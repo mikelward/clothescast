@@ -119,9 +119,9 @@ fun ForecastChart(
         }
     }
 
-    // Format y-axis labels as integers. With integer bounds and a 5-unit
+    // Format y-axis labels as integers. With integer bounds and a 4-unit
     // minimum span Vico's auto-stepper lands on sensible whole-number steps
-    // (1, 2, 5) so we don't need to override the item placer — adjacent labels
+    // (1, 2) so we don't need to override the item placer — adjacent labels
     // never collapse onto the same rounded value.
     val startFormatter = remember {
         CartesianValueFormatter { _, value, _ -> value.roundToInt().toString() }

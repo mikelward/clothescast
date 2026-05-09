@@ -20,8 +20,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    name: Detect changed paths
+    runs-on: ubuntu-latest
+    outputs:
+      non-md: ${{ steps.filter.outputs.non-md }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            non-md:
+              - '**'
+              - '!**/*.md'
+
   unit-tests:
     name: JVM unit tests
+    needs: changes
+    if: needs.changes.outputs.non-md == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       # contents: write so the snapshot-commit step can push regenerated PNGs
@@ -308,20 +325,21 @@ jobs:
   android-build:
     name: Android debug build
     runs-on: ubuntu-latest
+    needs: changes
     permissions:
       contents: read
       pull-requests: write
-    # workflow_dispatch can be invoked against any ref by any user with
-    # `actions: write`. The job-level env block below populates the runner
-    # with FIREBASE_* / PLAY_* secrets; without this guard, a manual dispatch
-    # against a feature branch that ships a malicious `ci.yml` modification
-    # would have those secrets in scope. The publishing steps' own
-    # `refs/heads/main` gates aren't enough — they only short-circuit the
-    # *publish* steps; the job env vars themselves are still populated for
-    # any other step that runs. push and pull_request events are unaffected
-    # (push is already filtered to main by the `on:` block; pull_request
-    # secrets are blocked by GitHub for fork PRs anyway).
-    if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
+    # Two guards combined:
+    # 1. Skip when only .md files changed (non-md == false); workflow_dispatch
+    #    always runs regardless since there's no diff to filter against.
+    # 2. workflow_dispatch is restricted to main — a manual dispatch on a
+    #    feature branch would otherwise expose FIREBASE_* / PLAY_* secrets to
+    #    any step in this job, even ones that don't publish. push is already
+    #    filtered to main by the `on:` block; pull_request fork secrets are
+    #    blocked by GitHub anyway.
+    if: >-
+      (needs.changes.outputs.non-md == 'true' || github.event_name == 'workflow_dispatch') &&
+      (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
     # Job-level env: the Firebase distribute step's `if:` reads these via
     # env.FIREBASE_APP_ID / env.FIREBASE_SERVICE_ACCOUNT_JSON. The `secrets`
     # context isn't available in `if:` expressions ("Unrecognized named-value:

@@ -32,6 +32,7 @@ import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WeatherCondition
+import app.clothescast.diag.BugReportConsentDialog
 import app.clothescast.ui.theme.ClothesCastTheme
 import app.clothescast.work.FetchAndNotifyWorker
 import java.time.Instant
@@ -450,6 +451,12 @@ internal fun LastCrashBannerPreview() {
     // depend on a real `cacheDir/last-crash.txt` existing on the Robolectric
     // filesystem at test time.
     Frame { LastCrashBannerCard(onShare = {}, onDismiss = {}) }
+}
+
+@Preview(name = "Dialog · bug-report consent", widthDp = 360)
+@Composable
+internal fun BugReportConsentDialogPreview() {
+    Frame { BugReportConsentDialog(onConfirm = {}, onDismiss = {}) }
 }
 
 @Preview(name = "Banner · update available", widthDp = 360)

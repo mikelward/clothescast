@@ -27,6 +27,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import app.clothescast.R
 import app.clothescast.diag.BugReport
+import app.clothescast.diag.BugReportConsentDialog
 import app.clothescast.diag.DiagLog
 import app.clothescast.diag.findActivity
 import kotlinx.coroutines.launch
@@ -53,6 +54,7 @@ internal fun LastCrashBanner(modifier: Modifier = Modifier) {
     val activity = context.findActivity()
     val coroutineScope = rememberCoroutineScope()
     var hasCrash by remember { mutableStateOf(DiagLog.hasUnacknowledgedCrash()) }
+    var consentVisible by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -69,22 +71,33 @@ internal fun LastCrashBanner(modifier: Modifier = Modifier) {
 
     LastCrashBannerCard(
         modifier = modifier,
-        onShare = {
-            val act = activity ?: return@LastCrashBannerCard
-            coroutineScope.launch {
-                // includeScreenshot=false: the visible screen is *now*, but
-                // the crash is from a previous run, so a current screenshot
-                // would be misleading.
-                BugReport.share(act, includeScreenshot = false)
-                DiagLog.acknowledgePersistedCrash()
-                hasCrash = false
-            }
-        },
+        onShare = { consentVisible = true },
         onDismiss = {
             DiagLog.acknowledgePersistedCrash()
             hasCrash = false
         },
     )
+
+    if (consentVisible) {
+        // Cancelling consent leaves the banner visible: the user hasn't
+        // shared yet, so we don't acknowledge the crash. They can tap
+        // Share again or Dismiss it explicitly.
+        BugReportConsentDialog(
+            onConfirm = {
+                consentVisible = false
+                val act = activity ?: return@BugReportConsentDialog
+                coroutineScope.launch {
+                    // includeScreenshot=false: the visible screen is *now*, but
+                    // the crash is from a previous run, so a current screenshot
+                    // would be misleading.
+                    BugReport.share(act, includeScreenshot = false)
+                    DiagLog.acknowledgePersistedCrash()
+                    hasCrash = false
+                }
+            },
+            onDismiss = { consentVisible = false },
+        )
+    }
 }
 
 @Composable

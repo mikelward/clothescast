@@ -548,6 +548,16 @@
     <string name="settings_about_share_bug_report">Share bug report</string>
     <string name="settings_about_version_copied">Version copied to clipboard</string>
 
+    <!-- Consent dialog shown before any "share bug report" action (Today
+         overflow, About page, or the post-crash banner). Brief by design:
+         the user is mid-tap, not reading a policy. Calls out the personal
+         data the report contains so picking a destination is an informed
+         choice. -->
+    <string name="bug_report_consent_title">Share bug report?</string>
+    <string name="bug_report_consent_body">This helps diagnose issues. The report contains sensitive personal information, including your approximate location, app settings, and recent activity. You choose where to send it — nothing leaves your device until you pick a destination.</string>
+    <string name="bug_report_consent_continue">Continue</string>
+    <string name="bug_report_consent_cancel">Cancel</string>
+
     <!--
     Insight prose templates rendered by InsightFormatter. Each clause is its own
     string so translations can reorder phrasing per language (e.g. German verb-

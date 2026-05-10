@@ -456,7 +456,7 @@ internal fun LastCrashBannerPreview() {
 @Preview(name = "Dialog · bug-report consent", widthDp = 360)
 @Composable
 internal fun BugReportConsentDialogPreview() {
-    Frame { BugReportConsentDialog(onConfirm = {}, onDismiss = {}) }
+    Frame { BugReportConsentDialog(onConfirm = { _ -> }, onDismiss = {}) }
 }
 
 @Preview(name = "Banner · update available", widthDp = 360)

@@ -27,7 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.BuildConfig
+import app.clothescast.ClothesCastApplication
 import app.clothescast.R
 import app.clothescast.diag.BugReport
 import app.clothescast.diag.BugReportConsentDialog
@@ -57,7 +59,20 @@ private fun AboutCard() {
     val context = LocalContext.current
     val activity = context.findActivity()
     val coroutineScope = rememberCoroutineScope()
+    val app = context.applicationContext as ClothesCastApplication
+    val bugReportConsentAcked by app.settingsRepository.bugReportConsentAcknowledged
+        .collectAsStateWithLifecycle(initialValue = false)
     var bugReportConsentVisible by remember { mutableStateOf(false) }
+
+    val launchBugReport: () -> Unit = launchBugReport@{
+        val act = activity ?: return@launchBugReport
+        coroutineScope.launch {
+            // No screenshot from About — the About page itself isn't useful
+            // to capture; Today's overflow menu owns the screenshot path.
+            BugReport.share(act, includeScreenshot = false)
+        }
+    }
+
     SectionCard(title = stringResource(R.string.settings_about_title)) {
         // Release builds get a clean "Version 0.1.0+61.85d100b (61)". Anything else
         // (debug today, possibly internal QA flavours later) appends " · <type> build"
@@ -108,22 +123,27 @@ private fun AboutCard() {
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.settings_about_dontkillmyapp)) }
         TextButton(
-            onClick = { bugReportConsentVisible = true },
+            onClick = {
+                if (bugReportConsentAcked) {
+                    launchBugReport()
+                } else {
+                    bugReportConsentVisible = true
+                }
+            },
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.settings_about_share_bug_report)) }
     }
 
     if (bugReportConsentVisible) {
         BugReportConsentDialog(
-            onConfirm = {
+            onConfirm = { dontShowAgain ->
                 bugReportConsentVisible = false
-                if (activity != null) {
+                if (dontShowAgain) {
                     coroutineScope.launch {
-                        // No screenshot from About — the About page itself isn't useful
-                        // to capture; Today's overflow menu owns the screenshot path.
-                        BugReport.share(activity, includeScreenshot = false)
+                        app.settingsRepository.setBugReportConsentAcknowledged(true)
                     }
                 }
+                launchBugReport()
             },
             onDismiss = { bugReportConsentVisible = false },
         )

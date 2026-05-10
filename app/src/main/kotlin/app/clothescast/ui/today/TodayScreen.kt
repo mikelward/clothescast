@@ -78,6 +78,7 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.thresholdC
 import app.clothescast.core.domain.model.toUnit
+import app.clothescast.ClothesCastApplication
 import app.clothescast.diag.BugReport
 import app.clothescast.diag.BugReportConsentDialog
 import app.clothescast.diag.findActivity
@@ -105,6 +106,9 @@ fun TodayScreen(
     val context = LocalContext.current
     val activity = context.findActivity()
     val coroutineScope = rememberCoroutineScope()
+    val app = context.applicationContext as ClothesCastApplication
+    val bugReportConsentAcked by app.settingsRepository.bugReportConsentAcknowledged
+        .collectAsStateWithLifecycle(initialValue = false)
     // Both Running (fresh enqueue) and Retrying (post-failure backoff) suppress
     // Refresh — the worker still bills a Gemini call on resumption, and a tap
     // would REPLACE the in-flight retry chain. The banner copy distinguishes them.
@@ -112,6 +116,11 @@ fun TodayScreen(
         state.workStatus is WorkStatus.Retrying
     var overflowExpanded by remember { mutableStateOf(false) }
     var bugReportConsentVisible by remember { mutableStateOf(false) }
+
+    val launchBugReport: () -> Unit = launchBugReport@{
+        val act = activity ?: return@launchBugReport
+        coroutineScope.launch { BugReport.share(act, includeScreenshot = true) }
+    }
 
     Scaffold(
         topBar = {
@@ -160,7 +169,11 @@ fun TodayScreen(
                             text = { Text(stringResource(R.string.today_report_a_bug)) },
                             onClick = {
                                 overflowExpanded = false
-                                bugReportConsentVisible = true
+                                if (bugReportConsentAcked) {
+                                    launchBugReport()
+                                } else {
+                                    bugReportConsentVisible = true
+                                }
                             },
                         )
                         DropdownMenuItem(
@@ -188,13 +201,14 @@ fun TodayScreen(
 
     if (bugReportConsentVisible) {
         BugReportConsentDialog(
-            onConfirm = {
+            onConfirm = { dontShowAgain ->
                 bugReportConsentVisible = false
-                if (activity != null) {
+                if (dontShowAgain) {
                     coroutineScope.launch {
-                        BugReport.share(activity, includeScreenshot = true)
+                        app.settingsRepository.setBugReportConsentAcknowledged(true)
                     }
                 }
+                launchBugReport()
             },
             onDismiss = { bugReportConsentVisible = false },
         )

@@ -329,8 +329,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_about_title">Acerca de</string>
     <string name="settings_about_version">Versión %1$s (%2$d)</string>
     <string name="settings_about_build_type_suffix"> · build %1$s</string>
-    <string name="settings_about_privacy">Tu clave API de Gemini (usada para la lectura en voz alta TTS) se cifra en reposo con una clave vinculada al Android Keystore. Los pronósticos vienen de Open-Meteo (sin clave, sin cuenta); el texto del resumen diario se genera localmente en el dispositivo. ClothesCast no tiene backend — no se envía nada a ningún servidor que controlemos.</string>
-    <string name="settings_about_privacy_policy">Política de privacidad</string>
     <string name="settings_about_source">Código fuente en GitHub</string>
     <string name="settings_about_dontkillmyapp">Restricciones en segundo plano (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Compartir informe de error</string>

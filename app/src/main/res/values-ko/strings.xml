@@ -344,8 +344,6 @@ displayed label localizes.
     <string name="settings_about_title">정보</string>
     <string name="settings_about_version">버전 %1$s (%2$d)</string>
     <string name="settings_about_build_type_suffix"> · %1$s 빌드</string>
-    <string name="settings_about_privacy">Gemini API 키(음성 읽기 TTS에 사용)는 Android Keystore에 연결된 키로 암호화되어 저장됩니다. 예보는 Open-Meteo에서 가져옵니다 (키 없음, 계정 없음). 매일 요약 텍스트는 기기에서 로컬로 생성됩니다. ClothesCast에는 백엔드가 없으며, 우리가 관리하는 어떤 서버에도 아무것도 전송되지 않아요.</string>
-    <string name="settings_about_privacy_policy">개인정보처리방침</string>
     <string name="settings_about_source">GitHub 소스 코드</string>
     <string name="settings_about_dontkillmyapp">백그라운드 제한 (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">버그 보고서 공유</string>

@@ -18,7 +18,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -26,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.BuildConfig
 import app.clothescast.R
 import app.clothescast.diag.BugReport
+import app.clothescast.diag.BugReportConsentDialog
 import app.clothescast.diag.findActivity
 import app.clothescast.work.FetchAndNotifyWorker
 import kotlinx.coroutines.launch
@@ -52,6 +57,7 @@ private fun AboutCard() {
     val context = LocalContext.current
     val activity = context.findActivity()
     val coroutineScope = rememberCoroutineScope()
+    var bugReportConsentVisible by remember { mutableStateOf(false) }
     SectionCard(title = stringResource(R.string.settings_about_title)) {
         // Release builds get a clean "Version 0.1.0+61.85d100b (61)". Anything else
         // (debug today, possibly internal QA flavours later) appends " · <type> build"
@@ -102,7 +108,15 @@ private fun AboutCard() {
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.settings_about_dontkillmyapp)) }
         TextButton(
-            onClick = {
+            onClick = { bugReportConsentVisible = true },
+            modifier = Modifier.fillMaxWidth(),
+        ) { Text(stringResource(R.string.settings_about_share_bug_report)) }
+    }
+
+    if (bugReportConsentVisible) {
+        BugReportConsentDialog(
+            onConfirm = {
+                bugReportConsentVisible = false
                 if (activity != null) {
                     coroutineScope.launch {
                         // No screenshot from About — the About page itself isn't useful
@@ -111,8 +125,8 @@ private fun AboutCard() {
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth(),
-        ) { Text(stringResource(R.string.settings_about_share_bug_report)) }
+            onDismiss = { bugReportConsentVisible = false },
+        )
     }
 }
 

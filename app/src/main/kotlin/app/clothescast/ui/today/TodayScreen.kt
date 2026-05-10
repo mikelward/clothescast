@@ -79,6 +79,7 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.thresholdC
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.diag.BugReport
+import app.clothescast.diag.BugReportConsentDialog
 import app.clothescast.diag.findActivity
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.location.hasBackgroundLocationPermission
@@ -110,6 +111,7 @@ fun TodayScreen(
     val isWorking = state.workStatus is WorkStatus.Running ||
         state.workStatus is WorkStatus.Retrying
     var overflowExpanded by remember { mutableStateOf(false) }
+    var bugReportConsentVisible by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -158,11 +160,7 @@ fun TodayScreen(
                             text = { Text(stringResource(R.string.today_report_a_bug)) },
                             onClick = {
                                 overflowExpanded = false
-                                if (activity != null) {
-                                    coroutineScope.launch {
-                                        BugReport.share(activity, includeScreenshot = true)
-                                    }
-                                }
+                                bugReportConsentVisible = true
                             },
                         )
                         DropdownMenuItem(
@@ -185,6 +183,20 @@ fun TodayScreen(
             onSetUpLocation = onNavigateToLocation,
             onOpenPrivacy = onNavigateToPrivacy,
             onAdjustThreshold = viewModel::adjustClothesRuleThreshold,
+        )
+    }
+
+    if (bugReportConsentVisible) {
+        BugReportConsentDialog(
+            onConfirm = {
+                bugReportConsentVisible = false
+                if (activity != null) {
+                    coroutineScope.launch {
+                        BugReport.share(activity, includeScreenshot = true)
+                    }
+                }
+            },
+            onDismiss = { bugReportConsentVisible = false },
         )
     }
 }

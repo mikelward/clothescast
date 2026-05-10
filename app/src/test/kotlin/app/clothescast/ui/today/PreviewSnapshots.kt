@@ -27,10 +27,14 @@ import app.clothescast.ui.settings.SettingsSchedulePreview
 import app.clothescast.ui.settings.SettingsVoiceDevicePreview
 import app.clothescast.ui.settings.SettingsVoiceGeminiPreview
 import app.clothescast.widget.WidgetEmptyPreview
+import app.clothescast.widget.WidgetTodayCompactPreview
 import app.clothescast.widget.WidgetTodayJacketPantsPreview
+import app.clothescast.widget.WidgetTodayLargePreview
+import app.clothescast.widget.WidgetTodayTonightWidePreview
 import app.clothescast.widget.WidgetTodayTShirtShortsPreview
 import app.clothescast.widget.WidgetTonightDarkPreview
 import app.clothescast.widget.WidgetTonightSweaterPantsPreview
+import app.clothescast.widget.WidgetTonightTomorrowWidePreview
 import com.github.takahirom.roborazzi.captureRoboImage
 import org.junit.Before
 import org.junit.Rule
@@ -188,6 +192,10 @@ class PreviewSnapshots {
     @Test fun widget_today_jacket_pants() = capture { WidgetTodayJacketPantsPreview() }
     @Test fun widget_tonight_dark() = capture { WidgetTonightDarkPreview() }
     @Test fun widget_empty() = capture { WidgetEmptyPreview() }
+    @Test fun widget_today_compact() = capture { WidgetTodayCompactPreview() }
+    @Test fun widget_today_large() = capture { WidgetTodayLargePreview() }
+    @Test fun widget_today_tonight_wide() = capture { WidgetTodayTonightWidePreview() }
+    @Test fun widget_tonight_tomorrow_wide() = capture { WidgetTonightTomorrowWidePreview() }
 
     @Test fun settings_root() = capture { SettingsRootPreview() }
     @Test fun settings_schedule() = capture { SettingsSchedulePreview() }

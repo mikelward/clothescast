@@ -2,6 +2,9 @@ package app.clothescast.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
@@ -10,16 +13,20 @@ import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
+import androidx.glance.LocalSize
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
+import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
@@ -44,8 +51,17 @@ import kotlinx.coroutines.flow.first
  * does, so it stays in lockstep with whatever the app last computed. Refreshes
  * are pushed by [app.clothescast.work.FetchAndNotifyWorker] after each cache
  * write via OutfitWidget().updateAll(context); there's no per-widget polling.
+ *
+ * Sizing is adaptive ([SizeMode.Exact] — minSdk 31 makes that safe): icon and
+ * text sizes scale with the widget's shortest side so a stretched widget looks
+ * deliberately bigger rather than centred-with-whitespace, and once the widget
+ * is wide enough to fit two columns it splits into the current period plus the
+ * next one ("Today + Tonight" on a morning insight, "Tonight + Tomorrow" on an
+ * evening one) — same convention as the Today screen's OutfitPreviewRow.
  */
 class OutfitWidget : GlanceAppWidget() {
+
+    override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val app = context.applicationContext as ClothesCastApplication
@@ -62,8 +78,14 @@ class OutfitWidget : GlanceAppWidget() {
     }
 }
 
+// Threshold at which we split into two columns: each column needs roughly the
+// width of a default-sized single-column widget (~120dp), so a 240dp+ widget is
+// the minimum that doesn't cramp either side.
+private val SIDE_BY_SIDE_MIN_WIDTH = 240.dp
+
 @Composable
 private fun OutfitWidgetContent(insight: Insight?) {
+    val size = LocalSize.current
     val outfit = insight?.outfit
     Box(
         modifier = GlanceModifier
@@ -75,25 +97,30 @@ private fun OutfitWidgetContent(insight: Insight?) {
         contentAlignment = Alignment.Center,
     ) {
         if (insight == null || outfit == null) {
-            EmptyContent()
+            EmptyContent(size)
+        } else if (size.width >= SIDE_BY_SIDE_MIN_WIDTH && insight.nextOutfit != null) {
+            SideBySideContent(insight, size)
         } else {
-            FilledContent(insight.period, outfit)
+            val context = LocalContext.current
+            SingleColumnContent(
+                label = context.getString(periodLabelRes(insight.period)),
+                outfit = outfit,
+                size = size,
+            )
         }
     }
 }
 
 @Composable
-private fun FilledContent(period: ForecastPeriod, outfit: OutfitSuggestion) {
+private fun SingleColumnContent(label: String, outfit: OutfitSuggestion, size: DpSize) {
     val context = LocalContext.current
+    val iconSize = scaledIconSize(size)
     Column(
         modifier = GlanceModifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = context.getString(periodLabelRes(period)),
-            style = labelStyle(),
-        )
+        Text(text = label, style = scaledLabelStyle(size))
         Spacer(modifier = GlanceModifier.height(4.dp))
         // Top-over-bottom vertical stack matches the Today screen's
         // OutfitPreviewCard so the home-screen glance reads the same way as
@@ -101,28 +128,62 @@ private fun FilledContent(period: ForecastPeriod, outfit: OutfitSuggestion) {
         Image(
             provider = ImageProvider(topIconRes(outfit.top)),
             contentDescription = context.getString(topLabelRes(outfit.top)),
-            modifier = GlanceModifier.size(48.dp),
+            modifier = GlanceModifier.size(iconSize),
         )
         Image(
             provider = ImageProvider(bottomIconRes(outfit.bottom)),
             contentDescription = context.getString(bottomLabelRes(outfit.bottom)),
-            modifier = GlanceModifier.size(48.dp),
+            modifier = GlanceModifier.size(iconSize),
         )
         Spacer(modifier = GlanceModifier.height(2.dp))
         Text(
             text = context.getString(topLabelRes(outfit.top)) +
                 " · " +
                 context.getString(bottomLabelRes(outfit.bottom)),
-            style = TextStyle(
-                color = GlanceTheme.colors.onSurfaceVariant,
-                fontSize = 11.sp,
-            ),
+            style = scaledSubtitleStyle(size),
         )
     }
 }
 
 @Composable
-private fun EmptyContent() {
+private fun SideBySideContent(insight: Insight, size: DpSize) {
+    val context = LocalContext.current
+    val primaryOutfit = insight.outfit ?: return
+    val nextOutfit = insight.nextOutfit ?: return
+    val (primaryLabelRes, nextLabelRes) = sideBySideLabelRes(insight.period)
+    // Each column gets roughly half the available width; drive the per-column
+    // scale off that half-width so icons / text don't try to grow into space
+    // they don't actually have.
+    val columnSize = DpSize(size.width / 2, size.height)
+    Row(
+        modifier = GlanceModifier.fillMaxSize(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = GlanceModifier.defaultWeight().fillMaxHeight(),
+            contentAlignment = Alignment.Center,
+        ) {
+            SingleColumnContent(
+                label = context.getString(primaryLabelRes),
+                outfit = primaryOutfit,
+                size = columnSize,
+            )
+        }
+        Box(
+            modifier = GlanceModifier.defaultWeight().fillMaxHeight(),
+            contentAlignment = Alignment.Center,
+        ) {
+            SingleColumnContent(
+                label = context.getString(nextLabelRes),
+                outfit = nextOutfit,
+                size = columnSize,
+            )
+        }
+    }
+}
+
+@Composable
+private fun EmptyContent(size: DpSize) {
     val context = LocalContext.current
     Column(
         modifier = GlanceModifier.fillMaxSize(),
@@ -131,29 +192,60 @@ private fun EmptyContent() {
     ) {
         Text(
             text = context.getString(R.string.widget_empty_title),
-            style = labelStyle(),
+            style = scaledLabelStyle(size),
         )
         Spacer(modifier = GlanceModifier.height(2.dp))
         Text(
             text = context.getString(R.string.widget_empty_subtitle),
-            style = TextStyle(
-                color = GlanceTheme.colors.onSurfaceVariant,
-                fontSize = 12.sp,
-            ),
+            style = scaledSubtitleStyle(size),
         )
     }
 }
 
+// Scaling factors are anchored so a 160dp-square cell reproduces the previous
+// hard-coded values (icon 48dp, label 14sp, subtitle 11sp); larger cells grow
+// up to the caps below. Sizing is driven by the shortest dimension because
+// the column is bounded vertically by two stacked icons + label + subtitle.
+private fun scaledIconSize(size: DpSize): Dp {
+    val short = minOf(size.width.value, size.height.value)
+    return (short * 0.30f).coerceIn(36f, 88f).dp
+}
+
 @Composable
-private fun labelStyle(): TextStyle = TextStyle(
+private fun scaledLabelStyle(size: DpSize): TextStyle = TextStyle(
     color = GlanceTheme.colors.onSurface,
     fontWeight = FontWeight.Medium,
-    fontSize = 14.sp,
+    fontSize = scaledLabelSp(size),
 )
+
+@Composable
+private fun scaledSubtitleStyle(size: DpSize): TextStyle = TextStyle(
+    color = GlanceTheme.colors.onSurfaceVariant,
+    fontSize = scaledSubtitleSp(size),
+)
+
+private fun scaledLabelSp(size: DpSize): TextUnit {
+    val short = minOf(size.width.value, size.height.value)
+    return (short * 0.0875f).coerceIn(13f, 18f).sp
+}
+
+private fun scaledSubtitleSp(size: DpSize): TextUnit {
+    val short = minOf(size.width.value, size.height.value)
+    return (short * 0.0688f).coerceIn(10f, 13f).sp
+}
 
 private fun periodLabelRes(period: ForecastPeriod): Int = when (period) {
     ForecastPeriod.TODAY -> R.string.today_outfit_label_today
     ForecastPeriod.TONIGHT -> R.string.today_outfit_label_tonight
+}
+
+// Mirrors `outfitLabels` in TodayScreen.OutfitPreviewRow: the "next" period
+// after TODAY is TONIGHT, after TONIGHT it's TOMORROW.
+private fun sideBySideLabelRes(period: ForecastPeriod): Pair<Int, Int> = when (period) {
+    ForecastPeriod.TODAY ->
+        R.string.today_outfit_label_today to R.string.today_outfit_label_tonight
+    ForecastPeriod.TONIGHT ->
+        R.string.today_outfit_label_tonight to R.string.today_outfit_label_tomorrow
 }
 
 private fun topIconRes(top: OutfitSuggestion.Top): Int = when (top) {

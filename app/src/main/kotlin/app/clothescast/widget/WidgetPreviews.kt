@@ -4,7 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,6 +22,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.clothescast.R
@@ -34,15 +39,18 @@ import app.clothescast.ui.theme.ClothesCastTheme
 // same dimensions and styling. Mirrors the NotificationIconPreviews approach.
 //
 // Visual changes to OutfitWidget.kt should be reflected here so the snapshots
-// stay representative — the two files are coupled by intent.
+// stay representative — the two files are coupled by intent. The scaling
+// formulas below MUST stay in lockstep with the ones in OutfitWidget.kt.
 //
-// The Frame matches a typical 2x2 launcher cell (~110dp). The widget itself
-// resizes; this preview pins one realistic size so PR diffs surface layout
-// regressions at the size most users will see.
+// Sizes covered:
+//   * compact (110x110)   — default 2x2 launcher cell
+//   * standard (160x160)  — what most users probably see; matches the size the
+//                           widget snapshots have always been pinned at
+//   * large   (220x220)   — stretched 3x3, scaled-up icons + text
+//   * wide    (300x150)   — 4x2-ish, side-by-side current + next period
 //
 
-private val WidgetWidth = 160.dp
-private val WidgetHeight = 160.dp
+private val SIDE_BY_SIDE_MIN_WIDTH = 240.dp
 
 @Composable
 private fun WidgetFrame(darkTheme: Boolean = false, content: @Composable () -> Unit) {
@@ -57,11 +65,11 @@ private fun WidgetFrame(darkTheme: Boolean = false, content: @Composable () -> U
 }
 
 @Composable
-private fun WidgetSurface(content: @Composable () -> Unit) {
+private fun WidgetSurface(width: Dp, height: Dp, content: @Composable () -> Unit) {
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.surface,
-        modifier = Modifier.size(width = WidgetWidth, height = WidgetHeight),
+        modifier = Modifier.size(width = width, height = height),
     ) {
         Box(
             modifier = Modifier
@@ -76,45 +84,97 @@ private fun WidgetSurface(content: @Composable () -> Unit) {
 internal fun OutfitWidgetMockFilled(
     period: ForecastPeriod,
     outfit: OutfitSuggestion,
+    width: Dp = 160.dp,
+    height: Dp = 160.dp,
 ) {
-    WidgetSurface {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+    WidgetSurface(width, height) {
+        SingleColumnMock(
+            label = stringResource(periodLabelResMock(period)),
+            outfit = outfit,
+            size = DpSize(width, height),
+        )
+    }
+}
+
+@Composable
+internal fun OutfitWidgetMockSideBySide(
+    primaryPeriod: ForecastPeriod,
+    primary: OutfitSuggestion,
+    next: OutfitSuggestion,
+    width: Dp = 300.dp,
+    height: Dp = 150.dp,
+) {
+    val (primaryLabel, nextLabel) = sideBySideLabelResMock(primaryPeriod)
+    val columnSize = DpSize(width / 2, height)
+    WidgetSurface(width, height) {
+        Row(
             modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = stringResource(periodLabelResMock(period)),
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Image(
-                painter = painterResource(id = topIconResMock(outfit.top)),
-                contentDescription = stringResource(topLabelResMock(outfit.top)),
-                modifier = Modifier.size(48.dp),
-            )
-            Image(
-                painter = painterResource(id = bottomIconResMock(outfit.bottom)),
-                contentDescription = stringResource(bottomLabelResMock(outfit.bottom)),
-                modifier = Modifier.size(48.dp),
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = stringResource(topLabelResMock(outfit.top)) +
-                    " · " +
-                    stringResource(bottomLabelResMock(outfit.bottom)),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 11.sp,
-            )
+            Box(
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                contentAlignment = Alignment.Center,
+            ) {
+                SingleColumnMock(
+                    label = stringResource(primaryLabel),
+                    outfit = primary,
+                    size = columnSize,
+                )
+            }
+            Box(
+                modifier = Modifier.weight(1f).fillMaxHeight(),
+                contentAlignment = Alignment.Center,
+            ) {
+                SingleColumnMock(
+                    label = stringResource(nextLabel),
+                    outfit = next,
+                    size = columnSize,
+                )
+            }
         }
     }
 }
 
 @Composable
-internal fun OutfitWidgetMockEmpty() {
-    WidgetSurface {
+private fun SingleColumnMock(label: String, outfit: OutfitSuggestion, size: DpSize) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        Text(
+            text = label,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = scaledLabelSpMock(size),
+            fontWeight = FontWeight.Medium,
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        val iconSize = scaledIconSizeMock(size)
+        Image(
+            painter = painterResource(id = topIconResMock(outfit.top)),
+            contentDescription = stringResource(topLabelResMock(outfit.top)),
+            modifier = Modifier.size(iconSize),
+        )
+        Image(
+            painter = painterResource(id = bottomIconResMock(outfit.bottom)),
+            contentDescription = stringResource(bottomLabelResMock(outfit.bottom)),
+            modifier = Modifier.size(iconSize),
+        )
+        Spacer(modifier = Modifier.height(2.dp))
+        Text(
+            text = stringResource(topLabelResMock(outfit.top)) +
+                " · " +
+                stringResource(bottomLabelResMock(outfit.bottom)),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = scaledSubtitleSpMock(size),
+        )
+    }
+}
+
+@Composable
+internal fun OutfitWidgetMockEmpty(width: Dp = 160.dp, height: Dp = 160.dp) {
+    val size = DpSize(width, height)
+    WidgetSurface(width, height) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -123,14 +183,14 @@ internal fun OutfitWidgetMockEmpty() {
             Text(
                 text = stringResource(R.string.widget_empty_title),
                 color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 14.sp,
+                fontSize = scaledLabelSpMock(size),
                 fontWeight = FontWeight.Medium,
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = stringResource(R.string.widget_empty_subtitle),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 12.sp,
+                fontSize = scaledSubtitleSpMock(size),
             )
         }
     }
@@ -186,9 +246,84 @@ internal fun WidgetEmptyPreview() {
     WidgetFrame { OutfitWidgetMockEmpty() }
 }
 
+@Preview(name = "Widget · today · compact (110dp)", widthDp = 142, heightDp = 142)
+@Composable
+internal fun WidgetTodayCompactPreview() {
+    WidgetFrame {
+        OutfitWidgetMockFilled(
+            period = ForecastPeriod.TODAY,
+            outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
+            width = 110.dp,
+            height = 110.dp,
+        )
+    }
+}
+
+@Preview(name = "Widget · today · large (220dp)", widthDp = 252, heightDp = 252)
+@Composable
+internal fun WidgetTodayLargePreview() {
+    WidgetFrame {
+        OutfitWidgetMockFilled(
+            period = ForecastPeriod.TODAY,
+            outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
+            width = 220.dp,
+            height = 220.dp,
+        )
+    }
+}
+
+@Preview(name = "Widget · today + tonight · side by side", widthDp = 332, heightDp = 182)
+@Composable
+internal fun WidgetTodayTonightWidePreview() {
+    WidgetFrame {
+        OutfitWidgetMockSideBySide(
+            primaryPeriod = ForecastPeriod.TODAY,
+            primary = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
+            next = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+        )
+    }
+}
+
+@Preview(name = "Widget · tonight + tomorrow · side by side", widthDp = 332, heightDp = 182)
+@Composable
+internal fun WidgetTonightTomorrowWidePreview() {
+    WidgetFrame {
+        OutfitWidgetMockSideBySide(
+            primaryPeriod = ForecastPeriod.TONIGHT,
+            primary = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+            next = OutfitSuggestion(OutfitSuggestion.Top.THIN_JACKET, OutfitSuggestion.Bottom.JEANS),
+        )
+    }
+}
+
+// Scaling formulas — kept in lockstep with OutfitWidget.kt's scaledIconSize /
+// scaledLabelSp / scaledSubtitleSp. Anchored so a 160dp-square cell reproduces
+// the previous hard-coded values (icon 48dp, label 14sp, subtitle 11sp).
+private fun scaledIconSizeMock(size: DpSize): Dp {
+    val short = minOf(size.width.value, size.height.value)
+    return (short * 0.30f).coerceIn(36f, 88f).dp
+}
+
+private fun scaledLabelSpMock(size: DpSize): TextUnit {
+    val short = minOf(size.width.value, size.height.value)
+    return (short * 0.0875f).coerceIn(13f, 18f).sp
+}
+
+private fun scaledSubtitleSpMock(size: DpSize): TextUnit {
+    val short = minOf(size.width.value, size.height.value)
+    return (short * 0.0688f).coerceIn(10f, 13f).sp
+}
+
 private fun periodLabelResMock(period: ForecastPeriod): Int = when (period) {
     ForecastPeriod.TODAY -> R.string.today_outfit_label_today
     ForecastPeriod.TONIGHT -> R.string.today_outfit_label_tonight
+}
+
+private fun sideBySideLabelResMock(period: ForecastPeriod): Pair<Int, Int> = when (period) {
+    ForecastPeriod.TODAY ->
+        R.string.today_outfit_label_today to R.string.today_outfit_label_tonight
+    ForecastPeriod.TONIGHT ->
+        R.string.today_outfit_label_tonight to R.string.today_outfit_label_tomorrow
 }
 
 private fun topIconResMock(top: OutfitSuggestion.Top): Int = when (top) {

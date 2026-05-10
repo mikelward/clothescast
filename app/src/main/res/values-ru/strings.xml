@@ -321,8 +321,6 @@ only the displayed label localizes.
     <string name="settings_about_title">О приложении</string>
     <string name="settings_about_version">Версия %1$s (%2$d)</string>
     <string name="settings_about_build_type_suffix"> · сборка %1$s</string>
-    <string name="settings_about_privacy">Твой ключ API Gemini (используемый для озвучивания TTS) зашифрован с помощью ключа, привязанного к Android Keystore. Прогнозы поступают от Open-Meteo (без ключа, без аккаунта); текст ежедневной сводки генерируется локально на устройстве. У ClothesCast нет бэкенда — ничего не отправляется ни на один сервер, который мы контролируем.</string>
-    <string name="settings_about_privacy_policy">Политика конфиденциальности</string>
     <string name="settings_about_source">Исходный код на GitHub</string>
     <string name="settings_about_dontkillmyapp">Ограничения в фоне (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Поделиться отчётом об ошибке</string>

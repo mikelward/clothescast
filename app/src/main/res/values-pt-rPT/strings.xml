@@ -350,8 +350,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_about_title">Acerca</string>
     <string name="settings_about_version">Versão %1$s (%2$d)</string>
     <string name="settings_about_build_type_suffix"> · build %1$s</string>
-    <string name="settings_about_privacy">A tua chave API Gemini (utilizada para a leitura em voz alta TTS) é encriptada em repouso com uma chave associada ao Android Keystore. As previsões vêm da Open-Meteo (sem chave, sem conta); o texto do resumo diário é gerado localmente no dispositivo. O ClothesCast não tem backend — nada é enviado para nenhum servidor que controlemos.</string>
-    <string name="settings_about_privacy_policy">Política de privacidade</string>
     <string name="settings_about_source">Código-fonte no GitHub</string>
     <string name="settings_about_dontkillmyapp">Restrições em segundo plano (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Partilhar relatório de erro</string>

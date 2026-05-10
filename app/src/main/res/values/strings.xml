@@ -541,8 +541,6 @@
          interpunct is the same separator the chart legend uses; the build-type name itself
          comes straight from BuildConfig.BUILD_TYPE and isn't translated. -->
     <string name="settings_about_build_type_suffix"> · %1$s build</string>
-    <string name="settings_about_privacy">Your Gemini API key (used for spoken-aloud TTS) is encrypted at rest using a key bound to the Android Keystore. Forecasts come from Open-Meteo (no key, no account); the daily summary text is rendered locally on-device. ClothesCast does not have a backend — nothing is sent to any server we control.</string>
-    <string name="settings_about_privacy_policy">Privacy policy</string>
     <string name="settings_about_source">Source code on GitHub</string>
     <string name="settings_about_dontkillmyapp">Background restrictions (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Share bug report</string>

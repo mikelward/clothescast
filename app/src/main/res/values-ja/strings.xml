@@ -328,8 +328,6 @@ the displayed label localizes.
     <string name="settings_about_title">アプリについて</string>
     <string name="settings_about_version">バージョン %1$s（%2$d）</string>
     <string name="settings_about_build_type_suffix"> · %1$s ビルド</string>
-    <string name="settings_about_privacy">あなたの Gemini API キー（音声読み上げ TTS で使用）は、Android Keystore に紐付いたキーで暗号化して保存されます。予報は Open-Meteo から取得しています（キー不要、アカウント不要）。毎日の要約テキストは端末でローカルに生成されます。ClothesCast にはバックエンドはなく、私たちが管理するサーバーには何も送信されません。</string>
-    <string name="settings_about_privacy_policy">プライバシーポリシー</string>
     <string name="settings_about_source">GitHub のソースコード</string>
     <string name="settings_about_dontkillmyapp">バックグラウンド制限（dontkillmyapp.com）</string>
     <string name="settings_about_share_bug_report">バグレポートを共有</string>

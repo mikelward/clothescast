@@ -322,8 +322,6 @@ label localizes.
     <string name="settings_about_title">关于</string>
     <string name="settings_about_version">版本 %1$s（%2$d）</string>
     <string name="settings_about_build_type_suffix"> · %1$s 构建</string>
-    <string name="settings_about_privacy">你的 Gemini API 密钥（用于语音朗读 TTS）会用绑定到 Android Keystore 的密钥加密存储。预报来自 Open-Meteo（无需密钥，无需账户）；每日摘要文本在设备本地生成。ClothesCast 没有后端 — 不会向我们控制的任何服务器发送数据。</string>
-    <string name="settings_about_privacy_policy">隐私政策</string>
     <string name="settings_about_source">GitHub 上的源代码</string>
     <string name="settings_about_dontkillmyapp">后台限制（dontkillmyapp.com）</string>
     <string name="settings_about_share_bug_report">分享问题报告</string>

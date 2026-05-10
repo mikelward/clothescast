@@ -41,6 +41,8 @@ import kotlinx.coroutines.flow.first
 import java.io.IOException
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
+import kotlin.math.cos
+import kotlin.math.sqrt
 
 /**
  * Performs one daily fetch + insight + notify cycle. Runs in a WorkManager
@@ -304,7 +306,18 @@ class FetchAndNotifyWorker(
                 // network failure / nothing useful in the address — the UI
                 // falls back to a date-only header in that case.
                 val cityName = app.reverseGeocoder.resolveCityName(device.latitude, device.longitude)
-                val resolved = if (cityName != null) device.copy(displayName = cityName) else device
+                // When reverse-geo fails for a fix close to the previously
+                // cached one, reuse the cached friendly name rather than
+                // clobbering "London" with the placeholder. Without this
+                // a single transient geocoder timeout permanently degrades
+                // the home screen to the localised "Your location" fallback
+                // until reverse-geo next succeeds.
+                val resolved = when {
+                    cityName != null -> device.copy(displayName = cityName)
+                    else -> reuseNearbyDisplayName(prefs.location, device)
+                        ?.let { device.copy(displayName = it) }
+                        ?: device
+                }
                 // Persist the resolved fix as the fallback so the next run can
                 // use the most recent good read when the device read fails
                 // (provider blip, no fix, services briefly off). With this in
@@ -321,6 +334,31 @@ class FetchAndNotifyWorker(
             DiagLog.i(TAG, "Device location unavailable; falling back to settings location.")
         }
         return prefs.location
+    }
+
+    // Reuse the previously cached displayName when it's a real city (not
+    // blank / not the LocationResolver placeholder) and the new device fix
+    // is close enough that the cached name is still meaningful. ~25km
+    // covers a typical commute / errand radius while still rejecting
+    // yesterday's trip to a different city.
+    private fun reuseNearbyDisplayName(prior: Location?, device: Location): String? {
+        if (prior == null) return null
+        val priorName = prior.displayName
+            ?.takeUnless { it.isBlank() || it == DEVICE_LOCATION_PLACEHOLDER }
+            ?: return null
+        return if (approxDistanceKm(prior, device) < REUSE_LABEL_RADIUS_KM) priorName else null
+    }
+
+    // Equirectangular approximation. Accurate to well under a kilometre
+    // at temperate latitudes for sub-100km separations — fine for "is
+    // the cached city name still meaningful?". TODO: switch to haversine
+    // if we ever need correctness near the poles or across the
+    // antimeridian; neither applies to current users.
+    private fun approxDistanceKm(a: Location, b: Location): Double {
+        val avgLatRad = (a.latitude + b.latitude) / 2 * Math.PI / 180
+        val dLat = (a.latitude - b.latitude) * Math.PI / 180
+        val dLon = (a.longitude - b.longitude) * Math.PI / 180 * cos(avgLatRad)
+        return EARTH_RADIUS_KM * sqrt(dLat * dLat + dLon * dLon)
     }
 
     // Mirrors the providers LocationResolver itself queries — NETWORK +
@@ -492,6 +530,20 @@ class FetchAndNotifyWorker(
 
         // Cap unhandled-error detail so the "Show details" pane stays readable.
         private const val MAX_DETAIL_LEN = 240
+
+        // Must match the literal LocationResolver stamps onto every device
+        // fix; we use it to spot the "no friendly name yet" case when
+        // deciding whether the previously cached displayName is worth
+        // reusing on a reverse-geo miss.
+        private const val DEVICE_LOCATION_PLACEHOLDER = "Device location"
+
+        // Radius within which we'll reuse the previously cached city name
+        // when reverse-geo fails. ~25km is generous enough to cover a
+        // commute or weekend outing without keeping yesterday's "Paris"
+        // glued to today's "London" fix.
+        private const val REUSE_LABEL_RADIUS_KM = 25.0
+
+        private const val EARTH_RADIUS_KM = 6371.0
 
         /** Set true via [enqueueOneShot] when the user explicitly taps Refresh. */
         private const val KEY_FORCE_REFRESH = "force_refresh"

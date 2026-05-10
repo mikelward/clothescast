@@ -492,6 +492,22 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `bugReportConsentAcknowledged defaults to false and round-trips`() = runTest {
+        // Default false so a fresh install always shows the consent dialog
+        // before the first share. A round-trip back to false covers the
+        // (currently UI-less) "let me see the disclosure again" path so
+        // the persistence layer doesn't lock anyone out if a future build
+        // exposes a reset toggle.
+        subject.bugReportConsentAcknowledged.first() shouldBe false
+
+        subject.setBugReportConsentAcknowledged(true)
+        subject.bugReportConsentAcknowledged.first() shouldBe true
+
+        subject.setBugReportConsentAcknowledged(false)
+        subject.bugReportConsentAcknowledged.first() shouldBe false
+    }
+
+    @Test
     fun `analyticsSnapshot reports defaults and UNSET when nothing is stored`() = runTest {
         // Pinned systemLocaleProvider is Locale.UK → BCP-47 "en-GB". With no
         // stored keys, both SYSTEM sentinels resolve to that for the

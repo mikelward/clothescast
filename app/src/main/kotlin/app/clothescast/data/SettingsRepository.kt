@@ -96,6 +96,25 @@ class SettingsRepository(
         dataStore.edit { it[DISMISSED_LOCAL_BUILD_SHA] = sha }
     }
 
+    /**
+     * Whether the user has ticked "Don't show this again" on the bug-report
+     * consent dialog. When `true`, the three "share bug report" entry points
+     * (Today overflow, About page, post-crash banner) skip the dialog and
+     * open the share sheet directly. Default `false` — first invocation
+     * always surfaces the disclosure.
+     *
+     * Stored alongside the other one-off ack flags rather than in
+     * [UserPreferences] because it isn't a user-visible setting (no
+     * Settings UI exposes it; reinstall is the only reset path).
+     */
+    val bugReportConsentAcknowledged: Flow<Boolean> = dataStore.data.map {
+        it[BUG_REPORT_CONSENT_ACKED] == true
+    }
+
+    suspend fun setBugReportConsentAcknowledged(acked: Boolean) {
+        dataStore.edit { it[BUG_REPORT_CONSENT_ACKED] = acked }
+    }
+
     suspend fun setSchedule(time: LocalTime, days: Set<DayOfWeek>) {
         require(days.isNotEmpty()) { "Schedule must include at least one day" }
         dataStore.edit { prefs ->
@@ -448,6 +467,7 @@ class SettingsRepository(
         private val DISMISSED_LOCAL_BUILD_SHA = stringPreferencesKey("dismissed_local_build_sha")
         private val TELEMETRY_ENABLED = booleanPreferencesKey("telemetry_enabled")
         private val TELEMETRY_NOTICE_ACKED = booleanPreferencesKey("telemetry_notice_acked")
+        private val BUG_REPORT_CONSENT_ACKED = booleanPreferencesKey("bug_report_consent_acked")
 
         private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
         private val DEFAULT_TIME: LocalTime = LocalTime.of(7, 0)

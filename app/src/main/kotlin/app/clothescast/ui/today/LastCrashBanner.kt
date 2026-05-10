@@ -25,6 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.clothescast.ClothesCastApplication
 import app.clothescast.R
 import app.clothescast.diag.BugReport
 import app.clothescast.diag.BugReportConsentDialog
@@ -53,6 +55,9 @@ internal fun LastCrashBanner(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val activity = context.findActivity()
     val coroutineScope = rememberCoroutineScope()
+    val app = context.applicationContext as ClothesCastApplication
+    val bugReportConsentAcked by app.settingsRepository.bugReportConsentAcknowledged
+        .collectAsStateWithLifecycle(initialValue = false)
     var hasCrash by remember { mutableStateOf(DiagLog.hasUnacknowledgedCrash()) }
     var consentVisible by remember { mutableStateOf(false) }
 
@@ -69,9 +74,23 @@ internal fun LastCrashBanner(modifier: Modifier = Modifier) {
 
     if (!hasCrash) return
 
+    val shareCrashReport: () -> Unit = shareCrashReport@{
+        val act = activity ?: return@shareCrashReport
+        coroutineScope.launch {
+            // includeScreenshot=false: the visible screen is *now*, but the
+            // crash is from a previous run, so a current screenshot would be
+            // misleading.
+            BugReport.share(act, includeScreenshot = false)
+            DiagLog.acknowledgePersistedCrash()
+            hasCrash = false
+        }
+    }
+
     LastCrashBannerCard(
         modifier = modifier,
-        onShare = { consentVisible = true },
+        onShare = {
+            if (bugReportConsentAcked) shareCrashReport() else consentVisible = true
+        },
         onDismiss = {
             DiagLog.acknowledgePersistedCrash()
             hasCrash = false
@@ -83,17 +102,14 @@ internal fun LastCrashBanner(modifier: Modifier = Modifier) {
         // shared yet, so we don't acknowledge the crash. They can tap
         // Share again or Dismiss it explicitly.
         BugReportConsentDialog(
-            onConfirm = {
+            onConfirm = { dontShowAgain ->
                 consentVisible = false
-                val act = activity ?: return@BugReportConsentDialog
-                coroutineScope.launch {
-                    // includeScreenshot=false: the visible screen is *now*, but
-                    // the crash is from a previous run, so a current screenshot
-                    // would be misleading.
-                    BugReport.share(act, includeScreenshot = false)
-                    DiagLog.acknowledgePersistedCrash()
-                    hasCrash = false
+                if (dontShowAgain) {
+                    coroutineScope.launch {
+                        app.settingsRepository.setBugReportConsentAcknowledged(true)
+                    }
                 }
+                shareCrashReport()
             },
             onDismiss = { consentVisible = false },
         )

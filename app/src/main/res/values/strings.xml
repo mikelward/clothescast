@@ -2,6 +2,13 @@
 <resources>
     <string name="app_name">ClothesCast</string>
 
+    <!-- Shown in place of the Compose UI when the device's framework.jar is
+         missing Configuration.fontWeightAdjustment (some OEM-modified
+         Android 12+ ROMs ship without it). The app can\'t start under
+         those conditions; this screen replaces a force-close with a
+         readable explanation. -->
+    <string name="error_device_incompatible">ClothesCast can\'t run on this device — your Android build is missing a feature the app\'s UI requires (Configuration.fontWeightAdjustment, expected on Android 12 and up). Please contact your device manufacturer for a system update.</string>
+
     <string name="today_title">Today</string>
     <string name="today_open_settings">Open Settings</string>
     <string name="today_more_options">More options</string>

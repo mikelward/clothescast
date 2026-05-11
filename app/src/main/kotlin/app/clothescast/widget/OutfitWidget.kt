@@ -1,6 +1,8 @@
 package app.clothescast.widget
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
@@ -14,10 +16,10 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
-import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
@@ -83,16 +85,31 @@ class OutfitWidget : GlanceAppWidget() {
 // the minimum that doesn't cramp either side.
 private val SIDE_BY_SIDE_MIN_WIDTH = 240.dp
 
+// Glance 1.1.x's actionStartActivity<MainActivity>() crashed in the wild with
+// "List adapter activity trampoline invoked without specifying target intent"
+// — the launcher dispatches the trampoline activity with empty extras, so the
+// wrapped target Intent is missing. Constructing the Intent ourselves with
+// ACTION_MAIN + a unique data URI gives the framework a fully-specified
+// component / action / data tuple to key the PendingIntent on, which makes
+// the trampoline more resilient to launcher-side state stripping.
+private fun launchAppIntent(context: Context): Intent =
+    Intent(Intent.ACTION_MAIN)
+        .setClass(context, MainActivity::class.java)
+        .addCategory(Intent.CATEGORY_LAUNCHER)
+        .setData(Uri.parse("clothescast://widget/open"))
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
 @Composable
 private fun OutfitWidgetContent(insight: Insight?) {
     val size = LocalSize.current
+    val context = LocalContext.current
     val outfit = insight?.outfit
     Box(
         modifier = GlanceModifier
             .fillMaxSize()
             .background(GlanceTheme.colors.widgetBackground)
             .cornerRadius(16.dp)
-            .clickable(actionStartActivity<MainActivity>())
+            .clickable(actionStartActivity(launchAppIntent(context)))
             .padding(4.dp),
         contentAlignment = Alignment.Center,
     ) {
@@ -101,7 +118,6 @@ private fun OutfitWidgetContent(insight: Insight?) {
         } else if (size.width >= SIDE_BY_SIDE_MIN_WIDTH && insight.nextOutfit != null) {
             SideBySideContent(insight, size)
         } else {
-            val context = LocalContext.current
             SingleColumnContent(
                 label = context.getString(periodLabelRes(insight.period)),
                 outfit = outfit,

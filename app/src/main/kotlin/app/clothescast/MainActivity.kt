@@ -103,7 +103,10 @@ class MainActivity : ComponentActivity() {
             // field unconditionally on API 31+, so setContent throws here
             // before any composable runs. Fall back to a native View so the
             // user sees an explanation instead of a force-close, and record
-            // a non-fatal so we can track incidence.
+            // a non-fatal so we can track incidence. Other NoSuchFieldErrors
+            // (an unrelated library or framework field mismatch) re-throw so
+            // we still notice them as fatals in Crashlytics.
+            if (e.message?.contains("fontWeightAdjustment") != true) throw e
             handleComposeStartupCrash(e)
         }
     }

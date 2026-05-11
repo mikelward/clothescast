@@ -1,6 +1,8 @@
 package app.clothescast.diag
 
 import android.content.Context
+import android.os.Build
+import app.clothescast.BuildConfig
 import app.clothescast.data.SettingsRepository
 import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -47,6 +49,20 @@ object Telemetry {
         if (FirebaseApp.getApps(context).isEmpty()) return
         val analytics = FirebaseAnalytics.getInstance(context)
         val crashlytics = FirebaseCrashlytics.getInstance()
+        // Firebase has shown the app crashing on a OnePlus 8 Pro reporting
+        // Android 11 (API 30) against a minSdk=31 APK — the OS package
+        // manager normally enforces minSdk at install time, but Test Lab
+        // elevated installs and some sideload paths can bypass that. The
+        // resulting Crashlytics / Analytics traffic is from a config the app
+        // was never built for, so silence both SDKs synchronously here
+        // (before the collectors below race a startup crash) and skip the
+        // user-preference subscription entirely — the persisted disable
+        // survives across launches.
+        if (Build.VERSION.SDK_INT < BuildConfig.MIN_SDK_VERSION) {
+            analytics.setAnalyticsCollectionEnabled(false)
+            crashlytics.setCrashlyticsCollectionEnabled(false)
+            return
+        }
         scope.launch {
             settings.preferences
                 .map { it.telemetryEnabled }

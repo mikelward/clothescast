@@ -105,7 +105,10 @@ android {
 
     defaultConfig {
         applicationId = "app.clothescast"
-        minSdk = 31
+        // Sourced from the version catalog so the same number drives both the
+        // install-time gate (this line) and BuildConfig.MIN_SDK_VERSION below
+        // — see the catalog entry for why the runtime guard exists.
+        minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = 35
         versionCode = gitCommitCount
         // semver build metadata: <base>+<commitCount>.<shortSha>. Some downstream
@@ -131,6 +134,11 @@ android {
         buildConfigField("String", "GIT_SHA", "\"$gitShortSha\"")
         buildConfigField("boolean", "GIT_DIRTY", gitDirty.toString())
         buildConfigField("long", "BUILD_TIMESTAMP_MS", "${buildTimestampMs}L")
+        // Mirror of `minSdk` above. The Telemetry controller reads this to
+        // silence Firebase when SDK_INT < MIN_SDK_VERSION so APKs that
+        // somehow land on sub-minSdk devices don't pollute Crashlytics /
+        // Analytics with a config the app was never built for.
+        buildConfigField("int", "MIN_SDK_VERSION", libs.versions.minSdk.get())
     }
 
     signingConfigs {

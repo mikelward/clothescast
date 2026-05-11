@@ -1,6 +1,15 @@
 [versions]
 agp = "8.7.3"
 kotlin = "2.0.21"
+# Android API floor. Single source of truth: `app/build.gradle.kts` reads this
+# for `minSdk` and re-emits it as `BuildConfig.MIN_SDK_VERSION` so the runtime
+# can defend against APKs landing on devices below the floor. The OS package
+# manager normally enforces this at install time, but Firebase has shown the
+# app crashing on a OnePlus 8 Pro reporting Android 11 (API 30 — see PR #369)
+# against this minSdk=31 APK. Whatever install path produced that, the
+# resulting Crashlytics noise is from a configuration we never built for, so
+# Telemetry silences Firebase when SDK_INT < MIN_SDK_VERSION.
+minSdk = "31"
 ksp = "2.0.21-1.0.27"
 coreKtx = "1.15.0"
 lifecycle = "2.8.7"

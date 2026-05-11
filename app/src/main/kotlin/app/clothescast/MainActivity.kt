@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -40,6 +42,8 @@ import app.clothescast.ui.theme.ClothesCastTheme
 import app.clothescast.ui.today.TodayScreen
 import app.clothescast.ui.today.TodayViewModel
 import app.clothescast.work.FetchAndNotifyWorker
+import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -73,24 +77,55 @@ class MainActivity : ComponentActivity() {
         val initialThemeMode = runBlocking {
             app.settingsRepository.preferences.first().themeMode
         }
-        setContent {
-            val themeMode by app.settingsRepository.preferences
-                .map { it.themeMode }
-                .collectAsStateWithLifecycle(initialValue = initialThemeMode)
-            val darkTheme = when (themeMode) {
-                ThemeMode.SYSTEM -> isSystemInDarkTheme()
-                ThemeMode.LIGHT -> false
-                ThemeMode.DARK -> true
+        try {
+            setContent {
+                val themeMode by app.settingsRepository.preferences
+                    .map { it.themeMode }
+                    .collectAsStateWithLifecycle(initialValue = initialThemeMode)
+                val darkTheme = when (themeMode) {
+                    ThemeMode.SYSTEM -> isSystemInDarkTheme()
+                    ThemeMode.LIGHT -> false
+                    ThemeMode.DARK -> true
+                }
+                ClothesCastTheme(darkTheme = darkTheme) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background,
+                    ) {
+                        ClothesCastNav(app, navigateToTodayVersion)
+                    }
+                }
             }
-            ClothesCastTheme(darkTheme = darkTheme) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
-                ) {
-                    ClothesCastNav(app, navigateToTodayVersion)
+        } catch (e: NoSuchFieldError) {
+            // Some OEM-modified Android 12+ ROMs ship a stripped framework.jar
+            // without Configuration.fontWeightAdjustment, even though they
+            // report API 31+. AndroidComposeView's constructor reads that
+            // field unconditionally on API 31+, so setContent throws here
+            // before any composable runs. Fall back to a native View so the
+            // user sees an explanation instead of a force-close, and record
+            // a non-fatal so we can track incidence.
+            handleComposeStartupCrash(e)
+        }
+    }
+
+    private fun handleComposeStartupCrash(error: NoSuchFieldError) {
+        runCatching {
+            if (FirebaseApp.getApps(this).isNotEmpty()) {
+                FirebaseCrashlytics.getInstance().apply {
+                    setCustomKey("compose_startup_unsupported", true)
+                    recordException(error)
                 }
             }
         }
+        val padding = (24 * resources.displayMetrics.density).toInt()
+        setContentView(
+            TextView(this).apply {
+                setPadding(padding, padding, padding, padding)
+                gravity = Gravity.CENTER
+                textSize = 16f
+                text = getString(R.string.error_device_incompatible)
+            },
+        )
     }
 
     override fun onNewIntent(intent: Intent) {

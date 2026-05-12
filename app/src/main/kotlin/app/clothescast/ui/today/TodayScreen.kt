@@ -286,6 +286,9 @@ private fun TodayContent(
         if (state.insight == null) {
             EmptyState(onRefresh = onRefresh, isWorking = isWorking)
         } else {
+            state.insight.confidence
+                ?.takeIf { it.level == ForecastConfidence.LOW }
+                ?.let { LowConfidenceCallout(it) }
             OutfitPreviewRow(
                 insight = state.insight,
                 temperatureUnit = state.temperatureUnit,
@@ -896,6 +899,44 @@ internal fun InsightCard(insight: Insight, region: Region) {
                 ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+/**
+ * Full-width banner shown above the outfit preview *only* at
+ * [ForecastConfidence.LOW]. The compact [ConfidenceChip] inside the insight
+ * card still renders for all three tiers — this is the louder "you may want to
+ * second-guess today's outfit" cue that the chip alone is too subtle for. Uses
+ * the same error-container tint as the LOW chip so the two reinforce each
+ * other rather than fighting for the user's attention.
+ */
+@Composable
+internal fun LowConfidenceCallout(info: ConfidenceInfo) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        ),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.today_low_confidence_callout_title),
+                style = MaterialTheme.typography.titleSmall,
+            )
+            Text(
+                text = stringResource(
+                    R.string.today_low_confidence_callout_body,
+                    info.tempSpreadC,
+                    info.precipSpreadPp,
+                    info.modelsConsulted.size,
+                ),
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }

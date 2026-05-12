@@ -169,6 +169,7 @@ class PreviewSnapshots {
     @Test fun confidence_high() = capture { ConfidenceHighPreview() }
     @Test fun confidence_medium() = capture { ConfidenceMediumPreview() }
     @Test fun confidence_low() = capture { ConfidenceLowPreview() }
+    @Test fun low_confidence_callout() = capture { LowConfidenceCalloutPreview() }
 
     @Test fun work_status_running() = capture { WorkStatusRunningPreview() }
     @Test fun work_status_retrying() = capture { WorkStatusRetryingPreview() }

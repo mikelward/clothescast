@@ -237,10 +237,11 @@ class InsightCacheTest {
 
     @Test
     fun `payloads without optional fields decode with those fields null`() = runTest {
-        // location, outfit and outfitRationale are all DTO-optional with null
-        // defaults — a minimal v5 payload (e.g. an early build that hasn't
-        // populated them yet, or a future field-pruning) still deserialises
-        // rather than dropping to null and burning a regen on next launch.
+        // location, outfit, outfitRationale and confidence are all DTO-optional
+        // with null defaults — a minimal v5 payload (e.g. an early build that
+        // hasn't populated them yet, or a future field-pruning) still
+        // deserialises rather than dropping to null and burning a regen on
+        // next launch.
         val minimalJson = """
             {
               "summary": {
@@ -259,8 +260,12 @@ class InsightCacheTest {
         }
 
         val read = subject.latest.first()
-        read shouldBe sample
+        // Sample carries a confidence so the round-trip test catches a future
+        // regression where the DTO drops it; the legacy/minimal payload here
+        // can't possibly carry it, so strip it from the expected value.
+        read shouldBe sample.copy(confidence = null)
         read?.location shouldBe null
+        read?.confidence shouldBe null
     }
 
     @Test

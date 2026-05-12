@@ -566,26 +566,67 @@ jobs:
         # "Commit messages" spells out the subject-line discipline that
         # makes this safe. Skipped when the Play secret isn't set, so a
         # fresh repo / fork still finishes CI without this step.
+        #
+        # Walks back from the head commit past commits whose subject would be
+        # noise in the Play Store changelog: anything prefixed `ci:` (the
+        # snapshot-regen bot commits "ci: regenerate UI snapshots", workflow
+        # tweaks, etc.) and changes whose paths are all under `docs/`, all
+        # under `.github/` (workflow / repo metadata), or top-level `*.md`.
+        # PRIVACY.md is treated as non-docs so that privacy-policy updates
+        # still surface to users. The `.github/` filter is a safety net for
+        # workflow-only commits that forget the `ci:` subject prefix — they
+        # still get walked past on the path-based check. Falls back to the
+        # head subject after 20 hops without a match, so an unusual stretch
+        # of filtered commits still produces *some* changelog rather than
+        # an empty file.
         if: |
           success() &&
           (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
           github.ref == 'refs/heads/main' &&
           env.PLAY_SERVICE_ACCOUNT_JSON != ''
         env:
-          # Pass the commit message via env rather than direct GHA expression
-          # interpolation so quotes / backticks in the subject can't break the
-          # shell script. Empty on workflow_dispatch (no head_commit payload);
-          # the script below falls back to `git log` in that case.
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
           COMMIT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/whatsnew"
-          subject=$(printf '%s\n' "$COMMIT_MESSAGE" | head -n1)
+          sha="$COMMIT_SHA"
+          subject=""
+          for _ in $(seq 1 20); do
+            if ! s=$(git log -1 --pretty=%s "$sha" 2>/dev/null); then
+              break
+            fi
+            case "$s" in
+              ci:*)
+                if ! sha=$(git rev-parse "$sha^" 2>/dev/null); then
+                  break
+                fi
+                continue
+                ;;
+            esac
+            non_doc_count=$(git show --no-renames --name-only --pretty=format: "$sha" \
+              | sed '/^$/d' \
+              | awk '
+                  /^PRIVACY\.md$/ { count++; next }
+                  /^docs\//       { next }
+                  /^\.github\//   { next }
+                  /\.md$/         { next }
+                                  { count++ }
+                  END             { print count + 0 }
+                ')
+            if [ "$non_doc_count" -eq 0 ]; then
+              if ! sha=$(git rev-parse "$sha^" 2>/dev/null); then
+                break
+              fi
+              continue
+            fi
+            subject="$s"
+            break
+          done
           if [ -z "$subject" ]; then
             subject=$(git log -1 --pretty=%s "$COMMIT_SHA")
           fi
           printf '%s\n' "$subject" | head -c 500 > "$RUNNER_TEMP/whatsnew/whatsnew-en-US"
+          echo "Play Store release notes: $subject"
 
       - name: Upload AAB to Play Store internal track
         # Push-to-main (or manual workflow_dispatch on main) only; skipped

@@ -407,18 +407,40 @@ class GenerateDailyInsightTest {
 
     @Test
     fun `per-model hourly rides the today insight but is stripped from tonight`() = runTest {
-        // The per-model hourly series only spans today's window; surfacing it on
-        // the tonight card would mean drawing model overlays for the wrong hours.
-        // Same period-gate as confidence above.
-        val hourly = PerModelHourly(
-            byModel = mapOf(
-                "ecmwf_ifs04" to listOf(PerModelHour(LocalTime.of(12, 0), 18.0, 20.0)),
-            ),
+        // The bundle's per-model hourly covers the full 24h day; the daytime
+        // window slice on TODAY should drop the overnight entries so the chart
+        // overlays line up with the blended hourly that the rest of the screen
+        // renders. TONIGHT drops the field entirely (today's per-model series
+        // doesn't span the overnight window).
+        val ecmwfFull = (0..23).map { hour ->
+            PerModelHour(LocalTime.of(hour, 0), 10.0 + hour, 5.0 * hour)
+        }
+        val gfsFull = (0..23).map { hour ->
+            PerModelHour(LocalTime.of(hour, 0), 11.0 + hour, 6.0 * hour)
+        }
+        val bundleHourly = PerModelHourly(
+            byModel = mapOf("ecmwf_ifs04" to ecmwfFull, "gfs_seamless" to gfsFull),
         )
-        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday, perModelHourly = hourly))
+        // Today's blended hourly slice — the chart plots overlays at the same
+        // indices as this list, so the test asserts the overlay times match
+        // these times exactly.
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 12.0, 11.0, 10.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(12, 0), 18.0, 17.0, 30.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 22.0, 21.0, 40.0, WeatherCondition.CLEAR),
+        )
+        val todayWithHourly = today.copy(hourly = daytime)
+        val weather = FakeWeatherRepository(
+            ForecastBundle(todayWithHourly, yesterday, perModelHourly = bundleHourly),
+        )
         val subject = GenerateDailyInsight(weather, clock = clock)
 
-        subject(london, prefs, ForecastPeriod.TODAY).insight.perModelHourly shouldBe hourly
+        val todayInsight = subject(london, prefs, ForecastPeriod.TODAY).insight
+        val overlay = todayInsight.perModelHourly.shouldNotBeNull()
+        overlay.byModel.keys shouldContainExactlyInAnyOrder listOf("ecmwf_ifs04", "gfs_seamless")
+        overlay.byModel.getValue("ecmwf_ifs04").map { it.time } shouldBe daytime.map { it.time }
+        overlay.byModel.getValue("gfs_seamless").map { it.time } shouldBe daytime.map { it.time }
+
         subject(london, prefs, ForecastPeriod.TONIGHT).insight.perModelHourly.shouldBeNull()
     }
 

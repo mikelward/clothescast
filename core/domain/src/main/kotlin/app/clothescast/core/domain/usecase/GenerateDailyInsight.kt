@@ -7,6 +7,7 @@ import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
@@ -151,8 +152,16 @@ class GenerateDailyInsight(
             // Same reasoning for the per-model hourly overlay data: today's
             // hourly per-model series doesn't span the tonight window
             // (19:00 today → 07:00 tomorrow), and Open-Meteo's per-model
-            // hourly only covers `forecast_days=1`. Strip on tonight.
-            perModelHourly = if (period == ForecastPeriod.TODAY) bundle.perModelHourly else null,
+            // hourly only covers `forecast_days=1`. Strip on tonight, and
+            // narrow today's series to the same daytime window we sliced
+            // `periodForecast.hourly` to — otherwise the chart plots the
+            // overlays by index and the midnight model value lands on the
+            // first visible hour of the daytime window.
+            perModelHourly = if (period == ForecastPeriod.TODAY) {
+                bundle.perModelHourly?.slicedTo(periodForecast.hourly)
+            } else {
+                null
+            },
             outfit = OutfitSuggestion.fromForecast(periodForecast, rules),
             nextOutfit = nextOutfit,
             outfitRationale = OutfitSuggestion.explainFromForecast(periodForecast, rules),
@@ -198,6 +207,24 @@ class GenerateDailyInsight(
  *    users via its own wrap, so blanking out the hourly here would just lose
  *    information the tonight slice still needs.
  */
+/**
+ * Filters each model's per-hour entries to just the hours covered by
+ * [windowHourly] (typically today's daytime slice), preserving the window's
+ * order so each index in the resulting series lines up with the same index
+ * in `windowHourly` — the chart plots overlays by index. Models with no
+ * surviving entries are dropped from the map; an empty result returns null
+ * so the caller can null the whole field.
+ */
+private fun PerModelHourly.slicedTo(windowHourly: List<HourlyForecast>): PerModelHourly? {
+    if (windowHourly.isEmpty()) return null
+    val order = windowHourly.map { it.time }
+    val filtered = byModel.mapValues { (_, entries) ->
+        val byTime = entries.associateBy { it.time }
+        order.mapNotNull { byTime[it] }
+    }.filterValues { it.isNotEmpty() }
+    return if (filtered.isEmpty()) null else PerModelHourly(filtered)
+}
+
 private fun DailyForecast.slicedForToday(
     morningStart: LocalTime,
     eveningEnd: LocalTime,

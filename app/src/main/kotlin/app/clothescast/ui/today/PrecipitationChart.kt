@@ -2,6 +2,7 @@ package app.clothescast.ui.today
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -46,14 +47,16 @@ fun PrecipitationChart(
     if (hourly.isEmpty()) return
 
     val overlays = perModelHourly?.byModel.orEmpty()
+    val visibleModels = MODEL_DRAW_ORDER.filter { it in overlays }
+    val mainLineColor = MaterialTheme.colorScheme.primary
 
     val producer = remember { CartesianChartModelProducer() }
     LaunchedEffect(hourly, overlays) {
         producer.runTransaction {
             lineSeries {
                 // Overlays first so they render under the blended main line.
-                MODEL_DRAW_ORDER.forEach { modelId ->
-                    overlays[modelId]?.let { entries ->
+                visibleModels.forEach { modelId ->
+                    overlays.getValue(modelId).let { entries ->
                         series(entries.map { it.precipitationProbabilityPct })
                     }
                 }
@@ -85,9 +88,14 @@ fun PrecipitationChart(
         CartesianValueFormatter { _, value, _ -> "${value.roundToInt()}%" }
     }
 
+    val lineProvider = rememberPinnedLineProvider(visibleModels, mainLineColor)
+
     CartesianChartHost(
         chart = rememberCartesianChart(
-            rememberLineCartesianLayer(rangeProvider = rangeProvider),
+            rememberLineCartesianLayer(
+                lineProvider = lineProvider,
+                rangeProvider = rangeProvider,
+            ),
             startAxis = VerticalAxis.rememberStart(valueFormatter = startFormatter),
             bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
         ),

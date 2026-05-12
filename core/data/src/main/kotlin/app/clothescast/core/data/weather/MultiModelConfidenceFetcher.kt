@@ -10,46 +10,36 @@ import io.ktor.client.request.parameter
 import io.ktor.http.URLProtocol
 import io.ktor.http.path
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.doubleOrNull
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonPrimitive
 
 /**
  * Fetches today's apparent-max temperature and peak precipitation probability from
- * several Open-Meteo models in parallel, computes the cross-model spread, and maps
- * to a [ConfidenceInfo]. When the major models agree, we surface "High confidence";
- * when they disagree, "Low confidence — forecasts disagree".
+ * several Open-Meteo models in a single request, computes the cross-model spread,
+ * and maps to a [ConfidenceInfo]. When the major models agree, we surface "High
+ * confidence"; when they disagree, "Low confidence — forecasts disagree".
  *
- * Best-effort: any failure (network, model unavailable, parse error) falls through
- * to a null result. The user still gets the daily forecast — just no confidence
- * badge.
+ * Open-Meteo lets us pass a comma-separated `models=` list and returns each
+ * requested daily field once per model, suffixed with the model name (e.g.
+ * `apparent_temperature_max_ecmwf_ifs04`). Issuing one request instead of N saves
+ * 2 of 5 weather calls per insight cycle and avoids per-model retry storms.
  *
- * Each model call requests only the two daily fields we need, so the responses are
- * tiny.
+ * Best-effort: any failure (network, parse error) falls through to null. Per-model
+ * failures (server returns nulls or omits a model's fields) drop just that model;
+ * we still return a [ConfidenceInfo] as long as at least two models reported
+ * usable values.
  */
 internal class MultiModelConfidenceFetcher(
     private val httpClient: HttpClient,
     private val models: List<String> = DEFAULT_MODELS,
 ) {
     suspend fun fetch(location: Location): ConfidenceInfo? = try {
-        coroutineScope {
-            val results = models.map { model ->
-                async { runCatching { fetchOne(location, model) }.getOrNull()?.let { model to it } }
-            }.awaitAll().filterNotNull()
-
-            // Need at least two models to compute a spread.
-            if (results.size < 2) null else compute(results)
-        }
-    } catch (ce: CancellationException) {
-        throw ce
-    } catch (_: Throwable) {
-        null
-    }
-
-    private suspend fun fetchOne(location: Location, model: String): ModelDailyValues? {
-        val response: ConfidenceResponse = httpClient.get {
+        val daily: JsonObject = httpClient.get {
             url {
                 protocol = URLProtocol.HTTPS
                 host = OPEN_METEO_HOST
@@ -60,13 +50,30 @@ internal class MultiModelConfidenceFetcher(
             parameter("forecast_days", 1)
             parameter("timezone", "auto")
             parameter("daily", "apparent_temperature_max,precipitation_probability_max")
-            parameter("models", model)
-        }.body()
+            parameter("models", models.joinToString(","))
+        }.body<ConfidenceResponse>().daily
 
-        // Index 0 is today (no past_days requested). Empty array or null entry → unusable.
-        val tempMax = response.daily.feelsLikeMax.firstOrNull() ?: return null
-        val precipMax = response.daily.precipitationProbabilityMax.firstOrNull()?.toDouble() ?: return null
+        val results = models.mapNotNull { model -> readModel(daily, model)?.let { model to it } }
+        if (results.size < 2) null else compute(results)
+    } catch (ce: CancellationException) {
+        throw ce
+    } catch (_: Throwable) {
+        null
+    }
+
+    private fun readModel(daily: JsonObject, model: String): ModelDailyValues? {
+        val tempMax = firstNumber(daily["apparent_temperature_max_$model"])?.toDouble()
+            ?: return null
+        val precipMax = firstNumber(daily["precipitation_probability_max_$model"])?.toDouble()
+            ?: return null
         return ModelDailyValues(tempMax, precipMax)
+    }
+
+    private fun firstNumber(element: JsonElement?): Number? {
+        val array = (element as? JsonArray) ?: return null
+        val first = array.firstOrNull() ?: return null
+        val primitive = runCatching { first.jsonPrimitive }.getOrNull() ?: return null
+        return primitive.doubleOrNull ?: primitive.intOrNull
     }
 
     private fun compute(results: List<Pair<String, ModelDailyValues>>): ConfidenceInfo {
@@ -110,11 +117,5 @@ internal class MultiModelConfidenceFetcher(
 
 @Serializable
 private data class ConfidenceResponse(
-    @SerialName("daily") val daily: ConfidenceDaily,
-)
-
-@Serializable
-private data class ConfidenceDaily(
-    @SerialName("apparent_temperature_max") val feelsLikeMax: List<Double?>,
-    @SerialName("precipitation_probability_max") val precipitationProbabilityMax: List<Int?>,
+    val daily: JsonObject,
 )

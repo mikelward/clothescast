@@ -10,6 +10,7 @@ import app.clothescast.core.data.tts.GeminiTtsClient
 import app.clothescast.core.data.weather.ConfidenceFetchLogger
 import app.clothescast.core.data.weather.OpenMeteoClient
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.repository.CachingWeatherRepository
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.repository.WeatherRepository
 import app.clothescast.core.domain.usecase.GenerateDailyInsight
@@ -96,12 +97,19 @@ class ClothesCastApplication : Application() {
     private val apiCallLogger: ApiCallLogger by lazy { TelemetryApiCallLogger(this) }
 
     val weatherRepository: WeatherRepository by lazy {
-        OpenMeteoClient(
-            httpClient = httpClient,
-            confidenceLogger = ConfidenceFetchLogger { message, throwable ->
-                DiagLog.w("ConfidenceFetcher", message, throwable)
-            },
-            apiCallLogger = apiCallLogger,
+        // Wrap the network client in a 1 h in-memory cache so a manual
+        // refresh on the Today screen — or back-to-back worker fires — reuse
+        // a fresh forecast instead of re-hitting Open-Meteo each time. The
+        // cache keys on location rounded to ~1 km, so small GPS jitter still
+        // hits and a real move (different suburb / city) misses.
+        CachingWeatherRepository(
+            delegate = OpenMeteoClient(
+                httpClient = httpClient,
+                confidenceLogger = ConfidenceFetchLogger { message, throwable ->
+                    DiagLog.w("ConfidenceFetcher", message, throwable)
+                },
+                apiCallLogger = apiCallLogger,
+            ),
         )
     }
     val geocodingClient: OpenMeteoGeocodingClient by lazy {

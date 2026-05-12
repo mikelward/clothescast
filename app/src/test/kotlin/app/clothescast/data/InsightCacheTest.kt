@@ -12,6 +12,8 @@ import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.ForecastConfidence
+import app.clothescast.core.domain.model.PerModelHour
+import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.Fact
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -71,6 +73,18 @@ class InsightCacheTest {
             tempSpreadC = 4.2,
             precipSpreadPp = 35.0,
             modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless"),
+        ),
+        perModelHourly = PerModelHourly(
+            byModel = mapOf(
+                "ecmwf_ifs04" to listOf(
+                    PerModelHour(LocalTime.of(0, 0), 12.0, 10.0),
+                    PerModelHour(LocalTime.of(1, 0), 11.5, 15.0),
+                ),
+                "gfs_seamless" to listOf(
+                    PerModelHour(LocalTime.of(0, 0), 12.2, 12.0),
+                    PerModelHour(LocalTime.of(1, 0), 11.8, 18.0),
+                ),
+            ),
         ),
     )
 
@@ -260,12 +274,14 @@ class InsightCacheTest {
         }
 
         val read = subject.latest.first()
-        // Sample carries a confidence so the round-trip test catches a future
-        // regression where the DTO drops it; the legacy/minimal payload here
-        // can't possibly carry it, so strip it from the expected value.
-        read shouldBe sample.copy(confidence = null)
+        // Sample carries both `confidence` and `perModelHourly` so the
+        // round-trip test catches a future regression where the DTO drops
+        // either; the legacy/minimal payload here can't possibly carry them,
+        // so strip them from the expected value.
+        read shouldBe sample.copy(confidence = null, perModelHourly = null)
         read?.location shouldBe null
         read?.confidence shouldBe null
+        read?.perModelHourly shouldBe null
     }
 
     @Test

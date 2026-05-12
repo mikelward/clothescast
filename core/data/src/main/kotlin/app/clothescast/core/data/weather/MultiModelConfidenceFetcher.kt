@@ -7,6 +7,8 @@ import app.clothescast.core.data.diag.instrument
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.PerModelHour
+import app.clothescast.core.domain.model.PerModelHourly
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.expectSuccess
@@ -19,9 +21,13 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonPrimitive
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 /**
  * Fetches today's apparent-max temperature and peak precipitation probability from
@@ -29,17 +35,22 @@ import kotlinx.serialization.json.jsonPrimitive
  * and maps to a [ConfidenceInfo]. When the major models agree, we surface "High
  * confidence"; when they disagree, "Low confidence — forecasts disagree".
  *
+ * The same call also pulls the per-model hourly apparent-temperature and
+ * precipitation-probability series so the Today screen's "show model spread"
+ * overlay has the curves it needs to render. Bundled into one request rather
+ * than a follow-up call so the additional bytes (~3 KB) ride the existing
+ * 7am-ish round-trip and we don't burn another rate-limit slot.
+ *
  * Open-Meteo lets us pass a comma-separated `models=` list and returns each
- * requested daily field once per model, suffixed with the model name (e.g.
- * `apparent_temperature_max_ecmwf_ifs04`). Issuing one request instead of N saves
- * 2 of 5 weather calls per insight cycle and avoids per-model retry storms.
+ * requested field once per model, suffixed with the model name (e.g.
+ * `apparent_temperature_max_ecmwf_ifs04`, `apparent_temperature_ecmwf_ifs04`).
  *
  * Best-effort: any failure (network, parse error) falls through to null. Per-model
  * failures (server returns nulls or omits a model's fields) drop just that model;
  * we still return a [ConfidenceInfo] as long as at least two models reported
- * usable values. Every drop and every failure is reported through [logger] so the
- * caller can surface why the chip didn't render — historically this path swallowed
- * its reasons silently.
+ * usable daily values, and a [PerModelHourly] when at least one model reported
+ * usable hourly values. Every drop and every failure is reported through
+ * [logger] so the caller can surface why the chip didn't render.
  */
 internal class MultiModelConfidenceFetcher(
     private val httpClient: HttpClient,
@@ -47,8 +58,8 @@ internal class MultiModelConfidenceFetcher(
     private val logger: ConfidenceFetchLogger = NoOpConfidenceFetchLogger,
     private val apiCallLogger: ApiCallLogger = NoOpApiCallLogger,
 ) {
-    suspend fun fetch(location: Location): ConfidenceInfo? = try {
-        val daily: JsonObject = apiCallLogger.instrument(ApiEndpoints.OPEN_METEO_CONFIDENCE) {
+    suspend fun fetch(location: Location): MultiModelData? = try {
+        val response = apiCallLogger.instrument(ApiEndpoints.OPEN_METEO_CONFIDENCE) {
             httpClient.get {
                 expectSuccess = true
                 url {
@@ -61,13 +72,25 @@ internal class MultiModelConfidenceFetcher(
                 parameter("forecast_days", 1)
                 parameter("timezone", "auto")
                 parameter("daily", "apparent_temperature_max,precipitation_probability_max")
+                parameter("hourly", "apparent_temperature,precipitation_probability")
                 parameter("models", models.joinToString(","))
-            }.body<ConfidenceResponse>().daily
+            }.body<MultiModelResponse>()
         }
 
+        val confidence = computeConfidence(response.daily)
+        val hourly = parseHourly(response.hourly)
+        if (confidence == null && hourly == null) null else MultiModelData(confidence, hourly)
+    } catch (ce: CancellationException) {
+        throw ce
+    } catch (t: Throwable) {
+        logger.log("confidence fetch failed", t)
+        null
+    }
+
+    private fun computeConfidence(daily: JsonObject): ConfidenceInfo? {
         val results = buildList {
             for (model in models) {
-                when (val outcome = readModel(daily, model)) {
+                when (val outcome = readModelDaily(daily, model)) {
                     is ReadOutcome.Usable -> add(model to outcome.values)
                     is ReadOutcome.Dropped ->
                         logger.log("model $model dropped: ${outcome.reason}")
@@ -79,20 +102,44 @@ internal class MultiModelConfidenceFetcher(
                 "only ${results.size} of ${models.size} models reported usable values; " +
                     "returning null",
             )
-            null
-        } else {
-            compute(results)
+            return null
         }
-    } catch (ce: CancellationException) {
-        throw ce
-    } catch (t: Throwable) {
-        logger.log("confidence fetch failed", t)
-        null
+        return compute(results)
     }
 
-    private fun readModel(daily: JsonObject, model: String): ReadOutcome {
-        val tempMax = firstNumber(daily["apparent_temperature_max_$model"])?.toDouble()
-        val precipMax = firstNumber(daily["precipitation_probability_max_$model"])?.toDouble()
+    private fun parseHourly(hourly: JsonObject?): PerModelHourly? {
+        val obj = hourly ?: return null
+        val times = (obj["time"] as? JsonArray) ?: return null
+        val byModel = buildMap<String, List<PerModelHour>> {
+            for (model in models) {
+                val temps = obj["apparent_temperature_$model"] as? JsonArray
+                val precips = obj["precipitation_probability_$model"] as? JsonArray
+                if (temps == null && precips == null) continue
+                val entries = buildList {
+                    for (i in 0 until times.size) {
+                        val time = parseHour(times.getOrNull(i)) ?: continue
+                        val temp = numberAt(temps, i)?.toDouble() ?: continue
+                        val precip = numberAt(precips, i)?.toDouble() ?: continue
+                        add(PerModelHour(time, temp, precip))
+                    }
+                }
+                if (entries.isNotEmpty()) put(model, entries)
+            }
+        }
+        return if (byModel.isEmpty()) null else PerModelHourly(byModel)
+    }
+
+    private fun parseHour(element: JsonElement?): LocalTime? {
+        val text = (element as? JsonPrimitive)?.contentOrNull ?: return null
+        return runCatching {
+            val ldt = LocalDateTime.parse(text)
+            LocalTime.of(ldt.hour, ldt.minute)
+        }.getOrNull()
+    }
+
+    private fun readModelDaily(daily: JsonObject, model: String): ReadOutcome {
+        val tempMax = numberAt(daily["apparent_temperature_max_$model"] as? JsonArray, 0)?.toDouble()
+        val precipMax = numberAt(daily["precipitation_probability_max_$model"] as? JsonArray, 0)?.toDouble()
         return when {
             tempMax == null && precipMax == null ->
                 ReadOutcome.Dropped("both apparent_temperature_max and precipitation_probability_max missing or null")
@@ -105,10 +152,9 @@ internal class MultiModelConfidenceFetcher(
         }
     }
 
-    private fun firstNumber(element: JsonElement?): Number? {
-        val array = (element as? JsonArray) ?: return null
-        val first = array.firstOrNull() ?: return null
-        val primitive = runCatching { first.jsonPrimitive }.getOrNull() ?: return null
+    private fun numberAt(array: JsonArray?, index: Int): Number? {
+        val element = array?.getOrNull(index) ?: return null
+        val primitive = runCatching { element.jsonPrimitive }.getOrNull() ?: return null
         return primitive.doubleOrNull ?: primitive.intOrNull
     }
 
@@ -156,7 +202,14 @@ internal class MultiModelConfidenceFetcher(
     }
 }
 
-@Serializable
-private data class ConfidenceResponse(
-    val daily: JsonObject,
+internal data class MultiModelData(
+    val confidence: ConfidenceInfo?,
+    val hourly: PerModelHourly?,
 )
+
+@Serializable
+private data class MultiModelResponse(
+    val daily: JsonObject,
+    val hourly: JsonObject? = null,
+)
+

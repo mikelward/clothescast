@@ -21,6 +21,7 @@ import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
+import java.time.LocalTime
 
 class MultiModelConfidenceFetcherTest {
     private val london = Location(latitude = 51.5074, longitude = -0.1278, displayName = "London")
@@ -72,13 +73,14 @@ class MultiModelConfidenceFetcherTest {
         req.url.encodedPath shouldBe "/v1/forecast"
         req.url.parameters["models"] shouldBe "ecmwf_ifs04,gfs_seamless,icon_seamless"
         req.url.parameters["daily"] shouldBe "apparent_temperature_max,precipitation_probability_max"
+        req.url.parameters["hourly"] shouldBe "apparent_temperature,precipitation_probability"
         req.url.parameters["forecast_days"] shouldBe "1"
         req.url.parameters["past_days"].shouldBeNull()
     }
 
     @Test
     fun `tight spread across all three models returns HIGH confidence`() = runTest {
-        val info = fetcherWith(THREE_MODEL_AGREEMENT).fetch(london).shouldNotBeNull()
+        val info = fetcherWith(THREE_MODEL_AGREEMENT).fetch(london)?.confidence.shouldNotBeNull()
 
         info.level shouldBe ForecastConfidence.HIGH
         info.tempSpreadC shouldBe (1.0 plusOrMinus 0.0001)
@@ -89,7 +91,7 @@ class MultiModelConfidenceFetcherTest {
 
     @Test
     fun `wide temp spread drops confidence to LOW`() = runTest {
-        val info = fetcherWith(THREE_MODEL_DISAGREEMENT).fetch(london).shouldNotBeNull()
+        val info = fetcherWith(THREE_MODEL_DISAGREEMENT).fetch(london)?.confidence.shouldNotBeNull()
 
         info.level shouldBe ForecastConfidence.LOW
         info.tempSpreadC shouldBe (5.0 plusOrMinus 0.0001)
@@ -97,14 +99,14 @@ class MultiModelConfidenceFetcherTest {
 
     @Test
     fun `falls back to two-model spread when one model is missing from response`() = runTest {
-        val info = fetcherWith(ONE_MODEL_OMITTED).fetch(london).shouldNotBeNull()
+        val info = fetcherWith(ONE_MODEL_OMITTED).fetch(london)?.confidence.shouldNotBeNull()
 
         info.modelsConsulted shouldContainExactlyInAnyOrder listOf("ecmwf_ifs04", "gfs_seamless")
         info.tempSpreadC shouldBe (0.5 plusOrMinus 0.0001)
     }
 
     @Test
-    fun `returns null when only one model reports usable values`() = runTest {
+    fun `returns null when only one model reports usable values and no hourly is present`() = runTest {
         fetcherWith(TWO_MODELS_OMITTED).fetch(london).shouldBeNull()
     }
 
@@ -116,9 +118,39 @@ class MultiModelConfidenceFetcherTest {
     @Test
     fun `null entries from a model are treated as missing`() = runTest {
         // Open-Meteo can return [null] for a model whose run hasn't finished yet.
-        val info = fetcherWith(ONE_MODEL_NULL_VALUES).fetch(london).shouldNotBeNull()
+        val info = fetcherWith(ONE_MODEL_NULL_VALUES).fetch(london)?.confidence.shouldNotBeNull()
 
         info.modelsConsulted shouldContainExactlyInAnyOrder listOf("gfs_seamless", "icon_seamless")
+    }
+
+    @Test
+    fun `parses per-model hourly series when present`() = runTest {
+        val hourly = fetcherWith(THREE_MODEL_WITH_HOURLY).fetch(london)?.hourly.shouldNotBeNull()
+
+        hourly.byModel.keys shouldContainExactlyInAnyOrder
+            listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless")
+        val ecmwf = hourly.byModel.getValue("ecmwf_ifs04")
+        ecmwf.size shouldBe 3
+        ecmwf[0].time shouldBe LocalTime.of(0, 0)
+        ecmwf[0].apparentTemperatureC shouldBe (12.0 plusOrMinus 0.0001)
+        ecmwf[0].precipitationProbabilityPct shouldBe (10.0 plusOrMinus 0.0001)
+        ecmwf[2].time shouldBe LocalTime.of(2, 0)
+    }
+
+    @Test
+    fun `hourly is null when the response carries only daily fields`() = runTest {
+        fetcherWith(THREE_MODEL_AGREEMENT).fetch(london)?.hourly.shouldBeNull()
+    }
+
+    @Test
+    fun `drops a model's hourly entry when a single hour reports nulls`() = runTest {
+        val hourly = fetcherWith(HOURLY_WITH_ONE_NULL_HOUR).fetch(london)?.hourly.shouldNotBeNull()
+
+        val ecmwf = hourly.byModel.getValue("ecmwf_ifs04")
+        // Hour 1 had a null apparent_temperature for ecmwf; the entry is dropped,
+        // but the other two hours survive.
+        ecmwf.map { it.time } shouldContainExactlyInAnyOrder
+            listOf(LocalTime.of(0, 0), LocalTime.of(2, 0))
     }
 
     @Test
@@ -231,6 +263,57 @@ class MultiModelConfidenceFetcherTest {
                 "precipitation_probability_max_ecmwf_ifs04": [null],
                 "precipitation_probability_max_gfs_seamless": [15],
                 "precipitation_probability_max_icon_seamless": [20]
+              }
+            }
+        """.trimIndent()
+
+        // Same agreement payload, plus a 3-hour per-model hourly block to
+        // exercise the overlay-parsing path. Times are local (`auto` timezone)
+        // ISO strings without trailing Z, matching real Open-Meteo output.
+        private val THREE_MODEL_WITH_HOURLY = """
+            {
+              "daily": {
+                "time": ["2026-05-12"],
+                "apparent_temperature_max_ecmwf_ifs04": [21.0],
+                "apparent_temperature_max_gfs_seamless": [21.5],
+                "apparent_temperature_max_icon_seamless": [22.0],
+                "precipitation_probability_max_ecmwf_ifs04": [10],
+                "precipitation_probability_max_gfs_seamless": [15],
+                "precipitation_probability_max_icon_seamless": [20]
+              },
+              "hourly": {
+                "time": ["2026-05-12T00:00", "2026-05-12T01:00", "2026-05-12T02:00"],
+                "apparent_temperature_ecmwf_ifs04": [12.0, 11.5, 11.0],
+                "apparent_temperature_gfs_seamless": [12.2, 11.8, 11.4],
+                "apparent_temperature_icon_seamless": [13.0, 12.6, 12.0],
+                "precipitation_probability_ecmwf_ifs04": [10, 15, 20],
+                "precipitation_probability_gfs_seamless": [12, 18, 22],
+                "precipitation_probability_icon_seamless": [18, 22, 28]
+              }
+            }
+        """.trimIndent()
+
+        // ecmwf is missing its T+1 hour: the entry should be dropped, not the
+        // whole model. gfs + icon are fully populated.
+        private val HOURLY_WITH_ONE_NULL_HOUR = """
+            {
+              "daily": {
+                "time": ["2026-05-12"],
+                "apparent_temperature_max_ecmwf_ifs04": [21.0],
+                "apparent_temperature_max_gfs_seamless": [21.5],
+                "apparent_temperature_max_icon_seamless": [22.0],
+                "precipitation_probability_max_ecmwf_ifs04": [10],
+                "precipitation_probability_max_gfs_seamless": [15],
+                "precipitation_probability_max_icon_seamless": [20]
+              },
+              "hourly": {
+                "time": ["2026-05-12T00:00", "2026-05-12T01:00", "2026-05-12T02:00"],
+                "apparent_temperature_ecmwf_ifs04": [12.0, null, 11.0],
+                "apparent_temperature_gfs_seamless": [12.2, 11.8, 11.4],
+                "apparent_temperature_icon_seamless": [13.0, 12.6, 12.0],
+                "precipitation_probability_ecmwf_ifs04": [10, 15, 20],
+                "precipitation_probability_gfs_seamless": [12, 18, 22],
+                "precipitation_probability_icon_seamless": [18, 22, 28]
               }
             }
         """.trimIndent()

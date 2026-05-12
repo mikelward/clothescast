@@ -148,6 +148,11 @@ class GenerateDailyInsight(
             // says "Forecasts disagree today," which is wrong-tense when the
             // user is reading the evening card.
             confidence = if (period == ForecastPeriod.TODAY) bundle.confidence else null,
+            // Same reasoning for the per-model hourly overlay data: today's
+            // hourly per-model series doesn't span the tonight window
+            // (19:00 today → 07:00 tomorrow), and Open-Meteo's per-model
+            // hourly only covers `forecast_days=1`. Strip on tonight.
+            perModelHourly = if (period == ForecastPeriod.TODAY) bundle.perModelHourly else null,
             outfit = OutfitSuggestion.fromForecast(periodForecast, rules),
             nextOutfit = nextOutfit,
             outfitRationale = OutfitSuggestion.explainFromForecast(periodForecast, rules),

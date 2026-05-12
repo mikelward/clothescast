@@ -23,6 +23,8 @@ import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitRationale
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.PerModelHour
+import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherCondition
@@ -116,6 +118,7 @@ class InsightCache(
         val hasEvents: Boolean = false,
         val location: LocationDto? = null,
         val confidence: ConfidenceInfoDto? = null,
+        val perModelHourly: PerModelHourlyDto? = null,
     ) {
         fun toDomain(): Insight = Insight(
             summary = summary.toDomain(),
@@ -125,12 +128,35 @@ class InsightCache(
             location = location?.toDomain(),
             hourly = hourly.map { it.toDomain() },
             confidence = confidence?.toDomain(),
+            perModelHourly = perModelHourly?.toDomain(),
             outfit = outfit?.toDomain(),
             nextOutfit = nextOutfit?.toDomain(),
             outfitRationale = outfitRationale?.toDomain(),
             nextOutfitRationale = nextOutfitRationale?.toDomain(),
             period = runCatching { ForecastPeriod.valueOf(period) }.getOrDefault(ForecastPeriod.TODAY),
             hasEvents = hasEvents,
+        )
+    }
+
+    @Serializable
+    private data class PerModelHourlyDto(
+        val byModel: Map<String, List<PerModelHourDto>>,
+    ) {
+        fun toDomain(): PerModelHourly = PerModelHourly(
+            byModel = byModel.mapValues { (_, hours) -> hours.map { it.toDomain() } },
+        )
+    }
+
+    @Serializable
+    private data class PerModelHourDto(
+        val secondOfDay: Int,
+        val apparentTemperatureC: Double,
+        val precipitationProbabilityPct: Double,
+    ) {
+        fun toDomain(): PerModelHour = PerModelHour(
+            time = LocalTime.ofSecondOfDay(secondOfDay.toLong()),
+            apparentTemperatureC = apparentTemperatureC,
+            precipitationProbabilityPct = precipitationProbabilityPct,
         )
     }
 
@@ -316,6 +342,7 @@ class InsightCache(
         hasEvents = hasEvents,
         location = location?.let { LocationDto(it.latitude, it.longitude, it.displayName) },
         confidence = confidence?.toDto(),
+        perModelHourly = perModelHourly?.toDto(),
     )
 
     private fun ConfidenceInfo.toDto(): ConfidenceInfoDto = ConfidenceInfoDto(
@@ -323,6 +350,16 @@ class InsightCache(
         tempSpreadC = tempSpreadC,
         precipSpreadPp = precipSpreadPp,
         modelsConsulted = modelsConsulted,
+    )
+
+    private fun PerModelHourly.toDto(): PerModelHourlyDto = PerModelHourlyDto(
+        byModel = byModel.mapValues { (_, hours) -> hours.map { it.toDto() } },
+    )
+
+    private fun PerModelHour.toDto(): PerModelHourDto = PerModelHourDto(
+        secondOfDay = time.toSecondOfDay(),
+        apparentTemperatureC = apparentTemperatureC,
+        precipitationProbabilityPct = precipitationProbabilityPct,
     )
 
     private fun OutfitRationale.toDto(): OutfitRationaleDto = OutfitRationaleDto(

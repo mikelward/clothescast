@@ -159,6 +159,10 @@ class PreviewSnapshots {
     @Test fun forecast_chart() = capture { ForecastChartPreview() }
     @Test fun forecast_chart_dark() = capture { ForecastChartDarkPreview() }
 
+    @Test fun precipitation_card() = capture { PrecipitationCardPreview() }
+    @Test fun precipitation_card_dark() = capture { PrecipitationCardDarkPreview() }
+    @Test fun precipitation_card_dry() = capture { PrecipitationCardDryPreview() }
+
     @Test fun today_insight_card_large_font() = capture { TodayInsightCardLargeFontPreview() }
     @Test fun outfit_tshirt_shorts_rtl() = capture { OutfitTShirtShortsRtlPreview() }
 

@@ -7,6 +7,7 @@ import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -24,10 +25,20 @@ import org.junit.jupiter.api.Test
 class MultiModelConfidenceFetcherTest {
     private val london = Location(latitude = 51.5074, longitude = -0.1278, displayName = "London")
 
+    private data class LogEntry(val message: String, val throwable: Throwable?)
+
+    private class CapturingLogger : ConfidenceFetchLogger {
+        val entries = mutableListOf<LogEntry>()
+        override fun log(message: String, throwable: Throwable?) {
+            entries += LogEntry(message, throwable)
+        }
+    }
+
     private fun fetcherWith(
         body: String,
         status: HttpStatusCode = HttpStatusCode.OK,
         capture: ((HttpRequestData) -> Unit)? = null,
+        logger: ConfidenceFetchLogger? = null,
     ): MultiModelConfidenceFetcher {
         val engine = MockEngine { request ->
             capture?.invoke(request)
@@ -42,7 +53,11 @@ class MultiModelConfidenceFetcherTest {
                 json(Json { ignoreUnknownKeys = true })
             }
         }
-        return MultiModelConfidenceFetcher(client)
+        return if (logger != null) {
+            MultiModelConfidenceFetcher(client, logger = logger)
+        } else {
+            MultiModelConfidenceFetcher(client)
+        }
     }
 
     @Test
@@ -104,6 +119,51 @@ class MultiModelConfidenceFetcherTest {
         val info = fetcherWith(ONE_MODEL_NULL_VALUES).fetch(london).shouldNotBeNull()
 
         info.modelsConsulted shouldContainExactlyInAnyOrder listOf("gfs_seamless", "icon_seamless")
+    }
+
+    @Test
+    fun `dropping a model logs which fields were missing`() = runTest {
+        val logger = CapturingLogger()
+        fetcherWith(ONE_MODEL_NULL_VALUES, logger = logger).fetch(london)
+
+        val message = logger.entries.singleOrNull { "ecmwf_ifs04" in it.message }
+            .shouldNotBeNull()
+            .message
+        message shouldContain "dropped"
+        message shouldContain "apparent_temperature_max"
+        message shouldContain "precipitation_probability_max"
+    }
+
+    @Test
+    fun `returning null because too few models reported logs the ratio`() = runTest {
+        val logger = CapturingLogger()
+        fetcherWith(TWO_MODELS_OMITTED, logger = logger).fetch(london).shouldBeNull()
+
+        val giveUp = logger.entries.lastOrNull().shouldNotBeNull()
+        giveUp.message shouldContain "1 of 3"
+        giveUp.message shouldContain "returning null"
+    }
+
+    @Test
+    fun `request failure logs the exception`() = runTest {
+        val logger = CapturingLogger()
+        fetcherWith(
+            body = "boom",
+            status = HttpStatusCode.InternalServerError,
+            logger = logger,
+        ).fetch(london).shouldBeNull()
+
+        val entry = logger.entries.singleOrNull { it.throwable != null }.shouldNotBeNull()
+        entry.message shouldContain "confidence fetch failed"
+        entry.throwable.shouldNotBeNull()
+    }
+
+    @Test
+    fun `successful fetch logs nothing`() = runTest {
+        val logger = CapturingLogger()
+        fetcherWith(THREE_MODEL_AGREEMENT, logger = logger).fetch(london).shouldNotBeNull()
+
+        logger.entries shouldBe emptyList()
     }
 
     companion object {

@@ -32,11 +32,14 @@ import kotlinx.serialization.json.jsonPrimitive
  * Best-effort: any failure (network, parse error) falls through to null. Per-model
  * failures (server returns nulls or omits a model's fields) drop just that model;
  * we still return a [ConfidenceInfo] as long as at least two models reported
- * usable values.
+ * usable values. Every drop and every failure is reported through [logger] so the
+ * caller can surface why the chip didn't render — historically this path swallowed
+ * its reasons silently.
  */
 internal class MultiModelConfidenceFetcher(
     private val httpClient: HttpClient,
     private val models: List<String> = DEFAULT_MODELS,
+    private val logger: ConfidenceFetchLogger = NoOpConfidenceFetchLogger,
 ) {
     suspend fun fetch(location: Location): ConfidenceInfo? = try {
         val daily: JsonObject = httpClient.get {
@@ -53,20 +56,44 @@ internal class MultiModelConfidenceFetcher(
             parameter("models", models.joinToString(","))
         }.body<ConfidenceResponse>().daily
 
-        val results = models.mapNotNull { model -> readModel(daily, model)?.let { model to it } }
-        if (results.size < 2) null else compute(results)
+        val results = buildList {
+            for (model in models) {
+                when (val outcome = readModel(daily, model)) {
+                    is ReadOutcome.Usable -> add(model to outcome.values)
+                    is ReadOutcome.Dropped ->
+                        logger.log("model $model dropped: ${outcome.reason}")
+                }
+            }
+        }
+        if (results.size < 2) {
+            logger.log(
+                "only ${results.size} of ${models.size} models reported usable values; " +
+                    "returning null",
+            )
+            null
+        } else {
+            compute(results)
+        }
     } catch (ce: CancellationException) {
         throw ce
-    } catch (_: Throwable) {
+    } catch (t: Throwable) {
+        logger.log("confidence fetch failed", t)
         null
     }
 
-    private fun readModel(daily: JsonObject, model: String): ModelDailyValues? {
+    private fun readModel(daily: JsonObject, model: String): ReadOutcome {
         val tempMax = firstNumber(daily["apparent_temperature_max_$model"])?.toDouble()
-            ?: return null
         val precipMax = firstNumber(daily["precipitation_probability_max_$model"])?.toDouble()
-            ?: return null
-        return ModelDailyValues(tempMax, precipMax)
+        return when {
+            tempMax == null && precipMax == null ->
+                ReadOutcome.Dropped("both apparent_temperature_max and precipitation_probability_max missing or null")
+            tempMax == null ->
+                ReadOutcome.Dropped("apparent_temperature_max missing or null")
+            precipMax == null ->
+                ReadOutcome.Dropped("precipitation_probability_max missing or null")
+            else ->
+                ReadOutcome.Usable(ModelDailyValues(tempMax, precipMax))
+        }
     }
 
     private fun firstNumber(element: JsonElement?): Number? {
@@ -99,6 +126,11 @@ internal class MultiModelConfidenceFetcher(
     }
 
     private data class ModelDailyValues(val tempMaxC: Double, val precipMaxPp: Double)
+
+    private sealed class ReadOutcome {
+        data class Usable(val values: ModelDailyValues) : ReadOutcome()
+        data class Dropped(val reason: String) : ReadOutcome()
+    }
 
     companion object {
         // Three models with global coverage so the spread is meaningful regardless of

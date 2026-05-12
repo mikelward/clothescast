@@ -106,6 +106,10 @@
     <string name="today_precipitation_peak">Peak %1$d%% at %2$s</string>
     <string name="today_precipitation_dry">No rain expected today</string>
 
+    <!-- Footer below the forecast / precipitation charts when "Show model spread"
+         is enabled, naming the weather models whose overlay lines are drawn. -->
+    <string name="today_chart_model_legend">Models: %1$s</string>
+
     <string name="today_confidence_high">High confidence — major models agree</string>
     <string name="today_confidence_medium">Medium confidence</string>
     <string name="today_confidence_low">Low confidence — forecasts disagree</string>
@@ -233,6 +237,14 @@
     <string name="settings_display_theme_system">Follow system</string>
     <string name="settings_display_theme_light">Light</string>
     <string name="settings_display_theme_dark">Dark</string>
+
+    <!-- "Show model spread" toggle in Display settings — opt-in overlay drawing
+         each major weather model's hourly curve on the Today charts alongside
+         the main blended forecast. Off by default; the data is always fetched
+         so flipping it on shows overlays immediately. -->
+    <string name="settings_display_charts_title">Charts</string>
+    <string name="settings_display_model_spread_label">Show model spread on charts</string>
+    <string name="settings_display_model_spread_description">Overlays each major weather model\'s hourly forecast on the temperature and rain charts. Useful for spotting when the forecast is uncertain.</string>
     <string name="settings_root_location_subtitle">Auto-detect or pick a city</string>
     <string name="settings_root_calendar_subtitle">Today\'s events</string>
     <string name="settings_root_privacy_subtitle">Crash + usage reports</string>

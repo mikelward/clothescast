@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.clothescast.core.domain.model.HourlyForecast
+import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.toUnit
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
@@ -27,6 +28,12 @@ import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.roundToInt
+
+// Render order for the per-model overlays — fixed so the legend's color
+// mapping stays stable across recompositions and renders. Internal so the
+// adjacent [PrecipitationChart] and the legend in [TodayScreen] iterate the
+// models in the same left-to-right order the chart draws them.
+internal val MODEL_DRAW_ORDER = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless")
 
 // Smallest y-axis span we'll display. A 1-degree-variation day padded to this
 // still shows clear hour-to-hour movement, but the chart never collapses to a
@@ -64,13 +71,28 @@ fun ForecastChart(
     temperatureUnit: TemperatureUnit,
     showFeelsLike: Boolean,
     modifier: Modifier = Modifier,
+    // Optional per-model overlays — passed by the caller when the user has
+    // the "Show model spread" Display setting on. Apparent-temperature only;
+    // we suppress the overlays in air-temperature mode so the visible model
+    // lines stay semantically aligned with the main line.
+    perModelHourly: PerModelHourly? = null,
 ) {
     if (hourly.isEmpty()) return
 
+    val overlays = perModelHourly?.takeIf { showFeelsLike }?.byModel.orEmpty()
+
     val producer = remember { CartesianChartModelProducer() }
-    LaunchedEffect(hourly, temperatureUnit, showFeelsLike) {
+    LaunchedEffect(hourly, temperatureUnit, showFeelsLike, overlays) {
         producer.runTransaction {
             lineSeries {
+                // Overlays first so they render *under* the main blended line.
+                // Iterate in a fixed model order so the legend's color mapping
+                // is stable across recompositions.
+                MODEL_DRAW_ORDER.forEach { modelId ->
+                    overlays[modelId]?.let { entries ->
+                        series(entries.map { it.apparentTemperatureC.toUnit(temperatureUnit) })
+                    }
+                }
                 val pick: (HourlyForecast) -> Double =
                     if (showFeelsLike) { h -> h.feelsLikeC } else { h -> h.temperatureC }
                 series(hourly.map { pick(it).toUnit(temperatureUnit) })
@@ -96,10 +118,14 @@ fun ForecastChart(
     // display unit so a calm day with a 1-degree variation doesn't get
     // amplified into a noisy zigzag — the data still fills more than half the
     // chart, but the labels stay on whole-degree gridlines.
-    val rangeProvider = remember(hourly, temperatureUnit) {
-        val all = hourly.flatMap {
+    val rangeProvider = remember(hourly, temperatureUnit, overlays) {
+        val main = hourly.flatMap {
             listOf(it.feelsLikeC.toUnit(temperatureUnit), it.temperatureC.toUnit(temperatureUnit))
         }
+        val extras = overlays.values.flatMap { entries ->
+            entries.map { it.apparentTemperatureC.toUnit(temperatureUnit) }
+        }
+        val all = main + extras
         val rawMin = floor(all.min())
         val rawMax = ceil(all.max())
         // Symmetric integer pad: extra below = ceil(deficit/2), extra above =

@@ -22,6 +22,8 @@ import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.GarmentReason
 import app.clothescast.core.domain.model.HourlyForecast
+import app.clothescast.core.domain.model.PerModelHour
+import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.Location
@@ -620,6 +622,50 @@ internal fun PrecipitationCardPreview() {
 @Composable
 internal fun PrecipitationCardDarkPreview() {
     Frame(darkTheme = true) { PrecipitationCard(hourly = SAMPLE_HOURLY_RAINY) }
+}
+
+// Three model curves spread around the blended sample. Offsets are deliberate
+// so the overlay is visually distinguishable from the main line.
+private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
+    fun shift(deltaC: Double, precipDelta: Double) = SAMPLE_HOURLY_RAINY.map { h ->
+        PerModelHour(
+            time = h.time,
+            apparentTemperatureC = h.feelsLikeC + deltaC,
+            precipitationProbabilityPct = (h.precipitationProbabilityPct + precipDelta)
+                .coerceIn(0.0, 100.0),
+        )
+    }
+    PerModelHourly(
+        byModel = mapOf(
+            "ecmwf_ifs04" to shift(deltaC = -1.5, precipDelta = -10.0),
+            "gfs_seamless" to shift(deltaC = 0.5, precipDelta = 5.0),
+            "icon_seamless" to shift(deltaC = 2.0, precipDelta = -5.0),
+        ),
+    )
+}
+
+@Preview(name = "Forecast chart · with model spread", widthDp = 360)
+@Composable
+internal fun ForecastChartWithModelSpreadPreview() {
+    Frame {
+        ForecastChart(
+            hourly = SAMPLE_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            showFeelsLike = true,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+        )
+    }
+}
+
+@Preview(name = "Precipitation card · with model spread", widthDp = 360)
+@Composable
+internal fun PrecipitationCardWithModelSpreadPreview() {
+    Frame {
+        PrecipitationCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+        )
+    }
 }
 
 // SAMPLE_HOURLY is already all-zero precipitation, so reuse it for the dry

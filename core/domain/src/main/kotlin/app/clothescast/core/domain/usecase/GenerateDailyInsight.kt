@@ -211,17 +211,24 @@ class GenerateDailyInsight(
  * Filters each model's per-hour entries to just the hours covered by
  * [windowHourly] (typically today's daytime slice), preserving the window's
  * order so each index in the resulting series lines up with the same index
- * in `windowHourly` — the chart plots overlays by index. Models with no
- * surviving entries are dropped from the map; an empty result returns null
- * so the caller can null the whole field.
+ * in `windowHourly` — the chart plots overlays by index.
+ *
+ * Drops a model entirely from the overlay if it's missing any in-window hour
+ * (the upstream `parseHourly` skips per-hour entries with null temp or precip
+ * values for a model whose run hasn't fully landed). Carrying a partial series
+ * would compact the surviving points left, misaligning the model line with the
+ * blended line for every hour after the gap — better to omit the model than
+ * draw a curve that's silently shifted. An empty result returns null so the
+ * caller can null the whole field.
  */
 private fun PerModelHourly.slicedTo(windowHourly: List<HourlyForecast>): PerModelHourly? {
     if (windowHourly.isEmpty()) return null
     val order = windowHourly.map { it.time }
-    val filtered = byModel.mapValues { (_, entries) ->
+    val filtered = byModel.mapNotNull { (model, entries) ->
         val byTime = entries.associateBy { it.time }
-        order.mapNotNull { byTime[it] }
-    }.filterValues { it.isNotEmpty() }
+        val sliced = order.map { byTime[it] ?: return@mapNotNull null }
+        model to sliced
+    }.toMap()
     return if (filtered.isEmpty()) null else PerModelHourly(filtered)
 }
 

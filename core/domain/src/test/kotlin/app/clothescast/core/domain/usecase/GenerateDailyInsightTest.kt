@@ -446,6 +446,41 @@ class GenerateDailyInsightTest {
     }
 
     @Test
+    fun `model with a missing in-window hour is dropped from the overlay`() = runTest {
+        // parseHourly drops the per-hour entry for a model whose run hasn't
+        // landed that hour (temp or precip null); the resulting series has a
+        // gap that, if surfaced, would compact the surviving points left and
+        // misalign the line with the blended hourly. Keep the model out of
+        // the overlay entirely rather than draw a silently-shifted curve.
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 12.0, 11.0, 10.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(12, 0), 18.0, 17.0, 30.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 22.0, 21.0, 40.0, WeatherCondition.CLEAR),
+        )
+        val incompleteEcmwf = listOf(
+            // 12:00 hour missing — the model is dropped from the overlay.
+            PerModelHour(LocalTime.of(8, 0), 11.5, 9.0),
+            PerModelHour(LocalTime.of(15, 0), 21.5, 38.0),
+        )
+        val completeGfs = daytime.map { h ->
+            PerModelHour(h.time, h.feelsLikeC + 0.5, h.precipitationProbabilityPct + 2.0)
+        }
+        val bundleHourly = PerModelHourly(
+            byModel = mapOf("ecmwf_ifs04" to incompleteEcmwf, "gfs_seamless" to completeGfs),
+        )
+        val todayWithHourly = today.copy(hourly = daytime)
+        val weather = FakeWeatherRepository(
+            ForecastBundle(todayWithHourly, yesterday, perModelHourly = bundleHourly),
+        )
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val overlay = subject(london, prefs, ForecastPeriod.TODAY).insight.perModelHourly
+            .shouldNotBeNull()
+        overlay.byModel.keys shouldContainExactlyInAnyOrder listOf("gfs_seamless")
+        overlay.byModel.getValue("gfs_seamless").map { it.time } shouldBe daytime.map { it.time }
+    }
+
+    @Test
     fun `tonight period leads with TONIGHT and skips the yesterday delta clause`() = runTest {
         val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
         val subject = GenerateDailyInsight(weather, clock = clock)

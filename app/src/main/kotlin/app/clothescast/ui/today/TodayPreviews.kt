@@ -579,6 +579,43 @@ internal fun ForecastChartDarkPreview() {
     }
 }
 
+// 24-hour rain probability tracking a wet day with a mid-afternoon peak. Values
+// in percent. Reuses SAMPLE_HOURLY's temperature curve as a base and overrides
+// just the precipitation probabilities, so the rainy preview shares the same
+// time/temperature shape as the dry one — only the precip series differs.
+private val SAMPLE_HOURLY_RAINY: List<HourlyForecast> = run {
+    val precipPctByHour = listOf(
+        0.0, 0.0, 0.0, 0.0, 5.0, 10.0,        // 00–05
+        15.0, 25.0, 40.0, 55.0, 65.0, 70.0,   // 06–11
+        75.0, 80.0, 80.0, 75.0, 60.0, 45.0,   // 12–17
+        30.0, 20.0, 15.0, 10.0, 5.0, 0.0,     // 18–23
+    )
+    SAMPLE_HOURLY.mapIndexed { i, h ->
+        h.copy(precipitationProbabilityPct = precipPctByHour[i])
+    }
+}
+
+@Preview(name = "Precipitation card · rainy", widthDp = 360)
+@Composable
+internal fun PrecipitationCardPreview() {
+    Frame { PrecipitationCard(hourly = SAMPLE_HOURLY_RAINY) }
+}
+
+@Preview(name = "Precipitation card · rainy (dark)", widthDp = 360)
+@Composable
+internal fun PrecipitationCardDarkPreview() {
+    Frame(darkTheme = true) { PrecipitationCard(hourly = SAMPLE_HOURLY_RAINY) }
+}
+
+// SAMPLE_HOURLY is already all-zero precipitation, so reuse it for the dry
+// variant — exercises the "No rain expected today" copy path while still
+// rendering the chart (per the always-show-chart design choice).
+@Preview(name = "Precipitation card · dry", widthDp = 360)
+@Composable
+internal fun PrecipitationCardDryPreview() {
+    Frame { PrecipitationCard(hourly = SAMPLE_HOURLY) }
+}
+
 // Accessibility / i18n stress variants. Each picks the surface most likely to
 // regress under the relevant axis: `headlineSmall` prose + adjacent confidence
 // chip for fontScale (the chip's row crowds the text at the top of the card),

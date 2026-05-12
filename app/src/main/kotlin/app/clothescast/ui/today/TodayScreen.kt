@@ -295,6 +295,7 @@ private fun TodayContent(
             InsightCard(state.insight, state.region)
             if (state.insight.hourly.isNotEmpty()) {
                 ForecastCard(state.insight.hourly, state.temperatureUnit)
+                PrecipitationCard(state.insight.hourly)
             }
         }
     }
@@ -1002,6 +1003,47 @@ private fun ForecastCard(hourly: List<HourlyForecast>, temperatureUnit: Temperat
         }
     }
 }
+
+@Composable
+internal fun PrecipitationCard(hourly: List<HourlyForecast>) {
+    // Always render the chart, even on dry days — keeps the card height stable
+    // across days so the cards below don't shift, and the flat baseline is its
+    // own kind of information ("nothing coming"). The summary line above the
+    // chart switches between a peak callout and a "no rain" message so the
+    // chart itself is just the visualisation, not the only signal.
+    val peak = remember(hourly) { hourly.maxByOrNull { it.precipitationProbabilityPct } }
+    val isDry = peak == null || peak.precipitationProbabilityPct < DRY_THRESHOLD_PCT
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.today_precipitation_title),
+                style = MaterialTheme.typography.titleSmall,
+            )
+            Text(
+                text = if (isDry || peak == null) {
+                    stringResource(R.string.today_precipitation_dry)
+                } else {
+                    stringResource(
+                        R.string.today_precipitation_peak,
+                        peak.precipitationProbabilityPct.roundToInt(),
+                        "%02d:00".format(peak.time.hour),
+                    )
+                },
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            PrecipitationChart(hourly = hourly)
+        }
+    }
+}
+
+// Open-Meteo rounds probability to whole percents and returns 1–3% peaks on
+// objectively dry days; treating anything under 5% as "no rain" suppresses
+// the misleading "Peak 2% at 03:00" callout while still surfacing genuine
+// drizzle-grade chances at 5%+.
+private const val DRY_THRESHOLD_PCT = 5.0
 
 private fun formatMinMax(values: List<Double>, unit: TemperatureUnit): Pair<Int, Int>? {
     if (values.isEmpty()) return null

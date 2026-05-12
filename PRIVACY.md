@@ -79,12 +79,17 @@ The source code is at <https://github.com/mikelward/clothescast>.
 
 ### Diagnostic logs and crash reports
 
-- **What:** ClothesCast keeps a small in-memory ring buffer of the most
-  recent log lines (errors, warnings, info) and, if the app crashes,
-  writes that buffer plus the stack trace to a file on your device
-  (`cacheDir/last-crash.txt`). The local bug-report payload also
-  includes your current settings (schedule, units, TTS choice, clothes
-  rules) and the most recently rendered insight prose.
+- **What:** ClothesCast keeps a rolling on-device file of the most
+  recent log lines — errors, warnings, info — at `cacheDir/diag.log`
+  (plus one rotated predecessor `cacheDir/diag.log.1`, capped at
+  ~200 KB each). Lines may include the rendered insight prose
+  ("Insight delivered for …") and device-resolved coordinates ("Using
+  device-resolved location at lat, lon"). If the app crashes, recent
+  lines plus the stack trace are also written to
+  `cacheDir/last-crash.txt`. The local bug-report payload includes the
+  most recent ~300 lines of the diag file plus your current settings
+  (schedule, units, TTS choice, clothes rules) and the most recently
+  rendered insight prose.
 - **Why:** So you can hand a complete diagnostic snapshot to the
   developer when something goes wrong, and so the developer can be
   alerted to crashes affecting users in the wild.
@@ -103,7 +108,12 @@ The source code is at <https://github.com/mikelward/clothescast>.
     travel separately as part of the aggregate analytics described
     below.) See "Analytics and crash reporting" below for the full
     limits.
-- **Stored on device:** The ring buffer is process-memory only. The
+- **Stored on device:** The diag file (`cacheDir/diag.log` plus one
+  rotated predecessor) persists across launches and app upgrades until
+  rotated out by newer lines or cleared on uninstall / cache-clear, so
+  bug reports filed after a process restart may include lines from
+  earlier runs. A `---- process start <version> ----` marker line at
+  each launch lets readers see where the current process began. The
   crash file persists across launches until a fresh crash overwrites
   it, and is cleared on uninstall.
 - **Retention by us:** The on-device file is yours — whatever you do
@@ -221,6 +231,17 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-05-12** — Diagnostic logs are now persisted to
+  `cacheDir/diag.log` (with one rotated predecessor, ~200 KB each)
+  instead of living only in a process-memory ring buffer. This lets
+  errors logged by background workers reach a bug report filed after
+  the OS later kills the process. The categories of data the diag log
+  may contain (rendered insight prose, device-resolved coordinates,
+  error / warning text) are unchanged — they were already shown in the
+  bug-report payload from the in-memory buffer; what changes is that
+  they now live on disk between launches, similar to the existing
+  crash file. Nothing new leaves the device; the bug-report share-sheet
+  flow is unchanged.
 - **2026-05-06** — Removed OpenAI and ElevenLabs as TTS provider options;
   Google Gemini is now the only online TTS provider. Removed the
   corresponding rows from the third-party services table and the note on

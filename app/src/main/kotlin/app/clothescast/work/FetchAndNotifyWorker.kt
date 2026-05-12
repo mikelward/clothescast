@@ -284,7 +284,7 @@ class FetchAndNotifyWorker(
 
     // First line of the exception message only — Ktor's NoTransformationFoundException
     // packs the URL, body excerpt, and a FAQ link into a multi-line wall of text.
-    // Full stack trace stays in logcat and the diag ring buffer (DiagLog.e above).
+    // Full stack trace stays in logcat and the on-disk diag log (DiagLog.e above).
     private fun summarize(t: Throwable): String {
         val firstLine = t.message?.lineSequence()?.firstOrNull { it.isNotBlank() }?.trim()
         val joined = if (firstLine.isNullOrEmpty()) t.javaClass.simpleName

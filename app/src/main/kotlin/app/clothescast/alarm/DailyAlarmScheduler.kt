@@ -40,7 +40,7 @@ class DailyAlarmScheduler(
         }
 
         val triggerAt: Instant = schedule.nextOccurrenceAfter(clock.instant())
-        val pendingIntent = pendingIntent(context, period)
+        val pendingIntent = pendingIntent(context, period, scheduledAtMs = triggerAt.toEpochMilli())
 
         if (!alarmManager.canScheduleExactAlarms()) {
             // USE_EXACT_ALARM (API 33+) auto-grants this; on the API 31-32 shim path it's
@@ -66,7 +66,24 @@ class DailyAlarmScheduler(
         private const val ALARM_REQUEST_CODE_TODAY = 0xADA1
         private const val ALARM_REQUEST_CODE_TONIGHT = 0xADA2
 
-        internal fun pendingIntent(context: Context, period: ForecastPeriod): PendingIntent {
+        /**
+         * Wall-clock millis of the moment we asked AlarmManager to fire. Read by
+         * [AlarmReceiver] to compute the doze-induced delivery delay and pass it
+         * along to the worker. FLAG_UPDATE_CURRENT swaps the extras on each
+         * re-arm so the value the receiver reads is always the most recently
+         * scheduled trigger time.
+         */
+        const val EXTRA_SCHEDULED_AT_MS = "app.clothescast.alarm.SCHEDULED_AT_MS"
+
+        // The cancel() path doesn't care about the timestamp — it just needs a
+        // PendingIntent that equals() the one previously handed to AlarmManager.
+        // PendingIntent equality ignores extras (matches action + component +
+        // requestCode), so calling cancel without a real schedule time is fine.
+        internal fun pendingIntent(
+            context: Context,
+            period: ForecastPeriod,
+            scheduledAtMs: Long = 0L,
+        ): PendingIntent {
             val action = when (period) {
                 ForecastPeriod.TODAY -> AlarmReceiver.ACTION_FIRE
                 ForecastPeriod.TONIGHT -> AlarmReceiver.ACTION_FIRE_TONIGHT
@@ -75,7 +92,9 @@ class DailyAlarmScheduler(
                 ForecastPeriod.TODAY -> ALARM_REQUEST_CODE_TODAY
                 ForecastPeriod.TONIGHT -> ALARM_REQUEST_CODE_TONIGHT
             }
-            val intent = Intent(context, AlarmReceiver::class.java).setAction(action)
+            val intent = Intent(context, AlarmReceiver::class.java)
+                .setAction(action)
+                .putExtra(EXTRA_SCHEDULED_AT_MS, scheduledAtMs)
             return PendingIntent.getBroadcast(
                 context,
                 requestCode,

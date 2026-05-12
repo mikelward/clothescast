@@ -22,6 +22,7 @@ import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
+import app.clothescast.diag.Telemetry
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
@@ -389,6 +390,7 @@ class FetchAndNotifyWorker(
         if (includesTts) awaitSpeakTime()
         if (mode == DeliveryMode.NOTIFICATION_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS) {
             app.insightNotifier.notify(insight, prose)
+            recordDeliveryDelay(ForecastPeriod.TODAY)
         }
         if (includesTts) {
             speakWithFallback(ttsUtterance(insight, prefs), prefs)
@@ -415,6 +417,49 @@ class FetchAndNotifyWorker(
             DiagLog.i(TAG, "Deferring TTS for ${waitMs}ms (alarm + ${TTS_DEFER_AFTER_ALARM_MS}ms window).")
             delay(waitMs)
         }
+    }
+
+    /**
+     * Emits a Firebase Analytics `notification_delivery` event covering the gap
+     * between when the schedule said the notification should fire and when it
+     * actually posted. Reads both timestamps stamped by [AlarmReceiver]:
+     *
+     *  - [KEY_ALARM_SCHEDULED_AT_MS] — the trigger time we handed to
+     *    AlarmManager.setExactAndAllowWhileIdle. Doze can push the actual fire
+     *    minutes later.
+     *  - [KEY_ALARM_FIRED_AT_MS] — System.currentTimeMillis at the receiver.
+     *    `alarm_delay_ms = fired - scheduled` isolates the doze deferral.
+     *
+     * `total_delay_ms` is taken at the moment this helper runs — moments after
+     * the system notification is posted — so it also folds in WorkManager
+     * constraint waits (no network, low battery), our own pipeline latency,
+     * and the deferred-TTS pause when applicable. The user wanted "schedule
+     * said X, we actually notified at Y" — that's `total_delay_ms`. The
+     * `alarm_delay_ms` breakdown lets us distinguish doze from worker waits
+     * when slicing the data.
+     *
+     * Silently no-ops when either timestamp is 0 (force-refresh tap,
+     * location-cache run, boot-completed re-arm path) — those aren't on the
+     * schedule we're measuring, so there's no scheduled-vs-actual to report.
+     */
+    private fun recordDeliveryDelay(period: ForecastPeriod) {
+        val scheduledAtMs = inputData.getLong(KEY_ALARM_SCHEDULED_AT_MS, 0L)
+        val firedAtMs = inputData.getLong(KEY_ALARM_FIRED_AT_MS, 0L)
+        if (scheduledAtMs == 0L || firedAtMs == 0L) return
+        val now = System.currentTimeMillis()
+        // Floor at 0 to defend against early-fire on a freshly-set wall clock
+        // (NTP correction jumping backward, manual time changes). Negative
+        // delays would only confuse the dashboard.
+        val alarmDelay = (firedAtMs - scheduledAtMs).coerceAtLeast(0L)
+        val totalDelay = (now - scheduledAtMs).coerceAtLeast(0L)
+        Telemetry.logNotificationDelivery(
+            period = when (period) {
+                ForecastPeriod.TODAY -> "today"
+                ForecastPeriod.TONIGHT -> "tonight"
+            },
+            alarmDelayMs = alarmDelay,
+            totalDelayMs = totalDelay,
+        )
     }
 
     /**
@@ -461,6 +506,7 @@ class FetchAndNotifyWorker(
             DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping notification.")
         } else if (canNotify) {
             app.tonightInsightNotifier.notify(insight, prose)
+            recordDeliveryDelay(ForecastPeriod.TONIGHT)
         }
         if (!insight.hasEvents) {
             DiagLog.i(TAG, "Tonight insight has no events; skipping TTS.")
@@ -552,9 +598,21 @@ class FetchAndNotifyWorker(
          * Wall-clock millis at which the alarm fired. Set by [AlarmReceiver] for
          * scheduled morning runs; absent (0) for force-refresh taps and other
          * non-alarm-triggered enqueues. Read by [awaitSpeakTime] to compute the
-         * earliest moment TTS should start speaking.
+         * earliest moment TTS should start speaking, and by [recordDeliveryDelay]
+         * to split the scheduled→delivered gap into "doze deferral" vs "worker
+         * wait".
          */
         private const val KEY_ALARM_FIRED_AT_MS = "alarm_fired_at_ms"
+
+        /**
+         * Wall-clock millis at which AlarmManager *should* have fired this alarm —
+         * the trigger time DailyAlarmScheduler stamped onto the PendingIntent's
+         * extras. AlarmReceiver forwards it here so [recordDeliveryDelay] can
+         * compute `total_delay_ms = now - scheduled` for the
+         * `notification_delivery` analytics event. Absent (0) for non-alarm
+         * enqueues (force refresh, location cache, boot re-arm path).
+         */
+        private const val KEY_ALARM_SCHEDULED_AT_MS = "alarm_scheduled_at_ms"
 
         /**
          * How long after the alarm fires before TTS is allowed to speak. One minute
@@ -587,6 +645,7 @@ class FetchAndNotifyWorker(
             context: Context,
             force: Boolean = false,
             period: ForecastPeriod = ForecastPeriod.TODAY,
+            alarmScheduledAtMs: Long = 0L,
             alarmFiredAtMs: Long = 0L,
         ) {
             val constraints = Constraints.Builder()
@@ -607,6 +666,7 @@ class FetchAndNotifyWorker(
                         KEY_FORCE_REFRESH to force,
                         KEY_REQUESTED_EPOCH_DAY to LocalDate.now().toEpochDay(),
                         KEY_PERIOD to period.name,
+                        KEY_ALARM_SCHEDULED_AT_MS to alarmScheduledAtMs,
                         KEY_ALARM_FIRED_AT_MS to alarmFiredAtMs,
                     )
                 )

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import app.clothescast.alarm.DailyAlarmScheduler
 import app.clothescast.calendar.CalendarContractEventReader
+import app.clothescast.core.data.diag.ApiCallLogger
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.data.tts.GeminiTtsClient
 import app.clothescast.core.data.weather.ConfidenceFetchLogger
@@ -17,6 +18,7 @@ import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
 import app.clothescast.diag.DiagLog
 import app.clothescast.diag.Telemetry
+import app.clothescast.diag.TelemetryApiCallLogger
 import app.clothescast.locale.AppLocale
 import app.clothescast.location.LocationResolver
 import app.clothescast.location.ReverseGeocoder
@@ -75,7 +77,9 @@ class ClothesCastApplication : Application() {
     val androidTtsVoiceEnumerator: AndroidTtsVoiceEnumerator by lazy { AndroidTtsVoiceEnumerator(this) }
     val calendarEventReader: CalendarEventReader by lazy { CalendarContractEventReader(this) }
     val appUpdateChecker: AppUpdateChecker by lazy { AppUpdateChecker(this) }
-    val geminiTtsClient: GeminiTtsClient by lazy { GeminiTtsClient(httpClient, secureKeyStore) }
+    val geminiTtsClient: GeminiTtsClient by lazy {
+        GeminiTtsClient(httpClient, secureKeyStore, apiCallLogger = apiCallLogger)
+    }
 
     private val httpClient: HttpClient by lazy {
         HttpClient(OkHttp) {
@@ -85,15 +89,24 @@ class ClothesCastApplication : Application() {
         }
     }
 
+    // Shared across all network clients so every Open-Meteo / Gemini call
+    // emits one Firebase Analytics `api_call` event with status + latency.
+    // The wrapper drops "device is offline" failures so the resulting stream
+    // is a clean read on rate limits and transient server issues.
+    private val apiCallLogger: ApiCallLogger by lazy { TelemetryApiCallLogger(this) }
+
     val weatherRepository: WeatherRepository by lazy {
         OpenMeteoClient(
             httpClient = httpClient,
             confidenceLogger = ConfidenceFetchLogger { message, throwable ->
                 DiagLog.w("ConfidenceFetcher", message, throwable)
             },
+            apiCallLogger = apiCallLogger,
         )
     }
-    val geocodingClient: OpenMeteoGeocodingClient by lazy { OpenMeteoGeocodingClient(httpClient) }
+    val geocodingClient: OpenMeteoGeocodingClient by lazy {
+        OpenMeteoGeocodingClient(httpClient, apiCallLogger = apiCallLogger)
+    }
 
     val generateDailyInsight: GenerateDailyInsight by lazy {
         GenerateDailyInsight(

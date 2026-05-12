@@ -2,6 +2,7 @@ package app.clothescast.diag
 
 import android.content.Context
 import android.os.Build
+import android.os.Bundle
 import app.clothescast.BuildConfig
 import app.clothescast.data.SettingsRepository
 import com.google.firebase.FirebaseApp
@@ -34,6 +35,16 @@ import kotlinx.coroutines.launch
  */
 object Telemetry {
     /**
+     * Captured in [start] so background components (the WorkManager worker,
+     * the alarm receiver) can emit events without re-resolving the SDK from
+     * a Context. Stays null on builds without google-services.json (CI) or
+     * on the OnePlus 8 Pro install-bypass path described in [start], which
+     * is how all the logEvent helpers below stay silent on those builds.
+     */
+    @Volatile
+    private var analyticsRef: FirebaseAnalytics? = null
+
+    /**
      * Subscribes to [settings]'s telemetry preference and pushes each change
      * into FirebaseAnalytics + FirebaseCrashlytics. Both SDKs persist their
      * collection flag across launches, so a `false` set here also suppresses
@@ -63,6 +74,7 @@ object Telemetry {
             crashlytics.setCrashlyticsCollectionEnabled(false)
             return
         }
+        analyticsRef = analytics
         scope.launch {
             settings.preferences
                 .map { it.telemetryEnabled }
@@ -78,6 +90,68 @@ object Telemetry {
                 .collect { snapshot -> snapshot.applyTo(analytics) }
         }
     }
+
+    /**
+     * Emits an `api_call` event. Called inline with every Open-Meteo / Gemini
+     * request — see [TelemetryApiCallLogger] for the offline-filter wrapper
+     * that decides which events make it here. Params:
+     *
+     *  - `endpoint` (string, ≤40 chars): see [app.clothescast.core.data.diag.ApiEndpoints].
+     *  - `outcome` (string): `success`, `http_error`, `timeout`, `network_error`, `other_error`.
+     *  - `status_code` (long): HTTP status when [outcome] is `success` / `http_error`, else 0.
+     *  - `latency_ms` (long): wall-clock from request start.
+     *
+     * No-op when Firebase didn't initialise (builds without google-services.json),
+     * and when the user's Privacy toggle has set collection to disabled the SDK
+     * itself silently drops the event — no per-call gate needed here.
+     */
+    fun logApiCall(endpoint: String, outcome: String, statusCode: Int, latencyMs: Long) {
+        val analytics = analyticsRef ?: return
+        val params = Bundle().apply {
+            putString(PARAM_ENDPOINT, endpoint)
+            putString(PARAM_OUTCOME, outcome)
+            putLong(PARAM_STATUS_CODE, statusCode.toLong())
+            putLong(PARAM_LATENCY_MS, latencyMs)
+        }
+        analytics.logEvent(EVENT_API_CALL, params)
+    }
+
+    /**
+     * Emits a `notification_delivery` event when the daily / tonight alarm
+     * pipeline posts a notification. Params:
+     *
+     *  - `period` (string): `today` or `tonight`.
+     *  - `alarm_delay_ms` (long): scheduled-fire time → AlarmReceiver fire time.
+     *    Catches Doze deferral on `setExactAndAllowWhileIdle`. Always ≥ 0.
+     *  - `total_delay_ms` (long): scheduled-fire time → moment the notification
+     *    posted. Adds in WorkManager constraint waits (NetworkType.CONNECTED)
+     *    and our own pipeline latency. Always ≥ alarm_delay_ms.
+     *
+     * Only emitted when the post actually happens, so a powered-off / offline
+     * device that misses the alarm entirely simply doesn't show up in the
+     * stream — matching the user's request to filter those out.
+     */
+    fun logNotificationDelivery(period: String, alarmDelayMs: Long, totalDelayMs: Long) {
+        val analytics = analyticsRef ?: return
+        val params = Bundle().apply {
+            putString(PARAM_PERIOD, period)
+            putLong(PARAM_ALARM_DELAY_MS, alarmDelayMs)
+            putLong(PARAM_TOTAL_DELAY_MS, totalDelayMs)
+        }
+        analytics.logEvent(EVENT_NOTIFICATION_DELIVERY, params)
+    }
+
+    // Firebase Analytics caps: event names ≤40 chars, param names ≤40 chars,
+    // string values ≤100 chars. All identifiers below comfortably fit.
+    private const val EVENT_API_CALL = "api_call"
+    private const val EVENT_NOTIFICATION_DELIVERY = "notification_delivery"
+    private const val PARAM_ENDPOINT = "endpoint"
+    private const val PARAM_OUTCOME = "outcome"
+    private const val PARAM_STATUS_CODE = "status_code"
+    private const val PARAM_LATENCY_MS = "latency_ms"
+    private const val PARAM_PERIOD = "period"
+    private const val PARAM_ALARM_DELAY_MS = "alarm_delay_ms"
+    private const val PARAM_TOTAL_DELAY_MS = "total_delay_ms"
 }
 
 /**

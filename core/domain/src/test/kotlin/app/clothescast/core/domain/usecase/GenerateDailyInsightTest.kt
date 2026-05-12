@@ -6,6 +6,8 @@ import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.ForecastConfidence
+import app.clothescast.core.domain.model.PerModelHour
+import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.DistanceUnit
@@ -401,6 +403,23 @@ class GenerateDailyInsightTest {
 
         subject(london, prefs, ForecastPeriod.TODAY).insight.confidence shouldBe info
         subject(london, prefs, ForecastPeriod.TONIGHT).insight.confidence.shouldBeNull()
+    }
+
+    @Test
+    fun `per-model hourly rides the today insight but is stripped from tonight`() = runTest {
+        // The per-model hourly series only spans today's window; surfacing it on
+        // the tonight card would mean drawing model overlays for the wrong hours.
+        // Same period-gate as confidence above.
+        val hourly = PerModelHourly(
+            byModel = mapOf(
+                "ecmwf_ifs04" to listOf(PerModelHour(LocalTime.of(12, 0), 18.0, 20.0)),
+            ),
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday, perModelHourly = hourly))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        subject(london, prefs, ForecastPeriod.TODAY).insight.perModelHourly shouldBe hourly
+        subject(london, prefs, ForecastPeriod.TONIGHT).insight.perModelHourly.shouldBeNull()
     }
 
     @Test

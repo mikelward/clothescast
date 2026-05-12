@@ -37,6 +37,12 @@ data class Insight(
      */
     val confidence: ConfidenceInfo? = null,
     /**
+     * Per-model hourly series powering the optional model-spread chart overlay.
+     * Null on insights from older caches, on fetches that failed the side-band
+     * multi-model call, or when the implementation doesn't compute it.
+     */
+    val perModelHourly: PerModelHourly? = null,
+    /**
      * The big-picture top + bottom shown as icons on the home screen. Null on
      * insights from older app versions deserialised from cache; the next worker
      * run repopulates it.

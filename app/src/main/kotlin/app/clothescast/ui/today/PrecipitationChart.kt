@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.clothescast.core.domain.model.HourlyForecast
+import app.clothescast.core.domain.model.PerModelHourly
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
@@ -39,13 +40,25 @@ import kotlin.math.roundToInt
 fun PrecipitationChart(
     hourly: List<HourlyForecast>,
     modifier: Modifier = Modifier,
+    // Optional per-model overlays; see [ForecastChart] for the same pattern.
+    perModelHourly: PerModelHourly? = null,
 ) {
     if (hourly.isEmpty()) return
 
+    val overlays = perModelHourly?.byModel.orEmpty()
+
     val producer = remember { CartesianChartModelProducer() }
-    LaunchedEffect(hourly) {
+    LaunchedEffect(hourly, overlays) {
         producer.runTransaction {
-            lineSeries { series(hourly.map { it.precipitationProbabilityPct }) }
+            lineSeries {
+                // Overlays first so they render under the blended main line.
+                MODEL_DRAW_ORDER.forEach { modelId ->
+                    overlays[modelId]?.let { entries ->
+                        series(entries.map { it.precipitationProbabilityPct })
+                    }
+                }
+                series(hourly.map { it.precipitationProbabilityPct })
+            }
         }
     }
 

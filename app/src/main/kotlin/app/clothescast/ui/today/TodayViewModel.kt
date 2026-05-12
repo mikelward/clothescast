@@ -42,6 +42,9 @@ data class TodayState(
      * time (which can differ from these if the user has nudged a knob since); the
      * dialog prefers these for display so the controls stay honest. */
     val clothesRules: List<ClothesRule> = emptyList(),
+    /** Whether to overlay each major weather model's hourly curve on the
+     * forecast and precipitation charts. Driven by the Display setting. */
+    val showModelSpread: Boolean = false,
 )
 
 sealed class WorkStatus {
@@ -164,6 +167,7 @@ class TodayViewModel(
             useDeviceLocation = prefs.useDeviceLocation,
             hasFallbackLocation = prefs.location != null,
             clothesRules = prefs.clothesRules,
+            showModelSpread = prefs.showModelSpread,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayState())
 

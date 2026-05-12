@@ -138,8 +138,10 @@ internal fun SettingsDisplayPreview() {
     SettingsFrame {
         DisplayContent(
             themeMode = ThemeMode.SYSTEM,
+            showModelSpread = false,
             padding = PaddingValues(0.dp),
             onSetThemeMode = {},
+            onSetShowModelSpread = {},
         )
     }
 }

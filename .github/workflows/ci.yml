@@ -560,10 +560,12 @@ jobs:
 
       - name: Prepare Play release notes
         # Play Console accepts per-locale "what's new" files in a directory,
-        # each capped at 500 chars. Write the head-commit subject + build
-        # metadata into whatsnew-en-US so internal testers see what changed.
-        # Skipped when the Play secret isn't set, so a fresh repo / fork still
-        # finishes CI without this step.
+        # each capped at 500 chars. Write *just* the commit-subject line into
+        # whatsnew-en-US — no body, no build/SHA tail — since this string
+        # ships verbatim to end users as the Play Store changelog. AGENTS.md
+        # "Commit messages" spells out the subject-line discipline that
+        # makes this safe. Skipped when the Play secret isn't set, so a
+        # fresh repo / fork still finishes CI without this step.
         if: |
           success() &&
           (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
@@ -575,7 +577,6 @@ jobs:
           # shell script. Empty on workflow_dispatch (no head_commit payload);
           # the script below falls back to `git log` in that case.
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-          RUN_NUMBER: ${{ github.run_number }}
           COMMIT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
@@ -584,10 +585,7 @@ jobs:
           if [ -z "$subject" ]; then
             subject=$(git log -1 --pretty=%s "$COMMIT_SHA")
           fi
-          {
-            printf '%s\n\n' "$subject"
-            printf 'Build %s · %s\n' "$RUN_NUMBER" "${COMMIT_SHA:0:7}"
-          } | head -c 500 > "$RUNNER_TEMP/whatsnew/whatsnew-en-US"
+          printf '%s\n' "$subject" | head -c 500 > "$RUNNER_TEMP/whatsnew/whatsnew-en-US"
 
       - name: Upload AAB to Play Store internal track
         # Push-to-main (or manual workflow_dispatch on main) only; skipped

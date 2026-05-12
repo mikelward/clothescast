@@ -41,9 +41,18 @@ new rule the first time something bites you, not the third.
   don't need confirmation. Do still confirm before anything destructive on
   shared / merged branches: force-pushing `main`, dropping commits already
   on `main`, rewriting another author's branch.
-- **Commit message style:** scope prefix, em-dash, lowercase imperative —
-  e.g. `:app + :core — glanceable outfit-preview icons on Today screen`.
-  Match the existing `git log` style, don't invent a new one.
+
+## Commit messages
+
+- **The subject line ships verbatim to the Play Store changelog** (CI writes
+  it to `whatsnew-en-US`, which becomes the "What's new" blurb internal
+  testers and, eventually, production users see). Treat it as end-user
+  copy: sentence case, no jargon, no scope prefix, ≤ ~80 chars.
+  e.g. `Bigger outfit icons on the Today screen`, not `:app + :core —
+  glanceable outfit-preview icons on Today screen`. Move scope, module
+  names, and engineering detail (file paths, refactor reasoning, "fixes
+  #123") into the commit body — reviewers see the body on the PR, but
+  the Play release notes don't.
 
 ## GitHub
 

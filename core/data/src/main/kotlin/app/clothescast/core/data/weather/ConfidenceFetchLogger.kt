@@ -11,7 +11,10 @@ package app.clothescast.core.data.weather
  * code wire in their own.
  */
 fun interface ConfidenceFetchLogger {
-    fun log(message: String, throwable: Throwable? = null)
+    fun log(message: String, throwable: Throwable?)
 }
+
+/** No-throwable convenience for the common case. */
+internal fun ConfidenceFetchLogger.log(message: String) = log(message, null)
 
 internal val NoOpConfidenceFetchLogger = ConfidenceFetchLogger { _, _ -> }

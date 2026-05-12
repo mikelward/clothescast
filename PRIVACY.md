@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026-05-06_
+_Last updated: 2026-05-12_
 
 ClothesCast is a daily weather-insight app for Android. This policy
 describes what data the app handles, where it goes, and what control you
@@ -188,6 +188,28 @@ What's sent:
   clothes-rule customisations, and the like — plus basic lifecycle
   events such as app open and daily refresh, so unused options can be
   pruned and defaults tuned.
+- **API-call outcomes:** one event per outgoing network request to
+  Open-Meteo or Gemini, carrying the endpoint identifier (e.g.
+  `open_meteo_forecast`), the HTTP status code, an outcome bucket
+  (`success` / `http_error` / `timeout` / `network_error` /
+  `other_error`), and the request latency in milliseconds. No URL
+  parameters, no request or response bodies — the endpoint identifier
+  is a fixed string from a short enum, not a captured URL. Used to spot
+  rate-limit hits and transient server issues in aggregate. Failures
+  that look like "device offline / airplane mode" are filtered out
+  before the event is sent so the stream reflects real provider issues
+  rather than the user's local radio state.
+- **Notification delivery timing:** when the daily / tonight alarm
+  actually posts its notification, one event carries the slot
+  (`today` / `tonight`) and two delay numbers in milliseconds — alarm
+  fire delay (how late the OS released the alarm after the scheduled
+  trigger, an indicator of Doze deferral) and total delay (how late
+  the notification reached the system, which also folds in WorkManager
+  waits for connectivity). No timestamps, no location, no calendar or
+  insight content. Used to spot regressions in delivery punctuality.
+  Powered-off / airplane-mode misses simply don't appear in the
+  stream — the event only fires when a notification is actually
+  posted, so unfired alarms aren't reported.
 
 What's **not** sent — these are hard limits, not "best-effort":
 
@@ -231,6 +253,15 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-05-12** — Added two new aggregate analytics events: per-request
+  API-call outcomes (endpoint identifier, HTTP status, outcome bucket,
+  latency) for Open-Meteo and Gemini, and notification-delivery delay
+  (slot + two millisecond delays) when the daily alarm actually posts.
+  Neither event carries request bodies, URL parameters, location,
+  timestamps, or calendar / insight content; the offline-failure
+  filter on API events drops airplane-mode noise. Same hard limits in
+  "Analytics and crash reporting" apply; the toggle in Settings →
+  Privacy still controls whether anything is sent.
 - **2026-05-12** — Diagnostic logs are now persisted to
   `cacheDir/diag.log` (with one rotated predecessor, ~200 KB each)
   instead of living only in a process-memory ring buffer. This lets

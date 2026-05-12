@@ -34,6 +34,17 @@ class AlarmReceiver : BroadcastReceiver() {
             ACTION_FIRE_TONIGHT -> ForecastPeriod.TONIGHT
             else -> return
         }
+        // Stamped by DailyAlarmScheduler at schedule time; the alarm-fire timestamp
+        // is captured below as `firedAtMs`. The pair lets the worker emit the
+        // doze-delay metric via Telemetry.logNotificationDelivery. Defaults to 0
+        // when the extra is missing (boot-completed re-arm path, stale alarms
+        // scheduled before this code shipped) so downstream code can treat 0 as
+        // "no scheduled time known" and skip the delay event.
+        val scheduledAtMs = intent.getLongExtra(
+            DailyAlarmScheduler.EXTRA_SCHEDULED_AT_MS,
+            0L,
+        )
+        val firedAtMs = System.currentTimeMillis()
         DiagLog.i(TAG, "AlarmReceiver fired (action=${intent.action}, period=$period)")
 
         val pending = goAsync()
@@ -57,7 +68,8 @@ class AlarmReceiver : BroadcastReceiver() {
                 FetchAndNotifyWorker.enqueueOneShot(
                     appCtx,
                     period = period,
-                    alarmFiredAtMs = System.currentTimeMillis(),
+                    alarmScheduledAtMs = scheduledAtMs,
+                    alarmFiredAtMs = firedAtMs,
                 )
                 val schedule = when (period) {
                     ForecastPeriod.TODAY -> prefs.schedule
@@ -70,10 +82,11 @@ class AlarmReceiver : BroadcastReceiver() {
                 // so the user gets *something* if it's the morning slot.
                 if (period == ForecastPeriod.TODAY) {
                     FetchAndNotifyWorker.enqueueOneShot(
-                    appCtx,
-                    period = period,
-                    alarmFiredAtMs = System.currentTimeMillis(),
-                )
+                        appCtx,
+                        period = period,
+                        alarmScheduledAtMs = scheduledAtMs,
+                        alarmFiredAtMs = firedAtMs,
+                    )
                 }
             } finally {
                 pending.finish()

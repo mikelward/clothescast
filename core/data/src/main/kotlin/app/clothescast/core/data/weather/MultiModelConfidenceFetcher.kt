@@ -1,10 +1,15 @@
 package app.clothescast.core.data.weather
 
+import app.clothescast.core.data.diag.ApiCallLogger
+import app.clothescast.core.data.diag.ApiEndpoints
+import app.clothescast.core.data.diag.NoOpApiCallLogger
+import app.clothescast.core.data.diag.instrument
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.Location
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.http.URLProtocol
@@ -40,21 +45,25 @@ internal class MultiModelConfidenceFetcher(
     private val httpClient: HttpClient,
     private val models: List<String> = DEFAULT_MODELS,
     private val logger: ConfidenceFetchLogger = NoOpConfidenceFetchLogger,
+    private val apiCallLogger: ApiCallLogger = NoOpApiCallLogger,
 ) {
     suspend fun fetch(location: Location): ConfidenceInfo? = try {
-        val daily: JsonObject = httpClient.get {
-            url {
-                protocol = URLProtocol.HTTPS
-                host = OPEN_METEO_HOST
-                path("v1", "forecast")
-            }
-            parameter("latitude", location.latitude)
-            parameter("longitude", location.longitude)
-            parameter("forecast_days", 1)
-            parameter("timezone", "auto")
-            parameter("daily", "apparent_temperature_max,precipitation_probability_max")
-            parameter("models", models.joinToString(","))
-        }.body<ConfidenceResponse>().daily
+        val daily: JsonObject = apiCallLogger.instrument(ApiEndpoints.OPEN_METEO_CONFIDENCE) {
+            httpClient.get {
+                expectSuccess = true
+                url {
+                    protocol = URLProtocol.HTTPS
+                    host = OPEN_METEO_HOST
+                    path("v1", "forecast")
+                }
+                parameter("latitude", location.latitude)
+                parameter("longitude", location.longitude)
+                parameter("forecast_days", 1)
+                parameter("timezone", "auto")
+                parameter("daily", "apparent_temperature_max,precipitation_probability_max")
+                parameter("models", models.joinToString(","))
+            }.body<ConfidenceResponse>().daily
+        }
 
         val results = buildList {
             for (model in models) {

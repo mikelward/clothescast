@@ -1,5 +1,9 @@
 package app.clothescast.core.data.tts
 
+import app.clothescast.core.data.diag.ApiCallEvent
+import app.clothescast.core.data.diag.ApiCallLogger
+import app.clothescast.core.data.diag.ApiEndpoints
+import app.clothescast.core.data.diag.NoOpApiCallLogger
 import app.clothescast.core.data.insight.KeyProvider
 import app.clothescast.core.data.insight.MissingApiKeyException
 import app.clothescast.core.domain.model.TtsStyle
@@ -16,6 +20,7 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.http.path
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -395,6 +400,7 @@ class GeminiTtsClient(
     private val httpClient: HttpClient,
     private val keyProvider: KeyProvider,
     private val model: String = DEFAULT_GEMINI_TTS_MODEL,
+    private val apiCallLogger: ApiCallLogger = NoOpApiCallLogger,
 ) {
     suspend fun synthesize(
         text: String,
@@ -424,30 +430,59 @@ class GeminiTtsClient(
             append(text)
         }
 
-        val httpResponse: HttpResponse = httpClient.post {
-            url {
-                protocol = URLProtocol.HTTPS
-                host = GEMINI_HOST
-                path(GEMINI_API_VERSION, "models", "$model:generateContent")
-            }
-            header("x-goog-api-key", key)
-            contentType(ContentType.Application.Json)
-            setBody(
-                TtsRequest(
-                    contents = listOf(
-                        TtsContent(parts = listOf(TtsTextPart(prompt))),
-                    ),
-                    generationConfig = TtsGenerationConfig(
-                        responseModalities = listOf("AUDIO"),
-                        speechConfig = SpeechConfig(
-                            voiceConfig = VoiceConfig(
-                                prebuiltVoiceConfig = PrebuiltVoiceConfig(voiceName),
+        // Hand-rolled (not via core.data.diag.instrument) because Gemini doesn't use
+        // Ktor's expectSuccess — a 4xx surfaces as a success HttpResponse with a JSON
+        // error envelope that we re-throw as GeminiTtsHttpException further down. We
+        // want the real HTTP status logged either way (rate-limit 429s, auth 403s),
+        // so capture status immediately after post() and emit the event before the
+        // isSuccess() check.
+        val started = System.currentTimeMillis()
+        val httpResponse: HttpResponse = try {
+            httpClient.post {
+                url {
+                    protocol = URLProtocol.HTTPS
+                    host = GEMINI_HOST
+                    path(GEMINI_API_VERSION, "models", "$model:generateContent")
+                }
+                header("x-goog-api-key", key)
+                contentType(ContentType.Application.Json)
+                setBody(
+                    TtsRequest(
+                        contents = listOf(
+                            TtsContent(parts = listOf(TtsTextPart(prompt))),
+                        ),
+                        generationConfig = TtsGenerationConfig(
+                            responseModalities = listOf("AUDIO"),
+                            speechConfig = SpeechConfig(
+                                voiceConfig = VoiceConfig(
+                                    prebuiltVoiceConfig = PrebuiltVoiceConfig(voiceName),
+                                ),
                             ),
                         ),
                     ),
+                )
+            }
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (t: Throwable) {
+            apiCallLogger.log(
+                ApiCallEvent(
+                    endpoint = ApiEndpoints.GEMINI_TTS,
+                    httpStatus = null,
+                    errorClass = t.javaClass.simpleName,
+                    latencyMs = System.currentTimeMillis() - started,
                 ),
             )
+            throw t
         }
+        apiCallLogger.log(
+            ApiCallEvent(
+                endpoint = ApiEndpoints.GEMINI_TTS,
+                httpStatus = httpResponse.status.value,
+                errorClass = null,
+                latencyMs = System.currentTimeMillis() - started,
+            ),
+        )
 
         // Without an explicit status check we'd quietly deserialize a 4xx error body
         // (e.g. {"error": {"code": 403, "message": "..."}}) as a TtsResponse with

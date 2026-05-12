@@ -9,7 +9,9 @@ import app.clothescast.core.domain.model.AlertClause
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.CalendarTieInClause
 import app.clothescast.core.domain.model.ClothesClause
+import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DeltaClause
+import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.Fact
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -64,6 +66,12 @@ class InsightCacheTest {
         recommendedItems = listOf("sweater", "umbrella"),
         generatedAt = now,
         forDate = today,
+        confidence = ConfidenceInfo(
+            level = ForecastConfidence.LOW,
+            tempSpreadC = 4.2,
+            precipSpreadPp = 35.0,
+            modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless"),
+        ),
     )
 
     @BeforeEach

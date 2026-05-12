@@ -10,7 +10,9 @@ import app.clothescast.core.domain.model.AlertClause
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.CalendarTieInClause
 import app.clothescast.core.domain.model.ClothesClause
+import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DeltaClause
+import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.Fact
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -113,6 +115,7 @@ class InsightCache(
         val period: String = ForecastPeriod.TODAY.name,
         val hasEvents: Boolean = false,
         val location: LocationDto? = null,
+        val confidence: ConfidenceInfoDto? = null,
     ) {
         fun toDomain(): Insight = Insight(
             summary = summary.toDomain(),
@@ -121,12 +124,29 @@ class InsightCache(
             forDate = LocalDate.ofEpochDay(forDateEpochDays),
             location = location?.toDomain(),
             hourly = hourly.map { it.toDomain() },
+            confidence = confidence?.toDomain(),
             outfit = outfit?.toDomain(),
             nextOutfit = nextOutfit?.toDomain(),
             outfitRationale = outfitRationale?.toDomain(),
             nextOutfitRationale = nextOutfitRationale?.toDomain(),
             period = runCatching { ForecastPeriod.valueOf(period) }.getOrDefault(ForecastPeriod.TODAY),
             hasEvents = hasEvents,
+        )
+    }
+
+    @Serializable
+    private data class ConfidenceInfoDto(
+        val level: String,
+        val tempSpreadC: Double,
+        val precipSpreadPp: Double,
+        val modelsConsulted: List<String>,
+    ) {
+        fun toDomain(): ConfidenceInfo = ConfidenceInfo(
+            level = runCatching { ForecastConfidence.valueOf(level) }
+                .getOrDefault(ForecastConfidence.MEDIUM),
+            tempSpreadC = tempSpreadC,
+            precipSpreadPp = precipSpreadPp,
+            modelsConsulted = modelsConsulted,
         )
     }
 
@@ -295,6 +315,14 @@ class InsightCache(
         period = period.name,
         hasEvents = hasEvents,
         location = location?.let { LocationDto(it.latitude, it.longitude, it.displayName) },
+        confidence = confidence?.toDto(),
+    )
+
+    private fun ConfidenceInfo.toDto(): ConfidenceInfoDto = ConfidenceInfoDto(
+        level = level.name,
+        tempSpreadC = tempSpreadC,
+        precipSpreadPp = precipSpreadPp,
+        modelsConsulted = modelsConsulted,
     )
 
     private fun OutfitRationale.toDto(): OutfitRationaleDto = OutfitRationaleDto(

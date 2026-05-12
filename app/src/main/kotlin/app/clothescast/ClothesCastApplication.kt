@@ -6,6 +6,7 @@ import app.clothescast.alarm.DailyAlarmScheduler
 import app.clothescast.calendar.CalendarContractEventReader
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.data.tts.GeminiTtsClient
+import app.clothescast.core.data.weather.ConfidenceFetchLogger
 import app.clothescast.core.data.weather.OpenMeteoClient
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.repository.CalendarEventReader
@@ -84,7 +85,14 @@ class ClothesCastApplication : Application() {
         }
     }
 
-    val weatherRepository: WeatherRepository by lazy { OpenMeteoClient(httpClient) }
+    val weatherRepository: WeatherRepository by lazy {
+        OpenMeteoClient(
+            httpClient = httpClient,
+            confidenceLogger = ConfidenceFetchLogger { message, throwable ->
+                DiagLog.w("ConfidenceFetcher", message, throwable)
+            },
+        )
+    }
     val geocodingClient: OpenMeteoGeocodingClient by lazy { OpenMeteoGeocodingClient(httpClient) }
 
     val generateDailyInsight: GenerateDailyInsight by lazy {

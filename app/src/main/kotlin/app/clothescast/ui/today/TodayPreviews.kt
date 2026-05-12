@@ -341,6 +341,21 @@ internal fun TodayInsightCardLocationUnknownPreview() {
     }
 }
 
+@Preview(name = "Low-confidence callout", widthDp = 360)
+@Composable
+internal fun LowConfidenceCalloutPreview() {
+    Frame {
+        LowConfidenceCallout(
+            ConfidenceInfo(
+                level = ForecastConfidence.LOW,
+                tempSpreadC = 4.2,
+                precipSpreadPp = 35.0,
+                modelsConsulted = listOf("ECMWF", "GFS", "ICON"),
+            ),
+        )
+    }
+}
+
 @Preview(name = "Confidence · high", widthDp = 360)
 @Composable
 internal fun ConfidenceHighPreview() {

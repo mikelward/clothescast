@@ -141,7 +141,13 @@ class GenerateDailyInsight(
             generatedAt = clock.instant(),
             forDate = bundle.today.date,
             hourly = periodForecast.hourly,
-            confidence = bundle.confidence,
+            // Cross-model confidence is derived from today's apparent-max and
+            // peak precipitation probability (forecast_days=1 daily), so it
+            // describes how much the major models disagree about *today*. Don't
+            // attach it to a TONIGHT insight — the chip/callout copy literally
+            // says "Forecasts disagree today," which is wrong-tense when the
+            // user is reading the evening card.
+            confidence = if (period == ForecastPeriod.TODAY) bundle.confidence else null,
             outfit = OutfitSuggestion.fromForecast(periodForecast, rules),
             nextOutfit = nextOutfit,
             outfitRationale = OutfitSuggestion.explainFromForecast(periodForecast, rules),

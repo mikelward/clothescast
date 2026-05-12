@@ -73,6 +73,7 @@ import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitRationale
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.symbol
@@ -297,8 +298,16 @@ private fun TodayContent(
             )
             InsightCard(state.insight, state.region)
             if (state.insight.hourly.isNotEmpty()) {
-                ForecastCard(state.insight.hourly, state.temperatureUnit)
-                PrecipitationCard(state.insight.hourly)
+                val overlay = state.insight.perModelHourly?.takeIf { state.showModelSpread }
+                ForecastCard(
+                    hourly = state.insight.hourly,
+                    temperatureUnit = state.temperatureUnit,
+                    perModelHourly = overlay,
+                )
+                PrecipitationCard(
+                    hourly = state.insight.hourly,
+                    perModelHourly = overlay,
+                )
             }
         }
     }
@@ -988,7 +997,11 @@ internal fun ConfidenceChip(info: ConfidenceInfo) {
 }
 
 @Composable
-private fun ForecastCard(hourly: List<HourlyForecast>, temperatureUnit: TemperatureUnit) {
+private fun ForecastCard(
+    hourly: List<HourlyForecast>,
+    temperatureUnit: TemperatureUnit,
+    perModelHourly: PerModelHourly? = null,
+) {
     // Default to feels-like — matches the band classification the user sees in the
     // summary sentence. Tap anywhere on the card to flip to raw 2 m air, which is
     // typically what other weather apps lead with. We surface min/max for both
@@ -1030,6 +1043,7 @@ private fun ForecastCard(hourly: List<HourlyForecast>, temperatureUnit: Temperat
                 hourly = hourly,
                 temperatureUnit = temperatureUnit,
                 showFeelsLike = showFeelsLike,
+                perModelHourly = perModelHourly,
             )
             val legendRes = if (showFeelsLike) {
                 R.string.today_forecast_legend_feels_like
@@ -1041,12 +1055,22 @@ private fun ForecastCard(hourly: List<HourlyForecast>, temperatureUnit: Temperat
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            // Per-model overlay legend — only meaningful when the overlays are
+            // actually being drawn (apparent-temperature mode + setting on +
+            // overlays available). Hidden in air mode so it doesn't suggest
+            // the lines visible on screen are per-model when they aren't.
+            if (perModelHourly != null && showFeelsLike) {
+                ModelSpreadLegend(perModelHourly)
+            }
         }
     }
 }
 
 @Composable
-internal fun PrecipitationCard(hourly: List<HourlyForecast>) {
+internal fun PrecipitationCard(
+    hourly: List<HourlyForecast>,
+    perModelHourly: PerModelHourly? = null,
+) {
     // Always render the chart, even on dry days — keeps the card height stable
     // across days so the cards below don't shift, and the flat baseline is its
     // own kind of information ("nothing coming"). The summary line above the
@@ -1075,9 +1099,42 @@ internal fun PrecipitationCard(hourly: List<HourlyForecast>) {
                 },
                 style = MaterialTheme.typography.bodyMedium,
             )
-            PrecipitationChart(hourly = hourly)
+            PrecipitationChart(hourly = hourly, perModelHourly = perModelHourly)
+            if (perModelHourly != null) {
+                ModelSpreadLegend(perModelHourly)
+            }
         }
     }
+}
+
+/**
+ * Compact "ECMWF · GFS · ICON" footer rendered under the temperature and
+ * precipitation charts when the per-model overlays are being drawn. The
+ * upstream chart library cycles its line palette automatically; this legend
+ * just names which models the user is looking at, without colour swatches —
+ * matching colours would require pinning Vico's palette and the next pass at
+ * visual polish can do that. Models are listed in the same fixed order the
+ * chart draws them, so colour-to-name pairing stays stable position-wise
+ * (left-to-right on the line palette).
+ */
+@Composable
+internal fun ModelSpreadLegend(perModelHourly: PerModelHourly) {
+    val names = MODEL_DRAW_ORDER
+        .filter { it in perModelHourly.byModel }
+        .map { friendlyModelName(it) }
+    if (names.isEmpty()) return
+    Text(
+        text = stringResource(R.string.today_chart_model_legend, names.joinToString(" · ")),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+}
+
+private fun friendlyModelName(modelId: String): String = when (modelId) {
+    "ecmwf_ifs04" -> "ECMWF"
+    "gfs_seamless" -> "GFS"
+    "icon_seamless" -> "ICON"
+    else -> modelId
 }
 
 // Open-Meteo rounds probability to whole percents and returns 1–3% peaks on

@@ -109,14 +109,15 @@
     <string name="today_confidence_high">High confidence — major models agree</string>
     <string name="today_confidence_medium">Medium confidence</string>
     <string name="today_confidence_low">Low confidence — forecasts disagree</string>
-    <string name="today_confidence_spread">Spread: %1$.1f°C, %2$.0fpp precip across %3$d models</string>
+    <string name="today_confidence_spread">Spread: %1$.1f°C, %2$.0f%% precip across %3$d models</string>
 
     <!-- Banner above the outfit row when ForecastConfidence.LOW. The compact
          ConfidenceChip inside the insight card still shows for all tiers; this
-         callout only appears at LOW because that's the case worth acting on
-         ("dress for the worse"). -->
+         is the louder cue that the chip alone is too subtle for. Body is
+         deliberately just-the-facts — no "dress for the worse case" nudge
+         until we have data to back the advice. -->
     <string name="today_low_confidence_callout_title">Forecasts disagree today</string>
-    <string name="today_low_confidence_callout_body">Temperature ranges by %1$.1f°C and rain chance by %2$.0fpp across %3$d models. Consider dressing for the worse case.</string>
+    <string name="today_low_confidence_callout_body">Temperature ranges by %1$.1f°C and rain chance by %2$.0f%% across %3$d models.</string>
 
     <string name="today_working">Working — fetching your ClothesCast…</string>
     <!-- Shown while WorkManager is in exponential backoff between attempts after

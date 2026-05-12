@@ -2,10 +2,12 @@ package app.clothescast.ui.today
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHourly
@@ -17,6 +19,7 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
+import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.Zoom
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
@@ -24,6 +27,7 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -34,6 +38,20 @@ import kotlin.math.roundToInt
 // adjacent [PrecipitationChart] and the legend in [TodayScreen] iterate the
 // models in the same left-to-right order the chart draws them.
 internal val MODEL_DRAW_ORDER = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless")
+
+// Pinned per-model overlay colours. Identity-based (keyed by model id), not
+// position-based, so ECMWF stays pink even when GFS happens to be missing on
+// a given run — Vico's default palette cycles by series index, which means a
+// dropped model would otherwise shift every remaining model's colour. Mid-tone
+// 600-weight hues chosen for legibility on both light and dark surfaces and
+// for distinctness from the theme primary that the blended main line uses
+// (currently a blue — see [app.clothescast.ui.theme]). Update the legend
+// swatches in [TodayScreen.ModelSpreadLegend] if these change.
+internal val MODEL_COLORS: Map<String, Color> = mapOf(
+    "ecmwf_ifs04" to Color(0xFFD81B60),
+    "gfs_seamless" to Color(0xFFFB8C00),
+    "icon_seamless" to Color(0xFF43A047),
+)
 
 // Smallest y-axis span we'll display. A 1-degree-variation day padded to this
 // still shows clear hour-to-hour movement, but the chart never collapses to a
@@ -80,6 +98,8 @@ fun ForecastChart(
     if (hourly.isEmpty()) return
 
     val overlays = perModelHourly?.takeIf { showFeelsLike }?.byModel.orEmpty()
+    val visibleModels = MODEL_DRAW_ORDER.filter { it in overlays }
+    val mainLineColor = MaterialTheme.colorScheme.primary
 
     val producer = remember { CartesianChartModelProducer() }
     LaunchedEffect(hourly, temperatureUnit, showFeelsLike, overlays) {
@@ -88,8 +108,8 @@ fun ForecastChart(
                 // Overlays first so they render *under* the main blended line.
                 // Iterate in a fixed model order so the legend's color mapping
                 // is stable across recompositions.
-                MODEL_DRAW_ORDER.forEach { modelId ->
-                    overlays[modelId]?.let { entries ->
+                visibleModels.forEach { modelId ->
+                    overlays.getValue(modelId).let { entries ->
                         series(entries.map { it.apparentTemperatureC.toUnit(temperatureUnit) })
                     }
                 }
@@ -153,9 +173,14 @@ fun ForecastChart(
         CartesianValueFormatter { _, value, _ -> value.roundToInt().toString() }
     }
 
+    val lineProvider = rememberPinnedLineProvider(visibleModels, mainLineColor)
+
     CartesianChartHost(
         chart = rememberCartesianChart(
-            rememberLineCartesianLayer(rangeProvider = rangeProvider),
+            rememberLineCartesianLayer(
+                lineProvider = lineProvider,
+                rangeProvider = rangeProvider,
+            ),
             startAxis = VerticalAxis.rememberStart(valueFormatter = startFormatter),
             bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
         ),
@@ -170,3 +195,27 @@ fun ForecastChart(
             .height(180.dp),
     )
 }
+
+// Builds a [LineCartesianLayer.LineProvider] whose Line list lines up with the
+// series order both charts emit into their model producer: each entry in
+// [visibleModels] (in MODEL_DRAW_ORDER) gets its pinned [MODEL_COLORS] hue,
+// then the blended main line gets [mainLineColor]. LineProvider.series matches
+// lines to series by index, so this ordering must mirror the lineSeries
+// builder in the caller. Shared by [ForecastChart] and [PrecipitationChart].
+@Composable
+internal fun rememberPinnedLineProvider(
+    visibleModels: List<String>,
+    mainLineColor: Color,
+): LineCartesianLayer.LineProvider =
+    remember(visibleModels, mainLineColor) {
+        val lines = visibleModels.map { modelId ->
+            LineCartesianLayer.Line(
+                fill = LineCartesianLayer.LineFill.single(
+                    fill(MODEL_COLORS.getValue(modelId)),
+                ),
+            )
+        } + LineCartesianLayer.Line(
+            fill = LineCartesianLayer.LineFill.single(fill(mainLineColor)),
+        )
+        LineCartesianLayer.LineProvider.series(lines)
+    }

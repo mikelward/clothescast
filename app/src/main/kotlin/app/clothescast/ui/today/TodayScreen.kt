@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -1108,26 +1110,45 @@ internal fun PrecipitationCard(
 }
 
 /**
- * Compact "ECMWF · GFS · ICON" footer rendered under the temperature and
- * precipitation charts when the per-model overlays are being drawn. The
- * upstream chart library cycles its line palette automatically; this legend
- * just names which models the user is looking at, without colour swatches —
- * matching colours would require pinning Vico's palette and the next pass at
- * visual polish can do that. Models are listed in the same fixed order the
- * chart draws them, so colour-to-name pairing stays stable position-wise
- * (left-to-right on the line palette).
+ * Compact "Models: ● ECMWF ● GFS ● ICON" footer rendered under the temperature
+ * and precipitation charts when the per-model overlays are being drawn. Each
+ * model gets a colour swatch in its pinned [MODEL_COLORS] hue so the user can
+ * map the on-chart overlay lines back to the model that produced them. Models
+ * appear in the same fixed [MODEL_DRAW_ORDER] the charts use.
  */
 @Composable
 internal fun ModelSpreadLegend(perModelHourly: PerModelHourly) {
-    val names = MODEL_DRAW_ORDER
-        .filter { it in perModelHourly.byModel }
-        .map { friendlyModelName(it) }
-    if (names.isEmpty()) return
-    Text(
-        text = stringResource(R.string.today_chart_model_legend, names.joinToString(" · ")),
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
+    val visible = MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel }
+    if (visible.isEmpty()) return
+    val labelStyle = MaterialTheme.typography.bodySmall
+    val labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = stringResource(R.string.today_chart_model_legend_label),
+            style = labelStyle,
+            color = labelColor,
+        )
+        visible.forEach { modelId ->
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    Modifier
+                        .size(8.dp)
+                        .background(MODEL_COLORS.getValue(modelId), CircleShape),
+                )
+                Text(
+                    text = friendlyModelName(modelId),
+                    style = labelStyle,
+                    color = labelColor,
+                )
+            }
+        }
+    }
 }
 
 private fun friendlyModelName(modelId: String): String = when (modelId) {

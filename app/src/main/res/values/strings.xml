@@ -106,9 +106,10 @@
     <string name="today_precipitation_peak">Peak %1$d%% at %2$s</string>
     <string name="today_precipitation_dry">No rain expected today</string>
 
-    <!-- Footer below the forecast / precipitation charts when "Show model spread"
-         is enabled, naming the weather models whose overlay lines are drawn. -->
-    <string name="today_chart_model_legend">Models: %1$s</string>
+    <!-- Footer label below the forecast / precipitation charts when "Show model
+         spread" is enabled. Each model name is rendered alongside a coloured
+         swatch matching the overlay line; this is just the leading label. -->
+    <string name="today_chart_model_legend_label">Models:</string>
 
     <string name="today_confidence_high">High confidence — major models agree</string>
     <string name="today_confidence_medium">Medium confidence</string>

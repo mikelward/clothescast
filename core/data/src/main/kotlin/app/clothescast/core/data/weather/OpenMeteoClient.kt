@@ -61,17 +61,20 @@ class OpenMeteoClient(
     )
 
     override suspend fun fetchForecast(location: Location): ForecastBundle = coroutineScope {
-        // Primary forecast and the side-band fetches all kick off in parallel — confidence
-        // adds three more model calls, so doing them concurrently with the alerts call
-        // hides their latency behind the primary fetch.
+        // Primary forecast and the side-band fetches all kick off in parallel — the
+        // multi-model call now pulls both confidence aggregates and per-model
+        // hourly series in one go, so doing it concurrently with alerts hides its
+        // latency behind the primary fetch.
         val primary = async { fetchPrimary(location) }
         val alerts = async { fetchAlerts(location) }
-        val confidence = async { confidenceFetcher.fetch(location) }
+        val multiModel = async { confidenceFetcher.fetch(location) }
 
         val bundle = OpenMeteoMapper.toBundle(primary.await())
+        val multi = multiModel.await()
         bundle.copy(
             alerts = alerts.await(),
-            confidence = confidence.await(),
+            confidence = multi?.confidence,
+            perModelHourly = multi?.hourly,
         )
     }
 

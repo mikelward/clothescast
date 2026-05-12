@@ -4,6 +4,7 @@ import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.WeatherAlert
 
 /**
@@ -27,6 +28,15 @@ data class ForecastBundle(
     val yesterday: DailyForecast,
     val alerts: List<WeatherAlert> = emptyList(),
     val confidence: ConfidenceInfo? = null,
+    /**
+     * Per-model hourly apparent-temperature and precipitation-probability
+     * series for today, pulled from the same batched multi-model request that
+     * feeds [confidence]. Drives the optional "show model spread" overlay on
+     * the Today screen's charts. Null when the side-band fetch failed or the
+     * upstream omitted the per-model hourly fields entirely; the chart simply
+     * doesn't render the overlay in that case.
+     */
+    val perModelHourly: PerModelHourly? = null,
     /**
      * Tomorrow's hourly entries, when the underlying API response carried them.
      * Used by the tonight insight to wrap from today's evening hours through to

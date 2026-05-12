@@ -82,9 +82,10 @@ class OpenMeteoClientTest {
 
         client.fetchForecast(london)
 
-        // The confidence fetcher also calls /v1/forecast (3x, one per model) with
-        // a different param shape (no past_days). Pick out the primary call by
-        // looking for past_days=1 so this test isn't sensitive to async ordering.
+        // The confidence fetcher also hits /v1/forecast (one batched call across
+        // all configured models) with a different param shape (no past_days).
+        // Pick out the primary call by looking for past_days=1 so this test isn't
+        // sensitive to async ordering.
         val forecastReq = captured.first {
             it.url.encodedPath == "/v1/forecast" && it.url.parameters["past_days"] == "1"
         }

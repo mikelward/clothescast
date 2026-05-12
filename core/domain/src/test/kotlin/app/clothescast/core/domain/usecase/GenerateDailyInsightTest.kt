@@ -3,7 +3,9 @@ package app.clothescast.core.domain.usecase
 import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DailyForecast
+import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.DistanceUnit
@@ -380,6 +382,25 @@ class GenerateDailyInsightTest {
 
         // 24h delta: high = 20 - 20 = 0, low = 4 - 4 = 0 → no clause.
         result.insight.summary.delta.shouldBeNull()
+    }
+
+    @Test
+    fun `confidence rides the today insight but is stripped from tonight`() = runTest {
+        // Cross-model confidence is computed from today's apparent-max + peak
+        // precipitation probability. Attaching it to a TONIGHT insight would
+        // surface "Forecasts disagree today" on the evening card, which is
+        // wrong-tense — drop it for non-TODAY periods.
+        val info = ConfidenceInfo(
+            level = ForecastConfidence.LOW,
+            tempSpreadC = 4.2,
+            precipSpreadPp = 35.0,
+            modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless"),
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday, confidence = info))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        subject(london, prefs, ForecastPeriod.TODAY).insight.confidence shouldBe info
+        subject(london, prefs, ForecastPeriod.TONIGHT).insight.confidence.shouldBeNull()
     }
 
     @Test

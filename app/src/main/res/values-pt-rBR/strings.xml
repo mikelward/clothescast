@@ -592,4 +592,95 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_update_available_dismiss">Agora não</string>
     <string name="today_update_downloaded_body">Atualização baixada. Reinicie para concluir a instalação.</string>
     <string name="today_update_downloaded_action">Reiniciar</string>
+
+    <string name="garment_puffer">Jaqueta de plumas</string>
+    <string name="garment_thin_jacket">Jaqueta leve</string>
+    <string name="garment_skirt">Saia</string>
+    <string name="garment_polo">Polo</string>
+
+    <string name="today_outfit_top_polo">Polo</string>
+    <string name="today_outfit_top_thin_jacket">Jaqueta leve</string>
+    <string name="today_outfit_top_thick_coat">Casaco grosso</string>
+    <string name="today_outfit_top_puffer_jacket">Jaqueta de plumas</string>
+    <string name="today_outfit_bottom_skirt">Saia</string>
+    <string name="today_outfit_bottom_jeans">Jeans</string>
+
+    <string name="error_device_incompatible">O ClothesCast não pode funcionar neste aparelho — seu build do Android não tem um recurso exigido pela interface do app (Configuration.fontWeightAdjustment, esperado no Android 12 ou superior). Contate o fabricante do seu aparelho para obter uma atualização do sistema.</string>
+
+    <string name="today_precipitation_title">Chance de chuva</string>
+    <string name="today_precipitation_peak">Pico de %1$d%% às %2$s</string>
+    <string name="today_precipitation_dry">Sem chuva prevista hoje</string>
+
+    <string name="today_chart_model_legend_label">Modelos:</string>
+    <string name="today_chart_main_line_label">Combinado</string>
+    <string name="today_chart_divergence_summary">Os modelos discordam mais às %1$s (Δ %2$.1f%3$s de sensação térmica) — principalmente %4$s, %5$s</string>
+
+    <string name="today_factor_air_temperature">temperatura do ar</string>
+    <string name="today_factor_wind_speed">velocidade do vento</string>
+    <string name="today_factor_cloud_cover">cobertura de nuvens</string>
+    <string name="today_factor_humidity">umidade</string>
+
+    <string name="today_wind_title">Velocidade do vento</string>
+    <string name="today_wind_subtitle">Velocidade do vento por modelo (%1$s) por hora</string>
+    <string name="today_cloud_title">Cobertura de nuvens</string>
+    <string name="today_cloud_subtitle">Cobertura total de nuvens por modelo (%%) por hora</string>
+    <string name="today_humidity_title">Umidade</string>
+    <string name="today_humidity_subtitle">Umidade relativa por modelo (%%) por hora</string>
+
+    <string name="today_low_confidence_callout_title">As previsões discordam hoje</string>
+    <string name="today_low_confidence_callout_body">A temperatura varia %1$.1f°C e a chance de chuva %2$.0f%% entre %3$d modelos.</string>
+
+    <string name="today_telemetry_notice_title">Relatórios de falhas e uso estão ativados</string>
+    <string name="today_telemetry_notice_body">O ClothesCast envia relatórios anônimos de falhas e dados de uso para ajudar a corrigir bugs. Nenhum dado do calendário, localização ou texto de resumo é incluído. Desative a qualquer momento nas Configurações.</string>
+    <string name="today_telemetry_notice_open_settings">Abrir configurações de privacidade</string>
+    <string name="today_telemetry_notice_dismiss">Fechar</string>
+
+    <string name="settings_root_privacy">Privacidade</string>
+    <string name="settings_root_privacy_subtitle">Relatórios de falhas e uso</string>
+
+    <string name="settings_privacy_telemetry_title">Relatórios de falhas e uso</string>
+    <string name="settings_privacy_telemetry_label">Enviar dados de falhas e uso</string>
+    <string name="settings_privacy_telemetry_description">Envia relatórios anônimos de falhas e estatísticas agregadas de uso para ajudar o desenvolvedor a corrigir bugs e decidir quais recursos manter.</string>
+    <string name="settings_privacy_telemetry_limits">Nunca enviados: eventos do calendário, coordenadas ou nomes de locais, texto de resumo ou de notificação, chaves de API, GPS preciso, identificadores de publicidade.</string>
+    <string name="settings_privacy_open_policy">Ler política de privacidade completa</string>
+
+    <string name="settings_display_charts_title">Gráficos</string>
+    <string name="settings_display_model_spread_label">Mostrar dispersão de modelos nos gráficos</string>
+    <string name="settings_display_model_spread_description">Sobrepõe a previsão horária de cada grande modelo meteorológico nos gráficos de temperatura e chuva. Útil para identificar quando a previsão é incerta.</string>
+
+    <string name="bug_report_consent_title">Compartilhar relatório de bug?</string>
+    <string name="bug_report_consent_body">Isso ajuda a diagnosticar problemas. O relatório contém informações pessoais sensíveis, incluindo sua localização, configurações do app e atividade recente. Você poderá revisar e editar antes de enviar.</string>
+    <string name="bug_report_consent_dont_show_again">Não mostrar novamente</string>
+    <string name="bug_report_consent_continue">Continuar</string>
+    <string name="bug_report_consent_cancel">Cancelar</string>
+
+    <string name="insight_precip_chance">Chance de %1$s %2$s.</string>
+    <string name="insight_tie_in_at_night">Leve %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Esta noite, chance de chuva às %2$s, leve %1$s.</string>
+    <string name="insight_evening_rain">Esta noite, chuva às %1$s.</string>
+    <string name="insight_evening_rain_chance">Esta noite, chance de chuva às %1$s.</string>
+
+    <string name="settings_tts_style_label">Estilo</string>
+    <string name="settings_tts_style_weather_forecaster">Apresentador de meteorologia</string>
+    <string name="settings_tts_style_pirate">Pirata</string>
+    <string name="settings_tts_style_cowboy">Cowboy</string>
+    <string name="settings_tts_style_shakespearean">Shakespeariano</string>
+    <string name="settings_tts_style_surfer">Surfista</string>
+    <string name="settings_tts_style_parent">Pai/Mãe</string>
+    <string name="settings_tts_style_child">Criança</string>
+    <string name="settings_tts_style_teenager">Adolescente</string>
+    <string name="settings_tts_style_grandparent">Avô/Avó</string>
+    <string name="settings_tts_style_kids_host">Apresentador de TV infantil</string>
+    <string name="settings_tts_style_radio_host">Apresentador de rádio</string>
+    <string name="settings_tts_style_morning_dj">DJ matinal</string>
+    <string name="settings_tts_style_science_teacher">Professor de ciências</string>
+    <string name="settings_tts_style_historian">Historiador</string>
+    <string name="settings_tts_style_sportscaster">Narrador esportivo</string>
+    <string name="settings_tts_style_stadium_announcer">Locutor de estádio</string>
+    <string name="settings_tts_style_storyteller">Contador de histórias</string>
+    <string name="settings_tts_style_fitness_instructor">Instrutor de fitness</string>
+    <string name="settings_tts_style_morning_presenter">Apresentador de rádio matinal</string>
+    <string name="settings_tts_style_custom">Personalizado…</string>
+    <string name="settings_tts_style_custom_label">Diretriz personalizada</string>
+    <string name="settings_tts_style_custom_placeholder">ex.: Leia o seguinte como um bibliotecário severo sussurrando</string>
 </resources>

@@ -7,18 +7,427 @@ existing Spanish prose register. Time format uses ":" rather than "h" since
 the in-app clock is digit-driven and reads consistently across locales.
 -->
 <resources>
-    <string name="settings_region_language_ca_es">Català (Espanya)</string>
-    <string name="settings_tts_voice_locale_ca_es">Català (Espanya)</string>
+    <string name="error_device_incompatible">ClothesCast no pot funcionar en aquest dispositiu — a la teva versió d\'Android li falta una funcionalitat que requereix la interfície de l\'aplicació (Configuration.fontWeightAdjustment, esperada a Android 12 i superior). Contacta amb el fabricant del dispositiu per a una actualització del sistema.</string>
+
+    <string name="today_title">Avui</string>
+    <string name="today_open_settings">Obre la configuració</string>
+    <string name="today_more_options">Més opcions</string>
+    <string name="today_report_a_bug">Informar d\'un error</string>
+    <string name="today_refresh">Actualitza</string>
+    <string name="today_refresh_toast_daily">Actualitzant el teu ClothesCast diari — apareixerà en breu.</string>
+    <string name="today_refresh_toast_nightly">Actualitzant el teu ClothesCast nocturn — apareixerà en breu.</string>
+    <string name="today_empty_title">Encara no hi ha ClothesCast</string>
+    <string name="today_empty_subtitle">El teu ClothesCast matinal apareixerà aquí un cop generat. Estableix la teva ubicació a la Configuració i toca Obtén ara.</string>
+    <string name="today_fetch_now">Obtén ara</string>
+    <string name="today_generated_at">Generat a les %1$s</string>
+    <string name="today_location_unknown">La teva ubicació</string>
+
+    <string name="today_outfit_title">Què posar-se</string>
+    <string name="today_outfit_label_today">Avui</string>
+    <string name="today_outfit_label_tonight">Aquesta nit</string>
+    <string name="today_outfit_label_tomorrow">Demà</string>
+    <string name="today_outfit_top_tshirt">Samarreta</string>
+    <string name="today_outfit_top_polo">Polo</string>
+    <string name="today_outfit_top_sweater">Jersei</string>
+    <string name="today_outfit_top_thin_jacket">Jaqueta prima</string>
+    <string name="today_outfit_top_thick_jacket">Jaqueta gruixuda</string>
+    <string name="today_outfit_top_thick_coat">Abric gruixut</string>
+    <string name="today_outfit_top_puffer_jacket">Jaqueta acolchada</string>
+    <string name="today_outfit_bottom_shorts">Pantalons curts</string>
+    <string name="today_outfit_bottom_skirt">Faldilla</string>
+    <string name="today_outfit_bottom_jeans">Texans</string>
+    <string name="today_outfit_bottom_long_pants">Pantalons llargs</string>
+
+    <string name="today_rationale_title">Per què aquest conjunt?</string>
+    <string name="today_rationale_show">Per què?</string>
+    <string name="today_rationale_dismiss">Entès</string>
+    <string name="today_rationale_threshold_decrease">Redueix el llindar 1 grau</string>
+    <string name="today_rationale_threshold_increase">Augmenta el llindar 1 grau</string>
+    <string name="today_rationale_threshold_changed_hint">Actualitza per veure el nou conjunt.</string>
+    <string name="today_rationale_unavailable">Cap justificació disponible — obre l\'aplicació després de la pròxima actualització.</string>
+    <string name="today_rationale_min_below_with_time">Sensació mínima de %1$s%2$s a les %3$s, per sota de %4$s%2$s</string>
+    <string name="today_rationale_min_below">Sensació mínima de %1$s%2$s, per sota de %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Sensació mínima de %1$s%2$s a les %3$s, almenys %4$s%2$s</string>
+    <string name="today_rationale_min_above">Sensació mínima de %1$s%2$s, almenys %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Sensació màxima de només %1$s%2$s a les %3$s, per sota de %4$s%2$s</string>
+    <string name="today_rationale_max_below">Sensació màxima de només %1$s%2$s, per sota de %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Sensació màxima de %1$s%2$s a les %3$s, almenys %4$s%2$s</string>
+    <string name="today_rationale_max_above">Sensació màxima de %1$s%2$s, almenys %3$s%2$s</string>
+
+    <string name="widget_label">Conjunt</string>
+    <string name="widget_description">El conjunt del moment, d\'un cop d\'ull.</string>
+    <string name="widget_empty_title">Encara no hi ha conjunt</string>
+    <string name="widget_empty_subtitle">Toca per obrir ClothesCast</string>
+
+    <string name="today_forecast_title">Previsió per hores</string>
+    <string name="today_forecast_min_max">Sensació %1$d – %2$d%3$s · Aire %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Temperatura percebuda (%1$s) per hora · toca per canviar a temperatura de l\'aire</string>
+    <string name="today_forecast_legend_air">Temperatura de l\'aire (%1$s) per hora · toca per canviar a temperatura percebuda</string>
+
+    <string name="today_precipitation_title">Probabilitat de pluja</string>
+    <string name="today_precipitation_peak">Màxim %1$d%% a les %2$s</string>
+    <string name="today_precipitation_dry">No s\'espera pluja avui</string>
+
+    <string name="today_chart_model_legend_label">Models:</string>
+    <string name="today_chart_main_line_label">Combinat</string>
+    <string name="today_chart_divergence_summary">Els models discrepan més a les %1$s (Δ %2$.1f%3$s sensació) — principalment %4$s, %5$s</string>
+
+    <string name="today_factor_air_temperature">temperatura de l\'aire</string>
+    <string name="today_factor_wind_speed">velocitat del vent</string>
+    <string name="today_factor_cloud_cover">nuvolositat</string>
+    <string name="today_factor_humidity">humitat</string>
+
+    <string name="today_wind_title">Velocitat del vent</string>
+    <string name="today_wind_subtitle">Velocitat del vent (%1$s) per model i hora</string>
+
+    <string name="today_cloud_title">Nuvolositat</string>
+    <string name="today_cloud_subtitle">Nuvolositat total (%%) per model i hora</string>
+
+    <string name="today_humidity_title">Humitat</string>
+    <string name="today_humidity_subtitle">Humitat relativa (%%) per model i hora</string>
+
+    <string name="today_confidence_high">Alta confiança — els models principals coincideixen</string>
+    <string name="today_confidence_medium">Confiança mitjana</string>
+    <string name="today_confidence_low">Baixa confiança — les previsions discrepan</string>
+    <string name="today_confidence_spread">Dispersió: %1$.1f°C, %2$.0f%% precipitació en %3$d models</string>
+
+    <string name="today_low_confidence_callout_title">Les previsions discrepan avui</string>
+    <string name="today_low_confidence_callout_body">La temperatura varia %1$.1f°C i la probabilitat de pluja %2$.0f%% en %3$d models.</string>
+
+    <string name="today_working">Treballant — obtenint el teu ClothesCast…</string>
+    <string name="today_retrying">L\'últim intent ha fallat — reintentant…</string>
+    <string name="today_failed_title">L\'últim intent ha fallat</string>
+    <string name="today_failed_unexpected_http">Error HTTP inesperat del servei de previsió.</string>
+    <string name="today_failed_unhandled">S\'ha produït un error inesperat.</string>
+    <string name="today_failed_no_location">No hem pogut obtenir la teva ubicació. Concedeix permís d\'ubicació permanent o estableix una ciutat a Configuració.</string>
+    <string name="today_failed_show_details">Mostra els detalls</string>
+    <string name="today_failed_hide_details">Amaga els detalls</string>
+
+    <string name="today_location_required_title">Configura la teva ubicació</string>
+    <string name="today_location_required_body">ClothesCast necessita saber on ets per obtenir la previsió. Concedeix permís d\'ubicació permanent o tria una ciutat.</string>
+    <string name="today_location_required_action">Obre la configuració d\'ubicació</string>
+
+    <string name="today_crash_banner_title">L\'última execució ha fallat</string>
+    <string name="today_crash_banner_body">S\'ha guardat un informe d\'error al teu dispositiu. Vols compartir-lo per poder solucionar el problema? Res no s\'envia fins que tries on.</string>
+    <string name="today_crash_banner_share">Comparteix l\'informe</string>
+    <string name="today_crash_banner_dismiss">Descarta</string>
+
+    <string name="today_update_available_title">Actualització disponible</string>
+    <string name="today_update_available_body">Una versió més nova de ClothesCast és a la Play Store.</string>
+    <string name="today_update_available_action">Actualitza</string>
+    <string name="today_update_available_dismiss">Ara no</string>
+    <string name="today_update_downloaded_body">Actualització descarregada. Reinicia per completar la instal·lació.</string>
+    <string name="today_update_downloaded_action">Reinicia</string>
+
+    <string name="today_telemetry_notice_title">Informes d\'errors + ús activats</string>
+    <string name="today_telemetry_notice_body">ClothesCast envia informes d\'errors anònims i analítiques d\'ús per ajudar a solucionar errors. No s\'inclouen dades del calendari, ubicació ni text de les previsions. Desactiva-ho quan vulguis a Configuració.</string>
+    <string name="today_telemetry_notice_open_settings">Obre la configuració de privadesa</string>
+    <string name="today_telemetry_notice_dismiss">Descarta</string>
+
+    <string name="onboarding_title">Benvingut a ClothesCast</string>
+    <string name="onboarding_subtitle">Dues opcions ràpides i ja estàs. Tot a la resta té un valor predeterminat raonable que pots ajustar més tard a Configuració.</string>
+    <string name="onboarding_subtitle_tv">Dues opcions ràpides i ja estàs. Tot es pot ajustar a Configuració més tard.</string>
+    <string name="onboarding_notifications_title">Notificacions</string>
+    <string name="onboarding_notifications_description">Necessàries per lliurar el teu ClothesCast diari.</string>
+    <string name="onboarding_notifications_grant">Concedeix permís de notificació</string>
+    <string name="onboarding_location_title">Ubicació</string>
+    <string name="onboarding_location_description">Obtén la previsió per a la teva ubicació aproximada.</string>
+    <string name="onboarding_location_grant">Concedeix permís d\'ubicació</string>
+    <string name="onboarding_location_grant_background">Concedeix ubicació permanent</string>
+    <string name="onboarding_location_background_needed">Un pas més: ClothesCast necessita «Permet sempre» perquè la previsió matinal pugui llegir la teva ubicació mentre l\'aplicació és tancada.</string>
+    <string name="onboarding_location_denied_hint">Permís d\'ubicació denegat. Pots triar una ciutat manualment.</string>
+    <string name="onboarding_location_enter_manual">Introdueix la ubicació manualment</string>
+    <string name="onboarding_location_enter_manual_hint">Pots introduir la teva ubicació manualment si denegues el permís d\'ubicació o si la ubicació del dispositiu és incorrecta.</string>
+    <string name="onboarding_location_using_device">S\'utilitza la ubicació del teu dispositiu cada matí.</string>
+    <string name="onboarding_gemini_title">Clau API de Gemini</string>
+    <string name="onboarding_gemini_description">Utilitza Gemini per obtenir veus d\'alta qualitat.</string>
+    <string name="onboarding_step_done">Fet</string>
+    <string name="onboarding_skip">Ometre per ara</string>
+    <string name="onboarding_continue">Continua</string>
+    <string name="onboarding_pair_from_phone">Emparella des del telèfon</string>
+
+    <string name="pairing_title">Escaneja per emparellar</string>
+    <string name="pairing_instructions">Escaneja aquest codi QR amb el teu telèfon i enganxa la teva clau API de Gemini al formulari que s\'obre. La clau s\'enviarà directament a aquest televisor per la teva xarxa Wi-Fi domèstica — sense relé al núvol.</string>
+    <string name="pairing_qr_description">Codi QR que enllaça a %1$s</string>
+    <string name="pairing_cancel">Cancel·la</string>
+    <string name="pairing_received">Clau rebuda — guardant…</string>
+    <string name="pairing_timeout_title">Finestra d\'emparellament caducada</string>
+    <string name="pairing_timeout_body">La finestra d\'emparellament de 5 minuts s\'ha tancat. Toca Torna a intentar per obrir-ne una de nova.</string>
+    <string name="pairing_error_title">No s\'ha pogut iniciar l\'emparellament</string>
+    <string name="pairing_error_body">Assegura\'t que el televisor estigui connectat a la Wi-Fi i torna-ho a intentar.</string>
+    <string name="pairing_retry">Torna a intentar</string>
+
+    <string name="settings_title">Configuració</string>
+    <string name="settings_back">Enrere</string>
+
+    <string name="settings_root_voice">Veu</string>
+    <string name="settings_root_schedule">Programació</string>
+    <string name="settings_root_region">Regió</string>
+    <string name="settings_root_clothes">Roba</string>
+    <string name="settings_root_display">Pantalla</string>
+    <string name="settings_root_location">Ubicació</string>
+    <string name="settings_root_calendar">Calendari</string>
+    <string name="settings_root_privacy">Privadesa</string>
+    <string name="settings_root_about">Informació</string>
+
+    <string name="settings_root_schedule_subtitle">Notificacions i horaris</string>
+    <string name="settings_root_clothes_subtitle">Temperatures i roba</string>
+    <string name="settings_root_region_subtitle">Idiomes i unitats</string>
+    <string name="settings_root_voice_subtitle">Proveïdors i accents</string>
+    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_location_subtitle">Detecció automàtica o tria una ciutat</string>
+    <string name="settings_root_calendar_subtitle">Esdeveniments d\'avui</string>
+    <string name="settings_root_privacy_subtitle">Informes d\'errors + ús</string>
+
+    <string name="settings_display_theme_title">Tema</string>
+    <string name="settings_display_theme_system">Segueix el sistema</string>
+    <string name="settings_display_theme_light">Clar</string>
+    <string name="settings_display_theme_dark">Fosc</string>
+
+    <string name="settings_display_charts_title">Gràfics</string>
+    <string name="settings_display_model_spread_label">Mostra la dispersió dels models als gràfics</string>
+    <string name="settings_display_model_spread_description">Superposa la previsió horària de cada model meteorològic principal als gràfics de temperatura i pluja. Útil per detectar quan la previsió és incerta.</string>
+
+    <string name="settings_privacy_telemetry_title">Informes d\'errors + ús</string>
+    <string name="settings_privacy_telemetry_label">Envia dades d\'errors + ús</string>
+    <string name="settings_privacy_telemetry_description">Envia informes d\'errors anònims i estadístiques d\'ús agregades per ajudar el desenvolupador a solucionar errors i decidir quines funcions mantenir.</string>
+    <string name="settings_privacy_telemetry_limits">Mai s\'envia: esdeveniments del calendari, coordenades de ubicació o noms de llocs, text de previsions o notificacions, claus API, GPS precís, identificadors publicitaris.</string>
+    <string name="settings_privacy_open_policy">Llegeix la política de privadesa completa</string>
+
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Utilitza Gemini per obtenir veus d\'alta qualitat.</string>
+    <string name="settings_api_key_status_set">Hi ha una clau de Gemini configurada.</string>
+    <string name="settings_api_key_status_unset">Obtén una clau gratuïta a aistudio.google.com</string>
+    <string name="settings_api_key_placeholder">Enganxa la teva clau API de Gemini</string>
+    <string name="settings_api_key_save">Guarda la clau de Gemini</string>
+    <string name="settings_api_key_clear">Esborra la clau de Gemini guardada</string>
+
+    <string name="settings_location_title">Ubicació</string>
+    <string name="settings_location_use_device">Utilitza la ubicació del dispositiu</string>
+    <string name="settings_location_use_device_description">Última ubicació aproximada</string>
+    <string name="settings_location_detecting">Detectant…</string>
+    <string name="settings_location_grant_background">Concedeix</string>
+    <string name="settings_location_background_banner_title">Cal ubicació permanent</string>
+    <string name="settings_location_background_banner_body">Sense ella, la previsió matinal no pot llegir la teva ubicació.</string>
+    <string name="settings_location_unset">No hi ha cap ubicació establerta</string>
+    <string name="settings_location_manual_override">Ubicació incorrecta? Estableix-la manualment</string>
+    <string name="settings_location_manual_override_disclosure">Triar una ciutat desactiva la detecció automàtica.</string>
+    <string name="settings_location_clear">Esborra la ubicació</string>
+    <string name="settings_location_search_title">Cerca una ubicació</string>
+    <string name="settings_location_query_label">Ciutat o lloc</string>
+    <string name="settings_location_search">Cerca</string>
+    <string name="settings_location_searching">Cercant…</string>
+    <string name="settings_location_no_results">No hi ha coincidències.</string>
+    <string name="settings_location_rationale_title">Accés a la ubicació</string>
+    <string name="settings_location_rationale_body">ClothesCast llegeix la teva ubicació per obtenir la previsió local.</string>
+    <string name="settings_location_rationale_continue">Continua</string>
+    <string name="settings_location_rationale_dismiss">Ara no</string>
+    <string name="settings_location_background_rationale_title">Permet sempre</string>
+    <string name="settings_location_background_rationale_body">Permet que ClothesCast llegeixi la teva ubicació mentre és tancada perquè la previsió matinal s\'actualitzi a temps.</string>
+    <string name="settings_location_background_rationale_continue">Obre Configuració</string>
+    <string name="settings_location_background_rationale_dismiss">Ara no</string>
+    <string name="settings_location_background_denied_title">Accés permanent no concedit</string>
+    <string name="settings_location_background_denied_body">Sense «Permet sempre», la previsió matinal no es pot actualitzar automàticament.</string>
+    <string name="settings_location_background_denied_open">Obre Configuració</string>
+    <string name="settings_location_background_denied_keep">Ara no</string>
+
+    <string name="settings_schedule_title">ClothesCast diari</string>
+    <string name="settings_schedule_time_label">Hora</string>
+    <string name="settings_schedule_days_label">Dies de la setmana</string>
+    <string name="settings_daily_mention_evening_events">Menciona els esdeveniments del vespre</string>
+
+    <string name="settings_tonight_title">ClothesCast nocturn</string>
+    <string name="settings_tonight_description">Un segon ClothesCast al vespre que cobreix el temps per aquesta nit. En vespres tranquils roman silenciós, o no apareix si «Notifica només quan hi ha esdeveniments al vespre» és actiu; en vespres amb esdeveniments toca un so i (si has activat la lectura en veu alta) es llegeix sol.</string>
+    <string name="settings_tonight_enabled">Mostra un ClothesCast nocturn</string>
+    <string name="settings_tonight_time_label">Hora</string>
+    <string name="settings_tonight_days_label">Dies de la setmana</string>
+    <string name="settings_tonight_notify_only_on_events">Notifica només quan hi ha esdeveniments al vespre</string>
+
+    <string name="settings_delivery_label">Lliurament</string>
+    <string name="settings_delivery_notification_only">Només notificació</string>
+    <string name="settings_delivery_tts_only">Només lectura en veu alta</string>
+    <string name="settings_delivery_notification_and_tts">Notificació i lectura en veu alta</string>
+
+    <string name="settings_tts_engine_title">Motor de veu</string>
+    <string name="settings_tts_engine_description">Gemini sona molt més natural que la veu del dispositiu però necessita una crida de xarxa en el moment de la síntesi i utilitza la teva clau API per a la síntesi (una crida curta per cada ClothesCast parlat). Torna a la veu del dispositiu si Gemini falla.</string>
+    <string name="settings_tts_engine_device">Dispositiu (sense connexió, gratuït)</string>
+    <string name="settings_tts_engine_gemini">Gemini (alta qualitat, en línia)</string>
+    <string name="settings_tts_voice_label">Veu</string>
+    <string name="settings_tts_voice_dismiss">Fet</string>
+    <string name="settings_tts_style_label">Estil</string>
+    <string name="settings_tts_style_weather_forecaster">Meteoròleg</string>
+    <string name="settings_tts_style_pirate">Pirata</string>
+    <string name="settings_tts_style_cowboy">Cowboy</string>
+    <string name="settings_tts_style_shakespearean">Shakespearià</string>
+    <string name="settings_tts_style_surfer">Surfista</string>
+    <string name="settings_tts_style_parent">Pare/Mare</string>
+    <string name="settings_tts_style_child">Nen</string>
+    <string name="settings_tts_style_teenager">Adolescent</string>
+    <string name="settings_tts_style_grandparent">Avi/Àvia</string>
+    <string name="settings_tts_style_kids_host">Presentador de TV infantil</string>
+    <string name="settings_tts_style_radio_host">Presentador de ràdio col·loquial</string>
+    <string name="settings_tts_style_morning_dj">DJ matinal</string>
+    <string name="settings_tts_style_science_teacher">Professor de ciències</string>
+    <string name="settings_tts_style_historian">Historiador</string>
+    <string name="settings_tts_style_sportscaster">Comentarista esportiu</string>
+    <string name="settings_tts_style_stadium_announcer">Locutor d\'estadi</string>
+    <string name="settings_tts_style_storyteller">Narrador</string>
+    <string name="settings_tts_style_fitness_instructor">Monitor de fitness</string>
+    <string name="settings_tts_style_morning_presenter">Presentador de ràdio matinal</string>
+    <string name="settings_tts_style_custom">Personalitzat…</string>
+    <string name="settings_tts_style_custom_label">Directiva personalitzada</string>
+    <string name="settings_tts_style_custom_placeholder">p. ex. Llegeix el següent com un bibliotecari sever que xiuxiueja</string>
+    <string name="settings_tts_device_voice_label">Veu del dispositiu</string>
+    <string name="settings_tts_device_voice_auto">Automàtic (millor per a l\'accent)</string>
+    <string name="settings_tts_device_voice_currently">Actual: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Carregant…</string>
+    <string name="settings_tts_device_voice_network">Xarxa</string>
+    <string name="settings_tts_device_voice_offline">Sense connexió</string>
+    <string name="settings_tts_install_google_hint">Instal·la el motor de text a veu de Google per a veus de major qualitat.</string>
+    <string name="settings_tts_install_google_button">Instal·la Google TTS</string>
     <string name="settings_tts_voice_locale_label">Accent</string>
+    <string name="settings_tts_voice_locale_description">Estableix l\'accent de la veu parlada. No canvia el text que es mostra.</string>
     <string name="settings_tts_voice_locale_system">Segueix la configuració d\'idioma</string>
+    <string name="settings_tts_voice_locale_en_us">Anglès (Estats Units)</string>
+    <string name="settings_tts_voice_locale_en_gb">Anglès (Regne Unit)</string>
+    <string name="settings_tts_voice_locale_en_au">Anglès (Austràlia)</string>
+    <string name="settings_tts_voice_locale_en_ca">Anglès (Canadà)</string>
+    <string name="settings_tts_voice_locale_en_za">Anglès (Sud-àfrica)</string>
+    <string name="settings_tts_voice_locale_de_de">Alemany (Alemanya)</string>
+    <string name="settings_tts_voice_locale_de_at">Alemany (Àustria)</string>
+    <string name="settings_tts_voice_locale_de_ch">Alemany (Suïssa)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Francès (França)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Francès (Canadà)</string>
+    <string name="settings_tts_voice_locale_it_it">Italià (Itàlia)</string>
+    <string name="settings_tts_voice_locale_es_es">Espanyol (Espanya)</string>
+    <string name="settings_tts_voice_locale_es_mx">Espanyol (Mèxic)</string>
+    <string name="settings_tts_voice_locale_ca_es">Català (Espanya)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Rus (Rússia)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Polonès (Polònia)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Croat (Croàcia)</string>
+    <string name="settings_tts_voice_locale_sl_si">Eslovè (Eslovènia)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Serbi (llatí)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Serbi (ciríl·lic)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Búlgar (Bulgària)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Txec (Txèquia)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Eslovac (Eslovàquia)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Hongarès (Hongria)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Romanès (Romania)</string>
+    <string name="settings_tts_voice_locale_el_gr">Grec (Grècia)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Ucraïnès (Ucraïna)</string>
+    <string name="settings_tts_voice_locale_pt_br">Portuguès (Brasil)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Portuguès (Portugal)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Neerlandès (Països Baixos)</string>
+    <string name="settings_tts_voice_locale_sv_se">Suec (Suècia)</string>
+    <string name="settings_tts_voice_locale_da_dk">Danès (Dinamarca)</string>
+    <string name="settings_tts_voice_locale_nb_no">Noruec Bokmål (Noruega)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Finès (Finlàndia)</string>
+    <string name="settings_tts_voice_locale_et_ee">Estonià (Estònia)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Letó (Letònia)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Lituà (Lituània)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Turc (Turquia)</string>
+    <string name="settings_tts_voice_locale_id_id">Indonesi (Indonèsia)</string>
+    <string name="settings_tts_voice_locale_ms_my">Malai (Malàisia)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Filipí (Filipines)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Suahili (Kenya)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Vietnamita (Vietnam)</string>
+    <string name="settings_tts_voice_locale_th_th">Tailandès (Tailàndia)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Xinès (simplificat)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Xinès (tradicional)</string>
+    <string name="settings_tts_voice_locale_hi_in">Hindi (Índia)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Bengalí (Bangladesh)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Japonès (Japó)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Coreà (Corea del Sud)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Àrab (Aràbia Saudita)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Àrab (Egipte)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Àrab (Emirats Àrabs Units)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Àrab (Marroc)</string>
+    <string name="settings_tts_voice_locale_he_il">Hebreu (Israel)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Persa (Iran)</string>
+    <string name="settings_tts_voice_locale_sq_al">Albanès (Albània)</string>
+    <string name="settings_tts_voice_locale_am_et">Amhàric (Etiòpia)</string>
+
+    <string name="settings_region_language_title">Idioma</string>
+    <string name="settings_region_language_description">Estableix l\'idioma del text que es mostra i les notificacions.</string>
+    <string name="settings_region_language_system">Segueix les configuracions regionals del sistema</string>
+    <string name="settings_region_language_en_us">Anglès (Estats Units)</string>
+    <string name="settings_region_language_en_gb">Anglès (Regne Unit)</string>
+    <string name="settings_region_language_en_au">Anglès (Austràlia)</string>
+    <string name="settings_region_language_en_ca">Anglès (Canadà)</string>
+    <string name="settings_region_language_en_za">Anglès (Sud-àfrica)</string>
+    <string name="settings_region_language_de_de">Alemany (Alemanya)</string>
+    <string name="settings_region_language_de_at">Alemany (Àustria)</string>
+    <string name="settings_region_language_de_ch">Alemany (Suïssa)</string>
+    <string name="settings_region_language_fr_fr">Francès (França)</string>
+    <string name="settings_region_language_fr_ca">Francès (Canadà)</string>
+    <string name="settings_region_language_it_it">Italià (Itàlia)</string>
+    <string name="settings_region_language_es_es">Espanyol (Espanya)</string>
+    <string name="settings_region_language_es_mx">Espanyol (Mèxic)</string>
+    <string name="settings_region_language_ca_es">Català (Espanya)</string>
+    <string name="settings_region_language_ru_ru">Rus (Rússia)</string>
+    <string name="settings_region_language_pl_pl">Polonès (Polònia)</string>
+    <string name="settings_region_language_hr_hr">Croat (Croàcia)</string>
+    <string name="settings_region_language_sl_si">Eslovè (Eslovènia)</string>
+    <string name="settings_region_language_sr_rs">Serbi (llatí)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Serbi (ciríl·lic)</string>
+    <string name="settings_region_language_bg_bg">Búlgar (Bulgària)</string>
+    <string name="settings_region_language_cs_cz">Txec (Txèquia)</string>
+    <string name="settings_region_language_sk_sk">Eslovac (Eslovàquia)</string>
+    <string name="settings_region_language_hu_hu">Hongarès (Hongria)</string>
+    <string name="settings_region_language_ro_ro">Romanès (Romania)</string>
+    <string name="settings_region_language_el_gr">Grec (Grècia)</string>
+    <string name="settings_region_language_uk_ua">Ucraïnès (Ucraïna)</string>
+    <string name="settings_region_language_pt_br">Portuguès (Brasil)</string>
+    <string name="settings_region_language_pt_pt">Portuguès (Portugal)</string>
+    <string name="settings_region_language_nl_nl">Neerlandès (Països Baixos)</string>
+    <string name="settings_region_language_sv_se">Suec (Suècia)</string>
+    <string name="settings_region_language_da_dk">Danès (Dinamarca)</string>
+    <string name="settings_region_language_nb_no">Noruec Bokmål (Noruega)</string>
+    <string name="settings_region_language_fi_fi">Finès (Finlàndia)</string>
+    <string name="settings_region_language_et_ee">Estonià (Estònia)</string>
+    <string name="settings_region_language_lv_lv">Letó (Letònia)</string>
+    <string name="settings_region_language_lt_lt">Lituà (Lituània)</string>
+    <string name="settings_region_language_tr_tr">Turc (Turquia)</string>
+    <string name="settings_region_language_id_id">Indonesi (Indonèsia)</string>
+    <string name="settings_region_language_ms_my">Malai (Malàisia)</string>
+    <string name="settings_region_language_fil_ph">Filipí (Filipines)</string>
+    <string name="settings_region_language_sw_ke">Suahili (Kenya)</string>
+    <string name="settings_region_language_vi_vn">Vietnamita (Vietnam)</string>
+    <string name="settings_region_language_th_th">Tailandès (Tailàndia)</string>
+    <string name="settings_region_language_zh_cn">Xinès (simplificat)</string>
+    <string name="settings_region_language_zh_tw">Xinès (tradicional)</string>
+    <string name="settings_region_language_hi_in">Hindi (Índia)</string>
+    <string name="settings_region_language_bn_bd">Bengalí (Bangladesh)</string>
+    <string name="settings_region_language_ja_jp">Japonès (Japó)</string>
+    <string name="settings_region_language_ko_kr">Coreà (Corea del Sud)</string>
+    <string name="settings_region_language_ar_sa">Àrab (Aràbia Saudita)</string>
+    <string name="settings_region_language_he_il">Hebreu (Israel)</string>
+    <string name="settings_region_language_fa_ir">Persa (Iran)</string>
+    <string name="settings_region_language_sq_al">Albanès (Albània)</string>
+    <string name="settings_region_language_am_et">Amhàric (Etiòpia)</string>
+
+    <string name="settings_temperature_unit_title">Unitat de temperatura</string>
+    <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+
+    <string name="settings_distance_unit_title">Unitat de distància</string>
+    <string name="settings_distance_unit_kilometers">Quilòmetres</string>
+    <string name="settings_distance_unit_miles">Milles</string>
+
+    <string name="settings_clothes_title">Regles de roba</string>
+    <string name="settings_clothes_description">Si una previsió supera un d\'aquests llindars, la peça apareix en el teu ClothesCast diari.</string>
 
     <string name="garment_sweater">Jersei</string>
     <string name="garment_hoodie">Dessuadora amb caputxa</string>
     <string name="garment_jacket">Jaqueta</string>
     <string name="garment_coat">Abric</string>
-    <string name="garment_tshirt">Samarreta</string>
-    <string name="garment_shirt">Camisa</string>
+    <string name="garment_puffer">Jaqueta acolchada</string>
+    <string name="garment_thin_jacket">Jaqueta prima</string>
     <string name="garment_shorts">Pantalons curts</string>
+    <string name="garment_skirt">Faldilla</string>
+    <string name="garment_tshirt">Samarreta</string>
+    <string name="garment_polo">Polo</string>
+    <string name="garment_shirt">Camisa</string>
     <string name="garment_pants">Pantalons</string>
     <string name="garment_jeans">Texans</string>
 
@@ -39,11 +448,49 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_clothes_cond_temp_above">quan la temperatura percebuda és superior a %1$s</string>
     <string name="settings_clothes_cond_precip_above">quan la probabilitat de pluja supera el %.0f%%</string>
 
-    <string name="today_outfit_top_tshirt">Samarreta</string>
-    <string name="today_outfit_top_sweater">Jersei</string>
-    <string name="today_outfit_top_thick_jacket">Jaqueta gruixuda</string>
-    <string name="today_outfit_bottom_shorts">Pantalons curts</string>
-    <string name="today_outfit_bottom_long_pants">Pantalons llargs</string>
+    <string name="notification_channel_daily_insight_name">ClothesCast diari</string>
+    <string name="notification_channel_daily_insight_description">El resum meteorològic matinal al qual t\'has subscrit.</string>
+    <string name="notification_daily_insight_title">El temps d\'avui</string>
+
+    <string name="notification_channel_tonight_insight_default_name">ClothesCast nocturn (amb esdeveniments)</string>
+    <string name="notification_channel_tonight_insight_default_description">El resum meteorològic del vespre quan tens esdeveniments al calendari aquesta nit. Reprodueix el so de notificació predeterminat.</string>
+    <string name="notification_channel_tonight_insight_silent_name">ClothesCast nocturn (silenciós)</string>
+    <string name="notification_channel_tonight_insight_silent_description">El resum meteorològic del vespre quan el teu vespre és lliure. S\'envia silenciosament — pots veure\'l a la pantalla de bloqueig, però no fa cap so.</string>
+    <string name="notification_tonight_insight_title">El temps d\'aquesta nit</string>
+
+    <string name="notification_channel_weather_alerts_name">Alertes de temps sever</string>
+    <string name="notification_channel_weather_alerts_description">Alertes d\'alta prioritat per a fenòmens meteorològics greus o extrems que afecten la teva àrea. S\'entreguen tan aviat com la recerca diària els detecta.</string>
+    <string name="notification_weather_alert_title">Alerta meteorològica: %1$s</string>
+
+    <string name="settings_notification_permission_title">Les notificacions estan bloquejades</string>
+    <string name="settings_notification_permission_description">Sense permís de notificació, el teu ClothesCast diari no té on anar. Concedeix-lo perquè ClothesCast pugui publicar demà al matí.</string>
+    <string name="settings_notification_permission_grant">Concedeix permís de notificació</string>
+
+    <string name="settings_calendar_title">Calendari</string>
+    <string name="settings_calendar_use_events">Utilitza els esdeveniments del calendari d\'avui</string>
+    <string name="settings_calendar_description_off">Personalitza la previsió matinal amb els esdeveniments d\'avui — només s\'utilitzen els títols i les hores, i res no surt del dispositiu.</string>
+    <string name="settings_calendar_description_on">Personalitzant la previsió matinal amb els esdeveniments d\'avui. Només s\'utilitzen els títols i les hores; res no surt del dispositiu.</string>
+    <string name="settings_calendar_grant_permission">Concedeix permís del calendari</string>
+    <string name="settings_calendar_open_settings">Permís del calendari denegat. Concedeix-lo des de la Configuració del sistema.</string>
+
+    <string name="settings_debug_title">Depuració (només en compilacions de depuració)</string>
+    <string name="settings_debug_description">Activa el pipeline del ClothesCast diari immediatament. Útil per verificar sense esperar l\'hora programada.</string>
+    <string name="settings_debug_fire_now">Activa ClothesCast ara</string>
+    <string name="settings_debug_fire_toast">Worker de ClothesCast en cua</string>
+
+    <string name="settings_about_title">Informació</string>
+    <string name="settings_about_version">Versió %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · compilació %1$s</string>
+    <string name="settings_about_source">Codi font a GitHub</string>
+    <string name="settings_about_dontkillmyapp">Restriccions en segon pla (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Comparteix l\'informe d\'errors</string>
+    <string name="settings_about_version_copied">Versió copiada al porta-retalls</string>
+
+    <string name="bug_report_consent_title">Compartir l\'informe d\'errors?</string>
+    <string name="bug_report_consent_body">Això ajuda a diagnosticar problemes. L\'informe conté informació personal sensible, com la teva ubicació, la configuració de l\'aplicació i l\'activitat recent. Podràs revisar-lo i editar-lo abans d\'enviar-lo.</string>
+    <string name="bug_report_consent_dont_show_again">No tornis a mostrar-ho</string>
+    <string name="bug_report_consent_continue">Continua</string>
+    <string name="bug_report_consent_cancel">Cancel·la</string>
 
     <string name="insight_lead_today">Avui</string>
     <string name="insight_lead_tonight">Aquesta nit</string>
@@ -66,6 +513,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="insight_clothes_join_two">%1$s i %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s i %3$s</string>
     <string name="insight_precip">%1$s %2$s.</string>
+    <string name="insight_precip_chance">Possibilitat de %1$s %2$s.</string>
     <string name="insight_precip_at_time">a les %1$s</string>
     <string name="insight_precip_overnight">durant la nit</string>
     <string name="insight_condition_clear">Cel serè</string>
@@ -78,7 +526,11 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="insight_condition_thunderstorm">Tempesta</string>
     <string name="insight_condition_unknown">Desconegut</string>
     <string name="insight_tie_in">Emporta\'t %1$s aquesta nit.</string>
-    <string name="insight_tie_in_with_rain">Emporta\'t %1$s aquesta nit, pluja a les %2$s.</string>
+    <string name="insight_tie_in_at_night">Emporta\'t %1$s.</string>
+    <string name="insight_tie_in_with_rain">Aquesta nit, pluja a les %2$s, emporta\'t %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Aquesta nit, possibilitat de pluja a les %2$s, emporta\'t %1$s.</string>
+    <string name="insight_evening_rain">Aquesta nit, pluja a les %1$s.</string>
+    <string name="insight_evening_rain_chance">Aquesta nit, possibilitat de pluja a les %1$s.</string>
     <!-- "15" / "15:30" — "a les" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>

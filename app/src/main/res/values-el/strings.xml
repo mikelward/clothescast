@@ -567,4 +567,106 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_rationale_max_below">Αίσθηση μέγιστης μόνο %1$s%2$s, κάτω από %3$s%2$s</string>
     <string name="today_rationale_max_above_with_time">Αίσθηση μέγιστης %1$s%2$s στις %3$s, τουλάχιστον %4$s%2$s</string>
     <string name="today_rationale_max_above">Αίσθηση μέγιστης %1$s%2$s, τουλάχιστον %3$s%2$s</string>
+
+    <!-- New garment names. -->
+    <string name="garment_puffer">Μπουφάν puffer</string>
+    <string name="garment_thin_jacket">Λεπτό μπουφάν</string>
+    <string name="garment_skirt">Φούστα</string>
+    <string name="garment_polo">Πόλο</string>
+
+    <!-- New outfit card labels. -->
+    <string name="today_outfit_top_polo">Πόλο</string>
+    <string name="today_outfit_top_thin_jacket">Λεπτό μπουφάν</string>
+    <string name="today_outfit_top_thick_coat">Χοντρό παλτό</string>
+    <string name="today_outfit_top_puffer_jacket">Μπουφάν puffer</string>
+    <string name="today_outfit_bottom_skirt">Φούστα</string>
+    <string name="today_outfit_bottom_jeans">Τζιν</string>
+
+    <!-- Device incompatibility error. -->
+    <string name="error_device_incompatible">Ο ClothesCast δεν μπορεί να εκτελεστεί σε αυτή τη συσκευή — στην Android έκδοσή σου λείπει μια δυνατότητα που απαιτεί η διεπαφή της εφαρμογής (Configuration.fontWeightAdjustment, αναμένεται σε Android 12 και άνω). Επικοινώνησε με τον κατασκευαστή της συσκευής σου για ενημέρωση συστήματος.</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Πιθανότητα βροχής</string>
+    <string name="today_precipitation_peak">Αιχμή %1$d%% στις %2$s</string>
+    <string name="today_precipitation_dry">Δεν αναμένεται βροχή σήμερα</string>
+
+    <!-- Model spread / chart strings. -->
+    <string name="today_chart_model_legend_label">Μοντέλα:</string>
+    <string name="today_chart_main_line_label">Συνδυασμένο</string>
+    <string name="today_chart_divergence_summary">Τα μοντέλα διαφωνούν περισσότερο στις %1$s (Δ %2$.1f%3$s αισθητή) — κυρίως %4$s, %5$s</string>
+    <string name="today_factor_air_temperature">θερμοκρασία αέρα</string>
+    <string name="today_factor_wind_speed">ταχύτητα ανέμου</string>
+    <string name="today_factor_cloud_cover">νέφωση</string>
+    <string name="today_factor_humidity">υγρασία</string>
+    <string name="today_wind_title">Ταχύτητα ανέμου</string>
+    <string name="today_wind_subtitle">Ταχύτητα ανέμου (%1$s) ανά μοντέλο και ώρα</string>
+    <string name="today_cloud_title">Νέφωση</string>
+    <string name="today_cloud_subtitle">Συνολική νέφωση (%%) ανά μοντέλο και ώρα</string>
+    <string name="today_humidity_title">Υγρασία</string>
+    <string name="today_humidity_subtitle">Σχετική υγρασία (%%) ανά μοντέλο και ώρα</string>
+
+    <!-- Low-confidence callout. -->
+    <string name="today_low_confidence_callout_title">Οι προβλέψεις διαφωνούν σήμερα</string>
+    <string name="today_low_confidence_callout_body">Η θερμοκρασία κυμαίνεται κατά %1$.1f°C και η πιθανότητα βροχής κατά %2$.0f%% σε %3$d μοντέλα.</string>
+
+    <!-- Telemetry notice banner. -->
+    <string name="today_telemetry_notice_title">Αναφορές σφαλμάτων + χρήσης είναι ενεργές</string>
+    <string name="today_telemetry_notice_body">Ο ClothesCast στέλνει ανώνυμες αναφορές σφαλμάτων και αναλυτικά χρήσης για βελτίωση. Δεν περιλαμβάνονται ημερολογιακά δεδομένα, τοποθεσία ή κείμενο πρόβλεψης. Μπορείς να το απενεργοποιήσεις οποτεδήποτε στις Ρυθμίσεις.</string>
+    <string name="today_telemetry_notice_open_settings">Άνοιγμα Ρυθμίσεων Απορρήτου</string>
+    <string name="today_telemetry_notice_dismiss">Κλείσιμο</string>
+
+    <!-- Privacy settings root. -->
+    <string name="settings_root_privacy">Απόρρητο</string>
+    <string name="settings_root_privacy_subtitle">Αναφορές σφαλμάτων + χρήσης</string>
+
+    <!-- Privacy settings sub-page. -->
+    <string name="settings_privacy_telemetry_title">Αναφορές σφαλμάτων + χρήσης</string>
+    <string name="settings_privacy_telemetry_label">Αποστολή δεδομένων σφαλμάτων + χρήσης</string>
+    <string name="settings_privacy_telemetry_description">Αποστέλλει ανώνυμες αναφορές σφαλμάτων και συγκεντρωτικά στατιστικά χρήσης για βελτίωση και απόφαση για χαρακτηριστικά.</string>
+    <string name="settings_privacy_telemetry_limits">Ποτέ δεν αποστέλλονται: συμβάντα ημερολογίου, συντεταγμένες ή ονόματα τοποθεσιών, κείμενο πρόβλεψης ή ειδοποιήσεων, API keys, ακριβές GPS, διαφημιστικά αναγνωριστικά.</string>
+    <string name="settings_privacy_open_policy">Διαβάστε την πλήρη πολιτική απορρήτου</string>
+
+    <!-- Display / model-spread settings. -->
+    <string name="settings_display_charts_title">Γραφήματα</string>
+    <string name="settings_display_model_spread_label">Εμφάνιση διαφοράς μοντέλων στα γραφήματα</string>
+    <string name="settings_display_model_spread_description">Επικαλύπτει την ωριαία πρόβλεψη κάθε κύριου μοντέλου καιρού στα γραφήματα θερμοκρασίας και βροχής. Χρήσιμο για τον εντοπισμό αβέβαιων προβλέψεων.</string>
+
+    <!-- Bug-report consent dialog. -->
+    <string name="bug_report_consent_title">Κοινοποίηση αναφοράς σφάλματος;</string>
+    <string name="bug_report_consent_body">Βοηθά στη διάγνωση προβλημάτων. Η αναφορά περιέχει ευαίσθητες προσωπικές πληροφορίες, συμπεριλαμβανομένης της τοποθεσίας σου, των ρυθμίσεων της εφαρμογής και της πρόσφατης δραστηριότητας. Θα μπορείς να την ελέγξεις και να την επεξεργαστείς πριν την αποστολή.</string>
+    <string name="bug_report_consent_dont_show_again">Να μην εμφανίζεται ξανά</string>
+    <string name="bug_report_consent_continue">Συνέχεια</string>
+    <string name="bug_report_consent_cancel">Άκυρο</string>
+
+    <!-- Missing insight prose. -->
+    <string name="insight_precip_chance">Πιθανότητα %1$s %2$s.</string>
+    <string name="insight_tie_in_at_night">Πάρε %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Πάρε %1$s απόψε, πιθανότητα βροχής στις %2$s.</string>
+    <string name="insight_evening_rain">Απόψε, βροχή στις %1$s.</string>
+    <string name="insight_evening_rain_chance">Απόψε, πιθανότητα βροχής στις %1$s.</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">Στυλ</string>
+    <string name="settings_tts_style_weather_forecaster">Μετεωρολόγος</string>
+    <string name="settings_tts_style_pirate">Πειρατής</string>
+    <string name="settings_tts_style_cowboy">Κάουμπόι</string>
+    <string name="settings_tts_style_shakespearean">Σαιξπηρικό</string>
+    <string name="settings_tts_style_surfer">Σέρφερ</string>
+    <string name="settings_tts_style_parent">Γονέας</string>
+    <string name="settings_tts_style_child">Παιδί</string>
+    <string name="settings_tts_style_teenager">Έφηβος</string>
+    <string name="settings_tts_style_grandparent">Παππούς / Γιαγιά</string>
+    <string name="settings_tts_style_kids_host">Παρουσιαστής παιδικής τηλεόρασης</string>
+    <string name="settings_tts_style_radio_host">Παρουσιαστής talk radio</string>
+    <string name="settings_tts_style_morning_dj">Πρωινός DJ</string>
+    <string name="settings_tts_style_science_teacher">Καθηγητής φυσικής</string>
+    <string name="settings_tts_style_historian">Ιστορικός</string>
+    <string name="settings_tts_style_sportscaster">Αθλητικός σχολιαστής</string>
+    <string name="settings_tts_style_stadium_announcer">Εκφωνητής σταδίου</string>
+    <string name="settings_tts_style_storyteller">Αφηγητής</string>
+    <string name="settings_tts_style_fitness_instructor">Προπονητής γυμναστικής</string>
+    <string name="settings_tts_style_morning_presenter">Πρωινός παρουσιαστής ραδιοφώνου</string>
+    <string name="settings_tts_style_custom">Προσαρμοσμένο…</string>
+    <string name="settings_tts_style_custom_label">Προσαρμοσμένη οδηγία</string>
+    <string name="settings_tts_style_custom_placeholder">π.χ. Διάβασε το παρακάτω ως αυστηρός βιβλιοθηκάριος που ψιθυρίζει</string>
 </resources>

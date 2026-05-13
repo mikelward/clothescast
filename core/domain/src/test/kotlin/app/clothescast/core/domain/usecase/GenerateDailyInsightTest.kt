@@ -640,53 +640,72 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `evening tie-in still fires when a model is missing an unrelated tonight-window hour`() = runTest {
-        // The strict [slicedTo] used for the chart overlay drops a model
-        // entirely on any missing in-window hour (positional alignment for
-        // the chart). The evening tie-in path uses [intersectedWith] instead
-        // — the renderer's peak-finder works on whatever per-hour readings
-        // are present, so a model that reports 75% rain at 21:00 but has no
-        // 05:00 entry must still feed the tie-in. Silently dropping it would
-        // re-introduce the bug this whole feature exists to fix.
+    fun `evening tie-in is omitted when the user has no event away from home`() = runTest {
+        // The away-from-home gate is the only behavioural asymmetry between
+        // the day and night passes. With no located event in the night window
+        // — only a morning event, or an unlocated evening one — the morning
+        // insight stays silent about the night even if clothes rules would
+        // fire on the night slice.
+        val zone = ZoneId.of("Europe/London")
+        val coldEvening = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(21, 0), 10.0, 8.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val baseHourly = today.copy(
+            hourly = coldEvening,
+            precipitationProbabilityMaxPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val unlocated = CalendarEvent(
+            title = "call",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(22, 0),
+            location = null,
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(unlocated))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val jacketOnly = listOf(ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)))
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = jacketOnly,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        result.insight.summary.eveningEventTieIn.shouldBeNull()
+    }
+
+    @Test
+    fun `evening tie-in mirrors what the night notification would itself say`() = runTest {
+        // The day's evening tie-in is the night insight, dictated by the
+        // night bundle. When the night insight would say "Bring a jacket;
+        // rain at 9pm.", the tie-in carries the same item + rain time.
+        val zone = ZoneId.of("Europe/London")
         val daytime = listOf(
             HourlyForecast(LocalTime.of(8, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
-            HourlyForecast(LocalTime.of(12, 0), 18.0, 17.0, 5.0, WeatherCondition.CLEAR),
             HourlyForecast(LocalTime.of(15, 0), 18.0, 17.0, 5.0, WeatherCondition.CLEAR),
         )
         val evening = listOf(
-            HourlyForecast(LocalTime.of(19, 0), 11.0, 9.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
-            HourlyForecast(LocalTime.of(21, 0), 10.0, 8.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
-        )
-        val tomorrowMorning = listOf(
-            HourlyForecast(LocalTime.of(2, 0), 9.0, 7.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
-            HourlyForecast(LocalTime.of(5, 0), 9.0, 7.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
+            HourlyForecast(LocalTime.of(19, 0), 11.0, 9.0, 60.0, WeatherCondition.RAIN),
+            HourlyForecast(LocalTime.of(21, 0), 10.0, 8.0, 80.0, WeatherCondition.RAIN),
         )
         val baseHourly = today.copy(
             hourly = daytime + evening,
-            precipitationProbabilityMaxPct = 10.0,
-            condition = WeatherCondition.PARTLY_CLOUDY,
+            precipitationProbabilityMaxPct = 80.0,
+            condition = WeatherCondition.RAIN,
         )
-        // ecmwf sees the evening rain at 21:00 but its 05:00 tomorrow entry
-        // is missing (model run still warming up — parseHourly drops null
-        // hours). Pre-fix the strict slice dropped the whole model and the
-        // tie-in fell back to base-only; with [intersectedWith] the rain
-        // hour survives.
-        val ecmwfEntries = listOf(
-            PerModelHour(LocalDateTime.of(today.date, LocalTime.of(19, 0)), 11.0, 9.0, 10.0),
-            PerModelHour(LocalDateTime.of(today.date, LocalTime.of(21, 0)), 11.0, 9.0, 75.0),
-            PerModelHour(LocalDateTime.of(today.date.plusDays(1), LocalTime.of(2, 0)), 9.0, 7.0, 10.0),
-            // 05:00 tomorrow intentionally missing.
-        )
-        val perModelHourly = PerModelHourly(byModel = mapOf("ecmwf_ifs04" to ecmwfEntries))
         val diner = CalendarEvent(
             title = "dinner",
             start = LocalTime.of(21, 0),
             end = LocalTime.of(23, 0),
             location = "Restaurant",
         )
-        val weather = FakeWeatherRepository(
-            ForecastBundle(baseHourly, yesterday, perModelHourly = perModelHourly, tomorrowHourly = tomorrowMorning),
-        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
@@ -696,6 +715,7 @@ class GenerateDailyInsightTest {
             prefs = prefs.copy(
                 clothesRules = jacketOnly,
                 useCalendarEvents = true,
+                schedule = Schedule.default(zone),
             ),
             period = ForecastPeriod.TODAY,
         )
@@ -704,6 +724,144 @@ class GenerateDailyInsightTest {
         tie.shouldNotBeNull()
         tie!!.item shouldBe "jacket"
         tie.rainTime shouldBe LocalTime.of(21, 0)
+    }
+
+    @Test
+    fun `evening tie-in carries only the clothing delta vs the morning insight`() = runTest {
+        // Today triggers sweater on a cool daytime; night gets colder and
+        // additionally needs a jacket. The tie-in carries the new item
+        // ("jacket"), not "sweater" — the morning insight already mentioned
+        // sweater, so repeating it adds nothing.
+        val zone = ZoneId.of("Europe/London")
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 17.0, 16.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 17.0, 16.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val evening = listOf(
+            HourlyForecast(LocalTime.of(19, 0), 11.0, 9.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(21, 0), 10.0, 8.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val baseHourly = today.copy(
+            hourly = daytime + evening,
+            precipitationProbabilityMaxPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val diner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(23, 0),
+            location = "Restaurant",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(diner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val rules = listOf(
+            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
+            ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)),
+        )
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = rules,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        val tie = result.insight.summary.eveningEventTieIn
+        tie.shouldNotBeNull()
+        tie!!.item shouldBe "jacket"
+        tie.rainTime.shouldBeNull()
+    }
+
+    @Test
+    fun `evening tie-in collapses to bare rain when night items are a subset of today`() = runTest {
+        // Today and night both trigger the same item (jacket — cold all
+        // day). With no clothing delta the tie-in skips the item part and
+        // surfaces just the rain mention, because evening rain is still new
+        // information the morning slice didn't cover.
+        val zone = ZoneId.of("Europe/London")
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 8.0, 6.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 10.0, 9.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val evening = listOf(
+            HourlyForecast(LocalTime.of(19, 0), 9.0, 7.0, 60.0, WeatherCondition.RAIN),
+            HourlyForecast(LocalTime.of(21, 0), 8.0, 6.0, 80.0, WeatherCondition.RAIN),
+        )
+        val baseHourly = today.copy(
+            hourly = daytime + evening,
+            precipitationProbabilityMaxPct = 80.0,
+            condition = WeatherCondition.RAIN,
+        )
+        val diner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(23, 0),
+            location = "Restaurant",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(diner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val jacketOnly = listOf(ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)))
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = jacketOnly,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        val tie = result.insight.summary.eveningEventTieIn
+        tie.shouldNotBeNull()
+        tie!!.item.shouldBeNull()
+        tie.rainTime shouldBe LocalTime.of(21, 0)
+    }
+
+    @Test
+    fun `evening tie-in is omitted when delta is empty and there is no rain`() = runTest {
+        // Same items today and night, no rain — there's genuinely nothing
+        // to add for the evening, so the tie-in stays silent.
+        val zone = ZoneId.of("Europe/London")
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 8.0, 6.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 10.0, 9.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val evening = listOf(
+            HourlyForecast(LocalTime.of(21, 0), 8.0, 6.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val baseHourly = today.copy(
+            hourly = daytime + evening,
+            precipitationProbabilityMaxPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val diner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(23, 0),
+            location = "Restaurant",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(diner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val jacketOnly = listOf(ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)))
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = jacketOnly,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        result.insight.summary.eveningEventTieIn.shouldBeNull()
     }
 
     @Test

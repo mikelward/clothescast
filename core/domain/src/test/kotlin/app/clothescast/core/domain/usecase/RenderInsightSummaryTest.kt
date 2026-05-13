@@ -5,6 +5,7 @@ import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeltaClause
+import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHour
@@ -51,7 +52,6 @@ class RenderInsightSummaryTest {
     private val sweaterRule = ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0))
     private val jacketRule = ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0))
     private val umbrellaRule = ClothesRule("umbrella", ClothesRule.PrecipitationProbabilityAbove(50.0))
-    private val shortsRule = ClothesRule("shorts", ClothesRule.TemperatureAbove(24.0))
 
     @Test
     fun `band clause is always emitted`() {
@@ -188,293 +188,28 @@ class RenderInsightSummaryTest {
     }
 
     @Test
-    fun `evening event tie-in pairs first evening event with first triggered evening item`() {
-        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0), location = "Restaurant")
-        val out = subject(
-            today = mildToday,
-            yesterday = yesterday,
-            todayTriggeredRules = emptyList(),
-            eveningEvents = listOf(event),
-            eveningTriggeredRules = listOf(jacketRule),
-        )
-        val tie = out.eveningEventTieIn
-        tie.shouldNotBeNull()
-        tie!!.item shouldBe "jacket"
-        // No title or rainTime — caller didn't pass an evening forecast and
-        // we never carry the event title in the rendered prose.
-        tie.rainTime.shouldBeNull()
-    }
-
-    @Test
-    fun `evening event tie-in carries rain time when evening forecast peaks above 30 percent`() {
-        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0), location = "Restaurant")
-        val rainyEvening = mildToday.copy(
-            precipitationProbabilityMaxPct = 60.0,
-            condition = WeatherCondition.RAIN,
-            hourly = listOf(HourlyForecast(LocalTime.of(21, 0), 12.0, 10.0, 60.0, WeatherCondition.RAIN)),
+    fun `evening event tie-in passes through whatever the caller built`() {
+        // The renderer no longer composes the evening tie-in — GenerateDailyInsight
+        // builds it by re-running the renderer against the night slice and
+        // folding clothes + precip into the clause. The renderer just passes
+        // it through.
+        val tieIn = EveningEventTieInClause(
+            item = "jacket",
+            rainTime = LocalTime.of(21, 0),
+            likelihood = PrecipLikelihood.POSSIBLE,
         )
         val out = subject(
             today = mildToday,
             yesterday = yesterday,
             todayTriggeredRules = emptyList(),
-            eveningEvents = listOf(event),
-            eveningTriggeredRules = listOf(umbrellaRule),
-            eveningForecast = rainyEvening,
+            eveningEventTieIn = tieIn,
         )
-        val tie = out.eveningEventTieIn
-        tie.shouldNotBeNull()
-        tie!!.item shouldBe "umbrella"
-        tie.rainTime shouldBe LocalTime.of(21, 0)
+        out.eveningEventTieIn shouldBe tieIn
     }
 
     @Test
-    fun `evening event tie-in omits rain time when evening peak is below threshold`() {
-        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0), location = "Restaurant")
-        val dryEvening = mildToday.copy(
-            precipitationProbabilityMaxPct = 5.0,
-            condition = WeatherCondition.PARTLY_CLOUDY,
-            hourly = listOf(HourlyForecast(LocalTime.of(21, 0), 8.0, 6.0, 5.0, WeatherCondition.PARTLY_CLOUDY)),
-        )
-        val out = subject(
-            today = mildToday,
-            yesterday = yesterday,
-            todayTriggeredRules = emptyList(),
-            eveningEvents = listOf(event),
-            eveningTriggeredRules = listOf(jacketRule),
-            eveningForecast = dryEvening,
-        )
-        val tie = out.eveningEventTieIn
-        tie.shouldNotBeNull()
-        tie!!.item shouldBe "jacket"
-        tie.rainTime.shouldBeNull()
-    }
-
-    @Test
-    fun `evening event tie-in prefers umbrella when on the triggered list`() {
-        val event = CalendarEvent("show", LocalTime.of(20, 0), LocalTime.of(22, 0), location = "Theatre")
-        val out = subject(
-            today = mildToday,
-            yesterday = yesterday,
-            todayTriggeredRules = emptyList(),
-            eveningEvents = listOf(event),
-            eveningTriggeredRules = listOf(jacketRule, umbrellaRule),
-        )
-        out.eveningEventTieIn.shouldNotBeNull()
-        out.eveningEventTieIn!!.item shouldBe "umbrella"
-    }
-
-    @Test
-    fun `evening event tie-in is omitted on the tonight period`() {
-        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0))
-        val out = subject(
-            today = mildToday,
-            yesterday = yesterday,
-            todayTriggeredRules = emptyList(),
-            period = ForecastPeriod.TONIGHT,
-            eveningEvents = listOf(event),
-            eveningTriggeredRules = listOf(jacketRule),
-        )
-        out.eveningEventTieIn.shouldBeNull()
-    }
-
-    @Test
-    fun `evening event tie-in is omitted when no clothes rules trigger and no rain to mention`() {
-        // The bare-rain emission path requires an evening peak; without one
-        // (no eveningForecast, or a dry evening) and with no triggered
-        // rules, there's genuinely nothing to add for the evening.
-        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0), location = "Restaurant")
-        val out = subject(
-            today = mildToday,
-            yesterday = yesterday,
-            todayTriggeredRules = emptyList(),
-            eveningEvents = listOf(event),
-            eveningTriggeredRules = emptyList(),
-        )
-        out.eveningEventTieIn.shouldBeNull()
-    }
-
-    @Test
-    fun `evening event tie-in emits bare rain when no rule triggers but per-model spots rain`() {
-        // The case AGENTS.md documents under "Domain conventions": user
-        // has only temperature-keyed rules, the evening is mild enough
-        // that none trigger, but a per-model series spots rain ≥ 30% in
-        // the tonight window. The morning insight must still mention the
-        // rain — staying silent is exactly the gap the per-model tier
-        // exists to catch — but it shouldn't invent a clothes
-        // recommendation the user hasn't asked for. Surfaces as
-        // item=null + rainTime set; the formatter renders this as a
-        // bare "Rain tonight at 9pm.".
-        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0), location = "Restaurant")
-        val mildEvening = mildToday.copy(
-            precipitationProbabilityMaxPct = 10.0,
-            condition = WeatherCondition.PARTLY_CLOUDY,
-            hourly = listOf(HourlyForecast(LocalTime.of(21, 0), 14.0, 13.0, 10.0, WeatherCondition.PARTLY_CLOUDY)),
-        )
-        // One model spots rain at 21:00 — the POSSIBLE tier (≥ 30% on a
-        // single model, < majority at ≥ 50%).
-        val perModel = PerModelHourly(
-            byModel = mapOf(
-                "ecmwf_ifs04" to listOf(
-                    PerModelHour(
-                        time = LocalDateTime.of(2026, 5, 13, 21, 0),
-                        apparentTemperatureC = 13.0,
-                        temperatureC = 14.0,
-                        precipitationProbabilityPct = 75.0,
-                    ),
-                ),
-                "gfs_seamless" to listOf(
-                    PerModelHour(
-                        time = LocalDateTime.of(2026, 5, 13, 21, 0),
-                        apparentTemperatureC = 13.0,
-                        temperatureC = 14.0,
-                        precipitationProbabilityPct = 10.0,
-                    ),
-                ),
-                "icon_seamless" to listOf(
-                    PerModelHour(
-                        time = LocalDateTime.of(2026, 5, 13, 21, 0),
-                        apparentTemperatureC = 13.0,
-                        temperatureC = 14.0,
-                        precipitationProbabilityPct = 5.0,
-                    ),
-                ),
-            ),
-        )
-        val out = subject(
-            today = mildToday,
-            yesterday = yesterday,
-            todayTriggeredRules = emptyList(),
-            eveningEvents = listOf(event),
-            eveningTriggeredRules = emptyList(),
-            eveningForecast = mildEvening,
-            eveningPerModelHourly = perModel,
-        )
-        val tie = out.eveningEventTieIn
-        tie.shouldNotBeNull()
-        tie!!.item.shouldBeNull()
-        tie.rainTime shouldBe LocalTime.of(21, 0)
-        tie.likelihood shouldBe PrecipLikelihood.POSSIBLE
-    }
-
-    @Test
-    fun `evening event tie-in bare rain requires a located evening event`() {
-        // Same setup as the bare-rain emission test above, but the event
-        // has no location — the location gate still applies on this path.
-        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0))
-        val mildEvening = mildToday.copy(
-            precipitationProbabilityMaxPct = 10.0,
-            condition = WeatherCondition.PARTLY_CLOUDY,
-            hourly = listOf(HourlyForecast(LocalTime.of(21, 0), 14.0, 13.0, 10.0, WeatherCondition.PARTLY_CLOUDY)),
-        )
-        val perModel = PerModelHourly(
-            byModel = mapOf(
-                "ecmwf_ifs04" to listOf(
-                    PerModelHour(
-                        time = LocalDateTime.of(2026, 5, 13, 21, 0),
-                        apparentTemperatureC = 13.0,
-                        temperatureC = 14.0,
-                        precipitationProbabilityPct = 75.0,
-                    ),
-                ),
-            ),
-        )
-        val out = subject(
-            today = mildToday,
-            yesterday = yesterday,
-            todayTriggeredRules = emptyList(),
-            eveningEvents = listOf(event),
-            eveningTriggeredRules = emptyList(),
-            eveningForecast = mildEvening,
-            eveningPerModelHourly = perModel,
-        )
-        out.eveningEventTieIn.shouldBeNull()
-    }
-
-    @Test
-    fun `evening event tie-in skips all-day events`() {
-        val allDay = CalendarEvent("public holiday", LocalTime.MIDNIGHT, LocalTime.MIDNIGHT, allDay = true)
-        val out = subject(
-            today = mildToday,
-            yesterday = yesterday,
-            todayTriggeredRules = emptyList(),
-            eveningEvents = listOf(allDay),
-            eveningTriggeredRules = listOf(jacketRule),
-        )
-        out.eveningEventTieIn.shouldBeNull()
-    }
-
-    @Test
-    fun `evening event tie-in is omitted when no evening event has a location`() {
-        // Events without a location don't imply outdoor exposure, so a
-        // weather-specific clothing tip isn't warranted.
-        val noLocation = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0))
-        val out = subject(
-            today = mildToday,
-            yesterday = yesterday,
-            todayTriggeredRules = emptyList(),
-            eveningEvents = listOf(noLocation),
-            eveningTriggeredRules = listOf(jacketRule),
-        )
-        out.eveningEventTieIn.shouldBeNull()
-    }
-
-    @Test
-    fun `evening event tie-in is omitted when evening clothes are the same as today`() {
-        // If the morning insight already mentions the same items, repeating them
-        // for the evening adds no new information.
-        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0), location = "Restaurant")
-        val out = subject(
-            today = mildToday,
-            yesterday = yesterday,
-            todayTriggeredRules = listOf(jacketRule),
-            eveningEvents = listOf(event),
-            eveningTriggeredRules = listOf(jacketRule),
-        )
-        out.eveningEventTieIn.shouldBeNull()
-    }
-
-    @Test
-    fun `evening event tie-in is omitted when evening clothes are a strict subset of today`() {
-        // Today triggered sweater + jacket; evening only needs jacket — already
-        // mentioned in the morning, so nothing new to add.
-        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0), location = "Restaurant")
-        val out = subject(
-            today = mildToday,
-            yesterday = yesterday,
-            todayTriggeredRules = listOf(sweaterRule, jacketRule),
-            eveningEvents = listOf(event),
-            eveningTriggeredRules = listOf(jacketRule),
-        )
-        out.eveningEventTieIn.shouldBeNull()
-    }
-
-    @Test
-    fun `evening event tie-in falls back to bare rain when items are a subset but rain peaks`() {
-        // Codex case: morning rules and evening rules both recommend jacket
-        // (cold all day), so the item part is redundant — but a per-model
-        // series spots evening rain at 21:00. The morning precip clause
-        // only covers the daytime slice, so dropping the tie-in entirely
-        // would lose the only place evening rain gets surfaced. Fall
-        // through to the bare-rain shape (item=null, rainTime set) so the
-        // rain mention survives without repeating the jacket clothing tip.
-        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0), location = "Restaurant")
-        val rainyEvening = mildToday.copy(
-            precipitationProbabilityMaxPct = 60.0,
-            condition = WeatherCondition.RAIN,
-            hourly = listOf(HourlyForecast(LocalTime.of(21, 0), 11.0, 9.0, 60.0, WeatherCondition.RAIN)),
-        )
-        val out = subject(
-            today = mildToday,
-            yesterday = yesterday,
-            todayTriggeredRules = listOf(jacketRule),
-            eveningEvents = listOf(event),
-            eveningTriggeredRules = listOf(jacketRule),
-            eveningForecast = rainyEvening,
-        )
-        val tie = out.eveningEventTieIn
-        tie.shouldNotBeNull()
-        tie!!.item.shouldBeNull()
-        tie.rainTime shouldBe LocalTime.of(21, 0)
+    fun `evening event tie-in defaults to null when caller doesn't supply one`() {
+        subject(mildToday, yesterday, emptyList()).eveningEventTieIn.shouldBeNull()
     }
 
     @Test

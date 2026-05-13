@@ -140,7 +140,9 @@
          predicting the windier hours when feels-like figures diverge — wind
          chill is usually the reason apparent and air temperature drift apart. -->
     <string name="today_wind_title">Wind speed</string>
-    <string name="today_wind_subtitle">Per-model wind speed (km/h) by hour</string>
+    <!-- %1$s is the user's wind-speed unit, e.g. "km/h" or "mph". Derived from
+         the chosen distance unit (metric / imperial) — see DistanceUnit.windSpeedUnit(). -->
+    <string name="today_wind_subtitle">Per-model wind speed (%1$s) by hour</string>
 
     <!-- Cloud-cover diagnostic card. Sits below the wind card; cloud cover
          is the upstream driver of air-temperature divergence between models

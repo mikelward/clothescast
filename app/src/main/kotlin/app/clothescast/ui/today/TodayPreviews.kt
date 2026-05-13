@@ -34,6 +34,7 @@ import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WeatherCondition
+import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.diag.BugReportConsentDialog
 import app.clothescast.ui.theme.ClothesCastTheme
 import app.clothescast.work.FetchAndNotifyWorker
@@ -672,6 +673,22 @@ internal fun WindCardWithModelSpreadPreview() {
         WindCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+        )
+    }
+}
+
+// Imperial variant — exercises the km/h → mph conversion in both the picker
+// (Y-axis values) and the subtitle string. Pairs with the default km/h preview
+// above to lock in the unit-switching path now that DistanceUnit drives wind
+// display.
+@Preview(name = "Wind card · with model spread (mph)", widthDp = 360)
+@Composable
+internal fun WindCardWithModelSpreadMphPreview() {
+    Frame {
+        WindCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            windSpeedUnit = WindSpeedUnit.MPH,
         )
     }
 }

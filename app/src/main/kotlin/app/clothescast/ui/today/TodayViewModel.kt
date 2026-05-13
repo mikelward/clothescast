@@ -7,6 +7,7 @@ import androidx.work.Data
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -24,6 +25,7 @@ data class TodayState(
     val insight: Insight? = null,
     val workStatus: WorkStatus = WorkStatus.Idle,
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
+    val distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
     val region: Region = Region.SYSTEM,
     // Window boundaries used by manual Refresh to decide TODAY vs TONIGHT.
     // Default to the same 7am / 7pm boundaries Schedule uses out of the box;
@@ -161,6 +163,7 @@ class TodayViewModel(
             insight = insight,
             workStatus = mergeWorkStatus(selectStatus(todayInfos.toLite()), selectStatus(tonightInfos.toLite())),
             temperatureUnit = prefs.temperatureUnit,
+            distanceUnit = prefs.distanceUnit,
             region = prefs.region,
             morningTime = prefs.schedule.time,
             tonightTime = prefs.tonightSchedule.time,

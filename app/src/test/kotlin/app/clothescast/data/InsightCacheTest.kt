@@ -77,9 +77,28 @@ class InsightCacheTest {
         perModelHourly = PerModelHourly(
             byModel = mapOf(
                 "ecmwf_ifs04" to listOf(
-                    PerModelHour(LocalTime.of(0, 0), 12.0, 14.0, 10.0),
-                    PerModelHour(LocalTime.of(1, 0), 11.5, 13.5, 15.0),
+                    PerModelHour(
+                        time = LocalTime.of(0, 0),
+                        apparentTemperatureC = 12.0,
+                        temperatureC = 14.0,
+                        precipitationProbabilityPct = 10.0,
+                        windSpeedKmh = 8.0,
+                        relativeHumidityPct = 78.0,
+                        cloudCoverPct = 60.0,
+                    ),
+                    PerModelHour(
+                        time = LocalTime.of(1, 0),
+                        apparentTemperatureC = 11.5,
+                        temperatureC = 13.5,
+                        precipitationProbabilityPct = 15.0,
+                        windSpeedKmh = 9.5,
+                        relativeHumidityPct = 80.0,
+                        cloudCoverPct = 70.0,
+                    ),
                 ),
+                // Second model exercises the null-diagnostic-field path: the
+                // upstream model run didn't return wind / humidity / cloud,
+                // but temp + precip are present so the entry survives.
                 "gfs_seamless" to listOf(
                     PerModelHour(LocalTime.of(0, 0), 12.2, 14.2, 12.0),
                     PerModelHour(LocalTime.of(1, 0), 11.8, 13.8, 18.0),

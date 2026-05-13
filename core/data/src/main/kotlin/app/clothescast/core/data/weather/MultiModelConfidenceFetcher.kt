@@ -72,7 +72,11 @@ internal class MultiModelConfidenceFetcher(
                 parameter("forecast_days", 1)
                 parameter("timezone", "auto")
                 parameter("daily", "apparent_temperature_max,precipitation_probability_max")
-                parameter("hourly", "apparent_temperature,temperature_2m,precipitation_probability")
+                parameter(
+                    "hourly",
+                    "apparent_temperature,temperature_2m,precipitation_probability," +
+                        "wind_speed_10m,relative_humidity_2m,cloud_cover",
+                )
                 parameter("models", models.joinToString(","))
             }.body<MultiModelResponse>()
         }
@@ -115,14 +119,32 @@ internal class MultiModelConfidenceFetcher(
                 val apparentTemps = obj["apparent_temperature_$model"] as? JsonArray
                 val airTemps = obj["temperature_2m_$model"] as? JsonArray
                 val precips = obj["precipitation_probability_$model"] as? JsonArray
+                val winds = obj["wind_speed_10m_$model"] as? JsonArray
+                val humidities = obj["relative_humidity_2m_$model"] as? JsonArray
+                val clouds = obj["cloud_cover_$model"] as? JsonArray
                 if (apparentTemps == null && airTemps == null && precips == null) continue
                 val entries = buildList {
                     for (i in 0 until times.size) {
                         val time = parseHour(times.getOrNull(i)) ?: continue
+                        // Required: time, apparent temp, air temp, precip — drop the hour
+                        // when any of these are null. Diagnostic fields (wind, humidity,
+                        // cloud) survive per-field nulls; we just carry through what we
+                        // got so the wind / humidity / cloud charts hide that model only
+                        // when *its* field is missing.
                         val apparent = numberAt(apparentTemps, i)?.toDouble() ?: continue
                         val air = numberAt(airTemps, i)?.toDouble() ?: continue
                         val precip = numberAt(precips, i)?.toDouble() ?: continue
-                        add(PerModelHour(time, apparent, air, precip))
+                        add(
+                            PerModelHour(
+                                time = time,
+                                apparentTemperatureC = apparent,
+                                temperatureC = air,
+                                precipitationProbabilityPct = precip,
+                                windSpeedKmh = numberAt(winds, i)?.toDouble(),
+                                relativeHumidityPct = numberAt(humidities, i)?.toDouble(),
+                                cloudCoverPct = numberAt(clouds, i)?.toDouble(),
+                            ),
+                        )
                     }
                 }
                 if (entries.isNotEmpty()) put(model, entries)

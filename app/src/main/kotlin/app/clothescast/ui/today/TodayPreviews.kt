@@ -627,22 +627,41 @@ internal fun PrecipitationCardDarkPreview() {
 // Three model curves spread around the blended sample. Offsets are deliberate
 // so the overlay is visually distinguishable from the main line.
 private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
-    fun shift(deltaC: Double, precipDelta: Double) = SAMPLE_HOURLY_RAINY.map { h ->
-        PerModelHour(
-            time = h.time,
-            apparentTemperatureC = h.feelsLikeC + deltaC,
-            temperatureC = h.temperatureC + deltaC,
-            precipitationProbabilityPct = (h.precipitationProbabilityPct + precipDelta)
-                .coerceIn(0.0, 100.0),
-        )
-    }
+    fun shift(deltaC: Double, precipDelta: Double, windBase: Double, cloudBase: Double) =
+        SAMPLE_HOURLY_RAINY.mapIndexed { i, h ->
+            // Simple sinusoidal-ish wind curve so the per-model lines visibly
+            // diverge across the day — the diagnostic chart's whole point is
+            // showing where the spread is largest.
+            val hourPhase = (i - 6).coerceAtLeast(0).coerceAtMost(12)
+            PerModelHour(
+                time = h.time,
+                apparentTemperatureC = h.feelsLikeC + deltaC,
+                temperatureC = h.temperatureC + deltaC,
+                precipitationProbabilityPct = (h.precipitationProbabilityPct + precipDelta)
+                    .coerceIn(0.0, 100.0),
+                windSpeedKmh = windBase + hourPhase * 0.6,
+                relativeHumidityPct = 70.0 - hourPhase * 0.5,
+                cloudCoverPct = (cloudBase + hourPhase * 2.0).coerceIn(0.0, 100.0),
+            )
+        }
     PerModelHourly(
         byModel = mapOf(
-            "ecmwf_ifs04" to shift(deltaC = -1.5, precipDelta = -10.0),
-            "gfs_seamless" to shift(deltaC = 0.5, precipDelta = 5.0),
-            "icon_seamless" to shift(deltaC = 2.0, precipDelta = -5.0),
+            "ecmwf_ifs04" to shift(deltaC = -1.5, precipDelta = -10.0, windBase = 8.0, cloudBase = 55.0),
+            "gfs_seamless" to shift(deltaC = 0.5, precipDelta = 5.0, windBase = 12.0, cloudBase = 70.0),
+            "icon_seamless" to shift(deltaC = 2.0, precipDelta = -5.0, windBase = 6.0, cloudBase = 40.0),
         ),
     )
+}
+
+@Preview(name = "Wind card · with model spread", widthDp = 360)
+@Composable
+internal fun WindCardWithModelSpreadPreview() {
+    Frame {
+        WindCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+        )
+    }
 }
 
 @Preview(name = "Forecast chart · with model spread", widthDp = 360)

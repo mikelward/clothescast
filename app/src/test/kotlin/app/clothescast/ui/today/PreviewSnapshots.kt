@@ -160,6 +160,7 @@ class PreviewSnapshots {
     @Test fun forecast_chart_dark() = capture { ForecastChartDarkPreview() }
     @Test fun forecast_chart_with_model_spread() = capture { ForecastChartWithModelSpreadPreview() }
     @Test fun precipitation_card_with_model_spread() = capture { PrecipitationCardWithModelSpreadPreview() }
+    @Test fun wind_card_with_model_spread() = capture { WindCardWithModelSpreadPreview() }
 
     @Test fun precipitation_card() = capture { PrecipitationCardPreview() }
     @Test fun precipitation_card_dark() = capture { PrecipitationCardDarkPreview() }

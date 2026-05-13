@@ -74,7 +74,8 @@ class MultiModelConfidenceFetcherTest {
         req.url.parameters["models"] shouldBe "ecmwf_ifs04,gfs_seamless,icon_seamless"
         req.url.parameters["daily"] shouldBe "apparent_temperature_max,precipitation_probability_max"
         req.url.parameters["hourly"] shouldBe
-            "apparent_temperature,temperature_2m,precipitation_probability"
+            "apparent_temperature,temperature_2m,precipitation_probability," +
+            "wind_speed_10m,relative_humidity_2m,cloud_cover"
         req.url.parameters["forecast_days"] shouldBe "1"
         req.url.parameters["past_days"].shouldBeNull()
     }
@@ -136,7 +137,27 @@ class MultiModelConfidenceFetcherTest {
         ecmwf[0].apparentTemperatureC shouldBe (12.0 plusOrMinus 0.0001)
         ecmwf[0].temperatureC shouldBe (14.0 plusOrMinus 0.0001)
         ecmwf[0].precipitationProbabilityPct shouldBe (10.0 plusOrMinus 0.0001)
+        ecmwf[0].windSpeedKmh shouldBe (8.0 plusOrMinus 0.0001)
+        ecmwf[0].relativeHumidityPct shouldBe (78.0 plusOrMinus 0.0001)
+        ecmwf[0].cloudCoverPct shouldBe (60.0 plusOrMinus 0.0001)
         ecmwf[2].time shouldBe LocalTime.of(2, 0)
+    }
+
+    @Test
+    fun `diagnostic fields stay null when the response omits them`() = runTest {
+        // Backwards-compat: the temp / precip overlay still works on responses
+        // that don't include wind / humidity / cloud (legacy fixtures, or a
+        // model run that didn't return those fields yet). The hour survives
+        // because the required temp + precip values are present; the
+        // diagnostic fields just come back null.
+        val hourly = fetcherWith(THREE_MODEL_WITH_HOURLY_NO_DIAGNOSTICS).fetch(london)?.hourly
+            .shouldNotBeNull()
+
+        val ecmwf = hourly.byModel.getValue("ecmwf_ifs04")
+        ecmwf[0].apparentTemperatureC shouldBe (12.0 plusOrMinus 0.0001)
+        ecmwf[0].windSpeedKmh.shouldBeNull()
+        ecmwf[0].relativeHumidityPct.shouldBeNull()
+        ecmwf[0].cloudCoverPct.shouldBeNull()
     }
 
     @Test
@@ -273,6 +294,44 @@ class MultiModelConfidenceFetcherTest {
         // exercise the overlay-parsing path. Times are local (`auto` timezone)
         // ISO strings without trailing Z, matching real Open-Meteo output.
         private val THREE_MODEL_WITH_HOURLY = """
+            {
+              "daily": {
+                "time": ["2026-05-12"],
+                "apparent_temperature_max_ecmwf_ifs04": [21.0],
+                "apparent_temperature_max_gfs_seamless": [21.5],
+                "apparent_temperature_max_icon_seamless": [22.0],
+                "precipitation_probability_max_ecmwf_ifs04": [10],
+                "precipitation_probability_max_gfs_seamless": [15],
+                "precipitation_probability_max_icon_seamless": [20]
+              },
+              "hourly": {
+                "time": ["2026-05-12T00:00", "2026-05-12T01:00", "2026-05-12T02:00"],
+                "apparent_temperature_ecmwf_ifs04": [12.0, 11.5, 11.0],
+                "apparent_temperature_gfs_seamless": [12.2, 11.8, 11.4],
+                "apparent_temperature_icon_seamless": [13.0, 12.6, 12.0],
+                "temperature_2m_ecmwf_ifs04": [14.0, 13.5, 13.0],
+                "temperature_2m_gfs_seamless": [14.2, 13.8, 13.4],
+                "temperature_2m_icon_seamless": [15.0, 14.6, 14.0],
+                "precipitation_probability_ecmwf_ifs04": [10, 15, 20],
+                "precipitation_probability_gfs_seamless": [12, 18, 22],
+                "precipitation_probability_icon_seamless": [18, 22, 28],
+                "wind_speed_10m_ecmwf_ifs04": [8.0, 9.5, 11.0],
+                "wind_speed_10m_gfs_seamless": [7.5, 9.0, 10.5],
+                "wind_speed_10m_icon_seamless": [10.0, 12.0, 13.5],
+                "relative_humidity_2m_ecmwf_ifs04": [78, 80, 82],
+                "relative_humidity_2m_gfs_seamless": [76, 78, 80],
+                "relative_humidity_2m_icon_seamless": [82, 84, 85],
+                "cloud_cover_ecmwf_ifs04": [60, 70, 80],
+                "cloud_cover_gfs_seamless": [65, 72, 78],
+                "cloud_cover_icon_seamless": [40, 55, 70]
+              }
+            }
+        """.trimIndent()
+
+        // Same daily + temp/precip hourly payload but with no wind / humidity
+        // / cloud fields — exercises the backwards-compat path where the
+        // diagnostic fields come back null rather than dropping the hour.
+        private val THREE_MODEL_WITH_HOURLY_NO_DIAGNOSTICS = """
             {
               "daily": {
                 "time": ["2026-05-12"],

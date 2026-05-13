@@ -33,6 +33,10 @@ default English (matching values-pl / values-uk).
     <string name="garment_shorts">Šorts</string>
     <string name="garment_pants">Pantalone</string>
     <string name="garment_jeans">Farmerke</string>
+    <string name="garment_polo">Polo</string>
+    <string name="garment_thin_jacket">Tanka jakna</string>
+    <string name="garment_puffer">Puffer jakna</string>
+    <string name="garment_skirt">Suknja</string>
 
     <string name="settings_clothes_empty">Nema pravila. Dodirni Dodaj za kreiranje.</string>
     <string name="settings_clothes_add">Dodaj</string>
@@ -51,10 +55,20 @@ default English (matching values-pl / values-uk).
     <string name="settings_clothes_cond_temp_above">kada je osećajna temperatura iznad %1$s</string>
     <string name="settings_clothes_cond_precip_above">kada je verovatnoća kiše veća od %.0f%%</string>
 
+    <!-- Clothes settings — title + description. -->
+    <string name="settings_clothes_title">Pravila odevanja</string>
+    <string name="settings_clothes_description">Ako prognoza pređe jedan od ovih pragova, predmet se pojavljuje u tvom dnevnom ClothesCastu.</string>
+
     <string name="today_outfit_top_tshirt">Majica</string>
+    <string name="today_outfit_top_polo">Polo</string>
     <string name="today_outfit_top_sweater">Džemper</string>
+    <string name="today_outfit_top_thin_jacket">Tanka jakna</string>
     <string name="today_outfit_top_thick_jacket">Debela jakna</string>
+    <string name="today_outfit_top_thick_coat">Debeli kaput</string>
+    <string name="today_outfit_top_puffer_jacket">Puffer jakna</string>
     <string name="today_outfit_bottom_shorts">Šorts</string>
+    <string name="today_outfit_bottom_skirt">Suknja</string>
+    <string name="today_outfit_bottom_jeans">Farmerke</string>
     <string name="today_outfit_bottom_long_pants">Pantalone</string>
 
     <string name="insight_lead_today">Danas</string>
@@ -76,6 +90,7 @@ default English (matching values-pl / values-uk).
     <string name="insight_clothes_join_two">%1$s i %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s i %3$s</string>
     <string name="insight_precip">%1$s %2$s.</string>
+    <string name="insight_precip_chance">Moguća %1$s %2$s.</string>
     <string name="insight_precip_at_time">u %1$s</string>
     <string name="insight_precip_overnight">tokom noći</string>
     <string name="insight_condition_clear">Vedro</string>
@@ -88,9 +103,485 @@ default English (matching values-pl / values-uk).
     <string name="insight_condition_thunderstorm">Grmljavina</string>
     <string name="insight_condition_unknown">Nepoznato</string>
     <string name="insight_tie_in">Ponesi %1$s večeras.</string>
+    <string name="insight_tie_in_at_night">Ponesi %1$s.</string>
     <string name="insight_tie_in_with_rain">Ponesi %1$s večeras, kiša u %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Večeras moguća kiša u %2$s, ponesi %1$s.</string>
+    <string name="insight_evening_rain">Večeras kiša u %1$s.</string>
+    <string name="insight_evening_rain_chance">Večeras moguća kiša u %1$s.</string>
     <!-- "15" — preposition "u" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
+
+    <!-- Device-incompatibility error screen. -->
+    <string name="error_device_incompatible">ClothesCast ne može da radi na ovom uređaju — tvoja verzija Androida nema funkciju koju zahteva korisničko sučelje aplikacije (Configuration.fontWeightAdjustment, očekuje se na Androidu 12 i novijim). Obrati se proizvođaču uređaja za sistemsko ažuriranje.</string>
+
+    <!-- Settings — top bar + root navigation list. -->
+    <string name="settings_title">Podešavanja</string>
+    <string name="settings_back">Nazad</string>
+
+    <string name="settings_root_voice">Glas</string>
+    <string name="settings_root_schedule">Raspored</string>
+    <string name="settings_root_region">Region</string>
+    <string name="settings_root_clothes">Odevanje</string>
+    <string name="settings_root_display">Prikaz</string>
+    <string name="settings_root_location">Lokacija</string>
+    <string name="settings_root_calendar">Kalendar</string>
+    <string name="settings_root_privacy">Privatnost</string>
+    <string name="settings_root_about">O aplikaciji</string>
+
+    <string name="settings_root_schedule_subtitle">Obaveštenja i vremena</string>
+    <string name="settings_root_clothes_subtitle">Temperature i kombinacije</string>
+    <string name="settings_root_region_subtitle">Jezici i jedinice</string>
+    <string name="settings_root_voice_subtitle">Provajderi i akcenti</string>
+    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_location_subtitle">Automatski ili odaberi grad</string>
+    <string name="settings_root_calendar_subtitle">Današnji događaji</string>
+    <string name="settings_root_privacy_subtitle">Izveštaji o greškama i korišćenju</string>
+
+    <!-- Display / theme settings. -->
+    <string name="settings_display_theme_title">Tema</string>
+    <string name="settings_display_theme_system">Prati sistemsko podešavanje</string>
+    <string name="settings_display_theme_light">Svetla</string>
+    <string name="settings_display_theme_dark">Tamna</string>
+
+    <string name="settings_display_charts_title">Grafikoni</string>
+    <string name="settings_display_model_spread_label">Prikaži raspršenost modela na grafikonima</string>
+    <string name="settings_display_model_spread_description">Prikazuje satnu prognozu svakog glavnog vremenskog modela na grafikonima temperature i kiše. Korisno za uočavanje kada je prognoza neizvesna.</string>
+
+    <!-- API keys screen. -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Koristi Gemini za visokokvalitetne glasove.</string>
+    <string name="settings_api_key_status_set">Gemini ključ je podešen.</string>
+    <string name="settings_api_key_status_unset">Nema Gemini ključa. Nabavi ga besplatno na aistudio.google.com za korišćenje Gemini glasova.</string>
+    <string name="settings_api_key_placeholder">Nalepi svoj Gemini API ključ</string>
+    <string name="settings_api_key_save">Sačuvaj Gemini ključ</string>
+    <string name="settings_api_key_clear">Obriši sačuvani Gemini ključ</string>
+
+    <!-- Location screen. -->
+    <string name="settings_location_title">Lokacija</string>
+    <string name="settings_location_use_device">Koristi lokaciju uređaja</string>
+    <string name="settings_location_use_device_description">Poslednja aproksimativna lokacija</string>
+    <string name="settings_location_detecting">Otkrivanje…</string>
+    <string name="settings_location_grant_background">Dozvoli</string>
+    <string name="settings_location_background_banner_title">Potrebna trajna lokacija</string>
+    <string name="settings_location_background_banner_body">Bez nje, jutarnja prognoza ne može da čita tvoju lokaciju.</string>
+    <string name="settings_location_unset">Lokacija nije podešena</string>
+    <string name="settings_location_manual_override">Pogrešna lokacija? Podesi ručno</string>
+    <string name="settings_location_manual_override_disclosure">Odabirom grada isključuje se automatsko otkrivanje.</string>
+    <string name="settings_location_clear">Obriši lokaciju</string>
+    <string name="settings_location_search_title">Pretraži lokaciju</string>
+    <string name="settings_location_query_label">Grad ili mesto</string>
+    <string name="settings_location_search">Pretraži</string>
+    <string name="settings_location_searching">Pretraga…</string>
+    <string name="settings_location_no_results">Nema rezultata.</string>
+    <string name="settings_location_rationale_title">Pristup lokaciji</string>
+    <string name="settings_location_rationale_body">ClothesCast čita tvoju lokaciju radi preuzimanja lokalne prognoze.</string>
+    <string name="settings_location_rationale_continue">Nastavi</string>
+    <string name="settings_location_rationale_dismiss">Ne sada</string>
+    <string name="settings_location_background_rationale_title">Dozvoli uvek</string>
+    <string name="settings_location_background_rationale_body">Dozvoli ClothesCastu da čita tvoju lokaciju dok je zatvoren kako bi se jutarnja prognoza ažurirala na vreme.</string>
+    <string name="settings_location_background_rationale_continue">Otvori podešavanja</string>
+    <string name="settings_location_background_rationale_dismiss">Ne sada</string>
+    <string name="settings_location_background_denied_title">Trajni pristup nije odobren</string>
+    <string name="settings_location_background_denied_body">Bez \'Dozvoli uvek\' jutarnja prognoza ne može automatski da se ažurira.</string>
+    <string name="settings_location_background_denied_open">Otvori podešavanja</string>
+    <string name="settings_location_background_denied_keep">Ne sada</string>
+
+    <!-- Schedule screen. -->
+    <string name="settings_schedule_title">Dnevni ClothesCast</string>
+    <string name="settings_schedule_time_label">Vreme</string>
+    <string name="settings_schedule_days_label">Dani u sedmici</string>
+    <string name="settings_daily_mention_evening_events">Pomeni večernje događaje</string>
+
+    <string name="settings_tonight_title">Noćni ClothesCast</string>
+    <string name="settings_tonight_description">Drugi ClothesCast uveče koji pokriva vremensku prognozu za večeras. Mirnih večeri ostaje tih ili se uopšte ne pojavljuje ako je uključeno „Obavesti samo kad ima večernjih događaja"; večerima sa događajima reproducira zvuk i (ako je uključen govorni prikaz) čita se naglas.</string>
+    <string name="settings_tonight_enabled">Prikaži noćni ClothesCast</string>
+    <string name="settings_tonight_time_label">Vreme</string>
+    <string name="settings_tonight_days_label">Dani u sedmici</string>
+    <string name="settings_tonight_notify_only_on_events">Obavesti samo kad ima večernjih događaja</string>
+
+    <string name="settings_delivery_label">Isporuka</string>
+    <string name="settings_delivery_notification_only">Samo obaveštenje</string>
+    <string name="settings_delivery_tts_only">Samo govorni prikaz</string>
+    <string name="settings_delivery_notification_and_tts">Obaveštenje i govorni prikaz</string>
+
+    <!-- Voice screen. -->
+    <string name="settings_tts_engine_title">Glasovni mehanizam</string>
+    <string name="settings_tts_engine_description">Gemini zvuči mnogo prirodnije od glasa uređaja, ali zahteva mrežni poziv u trenutku govora i koristi tvoj API ključ za sintezu (jedan kratak poziv po izgovorenom ClothesCastu). Prelazi na glas uređaja ako Gemini zakaže.</string>
+    <string name="settings_tts_engine_device">Uređaj (offline, besplatno)</string>
+    <string name="settings_tts_engine_gemini">Gemini (visoki kvalitet, online)</string>
+    <string name="settings_tts_voice_label">Glas</string>
+    <string name="settings_tts_voice_dismiss">Gotovo</string>
+    <string name="settings_tts_voice_locale_description">Postavlja akcenat izgovorenog glasa. Ne menja prikazani tekst.</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">Stil</string>
+    <string name="settings_tts_style_weather_forecaster">Vremenski najavljivač</string>
+    <string name="settings_tts_style_pirate">Pirat</string>
+    <string name="settings_tts_style_cowboy">Kauboj</string>
+    <string name="settings_tts_style_shakespearean">Šekspirijanski</string>
+    <string name="settings_tts_style_surfer">Surfer</string>
+    <string name="settings_tts_style_parent">Roditelj</string>
+    <string name="settings_tts_style_child">Dete</string>
+    <string name="settings_tts_style_teenager">Tinejdžer</string>
+    <string name="settings_tts_style_grandparent">Baka/Deda</string>
+    <string name="settings_tts_style_kids_host">Voditelj dečijeg programa</string>
+    <string name="settings_tts_style_radio_host">Voditelj talkbacka</string>
+    <string name="settings_tts_style_morning_dj">Jutarnji DJ</string>
+    <string name="settings_tts_style_science_teacher">Profesor prirodnih nauka</string>
+    <string name="settings_tts_style_historian">Istoričar</string>
+    <string name="settings_tts_style_sportscaster">Sportski komentator</string>
+    <string name="settings_tts_style_stadium_announcer">Najavljivač stadiona</string>
+    <string name="settings_tts_style_storyteller">Pripovedač</string>
+    <string name="settings_tts_style_fitness_instructor">Fitness instruktor</string>
+    <string name="settings_tts_style_morning_presenter">Jutarnji radio voditelj</string>
+    <string name="settings_tts_style_custom">Prilagođeno…</string>
+    <string name="settings_tts_style_custom_label">Prilagođena direktiva</string>
+    <string name="settings_tts_style_custom_placeholder">npr. Čitaj sledeće kao strog bibliotekar koji šapuće</string>
+
+    <!-- Device-voice picker. -->
+    <string name="settings_tts_device_voice_label">Glas uređaja</string>
+    <string name="settings_tts_device_voice_auto">Automatski (najbolji za akcenat)</string>
+    <string name="settings_tts_device_voice_currently">Trenutno: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Učitavanje…</string>
+    <string name="settings_tts_device_voice_network">Mreža</string>
+    <string name="settings_tts_device_voice_offline">Van mreže</string>
+    <string name="settings_tts_install_google_hint">Instaliraj Google TTS za glasove višeg kvaliteta.</string>
+    <string name="settings_tts_install_google_button">Instaliraj Google TTS</string>
+    <string name="settings_tts_test">Testiraj glas</string>
+    <string name="settings_tts_test_in_flight">Testiranje — sačekaj…</string>
+
+    <!-- Region screen — language picker. -->
+    <string name="settings_region_language_title">Jezik</string>
+    <string name="settings_region_language_description">Postavlja jezik prikazanog teksta i obaveštenja.</string>
+    <string name="settings_region_language_system">Prati sistemski jezik</string>
+    <string name="settings_region_language_en_us">Engleski (SAD)</string>
+    <string name="settings_region_language_en_gb">Engleski (Ujedinjeno Kraljevstvo)</string>
+    <string name="settings_region_language_en_au">Engleski (Australija)</string>
+    <string name="settings_region_language_en_ca">Engleski (Kanada)</string>
+    <string name="settings_region_language_en_za">Engleski (Južna Afrika)</string>
+    <string name="settings_region_language_de_de">Nemački (Nemačka)</string>
+    <string name="settings_region_language_de_at">Nemački (Austrija)</string>
+    <string name="settings_region_language_de_ch">Nemački (Švajcarska)</string>
+    <string name="settings_region_language_fr_fr">Francuski (Francuska)</string>
+    <string name="settings_region_language_fr_ca">Francuski (Kanada)</string>
+    <string name="settings_region_language_it_it">Italijanski (Italija)</string>
+    <string name="settings_region_language_es_es">Španski (Španija)</string>
+    <string name="settings_region_language_es_mx">Španski (Meksiko)</string>
+    <string name="settings_region_language_ca_es">Katalonski (Španija)</string>
+    <string name="settings_region_language_ru_ru">Ruski (Rusija)</string>
+    <string name="settings_region_language_pl_pl">Poljski (Poljska)</string>
+    <string name="settings_region_language_hr_hr">Hrvatski (Hrvatska)</string>
+    <string name="settings_region_language_sl_si">Slovenački (Slovenija)</string>
+    <string name="settings_region_language_bg_bg">Bugarski (Bugarska)</string>
+    <string name="settings_region_language_cs_cz">Češki (Češka)</string>
+    <string name="settings_region_language_sk_sk">Slovački (Slovačka)</string>
+    <string name="settings_region_language_hu_hu">Mađarski (Mađarska)</string>
+    <string name="settings_region_language_ro_ro">Rumunski (Rumunija)</string>
+    <string name="settings_region_language_el_gr">Grčki (Grčka)</string>
+    <string name="settings_region_language_uk_ua">Ukrajinski (Ukrajina)</string>
+    <string name="settings_region_language_pt_br">Portugalski (Brazil)</string>
+    <string name="settings_region_language_pt_pt">Portugalski (Portugal)</string>
+    <string name="settings_region_language_nl_nl">Holandski (Holandija)</string>
+    <string name="settings_region_language_sv_se">Švedski (Švedska)</string>
+    <string name="settings_region_language_da_dk">Danski (Danska)</string>
+    <string name="settings_region_language_nb_no">Norveški bokmål (Norveška)</string>
+    <string name="settings_region_language_fi_fi">Finski (Finska)</string>
+    <string name="settings_region_language_et_ee">Estonski (Estonija)</string>
+    <string name="settings_region_language_lv_lv">Latvijski (Latvija)</string>
+    <string name="settings_region_language_lt_lt">Litvanski (Litvanija)</string>
+    <string name="settings_region_language_tr_tr">Turski (Turska)</string>
+    <string name="settings_region_language_id_id">Indonežanski (Indonezija)</string>
+    <string name="settings_region_language_ms_my">Malajski (Malezija)</string>
+    <string name="settings_region_language_fil_ph">Filipinski (Filipini)</string>
+    <string name="settings_region_language_sw_ke">Svahili (Kenija)</string>
+    <string name="settings_region_language_vi_vn">Vijetnamski (Vijetnam)</string>
+    <string name="settings_region_language_th_th">Tajski (Tajland)</string>
+    <string name="settings_region_language_zh_cn">Kineski (pojednostavljeni)</string>
+    <string name="settings_region_language_zh_tw">Kineski (tradicionalni)</string>
+    <string name="settings_region_language_hi_in">Hindi (Indija)</string>
+    <string name="settings_region_language_bn_bd">Bengalski (Bangladeš)</string>
+    <string name="settings_region_language_ja_jp">Japanski (Japan)</string>
+    <string name="settings_region_language_ko_kr">Korejski (Južna Koreja)</string>
+    <string name="settings_region_language_ar_sa">Arapski (Saudijska Arabija)</string>
+    <string name="settings_region_language_he_il">Hebrejski (Izrael)</string>
+    <string name="settings_region_language_fa_ir">Persijski (Iran)</string>
+    <string name="settings_region_language_sq_al">Albanski (Albanija)</string>
+    <string name="settings_region_language_am_et">Amharski (Etiopija)</string>
+
+    <!-- Region screen — units pickers. -->
+    <string name="settings_temperature_unit_title">Jedinica temperature</string>
+    <string name="settings_temperature_unit_celsius">Celzijus (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Frenheit (°F)</string>
+    <string name="settings_distance_unit_title">Jedinica udaljenosti</string>
+    <string name="settings_distance_unit_kilometers">Kilometri</string>
+    <string name="settings_distance_unit_miles">Milje</string>
+
+    <!-- Voice locale picker labels. -->
+    <string name="settings_tts_voice_locale_en_us">Engleski (SAD)</string>
+    <string name="settings_tts_voice_locale_en_gb">Engleski (Ujedinjeno Kraljevstvo)</string>
+    <string name="settings_tts_voice_locale_en_au">Engleski (Australija)</string>
+    <string name="settings_tts_voice_locale_en_ca">Engleski (Kanada)</string>
+    <string name="settings_tts_voice_locale_en_za">Engleski (Južna Afrika)</string>
+    <string name="settings_tts_voice_locale_de_de">Nemački (Nemačka)</string>
+    <string name="settings_tts_voice_locale_de_at">Nemački (Austrija)</string>
+    <string name="settings_tts_voice_locale_de_ch">Nemački (Švajcarska)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Francuski (Francuska)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Francuski (Kanada)</string>
+    <string name="settings_tts_voice_locale_it_it">Italijanski (Italija)</string>
+    <string name="settings_tts_voice_locale_es_es">Španski (Španija)</string>
+    <string name="settings_tts_voice_locale_es_mx">Španski (Meksiko)</string>
+    <string name="settings_tts_voice_locale_ca_es">Katalonski (Španija)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Ruski (Rusija)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Poljski (Poljska)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Hrvatski (Hrvatska)</string>
+    <string name="settings_tts_voice_locale_sl_si">Slovenački (Slovenija)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Bugarski (Bugarska)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Češki (Češka)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Slovački (Slovačka)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Mađarski (Mađarska)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Rumunski (Rumunija)</string>
+    <string name="settings_tts_voice_locale_el_gr">Grčki (Grčka)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Ukrajinski (Ukrajina)</string>
+    <string name="settings_tts_voice_locale_pt_br">Portugalski (Brazil)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Portugalski (Portugal)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Holandski (Holandija)</string>
+    <string name="settings_tts_voice_locale_sv_se">Švedski (Švedska)</string>
+    <string name="settings_tts_voice_locale_da_dk">Danski (Danska)</string>
+    <string name="settings_tts_voice_locale_nb_no">Norveški bokmål (Norveška)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Finski (Finska)</string>
+    <string name="settings_tts_voice_locale_et_ee">Estonski (Estonija)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Latvijski (Latvija)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Litvanski (Litvanija)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Turski (Turska)</string>
+    <string name="settings_tts_voice_locale_id_id">Indonežanski (Indonezija)</string>
+    <string name="settings_tts_voice_locale_ms_my">Malajski (Malezija)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Filipinski (Filipini)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Svahili (Kenija)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Vijetnamski (Vijetnam)</string>
+    <string name="settings_tts_voice_locale_th_th">Tajski (Tajland)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Kineski (pojednostavljeni)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Kineski (tradicionalni)</string>
+    <string name="settings_tts_voice_locale_hi_in">Hindi (Indija)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Bengalski (Bangladeš)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Japanski (Japan)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Korejski (Južna Koreja)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Arapski (Saudijska Arabija)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Arapski (Egipat)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Arapski (Ujedinjeni Arapski Emirati)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Arapski (Maroko)</string>
+    <string name="settings_tts_voice_locale_he_il">Hebrejski (Izrael)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Persijski (Iran)</string>
+    <string name="settings_tts_voice_locale_sq_al">Albanski (Albanija)</string>
+    <string name="settings_tts_voice_locale_am_et">Amharski (Etiopija)</string>
+
+    <!-- Notification channels. -->
+    <string name="notification_channel_daily_insight_name">Dnevni ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">Jutarnji vremenski rezime koji si uključio.</string>
+    <string name="notification_daily_insight_title">Današnji ClothesCast</string>
+
+    <string name="notification_channel_tonight_insight_default_name">Noćni ClothesCast (sa događajima)</string>
+    <string name="notification_channel_tonight_insight_default_description">Večernji vremenski rezime kada večeras imaš događaje u kalendaru. Reprodukuje tvoj podrazumevani zvuk obaveštenja.</string>
+    <string name="notification_channel_tonight_insight_silent_name">Noćni ClothesCast (tihi)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Večernji vremenski rezime kada ti je večer slobodna. Šalje se tiho — možeš da ga pogledaš na zaključanom ekranu, ali neće reprodukovati zvuk.</string>
+    <string name="notification_tonight_insight_title">Večerašnji ClothesCast</string>
+
+    <string name="notification_channel_weather_alerts_name">Upozorenja o nepogodama</string>
+    <string name="notification_channel_weather_alerts_description">Hitna upozorenja za teška ili ekstremna vremenska zbivanja u tvom području. Šalju se čim ih dnevno preuzimanje otkrije.</string>
+    <string name="notification_weather_alert_title">Vremensko upozorenje: %1$s</string>
+
+    <!-- Notification-permission card. -->
+    <string name="settings_notification_permission_title">Obaveštenja su blokirana</string>
+    <string name="settings_notification_permission_description">Bez dozvole za obaveštenja tvoj dnevni ClothesCast nema gde da ode. Dozvoli ih kako bi ClothesCast mogao da se pojavi sutra ujutru.</string>
+    <string name="settings_notification_permission_grant">Dozvoli obaveštenja</string>
+
+    <!-- Calendar opt-in card. -->
+    <string name="settings_calendar_title">Kalendar</string>
+    <string name="settings_calendar_use_events">Koristi današnje događaje iz kalendara</string>
+    <string name="settings_calendar_description_off">Prilagodi jutarnju prognozu današnjim događajima — koriste se samo naslovi i vremena, ništa ne napušta uređaj.</string>
+    <string name="settings_calendar_description_on">Prilagođava jutarnju prognozu današnjim događajima. Koriste se samo naslovi i vremena; ništa ne napušta uređaj.</string>
+    <string name="settings_calendar_grant_permission">Dozvoli pristup kalendaru</string>
+    <string name="settings_calendar_open_settings">Pristup kalendaru odbijen. Dozvoli ga u sistemskim podešavanjima.</string>
+
+    <!-- Debug screen. -->
+    <string name="settings_debug_title">Debug (samo u debug verzijama)</string>
+    <string name="settings_debug_description">Odmah pokreni dnevni ClothesCast tok. Korisno za proveru bez čekanja na zakazano vreme.</string>
+    <string name="settings_debug_fire_now">Pokreni ClothesCast odmah</string>
+    <string name="settings_debug_fire_toast">ClothesCast radni zadatak je u redu čekanja</string>
+
+    <!-- About screen. -->
+    <string name="settings_about_title">O aplikaciji</string>
+    <string name="settings_about_version">Verzija %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s verzija</string>
+    <string name="settings_about_source">Izvorni kod na GitHubu</string>
+    <string name="settings_about_dontkillmyapp">Pozadinska ograničenja (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Podeli izveštaj o grešci</string>
+    <string name="settings_about_version_copied">Verzija kopirana u međuspremnik</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">Izveštaji o greškama i korišćenju</string>
+    <string name="settings_privacy_telemetry_label">Šalji podatke o greškama i korišćenju</string>
+    <string name="settings_privacy_telemetry_description">Šalje anonimne izveštaje o greškama i agregirane statistike korišćenja kako bi pomogao programeru da ispravlja greške i odlučuje koje funkcije da zadrži.</string>
+    <string name="settings_privacy_telemetry_limits">Nikad se ne šalje: događaji iz kalendara, koordinate lokacije ili nazivi mesta, tekst rezimea ili obaveštenja, API ključevi, precizni GPS, ID-ovi za oglašavanje.</string>
+    <string name="settings_privacy_open_policy">Pročitaj potpunu politiku privatnosti</string>
+
+    <!-- Today screen. -->
+    <string name="today_title">Danas</string>
+    <string name="today_open_settings">Otvori podešavanja</string>
+    <string name="today_more_options">Više opcija</string>
+    <string name="today_report_a_bug">Prijavi grešku</string>
+    <string name="today_refresh">Osveži</string>
+    <string name="today_refresh_toast_daily">Osvežavam tvoj dnevni ClothesCast — pojaviće se uskoro.</string>
+    <string name="today_refresh_toast_nightly">Osvežavam tvoj noćni ClothesCast — pojaviće se uskoro.</string>
+    <string name="today_empty_title">Još nema ClothesCasta</string>
+    <string name="today_empty_subtitle">Tvoj jutarnji ClothesCast pojaviće se ovde čim bude generisan. Podesi svoju lokaciju u podešavanjima, a zatim dodirni Preuzmi odmah.</string>
+    <string name="today_fetch_now">Preuzmi odmah</string>
+    <string name="today_generated_at">Generisano u %1$s</string>
+    <string name="today_location_unknown">Tvoja lokacija</string>
+
+    <string name="today_outfit_title">Šta obući</string>
+    <string name="today_outfit_label_today">Danas</string>
+    <string name="today_outfit_label_tonight">Večeras</string>
+    <string name="today_outfit_label_tomorrow">Sutra</string>
+
+    <!-- "Why this outfit?" rationale dialog. -->
+    <string name="today_rationale_title">Zašto ova kombinacija?</string>
+    <string name="today_rationale_show">Zašto?</string>
+    <string name="today_rationale_dismiss">Razumeo</string>
+    <string name="today_rationale_threshold_decrease">Smanji prag za 1 stepen</string>
+    <string name="today_rationale_threshold_increase">Povećaj prag za 1 stepen</string>
+    <string name="today_rationale_threshold_changed_hint">Osveži da vidiš novu kombinaciju.</string>
+    <string name="today_rationale_unavailable">Nema dostupnog objašnjenja — otvori aplikaciju posle sledećeg osvežavanja.</string>
+    <string name="today_rationale_min_below_with_time">Osećajna minimalna %1$s%2$s u %3$s, ispod %4$s%2$s</string>
+    <string name="today_rationale_min_below">Osećajna minimalna %1$s%2$s, ispod %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Osećajna minimalna %1$s%2$s u %3$s, najmanje %4$s%2$s</string>
+    <string name="today_rationale_min_above">Osećajna minimalna %1$s%2$s, najmanje %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Osećajna maksimalna samo %1$s%2$s u %3$s, ispod %4$s%2$s</string>
+    <string name="today_rationale_max_below">Osećajna maksimalna samo %1$s%2$s, ispod %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Osećajna maksimalna %1$s%2$s u %3$s, najmanje %4$s%2$s</string>
+    <string name="today_rationale_max_above">Osećajna maksimalna %1$s%2$s, najmanje %3$s%2$s</string>
+
+    <!-- Home-screen App Widget. -->
+    <string name="widget_label">Kombinacija</string>
+    <string name="widget_description">Kombinacija za trenutni period na prvi pogled.</string>
+    <string name="widget_empty_title">Još nema kombinacije</string>
+    <string name="widget_empty_subtitle">Dodirni za otvaranje ClothesCasta</string>
+
+    <!-- Hourly forecast card. -->
+    <string name="today_forecast_title">Prognoza po satu</string>
+    <string name="today_forecast_min_max">Osećaj %1$d – %2$d%3$s · Vazduh %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Osećajna temperatura (%1$s) po satu · dodirni za temperaturu vazduha</string>
+    <string name="today_forecast_legend_air">Temperatura vazduha (%1$s) po satu · dodirni za osećajnu temperaturu</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Verovatnoća kiše</string>
+    <string name="today_precipitation_peak">Vrhunac %1$d%% u %2$s</string>
+    <string name="today_precipitation_dry">Danas se ne očekuje kiša</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">Modeli:</string>
+    <string name="today_chart_main_line_label">Kombinovano</string>
+    <string name="today_chart_divergence_summary">Modeli se najviše razlikuju u %1$s (Δ %2$.1f%3$s osećajna temp.) — uglavnom %4$s, %5$s</string>
+
+    <!-- Divergence factor names. -->
+    <string name="today_factor_air_temperature">temperatura vazduha</string>
+    <string name="today_factor_wind_speed">brzina vetra</string>
+    <string name="today_factor_cloud_cover">oblačnost</string>
+    <string name="today_factor_humidity">vlažnost</string>
+
+    <!-- Diagnostic cards. -->
+    <string name="today_wind_title">Brzina vetra</string>
+    <string name="today_wind_subtitle">Brzina vetra po modelu (%1$s) po satu</string>
+    <string name="today_cloud_title">Oblačnost</string>
+    <string name="today_cloud_subtitle">Ukupna oblačnost po modelu (%) po satu</string>
+    <string name="today_humidity_title">Vlažnost</string>
+    <string name="today_humidity_subtitle">Relativna vlažnost po modelu (%) po satu</string>
+
+    <!-- Confidence chip. -->
+    <string name="today_confidence_high">Visoka pouzdanost — glavni modeli se slažu</string>
+    <string name="today_confidence_medium">Srednja pouzdanost</string>
+    <string name="today_confidence_low">Niska pouzdanost — prognoze se razlikuju</string>
+    <string name="today_confidence_spread">Raspršenost: %1$.1f°C, %2$.0f%% kiše za %3$d modela</string>
+
+    <!-- Low-confidence callout banner. -->
+    <string name="today_low_confidence_callout_title">Prognoze se danas razlikuju</string>
+    <string name="today_low_confidence_callout_body">Temperatura varira za %1$.1f°C, a verovatnoća kiše za %2$.0f%% između %3$d modela.</string>
+
+    <!-- Work-status banners. -->
+    <string name="today_working">Preuzimam tvoj ClothesCast…</string>
+    <string name="today_retrying">Poslednji pokušaj nije uspeo — ponavljam…</string>
+    <string name="today_failed_title">Poslednji pokušaj nije uspeo</string>
+    <string name="today_failed_unexpected_http">Neočekivana HTTP greška od servisa za prognozu.</string>
+    <string name="today_failed_unhandled">Došlo je do neočekivane greške.</string>
+    <string name="today_failed_no_location">Nismo mogli da dobijemo tvoju lokaciju. Dozvoli trajni pristup lokaciji ili podesi grad u podešavanjima.</string>
+    <string name="today_failed_show_details">Prikaži detalje</string>
+    <string name="today_failed_hide_details">Sakrij detalje</string>
+
+    <!-- Location required banner. -->
+    <string name="today_location_required_title">Podesi svoju lokaciju</string>
+    <string name="today_location_required_body">ClothesCast treba da zna gde se nalaziš kako bi preuzeo prognozu. Dozvoli trajni pristup lokaciji ili odaberi grad.</string>
+    <string name="today_location_required_action">Otvori podešavanja lokacije</string>
+
+    <!-- Crash-report banner. -->
+    <string name="today_crash_banner_title">Poslednje pokretanje se srušilo</string>
+    <string name="today_crash_banner_body">Izveštaj o rušenju sačuvan je na tvom uređaju. Podeliti ga kako bi se greška ispravila? Ništa se ne šalje dok ne odabereš odredište.</string>
+    <string name="today_crash_banner_share">Podeli izveštaj</string>
+    <string name="today_crash_banner_dismiss">Zatvori</string>
+
+    <!-- In-app update banner. -->
+    <string name="today_update_available_title">Dostupno ažuriranje</string>
+    <string name="today_update_available_body">Novija verzija ClothesCasta je dostupna na Play Storeu.</string>
+    <string name="today_update_available_action">Ažuriraj</string>
+    <string name="today_update_available_dismiss">Ne sada</string>
+    <string name="today_update_downloaded_body">Ažuriranje preuzeto. Ponovo pokreni da završiš instalaciju.</string>
+    <string name="today_update_downloaded_action">Ponovo pokreni</string>
+
+    <!-- Telemetry notice banner. -->
+    <string name="today_telemetry_notice_title">Izveštaji o greškama i korišćenju su uključeni</string>
+    <string name="today_telemetry_notice_body">ClothesCast šalje anonimne izveštaje o greškama i analitiku korišćenja radi ispravljanja grešaka. Podaci kalendara, lokacija ili tekst rezimea nisu uključeni. Isključi u bilo kom trenutku u podešavanjima.</string>
+    <string name="today_telemetry_notice_open_settings">Otvori podešavanja privatnosti</string>
+    <string name="today_telemetry_notice_dismiss">Zatvori</string>
+
+    <!-- Onboarding flow. -->
+    <string name="onboarding_title">Dobrodošao u ClothesCast</string>
+    <string name="onboarding_subtitle">Tri brza izbora i gotovo. Sve ostalo možeš da podesiš u podešavanjima.</string>
+    <string name="onboarding_subtitle_tv">Dva brza izbora i gotovo. Sve ostalo možeš da podesiš u podešavanjima.</string>
+    <string name="onboarding_notifications_title">Obaveštenja</string>
+    <string name="onboarding_notifications_description">Potrebno za isporuku tvog dnevnog ClothesCasta.</string>
+    <string name="onboarding_notifications_grant">Dozvoli obaveštenja</string>
+    <string name="onboarding_location_title">Lokacija</string>
+    <string name="onboarding_location_description">Preuzimanje prognoze za tvoju aproksimativnu lokaciju.</string>
+    <string name="onboarding_location_grant">Dozvoli pristup lokaciji</string>
+    <string name="onboarding_location_grant_background">Dozvoli trajni pristup lokaciji</string>
+    <string name="onboarding_location_background_needed">Još jedan korak: ClothesCast treba \'Dozvoli uvek\' kako bi jutarnja prognoza mogla da čita tvoju lokaciju dok je aplikacija zatvorena.</string>
+    <string name="onboarding_location_denied_hint">Pristup lokaciji odbijen. Umesto toga možeš ručno da odabereš grad.</string>
+    <string name="onboarding_location_enter_manual">Unesi lokaciju ručno</string>
+    <string name="onboarding_location_enter_manual_hint">Možeš ručno da uneseš svoju lokaciju ako odbijete pristup lokaciji ili ako je lokacija uređaja netačna.</string>
+    <string name="onboarding_location_using_device">Koristimo lokaciju tvog uređaja svakog jutra.</string>
+    <string name="onboarding_gemini_title">Gemini API ključ</string>
+    <string name="onboarding_gemini_description">Koristi Gemini za visokokvalitetne glasove.</string>
+    <string name="onboarding_step_done">Gotovo</string>
+    <string name="onboarding_skip">Preskoči za sada</string>
+    <string name="onboarding_continue">Nastavi</string>
+    <string name="onboarding_pair_from_phone">Upari putem telefona</string>
+
+    <!-- Phone-pairing screen. -->
+    <string name="pairing_title">Skeniraj za uparivanje</string>
+    <string name="pairing_instructions">Skeniraj ovaj QR kod telefonom, zatim nalepi svoj Gemini API ključ u obrazac koji se otvori. Ključ će biti poslat direktno na ovaj TV putem kućnog Wi-Fi-ja — bez posrednika u oblaku.</string>
+    <string name="pairing_qr_description">QR kod koji vodi na %1$s</string>
+    <string name="pairing_cancel">Otkaži</string>
+    <string name="pairing_received">Ključ primljen — čuvanje…</string>
+    <string name="pairing_timeout_title">Prozor za uparivanje je istekao</string>
+    <string name="pairing_timeout_body">Petominutni prozor za uparivanje je zatvoren. Dodirni Pokušaj ponovo da otvoriš novi.</string>
+    <string name="pairing_error_title">Uparivanje se nije moglo pokrenuti</string>
+    <string name="pairing_error_body">Proveri da li je TV povezan na Wi-Fi i pokušaj ponovo.</string>
+    <string name="pairing_retry">Pokušaj ponovo</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">Podeliti izveštaj o grešci?</string>
+    <string name="bug_report_consent_body">Ovo pomaže u dijagnostikovanju problema. Izveštaj sadrži osetljive lične podatke, uključujući tvoju lokaciju, podešavanja aplikacije i nedavnu aktivnost. Moći ćeš da ga pregledaš i urediš pre slanja.</string>
+    <string name="bug_report_consent_dont_show_again">Ne prikazuj više</string>
+    <string name="bug_report_consent_continue">Nastavi</string>
+    <string name="bug_report_consent_cancel">Otkaži</string>
 
 </resources>

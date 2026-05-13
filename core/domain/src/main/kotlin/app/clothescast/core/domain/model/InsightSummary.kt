@@ -119,29 +119,35 @@ enum class PrecipLikelihood { LIKELY, POSSIBLE }
 data class CalendarTieInClause(val item: String)
 
 /**
- * Evening-event tie-in for the morning insight: a clothes [item] hinted at by
- * an evening calendar event. The formatter renders this as "Bring <item>
- * tonight." — no event title, for the same off-device-prose reason as
+ * Evening-event tie-in for the morning insight: clothes [items] hinted at by
+ * an evening calendar event. The formatter renders this as "Tonight, bring
+ * <items>." — no event title, for the same off-device-prose reason as
  * [CalendarTieInClause]. Only emitted on [ForecastPeriod.TODAY] when the user
  * has the "Mention evening events" setting on.
  *
- * When the evening forecast slice has rain ≥ 30%, [rainTime] carries the peak
- * hour and the formatter folds it into the same sentence ("Bring an umbrella
- * tonight, rain at 9pm.") — keeps the morning insight's mention of evening rain
- * tied to the evening event, rather than emitting a second precip clause that
- * would compete with the morning slice's own precip clause.
+ * [items] carries every clothes item the night needs that the day didn't
+ * already announce — when the night triggers a jacket *and* coat the day
+ * didn't, both surface ("Tonight, bring a jacket and coat."). Empty list
+ * indicates the bare-rain emission path (per-model rain spotted, no clothes
+ * delta) where the rain mention is the entire clause; in that case the
+ * formatter renders "Tonight, rain at 9pm." (or "Tonight, chance of rain at
+ * 9pm." when [likelihood] is POSSIBLE).
  *
- * [item] is nullable so the clause can also fire on per-model evening rain
- * alone, with no clothes rule triggered for the tonight window — the user
- * still wants to know that a model spotted rain when they have an evening
- * event coming up, even without a precip-keyed rule on the books. In that
- * case the formatter renders a bare "Rain tonight at 9pm." (or "Chance of
- * rain tonight at 9pm." when [likelihood] is POSSIBLE). [likelihood] is only
- * meaningful when [rainTime] is set; it defaults to LIKELY for back-compat
- * with cached payloads written before the field existed.
+ * When the evening forecast slice has rain ≥ 30%, [rainTime] carries the peak
+ * hour and the formatter folds it into the same sentence ("Tonight, rain at
+ * 9pm, bring a jacket.") — keeps the morning insight's mention of evening rain
+ * tied to the evening event, rather than emitting a second precip clause that
+ * would compete with the morning slice's own precip clause. "umbrella" is
+ * stripped from [items] in that case — the rain mention already covers what
+ * an umbrella's for — falling back to bare-rain prose if it was the only
+ * item.
+ *
+ * [likelihood] is only meaningful when [rainTime] is set; it defaults to
+ * LIKELY for back-compat with cached payloads written before the field
+ * existed.
  */
 data class EveningEventTieInClause(
-    val item: String?,
+    val items: List<String> = emptyList(),
     val rainTime: LocalTime? = null,
     val likelihood: PrecipLikelihood = PrecipLikelihood.LIKELY,
 )

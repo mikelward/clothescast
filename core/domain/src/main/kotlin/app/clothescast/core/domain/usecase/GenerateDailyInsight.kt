@@ -271,13 +271,8 @@ class GenerateDailyInsight(
 
         if (deltaItems.isEmpty() && precip == null) return null
 
-        val item = deltaItems.firstOrNull { it.equals("umbrella", ignoreCase = true) }
-            ?: deltaItems.firstOrNull()
-        // TODO: rewording — "Tonight, bring an X" reads more naturally than
-        // "Bring an X tonight" in some locales. Leave the current template
-        // shape for now (formatter resource).
         return EveningEventTieInClause(
-            item = item,
+            items = deltaItems,
             rainTime = precip?.time,
             likelihood = precip?.likelihood ?: PrecipLikelihood.LIKELY,
         )

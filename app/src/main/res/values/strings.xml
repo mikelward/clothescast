@@ -660,10 +660,14 @@
     <string name="insight_lead_today">Today</string>
     <string name="insight_lead_tonight">Tonight</string>
 
-    <!-- Single-band sentence: %1$s = lead-in ("Today"), %2$s = band label ("mild"). -->
-    <string name="insight_band_single">%1$s will be %2$s.</string>
+    <!-- Single-band sentence: %1$s = lead-in ("Today"), %2$s = band label ("mild").
+         The comma-fronted "Today, it will be …" / "Tonight, it will be …" structure
+         is symmetric with how tie-in sentences front their own time marker
+         ("Tonight, bring a jacket.") so the insight reads as a series of
+         "<time>, <content>" beats. -->
+    <string name="insight_band_single">%1$s, it will be %2$s.</string>
     <!-- Range-band sentence: %1$s = lead-in, %2$s = low band, %3$s = high band. -->
-    <string name="insight_band_range">%1$s will be %2$s to %3$s.</string>
+    <string name="insight_band_range">%1$s, it will be %2$s to %3$s.</string>
 
     <!-- Band labels — used inside the band-sentence templates above. -->
     <string name="insight_band_freezing">freezing</string>
@@ -674,8 +678,12 @@
     <string name="insight_band_hot">hot</string>
 
     <!-- Day-on-day temperature delta. %1$d is the rounded degree difference. -->
-    <string name="insight_delta_warmer">It will be %1$d° warmer than yesterday.</string>
-    <string name="insight_delta_cooler">It will be %1$d° cooler than yesterday.</string>
+    <!-- Sentence fragment intentionally: the preceding band sentence
+         ("Today, it will be cool to mild.") already established the
+         subject, so a second "It will be …" reads as a stutter. The
+         delta line stands as a short factual addendum. -->
+    <string name="insight_delta_warmer">%1$d° warmer than yesterday.</string>
+    <string name="insight_delta_cooler">%1$d° cooler than yesterday.</string>
 
     <!-- Severe-weather alert prefix. %1$s = event name (e.g. "Tornado Warning"). -->
     <string name="insight_alert">Alert: %1$s.</string>
@@ -755,23 +763,39 @@
     <string name="insight_condition_unknown">Unknown</string>
 
     <!--
-    Tie-in clause — appended after the precip clause on TONIGHT (when the precip
-    peak overlaps a calendar event) or on TODAY's morning insight (when the user
-    has "Mention evening events" on and there's an evening event). %1$s = item
-    phrase (with article, via the same phraser as clothes). No event title or
-    time deliberately: titles never flow off-device (the prose is fed to TTS
-    engines over BYOK keys), and the "tonight" anchor is enough — the listener
-    already knows their schedule.
+    Tie-in clause used when the sentence introduces the evening context from a
+    morning-period insight (today's "Mention evening events" path, and also the
+    umbrella-style clothes-carry split). Fronted with "Tonight," so the time
+    marker sits up front; pairs with insight_tie_in_at_night, which is the
+    no-prefix counterpart used on TONIGHT insights where the band lead has
+    already established the night context. %1$s = item phrase (with article,
+    via the same phraser as clothes). No event title or time deliberately:
+    titles never flow off-device (the prose is fed to TTS engines over BYOK
+    keys), and the "Tonight," anchor is enough — the listener already knows
+    their schedule.
     -->
-    <string name="insight_tie_in">Bring %1$s tonight.</string>
+    <string name="insight_tie_in">Tonight, bring %1$s.</string>
+    <!--
+    No-prefix counterpart of insight_tie_in: used on a TONIGHT insight, where
+    the band lead ("Tonight, it will be …") has already established the night
+    context, so a second "Tonight," on this sentence would just repeat the
+    intro. %1$s = item phrase.
+    -->
+    <string name="insight_tie_in_at_night">Bring %1$s.</string>
     <!--
     Variant of insight_tie_in for the morning insight's evening tie-in when the
     evening forecast also has rain ≥ 30%. Folds the rain time into the same
     sentence so the morning insight mentions evening rain alongside the evening
     clothing tip, without emitting a second precip clause that would compete
-    with the morning slice's own. %1$s = item phrase, %2$s = spoken time.
+    with the morning slice's own. Rain clause leads the item ("Tonight, rain
+    at 9pm, bring a jacket.") so the sentence reads weather-then-action,
+    mirroring how the day insight orders precip before the carry. "umbrella"
+    is stripped from the items by the formatter when this template is used
+    — the rain mention already covers what an umbrella's for — so the
+    template never has to apologise for "bring an umbrella, rain at 9pm."
+    %1$s = item phrase, %2$s = spoken time.
     -->
-    <string name="insight_tie_in_with_rain">Bring %1$s tonight, rain at %2$s.</string>
+    <string name="insight_tie_in_with_rain">Tonight, rain at %2$s, bring %1$s.</string>
     <!--
     POSSIBLE-tier counterpart of insight_tie_in_with_rain: a clothes rule
     triggered for the evening but only one per-model series flagged the
@@ -779,24 +803,23 @@
     doesn't render with the same definite tone as a majority-of-models
     agreement. %1$s = item phrase, %2$s = spoken time.
     -->
-    <string name="insight_tie_in_with_rain_chance">Bring %1$s tonight, chance of rain at %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Tonight, chance of rain at %2$s, bring %1$s.</string>
     <!--
     Bare-rain variant of the evening tie-in for the morning insight: emitted
     when the user has an evening event with a location and the per-model
     forecast tier spots rain ≥ 50% (majority of models agree) at some hour in
     the tonight window, but no clothes rule fired for that period. The
     morning insight stays silent on clothing because nothing's been picked
-    yet — the rain mention itself is the point. %1$s = spoken time. Mirrors
-    insight_precip's verbosity ("Rain at 9pm" → "Rain tonight at 9pm")
-    rather than introducing a separate "tonight" lead-in clause, since this
-    sits alongside today's morning band/clothes/precip prose where "tonight"
-    is the disambiguation the listener needs.
+    yet — the rain mention itself is the point. %1$s = spoken time.
+    Fronts the "Tonight," time marker so the bare-rain sentence reads in
+    the same "<time>, <content>." shape as the band lead and the item-led
+    tie-in templates.
     -->
-    <string name="insight_evening_rain">Rain tonight at %1$s.</string>
+    <string name="insight_evening_rain">Tonight, rain at %1$s.</string>
     <!--
     POSSIBLE-tier counterpart of insight_evening_rain: only one per-model
     series flagged the tonight hour ≥ 30%, so we hedge the wording. Matches
     insight_precip_chance's "Chance of rain" pattern. %1$s = spoken time.
     -->
-    <string name="insight_evening_rain_chance">Chance of rain tonight at %1$s.</string>
+    <string name="insight_evening_rain_chance">Tonight, chance of rain at %1$s.</string>
 </resources>

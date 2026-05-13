@@ -47,109 +47,121 @@ class InsightFormatterTest {
 
     @Test
     fun `band-only insight emits the lead-in and label`() {
-        subject.format(summary()) shouldBe "Today will be mild."
+        subject.format(summary()) shouldBe "Today, it will be mild."
     }
 
     @Test
     fun `band emits a low-to-high range when min and max fall in different bands`() {
         subject.format(summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.MILD))) shouldBe
-            "Today will be cool to mild."
+            "Today, it will be cool to mild."
     }
 
     @Test
     fun `tonight period switches the lead-in`() {
-        subject.format(summary(period = ForecastPeriod.TONIGHT)) shouldBe "Tonight will be mild."
+        subject.format(summary(period = ForecastPeriod.TONIGHT)) shouldBe "Tonight, it will be mild."
     }
 
     @Test
     fun `delta clause emits warmer with rounded degrees`() {
         val out = subject.format(summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)))
-        out shouldBe "Today will be mild. It will be 5° warmer than yesterday."
+        out shouldBe "Today, it will be mild. 5° warmer than yesterday."
     }
 
     @Test
     fun `delta clause emits cooler`() {
         val out = subject.format(summary(delta = DeltaClause(6, DeltaClause.Direction.COOLER)))
-        out shouldBe "Today will be mild. It will be 6° cooler than yesterday."
+        out shouldBe "Today, it will be mild. 6° cooler than yesterday."
     }
 
     @Test
     fun `clothes with a single article-able item emits 'a sweater'`() {
         subject.format(summary(clothes = ClothesClause(listOf("sweater")))) shouldBe
-            "Today will be mild. Wear a sweater."
+            "Today, it will be mild. Wear a sweater."
     }
 
     @Test
-    fun `clothes picks 'an' before vowel-leading items`() {
+    fun `clothes containing only an umbrella renders no clothes sentence`() {
+        // Accessories (umbrella) are filtered out of the rendered prose
+        // entirely until the accessory catalog lands. The rule still fired
+        // (and a precip clause would still warn about rain elsewhere), but
+        // there's no garment to "Wear" so the clothes sentence drops out.
         subject.format(summary(clothes = ClothesClause(listOf("umbrella")))) shouldBe
-            "Today will be mild. Wear an umbrella."
+            "Today, it will be mild."
     }
 
     @Test
     fun `clothes normalizes capitalized english items mid-sentence`() {
         subject.format(summary(clothes = ClothesClause(listOf("Sweater", "Jacket")))) shouldBe
-            "Today will be mild. Wear a sweater and jacket."
+            "Today, it will be mild. Wear a sweater and jacket."
     }
 
     @Test
     fun `clothes drops the article on plural-looking items`() {
         subject.format(summary(clothes = ClothesClause(listOf("shorts")))) shouldBe
-            "Today will be mild. Wear shorts."
+            "Today, it will be mild. Wear shorts."
     }
 
     @Test
     fun `clothes joins two items with 'and' and only the first item gets an article`() {
         subject.format(summary(clothes = ClothesClause(listOf("sweater", "jacket")))) shouldBe
-            "Today will be mild. Wear a sweater and jacket."
+            "Today, it will be mild. Wear a sweater and jacket."
     }
 
     @Test
-    fun `clothes Oxford-joins three items with article only on the first`() {
-        subject.format(summary(clothes = ClothesClause(listOf("sweater", "jacket", "umbrella")))) shouldBe
-            "Today will be mild. Wear a sweater, jacket, and umbrella."
+    fun `clothes Oxford-joins three garments with article only on the first`() {
+        subject.format(summary(clothes = ClothesClause(listOf("sweater", "jacket", "coat")))) shouldBe
+            "Today, it will be mild. Wear a sweater, jacket, and coat."
     }
 
     @Test
-    fun `clothes Oxford-joins four items`() {
+    fun `clothes Oxford-joins four garments`() {
         subject.format(
-            summary(clothes = ClothesClause(listOf("sweater", "jacket", "shorts", "umbrella"))),
-        ) shouldBe "Today will be mild. Wear a sweater, jacket, shorts, and umbrella."
+            summary(clothes = ClothesClause(listOf("sweater", "jacket", "shorts", "coat"))),
+        ) shouldBe "Today, it will be mild. Wear a sweater, jacket, shorts, and coat."
+    }
+
+    @Test
+    fun `clothes with garments and umbrella keeps only the garments`() {
+        // Umbrella is silenced; the wear sentence carries the surviving
+        // garments.
+        subject.format(summary(clothes = ClothesClause(listOf("sweater", "jacket", "umbrella")))) shouldBe
+            "Today, it will be mild. Wear a sweater and jacket."
     }
 
     @Test
     fun `precip clause emits with spoken peak hour and capitalised type`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)))) shouldBe
-            "Today will be mild. Rain at 3pm."
+            "Today, it will be mild. Rain at 3pm."
     }
 
     @Test
     fun `precip clause says 'noon' for 12-00`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.DRIZZLE, LocalTime.NOON))) shouldBe
-            "Today will be mild. Drizzle at noon."
+            "Today, it will be mild. Drizzle at noon."
     }
 
     @Test
     fun `precip clause says 'overnight' for early-morning peak`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(2, 0)))) shouldBe
-            "Today will be mild. Rain overnight."
+            "Today, it will be mild. Rain overnight."
     }
 
     @Test
     fun `precip clause says 'overnight' for midnight peak`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.SNOW, LocalTime.MIDNIGHT))) shouldBe
-            "Today will be mild. Snow overnight."
+            "Today, it will be mild. Snow overnight."
     }
 
     @Test
     fun `precip clause uses 12-hour pm form for late-evening peak`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(23, 0)))) shouldBe
-            "Today will be mild. Rain at 11pm."
+            "Today, it will be mild. Rain at 11pm."
     }
 
     @Test
     fun `precip clause renders non-zero minutes`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 30)))) shouldBe
-            "Today will be mild. Rain at 3:30pm."
+            "Today, it will be mild. Rain at 3:30pm."
     }
 
     @Test
@@ -162,7 +174,7 @@ class InsightFormatterTest {
                     PrecipLikelihood.POSSIBLE,
                 ),
             ),
-        ) shouldBe "Today will be mild. Chance of rain at 3pm."
+        ) shouldBe "Today, it will be mild. Chance of rain at 3pm."
     }
 
     @Test
@@ -178,17 +190,22 @@ class InsightFormatterTest {
                     PrecipLikelihood.POSSIBLE,
                 ),
             ),
-        ) shouldBe "Today will be mild. Chance of drizzle at noon."
+        ) shouldBe "Today, it will be mild. Chance of drizzle at noon."
     }
 
     @Test
     fun `alert clause emits before the band`() {
         val out = subject.format(summary(alert = AlertClause("Tornado Warning")))
-        out shouldBe "Alert: Tornado Warning. Today will be mild."
+        out shouldBe "Alert: Tornado Warning. Today, it will be mild."
     }
 
     @Test
-    fun `calendar tie-in renders 'Bring a item tonight' with no event title`() {
+    fun `umbrella-with-rain on TONIGHT renders just the precip clause`() {
+        // Pre-PR this rendered "Wear an umbrella. Rain at 9pm. Bring an
+        // umbrella tonight." — three sentences of the same message. With
+        // accessories silenced, the umbrella is gone from the wear sentence
+        // AND from the calendar tie-in (which now matches an accessory item
+        // and skips it), leaving the bare precip line.
         val out = subject.format(
             summary(
                 period = ForecastPeriod.TONIGHT,
@@ -197,20 +214,50 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause("umbrella"),
             ),
         )
-        out shouldBe "Tonight will be mild. Wear an umbrella. Rain at 9pm. Bring an umbrella tonight."
+        out shouldBe "Tonight, it will be mild. Rain at 9pm."
     }
 
     @Test
-    fun `evening event tie-in renders bare rain when item is null and rain time is set`() {
+    fun `calendar tie-in on TONIGHT uses the no-prefix bring template`() {
+        // The band lead already says "Tonight, it will be …" so the tie-in
+        // doesn't repeat the "Tonight" intro — the resource resolves to
+        // insight_tie_in_at_night ("Bring …") instead of insight_tie_in
+        // ("Tonight, bring …").
+        val out = subject.format(
+            summary(
+                period = ForecastPeriod.TONIGHT,
+                calendarTieIn = CalendarTieInClause("sweater"),
+            ),
+        )
+        out shouldBe "Tonight, it will be mild. Bring a sweater."
+    }
+
+    @Test
+    fun `tie-in is suppressed when its item is already in the clothes list`() {
+        // Both clauses naming "sweater" would emit "Wear a sweater. Bring a
+        // sweater tonight." The dedup drops the tie-in since it adds no new
+        // vocabulary.
+        val out = subject.format(
+            summary(
+                period = ForecastPeriod.TONIGHT,
+                clothes = ClothesClause(listOf("sweater")),
+                calendarTieIn = CalendarTieInClause("sweater"),
+            ),
+        )
+        out shouldBe "Tonight, it will be mild. Wear a sweater."
+    }
+
+    @Test
+    fun `evening event tie-in renders bare rain when items are empty and rain time is set`() {
         val out = subject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
-                    item = null,
+                    items = emptyList(),
                     rainTime = LocalTime.of(21, 0),
                 ),
             ),
         )
-        out shouldBe "Today will be mild. Rain tonight at 9pm."
+        out shouldBe "Today, it will be mild. Tonight, rain at 9pm."
     }
 
     @Test
@@ -218,63 +265,128 @@ class InsightFormatterTest {
         val out = subject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
-                    item = null,
+                    items = emptyList(),
                     rainTime = LocalTime.of(21, 0),
                     likelihood = PrecipLikelihood.POSSIBLE,
                 ),
             ),
         )
-        out shouldBe "Today will be mild. Chance of rain tonight at 9pm."
+        out shouldBe "Today, it will be mild. Tonight, chance of rain at 9pm."
     }
 
     @Test
-    fun `evening event tie-in is omitted when item is null and rain time is null too`() {
+    fun `evening event tie-in is omitted when items are empty and rain time is null too`() {
         val out = subject.format(
             summary(
-                eveningEventTieIn = EveningEventTieInClause(item = null, rainTime = null),
+                eveningEventTieIn = EveningEventTieInClause(items = emptyList(), rainTime = null),
             ),
         )
-        out shouldBe "Today will be mild."
+        out shouldBe "Today, it will be mild."
     }
 
     @Test
-    fun `evening event tie-in renders 'Bring a item tonight' when no evening rain`() {
+    fun `evening event tie-in renders 'Tonight, bring' when no evening rain`() {
         val out = subject.format(
             summary(
-                eveningEventTieIn = EveningEventTieInClause("jacket"),
+                eveningEventTieIn = EveningEventTieInClause(items = listOf("jacket")),
             ),
         )
-        out shouldBe "Today will be mild. Bring a jacket tonight."
+        out shouldBe "Today, it will be mild. Tonight, bring a jacket."
     }
 
     @Test
-    fun `evening event tie-in folds rain time into the same sentence when present`() {
+    fun `evening event tie-in joins multiple delta items into one sentence`() {
+        // When the night triggers more than one item the day didn't already
+        // announce ("a jacket and coat"), both surface in the same tie-in
+        // sentence.
         val out = subject.format(
             summary(
-                eveningEventTieIn = EveningEventTieInClause("umbrella", rainTime = LocalTime.of(21, 0)),
+                eveningEventTieIn = EveningEventTieInClause(items = listOf("jacket", "coat")),
             ),
         )
-        out shouldBe "Today will be mild. Bring an umbrella tonight, rain at 9pm."
+        out shouldBe "Today, it will be mild. Tonight, bring a jacket and coat."
+    }
+
+    @Test
+    fun `evening event tie-in Oxford-joins three delta items`() {
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(items = listOf("sweater", "jacket", "scarf")),
+            ),
+        )
+        out shouldBe "Today, it will be mild. Tonight, bring a sweater, jacket, and scarf."
+    }
+
+    @Test
+    fun `evening event tie-in folds rain time leading the items when present`() {
+        // Rain leads the item ("Tonight, rain at 9pm, bring a jacket.") so
+        // the tie-in reads weather-then-action, same shape as the day insight
+        // (precip clause precedes the carry).
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(items = listOf("jacket"), rainTime = LocalTime.of(21, 0)),
+            ),
+        )
+        out shouldBe "Today, it will be mild. Tonight, rain at 9pm, bring a jacket."
+    }
+
+    @Test
+    fun `evening event tie-in silences a lone umbrella and falls through to bare rain`() {
+        // Umbrella is filtered out (accessories are silenced); with no items
+        // left to name and a rain time still set, the clause collapses to
+        // the bare-rain prose.
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("umbrella"),
+                    rainTime = LocalTime.of(21, 0),
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be mild. Tonight, rain at 9pm."
+    }
+
+    @Test
+    fun `evening event tie-in silences umbrella in a multi-item list and keeps the others`() {
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("jacket", "umbrella"),
+                    rainTime = LocalTime.of(21, 0),
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be mild. Tonight, rain at 9pm, bring a jacket."
+    }
+
+    @Test
+    fun `evening event tie-in silences a lone umbrella with no rain time too`() {
+        // No rain to fall through to, no garment to name → the tie-in drops
+        // entirely.
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(items = listOf("umbrella")),
+            ),
+        )
+        out shouldBe "Today, it will be mild."
     }
 
     @Test
     fun `evening event tie-in hedges item-led wording when likelihood is POSSIBLE`() {
         // Matches the bare-rain path's hedge: a clothes rule triggered (the
-        // user has a jacket rule and the evening is cold) but only one
+        // user has a jacket rule and the evening is cool) but only one
         // per-model series flagged the rain, so the per-model tier was
-        // POSSIBLE rather than LIKELY. Without the hedge, a single-model
-        // rain reading would render with the same definite tone as
-        // "majority of models agree".
+        // POSSIBLE rather than LIKELY.
         val out = subject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
-                    item = "jacket",
+                    items = listOf("jacket"),
                     rainTime = LocalTime.of(21, 0),
                     likelihood = PrecipLikelihood.POSSIBLE,
                 ),
             ),
         )
-        out shouldBe "Today will be mild. Bring a jacket tonight, chance of rain at 9pm."
+        out shouldBe "Today, it will be mild. Tonight, chance of rain at 9pm, bring a jacket."
     }
 
     @Test
@@ -282,14 +394,16 @@ class InsightFormatterTest {
         val out = subject.format(
             summary(
                 clothes = ClothesClause(listOf("shorts")),
-                eveningEventTieIn = EveningEventTieInClause("jacket"),
+                eveningEventTieIn = EveningEventTieInClause(items = listOf("jacket")),
             ),
         )
-        out shouldBe "Today will be mild. Wear shorts. Bring a jacket tonight."
+        out shouldBe "Today, it will be mild. Wear shorts. Tonight, bring a jacket."
     }
 
     @Test
     fun `full insight composes alert + band + delta + clothes + precip in order`() {
+        // Umbrella is silenced (accessories don't surface in rendered prose);
+        // "Wear a sweater. Rain at 3pm." carries the message.
         val out = subject.format(
             summary(
                 alert = AlertClause("Flood Warning"),
@@ -299,8 +413,21 @@ class InsightFormatterTest {
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
             ),
         )
-        out shouldBe "Alert: Flood Warning. Today will be cool to mild. It will be 6° warmer than yesterday. " +
-            "Wear a sweater and umbrella. Rain at 3pm."
+        out shouldBe "Alert: Flood Warning. Today, it will be cool to mild. 6° warmer than yesterday. " +
+            "Wear a sweater. Rain at 3pm."
+    }
+
+    @Test
+    fun `umbrella with no precip clause is silenced — only the surviving garments remain`() {
+        // Even when no precip clause is present to implicitly cover the
+        // umbrella, the accessory is filtered out. The user's umbrella rule
+        // is silent in the rendered prose until the accessory catalog lands.
+        val out = subject.format(
+            summary(
+                clothes = ClothesClause(listOf("sweater", "umbrella")),
+            ),
+        )
+        out shouldBe "Today, it will be mild. Wear a sweater."
     }
 
     @Test
@@ -356,20 +483,22 @@ class InsightFormatterTest {
     @Test
     fun `en-GB — sweater key renders as 'a jumper'`() {
         britishSubject.format(summary(clothes = ClothesClause(listOf("sweater")))) shouldBe
-            "Today will be mild. Wear a jumper."
+            "Today, it will be mild. Wear a jumper."
     }
 
     @Test
     fun `en-GB — pants key renders bare as 'trousers' (plural ending)`() {
         britishSubject.format(summary(clothes = ClothesClause(listOf("pants")))) shouldBe
-            "Today will be mild. Wear trousers."
+            "Today, it will be mild. Wear trousers."
     }
 
     @Test
     fun `en-GB — multi-item list translates each item, article only on the first`() {
+        // Umbrella is silenced; the surviving garments stay joined with en-GB
+        // vocabulary.
         britishSubject.format(
             summary(clothes = ClothesClause(listOf("sweater", "pants", "umbrella"))),
-        ) shouldBe "Today will be mild. Wear a jumper, trousers, and umbrella."
+        ) shouldBe "Today, it will be mild. Wear a jumper and trousers."
     }
 
     @Test
@@ -380,7 +509,7 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause("sweater"),
             ),
         )
-        out shouldBe "Tonight will be mild. Bring a jumper tonight."
+        out shouldBe "Tonight, it will be mild. Bring a jumper."
     }
 
     @Test
@@ -393,7 +522,7 @@ class InsightFormatterTest {
         // natural Aussie usage.
         australianSubject.format(
             summary(clothes = ClothesClause(listOf("sweater", "pants"))),
-        ) shouldBe "Today will be mild. Wear a jumper and pants."
+        ) shouldBe "Today, it will be mild. Wear a jumper and pants."
     }
 
     // ---------------------------------------------------------------------
@@ -448,7 +577,10 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `de — tie-in renders the German template with item only`() {
+    fun `de — calendar tie-in is suppressed when it duplicates a clothes item`() {
+        // Pre-fix this rendered "Trag Regenschirm. Denk an Regenschirm für
+        // heute Abend." — the tie-in repeated the wear sentence's item. Dedup
+        // suppresses it.
         val out = germanSubject.format(
             summary(
                 period = ForecastPeriod.TONIGHT,
@@ -456,15 +588,31 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause("Regenschirm"),
             ),
         )
-        out shouldBe "Heute Abend wird es mild. Trag Regenschirm. " +
-            "Denk an Regenschirm für heute Abend."
+        out shouldBe "Heute Abend wird es mild. Trag Regenschirm."
+    }
+
+    @Test
+    fun `de — calendar tie-in renders the German no-prefix template when it doesn't duplicate`() {
+        // Without a clothes line to dedup against, the tie-in surfaces. On
+        // TONIGHT it uses insight_tie_in_at_night (German "Denk an %1$s.")
+        // since the band lead has already established the night context.
+        val out = germanSubject.format(
+            summary(
+                period = ForecastPeriod.TONIGHT,
+                calendarTieIn = CalendarTieInClause("Regenschirm"),
+            ),
+        )
+        out shouldBe "Heute Abend wird es mild. Denk an Regenschirm."
     }
 
     @Test
     fun `de — evening event tie-in folds rain time via German positional placeholders`() {
         val out = germanSubject.format(
             summary(
-                eveningEventTieIn = EveningEventTieInClause("Regenschirm", rainTime = LocalTime.of(21, 0)),
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("Regenschirm"),
+                    rainTime = LocalTime.of(21, 0),
+                ),
             ),
         )
         out shouldBe "Heute wird es mild. Denk an Regenschirm für heute Abend, Regen um 21 Uhr."
@@ -480,21 +628,26 @@ class InsightFormatterTest {
     private val spanishSubject = InsightFormatter.forContext(context, Locale.forLanguageTag("es-ES"))
 
     @Test
-    fun `es — calendar tie-in renders the Spanish template, not a German fallback`() {
+    fun `es — calendar tie-in renders the Spanish no-prefix template on TONIGHT`() {
+        // Period=TONIGHT uses insight_tie_in_at_night ("Lleva %1$s.") so the
+        // tie-in doesn't repeat the band lead's "Esta noche".
         val out = spanishSubject.format(
             summary(
                 period = ForecastPeriod.TONIGHT,
                 calendarTieIn = CalendarTieInClause("paraguas"),
             ),
         )
-        out shouldBe "Esta noche hará templado. Lleva paraguas esta noche."
+        out shouldBe "Esta noche hará templado. Lleva paraguas."
     }
 
     @Test
     fun `es — evening event tie-in with rain renders the Spanish template`() {
         val out = spanishSubject.format(
             summary(
-                eveningEventTieIn = EveningEventTieInClause("paraguas", rainTime = LocalTime.of(21, 0)),
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("paraguas"),
+                    rainTime = LocalTime.of(21, 0),
+                ),
             ),
         )
         out shouldBe "Hoy hará templado. Lleva paraguas esta noche, lluvia a las 21."
@@ -517,7 +670,7 @@ class InsightFormatterTest {
                 clothes = ClothesClause(listOf(" ", "sweater", "")),
             ),
         )
-        out shouldBe "Today will be mild. Wear a sweater."
+        out shouldBe "Today, it will be mild. Wear a sweater."
     }
 
     @Test
@@ -527,7 +680,7 @@ class InsightFormatterTest {
                 clothes = ClothesClause(listOf(" ", "\t", "")),
             ),
         )
-        out shouldBe "Today will be mild."
+        out shouldBe "Today, it will be mild."
     }
 
     @Test
@@ -538,16 +691,22 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause(" "),
             ),
         )
-        out shouldBe "Tonight will be mild."
+        out shouldBe "Tonight, it will be mild."
     }
 
     @Test
-    fun `evening event tie-in is omitted when item is blank even when rain time exists`() {
+    fun `evening event tie-in falls through to bare rain when items resolve to blank`() {
+        // Defensive: if the renderer ever passes a list of blank items the
+        // phraser would join to nothing, the rain time is still real signal —
+        // emit the bare-rain prose rather than silently dropping the clause.
         val out = subject.format(
             summary(
-                eveningEventTieIn = EveningEventTieInClause(" ", rainTime = LocalTime.of(21, 0)),
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf(" "),
+                    rainTime = LocalTime.of(21, 0),
+                ),
             ),
         )
-        out shouldBe "Today will be mild."
+        out shouldBe "Today, it will be mild. Tonight, rain at 9pm."
     }
 }

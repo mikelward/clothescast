@@ -6,7 +6,6 @@ import android.content.res.Resources
 import app.clothescast.R
 import app.clothescast.core.domain.model.AlertClause
 import app.clothescast.core.domain.model.BandClause
-import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -45,22 +44,59 @@ class InsightFormatter(
 ) {
     private val phraser: ClothesPhraser = ClothesPhraser.forLocale(resources, locale)
 
-    fun format(summary: InsightSummary): String = buildList {
-        summary.alert?.let { add(formatAlert(it)) }
-        add(formatBand(summary.period, summary.band))
-        summary.delta?.let { add(formatDelta(it)) }
-        summary.clothes?.let(::formatClothes)?.let(::add)
-        summary.precip?.let { add(formatPrecip(it)) }
-        // Both tie-in clauses share the item-only "Bring a X tonight." form;
-        // the evening one additionally folds in the evening forecast's rain
-        // time when it's ≥ 30%, since the morning's own precip clause only
-        // covers the morning slice and otherwise wouldn't surface evening
-        // rain. The clauses are separate fields because they're gated
-        // differently (TONIGHT precip-peak overlap vs. TODAY evening-event
-        // opt-in).
-        summary.calendarTieIn?.let { formatTieIn(it.item) }?.let(::add)
-        summary.eveningEventTieIn?.let(::formatEveningEventTieIn)?.let(::add)
-    }.joinToString(" ")
+    fun format(summary: InsightSummary): String {
+        // Accessories (umbrella, etc.) are filtered out of the rendered prose
+        // entirely — we only surface temperature-driven clothing for now. The
+        // user's umbrella rule still triggers and the precip clause still
+        // says "Rain at 3pm.", but the umbrella itself doesn't show up in any
+        // sentence: "Wear an umbrella" reads wrong (it's carried), "Bring an
+        // umbrella" needs a time anchor that breaks for daytime-firing rules,
+        // and the rain mention already implies the umbrella for the typical
+        // precip-keyed rule. The accessory TODO below is the proper home for
+        // a re-introduction.
+        val wearItems = summary.clothes?.items.orEmpty().filterNot(::isAccessory)
+        // Items already in the wear sentence shouldn't be repeated by a
+        // tie-in — a calendar tie-in that picks "sweater" when the wear
+        // sentence already said "Wear a sweater" adds nothing. Dedup on the
+        // post-filter list (umbrella isn't surfaced anywhere, so it can't
+        // dedup against anything either).
+        val mentionedKeys = wearItems.map(::normalizeItemKey).toSet()
+        return buildList {
+            summary.alert?.let { add(formatAlert(it)) }
+            add(formatBand(summary.period, summary.band))
+            summary.delta?.let { add(formatDelta(it)) }
+            if (wearItems.isNotEmpty()) formatClothesWear(wearItems)?.let(::add)
+            summary.precip?.let { add(formatPrecip(it)) }
+            summary.calendarTieIn?.let { tieIn ->
+                if (isAccessory(tieIn.item)) return@let
+                if (normalizeItemKey(tieIn.item) in mentionedKeys) return@let
+                formatTieIn(summary.period, tieIn.item)?.let(::add)
+            }
+            summary.eveningEventTieIn?.let(::formatEveningEventTieIn)?.let(::add)
+        }.joinToString(" ")
+    }
+
+    // TODO(insight-tweak): when the morning precip clause already names a
+    //  daytime peak ("Rain at 3pm.") and the evening tie-in also names an
+    //  evening rain ("…, rain at 9pm, bring a jacket."), the listener hears
+    //  two distinct rain times back-to-back. Consider folding both peaks into
+    //  one mention ("Rain at 3pm and 9pm.") or suppressing the second when
+    //  the tie-in adds no new clothes vocabulary beyond rain.
+    //
+    // TODO(accessories-catalog): accessories are silenced rather than
+    //  rendered. To bring them back, build a domain-side ClothesRule
+    //  item-kind classification (garment / accessory) so each item knows
+    //  whether it's worn or carried, decide a per-item rule for whether a
+    //  precip mention should suppress it (umbrella: yes; sunscreen: no),
+    //  and pick a temporally-correct template ("Bring a hat today." vs
+    //  "Tonight, bring a hat." vs no-prefix). Until then we ship
+    //  temperature-driven clothing only and accept that user-typed
+    //  umbrella rules are silent — the precip clause still warns about
+    //  rain, which is the main thing.
+    private fun isAccessory(item: String): Boolean =
+        item.trim().equals("umbrella", ignoreCase = true)
+
+    private fun normalizeItemKey(item: String): String = item.trim().lowercase(Locale.ROOT)
 
     private fun formatAlert(alert: AlertClause): String =
         resources.getString(R.string.insight_alert, alert.event)
@@ -84,17 +120,10 @@ class InsightFormatter(
         return resources.getString(template, delta.degrees)
     }
 
-    // TODO: "Wear an umbrella" reads awkwardly — umbrellas are carried, not worn.
-    // Either drop umbrella from the clothes list (it's already implied by the
-    // precip clause and the tonight calendar tie-in) or split the clause into
-    // a "Wear …" sentence for garments and a "Bring …" sentence for accessories
-    // like umbrella. Probably wants a small domain-side classification on
-    // ClothesRule (item kind: garment / accessory) rather than hard-coding
-    // umbrella here.
-    private fun formatClothes(clothes: ClothesClause): String? {
-        val items = phraser.joinItems(clothes.items)
-        if (items.isBlank()) return null
-        return resources.getString(R.string.insight_clothes_wear, items)
+    private fun formatClothesWear(items: List<String>): String? {
+        val phrase = phraser.joinItems(items)
+        if (phrase.isBlank()) return null
+        return resources.getString(R.string.insight_clothes_wear, phrase)
     }
 
     private fun formatPrecip(precip: PrecipClause): String {
@@ -120,28 +149,39 @@ class InsightFormatter(
         }
     }
 
-    private fun formatTieIn(item: String): String? {
+    /**
+     * Single-item tie-in / clothes-carry sentence. Period-aware: on TODAY the
+     * sentence introduces the evening with "Tonight, bring …"; on TONIGHT the
+     * band lead already established the night context, so we use the short
+     * "Bring …" template to avoid a redundant second "Tonight" intro.
+     */
+    private fun formatTieIn(period: ForecastPeriod, item: String): String? {
         // Short-circuit before article picking: prefixArticle("") emits "a "
         // via the "a %1$s" template, which is non-blank and would slip past a
         // post-rendering isBlank() check.
         if (item.isBlank()) return null
         val renderedItem = phraser.withArticle(item)
         if (renderedItem.isBlank()) return null
-        return resources.getString(R.string.insight_tie_in, renderedItem)
+        val template = if (period == ForecastPeriod.TONIGHT) {
+            R.string.insight_tie_in_at_night
+        } else {
+            R.string.insight_tie_in
+        }
+        return resources.getString(template, renderedItem)
     }
 
     private fun formatEveningEventTieIn(tieIn: EveningEventTieInClause): String? {
-        // Local captures so null checks enable smart cast — the properties
-        // live on a :core:domain data class and Kotlin won't smart-cast a
-        // public API property across modules.
-        val item = tieIn.item
         val rainTime = tieIn.rainTime
-        if (item == null) {
-            // Bare-rain path: no clothes rule triggered (the renderer only
-            // emits item=null in this case), so the rain mention is the
-            // entire clause. The renderer also pairs this shape with a
-            // non-null rainTime — return null if not (malformed input,
-            // rather than emit a "Rain tonight at ." sentence).
+        // Accessories (umbrella) are silenced here for the same reason they're
+        // silenced in the main wear-list: until the accessory catalog lands,
+        // we only name temperature-driven clothing. The rain mention, if any,
+        // still surfaces through the bare-rain path below.
+        val items = tieIn.items.filterNot(::isAccessory)
+        val renderedItems = if (items.isEmpty()) "" else phraser.joinItems(items)
+        if (renderedItems.isBlank()) {
+            // No items left to name. If there's a rain time, the clause
+            // collapses to the bare-rain prose (the only signal left);
+            // otherwise the whole tie-in is empty and we drop it.
             if (rainTime == null) return null
             val template = when (tieIn.likelihood) {
                 PrecipLikelihood.LIKELY -> R.string.insight_evening_rain
@@ -149,25 +189,18 @@ class InsightFormatter(
             }
             return resources.getString(template, spokenTime(rainTime))
         }
-        // Item-led path: blank item indicates malformed input; suppress the
-        // whole clause rather than fall through to bare-rain — a blank
-        // item with rainTime set isn't the renderer's bare-rain emission
-        // (that path produces item=null specifically), so treat it as a
-        // data error.
-        if (item.isBlank()) return null
-        val renderedItem = phraser.withArticle(item)
-        if (renderedItem.isBlank()) return null
-        rainTime ?: return resources.getString(R.string.insight_tie_in, renderedItem)
+        // No rain — bare item-led sentence. Always uses the TODAY-context
+        // "Tonight, bring …" template because the evening tie-in only fires
+        // on TODAY (the TONIGHT pass uses calendarTieIn for event-anchored
+        // tie-ins).
+        rainTime ?: return resources.getString(R.string.insight_tie_in, renderedItems)
         // Hedge the item-led wording when only one model spotted the rain,
-        // matching the bare-rain path's chance-of-rain template. Otherwise
-        // a clothes rule triggering for warmth would always promote a
-        // single-model rain reading to a confident "Bring a jacket
-        // tonight, rain at 9pm." even when the per-model tier was POSSIBLE.
+        // matching the bare-rain path's chance-of-rain template.
         val template = when (tieIn.likelihood) {
             PrecipLikelihood.LIKELY -> R.string.insight_tie_in_with_rain
             PrecipLikelihood.POSSIBLE -> R.string.insight_tie_in_with_rain_chance
         }
-        return resources.getString(template, renderedItem, spokenTime(rainTime))
+        return resources.getString(template, renderedItems, spokenTime(rainTime))
     }
 
     private fun leadRes(period: ForecastPeriod): Int = when (period) {

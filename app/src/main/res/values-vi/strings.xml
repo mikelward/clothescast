@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Vietnamese translation. Scope: insight-prose templates, garment labels,
-clothes-rule editor, outfit-card labels, and region/voice-locale picker names.
-The rest of the UI falls through to values/strings.xml (English).
+Vietnamese translation (Tiếng Việt). Full coverage of values/strings.xml.
+Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
+(English-only 12h helpers — vi uses insight_time_hour/hour_minutes).
 -->
 <resources>
+    <!-- =====================================================================
+         Existing translations — unchanged
+         ===================================================================== -->
     <string name="settings_region_language_vi_vn">Tiếng Việt (Việt Nam)</string>
     <string name="settings_region_language_th_th">Tiếng Thái (Thái Lan)</string>
     <string name="settings_tts_voice_locale_vi_vn">Tiếng Việt (Việt Nam)</string>
@@ -82,5 +85,548 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- "15 giờ" / "15 giờ 30 phút" — preposition "lúc" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d giờ</string>
     <string name="insight_time_hour_minutes">%1$d giờ %2$02d phút</string>
+
+    <!-- =====================================================================
+         Device-incompatibility error
+         ===================================================================== -->
+    <string name="error_device_incompatible">ClothesCast không thể chạy trên thiết bị này — bản Android của bạn thiếu một tính năng mà giao diện ứng dụng yêu cầu (Configuration.fontWeightAdjustment, dự kiến có trên Android 12 trở lên). Vui lòng liên hệ nhà sản xuất thiết bị để được cập nhật hệ thống.</string>
+
+    <!-- =====================================================================
+         Today screen
+         ===================================================================== -->
+    <string name="today_title">Hôm nay</string>
+    <string name="today_open_settings">Mở Cài đặt</string>
+    <string name="today_more_options">Thêm tùy chọn</string>
+    <string name="today_report_a_bug">Báo lỗi</string>
+    <string name="today_refresh">Làm mới</string>
+    <string name="today_refresh_toast_daily">Đang làm mới ClothesCast hàng ngày — sẽ hiển thị ngay.</string>
+    <string name="today_refresh_toast_nightly">Đang làm mới ClothesCast buổi tối — sẽ hiển thị ngay.</string>
+    <string name="today_empty_title">Chưa có ClothesCast</string>
+    <string name="today_empty_subtitle">ClothesCast buổi sáng sẽ xuất hiện ở đây sau khi được tạo. Hãy đặt vị trí trong Cài đặt, rồi nhấn Tải ngay.</string>
+    <string name="today_fetch_now">Tải ngay</string>
+    <string name="today_generated_at">Được tạo lúc %1$s</string>
+    <string name="today_location_unknown">Vị trí của bạn</string>
+
+    <!-- Outfit card -->
+    <string name="today_outfit_title">Trang phục phù hợp</string>
+    <string name="today_outfit_label_today">Hôm nay</string>
+    <string name="today_outfit_label_tonight">Tối nay</string>
+    <string name="today_outfit_label_tomorrow">Ngày mai</string>
+    <string name="today_outfit_top_polo">Áo polo</string>
+    <string name="today_outfit_top_thin_jacket">Áo khoác mỏng</string>
+    <string name="today_outfit_top_thick_coat">Áo khoác dày mùa đông</string>
+    <string name="today_outfit_top_puffer_jacket">Áo phao</string>
+    <string name="today_outfit_bottom_skirt">Chân váy</string>
+    <string name="today_outfit_bottom_jeans">Quần jean</string>
+
+    <!-- Rationale dialog -->
+    <string name="today_rationale_title">Tại sao trang phục này?</string>
+    <string name="today_rationale_show">Tại sao?</string>
+    <string name="today_rationale_dismiss">Đã hiểu</string>
+    <string name="today_rationale_threshold_decrease">Giảm ngưỡng 1 độ</string>
+    <string name="today_rationale_threshold_increase">Tăng ngưỡng 1 độ</string>
+    <string name="today_rationale_threshold_changed_hint">Làm mới để xem trang phục mới.</string>
+    <string name="today_rationale_unavailable">Không có lý do — hãy mở ứng dụng sau lần làm mới tiếp theo.</string>
+    <string name="today_rationale_min_below_with_time">Cảm giác thấp nhất %1$s%2$s lúc %3$s, dưới %4$s%2$s</string>
+    <string name="today_rationale_min_below">Cảm giác thấp nhất %1$s%2$s, dưới %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Cảm giác thấp nhất %1$s%2$s lúc %3$s, ít nhất %4$s%2$s</string>
+    <string name="today_rationale_min_above">Cảm giác thấp nhất %1$s%2$s, ít nhất %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Cảm giác cao nhất chỉ %1$s%2$s lúc %3$s, dưới %4$s%2$s</string>
+    <string name="today_rationale_max_below">Cảm giác cao nhất chỉ %1$s%2$s, dưới %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Cảm giác cao nhất %1$s%2$s lúc %3$s, ít nhất %4$s%2$s</string>
+    <string name="today_rationale_max_above">Cảm giác cao nhất %1$s%2$s, ít nhất %3$s%2$s</string>
+
+    <!-- Home-screen widget -->
+    <string name="widget_label">Trang phục</string>
+    <string name="widget_description">Trang phục giai đoạn hiện tại nhìn nhanh.</string>
+    <string name="widget_empty_title">Chưa có trang phục</string>
+    <string name="widget_empty_subtitle">Nhấn để mở ClothesCast</string>
+
+    <!-- Forecast chart -->
+    <string name="today_forecast_title">Dự báo theo giờ</string>
+    <string name="today_forecast_min_max">Cảm giác %1$d – %2$d%3$s · Không khí %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Cảm giác (%1$s) theo giờ · nhấn để chuyển sang nhiệt độ không khí</string>
+    <string name="today_forecast_legend_air">Nhiệt độ không khí (%1$s) theo giờ · nhấn để chuyển sang cảm giác</string>
+
+    <!-- Precipitation card -->
+    <string name="today_precipitation_title">Khả năng mưa</string>
+    <string name="today_precipitation_peak">Đỉnh %1$d%% lúc %2$s</string>
+    <string name="today_precipitation_dry">Hôm nay không có mưa</string>
+
+    <!-- Chart labels -->
+    <string name="today_chart_model_legend_label">Mô hình:</string>
+    <string name="today_chart_main_line_label">Tổng hợp</string>
+    <string name="today_chart_divergence_summary">Các mô hình không đồng nhất nhất lúc %1$s (Δ %2$.1f%3$s cảm giác) — chủ yếu do %4$s, %5$s</string>
+
+    <!-- Factor names -->
+    <string name="today_factor_air_temperature">nhiệt độ không khí</string>
+    <string name="today_factor_wind_speed">tốc độ gió</string>
+    <string name="today_factor_cloud_cover">độ che phủ mây</string>
+    <string name="today_factor_humidity">độ ẩm</string>
+
+    <!-- Diagnostic cards -->
+    <string name="today_wind_title">Tốc độ gió</string>
+    <string name="today_wind_subtitle">Tốc độ gió theo mô hình (%1$s) theo giờ</string>
+    <string name="today_cloud_title">Độ che phủ mây</string>
+    <string name="today_cloud_subtitle">Độ che phủ mây theo mô hình (%) theo giờ</string>
+    <string name="today_humidity_title">Độ ẩm</string>
+    <string name="today_humidity_subtitle">Độ ẩm tương đối theo mô hình (%) theo giờ</string>
+
+    <!-- Confidence -->
+    <string name="today_confidence_high">Độ tin cậy cao — các mô hình lớn đồng thuận</string>
+    <string name="today_confidence_medium">Độ tin cậy trung bình</string>
+    <string name="today_confidence_low">Độ tin cậy thấp — dự báo không đồng nhất</string>
+    <string name="today_confidence_spread">Biên độ: %1$.1f°C, %2$.0f%% lượng mưa trên %3$d mô hình</string>
+    <string name="today_low_confidence_callout_title">Dự báo hôm nay không đồng nhất</string>
+    <string name="today_low_confidence_callout_body">Nhiệt độ chênh lệch %1$.1f°C và khả năng mưa chênh %2$.0f%% trên %3$d mô hình.</string>
+
+    <!-- Status / error states -->
+    <string name="today_working">Đang xử lý — đang tải ClothesCast…</string>
+    <string name="today_retrying">Lần thử trước thất bại — đang thử lại…</string>
+    <string name="today_failed_title">Lần thử trước thất bại</string>
+    <string name="today_failed_unexpected_http">Lỗi HTTP không mong đợi từ dịch vụ dự báo.</string>
+    <string name="today_failed_unhandled">Đã xảy ra lỗi không mong đợi.</string>
+    <string name="today_failed_no_location">Không thể lấy vị trí của bạn. Hãy cấp quyền vị trí luôn bật, hoặc đặt thành phố trong Cài đặt.</string>
+    <string name="today_failed_show_details">Xem chi tiết</string>
+    <string name="today_failed_hide_details">Ẩn chi tiết</string>
+
+    <!-- Location required -->
+    <string name="today_location_required_title">Thiết lập vị trí</string>
+    <string name="today_location_required_body">ClothesCast cần biết vị trí của bạn để tải dự báo. Hãy cấp quyền vị trí luôn bật hoặc chọn một thành phố.</string>
+    <string name="today_location_required_action">Mở cài đặt vị trí</string>
+
+    <!-- Crash banner -->
+    <string name="today_crash_banner_title">Lần chạy trước bị lỗi</string>
+    <string name="today_crash_banner_body">Báo cáo sự cố đã được lưu trên thiết bị. Chia sẻ để giúp khắc phục lỗi? Không có gì được gửi cho đến khi bạn chọn nơi gửi.</string>
+    <string name="today_crash_banner_share">Chia sẻ báo cáo</string>
+    <string name="today_crash_banner_dismiss">Đóng</string>
+
+    <!-- Update banners -->
+    <string name="today_update_available_title">Có bản cập nhật</string>
+    <string name="today_update_available_body">Đã có phiên bản ClothesCast mới hơn trên Play Store.</string>
+    <string name="today_update_available_action">Cập nhật</string>
+    <string name="today_update_available_dismiss">Để sau</string>
+    <string name="today_update_downloaded_body">Đã tải bản cập nhật. Khởi động lại để hoàn tất cài đặt.</string>
+    <string name="today_update_downloaded_action">Khởi động lại</string>
+
+    <!-- Telemetry notice -->
+    <string name="today_telemetry_notice_title">Báo cáo sự cố + sử dụng đang bật</string>
+    <string name="today_telemetry_notice_body">ClothesCast gửi báo cáo sự cố ẩn danh và số liệu sử dụng để giúp khắc phục lỗi. Không có dữ liệu lịch, vị trí hay nội dung thông tin nào được gửi. Tắt bất kỳ lúc nào trong Cài đặt.</string>
+    <string name="today_telemetry_notice_open_settings">Mở cài đặt Quyền riêng tư</string>
+    <string name="today_telemetry_notice_dismiss">Đóng</string>
+
+    <!-- =====================================================================
+         Onboarding
+         ===================================================================== -->
+    <string name="onboarding_title">Chào mừng đến với ClothesCast</string>
+    <string name="onboarding_subtitle">Ba lựa chọn nhanh là xong. Có thể chỉnh lại sau trong Cài đặt.</string>
+    <string name="onboarding_subtitle_tv">Hai lựa chọn nhanh là xong. Có thể chỉnh lại sau trong Cài đặt.</string>
+    <string name="onboarding_notifications_title">Thông báo</string>
+    <string name="onboarding_notifications_description">Cần thiết để gửi ClothesCast hàng ngày.</string>
+    <string name="onboarding_notifications_grant">Cấp quyền thông báo</string>
+    <string name="onboarding_location_title">Vị trí</string>
+    <string name="onboarding_location_description">Tải dự báo cho vị trí xấp xỉ của bạn.</string>
+    <string name="onboarding_location_grant">Cấp quyền vị trí</string>
+    <string name="onboarding_location_grant_background">Cấp quyền vị trí luôn bật</string>
+    <string name="onboarding_location_background_needed">Một bước nữa: ClothesCast cần \'Cho phép mọi lúc\' để dự báo buổi sáng có thể đọc vị trí của bạn khi ứng dụng đóng.</string>
+    <string name="onboarding_location_denied_hint">Đã từ chối quyền vị trí. Bạn có thể nhập thành phố thủ công thay thế.</string>
+    <string name="onboarding_location_enter_manual">Nhập vị trí thủ công</string>
+    <string name="onboarding_location_enter_manual_hint">Bạn có thể nhập thủ công nếu từ chối quyền vị trí hoặc vị trí thiết bị không chính xác.</string>
+    <string name="onboarding_location_using_device">Đang dùng vị trí thiết bị mỗi buổi sáng.</string>
+    <string name="onboarding_gemini_title">Khóa API Gemini</string>
+    <string name="onboarding_gemini_description">Dùng Gemini để có giọng đọc chất lượng cao.</string>
+    <string name="onboarding_step_done">Xong</string>
+    <string name="onboarding_skip">Bỏ qua</string>
+    <string name="onboarding_continue">Tiếp tục</string>
+    <string name="onboarding_pair_from_phone">Kết nối từ điện thoại thay thế</string>
+
+    <!-- =====================================================================
+         TV pairing
+         ===================================================================== -->
+    <string name="pairing_title">Quét để kết nối</string>
+    <string name="pairing_instructions">Quét mã QR này bằng điện thoại, rồi dán khóa API Gemini vào biểu mẫu hiện ra. Khóa sẽ được gửi trực tiếp đến TV qua Wi-Fi gia đình — không qua máy chủ trung gian.</string>
+    <string name="pairing_qr_description">Mã QR liên kết đến %1$s</string>
+    <string name="pairing_cancel">Hủy</string>
+    <string name="pairing_received">Đã nhận khóa — đang lưu…</string>
+    <string name="pairing_timeout_title">Cửa sổ kết nối đã hết hạn</string>
+    <string name="pairing_timeout_body">Cửa sổ kết nối 5 phút đã đóng. Nhấn Thử lại để mở cửa sổ mới.</string>
+    <string name="pairing_error_title">Không thể bắt đầu kết nối</string>
+    <string name="pairing_error_body">Hãy đảm bảo TV đã kết nối Wi-Fi, rồi thử lại.</string>
+    <string name="pairing_retry">Thử lại</string>
+
+    <!-- =====================================================================
+         Settings — root
+         ===================================================================== -->
+    <string name="settings_title">Cài đặt</string>
+    <string name="settings_back">Quay lại</string>
+
+    <string name="settings_root_voice">Giọng nói</string>
+    <string name="settings_root_schedule">Lịch trình</string>
+    <string name="settings_root_region">Khu vực</string>
+    <string name="settings_root_clothes">Quần áo</string>
+    <string name="settings_root_display">Hiển thị</string>
+    <string name="settings_root_location">Vị trí</string>
+    <string name="settings_root_calendar">Lịch</string>
+    <string name="settings_root_privacy">Quyền riêng tư</string>
+    <string name="settings_root_about">Giới thiệu</string>
+
+    <string name="settings_root_schedule_subtitle">Thông báo và giờ</string>
+    <string name="settings_root_clothes_subtitle">Nhiệt độ và trang phục</string>
+    <string name="settings_root_region_subtitle">Ngôn ngữ và đơn vị</string>
+    <string name="settings_root_voice_subtitle">Nhà cung cấp và giọng</string>
+    <string name="settings_root_display_subtitle">Giao diện</string>
+    <string name="settings_root_location_subtitle">Tự động phát hiện hoặc chọn thành phố</string>
+    <string name="settings_root_calendar_subtitle">Sự kiện hôm nay</string>
+    <string name="settings_root_privacy_subtitle">Báo cáo sự cố + sử dụng</string>
+
+    <!-- =====================================================================
+         Settings — Display
+         ===================================================================== -->
+    <string name="settings_display_theme_title">Giao diện</string>
+    <string name="settings_display_theme_system">Theo hệ thống</string>
+    <string name="settings_display_theme_light">Sáng</string>
+    <string name="settings_display_theme_dark">Tối</string>
+    <string name="settings_display_charts_title">Biểu đồ</string>
+    <string name="settings_display_model_spread_label">Hiển thị biên độ mô hình trên biểu đồ</string>
+    <string name="settings_display_model_spread_description">Hiển thị đường dự báo theo giờ của từng mô hình thời tiết lớn lên biểu đồ nhiệt độ và mưa. Hữu ích để phát hiện khi dự báo không chắc chắn.</string>
+
+    <!-- =====================================================================
+         Settings — Privacy
+         ===================================================================== -->
+    <string name="settings_privacy_telemetry_title">Báo cáo sự cố + sử dụng</string>
+    <string name="settings_privacy_telemetry_label">Gửi dữ liệu sự cố + sử dụng</string>
+    <string name="settings_privacy_telemetry_description">Gửi báo cáo sự cố ẩn danh và số liệu sử dụng tổng hợp để giúp nhà phát triển khắc phục lỗi và quyết định giữ tính năng nào.</string>
+    <string name="settings_privacy_telemetry_limits">Không bao giờ gửi: sự kiện lịch, tọa độ vị trí hoặc tên địa điểm, nội dung thông tin hoặc thông báo, khóa API, GPS chính xác, ID quảng cáo.</string>
+    <string name="settings_privacy_open_policy">Đọc chính sách quyền riêng tư đầy đủ</string>
+
+    <!-- =====================================================================
+         Settings — Voice / API key
+         ===================================================================== -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Dùng Gemini để có giọng đọc chất lượng cao.</string>
+    <string name="settings_api_key_status_set">Đã cài đặt khóa Gemini.</string>
+    <string name="settings_api_key_status_unset">Lấy khóa API miễn phí tại aistudio.google.com</string>
+    <string name="settings_api_key_placeholder">Dán khóa API Gemini của bạn</string>
+    <string name="settings_api_key_save">Lưu khóa Gemini</string>
+    <string name="settings_api_key_clear">Xóa khóa Gemini đã lưu</string>
+
+    <!-- =====================================================================
+         Settings — Location
+         ===================================================================== -->
+    <string name="settings_location_title">Vị trí</string>
+    <string name="settings_location_use_device">Dùng vị trí thiết bị</string>
+    <string name="settings_location_use_device_description">Vị trí xấp xỉ gần nhất</string>
+    <string name="settings_location_detecting">Đang phát hiện…</string>
+    <string name="settings_location_grant_background">Cấp phép</string>
+    <string name="settings_location_background_banner_title">Cần vị trí luôn bật</string>
+    <string name="settings_location_background_banner_body">Nếu không, dự báo buổi sáng không thể đọc vị trí của bạn.</string>
+    <string name="settings_location_unset">Chưa đặt vị trí</string>
+    <string name="settings_location_manual_override">Vị trí sai? Đặt thủ công</string>
+    <string name="settings_location_manual_override_disclosure">Chọn thành phố sẽ tắt tự động phát hiện.</string>
+    <string name="settings_location_clear">Xóa vị trí</string>
+    <string name="settings_location_search_title">Tìm kiếm vị trí</string>
+    <string name="settings_location_query_label">Thành phố hoặc địa điểm</string>
+    <string name="settings_location_search">Tìm kiếm</string>
+    <string name="settings_location_searching">Đang tìm kiếm…</string>
+    <string name="settings_location_no_results">Không có kết quả.</string>
+    <string name="settings_location_rationale_title">Quyền truy cập vị trí</string>
+    <string name="settings_location_rationale_body">ClothesCast đọc vị trí của bạn để tải dự báo địa phương.</string>
+    <string name="settings_location_rationale_continue">Tiếp tục</string>
+    <string name="settings_location_rationale_dismiss">Để sau</string>
+    <string name="settings_location_background_rationale_title">Cho phép mọi lúc</string>
+    <string name="settings_location_background_rationale_body">Cho phép ClothesCast đọc vị trí khi ứng dụng đóng để dự báo buổi sáng cập nhật đúng giờ.</string>
+    <string name="settings_location_background_rationale_continue">Mở Cài đặt</string>
+    <string name="settings_location_background_rationale_dismiss">Để sau</string>
+    <string name="settings_location_background_denied_title">Chưa cấp quyền luôn bật</string>
+    <string name="settings_location_background_denied_body">Nếu không có \'Cho phép mọi lúc\', dự báo buổi sáng không thể tự cập nhật.</string>
+    <string name="settings_location_background_denied_open">Mở Cài đặt</string>
+    <string name="settings_location_background_denied_keep">Để sau</string>
+
+    <!-- =====================================================================
+         Settings — Schedule
+         ===================================================================== -->
+    <string name="settings_schedule_title">ClothesCast hàng ngày</string>
+    <string name="settings_schedule_time_label">Giờ</string>
+    <string name="settings_schedule_days_label">Ngày trong tuần</string>
+    <string name="settings_daily_mention_evening_events">Đề cập sự kiện buổi tối</string>
+
+    <string name="settings_tonight_title">ClothesCast buổi tối</string>
+    <string name="settings_tonight_description">ClothesCast thứ hai vào buổi tối, dự báo thời tiết tối nay. Vào buổi tối yên tĩnh sẽ im lặng, hoặc không xuất hiện nếu "Chỉ thông báo khi có sự kiện buổi tối" được bật; vào buổi tối có sự kiện sẽ phát âm thanh và (nếu bật đọc to) tự đọc ra.</string>
+    <string name="settings_tonight_enabled">Hiện ClothesCast buổi tối</string>
+    <string name="settings_tonight_time_label">Giờ</string>
+    <string name="settings_tonight_days_label">Ngày trong tuần</string>
+    <string name="settings_tonight_notify_only_on_events">Chỉ thông báo khi có sự kiện buổi tối</string>
+
+    <!-- =====================================================================
+         Settings — Delivery
+         ===================================================================== -->
+    <string name="settings_delivery_label">Phương thức</string>
+    <string name="settings_delivery_notification_only">Chỉ thông báo</string>
+    <string name="settings_delivery_tts_only">Chỉ đọc to</string>
+    <string name="settings_delivery_notification_and_tts">Thông báo và đọc to</string>
+
+    <!-- =====================================================================
+         Settings — Voice engine / TTS
+         ===================================================================== -->
+    <string name="settings_tts_engine_title">Công cụ giọng nói</string>
+    <string name="settings_tts_engine_description">Gemini tự nhiên hơn nhiều so với giọng thiết bị nhưng cần kết nối mạng khi đọc và dùng khóa API của bạn để tổng hợp (một lần gọi ngắn cho mỗi ClothesCast được đọc to). Tự động chuyển sang giọng thiết bị nếu Gemini lỗi.</string>
+    <string name="settings_tts_engine_device">Thiết bị (ngoại tuyến, miễn phí)</string>
+    <string name="settings_tts_engine_gemini">Gemini (chất lượng cao, trực tuyến)</string>
+    <string name="settings_tts_voice_label">Giọng</string>
+    <string name="settings_tts_voice_dismiss">Xong</string>
+
+    <!-- Style picker -->
+    <string name="settings_tts_style_label">Phong cách</string>
+    <string name="settings_tts_style_weather_forecaster">Dự báo viên thời tiết</string>
+    <string name="settings_tts_style_pirate">Cướp biển</string>
+    <string name="settings_tts_style_cowboy">Cao bồi</string>
+    <string name="settings_tts_style_shakespearean">Shakespearean</string>
+    <string name="settings_tts_style_surfer">Dân lướt sóng</string>
+    <string name="settings_tts_style_parent">Phụ huynh</string>
+    <string name="settings_tts_style_child">Trẻ em</string>
+    <string name="settings_tts_style_teenager">Thiếu niên</string>
+    <string name="settings_tts_style_grandparent">Ông bà</string>
+    <string name="settings_tts_style_kids_host">Người dẫn chương trình thiếu nhi</string>
+    <string name="settings_tts_style_radio_host">Người dẫn talkback</string>
+    <string name="settings_tts_style_morning_dj">DJ buổi sáng</string>
+    <string name="settings_tts_style_science_teacher">Giáo viên khoa học</string>
+    <string name="settings_tts_style_historian">Nhà sử học</string>
+    <string name="settings_tts_style_sportscaster">Bình luận viên thể thao</string>
+    <string name="settings_tts_style_stadium_announcer">Phát thanh viên sân vận động</string>
+    <string name="settings_tts_style_storyteller">Người kể chuyện</string>
+    <string name="settings_tts_style_fitness_instructor">Huấn luyện viên thể dục</string>
+    <string name="settings_tts_style_morning_presenter">Người dẫn radio buổi sáng</string>
+    <string name="settings_tts_style_custom">Tùy chỉnh…</string>
+    <string name="settings_tts_style_custom_label">Chỉ thị tùy chỉnh</string>
+    <string name="settings_tts_style_custom_placeholder">Ví dụ: Đọc phần sau như một thủ thư nghiêm khắc đang thì thầm</string>
+
+    <!-- Device voice picker -->
+    <string name="settings_tts_device_voice_label">Giọng thiết bị</string>
+    <string name="settings_tts_device_voice_auto">Tự động (phù hợp nhất với giọng)</string>
+    <string name="settings_tts_device_voice_currently">Hiện tại: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Đang tải…</string>
+    <string name="settings_tts_device_voice_network">Mạng</string>
+    <string name="settings_tts_device_voice_offline">Ngoại tuyến</string>
+    <string name="settings_tts_install_google_hint">Cài Google Text-to-Speech để có giọng đọc chất lượng cao hơn.</string>
+    <string name="settings_tts_install_google_button">Cài Google TTS</string>
+
+    <!-- Accent picker -->
+    <string name="settings_tts_voice_locale_description">Đặt giọng nói được đọc to. Không thay đổi văn bản hiển thị.</string>
+
+    <!-- TTS voice locale names (in Vietnamese) -->
+    <string name="settings_tts_voice_locale_en_us">Tiếng Anh (Hoa Kỳ)</string>
+    <string name="settings_tts_voice_locale_en_gb">Tiếng Anh (Vương quốc Anh)</string>
+    <string name="settings_tts_voice_locale_en_au">Tiếng Anh (Úc)</string>
+    <string name="settings_tts_voice_locale_en_ca">Tiếng Anh (Canada)</string>
+    <string name="settings_tts_voice_locale_en_za">Tiếng Anh (Nam Phi)</string>
+    <string name="settings_tts_voice_locale_de_de">Tiếng Đức (Đức)</string>
+    <string name="settings_tts_voice_locale_de_at">Tiếng Đức (Áo)</string>
+    <string name="settings_tts_voice_locale_de_ch">Tiếng Đức (Thụy Sĩ)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Tiếng Pháp (Pháp)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Tiếng Pháp (Canada)</string>
+    <string name="settings_tts_voice_locale_it_it">Tiếng Ý (Ý)</string>
+    <string name="settings_tts_voice_locale_es_es">Tiếng Tây Ban Nha (Tây Ban Nha)</string>
+    <string name="settings_tts_voice_locale_es_mx">Tiếng Tây Ban Nha (Mexico)</string>
+    <string name="settings_tts_voice_locale_ca_es">Tiếng Catalan (Tây Ban Nha)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Tiếng Nga (Nga)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Tiếng Ba Lan (Ba Lan)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Tiếng Croatia (Croatia)</string>
+    <string name="settings_tts_voice_locale_sl_si">Tiếng Slovenia (Slovenia)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Tiếng Serbia (Latin)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Tiếng Serbia (Cyrillic)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Tiếng Bulgaria (Bulgaria)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Tiếng Séc (Séc)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Tiếng Slovak (Slovakia)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Tiếng Hungary (Hungary)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Tiếng Romania (Romania)</string>
+    <string name="settings_tts_voice_locale_el_gr">Tiếng Hy Lạp (Hy Lạp)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Tiếng Ukraine (Ukraine)</string>
+    <string name="settings_tts_voice_locale_pt_br">Tiếng Bồ Đào Nha (Brazil)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Tiếng Bồ Đào Nha (Bồ Đào Nha)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Tiếng Hà Lan (Hà Lan)</string>
+    <string name="settings_tts_voice_locale_sv_se">Tiếng Thụy Điển (Thụy Điển)</string>
+    <string name="settings_tts_voice_locale_da_dk">Tiếng Đan Mạch (Đan Mạch)</string>
+    <string name="settings_tts_voice_locale_nb_no">Tiếng Na Uy Bokmål (Na Uy)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Tiếng Phần Lan (Phần Lan)</string>
+    <string name="settings_tts_voice_locale_et_ee">Tiếng Estonia (Estonia)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Tiếng Latvia (Latvia)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Tiếng Litva (Litva)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Tiếng Thổ Nhĩ Kỳ (Thổ Nhĩ Kỳ)</string>
+    <string name="settings_tts_voice_locale_id_id">Tiếng Indonesia (Indonesia)</string>
+    <string name="settings_tts_voice_locale_ms_my">Tiếng Mã Lai (Malaysia)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Tiếng Philippines (Philippines)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Tiếng Swahili (Kenya)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Tiếng Trung (Giản thể)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Tiếng Trung (Phồn thể)</string>
+    <string name="settings_tts_voice_locale_hi_in">Tiếng Hindi (Ấn Độ)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Tiếng Bengal (Bangladesh)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Tiếng Nhật (Nhật Bản)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Tiếng Hàn (Hàn Quốc)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Tiếng Ả Rập (Ả Rập Xê Út)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Tiếng Ả Rập (Ai Cập)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Tiếng Ả Rập (UAE)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Tiếng Ả Rập (Maroc)</string>
+    <string name="settings_tts_voice_locale_he_il">Tiếng Do Thái (Israel)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Tiếng Ba Tư (Iran)</string>
+    <string name="settings_tts_voice_locale_sq_al">Tiếng Albania (Albania)</string>
+    <string name="settings_tts_voice_locale_am_et">Tiếng Amhara (Ethiopia)</string>
+
+    <!-- TTS test -->
+    <string name="settings_tts_test">Kiểm tra giọng</string>
+    <string name="settings_tts_test_in_flight">Đang kiểm tra — vui lòng chờ…</string>
+
+    <!-- =====================================================================
+         Settings — Region / Language
+         ===================================================================== -->
+    <string name="settings_region_language_title">Ngôn ngữ</string>
+    <string name="settings_region_language_description">Đặt ngôn ngữ của văn bản hiển thị và thông báo.</string>
+    <string name="settings_region_language_system">Theo ngôn ngữ hệ thống</string>
+
+    <!-- Language option names (in Vietnamese) -->
+    <string name="settings_region_language_en_us">Tiếng Anh (Hoa Kỳ)</string>
+    <string name="settings_region_language_en_gb">Tiếng Anh (Vương quốc Anh)</string>
+    <string name="settings_region_language_en_au">Tiếng Anh (Úc)</string>
+    <string name="settings_region_language_en_ca">Tiếng Anh (Canada)</string>
+    <string name="settings_region_language_en_za">Tiếng Anh (Nam Phi)</string>
+    <string name="settings_region_language_de_de">Tiếng Đức (Đức)</string>
+    <string name="settings_region_language_de_at">Tiếng Đức (Áo)</string>
+    <string name="settings_region_language_de_ch">Tiếng Đức (Thụy Sĩ)</string>
+    <string name="settings_region_language_fr_fr">Tiếng Pháp (Pháp)</string>
+    <string name="settings_region_language_fr_ca">Tiếng Pháp (Canada)</string>
+    <string name="settings_region_language_it_it">Tiếng Ý (Ý)</string>
+    <string name="settings_region_language_es_es">Tiếng Tây Ban Nha (Tây Ban Nha)</string>
+    <string name="settings_region_language_es_mx">Tiếng Tây Ban Nha (Mexico)</string>
+    <string name="settings_region_language_ca_es">Tiếng Catalan (Tây Ban Nha)</string>
+    <string name="settings_region_language_ru_ru">Tiếng Nga (Nga)</string>
+    <string name="settings_region_language_pl_pl">Tiếng Ba Lan (Ba Lan)</string>
+    <string name="settings_region_language_hr_hr">Tiếng Croatia (Croatia)</string>
+    <string name="settings_region_language_sl_si">Tiếng Slovenia (Slovenia)</string>
+    <string name="settings_region_language_sr_rs">Tiếng Serbia (Latin)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Tiếng Serbia (Cyrillic)</string>
+    <string name="settings_region_language_bg_bg">Tiếng Bulgaria (Bulgaria)</string>
+    <string name="settings_region_language_cs_cz">Tiếng Séc (Séc)</string>
+    <string name="settings_region_language_sk_sk">Tiếng Slovak (Slovakia)</string>
+    <string name="settings_region_language_hu_hu">Tiếng Hungary (Hungary)</string>
+    <string name="settings_region_language_ro_ro">Tiếng Romania (Romania)</string>
+    <string name="settings_region_language_el_gr">Tiếng Hy Lạp (Hy Lạp)</string>
+    <string name="settings_region_language_uk_ua">Tiếng Ukraine (Ukraine)</string>
+    <string name="settings_region_language_pt_br">Tiếng Bồ Đào Nha (Brazil)</string>
+    <string name="settings_region_language_pt_pt">Tiếng Bồ Đào Nha (Bồ Đào Nha)</string>
+    <string name="settings_region_language_nl_nl">Tiếng Hà Lan (Hà Lan)</string>
+    <string name="settings_region_language_sv_se">Tiếng Thụy Điển (Thụy Điển)</string>
+    <string name="settings_region_language_da_dk">Tiếng Đan Mạch (Đan Mạch)</string>
+    <string name="settings_region_language_nb_no">Tiếng Na Uy Bokmål (Na Uy)</string>
+    <string name="settings_region_language_fi_fi">Tiếng Phần Lan (Phần Lan)</string>
+    <string name="settings_region_language_et_ee">Tiếng Estonia (Estonia)</string>
+    <string name="settings_region_language_lv_lv">Tiếng Latvia (Latvia)</string>
+    <string name="settings_region_language_lt_lt">Tiếng Litva (Litva)</string>
+    <string name="settings_region_language_tr_tr">Tiếng Thổ Nhĩ Kỳ (Thổ Nhĩ Kỳ)</string>
+    <string name="settings_region_language_id_id">Tiếng Indonesia (Indonesia)</string>
+    <string name="settings_region_language_ms_my">Tiếng Mã Lai (Malaysia)</string>
+    <string name="settings_region_language_fil_ph">Tiếng Philippines (Philippines)</string>
+    <string name="settings_region_language_sw_ke">Tiếng Swahili (Kenya)</string>
+    <string name="settings_region_language_zh_cn">Tiếng Trung (Giản thể)</string>
+    <string name="settings_region_language_zh_tw">Tiếng Trung (Phồn thể)</string>
+    <string name="settings_region_language_hi_in">Tiếng Hindi (Ấn Độ)</string>
+    <string name="settings_region_language_bn_bd">Tiếng Bengal (Bangladesh)</string>
+    <string name="settings_region_language_ja_jp">Tiếng Nhật (Nhật Bản)</string>
+    <string name="settings_region_language_ko_kr">Tiếng Hàn (Hàn Quốc)</string>
+    <string name="settings_region_language_ar_sa">Tiếng Ả Rập (Ả Rập Xê Út)</string>
+    <string name="settings_region_language_he_il">Tiếng Do Thái (Israel)</string>
+    <string name="settings_region_language_fa_ir">Tiếng Ba Tư (Iran)</string>
+    <string name="settings_region_language_sq_al">Tiếng Albania (Albania)</string>
+    <string name="settings_region_language_am_et">Tiếng Amhara (Ethiopia)</string>
+
+    <!-- =====================================================================
+         Settings — Temperature &amp; Distance units
+         ===================================================================== -->
+    <string name="settings_temperature_unit_title">Đơn vị nhiệt độ</string>
+    <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+
+    <string name="settings_distance_unit_title">Đơn vị khoảng cách</string>
+    <string name="settings_distance_unit_kilometers">Kilômét</string>
+    <string name="settings_distance_unit_miles">Dặm</string>
+
+    <!-- =====================================================================
+         Settings — Clothes
+         ===================================================================== -->
+    <string name="settings_clothes_title">Quy tắc quần áo</string>
+    <string name="settings_clothes_description">Nếu dự báo vượt một trong các ngưỡng này, trang phục đó sẽ xuất hiện trong ClothesCast hàng ngày của bạn.</string>
+
+    <!-- Additional garment names -->
+    <string name="garment_puffer">Áo phao</string>
+    <string name="garment_thin_jacket">Áo khoác mỏng</string>
+    <string name="garment_polo">Áo polo</string>
+    <string name="garment_skirt">Chân váy</string>
+
+    <!-- =====================================================================
+         Notifications
+         ===================================================================== -->
+    <string name="notification_channel_daily_insight_name">ClothesCast hàng ngày</string>
+    <string name="notification_channel_daily_insight_description">Tóm tắt thời tiết buổi sáng bạn đã đăng ký.</string>
+    <string name="notification_daily_insight_title">ClothesCast hôm nay</string>
+
+    <string name="notification_channel_tonight_insight_default_name">ClothesCast buổi tối (có sự kiện)</string>
+    <string name="notification_channel_tonight_insight_default_description">Tóm tắt thời tiết buổi tối khi bạn có sự kiện lịch tối nay. Phát âm thanh thông báo mặc định.</string>
+    <string name="notification_channel_tonight_insight_silent_name">ClothesCast buổi tối (im lặng)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Tóm tắt thời tiết buổi tối khi buổi tối của bạn trống. Đăng im lặng — bạn có thể xem trên màn hình khóa nhưng sẽ không phát âm thanh.</string>
+    <string name="notification_tonight_insight_title">ClothesCast tối nay</string>
+
+    <string name="notification_channel_weather_alerts_name">Cảnh báo thời tiết khắc nghiệt</string>
+    <string name="notification_channel_weather_alerts_description">Cảnh báo ưu tiên cao về các sự kiện thời tiết nghiêm trọng hoặc cực đoan ảnh hưởng đến khu vực của bạn. Được gửi ngay khi lần tải hàng ngày phát hiện.</string>
+    <string name="notification_weather_alert_title">Cảnh báo thời tiết: %1$s</string>
+
+    <!-- Notification permission -->
+    <string name="settings_notification_permission_title">Thông báo bị chặn</string>
+    <string name="settings_notification_permission_description">Nếu không có quyền thông báo, ClothesCast hàng ngày của bạn không có nơi để hiển thị. Hãy cấp để ClothesCast có thể đăng vào sáng mai.</string>
+    <string name="settings_notification_permission_grant">Cấp quyền thông báo</string>
+
+    <!-- =====================================================================
+         Settings — Calendar
+         ===================================================================== -->
+    <string name="settings_calendar_title">Lịch</string>
+    <string name="settings_calendar_use_events">Dùng sự kiện lịch hôm nay</string>
+    <string name="settings_calendar_description_off">Điều chỉnh dự báo buổi sáng theo sự kiện hôm nay — chỉ sử dụng tiêu đề và giờ, không có gì rời khỏi thiết bị.</string>
+    <string name="settings_calendar_description_on">Đang điều chỉnh dự báo buổi sáng theo sự kiện hôm nay. Chỉ dùng tiêu đề và giờ; không có gì rời khỏi thiết bị.</string>
+    <string name="settings_calendar_grant_permission">Cấp quyền lịch</string>
+    <string name="settings_calendar_open_settings">Đã từ chối quyền lịch. Cấp từ Cài đặt hệ thống.</string>
+
+    <!-- =====================================================================
+         Settings — Debug
+         ===================================================================== -->
+    <string name="settings_debug_title">Debug (chỉ bản debug)</string>
+    <string name="settings_debug_description">Kích hoạt ngay quy trình ClothesCast hàng ngày. Hữu ích để xác minh mà không cần chờ đến giờ đã đặt lịch.</string>
+    <string name="settings_debug_fire_now">Kích hoạt ClothesCast ngay</string>
+    <string name="settings_debug_fire_toast">Đã xếp hàng worker ClothesCast</string>
+
+    <!-- =====================================================================
+         Settings — About
+         ===================================================================== -->
+    <string name="settings_about_title">Giới thiệu</string>
+    <string name="settings_about_version">Phiên bản %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · bản %1$s</string>
+    <string name="settings_about_source">Mã nguồn trên GitHub</string>
+    <string name="settings_about_dontkillmyapp">Hạn chế chạy nền (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Chia sẻ báo cáo lỗi</string>
+    <string name="settings_about_version_copied">Đã sao chép phiên bản vào clipboard</string>
+
+    <!-- =====================================================================
+         Bug report consent dialog
+         ===================================================================== -->
+    <string name="bug_report_consent_title">Chia sẻ báo cáo lỗi?</string>
+    <string name="bug_report_consent_body">Điều này giúp chẩn đoán sự cố. Báo cáo chứa thông tin cá nhân nhạy cảm, bao gồm vị trí, cài đặt ứng dụng và hoạt động gần đây. Bạn sẽ có thể xem xét và chỉnh sửa trước khi gửi.</string>
+    <string name="bug_report_consent_dont_show_again">Không hiện lại</string>
+    <string name="bug_report_consent_continue">Tiếp tục</string>
+    <string name="bug_report_consent_cancel">Hủy</string>
+
+    <!-- =====================================================================
+         Insight prose — additional templates
+         ===================================================================== -->
+    <string name="insight_precip_chance">Có thể %1$s %2$s.</string>
+    <string name="insight_tie_in_at_night">Mang %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Tối nay, có thể mưa lúc %2$s, mang %1$s.</string>
+    <string name="insight_evening_rain">Tối nay, mưa lúc %1$s.</string>
+    <string name="insight_evening_rain_chance">Tối nay, có thể mưa lúc %1$s.</string>
 
 </resources>

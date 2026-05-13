@@ -99,7 +99,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_outfit_top_thin_jacket">แจ็คเก็ตบาง</string>
     <string name="today_outfit_top_thick_coat">เสื้อโค้ทหนา</string>
     <string name="today_outfit_top_puffer_jacket">เสื้อขนเป็ด</string>
-    <string name="today_outfit_bottom_skirt">กระโปรง</string>
+    <string name="today_outfit_bottom_long_skirt">กระโปรง</string>
     <string name="today_outfit_bottom_jeans">กางเกงยีนส์</string>
 
     <!-- Today screen -->

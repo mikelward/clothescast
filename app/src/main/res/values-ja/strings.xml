@@ -602,7 +602,7 @@ the displayed label localizes.
     <string name="today_outfit_top_thin_jacket">薄手のジャケット</string>
     <string name="today_outfit_top_thick_coat">厚手のコート</string>
     <string name="today_outfit_top_puffer_jacket">ダウンジャケット</string>
-    <string name="today_outfit_bottom_skirt">スカート</string>
+    <string name="today_outfit_bottom_long_skirt">スカート</string>
     <string name="today_outfit_bottom_jeans">ジーンズ</string>
 
     <!-- Garment dropdown — additional items. -->

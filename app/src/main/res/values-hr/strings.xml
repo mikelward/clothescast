@@ -563,7 +563,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_outfit_top_thin_jacket">Lagana jakna</string>
     <string name="today_outfit_top_thick_coat">Debeli kaput</string>
     <string name="today_outfit_top_puffer_jacket">Pernata jakna</string>
-    <string name="today_outfit_bottom_skirt">Suknja</string>
+    <string name="today_outfit_bottom_long_skirt">Suknja</string>
     <string name="today_outfit_bottom_jeans">Traperice</string>
 
     <!-- Garment dropdown — additional items. -->

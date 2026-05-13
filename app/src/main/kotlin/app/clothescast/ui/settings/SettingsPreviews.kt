@@ -10,6 +10,7 @@ import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -83,11 +84,13 @@ internal fun SettingsClothesPreview() {
     SettingsFrame {
         ClothesContent(
             rules = ClothesRule.DEFAULTS,
+            defaultBottom = OutfitSuggestion.Bottom.LONG_PANTS,
             temperatureUnit = TemperatureUnit.CELSIUS,
             padding = PaddingValues(0.dp),
             onAdd = {},
             onReplace = { _, _ -> },
             onDelete = {},
+            onSetDefaultBottom = {},
         )
     }
 }
@@ -107,11 +110,13 @@ internal fun SettingsClothesFahrenheitPreview() {
                 Garment.TSHIRT.itemKey,
                 ClothesRule.TemperatureAbove(75.0, TemperatureUnit.FAHRENHEIT),
             ),
+            defaultBottom = OutfitSuggestion.Bottom.LONG_PANTS,
             temperatureUnit = TemperatureUnit.FAHRENHEIT,
             padding = PaddingValues(0.dp),
             onAdd = {},
             onReplace = { _, _ -> },
             onDelete = {},
+            onSetDefaultBottom = {},
         )
     }
 }

@@ -217,6 +217,17 @@ data class UserPreferences(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val clothesRules: List<ClothesRule>,
     /**
+     * Which bottom garment the home-screen outfit picker falls back to when no
+     * shorts / skirt / jeans rule fires — i.e. the user's "standard" trousers.
+     * Defaults to [OutfitSuggestion.Bottom.LONG_PANTS]; a denim-everyday user
+     * can flip it to [OutfitSuggestion.Bottom.JEANS] so the home-screen icon
+     * matches what they actually wear most days. Only LONG_PANTS and JEANS are
+     * surfaced in the Settings picker — SHORTS and SKIRT already have their
+     * own rule-driven paths in the picker, and using either as a fallback
+     * would defeat their warm-weather purpose.
+     */
+    val defaultBottom: OutfitSuggestion.Bottom = OutfitSuggestion.Bottom.LONG_PANTS,
+    /**
      * The fixed location to fetch weather for when [useDeviceLocation] is false (or as a
      * fallback when device location can't be resolved). Null when the user has not
      * configured one.

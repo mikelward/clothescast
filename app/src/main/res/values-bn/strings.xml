@@ -120,7 +120,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_outfit_top_thin_jacket">পাতলা জ্যাকেট</string>
     <string name="today_outfit_top_thick_coat">মোটা কোট</string>
     <string name="today_outfit_top_puffer_jacket">পাফার জ্যাকেট</string>
-    <string name="today_outfit_bottom_skirt">স্কার্ট</string>
+    <string name="today_outfit_bottom_long_skirt">স্কার্ট</string>
     <string name="today_outfit_bottom_jeans">জিন্স</string>
 
     <!-- Rationale dialog -->

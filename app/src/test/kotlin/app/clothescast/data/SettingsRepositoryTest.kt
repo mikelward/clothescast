@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -270,6 +271,34 @@ class SettingsRepositoryTest {
         }
 
         subject.preferences.first().clothesRules shouldBe ClothesRule.DEFAULTS
+    }
+
+    @Test
+    fun `defaultBottom defaults to LONG_PANTS and round-trips`() = runTest {
+        subject.preferences.first().defaultBottom shouldBe OutfitSuggestion.Bottom.LONG_PANTS
+
+        subject.setDefaultBottom(OutfitSuggestion.Bottom.JEANS)
+        subject.preferences.first().defaultBottom shouldBe OutfitSuggestion.Bottom.JEANS
+
+        subject.setDefaultBottom(OutfitSuggestion.Bottom.LONG_PANTS)
+        subject.preferences.first().defaultBottom shouldBe OutfitSuggestion.Bottom.LONG_PANTS
+    }
+
+    @Test
+    fun `defaultBottom round-trips LONG_SKIRT and clamps SHORTS or unknown back to LONG_PANTS`() = runTest {
+        // LONG_PANTS / JEANS / LONG_SKIRT are valid fallbacks (the picker's
+        // three options). SHORTS has its own rule-driven warm-weather path and
+        // shouldn't ever be the "no rule fires" answer; a stored value outside
+        // the picker set degrades to LONG_PANTS rather than silently dropping
+        // an invalid choice into the icon.
+        subject.setDefaultBottom(OutfitSuggestion.Bottom.LONG_SKIRT)
+        subject.preferences.first().defaultBottom shouldBe OutfitSuggestion.Bottom.LONG_SKIRT
+
+        dataStore.edit { it[stringPreferencesKey("default_bottom")] = "SHORTS" }
+        subject.preferences.first().defaultBottom shouldBe OutfitSuggestion.Bottom.LONG_PANTS
+
+        dataStore.edit { it[stringPreferencesKey("default_bottom")] = "BOGUS" }
+        subject.preferences.first().defaultBottom shouldBe OutfitSuggestion.Bottom.LONG_PANTS
     }
 
     @Test

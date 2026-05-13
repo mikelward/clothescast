@@ -116,7 +116,7 @@ to values/strings.xml (English).
     <string name="today_outfit_top_thin_jacket">Jaket tipis</string>
     <string name="today_outfit_top_thick_coat">Mantel tebal</string>
     <string name="today_outfit_top_puffer_jacket">Jaket puffer</string>
-    <string name="today_outfit_bottom_skirt">Rok</string>
+    <string name="today_outfit_bottom_long_skirt">Rok</string>
     <string name="today_outfit_bottom_jeans">Celana jeans</string>
 
     <!-- Outfit rationale dialog -->

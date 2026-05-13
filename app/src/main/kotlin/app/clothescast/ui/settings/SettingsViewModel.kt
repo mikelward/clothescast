@@ -11,6 +11,7 @@ import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -108,6 +109,7 @@ class SettingsViewModel(
                         distanceUnit = prefs.distanceUnit,
                         themeMode = prefs.themeMode,
                         clothesRules = prefs.clothesRules,
+                        defaultBottom = prefs.defaultBottom,
                         location = prefs.location,
                         useDeviceLocation = prefs.useDeviceLocation,
                         ttsEngine = prefs.ttsEngine,
@@ -269,6 +271,10 @@ class SettingsViewModel(
             if (index !in current.indices) return@launch
             settingsRepository.setClothesRules(current.toMutableList().apply { removeAt(index) })
         }
+    }
+
+    fun setDefaultBottom(bottom: OutfitSuggestion.Bottom) {
+        viewModelScope.launch { settingsRepository.setDefaultBottom(bottom) }
     }
 
     fun selectLocation(location: Location) {

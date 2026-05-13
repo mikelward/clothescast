@@ -383,7 +383,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_outfit_top_puffer_jacket">Péřová bunda</string>
     <string name="today_outfit_bottom_shorts">Šortky</string>
     <string name="today_outfit_bottom_long_pants">Kalhoty</string>
-    <string name="today_outfit_bottom_skirt">Sukně</string>
+    <string name="today_outfit_bottom_long_skirt">Sukně</string>
     <string name="today_outfit_bottom_jeans">Džíny</string>
 
     <!-- Forecast card. -->

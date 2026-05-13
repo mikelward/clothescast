@@ -598,7 +598,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_outfit_top_thin_jacket">Chaqueta ligera</string>
     <string name="today_outfit_top_thick_coat">Abrigo de invierno</string>
     <string name="today_outfit_top_puffer_jacket">Plumas</string>
-    <string name="today_outfit_bottom_skirt">Falda</string>
+    <string name="today_outfit_bottom_long_skirt">Falda</string>
     <string name="today_outfit_bottom_jeans">Vaqueros</string>
 
     <!-- Garment dropdown — additional items. -->

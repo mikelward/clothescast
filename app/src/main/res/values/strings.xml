@@ -56,7 +56,7 @@
     <string name="today_outfit_top_thick_coat">Thick coat</string>
     <string name="today_outfit_top_puffer_jacket">Puffer jacket</string>
     <string name="today_outfit_bottom_shorts">Shorts</string>
-    <string name="today_outfit_bottom_skirt">Skirt</string>
+    <string name="today_outfit_bottom_long_skirt">Long skirt</string>
     <string name="today_outfit_bottom_jeans">Jeans</string>
     <string name="today_outfit_bottom_long_pants">Long pants</string>
 
@@ -551,6 +551,9 @@
 
     <string name="settings_clothes_title">Clothes rules</string>
     <string name="settings_clothes_description">If a forecast crosses one of these thresholds, the item appears in your daily ClothesCast.</string>
+
+    <string name="settings_default_bottom_title">Standard bottom</string>
+    <string name="settings_default_bottom_description">What we suggest on the home screen when it\'s not warm enough for shorts.</string>
 
     <!-- Garment dropdown labels — picker options when the user adds or edits a
          clothes rule. Stored on disk as the en-US key (e.g. "sweater"), so the

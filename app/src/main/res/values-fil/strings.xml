@@ -110,7 +110,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_outfit_top_thin_jacket">Manipis na jacket</string>
     <string name="today_outfit_top_thick_coat">Makapal na coat</string>
     <string name="today_outfit_top_puffer_jacket">Puffer jacket</string>
-    <string name="today_outfit_bottom_skirt">Palda</string>
+    <string name="today_outfit_bottom_long_skirt">Palda</string>
     <string name="today_outfit_bottom_jeans">Maong</string>
 
     <!-- Outfit rationale dialog -->

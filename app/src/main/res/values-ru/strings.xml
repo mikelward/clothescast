@@ -458,7 +458,7 @@ only the displayed label localizes.
     <string name="today_outfit_top_puffer_jacket">Пуховик</string>
     <string name="today_outfit_bottom_shorts">Шорты</string>
     <string name="today_outfit_bottom_long_pants">Брюки</string>
-    <string name="today_outfit_bottom_skirt">Юбка</string>
+    <string name="today_outfit_bottom_long_skirt">Юбка</string>
     <string name="today_outfit_bottom_jeans">Джинсы</string>
 
     <string name="today_forecast_title">Почасовой прогноз</string>

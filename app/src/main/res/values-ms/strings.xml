@@ -111,7 +111,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_outfit_top_thin_jacket">Jaket nipis</string>
     <string name="today_outfit_top_thick_coat">Kot tebal</string>
     <string name="today_outfit_top_puffer_jacket">Jaket puffer</string>
-    <string name="today_outfit_bottom_skirt">Skirt</string>
+    <string name="today_outfit_bottom_long_skirt">Skirt</string>
     <string name="today_outfit_bottom_jeans">Seluar jean</string>
 
     <!-- Rationale dialog -->

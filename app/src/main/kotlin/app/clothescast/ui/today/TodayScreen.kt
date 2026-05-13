@@ -76,6 +76,7 @@ import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitRationale
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.ModelDivergenceSummary
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -1010,7 +1011,7 @@ internal fun ConfidenceChip(info: ConfidenceInfo) {
 }
 
 @Composable
-private fun ForecastCard(
+internal fun ForecastCard(
     hourly: List<HourlyForecast>,
     temperatureUnit: TemperatureUnit,
     perModelHourly: PerModelHourly? = null,
@@ -1085,9 +1086,78 @@ private fun ForecastCard(
                         label = stringResource(R.string.today_chart_main_line_label),
                     ),
                 )
+                // "Models disagree most at HH:00 (Δ X °C feels-like) —
+                // mostly cloud cover, A to B%" — a one-liner pointing at the
+                // hour with the biggest cross-model disagreement and the
+                // ancillary factor most likely to explain it. Hidden when
+                // the day's peak feels-like spread is below the threshold
+                // in [ModelDivergenceSummary.computeFrom], so we don't
+                // surface a misleading "biggest factor" attribution on
+                // essentially-agreeing models.
+                ModelDivergenceHint(perModelHourly = perModelHourly, temperatureUnit = temperatureUnit)
             }
         }
     }
+}
+
+/**
+ * One-line "why do the models disagree?" hint rendered under the temperature
+ * card's legend when the spread is wide enough to be worth surfacing. See
+ * [ModelDivergenceSummary.computeFrom] for the threshold + factor-ranking
+ * heuristic; this composable just formats the result.
+ */
+@Composable
+private fun ModelDivergenceHint(
+    perModelHourly: PerModelHourly,
+    temperatureUnit: TemperatureUnit,
+) {
+    val summary = remember(perModelHourly) {
+        ModelDivergenceSummary.computeFrom(perModelHourly)
+    } ?: return
+    val factorLabel = stringResource(
+        when (summary.topFactor) {
+            ModelDivergenceSummary.Factor.AIR_TEMPERATURE -> R.string.today_factor_air_temperature
+            ModelDivergenceSummary.Factor.WIND_SPEED -> R.string.today_factor_wind_speed
+            ModelDivergenceSummary.Factor.CLOUD_COVER -> R.string.today_factor_cloud_cover
+            ModelDivergenceSummary.Factor.RELATIVE_HUMIDITY -> R.string.today_factor_humidity
+        },
+    )
+    val rangeText = formatTopFactorRange(summary, temperatureUnit)
+    // A feels-like *delta* converts to °F by simple multiplication (no
+    // offset), unlike absolute temperatures. Express in the user's unit so
+    // a Fahrenheit user doesn't see °C in the spread number.
+    val spreadInUserUnit = when (temperatureUnit) {
+        TemperatureUnit.CELSIUS -> summary.feelsLikeSpreadC
+        TemperatureUnit.FAHRENHEIT -> summary.feelsLikeSpreadC * 1.8
+    }
+    Text(
+        text = stringResource(
+            R.string.today_chart_divergence_summary,
+            "%02d:%02d".format(summary.peakHour.hour, summary.peakHour.minute),
+            spreadInUserUnit,
+            temperatureUnit.symbol(),
+            factorLabel,
+            rangeText,
+        ),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+}
+
+private fun formatTopFactorRange(
+    summary: ModelDivergenceSummary,
+    temperatureUnit: TemperatureUnit,
+): String = when (summary.topFactor) {
+    ModelDivergenceSummary.Factor.AIR_TEMPERATURE -> {
+        val min = summary.topFactorMin.toUnit(temperatureUnit).roundToInt()
+        val max = summary.topFactorMax.toUnit(temperatureUnit).roundToInt()
+        "$min–$max${temperatureUnit.symbol()}"
+    }
+    ModelDivergenceSummary.Factor.WIND_SPEED ->
+        "${summary.topFactorMin.roundToInt()}–${summary.topFactorMax.roundToInt()} km/h"
+    ModelDivergenceSummary.Factor.CLOUD_COVER,
+    ModelDivergenceSummary.Factor.RELATIVE_HUMIDITY ->
+        "${summary.topFactorMin.roundToInt()}–${summary.topFactorMax.roundToInt()}%"
 }
 
 /**

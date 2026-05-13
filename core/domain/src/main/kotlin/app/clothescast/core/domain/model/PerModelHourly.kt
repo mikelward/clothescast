@@ -54,27 +54,17 @@ data class PerModelHour(
     val cloudCoverPct: Double? = null,
 )
 
-// TODO(model-divergence-summary): per-hour diagnostic panel — "this hour
-//   ICON predicts 6.5 °C warmer than GFS; biggest contributing factor:
-//   cloud cover (ICON 20% vs GFS 85%)" or "wind speed (12 vs 22 km/h)".
-//   We now carry the per-model wind / humidity / cloud series; the missing
-//   piece is the heuristic that ranks them and the bit of UI that surfaces
-//   it. Probably belongs as a tappable hint under the temp chart when the
-//   instantaneous spread exceeds the LOW-confidence threshold.
 // TODO(model-spread-stat): cross-model spread is currently reported as
 //   `max - min` (see [ConfidenceInfo.tempSpreadC]). One outlying model
-//   swings that disproportionately; consider RMSE / std-dev across the
-//   consulted models as an alternative confidence input.
-// TODO(main-line-model): OpenMeteoClient's `forecast` call doesn't pass a
-//   `models=` parameter, so the blended "main" line on the temperature
-//   chart is whatever Open-Meteo's `best_match` picks for the location —
-//   it visibly tracks one of the consulted models rather than a midpoint.
-//   That's confusing when models diverge: the clothes recommendation
-//   effectively picks one side. Consider either explicitly averaging the
-//   per-model series for the main line, or surfacing which model
-//   best_match chose so the legend reads honestly.
-// TODO(model-spread-stat): cross-model spread is currently reported as
-//   `max - min` (see [ConfidenceInfo.tempSpreadC]). That's intuitive but
-//   one outlying model swings it disproportionately; explore RMSE or std-dev
-//   across the consulted models as an alternative confidence input, plotted
+//   swings that disproportionately; explore RMSE / std-dev across the
+//   consulted models as an alternative confidence input, plotted
 //   alongside the existing spread so we can A/B them before switching.
+// TODO(main-line-averaging): the blended "main" temperature / rain line
+//   currently comes from OpenMeteoClient's `forecast` call, which
+//   defaults to Open-Meteo's `best_match` auto-selection — and that
+//   single model routinely tracks neither of the consulted overlays.
+//   #388 labels the line as "Best match" so the disagreement is at
+//   least legible, but a follow-up could compute a defensible midline
+//   in code (e.g. the per-hour mean of the consulted models) and feed
+//   *that* into the clothes recommendation instead of the single
+//   best_match line.

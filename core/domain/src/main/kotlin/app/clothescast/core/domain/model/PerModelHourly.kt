@@ -28,6 +28,25 @@ data class PerModelHour(
     val time: LocalTime,
     /** Apparent ("feels-like") temperature for the hour, °C. */
     val apparentTemperatureC: Double,
+    /** Raw 2 m air temperature for the hour, °C — the same series the blended
+     *  [HourlyForecast.temperatureC] line carries, but per model. Surfaced so
+     *  the chart can overlay model lines in air-temp mode (tap-to-toggle) too,
+     *  not just in feels-like mode. */
+    val temperatureC: Double,
     /** Probability of measurable precipitation for the hour, 0–100. */
     val precipitationProbabilityPct: Double,
 )
+
+// TODO(model-divergence-diagnostics): when models disagree, the cause is
+//   usually one of two things — disagreement on raw 2 m air temperature, or
+//   disagreement on the wind / humidity inputs that get folded into the
+//   apparent-temperature calculation. Carrying [temperatureC] alongside
+//   [apparentTemperatureC] is the first half; a follow-up should add the
+//   per-model wind-speed and relative-humidity hourly series so we can
+//   visualise where the divergence is *coming from*, and a small Insight-
+//   detail panel that summarises which factor is the biggest contributor.
+// TODO(model-spread-stat): cross-model spread is currently reported as
+//   `max - min` (see [ConfidenceInfo.tempSpreadC]). That's intuitive but
+//   one outlying model swings it disproportionately; explore RMSE or std-dev
+//   across the consulted models as an alternative confidence input, plotted
+//   alongside the existing spread so we can A/B them before switching.

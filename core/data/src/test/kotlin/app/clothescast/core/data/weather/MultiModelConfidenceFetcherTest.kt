@@ -73,7 +73,8 @@ class MultiModelConfidenceFetcherTest {
         req.url.encodedPath shouldBe "/v1/forecast"
         req.url.parameters["models"] shouldBe "ecmwf_ifs04,gfs_seamless,icon_seamless"
         req.url.parameters["daily"] shouldBe "apparent_temperature_max,precipitation_probability_max"
-        req.url.parameters["hourly"] shouldBe "apparent_temperature,precipitation_probability"
+        req.url.parameters["hourly"] shouldBe
+            "apparent_temperature,temperature_2m,precipitation_probability"
         req.url.parameters["forecast_days"] shouldBe "1"
         req.url.parameters["past_days"].shouldBeNull()
     }
@@ -133,6 +134,7 @@ class MultiModelConfidenceFetcherTest {
         ecmwf.size shouldBe 3
         ecmwf[0].time shouldBe LocalTime.of(0, 0)
         ecmwf[0].apparentTemperatureC shouldBe (12.0 plusOrMinus 0.0001)
+        ecmwf[0].temperatureC shouldBe (14.0 plusOrMinus 0.0001)
         ecmwf[0].precipitationProbabilityPct shouldBe (10.0 plusOrMinus 0.0001)
         ecmwf[2].time shouldBe LocalTime.of(2, 0)
     }
@@ -286,6 +288,9 @@ class MultiModelConfidenceFetcherTest {
                 "apparent_temperature_ecmwf_ifs04": [12.0, 11.5, 11.0],
                 "apparent_temperature_gfs_seamless": [12.2, 11.8, 11.4],
                 "apparent_temperature_icon_seamless": [13.0, 12.6, 12.0],
+                "temperature_2m_ecmwf_ifs04": [14.0, 13.5, 13.0],
+                "temperature_2m_gfs_seamless": [14.2, 13.8, 13.4],
+                "temperature_2m_icon_seamless": [15.0, 14.6, 14.0],
                 "precipitation_probability_ecmwf_ifs04": [10, 15, 20],
                 "precipitation_probability_gfs_seamless": [12, 18, 22],
                 "precipitation_probability_icon_seamless": [18, 22, 28]
@@ -311,6 +316,9 @@ class MultiModelConfidenceFetcherTest {
                 "apparent_temperature_ecmwf_ifs04": [12.0, null, 11.0],
                 "apparent_temperature_gfs_seamless": [12.2, 11.8, 11.4],
                 "apparent_temperature_icon_seamless": [13.0, 12.6, 12.0],
+                "temperature_2m_ecmwf_ifs04": [14.0, 13.5, 13.0],
+                "temperature_2m_gfs_seamless": [14.2, 13.8, 13.4],
+                "temperature_2m_icon_seamless": [15.0, 14.6, 14.0],
                 "precipitation_probability_ecmwf_ifs04": [10, 15, 20],
                 "precipitation_probability_gfs_seamless": [12, 18, 22],
                 "precipitation_probability_icon_seamless": [18, 22, 28]

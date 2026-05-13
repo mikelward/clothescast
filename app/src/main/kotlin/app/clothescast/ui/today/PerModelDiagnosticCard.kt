@@ -61,15 +61,20 @@ internal fun PerModelDiagnosticCard(
     perModelHourly: PerModelHourly,
     picker: (PerModelHour) -> Double?,
     yAxis: YAxis,
+    /**
+     * Extra cache key for callers whose [picker] closes over mutable state
+     * (e.g. the wind card converts km/h → mph using the user's unit). Defaults
+     * to [Unit] so plain field-accessor pickers (cloud, humidity) keep their
+     * old single-key behaviour. Passing the lambda itself wouldn't work —
+     * Compose treats fresh lambda instances as unequal, which would invalidate
+     * the cache every recomposition.
+     */
+    pickerKey: Any? = Unit,
 ) {
     // Build (originalIndex, value) pairs per model so a sparse series plots at
     // its real positions on the x-axis instead of getting compacted left and
     // misaligned with the rest of the screen's hourly axes.
-    // Key on perModelHourly only — the picker is conceptually fixed per card
-    // type (Wind/Cloud/Humidity each pass a literal field accessor) and
-    // including a lambda in a remember key invalidates the cache every
-    // recomposition because Compose doesn't treat lambda instances as stable.
-    val seriesByModel = remember(perModelHourly) {
+    val seriesByModel = remember(perModelHourly, pickerKey) {
         perModelHourly.byModel
             .mapValues { (_, entries) ->
                 entries.mapIndexedNotNull { i, e -> picker(e)?.let { i to it } }

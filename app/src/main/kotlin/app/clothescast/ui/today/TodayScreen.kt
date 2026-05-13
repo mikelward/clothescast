@@ -1212,6 +1212,10 @@ internal fun WindCard(
         perModelHourly = perModelHourly,
         picker = { it.windSpeedKmh?.toWindSpeedUnit(windSpeedUnit) },
         yAxis = YAxis.AutoZeroBased(minSpan = minSpan),
+        // Picker closes over windSpeedUnit; key the series cache on it so the
+        // chart values follow when the user flips distance unit while the
+        // overlay payload is unchanged.
+        pickerKey = windSpeedUnit,
     )
 }
 

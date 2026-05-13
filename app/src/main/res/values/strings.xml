@@ -140,7 +140,7 @@
          predicting the windier hours when feels-like figures diverge — wind
          chill is usually the reason apparent and air temperature drift apart. -->
     <string name="today_wind_title">Wind speed</string>
-    <string name="today_wind_subtitle">Per-model 10 m wind speed (km/h) by hour</string>
+    <string name="today_wind_subtitle">Per-model wind speed (km/h) by hour</string>
 
     <!-- Cloud-cover diagnostic card. Sits below the wind card; cloud cover
          is the upstream driver of air-temperature divergence between models
@@ -155,7 +155,7 @@
          but the data ride the same Open-Meteo call for free, so we surface
          it for the warm days where it does drive feels-like. -->
     <string name="today_humidity_title">Humidity</string>
-    <string name="today_humidity_subtitle">Per-model 2 m relative humidity (%) by hour</string>
+    <string name="today_humidity_subtitle">Per-model relative humidity (%) by hour</string>
 
     <string name="today_confidence_high">High confidence — major models agree</string>
     <string name="today_confidence_medium">Medium confidence</string>

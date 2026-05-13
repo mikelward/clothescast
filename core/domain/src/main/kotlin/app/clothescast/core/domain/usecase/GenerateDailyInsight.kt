@@ -14,6 +14,7 @@ import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.repository.WeatherRepository
 import java.time.Clock
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 /**
@@ -124,13 +125,32 @@ class GenerateDailyInsight(
         } else {
             emptyList()
         }
-        // Per-model hourly only covers `forecast_days=1`, so only the TODAY
-        // pass can pair the precip clause with cross-model agreement. The
-        // tonight pass falls through to base-only behaviour in the renderer.
-        // Sliced to the period window so the renderer's per-hour matches line
-        // up with [periodForecast.hourly].
+        // Per-model hourly now covers today + tomorrow's pre-dawn hours
+        // (MultiModelConfidenceFetcher uses `forecast_days=2`). Slicing pairs
+        // each forecast hour with its calendar date so today's 02:00 doesn't
+        // alias against tomorrow's 02:00 in [PerModelHour.time] (a
+        // LocalDateTime). The TONIGHT period intentionally still strips the
+        // overlay — the chart and "Forecasts disagree today" copy talk about
+        // today, not the night ahead.
         val perModelForPeriod = if (period == ForecastPeriod.TODAY) {
-            bundle.perModelHourly?.slicedTo(periodForecast.hourly)
+            bundle.perModelHourly?.slicedTo(todayWindow(periodForecast.hourly, bundle.today.date))
+        } else {
+            null
+        }
+        // Evening tie-in: pair each tonight-window hour with the right date
+        // (today for pre-midnight, tomorrow for post-midnight wrap). Uses the
+        // lenient [intersectedWith] rather than [slicedTo] — the renderer's
+        // peak-finder walks per-hour readings and doesn't need positional
+        // alignment, so a model with rain at 21:00 but a null entry at, say,
+        // 05:00 tomorrow should still feed the tie-in. The strict slice would
+        // drop it wholesale (chart-alignment contract) and we'd silently fall
+        // back to base-only, missing exactly the case the per-model tier
+        // exists to catch. The event-with-location gate inside the renderer
+        // decides whether the tie-in actually emits.
+        val eveningPerModelForPeriod = if (period == ForecastPeriod.TODAY) {
+            bundle.perModelHourly?.intersectedWith(
+                tonightWindow(tonightForecast.hourly, bundle.today.date, tonightStart),
+            )
         } else {
             null
         }
@@ -146,6 +166,7 @@ class GenerateDailyInsight(
             eveningForecast = if (period == ForecastPeriod.TODAY) tonightForecast else null,
             todayForDelta = deltaToday,
             perModelHourly = perModelForPeriod,
+            eveningPerModelHourly = eveningPerModelForPeriod,
         )
         val insight = Insight(
             summary = summary,
@@ -216,10 +237,10 @@ class GenerateDailyInsight(
  *    information the tonight slice still needs.
  */
 /**
- * Filters each model's per-hour entries to just the hours covered by
- * [windowHourly] (typically today's daytime slice), preserving the window's
- * order so each index in the resulting series lines up with the same index
- * in `windowHourly` — the chart plots overlays by index.
+ * Filters each model's per-hour entries to just the hours covered by [window]
+ * (LocalDateTimes the caller computed from the period's hourly slice), preserving
+ * the window's order so each index in the resulting series lines up with the same
+ * index in the matching base hourly — the chart plots overlays by index.
  *
  * Drops a model entirely from the overlay if it's missing any in-window hour
  * (the upstream `parseHourly` skips per-hour entries with null temp or precip
@@ -229,15 +250,58 @@ class GenerateDailyInsight(
  * draw a curve that's silently shifted. An empty result returns null so the
  * caller can null the whole field.
  */
-private fun PerModelHourly.slicedTo(windowHourly: List<HourlyForecast>): PerModelHourly? {
-    if (windowHourly.isEmpty()) return null
-    val order = windowHourly.map { it.time }
+private fun PerModelHourly.slicedTo(window: List<LocalDateTime>): PerModelHourly? {
+    if (window.isEmpty()) return null
     val filtered = byModel.mapNotNull { (model, entries) ->
         val byTime = entries.associateBy { it.time }
-        val sliced = order.map { byTime[it] ?: return@mapNotNull null }
+        val sliced = window.map { byTime[it] ?: return@mapNotNull null }
         model to sliced
     }.toMap()
     return if (filtered.isEmpty()) null else PerModelHourly(filtered)
+}
+
+/**
+ * Lenient counterpart to [slicedTo]: filters each model's entries to the ones
+ * whose [LocalDateTime] is in [window], dropping out-of-window entries but
+ * keeping models that don't cover every window hour. Renderer consumers
+ * (e.g. [RenderInsightSummary.pickPerModelPeak]) iterate per-hour readings
+ * and don't need positional alignment, so dropping an entire model because
+ * of one missing hour — what [slicedTo]'s chart-alignment contract demands
+ * — would silently lose the rain reading the per-model tier exists to catch.
+ * An empty result returns null so the caller can null the whole field.
+ */
+private fun PerModelHourly.intersectedWith(window: List<LocalDateTime>): PerModelHourly? {
+    if (window.isEmpty()) return null
+    val keep = window.toSet()
+    val filtered = byModel.mapNotNull { (model, entries) ->
+        val sliced = entries.filter { it.time in keep }
+        if (sliced.isEmpty()) null else model to sliced
+    }.toMap()
+    return if (filtered.isEmpty()) null else PerModelHourly(filtered)
+}
+
+/**
+ * Each daytime hour belongs to [todayDate] — [slicedForToday] never wraps
+ * past midnight, so every entry's [HourlyForecast.time] is unambiguously
+ * today's calendar day.
+ */
+private fun todayWindow(windowHourly: List<HourlyForecast>, todayDate: java.time.LocalDate): List<LocalDateTime> =
+    windowHourly.map { LocalDateTime.of(todayDate, it.time) }
+
+/**
+ * Tonight wraps from [tonightStart] today to next morning, so a window hour
+ * with `time >= tonightStart` is on [todayDate]; anything before it (the
+ * tomorrow-morning portion concatenated by [slicedForTonight]) is on the
+ * next day. Same rule that keeps the LocalTime ambiguity from biting the
+ * tonight wrap elsewhere in this module.
+ */
+private fun tonightWindow(
+    windowHourly: List<HourlyForecast>,
+    todayDate: java.time.LocalDate,
+    tonightStart: LocalTime,
+): List<LocalDateTime> = windowHourly.map { entry ->
+    val date = if (!entry.time.isBefore(tonightStart)) todayDate else todayDate.plusDays(1)
+    LocalDateTime.of(date, entry.time)
 }
 
 private fun DailyForecast.slicedForToday(

@@ -1,6 +1,6 @@
 package app.clothescast.core.domain.model
 
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 /**
  * Per-model hourly apparent-temperature and precipitation-probability series
@@ -40,7 +40,15 @@ data class PerModelHourly(
 }
 
 data class PerModelHour(
-    val time: LocalTime,
+    /**
+     * Wall-clock timestamp for the hour in the location's local zone. Carries
+     * the calendar date alongside the hour-of-day so the tonight insight can
+     * wrap past midnight without aliasing today's 02:00 against tomorrow's
+     * 02:00 in time-keyed lookups (e.g. [PerModelHourly] slicing, consensus
+     * blending). The hour-of-day plotted on the Today chart is simply
+     * `time.hour` — the date discriminator costs nothing for the UI.
+     */
+    val time: LocalDateTime,
     /** Apparent ("feels-like") temperature for the hour, °C. */
     val apparentTemperatureC: Double,
     /** Raw 2 m air temperature for the hour, °C — the same series the blended

@@ -38,6 +38,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 /**
@@ -121,22 +122,25 @@ class InsightCache(
         val confidence: ConfidenceInfoDto? = null,
         val perModelHourly: PerModelHourlyDto? = null,
     ) {
-        fun toDomain(): Insight = Insight(
-            summary = summary.toDomain(),
-            recommendedItems = recommendedItems,
-            generatedAt = Instant.ofEpochMilli(generatedAtEpochMillis),
-            forDate = LocalDate.ofEpochDay(forDateEpochDays),
-            location = location?.toDomain(),
-            hourly = hourly.map { it.toDomain() },
-            confidence = confidence?.toDomain(),
-            perModelHourly = perModelHourly?.toDomain(),
-            outfit = outfit?.toDomain(),
-            nextOutfit = nextOutfit?.toDomain(),
-            outfitRationale = outfitRationale?.toDomain(),
-            nextOutfitRationale = nextOutfitRationale?.toDomain(),
-            period = runCatching { ForecastPeriod.valueOf(period) }.getOrDefault(ForecastPeriod.TODAY),
-            hasEvents = hasEvents,
-        )
+        fun toDomain(): Insight {
+            val date = LocalDate.ofEpochDay(forDateEpochDays)
+            return Insight(
+                summary = summary.toDomain(),
+                recommendedItems = recommendedItems,
+                generatedAt = Instant.ofEpochMilli(generatedAtEpochMillis),
+                forDate = date,
+                location = location?.toDomain(),
+                hourly = hourly.map { it.toDomain() },
+                confidence = confidence?.toDomain(),
+                perModelHourly = perModelHourly?.toDomain(date),
+                outfit = outfit?.toDomain(),
+                nextOutfit = nextOutfit?.toDomain(),
+                outfitRationale = outfitRationale?.toDomain(),
+                nextOutfitRationale = nextOutfitRationale?.toDomain(),
+                period = runCatching { ForecastPeriod.valueOf(period) }.getOrDefault(ForecastPeriod.TODAY),
+                hasEvents = hasEvents,
+            )
+        }
     }
 
     @Serializable
@@ -149,11 +153,17 @@ class InsightCache(
         // a placeholder 0°C) means the air-temp model lines simply hide until the
         // next worker refresh repopulates the cache; the alternative would draw a
         // glaringly-wrong flat-0 line.
-        fun toDomain(): PerModelHourly? {
+        //
+        // [date] is the surrounding insight's `forDate` — used to rebuild each
+        // entry's [PerModelHour.time] LocalDateTime. GenerateDailyInsight only
+        // ever caches today's per-model hours (the slice in `slicedTo` narrows
+        // to today's daytime), so pairing with `forDate` reconstructs the
+        // correct date for every entry.
+        fun toDomain(date: LocalDate): PerModelHourly? {
             val out = LinkedHashMap<String, List<PerModelHour>>(byModel.size)
             for ((model, hours) in byModel) {
                 val converted = ArrayList<PerModelHour>(hours.size)
-                for (dto in hours) converted += dto.toDomain() ?: return null
+                for (dto in hours) converted += dto.toDomain(date) ?: return null
                 out[model] = converted
             }
             return PerModelHourly(byModel = out)
@@ -180,10 +190,10 @@ class InsightCache(
         // before the modal condition aggregation landed.
         val conditionName: String? = null,
     ) {
-        fun toDomain(): PerModelHour? {
+        fun toDomain(date: LocalDate): PerModelHour? {
             val airTemp = temperatureC ?: return null
             return PerModelHour(
-                time = LocalTime.ofSecondOfDay(secondOfDay.toLong()),
+                time = LocalDateTime.of(date, LocalTime.ofSecondOfDay(secondOfDay.toLong())),
                 apparentTemperatureC = apparentTemperatureC,
                 temperatureC = airTemp,
                 precipitationProbabilityPct = precipitationProbabilityPct,
@@ -301,12 +311,23 @@ class InsightCache(
 
     @Serializable
     private data class EveningEventTieInDto(
-        val item: String,
+        // Nullable on the bare-rain emission path (per-model rain spotted, no
+        // clothes rule triggered). Legacy payloads written before the bare-rain
+        // path landed always carry an item, so the nullable type is forward-
+        // compat only — there's no migration shape to worry about.
+        val item: String? = null,
         val rainSecondOfDay: Int? = null,
+        // Nullable for back-compat: payloads written before the field landed
+        // decode with `null`, and [toDomain] folds that to LIKELY — the same
+        // wording the older code produced unconditionally.
+        val likelihood: String? = null,
     ) {
         fun toDomain(): EveningEventTieInClause = EveningEventTieInClause(
             item = item,
             rainTime = rainSecondOfDay?.let { LocalTime.ofSecondOfDay(it.toLong()) },
+            likelihood = likelihood
+                ?.let { runCatching { PrecipLikelihood.valueOf(it) }.getOrNull() }
+                ?: PrecipLikelihood.LIKELY,
         )
     }
 
@@ -403,7 +424,11 @@ class InsightCache(
     )
 
     private fun PerModelHour.toDto(): PerModelHourDto = PerModelHourDto(
-        secondOfDay = time.toSecondOfDay(),
+        // Only the hour-of-day is persisted; the surrounding insight's
+        // `forDate` rebuilds the LocalDateTime on read. Today's per-model
+        // slice is the only thing GenerateDailyInsight caches, so the date
+        // is unambiguous.
+        secondOfDay = time.toLocalTime().toSecondOfDay(),
         apparentTemperatureC = apparentTemperatureC,
         temperatureC = temperatureC,
         precipitationProbabilityPct = precipitationProbabilityPct,
@@ -441,7 +466,11 @@ class InsightCache(
         },
         calendarTieIn = calendarTieIn?.let { CalendarTieInDto(it.item) },
         eveningEventTieIn = eveningEventTieIn?.let {
-            EveningEventTieInDto(it.item, it.rainTime?.toSecondOfDay())
+            EveningEventTieInDto(
+                item = it.item,
+                rainSecondOfDay = it.rainTime?.toSecondOfDay(),
+                likelihood = it.likelihood.name,
+            )
         },
     )
 

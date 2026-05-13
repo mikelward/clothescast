@@ -625,6 +625,12 @@ internal fun PrecipitationCardDarkPreview() {
     Frame(darkTheme = true) { PrecipitationCard(hourly = SAMPLE_HOURLY_RAINY) }
 }
 
+// Sample anchor for per-model entries. Charts read `time.toLocalTime()` for
+// labels, so any LocalDate works — pinning today keeps preview output
+// deterministic-ish across runs (and matches SAMPLE_INSIGHT.forDate's
+// vintage).
+private val SAMPLE_PER_MODEL_DATE: LocalDate = LocalDate.of(2026, 4, 26)
+
 // Three model curves spread around the blended sample. Offsets are deliberate
 // so the overlay is visually distinguishable from the main line.
 private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
@@ -635,7 +641,7 @@ private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
             // showing where the spread is largest.
             val hourPhase = (i - 6).coerceAtLeast(0).coerceAtMost(12)
             PerModelHour(
-                time = h.time,
+                time = java.time.LocalDateTime.of(SAMPLE_PER_MODEL_DATE, h.time),
                 apparentTemperatureC = h.feelsLikeC + deltaC,
                 temperatureC = h.temperatureC + deltaC,
                 precipitationProbabilityPct = (h.precipitationProbabilityPct + precipDelta)

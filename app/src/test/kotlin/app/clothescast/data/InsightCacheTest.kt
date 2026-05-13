@@ -45,6 +45,7 @@ import java.io.File
 import java.nio.file.Path
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -79,7 +80,7 @@ class InsightCacheTest {
             byModel = mapOf(
                 "ecmwf_ifs04" to listOf(
                     PerModelHour(
-                        time = LocalTime.of(0, 0),
+                        time = LocalDateTime.of(today, LocalTime.of(0, 0)),
                         apparentTemperatureC = 12.0,
                         temperatureC = 14.0,
                         precipitationProbabilityPct = 10.0,
@@ -88,7 +89,7 @@ class InsightCacheTest {
                         cloudCoverPct = 60.0,
                     ),
                     PerModelHour(
-                        time = LocalTime.of(1, 0),
+                        time = LocalDateTime.of(today, LocalTime.of(1, 0)),
                         apparentTemperatureC = 11.5,
                         temperatureC = 13.5,
                         precipitationProbabilityPct = 15.0,
@@ -101,8 +102,8 @@ class InsightCacheTest {
                 // upstream model run didn't return wind / humidity / cloud,
                 // but temp + precip are present so the entry survives.
                 "gfs_seamless" to listOf(
-                    PerModelHour(LocalTime.of(0, 0), 12.2, 14.2, 12.0),
-                    PerModelHour(LocalTime.of(1, 0), 11.8, 13.8, 18.0),
+                    PerModelHour(LocalDateTime.of(today, LocalTime.of(0, 0)), 12.2, 14.2, 12.0),
+                    PerModelHour(LocalDateTime.of(today, LocalTime.of(1, 0)), 11.8, 13.8, 18.0),
                 ),
             ),
         ),
@@ -322,6 +323,31 @@ class InsightCacheTest {
         subject.store(full)
 
         subject.latest.first() shouldBe full
+    }
+
+    @Test
+    fun `bare-rain evening tie-in round-trips through the cache`() = runTest {
+        // The new emission shape: item null (no clothes rule triggered),
+        // rainTime set, POSSIBLE likelihood from a single-model rain
+        // signal. The DTO has to preserve all three across a serde cycle —
+        // a regression that nulled likelihood would silently downgrade
+        // every cached bare-rain clause to LIKELY on read.
+        val bareRain = sample.copy(
+            summary = sample.summary.copy(
+                eveningEventTieIn = EveningEventTieInClause(
+                    item = null,
+                    rainTime = LocalTime.of(21, 0),
+                    likelihood = PrecipLikelihood.POSSIBLE,
+                ),
+            ),
+        )
+
+        subject.store(bareRain)
+
+        val tie = subject.latest.first()?.summary?.eveningEventTieIn
+        tie?.item shouldBe null
+        tie?.rainTime shouldBe LocalTime.of(21, 0)
+        tie?.likelihood shouldBe PrecipLikelihood.POSSIBLE
     }
 
     @Test

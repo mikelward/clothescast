@@ -772,4 +772,31 @@
     with the morning slice's own. %1$s = item phrase, %2$s = spoken time.
     -->
     <string name="insight_tie_in_with_rain">Bring %1$s tonight, rain at %2$s.</string>
+    <!--
+    POSSIBLE-tier counterpart of insight_tie_in_with_rain: a clothes rule
+    triggered for the evening but only one per-model series flagged the
+    rain at ≥ 30%. Hedges the wording so a single-model rain reading
+    doesn't render with the same definite tone as a majority-of-models
+    agreement. %1$s = item phrase, %2$s = spoken time.
+    -->
+    <string name="insight_tie_in_with_rain_chance">Bring %1$s tonight, chance of rain at %2$s.</string>
+    <!--
+    Bare-rain variant of the evening tie-in for the morning insight: emitted
+    when the user has an evening event with a location and the per-model
+    forecast tier spots rain ≥ 50% (majority of models agree) at some hour in
+    the tonight window, but no clothes rule fired for that period. The
+    morning insight stays silent on clothing because nothing's been picked
+    yet — the rain mention itself is the point. %1$s = spoken time. Mirrors
+    insight_precip's verbosity ("Rain at 9pm" → "Rain tonight at 9pm")
+    rather than introducing a separate "tonight" lead-in clause, since this
+    sits alongside today's morning band/clothes/precip prose where "tonight"
+    is the disambiguation the listener needs.
+    -->
+    <string name="insight_evening_rain">Rain tonight at %1$s.</string>
+    <!--
+    POSSIBLE-tier counterpart of insight_evening_rain: only one per-model
+    series flagged the tonight hour ≥ 30%, so we hedge the wording. Matches
+    insight_precip_chance's "Chance of rain" pattern. %1$s = spoken time.
+    -->
+    <string name="insight_evening_rain_chance">Chance of rain tonight at %1$s.</string>
 </resources>

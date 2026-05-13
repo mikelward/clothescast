@@ -5,9 +5,13 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 class ModelDivergenceSummaryTest {
+
+    private val today: LocalDate = LocalDate.of(2026, 5, 13)
 
     private fun entry(
         hour: Int,
@@ -18,7 +22,7 @@ class ModelDivergenceSummaryTest {
         humidity: Double? = null,
         cloud: Double? = null,
     ) = PerModelHour(
-        time = LocalTime.of(hour, 0),
+        time = LocalDateTime.of(today, LocalTime.of(hour, 0)),
         apparentTemperatureC = apparent,
         temperatureC = air,
         precipitationProbabilityPct = precip,

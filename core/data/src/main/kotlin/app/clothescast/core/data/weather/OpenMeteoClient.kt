@@ -23,6 +23,8 @@ import io.ktor.http.path
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import java.time.LocalDateTime
+import java.time.LocalDate
 
 internal const val OPEN_METEO_HOST = "api.open-meteo.com"
 
@@ -95,10 +97,26 @@ class OpenMeteoClient(
         // posture documented on [blendConsensusHourly], and an earlier
         // ordering of these two blocks regressed that by passing the
         // pre-injection map (Codex caught it on PR review).
+        //
+        // Include tomorrow's best_match hours too. The multi-model fetcher
+        // pulls today + tomorrow's pre-dawn (forecast_days=2) to feed the
+        // evening tie-in's wrap past midnight, so the consulted models
+        // (ECMWF / GFS / ICON) have tomorrow entries. If best_match's
+        // entries stopped at today's 23:00, [RenderInsightSummary.pickPerModelPeak]'s
+        // `majorityNeeded = models.size / 2 + 1` would compute the bar from
+        // all 4 models but only 3 readings would actually exist for any
+        // tomorrow hour, silently downgrading a clean 2-of-3-models-agree
+        // tomorrow peak to POSSIBLE (Codex caught it). Pulling
+        // [ForecastBundle.tomorrowHourly] through keeps best_match a real
+        // 4th vote on both sides of the midnight boundary.
+        val tomorrowDate = bundle.today.date.plusDays(1)
+        val bestMatchPerModel =
+            bestMatchHourly.asPerModelHours(bundle.today.date) +
+                bundle.tomorrowHourly.asPerModelHours(tomorrowDate)
         val perModelWithBestMatch = multi?.hourly?.let { existing ->
             existing.copy(
                 byModel = existing.byModel +
-                    (PerModelHourly.BEST_MATCH_MODEL_ID to bestMatchHourly.asPerModelHours()),
+                    (PerModelHourly.BEST_MATCH_MODEL_ID to bestMatchPerModel),
             )
         }
 
@@ -110,7 +128,7 @@ class OpenMeteoClient(
         // steps) for a max computed from the hourly *samples*, which can
         // differ by a fraction of a degree even when the consensus didn't
         // apply anywhere.
-        val blendedToday = blendConsensusHourly(bestMatchHourly, perModelWithBestMatch)
+        val blendedToday = blendConsensusHourly(bundle.today.date, bestMatchHourly, perModelWithBestMatch)
             ?.let { bundle.today.withAggregatesFrom(it) }
             ?: bundle.today
 
@@ -122,7 +140,7 @@ class OpenMeteoClient(
         )
     }
 
-    private fun List<HourlyForecast>.asPerModelHours(): List<PerModelHour> = map {
+    private fun List<HourlyForecast>.asPerModelHours(date: LocalDate): List<PerModelHour> = map {
         // best_match's hourly comes from the primary `/v1/forecast` call which
         // doesn't include the diagnostic fields (wind, humidity, cloud); those
         // ride only the side-band multi-model call and aren't fetched per
@@ -133,7 +151,7 @@ class OpenMeteoClient(
         // it through — the consensus blend's modal aggregation gets a 4th
         // vote from best_match this way.
         PerModelHour(
-            time = it.time,
+            time = LocalDateTime.of(date, it.time),
             apparentTemperatureC = it.feelsLikeC,
             temperatureC = it.temperatureC,
             precipitationProbabilityPct = it.precipitationProbabilityPct,

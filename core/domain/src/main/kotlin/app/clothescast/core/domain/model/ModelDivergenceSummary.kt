@@ -72,7 +72,13 @@ data class ModelDivergenceSummary(
             if (models.size < 2) return null
 
             // Group hours by time across all models so we can compute spreads.
-            val byHour = mutableMapOf<LocalTime, MutableList<PerModelHour>>()
+            // Per-model entries carry a full LocalDateTime; the public
+            // [peakHour] is the wall-clock LocalTime the chart label needs, so
+            // we convert at the output below. Keying internally by
+            // LocalDateTime keeps the tonight-wrap aliasing problem out of the
+            // group-by even though [computeFrom] is currently only ever called
+            // with today-only data.
+            val byHour = mutableMapOf<java.time.LocalDateTime, MutableList<PerModelHour>>()
             for (entries in models) {
                 for (entry in entries) {
                     byHour.getOrPut(entry.time) { mutableListOf() }.add(entry)
@@ -126,7 +132,7 @@ data class ModelDivergenceSummary(
                 .filter { it.normalised > 0.0 }
                 .maxByOrNull { it.normalised } ?: return null
             return ModelDivergenceSummary(
-                peakHour = peak.key,
+                peakHour = peak.key.toLocalTime(),
                 feelsLikeSpreadC = feelsLikeSpread,
                 topFactor = top.factor,
                 topFactorMin = top.min,

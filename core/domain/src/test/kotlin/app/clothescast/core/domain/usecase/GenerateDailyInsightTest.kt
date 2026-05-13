@@ -414,10 +414,10 @@ class GenerateDailyInsightTest {
         // renders. TONIGHT drops the field entirely (today's per-model series
         // doesn't span the overnight window).
         val ecmwfFull = (0..23).map { hour ->
-            PerModelHour(LocalTime.of(hour, 0), 10.0 + hour, 5.0 * hour)
+            PerModelHour(LocalTime.of(hour, 0), 10.0 + hour, 12.0 + hour, 5.0 * hour)
         }
         val gfsFull = (0..23).map { hour ->
-            PerModelHour(LocalTime.of(hour, 0), 11.0 + hour, 6.0 * hour)
+            PerModelHour(LocalTime.of(hour, 0), 11.0 + hour, 13.0 + hour, 6.0 * hour)
         }
         val bundleHourly = PerModelHourly(
             byModel = mapOf("ecmwf_ifs04" to ecmwfFull, "gfs_seamless" to gfsFull),
@@ -459,11 +459,16 @@ class GenerateDailyInsightTest {
         )
         val incompleteEcmwf = listOf(
             // 12:00 hour missing — the model is dropped from the overlay.
-            PerModelHour(LocalTime.of(8, 0), 11.5, 9.0),
-            PerModelHour(LocalTime.of(15, 0), 21.5, 38.0),
+            PerModelHour(LocalTime.of(8, 0), 11.5, 12.5, 9.0),
+            PerModelHour(LocalTime.of(15, 0), 21.5, 22.5, 38.0),
         )
         val completeGfs = daytime.map { h ->
-            PerModelHour(h.time, h.feelsLikeC + 0.5, h.precipitationProbabilityPct + 2.0)
+            PerModelHour(
+                h.time,
+                h.feelsLikeC + 0.5,
+                h.temperatureC + 0.5,
+                h.precipitationProbabilityPct + 2.0,
+            )
         }
         val bundleHourly = PerModelHourly(
             byModel = mapOf("ecmwf_ifs04" to incompleteEcmwf, "gfs_seamless" to completeGfs),

@@ -142,20 +142,36 @@ class InsightCache(
     private data class PerModelHourlyDto(
         val byModel: Map<String, List<PerModelHourDto>>,
     ) {
-        fun toDomain(): PerModelHourly = PerModelHourly(
-            byModel = byModel.mapValues { (_, hours) -> hours.map { it.toDomain() } },
-        )
+        // Returns null when any entry on any model lacks [PerModelHourDto.temperatureC]
+        // — i.e., the cached payload was written by a version that only carried
+        // apparent temperature. Dropping the whole overlay (rather than backfilling
+        // a placeholder 0°C) means the air-temp model lines simply hide until the
+        // next worker refresh repopulates the cache; the alternative would draw a
+        // glaringly-wrong flat-0 line.
+        fun toDomain(): PerModelHourly? {
+            val out = LinkedHashMap<String, List<PerModelHour>>(byModel.size)
+            for ((model, hours) in byModel) {
+                val converted = ArrayList<PerModelHour>(hours.size)
+                for (dto in hours) converted += dto.toDomain() ?: return null
+                out[model] = converted
+            }
+            return PerModelHourly(byModel = out)
+        }
     }
 
     @Serializable
     private data class PerModelHourDto(
         val secondOfDay: Int,
         val apparentTemperatureC: Double,
+        // Nullable for backwards compat: pre-temperatureC cache payloads omit it,
+        // and we surface that as "no overlay" rather than a fake 0°C line.
+        val temperatureC: Double? = null,
         val precipitationProbabilityPct: Double,
     ) {
-        fun toDomain(): PerModelHour = PerModelHour(
+        fun toDomain(): PerModelHour? = PerModelHour(
             time = LocalTime.ofSecondOfDay(secondOfDay.toLong()),
             apparentTemperatureC = apparentTemperatureC,
+            temperatureC = temperatureC ?: return null,
             precipitationProbabilityPct = precipitationProbabilityPct,
         )
     }
@@ -359,6 +375,7 @@ class InsightCache(
     private fun PerModelHour.toDto(): PerModelHourDto = PerModelHourDto(
         secondOfDay = time.toSecondOfDay(),
         apparentTemperatureC = apparentTemperatureC,
+        temperatureC = temperatureC,
         precipitationProbabilityPct = precipitationProbabilityPct,
     )
 

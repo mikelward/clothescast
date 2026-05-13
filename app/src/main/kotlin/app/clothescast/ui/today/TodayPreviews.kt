@@ -631,6 +631,7 @@ private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
         PerModelHour(
             time = h.time,
             apparentTemperatureC = h.feelsLikeC + deltaC,
+            temperatureC = h.temperatureC + deltaC,
             precipitationProbabilityPct = (h.precipitationProbabilityPct + precipDelta)
                 .coerceIn(0.0, 100.0),
         )

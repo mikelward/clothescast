@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.clothescast.core.domain.model.HourlyForecast
+import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.toUnit
@@ -90,16 +91,23 @@ fun ForecastChart(
     showFeelsLike: Boolean,
     modifier: Modifier = Modifier,
     // Optional per-model overlays — passed by the caller when the user has
-    // the "Show model spread" Display setting on. Apparent-temperature only;
-    // we suppress the overlays in air-temperature mode so the visible model
-    // lines stay semantically aligned with the main line.
+    // the "Show model spread" Display setting on. Drawn against whichever
+    // series the parent has the toggle on for: apparent-temperature when
+    // [showFeelsLike], raw 2 m air otherwise. The per-model entries carry
+    // both, so the overlay stays semantically aligned with the main line in
+    // either mode.
     perModelHourly: PerModelHourly? = null,
 ) {
     if (hourly.isEmpty()) return
 
-    val overlays = perModelHourly?.takeIf { showFeelsLike }?.byModel.orEmpty()
+    val overlays = perModelHourly?.byModel.orEmpty()
     val visibleModels = MODEL_DRAW_ORDER.filter { it in overlays }
     val mainLineColor = MaterialTheme.colorScheme.primary
+
+    val pickModel: (PerModelHour) -> Double =
+        if (showFeelsLike) { e -> e.apparentTemperatureC } else { e -> e.temperatureC }
+    val pickHourly: (HourlyForecast) -> Double =
+        if (showFeelsLike) { h -> h.feelsLikeC } else { h -> h.temperatureC }
 
     val producer = remember { CartesianChartModelProducer() }
     LaunchedEffect(hourly, temperatureUnit, showFeelsLike, overlays) {
@@ -110,12 +118,10 @@ fun ForecastChart(
                 // is stable across recompositions.
                 visibleModels.forEach { modelId ->
                     overlays.getValue(modelId).let { entries ->
-                        series(entries.map { it.apparentTemperatureC.toUnit(temperatureUnit) })
+                        series(entries.map { pickModel(it).toUnit(temperatureUnit) })
                     }
                 }
-                val pick: (HourlyForecast) -> Double =
-                    if (showFeelsLike) { h -> h.feelsLikeC } else { h -> h.temperatureC }
-                series(hourly.map { pick(it).toUnit(temperatureUnit) })
+                series(hourly.map { pickHourly(it).toUnit(temperatureUnit) })
             }
         }
     }
@@ -143,7 +149,12 @@ fun ForecastChart(
             listOf(it.feelsLikeC.toUnit(temperatureUnit), it.temperatureC.toUnit(temperatureUnit))
         }
         val extras = overlays.values.flatMap { entries ->
-            entries.map { it.apparentTemperatureC.toUnit(temperatureUnit) }
+            entries.flatMap {
+                listOf(
+                    it.apparentTemperatureC.toUnit(temperatureUnit),
+                    it.temperatureC.toUnit(temperatureUnit),
+                )
+            }
         }
         val all = main + extras
         val rawMin = floor(all.min())

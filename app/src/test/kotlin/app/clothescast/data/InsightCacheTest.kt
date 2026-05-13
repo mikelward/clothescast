@@ -77,12 +77,12 @@ class InsightCacheTest {
         perModelHourly = PerModelHourly(
             byModel = mapOf(
                 "ecmwf_ifs04" to listOf(
-                    PerModelHour(LocalTime.of(0, 0), 12.0, 10.0),
-                    PerModelHour(LocalTime.of(1, 0), 11.5, 15.0),
+                    PerModelHour(LocalTime.of(0, 0), 12.0, 14.0, 10.0),
+                    PerModelHour(LocalTime.of(1, 0), 11.5, 13.5, 15.0),
                 ),
                 "gfs_seamless" to listOf(
-                    PerModelHour(LocalTime.of(0, 0), 12.2, 12.0),
-                    PerModelHour(LocalTime.of(1, 0), 11.8, 18.0),
+                    PerModelHour(LocalTime.of(0, 0), 12.2, 14.2, 12.0),
+                    PerModelHour(LocalTime.of(1, 0), 11.8, 13.8, 18.0),
                 ),
             ),
         ),

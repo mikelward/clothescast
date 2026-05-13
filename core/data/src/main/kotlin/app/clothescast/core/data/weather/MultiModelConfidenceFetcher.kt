@@ -72,7 +72,7 @@ internal class MultiModelConfidenceFetcher(
                 parameter("forecast_days", 1)
                 parameter("timezone", "auto")
                 parameter("daily", "apparent_temperature_max,precipitation_probability_max")
-                parameter("hourly", "apparent_temperature,precipitation_probability")
+                parameter("hourly", "apparent_temperature,temperature_2m,precipitation_probability")
                 parameter("models", models.joinToString(","))
             }.body<MultiModelResponse>()
         }
@@ -112,15 +112,17 @@ internal class MultiModelConfidenceFetcher(
         val times = (obj["time"] as? JsonArray) ?: return null
         val byModel = buildMap<String, List<PerModelHour>> {
             for (model in models) {
-                val temps = obj["apparent_temperature_$model"] as? JsonArray
+                val apparentTemps = obj["apparent_temperature_$model"] as? JsonArray
+                val airTemps = obj["temperature_2m_$model"] as? JsonArray
                 val precips = obj["precipitation_probability_$model"] as? JsonArray
-                if (temps == null && precips == null) continue
+                if (apparentTemps == null && airTemps == null && precips == null) continue
                 val entries = buildList {
                     for (i in 0 until times.size) {
                         val time = parseHour(times.getOrNull(i)) ?: continue
-                        val temp = numberAt(temps, i)?.toDouble() ?: continue
+                        val apparent = numberAt(apparentTemps, i)?.toDouble() ?: continue
+                        val air = numberAt(airTemps, i)?.toDouble() ?: continue
                         val precip = numberAt(precips, i)?.toDouble() ?: continue
-                        add(PerModelHour(time, temp, precip))
+                        add(PerModelHour(time, apparent, air, precip))
                     }
                 }
                 if (entries.isNotEmpty()) put(model, entries)

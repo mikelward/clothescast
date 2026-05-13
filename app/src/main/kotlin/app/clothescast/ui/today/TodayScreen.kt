@@ -1057,11 +1057,12 @@ private fun ForecastCard(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            // Per-model overlay legend — only meaningful when the overlays are
-            // actually being drawn (apparent-temperature mode + setting on +
-            // overlays available). Hidden in air mode so it doesn't suggest
-            // the lines visible on screen are per-model when they aren't.
-            if (perModelHourly != null && showFeelsLike) {
+            // Per-model overlay legend — drawn whenever the overlays themselves
+            // are. The chart now draws per-model lines in both apparent and air
+            // modes (each entry carries both temperatures), so the legend
+            // applies regardless of which series the card is currently
+            // showing.
+            if (perModelHourly != null) {
                 ModelSpreadLegend(perModelHourly)
             }
         }

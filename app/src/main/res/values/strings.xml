@@ -111,6 +111,13 @@
          swatch matching the overlay line; this is just the leading label. -->
     <string name="today_chart_model_legend_label">Models:</string>
 
+    <!-- Label for the main blended line on the temp + rain charts. Open-Meteo
+         calls this "best match" — its automatic per-location, per-variable
+         model selection — and the line routinely tracks a different model
+         than the consulted overlays (ECMWF / GFS / ICON). Surfacing the
+         label makes that disagreement legible. -->
+    <string name="today_chart_main_line_label">Best match</string>
+
     <!-- Wind diagnostic card, only rendered when "Show model spread" is on and
          at least one consulted model returned a wind speed series. Sits under
          the temperature + rain cards so the user can see which model is

@@ -580,7 +580,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_outfit_top_thin_jacket">Λεπτό μπουφάν</string>
     <string name="today_outfit_top_thick_coat">Χοντρό παλτό</string>
     <string name="today_outfit_top_puffer_jacket">Μπουφάν puffer</string>
-    <string name="today_outfit_bottom_skirt">Φούστα</string>
+    <string name="today_outfit_bottom_long_skirt">Φούστα</string>
     <string name="today_outfit_bottom_jeans">Τζιν</string>
 
     <!-- Device incompatibility error. -->
@@ -713,4 +713,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_custom">Προσαρμοσμένο…</string>
     <string name="settings_tts_style_custom_label">Προσαρμοσμένη οδηγία</string>
     <string name="settings_tts_style_custom_placeholder">π.χ. Διάβασε το παρακάτω ως αυστηρός βιβλιοθηκάριος που ψιθυρίζει</string>
+    <string name="today_forecast_air_section_title">Θερμοκρασία αέρα</string>
+    <string name="settings_default_bottom_title">Κανονικό κάτω μέρος</string>
+    <string name="settings_default_bottom_description">Αυτό που προτείνουμε στην αρχική οθόνη όταν δεν κάνει αρκετά ζέστη για σορτς.</string>
 </resources>

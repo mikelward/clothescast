@@ -581,4 +581,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
 
     <!-- Device incompatibility error. -->
     <string name="error_device_incompatible">ClothesCast nelze na tomto zařízení spustit — tvému Android sestavení chybí funkce, kterou rozhraní aplikace potřebuje (Configuration.fontWeightAdjustment, očekáváno od Android 12 výše). Obrať se prosím na výrobce zařízení ohledně aktualizace systému.</string>
+    <string name="today_forecast_air_section_title">Teplota vzduchu</string>
+    <string name="settings_default_bottom_title">Standardní spodní díl</string>
+    <string name="settings_default_bottom_description">Co doporučujeme na domovské obrazovce, když není dost teplo na šortky.</string>
 </resources>

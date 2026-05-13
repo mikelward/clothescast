@@ -698,4 +698,7 @@ the displayed label localizes.
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">この端末では ClothesCast を実行できません — お使いの Android ビルドに、アプリの UI に必要な機能（Configuration.fontWeightAdjustment、Android 12 以降で利用可能）がありません。システムアップデートについては端末メーカーにお問い合わせください。</string>
+    <string name="today_forecast_air_section_title">気温</string>
+    <string name="settings_default_bottom_title">標準ボトム</string>
+    <string name="settings_default_bottom_description">ショートパンツには寒すぎる時に、ホーム画面でおすすめするもの。</string>
 </resources>

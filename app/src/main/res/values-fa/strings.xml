@@ -90,4 +90,358 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
+    <string name="today_forecast_air_section_title">دمای هوا</string>
+    <string name="settings_default_bottom_title">پایین‌تنه پیش‌فرض</string>
+    <string name="settings_default_bottom_description">آنچه وقتی هوا برای شلوارک گرم نیست در صفحه اصلی پیشنهاد می‌دهیم.</string>
+
+    <!-- Error / compatibility -->
+    <string name="error_device_incompatible">ClothesCast نمی‌تواند روی این دستگاه اجرا شود — نسخه Android شما فاقد ویژگی مورد نیاز رابط کاربری برنامه است. لطفاً با سازنده دستگاه خود برای دریافت به‌روزرسانی سیستم تماس بگیرید.</string>
+
+    <!-- Today screen -->
+    <string name="today_title">امروز</string>
+    <string name="today_open_settings">باز کردن تنظیمات</string>
+    <string name="today_more_options">گزینه‌های بیشتر</string>
+    <string name="today_report_a_bug">گزارش خطا</string>
+    <string name="today_refresh">بازخوانی</string>
+    <string name="today_refresh_toast_daily">در حال به‌روزرسانی ClothesCast روزانه شما — به زودی نمایش داده می‌شود.</string>
+    <string name="today_refresh_toast_nightly">در حال به‌روزرسانی ClothesCast شبانه شما — به زودی نمایش داده می‌شود.</string>
+    <string name="today_empty_title">هنوز ClothesCast وجود ندارد</string>
+    <string name="today_empty_subtitle">ClothesCast صبحگاهی شما پس از تولید اینجا نمایش داده می‌شود. موقعیت خود را در تنظیمات تنظیم کنید، سپس روی دریافت اکنون ضربه بزنید.</string>
+    <string name="today_fetch_now">دریافت اکنون</string>
+    <string name="today_generated_at">تولید شده در %1$s</string>
+    <string name="today_location_unknown">موقعیت شما</string>
+
+    <!-- Today — outfit card -->
+    <string name="today_outfit_title">چه بپوشم</string>
+    <string name="today_outfit_label_today">امروز</string>
+    <string name="today_outfit_label_tonight">امشب</string>
+    <string name="today_outfit_label_tomorrow">فردا</string>
+    <string name="today_outfit_top_polo">پولو</string>
+    <string name="today_outfit_top_thin_jacket">کت نازک</string>
+    <string name="today_outfit_top_thick_coat">پالتوی ضخیم</string>
+    <string name="today_outfit_top_puffer_jacket">کاپشن پفی</string>
+    <string name="today_outfit_bottom_long_skirt">دامن بلند</string>
+    <string name="today_outfit_bottom_jeans">جین</string>
+
+    <!-- Today — rationale sheet -->
+    <string name="today_rationale_title">چرا این لباس؟</string>
+    <string name="today_rationale_show">چرا؟</string>
+    <string name="today_rationale_dismiss">متوجه شدم</string>
+    <string name="today_rationale_threshold_decrease">کاهش آستانه ۱ درجه</string>
+    <string name="today_rationale_threshold_increase">افزایش آستانه ۱ درجه</string>
+    <string name="today_rationale_threshold_changed_hint">بازخوانی کنید تا لباس جدید را ببینید.</string>
+    <string name="today_rationale_unavailable">توضیحی در دسترس نیست — پس از به‌روزرسانی بعدی برنامه را باز کنید.</string>
+    <string name="today_rationale_min_below_with_time">حداقل دمای احساس‌شده %1$s%2$s در ساعت %3$s، کمتر از %4$s%2$s</string>
+    <string name="today_rationale_min_below">حداقل دمای احساس‌شده %1$s%2$s، کمتر از %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">حداقل دمای احساس‌شده %1$s%2$s در ساعت %3$s، حداقل %4$s%2$s</string>
+    <string name="today_rationale_min_above">حداقل دمای احساس‌شده %1$s%2$s، حداقل %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">حداکثر دمای احساس‌شده فقط %1$s%2$s در ساعت %3$s، کمتر از %4$s%2$s</string>
+    <string name="today_rationale_max_below">حداکثر دمای احساس‌شده فقط %1$s%2$s، کمتر از %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">حداکثر دمای احساس‌شده %1$s%2$s در ساعت %3$s، حداقل %4$s%2$s</string>
+    <string name="today_rationale_max_above">حداکثر دمای احساس‌شده %1$s%2$s، حداقل %3$s%2$s</string>
+
+    <!-- Widget -->
+    <string name="widget_label">لباس</string>
+    <string name="widget_description">لباس دوره جاری در یک نگاه.</string>
+    <string name="widget_empty_title">هنوز لباسی نیست</string>
+    <string name="widget_empty_subtitle">برای باز کردن ClothesCast ضربه بزنید</string>
+
+    <!-- Today — forecast charts -->
+    <string name="today_forecast_title">دمای احساس‌شده</string>
+    <string name="today_forecast_min_max">احساس می‌شود %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">دمای احساس‌شده (%1$s) به ازای ساعت</string>
+    <string name="today_forecast_air_min_max">هوا %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_air">دمای هوا (%1$s) به ازای ساعت</string>
+    <string name="today_precipitation_title">احتمال بارندگی</string>
+    <string name="today_precipitation_peak">اوج %1$d%% در ساعت %2$s</string>
+    <string name="today_precipitation_dry">امروز بارندگی انتظار نمی‌رود</string>
+    <string name="today_chart_model_legend_label">مدل‌ها:</string>
+    <string name="today_chart_main_line_label">ترکیبی</string>
+    <string name="today_chart_divergence_summary">مدل‌ها بیشترین اختلاف را در ساعت %1$s دارند (Δ %2$.1f%3$s احساس‌شده) — عمدتاً %4$s، %5$s</string>
+    <string name="today_factor_air_temperature">دمای هوا</string>
+    <string name="today_factor_wind_speed">سرعت باد</string>
+    <string name="today_factor_cloud_cover">پوشش ابری</string>
+    <string name="today_factor_humidity">رطوبت</string>
+    <string name="today_wind_title">سرعت باد</string>
+    <string name="today_wind_subtitle">سرعت باد (%1$s) به ازای مدل و ساعت</string>
+    <string name="today_cloud_title">پوشش ابری</string>
+    <string name="today_cloud_subtitle">پوشش ابری کل (%) به ازای مدل و ساعت</string>
+    <string name="today_humidity_title">رطوبت</string>
+    <string name="today_humidity_subtitle">رطوبت نسبی (%) به ازای مدل و ساعت</string>
+
+    <!-- Today — confidence callout -->
+    <string name="today_confidence_high">اطمینان بالا — مدل‌های اصلی توافق دارند</string>
+    <string name="today_confidence_medium">اطمینان متوسط</string>
+    <string name="today_confidence_low">اطمینان پایین — پیش‌بینی‌ها با هم اختلاف دارند</string>
+    <string name="today_confidence_spread">پراکندگی: %1$.1f°C، %2$.0f%% بارندگی در %3$d مدل</string>
+    <string name="today_low_confidence_callout_title">پیش‌بینی‌ها اختلاف دارند</string>
+    <string name="today_low_confidence_callout_body">دمای محدوده %1$.1f°C و احتمال بارندگی %2$.0f%% در %3$d مدل متفاوت است.</string>
+
+    <!-- Today — loading / error states -->
+    <string name="today_working">در حال کار — در حال دریافت ClothesCast شما…</string>
+    <string name="today_retrying">آخرین تلاش ناموفق بود — تلاش مجدد…</string>
+    <string name="today_failed_title">آخرین تلاش ناموفق بود</string>
+    <string name="today_failed_unexpected_http">خطای HTTP غیرمنتظره از سرویس پیش‌بینی.</string>
+    <string name="today_failed_unhandled">یک خطای غیرمنتظره رخ داد.</string>
+    <string name="today_failed_no_location">موقعیت شما را نمی‌توانیم دریافت کنیم. مجوز موقعیت دائمی بدهید، یا یک شهر در تنظیمات تنظیم کنید.</string>
+    <string name="today_failed_show_details">نمایش جزئیات</string>
+    <string name="today_failed_hide_details">پنهان کردن جزئیات</string>
+
+    <!-- Today — location required -->
+    <string name="today_location_required_title">موقعیت خود را تنظیم کنید</string>
+    <string name="today_location_required_body">ClothesCast باید بداند کجا هستید تا پیش‌بینی را دریافت کند. مجوز موقعیت دائمی بدهید، یا یک شهر انتخاب کنید.</string>
+    <string name="today_location_required_action">باز کردن تنظیمات موقعیت</string>
+
+    <!-- Today — crash banner -->
+    <string name="today_crash_banner_title">آخرین اجرا خراب شد</string>
+    <string name="today_crash_banner_body">گزارش خرابی روی دستگاه شما ذخیره شد. برای رفع اشکال آن را به اشتراک می‌گذارید؟ تا زمانی که مقصد را انتخاب نکنید چیزی ارسال نمی‌شود.</string>
+    <string name="today_crash_banner_share">اشتراک‌گذاری گزارش</string>
+    <string name="today_crash_banner_dismiss">رد کردن</string>
+
+    <!-- Today — update banners -->
+    <string name="today_update_available_title">به‌روزرسانی موجود است</string>
+    <string name="today_update_available_body">نسخه جدیدتر ClothesCast در Play Store وجود دارد.</string>
+    <string name="today_update_available_action">به‌روزرسانی</string>
+    <string name="today_update_available_dismiss">نه الان</string>
+    <string name="today_update_downloaded_body">به‌روزرسانی دانلود شد. برای تکمیل نصب راه‌اندازی مجدد کنید.</string>
+    <string name="today_update_downloaded_action">راه‌اندازی مجدد</string>
+
+    <!-- Today — telemetry notice -->
+    <string name="today_telemetry_notice_title">گزارش‌های خرابی و استفاده روشن هستند</string>
+    <string name="today_telemetry_notice_body">ClothesCast گزارش‌های خرابی ناشناس و آمار استفاده را برای کمک به رفع اشکال ارسال می‌کند. هیچ داده تقویم، موقعیت یا متن بینش‌ای درج نشده. هر زمان در تنظیمات خاموش کنید.</string>
+    <string name="today_telemetry_notice_open_settings">باز کردن تنظیمات حریم خصوصی</string>
+    <string name="today_telemetry_notice_dismiss">رد کردن</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">به ClothesCast خوش آمدید</string>
+    <string name="onboarding_subtitle">سه انتخاب سریع و آماده‌اید. بعداً در تنظیمات تغییر دهید.</string>
+    <string name="onboarding_subtitle_tv">دو انتخاب سریع و آماده‌اید. بعداً در تنظیمات تغییر دهید.</string>
+    <string name="onboarding_notifications_title">اعلان‌ها</string>
+    <string name="onboarding_notifications_description">برای ارسال ClothesCast روزانه شما لازم است.</string>
+    <string name="onboarding_notifications_grant">اعطای مجوز اعلان</string>
+    <string name="onboarding_location_title">موقعیت</string>
+    <string name="onboarding_location_description">دریافت پیش‌بینی برای موقعیت تقریبی شما.</string>
+    <string name="onboarding_location_grant">اعطای مجوز موقعیت</string>
+    <string name="onboarding_location_grant_background">اعطای مجوز موقعیت دائمی</string>
+    <string name="onboarding_location_background_needed">یک قدم دیگر: ClothesCast به \'همیشه اجازه بده\' نیاز دارد تا پیش‌بینی صبحگاهی بتواند موقعیت شما را در زمان بسته بودن برنامه بخواند.</string>
+    <string name="onboarding_location_denied_hint">مجوز موقعیت رد شد. می‌توانید یک شهر را به صورت دستی انتخاب کنید.</string>
+    <string name="onboarding_location_enter_manual">ورود دستی موقعیت</string>
+    <string name="onboarding_location_enter_manual_hint">اگر مجوز موقعیت را رد کنید یا موقعیت دستگاه شما اشتباه باشد، می‌توانید موقعیت خود را به صورت دستی وارد کنید.</string>
+    <string name="onboarding_location_using_device">هر صبح از موقعیت دستگاه شما استفاده می‌شود.</string>
+    <string name="onboarding_gemini_title">کلید Gemini API</string>
+    <string name="onboarding_gemini_description">از Gemini برای دریافت صداهای باکیفیت استفاده کنید.</string>
+    <string name="onboarding_step_done">انجام شد</string>
+    <string name="onboarding_skip">فعلاً رد شو</string>
+    <string name="onboarding_continue">ادامه</string>
+    <string name="onboarding_pair_from_phone">جفت‌سازی از طریق گوشی</string>
+
+    <!-- Pairing (TV) -->
+    <string name="pairing_title">اسکن برای جفت‌سازی</string>
+    <string name="pairing_instructions">این کد QR را با گوشی خود اسکن کنید، سپس کلید Gemini API خود را در فرمی که باز می‌شود جای‌گذاری کنید. کلید مستقیماً از طریق Wi-Fi خانگی شما به این تلویزیون ارسال می‌شود — بدون رله ابری.</string>
+    <string name="pairing_qr_description">کد QR لینک به %1$s</string>
+    <string name="pairing_cancel">لغو</string>
+    <string name="pairing_received">کلید دریافت شد — در حال ذخیره…</string>
+    <string name="pairing_timeout_title">پنجره جفت‌سازی منقضی شد</string>
+    <string name="pairing_timeout_body">پنجره جفت‌سازی ۵ دقیقه‌ای بسته شد. برای باز کردن پنجره جدید روی تلاش مجدد ضربه بزنید.</string>
+    <string name="pairing_error_title">شروع جفت‌سازی ممکن نشد</string>
+    <string name="pairing_error_body">مطمئن شوید تلویزیون به Wi-Fi متصل است، سپس دوباره امتحان کنید.</string>
+    <string name="pairing_retry">تلاش مجدد</string>
+
+    <!-- Settings — root -->
+    <string name="settings_title">تنظیمات</string>
+    <string name="settings_back">بازگشت</string>
+    <string name="settings_root_voice">صدا</string>
+    <string name="settings_root_schedule">برنامه</string>
+    <string name="settings_root_region">منطقه</string>
+    <string name="settings_root_clothes">لباس</string>
+    <string name="settings_root_display">نمایش</string>
+    <string name="settings_root_location">موقعیت</string>
+    <string name="settings_root_calendar">تقویم</string>
+    <string name="settings_root_privacy">حریم خصوصی</string>
+    <string name="settings_root_about">درباره</string>
+    <string name="settings_root_schedule_subtitle">اعلان‌ها و زمان‌ها</string>
+    <string name="settings_root_clothes_subtitle">دماها و لباس‌ها</string>
+    <string name="settings_root_region_subtitle">زبان‌ها و واحدها</string>
+    <string name="settings_root_voice_subtitle">ارائه‌دهندگان و لهجه‌ها</string>
+    <string name="settings_root_display_subtitle">قالب</string>
+    <string name="settings_root_location_subtitle">تشخیص خودکار یا انتخاب شهر</string>
+    <string name="settings_root_calendar_subtitle">رویدادهای امروز</string>
+    <string name="settings_root_privacy_subtitle">گزارش‌های خرابی و استفاده</string>
+
+    <!-- Settings — display -->
+    <string name="settings_display_theme_title">قالب</string>
+    <string name="settings_display_theme_system">پیروی از سیستم</string>
+    <string name="settings_display_theme_light">روشن</string>
+    <string name="settings_display_theme_dark">تیره</string>
+    <string name="settings_display_charts_title">نمودارها</string>
+    <string name="settings_display_model_spread_label">نمایش پراکندگی مدل در نمودارها</string>
+    <string name="settings_display_model_spread_description">پیش‌بینی ساعتی هر مدل آب‌وهوایی اصلی را روی نمودارهای دما و بارندگی همپوشانی می‌کند. برای تشخیص زمانی که پیش‌بینی نامطمئن است مفید است.</string>
+
+    <!-- Settings — privacy -->
+    <string name="settings_privacy_telemetry_title">گزارش‌های خرابی و استفاده</string>
+    <string name="settings_privacy_telemetry_label">ارسال داده خرابی و استفاده</string>
+    <string name="settings_privacy_telemetry_description">گزارش‌های خرابی ناشناس و آمار استفاده را ارسال می‌کند تا به توسعه‌دهنده در رفع اشکال کمک کند.</string>
+    <string name="settings_privacy_telemetry_limits">هرگز ارسال نمی‌شود: رویدادهای تقویم، مختصات موقعیت یا نام مکان‌ها، متن بینش یا اعلان، کلیدهای API، GPS دقیق، شناسه‌های تبلیغاتی.</string>
+    <string name="settings_privacy_open_policy">خواندن سیاست حریم خصوصی کامل</string>
+
+    <!-- Settings — API key -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">از Gemini برای دریافت صداهای باکیفیت استفاده کنید.</string>
+    <string name="settings_api_key_status_set">یک کلید Gemini پیکربندی شده.</string>
+    <string name="settings_api_key_status_unset">یک کلید API رایگان از aistudio.google.com دریافت کنید</string>
+    <string name="settings_api_key_placeholder">کلید Gemini API خود را جای‌گذاری کنید</string>
+    <string name="settings_api_key_save">ذخیره کلید Gemini</string>
+    <string name="settings_api_key_clear">پاک کردن کلید ذخیره‌شده Gemini</string>
+
+    <!-- Settings — location -->
+    <string name="settings_location_title">موقعیت</string>
+    <string name="settings_location_use_device">استفاده از موقعیت دستگاه</string>
+    <string name="settings_location_use_device_description">آخرین موقعیت تقریبی</string>
+    <string name="settings_location_detecting">در حال تشخیص…</string>
+    <string name="settings_location_grant_background">اعطا</string>
+    <string name="settings_location_background_banner_title">مجوز موقعیت دائمی لازم است</string>
+    <string name="settings_location_background_banner_body">بدون آن، پیش‌بینی صبحگاهی نمی‌تواند موقعیت شما را بخواند.</string>
+    <string name="settings_location_unset">هیچ موقعیتی تنظیم نشده</string>
+    <string name="settings_location_manual_override">موقعیت اشتباه است؟ دستی تنظیم کنید</string>
+    <string name="settings_location_manual_override_disclosure">انتخاب شهر تشخیص خودکار را غیرفعال می‌کند.</string>
+    <string name="settings_location_clear">پاک کردن موقعیت</string>
+    <string name="settings_location_search_title">جستجوی موقعیت</string>
+    <string name="settings_location_query_label">شهر یا مکان</string>
+    <string name="settings_location_search">جستجو</string>
+    <string name="settings_location_searching">در حال جستجو…</string>
+    <string name="settings_location_no_results">نتیجه‌ای یافت نشد.</string>
+    <string name="settings_location_rationale_title">دسترسی به موقعیت</string>
+    <string name="settings_location_rationale_body">ClothesCast موقعیت شما را برای دریافت پیش‌بینی محلی می‌خواند.</string>
+    <string name="settings_location_rationale_continue">ادامه</string>
+    <string name="settings_location_rationale_dismiss">نه الان</string>
+    <string name="settings_location_background_rationale_title">همیشه اجازه بده</string>
+    <string name="settings_location_background_rationale_body">اجازه دهید ClothesCast موقعیت شما را در زمان بسته بودن بخواند تا پیش‌بینی صبحگاهی به موقع به‌روز شود.</string>
+    <string name="settings_location_background_rationale_continue">باز کردن تنظیمات</string>
+    <string name="settings_location_background_rationale_dismiss">نه الان</string>
+    <string name="settings_location_background_denied_title">مجوز دائمی اعطا نشد</string>
+    <string name="settings_location_background_denied_body">بدون \'همیشه اجازه بده\' پیش‌بینی صبحگاهی نمی‌تواند به‌روزرسانی خودکار شود.</string>
+    <string name="settings_location_background_denied_open">باز کردن تنظیمات</string>
+    <string name="settings_location_background_denied_keep">نه الان</string>
+
+    <!-- Settings — schedule -->
+    <string name="settings_schedule_title">ClothesCast روزانه</string>
+    <string name="settings_schedule_time_label">زمان</string>
+    <string name="settings_schedule_days_label">روزهای هفته</string>
+    <string name="settings_daily_mention_evening_events">ذکر رویدادهای عصر</string>
+    <string name="settings_tonight_title">ClothesCast شبانه</string>
+    <string name="settings_tonight_description">یک ClothesCast دوم در عصر که آب‌وهوای امشب را پوشش می‌دهد. شب‌های آرام ساکت می‌ماند؛ شب‌های رویداد صدا پخش می‌کند و خودش را می‌خواند.</string>
+    <string name="settings_tonight_enabled">نمایش ClothesCast شبانه</string>
+    <string name="settings_tonight_time_label">زمان</string>
+    <string name="settings_tonight_days_label">روزهای هفته</string>
+    <string name="settings_tonight_notify_only_on_events">فقط در صورت وجود رویدادهای عصر اعلان بده</string>
+    <string name="settings_delivery_label">تحویل</string>
+    <string name="settings_delivery_notification_only">فقط اعلان</string>
+    <string name="settings_delivery_tts_only">فقط خواندن با صدای بلند</string>
+    <string name="settings_delivery_notification_and_tts">اعلان و خواندن با صدای بلند</string>
+
+    <!-- Settings — TTS engine -->
+    <string name="settings_tts_engine_title">موتور صوتی</string>
+    <string name="settings_tts_engine_description">Gemini طبیعی‌تر از صدای دستگاه به نظر می‌رسد اما به اتصال شبکه در زمان صحبت نیاز دارد. در صورت شکست Gemini به صدای دستگاه برمی‌گردد.</string>
+    <string name="settings_tts_engine_device">دستگاه (آفلاین، رایگان)</string>
+    <string name="settings_tts_engine_gemini">Gemini (کیفیت بالا، آنلاین)</string>
+    <string name="settings_tts_voice_label">صدا</string>
+    <string name="settings_tts_voice_dismiss">انجام شد</string>
+    <string name="settings_tts_style_label">سبک</string>
+    <string name="settings_tts_style_weather_forecaster">هواشناس</string>
+    <string name="settings_tts_style_pirate">دزد دریایی</string>
+    <string name="settings_tts_style_cowboy">کابوی</string>
+    <string name="settings_tts_style_shakespearean">شکسپیری</string>
+    <string name="settings_tts_style_surfer">موج‌سوار</string>
+    <string name="settings_tts_style_parent">والدین</string>
+    <string name="settings_tts_style_child">کودک</string>
+    <string name="settings_tts_style_teenager">نوجوان</string>
+    <string name="settings_tts_style_grandparent">پدربزرگ/مادربزرگ</string>
+    <string name="settings_tts_style_kids_host">مجری برنامه کودک</string>
+    <string name="settings_tts_style_radio_host">مجری گفتگو</string>
+    <string name="settings_tts_style_morning_dj">DJ صبح</string>
+    <string name="settings_tts_style_science_teacher">معلم علوم</string>
+    <string name="settings_tts_style_historian">مورخ</string>
+    <string name="settings_tts_style_sportscaster">گزارشگر ورزشی</string>
+    <string name="settings_tts_style_stadium_announcer">گزارشگر استادیوم</string>
+    <string name="settings_tts_style_storyteller">داستان‌سرا</string>
+    <string name="settings_tts_style_fitness_instructor">مربی تناسب اندام</string>
+    <string name="settings_tts_style_morning_presenter">مجری رادیوی صبح</string>
+    <string name="settings_tts_style_custom">سفارشی…</string>
+    <string name="settings_tts_style_custom_label">دستورالعمل سفارشی</string>
+    <string name="settings_tts_style_custom_placeholder">مثال: متن بعدی را به سبک یک کتابدار جدی که زمزمه می‌کند بخوانید</string>
+    <string name="settings_tts_device_voice_label">صدای دستگاه</string>
+    <string name="settings_tts_device_voice_auto">خودکار (بهترین برای لهجه)</string>
+    <string name="settings_tts_device_voice_currently">در حال حاضر: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">در حال بارگذاری…</string>
+    <string name="settings_tts_device_voice_network">شبکه</string>
+    <string name="settings_tts_device_voice_offline">آفلاین</string>
+    <string name="settings_tts_install_google_hint">برای صداهای باکیفیت‌تر موتور متن به گفتار Google را نصب کنید.</string>
+    <string name="settings_tts_install_google_button">نصب Google TTS</string>
+    <string name="settings_tts_test">آزمایش صدا</string>
+    <string name="settings_tts_test_in_flight">در حال آزمایش — لطفاً صبر کنید…</string>
+
+    <!-- Settings — units -->
+    <string name="settings_temperature_unit_title">واحد دما</string>
+    <string name="settings_temperature_unit_celsius">سلسیوس (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">فارنهایت (°F)</string>
+    <string name="settings_distance_unit_title">واحد فاصله</string>
+    <string name="settings_distance_unit_kilometers">کیلومتر</string>
+    <string name="settings_distance_unit_miles">مایل</string>
+
+    <!-- Settings — clothes rules -->
+    <string name="settings_clothes_title">قوانین لباس</string>
+    <string name="settings_clothes_description">اگر پیش‌بینی از یکی از این آستانه‌ها عبور کند، آن لباس در ClothesCast روزانه شما نمایش داده می‌شود.</string>
+    <string name="garment_puffer">کاپشن پفی</string>
+    <string name="garment_thin_jacket">کت نازک</string>
+    <string name="garment_skirt">دامن</string>
+    <string name="garment_polo">پولو</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_daily_insight_name">ClothesCast روزانه</string>
+    <string name="notification_channel_daily_insight_description">خلاصه آب‌وهوای صبحگاهی که ثبت‌نام کرده‌اید.</string>
+    <string name="notification_daily_insight_title">ClothesCast امروز</string>
+    <string name="notification_channel_tonight_insight_default_name">ClothesCast شبانه (با رویدادها)</string>
+    <string name="notification_channel_tonight_insight_default_description">خلاصه آب‌وهوای عصرگاهی هنگامی که امشب رویدادهای تقویم دارید.</string>
+    <string name="notification_channel_tonight_insight_silent_name">ClothesCast شبانه (ساکت)</string>
+    <string name="notification_channel_tonight_insight_silent_description">خلاصه آب‌وهوای عصرگاهی وقتی عصر شما خالی است. ساکت ارسال می‌شود.</string>
+    <string name="notification_tonight_insight_title">ClothesCast امشب</string>
+    <string name="notification_channel_weather_alerts_name">هشدارهای آب‌وهوای شدید</string>
+    <string name="notification_channel_weather_alerts_description">هشدارهای با اولویت بالا برای رویدادهای آب‌وهوایی شدید یا بحرانی که منطقه شما را تحت تأثیر قرار می‌دهند.</string>
+    <string name="notification_weather_alert_title">هشدار آب‌وهوا: %1$s</string>
+
+    <!-- Settings — notification permission -->
+    <string name="settings_notification_permission_title">اعلان‌ها مسدود شده‌اند</string>
+    <string name="settings_notification_permission_description">بدون مجوز اعلان، ClothesCast روزانه شما جایی برای ارسال ندارد. آن را اعطا کنید تا ClothesCast بتواند فردا صبح پست کند.</string>
+    <string name="settings_notification_permission_grant">اعطای مجوز اعلان</string>
+
+    <!-- Settings — calendar -->
+    <string name="settings_calendar_title">تقویم</string>
+    <string name="settings_calendar_use_events">استفاده از رویدادهای تقویم امروز</string>
+    <string name="settings_calendar_description_off">پیش‌بینی صبحگاهی را بر اساس رویدادهای امروز تنظیم کنید — فقط عناوین و زمان‌ها استفاده می‌شوند و هیچ چیز دستگاه را ترک نمی‌کند.</string>
+    <string name="settings_calendar_description_on">پیش‌بینی صبحگاهی بر اساس رویدادهای امروز تنظیم می‌شود. فقط عناوین و زمان‌ها استفاده می‌شوند؛ هیچ چیز دستگاه را ترک نمی‌کند.</string>
+    <string name="settings_calendar_grant_permission">اعطای مجوز تقویم</string>
+    <string name="settings_calendar_open_settings">مجوز تقویم رد شد. از تنظیمات سیستم آن را اعطا کنید.</string>
+
+    <!-- Settings — about -->
+    <string name="settings_about_title">درباره</string>
+    <string name="settings_about_version">نسخه %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · نسخه %1$s</string>
+    <string name="settings_about_source">کد منبع در GitHub</string>
+    <string name="settings_about_dontkillmyapp">محدودیت‌های پس‌زمینه (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">اشتراک‌گذاری گزارش خطا</string>
+    <string name="settings_about_version_copied">نسخه در کلیپ‌بورد کپی شد</string>
+
+    <!-- Bug report consent dialog -->
+    <string name="bug_report_consent_title">گزارش خطا را به اشتراک می‌گذارید؟</string>
+    <string name="bug_report_consent_body">این به تشخیص مشکلات کمک می‌کند. گزارش حاوی اطلاعات شخصی حساس است، از جمله موقعیت شما، تنظیمات برنامه و فعالیت اخیر. قبل از ارسال می‌توانید آن را بررسی و ویرایش کنید.</string>
+    <string name="bug_report_consent_dont_show_again">دیگر نشان نده</string>
+    <string name="bug_report_consent_continue">ادامه</string>
+    <string name="bug_report_consent_cancel">لغو</string>
+
+    <!-- Insight prose — precipitation and tie-in variants -->
+    <string name="insight_precip_chance">احتمال %1$s %2$s.</string>
+    <string name="insight_tie_in_at_night">%1$s را ببرید.</string>
+    <string name="insight_tie_in_with_rain_chance">%1$s را امشب ببرید، احتمال باران ساعت %2$s.</string>
+    <string name="insight_evening_rain">امشب، باران ساعت %1$s.</string>
+    <string name="insight_evening_rain_chance">امشب، احتمال باران ساعت %1$s.</string>
 </resources>

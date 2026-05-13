@@ -113,7 +113,7 @@ What is NOT overridden, by design:
     <string name="today_outfit_top_thin_jacket">Plona striukė</string>
     <string name="today_outfit_top_thick_coat">Storas paltas</string>
     <string name="today_outfit_top_puffer_jacket">Pūkinė striukė</string>
-    <string name="today_outfit_bottom_skirt">Sijonas</string>
+    <string name="today_outfit_bottom_long_skirt">Sijonas</string>
     <string name="today_outfit_bottom_jeans">Džinsai</string>
 
     <!-- Rationale dialog. -->
@@ -583,4 +583,7 @@ What is NOT overridden, by design:
     <string name="insight_evening_rain">Šįvakar lietus %1$s val.</string>
     <string name="insight_evening_rain_chance">Šįvakar gali lyti %1$s val.</string>
 
+    <string name="today_forecast_air_section_title">Oro temperatūra</string>
+    <string name="settings_default_bottom_title">Standartinė apatinė dalis</string>
+    <string name="settings_default_bottom_description">Ką siūlome pagrindiniame ekrane, kai per šalta šortams.</string>
 </resources>

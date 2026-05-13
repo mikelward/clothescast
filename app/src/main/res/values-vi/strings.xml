@@ -625,4 +625,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="insight_evening_rain">Tối nay, mưa lúc %1$s.</string>
     <string name="insight_evening_rain_chance">Tối nay, có thể mưa lúc %1$s.</string>
 
+    <string name="today_forecast_air_section_title">Nhiệt độ không khí</string>
+    <string name="settings_default_bottom_title">Quần/váy tiêu chuẩn</string>
+    <string name="settings_default_bottom_description">Những gì chúng tôi đề xuất trên màn hình chính khi không đủ ấm để mặc quần short.</string>
 </resources>

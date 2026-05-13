@@ -52,7 +52,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_outfit_top_thin_jacket">Plāna jaka</string>
     <string name="today_outfit_top_thick_coat">Biezs mētelis</string>
     <string name="today_outfit_top_puffer_jacket">Pūķa jaka</string>
-    <string name="today_outfit_bottom_skirt">Svārki</string>
+    <string name="today_outfit_bottom_long_skirt">Svārki</string>
     <string name="today_outfit_bottom_jeans">Džinsi</string>
 
     <string name="insight_lead_today">Šodien</string>
@@ -536,4 +536,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="bug_report_consent_continue">Turpināt</string>
     <string name="bug_report_consent_cancel">Atcelt</string>
 
+    <string name="today_forecast_air_section_title">Gaisa temperatūra</string>
+    <string name="settings_default_bottom_title">Standarta apakšdaļa</string>
+    <string name="settings_default_bottom_description">Ko iesakām sākuma ekrānā, kad nav pietiekami silts šortiem.</string>
 </resources>

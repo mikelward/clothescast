@@ -573,4 +573,7 @@ displayed label localizes.
     <string name="bug_report_consent_cancel">İptal</string>
 
     <string name="error_device_incompatible">ClothesCast bu cihazda çalıştırılamıyor — Android derlemeniz, uygulamanın kullanıcı arayüzünün ihtiyaç duyduğu bir özelliği eksik (Configuration.fontWeightAdjustment, Android 12 ve üzeri bekleniyor). Sistem güncellemesi için cihaz üreticinize başvurun.</string>
+    <string name="today_forecast_air_section_title">Hava sıcaklığı</string>
+    <string name="settings_default_bottom_title">Standart alt giysi</string>
+    <string name="settings_default_bottom_description">Şort için yeterince sıcak olmadığında ana ekranda önerdiğimiz şey.</string>
 </resources>

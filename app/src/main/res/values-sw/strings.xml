@@ -81,4 +81,350 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
+    <string name="today_forecast_air_section_title">Joto la hewa</string>
+    <string name="settings_default_bottom_title">Suruali ya chini ya kawaida</string>
+    <string name="settings_default_bottom_description">Tunachopendekeza kwenye skrini ya nyumbani wakati si joto la kutosha kwa suruali fupi.</string>
+
+    <!-- Error / compatibility -->
+    <string name="error_device_incompatible">ClothesCast haiwezi kufanya kazi kwenye kifaa hiki — muundo wako wa Android unakosa kipengele kinachohitajika. Tafadhali wasiliana na mtengenezaji wa kifaa chako kwa sasisho la mfumo.</string>
+
+    <!-- Today screen -->
+    <string name="today_title">Leo</string>
+    <string name="today_open_settings">Fungua Mipangilio</string>
+    <string name="today_more_options">Chaguo zaidi</string>
+    <string name="today_report_a_bug">Ripoti hitilafu</string>
+    <string name="today_refresh">Onyesha upya</string>
+    <string name="today_refresh_toast_daily">Inasasisha ClothesCast yako ya kila siku — itaonekana hivi karibuni.</string>
+    <string name="today_refresh_toast_nightly">Inasasisha ClothesCast yako ya usiku — itaonekana hivi karibuni.</string>
+    <string name="today_empty_title">Hakuna ClothesCast bado</string>
+    <string name="today_empty_subtitle">ClothesCast yako ya asubuhi itaonekana hapa baada ya kuundwa. Weka mahali pako katika Mipangilio, kisha gonga Pakua sasa.</string>
+    <string name="today_fetch_now">Pakua sasa</string>
+    <string name="today_generated_at">Imetayarishwa saa %1$s</string>
+    <string name="today_location_unknown">Mahali pako</string>
+    <string name="today_outfit_title">Vaa nini</string>
+    <string name="today_outfit_label_today">Leo</string>
+    <string name="today_outfit_label_tonight">Usiku huu</string>
+    <string name="today_outfit_label_tomorrow">Kesho</string>
+    <string name="today_outfit_top_polo">Polo</string>
+    <string name="today_outfit_top_thin_jacket">Jaketi nyepesi</string>
+    <string name="today_outfit_top_thick_coat">Koti nzito</string>
+    <string name="today_outfit_top_puffer_jacket">Jaketi ya pamba</string>
+    <string name="today_outfit_bottom_long_skirt">Sketi ndefu</string>
+    <string name="today_outfit_bottom_jeans">Jins</string>
+
+    <!-- Today rationale -->
+    <string name="today_rationale_title">Kwa nini mavazi haya?</string>
+    <string name="today_rationale_show">Kwa nini?</string>
+    <string name="today_rationale_dismiss">Sawa</string>
+    <string name="today_rationale_threshold_decrease">Punguza kiwango kwa digrii 1</string>
+    <string name="today_rationale_threshold_increase">Ongeza kiwango kwa digrii 1</string>
+    <string name="today_rationale_threshold_changed_hint">Onyesha upya ili kuona mavazi mapya.</string>
+    <string name="today_rationale_unavailable">Hakuna maelezo — fungua programu baada ya kusasisha ijayo.</string>
+    <string name="today_rationale_min_below_with_time">Kiwango cha chini kinachohisi %1$s%2$s saa %3$s, chini ya %4$s%2$s</string>
+    <string name="today_rationale_min_below">Kiwango cha chini kinachohisi %1$s%2$s, chini ya %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Kiwango cha chini kinachohisi %1$s%2$s saa %3$s, angalau %4$s%2$s</string>
+    <string name="today_rationale_min_above">Kiwango cha chini kinachohisi %1$s%2$s, angalau %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Kiwango cha juu kinachohisi %1$s%2$s tu saa %3$s, chini ya %4$s%2$s</string>
+    <string name="today_rationale_max_below">Kiwango cha juu kinachohisi %1$s%2$s tu, chini ya %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Kiwango cha juu kinachohisi %1$s%2$s saa %3$s, angalau %4$s%2$s</string>
+    <string name="today_rationale_max_above">Kiwango cha juu kinachohisi %1$s%2$s, angalau %3$s%2$s</string>
+
+    <!-- Widget -->
+    <string name="widget_label">Mavazi</string>
+    <string name="widget_description">Mavazi ya kipindi cha sasa kwa muhtasari.</string>
+    <string name="widget_empty_title">Hakuna mavazi bado</string>
+    <string name="widget_empty_subtitle">Gonga ili kufungua ClothesCast</string>
+
+    <!-- Today forecast / charts -->
+    <string name="today_forecast_title">Joto linalohisi</string>
+    <string name="today_forecast_min_max">Inahisi kama %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Joto linalohisi (%1$s) kwa saa</string>
+    <string name="today_forecast_air_min_max">Hewa %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_air">Joto la hewa (%1$s) kwa saa</string>
+    <string name="today_precipitation_title">Uwezekano wa mvua</string>
+    <string name="today_precipitation_peak">Kilele %1$d%% saa %2$s</string>
+    <string name="today_precipitation_dry">Hakuna mvua inayotarajiwa leo</string>
+    <string name="today_chart_model_legend_label">Mifano:</string>
+    <string name="today_chart_main_line_label">Mchanganyiko</string>
+    <string name="today_chart_divergence_summary">Mifano inayotofautiana zaidi saa %1$s (Δ %2$.1f%3$s inayohisi) — hasa %4$s, %5$s</string>
+    <string name="today_factor_air_temperature">joto la hewa</string>
+    <string name="today_factor_wind_speed">kasi ya upepo</string>
+    <string name="today_factor_cloud_cover">mawingu</string>
+    <string name="today_factor_humidity">unyevu</string>
+    <string name="today_wind_title">Kasi ya upepo</string>
+    <string name="today_wind_subtitle">Kasi ya upepo (%1$s) kwa mfano na saa</string>
+    <string name="today_cloud_title">Mawingu</string>
+    <string name="today_cloud_subtitle">Mawingu yote (%) kwa mfano na saa</string>
+    <string name="today_humidity_title">Unyevu</string>
+    <string name="today_humidity_subtitle">Unyevu wa jamaa (%) kwa mfano na saa</string>
+    <string name="today_confidence_high">Imani ya juu — mifano mikubwa inakubaliana</string>
+    <string name="today_confidence_medium">Imani ya kati</string>
+    <string name="today_confidence_low">Imani ya chini — utabiri hutofautiana</string>
+    <string name="today_confidence_spread">Tofauti: %1$.1f°C, %2$.0f%% mvua kwenye mifano %3$d</string>
+    <string name="today_low_confidence_callout_title">Utabiri hutofautiana</string>
+    <string name="today_low_confidence_callout_body">Halijoto inatofautiana kwa %1$.1f°C na uwezekano wa mvua kwa %2$.0f%% kwenye mifano %3$d.</string>
+
+    <!-- Today status / errors -->
+    <string name="today_working">Inafanya kazi — inashuka ClothesCast yako…</string>
+    <string name="today_retrying">Jaribio la mwisho lilishindwa — inajaribu tena…</string>
+    <string name="today_failed_title">Jaribio la mwisho lilishindwa</string>
+    <string name="today_failed_unexpected_http">Hitilafu ya HTTP isiyotarajiwa kutoka huduma ya utabiri.</string>
+    <string name="today_failed_unhandled">Hitilafu isiyotarajiwa imetokea.</string>
+    <string name="today_failed_no_location">Hatukuweza kupata mahali pako. Toa ruhusa ya mahali daima, au weka mji katika Mipangilio.</string>
+    <string name="today_failed_show_details">Onyesha maelezo</string>
+    <string name="today_failed_hide_details">Ficha maelezo</string>
+    <string name="today_location_required_title">Weka mahali pako</string>
+    <string name="today_location_required_body">ClothesCast inahitaji kujua uko wapi ili kupata utabiri. Toa ruhusa ya mahali daima, au chagua mji.</string>
+    <string name="today_location_required_action">Fungua mipangilio ya mahali</string>
+
+    <!-- Today banners -->
+    <string name="today_crash_banner_title">Mwisho uliharibika</string>
+    <string name="today_crash_banner_body">Ripoti ya hitilafu imehifadhiwa kwenye kifaa chako. Shiriki ili hitilafu irekebishwe? Hakuna kinachotumwa hadi uchague wapi.</string>
+    <string name="today_crash_banner_share">Shiriki ripoti</string>
+    <string name="today_crash_banner_dismiss">Ondoa</string>
+    <string name="today_update_available_title">Sasisho linapatikana</string>
+    <string name="today_update_available_body">Toleo jipya la ClothesCast lipo kwenye Play Store.</string>
+    <string name="today_update_available_action">Sasisha</string>
+    <string name="today_update_available_dismiss">Si sasa</string>
+    <string name="today_update_downloaded_body">Sasisho limepakuliwa. Anzisha upya ili kumaliza usakinishaji.</string>
+    <string name="today_update_downloaded_action">Anzisha upya</string>
+    <string name="today_telemetry_notice_title">Ripoti za hitilafu na matumizi zimewashwa</string>
+    <string name="today_telemetry_notice_body">ClothesCast inatuma ripoti za hitilafu zisizo na jina na takwimu za matumizi kusaidia kurekebisha hitilafu. Hakuna data ya kalenda, mahali, au maandishi ya ufahamu yanayojumuishwa. Izime wakati wowote katika Mipangilio.</string>
+    <string name="today_telemetry_notice_open_settings">Fungua Mipangilio ya Faragha</string>
+    <string name="today_telemetry_notice_dismiss">Ondoa</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Karibu ClothesCast</string>
+    <string name="onboarding_subtitle">Chaguo tatu za haraka na uko tayari. Rekebisha baadaye katika Mipangilio.</string>
+    <string name="onboarding_subtitle_tv">Chaguo mbili za haraka na uko tayari. Rekebisha baadaye katika Mipangilio.</string>
+    <string name="onboarding_notifications_title">Arifa</string>
+    <string name="onboarding_notifications_description">Inahitajika kutoa ClothesCast yako ya kila siku.</string>
+    <string name="onboarding_notifications_grant">Toa ruhusa ya arifa</string>
+    <string name="onboarding_location_title">Mahali</string>
+    <string name="onboarding_location_description">Pakua utabiri wa mahali pako pa takriban.</string>
+    <string name="onboarding_location_grant">Toa ruhusa ya mahali</string>
+    <string name="onboarding_location_grant_background">Toa ruhusa ya mahali daima</string>
+    <string name="onboarding_location_background_needed">Hatua moja zaidi: ClothesCast inahitaji \'Ruhusu wakati wote\' ili utabiri wa asubuhi uweze kusoma mahali pako programu inapofungwa.</string>
+    <string name="onboarding_location_denied_hint">Ruhusa ya mahali imekataliwa. Unaweza kuchagua mji wewe mwenyewe.</string>
+    <string name="onboarding_location_enter_manual">Ingiza mahali wewe mwenyewe</string>
+    <string name="onboarding_location_enter_manual_hint">Unaweza kuingiza mahali pako wewe mwenyewe ikiwa utakataa ruhusa ya mahali au mahali pa kifaa chako si sahihi.</string>
+    <string name="onboarding_location_using_device">Inatumia mahali pa kifaa chako kila asubuhi.</string>
+    <string name="onboarding_gemini_title">Ufunguo wa Gemini API</string>
+    <string name="onboarding_gemini_description">Tumia Gemini kupata sauti za ubora wa juu.</string>
+    <string name="onboarding_step_done">Imekamilika</string>
+    <string name="onboarding_skip">Ruka kwa sasa</string>
+    <string name="onboarding_continue">Endelea</string>
+    <string name="onboarding_pair_from_phone">Unganisha kutoka simu badala yake</string>
+
+    <!-- TV pairing -->
+    <string name="pairing_title">Scan ili kuunganisha</string>
+    <string name="pairing_instructions">Scan msimbo huu wa QR kwa simu yako, kisha bandika ufunguo wako wa Gemini API kwenye fomu inayofunguka. Ufunguo utapelekwa moja kwa moja kwenye TV hii kupitia Wi-Fi yako ya nyumbani — hakuna relay ya wingu.</string>
+    <string name="pairing_qr_description">Msimbo wa QR unaounganisha kwenye %1$s</string>
+    <string name="pairing_cancel">Ghairi</string>
+    <string name="pairing_received">Ufunguo umepokelewa — unuhifadhi…</string>
+    <string name="pairing_timeout_title">Dirisha la kuunganisha limeisha</string>
+    <string name="pairing_timeout_body">Dirisha la kuunganisha la dakika 5 limefungwa. Gonga Jaribu tena kufungua jipya.</string>
+    <string name="pairing_error_title">Haikuweza kuanza kuunganisha</string>
+    <string name="pairing_error_body">Hakikisha TV imeunganishwa na Wi-Fi, kisha jaribu tena.</string>
+    <string name="pairing_retry">Jaribu tena</string>
+
+    <!-- Settings root -->
+    <string name="settings_title">Mipangilio</string>
+    <string name="settings_back">Rudi</string>
+    <string name="settings_root_voice">Sauti</string>
+    <string name="settings_root_schedule">Ratiba</string>
+    <string name="settings_root_region">Eneo</string>
+    <string name="settings_root_clothes">Mavazi</string>
+    <string name="settings_root_display">Onyesho</string>
+    <string name="settings_root_location">Mahali</string>
+    <string name="settings_root_calendar">Kalenda</string>
+    <string name="settings_root_privacy">Faragha</string>
+    <string name="settings_root_about">Kuhusu</string>
+    <string name="settings_root_schedule_subtitle">Arifa na Nyakati</string>
+    <string name="settings_root_clothes_subtitle">Halijoto na Mavazi</string>
+    <string name="settings_root_region_subtitle">Lugha na Vitengo</string>
+    <string name="settings_root_voice_subtitle">Watoa huduma na Lafudhi</string>
+    <string name="settings_root_display_subtitle">Mandhari</string>
+
+    <!-- Settings: display -->
+    <string name="settings_display_theme_title">Mandhari</string>
+    <string name="settings_display_theme_system">Fuata mfumo</string>
+    <string name="settings_display_theme_light">Mwanga</string>
+    <string name="settings_display_theme_dark">Giza</string>
+    <string name="settings_display_charts_title">Chati</string>
+    <string name="settings_display_model_spread_label">Onyesha usambazaji wa mifano kwenye chati</string>
+    <string name="settings_display_model_spread_description">Inaweka tabaka mstari wa kila mfano mkubwa wa hali ya hewa kwenye chati za halijoto na mvua. Muhimu kwa kutambua wakati utabiri hauna uhakika.</string>
+
+    <!-- Settings: location -->
+    <string name="settings_root_location_subtitle">Gundua kiotomatiki au chagua mji</string>
+    <string name="settings_location_title">Mahali</string>
+    <string name="settings_location_use_device">Tumia mahali pa kifaa</string>
+    <string name="settings_location_use_device_description">Mahali pa mwisho pa takriban</string>
+    <string name="settings_location_detecting">Inagundua…</string>
+    <string name="settings_location_grant_background">Toa ruhusa</string>
+    <string name="settings_location_background_banner_title">Ruhusa ya mahali daima inahitajika</string>
+    <string name="settings_location_background_banner_body">Bila hiyo, utabiri wa asubuhi hauwezi kusoma mahali pako.</string>
+    <string name="settings_location_unset">Hakuna mahali palipoaandaliwa</string>
+    <string name="settings_location_manual_override">Mahali si sahihi? Weka wewe mwenyewe</string>
+    <string name="settings_location_manual_override_disclosure">Kuchagua mji kunazima utambuzi wa kiotomatiki.</string>
+    <string name="settings_location_clear">Futa mahali</string>
+    <string name="settings_location_search_title">Tafuta mahali</string>
+    <string name="settings_location_query_label">Mji au mahali</string>
+    <string name="settings_location_search">Tafuta</string>
+    <string name="settings_location_searching">Inatafuta…</string>
+    <string name="settings_location_no_results">Hakuna matokeo.</string>
+    <string name="settings_location_rationale_title">Upatikanaji wa mahali</string>
+    <string name="settings_location_rationale_body">ClothesCast inasoma mahali pako ili kupata utabiri wako wa karibu.</string>
+    <string name="settings_location_rationale_continue">Endelea</string>
+    <string name="settings_location_rationale_dismiss">Si sasa</string>
+    <string name="settings_location_background_rationale_title">Ruhusu wakati wote</string>
+    <string name="settings_location_background_rationale_body">Ruhusu ClothesCast kusoma mahali pako programu ikifungwa ili utabiri wa asubuhi usasishwe kwa wakati.</string>
+    <string name="settings_location_background_rationale_continue">Fungua Mipangilio</string>
+    <string name="settings_location_background_rationale_dismiss">Si sasa</string>
+    <string name="settings_location_background_denied_title">Ruhusa ya daima haikutolewa</string>
+    <string name="settings_location_background_denied_body">Bila \'Ruhusu wakati wote\' utabiri wa asubuhi hauwezi kusasishwa kiotomatiki.</string>
+    <string name="settings_location_background_denied_open">Fungua Mipangilio</string>
+    <string name="settings_location_background_denied_keep">Si sasa</string>
+
+    <!-- Settings: schedule -->
+    <string name="settings_schedule_title">ClothesCast ya kila siku</string>
+    <string name="settings_schedule_time_label">Wakati</string>
+    <string name="settings_schedule_days_label">Siku za wiki</string>
+    <string name="settings_daily_mention_evening_events">Taja matukio ya jioni</string>
+    <string name="settings_tonight_title">ClothesCast ya usiku</string>
+    <string name="settings_tonight_description">ClothesCast ya pili jioni inayoshughulikia hali ya hewa ya usiku huu. Jioni tulivu inabaki kimya; jioni za matukio inacheza sauti na kusoma yenyewe.</string>
+    <string name="settings_tonight_enabled">Onyesha ClothesCast ya usiku</string>
+    <string name="settings_tonight_time_label">Wakati</string>
+    <string name="settings_tonight_days_label">Siku za wiki</string>
+    <string name="settings_tonight_notify_only_on_events">Arifa tu kunapokuwa na matukio ya jioni</string>
+    <string name="settings_delivery_label">Utoaji</string>
+    <string name="settings_delivery_notification_only">Arifa peke yake</string>
+    <string name="settings_delivery_tts_only">Kusomwa kwa sauti peke yake</string>
+    <string name="settings_delivery_notification_and_tts">Arifa na kusomwa kwa sauti</string>
+
+    <!-- Settings: TTS / voice -->
+    <string name="settings_tts_engine_title">Injini ya sauti</string>
+    <string name="settings_tts_engine_description">Gemini inasikika asili zaidi kuliko sauti ya kifaa lakini inahitaji simu ya mtandao wakati wa kusema. Inarudi kwa sauti ya kifaa ikiwa Gemini itashindwa.</string>
+    <string name="settings_tts_engine_device">Kifaa (bila mtandao, bure)</string>
+    <string name="settings_tts_engine_gemini">Gemini (ubora wa juu, mtandaoni)</string>
+    <string name="settings_tts_voice_label">Sauti</string>
+    <string name="settings_tts_voice_dismiss">Imekamilika</string>
+    <string name="settings_tts_style_label">Mtindo</string>
+    <string name="settings_tts_style_weather_forecaster">Mtabiri wa hali ya hewa</string>
+    <string name="settings_tts_style_pirate">Maharamia</string>
+    <string name="settings_tts_style_cowboy">Mchungaji</string>
+    <string name="settings_tts_style_shakespearean">Kisekspiya</string>
+    <string name="settings_tts_style_surfer">Mpanda mawimbi</string>
+    <string name="settings_tts_style_parent">Mzazi</string>
+    <string name="settings_tts_style_child">Mtoto</string>
+    <string name="settings_tts_style_teenager">Kijana</string>
+    <string name="settings_tts_style_grandparent">Babu/Nyanya</string>
+    <string name="settings_tts_style_kids_host">Mwenyeji wa TV ya watoto</string>
+    <string name="settings_tts_style_radio_host">Mwenyeji wa mazungumzo</string>
+    <string name="settings_tts_style_morning_dj">DJ wa asubuhi</string>
+    <string name="settings_tts_style_science_teacher">Mwalimu wa sayansi</string>
+    <string name="settings_tts_style_historian">Mwanahistoria</string>
+    <string name="settings_tts_style_sportscaster">Mtangazaji wa michezo</string>
+    <string name="settings_tts_style_stadium_announcer">Mtangazaji wa uwanja</string>
+    <string name="settings_tts_style_storyteller">Msimulizi</string>
+    <string name="settings_tts_style_fitness_instructor">Mwalimu wa mazoezi</string>
+    <string name="settings_tts_style_morning_presenter">Mwasilishaji wa redio ya asubuhi</string>
+    <string name="settings_tts_style_custom">Maalum…</string>
+    <string name="settings_tts_style_custom_label">Agizo maalum</string>
+    <string name="settings_tts_style_custom_placeholder">mf. Soma yafuatayo kama maktabani mkali anayenong\'ona</string>
+    <string name="settings_tts_device_voice_label">Sauti ya kifaa</string>
+    <string name="settings_tts_device_voice_auto">Kiotomatiki (bora kwa lafudhi)</string>
+    <string name="settings_tts_device_voice_currently">Sasa hivi: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Inapakia…</string>
+    <string name="settings_tts_device_voice_network">Mtandao</string>
+    <string name="settings_tts_device_voice_offline">Bila mtandao</string>
+    <string name="settings_tts_install_google_hint">Sakinisha injini ya maandishi-kwa-sauti ya Google kwa sauti za ubora wa juu.</string>
+    <string name="settings_tts_install_google_button">Sakinisha Google TTS</string>
+    <string name="settings_tts_test">Jaribu sauti</string>
+    <string name="settings_tts_test_in_flight">Inajaribu — tafadhali subiri…</string>
+
+    <!-- Settings: region / units -->
+    <string name="settings_temperature_unit_title">Kitengo cha halijoto</string>
+    <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="settings_distance_unit_title">Kitengo cha umbali</string>
+    <string name="settings_distance_unit_kilometers">Kilomita</string>
+    <string name="settings_distance_unit_miles">Maili</string>
+
+    <!-- Settings: clothes -->
+    <string name="settings_clothes_title">Sheria za mavazi</string>
+    <string name="settings_clothes_description">Ikiwa utabiri utavuka moja ya vizingiti hivi, kipengee kitaonekana katika ClothesCast yako ya kila siku.</string>
+
+    <!-- Garment names (additional) -->
+    <string name="garment_puffer">Jaketi ya pamba</string>
+    <string name="garment_thin_jacket">Jaketi nyepesi</string>
+    <string name="garment_skirt">Sketi</string>
+    <string name="garment_polo">Polo</string>
+
+    <!-- Notification channels -->
+    <string name="notification_channel_daily_insight_name">ClothesCast ya kila siku</string>
+    <string name="notification_channel_daily_insight_description">Muhtasari wa hali ya hewa ya asubuhi uliojiunga.</string>
+    <string name="notification_daily_insight_title">ClothesCast ya Leo</string>
+    <string name="notification_channel_tonight_insight_default_name">ClothesCast ya usiku (na matukio)</string>
+    <string name="notification_channel_tonight_insight_default_description">Muhtasari wa hali ya hewa ya jioni unapokuwa na matukio ya kalenda usiku huu.</string>
+    <string name="notification_channel_tonight_insight_silent_name">ClothesCast ya usiku (kimya)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Muhtasari wa hali ya hewa ya jioni jioni yako ikiwa tulivu. Imetumwa kimya.</string>
+    <string name="notification_tonight_insight_title">ClothesCast ya Usiku Huu</string>
+    <string name="notification_channel_weather_alerts_name">Arifa za hali mbaya ya hewa</string>
+    <string name="notification_channel_weather_alerts_description">Arifa za kipaumbele cha juu kwa matukio ya hali mbaya au ya hatari ya hewa yanayoathiri eneo lako.</string>
+    <string name="notification_weather_alert_title">Arifa ya hali ya hewa: %1$s</string>
+
+    <!-- Settings: notifications permission -->
+    <string name="settings_notification_permission_title">Arifa zimezuiwa</string>
+    <string name="settings_notification_permission_description">Bila ruhusa ya arifa, ClothesCast yako ya kila siku haina mahali pa kwenda. Itoe ili ClothesCast iweze kutuma kesho asubuhi.</string>
+    <string name="settings_notification_permission_grant">Toa ruhusa ya arifa</string>
+
+    <!-- Settings: calendar -->
+    <string name="settings_root_calendar_subtitle">Matukio ya leo</string>
+    <string name="settings_calendar_title">Kalenda</string>
+    <string name="settings_calendar_use_events">Tumia matukio ya kalenda ya leo</string>
+    <string name="settings_calendar_description_off">Rekebisha utabiri wa asubuhi kulingana na matukio ya leo — vichwa vya habari na nyakati peke yake ndivyo vinavyotumika, na hakuna kinachoacha kifaa.</string>
+    <string name="settings_calendar_description_on">Inayorekebisha utabiri wa asubuhi kulingana na matukio ya leo. Vichwa vya habari na nyakati peke yake ndivyo vinavyotumika; hakuna kinachoacha kifaa.</string>
+    <string name="settings_calendar_grant_permission">Toa ruhusa ya kalenda</string>
+    <string name="settings_calendar_open_settings">Ruhusa ya kalenda imekataliwa. Itoe kutoka Mipangilio ya mfumo.</string>
+
+    <!-- Settings: privacy / telemetry -->
+    <string name="settings_root_privacy_subtitle">Ripoti za hitilafu na matumizi</string>
+    <string name="settings_privacy_telemetry_title">Ripoti za hitilafu na matumizi</string>
+    <string name="settings_privacy_telemetry_label">Tuma data ya hitilafu na matumizi</string>
+    <string name="settings_privacy_telemetry_description">Inatuma ripoti za hitilafu zisizo na jina na takwimu za matumizi kusaidia msanidi programu kurekebisha hitilafu.</string>
+    <string name="settings_privacy_telemetry_limits">Kamwe hazitumwi: matukio ya kalenda, kuratibu za mahali au majina ya maeneo, maandishi ya ufahamu au arifa, funguo za API, GPS sahihi, vitambulisho vya matangazo.</string>
+    <string name="settings_privacy_open_policy">Soma sera kamili ya faragha</string>
+
+    <!-- Settings: API key -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Tumia Gemini kupata sauti za ubora wa juu.</string>
+    <string name="settings_api_key_status_set">Ufunguo wa Gemini umewekwa.</string>
+    <string name="settings_api_key_status_unset">Pata ufunguo wa API bure kwenye aistudio.google.com</string>
+    <string name="settings_api_key_placeholder">Bandika ufunguo wako wa Gemini API</string>
+    <string name="settings_api_key_save">Hifadhi ufunguo wa Gemini</string>
+    <string name="settings_api_key_clear">Futa ufunguo uliohifadhiwa wa Gemini</string>
+
+    <!-- Settings: about -->
+    <string name="settings_about_title">Kuhusu</string>
+    <string name="settings_about_version">Toleo %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · muundo wa %1$s</string>
+    <string name="settings_about_source">Msimbo chanzo kwenye GitHub</string>
+    <string name="settings_about_dontkillmyapp">Vizuizi vya mandharinyuma (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Shiriki ripoti ya hitilafu</string>
+    <string name="settings_about_version_copied">Toleo limenakiliwa kwenye ubao wa kunakili</string>
+
+    <!-- Bug report consent -->
+    <string name="bug_report_consent_title">Shiriki ripoti ya hitilafu?</string>
+    <string name="bug_report_consent_body">Hii husaidia kutambua matatizo. Ripoti ina taarifa za kibinafsi nyeti, ikiwa ni pamoja na mahali pako, mipangilio ya programu, na shughuli za hivi karibuni. Utaweza kukagua na kuhariri kabla ya kutuma.</string>
+    <string name="bug_report_consent_dont_show_again">Usionyeshe tena</string>
+    <string name="bug_report_consent_continue">Endelea</string>
+    <string name="bug_report_consent_cancel">Ghairi</string>
+
+    <!-- Insight: precipitation / tie-in templates (new variants) -->
+    <string name="insight_precip_chance">Uwezekano wa %1$s %2$s.</string>
+    <string name="insight_tie_in_at_night">Chukua %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Usiku huu, uwezekano wa mvua saa %2$s, chukua %1$s.</string>
+    <string name="insight_evening_rain">Usiku huu, mvua saa %1$s.</string>
+    <string name="insight_evening_rain_chance">Usiku huu, uwezekano wa mvua saa %1$s.</string>
 </resources>

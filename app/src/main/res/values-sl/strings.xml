@@ -115,7 +115,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_outfit_top_thin_jacket">Lahka jakna</string>
     <string name="today_outfit_top_thick_coat">Debel plašč</string>
     <string name="today_outfit_top_puffer_jacket">Puhovka</string>
-    <string name="today_outfit_bottom_skirt">Krilo</string>
+    <string name="today_outfit_bottom_long_skirt">Krilo</string>
     <string name="today_outfit_bottom_jeans">Kavbojke</string>
 
     <!-- Garment dropdown — additional items. -->
@@ -576,4 +576,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="bug_report_consent_continue">Nadaljuj</string>
     <string name="bug_report_consent_cancel">Prekliči</string>
 
+    <string name="today_forecast_air_section_title">Temperatura zraka</string>
+    <string name="settings_default_bottom_title">Standardni spodnji del</string>
+    <string name="settings_default_bottom_description">Kar predlagamo na začetnem zaslonu, ko ni dovolj toplo za kratke hlače.</string>
 </resources>

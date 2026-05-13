@@ -660,4 +660,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast ne može raditi na ovom uređaju — tvoja Android verzija nema značajku koju sučelje aplikacije zahtijeva (Configuration.fontWeightAdjustment, očekuje se na Androidu 12 i novijim). Obrati se proizvođaču uređaja za ažuriranje sustava.</string>
+    <string name="today_forecast_air_section_title">Temperatura zraka</string>
+    <string name="settings_default_bottom_title">Standardni donji dio</string>
+    <string name="settings_default_bottom_description">Ono što predlažemo na početnom zaslonu kad nije dovoljno toplo za kratke hlače.</string>
 </resources>

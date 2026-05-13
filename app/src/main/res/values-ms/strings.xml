@@ -570,4 +570,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="insight_evening_rain">Malam ini, hujan pada pukul %1$s.</string>
     <string name="insight_evening_rain_chance">Malam ini, kemungkinan hujan pada pukul %1$s.</string>
 
+    <string name="today_forecast_air_section_title">Suhu udara</string>
+    <string name="settings_default_bottom_title">Bawahan standard</string>
+    <string name="settings_default_bottom_description">Yang kami cadangkan pada skrin utama apabila tidak cukup panas untuk seluar pendek.</string>
 </resources>

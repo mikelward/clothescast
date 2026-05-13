@@ -593,4 +593,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast kan ikke kjøres på denne enheten — Android-bygget ditt mangler en funksjon som appgrensesnittet krever (Configuration.fontWeightAdjustment, forventet fra Android 12 og oppover). Kontakt enhetsprodusenten din for en systemoppdatering.</string>
+    <string name="today_forecast_air_section_title">Lufttemperatur</string>
+    <string name="settings_default_bottom_title">Standard underdel</string>
+    <string name="settings_default_bottom_description">Hva vi foreslår på startskjermen når det ikke er varmt nok for shorts.</string>
 </resources>

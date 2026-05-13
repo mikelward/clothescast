@@ -640,4 +640,7 @@ the displayed label localizes.
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast kan niet worden uitgevoerd op dit apparaat — je Android-build mist een functie die de app-interface nodig heeft (Configuration.fontWeightAdjustment, verwacht vanaf Android 12 en hoger). Neem contact op met je apparaatfabrikant voor een systeemupdate.</string>
+    <string name="today_forecast_air_section_title">Luchttemperatuur</string>
+    <string name="settings_default_bottom_title">Standaard onderstuk</string>
+    <string name="settings_default_bottom_description">Wat we op het beginscherm voorstellen als het niet warm genoeg is voor shorts.</string>
 </resources>

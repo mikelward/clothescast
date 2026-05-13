@@ -81,4 +81,541 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
+    <!-- ============================================================
+         Device-incompatibility error
+         ============================================================ -->
+    <string name="error_device_incompatible">Hindi maaaring tumakbo ang ClothesCast sa device na ito — kulang ang iyong Android build ng feature na kailangan ng UI ng app (Configuration.fontWeightAdjustment, inaasahan sa Android 12 pataas). Makipag-ugnayan sa manufacturer ng iyong device para sa system update.</string>
+
+    <!-- ============================================================
+         Today screen
+         ============================================================ -->
+    <string name="today_title">Ngayon</string>
+    <string name="today_open_settings">Buksan ang Mga Setting</string>
+    <string name="today_more_options">Higit pang mga opsyon</string>
+    <string name="today_report_a_bug">Mag-ulat ng bug</string>
+    <string name="today_refresh">I-refresh</string>
+    <string name="today_refresh_toast_daily">Ina-refresh ang iyong pang-araw na ClothesCast — lilitaw ito nang ilang sandali.</string>
+    <string name="today_refresh_toast_nightly">Ina-refresh ang iyong pang-gabing ClothesCast — lilitaw ito nang ilang sandali.</string>
+    <string name="today_empty_title">Wala pang ClothesCast</string>
+    <string name="today_empty_subtitle">Lilitaw dito ang iyong umaga na ClothesCast kapag nagawa na ito. Itakda ang iyong lokasyon sa Mga Setting, pagkatapos ay i-tap ang Kunin ngayon.</string>
+    <string name="today_fetch_now">Kunin ngayon</string>
+    <string name="today_generated_at">Nagawa noong %1$s</string>
+    <string name="today_location_unknown">Ang iyong lokasyon</string>
+
+    <string name="today_outfit_title">Ano ang isusuot</string>
+    <string name="today_outfit_label_today">Ngayon</string>
+    <string name="today_outfit_label_tonight">Ngayong gabi</string>
+    <string name="today_outfit_label_tomorrow">Bukas</string>
+    <string name="today_outfit_top_polo">Polo</string>
+    <string name="today_outfit_top_thin_jacket">Manipis na jacket</string>
+    <string name="today_outfit_top_thick_coat">Makapal na coat</string>
+    <string name="today_outfit_top_puffer_jacket">Puffer jacket</string>
+    <string name="today_outfit_bottom_skirt">Palda</string>
+    <string name="today_outfit_bottom_jeans">Maong</string>
+
+    <!-- Outfit rationale dialog -->
+    <string name="today_rationale_title">Bakit ang outfit na ito?</string>
+    <string name="today_rationale_show">Bakit?</string>
+    <string name="today_rationale_dismiss">Nakuha ko</string>
+    <string name="today_rationale_threshold_decrease">Ibaba ang threshold ng 1 degree</string>
+    <string name="today_rationale_threshold_increase">Itaas ang threshold ng 1 degree</string>
+    <string name="today_rationale_threshold_changed_hint">I-refresh para makita ang bagong outfit.</string>
+    <string name="today_rationale_unavailable">Walang available na dahilan — buksan ang app pagkatapos ng susunod na refresh.</string>
+    <string name="today_rationale_min_below_with_time">Pinakamababang nararamdamang temperatura na %1$s%2$s ng %3$s, mas mababa sa %4$s%2$s</string>
+    <string name="today_rationale_min_below">Pinakamababang nararamdamang temperatura na %1$s%2$s, mas mababa sa %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Pinakamababang nararamdamang temperatura na %1$s%2$s ng %3$s, hindi bababa sa %4$s%2$s</string>
+    <string name="today_rationale_min_above">Pinakamababang nararamdamang temperatura na %1$s%2$s, hindi bababa sa %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Pinakamataas na nararamdamang temperatura na %1$s%2$s lamang ng %3$s, mas mababa sa %4$s%2$s</string>
+    <string name="today_rationale_max_below">Pinakamataas na nararamdamang temperatura na %1$s%2$s lamang, mas mababa sa %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Pinakamataas na nararamdamang temperatura na %1$s%2$s ng %3$s, hindi bababa sa %4$s%2$s</string>
+    <string name="today_rationale_max_above">Pinakamataas na nararamdamang temperatura na %1$s%2$s, hindi bababa sa %3$s%2$s</string>
+
+    <!-- Home-screen widget -->
+    <string name="widget_label">Outfit</string>
+    <string name="widget_description">Ang outfit ng kasalukuyang panahon sa isang tingin.</string>
+    <string name="widget_empty_title">Wala pang outfit</string>
+    <string name="widget_empty_subtitle">I-tap para buksan ang ClothesCast</string>
+
+    <!-- Forecast card -->
+    <string name="today_forecast_title">Oras-orasang hula</string>
+    <string name="today_forecast_min_max">Nararamdaman %1$d – %2$d%3$s · Hangin %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Nararamdamang temperatura (%1$s) bawat oras · i-tap para lumipat sa temperatura ng hangin</string>
+    <string name="today_forecast_legend_air">Temperatura ng hangin (%1$s) bawat oras · i-tap para lumipat sa nararamdamang temperatura</string>
+
+    <!-- Precipitation card -->
+    <string name="today_precipitation_title">Tsansa ng ulan</string>
+    <string name="today_precipitation_peak">Pinakamataas na %1$d%% ng %2$s</string>
+    <string name="today_precipitation_dry">Walang inaasahang ulan ngayon</string>
+
+    <!-- Chart labels -->
+    <string name="today_chart_model_legend_label">Mga modelo:</string>
+    <string name="today_chart_main_line_label">Pinagsama</string>
+    <string name="today_chart_divergence_summary">Pinaka-nagkakaiba ang mga modelo ng %1$s (Δ %2$.1f%3$s nararamdamang temperatura) — kadalasang %4$s, %5$s</string>
+
+    <!-- Factor names -->
+    <string name="today_factor_air_temperature">temperatura ng hangin</string>
+    <string name="today_factor_wind_speed">bilis ng hangin</string>
+    <string name="today_factor_cloud_cover">takip ng ulap</string>
+    <string name="today_factor_humidity">halumigmig</string>
+
+    <!-- Diagnostic cards -->
+    <string name="today_wind_title">Bilis ng hangin</string>
+    <string name="today_wind_subtitle">Bilis ng hangin bawat modelo (%1$s) bawat oras</string>
+    <string name="today_cloud_title">Takip ng ulap</string>
+    <string name="today_cloud_subtitle">Kabuuang takip ng ulap bawat modelo (%) bawat oras</string>
+    <string name="today_humidity_title">Halumigmig</string>
+    <string name="today_humidity_subtitle">Relatibong halumigmig bawat modelo (%) bawat oras</string>
+
+    <!-- Confidence -->
+    <string name="today_confidence_high">Mataas na kumpiyansa — sumasang-ayon ang mga pangunahing modelo</string>
+    <string name="today_confidence_medium">Katamtamang kumpiyansa</string>
+    <string name="today_confidence_low">Mababang kumpiyansa — hindi nagkakasundo ang mga hula</string>
+    <string name="today_confidence_spread">Pagkakaiba: %1$.1f°C, %2$.0f%% ulan sa %3$d na modelo</string>
+    <string name="today_low_confidence_callout_title">Hindi nagkakasundo ang mga hula ngayon</string>
+    <string name="today_low_confidence_callout_body">Nagkakaiba ng %1$.1f°C ang temperatura at %2$.0f%% ang tsansa ng ulan sa %3$d na modelo.</string>
+
+    <!-- Status banners -->
+    <string name="today_working">Nagtatrabaho — kinukuha ang iyong ClothesCast…</string>
+    <string name="today_retrying">Nabigo ang huling pagtatangka — sumusubok ulit…</string>
+    <string name="today_failed_title">Nabigo ang huling pagtatangka</string>
+    <string name="today_failed_unexpected_http">Hindi inaasahang HTTP error mula sa serbisyo ng hula.</string>
+    <string name="today_failed_unhandled">Naganap ang hindi inaasahang error.</string>
+    <string name="today_failed_no_location">Hindi namin makuha ang iyong lokasyon. Ibigay ang palaging naka-on na pahintulot sa lokasyon, o magtakda ng lungsod sa Mga Setting.</string>
+    <string name="today_failed_show_details">Ipakita ang mga detalye</string>
+    <string name="today_failed_hide_details">Itago ang mga detalye</string>
+
+    <string name="today_location_required_title">Itakda ang iyong lokasyon</string>
+    <string name="today_location_required_body">Kailangan ng ClothesCast na malaman kung nasaan ka para makuha ang hula. Ibigay ang palaging naka-on na pahintulot sa lokasyon, o pumili ng lungsod.</string>
+    <string name="today_location_required_action">Buksan ang mga setting ng lokasyon</string>
+
+    <!-- Crash banner -->
+    <string name="today_crash_banner_title">Na-crash ang huling pagpapatakbo</string>
+    <string name="today_crash_banner_body">Naligtas ang ulat ng pag-crash sa iyong device. Ibahagi ito para maayos ang bug? Walang maipapadala hanggang hindi mo pinipili kung saan.</string>
+    <string name="today_crash_banner_share">Ibahagi ang ulat</string>
+    <string name="today_crash_banner_dismiss">Isara</string>
+
+    <!-- Update banners -->
+    <string name="today_update_available_title">Available ang update</string>
+    <string name="today_update_available_body">Mayroon nang mas bagong bersyon ng ClothesCast sa Play Store.</string>
+    <string name="today_update_available_action">I-update</string>
+    <string name="today_update_available_dismiss">Hindi ngayon</string>
+    <string name="today_update_downloaded_body">Na-download ang update. I-restart para tapusin ang pag-install.</string>
+    <string name="today_update_downloaded_action">I-restart</string>
+
+    <!-- Telemetry notice banner -->
+    <string name="today_telemetry_notice_title">Naka-on ang mga ulat ng crash + paggamit</string>
+    <string name="today_telemetry_notice_body">Nagpapadala ang ClothesCast ng mga anonymous na ulat ng crash at analytics ng paggamit para matulungan ang pag-aayos ng mga bug. Walang kalendaryo, lokasyon, o teksto ng insight na kasama. I-off ito anumang oras sa Mga Setting.</string>
+    <string name="today_telemetry_notice_open_settings">Buksan ang mga setting ng Privacy</string>
+    <string name="today_telemetry_notice_dismiss">Isara</string>
+
+    <!-- ============================================================
+         Onboarding
+         ============================================================ -->
+    <string name="onboarding_title">Maligayang pagdating sa ClothesCast</string>
+    <string name="onboarding_subtitle">Tatlong mabilis na pagpipilian at tapos ka na. Baguhin mamaya sa Mga Setting.</string>
+    <string name="onboarding_subtitle_tv">Dalawang mabilis na pagpipilian at tapos ka na. Baguhin mamaya sa Mga Setting.</string>
+    <string name="onboarding_notifications_title">Mga Notipikasyon</string>
+    <string name="onboarding_notifications_description">Kinakailangan para maihatid ang iyong pang-araw na ClothesCast.</string>
+    <string name="onboarding_notifications_grant">Ibigay ang pahintulot sa notipikasyon</string>
+    <string name="onboarding_location_title">Lokasyon</string>
+    <string name="onboarding_location_description">Kunin ang hula para sa iyong tinatayang lokasyon.</string>
+    <string name="onboarding_location_grant">Ibigay ang pahintulot sa lokasyon</string>
+    <string name="onboarding_location_grant_background">Ibigay ang palaging naka-on na lokasyon</string>
+    <string name="onboarding_location_background_needed">Isa pang hakbang: kailangan ng ClothesCast ng \'Payagan sa lahat ng oras\' para mabasa ang iyong lokasyon habang nakasara ang app.</string>
+    <string name="onboarding_location_denied_hint">Tinanggihan ang pahintulot sa lokasyon. Maaari kang pumili ng lungsod nang manu-mano.</string>
+    <string name="onboarding_location_enter_manual">Ilagay ang lokasyon nang manu-mano</string>
+    <string name="onboarding_location_enter_manual_hint">Maaari kang manu-manong ilagay ang iyong lokasyon kung tinanggihan mo ang pahintulot sa lokasyon o kung mali ang lokasyon ng iyong device.</string>
+    <string name="onboarding_location_using_device">Ginagamit ang lokasyon ng iyong device tuwing umaga.</string>
+    <string name="onboarding_gemini_title">Gemini API key</string>
+    <string name="onboarding_gemini_description">Gumamit ng Gemini para sa mga de-kalidad na boses.</string>
+    <string name="onboarding_step_done">Tapos na</string>
+    <string name="onboarding_skip">Laktawan muna</string>
+    <string name="onboarding_continue">Magpatuloy</string>
+    <string name="onboarding_pair_from_phone">Mag-pair mula sa telepono</string>
+
+    <!-- ============================================================
+         TV pairing screen
+         ============================================================ -->
+    <string name="pairing_title">I-scan para mag-pair</string>
+    <string name="pairing_instructions">I-scan ang QR code na ito gamit ang iyong telepono, pagkatapos ay i-paste ang iyong Gemini API key sa form na magbubukas. Ang key ay direktang ipapadala sa TV na ito sa pamamagitan ng iyong home Wi-Fi — walang cloud relay.</string>
+    <string name="pairing_qr_description">QR code na nag-li-link sa %1$s</string>
+    <string name="pairing_cancel">Kanselahin</string>
+    <string name="pairing_received">Natanggap ang key — nino-save…</string>
+    <string name="pairing_timeout_title">Nag-expire na ang window ng pairing</string>
+    <string name="pairing_timeout_body">Nagsara na ang 5-minutong window ng pairing. I-tap ang Subukan ulit para magbukas ng bago.</string>
+    <string name="pairing_error_title">Hindi makapagsimula ng pairing</string>
+    <string name="pairing_error_body">Tiyaking nakakonekta ang TV sa Wi-Fi, pagkatapos ay subukan ulit.</string>
+    <string name="pairing_retry">Subukan ulit</string>
+
+    <!-- ============================================================
+         Settings — root
+         ============================================================ -->
+    <string name="settings_title">Mga Setting</string>
+    <string name="settings_back">Bumalik</string>
+
+    <string name="settings_root_voice">Boses</string>
+    <string name="settings_root_schedule">Iskedyul</string>
+    <string name="settings_root_region">Rehiyon</string>
+    <string name="settings_root_clothes">Damit</string>
+    <string name="settings_root_display">Display</string>
+    <string name="settings_root_location">Lokasyon</string>
+    <string name="settings_root_calendar">Kalendaryo</string>
+    <string name="settings_root_privacy">Pagkapribado</string>
+    <string name="settings_root_about">Tungkol</string>
+
+    <string name="settings_root_schedule_subtitle">Mga Notipikasyon at Oras</string>
+    <string name="settings_root_clothes_subtitle">Mga Temperatura at Outfit</string>
+    <string name="settings_root_region_subtitle">Mga Wika at Yunit</string>
+    <string name="settings_root_voice_subtitle">Mga Tagapagbigay at Punto</string>
+    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_location_subtitle">Auto-detect o pumili ng lungsod</string>
+    <string name="settings_root_calendar_subtitle">Mga evento ngayon</string>
+    <string name="settings_root_privacy_subtitle">Mga ulat ng crash + paggamit</string>
+
+    <!-- ============================================================
+         Settings — Display
+         ============================================================ -->
+    <string name="settings_display_theme_title">Tema</string>
+    <string name="settings_display_theme_system">Sundan ang system</string>
+    <string name="settings_display_theme_light">Maliwanag</string>
+    <string name="settings_display_theme_dark">Madilim</string>
+
+    <string name="settings_display_charts_title">Mga Chart</string>
+    <string name="settings_display_model_spread_label">Ipakita ang pagkalat ng modelo sa mga chart</string>
+    <string name="settings_display_model_spread_description">Isinasapatong ang oras-orasang hula ng bawat pangunahing modelo ng panahon sa temperatura at mga chart ng ulan. Kapaki-pakinabang para matukoy kung kailan hindi tiyak ang hula.</string>
+
+    <!-- ============================================================
+         Settings — Privacy
+         ============================================================ -->
+    <string name="settings_privacy_telemetry_title">Mga ulat ng crash + paggamit</string>
+    <string name="settings_privacy_telemetry_label">Magpadala ng crash + datos ng paggamit</string>
+    <string name="settings_privacy_telemetry_description">Nagpapadala ng mga anonymous na ulat ng crash at pinagsama-samang stats ng paggamit para matulungan ang developer na ayusin ang mga bug at magdesisyon kung aling mga feature ang panatilihin.</string>
+    <string name="settings_privacy_telemetry_limits">Hindi kailanman ipinapadala: mga evento ng kalendaryo, mga coordinate ng lokasyon o mga pangalan ng lugar, teksto ng insight o notipikasyon, mga API key, tumpak na GPS, mga advertising ID.</string>
+    <string name="settings_privacy_open_policy">Basahin ang buong patakaran sa privacy</string>
+
+    <!-- ============================================================
+         Settings — API key / Gemini
+         ============================================================ -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Gumamit ng Gemini para sa mga de-kalidad na boses.</string>
+    <string name="settings_api_key_status_set">May naka-configure na Gemini key.</string>
+    <string name="settings_api_key_status_unset">Kumuha ng libreng API key sa aistudio.google.com</string>
+    <string name="settings_api_key_placeholder">I-paste ang iyong Gemini API key</string>
+    <string name="settings_api_key_save">I-save ang Gemini key</string>
+    <string name="settings_api_key_clear">I-clear ang nakaimbak na Gemini key</string>
+
+    <!-- ============================================================
+         Settings — Location
+         ============================================================ -->
+    <string name="settings_location_title">Lokasyon</string>
+    <string name="settings_location_use_device">Gamitin ang lokasyon ng device</string>
+    <string name="settings_location_use_device_description">Huling tinatayang lokasyon</string>
+    <string name="settings_location_detecting">Nide-detect…</string>
+    <string name="settings_location_grant_background">Ibigay</string>
+    <string name="settings_location_background_banner_title">Kailangan ng palaging naka-on na lokasyon</string>
+    <string name="settings_location_background_banner_body">Kung wala ito, hindi mababasa ng umaga na hula ang iyong lokasyon.</string>
+    <string name="settings_location_unset">Walang nakatakdang lokasyon</string>
+    <string name="settings_location_manual_override">Mali ang lokasyon? Itakda nang manu-mano</string>
+    <string name="settings_location_manual_override_disclosure">Ang pagpili ng lungsod ay nagpapaalis ng auto-detect.</string>
+    <string name="settings_location_clear">I-clear ang lokasyon</string>
+    <string name="settings_location_search_title">Maghanap ng lokasyon</string>
+    <string name="settings_location_query_label">Lungsod o lugar</string>
+    <string name="settings_location_search">Maghanap</string>
+    <string name="settings_location_searching">Naghahanap…</string>
+    <string name="settings_location_no_results">Walang nahanap na tugma.</string>
+    <string name="settings_location_rationale_title">Access sa lokasyon</string>
+    <string name="settings_location_rationale_body">Binabasa ng ClothesCast ang iyong lokasyon para makuha ang lokal na hula.</string>
+    <string name="settings_location_rationale_continue">Magpatuloy</string>
+    <string name="settings_location_rationale_dismiss">Hindi ngayon</string>
+    <string name="settings_location_background_rationale_title">Payagan sa lahat ng oras</string>
+    <string name="settings_location_background_rationale_body">Payagan ang ClothesCast na basahin ang iyong lokasyon habang nakasara ito para ma-update ang umaga na hula sa oras.</string>
+    <string name="settings_location_background_rationale_continue">Buksan ang Mga Setting</string>
+    <string name="settings_location_background_rationale_dismiss">Hindi ngayon</string>
+    <string name="settings_location_background_denied_title">Hindi ibinigay ang palaging naka-on</string>
+    <string name="settings_location_background_denied_body">Kung wala ang \'Payagan sa lahat ng oras\' hindi maaaring mag-auto-update ang umaga na hula.</string>
+    <string name="settings_location_background_denied_open">Buksan ang Mga Setting</string>
+    <string name="settings_location_background_denied_keep">Hindi ngayon</string>
+
+    <!-- ============================================================
+         Settings — Schedule
+         ============================================================ -->
+    <string name="settings_schedule_title">Pang-araw na ClothesCast</string>
+    <string name="settings_schedule_time_label">Oras</string>
+    <string name="settings_schedule_days_label">Mga araw ng linggo</string>
+    <string name="settings_daily_mention_evening_events">Banggitin ang mga gabi na evento</string>
+
+    <string name="settings_tonight_title">Pang-gabing ClothesCast</string>
+    <string name="settings_tonight_description">Pangalawang ClothesCast sa gabi na sumasaklaw sa panahon ngayong gabi. Sa mga tahimik na gabi ay nananatiling tahimik ito, o hindi lumilitaw kung naka-on ang "Mag-notify lamang kapag may mga gabi na evento"; sa mga gabi na may evento ay nagpapatugtog ng tunog at (kung pinagana mo ang pagbabasa nang malakas) binabasa ang sarili nito.</string>
+    <string name="settings_tonight_enabled">Magpakita ng pang-gabing ClothesCast</string>
+    <string name="settings_tonight_time_label">Oras</string>
+    <string name="settings_tonight_days_label">Mga araw ng linggo</string>
+    <string name="settings_tonight_notify_only_on_events">Mag-notify lamang kapag may mga gabi na evento</string>
+
+    <!-- ============================================================
+         Settings — Delivery
+         ============================================================ -->
+    <string name="settings_delivery_label">Paghahatid</string>
+    <string name="settings_delivery_notification_only">Notipikasyon lamang</string>
+    <string name="settings_delivery_tts_only">Binibigkas lamang</string>
+    <string name="settings_delivery_notification_and_tts">Notipikasyon at binibigkas</string>
+
+    <!-- ============================================================
+         Settings — Voice / TTS
+         ============================================================ -->
+    <string name="settings_tts_engine_title">Voice engine</string>
+    <string name="settings_tts_engine_description">Mas natural ang tunog ng Gemini kaysa sa boses ng device ngunit nangangailangan ng network call sa oras ng pagsasalita at gumagamit ng iyong API key para sa synthesis (isang maikling call bawat binibigkas na ClothesCast). Bumabalik sa boses ng device kung mabigo ang Gemini.</string>
+    <string name="settings_tts_engine_device">Device (offline, libre)</string>
+    <string name="settings_tts_engine_gemini">Gemini (mataas na kalidad, online)</string>
+    <string name="settings_tts_voice_label">Boses</string>
+    <string name="settings_tts_voice_dismiss">Tapos na</string>
+
+    <string name="settings_tts_style_label">Estilo</string>
+    <string name="settings_tts_style_weather_forecaster">Tagahula ng Panahon</string>
+    <string name="settings_tts_style_pirate">Pirata</string>
+    <string name="settings_tts_style_cowboy">Cowboy</string>
+    <string name="settings_tts_style_shakespearean">Shakespearean</string>
+    <string name="settings_tts_style_surfer">Surfer</string>
+    <string name="settings_tts_style_parent">Magulang</string>
+    <string name="settings_tts_style_child">Bata</string>
+    <string name="settings_tts_style_teenager">Teenager</string>
+    <string name="settings_tts_style_grandparent">Lolo/Lola</string>
+    <string name="settings_tts_style_kids_host">Host ng TV para sa Bata</string>
+    <string name="settings_tts_style_radio_host">Host ng Talkback</string>
+    <string name="settings_tts_style_morning_dj">Morning DJ</string>
+    <string name="settings_tts_style_science_teacher">Guro ng Agham</string>
+    <string name="settings_tts_style_historian">Historyador</string>
+    <string name="settings_tts_style_sportscaster">Sportscaster</string>
+    <string name="settings_tts_style_stadium_announcer">Announcer ng Stadium</string>
+    <string name="settings_tts_style_storyteller">Mangangatha</string>
+    <string name="settings_tts_style_fitness_instructor">Fitness Instructor</string>
+    <string name="settings_tts_style_morning_presenter">Presenter sa Umaga</string>
+    <string name="settings_tts_style_custom">Custom…</string>
+    <string name="settings_tts_style_custom_label">Custom na direktiba</string>
+    <string name="settings_tts_style_custom_placeholder">hal. Basahin ang sumusunod bilang isang mahigpit na aklatan na nagbubulong</string>
+
+    <string name="settings_tts_device_voice_label">Boses ng device</string>
+    <string name="settings_tts_device_voice_auto">Auto (pinakamainam para sa punto)</string>
+    <string name="settings_tts_device_voice_currently">Kasalukuyan: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Naglo-load…</string>
+    <string name="settings_tts_device_voice_network">Network</string>
+    <string name="settings_tts_device_voice_offline">Offline</string>
+    <string name="settings_tts_install_google_hint">I-install ang text-to-speech engine ng Google para sa mas de-kalidad na mga boses.</string>
+    <string name="settings_tts_install_google_button">I-install ang Google TTS</string>
+    <string name="settings_tts_voice_locale_description">Itinatakda ang punto ng binibigkas na boses. Hindi nagbabago ng ipinapakitang teksto.</string>
+    <string name="settings_tts_test">Subukan ang boses</string>
+    <string name="settings_tts_test_in_flight">Sinusubukan — mangyaring maghintay…</string>
+
+    <!-- TTS voice locale names (in Filipino) -->
+    <string name="settings_tts_voice_locale_en_us">Ingles (Estados Unidos)</string>
+    <string name="settings_tts_voice_locale_en_gb">Ingles (United Kingdom)</string>
+    <string name="settings_tts_voice_locale_en_au">Ingles (Australia)</string>
+    <string name="settings_tts_voice_locale_en_ca">Ingles (Canada)</string>
+    <string name="settings_tts_voice_locale_en_za">Ingles (South Africa)</string>
+    <string name="settings_tts_voice_locale_de_de">Aleman (Alemanya)</string>
+    <string name="settings_tts_voice_locale_de_at">Aleman (Austria)</string>
+    <string name="settings_tts_voice_locale_de_ch">Aleman (Switzerland)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Pranses (Pransya)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Pranses (Canada)</string>
+    <string name="settings_tts_voice_locale_it_it">Italyano (Italya)</string>
+    <string name="settings_tts_voice_locale_es_es">Espanyol (Espanya)</string>
+    <string name="settings_tts_voice_locale_es_mx">Espanyol (Mexico)</string>
+    <string name="settings_tts_voice_locale_ca_es">Catalan (Espanya)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Ruso (Rusya)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Polish (Poland)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Croatian (Croatia)</string>
+    <string name="settings_tts_voice_locale_sl_si">Slovenian (Slovenia)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Serbian (Latin)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Serbian (Cyrillic)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Bulgarian (Bulgaria)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Czech (Czechia)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Slovak (Slovakia)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Hungarian (Hungary)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Romanian (Romania)</string>
+    <string name="settings_tts_voice_locale_el_gr">Griyego (Greece)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Ukrainian (Ukraine)</string>
+    <string name="settings_tts_voice_locale_pt_br">Portuges (Brazil)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Portuges (Portugal)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Dutch (Netherlands)</string>
+    <string name="settings_tts_voice_locale_sv_se">Swedish (Sweden)</string>
+    <string name="settings_tts_voice_locale_da_dk">Danish (Denmark)</string>
+    <string name="settings_tts_voice_locale_nb_no">Norwegian Bokmål (Norway)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Finnish (Finland)</string>
+    <string name="settings_tts_voice_locale_et_ee">Estonian (Estonia)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Latvian (Latvia)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Lithuanian (Lithuania)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Turko (Turkey)</string>
+    <string name="settings_tts_voice_locale_id_id">Indonesiano (Indonesia)</string>
+    <string name="settings_tts_voice_locale_ms_my">Malay (Malaysia)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Swahili (Kenya)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Vietnamese (Vietnam)</string>
+    <string name="settings_tts_voice_locale_th_th">Thai (Thailand)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Tsino (Pinasimple)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Tsino (Tradisyonal)</string>
+    <string name="settings_tts_voice_locale_hi_in">Hindi (India)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Bengali (Bangladesh)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Hapon (Japan)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Koreano (South Korea)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Arabe (Saudi Arabia)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Arabe (Egypt)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Arabe (UAE)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Arabe (Morocco)</string>
+    <string name="settings_tts_voice_locale_he_il">Hebreo (Israel)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Persyano (Iran)</string>
+    <string name="settings_tts_voice_locale_sq_al">Albanian (Albania)</string>
+    <string name="settings_tts_voice_locale_am_et">Amharic (Ethiopia)</string>
+
+    <!-- ============================================================
+         Settings — Region / Language
+         ============================================================ -->
+    <string name="settings_region_language_title">Wika</string>
+    <string name="settings_region_language_description">Itinatakda ang wika ng ipinapakitang teksto at mga notipikasyon.</string>
+    <string name="settings_region_language_system">Sundan ang locale ng system</string>
+
+    <!-- Language option names (in Filipino) -->
+    <string name="settings_region_language_en_us">Ingles (Estados Unidos)</string>
+    <string name="settings_region_language_en_gb">Ingles (United Kingdom)</string>
+    <string name="settings_region_language_en_au">Ingles (Australia)</string>
+    <string name="settings_region_language_en_ca">Ingles (Canada)</string>
+    <string name="settings_region_language_en_za">Ingles (South Africa)</string>
+    <string name="settings_region_language_de_de">Aleman (Alemanya)</string>
+    <string name="settings_region_language_de_at">Aleman (Austria)</string>
+    <string name="settings_region_language_de_ch">Aleman (Switzerland)</string>
+    <string name="settings_region_language_fr_fr">Pranses (Pransya)</string>
+    <string name="settings_region_language_fr_ca">Pranses (Canada)</string>
+    <string name="settings_region_language_it_it">Italyano (Italya)</string>
+    <string name="settings_region_language_es_es">Espanyol (Espanya)</string>
+    <string name="settings_region_language_es_mx">Espanyol (Mexico)</string>
+    <string name="settings_region_language_ca_es">Catalan (Espanya)</string>
+    <string name="settings_region_language_ru_ru">Ruso (Rusya)</string>
+    <string name="settings_region_language_pl_pl">Polish (Poland)</string>
+    <string name="settings_region_language_hr_hr">Croatian (Croatia)</string>
+    <string name="settings_region_language_sl_si">Slovenian (Slovenia)</string>
+    <string name="settings_region_language_sr_rs">Serbian (Latin)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Serbian (Cyrillic)</string>
+    <string name="settings_region_language_bg_bg">Bulgarian (Bulgaria)</string>
+    <string name="settings_region_language_cs_cz">Czech (Czechia)</string>
+    <string name="settings_region_language_sk_sk">Slovak (Slovakia)</string>
+    <string name="settings_region_language_hu_hu">Hungarian (Hungary)</string>
+    <string name="settings_region_language_ro_ro">Romanian (Romania)</string>
+    <string name="settings_region_language_el_gr">Griyego (Greece)</string>
+    <string name="settings_region_language_uk_ua">Ukrainian (Ukraine)</string>
+    <string name="settings_region_language_pt_br">Portuges (Brazil)</string>
+    <string name="settings_region_language_pt_pt">Portuges (Portugal)</string>
+    <string name="settings_region_language_nl_nl">Dutch (Netherlands)</string>
+    <string name="settings_region_language_sv_se">Swedish (Sweden)</string>
+    <string name="settings_region_language_da_dk">Danish (Denmark)</string>
+    <string name="settings_region_language_nb_no">Norwegian Bokmål (Norway)</string>
+    <string name="settings_region_language_fi_fi">Finnish (Finland)</string>
+    <string name="settings_region_language_et_ee">Estonian (Estonia)</string>
+    <string name="settings_region_language_lv_lv">Latvian (Latvia)</string>
+    <string name="settings_region_language_lt_lt">Lithuanian (Lithuania)</string>
+    <string name="settings_region_language_tr_tr">Turko (Turkey)</string>
+    <string name="settings_region_language_id_id">Indonesiano (Indonesia)</string>
+    <string name="settings_region_language_ms_my">Malay (Malaysia)</string>
+    <string name="settings_region_language_sw_ke">Swahili (Kenya)</string>
+    <string name="settings_region_language_vi_vn">Vietnamese (Vietnam)</string>
+    <string name="settings_region_language_th_th">Thai (Thailand)</string>
+    <string name="settings_region_language_zh_cn">Tsino (Pinasimple)</string>
+    <string name="settings_region_language_zh_tw">Tsino (Tradisyonal)</string>
+    <string name="settings_region_language_hi_in">Hindi (India)</string>
+    <string name="settings_region_language_bn_bd">Bengali (Bangladesh)</string>
+    <string name="settings_region_language_ja_jp">Hapon (Japan)</string>
+    <string name="settings_region_language_ko_kr">Koreano (South Korea)</string>
+    <string name="settings_region_language_ar_sa">Arabe (Saudi Arabia)</string>
+    <string name="settings_region_language_he_il">Hebreo (Israel)</string>
+    <string name="settings_region_language_fa_ir">Persyano (Iran)</string>
+    <string name="settings_region_language_sq_al">Albanian (Albania)</string>
+    <string name="settings_region_language_am_et">Amharic (Ethiopia)</string>
+
+    <!-- ============================================================
+         Settings — Temperature and Distance units
+         ============================================================ -->
+    <string name="settings_temperature_unit_title">Yunit ng temperatura</string>
+    <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+
+    <string name="settings_distance_unit_title">Yunit ng distansya</string>
+    <string name="settings_distance_unit_kilometers">Kilometro</string>
+    <string name="settings_distance_unit_miles">Milya</string>
+
+    <!-- ============================================================
+         Settings — Clothes
+         ============================================================ -->
+    <string name="settings_clothes_title">Mga panuntunan sa damit</string>
+    <string name="settings_clothes_description">Kung lalampas ang hula sa isa sa mga threshold na ito, lilitaw ang item sa iyong pang-araw na ClothesCast.</string>
+
+    <!-- Additional garments -->
+    <string name="garment_puffer">Puffer jacket</string>
+    <string name="garment_thin_jacket">Manipis na jacket</string>
+    <string name="garment_polo">Polo</string>
+    <string name="garment_skirt">Palda</string>
+
+    <!-- ============================================================
+         Notifications
+         ============================================================ -->
+    <string name="notification_channel_daily_insight_name">Pang-araw na ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">Ang umaga na buod ng panahon na pinili mo.</string>
+    <string name="notification_daily_insight_title">ClothesCast ngayon</string>
+
+    <string name="notification_channel_tonight_insight_default_name">Pang-gabing ClothesCast (may mga evento)</string>
+    <string name="notification_channel_tonight_insight_default_description">Ang gabi na buod ng panahon kapag mayroon kang mga evento ng kalendaryo ngayong gabi. Nagpapatugtog ng iyong default na tunog ng notipikasyon.</string>
+    <string name="notification_channel_tonight_insight_silent_name">Pang-gabing ClothesCast (tahimik)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Ang gabi na buod ng panahon kapag walang laman ang iyong gabi. Nipo-post nang tahimik — maaari mo itong tingnan sa lock screen, ngunit hindi ito magpapatugtog ng tunog.</string>
+    <string name="notification_tonight_insight_title">ClothesCast ngayong gabi</string>
+
+    <string name="notification_channel_weather_alerts_name">Mga babala sa matinding panahon</string>
+    <string name="notification_channel_weather_alerts_description">Mataas na priyoridad na mga babala para sa matindi o matinding mga kaganapan ng panahon na nakakaapekto sa iyong lugar. Inihahatid sa sandaling matukoy ng pang-araw na fetch.</string>
+    <string name="notification_weather_alert_title">Babala sa panahon: %1$s</string>
+
+    <string name="settings_notification_permission_title">Naka-block ang mga notipikasyon</string>
+    <string name="settings_notification_permission_description">Kung walang pahintulot sa notipikasyon, wala kung saan mapupunta ang iyong pang-araw na ClothesCast. Ibigay ito para makapag-post ang ClothesCast bukas ng umaga.</string>
+    <string name="settings_notification_permission_grant">Ibigay ang pahintulot sa notipikasyon</string>
+
+    <!-- ============================================================
+         Settings — Calendar
+         ============================================================ -->
+    <string name="settings_calendar_title">Kalendaryo</string>
+    <string name="settings_calendar_use_events">Gamitin ang mga evento ng kalendaryo ngayon</string>
+    <string name="settings_calendar_description_off">Iaangkop ang umaga na hula sa mga evento ngayon — mga titulo at oras lamang ang ginagamit, at walang lumalabas sa device.</string>
+    <string name="settings_calendar_description_on">Inaangkop ang umaga na hula sa mga evento ngayon. Mga titulo at oras lamang ang ginagamit; walang lumalabas sa device.</string>
+    <string name="settings_calendar_grant_permission">Ibigay ang pahintulot sa kalendaryo</string>
+    <string name="settings_calendar_open_settings">Tinanggihan ang pahintulot sa kalendaryo. Ibigay ito mula sa system na Mga Setting.</string>
+
+    <!-- ============================================================
+         Settings — Debug
+         ============================================================ -->
+    <string name="settings_debug_title">Debug (mga debug build lamang)</string>
+    <string name="settings_debug_description">Agad na i-fire ang pang-araw na pipeline ng ClothesCast. Kapaki-pakinabang para sa pag-verify nang hindi naghihintay hanggang sa nakatakdang oras.</string>
+    <string name="settings_debug_fire_now">I-fire ang ClothesCast ngayon</string>
+    <string name="settings_debug_fire_toast">Naka-enqueue ang worker ng ClothesCast</string>
+
+    <!-- ============================================================
+         Settings — About
+         ============================================================ -->
+    <string name="settings_about_title">Tungkol</string>
+    <string name="settings_about_version">Bersyon %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s build</string>
+    <string name="settings_about_source">Source code sa GitHub</string>
+    <string name="settings_about_dontkillmyapp">Mga paghihigpit sa background (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Ibahagi ang ulat ng bug</string>
+    <string name="settings_about_version_copied">Kinopya ang bersyon sa clipboard</string>
+
+    <!-- ============================================================
+         Bug report consent dialog
+         ============================================================ -->
+    <string name="bug_report_consent_title">Ibahagi ang ulat ng bug?</string>
+    <string name="bug_report_consent_body">Nakakatulong ito sa pag-diagnose ng mga isyu. Ang ulat ay naglalaman ng sensitibong personal na impormasyon, kabilang ang iyong lokasyon, mga setting ng app, at kamakailang aktibidad. Maaari mo itong suriin at i-edit bago ipadala.</string>
+    <string name="bug_report_consent_dont_show_again">Huwag nang ipakita ito ulit</string>
+    <string name="bug_report_consent_continue">Magpatuloy</string>
+    <string name="bug_report_consent_cancel">Kanselahin</string>
+
+    <!-- ============================================================
+         Additional insight prose templates
+         ============================================================ -->
+    <string name="insight_precip_chance">Posibilidad ng %1$s %2$s.</string>
+    <string name="insight_tie_in_at_night">Magdala ng %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Ngayong gabi, posibilidad ng ulan ng %2$s, magdala ng %1$s.</string>
+    <string name="insight_evening_rain">Ngayong gabi, ulan ng %1$s.</string>
+    <string name="insight_evening_rain_chance">Ngayong gabi, posibilidad ng ulan ng %1$s.</string>
+
 </resources>

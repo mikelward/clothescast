@@ -12,6 +12,14 @@ that a Mexican speaker would notice as wrong is overridden here.
     <string name="garment_jeans">Mezclilla</string>
     <string name="today_outfit_top_tshirt">Playera</string>
     <string name="today_outfit_top_sweater">Suéter</string>
+    <!-- "Chamarra" is the Mexican word for jacket; "chaqueta" is vulgar
+         slang in Mexico and must never appear. Covers both the garment-picker
+         item and the outfit-card label. -->
+    <string name="garment_thin_jacket">Chamarra ligera</string>
+    <string name="today_outfit_top_thin_jacket">Chamarra ligera</string>
+    <!-- "Mezclilla" card label to match the garment_jeans picker override. -->
+    <string name="today_outfit_bottom_jeans">Mezclilla</string>
+
     <!-- "Agregar" is more natural than "añadir" in Mexican Spanish. -->
     <string name="settings_clothes_add">Agregar</string>
     <string name="settings_clothes_empty">Sin reglas. Toca Agregar para crear una.</string>

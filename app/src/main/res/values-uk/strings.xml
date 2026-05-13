@@ -78,7 +78,7 @@ only the displayed label localizes.
     <string name="settings_clothes_item_label">Одяг</string>
     <string name="settings_clothes_condition_label">Умова</string>
     <string name="settings_clothes_value_label_temp">Поріг (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Поріг (%%)</string>
+    <string name="settings_clothes_value_label_precip">Поріг (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Коли відчувається холодніше</string>
     <string name="settings_clothes_cond_type_temp_above">Коли відчувається тепліше</string>
     <string name="settings_clothes_cond_type_precip_above">Коли ймовірність дощу перевищує</string>
@@ -461,9 +461,9 @@ only the displayed label localizes.
     <string name="today_wind_title">Швидкість вітру</string>
     <string name="today_wind_subtitle">Швидкість вітру (%1$s) погодинно за моделями</string>
     <string name="today_cloud_title">Хмарність</string>
-    <string name="today_cloud_subtitle">Загальна хмарність (%%) погодинно за моделями</string>
+    <string name="today_cloud_subtitle">Загальна хмарність (%) погодинно за моделями</string>
     <string name="today_humidity_title">Вологість</string>
-    <string name="today_humidity_subtitle">Відносна вологість (%%) погодинно за моделями</string>
+    <string name="today_humidity_subtitle">Відносна вологість (%) погодинно за моделями</string>
 
     <!-- Low-confidence callout banner. -->
     <string name="today_low_confidence_callout_title">Прогнози розходяться</string>

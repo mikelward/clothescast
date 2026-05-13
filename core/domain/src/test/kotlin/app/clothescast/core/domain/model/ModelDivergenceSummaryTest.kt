@@ -159,6 +159,41 @@ class ModelDivergenceSummaryTest {
     }
 
     @Test
+    fun `returns null when every available factor has zero spread`() {
+        // Feels-like spread of 2.0 °C clears the threshold, but air
+        // temperature is the only available factor and both models report
+        // the same value — picking it would produce a misleading
+        // "mostly air temperature, 11–11 °C" attribution.
+        val data = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(entry(13, 9.0, 11.0)),
+                "icon_seamless" to listOf(entry(13, 11.0, 11.0)),
+            ),
+        )
+
+        ModelDivergenceSummary.computeFrom(data).shouldBeNull()
+    }
+
+    @Test
+    fun `skips zero-spread factors in favour of a non-zero one`() {
+        // Air temp agrees exactly across models, but wind disagrees —
+        // we should attribute the feels-like spread to wind rather than
+        // pick the alphabetically-first zero-spread factor.
+        val data = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(entry(13, 7.0, 10.0, wind = 5.0)),
+                "icon_seamless" to listOf(entry(13, 10.0, 10.0, wind = 25.0)),
+            ),
+        )
+
+        val summary = ModelDivergenceSummary.computeFrom(data).shouldNotBeNull()
+
+        summary.topFactor shouldBe ModelDivergenceSummary.Factor.WIND_SPEED
+        summary.topFactorMin shouldBe (5.0 plusOrMinus 0.0001)
+        summary.topFactorMax shouldBe (25.0 plusOrMinus 0.0001)
+    }
+
+    @Test
     fun `ignores hours that only one model reported`() {
         // 12:00 has a 5 °C spread but only one model is present — skipped.
         // 15:00 has a 2 °C spread across both — this is the real peak.

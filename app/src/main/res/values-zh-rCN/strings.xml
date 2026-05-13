@@ -587,4 +587,111 @@ label localizes.
     <!-- Voice screen — engine-picker description (Device vs Gemini
          trade-offs). -->
     <string name="settings_tts_engine_description">Gemini 比设备语音听起来自然得多，但在朗读时需要网络通信，并使用你的 API 密钥进行合成（每次朗读一份 ClothesCast 约一次短请求）。Gemini 失败时会回退到设备语音。</string>
+
+    <!-- Outfit card labels — additional garments not previously translated. -->
+    <string name="today_outfit_top_polo">POLO 衫</string>
+    <string name="today_outfit_top_thin_jacket">薄夹克</string>
+    <string name="today_outfit_top_thick_coat">厚大衣</string>
+    <string name="today_outfit_top_puffer_jacket">羽绒服</string>
+    <string name="today_outfit_bottom_skirt">裙子</string>
+    <string name="today_outfit_bottom_jeans">牛仔裤</string>
+
+    <!-- Garment dropdown — additional items. -->
+    <string name="garment_polo">POLO 衫</string>
+    <string name="garment_thin_jacket">薄夹克</string>
+    <string name="garment_puffer">羽绒服</string>
+    <string name="garment_skirt">裙子</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">降雨概率</string>
+    <string name="today_precipitation_peak">峰值 %1$d%%（%2$s）</string>
+    <string name="today_precipitation_dry">今日预计无雨</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">模型：</string>
+    <string name="today_chart_main_line_label">综合</string>
+    <string name="today_chart_divergence_summary">模型分歧最大的时刻是 %1$s（体感温度 Δ %2$.1f%3$s）— 主要因 %4$s、%5$s</string>
+
+    <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
+    <string name="today_factor_air_temperature">气温</string>
+    <string name="today_factor_wind_speed">风速</string>
+    <string name="today_factor_cloud_cover">云量</string>
+    <string name="today_factor_humidity">湿度</string>
+
+    <!-- Diagnostic cards (wind, cloud cover, humidity). -->
+    <string name="today_wind_title">风速</string>
+    <string name="today_wind_subtitle">各模型每小时风速（%1$s）</string>
+    <string name="today_cloud_title">云量</string>
+    <string name="today_cloud_subtitle">各模型每小时总云量（%）</string>
+    <string name="today_humidity_title">湿度</string>
+    <string name="today_humidity_subtitle">各模型每小时相对湿度（%）</string>
+
+    <!-- Low-confidence callout banner. -->
+    <string name="today_low_confidence_callout_title">今日预报存在分歧</string>
+    <string name="today_low_confidence_callout_body">%3$d 个模型间，气温相差 %1$.1f°C，降雨概率相差 %2$.0f%%。</string>
+
+    <!-- Telemetry notice (first-run banner on Today screen). -->
+    <string name="today_telemetry_notice_title">崩溃及使用情况报告已开启</string>
+    <string name="today_telemetry_notice_body">ClothesCast 会发送匿名的崩溃报告和使用情况分析，帮助修复问题。不包含日历数据、位置或预报文本。可随时在「设置」中关闭。</string>
+    <string name="today_telemetry_notice_open_settings">打开隐私设置</string>
+    <string name="today_telemetry_notice_dismiss">忽略</string>
+
+    <!-- Settings root — Privacy row. -->
+    <string name="settings_root_privacy">隐私</string>
+    <string name="settings_root_privacy_subtitle">崩溃及使用情况报告</string>
+
+    <!-- Display — Charts section. -->
+    <string name="settings_display_charts_title">图表</string>
+    <string name="settings_display_model_spread_label">在图表上显示模型分布</string>
+    <string name="settings_display_model_spread_description">将各主要气象模型的小时预报叠加在温度与降雨图表上，便于发现预报不确定的时段。</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">崩溃及使用情况报告</string>
+    <string name="settings_privacy_telemetry_label">发送崩溃和使用数据</string>
+    <string name="settings_privacy_telemetry_description">发送匿名崩溃报告和汇总使用统计，帮助开发者修复问题并决定保留哪些功能。</string>
+    <string name="settings_privacy_telemetry_limits">永不发送：日历事件、位置坐标或地名、预报或通知文本、API 密钥、精确 GPS、广告 ID。</string>
+    <string name="settings_privacy_open_policy">阅读完整隐私政策</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">风格</string>
+    <string name="settings_tts_style_weather_forecaster">气象主播</string>
+    <string name="settings_tts_style_pirate">海盗</string>
+    <string name="settings_tts_style_cowboy">牛仔</string>
+    <string name="settings_tts_style_shakespearean">莎士比亚风</string>
+    <string name="settings_tts_style_surfer">冲浪手</string>
+    <string name="settings_tts_style_parent">家长</string>
+    <string name="settings_tts_style_child">小孩</string>
+    <string name="settings_tts_style_teenager">青少年</string>
+    <string name="settings_tts_style_grandparent">祖父母</string>
+    <string name="settings_tts_style_kids_host">儿童节目主持人</string>
+    <string name="settings_tts_style_radio_host">谈话节目主持人</string>
+    <string name="settings_tts_style_morning_dj">晨间 DJ</string>
+    <string name="settings_tts_style_science_teacher">科学老师</string>
+    <string name="settings_tts_style_historian">历史学家</string>
+    <string name="settings_tts_style_sportscaster">体育解说员</string>
+    <string name="settings_tts_style_stadium_announcer">体育场播报员</string>
+    <string name="settings_tts_style_storyteller">说书人</string>
+    <string name="settings_tts_style_fitness_instructor">健身教练</string>
+    <string name="settings_tts_style_morning_presenter">晨间电台主持人</string>
+    <string name="settings_tts_style_custom">自定义…</string>
+    <string name="settings_tts_style_custom_label">自定义指令</string>
+    <string name="settings_tts_style_custom_placeholder">例如：请像严厉的图书管理员低声细语般朗读以下内容</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">分享错误报告？</string>
+    <string name="bug_report_consent_body">这有助于诊断问题。报告包含敏感的个人信息，包括你的位置、应用设置和近期活动。发送前你可以查看并编辑内容。</string>
+    <string name="bug_report_consent_dont_show_again">不再显示</string>
+    <string name="bug_report_consent_continue">继续</string>
+    <string name="bug_report_consent_cancel">取消</string>
+
+    <!-- Insight: hedged precipitation and evening-rain templates. -->
+    <!-- "可能" — invariant adverb; works for any precip noun. -->
+    <string name="insight_precip_chance">可能%1$s（%2$s）。</string>
+    <string name="insight_tie_in_at_night">带上%1$s。</string>
+    <string name="insight_tie_in_with_rain_chance">今晚带上%1$s，%2$s可能有雨。</string>
+    <string name="insight_evening_rain">今晚%1$s有雨。</string>
+    <string name="insight_evening_rain_chance">今晚%1$s可能有雨。</string>
+
+    <!-- Device-incompatibility error screen. -->
+    <string name="error_device_incompatible">ClothesCast 无法在此设备上运行 — 你的 Android 版本缺少应用界面所需的功能（Configuration.fontWeightAdjustment，需 Android 12 及以上）。请联系设备制造商进行系统更新。</string>
 </resources>

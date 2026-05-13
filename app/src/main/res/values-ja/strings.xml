@@ -595,4 +595,111 @@ the displayed label localizes.
     <!-- Voice screen — engine-picker description (Device vs Gemini
          trade-offs). -->
     <string name="settings_tts_engine_description">Gemini は端末の音声よりずっと自然に聞こえますが、読み上げ時にネットワーク通信が必要で、合成にあなたの API キーを使います（ClothesCast の読み上げ1回につき短いリクエスト1回）。Gemini が失敗した場合は端末の音声にフォールバックします。</string>
+
+    <!-- Outfit card labels — additional garments not previously translated. -->
+    <string name="today_outfit_top_polo">ポロシャツ</string>
+    <string name="today_outfit_top_thin_jacket">薄手のジャケット</string>
+    <string name="today_outfit_top_thick_coat">厚手のコート</string>
+    <string name="today_outfit_top_puffer_jacket">ダウンジャケット</string>
+    <string name="today_outfit_bottom_skirt">スカート</string>
+    <string name="today_outfit_bottom_jeans">ジーンズ</string>
+
+    <!-- Garment dropdown — additional items. -->
+    <string name="garment_polo">ポロシャツ</string>
+    <string name="garment_thin_jacket">薄手のジャケット</string>
+    <string name="garment_puffer">ダウンジャケット</string>
+    <string name="garment_skirt">スカート</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">降水確率</string>
+    <string name="today_precipitation_peak">ピーク %1$d%%（%2$s）</string>
+    <string name="today_precipitation_dry">今日は雨の予報なし</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">モデル:</string>
+    <string name="today_chart_main_line_label">統合</string>
+    <string name="today_chart_divergence_summary">モデル間の差が最も大きいのは %1$s（体感温度 Δ %2$.1f%3$s）— 主に %4$s、%5$s</string>
+
+    <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
+    <string name="today_factor_air_temperature">気温</string>
+    <string name="today_factor_wind_speed">風速</string>
+    <string name="today_factor_cloud_cover">雲量</string>
+    <string name="today_factor_humidity">湿度</string>
+
+    <!-- Diagnostic cards (wind, cloud cover, humidity). -->
+    <string name="today_wind_title">風速</string>
+    <string name="today_wind_subtitle">モデル別の風速（%1$s）、1時間ごと</string>
+    <string name="today_cloud_title">雲量</string>
+    <string name="today_cloud_subtitle">モデル別の全雲量（%）、1時間ごと</string>
+    <string name="today_humidity_title">湿度</string>
+    <string name="today_humidity_subtitle">モデル別の相対湿度（%）、1時間ごと</string>
+
+    <!-- Low-confidence callout banner. -->
+    <string name="today_low_confidence_callout_title">今日の予報はばらつきがあります</string>
+    <string name="today_low_confidence_callout_body">%3$d モデル間で気温が %1$.1f°C、降水確率が %2$.0f%% ばらついています。</string>
+
+    <!-- Telemetry notice (first-run banner on Today screen). -->
+    <string name="today_telemetry_notice_title">クラッシュ・利用状況レポートは有効です</string>
+    <string name="today_telemetry_notice_body">ClothesCast は不具合修正のため、匿名のクラッシュレポートと利用状況分析を送信します。カレンダーデータ、位置情報、要約テキストは含まれません。設定からいつでも無効にできます。</string>
+    <string name="today_telemetry_notice_open_settings">プライバシー設定を開く</string>
+    <string name="today_telemetry_notice_dismiss">閉じる</string>
+
+    <!-- Settings root — Privacy row. -->
+    <string name="settings_root_privacy">プライバシー</string>
+    <string name="settings_root_privacy_subtitle">クラッシュ・利用状況レポート</string>
+
+    <!-- Display — Charts section. -->
+    <string name="settings_display_charts_title">グラフ</string>
+    <string name="settings_display_model_spread_label">グラフにモデルのばらつきを表示</string>
+    <string name="settings_display_model_spread_description">主要な天気モデルごとの1時間予報を、気温と降水のグラフに重ねて表示します。予報が不確かなときを見極めるのに便利です。</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">クラッシュ・利用状況レポート</string>
+    <string name="settings_privacy_telemetry_label">クラッシュ・利用状況データを送信</string>
+    <string name="settings_privacy_telemetry_description">匿名のクラッシュレポートと集計済みの利用状況統計を送信します。開発者が不具合を修正し、機能の取捨選択を判断するのに役立ちます。</string>
+    <string name="settings_privacy_telemetry_limits">送信されないもの: カレンダーの予定、位置座標や地名、要約や通知のテキスト、API キー、精密な GPS、広告 ID。</string>
+    <string name="settings_privacy_open_policy">プライバシーポリシー全文を読む</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">スタイル</string>
+    <string name="settings_tts_style_weather_forecaster">気象予報士</string>
+    <string name="settings_tts_style_pirate">海賊</string>
+    <string name="settings_tts_style_cowboy">カウボーイ</string>
+    <string name="settings_tts_style_shakespearean">シェイクスピア風</string>
+    <string name="settings_tts_style_surfer">サーファー</string>
+    <string name="settings_tts_style_parent">親</string>
+    <string name="settings_tts_style_child">子ども</string>
+    <string name="settings_tts_style_teenager">ティーンエイジャー</string>
+    <string name="settings_tts_style_grandparent">祖父母</string>
+    <string name="settings_tts_style_kids_host">子ども向け番組の司会者</string>
+    <string name="settings_tts_style_radio_host">トーク番組の司会者</string>
+    <string name="settings_tts_style_morning_dj">朝の DJ</string>
+    <string name="settings_tts_style_science_teacher">理科の先生</string>
+    <string name="settings_tts_style_historian">歴史家</string>
+    <string name="settings_tts_style_sportscaster">スポーツキャスター</string>
+    <string name="settings_tts_style_stadium_announcer">スタジアムアナウンサー</string>
+    <string name="settings_tts_style_storyteller">語り部</string>
+    <string name="settings_tts_style_fitness_instructor">フィットネスインストラクター</string>
+    <string name="settings_tts_style_morning_presenter">朝のラジオパーソナリティ</string>
+    <string name="settings_tts_style_custom">カスタム…</string>
+    <string name="settings_tts_style_custom_label">カスタム指示</string>
+    <string name="settings_tts_style_custom_placeholder">例：以下の文章を、厳しい司書がささやくように読んでください</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">バグレポートを共有しますか？</string>
+    <string name="bug_report_consent_body">問題の診断に役立ちます。レポートには、現在地、アプリの設定、最近の操作など、機密性の高い個人情報が含まれます。送信前に内容を確認・編集できます。</string>
+    <string name="bug_report_consent_dont_show_again">今後表示しない</string>
+    <string name="bug_report_consent_continue">続ける</string>
+    <string name="bug_report_consent_cancel">キャンセル</string>
+
+    <!-- Insight: hedged precipitation and evening-rain templates. -->
+    <!-- "〜の可能性" wraps a noun (e.g. 雨); invariant for any precip noun. -->
+    <string name="insight_precip_chance">%1$sの可能性（%2$s）。</string>
+    <string name="insight_tie_in_at_night">%1$sを持っていきましょう。</string>
+    <string name="insight_tie_in_with_rain_chance">今夜は%1$sを持っていきましょう。%2$s頃に雨の可能性。</string>
+    <string name="insight_evening_rain">今夜は%1$s頃に雨。</string>
+    <string name="insight_evening_rain_chance">今夜は%1$s頃に雨の可能性。</string>
+
+    <!-- Device-incompatibility error screen. -->
+    <string name="error_device_incompatible">この端末では ClothesCast を実行できません — お使いの Android ビルドに、アプリの UI に必要な機能（Configuration.fontWeightAdjustment、Android 12 以降で利用可能）がありません。システムアップデートについては端末メーカーにお問い合わせください。</string>
 </resources>

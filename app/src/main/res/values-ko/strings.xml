@@ -599,4 +599,111 @@ displayed label localizes.
     <!-- Voice screen — engine-picker description (Device vs Gemini
          trade-offs). -->
     <string name="settings_tts_engine_description">Gemini는 기기 음성보다 훨씬 자연스럽게 들리지만, 말할 때 네트워크 호출이 필요하고 합성에 회원님의 API 키를 사용합니다 (ClothesCast 한 번 읽을 때마다 짧은 호출 한 번). Gemini가 실패하면 기기 음성으로 대체됩니다.</string>
+
+    <!-- Outfit card labels — additional garments not previously translated. -->
+    <string name="today_outfit_top_polo">폴로</string>
+    <string name="today_outfit_top_thin_jacket">얇은 재킷</string>
+    <string name="today_outfit_top_thick_coat">두꺼운 코트</string>
+    <string name="today_outfit_top_puffer_jacket">패딩 재킷</string>
+    <string name="today_outfit_bottom_skirt">치마</string>
+    <string name="today_outfit_bottom_jeans">청바지</string>
+
+    <!-- Garment dropdown — additional items. -->
+    <string name="garment_polo">폴로</string>
+    <string name="garment_thin_jacket">얇은 재킷</string>
+    <string name="garment_puffer">패딩 재킷</string>
+    <string name="garment_skirt">치마</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">강수 확률</string>
+    <string name="today_precipitation_peak">최고 %1$d%% (%2$s)</string>
+    <string name="today_precipitation_dry">오늘은 비 예보 없음</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">모델:</string>
+    <string name="today_chart_main_line_label">통합</string>
+    <string name="today_chart_divergence_summary">모델 간 차이가 가장 큰 시간은 %1$s (체감 Δ %2$.1f%3$s) — 주로 %4$s, %5$s</string>
+
+    <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
+    <string name="today_factor_air_temperature">기온</string>
+    <string name="today_factor_wind_speed">풍속</string>
+    <string name="today_factor_cloud_cover">구름량</string>
+    <string name="today_factor_humidity">습도</string>
+
+    <!-- Diagnostic cards (wind, cloud cover, humidity). -->
+    <string name="today_wind_title">풍속</string>
+    <string name="today_wind_subtitle">모델별 시간당 풍속 (%1$s)</string>
+    <string name="today_cloud_title">구름량</string>
+    <string name="today_cloud_subtitle">모델별 시간당 전체 구름량 (%)</string>
+    <string name="today_humidity_title">습도</string>
+    <string name="today_humidity_subtitle">모델별 시간당 상대 습도 (%)</string>
+
+    <!-- Low-confidence callout banner. -->
+    <string name="today_low_confidence_callout_title">오늘 예보가 모델마다 다릅니다</string>
+    <string name="today_low_confidence_callout_body">%3$d개 모델 간 기온이 %1$.1f°C, 강수 확률이 %2$.0f%% 차이가 납니다.</string>
+
+    <!-- Telemetry notice (first-run banner on Today screen). -->
+    <string name="today_telemetry_notice_title">충돌 및 사용 보고가 켜져 있습니다</string>
+    <string name="today_telemetry_notice_body">ClothesCast는 버그 수정을 위해 익명 충돌 보고서와 사용 통계를 전송합니다. 캘린더 데이터, 위치, 요약 텍스트는 포함되지 않습니다. 설정에서 언제든 끌 수 있습니다.</string>
+    <string name="today_telemetry_notice_open_settings">개인정보 설정 열기</string>
+    <string name="today_telemetry_notice_dismiss">닫기</string>
+
+    <!-- Settings root — Privacy row. -->
+    <string name="settings_root_privacy">개인정보</string>
+    <string name="settings_root_privacy_subtitle">충돌 및 사용 보고</string>
+
+    <!-- Display — Charts section. -->
+    <string name="settings_display_charts_title">차트</string>
+    <string name="settings_display_model_spread_label">차트에 모델 편차 표시</string>
+    <string name="settings_display_model_spread_description">주요 기상 모델별 시간 예보를 기온과 강수 차트 위에 겹쳐 표시합니다. 예보가 불확실한 시점을 파악하는 데 유용합니다.</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">충돌 및 사용 보고</string>
+    <string name="settings_privacy_telemetry_label">충돌 및 사용 데이터 전송</string>
+    <string name="settings_privacy_telemetry_description">익명 충돌 보고서와 집계된 사용 통계를 전송하여 개발자가 버그를 수정하고 어떤 기능을 유지할지 결정하는 데 도움을 줍니다.</string>
+    <string name="settings_privacy_telemetry_limits">전송되지 않음: 캘린더 일정, 위치 좌표 또는 지명, 요약 또는 알림 텍스트, API 키, 정밀 GPS, 광고 ID.</string>
+    <string name="settings_privacy_open_policy">개인정보 처리방침 전문 보기</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">스타일</string>
+    <string name="settings_tts_style_weather_forecaster">기상 캐스터</string>
+    <string name="settings_tts_style_pirate">해적</string>
+    <string name="settings_tts_style_cowboy">카우보이</string>
+    <string name="settings_tts_style_shakespearean">셰익스피어풍</string>
+    <string name="settings_tts_style_surfer">서퍼</string>
+    <string name="settings_tts_style_parent">부모</string>
+    <string name="settings_tts_style_child">아이</string>
+    <string name="settings_tts_style_teenager">청소년</string>
+    <string name="settings_tts_style_grandparent">조부모</string>
+    <string name="settings_tts_style_kids_host">어린이 프로그램 진행자</string>
+    <string name="settings_tts_style_radio_host">토크쇼 진행자</string>
+    <string name="settings_tts_style_morning_dj">아침 DJ</string>
+    <string name="settings_tts_style_science_teacher">과학 선생님</string>
+    <string name="settings_tts_style_historian">역사가</string>
+    <string name="settings_tts_style_sportscaster">스포츠 캐스터</string>
+    <string name="settings_tts_style_stadium_announcer">경기장 아나운서</string>
+    <string name="settings_tts_style_storyteller">이야기꾼</string>
+    <string name="settings_tts_style_fitness_instructor">피트니스 강사</string>
+    <string name="settings_tts_style_morning_presenter">아침 라디오 진행자</string>
+    <string name="settings_tts_style_custom">사용자 지정…</string>
+    <string name="settings_tts_style_custom_label">사용자 지정 지시문</string>
+    <string name="settings_tts_style_custom_placeholder">예: 다음 내용을 엄격한 사서가 속삭이듯 읽어주세요</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">버그 보고서를 공유할까요?</string>
+    <string name="bug_report_consent_body">문제 진단에 도움이 됩니다. 보고서에는 위치, 앱 설정, 최근 활동 등 민감한 개인정보가 포함됩니다. 보내기 전에 검토하고 편집할 수 있습니다.</string>
+    <string name="bug_report_consent_dont_show_again">다시 표시 안 함</string>
+    <string name="bug_report_consent_continue">계속</string>
+    <string name="bug_report_consent_cancel">취소</string>
+
+    <!-- Insight: hedged precipitation and evening-rain templates. -->
+    <!-- "가능성" — invariant Sino-Korean noun, no inflection on the preceding precip noun. -->
+    <string name="insight_precip_chance">%1$s 가능성 %2$s.</string>
+    <string name="insight_tie_in_at_night">%1$s 챙기세요.</string>
+    <string name="insight_tie_in_with_rain_chance">오늘 밤 %1$s 챙기세요, %2$s경에 비 가능성.</string>
+    <string name="insight_evening_rain">오늘 밤 %1$s경에 비.</string>
+    <string name="insight_evening_rain_chance">오늘 밤 %1$s경에 비 가능성.</string>
+
+    <!-- Device-incompatibility error screen. -->
+    <string name="error_device_incompatible">이 기기에서는 ClothesCast를 실행할 수 없습니다 — Android 빌드에 앱 UI가 필요한 기능(Configuration.fontWeightAdjustment, Android 12 이상에서 지원)이 없습니다. 시스템 업데이트는 기기 제조사에 문의하세요.</string>
 </resources>

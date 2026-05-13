@@ -556,4 +556,112 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_update_available_dismiss">Ne sada</string>
     <string name="today_update_downloaded_body">Ažuriranje preuzeto. Ponovo pokreni za dovršetak instalacije.</string>
     <string name="today_update_downloaded_action">Ponovo pokreni</string>
+
+    <!-- Outfit card labels — additional garments not previously translated. -->
+    <string name="today_outfit_top_polo">Polo</string>
+    <string name="today_outfit_top_thin_jacket">Lagana jakna</string>
+    <string name="today_outfit_top_thick_coat">Debeli kaput</string>
+    <string name="today_outfit_top_puffer_jacket">Pernata jakna</string>
+    <string name="today_outfit_bottom_skirt">Suknja</string>
+    <string name="today_outfit_bottom_jeans">Traperice</string>
+
+    <!-- Garment dropdown — additional items. -->
+    <string name="garment_polo">Polo</string>
+    <string name="garment_thin_jacket">Lagana jakna</string>
+    <string name="garment_puffer">Pernata jakna</string>
+    <string name="garment_skirt">Suknja</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Vjerojatnost kiše</string>
+    <string name="today_precipitation_peak">Vrh %1$d%% u %2$s</string>
+    <string name="today_precipitation_dry">Danas se ne očekuje kiša</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">Modeli:</string>
+    <string name="today_chart_main_line_label">Kombinirano</string>
+    <string name="today_chart_divergence_summary">Modeli se najviše razlikuju u %1$s (Δ %2$.1f%3$s osjećajna temp.) — uglavnom %4$s, %5$s</string>
+
+    <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
+    <string name="today_factor_air_temperature">temperatura zraka</string>
+    <string name="today_factor_wind_speed">brzina vjetra</string>
+    <string name="today_factor_cloud_cover">naoblaka</string>
+    <string name="today_factor_humidity">vlažnost</string>
+
+    <!-- Diagnostic cards (wind, cloud cover, humidity). -->
+    <string name="today_wind_title">Brzina vjetra</string>
+    <string name="today_wind_subtitle">Brzina vjetra (%1$s) po satu po modelu</string>
+    <string name="today_cloud_title">Naoblaka</string>
+    <string name="today_cloud_subtitle">Ukupna naoblaka (%) po satu po modelu</string>
+    <string name="today_humidity_title">Vlažnost</string>
+    <string name="today_humidity_subtitle">Relativna vlažnost (%) po satu po modelu</string>
+
+    <!-- Low-confidence callout banner. -->
+    <string name="today_low_confidence_callout_title">Prognoze se danas razlikuju</string>
+    <string name="today_low_confidence_callout_body">Temperatura varira za %1$.1f°C, a vjerojatnost kiše za %2$.0f%% između %3$d modela.</string>
+
+    <!-- Telemetry notice (first-run banner on Today screen). -->
+    <string name="today_telemetry_notice_title">Izvješća o padovima i korištenju su uključena</string>
+    <string name="today_telemetry_notice_body">ClothesCast šalje anonimna izvješća o padovima i analitiku korištenja za ispravljanje grešaka. Podaci kalendara, lokacija ili tekst sažetaka nisu uključeni. Isključi u bilo kom trenutku u Postavkama.</string>
+    <string name="today_telemetry_notice_open_settings">Otvori postavke privatnosti</string>
+    <string name="today_telemetry_notice_dismiss">Zatvori</string>
+
+    <!-- Settings root — Privacy row. -->
+    <string name="settings_root_privacy">Privatnost</string>
+    <string name="settings_root_privacy_subtitle">Izvješća o padovima i korištenju</string>
+
+    <!-- Display — Charts section. -->
+    <string name="settings_display_charts_title">Grafikoni</string>
+    <string name="settings_display_model_spread_label">Prikaži raspršenost modela na grafikonima</string>
+    <string name="settings_display_model_spread_description">Prikazuje satnu prognozu svakog glavnog vremenskog modela na grafikonima temperature i kiše. Korisno za prepoznavanje kada je prognoza neizvjesna.</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">Izvješća o padovima i korištenju</string>
+    <string name="settings_privacy_telemetry_label">Pošalji podatke o padovima i korištenju</string>
+    <string name="settings_privacy_telemetry_description">Šalje anonimna izvješća o padovima i agregirane statistike korištenja kako bi pomoglo programeru ispravljati greške i odlučiti koje značajke zadržati.</string>
+    <string name="settings_privacy_telemetry_limits">Nikad se ne šalje: kalendarski događaji, koordinate lokacije ili nazivi mjesta, tekst sažetaka ili obavijesti, API ključevi, precizni GPS, ID-ovi za oglašavanje.</string>
+    <string name="settings_privacy_open_policy">Pročitaj potpunu politiku privatnosti</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">Stil</string>
+    <string name="settings_tts_style_weather_forecaster">Vremenski najavljivač</string>
+    <string name="settings_tts_style_pirate">Pirat</string>
+    <string name="settings_tts_style_cowboy">Kauboj</string>
+    <string name="settings_tts_style_shakespearean">Shakespearski</string>
+    <string name="settings_tts_style_surfer">Surfer</string>
+    <string name="settings_tts_style_parent">Roditelj</string>
+    <string name="settings_tts_style_child">Dijete</string>
+    <string name="settings_tts_style_teenager">Tinejdžer</string>
+    <string name="settings_tts_style_grandparent">Baka/Djed</string>
+    <string name="settings_tts_style_kids_host">Voditelj dječje TV</string>
+    <string name="settings_tts_style_radio_host">Voditelj talkbacka</string>
+    <string name="settings_tts_style_morning_dj">Jutarnji DJ</string>
+    <string name="settings_tts_style_science_teacher">Profesor prirodnih znanosti</string>
+    <string name="settings_tts_style_historian">Povjesničar</string>
+    <string name="settings_tts_style_sportscaster">Sportski komentator</string>
+    <string name="settings_tts_style_stadium_announcer">Najavljivač stadiona</string>
+    <string name="settings_tts_style_storyteller">Pripovijedač</string>
+    <string name="settings_tts_style_fitness_instructor">Fitness instruktor</string>
+    <string name="settings_tts_style_morning_presenter">Jutarnji radio voditelj</string>
+    <string name="settings_tts_style_custom">Prilagođeno…</string>
+    <string name="settings_tts_style_custom_label">Prilagođena direktiva</string>
+    <string name="settings_tts_style_custom_placeholder">npr. Pročitaj sljedeće kao strogi knjižničar koji šapuće</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">Podijeliti izvješće o grešci?</string>
+    <string name="bug_report_consent_body">Ovo pomaže u dijagnosticiranju problema. Izvješće sadrži osjetljive osobne podatke, uključujući tvoju lokaciju, postavke aplikacije i nedavnu aktivnost. Moći ćeš ga pregledati i urediti prije slanja.</string>
+    <string name="bug_report_consent_dont_show_again">Ne prikazuj više</string>
+    <string name="bug_report_consent_continue">Nastavi</string>
+    <string name="bug_report_consent_cancel">Odustani</string>
+
+    <!-- Insight: tie-in at night (no "Večeras" prefix — band lead already set context). -->
+    <string name="insight_tie_in_at_night">Ponesi %1$s.</string>
+    <!-- Hedged precipitation and evening-rain templates.
+         "Možda" (maybe) is an invariable adverb — no gender agreement issues. -->
+    <string name="insight_precip_chance">Možda %1$s %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Večeras, možda kiša u %2$s, ponesi %1$s.</string>
+    <string name="insight_evening_rain">Večeras, kiša u %1$s.</string>
+    <string name="insight_evening_rain_chance">Večeras, možda kiša u %1$s.</string>
+
+    <!-- Device-incompatibility error screen. -->
+    <string name="error_device_incompatible">ClothesCast ne može raditi na ovom uređaju — tvoja Android verzija nema značajku koju sučelje aplikacije zahtijeva (Configuration.fontWeightAdjustment, očekuje se na Androidu 12 i novijim). Obrati se proizvođaču uređaja za ažuriranje sustava.</string>
 </resources>

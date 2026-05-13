@@ -699,6 +699,22 @@ internal fun ForecastChartWithModelSpreadPreview() {
     }
 }
 
+// Captures the full ForecastCard including the legend's "Best match" chip
+// and the divergence-summary hint — both layered on top of the chart by the
+// card itself, so the existing [ForecastChartWithModelSpreadPreview] (which
+// renders the chart in isolation) doesn't exercise them.
+@Preview(name = "Forecast card · with model spread", widthDp = 360)
+@Composable
+internal fun ForecastCardWithModelSpreadPreview() {
+    Frame {
+        ForecastCard(
+            hourly = SAMPLE_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+        )
+    }
+}
+
 @Preview(name = "Precipitation card · with model spread", widthDp = 360)
 @Composable
 internal fun PrecipitationCardWithModelSpreadPreview() {

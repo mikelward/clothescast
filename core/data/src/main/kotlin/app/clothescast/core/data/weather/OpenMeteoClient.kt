@@ -88,6 +88,20 @@ class OpenMeteoClient(
         // side-band fetch is sparse, and unconditionally when the
         // multi-model fetch failed entirely.
         val bestMatchHourly = bundle.today.hourly
+
+        // Stash best_match alongside the consulted models in [PerModelHourly]
+        // before passing into the consensus blender so the blender sees it
+        // as a regular model — equal-weight inclusion of best_match is the
+        // posture documented on [blendConsensusHourly], and an earlier
+        // ordering of these two blocks regressed that by passing the
+        // pre-injection map (Codex caught it on PR review).
+        val perModelWithBestMatch = multi?.hourly?.let { existing ->
+            existing.copy(
+                byModel = existing.byModel +
+                    (PerModelHourly.BEST_MATCH_MODEL_ID to bestMatchHourly.asPerModelHours()),
+            )
+        }
+
         // Recompute daily aggregates only when at least one hour actually got
         // blended — `blendConsensusHourly` returns null when nothing changed
         // (no per-model data, fewer than two models, or no hour had ≥2 of
@@ -96,21 +110,9 @@ class OpenMeteoClient(
         // steps) for a max computed from the hourly *samples*, which can
         // differ by a fraction of a degree even when the consensus didn't
         // apply anywhere.
-        val blendedToday = blendConsensusHourly(bestMatchHourly, multi?.hourly)
+        val blendedToday = blendConsensusHourly(bestMatchHourly, perModelWithBestMatch)
             ?.let { bundle.today.withAggregatesFrom(it) }
             ?: bundle.today
-
-        // Stash best_match alongside the consulted models in [PerModelHourly]
-        // so the chart can render it as a labelled overlay ("Auto") for
-        // power users with model spread on. The consensus computation above
-        // already saw this entry — it folds best_match into the mean like
-        // any other model.
-        val perModelWithBestMatch = multi?.hourly?.let { existing ->
-            existing.copy(
-                byModel = existing.byModel +
-                    (PerModelHourly.BEST_MATCH_MODEL_ID to bestMatchHourly.asPerModelHours()),
-            )
-        }
 
         bundle.copy(
             today = blendedToday,

@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Hungarian translation. Tone is informal "te"-form throughout ("Vegyél fel …",
-"Vigyél …"). Scope: insight-prose templates, garment labels, clothes-rule
-editor, outfit-card labels, and region/voice-locale picker names. Other UI
-surfaces fall back to default English (matching values-pl / values-uk).
+Hungarian translation — full UI coverage. Tone is informal "te"-form
+throughout ("Vegyél fel …", "Vigyél …"). Brand name "ClothesCast" stays
+verbatim.
+
+What is NOT overridden, by design:
+- `app_name` — brand identifier, identical across locales.
+- `insight_time_am` / `_pm` / `_midnight` / `_noon` (and the *_minutes
+  variants) — English-only spoken-time formatter helpers. Hungarian
+  locales use `insight_time_hour` / `insight_time_hour_minutes` which
+  are translated below; the AM/PM keys exist for `Locale.language ==
+  "en"` paths only.
+
+Picker labels under `settings_region_language_*` and
+`settings_tts_voice_locale_*` give the Hungarian names for every offered
+locale (Angol (Egyesült Államok), Francia (Franciaország), Német
+(Németország), …).
 -->
 <resources>
     <string name="settings_region_language_hu_hu">Magyar (Magyarország)</string>
@@ -11,6 +23,144 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_tts_voice_locale_label">Akcentus</string>
     <string name="settings_tts_voice_locale_system">Kövesse a nyelvbeállítást</string>
 
+    <!-- Region language picker — Hungarian names for all supported locales. -->
+    <string name="settings_region_language_de_de">Német (Németország)</string>
+    <string name="settings_region_language_de_at">Német (Ausztria)</string>
+    <string name="settings_region_language_de_ch">Német (Svájc)</string>
+    <string name="settings_region_language_en_us">Angol (Egyesült Államok)</string>
+    <string name="settings_region_language_en_gb">Angol (Egyesült Királyság)</string>
+    <string name="settings_region_language_en_au">Angol (Ausztrália)</string>
+    <string name="settings_region_language_en_ca">Angol (Kanada)</string>
+    <string name="settings_region_language_en_za">Angol (Dél-Afrika)</string>
+    <string name="settings_region_language_fr_fr">Francia (Franciaország)</string>
+    <string name="settings_region_language_fr_ca">Francia (Kanada)</string>
+    <string name="settings_region_language_it_it">Olasz (Olaszország)</string>
+    <string name="settings_region_language_es_es">Spanyol (Spanyolország)</string>
+    <string name="settings_region_language_es_mx">Spanyol (Mexikó)</string>
+    <string name="settings_region_language_ca_es">Katalán (Spanyolország)</string>
+    <string name="settings_region_language_ru_ru">Orosz (Oroszország)</string>
+    <string name="settings_region_language_pl_pl">Lengyel (Lengyelország)</string>
+    <string name="settings_region_language_hr_hr">Horvát (Horvátország)</string>
+    <string name="settings_region_language_sl_si">Szlovén (Szlovénia)</string>
+    <string name="settings_region_language_sr_rs">Szerb (latin)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Szerb (cirill)</string>
+    <string name="settings_region_language_bg_bg">Bolgár (Bulgária)</string>
+    <string name="settings_region_language_cs_cz">Cseh (Csehország)</string>
+    <string name="settings_region_language_sk_sk">Szlovák (Szlovákia)</string>
+    <string name="settings_region_language_ro_ro">Román (Románia)</string>
+    <string name="settings_region_language_el_gr">Görög (Görögország)</string>
+    <string name="settings_region_language_uk_ua">Ukrán (Ukrajna)</string>
+    <string name="settings_region_language_pt_br">Portugál (Brazília)</string>
+    <string name="settings_region_language_pt_pt">Portugál (Portugália)</string>
+    <string name="settings_region_language_nl_nl">Holland (Hollandia)</string>
+    <string name="settings_region_language_sv_se">Svéd (Svédország)</string>
+    <string name="settings_region_language_fi_fi">Finn (Finnország)</string>
+    <string name="settings_region_language_et_ee">Észt (Észtország)</string>
+    <string name="settings_region_language_lv_lv">Lett (Lettország)</string>
+    <string name="settings_region_language_lt_lt">Litván (Litvánia)</string>
+    <string name="settings_region_language_tr_tr">Török (Törökország)</string>
+    <string name="settings_region_language_id_id">Indonéz (Indonézia)</string>
+    <string name="settings_region_language_ms_my">Maláj (Malajzia)</string>
+    <string name="settings_region_language_fil_ph">Filippínó (Fülöp-szigetek)</string>
+    <string name="settings_region_language_vi_vn">Vietnami (Vietnám)</string>
+    <string name="settings_region_language_th_th">Thai (Thaiföld)</string>
+    <string name="settings_region_language_zh_cn">Kínai (egyszerűsített)</string>
+    <string name="settings_region_language_zh_tw">Kínai (hagyományos)</string>
+    <string name="settings_region_language_hi_in">Hindi (India)</string>
+    <string name="settings_region_language_bn_bd">Bengáli (Banglades)</string>
+    <string name="settings_region_language_ja_jp">Japán (Japán)</string>
+    <string name="settings_region_language_ko_kr">Koreai (Dél-Korea)</string>
+    <string name="settings_region_language_ar_sa">Arab (Szaúd-Arábia)</string>
+    <string name="settings_region_language_he_il">Héber (Izrael)</string>
+    <string name="settings_region_language_fa_ir">Perzsa (Irán)</string>
+    <string name="settings_region_language_am_et">Amhara (Etiópia)</string>
+    <string name="settings_region_language_da_dk">Dán (Dánia)</string>
+    <string name="settings_region_language_nb_no">Norvég bokmål (Norvégia)</string>
+    <string name="settings_region_language_sq_al">Albán (Albánia)</string>
+    <string name="settings_region_language_sw_ke">Szuahéli (Kenya)</string>
+
+    <!-- Voice locale picker — Hungarian names for all supported locales. -->
+    <string name="settings_tts_voice_locale_de_de">Német (Németország)</string>
+    <string name="settings_tts_voice_locale_de_at">Német (Ausztria)</string>
+    <string name="settings_tts_voice_locale_de_ch">Német (Svájc)</string>
+    <string name="settings_tts_voice_locale_en_us">Angol (Egyesült Államok)</string>
+    <string name="settings_tts_voice_locale_en_gb">Angol (Egyesült Királyság)</string>
+    <string name="settings_tts_voice_locale_en_au">Angol (Ausztrália)</string>
+    <string name="settings_tts_voice_locale_en_ca">Angol (Kanada)</string>
+    <string name="settings_tts_voice_locale_en_za">Angol (Dél-Afrika)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Francia (Franciaország)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Francia (Kanada)</string>
+    <string name="settings_tts_voice_locale_it_it">Olasz (Olaszország)</string>
+    <string name="settings_tts_voice_locale_es_es">Spanyol (Spanyolország)</string>
+    <string name="settings_tts_voice_locale_es_mx">Spanyol (Mexikó)</string>
+    <string name="settings_tts_voice_locale_ca_es">Katalán (Spanyolország)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Orosz (Oroszország)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Lengyel (Lengyelország)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Horvát (Horvátország)</string>
+    <string name="settings_tts_voice_locale_sl_si">Szlovén (Szlovénia)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Szerb (latin)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Szerb (cirill)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Bolgár (Bulgária)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Cseh (Csehország)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Szlovák (Szlovákia)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Román (Románia)</string>
+    <string name="settings_tts_voice_locale_el_gr">Görög (Görögország)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Ukrán (Ukrajna)</string>
+    <string name="settings_tts_voice_locale_pt_br">Portugál (Brazília)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Portugál (Portugália)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Holland (Hollandia)</string>
+    <string name="settings_tts_voice_locale_sv_se">Svéd (Svédország)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Finn (Finnország)</string>
+    <string name="settings_tts_voice_locale_et_ee">Észt (Észtország)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Lett (Lettország)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Litván (Litvánia)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Török (Törökország)</string>
+    <string name="settings_tts_voice_locale_id_id">Indonéz (Indonézia)</string>
+    <string name="settings_tts_voice_locale_ms_my">Maláj (Malajzia)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Filippínó (Fülöp-szigetek)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Vietnami (Vietnám)</string>
+    <string name="settings_tts_voice_locale_th_th">Thai (Thaiföld)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Kínai (egyszerűsített)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Kínai (hagyományos)</string>
+    <string name="settings_tts_voice_locale_hi_in">Hindi (India)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Bengáli (Banglades)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Japán (Japán)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Koreai (Dél-Korea)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Arab (Szaúd-Arábia)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Arab (Egyiptom)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Arab (Egyesült Arab Emírségek)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Arab (Marokkó)</string>
+    <string name="settings_tts_voice_locale_he_il">Héber (Izrael)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Perzsa (Irán)</string>
+    <string name="settings_tts_voice_locale_am_et">Amhara (Etiópia)</string>
+    <string name="settings_tts_voice_locale_da_dk">Dán (Dánia)</string>
+    <string name="settings_tts_voice_locale_nb_no">Norvég bokmål (Norvégia)</string>
+    <string name="settings_tts_voice_locale_sq_al">Albán (Albánia)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Szuahéli (Kenya)</string>
+
+    <!-- Settings — top bar + root navigation. -->
+    <string name="settings_title">Beállítások</string>
+    <string name="settings_back">Vissza</string>
+
+    <string name="settings_root_voice">Hang</string>
+    <string name="settings_root_schedule">Ütemezés</string>
+    <string name="settings_root_region">Régió</string>
+    <string name="settings_root_clothes">Ruházat</string>
+    <string name="settings_root_about">Névjegy</string>
+    <string name="settings_root_display">Megjelenítés</string>
+    <string name="settings_root_location">Helyszín</string>
+    <string name="settings_root_calendar">Naptár</string>
+    <string name="settings_root_privacy">Adatvédelem</string>
+    <string name="settings_root_schedule_subtitle">Értesítések és időpontok</string>
+    <string name="settings_root_clothes_subtitle">Hőmérsékletek és outfitek</string>
+    <string name="settings_root_region_subtitle">Nyelvek és mértékegységek</string>
+    <string name="settings_root_voice_subtitle">Szolgáltató és akcentusok</string>
+    <string name="settings_root_display_subtitle">Téma</string>
+    <string name="settings_root_location_subtitle">Automatikus vagy válassz várost</string>
+    <string name="settings_root_calendar_subtitle">Mai események</string>
+    <string name="settings_root_privacy_subtitle">Összeomlás- és használati jelentések</string>
+
+    <!-- Garment dropdown labels. -->
     <string name="garment_sweater">Pulóver</string>
     <string name="garment_hoodie">Kapucnis pulóver</string>
     <string name="garment_jacket">Dzseki</string>
@@ -20,7 +170,14 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="garment_shorts">Rövidnadrág</string>
     <string name="garment_pants">Nadrág</string>
     <string name="garment_jeans">Farmer</string>
+    <string name="garment_polo">Galléros póló</string>
+    <string name="garment_thin_jacket">Könnyű dzseki</string>
+    <string name="garment_puffer">Steppelt kabát</string>
+    <string name="garment_skirt">Szoknya</string>
 
+    <!-- Clothes settings. -->
+    <string name="settings_clothes_title">Öltözködési szabályok</string>
+    <string name="settings_clothes_description">Ha egy előrejelzés átlépi valamelyik küszöbértéket, a ruhadarab megjelenik a napi ClothesCastodban.</string>
     <string name="settings_clothes_empty">Nincsenek szabályok. Hozzáadáshoz koppints a Hozzáadás gombra.</string>
     <string name="settings_clothes_add">Hozzáadás</string>
     <string name="settings_clothes_edit">Szerkesztés</string>
@@ -38,12 +195,355 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_clothes_cond_temp_above">ha a hőérzet %1$s felett van</string>
     <string name="settings_clothes_cond_precip_above">ha az eső valószínűsége meghaladja a %.0f%%-ot</string>
 
+    <!-- Schedule screen. -->
+    <string name="settings_schedule_title">Napi ClothesCast</string>
+    <string name="settings_schedule_time_label">Időpont</string>
+    <string name="settings_schedule_days_label">Hét napjai</string>
+    <string name="settings_daily_mention_evening_events">Esti események megemlítése</string>
+
+    <string name="settings_tonight_title">Esti ClothesCast</string>
+    <string name="settings_tonight_description">Egy második ClothesCast este a mai éjszakai időjáráshoz. Csendes estéken néma marad, vagy egyáltalán nem jelenik meg, ha az „Értesítés csak esti eseményeknél" aktív; eseményes estéken hangot ad, és (ha bekapcsoltad a hangos kimenetelt) felolvassa magát.</string>
+    <string name="settings_tonight_enabled">Esti ClothesCast megjelenítése</string>
+    <string name="settings_tonight_time_label">Időpont</string>
+    <string name="settings_tonight_days_label">Hét napjai</string>
+    <string name="settings_tonight_notify_only_on_events">Értesítés csak esti eseményeknél</string>
+
+    <string name="settings_delivery_label">Kézbesítés</string>
+    <string name="settings_delivery_notification_only">Csak értesítés</string>
+    <string name="settings_delivery_tts_only">Csak hangosan</string>
+    <string name="settings_delivery_notification_and_tts">Értesítés és hangos</string>
+
+    <!-- Voice screen. -->
+    <string name="settings_tts_engine_title">Beszédmotor</string>
+    <string name="settings_tts_engine_device">Eszköz (offline, ingyenes)</string>
+    <string name="settings_tts_engine_gemini">Gemini (magas minőség, online)</string>
+    <string name="settings_tts_engine_description">A Gemini lényegesen természetesebben hangzik, mint az eszközhang, de beszédkor hálózati hívást igényel, és a szintézishez az API-kulcsodat használja (rövid hívás minden elmondott ClothesCastnál). Gemini hiba esetén visszaáll az eszközhanggra.</string>
+
+    <string name="settings_tts_voice_label">Hang</string>
+    <string name="settings_tts_voice_dismiss">Kész</string>
+    <string name="settings_tts_voice_locale_description">Beállítja a kimondott hang akcentusát. Nem változtatja meg a megjelenített szöveget.</string>
+
+    <string name="settings_tts_test">Hang tesztelése</string>
+    <string name="settings_tts_test_in_flight">Tesztelés — kérlek várj…</string>
+
+    <string name="settings_tts_device_voice_label">Eszközhang</string>
+    <string name="settings_tts_device_voice_auto">Automatikus (legjobb akcentus)</string>
+    <string name="settings_tts_device_voice_currently">Jelenleg: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Betöltés…</string>
+    <string name="settings_tts_device_voice_network">Hálózat</string>
+    <string name="settings_tts_device_voice_offline">Offline</string>
+    <string name="settings_tts_install_google_hint">Telepítsd a Google Text-to-Speech motort a jobb minőségű hangokhoz.</string>
+    <string name="settings_tts_install_google_button">Google TTS telepítése</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">Stílus</string>
+    <string name="settings_tts_style_weather_forecaster">Időjós</string>
+    <string name="settings_tts_style_pirate">Kalóz</string>
+    <string name="settings_tts_style_cowboy">Cowboy</string>
+    <string name="settings_tts_style_shakespearean">Shakespeares</string>
+    <string name="settings_tts_style_surfer">Szörfös</string>
+    <string name="settings_tts_style_parent">Szülő</string>
+    <string name="settings_tts_style_child">Gyerek</string>
+    <string name="settings_tts_style_teenager">Tinédzser</string>
+    <string name="settings_tts_style_grandparent">Nagyszülő</string>
+    <string name="settings_tts_style_kids_host">Gyerekprogram-műsorvezető</string>
+    <string name="settings_tts_style_radio_host">Telefonos talk-show műsorvezető</string>
+    <string name="settings_tts_style_morning_dj">Reggeli DJ</string>
+    <string name="settings_tts_style_science_teacher">Természettudományi tanár</string>
+    <string name="settings_tts_style_historian">Történész</string>
+    <string name="settings_tts_style_sportscaster">Sportkontmmentátor</string>
+    <string name="settings_tts_style_stadium_announcer">Stadionbemondó</string>
+    <string name="settings_tts_style_storyteller">Mesélő</string>
+    <string name="settings_tts_style_fitness_instructor">Fitness edző</string>
+    <string name="settings_tts_style_morning_presenter">Reggeli rádió műsorvezető</string>
+    <string name="settings_tts_style_custom">Egyéni…</string>
+    <string name="settings_tts_style_custom_label">Egyéni utasítás</string>
+    <string name="settings_tts_style_custom_placeholder">pl. Olvasd fel a következőt mint egy szigorú suttogó könyvtáros</string>
+
+    <!-- Region screen. -->
+    <string name="settings_region_language_title">Nyelv</string>
+    <string name="settings_region_language_description">Beállítja a megjelenített szöveg és értesítések nyelvét.</string>
+    <string name="settings_region_language_system">Rendszer nyelvének használata</string>
+
+    <string name="settings_temperature_unit_title">Hőmérséklet-egység</string>
+    <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="settings_distance_unit_title">Távolság-egység</string>
+    <string name="settings_distance_unit_kilometers">Kilométer</string>
+    <string name="settings_distance_unit_miles">Mérföld</string>
+
+    <!-- API keys screen. -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Használj Geminit a kiváló minőségű hangokhoz.</string>
+    <string name="settings_api_key_status_set">Gemini-kulcs be van állítva.</string>
+    <string name="settings_api_key_status_unset">Nincs Gemini-kulcs beállítva. Szerezz egyet az aistudio.google.com oldalon a Gemini-hangok használatához.</string>
+    <string name="settings_api_key_placeholder">Gemini API-kulcs beillesztése ide</string>
+    <string name="settings_api_key_save">Gemini-kulcs mentése</string>
+    <string name="settings_api_key_clear">Mentett Gemini-kulcs törlése</string>
+
+    <!-- Location screen. -->
+    <string name="settings_location_title">Helyszín</string>
+    <string name="settings_location_use_device">Eszköz helyszínének használata</string>
+    <string name="settings_location_use_device_description">Utolsó hozzávetőleges helyszín</string>
+    <string name="settings_location_grant_background">Háttér-helyszín engedélyezése (Rendszerbeállítások)</string>
+    <string name="settings_location_unset">Nincs helyszín beállítva</string>
+    <string name="settings_location_clear">Helyszín eltávolítása</string>
+    <string name="settings_location_search_title">Helyszín keresése</string>
+    <string name="settings_location_query_label">Város vagy hely</string>
+    <string name="settings_location_search">Keresés</string>
+    <string name="settings_location_searching">Keresés…</string>
+    <string name="settings_location_no_results">Nincs találat.</string>
+    <string name="settings_location_detecting">Észlelés…</string>
+    <string name="settings_location_background_banner_title">Állandó helyszín szükséges</string>
+    <string name="settings_location_background_banner_body">Nélküle a reggeli előrejelzés nem tudja olvasni a helyszínedet.</string>
+    <string name="settings_location_manual_override">Helytelen helyszín? Manuális beállítás</string>
+    <string name="settings_location_manual_override_disclosure">Város kiválasztásával letiltod az automatikus észlelést.</string>
+
+    <string name="settings_location_background_rationale_title">Mindig engedélyezve</string>
+    <string name="settings_location_background_rationale_body">A ClothesCast minden reggel a háttérben tölti le az előrejelzésedet. Ehhez „Mindig engedélyezve" helyszín-hozzáférés szükséges. A rendszerbeállításokba kerülsz, ahol megadhatod.</string>
+    <string name="settings_location_background_rationale_continue">Beállítások megnyitása</string>
+    <string name="settings_location_background_rationale_dismiss">Most nem</string>
+
+    <string name="settings_location_background_denied_title">Állandó hozzáférés nem adott</string>
+    <string name="settings_location_background_denied_body">„Mindig engedélyezve" nélkül a reggeli előrejelzés a mentett helyszínedet használja. Megnyitod a rendszerbeállításokat a megadáshoz?</string>
+    <string name="settings_location_background_denied_open">Beállítások megnyitása</string>
+    <string name="settings_location_background_denied_keep">Mentett helyszín megtartása</string>
+
+    <string name="settings_location_rationale_title">Állandó helyszín</string>
+    <string name="settings_location_rationale_body">A ClothesCast a háttérben frissíti az előrejelzésedet, hogy időben kézbesítse. Ehhez „Mindig engedélyezve" helyszín-engedély szükséges.</string>
+    <string name="settings_location_rationale_continue">Folytatás</string>
+    <string name="settings_location_rationale_dismiss">Most nem</string>
+
+    <!-- Notification channels. -->
+    <string name="notification_channel_daily_insight_name">Napi ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">Az általad aktivált reggeli időjárás-összefoglaló.</string>
+    <string name="notification_daily_insight_title">Mai időjárás</string>
+
+    <string name="notification_channel_tonight_insight_default_name">Esti ClothesCast (eseményekkel)</string>
+    <string name="notification_channel_tonight_insight_default_description">Az esti időjárás-összefoglaló, ha ma este eseményeid vannak. Lejátssza az alapértelmezett értesítési hangot.</string>
+    <string name="notification_channel_tonight_insight_silent_name">Esti ClothesCast (néma)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Az esti időjárás-összefoglaló csendes estéken. Némán érkezik — láthatod a zárolási képernyőn, de nem ad hangot.</string>
+    <string name="notification_tonight_insight_title">Mai esti időjárás</string>
+
+    <string name="notification_channel_weather_alerts_name">Viharfigyelmeztetések</string>
+    <string name="notification_channel_weather_alerts_description">Magas prioritású figyelmeztetések súlyos vagy szélsőséges időjárási eseményekre a térségedben. A napi lekéréskor észlelés után azonnal elküldésre kerülnek.</string>
+    <string name="notification_weather_alert_title">Időjárási figyelmeztetés: %1$s</string>
+
+    <!-- Notification permission card. -->
+    <string name="settings_notification_permission_title">Az értesítések le vannak tiltva</string>
+    <string name="settings_notification_permission_description">Értesítési engedély nélkül a napi ClothesCastodnak nincs hova megérkezni. Engedélyezd, hogy a ClothesCast reggel megjelenhessen.</string>
+    <string name="settings_notification_permission_grant">Értesítések engedélyezése</string>
+
+    <!-- Calendar settings. -->
+    <string name="settings_calendar_title">Naptár</string>
+    <string name="settings_calendar_use_events">Mai naptári események használata</string>
+    <string name="settings_calendar_description_off">Ha engedélyezve van, a ClothesCast beolvassa a mai eseményeket az eszköz naptárából, hogy a reggeli ClothesCast konkrét eseményekre tegyen javaslatokat — például „Vigyél esernyőt a 15 órai parkfutásodhoz". Csak az esemény nevét és időpontját használja; leírásokat, résztvevőket és helyszíneket beolvas, de soha nem hagyja el az eszközt.</string>
+    <string name="settings_calendar_description_on">Beolvassa a mai eseményeket az eszköz naptárából a reggeli ClothesCast kiegészítéséhez. A generált összefoglalóban csak neveket és időpontokat használ; leírásokat és résztvevőket nem. Minden az eszközön marad.</string>
+    <string name="settings_calendar_grant_permission">Naptár-hozzáférés engedélyezése</string>
+    <string name="settings_calendar_open_settings">Naptár-hozzáférés megtagadva. Engedélyezd a rendszerbeállításokban.</string>
+
+    <!-- Debug screen. -->
+    <string name="settings_debug_title">Hibakeresés (csak debug buildekben)</string>
+    <string name="settings_debug_description">A napi ClothesCast-folyamat azonnali elindítása. Hasznos az ellenőrzéshez az ütemezett időre való várakozás nélkül.</string>
+    <string name="settings_debug_fire_now">ClothesCast indítása most</string>
+    <string name="settings_debug_fire_toast">ClothesCast munkás sorba helyezve</string>
+
+    <!-- About screen. -->
+    <string name="settings_about_title">Névjegy</string>
+    <string name="settings_about_version">Verzió: %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s build</string>
+    <string name="settings_about_source">Forráskód a GitHubon</string>
+    <string name="settings_about_dontkillmyapp">Háttér-korlátozások (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Hibajelentés megosztása</string>
+    <string name="settings_about_version_copied">Verzió vágólapra másolva</string>
+
+    <!-- Today screen. -->
+    <string name="today_title">Ma</string>
+    <string name="today_open_settings">Beállítások megnyitása</string>
+    <string name="today_more_options">További lehetőségek</string>
+    <string name="today_report_a_bug">Hiba bejelentése</string>
+    <string name="today_refresh">Frissítés</string>
+    <string name="today_refresh_toast_daily">A napi ClothesCastod frissül — hamarosan megjelenik.</string>
+    <string name="today_refresh_toast_nightly">Az esti ClothesCastod frissül — hamarosan megjelenik.</string>
+    <string name="today_empty_title">Még nincs ClothesCast</string>
+    <string name="today_empty_subtitle">A reggeli ClothesCastod itt jelenik meg, amint elkészül. Állítsd be a helyszínedet a beállításokban, majd koppints a Betöltés most gombra.</string>
+    <string name="today_fetch_now">Betöltés most</string>
+    <string name="today_generated_at">Létrehozva: %1$s</string>
+
+    <string name="today_outfit_title">Mit vegyek fel</string>
+    <string name="today_outfit_label_today">Ma</string>
+    <string name="today_outfit_label_tonight">Ma este</string>
+    <string name="today_outfit_label_tomorrow">Holnap</string>
+
+    <!-- Outfit card labels. -->
     <string name="today_outfit_top_tshirt">Póló</string>
     <string name="today_outfit_top_sweater">Pulóver</string>
     <string name="today_outfit_top_thick_jacket">Vastag kabát</string>
+    <string name="today_outfit_top_polo">Galléros póló</string>
+    <string name="today_outfit_top_thin_jacket">Könnyű dzseki</string>
+    <string name="today_outfit_top_thick_coat">Vastag kabát</string>
+    <string name="today_outfit_top_puffer_jacket">Steppelt kabát</string>
     <string name="today_outfit_bottom_shorts">Rövidnadrág</string>
     <string name="today_outfit_bottom_long_pants">Hosszú nadrág</string>
+    <string name="today_outfit_bottom_skirt">Szoknya</string>
+    <string name="today_outfit_bottom_jeans">Farmer</string>
 
+    <!-- Forecast card. -->
+    <string name="today_forecast_title">Óránkénti előrejelzés</string>
+    <string name="today_forecast_min_max">Érzet %1$d – %2$d%3$s · Levegő %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Hőérzet (%1$s) óránként · koppints a levegőhőmérséklethez</string>
+    <string name="today_forecast_legend_air">Levegőhőmérséklet (%1$s) óránként · koppints a hőérzethez</string>
+
+    <string name="today_confidence_high">Magas biztonság — a fő modellek egyetértenek</string>
+    <string name="today_confidence_medium">Közepes biztonság</string>
+    <string name="today_confidence_low">Alacsony biztonság — az előrejelzések eltérnek</string>
+    <string name="today_confidence_spread">Szórás: %1$.1f°C, %2$.0f százalékpont csapadék %3$d modell felett</string>
+
+    <string name="today_working">ClothesCast betöltése…</string>
+    <string name="today_failed_title">Az utolsó kísérlet sikertelen volt</string>
+    <string name="today_failed_unexpected_http">Váratlan HTTP-hiba az időjárás-szolgáltatótól.</string>
+    <string name="today_failed_unhandled">Váratlan hiba történt.</string>
+    <string name="today_failed_show_details">Részletek megjelenítése</string>
+    <string name="today_failed_hide_details">Részletek elrejtése</string>
+    <string name="today_failed_no_location">Nem sikerült meghatározni a helyszínedet. Adj állandó helyszín-engedélyt, vagy állíts be egy várost a beállításokban.</string>
+
+    <string name="today_location_required_title">Állítsd be a helyszínedet</string>
+    <string name="today_location_required_body">A ClothesCastnak ismernie kell a helyszínedet az előrejelzés letöltéséhez. Adj állandó helyszín-engedélyt, vagy válassz egy várost.</string>
+    <string name="today_location_required_action">Helyszínbeállítások megnyitása</string>
+    <string name="today_location_unknown">A te helyszíned</string>
+    <string name="today_retrying">Az utolsó kísérlet sikertelen volt — újrapróbálkozás…</string>
+
+    <!-- Rationale / outfit explanation. -->
+    <string name="today_rationale_title">Miért ez az outfit?</string>
+    <string name="today_rationale_show">Miért?</string>
+    <string name="today_rationale_dismiss">Értem</string>
+    <string name="today_rationale_threshold_decrease">Küszöb csökkentése 1 fokkal</string>
+    <string name="today_rationale_threshold_increase">Küszöb növelése 1 fokkal</string>
+    <string name="today_rationale_threshold_changed_hint">Frissítsd az új outfit megtekintéséhez.</string>
+    <string name="today_rationale_unavailable">Az indoklás nem elérhető — nyisd meg az alkalmazást a következő frissítés után.</string>
+    <string name="today_rationale_min_below_with_time">Érzet-minimum %1$s%2$s %3$s órakor, %4$s%2$s alatt</string>
+    <string name="today_rationale_min_below">Érzet-minimum %1$s%2$s, %3$s%2$s alatt</string>
+    <string name="today_rationale_min_above_with_time">Érzet-minimum %1$s%2$s %3$s órakor, legalább %4$s%2$s</string>
+    <string name="today_rationale_min_above">Érzet-minimum %1$s%2$s, legalább %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Érzet-maximum csak %1$s%2$s %3$s órakor, %4$s%2$s alatt</string>
+    <string name="today_rationale_max_below">Érzet-maximum csak %1$s%2$s, %3$s%2$s alatt</string>
+    <string name="today_rationale_max_above_with_time">Érzet-maximum %1$s%2$s %3$s órakor, legalább %4$s%2$s</string>
+    <string name="today_rationale_max_above">Érzet-maximum %1$s%2$s, legalább %3$s%2$s</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Csapadék valószínűsége</string>
+    <string name="today_precipitation_peak">Csúcs %1$d%% %2$s órakor</string>
+    <string name="today_precipitation_dry">Ma nem várható csapadék</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">Modellek:</string>
+    <string name="today_chart_main_line_label">Kombinált</string>
+    <string name="today_chart_divergence_summary">A modellek %1$s-kor térnek el legjobban (Δ %2$.1f%3$s hőérzet) — főként %4$s, %5$s</string>
+
+    <!-- Divergence factor names. -->
+    <string name="today_factor_air_temperature">Levegőhőmérséklet</string>
+    <string name="today_factor_wind_speed">Szélsebesség</string>
+    <string name="today_factor_cloud_cover">Felhőzet</string>
+    <string name="today_factor_humidity">Páratartalom</string>
+
+    <!-- Diagnostic cards. -->
+    <string name="today_wind_title">Szélsebesség</string>
+    <string name="today_wind_subtitle">Szélsebesség (%1$s) óránként modellenként</string>
+    <string name="today_cloud_title">Felhőzet</string>
+    <string name="today_cloud_subtitle">Teljes felhőzet (%) óránként modellenként</string>
+    <string name="today_humidity_title">Páratartalom</string>
+    <string name="today_humidity_subtitle">Relatív páratartalom (%) óránként modellenként</string>
+
+    <!-- Low-confidence callout. -->
+    <string name="today_low_confidence_callout_title">Az előrejelzések ma eltérnek</string>
+    <string name="today_low_confidence_callout_body">A hőmérséklet %1$.1f°C-ot, a csapadék valószínűsége %2$.0f%%-ot ingadozik %3$d modell felett.</string>
+
+    <!-- Telemetry notice. -->
+    <string name="today_telemetry_notice_title">Összeomlás- és használati jelentések be vannak kapcsolva</string>
+    <string name="today_telemetry_notice_body">A ClothesCast névtelen összeomlás-jelentéseket és használati analitikát küld a hibák javításához. Naptár-, helyszín- vagy tartalmi adatok nem kerülnek átvitelre. Bármikor letiltható a beállításokban.</string>
+    <string name="today_telemetry_notice_open_settings">Adatvédelmi beállítások megnyitása</string>
+    <string name="today_telemetry_notice_dismiss">Bezárás</string>
+
+    <!-- Crash banner. -->
+    <string name="today_crash_banner_title">Az előző indítás összeomlott</string>
+    <string name="today_crash_banner_body">Összeomlás-jelentés lett mentve az eszközödre. Szeretnéd megosztani, hogy a hiba kijavítható legyen? Semmi nem kerül elküldésre, amíg nem választasz célt.</string>
+    <string name="today_crash_banner_share">Jelentés megosztása</string>
+    <string name="today_crash_banner_dismiss">Bezárás</string>
+
+    <!-- Update banner. -->
+    <string name="today_update_available_title">Frissítés elérhető</string>
+    <string name="today_update_available_body">A ClothesCast újabb verziója elérhető a Play Áruházban.</string>
+    <string name="today_update_available_action">Frissítés</string>
+    <string name="today_update_available_dismiss">Most nem</string>
+    <string name="today_update_downloaded_body">Frissítés letöltve. Indítsd újra a telepítés befejezéséhez.</string>
+    <string name="today_update_downloaded_action">Újraindítás</string>
+
+    <!-- App widget. -->
+    <string name="widget_label">Outfit</string>
+    <string name="widget_description">Az aktuális napszak outfitje egy pillantásra.</string>
+    <string name="widget_empty_title">Még nincs outfit</string>
+    <string name="widget_empty_subtitle">Koppints a ClothesCast megnyitásához</string>
+
+    <!-- Onboarding. -->
+    <string name="onboarding_title">Üdvözöl a ClothesCast</string>
+    <string name="onboarding_subtitle">Két gyors választás, és indulhatsz. Minden másnak van ésszerű alapértéke, amelyet később megváltoztathatsz a beállításokban.</string>
+    <string name="onboarding_subtitle_tv">Két gyors választás, és indulhatsz. Minden mást később megváltoztathatsz a beállításokban.</string>
+    <string name="onboarding_notifications_title">Értesítések</string>
+    <string name="onboarding_notifications_description">Hogy megkapd a napi ClothesCastodat. Engedélyezd egyszer, és reggel ott lesz.</string>
+    <string name="onboarding_notifications_grant">Értesítések engedélyezése</string>
+    <string name="onboarding_location_title">Helyszín</string>
+    <string name="onboarding_location_description">Hogy a megfelelő előrejelzés töltődjön be. Helyszín-hozzáféréssel a ClothesCast minden reggel beolvassa az eszközöd hozzávetőleges helyzetét; egyébként válassz várost manuálisan.</string>
+    <string name="onboarding_location_grant">Helyszín-hozzáférés engedélyezése</string>
+    <string name="onboarding_location_denied_hint">Helyszín-hozzáférés megtagadva. Ehelyett manuálisan is választhatsz várost.</string>
+    <string name="onboarding_location_enter_manual">Helyszín manuális megadása</string>
+    <string name="onboarding_location_using_device">Minden reggel az eszközöd helyszínét fogjuk használni.</string>
+    <string name="onboarding_location_grant_background">Mindig engedélyezve</string>
+    <string name="onboarding_location_background_needed">Még egy lépés: a ClothesCastnak „Mindig engedélyezve" szükséges, hogy a reggeli előrejelzés olvashassa a helyszínedet, amikor az alkalmazás be van zárva.</string>
+    <string name="onboarding_location_enter_manual_hint">Manuálisan is megadhatod a helyszínedet, ha megtagadod a helyszín-hozzáférést, vagy az eszköz helyszíne helytelen.</string>
+
+    <string name="onboarding_gemini_title">Gemini API-kulcs</string>
+    <string name="onboarding_gemini_description">A ClothesCast ezt használja a hangos hangokhoz és az előrejelzés-generáláshoz. Szerezz egyet ingyen az aistudio.google.com oldalon. A kulcs titkosítva van tárolva az Android Keystoreban.</string>
+    <string name="onboarding_step_done">Kész</string>
+    <string name="onboarding_skip">Egyelőre kihagyás</string>
+    <string name="onboarding_continue">Folytatás</string>
+    <string name="onboarding_pair_from_phone">Inkább párosítás telefonról</string>
+
+    <!-- Pairing (TV). -->
+    <string name="pairing_title">Szkennelés párosításhoz</string>
+    <string name="pairing_instructions">Szkenneld be ezt a QR-kódot a telefonoddal, majd illeszd be a Gemini API-kulcsodat a megnyíló űrlapba. A kulcs közvetlenül az otthoni hálózaton keresztül kerül elküldésre erre a tévére — felhő-közvetítő nélkül.</string>
+    <string name="pairing_qr_description">QR-kód, link: %1$s</string>
+    <string name="pairing_cancel">Mégse</string>
+    <string name="pairing_received">Kulcs megérkezett — mentés…</string>
+    <string name="pairing_timeout_title">Párosítási ablak lejárt</string>
+    <string name="pairing_timeout_body">Az 5 perces párosítási ablak bezárult. Koppints az Újra gombra egy új megnyitásához.</string>
+    <string name="pairing_error_title">A párosítás nem indítható el</string>
+    <string name="pairing_error_body">Győződj meg róla, hogy a tévé Wi-Fi-hez csatlakozik, és próbáld újra.</string>
+    <string name="pairing_retry">Újra</string>
+
+    <!-- Display settings. -->
+    <string name="settings_display_theme_title">Téma</string>
+    <string name="settings_display_theme_system">Rendszerbeállítás</string>
+    <string name="settings_display_theme_light">Világos</string>
+    <string name="settings_display_theme_dark">Sötét</string>
+    <string name="settings_display_charts_title">Grafikonok</string>
+    <string name="settings_display_model_spread_label">Modellszórás megjelenítése a grafikonokon</string>
+    <string name="settings_display_model_spread_description">Megjeleníti a főbb időjárási modellek óránkénti előrejelzését a hőmérséklet és csapadék grafikonokon. Hasznos a bizonytalan előrejelzések felismeréséhez.</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">Összeomlás- és használati jelentések</string>
+    <string name="settings_privacy_telemetry_label">Összeomlás- és használati adatok küldése</string>
+    <string name="settings_privacy_telemetry_description">Névtelen összeomlás-jelentéseket és összesített használati statisztikákat küld, hogy segítse a fejlesztőt a hibajavításban és a funkciódöntésekben.</string>
+    <string name="settings_privacy_telemetry_limits">Soha nem kerül elküldésre: naptárbejegyzések, helyszín-koordináták vagy helynevek, tartalom- vagy értesítési szövegek, API-kulcsok, pontos GPS-adatok, hirdetési azonosítók.</string>
+    <string name="settings_privacy_open_policy">Teljes adatvédelmi irányelvek elolvasása</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">Hibajelentés megosztása?</string>
+    <string name="bug_report_consent_body">Ez segít a problémák diagnosztizálásában. A jelentés érzékeny személyes adatokat tartalmaz, beleértve a helyszínedet, az alkalmazásbeállításaidat és a legutóbbi tevékenységeidet. Elküldés előtt megtekintheted és szerkesztheted.</string>
+    <string name="bug_report_consent_dont_show_again">Ne jelenjen meg újra</string>
+    <string name="bug_report_consent_continue">Folytatás</string>
+    <string name="bug_report_consent_cancel">Mégse</string>
+
+    <!-- Insight prose templates. -->
     <string name="insight_lead_today">Ma</string>
     <string name="insight_lead_tonight">Ma este</string>
     <!-- "%1$s %2$s lesz." → "Ma hideg lesz." Lead first, then band, copula at end. -->
@@ -66,6 +566,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="insight_precip">%1$s %2$s.</string>
     <string name="insight_precip_at_time">%1$s órakor</string>
     <string name="insight_precip_overnight">éjszaka</string>
+    <string name="insight_precip_chance">Esetleg %1$s %2$s.</string>
     <string name="insight_condition_clear">Tiszta</string>
     <string name="insight_condition_partly_cloudy">Részben felhős</string>
     <string name="insight_condition_cloudy">Felhős</string>
@@ -76,9 +577,15 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="insight_condition_thunderstorm">Zivatar</string>
     <string name="insight_condition_unknown">Ismeretlen</string>
     <string name="insight_tie_in">Vigyél magaddal %1$s estére.</string>
+    <string name="insight_tie_in_at_night">Vigyél magaddal %1$s estére.</string>
     <string name="insight_tie_in_with_rain">Vigyél magaddal %1$s estére, eső %2$s órakor.</string>
+    <string name="insight_tie_in_with_rain_chance">Esetleg eső %2$s órakor — vigyél %1$s.</string>
+    <string name="insight_evening_rain">Este eső %1$s órakor.</string>
+    <string name="insight_evening_rain_chance">Este esetleg eső %1$s órakor.</string>
     <!-- "15" — postposition "órakor" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
+    <!-- Device incompatibility error. -->
+    <string name="error_device_incompatible">A ClothesCast nem futtatható ezen az eszközön — az Android buildedből hiányzik egy funkció, amelyre az alkalmazás felülete szükséges (Configuration.fontWeightAdjustment, Android 12-től felfelé várható). Kérjük, fordulj az eszköz gyártójához rendszerfrissítésért.</string>
 </resources>

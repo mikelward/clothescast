@@ -35,13 +35,13 @@
          _background_banner_*/_manual_override*,
          settings_tts_engine_description, today_update_available_*,
          today_update_downloaded_* are translated for
-         de/fr/es/it/pt-BR/pt-PT/hr (de-AT/CH, fr-CA, es-MX inherit
-         via Android's base-language fallback and need no separate
-         entry), but still missing from all other language trees:
-         nl, pl, ru, sv, da, nb, fi, et, lv, lt, tr, cs, sk, hu,
-         ro, bg, sl, sr, el, uk, ca, ar, he, fa, bn, ja, ko, zh-CN,
-         zh-TW, th, vi, id, ms, fil, sw, am, sq, and any future
-         additions. -->
+         de/fr/es/it/pt-BR/pt-PT/hr/nl/pl/ru/sv/da/nb/fi/tr/cs/hu
+         (de-AT/CH, fr-CA, es-MX inherit via Android's base-language
+         fallback and need no separate entry), but still missing from
+         all other language trees:
+         et, lv, lt, sk, ro, bg, sl, sr, el, uk, ca, ar, he, fa,
+         bn, ja, ko, zh-CN, zh-TW, th, vi, id, ms, fil, sw, am, sq,
+         and any future additions. -->
     <string name="today_location_unknown">Your location</string>
 
     <string name="today_outfit_title">What to wear</string>

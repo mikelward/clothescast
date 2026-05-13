@@ -1,14 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Dutch translation. Scope: insight-prose templates, garment labels, clothes-rule
-editor, outfit-card labels, and region/voice-locale picker names.
+Dutch translation — full UI coverage. Je/jij/jou-form throughout (informal
+second-person singular). No u-form anywhere. Brand name "ClothesCast" stays
+verbatim.
+
+What is NOT overridden, by design:
+- `app_name` — brand identifier, identical across locales.
+- `insight_time_am` / `_pm` / `_midnight` / `_noon` (and the *_minutes
+  variants) — English-only spoken-time formatter helpers. Dutch locales
+  use `insight_time_hour` / `insight_time_hour_minutes` ("%1$d uur" /
+  "%1$d:%2$02d") which are translated below; the AM/PM keys exist for
+  `Locale.language == "en"` paths only and would never be read in a
+  Dutch runtime.
+
+Picker labels under `settings_region_language_*` and
+`settings_tts_voice_locale_*` give the Dutch names for every offered
+locale (Engels (Verenigde Staten), Frans (Canada), Chinees (vereenvoudigd), …).
+The locale tag stored on disk (en-US / fr-CA / zh-CN) is unchanged; only
+the displayed label localizes.
 -->
 <resources>
     <string name="settings_region_language_nl_nl">Nederlands (Nederland)</string>
     <string name="settings_tts_voice_locale_nl_nl">Nederlands (Nederland)</string>
+    <!-- Voice-engine "Accent" picker title. -->
     <string name="settings_tts_voice_locale_label">Accent</string>
-    <string name="settings_tts_voice_locale_system">Taalinstelling volgen</string>
 
+    <!--
+    Settings — top bar + root navigation list.
+    -->
+    <string name="settings_title">Instellingen</string>
+    <string name="settings_back">Terug</string>
+
+    <string name="settings_root_voice">Stem</string>
+    <string name="settings_root_schedule">Schema</string>
+    <string name="settings_root_region">Regio</string>
+    <string name="settings_root_clothes">Kleding</string>
+    <string name="settings_root_about">Over</string>
+
+    <!-- Garment dropdown labels. -->
     <string name="garment_sweater">Trui</string>
     <string name="garment_hoodie">Hoodie</string>
     <string name="garment_jacket">Jas</string>
@@ -18,6 +47,10 @@ editor, outfit-card labels, and region/voice-locale picker names.
     <string name="garment_shorts">Shorts</string>
     <string name="garment_pants">Broek</string>
     <string name="garment_jeans">Spijkerbroek</string>
+
+    <!-- Clothes settings. -->
+    <string name="settings_clothes_title">Kledingregels</string>
+    <string name="settings_clothes_description">Als een voorspelling een van deze drempelwaarden overschrijdt, verschijnt het kledingstuk in je dagelijkse ClothesCast.</string>
 
     <string name="settings_clothes_empty">Geen regels. Tik op Toevoegen om er een aan te maken.</string>
     <string name="settings_clothes_add">Toevoegen</string>
@@ -36,35 +69,344 @@ editor, outfit-card labels, and region/voice-locale picker names.
     <string name="settings_clothes_cond_temp_above">wanneer de gevoelstemperatuur boven %1$s ligt</string>
     <string name="settings_clothes_cond_precip_above">wanneer de kans op regen groter is dan %.0f%%</string>
 
+    <!--
+    Schedule screen.
+    -->
+    <string name="settings_schedule_title">Dagelijkse ClothesCast</string>
+    <string name="settings_schedule_time_label">Tijdstip</string>
+    <string name="settings_schedule_days_label">Weekdagen</string>
+    <string name="settings_daily_mention_evening_events">Avondafspraken vermelden</string>
+
+    <string name="settings_tonight_title">Avondlijkse ClothesCast</string>
+    <string name="settings_tonight_description">Een tweede ClothesCast \'s avonds voor het weer van vanavond. Op rustige avonden blijft hij stil of verschijnt hij helemaal niet als \'Alleen meldingen bij avondafspraken\' is ingeschakeld; op avonden met afspraken speelt hij een geluid af en (als je gesproken uitvoer hebt ingeschakeld) leest hij zichzelf voor.</string>
+    <string name="settings_tonight_enabled">Avondlijkse ClothesCast weergeven</string>
+    <string name="settings_tonight_time_label">Tijdstip</string>
+    <string name="settings_tonight_days_label">Weekdagen</string>
+    <string name="settings_tonight_notify_only_on_events">Alleen meldingen bij avondafspraken</string>
+
+    <string name="settings_delivery_label">Bezorging</string>
+    <string name="settings_delivery_notification_only">Alleen melding</string>
+    <string name="settings_delivery_tts_only">Alleen gesproken</string>
+    <string name="settings_delivery_notification_and_tts">Melding en gesproken</string>
+
+    <!--
+    Voice screen.
+    -->
+    <string name="settings_tts_engine_title">Spraakengine</string>
+    <string name="settings_tts_engine_device">Apparaat (offline, gratis)</string>
+    <string name="settings_tts_engine_gemini">Gemini (hoge kwaliteit, online)</string>
+
+    <string name="settings_tts_voice_label">Stem</string>
+    <string name="settings_tts_voice_dismiss">Klaar</string>
+    <string name="settings_tts_voice_locale_description">Bepaalt het accent van de gesproken stem. Heeft geen invloed op de weergegeven tekst.</string>
+    <string name="settings_tts_voice_locale_system">Taalinstelling volgen</string>
+
+    <string name="settings_tts_test">Stem testen</string>
+    <string name="settings_tts_test_in_flight">Bezig met testen — even geduld…</string>
+
+    <!--
+    Region screen — language picker.
+    -->
+    <string name="settings_region_language_title">Taal</string>
+    <string name="settings_region_language_description">Bepaalt de taal van weergegeven tekst en meldingen.</string>
+    <string name="settings_region_language_system">Systeemtaal gebruiken</string>
+    <string name="settings_region_language_en_us">Engels (Verenigde Staten)</string>
+    <string name="settings_region_language_en_gb">Engels (Verenigd Koninkrijk)</string>
+    <string name="settings_region_language_en_au">Engels (Australië)</string>
+    <string name="settings_region_language_en_ca">Engels (Canada)</string>
+    <string name="settings_region_language_en_za">Engels (Zuid-Afrika)</string>
+    <string name="settings_region_language_fr_fr">Frans (Frankrijk)</string>
+    <string name="settings_region_language_fr_ca">Frans (Canada)</string>
+    <string name="settings_region_language_it_it">Italiaans (Italië)</string>
+    <string name="settings_region_language_es_es">Spaans (Spanje)</string>
+    <string name="settings_region_language_es_mx">Spaans (Mexico)</string>
+    <string name="settings_region_language_ca_es">Catalaans (Spanje)</string>
+    <string name="settings_region_language_ru_ru">Russisch (Rusland)</string>
+    <string name="settings_region_language_pl_pl">Pools (Polen)</string>
+    <string name="settings_region_language_hr_hr">Kroatisch (Kroatië)</string>
+    <string name="settings_region_language_sl_si">Sloveens (Slovenië)</string>
+    <string name="settings_region_language_sr_rs">Servisch (Latijns)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Servisch (Cyrillisch)</string>
+    <string name="settings_region_language_bg_bg">Bulgaars (Bulgarije)</string>
+    <string name="settings_region_language_cs_cz">Tsjechisch (Tsjechië)</string>
+    <string name="settings_region_language_sk_sk">Slowaaks (Slowakije)</string>
+    <string name="settings_region_language_hu_hu">Hongaars (Hongarije)</string>
+    <string name="settings_region_language_ro_ro">Roemeens (Roemenië)</string>
+    <string name="settings_region_language_el_gr">Grieks (Griekenland)</string>
+    <string name="settings_region_language_uk_ua">Oekraïens (Oekraïne)</string>
+    <string name="settings_region_language_pt_br">Portugees (Brazilië)</string>
+    <string name="settings_region_language_pt_pt">Portugees (Portugal)</string>
+    <string name="settings_region_language_sv_se">Zweeds (Zweden)</string>
+    <string name="settings_region_language_fi_fi">Fins (Finland)</string>
+    <string name="settings_region_language_et_ee">Ests (Estland)</string>
+    <string name="settings_region_language_lv_lv">Lets (Letland)</string>
+    <string name="settings_region_language_lt_lt">Litouws (Litouwen)</string>
+    <string name="settings_region_language_tr_tr">Turks (Turkije)</string>
+    <string name="settings_region_language_id_id">Indonesisch (Indonesië)</string>
+    <string name="settings_region_language_ms_my">Maleis (Maleisië)</string>
+    <string name="settings_region_language_fil_ph">Filipijns (Filipijnen)</string>
+    <string name="settings_region_language_vi_vn">Vietnamees (Vietnam)</string>
+    <string name="settings_region_language_th_th">Thais (Thailand)</string>
+    <string name="settings_region_language_zh_cn">Chinees (vereenvoudigd)</string>
+    <string name="settings_region_language_zh_tw">Chinees (traditioneel)</string>
+    <string name="settings_region_language_hi_in">Hindi (India)</string>
+    <string name="settings_region_language_bn_bd">Bengaals (Bangladesh)</string>
+    <string name="settings_region_language_ja_jp">Japans (Japan)</string>
+    <string name="settings_region_language_ko_kr">Koreaans (Zuid-Korea)</string>
+    <string name="settings_region_language_ar_sa">Arabisch (Saudi-Arabië)</string>
+    <string name="settings_region_language_he_il">Hebreeuws (Israël)</string>
+    <string name="settings_region_language_fa_ir">Perzisch (Iran)</string>
+    <string name="settings_region_language_de_de">Duits (Duitsland)</string>
+    <string name="settings_region_language_de_at">Duits (Oostenrijk)</string>
+    <string name="settings_region_language_de_ch">Duits (Zwitserland)</string>
+    <string name="settings_region_language_am_et">Amhaars (Ethiopië)</string>
+    <string name="settings_region_language_da_dk">Deens (Denemarken)</string>
+    <string name="settings_region_language_nb_no">Noors Bokmål (Noorwegen)</string>
+    <string name="settings_region_language_sq_al">Albanees (Albanië)</string>
+    <string name="settings_region_language_sw_ke">Swahili (Kenia)</string>
+
+    <!-- Region screen — units pickers. -->
+    <string name="settings_temperature_unit_title">Temperatuureenheid</string>
+    <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="settings_distance_unit_title">Afstandseenheid</string>
+    <string name="settings_distance_unit_kilometers">Kilometer</string>
+    <string name="settings_distance_unit_miles">Mijl</string>
+
+    <!--
+    Voice locale picker labels.
+    -->
+    <string name="settings_tts_voice_locale_en_us">Engels (Verenigde Staten)</string>
+    <string name="settings_tts_voice_locale_en_gb">Engels (Verenigd Koninkrijk)</string>
+    <string name="settings_tts_voice_locale_en_au">Engels (Australië)</string>
+    <string name="settings_tts_voice_locale_en_ca">Engels (Canada)</string>
+    <string name="settings_tts_voice_locale_en_za">Engels (Zuid-Afrika)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Frans (Frankrijk)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Frans (Canada)</string>
+    <string name="settings_tts_voice_locale_it_it">Italiaans (Italië)</string>
+    <string name="settings_tts_voice_locale_es_es">Spaans (Spanje)</string>
+    <string name="settings_tts_voice_locale_es_mx">Spaans (Mexico)</string>
+    <string name="settings_tts_voice_locale_ca_es">Catalaans (Spanje)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Russisch (Rusland)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Pools (Polen)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Kroatisch (Kroatië)</string>
+    <string name="settings_tts_voice_locale_sl_si">Sloveens (Slovenië)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Servisch (Latijns)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Servisch (Cyrillisch)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Bulgaars (Bulgarije)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Tsjechisch (Tsjechië)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Slowaaks (Slowakije)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Hongaars (Hongarije)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Roemeens (Roemenië)</string>
+    <string name="settings_tts_voice_locale_el_gr">Grieks (Griekenland)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Oekraïens (Oekraïne)</string>
+    <string name="settings_tts_voice_locale_pt_br">Portugees (Brazilië)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Portugees (Portugal)</string>
+    <string name="settings_tts_voice_locale_sv_se">Zweeds (Zweden)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Fins (Finland)</string>
+    <string name="settings_tts_voice_locale_et_ee">Ests (Estland)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Lets (Letland)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Litouws (Litouwen)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Turks (Turkije)</string>
+    <string name="settings_tts_voice_locale_id_id">Indonesisch (Indonesië)</string>
+    <string name="settings_tts_voice_locale_ms_my">Maleis (Maleisië)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Filipijns (Filipijnen)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Vietnamees (Vietnam)</string>
+    <string name="settings_tts_voice_locale_th_th">Thais (Thailand)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Chinees (vereenvoudigd)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Chinees (traditioneel)</string>
+    <string name="settings_tts_voice_locale_hi_in">Hindi (India)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Bengaals (Bangladesh)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Japans (Japan)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Koreaans (Zuid-Korea)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Arabisch (Saudi-Arabië)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Arabisch (Egypte)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Arabisch (Verenigde Arabische Emiraten)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Arabisch (Marokko)</string>
+    <string name="settings_tts_voice_locale_he_il">Hebreeuws (Israël)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Perzisch (Iran)</string>
+    <string name="settings_tts_voice_locale_de_de">Duits (Duitsland)</string>
+    <string name="settings_tts_voice_locale_de_at">Duits (Oostenrijk)</string>
+    <string name="settings_tts_voice_locale_de_ch">Duits (Zwitserland)</string>
+    <string name="settings_tts_voice_locale_am_et">Amhaars (Ethiopië)</string>
+    <string name="settings_tts_voice_locale_da_dk">Deens (Denemarken)</string>
+    <string name="settings_tts_voice_locale_nb_no">Noors Bokmål (Noorwegen)</string>
+    <string name="settings_tts_voice_locale_sq_al">Albanees (Albanië)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Swahili (Kenia)</string>
+
+    <!--
+    API keys screen.
+    -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_status_set">Er is een Gemini-sleutel ingesteld.</string>
+    <string name="settings_api_key_status_unset">Geen Gemini-sleutel ingesteld. Haal er een op via aistudio.google.com om Gemini-stemmen te gebruiken.</string>
+    <string name="settings_api_key_placeholder">Plak hier je Gemini-API-sleutel</string>
+    <string name="settings_api_key_save">Gemini-sleutel opslaan</string>
+    <string name="settings_api_key_clear">Opgeslagen Gemini-sleutel wissen</string>
+
+    <!--
+    Location screen.
+    -->
+    <string name="settings_location_title">Locatie</string>
+    <string name="settings_location_use_device">Apparaatlocatie gebruiken</string>
+    <string name="settings_location_grant_background">Achtergrondlocatie toestaan (systeeminstellingen)</string>
+    <string name="settings_location_unset">Geen locatie ingesteld</string>
+    <string name="settings_location_clear">Locatie verwijderen</string>
+    <string name="settings_location_search_title">Locatie zoeken</string>
+    <string name="settings_location_query_label">Stad of plaats</string>
+    <string name="settings_location_search">Zoeken</string>
+    <string name="settings_location_searching">Bezig met zoeken…</string>
+    <string name="settings_location_no_results">Geen resultaten.</string>
+
+    <!--
+    Notification channels.
+    -->
+    <string name="notification_channel_daily_insight_name">Dagelijkse ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">De ochtendelijke weersamenvatting die je hebt ingesteld.</string>
+    <string name="notification_daily_insight_title">Weer vandaag</string>
+
+    <string name="notification_channel_tonight_insight_default_name">Avondlijkse ClothesCast (met afspraken)</string>
+    <string name="notification_channel_tonight_insight_default_description">De avondlijkse weersamenvatting als je vanavond afspraken hebt. Speelt je standaard meldingsgeluid af.</string>
+    <string name="notification_channel_tonight_insight_silent_name">Avondlijkse ClothesCast (stil)</string>
+    <string name="notification_channel_tonight_insight_silent_description">De avondlijkse weersamenvatting op vrije avonden. Stil bezorgd — je kunt hem op het vergrendelscherm zien, maar hij maakt geen geluid.</string>
+    <string name="notification_tonight_insight_title">Weer vanavond</string>
+
+    <string name="notification_channel_weather_alerts_name">Weerwaarschuwingen</string>
+    <string name="notification_channel_weather_alerts_description">Waarschuwingen met hoge prioriteit voor ernstige of extreme weersomstandigheden in jouw regio. Worden verzonden zodra ze worden gedetecteerd bij de dagelijkse ophaalbeurt.</string>
+    <string name="notification_weather_alert_title">Weerwaarschuwing: %1$s</string>
+
+    <!-- Notification-permission card. -->
+    <string name="settings_notification_permission_title">Meldingen zijn geblokkeerd</string>
+    <string name="settings_notification_permission_description">Zonder toestemming voor meldingen heeft je dagelijkse ClothesCast nergens naartoe. Sta ze toe zodat ClothesCast morgenochtend kan verschijnen.</string>
+    <string name="settings_notification_permission_grant">Meldingen toestaan</string>
+
+    <!-- Calendar opt-in card. -->
+    <string name="settings_calendar_title">Agenda</string>
+    <string name="settings_calendar_use_events">Agenda-afspraken van vandaag gebruiken</string>
+    <string name="settings_calendar_description_off">Als dit is ingeschakeld, leest ClothesCast de afspraken van vandaag uit je apparaatagenda, zodat je ochtendlijkse ClothesCast suggesties kan doen voor specifieke afspraken — bijvoorbeeld "Neem een paraplu mee voor je hardlooptraining om 15 uur in het park". Alleen afsprakentitels en tijdstippen worden gebruikt; beschrijvingen, deelnemers en locaties worden gelezen maar verlaten het apparaat nooit.</string>
+    <string name="settings_calendar_description_on">Leest de afspraken van vandaag uit je apparaatagenda om je ochtendlijkse ClothesCast aan te vullen. Alleen titels en tijdstippen worden gebruikt in de samenvatting; beschrijvingen en deelnemers niet. Alles blijft op het apparaat.</string>
+    <string name="settings_calendar_grant_permission">Toegang tot agenda toestaan</string>
+    <string name="settings_calendar_open_settings">Toegang tot agenda geweigerd. Sta dit toe in de systeeminstellingen.</string>
+
+    <!-- Debug screen. -->
+    <string name="settings_debug_title">Debug (alleen in debug-builds)</string>
+    <string name="settings_debug_description">De dagelijkse ClothesCast-routine direct activeren. Handig om te controleren zonder op het geplande tijdstip te wachten.</string>
+    <string name="settings_debug_fire_now">ClothesCast nu activeren</string>
+    <string name="settings_debug_fire_toast">ClothesCast-worker in de wachtrij geplaatst</string>
+
+    <!--
+    About screen.
+    -->
+    <string name="settings_about_title">Over</string>
+    <string name="settings_about_version">Versie %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s-build</string>
+    <string name="settings_about_source">Broncode op GitHub</string>
+    <string name="settings_about_dontkillmyapp">Achtergrondproblemen (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Bugrapport delen</string>
+    <string name="settings_about_version_copied">Versie gekopieerd naar klembord</string>
+
+    <!--
+    Today screen.
+    -->
+    <string name="today_title">Vandaag</string>
+    <string name="today_open_settings">Instellingen openen</string>
+    <string name="today_more_options">Meer opties</string>
+    <string name="today_report_a_bug">Bug melden</string>
+    <string name="today_refresh">Vernieuwen</string>
+    <string name="today_refresh_toast_daily">Je dagelijkse ClothesCast wordt vernieuwd — hij verschijnt zo meteen.</string>
+    <string name="today_refresh_toast_nightly">Je avondlijkse ClothesCast wordt vernieuwd — hij verschijnt zo meteen.</string>
+    <string name="today_empty_title">Nog geen ClothesCast</string>
+    <string name="today_empty_subtitle">Je ochtendlijkse ClothesCast verschijnt hier zodra hij is aangemaakt. Stel je locatie in via de instellingen en tik dan op Nu ophalen.</string>
+    <string name="today_fetch_now">Nu ophalen</string>
+    <string name="today_generated_at">Aangemaakt om %1$s</string>
+
+    <string name="today_outfit_title">Wat aantrekken</string>
+    <string name="today_outfit_label_today">Vandaag</string>
+    <string name="today_outfit_label_tonight">Vanavond</string>
+    <string name="today_outfit_label_tomorrow">Morgen</string>
+
+    <!-- Outfit-card category labels. -->
     <string name="today_outfit_top_tshirt">T-shirt</string>
     <string name="today_outfit_top_sweater">Trui</string>
     <string name="today_outfit_top_thick_jacket">Dikke jas</string>
     <string name="today_outfit_bottom_shorts">Shorts</string>
     <string name="today_outfit_bottom_long_pants">Broek</string>
 
+    <string name="today_forecast_title">Uurlijkse voorspelling</string>
+    <string name="today_forecast_min_max">Gevoeld %1$d – %2$d%3$s · Lucht %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Gevoelstemperatuur (%1$s) per uur · tik voor luchttemperatuur</string>
+    <string name="today_forecast_legend_air">Luchttemperatuur (%1$s) per uur · tik voor gevoelstemperatuur</string>
+
+    <string name="today_confidence_high">Hoge zekerheid — de belangrijkste modellen zijn het eens</string>
+    <string name="today_confidence_medium">Gemiddelde zekerheid</string>
+    <string name="today_confidence_low">Lage zekerheid — voorspellingen lopen uiteen</string>
+    <string name="today_confidence_spread">Spreiding: %1$.1f°C, %2$.0fpp neerslag over %3$d modellen</string>
+
+    <string name="today_working">Je ClothesCast wordt opgehaald…</string>
+    <string name="today_failed_title">Laatste poging mislukt</string>
+    <string name="today_failed_unexpected_http">Onverwachte HTTP-fout van de weerdienst.</string>
+    <string name="today_failed_unhandled">Er is een onverwachte fout opgetreden.</string>
+    <string name="today_failed_show_details">Details weergeven</string>
+    <string name="today_failed_hide_details">Details verbergen</string>
+
+    <!-- Home-screen App Widget. -->
+    <string name="widget_label">Outfit</string>
+    <string name="widget_description">De outfit voor het huidige dagdeel in één oogopslag.</string>
+    <string name="widget_empty_title">Nog geen outfit</string>
+    <string name="widget_empty_subtitle">Tik om ClothesCast te openen</string>
+
+    <!--
+    Onboarding flow.
+    -->
+    <string name="onboarding_title">Welkom bij ClothesCast</string>
+    <string name="onboarding_subtitle">Twee snelle keuzes en je bent klaar. Alles andere heeft een goede standaardinstelling die je later in de instellingen kunt aanpassen.</string>
+    <string name="onboarding_notifications_title">Meldingen</string>
+    <string name="onboarding_notifications_description">Zodat je dagelijkse ClothesCast bij je aankomt. Eenmalig toestaan, en morgenochtend is hij er.</string>
+    <string name="onboarding_notifications_grant">Meldingen toestaan</string>
+    <string name="onboarding_location_title">Locatie</string>
+    <string name="onboarding_location_description">Zodat de juiste voorspelling wordt opgehaald. Met locatietoegang leest ClothesCast elke ochtend de globale locatie van je apparaat; anders kun je handmatig een stad kiezen.</string>
+    <string name="onboarding_location_grant">Locatietoegang toestaan</string>
+    <string name="onboarding_location_denied_hint">Locatietoegang geweigerd. Je kunt in plaats daarvan handmatig een stad kiezen.</string>
+    <string name="onboarding_location_enter_manual">Locatie handmatig invoeren</string>
+    <string name="onboarding_location_using_device">We gebruiken elke ochtend de locatie van je apparaat.</string>
+
+    <string name="onboarding_gemini_title">Gemini-API-sleutel</string>
+    <string name="onboarding_gemini_description">Wordt door ClothesCast gebruikt voor gesproken stemmen en het genereren van voorspellingen. Haal er gratis een op via aistudio.google.com. De sleutel wordt versleuteld opgeslagen in de Android Keystore.</string>
+    <string name="onboarding_step_done">Klaar</string>
+    <string name="onboarding_skip">Voorlopig overslaan</string>
+    <string name="onboarding_continue">Doorgaan</string>
+
+    <!-- Insight prose templates. -->
     <string name="insight_lead_today">Vandaag</string>
     <string name="insight_lead_tonight">Vanavond</string>
+
     <!-- Dutch V2 word order: "Vandaag wordt het mild." -->
     <string name="insight_band_single">%1$s wordt het %2$s.</string>
     <string name="insight_band_range">%1$s wordt het %2$s tot %3$s.</string>
+
     <string name="insight_band_freezing">vriezend koud</string>
     <string name="insight_band_cold">koud</string>
     <string name="insight_band_cool">fris</string>
     <string name="insight_band_mild">mild</string>
     <string name="insight_band_warm">warm</string>
     <string name="insight_band_hot">erg warm</string>
+
     <string name="insight_delta_warmer">Het wordt vandaag %1$d° warmer.</string>
     <string name="insight_delta_cooler">Het wordt vandaag %1$d° kouder.</string>
+
     <string name="insight_alert">Waarschuwing: %1$s.</string>
+
     <string name="insight_clothes_wear">Draag %1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s en %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s en %3$s</string>
+
     <string name="insight_precip">%1$s %2$s.</string>
     <string name="insight_precip_at_time">om %1$s</string>
-    <!-- Apostrophe before s-genitive in Dutch: "\'s nachts" = at night. -->
+    <!-- Apostrophe before s-genitive in Dutch: "'s nachts" = at night. -->
     <string name="insight_precip_overnight">\'s nachts</string>
+
     <string name="insight_condition_clear">Helder</string>
     <string name="insight_condition_partly_cloudy">Gedeeltelijk bewolkt</string>
     <string name="insight_condition_cloudy">Bewolkt</string>
@@ -74,10 +416,232 @@ editor, outfit-card labels, and region/voice-locale picker names.
     <string name="insight_condition_snow">Sneeuw</string>
     <string name="insight_condition_thunderstorm">Onweer</string>
     <string name="insight_condition_unknown">Onbekend</string>
+
     <string name="insight_tie_in">Neem %1$s mee vanavond.</string>
+    <string name="insight_tie_in_at_night">Neem %1$s mee vanavond.</string>
     <string name="insight_tie_in_with_rain">Neem %1$s mee vanavond, regen om %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Kans op regen om %2$s — neem %1$s mee.</string>
+    <string name="insight_evening_rain">Vanavond regen om %1$s.</string>
+    <string name="insight_evening_rain_chance">Vanavond kans op regen om %1$s.</string>
+    <string name="insight_precip_chance">Kans op %1$s %2$s.</string>
+
     <!-- "15 uur" — preposition "om" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d uur</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
+    <string name="onboarding_pair_from_phone">In plaats daarvan koppelen via telefoon</string>
+
+    <string name="pairing_title">Scannen om te koppelen</string>
+    <string name="pairing_instructions">Scan deze QR-code met je telefoon en plak vervolgens je Gemini-API-sleutel in het formulier dat opent. De sleutel wordt rechtstreeks via je thuisnetwerk naar deze tv verzonden — zonder cloud-relay.</string>
+    <string name="pairing_qr_description">QR-code met link naar %1$s</string>
+    <string name="pairing_cancel">Annuleren</string>
+    <string name="pairing_received">Sleutel ontvangen — wordt opgeslagen…</string>
+    <string name="pairing_timeout_title">Koppelingsvenster verlopen</string>
+    <string name="pairing_timeout_body">Het koppelingsvenster van 5 minuten is gesloten. Tik op Opnieuw proberen om een nieuw venster te openen.</string>
+    <string name="pairing_error_title">Koppeling kon niet worden gestart</string>
+    <string name="pairing_error_body">Zorg dat de tv verbonden is met wifi en probeer het opnieuw.</string>
+    <string name="pairing_retry">Opnieuw proberen</string>
+
+    <string name="settings_location_background_rationale_title">Altijd toestaan</string>
+    <string name="settings_location_background_rationale_body">ClothesCast haalt elke ochtend op de achtergrond je voorspelling op. Daarvoor is locatietoegang \'Altijd toestaan\' nodig. Je wordt doorgestuurd naar de systeeminstellingen om dit in te stellen.</string>
+    <string name="settings_location_background_rationale_continue">Instellingen openen</string>
+    <string name="settings_location_background_rationale_dismiss">Niet nu</string>
+
+    <string name="settings_location_background_denied_title">Permanente toegang niet verleend</string>
+    <string name="settings_location_background_denied_body">Zonder \'Altijd toestaan\' valt de ochtendvoorspelling terug op je opgeslagen locatie. Wil je de systeeminstellingen openen om dit te verlenen?</string>
+    <string name="settings_location_background_denied_open">Instellingen openen</string>
+    <string name="settings_location_background_denied_keep">Opgeslagen locatie behouden</string>
+
+    <string name="settings_location_rationale_title">Permanente locatie</string>
+    <string name="settings_location_rationale_body">ClothesCast vernieuwt je voorspelling op de achtergrond om hem op tijd te bezorgen. Daarvoor is de locatietoestemming \'Altijd toestaan\' nodig.</string>
+    <string name="settings_location_rationale_continue">Doorgaan</string>
+    <string name="settings_location_rationale_dismiss">Niet nu</string>
+
+    <string name="settings_root_schedule_subtitle">Meldingen en tijdstippen</string>
+    <string name="settings_root_clothes_subtitle">Temperaturen en outfits</string>
+    <string name="settings_root_region_subtitle">Talen en eenheden</string>
+    <string name="settings_root_voice_subtitle">Providers en accenten</string>
+
+    <string name="settings_tts_device_voice_label">Apparaatstem</string>
+    <string name="settings_tts_device_voice_auto">Automatisch (beste accent)</string>
+    <string name="settings_tts_device_voice_currently">Huidig: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Wordt geladen…</string>
+    <string name="settings_tts_device_voice_network">Netwerk</string>
+    <string name="settings_tts_device_voice_offline">Offline</string>
+    <string name="settings_tts_install_google_hint">Installeer Google\'s tekst-naar-spraak-engine voor betere stemmen.</string>
+    <string name="settings_tts_install_google_button">Google TTS installeren</string>
+
+    <string name="today_failed_no_location">Je locatie kon niet worden bepaald. Sta permanente locatietoegang toe of stel een stad in via de instellingen.</string>
+    <string name="today_location_required_title">Stel je locatie in</string>
+    <string name="today_location_required_body">ClothesCast heeft je locatie nodig om de voorspelling op te halen. Sta permanente locatietoegang toe of kies een stad.</string>
+    <string name="today_location_required_action">Locatie-instellingen openen</string>
+
+    <string name="today_rationale_title">Waarom dit outfit?</string>
+    <string name="today_rationale_show">Waarom?</string>
+    <string name="today_rationale_dismiss">Begrepen</string>
+    <string name="today_rationale_threshold_decrease">Drempel met 1 graad verlagen</string>
+    <string name="today_rationale_threshold_increase">Drempel met 1 graad verhogen</string>
+    <string name="today_rationale_threshold_changed_hint">Vernieuwen om het nieuwe outfit te zien.</string>
+    <string name="today_rationale_unavailable">Geen onderbouwing beschikbaar — open de app na de volgende vernieuwing.</string>
+    <string name="today_rationale_min_below_with_time">Minimale gevoelstemperatuur %1$s%2$s om %3$s uur, onder %4$s%2$s</string>
+    <string name="today_rationale_min_below">Minimale gevoelstemperatuur %1$s%2$s, onder %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Minimale gevoelstemperatuur %1$s%2$s om %3$s uur, minstens %4$s%2$s</string>
+    <string name="today_rationale_min_above">Minimale gevoelstemperatuur %1$s%2$s, minstens %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Maximale gevoelstemperatuur slechts %1$s%2$s om %3$s uur, onder %4$s%2$s</string>
+    <string name="today_rationale_max_below">Maximale gevoelstemperatuur slechts %1$s%2$s, onder %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Maximale gevoelstemperatuur %1$s%2$s om %3$s uur, minstens %4$s%2$s</string>
+    <string name="today_rationale_max_above">Maximale gevoelstemperatuur %1$s%2$s, minstens %3$s%2$s</string>
+
+    <string name="today_location_unknown">Jouw locatie</string>
+
+    <string name="today_retrying">Laatste poging mislukt — opnieuw proberen…</string>
+
+    <!-- Crash-report banner. -->
+    <string name="today_crash_banner_title">Vorige start gecrasht</string>
+    <string name="today_crash_banner_body">Er is een crashrapport opgeslagen op je apparaat. Wil je het delen zodat de fout kan worden verholpen? Er wordt niets verzonden totdat je een bestemming kiest.</string>
+    <string name="today_crash_banner_share">Rapport delen</string>
+    <string name="today_crash_banner_dismiss">Sluiten</string>
+
+    <!-- TV-specific onboarding subtitle. -->
+    <string name="onboarding_subtitle_tv">Twee snelle keuzes en je bent klaar. Alles andere kun je later in de instellingen aanpassen.</string>
+
+    <!-- Onboarding — background location step. -->
+    <string name="onboarding_location_grant_background">Altijd toestaan</string>
+    <string name="onboarding_location_background_needed">Nog één stap: ClothesCast heeft \'Altijd toestaan\' nodig zodat de ochtendvoorspelling je locatie kan lezen terwijl de app gesloten is.</string>
+    <string name="onboarding_location_enter_manual_hint">Je kunt je locatie handmatig invoeren als je locatietoegang weigert of als de apparaatlocatie onjuist is.</string>
+
+    <!-- Settings root — extra rows. -->
+    <string name="settings_root_display">Weergave</string>
+    <string name="settings_root_location">Locatie</string>
+    <string name="settings_root_calendar">Agenda</string>
+    <string name="settings_root_display_subtitle">Thema</string>
+    <string name="settings_root_location_subtitle">Automatisch of stad kiezen</string>
+    <string name="settings_root_calendar_subtitle">Afspraken van vandaag</string>
+
+    <!-- Display / theme settings. -->
+    <string name="settings_display_theme_title">Thema</string>
+    <string name="settings_display_theme_system">Systeeminstelling</string>
+    <string name="settings_display_theme_light">Licht</string>
+    <string name="settings_display_theme_dark">Donker</string>
+
+    <!-- API key screen — Gemini section header. -->
+    <string name="settings_api_key_gemini_header">Gebruik Gemini voor stemmen van hoge kwaliteit.</string>
+
+    <!-- Location screen — additional strings. -->
+    <string name="settings_location_use_device_description">Laatste globale locatie</string>
+    <string name="settings_location_detecting">Wordt bepaald…</string>
+    <string name="settings_location_background_banner_title">Permanente locatie vereist</string>
+    <string name="settings_location_background_banner_body">Zonder dit kan de ochtendvoorspelling je locatie niet lezen.</string>
+    <string name="settings_location_manual_override">Verkeerde locatie? Handmatig instellen</string>
+    <string name="settings_location_manual_override_disclosure">Als je een stad kiest, wordt automatische detectie uitgeschakeld.</string>
+
+    <!-- TTS engine selection — description. -->
+    <string name="settings_tts_engine_description">Gemini klinkt aanzienlijk natuurlijker dan de apparaatstem, maar vereist een netwerkoproep bij het spreken en gebruikt je API-sleutel voor de synthese (één korte oproep per gesproken ClothesCast). Valt terug op de apparaatstem als Gemini mislukt.</string>
+
+    <!-- In-app update banner. -->
+    <string name="today_update_available_title">Update beschikbaar</string>
+    <string name="today_update_available_body">Er is een nieuwere versie van ClothesCast beschikbaar in de Play Store.</string>
+    <string name="today_update_available_action">Bijwerken</string>
+    <string name="today_update_available_dismiss">Niet nu</string>
+    <string name="today_update_downloaded_body">Update gedownload. Herstart om de installatie te voltooien.</string>
+    <string name="today_update_downloaded_action">Herstarten</string>
+
+    <!-- Outfit card labels — additional garments. -->
+    <string name="today_outfit_top_polo">Poloshirt</string>
+    <string name="today_outfit_top_thin_jacket">Lichte jas</string>
+    <string name="today_outfit_top_thick_coat">Dikke jas</string>
+    <string name="today_outfit_top_puffer_jacket">Donsjack</string>
+    <string name="today_outfit_bottom_skirt">Rok</string>
+    <string name="today_outfit_bottom_jeans">Jeans</string>
+
+    <!-- Garment dropdown — additional items. -->
+    <string name="garment_polo">Poloshirt</string>
+    <string name="garment_thin_jacket">Lichte jas</string>
+    <string name="garment_puffer">Donsjack</string>
+    <string name="garment_skirt">Rok</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Kans op regen</string>
+    <string name="today_precipitation_peak">Piek %1$d%% om %2$s</string>
+    <string name="today_precipitation_dry">Geen regen verwacht vandaag</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">Modellen:</string>
+    <string name="today_chart_main_line_label">Gecombineerd</string>
+    <string name="today_chart_divergence_summary">Modellen wijken het meest af om %1$s (Δ %2$.1f%3$s gevoelstemperatuur) — voornamelijk %4$s, %5$s</string>
+
+    <!-- Divergence factor names. -->
+    <string name="today_factor_air_temperature">Luchttemperatuur</string>
+    <string name="today_factor_wind_speed">Windsnelheid</string>
+    <string name="today_factor_cloud_cover">Bewolking</string>
+    <string name="today_factor_humidity">Luchtvochtigheid</string>
+
+    <!-- Diagnostic cards. -->
+    <string name="today_wind_title">Windsnelheid</string>
+    <string name="today_wind_subtitle">Windsnelheid (%1$s) per uur per model</string>
+    <string name="today_cloud_title">Bewolking</string>
+    <string name="today_cloud_subtitle">Totale bewolking (%) per uur per model</string>
+    <string name="today_humidity_title">Luchtvochtigheid</string>
+    <string name="today_humidity_subtitle">Relatieve luchtvochtigheid (%) per uur per model</string>
+
+    <!-- Low-confidence callout banner. -->
+    <string name="today_low_confidence_callout_title">Voorspellingen lopen vandaag uiteen</string>
+    <string name="today_low_confidence_callout_body">Temperatuur varieert met %1$.1f°C en kans op neerslag met %2$.0f%% over %3$d modellen.</string>
+
+    <!-- Telemetry notice. -->
+    <string name="today_telemetry_notice_title">Crash- en gebruiksrapporten zijn ingeschakeld</string>
+    <string name="today_telemetry_notice_body">ClothesCast verstuurt anonieme crashrapporten en gebruiksanalyses om fouten op te lossen. Er worden geen agendagegevens, locatiegegevens of inhoudsteksten verzonden. Op elk moment uit te schakelen via de instellingen.</string>
+    <string name="today_telemetry_notice_open_settings">Privacy-instellingen openen</string>
+    <string name="today_telemetry_notice_dismiss">Sluiten</string>
+
+    <!-- Settings root — Privacy row. -->
+    <string name="settings_root_privacy">Privacy</string>
+    <string name="settings_root_privacy_subtitle">Crash- en gebruiksrapporten</string>
+
+    <!-- Display — Charts section. -->
+    <string name="settings_display_charts_title">Grafieken</string>
+    <string name="settings_display_model_spread_label">Modelverspreiding in grafieken weergeven</string>
+    <string name="settings_display_model_spread_description">Toont de uurlijkse voorspelling van de belangrijkste weermodellen over de temperatuur- en regengrafieken. Handig om onzekere voorspellingen te herkennen.</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">Crash- en gebruiksrapporten</string>
+    <string name="settings_privacy_telemetry_label">Crash- en gebruiksgegevens verzenden</string>
+    <string name="settings_privacy_telemetry_description">Verstuurt anonieme crashrapporten en geaggregeerde gebruiksstatistieken om de ontwikkelaar te helpen bij het oplossen van fouten en het nemen van functiekeuzes.</string>
+    <string name="settings_privacy_telemetry_limits">Nooit verzonden: agenda-items, locatiecoördinaten of plaatsnamen, inhoud of meldingsteksten, API-sleutels, nauwkeurige GPS-gegevens, advertentie-ID\'s.</string>
+    <string name="settings_privacy_open_policy">Volledig privacybeleid lezen</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">Stijl</string>
+    <string name="settings_tts_style_weather_forecaster">Weerpresentator</string>
+    <string name="settings_tts_style_pirate">Piraat</string>
+    <string name="settings_tts_style_cowboy">Cowboy</string>
+    <string name="settings_tts_style_shakespearean">Shakespeareaans</string>
+    <string name="settings_tts_style_surfer">Surfer</string>
+    <string name="settings_tts_style_parent">Ouder</string>
+    <string name="settings_tts_style_child">Kind</string>
+    <string name="settings_tts_style_teenager">Tiener</string>
+    <string name="settings_tts_style_grandparent">Grootouder</string>
+    <string name="settings_tts_style_kids_host">Kinderprogramma-presentatrice</string>
+    <string name="settings_tts_style_radio_host">Talkshow-presentator</string>
+    <string name="settings_tts_style_morning_dj">Ochtend-DJ</string>
+    <string name="settings_tts_style_science_teacher">Natuurkundeleraar</string>
+    <string name="settings_tts_style_historian">Historicus</string>
+    <string name="settings_tts_style_sportscaster">Sportcommentator</string>
+    <string name="settings_tts_style_stadium_announcer">Stadionspeaker</string>
+    <string name="settings_tts_style_storyteller">Verteller</string>
+    <string name="settings_tts_style_fitness_instructor">Fitnessinstructeur</string>
+    <string name="settings_tts_style_morning_presenter">Ochtendradio-presentatrice</string>
+    <string name="settings_tts_style_custom">Aangepast…</string>
+    <string name="settings_tts_style_custom_label">Aangepaste instructie</string>
+    <string name="settings_tts_style_custom_placeholder">bijv. Lees het volgende voor als een strenge fluisterende bibliotheekmedewerker</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">Bugrapport delen?</string>
+    <string name="bug_report_consent_body">Dit helpt bij het diagnosticeren van problemen. Het rapport bevat gevoelige persoonlijke informatie, waaronder je locatie, app-instellingen en recente activiteit. Je kunt het voor verzending bekijken en bewerken.</string>
+    <string name="bug_report_consent_dont_show_again">Niet meer weergeven</string>
+    <string name="bug_report_consent_continue">Doorgaan</string>
+    <string name="bug_report_consent_cancel">Annuleren</string>
+
+    <!-- Device-incompatibility error screen. -->
+    <string name="error_device_incompatible">ClothesCast kan niet worden uitgevoerd op dit apparaat — je Android-build mist een functie die de app-interface nodig heeft (Configuration.fontWeightAdjustment, verwacht vanaf Android 12 en hoger). Neem contact op met je apparaatfabrikant voor een systeemupdate.</string>
 </resources>

@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Czech translation. Tone is informal "ty"-form throughout ("Obleč si …",
-"Vezmi si …"). Scope: insight-prose templates, garment labels, clothes-rule
-editor, outfit-card labels, and region/voice-locale picker names. Other UI
-surfaces fall back to default English (matching values-pl / values-uk).
+Czech translation — full UI coverage. Tone is informal "ty"-form throughout
+("Obleč si …", "Vezmi si …"). Brand name "ClothesCast" stays verbatim.
+
+What is NOT overridden, by design:
+- `app_name` — brand identifier, identical across locales.
+- `insight_time_am` / `_pm` / `_midnight` / `_noon` (and the *_minutes
+  variants) — English-only spoken-time formatter helpers. Czech locales
+  use `insight_time_hour` / `insight_time_hour_minutes` which are
+  translated below; the AM/PM keys exist for `Locale.language == "en"`
+  paths only.
+
+Picker labels under `settings_region_language_*` and
+`settings_tts_voice_locale_*` give the Czech names for every offered
+locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
 -->
 <resources>
     <string name="settings_region_language_cs_cz">Čeština (Česko)</string>
@@ -11,6 +21,144 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_tts_voice_locale_label">Přízvuk</string>
     <string name="settings_tts_voice_locale_system">Sledovat nastavení jazyka</string>
 
+    <!-- Region language picker — Czech names for all supported locales. -->
+    <string name="settings_region_language_de_de">Němčina (Německo)</string>
+    <string name="settings_region_language_de_at">Němčina (Rakousko)</string>
+    <string name="settings_region_language_de_ch">Němčina (Švýcarsko)</string>
+    <string name="settings_region_language_en_us">Angličtina (USA)</string>
+    <string name="settings_region_language_en_gb">Angličtina (Velká Británie)</string>
+    <string name="settings_region_language_en_au">Angličtina (Austrálie)</string>
+    <string name="settings_region_language_en_ca">Angličtina (Kanada)</string>
+    <string name="settings_region_language_en_za">Angličtina (Jižní Afrika)</string>
+    <string name="settings_region_language_fr_fr">Francouzština (Francie)</string>
+    <string name="settings_region_language_fr_ca">Francouzština (Kanada)</string>
+    <string name="settings_region_language_it_it">Italština (Itálie)</string>
+    <string name="settings_region_language_es_es">Španělština (Španělsko)</string>
+    <string name="settings_region_language_es_mx">Španělština (Mexiko)</string>
+    <string name="settings_region_language_ca_es">Katalánština (Španělsko)</string>
+    <string name="settings_region_language_ru_ru">Ruština (Rusko)</string>
+    <string name="settings_region_language_pl_pl">Polština (Polsko)</string>
+    <string name="settings_region_language_hr_hr">Chorvatština (Chorvatsko)</string>
+    <string name="settings_region_language_sl_si">Slovinština (Slovinsko)</string>
+    <string name="settings_region_language_sr_rs">Srbština (latinkou)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Srbština (cyrilicí)</string>
+    <string name="settings_region_language_bg_bg">Bulharština (Bulharsko)</string>
+    <string name="settings_region_language_sk_sk">Slovenština (Slovensko)</string>
+    <string name="settings_region_language_hu_hu">Maďarština (Maďarsko)</string>
+    <string name="settings_region_language_ro_ro">Rumunština (Rumunsko)</string>
+    <string name="settings_region_language_el_gr">Řečtina (Řecko)</string>
+    <string name="settings_region_language_uk_ua">Ukrajinština (Ukrajina)</string>
+    <string name="settings_region_language_pt_br">Portugalština (Brazílie)</string>
+    <string name="settings_region_language_pt_pt">Portugalština (Portugalsko)</string>
+    <string name="settings_region_language_nl_nl">Nizozemština (Nizozemsko)</string>
+    <string name="settings_region_language_sv_se">Švédština (Švédsko)</string>
+    <string name="settings_region_language_fi_fi">Finština (Finsko)</string>
+    <string name="settings_region_language_et_ee">Estonština (Estonsko)</string>
+    <string name="settings_region_language_lv_lv">Lotyšština (Lotyšsko)</string>
+    <string name="settings_region_language_lt_lt">Litevština (Litva)</string>
+    <string name="settings_region_language_tr_tr">Turečtina (Turecko)</string>
+    <string name="settings_region_language_id_id">Indonéština (Indonésie)</string>
+    <string name="settings_region_language_ms_my">Malajština (Malajsie)</string>
+    <string name="settings_region_language_fil_ph">Filipínština (Filipíny)</string>
+    <string name="settings_region_language_vi_vn">Vietnamština (Vietnam)</string>
+    <string name="settings_region_language_th_th">Thajština (Thajsko)</string>
+    <string name="settings_region_language_zh_cn">Čínština (zjednodušená)</string>
+    <string name="settings_region_language_zh_tw">Čínština (tradiční)</string>
+    <string name="settings_region_language_hi_in">Hindština (Indie)</string>
+    <string name="settings_region_language_bn_bd">Bengálština (Bangladéš)</string>
+    <string name="settings_region_language_ja_jp">Japonština (Japonsko)</string>
+    <string name="settings_region_language_ko_kr">Korejština (Jižní Korea)</string>
+    <string name="settings_region_language_ar_sa">Arabština (Saúdská Arábie)</string>
+    <string name="settings_region_language_he_il">Hebrejština (Izrael)</string>
+    <string name="settings_region_language_fa_ir">Perština (Írán)</string>
+    <string name="settings_region_language_am_et">Amharština (Etiopie)</string>
+    <string name="settings_region_language_da_dk">Dánština (Dánsko)</string>
+    <string name="settings_region_language_nb_no">Norština bokmål (Norsko)</string>
+    <string name="settings_region_language_sq_al">Albánština (Albánie)</string>
+    <string name="settings_region_language_sw_ke">Svahilština (Keňa)</string>
+
+    <!-- Voice locale picker — Czech names for all supported locales. -->
+    <string name="settings_tts_voice_locale_de_de">Němčina (Německo)</string>
+    <string name="settings_tts_voice_locale_de_at">Němčina (Rakousko)</string>
+    <string name="settings_tts_voice_locale_de_ch">Němčina (Švýcarsko)</string>
+    <string name="settings_tts_voice_locale_en_us">Angličtina (USA)</string>
+    <string name="settings_tts_voice_locale_en_gb">Angličtina (Velká Británie)</string>
+    <string name="settings_tts_voice_locale_en_au">Angličtina (Austrálie)</string>
+    <string name="settings_tts_voice_locale_en_ca">Angličtina (Kanada)</string>
+    <string name="settings_tts_voice_locale_en_za">Angličtina (Jižní Afrika)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Francouzština (Francie)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Francouzština (Kanada)</string>
+    <string name="settings_tts_voice_locale_it_it">Italština (Itálie)</string>
+    <string name="settings_tts_voice_locale_es_es">Španělština (Španělsko)</string>
+    <string name="settings_tts_voice_locale_es_mx">Španělština (Mexiko)</string>
+    <string name="settings_tts_voice_locale_ca_es">Katalánština (Španělsko)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Ruština (Rusko)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Polština (Polsko)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Chorvatština (Chorvatsko)</string>
+    <string name="settings_tts_voice_locale_sl_si">Slovinština (Slovinsko)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Srbština (latinkou)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Srbština (cyrilicí)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Bulharština (Bulharsko)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Slovenština (Slovensko)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Maďarština (Maďarsko)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Rumunština (Rumunsko)</string>
+    <string name="settings_tts_voice_locale_el_gr">Řečtina (Řecko)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Ukrajinština (Ukrajina)</string>
+    <string name="settings_tts_voice_locale_pt_br">Portugalština (Brazílie)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Portugalština (Portugalsko)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Nizozemština (Nizozemsko)</string>
+    <string name="settings_tts_voice_locale_sv_se">Švédština (Švédsko)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Finština (Finsko)</string>
+    <string name="settings_tts_voice_locale_et_ee">Estonština (Estonsko)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Lotyšština (Lotyšsko)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Litevština (Litva)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Turečtina (Turecko)</string>
+    <string name="settings_tts_voice_locale_id_id">Indonéština (Indonésie)</string>
+    <string name="settings_tts_voice_locale_ms_my">Malajština (Malajsie)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Filipínština (Filipíny)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Vietnamština (Vietnam)</string>
+    <string name="settings_tts_voice_locale_th_th">Thajština (Thajsko)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Čínština (zjednodušená)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Čínština (tradiční)</string>
+    <string name="settings_tts_voice_locale_hi_in">Hindština (Indie)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Bengálština (Bangladéš)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Japonština (Japonsko)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Korejština (Jižní Korea)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Arabština (Saúdská Arábie)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Arabština (Egypt)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Arabština (Spojené arabské emiráty)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Arabština (Maroko)</string>
+    <string name="settings_tts_voice_locale_he_il">Hebrejština (Izrael)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Perština (Írán)</string>
+    <string name="settings_tts_voice_locale_am_et">Amharština (Etiopie)</string>
+    <string name="settings_tts_voice_locale_da_dk">Dánština (Dánsko)</string>
+    <string name="settings_tts_voice_locale_nb_no">Norština bokmål (Norsko)</string>
+    <string name="settings_tts_voice_locale_sq_al">Albánština (Albánie)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Svahilština (Keňa)</string>
+
+    <!-- Settings — top bar + root navigation. -->
+    <string name="settings_title">Nastavení</string>
+    <string name="settings_back">Zpět</string>
+
+    <string name="settings_root_voice">Hlas</string>
+    <string name="settings_root_schedule">Plán</string>
+    <string name="settings_root_region">Oblast</string>
+    <string name="settings_root_clothes">Oblečení</string>
+    <string name="settings_root_about">O aplikaci</string>
+    <string name="settings_root_display">Zobrazení</string>
+    <string name="settings_root_location">Poloha</string>
+    <string name="settings_root_calendar">Kalendář</string>
+    <string name="settings_root_privacy">Soukromí</string>
+    <string name="settings_root_schedule_subtitle">Oznámení a časy</string>
+    <string name="settings_root_clothes_subtitle">Teploty a outfity</string>
+    <string name="settings_root_region_subtitle">Jazyky a jednotky</string>
+    <string name="settings_root_voice_subtitle">Poskytovatel a přízvuky</string>
+    <string name="settings_root_display_subtitle">Motiv</string>
+    <string name="settings_root_location_subtitle">Automaticky nebo vyber město</string>
+    <string name="settings_root_calendar_subtitle">Dnešní události</string>
+    <string name="settings_root_privacy_subtitle">Zprávy o pádech a využití</string>
+
+    <!-- Garment dropdown labels. -->
     <string name="garment_sweater">Svetr</string>
     <string name="garment_hoodie">Mikina s kapucí</string>
     <string name="garment_jacket">Bunda</string>
@@ -20,7 +168,14 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="garment_shorts">Šortky</string>
     <string name="garment_pants">Kalhoty</string>
     <string name="garment_jeans">Džíny</string>
+    <string name="garment_polo">Polo tričko</string>
+    <string name="garment_thin_jacket">Lehká bunda</string>
+    <string name="garment_puffer">Péřová bunda</string>
+    <string name="garment_skirt">Sukně</string>
 
+    <!-- Clothes settings. -->
+    <string name="settings_clothes_title">Pravidla oblékání</string>
+    <string name="settings_clothes_description">Když předpověď překročí jeden z těchto prahů, oblečení se zobrazí v tvém denním ClothesCastu.</string>
     <string name="settings_clothes_empty">Žádná pravidla. Klepni na Přidat pro vytvoření.</string>
     <string name="settings_clothes_add">Přidat</string>
     <string name="settings_clothes_edit">Upravit</string>
@@ -38,12 +193,355 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_clothes_cond_temp_above">když je pocitová teplota nad %1$s</string>
     <string name="settings_clothes_cond_precip_above">když je pravděpodobnost deště nad %.0f%%</string>
 
+    <!-- Schedule screen. -->
+    <string name="settings_schedule_title">Denní ClothesCast</string>
+    <string name="settings_schedule_time_label">Čas</string>
+    <string name="settings_schedule_days_label">Dny v týdnu</string>
+    <string name="settings_daily_mention_evening_events">Zmiňovat večerní události</string>
+
+    <string name="settings_tonight_title">Noční ClothesCast</string>
+    <string name="settings_tonight_description">Druhý ClothesCast večer pro počasí dnešní noci. V klidných večerech zůstane tichý nebo se vůbec nezobrazí, pokud je aktivní „Upozorňovat jen při večerních událostech"; ve večerech s událostmi přehraje zvuk a (pokud máš zapnutý mluvený výstup) přečte se sám nahlas.</string>
+    <string name="settings_tonight_enabled">Zobrazovat noční ClothesCast</string>
+    <string name="settings_tonight_time_label">Čas</string>
+    <string name="settings_tonight_days_label">Dny v týdnu</string>
+    <string name="settings_tonight_notify_only_on_events">Upozorňovat jen při večerních událostech</string>
+
+    <string name="settings_delivery_label">Doručení</string>
+    <string name="settings_delivery_notification_only">Jen oznámení</string>
+    <string name="settings_delivery_tts_only">Jen mluvené</string>
+    <string name="settings_delivery_notification_and_tts">Oznámení i mluvené</string>
+
+    <!-- Voice screen. -->
+    <string name="settings_tts_engine_title">Řečový engine</string>
+    <string name="settings_tts_engine_device">Zařízení (offline, zdarma)</string>
+    <string name="settings_tts_engine_gemini">Gemini (vysoká kvalita, online)</string>
+    <string name="settings_tts_engine_description">Gemini zní výrazně přirozeněji než hlas zařízení, ale při mluvení vyžaduje síťové volání a používá tvůj API klíč pro syntézu (krátké volání za každý mluvený ClothesCast). Při selhání Gemini se vrátí k hlasu zařízení.</string>
+
+    <string name="settings_tts_voice_label">Hlas</string>
+    <string name="settings_tts_voice_dismiss">Hotovo</string>
+    <string name="settings_tts_voice_locale_description">Nastavuje přízvuk mluveného hlasu. Nemění zobrazený text.</string>
+
+    <string name="settings_tts_test">Otestovat hlas</string>
+    <string name="settings_tts_test_in_flight">Testování — čekej prosím…</string>
+
+    <string name="settings_tts_device_voice_label">Hlas zařízení</string>
+    <string name="settings_tts_device_voice_auto">Automaticky (nejlepší přízvuk)</string>
+    <string name="settings_tts_device_voice_currently">Aktuálně: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Načítám…</string>
+    <string name="settings_tts_device_voice_network">Síť</string>
+    <string name="settings_tts_device_voice_offline">Offline</string>
+    <string name="settings_tts_install_google_hint">Nainstaluj Google Text-to-Speech engine pro kvalitnější hlasy.</string>
+    <string name="settings_tts_install_google_button">Nainstalovat Google TTS</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">Styl</string>
+    <string name="settings_tts_style_weather_forecaster">Meteorolog</string>
+    <string name="settings_tts_style_pirate">Pirát</string>
+    <string name="settings_tts_style_cowboy">Cowboy</string>
+    <string name="settings_tts_style_shakespearean">Shakespeariánský</string>
+    <string name="settings_tts_style_surfer">Surfař</string>
+    <string name="settings_tts_style_parent">Rodič</string>
+    <string name="settings_tts_style_child">Dítě</string>
+    <string name="settings_tts_style_teenager">Teenager</string>
+    <string name="settings_tts_style_grandparent">Prarodič</string>
+    <string name="settings_tts_style_kids_host">Moderátor dětského pořadu</string>
+    <string name="settings_tts_style_radio_host">Moderátor talk-show</string>
+    <string name="settings_tts_style_morning_dj">Ranní DJ</string>
+    <string name="settings_tts_style_science_teacher">Učitel přírodních věd</string>
+    <string name="settings_tts_style_historian">Historik</string>
+    <string name="settings_tts_style_sportscaster">Sportovní komentátor</string>
+    <string name="settings_tts_style_stadium_announcer">Stadionový hlasatel</string>
+    <string name="settings_tts_style_storyteller">Vypravěč</string>
+    <string name="settings_tts_style_fitness_instructor">Fitness instruktor</string>
+    <string name="settings_tts_style_morning_presenter">Ranní moderátor rozhlasu</string>
+    <string name="settings_tts_style_custom">Vlastní…</string>
+    <string name="settings_tts_style_custom_label">Vlastní pokyn</string>
+    <string name="settings_tts_style_custom_placeholder">např. Čti následující jako přísný šeptající knihovník</string>
+
+    <!-- Region screen. -->
+    <string name="settings_region_language_title">Jazyk</string>
+    <string name="settings_region_language_description">Nastavuje jazyk zobrazeného textu a oznámení.</string>
+    <string name="settings_region_language_system">Použít jazyk systému</string>
+
+    <string name="settings_temperature_unit_title">Jednotka teploty</string>
+    <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="settings_distance_unit_title">Jednotka vzdálenosti</string>
+    <string name="settings_distance_unit_kilometers">Kilometry</string>
+    <string name="settings_distance_unit_miles">Míle</string>
+
+    <!-- API keys screen. -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Použij Gemini pro kvalitní hlasy.</string>
+    <string name="settings_api_key_status_set">Gemini klíč je nastaven.</string>
+    <string name="settings_api_key_status_unset">Žádný Gemini klíč není nastaven. Získej ho na aistudio.google.com pro použití hlasů Gemini.</string>
+    <string name="settings_api_key_placeholder">Vlož sem Gemini API klíč</string>
+    <string name="settings_api_key_save">Uložit Gemini klíč</string>
+    <string name="settings_api_key_clear">Smazat uložený Gemini klíč</string>
+
+    <!-- Location screen. -->
+    <string name="settings_location_title">Poloha</string>
+    <string name="settings_location_use_device">Použít polohu zařízení</string>
+    <string name="settings_location_use_device_description">Poslední přibližná poloha</string>
+    <string name="settings_location_grant_background">Povolit polohu na pozadí (Systémové nastavení)</string>
+    <string name="settings_location_unset">Žádná poloha nastavena</string>
+    <string name="settings_location_clear">Odebrat polohu</string>
+    <string name="settings_location_search_title">Hledat polohu</string>
+    <string name="settings_location_query_label">Město nebo místo</string>
+    <string name="settings_location_search">Hledat</string>
+    <string name="settings_location_searching">Hledám…</string>
+    <string name="settings_location_no_results">Žádné výsledky.</string>
+    <string name="settings_location_detecting">Zjišťuji…</string>
+    <string name="settings_location_background_banner_title">Vyžadována trvalá poloha</string>
+    <string name="settings_location_background_banner_body">Bez ní nemůže ranní předpověď číst tvou polohu.</string>
+    <string name="settings_location_manual_override">Špatná poloha? Nastavit ručně</string>
+    <string name="settings_location_manual_override_disclosure">Výběrem města deaktivuješ automatické zjišťování.</string>
+
+    <string name="settings_location_background_rationale_title">Vždy povolit</string>
+    <string name="settings_location_background_rationale_body">ClothesCast načítá tvou předpověď každé ráno na pozadí. K tomu potřebuje přístup k poloze „Vždy povolit". Budeš přesměrován/a do systémového nastavení, kde ho udělíš.</string>
+    <string name="settings_location_background_rationale_continue">Otevřít nastavení</string>
+    <string name="settings_location_background_rationale_dismiss">Teď ne</string>
+
+    <string name="settings_location_background_denied_title">Trvalý přístup nebyl udělen</string>
+    <string name="settings_location_background_denied_body">Bez „Vždy povolit" bude ranní předpověď používat tvou uloženou polohu. Chceš otevřít systémové nastavení a přístup udělit?</string>
+    <string name="settings_location_background_denied_open">Otevřít nastavení</string>
+    <string name="settings_location_background_denied_keep">Ponechat uloženou polohu</string>
+
+    <string name="settings_location_rationale_title">Trvalá poloha</string>
+    <string name="settings_location_rationale_body">ClothesCast aktualizuje tvou předpověď na pozadí, aby ji doručil včas. K tomu potřebuje oprávnění k poloze „Vždy povolit".</string>
+    <string name="settings_location_rationale_continue">Pokračovat</string>
+    <string name="settings_location_rationale_dismiss">Teď ne</string>
+
+    <!-- Notification channels. -->
+    <string name="notification_channel_daily_insight_name">Denní ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">Ranní shrnutí počasí, které jsi aktivoval/a.</string>
+    <string name="notification_daily_insight_title">Dnešní počasí</string>
+
+    <string name="notification_channel_tonight_insight_default_name">Noční ClothesCast (s událostmi)</string>
+    <string name="notification_channel_tonight_insight_default_description">Večerní shrnutí počasí, pokud máš dnes večer události. Přehraje tvůj výchozí tón oznámení.</string>
+    <string name="notification_channel_tonight_insight_silent_name">Noční ClothesCast (tichý)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Večerní shrnutí počasí v klidné večery. Doručí se tiše — uvidíš ho na zamykací obrazovce, ale nevydá žádný zvuk.</string>
+    <string name="notification_tonight_insight_title">Dnešní večerní počasí</string>
+
+    <string name="notification_channel_weather_alerts_name">Výstrahy před bouřkami</string>
+    <string name="notification_channel_weather_alerts_description">Vysoce prioritní výstrahy před silnými nebo extrémními povětrnostními jevy ve tvé oblasti. Odesílají se, jakmile jsou zjištěny při denním načítání.</string>
+    <string name="notification_weather_alert_title">Výstraha před počasím: %1$s</string>
+
+    <!-- Notification permission card. -->
+    <string name="settings_notification_permission_title">Oznámení jsou zablokována</string>
+    <string name="settings_notification_permission_description">Bez oprávnění k oznámením nemá tvůj denní ClothesCast kam přijít. Povol ho, aby se ClothesCast mohl ráno zobrazit.</string>
+    <string name="settings_notification_permission_grant">Povolit oznámení</string>
+
+    <!-- Calendar settings. -->
+    <string name="settings_calendar_title">Kalendář</string>
+    <string name="settings_calendar_use_events">Použít dnešní události z kalendáře</string>
+    <string name="settings_calendar_description_off">Pokud je zapnuto, ClothesCast čte dnešní události z tvého kalendáře zařízení, aby mohl ranní ClothesCast navrhovat konkrétní události — například „Vezmi si deštník na svůj běh v parku ve 15 hodin". Používají se jen názvy událostí a časy; popisy, účastníci a místa se čtou, ale nikdy neopustí zařízení.</string>
+    <string name="settings_calendar_description_on">Čte dnešní události z tvého kalendáře zařízení pro doplnění ranního ClothesCastu. V sestavené přehledu se používají pouze názvy a časy; popisy a účastníci ne. Vše zůstane v zařízení.</string>
+    <string name="settings_calendar_grant_permission">Povolit přístup ke kalendáři</string>
+    <string name="settings_calendar_open_settings">Přístup ke kalendáři byl odmítnut. Povol ho v systémovém nastavení.</string>
+
+    <!-- Debug screen. -->
+    <string name="settings_debug_title">Ladění (pouze v ladicích sestaveních)</string>
+    <string name="settings_debug_description">Okamžitě spustit denní průchod ClothesCastem. Praktické pro ověření bez čekání na naplánovaný čas.</string>
+    <string name="settings_debug_fire_now">Spustit ClothesCast nyní</string>
+    <string name="settings_debug_fire_toast">Worker ClothesCastu byl zařazen do fronty</string>
+
+    <!-- About screen. -->
+    <string name="settings_about_title">O aplikaci</string>
+    <string name="settings_about_version">Verze %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s sestava</string>
+    <string name="settings_about_source">Zdrojový kód na GitHubu</string>
+    <string name="settings_about_dontkillmyapp">Omezení na pozadí (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Sdílet hlášení chyby</string>
+    <string name="settings_about_version_copied">Verze zkopírována do schránky</string>
+
+    <!-- Today screen. -->
+    <string name="today_title">Dnes</string>
+    <string name="today_open_settings">Otevřít nastavení</string>
+    <string name="today_more_options">Více možností</string>
+    <string name="today_report_a_bug">Nahlásit chybu</string>
+    <string name="today_refresh">Obnovit</string>
+    <string name="today_refresh_toast_daily">Tvůj denní ClothesCast se aktualizuje — za chvíli se zobrazí.</string>
+    <string name="today_refresh_toast_nightly">Tvůj noční ClothesCast se aktualizuje — za chvíli se zobrazí.</string>
+    <string name="today_empty_title">Zatím žádný ClothesCast</string>
+    <string name="today_empty_subtitle">Tvůj ranní ClothesCast se zde zobrazí, jakmile bude vytvořen. Nastav svou polohu v nastavení a klepni na Načíst nyní.</string>
+    <string name="today_fetch_now">Načíst nyní</string>
+    <string name="today_generated_at">Vytvořeno v %1$s</string>
+
+    <string name="today_outfit_title">Co si vzít na sebe</string>
+    <string name="today_outfit_label_today">Dnes</string>
+    <string name="today_outfit_label_tonight">Dnes večer</string>
+    <string name="today_outfit_label_tomorrow">Zítra</string>
+
+    <!-- Outfit card labels. -->
     <string name="today_outfit_top_tshirt">Tričko</string>
     <string name="today_outfit_top_sweater">Svetr</string>
     <string name="today_outfit_top_thick_jacket">Tlustý kabát</string>
+    <string name="today_outfit_top_polo">Polo</string>
+    <string name="today_outfit_top_thin_jacket">Lehká bunda</string>
+    <string name="today_outfit_top_thick_coat">Těžký kabát</string>
+    <string name="today_outfit_top_puffer_jacket">Péřová bunda</string>
     <string name="today_outfit_bottom_shorts">Šortky</string>
     <string name="today_outfit_bottom_long_pants">Kalhoty</string>
+    <string name="today_outfit_bottom_skirt">Sukně</string>
+    <string name="today_outfit_bottom_jeans">Džíny</string>
 
+    <!-- Forecast card. -->
+    <string name="today_forecast_title">Hodinová předpověď</string>
+    <string name="today_forecast_min_max">Pocit %1$d – %2$d%3$s · Vzduch %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Pocitová teplota (%1$s) za hodinu · klepni pro teplotu vzduchu</string>
+    <string name="today_forecast_legend_air">Teplota vzduchu (%1$s) za hodinu · klepni pro pocitovou teplotu</string>
+
+    <string name="today_confidence_high">Vysoká jistota — hlavní modely se shodují</string>
+    <string name="today_confidence_medium">Střední jistota</string>
+    <string name="today_confidence_low">Nízká jistota — předpovědi se rozcházejí</string>
+    <string name="today_confidence_spread">Rozptyl: %1$.1f°C, %2$.0f p.b. srážky přes %3$d modelů</string>
+
+    <string name="today_working">Načítám tvůj ClothesCast…</string>
+    <string name="today_failed_title">Poslední pokus selhal</string>
+    <string name="today_failed_unexpected_http">Neočekávaná HTTP chyba od služby počasí.</string>
+    <string name="today_failed_unhandled">Došlo k neočekávané chybě.</string>
+    <string name="today_failed_show_details">Zobrazit podrobnosti</string>
+    <string name="today_failed_hide_details">Skrýt podrobnosti</string>
+    <string name="today_failed_no_location">Nepodařilo se zjistit tvou polohu. Udělej trvalé oprávnění k poloze nebo nastav město v nastavení.</string>
+
+    <string name="today_location_required_title">Nastav svou polohu</string>
+    <string name="today_location_required_body">ClothesCast potřebuje znát tvou polohu pro načtení předpovědi. Udělej trvalé oprávnění k poloze nebo vyber město.</string>
+    <string name="today_location_required_action">Otevřít nastavení polohy</string>
+    <string name="today_location_unknown">Tvá poloha</string>
+    <string name="today_retrying">Poslední pokus selhal — zkouším znovu…</string>
+
+    <!-- Rationale / outfit explanation. -->
+    <string name="today_rationale_title">Proč tento outfit?</string>
+    <string name="today_rationale_show">Proč?</string>
+    <string name="today_rationale_dismiss">Rozumím</string>
+    <string name="today_rationale_threshold_decrease">Snížit práh o 1 stupeň</string>
+    <string name="today_rationale_threshold_increase">Zvýšit práh o 1 stupeň</string>
+    <string name="today_rationale_threshold_changed_hint">Obnovit pro zobrazení nového outfitu.</string>
+    <string name="today_rationale_unavailable">Zdůvodnění není k dispozici — otevři aplikaci po příštím obnovení.</string>
+    <string name="today_rationale_min_below_with_time">Pocitové minimum %1$s%2$s v %3$s h, pod %4$s%2$s</string>
+    <string name="today_rationale_min_below">Pocitové minimum %1$s%2$s, pod %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Pocitové minimum %1$s%2$s v %3$s h, alespoň %4$s%2$s</string>
+    <string name="today_rationale_min_above">Pocitové minimum %1$s%2$s, alespoň %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Pocitové maximum jen %1$s%2$s v %3$s h, pod %4$s%2$s</string>
+    <string name="today_rationale_max_below">Pocitové maximum jen %1$s%2$s, pod %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Pocitové maximum %1$s%2$s v %3$s h, alespoň %4$s%2$s</string>
+    <string name="today_rationale_max_above">Pocitové maximum %1$s%2$s, alespoň %3$s%2$s</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Pravděpodobnost srážek</string>
+    <string name="today_precipitation_peak">Vrchol %1$d%% v %2$s</string>
+    <string name="today_precipitation_dry">Dnes se srážky neočekávají</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">Modely:</string>
+    <string name="today_chart_main_line_label">Kombinované</string>
+    <string name="today_chart_divergence_summary">Modely se nejvíce rozcházejí v %1$s (Δ %2$.1f%3$s pocitová teplota) — zejména %4$s, %5$s</string>
+
+    <!-- Divergence factor names. -->
+    <string name="today_factor_air_temperature">Teplota vzduchu</string>
+    <string name="today_factor_wind_speed">Rychlost větru</string>
+    <string name="today_factor_cloud_cover">Oblačnost</string>
+    <string name="today_factor_humidity">Vlhkost vzduchu</string>
+
+    <!-- Diagnostic cards. -->
+    <string name="today_wind_title">Rychlost větru</string>
+    <string name="today_wind_subtitle">Rychlost větru (%1$s) za hodinu podle modelu</string>
+    <string name="today_cloud_title">Oblačnost</string>
+    <string name="today_cloud_subtitle">Celková oblačnost (%) za hodinu podle modelu</string>
+    <string name="today_humidity_title">Vlhkost vzduchu</string>
+    <string name="today_humidity_subtitle">Relativní vlhkost vzduchu (%) za hodinu podle modelu</string>
+
+    <!-- Low-confidence callout. -->
+    <string name="today_low_confidence_callout_title">Předpovědi se dnes rozcházejí</string>
+    <string name="today_low_confidence_callout_body">Teplota kolísá o %1$.1f°C a pravděpodobnost srážek o %2$.0f%% přes %3$d modelů.</string>
+
+    <!-- Telemetry notice. -->
+    <string name="today_telemetry_notice_title">Zprávy o pádech a využití jsou zapnuty</string>
+    <string name="today_telemetry_notice_body">ClothesCast odesílá anonymní zprávy o pádech a analýzy využití pro opravy chyb. Žádná data z kalendáře, polohy ani obsahu nejsou přenášena. Kdykoli deaktivovatelné v nastavení.</string>
+    <string name="today_telemetry_notice_open_settings">Otevřít nastavení ochrany soukromí</string>
+    <string name="today_telemetry_notice_dismiss">Zavřít</string>
+
+    <!-- Crash banner. -->
+    <string name="today_crash_banner_title">Předchozí spuštění spadlo</string>
+    <string name="today_crash_banner_body">Na tvém zařízení byla uložena zpráva o pádu. Chceš ji sdílet, aby bylo možné chybu opravit? Nic nebude odesláno, dokud nevybereš cíl.</string>
+    <string name="today_crash_banner_share">Sdílet zprávu</string>
+    <string name="today_crash_banner_dismiss">Zavřít</string>
+
+    <!-- Update banner. -->
+    <string name="today_update_available_title">Dostupná aktualizace</string>
+    <string name="today_update_available_body">V Obchodě Play je k dispozici novější verze ClothesCastu.</string>
+    <string name="today_update_available_action">Aktualizovat</string>
+    <string name="today_update_available_dismiss">Teď ne</string>
+    <string name="today_update_downloaded_body">Aktualizace stažena. Restartuj pro dokončení instalace.</string>
+    <string name="today_update_downloaded_action">Restartovat</string>
+
+    <!-- App widget. -->
+    <string name="widget_label">Outfit</string>
+    <string name="widget_description">Outfit pro aktuální část dne na první pohled.</string>
+    <string name="widget_empty_title">Zatím žádný outfit</string>
+    <string name="widget_empty_subtitle">Klepni pro otevření ClothesCastu</string>
+
+    <!-- Onboarding. -->
+    <string name="onboarding_title">Vítej v ClothesCastu</string>
+    <string name="onboarding_subtitle">Dvě rychlé volby a můžeš začít. Vše ostatní má rozumné výchozí hodnoty, které můžeš později změnit v nastavení.</string>
+    <string name="onboarding_subtitle_tv">Dvě rychlé volby a můžeš začít. Vše ostatní můžeš změnit později v nastavení.</string>
+    <string name="onboarding_notifications_title">Oznámení</string>
+    <string name="onboarding_notifications_description">Aby ti tvůj denní ClothesCast dorazil. Jednou povol a ráno bude tady.</string>
+    <string name="onboarding_notifications_grant">Povolit oznámení</string>
+    <string name="onboarding_location_title">Poloha</string>
+    <string name="onboarding_location_description">Aby se načetla správná předpověď. S přístupem k poloze bude ClothesCast každé ráno číst přibližnou polohu tvého zařízení; jinak vyber město ručně.</string>
+    <string name="onboarding_location_grant">Povolit přístup k poloze</string>
+    <string name="onboarding_location_denied_hint">Přístup k poloze byl odmítnut. Místo toho můžeš ručně vybrat město.</string>
+    <string name="onboarding_location_enter_manual">Zadat polohu ručně</string>
+    <string name="onboarding_location_using_device">Každé ráno budeme používat polohu tvého zařízení.</string>
+    <string name="onboarding_location_grant_background">Vždy povolit</string>
+    <string name="onboarding_location_background_needed">Ještě jeden krok: ClothesCast potřebuje „Vždy povolit", aby ranní předpověď mohla číst tvou polohu, když je aplikace zavřená.</string>
+    <string name="onboarding_location_enter_manual_hint">Svou polohu můžeš zadat ručně, pokud odmítneš přístup k poloze nebo je poloha zařízení nesprávná.</string>
+
+    <string name="onboarding_gemini_title">Gemini API klíč</string>
+    <string name="onboarding_gemini_description">Používá ho ClothesCast pro mluvené hlasy a generování předpovědí. Získej ho zdarma na aistudio.google.com. Klíč je zašifrovaně uložen v Android Keystoru.</string>
+    <string name="onboarding_step_done">Hotovo</string>
+    <string name="onboarding_skip">Zatím přeskočit</string>
+    <string name="onboarding_continue">Pokračovat</string>
+    <string name="onboarding_pair_from_phone">Místo toho spárovat z telefonu</string>
+
+    <!-- Pairing (TV). -->
+    <string name="pairing_title">Naskenovat pro spárování</string>
+    <string name="pairing_instructions">Naskenuj tento QR kód svým telefonem a poté vlož svůj Gemini API klíč do formuláře, který se otevře. Klíč je odeslán přímo přes tvou domácí síť do tohoto televizoru — bez cloudového relé.</string>
+    <string name="pairing_qr_description">QR kód s odkazem na %1$s</string>
+    <string name="pairing_cancel">Zrušit</string>
+    <string name="pairing_received">Klíč přijat — ukládám…</string>
+    <string name="pairing_timeout_title">Okno spárování vypršelo</string>
+    <string name="pairing_timeout_body">5minutové okno spárování je zavřeno. Klepni na Zkusit znovu pro otevření nového.</string>
+    <string name="pairing_error_title">Spárování se nepodařilo spustit</string>
+    <string name="pairing_error_body">Zkontroluj, zda je televizor připojen k Wi-Fi, a zkus to znovu.</string>
+    <string name="pairing_retry">Zkusit znovu</string>
+
+    <!-- Display settings. -->
+    <string name="settings_display_theme_title">Motiv</string>
+    <string name="settings_display_theme_system">Systémové nastavení</string>
+    <string name="settings_display_theme_light">Světlý</string>
+    <string name="settings_display_theme_dark">Tmavý</string>
+    <string name="settings_display_charts_title">Grafy</string>
+    <string name="settings_display_model_spread_label">Zobrazit rozptyl modelů v grafech</string>
+    <string name="settings_display_model_spread_description">Zobrazuje hodinovou předpověď hlavních meteorologických modelů přes grafy teploty a srážek. Užitečné pro rozpoznání nejistých předpovědí.</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">Zprávy o pádech a využití</string>
+    <string name="settings_privacy_telemetry_label">Odesílat data o pádech a využití</string>
+    <string name="settings_privacy_telemetry_description">Odesílá anonymní zprávy o pádech a agregované statistiky využití, aby vývojáři pomohly při opravách chyb a rozhodování o funkcích.</string>
+    <string name="settings_privacy_telemetry_limits">Nikdy odesíláno: záznamy z kalendáře, souřadnice polohy nebo názvy míst, text obsahu nebo oznámení, API klíče, přesné GPS data, reklamní ID.</string>
+    <string name="settings_privacy_open_policy">Přečíst úplné zásady ochrany osobních údajů</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">Sdílet hlášení chyby?</string>
+    <string name="bug_report_consent_body">Pomáhá to diagnostikovat problémy. Zpráva obsahuje citlivé osobní informace, včetně tvé polohy, nastavení aplikace a nedávné aktivity. Můžeš ji před odesláním zkontrolovat a upravit.</string>
+    <string name="bug_report_consent_dont_show_again">Příště nezobrazovat</string>
+    <string name="bug_report_consent_continue">Pokračovat</string>
+    <string name="bug_report_consent_cancel">Zrušit</string>
+
+    <!-- Insight prose templates. -->
     <string name="insight_lead_today">Dnes</string>
     <string name="insight_lead_tonight">Dnes večer</string>
     <string name="insight_band_single">%1$s bude %2$s.</string>
@@ -65,6 +563,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="insight_precip">%1$s %2$s.</string>
     <string name="insight_precip_at_time">v %1$s</string>
     <string name="insight_precip_overnight">v noci</string>
+    <string name="insight_precip_chance">Možná %1$s %2$s.</string>
     <string name="insight_condition_clear">Jasno</string>
     <string name="insight_condition_partly_cloudy">Polojasno</string>
     <string name="insight_condition_cloudy">Zataženo</string>
@@ -75,9 +574,15 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="insight_condition_thunderstorm">Bouřka</string>
     <string name="insight_condition_unknown">Neznámé</string>
     <string name="insight_tie_in">Vezmi si %1$s na večer.</string>
+    <string name="insight_tie_in_at_night">Vezmi si %1$s na večer.</string>
     <string name="insight_tie_in_with_rain">Vezmi si %1$s na večer, déšť v %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Možný déšť v %2$s — vezmi si %1$s.</string>
+    <string name="insight_evening_rain">Večer déšť v %1$s.</string>
+    <string name="insight_evening_rain_chance">Večer možný déšť v %1$s.</string>
     <!-- "15" — preposition "v" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
+    <!-- Device incompatibility error. -->
+    <string name="error_device_incompatible">ClothesCast nelze na tomto zařízení spustit — tvému Android sestavení chybí funkce, kterou rozhraní aplikace potřebuje (Configuration.fontWeightAdjustment, očekáváno od Android 12 výše). Obrať se prosím na výrobce zařízení ohledně aktualizace systému.</string>
 </resources>

@@ -1095,12 +1095,18 @@ internal fun WindCard(
     perModelHourly: PerModelHourly,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
-    val anyWind = remember(perModelHourly) {
-        perModelHourly.byModel.values.any { entries ->
-            entries.any { it.windSpeedKmh != null }
-        }
+    // Pre-filter to the models the chart will actually plot — `WindChart` drops
+    // any model without a full wind series — so the legend below it lists
+    // exactly the lines drawn. Otherwise GFS/ICON could appear in the legend
+    // for an older cached payload where only ECMWF has wind data.
+    val windFiltered = remember(perModelHourly, times) {
+        PerModelHourly(
+            byModel = perModelHourly.byModel
+                .mapValues { (_, entries) -> entries.filter { it.windSpeedKmh != null } }
+                .filterValues { it.size == times.size },
+        )
     }
-    if (!anyWind) return
+    if (windFiltered.byModel.isEmpty()) return
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1114,8 +1120,8 @@ internal fun WindCard(
                 text = stringResource(R.string.today_wind_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
             )
-            WindChart(times = times, perModelHourly = perModelHourly)
-            ModelSpreadLegend(perModelHourly)
+            WindChart(times = times, perModelHourly = windFiltered)
+            ModelSpreadLegend(windFiltered)
         }
     }
 }

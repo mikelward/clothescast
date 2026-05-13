@@ -391,11 +391,7 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `confidence rides the today insight but is stripped from tonight`() = runTest {
-        // Cross-model confidence is computed from today's apparent-max + peak
-        // precipitation probability. Attaching it to a TONIGHT insight would
-        // surface "Forecasts disagree today" on the evening card, which is
-        // wrong-tense — drop it for non-TODAY periods.
+    fun `confidence populates for both today and tonight`() = runTest {
         val info = ConfidenceInfo(
             level = ForecastConfidence.LOW,
             tempSpreadC = 4.2,
@@ -406,7 +402,7 @@ class GenerateDailyInsightTest {
         val subject = GenerateDailyInsight(weather, clock = clock)
 
         subject(london, prefs, ForecastPeriod.TODAY).insight.confidence shouldBe info
-        subject(london, prefs, ForecastPeriod.TONIGHT).insight.confidence.shouldBeNull()
+        subject(london, prefs, ForecastPeriod.TONIGHT).insight.confidence shouldBe info
     }
 
     @Test

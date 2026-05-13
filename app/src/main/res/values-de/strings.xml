@@ -653,7 +653,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_humidity_subtitle">Relative Luftfeuchtigkeit (%) pro Stunde je Modell</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">Vorhersagen weichen heute ab</string>
+    <string name="today_low_confidence_callout_title">Vorhersagen weichen ab</string>
     <string name="today_low_confidence_callout_body">Temperatur schwankt um %1$.1f°C und Regenwahrscheinlichkeit um %2$.0f%% über %3$d Modelle.</string>
 
     <!-- Telemetry notice (first-run banner on Today screen). -->

@@ -525,7 +525,7 @@ displayed label localizes.
     <string name="today_humidity_title">Nem</string>
     <string name="today_humidity_subtitle">Model başına saatlik bağıl nem (%%)</string>
 
-    <string name="today_low_confidence_callout_title">Tahminler bugün farklılık gösteriyor</string>
+    <string name="today_low_confidence_callout_title">Tahminler farklılık gösteriyor</string>
     <string name="today_low_confidence_callout_body">Sıcaklık %3$d model arasında %1$.1f°C, yağış ihtimali %2$.0f%% değişiyor.</string>
 
     <string name="today_telemetry_notice_title">Çökme ve kullanım raporları etkin</string>

@@ -614,7 +614,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_humidity_subtitle">Umidità relativa (%) per ora per modello</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">Le previsioni divergono oggi</string>
+    <string name="today_low_confidence_callout_title">Le previsioni divergono</string>
     <string name="today_low_confidence_callout_body">La temperatura varia di %1$.1f°C e la probabilità di pioggia di %2$.0f%% tra %3$d modelli.</string>
 
     <!-- Telemetry notice (first-run banner on Today screen). -->

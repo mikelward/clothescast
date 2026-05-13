@@ -453,7 +453,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_humidity_subtitle">Relativní vlhkost vzduchu (%) za hodinu podle modelu</string>
 
     <!-- Low-confidence callout. -->
-    <string name="today_low_confidence_callout_title">Předpovědi se dnes rozcházejí</string>
+    <string name="today_low_confidence_callout_title">Předpovědi se rozcházejí</string>
     <string name="today_low_confidence_callout_body">Teplota kolísá o %1$.1f°C a pravděpodobnost srážek o %2$.0f%% přes %3$d modelů.</string>
 
     <!-- Telemetry notice. -->

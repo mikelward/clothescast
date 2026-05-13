@@ -169,7 +169,7 @@
          is the louder cue that the chip alone is too subtle for. Body is
          deliberately just-the-facts — no "dress for the worse case" nudge
          until we have data to back the advice. -->
-    <string name="today_low_confidence_callout_title">Forecasts disagree today</string>
+    <string name="today_low_confidence_callout_title">Forecasts disagree</string>
     <string name="today_low_confidence_callout_body">Temperature ranges by %1$.1f°C and rain chance by %2$.0f%% across %3$d models.</string>
 
     <string name="today_working">Working — fetching your ClothesCast…</string>

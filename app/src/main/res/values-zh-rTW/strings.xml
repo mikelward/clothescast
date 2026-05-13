@@ -643,7 +643,7 @@ label localises.
     <string name="today_humidity_subtitle">各模型每小時相對濕度（%）</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">今日預報存在分歧</string>
+    <string name="today_low_confidence_callout_title">預報存在分歧</string>
     <string name="today_low_confidence_callout_body">%3$d 個模型間，氣溫相差 %1$.1f°C，降雨機率相差 %2$.0f%%。</string>
 
     <!-- Telemetry notice (first-run banner on Today screen). -->

@@ -110,13 +110,8 @@ class GenerateDailyInsight(
             generatedAt = clock.instant(),
             forDate = bundle.today.date,
             hourly = periodView.forecast.hourly,
-            // Confidence and chart-side per-model overlay stay TODAY-only: their
-            // copy and chart axes are anchored to "today" and would read
-            // wrong-tense on a TONIGHT card. The precip-clause tier above
-            // does use per-model for both periods — that's prose-side, period
-            // agnostic, and benefits from cross-model agreement either way.
-            confidence = if (period == ForecastPeriod.TODAY) bundle.confidence else null,
-            perModelHourly = if (period == ForecastPeriod.TODAY) periodView.perModelForRender else null,
+            confidence = bundle.confidence,
+            perModelHourly = periodView.perModelForRender,
             outfit = OutfitSuggestion.fromForecast(periodView.forecast, rules),
             nextOutfit = periodView.nextForecast?.let { OutfitSuggestion.fromForecast(it, rules) },
             outfitRationale = OutfitSuggestion.explainFromForecast(periodView.forecast, rules),

@@ -155,27 +155,31 @@ private fun PerModelDiagnosticChart(
     // whole point of plotting at original indices.
     val xMin = 0.0
     val xMax = times.lastIndex.toDouble()
-    val rangeProvider = remember(yAxis, seriesByModel, xMax) {
+    // Wind picks a [niceStep]-aligned ceiling and a matching tick step so a
+    // 26 km/h day reads as "0, 5, 10, …, 30" instead of Vico's default "0,
+    // 13, 26". Percent stays pinned 0..100 with step 20.
+    val yBounds = remember(yAxis, seriesByModel) {
         when (yAxis) {
-            is YAxis.Percent -> object : CartesianLayerRangeProvider {
-                override fun getMinX(minX: Double, maxX: Double, extraStore: ExtraStore) = xMin
-                override fun getMaxX(minX: Double, maxX: Double, extraStore: ExtraStore) = xMax
-                override fun getMinY(minY: Double, maxY: Double, extraStore: ExtraStore) = 0.0
-                override fun getMaxY(minY: Double, maxY: Double, extraStore: ExtraStore) = 100.0
-            }
+            is YAxis.Percent -> YAxisBounds(min = 0.0, max = 100.0, step = 20.0)
             is YAxis.AutoZeroBased -> {
                 val rawMax = seriesByModel.values
                     .flatten()
                     .maxOfOrNull { it.second } ?: 0.0
-                val dataMax = ceil(rawMax).coerceAtLeast(yAxis.minSpan)
-                object : CartesianLayerRangeProvider {
-                    override fun getMinX(minX: Double, maxX: Double, extraStore: ExtraStore) = xMin
-                    override fun getMaxX(minX: Double, maxX: Double, extraStore: ExtraStore) = xMax
-                    override fun getMinY(minY: Double, maxY: Double, extraStore: ExtraStore) = 0.0
-                    override fun getMaxY(minY: Double, maxY: Double, extraStore: ExtraStore) = dataMax
-                }
+                val paddedMax = ceil(rawMax).coerceAtLeast(yAxis.minSpan)
+                alignToStep(rawMin = 0.0, rawMax = paddedMax, step = niceStep(paddedMax))
             }
         }
+    }
+    val rangeProvider = remember(yBounds, xMax) {
+        object : CartesianLayerRangeProvider {
+            override fun getMinX(minX: Double, maxX: Double, extraStore: ExtraStore) = xMin
+            override fun getMaxX(minX: Double, maxX: Double, extraStore: ExtraStore) = xMax
+            override fun getMinY(minY: Double, maxY: Double, extraStore: ExtraStore) = yBounds.min
+            override fun getMaxY(minY: Double, maxY: Double, extraStore: ExtraStore) = yBounds.max
+        }
+    }
+    val yItemPlacer = remember(yBounds.step) {
+        VerticalAxis.ItemPlacer.step({ yBounds.step })
     }
 
     val startFormatter = remember(yAxis) {
@@ -197,7 +201,10 @@ private fun PerModelDiagnosticChart(
                 lineProvider = lineProvider,
                 rangeProvider = rangeProvider,
             ),
-            startAxis = VerticalAxis.rememberStart(valueFormatter = startFormatter),
+            startAxis = VerticalAxis.rememberStart(
+                itemPlacer = yItemPlacer,
+                valueFormatter = startFormatter,
+            ),
             bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
         ),
         modelProducer = producer,

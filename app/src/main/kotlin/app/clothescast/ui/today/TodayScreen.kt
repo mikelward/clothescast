@@ -47,6 +47,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -1068,12 +1069,22 @@ private fun ForecastCard(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             // Per-model overlay legend — drawn whenever the overlays themselves
-            // are. The chart now draws per-model lines in both apparent and air
+            // are. The chart draws per-model lines in both apparent and air
             // modes (each entry carries both temperatures), so the legend
             // applies regardless of which series the card is currently
-            // showing.
+            // showing. The main blended line is the OpenMeteoClient `forecast`
+            // default — Open-Meteo's "best match" auto-selection — which
+            // routinely tracks a different model than the consulted overlays;
+            // labelling it in the legend makes that disagreement legible
+            // instead of mysterious.
             if (perModelHourly != null) {
-                ModelSpreadLegend(perModelHourly)
+                ModelSpreadLegend(
+                    visibleModelIds = MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel },
+                    mainLine = MainLineLegend(
+                        color = MaterialTheme.colorScheme.primary,
+                        label = stringResource(R.string.today_chart_main_line_label),
+                    ),
+                )
             }
         }
     }
@@ -1097,29 +1108,16 @@ internal fun WindCard(
     perModelHourly: PerModelHourly,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
-    val anyWind = remember(perModelHourly) {
-        perModelHourly.byModel.values.any { entries ->
-            entries.any { it.windSpeedKmh != null }
-        }
-    }
-    if (!anyWind) return
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.today_wind_title),
-                style = MaterialTheme.typography.titleSmall,
-            )
-            Text(
-                text = stringResource(R.string.today_wind_subtitle),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            WindChart(times = times, perModelHourly = perModelHourly)
-            ModelSpreadLegend(perModelHourly)
-        }
-    }
+    PerModelDiagnosticCard(
+        title = stringResource(R.string.today_wind_title),
+        subtitle = stringResource(R.string.today_wind_subtitle),
+        times = times,
+        perModelHourly = perModelHourly,
+        picker = { it.windSpeedKmh },
+        // 10 km/h floor on the y-range so a near-still day doesn't get
+        // zoomed into noise — same reasoning as ForecastChart.MIN_Y_SPAN.
+        yAxis = YAxis.AutoZeroBased(minSpan = 10.0),
+    )
 }
 
 /**
@@ -1135,29 +1133,14 @@ internal fun CloudCard(
     perModelHourly: PerModelHourly,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
-    val anyCloud = remember(perModelHourly) {
-        perModelHourly.byModel.values.any { entries ->
-            entries.any { it.cloudCoverPct != null }
-        }
-    }
-    if (!anyCloud) return
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.today_cloud_title),
-                style = MaterialTheme.typography.titleSmall,
-            )
-            Text(
-                text = stringResource(R.string.today_cloud_subtitle),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            CloudChart(times = times, perModelHourly = perModelHourly)
-            ModelSpreadLegend(perModelHourly)
-        }
-    }
+    PerModelDiagnosticCard(
+        title = stringResource(R.string.today_cloud_title),
+        subtitle = stringResource(R.string.today_cloud_subtitle),
+        times = times,
+        perModelHourly = perModelHourly,
+        picker = { it.cloudCoverPct },
+        yAxis = YAxis.Percent,
+    )
 }
 
 /**
@@ -1173,29 +1156,14 @@ internal fun HumidityCard(
     perModelHourly: PerModelHourly,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
-    val anyHumidity = remember(perModelHourly) {
-        perModelHourly.byModel.values.any { entries ->
-            entries.any { it.relativeHumidityPct != null }
-        }
-    }
-    if (!anyHumidity) return
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.today_humidity_title),
-                style = MaterialTheme.typography.titleSmall,
-            )
-            Text(
-                text = stringResource(R.string.today_humidity_subtitle),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            HumidityChart(times = times, perModelHourly = perModelHourly)
-            ModelSpreadLegend(perModelHourly)
-        }
-    }
+    PerModelDiagnosticCard(
+        title = stringResource(R.string.today_humidity_title),
+        subtitle = stringResource(R.string.today_humidity_subtitle),
+        times = times,
+        perModelHourly = perModelHourly,
+        picker = { it.relativeHumidityPct },
+        yAxis = YAxis.Percent,
+    )
 }
 
 @Composable
@@ -1233,23 +1201,41 @@ internal fun PrecipitationCard(
             )
             PrecipitationChart(hourly = hourly, perModelHourly = perModelHourly)
             if (perModelHourly != null) {
-                ModelSpreadLegend(perModelHourly)
+                ModelSpreadLegend(
+                    visibleModelIds = MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel },
+                    mainLine = MainLineLegend(
+                        color = MaterialTheme.colorScheme.primary,
+                        label = stringResource(R.string.today_chart_main_line_label),
+                    ),
+                )
             }
         }
     }
 }
 
 /**
- * Compact "Models: ● ECMWF ● GFS ● ICON" footer rendered under the temperature
- * and precipitation charts when the per-model overlays are being drawn. Each
- * model gets a colour swatch in its pinned [MODEL_COLORS] hue so the user can
- * map the on-chart overlay lines back to the model that produced them. Models
- * appear in the same fixed [MODEL_DRAW_ORDER] the charts use.
+ * Compact "Models: ● ECMWF ● GFS ● ICON · ● Best match" footer rendered under
+ * the charts. Each consulted model gets a colour swatch in its pinned
+ * [MODEL_COLORS] hue, and the optional [mainLine] argument tacks on a final
+ * entry for the blended "main" line (theme primary) so the user can map every
+ * line on the chart back to its source — including the main line, which
+ * on the temperature and precipitation charts comes from Open-Meteo's
+ * automatic-model-selection ("best match") default and routinely tracks a
+ * different model than the consulted overlays.
+ *
+ * Callers pass the exact set of model ids actually plotted in
+ * [visibleModelIds] (pre-refactor the legend derived this from `byModel`
+ * directly, which silently listed models whose lines had been filtered out of
+ * a chart — e.g. wind diagnostic lines for models that didn't report wind).
+ * Pass [mainLine] when the chart has a blended main line on top of the
+ * overlays (temp + rain cards); the diagnostic cards leave it null.
  */
 @Composable
-internal fun ModelSpreadLegend(perModelHourly: PerModelHourly) {
-    val visible = MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel }
-    if (visible.isEmpty()) return
+internal fun ModelSpreadLegend(
+    visibleModelIds: List<String>,
+    mainLine: MainLineLegend? = null,
+) {
+    if (visibleModelIds.isEmpty() && mainLine == null) return
     val labelStyle = MaterialTheme.typography.bodySmall
     val labelColor = MaterialTheme.colorScheme.onSurfaceVariant
     Row(
@@ -1261,23 +1247,45 @@ internal fun ModelSpreadLegend(perModelHourly: PerModelHourly) {
             style = labelStyle,
             color = labelColor,
         )
-        visible.forEach { modelId ->
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Box(
-                    Modifier
-                        .size(8.dp)
-                        .background(MODEL_COLORS.getValue(modelId), CircleShape),
-                )
-                Text(
-                    text = friendlyModelName(modelId),
-                    style = labelStyle,
-                    color = labelColor,
-                )
-            }
+        visibleModelIds.forEach { modelId ->
+            LegendChip(
+                color = MODEL_COLORS.getValue(modelId),
+                label = friendlyModelName(modelId),
+                style = labelStyle,
+                textColor = labelColor,
+            )
         }
+        mainLine?.let {
+            LegendChip(
+                color = it.color,
+                label = it.label,
+                style = labelStyle,
+                textColor = labelColor,
+            )
+        }
+    }
+}
+
+/** Optional main-line entry rendered after the per-model entries in [ModelSpreadLegend]. */
+internal data class MainLineLegend(val color: Color, val label: String)
+
+@Composable
+private fun LegendChip(
+    color: Color,
+    label: String,
+    style: androidx.compose.ui.text.TextStyle,
+    textColor: Color,
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            Modifier
+                .size(8.dp)
+                .background(color, CircleShape),
+        )
+        Text(text = label, style = style, color = textColor)
     }
 }
 

@@ -686,6 +686,31 @@ internal fun HumidityCardWithModelSpreadPreview() {
     }
 }
 
+// Sparse-edge variant: every model is missing wind data for hours 00–19 and
+// only carries values for the trailing 20–23 window. Without an x-range pin
+// on the chart, those four surviving points get fitted to the full card width
+// by Zoom.Content and the lines appear as if they cover the whole day. With
+// the pin, they sit on the right edge with the leading hours visibly empty.
+private val SAMPLE_PER_MODEL_HOURLY_SPARSE_WIND_TRAILING: PerModelHourly =
+    PerModelHourly(
+        byModel = SAMPLE_PER_MODEL_HOURLY.byModel.mapValues { (_, entries) ->
+            entries.mapIndexed { i, e ->
+                if (i < 20) e.copy(windSpeedKmh = null) else e
+            }
+        },
+    )
+
+@Preview(name = "Wind card · sparse trailing only", widthDp = 360)
+@Composable
+internal fun WindCardSparseTrailingPreview() {
+    Frame {
+        WindCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY_SPARSE_WIND_TRAILING,
+        )
+    }
+}
+
 @Preview(name = "Forecast chart · with model spread", widthDp = 360)
 @Composable
 internal fun ForecastChartWithModelSpreadPreview() {

@@ -4,6 +4,15 @@ enum class TemperatureUnit { CELSIUS, FAHRENHEIT }
 
 enum class DistanceUnit { KILOMETERS, MILES }
 
+/**
+ * Wind-speed display unit. Currently derived from [DistanceUnit] at the call
+ * site (see `DistanceUnit.windSpeedUnit()` in Units.kt) — a metric user sees
+ * km/h, an imperial user sees mph. TODO: add `KNOTS` (and possibly `MS`) and
+ * promote this to its own user-facing setting so sailors / pilots can pick a
+ * wind unit independent of the distance preference.
+ */
+enum class WindSpeedUnit { KMH, MPH }
+
 enum class DeliveryMode { NOTIFICATION_ONLY, TTS_ONLY, NOTIFICATION_AND_TTS }
 
 enum class ThemeMode { SYSTEM, LIGHT, DARK }

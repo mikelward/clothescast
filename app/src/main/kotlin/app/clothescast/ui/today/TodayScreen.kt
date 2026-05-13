@@ -68,6 +68,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.R
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ConfidenceInfo
+import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.Fact
 import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -80,9 +81,12 @@ import app.clothescast.core.domain.model.ModelDivergenceSummary
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.thresholdC
 import app.clothescast.core.domain.model.toUnit
+import app.clothescast.core.domain.model.toWindSpeedUnit
+import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.ClothesCastApplication
 import app.clothescast.diag.BugReport
 import app.clothescast.diag.BugReportConsentDialog
@@ -306,6 +310,7 @@ private fun TodayContent(
                 ForecastCard(
                     hourly = state.insight.hourly,
                     temperatureUnit = state.temperatureUnit,
+                    distanceUnit = state.distanceUnit,
                     perModelHourly = overlay,
                 )
                 PrecipitationCard(
@@ -318,7 +323,11 @@ private fun TodayContent(
                 // cached payloads don't carry wind / humidity / cloud, so the
                 // cards self-hide until the next worker refresh repopulates.
                 if (overlay != null) {
-                    WindCard(hourly = state.insight.hourly, perModelHourly = overlay)
+                    WindCard(
+                        hourly = state.insight.hourly,
+                        perModelHourly = overlay,
+                        windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                    )
                     CloudCard(hourly = state.insight.hourly, perModelHourly = overlay)
                     HumidityCard(hourly = state.insight.hourly, perModelHourly = overlay)
                 }
@@ -1014,6 +1023,7 @@ internal fun ConfidenceChip(info: ConfidenceInfo) {
 internal fun ForecastCard(
     hourly: List<HourlyForecast>,
     temperatureUnit: TemperatureUnit,
+    distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
     perModelHourly: PerModelHourly? = null,
 ) {
     // Default to feels-like — matches the band classification the user sees in the
@@ -1096,7 +1106,11 @@ internal fun ForecastCard(
                 // in [ModelDivergenceSummary.computeFrom], so we don't
                 // surface a misleading "biggest factor" attribution on
                 // essentially-agreeing models.
-                ModelDivergenceHint(perModelHourly = perModelHourly, temperatureUnit = temperatureUnit)
+                ModelDivergenceHint(
+                    perModelHourly = perModelHourly,
+                    temperatureUnit = temperatureUnit,
+                    windSpeedUnit = distanceUnit.windSpeedUnit(),
+                )
             }
         }
     }
@@ -1112,6 +1126,7 @@ internal fun ForecastCard(
 private fun ModelDivergenceHint(
     perModelHourly: PerModelHourly,
     temperatureUnit: TemperatureUnit,
+    windSpeedUnit: WindSpeedUnit,
 ) {
     val summary = remember(perModelHourly) {
         ModelDivergenceSummary.computeFrom(perModelHourly)
@@ -1124,7 +1139,7 @@ private fun ModelDivergenceHint(
             ModelDivergenceSummary.Factor.RELATIVE_HUMIDITY -> R.string.today_factor_humidity
         },
     )
-    val rangeText = formatTopFactorRange(summary, temperatureUnit)
+    val rangeText = formatTopFactorRange(summary, temperatureUnit, windSpeedUnit)
     // A feels-like *delta* converts to °F by simple multiplication (no
     // offset), unlike absolute temperatures. Express in the user's unit so
     // a Fahrenheit user doesn't see °C in the spread number.
@@ -1149,14 +1164,18 @@ private fun ModelDivergenceHint(
 private fun formatTopFactorRange(
     summary: ModelDivergenceSummary,
     temperatureUnit: TemperatureUnit,
+    windSpeedUnit: WindSpeedUnit,
 ): String = when (summary.topFactor) {
     ModelDivergenceSummary.Factor.AIR_TEMPERATURE -> {
         val min = summary.topFactorMin.toUnit(temperatureUnit).roundToInt()
         val max = summary.topFactorMax.toUnit(temperatureUnit).roundToInt()
         "$min–$max${temperatureUnit.symbol()}"
     }
-    ModelDivergenceSummary.Factor.WIND_SPEED ->
-        "${summary.topFactorMin.roundToInt()}–${summary.topFactorMax.roundToInt()} km/h"
+    ModelDivergenceSummary.Factor.WIND_SPEED -> {
+        val min = summary.topFactorMin.toWindSpeedUnit(windSpeedUnit).roundToInt()
+        val max = summary.topFactorMax.toWindSpeedUnit(windSpeedUnit).roundToInt()
+        "$min–$max ${windSpeedUnit.symbol()}"
+    }
     ModelDivergenceSummary.Factor.CLOUD_COVER,
     ModelDivergenceSummary.Factor.RELATIVE_HUMIDITY ->
         "${summary.topFactorMin.roundToInt()}–${summary.topFactorMax.roundToInt()}%"
@@ -1178,17 +1197,21 @@ private fun formatTopFactorRange(
 internal fun WindCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly,
+    windSpeedUnit: WindSpeedUnit = WindSpeedUnit.KMH,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
+    // 10 km/h floor on the y-range so a near-still day doesn't get zoomed
+    // into noise — same reasoning as ForecastChart.MIN_Y_SPAN. Express the
+    // floor in the user's unit so the heuristic stays equivalent (10 km/h
+    // ≈ 6.2 mph) instead of shrinking to a tighter span on imperial.
+    val minSpan = 10.0.toWindSpeedUnit(windSpeedUnit)
     PerModelDiagnosticCard(
         title = stringResource(R.string.today_wind_title),
-        subtitle = stringResource(R.string.today_wind_subtitle),
+        subtitle = stringResource(R.string.today_wind_subtitle, windSpeedUnit.symbol()),
         times = times,
         perModelHourly = perModelHourly,
-        picker = { it.windSpeedKmh },
-        // 10 km/h floor on the y-range so a near-still day doesn't get
-        // zoomed into noise — same reasoning as ForecastChart.MIN_Y_SPAN.
-        yAxis = YAxis.AutoZeroBased(minSpan = 10.0),
+        picker = { it.windSpeedKmh?.toWindSpeedUnit(windSpeedUnit) },
+        yAxis = YAxis.AutoZeroBased(minSpan = minSpan),
     )
 }
 

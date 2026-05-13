@@ -33,4 +33,30 @@ class UnitsTest {
             c.toUnit(TemperatureUnit.FAHRENHEIT).fromUnit(TemperatureUnit.FAHRENHEIT) shouldBe (c plusOrMinus 1e-9)
         }
     }
+
+    @Test
+    fun `kmh is the identity for wind speed`() {
+        15.0.toWindSpeedUnit(WindSpeedUnit.KMH) shouldBe 15.0
+        0.0.toWindSpeedUnit(WindSpeedUnit.KMH) shouldBe 0.0
+    }
+
+    @Test
+    fun `mph conversion matches the textbook factor`() {
+        // 1 mile = 1.609344 km exactly, so 1 km/h = 1 / 1.609344 mph.
+        1.609344.toWindSpeedUnit(WindSpeedUnit.MPH) shouldBe (1.0 plusOrMinus 1e-9)
+        100.0.toWindSpeedUnit(WindSpeedUnit.MPH) shouldBe (62.1371192 plusOrMinus 1e-6)
+        0.0.toWindSpeedUnit(WindSpeedUnit.MPH) shouldBe (0.0 plusOrMinus 1e-9)
+    }
+
+    @Test
+    fun `wind speed unit symbols are the lowercase abbreviations`() {
+        WindSpeedUnit.KMH.symbol() shouldBe "km/h"
+        WindSpeedUnit.MPH.symbol() shouldBe "mph"
+    }
+
+    @Test
+    fun `wind speed unit derives from the chosen distance unit`() {
+        DistanceUnit.KILOMETERS.windSpeedUnit() shouldBe WindSpeedUnit.KMH
+        DistanceUnit.MILES.windSpeedUnit() shouldBe WindSpeedUnit.MPH
+    }
 }

@@ -26,6 +26,7 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PrecipClause
+import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherCondition
 import kotlinx.coroutines.flow.Flow
@@ -268,11 +269,20 @@ class InsightCache(
     }
 
     @Serializable
-    private data class PrecipDto(val condition: String, val secondOfDay: Int) {
+    private data class PrecipDto(
+        val condition: String,
+        val secondOfDay: Int,
+        // Default to LIKELY so cached payloads written before the field existed
+        // round-trip as the pre-tier "Rain at 3pm." form they were originally
+        // generated with — same rationale as PrecipClause's domain default.
+        val likelihood: String = PrecipLikelihood.LIKELY.name,
+    ) {
         fun toDomain(): PrecipClause = PrecipClause(
             condition = runCatching { WeatherCondition.valueOf(condition) }
                 .getOrDefault(WeatherCondition.UNKNOWN),
             time = LocalTime.ofSecondOfDay(secondOfDay.toLong()),
+            likelihood = runCatching { PrecipLikelihood.valueOf(likelihood) }
+                .getOrDefault(PrecipLikelihood.LIKELY),
         )
     }
 
@@ -417,7 +427,9 @@ class InsightCache(
         alert = alert?.let { AlertDto(it.event) },
         delta = delta?.let { DeltaDto(it.degrees, it.direction.name) },
         clothes = clothes?.let { ClothesDto(it.items) },
-        precip = precip?.let { PrecipDto(it.condition.name, it.time.toSecondOfDay()) },
+        precip = precip?.let {
+            PrecipDto(it.condition.name, it.time.toSecondOfDay(), it.likelihood.name)
+        },
         calendarTieIn = calendarTieIn?.let { CalendarTieInDto(it.item) },
         eveningEventTieIn = eveningEventTieIn?.let {
             EveningEventTieInDto(it.item, it.rainTime?.toSecondOfDay())

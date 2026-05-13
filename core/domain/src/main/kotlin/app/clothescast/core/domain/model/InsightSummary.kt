@@ -85,8 +85,27 @@ data class ClothesClause(val items: List<String>)
 /**
  * Peak precipitation hour: a [condition] (RAIN, SNOW, etc.) at a wall-clock [time].
  * The formatter capitalises and humanises the condition name ("Rain at 15:00.").
+ *
+ * [likelihood] tracks how confident we are. [PrecipLikelihood.LIKELY] renders as
+ * the bare condition ("Rain at 3pm."); [PrecipLikelihood.POSSIBLE] hedges
+ * ("Chance of rain at 3pm.") because only a single per-model series flagged
+ * the hour while others stayed dry. Defaults to LIKELY so legacy cached
+ * payloads — written before the field existed — keep their original wording.
  */
-data class PrecipClause(val condition: WeatherCondition, val time: LocalTime)
+data class PrecipClause(
+    val condition: WeatherCondition,
+    val time: LocalTime,
+    val likelihood: PrecipLikelihood = PrecipLikelihood.LIKELY,
+)
+
+/**
+ * Confidence tier for [PrecipClause]. The two values map to two prose forms:
+ * "Rain at 3pm." (LIKELY) when models agree, "Chance of rain at 3pm."
+ * (POSSIBLE) when only one model flags the hour. The renderer picks the tier
+ * based on cross-model agreement at the peak hour; the formatter picks the
+ * template.
+ */
+enum class PrecipLikelihood { LIKELY, POSSIBLE }
 
 /**
  * Calendar tie-in: a clothes [item] keyed off the precipitation peak overlapping

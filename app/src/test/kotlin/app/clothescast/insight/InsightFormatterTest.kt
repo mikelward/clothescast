@@ -12,6 +12,7 @@ import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PrecipClause
+import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherCondition
@@ -149,6 +150,35 @@ class InsightFormatterTest {
     fun `precip clause renders non-zero minutes`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 30)))) shouldBe
             "Today will be mild. Rain at 3:30pm."
+    }
+
+    @Test
+    fun `precip clause hedges with 'Chance of rain' when likelihood is POSSIBLE`() {
+        subject.format(
+            summary(
+                precip = PrecipClause(
+                    WeatherCondition.RAIN,
+                    LocalTime.of(15, 0),
+                    PrecipLikelihood.POSSIBLE,
+                ),
+            ),
+        ) shouldBe "Today will be mild. Chance of rain at 3pm."
+    }
+
+    @Test
+    fun `precip clause downcases the condition mid-sentence in the hedged form`() {
+        // Drizzle would otherwise read "Chance of Drizzle at noon." — title-
+        // cased mid-sentence. The formatter lowercases the condition for the
+        // POSSIBLE template so it sits naturally after "Chance of".
+        subject.format(
+            summary(
+                precip = PrecipClause(
+                    WeatherCondition.DRIZZLE,
+                    LocalTime.NOON,
+                    PrecipLikelihood.POSSIBLE,
+                ),
+            ),
+        ) shouldBe "Today will be mild. Chance of drizzle at noon."
     }
 
     @Test

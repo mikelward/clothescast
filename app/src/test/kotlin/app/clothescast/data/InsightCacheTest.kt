@@ -25,6 +25,7 @@ import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitRationale
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PrecipClause
+import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherCondition
 import io.kotest.matchers.shouldBe
@@ -321,5 +322,22 @@ class InsightCacheTest {
         subject.store(full)
 
         subject.latest.first() shouldBe full
+    }
+
+    @Test
+    fun `precip likelihood round-trips through the cache`() = runTest {
+        val possible = sample.copy(
+            summary = sample.summary.copy(
+                precip = PrecipClause(
+                    WeatherCondition.RAIN,
+                    LocalTime.of(10, 0),
+                    PrecipLikelihood.POSSIBLE,
+                ),
+            ),
+        )
+
+        subject.store(possible)
+
+        subject.latest.first()?.summary?.precip?.likelihood shouldBe PrecipLikelihood.POSSIBLE
     }
 }

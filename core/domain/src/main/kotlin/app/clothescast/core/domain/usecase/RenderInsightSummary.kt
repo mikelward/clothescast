@@ -12,7 +12,9 @@ import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
+import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PrecipClause
+import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
@@ -36,8 +38,13 @@ import kotlin.math.roundToInt
  *    feels-like delta is ≥ 3°C, and only for [ForecastPeriod.TODAY] (the morning
  *    pass already mentioned this comparison; the tonight pass shouldn't repeat it).
  * 4. [ClothesClause] — items triggered by the user's rule list, in rule order.
- * 5. [PrecipClause] — peak chance ≥ 30% (hourly peak preferred; falls back to a
- *    noon synthesis when only the day-level field crosses the threshold).
+ * 5. [PrecipClause] — fires in two tiers driven by cross-model agreement:
+ *    [PrecipLikelihood.LIKELY] when a majority of consulted models hit ≥ 50%
+ *    at the same hour ("Rain at 3pm."), [PrecipLikelihood.POSSIBLE] when at
+ *    least one model hits ≥ 30% but the majority bar isn't cleared ("Chance
+ *    of rain at 3pm."). Falls back to the base hourly series — and ultimately
+ *    a noon synthesis from the day-level field — when per-model data isn't
+ *    available; both fallbacks render as LIKELY (the existing behaviour).
  * 6. [CalendarTieInClause] — when clothes + precip both fired AND a calendar
  *    event overlaps the precip peak hour. Picks "umbrella" when on the clothes
  *    list, otherwise the first triggered item, mirroring rule 4's ordering.
@@ -71,9 +78,21 @@ class RenderInsightSummary {
         // Defaults to [today], which is correct when the caller hasn't sliced
         // the forecast (e.g. in unit tests that pass raw 24h fields on both sides).
         todayForDelta: DailyForecast = today,
+        // Per-model hourly series for the same period [today] covers. When
+        // present, the precip clause uses cross-model agreement to pick its
+        // tier (see [PrecipLikelihood]); when null we fall back to the base
+        // hourly + day-level field. Caller is responsible for slicing the
+        // per-model series to the same window as [today.hourly] so peak hours
+        // line up.
+        perModelHourly: PerModelHourly? = null,
+        // Evening per-model hourly, paired with [eveningForecast]. Open-Meteo's
+        // per-model hourly currently only covers `forecast_days=1`, so the
+        // tonight pass (which wraps past midnight) usually can't supply this —
+        // null falls back to the base series exactly like the today path.
+        eveningPerModelHourly: PerModelHourly? = null,
     ): InsightSummary {
         val items = todayTriggeredRules.map { it.item }
-        val peak = peakPrecip(today)
+        val peak = peakPrecip(today, perModelHourly)
         // Compute the evening peak only when the evening tie-in is going to
         // emit (i.e. caller passed events + triggered rules + an evening
         // forecast). Avoids spending the search on every TODAY pass, and
@@ -83,7 +102,7 @@ class RenderInsightSummary {
             eveningEvents.isNotEmpty() &&
             eveningTriggeredRules.isNotEmpty()
         ) {
-            eveningForecast?.let { peakPrecip(it) }
+            eveningForecast?.let { peakPrecip(it, eveningPerModelHourly) }
         } else {
             null
         }
@@ -93,7 +112,7 @@ class RenderInsightSummary {
             band = bandClause(today),
             delta = if (period == ForecastPeriod.TODAY) deltaClause(todayForDelta, yesterday) else null,
             clothes = clothesClause(items),
-            precip = peak?.let { PrecipClause(it.condition, it.time) },
+            precip = peak?.let { PrecipClause(it.condition, it.time, it.likelihood) },
             // Calendar tie-in only fires on TONIGHT — pairing the precip peak
             // with an event the listener hasn't started yet ("Bring an umbrella
             // for your 8pm dinner") is the case where it adds value. On TODAY
@@ -140,24 +159,40 @@ class RenderInsightSummary {
      * event window against the same time without re-running the logic and getting
      * out of sync.
      *
-     * Returns null unless the resolved condition is *actual* precipitation
-     * (drizzle / rain / snow / thunderstorm). A cloudy or foggy day with a
-     * 30%+ "precip" probability isn't worth a clause — the user wants the
-     * spoken summary to mention precipitation, not haziness.
+     * Tier selection when [perModelHourly] is supplied:
+     *  - [PrecipLikelihood.LIKELY] when a *majority* of consulted models hit
+     *    ≥ [LIKELY_THRESHOLD]% probability at the same hour ("majority" = more
+     *    than half: 2 of 3, both of 2, 1 of 1). Wettest such hour wins.
+     *  - [PrecipLikelihood.POSSIBLE] when at least one model hits ≥
+     *    [POSSIBLE_THRESHOLD]% at some hour but the LIKELY bar isn't cleared.
+     *    The hour carrying the single biggest per-model reading wins.
      *
-     * When an hourly entry's condition is [WeatherCondition.UNKNOWN] (Open-Meteo
-     * omitted the weather code for that hour), the day-level condition is used as a
-     * fallback. If the day-level condition is also unknown or non-precipitating, the
-     * clause is suppressed. This is intentionally conservative — a missing code is
-     * ambiguous, and the day-level field will normally carry the right type when the
-     * API is healthy.
+     * Falls back to the base hourly series (and finally a noon synthesis from
+     * the day-level field) when per-model data isn't available. Both fallback
+     * paths emit LIKELY so legacy behaviour and cached payloads keep their
+     * original wording. The 30% bar matches the historical fallback threshold.
+     *
+     * Condition resolution: prefers the base hour's weather code at the peak
+     * time when it's a precipitating type; falls back to the day-level
+     * condition (after `slicedFor…`, this is already the wettest in-window
+     * hour's code) when the base hour is missing, UNKNOWN, or non-precip; and
+     * finally defaults to [WeatherCondition.RAIN] when the per-model tier
+     * triggered but the base forecast carries no precipitating code at all —
+     * which is the exact "base under-called both probability *and* type"
+     * scenario the per-model tier exists to catch. The base-only fallback
+     * (no per-model data) keeps the original strict "suppress when no
+     * precipitating code" behaviour, because there's no extra signal to
+     * justify overriding the base condition.
      */
-    private fun peakPrecip(today: DailyForecast): PeakPrecip? {
+    private fun peakPrecip(today: DailyForecast, perModelHourly: PerModelHourly?): PeakPrecip? {
+        val perModelHit = perModelHourly?.let { pickPerModelPeak(today, it) }
+        if (perModelHit != null) return perModelHit
+
         val peak = today.hourly.maxByOrNull { it.precipitationProbabilityPct }
         val time: LocalTime
         val condition: WeatherCondition
-        if (peak == null || peak.precipitationProbabilityPct < 30.0) {
-            if (today.precipitationProbabilityMaxPct < 30.0) return null
+        if (peak == null || peak.precipitationProbabilityPct < POSSIBLE_THRESHOLD) {
+            if (today.precipitationProbabilityMaxPct < POSSIBLE_THRESHOLD) return null
             time = LocalTime.NOON
             condition = today.condition
         } else {
@@ -165,7 +200,55 @@ class RenderInsightSummary {
             condition = if (peak.condition == WeatherCondition.UNKNOWN) today.condition else peak.condition
         }
         if (!condition.isPrecipitation()) return null
-        return PeakPrecip(time, condition)
+        return PeakPrecip(time, condition, PrecipLikelihood.LIKELY)
+    }
+
+    private fun pickPerModelPeak(today: DailyForecast, perModelHourly: PerModelHourly): PeakPrecip? {
+        val models = perModelHourly.byModel.values.toList()
+        if (models.isEmpty()) return null
+        // Majority = more than half: 2 of 3, both of 2, 1 of 1. Matches how the
+        // user described it ("any model says ≥ 30 → chance of rain; majority of
+        // models say ≥ 50 → rain"); generalises naturally to whatever subset of
+        // models reported usable hourly values today.
+        val majorityNeeded = models.size / 2 + 1
+        // Walk every hour any model reported, scoring by "models hitting LIKELY
+        // at this hour" first and the single biggest per-model reading second
+        // (tie-break, also doubles as the POSSIBLE fallback pivot).
+        val hours = models.flatMap { entries -> entries.map { it.time } }.toSortedSet()
+        val likelyHour = hours
+            .mapNotNull { hour ->
+                val readings = models.mapNotNull { entries -> entries.firstOrNull { it.time == hour } }
+                val likelyCount = readings.count { it.precipitationProbabilityPct >= LIKELY_THRESHOLD }
+                if (likelyCount >= majorityNeeded) hour to readings else null
+            }
+            .maxByOrNull { (_, readings) -> readings.maxOf { it.precipitationProbabilityPct } }
+            ?.first
+        if (likelyHour != null) {
+            return PeakPrecip(likelyHour, perModelConditionAt(likelyHour, today), PrecipLikelihood.LIKELY)
+        }
+
+        val possibleHour = models.asSequence()
+            .flatten()
+            .filter { it.precipitationProbabilityPct >= POSSIBLE_THRESHOLD }
+            .maxByOrNull { it.precipitationProbabilityPct }
+            ?.time
+        if (possibleHour != null) {
+            return PeakPrecip(possibleHour, perModelConditionAt(possibleHour, today), PrecipLikelihood.POSSIBLE)
+        }
+        return null
+    }
+
+    private fun perModelConditionAt(time: LocalTime, today: DailyForecast): WeatherCondition {
+        val baseHourCondition = today.hourly.firstOrNull { it.time == time }
+            ?.condition
+            ?.takeIf { it != WeatherCondition.UNKNOWN }
+        if (baseHourCondition != null && baseHourCondition.isPrecipitation()) return baseHourCondition
+        if (today.condition.isPrecipitation()) return today.condition
+        // The per-model tier triggered on probability alone but no part of the
+        // base forecast carries a precipitating code. Default to RAIN — the
+        // model is the source of truth here and "Chance of rain" / "Rain" reads
+        // honestly even when the base under-called the precipitation type.
+        return WeatherCondition.RAIN
     }
 
     private fun WeatherCondition.isPrecipitation(): Boolean = when (this) {
@@ -241,5 +324,18 @@ class RenderInsightSummary {
         return EveningEventTieInClause(item = item, rainTime = eveningPeak?.time)
     }
 
-    private data class PeakPrecip(val time: LocalTime, val condition: WeatherCondition)
+    private data class PeakPrecip(
+        val time: LocalTime,
+        val condition: WeatherCondition,
+        val likelihood: PrecipLikelihood,
+    )
+
+    companion object {
+        // Per-model agreement thresholds. The user's mental model is "1 model
+        // says rain → hedge it as a chance; majority of models say a lot of
+        // rain → just say rain". 30% is the historical base-only trigger
+        // threshold; 50% is the per-model bar for a *confident* announcement.
+        internal const val POSSIBLE_THRESHOLD: Double = 30.0
+        internal const val LIKELY_THRESHOLD: Double = 50.0
+    }
 }

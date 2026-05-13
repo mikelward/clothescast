@@ -702,6 +702,15 @@
     swap a verb-shaped phrase ("at 3pm" / "overnight") cleanly per locale.
     -->
     <string name="insight_precip">%1$s %2$s.</string>
+    <!--
+    Hedged variant for when only a single weather model flags the hour. %1$s
+    and %2$s are the same condition / time-phrase pair as insight_precip; the
+    template downcases the condition because "Chance of Rain" reads oddly
+    title-cased mid-sentence. Locales without an obvious "chance of <noun>"
+    construction can keep the rendered text the same as insight_precip — it's
+    a hedge, not a contradiction.
+    -->
+    <string name="insight_precip_chance">Chance of %1$s %2$s.</string>
     <!-- Inserted as %2$s above when the peak hour is named — e.g. "at 3pm". -->
     <string name="insight_precip_at_time">at %1$s</string>
     <!-- Replaces the time phrase entirely for early-morning peaks

@@ -124,6 +124,16 @@ class GenerateDailyInsight(
         } else {
             emptyList()
         }
+        // Per-model hourly only covers `forecast_days=1`, so only the TODAY
+        // pass can pair the precip clause with cross-model agreement. The
+        // tonight pass falls through to base-only behaviour in the renderer.
+        // Sliced to the period window so the renderer's per-hour matches line
+        // up with [periodForecast.hourly].
+        val perModelForPeriod = if (period == ForecastPeriod.TODAY) {
+            bundle.perModelHourly?.slicedTo(periodForecast.hourly)
+        } else {
+            null
+        }
         val summary = renderInsightSummary(
             today = periodForecast,
             yesterday = deltaYesterday,
@@ -135,6 +145,7 @@ class GenerateDailyInsight(
             eveningTriggeredRules = eveningTriggered,
             eveningForecast = if (period == ForecastPeriod.TODAY) tonightForecast else null,
             todayForDelta = deltaToday,
+            perModelHourly = perModelForPeriod,
         )
         val insight = Insight(
             summary = summary,
@@ -156,12 +167,9 @@ class GenerateDailyInsight(
             // narrow today's series to the same daytime window we sliced
             // `periodForecast.hourly` to — otherwise the chart plots the
             // overlays by index and the midnight model value lands on the
-            // first visible hour of the daytime window.
-            perModelHourly = if (period == ForecastPeriod.TODAY) {
-                bundle.perModelHourly?.slicedTo(periodForecast.hourly)
-            } else {
-                null
-            },
+            // first visible hour of the daytime window. Same series that
+            // fed the precip-clause tier selection above.
+            perModelHourly = perModelForPeriod,
             outfit = OutfitSuggestion.fromForecast(periodForecast, rules),
             nextOutfit = nextOutfit,
             outfitRationale = OutfitSuggestion.explainFromForecast(periodForecast, rules),

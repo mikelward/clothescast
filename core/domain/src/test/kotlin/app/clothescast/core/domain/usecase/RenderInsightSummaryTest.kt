@@ -7,6 +7,9 @@ import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
+import app.clothescast.core.domain.model.PerModelHour
+import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
@@ -561,6 +564,224 @@ class RenderInsightSummaryTest {
             period = ForecastPeriod.TONIGHT,
         ).calendarTieIn.shouldBeNull()
     }
+
+    @Test
+    fun `precip clause is LIKELY when the base hourly is the only signal`() {
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 60.0,
+            condition = WeatherCondition.RAIN,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.RAIN),
+            ),
+        )
+        val out = subject(today, yesterday, emptyList()).precip
+        out.shouldNotBeNull()
+        out!!.likelihood shouldBe PrecipLikelihood.LIKELY
+    }
+
+    @Test
+    fun `precip clause is LIKELY when majority of three models hit 50 percent at the same hour`() {
+        // The user's exact scenario, inverted: GFS + ECMWF both flag 10am wet,
+        // ICON disagrees. Two of three is majority → confident "Rain at 10am."
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 30.0,
+            condition = WeatherCondition.PARTLY_CLOUDY,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(10, 0), 18.0, 18.0, 30.0, WeatherCondition.PARTLY_CLOUDY),
+                HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
+            ),
+        )
+        val perModel = perModelHourly(
+            "gfs_seamless" to listOf(
+                perModelHour(LocalTime.of(10, 0), 80.0),
+                perModelHour(LocalTime.of(15, 0), 5.0),
+            ),
+            "ecmwf_ifs04" to listOf(
+                perModelHour(LocalTime.of(10, 0), 70.0),
+                perModelHour(LocalTime.of(15, 0), 5.0),
+            ),
+            "icon_seamless" to listOf(
+                perModelHour(LocalTime.of(10, 0), 10.0),
+                perModelHour(LocalTime.of(15, 0), 5.0),
+            ),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.time shouldBe LocalTime.of(10, 0)
+        out.likelihood shouldBe PrecipLikelihood.LIKELY
+        // Base condition at 10:00 is PARTLY_CLOUDY and the day-level is too,
+        // so we default to RAIN — the per-model tier triggered on probability
+        // alone and "Rain" reads honestly when the base under-called the type.
+        out.condition shouldBe WeatherCondition.RAIN
+    }
+
+    @Test
+    fun `precip clause is POSSIBLE when only one of three models hits 50 percent`() {
+        // Exact mirror of the user's screenshot: GFS at ~80% at 10am, the others
+        // stay near zero. Single-model disagreement → hedged "Chance of rain".
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 30.0,
+            condition = WeatherCondition.PARTLY_CLOUDY,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(10, 0), 18.0, 18.0, 30.0, WeatherCondition.PARTLY_CLOUDY),
+            ),
+        )
+        val perModel = perModelHourly(
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(10, 0), 80.0)),
+            "ecmwf_ifs04" to listOf(perModelHour(LocalTime.of(10, 0), 5.0)),
+            "icon_seamless" to listOf(perModelHour(LocalTime.of(10, 0), 10.0)),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.time shouldBe LocalTime.of(10, 0)
+        out.likelihood shouldBe PrecipLikelihood.POSSIBLE
+        out.condition shouldBe WeatherCondition.RAIN
+    }
+
+    @Test
+    fun `precip clause is POSSIBLE when a single model passes 30 but no model passes 50`() {
+        // Soft signal — one model in the 30-49% band, others dry. Hedged form
+        // wins; nobody crosses the LIKELY bar.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 30.0,
+            condition = WeatherCondition.RAIN,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(11, 0), 18.0, 18.0, 30.0, WeatherCondition.RAIN),
+            ),
+        )
+        val perModel = perModelHourly(
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(11, 0), 40.0)),
+            "ecmwf_ifs04" to listOf(perModelHour(LocalTime.of(11, 0), 5.0)),
+            "icon_seamless" to listOf(perModelHour(LocalTime.of(11, 0), 5.0)),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.likelihood shouldBe PrecipLikelihood.POSSIBLE
+    }
+
+    @Test
+    fun `precip clause is omitted when every model stays below 30 percent`() {
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 10.0,
+            condition = WeatherCondition.PARTLY_CLOUDY,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(10, 0), 18.0, 18.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
+            ),
+        )
+        val perModel = perModelHourly(
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(10, 0), 20.0)),
+            "ecmwf_ifs04" to listOf(perModelHour(LocalTime.of(10, 0), 25.0)),
+            "icon_seamless" to listOf(perModelHour(LocalTime.of(10, 0), 5.0)),
+        )
+        subject(today, yesterday, emptyList(), perModelHourly = perModel).precip.shouldBeNull()
+    }
+
+    @Test
+    fun `precip clause is LIKELY when both of two available models hit 50 percent`() {
+        // Majority of 2 is 2 (both). ECMWF dropped (its run wasn't ready in the
+        // wider pipeline); GFS + ICON both at 60% is still majority agreement.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 20.0,
+            condition = WeatherCondition.PARTLY_CLOUDY,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(13, 0), 18.0, 18.0, 20.0, WeatherCondition.PARTLY_CLOUDY),
+            ),
+        )
+        val perModel = perModelHourly(
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(13, 0), 60.0)),
+            "icon_seamless" to listOf(perModelHour(LocalTime.of(13, 0), 70.0)),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.likelihood shouldBe PrecipLikelihood.LIKELY
+        out.time shouldBe LocalTime.of(13, 0)
+    }
+
+    @Test
+    fun `precip clause is POSSIBLE when one of two available models hits 50 percent`() {
+        // Majority of 2 is 2 — one passing isn't a majority, so the LIKELY
+        // tier doesn't fire; the lone 60% still earns the hedged form.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 20.0,
+            condition = WeatherCondition.RAIN,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(13, 0), 18.0, 18.0, 20.0, WeatherCondition.RAIN),
+            ),
+        )
+        val perModel = perModelHourly(
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(13, 0), 60.0)),
+            "icon_seamless" to listOf(perModelHour(LocalTime.of(13, 0), 10.0)),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.likelihood shouldBe PrecipLikelihood.POSSIBLE
+    }
+
+    @Test
+    fun `precip clause uses base hour condition when the peak hour itself is precipitating`() {
+        // Per-model triggers LIKELY at 17:00 where the base hour says
+        // THUNDERSTORM — we should keep THUNDERSTORM rather than defaulting
+        // to RAIN, because the base carries a more specific code at the peak.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 80.0,
+            condition = WeatherCondition.THUNDERSTORM,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(17, 0), 22.0, 22.0, 80.0, WeatherCondition.THUNDERSTORM),
+            ),
+        )
+        val perModel = perModelHourly(
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(17, 0), 80.0)),
+            "ecmwf_ifs04" to listOf(perModelHour(LocalTime.of(17, 0), 70.0)),
+            "icon_seamless" to listOf(perModelHour(LocalTime.of(17, 0), 60.0)),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.condition shouldBe WeatherCondition.THUNDERSTORM
+        out.likelihood shouldBe PrecipLikelihood.LIKELY
+    }
+
+    @Test
+    fun `precip clause picks the wettest hour when several clear the LIKELY bar`() {
+        // 10:00 has 2 models ≥ 50 (60, 55); 16:00 has 3 models ≥ 50 (90, 80, 70).
+        // 16:00 wins because its max single-model reading is higher.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 70.0,
+            condition = WeatherCondition.RAIN,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(10, 0), 18.0, 18.0, 50.0, WeatherCondition.RAIN),
+                HourlyForecast(LocalTime.of(16, 0), 22.0, 22.0, 70.0, WeatherCondition.RAIN),
+            ),
+        )
+        val perModel = perModelHourly(
+            "gfs_seamless" to listOf(
+                perModelHour(LocalTime.of(10, 0), 60.0),
+                perModelHour(LocalTime.of(16, 0), 90.0),
+            ),
+            "ecmwf_ifs04" to listOf(
+                perModelHour(LocalTime.of(10, 0), 55.0),
+                perModelHour(LocalTime.of(16, 0), 80.0),
+            ),
+            "icon_seamless" to listOf(
+                perModelHour(LocalTime.of(10, 0), 20.0),
+                perModelHour(LocalTime.of(16, 0), 70.0),
+            ),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.time shouldBe LocalTime.of(16, 0)
+        out.likelihood shouldBe PrecipLikelihood.LIKELY
+    }
+
+    private fun perModelHour(time: LocalTime, precipPct: Double): PerModelHour =
+        PerModelHour(
+            time = time,
+            apparentTemperatureC = 18.0,
+            temperatureC = 18.0,
+            precipitationProbabilityPct = precipPct,
+        )
+
+    private fun perModelHourly(vararg models: Pair<String, List<PerModelHour>>): PerModelHourly =
+        PerModelHourly(models.toMap())
 
     @Test
     fun `temperature band classifier covers all six bands at boundaries`() {

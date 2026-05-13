@@ -12,6 +12,7 @@ import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PrecipClause
+import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherCondition
@@ -97,7 +98,7 @@ class InsightFormatter(
     }
 
     private fun formatPrecip(precip: PrecipClause): String {
-        val type = resources.getString(conditionRes(precip.condition))
+        val rawType = resources.getString(conditionRes(precip.condition))
         // "Rain at 02:00" sounds robotic and a precise hour adds little value
         // when the user is asleep — collapse early-morning peaks to "overnight".
         val timePhrase = if (precip.time.hour in OVERNIGHT_HOURS) {
@@ -105,7 +106,18 @@ class InsightFormatter(
         } else {
             resources.getString(R.string.insight_precip_at_time, spokenTime(precip.time))
         }
-        return resources.getString(R.string.insight_precip, type, timePhrase)
+        return when (precip.likelihood) {
+            PrecipLikelihood.LIKELY ->
+                resources.getString(R.string.insight_precip, rawType, timePhrase)
+            // "Chance of Rain at 3pm" reads odd with the condition title-cased
+            // mid-sentence; downcase the noun so the lead "Chance of" sits
+            // naturally. Other locales' condition resources may already be
+            // lowercase or have grammatical case to handle — this lowering is
+            // safe for English ("Rain" → "rain") and a no-op for languages
+            // where the condition resource is already in lower form.
+            PrecipLikelihood.POSSIBLE ->
+                resources.getString(R.string.insight_precip_chance, rawType.lowercase(locale), timePhrase)
+        }
     }
 
     private fun formatTieIn(item: String): String? {

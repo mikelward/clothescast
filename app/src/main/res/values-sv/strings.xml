@@ -1,14 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Swedish translation. Scope: insight-prose templates, garment labels, clothes-rule
-editor, outfit-card labels, and region/voice-locale picker names.
+Swedish (sv-SE) — full UI coverage matching the German reference.
+Register: informal "du" throughout. Brand name "ClothesCast" stays verbatim.
+
+What is NOT overridden, by design:
+- `app_name` — brand identifier, identical across locales.
+- `insight_time_am` / `_pm` / `_midnight` / `_noon` (and *_minutes variants)
+  — English-only spoken-time formatter helpers. Swedish uses
+  `insight_time_hour` / `insight_time_hour_minutes` ("%1$d" / "%1$d:%2$02d")
+  with "klockan" from surrounding templates.
+
+`settings_region_language_*` and `settings_tts_voice_locale_*` use Swedish
+native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
 -->
 <resources>
+    <!-- Own-locale entries (used by both Region and Voice pickers). -->
     <string name="settings_region_language_sv_se">Svenska (Sverige)</string>
     <string name="settings_tts_voice_locale_sv_se">Svenska (Sverige)</string>
+    <!-- "Accent" picker label. -->
     <string name="settings_tts_voice_locale_label">Brytning</string>
-    <string name="settings_tts_voice_locale_system">Följ språkinställning</string>
 
+    <!-- Settings — top bar + root navigation list. -->
+    <string name="settings_title">Inställningar</string>
+    <string name="settings_back">Tillbaka</string>
+
+    <string name="settings_root_voice">Röst</string>
+    <string name="settings_root_schedule">Schema</string>
+    <string name="settings_root_region">Region</string>
+    <string name="settings_root_clothes">Kläder</string>
+    <string name="settings_root_about">Om</string>
+    <string name="settings_root_display">Visning</string>
+    <string name="settings_root_location">Plats</string>
+    <string name="settings_root_calendar">Kalender</string>
+    <string name="settings_root_privacy">Integritet</string>
+
+    <string name="settings_root_schedule_subtitle">Aviseringar och tider</string>
+    <string name="settings_root_clothes_subtitle">Temperaturer och outfits</string>
+    <string name="settings_root_region_subtitle">Språk och enheter</string>
+    <string name="settings_root_voice_subtitle">Leverantör och brytningar</string>
+    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_location_subtitle">Automatisk eller välj stad</string>
+    <string name="settings_root_calendar_subtitle">Dagens händelser</string>
+    <string name="settings_root_privacy_subtitle">Krasch- och användningsrapporter</string>
+
+    <!-- Garment dropdown labels. -->
     <string name="garment_sweater">Tröja</string>
     <string name="garment_hoodie">Huvtröja</string>
     <string name="garment_jacket">Jacka</string>
@@ -18,7 +53,14 @@ editor, outfit-card labels, and region/voice-locale picker names.
     <string name="garment_shorts">Shorts</string>
     <string name="garment_pants">Byxor</string>
     <string name="garment_jeans">Jeans</string>
+    <string name="garment_polo">Piké/Pikétröja</string>
+    <string name="garment_thin_jacket">Tunn jacka</string>
+    <string name="garment_puffer">Dunjacka</string>
+    <string name="garment_skirt">Kjol</string>
 
+    <!-- Clothes settings. -->
+    <string name="settings_clothes_title">Klädesregler</string>
+    <string name="settings_clothes_description">När en prognos överstiger ett av dessa tröskelvärden visas plagget i ditt dagliga ClothesCast.</string>
     <string name="settings_clothes_empty">Inga regler. Tryck på Lägg till för att skapa en.</string>
     <string name="settings_clothes_add">Lägg till</string>
     <string name="settings_clothes_edit">Redigera</string>
@@ -36,34 +78,502 @@ editor, outfit-card labels, and region/voice-locale picker names.
     <string name="settings_clothes_cond_temp_above">när upplevd temperatur är över %1$s</string>
     <string name="settings_clothes_cond_precip_above">när risken för regn överstiger %.0f%%</string>
 
+    <!-- Schedule screen. -->
+    <string name="settings_schedule_title">Dagligt ClothesCast</string>
+    <string name="settings_schedule_time_label">Tid</string>
+    <string name="settings_schedule_days_label">Veckodagar</string>
+    <string name="settings_daily_mention_evening_events">Nämn kvällshändelser</string>
+
+    <string name="settings_tonight_title">Kvällens ClothesCast</string>
+    <string name="settings_tonight_description">Ett andra ClothesCast på kvällen för vädret ikväll. På lugna kvällar är det tyst eller visas inte alls om "Avisera bara vid kvällshändelser" är aktiverat; på kvällar med händelser spelar det upp ett ljud och (om du har röstutläsning aktiverat) läser upp sig självt.</string>
+    <string name="settings_tonight_enabled">Visa kvällets ClothesCast</string>
+    <string name="settings_tonight_time_label">Tid</string>
+    <string name="settings_tonight_days_label">Veckodagar</string>
+    <string name="settings_tonight_notify_only_on_events">Avisera bara vid kvällshändelser</string>
+
+    <string name="settings_delivery_label">Leverans</string>
+    <string name="settings_delivery_notification_only">Endast avisering</string>
+    <string name="settings_delivery_tts_only">Endast röst</string>
+    <string name="settings_delivery_notification_and_tts">Avisering och röst</string>
+
+    <!-- Voice screen. -->
+    <string name="settings_tts_engine_title">Röstmotor</string>
+    <string name="settings_tts_engine_device">Enhet (offline, gratis)</string>
+    <string name="settings_tts_engine_gemini">Gemini (hög kvalitet, online)</string>
+    <string name="settings_tts_engine_description">Gemini låter betydligt mer naturlig än enhetens röst, men kräver ett nätverksanrop vid uppläsning och använder din API-nyckel för syntesen (ett kort anrop per uppläst ClothesCast). Faller tillbaka på enhetens röst om Gemini misslyckas.</string>
+
+    <string name="settings_tts_voice_label">Röst</string>
+    <string name="settings_tts_voice_dismiss">Klar</string>
+    <string name="settings_tts_voice_locale_description">Anger accenten för den talade rösten. Ändrar inte den visade texten.</string>
+    <string name="settings_tts_voice_locale_system">Följ språkinställning</string>
+
+    <string name="settings_tts_test">Testa röst</string>
+    <string name="settings_tts_test_in_flight">Testar — vänta…</string>
+
+    <string name="settings_tts_device_voice_label">Enhetens röst</string>
+    <string name="settings_tts_device_voice_auto">Automatisk (bästa accent)</string>
+    <string name="settings_tts_device_voice_currently">Aktuell: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Laddar…</string>
+    <string name="settings_tts_device_voice_network">Nätverk</string>
+    <string name="settings_tts_device_voice_offline">Offline</string>
+    <string name="settings_tts_install_google_hint">Installera Googles text-till-tal-motor för bättre röster.</string>
+    <string name="settings_tts_install_google_button">Installera Google TTS</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">Stil</string>
+    <string name="settings_tts_style_weather_forecaster">Väderrapportör</string>
+    <string name="settings_tts_style_pirate">Pirat</string>
+    <string name="settings_tts_style_cowboy">Cowboy</string>
+    <string name="settings_tts_style_shakespearean">Shakespeariansk</string>
+    <string name="settings_tts_style_surfer">Surfare</string>
+    <string name="settings_tts_style_parent">Förälder</string>
+    <string name="settings_tts_style_child">Barn</string>
+    <string name="settings_tts_style_teenager">Tonåring</string>
+    <string name="settings_tts_style_grandparent">Farförälder</string>
+    <string name="settings_tts_style_kids_host">Barnprogramledare</string>
+    <string name="settings_tts_style_radio_host">Pratshow-värd</string>
+    <string name="settings_tts_style_morning_dj">Morgen-DJ</string>
+    <string name="settings_tts_style_science_teacher">Naturvetenskapslärare</string>
+    <string name="settings_tts_style_historian">Historiker</string>
+    <string name="settings_tts_style_sportscaster">Sportkommentator</string>
+    <string name="settings_tts_style_stadium_announcer">Arenaropert</string>
+    <string name="settings_tts_style_storyteller">Berättare</string>
+    <string name="settings_tts_style_fitness_instructor">Fitnessinstruktör</string>
+    <string name="settings_tts_style_morning_presenter">Morgonradiokvärd</string>
+    <string name="settings_tts_style_custom">Anpassad…</string>
+    <string name="settings_tts_style_custom_label">Anpassad instruktion</string>
+    <string name="settings_tts_style_custom_placeholder">t.ex. Läs följande som en sträng, viskande bibliotekarie</string>
+
+    <!-- Region screen — language picker. -->
+    <string name="settings_region_language_title">Språk</string>
+    <string name="settings_region_language_description">Anger språket för visad text och aviseringar.</string>
+    <string name="settings_region_language_system">Använd systemspråk</string>
+    <string name="settings_region_language_en_us">Engelska (USA)</string>
+    <string name="settings_region_language_en_gb">Engelska (Storbritannien)</string>
+    <string name="settings_region_language_en_au">Engelska (Australien)</string>
+    <string name="settings_region_language_en_ca">Engelska (Kanada)</string>
+    <string name="settings_region_language_en_za">Engelska (Sydafrika)</string>
+    <string name="settings_region_language_fr_fr">Franska (Frankrike)</string>
+    <string name="settings_region_language_fr_ca">Franska (Kanada)</string>
+    <string name="settings_region_language_de_de">Tyska (Tyskland)</string>
+    <string name="settings_region_language_de_at">Tyska (Österrike)</string>
+    <string name="settings_region_language_de_ch">Tyska (Schweiz)</string>
+    <string name="settings_region_language_it_it">Italienska (Italien)</string>
+    <string name="settings_region_language_es_es">Spanska (Spanien)</string>
+    <string name="settings_region_language_es_mx">Spanska (Mexiko)</string>
+    <string name="settings_region_language_ca_es">Katalanska (Spanien)</string>
+    <string name="settings_region_language_ru_ru">Ryska (Ryssland)</string>
+    <string name="settings_region_language_pl_pl">Polska (Polen)</string>
+    <string name="settings_region_language_hr_hr">Kroatiska (Kroatien)</string>
+    <string name="settings_region_language_sl_si">Slovenska (Slovenien)</string>
+    <string name="settings_region_language_sr_rs">Serbiska (latin)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Serbiska (kyrilliska)</string>
+    <string name="settings_region_language_bg_bg">Bulgariska (Bulgarien)</string>
+    <string name="settings_region_language_cs_cz">Tjeckiska (Tjeckien)</string>
+    <string name="settings_region_language_sk_sk">Slovakiska (Slovakien)</string>
+    <string name="settings_region_language_hu_hu">Ungerska (Ungern)</string>
+    <string name="settings_region_language_ro_ro">Rumänska (Rumänien)</string>
+    <string name="settings_region_language_el_gr">Grekiska (Grekland)</string>
+    <string name="settings_region_language_uk_ua">Ukrainska (Ukraina)</string>
+    <string name="settings_region_language_pt_br">Portugisiska (Brasilien)</string>
+    <string name="settings_region_language_pt_pt">Portugisiska (Portugal)</string>
+    <string name="settings_region_language_nl_nl">Nederländska (Nederländerna)</string>
+    <string name="settings_region_language_fi_fi">Finska (Finland)</string>
+    <string name="settings_region_language_da_dk">Danska (Danmark)</string>
+    <string name="settings_region_language_nb_no">Norska bokmål (Norge)</string>
+    <string name="settings_region_language_et_ee">Estniska (Estland)</string>
+    <string name="settings_region_language_lv_lv">Lettiska (Lettland)</string>
+    <string name="settings_region_language_lt_lt">Litauiska (Litauen)</string>
+    <string name="settings_region_language_tr_tr">Turkiska (Turkiet)</string>
+    <string name="settings_region_language_id_id">Indonesiska (Indonesien)</string>
+    <string name="settings_region_language_ms_my">Malajiska (Malaysia)</string>
+    <string name="settings_region_language_fil_ph">Filippinska (Filippinerna)</string>
+    <string name="settings_region_language_vi_vn">Vietnamesiska (Vietnam)</string>
+    <string name="settings_region_language_th_th">Thailändska (Thailand)</string>
+    <string name="settings_region_language_zh_cn">Kinesiska (förenklad)</string>
+    <string name="settings_region_language_zh_tw">Kinesiska (traditionell)</string>
+    <string name="settings_region_language_hi_in">Hindi (Indien)</string>
+    <string name="settings_region_language_bn_bd">Bengali (Bangladesh)</string>
+    <string name="settings_region_language_ja_jp">Japanska (Japan)</string>
+    <string name="settings_region_language_ko_kr">Koreanska (Sydkorea)</string>
+    <string name="settings_region_language_ar_sa">Arabiska (Saudiarabien)</string>
+    <string name="settings_region_language_he_il">Hebreiska (Israel)</string>
+    <string name="settings_region_language_fa_ir">Persiska (Iran)</string>
+    <string name="settings_region_language_am_et">Amhariska (Etiopien)</string>
+    <string name="settings_region_language_sq_al">Albanska (Albanien)</string>
+    <string name="settings_region_language_sw_ke">Swahili (Kenya)</string>
+
+    <!-- Region screen — units pickers. -->
+    <string name="settings_temperature_unit_title">Temperaturenhet</string>
+    <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="settings_distance_unit_title">Avståndsenhet</string>
+    <string name="settings_distance_unit_kilometers">Kilometer</string>
+    <string name="settings_distance_unit_miles">Miles</string>
+
+    <!-- Voice locale picker labels (Swedish names for all locales). -->
+    <string name="settings_tts_voice_locale_en_us">Engelska (USA)</string>
+    <string name="settings_tts_voice_locale_en_gb">Engelska (Storbritannien)</string>
+    <string name="settings_tts_voice_locale_en_au">Engelska (Australien)</string>
+    <string name="settings_tts_voice_locale_en_ca">Engelska (Kanada)</string>
+    <string name="settings_tts_voice_locale_en_za">Engelska (Sydafrika)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Franska (Frankrike)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Franska (Kanada)</string>
+    <string name="settings_tts_voice_locale_de_de">Tyska (Tyskland)</string>
+    <string name="settings_tts_voice_locale_de_at">Tyska (Österrike)</string>
+    <string name="settings_tts_voice_locale_de_ch">Tyska (Schweiz)</string>
+    <string name="settings_tts_voice_locale_it_it">Italienska (Italien)</string>
+    <string name="settings_tts_voice_locale_es_es">Spanska (Spanien)</string>
+    <string name="settings_tts_voice_locale_es_mx">Spanska (Mexiko)</string>
+    <string name="settings_tts_voice_locale_ca_es">Katalanska (Spanien)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Ryska (Ryssland)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Polska (Polen)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Kroatiska (Kroatien)</string>
+    <string name="settings_tts_voice_locale_sl_si">Slovenska (Slovenien)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Serbiska (latin)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Serbiska (kyrilliska)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Bulgariska (Bulgarien)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Tjeckiska (Tjeckien)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Slovakiska (Slovakien)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Ungerska (Ungern)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Rumänska (Rumänien)</string>
+    <string name="settings_tts_voice_locale_el_gr">Grekiska (Grekland)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Ukrainska (Ukraina)</string>
+    <string name="settings_tts_voice_locale_pt_br">Portugisiska (Brasilien)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Portugisiska (Portugal)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Nederländska (Nederländerna)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Finska (Finland)</string>
+    <string name="settings_tts_voice_locale_da_dk">Danska (Danmark)</string>
+    <string name="settings_tts_voice_locale_nb_no">Norska bokmål (Norge)</string>
+    <string name="settings_tts_voice_locale_et_ee">Estniska (Estland)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Lettiska (Lettland)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Litauiska (Litauen)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Turkiska (Turkiet)</string>
+    <string name="settings_tts_voice_locale_id_id">Indonesiska (Indonesien)</string>
+    <string name="settings_tts_voice_locale_ms_my">Malajiska (Malaysia)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Filippinska (Filippinerna)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Vietnamesiska (Vietnam)</string>
+    <string name="settings_tts_voice_locale_th_th">Thailändska (Thailand)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Kinesiska (förenklad)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Kinesiska (traditionell)</string>
+    <string name="settings_tts_voice_locale_hi_in">Hindi (Indien)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Bengali (Bangladesh)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Japanska (Japan)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Koreanska (Sydkorea)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Arabiska (Saudiarabien)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Arabiska (Egypten)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Arabiska (Förenade arabemiraten)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Arabiska (Marocko)</string>
+    <string name="settings_tts_voice_locale_he_il">Hebreiska (Israel)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Persiska (Iran)</string>
+    <string name="settings_tts_voice_locale_am_et">Amhariska (Etiopien)</string>
+    <string name="settings_tts_voice_locale_sq_al">Albanska (Albanien)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Swahili (Kenya)</string>
+
+    <!-- API keys screen. -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Använd Gemini för röster av hög kvalitet.</string>
+    <string name="settings_api_key_status_set">En Gemini-nyckel är inställd.</string>
+    <string name="settings_api_key_status_unset">Ingen Gemini-nyckel inställd. Hämta en på aistudio.google.com för att använda Gemini-röster.</string>
+    <string name="settings_api_key_placeholder">Klistra in Gemini API-nyckel här</string>
+    <string name="settings_api_key_save">Spara Gemini-nyckel</string>
+    <string name="settings_api_key_clear">Ta bort sparad Gemini-nyckel</string>
+
+    <!-- Location screen. -->
+    <string name="settings_location_title">Plats</string>
+    <string name="settings_location_use_device">Använd enhetens plats</string>
+    <string name="settings_location_use_device_description">Senaste ungefärliga plats</string>
+    <string name="settings_location_grant_background">Tillåt bakgrundsplats (Systeminställningar)</string>
+    <string name="settings_location_unset">Ingen plats inställd</string>
+    <string name="settings_location_clear">Ta bort plats</string>
+    <string name="settings_location_search_title">Sök efter plats</string>
+    <string name="settings_location_query_label">Stad eller ort</string>
+    <string name="settings_location_search">Sök</string>
+    <string name="settings_location_searching">Söker…</string>
+    <string name="settings_location_no_results">Inga träffar.</string>
+    <string name="settings_location_detecting">Identifierar…</string>
+    <string name="settings_location_background_banner_title">Permanent plats krävs</string>
+    <string name="settings_location_background_banner_body">Utan den kan morgonprognosen inte läsa din plats.</string>
+    <string name="settings_location_manual_override">Fel plats? Ange manuellt</string>
+    <string name="settings_location_manual_override_disclosure">Om du väljer en stad inaktiveras den automatiska identifieringen.</string>
+
+    <!-- Location rationale dialogs. -->
+    <string name="settings_location_background_rationale_title">Tillåt alltid</string>
+    <string name="settings_location_background_rationale_body">ClothesCast hämtar din prognos varje morgon i bakgrunden. Det kräver platsbehörigheten "Tillåt alltid". Du skickas vidare till systeminställningarna för att bevilja den.</string>
+    <string name="settings_location_background_rationale_continue">Öppna inställningar</string>
+    <string name="settings_location_background_rationale_dismiss">Inte nu</string>
+
+    <string name="settings_location_background_denied_title">Permanent åtkomst ej beviljad</string>
+    <string name="settings_location_background_denied_body">Utan "Tillåt alltid" använder morgonprognosen din sparade plats. Vill du öppna systeminställningarna för att bevilja den?</string>
+    <string name="settings_location_background_denied_open">Öppna inställningar</string>
+    <string name="settings_location_background_denied_keep">Behåll sparad plats</string>
+
+    <string name="settings_location_rationale_title">Permanent plats</string>
+    <string name="settings_location_rationale_body">ClothesCast uppdaterar din prognos i bakgrunden för att leverera den i tid. Det kräver platsbehörigheten "Tillåt alltid".</string>
+    <string name="settings_location_rationale_continue">Fortsätt</string>
+    <string name="settings_location_rationale_dismiss">Inte nu</string>
+
+    <!-- Notification channels. -->
+    <string name="notification_channel_daily_insight_name">Dagligt ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">Den morgonliga vädersammanfattning du har aktiverat.</string>
+    <string name="notification_daily_insight_title">Dagens väder</string>
+
+    <string name="notification_channel_tonight_insight_default_name">Kvällens ClothesCast (med händelser)</string>
+    <string name="notification_channel_tonight_insight_default_description">Den kvällsvisa vädersammanfattningen när du har händelser ikväll. Spelar upp din standardaviseringston.</string>
+    <string name="notification_channel_tonight_insight_silent_name">Kvällens ClothesCast (tyst)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Den kvällsvisa vädersammanfattningen på lediga kvällar. Levereras tyst — du kan se den på låsskärmen men den gör inget ljud.</string>
+    <string name="notification_tonight_insight_title">Vädret ikväll</string>
+
+    <string name="notification_channel_weather_alerts_name">Vädervarningar</string>
+    <string name="notification_channel_weather_alerts_description">Högprioriterade varningar för svåra eller extrema väderhändelser i ditt område. Skickas så snart de identifieras vid det dagliga hämtandet.</string>
+    <string name="notification_weather_alert_title">Vädervarning: %1$s</string>
+
+    <!-- Notification permission card. -->
+    <string name="settings_notification_permission_title">Aviseringar är blockerade</string>
+    <string name="settings_notification_permission_description">Utan aviseringsbehörighet har ditt dagliga ClothesCast ingenstans att ta vägen. Tillåt det så att ClothesCast kan dyka upp tidigt imorgon bitti.</string>
+    <string name="settings_notification_permission_grant">Tillåt aviseringar</string>
+
+    <!-- Calendar opt-in card. -->
+    <string name="settings_calendar_title">Kalender</string>
+    <string name="settings_calendar_use_events">Använd dagens kalenderhändelser</string>
+    <string name="settings_calendar_description_off">När aktiverat läser ClothesCast dagens händelser från din enhetskalender så att ditt morgonliga ClothesCast kan ge förslag kopplade till specifika händelser — t.ex. "Ta med ett paraply till din löptur i parken klockan 15". Bara händelsetitlar och tider används; beskrivningar, deltagare och platser läses men lämnar aldrig enheten.</string>
+    <string name="settings_calendar_description_on">Läser dagens händelser från din enhetskalender för att komplettera ditt morgonliga ClothesCast. Bara titlar och tider används i den renderade sammanfattningen; inte beskrivningar eller deltagare. Allt stannar på enheten.</string>
+    <string name="settings_calendar_grant_permission">Tillåt kalenderåtkomst</string>
+    <string name="settings_calendar_open_settings">Kalenderåtkomst nekad. Tillåt den i Systeminställningar.</string>
+
+    <!-- Debug screen. -->
+    <string name="settings_debug_title">Debug (endast i debug-byggen)</string>
+    <string name="settings_debug_description">Utlös det dagliga ClothesCast-flödet omedelbart. Praktiskt för att kontrollera utan att vänta på planerad tid.</string>
+    <string name="settings_debug_fire_now">Utlös ClothesCast nu</string>
+    <string name="settings_debug_fire_toast">ClothesCast-worker köad</string>
+
+    <!-- About screen. -->
+    <string name="settings_about_title">Om</string>
+    <string name="settings_about_version">Version %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s-bygge</string>
+    <string name="settings_about_source">Källkod på GitHub</string>
+    <string name="settings_about_dontkillmyapp">Bakgrundsbegränsningar (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Dela felrapport</string>
+    <string name="settings_about_version_copied">Version kopierad till urklipp</string>
+
+    <!-- Today screen. -->
+    <string name="today_title">Idag</string>
+    <string name="today_open_settings">Öppna inställningar</string>
+    <string name="today_more_options">Fler alternativ</string>
+    <string name="today_report_a_bug">Rapportera ett fel</string>
+    <string name="today_refresh">Uppdatera</string>
+    <string name="today_refresh_toast_daily">Ditt dagliga ClothesCast uppdateras — det kommer strax.</string>
+    <string name="today_refresh_toast_nightly">Ditt kvällsvisa ClothesCast uppdateras — det kommer strax.</string>
+    <string name="today_empty_title">Inget ClothesCast ännu</string>
+    <string name="today_empty_subtitle">Ditt morgonliga ClothesCast dyker upp här när det har genererats. Ange din plats i inställningarna och tryck sedan på Hämta nu.</string>
+    <string name="today_fetch_now">Hämta nu</string>
+    <string name="today_generated_at">Genererat klockan %1$s</string>
+
+    <string name="today_outfit_title">Vad ska du ha på dig</string>
+    <string name="today_outfit_label_today">Idag</string>
+    <string name="today_outfit_label_tonight">Ikväll</string>
+    <string name="today_outfit_label_tomorrow">Imorgon</string>
+
+    <!-- Outfit card labels. -->
     <string name="today_outfit_top_tshirt">T-shirt</string>
     <string name="today_outfit_top_sweater">Tröja</string>
     <string name="today_outfit_top_thick_jacket">Tjock jacka</string>
+    <string name="today_outfit_top_polo">Piké</string>
+    <string name="today_outfit_top_thin_jacket">Tunn jacka</string>
+    <string name="today_outfit_top_thick_coat">Tjock kappa</string>
+    <string name="today_outfit_top_puffer_jacket">Dunjacka</string>
     <string name="today_outfit_bottom_shorts">Shorts</string>
     <string name="today_outfit_bottom_long_pants">Byxor</string>
+    <string name="today_outfit_bottom_skirt">Kjol</string>
+    <string name="today_outfit_bottom_jeans">Jeans</string>
 
+    <string name="today_forecast_title">Timprognos</string>
+    <string name="today_forecast_min_max">Upplevd %1$d – %2$d%3$s · Luft %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Upplevd temperatur (%1$s) per timme · tryck för lufttemperatur</string>
+    <string name="today_forecast_legend_air">Lufttemperatur (%1$s) per timme · tryck för upplevd temperatur</string>
+
+    <string name="today_confidence_high">Hög säkerhet — de viktigaste modellerna stämmer överens</string>
+    <string name="today_confidence_medium">Medelhög säkerhet</string>
+    <string name="today_confidence_low">Låg säkerhet — prognoserna avviker från varandra</string>
+    <string name="today_confidence_spread">Spridning: %1$.1f°C, %2$.0f pp nederbörd över %3$d modeller</string>
+
+    <string name="today_working">Hämtar ditt ClothesCast…</string>
+    <string name="today_failed_title">Senaste försöket misslyckades</string>
+    <string name="today_failed_unexpected_http">Oväntat HTTP-fel från vädertjänsten.</string>
+    <string name="today_failed_unhandled">Ett oväntat fel uppstod.</string>
+    <string name="today_failed_show_details">Visa detaljer</string>
+    <string name="today_failed_hide_details">Dölj detaljer</string>
+    <string name="today_failed_no_location">Din plats kunde inte fastställas. Bevilja permanent platsåtkomst eller ange en stad i inställningarna.</string>
+
+    <string name="today_location_required_title">Ange din plats</string>
+    <string name="today_location_required_body">ClothesCast behöver känna till din plats för att hämta prognosen. Bevilja permanent platsåtkomst eller välj en stad.</string>
+    <string name="today_location_required_action">Öppna platsinställningar</string>
+    <string name="today_location_unknown">Din plats</string>
+
+    <string name="today_retrying">Senaste försöket misslyckades — försöker igen…</string>
+
+    <!-- Rationale card. -->
+    <string name="today_rationale_title">Varför detta outfit?</string>
+    <string name="today_rationale_show">Varför?</string>
+    <string name="today_rationale_dismiss">Förstått</string>
+    <string name="today_rationale_threshold_decrease">Sänk tröskeln med 1 grad</string>
+    <string name="today_rationale_threshold_increase">Höj tröskeln med 1 grad</string>
+    <string name="today_rationale_threshold_changed_hint">Uppdatera för att se det nya outfitet.</string>
+    <string name="today_rationale_unavailable">Ingen motivering tillgänglig — öppna appen efter nästa uppdatering.</string>
+    <string name="today_rationale_min_below_with_time">Upplevd lägstatemperatur %1$s%2$s klockan %3$s, under %4$s%2$s</string>
+    <string name="today_rationale_min_below">Upplevd lägstatemperatur %1$s%2$s, under %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Upplevd lägstatemperatur %1$s%2$s klockan %3$s, minst %4$s%2$s</string>
+    <string name="today_rationale_min_above">Upplevd lägstatemperatur %1$s%2$s, minst %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Upplevd högstatemperatur bara %1$s%2$s klockan %3$s, under %4$s%2$s</string>
+    <string name="today_rationale_max_below">Upplevd högstatemperatur bara %1$s%2$s, under %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Upplevd högstatemperatur %1$s%2$s klockan %3$s, minst %4$s%2$s</string>
+    <string name="today_rationale_max_above">Upplevd högstatemperatur %1$s%2$s, minst %3$s%2$s</string>
+
+    <!-- Crash banner. -->
+    <string name="today_crash_banner_title">Senaste starten kraschade</string>
+    <string name="today_crash_banner_body">En kraschrapport har sparats på din enhet. Vill du dela den så att felet kan åtgärdas? Inget skickas förrän du väljer en destination.</string>
+    <string name="today_crash_banner_share">Dela rapport</string>
+    <string name="today_crash_banner_dismiss">Stäng</string>
+
+    <!-- In-app update banner. -->
+    <string name="today_update_available_title">Uppdatering tillgänglig</string>
+    <string name="today_update_available_body">En nyare version av ClothesCast finns i Play Butik.</string>
+    <string name="today_update_available_action">Uppdatera</string>
+    <string name="today_update_available_dismiss">Inte nu</string>
+    <string name="today_update_downloaded_body">Uppdatering nedladdad. Starta om för att slutföra installationen.</string>
+    <string name="today_update_downloaded_action">Starta om</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Regnsannolikhet</string>
+    <string name="today_precipitation_peak">Topp %1$d%% klockan %2$s</string>
+    <string name="today_precipitation_dry">Inget regn väntas idag</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">Modeller:</string>
+    <string name="today_chart_main_line_label">Kombinerat</string>
+    <string name="today_chart_divergence_summary">Modellerna avviker mest kl. %1$s (Δ %2$.1f%3$s upplevd temp.) — framför allt %4$s, %5$s</string>
+
+    <!-- Divergence factor names. -->
+    <string name="today_factor_air_temperature">Lufttemperatur</string>
+    <string name="today_factor_wind_speed">Vindhastighet</string>
+    <string name="today_factor_cloud_cover">Molntäcke</string>
+    <string name="today_factor_humidity">Luftfuktighet</string>
+
+    <!-- Diagnostic cards. -->
+    <string name="today_wind_title">Vindhastighet</string>
+    <string name="today_wind_subtitle">Vindhastighet (%1$s) per timme per modell</string>
+    <string name="today_cloud_title">Molntäcke</string>
+    <string name="today_cloud_subtitle">Totalt molntäcke (%) per timme per modell</string>
+    <string name="today_humidity_title">Luftfuktighet</string>
+    <string name="today_humidity_subtitle">Relativ luftfuktighet (%) per timme per modell</string>
+
+    <!-- Low-confidence callout. -->
+    <string name="today_low_confidence_callout_title">Prognoserna avviker idag</string>
+    <string name="today_low_confidence_callout_body">Temperaturen varierar med %1$.1f°C och regnsannolikheten med %2$.0f%% över %3$d modeller.</string>
+
+    <!-- Telemetry notice. -->
+    <string name="today_telemetry_notice_title">Krasch- och användningsrapporter är aktiverade</string>
+    <string name="today_telemetry_notice_body">ClothesCast skickar anonyma kraschrapporter och användningsanalyser för att åtgärda fel. Inga kalenderdata, platsdata eller innehållstexter skickas. Kan inaktiveras när som helst i inställningarna.</string>
+    <string name="today_telemetry_notice_open_settings">Öppna integritetsinställningar</string>
+    <string name="today_telemetry_notice_dismiss">Stäng</string>
+
+    <!-- Widget. -->
+    <string name="widget_label">Outfit</string>
+    <string name="widget_description">En snabb titt på outfitet för den aktuella delen av dagen.</string>
+    <string name="widget_empty_title">Inget outfit ännu</string>
+    <string name="widget_empty_subtitle">Tryck för att öppna ClothesCast</string>
+
+    <!-- Onboarding. -->
+    <string name="onboarding_title">Välkommen till ClothesCast</string>
+    <string name="onboarding_subtitle">Två snabba val, så är du redo. Allt annat har ett vettigt standardvärde som du kan ändra senare i inställningarna.</string>
+    <string name="onboarding_subtitle_tv">Två snabba val, så är du redo. Allt annat kan du anpassa senare i inställningarna.</string>
+    <string name="onboarding_notifications_title">Aviseringar</string>
+    <string name="onboarding_notifications_description">För att ditt dagliga ClothesCast ska nå dig. Tillåt en gång, och imorgon bitti är det där.</string>
+    <string name="onboarding_notifications_grant">Tillåt aviseringar</string>
+    <string name="onboarding_location_title">Plats</string>
+    <string name="onboarding_location_description">För att hämta rätt prognos. Med platsåtkomst läser ClothesCast varje morgon den ungefärliga platsen för din enhet; annars väljer du en stad manuellt.</string>
+    <string name="onboarding_location_grant">Tillåt platsåtkomst</string>
+    <string name="onboarding_location_denied_hint">Platsåtkomst nekad. Du kan istället välja en stad manuellt.</string>
+    <string name="onboarding_location_enter_manual">Ange plats manuellt</string>
+    <string name="onboarding_location_using_device">Vi använder din enhets plats varje morgon.</string>
+    <string name="onboarding_location_grant_background">Tillåt alltid</string>
+    <string name="onboarding_location_background_needed">Ett steg till: ClothesCast behöver "Tillåt alltid" för att morgonprognosen ska kunna läsa din plats när appen är stängd.</string>
+    <string name="onboarding_location_enter_manual_hint">Du kan ange din plats manuellt om du nekar platsåtkomst eller om enhetens plats är fel.</string>
+
+    <string name="onboarding_gemini_title">Gemini API-nyckel</string>
+    <string name="onboarding_gemini_description">Används av ClothesCast för talade röster och prognosgenerering. Hämta en gratis på aistudio.google.com. Nyckeln lagras krypterat i Android Keystore.</string>
+    <string name="onboarding_step_done">Klar</string>
+    <string name="onboarding_skip">Hoppa över för nu</string>
+    <string name="onboarding_continue">Fortsätt</string>
+    <string name="onboarding_pair_from_phone">Koppla från telefonen istället</string>
+
+    <!-- Pairing screen (TV). -->
+    <string name="pairing_title">Skanna för att koppla</string>
+    <string name="pairing_instructions">Skanna den här QR-koden med din telefon och klistra sedan in din Gemini API-nyckel i formuläret som öppnas. Nyckeln skickas direkt via ditt hemnätverk till den här TV:n — utan molnrelä.</string>
+    <string name="pairing_qr_description">QR-kod med länk till %1$s</string>
+    <string name="pairing_cancel">Avbryt</string>
+    <string name="pairing_received">Nyckel mottagen — sparar…</string>
+    <string name="pairing_timeout_title">Kopplingsfönster har gått ut</string>
+    <string name="pairing_timeout_body">Det 5-minuters kopplingsfönstret är stängt. Tryck på Försök igen för att öppna ett nytt.</string>
+    <string name="pairing_error_title">Det gick inte att starta koppling</string>
+    <string name="pairing_error_body">Kontrollera att TV:n är ansluten till Wi-Fi och försök igen.</string>
+    <string name="pairing_retry">Försök igen</string>
+
+    <!-- Display / theme settings. -->
+    <string name="settings_display_theme_title">Tema</string>
+    <string name="settings_display_theme_system">Systeminställning</string>
+    <string name="settings_display_theme_light">Ljust</string>
+    <string name="settings_display_theme_dark">Mörkt</string>
+
+    <!-- Display — Charts section. -->
+    <string name="settings_display_charts_title">Diagram</string>
+    <string name="settings_display_model_spread_label">Visa modellspridning i diagram</string>
+    <string name="settings_display_model_spread_description">Visar timprognosen från de viktigaste vädermodellerna över temperatur- och nederbördsdiagrammen. Användbart för att se osäkra prognoser.</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">Krasch- och användningsrapporter</string>
+    <string name="settings_privacy_telemetry_label">Skicka krasch- och användningsdata</string>
+    <string name="settings_privacy_telemetry_description">Skickar anonyma kraschrapporter och aggregerad användningsstatistik för att hjälpa utvecklaren att åtgärda fel och fatta funktionsbeslut.</string>
+    <string name="settings_privacy_telemetry_limits">Skickas aldrig: kalenderposter, platskoordinater eller ortnamn, innehålls- eller aviseringstext, API-nycklar, exakt GPS-data, annons-ID:n.</string>
+    <string name="settings_privacy_open_policy">Läs fullständig integritetspolicy</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">Dela felrapport?</string>
+    <string name="bug_report_consent_body">Det här hjälper till att diagnostisera problem. Rapporten innehåller känslig personlig information, inklusive din plats, appinställningar och senaste aktiviteter. Du kan granska och redigera den innan du skickar.</string>
+    <string name="bug_report_consent_dont_show_again">Visa inte igen</string>
+    <string name="bug_report_consent_continue">Fortsätt</string>
+    <string name="bug_report_consent_cancel">Avbryt</string>
+
+    <!-- Insight prose templates. -->
     <string name="insight_lead_today">Idag</string>
     <string name="insight_lead_tonight">I kväll</string>
     <!-- Swedish V2 word order: "Idag blir det milt." -->
     <string name="insight_band_single">%1$s blir det %2$s.</string>
     <string name="insight_band_range">%1$s blir det %2$s till %3$s.</string>
+
     <string name="insight_band_freezing">iskallt</string>
     <string name="insight_band_cold">kallt</string>
     <string name="insight_band_cool">svalt</string>
     <string name="insight_band_mild">milt</string>
     <string name="insight_band_warm">varmt</string>
     <string name="insight_band_hot">mycket varmt</string>
+
     <string name="insight_delta_warmer">Det blir %1$d° varmare idag.</string>
     <string name="insight_delta_cooler">Det blir %1$d° kallare idag.</string>
+
     <string name="insight_alert">Varning: %1$s.</string>
+
     <string name="insight_clothes_wear">Ta på %1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s och %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s och %3$s</string>
+
     <string name="insight_precip">%1$s %2$s.</string>
     <string name="insight_precip_at_time">klockan %1$s</string>
     <string name="insight_precip_overnight">under natten</string>
+    <string name="insight_precip_chance">Risk för %1$s %2$s.</string>
+
     <string name="insight_condition_clear">Klart</string>
     <string name="insight_condition_partly_cloudy">Delvis molnigt</string>
     <string name="insight_condition_cloudy">Molnigt</string>
@@ -73,10 +583,18 @@ editor, outfit-card labels, and region/voice-locale picker names.
     <string name="insight_condition_snow">Snö</string>
     <string name="insight_condition_thunderstorm">Åskväder</string>
     <string name="insight_condition_unknown">Okänt</string>
+
     <string name="insight_tie_in">Ta med %1$s i kväll.</string>
+    <string name="insight_tie_in_at_night">Ta med %1$s i kväll.</string>
     <string name="insight_tie_in_with_rain">Ta med %1$s i kväll, regn klockan %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Risk för regn klockan %2$s — ta med %1$s.</string>
+    <string name="insight_evening_rain">I kväll regn klockan %1$s.</string>
+    <string name="insight_evening_rain_chance">I kväll risk för regn klockan %1$s.</string>
+
     <!-- "15" — "klockan" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
+    <!-- Device-incompatibility error screen. -->
+    <string name="error_device_incompatible">ClothesCast kan inte köras på den här enheten — din Android-bygge saknar en funktion som appgränssnittet behöver (Configuration.fontWeightAdjustment, förväntas från Android 12 och uppåt). Kontakta din enhetstillverkare för en systemuppdatering.</string>
 </resources>

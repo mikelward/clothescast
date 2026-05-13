@@ -44,6 +44,19 @@ only the displayed label localizes.
     <string name="settings_root_region">Регион</string>
     <string name="settings_root_clothes">Одежда</string>
     <string name="settings_root_about">О приложении</string>
+    <string name="settings_root_display">Экран</string>
+    <string name="settings_root_location">Местоположение</string>
+    <string name="settings_root_calendar">Календарь</string>
+    <string name="settings_root_privacy">Конфиденциальность</string>
+
+    <string name="settings_root_schedule_subtitle">Уведомления и время</string>
+    <string name="settings_root_clothes_subtitle">Температуры и наряды</string>
+    <string name="settings_root_region_subtitle">Языки и единицы</string>
+    <string name="settings_root_voice_subtitle">Провайдеры и акценты</string>
+    <string name="settings_root_display_subtitle">Тема</string>
+    <string name="settings_root_location_subtitle">Авто или выбор города</string>
+    <string name="settings_root_calendar_subtitle">События на сегодня</string>
+    <string name="settings_root_privacy_subtitle">Отчёты о сбоях и использовании</string>
 
     <string name="garment_sweater">Свитер</string>
     <string name="garment_hoodie">Худи</string>
@@ -54,6 +67,10 @@ only the displayed label localizes.
     <string name="garment_shorts">Шорты</string>
     <string name="garment_pants">Брюки</string>
     <string name="garment_jeans">Джинсы</string>
+    <string name="garment_polo">Поло</string>
+    <string name="garment_thin_jacket">Лёгкая куртка</string>
+    <string name="garment_puffer">Пуховик</string>
+    <string name="garment_skirt">Юбка</string>
 
     <!-- Clothes settings — top of the screen. -->
     <string name="settings_clothes_title">Правила одежды</string>
@@ -107,6 +124,7 @@ only the displayed label localizes.
     <string name="settings_tts_engine_title">Голосовой движок</string>
     <string name="settings_tts_engine_device">Устройство (офлайн, бесплатно)</string>
     <string name="settings_tts_engine_gemini">Gemini (высокое качество, онлайн)</string>
+    <string name="settings_tts_engine_description">Gemini звучит значительно естественнее голоса устройства, но требует сетевого вызова во время озвучивания и использует ключ API для синтеза (один короткий вызов на каждый озвученный ClothesCast). Если Gemini недоступен, используется голос устройства.</string>
 
     <string name="settings_tts_voice_label">Голос</string>
     <string name="settings_tts_voice_dismiss">Готово</string>
@@ -115,6 +133,40 @@ only the displayed label localizes.
 
     <string name="settings_tts_test">Проверить голос</string>
     <string name="settings_tts_test_in_flight">Проверка — подожди…</string>
+
+    <string name="settings_tts_device_voice_label">Голос устройства</string>
+    <string name="settings_tts_device_voice_auto">Авто (лучший для акцента)</string>
+    <string name="settings_tts_device_voice_currently">Сейчас: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Загрузка…</string>
+    <string name="settings_tts_device_voice_network">Сеть</string>
+    <string name="settings_tts_device_voice_offline">Офлайн</string>
+    <string name="settings_tts_install_google_hint">Установи движок Google для синтеза речи, чтобы получить голоса более высокого качества.</string>
+    <string name="settings_tts_install_google_button">Установить Google TTS</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">Стиль</string>
+    <string name="settings_tts_style_weather_forecaster">Метеоролог</string>
+    <string name="settings_tts_style_pirate">Пират</string>
+    <string name="settings_tts_style_cowboy">Ковбой</string>
+    <string name="settings_tts_style_shakespearean">Шекспировский</string>
+    <string name="settings_tts_style_surfer">Сёрфер</string>
+    <string name="settings_tts_style_parent">Родитель</string>
+    <string name="settings_tts_style_child">Ребёнок</string>
+    <string name="settings_tts_style_teenager">Подросток</string>
+    <string name="settings_tts_style_grandparent">Бабушка/дедушка</string>
+    <string name="settings_tts_style_kids_host">Ведущий детской программы</string>
+    <string name="settings_tts_style_radio_host">Ведущий ток-шоу</string>
+    <string name="settings_tts_style_morning_dj">Утренний DJ</string>
+    <string name="settings_tts_style_science_teacher">Учитель естественных наук</string>
+    <string name="settings_tts_style_historian">Историк</string>
+    <string name="settings_tts_style_sportscaster">Спортивный комментатор</string>
+    <string name="settings_tts_style_stadium_announcer">Диктор стадиона</string>
+    <string name="settings_tts_style_storyteller">Рассказчик</string>
+    <string name="settings_tts_style_fitness_instructor">Фитнес-инструктор</string>
+    <string name="settings_tts_style_morning_presenter">Ведущий утреннего радио</string>
+    <string name="settings_tts_style_custom">Особый…</string>
+    <string name="settings_tts_style_custom_label">Особая инструкция</string>
+    <string name="settings_tts_style_custom_placeholder">Например: читай это как строгий шепчущий библиотекарь</string>
 
     <!--
     Region screen — language picker title + caption (the disambiguation
@@ -177,6 +229,11 @@ only the displayed label localizes.
     <string name="settings_region_language_ar_sa">Арабский (Саудовская Аравия)</string>
     <string name="settings_region_language_he_il">Иврит (Израиль)</string>
     <string name="settings_region_language_fa_ir">Персидский (Иран)</string>
+    <string name="settings_region_language_am_et">Амхарский (Эфиопия)</string>
+    <string name="settings_region_language_da_dk">Датский (Дания)</string>
+    <string name="settings_region_language_nb_no">Норвежский букмол (Норвегия)</string>
+    <string name="settings_region_language_sq_al">Албанский (Албания)</string>
+    <string name="settings_region_language_sw_ke">Суахили (Кения)</string>
 
     <!-- Region screen — units pickers. -->
     <string name="settings_temperature_unit_title">Единицы температуры</string>
@@ -244,13 +301,18 @@ only the displayed label localizes.
     <string name="settings_tts_voice_locale_ar_ma">Арабский (Марокко)</string>
     <string name="settings_tts_voice_locale_he_il">Иврит (Израиль)</string>
     <string name="settings_tts_voice_locale_fa_ir">Персидский (Иран)</string>
+    <string name="settings_tts_voice_locale_am_et">Амхарский (Эфиопия)</string>
+    <string name="settings_tts_voice_locale_da_dk">Датский (Дания)</string>
+    <string name="settings_tts_voice_locale_nb_no">Норвежский букмол (Норвегия)</string>
+    <string name="settings_tts_voice_locale_sq_al">Албанский (Албания)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Суахили (Кения)</string>
 
     <!--
     API keys screen — Gemini block with status copy, paste-key placeholder,
-    and
-    save / clear buttons. URLs stay verbatim.
+    and save / clear buttons. URLs stay verbatim.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Используй Gemini для голосов высокого качества.</string>
 
     <string name="settings_api_key_status_set">Ключ Gemini настроен.</string>
     <string name="settings_api_key_status_unset">Ключ Gemini не настроен. Получи на aistudio.google.com, чтобы использовать голоса Gemini.</string>
@@ -258,15 +320,19 @@ only the displayed label localizes.
     <string name="settings_api_key_save">Сохранить ключ Gemini</string>
     <string name="settings_api_key_clear">Удалить сохранённый ключ Gemini</string>
 
-
-
     <!--
     Location screen — device-location toggle, manual city search +
     selection, and the "no location set" empty state.
     -->
     <string name="settings_location_title">Местоположение</string>
     <string name="settings_location_use_device">Использовать местоположение устройства</string>
+    <string name="settings_location_use_device_description">Последнее примерное местоположение</string>
+    <string name="settings_location_detecting">Определение…</string>
     <string name="settings_location_grant_background">Разрешить фоновое местоположение (системные настройки)</string>
+    <string name="settings_location_background_banner_title">Требуется постоянный доступ</string>
+    <string name="settings_location_background_banner_body">Без него утренний прогноз не сможет определить твоё местоположение.</string>
+    <string name="settings_location_manual_override">Неверное местоположение? Задай вручную</string>
+    <string name="settings_location_manual_override_disclosure">Если выбрать город, автоматическое определение отключится.</string>
     <string name="settings_location_unset">Местоположение не задано</string>
     <string name="settings_location_clear">Очистить местоположение</string>
     <string name="settings_location_search_title">Поиск местоположения</string>
@@ -274,6 +340,21 @@ only the displayed label localizes.
     <string name="settings_location_search">Найти</string>
     <string name="settings_location_searching">Поиск…</string>
     <string name="settings_location_no_results">Нет результатов.</string>
+
+    <string name="settings_location_background_rationale_title">Разрешить всегда</string>
+    <string name="settings_location_background_rationale_body">ClothesCast получает прогноз в фоновом режиме каждое утро, поэтому требуется доступ к местоположению «Разрешить всегда». Ты будешь перенаправлен в системные Настройки для его предоставления.</string>
+    <string name="settings_location_background_rationale_continue">Открыть настройки</string>
+    <string name="settings_location_background_rationale_dismiss">Не сейчас</string>
+
+    <string name="settings_location_background_denied_title">Постоянный доступ не предоставлен</string>
+    <string name="settings_location_background_denied_body">Без «Разрешить всегда» утренний прогноз будет использовать сохранённое местоположение. Открыть системные Настройки для предоставления доступа?</string>
+    <string name="settings_location_background_denied_open">Открыть настройки</string>
+    <string name="settings_location_background_denied_keep">Продолжить использовать сохранённое местоположение</string>
+
+    <string name="settings_location_rationale_title">Постоянное местоположение</string>
+    <string name="settings_location_rationale_body">ClothesCast обновляет прогноз в фоновом режиме, чтобы доставить его вовремя. Для этого требуется разрешение на местоположение «Разрешить всегда».</string>
+    <string name="settings_location_rationale_continue">Продолжить</string>
+    <string name="settings_location_rationale_dismiss">Не сейчас</string>
 
     <!--
     Notification channels (system Settings → App → Notifications) and
@@ -309,6 +390,22 @@ only the displayed label localizes.
     <string name="settings_calendar_description_on">Читаю события сегодняшнего дня из календаря твоего устройства, чтобы обогатить утренний ClothesCast. В сводке используются только заголовки и время; описания и участники не используются. Всё остаётся на устройстве.</string>
     <string name="settings_calendar_grant_permission">Разрешить доступ к календарю</string>
     <string name="settings_calendar_open_settings">Доступ к календарю запрещён. Разреши в системных настройках.</string>
+
+    <!-- Display / theme settings. -->
+    <string name="settings_display_theme_title">Тема</string>
+    <string name="settings_display_theme_system">Как в системе</string>
+    <string name="settings_display_theme_light">Светлая</string>
+    <string name="settings_display_theme_dark">Тёмная</string>
+    <string name="settings_display_charts_title">Графики</string>
+    <string name="settings_display_model_spread_label">Показывать разброс моделей на графиках</string>
+    <string name="settings_display_model_spread_description">Показывает почасовой прогноз каждой основной погодной модели на графиках температуры и осадков. Полезно для определения степени неопределённости прогноза.</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">Отчёты о сбоях и использовании</string>
+    <string name="settings_privacy_telemetry_label">Отправлять данные о сбоях и использовании</string>
+    <string name="settings_privacy_telemetry_description">Отправляет анонимные отчёты о сбоях и агрегированную статистику использования, чтобы помочь разработчику исправлять ошибки и решать, какие функции оставить.</string>
+    <string name="settings_privacy_telemetry_limits">Никогда не отправляются: события календаря, координаты местоположения или названия мест, тексты прогнозов или уведомлений, ключи API, точный GPS, рекламные идентификаторы.</string>
+    <string name="settings_privacy_open_policy">Прочитать полную политику конфиденциальности</string>
 
     <!-- Debug screen — visible only on debug builds. -->
     <string name="settings_debug_title">Отладка (только в отладочных сборках)</string>
@@ -348,11 +445,21 @@ only the displayed label localizes.
     <string name="today_outfit_label_tonight">Сегодня вечером</string>
     <string name="today_outfit_label_tomorrow">Завтра</string>
 
+    <!--
+    Outfit-card category labels — shown in OutfitPreviewCard on the Today
+    screen.
+    -->
     <string name="today_outfit_top_tshirt">Футболка</string>
     <string name="today_outfit_top_sweater">Свитер</string>
     <string name="today_outfit_top_thick_jacket">Тёплая куртка</string>
+    <string name="today_outfit_top_polo">Поло</string>
+    <string name="today_outfit_top_thin_jacket">Лёгкая куртка</string>
+    <string name="today_outfit_top_thick_coat">Тёплое пальто</string>
+    <string name="today_outfit_top_puffer_jacket">Пуховик</string>
     <string name="today_outfit_bottom_shorts">Шорты</string>
     <string name="today_outfit_bottom_long_pants">Брюки</string>
+    <string name="today_outfit_bottom_skirt">Юбка</string>
+    <string name="today_outfit_bottom_jeans">Джинсы</string>
 
     <string name="today_forecast_title">Почасовой прогноз</string>
     <string name="today_forecast_min_max">Ощущение %1$d – %2$d%3$s · Воздух %4$d – %5$d%6$s</string>
@@ -364,12 +471,88 @@ only the displayed label localizes.
     <string name="today_confidence_low">Низкая уверенность — прогнозы расходятся</string>
     <string name="today_confidence_spread">Разброс: %1$.1f°C, %2$.0fpp осадков по %3$d моделям</string>
 
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Вероятность дождя</string>
+    <string name="today_precipitation_peak">Пик %1$d%% в %2$s</string>
+    <string name="today_precipitation_dry">Дождя сегодня не ожидается</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">Модели:</string>
+    <string name="today_chart_main_line_label">Общее</string>
+    <string name="today_chart_divergence_summary">Максимальное расхождение в %1$s (Δ %2$.1f%3$s ощущений) — в основном %4$s, %5$s</string>
+
+    <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
+    <string name="today_factor_air_temperature">температура воздуха</string>
+    <string name="today_factor_wind_speed">скорость ветра</string>
+    <string name="today_factor_cloud_cover">облачность</string>
+    <string name="today_factor_humidity">влажность</string>
+
+    <!-- Diagnostic cards (wind, cloud cover, humidity). -->
+    <string name="today_wind_title">Скорость ветра</string>
+    <string name="today_wind_subtitle">Скорость ветра (%1$s) по часам и моделям</string>
+    <string name="today_cloud_title">Облачность</string>
+    <string name="today_cloud_subtitle">Общая облачность (%%) по часам и моделям</string>
+    <string name="today_humidity_title">Влажность</string>
+    <string name="today_humidity_subtitle">Относительная влажность (%%) по часам и моделям</string>
+
+    <!-- Low-confidence callout banner. -->
+    <string name="today_low_confidence_callout_title">Прогнозы расходятся</string>
+    <string name="today_low_confidence_callout_body">Температура расходится на %1$.1f°C, вероятность осадков — на %2$.0f%% по %3$d моделям.</string>
+
+    <!-- Telemetry notice (first-run banner on Today screen). -->
+    <string name="today_telemetry_notice_title">Отчёты о сбоях и использовании включены</string>
+    <string name="today_telemetry_notice_body">ClothesCast отправляет анонимные отчёты о сбоях и аналитику использования для исправления ошибок. Данные календаря, местоположения и текст прогноза не включаются. Отключи в любое время в настройках.</string>
+    <string name="today_telemetry_notice_open_settings">Открыть настройки конфиденциальности</string>
+    <string name="today_telemetry_notice_dismiss">Закрыть</string>
+
+    <!-- Crash-report banner shown on the Today screen after a previous crash. -->
+    <string name="today_crash_banner_title">Последний запуск завершился сбоем</string>
+    <string name="today_crash_banner_body">Отчёт о сбое сохранён на устройстве. Поделиться им, чтобы помочь исправить ошибку? Ничего не будет отправлено, пока ты не выберешь куда.</string>
+    <string name="today_crash_banner_share">Поделиться отчётом</string>
+    <string name="today_crash_banner_dismiss">Закрыть</string>
+
+    <!-- In-app update banners. -->
+    <string name="today_update_available_title">Доступно обновление</string>
+    <string name="today_update_available_body">Новая версия ClothesCast доступна в Play Store.</string>
+    <string name="today_update_available_action">Обновить</string>
+    <string name="today_update_available_dismiss">Не сейчас</string>
+    <string name="today_update_downloaded_body">Обновление загружено. Перезапусти, чтобы завершить установку.</string>
+    <string name="today_update_downloaded_action">Перезапустить</string>
+
+    <!-- Shown while WorkManager is in exponential back-off between retries
+         (distinct from today_working, which covers the first attempt). -->
+    <string name="today_retrying">Последняя попытка не удалась — повтор…</string>
+
+    <!-- Fallback label for the maps link when GPS coords are known but no
+         city name could be resolved (reverse geocoding returned nothing). -->
+    <string name="today_location_unknown">Твоё местоположение</string>
+
     <string name="today_working">Получаю твой ClothesCast…</string>
     <string name="today_failed_title">Последняя попытка не удалась</string>
     <string name="today_failed_unexpected_http">Неожиданная HTTP-ошибка от службы прогноза.</string>
     <string name="today_failed_unhandled">Произошла непредвиденная ошибка.</string>
     <string name="today_failed_show_details">Показать подробности</string>
     <string name="today_failed_hide_details">Скрыть подробности</string>
+    <string name="today_failed_no_location">Не удалось определить твоё местоположение. Предоставь постоянный доступ к местоположению или укажи город в Настройках.</string>
+    <string name="today_location_required_title">Настрой своё местоположение</string>
+    <string name="today_location_required_body">ClothesCast должен знать, где ты находишься, чтобы получить прогноз. Предоставь постоянный доступ к местоположению или выбери город.</string>
+    <string name="today_location_required_action">Открыть настройки местоположения</string>
+
+    <string name="today_rationale_title">Почему этот наряд?</string>
+    <string name="today_rationale_show">Почему?</string>
+    <string name="today_rationale_dismiss">Понятно</string>
+    <string name="today_rationale_threshold_decrease">Снизить порог на 1 градус</string>
+    <string name="today_rationale_threshold_increase">Повысить порог на 1 градус</string>
+    <string name="today_rationale_threshold_changed_hint">Обновить, чтобы увидеть новый наряд.</string>
+    <string name="today_rationale_unavailable">Объяснение недоступно — открой приложение после следующего обновления.</string>
+    <string name="today_rationale_min_below_with_time">Ощущается минимум %1$s%2$s в %3$s, ниже %4$s%2$s</string>
+    <string name="today_rationale_min_below">Ощущается минимум %1$s%2$s, ниже %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Ощущается минимум %1$s%2$s в %3$s, не менее %4$s%2$s</string>
+    <string name="today_rationale_min_above">Ощущается минимум %1$s%2$s, не менее %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Ощущается максимум всего %1$s%2$s в %3$s, ниже %4$s%2$s</string>
+    <string name="today_rationale_max_below">Ощущается максимум всего %1$s%2$s, ниже %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Ощущается максимум %1$s%2$s в %3$s, не менее %4$s%2$s</string>
+    <string name="today_rationale_max_above">Ощущается максимум %1$s%2$s, не менее %3$s%2$s</string>
 
     <!-- Home-screen App Widget. "Образ" is the standard Russian
          fashion-vocab word for an outfit / day's clothing combination,
@@ -387,14 +570,18 @@ only the displayed label localizes.
     -->
     <string name="onboarding_title">Добро пожаловать в ClothesCast</string>
     <string name="onboarding_subtitle">Два быстрых выбора — и всё готово. У всего остального есть разумные значения по умолчанию, которые ты потом сможешь настроить в настройках.</string>
+    <string name="onboarding_subtitle_tv">Два быстрых выбора — и всё готово. Всё остальное ты сможешь настроить позже в настройках.</string>
     <string name="onboarding_notifications_title">Уведомления</string>
     <string name="onboarding_notifications_description">Нужны для доставки твоего ежедневного ClothesCast. Разреши один раз — и ClothesCast появится завтра утром.</string>
     <string name="onboarding_notifications_grant">Разрешить уведомления</string>
     <string name="onboarding_location_title">Местоположение</string>
     <string name="onboarding_location_description">Используется для получения правильного прогноза. Если разрешишь местоположение, ClothesCast сможет каждое утро читать примерное местоположение твоего устройства; иначе выбери город вручную.</string>
     <string name="onboarding_location_grant">Разрешить доступ к местоположению</string>
+    <string name="onboarding_location_grant_background">Разрешить всегда</string>
+    <string name="onboarding_location_background_needed">Ещё один шаг: ClothesCast требуется «Разрешить всегда», чтобы утренний прогноз мог определять твоё местоположение, пока приложение закрыто.</string>
     <string name="onboarding_location_denied_hint">Доступ к местоположению отклонён. Можешь выбрать город вручную.</string>
     <string name="onboarding_location_enter_manual">Ввести местоположение вручную</string>
+    <string name="onboarding_location_enter_manual_hint">Ты можешь ввести своё местоположение вручную, если откажешь в доступе к местоположению или местоположение устройства неверно.</string>
     <string name="onboarding_location_using_device">Каждое утро используем местоположение твоего устройства.</string>
 
     <string name="onboarding_gemini_title">Ключ API Gemini</string>
@@ -402,7 +589,30 @@ only the displayed label localizes.
     <string name="onboarding_step_done">Готово</string>
     <string name="onboarding_skip">Пропустить пока</string>
     <string name="onboarding_continue">Продолжить</string>
+    <string name="onboarding_pair_from_phone">Связать с телефона</string>
 
+    <string name="pairing_title">Сканировать для сопряжения</string>
+    <string name="pairing_instructions">Отсканируй этот QR-код телефоном, затем вставь свой API-ключ Gemini в открывшуюся форму. Ключ будет отправлен напрямую на этот телевизор через домашнюю сеть Wi-Fi — без облачного ретранслятора.</string>
+    <string name="pairing_qr_description">QR-код со ссылкой на %1$s</string>
+    <string name="pairing_cancel">Отмена</string>
+    <string name="pairing_received">Ключ получен — сохранение…</string>
+    <string name="pairing_timeout_title">Окно сопряжения истекло</string>
+    <string name="pairing_timeout_body">5-минутное окно сопряжения закрыто. Нажми «Повторить», чтобы открыть новое.</string>
+    <string name="pairing_error_title">Не удалось запустить сопряжение</string>
+    <string name="pairing_error_body">Убедись, что телевизор подключён к Wi-Fi, и попробуй снова.</string>
+    <string name="pairing_retry">Повторить</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">Поделиться отчётом об ошибке?</string>
+    <string name="bug_report_consent_body">Это поможет диагностировать проблемы. Отчёт содержит конфиденциальные данные, включая твоё местоположение, настройки приложения и последние действия. Перед отправкой ты сможешь просмотреть и отредактировать его.</string>
+    <string name="bug_report_consent_dont_show_again">Больше не показывать</string>
+    <string name="bug_report_consent_continue">Продолжить</string>
+    <string name="bug_report_consent_cancel">Отмена</string>
+
+    <!-- Device-incompatibility error screen. -->
+    <string name="error_device_incompatible">ClothesCast не может работать на этом устройстве — в твоей Android-прошивке отсутствует функция, необходимая для интерфейса приложения (Configuration.fontWeightAdjustment, ожидается на Android 12 и выше). Обратись к производителю устройства за обновлением системы.</string>
+
+    <!-- Insight prose templates. -->
     <string name="insight_lead_today">Сегодня</string>
     <string name="insight_lead_tonight">Сегодня вечером</string>
     <string name="insight_band_single">%1$s будет %2$s.</string>
@@ -424,6 +634,7 @@ only the displayed label localizes.
     <string name="insight_precip">%1$s %2$s.</string>
     <string name="insight_precip_at_time">в %1$s</string>
     <string name="insight_precip_overnight">ночью</string>
+    <string name="insight_precip_chance">Возможен %1$s %2$s.</string>
     <string name="insight_condition_clear">Ясно</string>
     <string name="insight_condition_partly_cloudy">Переменная облачность</string>
     <string name="insight_condition_cloudy">Облачно</string>
@@ -434,86 +645,12 @@ only the displayed label localizes.
     <string name="insight_condition_thunderstorm">Гроза</string>
     <string name="insight_condition_unknown">Неизвестно</string>
     <string name="insight_tie_in">Возьми %1$s сегодня вечером.</string>
+    <string name="insight_tie_in_at_night">Возьми %1$s сегодня вечером.</string>
     <string name="insight_tie_in_with_rain">Возьми %1$s сегодня вечером, дождь в %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Возможен дождь в %2$s — возьми %1$s.</string>
+    <string name="insight_evening_rain">Сегодня вечером дождь в %1$s.</string>
+    <string name="insight_evening_rain_chance">Сегодня вечером возможен дождь в %1$s.</string>
     <!-- "15" — preposition "в" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
-
-
-    <string name="onboarding_pair_from_phone">Связать с телефона</string>
-
-    <string name="pairing_title">Сканировать для сопряжения</string>
-    <string name="pairing_instructions">Отсканируй этот QR-код телефоном, затем вставь свой API-ключ Gemini в открывшуюся форму. Ключ будет отправлен напрямую на этот телевизор через домашнюю сеть Wi-Fi — без облачного ретранслятора.</string>
-    <string name="pairing_qr_description">QR-код со ссылкой на %1$s</string>
-    <string name="pairing_cancel">Отмена</string>
-    <string name="pairing_received">Ключ получен — сохранение…</string>
-    <string name="pairing_timeout_title">Окно сопряжения истекло</string>
-    <string name="pairing_timeout_body">5-минутное окно сопряжения закрыто. Нажми «Повторить», чтобы открыть новое.</string>
-    <string name="pairing_error_title">Не удалось запустить сопряжение</string>
-    <string name="pairing_error_body">Убедись, что телевизор подключён к Wi-Fi, и попробуй снова.</string>
-    <string name="pairing_retry">Повторить</string>
-
-
-    <string name="settings_location_background_rationale_title">Разрешить всегда</string>
-    <string name="settings_location_background_rationale_body">ClothesCast получает прогноз в фоновом режиме каждое утро, поэтому требуется доступ к местоположению «Разрешить всегда». Ты будешь перенаправлен в системные Настройки для его предоставления.</string>
-    <string name="settings_location_background_rationale_continue">Открыть настройки</string>
-    <string name="settings_location_background_rationale_dismiss">Не сейчас</string>
-
-    <string name="settings_location_background_denied_title">Постоянный доступ не предоставлен</string>
-    <string name="settings_location_background_denied_body">Без «Разрешить всегда» утренний прогноз будет использовать сохранённое местоположение. Открыть системные Настройки для предоставления доступа?</string>
-    <string name="settings_location_background_denied_open">Открыть настройки</string>
-    <string name="settings_location_background_denied_keep">Продолжить использовать сохранённое местоположение</string>
-
-    <string name="settings_location_rationale_title">Постоянное местоположение</string>
-    <string name="settings_location_rationale_body">ClothesCast обновляет прогноз в фоновом режиме, чтобы доставить его вовремя. Для этого требуется разрешение на местоположение «Разрешить всегда».</string>
-    <string name="settings_location_rationale_continue">Продолжить</string>
-    <string name="settings_location_rationale_dismiss">Не сейчас</string>
-
-
-    <string name="settings_region_language_am_et">Амхарский (Эфиопия)</string>
-    <string name="settings_region_language_da_dk">Датский (Дания)</string>
-    <string name="settings_region_language_nb_no">Норвежский букмол (Норвегия)</string>
-    <string name="settings_region_language_sq_al">Албанский (Албания)</string>
-    <string name="settings_region_language_sw_ke">Суахили (Кения)</string>
-
-    <string name="settings_root_schedule_subtitle">Уведомления и время</string>
-    <string name="settings_root_clothes_subtitle">Температуры и наряды</string>
-    <string name="settings_root_region_subtitle">Языки и единицы</string>
-    <string name="settings_root_voice_subtitle">Провайдеры и акценты</string>
-
-    <string name="settings_tts_device_voice_label">Голос устройства</string>
-    <string name="settings_tts_device_voice_auto">Авто (лучший для акцента)</string>
-    <string name="settings_tts_device_voice_currently">Сейчас: %1$s</string>
-    <string name="settings_tts_device_voice_currently_loading">Загрузка…</string>
-    <string name="settings_tts_device_voice_network">Сеть</string>
-    <string name="settings_tts_device_voice_offline">Офлайн</string>
-    <string name="settings_tts_install_google_hint">Установи движок Google для синтеза речи, чтобы получить голоса более высокого качества.</string>
-    <string name="settings_tts_install_google_button">Установить Google TTS</string>
-
-    <string name="settings_tts_voice_locale_am_et">Амхарский (Эфиопия)</string>
-    <string name="settings_tts_voice_locale_da_dk">Датский (Дания)</string>
-    <string name="settings_tts_voice_locale_nb_no">Норвежский букмол (Норвегия)</string>
-    <string name="settings_tts_voice_locale_sq_al">Албанский (Албания)</string>
-    <string name="settings_tts_voice_locale_sw_ke">Суахили (Кения)</string>
-
-    <string name="today_failed_no_location">Не удалось определить твоё местоположение. Предоставь постоянный доступ к местоположению или укажи город в Настройках.</string>
-    <string name="today_location_required_title">Настрой своё местоположение</string>
-    <string name="today_location_required_body">ClothesCast должен знать, где ты находишься, чтобы получить прогноз. Предоставь постоянный доступ к местоположению или выбери город.</string>
-    <string name="today_location_required_action">Открыть настройки местоположения</string>
-
-    <string name="today_rationale_title">Почему этот наряд?</string>
-    <string name="today_rationale_show">Почему?</string>
-    <string name="today_rationale_dismiss">Понятно</string>
-    <string name="today_rationale_threshold_decrease">Снизить порог на 1 градус</string>
-    <string name="today_rationale_threshold_increase">Повысить порог на 1 градус</string>
-    <string name="today_rationale_threshold_changed_hint">Обновить, чтобы увидеть новый наряд.</string>
-    <string name="today_rationale_unavailable">Объяснение недоступно — открой приложение после следующего обновления.</string>
-    <string name="today_rationale_min_below_with_time">Ощущается минимум %1$s%2$s в %3$s, ниже %4$s%2$s</string>
-    <string name="today_rationale_min_below">Ощущается минимум %1$s%2$s, ниже %3$s%2$s</string>
-    <string name="today_rationale_min_above_with_time">Ощущается минимум %1$s%2$s в %3$s, не менее %4$s%2$s</string>
-    <string name="today_rationale_min_above">Ощущается минимум %1$s%2$s, не менее %3$s%2$s</string>
-    <string name="today_rationale_max_below_with_time">Ощущается максимум всего %1$s%2$s в %3$s, ниже %4$s%2$s</string>
-    <string name="today_rationale_max_below">Ощущается максимум всего %1$s%2$s, ниже %3$s%2$s</string>
-    <string name="today_rationale_max_above_with_time">Ощущается максимум %1$s%2$s в %3$s, не менее %4$s%2$s</string>
-    <string name="today_rationale_max_above">Ощущается максимум %1$s%2$s, не менее %3$s%2$s</string>
 </resources>

@@ -1,13 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Turkish translation. Scope: insight-prose templates, garment labels, clothes-rule
-editor, outfit-card labels, and region/voice-locale picker names.
+Turkish translation — full UI coverage. Sen-form (informal 2nd person singular)
+throughout. SOV word order where natural. Brand name "ClothesCast" stays verbatim.
+
+What is NOT overridden, by design:
+- `app_name` — brand identifier, identical across locales.
+- `insight_time_am` / `_pm` / `_midnight` / `_noon` (and the *_minutes
+  variants) — English-only spoken-time formatter helpers. Turkish locales
+  use `insight_time_hour` / `insight_time_hour_minutes` ("%1$d" / "%1$d:%2$02d")
+  which are translated below; the AM/PM keys exist for `Locale.language == "en"`
+  paths only and would never be read in a Turkish runtime.
+
+Picker labels under `settings_region_language_*` and
+`settings_tts_voice_locale_*` give the Turkish names for every offered locale.
+The locale tag stored on disk (en-US / fr-CA / zh-CN) is unchanged; only the
+displayed label localizes.
 -->
 <resources>
-    <string name="settings_region_language_tr_tr">Türkçe (Türkiye)</string>
-    <string name="settings_tts_voice_locale_tr_tr">Türkçe (Türkiye)</string>
+    <string name="settings_region_language_de_de">Almanca (Almanya)</string>
+    <string name="settings_region_language_de_at">Almanca (Avusturya)</string>
+    <string name="settings_region_language_de_ch">Almanca (İsviçre)</string>
+    <string name="settings_tts_voice_locale_de_de">Almanca (Almanya)</string>
+    <string name="settings_tts_voice_locale_de_at">Almanca (Avusturya)</string>
+    <string name="settings_tts_voice_locale_de_ch">Almanca (İsviçre)</string>
     <string name="settings_tts_voice_locale_label">Aksan</string>
-    <string name="settings_tts_voice_locale_system">Dil ayarını takip et</string>
+
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_back">Geri</string>
+
+    <string name="settings_root_voice">Ses</string>
+    <string name="settings_root_schedule">Program</string>
+    <string name="settings_root_region">Bölge</string>
+    <string name="settings_root_clothes">Kıyafetler</string>
+    <string name="settings_root_about">Hakkında</string>
 
     <string name="garment_sweater">Kazak</string>
     <string name="garment_hoodie">Kapüşonlu sweatshirt</string>
@@ -18,6 +43,9 @@ editor, outfit-card labels, and region/voice-locale picker names.
     <string name="garment_shorts">Şort</string>
     <string name="garment_pants">Pantolon</string>
     <string name="garment_jeans">Kot pantolon</string>
+
+    <string name="settings_clothes_title">Kıyafet Kuralları</string>
+    <string name="settings_clothes_description">Bir tahmin bu eşiklerden birini aşarsa, kıyafet günlük ClothesCast\'ında görünür.</string>
 
     <string name="settings_clothes_empty">Kural yok. Oluşturmak için Ekle\'ye dokunun.</string>
     <string name="settings_clothes_add">Ekle</string>
@@ -32,9 +60,232 @@ editor, outfit-card labels, and region/voice-locale picker names.
     <string name="settings_clothes_cond_type_temp_below">Hissedilen sıcaklık şundan düşükse</string>
     <string name="settings_clothes_cond_type_temp_above">Hissedilen sıcaklık şundan yüksekse</string>
     <string name="settings_clothes_cond_type_precip_above">Yağmur ihtimali şunu aşarsa</string>
+
     <string name="settings_clothes_cond_temp_below">hissedilen sıcaklık %1$s\'nin altındaysa</string>
     <string name="settings_clothes_cond_temp_above">hissedilen sıcaklık %1$s\'nin üstündeyse</string>
     <string name="settings_clothes_cond_precip_above">yağmur ihtimali %.0f%% üzerindeyse</string>
+
+    <string name="settings_schedule_title">Günlük ClothesCast</string>
+    <string name="settings_schedule_time_label">Saat</string>
+    <string name="settings_schedule_days_label">Haftanın günleri</string>
+    <string name="settings_daily_mention_evening_events">Akşam etkinliklerinden bahset</string>
+
+    <string name="settings_tonight_title">Gecelik ClothesCast</string>
+    <string name="settings_tonight_description">Bu gecenin hava durumu için akşam ikinci bir ClothesCast. Sakin akşamlarda sessiz kalır veya "Yalnızca akşam etkinlikleri varsa bildir" etkinse hiç görünmez; etkinlikleri olan akşamlarda ses çıkarır ve (sesli çıkış etkinse) kendini sesli okur.</string>
+    <string name="settings_tonight_enabled">Gecelik ClothesCast\'ı göster</string>
+    <string name="settings_tonight_time_label">Saat</string>
+    <string name="settings_tonight_days_label">Haftanın günleri</string>
+    <string name="settings_tonight_notify_only_on_events">Yalnızca akşam etkinlikleri varsa bildir</string>
+
+    <string name="settings_delivery_label">Teslim</string>
+    <string name="settings_delivery_notification_only">Yalnızca bildirim</string>
+    <string name="settings_delivery_tts_only">Yalnızca sesli</string>
+    <string name="settings_delivery_notification_and_tts">Bildirim ve sesli</string>
+
+    <string name="settings_tts_engine_title">Konuşma motoru</string>
+    <string name="settings_tts_engine_device">Cihaz (çevrimdışı, ücretsiz)</string>
+    <string name="settings_tts_engine_gemini">Gemini (yüksek kalite, çevrimiçi)</string>
+
+    <string name="settings_tts_voice_label">Ses</string>
+    <string name="settings_tts_voice_dismiss">Tamam</string>
+    <string name="settings_tts_voice_locale_description">Konuşulan sesin aksanını belirler. Görüntülenen metni değiştirmez.</string>
+    <string name="settings_tts_voice_locale_system">Dil ayarını takip et</string>
+
+    <string name="settings_tts_test">Sesi test et</string>
+    <string name="settings_tts_test_in_flight">Test ediliyor — lütfen bekleyin…</string>
+
+    <string name="settings_region_language_title">Dil</string>
+    <string name="settings_region_language_description">Görüntülenen metin ve bildirimlerin dilini belirler.</string>
+    <string name="settings_region_language_system">Sistem dilini kullan</string>
+    <string name="settings_region_language_en_us">İngilizce (ABD)</string>
+    <string name="settings_region_language_en_gb">İngilizce (Birleşik Krallık)</string>
+    <string name="settings_region_language_en_au">İngilizce (Avustralya)</string>
+    <string name="settings_region_language_en_ca">İngilizce (Kanada)</string>
+    <string name="settings_region_language_en_za">İngilizce (Güney Afrika)</string>
+    <string name="settings_region_language_fr_fr">Fransızca (Fransa)</string>
+    <string name="settings_region_language_fr_ca">Fransızca (Kanada)</string>
+    <string name="settings_region_language_it_it">İtalyanca (İtalya)</string>
+    <string name="settings_region_language_es_es">İspanyolca (İspanya)</string>
+    <string name="settings_region_language_es_mx">İspanyolca (Meksika)</string>
+    <string name="settings_region_language_ca_es">Katalanca (İspanya)</string>
+    <string name="settings_region_language_ru_ru">Rusça (Rusya)</string>
+    <string name="settings_region_language_pl_pl">Lehçe (Polonya)</string>
+    <string name="settings_region_language_hr_hr">Hırvatça (Hırvatistan)</string>
+    <string name="settings_region_language_sl_si">Slovence (Slovenya)</string>
+    <string name="settings_region_language_sr_rs">Sırpça (Latin)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Sırpça (Kiril)</string>
+    <string name="settings_region_language_bg_bg">Bulgarca (Bulgaristan)</string>
+    <string name="settings_region_language_cs_cz">Çekçe (Çekya)</string>
+    <string name="settings_region_language_sk_sk">Slovakça (Slovakya)</string>
+    <string name="settings_region_language_hu_hu">Macarca (Macaristan)</string>
+    <string name="settings_region_language_ro_ro">Rumence (Romanya)</string>
+    <string name="settings_region_language_el_gr">Yunanca (Yunanistan)</string>
+    <string name="settings_region_language_uk_ua">Ukraynaca (Ukrayna)</string>
+    <string name="settings_region_language_pt_br">Portekizce (Brezilya)</string>
+    <string name="settings_region_language_pt_pt">Portekizce (Portekiz)</string>
+    <string name="settings_region_language_nl_nl">Felemenkçe (Hollanda)</string>
+    <string name="settings_region_language_sv_se">İsveççe (İsveç)</string>
+    <string name="settings_region_language_fi_fi">Fince (Finlandiya)</string>
+    <string name="settings_region_language_et_ee">Estonca (Estonya)</string>
+    <string name="settings_region_language_lv_lv">Letonca (Letonya)</string>
+    <string name="settings_region_language_lt_lt">Litvanca (Litvanya)</string>
+    <string name="settings_region_language_tr_tr">Türkçe (Türkiye)</string>
+    <string name="settings_region_language_id_id">Endonezce (Endonezya)</string>
+    <string name="settings_region_language_ms_my">Malayca (Malezya)</string>
+    <string name="settings_region_language_fil_ph">Filipince (Filipinler)</string>
+    <string name="settings_region_language_vi_vn">Vietnamca (Vietnam)</string>
+    <string name="settings_region_language_th_th">Tayca (Tayland)</string>
+    <string name="settings_region_language_zh_cn">Çince (Basitleştirilmiş)</string>
+    <string name="settings_region_language_zh_tw">Çince (Geleneksel)</string>
+    <string name="settings_region_language_hi_in">Hintçe (Hindistan)</string>
+    <string name="settings_region_language_bn_bd">Bengalce (Bangladeş)</string>
+    <string name="settings_region_language_ja_jp">Japonca (Japonya)</string>
+    <string name="settings_region_language_ko_kr">Korece (Güney Kore)</string>
+    <string name="settings_region_language_ar_sa">Arapça (Suudi Arabistan)</string>
+    <string name="settings_region_language_he_il">İbranice (İsrail)</string>
+    <string name="settings_region_language_fa_ir">Farsça (İran)</string>
+    <string name="settings_region_language_am_et">Amharca (Etiyopya)</string>
+    <string name="settings_region_language_da_dk">Danca (Danimarka)</string>
+    <string name="settings_region_language_nb_no">Norveççe Bokmål (Norveç)</string>
+    <string name="settings_region_language_sq_al">Arnavutça (Arnavutluk)</string>
+    <string name="settings_region_language_sw_ke">Svahili (Kenya)</string>
+
+    <string name="settings_temperature_unit_title">Sıcaklık birimi</string>
+    <string name="settings_temperature_unit_celsius">Santigrat (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="settings_distance_unit_title">Mesafe birimi</string>
+    <string name="settings_distance_unit_kilometers">Kilometre</string>
+    <string name="settings_distance_unit_miles">Mil</string>
+
+    <string name="settings_tts_voice_locale_en_us">İngilizce (ABD)</string>
+    <string name="settings_tts_voice_locale_en_gb">İngilizce (Birleşik Krallık)</string>
+    <string name="settings_tts_voice_locale_en_au">İngilizce (Avustralya)</string>
+    <string name="settings_tts_voice_locale_en_ca">İngilizce (Kanada)</string>
+    <string name="settings_tts_voice_locale_en_za">İngilizce (Güney Afrika)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Fransızca (Fransa)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Fransızca (Kanada)</string>
+    <string name="settings_tts_voice_locale_it_it">İtalyanca (İtalya)</string>
+    <string name="settings_tts_voice_locale_es_es">İspanyolca (İspanya)</string>
+    <string name="settings_tts_voice_locale_es_mx">İspanyolca (Meksika)</string>
+    <string name="settings_tts_voice_locale_ca_es">Katalanca (İspanya)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Rusça (Rusya)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Lehçe (Polonya)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Hırvatça (Hırvatistan)</string>
+    <string name="settings_tts_voice_locale_sl_si">Slovence (Slovenya)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Sırpça (Latin)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Sırpça (Kiril)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Bulgarca (Bulgaristan)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Çekçe (Çekya)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Slovakça (Slovakya)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Macarca (Macaristan)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Rumence (Romanya)</string>
+    <string name="settings_tts_voice_locale_el_gr">Yunanca (Yunanistan)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Ukraynaca (Ukrayna)</string>
+    <string name="settings_tts_voice_locale_pt_br">Portekizce (Brezilya)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Portekizce (Portekiz)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Felemenkçe (Hollanda)</string>
+    <string name="settings_tts_voice_locale_sv_se">İsveççe (İsveç)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Fince (Finlandiya)</string>
+    <string name="settings_tts_voice_locale_et_ee">Estonca (Estonya)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Letonca (Letonya)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Litvanca (Litvanya)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Türkçe (Türkiye)</string>
+    <string name="settings_tts_voice_locale_id_id">Endonezce (Endonezya)</string>
+    <string name="settings_tts_voice_locale_ms_my">Malayca (Malezya)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Filipince (Filipinler)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Vietnamca (Vietnam)</string>
+    <string name="settings_tts_voice_locale_th_th">Tayca (Tayland)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Çince (Basitleştirilmiş)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Çince (Geleneksel)</string>
+    <string name="settings_tts_voice_locale_hi_in">Hintçe (Hindistan)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Bengalce (Bangladeş)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Japonca (Japonya)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Korece (Güney Kore)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Arapça (Suudi Arabistan)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Arapça (Mısır)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Arapça (Birleşik Arap Emirlikleri)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Arapça (Fas)</string>
+    <string name="settings_tts_voice_locale_he_il">İbranice (İsrail)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Farsça (İran)</string>
+    <string name="settings_tts_voice_locale_am_et">Amharca (Etiyopya)</string>
+    <string name="settings_tts_voice_locale_da_dk">Danca (Danimarka)</string>
+    <string name="settings_tts_voice_locale_nb_no">Norveççe Bokmål (Norveç)</string>
+    <string name="settings_tts_voice_locale_sq_al">Arnavutça (Arnavutluk)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Svahili (Kenya)</string>
+
+    <string name="settings_api_key_gemini_label">Gemini</string>
+
+    <string name="settings_api_key_status_set">Bir Gemini anahtarı ayarlandı.</string>
+    <string name="settings_api_key_status_unset">Gemini anahtarı ayarlanmadı. Gemini seslerini kullanmak için aistudio.google.com adresinden bir anahtar alın.</string>
+    <string name="settings_api_key_placeholder">Gemini API anahtarını buraya yapıştırın</string>
+    <string name="settings_api_key_save">Gemini anahtarını kaydet</string>
+    <string name="settings_api_key_clear">Kayıtlı Gemini anahtarını sil</string>
+
+    <string name="settings_location_title">Konum</string>
+    <string name="settings_location_use_device">Cihaz konumunu kullan</string>
+    <string name="settings_location_grant_background">Arka plan konumuna izin ver (sistem ayarları)</string>
+    <string name="settings_location_unset">Konum ayarlanmadı</string>
+    <string name="settings_location_clear">Konumu kaldır</string>
+    <string name="settings_location_search_title">Konum ara</string>
+    <string name="settings_location_query_label">Şehir veya yer</string>
+    <string name="settings_location_search">Ara</string>
+    <string name="settings_location_searching">Aranıyor…</string>
+    <string name="settings_location_no_results">Sonuç bulunamadı.</string>
+
+    <string name="notification_channel_daily_insight_name">Günlük ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">Etkinleştirdiğiniz sabah hava durumu özeti.</string>
+    <string name="notification_daily_insight_title">Bugünün hava durumu</string>
+
+    <string name="notification_channel_tonight_insight_default_name">Gecelik ClothesCast (etkinliklerle)</string>
+    <string name="notification_channel_tonight_insight_default_description">Bu akşam etkinlikleriniz olduğunda gelen akşam hava durumu özeti. Varsayılan bildirim sesini çalar.</string>
+    <string name="notification_channel_tonight_insight_silent_name">Gecelik ClothesCast (sessiz)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Sakin akşamlarda gelen akşam hava durumu özeti. Sessiz teslim edilir — kilit ekranında görebilirsiniz ama ses çıkarmaz.</string>
+    <string name="notification_tonight_insight_title">Bu akşamın hava durumu</string>
+
+    <string name="notification_channel_weather_alerts_name">Hava durumu uyarıları</string>
+    <string name="notification_channel_weather_alerts_description">Bölgenizdeki şiddetli veya aşırı hava olayları için yüksek öncelikli uyarılar. Günlük veri çekiminde tespit edildiğinde gönderilir.</string>
+    <string name="notification_weather_alert_title">Hava durumu uyarısı: %1$s</string>
+
+    <string name="settings_notification_permission_title">Bildirimler engellendi</string>
+    <string name="settings_notification_permission_description">Bildirim izni olmadan günlük ClothesCast\'ının gidecek yeri yok. Yarın sabah ClothesCast görünebilsin diye izin ver.</string>
+    <string name="settings_notification_permission_grant">Bildirimlere izin ver</string>
+
+    <string name="settings_calendar_title">Takvim</string>
+    <string name="settings_calendar_use_events">Bugünün takvim etkinliklerini kullan</string>
+    <string name="settings_calendar_description_off">Etkinleştirildiğinde, ClothesCast sabah ClothesCast\'ının belirli etkinliklere önerilerde bulunabilmesi için cihazınızın takviminden bugünün etkinliklerini okur — örneğin "Saat 15\'te parkta koşun için şemsiyeni unut". Yalnızca etkinlik başlıkları ve saatler kullanılır; açıklamalar, katılımcılar ve konumlar okunur ancak cihazı asla terk etmez.</string>
+    <string name="settings_calendar_description_on">Sabah ClothesCast\'ını tamamlamak için cihazınızın takviminden bugünün etkinliklerini okur. Oluşturulan özette yalnızca başlıklar ve saatler kullanılır; açıklamalar ve katılımcılar değil. Her şey cihazda kalır.</string>
+    <string name="settings_calendar_grant_permission">Takvim erişimine izin ver</string>
+    <string name="settings_calendar_open_settings">Takvim erişimi reddedildi. Sistem ayarlarından izin verin.</string>
+
+    <string name="settings_debug_title">Hata ayıklama (yalnızca hata ayıklama sürümlerinde)</string>
+    <string name="settings_debug_description">Günlük ClothesCast sürecini hemen tetikle. Zamanlanmış saati beklemeden test etmek için kullanışlıdır.</string>
+    <string name="settings_debug_fire_now">ClothesCast\'ı şimdi tetikle</string>
+    <string name="settings_debug_fire_toast">ClothesCast çalışanı kuyruğa alındı</string>
+
+    <string name="settings_about_title">Hakkında</string>
+    <string name="settings_about_version">Sürüm %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s derlemesi</string>
+    <string name="settings_about_source">GitHub\'da kaynak kodu</string>
+    <string name="settings_about_dontkillmyapp">Arka plan kısıtlamaları (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Hata raporunu paylaş</string>
+    <string name="settings_about_version_copied">Sürüm panoya kopyalandı</string>
+
+    <string name="today_title">Bugün</string>
+    <string name="today_open_settings">Ayarları aç</string>
+    <string name="today_more_options">Daha fazla seçenek</string>
+    <string name="today_report_a_bug">Hata bildir</string>
+    <string name="today_refresh">Yenile</string>
+    <string name="today_refresh_toast_daily">Günlük ClothesCast\'ın güncelleniyor — birazdan görünecek.</string>
+    <string name="today_refresh_toast_nightly">Gecelik ClothesCast\'ın güncelleniyor — birazdan görünecek.</string>
+    <string name="today_empty_title">Henüz ClothesCast yok</string>
+    <string name="today_empty_subtitle">Sabah ClothesCast\'ın oluşturulduğunda burada görünecek. Ayarlarda konumunu belirle ve ardından Şimdi al\'a dokun.</string>
+    <string name="today_fetch_now">Şimdi al</string>
+    <string name="today_generated_at">Saat %1$s\'de oluşturuldu</string>
+
+    <string name="today_outfit_title">Ne giymeli</string>
+    <string name="today_outfit_label_today">Bugün</string>
+    <string name="today_outfit_label_tonight">Bu akşam</string>
+    <string name="today_outfit_label_tomorrow">Yarın</string>
 
     <string name="today_outfit_top_tshirt">Tişört</string>
     <string name="today_outfit_top_sweater">Kazak</string>
@@ -42,28 +293,76 @@ editor, outfit-card labels, and region/voice-locale picker names.
     <string name="today_outfit_bottom_shorts">Şort</string>
     <string name="today_outfit_bottom_long_pants">Pantolon</string>
 
+    <string name="today_forecast_title">Saatlik tahmin</string>
+    <string name="today_forecast_min_max">Hissedilen %1$d – %2$d%3$s · Hava %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Saatlik hissedilen sıcaklık (%1$s) · hava sıcaklığı için dokun</string>
+    <string name="today_forecast_legend_air">Saatlik hava sıcaklığı (%1$s) · hissedilen sıcaklık için dokun</string>
+
+    <string name="today_confidence_high">Yüksek güven — ana modeller hemfikir</string>
+    <string name="today_confidence_medium">Orta güven</string>
+    <string name="today_confidence_low">Düşük güven — tahminler farklılık gösteriyor</string>
+    <string name="today_confidence_spread">Yayılım: %1$.1f°C, %2$.0f pp yağış, %3$d model</string>
+
+    <string name="today_working">ClothesCast\'ın alınıyor…</string>
+    <string name="today_failed_title">Son deneme başarısız oldu</string>
+    <string name="today_failed_unexpected_http">Hava durumu servisinden beklenmedik HTTP hatası.</string>
+    <string name="today_failed_unhandled">Beklenmedik bir hata oluştu.</string>
+    <string name="today_failed_show_details">Ayrıntıları göster</string>
+    <string name="today_failed_hide_details">Ayrıntıları gizle</string>
+
+    <string name="widget_label">Kıyafet</string>
+    <string name="widget_description">Mevcut günün dilimindeki kıyafete bir bakış.</string>
+    <string name="widget_empty_title">Henüz kıyafet yok</string>
+    <string name="widget_empty_subtitle">ClothesCast\'ı açmak için dokun</string>
+
+    <string name="onboarding_title">ClothesCast\'a Hoş Geldiniz</string>
+    <string name="onboarding_subtitle">İki hızlı seçim ve hazırsın. Diğer her şeyin daha sonra ayarlardan değiştirebileceğin makul bir varsayılanı var.</string>
+    <string name="onboarding_notifications_title">Bildirimler</string>
+    <string name="onboarding_notifications_description">Günlük ClothesCast\'ının sana ulaşması için. Bir kez izin ver ve yarın sabah hazır olacak.</string>
+    <string name="onboarding_notifications_grant">Bildirimlere izin ver</string>
+    <string name="onboarding_location_title">Konum</string>
+    <string name="onboarding_location_description">Doğru tahminin alınması için. Konum erişimiyle ClothesCast her sabah cihazının yaklaşık konumunu okur; aksi takdirde bir şehri manuel olarak seç.</string>
+    <string name="onboarding_location_grant">Konum erişimine izin ver</string>
+    <string name="onboarding_location_denied_hint">Konum erişimi reddedildi. Bunun yerine manuel olarak bir şehir seçebilirsin.</string>
+    <string name="onboarding_location_enter_manual">Konumu manuel olarak gir</string>
+    <string name="onboarding_location_using_device">Her sabah cihazının konumunu kullanıyoruz.</string>
+
+    <string name="onboarding_gemini_title">Gemini API Anahtarı</string>
+    <string name="onboarding_gemini_description">ClothesCast bunu sesli konuşma ve tahmin oluşturma için kullanır. aistudio.google.com adresinden ücretsiz bir anahtar alın. Anahtar Android Keystore\'da şifreli olarak saklanır.</string>
+    <string name="onboarding_step_done">Tamam</string>
+    <string name="onboarding_skip">Şimdilik atla</string>
+    <string name="onboarding_continue">Devam et</string>
+
     <string name="insight_lead_today">Bugün</string>
     <string name="insight_lead_tonight">Bu gece</string>
+
     <!-- Turkish SOV word order: subject-object-verb; predicate at the end. -->
     <string name="insight_band_single">%1$s %2$s olacak.</string>
     <string name="insight_band_range">%1$s %2$s ile %3$s arasında olacak.</string>
+
     <string name="insight_band_freezing">dondurucu soğuk</string>
     <string name="insight_band_cold">soğuk</string>
     <string name="insight_band_cool">serin</string>
     <string name="insight_band_mild">ılıman</string>
     <string name="insight_band_warm">sıcak</string>
     <string name="insight_band_hot">çok sıcak</string>
+
     <string name="insight_delta_warmer">Bugün %1$d° daha sıcak olacak.</string>
     <string name="insight_delta_cooler">Bugün %1$d° daha soğuk olacak.</string>
+
     <string name="insight_alert">Uyarı: %1$s.</string>
+
     <string name="insight_clothes_wear">%1$s giy.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s ve %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s ve %3$s</string>
+
     <string name="insight_precip">%1$s %2$s.</string>
+    <!-- "saat X'de" — time preposition in Turkish. -->
     <string name="insight_precip_at_time">saat %1$s\'de</string>
     <string name="insight_precip_overnight">gece boyunca</string>
+
     <string name="insight_condition_clear">Açık</string>
     <string name="insight_condition_partly_cloudy">Parçalı bulutlu</string>
     <string name="insight_condition_cloudy">Bulutlu</string>
@@ -73,10 +372,209 @@ editor, outfit-card labels, and region/voice-locale picker names.
     <string name="insight_condition_snow">Kar</string>
     <string name="insight_condition_thunderstorm">Fırtına</string>
     <string name="insight_condition_unknown">Bilinmiyor</string>
+
     <string name="insight_tie_in">Bu gece %1$s al.</string>
+    <string name="insight_tie_in_at_night">Bu gece %1$s al.</string>
     <string name="insight_tie_in_with_rain">Bu gece %1$s al, saat %2$s\'de yağmur.</string>
-    <!-- "15" — "saat" comes from surrounding templates. -->
+    <string name="insight_tie_in_with_rain_chance">Saat %2$s\'de olası yağmur — %1$s al.</string>
+    <string name="insight_precip_chance">Olası %1$s %2$s.</string>
+    <string name="insight_evening_rain">Bu gece saat %1$s\'de yağmur.</string>
+    <string name="insight_evening_rain_chance">Bu gece saat %1$s\'de olası yağmur.</string>
+
+    <!-- Turkish time format: colon separator, no AM/PM. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
+    <string name="onboarding_pair_from_phone">Bunun yerine telefondan eşleştir</string>
+
+    <string name="pairing_title">Eşleştirmek için tara</string>
+    <string name="pairing_instructions">Bu QR kodunu telefonunuzla tarayın ve ardından Gemini API anahtarınızı açılan forma yapıştırın. Anahtar, bulut geçişi olmadan ev ağınız üzerinden doğrudan bu TV\'ye gönderilir.</string>
+    <string name="pairing_qr_description">%1$s bağlantılı QR kodu</string>
+    <string name="pairing_cancel">İptal</string>
+    <string name="pairing_received">Anahtar alındı — kaydediliyor…</string>
+    <string name="pairing_timeout_title">Eşleştirme penceresi sona erdi</string>
+    <string name="pairing_timeout_body">5 dakikalık eşleştirme penceresi kapandı. Yeni bir pencere açmak için Tekrar dene\'ye dokun.</string>
+    <string name="pairing_error_title">Eşleştirme başlatılamadı</string>
+    <string name="pairing_error_body">TV\'nin Wi-Fi\'ye bağlı olduğundan emin olun ve tekrar deneyin.</string>
+    <string name="pairing_retry">Tekrar dene</string>
+
+    <string name="settings_location_background_rationale_title">Her zaman izin ver</string>
+    <string name="settings_location_background_rationale_body">ClothesCast her sabah arka planda tahmininizi alır. Bunun için "Her zaman izin ver" konum iznine ihtiyaç vardır. Vermek için sistem ayarlarına yönlendirileceksiniz.</string>
+    <string name="settings_location_background_rationale_continue">Ayarları aç</string>
+    <string name="settings_location_background_rationale_dismiss">Şimdi değil</string>
+
+    <string name="settings_location_background_denied_title">Sürekli erişim verilmedi</string>
+    <string name="settings_location_background_denied_body">"Her zaman izin ver" olmadan sabah tahmini kayıtlı konumunuzu kullanır. Vermek için sistem ayarlarını açmak ister misiniz?</string>
+    <string name="settings_location_background_denied_open">Ayarları aç</string>
+    <string name="settings_location_background_denied_keep">Kayıtlı konumu koru</string>
+
+    <string name="settings_location_rationale_title">Kalıcı konum</string>
+    <string name="settings_location_rationale_body">ClothesCast zamanında teslim etmek için tahmininizi arka planda günceller. Bunun için "Her zaman izin ver" konum iznine ihtiyaç vardır.</string>
+    <string name="settings_location_rationale_continue">Devam et</string>
+    <string name="settings_location_rationale_dismiss">Şimdi değil</string>
+
+    <string name="settings_root_schedule_subtitle">Bildirimler ve saatler</string>
+    <string name="settings_root_clothes_subtitle">Sıcaklıklar ve kıyafetler</string>
+    <string name="settings_root_region_subtitle">Diller ve birimler</string>
+    <string name="settings_root_voice_subtitle">Sağlayıcılar ve aksanlar</string>
+
+    <string name="settings_tts_device_voice_label">Cihaz sesi</string>
+    <string name="settings_tts_device_voice_auto">Otomatik (en iyi aksan)</string>
+    <string name="settings_tts_device_voice_currently">Mevcut: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Yükleniyor…</string>
+    <string name="settings_tts_device_voice_network">Ağ</string>
+    <string name="settings_tts_device_voice_offline">Çevrimdışı</string>
+    <string name="settings_tts_install_google_hint">Daha kaliteli sesler için Google Metin Okuma motorunu yükleyin.</string>
+    <string name="settings_tts_install_google_button">Google TTS\'yi yükle</string>
+
+    <string name="today_failed_no_location">Konumunuz belirlenemedi. Kalıcı konum iznini verin veya ayarlardan bir şehir belirleyin.</string>
+    <string name="today_location_required_title">Konumunuzu ayarlayın</string>
+    <string name="today_location_required_body">ClothesCast tahmini almak için konumunuzu bilmesi gerekiyor. Kalıcı konum iznini verin veya bir şehir seçin.</string>
+    <string name="today_location_required_action">Konum ayarlarını aç</string>
+
+    <string name="today_rationale_title">Bu kıyafet neden?</string>
+    <string name="today_rationale_show">Neden?</string>
+    <string name="today_rationale_dismiss">Anladım</string>
+    <string name="today_rationale_threshold_decrease">Eşiği 1 derece düşür</string>
+    <string name="today_rationale_threshold_increase">Eşiği 1 derece artır</string>
+    <string name="today_rationale_threshold_changed_hint">Yeni kıyafeti görmek için yenile.</string>
+    <string name="today_rationale_unavailable">Gerekçe mevcut değil — bir sonraki güncellemeden sonra uygulamayı açın.</string>
+    <string name="today_rationale_min_below_with_time">Hissedilen minimum sıcaklık saat %3$s\'de %1$s%2$s, %4$s%2$s altında</string>
+    <string name="today_rationale_min_below">Hissedilen minimum sıcaklık %1$s%2$s, %3$s%2$s altında</string>
+    <string name="today_rationale_min_above_with_time">Hissedilen minimum sıcaklık saat %3$s\'de %1$s%2$s, en az %4$s%2$s</string>
+    <string name="today_rationale_min_above">Hissedilen minimum sıcaklık %1$s%2$s, en az %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Hissedilen maksimum sıcaklık saat %3$s\'de yalnızca %1$s%2$s, %4$s%2$s altında</string>
+    <string name="today_rationale_max_below">Hissedilen maksimum sıcaklık yalnızca %1$s%2$s, %3$s%2$s altında</string>
+    <string name="today_rationale_max_above_with_time">Hissedilen maksimum sıcaklık saat %3$s\'de %1$s%2$s, en az %4$s%2$s</string>
+    <string name="today_rationale_max_above">Hissedilen maksimum sıcaklık %1$s%2$s, en az %3$s%2$s</string>
+
+    <string name="today_location_unknown">Konumunuz</string>
+
+    <string name="today_retrying">Son deneme başarısız oldu — yeniden deneniyor…</string>
+
+    <string name="today_crash_banner_title">Son başlatma çöktü</string>
+    <string name="today_crash_banner_body">Cihazınızda bir çökme raporu kaydedildi. Hatanın düzeltilmesi için paylaşmak ister misiniz? Bir hedef seçene kadar hiçbir şey gönderilmez.</string>
+    <string name="today_crash_banner_share">Raporu paylaş</string>
+    <string name="today_crash_banner_dismiss">Kapat</string>
+
+    <string name="onboarding_subtitle_tv">İki hızlı seçim ve hazırsın. Diğer her şeyi daha sonra ayarlardan değiştirebilirsin.</string>
+
+    <string name="onboarding_location_grant_background">Her zaman izin ver</string>
+    <string name="onboarding_location_background_needed">Bir adım daha: ClothesCast, uygulama kapalıyken sabah tahmini konumunuzu okuyabilmesi için "Her zaman izin ver" iznine ihtiyaç duyar.</string>
+    <string name="onboarding_location_enter_manual_hint">Konum erişimini reddederseniz veya cihaz konumu yanlışsa konumunuzu manuel olarak girebilirsiniz.</string>
+
+    <string name="settings_root_display">Görünüm</string>
+    <string name="settings_root_location">Konum</string>
+    <string name="settings_root_calendar">Takvim</string>
+    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_location_subtitle">Otomatik veya şehir seç</string>
+    <string name="settings_root_calendar_subtitle">Bugünün etkinlikleri</string>
+
+    <string name="settings_display_theme_title">Tema</string>
+    <string name="settings_display_theme_system">Sistem ayarı</string>
+    <string name="settings_display_theme_light">Açık</string>
+    <string name="settings_display_theme_dark">Koyu</string>
+
+    <string name="settings_api_key_gemini_header">Kaliteli sesler için Gemini\'yi kullanın.</string>
+
+    <string name="settings_location_use_device_description">Son yaklaşık konum</string>
+    <string name="settings_location_detecting">Belirleniyor…</string>
+    <string name="settings_location_background_banner_title">Kalıcı konum izni gerekli</string>
+    <string name="settings_location_background_banner_body">Bu olmadan sabah tahmini konumunuzu okuyamaz.</string>
+    <string name="settings_location_manual_override">Yanlış konum mu? Manuel olarak ayarla</string>
+    <string name="settings_location_manual_override_disclosure">Bir şehir seçmek otomatik algılamayı devre dışı bırakır.</string>
+
+    <string name="settings_tts_engine_description">Gemini, cihaz sesinden çok daha doğal geliyor ancak konuşurken ağ çağrısı gerektirir ve sentez için API anahtarınızı kullanır (konuşulan her ClothesCast başına bir kısa çağrı). Gemini başarısız olursa cihaz sesine geri döner.</string>
+
+    <string name="today_update_available_title">Güncelleme mevcut</string>
+    <string name="today_update_available_body">Play Store\'da ClothesCast\'ın daha yeni bir sürümü var.</string>
+    <string name="today_update_available_action">Güncelle</string>
+    <string name="today_update_available_dismiss">Şimdi değil</string>
+    <string name="today_update_downloaded_body">Güncelleme indirildi. Kurulumu tamamlamak için yeniden başlat.</string>
+    <string name="today_update_downloaded_action">Yeniden başlat</string>
+
+    <string name="today_outfit_top_polo">Polo yaka</string>
+    <string name="today_outfit_top_thin_jacket">İnce ceket</string>
+    <string name="today_outfit_top_thick_coat">Kalın palto</string>
+    <string name="today_outfit_top_puffer_jacket">Şişme mont</string>
+    <string name="today_outfit_bottom_skirt">Etek</string>
+    <string name="today_outfit_bottom_jeans">Kot pantolon</string>
+
+    <string name="garment_polo">Polo yaka</string>
+    <string name="garment_thin_jacket">İnce ceket</string>
+    <string name="garment_puffer">Şişme mont</string>
+    <string name="garment_skirt">Etek</string>
+
+    <string name="today_precipitation_title">Yağış ihtimali</string>
+    <string name="today_precipitation_peak">Zirve %1$d%%, saat %2$s</string>
+    <string name="today_precipitation_dry">Bugün yağış beklenmez</string>
+
+    <string name="today_chart_model_legend_label">Modeller:</string>
+    <string name="today_chart_main_line_label">Birleşik</string>
+    <string name="today_chart_divergence_summary">Modeller saat %1$s\'de en fazla farklılaşıyor (Δ %2$.1f%3$s hissedilen sıcaklık) — ağırlıklı olarak %4$s, %5$s</string>
+
+    <string name="today_factor_air_temperature">Hava sıcaklığı</string>
+    <string name="today_factor_wind_speed">Rüzgar hızı</string>
+    <string name="today_factor_cloud_cover">Bulut örtüsü</string>
+    <string name="today_factor_humidity">Nem</string>
+
+    <string name="today_wind_title">Rüzgar hızı</string>
+    <string name="today_wind_subtitle">Model başına saatlik rüzgar hızı (%1$s)</string>
+    <string name="today_cloud_title">Bulut örtüsü</string>
+    <string name="today_cloud_subtitle">Model başına saatlik toplam bulut örtüsü (%%)</string>
+    <string name="today_humidity_title">Nem</string>
+    <string name="today_humidity_subtitle">Model başına saatlik bağıl nem (%%)</string>
+
+    <string name="today_low_confidence_callout_title">Tahminler bugün farklılık gösteriyor</string>
+    <string name="today_low_confidence_callout_body">Sıcaklık %3$d model arasında %1$.1f°C, yağış ihtimali %2$.0f%% değişiyor.</string>
+
+    <string name="today_telemetry_notice_title">Çökme ve kullanım raporları etkin</string>
+    <string name="today_telemetry_notice_body">ClothesCast hataları düzeltmek için anonim çökme raporları ve kullanım analitiği gönderir. Takvim verileri, konum bilgileri veya içerik metni iletilmez. Ayarlardan istediğiniz zaman devre dışı bırakılabilir.</string>
+    <string name="today_telemetry_notice_open_settings">Gizlilik ayarlarını aç</string>
+    <string name="today_telemetry_notice_dismiss">Kapat</string>
+
+    <string name="settings_root_privacy">Gizlilik</string>
+    <string name="settings_root_privacy_subtitle">Çökme ve kullanım raporları</string>
+
+    <string name="settings_display_charts_title">Grafikler</string>
+    <string name="settings_display_model_spread_label">Grafiklerde model yayılımını göster</string>
+    <string name="settings_display_model_spread_description">Sıcaklık ve yağış grafiklerinde ana hava durumu modellerinin saatlik tahminini gösterir. Belirsiz tahminleri tespit etmek için kullanışlıdır.</string>
+
+    <string name="settings_privacy_telemetry_title">Çökme ve kullanım raporları</string>
+    <string name="settings_privacy_telemetry_label">Çökme ve kullanım verilerini gönder</string>
+    <string name="settings_privacy_telemetry_description">Geliştiricinin hata ayıklamasına ve özellik kararlarına yardımcı olmak için anonim çökme raporları ve toplu kullanım istatistikleri gönderir.</string>
+    <string name="settings_privacy_telemetry_limits">Hiçbir zaman gönderilmez: takvim girdileri, konum koordinatları veya yer adları, içerik veya bildirim metinleri, API anahtarları, hassas GPS verileri, reklam kimlikleri.</string>
+    <string name="settings_privacy_open_policy">Gizlilik politikasının tamamını oku</string>
+
+    <string name="settings_tts_style_label">Stil</string>
+    <string name="settings_tts_style_weather_forecaster">Hava Durumu Sunucusu</string>
+    <string name="settings_tts_style_pirate">Korsan</string>
+    <string name="settings_tts_style_cowboy">Cowboy</string>
+    <string name="settings_tts_style_shakespearean">Shakespearvari</string>
+    <string name="settings_tts_style_surfer">Sörfçü</string>
+    <string name="settings_tts_style_parent">Ebeveyn</string>
+    <string name="settings_tts_style_child">Çocuk</string>
+    <string name="settings_tts_style_teenager">Genç</string>
+    <string name="settings_tts_style_grandparent">Büyükanne/büyükbaba</string>
+    <string name="settings_tts_style_kids_host">Çocuk TV sunucusu</string>
+    <string name="settings_tts_style_radio_host">Telefon açık sunucusu</string>
+    <string name="settings_tts_style_morning_dj">Sabah DJ\'i</string>
+    <string name="settings_tts_style_science_teacher">Fen öğretmeni</string>
+    <string name="settings_tts_style_historian">Tarihçi</string>
+    <string name="settings_tts_style_sportscaster">Spor spikeri</string>
+    <string name="settings_tts_style_stadium_announcer">Stadyum speakeri</string>
+    <string name="settings_tts_style_storyteller">Hikaye anlatıcısı</string>
+    <string name="settings_tts_style_fitness_instructor">Fitness eğitmeni</string>
+    <string name="settings_tts_style_morning_presenter">Sabah radyo sunucusu</string>
+    <string name="settings_tts_style_custom">Özel…</string>
+    <string name="settings_tts_style_custom_label">Özel talimat</string>
+    <string name="settings_tts_style_custom_placeholder">örn. Aşağıdakileri sert bir fısıldayan kütüphaneci gibi oku</string>
+
+    <string name="bug_report_consent_title">Hata raporu paylaşılsın mı?</string>
+    <string name="bug_report_consent_body">Bu sorunların teşhisine yardımcı olur. Rapor konumunuz, uygulama ayarlarınız ve son etkinlikleriniz dahil olmak üzere hassas kişisel bilgiler içerir. Göndermeden önce inceleyip düzenleyebilirsiniz.</string>
+    <string name="bug_report_consent_dont_show_again">Tekrar gösterme</string>
+    <string name="bug_report_consent_continue">Devam et</string>
+    <string name="bug_report_consent_cancel">İptal</string>
+
+    <string name="error_device_incompatible">ClothesCast bu cihazda çalıştırılamıyor — Android derlemeniz, uygulamanın kullanıcı arayüzünün ihtiyaç duyduğu bir özelliği eksik (Configuration.fontWeightAdjustment, Android 12 ve üzeri bekleniyor). Sistem güncellemesi için cihaz üreticinize başvurun.</string>
 </resources>

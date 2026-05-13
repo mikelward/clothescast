@@ -318,18 +318,16 @@ private fun TodayContent(
                     perModelHourly = overlay,
                 )
                 // Diagnostic cards below the headline temp + rain pair. Each
-                // one is gated on the overlay being available *and* on at
-                // least one consulted model returning the metric — older
-                // cached payloads don't carry wind / humidity / cloud, so the
-                // cards self-hide until the next worker refresh repopulates.
-                if (overlay != null) {
+                // auto-hides when every consulted model is missing the metric
+                // (older cached payloads don't carry wind / humidity / cloud).
+                state.insight.perModelHourly?.let { perModelData ->
                     WindCard(
                         hourly = state.insight.hourly,
-                        perModelHourly = overlay,
+                        perModelHourly = perModelData,
                         windSpeedUnit = state.distanceUnit.windSpeedUnit(),
                     )
-                    CloudCard(hourly = state.insight.hourly, perModelHourly = overlay)
-                    HumidityCard(hourly = state.insight.hourly, perModelHourly = overlay)
+                    CloudCard(hourly = state.insight.hourly, perModelHourly = perModelData)
+                    HumidityCard(hourly = state.insight.hourly, perModelHourly = perModelData)
                 }
             }
         }

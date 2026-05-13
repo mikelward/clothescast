@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.core.domain.model.PerModelHourly.Companion.BEST_MATCH_MODEL_ID
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.toUnit
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
@@ -37,8 +38,16 @@ import kotlin.math.roundToInt
 // Render order for the per-model overlays — fixed so the legend's color
 // mapping stays stable across recompositions and renders. Internal so the
 // adjacent [PrecipitationChart] and the legend in [TodayScreen] iterate the
-// models in the same left-to-right order the chart draws them.
-internal val MODEL_DRAW_ORDER = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless")
+// models in the same left-to-right order the chart draws them. The
+// best_match overlay sits last so it draws on top of the consulted models;
+// the blended "Combined" main line is drawn after that, on top of every
+// overlay, by the temp + rain card scaffolding.
+internal val MODEL_DRAW_ORDER = listOf(
+    "ecmwf_ifs04",
+    "gfs_seamless",
+    "icon_seamless",
+    BEST_MATCH_MODEL_ID,
+)
 
 // Pinned per-model overlay colours. Identity-based (keyed by model id), not
 // position-based, so ECMWF stays pink even when GFS happens to be missing on
@@ -46,12 +55,16 @@ internal val MODEL_DRAW_ORDER = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seam
 // dropped model would otherwise shift every remaining model's colour. Mid-tone
 // 600-weight hues chosen for legibility on both light and dark surfaces and
 // for distinctness from the theme primary that the blended main line uses
-// (currently a blue — see [app.clothescast.ui.theme]). Update the legend
+// (currently a blue — see [app.clothescast.ui.theme]). The best_match
+// overlay gets a neutral grey: it's a side comparison rather than a
+// consulted model, and pairing it with a vibrant hue would imply
+// equivalence with the real models on the chart. Update the legend
 // swatches in [TodayScreen.ModelSpreadLegend] if these change.
 internal val MODEL_COLORS: Map<String, Color> = mapOf(
     "ecmwf_ifs04" to Color(0xFFD81B60),
     "gfs_seamless" to Color(0xFFFB8C00),
     "icon_seamless" to Color(0xFF43A047),
+    BEST_MATCH_MODEL_ID to Color(0xFF9E9E9E),
 )
 
 // Smallest y-axis span we'll display. A 1-degree-variation day padded to this

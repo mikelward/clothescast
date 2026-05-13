@@ -111,12 +111,12 @@
          swatch matching the overlay line; this is just the leading label. -->
     <string name="today_chart_model_legend_label">Models:</string>
 
-    <!-- Label for the main blended line on the temp + rain charts. Open-Meteo
-         calls this "best match" — its automatic per-location, per-variable
-         model selection — and the line routinely tracks a different model
-         than the consulted overlays (ECMWF / GFS / ICON). Surfacing the
-         label makes that disagreement legible. -->
-    <string name="today_chart_main_line_label">Best match</string>
+    <!-- Label for the main blended line on the temp + rain charts. The
+         line is our combined consensus across the consulted models —
+         per-hour mean of ECMWF / GFS / ICON, falling back to Open-Meteo's
+         "Auto" pick when fewer than two of them reported an hour. This
+         is what drives the clothes recommendation. -->
+    <string name="today_chart_main_line_label">Combined</string>
 
     <!-- Per-hour divergence summary rendered under the temperature card's
          legend when the consulted models disagree most on feels-like.

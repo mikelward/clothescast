@@ -62,12 +62,23 @@ data class ModelDivergenceSummary(
          * [MIN_FEELS_LIKE_SPREAD_C].
          */
         fun computeFrom(perModelHourly: PerModelHourly): ModelDivergenceSummary? {
-            val models = perModelHourly.byModel.values.toList()
-            if (models.size < 2) return null
+            // Exclude Open-Meteo's best_match meta-model — it's a single auto-
+            // selected model whose value is already in [PerModelHourly.byModel]
+            // as a labelled overlay, but it isn't one of the *consulted*
+            // forecasts whose disagreement we're trying to attribute. Folding
+            // it into the spread would over-state divergence when best_match
+            // is itself an outlier (see the rain-prediction case the
+            // consensus blend was added to handle).
+            val consulted = perModelHourly.byModel
+                .filterKeys { it != PerModelHourly.BEST_MATCH_MODEL_ID }
+                .values
+                .toList()
+            if (consulted.size < 2) return null
 
-            // Group hours by time across all models so we can compute spreads.
+            // Group hours by time across all consulted models so we can
+            // compute spreads.
             val byHour = mutableMapOf<LocalTime, MutableList<PerModelHour>>()
-            for (entries in models) {
+            for (entries in consulted) {
                 for (entry in entries) {
                     byHour.getOrPut(entry.time) { mutableListOf() }.add(entry)
                 }

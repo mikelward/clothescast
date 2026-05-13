@@ -588,4 +588,111 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_update_available_dismiss">Pas maintenant</string>
     <string name="today_update_downloaded_body">Mise à jour téléchargée. Redémarre pour terminer l\'installation.</string>
     <string name="today_update_downloaded_action">Redémarrer</string>
+
+    <!-- Outfit card labels — additional garments not previously translated. -->
+    <string name="today_outfit_top_polo">Polo</string>
+    <string name="today_outfit_top_thin_jacket">Veste légère</string>
+    <string name="today_outfit_top_thick_coat">Manteau d\'hiver</string>
+    <string name="today_outfit_top_puffer_jacket">Doudoune</string>
+    <string name="today_outfit_bottom_skirt">Jupe</string>
+    <string name="today_outfit_bottom_jeans">Jean</string>
+
+    <!-- Garment dropdown — additional items. -->
+    <string name="garment_polo">Polo</string>
+    <string name="garment_thin_jacket">Veste légère</string>
+    <string name="garment_puffer">Doudoune</string>
+    <string name="garment_skirt">Jupe</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Risque de pluie</string>
+    <string name="today_precipitation_peak">Pic %1$d%% à %2$s</string>
+    <string name="today_precipitation_dry">Aucune pluie prévue aujourd\'hui</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">Modèles :</string>
+    <string name="today_chart_main_line_label">Combiné</string>
+    <string name="today_chart_divergence_summary">Les modèles divergent le plus à %1$s (Δ %2$.1f%3$s ressenti) — surtout %4$s, %5$s</string>
+
+    <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
+    <string name="today_factor_air_temperature">température de l\'air</string>
+    <string name="today_factor_wind_speed">vitesse du vent</string>
+    <string name="today_factor_cloud_cover">couverture nuageuse</string>
+    <string name="today_factor_humidity">humidité</string>
+
+    <!-- Diagnostic cards (wind, cloud cover, humidity). -->
+    <string name="today_wind_title">Vitesse du vent</string>
+    <string name="today_wind_subtitle">Vitesse du vent (%1$s) par heure par modèle</string>
+    <string name="today_cloud_title">Couverture nuageuse</string>
+    <string name="today_cloud_subtitle">Couverture nuageuse totale (%) par heure par modèle</string>
+    <string name="today_humidity_title">Humidité</string>
+    <string name="today_humidity_subtitle">Humidité relative (%) par heure par modèle</string>
+
+    <!-- Low-confidence callout banner. -->
+    <string name="today_low_confidence_callout_title">Les prévisions divergent aujourd\'hui</string>
+    <string name="today_low_confidence_callout_body">La température varie de %1$.1f°C et le risque de pluie de %2$.0f%% selon %3$d modèles.</string>
+
+    <!-- Telemetry notice (first-run banner on Today screen). -->
+    <string name="today_telemetry_notice_title">Rapports de plantage et d\'utilisation activés</string>
+    <string name="today_telemetry_notice_body">ClothesCast envoie des rapports de plantage anonymes et des analyses d\'utilisation pour corriger les bugs. Aucune donnée de calendrier, position ou texte de résumé n\'est incluse. Désactive-le à tout moment dans les Paramètres.</string>
+    <string name="today_telemetry_notice_open_settings">Ouvrir les paramètres de confidentialité</string>
+    <string name="today_telemetry_notice_dismiss">Ignorer</string>
+
+    <!-- Settings root — Privacy row. -->
+    <string name="settings_root_privacy">Confidentialité</string>
+    <string name="settings_root_privacy_subtitle">Rapports de plantage et d\'utilisation</string>
+
+    <!-- Display — Charts section. -->
+    <string name="settings_display_charts_title">Graphiques</string>
+    <string name="settings_display_model_spread_label">Afficher la dispersion des modèles sur les graphiques</string>
+    <string name="settings_display_model_spread_description">Superpose la prévision horaire de chaque grand modèle météo sur les graphiques de température et de pluie. Utile pour repérer quand la prévision est incertaine.</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">Rapports de plantage et d\'utilisation</string>
+    <string name="settings_privacy_telemetry_label">Envoyer les données de plantage et d\'utilisation</string>
+    <string name="settings_privacy_telemetry_description">Envoie des rapports de plantage anonymes et des statistiques d\'utilisation agrégées pour aider le développeur à corriger les bugs et décider quelles fonctionnalités conserver.</string>
+    <string name="settings_privacy_telemetry_limits">Jamais envoyés : événements du calendrier, coordonnées de position ou noms de lieux, texte de résumé ou de notification, clés API, GPS précis, identifiants publicitaires.</string>
+    <string name="settings_privacy_open_policy">Lire la politique de confidentialité complète</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">Style</string>
+    <string name="settings_tts_style_weather_forecaster">Météorologue</string>
+    <string name="settings_tts_style_pirate">Pirate</string>
+    <string name="settings_tts_style_cowboy">Cowboy</string>
+    <string name="settings_tts_style_shakespearean">Shakespearien</string>
+    <string name="settings_tts_style_surfer">Surfeur</string>
+    <string name="settings_tts_style_parent">Parent</string>
+    <string name="settings_tts_style_child">Enfant</string>
+    <string name="settings_tts_style_teenager">Adolescent</string>
+    <string name="settings_tts_style_grandparent">Grand-parent</string>
+    <string name="settings_tts_style_kids_host">Animateur TV enfants</string>
+    <string name="settings_tts_style_radio_host">Animateur radio</string>
+    <string name="settings_tts_style_morning_dj">DJ matinal</string>
+    <string name="settings_tts_style_science_teacher">Professeur de sciences</string>
+    <string name="settings_tts_style_historian">Historien</string>
+    <string name="settings_tts_style_sportscaster">Commentateur sportif</string>
+    <string name="settings_tts_style_stadium_announcer">Annonceur de stade</string>
+    <string name="settings_tts_style_storyteller">Conteur</string>
+    <string name="settings_tts_style_fitness_instructor">Coach fitness</string>
+    <string name="settings_tts_style_morning_presenter">Présentateur radio matinal</string>
+    <string name="settings_tts_style_custom">Personnalisé…</string>
+    <string name="settings_tts_style_custom_label">Directive personnalisée</string>
+    <string name="settings_tts_style_custom_placeholder">p. ex. Lis ce qui suit comme un bibliothécaire sévère qui chuchote</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">Partager le rapport de bug ?</string>
+    <string name="bug_report_consent_body">Cela aide à diagnostiquer les problèmes. Le rapport contient des informations personnelles sensibles, notamment ta position, les paramètres de l\'app et ton activité récente. Tu pourras le vérifier et le modifier avant de l\'envoyer.</string>
+    <string name="bug_report_consent_dont_show_again">Ne plus afficher</string>
+    <string name="bug_report_consent_continue">Continuer</string>
+    <string name="bug_report_consent_cancel">Annuler</string>
+
+    <!-- Insight: tie-in at night (no "Ce soir" prefix — band lead already set context). -->
+    <string name="insight_tie_in_at_night">Prends %1$s.</string>
+    <!-- Hedged precipitation and evening-rain templates. -->
+    <string name="insight_precip_chance">Risque de %1$s %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Ce soir, risque de pluie à %2$s, prends %1$s.</string>
+    <string name="insight_evening_rain">Ce soir, pluie à %1$s.</string>
+    <string name="insight_evening_rain_chance">Ce soir, risque de pluie à %1$s.</string>
+
+    <!-- Device-incompatibility error screen. -->
+    <string name="error_device_incompatible">ClothesCast ne peut pas fonctionner sur cet appareil — ta version d\'Android ne dispose pas d\'une fonctionnalité requise par l\'interface de l\'app (Configuration.fontWeightAdjustment, attendue sur Android 12 et versions ultérieures). Contacte le fabricant de ton appareil pour une mise à jour système.</string>
 </resources>

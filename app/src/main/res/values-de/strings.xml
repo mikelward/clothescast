@@ -613,4 +613,110 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_update_available_dismiss">Nicht jetzt</string>
     <string name="today_update_downloaded_body">Update heruntergeladen. Neu starten, um die Installation abzuschließen.</string>
     <string name="today_update_downloaded_action">Neu starten</string>
+
+    <!-- Outfit card labels — additional garments not previously translated. -->
+    <string name="today_outfit_top_polo">Polo</string>
+    <string name="today_outfit_top_thin_jacket">Leichte Jacke</string>
+    <string name="today_outfit_top_thick_coat">Dicker Mantel</string>
+    <string name="today_outfit_top_puffer_jacket">Daunenjacke</string>
+    <string name="today_outfit_bottom_skirt">Rock</string>
+    <string name="today_outfit_bottom_jeans">Jeans</string>
+
+    <!-- Garment dropdown — additional items. -->
+    <string name="garment_polo">Polo</string>
+    <string name="garment_thin_jacket">Leichte Jacke</string>
+    <string name="garment_puffer">Daunenjacke</string>
+    <string name="garment_skirt">Rock</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Regenwahrscheinlichkeit</string>
+    <string name="today_precipitation_peak">Spitze %1$d%% um %2$s</string>
+    <string name="today_precipitation_dry">Heute kein Regen erwartet</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">Modelle:</string>
+    <string name="today_chart_main_line_label">Kombiniert</string>
+    <string name="today_chart_divergence_summary">Modelle weichen am stärksten um %1$s ab (Δ %2$.1f%3$s Gefühlstemperatur) — hauptsächlich %4$s, %5$s</string>
+
+    <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
+    <string name="today_factor_air_temperature">Lufttemperatur</string>
+    <string name="today_factor_wind_speed">Windgeschwindigkeit</string>
+    <string name="today_factor_cloud_cover">Bewölkung</string>
+    <string name="today_factor_humidity">Luftfeuchtigkeit</string>
+
+    <!-- Diagnostic cards (wind, cloud cover, humidity). -->
+    <string name="today_wind_title">Windgeschwindigkeit</string>
+    <string name="today_wind_subtitle">Windgeschwindigkeit (%1$s) pro Stunde je Modell</string>
+    <string name="today_cloud_title">Bewölkung</string>
+    <string name="today_cloud_subtitle">Gesamtbewölkung (%) pro Stunde je Modell</string>
+    <string name="today_humidity_title">Luftfeuchtigkeit</string>
+    <string name="today_humidity_subtitle">Relative Luftfeuchtigkeit (%) pro Stunde je Modell</string>
+
+    <!-- Low-confidence callout banner. -->
+    <string name="today_low_confidence_callout_title">Vorhersagen weichen heute ab</string>
+    <string name="today_low_confidence_callout_body">Temperatur schwankt um %1$.1f°C und Regenwahrscheinlichkeit um %2$.0f%% über %3$d Modelle.</string>
+
+    <!-- Telemetry notice (first-run banner on Today screen). -->
+    <string name="today_telemetry_notice_title">Absturz- und Nutzungsberichte sind aktiviert</string>
+    <string name="today_telemetry_notice_body">ClothesCast sendet anonyme Absturzberichte und Nutzungsanalysen, um Fehler zu beheben. Keine Kalenderdaten, Standortdaten oder Inhaltstexte werden übermittelt. Jederzeit in den Einstellungen deaktivierbar.</string>
+    <string name="today_telemetry_notice_open_settings">Datenschutzeinstellungen öffnen</string>
+    <string name="today_telemetry_notice_dismiss">Schließen</string>
+
+    <!-- Settings root — Privacy row. -->
+    <string name="settings_root_privacy">Datenschutz</string>
+    <string name="settings_root_privacy_subtitle">Absturz- und Nutzungsberichte</string>
+
+    <!-- Display — Charts section. -->
+    <string name="settings_display_charts_title">Diagramme</string>
+    <string name="settings_display_model_spread_label">Modellstreuung in Diagrammen anzeigen</string>
+    <string name="settings_display_model_spread_description">Zeigt die stündliche Vorhersage der wichtigsten Wettermodelle über die Temperatur- und Regendiagramme. Nützlich, um unsichere Vorhersagen zu erkennen.</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">Absturz- und Nutzungsberichte</string>
+    <string name="settings_privacy_telemetry_label">Absturz- und Nutzungsdaten senden</string>
+    <string name="settings_privacy_telemetry_description">Sendet anonyme Absturzberichte und aggregierte Nutzungsstatistiken, um dem Entwickler bei der Fehlerbehebung und Funktionsentscheidung zu helfen.</string>
+    <string name="settings_privacy_telemetry_limits">Nie gesendet: Kalendereinträge, Standortkoordinaten oder Ortsnamen, Inhalts- oder Benachrichtigungstexte, API-Schlüssel, genaue GPS-Daten, Werbe-IDs.</string>
+    <string name="settings_privacy_open_policy">Vollständige Datenschutzerklärung lesen</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">Stil</string>
+    <string name="settings_tts_style_weather_forecaster">Wettervorhersager</string>
+    <string name="settings_tts_style_pirate">Pirat</string>
+    <string name="settings_tts_style_cowboy">Cowboy</string>
+    <string name="settings_tts_style_shakespearean">Shakespearisch</string>
+    <string name="settings_tts_style_surfer">Surfer</string>
+    <string name="settings_tts_style_parent">Elternteil</string>
+    <string name="settings_tts_style_child">Kind</string>
+    <string name="settings_tts_style_teenager">Teenager</string>
+    <string name="settings_tts_style_grandparent">Großelternteil</string>
+    <string name="settings_tts_style_kids_host">Kindersendungs-Moderatorin</string>
+    <string name="settings_tts_style_radio_host">Talkshow-Moderator</string>
+    <string name="settings_tts_style_morning_dj">Morgen-DJ</string>
+    <string name="settings_tts_style_science_teacher">Naturwissenschaftslehrer</string>
+    <string name="settings_tts_style_historian">Historiker</string>
+    <string name="settings_tts_style_sportscaster">Sportkommentator</string>
+    <string name="settings_tts_style_stadium_announcer">Stadionsprecher</string>
+    <string name="settings_tts_style_storyteller">Geschichtenerzähler</string>
+    <string name="settings_tts_style_fitness_instructor">Fitnesstrainer</string>
+    <string name="settings_tts_style_morning_presenter">Morgenradio-Moderatorin</string>
+    <string name="settings_tts_style_custom">Benutzerdefiniert…</string>
+    <string name="settings_tts_style_custom_label">Benutzerdefinierte Anweisung</string>
+    <string name="settings_tts_style_custom_placeholder">z. B. Lies das Folgende wie ein strenger flüsternder Bibliothekar vor</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">Fehlerbericht teilen?</string>
+    <string name="bug_report_consent_body">Dies hilft bei der Diagnose von Problemen. Der Bericht enthält sensible persönliche Informationen, einschließlich deines Standorts, deiner App-Einstellungen und deiner letzten Aktivitäten. Du kannst ihn vor dem Senden überprüfen und bearbeiten.</string>
+    <string name="bug_report_consent_dont_show_again">Nicht mehr anzeigen</string>
+    <string name="bug_report_consent_continue">Weiter</string>
+    <string name="bug_report_consent_cancel">Abbrechen</string>
+
+    <!-- Insight: hedged precipitation and evening-rain templates. -->
+    <!-- "Evtl." (eventuell) is an invariable adverb — no gender agreement needed. -->
+    <string name="insight_precip_chance">Evtl. %1$s %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Evtl. Regen um %2$s — denk an %1$s für heute Abend.</string>
+    <string name="insight_evening_rain">Heute Abend Regen um %1$s.</string>
+    <string name="insight_evening_rain_chance">Evtl. Regen heute Abend um %1$s.</string>
+
+    <!-- Device-incompatibility error screen. -->
+    <string name="error_device_incompatible">ClothesCast kann auf diesem Gerät nicht ausgeführt werden — deinem Android-Build fehlt eine Funktion, die die App-Oberfläche benötigt (Configuration.fontWeightAdjustment, erwartet ab Android 12 aufwärts). Bitte wende dich an deinen Gerätehersteller für ein System-Update.</string>
 </resources>

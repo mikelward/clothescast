@@ -128,6 +128,22 @@ class PreviewSnapshots {
         }
     }
 
+    // Same as `capture`, but with a stricter blank check tuned for chart cards.
+    // The default `looksEmpty` only flags PNGs where every sampled pixel is
+    // identical, which misses the common chart race where the card header
+    // ("Chance of rain", "Peak 80% at 13:00") rendered fine but the Vico chart
+    // body didn't — see PR #400's flaky precipitation_card regen. This variant
+    // also retries if the bottom region of the snapshot is near-uniform, since
+    // chart cards always paint axis labels, grid lines and at least one data
+    // line across that area.
+    private fun captureChart(content: @Composable () -> Unit) {
+        composeRule.setContent { content() }
+        captureWithRetryIfEmpty(checker = ::chartLooksEmpty) {
+            composeRule.waitForIdle()
+            composeRule.onRoot().captureRoboImage(filePath = "$outputDir/${testName.methodName}.png")
+        }
+    }
+
     // Dialog previews live in their own popup window — `composeRule.onRoot()`
     // sees both the host composition and the popup and errors with "Expected
     // exactly 1 node but found 2 that satisfy isRoot". Capture the dialog
@@ -148,11 +164,15 @@ class PreviewSnapshots {
     // baseline. Re-run the capture a few times if it looks empty; the
     // intervening waitForIdle + brief sleep give the missing frame time to
     // settle. The final PNG on disk is whichever attempt wrote last.
-    private fun captureWithRetryIfEmpty(maxAttempts: Int = 3, snapshot: () -> Unit) {
+    private fun captureWithRetryIfEmpty(
+        maxAttempts: Int = 3,
+        checker: (File) -> Boolean = ::looksEmpty,
+        snapshot: () -> Unit,
+    ) {
         val outputFile = File("$outputDir/${testName.methodName}.png")
         repeat(maxAttempts) { attempt ->
             snapshot()
-            if (!looksEmpty(outputFile)) return
+            if (!checker(outputFile)) return
             if (attempt < maxAttempts - 1) Thread.sleep(50L * (attempt + 1))
         }
         System.err.println(
@@ -187,6 +207,35 @@ class PreviewSnapshots {
         return true
     }
 
+    // Chart-card variant: subsumes `looksEmpty` and additionally flags the
+    // partial-blank case where the card header rendered but the chart body
+    // didn't. We sample only the bottom 60% of the image (past the header)
+    // on a denser grid and require at least three distinct colours — a
+    // real chart paints axis labels (dark on background), grid lines (gray)
+    // and a data line (primary), so 3+ unique sampled colours is easy; a
+    // chart-less card body is one flat colour. Stop early once the threshold
+    // is met so the steady-state cost stays one bitmap decode per snapshot.
+    private fun chartLooksEmpty(file: File): Boolean {
+        if (looksEmpty(file)) return true
+        val bitmap = runCatching { BitmapFactory.decodeFile(file.absolutePath) }.getOrNull()
+            ?: return true
+        val startY = (bitmap.height * 0.40).toInt()
+        val stepX = (bitmap.width / 24).coerceAtLeast(1)
+        val stepY = ((bitmap.height - startY) / 16).coerceAtLeast(1)
+        val seen = mutableSetOf<Int>()
+        var y = startY
+        while (y < bitmap.height) {
+            var x = 0
+            while (x < bitmap.width) {
+                seen += bitmap.getPixel(x, y)
+                if (seen.size >= 3) return false
+                x += stepX
+            }
+            y += stepY
+        }
+        return true
+    }
+
     @Test fun outfit_tshirt_shorts() = capture { OutfitTShirtShortsPreview() }
     @Test fun outfit_tshirt_pants() = capture { OutfitTShirtPantsPreview() }
     @Test fun outfit_sweater_shorts() = capture { OutfitSweaterShortsPreview() }
@@ -206,19 +255,19 @@ class PreviewSnapshots {
     @Test fun today_insight_card_location_unknown() = capture { TodayInsightCardLocationUnknownPreview() }
     @Test fun today_insight_card_long() = capture { TodayInsightCardLongPreview() }
 
-    @Test fun forecast_chart() = capture { ForecastChartPreview() }
-    @Test fun forecast_chart_dark() = capture { ForecastChartDarkPreview() }
-    @Test fun forecast_chart_with_model_spread() = capture { ForecastChartWithModelSpreadPreview() }
-    @Test fun forecast_card_with_model_spread() = capture { ForecastCardWithModelSpreadPreview() }
-    @Test fun precipitation_card_with_model_spread() = capture { PrecipitationCardWithModelSpreadPreview() }
-    @Test fun wind_card_with_model_spread() = capture { WindCardWithModelSpreadPreview() }
-    @Test fun cloud_card_with_model_spread() = capture { CloudCardWithModelSpreadPreview() }
-    @Test fun humidity_card_with_model_spread() = capture { HumidityCardWithModelSpreadPreview() }
-    @Test fun wind_card_sparse_trailing() = capture { WindCardSparseTrailingPreview() }
+    @Test fun forecast_chart() = captureChart { ForecastChartPreview() }
+    @Test fun forecast_chart_dark() = captureChart { ForecastChartDarkPreview() }
+    @Test fun forecast_chart_with_model_spread() = captureChart { ForecastChartWithModelSpreadPreview() }
+    @Test fun forecast_card_with_model_spread() = captureChart { ForecastCardWithModelSpreadPreview() }
+    @Test fun precipitation_card_with_model_spread() = captureChart { PrecipitationCardWithModelSpreadPreview() }
+    @Test fun wind_card_with_model_spread() = captureChart { WindCardWithModelSpreadPreview() }
+    @Test fun cloud_card_with_model_spread() = captureChart { CloudCardWithModelSpreadPreview() }
+    @Test fun humidity_card_with_model_spread() = captureChart { HumidityCardWithModelSpreadPreview() }
+    @Test fun wind_card_sparse_trailing() = captureChart { WindCardSparseTrailingPreview() }
 
-    @Test fun precipitation_card() = capture { PrecipitationCardPreview() }
-    @Test fun precipitation_card_dark() = capture { PrecipitationCardDarkPreview() }
-    @Test fun precipitation_card_dry() = capture { PrecipitationCardDryPreview() }
+    @Test fun precipitation_card() = captureChart { PrecipitationCardPreview() }
+    @Test fun precipitation_card_dark() = captureChart { PrecipitationCardDarkPreview() }
+    @Test fun precipitation_card_dry() = captureChart { PrecipitationCardDryPreview() }
 
     @Test fun today_insight_card_large_font() = capture { TodayInsightCardLargeFontPreview() }
     @Test fun outfit_tshirt_shorts_rtl() = capture { OutfitTShirtShortsRtlPreview() }

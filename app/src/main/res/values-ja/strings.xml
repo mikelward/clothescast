@@ -635,7 +635,7 @@ the displayed label localizes.
     <string name="today_humidity_subtitle">モデル別の相対湿度（%）、1時間ごと</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">今日の予報はばらつきがあります</string>
+    <string name="today_low_confidence_callout_title">予報はばらつきがあります</string>
     <string name="today_low_confidence_callout_body">%3$d モデル間で気温が %1$.1f°C、降水確率が %2$.0f%% ばらついています。</string>
 
     <!-- Telemetry notice (first-run banner on Today screen). -->

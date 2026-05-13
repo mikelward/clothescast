@@ -455,7 +455,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_humidity_subtitle">Relatív páratartalom (%) óránként modellenként</string>
 
     <!-- Low-confidence callout. -->
-    <string name="today_low_confidence_callout_title">Az előrejelzések ma eltérnek</string>
+    <string name="today_low_confidence_callout_title">Az előrejelzések eltérnek</string>
     <string name="today_low_confidence_callout_body">A hőmérséklet %1$.1f°C-ot, a csapadék valószínűsége %2$.0f%%-ot ingadozik %3$d modell felett.</string>
 
     <!-- Telemetry notice. -->

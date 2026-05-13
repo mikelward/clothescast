@@ -526,7 +526,7 @@ displayed label localizes.
     <string name="today_humidity_title">Kosteus</string>
     <string name="today_humidity_subtitle">Suhteellinen kosteus (%) tunnissa per malli</string>
 
-    <string name="today_low_confidence_callout_title">Ennusteet poikkeavat tänään</string>
+    <string name="today_low_confidence_callout_title">Ennusteet poikkeavat</string>
     <string name="today_low_confidence_callout_body">Lämpötila vaihtelee %1$.1f°C ja sateen todennäköisyys %2$.0f%% yli %3$d mallin välillä.</string>
 
     <string name="today_telemetry_notice_title">Kaatumis- ja käyttöraportit ovat käytössä</string>

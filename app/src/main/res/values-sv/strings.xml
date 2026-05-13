@@ -468,7 +468,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="today_humidity_subtitle">Relativ luftfuktighet (%) per timme per modell</string>
 
     <!-- Low-confidence callout. -->
-    <string name="today_low_confidence_callout_title">Prognoserna avviker idag</string>
+    <string name="today_low_confidence_callout_title">Prognoserna avviker</string>
     <string name="today_low_confidence_callout_body">Temperaturen varierar med %1$.1f°C och regnsannolikheten med %2$.0f%% över %3$d modeller.</string>
 
     <!-- Telemetry notice. -->

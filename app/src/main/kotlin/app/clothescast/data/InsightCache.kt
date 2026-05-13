@@ -174,6 +174,11 @@ class InsightCache(
         val windSpeedKmh: Double? = null,
         val relativeHumidityPct: Double? = null,
         val cloudCoverPct: Double? = null,
+        // Weather code bucket, stored as the enum name so a future enum
+        // rename trips deserialisation rather than silently mapping to the
+        // wrong bucket. Nullable for back-compat with payloads written
+        // before the modal condition aggregation landed.
+        val conditionName: String? = null,
     ) {
         fun toDomain(): PerModelHour? {
             val airTemp = temperatureC ?: return null
@@ -185,6 +190,9 @@ class InsightCache(
                 windSpeedKmh = windSpeedKmh,
                 relativeHumidityPct = relativeHumidityPct,
                 cloudCoverPct = cloudCoverPct,
+                condition = conditionName?.let {
+                    runCatching { WeatherCondition.valueOf(it) }.getOrNull()
+                },
             )
         }
     }
@@ -402,6 +410,7 @@ class InsightCache(
         windSpeedKmh = windSpeedKmh,
         relativeHumidityPct = relativeHumidityPct,
         cloudCoverPct = cloudCoverPct,
+        conditionName = condition?.name,
     )
 
     private fun OutfitRationale.toDto(): OutfitRationaleDto = OutfitRationaleDto(

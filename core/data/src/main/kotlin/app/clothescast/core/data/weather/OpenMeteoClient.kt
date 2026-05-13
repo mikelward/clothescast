@@ -128,11 +128,16 @@ class OpenMeteoClient(
         // ride only the side-band multi-model call and aren't fetched per
         // best_match. Surface as null so the diagnostic charts treat
         // best_match as "no data for this metric" instead of dropping it.
+        // The weather code *is* available on the primary call (already
+        // mapped to a [WeatherCondition] in [OpenMeteoMapper]), so we pass
+        // it through — the consensus blend's modal aggregation gets a 4th
+        // vote from best_match this way.
         PerModelHour(
             time = it.time,
             apparentTemperatureC = it.feelsLikeC,
             temperatureC = it.temperatureC,
             precipitationProbabilityPct = it.precipitationProbabilityPct,
+            condition = it.condition,
         )
     }
 

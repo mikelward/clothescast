@@ -2,6 +2,7 @@ package app.clothescast.core.data.weather
 
 import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.WeatherCondition
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.nulls.shouldBeNull
@@ -75,7 +76,7 @@ class MultiModelConfidenceFetcherTest {
         req.url.parameters["daily"] shouldBe "apparent_temperature_max,precipitation_probability_max"
         req.url.parameters["hourly"] shouldBe
             "apparent_temperature,temperature_2m,precipitation_probability," +
-            "wind_speed_10m,relative_humidity_2m,cloud_cover"
+            "wind_speed_10m,relative_humidity_2m,cloud_cover,weather_code"
         req.url.parameters["forecast_days"] shouldBe "1"
         req.url.parameters["past_days"].shouldBeNull()
     }
@@ -140,6 +141,9 @@ class MultiModelConfidenceFetcherTest {
         ecmwf[0].windSpeedKmh shouldBe (8.0 plusOrMinus 0.0001)
         ecmwf[0].relativeHumidityPct shouldBe (78.0 plusOrMinus 0.0001)
         ecmwf[0].cloudCoverPct shouldBe (60.0 plusOrMinus 0.0001)
+        // WMO 3 → CLOUDY; ensures weather_code_<model> is being parsed
+        // through [WmoCodeMapper] alongside the numeric fields.
+        ecmwf[0].condition shouldBe WeatherCondition.CLOUDY
         ecmwf[2].time shouldBe LocalTime.of(2, 0)
     }
 
@@ -323,7 +327,10 @@ class MultiModelConfidenceFetcherTest {
                 "relative_humidity_2m_icon_seamless": [82, 84, 85],
                 "cloud_cover_ecmwf_ifs04": [60, 70, 80],
                 "cloud_cover_gfs_seamless": [65, 72, 78],
-                "cloud_cover_icon_seamless": [40, 55, 70]
+                "cloud_cover_icon_seamless": [40, 55, 70],
+                "weather_code_ecmwf_ifs04": [3, 61, 61],
+                "weather_code_gfs_seamless": [2, 61, 61],
+                "weather_code_icon_seamless": [3, 51, 51]
               }
             }
         """.trimIndent()

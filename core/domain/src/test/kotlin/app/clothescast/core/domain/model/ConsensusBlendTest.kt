@@ -14,12 +14,13 @@ class ConsensusBlendTest {
         temp: Double,
         feels: Double = temp - 1.0,
         precip: Double = 0.0,
+        condition: WeatherCondition = WeatherCondition.CLEAR,
     ) = HourlyForecast(
         time = LocalTime.of(h, 0),
         temperatureC = temp,
         feelsLikeC = feels,
         precipitationProbabilityPct = precip,
-        condition = WeatherCondition.CLEAR,
+        condition = condition,
     )
 
     private fun perModel(
@@ -27,11 +28,13 @@ class ConsensusBlendTest {
         apparent: Double,
         air: Double,
         precip: Double = 0.0,
+        condition: WeatherCondition? = null,
     ) = PerModelHour(
         time = LocalTime.of(h, 0),
         apparentTemperatureC = apparent,
         temperatureC = air,
         precipitationProbabilityPct = precip,
+        condition = condition,
     )
 
     @Test
@@ -128,6 +131,71 @@ class ConsensusBlendTest {
 
         blended[0].temperatureC shouldBe (13.0 plusOrMinus 0.0001)  // consensus
         blended[1] shouldBe best[1]                                   // fell back
+    }
+
+    @Test
+    fun `condition is aggregated modally across models`() {
+        // best_match says CLEAR but two of three consulted models say RAIN —
+        // mode wins. This is the case the modal aggregation was added to
+        // handle: the 90%-rain Combined line used to draw with a CLEAR icon
+        // because we kept best_match's condition untouched.
+        val best = listOf(hour(12, temp = 10.0, precip = 30.0, condition = WeatherCondition.CLEAR))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(perModel(12, apparent = 11.0, air = 12.0, precip = 80.0,
+                    condition = WeatherCondition.RAIN)),
+                "icon_seamless" to listOf(perModel(12, apparent = 13.0, air = 14.0, precip = 90.0,
+                    condition = WeatherCondition.RAIN)),
+                "ecmwf_ifs04" to listOf(perModel(12, apparent = 12.0, air = 13.0, precip = 60.0,
+                    condition = WeatherCondition.CLOUDY)),
+            ),
+        )
+
+        val blended = blendConsensusHourly(best, perModel).shouldNotBeNull()
+
+        blended[0].condition shouldBe WeatherCondition.RAIN
+    }
+
+    @Test
+    fun `condition tie is broken by severity, favouring the more actionable bucket`() {
+        // Two models say CLEAR, two say RAIN — mode is a 2-2 tie. Severity
+        // tiebreak picks RAIN (the more actionable / outfit-relevant
+        // outcome) rather than CLEAR.
+        val best = listOf(hour(12, temp = 15.0, condition = WeatherCondition.CLEAR))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(perModel(12, apparent = 14.0, air = 15.0,
+                    condition = WeatherCondition.CLEAR)),
+                "icon_seamless" to listOf(perModel(12, apparent = 16.0, air = 17.0,
+                    condition = WeatherCondition.RAIN)),
+                "ecmwf_ifs04" to listOf(perModel(12, apparent = 15.0, air = 16.0,
+                    condition = WeatherCondition.RAIN)),
+                PerModelHourly.BEST_MATCH_MODEL_ID to listOf(perModel(12, apparent = 15.0, air = 16.0,
+                    condition = WeatherCondition.CLEAR)),
+            ),
+        )
+
+        val blended = blendConsensusHourly(best, perModel).shouldNotBeNull()
+
+        blended[0].condition shouldBe WeatherCondition.RAIN
+    }
+
+    @Test
+    fun `condition falls back to best-match when no model reported one`() {
+        // All four models present (so the numeric blend runs) but none of
+        // them carried a weather code — keep best_match's condition rather
+        // than rolling UNKNOWN through.
+        val best = listOf(hour(12, temp = 10.0, condition = WeatherCondition.CLEAR))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(perModel(12, apparent = 11.0, air = 12.0)),
+                "icon_seamless" to listOf(perModel(12, apparent = 13.0, air = 14.0)),
+            ),
+        )
+
+        val blended = blendConsensusHourly(best, perModel).shouldNotBeNull()
+
+        blended[0].condition shouldBe WeatherCondition.CLEAR
     }
 
     @Test

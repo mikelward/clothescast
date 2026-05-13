@@ -27,9 +27,13 @@ data class PerModelHourly(
         /**
          * Sentinel model id for Open-Meteo's `best_match` auto-selection —
          * stored alongside the consulted models in [byModel] so the chart
-         * can render it as a labelled overlay. Consensus + spread / confidence
-         * computations exclude this entry; only the real consulted models
-         * (ECMWF, GFS, ICON, etc.) feed those.
+         * can render it as a labelled overlay. Treated as a regular model
+         * in the consensus blend + divergence summary: it's one of the
+         * forecasts in play and folding it in keeps Open-Meteo's
+         * (presumably location-tuned) signal in the mean. ConfidenceInfo's
+         * tempSpreadC / precipSpreadPp still come from the consulted-only
+         * subset because best_match isn't reported via the side-band
+         * `daily` block.
          */
         const val BEST_MATCH_MODEL_ID = "best_match"
     }
@@ -63,6 +67,15 @@ data class PerModelHour(
      *  gain (one predicts a mid-day clearing, the other keeps it overcast).
      *  Nullable — see [windSpeedKmh]. */
     val cloudCoverPct: Double? = null,
+    /** Coarse weather bucket for the hour, mapped from the model's WMO
+     *  weather code. Carried per-model so [blendConsensusHourly] can pick
+     *  a defensible condition for the blended main line (modal aggregation
+     *  with a severity tiebreak); without it the blended numeric series
+     *  would coexist with whichever model the [HourlyForecast] originally
+     *  came from for the icon/label, which on divergence days produced
+     *  "90% rain, Clear conditions" inconsistencies. Nullable for the same
+     *  back-compat reasons as the other diagnostic fields. */
+    val condition: WeatherCondition? = null,
 )
 
 // TODO(model-spread-stat): cross-model spread is currently reported as
@@ -70,8 +83,3 @@ data class PerModelHour(
 //   swings that disproportionately; explore RMSE / std-dev across the
 //   consulted models as an alternative confidence input, plotted
 //   alongside the existing spread so we can A/B them before switching.
-// TODO(weather-code-aggregation): [blendConsensusHourly] currently keeps
-//   the best_match weather code (CLEAR / RAIN / etc.) even when it
-//   blends the numeric fields, so a "Combined" line at 90% rain can
-//   coexist with a "Clear" condition icon. Modal aggregation of weather
-//   codes across the consulted models would close that loop.

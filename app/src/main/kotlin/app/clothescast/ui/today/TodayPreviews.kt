@@ -664,6 +664,28 @@ internal fun WindCardWithModelSpreadPreview() {
     }
 }
 
+@Preview(name = "Cloud card · with model spread", widthDp = 360)
+@Composable
+internal fun CloudCardWithModelSpreadPreview() {
+    Frame {
+        CloudCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+        )
+    }
+}
+
+@Preview(name = "Humidity card · with model spread", widthDp = 360)
+@Composable
+internal fun HumidityCardWithModelSpreadPreview() {
+    Frame {
+        HumidityCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+        )
+    }
+}
+
 @Preview(name = "Forecast chart · with model spread", widthDp = 360)
 @Composable
 internal fun ForecastChartWithModelSpreadPreview() {

@@ -412,9 +412,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_outfit_bottom_long_pants">Μακρύ παντελόνι</string>
 
     <string name="today_forecast_title">Ωριαία πρόβλεψη</string>
-    <string name="today_forecast_min_max">Αίσθηση %1$d – %2$d%3$s · Αέρας %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Αισθητή θερμοκρασία (%1$s) ανά ώρα · πάτησε για θερμοκρασία αέρα</string>
-    <string name="today_forecast_legend_air">Θερμοκρασία αέρα (%1$s) ανά ώρα · πάτησε για αισθητή θερμοκρασία</string>
+    <string name="today_forecast_min_max">Αίσθηση %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Αέρας %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Αισθητή θερμοκρασία (%1$s) ανά ώρα</string>
+    <string name="today_forecast_legend_air">Θερμοκρασία αέρα (%1$s) ανά ώρα</string>
 
     <string name="today_confidence_high">Υψηλή αξιοπιστία — τα κύρια μοντέλα συμφωνούν</string>
     <string name="today_confidence_medium">Μέτρια αξιοπιστία</string>

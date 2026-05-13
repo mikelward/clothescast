@@ -431,9 +431,10 @@ only the displayed label localizes.
 
     <!-- Hourly forecast card. -->
     <string name="today_forecast_title">Погодинний прогноз</string>
-    <string name="today_forecast_min_max">Відчувається %1$d – %2$d%3$s · Повітря %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Відчувана температура (%1$s) погодинно · натисніть, щоб перейти до температури повітря</string>
-    <string name="today_forecast_legend_air">Температура повітря (%1$s) погодинно · натисніть, щоб перейти до відчуваної температури</string>
+    <string name="today_forecast_min_max">Відчувається %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Повітря %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Відчувана температура (%1$s) погодинно</string>
+    <string name="today_forecast_legend_air">Температура повітря (%1$s) погодинно</string>
 
     <!-- Confidence chip. -->
     <string name="today_confidence_high">Висока впевненість — основні моделі збігаються</string>

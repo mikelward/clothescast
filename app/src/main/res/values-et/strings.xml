@@ -60,9 +60,10 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="widget_empty_subtitle">Puuduta, et avada ClothesCast</string>
 
     <string name="today_forecast_title">Tunnipõhine ilmaprognoos</string>
-    <string name="today_forecast_min_max">Tundub %1$d – %2$d%3$s · Õhk %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Tunnetatav (%1$s) tunni kaupa · puuduta, et lülituda õhutemperatuurile</string>
-    <string name="today_forecast_legend_air">Õhutemperatuur (%1$s) tunni kaupa · puuduta, et lülituda tunnetatavale</string>
+    <string name="today_forecast_min_max">Tundub %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Õhk %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Tunnetatav (%1$s) tunni kaupa</string>
+    <string name="today_forecast_legend_air">Õhutemperatuur (%1$s) tunni kaupa</string>
 
     <string name="today_precipitation_title">Vihma tõenäosus</string>
     <string name="today_precipitation_peak">Tipp %1$d%% kell %2$s</string>

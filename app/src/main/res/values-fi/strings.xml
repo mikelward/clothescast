@@ -294,9 +294,10 @@ displayed label localizes.
     <string name="today_outfit_bottom_long_pants">Pitkät housut</string>
 
     <string name="today_forecast_title">Tuntiennuste</string>
-    <string name="today_forecast_min_max">Tuntuu %1$d – %2$d%3$s · Ilma %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Tuntuva lämpötila (%1$s) tunnissa · napauta ilmalämpötilaa varten</string>
-    <string name="today_forecast_legend_air">Ilmalämpötila (%1$s) tunnissa · napauta tuntuvaa lämpötilaa varten</string>
+    <string name="today_forecast_min_max">Tuntuu %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Ilma %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Tuntuva lämpötila (%1$s) tunnissa</string>
+    <string name="today_forecast_legend_air">Ilmalämpötila (%1$s) tunnissa</string>
 
     <string name="today_confidence_high">Korkea varmuus — tärkeimmät mallit ovat yhtä mieltä</string>
     <string name="today_confidence_medium">Keskitason varmuus</string>

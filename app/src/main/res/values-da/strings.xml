@@ -388,9 +388,10 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_outfit_bottom_jeans">Jeans</string>
 
     <string name="today_forecast_title">Timeprognose</string>
-    <string name="today_forecast_min_max">Føles som %1$d – %2$d%3$s · Luft %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Følt temperatur (%1$s) pr. time · tryk for lufttemperatur</string>
-    <string name="today_forecast_legend_air">Lufttemperatur (%1$s) pr. time · tryk for følt temperatur</string>
+    <string name="today_forecast_min_max">Føles som %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Luft %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Følt temperatur (%1$s) pr. time</string>
+    <string name="today_forecast_legend_air">Lufttemperatur (%1$s) pr. time</string>
 
     <string name="today_confidence_high">Høj sikkerhed — de vigtigste modeller er enige</string>
     <string name="today_confidence_medium">Middel sikkerhed</string>

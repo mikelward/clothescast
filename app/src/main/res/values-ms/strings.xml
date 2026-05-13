@@ -139,9 +139,10 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <!-- Forecast card -->
     <string name="today_forecast_title">Ramalan setiap jam</string>
-    <string name="today_forecast_min_max">Terasa seperti %1$d – %2$d%3$s · Udara %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Terasa seperti (%1$s) mengikut jam · ketik untuk beralih ke suhu udara</string>
-    <string name="today_forecast_legend_air">Suhu udara (%1$s) mengikut jam · ketik untuk beralih ke terasa seperti</string>
+    <string name="today_forecast_min_max">Terasa seperti %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Udara %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Terasa seperti (%1$s) mengikut jam</string>
+    <string name="today_forecast_legend_air">Suhu udara (%1$s) mengikut jam</string>
 
     <!-- Precipitation card -->
     <string name="today_precipitation_title">Kebarangkalian hujan</string>

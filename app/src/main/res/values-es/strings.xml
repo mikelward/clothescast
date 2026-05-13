@@ -363,9 +363,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_outfit_bottom_long_pants">Pantalones</string>
 
     <string name="today_forecast_title">Pronóstico por horas</string>
-    <string name="today_forecast_min_max">Sensación %1$d – %2$d%3$s · Aire %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Sensación térmica (%1$s) por hora · toca para ver la temperatura del aire</string>
-    <string name="today_forecast_legend_air">Temperatura del aire (%1$s) por hora · toca para ver la sensación térmica</string>
+    <string name="today_forecast_min_max">Sensación %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Aire %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Sensación térmica (%1$s) por hora</string>
+    <string name="today_forecast_legend_air">Temperatura del aire (%1$s) por hora</string>
 
     <string name="today_confidence_high">Alta confianza — los principales modelos coinciden</string>
     <string name="today_confidence_medium">Confianza media</string>

@@ -388,9 +388,10 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
 
     <!-- Forecast card. -->
     <string name="today_forecast_title">Hodinová předpověď</string>
-    <string name="today_forecast_min_max">Pocit %1$d – %2$d%3$s · Vzduch %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Pocitová teplota (%1$s) za hodinu · klepni pro teplotu vzduchu</string>
-    <string name="today_forecast_legend_air">Teplota vzduchu (%1$s) za hodinu · klepni pro pocitovou teplotu</string>
+    <string name="today_forecast_min_max">Pocit %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Vzduch %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Pocitová teplota (%1$s) za hodinu</string>
+    <string name="today_forecast_legend_air">Teplota vzduchu (%1$s) za hodinu</string>
 
     <string name="today_confidence_high">Vysoká jistota — hlavní modely se shodují</string>
     <string name="today_confidence_medium">Střední jistota</string>

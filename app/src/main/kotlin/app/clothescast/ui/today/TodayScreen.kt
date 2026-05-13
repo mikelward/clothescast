@@ -313,6 +313,11 @@ private fun TodayContent(
                     distanceUnit = state.distanceUnit,
                     perModelHourly = overlay,
                 )
+                AirTemperatureCard(
+                    hourly = state.insight.hourly,
+                    temperatureUnit = state.temperatureUnit,
+                    perModelHourly = overlay,
+                )
                 PrecipitationCard(
                     hourly = state.insight.hourly,
                     perModelHourly = overlay,
@@ -1024,24 +1029,13 @@ internal fun ForecastCard(
     distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
     perModelHourly: PerModelHourly? = null,
 ) {
-    // Default to feels-like — matches the band classification the user sees in the
-    // summary sentence. Tap anywhere on the card to flip to raw 2 m air, which is
-    // typically what other weather apps lead with. We surface min/max for both
-    // either way so the comparison is always visible without a tap.
-    var showFeelsLike by rememberSaveable { mutableStateOf(true) }
-
     val symbol = temperatureUnit.symbol()
     val feelsLikeMinMax = remember(hourly, temperatureUnit) {
         formatMinMax(hourly.map { it.feelsLikeC }, temperatureUnit)
     }
-    val airMinMax = remember(hourly, temperatureUnit) {
-        formatMinMax(hourly.map { it.temperatureC }, temperatureUnit)
-    }
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { showFeelsLike = !showFeelsLike },
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1051,43 +1045,23 @@ internal fun ForecastCard(
                 text = stringResource(R.string.today_forecast_title),
                 style = MaterialTheme.typography.titleSmall,
             )
-            if (feelsLikeMinMax != null && airMinMax != null) {
+            feelsLikeMinMax?.let {
                 Text(
-                    text = stringResource(
-                        R.string.today_forecast_min_max,
-                        feelsLikeMinMax.first, feelsLikeMinMax.second, symbol,
-                        airMinMax.first, airMinMax.second, symbol,
-                    ),
+                    text = stringResource(R.string.today_forecast_min_max, it.first, it.second, symbol),
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
             ForecastChart(
                 hourly = hourly,
                 temperatureUnit = temperatureUnit,
-                showFeelsLike = showFeelsLike,
+                showFeelsLike = true,
                 perModelHourly = perModelHourly,
             )
-            val legendRes = if (showFeelsLike) {
-                R.string.today_forecast_legend_feels_like
-            } else {
-                R.string.today_forecast_legend_air
-            }
             Text(
-                text = stringResource(legendRes, symbol),
+                text = stringResource(R.string.today_forecast_legend_feels_like, symbol),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            // Per-model overlay legend — drawn whenever the overlays themselves
-            // are. The chart draws per-model lines in both apparent and air
-            // modes (each entry carries both temperatures), so the legend
-            // applies regardless of which series the card is currently
-            // showing. The main line on the chart is now the consulted-
-            // models consensus (labelled "Combined") rather than Open-Meteo's
-            // `best_match` auto-pick — that data layer choice is what
-            // drives clothes rules + insight prose. best_match itself is
-            // surfaced separately as the "Auto" overlay in MODEL_DRAW_ORDER
-            // so the user can still see what Open-Meteo would have picked
-            // when it diverges from the consensus.
             if (perModelHourly != null) {
                 ModelSpreadLegend(
                     visibleModelIds = MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel },
@@ -1096,18 +1070,62 @@ internal fun ForecastCard(
                         label = stringResource(R.string.today_chart_main_line_label),
                     ),
                 )
-                // "Models disagree most at HH:00 (Δ X °C feels-like) —
-                // mostly cloud cover, A to B%" — a one-liner pointing at the
-                // hour with the biggest cross-model disagreement and the
-                // ancillary factor most likely to explain it. Hidden when
-                // the day's peak feels-like spread is below the threshold
-                // in [ModelDivergenceSummary.computeFrom], so we don't
-                // surface a misleading "biggest factor" attribution on
-                // essentially-agreeing models.
                 ModelDivergenceHint(
                     perModelHourly = perModelHourly,
                     temperatureUnit = temperatureUnit,
                     windSpeedUnit = distanceUnit.windSpeedUnit(),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+internal fun AirTemperatureCard(
+    hourly: List<HourlyForecast>,
+    temperatureUnit: TemperatureUnit,
+    perModelHourly: PerModelHourly? = null,
+) {
+    val symbol = temperatureUnit.symbol()
+    val airMinMax = remember(hourly, temperatureUnit) {
+        formatMinMax(hourly.map { it.temperatureC }, temperatureUnit)
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.today_forecast_air_section_title),
+                style = MaterialTheme.typography.titleSmall,
+            )
+            airMinMax?.let {
+                Text(
+                    text = stringResource(R.string.today_forecast_air_min_max, it.first, it.second, symbol),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+            ForecastChart(
+                hourly = hourly,
+                temperatureUnit = temperatureUnit,
+                showFeelsLike = false,
+                perModelHourly = perModelHourly,
+            )
+            Text(
+                text = stringResource(R.string.today_forecast_legend_air, symbol),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (perModelHourly != null) {
+                ModelSpreadLegend(
+                    visibleModelIds = MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel },
+                    mainLine = MainLineLegend(
+                        color = MaterialTheme.colorScheme.primary,
+                        label = stringResource(R.string.today_chart_main_line_label),
+                    ),
                 )
             }
         }

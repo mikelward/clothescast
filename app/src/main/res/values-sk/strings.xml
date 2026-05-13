@@ -401,9 +401,10 @@ What is NOT overridden, by design:
     <string name="today_outfit_bottom_jeans">Rifle</string>
 
     <string name="today_forecast_title">Hodinová predpoveď</string>
-    <string name="today_forecast_min_max">Pocit %1$d – %2$d%3$s · Vzduch %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Pocitová teplota (%1$s) za hodinu · klepni pre teplotu vzduchu</string>
-    <string name="today_forecast_legend_air">Teplota vzduchu (%1$s) za hodinu · klepni pre pocitovú teplotu</string>
+    <string name="today_forecast_min_max">Pocit %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Vzduch %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Pocitová teplota (%1$s) za hodinu</string>
+    <string name="today_forecast_legend_air">Teplota vzduchu (%1$s) za hodinu</string>
 
     <string name="today_confidence_high">Vysoká istota — hlavné modely sa zhodujú</string>
     <string name="today_confidence_medium">Stredná istota</string>

@@ -154,9 +154,10 @@ What is NOT overridden, by design:
 
     <!-- Hourly forecast card. -->
     <string name="today_forecast_title">Почасова прогноза</string>
-    <string name="today_forecast_min_max">Feels like %1$d – %2$d%3$s · Air %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Усещана температура (%1$s) по часове · докосни за превключване към температура на въздуха</string>
-    <string name="today_forecast_legend_air">Температура на въздуха (%1$s) по часове · докосни за превключване към усещана температура</string>
+    <string name="today_forecast_min_max">Feels like %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Air %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Усещана температура (%1$s) по часове</string>
+    <string name="today_forecast_legend_air">Температура на въздуха (%1$s) по часове</string>
 
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Шанс за дъжд</string>

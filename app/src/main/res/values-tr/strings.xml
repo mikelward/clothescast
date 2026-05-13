@@ -294,9 +294,10 @@ displayed label localizes.
     <string name="today_outfit_bottom_long_pants">Pantolon</string>
 
     <string name="today_forecast_title">Saatlik tahmin</string>
-    <string name="today_forecast_min_max">Hissedilen %1$d – %2$d%3$s · Hava %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Saatlik hissedilen sıcaklık (%1$s) · hava sıcaklığı için dokun</string>
-    <string name="today_forecast_legend_air">Saatlik hava sıcaklığı (%1$s) · hissedilen sıcaklık için dokun</string>
+    <string name="today_forecast_min_max">Hissedilen %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Hava %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Saatlik hissedilen sıcaklık (%1$s)</string>
+    <string name="today_forecast_legend_air">Saatlik hava sıcaklığı (%1$s)</string>
 
     <string name="today_confidence_high">Yüksek güven — ana modeller hemfikir</string>
     <string name="today_confidence_medium">Orta güven</string>

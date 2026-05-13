@@ -349,9 +349,10 @@ label localises.
     <string name="today_outfit_bottom_long_pants">長褲</string>
 
     <string name="today_forecast_title">逐小時預報</string>
-    <string name="today_forecast_min_max">體感 %1$d – %2$d%3$s · 氣溫 %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">逐小時體感溫度（%1$s）· 點一下切換到氣溫</string>
-    <string name="today_forecast_legend_air">逐小時氣溫（%1$s）· 點一下切換到體感溫度</string>
+    <string name="today_forecast_min_max">體感 %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">氣溫 %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">逐小時體感溫度（%1$s）</string>
+    <string name="today_forecast_legend_air">逐小時氣溫（%1$s）</string>
 
     <string name="today_confidence_high">高信心 — 主要模型一致</string>
     <string name="today_confidence_medium">中等信心</string>

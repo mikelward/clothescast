@@ -333,9 +333,10 @@ the displayed label localizes.
     <string name="today_outfit_bottom_long_pants">Broek</string>
 
     <string name="today_forecast_title">Uurlijkse voorspelling</string>
-    <string name="today_forecast_min_max">Gevoeld %1$d – %2$d%3$s · Lucht %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Gevoelstemperatuur (%1$s) per uur · tik voor luchttemperatuur</string>
-    <string name="today_forecast_legend_air">Luchttemperatuur (%1$s) per uur · tik voor gevoelstemperatuur</string>
+    <string name="today_forecast_min_max">Gevoeld %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Lucht %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Gevoelstemperatuur (%1$s) per uur</string>
+    <string name="today_forecast_legend_air">Luchttemperatuur (%1$s) per uur</string>
 
     <string name="today_confidence_high">Hoge zekerheid — de belangrijkste modellen zijn het eens</string>
     <string name="today_confidence_medium">Gemiddelde zekerheid</string>

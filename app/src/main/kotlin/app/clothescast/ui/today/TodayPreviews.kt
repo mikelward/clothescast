@@ -775,6 +775,18 @@ internal fun ForecastCardWithModelSpreadPreview() {
     }
 }
 
+@Preview(name = "Air temperature card · with model spread", widthDp = 360)
+@Composable
+internal fun AirTemperatureCardWithModelSpreadPreview() {
+    Frame {
+        AirTemperatureCard(
+            hourly = SAMPLE_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+        )
+    }
+}
+
 @Preview(name = "Precipitation card · with model spread", widthDp = 360)
 @Composable
 internal fun PrecipitationCardWithModelSpreadPreview() {

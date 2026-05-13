@@ -24,9 +24,13 @@ package app.clothescast.core.domain.model
  *   - When two or more models reported an entry at hour t, replace
  *     best_match's value with their mean. With fewer than two, keep
  *     best_match — a one-model "consensus" isn't a consensus.
- *   - [HourlyForecast.condition] (CLEAR / RAIN / etc.) stays from
- *     best_match for now; modal aggregation of weather codes across
- *     models is a follow-up — see TODO in [PerModelHourly].
+ *   - [HourlyForecast.condition] (CLEAR / RAIN / etc.) is aggregated
+ *     modally — most-commonly-predicted bucket across the same
+ *     candidate set wins, with ties broken by severity so the
+ *     "Combined" line's icon stays in sync with its numeric series
+ *     (otherwise we'd get a 90% rain line drawn alongside a "Clear"
+ *     condition icon when best_match disagreed on the code). See
+ *     [consensusCondition].
  *
  * Returns null when nothing was blended: [perModel] is null, fewer than
  * two models reported overall, or every hour fell back to best_match.
@@ -60,10 +64,53 @@ fun blendConsensusHourly(
                 temperatureC = candidates.map { it.temperatureC }.average(),
                 feelsLikeC = candidates.map { it.apparentTemperatureC }.average(),
                 precipitationProbabilityPct = candidates.map { it.precipitationProbabilityPct }.average(),
+                condition = consensusCondition(
+                    fallback = hour.condition,
+                    candidates = candidates.mapNotNull { it.condition },
+                ),
             )
         }
     }
     return if (anyBlended) out else null
+}
+
+/**
+ * Picks a single weather condition that represents the consulted models
+ * at a given hour. Strategy is **modal with severity tiebreak**: the most
+ * commonly-predicted bucket wins; on a tie, the more severe one wins
+ * (RAIN beats CLEAR, SNOW beats RAIN, etc.). Avoids the over-cautious
+ * "any-rain-anywhere → rain" failure mode of pure max-severity while
+ * still nudging toward the more actionable outcome when models genuinely
+ * split. Returns [fallback] when [candidates] is empty.
+ */
+private fun consensusCondition(
+    fallback: WeatherCondition,
+    candidates: List<WeatherCondition>,
+): WeatherCondition {
+    if (candidates.isEmpty()) return fallback
+    val counts = candidates.groupingBy { it }.eachCount()
+    val maxCount = counts.values.max()
+    val winners = counts.filterValues { it == maxCount }.keys
+    return winners.maxBy { it.severityRank() }
+}
+
+/**
+ * Severity ranking used by [consensusCondition] to break modal-aggregation
+ * ties. Order is roughly "how much would this change today's outfit", so
+ * THUNDERSTORM > SNOW > RAIN > DRIZZLE > FOG > CLOUDY > PARTLY_CLOUDY >
+ * CLEAR > UNKNOWN. Internal to the consensus blend for now; promote to a
+ * public extension on [WeatherCondition] if another caller needs it.
+ */
+private fun WeatherCondition.severityRank(): Int = when (this) {
+    WeatherCondition.THUNDERSTORM -> 8
+    WeatherCondition.SNOW -> 7
+    WeatherCondition.RAIN -> 6
+    WeatherCondition.DRIZZLE -> 5
+    WeatherCondition.FOG -> 4
+    WeatherCondition.CLOUDY -> 3
+    WeatherCondition.PARTLY_CLOUDY -> 2
+    WeatherCondition.CLEAR -> 1
+    WeatherCondition.UNKNOWN -> 0
 }
 
 /**

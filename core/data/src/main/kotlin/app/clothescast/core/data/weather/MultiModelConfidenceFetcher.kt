@@ -75,7 +75,7 @@ internal class MultiModelConfidenceFetcher(
                 parameter(
                     "hourly",
                     "apparent_temperature,temperature_2m,precipitation_probability," +
-                        "wind_speed_10m,relative_humidity_2m,cloud_cover",
+                        "wind_speed_10m,relative_humidity_2m,cloud_cover,weather_code",
                 )
                 parameter("models", models.joinToString(","))
             }.body<MultiModelResponse>()
@@ -122,15 +122,16 @@ internal class MultiModelConfidenceFetcher(
                 val winds = obj["wind_speed_10m_$model"] as? JsonArray
                 val humidities = obj["relative_humidity_2m_$model"] as? JsonArray
                 val clouds = obj["cloud_cover_$model"] as? JsonArray
+                val weatherCodes = obj["weather_code_$model"] as? JsonArray
                 if (apparentTemps == null && airTemps == null && precips == null) continue
                 val entries = buildList {
                     for (i in 0 until times.size) {
                         val time = parseHour(times.getOrNull(i)) ?: continue
                         // Required: time, apparent temp, air temp, precip — drop the hour
                         // when any of these are null. Diagnostic fields (wind, humidity,
-                        // cloud) survive per-field nulls; we just carry through what we
-                        // got so the wind / humidity / cloud charts hide that model only
-                        // when *its* field is missing.
+                        // cloud, condition) survive per-field nulls; we just carry through
+                        // what we got so the diagnostic charts and the consensus blend hide
+                        // that model only when *its* field is missing.
                         val apparent = numberAt(apparentTemps, i)?.toDouble() ?: continue
                         val air = numberAt(airTemps, i)?.toDouble() ?: continue
                         val precip = numberAt(precips, i)?.toDouble() ?: continue
@@ -143,6 +144,8 @@ internal class MultiModelConfidenceFetcher(
                                 windSpeedKmh = numberAt(winds, i)?.toDouble(),
                                 relativeHumidityPct = numberAt(humidities, i)?.toDouble(),
                                 cloudCoverPct = numberAt(clouds, i)?.toDouble(),
+                                condition = numberAt(weatherCodes, i)?.toInt()
+                                    ?.let { WmoCodeMapper.map(it) },
                             ),
                         )
                     }

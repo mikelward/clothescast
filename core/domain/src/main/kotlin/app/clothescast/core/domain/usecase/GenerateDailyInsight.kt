@@ -1,25 +1,44 @@
 package app.clothescast.core.domain.usecase
 
 import app.clothescast.core.domain.model.CalendarEvent
+import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DailyForecast
+import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
+import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.repository.CalendarEventReader
+import app.clothescast.core.domain.repository.ForecastBundle
 import app.clothescast.core.domain.repository.WeatherRepository
 import java.time.Clock
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.Locale
 
 /**
  * The product. Fetches the forecast, evaluates clothes rules, renders the
  * deterministic summary string in [renderInsightSummary], and packages the result.
+ *
+ * Day / night windows are derived entirely from the user's notification times
+ * (`prefs.schedule.time` / `prefs.tonightSchedule.time`, defaulting to 07:00 and
+ * 19:00). TODAY covers `[morning, tonight)`; TONIGHT covers `[tonight, next
+ * morning)` wrapping past midnight. The morning insight's evening tie-in is
+ * derived by running this same renderer against the night slice — i.e. the
+ * tie-in's clothes + rain mention is whatever the 7pm night notification would
+ * itself say — and only emits when the user has at least one non-all-day
+ * calendar event with a location in the night window (an event "away from
+ * home"). That away-from-home gate is the only behavioural asymmetry between
+ * the two passes; everything else falls out of the period each pass is
+ * computing.
  *
  * Severe-weather alerts piggy-back on the same fetch and are returned alongside the
  * insight in [DailyInsightResult]; the worker uses them to drive a separate
@@ -39,16 +58,97 @@ class GenerateDailyInsight(
     ): DailyInsightResult {
         val bundle = weatherRepository.fetchForecast(location)
         val activeAlerts = bundle.alerts.filter { it.expires.isAfter(clock.instant()) }
-        // Each period is narrowed to the user-configured window so the insight
-        // talks about hours the user will actually walk into:
-        //  - TODAY = morning time → tonight time (e.g. 07:00–19:00)
-        //  - TONIGHT = tonight time → next morning time (e.g. 19:00–07:00, wrapping
-        //    past midnight via tomorrow's hourly)
-        // Both reads pull from `prefs.schedule.time` and `prefs.tonightSchedule.time`
-        // (not fixed constants) so a user who moved either dial sees an insight
-        // that matches the alarm that just fired.
         val morningStart = prefs.schedule.time
         val tonightStart = prefs.tonightSchedule.time
+
+        val allEvents = readEventsForDay(bundle.today.date, prefs)
+
+        val periodView = buildPeriodView(
+            bundle = bundle,
+            prefs = prefs,
+            period = period,
+            morningStart = morningStart,
+            tonightStart = tonightStart,
+            events = allEvents,
+        )
+
+        // Morning insight's tie-in: re-run the same machinery against the night
+        // slice and fold its clothes + precip clauses into an
+        // EveningEventTieInClause, but only when the user has an event away
+        // from home that night (location-set, non-all-day). When TONIGHT is
+        // the primary, no tie-in (it's already what the user is hearing).
+        val eveningEventTieIn = if (period == ForecastPeriod.TODAY && prefs.dailyMentionEveningEvents) {
+            buildEveningEventTieIn(
+                bundle = bundle,
+                prefs = prefs,
+                morningStart = morningStart,
+                tonightStart = tonightStart,
+                allEvents = allEvents,
+                alerts = activeAlerts,
+                todayItems = periodView.triggeredRules.map { it.item },
+            )
+        } else {
+            null
+        }
+
+        val summary = renderInsightSummary(
+            today = periodView.forecast,
+            yesterday = periodView.deltaYesterday,
+            todayTriggeredRules = periodView.triggeredRules,
+            alerts = activeAlerts,
+            events = periodView.events,
+            period = period,
+            todayForDelta = periodView.deltaToday,
+            perModelHourly = periodView.perModelForRender,
+            eveningEventTieIn = eveningEventTieIn,
+        )
+
+        val rules = prefs.clothesRules
+        val insight = Insight(
+            summary = summary,
+            recommendedItems = periodView.triggeredRules.map { it.item },
+            generatedAt = clock.instant(),
+            forDate = bundle.today.date,
+            hourly = periodView.forecast.hourly,
+            // Confidence and chart-side per-model overlay stay TODAY-only: their
+            // copy and chart axes are anchored to "today" and would read
+            // wrong-tense on a TONIGHT card. The precip-clause tier above
+            // does use per-model for both periods — that's prose-side, period
+            // agnostic, and benefits from cross-model agreement either way.
+            confidence = if (period == ForecastPeriod.TODAY) bundle.confidence else null,
+            perModelHourly = if (period == ForecastPeriod.TODAY) periodView.perModelForRender else null,
+            outfit = OutfitSuggestion.fromForecast(periodView.forecast, rules),
+            nextOutfit = periodView.nextForecast?.let { OutfitSuggestion.fromForecast(it, rules) },
+            outfitRationale = OutfitSuggestion.explainFromForecast(periodView.forecast, rules),
+            nextOutfitRationale = periodView.nextForecast?.let {
+                OutfitSuggestion.explainFromForecast(it, rules)
+            },
+            period = period,
+            hasEvents = periodView.events.isNotEmpty(),
+        )
+        return DailyInsightResult(insight = insight, alerts = activeAlerts)
+    }
+
+    private suspend fun readEventsForDay(date: LocalDate, prefs: UserPreferences): List<CalendarEvent> {
+        // Failures (missing permission, provider crash) degrade to no events so
+        // a misbehaving reader can never fail the insight pipeline. Capture the
+        // property as a local so the smart-cast survives across the runCatching
+        // lambda boundary.
+        val reader = calendarEventReader
+        if (!prefs.useCalendarEvents || reader == null) return emptyList()
+        return runCatching {
+            reader.eventsForDay(date, prefs.schedule.zoneId)
+        }.getOrDefault(emptyList())
+    }
+
+    private fun buildPeriodView(
+        bundle: ForecastBundle,
+        prefs: UserPreferences,
+        period: ForecastPeriod,
+        morningStart: LocalTime,
+        tonightStart: LocalTime,
+        events: List<CalendarEvent>,
+    ): PeriodView {
         val todayForecast = bundle.today.slicedForToday(
             morningStart = morningStart,
             eveningEnd = tonightStart,
@@ -62,12 +162,11 @@ class GenerateDailyInsight(
             ForecastPeriod.TODAY -> todayForecast
             ForecastPeriod.TONIGHT -> tonightForecast
         }
-        // Slice yesterday to the same daytime window as today so the delta clause
-        // compares apples to apples — daytime feels-like high/low on both sides
-        // rather than 24h aggregates that fold in overnight extremes the listener
-        // doesn't care about. Falls back to 24h-vs-24h when either side lacks
-        // daytime hourly entries (legacy cached payloads, sparse fixtures), to
-        // keep the comparison symmetric in the absence of hourly data.
+        // Yesterday paired against today's daytime window for the delta
+        // comparison — apples-to-apples daytime feels-like, falling back to 24h
+        // if either side has no hourly data. TONIGHT skips the delta clause
+        // entirely so this pair only matters for TODAY, but compute it
+        // unconditionally for symmetry.
         val yesterdayDaytime = bundle.yesterday.slicedForToday(
             morningStart = morningStart,
             eveningEnd = tonightStart,
@@ -79,126 +178,109 @@ class GenerateDailyInsight(
                 bundle.today to bundle.yesterday
             }
         // The home screen wants a side-by-side preview pair: "Today + Tonight"
-        // on a morning insight, "Tonight + Tomorrow" on an evening one. We
-        // compute the second outfit from the same forecast bundle so showing
-        // both costs no extra API call. Null when the underlying data isn't
-        // there (e.g. evening insight on a legacy bundle without tomorrow's
-        // daily aggregates) — the screen falls back to a single card.
+        // on a morning insight, "Tonight + Tomorrow" on an evening one. The
+        // second outfit comes from the same bundle so showing both costs no
+        // extra API call. Null when the underlying data isn't there (e.g.
+        // evening insight on a legacy bundle without tomorrow's daily
+        // aggregates) — the screen falls back to a single card.
         val nextForecast = when (period) {
             ForecastPeriod.TODAY -> tonightForecast.takeIf { it.hourly.isNotEmpty() }
             ForecastPeriod.TONIGHT -> bundle.tomorrow
         }
-        val rules = prefs.clothesRules
-        val nextOutfit = nextForecast?.let { OutfitSuggestion.fromForecast(it, rules) }
-        val nextOutfitRationale = nextForecast?.let {
-            OutfitSuggestion.explainFromForecast(it, rules)
-        }
-        val todayTriggered = evaluateClothesRules(periodForecast, prefs.clothesRules)
-        // Calendar events are gated on both the opt-in pref AND a configured reader.
-        // Failures (missing permission, provider crash) degrade to no events so a
-        // misbehaving reader can never fail the insight pipeline; the rest of the
-        // summary still renders. Capture the property as a local so the smart-cast
-        // survives across the runCatching lambda boundary.
-        val reader = calendarEventReader
-        val allEvents = if (prefs.useCalendarEvents && reader != null) {
-            runCatching {
-                reader.eventsForDay(bundle.today.date, prefs.schedule.zoneId)
-            }.getOrDefault(emptyList())
-        } else {
-            emptyList()
-        }
-        val periodEvents = filterEventsForPeriod(allEvents, period, tonightStart)
-        // Morning-only: when the user opted in to "Mention evening events", we
-        // also evaluate clothes rules against the evening slice and pass any
-        // evening events through so the renderer can attach a tie-in clause
-        // ("Bring a jacket tonight." — or "Bring an umbrella tonight, rain at
-        // 9pm." when the evening slice has rain). Event titles never appear
-        // in the rendered prose; see the AGENTS.md privacy note. Cheap to
-        // compute — both inputs already live in this scope.
-        val eveningEvents = if (period == ForecastPeriod.TODAY && prefs.dailyMentionEveningEvents) {
-            allEvents.filter { !it.allDay && !it.start.isBefore(tonightStart) }
-        } else {
-            emptyList()
-        }
-        val eveningTriggered = if (eveningEvents.isNotEmpty()) {
-            evaluateClothesRules(tonightForecast, prefs.clothesRules)
-        } else {
-            emptyList()
-        }
-        // Per-model hourly now covers today + tomorrow's pre-dawn hours
-        // (MultiModelConfidenceFetcher uses `forecast_days=2`). Slicing pairs
-        // each forecast hour with its calendar date so today's 02:00 doesn't
-        // alias against tomorrow's 02:00 in [PerModelHour.time] (a
-        // LocalDateTime). The TONIGHT period intentionally still strips the
-        // overlay — the chart and "Forecasts disagree today" copy talk about
-        // today, not the night ahead.
-        val perModelForPeriod = if (period == ForecastPeriod.TODAY) {
-            bundle.perModelHourly?.slicedTo(todayWindow(periodForecast.hourly, bundle.today.date))
-        } else {
-            null
-        }
-        // Evening tie-in: pair each tonight-window hour with the right date
-        // (today for pre-midnight, tomorrow for post-midnight wrap). Uses the
-        // lenient [intersectedWith] rather than [slicedTo] — the renderer's
-        // peak-finder walks per-hour readings and doesn't need positional
-        // alignment, so a model with rain at 21:00 but a null entry at, say,
-        // 05:00 tomorrow should still feed the tie-in. The strict slice would
-        // drop it wholesale (chart-alignment contract) and we'd silently fall
-        // back to base-only, missing exactly the case the per-model tier
-        // exists to catch. The event-with-location gate inside the renderer
-        // decides whether the tie-in actually emits.
-        val eveningPerModelForPeriod = if (period == ForecastPeriod.TODAY) {
-            bundle.perModelHourly?.intersectedWith(
-                tonightWindow(tonightForecast.hourly, bundle.today.date, tonightStart),
-            )
-        } else {
-            null
-        }
-        val summary = renderInsightSummary(
-            today = periodForecast,
-            yesterday = deltaYesterday,
-            todayTriggeredRules = todayTriggered,
-            alerts = activeAlerts,
-            events = periodEvents,
-            period = period,
-            eveningEvents = eveningEvents,
-            eveningTriggeredRules = eveningTriggered,
-            eveningForecast = if (period == ForecastPeriod.TODAY) tonightForecast else null,
-            todayForDelta = deltaToday,
-            perModelHourly = perModelForPeriod,
-            eveningPerModelHourly = eveningPerModelForPeriod,
+        val triggeredRules = evaluateClothesRules(periodForecast, prefs.clothesRules)
+        val perModelForRender = bundle.perModelHourly?.slicedTo(
+            when (period) {
+                ForecastPeriod.TODAY -> todayWindow(periodForecast.hourly, bundle.today.date)
+                ForecastPeriod.TONIGHT -> tonightWindow(periodForecast.hourly, bundle.today.date, tonightStart)
+            },
         )
-        val insight = Insight(
-            summary = summary,
-            recommendedItems = todayTriggered.map { it.item },
-            generatedAt = clock.instant(),
-            forDate = bundle.today.date,
-            hourly = periodForecast.hourly,
-            // Cross-model confidence is derived from today's apparent-max and
-            // peak precipitation probability (forecast_days=1 daily), so it
-            // describes how much the major models disagree about *today*. Don't
-            // attach it to a TONIGHT insight — the chip/callout copy literally
-            // says "Forecasts disagree today," which is wrong-tense when the
-            // user is reading the evening card.
-            confidence = if (period == ForecastPeriod.TODAY) bundle.confidence else null,
-            // Same reasoning for the per-model hourly overlay data: today's
-            // hourly per-model series doesn't span the tonight window
-            // (19:00 today → 07:00 tomorrow), and Open-Meteo's per-model
-            // hourly only covers `forecast_days=1`. Strip on tonight, and
-            // narrow today's series to the same daytime window we sliced
-            // `periodForecast.hourly` to — otherwise the chart plots the
-            // overlays by index and the midnight model value lands on the
-            // first visible hour of the daytime window. Same series that
-            // fed the precip-clause tier selection above.
-            perModelHourly = perModelForPeriod,
-            outfit = OutfitSuggestion.fromForecast(periodForecast, rules),
-            nextOutfit = nextOutfit,
-            outfitRationale = OutfitSuggestion.explainFromForecast(periodForecast, rules),
-            nextOutfitRationale = nextOutfitRationale,
-            period = period,
-            hasEvents = periodEvents.isNotEmpty(),
+        return PeriodView(
+            forecast = periodForecast,
+            nextForecast = nextForecast,
+            triggeredRules = triggeredRules,
+            events = filterEventsForPeriod(events, period, tonightStart),
+            perModelForRender = perModelForRender,
+            deltaToday = deltaToday,
+            deltaYesterday = deltaYesterday,
         )
-        return DailyInsightResult(insight = insight, alerts = activeAlerts)
+    }
+
+    /**
+     * Composes the morning's evening-event tie-in by running the renderer
+     * against the night slice and folding off its clothes and precip clauses.
+     * Gated on the user having at least one non-all-day calendar event with a
+     * location set in the night window — the "away from home" rule that
+     * motivates the heads-up in the first place.
+     *
+     * The clothing item carried in the clause is the *delta* between night
+     * and day — items the night needs that the day didn't already announce
+     * — so a tie-in only adds vocabulary the morning insight hasn't already
+     * delivered. If the day already says "Bring a jacket", an identical
+     * "Bring a jacket tonight" repeats; if the night additionally needs a
+     * coat, the tie-in carries "coat". When the night and day rules trigger
+     * the same items but the night insight has a precip clause, the tie-in
+     * falls through to a bare rain mention (item=null, rainTime set), since
+     * the rain itself is new information the morning slice didn't surface.
+     *
+     * Returns null when there's no away-from-home event, when there's
+     * neither a delta nor rain to surface, or both.
+     */
+    private fun buildEveningEventTieIn(
+        bundle: ForecastBundle,
+        prefs: UserPreferences,
+        morningStart: LocalTime,
+        tonightStart: LocalTime,
+        allEvents: List<CalendarEvent>,
+        alerts: List<WeatherAlert>,
+        todayItems: List<String>,
+    ): EveningEventTieInClause? {
+        val nightEvents = filterEventsForPeriod(allEvents, ForecastPeriod.TONIGHT, tonightStart)
+        // "Away from home" = any non-all-day event with a non-blank location.
+        // TODO: refine by filtering out events whose location matches a
+        // user-configured home location (settings-side, when that pref ships).
+        val awayFromHome = nightEvents.any { !it.allDay && !it.location.isNullOrBlank() }
+        if (!awayFromHome) return null
+
+        val nightView = buildPeriodView(
+            bundle = bundle,
+            prefs = prefs,
+            period = ForecastPeriod.TONIGHT,
+            morningStart = morningStart,
+            tonightStart = tonightStart,
+            events = allEvents,
+        )
+        val nightSummary: InsightSummary = renderInsightSummary(
+            today = nightView.forecast,
+            yesterday = nightView.deltaYesterday,
+            todayTriggeredRules = nightView.triggeredRules,
+            alerts = alerts,
+            events = nightView.events,
+            period = ForecastPeriod.TONIGHT,
+            todayForDelta = nightView.deltaToday,
+            perModelHourly = nightView.perModelForRender,
+            eveningEventTieIn = null,
+        )
+        val nightItems = nightSummary.clothes?.items.orEmpty()
+        val precip = nightSummary.precip
+        // Case- and whitespace-insensitive set comparison, matching the
+        // formatter's umbrella check and avoiding "Jacket" / "jacket"
+        // mismatches from legacy free-form ClothesRule.item values.
+        val normalize: (String) -> String = { it.trim().lowercase(Locale.ROOT) }
+        val todayKey = todayItems.map(normalize).toSet()
+        val deltaItems = nightItems.filter { normalize(it) !in todayKey }
+
+        if (deltaItems.isEmpty() && precip == null) return null
+
+        val item = deltaItems.firstOrNull { it.equals("umbrella", ignoreCase = true) }
+            ?: deltaItems.firstOrNull()
+        // TODO: rewording — "Tonight, bring an X" reads more naturally than
+        // "Bring an X tonight" in some locales. Leave the current template
+        // shape for now (formatter resource).
+        return EveningEventTieInClause(
+            item = item,
+            rainTime = precip?.time,
+            likelihood = precip?.likelihood ?: PrecipLikelihood.LIKELY,
+        )
     }
 
     private fun filterEventsForPeriod(
@@ -211,6 +293,62 @@ class GenerateDailyInsight(
         // event that bleeds across the evening (treated as relevant context).
         ForecastPeriod.TONIGHT -> events.filter { it.allDay || !it.start.isBefore(tonightStart) }
     }
+
+    private data class PeriodView(
+        val forecast: DailyForecast,
+        val nextForecast: DailyForecast?,
+        val triggeredRules: List<ClothesRule>,
+        val events: List<CalendarEvent>,
+        val perModelForRender: PerModelHourly?,
+        val deltaToday: DailyForecast,
+        val deltaYesterday: DailyForecast,
+    )
+}
+
+/**
+ * Filters each model's per-hour entries to just the hours covered by [window]
+ * (LocalDateTimes the caller computed from the period's hourly slice), preserving
+ * the window's order so each index in the resulting series lines up with the same
+ * index in the matching base hourly — the chart plots overlays by index.
+ *
+ * Drops a model entirely from the overlay if it's missing any in-window hour
+ * (the upstream `parseHourly` skips per-hour entries with null temp or precip
+ * values for a model whose run hasn't fully landed). Carrying a partial series
+ * would compact the surviving points left, misaligning the model line with the
+ * blended line for every hour after the gap. An empty result returns null so
+ * the caller can null the whole field.
+ */
+private fun PerModelHourly.slicedTo(window: List<LocalDateTime>): PerModelHourly? {
+    if (window.isEmpty()) return null
+    val filtered = byModel.mapNotNull { (model, entries) ->
+        val byTime = entries.associateBy { it.time }
+        val sliced = window.map { byTime[it] ?: return@mapNotNull null }
+        model to sliced
+    }.toMap()
+    return if (filtered.isEmpty()) null else PerModelHourly(filtered)
+}
+
+/**
+ * Each daytime hour belongs to [todayDate] — [slicedForToday] never wraps
+ * past midnight, so every entry's [HourlyForecast.time] is unambiguously
+ * today's calendar day.
+ */
+private fun todayWindow(windowHourly: List<HourlyForecast>, todayDate: LocalDate): List<LocalDateTime> =
+    windowHourly.map { LocalDateTime.of(todayDate, it.time) }
+
+/**
+ * Tonight wraps from [tonightStart] today to next morning, so a window hour
+ * with `time >= tonightStart` is on [todayDate]; anything before it (the
+ * tomorrow-morning portion concatenated by [slicedForTonight]) is on the
+ * next day.
+ */
+private fun tonightWindow(
+    windowHourly: List<HourlyForecast>,
+    todayDate: LocalDate,
+    tonightStart: LocalTime,
+): List<LocalDateTime> = windowHourly.map { entry ->
+    val date = if (!entry.time.isBefore(tonightStart)) todayDate else todayDate.plusDays(1)
+    LocalDateTime.of(date, entry.time)
 }
 
 /**
@@ -236,74 +374,6 @@ class GenerateDailyInsight(
  *    users via its own wrap, so blanking out the hourly here would just lose
  *    information the tonight slice still needs.
  */
-/**
- * Filters each model's per-hour entries to just the hours covered by [window]
- * (LocalDateTimes the caller computed from the period's hourly slice), preserving
- * the window's order so each index in the resulting series lines up with the same
- * index in the matching base hourly — the chart plots overlays by index.
- *
- * Drops a model entirely from the overlay if it's missing any in-window hour
- * (the upstream `parseHourly` skips per-hour entries with null temp or precip
- * values for a model whose run hasn't fully landed). Carrying a partial series
- * would compact the surviving points left, misaligning the model line with the
- * blended line for every hour after the gap — better to omit the model than
- * draw a curve that's silently shifted. An empty result returns null so the
- * caller can null the whole field.
- */
-private fun PerModelHourly.slicedTo(window: List<LocalDateTime>): PerModelHourly? {
-    if (window.isEmpty()) return null
-    val filtered = byModel.mapNotNull { (model, entries) ->
-        val byTime = entries.associateBy { it.time }
-        val sliced = window.map { byTime[it] ?: return@mapNotNull null }
-        model to sliced
-    }.toMap()
-    return if (filtered.isEmpty()) null else PerModelHourly(filtered)
-}
-
-/**
- * Lenient counterpart to [slicedTo]: filters each model's entries to the ones
- * whose [LocalDateTime] is in [window], dropping out-of-window entries but
- * keeping models that don't cover every window hour. Renderer consumers
- * (e.g. [RenderInsightSummary.pickPerModelPeak]) iterate per-hour readings
- * and don't need positional alignment, so dropping an entire model because
- * of one missing hour — what [slicedTo]'s chart-alignment contract demands
- * — would silently lose the rain reading the per-model tier exists to catch.
- * An empty result returns null so the caller can null the whole field.
- */
-private fun PerModelHourly.intersectedWith(window: List<LocalDateTime>): PerModelHourly? {
-    if (window.isEmpty()) return null
-    val keep = window.toSet()
-    val filtered = byModel.mapNotNull { (model, entries) ->
-        val sliced = entries.filter { it.time in keep }
-        if (sliced.isEmpty()) null else model to sliced
-    }.toMap()
-    return if (filtered.isEmpty()) null else PerModelHourly(filtered)
-}
-
-/**
- * Each daytime hour belongs to [todayDate] — [slicedForToday] never wraps
- * past midnight, so every entry's [HourlyForecast.time] is unambiguously
- * today's calendar day.
- */
-private fun todayWindow(windowHourly: List<HourlyForecast>, todayDate: java.time.LocalDate): List<LocalDateTime> =
-    windowHourly.map { LocalDateTime.of(todayDate, it.time) }
-
-/**
- * Tonight wraps from [tonightStart] today to next morning, so a window hour
- * with `time >= tonightStart` is on [todayDate]; anything before it (the
- * tomorrow-morning portion concatenated by [slicedForTonight]) is on the
- * next day. Same rule that keeps the LocalTime ambiguity from biting the
- * tonight wrap elsewhere in this module.
- */
-private fun tonightWindow(
-    windowHourly: List<HourlyForecast>,
-    todayDate: java.time.LocalDate,
-    tonightStart: LocalTime,
-): List<LocalDateTime> = windowHourly.map { entry ->
-    val date = if (!entry.time.isBefore(tonightStart)) todayDate else todayDate.plusDays(1)
-    LocalDateTime.of(date, entry.time)
-}
-
 private fun DailyForecast.slicedForToday(
     morningStart: LocalTime,
     eveningEnd: LocalTime,

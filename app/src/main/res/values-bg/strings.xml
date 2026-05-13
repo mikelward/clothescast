@@ -126,7 +126,7 @@ What is NOT overridden, by design:
     <string name="today_outfit_top_thin_jacket">Тънко яке</string>
     <string name="today_outfit_top_thick_coat">Дебело палто</string>
     <string name="today_outfit_top_puffer_jacket">Зимно яке</string>
-    <string name="today_outfit_bottom_skirt">Пола</string>
+    <string name="today_outfit_bottom_long_skirt">Пола</string>
     <string name="today_outfit_bottom_jeans">Дънки</string>
 
     <!-- "Why this outfit?" rationale dialog. -->
@@ -583,4 +583,7 @@ What is NOT overridden, by design:
     <string name="bug_report_consent_continue">Продължи</string>
     <string name="bug_report_consent_cancel">Откажи</string>
 
+    <string name="today_forecast_air_section_title">Температура на въздуха</string>
+    <string name="settings_default_bottom_title">Стандартен долен</string>
+    <string name="settings_default_bottom_description">Какво предлагаме на началния екран, когато не е достатъчно топло за шорти.</string>
 </resources>

@@ -720,4 +720,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast kann auf diesem Gerät nicht ausgeführt werden — deinem Android-Build fehlt eine Funktion, die die App-Oberfläche benötigt (Configuration.fontWeightAdjustment, erwartet ab Android 12 aufwärts). Bitte wende dich an deinen Gerätehersteller für ein System-Update.</string>
+    <string name="today_forecast_air_section_title">Lufttemperatur</string>
+    <string name="settings_default_bottom_title">Standard-Unterteil</string>
+    <string name="settings_default_bottom_description">Was wir auf dem Startbildschirm vorschlagen, wenn es nicht warm genug für Shorts ist.</string>
 </resources>

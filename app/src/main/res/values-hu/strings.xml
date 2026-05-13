@@ -589,4 +589,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
 
     <!-- Device incompatibility error. -->
     <string name="error_device_incompatible">A ClothesCast nem futtatható ezen az eszközön — az Android buildedből hiányzik egy funkció, amelyre az alkalmazás felülete szükséges (Configuration.fontWeightAdjustment, Android 12-től felfelé várható). Kérjük, fordulj az eszköz gyártójához rendszerfrissítésért.</string>
+    <string name="today_forecast_air_section_title">Levegő hőmérséklete</string>
+    <string name="settings_default_bottom_title">Alapértelmezett alsó ruha</string>
+    <string name="settings_default_bottom_description">Amit a főképernyőn javaslunk, ha nem elég meleg a rövidnadrághoz.</string>
 </resources>

@@ -397,7 +397,7 @@ What is NOT overridden, by design:
     <string name="today_outfit_top_puffer_jacket">Páperová bunda</string>
     <string name="today_outfit_bottom_shorts">Šortky</string>
     <string name="today_outfit_bottom_long_pants">Nohavice</string>
-    <string name="today_outfit_bottom_skirt">Sukňa</string>
+    <string name="today_outfit_bottom_long_skirt">Sukňa</string>
     <string name="today_outfit_bottom_jeans">Rifle</string>
 
     <string name="today_forecast_title">Hodinová predpoveď</string>
@@ -600,4 +600,7 @@ What is NOT overridden, by design:
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast nemôže bežať na tomto zariadení — tvoja zostava Androidu nemá funkciu, ktorú vyžaduje rozhranie aplikácie (Configuration.fontWeightAdjustment, očakávaná od Androidu 12 vyššie). Kontaktuj prosím výrobcu zariadenia ohľadom aktualizácie systému.</string>
+    <string name="today_forecast_air_section_title">Teplota vzduchu</string>
+    <string name="settings_default_bottom_title">Štandardná spodná časť</string>
+    <string name="settings_default_bottom_description">Čo odporúčame na domovskej obrazovke, keď nie je dosť teplo na šortky.</string>
 </resources>

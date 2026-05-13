@@ -113,7 +113,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_outfit_top_thin_jacket">Geacă ușoară</string>
     <string name="today_outfit_top_thick_coat">Palton gros</string>
     <string name="today_outfit_top_puffer_jacket">Geacă matlasată</string>
-    <string name="today_outfit_bottom_skirt">Fustă</string>
+    <string name="today_outfit_bottom_long_skirt">Fustă</string>
     <string name="today_outfit_bottom_jeans">Blugi</string>
 
     <!-- Rationale dialog. -->
@@ -572,4 +572,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="bug_report_consent_continue">Continuă</string>
     <string name="bug_report_consent_cancel">Anulează</string>
 
+    <string name="today_forecast_air_section_title">Temperatura aerului</string>
+    <string name="settings_default_bottom_title">Jos standard</string>
+    <string name="settings_default_bottom_description">Ceea ce sugerăm pe ecranul de start când nu este suficient de cald pentru pantaloni scurți.</string>
 </resources>

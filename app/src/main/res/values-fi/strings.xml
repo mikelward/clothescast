@@ -579,4 +579,7 @@ displayed label localizes.
     <string name="bug_report_consent_cancel">Peruuta</string>
 
     <string name="error_device_incompatible">ClothesCastia ei voi suorittaa tällä laitteella — Android-koontiversiostasi puuttuu ominaisuus, jota sovelluksen käyttöliittymä tarvitsee (Configuration.fontWeightAdjustment, odotetaan Android 12:sta ylöspäin). Ota yhteyttä laitevalmistajaan järjestelmäpäivitystä varten.</string>
+    <string name="today_forecast_air_section_title">Ilman lämpötila</string>
+    <string name="settings_default_bottom_title">Standardialaosa</string>
+    <string name="settings_default_bottom_description">Mitä suosittelemme kotinäytöllä, kun ei ole tarpeeksi lämmintä shortseja varten.</string>
 </resources>

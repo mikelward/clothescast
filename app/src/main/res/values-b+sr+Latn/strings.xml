@@ -67,7 +67,7 @@ default English (matching values-pl / values-uk).
     <string name="today_outfit_top_thick_coat">Debeli kaput</string>
     <string name="today_outfit_top_puffer_jacket">Puffer jakna</string>
     <string name="today_outfit_bottom_shorts">Šorts</string>
-    <string name="today_outfit_bottom_skirt">Suknja</string>
+    <string name="today_outfit_bottom_long_skirt">Suknja</string>
     <string name="today_outfit_bottom_jeans">Farmerke</string>
     <string name="today_outfit_bottom_long_pants">Pantalone</string>
 
@@ -585,4 +585,7 @@ default English (matching values-pl / values-uk).
     <string name="bug_report_consent_continue">Nastavi</string>
     <string name="bug_report_consent_cancel">Otkaži</string>
 
+    <string name="today_forecast_air_section_title">Temperatura vazduha</string>
+    <string name="settings_default_bottom_title">Standardni donji deo</string>
+    <string name="settings_default_bottom_description">Ono što predlažemo na početnom ekranu kada nije dovoljno toplo za kratke hlače.</string>
 </resources>

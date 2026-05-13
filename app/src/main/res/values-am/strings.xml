@@ -10,6 +10,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_voice_locale_label">ዘዬ</string>
     <string name="settings_tts_voice_locale_system">የቋንቋ ቅንብርን ተከተል</string>
 
+    <!-- Garments -->
     <string name="garment_sweater">ስወተር</string>
     <string name="garment_hoodie">ሁዲ</string>
     <string name="garment_jacket">ጃኬት</string>
@@ -19,7 +20,12 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="garment_shorts">ሹርቴ</string>
     <string name="garment_pants">ሱሪ</string>
     <string name="garment_jeans">ጂንስ</string>
+    <string name="garment_puffer">ፑፈር ጃኬት</string>
+    <string name="garment_thin_jacket">ቀጭን ጃኬት</string>
+    <string name="garment_skirt">ቀሚስ</string>
+    <string name="garment_polo">ፖሎ</string>
 
+    <!-- Clothes rules settings -->
     <string name="settings_clothes_empty">ምንም ህግ የለም። ለመፍጠር ጨምር ን ይጫኑ።</string>
     <string name="settings_clothes_add">ጨምር</string>
     <string name="settings_clothes_edit">አርትዕ</string>
@@ -36,13 +42,340 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_clothes_cond_temp_below">ዝቅተኛ ሙቀት %1$s ሲቀንስ</string>
     <string name="settings_clothes_cond_temp_above">ከፍተኛ ሙቀት %1$s ሲጨምር</string>
     <string name="settings_clothes_cond_precip_above">የዝናብ ዕድል %.0f%% ሲጨምር</string>
+    <string name="settings_clothes_title">የልብስ ህጎች</string>
+    <string name="settings_clothes_description">አንድ ትንበያ ከእነዚህ ደረጃዎች ካለፈ፣ ልብሱ ወደ ዕለታዊ ClothesCast ይታከላል።</string>
 
+    <!-- Outfit card labels -->
     <string name="today_outfit_top_tshirt">ቲሸርት</string>
     <string name="today_outfit_top_sweater">ስወተር</string>
     <string name="today_outfit_top_thick_jacket">ወፍራም ጃኬት</string>
     <string name="today_outfit_bottom_shorts">ሹርቴ</string>
     <string name="today_outfit_bottom_long_pants">ሱሪ</string>
+    <string name="today_outfit_top_polo">ፖሎ</string>
+    <string name="today_outfit_top_thin_jacket">ቀጭን ጃኬት</string>
+    <string name="today_outfit_top_thick_coat">ወፍራም ኮት</string>
+    <string name="today_outfit_top_puffer_jacket">ፑፈር ጃኬት</string>
+    <string name="today_outfit_bottom_long_skirt">ረጅም ቀሚስ</string>
+    <string name="today_outfit_bottom_jeans">ጂንስ</string>
 
+    <!-- Today screen -->
+    <string name="today_title">ዛሬ</string>
+    <string name="today_open_settings">ቅንብሮችን ክፈት</string>
+    <string name="today_more_options">ተጨማሪ አማራጮች</string>
+    <string name="today_report_a_bug">ስህተት ሪፖርት አድርግ</string>
+    <string name="today_refresh">አድስ</string>
+    <string name="today_refresh_toast_daily">ዕለታዊ ClothesCast እያዳሰ ነው — ብዙም ሳይቆይ ይታያል።</string>
+    <string name="today_refresh_toast_nightly">ምሽታዊ ClothesCast እያዳሰ ነው — ብዙም ሳይቆይ ይታያል።</string>
+    <string name="today_empty_title">እስካሁን ClothesCast የለም</string>
+    <string name="today_empty_subtitle">የጠዋቱ ClothesCast ከተሰራ በኋላ እዚህ ይታያል። ቦታዎን በቅንብሮች ውስጥ ያስቀምጡ፣ ከዚያ አሁን አምጣ ን ይጫኑ።</string>
+    <string name="today_fetch_now">አሁን አምጣ</string>
+    <string name="today_generated_at">በ%1$s ሰዓት ተሰርቷል</string>
+    <string name="today_location_unknown">ቦታዎ</string>
+    <string name="today_outfit_title">ምን ይልበሱ</string>
+    <string name="today_outfit_label_today">ዛሬ</string>
+    <string name="today_outfit_label_tonight">ዛሬ ምሽት</string>
+    <string name="today_outfit_label_tomorrow">ነገ</string>
+    <string name="today_rationale_title">ይህ ልብስ ለምን?</string>
+    <string name="today_rationale_show">ለምን?</string>
+    <string name="today_rationale_dismiss">ገባኝ</string>
+    <string name="today_rationale_threshold_decrease">ደረጃን በ1 ዲግሪ ቀንስ</string>
+    <string name="today_rationale_threshold_increase">ደረጃን በ1 ዲግሪ ጨምር</string>
+    <string name="today_rationale_threshold_changed_hint">አዲሱን ልብስ ለማየት አድስ።</string>
+    <string name="today_rationale_unavailable">ምንም ምክንያት የለም — ከሚቀጥለው ዳግም ሙከራ በኋላ መተግበሪያውን ይክፈቱ።</string>
+    <string name="today_rationale_min_below_with_time">ዝቅተኛ የሚሰማ ሙቀት %1$s%2$s በ%3$s ሰዓት፣ ከ%4$s%2$s በታች</string>
+    <string name="today_rationale_min_below">ዝቅተኛ የሚሰማ ሙቀት %1$s%2$s፣ ከ%3$s%2$s በታች</string>
+    <string name="today_rationale_min_above_with_time">ዝቅተኛ የሚሰማ ሙቀት %1$s%2$s በ%3$s ሰዓት፣ ቢያንስ %4$s%2$s</string>
+    <string name="today_rationale_min_above">ዝቅተኛ የሚሰማ ሙቀት %1$s%2$s፣ ቢያንስ %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">ከፍተኛ የሚሰማ ሙቀት %1$s%2$s ብቻ በ%3$s ሰዓት፣ ከ%4$s%2$s በታች</string>
+    <string name="today_rationale_max_below">ከፍተኛ የሚሰማ ሙቀት %1$s%2$s ብቻ፣ ከ%3$s%2$s በታች</string>
+    <string name="today_rationale_max_above_with_time">ከፍተኛ የሚሰማ ሙቀት %1$s%2$s በ%3$s ሰዓት፣ ቢያንስ %4$s%2$s</string>
+    <string name="today_rationale_max_above">ከፍተኛ የሚሰማ ሙቀት %1$s%2$s፣ ቢያንስ %3$s%2$s</string>
+
+    <!-- Forecast and charts -->
+    <string name="today_forecast_air_section_title">የአየር ሙቀት</string>
+    <string name="today_forecast_title">የሚሰማ ሙቀት</string>
+    <string name="today_forecast_min_max">የሚሰማ %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">የሚሰማ ሙቀት (%1$s) በሰዓት</string>
+    <string name="today_forecast_air_min_max">አየር %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_air">የአየር ሙቀት (%1$s) በሰዓት</string>
+    <string name="today_precipitation_title">የዝናብ ዕድል</string>
+    <string name="today_precipitation_peak">ከፍተኛ %1$d%% በ%2$s ሰዓት</string>
+    <string name="today_precipitation_dry">ዛሬ ዝናብ አይጠበቅም</string>
+    <string name="today_chart_model_legend_label">ሞዴሎች:</string>
+    <string name="today_chart_main_line_label">ጠቅላላ</string>
+    <string name="today_chart_divergence_summary">ሞዴሎቹ በ%1$s ሰዓት ይለያያሉ (Δ %2$.1f%3$s የሚሰማ) — ብዙውን ጊዜ %4$s፣ %5$s</string>
+    <string name="today_factor_air_temperature">የአየር ሙቀት</string>
+    <string name="today_factor_wind_speed">የንፋስ ፍጥነት</string>
+    <string name="today_factor_cloud_cover">ደመና ሽፋን</string>
+    <string name="today_factor_humidity">እርጥበት</string>
+    <string name="today_wind_title">የንፋስ ፍጥነት</string>
+    <string name="today_wind_subtitle">በሞዴል የንፋስ ፍጥነት (%1$s) በሰዓት</string>
+    <string name="today_cloud_title">ደመና ሽፋን</string>
+    <string name="today_cloud_subtitle">በሞዴል ጠቅላላ ደመና ሽፋን (%%) በሰዓት</string>
+    <string name="today_humidity_title">እርጥበት</string>
+    <string name="today_humidity_subtitle">በሞዴል አንጻራዊ እርጥበት (%%) በሰዓት</string>
+    <string name="today_confidence_high">ከፍተኛ እምነት — ዋና ሞዴሎቹ ይስማማሉ</string>
+    <string name="today_confidence_medium">መካከለኛ እምነት</string>
+    <string name="today_confidence_low">ዝቅተኛ እምነት — ትንበያዎቹ ይለያያሉ</string>
+    <string name="today_confidence_spread">ልዩነት: %1$.1f°C፣ %2$.0f%% ዝናብ በ%3$d ሞዴሎቹ</string>
+    <string name="today_low_confidence_callout_title">ትንበያዎቹ ይለያያሉ</string>
+    <string name="today_low_confidence_callout_body">የሙቀት ልዩነት %1$.1f°C ሲሆን የዝናብ ዕድል ልዩነት %2$.0f%% ነው በ%3$d ሞዴሎቹ።</string>
+
+    <!-- Today screen states -->
+    <string name="today_working">እየሰራ ነው — ClothesCast እያምጣ ነው…</string>
+    <string name="today_retrying">የመጨረሻ ሙከራ ሳይሳካ ቀረ — እንደገና እየሞከረ ነው…</string>
+    <string name="today_failed_title">የመጨረሻ ሙከራ ሳይሳካ ቀረ</string>
+    <string name="today_failed_unexpected_http">ከትንበያ አገልግሎቱ ያልተጠበቀ HTTP ስህተት።</string>
+    <string name="today_failed_unhandled">ያልተጠበቀ ስህተት ተፈጠረ።</string>
+    <string name="today_failed_no_location">ቦታዎን ማግኘት አልቻልንም። ሁልጊዜ ያለ ቦታ ፍቃድ ይስጡ፣ ወይም ከተማ በቅንብሮች ውስጥ ያስቀምጡ።</string>
+    <string name="today_failed_show_details">ዝርዝሮችን አሳይ</string>
+    <string name="today_failed_hide_details">ዝርዝሮችን ደብቅ</string>
+    <string name="today_location_required_title">ቦታዎን ያዋቅሩ</string>
+    <string name="today_location_required_body">ClothesCast ትንበያ ለማምጣት ቦታዎን ማወቅ ያስፈልጋል። ሁልጊዜ ያለ ቦታ ፍቃድ ይስጡ፣ ወይም ከተማ ይምረጡ።</string>
+    <string name="today_location_required_action">የቦታ ቅንብሮችን ክፈት</string>
+    <string name="today_crash_banner_title">የቀደመው አሂድ ተቋርጧል</string>
+    <string name="today_crash_banner_body">ስህተት ሪፖርት በመሳሪያዎ ላይ ተቀምጧል። ስህተቱ እንዲስተካከል ያጋሩ? ምንም ሳይላክ ወደ ምን ቦታ እንደሚላክ ይወስናሉ።</string>
+    <string name="today_crash_banner_share">ሪፖርት አጋራ</string>
+    <string name="today_crash_banner_dismiss">ዝጋ</string>
+    <string name="today_update_available_title">ዝማኔ አለ</string>
+    <string name="today_update_available_body">አዲስ የ ClothesCast ስሪት በ Play Store ላይ አለ።</string>
+    <string name="today_update_available_action">አዘምን</string>
+    <string name="today_update_available_dismiss">አሁን አይሆንም</string>
+    <string name="today_update_downloaded_body">ዝማኔ ተሰቅሏል። ጫንን ለማጠናቀቅ እንደገና ጀምር።</string>
+    <string name="today_update_downloaded_action">እንደገና ጀምር</string>
+    <string name="today_telemetry_notice_title">ስህተት + አጠቃቀም ሪፖርቶች ተከፍቷል</string>
+    <string name="today_telemetry_notice_body">ClothesCast ስህተቶችን ለማስተካከል익익 익ስምን-አልባ ስህተት ሪፖርቶችና የአጠቃቀም ትንታኔዎችን ይልካል። የቀን መቁጠሪያ ውሂብ፣ ቦታ ወይም የናሙና ጽሑፍ አይካተትም። በቅንብሮች ውስጥ በማናቸውም ጊዜ ያጥፉ።</string>
+    <string name="today_telemetry_notice_open_settings">የግለነት ቅንብሮችን ክፈት</string>
+    <string name="today_telemetry_notice_dismiss">ዝጋ</string>
+
+    <!-- Error -->
+    <string name="error_device_incompatible">ClothesCast በዚህ መሳሪያ ላይ ሊሰራ አይችልም — የ Android ስሪትዎ መተግበሪያው ለ UI የሚፈልጋቸው ባህሪያት ይጎድሉታል። ለስርዓት ዝማኔ ከመሳሪያዎ አምራች ጋር ይወያዩ።</string>
+
+    <!-- Widget -->
+    <string name="widget_label">ልብስ</string>
+    <string name="widget_description">የአሁኑ ወቅት ልብስ በፍጥነት ለማየት።</string>
+    <string name="widget_empty_title">እስካሁን ልብስ የለም</string>
+    <string name="widget_empty_subtitle">ClothesCastን ለመክፈት ይጫኑ</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">እንኳን ወደ ClothesCast መጡ</string>
+    <string name="onboarding_subtitle">ሶስት ፈጣን ምርጫዎች ብቻ ያደርጉታል። ቆይቶ በቅንብሮች ውስጥ ይቀይሩ።</string>
+    <string name="onboarding_subtitle_tv">ሁለት ፈጣን ምርጫዎች ብቻ ያደርጉታል። ቆይቶ በቅንብሮች ውስጥ ይቀይሩ።</string>
+    <string name="onboarding_notifications_title">ማሳወቂያዎች</string>
+    <string name="onboarding_notifications_description">ዕለታዊ ClothesCast ለማድረስ ያስፈልጋል።</string>
+    <string name="onboarding_notifications_grant">የማሳወቂያ ፍቃድ ስጥ</string>
+    <string name="onboarding_location_title">ቦታ</string>
+    <string name="onboarding_location_description">ለቦታዎ ትንበያ ማምጣት።</string>
+    <string name="onboarding_location_grant">የቦታ ፍቃድ ስጥ</string>
+    <string name="onboarding_location_grant_background">ሁልጊዜ ያለ ቦታ ፍቃድ ስጥ</string>
+    <string name="onboarding_location_background_needed">አንድ ተጨማሪ ደረጃ: ClothesCast ጠዋት ሲዘጋ ቦታዎን ሊያነብ \'ሁልጊዜ ፍቀድ\' ያስፈልጋል።</string>
+    <string name="onboarding_location_denied_hint">የቦታ ፍቃድ ተከልክሏል። ከተማ በእጅ ሊያስገቡ ይችላሉ።</string>
+    <string name="onboarding_location_enter_manual">ቦታ በእጅ አስገባ</string>
+    <string name="onboarding_location_enter_manual_hint">የቦታ ፍቃድ ከከለከሉ ወይም የመሳሪያዎ ቦታ ትክክል ካልሆነ ቦታዎን በእጅ ሊያስገቡ ይችላሉ።</string>
+    <string name="onboarding_location_using_device">ጠዋቱን የመሳሪያዎን ቦታ ይጠቀማል።</string>
+    <string name="onboarding_gemini_title">Gemini API key</string>
+    <string name="onboarding_gemini_description">ከፍተኛ ጥራት ያለው ድምፅ ለማግኘት Gemini ይጠቀሙ።</string>
+    <string name="onboarding_step_done">ተጠናቀቀ</string>
+    <string name="onboarding_skip">አሁን ዝለሉ</string>
+    <string name="onboarding_continue">ቀጥል</string>
+    <string name="onboarding_pair_from_phone">ከስልኩ ጋር አስተሳስር</string>
+
+    <!-- Pairing (TV) -->
+    <string name="pairing_title">ለማስተሳሰር ቅኝ</string>
+    <string name="pairing_instructions">ይህን QR code በስልክዎ ቅኝ፣ ከዚያ Gemini API key ወደሚከፈተው ቅጽ ይለጥፉ። ቁልፉ ቀጥታ ወደዚህ ቲቪ በቤት Wi-Fi ይላካል — ምንም የደመና ማስተላለፊያ የለም።</string>
+    <string name="pairing_qr_description">ወደ %1$s የሚያስተሳስር QR code</string>
+    <string name="pairing_cancel">ሰርዝ</string>
+    <string name="pairing_received">ቁልፉ ደረሰ — እያስቀመጠ ነው…</string>
+    <string name="pairing_timeout_title">የማስተሳሰሪያ መስኮት ጊዜ አለፈ</string>
+    <string name="pairing_timeout_body">የ5 ደቂቃ የማስተሳሰሪያ መስኮት ተዘጋ። አዲስ ለመክፈት እንደገና ሞክር ን ይጫኑ።</string>
+    <string name="pairing_error_title">ማስተሳሰር ሊጀምር አልቻለም</string>
+    <string name="pairing_error_body">ቲቪው ወደ Wi-Fi መጋጠሙን ያረጋግጡ፣ ከዚያ እንደገና ሞክሩ።</string>
+    <string name="pairing_retry">እንደገና ሞክር</string>
+
+    <!-- Settings root -->
+    <string name="settings_title">ቅንብሮች</string>
+    <string name="settings_back">ተመለስ</string>
+    <string name="settings_root_voice">ድምፅ</string>
+    <string name="settings_root_schedule">መርሃ ግብር</string>
+    <string name="settings_root_region">ክልል</string>
+    <string name="settings_root_clothes">ልብስ</string>
+    <string name="settings_root_display">ማሳያ</string>
+    <string name="settings_root_location">ቦታ</string>
+    <string name="settings_root_calendar">የቀን መቁጠሪያ</string>
+    <string name="settings_root_privacy">ግለነት</string>
+    <string name="settings_root_about">ስለ</string>
+    <string name="settings_root_schedule_subtitle">ማሳወቂያዎች እና ጊዜ</string>
+    <string name="settings_root_clothes_subtitle">ሙቀት እና ልብሶች</string>
+    <string name="settings_root_region_subtitle">ቋንቋዎች እና ክፍሎች</string>
+    <string name="settings_root_voice_subtitle">አቅራቢዎች እና ዘዬዎች</string>
+    <string name="settings_root_display_subtitle">ጭብጥ</string>
+    <string name="settings_root_location_subtitle">ራስ-ፈልጎ ወይም ከተማ ምረጥ</string>
+    <string name="settings_root_calendar_subtitle">የዛሬ ዝግጅቶች</string>
+    <string name="settings_root_privacy_subtitle">ስህተት + አጠቃቀም ሪፖርቶች</string>
+
+    <!-- Settings — display -->
+    <string name="settings_display_theme_title">ጭብጥ</string>
+    <string name="settings_display_theme_system">ስርዓቱን ተከተል</string>
+    <string name="settings_display_theme_light">ብርሃን</string>
+    <string name="settings_display_theme_dark">ጨለማ</string>
+    <string name="settings_display_charts_title">ቻርቶች</string>
+    <string name="settings_display_model_spread_label">በቻርቶቹ ላይ የሞዴል ልዩነት አሳይ</string>
+    <string name="settings_display_model_spread_description">እያንዳንዱ ዋና የአየር ሁኔታ ሞዴል ሰዓታዊ ትንበያ በሙቀት እና ዝናብ ቻርቶቹ ላይ ያሳያል። ትንበያው ዕርግጠኛ ባልሆነ ጊዜ ለማወቅ ጠቃሚ ነው።</string>
+
+    <!-- Settings — privacy -->
+    <string name="settings_privacy_telemetry_title">ስህተት + አጠቃቀም ሪፖርቶች</string>
+    <string name="settings_privacy_telemetry_label">ስህተት + አጠቃቀም ውሂብ ላክ</string>
+    <string name="settings_privacy_telemetry_description">ለገንቢው ስህተቶቹን ለማስተካከልና የትኞቹን ባህሪያት ማቆየት እንዳለበት ለመወሰን ስምን-አልባ ስህተት ሪፖርቶችና ጠቅላላ የአጠቃቀም ስታቲስቲክስ ይልካል።</string>
+    <string name="settings_privacy_telemetry_limits">ፈጽሞ አይላክም: የቀን መቁጠሪያ ዝግጅቶች፣ የቦታ መጋጠሚያዎች ወይም የቦታ ስሞች፣ የናሙና ጽሑፍ ወይም የማሳወቂያ ጽሑፍ፣ API keys፣ ትክክለኛ GPS፣ የማስታወቂያ መለያዎች።</string>
+    <string name="settings_privacy_open_policy">ሙሉ የግለነት ፖሊሲ አንብብ</string>
+
+    <!-- Settings — API key / Gemini -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">ከፍተኛ ጥራት ያለው ድምፅ ለማግኘት Gemini ይጠቀሙ።</string>
+    <string name="settings_api_key_status_set">Gemini ቁልፍ ተዋቅሯል።</string>
+    <string name="settings_api_key_status_unset">ነፃ API key ያግኙ aistudio.google.com ላይ</string>
+    <string name="settings_api_key_placeholder">Gemini API key ይለጥፉ</string>
+    <string name="settings_api_key_save">Gemini ቁልፍ አስቀምጥ</string>
+    <string name="settings_api_key_clear">የተቀመጠ Gemini ቁልፍ ሰርዝ</string>
+
+    <!-- Settings — location -->
+    <string name="settings_location_title">ቦታ</string>
+    <string name="settings_location_use_device">የመሳሪያ ቦታ ተጠቀም</string>
+    <string name="settings_location_use_device_description">የመጨረሻ ቦታ ግምት</string>
+    <string name="settings_location_detecting">እያሰሳ ነው…</string>
+    <string name="settings_location_grant_background">ፍቀድ</string>
+    <string name="settings_location_background_banner_title">ሁልጊዜ ያለ ቦታ ያስፈልጋል</string>
+    <string name="settings_location_background_banner_body">ከሌለ የጠዋቱ ትንበያ ቦታዎን ሊያነብ አይችልም።</string>
+    <string name="settings_location_unset">ምንም ቦታ አልተቀመጠም</string>
+    <string name="settings_location_manual_override">ቦታው ትክክል አይደለም? በእጅ ያስቀምጡ</string>
+    <string name="settings_location_manual_override_disclosure">ከተማ መምረጥ ራስ-ፈልጎን ያጠፋል።</string>
+    <string name="settings_location_clear">ቦታ ሰርዝ</string>
+    <string name="settings_location_search_title">ቦታ ፈልግ</string>
+    <string name="settings_location_query_label">ከተማ ወይም ቦታ</string>
+    <string name="settings_location_search">ፈልግ</string>
+    <string name="settings_location_searching">እየፈለገ ነው…</string>
+    <string name="settings_location_no_results">ምንም ውጤት የለም።</string>
+    <string name="settings_location_rationale_title">የቦታ ፍቃድ</string>
+    <string name="settings_location_rationale_body">ClothesCast ሀገርዎን ትንበያ ለማምጣት ቦታዎን ያነባል።</string>
+    <string name="settings_location_rationale_continue">ቀጥል</string>
+    <string name="settings_location_rationale_dismiss">አሁን አይሆንም</string>
+    <string name="settings_location_background_rationale_title">ሁልጊዜ ፍቀድ</string>
+    <string name="settings_location_background_rationale_body">ClothesCast ሲዘጋ ቦታዎን ሊያነብ \'ሁልጊዜ ፍቀድ\' ይምረጡ እናም የጠዋቱ ትንበያ ወቅቱን ጠብቆ ይዘምናል።</string>
+    <string name="settings_location_background_rationale_continue">ቅንብሮችን ክፈት</string>
+    <string name="settings_location_background_rationale_dismiss">አሁን አይሆንም</string>
+    <string name="settings_location_background_denied_title">ሁልጊዜ ያለ ፍቃድ አልተሰጠም</string>
+    <string name="settings_location_background_denied_body">\'ሁልጊዜ ፍቀድ\' ሳይኖር የጠዋቱ ትንበያ ራሱን ሊያዘምን አይችልም።</string>
+    <string name="settings_location_background_denied_open">ቅንብሮችን ክፈት</string>
+    <string name="settings_location_background_denied_keep">አሁን አይሆንም</string>
+
+    <!-- Settings — schedule -->
+    <string name="settings_schedule_title">ዕለታዊ ClothesCast</string>
+    <string name="settings_schedule_time_label">ጊዜ</string>
+    <string name="settings_schedule_days_label">የሳምንቱ ቀናት</string>
+    <string name="settings_daily_mention_evening_events">የምሽት ዝግጅቶችን ጥቀስ</string>
+    <string name="settings_tonight_title">ምሽታዊ ClothesCast</string>
+    <string name="settings_tonight_description">ዛሬ ምሽቱን ሁኔታ የሚሸፍን ምሽታዊ ሁለተኛ ClothesCast። ጸጥ ባሉ ምሽቶች ዝም ይላል፣ ዝግጅት ባለባቸው ምሽቶች ድምፅ ያሰማና ራሱን ያነባል።</string>
+    <string name="settings_tonight_enabled">ምሽታዊ ClothesCast አሳይ</string>
+    <string name="settings_tonight_time_label">ጊዜ</string>
+    <string name="settings_tonight_days_label">የሳምንቱ ቀናት</string>
+    <string name="settings_tonight_notify_only_on_events">የምሽት ዝግጅቶች ሲኖሩ ብቻ አሳውቅ</string>
+    <string name="settings_delivery_label">አደራረስ</string>
+    <string name="settings_delivery_notification_only">ማሳወቂያ ብቻ</string>
+    <string name="settings_delivery_tts_only">በድምፅ ብቻ</string>
+    <string name="settings_delivery_notification_and_tts">ማሳወቂያ እና በድምፅ</string>
+
+    <!-- Settings — TTS / voice -->
+    <string name="settings_tts_engine_title">የድምፅ ሞተር</string>
+    <string name="settings_tts_engine_description">Gemini ከመሳሪያ ድምፅ በጣም ተፈጥሯዊ ይሰማል ነገር ግን ሲናገር የኔትወርክ ጥሪ ያስፈልጋል። Gemini ካልሆነ ወደ መሳሪያ ድምፅ ይመለሳል።</string>
+    <string name="settings_tts_engine_device">መሳሪያ (offline, ነፃ)</string>
+    <string name="settings_tts_engine_gemini">Gemini (ከፍተኛ ጥራት, online)</string>
+    <string name="settings_tts_voice_label">ድምፅ</string>
+    <string name="settings_tts_voice_dismiss">ተጠናቀቀ</string>
+    <string name="settings_tts_style_label">ዘይቤ</string>
+    <string name="settings_tts_style_weather_forecaster">የአየር ሁኔታ አስተናጋጅ</string>
+    <string name="settings_tts_style_pirate">ባህር ወንበዴ</string>
+    <string name="settings_tts_style_cowboy">ካውቦይ</string>
+    <string name="settings_tts_style_shakespearean">ሼክስፒርያዊ</string>
+    <string name="settings_tts_style_surfer">ሰርፈር</string>
+    <string name="settings_tts_style_parent">ወላጅ</string>
+    <string name="settings_tts_style_child">ልጅ</string>
+    <string name="settings_tts_style_teenager">ወጣት</string>
+    <string name="settings_tts_style_grandparent">አያት</string>
+    <string name="settings_tts_style_kids_host">የህፃናት ቲቪ አቅራቢ</string>
+    <string name="settings_tts_style_radio_host">የቶክባክ አቅራቢ</string>
+    <string name="settings_tts_style_morning_dj">የጠዋቱ ዲጄ</string>
+    <string name="settings_tts_style_science_teacher">የሳይንስ መምህር</string>
+    <string name="settings_tts_style_historian">ታሪክ ምሁር</string>
+    <string name="settings_tts_style_sportscaster">የስፖርት አስተናጋጅ</string>
+    <string name="settings_tts_style_stadium_announcer">የስታዲዩም አስታዋቂ</string>
+    <string name="settings_tts_style_storyteller">ተረት ተራኪ</string>
+    <string name="settings_tts_style_fitness_instructor">የአካል ብቃት አሰልጣኝ</string>
+    <string name="settings_tts_style_morning_presenter">የጠዋቱ ሬዲዮ አቅራቢ</string>
+    <string name="settings_tts_style_custom">ብጁ…</string>
+    <string name="settings_tts_style_custom_label">ብጁ መመሪያ</string>
+    <string name="settings_tts_style_custom_placeholder">ምሳሌ: የሚከተለውን እንደ ጥብቅ ቤተ-መፃህፍት ጠባቂ በሹክሹክታ አንብብ</string>
+    <string name="settings_tts_device_voice_label">የመሳሪያ ድምፅ</string>
+    <string name="settings_tts_device_voice_auto">ራስ (ለዘዬ ምርጥ)</string>
+    <string name="settings_tts_device_voice_currently">አሁን: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">እየጫነ ነው…</string>
+    <string name="settings_tts_device_voice_network">ኔትወርክ</string>
+    <string name="settings_tts_device_voice_offline">Offline</string>
+    <string name="settings_tts_install_google_hint">ከፍተኛ ጥራት ያላቸው ድምፆች ለማግኘት የ Google ጽሑፍ-ወደ-ንግግር ሞተር ይጫኑ።</string>
+    <string name="settings_tts_install_google_button">Google TTS ጫን</string>
+    <string name="settings_tts_test">ድምፅ ሙከራ</string>
+    <string name="settings_tts_test_in_flight">እየሞከረ ነው — እባክዎ ይጠብቁ…</string>
+
+    <!-- Settings — units -->
+    <string name="settings_temperature_unit_title">የሙቀት ክፍል</string>
+    <string name="settings_temperature_unit_celsius">ሴልሺየስ (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">ፋረንሃይት (°F)</string>
+    <string name="settings_distance_unit_title">የርቀት ክፍል</string>
+    <string name="settings_distance_unit_kilometers">ኪሎሜትር</string>
+    <string name="settings_distance_unit_miles">ማይሎች</string>
+
+    <!-- Settings — notifications permission -->
+    <string name="settings_notification_permission_title">ማሳወቂያዎች ታግደዋል</string>
+    <string name="settings_notification_permission_description">ያለ ማሳወቂያ ፍቃድ ዕለታዊ ClothesCast የሚሄድበት ቦታ የለም። ነገ ጠዋት ClothesCast እንዲልክ ፍቃዱን ስጥ።</string>
+    <string name="settings_notification_permission_grant">የማሳወቂያ ፍቃድ ስጥ</string>
+
+    <!-- Settings — calendar -->
+    <string name="settings_calendar_title">የቀን መቁጠሪያ</string>
+    <string name="settings_calendar_use_events">የዛሬ የቀን መቁጠሪያ ዝግጅቶችን ተጠቀም</string>
+    <string name="settings_calendar_description_off">የጠዋቱ ትንበያ ለዛሬ ዝግጅቶቻቸው ብጁ ያደርጋል — ርዕሶችና ጊዜዎች ብቻ ይጠቀማሉ፣ ምንም ከመሳሪያው አይወጣም።</string>
+    <string name="settings_calendar_description_on">የጠዋቱ ትንበያ ለዛሬ ዝግጅቶቻቸው ብጁ እያደረገ ነው። ርዕሶችና ጊዜዎች ብቻ ይጠቀማሉ፣ ምንም ከመሳሪያው አይወጣም።</string>
+    <string name="settings_calendar_grant_permission">የቀን መቁጠሪያ ፍቃድ ስጥ</string>
+    <string name="settings_calendar_open_settings">የቀን መቁጠሪያ ፍቃድ ተከልክሏል። ከስርዓት ቅንብሮች ፍቀዱ።</string>
+
+    <!-- Settings — about -->
+    <string name="settings_about_title">ስለ</string>
+    <string name="settings_about_version">ስሪት %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s ግንባታ</string>
+    <string name="settings_about_source">Source code on GitHub</string>
+    <string name="settings_about_dontkillmyapp">የዳራ ገደቦች (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">ስህተት ሪፖርት አጋራ</string>
+    <string name="settings_about_version_copied">ስሪት ወደ ክሊፕቦርድ ተቀድቷል</string>
+
+    <!-- Bug report consent -->
+    <string name="bug_report_consent_title">ስህተት ሪፖርት ያጋሩ?</string>
+    <string name="bug_report_consent_body">ይህ ችግሮችን ለመመርመር ይረዳል። ሪፖርቱ ቦታዎን፣ የመተግበሪያ ቅንብሮችን፣ እና የቅርብ ጊዜ እንቅስቃሴዎን ጨምሮ ስሱ ግላዊ መረጃ ይይዛል። ከመላክዎ በፊት መፈተሸና ማርትዕ ይችላሉ።</string>
+    <string name="bug_report_consent_dont_show_again">ዳግም አታሳይ</string>
+    <string name="bug_report_consent_continue">ቀጥል</string>
+    <string name="bug_report_consent_cancel">ሰርዝ</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_daily_insight_name">ዕለታዊ ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">የጠዋቱ የአየር ሁኔታ ማጠቃለያ ለምን ተመዘገቡ።</string>
+    <string name="notification_daily_insight_title">የዛሬ ClothesCast</string>
+    <string name="notification_channel_tonight_insight_default_name">ምሽታዊ ClothesCast (ዝግጅቶች ሲኖሩ)</string>
+    <string name="notification_channel_tonight_insight_default_description">ዛሬ ምሽት የቀን መቁጠሪያ ዝግጅቶቻቸው ሲኖሩ የምሽቱ የአየር ሁኔታ ማጠቃለያ።</string>
+    <string name="notification_channel_tonight_insight_silent_name">ምሽታዊ ClothesCast (ዝምታ)</string>
+    <string name="notification_channel_tonight_insight_silent_description">ምሽቱ ጸጥ ሲሆን የምሽቱ የአየር ሁኔታ ማጠቃለያ። ዝምታ ሆኖ ይለጠፋል።</string>
+    <string name="notification_tonight_insight_title">የዛሬ ምሽት ClothesCast</string>
+    <string name="notification_channel_weather_alerts_name">የጠና የአየር ሁኔታ ማስጠንቀቂያዎች</string>
+    <string name="notification_channel_weather_alerts_description">ለቦታዎ አካባቢ ለሚጎዱ ጠና ወይም ከፍተኛ የአየር ሁኔታ ዝግጅቶች ከፍተኛ ቅድሚያ ማስጠንቀቂያዎች።</string>
+    <string name="notification_weather_alert_title">የአየር ሁኔታ ማስጠንቀቂያ: %1$s</string>
+
+    <!-- Insight prose -->
     <string name="insight_lead_today">ዛሬ</string>
     <string name="insight_lead_tonight">ዛሬ ምሽት</string>
     <!-- Amharic: "ዛሬ ምቹ ይሆናል።" -->
@@ -80,5 +413,17 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Amharic: bare digits for TTS-friendly 24h time. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
+    <!-- insight_precip_chance: %1$s = condition word, %2$s = time phrase -->
+    <string name="insight_precip_chance">%1$s %2$s ሊኖር ይችላል።</string>
+    <!-- insight_tie_in_at_night: bare imperative, "tonight" already established -->
+    <string name="insight_tie_in_at_night">%1$s ይዙ።</string>
+    <!-- insight_tie_in_with_rain_chance: %1$s = item, %2$s = time -->
+    <string name="insight_tie_in_with_rain_chance">%1$s ይዙ፣ ዝናብ ሊኖር ይችላል %2$s ሰዓት።</string>
+    <!-- insight_evening_rain / insight_evening_rain_chance: %1$s = time -->
+    <string name="insight_evening_rain">ዛሬ ምሽት ዝናብ %1$s ሰዓት።</string>
+    <string name="insight_evening_rain_chance">ዛሬ ምሽት ዝናብ ሊኖር ይችላል %1$s ሰዓት።</string>
 
+    <!-- Miscellaneous -->
+    <string name="settings_default_bottom_title">መደበኛ ታች</string>
+    <string name="settings_default_bottom_description">ሹርቴ ለመልበስ ሞቃት ሳይሆን ለዋናው ማያ ምን እናሳያለን።</string>
 </resources>

@@ -645,7 +645,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_outfit_top_thin_jacket">Casaco leve</string>
     <string name="today_outfit_top_thick_coat">Casacão</string>
     <string name="today_outfit_top_puffer_jacket">Casaco de penas</string>
-    <string name="today_outfit_bottom_skirt">Saia</string>
+    <string name="today_outfit_bottom_long_skirt">Saia</string>
     <string name="today_outfit_bottom_jeans">Calças de ganga</string>
 
     <string name="error_device_incompatible">O ClothesCast não pode funcionar neste dispositivo — o teu build do Android não tem uma funcionalidade exigida pela interface da aplicação (Configuration.fontWeightAdjustment, esperada no Android 12 ou superior). Contacta o fabricante do teu dispositivo para obteres uma atualização do sistema.</string>
@@ -726,4 +726,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_tts_style_custom">Personalizado…</string>
     <string name="settings_tts_style_custom_label">Diretriz personalizada</string>
     <string name="settings_tts_style_custom_placeholder">ex.: Lê o seguinte como um bibliotecário severo a sussurrar</string>
+    <string name="today_forecast_air_section_title">Temperatura do ar</string>
+    <string name="settings_default_bottom_title">Parte inferior padrão</string>
+    <string name="settings_default_bottom_description">O que sugerimos no ecrã inicial quando não está quente o suficiente para calções.</string>
 </resources>

@@ -90,4 +90,366 @@ standard in Israeli digital communication.
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
+    <string name="today_forecast_air_section_title">טמפרטורת אוויר</string>
+    <string name="settings_default_bottom_title">תחתון סטנדרטי</string>
+    <string name="settings_default_bottom_description">מה שאנחנו מציעים במסך הבית כשלא חם מספיק לשורטס.</string>
+
+    <!-- Error / compatibility -->
+    <string name="error_device_incompatible">ClothesCast לא יכול לפעול במכשיר זה — גרסת Android שלך חסרה תכונה הנדרשת לממשק המשתמש. נא לפנות ליצרן המכשיר לקבלת עדכון מערכת.</string>
+
+    <!-- Today screen -->
+    <string name="today_title">היום</string>
+    <string name="today_open_settings">פתח/י הגדרות</string>
+    <string name="today_more_options">אפשרויות נוספות</string>
+    <string name="today_report_a_bug">דווח/י על תקלה</string>
+    <string name="today_refresh">רענן/י</string>
+    <string name="today_refresh_toast_daily">מרענן את ClothesCast היומי שלך — יופיע בקרוב.</string>
+    <string name="today_refresh_toast_nightly">מרענן את ClothesCast הלילי שלך — יופיע בקרוב.</string>
+    <string name="today_empty_title">אין ClothesCast עדיין</string>
+    <string name="today_empty_subtitle">ClothesCast הבוקר שלך יופיע כאן לאחר שייווצר. הגדר/י את מיקומך בהגדרות, ואז הקש/י על טען עכשיו.</string>
+    <string name="today_fetch_now">טען עכשיו</string>
+    <string name="today_generated_at">נוצר ב-%1$s</string>
+    <string name="today_location_unknown">המיקום שלך</string>
+
+    <!-- Today — outfit card -->
+    <string name="today_outfit_title">מה ללבוש</string>
+    <string name="today_outfit_label_today">היום</string>
+    <string name="today_outfit_label_tonight">הלילה</string>
+    <string name="today_outfit_label_tomorrow">מחר</string>
+    <string name="today_outfit_top_polo">פולו</string>
+    <string name="today_outfit_top_thin_jacket">ז׳קט דק</string>
+    <string name="today_outfit_top_thick_coat">מעיל כבד</string>
+    <string name="today_outfit_top_puffer_jacket">מעיל פוך</string>
+    <string name="today_outfit_bottom_long_skirt">חצאית ארוכה</string>
+    <string name="today_outfit_bottom_jeans">ג׳ינס</string>
+
+    <!-- Today — rationale sheet -->
+    <string name="today_rationale_title">למה הלבוש הזה?</string>
+    <string name="today_rationale_show">למה?</string>
+    <string name="today_rationale_dismiss">הבנתי</string>
+    <string name="today_rationale_threshold_decrease">הורד/י סף ב-1 מעלה</string>
+    <string name="today_rationale_threshold_increase">העלה/י סף ב-1 מעלה</string>
+    <string name="today_rationale_threshold_changed_hint">רענן/י כדי לראות את הלבוש החדש.</string>
+    <string name="today_rationale_unavailable">אין הסבר זמין — פתח/י את האפליקציה לאחר הרענון הבא.</string>
+    <string name="today_rationale_min_below_with_time">מינימום טמפ׳ מורגשת %1$s%2$s בשעה %3$s, מתחת ל-%4$s%2$s</string>
+    <string name="today_rationale_min_below">מינימום טמפ׳ מורגשת %1$s%2$s, מתחת ל-%3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">מינימום טמפ׳ מורגשת %1$s%2$s בשעה %3$s, לפחות %4$s%2$s</string>
+    <string name="today_rationale_min_above">מינימום טמפ׳ מורגשת %1$s%2$s, לפחות %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">מקסימום טמפ׳ מורגשת רק %1$s%2$s בשעה %3$s, מתחת ל-%4$s%2$s</string>
+    <string name="today_rationale_max_below">מקסימום טמפ׳ מורגשת רק %1$s%2$s, מתחת ל-%3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">מקסימום טמפ׳ מורגשת %1$s%2$s בשעה %3$s, לפחות %4$s%2$s</string>
+    <string name="today_rationale_max_above">מקסימום טמפ׳ מורגשת %1$s%2$s, לפחות %3$s%2$s</string>
+
+    <!-- Widget -->
+    <string name="widget_label">לבוש</string>
+    <string name="widget_description">הלבוש של התקופה הנוכחית במבט מהיר.</string>
+    <string name="widget_empty_title">אין לבוש עדיין</string>
+    <string name="widget_empty_subtitle">הקש/י לפתיחת ClothesCast</string>
+
+    <!-- Today — forecast chart -->
+    <string name="today_forecast_title">טמפרטורה מורגשת</string>
+    <string name="today_forecast_min_max">מרגיש כמו %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">טמפ׳ מורגשת (%1$s) לפי שעה</string>
+    <string name="today_forecast_air_min_max">אוויר %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_air">טמפרטורת אוויר (%1$s) לפי שעה</string>
+
+    <!-- Today — precipitation chart -->
+    <string name="today_precipitation_title">סיכוי לגשם</string>
+    <string name="today_precipitation_peak">שיא %1$d%% בשעה %2$s</string>
+    <string name="today_precipitation_dry">לא צפוי גשם היום</string>
+
+    <!-- Today — model divergence / confidence -->
+    <string name="today_chart_model_legend_label">מודלים:</string>
+    <string name="today_chart_main_line_label">משולב</string>
+    <string name="today_chart_divergence_summary">המודלים חלוקים ביותר בשעה %1$s (Δ %2$.1f%3$s מורגש) — בעיקר %4$s, %5$s</string>
+    <string name="today_factor_air_temperature">טמפרטורת אוויר</string>
+    <string name="today_factor_wind_speed">מהירות רוח</string>
+    <string name="today_factor_cloud_cover">כיסוי ענן</string>
+    <string name="today_factor_humidity">לחות</string>
+
+    <!-- Today — wind / cloud / humidity charts -->
+    <string name="today_wind_title">מהירות רוח</string>
+    <string name="today_wind_subtitle">מהירות רוח (%1$s) לפי מודל ושעה</string>
+    <string name="today_cloud_title">כיסוי ענן</string>
+    <string name="today_cloud_subtitle">כיסוי ענן כולל (%) לפי מודל ושעה</string>
+    <string name="today_humidity_title">לחות</string>
+    <string name="today_humidity_subtitle">לחות יחסית (%) לפי מודל ושעה</string>
+
+    <!-- Today — confidence callout -->
+    <string name="today_confidence_high">אמון גבוה — מודלים עיקריים מסכימים</string>
+    <string name="today_confidence_medium">אמון בינוני</string>
+    <string name="today_confidence_low">אמון נמוך — תחזיות אינן מסכימות</string>
+    <string name="today_confidence_spread">פיזור: %1$.1f°C, %2$.0f%% משקעים על פני %3$d מודלים</string>
+    <string name="today_low_confidence_callout_title">התחזיות חלוקות</string>
+    <string name="today_low_confidence_callout_body">טווח הטמפרטורה משתנה ב-%1$.1f°C וסיכוי לגשם ב-%2$.0f%% על פני %3$d מודלים.</string>
+
+    <!-- Today — loading / error states -->
+    <string name="today_working">עובד/ת — מוריד/ת את ClothesCast שלך…</string>
+    <string name="today_retrying">הניסיון האחרון נכשל — מנסה שוב…</string>
+    <string name="today_failed_title">הניסיון האחרון נכשל</string>
+    <string name="today_failed_unexpected_http">שגיאת HTTP בלתי צפויה משירות התחזית.</string>
+    <string name="today_failed_unhandled">אירעה שגיאה בלתי צפויה.</string>
+    <string name="today_failed_no_location">לא הצלחנו לאתר את מיקומך. הענק/י הרשאת מיקום תמידית, או הגדר/י עיר בהגדרות.</string>
+    <string name="today_failed_show_details">הצג/י פרטים</string>
+    <string name="today_failed_hide_details">הסתר/י פרטים</string>
+
+    <!-- Today — location required -->
+    <string name="today_location_required_title">הגדר/י את מיקומך</string>
+    <string name="today_location_required_body">ClothesCast צריך לדעת היכן אתה/את כדי לאחזר את התחזית. הענק/י הרשאת מיקום תמידית, או בחר/י עיר.</string>
+    <string name="today_location_required_action">פתח/י הגדרות מיקום</string>
+
+    <!-- Today — crash banner -->
+    <string name="today_crash_banner_title">ההרצה האחרונה קרסה</string>
+    <string name="today_crash_banner_body">דוח קריסה נשמר במכשירך. לשתף אותו כדי שהבאג יתוקן? שום דבר לא נשלח עד שתבחר/י יעד.</string>
+    <string name="today_crash_banner_share">שתף/י דוח</string>
+    <string name="today_crash_banner_dismiss">סגור/י</string>
+
+    <!-- Today — update banners -->
+    <string name="today_update_available_title">עדכון זמין</string>
+    <string name="today_update_available_body">גרסה חדשה יותר של ClothesCast זמינה ב-Play Store.</string>
+    <string name="today_update_available_action">עדכן/י</string>
+    <string name="today_update_available_dismiss">לא עכשיו</string>
+    <string name="today_update_downloaded_body">העדכון הורד. הפעל/י מחדש לסיום ההתקנה.</string>
+    <string name="today_update_downloaded_action">הפעל/י מחדש</string>
+
+    <!-- Today — telemetry notice -->
+    <string name="today_telemetry_notice_title">דוחות קריסה ושימוש פועלים</string>
+    <string name="today_telemetry_notice_body">ClothesCast שולח דוחות קריסה אנונימיים וסטטיסטיקות שימוש כדי לסייע בתיקון באגים. אין נתוני לוח שנה, מיקום או טקסט תובנה. כבה/י בכל עת בהגדרות.</string>
+    <string name="today_telemetry_notice_open_settings">פתח/י הגדרות פרטיות</string>
+    <string name="today_telemetry_notice_dismiss">סגור/י</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">ברוך/ה הבא/ה ל-ClothesCast</string>
+    <string name="onboarding_subtitle">שלוש בחירות מהירות ואתה/את מוכן/ה. שנה/י מאוחר יותר בהגדרות.</string>
+    <string name="onboarding_subtitle_tv">שתי בחירות מהירות ואתה/את מוכן/ה. שנה/י מאוחר יותר בהגדרות.</string>
+    <string name="onboarding_notifications_title">התראות</string>
+    <string name="onboarding_notifications_description">נדרש למסירת ClothesCast היומי שלך.</string>
+    <string name="onboarding_notifications_grant">הענק/י הרשאת התראות</string>
+    <string name="onboarding_location_title">מיקום</string>
+    <string name="onboarding_location_description">אחזר/י תחזית עבור מיקומך המשוער.</string>
+    <string name="onboarding_location_grant">הענק/י הרשאת מיקום</string>
+    <string name="onboarding_location_grant_background">הענק/י מיקום תמידי</string>
+    <string name="onboarding_location_background_needed">עוד שלב אחד: ClothesCast זקוק ל\'אפשר בכל עת\' כדי שתחזית הבוקר תוכל לקרוא את מיקומך כשהאפליקציה סגורה.</string>
+    <string name="onboarding_location_denied_hint">הרשאת מיקום נדחתה. תוכל/י לבחור עיר ידנית במקום.</string>
+    <string name="onboarding_location_enter_manual">הזן/י מיקום ידנית</string>
+    <string name="onboarding_location_enter_manual_hint">תוכל/י להזין את מיקומך ידנית אם תדחה/י את הרשאת המיקום או אם מיקום המכשיר שלך שגוי.</string>
+    <string name="onboarding_location_using_device">משתמש/ת במיקום המכשיר שלך בכל בוקר.</string>
+    <string name="onboarding_gemini_title">מפתח Gemini API</string>
+    <string name="onboarding_gemini_description">השתמש/י ב-Gemini לקבלת קולות איכותיים.</string>
+    <string name="onboarding_step_done">סיום</string>
+    <string name="onboarding_skip">דלג/י לעת עתה</string>
+    <string name="onboarding_continue">המשך/י</string>
+    <string name="onboarding_pair_from_phone">צמד/י מהטלפון במקום</string>
+
+    <!-- Pairing (TV) -->
+    <string name="pairing_title">סרוק/י לצימוד</string>
+    <string name="pairing_instructions">סרוק/י את קוד ה-QR הזה עם הטלפון שלך, ואז הדבק/י את מפתח Gemini API שלך בטופס שנפתח. המפתח יישלח ישירות לטלוויזיה זו דרך ה-Wi-Fi הביתי שלך — ללא ממסר ענן.</string>
+    <string name="pairing_qr_description">קוד QR המקשר אל %1$s</string>
+    <string name="pairing_cancel">ביטול</string>
+    <string name="pairing_received">המפתח התקבל — שומר…</string>
+    <string name="pairing_timeout_title">חלון הצימוד פג</string>
+    <string name="pairing_timeout_body">חלון הצימוד של 5 דקות נסגר. הקש/י על נסה שוב לפתיחת חלון חדש.</string>
+    <string name="pairing_error_title">לא ניתן להתחיל צימוד</string>
+    <string name="pairing_error_body">ודא/י שהטלוויזיה מחוברת ל-Wi-Fi, ואז נסה/י שוב.</string>
+    <string name="pairing_retry">נסה/י שוב</string>
+
+    <!-- Settings — root menu -->
+    <string name="settings_title">הגדרות</string>
+    <string name="settings_back">חזור/י</string>
+    <string name="settings_root_voice">קול</string>
+    <string name="settings_root_schedule">לוח זמנים</string>
+    <string name="settings_root_region">אזור</string>
+    <string name="settings_root_clothes">בגדים</string>
+    <string name="settings_root_display">תצוגה</string>
+    <string name="settings_root_location">מיקום</string>
+    <string name="settings_root_calendar">לוח שנה</string>
+    <string name="settings_root_privacy">פרטיות</string>
+    <string name="settings_root_about">אודות</string>
+    <string name="settings_root_schedule_subtitle">התראות וזמנים</string>
+    <string name="settings_root_clothes_subtitle">טמפרטורות ולבוש</string>
+    <string name="settings_root_region_subtitle">שפות ויחידות</string>
+    <string name="settings_root_voice_subtitle">ספקים ומבטאים</string>
+    <string name="settings_root_display_subtitle">ערכת נושא</string>
+    <string name="settings_root_location_subtitle">זיהוי אוטומטי או בחירת עיר</string>
+    <string name="settings_root_calendar_subtitle">אירועי היום</string>
+    <string name="settings_root_privacy_subtitle">דוחות קריסה ושימוש</string>
+
+    <!-- Settings — display -->
+    <string name="settings_display_theme_title">ערכת נושא</string>
+    <string name="settings_display_theme_system">עקוב/י אחר המערכת</string>
+    <string name="settings_display_theme_light">בהיר</string>
+    <string name="settings_display_theme_dark">כהה</string>
+    <string name="settings_display_charts_title">גרפים</string>
+    <string name="settings_display_model_spread_label">הצג/י פיזור מודלים בגרפים</string>
+    <string name="settings_display_model_spread_description">מציג שכבת-על של התחזית השעתית של כל מודל מזג אוויר עיקרי על גרפי הטמפרטורה והגשם. שימושי לזיהוי אי-ודאות בתחזית.</string>
+
+    <!-- Settings — privacy / telemetry -->
+    <string name="settings_privacy_telemetry_title">דוחות קריסה ושימוש</string>
+    <string name="settings_privacy_telemetry_label">שלח/י נתוני קריסה ושימוש</string>
+    <string name="settings_privacy_telemetry_description">שולח דוחות קריסה אנונימיים וסטטיסטיקות שימוש מצטברות כדי לסייע למפתח לתקן באגים ולהחליט אילו תכונות לשמור.</string>
+    <string name="settings_privacy_telemetry_limits">לעולם לא נשלח: אירועי לוח שנה, קואורדינטות מיקום או שמות מקומות, טקסט תובנה או התראות, מפתחות API, GPS מדויק, מזהי פרסום.</string>
+    <string name="settings_privacy_open_policy">קרא/י את מדיניות הפרטיות המלאה</string>
+
+    <!-- Settings — API key -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">השתמש/י ב-Gemini לקבלת קולות איכותיים.</string>
+    <string name="settings_api_key_status_set">מפתח Gemini מוגדר.</string>
+    <string name="settings_api_key_status_unset">קבל/י מפתח API חינמי ב-aistudio.google.com</string>
+    <string name="settings_api_key_placeholder">הדבק/י את מפתח Gemini API שלך</string>
+    <string name="settings_api_key_save">שמור/י מפתח Gemini</string>
+    <string name="settings_api_key_clear">מחק/י מפתח Gemini שמור</string>
+
+    <!-- Settings — location -->
+    <string name="settings_location_title">מיקום</string>
+    <string name="settings_location_use_device">השתמש/י במיקום המכשיר</string>
+    <string name="settings_location_use_device_description">מיקום משוער אחרון</string>
+    <string name="settings_location_detecting">מזהה…</string>
+    <string name="settings_location_grant_background">הענק/י</string>
+    <string name="settings_location_background_banner_title">נדרש מיקום תמידי</string>
+    <string name="settings_location_background_banner_body">בלעדיו, תחזית הבוקר לא יכולה לקרוא את מיקומך.</string>
+    <string name="settings_location_unset">לא הוגדר מיקום</string>
+    <string name="settings_location_manual_override">מיקום שגוי? הגדר/י ידנית</string>
+    <string name="settings_location_manual_override_disclosure">בחירת עיר מכבה את הזיהוי האוטומטי.</string>
+    <string name="settings_location_clear">נקה/י מיקום</string>
+    <string name="settings_location_search_title">חפש/י מיקום</string>
+    <string name="settings_location_query_label">עיר או מקום</string>
+    <string name="settings_location_search">חפש/י</string>
+    <string name="settings_location_searching">מחפש/ת…</string>
+    <string name="settings_location_no_results">אין תוצאות.</string>
+    <string name="settings_location_rationale_title">גישה למיקום</string>
+    <string name="settings_location_rationale_body">ClothesCast קורא את מיקומך כדי לאחזר את התחזית המקומית שלך.</string>
+    <string name="settings_location_rationale_continue">המשך/י</string>
+    <string name="settings_location_rationale_dismiss">לא עכשיו</string>
+    <string name="settings_location_background_rationale_title">אפשר/י בכל עת</string>
+    <string name="settings_location_background_rationale_body">אפשר/י ל-ClothesCast לקרוא את מיקומך כשהוא סגור כדי שתחזית הבוקר תתעדכן בזמן.</string>
+    <string name="settings_location_background_rationale_continue">פתח/י הגדרות</string>
+    <string name="settings_location_background_rationale_dismiss">לא עכשיו</string>
+    <string name="settings_location_background_denied_title">מיקום תמידי לא הוענק</string>
+    <string name="settings_location_background_denied_body">ללא \'אפשר בכל עת\' תחזית הבוקר לא יכולה להתעדכן אוטומטית.</string>
+    <string name="settings_location_background_denied_open">פתח/י הגדרות</string>
+    <string name="settings_location_background_denied_keep">לא עכשיו</string>
+
+    <!-- Settings — schedule (daily + nightly) -->
+    <string name="settings_schedule_title">ClothesCast יומי</string>
+    <string name="settings_schedule_time_label">שעה</string>
+    <string name="settings_schedule_days_label">ימות השבוע</string>
+    <string name="settings_daily_mention_evening_events">ציין/י אירועי ערב</string>
+    <string name="settings_tonight_title">ClothesCast לילי</string>
+    <string name="settings_tonight_description">ClothesCast שני בערב המכסה את מזג האוויר הלילי. בערבים שקטים נשאר שקט; בערבי אירועים משמיע צליל וקורא את עצמו.</string>
+    <string name="settings_tonight_enabled">הצג/י ClothesCast לילי</string>
+    <string name="settings_tonight_time_label">שעה</string>
+    <string name="settings_tonight_days_label">ימות השבוע</string>
+    <string name="settings_tonight_notify_only_on_events">הודע/י רק כשיש אירועי ערב</string>
+
+    <!-- Settings — delivery / TTS -->
+    <string name="settings_delivery_label">משלוח</string>
+    <string name="settings_delivery_notification_only">התראה בלבד</string>
+    <string name="settings_delivery_tts_only">קריאה בקול בלבד</string>
+    <string name="settings_delivery_notification_and_tts">התראה וקריאה בקול</string>
+    <string name="settings_tts_engine_title">מנוע קול</string>
+    <string name="settings_tts_engine_description">Gemini נשמע טבעי בהרבה מקול המכשיר אך זקוק לחיבור רשת בזמן הדיבור. חוזר לקול המכשיר אם Gemini נכשל.</string>
+    <string name="settings_tts_engine_device">מכשיר (ללא אינטרנט, חינם)</string>
+    <string name="settings_tts_engine_gemini">Gemini (איכות גבוהה, מקוון)</string>
+    <string name="settings_tts_voice_label">קול</string>
+    <string name="settings_tts_voice_dismiss">סיום</string>
+    <string name="settings_tts_style_label">סגנון</string>
+    <string name="settings_tts_style_weather_forecaster">חוזאי מזג אוויר</string>
+    <string name="settings_tts_style_pirate">פיראט</string>
+    <string name="settings_tts_style_cowboy">קאובוי</string>
+    <string name="settings_tts_style_shakespearean">שקספירי</string>
+    <string name="settings_tts_style_surfer">גולש/ת גלים</string>
+    <string name="settings_tts_style_parent">הורה</string>
+    <string name="settings_tts_style_child">ילד/ה</string>
+    <string name="settings_tts_style_teenager">מתבגר/ת</string>
+    <string name="settings_tts_style_grandparent">סבא/סבתא</string>
+    <string name="settings_tts_style_kids_host">מגיש/ת טלוויזיה לילדים</string>
+    <string name="settings_tts_style_radio_host">מגיש/ת תוכנית שיחות</string>
+    <string name="settings_tts_style_morning_dj">DJ בוקר</string>
+    <string name="settings_tts_style_science_teacher">מורה למדעים</string>
+    <string name="settings_tts_style_historian">היסטוריון/ית</string>
+    <string name="settings_tts_style_sportscaster">פרשן/ית ספורט</string>
+    <string name="settings_tts_style_stadium_announcer">כרוז/ת אצטדיון</string>
+    <string name="settings_tts_style_storyteller">מספר/ת סיפורים</string>
+    <string name="settings_tts_style_fitness_instructor">מדריך/ה כושר</string>
+    <string name="settings_tts_style_morning_presenter">מגיש/ת רדיו בוקר</string>
+    <string name="settings_tts_style_custom">מותאם אישית…</string>
+    <string name="settings_tts_style_custom_label">הוראה מותאמת אישית</string>
+    <string name="settings_tts_style_custom_placeholder">לדוגמה: קרא/י את הטקסט הבא כספרן/ית קפדני/ת שלוחש/ת</string>
+    <string name="settings_tts_device_voice_label">קול המכשיר</string>
+    <string name="settings_tts_device_voice_auto">אוטומטי (הטוב ביותר למבטא)</string>
+    <string name="settings_tts_device_voice_currently">כעת: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">טוען/ת…</string>
+    <string name="settings_tts_device_voice_network">רשת</string>
+    <string name="settings_tts_device_voice_offline">ללא אינטרנט</string>
+    <string name="settings_tts_install_google_hint">התקן/י את מנוע הטקסט-לדיבור של Google לקולות איכותיים יותר.</string>
+    <string name="settings_tts_install_google_button">התקן/י Google TTS</string>
+    <string name="settings_tts_test">בדוק/י קול</string>
+    <string name="settings_tts_test_in_flight">בודק/ת — אנא המתן/י…</string>
+
+    <!-- Settings — units -->
+    <string name="settings_temperature_unit_title">יחידת טמפרטורה</string>
+    <string name="settings_temperature_unit_celsius">צלזיוס (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">פרנהייט (°F)</string>
+    <string name="settings_distance_unit_title">יחידת מרחק</string>
+    <string name="settings_distance_unit_kilometers">קילומטרים</string>
+    <string name="settings_distance_unit_miles">מיילים</string>
+
+    <!-- Settings — clothes rules -->
+    <string name="settings_clothes_title">כללי לבוש</string>
+    <string name="settings_clothes_description">אם תחזית חוצה את אחד מהספים הללו, הפריט יופיע ב-ClothesCast היומי שלך.</string>
+
+    <!-- Garment names (additional) -->
+    <string name="garment_puffer">מעיל פוך</string>
+    <string name="garment_thin_jacket">ז׳קט דק</string>
+    <string name="garment_skirt">חצאית</string>
+    <string name="garment_polo">פולו</string>
+
+    <!-- Notification channels -->
+    <string name="notification_channel_daily_insight_name">ClothesCast יומי</string>
+    <string name="notification_channel_daily_insight_description">סיכום מזג האוויר הבוקר שנרשמת אליו.</string>
+    <string name="notification_daily_insight_title">ClothesCast להיום</string>
+    <string name="notification_channel_tonight_insight_default_name">ClothesCast לילי (עם אירועים)</string>
+    <string name="notification_channel_tonight_insight_default_description">סיכום מזג האוויר הערבי כשיש לך אירועי לוח שנה הלילה.</string>
+    <string name="notification_channel_tonight_insight_silent_name">ClothesCast לילי (שקט)</string>
+    <string name="notification_channel_tonight_insight_silent_description">סיכום מזג האוויר הערבי כשהערב שלך ריק. נשלח בשקט.</string>
+    <string name="notification_tonight_insight_title">ClothesCast ללילה</string>
+    <string name="notification_channel_weather_alerts_name">התראות מזג אוויר קיצוני</string>
+    <string name="notification_channel_weather_alerts_description">התראות עדיפות גבוהה לאירועי מזג אוויר קיצוניים המשפיעים על אזורך.</string>
+    <string name="notification_weather_alert_title">התראת מזג אוויר: %1$s</string>
+
+    <!-- Settings — notification permission -->
+    <string name="settings_notification_permission_title">התראות חסומות</string>
+    <string name="settings_notification_permission_description">ללא הרשאת התראות, ל-ClothesCast היומי שלך אין לאן לשלוח. הענק/י אותה כדי ש-ClothesCast יוכל לפרסם מחר בבוקר.</string>
+    <string name="settings_notification_permission_grant">הענק/י הרשאת התראות</string>
+
+    <!-- Settings — calendar -->
+    <string name="settings_calendar_title">לוח שנה</string>
+    <string name="settings_calendar_use_events">השתמש/י באירועי לוח השנה של היום</string>
+    <string name="settings_calendar_description_off">התאם/י את תחזית הבוקר לאירועי היום — נעשה שימוש בכותרות ובזמנים בלבד, ושום דבר לא יוצא מהמכשיר.</string>
+    <string name="settings_calendar_description_on">מתאים את תחזית הבוקר לאירועי היום. נעשה שימוש בכותרות ובזמנים בלבד; שום דבר לא יוצא מהמכשיר.</string>
+    <string name="settings_calendar_grant_permission">הענק/י הרשאת לוח שנה</string>
+    <string name="settings_calendar_open_settings">הרשאת לוח שנה נדחתה. הענק/י אותה מהגדרות המערכת.</string>
+
+    <!-- Settings — about -->
+    <string name="settings_about_title">אודות</string>
+    <string name="settings_about_version">גרסה %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · גרסת %1$s</string>
+    <string name="settings_about_source">קוד מקור ב-GitHub</string>
+    <string name="settings_about_dontkillmyapp">הגבלות רקע (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">שתף/י דוח תקלה</string>
+    <string name="settings_about_version_copied">הגרסה הועתקה ללוח</string>
+
+    <!-- Bug report consent dialog -->
+    <string name="bug_report_consent_title">לשתף דוח תקלה?</string>
+    <string name="bug_report_consent_body">זה עוזר לאבחן בעיות. הדוח מכיל מידע אישי רגיש, כולל מיקומך, הגדרות האפליקציה ופעילות אחרונה. תוכל/י לסקור ולערוך לפני השליחה.</string>
+    <string name="bug_report_consent_dont_show_again">אל תציג/י שוב</string>
+    <string name="bug_report_consent_continue">המשך/י</string>
+    <string name="bug_report_consent_cancel">ביטול</string>
+
+    <!-- Insight prose templates (additional) -->
+    <string name="insight_precip_chance">סיכוי ל%1$s %2$s.</string>
+    <string name="insight_tie_in_at_night">קח/י %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">קח/י %1$s הלילה, סיכוי לגשם בשעה %2$s.</string>
+    <string name="insight_evening_rain">הלילה, גשם בשעה %1$s.</string>
+    <string name="insight_evening_rain_chance">הלילה, סיכוי לגשם בשעה %1$s.</string>
 </resources>

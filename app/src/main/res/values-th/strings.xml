@@ -569,4 +569,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Device incompatibility error -->
     <string name="error_device_incompatible">ClothesCast ไม่สามารถทำงานบนอุปกรณ์นี้ได้ — Android build ของคุณขาดฟีเจอร์ที่ UI ของแอปต้องการ (Configuration.fontWeightAdjustment ที่คาดว่าจะมีใน Android 12 และสูงกว่า) กรุณาติดต่อผู้ผลิตอุปกรณ์ของคุณเพื่อขอการอัปเดตระบบ</string>
 
+    <string name="today_forecast_air_section_title">อุณหภูมิอากาศ</string>
+    <string name="settings_default_bottom_title">ท่อนล่างมาตรฐาน</string>
+    <string name="settings_default_bottom_description">สิ่งที่เราแนะนำบนหน้าจอหลักเมื่ออากาศไม่อบอุ่นพอที่จะใส่กางเกงขาสั้น</string>
 </resources>

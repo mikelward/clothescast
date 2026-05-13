@@ -603,7 +603,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_outfit_top_thin_jacket">Jaqueta leve</string>
     <string name="today_outfit_top_thick_coat">Casaco grosso</string>
     <string name="today_outfit_top_puffer_jacket">Jaqueta de plumas</string>
-    <string name="today_outfit_bottom_skirt">Saia</string>
+    <string name="today_outfit_bottom_long_skirt">Saia</string>
     <string name="today_outfit_bottom_jeans">Jeans</string>
 
     <string name="error_device_incompatible">O ClothesCast não pode funcionar neste aparelho — seu build do Android não tem um recurso exigido pela interface do app (Configuration.fontWeightAdjustment, esperado no Android 12 ou superior). Contate o fabricante do seu aparelho para obter uma atualização do sistema.</string>
@@ -684,4 +684,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_custom">Personalizado…</string>
     <string name="settings_tts_style_custom_label">Diretriz personalizada</string>
     <string name="settings_tts_style_custom_placeholder">ex.: Leia o seguinte como um bibliotecário severo sussurrando</string>
+    <string name="today_forecast_air_section_title">Temperatura do ar</string>
+    <string name="settings_default_bottom_title">Parte inferior padrão</string>
+    <string name="settings_default_bottom_description">O que sugerimos na tela inicial quando não está quente o suficiente para shorts.</string>
 </resources>

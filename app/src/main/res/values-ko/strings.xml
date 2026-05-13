@@ -707,4 +707,7 @@ displayed label localizes.
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">이 기기에서는 ClothesCast를 실행할 수 없습니다 — Android 빌드에 앱 UI가 필요한 기능(Configuration.fontWeightAdjustment, Android 12 이상에서 지원)이 없습니다. 시스템 업데이트는 기기 제조사에 문의하세요.</string>
+    <string name="today_forecast_air_section_title">기온</string>
+    <string name="settings_default_bottom_title">기본 하의</string>
+    <string name="settings_default_bottom_description">반바지를 입기에 충분히 따뜻하지 않을 때 홈 화면에서 추천하는 것.</string>
 </resources>

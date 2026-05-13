@@ -141,9 +141,20 @@ private fun PerModelDiagnosticChart(
         }
     }
 
-    val rangeProvider = remember(yAxis, seriesByModel) {
+    // Pin the x-range to the full times window so a sparse series that's
+    // missing the leading or trailing hours doesn't get stretched across the
+    // whole card by Zoom.Content. Without this anchor, if every visible model
+    // is missing (say) hours 0..18 of the day, the chart only sees x = 19..23
+    // and fits those four points to the full width — visually misaligning the
+    // line with the other cards' 0..23 axes and hiding the gap that's the
+    // whole point of plotting at original indices.
+    val xMin = 0.0
+    val xMax = times.lastIndex.toDouble()
+    val rangeProvider = remember(yAxis, seriesByModel, xMax) {
         when (yAxis) {
             is YAxis.Percent -> object : CartesianLayerRangeProvider {
+                override fun getMinX(minX: Double, maxX: Double, extraStore: ExtraStore) = xMin
+                override fun getMaxX(minX: Double, maxX: Double, extraStore: ExtraStore) = xMax
                 override fun getMinY(minY: Double, maxY: Double, extraStore: ExtraStore) = 0.0
                 override fun getMaxY(minY: Double, maxY: Double, extraStore: ExtraStore) = 100.0
             }
@@ -153,6 +164,8 @@ private fun PerModelDiagnosticChart(
                     .maxOfOrNull { it.second } ?: 0.0
                 val dataMax = ceil(rawMax).coerceAtLeast(yAxis.minSpan)
                 object : CartesianLayerRangeProvider {
+                    override fun getMinX(minX: Double, maxX: Double, extraStore: ExtraStore) = xMin
+                    override fun getMaxX(minX: Double, maxX: Double, extraStore: ExtraStore) = xMax
                     override fun getMinY(minY: Double, maxY: Double, extraStore: ExtraStore) = 0.0
                     override fun getMaxY(minY: Double, maxY: Double, extraStore: ExtraStore) = dataMax
                 }

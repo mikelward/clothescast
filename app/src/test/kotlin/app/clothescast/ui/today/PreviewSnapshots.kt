@@ -1,6 +1,7 @@
 package app.clothescast.ui.today
 
 import android.Manifest
+import android.graphics.BitmapFactory
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.isDialog
@@ -37,7 +38,6 @@ import app.clothescast.widget.WidgetTonightSweaterPantsPreview
 import app.clothescast.widget.WidgetTonightTomorrowWidePreview
 import com.github.takahirom.roborazzi.captureRoboImage
 import java.io.File
-import javax.imageio.ImageIO
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -163,19 +163,23 @@ class PreviewSnapshots {
     // "Empty" = unreadable as a PNG, or every sampled pixel matches (0,0). The
     // 16x16 grid is sparse enough to be cheap and dense enough that a centred
     // launcher icon or any non-trivial UI registers at least one differing
-    // pixel.
+    // pixel. BitmapFactory rather than javax.imageio because Android unit
+    // tests compile against android.jar (which omits javax.imageio); under
+    // GraphicsMode.NATIVE Robolectric decodes via real Skia, so getPixel
+    // returns the actual rasterised colour.
     private fun looksEmpty(file: File): Boolean {
         if (!file.exists() || file.length() == 0L) return true
-        val image = runCatching { ImageIO.read(file) }.getOrNull() ?: return true
-        if (image.width == 0 || image.height == 0) return true
-        val firstPixel = image.getRGB(0, 0)
-        val stepX = (image.width / 16).coerceAtLeast(1)
-        val stepY = (image.height / 16).coerceAtLeast(1)
+        val bitmap = runCatching { BitmapFactory.decodeFile(file.absolutePath) }.getOrNull()
+            ?: return true
+        if (bitmap.width == 0 || bitmap.height == 0) return true
+        val firstPixel = bitmap.getPixel(0, 0)
+        val stepX = (bitmap.width / 16).coerceAtLeast(1)
+        val stepY = (bitmap.height / 16).coerceAtLeast(1)
         var y = 0
-        while (y < image.height) {
+        while (y < bitmap.height) {
             var x = 0
-            while (x < image.width) {
-                if (image.getRGB(x, y) != firstPixel) return false
+            while (x < bitmap.width) {
+                if (bitmap.getPixel(x, y) != firstPixel) return false
                 x += stepX
             }
             y += stepY

@@ -649,6 +649,18 @@ private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
             "ecmwf_ifs04" to shift(deltaC = -1.5, precipDelta = -10.0, windBase = 8.0, cloudBase = 55.0),
             "gfs_seamless" to shift(deltaC = 0.5, precipDelta = 5.0, windBase = 12.0, cloudBase = 70.0),
             "icon_seamless" to shift(deltaC = 2.0, precipDelta = -5.0, windBase = 6.0, cloudBase = 40.0),
+            // best_match deliberately offset further than any consulted model
+            // so the preview shows the "Auto" overlay diverging — the exact
+            // case the user wants the consensus to outvote. Wind/cloud are
+            // null because the primary `/v1/forecast` call doesn't fetch the
+            // diagnostic fields per best_match; the diagnostic charts will
+            // hide the Auto line on those metrics.
+            PerModelHourly.BEST_MATCH_MODEL_ID to shift(
+                deltaC = -2.5,
+                precipDelta = -30.0,
+                windBase = 0.0,
+                cloudBase = 0.0,
+            ).map { it.copy(windSpeedKmh = null, relativeHumidityPct = null, cloudCoverPct = null) },
         ),
     )
 }

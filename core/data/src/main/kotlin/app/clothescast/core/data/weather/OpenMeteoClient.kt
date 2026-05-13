@@ -4,8 +4,13 @@ import app.clothescast.core.data.diag.ApiCallLogger
 import app.clothescast.core.data.diag.ApiEndpoints
 import app.clothescast.core.data.diag.NoOpApiCallLogger
 import app.clothescast.core.data.diag.instrument
+import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.PerModelHour
+import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.WeatherAlert
+import app.clothescast.core.domain.model.blendConsensusHourly
+import app.clothescast.core.domain.model.withAggregatesFrom
 import app.clothescast.core.domain.repository.ForecastBundle
 import app.clothescast.core.domain.repository.WeatherRepository
 import io.ktor.client.HttpClient
@@ -71,10 +76,62 @@ class OpenMeteoClient(
 
         val bundle = OpenMeteoMapper.toBundle(primary.await())
         val multi = multiModel.await()
+
+        // Replace today's hourly + the derived daily extremes with the
+        // consensus mean of the consulted models. The previous behaviour
+        // — using Open-Meteo's `best_match` auto-selection straight through
+        // — let a single outlier model (best_match's pick for the location)
+        // drive clothes rules + insight prose. On the diverging days the
+        // user keeps catching, that outlier was the wrong call (consulted
+        // ECMWF / GFS / ICON agreed; best_match disagreed). Falling back to
+        // best_match per-hour when fewer than two consulted models reported
+        // keeps a sane backstop in regions where the side-band fetch is
+        // sparse, and unconditionally when the multi-model fetch failed
+        // entirely.
+        val bestMatchHourly = bundle.today.hourly
+        // Recompute daily aggregates only when at least one hour actually got
+        // blended — `blendConsensusHourly` returns null when nothing changed
+        // (no per-model data, fewer than two consulted models, or no hour had
+        // ≥2 of them). Without this guard we'd swap the upstream daily
+        // temperatureMax (derived by Open-Meteo from its own internal model
+        // steps) for a max computed from the hourly *samples*, which can
+        // differ by a fraction of a degree even when the consensus didn't
+        // apply anywhere.
+        val blendedToday = blendConsensusHourly(bestMatchHourly, multi?.hourly)
+            ?.let { bundle.today.withAggregatesFrom(it) }
+            ?: bundle.today
+
+        // Stash best_match alongside the consulted models in [PerModelHourly]
+        // so the chart can render it as a labelled overlay ("Auto") for
+        // power users with model spread on. The consensus computation above
+        // already excluded this entry from its own input — see
+        // [blendConsensusHourly].
+        val perModelWithBestMatch = multi?.hourly?.let { existing ->
+            existing.copy(
+                byModel = existing.byModel +
+                    (PerModelHourly.BEST_MATCH_MODEL_ID to bestMatchHourly.asPerModelHours()),
+            )
+        }
+
         bundle.copy(
+            today = blendedToday,
             alerts = alerts.await(),
             confidence = multi?.confidence,
-            perModelHourly = multi?.hourly,
+            perModelHourly = perModelWithBestMatch,
+        )
+    }
+
+    private fun List<HourlyForecast>.asPerModelHours(): List<PerModelHour> = map {
+        // best_match's hourly comes from the primary `/v1/forecast` call which
+        // doesn't include the diagnostic fields (wind, humidity, cloud); those
+        // ride only the side-band multi-model call and aren't fetched per
+        // best_match. Surface as null so the diagnostic charts treat
+        // best_match as "no data for this metric" instead of dropping it.
+        PerModelHour(
+            time = it.time,
+            apparentTemperatureC = it.feelsLikeC,
+            temperatureC = it.temperatureC,
+            precipitationProbabilityPct = it.precipitationProbabilityPct,
         )
     }
 

@@ -1073,11 +1073,13 @@ internal fun ForecastCard(
             // are. The chart draws per-model lines in both apparent and air
             // modes (each entry carries both temperatures), so the legend
             // applies regardless of which series the card is currently
-            // showing. The main blended line is the OpenMeteoClient `forecast`
-            // default — Open-Meteo's "best match" auto-selection — which
-            // routinely tracks a different model than the consulted overlays;
-            // labelling it in the legend makes that disagreement legible
-            // instead of mysterious.
+            // showing. The main line on the chart is now the consulted-
+            // models consensus (labelled "Combined") rather than Open-Meteo's
+            // `best_match` auto-pick — that data layer choice is what
+            // drives clothes rules + insight prose. best_match itself is
+            // surfaced separately as the "Auto" overlay in MODEL_DRAW_ORDER
+            // so the user can still see what Open-Meteo would have picked
+            // when it diverges from the consensus.
             if (perModelHourly != null) {
                 ModelSpreadLegend(
                     visibleModelIds = MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel },
@@ -1363,6 +1365,7 @@ private fun friendlyModelName(modelId: String): String = when (modelId) {
     "ecmwf_ifs04" -> "ECMWF"
     "gfs_seamless" -> "GFS"
     "icon_seamless" -> "ICON"
+    PerModelHourly.BEST_MATCH_MODEL_ID -> "Auto"
     else -> modelId
 }
 

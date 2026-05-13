@@ -22,7 +22,18 @@ import java.time.LocalTime
 data class PerModelHourly(
     /** Open-Meteo model id (e.g. `ecmwf_ifs04`) -> hourly series. */
     val byModel: Map<String, List<PerModelHour>>,
-)
+) {
+    companion object {
+        /**
+         * Sentinel model id for Open-Meteo's `best_match` auto-selection —
+         * stored alongside the consulted models in [byModel] so the chart
+         * can render it as a labelled overlay. Consensus + spread / confidence
+         * computations exclude this entry; only the real consulted models
+         * (ECMWF, GFS, ICON, etc.) feed those.
+         */
+        const val BEST_MATCH_MODEL_ID = "best_match"
+    }
+}
 
 data class PerModelHour(
     val time: LocalTime,
@@ -59,12 +70,8 @@ data class PerModelHour(
 //   swings that disproportionately; explore RMSE / std-dev across the
 //   consulted models as an alternative confidence input, plotted
 //   alongside the existing spread so we can A/B them before switching.
-// TODO(main-line-averaging): the blended "main" temperature / rain line
-//   currently comes from OpenMeteoClient's `forecast` call, which
-//   defaults to Open-Meteo's `best_match` auto-selection — and that
-//   single model routinely tracks neither of the consulted overlays.
-//   #388 labels the line as "Best match" so the disagreement is at
-//   least legible, but a follow-up could compute a defensible midline
-//   in code (e.g. the per-hour mean of the consulted models) and feed
-//   *that* into the clothes recommendation instead of the single
-//   best_match line.
+// TODO(weather-code-aggregation): [blendConsensusHourly] currently keeps
+//   the best_match weather code (CLEAR / RAIN / etc.) even when it
+//   blends the numeric fields, so a "Combined" line at 90% rain can
+//   coexist with a "Clear" condition icon. Modal aggregation of weather
+//   codes across the consulted models would close that loop.

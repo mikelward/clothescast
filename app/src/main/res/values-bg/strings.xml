@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 Bulgarian translation. Tone is informal "ти"-form throughout ("Облечи …",
-"Вземи …"). Scope: insight-prose templates, garment labels, clothes-rule
-editor, outfit-card labels, and region/voice-locale picker names. Other UI
-surfaces fall back to default English (matching values-pl / values-uk).
+"Вземи …"). Scope: full UI coverage — insight-prose templates, garment labels,
+clothes-rule editor, outfit-card labels, region/voice-locale picker names,
+settings, onboarding, notifications, and all other UI surfaces.
+
+What is NOT overridden, by design:
+- `app_name` — brand identifier, identical across locales.
+- `insight_time_am` / `_pm` / `_midnight` / `_noon` (and the *_minutes
+  variants) — English-only spoken-time formatter helpers. Bulgarian uses
+  `insight_time_hour` / `insight_time_hour_minutes` which are translated
+  below; preposition "в" comes from surrounding templates. The AM/PM keys
+  exist for `Locale.language == "en"` paths only and would never be read
+  in a Bulgarian runtime.
 -->
 <resources>
     <string name="settings_region_language_bg_bg">Български (България)</string>
@@ -20,6 +29,10 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="garment_shorts">Къси панталони</string>
     <string name="garment_pants">Панталон</string>
     <string name="garment_jeans">Дънки</string>
+    <string name="garment_polo">Поло</string>
+    <string name="garment_thin_jacket">Тънко яке</string>
+    <string name="garment_puffer">Зимно яке</string>
+    <string name="garment_skirt">Пола</string>
 
     <string name="settings_clothes_empty">Няма правила. Докосни Добави, за да създадеш.</string>
     <string name="settings_clothes_add">Добави</string>
@@ -79,5 +92,494 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <!-- "15" — preposition "в" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
+
+    <!-- New insight strings -->
+    <string name="insight_precip_chance">Шанс за %1$s %2$s.</string>
+    <string name="insight_tie_in_at_night">Вземи %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Тази вечер шанс за дъжд в %2$s, вземи %1$s.</string>
+    <string name="insight_evening_rain">Тази вечер дъжд в %1$s.</string>
+    <string name="insight_evening_rain_chance">Тази вечер шанс за дъжд в %1$s.</string>
+
+    <!-- Device-incompatibility error screen. -->
+    <string name="error_device_incompatible">ClothesCast не може да работи на това устройство — Android сборката ти липсва функция, необходима за интерфейса на приложението (Configuration.fontWeightAdjustment, очаквана при Android 12 и нагоре). Свържи се с производителя на устройството за системна актуализация.</string>
+
+    <!-- Today screen. -->
+    <string name="today_title">Днес</string>
+    <string name="today_open_settings">Отвори настройките</string>
+    <string name="today_more_options">Още опции</string>
+    <string name="today_report_a_bug">Докладвай грешка</string>
+    <string name="today_refresh">Обнови</string>
+    <string name="today_refresh_toast_daily">Обновявам твоя дневен ClothesCast — ще се появи скоро.</string>
+    <string name="today_refresh_toast_nightly">Обновявам твоя нощен ClothesCast — ще се появи скоро.</string>
+    <string name="today_empty_title">Все още няма ClothesCast</string>
+    <string name="today_empty_subtitle">Сутрешният ти ClothesCast ще се появи тук, след като бъде генериран. Задай местоположението си в Настройки, след което докосни Вземи сега.</string>
+    <string name="today_fetch_now">Вземи сега</string>
+    <string name="today_generated_at">Генерирано в %1$s</string>
+    <string name="today_location_unknown">Твоето местоположение</string>
+
+    <!-- Outfit card. -->
+    <string name="today_outfit_title">Какво да облечеш</string>
+    <string name="today_outfit_label_today">Днес</string>
+    <string name="today_outfit_label_tonight">Тази вечер</string>
+    <string name="today_outfit_label_tomorrow">Утре</string>
+    <string name="today_outfit_top_polo">Поло</string>
+    <string name="today_outfit_top_thin_jacket">Тънко яке</string>
+    <string name="today_outfit_top_thick_coat">Дебело палто</string>
+    <string name="today_outfit_top_puffer_jacket">Зимно яке</string>
+    <string name="today_outfit_bottom_skirt">Пола</string>
+    <string name="today_outfit_bottom_jeans">Дънки</string>
+
+    <!-- "Why this outfit?" rationale dialog. -->
+    <string name="today_rationale_title">Защо този тоалет?</string>
+    <string name="today_rationale_show">Защо?</string>
+    <string name="today_rationale_dismiss">Разбрах</string>
+    <string name="today_rationale_threshold_decrease">Намали прага с 1 градус</string>
+    <string name="today_rationale_threshold_increase">Увеличи прага с 1 градус</string>
+    <string name="today_rationale_threshold_changed_hint">Обнови, за да видиш новия тоалет.</string>
+    <string name="today_rationale_unavailable">Няма налично обяснение — отвори приложението след следващото обновяване.</string>
+    <string name="today_rationale_min_below_with_time">Усещана минимална температура %1$s%2$s в %3$s, под %4$s%2$s</string>
+    <string name="today_rationale_min_below">Усещана минимална температура %1$s%2$s, под %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Усещана минимална температура %1$s%2$s в %3$s, поне %4$s%2$s</string>
+    <string name="today_rationale_min_above">Усещана минимална температура %1$s%2$s, поне %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Усещана максимална температура само %1$s%2$s в %3$s, под %4$s%2$s</string>
+    <string name="today_rationale_max_below">Усещана максимална температура само %1$s%2$s, под %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Усещана максимална температура %1$s%2$s в %3$s, поне %4$s%2$s</string>
+    <string name="today_rationale_max_above">Усещана максимална температура %1$s%2$s, поне %3$s%2$s</string>
+
+    <!-- Home-screen App Widget. -->
+    <string name="widget_label">Тоалет</string>
+    <string name="widget_description">Тоалетът за текущия период с един поглед.</string>
+    <string name="widget_empty_title">Все още няма тоалет</string>
+    <string name="widget_empty_subtitle">Докосни, за да отвориш ClothesCast</string>
+
+    <!-- Hourly forecast card. -->
+    <string name="today_forecast_title">Почасова прогноза</string>
+    <string name="today_forecast_min_max">Feels like %1$d – %2$d%3$s · Air %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Усещана температура (%1$s) по часове · докосни за превключване към температура на въздуха</string>
+    <string name="today_forecast_legend_air">Температура на въздуха (%1$s) по часове · докосни за превключване към усещана температура</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Шанс за дъжд</string>
+    <string name="today_precipitation_peak">Пик %1$d%% в %2$s</string>
+    <string name="today_precipitation_dry">Без очакван дъжд днес</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">Модели:</string>
+    <string name="today_chart_main_line_label">Комбиниран</string>
+    <string name="today_chart_divergence_summary">Моделите се разминават най-много в %1$s (Δ %2$.1f%3$s усещана) — предимно %4$s, %5$s</string>
+
+    <!-- Divergence factor names. -->
+    <string name="today_factor_air_temperature">температура на въздуха</string>
+    <string name="today_factor_wind_speed">скорост на вятъра</string>
+    <string name="today_factor_cloud_cover">облачност</string>
+    <string name="today_factor_humidity">влажност</string>
+
+    <!-- Diagnostic cards. -->
+    <string name="today_wind_title">Скорост на вятъра</string>
+    <string name="today_wind_subtitle">Скорост на вятъра (%1$s) по часове за всеки модел</string>
+    <string name="today_cloud_title">Облачност</string>
+    <string name="today_cloud_subtitle">Обща облачност (%%) по часове за всеки модел</string>
+    <string name="today_humidity_title">Влажност</string>
+    <string name="today_humidity_subtitle">Относителна влажност (%%) по часове за всеки модел</string>
+
+    <!-- Confidence chip. -->
+    <string name="today_confidence_high">Висока достоверност — основните модели са съгласни</string>
+    <string name="today_confidence_medium">Средна достоверност</string>
+    <string name="today_confidence_low">Ниска достоверност — прогнозите се разминават</string>
+    <string name="today_confidence_spread">Разлика: %1$.1f°C, %2$.0f%% валежи при %3$d модела</string>
+
+    <!-- Low-confidence callout banner. -->
+    <string name="today_low_confidence_callout_title">Прогнозите се разминават днес</string>
+    <string name="today_low_confidence_callout_body">Температурата се различава с %1$.1f°C, а шансът за дъжд — с %2$.0f%% при %3$d модела.</string>
+
+    <!-- Work-status banners. -->
+    <string name="today_working">Работя — получавам твоя ClothesCast…</string>
+    <string name="today_retrying">Последният опит не успя — повтарям…</string>
+    <string name="today_failed_title">Последният опит не успя</string>
+    <string name="today_failed_unexpected_http">Неочаквана HTTP грешка от услугата за прогноза.</string>
+    <string name="today_failed_unhandled">Възникна неочаквана грешка.</string>
+    <string name="today_failed_no_location">Не успяхме да получим твоето местоположение. Разреши постоянен достъп до местоположение или задай град в Настройките.</string>
+    <string name="today_failed_show_details">Покажи подробности</string>
+    <string name="today_failed_hide_details">Скрий подробности</string>
+
+    <!-- Location-required prompt. -->
+    <string name="today_location_required_title">Настрой местоположението си</string>
+    <string name="today_location_required_body">ClothesCast трябва да знае къде се намираш, за да вземе прогнозата. Разреши постоянен достъп до местоположение или избери град.</string>
+    <string name="today_location_required_action">Отвори настройките за местоположение</string>
+
+    <!-- Crash-report banner. -->
+    <string name="today_crash_banner_title">Последното стартиране се срина</string>
+    <string name="today_crash_banner_body">На устройството ти е записан доклад за срив. Да го споделиш, за да помогнеш с отстраняването на грешката? Нищо не се изпраща, докато не избереш къде.</string>
+    <string name="today_crash_banner_share">Сподели доклада</string>
+    <string name="today_crash_banner_dismiss">Затвори</string>
+
+    <!-- In-app update banner. -->
+    <string name="today_update_available_title">Налична е актуализация</string>
+    <string name="today_update_available_body">По-нова версия на ClothesCast е налична в Play Store.</string>
+    <string name="today_update_available_action">Актуализирай</string>
+    <string name="today_update_available_dismiss">Не сега</string>
+    <string name="today_update_downloaded_body">Актуализацията е изтеглена. Рестартирай, за да завършиш инсталацията.</string>
+    <string name="today_update_downloaded_action">Рестартирай</string>
+
+    <!-- Telemetry notice. -->
+    <string name="today_telemetry_notice_title">Докладите за сривове и използване са включени</string>
+    <string name="today_telemetry_notice_body">ClothesCast изпраща анонимни доклади за сривове и статистика за използване, за да помогне за отстраняване на грешки. Не се включват данни от календара, местоположение или текст на прозрението. Изключи го по всяко време от Настройките.</string>
+    <string name="today_telemetry_notice_open_settings">Отвори настройките за поверителност</string>
+    <string name="today_telemetry_notice_dismiss">Затвори</string>
+
+    <!-- Onboarding flow. -->
+    <string name="onboarding_title">Добре дошъл в ClothesCast</string>
+    <string name="onboarding_subtitle">Три бързи избора и сте готов. Промени настройките по-късно.</string>
+    <string name="onboarding_subtitle_tv">Два бързи избора и си готов. Промени настройките по-късно.</string>
+    <string name="onboarding_notifications_title">Известия</string>
+    <string name="onboarding_notifications_description">Необходими за доставяне на твоя дневен ClothesCast.</string>
+    <string name="onboarding_notifications_grant">Разреши известия</string>
+    <string name="onboarding_location_title">Местоположение</string>
+    <string name="onboarding_location_description">Взима прогнозата за твоето приблизително местоположение.</string>
+    <string name="onboarding_location_grant">Разреши достъп до местоположение</string>
+    <string name="onboarding_location_grant_background">Разреши винаги</string>
+    <string name="onboarding_location_background_needed">Още една стъпка: ClothesCast се нуждае от „Разреши винаги", за да може сутрешната прогноза да прочете местоположението ти, докато приложението е затворено.</string>
+    <string name="onboarding_location_denied_hint">Достъпът до местоположение е отказан. Вместо това можеш да въведеш град ръчно.</string>
+    <string name="onboarding_location_enter_manual">Въведи местоположение ръчно</string>
+    <string name="onboarding_location_enter_manual_hint">Можеш да въведеш местоположението си ръчно, ако откажеш достъп до местоположение или местоположението на устройството е грешно.</string>
+    <string name="onboarding_location_using_device">Ще използваме местоположението на устройството ти всяка сутрин.</string>
+    <string name="onboarding_gemini_title">API ключ за Gemini</string>
+    <string name="onboarding_gemini_description">Използвай Gemini за гласове с високо качество.</string>
+    <string name="onboarding_step_done">Готово</string>
+    <string name="onboarding_skip">Пропусни засега</string>
+    <string name="onboarding_continue">Продължи</string>
+    <string name="onboarding_pair_from_phone">Свързване от телефон</string>
+
+    <!-- Phone-pairing screen (TV). -->
+    <string name="pairing_title">Сканирай за свързване</string>
+    <string name="pairing_instructions">Сканирай този QR код с телефона си, след което постави API ключа за Gemini във формуляра, който се отваря. Ключът ще бъде изпратен директно до този телевизор през домашната ти Wi-Fi мрежа — без облачен посредник.</string>
+    <string name="pairing_qr_description">QR код с връзка към %1$s</string>
+    <string name="pairing_cancel">Откажи</string>
+    <string name="pairing_received">Ключът е получен — запазва се…</string>
+    <string name="pairing_timeout_title">Прозорецът за свързване изтече</string>
+    <string name="pairing_timeout_body">5-минутният прозорец за свързване е затворен. Докосни Опитай отново, за да отвориш нов.</string>
+    <string name="pairing_error_title">Не може да се стартира свързването</string>
+    <string name="pairing_error_body">Увери се, че телевизорът е свързан с Wi-Fi, и опитай отново.</string>
+    <string name="pairing_retry">Опитай отново</string>
+
+    <!-- Settings top bar + root navigation. -->
+    <string name="settings_title">Настройки</string>
+    <string name="settings_back">Назад</string>
+
+    <string name="settings_root_voice">Глас</string>
+    <string name="settings_root_schedule">График</string>
+    <string name="settings_root_region">Регион</string>
+    <string name="settings_root_clothes">Дрехи</string>
+    <string name="settings_root_display">Дисплей</string>
+    <string name="settings_root_location">Местоположение</string>
+    <string name="settings_root_calendar">Календар</string>
+    <string name="settings_root_privacy">Поверителност</string>
+    <string name="settings_root_about">За приложението</string>
+
+    <string name="settings_root_schedule_subtitle">Известия и часове</string>
+    <string name="settings_root_clothes_subtitle">Температури и тоалети</string>
+    <string name="settings_root_region_subtitle">Езици и единици</string>
+    <string name="settings_root_voice_subtitle">Доставчици и акценти</string>
+    <string name="settings_root_display_subtitle">Тема</string>
+    <string name="settings_root_location_subtitle">Автоматично или избери град</string>
+    <string name="settings_root_calendar_subtitle">Днешните събития</string>
+    <string name="settings_root_privacy_subtitle">Доклади за сривове и използване</string>
+
+    <!-- Display / theme settings. -->
+    <string name="settings_display_theme_title">Тема</string>
+    <string name="settings_display_theme_system">Следвай системата</string>
+    <string name="settings_display_theme_light">Светла</string>
+    <string name="settings_display_theme_dark">Тъмна</string>
+    <string name="settings_display_charts_title">Графики</string>
+    <string name="settings_display_model_spread_label">Покажи разминаването на моделите в графиките</string>
+    <string name="settings_display_model_spread_description">Показва почасовата прогноза на всеки основен метеорологичен модел в графиките за температура и дъжд. Полезно за установяване кога прогнозата е несигурна.</string>
+
+    <!-- Privacy settings. -->
+    <string name="settings_privacy_telemetry_title">Доклади за сривове и използване</string>
+    <string name="settings_privacy_telemetry_label">Изпращай данни за сривове и използване</string>
+    <string name="settings_privacy_telemetry_description">Изпраща анонимни доклади за сривове и обобщена статистика за използване, за да помогне на разработчика да поправя грешки и решава кои функции да запази.</string>
+    <string name="settings_privacy_telemetry_limits">Никога не се изпращат: събитията от календара, координати на местоположението или имена на места, текст на прозрението или известията, API ключове, точни GPS данни, рекламни идентификатори.</string>
+    <string name="settings_privacy_open_policy">Прочети пълната политика за поверителност</string>
+
+    <!-- API key screen. -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Използвай Gemini за гласове с високо качество.</string>
+    <string name="settings_api_key_status_set">Конфигуриран е ключ за Gemini.</string>
+    <string name="settings_api_key_status_unset">Вземи безплатен API ключ от aistudio.google.com</string>
+    <string name="settings_api_key_placeholder">Постави своя API ключ за Gemini</string>
+    <string name="settings_api_key_save">Запази ключа за Gemini</string>
+    <string name="settings_api_key_clear">Изтрий запазения ключ за Gemini</string>
+
+    <!-- Location screen. -->
+    <string name="settings_location_title">Местоположение</string>
+    <string name="settings_location_use_device">Използвай местоположението на устройството</string>
+    <string name="settings_location_use_device_description">Последно приблизително местоположение</string>
+    <string name="settings_location_detecting">Открива се…</string>
+    <string name="settings_location_grant_background">Разреши</string>
+    <string name="settings_location_background_banner_title">Необходим е постоянен достъп до местоположение</string>
+    <string name="settings_location_background_banner_body">Без него сутрешната прогноза не може да прочете местоположението ти.</string>
+    <string name="settings_location_unset">Не е зададено местоположение</string>
+    <string name="settings_location_manual_override">Грешно местоположение? Задай ръчно</string>
+    <string name="settings_location_manual_override_disclosure">Изборът на град изключва автоматичното разпознаване.</string>
+    <string name="settings_location_clear">Изчисти местоположението</string>
+    <string name="settings_location_search_title">Търси местоположение</string>
+    <string name="settings_location_query_label">Град или място</string>
+    <string name="settings_location_search">Търси</string>
+    <string name="settings_location_searching">Търси се…</string>
+    <string name="settings_location_no_results">Няма резултати.</string>
+    <string name="settings_location_rationale_title">Достъп до местоположение</string>
+    <string name="settings_location_rationale_body">ClothesCast чете местоположението ти, за да вземе местната прогноза.</string>
+    <string name="settings_location_rationale_continue">Продължи</string>
+    <string name="settings_location_rationale_dismiss">Не сега</string>
+    <string name="settings_location_background_rationale_title">Разреши винаги</string>
+    <string name="settings_location_background_rationale_body">Разреши на ClothesCast да чете местоположението ти, докато е затворен, за да се актуализира сутрешната прогноза навреме.</string>
+    <string name="settings_location_background_rationale_continue">Отвори настройките</string>
+    <string name="settings_location_background_rationale_dismiss">Не сега</string>
+    <string name="settings_location_background_denied_title">Постоянният достъп не е предоставен</string>
+    <string name="settings_location_background_denied_body">Без „Разреши винаги" сутрешната прогноза не може да се актуализира автоматично.</string>
+    <string name="settings_location_background_denied_open">Отвори настройките</string>
+    <string name="settings_location_background_denied_keep">Не сега</string>
+
+    <!-- Schedule screen. -->
+    <string name="settings_schedule_title">Дневен ClothesCast</string>
+    <string name="settings_schedule_time_label">Час</string>
+    <string name="settings_schedule_days_label">Дни от седмицата</string>
+    <string name="settings_daily_mention_evening_events">Споменавай вечерни събития</string>
+
+    <!-- Nightly ClothesCast. -->
+    <string name="settings_tonight_title">Нощен ClothesCast</string>
+    <string name="settings_tonight_description">Втори ClothesCast вечерта, обхващащ времето тази нощ. В спокойни вечери остава тих или изобщо не се появява, ако е включено „Уведомявай само при вечерни събития"; при вечери с събития издава звук и (ако е включено гласово четене) се чете на глас.</string>
+    <string name="settings_tonight_enabled">Показвай нощен ClothesCast</string>
+    <string name="settings_tonight_time_label">Час</string>
+    <string name="settings_tonight_days_label">Дни от седмицата</string>
+    <string name="settings_tonight_notify_only_on_events">Уведомявай само при вечерни събития</string>
+
+    <!-- Delivery picker. -->
+    <string name="settings_delivery_label">Доставяне</string>
+    <string name="settings_delivery_notification_only">Само известие</string>
+    <string name="settings_delivery_tts_only">Само гласово</string>
+    <string name="settings_delivery_notification_and_tts">Известие и гласово</string>
+
+    <!-- Voice / TTS screen. -->
+    <string name="settings_tts_engine_title">Гласов двигател</string>
+    <string name="settings_tts_engine_description">Gemini звучи много по-естествено от гласа на устройството, но изисква мрежово повикване при говорене и използва твоя API ключ за синтез (едно кратко повикване за всеки произнесен ClothesCast). Преминава към гласа на устройството, ако Gemini не успее.</string>
+    <string name="settings_tts_engine_device">Устройство (офлайн, безплатно)</string>
+    <string name="settings_tts_engine_gemini">Gemini (високо качество, онлайн)</string>
+    <string name="settings_tts_voice_label">Глас</string>
+    <string name="settings_tts_voice_dismiss">Готово</string>
+    <string name="settings_tts_voice_locale_description">Задава акцента на произнесения глас. Не променя показания текст.</string>
+    <string name="settings_tts_test">Тествай глас</string>
+    <string name="settings_tts_test_in_flight">Тества се — изчакай…</string>
+    <string name="settings_tts_device_voice_label">Глас на устройството</string>
+    <string name="settings_tts_device_voice_auto">Автоматично (най-добро за акцент)</string>
+    <string name="settings_tts_device_voice_currently">Текущо: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Зарежда се…</string>
+    <string name="settings_tts_device_voice_network">Мрежа</string>
+    <string name="settings_tts_device_voice_offline">Офлайн</string>
+    <string name="settings_tts_install_google_hint">Инсталирай гласовия синтезатор на Google за гласове с по-високо качество.</string>
+    <string name="settings_tts_install_google_button">Инсталирай Google TTS</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">Стил</string>
+    <string name="settings_tts_style_weather_forecaster">Метеоролог</string>
+    <string name="settings_tts_style_pirate">Пират</string>
+    <string name="settings_tts_style_cowboy">Каубой</string>
+    <string name="settings_tts_style_shakespearean">Шекспиров</string>
+    <string name="settings_tts_style_surfer">Сърфист</string>
+    <string name="settings_tts_style_parent">Родител</string>
+    <string name="settings_tts_style_child">Дете</string>
+    <string name="settings_tts_style_teenager">Тийнейджър</string>
+    <string name="settings_tts_style_grandparent">Баба/дядо</string>
+    <string name="settings_tts_style_kids_host">Водещ на детско предаване</string>
+    <string name="settings_tts_style_radio_host">Водещ на ток шоу</string>
+    <string name="settings_tts_style_morning_dj">Сутрешен DJ</string>
+    <string name="settings_tts_style_science_teacher">Учител по природни науки</string>
+    <string name="settings_tts_style_historian">Историк</string>
+    <string name="settings_tts_style_sportscaster">Спортен коментатор</string>
+    <string name="settings_tts_style_stadium_announcer">Стадионен диктор</string>
+    <string name="settings_tts_style_storyteller">Разказвач</string>
+    <string name="settings_tts_style_fitness_instructor">Фитнес инструктор</string>
+    <string name="settings_tts_style_morning_presenter">Сутрешен радиоводещ</string>
+    <string name="settings_tts_style_custom">Персонализиран…</string>
+    <string name="settings_tts_style_custom_label">Персонализирана инструкция</string>
+    <string name="settings_tts_style_custom_placeholder">напр. Прочети следното като строг шепнещ библиотекар</string>
+
+    <!-- Region screen — language picker. -->
+    <string name="settings_region_language_title">Език</string>
+    <string name="settings_region_language_description">Задава езика на показвания текст и известията.</string>
+    <string name="settings_region_language_system">Следвай системния език</string>
+    <string name="settings_region_language_en_us">Английски (САЩ)</string>
+    <string name="settings_region_language_en_gb">Английски (Великобритания)</string>
+    <string name="settings_region_language_en_au">Английски (Австралия)</string>
+    <string name="settings_region_language_en_ca">Английски (Канада)</string>
+    <string name="settings_region_language_en_za">Английски (Южна Африка)</string>
+    <string name="settings_region_language_de_de">Немски (Германия)</string>
+    <string name="settings_region_language_de_at">Немски (Австрия)</string>
+    <string name="settings_region_language_de_ch">Немски (Швейцария)</string>
+    <string name="settings_region_language_fr_fr">Френски (Франция)</string>
+    <string name="settings_region_language_fr_ca">Френски (Канада)</string>
+    <string name="settings_region_language_it_it">Италиански (Италия)</string>
+    <string name="settings_region_language_es_es">Испански (Испания)</string>
+    <string name="settings_region_language_es_mx">Испански (Мексико)</string>
+    <string name="settings_region_language_ca_es">Каталонски (Испания)</string>
+    <string name="settings_region_language_ru_ru">Руски (Русия)</string>
+    <string name="settings_region_language_pl_pl">Полски (Полша)</string>
+    <string name="settings_region_language_hr_hr">Хърватски (Хърватия)</string>
+    <string name="settings_region_language_sl_si">Словенски (Словения)</string>
+    <string name="settings_region_language_sr_rs">Сръбски (латиница)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Сръбски (кирилица)</string>
+    <string name="settings_region_language_cs_cz">Чешки (Чехия)</string>
+    <string name="settings_region_language_sk_sk">Словашки (Словакия)</string>
+    <string name="settings_region_language_hu_hu">Унгарски (Унгария)</string>
+    <string name="settings_region_language_ro_ro">Румънски (Румъния)</string>
+    <string name="settings_region_language_el_gr">Гръцки (Гърция)</string>
+    <string name="settings_region_language_uk_ua">Украински (Украйна)</string>
+    <string name="settings_region_language_pt_br">Португалски (Бразилия)</string>
+    <string name="settings_region_language_pt_pt">Португалски (Португалия)</string>
+    <string name="settings_region_language_nl_nl">Нидерландски (Нидерландия)</string>
+    <string name="settings_region_language_sv_se">Шведски (Швеция)</string>
+    <string name="settings_region_language_da_dk">Датски (Дания)</string>
+    <string name="settings_region_language_nb_no">Норвежки букмол (Норвегия)</string>
+    <string name="settings_region_language_fi_fi">Фински (Финландия)</string>
+    <string name="settings_region_language_et_ee">Естонски (Естония)</string>
+    <string name="settings_region_language_lv_lv">Латвийски (Латвия)</string>
+    <string name="settings_region_language_lt_lt">Литовски (Литва)</string>
+    <string name="settings_region_language_tr_tr">Турски (Турция)</string>
+    <string name="settings_region_language_id_id">Индонезийски (Индонезия)</string>
+    <string name="settings_region_language_ms_my">Малайски (Малайзия)</string>
+    <string name="settings_region_language_fil_ph">Филипински (Филипините)</string>
+    <string name="settings_region_language_sw_ke">Суахили (Кения)</string>
+    <string name="settings_region_language_vi_vn">Виетнамски (Виетнам)</string>
+    <string name="settings_region_language_th_th">Тайски (Тайланд)</string>
+    <string name="settings_region_language_zh_cn">Китайски (опростен)</string>
+    <string name="settings_region_language_zh_tw">Китайски (традиционен)</string>
+    <string name="settings_region_language_hi_in">Хинди (Индия)</string>
+    <string name="settings_region_language_bn_bd">Бенгалски (Бангладеш)</string>
+    <string name="settings_region_language_ja_jp">Японски (Япония)</string>
+    <string name="settings_region_language_ko_kr">Корейски (Южна Корея)</string>
+    <string name="settings_region_language_ar_sa">Арабски (Саудитска Арабия)</string>
+    <string name="settings_region_language_he_il">Иврит (Израел)</string>
+    <string name="settings_region_language_fa_ir">Персийски (Иран)</string>
+    <string name="settings_region_language_sq_al">Албански (Албания)</string>
+    <string name="settings_region_language_am_et">Амхарски (Етиопия)</string>
+
+    <!-- Region screen — units pickers. -->
+    <string name="settings_temperature_unit_title">Единица за температура</string>
+    <string name="settings_temperature_unit_celsius">Целзий (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Фаренхайт (°F)</string>
+    <string name="settings_distance_unit_title">Единица за разстояние</string>
+    <string name="settings_distance_unit_kilometers">Километри</string>
+    <string name="settings_distance_unit_miles">Мили</string>
+
+    <!-- Clothes rules screen. -->
+    <string name="settings_clothes_title">Правила за дрехи</string>
+    <string name="settings_clothes_description">Ако прогнозата пресече един от тези прагове, елементът ще се появи в твоя дневен ClothesCast.</string>
+
+    <!-- Voice locale picker labels. -->
+    <string name="settings_tts_voice_locale_en_us">Английски (САЩ)</string>
+    <string name="settings_tts_voice_locale_en_gb">Английски (Великобритания)</string>
+    <string name="settings_tts_voice_locale_en_au">Английски (Австралия)</string>
+    <string name="settings_tts_voice_locale_en_ca">Английски (Канада)</string>
+    <string name="settings_tts_voice_locale_en_za">Английски (Южна Африка)</string>
+    <string name="settings_tts_voice_locale_de_de">Немски (Германия)</string>
+    <string name="settings_tts_voice_locale_de_at">Немски (Австрия)</string>
+    <string name="settings_tts_voice_locale_de_ch">Немски (Швейцария)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Френски (Франция)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Френски (Канада)</string>
+    <string name="settings_tts_voice_locale_it_it">Италиански (Италия)</string>
+    <string name="settings_tts_voice_locale_es_es">Испански (Испания)</string>
+    <string name="settings_tts_voice_locale_es_mx">Испански (Мексико)</string>
+    <string name="settings_tts_voice_locale_ca_es">Каталонски (Испания)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Руски (Русия)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Полски (Полша)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Хърватски (Хърватия)</string>
+    <string name="settings_tts_voice_locale_sl_si">Словенски (Словения)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Сръбски (латиница)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Сръбски (кирилица)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Чешки (Чехия)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Словашки (Словакия)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Унгарски (Унгария)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Румънски (Румъния)</string>
+    <string name="settings_tts_voice_locale_el_gr">Гръцки (Гърция)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Украински (Украйна)</string>
+    <string name="settings_tts_voice_locale_pt_br">Португалски (Бразилия)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Португалски (Португалия)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Нидерландски (Нидерландия)</string>
+    <string name="settings_tts_voice_locale_sv_se">Шведски (Швеция)</string>
+    <string name="settings_tts_voice_locale_da_dk">Датски (Дания)</string>
+    <string name="settings_tts_voice_locale_nb_no">Норвежки букмол (Норвегия)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Фински (Финландия)</string>
+    <string name="settings_tts_voice_locale_et_ee">Естонски (Естония)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Латвийски (Латвия)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Литовски (Литва)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Турски (Турция)</string>
+    <string name="settings_tts_voice_locale_id_id">Индонезийски (Индонезия)</string>
+    <string name="settings_tts_voice_locale_ms_my">Малайски (Малайзия)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Филипински (Филипините)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Суахили (Кения)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Виетнамски (Виетнам)</string>
+    <string name="settings_tts_voice_locale_th_th">Тайски (Тайланд)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Китайски (опростен)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Китайски (традиционен)</string>
+    <string name="settings_tts_voice_locale_hi_in">Хинди (Индия)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Бенгалски (Бангладеш)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Японски (Япония)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Корейски (Южна Корея)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Арабски (Саудитска Арабия)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Арабски (Египет)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Арабски (Обединени арабски емирства)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Арабски (Мароко)</string>
+    <string name="settings_tts_voice_locale_he_il">Иврит (Израел)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Персийски (Иран)</string>
+    <string name="settings_tts_voice_locale_sq_al">Албански (Албания)</string>
+    <string name="settings_tts_voice_locale_am_et">Амхарски (Етиопия)</string>
+
+    <!-- Notification channels. -->
+    <string name="notification_channel_daily_insight_name">Дневен ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">Сутрешното резюме на времето, което си активирал.</string>
+    <string name="notification_daily_insight_title">Днешният ClothesCast</string>
+    <string name="notification_channel_tonight_insight_default_name">Нощен ClothesCast (със събития)</string>
+    <string name="notification_channel_tonight_insight_default_description">Вечерното резюме на времето, когато имаш събития в календара тази вечер. Пуска стандартния звук за известие.</string>
+    <string name="notification_channel_tonight_insight_silent_name">Нощен ClothesCast (тих)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Вечерното резюме на времето, когато вечерта е спокойна. Публикува се тихо — можеш да го видиш на заключения екран, но няма да издаде звук.</string>
+    <string name="notification_tonight_insight_title">Нощният ClothesCast</string>
+    <string name="notification_channel_weather_alerts_name">Предупреждения за тежко време</string>
+    <string name="notification_channel_weather_alerts_description">Приоритетни предупреждения за тежки или екстремни метеорологични явления в твоя район. Доставят се веднага след като дневното извличане ги открие.</string>
+    <string name="notification_weather_alert_title">Метеорологично предупреждение: %1$s</string>
+
+    <!-- Notification permission card. -->
+    <string name="settings_notification_permission_title">Известията са блокирани</string>
+    <string name="settings_notification_permission_description">Без разрешение за известия твоят дневен ClothesCast няма накъде да отиде. Разреши го, за да може ClothesCast да публикува утре сутринта.</string>
+    <string name="settings_notification_permission_grant">Разреши известия</string>
+
+    <!-- Calendar settings. -->
+    <string name="settings_calendar_title">Календар</string>
+    <string name="settings_calendar_use_events">Използвай събитията от календара за днес</string>
+    <string name="settings_calendar_description_off">Адаптирай сутрешната прогноза към събитията за днес — използват се само заглавия и часове и нищо не напуска устройството.</string>
+    <string name="settings_calendar_description_on">Адаптира сутрешната прогноза към събитията за днес. Използват се само заглавия и часове; нищо не напуска устройството.</string>
+    <string name="settings_calendar_grant_permission">Разреши достъп до календара</string>
+    <string name="settings_calendar_open_settings">Достъпът до календара е отказан. Разреши го от системните настройки.</string>
+
+    <!-- Debug screen. -->
+    <string name="settings_debug_title">Дебъг (само за дебъг версии)</string>
+    <string name="settings_debug_description">Стартирай дневния поток на ClothesCast незабавно. Полезно за проверка без чакане до насроченото време.</string>
+    <string name="settings_debug_fire_now">Стартирай ClothesCast сега</string>
+    <string name="settings_debug_fire_toast">Работникът на ClothesCast е поставен в опашка</string>
+
+    <!-- About screen. -->
+    <string name="settings_about_title">За приложението</string>
+    <string name="settings_about_version">Версия %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s версия</string>
+    <string name="settings_about_source">Изходен код в GitHub</string>
+    <string name="settings_about_dontkillmyapp">Ограничения в background (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Сподели доклад за грешка</string>
+    <string name="settings_about_version_copied">Версията е копирана в клипборда</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">Да се сподели ли доклад за грешка?</string>
+    <string name="bug_report_consent_body">Това помага за диагностициране на проблеми. Докладът съдържа чувствителна лична информация, включително твоето местоположение, настройките на приложението и скорошната активност. Ще можеш да го прегледаш и редактираш преди изпращане.</string>
+    <string name="bug_report_consent_dont_show_again">Не показвай отново</string>
+    <string name="bug_report_consent_continue">Продължи</string>
+    <string name="bug_report_consent_cancel">Откажи</string>
 
 </resources>

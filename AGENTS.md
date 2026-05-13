@@ -213,6 +213,21 @@ new rule the first time something bites you, not the third.
   temperatures (apparent, wind-chill / humidity adjusted) — never raw 2 m
   air temperature. That's what the user actually experiences stepping
   outside.
+- **Per-model rain doesn't pick clothes, but it does mention rain.** The
+  morning insight's evening tie-in clause has two emission paths. If the
+  user's clothes rules fire for the evening window (e.g. it'll be cold
+  enough for a jacket), the clause names the item *and* folds in the
+  per-model rain time when one's detected: "Bring a jacket tonight, rain
+  at 9pm." If no clothes rule fires but a per-model series spots rain ≥
+  30% in the tonight window and the user has an evening event with a
+  location, the clause still emits — without recommending clothes —
+  as a bare rain warning ("Rain tonight at 9pm." / "Chance of rain
+  tonight at 9pm." for the POSSIBLE tier). The principle: we don't
+  recommend clothes the user hasn't asked for (an umbrella isn't a
+  default, see the comment on `ClothesRule.DEFAULTS`), but we *do*
+  surface rain when a model spots it — staying silent on evening rain
+  because no rule happened to trigger is exactly the case the per-model
+  tier exists to catch.
 - The `:app` module owns Android concerns; LLM choice (which Gemini model
   to call) is `:app`'s problem. The `:core:domain` module is pure Kotlin
   and must stay that way — it's where the clothes / insight logic lives

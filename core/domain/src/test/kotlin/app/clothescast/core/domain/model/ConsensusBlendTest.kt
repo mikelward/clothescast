@@ -5,9 +5,16 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 class ConsensusBlendTest {
+
+    // Anchor date for the per-model series — every entry's full LocalDateTime
+    // pairs this with the hour. Best_match is just LocalTime; the blender
+    // gets [TODAY] passed in to bridge the two.
+    private val today: LocalDate = LocalDate.of(2026, 5, 13)
 
     private fun hour(
         h: Int,
@@ -30,7 +37,7 @@ class ConsensusBlendTest {
         precip: Double = 0.0,
         condition: WeatherCondition? = null,
     ) = PerModelHour(
-        time = LocalTime.of(h, 0),
+        time = LocalDateTime.of(today, LocalTime.of(h, 0)),
         apparentTemperatureC = apparent,
         temperatureC = air,
         precipitationProbabilityPct = precip,
@@ -41,7 +48,7 @@ class ConsensusBlendTest {
     fun `returns null when per-model data is null`() {
         val best = listOf(hour(12, temp = 10.0))
 
-        blendConsensusHourly(best, perModel = null).shouldBeNull()
+        blendConsensusHourly(today, best, perModel = null).shouldBeNull()
     }
 
     @Test
@@ -54,7 +61,7 @@ class ConsensusBlendTest {
             ),
         )
 
-        blendConsensusHourly(listOf(hour(12, temp = 10.0)), perModel).shouldBeNull()
+        blendConsensusHourly(today, listOf(hour(12, temp = 10.0)), perModel).shouldBeNull()
     }
 
     @Test
@@ -75,7 +82,7 @@ class ConsensusBlendTest {
             ),
         )
 
-        val blended = blendConsensusHourly(best, perModel).shouldNotBeNull()
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
 
         blended[0].temperatureC shouldBe (12.5 plusOrMinus 0.0001) // (15 + 10) / 2
         blended[0].feelsLikeC shouldBe (11.5 plusOrMinus 0.0001)   // (14 + 9) / 2
@@ -95,7 +102,7 @@ class ConsensusBlendTest {
             ),
         )
 
-        val blended = blendConsensusHourly(best, perModel).shouldNotBeNull()
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
 
         blended.size shouldBe 1
         blended[0].time shouldBe LocalTime.of(12, 0)
@@ -127,7 +134,7 @@ class ConsensusBlendTest {
             ),
         )
 
-        val blended = blendConsensusHourly(best, perModel).shouldNotBeNull()
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
 
         blended[0].temperatureC shouldBe (13.0 plusOrMinus 0.0001)  // consensus
         blended[1] shouldBe best[1]                                   // fell back
@@ -151,7 +158,7 @@ class ConsensusBlendTest {
             ),
         )
 
-        val blended = blendConsensusHourly(best, perModel).shouldNotBeNull()
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
 
         blended[0].condition shouldBe WeatherCondition.RAIN
     }
@@ -175,7 +182,7 @@ class ConsensusBlendTest {
             ),
         )
 
-        val blended = blendConsensusHourly(best, perModel).shouldNotBeNull()
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
 
         blended[0].condition shouldBe WeatherCondition.RAIN
     }
@@ -193,7 +200,7 @@ class ConsensusBlendTest {
             ),
         )
 
-        val blended = blendConsensusHourly(best, perModel).shouldNotBeNull()
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
 
         blended[0].condition shouldBe WeatherCondition.CLEAR
     }
@@ -220,7 +227,7 @@ class ConsensusBlendTest {
             ),
         )
 
-        blendConsensusHourly(best, perModel).shouldBeNull()
+        blendConsensusHourly(today, best, perModel).shouldBeNull()
     }
 
     @Test

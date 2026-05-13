@@ -27,7 +27,6 @@ import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import java.time.LocalDateTime
-import java.time.LocalTime
 
 /**
  * Fetches today's apparent-max temperature and peak precipitation probability from
@@ -69,7 +68,13 @@ internal class MultiModelConfidenceFetcher(
                 }
                 parameter("latitude", location.latitude)
                 parameter("longitude", location.longitude)
-                parameter("forecast_days", 1)
+                // forecast_days=2 so the per-model series covers today AND tomorrow's
+                // pre-dawn hours. The tonight insight's evening tie-in needs the wrap
+                // past midnight to spot rain that one model sees overnight but the
+                // base-only fallback misses. Confidence aggregates read `daily[0]`
+                // (today's value), so widening the window doesn't disturb the
+                // tier calculation downstream.
+                parameter("forecast_days", 2)
                 parameter("timezone", "auto")
                 parameter("daily", "apparent_temperature_max,precipitation_probability_max")
                 parameter(
@@ -156,12 +161,9 @@ internal class MultiModelConfidenceFetcher(
         return if (byModel.isEmpty()) null else PerModelHourly(byModel)
     }
 
-    private fun parseHour(element: JsonElement?): LocalTime? {
+    private fun parseHour(element: JsonElement?): LocalDateTime? {
         val text = (element as? JsonPrimitive)?.contentOrNull ?: return null
-        return runCatching {
-            val ldt = LocalDateTime.parse(text)
-            LocalTime.of(ldt.hour, ldt.minute)
-        }.getOrNull()
+        return runCatching { LocalDateTime.parse(text) }.getOrNull()
     }
 
     private fun readModelDaily(daily: JsonObject, model: String): ReadOutcome {

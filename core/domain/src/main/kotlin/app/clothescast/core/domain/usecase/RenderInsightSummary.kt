@@ -93,14 +93,18 @@ class RenderInsightSummary {
     ): InsightSummary {
         val items = todayTriggeredRules.map { it.item }
         val peak = peakPrecip(today, perModelHourly)
-        // Compute the evening peak only when the evening tie-in is going to
-        // emit (i.e. caller passed events + triggered rules + an evening
-        // forecast). Avoids spending the search on every TODAY pass, and
-        // keeps the result strictly scoped to the tie-in clause.
+        // Compute the evening peak whenever the tie-in could fire — i.e. the
+        // morning insight, with at least one evening event, and an evening
+        // forecast to inspect. Previously also gated on
+        // `eveningTriggeredRules.isNotEmpty()`, but per-model rain on a mild
+        // evening (no temperature rule triggered, no user-defined precip
+        // rule) is exactly the case the tie-in needs to surface — the bare
+        // rain warning falls out of the clause assembly below when no item
+        // is on the list. Cheap when no per-model data is present (the
+        // base-only peakPrecip is a single max over the hourly slice).
         val eveningPeak = if (
             period == ForecastPeriod.TODAY &&
-            eveningEvents.isNotEmpty() &&
-            eveningTriggeredRules.isNotEmpty()
+            eveningEvents.isNotEmpty()
         ) {
             eveningForecast?.let { peakPrecip(it, eveningPerModelHourly) }
         } else {
@@ -206,23 +210,39 @@ class RenderInsightSummary {
     private fun pickPerModelPeak(today: DailyForecast, perModelHourly: PerModelHourly): PeakPrecip? {
         val models = perModelHourly.byModel.values.toList()
         if (models.isEmpty()) return null
-        // Majority = more than half: 2 of 3, both of 2, 1 of 1. Matches how the
-        // user described it ("any model says ≥ 30 → chance of rain; majority of
-        // models say ≥ 50 → rain"); generalises naturally to whatever subset of
-        // models reported usable hourly values today.
-        val majorityNeeded = models.size / 2 + 1
         // Walk every hour any model reported, scoring by "models hitting LIKELY
         // at this hour" first and the single biggest per-model reading second
-        // (tie-break, also doubles as the POSSIBLE fallback pivot).
+        // (tie-break, also doubles as the POSSIBLE fallback pivot). Hours are
+        // LocalDateTimes (per-model entries carry a date so the tonight wrap
+        // doesn't alias); convert to LocalTime at emission, which is all the
+        // downstream prose / chart consumers need.
+        //
+        // Majority is computed PER HOUR over the models that actually reported
+        // a reading there, not over the total number of models in [byModel].
+        // The lenient evening-tie-in slice ([intersectedWith]) intentionally
+        // keeps models that only cover part of the tonight window — a model
+        // whose run hasn't fully landed reports rain at 21:00 but has no
+        // 05:00 entry, and we still want it feeding the 21:00 peak (Codex
+        // caught it). With a total-models-based bar, "both models that did
+        // report at 02:00 agree at 80%" would be treated as 2-of-4 against
+        // the absent ones — silently downgrading a genuine consensus to
+        // POSSIBLE just because the other two models had no overnight data.
+        // Floor of 2 readings keeps a single-model agreement honest as a
+        // POSSIBLE rather than promoting it to LIKELY: "one model says rain"
+        // is the textbook chance-of-rain case the per-model tier exists to
+        // express.
         val hours = models.flatMap { entries -> entries.map { it.time } }.toSortedSet()
         val likelyHour = hours
             .mapNotNull { hour ->
                 val readings = models.mapNotNull { entries -> entries.firstOrNull { it.time == hour } }
+                if (readings.size < 2) return@mapNotNull null
+                val majorityOfReporters = readings.size / 2 + 1
                 val likelyCount = readings.count { it.precipitationProbabilityPct >= LIKELY_THRESHOLD }
-                if (likelyCount >= majorityNeeded) hour to readings else null
+                if (likelyCount >= majorityOfReporters) hour to readings else null
             }
             .maxByOrNull { (_, readings) -> readings.maxOf { it.precipitationProbabilityPct } }
             ?.first
+            ?.toLocalTime()
         if (likelyHour != null) {
             return PeakPrecip(likelyHour, perModelConditionAt(likelyHour, today), PrecipLikelihood.LIKELY)
         }
@@ -232,6 +252,7 @@ class RenderInsightSummary {
             .filter { it.precipitationProbabilityPct >= POSSIBLE_THRESHOLD }
             .maxByOrNull { it.precipitationProbabilityPct }
             ?.time
+            ?.toLocalTime()
         if (possibleHour != null) {
             return PeakPrecip(possibleHour, perModelConditionAt(possibleHour, today), PrecipLikelihood.POSSIBLE)
         }
@@ -291,12 +312,28 @@ class RenderInsightSummary {
      * forecast. Calendar event titles, locations, and start times are never captured
      * into the returned clause.
      *
+     * Two emission paths:
+     *  - Triggered-item path: at least one clothes rule fires on the evening
+     *    forecast → "Bring a jacket tonight." (item only) or "Bring an umbrella
+     *    tonight, rain at 9pm." (item + per-model rain).
+     *  - Bare-rain path: no rule triggers but a per-model series spots rain ≥
+     *    [POSSIBLE_THRESHOLD]% somewhere in the tonight window → emit with
+     *    [EveningEventTieInClause.item] null. The formatter renders this as
+     *    "Rain tonight at 9pm." (LIKELY) or "Chance of rain tonight at 9pm."
+     *    (POSSIBLE). Picks up the case where the user has a temperature-only
+     *    rule set on a mild evening with one-model rain — the morning insight
+     *    would otherwise stay silent on the rain even though it's exactly
+     *    what the per-model tier exists to catch.
+     *
      * Suppressed when:
      *  - No evening event has a location (location-less events don't imply outdoor
      *    exposure where the weather matters).
-     *  - The evening clothes items are a subset of (or equal to) [todayItems] — the
-     *    morning insight already told the user every item; repeating a subset of them
-     *    for the evening adds no new information.
+     *  - Triggered-item path only: the evening clothes items are a subset of (or
+     *    equal to) [todayItems] — the morning insight already told the user every
+     *    item; repeating a subset of them for the evening adds no new information.
+     *    The bare-rain path doesn't apply this filter: today's rain ≠ tonight's
+     *    rain, so the morning insight covering today's clothing list doesn't
+     *    pre-empt an evening rain warning.
      */
     private fun eveningEventTieInClause(
         period: ForecastPeriod,
@@ -306,22 +343,52 @@ class RenderInsightSummary {
         todayItems: List<String>,
     ): EveningEventTieInClause? {
         if (period != ForecastPeriod.TODAY) return null
-        if (eveningEvents.isEmpty() || eveningTriggeredRules.isEmpty()) return null
+        if (eveningEvents.isEmpty()) return null
         // Gate on at least one non-all-day evening event that has a location.
         // Events without a location don't imply outdoor exposure, so the
         // weather-specific clothing tip isn't warranted. Calendar event titles
         // never flow to off-device TTS.
         eveningEvents.firstOrNull { !it.allDay && !it.location.isNullOrBlank() } ?: return null
         val items = eveningTriggeredRules.map { it.item }
+        if (items.isEmpty()) {
+            // Bare-rain path: no triggered rule, so the only thing left to say
+            // is that a model spotted evening rain. Suppress when there's no
+            // rain to name either — that's the genuinely-nothing-to-add case.
+            val peak = eveningPeak ?: return null
+            return EveningEventTieInClause(
+                item = null,
+                rainTime = peak.time,
+                likelihood = peak.likelihood,
+            )
+        }
         // If the evening clothes are a subset of (or equal to) today's clothes,
         // the morning insight already covered every item — no new information to add.
         // Compare normalized (trim + lowercase) so legacy free-form ClothesRule.item
         // values don't fail to suppress on a casing/whitespace mismatch ("Jacket" vs
         // "jacket"); matches the case-insensitive umbrella check below.
+        //
+        // Exception: when there's an evening rain peak, the rain mention IS
+        // new information even if the items are a subset — the morning
+        // precip clause only covers the daytime slice, so without the
+        // tie-in there's no other place that evening rain gets surfaced
+        // (Codex caught it). Fall through to the bare-rain emission in
+        // that case rather than dropping the clause wholesale.
         val normalize: (String) -> String = { it.trim().lowercase(Locale.ROOT) }
-        if (todayItems.map(normalize).toSet().containsAll(items.map(normalize).toSet())) return null
+        val itemsRedundant = todayItems.map(normalize).toSet().containsAll(items.map(normalize).toSet())
+        if (itemsRedundant) {
+            val peak = eveningPeak ?: return null
+            return EveningEventTieInClause(
+                item = null,
+                rainTime = peak.time,
+                likelihood = peak.likelihood,
+            )
+        }
         val item = items.firstOrNull { it.equals("umbrella", ignoreCase = true) } ?: items.first()
-        return EveningEventTieInClause(item = item, rainTime = eveningPeak?.time)
+        return EveningEventTieInClause(
+            item = item,
+            rainTime = eveningPeak?.time,
+            likelihood = eveningPeak?.likelihood ?: PrecipLikelihood.LIKELY,
+        )
     }
 
     private data class PeakPrecip(

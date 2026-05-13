@@ -130,10 +130,20 @@ data class CalendarTieInClause(val item: String)
  * tonight, rain at 9pm.") — keeps the morning insight's mention of evening rain
  * tied to the evening event, rather than emitting a second precip clause that
  * would compete with the morning slice's own precip clause.
+ *
+ * [item] is nullable so the clause can also fire on per-model evening rain
+ * alone, with no clothes rule triggered for the tonight window — the user
+ * still wants to know that a model spotted rain when they have an evening
+ * event coming up, even without a precip-keyed rule on the books. In that
+ * case the formatter renders a bare "Rain tonight at 9pm." (or "Chance of
+ * rain tonight at 9pm." when [likelihood] is POSSIBLE). [likelihood] is only
+ * meaningful when [rainTime] is set; it defaults to LIKELY for back-compat
+ * with cached payloads written before the field existed.
  */
 data class EveningEventTieInClause(
-    val item: String,
+    val item: String?,
     val rainTime: LocalTime? = null,
+    val likelihood: PrecipLikelihood = PrecipLikelihood.LIKELY,
 )
 
 /**

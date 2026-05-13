@@ -20,6 +20,7 @@ import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 class RenderInsightSummaryTest {
@@ -277,14 +278,114 @@ class RenderInsightSummaryTest {
     }
 
     @Test
-    fun `evening event tie-in is omitted when no clothes rules trigger against the evening`() {
-        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0))
+    fun `evening event tie-in is omitted when no clothes rules trigger and no rain to mention`() {
+        // The bare-rain emission path requires an evening peak; without one
+        // (no eveningForecast, or a dry evening) and with no triggered
+        // rules, there's genuinely nothing to add for the evening.
+        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0), location = "Restaurant")
         val out = subject(
             today = mildToday,
             yesterday = yesterday,
             todayTriggeredRules = emptyList(),
             eveningEvents = listOf(event),
             eveningTriggeredRules = emptyList(),
+        )
+        out.eveningEventTieIn.shouldBeNull()
+    }
+
+    @Test
+    fun `evening event tie-in emits bare rain when no rule triggers but per-model spots rain`() {
+        // The case AGENTS.md documents under "Domain conventions": user
+        // has only temperature-keyed rules, the evening is mild enough
+        // that none trigger, but a per-model series spots rain ≥ 30% in
+        // the tonight window. The morning insight must still mention the
+        // rain — staying silent is exactly the gap the per-model tier
+        // exists to catch — but it shouldn't invent a clothes
+        // recommendation the user hasn't asked for. Surfaces as
+        // item=null + rainTime set; the formatter renders this as a
+        // bare "Rain tonight at 9pm.".
+        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0), location = "Restaurant")
+        val mildEvening = mildToday.copy(
+            precipitationProbabilityMaxPct = 10.0,
+            condition = WeatherCondition.PARTLY_CLOUDY,
+            hourly = listOf(HourlyForecast(LocalTime.of(21, 0), 14.0, 13.0, 10.0, WeatherCondition.PARTLY_CLOUDY)),
+        )
+        // One model spots rain at 21:00 — the POSSIBLE tier (≥ 30% on a
+        // single model, < majority at ≥ 50%).
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "ecmwf_ifs04" to listOf(
+                    PerModelHour(
+                        time = LocalDateTime.of(2026, 5, 13, 21, 0),
+                        apparentTemperatureC = 13.0,
+                        temperatureC = 14.0,
+                        precipitationProbabilityPct = 75.0,
+                    ),
+                ),
+                "gfs_seamless" to listOf(
+                    PerModelHour(
+                        time = LocalDateTime.of(2026, 5, 13, 21, 0),
+                        apparentTemperatureC = 13.0,
+                        temperatureC = 14.0,
+                        precipitationProbabilityPct = 10.0,
+                    ),
+                ),
+                "icon_seamless" to listOf(
+                    PerModelHour(
+                        time = LocalDateTime.of(2026, 5, 13, 21, 0),
+                        apparentTemperatureC = 13.0,
+                        temperatureC = 14.0,
+                        precipitationProbabilityPct = 5.0,
+                    ),
+                ),
+            ),
+        )
+        val out = subject(
+            today = mildToday,
+            yesterday = yesterday,
+            todayTriggeredRules = emptyList(),
+            eveningEvents = listOf(event),
+            eveningTriggeredRules = emptyList(),
+            eveningForecast = mildEvening,
+            eveningPerModelHourly = perModel,
+        )
+        val tie = out.eveningEventTieIn
+        tie.shouldNotBeNull()
+        tie!!.item.shouldBeNull()
+        tie.rainTime shouldBe LocalTime.of(21, 0)
+        tie.likelihood shouldBe PrecipLikelihood.POSSIBLE
+    }
+
+    @Test
+    fun `evening event tie-in bare rain requires a located evening event`() {
+        // Same setup as the bare-rain emission test above, but the event
+        // has no location — the location gate still applies on this path.
+        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0))
+        val mildEvening = mildToday.copy(
+            precipitationProbabilityMaxPct = 10.0,
+            condition = WeatherCondition.PARTLY_CLOUDY,
+            hourly = listOf(HourlyForecast(LocalTime.of(21, 0), 14.0, 13.0, 10.0, WeatherCondition.PARTLY_CLOUDY)),
+        )
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "ecmwf_ifs04" to listOf(
+                    PerModelHour(
+                        time = LocalDateTime.of(2026, 5, 13, 21, 0),
+                        apparentTemperatureC = 13.0,
+                        temperatureC = 14.0,
+                        precipitationProbabilityPct = 75.0,
+                    ),
+                ),
+            ),
+        )
+        val out = subject(
+            today = mildToday,
+            yesterday = yesterday,
+            todayTriggeredRules = emptyList(),
+            eveningEvents = listOf(event),
+            eveningTriggeredRules = emptyList(),
+            eveningForecast = mildEvening,
+            eveningPerModelHourly = perModel,
         )
         out.eveningEventTieIn.shouldBeNull()
     }
@@ -345,6 +446,35 @@ class RenderInsightSummaryTest {
             eveningTriggeredRules = listOf(jacketRule),
         )
         out.eveningEventTieIn.shouldBeNull()
+    }
+
+    @Test
+    fun `evening event tie-in falls back to bare rain when items are a subset but rain peaks`() {
+        // Codex case: morning rules and evening rules both recommend jacket
+        // (cold all day), so the item part is redundant — but a per-model
+        // series spots evening rain at 21:00. The morning precip clause
+        // only covers the daytime slice, so dropping the tie-in entirely
+        // would lose the only place evening rain gets surfaced. Fall
+        // through to the bare-rain shape (item=null, rainTime set) so the
+        // rain mention survives without repeating the jacket clothing tip.
+        val event = CalendarEvent("dinner", LocalTime.of(21, 0), LocalTime.of(23, 0), location = "Restaurant")
+        val rainyEvening = mildToday.copy(
+            precipitationProbabilityMaxPct = 60.0,
+            condition = WeatherCondition.RAIN,
+            hourly = listOf(HourlyForecast(LocalTime.of(21, 0), 11.0, 9.0, 60.0, WeatherCondition.RAIN)),
+        )
+        val out = subject(
+            today = mildToday,
+            yesterday = yesterday,
+            todayTriggeredRules = listOf(jacketRule),
+            eveningEvents = listOf(event),
+            eveningTriggeredRules = listOf(jacketRule),
+            eveningForecast = rainyEvening,
+        )
+        val tie = out.eveningEventTieIn
+        tie.shouldNotBeNull()
+        tie!!.item.shouldBeNull()
+        tie.rainTime shouldBe LocalTime.of(21, 0)
     }
 
     @Test
@@ -698,6 +828,63 @@ class RenderInsightSummaryTest {
     }
 
     @Test
+    fun `precip clause is LIKELY when reporting models agree at a sparse hour`() {
+        // Codex case: the lenient evening-tie-in slice keeps models with
+        // only partial tonight-window coverage. Two models report at 02:00
+        // and both hit ≥ LIKELY_THRESHOLD; the other two are in [byModel]
+        // (they reported at other hours like 21:00) but have no 02:00
+        // entry. Majority must be computed over the two that actually
+        // reported at 02:00, not over the four in the map — otherwise the
+        // genuine 2-of-2 consensus gets silently downgraded to POSSIBLE
+        // because the absent models inflate `majorityNeeded` to 3.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 20.0,
+            condition = WeatherCondition.PARTLY_CLOUDY,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(2, 0), 8.0, 8.0, 20.0, WeatherCondition.PARTLY_CLOUDY),
+            ),
+        )
+        val perModel = perModelHourly(
+            // best_match + ECMWF report at 02:00, both wet.
+            PerModelHourly.BEST_MATCH_MODEL_ID to listOf(perModelHour(LocalTime.of(2, 0), 80.0)),
+            "ecmwf_ifs04" to listOf(perModelHour(LocalTime.of(2, 0), 75.0)),
+            // GFS + ICON only have an unrelated 21:00 entry — no 02:00 data.
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(21, 0), 5.0)),
+            "icon_seamless" to listOf(perModelHour(LocalTime.of(21, 0), 10.0)),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.time shouldBe LocalTime.of(2, 0)
+        out.likelihood shouldBe PrecipLikelihood.LIKELY
+    }
+
+    @Test
+    fun `precip clause is POSSIBLE when only one model reports a sparse hour`() {
+        // Counterpart to the sparse-LIKELY test above: a single model
+        // reports at 02:00 — even if it's at 80%, "one model says rain"
+        // is the textbook POSSIBLE case the per-model tier exists to
+        // express. The floor of two readings keeps a single-reading
+        // sparse hour from getting promoted to LIKELY.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 10.0,
+            condition = WeatherCondition.PARTLY_CLOUDY,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(2, 0), 8.0, 8.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
+            ),
+        )
+        val perModel = perModelHourly(
+            "ecmwf_ifs04" to listOf(perModelHour(LocalTime.of(2, 0), 80.0)),
+            // Other models cover other hours but not 02:00.
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(21, 0), 5.0)),
+            "icon_seamless" to listOf(perModelHour(LocalTime.of(21, 0), 10.0)),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.time shouldBe LocalTime.of(2, 0)
+        out.likelihood shouldBe PrecipLikelihood.POSSIBLE
+    }
+
+    @Test
     fun `precip clause is POSSIBLE when one of two available models hits 50 percent`() {
         // Majority of 2 is 2 — one passing isn't a majority, so the LIKELY
         // tier doesn't fire; the lone 60% still earns the hedged form.
@@ -772,9 +959,16 @@ class RenderInsightSummaryTest {
         out.likelihood shouldBe PrecipLikelihood.LIKELY
     }
 
+    // PerModelHour now carries a LocalDateTime — paired against an arbitrary
+    // anchor date so the test fixtures don't have to thread a date through
+    // every call. The renderer reads `time.toLocalTime()` at output points;
+    // the date is only used internally for tonight-wrap disambiguation,
+    // which these tests don't exercise.
+    private val perModelDate: java.time.LocalDate = java.time.LocalDate.of(2026, 5, 13)
+
     private fun perModelHour(time: LocalTime, precipPct: Double): PerModelHour =
         PerModelHour(
-            time = time,
+            time = java.time.LocalDateTime.of(perModelDate, time),
             apparentTemperatureC = 18.0,
             temperatureC = 18.0,
             precipitationProbabilityPct = precipPct,

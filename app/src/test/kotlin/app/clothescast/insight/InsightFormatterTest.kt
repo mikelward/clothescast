@@ -201,6 +201,43 @@ class InsightFormatterTest {
     }
 
     @Test
+    fun `evening event tie-in renders bare rain when item is null and rain time is set`() {
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    item = null,
+                    rainTime = LocalTime.of(21, 0),
+                ),
+            ),
+        )
+        out shouldBe "Today will be mild. Rain tonight at 9pm."
+    }
+
+    @Test
+    fun `evening event tie-in hedges to chance when likelihood is POSSIBLE`() {
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    item = null,
+                    rainTime = LocalTime.of(21, 0),
+                    likelihood = PrecipLikelihood.POSSIBLE,
+                ),
+            ),
+        )
+        out shouldBe "Today will be mild. Chance of rain tonight at 9pm."
+    }
+
+    @Test
+    fun `evening event tie-in is omitted when item is null and rain time is null too`() {
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(item = null, rainTime = null),
+            ),
+        )
+        out shouldBe "Today will be mild."
+    }
+
+    @Test
     fun `evening event tie-in renders 'Bring a item tonight' when no evening rain`() {
         val out = subject.format(
             summary(
@@ -218,6 +255,26 @@ class InsightFormatterTest {
             ),
         )
         out shouldBe "Today will be mild. Bring an umbrella tonight, rain at 9pm."
+    }
+
+    @Test
+    fun `evening event tie-in hedges item-led wording when likelihood is POSSIBLE`() {
+        // Matches the bare-rain path's hedge: a clothes rule triggered (the
+        // user has a jacket rule and the evening is cold) but only one
+        // per-model series flagged the rain, so the per-model tier was
+        // POSSIBLE rather than LIKELY. Without the hedge, a single-model
+        // rain reading would render with the same definite tone as
+        // "majority of models agree".
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    item = "jacket",
+                    rainTime = LocalTime.of(21, 0),
+                    likelihood = PrecipLikelihood.POSSIBLE,
+                ),
+            ),
+        )
+        out shouldBe "Today will be mild. Bring a jacket tonight, chance of rain at 9pm."
     }
 
     @Test

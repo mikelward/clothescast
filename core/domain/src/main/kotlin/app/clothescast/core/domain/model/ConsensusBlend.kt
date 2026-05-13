@@ -39,6 +39,7 @@ package app.clothescast.core.domain.model
  * [withAggregatesFrom] on data that hasn't actually changed.
  */
 fun blendConsensusHourly(
+    bestMatchDate: java.time.LocalDate,
     bestMatch: List<HourlyForecast>,
     perModel: PerModelHourly?,
 ): List<HourlyForecast>? {
@@ -46,7 +47,11 @@ fun blendConsensusHourly(
     val models = perModel.byModel
     if (models.size < 2) return null
 
-    val byHour = mutableMapOf<java.time.LocalTime, MutableList<PerModelHour>>()
+    // Per-model entries carry a full LocalDateTime so the tonight wrap doesn't
+    // alias today's 02:00 against tomorrow's 02:00. Best_match is today's
+    // hourly only, indexed by LocalTime — pair it against the matching
+    // calendar day before looking up consensus candidates.
+    val byHour = mutableMapOf<java.time.LocalDateTime, MutableList<PerModelHour>>()
     for (entries in models.values) {
         for (entry in entries) {
             byHour.getOrPut(entry.time) { mutableListOf() }.add(entry)
@@ -55,7 +60,7 @@ fun blendConsensusHourly(
 
     var anyBlended = false
     val out = bestMatch.map { hour ->
-        val candidates = byHour[hour.time].orEmpty()
+        val candidates = byHour[java.time.LocalDateTime.of(bestMatchDate, hour.time)].orEmpty()
         if (candidates.size < 2) {
             hour
         } else {

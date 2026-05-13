@@ -22,7 +22,7 @@ import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 class MultiModelConfidenceFetcherTest {
     private val london = Location(latitude = 51.5074, longitude = -0.1278, displayName = "London")
@@ -77,7 +77,10 @@ class MultiModelConfidenceFetcherTest {
         req.url.parameters["hourly"] shouldBe
             "apparent_temperature,temperature_2m,precipitation_probability," +
             "wind_speed_10m,relative_humidity_2m,cloud_cover,weather_code"
-        req.url.parameters["forecast_days"] shouldBe "1"
+        // forecast_days=2 keeps the wrap-past-midnight evening tie-in able to
+        // see tomorrow's pre-dawn rain that one model spots but the base
+        // forecast under-calls.
+        req.url.parameters["forecast_days"] shouldBe "2"
         req.url.parameters["past_days"].shouldBeNull()
     }
 
@@ -134,7 +137,7 @@ class MultiModelConfidenceFetcherTest {
             listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless")
         val ecmwf = hourly.byModel.getValue("ecmwf_ifs04")
         ecmwf.size shouldBe 3
-        ecmwf[0].time shouldBe LocalTime.of(0, 0)
+        ecmwf[0].time shouldBe LocalDateTime.parse("2026-05-12T00:00")
         ecmwf[0].apparentTemperatureC shouldBe (12.0 plusOrMinus 0.0001)
         ecmwf[0].temperatureC shouldBe (14.0 plusOrMinus 0.0001)
         ecmwf[0].precipitationProbabilityPct shouldBe (10.0 plusOrMinus 0.0001)
@@ -144,7 +147,7 @@ class MultiModelConfidenceFetcherTest {
         // WMO 3 → CLOUDY; ensures weather_code_<model> is being parsed
         // through [WmoCodeMapper] alongside the numeric fields.
         ecmwf[0].condition shouldBe WeatherCondition.CLOUDY
-        ecmwf[2].time shouldBe LocalTime.of(2, 0)
+        ecmwf[2].time shouldBe LocalDateTime.parse("2026-05-12T02:00")
     }
 
     @Test
@@ -177,7 +180,7 @@ class MultiModelConfidenceFetcherTest {
         // Hour 1 had a null apparent_temperature for ecmwf; the entry is dropped,
         // but the other two hours survive.
         ecmwf.map { it.time } shouldContainExactlyInAnyOrder
-            listOf(LocalTime.of(0, 0), LocalTime.of(2, 0))
+            listOf(LocalDateTime.parse("2026-05-12T00:00"), LocalDateTime.parse("2026-05-12T02:00"))
     }
 
     @Test

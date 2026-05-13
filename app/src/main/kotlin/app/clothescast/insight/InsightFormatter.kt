@@ -131,18 +131,43 @@ class InsightFormatter(
     }
 
     private fun formatEveningEventTieIn(tieIn: EveningEventTieInClause): String? {
-        if (tieIn.item.isBlank()) return null
-        val renderedItem = phraser.withArticle(tieIn.item)
-        if (renderedItem.isBlank()) return null
-        // Local capture so the null check enables smart cast — the property
-        // lives on a :core:domain data class and Kotlin won't smart-cast a
+        // Local captures so null checks enable smart cast — the properties
+        // live on a :core:domain data class and Kotlin won't smart-cast a
         // public API property across modules.
-        val rainTime = tieIn.rainTime ?: return resources.getString(R.string.insight_tie_in, renderedItem)
-        return resources.getString(
-            R.string.insight_tie_in_with_rain,
-            renderedItem,
-            spokenTime(rainTime),
-        )
+        val item = tieIn.item
+        val rainTime = tieIn.rainTime
+        if (item == null) {
+            // Bare-rain path: no clothes rule triggered (the renderer only
+            // emits item=null in this case), so the rain mention is the
+            // entire clause. The renderer also pairs this shape with a
+            // non-null rainTime — return null if not (malformed input,
+            // rather than emit a "Rain tonight at ." sentence).
+            if (rainTime == null) return null
+            val template = when (tieIn.likelihood) {
+                PrecipLikelihood.LIKELY -> R.string.insight_evening_rain
+                PrecipLikelihood.POSSIBLE -> R.string.insight_evening_rain_chance
+            }
+            return resources.getString(template, spokenTime(rainTime))
+        }
+        // Item-led path: blank item indicates malformed input; suppress the
+        // whole clause rather than fall through to bare-rain — a blank
+        // item with rainTime set isn't the renderer's bare-rain emission
+        // (that path produces item=null specifically), so treat it as a
+        // data error.
+        if (item.isBlank()) return null
+        val renderedItem = phraser.withArticle(item)
+        if (renderedItem.isBlank()) return null
+        rainTime ?: return resources.getString(R.string.insight_tie_in, renderedItem)
+        // Hedge the item-led wording when only one model spotted the rain,
+        // matching the bare-rain path's chance-of-rain template. Otherwise
+        // a clothes rule triggering for warmth would always promote a
+        // single-model rain reading to a confident "Bring a jacket
+        // tonight, rain at 9pm." even when the per-model tier was POSSIBLE.
+        val template = when (tieIn.likelihood) {
+            PrecipLikelihood.LIKELY -> R.string.insight_tie_in_with_rain
+            PrecipLikelihood.POSSIBLE -> R.string.insight_tie_in_with_rain_chance
+        }
+        return resources.getString(template, renderedItem, spokenTime(rainTime))
     }
 
     private fun leadRes(period: ForecastPeriod): Int = when (period) {

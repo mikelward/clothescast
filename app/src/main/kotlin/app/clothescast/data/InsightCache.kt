@@ -111,10 +111,18 @@ class InsightCache(
             // TONIGHT's hourly when re-deriving.
             val todayInsight = prefs[TODAY_INSIGHT_JSON]?.let { decodeInsight(it) }
             val tonightInsight = prefs[TONIGHT_INSIGHT_JSON]?.let { decodeInsight(it) }
+            // Only pair the slots when their forDate matches — during a morning
+            // settings edit, the TONIGHT slot may still be yesterday's evening
+            // insight while the TODAY slot is current. Rewriting today's
+            // `nextOutfit` from yesterday's overnight hourly would silently
+            // backdate the home-screen "Tonight" icon to last night's conditions
+            // (which already happened); preserving the existing `nextOutfit` is
+            // the honest choice until the next worker run rebuilds TONIGHT.
+            val tonightPair = tonightInsight?.takeIf { it.forDate == todayInsight?.forDate }
             todayInsight?.recomputed(
                 clothesRules = clothesRules,
                 defaultBottom = defaultBottom,
-                nextSlot = tonightInsight,
+                nextSlot = tonightPair,
             )?.let { prefs[TODAY_INSIGHT_JSON] = json.encodeToString(it.toDto()) }
             tonightInsight?.recomputed(
                 clothesRules = clothesRules,

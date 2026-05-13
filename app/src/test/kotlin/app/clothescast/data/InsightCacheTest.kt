@@ -498,6 +498,64 @@ class InsightCacheTest {
     }
 
     @Test
+    fun `recomputeOutfits preserves todays nextOutfit when tonight slot is from a previous day`() = runTest {
+        // Morning settings edit: the TODAY slot was rewritten by the morning
+        // worker (forDate = today), but the TONIGHT slot is still yesterday
+        // evening's insight (forDate = yesterday). Borrowing the stale TONIGHT
+        // hourly to rewrite today's `nextOutfit` would silently backdate the
+        // home-screen "Tonight" icon to last night's conditions — which have
+        // already happened. The date guard preserves the existing nextOutfit
+        // and lets the next TONIGHT worker run repair it properly.
+        val todayHourly = listOf(
+            HourlyForecast(
+                time = LocalTime.of(7, 0),
+                temperatureC = 14.0,
+                feelsLikeC = 13.0,
+                precipitationProbabilityPct = 5.0,
+                condition = WeatherCondition.CLEAR,
+            ),
+        )
+        // Yesterday's overnight was cold — if we mis-pair this with today's
+        // TODAY slot we'd compute a colder `nextOutfit` than today's actual
+        // upcoming evening warrants.
+        val yesterdayOvernightHourly = listOf(
+            HourlyForecast(
+                time = LocalTime.of(21, 0),
+                temperatureC = 2.0,
+                feelsLikeC = 0.0,
+                precipitationProbabilityPct = 5.0,
+                condition = WeatherCondition.CLEAR,
+            ),
+        )
+        val storedNext = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS)
+        subject.store(
+            sample.copy(
+                period = ForecastPeriod.TODAY,
+                forDate = today,
+                hourly = todayHourly,
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+                nextOutfit = storedNext,
+            ),
+        )
+        subject.store(
+            sample.copy(
+                period = ForecastPeriod.TONIGHT,
+                forDate = today.minusDays(1),
+                hourly = yesterdayOvernightHourly,
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.THICK_COAT, OutfitSuggestion.Bottom.LONG_PANTS),
+            ),
+        )
+
+        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
+
+        val refreshed = subject.forPeriodToday(today, ForecastPeriod.TODAY)
+        refreshed?.outfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
+        // nextOutfit preserved verbatim — not silently rebuilt from yesterday's
+        // overnight data.
+        refreshed?.nextOutfit shouldBe storedNext
+    }
+
+    @Test
     fun `recomputeOutfits leaves a slot without hourly data alone`() = runTest {
         // No hourly entries → no way to reconstruct the day's aggregates, so
         // the recompute can't re-evaluate rules. The slot's outfit stays as

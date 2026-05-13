@@ -168,12 +168,15 @@ class InsightCache(
         val temperatureC: Double? = null,
         val precipitationProbabilityPct: Double,
     ) {
-        fun toDomain(): PerModelHour? = PerModelHour(
-            time = LocalTime.ofSecondOfDay(secondOfDay.toLong()),
-            apparentTemperatureC = apparentTemperatureC,
-            temperatureC = temperatureC ?: return null,
-            precipitationProbabilityPct = precipitationProbabilityPct,
-        )
+        fun toDomain(): PerModelHour? {
+            val airTemp = temperatureC ?: return null
+            return PerModelHour(
+                time = LocalTime.ofSecondOfDay(secondOfDay.toLong()),
+                apparentTemperatureC = apparentTemperatureC,
+                temperatureC = airTemp,
+                precipitationProbabilityPct = precipitationProbabilityPct,
+            )
+        }
     }
 
     @Serializable

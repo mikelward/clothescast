@@ -141,9 +141,10 @@ What is NOT overridden, by design:
 
     <!-- Hourly forecast card. -->
     <string name="today_forecast_title">Valandos prognozė</string>
-    <string name="today_forecast_min_max">Juntama %1$d – %2$d%3$s · Oras %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Juntama (%1$s) pagal valandą · palieski, kad perjungtum į oro temperatūrą</string>
-    <string name="today_forecast_legend_air">Oro temperatūra (%1$s) pagal valandą · palieski, kad perjungtum į juntamą</string>
+    <string name="today_forecast_min_max">Juntama %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Oras %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Juntama (%1$s) pagal valandą</string>
+    <string name="today_forecast_legend_air">Oro temperatūra (%1$s) pagal valandą</string>
 
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Lietaus tikimybė</string>

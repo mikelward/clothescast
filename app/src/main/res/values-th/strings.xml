@@ -145,9 +145,10 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Forecast / charts -->
     <string name="today_forecast_title">พยากรณ์รายชั่วโมง</string>
-    <string name="today_forecast_min_max">อุณหภูมิที่รู้สึก %1$d – %2$d%3$s · อากาศ %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">อุณหภูมิที่รู้สึก (%1$s) รายชั่วโมง · แตะเพื่อสลับเป็นอุณหภูมิอากาศ</string>
-    <string name="today_forecast_legend_air">อุณหภูมิอากาศ (%1$s) รายชั่วโมง · แตะเพื่อสลับเป็นอุณหภูมิที่รู้สึก</string>
+    <string name="today_forecast_min_max">อุณหภูมิที่รู้สึก %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">อากาศ %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">อุณหภูมิที่รู้สึก (%1$s) รายชั่วโมง</string>
+    <string name="today_forecast_legend_air">อุณหภูมิอากาศ (%1$s) รายชั่วโมง</string>
 
     <!-- Precipitation card -->
     <string name="today_precipitation_title">โอกาสฝนตก</string>

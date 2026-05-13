@@ -142,9 +142,10 @@ West Bengal vocabulary differences in a future PR.
 
     <!-- Forecast / charts -->
     <string name="today_forecast_title">প্রতি ঘণ্টার পূর্বাভাস</string>
-    <string name="today_forecast_min_max">অনুভূত %1$d – %2$d%3$s · বায়ু %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">প্রতি ঘণ্টায় অনুভূত তাপমাত্রা (%1$s) · বায়ু তাপমাত্রায় স্যুইচ করতে ট্যাপ করুন</string>
-    <string name="today_forecast_legend_air">প্রতি ঘণ্টায় বায়ু তাপমাত্রা (%1$s) · অনুভূত তাপমাত্রায় স্যুইচ করতে ট্যাপ করুন</string>
+    <string name="today_forecast_min_max">অনুভূত %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">বায়ু %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">প্রতি ঘণ্টায় অনুভূত তাপমাত্রা (%1$s)</string>
+    <string name="today_forecast_legend_air">প্রতি ঘণ্টায় বায়ু তাপমাত্রা (%1$s)</string>
 
     <!-- Precipitation card -->
     <string name="today_precipitation_title">বৃষ্টির সম্ভাবনা</string>

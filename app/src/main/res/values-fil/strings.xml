@@ -138,9 +138,10 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Forecast card -->
     <string name="today_forecast_title">Oras-orasang hula</string>
-    <string name="today_forecast_min_max">Nararamdaman %1$d – %2$d%3$s · Hangin %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Nararamdamang temperatura (%1$s) bawat oras · i-tap para lumipat sa temperatura ng hangin</string>
-    <string name="today_forecast_legend_air">Temperatura ng hangin (%1$s) bawat oras · i-tap para lumipat sa nararamdamang temperatura</string>
+    <string name="today_forecast_min_max">Nararamdaman %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Hangin %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Nararamdamang temperatura (%1$s) bawat oras</string>
+    <string name="today_forecast_legend_air">Temperatura ng hangin (%1$s) bawat oras</string>
 
     <!-- Precipitation card -->
     <string name="today_precipitation_title">Tsansa ng ulan</string>

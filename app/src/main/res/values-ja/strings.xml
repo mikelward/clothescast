@@ -366,9 +366,10 @@ the displayed label localizes.
     <string name="today_outfit_bottom_long_pants">ズボン</string>
 
     <string name="today_forecast_title">1時間ごとの予報</string>
-    <string name="today_forecast_min_max">体感 %1$d – %2$d%3$s · 気温 %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">1時間ごとの体感温度（%1$s）· タップで気温に切り替え</string>
-    <string name="today_forecast_legend_air">1時間ごとの気温（%1$s）· タップで体感温度に切り替え</string>
+    <string name="today_forecast_min_max">体感 %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">気温 %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">1時間ごとの体感温度（%1$s）</string>
+    <string name="today_forecast_legend_air">1時間ごとの気温（%1$s）</string>
 
     <string name="today_confidence_high">信頼度：高 — 主要モデルが一致</string>
     <string name="today_confidence_medium">信頼度：中</string>

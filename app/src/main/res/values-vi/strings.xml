@@ -144,9 +144,10 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
 
     <!-- Forecast chart -->
     <string name="today_forecast_title">Dự báo theo giờ</string>
-    <string name="today_forecast_min_max">Cảm giác %1$d – %2$d%3$s · Không khí %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Cảm giác (%1$s) theo giờ · nhấn để chuyển sang nhiệt độ không khí</string>
-    <string name="today_forecast_legend_air">Nhiệt độ không khí (%1$s) theo giờ · nhấn để chuyển sang cảm giác</string>
+    <string name="today_forecast_min_max">Cảm giác %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Không khí %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Cảm giác (%1$s) theo giờ</string>
+    <string name="today_forecast_legend_air">Nhiệt độ không khí (%1$s) theo giờ</string>
 
     <!-- Precipitation card -->
     <string name="today_precipitation_title">Khả năng mưa</string>

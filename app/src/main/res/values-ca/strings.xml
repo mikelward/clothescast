@@ -60,9 +60,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="widget_empty_subtitle">Toca per obrir ClothesCast</string>
 
     <string name="today_forecast_title">Previsió per hores</string>
-    <string name="today_forecast_min_max">Sensació %1$d – %2$d%3$s · Aire %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Temperatura percebuda (%1$s) per hora · toca per canviar a temperatura de l\'aire</string>
-    <string name="today_forecast_legend_air">Temperatura de l\'aire (%1$s) per hora · toca per canviar a temperatura percebuda</string>
+    <string name="today_forecast_min_max">Sensació %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Aire %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Temperatura percebuda (%1$s) per hora</string>
+    <string name="today_forecast_legend_air">Temperatura de l\'aire (%1$s) per hora</string>
 
     <string name="today_precipitation_title">Probabilitat de pluja</string>
     <string name="today_precipitation_peak">Màxim %1$d%% a les %2$s</string>

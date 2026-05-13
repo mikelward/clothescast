@@ -149,9 +149,10 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
 
     <!-- Hourly forecast card. -->
     <string name="today_forecast_title">Urna napoved</string>
-    <string name="today_forecast_min_max">Občutek %1$d – %2$d%3$s · Zrak %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Občutena temperatura (%1$s) po urah · pritisni za temperaturo zraka</string>
-    <string name="today_forecast_legend_air">Temperatura zraka (%1$s) po urah · pritisni za občuteno temperaturo</string>
+    <string name="today_forecast_min_max">Občutek %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Zrak %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Občutena temperatura (%1$s) po urah</string>
+    <string name="today_forecast_legend_air">Temperatura zraka (%1$s) po urah</string>
 
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Verjetnost dežja</string>

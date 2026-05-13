@@ -390,9 +390,10 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
 
     <!-- Forecast card. -->
     <string name="today_forecast_title">Óránkénti előrejelzés</string>
-    <string name="today_forecast_min_max">Érzet %1$d – %2$d%3$s · Levegő %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Hőérzet (%1$s) óránként · koppints a levegőhőmérséklethez</string>
-    <string name="today_forecast_legend_air">Levegőhőmérséklet (%1$s) óránként · koppints a hőérzethez</string>
+    <string name="today_forecast_min_max">Érzet %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Levegő %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Hőérzet (%1$s) óránként</string>
+    <string name="today_forecast_legend_air">Levegőhőmérséklet (%1$s) óránként</string>
 
     <string name="today_confidence_high">Magas biztonság — a fő modellek egyetértenek</string>
     <string name="today_confidence_medium">Közepes biztonság</string>

@@ -90,10 +90,12 @@
     <string name="widget_empty_title">No outfit yet</string>
     <string name="widget_empty_subtitle">Tap to open ClothesCast</string>
 
-    <string name="today_forecast_title">Hourly forecast</string>
-    <string name="today_forecast_min_max">Feels like %1$d – %2$d%3$s · Air %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Feels-like (%1$s) by hour · tap to switch to air temperature</string>
-    <string name="today_forecast_legend_air">Air temperature (%1$s) by hour · tap to switch to feels-like</string>
+    <string name="today_forecast_title">Feels like temperature</string>
+    <string name="today_forecast_min_max">Feels like %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Feels-like (%1$s) by hour</string>
+    <string name="today_forecast_air_section_title">Air temperature</string>
+    <string name="today_forecast_air_min_max">Air %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_air">Air temperature (%1$s) by hour</string>
 
     <!-- Precipitation card on the Today screen, rendered directly below the
          hourly-forecast temperature card. The chart plots hourly chance-of-rain

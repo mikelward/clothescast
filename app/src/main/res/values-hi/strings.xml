@@ -372,9 +372,10 @@ Not overridden by design:
 
     <!-- Hourly forecast chart. -->
     <string name="today_forecast_title">प्रति घंटा पूर्वानुमान</string>
-    <string name="today_forecast_min_max">महसूस %1$d – %2$d%3$s · हवा %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">प्रति घंटा महसूस तापमान (%1$s) · स्विच के लिए टैप करें</string>
-    <string name="today_forecast_legend_air">प्रति घंटा हवा का तापमान (%1$s) · स्विच के लिए टैप करें</string>
+    <string name="today_forecast_min_max">महसूस %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">हवा %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">प्रति घंटा महसूस तापमान (%1$s)</string>
+    <string name="today_forecast_legend_air">प्रति घंटा हवा का तापमान (%1$s)</string>
 
     <!-- Confidence chip. -->
     <string name="today_confidence_high">उच्च विश्वास — प्रमुख मॉडल सहमत</string>

@@ -144,9 +144,10 @@ to values/strings.xml (English).
 
     <!-- Forecast cards -->
     <string name="today_forecast_title">Prakiraan per jam</string>
-    <string name="today_forecast_min_max">Terasa seperti %1$d – %2$d%3$s · Udara %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Suhu terasa (%1$s) per jam · ketuk untuk beralih ke suhu udara</string>
-    <string name="today_forecast_legend_air">Suhu udara (%1$s) per jam · ketuk untuk beralih ke suhu terasa</string>
+    <string name="today_forecast_min_max">Terasa seperti %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Udara %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Suhu terasa (%1$s) per jam</string>
+    <string name="today_forecast_legend_air">Suhu udara (%1$s) per jam</string>
     <string name="today_precipitation_title">Kemungkinan hujan</string>
     <string name="today_precipitation_peak">Puncak %1$d%% pukul %2$s</string>
     <string name="today_precipitation_dry">Tidak ada hujan hari ini</string>

@@ -337,9 +337,10 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_outfit_bottom_long_pants">Hlače</string>
 
     <string name="today_forecast_title">Prognoza po satu</string>
-    <string name="today_forecast_min_max">Osjećaj %1$d – %2$d%3$s · Zrak %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Osjećajna temperatura (%1$s) po satu · dodirni za temperaturu zraka</string>
-    <string name="today_forecast_legend_air">Temperatura zraka (%1$s) po satu · dodirni za osjećajnu temperaturu</string>
+    <string name="today_forecast_min_max">Osjećaj %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Zrak %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Osjećajna temperatura (%1$s) po satu</string>
+    <string name="today_forecast_legend_air">Temperatura zraka (%1$s) po satu</string>
 
     <string name="today_confidence_high">Visoka pouzdanost — glavni modeli se slažu</string>
     <string name="today_confidence_medium">Srednja pouzdanost</string>

@@ -387,9 +387,10 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_outfit_bottom_long_pants">Calças</string>
 
     <string name="today_forecast_title">Previsão por hora</string>
-    <string name="today_forecast_min_max">Sensação %1$d – %2$d%3$s · Ar %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Sensação térmica (%1$s) por hora · toca para ver a temperatura do ar</string>
-    <string name="today_forecast_legend_air">Temperatura do ar (%1$s) por hora · toca para ver a sensação térmica</string>
+    <string name="today_forecast_min_max">Sensação %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Ar %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Sensação térmica (%1$s) por hora</string>
+    <string name="today_forecast_legend_air">Temperatura do ar (%1$s) por hora</string>
 
     <string name="today_confidence_high">Confiança elevada — os principais modelos concordam</string>
     <string name="today_confidence_medium">Confiança média</string>

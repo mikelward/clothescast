@@ -143,9 +143,10 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
 
     <!-- Today forecast / charts -->
     <string name="today_forecast_title">Stundas prognoze</string>
-    <string name="today_forecast_min_max">Sajūtas %1$d – %2$d%3$s · Gaiss %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Sajustā temperatūra (%1$s) pa stundām · pieskarieties, lai pārslēgtu uz gaisa temperatūru</string>
-    <string name="today_forecast_legend_air">Gaisa temperatūra (%1$s) pa stundām · pieskarieties, lai pārslēgtu uz sajusto temperatūru</string>
+    <string name="today_forecast_min_max">Sajūtas %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Gaiss %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Sajustā temperatūra (%1$s) pa stundām</string>
+    <string name="today_forecast_legend_air">Gaisa temperatūra (%1$s) pa stundām</string>
     <string name="today_precipitation_title">Lietus iespējamība</string>
     <string name="today_precipitation_peak">Maksimums %1$d%% plkst. %2$s</string>
     <string name="today_precipitation_dry">Šodien lietus nav paredzams</string>

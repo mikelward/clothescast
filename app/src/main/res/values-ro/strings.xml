@@ -141,9 +141,10 @@ surfaces fall back to default English (matching values-pl / values-uk).
 
     <!-- Forecast card. -->
     <string name="today_forecast_title">Prognoză orară</string>
-    <string name="today_forecast_min_max">Resimțit %1$d – %2$d%3$s · Aer %4$d – %5$d%6$s</string>
-    <string name="today_forecast_legend_feels_like">Temperatura resimțită (%1$s) pe oră · atinge pentru a comuta la temperatura aerului</string>
-    <string name="today_forecast_legend_air">Temperatura aerului (%1$s) pe oră · atinge pentru a comuta la temperatura resimțită</string>
+    <string name="today_forecast_min_max">Resimțit %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Aer %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Temperatura resimțită (%1$s) pe oră</string>
+    <string name="today_forecast_legend_air">Temperatura aerului (%1$s) pe oră</string>
 
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Probabilitate de ploaie</string>

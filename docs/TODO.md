@@ -55,6 +55,21 @@ Code TODOs in source files are linked from here when they exist.
 - [x] **Multi-model confidence badge** (MODELS.md idea #1) — Today shows
       a chip indicating how much ECMWF / GFS / ICON disagree about today's
       apparent high and peak precip probability.
+- [ ] **User-selectable models for the spread overlay.** The consulted set
+      is hard-coded in `MultiModelConfidenceFetcher.DEFAULT_MODELS` to
+      ECMWF + GFS + ICON (with `best_match` folded in as "Auto"). A user
+      whose region is better served by MeteoFrance / GEM / JMA / BOM
+      can't add them, and a model that returns no usable hourly data for
+      a given cell (ECMWF over high latitudes or some coastal grid
+      points) silently disappears from the chart legend — reads as a bug
+      rather than an empty model. Plan: multi-select picker in Display
+      settings under the existing "Show model spread" toggle, defaulting
+      to today's trio; thread the chosen list through the fetcher's
+      already-pluggable `models` constructor argument. `best_match` stays
+      always-on (rides the primary call, no extra slot needed). Consensus
+      blend in `ConsensusBlend.kt` already iterates whatever's in
+      `PerModelHourly.byModel`, so no changes there. Same Open-Meteo
+      endpoint either way — no privacy change.
 
 ## Feature ideas (queued)
 

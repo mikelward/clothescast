@@ -116,7 +116,15 @@ data class ModelDivergenceSummary(
                 candidate(Factor.CLOUD_COVER, SCALE_CLOUD_PP) { it.cloudCoverPct },
                 candidate(Factor.RELATIVE_HUMIDITY, SCALE_HUMIDITY_PP) { it.relativeHumidityPct },
             )
-            val top = candidates.maxByOrNull { it.normalised } ?: return null
+            // Drop zero-spread candidates so we don't surface a misleading
+            // "mostly air temperature, 10–10 °C" attribution when the
+            // feels-like spread is real but every available explanatory
+            // factor happens to agree across models (older cached entries
+            // that lack wind / humidity / cloud, or fresh data where those
+            // optional fields are missing).
+            val top = candidates
+                .filter { it.normalised > 0.0 }
+                .maxByOrNull { it.normalised } ?: return null
             return ModelDivergenceSummary(
                 peakHour = peak.key,
                 feelsLikeSpreadC = feelsLikeSpread,

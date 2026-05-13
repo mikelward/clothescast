@@ -19,6 +19,10 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="garment_shorts">Šorti</string>
     <string name="garment_pants">Bikses</string>
     <string name="garment_jeans">Džinsi</string>
+    <string name="garment_puffer">Pūķa jaka</string>
+    <string name="garment_thin_jacket">Plāna jaka</string>
+    <string name="garment_skirt">Svārki</string>
+    <string name="garment_polo">Polo krekls</string>
 
     <string name="settings_clothes_empty">Nav noteikumu. Pieskaries Pievienot, lai izveidotu.</string>
     <string name="settings_clothes_add">Pievienot</string>
@@ -36,12 +40,20 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_clothes_cond_temp_below">kad sajustā temperatūra ir zem %1$s</string>
     <string name="settings_clothes_cond_temp_above">kad sajustā temperatūra ir virs %1$s</string>
     <string name="settings_clothes_cond_precip_above">kad lietus iespējamība pārsniedz %.0f%%</string>
+    <string name="settings_clothes_title">Apģērba noteikumi</string>
+    <string name="settings_clothes_description">Ja prognoze pārsniedz kādu no šiem sliekšņiem, apģērbs parādās tavā ikdienas ClothesCast.</string>
 
     <string name="today_outfit_top_tshirt">T krekls</string>
     <string name="today_outfit_top_sweater">Džemperis</string>
     <string name="today_outfit_top_thick_jacket">Bieza jaka</string>
     <string name="today_outfit_bottom_shorts">Šorti</string>
     <string name="today_outfit_bottom_long_pants">Garas bikses</string>
+    <string name="today_outfit_top_polo">Polo krekls</string>
+    <string name="today_outfit_top_thin_jacket">Plāna jaka</string>
+    <string name="today_outfit_top_thick_coat">Biezs mētelis</string>
+    <string name="today_outfit_top_puffer_jacket">Pūķa jaka</string>
+    <string name="today_outfit_bottom_skirt">Svārki</string>
+    <string name="today_outfit_bottom_jeans">Džinsi</string>
 
     <string name="insight_lead_today">Šodien</string>
     <string name="insight_lead_tonight">Šovakar</string>
@@ -66,6 +78,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="insight_precip">%1$s %2$s.</string>
     <string name="insight_precip_at_time">plkst. %1$s</string>
     <string name="insight_precip_overnight">naktī</string>
+    <string name="insight_precip_chance">Iespējams %1$s %2$s.</string>
     <string name="insight_condition_clear">Skaidrs</string>
     <string name="insight_condition_partly_cloudy">Daļēji mākoņains</string>
     <string name="insight_condition_cloudy">Mākoņains</string>
@@ -77,8 +90,454 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="insight_condition_unknown">Nezināms</string>
     <string name="insight_tie_in">Paņem %1$s šovakar līdzi.</string>
     <string name="insight_tie_in_with_rain">Paņem %1$s šovakar līdzi, lietus plkst. %2$s.</string>
+    <!-- TONIGHT form — no "Šovakar" prefix, night context already set -->
+    <string name="insight_tie_in_at_night">Paņem %1$s līdzi.</string>
+    <string name="insight_tie_in_with_rain_chance">Šovakar iespējams lietus plkst. %2$s, paņem %1$s līdzi.</string>
+    <string name="insight_evening_rain">Šovakar lietus plkst. %1$s.</string>
+    <string name="insight_evening_rain_chance">Šovakar iespējams lietus plkst. %1$s.</string>
     <!-- Latvian time format uses "." separator: "plkst. 15.30". -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>
+
+    <!-- Error messages -->
+    <string name="error_device_incompatible">ClothesCast nevar darboties šajā ierīcē — tavā Android versijā trūkst funkcijas, kas nepieciešama lietotnes saskarnei (Configuration.fontWeightAdjustment, paredzama Android 12 un jaunākām versijām). Lūdzu, sazinieties ar ierīces ražotāju par sistēmas atjauninājumu.</string>
+
+    <!-- Today screen -->
+    <string name="today_title">Šodien</string>
+    <string name="today_open_settings">Atvērt iestatījumus</string>
+    <string name="today_more_options">Vairāk opciju</string>
+    <string name="today_report_a_bug">Ziņot par kļūdu</string>
+    <string name="today_refresh">Atjaunināt</string>
+    <string name="today_refresh_toast_daily">Atjaunina ikdienas ClothesCast — tas parādīsies drīzumā.</string>
+    <string name="today_refresh_toast_nightly">Atjaunina nakts ClothesCast — tas parādīsies drīzumā.</string>
+    <string name="today_empty_title">ClothesCast vēl nav</string>
+    <string name="today_empty_subtitle">Tavs rīta ClothesCast parādīsies šeit, tiklīdz tas tiks ģenerēts. Norādi atrašanās vietu iestatījumos, tad pieskarieties Ielādēt tagad.</string>
+    <string name="today_fetch_now">Ielādēt tagad</string>
+    <string name="today_generated_at">Ģenerēts plkst. %1$s</string>
+    <string name="today_location_unknown">Tava atrašanās vieta</string>
+    <string name="today_outfit_title">Ko vilkt mugurā</string>
+    <string name="today_outfit_label_today">Šodien</string>
+    <string name="today_outfit_label_tonight">Šovakar</string>
+    <string name="today_outfit_label_tomorrow">Rīt</string>
+    <string name="today_rationale_title">Kāpēc šis apģērbs?</string>
+    <string name="today_rationale_show">Kāpēc?</string>
+    <string name="today_rationale_dismiss">Sapratu</string>
+    <string name="today_rationale_threshold_decrease">Pazemināt slieksni par 1 grādu</string>
+    <string name="today_rationale_threshold_increase">Paaugstināt slieksni par 1 grādu</string>
+    <string name="today_rationale_threshold_changed_hint">Atjaunini, lai redzētu jauno apģērbu.</string>
+    <string name="today_rationale_unavailable">Pamatojums nav pieejams — atver lietotni pēc nākamās atjaunināšanas.</string>
+    <string name="today_rationale_min_below_with_time">Sajustā minimālā temperatūra %1$s%2$s plkst. %3$s, zem %4$s%2$s</string>
+    <string name="today_rationale_min_below">Sajustā minimālā temperatūra %1$s%2$s, zem %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Sajustā minimālā temperatūra %1$s%2$s plkst. %3$s, vismaz %4$s%2$s</string>
+    <string name="today_rationale_min_above">Sajustā minimālā temperatūra %1$s%2$s, vismaz %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Sajustā maksimālā temperatūra tikai %1$s%2$s plkst. %3$s, zem %4$s%2$s</string>
+    <string name="today_rationale_max_below">Sajustā maksimālā temperatūra tikai %1$s%2$s, zem %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Sajustā maksimālā temperatūra %1$s%2$s plkst. %3$s, vismaz %4$s%2$s</string>
+    <string name="today_rationale_max_above">Sajustā maksimālā temperatūra %1$s%2$s, vismaz %3$s%2$s</string>
+
+    <!-- Widget -->
+    <string name="widget_label">Apģērbs</string>
+    <string name="widget_description">Pašreizējā perioda apģērbs vienā skatienā.</string>
+    <string name="widget_empty_title">Apģērba ieteikuma vēl nav</string>
+    <string name="widget_empty_subtitle">Pieskarieties, lai atvērtu ClothesCast</string>
+
+    <!-- Today forecast / charts -->
+    <string name="today_forecast_title">Stundas prognoze</string>
+    <string name="today_forecast_min_max">Sajūtas %1$d – %2$d%3$s · Gaiss %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Sajustā temperatūra (%1$s) pa stundām · pieskarieties, lai pārslēgtu uz gaisa temperatūru</string>
+    <string name="today_forecast_legend_air">Gaisa temperatūra (%1$s) pa stundām · pieskarieties, lai pārslēgtu uz sajusto temperatūru</string>
+    <string name="today_precipitation_title">Lietus iespējamība</string>
+    <string name="today_precipitation_peak">Maksimums %1$d%% plkst. %2$s</string>
+    <string name="today_precipitation_dry">Šodien lietus nav paredzams</string>
+    <string name="today_chart_model_legend_label">Modeļi:</string>
+    <string name="today_chart_main_line_label">Apvienots</string>
+    <string name="today_chart_divergence_summary">Modeļi visvairāk atšķiras plkst. %1$s (Δ %2$.1f%3$s sajustā) — galvenokārt %4$s, %5$s</string>
+    <string name="today_factor_air_temperature">gaisa temperatūra</string>
+    <string name="today_factor_wind_speed">vēja ātrums</string>
+    <string name="today_factor_cloud_cover">mākoņu daudzums</string>
+    <string name="today_factor_humidity">mitrums</string>
+    <string name="today_wind_title">Vēja ātrums</string>
+    <string name="today_wind_subtitle">Vēja ātrums pēc modeļiem (%1$s) pa stundām</string>
+    <string name="today_cloud_title">Mākoņu daudzums</string>
+    <string name="today_cloud_subtitle">Kopējais mākoņu daudzums pēc modeļiem (%) pa stundām</string>
+    <string name="today_humidity_title">Mitrums</string>
+    <string name="today_humidity_subtitle">Relatīvais mitrums pēc modeļiem (%) pa stundām</string>
+    <string name="today_confidence_high">Augsta ticamība — galvenie modeļi saskan</string>
+    <string name="today_confidence_medium">Vidēja ticamība</string>
+    <string name="today_confidence_low">Zema ticamība — prognozes nesakrīt</string>
+    <string name="today_confidence_spread">Izkliede: %1$.1f°C, %2$.0f%% nokrišņi %3$d modeļos</string>
+    <string name="today_low_confidence_callout_title">Šodien prognozes atšķiras</string>
+    <string name="today_low_confidence_callout_body">Temperatūra atšķiras par %1$.1f°C un lietus iespējamība par %2$.0f%% starp %3$d modeļiem.</string>
+    <string name="today_working">Strādā — ielādē tavu ClothesCast…</string>
+    <string name="today_retrying">Iepriekšējais mēģinājums neizdevās — mēģina vēlreiz…</string>
+    <string name="today_failed_title">Iepriekšējais mēģinājums neizdevās</string>
+    <string name="today_failed_unexpected_http">Neparedzēta HTTP kļūda no prognozes pakalpojuma.</string>
+    <string name="today_failed_unhandled">Radās neparedzēta kļūda.</string>
+    <string name="today_failed_no_location">Nevarējām noteikt tavu atrašanās vietu. Piešķir pastāvīgu atrašanās vietas atļauju vai norādi pilsētu iestatījumos.</string>
+    <string name="today_failed_show_details">Rādīt detaļas</string>
+    <string name="today_failed_hide_details">Slēpt detaļas</string>
+    <string name="today_location_required_title">Norādi atrašanās vietu</string>
+    <string name="today_location_required_body">ClothesCast jāzina, kur tu atrodies, lai iegūtu prognozi. Piešķir pastāvīgu atrašanās vietas atļauju vai izvēlies pilsētu.</string>
+    <string name="today_location_required_action">Atvērt atrašanās vietas iestatījumus</string>
+    <string name="today_crash_banner_title">Iepriekšējā palaišana avarēja</string>
+    <string name="today_crash_banner_body">Tava ierīcē tika saglabāts avārijas ziņojums. Kopīgot to, lai kļūdu varētu novērst? Nekas netiek nosūtīts, kamēr neizvēlies, kur.</string>
+    <string name="today_crash_banner_share">Kopīgot ziņojumu</string>
+    <string name="today_crash_banner_dismiss">Aizvērt</string>
+    <string name="today_update_available_title">Pieejams atjauninājums</string>
+    <string name="today_update_available_body">Play Store ir pieejama jaunāka ClothesCast versija.</string>
+    <string name="today_update_available_action">Atjaunināt</string>
+    <string name="today_update_available_dismiss">Ne tagad</string>
+    <string name="today_update_downloaded_body">Atjauninājums lejupielādēts. Restartē, lai pabeigtu instalēšanu.</string>
+    <string name="today_update_downloaded_action">Restartēt</string>
+    <string name="today_telemetry_notice_title">Avāriju un lietošanas ziņojumi ir ieslēgti</string>
+    <string name="today_telemetry_notice_body">ClothesCast nosūta anonīmus avāriju ziņojumus un lietošanas analītiku, lai palīdzētu novērst kļūdas. Kalendāra dati, atrašanās vieta vai teksti netiek iekļauti. Izslēdz to jebkurā laikā iestatījumos.</string>
+    <string name="today_telemetry_notice_open_settings">Atvērt privātuma iestatījumus</string>
+    <string name="today_telemetry_notice_dismiss">Aizvērt</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Laipni lūgti ClothesCast</string>
+    <string name="onboarding_subtitle">Trīs ātra izvēle un esi gatavs. Vēlāk maini iestatījumos.</string>
+    <string name="onboarding_subtitle_tv">Divas ātra izvēle un esi gatavs. Vēlāk maini iestatījumos.</string>
+    <string name="onboarding_notifications_title">Paziņojumi</string>
+    <string name="onboarding_notifications_description">Nepieciešami, lai piegādātu tavu ikdienas ClothesCast.</string>
+    <string name="onboarding_notifications_grant">Piešķirt paziņojumu atļauju</string>
+    <string name="onboarding_location_title">Atrašanās vieta</string>
+    <string name="onboarding_location_description">Ielādē prognozi tuvākajai atrašanās vietai.</string>
+    <string name="onboarding_location_grant">Piešķirt atrašanās vietas atļauju</string>
+    <string name="onboarding_location_grant_background">Piešķirt pastāvīgu atrašanās vietas atļauju</string>
+    <string name="onboarding_location_background_needed">Vēl viens solis: ClothesCast vajadzīga atļauja "Vienmēr atļaut", lai rīta prognoze varētu nolasīt tavu atrašanās vietu, kamēr lietotne ir aizvērta.</string>
+    <string name="onboarding_location_denied_hint">Atrašanās vietas atļauja liegta. Tā vietā vari manuāli ievadīt pilsētu.</string>
+    <string name="onboarding_location_enter_manual">Ievadīt atrašanās vietu manuāli</string>
+    <string name="onboarding_location_enter_manual_hint">Vari manuāli ievadīt atrašanās vietu, ja liedz atrašanās vietas atļauju vai ierīces atrašanās vieta ir nepareiza.</string>
+    <string name="onboarding_location_using_device">Katru rītu tiek izmantota ierīces atrašanās vieta.</string>
+    <string name="onboarding_gemini_title">Gemini API atslēga</string>
+    <string name="onboarding_gemini_description">Izmanto Gemini, lai iegūtu augstas kvalitātes balsis.</string>
+    <string name="onboarding_step_done">Gatavs</string>
+    <string name="onboarding_skip">Izlaist pagaidām</string>
+    <string name="onboarding_continue">Turpināt</string>
+    <string name="onboarding_pair_from_phone">Savienot no tālruņa</string>
+
+    <!-- Pairing (TV) -->
+    <string name="pairing_title">Skenēt, lai savienotu</string>
+    <string name="pairing_instructions">Skenē šo QR kodu ar tālruni, tad ielīmē savu Gemini API atslēgu atvērtajā formā. Atslēga tiks nosūtīta tieši uz šo televizoru caur mājas Wi-Fi — bez mākoņa starpnieka.</string>
+    <string name="pairing_qr_description">QR kods ar saiti uz %1$s</string>
+    <string name="pairing_cancel">Atcelt</string>
+    <string name="pairing_received">Atslēga saņemta — saglabā…</string>
+    <string name="pairing_timeout_title">Savienošanas logs beidzies</string>
+    <string name="pairing_timeout_body">5 minūšu savienošanas logs ir aizvērts. Pieskarieties Mēģināt vēlreiz, lai atvērtu jaunu.</string>
+    <string name="pairing_error_title">Nevarēja sākt savienošanu</string>
+    <string name="pairing_error_body">Pārliecinies, ka televizors ir savienots ar Wi-Fi, tad mēģini vēlreiz.</string>
+    <string name="pairing_retry">Mēģināt vēlreiz</string>
+
+    <!-- Settings root -->
+    <string name="settings_title">Iestatījumi</string>
+    <string name="settings_back">Atpakaļ</string>
+    <string name="settings_root_voice">Balss</string>
+    <string name="settings_root_schedule">Grafiks</string>
+    <string name="settings_root_region">Reģions</string>
+    <string name="settings_root_clothes">Apģērbs</string>
+    <string name="settings_root_display">Displejs</string>
+    <string name="settings_root_location">Atrašanās vieta</string>
+    <string name="settings_root_calendar">Kalendārs</string>
+    <string name="settings_root_privacy">Privātums</string>
+    <string name="settings_root_about">Par</string>
+    <string name="settings_root_schedule_subtitle">Paziņojumi un laiki</string>
+    <string name="settings_root_clothes_subtitle">Temperatūras un apģērbs</string>
+    <string name="settings_root_region_subtitle">Valodas un vienības</string>
+    <string name="settings_root_voice_subtitle">Pakalpojumi un akcenti</string>
+    <string name="settings_root_display_subtitle">Motīvs</string>
+    <string name="settings_root_location_subtitle">Automātiska noteikšana vai pilsētas izvēle</string>
+    <string name="settings_root_calendar_subtitle">Šodienas notikumi</string>
+    <string name="settings_root_privacy_subtitle">Avāriju un lietošanas ziņojumi</string>
+
+    <!-- Display settings -->
+    <string name="settings_display_theme_title">Motīvs</string>
+    <string name="settings_display_theme_system">Sekot sistēmai</string>
+    <string name="settings_display_theme_light">Gaišs</string>
+    <string name="settings_display_theme_dark">Tumšs</string>
+    <string name="settings_display_charts_title">Diagrammas</string>
+    <string name="settings_display_model_spread_label">Rādīt modeļu izkliedi diagrammās</string>
+    <string name="settings_display_model_spread_description">Uzklāj katras galvenās laika prognozes modeļa stundas prognozi temperatūras un lietus diagrammās. Noderīgi, lai pamanītu, kad prognoze ir nenoteikta.</string>
+
+    <!-- Privacy settings -->
+    <string name="settings_privacy_telemetry_title">Avāriju un lietošanas ziņojumi</string>
+    <string name="settings_privacy_telemetry_label">Sūtīt avāriju un lietošanas datus</string>
+    <string name="settings_privacy_telemetry_description">Nosūta anonīmus avāriju ziņojumus un apkopotas lietošanas statistikas, lai palīdzētu izstrādātājam novērst kļūdas un izlemt, kuras funkcijas saglabāt.</string>
+    <string name="settings_privacy_telemetry_limits">Nekad netiek sūtīts: kalendāra notikumi, atrašanās vietas koordinātas vai vietu nosaukumi, ieskatu teksts vai paziņojumu teksts, API atslēgas, precīzs GPS, reklāmu identifikatori.</string>
+    <string name="settings_privacy_open_policy">Lasīt pilnu privātuma politiku</string>
+
+    <!-- API key settings -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Izmanto Gemini, lai iegūtu augstas kvalitātes balsis.</string>
+    <string name="settings_api_key_status_set">Gemini atslēga ir konfigurēta.</string>
+    <string name="settings_api_key_status_unset">Iegūsti bezmaksas API atslēgu vietnē aistudio.google.com</string>
+    <string name="settings_api_key_placeholder">Ielīmē savu Gemini API atslēgu</string>
+    <string name="settings_api_key_save">Saglabāt Gemini atslēgu</string>
+    <string name="settings_api_key_clear">Dzēst saglabāto Gemini atslēgu</string>
+
+    <!-- Location settings -->
+    <string name="settings_location_title">Atrašanās vieta</string>
+    <string name="settings_location_use_device">Izmantot ierīces atrašanās vietu</string>
+    <string name="settings_location_use_device_description">Pēdējā aptuveni noteiktā atrašanās vieta</string>
+    <string name="settings_location_detecting">Nosaka…</string>
+    <string name="settings_location_grant_background">Piešķirt</string>
+    <string name="settings_location_background_banner_title">Nepieciešama pastāvīga atrašanās vietas atļauja</string>
+    <string name="settings_location_background_banner_body">Bez tās rīta prognoze nevar nolasīt tavu atrašanās vietu.</string>
+    <string name="settings_location_unset">Atrašanās vieta nav norādīta</string>
+    <string name="settings_location_manual_override">Nepareiza atrašanās vieta? Norādīt manuāli</string>
+    <string name="settings_location_manual_override_disclosure">Izvēloties pilsētu, tiek izslēgta automātiskā noteikšana.</string>
+    <string name="settings_location_clear">Notīrīt atrašanās vietu</string>
+    <string name="settings_location_search_title">Meklēt atrašanās vietu</string>
+    <string name="settings_location_query_label">Pilsēta vai vieta</string>
+    <string name="settings_location_search">Meklēt</string>
+    <string name="settings_location_searching">Meklē…</string>
+    <string name="settings_location_no_results">Nav atbilstību.</string>
+    <string name="settings_location_rationale_title">Atrašanās vietas piekļuve</string>
+    <string name="settings_location_rationale_body">ClothesCast nolasa tavu atrašanās vietu, lai iegūtu vietējo prognozi.</string>
+    <string name="settings_location_rationale_continue">Turpināt</string>
+    <string name="settings_location_rationale_dismiss">Ne tagad</string>
+    <string name="settings_location_background_rationale_title">Atļaut vienmēr</string>
+    <string name="settings_location_background_rationale_body">Atļauj ClothesCast nolasīt tavu atrašanās vietu, kamēr lietotne ir aizvērta, lai rīta prognoze tiktu atjaunināta laicīgi.</string>
+    <string name="settings_location_background_rationale_continue">Atvērt iestatījumus</string>
+    <string name="settings_location_background_rationale_dismiss">Ne tagad</string>
+    <string name="settings_location_background_denied_title">Pastāvīga atļauja nav piešķirta</string>
+    <string name="settings_location_background_denied_body">Bez "Vienmēr atļaut" rīta prognoze nevar tikt automātiski atjaunināta.</string>
+    <string name="settings_location_background_denied_open">Atvērt iestatījumus</string>
+    <string name="settings_location_background_denied_keep">Ne tagad</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_title">Ikdienas ClothesCast</string>
+    <string name="settings_schedule_time_label">Laiks</string>
+    <string name="settings_schedule_days_label">Nedēļas dienas</string>
+    <string name="settings_daily_mention_evening_events">Pieminēt vakara notikumus</string>
+    <string name="settings_tonight_title">Nakts ClothesCast</string>
+    <string name="settings_tonight_description">Otrs ClothesCast vakarā, kas aptver šovakarējā laika apstākļus. Klusās vakaros tas paliek klusēdams vai vispār neparādās, ja ir ieslēgta opcija "Paziņot tikai tad, kad ir vakara notikumi"; notikumu vakaros tas atskaņo skaņu un (ja esi iespējojis balss piegādi) nolasa sevi skaļi.</string>
+    <string name="settings_tonight_enabled">Rādīt nakts ClothesCast</string>
+    <string name="settings_tonight_time_label">Laiks</string>
+    <string name="settings_tonight_days_label">Nedēļas dienas</string>
+    <string name="settings_tonight_notify_only_on_events">Paziņot tikai tad, kad ir vakara notikumi</string>
+
+    <!-- Delivery settings -->
+    <string name="settings_delivery_label">Piegāde</string>
+    <string name="settings_delivery_notification_only">Tikai paziņojums</string>
+    <string name="settings_delivery_tts_only">Tikai skaļi nolasīts</string>
+    <string name="settings_delivery_notification_and_tts">Paziņojums un skaļi nolasīts</string>
+
+    <!-- TTS settings -->
+    <string name="settings_tts_engine_title">Balss dzinējs</string>
+    <string name="settings_tts_engine_description">Gemini izklausās daudz dabiskāk nekā ierīces balss, taču tam nepieciešams tīkla zvans runāšanas laikā un tiek izmantota tava API atslēga sintēzei (viens īss zvans katram skaļi nolasītajam ClothesCast). Ja Gemini neizdodas, izmanto ierīces balsi.</string>
+    <string name="settings_tts_engine_device">Ierīce (bezsaiste, bezmaksas)</string>
+    <string name="settings_tts_engine_gemini">Gemini (augsta kvalitāte, tiešsaistē)</string>
+    <string name="settings_tts_voice_label">Balss</string>
+    <string name="settings_tts_voice_dismiss">Gatavs</string>
+    <string name="settings_tts_style_label">Stils</string>
+    <string name="settings_tts_style_weather_forecaster">Laika ziņu sniedzējs</string>
+    <string name="settings_tts_style_pirate">Pirāts</string>
+    <string name="settings_tts_style_cowboy">Kovbojs</string>
+    <string name="settings_tts_style_shakespearean">Šekspīra stilā</string>
+    <string name="settings_tts_style_surfer">Sērfotājs</string>
+    <string name="settings_tts_style_parent">Vecāks</string>
+    <string name="settings_tts_style_child">Bērns</string>
+    <string name="settings_tts_style_teenager">Pusaudzis</string>
+    <string name="settings_tts_style_grandparent">Vecvecāks</string>
+    <string name="settings_tts_style_kids_host">Bērnu TV vadītājs</string>
+    <string name="settings_tts_style_radio_host">Sarunu šova vadītājs</string>
+    <string name="settings_tts_style_morning_dj">Rīta DJ</string>
+    <string name="settings_tts_style_science_teacher">Dabaszinātņu skolotājs</string>
+    <string name="settings_tts_style_historian">Vēsturnieks</string>
+    <string name="settings_tts_style_sportscaster">Sporta komentētājs</string>
+    <string name="settings_tts_style_stadium_announcer">Stadiona diktors</string>
+    <string name="settings_tts_style_storyteller">Stāstnieks</string>
+    <string name="settings_tts_style_fitness_instructor">Fitnesa instruktors</string>
+    <string name="settings_tts_style_morning_presenter">Rīta raidījuma vadītājs</string>
+    <string name="settings_tts_style_custom">Pielāgots…</string>
+    <string name="settings_tts_style_custom_label">Pielāgota direktīva</string>
+    <string name="settings_tts_style_custom_placeholder">piem., Lasi šo kā stingra bibliotekāre, kas čukst</string>
+    <string name="settings_tts_device_voice_label">Ierīces balss</string>
+    <string name="settings_tts_device_voice_auto">Automātiski (vislabāk akcenta gadījumā)</string>
+    <string name="settings_tts_device_voice_currently">Pašlaik: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Ielādē…</string>
+    <string name="settings_tts_device_voice_network">Tīkls</string>
+    <string name="settings_tts_device_voice_offline">Bezsaiste</string>
+    <string name="settings_tts_install_google_hint">Instalē Google teksta-uz-runu dzinēju augstākas kvalitātes balsīm.</string>
+    <string name="settings_tts_install_google_button">Instalēt Google TTS</string>
+    <string name="settings_tts_voice_locale_description">Iestata runātās balss akcentu. Nemaina rādīto tekstu.</string>
+    <string name="settings_tts_test">Testēt balsi</string>
+    <string name="settings_tts_test_in_flight">Testē — lūdzu, uzgaidi…</string>
+
+    <!-- TTS voice locale / region language names (in Latvian) -->
+    <string name="settings_tts_voice_locale_en_us">Angļu (ASV)</string>
+    <string name="settings_region_language_en_us">Angļu (ASV)</string>
+    <string name="settings_tts_voice_locale_en_gb">Angļu (Lielbritānija)</string>
+    <string name="settings_region_language_en_gb">Angļu (Lielbritānija)</string>
+    <string name="settings_tts_voice_locale_en_au">Angļu (Austrālija)</string>
+    <string name="settings_region_language_en_au">Angļu (Austrālija)</string>
+    <string name="settings_tts_voice_locale_en_ca">Angļu (Kanāda)</string>
+    <string name="settings_region_language_en_ca">Angļu (Kanāda)</string>
+    <string name="settings_tts_voice_locale_de_de">Vācu (Vācija)</string>
+    <string name="settings_region_language_de_de">Vācu (Vācija)</string>
+    <string name="settings_tts_voice_locale_de_at">Vācu (Austrija)</string>
+    <string name="settings_region_language_de_at">Vācu (Austrija)</string>
+    <string name="settings_tts_voice_locale_de_ch">Vācu (Šveice)</string>
+    <string name="settings_region_language_de_ch">Vācu (Šveice)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Franču (Francija)</string>
+    <string name="settings_region_language_fr_fr">Franču (Francija)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Franču (Kanāda)</string>
+    <string name="settings_region_language_fr_ca">Franču (Kanāda)</string>
+    <string name="settings_tts_voice_locale_it_it">Itāļu (Itālija)</string>
+    <string name="settings_region_language_it_it">Itāļu (Itālija)</string>
+    <string name="settings_tts_voice_locale_es_es">Spāņu (Spānija)</string>
+    <string name="settings_region_language_es_es">Spāņu (Spānija)</string>
+    <string name="settings_tts_voice_locale_es_mx">Spāņu (Meksika)</string>
+    <string name="settings_region_language_es_mx">Spāņu (Meksika)</string>
+    <string name="settings_tts_voice_locale_ca_es">Katalāņu (Spānija)</string>
+    <string name="settings_region_language_ca_es">Katalāņu (Spānija)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Krievu (Krievija)</string>
+    <string name="settings_region_language_ru_ru">Krievu (Krievija)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Poļu (Polija)</string>
+    <string name="settings_region_language_pl_pl">Poļu (Polija)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Horvātu (Horvātija)</string>
+    <string name="settings_region_language_hr_hr">Horvātu (Horvātija)</string>
+    <string name="settings_tts_voice_locale_sl_si">Slovēņu (Slovēnija)</string>
+    <string name="settings_region_language_sl_si">Slovēņu (Slovēnija)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Serbu (latīņu)</string>
+    <string name="settings_region_language_sr_rs">Serbu (latīņu)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Serbu (kirilica)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Serbu (kirilica)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Bulgāru (Bulgārija)</string>
+    <string name="settings_region_language_bg_bg">Bulgāru (Bulgārija)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Čehu (Čehija)</string>
+    <string name="settings_region_language_cs_cz">Čehu (Čehija)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Slovāku (Slovākija)</string>
+    <string name="settings_region_language_sk_sk">Slovāku (Slovākija)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Ungāru (Ungārija)</string>
+    <string name="settings_region_language_hu_hu">Ungāru (Ungārija)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Rumāņu (Rumānija)</string>
+    <string name="settings_region_language_ro_ro">Rumāņu (Rumānija)</string>
+    <string name="settings_tts_voice_locale_el_gr">Grieķu (Grieķija)</string>
+    <string name="settings_region_language_el_gr">Grieķu (Grieķija)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Ukraiņu (Ukraina)</string>
+    <string name="settings_region_language_uk_ua">Ukraiņu (Ukraina)</string>
+    <string name="settings_tts_voice_locale_pt_br">Portugāļu (Brazīlija)</string>
+    <string name="settings_region_language_pt_br">Portugāļu (Brazīlija)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Portugāļu (Portugāle)</string>
+    <string name="settings_region_language_pt_pt">Portugāļu (Portugāle)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Holandiešu (Nīderlande)</string>
+    <string name="settings_region_language_nl_nl">Holandiešu (Nīderlande)</string>
+    <string name="settings_tts_voice_locale_sv_se">Zviedru (Zviedrija)</string>
+    <string name="settings_region_language_sv_se">Zviedru (Zviedrija)</string>
+    <string name="settings_tts_voice_locale_da_dk">Dāņu (Dānija)</string>
+    <string name="settings_region_language_da_dk">Dāņu (Dānija)</string>
+    <string name="settings_tts_voice_locale_nb_no">Norvēģu bukmols (Norvēģija)</string>
+    <string name="settings_region_language_nb_no">Norvēģu bukmols (Norvēģija)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Somu (Somija)</string>
+    <string name="settings_region_language_fi_fi">Somu (Somija)</string>
+    <!-- lv_lv already defined at the top of the file -->
+    <string name="settings_tts_voice_locale_et_ee">Igauņu (Igaunija)</string>
+    <string name="settings_region_language_et_ee">Igauņu (Igaunija)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Lietuviešu (Lietuva)</string>
+    <string name="settings_region_language_lt_lt">Lietuviešu (Lietuva)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Turku (Turcija)</string>
+    <string name="settings_region_language_tr_tr">Turku (Turcija)</string>
+    <string name="settings_tts_voice_locale_en_za">Angļu (Dienvidāfrika)</string>
+    <string name="settings_region_language_en_za">Angļu (Dienvidāfrika)</string>
+    <string name="settings_tts_voice_locale_id_id">Indonēziešu (Indonēzija)</string>
+    <string name="settings_region_language_id_id">Indonēziešu (Indonēzija)</string>
+    <string name="settings_tts_voice_locale_ms_my">Malajiešu (Malaizija)</string>
+    <string name="settings_region_language_ms_my">Malajiešu (Malaizija)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Filipīniešu (Filipīnas)</string>
+    <string name="settings_region_language_fil_ph">Filipīniešu (Filipīnas)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Svahili (Kenija)</string>
+    <string name="settings_region_language_sw_ke">Svahili (Kenija)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Vjetnamiešu (Vjetnama)</string>
+    <string name="settings_region_language_vi_vn">Vjetnamiešu (Vjetnama)</string>
+    <string name="settings_tts_voice_locale_th_th">Taju (Taizeme)</string>
+    <string name="settings_region_language_th_th">Taju (Taizeme)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Ķīniešu (vienkāršotā)</string>
+    <string name="settings_region_language_zh_cn">Ķīniešu (vienkāršotā)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Ķīniešu (tradicionālā)</string>
+    <string name="settings_region_language_zh_tw">Ķīniešu (tradicionālā)</string>
+    <string name="settings_tts_voice_locale_hi_in">Hindi (Indija)</string>
+    <string name="settings_region_language_hi_in">Hindi (Indija)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Bengāļu (Bangladeša)</string>
+    <string name="settings_region_language_bn_bd">Bengāļu (Bangladeša)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Japāņu (Japāna)</string>
+    <string name="settings_region_language_ja_jp">Japāņu (Japāna)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Korejiešu (Dienvidkoreja)</string>
+    <string name="settings_region_language_ko_kr">Korejiešu (Dienvidkoreja)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Arābu (Saūda Arābija)</string>
+    <string name="settings_region_language_ar_sa">Arābu (Saūda Arābija)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Arābu (Ēģipte)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Arābu (Apvienotie Arābu Emirāti)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Arābu (Maroka)</string>
+    <string name="settings_tts_voice_locale_he_il">Ivrita (Izraēla)</string>
+    <string name="settings_region_language_he_il">Ivrita (Izraēla)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Persiešu (Irāna)</string>
+    <string name="settings_region_language_fa_ir">Persiešu (Irāna)</string>
+    <string name="settings_tts_voice_locale_sq_al">Albāņu (Albānija)</string>
+    <string name="settings_region_language_sq_al">Albāņu (Albānija)</string>
+    <string name="settings_tts_voice_locale_am_et">Amharu (Etiopija)</string>
+    <string name="settings_region_language_am_et">Amharu (Etiopija)</string>
+
+    <!-- Region / language settings -->
+    <string name="settings_region_language_title">Valoda</string>
+    <string name="settings_region_language_description">Iestata rādītā teksta un paziņojumu valodu.</string>
+    <string name="settings_region_language_system">Sekot sistēmas lokalizācijai</string>
+
+    <!-- Temperature / distance units -->
+    <string name="settings_temperature_unit_title">Temperatūras vienība</string>
+    <string name="settings_temperature_unit_celsius">Celsijs (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Fārenheits (°F)</string>
+    <string name="settings_distance_unit_title">Attāluma vienība</string>
+    <string name="settings_distance_unit_kilometers">Kilometri</string>
+    <string name="settings_distance_unit_miles">Jūdzes</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_daily_insight_name">Ikdienas ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">Rīta laika apkopojums, kuram tu pierakstījies.</string>
+    <string name="notification_daily_insight_title">Šodienas ClothesCast</string>
+    <string name="notification_channel_tonight_insight_default_name">Nakts ClothesCast (ar notikumiem)</string>
+    <string name="notification_channel_tonight_insight_default_description">Vakara laika apkopojums, ja šovakar ir kalendāra notikumi. Atskaņo noklusējuma paziņojuma skaņu.</string>
+    <string name="notification_channel_tonight_insight_silent_name">Nakts ClothesCast (klusais)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Vakara laika apkopojums, ja vakars ir brīvs. Publicēts klusumā — vari to apskatīt bloķēšanas ekrānā, taču tas neskanēs.</string>
+    <string name="notification_tonight_insight_title">Šovakarējais ClothesCast</string>
+    <string name="notification_channel_weather_alerts_name">Bīstama laika brīdinājumi</string>
+    <string name="notification_channel_weather_alerts_description">Augstpriorāri brīdinājumi par smagiem vai ekstremāliem laika apstākļiem tavā apkārtnē. Piegādāti, tiklīdz ikdienas ielāde tos atklāj.</string>
+    <string name="notification_weather_alert_title">Laika brīdinājums: %1$s</string>
+
+    <!-- Notification permission settings -->
+    <string name="settings_notification_permission_title">Paziņojumi ir bloķēti</string>
+    <string name="settings_notification_permission_description">Bez paziņojumu atļaujas tavam ikdienas ClothesCast nav kur nosūtīties. Piešķir to, lai ClothesCast varētu publicēt rītvakar no rīta.</string>
+    <string name="settings_notification_permission_grant">Piešķirt paziņojumu atļauju</string>
+
+    <!-- Calendar settings -->
+    <string name="settings_calendar_title">Kalendārs</string>
+    <string name="settings_calendar_use_events">Izmantot šodienas kalendāra notikumus</string>
+    <string name="settings_calendar_description_off">Pielāgo rīta prognozi šodienas notikumiem — tiek izmantoti tikai nosaukumi un laiki, un nekas nepamet ierīci.</string>
+    <string name="settings_calendar_description_on">Pielāgo rīta prognozi šodienas notikumiem. Tiek izmantoti tikai nosaukumi un laiki; nekas nepamet ierīci.</string>
+    <string name="settings_calendar_grant_permission">Piešķirt kalendāra atļauju</string>
+    <string name="settings_calendar_open_settings">Kalendāra atļauja liegta. Piešķir to sistēmas iestatījumos.</string>
+
+    <!-- Debug settings -->
+    <string name="settings_debug_title">Atkļūdošana (tikai atkļūdošanas versijās)</string>
+    <string name="settings_debug_description">Nekavējoties palaiž ikdienas ClothesCast procesu. Noderīgi pārbaudei, negaidot plānoto laiku.</string>
+    <string name="settings_debug_fire_now">Palaist ClothesCast tagad</string>
+    <string name="settings_debug_fire_toast">ClothesCast darbinieks ievietots rindā</string>
+
+    <!-- About settings -->
+    <string name="settings_about_title">Par</string>
+    <string name="settings_about_version">Versija %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s versija</string>
+    <string name="settings_about_source">Pirmkods GitHub</string>
+    <string name="settings_about_dontkillmyapp">Fona ierobežojumi (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Kopīgot kļūdu ziņojumu</string>
+    <string name="settings_about_version_copied">Versija nokopēta starpliktuvē</string>
+
+    <!-- Bug report consent -->
+    <string name="bug_report_consent_title">Kopīgot kļūdu ziņojumu?</string>
+    <string name="bug_report_consent_body">Tas palīdz diagnosticēt problēmas. Ziņojumā ir sensitīva personiskā informācija, tostarp tava atrašanās vieta, lietotnes iestatījumi un nesenā aktivitāte. Pirms nosūtīšanas varēsi to pārskatīt un rediģēt.</string>
+    <string name="bug_report_consent_dont_show_again">Vairs nerādīt</string>
+    <string name="bug_report_consent_continue">Turpināt</string>
+    <string name="bug_report_consent_cancel">Atcelt</string>
 
 </resources>

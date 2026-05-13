@@ -3,6 +3,13 @@
 Lithuanian translation. Scope: insight-prose templates, garment labels, clothes-rule
 editor, outfit-card labels, and region/voice-locale picker names. Tone is
 informal "tu"-form throughout ("Apsivilk …", "Pasiimk …").
+
+What is NOT overridden, by design:
+- `app_name` — brand identifier, identical across locales.
+- `insight_time_am` / `_pm` / `_midnight` / `_noon` (and the *_minutes
+  variants) — English-only spoken-time formatter helpers. Lithuanian locales
+  use `insight_time_hour` / `insight_time_hour_minutes` which are translated
+  below; the AM/PM keys exist for `Locale.language == "en"` paths only.
 -->
 <resources>
     <string name="settings_region_language_lt_lt">Lietuvių (Lietuva)</string>
@@ -79,5 +86,505 @@ informal "tu"-form throughout ("Apsivilk …", "Pasiimk …").
     <!-- Lithuanian time uses "val." (= o\'clock) suffix; minutes joined by ":". -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
+
+    <!-- Device-incompatibility error screen. -->
+    <string name="error_device_incompatible">ClothesCast negali veikti šiame įrenginyje — jūsų „Android" versijoje trūksta programos sąsajai reikalingos funkcijos (Configuration.fontWeightAdjustment, laukiama nuo „Android 12"). Susisiekite su įrenginio gamintoju dėl sistemos atnaujinimo.</string>
+
+    <!-- Today screen. -->
+    <string name="today_title">Šiandien</string>
+    <string name="today_open_settings">Atidaryti nustatymus</string>
+    <string name="today_more_options">Daugiau parinkčių</string>
+    <string name="today_report_a_bug">Pranešti apie klaidą</string>
+    <string name="today_refresh">Atnaujinti</string>
+    <string name="today_refresh_toast_daily">Atnaujinamas dienos ClothesCast — netrukus pasirodys.</string>
+    <string name="today_refresh_toast_nightly">Atnaujinamas nakties ClothesCast — netrukus pasirodys.</string>
+    <string name="today_empty_title">ClothesCast dar nėra</string>
+    <string name="today_empty_subtitle">Ryto ClothesCast pasirodys čia, kai bus sugeneruotas. Nustatymuose nustatyk vietą, tada paspausk Gauti dabar.</string>
+    <string name="today_fetch_now">Gauti dabar</string>
+    <string name="today_generated_at">Sugeneruota %1$s</string>
+    <string name="today_location_unknown">Tavo vieta</string>
+
+    <!-- Outfit card. -->
+    <string name="today_outfit_title">Ką vilkėti</string>
+    <string name="today_outfit_label_today">Šiandien</string>
+    <string name="today_outfit_label_tonight">Šįvakar</string>
+    <string name="today_outfit_label_tomorrow">Rytoj</string>
+    <string name="today_outfit_top_polo">Polo</string>
+    <string name="today_outfit_top_thin_jacket">Plona striukė</string>
+    <string name="today_outfit_top_thick_coat">Storas paltas</string>
+    <string name="today_outfit_top_puffer_jacket">Pūkinė striukė</string>
+    <string name="today_outfit_bottom_skirt">Sijonas</string>
+    <string name="today_outfit_bottom_jeans">Džinsai</string>
+
+    <!-- Rationale dialog. -->
+    <string name="today_rationale_title">Kodėl šis aprangos rinkinys?</string>
+    <string name="today_rationale_show">Kodėl?</string>
+    <string name="today_rationale_dismiss">Supratau</string>
+    <string name="today_rationale_threshold_decrease">Sumažinti ribą 1 laipsniu</string>
+    <string name="today_rationale_threshold_increase">Padidinti ribą 1 laipsniu</string>
+    <string name="today_rationale_threshold_changed_hint">Atnaujink, kad pamatytum naują aprangos rinkinį.</string>
+    <string name="today_rationale_unavailable">Pagrindimas nepasiekiamas — atidaryti programą po kito atnaujinimo.</string>
+    <string name="today_rationale_min_below_with_time">Pojūčio min. %1$s%2$s %3$s val., žemiau %4$s%2$s</string>
+    <string name="today_rationale_min_below">Pojūčio min. %1$s%2$s, žemiau %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Pojūčio min. %1$s%2$s %3$s val., ne mažiau kaip %4$s%2$s</string>
+    <string name="today_rationale_min_above">Pojūčio min. %1$s%2$s, ne mažiau kaip %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Pojūčio maks. tik %1$s%2$s %3$s val., žemiau %4$s%2$s</string>
+    <string name="today_rationale_max_below">Pojūčio maks. tik %1$s%2$s, žemiau %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Pojūčio maks. %1$s%2$s %3$s val., ne mažiau kaip %4$s%2$s</string>
+    <string name="today_rationale_max_above">Pojūčio maks. %1$s%2$s, ne mažiau kaip %3$s%2$s</string>
+
+    <!-- Home-screen App Widget. -->
+    <string name="widget_label">Apranga</string>
+    <string name="widget_description">Dabartinio laikotarpio aprangos rinkinys iš pirmo žvilgsnio.</string>
+    <string name="widget_empty_title">Aprangos rinkinio dar nėra</string>
+    <string name="widget_empty_subtitle">Palieski, kad atidarytum ClothesCast</string>
+
+    <!-- Hourly forecast card. -->
+    <string name="today_forecast_title">Valandos prognozė</string>
+    <string name="today_forecast_min_max">Juntama %1$d – %2$d%3$s · Oras %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Juntama (%1$s) pagal valandą · palieski, kad perjungtum į oro temperatūrą</string>
+    <string name="today_forecast_legend_air">Oro temperatūra (%1$s) pagal valandą · palieski, kad perjungtum į juntamą</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Lietaus tikimybė</string>
+    <string name="today_precipitation_peak">Pikas %1$d%% %2$s val.</string>
+    <string name="today_precipitation_dry">Šiandien lietaus nesitikima</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">Modeliai:</string>
+    <string name="today_chart_main_line_label">Bendras</string>
+    <string name="today_chart_divergence_summary">Modeliai labiausiai skiriasi %1$s (Δ %2$.1f%3$s juntama) — daugiausia %4$s, %5$s</string>
+
+    <!-- Divergence factor names. -->
+    <string name="today_factor_air_temperature">oro temperatūra</string>
+    <string name="today_factor_wind_speed">vėjo greitis</string>
+    <string name="today_factor_cloud_cover">debesuotumas</string>
+    <string name="today_factor_humidity">drėgmė</string>
+
+    <!-- Diagnostic cards. -->
+    <string name="today_wind_title">Vėjo greitis</string>
+    <string name="today_wind_subtitle">Vėjo greitis (%1$s) pagal valandą kiekvienam modeliui</string>
+    <string name="today_cloud_title">Debesuotumas</string>
+    <string name="today_cloud_subtitle">Bendras debesuotumas (%) pagal valandą kiekvienam modeliui</string>
+    <string name="today_humidity_title">Drėgmė</string>
+    <string name="today_humidity_subtitle">Santykinė drėgmė (%) pagal valandą kiekvienam modeliui</string>
+
+    <!-- Confidence indicators. -->
+    <string name="today_confidence_high">Didelis tikslumas — pagrindiniai modeliai sutaria</string>
+    <string name="today_confidence_medium">Vidutinis tikslumas</string>
+    <string name="today_confidence_low">Mažas tikslumas — prognozės skiriasi</string>
+    <string name="today_confidence_spread">Skirtumas: %1$.1f°C, %2$.0f%% krituliai tarp %3$d modelių</string>
+
+    <!-- Low-confidence callout banner. -->
+    <string name="today_low_confidence_callout_title">Prognozės šiandien nesutampa</string>
+    <string name="today_low_confidence_callout_body">Temperatūra skiriasi %1$.1f°C, o lietaus tikimybė — %2$.0f%% tarp %3$d modelių.</string>
+
+    <!-- Status messages. -->
+    <string name="today_working">Dirbama — gaunamas ClothesCast…</string>
+    <string name="today_retrying">Paskutinis bandymas nepavyko — bandoma iš naujo…</string>
+    <string name="today_failed_title">Paskutinis bandymas nepavyko</string>
+    <string name="today_failed_unexpected_http">Netikėta HTTP klaida iš prognozės tarnybos.</string>
+    <string name="today_failed_unhandled">Įvyko netikėta klaida.</string>
+    <string name="today_failed_no_location">Nepavyko gauti tavo vietos. Suteik nuolatinį buvimo vietos leidimą arba nustatymuose pasirink miestą.</string>
+    <string name="today_failed_show_details">Rodyti išsamią informaciją</string>
+    <string name="today_failed_hide_details">Slėpti išsamią informaciją</string>
+
+    <!-- Location required card. -->
+    <string name="today_location_required_title">Nustatyk savo vietą</string>
+    <string name="today_location_required_body">ClothesCast turi žinoti, kur esi, kad gautų prognozę. Suteik nuolatinį buvimo vietos leidimą arba pasirink miestą.</string>
+    <string name="today_location_required_action">Atidaryti vietos nustatymus</string>
+
+    <!-- Crash banner. -->
+    <string name="today_crash_banner_title">Paskutinis paleidimas užstrigo</string>
+    <string name="today_crash_banner_body">Tavo įrenginyje išsaugotas gedimo ataskaita. Bendrinti, kad klaidą būtų galima ištaisyti? Niekas nebus išsiųsta, kol nepasirinksid vietos.</string>
+    <string name="today_crash_banner_share">Bendrinti ataskaitą</string>
+    <string name="today_crash_banner_dismiss">Atmesti</string>
+
+    <!-- In-app update banner. -->
+    <string name="today_update_available_title">Yra atnaujinimas</string>
+    <string name="today_update_available_body">Naujesnė ClothesCast versija yra „Play" parduotuvėje.</string>
+    <string name="today_update_available_action">Atnaujinti</string>
+    <string name="today_update_available_dismiss">Ne dabar</string>
+    <string name="today_update_downloaded_body">Atnaujinimas atsisiųstas. Paleisk iš naujo, kad baigtum diegimą.</string>
+    <string name="today_update_downloaded_action">Paleisti iš naujo</string>
+
+    <!-- Telemetry notice banner. -->
+    <string name="today_telemetry_notice_title">Gedimų ir naudojimo ataskaitos įjungtos</string>
+    <string name="today_telemetry_notice_body">ClothesCast siunčia anonimines gedimų ataskaitas ir naudojimo analizę, kad padėtų taisyti klaidas. Kalendoriaus duomenys, vieta ar teksto turinys neįtraukiami. Galima išjungti bet kada nustatymuose.</string>
+    <string name="today_telemetry_notice_open_settings">Atidaryti privatumo nustatymus</string>
+    <string name="today_telemetry_notice_dismiss">Atmesti</string>
+
+    <!-- Onboarding. -->
+    <string name="onboarding_title">Sveiki atvykę į ClothesCast</string>
+    <string name="onboarding_subtitle">Trys greiti pasirinkimai — ir viskas paruošta. Vėliau galima keisti nustatymuose.</string>
+    <string name="onboarding_subtitle_tv">Du greiti pasirinkimai — ir viskas paruošta. Vėliau galima keisti nustatymuose.</string>
+    <string name="onboarding_notifications_title">Pranešimai</string>
+    <string name="onboarding_notifications_description">Reikalinga, kad kasdieninis ClothesCast būtų pristatytas.</string>
+    <string name="onboarding_notifications_grant">Suteikti pranešimų leidimą</string>
+    <string name="onboarding_location_title">Vieta</string>
+    <string name="onboarding_location_description">Gauti prognozę pagal apytikslę tavo vietą.</string>
+    <string name="onboarding_location_grant">Suteikti vietos leidimą</string>
+    <string name="onboarding_location_grant_background">Suteikti nuolatinį vietos leidimą</string>
+    <string name="onboarding_location_background_needed">Dar vienas žingsnis: ClothesCast reikia leidimo „Visada leisti", kad ryto prognozė galėtų nuskaityti tavo vietą, kol programa uždaryta.</string>
+    <string name="onboarding_location_denied_hint">Vietos leidimas atmestas. Vietoj to galite pasirinkti miestą rankiniu būdu.</string>
+    <string name="onboarding_location_enter_manual">Įvesti vietą rankiniu būdu</string>
+    <string name="onboarding_location_enter_manual_hint">Galite rankiniu būdu įvesti vietą, jei atsisakysite vietos leidimo arba įrenginio vieta yra neteisinga.</string>
+    <string name="onboarding_location_using_device">Kiekvieną rytą bus naudojama įrenginio vieta.</string>
+    <string name="onboarding_gemini_title">Gemini API raktas</string>
+    <string name="onboarding_gemini_description">Naudok Gemini aukštos kokybės balsams.</string>
+    <string name="onboarding_step_done">Atlikta</string>
+    <string name="onboarding_skip">Praleisti dabar</string>
+    <string name="onboarding_continue">Tęsti</string>
+    <string name="onboarding_pair_from_phone">Susieti iš telefono</string>
+
+    <!-- TV pairing screen. -->
+    <string name="pairing_title">Nuskaityk, kad susietum</string>
+    <string name="pairing_instructions">Nuskaityk šį QR kodą telefonu, tada įklijuok Gemini API raktą į atidarytą formą. Raktas bus siunčiamas tiesiai į šį televizorių per namų Wi-Fi — be debesies tarpininko.</string>
+    <string name="pairing_qr_description">QR kodas su nuoroda į %1$s</string>
+    <string name="pairing_cancel">Atšaukti</string>
+    <string name="pairing_received">Raktas gautas — išsaugoma…</string>
+    <string name="pairing_timeout_title">Susiejimo langas baigėsi</string>
+    <string name="pairing_timeout_body">5 minučių susiejimo langas užsidarė. Palieski Bandyti dar kartą, kad atidaryti naują.</string>
+    <string name="pairing_error_title">Nepavyko pradėti susiejimo</string>
+    <string name="pairing_error_body">Įsitikink, kad televizorius prijungtas prie Wi-Fi, tada bandyk dar kartą.</string>
+    <string name="pairing_retry">Bandyti dar kartą</string>
+
+    <!-- Settings — top bar and root navigation. -->
+    <string name="settings_title">Nustatymai</string>
+    <string name="settings_back">Atgal</string>
+
+    <string name="settings_root_voice">Balsas</string>
+    <string name="settings_root_schedule">Tvarkaraštis</string>
+    <string name="settings_root_region">Regionas</string>
+    <string name="settings_root_clothes">Drabužiai</string>
+    <string name="settings_root_display">Rodymas</string>
+    <string name="settings_root_location">Vieta</string>
+    <string name="settings_root_calendar">Kalendorius</string>
+    <string name="settings_root_privacy">Privatumas</string>
+    <string name="settings_root_about">Apie</string>
+
+    <string name="settings_root_schedule_subtitle">Pranešimai ir laikas</string>
+    <string name="settings_root_clothes_subtitle">Temperatūros ir aprangos rinkiniai</string>
+    <string name="settings_root_region_subtitle">Kalbos ir vienetai</string>
+    <string name="settings_root_voice_subtitle">Teikėjai ir akcentai</string>
+    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_location_subtitle">Automatinis aptikimas arba miesto pasirinkimas</string>
+    <string name="settings_root_calendar_subtitle">Šiandienos renginiai</string>
+    <string name="settings_root_privacy_subtitle">Gedimų ir naudojimo ataskaitos</string>
+
+    <!-- Display / theme settings. -->
+    <string name="settings_display_theme_title">Tema</string>
+    <string name="settings_display_theme_system">Sekti sistemą</string>
+    <string name="settings_display_theme_light">Šviesi</string>
+    <string name="settings_display_theme_dark">Tamsi</string>
+
+    <!-- Charts settings. -->
+    <string name="settings_display_charts_title">Diagramos</string>
+    <string name="settings_display_model_spread_label">Rodyti modelių skirtumą diagramose</string>
+    <string name="settings_display_model_spread_description">Ant temperatūros ir lietaus diagramų pridedamos pagrindinių orų modelių valandos prognozės. Naudinga pastebėti, kai prognozė yra neaiški.</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">Gedimų ir naudojimo ataskaitos</string>
+    <string name="settings_privacy_telemetry_label">Siųsti gedimų ir naudojimo duomenis</string>
+    <string name="settings_privacy_telemetry_description">Siunčia anonimines gedimų ataskaitas ir apibendrintas naudojimo statistikas, kad padėtų kūrėjui taisyti klaidas ir spręsti, kurias funkcijas palikti.</string>
+    <string name="settings_privacy_telemetry_limits">Niekada nesiunčiama: kalendoriaus įvykiai, vietos koordinatės ar vietovių pavadinimai, įžvalgų ar pranešimų tekstas, API raktai, tikslus GPS, reklamos identifikatoriai.</string>
+    <string name="settings_privacy_open_policy">Skaityti visą privatumo politiką</string>
+
+    <!-- API key screen. -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Naudok Gemini aukštos kokybės balsams.</string>
+    <string name="settings_api_key_status_set">Gemini raktas sukonfigūruotas.</string>
+    <string name="settings_api_key_status_unset">Gauk nemokamą API raktą adresu aistudio.google.com</string>
+    <string name="settings_api_key_placeholder">Įklijuok Gemini API raktą</string>
+    <string name="settings_api_key_save">Išsaugoti Gemini raktą</string>
+    <string name="settings_api_key_clear">Ištrinti išsaugotą Gemini raktą</string>
+
+    <!-- Location screen. -->
+    <string name="settings_location_title">Vieta</string>
+    <string name="settings_location_use_device">Naudoti įrenginio vietą</string>
+    <string name="settings_location_use_device_description">Paskutinė apytikslė vieta</string>
+    <string name="settings_location_detecting">Aptinkama…</string>
+    <string name="settings_location_grant_background">Suteikti</string>
+    <string name="settings_location_background_banner_title">Reikalingas nuolatinis vietos leidimas</string>
+    <string name="settings_location_background_banner_body">Be jo ryto prognozė negali nuskaityti tavo vietos.</string>
+    <string name="settings_location_unset">Vieta nenustatyta</string>
+    <string name="settings_location_manual_override">Neteisinga vieta? Nustatyk rankiniu būdu</string>
+    <string name="settings_location_manual_override_disclosure">Pasirinkus miestą, automatinis aptikimas išjungiamas.</string>
+    <string name="settings_location_clear">Išvalyti vietą</string>
+    <string name="settings_location_search_title">Ieškoti vietos</string>
+    <string name="settings_location_query_label">Miestas arba vieta</string>
+    <string name="settings_location_search">Ieškoti</string>
+    <string name="settings_location_searching">Ieškoma…</string>
+    <string name="settings_location_no_results">Atitikmenų nerasta.</string>
+    <string name="settings_location_rationale_title">Prieiga prie vietos</string>
+    <string name="settings_location_rationale_body">ClothesCast nuskaito tavo vietą, kad gautų vietinę prognozę.</string>
+    <string name="settings_location_rationale_continue">Tęsti</string>
+    <string name="settings_location_rationale_dismiss">Ne dabar</string>
+    <string name="settings_location_background_rationale_title">Leisti visada</string>
+    <string name="settings_location_background_rationale_body">Leisk ClothesCast nuskaityti tavo vietą, kol programa uždaryta, kad ryto prognozė būtų atnaujinta laiku.</string>
+    <string name="settings_location_background_rationale_continue">Atidaryti nustatymus</string>
+    <string name="settings_location_background_rationale_dismiss">Ne dabar</string>
+    <string name="settings_location_background_denied_title">Nuolatinis leidimas nesuteiktas</string>
+    <string name="settings_location_background_denied_body">Be „Leisti visada" ryto prognozė negali atsinaujinti automatiškai.</string>
+    <string name="settings_location_background_denied_open">Atidaryti nustatymus</string>
+    <string name="settings_location_background_denied_keep">Ne dabar</string>
+
+    <!-- Schedule screen. -->
+    <string name="settings_schedule_title">Dienos ClothesCast</string>
+    <string name="settings_schedule_time_label">Laikas</string>
+    <string name="settings_schedule_days_label">Savaitės dienos</string>
+    <string name="settings_daily_mention_evening_events">Minėti vakaro renginius</string>
+
+    <!-- Nightly ClothesCast. -->
+    <string name="settings_tonight_title">Nakties ClothesCast</string>
+    <string name="settings_tonight_description">Antras ClothesCast vakare, apimantis šios nakties orą. Ramiais vakarais tyliai tyli arba visai nepasirodo, jei įjungta „Pranešti tik esant vakaro renginiams"; renginių vakarais skleidžia garsą ir (jei įjungtas balso skaitymas) perskaito save.</string>
+    <string name="settings_tonight_enabled">Rodyti nakties ClothesCast</string>
+    <string name="settings_tonight_time_label">Laikas</string>
+    <string name="settings_tonight_days_label">Savaitės dienos</string>
+    <string name="settings_tonight_notify_only_on_events">Pranešti tik esant vakaro renginiams</string>
+
+    <!-- Delivery options. -->
+    <string name="settings_delivery_label">Pateikimas</string>
+    <string name="settings_delivery_notification_only">Tik pranešimas</string>
+    <string name="settings_delivery_tts_only">Tik balsu</string>
+    <string name="settings_delivery_notification_and_tts">Pranešimas ir balsu</string>
+
+    <!-- Voice engine. -->
+    <string name="settings_tts_engine_title">Balso variklis</string>
+    <string name="settings_tts_engine_description">Gemini skamba daug natūraliau nei įrenginio balsas, tačiau kalbėjimo metu reikia tinklo skambučio ir naudoja API raktą sintezei (vienas trumpas skambutis kiekvienam ištartam ClothesCast). Jei Gemini nepavyksta, grįžtama prie įrenginio balso.</string>
+    <string name="settings_tts_engine_device">Įrenginys (neprisijungus, nemokamas)</string>
+    <string name="settings_tts_engine_gemini">Gemini (aukšta kokybė, prisijungus)</string>
+    <string name="settings_tts_voice_label">Balsas</string>
+    <string name="settings_tts_voice_dismiss">Atlikta</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">Stilius</string>
+    <string name="settings_tts_style_weather_forecaster">Orų pranešėjas</string>
+    <string name="settings_tts_style_pirate">Pilotas</string>
+    <string name="settings_tts_style_cowboy">Kovbojus</string>
+    <string name="settings_tts_style_shakespearean">Šekspyriškas</string>
+    <string name="settings_tts_style_surfer">Banglentininkas</string>
+    <string name="settings_tts_style_parent">Tėvas / Motina</string>
+    <string name="settings_tts_style_child">Vaikas</string>
+    <string name="settings_tts_style_teenager">Paauglys</string>
+    <string name="settings_tts_style_grandparent">Seneliai</string>
+    <string name="settings_tts_style_kids_host">Vaikų televizijos vedėjas</string>
+    <string name="settings_tts_style_radio_host">Pokalbių laidos vedėjas</string>
+    <string name="settings_tts_style_morning_dj">Ryto DJ</string>
+    <string name="settings_tts_style_science_teacher">Gamtos mokslų mokytojas</string>
+    <string name="settings_tts_style_historian">Istorikas</string>
+    <string name="settings_tts_style_sportscaster">Sporto komentatorius</string>
+    <string name="settings_tts_style_stadium_announcer">Stadiono diktorius</string>
+    <string name="settings_tts_style_storyteller">Pasakotojas</string>
+    <string name="settings_tts_style_fitness_instructor">Kūno kultūros instruktorius</string>
+    <string name="settings_tts_style_morning_presenter">Ryto radijo vedėjas</string>
+    <string name="settings_tts_style_custom">Pasirinktinis…</string>
+    <string name="settings_tts_style_custom_label">Pasirinktinė direktyva</string>
+    <string name="settings_tts_style_custom_placeholder">pvz., Skaityk šį tekstą kaip griežtas šnabždantis bibliotekininkas</string>
+
+    <!-- Device-voice picker. -->
+    <string name="settings_tts_device_voice_label">Įrenginio balsas</string>
+    <string name="settings_tts_device_voice_auto">Automatinis (geriausias akcentui)</string>
+    <string name="settings_tts_device_voice_currently">Dabartinis: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Kraunama…</string>
+    <string name="settings_tts_device_voice_network">Tinklas</string>
+    <string name="settings_tts_device_voice_offline">Neprisijungus</string>
+    <string name="settings_tts_install_google_hint">Įdiek „Google" teksto į kalbą variklį, kad gautum aukštesnės kokybės balsus.</string>
+    <string name="settings_tts_install_google_button">Įdiegti „Google TTS"</string>
+
+    <string name="settings_tts_voice_locale_description">Nustato kalbamo balso akcentą. Nekeičia rodomo teksto.</string>
+    <string name="settings_tts_test">Išbandyti balsą</string>
+    <string name="settings_tts_test_in_flight">Testuojama — palaukite…</string>
+
+    <!-- TTS voice locale picker labels — all locales in Lithuanian. -->
+    <string name="settings_tts_voice_locale_en_us">Anglų (Jungtinės Valstijos)</string>
+    <string name="settings_tts_voice_locale_en_gb">Anglų (Jungtinė Karalystė)</string>
+    <string name="settings_tts_voice_locale_en_au">Anglų (Australija)</string>
+    <string name="settings_tts_voice_locale_en_ca">Anglų (Kanada)</string>
+    <string name="settings_tts_voice_locale_en_za">Anglų (Pietų Afrika)</string>
+    <string name="settings_tts_voice_locale_de_de">Vokiečių (Vokietija)</string>
+    <string name="settings_tts_voice_locale_de_at">Vokiečių (Austrija)</string>
+    <string name="settings_tts_voice_locale_de_ch">Vokiečių (Šveicarija)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Prancūzų (Prancūzija)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Prancūzų (Kanada)</string>
+    <string name="settings_tts_voice_locale_it_it">Italų (Italija)</string>
+    <string name="settings_tts_voice_locale_es_es">Ispanų (Ispanija)</string>
+    <string name="settings_tts_voice_locale_es_mx">Ispanų (Meksika)</string>
+    <string name="settings_tts_voice_locale_ca_es">Katalonų (Ispanija)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Rusų (Rusija)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Lenkų (Lenkija)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Kroatų (Kroatija)</string>
+    <string name="settings_tts_voice_locale_sl_si">Slovėnų (Slovėnija)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Serbų (lotynų)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Serbų (kirilika)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Bulgarų (Bulgarija)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Čekų (Čekija)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Slovakų (Slovakija)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Vengrų (Vengrija)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Rumunų (Rumunija)</string>
+    <string name="settings_tts_voice_locale_el_gr">Graikų (Graikija)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Ukrainiečių (Ukraina)</string>
+    <string name="settings_tts_voice_locale_pt_br">Portugalų (Brazilija)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Portugalų (Portugalija)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Olandų (Nyderlandai)</string>
+    <string name="settings_tts_voice_locale_sv_se">Švedų (Švedija)</string>
+    <string name="settings_tts_voice_locale_da_dk">Danų (Danija)</string>
+    <string name="settings_tts_voice_locale_nb_no">Norvegų bokmål (Norvegija)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Suomių (Suomija)</string>
+    <string name="settings_tts_voice_locale_et_ee">Estų (Estija)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Latvių (Latvija)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Turkų (Turkija)</string>
+    <string name="settings_tts_voice_locale_id_id">Indoneziečių (Indonezija)</string>
+    <string name="settings_tts_voice_locale_ms_my">Malajų (Malaizija)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Filipinų (Filipinai)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Suahilių (Kenija)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Vietnamiečių (Vietnamas)</string>
+    <string name="settings_tts_voice_locale_th_th">Tajų (Tailandas)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Kinų (supaprastinta)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Kinų (tradicinė)</string>
+    <string name="settings_tts_voice_locale_hi_in">Hindi (Indija)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Bengalų (Bangladešas)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Japonų (Japonija)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Korėjiečių (Pietų Korėja)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Arabų (Saudo Arabija)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Arabų (Egiptas)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Arabų (Jungtiniai Arabų Emyratai)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Arabų (Marokas)</string>
+    <string name="settings_tts_voice_locale_he_il">Hebrajų (Izraelis)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Persų (Iranas)</string>
+    <string name="settings_tts_voice_locale_sq_al">Albanų (Albanija)</string>
+    <string name="settings_tts_voice_locale_am_et">Amharų (Etiopija)</string>
+
+    <!-- Region language picker. -->
+    <string name="settings_region_language_title">Kalba</string>
+    <string name="settings_region_language_description">Nustato rodomo teksto ir pranešimų kalbą.</string>
+    <string name="settings_region_language_system">Sekti sistemos lokalizaciją</string>
+    <string name="settings_region_language_en_us">Anglų (Jungtinės Valstijos)</string>
+    <string name="settings_region_language_en_gb">Anglų (Jungtinė Karalystė)</string>
+    <string name="settings_region_language_en_au">Anglų (Australija)</string>
+    <string name="settings_region_language_en_ca">Anglų (Kanada)</string>
+    <string name="settings_region_language_en_za">Anglų (Pietų Afrika)</string>
+    <string name="settings_region_language_de_de">Vokiečių (Vokietija)</string>
+    <string name="settings_region_language_de_at">Vokiečių (Austrija)</string>
+    <string name="settings_region_language_de_ch">Vokiečių (Šveicarija)</string>
+    <string name="settings_region_language_fr_fr">Prancūzų (Prancūzija)</string>
+    <string name="settings_region_language_fr_ca">Prancūzų (Kanada)</string>
+    <string name="settings_region_language_it_it">Italų (Italija)</string>
+    <string name="settings_region_language_es_es">Ispanų (Ispanija)</string>
+    <string name="settings_region_language_es_mx">Ispanų (Meksika)</string>
+    <string name="settings_region_language_ca_es">Katalonų (Ispanija)</string>
+    <string name="settings_region_language_ru_ru">Rusų (Rusija)</string>
+    <string name="settings_region_language_pl_pl">Lenkų (Lenkija)</string>
+    <string name="settings_region_language_hr_hr">Kroatų (Kroatija)</string>
+    <string name="settings_region_language_sl_si">Slovėnų (Slovėnija)</string>
+    <string name="settings_region_language_sr_rs">Serbų (lotynų)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Serbų (kirilika)</string>
+    <string name="settings_region_language_bg_bg">Bulgarų (Bulgarija)</string>
+    <string name="settings_region_language_cs_cz">Čekų (Čekija)</string>
+    <string name="settings_region_language_sk_sk">Slovakų (Slovakija)</string>
+    <string name="settings_region_language_hu_hu">Vengrų (Vengrija)</string>
+    <string name="settings_region_language_ro_ro">Rumunų (Rumunija)</string>
+    <string name="settings_region_language_el_gr">Graikų (Graikija)</string>
+    <string name="settings_region_language_uk_ua">Ukrainiečių (Ukraina)</string>
+    <string name="settings_region_language_pt_br">Portugalų (Brazilija)</string>
+    <string name="settings_region_language_pt_pt">Portugalų (Portugalija)</string>
+    <string name="settings_region_language_nl_nl">Olandų (Nyderlandai)</string>
+    <string name="settings_region_language_sv_se">Švedų (Švedija)</string>
+    <string name="settings_region_language_da_dk">Danų (Danija)</string>
+    <string name="settings_region_language_nb_no">Norvegų bokmål (Norvegija)</string>
+    <string name="settings_region_language_fi_fi">Suomių (Suomija)</string>
+    <string name="settings_region_language_et_ee">Estų (Estija)</string>
+    <string name="settings_region_language_lv_lv">Latvių (Latvija)</string>
+    <string name="settings_region_language_tr_tr">Turkų (Turkija)</string>
+    <string name="settings_region_language_id_id">Indoneziečių (Indonezija)</string>
+    <string name="settings_region_language_ms_my">Malajų (Malaizija)</string>
+    <string name="settings_region_language_fil_ph">Filipinų (Filipinai)</string>
+    <string name="settings_region_language_sw_ke">Suahilių (Kenija)</string>
+    <string name="settings_region_language_vi_vn">Vietnamiečių (Vietnamas)</string>
+    <string name="settings_region_language_th_th">Tajų (Tailandas)</string>
+    <string name="settings_region_language_zh_cn">Kinų (supaprastinta)</string>
+    <string name="settings_region_language_zh_tw">Kinų (tradicinė)</string>
+    <string name="settings_region_language_hi_in">Hindi (Indija)</string>
+    <string name="settings_region_language_bn_bd">Bengalų (Bangladešas)</string>
+    <string name="settings_region_language_ja_jp">Japonų (Japonija)</string>
+    <string name="settings_region_language_ko_kr">Korėjiečių (Pietų Korėja)</string>
+    <string name="settings_region_language_ar_sa">Arabų (Saudo Arabija)</string>
+    <string name="settings_region_language_he_il">Hebrajų (Izraelis)</string>
+    <string name="settings_region_language_fa_ir">Persų (Iranas)</string>
+    <string name="settings_region_language_sq_al">Albanų (Albanija)</string>
+    <string name="settings_region_language_am_et">Amharų (Etiopija)</string>
+
+    <!-- Temperature and distance units. -->
+    <string name="settings_temperature_unit_title">Temperatūros vienetas</string>
+    <string name="settings_temperature_unit_celsius">Celsijus (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Farenheitas (°F)</string>
+    <string name="settings_distance_unit_title">Atstumo vienetas</string>
+    <string name="settings_distance_unit_kilometers">Kilometrai</string>
+    <string name="settings_distance_unit_miles">Mylios</string>
+
+    <!-- Clothes settings. -->
+    <string name="settings_clothes_title">Aprangos taisyklės</string>
+    <string name="settings_clothes_description">Jei prognozė viršija vieną iš šių ribų, daiktas pasirodys tavo dienos ClothesCast.</string>
+
+    <!-- Additional garment labels. -->
+    <string name="garment_puffer">Pūkinė striukė</string>
+    <string name="garment_thin_jacket">Plona striukė</string>
+    <string name="garment_skirt">Sijonas</string>
+    <string name="garment_polo">Polo</string>
+
+    <!-- Notification channels. -->
+    <string name="notification_channel_daily_insight_name">Dienos ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">Ryto orų santrauka, kurią užsisakei.</string>
+    <string name="notification_daily_insight_title">Šiandienos ClothesCast</string>
+    <string name="notification_channel_tonight_insight_default_name">Nakties ClothesCast (su renginiais)</string>
+    <string name="notification_channel_tonight_insight_default_description">Vakaro orų santrauka, kai šiandien vakare turi kalendoriaus renginių. Skleidžia numatytąjį pranešimo garsą.</string>
+    <string name="notification_channel_tonight_insight_silent_name">Nakties ClothesCast (tylus)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Vakaro orų santrauka ramiais vakarais. Pateikiama tyliai — gali matyti užrakto ekrane, bet nekeliks garso.</string>
+    <string name="notification_tonight_insight_title">Šiandien vakaro ClothesCast</string>
+    <string name="notification_channel_weather_alerts_name">Stichinių orų įspėjimai</string>
+    <string name="notification_channel_weather_alerts_description">Aukšto prioriteto įspėjimai apie stichinį arba ekstremalų orą tavo vietovėje. Pateikiami iškart aptikus per kasdienį gavimą.</string>
+    <string name="notification_weather_alert_title">Orų įspėjimas: %1$s</string>
+
+    <!-- Notification permission card. -->
+    <string name="settings_notification_permission_title">Pranešimai užblokuoti</string>
+    <string name="settings_notification_permission_description">Be pranešimų leidimo tavo dienos ClothesCast neturi kur pasirodyti. Suteik jį, kad ClothesCast galėtų paskelbti rytoj ryte.</string>
+    <string name="settings_notification_permission_grant">Suteikti pranešimų leidimą</string>
+
+    <!-- Calendar settings. -->
+    <string name="settings_calendar_title">Kalendorius</string>
+    <string name="settings_calendar_use_events">Naudoti šiandienos kalendoriaus renginius</string>
+    <string name="settings_calendar_description_off">Pritaikyti ryto prognozę prie šiandienos renginių — naudojami tik pavadinimai ir laikas, ir niekas nepalieka įrenginio.</string>
+    <string name="settings_calendar_description_on">Ryto prognozė pritaikoma prie šiandienos renginių. Naudojami tik pavadinimai ir laikas; niekas nepalieka įrenginio.</string>
+    <string name="settings_calendar_grant_permission">Suteikti kalendoriaus leidimą</string>
+    <string name="settings_calendar_open_settings">Kalendoriaus leidimas atmestas. Suteik jį sistemos nustatymuose.</string>
+
+    <!-- Debug screen. -->
+    <string name="settings_debug_title">Derinimas (tik derinimo versijose)</string>
+    <string name="settings_debug_description">Paleisti dienos ClothesCast procesą nedelsiant. Naudinga patikrinti nelaukiant suplanuoto laiko.</string>
+    <string name="settings_debug_fire_now">Paleisti ClothesCast dabar</string>
+    <string name="settings_debug_fire_toast">ClothesCast darbininkas įdėtas į eilę</string>
+
+    <!-- About screen. -->
+    <string name="settings_about_title">Apie</string>
+    <string name="settings_about_version">Versija %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s versija</string>
+    <string name="settings_about_source">Šaltinio kodas „GitHub"</string>
+    <string name="settings_about_dontkillmyapp">Fono apribojimai (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Bendrinti klaidos ataskaitą</string>
+    <string name="settings_about_version_copied">Versija nukopijuota į iškarpinę</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">Bendrinti klaidos ataskaitą?</string>
+    <string name="bug_report_consent_body">Tai padeda diagnozuoti problemas. Ataskaita apima jautrią asmeninę informaciją, įskaitant tavo vietą, programos nustatymus ir pastarąją veiklą. Prieš siunčiant galėsi peržiūrėti ir redaguoti.</string>
+    <string name="bug_report_consent_dont_show_again">Nerodyti dar kartą</string>
+    <string name="bug_report_consent_continue">Tęsti</string>
+    <string name="bug_report_consent_cancel">Atšaukti</string>
+
+    <!-- Additional insight prose templates. -->
+    <string name="insight_precip_chance">Gali būti %1$s %2$s.</string>
+    <string name="insight_tie_in_at_night">Pasiimk %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Pasiimk %1$s šįvakar, gali lyti %2$s val.</string>
+    <string name="insight_evening_rain">Šįvakar lietus %1$s val.</string>
+    <string name="insight_evening_rain_chance">Šįvakar gali lyti %1$s val.</string>
 
 </resources>

@@ -80,4 +80,495 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
+    <!-- Missing insight prose strings. -->
+    <string name="insight_precip_chance">Posibil %1$s %2$s.</string>
+    <string name="insight_tie_in_at_night">Ia %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Diseară, posibil ploaie la %2$s, ia %1$s.</string>
+    <string name="insight_evening_rain">Diseară, ploaie la %1$s.</string>
+    <string name="insight_evening_rain_chance">Diseară, posibil ploaie la %1$s.</string>
+
+    <!-- Error screen. -->
+    <string name="error_device_incompatible">ClothesCast nu poate rula pe acest dispozitiv — versiunea ta de Android nu include o funcție necesară pentru interfața aplicației (Configuration.fontWeightAdjustment, disponibilă pe Android 12 și versiuni superioare). Contactează producătorul dispozitivului pentru o actualizare de sistem.</string>
+
+    <!-- Today screen. -->
+    <string name="today_title">Astăzi</string>
+    <string name="today_open_settings">Deschide Setările</string>
+    <string name="today_more_options">Mai multe opțiuni</string>
+    <string name="today_report_a_bug">Raportează un bug</string>
+    <string name="today_refresh">Reîmprospătează</string>
+    <string name="today_refresh_toast_daily">Se reîmprospătează ClothesCast-ul zilnic — va apărea în scurt timp.</string>
+    <string name="today_refresh_toast_nightly">Se reîmprospătează ClothesCast-ul de seară — va apărea în scurt timp.</string>
+    <string name="today_empty_title">Niciun ClothesCast încă</string>
+    <string name="today_empty_subtitle">ClothesCast-ul tău de dimineață va apărea aici odată generat. Setează locația în Setări, apoi atinge Aduce acum.</string>
+    <string name="today_fetch_now">Aduce acum</string>
+    <string name="today_generated_at">Generat la %1$s</string>
+    <string name="today_location_unknown">Locația ta</string>
+
+    <!-- Outfit card. -->
+    <string name="today_outfit_title">Ce să porți</string>
+    <string name="today_outfit_label_today">Astăzi</string>
+    <string name="today_outfit_label_tonight">Diseară</string>
+    <string name="today_outfit_label_tomorrow">Mâine</string>
+    <string name="today_outfit_top_polo">Polo</string>
+    <string name="today_outfit_top_thin_jacket">Geacă ușoară</string>
+    <string name="today_outfit_top_thick_coat">Palton gros</string>
+    <string name="today_outfit_top_puffer_jacket">Geacă matlasată</string>
+    <string name="today_outfit_bottom_skirt">Fustă</string>
+    <string name="today_outfit_bottom_jeans">Blugi</string>
+
+    <!-- Rationale dialog. -->
+    <string name="today_rationale_title">De ce această ținută?</string>
+    <string name="today_rationale_show">De ce?</string>
+    <string name="today_rationale_dismiss">Am înțeles</string>
+    <string name="today_rationale_threshold_decrease">Scade pragul cu 1 grad</string>
+    <string name="today_rationale_threshold_increase">Crește pragul cu 1 grad</string>
+    <string name="today_rationale_threshold_changed_hint">Reîmprospătează pentru a vedea noua ținută.</string>
+    <string name="today_rationale_unavailable">Nicio explicație disponibilă — deschide aplicația după următoarea reîmprospătare.</string>
+    <string name="today_rationale_min_below_with_time">Temperatura resimțită minimă %1$s%2$s la %3$s, sub %4$s%2$s</string>
+    <string name="today_rationale_min_below">Temperatura resimțită minimă %1$s%2$s, sub %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Temperatura resimțită minimă %1$s%2$s la %3$s, cel puțin %4$s%2$s</string>
+    <string name="today_rationale_min_above">Temperatura resimțită minimă %1$s%2$s, cel puțin %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Temperatura resimțită maximă doar %1$s%2$s la %3$s, sub %4$s%2$s</string>
+    <string name="today_rationale_max_below">Temperatura resimțită maximă doar %1$s%2$s, sub %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Temperatura resimțită maximă %1$s%2$s la %3$s, cel puțin %4$s%2$s</string>
+    <string name="today_rationale_max_above">Temperatura resimțită maximă %1$s%2$s, cel puțin %3$s%2$s</string>
+
+    <!-- Widget. -->
+    <string name="widget_label">Ținută</string>
+    <string name="widget_description">Ținuta pentru perioada curentă, la o privire.</string>
+    <string name="widget_empty_title">Nicio ținută încă</string>
+    <string name="widget_empty_subtitle">Atinge pentru a deschide ClothesCast</string>
+
+    <!-- Forecast card. -->
+    <string name="today_forecast_title">Prognoză orară</string>
+    <string name="today_forecast_min_max">Resimțit %1$d – %2$d%3$s · Aer %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Temperatura resimțită (%1$s) pe oră · atinge pentru a comuta la temperatura aerului</string>
+    <string name="today_forecast_legend_air">Temperatura aerului (%1$s) pe oră · atinge pentru a comuta la temperatura resimțită</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Probabilitate de ploaie</string>
+    <string name="today_precipitation_peak">Vârf %1$d%% la %2$s</string>
+    <string name="today_precipitation_dry">Nu se prevede ploaie astăzi</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">Modele:</string>
+    <string name="today_chart_main_line_label">Combinat</string>
+    <string name="today_chart_divergence_summary">Modelele diferă cel mai mult la %1$s (Δ %2$.1f%3$s resimțit) — mai ales %4$s, %5$s</string>
+
+    <!-- Divergence factor names. -->
+    <string name="today_factor_air_temperature">temperatura aerului</string>
+    <string name="today_factor_wind_speed">viteza vântului</string>
+    <string name="today_factor_cloud_cover">acoperire noroasă</string>
+    <string name="today_factor_humidity">umiditate</string>
+
+    <!-- Diagnostic cards. -->
+    <string name="today_wind_title">Viteza vântului</string>
+    <string name="today_wind_subtitle">Viteza vântului (%1$s) pe oră per model</string>
+    <string name="today_cloud_title">Acoperire noroasă</string>
+    <string name="today_cloud_subtitle">Acoperire noroasă totală (%) pe oră per model</string>
+    <string name="today_humidity_title">Umiditate</string>
+    <string name="today_humidity_subtitle">Umiditate relativă (%) pe oră per model</string>
+
+    <!-- Confidence. -->
+    <string name="today_confidence_high">Încredere ridicată — modelele principale sunt de acord</string>
+    <string name="today_confidence_medium">Încredere medie</string>
+    <string name="today_confidence_low">Încredere scăzută — prognozele diferă</string>
+    <string name="today_confidence_spread">Dispersie: %1$.1f°C, %2$.0f%% precipitații la %3$d modele</string>
+
+    <!-- Low-confidence callout. -->
+    <string name="today_low_confidence_callout_title">Prognozele diferă astăzi</string>
+    <string name="today_low_confidence_callout_body">Temperatura variază cu %1$.1f°C, iar probabilitatea de ploaie cu %2$.0f%% la %3$d modele.</string>
+
+    <!-- Status strings. -->
+    <string name="today_working">Se încarcă — se preia ClothesCast-ul tău…</string>
+    <string name="today_retrying">Ultima încercare a eșuat — se încearcă din nou…</string>
+    <string name="today_failed_title">Ultima încercare a eșuat</string>
+    <string name="today_failed_unexpected_http">Eroare HTTP neașteptată de la serviciul de prognoză.</string>
+    <string name="today_failed_unhandled">A apărut o eroare neașteptată.</string>
+    <string name="today_failed_no_location">Nu am putut determina locația ta. Acordă permisiune permanentă de locație sau setează un oraș în Setări.</string>
+    <string name="today_failed_show_details">Arată detalii</string>
+    <string name="today_failed_hide_details">Ascunde detalii</string>
+
+    <!-- Location required. -->
+    <string name="today_location_required_title">Configurează locația</string>
+    <string name="today_location_required_body">ClothesCast trebuie să știe unde ești pentru a prelua prognoza. Acordă permisiune permanentă de locație sau alege un oraș.</string>
+    <string name="today_location_required_action">Deschide setările de locație</string>
+
+    <!-- Crash banner. -->
+    <string name="today_crash_banner_title">Ultima rulare a crăpat</string>
+    <string name="today_crash_banner_body">Un raport de eroare a fost salvat pe dispozitivul tău. Îl trimiți ca să poată fi remediat bug-ul? Nimic nu se trimite până nu alegi unde.</string>
+    <string name="today_crash_banner_share">Trimite raportul</string>
+    <string name="today_crash_banner_dismiss">Închide</string>
+
+    <!-- Update banners. -->
+    <string name="today_update_available_title">Actualizare disponibilă</string>
+    <string name="today_update_available_body">O versiune mai nouă a ClothesCast este pe Play Store.</string>
+    <string name="today_update_available_action">Actualizează</string>
+    <string name="today_update_available_dismiss">Nu acum</string>
+    <string name="today_update_downloaded_body">Actualizare descărcată. Repornește pentru a finaliza instalarea.</string>
+    <string name="today_update_downloaded_action">Repornește</string>
+
+    <!-- Telemetry notice. -->
+    <string name="today_telemetry_notice_title">Rapoartele de erori și utilizare sunt activate</string>
+    <string name="today_telemetry_notice_body">ClothesCast trimite rapoarte anonime de erori și analize de utilizare pentru a ajuta la remedierea bug-urilor. Nu sunt incluse date din calendar, locație sau textul rezumatului. Le poți dezactiva oricând din Setări.</string>
+    <string name="today_telemetry_notice_open_settings">Deschide setările de Confidențialitate</string>
+    <string name="today_telemetry_notice_dismiss">Închide</string>
+
+    <!-- Onboarding. -->
+    <string name="onboarding_title">Bun venit în ClothesCast</string>
+    <string name="onboarding_subtitle">Trei alegeri rapide și ești gata. Ajustează mai târziu în Setări.</string>
+    <string name="onboarding_subtitle_tv">Două alegeri rapide și ești gata. Ajustează mai târziu în Setări.</string>
+    <string name="onboarding_notifications_title">Notificări</string>
+    <string name="onboarding_notifications_description">Necesar pentru a livra ClothesCast-ul tău zilnic.</string>
+    <string name="onboarding_notifications_grant">Acordă permisiunea pentru notificări</string>
+    <string name="onboarding_location_title">Locație</string>
+    <string name="onboarding_location_description">Preia prognoza pentru locația ta aproximativă.</string>
+    <string name="onboarding_location_grant">Acordă permisiunea de locație</string>
+    <string name="onboarding_location_grant_background">Acordă locație permanentă</string>
+    <string name="onboarding_location_background_needed">Încă un pas: ClothesCast are nevoie de \'Permite mereu\' ca prognoza de dimineață să poată citi locația ta când aplicația este închisă.</string>
+    <string name="onboarding_location_denied_hint">Permisiunea de locație a fost refuzată. Poți alege un oraș manual în loc.</string>
+    <string name="onboarding_location_enter_manual">Introdu locația manual</string>
+    <string name="onboarding_location_enter_manual_hint">Poți introduce manual locația dacă refuzi permisiunea de locație sau dacă locația dispozitivului tău este greșită.</string>
+    <string name="onboarding_location_using_device">Se folosește locația dispozitivului tău în fiecare dimineață.</string>
+    <string name="onboarding_gemini_title">Cheie API Gemini</string>
+    <string name="onboarding_gemini_description">Folosește Gemini pentru voci de înaltă calitate.</string>
+    <string name="onboarding_step_done">Gata</string>
+    <string name="onboarding_skip">Omite deocamdată</string>
+    <string name="onboarding_continue">Continuă</string>
+    <string name="onboarding_pair_from_phone">Asociază de pe telefon</string>
+
+    <!-- Pairing (TV). -->
+    <string name="pairing_title">Scanează pentru asociere</string>
+    <string name="pairing_instructions">Scanează acest cod QR cu telefonul tău, apoi lipește cheia API Gemini în formularul care se deschide. Cheia va fi trimisă direct pe acest TV prin rețeaua ta de acasă — fără releu în cloud.</string>
+    <string name="pairing_qr_description">Cod QR cu link către %1$s</string>
+    <string name="pairing_cancel">Anulează</string>
+    <string name="pairing_received">Cheie primită — se salvează…</string>
+    <string name="pairing_timeout_title">Fereastra de asociere a expirat</string>
+    <string name="pairing_timeout_body">Fereastra de asociere de 5 minute s-a închis. Atinge Reîncearcă pentru a deschide una nouă.</string>
+    <string name="pairing_error_title">Nu s-a putut porni asocierea</string>
+    <string name="pairing_error_body">Asigură-te că TV-ul este conectat la Wi-Fi, apoi încearcă din nou.</string>
+    <string name="pairing_retry">Reîncearcă</string>
+
+    <!-- Settings navigation. -->
+    <string name="settings_title">Setări</string>
+    <string name="settings_back">Înapoi</string>
+    <string name="settings_root_voice">Voce</string>
+    <string name="settings_root_schedule">Program</string>
+    <string name="settings_root_region">Regiune</string>
+    <string name="settings_root_clothes">Îmbrăcăminte</string>
+    <string name="settings_root_display">Afișaj</string>
+    <string name="settings_root_location">Locație</string>
+    <string name="settings_root_calendar">Calendar</string>
+    <string name="settings_root_privacy">Confidențialitate</string>
+    <string name="settings_root_about">Despre</string>
+    <string name="settings_root_schedule_subtitle">Notificări și ore</string>
+    <string name="settings_root_clothes_subtitle">Temperaturi și ținute</string>
+    <string name="settings_root_region_subtitle">Limbi și unități</string>
+    <string name="settings_root_voice_subtitle">Furnizori și accente</string>
+    <string name="settings_root_display_subtitle">Temă</string>
+    <string name="settings_root_location_subtitle">Detectare automată sau alege un oraș</string>
+    <string name="settings_root_calendar_subtitle">Evenimentele de astăzi</string>
+    <string name="settings_root_privacy_subtitle">Rapoarte de erori și utilizare</string>
+
+    <!-- Display settings. -->
+    <string name="settings_display_theme_title">Temă</string>
+    <string name="settings_display_theme_system">Urmează sistemul</string>
+    <string name="settings_display_theme_light">Deschis</string>
+    <string name="settings_display_theme_dark">Întunecat</string>
+    <string name="settings_display_charts_title">Grafice</string>
+    <string name="settings_display_model_spread_label">Arată dispersia modelelor pe grafice</string>
+    <string name="settings_display_model_spread_description">Suprapune prognoza orară a fiecărui model meteo major pe graficele de temperatură și ploaie. Util pentru a detecta când prognoza este incertă.</string>
+
+    <!-- Privacy settings. -->
+    <string name="settings_privacy_telemetry_title">Rapoarte de erori și utilizare</string>
+    <string name="settings_privacy_telemetry_label">Trimite date de erori și utilizare</string>
+    <string name="settings_privacy_telemetry_description">Trimite rapoarte anonime de erori și statistici agregate de utilizare pentru a ajuta dezvoltatorul să remedieze bug-uri și să decidă ce funcții să păstreze.</string>
+    <string name="settings_privacy_telemetry_limits">Niciodată trimise: evenimente din calendar, coordonate de locație sau nume de locuri, textul rezumatului sau notificărilor, chei API, GPS precis, identificatori publicitari.</string>
+    <string name="settings_privacy_open_policy">Citește politica de confidențialitate completă</string>
+
+    <!-- API key settings. -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Folosește Gemini pentru voci de înaltă calitate.</string>
+    <string name="settings_api_key_status_set">O cheie Gemini este configurată.</string>
+    <string name="settings_api_key_status_unset">Obține o cheie API gratuită la aistudio.google.com</string>
+    <string name="settings_api_key_placeholder">Lipește cheia ta API Gemini</string>
+    <string name="settings_api_key_save">Salvează cheia Gemini</string>
+    <string name="settings_api_key_clear">Șterge cheia Gemini salvată</string>
+
+    <!-- Location settings. -->
+    <string name="settings_location_title">Locație</string>
+    <string name="settings_location_use_device">Folosește locația dispozitivului</string>
+    <string name="settings_location_use_device_description">Ultima locație aproximativă</string>
+    <string name="settings_location_detecting">Se detectează…</string>
+    <string name="settings_location_grant_background">Acordă</string>
+    <string name="settings_location_background_banner_title">Locație permanentă necesară</string>
+    <string name="settings_location_background_banner_body">Fără aceasta, prognoza de dimineață nu poate citi locația ta.</string>
+    <string name="settings_location_unset">Nicio locație setată</string>
+    <string name="settings_location_manual_override">Locație greșită? Setează manual</string>
+    <string name="settings_location_manual_override_disclosure">Alegerea unui oraș dezactivează detectarea automată.</string>
+    <string name="settings_location_clear">Șterge locația</string>
+    <string name="settings_location_search_title">Caută o locație</string>
+    <string name="settings_location_query_label">Oraș sau loc</string>
+    <string name="settings_location_search">Caută</string>
+    <string name="settings_location_searching">Se caută…</string>
+    <string name="settings_location_no_results">Niciun rezultat.</string>
+    <string name="settings_location_rationale_title">Acces la locație</string>
+    <string name="settings_location_rationale_body">ClothesCast citește locația ta pentru a prelua prognoza locală.</string>
+    <string name="settings_location_rationale_continue">Continuă</string>
+    <string name="settings_location_rationale_dismiss">Nu acum</string>
+    <string name="settings_location_background_rationale_title">Permite mereu</string>
+    <string name="settings_location_background_rationale_body">Permite ClothesCast să citească locația ta când este închis, astfel prognoza de dimineață se actualizează la timp.</string>
+    <string name="settings_location_background_rationale_continue">Deschide Setările</string>
+    <string name="settings_location_background_rationale_dismiss">Nu acum</string>
+    <string name="settings_location_background_denied_title">Locație permanentă neacordată</string>
+    <string name="settings_location_background_denied_body">Fără \'Permite mereu\', prognoza de dimineață nu se poate actualiza automat.</string>
+    <string name="settings_location_background_denied_open">Deschide Setările</string>
+    <string name="settings_location_background_denied_keep">Nu acum</string>
+
+    <!-- Schedule settings. -->
+    <string name="settings_schedule_title">ClothesCast zilnic</string>
+    <string name="settings_schedule_time_label">Oră</string>
+    <string name="settings_schedule_days_label">Zile ale săptămânii</string>
+    <string name="settings_daily_mention_evening_events">Menționează evenimentele de seară</string>
+
+    <!-- Tonight settings. -->
+    <string name="settings_tonight_title">ClothesCast nocturn</string>
+    <string name="settings_tonight_description">Un al doilea ClothesCast seara care acoperă vremea de diseară. În serile liniștite rămâne tăcut sau nu apare deloc dacă „Notifică doar când sunt evenimente de seară" este activat; în serile cu evenimente redă un sunet și (dacă ai activat livrarea citită cu voce tare) se citește singur.</string>
+    <string name="settings_tonight_enabled">Arată un ClothesCast nocturn</string>
+    <string name="settings_tonight_time_label">Oră</string>
+    <string name="settings_tonight_days_label">Zile ale săptămânii</string>
+    <string name="settings_tonight_notify_only_on_events">Notifică doar când sunt evenimente de seară</string>
+
+    <!-- Delivery options. -->
+    <string name="settings_delivery_label">Livrare</string>
+    <string name="settings_delivery_notification_only">Doar notificare</string>
+    <string name="settings_delivery_tts_only">Doar citit cu voce tare</string>
+    <string name="settings_delivery_notification_and_tts">Notificare și citit cu voce tare</string>
+
+    <!-- Voice / TTS settings. -->
+    <string name="settings_tts_engine_title">Motor vocal</string>
+    <string name="settings_tts_engine_description">Gemini sună mult mai natural decât vocea dispozitivului, dar necesită un apel de rețea la momentul vorbirii și utilizează cheia ta API pentru sinteză (un apel scurt per fiecare ClothesCast citit cu voce tare). Revine la vocea dispozitivului dacă Gemini eșuează.</string>
+    <string name="settings_tts_engine_device">Dispozitiv (offline, gratuit)</string>
+    <string name="settings_tts_engine_gemini">Gemini (calitate ridicată, online)</string>
+    <string name="settings_tts_voice_label">Voce</string>
+    <string name="settings_tts_voice_dismiss">Gata</string>
+    <string name="settings_tts_style_label">Stil</string>
+    <string name="settings_tts_style_weather_forecaster">Prezentator meteo</string>
+    <string name="settings_tts_style_pirate">Pirat</string>
+    <string name="settings_tts_style_cowboy">Cowboy</string>
+    <string name="settings_tts_style_shakespearean">Shakespearian</string>
+    <string name="settings_tts_style_surfer">Surfer</string>
+    <string name="settings_tts_style_parent">Părinte</string>
+    <string name="settings_tts_style_child">Copil</string>
+    <string name="settings_tts_style_teenager">Teenager</string>
+    <string name="settings_tts_style_grandparent">Bunic</string>
+    <string name="settings_tts_style_kids_host">Prezentator TV pentru copii</string>
+    <string name="settings_tts_style_radio_host">Prezentator talkback</string>
+    <string name="settings_tts_style_morning_dj">DJ de dimineață</string>
+    <string name="settings_tts_style_science_teacher">Profesor de științe</string>
+    <string name="settings_tts_style_historian">Istoric</string>
+    <string name="settings_tts_style_sportscaster">Comentator sportiv</string>
+    <string name="settings_tts_style_stadium_announcer">Crainic de stadion</string>
+    <string name="settings_tts_style_storyteller">Povestitor</string>
+    <string name="settings_tts_style_fitness_instructor">Instructor de fitness</string>
+    <string name="settings_tts_style_morning_presenter">Prezentator radio de dimineață</string>
+    <string name="settings_tts_style_custom">Personalizat…</string>
+    <string name="settings_tts_style_custom_label">Directivă personalizată</string>
+    <string name="settings_tts_style_custom_placeholder">de ex. Citește cele de mai jos ca un bibliotecar sever care șoptește</string>
+    <string name="settings_tts_device_voice_label">Vocea dispozitivului</string>
+    <string name="settings_tts_device_voice_auto">Automat (cel mai bun accent)</string>
+    <string name="settings_tts_device_voice_currently">Curent: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Se încarcă…</string>
+    <string name="settings_tts_device_voice_network">Rețea</string>
+    <string name="settings_tts_device_voice_offline">Offline</string>
+    <string name="settings_tts_install_google_hint">Instalează motorul text-to-speech Google pentru voci de calitate mai bună.</string>
+    <string name="settings_tts_install_google_button">Instalează Google TTS</string>
+    <string name="settings_tts_voice_locale_description">Setează accentul vocii vorbite. Nu modifică textul afișat.</string>
+    <string name="settings_tts_test">Testează vocea</string>
+    <string name="settings_tts_test_in_flight">Se testează — așteaptă…</string>
+
+    <!-- Voice locale picker labels (in Romanian). -->
+    <string name="settings_tts_voice_locale_en_us">Engleză (Statele Unite)</string>
+    <string name="settings_tts_voice_locale_en_gb">Engleză (Regatul Unit)</string>
+    <string name="settings_tts_voice_locale_en_au">Engleză (Australia)</string>
+    <string name="settings_tts_voice_locale_en_ca">Engleză (Canada)</string>
+    <string name="settings_tts_voice_locale_en_za">Engleză (Africa de Sud)</string>
+    <string name="settings_tts_voice_locale_de_de">Germană (Germania)</string>
+    <string name="settings_tts_voice_locale_de_at">Germană (Austria)</string>
+    <string name="settings_tts_voice_locale_de_ch">Germană (Elveția)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Franceză (Franța)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Franceză (Canada)</string>
+    <string name="settings_tts_voice_locale_it_it">Italiană (Italia)</string>
+    <string name="settings_tts_voice_locale_es_es">Spaniolă (Spania)</string>
+    <string name="settings_tts_voice_locale_es_mx">Spaniolă (Mexic)</string>
+    <string name="settings_tts_voice_locale_ca_es">Catalană (Spania)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Rusă (Rusia)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Poloneză (Polonia)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Croată (Croația)</string>
+    <string name="settings_tts_voice_locale_sl_si">Slovenă (Slovenia)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Sârbă (latină)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Sârbă (chirilică)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Bulgară (Bulgaria)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Cehă (Cehia)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Slovacă (Slovacia)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Maghiară (Ungaria)</string>
+    <string name="settings_tts_voice_locale_el_gr">Greacă (Grecia)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Ucraineană (Ucraina)</string>
+    <string name="settings_tts_voice_locale_pt_br">Portugheză (Brazilia)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Portugheză (Portugalia)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Olandeză (Țările de Jos)</string>
+    <string name="settings_tts_voice_locale_sv_se">Suedeză (Suedia)</string>
+    <string name="settings_tts_voice_locale_da_dk">Daneză (Danemarca)</string>
+    <string name="settings_tts_voice_locale_nb_no">Norvegiană Bokmål (Norvegia)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Finlandeză (Finlanda)</string>
+    <string name="settings_tts_voice_locale_et_ee">Estonă (Estonia)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Letonă (Letonia)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Lituaniană (Lituania)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Turcă (Turcia)</string>
+    <string name="settings_tts_voice_locale_id_id">Indoneziană (Indonezia)</string>
+    <string name="settings_tts_voice_locale_ms_my">Malaieză (Malaezia)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Filipineză (Filipine)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Swahili (Kenya)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Vietnameză (Vietnam)</string>
+    <string name="settings_tts_voice_locale_th_th">Tailandeză (Thailanda)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Chineză (simplificată)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Chineză (tradițională)</string>
+    <string name="settings_tts_voice_locale_hi_in">Hindi (India)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Bengaleză (Bangladesh)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Japoneză (Japonia)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Coreeană (Coreea de Sud)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Arabă (Arabia Saudită)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Arabă (Egipt)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Arabă (Emiratele Arabe Unite)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Arabă (Maroc)</string>
+    <string name="settings_tts_voice_locale_he_il">Ebraică (Israel)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Persană (Iran)</string>
+    <string name="settings_tts_voice_locale_sq_al">Albaneză (Albania)</string>
+    <string name="settings_tts_voice_locale_am_et">Amharică (Etiopia)</string>
+
+    <!-- Region / language settings. -->
+    <string name="settings_region_language_title">Limbă</string>
+    <string name="settings_region_language_description">Setează limba textului afișat și a notificărilor.</string>
+    <string name="settings_region_language_system">Urmează configurarea regională a sistemului</string>
+    <string name="settings_region_language_en_us">Engleză (Statele Unite)</string>
+    <string name="settings_region_language_en_gb">Engleză (Regatul Unit)</string>
+    <string name="settings_region_language_en_au">Engleză (Australia)</string>
+    <string name="settings_region_language_en_ca">Engleză (Canada)</string>
+    <string name="settings_region_language_en_za">Engleză (Africa de Sud)</string>
+    <string name="settings_region_language_de_de">Germană (Germania)</string>
+    <string name="settings_region_language_de_at">Germană (Austria)</string>
+    <string name="settings_region_language_de_ch">Germană (Elveția)</string>
+    <string name="settings_region_language_fr_fr">Franceză (Franța)</string>
+    <string name="settings_region_language_fr_ca">Franceză (Canada)</string>
+    <string name="settings_region_language_it_it">Italiană (Italia)</string>
+    <string name="settings_region_language_es_es">Spaniolă (Spania)</string>
+    <string name="settings_region_language_es_mx">Spaniolă (Mexic)</string>
+    <string name="settings_region_language_ca_es">Catalană (Spania)</string>
+    <string name="settings_region_language_ru_ru">Rusă (Rusia)</string>
+    <string name="settings_region_language_pl_pl">Poloneză (Polonia)</string>
+    <string name="settings_region_language_hr_hr">Croată (Croația)</string>
+    <string name="settings_region_language_sl_si">Slovenă (Slovenia)</string>
+    <string name="settings_region_language_sr_rs">Sârbă (latină)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Sârbă (chirilică)</string>
+    <string name="settings_region_language_bg_bg">Bulgară (Bulgaria)</string>
+    <string name="settings_region_language_cs_cz">Cehă (Cehia)</string>
+    <string name="settings_region_language_sk_sk">Slovacă (Slovacia)</string>
+    <string name="settings_region_language_hu_hu">Maghiară (Ungaria)</string>
+    <string name="settings_region_language_el_gr">Greacă (Grecia)</string>
+    <string name="settings_region_language_uk_ua">Ucraineană (Ucraina)</string>
+    <string name="settings_region_language_pt_br">Portugheză (Brazilia)</string>
+    <string name="settings_region_language_pt_pt">Portugheză (Portugalia)</string>
+    <string name="settings_region_language_nl_nl">Olandeză (Țările de Jos)</string>
+    <string name="settings_region_language_sv_se">Suedeză (Suedia)</string>
+    <string name="settings_region_language_da_dk">Daneză (Danemarca)</string>
+    <string name="settings_region_language_nb_no">Norvegiană Bokmål (Norvegia)</string>
+    <string name="settings_region_language_fi_fi">Finlandeză (Finlanda)</string>
+    <string name="settings_region_language_et_ee">Estonă (Estonia)</string>
+    <string name="settings_region_language_lv_lv">Letonă (Letonia)</string>
+    <string name="settings_region_language_lt_lt">Lituaniană (Lituania)</string>
+    <string name="settings_region_language_tr_tr">Turcă (Turcia)</string>
+    <string name="settings_region_language_id_id">Indoneziană (Indonezia)</string>
+    <string name="settings_region_language_ms_my">Malaieză (Malaezia)</string>
+    <string name="settings_region_language_fil_ph">Filipineză (Filipine)</string>
+    <string name="settings_region_language_sw_ke">Swahili (Kenya)</string>
+    <string name="settings_region_language_vi_vn">Vietnameză (Vietnam)</string>
+    <string name="settings_region_language_th_th">Tailandeză (Thailanda)</string>
+    <string name="settings_region_language_zh_cn">Chineză (simplificată)</string>
+    <string name="settings_region_language_zh_tw">Chineză (tradițională)</string>
+    <string name="settings_region_language_hi_in">Hindi (India)</string>
+    <string name="settings_region_language_bn_bd">Bengaleză (Bangladesh)</string>
+    <string name="settings_region_language_ja_jp">Japoneză (Japonia)</string>
+    <string name="settings_region_language_ko_kr">Coreeană (Coreea de Sud)</string>
+    <string name="settings_region_language_ar_sa">Arabă (Arabia Saudită)</string>
+    <string name="settings_region_language_he_il">Ebraică (Israel)</string>
+    <string name="settings_region_language_fa_ir">Persană (Iran)</string>
+    <string name="settings_region_language_sq_al">Albaneză (Albania)</string>
+    <string name="settings_region_language_am_et">Amharică (Etiopia)</string>
+
+    <!-- Temperature and distance units. -->
+    <string name="settings_temperature_unit_title">Unitate de temperatură</string>
+    <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="settings_distance_unit_title">Unitate de distanță</string>
+    <string name="settings_distance_unit_kilometers">Kilometri</string>
+    <string name="settings_distance_unit_miles">Mile</string>
+
+    <!-- Clothes settings — additional. -->
+    <string name="settings_clothes_title">Reguli de îmbrăcăminte</string>
+    <string name="settings_clothes_description">Dacă o prognoză depășește unul dintre aceste praguri, articolul apare în ClothesCast-ul tău zilnic.</string>
+
+    <!-- Garment dropdown — additional items. -->
+    <string name="garment_puffer">Geacă matlasată</string>
+    <string name="garment_thin_jacket">Geacă ușoară</string>
+    <string name="garment_skirt">Fustă</string>
+    <string name="garment_polo">Polo</string>
+
+    <!-- Notification channels. -->
+    <string name="notification_channel_daily_insight_name">ClothesCast zilnic</string>
+    <string name="notification_channel_daily_insight_description">Rezumatul meteo de dimineață la care ai optat.</string>
+    <string name="notification_daily_insight_title">ClothesCast-ul de astăzi</string>
+    <string name="notification_channel_tonight_insight_default_name">ClothesCast nocturn (cu evenimente)</string>
+    <string name="notification_channel_tonight_insight_default_description">Rezumatul meteo de seară când ai evenimente în calendar diseară. Redă sunetul de notificare implicit.</string>
+    <string name="notification_channel_tonight_insight_silent_name">ClothesCast nocturn (silențios)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Rezumatul meteo de seară când seara este liberă. Postat silențios — îl poți vedea pe ecranul de blocare, dar nu va emite niciun sunet.</string>
+    <string name="notification_tonight_insight_title">ClothesCast-ul de diseară</string>
+    <string name="notification_channel_weather_alerts_name">Alerte meteo severe</string>
+    <string name="notification_channel_weather_alerts_description">Alerte de prioritate înaltă pentru fenomene meteo severe sau extreme care afectează zona ta. Livrate imediat ce sunt detectate la preluarea zilnică.</string>
+    <string name="notification_weather_alert_title">Alertă meteo: %1$s</string>
+
+    <!-- Notification permission card. -->
+    <string name="settings_notification_permission_title">Notificările sunt blocate</string>
+    <string name="settings_notification_permission_description">Fără permisiunea de notificare, ClothesCast-ul tău zilnic nu are unde să ajungă. Acordă permisiunea pentru ca ClothesCast să poată posta mâine dimineață.</string>
+    <string name="settings_notification_permission_grant">Acordă permisiunea pentru notificări</string>
+
+    <!-- Calendar settings. -->
+    <string name="settings_calendar_title">Calendar</string>
+    <string name="settings_calendar_use_events">Folosește evenimentele din calendar de astăzi</string>
+    <string name="settings_calendar_description_off">Personalizează prognoza de dimineață în funcție de evenimentele de astăzi — se folosesc doar titlurile și orele, nimic nu părăsește dispozitivul.</string>
+    <string name="settings_calendar_description_on">Personalizează prognoza de dimineață în funcție de evenimentele de astăzi. Se folosesc doar titlurile și orele; nimic nu părăsește dispozitivul.</string>
+    <string name="settings_calendar_grant_permission">Acordă permisiunea de calendar</string>
+    <string name="settings_calendar_open_settings">Permisiunea de calendar refuzată. Acordă-o din Setările sistemului.</string>
+
+    <!-- Debug settings. -->
+    <string name="settings_debug_title">Debug (doar în build-urile debug)</string>
+    <string name="settings_debug_description">Declanșează imediat fluxul ClothesCast zilnic. Util pentru verificare fără a aștepta ora programată.</string>
+    <string name="settings_debug_fire_now">Declanșează ClothesCast acum</string>
+    <string name="settings_debug_fire_toast">Task-ul ClothesCast a fost adăugat în coadă</string>
+
+    <!-- About settings. -->
+    <string name="settings_about_title">Despre</string>
+    <string name="settings_about_version">Versiunea %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · build %1$s</string>
+    <string name="settings_about_source">Cod sursă pe GitHub</string>
+    <string name="settings_about_dontkillmyapp">Restricții în fundal (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Trimite raport de bug</string>
+    <string name="settings_about_version_copied">Versiunea copiată în clipboard</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">Trimiți raportul de bug?</string>
+    <string name="bug_report_consent_body">Aceasta ajută la diagnosticarea problemelor. Raportul conține informații personale sensibile, inclusiv locația ta, setările aplicației și activitatea recentă. Îl vei putea revizui și edita înainte de trimitere.</string>
+    <string name="bug_report_consent_dont_show_again">Nu mai arăta din nou</string>
+    <string name="bug_report_consent_continue">Continuă</string>
+    <string name="bug_report_consent_cancel">Anulează</string>
+
 </resources>

@@ -1,22 +1,439 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-Estonian translation. Scope: insight-prose templates, garment labels, clothes-rule
-editor, outfit-card labels, and region/voice-locale picker names. Tone is
-informal "sina"-form throughout ("Pane … selga", "Võta … kaasa").
+Estonian translation. Scope: all UI strings — insight-prose templates, garment
+labels, clothes-rule editor, outfit-card labels, region/voice-locale picker
+names, settings screens, onboarding, notifications, and widget labels.
+Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
+"Puuduta" for tap).
 -->
 <resources>
-    <string name="settings_region_language_et_ee">Eesti (Eesti)</string>
-    <string name="settings_tts_voice_locale_et_ee">Eesti (Eesti)</string>
+    <string name="error_device_incompatible">ClothesCast ei saa sellel seadmel käivituda — su Android-i versioon ei sisalda funktsiooni, mida rakenduse kasutajaliides vajab (Configuration.fontWeightAdjustment, oodatakse Android 12 ja uuematel). Palun võta ühendust seadme tootjaga süsteemivärskenduse saamiseks.</string>
+
+    <string name="today_title">Täna</string>
+    <string name="today_open_settings">Ava seaded</string>
+    <string name="today_more_options">Rohkem valikuid</string>
+    <string name="today_report_a_bug">Teata veast</string>
+    <string name="today_refresh">Värskenda</string>
+    <string name="today_refresh_toast_daily">Värskendatakse sinu igapäevast ClothesCast\'i — ilmub varsti.</string>
+    <string name="today_refresh_toast_nightly">Värskendatakse sinu õhtust ClothesCast\'i — ilmub varsti.</string>
+    <string name="today_empty_title">ClothesCast puudub veel</string>
+    <string name="today_empty_subtitle">Sinu hommikune ClothesCast ilmub siia, kui see on genereeritud. Määra asukoht seadetes ja puuduta Laadi kohe.</string>
+    <string name="today_fetch_now">Laadi kohe</string>
+    <string name="today_generated_at">Genereeritud kell %1$s</string>
+    <string name="today_location_unknown">Sinu asukoht</string>
+
+    <string name="today_outfit_title">Mida selga panna</string>
+    <string name="today_outfit_label_today">Täna</string>
+    <string name="today_outfit_label_tonight">Täna õhtul</string>
+    <string name="today_outfit_label_tomorrow">Homme</string>
+    <string name="today_outfit_top_tshirt">T-särk</string>
+    <string name="today_outfit_top_polo">Polo</string>
+    <string name="today_outfit_top_sweater">Kampsun</string>
+    <string name="today_outfit_top_thin_jacket">Õhuke jope</string>
+    <string name="today_outfit_top_thick_jacket">Paks jope</string>
+    <string name="today_outfit_top_thick_coat">Paks mantel</string>
+    <string name="today_outfit_top_puffer_jacket">Unijope</string>
+    <string name="today_outfit_bottom_shorts">Lühikesed püksid</string>
+    <string name="today_outfit_bottom_skirt">Seelik</string>
+    <string name="today_outfit_bottom_jeans">Teksad</string>
+    <string name="today_outfit_bottom_long_pants">Pikad püksid</string>
+
+    <string name="today_rationale_title">Miks see riietus?</string>
+    <string name="today_rationale_show">Miks?</string>
+    <string name="today_rationale_dismiss">Selge</string>
+    <string name="today_rationale_threshold_decrease">Alanda läve 1 kraadi võrra</string>
+    <string name="today_rationale_threshold_increase">Tõsta läve 1 kraadi võrra</string>
+    <string name="today_rationale_threshold_changed_hint">Värskenda, et näha uut riietust.</string>
+    <string name="today_rationale_unavailable">Põhjendus puudub — ava rakendus pärast järgmist värskendust.</string>
+    <string name="today_rationale_min_below_with_time">Tunnetatav miinimum %1$s%2$s kell %3$s, alla %4$s%2$s</string>
+    <string name="today_rationale_min_below">Tunnetatav miinimum %1$s%2$s, alla %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Tunnetatav miinimum %1$s%2$s kell %3$s, vähemalt %4$s%2$s</string>
+    <string name="today_rationale_min_above">Tunnetatav miinimum %1$s%2$s, vähemalt %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Tunnetatav maksimum vaid %1$s%2$s kell %3$s, alla %4$s%2$s</string>
+    <string name="today_rationale_max_below">Tunnetatav maksimum vaid %1$s%2$s, alla %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Tunnetatav maksimum %1$s%2$s kell %3$s, vähemalt %4$s%2$s</string>
+    <string name="today_rationale_max_above">Tunnetatav maksimum %1$s%2$s, vähemalt %3$s%2$s</string>
+
+    <string name="widget_label">Riietus</string>
+    <string name="widget_description">Praeguse perioodi riietus ühel pilgul.</string>
+    <string name="widget_empty_title">Riietust veel pole</string>
+    <string name="widget_empty_subtitle">Puuduta, et avada ClothesCast</string>
+
+    <string name="today_forecast_title">Tunnipõhine ilmaprognoos</string>
+    <string name="today_forecast_min_max">Tundub %1$d – %2$d%3$s · Õhk %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Tunnetatav (%1$s) tunni kaupa · puuduta, et lülituda õhutemperatuurile</string>
+    <string name="today_forecast_legend_air">Õhutemperatuur (%1$s) tunni kaupa · puuduta, et lülituda tunnetatavale</string>
+
+    <string name="today_precipitation_title">Vihma tõenäosus</string>
+    <string name="today_precipitation_peak">Tipp %1$d%% kell %2$s</string>
+    <string name="today_precipitation_dry">Täna vihma ei oodata</string>
+
+    <string name="today_chart_model_legend_label">Mudelid:</string>
+    <string name="today_chart_main_line_label">Kombineeritud</string>
+    <string name="today_chart_divergence_summary">Mudelid lahknevad kõige rohkem kell %1$s (Δ %2$.1f%3$s tunnetatav) — peamiselt %4$s, %5$s</string>
+
+    <string name="today_factor_air_temperature">õhutemperatuur</string>
+    <string name="today_factor_wind_speed">tuule kiirus</string>
+    <string name="today_factor_cloud_cover">pilvisus</string>
+    <string name="today_factor_humidity">niiskus</string>
+
+    <string name="today_wind_title">Tuule kiirus</string>
+    <string name="today_wind_subtitle">Mudelihaare tuule kiirus (%1$s) tunni kaupa</string>
+
+    <string name="today_cloud_title">Pilvisus</string>
+    <string name="today_cloud_subtitle">Mudelihaare kogu pilvisus (%) tunni kaupa</string>
+
+    <string name="today_humidity_title">Niiskus</string>
+    <string name="today_humidity_subtitle">Mudelihaare suhteline niiskus (%) tunni kaupa</string>
+
+    <string name="today_confidence_high">Kõrge kindlus — peamised mudelid on nõus</string>
+    <string name="today_confidence_medium">Keskmine kindlus</string>
+    <string name="today_confidence_low">Madal kindlus — prognoosid lahknevad</string>
+    <string name="today_confidence_spread">Hajuvus: %1$.1f°C, %2$.0f%% sademeid %3$d mudeli lõikes</string>
+
+    <string name="today_low_confidence_callout_title">Prognoosid lahknevad täna</string>
+    <string name="today_low_confidence_callout_body">Temperatuur varieerub %1$.1f°C ja vihma tõenäosus %2$.0f%% %3$d mudeli lõikes.</string>
+
+    <string name="today_working">Töötab — laadib sinu ClothesCast\'i…</string>
+    <string name="today_retrying">Viimane katse ebaõnnestus — proovib uuesti…</string>
+    <string name="today_failed_title">Viimane katse ebaõnnestus</string>
+    <string name="today_failed_unexpected_http">Prognoositeenuselt tuli ootamatu HTTP-viga.</string>
+    <string name="today_failed_unhandled">Ilmnes ootamatu viga.</string>
+    <string name="today_failed_no_location">Asukoha tuvastamine ebaõnnestus. Anna alati-sees asukohaluba või määra linn seadetes.</string>
+    <string name="today_failed_show_details">Näita üksikasju</string>
+    <string name="today_failed_hide_details">Peida üksikasjad</string>
+
+    <string name="today_location_required_title">Seadista oma asukoht</string>
+    <string name="today_location_required_body">ClothesCast peab teadma, kus sa oled, et laadida ilmaprognoos. Anna alati-sees asukohaluba või vali linn.</string>
+    <string name="today_location_required_action">Ava asukoha seaded</string>
+
+    <string name="today_crash_banner_title">Viimane käivitus kukkus kokku</string>
+    <string name="today_crash_banner_body">Sinu seadmesse salvestati veaaruanne. Jaga seda, et viga saaks parandada? Midagi ei saadeta enne, kui valid kuhu.</string>
+    <string name="today_crash_banner_share">Jaga aruannet</string>
+    <string name="today_crash_banner_dismiss">Sulge</string>
+
+    <string name="today_update_available_title">Uuendus saadaval</string>
+    <string name="today_update_available_body">Play Store\'is on saadaval ClothesCast\'i uuem versioon.</string>
+    <string name="today_update_available_action">Uuenda</string>
+    <string name="today_update_available_dismiss">Mitte praegu</string>
+    <string name="today_update_downloaded_body">Uuendus alla laaditud. Taaskäivita installimise lõpetamiseks.</string>
+    <string name="today_update_downloaded_action">Taaskäivita</string>
+
+    <string name="today_telemetry_notice_title">Krahhi- ja kasutusaruanded on sees</string>
+    <string name="today_telemetry_notice_body">ClothesCast saadab anonüümseid krahhiaruandeid ja kasutusanalüütikat vigade parandamiseks. Kalendriandmeid, asukohta ega ülevaate teksti ei lisata. Lülita välja igal ajal seadetes.</string>
+    <string name="today_telemetry_notice_open_settings">Ava privaatsuse seaded</string>
+    <string name="today_telemetry_notice_dismiss">Sulge</string>
+
+    <string name="onboarding_title">Tere tulemast ClothesCast\'i</string>
+    <string name="onboarding_subtitle">Kolm kiiret valikut ja oled valmis. Muuda hiljem seadetes.</string>
+    <string name="onboarding_subtitle_tv">Kaks kiiret valikut ja oled valmis. Muuda hiljem seadetes.</string>
+    <string name="onboarding_notifications_title">Teavitused</string>
+    <string name="onboarding_notifications_description">Vajalik igapäevase ClothesCast\'i edastamiseks.</string>
+    <string name="onboarding_notifications_grant">Anna teavitusluba</string>
+    <string name="onboarding_location_title">Asukoht</string>
+    <string name="onboarding_location_description">Laadi ilmaprognoos sinu ligikaudse asukoha jaoks.</string>
+    <string name="onboarding_location_grant">Anna asukohaluba</string>
+    <string name="onboarding_location_grant_background">Anna alati-sees asukohaluba</string>
+    <string name="onboarding_location_background_needed">Veel üks samm: ClothesCast vajab luba „Luba alati", et hommikune prognoos saaks lugeda sinu asukohta rakenduse suletuks ajal.</string>
+    <string name="onboarding_location_denied_hint">Asukohaluba keelati. Võid hoopis käsitsi linna valida.</string>
+    <string name="onboarding_location_enter_manual">Sisesta asukoht käsitsi</string>
+    <string name="onboarding_location_enter_manual_hint">Võid asukoha käsitsi sisestada, kui keelad asukohaloa või seadme asukoht on vale.</string>
+    <string name="onboarding_location_using_device">Kasutatakse seadme asukohta igal hommikul.</string>
+
+    <string name="onboarding_gemini_title">Gemini API-võti</string>
+    <string name="onboarding_gemini_description">Kasuta Gemini\'t kõrgekvaliteediliste häälte saamiseks.</string>
+    <string name="onboarding_step_done">Valmis</string>
+    <string name="onboarding_skip">Jäta praegu vahele</string>
+    <string name="onboarding_continue">Jätka</string>
+    <string name="onboarding_pair_from_phone">Ühenda hoopis telefonist</string>
+
+    <string name="pairing_title">Skaneeri paarimiseks</string>
+    <string name="pairing_instructions">Skaneeri see QR-kood telefoniga, seejärel kleebi oma Gemini API-võti avanevasse vormi. Võti saadetakse otse sellele telerile sinu koduüle Wi-Fi — pilverelee puudub.</string>
+    <string name="pairing_qr_description">QR-kood, mis viib aadressile %1$s</string>
+    <string name="pairing_cancel">Tühista</string>
+    <string name="pairing_received">Võti vastu võetud — salvestamine…</string>
+    <string name="pairing_timeout_title">Paarimisaken aegus</string>
+    <string name="pairing_timeout_body">5-minutiline paarimisaken on suletud. Puuduta Proovi uuesti, et avada uus.</string>
+    <string name="pairing_error_title">Paarimist ei saanud alustada</string>
+    <string name="pairing_error_body">Veendu, et teler on Wi-Fi-ga ühendatud, ja proovi uuesti.</string>
+    <string name="pairing_retry">Proovi uuesti</string>
+
+    <string name="settings_title">Seaded</string>
+    <string name="settings_back">Tagasi</string>
+
+    <string name="settings_root_voice">Hääl</string>
+    <string name="settings_root_schedule">Ajakava</string>
+    <string name="settings_root_region">Piirkond</string>
+    <string name="settings_root_clothes">Riietus</string>
+    <string name="settings_root_display">Ekraan</string>
+    <string name="settings_root_location">Asukoht</string>
+    <string name="settings_root_calendar">Kalender</string>
+    <string name="settings_root_privacy">Privaatsus</string>
+    <string name="settings_root_about">Teave</string>
+
+    <string name="settings_root_schedule_subtitle">Teavitused ja ajad</string>
+    <string name="settings_root_clothes_subtitle">Temperatuurid ja riietus</string>
+    <string name="settings_root_region_subtitle">Keeled ja ühikud</string>
+    <string name="settings_root_voice_subtitle">Teenusepakkujad ja aktsendid</string>
+    <string name="settings_root_display_subtitle">Teema</string>
+
+    <string name="settings_display_theme_title">Teema</string>
+    <string name="settings_display_theme_system">Järgi süsteemi</string>
+    <string name="settings_display_theme_light">Hele</string>
+    <string name="settings_display_theme_dark">Tume</string>
+
+    <string name="settings_display_charts_title">Graafikud</string>
+    <string name="settings_display_model_spread_label">Näita mudelite hajuvust graafikutel</string>
+    <string name="settings_display_model_spread_description">Kuvab iga suurema ilmamudeli tunnipõhise prognoosi temperatuuri- ja vihmagrammikutel. Kasulik ebakindla prognoosi tuvastamiseks.</string>
+
+    <string name="settings_root_location_subtitle">Automaattuvastus või vali linn</string>
+    <string name="settings_root_calendar_subtitle">Tänased sündmused</string>
+    <string name="settings_root_privacy_subtitle">Krahhi- ja kasutusaruanded</string>
+
+    <string name="settings_privacy_telemetry_title">Krahhi- ja kasutusaruanded</string>
+    <string name="settings_privacy_telemetry_label">Saada krahhi- ja kasutusandmeid</string>
+    <string name="settings_privacy_telemetry_description">Saadab anonüümseid krahhiaruandeid ja koondkasutusstatistikat, et aidata arendajal vigu parandada ja otsustada, milliseid funktsioone alles hoida.</string>
+    <string name="settings_privacy_telemetry_limits">Mitte kunagi ei saadeta: kalendrisündmused, asukoha koordinaadid või kohanimed, ülevaate tekst või teavituse tekst, API-võtmed, täpne GPS, reklaamiidentifikaatorid.</string>
+    <string name="settings_privacy_open_policy">Loe täielikku privaatsuspoliitikat</string>
+
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Kasuta Gemini\'t kõrgekvaliteediliste häälte saamiseks.</string>
+    <string name="settings_api_key_status_set">Gemini võti on seadistatud.</string>
+    <string name="settings_api_key_status_unset">Hangi tasuta API-võti aadressilt aistudio.google.com</string>
+    <string name="settings_api_key_placeholder">Kleebi oma Gemini API-võti</string>
+    <string name="settings_api_key_save">Salvesta Gemini võti</string>
+    <string name="settings_api_key_clear">Kustuta salvestatud Gemini võti</string>
+
+    <string name="settings_location_title">Asukoht</string>
+    <string name="settings_location_use_device">Kasuta seadme asukohta</string>
+    <string name="settings_location_use_device_description">Viimane ligikaudne asukoht</string>
+    <string name="settings_location_detecting">Tuvastamine…</string>
+    <string name="settings_location_grant_background">Anna luba</string>
+    <string name="settings_location_background_banner_title">Alati-sees asukoht on vajalik</string>
+    <string name="settings_location_background_banner_body">Ilma selleta ei saa hommikune prognoos su asukohta lugeda.</string>
+    <string name="settings_location_unset">Asukohta pole määratud</string>
+    <string name="settings_location_manual_override">Vale asukoht? Määra käsitsi</string>
+    <string name="settings_location_manual_override_disclosure">Linna valimine lülitab automaattuvastuse välja.</string>
+    <string name="settings_location_clear">Kustuta asukoht</string>
+    <string name="settings_location_search_title">Otsi asukohta</string>
+    <string name="settings_location_query_label">Linn või koht</string>
+    <string name="settings_location_search">Otsi</string>
+    <string name="settings_location_searching">Otsimine…</string>
+    <string name="settings_location_no_results">Tulemused puuduvad.</string>
+    <string name="settings_location_rationale_title">Asukohaluba</string>
+    <string name="settings_location_rationale_body">ClothesCast loeb su asukohta kohaliku prognoosi laadimiseks.</string>
+    <string name="settings_location_rationale_continue">Jätka</string>
+    <string name="settings_location_rationale_dismiss">Mitte praegu</string>
+    <string name="settings_location_background_rationale_title">Luba alati</string>
+    <string name="settings_location_background_rationale_body">Luba ClothesCast\'il lugeda su asukohta rakenduse suletuks ajal, et hommikune prognoos uueneks õigeaegselt.</string>
+    <string name="settings_location_background_rationale_continue">Ava seaded</string>
+    <string name="settings_location_background_rationale_dismiss">Mitte praegu</string>
+    <string name="settings_location_background_denied_title">Alati-sees luba puudub</string>
+    <string name="settings_location_background_denied_body">Ilma loata „Luba alati" ei saa hommikune prognoos automaatselt uueneda.</string>
+    <string name="settings_location_background_denied_open">Ava seaded</string>
+    <string name="settings_location_background_denied_keep">Mitte praegu</string>
+
+    <string name="settings_schedule_title">Igapäevane ClothesCast</string>
+    <string name="settings_schedule_time_label">Kellaaeg</string>
+    <string name="settings_schedule_days_label">Nädalapäevad</string>
+    <string name="settings_daily_mention_evening_events">Maini õhtuseid sündmusi</string>
+
+    <string name="settings_tonight_title">Õhtune ClothesCast</string>
+    <string name="settings_tonight_description">Teine ClothesCast õhtul, mis käsitleb tänase õhtu ilma. Vaiksetel õhtutel jääb vaikseks või ei ilmu üldse, kui „Teavita ainult õhtuste sündmuste korral" on sees; sündmustega õhtutel esitab heli ja (kui kõvalugemise edastus on lubatud) loeb ise ette.</string>
+    <string name="settings_tonight_enabled">Näita õhtust ClothesCast\'i</string>
+    <string name="settings_tonight_time_label">Kellaaeg</string>
+    <string name="settings_tonight_days_label">Nädalapäevad</string>
+    <string name="settings_tonight_notify_only_on_events">Teavita ainult õhtuste sündmuste korral</string>
+
+    <string name="settings_delivery_label">Edastus</string>
+    <string name="settings_delivery_notification_only">Ainult teavitus</string>
+    <string name="settings_delivery_tts_only">Ainult kõvalugemine</string>
+    <string name="settings_delivery_notification_and_tts">Teavitus ja kõvalugemine</string>
+
+    <string name="settings_tts_engine_title">Häälemootor</string>
+    <string name="settings_tts_engine_description">Gemini kõlab palju loomulikumalt kui seadme hääl, kuid vajab rääkimise ajal võrguühendust ja kasutab sünteesimiseks sinu API-võtit (üks lühike kõne iga kõvalugemisel). Langeb seadme häälele tagasi, kui Gemini ebaõnnestub.</string>
+    <string name="settings_tts_engine_device">Seade (võrguühenduseta, tasuta)</string>
+    <string name="settings_tts_engine_gemini">Gemini (kõrge kvaliteet, võrguühendusega)</string>
+    <string name="settings_tts_voice_label">Hääl</string>
+    <string name="settings_tts_voice_dismiss">Valmis</string>
+
+    <string name="settings_tts_style_label">Stiil</string>
+    <string name="settings_tts_style_weather_forecaster">Ilmateadlane</string>
+    <string name="settings_tts_style_pirate">Piraat</string>
+    <string name="settings_tts_style_cowboy">Karupoiss</string>
+    <string name="settings_tts_style_shakespearean">Shakespeare\'i stiilis</string>
+    <string name="settings_tts_style_surfer">Surfer</string>
+    <string name="settings_tts_style_parent">Lapsevanem</string>
+    <string name="settings_tts_style_child">Laps</string>
+    <string name="settings_tts_style_teenager">Teismeline</string>
+    <string name="settings_tts_style_grandparent">Vanavanem</string>
+    <string name="settings_tts_style_kids_host">Lastetelekava saatejuht</string>
+    <string name="settings_tts_style_radio_host">Raadiosaatejuht</string>
+    <string name="settings_tts_style_morning_dj">Hommiku-DJ</string>
+    <string name="settings_tts_style_science_teacher">Loodusteaduste õpetaja</string>
+    <string name="settings_tts_style_historian">Ajaloolane</string>
+    <string name="settings_tts_style_sportscaster">Spordireporter</string>
+    <string name="settings_tts_style_stadium_announcer">Staadionikuulutaja</string>
+    <string name="settings_tts_style_storyteller">Jutustaja</string>
+    <string name="settings_tts_style_fitness_instructor">Treeninguinstruktor</string>
+    <string name="settings_tts_style_morning_presenter">Hommikuradio saatejuht</string>
+    <string name="settings_tts_style_custom">Kohandatud…</string>
+    <string name="settings_tts_style_custom_label">Kohandatud juhend</string>
+    <string name="settings_tts_style_custom_placeholder">nt Loe järgnev ette range raamatukoguhoidjana sosistatuna</string>
+
+    <string name="settings_tts_device_voice_label">Seadme hääl</string>
+    <string name="settings_tts_device_voice_auto">Automaatne (parim aktsendi jaoks)</string>
+    <string name="settings_tts_device_voice_currently">Praegu: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Laadimine…</string>
+    <string name="settings_tts_device_voice_network">Võrk</string>
+    <string name="settings_tts_device_voice_offline">Võrguühenduseta</string>
+    <string name="settings_tts_install_google_hint">Installi Google\'i tekst-kõneks mootor kõrgekvaliteediliste häälte saamiseks.</string>
+    <string name="settings_tts_install_google_button">Installi Google TTS</string>
     <string name="settings_tts_voice_locale_label">Aktsent</string>
+    <string name="settings_tts_voice_locale_description">Määrab kõnehääle aksendi. Ei muuda kuvatavat teksti.</string>
     <string name="settings_tts_voice_locale_system">Järgi keelesätet</string>
+    <string name="settings_tts_voice_locale_en_us">Inglise (Ameerika Ühendriigid)</string>
+    <string name="settings_tts_voice_locale_en_gb">Inglise (Ühendkuningriik)</string>
+    <string name="settings_tts_voice_locale_en_au">Inglise (Austraalia)</string>
+    <string name="settings_tts_voice_locale_en_ca">Inglise (Kanada)</string>
+    <string name="settings_tts_voice_locale_de_de">Saksa (Saksamaa)</string>
+    <string name="settings_tts_voice_locale_de_at">Saksa (Austria)</string>
+    <string name="settings_tts_voice_locale_de_ch">Saksa (Šveits)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Prantsuse (Prantsusmaa)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Prantsuse (Kanada)</string>
+    <string name="settings_tts_voice_locale_it_it">Itaalia (Itaalia)</string>
+    <string name="settings_tts_voice_locale_es_es">Hispaania (Hispaania)</string>
+    <string name="settings_tts_voice_locale_es_mx">Hispaania (Mehhiko)</string>
+    <string name="settings_tts_voice_locale_ca_es">Katalaani (Hispaania)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Vene (Venemaa)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Poola (Poola)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Horvaadi (Horvaatia)</string>
+    <string name="settings_tts_voice_locale_sl_si">Sloveeni (Sloveenia)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Serbia (ladina)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Serbia (kirillitsa)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Bulgaaria (Bulgaaria)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Tšehhi (Tšehhi)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Slovaki (Slovakkia)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Ungari (Ungari)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Rumeenia (Rumeenia)</string>
+    <string name="settings_tts_voice_locale_el_gr">Kreeka (Kreeka)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Ukraina (Ukraina)</string>
+    <string name="settings_tts_voice_locale_pt_br">Portugali (Brasiilia)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Portugali (Portugal)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Hollandi (Madalmaad)</string>
+    <string name="settings_tts_voice_locale_sv_se">Rootsi (Rootsi)</string>
+    <string name="settings_tts_voice_locale_da_dk">Taani (Taani)</string>
+    <string name="settings_tts_voice_locale_nb_no">Norra bokmål (Norra)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Soome (Soome)</string>
+    <string name="settings_tts_voice_locale_et_ee">Eesti (Eesti)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Läti (Läti)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Leedu (Leedu)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Türgi (Türgi)</string>
+    <string name="settings_tts_voice_locale_en_za">Inglise (Lõuna-Aafrika)</string>
+    <string name="settings_tts_voice_locale_id_id">Indoneesia (Indoneesia)</string>
+    <string name="settings_tts_voice_locale_ms_my">Malaisia (Malaisia)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Filipino (Filipiinid)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Suahiili (Keenia)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Vietnami (Vietnam)</string>
+    <string name="settings_tts_voice_locale_th_th">Tai (Tai)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Hiina (lihtsustatud)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Hiina (traditsiooniline)</string>
+    <string name="settings_tts_voice_locale_hi_in">Hindi (India)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Bengaali (Bangladesh)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Jaapani (Jaapan)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Korea (Lõuna-Korea)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Araabia (Saudi Araabia)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Araabia (Egiptus)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Araabia (Araabia Ühendemiraadid)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Araabia (Maroko)</string>
+    <string name="settings_tts_voice_locale_he_il">Heebrea (Iisrael)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Pärsia (Iraan)</string>
+    <string name="settings_tts_voice_locale_sq_al">Albaania (Albaania)</string>
+    <string name="settings_tts_voice_locale_am_et">Amhara (Etioopia)</string>
+    <string name="settings_tts_test">Testi häält</string>
+    <string name="settings_tts_test_in_flight">Testimine — palun oota…</string>
+
+    <string name="settings_region_language_title">Keel</string>
+    <string name="settings_region_language_description">Määrab kuvatava teksti ja teavituste keele.</string>
+    <string name="settings_region_language_system">Järgi süsteemi lokaali</string>
+    <string name="settings_region_language_en_us">Inglise (Ameerika Ühendriigid)</string>
+    <string name="settings_region_language_en_gb">Inglise (Ühendkuningriik)</string>
+    <string name="settings_region_language_en_au">Inglise (Austraalia)</string>
+    <string name="settings_region_language_en_ca">Inglise (Kanada)</string>
+    <string name="settings_region_language_de_de">Saksa (Saksamaa)</string>
+    <string name="settings_region_language_de_at">Saksa (Austria)</string>
+    <string name="settings_region_language_de_ch">Saksa (Šveits)</string>
+    <string name="settings_region_language_fr_fr">Prantsuse (Prantsusmaa)</string>
+    <string name="settings_region_language_fr_ca">Prantsuse (Kanada)</string>
+    <string name="settings_region_language_it_it">Itaalia (Itaalia)</string>
+    <string name="settings_region_language_es_es">Hispaania (Hispaania)</string>
+    <string name="settings_region_language_es_mx">Hispaania (Mehhiko)</string>
+    <string name="settings_region_language_ca_es">Katalaani (Hispaania)</string>
+    <string name="settings_region_language_ru_ru">Vene (Venemaa)</string>
+    <string name="settings_region_language_pl_pl">Poola (Poola)</string>
+    <string name="settings_region_language_hr_hr">Horvaadi (Horvaatia)</string>
+    <string name="settings_region_language_sl_si">Sloveeni (Sloveenia)</string>
+    <string name="settings_region_language_sr_rs">Serbia (ladina)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Serbia (kirillitsa)</string>
+    <string name="settings_region_language_bg_bg">Bulgaaria (Bulgaaria)</string>
+    <string name="settings_region_language_cs_cz">Tšehhi (Tšehhi)</string>
+    <string name="settings_region_language_sk_sk">Slovaki (Slovakkia)</string>
+    <string name="settings_region_language_hu_hu">Ungari (Ungari)</string>
+    <string name="settings_region_language_ro_ro">Rumeenia (Rumeenia)</string>
+    <string name="settings_region_language_el_gr">Kreeka (Kreeka)</string>
+    <string name="settings_region_language_uk_ua">Ukraina (Ukraina)</string>
+    <string name="settings_region_language_pt_br">Portugali (Brasiilia)</string>
+    <string name="settings_region_language_pt_pt">Portugali (Portugal)</string>
+    <string name="settings_region_language_nl_nl">Hollandi (Madalmaad)</string>
+    <string name="settings_region_language_sv_se">Rootsi (Rootsi)</string>
+    <string name="settings_region_language_da_dk">Taani (Taani)</string>
+    <string name="settings_region_language_nb_no">Norra bokmål (Norra)</string>
+    <string name="settings_region_language_fi_fi">Soome (Soome)</string>
+    <string name="settings_region_language_et_ee">Eesti (Eesti)</string>
+    <string name="settings_region_language_lv_lv">Läti (Läti)</string>
+    <string name="settings_region_language_lt_lt">Leedu (Leedu)</string>
+    <string name="settings_region_language_tr_tr">Türgi (Türgi)</string>
+    <string name="settings_region_language_en_za">Inglise (Lõuna-Aafrika)</string>
+    <string name="settings_region_language_id_id">Indoneesia (Indoneesia)</string>
+    <string name="settings_region_language_ms_my">Malaisia (Malaisia)</string>
+    <string name="settings_region_language_fil_ph">Filipino (Filipiinid)</string>
+    <string name="settings_region_language_sw_ke">Suahiili (Keenia)</string>
+    <string name="settings_region_language_vi_vn">Vietnami (Vietnam)</string>
+    <string name="settings_region_language_th_th">Tai (Tai)</string>
+    <string name="settings_region_language_zh_cn">Hiina (lihtsustatud)</string>
+    <string name="settings_region_language_zh_tw">Hiina (traditsiooniline)</string>
+    <string name="settings_region_language_hi_in">Hindi (India)</string>
+    <string name="settings_region_language_bn_bd">Bengaali (Bangladesh)</string>
+    <string name="settings_region_language_ja_jp">Jaapani (Jaapan)</string>
+    <string name="settings_region_language_ko_kr">Korea (Lõuna-Korea)</string>
+    <string name="settings_region_language_ar_sa">Araabia (Saudi Araabia)</string>
+    <string name="settings_region_language_he_il">Heebrea (Iisrael)</string>
+    <string name="settings_region_language_fa_ir">Pärsia (Iraan)</string>
+    <string name="settings_region_language_sq_al">Albaania (Albaania)</string>
+    <string name="settings_region_language_am_et">Amhara (Etioopia)</string>
+
+    <string name="settings_temperature_unit_title">Temperatuuri ühik</string>
+    <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+
+    <string name="settings_distance_unit_title">Kauguse ühik</string>
+    <string name="settings_distance_unit_kilometers">Kilomeetrid</string>
+    <string name="settings_distance_unit_miles">Miilid</string>
+
+    <string name="settings_clothes_title">Riietusreeglid</string>
+    <string name="settings_clothes_description">Kui prognoos ületab mõne neist läviväärtustest, ilmub ese sinu igapäevases ClothesCast\'is.</string>
 
     <string name="garment_sweater">Kampsun</string>
     <string name="garment_hoodie">Kapuutsiga pusa</string>
     <string name="garment_jacket">Jope</string>
     <string name="garment_coat">Mantel</string>
+    <string name="garment_puffer">Unijope</string>
+    <string name="garment_thin_jacket">Õhuke jope</string>
     <string name="garment_tshirt">T-särk</string>
+    <string name="garment_polo">Polo</string>
     <string name="garment_shirt">Särk</string>
     <string name="garment_shorts">Lühikesed püksid</string>
+    <string name="garment_skirt">Seelik</string>
     <string name="garment_pants">Püksid</string>
     <string name="garment_jeans">Teksad</string>
 
@@ -37,11 +454,49 @@ informal "sina"-form throughout ("Pane … selga", "Võta … kaasa").
     <string name="settings_clothes_cond_temp_above">kui tunnetatav temperatuur on üle %1$s</string>
     <string name="settings_clothes_cond_precip_above">kui vihma tõenäosus on üle %.0f%%</string>
 
-    <string name="today_outfit_top_tshirt">T-särk</string>
-    <string name="today_outfit_top_sweater">Kampsun</string>
-    <string name="today_outfit_top_thick_jacket">Paks jope</string>
-    <string name="today_outfit_bottom_shorts">Lühikesed püksid</string>
-    <string name="today_outfit_bottom_long_pants">Pikad püksid</string>
+    <string name="notification_channel_daily_insight_name">Igapäevane ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">Hommikune ilmakokkuvõte, millele oled tellinud.</string>
+    <string name="notification_daily_insight_title">Tänane ClothesCast</string>
+
+    <string name="notification_channel_tonight_insight_default_name">Õhtune ClothesCast (sündmustega)</string>
+    <string name="notification_channel_tonight_insight_default_description">Õhtune ilmakokkuvõte, kui täna õhtul on kalendrisündmusi. Esitab vaikimisi teavitusheli.</string>
+    <string name="notification_channel_tonight_insight_silent_name">Õhtune ClothesCast (vaikne)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Õhtune ilmakokkuvõte, kui õhtu on vaba. Postitatakse vaikselt — saad sellele lukustusekraanilt pilgu heita, kuid heli ei esita.</string>
+    <string name="notification_tonight_insight_title">Tänase õhtu ClothesCast</string>
+
+    <string name="notification_channel_weather_alerts_name">Tormhoiatused</string>
+    <string name="notification_channel_weather_alerts_description">Kõrge prioriteediga hoiatused tõsiste või äärmuslike ilmasündmuste kohta sinu piirkonnas. Edastatakse kohe, kui igapäevane laadimine need avastab.</string>
+    <string name="notification_weather_alert_title">Ilmahoiatus: %1$s</string>
+
+    <string name="settings_notification_permission_title">Teavitused on blokeeritud</string>
+    <string name="settings_notification_permission_description">Ilma teavitusloata pole sinu igapäevasel ClothesCast\'il kuhugi minna. Anna luba, et ClothesCast saaks homme hommikul postitada.</string>
+    <string name="settings_notification_permission_grant">Anna teavitusluba</string>
+
+    <string name="settings_calendar_title">Kalender</string>
+    <string name="settings_calendar_use_events">Kasuta tänaseid kalendrisündmusi</string>
+    <string name="settings_calendar_description_off">Kohanda hommikuprognoosi tänaste sündmustega — kasutatakse ainult pealkirju ja kellaaegu ning midagi ei lahku seadmest.</string>
+    <string name="settings_calendar_description_on">Hommikuprognoosi kohandatakse tänaste sündmustega. Kasutatakse ainult pealkirju ja kellaaegu; midagi ei lahku seadmest.</string>
+    <string name="settings_calendar_grant_permission">Anna kalenderiluba</string>
+    <string name="settings_calendar_open_settings">Kalendriluba keelati. Anna see süsteemi seadetest.</string>
+
+    <string name="settings_debug_title">Silumine (ainult silumisjärgud)</string>
+    <string name="settings_debug_description">Käivita igapäevane ClothesCast\'i konveier kohe. Kasulik kontrollimiseks ilma planeeritud ajani ootamata.</string>
+    <string name="settings_debug_fire_now">Käivita ClothesCast kohe</string>
+    <string name="settings_debug_fire_toast">ClothesCast\'i töötaja lisati järjekorda</string>
+
+    <string name="settings_about_title">Teave</string>
+    <string name="settings_about_version">Versioon %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s järk</string>
+    <string name="settings_about_source">Lähtekood GitHubis</string>
+    <string name="settings_about_dontkillmyapp">Taustarakenduste piirangud (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Jaga veaaruannet</string>
+    <string name="settings_about_version_copied">Versioon kopeeriti lõikelauale</string>
+
+    <string name="bug_report_consent_title">Jaga veaaruannet?</string>
+    <string name="bug_report_consent_body">See aitab probleeme diagnoosida. Aruanne sisaldab tundlikku isiklikku teavet, sh sinu asukoha, rakenduse seaded ja hiljutise tegevuse. Saad seda enne saatmist üle vaadata ja redigeerida.</string>
+    <string name="bug_report_consent_dont_show_again">Ära näita seda enam</string>
+    <string name="bug_report_consent_continue">Jätka</string>
+    <string name="bug_report_consent_cancel">Tühista</string>
 
     <string name="insight_lead_today">Täna</string>
     <string name="insight_lead_tonight">Täna õhtul</string>
@@ -64,6 +519,7 @@ informal "sina"-form throughout ("Pane … selga", "Võta … kaasa").
     <string name="insight_clothes_join_two">%1$s ja %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s ja %3$s</string>
     <string name="insight_precip">%1$s %2$s.</string>
+    <string name="insight_precip_chance">Vihma võimalus: %1$s %2$s.</string>
     <string name="insight_precip_at_time">kell %1$s</string>
     <string name="insight_precip_overnight">öö jooksul</string>
     <string name="insight_condition_clear">Selge</string>
@@ -75,8 +531,14 @@ informal "sina"-form throughout ("Pane … selga", "Võta … kaasa").
     <string name="insight_condition_snow">Lumi</string>
     <string name="insight_condition_thunderstorm">Äike</string>
     <string name="insight_condition_unknown">Teadmata</string>
+    <!-- Morning form: fronts "täna õhtul" since tonight context isn't yet set. -->
     <string name="insight_tie_in">Võta %1$s täna õhtul kaasa.</string>
+    <!-- No-prefix tonight form: band lead already established the night context. -->
+    <string name="insight_tie_in_at_night">Võta %1$s kaasa.</string>
     <string name="insight_tie_in_with_rain">Võta %1$s täna õhtul kaasa, vihma kell %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Täna õhtul vihma võimalus kell %2$s, võta %1$s kaasa.</string>
+    <string name="insight_evening_rain">Täna õhtul vihma kell %1$s.</string>
+    <string name="insight_evening_rain_chance">Täna õhtul vihma võimalus kell %1$s.</string>
     <!-- Estonian time format uses "." separator: "kell 15.30". -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>

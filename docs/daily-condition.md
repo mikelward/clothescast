@@ -30,37 +30,51 @@ Smaller surface than I expected:
    condition is `CLEAR`/`UNKNOWN`/`PARTLY_CLOUDY`** but the day-level
    field *is* a precipitation bucket.
 
-3. **`ClothesRule.appliesTo`** (line 24): some rules match on
-   `forecast.condition` (e.g. the umbrella rule's
-   `WeatherCondition.matches`). This is real and not derived from hourly
-   — the day-level field directly drives rule firing.
+3. **`ClothesRule.appliesTo`** (line 24): ~~some rules match on
+   `forecast.condition`~~. **Misread on my part — Codex caught it.**
+   `ClothesRule.condition` is the *rule's own predicate field* (e.g.
+   "feels-like below 5 °C"), not `forecast.condition`. The rule
+   variants — `TemperatureBelow`, `TemperatureAbove`,
+   `PrecipitationProbabilityAbove` — read `feelsLikeMinC`,
+   `feelsLikeMaxC` and `precipitationProbabilityMaxPct` respectively.
+   There is no `WeatherCondition.matches`. **Clothes-rule firing does
+   not depend on `DailyForecast.condition` at all.**
 
 4. **Cache round-trip** via `InsightCache` (line 440 of cache): just
    serialises whatever it was given. Doesn't reinterpret.
 
-So the *practical* impact of "fix" `DailyForecast.condition` is:
+So the *practical* impact of "fixing" `DailyForecast.condition` —
+revised after the audit error — is much smaller than the original
+recommendation made out:
 
-- (#1) Wettest-hour rewrite already largely solves the chart-vs-summary
-  mismatch the user originally flagged — the rewrite uses the
-  consensus-blended hourly conditions.
-- (#2) The fallback path matters on dry-ish days where the peak hour is
-  `CLEAR` but the daily field claims `RAIN` (or vice versa).
-- (#3) Clothes-rule firing on the day-level field is where the day-level
-  condition actually *changes behaviour*. Worth fixing properly.
+- (#1) Wettest-hour rewrite already solves the chart-vs-summary
+  mismatch — the rewrite uses the consensus-blended hourly
+  conditions.
+- (#2) The remaining concrete consumer is `RenderInsightSummary`'s
+  fallback paths in `PrecipClause` rendering: when the precip-peak
+  hour's own condition is `CLEAR` / `UNKNOWN` / non-precipitating
+  but the day-level field *is* a precipitation bucket, the prose's
+  rain/snow/etc. mention falls back to `today.condition`. Marginal
+  improvement available, not a behaviour-changing gap.
+- ~~(#3) Clothes-rule firing.~~ Doesn't exist.
 
 ## Options
 
 ### 1. Leave it; rely on the existing hourly-derived rewrites
 
-The `slicedForToday` / `slicedForTonight` rewrites already paper over
-most of the problem. The remaining gap is the pre-slice value
-(`OpenMeteoMapper` straight from best_match) feeding the
-`ClothesRule.appliesTo(forecast)` path and the fallback in
-`perModelConditionAt`.
+The `slicedForToday` / `slicedForTonight` rewrites already do the
+heavy lifting — `today.condition` post-slice is the condition of the
+wettest hour in the consensus-blended hourly. The only remaining
+consumer is `RenderInsightSummary`'s fallback for the `PrecipClause`
+condition when the peak hour's own condition isn't a precipitating
+bucket.
 
-*Pro:* zero change.
-*Con:* clothes rules that key off `forecast.condition` still see
-best_match's lone vote.
+*Pro:* zero change. **This is the leading recommendation post-audit
+correction.**
+*Con:* on edge cases the prose's `PrecipClause` falls back to a
+day-level condition that might originate from best_match alone.
+Audible only on "all hourly conditions are CLEAR but the daily
+forecast says rain" days, which is rare.
 
 ### 2. Rewrite once at `OpenMeteoClient.fetchForecast` — most-severe blended hourly
 
@@ -151,30 +165,36 @@ Same edge cases, different answers per option:
   (3) inherits hourly consensus. (4) does its own cross-model
   aggregation at the daily level — strictly different signal.
 
-## My recommendation
+## My recommendation (revised after the audit correction)
 
-**(2) most-severe blended hourly,** plus a small follow-up to
-double-check the `ClothesRule.appliesTo` consumers actually do what
-the user expects on edge cases (esp. the "1 hour drizzle on a clear
-day" pattern). Reasons:
+**(1) Leave it.** The original recommendation was (2), justified by
+a claimed clothes-rule dependency that doesn't actually exist (see
+the strikethrough on #3 above — Codex's catch). Removing that
+motivation, the case for (2) reduces to a marginal cosmetic
+improvement on the `RenderInsightSummary` fallback, against a small
+but real cost (one more place to maintain, one more set of edge
+cases to think about).
 
-- Already-blended hourly is the right input; #396 did the work.
-- "Worst weather event of the day" matches what users expect from a
-  day-summary icon (matches Open-Meteo's own approach too).
-- Doesn't require new fetch plumbing like (4); doesn't pick an
-  arbitrary threshold like (5); doesn't spread aggregation across
-  consumers like (6).
-- The "one hour of drizzle" edge case is mostly mitigated by the fact
-  that the *insight prose* already carries a `PrecipClause` mentioning
-  the specific peak hour, so the day-level condition reading
-  "Drizzly" alongside "Light rain at 13:00" reads honestly rather
-  than redundantly.
+The existing wettest-hour rewrite in `slicedForToday` /
+`slicedForTonight` is consensus-aware (post-#396) and produces a
+defensible value in the cases that matter. The remaining gap — the
+`PrecipClause` fallback when the peak hour's own condition is
+non-precipitating — is small enough that "fixing" it would
+trade complexity for an inaudible product win.
 
-(1) is also defensible — the existing hourly-derived rewrite handles
-most cases. The remaining gap (clothes-rule firing on the un-rewritten
-day-level field) is small but real on divergent days, which is the
-exact scenario the user flagged. (2) closes that gap with minimal
-extra code.
+If we *do* later have a reason to pick a different daily condition
+heuristic — e.g. for a future day-summary icon that diverges
+visibly from the prose — option (2) is the natural place to start.
+Until then, keep the change cost where it belongs (zero).
+
+## What changed since this doc was first drafted
+
+- Audit point #3 was wrong (clothes rules don't read
+  `forecast.condition`). Strikethrough preserved so the history is
+  legible.
+- Recommendation flipped from (2) to (1) as a consequence.
+- Options (2)–(6) left intact as reference — useful if the picture
+  changes again.
 
 (4) is the "purest" option, and the right one to pick if we later add
 more daily-level cross-model fields (or if (2) feels noisy in practice

@@ -310,6 +310,14 @@ private fun TodayContent(
                     hourly = state.insight.hourly,
                     perModelHourly = overlay,
                 )
+                // Diagnostic cards below the headline temp + rain pair. Each
+                // one is gated on the overlay being available *and* on at
+                // least one consulted model returning the metric — older
+                // cached payloads don't carry wind / humidity / cloud, so the
+                // cards self-hide until the next worker refresh repopulates.
+                if (overlay != null) {
+                    WindCard(hourly = state.insight.hourly, perModelHourly = overlay)
+                }
             }
         }
     }
@@ -1065,6 +1073,49 @@ private fun ForecastCard(
             if (perModelHourly != null) {
                 ModelSpreadLegend(perModelHourly)
             }
+        }
+    }
+}
+
+/**
+ * Diagnostic wind-speed card — only renders when the per-model overlay is
+ * active and at least one model returned wind data. The clothes-recommendation
+ * pipeline doesn't read wind directly (feels-like already folds in wind chill),
+ * so this is purely a "why are the models disagreeing?" surface for the
+ * power-user setting that turns on model overlays in the first place.
+ *
+ * No "main" line — [HourlyForecast] doesn't carry wind, so we draw the
+ * per-model overlays alone. The card auto-hides if every consulted model is
+ * missing wind data (older cached payloads), which is why it sits in its own
+ * `if` rather than inside a fixed slot like the temp / rain cards.
+ */
+@Composable
+internal fun WindCard(
+    hourly: List<HourlyForecast>,
+    perModelHourly: PerModelHourly,
+) {
+    val times = remember(hourly) { hourly.map { it.time } }
+    val anyWind = remember(perModelHourly) {
+        perModelHourly.byModel.values.any { entries ->
+            entries.any { it.windSpeedKmh != null }
+        }
+    }
+    if (!anyWind) return
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.today_wind_title),
+                style = MaterialTheme.typography.titleSmall,
+            )
+            Text(
+                text = stringResource(R.string.today_wind_subtitle),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            WindChart(times = times, perModelHourly = perModelHourly)
+            ModelSpreadLegend(perModelHourly)
         }
     }
 }

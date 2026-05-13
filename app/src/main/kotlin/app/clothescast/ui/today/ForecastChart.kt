@@ -210,23 +210,27 @@ fun ForecastChart(
 // Builds a [LineCartesianLayer.LineProvider] whose Line list lines up with the
 // series order both charts emit into their model producer: each entry in
 // [visibleModels] (in MODEL_DRAW_ORDER) gets its pinned [MODEL_COLORS] hue,
-// then the blended main line gets [mainLineColor]. LineProvider.series matches
-// lines to series by index, so this ordering must mirror the lineSeries
-// builder in the caller. Shared by [ForecastChart] and [PrecipitationChart].
+// then — when [mainLineColor] is non-null — the blended main line gets that
+// colour appended. Pass null for charts that have no main line (e.g. the wind
+// diagnostic chart, where there's no single-model blended series to pair the
+// overlays with). LineProvider.series matches lines to series by index, so
+// this ordering must mirror the lineSeries builder in the caller.
 @Composable
 internal fun rememberPinnedLineProvider(
     visibleModels: List<String>,
-    mainLineColor: Color,
+    mainLineColor: Color?,
 ): LineCartesianLayer.LineProvider =
     remember(visibleModels, mainLineColor) {
-        val lines = visibleModels.map { modelId ->
+        val perModelLines = visibleModels.map { modelId ->
             LineCartesianLayer.Line(
                 fill = LineCartesianLayer.LineFill.single(
                     fill(MODEL_COLORS.getValue(modelId)),
                 ),
             )
-        } + LineCartesianLayer.Line(
-            fill = LineCartesianLayer.LineFill.single(fill(mainLineColor)),
-        )
+        }
+        val mainLine = mainLineColor?.let {
+            LineCartesianLayer.Line(fill = LineCartesianLayer.LineFill.single(fill(it)))
+        }
+        val lines = perModelLines + listOfNotNull(mainLine)
         LineCartesianLayer.LineProvider.series(lines)
     }

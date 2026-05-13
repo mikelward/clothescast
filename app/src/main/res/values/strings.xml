@@ -111,6 +111,14 @@
          swatch matching the overlay line; this is just the leading label. -->
     <string name="today_chart_model_legend_label">Models:</string>
 
+    <!-- Wind diagnostic card, only rendered when "Show model spread" is on and
+         at least one consulted model returned a wind speed series. Sits under
+         the temperature + rain cards so the user can see which model is
+         predicting the windier hours when feels-like figures diverge — wind
+         chill is usually the reason apparent and air temperature drift apart. -->
+    <string name="today_wind_title">Wind speed</string>
+    <string name="today_wind_subtitle">Per-model 10 m wind speed (km/h) by hour</string>
+
     <string name="today_confidence_high">High confidence — major models agree</string>
     <string name="today_confidence_medium">Medium confidence</string>
     <string name="today_confidence_low">Low confidence — forecasts disagree</string>

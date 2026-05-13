@@ -167,6 +167,12 @@ class InsightCache(
         // and we surface that as "no overlay" rather than a fake 0°C line.
         val temperatureC: Double? = null,
         val precipitationProbabilityPct: Double,
+        // Diagnostic fields — nullable in the domain too, so missing values just
+        // hide that model from the wind / humidity / cloud chart rather than
+        // dropping the temperature overlay entirely.
+        val windSpeedKmh: Double? = null,
+        val relativeHumidityPct: Double? = null,
+        val cloudCoverPct: Double? = null,
     ) {
         fun toDomain(): PerModelHour? {
             val airTemp = temperatureC ?: return null
@@ -175,6 +181,9 @@ class InsightCache(
                 apparentTemperatureC = apparentTemperatureC,
                 temperatureC = airTemp,
                 precipitationProbabilityPct = precipitationProbabilityPct,
+                windSpeedKmh = windSpeedKmh,
+                relativeHumidityPct = relativeHumidityPct,
+                cloudCoverPct = cloudCoverPct,
             )
         }
     }
@@ -380,6 +389,9 @@ class InsightCache(
         apparentTemperatureC = apparentTemperatureC,
         temperatureC = temperatureC,
         precipitationProbabilityPct = precipitationProbabilityPct,
+        windSpeedKmh = windSpeedKmh,
+        relativeHumidityPct = relativeHumidityPct,
+        cloudCoverPct = cloudCoverPct,
     )
 
     private fun OutfitRationale.toDto(): OutfitRationaleDto = OutfitRationaleDto(

@@ -96,7 +96,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_clothes_item_label">Peça</string>
     <string name="settings_clothes_condition_label">Condição</string>
     <string name="settings_clothes_value_label_temp">Limite (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Limite (%%)</string>
+    <string name="settings_clothes_value_label_precip">Limite (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Quando a sensação térmica for inferior a</string>
     <string name="settings_clothes_cond_type_temp_above">Quando a sensação térmica for superior a</string>
     <string name="settings_clothes_cond_type_precip_above">Quando a probabilidade de chuva ultrapassar</string>
@@ -665,9 +665,9 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_wind_title">Velocidade do vento</string>
     <string name="today_wind_subtitle">Velocidade do vento por modelo (%1$s) por hora</string>
     <string name="today_cloud_title">Cobertura de nuvens</string>
-    <string name="today_cloud_subtitle">Cobertura total de nuvens por modelo (%%) por hora</string>
+    <string name="today_cloud_subtitle">Cobertura total de nuvens por modelo (%) por hora</string>
     <string name="today_humidity_title">Humidade</string>
-    <string name="today_humidity_subtitle">Humidade relativa por modelo (%%) por hora</string>
+    <string name="today_humidity_subtitle">Humidade relativa por modelo (%) por hora</string>
 
     <string name="today_low_confidence_callout_title">As previsões discordam</string>
     <string name="today_low_confidence_callout_body">A temperatura varia %1$.1f°C e a possibilidade de chuva %2$.0f%% entre %3$d modelos.</string>

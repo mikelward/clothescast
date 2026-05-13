@@ -87,7 +87,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_clothes_item_label">Ρούχο</string>
     <string name="settings_clothes_condition_label">Συνθήκη</string>
     <string name="settings_clothes_value_label_temp">Όριο (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Όριο (%%)</string>
+    <string name="settings_clothes_value_label_precip">Όριο (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Όταν η αισθητή θερμοκρασία είναι κάτω από</string>
     <string name="settings_clothes_cond_type_temp_above">Όταν η αισθητή θερμοκρασία είναι πάνω από</string>
     <string name="settings_clothes_cond_type_precip_above">Όταν η πιθανότητα βροχής ξεπερνά</string>
@@ -601,9 +601,9 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_wind_title">Ταχύτητα ανέμου</string>
     <string name="today_wind_subtitle">Ταχύτητα ανέμου (%1$s) ανά μοντέλο και ώρα</string>
     <string name="today_cloud_title">Νέφωση</string>
-    <string name="today_cloud_subtitle">Συνολική νέφωση (%%) ανά μοντέλο και ώρα</string>
+    <string name="today_cloud_subtitle">Συνολική νέφωση (%) ανά μοντέλο και ώρα</string>
     <string name="today_humidity_title">Υγρασία</string>
-    <string name="today_humidity_subtitle">Σχετική υγρασία (%%) ανά μοντέλο και ώρα</string>
+    <string name="today_humidity_subtitle">Σχετική υγρασία (%) ανά μοντέλο και ώρα</string>
 
     <!-- Low-confidence callout. -->
     <string name="today_low_confidence_callout_title">Οι προβλέψεις διαφωνούν</string>

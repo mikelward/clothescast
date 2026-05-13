@@ -81,10 +81,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_wind_subtitle">Velocitat del vent (%1$s) per model i hora</string>
 
     <string name="today_cloud_title">Nuvolositat</string>
-    <string name="today_cloud_subtitle">Nuvolositat total (%%) per model i hora</string>
+    <string name="today_cloud_subtitle">Nuvolositat total (%) per model i hora</string>
 
     <string name="today_humidity_title">Humitat</string>
-    <string name="today_humidity_subtitle">Humitat relativa (%%) per model i hora</string>
+    <string name="today_humidity_subtitle">Humitat relativa (%) per model i hora</string>
 
     <string name="today_confidence_high">Alta confiança — els models principals coincideixen</string>
     <string name="today_confidence_medium">Confiança mitjana</string>
@@ -440,7 +440,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_clothes_item_label">Peça de roba</string>
     <string name="settings_clothes_condition_label">Condició</string>
     <string name="settings_clothes_value_label_temp">Llindar (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Llindar (%%)</string>
+    <string name="settings_clothes_value_label_precip">Llindar (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Quan se sent més fred que</string>
     <string name="settings_clothes_cond_type_temp_above">Quan se sent més càlid que</string>
     <string name="settings_clothes_cond_type_precip_above">Quan la probabilitat de pluja supera</string>

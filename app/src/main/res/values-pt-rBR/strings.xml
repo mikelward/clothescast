@@ -80,7 +80,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_clothes_item_label">Peça</string>
     <string name="settings_clothes_condition_label">Condição</string>
     <string name="settings_clothes_value_label_temp">Limite (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Limite (%%)</string>
+    <string name="settings_clothes_value_label_precip">Limite (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Quando a sensação for menor que</string>
     <string name="settings_clothes_cond_type_temp_above">Quando a sensação for maior que</string>
     <string name="settings_clothes_cond_type_precip_above">Quando a chance de chuva superar</string>
@@ -623,9 +623,9 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_wind_title">Velocidade do vento</string>
     <string name="today_wind_subtitle">Velocidade do vento por modelo (%1$s) por hora</string>
     <string name="today_cloud_title">Cobertura de nuvens</string>
-    <string name="today_cloud_subtitle">Cobertura total de nuvens por modelo (%%) por hora</string>
+    <string name="today_cloud_subtitle">Cobertura total de nuvens por modelo (%) por hora</string>
     <string name="today_humidity_title">Umidade</string>
-    <string name="today_humidity_subtitle">Umidade relativa por modelo (%%) por hora</string>
+    <string name="today_humidity_subtitle">Umidade relativa por modelo (%) por hora</string>
 
     <string name="today_low_confidence_callout_title">As previsões discordam</string>
     <string name="today_low_confidence_callout_body">A temperatura varia %1$.1f°C e a chance de chuva %2$.0f%% entre %3$d modelos.</string>

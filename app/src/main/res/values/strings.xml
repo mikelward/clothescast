@@ -119,6 +119,21 @@
     <string name="today_wind_title">Wind speed</string>
     <string name="today_wind_subtitle">Per-model 10 m wind speed (km/h) by hour</string>
 
+    <!-- Cloud-cover diagnostic card. Sits below the wind card; cloud cover
+         is the upstream driver of air-temperature divergence between models
+         (more clearing means more solar gain means warmer surface), so this
+         is the most useful follow-up when models disagree on temperature
+         itself. -->
+    <string name="today_cloud_title">Cloud cover</string>
+    <string name="today_cloud_subtitle">Per-model total cloud cover (%) by hour</string>
+
+    <!-- Relative-humidity diagnostic card. Low signal at cool temperatures
+         (apparent-temperature's humidity term only kicks in above ~20°C)
+         but the data ride the same Open-Meteo call for free, so we surface
+         it for the warm days where it does drive feels-like. -->
+    <string name="today_humidity_title">Humidity</string>
+    <string name="today_humidity_subtitle">Per-model 2 m relative humidity (%) by hour</string>
+
     <string name="today_confidence_high">High confidence — major models agree</string>
     <string name="today_confidence_medium">Medium confidence</string>
     <string name="today_confidence_low">Low confidence — forecasts disagree</string>

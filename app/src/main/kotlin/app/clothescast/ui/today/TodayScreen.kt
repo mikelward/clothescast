@@ -317,6 +317,8 @@ private fun TodayContent(
                 // cards self-hide until the next worker refresh repopulates.
                 if (overlay != null) {
                     WindCard(hourly = state.insight.hourly, perModelHourly = overlay)
+                    CloudCard(hourly = state.insight.hourly, perModelHourly = overlay)
+                    HumidityCard(hourly = state.insight.hourly, perModelHourly = overlay)
                 }
             }
         }
@@ -1115,6 +1117,82 @@ internal fun WindCard(
                 style = MaterialTheme.typography.bodyMedium,
             )
             WindChart(times = times, perModelHourly = perModelHourly)
+            ModelSpreadLegend(perModelHourly)
+        }
+    }
+}
+
+/**
+ * Diagnostic cloud-cover card. Same gating + scaffolding as [WindCard]: only
+ * renders when the per-model overlay is active and at least one model returned
+ * cloud cover. Cloud divergence is the upstream cause of most mid-day air-temp
+ * disagreements between models (one predicts a clearing, the other doesn't),
+ * so this is the most useful follow-up to the wind diagnostic.
+ */
+@Composable
+internal fun CloudCard(
+    hourly: List<HourlyForecast>,
+    perModelHourly: PerModelHourly,
+) {
+    val times = remember(hourly) { hourly.map { it.time } }
+    val anyCloud = remember(perModelHourly) {
+        perModelHourly.byModel.values.any { entries ->
+            entries.any { it.cloudCoverPct != null }
+        }
+    }
+    if (!anyCloud) return
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.today_cloud_title),
+                style = MaterialTheme.typography.titleSmall,
+            )
+            Text(
+                text = stringResource(R.string.today_cloud_subtitle),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            CloudChart(times = times, perModelHourly = perModelHourly)
+            ModelSpreadLegend(perModelHourly)
+        }
+    }
+}
+
+/**
+ * Diagnostic relative-humidity card. Same gating + scaffolding as the wind /
+ * cloud cards. Humidity has low signal at the cool temperatures Europe sees
+ * most of the year (apparent-temperature's humidity term only kicks in above
+ * ~20 °C) but the data ride the same Open-Meteo call for free, so we surface
+ * it for the warmer days where it does drive feels-like.
+ */
+@Composable
+internal fun HumidityCard(
+    hourly: List<HourlyForecast>,
+    perModelHourly: PerModelHourly,
+) {
+    val times = remember(hourly) { hourly.map { it.time } }
+    val anyHumidity = remember(perModelHourly) {
+        perModelHourly.byModel.values.any { entries ->
+            entries.any { it.relativeHumidityPct != null }
+        }
+    }
+    if (!anyHumidity) return
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.today_humidity_title),
+                style = MaterialTheme.typography.titleSmall,
+            )
+            Text(
+                text = stringResource(R.string.today_humidity_subtitle),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            HumidityChart(times = times, perModelHourly = perModelHourly)
             ModelSpreadLegend(perModelHourly)
         }
     }

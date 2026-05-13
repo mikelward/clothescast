@@ -516,7 +516,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="pairing_timeout_title">Parringsvindue udløbet</string>
     <string name="pairing_timeout_body">Det 5-minutters parringsvindue er lukket. Tryk på Prøv igen for at åbne et nyt.</string>
     <string name="pairing_error_title">Parring kunne ikke startes</string>
-    <string name="pairing_error_body">Kontrollér, at TV'et er forbundet til Wi-Fi, og prøv igen.</string>
+    <string name="pairing_error_body">Kontrollér, at TV\'et er forbundet til Wi-Fi, og prøv igen.</string>
     <string name="pairing_retry">Prøv igen</string>
 
     <!-- Display / theme settings. -->
@@ -534,7 +534,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_privacy_telemetry_title">Nedbrud- og brugsrapporter</string>
     <string name="settings_privacy_telemetry_label">Send nedbrud- og brugsdata</string>
     <string name="settings_privacy_telemetry_description">Sender anonyme nedbrudrapporter og aggregeret brugsstatistik for at hjælpe udvikleren med at rette fejl og træffe funktionsbeslutninger.</string>
-    <string name="settings_privacy_telemetry_limits">Sendes aldrig: kalenderindgange, placeringskoordinater eller stednavne, indholds- eller notifikationstekster, API-nøgler, præcise GPS-data, reklame-ID'er.</string>
+    <string name="settings_privacy_telemetry_limits">Sendes aldrig: kalenderindgange, placeringskoordinater eller stednavne, indholds- eller notifikationstekster, API-nøgler, præcise GPS-data, reklame-ID\'er.</string>
     <string name="settings_privacy_open_policy">Læs fuld privatlivspolitik</string>
 
     <!-- Bug report consent dialog. -->

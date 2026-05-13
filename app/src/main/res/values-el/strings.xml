@@ -606,7 +606,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_humidity_subtitle">Σχετική υγρασία (%%) ανά μοντέλο και ώρα</string>
 
     <!-- Low-confidence callout. -->
-    <string name="today_low_confidence_callout_title">Οι προβλέψεις διαφωνούν σήμερα</string>
+    <string name="today_low_confidence_callout_title">Οι προβλέψεις διαφωνούν</string>
     <string name="today_low_confidence_callout_body">Η θερμοκρασία κυμαίνεται κατά %1$.1f°C και η πιθανότητα βροχής κατά %2$.0f%% σε %3$d μοντέλα.</string>
 
     <!-- Telemetry notice banner. -->
@@ -644,6 +644,54 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_tie_in_with_rain_chance">Πάρε %1$s απόψε, πιθανότητα βροχής στις %2$s.</string>
     <string name="insight_evening_rain">Απόψε, βροχή στις %1$s.</string>
     <string name="insight_evening_rain_chance">Απόψε, πιθανότητα βροχής στις %1$s.</string>
+
+    <!-- Missing onboarding strings. -->
+    <string name="onboarding_subtitle_tv">Δύο γρήγορες επιλογές και είσαι έτοιμος. Μπορείς να τα αλλάξεις αργότερα στις Ρυθμίσεις.</string>
+    <string name="onboarding_location_grant_background">Παραχώρηση τοποθεσίας πάντα ενεργής</string>
+    <string name="onboarding_location_background_needed">Ένα ακόμη βήμα: ο ClothesCast χρειάζεται \'Να επιτρέπεται πάντα\' ώστε η πρωινή πρόβλεψη να μπορεί να διαβάζει την τοποθεσία σου ενώ η εφαρμογή είναι κλειστή.</string>
+    <string name="onboarding_location_enter_manual_hint">Μπορείς να εισάγεις χειροκίνητα την τοποθεσία σου αν αρνηθείς την πρόσβαση τοποθεσίας ή αν η τοποθεσία της συσκευής σου είναι λανθασμένη.</string>
+
+    <!-- Missing settings root nav entries. -->
+    <string name="settings_root_display">Εμφάνιση</string>
+    <string name="settings_root_display_subtitle">Θέμα</string>
+    <string name="settings_root_location">Τοποθεσία</string>
+    <string name="settings_root_location_subtitle">Αυτόματος εντοπισμός ή επιλογή πόλης</string>
+    <string name="settings_root_calendar">Ημερολόγιο</string>
+    <string name="settings_root_calendar_subtitle">Συμβάντα σήμερα</string>
+
+    <!-- Missing display / theme settings. -->
+    <string name="settings_display_theme_title">Θέμα</string>
+    <string name="settings_display_theme_system">Κατά το σύστημα</string>
+    <string name="settings_display_theme_light">Ανοιχτό</string>
+    <string name="settings_display_theme_dark">Σκοτεινό</string>
+
+    <!-- Missing location settings. -->
+    <string name="settings_location_use_device_description">Τελευταία κατά προσέγγιση τοποθεσία</string>
+    <string name="settings_location_detecting">Εντοπισμός…</string>
+    <string name="settings_location_background_banner_title">Απαιτείται τοποθεσία πάντα ενεργής</string>
+    <string name="settings_location_background_banner_body">Χωρίς αυτό, η πρωινή πρόβλεψη δεν μπορεί να διαβάσει την τοποθεσία σου.</string>
+    <string name="settings_location_manual_override">Λανθασμένη τοποθεσία; Ρύθμισε χειροκίνητα</string>
+    <string name="settings_location_manual_override_disclosure">Η επιλογή πόλης απενεργοποιεί τον αυτόματο εντοπισμό.</string>
+
+    <!-- Missing API key strings. -->
+    <string name="settings_api_key_gemini_header">Χρησιμοποίησε το Gemini για φωνές υψηλής ποιότητας.</string>
+
+    <!-- Missing TTS engine description. -->
+    <string name="settings_tts_engine_description">Το Gemini ακούγεται πολύ πιο φυσικό από τη φωνή της συσκευής, αλλά χρειάζεται κλήση δικτύου τη στιγμή εκφώνησης και χρησιμοποιεί το API key σου για σύνθεση (μία σύντομη κλήση ανά εκφωνούμενο ClothesCast). Αν το Gemini αποτύχει, επιστρέφει στη φωνή της συσκευής.</string>
+
+    <!-- Missing Today screen strings. -->
+    <string name="today_location_unknown">Η τοποθεσία σου</string>
+    <string name="today_retrying">Η τελευταία προσπάθεια απέτυχε — επαναλαμβάνεται…</string>
+    <string name="today_crash_banner_title">Η τελευταία εκτέλεση κατέρρευσε</string>
+    <string name="today_crash_banner_body">Μια αναφορά σφάλματος αποθηκεύτηκε στη συσκευή σου. Θέλεις να τη μοιραστείς ώστε να διορθωθεί το πρόβλημα; Δεν αποστέλλεται τίποτα μέχρι να επιλέξεις πού.</string>
+    <string name="today_crash_banner_share">Κοινοποίηση αναφοράς</string>
+    <string name="today_crash_banner_dismiss">Κλείσιμο</string>
+    <string name="today_update_available_title">Διαθέσιμη ενημέρωση</string>
+    <string name="today_update_available_body">Μια νεότερη έκδοση του ClothesCast είναι διαθέσιμη στο Play Store.</string>
+    <string name="today_update_available_action">Ενημέρωση</string>
+    <string name="today_update_available_dismiss">Όχι τώρα</string>
+    <string name="today_update_downloaded_body">Η ενημέρωση λήφθηκε. Επανεκκίνησε για να ολοκληρωθεί η εγκατάσταση.</string>
+    <string name="today_update_downloaded_action">Επανεκκίνηση</string>
 
     <!-- TTS style picker. -->
     <string name="settings_tts_style_label">Στυλ</string>

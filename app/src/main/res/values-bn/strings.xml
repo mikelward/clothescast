@@ -84,5 +84,558 @@ West Bengal vocabulary differences in a future PR.
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
-</resources>
+    <!-- ============================================================
+         Remaining insight prose
+         ============================================================ -->
 
+    <string name="insight_precip_chance">%1$s হওয়ার সম্ভাবনা %2$s।</string>
+    <string name="insight_tie_in_at_night">%1$s নিন।</string>
+    <string name="insight_tie_in_with_rain_chance">আজ রাতে %1$s নিন, %2$s-এ বৃষ্টির সম্ভাবনা।</string>
+    <string name="insight_evening_rain">আজ রাতে %1$s-এ বৃষ্টি।</string>
+    <string name="insight_evening_rain_chance">আজ রাতে %1$s-এ বৃষ্টির সম্ভাবনা।</string>
+
+    <!-- ============================================================
+         Today screen
+         ============================================================ -->
+
+    <string name="today_title">আজ</string>
+    <string name="today_open_settings">সেটিংস খুলুন</string>
+    <string name="today_more_options">আরও বিকল্প</string>
+    <string name="today_report_a_bug">বাগ রিপোর্ট করুন</string>
+    <string name="today_refresh">রিফ্রেশ</string>
+    <string name="today_refresh_toast_daily">আপনার দৈনিক ClothesCast রিফ্রেশ হচ্ছে — শীঘ্রই দেখা যাবে।</string>
+    <string name="today_refresh_toast_nightly">আপনার রাতের ClothesCast রিফ্রেশ হচ্ছে — শীঘ্রই দেখা যাবে।</string>
+    <string name="today_empty_title">এখনো কোনো ClothesCast নেই</string>
+    <string name="today_empty_subtitle">আপনার সকালের ClothesCast তৈরি হলে এখানে দেখা যাবে। সেটিংসে আপনার অবস্থান দিন, তারপর এখনই আনুন-এ ট্যাপ করুন।</string>
+    <string name="today_fetch_now">এখনই আনুন</string>
+    <string name="today_generated_at">%1$s-এ তৈরি</string>
+    <string name="today_location_unknown">আপনার অবস্থান</string>
+
+    <!-- Outfit card -->
+    <string name="today_outfit_title">কী পরবেন</string>
+    <string name="today_outfit_label_today">আজ</string>
+    <string name="today_outfit_label_tonight">আজ রাতে</string>
+    <string name="today_outfit_label_tomorrow">আগামীকাল</string>
+    <string name="today_outfit_top_polo">পোলো</string>
+    <string name="today_outfit_top_thin_jacket">পাতলা জ্যাকেট</string>
+    <string name="today_outfit_top_thick_coat">মোটা কোট</string>
+    <string name="today_outfit_top_puffer_jacket">পাফার জ্যাকেট</string>
+    <string name="today_outfit_bottom_skirt">স্কার্ট</string>
+    <string name="today_outfit_bottom_jeans">জিন্স</string>
+
+    <!-- Rationale dialog -->
+    <string name="today_rationale_title">এই পোশাক কেন?</string>
+    <string name="today_rationale_show">কেন?</string>
+    <string name="today_rationale_dismiss">বুঝেছি</string>
+    <string name="today_rationale_threshold_decrease">সীমা ১ ডিগ্রি কমান</string>
+    <string name="today_rationale_threshold_increase">সীমা ১ ডিগ্রি বাড়ান</string>
+    <string name="today_rationale_threshold_changed_hint">নতুন পোশাক দেখতে রিফ্রেশ করুন।</string>
+    <string name="today_rationale_unavailable">কোনো ব্যাখ্যা নেই — পরবর্তী রিফ্রেশের পর অ্যাপ খুলুন।</string>
+    <string name="today_rationale_min_below_with_time">%3$s-এ অনুভূত সর্বনিম্ন %1$s%2$s, %4$s%2$s-এর নিচে</string>
+    <string name="today_rationale_min_below">অনুভূত সর্বনিম্ন %1$s%2$s, %3$s%2$s-এর নিচে</string>
+    <string name="today_rationale_min_above_with_time">%3$s-এ অনুভূত সর্বনিম্ন %1$s%2$s, কমপক্ষে %4$s%2$s</string>
+    <string name="today_rationale_min_above">অনুভূত সর্বনিম্ন %1$s%2$s, কমপক্ষে %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">%3$s-এ অনুভূত সর্বোচ্চ মাত্র %1$s%2$s, %4$s%2$s-এর নিচে</string>
+    <string name="today_rationale_max_below">অনুভূত সর্বোচ্চ মাত্র %1$s%2$s, %3$s%2$s-এর নিচে</string>
+    <string name="today_rationale_max_above_with_time">%3$s-এ অনুভূত সর্বোচ্চ %1$s%2$s, কমপক্ষে %4$s%2$s</string>
+    <string name="today_rationale_max_above">অনুভূত সর্বোচ্চ %1$s%2$s, কমপক্ষে %3$s%2$s</string>
+
+    <!-- Forecast / charts -->
+    <string name="today_forecast_title">প্রতি ঘণ্টার পূর্বাভাস</string>
+    <string name="today_forecast_min_max">অনুভূত %1$d – %2$d%3$s · বায়ু %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">প্রতি ঘণ্টায় অনুভূত তাপমাত্রা (%1$s) · বায়ু তাপমাত্রায় স্যুইচ করতে ট্যাপ করুন</string>
+    <string name="today_forecast_legend_air">প্রতি ঘণ্টায় বায়ু তাপমাত্রা (%1$s) · অনুভূত তাপমাত্রায় স্যুইচ করতে ট্যাপ করুন</string>
+
+    <!-- Precipitation card -->
+    <string name="today_precipitation_title">বৃষ্টির সম্ভাবনা</string>
+    <string name="today_precipitation_peak">%2$s-এ সর্বোচ্চ %1$d%%</string>
+    <string name="today_precipitation_dry">আজ বৃষ্টির সম্ভাবনা নেই</string>
+
+    <!-- Model spread / charts -->
+    <string name="today_chart_model_legend_label">মডেল:</string>
+    <string name="today_chart_main_line_label">সম্মিলিত</string>
+    <string name="today_chart_divergence_summary">%1$s-এ মডেলগুলো সবচেয়ে বেশি ভিন্নমত পোষণ করে (Δ %2$.1f%3$s অনুভূত) — মূলত %4$s, %5$s</string>
+
+    <!-- Factor names -->
+    <string name="today_factor_air_temperature">বায়ু তাপমাত্রা</string>
+    <string name="today_factor_wind_speed">বাতাসের গতি</string>
+    <string name="today_factor_cloud_cover">মেঘাচ্ছন্নতা</string>
+    <string name="today_factor_humidity">আর্দ্রতা</string>
+
+    <!-- Wind / cloud / humidity diagnostic cards -->
+    <string name="today_wind_title">বাতাসের গতি</string>
+    <string name="today_wind_subtitle">প্রতি ঘণ্টায় প্রতি-মডেল বাতাসের গতি (%1$s)</string>
+    <string name="today_cloud_title">মেঘাচ্ছন্নতা</string>
+    <string name="today_cloud_subtitle">প্রতি ঘণ্টায় প্রতি-মডেল মোট মেঘাচ্ছন্নতা (%%)</string>
+    <string name="today_humidity_title">আর্দ্রতা</string>
+    <string name="today_humidity_subtitle">প্রতি ঘণ্টায় প্রতি-মডেল আপেক্ষিক আর্দ্রতা (%%)</string>
+
+    <!-- Confidence -->
+    <string name="today_confidence_high">উচ্চ আস্থা — প্রধান মডেলগুলো একমত</string>
+    <string name="today_confidence_medium">মাঝারি আস্থা</string>
+    <string name="today_confidence_low">কম আস্থা — পূর্বাভাসে মতভেদ</string>
+    <string name="today_confidence_spread">বিস্তার: %3$d মডেলে %1$.1f°C, %2$.0f%% বৃষ্টি</string>
+    <string name="today_low_confidence_callout_title">আজকের পূর্বাভাসে মতভেদ</string>
+    <string name="today_low_confidence_callout_body">%3$d মডেলে তাপমাত্রার পার্থক্য %1$.1f°C এবং বৃষ্টির সম্ভাবনার পার্থক্য %2$.0f%%।</string>
+
+    <!-- Working / error states -->
+    <string name="today_working">কাজ চলছে — আপনার ClothesCast আনা হচ্ছে…</string>
+    <string name="today_retrying">শেষ প্রচেষ্টা ব্যর্থ হয়েছে — পুনরায় চেষ্টা করা হচ্ছে…</string>
+    <string name="today_failed_title">শেষ প্রচেষ্টা ব্যর্থ হয়েছে</string>
+    <string name="today_failed_unexpected_http">পূর্বাভাস সেবা থেকে অপ্রত্যাশিত HTTP ত্রুটি।</string>
+    <string name="today_failed_unhandled">একটি অপ্রত্যাশিত ত্রুটি ঘটেছে।</string>
+    <string name="today_failed_no_location">আপনার অবস্থান পাওয়া যায়নি। সর্বদা অবস্থান অনুমতি দিন, অথবা সেটিংসে একটি শহর নির্ধারণ করুন।</string>
+    <string name="today_failed_show_details">বিবরণ দেখুন</string>
+    <string name="today_failed_hide_details">বিবরণ লুকান</string>
+
+    <!-- Location required -->
+    <string name="today_location_required_title">আপনার অবস্থান নির্ধারণ করুন</string>
+    <string name="today_location_required_body">পূর্বাভাস আনতে ClothesCast-এর আপনার অবস্থান জানা দরকার। সর্বদা অবস্থান অনুমতি দিন, অথবা একটি শহর বেছে নিন।</string>
+    <string name="today_location_required_action">অবস্থান সেটিংস খুলুন</string>
+
+    <!-- Crash banner -->
+    <string name="today_crash_banner_title">শেষ রানটি ক্র্যাশ হয়েছে</string>
+    <string name="today_crash_banner_body">আপনার ডিভাইসে একটি ক্র্যাশ রিপোর্ট সংরক্ষিত হয়েছে। বাগটি ঠিক করতে সাহায্য করতে এটি শেয়ার করবেন? আপনি কোথায় পাঠাবেন তা না বেছে নেওয়া পর্যন্ত কিছু পাঠানো হবে না।</string>
+    <string name="today_crash_banner_share">রিপোর্ট শেয়ার করুন</string>
+    <string name="today_crash_banner_dismiss">বন্ধ করুন</string>
+
+    <!-- Update available / downloaded banners -->
+    <string name="today_update_available_title">আপডেট পাওয়া গেছে</string>
+    <string name="today_update_available_body">Play Store-এ ClothesCast-এর একটি নতুন সংস্করণ রয়েছে।</string>
+    <string name="today_update_available_action">আপডেট</string>
+    <string name="today_update_available_dismiss">এখন নয়</string>
+    <string name="today_update_downloaded_body">আপডেট ডাউনলোড হয়েছে। ইনস্টল সম্পন্ন করতে পুনরায় চালু করুন।</string>
+    <string name="today_update_downloaded_action">পুনরায় চালু করুন</string>
+
+    <!-- Telemetry notice banner -->
+    <string name="today_telemetry_notice_title">ক্র্যাশ ও ব্যবহারের রিপোর্ট চালু আছে</string>
+    <string name="today_telemetry_notice_body">ClothesCast বাগ ঠিক করতে সাহায্যের জন্য বেনামীভাবে ক্র্যাশ রিপোর্ট ও ব্যবহারের পরিসংখ্যান পাঠায়। কোনো ক্যালেন্ডার ডেটা, অবস্থান বা অন্তর্দৃষ্টির লেখা অন্তর্ভুক্ত নয়। যেকোনো সময় সেটিংসে বন্ধ করুন।</string>
+    <string name="today_telemetry_notice_open_settings">গোপনীয়তা সেটিংস খুলুন</string>
+    <string name="today_telemetry_notice_dismiss">বন্ধ করুন</string>
+
+    <!-- ============================================================
+         Home-screen widget
+         ============================================================ -->
+
+    <string name="widget_label">পোশাক</string>
+    <string name="widget_description">বর্তমান সময়কালের পোশাক এক নজরে।</string>
+    <string name="widget_empty_title">এখনো কোনো পোশাক নেই</string>
+    <string name="widget_empty_subtitle">ClothesCast খুলতে ট্যাপ করুন</string>
+
+    <!-- ============================================================
+         Onboarding
+         ============================================================ -->
+
+    <string name="onboarding_title">ClothesCast-এ স্বাগতম</string>
+    <string name="onboarding_subtitle">তিনটি দ্রুত পছন্দ এবং আপনি প্রস্তুত। পরে সেটিংসে পরিবর্তন করুন।</string>
+    <string name="onboarding_subtitle_tv">দুটি দ্রুত পছন্দ এবং আপনি প্রস্তুত। পরে সেটিংসে পরিবর্তন করুন।</string>
+    <string name="onboarding_notifications_title">বিজ্ঞপ্তি</string>
+    <string name="onboarding_notifications_description">আপনার দৈনিক ClothesCast পাঠাতে প্রয়োজন।</string>
+    <string name="onboarding_notifications_grant">বিজ্ঞপ্তির অনুমতি দিন</string>
+    <string name="onboarding_location_title">অবস্থান</string>
+    <string name="onboarding_location_description">আপনার আনুমানিক অবস্থানের পূর্বাভাস আনুন।</string>
+    <string name="onboarding_location_grant">অবস্থানের অনুমতি দিন</string>
+    <string name="onboarding_location_grant_background">সর্বদা অবস্থান অনুমতি দিন</string>
+    <string name="onboarding_location_background_needed">আরেকটি ধাপ: অ্যাপ বন্ধ থাকলেও সকালের পূর্বাভাস আনতে ClothesCast-এর \'সব সময় অনুমতি দিন\' দরকার।</string>
+    <string name="onboarding_location_denied_hint">অবস্থানের অনুমতি প্রত্যাখ্যাত হয়েছে। পরিবর্তে আপনি ম্যানুয়ালি একটি শহর বেছে নিতে পারেন।</string>
+    <string name="onboarding_location_enter_manual">ম্যানুয়ালি অবস্থান দিন</string>
+    <string name="onboarding_location_enter_manual_hint">অবস্থানের অনুমতি না দিলে বা ডিভাইসের অবস্থান ভুল হলে আপনি ম্যানুয়ালি অবস্থান দিতে পারেন।</string>
+    <string name="onboarding_location_using_device">প্রতিদিন সকালে আপনার ডিভাইসের অবস্থান ব্যবহার করা হচ্ছে।</string>
+    <string name="onboarding_gemini_title">Gemini API কী</string>
+    <string name="onboarding_gemini_description">উচ্চমানের ভয়েস পেতে Gemini ব্যবহার করুন।</string>
+    <string name="onboarding_step_done">সম্পন্ন</string>
+    <string name="onboarding_skip">এখনের জন্য এড়িয়ে যান</string>
+    <string name="onboarding_continue">চালিয়ে যান</string>
+    <string name="onboarding_pair_from_phone">পরিবর্তে ফোন থেকে পেয়ার করুন</string>
+
+    <!-- ============================================================
+         TV pairing screen
+         ============================================================ -->
+
+    <string name="pairing_title">পেয়ার করতে স্ক্যান করুন</string>
+    <string name="pairing_instructions">আপনার ফোন দিয়ে এই QR কোড স্ক্যান করুন, তারপর যে ফর্মটি খোলে তাতে আপনার Gemini API কী পেস্ট করুন। কীটি সরাসরি আপনার হোম Wi-Fi-এর মাধ্যমে এই TV-তে পাঠানো হবে — কোনো ক্লাউড রিলে নেই।</string>
+    <string name="pairing_qr_description">%1$s-এর লিঙ্কসহ QR কোড</string>
+    <string name="pairing_cancel">বাতিল করুন</string>
+    <string name="pairing_received">কী পাওয়া গেছে — সংরক্ষণ করা হচ্ছে…</string>
+    <string name="pairing_timeout_title">পেয়ারিং উইন্ডো মেয়াদ শেষ</string>
+    <string name="pairing_timeout_body">৫ মিনিটের পেয়ারিং উইন্ডো বন্ধ হয়ে গেছে। নতুন উইন্ডো খুলতে পুনরায় চেষ্টা করুন-এ ট্যাপ করুন।</string>
+    <string name="pairing_error_title">পেয়ারিং শুরু করা যায়নি</string>
+    <string name="pairing_error_body">TV Wi-Fi-এ সংযুক্ত কিনা নিশ্চিত করুন, তারপর আবার চেষ্টা করুন।</string>
+    <string name="pairing_retry">পুনরায় চেষ্টা করুন</string>
+
+    <!-- ============================================================
+         Settings — root
+         ============================================================ -->
+
+    <string name="settings_title">সেটিংস</string>
+    <string name="settings_back">ফিরুন</string>
+    <string name="settings_root_voice">ভয়েস</string>
+    <string name="settings_root_schedule">সময়সূচি</string>
+    <string name="settings_root_region">অঞ্চল</string>
+    <string name="settings_root_clothes">পোশাক</string>
+    <string name="settings_root_display">প্রদর্শন</string>
+    <string name="settings_root_location">অবস্থান</string>
+    <string name="settings_root_calendar">ক্যালেন্ডার</string>
+    <string name="settings_root_privacy">গোপনীয়তা</string>
+    <string name="settings_root_about">সম্পর্কে</string>
+    <string name="settings_root_schedule_subtitle">বিজ্ঞপ্তি ও সময়</string>
+    <string name="settings_root_clothes_subtitle">তাপমাত্রা ও পোশাক</string>
+    <string name="settings_root_region_subtitle">ভাষা ও একক</string>
+    <string name="settings_root_voice_subtitle">প্রদানকারী ও উচ্চারণভঙ্গি</string>
+    <string name="settings_root_display_subtitle">থিম</string>
+    <string name="settings_root_location_subtitle">স্বয়ংক্রিয় শনাক্ত বা শহর বেছে নিন</string>
+    <string name="settings_root_calendar_subtitle">আজকের ইভেন্ট</string>
+    <string name="settings_root_privacy_subtitle">ক্র্যাশ ও ব্যবহারের রিপোর্ট</string>
+
+    <!-- ============================================================
+         Settings — Display
+         ============================================================ -->
+
+    <string name="settings_display_theme_title">থিম</string>
+    <string name="settings_display_theme_system">সিস্টেম অনুসরণ করুন</string>
+    <string name="settings_display_theme_light">হালকা</string>
+    <string name="settings_display_theme_dark">গাঢ়</string>
+    <string name="settings_display_charts_title">চার্ট</string>
+    <string name="settings_display_model_spread_label">চার্টে মডেল বিস্তার দেখান</string>
+    <string name="settings_display_model_spread_description">তাপমাত্রা ও বৃষ্টির চার্টে প্রতিটি প্রধান আবহাওয়া মডেলের প্রতি ঘণ্টার পূর্বাভাস ওভারলে করে। পূর্বাভাস অনিশ্চিত কিনা বুঝতে সহায়ক।</string>
+
+    <!-- ============================================================
+         Settings — Schedule
+         ============================================================ -->
+
+    <string name="settings_schedule_title">দৈনিক ClothesCast</string>
+    <string name="settings_schedule_time_label">সময়</string>
+    <string name="settings_schedule_days_label">সপ্তাহের দিন</string>
+    <string name="settings_daily_mention_evening_events">সন্ধ্যার ইভেন্ট উল্লেখ করুন</string>
+    <string name="settings_tonight_title">রাতের ClothesCast</string>
+    <string name="settings_tonight_description">সন্ধ্যায় একটি দ্বিতীয় ClothesCast যা আজ রাতের আবহাওয়া জানায়। শান্ত সন্ধ্যায় এটি নীরব থাকে, বা যদি "শুধুমাত্র সন্ধ্যার ইভেন্ট থাকলে বিজ্ঞপ্তি দিন" চালু থাকে তবে একদমই দেখা নাও যেতে পারে; ইভেন্টের সন্ধ্যায় এটি শব্দ করে এবং (কথ্য বিতরণ চালু থাকলে) পড়ে শোনায়।</string>
+    <string name="settings_tonight_enabled">রাতের ClothesCast দেখান</string>
+    <string name="settings_tonight_time_label">সময়</string>
+    <string name="settings_tonight_days_label">সপ্তাহের দিন</string>
+    <string name="settings_tonight_notify_only_on_events">শুধুমাত্র সন্ধ্যার ইভেন্ট থাকলে বিজ্ঞপ্তি দিন</string>
+
+    <!-- ============================================================
+         Settings — Delivery
+         ============================================================ -->
+
+    <string name="settings_delivery_label">বিতরণ</string>
+    <string name="settings_delivery_notification_only">শুধুমাত্র বিজ্ঞপ্তি</string>
+    <string name="settings_delivery_tts_only">শুধুমাত্র কথ্য</string>
+    <string name="settings_delivery_notification_and_tts">বিজ্ঞপ্তি ও কথ্য</string>
+
+    <!-- ============================================================
+         Settings — Voice / TTS
+         ============================================================ -->
+
+    <string name="settings_tts_engine_title">ভয়েস ইঞ্জিন</string>
+    <string name="settings_tts_engine_description">Gemini ডিভাইস ভয়েসের চেয়ে অনেক বেশি স্বাভাবিক শোনায় কিন্তু কথ্য সময়ে নেটওয়ার্ক কল এবং সংশ্লেষণের জন্য আপনার API কী ব্যবহার করে (প্রতিটি কথ্য ClothesCast-এর জন্য একটি সংক্ষিপ্ত কল)। Gemini ব্যর্থ হলে ডিভাইস ভয়েসে ফিরে যায়।</string>
+    <string name="settings_tts_engine_device">ডিভাইস (অফলাইন, বিনামূল্যে)</string>
+    <string name="settings_tts_engine_gemini">Gemini (উচ্চমান, অনলাইন)</string>
+    <string name="settings_tts_voice_label">ভয়েস</string>
+    <string name="settings_tts_voice_dismiss">সম্পন্ন</string>
+    <string name="settings_tts_style_label">স্টাইল</string>
+    <string name="settings_tts_style_weather_forecaster">আবহাওয়া পূর্বাভাসক</string>
+    <string name="settings_tts_style_pirate">জলদস্যু</string>
+    <string name="settings_tts_style_cowboy">কাউবয়</string>
+    <string name="settings_tts_style_shakespearean">শেক্সপিয়ারীয়</string>
+    <string name="settings_tts_style_surfer">সার্ফার</string>
+    <string name="settings_tts_style_parent">অভিভাবক</string>
+    <string name="settings_tts_style_child">শিশু</string>
+    <string name="settings_tts_style_teenager">কিশোর</string>
+    <string name="settings_tts_style_grandparent">দাদা-দাদি/নানা-নানি</string>
+    <string name="settings_tts_style_kids_host">শিশু TV উপস্থাপক</string>
+    <string name="settings_tts_style_radio_host">টকব্যাক উপস্থাপক</string>
+    <string name="settings_tts_style_morning_dj">মর্নিং DJ</string>
+    <string name="settings_tts_style_science_teacher">বিজ্ঞান শিক্ষক</string>
+    <string name="settings_tts_style_historian">ইতিহাসবিদ</string>
+    <string name="settings_tts_style_sportscaster">ক্রীড়া ধারাভাষ্যকার</string>
+    <string name="settings_tts_style_stadium_announcer">স্টেডিয়াম ঘোষক</string>
+    <string name="settings_tts_style_storyteller">গল্পকার</string>
+    <string name="settings_tts_style_fitness_instructor">ফিটনেস প্রশিক্ষক</string>
+    <string name="settings_tts_style_morning_presenter">সকালের রেডিও উপস্থাপক</string>
+    <string name="settings_tts_style_custom">কাস্টম…</string>
+    <string name="settings_tts_style_custom_label">কাস্টম নির্দেশনা</string>
+    <string name="settings_tts_style_custom_placeholder">যেমন: নিম্নলিখিতটি একজন কঠোর লাইব্রেরিয়ানের ফিসফিসানিতে পড়ুন</string>
+    <string name="settings_tts_device_voice_label">ডিভাইস ভয়েস</string>
+    <string name="settings_tts_device_voice_auto">স্বয়ংক্রিয় (উচ্চারণভঙ্গির জন্য সেরা)</string>
+    <string name="settings_tts_device_voice_currently">বর্তমান: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">লোড হচ্ছে…</string>
+    <string name="settings_tts_device_voice_network">নেটওয়ার্ক</string>
+    <string name="settings_tts_device_voice_offline">অফলাইন</string>
+    <string name="settings_tts_install_google_hint">উচ্চমানের ভয়েসের জন্য Google-এর টেক্সট-টু-স্পিচ ইঞ্জিন ইনস্টল করুন।</string>
+    <string name="settings_tts_install_google_button">Google TTS ইনস্টল করুন</string>
+    <string name="settings_tts_voice_locale_description">কথ্য ভয়েসের উচ্চারণভঙ্গি নির্ধারণ করে। প্রদর্শিত লেখা পরিবর্তন করে না।</string>
+    <string name="settings_tts_test">ভয়েস পরীক্ষা করুন</string>
+    <string name="settings_tts_test_in_flight">পরীক্ষা করা হচ্ছে — অনুগ্রহ করে অপেক্ষা করুন…</string>
+
+    <!-- TTS voice locale names in Bengali -->
+    <string name="settings_tts_voice_locale_en_us">ইংরেজি (মার্কিন যুক্তরাষ্ট্র)</string>
+    <string name="settings_tts_voice_locale_en_gb">ইংরেজি (যুক্তরাজ্য)</string>
+    <string name="settings_tts_voice_locale_en_au">ইংরেজি (অস্ট্রেলিয়া)</string>
+    <string name="settings_tts_voice_locale_en_ca">ইংরেজি (কানাডা)</string>
+    <string name="settings_tts_voice_locale_en_za">ইংরেজি (দক্ষিণ আফ্রিকা)</string>
+    <string name="settings_tts_voice_locale_de_de">জার্মান (জার্মানি)</string>
+    <string name="settings_tts_voice_locale_de_at">জার্মান (অস্ট্রিয়া)</string>
+    <string name="settings_tts_voice_locale_de_ch">জার্মান (সুইজারল্যান্ড)</string>
+    <string name="settings_tts_voice_locale_fr_fr">ফরাসি (ফ্রান্স)</string>
+    <string name="settings_tts_voice_locale_fr_ca">ফরাসি (কানাডা)</string>
+    <string name="settings_tts_voice_locale_it_it">ইতালীয় (ইতালি)</string>
+    <string name="settings_tts_voice_locale_es_es">স্পেনিশ (স্পেন)</string>
+    <string name="settings_tts_voice_locale_es_mx">স্পেনিশ (মেক্সিকো)</string>
+    <string name="settings_tts_voice_locale_ca_es">কাতালান (স্পেন)</string>
+    <string name="settings_tts_voice_locale_ru_ru">রাশিয়ান (রাশিয়া)</string>
+    <string name="settings_tts_voice_locale_pl_pl">পোলিশ (পোল্যান্ড)</string>
+    <string name="settings_tts_voice_locale_hr_hr">ক্রোয়েশিয়ান (ক্রোয়েশিয়া)</string>
+    <string name="settings_tts_voice_locale_sl_si">স্লোভেনিয়ান (স্লোভেনিয়া)</string>
+    <string name="settings_tts_voice_locale_sr_rs">সার্বিয়ান (লাতিন)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">সার্বিয়ান (সিরিলিক)</string>
+    <string name="settings_tts_voice_locale_bg_bg">বুলগেরিয়ান (বুলগেরিয়া)</string>
+    <string name="settings_tts_voice_locale_cs_cz">চেক (চেকিয়া)</string>
+    <string name="settings_tts_voice_locale_sk_sk">স্লোভাক (স্লোভাকিয়া)</string>
+    <string name="settings_tts_voice_locale_hu_hu">হাঙ্গেরিয়ান (হাঙ্গেরি)</string>
+    <string name="settings_tts_voice_locale_ro_ro">রোমানিয়ান (রোমানিয়া)</string>
+    <string name="settings_tts_voice_locale_el_gr">গ্রিক (গ্রিস)</string>
+    <string name="settings_tts_voice_locale_uk_ua">ইউক্রেনিয়ান (ইউক্রেন)</string>
+    <string name="settings_tts_voice_locale_pt_br">পর্তুগিজ (ব্রাজিল)</string>
+    <string name="settings_tts_voice_locale_pt_pt">পর্তুগিজ (পর্তুগাল)</string>
+    <string name="settings_tts_voice_locale_nl_nl">ডাচ (নেদারল্যান্ড)</string>
+    <string name="settings_tts_voice_locale_sv_se">সুইডিশ (সুইডেন)</string>
+    <string name="settings_tts_voice_locale_da_dk">ডেনিশ (ডেনমার্ক)</string>
+    <string name="settings_tts_voice_locale_nb_no">নরওয়েজিয়ান বোকমাল (নরওয়ে)</string>
+    <string name="settings_tts_voice_locale_fi_fi">ফিনিশ (ফিনল্যান্ড)</string>
+    <string name="settings_tts_voice_locale_et_ee">এস্তোনিয়ান (এস্তোনিয়া)</string>
+    <string name="settings_tts_voice_locale_lv_lv">লাটভিয়ান (লাটভিয়া)</string>
+    <string name="settings_tts_voice_locale_lt_lt">লিথুয়ানিয়ান (লিথুয়ানিয়া)</string>
+    <string name="settings_tts_voice_locale_tr_tr">তুর্কি (তুরস্ক)</string>
+    <string name="settings_tts_voice_locale_id_id">ইন্দোনেশিয়ান (ইন্দোনেশিয়া)</string>
+    <string name="settings_tts_voice_locale_ms_my">মালয় (মালয়েশিয়া)</string>
+    <string name="settings_tts_voice_locale_fil_ph">ফিলিপিনো (ফিলিপাইন)</string>
+    <string name="settings_tts_voice_locale_sw_ke">সোয়াহিলি (কেনিয়া)</string>
+    <string name="settings_tts_voice_locale_vi_vn">ভিয়েতনামি (ভিয়েতনাম)</string>
+    <string name="settings_tts_voice_locale_th_th">থাই (থাইল্যান্ড)</string>
+    <string name="settings_tts_voice_locale_zh_cn">চীনা (সরলীকৃত)</string>
+    <string name="settings_tts_voice_locale_zh_tw">চীনা (ঐতিহ্যবাহী)</string>
+    <string name="settings_tts_voice_locale_hi_in">হিন্দি (ভারত)</string>
+    <string name="settings_tts_voice_locale_ja_jp">জাপানি (জাপান)</string>
+    <string name="settings_tts_voice_locale_ko_kr">কোরিয়ান (দক্ষিণ কোরিয়া)</string>
+    <string name="settings_tts_voice_locale_ar_sa">আরবি (সৌদি আরব)</string>
+    <string name="settings_tts_voice_locale_ar_eg">আরবি (মিসর)</string>
+    <string name="settings_tts_voice_locale_ar_ae">আরবি (সংযুক্ত আরব আমিরাত)</string>
+    <string name="settings_tts_voice_locale_ar_ma">আরবি (মরক্কো)</string>
+    <string name="settings_tts_voice_locale_he_il">হিব্রু (ইসরায়েল)</string>
+    <string name="settings_tts_voice_locale_fa_ir">ফার্সি (ইরান)</string>
+    <string name="settings_tts_voice_locale_sq_al">আলবেনিয়ান (আলবেনিয়া)</string>
+    <string name="settings_tts_voice_locale_am_et">আমহারিক (ইথিওপিয়া)</string>
+
+    <!-- ============================================================
+         Settings — Region / Language
+         ============================================================ -->
+
+    <string name="settings_region_language_title">ভাষা</string>
+    <string name="settings_region_language_description">প্রদর্শিত লেখা ও বিজ্ঞপ্তির ভাষা নির্ধারণ করে।</string>
+    <string name="settings_region_language_system">সিস্টেম লোকেল অনুসরণ করুন</string>
+    <string name="settings_region_language_en_us">ইংরেজি (মার্কিন যুক্তরাষ্ট্র)</string>
+    <string name="settings_region_language_en_gb">ইংরেজি (যুক্তরাজ্য)</string>
+    <string name="settings_region_language_en_au">ইংরেজি (অস্ট্রেলিয়া)</string>
+    <string name="settings_region_language_en_ca">ইংরেজি (কানাডা)</string>
+    <string name="settings_region_language_en_za">ইংরেজি (দক্ষিণ আফ্রিকা)</string>
+    <string name="settings_region_language_de_de">জার্মান (জার্মানি)</string>
+    <string name="settings_region_language_de_at">জার্মান (অস্ট্রিয়া)</string>
+    <string name="settings_region_language_de_ch">জার্মান (সুইজারল্যান্ড)</string>
+    <string name="settings_region_language_fr_fr">ফরাসি (ফ্রান্স)</string>
+    <string name="settings_region_language_fr_ca">ফরাসি (কানাডা)</string>
+    <string name="settings_region_language_it_it">ইতালীয় (ইতালি)</string>
+    <string name="settings_region_language_es_es">স্পেনিশ (স্পেন)</string>
+    <string name="settings_region_language_es_mx">স্পেনিশ (মেক্সিকো)</string>
+    <string name="settings_region_language_ca_es">কাতালান (স্পেন)</string>
+    <string name="settings_region_language_ru_ru">রাশিয়ান (রাশিয়া)</string>
+    <string name="settings_region_language_pl_pl">পোলিশ (পোল্যান্ড)</string>
+    <string name="settings_region_language_hr_hr">ক্রোয়েশিয়ান (ক্রোয়েশিয়া)</string>
+    <string name="settings_region_language_sl_si">স্লোভেনিয়ান (স্লোভেনিয়া)</string>
+    <string name="settings_region_language_sr_rs">সার্বিয়ান (লাতিন)</string>
+    <string name="settings_region_language_sr_cyrl_rs">সার্বিয়ান (সিরিলিক)</string>
+    <string name="settings_region_language_bg_bg">বুলগেরিয়ান (বুলগেরিয়া)</string>
+    <string name="settings_region_language_cs_cz">চেক (চেকিয়া)</string>
+    <string name="settings_region_language_sk_sk">স্লোভাক (স্লোভাকিয়া)</string>
+    <string name="settings_region_language_hu_hu">হাঙ্গেরিয়ান (হাঙ্গেরি)</string>
+    <string name="settings_region_language_ro_ro">রোমানিয়ান (রোমানিয়া)</string>
+    <string name="settings_region_language_el_gr">গ্রিক (গ্রিস)</string>
+    <string name="settings_region_language_uk_ua">ইউক্রেনিয়ান (ইউক্রেন)</string>
+    <string name="settings_region_language_pt_br">পর্তুগিজ (ব্রাজিল)</string>
+    <string name="settings_region_language_pt_pt">পর্তুগিজ (পর্তুগাল)</string>
+    <string name="settings_region_language_nl_nl">ডাচ (নেদারল্যান্ড)</string>
+    <string name="settings_region_language_sv_se">সুইডিশ (সুইডেন)</string>
+    <string name="settings_region_language_da_dk">ডেনিশ (ডেনমার্ক)</string>
+    <string name="settings_region_language_nb_no">নরওয়েজিয়ান বোকমাল (নরওয়ে)</string>
+    <string name="settings_region_language_fi_fi">ফিনিশ (ফিনল্যান্ড)</string>
+    <string name="settings_region_language_et_ee">এস্তোনিয়ান (এস্তোনিয়া)</string>
+    <string name="settings_region_language_lv_lv">লাটভিয়ান (লাটভিয়া)</string>
+    <string name="settings_region_language_lt_lt">লিথুয়ানিয়ান (লিথুয়ানিয়া)</string>
+    <string name="settings_region_language_tr_tr">তুর্কি (তুরস্ক)</string>
+    <string name="settings_region_language_id_id">ইন্দোনেশিয়ান (ইন্দোনেশিয়া)</string>
+    <string name="settings_region_language_ms_my">মালয় (মালয়েশিয়া)</string>
+    <string name="settings_region_language_fil_ph">ফিলিপিনো (ফিলিপাইন)</string>
+    <string name="settings_region_language_sw_ke">সোয়াহিলি (কেনিয়া)</string>
+    <string name="settings_region_language_vi_vn">ভিয়েতনামি (ভিয়েতনাম)</string>
+    <string name="settings_region_language_th_th">থাই (থাইল্যান্ড)</string>
+    <string name="settings_region_language_zh_cn">চীনা (সরলীকৃত)</string>
+    <string name="settings_region_language_zh_tw">চীনা (ঐতিহ্যবাহী)</string>
+    <string name="settings_region_language_hi_in">হিন্দি (ভারত)</string>
+    <string name="settings_region_language_ja_jp">জাপানি (জাপান)</string>
+    <string name="settings_region_language_ko_kr">কোরিয়ান (দক্ষিণ কোরিয়া)</string>
+    <string name="settings_region_language_ar_sa">আরবি (সৌদি আরব)</string>
+    <string name="settings_region_language_he_il">হিব্রু (ইসরায়েল)</string>
+    <string name="settings_region_language_fa_ir">ফার্সি (ইরান)</string>
+    <string name="settings_region_language_sq_al">আলবেনিয়ান (আলবেনিয়া)</string>
+    <string name="settings_region_language_am_et">আমহারিক (ইথিওপিয়া)</string>
+
+    <!-- ============================================================
+         Settings — Temperature / Distance units
+         ============================================================ -->
+
+    <string name="settings_temperature_unit_title">তাপমাত্রা একক</string>
+    <string name="settings_temperature_unit_celsius">সেলসিয়াস (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">ফারেনহাইট (°F)</string>
+    <string name="settings_distance_unit_title">দূরত্ব একক</string>
+    <string name="settings_distance_unit_kilometers">কিলোমিটার</string>
+    <string name="settings_distance_unit_miles">মাইল</string>
+
+    <!-- ============================================================
+         Settings — Clothes
+         ============================================================ -->
+
+    <string name="settings_clothes_title">পোশাকের নিয়ম</string>
+    <string name="settings_clothes_description">পূর্বাভাস এই সীমাগুলোর একটি অতিক্রম করলে, আইটেমটি আপনার দৈনিক ClothesCast-এ দেখা যাবে।</string>
+    <string name="garment_puffer">পাফার জ্যাকেট</string>
+    <string name="garment_thin_jacket">পাতলা জ্যাকেট</string>
+    <string name="garment_skirt">স্কার্ট</string>
+    <string name="garment_polo">পোলো</string>
+
+    <!-- ============================================================
+         Settings — API key (Gemini)
+         ============================================================ -->
+
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">উচ্চমানের ভয়েস পেতে Gemini ব্যবহার করুন।</string>
+    <string name="settings_api_key_status_set">একটি Gemini কী কনফিগার করা আছে।</string>
+    <string name="settings_api_key_status_unset">aistudio.google.com-এ বিনামূল্যে API কী নিন</string>
+    <string name="settings_api_key_placeholder">আপনার Gemini API কী পেস্ট করুন</string>
+    <string name="settings_api_key_save">Gemini কী সংরক্ষণ করুন</string>
+    <string name="settings_api_key_clear">সংরক্ষিত Gemini কী মুছুন</string>
+
+    <!-- ============================================================
+         Settings — Location
+         ============================================================ -->
+
+    <string name="settings_location_title">অবস্থান</string>
+    <string name="settings_location_use_device">ডিভাইসের অবস্থান ব্যবহার করুন</string>
+    <string name="settings_location_use_device_description">শেষ আনুমানিক অবস্থান</string>
+    <string name="settings_location_detecting">শনাক্ত করা হচ্ছে…</string>
+    <string name="settings_location_grant_background">অনুমতি দিন</string>
+    <string name="settings_location_background_banner_title">সর্বদা অবস্থান অনুমতি প্রয়োজন</string>
+    <string name="settings_location_background_banner_body">এটি ছাড়া, সকালের পূর্বাভাস আপনার অবস্থান পড়তে পারবে না।</string>
+    <string name="settings_location_unset">কোনো অবস্থান নির্ধারিত নেই</string>
+    <string name="settings_location_manual_override">ভুল অবস্থান? ম্যানুয়ালি নির্ধারণ করুন</string>
+    <string name="settings_location_manual_override_disclosure">একটি শহর বেছে নিলে স্বয়ংক্রিয় শনাক্ত বন্ধ হবে।</string>
+    <string name="settings_location_clear">অবস্থান মুছুন</string>
+    <string name="settings_location_search_title">একটি অবস্থান খুঁজুন</string>
+    <string name="settings_location_query_label">শহর বা স্থান</string>
+    <string name="settings_location_search">অনুসন্ধান</string>
+    <string name="settings_location_searching">অনুসন্ধান করা হচ্ছে…</string>
+    <string name="settings_location_no_results">কোনো ফলাফল নেই।</string>
+    <string name="settings_location_rationale_title">অবস্থানের অ্যাক্সেস</string>
+    <string name="settings_location_rationale_body">স্থানীয় পূর্বাভাস আনতে ClothesCast আপনার অবস্থান পড়ে।</string>
+    <string name="settings_location_rationale_continue">চালিয়ে যান</string>
+    <string name="settings_location_rationale_dismiss">এখন নয়</string>
+    <string name="settings_location_background_rationale_title">সব সময় অনুমতি দিন</string>
+    <string name="settings_location_background_rationale_body">অ্যাপ বন্ধ থাকলেও সকালের পূর্বাভাস সময়মতো আপডেট হতে ClothesCast-কে আপনার অবস্থান পড়ার অনুমতি দিন।</string>
+    <string name="settings_location_background_rationale_continue">সেটিংস খুলুন</string>
+    <string name="settings_location_background_rationale_dismiss">এখন নয়</string>
+    <string name="settings_location_background_denied_title">সর্বদা অনুমতি দেওয়া হয়নি</string>
+    <string name="settings_location_background_denied_body">\'সব সময় অনুমতি দিন\' ছাড়া সকালের পূর্বাভাস স্বয়ংক্রিয়ভাবে আপডেট হবে না।</string>
+    <string name="settings_location_background_denied_open">সেটিংস খুলুন</string>
+    <string name="settings_location_background_denied_keep">এখন নয়</string>
+
+    <!-- ============================================================
+         Settings — Notifications
+         ============================================================ -->
+
+    <string name="settings_notification_permission_title">বিজ্ঞপ্তি ব্লক করা আছে</string>
+    <string name="settings_notification_permission_description">বিজ্ঞপ্তির অনুমতি ছাড়া আপনার দৈনিক ClothesCast কোথাও যাবে না। আগামীকাল সকালে পোস্ট করতে ClothesCast-কে অনুমতি দিন।</string>
+    <string name="settings_notification_permission_grant">বিজ্ঞপ্তির অনুমতি দিন</string>
+
+    <!-- ============================================================
+         Settings — Calendar
+         ============================================================ -->
+
+    <string name="settings_calendar_title">ক্যালেন্ডার</string>
+    <string name="settings_calendar_use_events">আজকের ক্যালেন্ডার ইভেন্ট ব্যবহার করুন</string>
+    <string name="settings_calendar_description_off">আজকের ইভেন্ট অনুযায়ী সকালের পূর্বাভাস তৈরি করুন — শুধুমাত্র শিরোনাম ও সময় ব্যবহার করা হয়, এবং কিছুই ডিভাইস ছাড়ে না।</string>
+    <string name="settings_calendar_description_on">আজকের ইভেন্ট অনুযায়ী সকালের পূর্বাভাস তৈরি হচ্ছে। শুধুমাত্র শিরোনাম ও সময় ব্যবহার করা হয়; কিছুই ডিভাইস ছাড়ে না।</string>
+    <string name="settings_calendar_grant_permission">ক্যালেন্ডারের অনুমতি দিন</string>
+    <string name="settings_calendar_open_settings">ক্যালেন্ডারের অনুমতি প্রত্যাখ্যাত হয়েছে। সিস্টেম সেটিংস থেকে অনুমতি দিন।</string>
+
+    <!-- ============================================================
+         Settings — Privacy
+         ============================================================ -->
+
+    <string name="settings_privacy_telemetry_title">ক্র্যাশ ও ব্যবহারের রিপোর্ট</string>
+    <string name="settings_privacy_telemetry_label">ক্র্যাশ ও ব্যবহারের ডেটা পাঠান</string>
+    <string name="settings_privacy_telemetry_description">বাগ ঠিক করতে এবং কোন ফিচারগুলো রাখা হবে তা ঠিক করতে ডেভেলপারকে সাহায্য করতে বেনামীভাবে ক্র্যাশ রিপোর্ট ও সম্মিলিত ব্যবহারের পরিসংখ্যান পাঠায়।</string>
+    <string name="settings_privacy_telemetry_limits">কখনো পাঠানো হয় না: ক্যালেন্ডার ইভেন্ট, অবস্থানের স্থানাঙ্ক বা স্থানের নাম, অন্তর্দৃষ্টি বা বিজ্ঞপ্তির লেখা, API কী, সুনির্দিষ্ট GPS, বিজ্ঞাপন শনাক্তকারী।</string>
+    <string name="settings_privacy_open_policy">সম্পূর্ণ গোপনীয়তা নীতি পড়ুন</string>
+
+    <!-- ============================================================
+         Settings — Debug
+         ============================================================ -->
+
+    <string name="settings_debug_title">ডিবাগ (শুধুমাত্র ডিবাগ বিল্ড)</string>
+    <string name="settings_debug_description">দৈনিক ClothesCast পাইপলাইন এখনই চালু করুন। নির্ধারিত সময় পর্যন্ত অপেক্ষা না করে যাচাই করতে উপকারী।</string>
+    <string name="settings_debug_fire_now">এখনই ClothesCast চালু করুন</string>
+    <string name="settings_debug_fire_toast">ClothesCast ওয়ার্কার এনকিউ করা হয়েছে</string>
+
+    <!-- ============================================================
+         Settings — About
+         ============================================================ -->
+
+    <string name="settings_about_title">সম্পর্কে</string>
+    <string name="settings_about_version">সংস্করণ %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s বিল্ড</string>
+    <string name="settings_about_source">GitHub-এ সোর্স কোড</string>
+    <string name="settings_about_dontkillmyapp">ব্যাকগ্রাউন্ড বিধিনিষেধ (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">বাগ রিপোর্ট শেয়ার করুন</string>
+    <string name="settings_about_version_copied">সংস্করণ ক্লিপবোর্ডে কপি হয়েছে</string>
+
+    <!-- ============================================================
+         Bug report consent dialog
+         ============================================================ -->
+
+    <string name="bug_report_consent_title">বাগ রিপোর্ট শেয়ার করবেন?</string>
+    <string name="bug_report_consent_body">এটি সমস্যা নির্ণয়ে সাহায্য করে। রিপোর্টে আপনার অবস্থান, অ্যাপের সেটিংস এবং সাম্প্রতিক কার্যকলাপ সহ সংবেদনশীল ব্যক্তিগত তথ্য রয়েছে। পাঠানোর আগে আপনি এটি পর্যালোচনা ও সম্পাদনা করতে পারবেন।</string>
+    <string name="bug_report_consent_dont_show_again">আর দেখাবেন না</string>
+    <string name="bug_report_consent_continue">চালিয়ে যান</string>
+    <string name="bug_report_consent_cancel">বাতিল করুন</string>
+
+    <!-- ============================================================
+         Notification channels
+         ============================================================ -->
+
+    <string name="notification_channel_daily_insight_name">দৈনিক ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">আপনার অপ্ট-ইন করা সকালের আবহাওয়ার সারসংক্ষেপ।</string>
+    <string name="notification_daily_insight_title">আজকের ClothesCast</string>
+    <string name="notification_channel_tonight_insight_default_name">রাতের ClothesCast (ইভেন্টসহ)</string>
+    <string name="notification_channel_tonight_insight_default_description">আজ রাতে ক্যালেন্ডার ইভেন্ট থাকলে সন্ধ্যার আবহাওয়ার সারসংক্ষেপ। আপনার ডিফল্ট বিজ্ঞপ্তির শব্দ বাজায়।</string>
+    <string name="notification_channel_tonight_insight_silent_name">রাতের ClothesCast (নীরব)</string>
+    <string name="notification_channel_tonight_insight_silent_description">সন্ধ্যা ফাঁকা থাকলে সন্ধ্যার আবহাওয়ার সারসংক্ষেপ। নীরবে পোস্ট হয় — লক স্ক্রিনে দেখতে পাবেন, কিন্তু কোনো শব্দ করবে না।</string>
+    <string name="notification_tonight_insight_title">আজ রাতের ClothesCast</string>
+    <string name="notification_channel_weather_alerts_name">গুরুতর আবহাওয়া সতর্কতা</string>
+    <string name="notification_channel_weather_alerts_description">আপনার এলাকায় গুরুতর বা চরম আবহাওয়ার জন্য উচ্চ-অগ্রাধিকার সতর্কতা। দৈনিক ফেচ শনাক্ত করার সাথে সাথে প্রেরণ করা হয়।</string>
+    <string name="notification_weather_alert_title">আবহাওয়া সতর্কতা: %1$s</string>
+
+    <!-- ============================================================
+         Error / incompatible device
+         ============================================================ -->
+
+    <string name="error_device_incompatible">ClothesCast এই ডিভাইসে চলতে পারছে না — আপনার Android বিল্ডে অ্যাপের UI-এর জন্য প্রয়োজনীয় একটি ফিচার অনুপস্থিত (Configuration.fontWeightAdjustment, Android 12 এবং উপরে প্রত্যাশিত)। সিস্টেম আপডেটের জন্য আপনার ডিভাইস প্রস্তুতকারকের সাথে যোগাযোগ করুন।</string>
+
+</resources>

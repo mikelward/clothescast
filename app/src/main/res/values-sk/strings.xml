@@ -465,7 +465,7 @@ What is NOT overridden, by design:
     <string name="today_humidity_subtitle">Relatívna vlhkosť (%) za hodinu podľa modelu</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">Predpovede sa dnes rozchádzajú</string>
+    <string name="today_low_confidence_callout_title">Predpovede sa rozchádzajú</string>
     <string name="today_low_confidence_callout_body">Teplota sa líši o %1$.1f°C a pravdepodobnosť zrážok o %2$.0f%% naprieč %3$d modelmi.</string>
 
     <!-- Crash-report banner. -->

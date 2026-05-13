@@ -184,7 +184,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_confidence_spread">Razpršenost: %1$.1f°C, %2$.0f%% padavin pri %3$d modelih</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">Napovedi se danes razlikujejo</string>
+    <string name="today_low_confidence_callout_title">Napovedi se razlikujejo</string>
     <string name="today_low_confidence_callout_body">Temperatura se razlikuje za %1$.1f°C in verjetnost dežja za %2$.0f%% med %3$d modeli.</string>
 
     <!-- Work status banners. -->

@@ -627,7 +627,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_humidity_title">Umidade</string>
     <string name="today_humidity_subtitle">Umidade relativa por modelo (%%) por hora</string>
 
-    <string name="today_low_confidence_callout_title">As previsões discordam hoje</string>
+    <string name="today_low_confidence_callout_title">As previsões discordam</string>
     <string name="today_low_confidence_callout_body">A temperatura varia %1$.1f°C e a chance de chuva %2$.0f%% entre %3$d modelos.</string>
 
     <string name="today_telemetry_notice_title">Relatórios de falhas e uso estão ativados</string>

@@ -78,21 +78,20 @@ class OpenMeteoClient(
         val multi = multiModel.await()
 
         // Replace today's hourly + the derived daily extremes with the
-        // consensus mean of the consulted models. The previous behaviour
-        // — using Open-Meteo's `best_match` auto-selection straight through
-        // — let a single outlier model (best_match's pick for the location)
-        // drive clothes rules + insight prose. On the diverging days the
-        // user keeps catching, that outlier was the wrong call (consulted
-        // ECMWF / GFS / ICON agreed; best_match disagreed). Falling back to
-        // best_match per-hour when fewer than two consulted models reported
-        // keeps a sane backstop in regions where the side-band fetch is
-        // sparse, and unconditionally when the multi-model fetch failed
-        // entirely.
+        // consensus mean across the per-model series (ECMWF / GFS / ICON
+        // plus best_match itself, all weighted equally — see
+        // [blendConsensusHourly]). The previous behaviour piped
+        // best_match straight through; on the diverging days the user
+        // keeps catching, that single auto-selected line was the wrong
+        // call. Falling back to best_match per-hour when fewer than two
+        // models reported keeps a sane backstop in regions where the
+        // side-band fetch is sparse, and unconditionally when the
+        // multi-model fetch failed entirely.
         val bestMatchHourly = bundle.today.hourly
         // Recompute daily aggregates only when at least one hour actually got
         // blended — `blendConsensusHourly` returns null when nothing changed
-        // (no per-model data, fewer than two consulted models, or no hour had
-        // ≥2 of them). Without this guard we'd swap the upstream daily
+        // (no per-model data, fewer than two models, or no hour had ≥2 of
+        // them). Without this guard we'd swap the upstream daily
         // temperatureMax (derived by Open-Meteo from its own internal model
         // steps) for a max computed from the hourly *samples*, which can
         // differ by a fraction of a degree even when the consensus didn't
@@ -104,8 +103,8 @@ class OpenMeteoClient(
         // Stash best_match alongside the consulted models in [PerModelHourly]
         // so the chart can render it as a labelled overlay ("Auto") for
         // power users with model spread on. The consensus computation above
-        // already excluded this entry from its own input — see
-        // [blendConsensusHourly].
+        // already saw this entry — it folds best_match into the mean like
+        // any other model.
         val perModelWithBestMatch = multi?.hourly?.let { existing ->
             existing.copy(
                 byModel = existing.byModel +

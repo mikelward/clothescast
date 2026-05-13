@@ -36,6 +36,8 @@ import app.clothescast.widget.WidgetTonightDarkPreview
 import app.clothescast.widget.WidgetTonightSweaterPantsPreview
 import app.clothescast.widget.WidgetTonightTomorrowWidePreview
 import com.github.takahirom.roborazzi.captureRoboImage
+import java.io.File
+import javax.imageio.ImageIO
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -117,14 +119,13 @@ class PreviewSnapshots {
         // transaction, which runs in a LaunchedEffect and delivers data to the chart
         // host via a separate coroutine hop). Without this, the chart snapshot can
         // race and produce a near-blank PNG. waitForIdle() works if Vico dispatches
-        // on the composition's coroutine scope; if it still flakes, the robust fix
-        // is to pre-populate the producer synchronously in the test with runBlocking
-        // before setContent, which requires hoisting it out of ForecastChart into a
-        // parameter so the test can inject it.
-        // TODO: if forecast_chart snapshots flake again, implement the runBlocking
-        //  pre-population approach instead.
-        composeRule.waitForIdle()
-        composeRule.onRoot().captureRoboImage(filePath = "$outputDir/${testName.methodName}.png")
+        // on the composition's coroutine scope; the empty-snapshot retry below
+        // backs it up: if the captured PNG looks blank (every sampled pixel
+        // identical), we wait and re-capture before accepting the result.
+        captureWithRetryIfEmpty {
+            composeRule.waitForIdle()
+            composeRule.onRoot().captureRoboImage(filePath = "$outputDir/${testName.methodName}.png")
+        }
     }
 
     // Dialog previews live in their own popup window — `composeRule.onRoot()`
@@ -134,7 +135,52 @@ class PreviewSnapshots {
     // is the visible thing here).
     private fun captureDialog(content: @Composable () -> Unit) {
         composeRule.setContent { content() }
-        composeRule.onNode(isDialog()).captureRoboImage(filePath = "$outputDir/${testName.methodName}.png")
+        captureWithRetryIfEmpty {
+            composeRule.waitForIdle()
+            composeRule.onNode(isDialog()).captureRoboImage(filePath = "$outputDir/${testName.methodName}.png")
+        }
+    }
+
+    // Snapshots occasionally race async composition state — most often a chart
+    // with data delivered through a separate coroutine hop — and land a PNG
+    // that's either zero-bytes or a single flat colour. `roborazzi.test.record`
+    // means CI commits whatever lands, so a blank PNG silently becomes the new
+    // baseline. Re-run the capture a few times if it looks empty; the
+    // intervening waitForIdle + brief sleep give the missing frame time to
+    // settle. The final PNG on disk is whichever attempt wrote last.
+    private fun captureWithRetryIfEmpty(maxAttempts: Int = 3, snapshot: () -> Unit) {
+        val outputFile = File("$outputDir/${testName.methodName}.png")
+        repeat(maxAttempts) { attempt ->
+            snapshot()
+            if (!looksEmpty(outputFile)) return
+            if (attempt < maxAttempts - 1) Thread.sleep(50L * (attempt + 1))
+        }
+        System.err.println(
+            "WARN: snapshot ${testName.methodName} still appears empty after $maxAttempts attempts",
+        )
+    }
+
+    // "Empty" = unreadable as a PNG, or every sampled pixel matches (0,0). The
+    // 16x16 grid is sparse enough to be cheap and dense enough that a centred
+    // launcher icon or any non-trivial UI registers at least one differing
+    // pixel.
+    private fun looksEmpty(file: File): Boolean {
+        if (!file.exists() || file.length() == 0L) return true
+        val image = runCatching { ImageIO.read(file) }.getOrNull() ?: return true
+        if (image.width == 0 || image.height == 0) return true
+        val firstPixel = image.getRGB(0, 0)
+        val stepX = (image.width / 16).coerceAtLeast(1)
+        val stepY = (image.height / 16).coerceAtLeast(1)
+        var y = 0
+        while (y < image.height) {
+            var x = 0
+            while (x < image.width) {
+                if (image.getRGB(x, y) != firstPixel) return false
+                x += stepX
+            }
+            y += stepY
+        }
+        return true
     }
 
     @Test fun outfit_tshirt_shorts() = capture { OutfitTShirtShortsPreview() }

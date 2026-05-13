@@ -447,6 +447,87 @@ jobs:
           path: app/build/outputs/apk/debug/*.apk
           retention-days: 14
 
+      - name: Prepare release notes for FAD and Play
+        # Single source of truth for "what changed in this build" copy. Both
+        # Firebase App Distribution (tester push-notification + release page)
+        # and Play Store internal track (whatsnew-en-US) ship this string to
+        # humans, so they MUST agree — and they MUST be the curated, end-user
+        # subject line, not the raw head-commit message.
+        #
+        # Walks back from the head commit past commits whose subject would be
+        # noise to a non-engineer reader: anything prefixed `ci:` (the
+        # snapshot-regen bot commits "ci: regenerate UI snapshots", workflow
+        # tweaks, etc.) and changes whose paths are all under `docs/`, all
+        # under `.github/` (workflow / repo metadata), or top-level `*.md`.
+        # PRIVACY.md is treated as non-docs so that privacy-policy updates
+        # still surface to users. The `.github/` filter is a safety net for
+        # workflow-only commits that forget the `ci:` subject prefix — they
+        # still get walked past on the path-based check. Falls back to the
+        # head subject after 20 hops without a match, so an unusual stretch
+        # of filtered commits still produces *some* changelog rather than
+        # nothing.
+        #
+        # Outputs:
+        #   - $RUNNER_TEMP/whatsnew/whatsnew-en-US  (consumed by Play upload,
+        #     capped at 500 chars per Play API)
+        #   - $RELEASE_SUBJECT in $GITHUB_ENV       (consumed by the FAD step's
+        #     releaseNotes input)
+        #
+        # Gated on push/dispatch to main only — feature-branch CI runs don't
+        # distribute, so the prep work would be wasted there. No secret gate:
+        # FAD and Play each have their own secret gates downstream, but the
+        # subject should be computed even when only one of the two is wired up.
+        if: |
+          success() &&
+          (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+          github.ref == 'refs/heads/main'
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/whatsnew"
+          sha="$COMMIT_SHA"
+          subject=""
+          for _ in $(seq 1 20); do
+            if ! s=$(git log -1 --pretty=%s "$sha" 2>/dev/null); then
+              break
+            fi
+            case "$s" in
+              ci:*)
+                if ! sha=$(git rev-parse "$sha^" 2>/dev/null); then
+                  break
+                fi
+                continue
+                ;;
+            esac
+            non_doc_count=$(git show --no-renames --name-only --pretty=format: "$sha" \
+              | sed '/^$/d' \
+              | awk '
+                  /^PRIVACY\.md$/ { count++; next }
+                  /^docs\//       { next }
+                  /^\.github\//   { next }
+                  /\.md$/         { next }
+                                  { count++ }
+                  END             { print count + 0 }
+                ')
+            if [ "$non_doc_count" -eq 0 ]; then
+              if ! sha=$(git rev-parse "$sha^" 2>/dev/null); then
+                break
+              fi
+              continue
+            fi
+            subject="$s"
+            break
+          done
+          if [ -z "$subject" ]; then
+            subject=$(git log -1 --pretty=%s "$COMMIT_SHA")
+          fi
+          printf '%s\n' "$subject" | head -c 500 > "$RUNNER_TEMP/whatsnew/whatsnew-en-US"
+          # Single-line for the FAD step's releaseNotes. No newlines so it
+          # composes cleanly with the `Build: N · SHA` trailer below.
+          printf 'RELEASE_SUBJECT=%s\n' "$subject" >> "$GITHUB_ENV"
+          echo "Release notes subject: $subject"
+
       - name: Distribute via Firebase App Distribution
         # On push to main (or manual workflow_dispatch on main) only —
         # feature-branch CI runs would otherwise spam testers with WIP builds.
@@ -480,12 +561,15 @@ jobs:
           groups: testers
           file: app/build/outputs/apk/debug/app-debug.apk
           # Push notification on the tester's phone shows the first ~60 chars
-          # of these notes, so put the most useful info first. Commit subject
-          # is normally that.
-          # `head_commit.message` is null on workflow_dispatch (no associated
-          # push payload), so fall back to a synthesized subject in that case.
+          # of these notes — must match what Play Store testers see, which is
+          # the curated subject computed in "Prepare release notes" above.
+          # Raw `head_commit.message` would be wrong twice over: on a `ci:
+          # regenerate UI snapshots` head commit testers would see the bot
+          # message, and on a normal feature commit they'd get the full body
+          # too (file paths, engineering reasoning), which CLAUDE.md reserves
+          # for reviewers, not end users.
           releaseNotes: |
-            ${{ github.event.head_commit.message || format('Manual workflow_dispatch run on {0}', github.sha) }}
+            ${{ env.RELEASE_SUBJECT }}
             ---
             Build: ${{ github.run_number }} · ${{ github.sha }}
 
@@ -557,76 +641,6 @@ jobs:
           name: app-release-aab
           path: app/build/outputs/bundle/release/app-release.aab
           retention-days: 14
-
-      - name: Prepare Play release notes
-        # Play Console accepts per-locale "what's new" files in a directory,
-        # each capped at 500 chars. Write *just* the commit-subject line into
-        # whatsnew-en-US — no body, no build/SHA tail — since this string
-        # ships verbatim to end users as the Play Store changelog. AGENTS.md
-        # "Commit messages" spells out the subject-line discipline that
-        # makes this safe. Skipped when the Play secret isn't set, so a
-        # fresh repo / fork still finishes CI without this step.
-        #
-        # Walks back from the head commit past commits whose subject would be
-        # noise in the Play Store changelog: anything prefixed `ci:` (the
-        # snapshot-regen bot commits "ci: regenerate UI snapshots", workflow
-        # tweaks, etc.) and changes whose paths are all under `docs/`, all
-        # under `.github/` (workflow / repo metadata), or top-level `*.md`.
-        # PRIVACY.md is treated as non-docs so that privacy-policy updates
-        # still surface to users. The `.github/` filter is a safety net for
-        # workflow-only commits that forget the `ci:` subject prefix — they
-        # still get walked past on the path-based check. Falls back to the
-        # head subject after 20 hops without a match, so an unusual stretch
-        # of filtered commits still produces *some* changelog rather than
-        # an empty file.
-        if: |
-          success() &&
-          (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-          github.ref == 'refs/heads/main' &&
-          env.PLAY_SERVICE_ACCOUNT_JSON != ''
-        env:
-          COMMIT_SHA: ${{ github.sha }}
-        run: |
-          set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/whatsnew"
-          sha="$COMMIT_SHA"
-          subject=""
-          for _ in $(seq 1 20); do
-            if ! s=$(git log -1 --pretty=%s "$sha" 2>/dev/null); then
-              break
-            fi
-            case "$s" in
-              ci:*)
-                if ! sha=$(git rev-parse "$sha^" 2>/dev/null); then
-                  break
-                fi
-                continue
-                ;;
-            esac
-            non_doc_count=$(git show --no-renames --name-only --pretty=format: "$sha" \
-              | sed '/^$/d' \
-              | awk '
-                  /^PRIVACY\.md$/ { count++; next }
-                  /^docs\//       { next }
-                  /^\.github\//   { next }
-                  /\.md$/         { next }
-                                  { count++ }
-                  END             { print count + 0 }
-                ')
-            if [ "$non_doc_count" -eq 0 ]; then
-              if ! sha=$(git rev-parse "$sha^" 2>/dev/null); then
-                break
-              fi
-              continue
-            fi
-            subject="$s"
-            break
-          done
-          if [ -z "$subject" ]; then
-            subject=$(git log -1 --pretty=%s "$COMMIT_SHA")
-          fi
-          printf '%s\n' "$subject" | head -c 500 > "$RUNNER_TEMP/whatsnew/whatsnew-en-US"
-          echo "Play Store release notes: $subject"
 
       - name: Upload AAB to Play Store internal track
         # Push-to-main (or manual workflow_dispatch on main) only; skipped

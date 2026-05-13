@@ -609,7 +609,7 @@ label localises.
     <string name="today_outfit_top_thin_jacket">薄外套</string>
     <string name="today_outfit_top_thick_coat">厚大衣</string>
     <string name="today_outfit_top_puffer_jacket">羽絨外套</string>
-    <string name="today_outfit_bottom_skirt">裙子</string>
+    <string name="today_outfit_bottom_long_skirt">裙子</string>
     <string name="today_outfit_bottom_jeans">牛仔褲</string>
 
     <!-- Garment dropdown — additional items. -->

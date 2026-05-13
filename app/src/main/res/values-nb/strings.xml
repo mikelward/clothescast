@@ -384,7 +384,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="today_outfit_top_puffer_jacket">Dunjacke</string>
     <string name="today_outfit_bottom_shorts">Shorts</string>
     <string name="today_outfit_bottom_long_pants">Lang bukse</string>
-    <string name="today_outfit_bottom_skirt">Skjørt</string>
+    <string name="today_outfit_bottom_long_skirt">Skjørt</string>
     <string name="today_outfit_bottom_jeans">Jeans</string>
 
     <string name="today_forecast_title">Timeprognose</string>

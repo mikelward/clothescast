@@ -861,14 +861,14 @@ private fun topLabelRes(top: OutfitSuggestion.Top): Int = when (top) {
 
 private fun bottomIconRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom) {
     OutfitSuggestion.Bottom.SHORTS -> R.drawable.ic_outfit_shorts
-    OutfitSuggestion.Bottom.SKIRT -> R.drawable.ic_outfit_skirt
+    OutfitSuggestion.Bottom.LONG_SKIRT -> R.drawable.ic_outfit_skirt
     OutfitSuggestion.Bottom.JEANS -> R.drawable.ic_outfit_jeans
     OutfitSuggestion.Bottom.LONG_PANTS -> R.drawable.ic_outfit_long_pants
 }
 
 private fun bottomLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom) {
     OutfitSuggestion.Bottom.SHORTS -> R.string.today_outfit_bottom_shorts
-    OutfitSuggestion.Bottom.SKIRT -> R.string.today_outfit_bottom_skirt
+    OutfitSuggestion.Bottom.LONG_SKIRT -> R.string.today_outfit_bottom_long_skirt
     OutfitSuggestion.Bottom.JEANS -> R.string.today_outfit_bottom_jeans
     OutfitSuggestion.Bottom.LONG_PANTS -> R.string.today_outfit_bottom_long_pants
 }

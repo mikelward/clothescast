@@ -498,7 +498,7 @@ displayed label localizes.
     <string name="today_outfit_top_thin_jacket">Kevyt takki</string>
     <string name="today_outfit_top_thick_coat">Paksu takki</string>
     <string name="today_outfit_top_puffer_jacket">Untuvatakki</string>
-    <string name="today_outfit_bottom_skirt">Hame</string>
+    <string name="today_outfit_bottom_long_skirt">Hame</string>
     <string name="today_outfit_bottom_jeans">Farkut</string>
 
     <string name="garment_polo">Poolopaita</string>

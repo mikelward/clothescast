@@ -385,7 +385,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_outfit_top_puffer_jacket">Steppelt kabát</string>
     <string name="today_outfit_bottom_shorts">Rövidnadrág</string>
     <string name="today_outfit_bottom_long_pants">Hosszú nadrág</string>
-    <string name="today_outfit_bottom_skirt">Szoknya</string>
+    <string name="today_outfit_bottom_long_skirt">Szoknya</string>
     <string name="today_outfit_bottom_jeans">Farmer</string>
 
     <!-- Forecast card. -->

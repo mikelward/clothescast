@@ -116,7 +116,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_outfit_top_thin_jacket">Áo khoác mỏng</string>
     <string name="today_outfit_top_thick_coat">Áo khoác dày mùa đông</string>
     <string name="today_outfit_top_puffer_jacket">Áo phao</string>
-    <string name="today_outfit_bottom_skirt">Chân váy</string>
+    <string name="today_outfit_bottom_long_skirt">Chân váy</string>
     <string name="today_outfit_bottom_jeans">Quần jean</string>
 
     <!-- Rationale dialog -->

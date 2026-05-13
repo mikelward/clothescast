@@ -551,7 +551,7 @@ the displayed label localizes.
     <string name="today_outfit_top_thin_jacket">Lichte jas</string>
     <string name="today_outfit_top_thick_coat">Dikke jas</string>
     <string name="today_outfit_top_puffer_jacket">Donsjack</string>
-    <string name="today_outfit_bottom_skirt">Rok</string>
+    <string name="today_outfit_bottom_long_skirt">Rok</string>
     <string name="today_outfit_bottom_jeans">Jeans</string>
 
     <!-- Garment dropdown — additional items. -->

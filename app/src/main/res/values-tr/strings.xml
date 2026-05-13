@@ -497,7 +497,7 @@ displayed label localizes.
     <string name="today_outfit_top_thin_jacket">İnce ceket</string>
     <string name="today_outfit_top_thick_coat">Kalın palto</string>
     <string name="today_outfit_top_puffer_jacket">Şişme mont</string>
-    <string name="today_outfit_bottom_skirt">Etek</string>
+    <string name="today_outfit_bottom_long_skirt">Etek</string>
     <string name="today_outfit_bottom_jeans">Kot pantolon</string>
 
     <string name="garment_polo">Polo yaka</string>

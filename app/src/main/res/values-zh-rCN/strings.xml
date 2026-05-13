@@ -593,7 +593,7 @@ label localizes.
     <string name="today_outfit_top_thin_jacket">薄夹克</string>
     <string name="today_outfit_top_thick_coat">厚大衣</string>
     <string name="today_outfit_top_puffer_jacket">羽绒服</string>
-    <string name="today_outfit_bottom_skirt">裙子</string>
+    <string name="today_outfit_bottom_long_skirt">裙子</string>
     <string name="today_outfit_bottom_jeans">牛仔裤</string>
 
     <!-- Garment dropdown — additional items. -->

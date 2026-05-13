@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.Garment
+import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.fromUnit
 import app.clothescast.core.domain.model.symbol
@@ -57,11 +58,13 @@ import kotlin.math.roundToInt
 @Composable
 internal fun ClothesContent(
     rules: List<ClothesRule>,
+    defaultBottom: OutfitSuggestion.Bottom,
     temperatureUnit: TemperatureUnit,
     padding: PaddingValues,
     onAdd: (ClothesRule) -> Unit,
     onReplace: (Int, ClothesRule) -> Unit,
     onDelete: (Int) -> Unit,
+    onSetDefaultBottom: (OutfitSuggestion.Bottom) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -72,6 +75,42 @@ internal fun ClothesContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         ClothesRulesCard(rules, temperatureUnit, onAdd, onReplace, onDelete)
+        DefaultBottomCard(defaultBottom, onSetDefaultBottom)
+    }
+}
+
+/**
+ * Picks which bottom garment the home-screen outfit picker falls back to when
+ * no shorts / skirt / jeans rule fires — the user's "standard" trousers.
+ * Re-uses the [R.string.today_outfit_bottom_long_pants] / `_jeans` labels that
+ * the Today screen already displays so the picker reads the same string the
+ * user will see under the icon.
+ */
+@Composable
+private fun DefaultBottomCard(
+    selected: OutfitSuggestion.Bottom,
+    onSelect: (OutfitSuggestion.Bottom) -> Unit,
+) {
+    SectionCard(title = stringResource(R.string.settings_default_bottom_title)) {
+        Text(
+            text = stringResource(R.string.settings_default_bottom_description),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        RadioRow(
+            label = stringResource(R.string.today_outfit_bottom_long_pants),
+            selected = selected == OutfitSuggestion.Bottom.LONG_PANTS,
+            onSelect = { onSelect(OutfitSuggestion.Bottom.LONG_PANTS) },
+        )
+        RadioRow(
+            label = stringResource(R.string.today_outfit_bottom_jeans),
+            selected = selected == OutfitSuggestion.Bottom.JEANS,
+            onSelect = { onSelect(OutfitSuggestion.Bottom.JEANS) },
+        )
+        RadioRow(
+            label = stringResource(R.string.today_outfit_bottom_long_skirt),
+            selected = selected == OutfitSuggestion.Bottom.LONG_SKIRT,
+            onSelect = { onSelect(OutfitSuggestion.Bottom.LONG_SKIRT) },
+        )
     }
 }
 

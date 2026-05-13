@@ -605,7 +605,7 @@ displayed label localizes.
     <string name="today_outfit_top_thin_jacket">얇은 재킷</string>
     <string name="today_outfit_top_thick_coat">두꺼운 코트</string>
     <string name="today_outfit_top_puffer_jacket">패딩 재킷</string>
-    <string name="today_outfit_bottom_skirt">치마</string>
+    <string name="today_outfit_bottom_long_skirt">치마</string>
     <string name="today_outfit_bottom_jeans">청바지</string>
 
     <!-- Garment dropdown — additional items. -->

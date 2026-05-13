@@ -549,7 +549,7 @@ is unchanged; only the displayed label localizes.
     <string name="today_outfit_top_thin_jacket">Lekka kurtka</string>
     <string name="today_outfit_top_thick_coat">Gruby płaszcz</string>
     <string name="today_outfit_top_puffer_jacket">Kurtka puchowa</string>
-    <string name="today_outfit_bottom_skirt">Spódnica</string>
+    <string name="today_outfit_bottom_long_skirt">Spódnica</string>
     <string name="today_outfit_bottom_jeans">Dżinsy</string>
 
     <!-- Garment dropdown — additional items. -->

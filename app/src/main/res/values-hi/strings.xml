@@ -497,7 +497,7 @@ Not overridden by design:
     <string name="today_outfit_top_thin_jacket">पतली जैकेट</string>
     <string name="today_outfit_top_thick_coat">मोटा कोट</string>
     <string name="today_outfit_top_puffer_jacket">पफ़र जैकेट</string>
-    <string name="today_outfit_bottom_skirt">स्कर्ट</string>
+    <string name="today_outfit_bottom_long_skirt">स्कर्ट</string>
     <string name="today_outfit_bottom_jeans">जींस</string>
 
     <!-- Garment dropdown — additional items. -->

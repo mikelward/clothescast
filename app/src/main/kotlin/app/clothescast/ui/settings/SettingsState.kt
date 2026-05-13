@@ -4,6 +4,7 @@ import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -38,6 +39,7 @@ data class SettingsState(
     val distanceUnit: DistanceUnit = defaultDistanceUnitFor(Locale.getDefault()),
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val clothesRules: List<ClothesRule> = ClothesRule.DEFAULTS,
+    val defaultBottom: OutfitSuggestion.Bottom = OutfitSuggestion.Bottom.LONG_PANTS,
     val location: Location? = null,
     val useDeviceLocation: Boolean = false,
     val ttsEngine: TtsEngine = TtsEngine.DEVICE,

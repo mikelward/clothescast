@@ -83,4 +83,489 @@ to values/strings.xml (English).
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>
 
+    <!-- Insight prose: precip chance hedge and evening rain -->
+    <string name="insight_precip_chance">Kemungkinan %1$s %2$s.</string>
+    <string name="insight_tie_in_at_night">Bawa %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Malam ini, kemungkinan hujan pukul %2$s, bawa %1$s.</string>
+    <string name="insight_evening_rain">Malam ini, hujan pukul %1$s.</string>
+    <string name="insight_evening_rain_chance">Malam ini, kemungkinan hujan pukul %1$s.</string>
+
+    <!-- Device incompatibility error -->
+    <string name="error_device_incompatible">ClothesCast tidak dapat berjalan di perangkat ini — build Android Anda tidak memiliki fitur yang dibutuhkan oleh antarmuka aplikasi (Configuration.fontWeightAdjustment, diharapkan ada di Android 12 ke atas). Silakan hubungi produsen perangkat Anda untuk pembaruan sistem.</string>
+
+    <!-- Today screen -->
+    <string name="today_title">Hari ini</string>
+    <string name="today_open_settings">Buka Pengaturan</string>
+    <string name="today_more_options">Opsi lainnya</string>
+    <string name="today_report_a_bug">Laporkan bug</string>
+    <string name="today_refresh">Perbarui</string>
+    <string name="today_refresh_toast_daily">Memperbarui ClothesCast harian Anda — sebentar lagi akan muncul.</string>
+    <string name="today_refresh_toast_nightly">Memperbarui ClothesCast malam Anda — sebentar lagi akan muncul.</string>
+    <string name="today_empty_title">Belum ada ClothesCast</string>
+    <string name="today_empty_subtitle">ClothesCast pagi Anda akan muncul di sini setelah dibuat. Atur lokasi di Pengaturan, lalu ketuk Ambil sekarang.</string>
+    <string name="today_fetch_now">Ambil sekarang</string>
+    <string name="today_generated_at">Dibuat pukul %1$s</string>
+    <string name="today_location_unknown">Lokasi Anda</string>
+
+    <!-- Outfit card labels -->
+    <string name="today_outfit_title">Apa yang harus dipakai</string>
+    <string name="today_outfit_label_today">Hari ini</string>
+    <string name="today_outfit_label_tonight">Malam ini</string>
+    <string name="today_outfit_label_tomorrow">Besok</string>
+    <string name="today_outfit_top_polo">Polo</string>
+    <string name="today_outfit_top_thin_jacket">Jaket tipis</string>
+    <string name="today_outfit_top_thick_coat">Mantel tebal</string>
+    <string name="today_outfit_top_puffer_jacket">Jaket puffer</string>
+    <string name="today_outfit_bottom_skirt">Rok</string>
+    <string name="today_outfit_bottom_jeans">Celana jeans</string>
+
+    <!-- Outfit rationale dialog -->
+    <string name="today_rationale_title">Mengapa pakaian ini?</string>
+    <string name="today_rationale_show">Mengapa?</string>
+    <string name="today_rationale_dismiss">Mengerti</string>
+    <string name="today_rationale_threshold_decrease">Turunkan ambang batas 1 derajat</string>
+    <string name="today_rationale_threshold_increase">Naikkan ambang batas 1 derajat</string>
+    <string name="today_rationale_threshold_changed_hint">Perbarui untuk melihat pakaian baru.</string>
+    <string name="today_rationale_unavailable">Tidak ada penjelasan tersedia — buka aplikasi setelah pembaruan berikutnya.</string>
+    <string name="today_rationale_min_below_with_time">Suhu terasa minimum %1$s%2$s pukul %3$s, di bawah %4$s%2$s</string>
+    <string name="today_rationale_min_below">Suhu terasa minimum %1$s%2$s, di bawah %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Suhu terasa minimum %1$s%2$s pukul %3$s, setidaknya %4$s%2$s</string>
+    <string name="today_rationale_min_above">Suhu terasa minimum %1$s%2$s, setidaknya %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Suhu terasa maksimum hanya %1$s%2$s pukul %3$s, di bawah %4$s%2$s</string>
+    <string name="today_rationale_max_below">Suhu terasa maksimum hanya %1$s%2$s, di bawah %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Suhu terasa maksimum %1$s%2$s pukul %3$s, setidaknya %4$s%2$s</string>
+    <string name="today_rationale_max_above">Suhu terasa maksimum %1$s%2$s, setidaknya %3$s%2$s</string>
+
+    <!-- Home-screen widget -->
+    <string name="widget_label">Pakaian</string>
+    <string name="widget_description">Pakaian periode saat ini sekilas.</string>
+    <string name="widget_empty_title">Belum ada pakaian</string>
+    <string name="widget_empty_subtitle">Ketuk untuk membuka ClothesCast</string>
+
+    <!-- Forecast cards -->
+    <string name="today_forecast_title">Prakiraan per jam</string>
+    <string name="today_forecast_min_max">Terasa seperti %1$d – %2$d%3$s · Udara %4$d – %5$d%6$s</string>
+    <string name="today_forecast_legend_feels_like">Suhu terasa (%1$s) per jam · ketuk untuk beralih ke suhu udara</string>
+    <string name="today_forecast_legend_air">Suhu udara (%1$s) per jam · ketuk untuk beralih ke suhu terasa</string>
+    <string name="today_precipitation_title">Kemungkinan hujan</string>
+    <string name="today_precipitation_peak">Puncak %1$d%% pukul %2$s</string>
+    <string name="today_precipitation_dry">Tidak ada hujan hari ini</string>
+
+    <!-- Chart labels -->
+    <string name="today_chart_model_legend_label">Model:</string>
+    <string name="today_chart_main_line_label">Gabungan</string>
+    <string name="today_chart_divergence_summary">Model paling tidak sepakat pukul %1$s (Δ %2$.1f%3$s terasa seperti) — terutama %4$s, %5$s</string>
+    <string name="today_factor_air_temperature">suhu udara</string>
+    <string name="today_factor_wind_speed">kecepatan angin</string>
+    <string name="today_factor_cloud_cover">tutupan awan</string>
+    <string name="today_factor_humidity">kelembapan</string>
+
+    <!-- Wind / cloud / humidity diagnostic cards -->
+    <string name="today_wind_title">Kecepatan angin</string>
+    <string name="today_wind_subtitle">Kecepatan angin per model (%1$s) per jam</string>
+    <string name="today_cloud_title">Tutupan awan</string>
+    <string name="today_cloud_subtitle">Tutupan awan total per model (%) per jam</string>
+    <string name="today_humidity_title">Kelembapan</string>
+    <string name="today_humidity_subtitle">Kelembapan relatif per model (%) per jam</string>
+
+    <!-- Confidence -->
+    <string name="today_confidence_high">Kepercayaan tinggi — model utama sepakat</string>
+    <string name="today_confidence_medium">Kepercayaan sedang</string>
+    <string name="today_confidence_low">Kepercayaan rendah — prakiraan tidak sepakat</string>
+    <string name="today_confidence_spread">Selisih: %1$.1f°C, %2$.0f%% curah hujan di %3$d model</string>
+    <string name="today_low_confidence_callout_title">Prakiraan hari ini tidak sepakat</string>
+    <string name="today_low_confidence_callout_body">Rentang suhu %1$.1f°C dan kemungkinan hujan %2$.0f%% di %3$d model.</string>
+
+    <!-- Today status messages -->
+    <string name="today_working">Memproses — mengambil ClothesCast Anda…</string>
+    <string name="today_retrying">Percobaan terakhir gagal — mencoba lagi…</string>
+    <string name="today_failed_title">Percobaan terakhir gagal</string>
+    <string name="today_failed_unexpected_http">Kesalahan HTTP tak terduga dari layanan prakiraan.</string>
+    <string name="today_failed_unhandled">Terjadi kesalahan yang tidak terduga.</string>
+    <string name="today_failed_no_location">Kami tidak dapat menemukan lokasi Anda. Izinkan akses lokasi setiap saat, atau atur kota di Pengaturan.</string>
+    <string name="today_failed_show_details">Tampilkan detail</string>
+    <string name="today_failed_hide_details">Sembunyikan detail</string>
+
+    <!-- Location required prompt -->
+    <string name="today_location_required_title">Atur lokasi Anda</string>
+    <string name="today_location_required_body">ClothesCast perlu mengetahui lokasi Anda untuk mengambil prakiraan. Izinkan akses lokasi setiap saat, atau pilih kota.</string>
+    <string name="today_location_required_action">Buka pengaturan lokasi</string>
+
+    <!-- Crash banner -->
+    <string name="today_crash_banner_title">Sesi terakhir mengalami crash</string>
+    <string name="today_crash_banner_body">Laporan crash disimpan di perangkat Anda. Bagikan agar bug dapat diperbaiki? Tidak ada yang dikirim hingga Anda memilih tujuan.</string>
+    <string name="today_crash_banner_share">Bagikan laporan</string>
+    <string name="today_crash_banner_dismiss">Tutup</string>
+
+    <!-- Update banners -->
+    <string name="today_update_available_title">Pembaruan tersedia</string>
+    <string name="today_update_available_body">Versi terbaru ClothesCast tersedia di Play Store.</string>
+    <string name="today_update_available_action">Perbarui</string>
+    <string name="today_update_available_dismiss">Nanti saja</string>
+    <string name="today_update_downloaded_body">Pembaruan telah diunduh. Mulai ulang untuk menyelesaikan instalasi.</string>
+    <string name="today_update_downloaded_action">Mulai ulang</string>
+
+    <!-- Telemetry notice banner -->
+    <string name="today_telemetry_notice_title">Laporan crash + penggunaan aktif</string>
+    <string name="today_telemetry_notice_body">ClothesCast mengirimkan laporan crash anonim dan analitik penggunaan untuk membantu memperbaiki bug. Tidak ada data kalender, lokasi, atau teks wawasan yang disertakan. Matikan kapan saja di Pengaturan.</string>
+    <string name="today_telemetry_notice_open_settings">Buka Pengaturan Privasi</string>
+    <string name="today_telemetry_notice_dismiss">Tutup</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Selamat datang di ClothesCast</string>
+    <string name="onboarding_subtitle">Tiga pilihan cepat dan Anda siap. Sesuaikan nanti di Pengaturan.</string>
+    <string name="onboarding_subtitle_tv">Dua pilihan cepat dan Anda siap. Sesuaikan nanti di Pengaturan.</string>
+    <string name="onboarding_notifications_title">Notifikasi</string>
+    <string name="onboarding_notifications_description">Diperlukan untuk mengirimkan ClothesCast harian Anda.</string>
+    <string name="onboarding_notifications_grant">Izinkan notifikasi</string>
+    <string name="onboarding_location_title">Lokasi</string>
+    <string name="onboarding_location_description">Ambil prakiraan untuk lokasi perkiraan Anda.</string>
+    <string name="onboarding_location_grant">Izinkan akses lokasi</string>
+    <string name="onboarding_location_grant_background">Izinkan akses lokasi setiap saat</string>
+    <string name="onboarding_location_background_needed">Satu langkah lagi: ClothesCast membutuhkan \'Izinkan setiap saat\' agar prakiraan pagi dapat membaca lokasi Anda saat aplikasi ditutup.</string>
+    <string name="onboarding_location_denied_hint">Izin lokasi ditolak. Anda dapat memilih kota secara manual.</string>
+    <string name="onboarding_location_enter_manual">Masukkan lokasi secara manual</string>
+    <string name="onboarding_location_enter_manual_hint">Anda dapat memasukkan lokasi secara manual jika menolak izin lokasi atau lokasi perangkat Anda salah.</string>
+    <string name="onboarding_location_using_device">Menggunakan lokasi perangkat Anda setiap pagi.</string>
+    <string name="onboarding_gemini_title">Kunci API Gemini</string>
+    <string name="onboarding_gemini_description">Gunakan Gemini untuk mendapatkan suara berkualitas tinggi.</string>
+    <string name="onboarding_step_done">Selesai</string>
+    <string name="onboarding_skip">Lewati untuk sekarang</string>
+    <string name="onboarding_continue">Lanjutkan</string>
+    <string name="onboarding_pair_from_phone">Pasangkan dari ponsel</string>
+
+    <!-- TV pairing screen -->
+    <string name="pairing_title">Pindai untuk memasangkan</string>
+    <string name="pairing_instructions">Pindai kode QR ini dengan ponsel Anda, lalu tempelkan kunci API Gemini Anda ke formulir yang terbuka. Kunci akan dikirim langsung ke TV ini melalui Wi-Fi rumah Anda — tanpa relay cloud.</string>
+    <string name="pairing_qr_description">Kode QR yang mengarah ke %1$s</string>
+    <string name="pairing_cancel">Batal</string>
+    <string name="pairing_received">Kunci diterima — menyimpan…</string>
+    <string name="pairing_timeout_title">Jendela pemasangan kedaluwarsa</string>
+    <string name="pairing_timeout_body">Jendela pemasangan 5 menit telah tertutup. Ketuk Coba lagi untuk membuka jendela baru.</string>
+    <string name="pairing_error_title">Tidak dapat memulai pemasangan</string>
+    <string name="pairing_error_body">Pastikan TV terhubung ke Wi-Fi, lalu coba lagi.</string>
+    <string name="pairing_retry">Coba lagi</string>
+
+    <!-- Settings root -->
+    <string name="settings_title">Pengaturan</string>
+    <string name="settings_back">Kembali</string>
+    <string name="settings_root_voice">Suara</string>
+    <string name="settings_root_schedule">Jadwal</string>
+    <string name="settings_root_region">Wilayah</string>
+    <string name="settings_root_clothes">Pakaian</string>
+    <string name="settings_root_display">Tampilan</string>
+    <string name="settings_root_location">Lokasi</string>
+    <string name="settings_root_calendar">Kalender</string>
+    <string name="settings_root_privacy">Privasi</string>
+    <string name="settings_root_about">Tentang</string>
+    <string name="settings_root_schedule_subtitle">Notifikasi dan Waktu</string>
+    <string name="settings_root_clothes_subtitle">Suhu dan Pakaian</string>
+    <string name="settings_root_region_subtitle">Bahasa dan Satuan</string>
+    <string name="settings_root_voice_subtitle">Penyedia dan Aksen</string>
+    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_location_subtitle">Deteksi otomatis atau pilih kota</string>
+    <string name="settings_root_calendar_subtitle">Acara hari ini</string>
+    <string name="settings_root_privacy_subtitle">Laporan crash + penggunaan</string>
+
+    <!-- Display settings -->
+    <string name="settings_display_theme_title">Tema</string>
+    <string name="settings_display_theme_system">Ikuti sistem</string>
+    <string name="settings_display_theme_light">Terang</string>
+    <string name="settings_display_theme_dark">Gelap</string>
+    <string name="settings_display_charts_title">Grafik</string>
+    <string name="settings_display_model_spread_label">Tampilkan selisih model di grafik</string>
+    <string name="settings_display_model_spread_description">Menampilkan prakiraan per jam setiap model cuaca utama di grafik suhu dan hujan. Berguna untuk melihat ketidakpastian prakiraan.</string>
+
+    <!-- Privacy settings -->
+    <string name="settings_privacy_telemetry_title">Laporan crash + penggunaan</string>
+    <string name="settings_privacy_telemetry_label">Kirim data crash + penggunaan</string>
+    <string name="settings_privacy_telemetry_description">Mengirimkan laporan crash anonim dan statistik penggunaan agregat untuk membantu pengembang memperbaiki bug dan memutuskan fitur mana yang perlu dipertahankan.</string>
+    <string name="settings_privacy_telemetry_limits">Tidak pernah dikirim: acara kalender, koordinat lokasi atau nama tempat, teks wawasan atau teks notifikasi, kunci API, GPS presisi, ID iklan.</string>
+    <string name="settings_privacy_open_policy">Baca kebijakan privasi lengkap</string>
+
+    <!-- API key settings -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Gunakan Gemini untuk mendapatkan suara berkualitas tinggi.</string>
+    <string name="settings_api_key_status_set">Kunci Gemini telah dikonfigurasi.</string>
+    <string name="settings_api_key_status_unset">Dapatkan kunci API gratis di aistudio.google.com</string>
+    <string name="settings_api_key_placeholder">Tempelkan kunci API Gemini Anda</string>
+    <string name="settings_api_key_save">Simpan kunci Gemini</string>
+    <string name="settings_api_key_clear">Hapus kunci Gemini tersimpan</string>
+
+    <!-- Location settings -->
+    <string name="settings_location_title">Lokasi</string>
+    <string name="settings_location_use_device">Gunakan lokasi perangkat</string>
+    <string name="settings_location_use_device_description">Lokasi perkiraan terakhir</string>
+    <string name="settings_location_detecting">Mendeteksi…</string>
+    <string name="settings_location_grant_background">Izinkan</string>
+    <string name="settings_location_background_banner_title">Diperlukan lokasi setiap saat</string>
+    <string name="settings_location_background_banner_body">Tanpanya, prakiraan pagi tidak dapat membaca lokasi Anda.</string>
+    <string name="settings_location_unset">Belum ada lokasi</string>
+    <string name="settings_location_manual_override">Lokasi salah? Atur secara manual</string>
+    <string name="settings_location_manual_override_disclosure">Memilih kota akan menonaktifkan deteksi otomatis.</string>
+    <string name="settings_location_clear">Hapus lokasi</string>
+    <string name="settings_location_search_title">Cari lokasi</string>
+    <string name="settings_location_query_label">Kota atau tempat</string>
+    <string name="settings_location_search">Cari</string>
+    <string name="settings_location_searching">Mencari…</string>
+    <string name="settings_location_no_results">Tidak ada hasil.</string>
+    <string name="settings_location_rationale_title">Akses lokasi</string>
+    <string name="settings_location_rationale_body">ClothesCast membaca lokasi Anda untuk mengambil prakiraan lokal.</string>
+    <string name="settings_location_rationale_continue">Lanjutkan</string>
+    <string name="settings_location_rationale_dismiss">Nanti saja</string>
+    <string name="settings_location_background_rationale_title">Izinkan setiap saat</string>
+    <string name="settings_location_background_rationale_body">Izinkan ClothesCast membaca lokasi Anda saat ditutup agar prakiraan pagi diperbarui tepat waktu.</string>
+    <string name="settings_location_background_rationale_continue">Buka Pengaturan</string>
+    <string name="settings_location_background_rationale_dismiss">Nanti saja</string>
+    <string name="settings_location_background_denied_title">Akses setiap saat tidak diberikan</string>
+    <string name="settings_location_background_denied_body">Tanpa \'Izinkan setiap saat\', prakiraan pagi tidak dapat diperbarui otomatis.</string>
+    <string name="settings_location_background_denied_open">Buka Pengaturan</string>
+    <string name="settings_location_background_denied_keep">Nanti saja</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_title">ClothesCast Harian</string>
+    <string name="settings_schedule_time_label">Waktu</string>
+    <string name="settings_schedule_days_label">Hari dalam seminggu</string>
+    <string name="settings_daily_mention_evening_events">Sebutkan acara malam</string>
+    <string name="settings_tonight_title">ClothesCast Malam</string>
+    <string name="settings_tonight_description">ClothesCast kedua di malam hari yang mencakup cuaca malam ini. Di malam yang tenang, notifikasi tidak muncul, atau sama sekali tidak muncul jika "Hanya beri tahu saat ada acara malam" diaktifkan; di malam dengan acara, notifikasi berbunyi dan (jika pengiriman dengan suara diaktifkan) dibacakan.</string>
+    <string name="settings_tonight_enabled">Tampilkan ClothesCast malam</string>
+    <string name="settings_tonight_time_label">Waktu</string>
+    <string name="settings_tonight_days_label">Hari dalam seminggu</string>
+    <string name="settings_tonight_notify_only_on_events">Hanya beri tahu saat ada acara malam</string>
+
+    <!-- Delivery settings -->
+    <string name="settings_delivery_label">Pengiriman</string>
+    <string name="settings_delivery_notification_only">Notifikasi saja</string>
+    <string name="settings_delivery_tts_only">Dibacakan saja</string>
+    <string name="settings_delivery_notification_and_tts">Notifikasi dan dibacakan</string>
+
+    <!-- TTS / voice settings -->
+    <string name="settings_tts_engine_title">Mesin suara</string>
+    <string name="settings_tts_engine_description">Gemini terdengar jauh lebih alami daripada suara perangkat tetapi membutuhkan panggilan jaringan saat berbicara dan menggunakan kunci API Anda untuk sintesis (satu panggilan singkat per ClothesCast yang dibacakan). Beralih ke suara perangkat jika Gemini gagal.</string>
+    <string name="settings_tts_engine_device">Perangkat (offline, gratis)</string>
+    <string name="settings_tts_engine_gemini">Gemini (kualitas tinggi, online)</string>
+    <string name="settings_tts_voice_label">Suara</string>
+    <string name="settings_tts_voice_dismiss">Selesai</string>
+    <string name="settings_tts_style_label">Gaya</string>
+    <string name="settings_tts_style_weather_forecaster">Prakirawan Cuaca</string>
+    <string name="settings_tts_style_pirate">Bajak Laut</string>
+    <string name="settings_tts_style_cowboy">Koboi</string>
+    <string name="settings_tts_style_shakespearean">Shakespearean</string>
+    <string name="settings_tts_style_surfer">Peselancar</string>
+    <string name="settings_tts_style_parent">Orang Tua</string>
+    <string name="settings_tts_style_child">Anak</string>
+    <string name="settings_tts_style_teenager">Remaja</string>
+    <string name="settings_tts_style_grandparent">Kakek/Nenek</string>
+    <string name="settings_tts_style_kids_host">Pembawa Acara Anak</string>
+    <string name="settings_tts_style_radio_host">Pembawa Acara Bincang</string>
+    <string name="settings_tts_style_morning_dj">DJ Pagi</string>
+    <string name="settings_tts_style_science_teacher">Guru Sains</string>
+    <string name="settings_tts_style_historian">Sejarawan</string>
+    <string name="settings_tts_style_sportscaster">Komentator Olahraga</string>
+    <string name="settings_tts_style_stadium_announcer">Penyiar Stadion</string>
+    <string name="settings_tts_style_storyteller">Pendongeng</string>
+    <string name="settings_tts_style_fitness_instructor">Instruktur Kebugaran</string>
+    <string name="settings_tts_style_morning_presenter">Presenter Radio Pagi</string>
+    <string name="settings_tts_style_custom">Kustom…</string>
+    <string name="settings_tts_style_custom_label">Direktif kustom</string>
+    <string name="settings_tts_style_custom_placeholder">mis. Bacakan berikut sebagai pustakawan yang berbisik dengan tegas</string>
+    <string name="settings_tts_device_voice_label">Suara perangkat</string>
+    <string name="settings_tts_device_voice_auto">Otomatis (terbaik untuk aksen)</string>
+    <string name="settings_tts_device_voice_currently">Saat ini: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Memuat…</string>
+    <string name="settings_tts_device_voice_network">Jaringan</string>
+    <string name="settings_tts_device_voice_offline">Offline</string>
+    <string name="settings_tts_install_google_hint">Instal mesin text-to-speech Google untuk suara berkualitas lebih tinggi.</string>
+    <string name="settings_tts_install_google_button">Instal Google TTS</string>
+    <string name="settings_tts_voice_locale_description">Mengatur aksen suara yang diucapkan. Tidak mengubah teks yang ditampilkan.</string>
+    <string name="settings_tts_test">Uji suara</string>
+    <string name="settings_tts_test_in_flight">Menguji — mohon tunggu…</string>
+
+    <!-- Voice locale names in Indonesian -->
+    <string name="settings_tts_voice_locale_en_us">Inggris (Amerika Serikat)</string>
+    <string name="settings_tts_voice_locale_en_gb">Inggris (Britania Raya)</string>
+    <string name="settings_tts_voice_locale_en_au">Inggris (Australia)</string>
+    <string name="settings_tts_voice_locale_en_ca">Inggris (Kanada)</string>
+    <string name="settings_tts_voice_locale_en_za">Inggris (Afrika Selatan)</string>
+    <string name="settings_tts_voice_locale_de_de">Jerman (Jerman)</string>
+    <string name="settings_tts_voice_locale_de_at">Jerman (Austria)</string>
+    <string name="settings_tts_voice_locale_de_ch">Jerman (Swiss)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Prancis (Prancis)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Prancis (Kanada)</string>
+    <string name="settings_tts_voice_locale_it_it">Italia (Italia)</string>
+    <string name="settings_tts_voice_locale_es_es">Spanyol (Spanyol)</string>
+    <string name="settings_tts_voice_locale_es_mx">Spanyol (Meksiko)</string>
+    <string name="settings_tts_voice_locale_ca_es">Katalan (Spanyol)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Rusia (Rusia)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Polandia (Polandia)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Kroasia (Kroasia)</string>
+    <string name="settings_tts_voice_locale_sl_si">Slovenia (Slovenia)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Serbia (Latin)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Serbia (Sirilik)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Bulgaria (Bulgaria)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Ceko (Ceko)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Slowakia (Slowakia)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Hungaria (Hungaria)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Rumania (Rumania)</string>
+    <string name="settings_tts_voice_locale_el_gr">Yunani (Yunani)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Ukraina (Ukraina)</string>
+    <string name="settings_tts_voice_locale_pt_br">Portugis (Brasil)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Portugis (Portugal)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Belanda (Belanda)</string>
+    <string name="settings_tts_voice_locale_sv_se">Swedia (Swedia)</string>
+    <string name="settings_tts_voice_locale_da_dk">Denmark (Denmark)</string>
+    <string name="settings_tts_voice_locale_nb_no">Norwegia Bokmål (Norwegia)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Finlandia (Finlandia)</string>
+    <string name="settings_tts_voice_locale_et_ee">Estonia (Estonia)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Latvia (Latvia)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Lituania (Lituania)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Turki (Turki)</string>
+    <string name="settings_tts_voice_locale_ms_my">Melayu (Malaysia)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Filipina (Filipina)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Swahili (Kenya)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Vietnam (Vietnam)</string>
+    <string name="settings_tts_voice_locale_th_th">Thai (Thailand)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Tionghoa (Sederhana)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Tionghoa (Tradisional)</string>
+    <string name="settings_tts_voice_locale_hi_in">Hindi (India)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Bengali (Bangladesh)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Jepang (Jepang)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Korea (Korea Selatan)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Arab (Arab Saudi)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Arab (Mesir)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Arab (Uni Emirat Arab)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Arab (Maroko)</string>
+    <string name="settings_tts_voice_locale_he_il">Ibrani (Israel)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Persia (Iran)</string>
+    <string name="settings_tts_voice_locale_sq_al">Albania (Albania)</string>
+    <string name="settings_tts_voice_locale_am_et">Amhara (Ethiopia)</string>
+
+    <!-- Region / language settings -->
+    <string name="settings_region_language_title">Bahasa</string>
+    <string name="settings_region_language_description">Mengatur bahasa teks yang ditampilkan dan notifikasi.</string>
+    <string name="settings_region_language_system">Ikuti lokal sistem</string>
+
+    <!-- Language names in Indonesian -->
+    <string name="settings_region_language_en_us">Inggris (Amerika Serikat)</string>
+    <string name="settings_region_language_en_gb">Inggris (Britania Raya)</string>
+    <string name="settings_region_language_en_au">Inggris (Australia)</string>
+    <string name="settings_region_language_en_ca">Inggris (Kanada)</string>
+    <string name="settings_region_language_en_za">Inggris (Afrika Selatan)</string>
+    <string name="settings_region_language_de_de">Jerman (Jerman)</string>
+    <string name="settings_region_language_de_at">Jerman (Austria)</string>
+    <string name="settings_region_language_de_ch">Jerman (Swiss)</string>
+    <string name="settings_region_language_fr_fr">Prancis (Prancis)</string>
+    <string name="settings_region_language_fr_ca">Prancis (Kanada)</string>
+    <string name="settings_region_language_it_it">Italia (Italia)</string>
+    <string name="settings_region_language_es_es">Spanyol (Spanyol)</string>
+    <string name="settings_region_language_es_mx">Spanyol (Meksiko)</string>
+    <string name="settings_region_language_ca_es">Katalan (Spanyol)</string>
+    <string name="settings_region_language_ru_ru">Rusia (Rusia)</string>
+    <string name="settings_region_language_pl_pl">Polandia (Polandia)</string>
+    <string name="settings_region_language_hr_hr">Kroasia (Kroasia)</string>
+    <string name="settings_region_language_sl_si">Slovenia (Slovenia)</string>
+    <string name="settings_region_language_sr_rs">Serbia (Latin)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Serbia (Sirilik)</string>
+    <string name="settings_region_language_bg_bg">Bulgaria (Bulgaria)</string>
+    <string name="settings_region_language_cs_cz">Ceko (Ceko)</string>
+    <string name="settings_region_language_sk_sk">Slowakia (Slowakia)</string>
+    <string name="settings_region_language_hu_hu">Hungaria (Hungaria)</string>
+    <string name="settings_region_language_ro_ro">Rumania (Rumania)</string>
+    <string name="settings_region_language_el_gr">Yunani (Yunani)</string>
+    <string name="settings_region_language_uk_ua">Ukraina (Ukraina)</string>
+    <string name="settings_region_language_pt_br">Portugis (Brasil)</string>
+    <string name="settings_region_language_pt_pt">Portugis (Portugal)</string>
+    <string name="settings_region_language_nl_nl">Belanda (Belanda)</string>
+    <string name="settings_region_language_sv_se">Swedia (Swedia)</string>
+    <string name="settings_region_language_da_dk">Denmark (Denmark)</string>
+    <string name="settings_region_language_nb_no">Norwegia Bokmål (Norwegia)</string>
+    <string name="settings_region_language_fi_fi">Finlandia (Finlandia)</string>
+    <string name="settings_region_language_et_ee">Estonia (Estonia)</string>
+    <string name="settings_region_language_lv_lv">Latvia (Latvia)</string>
+    <string name="settings_region_language_lt_lt">Lituania (Lituania)</string>
+    <string name="settings_region_language_tr_tr">Turki (Turki)</string>
+    <string name="settings_region_language_ms_my">Melayu (Malaysia)</string>
+    <string name="settings_region_language_fil_ph">Filipina (Filipina)</string>
+    <string name="settings_region_language_sw_ke">Swahili (Kenya)</string>
+    <string name="settings_region_language_vi_vn">Vietnam (Vietnam)</string>
+    <string name="settings_region_language_th_th">Thai (Thailand)</string>
+    <string name="settings_region_language_zh_cn">Tionghoa (Sederhana)</string>
+    <string name="settings_region_language_zh_tw">Tionghoa (Tradisional)</string>
+    <string name="settings_region_language_hi_in">Hindi (India)</string>
+    <string name="settings_region_language_bn_bd">Bengali (Bangladesh)</string>
+    <string name="settings_region_language_ja_jp">Jepang (Jepang)</string>
+    <string name="settings_region_language_ko_kr">Korea (Korea Selatan)</string>
+    <string name="settings_region_language_ar_sa">Arab (Arab Saudi)</string>
+    <string name="settings_region_language_he_il">Ibrani (Israel)</string>
+    <string name="settings_region_language_fa_ir">Persia (Iran)</string>
+    <string name="settings_region_language_sq_al">Albania (Albania)</string>
+    <string name="settings_region_language_am_et">Amhara (Ethiopia)</string>
+
+    <!-- Temperature and distance unit settings -->
+    <string name="settings_temperature_unit_title">Satuan suhu</string>
+    <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
+    <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="settings_distance_unit_title">Satuan jarak</string>
+    <string name="settings_distance_unit_kilometers">Kilometer</string>
+    <string name="settings_distance_unit_miles">Mil</string>
+
+    <!-- Clothes settings -->
+    <string name="settings_clothes_title">Aturan pakaian</string>
+    <string name="settings_clothes_description">Jika prakiraan melewati salah satu ambang batas ini, item tersebut akan muncul di ClothesCast harian Anda.</string>
+
+    <!-- Garment names -->
+    <string name="garment_puffer">Jaket puffer</string>
+    <string name="garment_thin_jacket">Jaket tipis</string>
+    <string name="garment_skirt">Rok</string>
+    <string name="garment_polo">Polo</string>
+
+    <!-- Notification channels -->
+    <string name="notification_channel_daily_insight_name">ClothesCast Harian</string>
+    <string name="notification_channel_daily_insight_description">Ringkasan cuaca pagi yang Anda pilih.</string>
+    <string name="notification_daily_insight_title">ClothesCast hari ini</string>
+    <string name="notification_channel_tonight_insight_default_name">ClothesCast Malam (dengan acara)</string>
+    <string name="notification_channel_tonight_insight_default_description">Ringkasan cuaca malam saat Anda memiliki acara kalender malam ini. Memainkan suara notifikasi default Anda.</string>
+    <string name="notification_channel_tonight_insight_silent_name">ClothesCast Malam (senyap)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Ringkasan cuaca malam saat malam Anda kosong. Diposting secara senyap — Anda dapat melihatnya di layar kunci, tetapi tidak akan mengeluarkan suara.</string>
+    <string name="notification_tonight_insight_title">ClothesCast malam ini</string>
+    <string name="notification_channel_weather_alerts_name">Peringatan cuaca ekstrem</string>
+    <string name="notification_channel_weather_alerts_description">Peringatan prioritas tinggi untuk cuaca buruk atau ekstrem yang mempengaruhi area Anda. Dikirimkan segera setelah pengambilan harian mendeteksinya.</string>
+    <string name="notification_weather_alert_title">Peringatan cuaca: %1$s</string>
+
+    <!-- Notification permission settings -->
+    <string name="settings_notification_permission_title">Notifikasi diblokir</string>
+    <string name="settings_notification_permission_description">Tanpa izin notifikasi, ClothesCast harian Anda tidak punya tempat untuk tampil. Izinkan agar ClothesCast dapat mengirim notifikasi besok pagi.</string>
+    <string name="settings_notification_permission_grant">Izinkan notifikasi</string>
+
+    <!-- Calendar settings -->
+    <string name="settings_calendar_title">Kalender</string>
+    <string name="settings_calendar_use_events">Gunakan acara kalender hari ini</string>
+    <string name="settings_calendar_description_off">Sesuaikan prakiraan pagi dengan acara hari ini — hanya judul dan waktu yang digunakan, tidak ada yang meninggalkan perangkat.</string>
+    <string name="settings_calendar_description_on">Menyesuaikan prakiraan pagi dengan acara hari ini. Hanya judul dan waktu yang digunakan; tidak ada yang meninggalkan perangkat.</string>
+    <string name="settings_calendar_grant_permission">Izinkan akses kalender</string>
+    <string name="settings_calendar_open_settings">Izin kalender ditolak. Berikan dari Pengaturan sistem.</string>
+
+    <!-- Debug settings -->
+    <string name="settings_debug_title">Debug (hanya build debug)</string>
+    <string name="settings_debug_description">Jalankan pipeline ClothesCast harian segera. Berguna untuk verifikasi tanpa menunggu waktu terjadwal.</string>
+    <string name="settings_debug_fire_now">Jalankan ClothesCast sekarang</string>
+    <string name="settings_debug_fire_toast">Worker ClothesCast diantrekan</string>
+
+    <!-- About settings -->
+    <string name="settings_about_title">Tentang</string>
+    <string name="settings_about_version">Versi %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · build %1$s</string>
+    <string name="settings_about_source">Kode sumber di GitHub</string>
+    <string name="settings_about_dontkillmyapp">Pembatasan latar belakang (dontkillmyapp.com)</string>
+    <string name="settings_about_share_bug_report">Bagikan laporan bug</string>
+    <string name="settings_about_version_copied">Versi disalin ke papan klip</string>
+
+    <!-- Bug report consent dialog -->
+    <string name="bug_report_consent_title">Bagikan laporan bug?</string>
+    <string name="bug_report_consent_body">Ini membantu mendiagnosis masalah. Laporan ini berisi informasi pribadi sensitif, termasuk lokasi, pengaturan aplikasi, dan aktivitas terkini Anda. Anda dapat meninjau dan mengeditnya sebelum dikirim.</string>
+    <string name="bug_report_consent_dont_show_again">Jangan tampilkan lagi</string>
+    <string name="bug_report_consent_continue">Lanjutkan</string>
+    <string name="bug_report_consent_cancel">Batal</string>
+
 </resources>

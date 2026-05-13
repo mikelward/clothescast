@@ -504,7 +504,7 @@ default English (matching values-pl / values-uk).
     <string name="today_confidence_spread">Raspršenost: %1$.1f°C, %2$.0f%% kiše za %3$d modela</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">Prognoze se danas razlikuju</string>
+    <string name="today_low_confidence_callout_title">Prognoze se razlikuju</string>
     <string name="today_low_confidence_callout_body">Temperatura varira za %1$.1f°C, a verovatnoća kiše za %2$.0f%% između %3$d modela.</string>
 
     <!-- Work-status banners. -->

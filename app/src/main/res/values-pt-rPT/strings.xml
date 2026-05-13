@@ -669,7 +669,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_humidity_title">Humidade</string>
     <string name="today_humidity_subtitle">Humidade relativa por modelo (%%) por hora</string>
 
-    <string name="today_low_confidence_callout_title">As previsões discordam hoje</string>
+    <string name="today_low_confidence_callout_title">As previsões discordam</string>
     <string name="today_low_confidence_callout_body">A temperatura varia %1$.1f°C e a possibilidade de chuva %2$.0f%% entre %3$d modelos.</string>
 
     <string name="today_telemetry_notice_title">Relatórios de falhas e uso estão ativos</string>

@@ -176,7 +176,7 @@ What is NOT overridden, by design:
     <string name="today_confidence_spread">Skirtumas: %1$.1f°C, %2$.0f%% krituliai tarp %3$d modelių</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">Prognozės šiandien nesutampa</string>
+    <string name="today_low_confidence_callout_title">Prognozės nesutampa</string>
     <string name="today_low_confidence_callout_body">Temperatūra skiriasi %1$.1f°C, o lietaus tikimybė — %2$.0f%% tarp %3$d modelių.</string>
 
     <!-- Status messages. -->

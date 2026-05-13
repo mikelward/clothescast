@@ -176,7 +176,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_confidence_spread">Dispersie: %1$.1f°C, %2$.0f%% precipitații la %3$d modele</string>
 
     <!-- Low-confidence callout. -->
-    <string name="today_low_confidence_callout_title">Prognozele diferă astăzi</string>
+    <string name="today_low_confidence_callout_title">Prognozele diferă</string>
     <string name="today_low_confidence_callout_body">Temperatura variază cu %1$.1f°C, iar probabilitatea de ploaie cu %2$.0f%% la %3$d modele.</string>
 
     <!-- Status strings. -->

@@ -91,7 +91,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_confidence_low">Baixa confiança — les previsions discrepan</string>
     <string name="today_confidence_spread">Dispersió: %1$.1f°C, %2$.0f%% precipitació en %3$d models</string>
 
-    <string name="today_low_confidence_callout_title">Les previsions discrepan avui</string>
+    <string name="today_low_confidence_callout_title">Les previsions discrepan</string>
     <string name="today_low_confidence_callout_body">La temperatura varia %1$.1f°C i la probabilitat de pluja %2$.0f%% en %3$d models.</string>
 
     <string name="today_working">Treballant — obtenint el teu ClothesCast…</string>

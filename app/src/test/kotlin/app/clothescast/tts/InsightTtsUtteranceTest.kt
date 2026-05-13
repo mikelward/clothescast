@@ -43,7 +43,7 @@ class InsightTtsUtteranceTest {
         )
 
         utterance.locale.toLanguageTag() shouldBe "en-GB"
-        utterance.text shouldBe "Today will be cold to cool. Wear a jumper and jacket."
+        utterance.text shouldBe "Today, it will be cold to cool. Wear a jumper and jacket."
     }
 
     private companion object {

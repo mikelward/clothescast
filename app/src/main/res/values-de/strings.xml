@@ -471,6 +471,9 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- "Denk an Regenschirm für heute Abend." / "…, Regen um 21 Uhr." -->
     <string name="insight_tie_in">Denk an %1$s für heute Abend.</string>
+    <!-- Counterpart used on a TONIGHT insight where the band lead already
+         says "Heute Abend …"; drops "heute Abend" so it isn't repeated. -->
+    <string name="insight_tie_in_at_night">Denk an %1$s.</string>
     <string name="insight_tie_in_with_rain">Denk an %1$s für heute Abend, Regen um %2$s.</string>
     <!-- "15 Uhr" / "15 Uhr 30" — read naturally by German TTS. -->
     <string name="insight_time_hour">%1$d Uhr</string>

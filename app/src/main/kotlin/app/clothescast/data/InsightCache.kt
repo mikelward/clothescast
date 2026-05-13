@@ -311,10 +311,15 @@ class InsightCache(
 
     @Serializable
     private data class EveningEventTieInDto(
-        // Nullable on the bare-rain emission path (per-model rain spotted, no
-        // clothes rule triggered). Legacy payloads written before the bare-rain
-        // path landed always carry an item, so the nullable type is forward-
-        // compat only — there's no migration shape to worry about.
+        // The current shape carries every night-only clothes item the tie-in
+        // names ("a jacket and coat"). Defaults to an empty list so payloads
+        // written before this field landed decode without an explicit list.
+        val items: List<String> = emptyList(),
+        // Kept for back-compat: pre-multi-item payloads stored the single
+        // chosen item here. On read we fold it into [items] when [items] is
+        // empty; on write we also populate it with the first list entry so a
+        // downgraded build reading new payloads still surfaces at least one
+        // item.
         val item: String? = null,
         val rainSecondOfDay: Int? = null,
         // Nullable for back-compat: payloads written before the field landed
@@ -323,7 +328,7 @@ class InsightCache(
         val likelihood: String? = null,
     ) {
         fun toDomain(): EveningEventTieInClause = EveningEventTieInClause(
-            item = item,
+            items = items.ifEmpty { item?.let { listOf(it) }.orEmpty() },
             rainTime = rainSecondOfDay?.let { LocalTime.ofSecondOfDay(it.toLong()) },
             likelihood = likelihood
                 ?.let { runCatching { PrecipLikelihood.valueOf(it) }.getOrNull() }
@@ -467,7 +472,12 @@ class InsightCache(
         calendarTieIn = calendarTieIn?.let { CalendarTieInDto(it.item) },
         eveningEventTieIn = eveningEventTieIn?.let {
             EveningEventTieInDto(
-                item = it.item,
+                items = it.items,
+                // Mirror the first item into the legacy single-item field so a
+                // downgraded build reading this payload still surfaces something
+                // ("a jacket" instead of nothing) — the older reader doesn't
+                // know about the multi-item list.
+                item = it.items.firstOrNull(),
                 rainSecondOfDay = it.rainTime?.toSecondOfDay(),
                 likelihood = it.likelihood.name,
             )

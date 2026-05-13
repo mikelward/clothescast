@@ -316,7 +316,10 @@ class InsightCacheTest {
                 clothes = ClothesClause(listOf("sweater", "jacket", "shorts", "umbrella")),
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
                 calendarTieIn = CalendarTieInClause("umbrella"),
-                eveningEventTieIn = EveningEventTieInClause("jacket", rainTime = LocalTime.of(21, 0)),
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("jacket", "coat"),
+                    rainTime = LocalTime.of(21, 0),
+                ),
             ),
         )
 
@@ -327,15 +330,15 @@ class InsightCacheTest {
 
     @Test
     fun `bare-rain evening tie-in round-trips through the cache`() = runTest {
-        // The new emission shape: item null (no clothes rule triggered),
-        // rainTime set, POSSIBLE likelihood from a single-model rain
-        // signal. The DTO has to preserve all three across a serde cycle —
-        // a regression that nulled likelihood would silently downgrade
-        // every cached bare-rain clause to LIKELY on read.
+        // The bare-rain emission shape: empty items (no clothes rule triggered),
+        // rainTime set, POSSIBLE likelihood from a single-model rain signal.
+        // The DTO has to preserve all three across a serde cycle — a regression
+        // that nulled likelihood would silently downgrade every cached
+        // bare-rain clause to LIKELY on read.
         val bareRain = sample.copy(
             summary = sample.summary.copy(
                 eveningEventTieIn = EveningEventTieInClause(
-                    item = null,
+                    items = emptyList(),
                     rainTime = LocalTime.of(21, 0),
                     likelihood = PrecipLikelihood.POSSIBLE,
                 ),
@@ -345,9 +348,41 @@ class InsightCacheTest {
         subject.store(bareRain)
 
         val tie = subject.latest.first()?.summary?.eveningEventTieIn
-        tie?.item shouldBe null
+        tie?.items shouldBe emptyList()
         tie?.rainTime shouldBe LocalTime.of(21, 0)
         tie?.likelihood shouldBe PrecipLikelihood.POSSIBLE
+    }
+
+    @Test
+    fun `legacy single-item evening tie-in payload decodes into the items list`() = runTest {
+        // Pre-multi-item payloads stored the chosen tie-in item in a singular
+        // "item" field. The DTO keeps that field for read back-compat and
+        // folds it into [items] on toDomain so a cached morning insight from
+        // an older build doesn't lose its evening tie-in item on read.
+        val legacyJson = """
+            {
+              "summary": {
+                "period": "TODAY",
+                "band": {"low": "COOL", "high": "MILD"},
+                "eveningEventTieIn": {
+                  "item": "jacket",
+                  "rainSecondOfDay": 75600,
+                  "likelihood": "LIKELY"
+                }
+              },
+              "recommendedItems": [],
+              "generatedAtEpochMillis": ${now.toEpochMilli()},
+              "forDateEpochDays": ${today.toEpochDay()}
+            }
+        """.trimIndent()
+        dataStore.edit {
+            it[stringPreferencesKey("latest_insight_v5")] = legacyJson
+        }
+
+        val tie = subject.latest.first()?.summary?.eveningEventTieIn
+        tie?.items shouldBe listOf("jacket")
+        tie?.rainTime shouldBe LocalTime.of(21, 0)
+        tie?.likelihood shouldBe PrecipLikelihood.LIKELY
     }
 
     @Test

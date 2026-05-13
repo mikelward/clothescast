@@ -25,6 +25,7 @@ import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.repository.ForecastBundle
 import app.clothescast.core.domain.repository.WeatherRepository
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.nulls.shouldBeNull
@@ -566,7 +567,7 @@ class GenerateDailyInsightTest {
 
         val tie = result.insight.summary.eveningEventTieIn
         tie.shouldNotBeNull()
-        tie!!.item shouldBe "jacket"
+        tie!!.items shouldBe listOf("jacket")
         tie.rainTime shouldBe LocalTime.of(21, 0)
     }
 
@@ -635,7 +636,7 @@ class GenerateDailyInsightTest {
 
         val tie = result.insight.summary.eveningEventTieIn
         tie.shouldNotBeNull()
-        tie!!.item shouldBe "jacket"
+        tie!!.items shouldBe listOf("jacket")
         tie.rainTime shouldBe LocalTime.of(2, 0)
     }
 
@@ -722,7 +723,7 @@ class GenerateDailyInsightTest {
 
         val tie = result.insight.summary.eveningEventTieIn
         tie.shouldNotBeNull()
-        tie!!.item shouldBe "jacket"
+        tie!!.items shouldBe listOf("jacket")
         tie.rainTime shouldBe LocalTime.of(21, 0)
     }
 
@@ -772,7 +773,59 @@ class GenerateDailyInsightTest {
 
         val tie = result.insight.summary.eveningEventTieIn
         tie.shouldNotBeNull()
-        tie!!.item shouldBe "jacket"
+        tie!!.items shouldBe listOf("jacket")
+        tie.rainTime.shouldBeNull()
+    }
+
+    @Test
+    fun `evening tie-in carries every night-only item, not just the first`() = runTest {
+        // Today triggers sweater (mild daytime); the night drops to freezing
+        // and triggers sweater + jacket + coat. The delta is jacket + coat —
+        // both surface in the tie-in's items list so the morning insight can
+        // render "Tonight, bring a jacket and coat." rather than dropping
+        // coat silently.
+        val zone = ZoneId.of("Europe/London")
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 17.0, 16.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 17.0, 16.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val evening = listOf(
+            HourlyForecast(LocalTime.of(19, 0), 5.0, 3.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(21, 0), 4.0, 2.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val baseHourly = today.copy(
+            hourly = daytime + evening,
+            precipitationProbabilityMaxPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val diner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(23, 0),
+            location = "Restaurant",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(diner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val rules = listOf(
+            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
+            ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)),
+            ClothesRule("coat", ClothesRule.TemperatureBelow(6.0)),
+        )
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = rules,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        val tie = result.insight.summary.eveningEventTieIn
+        tie.shouldNotBeNull()
+        tie!!.items shouldBe listOf("jacket", "coat")
         tie.rainTime.shouldBeNull()
     }
 
@@ -819,7 +872,7 @@ class GenerateDailyInsightTest {
 
         val tie = result.insight.summary.eveningEventTieIn
         tie.shouldNotBeNull()
-        tie!!.item.shouldBeNull()
+        tie!!.items.shouldBeEmpty()
         tie.rainTime shouldBe LocalTime.of(21, 0)
     }
 
@@ -1174,8 +1227,8 @@ class GenerateDailyInsightTest {
 
         val tie = result.insight.summary.eveningEventTieIn
         tie.shouldNotBeNull()
-        // Bare-rain emission: no item, rain time set, POSSIBLE tier.
-        tie!!.item shouldBe null
+        // Bare-rain emission: no items, rain time set, POSSIBLE tier.
+        tie!!.items shouldBe emptyList()
         tie.rainTime shouldBe LocalTime.of(21, 0)
         tie.likelihood shouldBe PrecipLikelihood.POSSIBLE
     }

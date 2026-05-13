@@ -194,7 +194,7 @@ class RenderInsightSummaryTest {
         // folding clothes + precip into the clause. The renderer just passes
         // it through.
         val tieIn = EveningEventTieInClause(
-            item = "jacket",
+            items = listOf("jacket"),
             rainTime = LocalTime.of(21, 0),
             likelihood = PrecipLikelihood.POSSIBLE,
         )
@@ -342,24 +342,7 @@ class RenderInsightSummaryTest {
     }
 
     @Test
-    fun `calendar tie-in prefers umbrella over the first listed item when both apply`() {
-        val today = mildToday.copy(
-            precipitationProbabilityMaxPct = 60.0,
-            condition = WeatherCondition.RAIN,
-            hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.RAIN)),
-        )
-        val event = CalendarEvent("standup", LocalTime.of(14, 0), LocalTime.of(16, 0))
-        val out = subject(
-            today, yesterday, listOf(sweaterRule, umbrellaRule),
-            events = listOf(event),
-            period = ForecastPeriod.TONIGHT,
-        ).calendarTieIn
-        out.shouldNotBeNull()
-        out!!.item shouldBe "umbrella"
-    }
-
-    @Test
-    fun `calendar tie-in falls back to the first item when umbrella is not on the list`() {
+    fun `calendar tie-in picks the first triggered item in rule order`() {
         val today = mildToday.copy(
             precipitationProbabilityMaxPct = 60.0,
             condition = WeatherCondition.RAIN,

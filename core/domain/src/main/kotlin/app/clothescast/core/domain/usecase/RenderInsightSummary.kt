@@ -264,11 +264,11 @@ class RenderInsightSummary {
         // never want a calendar event title flowing through to off-device TTS
         // (the prose is fed to Gemini over the BYOK key).
         events.firstOrNull { it.overlaps(peak.time) } ?: return null
-        // Prefer "umbrella" when the user has it on their list — that's the clothes
-        // item the precip-peak overlap was actually motivated by. Otherwise just
-        // take the first triggered item, mirroring rule 4's ordering.
-        val item = items.firstOrNull { it.equals("umbrella", ignoreCase = true) } ?: items.first()
-        return CalendarTieInClause(item = item)
+        // Pick the first triggered item, mirroring rule 4's ordering. The formatter
+        // silences accessories (umbrella) before they reach the rendered prose, so
+        // there's no point picking a specifically-precip-motivated item here — until
+        // the accessory catalog lands, calendar tie-ins are garment-only.
+        return CalendarTieInClause(item = items.first())
     }
 
     private data class PeakPrecip(

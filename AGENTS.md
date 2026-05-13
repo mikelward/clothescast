@@ -25,14 +25,18 @@ new rule the first time something bites you, not the third.
   step, build wiring) alongside a feature, split it: infra PR first, feature
   PR rebased on top. Reviewers read smaller PRs faster and the feature PR's
   diff actually shows the feature.
-- **Restructure unmerged commits freely.** Anything still on a feature
-  branch (not yet merged to `main`) is fair game to reshape — amend, squash,
-  reorder, split, drop, rebase onto a different base. When you iterate on
-  the same branch and the result is a tidier story (review fixes squashed
-  into the commit they fix, infra ahead of feature, no "fix typo" noise),
-  do that locally and force-push instead of piling fixup commits on the
-  end. Only `main`'s history is sacred — feature branches are scratch space
-  until they merge.
+- **Clean up unmerged commits before pushing for review.** Anything still
+  on a feature branch (not yet merged to `main`) is scratch space — amend,
+  squash, reorder, split, drop, rebase onto a different base as needed.
+  Before each push, the branch's commit graph should read as the story
+  you'd want a reviewer to see: review fixes squashed into the commit
+  they fix, infra ahead of feature, no "fix typo" / "address review" /
+  "wip" / "revert previous" / "lint" noise, no half-applied changes
+  later undone. Iterating on the same branch? Reshape locally and
+  force-push instead of piling fixup commits on the end. Default to
+  squashing fixups into their parent unless the user has explicitly
+  asked you to preserve a particular commit boundary. Only `main`'s
+  history is sacred — feature branches stay malleable until they merge.
 - **Stacked PRs:** the lower PR (infra) targets `main`; the upper PR
   (feature) targets the lower PR's branch. When the lower PR merges to
   `main`, rebase the upper one onto `main` — its diff cleanly shrinks to
@@ -72,6 +76,13 @@ new rule the first time something bites you, not the third.
   rationale, privacy-relevant changes, and test plan for everything now
   in the diff. If nothing material changed, no update is needed — but
   check, don't assume.
+- **Tidy the commit history before pushing for review.** Pair the
+  title/body sync above with a commit-graph sync: squash fixups into
+  their parent, drop "wip" / "lint" / "revert previous" noise, reorder
+  so infra leads feature, and force-push the cleaned-up branch. The
+  full rule lives under "Commits and PRs" — the short version is "what
+  a reviewer sees on this push should be the story you want them to
+  read, not your scratch work."
 - **Never leave a review comment thread silently dismissed.** Either reply on
   the thread *or* resolve it — the user wants every thread to end in one of
   those two states, not "left open and ignored." When you think a comment is

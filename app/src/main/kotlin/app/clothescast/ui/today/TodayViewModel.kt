@@ -17,6 +17,7 @@ import app.clothescast.work.FetchAndNotifyWorker
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalTime
@@ -146,9 +147,16 @@ internal fun mergeWorkStatus(a: WorkStatus, b: WorkStatus): WorkStatus = when {
 }
 
 class TodayViewModel(
-    insightCache: InsightCache,
+    private val insightCache: InsightCache,
     workManager: WorkManager,
     private val settingsRepository: SettingsRepository,
+    /**
+     * Pushes the home-screen widget after a clothes-rule nudge so the icon
+     * out on the launcher refreshes in the same frame as the Today screen.
+     * Defaulted to a no-op so pure-VM tests don't need an Android Context;
+     * the Activity wires `OutfitWidget().updateAll(applicationContext)`.
+     */
+    private val refreshOutfitWidget: suspend () -> Unit = {},
 ) : ViewModel() {
     // Combine status across both unique-work names so the spinner / failure
     // banner reflects an in-flight tonight refresh too — the Refresh button
@@ -185,20 +193,35 @@ class TodayViewModel(
      * persisted in the rule's existing unit.
      */
     fun adjustClothesRuleThreshold(ruleItem: String, deltaC: Double) {
-        viewModelScope.launch { settingsRepository.adjustClothesRuleThreshold(ruleItem, deltaC) }
+        viewModelScope.launch {
+            settingsRepository.adjustClothesRuleThreshold(ruleItem, deltaC)
+            // Repick the cached outfit against the updated threshold so the
+            // home-screen icon catches up in the same frame as the rationale
+            // dialog's number — without this, a `+1°` tap that flips the icon
+            // tier wouldn't visibly do anything until the next refresh.
+            val prefs = settingsRepository.preferences.first()
+            insightCache.recomputeOutfits(prefs.clothesRules, prefs.defaultBottom)
+            refreshOutfitWidget()
+        }
     }
 
     class Factory(
         private val insightCache: InsightCache,
         private val workManager: WorkManager,
         private val settingsRepository: SettingsRepository,
+        private val refreshOutfitWidget: suspend () -> Unit,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             require(modelClass.isAssignableFrom(TodayViewModel::class.java)) {
                 "Unknown ViewModel: ${modelClass.name}"
             }
-            return TodayViewModel(insightCache, workManager, settingsRepository) as T
+            return TodayViewModel(
+                insightCache = insightCache,
+                workManager = workManager,
+                settingsRepository = settingsRepository,
+                refreshOutfitWidget = refreshOutfitWidget,
+            ) as T
         }
     }
 }

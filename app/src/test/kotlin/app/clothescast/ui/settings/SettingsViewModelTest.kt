@@ -4,8 +4,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
+import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.data.SecureKeyStore
@@ -235,6 +237,45 @@ class SettingsViewModelTest {
         refreshSubject.setUseDeviceLocation(false)
         refreshSubject.state.first { !it.useDeviceLocation }
         refreshCount shouldBe 1
+    }
+
+    @Test
+    fun `clothes-rule edits and setDefaultBottom kick the cached-outfit refresh`() = runTest {
+        // The Activity wires this lambda to a recomputeOutfits + widget-update
+        // pair so the home-screen icon flips immediately on every clothes-rule
+        // change. Without the refresh, settings writes would only land on the
+        // Today screen at the next worker run — the bug Codex flagged on PR
+        // #419.
+        var refreshCount = 0
+        val refreshSubject = SettingsViewModel(
+            settingsRepository = settingsRepository,
+            keyStore = keyStore,
+            rearmAlarm = { _, _ -> },
+            cancelAlarm = { _ -> },
+            geocodingClient = OpenMeteoGeocodingClient(
+                HttpClient(MockEngine { respond("""{"results":[]}""") }) {
+                    install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) }
+                },
+            ),
+            voiceEnumerator = EmptyVoiceEnumerator,
+            refreshCachedOutfits = { refreshCount++ },
+        )
+
+        refreshSubject.addClothesRule(ClothesRule("hat", ClothesRule.TemperatureBelow(0.0)))
+        refreshSubject.state.first { it.clothesRules.any { rule -> rule.item == "hat" } }
+        refreshCount shouldBe 1
+
+        refreshSubject.replaceClothesRule(0, ClothesRule("scarf", ClothesRule.TemperatureBelow(0.0)))
+        refreshSubject.state.first { it.clothesRules.first().item == "scarf" }
+        refreshCount shouldBe 2
+
+        refreshSubject.deleteClothesRule(0)
+        refreshSubject.state.first { it.clothesRules.none { rule -> rule.item == "scarf" } }
+        refreshCount shouldBe 3
+
+        refreshSubject.setDefaultBottom(OutfitSuggestion.Bottom.JEANS)
+        refreshSubject.state.first { it.defaultBottom == OutfitSuggestion.Bottom.JEANS }
+        refreshCount shouldBe 4
     }
 
     @Test

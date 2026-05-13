@@ -19,6 +19,7 @@ import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.model.VoiceLocale
+import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
 import app.clothescast.work.FetchAndNotifyWorker
@@ -45,6 +46,15 @@ class SettingsViewModel(
     private val cancelAlarm: (ForecastPeriod) -> Unit,
     private val geocodingClient: OpenMeteoGeocodingClient,
     private val voiceEnumerator: TtsVoiceEnumerator,
+    /**
+     * Cache the home-screen / widget read [Insight.outfit] from. Settings VM
+     * mutates it directly after each clothes-rule edit (add / replace / delete
+     * a rule, flip the default-bottom picker) so the icon updates in the same
+     * frame instead of waiting for the next scheduled or manual refresh.
+     * Defaulted to a no-op for pure-VM tests that don't care about the cache;
+     * the Activity wires the real [InsightCache].
+     */
+    private val refreshCachedOutfits: suspend () -> Unit = {},
     /**
      * Pushes the chosen [Region] into the platform locale machinery
      * (Locale.setDefault + LocaleManager / attachBaseContext cache) so the
@@ -254,6 +264,7 @@ class SettingsViewModel(
     fun addClothesRule(rule: ClothesRule) {
         viewModelScope.launch {
             settingsRepository.setClothesRules(_state.value.clothesRules + rule)
+            refreshCachedOutfits()
         }
     }
 
@@ -262,6 +273,7 @@ class SettingsViewModel(
             val current = _state.value.clothesRules
             if (index !in current.indices) return@launch
             settingsRepository.setClothesRules(current.toMutableList().apply { this[index] = rule })
+            refreshCachedOutfits()
         }
     }
 
@@ -270,11 +282,15 @@ class SettingsViewModel(
             val current = _state.value.clothesRules
             if (index !in current.indices) return@launch
             settingsRepository.setClothesRules(current.toMutableList().apply { removeAt(index) })
+            refreshCachedOutfits()
         }
     }
 
     fun setDefaultBottom(bottom: OutfitSuggestion.Bottom) {
-        viewModelScope.launch { settingsRepository.setDefaultBottom(bottom) }
+        viewModelScope.launch {
+            settingsRepository.setDefaultBottom(bottom)
+            refreshCachedOutfits()
+        }
     }
 
     fun selectLocation(location: Location) {
@@ -393,6 +409,7 @@ class SettingsViewModel(
         private val voiceEnumerator: TtsVoiceEnumerator,
         private val applyAppLocale: (Region) -> Unit,
         private val refreshLocationCache: () -> Unit,
+        private val refreshCachedOutfits: suspend () -> Unit,
         private val workManager: WorkManager? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
@@ -401,15 +418,16 @@ class SettingsViewModel(
                 "Unknown ViewModel: ${modelClass.name}"
             }
             return SettingsViewModel(
-                settingsRepository,
-                keyStore,
-                rearmAlarm,
-                cancelAlarm,
-                geocodingClient,
-                voiceEnumerator,
-                applyAppLocale,
-                refreshLocationCache,
-                workManager,
+                settingsRepository = settingsRepository,
+                keyStore = keyStore,
+                rearmAlarm = rearmAlarm,
+                cancelAlarm = cancelAlarm,
+                geocodingClient = geocodingClient,
+                voiceEnumerator = voiceEnumerator,
+                refreshCachedOutfits = refreshCachedOutfits,
+                applyAppLocale = applyAppLocale,
+                refreshLocationCache = refreshLocationCache,
+                workManager = workManager,
             ) as T
         }
     }

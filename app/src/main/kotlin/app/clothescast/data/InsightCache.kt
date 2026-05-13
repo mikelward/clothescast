@@ -10,6 +10,8 @@ import app.clothescast.core.domain.model.AlertClause
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.CalendarTieInClause
 import app.clothescast.core.domain.model.ClothesClause
+import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.ForecastConfidence
@@ -78,6 +80,103 @@ class InsightCache(
 
     suspend fun store(insight: Insight) {
         dataStore.edit { it[keyFor(insight.period)] = json.encodeToString(insight.toDto()) }
+    }
+
+    /**
+     * Re-derives the [Insight.outfit] / [Insight.outfitRationale] for every cached
+     * slot against the supplied [clothesRules] and [defaultBottom], and writes the
+     * updated insight back. Used by the settings UI after a clothes-rule edit so
+     * the home-screen icon flips immediately instead of waiting for the next
+     * worker run; without this, changing the picker has no visible effect on the
+     * current forecast until the next scheduled or manual refresh.
+     *
+     * Each slot's [Insight.nextOutfit] is recomputed from the *paired* slot's
+     * hourly data — TODAY's `nextOutfit` is TONIGHT's pick, so we read TONIGHT's
+     * hourly to re-derive it (and vice versa is moot — TONIGHT's `nextOutfit` is
+     * tomorrow's pick, which we don't cache, so it stays as the worker last
+     * wrote it). Without this, the home screen's "Today + Tonight" preview row
+     * would flip the today icon but leave the tonight icon stale, making the
+     * setting look half-applied.
+     *
+     * Slots without enough hourly entries to reconstruct a [DailyForecast] are
+     * skipped — the rest of the insight stays as-is and the picker just inherits
+     * the stale outfit until the next worker run.
+     */
+    suspend fun recomputeOutfits(
+        clothesRules: List<ClothesRule>,
+        defaultBottom: OutfitSuggestion.Bottom,
+    ) {
+        dataStore.edit { prefs ->
+            // Read both slots up front so TODAY's `nextOutfit` can borrow
+            // TONIGHT's hourly when re-deriving.
+            val todayInsight = prefs[TODAY_INSIGHT_JSON]?.let { decodeInsight(it) }
+            val tonightInsight = prefs[TONIGHT_INSIGHT_JSON]?.let { decodeInsight(it) }
+            todayInsight?.recomputed(
+                clothesRules = clothesRules,
+                defaultBottom = defaultBottom,
+                nextSlot = tonightInsight,
+            )?.let { prefs[TODAY_INSIGHT_JSON] = json.encodeToString(it.toDto()) }
+            tonightInsight?.recomputed(
+                clothesRules = clothesRules,
+                defaultBottom = defaultBottom,
+                nextSlot = null,
+            )?.let { prefs[TONIGHT_INSIGHT_JSON] = json.encodeToString(it.toDto()) }
+        }
+    }
+
+    private fun decodeInsight(raw: String): Insight? =
+        runCatching { json.decodeFromString<InsightDto>(raw).toDomain() }.getOrNull()
+
+    /**
+     * Returns this insight with its `outfit` and (when [nextSlot] supplies the
+     * paired hourly) `nextOutfit` re-derived against the supplied rules. Returns
+     * `null` when this slot has no hourly data — there's nothing to recompute
+     * against, so the caller leaves the slot alone.
+     *
+     * When [nextSlot] is null or hourly-less, this slot's existing `nextOutfit`
+     * / `nextOutfitRationale` are preserved verbatim — only the next worker run
+     * can refresh them.
+     */
+    private fun Insight.recomputed(
+        clothesRules: List<ClothesRule>,
+        defaultBottom: OutfitSuggestion.Bottom,
+        nextSlot: Insight?,
+    ): Insight? {
+        val selfForecast = toReconstructedForecast() ?: return null
+        val nextForecast = nextSlot?.toReconstructedForecast()
+        return copy(
+            outfit = OutfitSuggestion.fromForecast(selfForecast, clothesRules, defaultBottom),
+            outfitRationale = OutfitSuggestion.explainFromForecast(selfForecast, clothesRules),
+            nextOutfit = if (nextForecast != null) {
+                OutfitSuggestion.fromForecast(nextForecast, clothesRules, defaultBottom)
+            } else nextOutfit,
+            nextOutfitRationale = if (nextForecast != null) {
+                OutfitSuggestion.explainFromForecast(nextForecast, clothesRules)
+            } else nextOutfitRationale,
+        )
+    }
+
+    /**
+     * Rebuilds the daily-aggregate fields ([DailyForecast.feelsLikeMinC] etc.)
+     * from the cached hourly entries. Rule conditions only look at the min /
+     * max / probability aggregates and at `hourly` itself, so a forecast
+     * reconstructed this way is sufficient for [OutfitSuggestion.fromForecast]
+     * even though we don't cache `precipitationMmTotal` or the high-level
+     * [WeatherCondition] (the picker doesn't read either).
+     */
+    private fun Insight.toReconstructedForecast(): DailyForecast? {
+        if (hourly.isEmpty()) return null
+        return DailyForecast(
+            date = forDate,
+            temperatureMinC = hourly.minOf { it.temperatureC },
+            temperatureMaxC = hourly.maxOf { it.temperatureC },
+            feelsLikeMinC = hourly.minOf { it.feelsLikeC },
+            feelsLikeMaxC = hourly.maxOf { it.feelsLikeC },
+            precipitationProbabilityMaxPct = hourly.maxOf { it.precipitationProbabilityPct },
+            precipitationMmTotal = 0.0,
+            condition = WeatherCondition.CLEAR,
+            hourly = hourly,
+        )
     }
 
     suspend fun forToday(today: LocalDate): Insight? = forPeriodToday(today, ForecastPeriod.TODAY)

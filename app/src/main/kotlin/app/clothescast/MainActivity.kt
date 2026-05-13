@@ -24,6 +24,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.WorkManager
@@ -41,6 +42,7 @@ import app.clothescast.ui.settings.SettingsViewModel
 import app.clothescast.ui.theme.ClothesCastTheme
 import app.clothescast.ui.today.TodayScreen
 import app.clothescast.ui.today.TodayViewModel
+import app.clothescast.widget.OutfitWidget
 import app.clothescast.work.FetchAndNotifyWorker
 import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -214,6 +216,9 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                     insightCache = app.insightCache,
                     workManager = WorkManager.getInstance(app),
                     settingsRepository = app.settingsRepository,
+                    refreshOutfitWidget = {
+                        runCatching { OutfitWidget().updateAll(context.applicationContext) }
+                    },
                 ),
             )
             TodayScreen(
@@ -264,6 +269,21 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                         // 10am after the morning run already fired doesn't
                         // double-notify.
                         FetchAndNotifyWorker.enqueueLocationCacheRefresh(context)
+                    },
+                    refreshCachedOutfits = {
+                        // Re-pick the home-screen outfit against the just-written
+                        // clothes-rule preferences so the icon flips immediately
+                        // when the user edits a rule or the default-bottom
+                        // picker. The cache is the canonical source for the
+                        // Today screen and the widget; mutating it here means
+                        // the user doesn't have to wait for the next scheduled
+                        // or manual refresh to see their choice take effect.
+                        // We also push the widget update — the cache flow
+                        // wakes the Today screen automatically, but the widget
+                        // only refreshes when we explicitly tell it to.
+                        val prefs = app.settingsRepository.preferences.first()
+                        app.insightCache.recomputeOutfits(prefs.clothesRules, prefs.defaultBottom)
+                        runCatching { OutfitWidget().updateAll(context.applicationContext) }
                     },
                     workManager = WorkManager.getInstance(app),
                 ),

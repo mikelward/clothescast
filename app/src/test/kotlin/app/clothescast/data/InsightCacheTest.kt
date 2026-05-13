@@ -9,6 +9,7 @@ import app.clothescast.core.domain.model.AlertClause
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.CalendarTieInClause
 import app.clothescast.core.domain.model.ClothesClause
+import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.ForecastConfidence
@@ -383,6 +384,135 @@ class InsightCacheTest {
         tie?.items shouldBe listOf("jacket")
         tie?.rainTime shouldBe LocalTime.of(21, 0)
         tie?.likelihood shouldBe PrecipLikelihood.LIKELY
+    }
+
+    @Test
+    fun `recomputeOutfits flips the cached fallback bottom to the new default`() = runTest {
+        // Hourly never crosses the shorts (24°C) or jeans (no rule) thresholds,
+        // so the outfit picker lands on the user's chosen defaultBottom.
+        // Storing with LONG_PANTS, then recomputing with JEANS, should rewrite
+        // the cached outfit's bottom — that's the Today screen / widget fix
+        // for changing the picker after the day's insight has been generated.
+        val hourly = listOf(
+            HourlyForecast(
+                time = LocalTime.of(7, 0),
+                temperatureC = 14.0,
+                feelsLikeC = 13.0,
+                precipitationProbabilityPct = 5.0,
+                condition = WeatherCondition.CLEAR,
+            ),
+            HourlyForecast(
+                time = LocalTime.of(14, 0),
+                temperatureC = 19.0,
+                feelsLikeC = 18.0,
+                precipitationProbabilityPct = 5.0,
+                condition = WeatherCondition.CLEAR,
+            ),
+        )
+        val stored = sample.copy(
+            hourly = hourly,
+            outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+        )
+        subject.store(stored)
+
+        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
+
+        subject.latest.first()?.outfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
+    }
+
+    @Test
+    fun `recomputeOutfits also flips the today slot's nextOutfit using tonight's hourly`() = runTest {
+        // The "Today + Tonight" home-screen row reads both icons off the same
+        // cached TODAY insight (today's `outfit` + that insight's `nextOutfit`),
+        // not off the separate TONIGHT slot. Flipping the default-bottom picker
+        // therefore has to recompute *both* fields against the new prefs, or
+        // the user sees the today icon switch while the tonight icon next to it
+        // stays on the old pick — the setting looks half-applied.
+        val mildHourly = listOf(
+            HourlyForecast(
+                time = LocalTime.of(7, 0),
+                temperatureC = 14.0,
+                feelsLikeC = 13.0,
+                precipitationProbabilityPct = 5.0,
+                condition = WeatherCondition.CLEAR,
+            ),
+            HourlyForecast(
+                time = LocalTime.of(14, 0),
+                temperatureC = 19.0,
+                feelsLikeC = 18.0,
+                precipitationProbabilityPct = 5.0,
+                condition = WeatherCondition.CLEAR,
+            ),
+        )
+        val todayInsight = sample.copy(
+            period = ForecastPeriod.TODAY,
+            hourly = mildHourly,
+            outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+            nextOutfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+        )
+        val tonightInsight = sample.copy(
+            period = ForecastPeriod.TONIGHT,
+            hourly = mildHourly,
+            outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+        )
+        subject.store(todayInsight)
+        subject.store(tonightInsight)
+
+        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
+
+        val refreshedToday = subject.forPeriodToday(today, ForecastPeriod.TODAY)
+        refreshedToday?.outfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
+        refreshedToday?.nextOutfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
+    }
+
+    @Test
+    fun `recomputeOutfits preserves todays nextOutfit when tonight slot is absent`() = runTest {
+        // No TONIGHT slot cached → no paired hourly to recompute TODAY's
+        // nextOutfit against. The existing nextOutfit is preserved verbatim
+        // (the next worker run is what'll repair it) so we don't accidentally
+        // drop the user's tomorrow preview while waiting on the worker.
+        val mildHourly = listOf(
+            HourlyForecast(
+                time = LocalTime.of(7, 0),
+                temperatureC = 14.0,
+                feelsLikeC = 13.0,
+                precipitationProbabilityPct = 5.0,
+                condition = WeatherCondition.CLEAR,
+            ),
+        )
+        val storedNext = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS)
+        subject.store(
+            sample.copy(
+                period = ForecastPeriod.TODAY,
+                hourly = mildHourly,
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+                nextOutfit = storedNext,
+            ),
+        )
+
+        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
+
+        val refreshed = subject.forPeriodToday(today, ForecastPeriod.TODAY)
+        refreshed?.outfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
+        refreshed?.nextOutfit shouldBe storedNext
+    }
+
+    @Test
+    fun `recomputeOutfits leaves a slot without hourly data alone`() = runTest {
+        // No hourly entries → no way to reconstruct the day's aggregates, so
+        // the recompute can't re-evaluate rules. The slot's outfit stays as
+        // last written and refreshes on the next worker run.
+        val storedBottom = OutfitSuggestion.Bottom.LONG_PANTS
+        subject.store(
+            sample.copy(
+                hourly = emptyList(),
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, storedBottom),
+            ),
+        )
+
+        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
+
+        subject.latest.first()?.outfit?.bottom shouldBe storedBottom
     }
 
     @Test

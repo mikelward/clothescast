@@ -1,32 +1,36 @@
 package app.clothescast.core.domain.model
 
 /**
- * Blends per-hour values from the consulted models into a single
- * [HourlyForecast] series, replacing the corresponding [bestMatch] entry
- * with the arithmetic mean across models. Used to drive the chart's
- * "Combined" main line and — crucially — the clothes-rule + insight-prose
- * pipeline, so on days when Open-Meteo's `best_match` auto-selection
- * diverges from the consulted ECMWF / GFS / ICON consensus (the case the
- * user keeps catching: best_match underestimating rain that two real
- * models agreed on), the recommendation follows the consensus rather
- * than the outlier.
+ * Blends per-hour values from the consulted models — including Open-Meteo's
+ * `best_match` overlay — into a single [HourlyForecast] series, replacing
+ * the corresponding [bestMatch] entry with the arithmetic mean across
+ * models. Used to drive the chart's "Combined" main line and — crucially —
+ * the clothes-rule + insight-prose pipeline, so on days when best_match
+ * diverges from the consulted ECMWF / GFS / ICON consensus (the rain case
+ * the user kept catching), the recommendation follows the broader picture
+ * rather than the single auto-selected line.
  *
  * Mechanics:
- *   - At each hour t, collect values from every consulted model
- *     (anything in [PerModelHourly.byModel] *except*
- *     [PerModelHourly.BEST_MATCH_MODEL_ID] — best_match is excluded from
- *     its own consensus by design, since it's the meta-model we're
- *     trying to outvote).
- *   - When two or more consulted models reported an entry at hour t,
- *     replace best_match's value with their mean. With fewer than two,
- *     keep best_match — a single-model "consensus" isn't a consensus.
+ *   - At each hour t, collect values from every model in
+ *     [PerModelHourly.byModel] — best_match counts as a regular model
+ *     here. Open-Meteo's auto-selection is presumably location-tuned and
+ *     more accurate on average than a naive mean of three competitors;
+ *     pulling it out of the consensus would dilute that signal. The
+ *     implicit consequence is that whichever underlying model best_match
+ *     resolved to (often one of the same models we list separately) is
+ *     effectively double-weighted in the mean. We accept that as the
+ *     price of letting the consulted models still outvote best_match
+ *     when they aggressively agree against it.
+ *   - When two or more models reported an entry at hour t, replace
+ *     best_match's value with their mean. With fewer than two, keep
+ *     best_match — a one-model "consensus" isn't a consensus.
  *   - [HourlyForecast.condition] (CLEAR / RAIN / etc.) stays from
  *     best_match for now; modal aggregation of weather codes across
  *     models is a follow-up — see TODO in [PerModelHourly].
  *
  * Returns null when nothing was blended: [perModel] is null, fewer than
- * two consulted models reported overall, or every hour fell back to
- * best_match. The caller should keep the original [bestMatch] (and its
+ * two models reported overall, or every hour fell back to best_match.
+ * The caller should keep the original [bestMatch] (and its
  * upstream-supplied daily aggregates) in that case rather than calling
  * [withAggregatesFrom] on data that hasn't actually changed.
  */
@@ -35,12 +39,11 @@ fun blendConsensusHourly(
     perModel: PerModelHourly?,
 ): List<HourlyForecast>? {
     if (perModel == null) return null
-    val consulted = perModel.byModel
-        .filterKeys { it != PerModelHourly.BEST_MATCH_MODEL_ID }
-    if (consulted.size < 2) return null
+    val models = perModel.byModel
+    if (models.size < 2) return null
 
     val byHour = mutableMapOf<java.time.LocalTime, MutableList<PerModelHour>>()
-    for (entries in consulted.values) {
+    for (entries in models.values) {
         for (entry in entries) {
             byHour.getOrPut(entry.time) { mutableListOf() }.add(entry)
         }

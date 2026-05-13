@@ -42,9 +42,9 @@ class ConsensusBlendTest {
     }
 
     @Test
-    fun `returns null when fewer than two consulted models reported`() {
-        // Only one consulted model present — single-model "consensus" is
-        // meaningless, fall back to best_match.
+    fun `returns null when fewer than two models reported`() {
+        // Only one model present — single-model "consensus" is meaningless,
+        // fall back to best_match.
         val perModel = PerModelHourly(
             byModel = mapOf(
                 "ecmwf_ifs04" to listOf(perModel(12, apparent = 14.0, air = 15.0, precip = 80.0)),
@@ -55,10 +55,14 @@ class ConsensusBlendTest {
     }
 
     @Test
-    fun `excludes the best-match overlay from its own consensus`() {
-        // best_match appears as an overlay entry — must not be averaged in
-        // when computing the consensus, otherwise we'd just be averaging
-        // best_match against itself plus one consulted model.
+    fun `includes the best-match overlay in the consensus mean`() {
+        // best_match is one of the models in [byModel] and gets folded into
+        // the mean alongside the consulted models. The user picked this
+        // posture deliberately: Open-Meteo's auto-pick is presumably
+        // location-tuned and excluding it would dilute that signal, even at
+        // the cost of implicitly double-weighting whichever underlying
+        // model best_match resolved to.
+        val best = listOf(hour(12, temp = 10.0, feels = 9.0, precip = 30.0))
         val perModel = PerModelHourly(
             byModel = mapOf(
                 "ecmwf_ifs04" to listOf(perModel(12, apparent = 14.0, air = 15.0, precip = 80.0)),
@@ -68,15 +72,18 @@ class ConsensusBlendTest {
             ),
         )
 
-        // Only one *consulted* model → returns null (fall back to best_match).
-        blendConsensusHourly(listOf(hour(12, temp = 10.0)), perModel).shouldBeNull()
+        val blended = blendConsensusHourly(best, perModel).shouldNotBeNull()
+
+        blended[0].temperatureC shouldBe (12.5 plusOrMinus 0.0001) // (15 + 10) / 2
+        blended[0].feelsLikeC shouldBe (11.5 plusOrMinus 0.0001)   // (14 + 9) / 2
+        blended[0].precipitationProbabilityPct shouldBe (55.0 plusOrMinus 0.0001) // (80 + 30) / 2
     }
 
     @Test
-    fun `averages consulted models when two or more report a given hour`() {
+    fun `averages all models when two or more report a given hour`() {
         // Today's pattern: best_match predicts 30% rain at 12:00 but two
         // consulted models both predict 80%+. The consensus should beat the
-        // outlier.
+        // outlier even with best_match included in the mean.
         val best = listOf(hour(12, temp = 10.0, feels = 9.0, precip = 30.0))
         val perModel = PerModelHourly(
             byModel = mapOf(
@@ -97,9 +104,9 @@ class ConsensusBlendTest {
     }
 
     @Test
-    fun `falls back to best-match for an hour only one consulted model covered`() {
-        // 12:00 has two consulted models → averaged.
-        // 15:00 has just one consulted model → keeps best_match.
+    fun `falls back to best-match for an hour only one model covered`() {
+        // 12:00 has two models → averaged.
+        // 15:00 has just one model → keeps best_match.
         val best = listOf(
             hour(12, temp = 10.0, feels = 9.0, precip = 30.0),
             hour(15, temp = 11.0, feels = 10.0, precip = 40.0),

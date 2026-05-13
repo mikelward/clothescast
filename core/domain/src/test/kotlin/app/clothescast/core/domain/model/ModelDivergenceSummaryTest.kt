@@ -138,13 +138,13 @@ class ModelDivergenceSummaryTest {
     }
 
     @Test
-    fun `excludes the best-match overlay from the spread calc`() {
-        // GFS / ICON agree (1 °C spread; under the threshold), best_match is
-        // a wild outlier at 20 °C. If we included best_match the spread would
-        // hit 13 °C and the summary would surface a divergence at this hour
-        // — but best_match is the meta-model we *don't* want polluting the
-        // attribution. Should return null since the consulted spread is
-        // sub-threshold.
+    fun `includes the best-match overlay in the spread calc`() {
+        // best_match is treated as a regular model here, matching the
+        // consensus blend's posture: if it's the outlier on a given hour
+        // the divergence summary surfaces that disagreement rather than
+        // hiding it. GFS / ICON agree at ~7 °C feels-like; best_match is
+        // a wild outlier at 20 °C; including all three gives a 13 °C
+        // spread which clears the MIN_FEELS_LIKE_SPREAD_C threshold.
         val data = PerModelHourly(
             byModel = mapOf(
                 "gfs_seamless" to listOf(entry(13, 7.0, 9.0)),
@@ -153,7 +153,9 @@ class ModelDivergenceSummaryTest {
             ),
         )
 
-        ModelDivergenceSummary.computeFrom(data).shouldBeNull()
+        val summary = ModelDivergenceSummary.computeFrom(data).shouldNotBeNull()
+
+        summary.feelsLikeSpreadC shouldBe (13.0 plusOrMinus 0.0001)
     }
 
     @Test

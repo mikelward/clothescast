@@ -520,11 +520,11 @@ displayed label localizes.
     <string name="today_factor_humidity">Kosteus</string>
 
     <string name="today_wind_title">Tuulennopeus</string>
-    <string name="today_wind_subtitle">Tuulennopeus (%1$s) tunnissa per malli</string>
+    <string name="today_wind_subtitle">Tuulennopeus (%1$s) tunnissa</string>
     <string name="today_cloud_title">Pilvisyys</string>
-    <string name="today_cloud_subtitle">Kokonaispilvisyys (%) tunnissa per malli</string>
+    <string name="today_cloud_subtitle">Kokonaispilvisyys (%) tunnissa</string>
     <string name="today_humidity_title">Kosteus</string>
-    <string name="today_humidity_subtitle">Suhteellinen kosteus (%) tunnissa per malli</string>
+    <string name="today_humidity_subtitle">Suhteellinen kosteus (%) tunnissa</string>
 
 
     <string name="today_telemetry_notice_title">Kaatumis- ja käyttöraportit ovat käytössä</string>
@@ -589,14 +589,14 @@ displayed label localizes.
     <string name="today_confidence_tap_to_hide">Napauta piilottaaksesi malliennusteet</string>
     <string name="today_confidence_tap_to_show">Napauta nähdäksesi jokaisen mallin ennuste</string>
     <string name="today_humidity_range">Kosteus %1$d\u2013%2$d%%</string>
-    <string name="today_solar_subtitle">Pinnan säteilyvoimakkuus (W/m²) tunnissa per malli</string>
+    <string name="today_solar_subtitle">Pinnan säteilyvoimakkuus (W/m²) tunnissa</string>
     <string name="today_solar_title">Aurinkolämpösäteily</string>
-    <string name="today_sunshine_subtitle">Aurinkoisia minuutteja tunnissa per malli</string>
+    <string name="today_sunshine_subtitle">Aurinkoisia minuutteja tunnissa</string>
     <string name="today_sunshine_title">Aurinkopaiste</string>
     <string name="today_sunshine_total_hours_minutes">%1$d h %2$d min aurinkoa tänään</string>
     <string name="today_sunshine_total_hours_only">%1$d h aurinkoa tänään</string>
     <string name="today_sunshine_total_minutes_only">%1$d min aurinkoa tänään</string>
-    <string name="today_uv_subtitle">UV-indeksi tunnissa per malli</string>
+    <string name="today_uv_subtitle">UV-indeksi tunnissa</string>
     <string name="today_uv_title">UV-indeksi</string>
     <string name="today_wind_peak">Huippuarvo %1$d %2$s klo %3$s</string>
 </resources>

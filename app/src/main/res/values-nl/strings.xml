@@ -578,11 +578,11 @@ the displayed label localizes.
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Windsnelheid</string>
-    <string name="today_wind_subtitle">Windsnelheid (%1$s) per uur per model</string>
+    <string name="today_wind_subtitle">Windsnelheid (%1$s) per uur</string>
     <string name="today_cloud_title">Bewolking</string>
-    <string name="today_cloud_subtitle">Totale bewolking (%) per uur per model</string>
+    <string name="today_cloud_subtitle">Totale bewolking (%) per uur</string>
     <string name="today_humidity_title">Luchtvochtigheid</string>
-    <string name="today_humidity_subtitle">Relatieve luchtvochtigheid (%) per uur per model</string>
+    <string name="today_humidity_subtitle">Relatieve luchtvochtigheid (%) per uur</string>
 
     <!-- Low-confidence callout banner. -->
 
@@ -655,14 +655,14 @@ the displayed label localizes.
     <string name="today_confidence_tap_to_hide">Tik om modelprognoses te verbergen</string>
     <string name="today_confidence_tap_to_show">Tik om de prognose van elk model te zien</string>
     <string name="today_humidity_range">Luchtvochtigheid %1$d\u2013%2$d%%</string>
-    <string name="today_solar_subtitle">Oppervlakte-instraling (W/m²) per uur per model</string>
+    <string name="today_solar_subtitle">Oppervlakte-instraling (W/m²) per uur</string>
     <string name="today_solar_title">Zonnestraling</string>
-    <string name="today_sunshine_subtitle">Minuten zon per uur per model</string>
+    <string name="today_sunshine_subtitle">Minuten zon per uur</string>
     <string name="today_sunshine_title">Zonneschijn</string>
     <string name="today_sunshine_total_hours_minutes">%1$du %2$dm zon vandaag</string>
     <string name="today_sunshine_total_hours_only">%1$du zon vandaag</string>
     <string name="today_sunshine_total_minutes_only">%1$dm zon vandaag</string>
-    <string name="today_uv_subtitle">UV-index per uur per model</string>
+    <string name="today_uv_subtitle">UV-index per uur</string>
     <string name="today_uv_title">UV-index</string>
     <string name="today_wind_peak">Piek %1$d %2$s om %3$s</string>
 </resources>

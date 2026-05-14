@@ -380,6 +380,7 @@ class PreviewSnapshots {
     @Test fun humidity_card_consensus() = capture { HumidityCardConsensusPreview() }
     @Test fun solar_radiation_card_consensus() = capture { SolarRadiationCardConsensusPreview() }
     @Test fun sunshine_card_consensus() = capture { SunshineCardConsensusPreview() }
+    @Test fun sunshine_card_tonight() = capture { SunshineCardTonightPreview() }
     @Test fun uv_index_card_consensus() = capture { UvIndexCardConsensusPreview() }
     @Test fun wind_card_sparse_trailing() = capture { WindCardSparseTrailingPreview() }
 

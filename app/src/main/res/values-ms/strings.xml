@@ -162,11 +162,11 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <!-- Wind / cloud / humidity diagnostic cards -->
     <string name="today_wind_title">Kelajuan angin</string>
-    <string name="today_wind_subtitle">Kelajuan angin setiap model (%1$s) mengikut jam</string>
+    <string name="today_wind_subtitle">Kelajuan angin (%1$s) mengikut jam</string>
     <string name="today_cloud_title">Liputan awan</string>
-    <string name="today_cloud_subtitle">Jumlah liputan awan setiap model (%) mengikut jam</string>
+    <string name="today_cloud_subtitle">Jumlah liputan awan (%) mengikut jam</string>
     <string name="today_humidity_title">Kelembapan</string>
-    <string name="today_humidity_subtitle">Kelembapan relatif setiap model (%) mengikut jam</string>
+    <string name="today_humidity_subtitle">Kelembapan relatif (%) mengikut jam</string>
 
     <!-- Confidence -->
     <string name="today_confidence_high">Keyakinan tinggi — model utama bersetuju</string>
@@ -585,14 +585,14 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_confidence_tap_to_hide">Ketik untuk sembunyikan ramalan model</string>
     <string name="today_confidence_tap_to_show">Ketik untuk lihat ramalan setiap model</string>
     <string name="today_humidity_range">Kelembapan %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">Pencahayaan permukaan (W/m²) per jam per model</string>
+    <string name="today_solar_subtitle">Pencahayaan permukaan (W/m²) per jam</string>
     <string name="today_solar_title">Sinaran solar</string>
-    <string name="today_sunshine_subtitle">Minit cerah per jam per model</string>
+    <string name="today_sunshine_subtitle">Minit cerah per jam</string>
     <string name="today_sunshine_title">Cahaya matahari</string>
     <string name="today_sunshine_total_hours_minutes">%1$d j %2$d min cerah hari ini</string>
     <string name="today_sunshine_total_hours_only">%1$d j cerah hari ini</string>
     <string name="today_sunshine_total_minutes_only">%1$d min cerah hari ini</string>
-    <string name="today_uv_subtitle">Indeks UV per jam per model</string>
+    <string name="today_uv_subtitle">Indeks UV per jam</string>
     <string name="today_uv_title">Indeks UV</string>
     <string name="today_wind_peak">Puncak %1$d %2$s pukul %3$s</string>
 </resources>

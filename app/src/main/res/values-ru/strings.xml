@@ -671,7 +671,11 @@ only the displayed label localizes.
     <string name="today_sunshine_total_hours_minutes">%1$d ч %2$d мин солнца сегодня</string>
     <string name="today_sunshine_total_hours_only">%1$d ч солнца сегодня</string>
     <string name="today_sunshine_total_minutes_only">%1$d мин солнца сегодня</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$d ч %2$d мин солнца сегодня вечером</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$d ч солнца сегодня вечером</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$d мин солнца сегодня вечером</string>
     <string name="today_uv_subtitle">УФ-индекс по часам</string>
+    <string name="today_uv_peak">Максимум %1$d в %2$s</string>
     <string name="today_uv_title">УФ-индекс</string>
     <string name="today_wind_peak">Максимум %1$d %2$s в %3$s</string>
 </resources>

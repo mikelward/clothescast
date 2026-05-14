@@ -445,7 +445,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_sunshine_total_hours_minutes">Saa %1$d dakika %2$d za jua leo</string>
     <string name="today_sunshine_total_hours_only">Saa %1$d za jua leo</string>
     <string name="today_sunshine_total_minutes_only">Dakika %1$d za jua leo</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">Saa %1$d dakika %2$d za jua usiku huu</string>
+    <string name="today_sunshine_total_hours_only_tonight">Saa %1$d za jua usiku huu</string>
+    <string name="today_sunshine_total_minutes_only_tonight">Dakika %1$d za jua usiku huu</string>
     <string name="today_uv_subtitle">Kiwango cha UV kwa saa</string>
+    <string name="today_uv_peak">Kilele %1$d saa %2$s</string>
     <string name="today_uv_title">Kiwango cha UV</string>
     <string name="today_wind_peak">Kilele %1$d %2$s saa %3$s</string>
     <string name="settings_region_language_en_us">Kiingereza (Marekani)</string>

@@ -603,7 +603,11 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_sunshine_total_hours_minutes">%1$d hod %2$d min slunce dnes</string>
     <string name="today_sunshine_total_hours_only">%1$d hod slunce dnes</string>
     <string name="today_sunshine_total_minutes_only">%1$d min slunce dnes</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$d hod %2$d min slunce dnes večer</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$d hod slunce dnes večer</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$d min slunce dnes večer</string>
     <string name="today_uv_subtitle">UV index za hodinu</string>
+    <string name="today_uv_peak">Vrchol %1$d v %2$s</string>
     <string name="today_uv_title">UV index</string>
     <string name="today_wind_peak">Vrchol %1$d %2$s v %3$s</string>
 </resources>

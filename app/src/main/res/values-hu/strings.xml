@@ -606,7 +606,11 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_sunshine_total_hours_minutes">%1$d ó %2$d p napsütés ma</string>
     <string name="today_sunshine_total_hours_only">%1$d ó napsütés ma</string>
     <string name="today_sunshine_total_minutes_only">%1$d p napsütés ma</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$d ó %2$d p napsütés ma este</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$d ó napsütés ma este</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$d p napsütés ma este</string>
     <string name="today_uv_subtitle">UV-index óránként</string>
+    <string name="today_uv_peak">Csúcs %1$d, %2$s-kor</string>
     <string name="today_uv_title">UV-index</string>
     <string name="today_wind_peak">Csúcs %1$d %2$s, %3$s-kor</string>
 </resources>

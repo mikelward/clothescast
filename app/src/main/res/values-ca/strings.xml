@@ -553,7 +553,11 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm de sol avui</string>
     <string name="today_sunshine_total_hours_only">%1$dh de sol avui</string>
     <string name="today_sunshine_total_minutes_only">%1$dm de sol avui</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$dh %2$dm de sol aquesta nit</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$dh de sol aquesta nit</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$dm de sol aquesta nit</string>
     <string name="today_uv_subtitle">Índex UV per hora</string>
+    <string name="today_uv_peak">Pic %1$d a les %2$s</string>
     <string name="today_uv_title">Índex UV</string>
     <string name="today_wind_peak">Pic %1$d %2$s a les %3$s</string>
 

@@ -682,7 +682,11 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm sunca danas</string>
     <string name="today_sunshine_total_hours_only">%1$dh sunca danas</string>
     <string name="today_sunshine_total_minutes_only">%1$dm sunca danas</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$dh %2$dm sunca večeras</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$dh sunca večeras</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$dm sunca večeras</string>
     <string name="today_uv_subtitle">UV indeks po satu</string>
+    <string name="today_uv_peak">Vršna vrijednost %1$d u %2$s</string>
     <string name="today_uv_title">UV indeks</string>
     <string name="today_wind_peak">Vršna vrijednost %1$d %2$s u %3$s</string>
 </resources>

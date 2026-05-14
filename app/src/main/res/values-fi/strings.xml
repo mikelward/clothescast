@@ -596,7 +596,11 @@ displayed label localizes.
     <string name="today_sunshine_total_hours_minutes">%1$d h %2$d min aurinkoa tänään</string>
     <string name="today_sunshine_total_hours_only">%1$d h aurinkoa tänään</string>
     <string name="today_sunshine_total_minutes_only">%1$d min aurinkoa tänään</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$d h %2$d min aurinkoa tänä iltana</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$d h aurinkoa tänä iltana</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$d min aurinkoa tänä iltana</string>
     <string name="today_uv_subtitle">UV-indeksi tunnissa</string>
+    <string name="today_uv_peak">Huippuarvo %1$d klo %2$s</string>
     <string name="today_uv_title">UV-indeksi</string>
     <string name="today_wind_peak">Huippuarvo %1$d %2$s klo %3$s</string>
 </resources>

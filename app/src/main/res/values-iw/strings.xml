@@ -470,7 +470,11 @@ standard in Israeli digital communication.
     <string name="today_sunshine_total_hours_minutes">%1$d ש׳ %2$d ד׳ שמש היום</string>
     <string name="today_sunshine_total_hours_only">%1$d שעות שמש היום</string>
     <string name="today_sunshine_total_minutes_only">%1$d דקות שמש היום</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$d ש׳ %2$d ד׳ שמש הלילה</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$d שעות שמש הלילה</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$d דקות שמש הלילה</string>
     <string name="today_uv_subtitle">מדד UV לשעה</string>
+    <string name="today_uv_peak">שיא %1$d בשעה %2$s</string>
     <string name="today_uv_title">מדד UV</string>
     <string name="today_wind_peak">שיא %1$d %2$s בשעה %3$s</string>
     <string name="settings_region_language_en_us">אנגלית (ארצות הברית)</string>

@@ -615,7 +615,11 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="today_sunshine_total_hours_minutes">%1$d t %2$d min sol i dag</string>
     <string name="today_sunshine_total_hours_only">%1$d t sol i dag</string>
     <string name="today_sunshine_total_minutes_only">%1$d min sol i dag</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$d t %2$d min sol i kveld</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$d t sol i kveld</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$d min sol i kveld</string>
     <string name="today_uv_subtitle">UV-indeks per time</string>
+    <string name="today_uv_peak">Topp %1$d kl. %2$s</string>
     <string name="today_uv_title">UV-indeks</string>
     <string name="today_wind_peak">Toppvind %1$d %2$s kl. %3$s</string>
 </resources>

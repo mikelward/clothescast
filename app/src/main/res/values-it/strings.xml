@@ -699,7 +699,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm di sole oggi</string>
     <string name="today_sunshine_total_hours_only">%1$dh di sole oggi</string>
     <string name="today_sunshine_total_minutes_only">%1$dm di sole oggi</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$dh %2$dm di sole stasera</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$dh di sole stasera</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$dm di sole stasera</string>
     <string name="today_uv_subtitle">Indice UV per ora</string>
+    <string name="today_uv_peak">Picco %1$d alle %2$s</string>
     <string name="today_uv_title">Indice UV</string>
     <string name="today_wind_peak">Picco %1$d %2$s alle %3$s</string>
 </resources>

@@ -592,7 +592,11 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_sunshine_total_hours_minutes">%1$d j %2$d min cerah hari ini</string>
     <string name="today_sunshine_total_hours_only">%1$d j cerah hari ini</string>
     <string name="today_sunshine_total_minutes_only">%1$d min cerah hari ini</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$d j %2$d min cerah malam ini</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$d j cerah malam ini</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$d min cerah malam ini</string>
     <string name="today_uv_subtitle">Indeks UV per jam</string>
+    <string name="today_uv_peak">Puncak %1$d pukul %2$s</string>
     <string name="today_uv_title">Indeks UV</string>
     <string name="today_wind_peak">Puncak %1$d %2$s pukul %3$s</string>
 </resources>

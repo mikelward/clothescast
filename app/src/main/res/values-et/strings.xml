@@ -561,7 +561,11 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_sunshine_total_hours_minutes">%1$d t %2$d min päikest täna</string>
     <string name="today_sunshine_total_hours_only">%1$d t päikest täna</string>
     <string name="today_sunshine_total_minutes_only">%1$d min päikest täna</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$d t %2$d min päikest täna õhtul</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$d t päikest täna õhtul</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$d min päikest täna õhtul</string>
     <string name="today_uv_subtitle">UV-indeks tunnis</string>
+    <string name="today_uv_peak">Tipp %1$d kell %2$s</string>
     <string name="today_uv_title">UV-indeks</string>
     <string name="today_wind_peak">Tipp %1$d %2$s kell %3$s</string>
 </resources>

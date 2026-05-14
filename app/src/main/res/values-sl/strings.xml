@@ -598,7 +598,11 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_sunshine_total_hours_minutes">%1$d h %2$d min sonca danes</string>
     <string name="today_sunshine_total_hours_only">%1$d h sonca danes</string>
     <string name="today_sunshine_total_minutes_only">%1$d min sonca danes</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$d h %2$d min sonca nocoj</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$d h sonca nocoj</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$d min sonca nocoj</string>
     <string name="today_uv_subtitle">UV indeks po urah</string>
+    <string name="today_uv_peak">Vrh %1$d ob %2$s</string>
     <string name="today_uv_title">UV indeks</string>
     <string name="today_wind_peak">Vrh %1$d %2$s ob %3$s</string>
 </resources>

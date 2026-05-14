@@ -647,7 +647,11 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm nắng hôm nay</string>
     <string name="today_sunshine_total_hours_only">%1$dh nắng hôm nay</string>
     <string name="today_sunshine_total_minutes_only">%1$dm nắng hôm nay</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$dh %2$dm nắng tối nay</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$dh nắng tối nay</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$dm nắng tối nay</string>
     <string name="today_uv_subtitle">Chỉ số UV theo giờ</string>
+    <string name="today_uv_peak">Đỉnh %1$d lúc %2$s</string>
     <string name="today_uv_title">Chỉ số UV</string>
     <string name="today_wind_peak">Đỉnh %1$d %2$s lúc %3$s</string>
 </resources>

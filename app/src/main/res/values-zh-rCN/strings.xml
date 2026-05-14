@@ -712,7 +712,11 @@ label localizes.
     <string name="today_sunshine_total_hours_minutes">今日日照 %1$d小时%2$d分钟</string>
     <string name="today_sunshine_total_hours_only">今日日照 %1$d小时</string>
     <string name="today_sunshine_total_minutes_only">今日日照 %1$d分钟</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">今晚日照 %1$d小时%2$d分钟</string>
+    <string name="today_sunshine_total_hours_only_tonight">今晚日照 %1$d小时</string>
+    <string name="today_sunshine_total_minutes_only_tonight">今晚日照 %1$d分钟</string>
     <string name="today_uv_subtitle">每小时紫外线指数</string>
+    <string name="today_uv_peak">最高 %1$d（%2$s）</string>
     <string name="today_uv_title">紫外线指数</string>
     <string name="today_wind_peak">最高 %1$d %2$s（%3$s）</string>
 </resources>

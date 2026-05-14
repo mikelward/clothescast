@@ -20,6 +20,8 @@ import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.core.domain.model.thresholdC
+import app.clothescast.core.domain.model.ThemeMode
+import app.clothescast.diag.ClothesRulesSnapshot
 import app.clothescast.diag.SettingsAnalyticsSnapshot
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContainExactly
@@ -677,6 +679,96 @@ class SettingsRepositoryTest {
         snap.regionEffective shouldBe "en-GB"
         snap.voiceLocaleOverride shouldBe VoiceLocale.SYSTEM.name
         snap.voiceLocaleEffective shouldBe "en-GB"
+    }
+
+    @Test
+    fun `settingsSnapshot reflects effective values and hour-bucketed schedule`() = runTest {
+        // Pinned systemLocaleProvider is Locale.UK → temperature CELSIUS,
+        // distance MILES (UK uses miles for everyday distances per
+        // defaultDistanceUnitFor). Defaults give NOTIFICATION_AND_TTS for both
+        // slots and 07:00 / 19:00 every day.
+        val defaults = subject.settingsSnapshot.first()
+
+        defaults.temperatureUnitSetting shouldBe TemperatureUnitSetting.AUTO.name
+        defaults.temperatureUnitEffective shouldBe TemperatureUnit.CELSIUS.name
+        defaults.distanceUnitSetting shouldBe DistanceUnitSetting.AUTO.name
+        defaults.distanceUnitEffective shouldBe DistanceUnit.MILES.name
+        defaults.deliveryModeDaily shouldBe DeliveryMode.NOTIFICATION_AND_TTS.name
+        defaults.deliveryModeTonight shouldBe DeliveryMode.NOTIFICATION_AND_TTS.name
+        defaults.themeMode shouldBe ThemeMode.SYSTEM.name
+        defaults.dailyTimeBucketHour shouldBe "07"
+        defaults.dailyDaysCount shouldBe 7
+        defaults.tonightTimeBucketHour shouldBe "19"
+        defaults.tonightDaysCount shouldBe 7
+        defaults.tonightEnabled shouldBe true
+        defaults.tonightNotifyOnlyOnEvents shouldBe false
+        defaults.dailyMentionEveningEvents shouldBe true
+        defaults.useCalendarEvents shouldBe false
+
+        subject.setSchedule(
+            time = LocalTime.of(6, 30),
+            days = setOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
+        )
+        subject.setTemperatureUnitSetting(TemperatureUnitSetting.FAHRENHEIT)
+        subject.setDeliveryMode(DeliveryMode.NOTIFICATION_ONLY)
+        subject.setUseCalendarEvents(true)
+
+        val edited = subject.settingsSnapshot.first()
+
+        // Hour bucket drops the minutes — 06:30 reports as "06" so reports
+        // don't see exact-time precision that could fingerprint a schedule.
+        edited.dailyTimeBucketHour shouldBe "06"
+        edited.dailyDaysCount shouldBe 3
+        edited.temperatureUnitSetting shouldBe TemperatureUnitSetting.FAHRENHEIT.name
+        edited.temperatureUnitEffective shouldBe TemperatureUnit.FAHRENHEIT.name
+        edited.deliveryModeDaily shouldBe DeliveryMode.NOTIFICATION_ONLY.name
+        edited.useCalendarEvents shouldBe true
+    }
+
+    @Test
+    fun `clothesRulesSnapshot reflects user edits to thresholds`() = runTest {
+        // Nudge jacket from default 12°C down to 10°C — delta should report
+        // as "-2" and the customised count should land at exactly 1.
+        val edited = ClothesRule.DEFAULTS.map { rule ->
+            if (rule.item == "jacket") rule.copy(condition = ClothesRule.TemperatureBelow(10.0))
+            else rule
+        }
+        subject.setClothesRules(edited)
+
+        val snap = subject.clothesRulesSnapshot.first()
+
+        snap.customisedCount shouldBe 1
+        snap.jacketDeltaC shouldBe "-2"
+        snap.categoriesCustomised shouldBe "jacket"
+        snap.allDefaults shouldBe false
+    }
+
+    @Test
+    fun `clothesRulesSnapshot defaults report all zeros and allDefaults true`() = runTest {
+        // Untouched repository — falls back to ClothesRule.DEFAULTS, which the
+        // snapshot must report as completely unmodified.
+        val snap = subject.clothesRulesSnapshot.first()
+
+        snap.allDefaults shouldBe true
+        snap.customisedCount shouldBe 0
+        snap.extraRulesCount shouldBe 0
+        snap.sweaterDeltaC shouldBe "0"
+        snap.jacketDeltaC shouldBe "0"
+        snap.coatDeltaC shouldBe "0"
+        snap.shortsDeltaC shouldBe "0"
+        snap.categoriesCustomised shouldBe ""
+    }
+
+    @Test
+    fun `clothesRulesSnapshot deleted category surfaces as MISSING`() = runTest {
+        // User wiped coat from their list — every other default unchanged.
+        subject.setClothesRules(ClothesRule.DEFAULTS.filter { it.item != "coat" })
+
+        val snap = subject.clothesRulesSnapshot.first()
+
+        snap.coatDeltaC shouldBe ClothesRulesSnapshot.MISSING
+        snap.customisedCount shouldBe 1
+        snap.categoriesCustomised shouldBe "coat"
     }
 
     @Test

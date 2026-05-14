@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026-05-12_
+_Last updated: 2026-05-14_
 
 ClothesCast is a daily weather-insight app for Android. This policy
 describes what data the app handles, where it goes, and what control you
@@ -210,6 +210,42 @@ What's sent:
   Powered-off / airplane-mode misses simply don't appear in the
   stream — the event only fires when a notification is actually
   posted, so unfired alarms aren't reported.
+- **Daily refresh outcomes:** when the scheduled fetch + insight + notify
+  pipeline reaches a terminal result, one event carries the slot
+  (`today` / `tonight`), an outcome bucket (`success`, `forecast_error`,
+  `no_location`, `cancelled`, or `other_error`), and the wall-clock
+  latency from worker start to terminal result in milliseconds. No
+  forecast content, no insight prose, no location coordinates, no error
+  messages. Used to spot regressions in delivery reliability ("what
+  percentage of scheduled refreshes actually completed today?").
+  WorkManager retries between transient failures (no connectivity, 5xx
+  from upstream) aren't reported individually — only the terminal
+  outcome the user actually sees.
+- **Settings snapshot:** once per app process start, and again each time
+  the user changes a non-voice setting later in the same process, one
+  event carries the resolved values: unit settings (auto vs. explicit
+  choice + the unit in effect), delivery mode for the daily and
+  tonight slots, theme mode, colour palette, the default-bottom
+  fallback choice, the four schedule booleans (tonight enabled,
+  notify-only-on-events, daily-mention-evening-events, use-calendar-
+  events), the day-of-week counts for daily and tonight schedules
+  (1..7), and the schedule times bucketed to the hour ("00".."23").
+  No exact local time, no calendar content, no location, no insight
+  prose. The launch-time emission is intentional — it samples the
+  population's default behaviour without requiring the user to
+  interact, so reports can answer "which features do users actually
+  configure and which defaults serve them best?"
+- **Clothes-rule customisation snapshot:** same cadence as the settings
+  snapshot — once per app process start, then again whenever the user
+  edits their clothes rules in the same process. One event carries:
+  the count of catalog defaults the user has changed (the four
+  `sweater` / `jacket` / `coat` / `shorts` rules); the count of extra
+  rules added beyond the catalog defaults; a sorted comma-joined list
+  of which catalog categories were customised; an `all_defaults` flag;
+  and per-category integer Celsius deltas from the default threshold,
+  clamped to ±5°C (so e.g. moving the jacket threshold from 12°C down
+  to 10°C reports `-2`). No raw thresholds, no user-added rule items,
+  no precipitation thresholds.
 
 What's **not** sent — these are hard limits, not "best-effort":
 
@@ -253,6 +289,19 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-05-14** — Added three new aggregate analytics events:
+  `daily_refresh` (slot + outcome bucket + latency, one per terminal
+  result of the scheduled fetch + notify pipeline; WorkManager retries
+  between transient failures aren't individually reported),
+  `settings_snapshot` (the resolved values of the non-voice user
+  settings — units, delivery mode, theme / palette / default-bottom,
+  the four schedule booleans, day counts, and schedule times bucketed
+  to the hour), and `clothes_rules_snapshot` (counts of customised
+  defaults and extra rules, sorted list of customised categories, plus
+  per-category integer Celsius delta from the default threshold,
+  clamped to ±5°C). No raw thresholds, no exact local times, no
+  calendar / location / insight content; same hard limits in
+  "Analytics and crash reporting" apply.
 - **2026-05-12** — Added two new aggregate analytics events: per-request
   API-call outcomes (endpoint identifier, HTTP status, outcome bucket,
   latency) for Open-Meteo and Gemini, and notification-delivery delay

@@ -23,6 +23,7 @@ import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.diag.Telemetry
+import app.clothescast.diag.classifyDailyRefreshReason
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
@@ -63,7 +64,56 @@ class FetchAndNotifyWorker(
     private val app: ClothesCastApplication
         get() = applicationContext as ClothesCastApplication
 
-    override suspend fun doWork(): Result = stamped(doWorkInternal())
+    override suspend fun doWork(): Result {
+        val isCacheOnly = inputData.getBoolean(KEY_CACHE_LOCATION_ONLY, false)
+        val period = inputData.getString(KEY_PERIOD)
+            ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() }
+            ?: ForecastPeriod.TODAY
+        val startMs = System.currentTimeMillis()
+        // The cache-only path doesn't deliver an insight, so don't count it
+        // as a refresh outcome — that would skew the success-rate dashboard
+        // with no-op runs every time the user toggles device location.
+        return try {
+            val result = stamped(doWorkInternal())
+            if (!isCacheOnly) recordDailyRefreshOutcome(period, result, startMs)
+            result
+        } catch (ce: CancellationException) {
+            if (!isCacheOnly) {
+                Telemetry.logDailyRefresh(
+                    slot = slotName(period),
+                    outcome = OUTCOME_CANCELLED,
+                    latencyMs = System.currentTimeMillis() - startMs,
+                )
+            }
+            throw ce
+        }
+    }
+
+    private fun recordDailyRefreshOutcome(period: ForecastPeriod, result: Result, startMs: Long) {
+        val outcome = when (result) {
+            is Result.Success -> {
+                // Tonight-disabled and similar early-exit branches stamp
+                // KEY_SKIP_TELEMETRY so the dashboard's success rate
+                // reflects "did the user actually get a refresh?", not
+                // "did the worker happen to return successfully?".
+                if (result.outputData.getBoolean(KEY_SKIP_TELEMETRY, false)) return
+                OUTCOME_SUCCESS
+            }
+            is Result.Failure -> classifyDailyRefreshReason(result.outputData.getString(KEY_REASON))
+            // Result.retry is non-terminal — WorkManager will re-run us — so leave it off the stream.
+            else -> return
+        }
+        Telemetry.logDailyRefresh(
+            slot = slotName(period),
+            outcome = outcome,
+            latencyMs = System.currentTimeMillis() - startMs,
+        )
+    }
+
+    private fun slotName(period: ForecastPeriod): String = when (period) {
+        ForecastPeriod.TODAY -> "today"
+        ForecastPeriod.TONIGHT -> "tonight"
+    }
 
     private suspend fun doWorkInternal(): Result {
         val prefs = try {
@@ -93,7 +143,12 @@ class FetchAndNotifyWorker(
         // after the user disabled the feature.
         if (period == ForecastPeriod.TONIGHT && !prefs.tonightEnabled) {
             DiagLog.i(TAG, "Tonight insight is disabled; skipping.")
-            return Result.success()
+            // Stamp KEY_SKIP_TELEMETRY so the daily_refresh outcome event
+            // doesn't count this as a success. TodayScreen.triggerRefresh
+            // enqueues a TONIGHT run purely on the clock, so any user who
+            // turned the feature off would otherwise show a steady stream
+            // of "successful" tonight refreshes that delivered nothing.
+            return Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
         }
 
         val location = resolveLocation(prefs)
@@ -573,6 +628,21 @@ class FetchAndNotifyWorker(
         const val REASON_UNEXPECTED_HTTP = "unexpected_http"
         const val REASON_UNHANDLED = "unhandled"
         const val REASON_NO_LOCATION = "no_location"
+
+        // daily_refresh event outcome buckets — kept here next to the reason
+        // codes so the mapping in classifyDailyRefreshReason stays
+        // discoverable. "success" / "cancelled" don't have matching reason
+        // codes because they aren't WorkManager Failure reasons.
+        private const val OUTCOME_SUCCESS = "success"
+        private const val OUTCOME_CANCELLED = "cancelled"
+
+        /**
+         * Output-data flag set on the no-op success branches (tonight-disabled
+         * being the canonical case) to tell [recordDailyRefreshOutcome] that
+         * the run reached `Result.success()` without delivering anything, so
+         * the daily_refresh event should be suppressed for it.
+         */
+        private const val KEY_SKIP_TELEMETRY = "skip_telemetry"
 
         // Cap unhandled-error detail so the "Show details" pane stays readable.
         private const val MAX_DETAIL_LEN = 240

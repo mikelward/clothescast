@@ -572,4 +572,27 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_forecast_air_section_title">Suhu udara</string>
     <string name="settings_default_bottom_title">Bawahan standard</string>
     <string name="settings_default_bottom_description">Yang kami cadangkan pada skrin utama apabila tidak cukup panas untuk seluar pendek.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Palet warna</string>
+    <string name="settings_display_palette_accessible">Boleh Capaian</string>
+    <string name="settings_display_palette_accessible_description">Palet berasaskan Okabe-Ito yang direka untuk kekal dapat dibezakan semasa deuteranopia, protanopia, dan tritanopia. Kad keyakinan menggunakan biru langit, neutral, dan kuning amber, bukan teal, neutral, dan merah.</string>
+    <string name="settings_display_palette_rainbow">Pelangi</string>
+    <string name="settings_display_palette_rainbow_description">Garis carta merah jambu, oren, dan hijau dengan kad keyakinan Material teal/merah. Lalai.</string>
+    <string name="settings_unit_auto">Auto</string>
+    <string name="today_cloud_range">Awan %1$d–%2$d%%</string>
+    <string name="today_confidence_precip_spread">Model tidak bersetuju tentang hujan (Δ %1$.0f%% merentasi %2$d model)</string>
+    <string name="today_confidence_tap_to_hide">Ketik untuk sembunyikan ramalan model</string>
+    <string name="today_confidence_tap_to_show">Ketik untuk lihat ramalan setiap model</string>
+    <string name="today_humidity_range">Kelembapan %1$d–%2$d%%</string>
+    <string name="today_solar_subtitle">Pencahayaan permukaan (W/m²) per jam per model</string>
+    <string name="today_solar_title">Sinaran solar</string>
+    <string name="today_sunshine_subtitle">Minit cerah per jam per model</string>
+    <string name="today_sunshine_title">Cahaya matahari</string>
+    <string name="today_sunshine_total_hours_minutes">%1$d j %2$d min cerah hari ini</string>
+    <string name="today_sunshine_total_hours_only">%1$d j cerah hari ini</string>
+    <string name="today_sunshine_total_minutes_only">%1$d min cerah hari ini</string>
+    <string name="today_uv_subtitle">Indeks UV per jam per model</string>
+    <string name="today_uv_title">Indeks UV</string>
+    <string name="today_wind_peak">Puncak %1$d %2$s pukul %3$s</string>
 </resources>

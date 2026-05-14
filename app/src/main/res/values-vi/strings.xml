@@ -627,4 +627,27 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_forecast_air_section_title">Nhiệt độ không khí</string>
     <string name="settings_default_bottom_title">Quần/váy tiêu chuẩn</string>
     <string name="settings_default_bottom_description">Những gì chúng tôi đề xuất trên màn hình chính khi không đủ ấm để mặc quần short.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Bảng màu</string>
+    <string name="settings_display_palette_accessible">Dễ tiếp cận</string>
+    <string name="settings_display_palette_accessible_description">Bảng màu dựa trên Okabe-Ito, được thiết kế để vẫn phân biệt được khi bị mù màu đỏ-xanh lá và xanh lam. Thẻ độ tin cậy dùng xanh trời, trung tính và hổ phách thay vì xanh mòng két, trung tính và đỏ.</string>
+    <string name="settings_display_palette_rainbow">Cầu vồng</string>
+    <string name="settings_display_palette_rainbow_description">Đường biểu đồ màu hồng, cam và xanh lá với thẻ độ tin cậy Material xanh mòng két/đỏ. Mặc định.</string>
+    <string name="settings_unit_auto">Tự động</string>
+    <string name="today_cloud_range">Mây %1$d–%2$d%%</string>
+    <string name="today_confidence_precip_spread">Các mô hình không đồng thuận về mưa (Δ %1$.0f%% trên %2$d mô hình)</string>
+    <string name="today_confidence_tap_to_hide">Nhấn để ẩn dự báo của từng mô hình</string>
+    <string name="today_confidence_tap_to_show">Nhấn để xem dự báo của từng mô hình</string>
+    <string name="today_humidity_range">Độ ẩm %1$d–%2$d%%</string>
+    <string name="today_solar_subtitle">Bức xạ bề mặt (W/m²) theo giờ theo mô hình</string>
+    <string name="today_solar_title">Bức xạ mặt trời</string>
+    <string name="today_sunshine_subtitle">Phút nắng mỗi giờ theo mô hình</string>
+    <string name="today_sunshine_title">Thời gian nắng</string>
+    <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm nắng hôm nay</string>
+    <string name="today_sunshine_total_hours_only">%1$dh nắng hôm nay</string>
+    <string name="today_sunshine_total_minutes_only">%1$dm nắng hôm nay</string>
+    <string name="today_uv_subtitle">Chỉ số UV theo giờ theo mô hình</string>
+    <string name="today_uv_title">Chỉ số UV</string>
+    <string name="today_wind_peak">Đỉnh %1$d %2$s lúc %3$s</string>
 </resources>

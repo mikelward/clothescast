@@ -38,6 +38,7 @@ import app.clothescast.widget.WidgetTonightSweaterPantsPreview
 import app.clothescast.widget.WidgetTonightTomorrowWidePreview
 import com.github.takahirom.roborazzi.captureRoboImage
 import java.io.File
+import kotlin.math.abs
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -155,21 +156,33 @@ class PreviewSnapshots {
      * check, but it's still the wrong answer compared to a stabilised
      * second capture.
      *
+     * After the in-session stable check passes, the result is compared
+     * against the pre-capture baseline (the PNG already on disk, i.e.
+     * whatever `main` last committed). If the only differences are
+     * sub-perceptual rendering noise — anti-aliasing wobble on a chart
+     * line, font hinting jitter between Robolectric sessions — the
+     * baseline bytes are restored. This stops the regen bot from
+     * committing 41-byte "look at me, I'm a UI change" diffs that are
+     * invisible to the eye but break apart inline image-diff review.
+     *
      * [looksEmpty] stays as a separate guard so a *completely* blank
      * capture (every sampled pixel matching the first) never gets to
      * "stable" status just by failing the same way twice in a row.
      *
      * History: PR #436's CI runs flipped `precipitation_card_dry.png`
      * between a "with chart" (29.6KB) and a "no chart" render (11.6KB)
-     * on consecutive runs of the *same* commit — the chart line was
-     * dropping out on roughly one in two captures, depending on when the
-     * snapshot landed relative to Vico's flow delivery. The two
-     * regenerations cancelled each other out at merge time, but on the
-     * next unrelated PR the same race will flip again and look like a UI
-     * regression. This helper closes that gap.
+     * on consecutive runs of the *same* commit — the chart-missing
+     * race the stable check now closes. PR #438 cut that race to
+     * pieces but still left a 41-byte anti-aliasing wobble on
+     * `uv_index_card_with_model_spread.png` flipping each run; this
+     * helper's noise-tolerant baseline restore handles that.
      */
     private fun captureUntilStable(maxAttempts: Int = 4, snapshot: () -> Unit) {
         val outputFile = File("$outputDir/${testName.methodName}.png")
+        // Snapshot the pre-capture bytes for the noise-tolerant baseline
+        // restore at the end. Null when this is a new preview with no
+        // existing PNG; in that case any capture is the new baseline.
+        val baseline = if (outputFile.exists()) outputFile.readBytes() else null
         var prior: ByteArray? = null
         repeat(maxAttempts) { attempt ->
             composeRule.waitForIdle()
@@ -185,7 +198,10 @@ class PreviewSnapshots {
                 prior = null
             } else {
                 val current = outputFile.readBytes()
-                if (prior != null && prior.contentEquals(current)) return
+                if (prior != null && prior.contentEquals(current)) {
+                    restoreBaselineIfOnlyNoise(outputFile, current, baseline)
+                    return
+                }
                 prior = current
             }
             if (attempt < maxAttempts - 1) Thread.sleep(50L * (attempt + 1))
@@ -195,13 +211,103 @@ class PreviewSnapshots {
         )
     }
 
+    /**
+     * After a stable capture lands, compare it pixel-wise against the
+     * pre-capture [baseline]. Restore [baseline] only when the
+     * differences look like rendering noise rather than a real UI
+     * change. Two thresholds, both of which must hold:
+     *
+     *  - At most [NOISY_PIXEL_BUDGET] pixels exceed [INTENSITY_TOLERANCE]
+     *    in any RGB channel. Bounds the "moved-label" / "swapped-glyph"
+     *    style of regression, where a handful of pixels go from full
+     *    foreground intensity to full background intensity.
+     *
+     *  - At most [IN_TOLERANCE_PIXEL_BUDGET] pixels differ at all but
+     *    within tolerance. Without this an across-the-board ≤8/255
+     *    intensity shift — e.g. a Material colour token tweak applied
+     *    to every pixel of a card surface — would never bump the
+     *    high-diff counter and the real change would be discarded as
+     *    noise. Anti-aliasing wobble on chart lines typically affects
+     *    a few hundred edge pixels at low intensity; a broad surface
+     *    shift hits tens of thousands.
+     *
+     * If both budgets hold, the captured PNG is functionally identical
+     * to what `main` already has and rewriting it just flips a few
+     * sub-perceptual bits — exactly the spurious-regen pattern we're
+     * trying to avoid.
+     */
+    private fun restoreBaselineIfOnlyNoise(
+        file: File,
+        captured: ByteArray,
+        baseline: ByteArray?,
+    ) {
+        if (baseline == null) return
+        if (baseline.contentEquals(captured)) return
+        val a = runCatching { BitmapFactory.decodeByteArray(baseline, 0, baseline.size) }.getOrNull()
+            ?: return
+        val b = runCatching { BitmapFactory.decodeByteArray(captured, 0, captured.size) }.getOrNull()
+            ?: return
+        if (a.width != b.width || a.height != b.height) return
+        val total = a.width * a.height
+        val pa = IntArray(total).also { a.getPixels(it, 0, a.width, 0, 0, a.width, a.height) }
+        val pb = IntArray(total).also { b.getPixels(it, 0, b.width, 0, 0, b.width, b.height) }
+        var noisyPixels = 0
+        var inToleranceDiffs = 0
+        for (i in 0 until total) {
+            val d = maxChannelDiff(pa[i], pb[i])
+            if (d == 0) continue
+            if (d > INTENSITY_TOLERANCE) {
+                if (++noisyPixels > NOISY_PIXEL_BUDGET) return
+            } else {
+                if (++inToleranceDiffs > IN_TOLERANCE_PIXEL_BUDGET) return
+            }
+        }
+        file.writeBytes(baseline)
+    }
+
+    /**
+     * Largest per-channel absolute difference between two ARGB-packed
+     * pixels. Alpha is ignored: the captured PNGs are all fully opaque,
+     * so any alpha variance is rendering-pipeline noise rather than a
+     * meaningful colour change.
+     */
+    private fun maxChannelDiff(a: Int, b: Int): Int {
+        val rDiff = abs(((a shr 16) and 0xff) - ((b shr 16) and 0xff))
+        val gDiff = abs(((a shr 8) and 0xff) - ((b shr 8) and 0xff))
+        val bDiff = abs((a and 0xff) - (b and 0xff))
+        return maxOf(rDiff, gDiff, bDiff)
+    }
+
     // Number of additional frames to advance past Compose's idle state
     // before each capture attempt. Three covers Vico's typical
     // producer-flow-emit + host-recompose + paint sequence with margin;
     // each frame is ~16ms in virtual time but ~near-zero wall-clock under
     // Robolectric, so the cost is negligible.
+    //
+    // Noise tolerances for the baseline-restore comparison.
+    //
+    // INTENSITY_TOLERANCE = 8/255 per channel: below this, a pixel diff is
+    // considered "rendering wobble" rather than a meaningful colour change.
+    // Above, it's a hard regression signal.
+    //
+    // NOISY_PIXEL_BUDGET = 64: how many pixels may exceed the intensity
+    // threshold before we stop calling it noise. A 1-pixel label shift
+    // swaps text-foreground for text-background across hundreds of pixels
+    // and blows through this immediately.
+    //
+    // IN_TOLERANCE_PIXEL_BUDGET = 4096 (~1% of a 720x540 card): how many
+    // pixels may *differ at all* — even by a single intensity level —
+    // before we stop calling it noise. Without this, a uniform ≤8/255
+    // colour-token tweak applied to every pixel of a surface would slip
+    // past unnoticed; with it, broad palette / theme changes are caught.
+    // Anti-aliasing on chart-line edges and font hinting across the
+    // ~20 axis labels on a chart card typically affects a few hundred
+    // sub-tolerance pixels, well under the cap.
     private companion object {
         const val FRAME_PUMP_COUNT = 3
+        const val INTENSITY_TOLERANCE = 8
+        const val NOISY_PIXEL_BUDGET = 64
+        const val IN_TOLERANCE_PIXEL_BUDGET = 4096
     }
 
     // "Empty" = unreadable as a PNG, or every sampled pixel matches (0,0). The

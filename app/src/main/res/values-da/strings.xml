@@ -396,7 +396,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_confidence_high">Høj sikkerhed — de vigtigste modeller er enige</string>
     <string name="today_confidence_medium">Middel sikkerhed</string>
     <string name="today_confidence_low">Lav sikkerhed — prognoserne afviger fra hinanden</string>
-    <string name="today_confidence_spread">Spredning: %1$.1f°C, %2$.0f pp nedbør over %3$d modeller</string>
 
     <string name="today_working">Henter dit ClothesCast…</string>
     <string name="today_failed_title">Sidste forsøg mislykkedes</string>

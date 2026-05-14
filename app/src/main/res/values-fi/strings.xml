@@ -302,7 +302,6 @@ displayed label localizes.
     <string name="today_confidence_high">Korkea varmuus — tärkeimmät mallit ovat yhtä mieltä</string>
     <string name="today_confidence_medium">Keskitason varmuus</string>
     <string name="today_confidence_low">Alhainen varmuus — ennusteet poikkeavat toisistaan</string>
-    <string name="today_confidence_spread">Hajonta: %1$.1f°C, %2$.0f pp sadetta %3$d mallissa</string>
 
     <string name="today_working">Haetaan ClothesCastiasi…</string>
     <string name="today_failed_title">Viimeisin yritys epäonnistui</string>

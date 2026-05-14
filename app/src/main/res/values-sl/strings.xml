@@ -182,7 +182,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_confidence_high">Visoka zanesljivost — glavni modeli se strinjajo</string>
     <string name="today_confidence_medium">Srednja zanesljivost</string>
     <string name="today_confidence_low">Nizka zanesljivost — napovedi se razlikujejo</string>
-    <string name="today_confidence_spread">Razpršenost: %1$.1f°C, %2$.0f%% padavin pri %3$d modelih</string>
 
     <!-- Low-confidence callout banner. -->
 

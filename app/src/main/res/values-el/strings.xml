@@ -420,7 +420,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_confidence_high">Υψηλή αξιοπιστία — τα κύρια μοντέλα συμφωνούν</string>
     <string name="today_confidence_medium">Μέτρια αξιοπιστία</string>
     <string name="today_confidence_low">Χαμηλή αξιοπιστία — οι προβλέψεις διαφωνούν</string>
-    <string name="today_confidence_spread">Διασπορά: %1$.1f°C, %2$.0fpp υετός σε %3$d μοντέλα</string>
 
     <string name="today_working">Σε εξέλιξη — ανάκτηση του ClothesCast σου…</string>
     <string name="today_failed_title">Η τελευταία προσπάθεια απέτυχε</string>

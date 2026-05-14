@@ -467,7 +467,6 @@ only the displayed label localizes.
     <string name="today_confidence_high">Высокая уверенность — основные модели согласны</string>
     <string name="today_confidence_medium">Средняя уверенность</string>
     <string name="today_confidence_low">Низкая уверенность — прогнозы расходятся</string>
-    <string name="today_confidence_spread">Разброс: %1$.1f°C, %2$.0fpp осадков по %3$d моделям</string>
 
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Вероятность дождя</string>

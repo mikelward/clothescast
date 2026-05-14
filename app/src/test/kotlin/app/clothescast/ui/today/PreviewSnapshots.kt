@@ -245,6 +245,8 @@ class PreviewSnapshots {
     @Test fun confidence_low() = capture { ConfidenceLowPreview() }
     @Test fun confidence_medium_tap_to_show() = capture { ConfidenceMediumTapToShowPreview() }
     @Test fun confidence_medium_tap_to_hide() = capture { ConfidenceMediumTapToHidePreview() }
+    @Test fun confidence_medium_precip_only() = capture { ConfidenceMediumPrecipOnlyPreview() }
+    @Test fun confidence_medium_no_detail() = capture { ConfidenceMediumNoDetailPreview() }
 
     @Test fun work_status_running() = capture { WorkStatusRunningPreview() }
     @Test fun work_status_retrying() = capture { WorkStatusRetryingPreview() }

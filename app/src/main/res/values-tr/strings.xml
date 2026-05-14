@@ -302,7 +302,6 @@ displayed label localizes.
     <string name="today_confidence_high">Yüksek güven — ana modeller hemfikir</string>
     <string name="today_confidence_medium">Orta güven</string>
     <string name="today_confidence_low">Düşük güven — tahminler farklılık gösteriyor</string>
-    <string name="today_confidence_spread">Yayılım: %1$.1f°C, %2$.0f pp yağış, %3$d model</string>
 
     <string name="today_working">ClothesCast\'ın alınıyor…</string>
     <string name="today_failed_title">Son deneme başarısız oldu</string>

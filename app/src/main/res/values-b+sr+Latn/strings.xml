@@ -499,7 +499,6 @@ default English (matching values-pl / values-uk).
     <string name="today_confidence_high">Visoka pouzdanost — glavni modeli se slažu</string>
     <string name="today_confidence_medium">Srednja pouzdanost</string>
     <string name="today_confidence_low">Niska pouzdanost — prognoze se razlikuju</string>
-    <string name="today_confidence_spread">Raspršenost: %1$.1f°C, %2$.0f%% kiše za %3$d modela</string>
 
     <!-- Low-confidence callout banner. -->
 

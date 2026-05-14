@@ -90,7 +90,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_confidence_high">Kõrge kindlus — peamised mudelid on nõus</string>
     <string name="today_confidence_medium">Keskmine kindlus</string>
     <string name="today_confidence_low">Madal kindlus — prognoosid lahknevad</string>
-    <string name="today_confidence_spread">Hajuvus: %1$.1f°C, %2$.0f%% sademeid %3$d mudeli lõikes</string>
 
 
     <string name="today_working">Töötab — laadib sinu ClothesCast\'i…</string>

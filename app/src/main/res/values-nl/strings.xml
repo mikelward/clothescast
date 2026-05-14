@@ -341,7 +341,6 @@ the displayed label localizes.
     <string name="today_confidence_high">Hoge zekerheid — de belangrijkste modellen zijn het eens</string>
     <string name="today_confidence_medium">Gemiddelde zekerheid</string>
     <string name="today_confidence_low">Lage zekerheid — voorspellingen lopen uiteen</string>
-    <string name="today_confidence_spread">Spreiding: %1$.1f°C, %2$.0fpp neerslag over %3$d modellen</string>
 
     <string name="today_working">Je ClothesCast wordt opgehaald…</string>
     <string name="today_failed_title">Laatste poging mislukt</string>

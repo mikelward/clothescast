@@ -354,12 +354,16 @@ internal fun TodayInsightCardLocationUnknownPreview() {
 internal fun ConfidenceHighPreview() {
     Frame {
         ConfidenceChip(
-            ConfidenceInfo(
+            info = ConfidenceInfo(
                 level = ForecastConfidence.HIGH,
                 tempSpreadC = 0.8,
                 precipSpreadPp = 5.0,
-                modelsConsulted = listOf("ECMWF", "GFS", "ICON"),
+                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless"),
             ),
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            windSpeedUnit = WindSpeedUnit.KMH,
+            onToggleModelSpread = {},
         )
     }
 }
@@ -369,12 +373,16 @@ internal fun ConfidenceHighPreview() {
 internal fun ConfidenceMediumPreview() {
     Frame {
         ConfidenceChip(
-            ConfidenceInfo(
+            info = ConfidenceInfo(
                 level = ForecastConfidence.MEDIUM,
                 tempSpreadC = 2.5,
                 precipSpreadPp = 20.0,
-                modelsConsulted = listOf("ECMWF", "GFS"),
+                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless"),
             ),
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            windSpeedUnit = WindSpeedUnit.KMH,
+            onToggleModelSpread = {},
         )
     }
 }
@@ -384,12 +392,16 @@ internal fun ConfidenceMediumPreview() {
 internal fun ConfidenceLowPreview() {
     Frame {
         ConfidenceChip(
-            ConfidenceInfo(
+            info = ConfidenceInfo(
                 level = ForecastConfidence.LOW,
                 tempSpreadC = 6.1,
                 precipSpreadPp = 55.0,
-                modelsConsulted = listOf("ECMWF", "GFS", "ICON"),
+                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless"),
             ),
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            windSpeedUnit = WindSpeedUnit.KMH,
+            onToggleModelSpread = {},
         )
     }
 }
@@ -407,8 +419,11 @@ internal fun ConfidenceMediumTapToShowPreview() {
                 level = ForecastConfidence.MEDIUM,
                 tempSpreadC = 2.5,
                 precipSpreadPp = 20.0,
-                modelsConsulted = listOf("ECMWF", "GFS"),
+                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless"),
             ),
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            windSpeedUnit = WindSpeedUnit.KMH,
             showModelSpread = false,
             onToggleModelSpread = {},
         )
@@ -424,9 +439,67 @@ internal fun ConfidenceMediumTapToHidePreview() {
                 level = ForecastConfidence.MEDIUM,
                 tempSpreadC = 2.5,
                 precipSpreadPp = 20.0,
-                modelsConsulted = listOf("ECMWF", "GFS"),
+                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless"),
             ),
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            windSpeedUnit = WindSpeedUnit.KMH,
             showModelSpread = true,
+            onToggleModelSpread = {},
+        )
+    }
+}
+
+// Two variants covering the chip's "what fires when" judgment calls so the
+// effect of each gate is reviewable in a snapshot:
+//
+//  - `ConfidenceMediumPrecipOnlyPreview` exercises the precip-only-driver
+//    path added to address the precip-driven LOW/MEDIUM case (tight feels-
+//    like, wide rain disagreement). perModelHourly is null so no feels-like
+//    divergence hint can fire; precipSpreadPp ≥ 15 makes only the rain line
+//    render. Validates that the chip still says *why* models disagree even
+//    when ModelDivergenceSummary has nothing to offer.
+//  - `ConfidenceMediumNoDetailPreview` exercises the deliberately-empty
+//    case: a MEDIUM/LOW tier from cached data with no perModelHourly and
+//    sub-threshold precip spread. The chip shows only the title and the
+//    tap-to-show hint. Locked into a snapshot so the call to *not* add a
+//    raw-numbers fallback (which would reintroduce the abstract "Spread: …"
+//    line this PR set out to remove) is easy to eyeball.
+@Preview(name = "Confidence · medium · precip-only", widthDp = 360)
+@Composable
+internal fun ConfidenceMediumPrecipOnlyPreview() {
+    Frame {
+        ConfidenceChip(
+            info = ConfidenceInfo(
+                level = ForecastConfidence.MEDIUM,
+                tempSpreadC = 1.0,
+                precipSpreadPp = 35.0,
+                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless"),
+            ),
+            perModelHourly = null,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            windSpeedUnit = WindSpeedUnit.KMH,
+            showModelSpread = false,
+            onToggleModelSpread = {},
+        )
+    }
+}
+
+@Preview(name = "Confidence · medium · no detail line", widthDp = 360)
+@Composable
+internal fun ConfidenceMediumNoDetailPreview() {
+    Frame {
+        ConfidenceChip(
+            info = ConfidenceInfo(
+                level = ForecastConfidence.MEDIUM,
+                tempSpreadC = 2.5,
+                precipSpreadPp = 8.0,
+                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless"),
+            ),
+            perModelHourly = null,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            windSpeedUnit = WindSpeedUnit.KMH,
+            showModelSpread = false,
             onToggleModelSpread = {},
         )
     }
@@ -934,10 +1007,10 @@ internal fun ForecastChartWithModelSpreadPreview() {
     }
 }
 
-// Captures the full ForecastCard including the legend's "Best match" chip
-// and the divergence-summary hint — both layered on top of the chart by the
-// card itself, so the existing [ForecastChartWithModelSpreadPreview] (which
-// renders the chart in isolation) doesn't exercise them.
+// Captures the full ForecastCard including the legend's "Best match" chip —
+// layered on top of the chart by the card itself, so the existing
+// [ForecastChartWithModelSpreadPreview] (which renders the chart in isolation)
+// doesn't exercise it.
 @Preview(name = "Forecast card · with model spread", widthDp = 360)
 @Composable
 internal fun ForecastCardWithModelSpreadPreview() {

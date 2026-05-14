@@ -173,7 +173,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_confidence_high">اطمینان بالا — مدل‌های اصلی توافق دارند</string>
     <string name="today_confidence_medium">اطمینان متوسط</string>
     <string name="today_confidence_low">اطمینان پایین — پیش‌بینی‌ها با هم اختلاف دارند</string>
-    <string name="today_confidence_spread">پراکندگی: %1$.1f°C، %2$.0f%% بارندگی در %3$d مدل</string>
     <string name="today_low_confidence_callout_title">پیش‌بینی‌ها اختلاف دارند</string>
     <string name="today_low_confidence_callout_body">دمای محدوده %1$.1f°C و احتمال بارندگی %2$.0f%% در %3$d مدل متفاوت است.</string>
 

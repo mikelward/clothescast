@@ -322,12 +322,40 @@ private fun TodayContent(
                 insight = state.insight,
                 region = state.region,
             )
-            state.insight.confidence?.let {
-                ConfidenceChip(
-                    info = it,
-                    showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = tapToggle,
-                )
+            // ConfidenceInfo on Insight is always today's daily aggregate
+            // (`bundle.confidence` in GenerateDailyInsight, max/min across the
+            // full day's hours), while `insight.perModelHourly` is sliced to
+            // the period being rendered. On a TONIGHT insight the tier title
+            // and precip-spread number would describe today's daytime
+            // disagreement, but the divergence hint would pick a peak hour
+            // from the nighttime slice — two halves of the chip about
+            // different windows. Skip the whole chip on non-TODAY insights
+            // rather than show a misaligned one; addressing the tonight case
+            // properly needs a domain-side tonight-confidence aggregate.
+            //
+            // TODO(period-windowed-confidence): replace this UI-side gate
+            //   with a domain-side per-window aggregate. ConfidenceInfo
+            //   currently comes from `bundle.confidence` (daily max/min)
+            //   while perModelHourly is sliced to the render window in
+            //   `GenerateDailyInsight.buildPeriodView`. The same root
+            //   misalignment shows up on TODAY too — daily-max spread can
+            //   be driven by an evening outlier that's outside the
+            //   `[morningStart, tonightStart)` slice passed to the chip's
+            //   divergence hint (Codex P2 #6, #discussion_r3240468750).
+            //   Computing ConfidenceInfo over the same window as
+            //   perModelHourly would let the chip render correctly on both
+            //   TODAY and TONIGHT and drop this gate.
+            if (state.insight.period == ForecastPeriod.TODAY) {
+                state.insight.confidence?.let {
+                    ConfidenceChip(
+                        info = it,
+                        perModelHourly = state.insight.perModelHourly,
+                        temperatureUnit = state.temperatureUnit,
+                        windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
+                    )
+                }
             }
             if (state.insight.hourly.isNotEmpty()) {
                 val overlay = state.insight.perModelHourly?.takeIf { state.showModelSpread }
@@ -1008,12 +1036,20 @@ internal fun InsightCard(
  * — Material `secondaryContainer` / `surfaceVariant` / `errorContainer` on the
  * Rainbow palette (teal-ish HIGH, neutral MEDIUM, red-ish LOW), or the
  * Okabe-Ito-derived sky blue / neutral / amber when the user has picked the
- * Accessible palette in Display settings. Detail text shows the actual spread
- * across the consulted models so the user can judge for themselves.
+ * Accessible palette in Display settings. On MEDIUM/LOW tiers the card adds a
+ * detail line (or two): a feels-like divergence hint from
+ * [ModelDivergenceSummary] explaining *what* the models disagree on (e.g.
+ * "Models disagree most at 15:00 (Δ 2.4°C feels-like) — mostly air
+ * temperature, 11–14°C") and, when precip spread crosses the HIGH/MEDIUM
+ * boundary, a parallel rain-disagreement line. HIGH tiers stay quiet — title
+ * + tap hint only.
  */
 @Composable
 internal fun ConfidenceChip(
     info: ConfidenceInfo,
+    perModelHourly: PerModelHourly?,
+    temperatureUnit: TemperatureUnit,
+    windSpeedUnit: WindSpeedUnit,
     showModelSpread: Boolean = false,
     onToggleModelSpread: (() -> Unit)? = null,
 ) {
@@ -1040,15 +1076,66 @@ internal fun ConfidenceChip(
                 text = stringResource(labelRes),
                 style = MaterialTheme.typography.titleSmall,
             )
-            Text(
-                text = stringResource(
-                    R.string.today_confidence_spread,
-                    info.tempSpreadC,
-                    info.precipSpreadPp,
-                    info.modelsConsulted.size,
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-            )
+            // Detail lines only render when the chip's tier shows disagreement.
+            // On HIGH days the title is the message ("Forecasters agree"); per-
+            // hour or timing-only spreads aren't worth surfacing here when the
+            // daily aggregates driving info.level match — surfacing them would
+            // contradict the title (e.g. "Forecasters agree" sitting directly
+            // above "Models disagree most at 15:00…" on a day where models
+            // share a daily maximum but peak at different hours). Power users
+            // can still toggle the per-model overlay on the charts below to
+            // see the curves themselves.
+            if (info.level != ForecastConfidence.HIGH) {
+                // Filter perModelHourly to the consulted-models subset before
+                // computing the feels-like divergence hint. ConfidenceInfo's
+                // tier is derived from the named consulted models only (ECMWF
+                // / GFS / ICON), while perModelHourly also carries the Open-
+                // Meteo best_match overlay. Without this filter a best_match
+                // outlier could make the detail line disagree with the tier
+                // even after the HIGH gate.
+                val consultedHourly = remember(perModelHourly, info.modelsConsulted) {
+                    perModelHourly?.let { hourly ->
+                        val consulted = info.modelsConsulted.toSet()
+                        PerModelHourly(byModel = hourly.byModel.filterKeys { it in consulted })
+                    }?.takeIf { it.byModel.size >= 2 }
+                }
+                if (consultedHourly != null) {
+                    ModelDivergenceHint(
+                        perModelHourly = consultedHourly,
+                        temperatureUnit = temperatureUnit,
+                        windSpeedUnit = windSpeedUnit,
+                    )
+                }
+                // Precip spread can drive MEDIUM/LOW on its own (tight temps,
+                // wide rain disagreement) — ModelDivergenceHint only explains
+                // feels-like divergence, so without this line the chip would
+                // say "Forecasters disagree…" with no explanation on a precip-
+                // only LOW day. Surface the rain disagreement alongside the
+                // feels-like hint whenever it crosses the same HIGH/MEDIUM
+                // boundary the tier-picker uses
+                // (PRECIP_HIGH_AGREEMENT_PP in MultiModelConfidenceFetcher).
+                //
+                // TODO(shared-confidence-thresholds): hoist
+                //   PRECIP_HIGH_AGREEMENT_PP / TEMP_HIGH_AGREEMENT_C and the
+                //   MEDIUM siblings out of MultiModelConfidenceFetcher's
+                //   internal companion (`:core:data`) into a shared home in
+                //   `:core:domain` — e.g. a ConfidenceInfo companion or a
+                //   ConfidenceThresholds object — so this chip can reference
+                //   the same constant the tier-picker uses instead of
+                //   hardcoding 15.0 here. Currently a drift risk: change one
+                //   without changing the other and the chip's precip line
+                //   stops aligning with the HIGH/MEDIUM boundary.
+                if (info.precipSpreadPp >= 15.0) {
+                    Text(
+                        text = stringResource(
+                            R.string.today_confidence_precip_spread,
+                            info.precipSpreadPp,
+                            info.modelsConsulted.size,
+                        ),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+            }
             if (onToggleModelSpread != null) {
                 Text(
                     text = stringResource(
@@ -1113,11 +1200,6 @@ internal fun ForecastCard(
                         label = stringResource(R.string.today_chart_main_line_label),
                     ),
                 )
-                ModelDivergenceHint(
-                    perModelHourly = perModelHourly,
-                    temperatureUnit = temperatureUnit,
-                    windSpeedUnit = distanceUnit.windSpeedUnit(),
-                )
             }
         }
     }
@@ -1179,10 +1261,12 @@ internal fun AirTemperatureCard(
 }
 
 /**
- * One-line "why do the models disagree?" hint rendered under the temperature
- * card's legend when the spread is wide enough to be worth surfacing. See
+ * One-line "why do the models disagree?" hint rendered inside the forecast
+ * confidence card as the chip's detail line. See
  * [ModelDivergenceSummary.computeFrom] for the threshold + factor-ranking
- * heuristic; this composable just formats the result.
+ * heuristic; this composable just formats the result. Color is left
+ * inherited so it picks up the chip's `contentColor` (which tracks the
+ * confidence tier — secondary / surface / error container).
  */
 @Composable
 private fun ModelDivergenceHint(
@@ -1218,8 +1302,7 @@ private fun ModelDivergenceHint(
             factorLabel,
             rangeText,
         ),
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        style = MaterialTheme.typography.bodyMedium,
     )
 }
 

@@ -120,13 +120,26 @@
          is what drives the clothes recommendation. -->
     <string name="today_chart_main_line_label">Combined</string>
 
-    <!-- Per-hour divergence summary rendered under the temperature card's
-         legend when the consulted models disagree most on feels-like.
+    <!-- Per-hour divergence summary rendered inside the forecast confidence
+         card as the chip's detail line, when the consulted models disagree
+         enough on feels-like to surface a peak hour.
          %1$s = hour (e.g. "13:00"), %2$.1f = spread magnitude in the user's
          temperature unit (it's a delta, no offset needed), %3$s = unit
          symbol ("°C" / "°F"), %4$s = factor name ("cloud cover" etc.),
          %5$s = pre-formatted factor range (e.g. "20–75%%"). -->
     <string name="today_chart_divergence_summary">Models disagree most at %1$s (Δ %2$.1f%3$s feels-like) — mostly %4$s, %5$s</string>
+
+    <!-- Precipitation-disagreement detail line, rendered inside the forecast
+         confidence card alongside (or instead of) the feels-like divergence
+         summary when the consulted models' chance-of-rain spread is wide
+         enough to surface — without this, a LOW/MEDIUM tier driven by precip
+         disagreement (tight temperature, wide rain spread) would leave the
+         user with "Forecasters disagree…" and no explanation, since
+         ModelDivergenceSummary only describes feels-like factors. %1$.0f =
+         precipitation-probability spread in percentage points, written as
+         "%%" so the user sees "35%%" (not "35pp"). %2$d = number of models
+         consulted (typically 2–3 across ECMWF / GFS / ICON). -->
+    <string name="today_confidence_precip_spread">Models disagree on rain (Δ %1$.0f%% across %2$d models)</string>
 
     <!-- Lowercase factor names used inside the divergence-summary string
          above. Kept short so the whole line fits on one row at typical
@@ -206,7 +219,6 @@
     <string name="today_confidence_high">Forecasters agree</string>
     <string name="today_confidence_medium">Forecasters disagree a bit</string>
     <string name="today_confidence_low">Forecasters disagree a lot</string>
-    <string name="today_confidence_spread">Spread: %1$.1f°C, %2$.0f%% precip across %3$d models</string>
 
     <!-- Banner above the outfit row when ForecastConfidence.LOW. The compact
          ConfidenceChip inside the insight card still shows for all tiers; this

@@ -117,7 +117,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_confidence_high">ከፍተኛ እምነት — ዋና ሞዴሎቹ ይስማማሉ</string>
     <string name="today_confidence_medium">መካከለኛ እምነት</string>
     <string name="today_confidence_low">ዝቅተኛ እምነት — ትንበያዎቹ ይለያያሉ</string>
-    <string name="today_confidence_spread">ልዩነት: %1$.1f°C፣ %2$.0f%% ዝናብ በ%3$d ሞዴሎቹ</string>
     <string name="today_low_confidence_callout_title">ትንበያዎቹ ይለያያሉ</string>
     <string name="today_low_confidence_callout_body">የሙቀት ልዩነት %1$.1f°C ሲሆን የዝናብ ዕድል ልዩነት %2$.0f%% ነው በ%3$d ሞዴሎቹ።</string>
 

@@ -437,7 +437,6 @@ only the displayed label localizes.
     <string name="today_confidence_high">Висока впевненість — основні моделі збігаються</string>
     <string name="today_confidence_medium">Середня впевненість</string>
     <string name="today_confidence_low">Низька впевненість — прогнози розходяться</string>
-    <string name="today_confidence_spread">Розкид: %1$.1f°C, %2$.0f%% опадів за %3$d моделями</string>
 
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Ймовірність дощу</string>

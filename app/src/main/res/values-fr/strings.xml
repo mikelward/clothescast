@@ -373,7 +373,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_confidence_high">Les prévisions s\'accordent</string>
     <string name="today_confidence_medium">Les prévisions divergent un peu</string>
     <string name="today_confidence_low">Les prévisions divergent nettement</string>
-    <string name="today_confidence_spread">Dispersion : %1$.1f°C, %2$.0fpp de précipitations sur %3$d modèles</string>
 
     <string name="today_working">Récupération de ton ClothesCast…</string>
     <string name="today_failed_title">Dernière tentative échouée</string>
@@ -613,6 +612,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_chart_model_legend_label">Modèles :</string>
     <string name="today_chart_main_line_label">Combiné</string>
     <string name="today_chart_divergence_summary">Les modèles divergent le plus à %1$s (Δ %2$.1f%3$s ressenti) — surtout %4$s, %5$s</string>
+    <string name="today_confidence_precip_spread">Les modèles divergent sur la pluie (Δ %1$.0f%% sur %2$d modèles)</string>
 
     <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
     <string name="today_factor_air_temperature">température de l\'air</string>

@@ -409,7 +409,6 @@ What is NOT overridden, by design:
     <string name="today_confidence_high">Vysoká istota — hlavné modely sa zhodujú</string>
     <string name="today_confidence_medium">Stredná istota</string>
     <string name="today_confidence_low">Nízka istota — predpovede sa rozchádzajú</string>
-    <string name="today_confidence_spread">Rozptyl: %1$.1f°C, %2$.0f p.b. zrážky cez %3$d modelov</string>
 
     <string name="today_working">Načítavam tvoj ClothesCast…</string>
     <string name="today_retrying">Posledný pokus zlyhal — skúšam znova…</string>

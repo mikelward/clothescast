@@ -341,7 +341,6 @@ is unchanged; only the displayed label localizes.
     <string name="today_confidence_high">Duża pewność — główne modele są zgodne</string>
     <string name="today_confidence_medium">Średnia pewność</string>
     <string name="today_confidence_low">Mała pewność — prognozy się różnią</string>
-    <string name="today_confidence_spread">Rozrzut: %1$.1f°C, %2$.0f pp opadów dla %3$d modeli</string>
 
     <string name="today_working">Pobieranie Twojego ClothesCastu…</string>
     <string name="today_failed_title">Ostatnia próba nie powiodła się</string>

@@ -345,7 +345,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_confidence_high">Prognoze se slažu</string>
     <string name="today_confidence_medium">Prognoze se malo razlikuju</string>
     <string name="today_confidence_low">Prognoze se jako razlikuju</string>
-    <string name="today_confidence_spread">Raspršenost: %1$.1f°C, %2$.0fpp oborine preko %3$d modela</string>
 
     <string name="today_working">Dohvaćam tvoj ClothesCast…</string>
     <string name="today_failed_title">Posljednji pokušaj nije uspio</string>
@@ -581,6 +580,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_chart_model_legend_label">Modeli:</string>
     <string name="today_chart_main_line_label">Kombinirano</string>
     <string name="today_chart_divergence_summary">Modeli se najviše razlikuju u %1$s (Δ %2$.1f%3$s osjećajna temp.) — uglavnom %4$s, %5$s</string>
+    <string name="today_confidence_precip_spread">Modeli se razlikuju oko kiše (Δ %1$.0f%% kroz %2$d modela)</string>
 
     <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
     <string name="today_factor_air_temperature">temperatura zraka</string>

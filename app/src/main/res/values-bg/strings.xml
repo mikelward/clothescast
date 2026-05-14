@@ -187,7 +187,6 @@ What is NOT overridden, by design:
     <string name="today_confidence_high">Висока достоверност — основните модели са съгласни</string>
     <string name="today_confidence_medium">Средна достоверност</string>
     <string name="today_confidence_low">Ниска достоверност — прогнозите се разминават</string>
-    <string name="today_confidence_spread">Разлика: %1$.1f°C, %2$.0f%% валежи при %3$d модела</string>
 
     <!-- Low-confidence callout banner. -->
 

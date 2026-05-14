@@ -179,7 +179,6 @@ standard in Israeli digital communication.
     <string name="today_confidence_high">אמון גבוה — מודלים עיקריים מסכימים</string>
     <string name="today_confidence_medium">אמון בינוני</string>
     <string name="today_confidence_low">אמון נמוך — תחזיות אינן מסכימות</string>
-    <string name="today_confidence_spread">פיזור: %1$.1f°C, %2$.0f%% משקעים על פני %3$d מודלים</string>
     <string name="today_low_confidence_callout_title">התחזיות חלוקות</string>
     <string name="today_low_confidence_callout_body">טווח הטמפרטורה משתנה ב-%1$.1f°C וסיכוי לגשם ב-%2$.0f%% על פני %3$d מודלים.</string>
 

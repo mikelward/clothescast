@@ -160,7 +160,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_confidence_high">Imani ya juu — mifano mikubwa inakubaliana</string>
     <string name="today_confidence_medium">Imani ya kati</string>
     <string name="today_confidence_low">Imani ya chini — utabiri hutofautiana</string>
-    <string name="today_confidence_spread">Tofauti: %1$.1f°C, %2$.0f%% mvua kwenye mifano %3$d</string>
     <string name="today_low_confidence_callout_title">Utabiri hutofautiana</string>
     <string name="today_low_confidence_callout_body">Halijoto inatofautiana kwa %1$.1f°C na uwezekano wa mvua kwa %2$.0f%% kwenye mifano %3$d.</string>
 

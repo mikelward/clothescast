@@ -1165,9 +1165,9 @@ internal fun ForecastCard(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            if (showModelSpread && perModelHourly != null) {
+            if (perModelHourly != null) {
                 ModelSpreadLegend(
-                    visibleModelIds = MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel },
+                    visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
                     mainLine = MainLineLegend(
                         color = MaterialTheme.colorScheme.primary,
                         label = stringResource(R.string.today_chart_main_line_label),
@@ -1222,9 +1222,9 @@ internal fun AirTemperatureCard(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            if (showModelSpread && perModelHourly != null) {
+            if (perModelHourly != null) {
                 ModelSpreadLegend(
-                    visibleModelIds = MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel },
+                    visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
                     mainLine = MainLineLegend(
                         color = MaterialTheme.colorScheme.primary,
                         label = stringResource(R.string.today_chart_main_line_label),
@@ -1582,9 +1582,9 @@ internal fun PrecipitationCard(
                 perModelHourly = perModelHourly,
                 showModelSpread = showModelSpread,
             )
-            if (showModelSpread && perModelHourly != null) {
+            if (perModelHourly != null) {
                 ModelSpreadLegend(
-                    visibleModelIds = MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel },
+                    visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
                     mainLine = MainLineLegend(
                         color = MaterialTheme.colorScheme.primary,
                         label = stringResource(R.string.today_chart_main_line_label),

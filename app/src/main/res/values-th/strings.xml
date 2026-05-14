@@ -566,4 +566,27 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_forecast_air_section_title">อุณหภูมิอากาศ</string>
     <string name="settings_default_bottom_title">ท่อนล่างมาตรฐาน</string>
     <string name="settings_default_bottom_description">สิ่งที่เราแนะนำบนหน้าจอหลักเมื่ออากาศไม่อบอุ่นพอที่จะใส่กางเกงขาสั้น</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">ชุดสี</string>
+    <string name="settings_display_palette_accessible">เข้าถึงได้</string>
+    <string name="settings_display_palette_accessible_description">ชุดสีที่อิงจาก Okabe-Ito ออกแบบให้แยกแยะได้ในภาวะตาบอดสีเขียว-แดงและสีน้ำเงิน การ์ดความเชื่อมั่นใช้สีฟ้าฟ้า, กลาง และอำพัน แทนสีเขียวน้ำทะเล, กลาง และแดง</string>
+    <string name="settings_display_palette_rainbow">สีรุ้ง</string>
+    <string name="settings_display_palette_rainbow_description">เส้นกราฟสีชมพู ส้ม และเขียว พร้อมการ์ดความเชื่อมั่น Material สีเขียวน้ำทะเล/แดง ค่าเริ่มต้น</string>
+    <string name="settings_unit_auto">อัตโนมัติ</string>
+    <string name="today_cloud_range">เมฆ %1$d–%2$d%%</string>
+    <string name="today_confidence_precip_spread">แบบจำลองไม่ตรงกันเรื่องฝน (Δ %1$.0f%% ใน %2$d แบบจำลอง)</string>
+    <string name="today_confidence_tap_to_hide">แตะเพื่อซ่อนพยากรณ์ของแต่ละแบบจำลอง</string>
+    <string name="today_confidence_tap_to_show">แตะเพื่อดูพยากรณ์ของแต่ละแบบจำลอง</string>
+    <string name="today_humidity_range">ความชื้น %1$d–%2$d%%</string>
+    <string name="today_solar_subtitle">ความเข้มรังสีพื้นผิว (W/m²) ต่อชั่วโมงต่อแบบจำลอง</string>
+    <string name="today_solar_title">รังสีดวงอาทิตย์</string>
+    <string name="today_sunshine_subtitle">นาทีแดดออกต่อชั่วโมงต่อแบบจำลอง</string>
+    <string name="today_sunshine_title">ชั่วโมงแดด</string>
+    <string name="today_sunshine_total_hours_minutes">แดดวันนี้ %1$d ชม. %2$d นาที</string>
+    <string name="today_sunshine_total_hours_only">แดดวันนี้ %1$d ชม.</string>
+    <string name="today_sunshine_total_minutes_only">แดดวันนี้ %1$d นาที</string>
+    <string name="today_uv_subtitle">ดัชนี UV ต่อชั่วโมงต่อแบบจำลอง</string>
+    <string name="today_uv_title">ดัชนี UV</string>
+    <string name="today_wind_peak">สูงสุด %1$d %2$s เวลา %3$s</string>
 </resources>

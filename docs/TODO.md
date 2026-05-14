@@ -26,7 +26,7 @@ Code TODOs in source files are linked from here when they exist.
 
 - [x] Gemini TTS as opt-in voice engine (PR #27)
 - [x] Diagnostic "Test Gemini voice" button in Settings (PR #28)
-- [ ] **Voice picker** for Gemini. Currently hardcoded to `Kore`.
+- [x] **Voice picker** for Gemini. Curated list in `TtsVoices.kt`; Despina is the current default (validated across en-GB / en-AU / en-US / de-*).
 
 ## Calendar integration (next-up after TTS)
 
@@ -39,7 +39,6 @@ Code TODOs in source files are linked from here when they exist.
       clothes rule + a precip-peak event window both apply, preferring
       "umbrella" when on the clothes list. Reader failures degrade silently
       to no events.
-  - Privacy disclosure update in `docs/privacy.md` (file not yet created).
 
 ## Forecast & alerts
 
@@ -149,10 +148,3 @@ Decide before wiring anything; the wiring is the easy part.
 - Backend Gemini proxy (interface in place; swap before Play Store).
 - Google Home / alarm-clock-app integration.
 - Play Store submission. Sideload + FAD only for v1.
-
-## Code TODOs
-
-| File | Note |
-|---|---|
-| `app/build.gradle.kts:9` | Pin namespace + applicationId before first distribution. |
-| `app/src/main/kotlin/app/clothescast/tts/AndroidTtsSpeaker.kt:30` | Evaluate higher-quality TTS alternatives. (Gemini now landed.) |

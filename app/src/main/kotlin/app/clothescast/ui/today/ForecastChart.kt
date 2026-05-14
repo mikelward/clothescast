@@ -92,6 +92,12 @@ private const val MIN_Y_SPAN = 4.0
  * we convert at the edge with [toUnit] so the chart matches the user's
  * temperatureUnit preference. The legend, rendered by the parent, carries the
  * unit symbol — the axis stays unitless to avoid "10°C, 15°C, 20°C" repetition.
+ *
+ * When [perModelHourly] is supplied, the y-axis is always sized to the full
+ * per-model envelope — even when [showModelSpread] is off and only the main
+ * line is drawn — so tapping the card to toggle the overlay adds or removes
+ * lines without shifting the axis labels underneath the data. Matches the
+ * [PerModelDiagnosticCard] pattern.
  */
 @Composable
 fun ForecastChart(
@@ -99,18 +105,27 @@ fun ForecastChart(
     temperatureUnit: TemperatureUnit,
     showFeelsLike: Boolean,
     modifier: Modifier = Modifier,
-    // Optional per-model overlays — passed by the caller when the user has
-    // the "Show model spread" Display setting on. Drawn against whichever
-    // series the parent has the toggle on for: apparent-temperature when
+    // Optional per-model data. When non-null, used to size the y-axis to the
+    // full envelope regardless of [showModelSpread] so the toggle only adds /
+    // removes lines, never shifts the scale. Drawn against whichever series
+    // the parent has the toggle on for: apparent-temperature when
     // [showFeelsLike], raw 2 m air otherwise. The per-model entries carry
     // both, so the overlay stays semantically aligned with the main line in
     // either mode.
     perModelHourly: PerModelHourly? = null,
+    // When true, draw the individual model lines underneath the main line.
+    // When false, only the main consensus line is rendered. Y-axis range is
+    // unchanged in either case (see [perModelHourly]).
+    showModelSpread: Boolean = false,
 ) {
     if (hourly.isEmpty()) return
 
     val overlays = perModelHourly?.byModel.orEmpty()
-    val visibleModels = MODEL_DRAW_ORDER.filter { it in overlays }
+    val visibleModels = if (showModelSpread) {
+        MODEL_DRAW_ORDER.filter { it in overlays }
+    } else {
+        emptyList()
+    }
     val mainLineColor = MaterialTheme.colorScheme.primary
 
     val pickModel: (PerModelHour) -> Double =
@@ -119,12 +134,13 @@ fun ForecastChart(
         if (showFeelsLike) { h -> h.feelsLikeC } else { h -> h.temperatureC }
 
     val producer = remember { CartesianChartModelProducer() }
-    LaunchedEffect(hourly, temperatureUnit, showFeelsLike, overlays) {
+    LaunchedEffect(hourly, temperatureUnit, showFeelsLike, visibleModels) {
         producer.runTransaction {
             lineSeries {
                 // Overlays first so they render *under* the main blended line.
                 // Iterate in a fixed model order so the legend's color mapping
-                // is stable across recompositions.
+                // is stable across recompositions. Empty when [showModelSpread]
+                // is off — only the main line is emitted in that case.
                 visibleModels.forEach { modelId ->
                     overlays.getValue(modelId).let { entries ->
                         series(entries.map { pickModel(it).toUnit(temperatureUnit) })

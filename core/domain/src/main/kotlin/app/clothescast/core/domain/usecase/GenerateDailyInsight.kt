@@ -2,6 +2,7 @@ package app.clothescast.core.domain.usecase
 
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -111,7 +112,28 @@ class GenerateDailyInsight(
             generatedAt = clock.instant(),
             forDate = bundle.today.date,
             hourly = periodView.forecast.hourly,
-            confidence = bundle.confidence,
+            // Recompute over the rendered window so the chip's tier title +
+            // precip-spread number describe the same hours the divergence
+            // hint picks its peak from. `bundle.confidence` is the full-
+            // calendar-day aggregate; falling back to it is only safe when
+            // the *bundle itself* has no perModelHourly (truly legacy
+            // payloads), because in that case the chip has no detail line
+            // either and the window mismatch is invisible.
+            //
+            // When the bundle does carry perModelHourly but the rendered
+            // window slice ends up null or sparse — `slicedTo` returns
+            // null on an empty window or when every model is missing an
+            // in-window hour; `ConfidenceInfo.computeFrom` returns null
+            // on < 2 consulted models with non-empty hours — prefer null
+            // over `bundle.confidence`. Surfacing the daily aggregate
+            // there would silently reintroduce the window mismatch this
+            // change is fixing. The chip treats null as "unknown" and
+            // hides itself, which is the honest answer.
+            confidence = if (bundle.perModelHourly == null) {
+                bundle.confidence
+            } else {
+                periodView.perModelForRender?.let { ConfidenceInfo.computeFrom(it) }
+            },
             perModelHourly = periodView.perModelForRender,
             outfit = OutfitSuggestion.fromForecast(periodView.forecast, rules, defaultBottom),
             nextOutfit = periodView.nextForecast?.let { OutfitSuggestion.fromForecast(it, rules, defaultBottom) },

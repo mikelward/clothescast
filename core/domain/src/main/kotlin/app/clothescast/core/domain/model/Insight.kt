@@ -34,6 +34,14 @@ data class Insight(
      * Cross-model agreement at fetch time, when available. Null when the
      * multi-model confidence call failed or the implementation doesn't compute
      * it. UI should treat null as "unknown" rather than "high".
+     *
+     * Scope: this is computed over the *rendered window* — daytime for
+     * [ForecastPeriod.TODAY], tonight for [ForecastPeriod.TONIGHT] — so it
+     * describes the same hours the Today screen's other cards visualise.
+     * Falls back to a full-calendar-day aggregate on older cached bundles
+     * that don't carry [PerModelHourly]. See
+     * [ConfidenceInfo.computeFrom] and
+     * [app.clothescast.core.domain.usecase.GenerateDailyInsight].
      */
     val confidence: ConfidenceInfo? = null,
     /**

@@ -7,15 +7,63 @@ new rule the first time something bites you, not the third.
 ## Working in this repo
 
 - This repo is an Android app (Kotlin + Compose) with two pure-Kotlin
-  sub-modules: `:core:domain` and `:core:data`. Only `:core:domain` builds
-  without the Android SDK; `:core:data` and `:app` need AGP loadable.
-- The Android SDK is generally **not** available in agent sandboxes, and the
-  Google Maven repo is often blocked. If you can't run `:app:assembleDebug`
-  or `:app:testDebugUnitTest` locally, **say so explicitly** and rely on CI
-  as the validation surface. Do not claim "the build passes" when you only
+  sub-modules: `:core:domain` (clothes / insight logic, JVM-only) and
+  `:core:data` (Open-Meteo client, Ktor + kotlinx.serialization, also
+  JVM-only). The `:app` module owns everything Android — Compose UI,
+  Roborazzi snapshots, the WorkManager glue, Firebase wiring.
+- Domain logic that doesn't need Android **already lives in `:core:domain`
+  or `:core:data`** — both modules apply only `kotlin.jvm` and run on the
+  JVM without AGP or the Android SDK. Before adding pure-Kotlin code into
+  `:app`, check whether it belongs in one of the core modules so it stays
+  testable in low-tooling sandboxes. Roborazzi / Compose-preview snapshot
+  tests inherently live in `:app` (they need AGP + Robolectric); rule and
+  rendering logic does not.
+
+### Build & test by sandbox capability
+
+What you can run depends on which pieces of the toolchain are reachable.
+Probe before committing to a plan:
+
+```
+which gradle; ls ./gradlew     # Gradle CLI / wrapper
+echo "$ANDROID_HOME"; ls "$ANDROID_HOME/platforms" 2>/dev/null  # SDK
+./gradlew :app:tasks --no-daemon -q 2>&1 | tail -5   # AGP resolves?
+```
+
+- **Full toolchain (Gradle + Google Maven + Android SDK).** Run the
+  CI-equivalent locally and treat green as authoritative:
+  ```
+  ./gradlew :core:domain:test :core:data:test :app:testDebugUnitTest
+  ./gradlew :app:assembleDebug
+  ```
+  This is the Cursor Cloud VM and any dev workstation. See the
+  "Cursor Cloud specific instructions" section for the SDK install path.
+- **Gradle + Google Maven, no SDK.** AGP loads, `:app:tasks` lists the
+  Android tasks, but anything that compiles against `android.jar` (e.g.
+  `:app:testDebugUnitTest`, `:app:assembleDebug`) fails with `SDK
+  location not found`. The two core modules still build and test:
+  ```
+  ./gradlew :core:domain:test :core:data:test
+  ```
+  This is the current Claude Code on the web environment with
+  `dl.google.com` / `maven.google.com` allowlisted. Use it to validate
+  any pure-Kotlin change end-to-end before pushing; defer `:app` checks
+  to CI.
+- **Gradle + Maven Central only (Google Maven blocked).** AGP plugin
+  resolution fails, so configuring `:app` (which is included in
+  `settings.gradle.kts`) errors out and `./gradlew :core:*:test` can be
+  collateral damage if Gradle tries to configure all projects. If
+  `:core:domain:test` still runs (configure-on-demand sometimes lets it
+  through), use it; otherwise rely on CI. Either way, **say so
+  explicitly** in your reply — don't claim a build passed when you only
   ran the domain tests.
-- `:core:domain:test` is the one thing you can usually run locally — use it
-  to validate any pure-Kotlin domain change before pushing.
+- **No Gradle / no JVM at all.** Push and let CI validate. Note in the
+  PR description that you couldn't run anything locally.
+
+Never claim "the build passes" on the strength of `:core:domain:test`
+alone — the Android variant tests (Roborazzi snapshots, Robolectric
+unit tests) exercise code the core modules don't touch. CI is the
+validation surface for `:app`.
 
 ## Commits and PRs
 
@@ -247,9 +295,9 @@ new rule the first time something bites you, not the third.
   + build-tools;35.0.0). `ANDROID_HOME` / `ANDROID_SDK_ROOT` are exported via
   `~/.bashrc`; source it or `export ANDROID_HOME=/opt/android-sdk` before
   running Gradle if your shell hasn't picked it up.
-- **All three modules build and test on this VM.** Unlike the AGENTS.md note
-  about agent sandboxes lacking the SDK, the Cursor Cloud VM has it. You can
-  run the full CI-equivalent locally:
+- **All three modules build and test on this VM** — this is the "full
+  toolchain" row of the build matrix in "Working in this repo". Run the
+  full CI-equivalent locally:
   ```
   export ANDROID_HOME=/opt/android-sdk
   ./gradlew :core:domain:test :core:data:test :app:testDebugUnitTest

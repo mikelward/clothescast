@@ -360,9 +360,9 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_forecast_legend_feels_like">Temperatura percepita (%1$s) per ora</string>
     <string name="today_forecast_legend_air">Temperatura dell\'aria (%1$s) per ora</string>
 
-    <string name="today_confidence_high">Alta confidenza — i modelli principali concordano</string>
-    <string name="today_confidence_medium">Confidenza media</string>
-    <string name="today_confidence_low">Bassa confidenza — le previsioni non concordano</string>
+    <string name="today_confidence_high">Le previsioni concordano</string>
+    <string name="today_confidence_medium">Le previsioni divergono un po\'</string>
+    <string name="today_confidence_low">Le previsioni divergono molto</string>
     <string name="today_confidence_spread">Dispersione: %1$.1f°C, %2$.0fpp precipitazioni su %3$d modelli</string>
 
     <string name="today_working">Sto recuperando il tuo ClothesCast…</string>

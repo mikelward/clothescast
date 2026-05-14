@@ -383,9 +383,9 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_forecast_legend_feels_like">Gefühlte Temperatur (%1$s) pro Stunde</string>
     <string name="today_forecast_legend_air">Lufttemperatur (%1$s) pro Stunde</string>
 
-    <string name="today_confidence_high">Hohe Sicherheit — die wichtigsten Modelle stimmen überein</string>
-    <string name="today_confidence_medium">Mittlere Sicherheit</string>
-    <string name="today_confidence_low">Geringe Sicherheit — Vorhersagen weichen voneinander ab</string>
+    <string name="today_confidence_high">Vorhersagen stimmen überein</string>
+    <string name="today_confidence_medium">Vorhersagen weichen leicht ab</string>
+    <string name="today_confidence_low">Vorhersagen weichen stark ab</string>
     <string name="today_confidence_spread">Streuung: %1$.1f°C, %2$.0fpp Niederschlag über %3$d Modelle</string>
 
     <string name="today_working">Hole deinen ClothesCast…</string>

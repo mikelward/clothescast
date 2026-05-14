@@ -129,8 +129,15 @@ Decide before wiring anything; the wiring is the easy part.
 
 ## Testing & quality
 
-- [ ] **Robolectric tests** for `NotificationBuilder`, `DailyAlarmScheduler`,
-      `BootReceiver`. Currently zero coverage on those error-prone bits.
+- [x] **Robolectric tests** for the alarm + notification path. First
+      coverage landed for `DailyAlarmScheduler` (exact-alarm trigger time,
+      TODAY/TONIGHT slot independence, cancel), `ScheduleRefreshReceiver`
+      (the boot / package-replaced / timezone / locale re-arm path,
+      tonight-enabled vs disabled branches), and the two
+      notifiers — `InsightNotifier` and `TonightInsightNotifier` —
+      covering channel routing, title/body/big-text, the tap intent,
+      POST_NOTIFICATIONS gating on API 33+, and the outfit-driven
+      small-icon mapping.
 - [ ] **Compose UI tests** for `SettingsScreen` (state transitions, dialog
       flow). No `app/src/androidTest/` exists today.
 - [ ] **Maestro flows** — `.maestro/first_launch.yaml`,

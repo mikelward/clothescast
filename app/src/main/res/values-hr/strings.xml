@@ -342,9 +342,9 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_forecast_legend_feels_like">Osjećajna temperatura (%1$s) po satu</string>
     <string name="today_forecast_legend_air">Temperatura zraka (%1$s) po satu</string>
 
-    <string name="today_confidence_high">Visoka pouzdanost — glavni modeli se slažu</string>
-    <string name="today_confidence_medium">Srednja pouzdanost</string>
-    <string name="today_confidence_low">Niska pouzdanost — prognoze se razlikuju</string>
+    <string name="today_confidence_high">Prognoze se slažu</string>
+    <string name="today_confidence_medium">Prognoze se malo razlikuju</string>
+    <string name="today_confidence_low">Prognoze se jako razlikuju</string>
     <string name="today_confidence_spread">Raspršenost: %1$.1f°C, %2$.0fpp oborine preko %3$d modela</string>
 
     <string name="today_working">Dohvaćam tvoj ClothesCast…</string>

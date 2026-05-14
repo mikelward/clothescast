@@ -129,7 +129,6 @@ class SettingsViewModel(
                         voiceLocale = prefs.voiceLocale,
                         useCalendarEvents = prefs.useCalendarEvents,
                         telemetryEnabled = prefs.telemetryEnabled,
-                        showModelSpread = prefs.showModelSpread,
                     )
                 }
                 // Re-enumerate on first observation and whenever the effective
@@ -339,10 +338,6 @@ class SettingsViewModel(
 
     fun setUseCalendarEvents(enabled: Boolean) {
         viewModelScope.launch { settingsRepository.setUseCalendarEvents(enabled) }
-    }
-
-    fun setShowModelSpread(enabled: Boolean) {
-        viewModelScope.launch { settingsRepository.setShowModelSpread(enabled) }
     }
 
     fun setTelemetryEnabled(enabled: Boolean) {

@@ -244,10 +244,6 @@ class SettingsRepository(
         dataStore.edit { it[TELEMETRY_NOTICE_ACKED] = acked }
     }
 
-    suspend fun setShowModelSpread(enabled: Boolean) {
-        dataStore.edit { it[SHOW_MODEL_SPREAD] = enabled }
-    }
-
     /**
      * Atomically nudges the temperature threshold of the [ClothesRule] keyed
      * `ruleItem` by [deltaC] degrees Celsius. Used by the rationale dialog's
@@ -366,7 +362,6 @@ class SettingsRepository(
         // default; the one-time Today banner is what surfaces the choice to the user.
         val telemetryEnabled = this[TELEMETRY_ENABLED] != false
         val telemetryNoticeAcked = this[TELEMETRY_NOTICE_ACKED] == true
-        val showModelSpread = this[SHOW_MODEL_SPREAD] == true
         val zone = zoneIdProvider()
 
         return UserPreferences(
@@ -393,7 +388,6 @@ class SettingsRepository(
             dailyMentionEveningEvents = dailyMentionEveningEvents,
             telemetryEnabled = telemetryEnabled,
             telemetryNoticeAcked = telemetryNoticeAcked,
-            showModelSpread = showModelSpread,
         )
     }
 
@@ -505,7 +499,6 @@ class SettingsRepository(
         private val TELEMETRY_ENABLED = booleanPreferencesKey("telemetry_enabled")
         private val TELEMETRY_NOTICE_ACKED = booleanPreferencesKey("telemetry_notice_acked")
         private val BUG_REPORT_CONSENT_ACKED = booleanPreferencesKey("bug_report_consent_acked")
-        private val SHOW_MODEL_SPREAD = booleanPreferencesKey("show_model_spread")
 
         private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
         private val DEFAULT_TIME: LocalTime = LocalTime.of(7, 0)

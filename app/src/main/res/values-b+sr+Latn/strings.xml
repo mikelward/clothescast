@@ -144,9 +144,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_display_theme_light">Svetla</string>
     <string name="settings_display_theme_dark">Tamna</string>
 
-    <string name="settings_display_charts_title">Grafikoni</string>
-    <string name="settings_display_model_spread_label">Prikaži raspršenost modela na grafikonima</string>
-    <string name="settings_display_model_spread_description">Prikazuje satnu prognozu svakog glavnog vremenskog modela na grafikonima temperature i kiše. Korisno za uočavanje kada je prognoza neizvesna.</string>
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>

@@ -280,9 +280,6 @@ What is NOT overridden, by design:
     <string name="settings_display_theme_dark">Tamsi</string>
 
     <!-- Charts settings. -->
-    <string name="settings_display_charts_title">Diagramos</string>
-    <string name="settings_display_model_spread_label">Rodyti modelių skirtumą diagramose</string>
-    <string name="settings_display_model_spread_description">Ant temperatūros ir lietaus diagramų pridedamos pagrindinių orų modelių valandos prognozės. Naudinga pastebėti, kai prognozė yra neaiški.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Gedimų ir naudojimo ataskaitos</string>

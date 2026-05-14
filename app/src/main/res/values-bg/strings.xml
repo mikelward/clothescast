@@ -291,9 +291,6 @@ What is NOT overridden, by design:
     <string name="settings_display_theme_system">Следвай системата</string>
     <string name="settings_display_theme_light">Светла</string>
     <string name="settings_display_theme_dark">Тъмна</string>
-    <string name="settings_display_charts_title">Графики</string>
-    <string name="settings_display_model_spread_label">Покажи разминаването на моделите в графиките</string>
-    <string name="settings_display_model_spread_description">Показва почасовата прогноза на всеки основен метеорологичен модел в графиките за температура и дъжд. Полезно за установяване кога прогнозата е несигурна.</string>
 
     <!-- Privacy settings. -->
     <string name="settings_privacy_telemetry_title">Доклади за сривове и използване</string>

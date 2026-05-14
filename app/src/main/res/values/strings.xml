@@ -205,6 +205,15 @@
     <string name="today_low_confidence_callout_title">Forecasts disagree</string>
     <string name="today_low_confidence_callout_body">Temperature ranges by %1$.1f°C and rain chance by %2$.0f%% across %3$d models.</string>
 
+    <!-- Hint text added to the confidence chip + low-confidence callout so the
+         tap-to-reveal affordance is discoverable. Toggles per-model overlay
+         lines on the temperature / feels-like / precip charts; the diagnostic
+         cards below (wind / cloud / humidity / solar / sunshine / UV) are
+         per-model-only and always rendered. _hide is the inverse copy
+         shown when the overlay is already on. -->
+    <string name="today_confidence_tap_to_show">Tap to see each model\'s forecast</string>
+    <string name="today_confidence_tap_to_hide">Tap to hide model forecasts</string>
+
     <string name="today_working">Working — fetching your ClothesCast…</string>
     <!-- Shown while WorkManager is in exponential backoff between attempts after
          the worker returned Result.retry(). Distinct from today_working so the
@@ -320,13 +329,6 @@
     <string name="settings_display_theme_light">Light</string>
     <string name="settings_display_theme_dark">Dark</string>
 
-    <!-- "Show model spread" toggle in Display settings — opt-in overlay drawing
-         each major weather model's hourly curve on the Today charts alongside
-         the main blended forecast. Off by default; the data is always fetched
-         so flipping it on shows overlays immediately. -->
-    <string name="settings_display_charts_title">Charts</string>
-    <string name="settings_display_model_spread_label">Show model spread on charts</string>
-    <string name="settings_display_model_spread_description">Overlays each major weather model\'s hourly forecast on the temperature and rain charts. Useful for spotting when the forecast is uncertain.</string>
     <string name="settings_root_location_subtitle">Auto-detect or pick a city</string>
     <string name="settings_root_calendar_subtitle">Today\'s events</string>
     <string name="settings_root_privacy_subtitle">Crash + usage reports</string>

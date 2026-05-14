@@ -642,9 +642,6 @@ label localizes.
     <string name="settings_root_privacy_subtitle">崩溃及使用情况报告</string>
 
     <!-- Display — Charts section. -->
-    <string name="settings_display_charts_title">图表</string>
-    <string name="settings_display_model_spread_label">在图表上显示模型分布</string>
-    <string name="settings_display_model_spread_description">将各主要气象模型的小时预报叠加在温度与降雨图表上，便于发现预报不确定的时段。</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">崩溃及使用情况报告</string>

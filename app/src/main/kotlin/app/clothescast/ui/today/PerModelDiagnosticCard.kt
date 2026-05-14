@@ -1,5 +1,6 @@
 package app.clothescast.ui.today
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
@@ -34,24 +36,30 @@ import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 /**
- * Shared "diagnostic card" used by the per-model wind / cloud / humidity
- * surfaces. Each metric differs in three ways — which field of [PerModelHour]
- * to plot, what y-axis range to pin, and how to format the y values — and
- * everything else (title + subtitle copy aside) is identical: filter the
- * per-model overlays to the entries that have the metric, render those
- * sparse series at their original time indices so a single missing hour
- * doesn't drop the whole model, and surface a [ModelSpreadLegend] keyed to
- * exactly the models that ended up on the chart.
+ * Shared "diagnostic card" used by every per-model metric (wind / cloud /
+ * humidity / solar / sunshine / UV). The chart always draws a single
+ * consensus main line — the per-hour mean across consulted models — and
+ * optionally overlays the individual model lines when [showOverlay] is on.
+ * This matches the temp / feels-like / precip cards' "main line first,
+ * spread on tap" pattern so every chart on the Today screen reads the same
+ * way.
+ *
+ * Each metric differs in three ways: which field of [PerModelHour] to plot,
+ * what y-axis range to pin, and how to format the y values. The y-axis is
+ * always sized to the per-model envelope (not just the main line) so
+ * toggling [showOverlay] doesn't shift the axis underneath the data — the
+ * spread fits in the same space whether or not it's visible.
  *
  * Sparse handling: when only some of a model's hours carry the metric (the
  * upstream API can return nulls for individual hours of a model whose run
  * is still warming up), we plot the non-null hours at their original
- * indices and let Vico bridge the gap. The alternative — dropping the whole
- * model — loses an entire diagnostic line for the sake of one missing
- * sample. The card auto-hides when *every* consulted model is missing the
- * metric outright.
+ * indices and let Vico bridge the gap. The main consensus line is computed
+ * per-index from whichever models reported at that hour, so a single
+ * missing sample doesn't punch a hole in the main line either. The card
+ * auto-hides when *every* consulted model is missing the metric outright.
  *
- * Used by the [WindCard], [CloudCard] and [HumidityCard] wrappers below.
+ * Used by the [WindCard], [CloudCard], [HumidityCard], [SolarRadiationCard],
+ * [SunshineCard] and [UvIndexCard] wrappers in [TodayScreen].
  */
 @Composable
 internal fun PerModelDiagnosticCard(
@@ -70,6 +78,18 @@ internal fun PerModelDiagnosticCard(
      * the cache every recomposition.
      */
     pickerKey: Any? = Unit,
+    /**
+     * When true, overlay the per-model lines underneath the main consensus
+     * line. When false, only the main line is drawn. Y-axis range stays the
+     * same in both cases (sized to the per-model envelope) so toggling
+     * doesn't shift the axis labels.
+     */
+    showOverlay: Boolean = false,
+    /**
+     * Wires the card up as tap-to-toggle the overlay. Null means the card is
+     * not clickable — used for previews and any wrapper that wants to opt out.
+     */
+    onToggleOverlay: (() -> Unit)? = null,
 ) {
     // Build (originalIndex, value) pairs per model so a sparse series plots at
     // its real positions on the x-axis instead of getting compacted left and
@@ -81,10 +101,27 @@ internal fun PerModelDiagnosticCard(
             }
             .filterValues { it.isNotEmpty() }
     }
-    val visibleModels = MODEL_DRAW_ORDER.filter { it in seriesByModel }
-    if (visibleModels.isEmpty() || times.isEmpty()) return
+    val availableModels = MODEL_DRAW_ORDER.filter { it in seriesByModel }
+    if (availableModels.isEmpty() || times.isEmpty()) return
 
-    Card(modifier = Modifier.fillMaxWidth()) {
+    // Per-hour mean of [picker] across whichever models reported at that
+    // hour. Plotted at the model's original index so the main line stays
+    // aligned with the per-model overlay underneath it (when shown) and
+    // with the rest of the screen's 0..23 axes.
+    val mainLine = remember(seriesByModel) {
+        val byIndex = mutableMapOf<Int, MutableList<Double>>()
+        seriesByModel.values.forEach { entries ->
+            entries.forEach { (idx, v) -> byIndex.getOrPut(idx) { mutableListOf() } += v }
+        }
+        byIndex.entries
+            .sortedBy { it.key }
+            .map { (idx, vs) -> idx to vs.average() }
+    }
+
+    val cardModifier = Modifier
+        .fillMaxWidth()
+        .let { if (onToggleOverlay != null) it.clickable(onClick = onToggleOverlay) else it }
+    Card(modifier = cardModifier) {
         Column(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -93,14 +130,16 @@ internal fun PerModelDiagnosticCard(
             Text(text = subtitle, style = MaterialTheme.typography.bodyMedium)
             PerModelDiagnosticChart(
                 times = times,
+                mainLine = mainLine,
                 seriesByModel = seriesByModel,
-                visibleModels = visibleModels,
+                overlayModels = if (showOverlay) availableModels else emptyList(),
                 yAxis = yAxis,
             )
-            // Legend tracks the same visibleModels the chart actually drew —
-            // pre-refactor, the legend was derived from byModel and could
-            // list models whose lines had silently been filtered out.
-            ModelSpreadLegend(visibleModelIds = visibleModels)
+            // Legend only renders when the overlay is showing — without
+            // overlay lines, there's nothing for the swatches to refer to.
+            if (showOverlay) {
+                ModelSpreadLegend(visibleModelIds = availableModels)
+            }
         }
     }
 }
@@ -120,21 +159,32 @@ internal sealed class YAxis {
 @Composable
 private fun PerModelDiagnosticChart(
     times: List<LocalTime>,
+    mainLine: List<Pair<Int, Double>>,
     seriesByModel: Map<String, List<Pair<Int, Double>>>,
-    visibleModels: List<String>,
+    overlayModels: List<String>,
     yAxis: YAxis,
 ) {
+    val mainLineColor = MaterialTheme.colorScheme.primary
     val producer = remember { CartesianChartModelProducer() }
-    LaunchedEffect(seriesByModel, visibleModels) {
+    LaunchedEffect(seriesByModel, overlayModels, mainLine) {
         producer.runTransaction {
             lineSeries {
-                visibleModels.forEach { modelId ->
+                // Overlay first so the consensus main line draws over the
+                // per-model lines (when the overlay is on). When the overlay
+                // is off, [overlayModels] is empty and only the main line
+                // is emitted — but the y-bounds below still use the full
+                // per-model envelope so the axis labels don't jump.
+                overlayModels.forEach { modelId ->
                     val data = seriesByModel.getValue(modelId)
                     series(
                         x = data.map { it.first },
                         y = data.map { it.second },
                     )
                 }
+                series(
+                    x = mainLine.map { it.first },
+                    y = mainLine.map { it.second },
+                )
             }
         }
     }
@@ -193,7 +243,12 @@ private fun PerModelDiagnosticChart(
         }
     }
 
-    val lineProvider = rememberPinnedLineProvider(visibleModels, mainLineColor = null)
+    // The line provider matches lines to series by index: overlay lines
+    // first (keyed by [overlayModels] order), then the main consensus line
+    // on top. Pass the theme primary as [mainLineColor] so the consensus
+    // line matches the temp / precip cards' "main line is theme primary"
+    // convention.
+    val lineProvider = rememberPinnedLineProvider(overlayModels, mainLineColor)
 
     CartesianChartHost(
         chart = rememberCartesianChart(

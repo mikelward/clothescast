@@ -546,9 +546,6 @@ Not overridden by design:
     <string name="settings_root_privacy_subtitle">क्रैश और उपयोग रिपोर्ट</string>
 
     <!-- Display — Charts section. -->
-    <string name="settings_display_charts_title">चार्ट</string>
-    <string name="settings_display_model_spread_label">चार्ट पर मॉडल बिखराव दिखाएँ</string>
-    <string name="settings_display_model_spread_description">तापमान और बारिश के चार्ट पर हर प्रमुख मौसम मॉडल का प्रति-घंटा पूर्वानुमान ओवरले करता है। पूर्वानुमान कब अनिश्चित है यह पहचानने के लिए उपयोगी।</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">क्रैश और उपयोग रिपोर्ट</string>

@@ -185,9 +185,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_display_theme_light">Clar</string>
     <string name="settings_display_theme_dark">Fosc</string>
 
-    <string name="settings_display_charts_title">Gràfics</string>
-    <string name="settings_display_model_spread_label">Mostra la dispersió dels models als gràfics</string>
-    <string name="settings_display_model_spread_description">Superposa la previsió horària de cada model meteorològic principal als gràfics de temperatura i pluja. Útil per detectar quan la previsió és incerta.</string>
 
     <string name="settings_privacy_telemetry_title">Informes d\'errors + ús</string>
     <string name="settings_privacy_telemetry_label">Envia dades d\'errors + ús</string>

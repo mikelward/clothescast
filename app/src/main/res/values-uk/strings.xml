@@ -349,9 +349,6 @@ only the displayed label localizes.
     <string name="settings_display_theme_system">Як у системі</string>
     <string name="settings_display_theme_light">Світла</string>
     <string name="settings_display_theme_dark">Темна</string>
-    <string name="settings_display_charts_title">Графіки</string>
-    <string name="settings_display_model_spread_label">Показувати розкид моделей на графіках</string>
-    <string name="settings_display_model_spread_description">Накладає погодинний прогноз кожної основної погодної моделі на графіки температури та опадів. Корисно для визначення ступеня невизначеності прогнозу.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Звіти про збої та використання</string>

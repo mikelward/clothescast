@@ -276,9 +276,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_display_theme_system">Urmează sistemul</string>
     <string name="settings_display_theme_light">Deschis</string>
     <string name="settings_display_theme_dark">Întunecat</string>
-    <string name="settings_display_charts_title">Grafice</string>
-    <string name="settings_display_model_spread_label">Arată dispersia modelelor pe grafice</string>
-    <string name="settings_display_model_spread_description">Suprapune prognoza orară a fiecărui model meteo major pe graficele de temperatură și ploaie. Util pentru a detecta când prognoza este incertă.</string>
 
     <!-- Privacy settings. -->
     <string name="settings_privacy_telemetry_title">Rapoarte de erori și utilizare</string>

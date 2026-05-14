@@ -273,9 +273,6 @@ to values/strings.xml (English).
     <string name="settings_display_theme_system">Ikuti sistem</string>
     <string name="settings_display_theme_light">Terang</string>
     <string name="settings_display_theme_dark">Gelap</string>
-    <string name="settings_display_charts_title">Grafik</string>
-    <string name="settings_display_model_spread_label">Tampilkan selisih model di grafik</string>
-    <string name="settings_display_model_spread_description">Menampilkan prakiraan per jam setiap model cuaca utama di grafik suhu dan hujan. Berguna untuk melihat ketidakpastian prakiraan.</string>
 
     <!-- Privacy settings -->
     <string name="settings_privacy_telemetry_title">Laporan crash + penggunaan</string>

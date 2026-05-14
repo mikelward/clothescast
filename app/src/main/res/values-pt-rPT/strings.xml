@@ -687,9 +687,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_privacy_telemetry_limits">Nunca enviados: eventos do calendário, coordenadas ou nomes de locais, texto de resumo ou de notificação, chaves de API, GPS preciso, identificadores de publicidade.</string>
     <string name="settings_privacy_open_policy">Ler política de privacidade completa</string>
 
-    <string name="settings_display_charts_title">Gráficos</string>
-    <string name="settings_display_model_spread_label">Mostrar dispersão de modelos nos gráficos</string>
-    <string name="settings_display_model_spread_description">Sobrepõe a previsão horária de cada grande modelo meteorológico nos gráficos de temperatura e chuva. Útil para identificar quando a previsão é incerta.</string>
 
     <string name="bug_report_consent_title">Partilhar relatório de erro?</string>
     <string name="bug_report_consent_body">Isto ajuda a diagnosticar problemas. O relatório contém informações pessoais sensíveis, incluindo a tua localização, definições da aplicação e atividade recente. Poderás rever e editar antes de enviar.</string>

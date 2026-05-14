@@ -296,9 +296,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_display_theme_system">সিস্টেম অনুসরণ করুন</string>
     <string name="settings_display_theme_light">হালকা</string>
     <string name="settings_display_theme_dark">গাঢ়</string>
-    <string name="settings_display_charts_title">চার্ট</string>
-    <string name="settings_display_model_spread_label">চার্টে মডেল বিস্তার দেখান</string>
-    <string name="settings_display_model_spread_description">তাপমাত্রা ও বৃষ্টির চার্টে প্রতিটি প্রধান আবহাওয়া মডেলের প্রতি ঘণ্টার পূর্বাভাস ওভারলে করে। পূর্বাভাস অনিশ্চিত কিনা বুঝতে সহায়ক।</string>
 
     <!-- ============================================================
          Settings — Schedule

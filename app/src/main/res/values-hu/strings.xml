@@ -526,9 +526,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_display_theme_system">Rendszerbeállítás</string>
     <string name="settings_display_theme_light">Világos</string>
     <string name="settings_display_theme_dark">Sötét</string>
-    <string name="settings_display_charts_title">Grafikonok</string>
-    <string name="settings_display_model_spread_label">Modellszórás megjelenítése a grafikonokon</string>
-    <string name="settings_display_model_spread_description">Megjeleníti a főbb időjárási modellek óránkénti előrejelzését a hőmérséklet és csapadék grafikonokon. Hasznos a bizonytalan előrejelzések felismeréséhez.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Összeomlás- és használati jelentések</string>

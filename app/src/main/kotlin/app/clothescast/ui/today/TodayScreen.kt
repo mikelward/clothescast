@@ -206,6 +206,7 @@ fun TodayScreen(
             onSetUpLocation = onNavigateToLocation,
             onOpenPrivacy = onNavigateToPrivacy,
             onAdjustThreshold = viewModel::adjustClothesRuleThreshold,
+            onToggleModelSpread = viewModel::toggleModelSpread,
         )
     }
 
@@ -234,6 +235,7 @@ private fun TodayContent(
     onSetUpLocation: () -> Unit,
     onOpenPrivacy: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
+    onToggleModelSpread: () -> Unit,
 ) {
     val context = LocalContext.current
     // Permission state is observed live, not snapshotted, so granting from system
@@ -296,16 +298,39 @@ private fun TodayContent(
         if (state.insight == null) {
             EmptyState(onRefresh = onRefresh, isWorking = isWorking)
         } else {
+            // Tap-to-toggle is wired uniformly on every surface that shows a
+            // chart: the confidence chip / callout (where the hint copy
+            // explains the affordance), the three temp / feels-like / precip
+            // cards, and the six diagnostic cards below (wind / cloud /
+            // humidity / solar / sunshine / UV). Every chart draws a consensus
+            // main line by default and overlays the per-model spread when the
+            // toggle is on, so tapping any of them produces a visible change.
+            // [tapToggle] is null when there's no per-model data in the cache
+            // (e.g. older payloads) — in that case the cards stay non-clickable
+            // and the diagnostic block at the bottom hides itself.
+            val perModelAvailable = state.insight.perModelHourly != null
+            val tapToggle = onToggleModelSpread.takeIf { perModelAvailable }
             state.insight.confidence
                 ?.takeIf { it.level == ForecastConfidence.LOW }
-                ?.let { LowConfidenceCallout(it) }
+                ?.let {
+                    LowConfidenceCallout(
+                        info = it,
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
+                    )
+                }
             OutfitPreviewRow(
                 insight = state.insight,
                 temperatureUnit = state.temperatureUnit,
                 clothesRules = state.clothesRules,
                 onAdjustThreshold = onAdjustThreshold,
             )
-            InsightCard(state.insight, state.region)
+            InsightCard(
+                insight = state.insight,
+                region = state.region,
+                showModelSpread = state.showModelSpread,
+                onToggleModelSpread = tapToggle,
+            )
             if (state.insight.hourly.isNotEmpty()) {
                 val overlay = state.insight.perModelHourly?.takeIf { state.showModelSpread }
                 ForecastCard(
@@ -313,37 +338,64 @@ private fun TodayContent(
                     temperatureUnit = state.temperatureUnit,
                     distanceUnit = state.distanceUnit,
                     perModelHourly = overlay,
+                    onToggleModelSpread = tapToggle,
                 )
                 AirTemperatureCard(
                     hourly = state.insight.hourly,
                     temperatureUnit = state.temperatureUnit,
                     perModelHourly = overlay,
+                    onToggleModelSpread = tapToggle,
                 )
                 PrecipitationCard(
                     hourly = state.insight.hourly,
                     perModelHourly = overlay,
+                    onToggleModelSpread = tapToggle,
                 )
                 // Diagnostic cards below the headline temp + rain pair. Each
-                // auto-hides when every consulted model is missing the metric
-                // (older cached payloads don't carry wind / humidity / cloud).
+                // draws a consensus main line by default and overlays the
+                // per-model spread when [showModelSpread] is on — same pattern
+                // as the temp / precip cards. Each card auto-hides when every
+                // consulted model is missing its metric outright (older cached
+                // payloads don't carry wind / humidity / cloud).
                 state.insight.perModelHourly?.let { perModelData ->
                     WindCard(
                         hourly = state.insight.hourly,
                         perModelHourly = perModelData,
                         windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
                     )
-                    CloudCard(hourly = state.insight.hourly, perModelHourly = perModelData)
-                    HumidityCard(hourly = state.insight.hourly, perModelHourly = perModelData)
+                    CloudCard(
+                        hourly = state.insight.hourly,
+                        perModelHourly = perModelData,
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
+                    )
+                    HumidityCard(
+                        hourly = state.insight.hourly,
+                        perModelHourly = perModelData,
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
+                    )
                     SolarRadiationCard(
                         hourly = state.insight.hourly,
                         perModelHourly = perModelData,
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
                     )
                     SunshineCard(
                         hourly = state.insight.hourly,
                         perModelHourly = perModelData,
                         forDate = state.insight.forDate,
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
                     )
-                    UvIndexCard(hourly = state.insight.hourly, perModelHourly = perModelData)
+                    UvIndexCard(
+                        hourly = state.insight.hourly,
+                        perModelHourly = perModelData,
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
+                    )
                 }
             }
         }
@@ -890,7 +942,12 @@ private fun bottomLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom)
 }
 
 @Composable
-internal fun InsightCard(insight: Insight, region: Region) {
+internal fun InsightCard(
+    insight: Insight,
+    region: Region,
+    showModelSpread: Boolean = false,
+    onToggleModelSpread: (() -> Unit)? = null,
+) {
     val context = LocalContext.current
     val formatter = remember(context, region) { InsightFormatter.forRegion(context, region) }
     val locale = LocalConfiguration.current.locales[0]
@@ -933,7 +990,13 @@ internal fun InsightCard(insight: Insight, region: Region) {
                     )
                 }
             }
-            insight.confidence?.let { ConfidenceChip(it) }
+            insight.confidence?.let {
+                ConfidenceChip(
+                    info = it,
+                    showModelSpread = showModelSpread,
+                    onToggleModelSpread = onToggleModelSpread,
+                )
+            }
             Text(
                 text = formatter.format(insight.summary),
                 style = MaterialTheme.typography.headlineSmall,
@@ -959,9 +1022,16 @@ internal fun InsightCard(insight: Insight, region: Region) {
  * other rather than fighting for the user's attention.
  */
 @Composable
-internal fun LowConfidenceCallout(info: ConfidenceInfo) {
+internal fun LowConfidenceCallout(
+    info: ConfidenceInfo,
+    showModelSpread: Boolean = false,
+    onToggleModelSpread: (() -> Unit)? = null,
+) {
+    val cardModifier = Modifier
+        .fillMaxWidth()
+        .let { if (onToggleModelSpread != null) it.clickable(onClick = onToggleModelSpread) else it }
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = cardModifier,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.errorContainer,
             contentColor = MaterialTheme.colorScheme.onErrorContainer,
@@ -984,6 +1054,15 @@ internal fun LowConfidenceCallout(info: ConfidenceInfo) {
                 ),
                 style = MaterialTheme.typography.bodyMedium,
             )
+            if (onToggleModelSpread != null) {
+                Text(
+                    text = stringResource(
+                        if (showModelSpread) R.string.today_confidence_tap_to_hide
+                        else R.string.today_confidence_tap_to_show,
+                    ),
+                    style = MaterialTheme.typography.labelMedium,
+                )
+            }
         }
     }
 }
@@ -995,7 +1074,11 @@ internal fun LowConfidenceCallout(info: ConfidenceInfo) {
  * across the consulted models so the user can judge for themselves.
  */
 @Composable
-internal fun ConfidenceChip(info: ConfidenceInfo) {
+internal fun ConfidenceChip(
+    info: ConfidenceInfo,
+    showModelSpread: Boolean = false,
+    onToggleModelSpread: (() -> Unit)? = null,
+) {
     val (bgColor, fgColor) = when (info.level) {
         ForecastConfidence.HIGH -> MaterialTheme.colorScheme.secondaryContainer to
             MaterialTheme.colorScheme.onSecondaryContainer
@@ -1010,6 +1093,8 @@ internal fun ConfidenceChip(info: ConfidenceInfo) {
         ForecastConfidence.LOW -> R.string.today_confidence_low
     }
     Card(
+        modifier = if (onToggleModelSpread != null) Modifier.clickable(onClick = onToggleModelSpread)
+        else Modifier,
         colors = CardDefaults.cardColors(containerColor = bgColor, contentColor = fgColor),
     ) {
         Column(
@@ -1029,6 +1114,15 @@ internal fun ConfidenceChip(info: ConfidenceInfo) {
                 ),
                 style = MaterialTheme.typography.bodySmall,
             )
+            if (onToggleModelSpread != null) {
+                Text(
+                    text = stringResource(
+                        if (showModelSpread) R.string.today_confidence_tap_to_hide
+                        else R.string.today_confidence_tap_to_show,
+                    ),
+                    style = MaterialTheme.typography.labelSmall,
+                )
+            }
         }
     }
 }
@@ -1039,6 +1133,7 @@ internal fun ForecastCard(
     temperatureUnit: TemperatureUnit,
     distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
     perModelHourly: PerModelHourly? = null,
+    onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val symbol = temperatureUnit.symbol()
     val feelsLikeMinMax = remember(hourly, temperatureUnit) {
@@ -1046,7 +1141,9 @@ internal fun ForecastCard(
     }
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .let { if (onToggleModelSpread != null) it.clickable(onClick = onToggleModelSpread) else it },
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1096,6 +1193,7 @@ internal fun AirTemperatureCard(
     hourly: List<HourlyForecast>,
     temperatureUnit: TemperatureUnit,
     perModelHourly: PerModelHourly? = null,
+    onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val symbol = temperatureUnit.symbol()
     val airMinMax = remember(hourly, temperatureUnit) {
@@ -1103,7 +1201,9 @@ internal fun AirTemperatureCard(
     }
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .let { if (onToggleModelSpread != null) it.clickable(onClick = onToggleModelSpread) else it },
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1209,22 +1309,26 @@ private fun formatTopFactorRange(
 }
 
 /**
- * Diagnostic wind-speed card — only renders when the per-model overlay is
- * active and at least one model returned wind data. The clothes-recommendation
- * pipeline doesn't read wind directly (feels-like already folds in wind chill),
- * so this is purely a "why are the models disagreeing?" surface for the
- * power-user setting that turns on model overlays in the first place.
+ * Diagnostic wind-speed card. Renders a per-hour consensus main line drawn
+ * from the cross-model mean (the temp / precip cards' "main line" pattern,
+ * applied uniformly to every diagnostic chart); when [showModelSpread] is
+ * on, the per-model lines also draw underneath. The clothes-recommendation
+ * pipeline doesn't read wind directly (feels-like already folds in wind
+ * chill), so this is purely a "what's the day's wind look like, and where
+ * do the models disagree?" surface.
  *
- * No "main" line — [HourlyForecast] doesn't carry wind, so we draw the
- * per-model overlays alone. The card auto-hides if every consulted model is
- * missing wind data (older cached payloads), which is why it sits in its own
- * `if` rather than inside a fixed slot like the temp / rain cards.
+ * Auto-hides when every consulted model is missing wind data outright (older
+ * cached payloads). When some hours are present, sparse-handling in
+ * [PerModelDiagnosticCard] bridges the gaps for both the main line and the
+ * overlay rather than dropping the chart entirely.
  */
 @Composable
 internal fun WindCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly,
     windSpeedUnit: WindSpeedUnit = WindSpeedUnit.KMH,
+    showModelSpread: Boolean = false,
+    onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     // 10 km/h floor on the y-range so a near-still day doesn't get zoomed
@@ -1243,13 +1347,15 @@ internal fun WindCard(
         // chart values follow when the user flips distance unit while the
         // overlay payload is unchanged.
         pickerKey = windSpeedUnit,
+        showOverlay = showModelSpread,
+        onToggleOverlay = onToggleModelSpread,
     )
 }
 
 /**
- * Diagnostic cloud-cover card. Same gating + scaffolding as [WindCard]: only
- * renders when the per-model overlay is active and at least one model returned
- * cloud cover. Cloud divergence is the upstream cause of most mid-day air-temp
+ * Diagnostic cloud-cover card. Same scaffolding as [WindCard]: consensus
+ * main line by default, per-model overlay underneath when [showModelSpread]
+ * is on. Cloud divergence is the upstream cause of most mid-day air-temp
  * disagreements between models (one predicts a clearing, the other doesn't),
  * so this is the most useful follow-up to the wind diagnostic.
  */
@@ -1257,6 +1363,8 @@ internal fun WindCard(
 internal fun CloudCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly,
+    showModelSpread: Boolean = false,
+    onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     PerModelDiagnosticCard(
@@ -1266,6 +1374,8 @@ internal fun CloudCard(
         perModelHourly = perModelHourly,
         picker = { it.cloudCoverPct },
         yAxis = YAxis.Percent,
+        showOverlay = showModelSpread,
+        onToggleOverlay = onToggleModelSpread,
     )
 }
 
@@ -1280,6 +1390,8 @@ internal fun CloudCard(
 internal fun HumidityCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly,
+    showModelSpread: Boolean = false,
+    onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     PerModelDiagnosticCard(
@@ -1289,6 +1401,8 @@ internal fun HumidityCard(
         perModelHourly = perModelHourly,
         picker = { it.relativeHumidityPct },
         yAxis = YAxis.Percent,
+        showOverlay = showModelSpread,
+        onToggleOverlay = onToggleModelSpread,
     )
 }
 
@@ -1303,6 +1417,8 @@ internal fun HumidityCard(
 internal fun SolarRadiationCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly,
+    showModelSpread: Boolean = false,
+    onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     PerModelDiagnosticCard(
@@ -1315,6 +1431,8 @@ internal fun SolarRadiationCard(
         // overcast day's near-zero series from collapsing into a flat line on
         // top of the x-axis.
         yAxis = YAxis.AutoZeroBased(minSpan = 100.0),
+        showOverlay = showModelSpread,
+        onToggleOverlay = onToggleModelSpread,
     )
 }
 
@@ -1333,6 +1451,8 @@ internal fun SunshineCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly,
     forDate: java.time.LocalDate,
+    showModelSpread: Boolean = false,
+    onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     val totalHours = remember(perModelHourly, forDate) {
@@ -1351,6 +1471,8 @@ internal fun SunshineCard(
         picker = { it.sunshineDurationSec?.div(60.0) },
         perModelHourly = perModelHourly,
         yAxis = YAxis.AutoZeroBased(minSpan = 60.0),
+        showOverlay = showModelSpread,
+        onToggleOverlay = onToggleModelSpread,
     )
 }
 
@@ -1375,6 +1497,8 @@ private fun formatSunshineTotal(hours: Double): String {
 internal fun UvIndexCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly,
+    showModelSpread: Boolean = false,
+    onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     PerModelDiagnosticCard(
@@ -1387,6 +1511,8 @@ internal fun UvIndexCard(
         // keeps a winter-morning all-zero series from collapsing onto the
         // axis. niceStep gives "0, 2, 4, 6" for typical 0..6 days.
         yAxis = YAxis.AutoZeroBased(minSpan = 6.0),
+        showOverlay = showModelSpread,
+        onToggleOverlay = onToggleModelSpread,
     )
 }
 
@@ -1394,6 +1520,7 @@ internal fun UvIndexCard(
 internal fun PrecipitationCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly? = null,
+    onToggleModelSpread: (() -> Unit)? = null,
 ) {
     // Always render the chart, even on dry days — keeps the card height stable
     // across days so the cards below don't shift, and the flat baseline is its
@@ -1402,7 +1529,11 @@ internal fun PrecipitationCard(
     // chart itself is just the visualisation, not the only signal.
     val peak = remember(hourly) { hourly.maxByOrNull { it.precipitationProbabilityPct } }
     val isDry = peak == null || peak.precipitationProbabilityPct < DRY_THRESHOLD_PCT
-    Card(modifier = Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .let { if (onToggleModelSpread != null) it.clickable(onClick = onToggleModelSpread) else it },
+    ) {
         Column(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),

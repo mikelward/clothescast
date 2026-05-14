@@ -527,9 +527,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_display_theme_dark">Mörkt</string>
 
     <!-- Display — Charts section. -->
-    <string name="settings_display_charts_title">Diagram</string>
-    <string name="settings_display_model_spread_label">Visa modellspridning i diagram</string>
-    <string name="settings_display_model_spread_description">Visar timprognosen från de viktigaste vädermodellerna över temperatur- och nederbördsdiagrammen. Användbart för att se osäkra prognoser.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Krasch- och användningsrapporter</string>

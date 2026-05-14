@@ -643,9 +643,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_privacy_subtitle">Rapports de plantage et d\'utilisation</string>
 
     <!-- Display — Charts section. -->
-    <string name="settings_display_charts_title">Graphiques</string>
-    <string name="settings_display_model_spread_label">Afficher la dispersion des modèles sur les graphiques</string>
-    <string name="settings_display_model_spread_description">Superpose la prévision horaire de chaque grand modèle météo sur les graphiques de température et de pluie. Utile pour repérer quand la prévision est incertaine.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Rapports de plantage et d\'utilisation</string>

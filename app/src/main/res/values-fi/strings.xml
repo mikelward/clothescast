@@ -538,9 +538,6 @@ displayed label localizes.
     <string name="settings_root_privacy">Tietosuoja</string>
     <string name="settings_root_privacy_subtitle">Kaatumis- ja käyttöraportit</string>
 
-    <string name="settings_display_charts_title">Kaaviot</string>
-    <string name="settings_display_model_spread_label">Näytä mallien hajonta kaavioissa</string>
-    <string name="settings_display_model_spread_description">Näyttää tärkeimpien sääennustusmallien tuntiennusteen lämpötila- ja sadesaavioiden päällä. Hyödyllinen epävarmojen ennusteiden tunnistamiseen.</string>
 
     <string name="settings_privacy_telemetry_title">Kaatumis- ja käyttöraportit</string>
     <string name="settings_privacy_telemetry_label">Lähetä kaatumis- ja käyttötietoja</string>

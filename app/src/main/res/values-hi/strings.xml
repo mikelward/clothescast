@@ -596,4 +596,27 @@ Not overridden by design:
     <string name="today_forecast_air_section_title">हवा का तापमान</string>
     <string name="settings_default_bottom_title">मानक नीचे का वस्त्र</string>
     <string name="settings_default_bottom_description">जब शॉर्ट्स के लिए पर्याप्त गर्मी नहीं होती तो होम स्क्रीन पर हम क्या सुझाते हैं।</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">रंग पैलेट</string>
+    <string name="settings_display_palette_accessible">सुलभ</string>
+    <string name="settings_display_palette_accessible_description">Okabe-Ito पर आधारित पैलेट, जो ड्यूटेरानोपिया, प्रोटानोपिया और ट्रिटानोपिया में भी पहचाने जाने योग्य रहे। विश्वास कार्ड टील, तटस्थ और लाल की जगह आसमानी नीला, तटस्थ और एम्बर रंग का उपयोग करते हैं।</string>
+    <string name="settings_display_palette_rainbow">इंद्रधनुष</string>
+    <string name="settings_display_palette_rainbow_description">गुलाबी, नारंगी और हरी चार्ट लाइनें Material टील/लाल विश्वास कार्ड के साथ। डिफ़ॉल्ट।</string>
+    <string name="settings_unit_auto">स्वचालित</string>
+    <string name="today_cloud_range">बादल %1$d–%2$d%%</string>
+    <string name="today_confidence_precip_spread">मॉडल बारिश पर सहमत नहीं (Δ %1$.0f%%, %2$d मॉडल में)</string>
+    <string name="today_confidence_tap_to_hide">मॉडल पूर्वानुमान छुपाने के लिए टैप करें</string>
+    <string name="today_confidence_tap_to_show">प्रत्येक मॉडल का पूर्वानुमान देखने के लिए टैप करें</string>
+    <string name="today_humidity_range">नमी %1$d–%2$d%%</string>
+    <string name="today_solar_subtitle">सतह विकिरण तीव्रता (W/m²) प्रति घंटे प्रति मॉडल</string>
+    <string name="today_solar_title">सौर विकिरण</string>
+    <string name="today_sunshine_subtitle">प्रति मॉडल प्रति घंटे धूप के मिनट</string>
+    <string name="today_sunshine_title">धूप</string>
+    <string name="today_sunshine_total_hours_minutes">आज %1$d घंटे %2$d मिनट धूप</string>
+    <string name="today_sunshine_total_hours_only">आज %1$d घंटे धूप</string>
+    <string name="today_sunshine_total_minutes_only">आज %1$d मिनट धूप</string>
+    <string name="today_uv_subtitle">प्रति मॉडल प्रति घंटे UV सूचकांक</string>
+    <string name="today_uv_title">UV सूचकांक</string>
+    <string name="today_wind_peak">अधिकतम %1$d %2$s %3$s बजे</string>
 </resources>

@@ -58,6 +58,18 @@ if [ -x "$CMDLINE_TOOLS_DIR/bin/sdkmanager" ] \
   exit 0
 fi
 
+# Recovery path: a previous install crashed or got SIGKILLed mid-flight,
+# leaving $ANDROID_HOME partially populated. The next session's sdkmanager
+# tries to enumerate that half-tree and NPEs in LocalRepoLoaderImpl.
+# collectPackages, which manifests as "Setup script failed with exit
+# code -1" plus a Java stack trace from the SessionStart hook.
+# Detect partial state — anything under $ANDROID_HOME that isn't the
+# complete fast-path layout — and wipe before retrying.
+if [ -d "$ANDROID_HOME" ] && [ -n "$(ls -A "$ANDROID_HOME" 2>/dev/null)" ]; then
+  echo "Partial SDK install detected at $ANDROID_HOME — wiping before reinstall." >&2
+  rm -rf "$ANDROID_HOME"
+fi
+
 echo "Installing Android SDK to $ANDROID_HOME ..."
 mkdir -p "$ANDROID_HOME/cmdline-tools"
 

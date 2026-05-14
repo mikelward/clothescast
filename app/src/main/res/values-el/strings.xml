@@ -628,9 +628,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_privacy_open_policy">Διαβάστε την πλήρη πολιτική απορρήτου</string>
 
     <!-- Display / model-spread settings. -->
-    <string name="settings_display_charts_title">Γραφήματα</string>
-    <string name="settings_display_model_spread_label">Εμφάνιση διαφοράς μοντέλων στα γραφήματα</string>
-    <string name="settings_display_model_spread_description">Επικαλύπτει την ωριαία πρόβλεψη κάθε κύριου μοντέλου καιρού στα γραφήματα θερμοκρασίας και βροχής. Χρήσιμο για τον εντοπισμό αβέβαιων προβλέψεων.</string>
 
     <!-- Bug-report consent dialog. -->
     <string name="bug_report_consent_title">Κοινοποίηση αναφοράς σφάλματος;</string>

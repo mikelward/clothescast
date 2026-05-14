@@ -654,9 +654,6 @@ displayed label localizes.
     <string name="settings_root_privacy_subtitle">충돌 및 사용 보고</string>
 
     <!-- Display — Charts section. -->
-    <string name="settings_display_charts_title">차트</string>
-    <string name="settings_display_model_spread_label">차트에 모델 편차 표시</string>
-    <string name="settings_display_model_spread_description">주요 기상 모델별 시간 예보를 기온과 강수 차트 위에 겹쳐 표시합니다. 예보가 불확실한 시점을 파악하는 데 유용합니다.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">충돌 및 사용 보고</string>

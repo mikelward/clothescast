@@ -646,9 +646,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_privacy_subtitle">Informes de fallos y uso</string>
 
     <!-- Display — Charts section. -->
-    <string name="settings_display_charts_title">Gráficos</string>
-    <string name="settings_display_model_spread_label">Mostrar dispersión de modelos en gráficos</string>
-    <string name="settings_display_model_spread_description">Superpone la previsión horaria de cada modelo meteorológico principal sobre los gráficos de temperatura y lluvia. Útil para detectar cuándo la previsión es incierta.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Informes de fallos y uso</string>

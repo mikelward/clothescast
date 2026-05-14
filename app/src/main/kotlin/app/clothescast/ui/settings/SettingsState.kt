@@ -73,7 +73,6 @@ data class SettingsState(
     val useCalendarEvents: Boolean = false,
     val telemetryEnabled: Boolean = true,
     val apiKeyConfigured: Boolean = false,
-    val showModelSpread: Boolean = false,
     /**
      * True while the WorkManager location-cache-refresh job is ENQUEUED,
      * RUNNING, or BLOCKED. Drives "Detecting…" in the Location settings

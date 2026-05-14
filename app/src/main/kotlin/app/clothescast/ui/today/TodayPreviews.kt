@@ -404,6 +404,61 @@ internal fun ConfidenceLowPreview() {
     }
 }
 
+// Tap-to-toggle hint variants — when the model-spread toggle is wired,
+// the confidence chip / callout grow an extra "Tap to ..." line so the
+// gesture is discoverable. These previews lock both sides of the hint copy
+// (show vs. hide) into snapshots.
+@Preview(name = "Confidence · medium · tap to show spread", widthDp = 360)
+@Composable
+internal fun ConfidenceMediumTapToShowPreview() {
+    Frame {
+        ConfidenceChip(
+            info = ConfidenceInfo(
+                level = ForecastConfidence.MEDIUM,
+                tempSpreadC = 2.5,
+                precipSpreadPp = 20.0,
+                modelsConsulted = listOf("ECMWF", "GFS"),
+            ),
+            showModelSpread = false,
+            onToggleModelSpread = {},
+        )
+    }
+}
+
+@Preview(name = "Confidence · medium · tap to hide spread", widthDp = 360)
+@Composable
+internal fun ConfidenceMediumTapToHidePreview() {
+    Frame {
+        ConfidenceChip(
+            info = ConfidenceInfo(
+                level = ForecastConfidence.MEDIUM,
+                tempSpreadC = 2.5,
+                precipSpreadPp = 20.0,
+                modelsConsulted = listOf("ECMWF", "GFS"),
+            ),
+            showModelSpread = true,
+            onToggleModelSpread = {},
+        )
+    }
+}
+
+@Preview(name = "Low-confidence callout · tap to show spread", widthDp = 360)
+@Composable
+internal fun LowConfidenceCalloutTapToShowPreview() {
+    Frame {
+        LowConfidenceCallout(
+            info = ConfidenceInfo(
+                level = ForecastConfidence.LOW,
+                tempSpreadC = 4.2,
+                precipSpreadPp = 35.0,
+                modelsConsulted = listOf("ECMWF", "GFS", "ICON"),
+            ),
+            showModelSpread = false,
+            onToggleModelSpread = {},
+        )
+    }
+}
+
 @Preview(name = "Banner · running", widthDp = 360)
 @Composable
 internal fun WorkStatusRunningPreview() {
@@ -707,6 +762,20 @@ private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
     )
 }
 
+// "Consensus-only" variants (showModelSpread = false) — the default state of
+// each diagnostic card. The chart draws a single main line computed as the
+// per-hour cross-model mean; no per-model overlay, no legend.
+@Preview(name = "Wind card · consensus only", widthDp = 360)
+@Composable
+internal fun WindCardConsensusPreview() {
+    Frame {
+        WindCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+        )
+    }
+}
+
 @Preview(name = "Wind card · with model spread", widthDp = 360)
 @Composable
 internal fun WindCardWithModelSpreadPreview() {
@@ -714,6 +783,7 @@ internal fun WindCardWithModelSpreadPreview() {
         WindCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
         )
     }
 }
@@ -730,6 +800,18 @@ internal fun WindCardWithModelSpreadMphPreview() {
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             windSpeedUnit = WindSpeedUnit.MPH,
+            showModelSpread = true,
+        )
+    }
+}
+
+@Preview(name = "Cloud card · consensus only", widthDp = 360)
+@Composable
+internal fun CloudCardConsensusPreview() {
+    Frame {
+        CloudCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
         )
     }
 }
@@ -739,6 +821,18 @@ internal fun WindCardWithModelSpreadMphPreview() {
 internal fun CloudCardWithModelSpreadPreview() {
     Frame {
         CloudCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
+        )
+    }
+}
+
+@Preview(name = "Humidity card · consensus only", widthDp = 360)
+@Composable
+internal fun HumidityCardConsensusPreview() {
+    Frame {
+        HumidityCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
         )
@@ -752,6 +846,18 @@ internal fun HumidityCardWithModelSpreadPreview() {
         HumidityCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
+        )
+    }
+}
+
+@Preview(name = "Solar radiation card · consensus only", widthDp = 360)
+@Composable
+internal fun SolarRadiationCardConsensusPreview() {
+    Frame {
+        SolarRadiationCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
         )
     }
 }
@@ -763,6 +869,19 @@ internal fun SolarRadiationCardWithModelSpreadPreview() {
         SolarRadiationCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
+        )
+    }
+}
+
+@Preview(name = "Sunshine card · consensus only", widthDp = 360)
+@Composable
+internal fun SunshineCardConsensusPreview() {
+    Frame {
+        SunshineCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            forDate = SAMPLE_PER_MODEL_DATE,
         )
     }
 }
@@ -775,6 +894,18 @@ internal fun SunshineCardWithModelSpreadPreview() {
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             forDate = SAMPLE_PER_MODEL_DATE,
+            showModelSpread = true,
+        )
+    }
+}
+
+@Preview(name = "UV index card · consensus only", widthDp = 360)
+@Composable
+internal fun UvIndexCardConsensusPreview() {
+    Frame {
+        UvIndexCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
         )
     }
 }
@@ -786,6 +917,7 @@ internal fun UvIndexCardWithModelSpreadPreview() {
         UvIndexCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
         )
     }
 }
@@ -811,6 +943,7 @@ internal fun WindCardSparseTrailingPreview() {
         WindCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY_SPARSE_WIND_TRAILING,
+            showModelSpread = true,
         )
     }
 }

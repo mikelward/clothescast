@@ -329,15 +329,6 @@ data class UserPreferences(
      * doesn't see the banner re-surface; once they've seen it once, it's done.
      */
     val telemetryNoticeAcked: Boolean = false,
-    /**
-     * When true, the Today screen's forecast and precipitation charts draw a
-     * faint per-model overlay alongside the main blended curve. Off by default
-     * — power-user diagnostic for understanding when major models disagree
-     * about the day's apparent temperature or rain chance. The overlay data
-     * (`Insight.perModelHourly`) is fetched alongside today's confidence on
-     * every cycle regardless of this toggle, so flipping it on is instant.
-     */
-    val showModelSpread: Boolean = false,
 ) {
     companion object {
         const val DEFAULT_GEMINI_VOICE = "Despina"

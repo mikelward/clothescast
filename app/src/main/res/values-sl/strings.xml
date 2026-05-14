@@ -288,9 +288,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_display_theme_dark">Temna</string>
 
     <!-- Display — Charts section. -->
-    <string name="settings_display_charts_title">Grafikoni</string>
-    <string name="settings_display_model_spread_label">Prikaži razpršenost modelov na grafikonih</string>
-    <string name="settings_display_model_spread_description">Prikazuje urno napoved vsakega glavnega vremenskega modela na grafih temperature in dežja. Koristno za prepoznavanje negotovosti napovedi.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Poročila o sesutjih in uporabi</string>

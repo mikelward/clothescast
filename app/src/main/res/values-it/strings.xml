@@ -629,9 +629,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_privacy_subtitle">Report arresti anomali e utilizzo</string>
 
     <!-- Display — Charts section. -->
-    <string name="settings_display_charts_title">Grafici</string>
-    <string name="settings_display_model_spread_label">Mostra dispersione modelli sui grafici</string>
-    <string name="settings_display_model_spread_description">Sovrappone la previsione oraria di ogni modello meteorologico principale sui grafici di temperatura e pioggia. Utile per individuare quando la previsione è incerta.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Report arresti anomali e utilizzo</string>

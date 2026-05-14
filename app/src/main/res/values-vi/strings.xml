@@ -287,9 +287,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_display_theme_system">Theo hệ thống</string>
     <string name="settings_display_theme_light">Sáng</string>
     <string name="settings_display_theme_dark">Tối</string>
-    <string name="settings_display_charts_title">Biểu đồ</string>
-    <string name="settings_display_model_spread_label">Hiển thị biên độ mô hình trên biểu đồ</string>
-    <string name="settings_display_model_spread_description">Hiển thị đường dự báo theo giờ của từng mô hình thời tiết lớn lên biểu đồ nhiệt độ và mưa. Hữu ích để phát hiện khi dự báo không chắc chắn.</string>
 
     <!-- =====================================================================
          Settings — Privacy

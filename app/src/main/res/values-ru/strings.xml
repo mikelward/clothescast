@@ -396,9 +396,6 @@ only the displayed label localizes.
     <string name="settings_display_theme_system">Как в системе</string>
     <string name="settings_display_theme_light">Светлая</string>
     <string name="settings_display_theme_dark">Тёмная</string>
-    <string name="settings_display_charts_title">Графики</string>
-    <string name="settings_display_model_spread_label">Показывать разброс моделей на графиках</string>
-    <string name="settings_display_model_spread_description">Показывает почасовой прогноз каждой основной погодной модели на графиках температуры и осадков. Полезно для определения степени неопределённости прогноза.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Отчёты о сбоях и использовании</string>

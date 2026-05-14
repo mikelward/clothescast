@@ -537,9 +537,6 @@ displayed label localizes.
     <string name="settings_root_privacy">Gizlilik</string>
     <string name="settings_root_privacy_subtitle">Çökme ve kullanım raporları</string>
 
-    <string name="settings_display_charts_title">Grafikler</string>
-    <string name="settings_display_model_spread_label">Grafiklerde model yayılımını göster</string>
-    <string name="settings_display_model_spread_description">Sıcaklık ve yağış grafiklerinde ana hava durumu modellerinin saatlik tahminini gösterir. Belirsiz tahminleri tespit etmek için kullanışlıdır.</string>
 
     <string name="settings_privacy_telemetry_title">Çökme ve kullanım raporları</string>
     <string name="settings_privacy_telemetry_label">Çökme ve kullanım verilerini gönder</string>

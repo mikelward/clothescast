@@ -256,9 +256,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_display_theme_system">Sekot sistēmai</string>
     <string name="settings_display_theme_light">Gaišs</string>
     <string name="settings_display_theme_dark">Tumšs</string>
-    <string name="settings_display_charts_title">Diagrammas</string>
-    <string name="settings_display_model_spread_label">Rādīt modeļu izkliedi diagrammās</string>
-    <string name="settings_display_model_spread_description">Uzklāj katras galvenās laika prognozes modeļa stundas prognozi temperatūras un lietus diagrammās. Noderīgi, lai pamanītu, kad prognoze ir nenoteikta.</string>
 
     <!-- Privacy settings -->
     <string name="settings_privacy_telemetry_title">Avāriju un lietošanas ziņojumi</string>

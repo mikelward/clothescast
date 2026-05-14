@@ -219,6 +219,16 @@ class PreviewSnapshots {
     @Test fun solar_radiation_card_with_model_spread() = capture { SolarRadiationCardWithModelSpreadPreview() }
     @Test fun sunshine_card_with_model_spread() = capture { SunshineCardWithModelSpreadPreview() }
     @Test fun uv_index_card_with_model_spread() = capture { UvIndexCardWithModelSpreadPreview() }
+    // Consensus-only variants — the default state of each diagnostic card
+    // when the model-spread tap toggle is off. Locks in the "main line only"
+    // appearance so a regression that accidentally renders overlay lines
+    // when the toggle is off would surface as a snapshot diff.
+    @Test fun wind_card_consensus() = capture { WindCardConsensusPreview() }
+    @Test fun cloud_card_consensus() = capture { CloudCardConsensusPreview() }
+    @Test fun humidity_card_consensus() = capture { HumidityCardConsensusPreview() }
+    @Test fun solar_radiation_card_consensus() = capture { SolarRadiationCardConsensusPreview() }
+    @Test fun sunshine_card_consensus() = capture { SunshineCardConsensusPreview() }
+    @Test fun uv_index_card_consensus() = capture { UvIndexCardConsensusPreview() }
     @Test fun wind_card_sparse_trailing() = capture { WindCardSparseTrailingPreview() }
 
     @Test fun precipitation_card() = capture { PrecipitationCardPreview() }
@@ -231,7 +241,10 @@ class PreviewSnapshots {
     @Test fun confidence_high() = capture { ConfidenceHighPreview() }
     @Test fun confidence_medium() = capture { ConfidenceMediumPreview() }
     @Test fun confidence_low() = capture { ConfidenceLowPreview() }
+    @Test fun confidence_medium_tap_to_show() = capture { ConfidenceMediumTapToShowPreview() }
+    @Test fun confidence_medium_tap_to_hide() = capture { ConfidenceMediumTapToHidePreview() }
     @Test fun low_confidence_callout() = capture { LowConfidenceCalloutPreview() }
+    @Test fun low_confidence_callout_tap_to_show() = capture { LowConfidenceCalloutTapToShowPreview() }
 
     @Test fun work_status_running() = capture { WorkStatusRunningPreview() }
     @Test fun work_status_retrying() = capture { WorkStatusRetryingPreview() }

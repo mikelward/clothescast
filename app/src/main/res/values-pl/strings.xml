@@ -598,9 +598,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_root_privacy_subtitle">Raporty awarii i użytkowania</string>
 
     <!-- Display — Charts section. -->
-    <string name="settings_display_charts_title">Wykresy</string>
-    <string name="settings_display_model_spread_label">Pokaż rozrzut modeli na wykresach</string>
-    <string name="settings_display_model_spread_description">Wyświetla godzinową prognozę głównych modeli pogodowych na wykresach temperatury i opadów. Przydatne do rozpoznawania niepewnych prognoz.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Raporty awarii i użytkowania</string>

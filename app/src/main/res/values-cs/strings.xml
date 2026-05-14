@@ -524,9 +524,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_display_theme_system">Systémové nastavení</string>
     <string name="settings_display_theme_light">Světlý</string>
     <string name="settings_display_theme_dark">Tmavý</string>
-    <string name="settings_display_charts_title">Grafy</string>
-    <string name="settings_display_model_spread_label">Zobrazit rozptyl modelů v grafech</string>
-    <string name="settings_display_model_spread_description">Zobrazuje hodinovou předpověď hlavních meteorologických modelů přes grafy teploty a srážek. Užitečné pro rozpoznání nejistých předpovědí.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Zprávy o pádech a využití</string>

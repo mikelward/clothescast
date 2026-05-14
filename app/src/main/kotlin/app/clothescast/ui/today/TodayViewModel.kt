@@ -14,6 +14,7 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SettingsRepository
 import app.clothescast.work.FetchAndNotifyWorker
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -45,8 +46,17 @@ data class TodayState(
      * time (which can differ from these if the user has nudged a knob since); the
      * dialog prefers these for display so the controls stay honest. */
     val clothesRules: List<ClothesRule> = emptyList(),
-    /** Whether to overlay each major weather model's hourly curve on the
-     * forecast and precipitation charts. Driven by the Display setting. */
+    /**
+     * Whether to overlay each major weather model's hourly curve on the
+     * forecast / feels-like / precipitation charts. Session-scoped (lives on
+     * the ViewModel, not in DataStore) — toggled by tapping the confidence
+     * chip, the low-confidence callout, or any of the three temperature /
+     * precip cards. Resets to off when the Activity's ViewModelStore is
+     * cleared (config change preserves it; process death does not). The
+     * diagnostic cards below (wind / cloud / humidity / solar / sunshine /
+     * UV) ignore this flag — they're per-model-only and render whenever
+     * [Insight.perModelHourly] is present.
+     */
     val showModelSpread: Boolean = false,
 )
 
@@ -158,6 +168,14 @@ class TodayViewModel(
      */
     private val refreshOutfitWidget: suspend () -> Unit = {},
 ) : ViewModel() {
+    /**
+     * Session-scoped "show model spread" flag. Held in the ViewModel rather
+     * than DataStore because the toggle is a per-screen-visit gesture, not a
+     * persistent preference — flipped from the Today UI by tapping the
+     * confidence chip / callout / any temp-or-precip card. See [TodayState.showModelSpread].
+     */
+    private val showModelSpread = MutableStateFlow(false)
+
     // Combine status across both unique-work names so the spinner / failure
     // banner reflects an in-flight tonight refresh too — the Refresh button
     // routes to TONIGHT when it's tapped between 19:00 and 07:00.
@@ -166,7 +184,8 @@ class TodayViewModel(
         workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME),
         workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT),
         settingsRepository.preferences,
-    ) { insight, todayInfos, tonightInfos, prefs ->
+        showModelSpread,
+    ) { insight, todayInfos, tonightInfos, prefs, spread ->
         TodayState(
             insight = insight,
             workStatus = mergeWorkStatus(selectStatus(todayInfos.toLite()), selectStatus(tonightInfos.toLite())),
@@ -178,9 +197,19 @@ class TodayViewModel(
             useDeviceLocation = prefs.useDeviceLocation,
             hasFallbackLocation = prefs.location != null,
             clothesRules = prefs.clothesRules,
-            showModelSpread = prefs.showModelSpread,
+            showModelSpread = spread,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayState())
+
+    /**
+     * Flip the session-scoped model-spread overlay on the temp / feels-like /
+     * precip cards. The Today screen wires this to a tap on the confidence
+     * chip, the low-confidence callout, and each of those three cards — a
+     * wide gesture surface so the affordance is easy to stumble on.
+     */
+    fun toggleModelSpread() {
+        showModelSpread.value = !showModelSpread.value
+    }
 
     /**
      * Nudges the temperature threshold of the [ClothesRule] keyed [ruleItem] by

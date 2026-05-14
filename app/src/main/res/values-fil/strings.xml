@@ -281,9 +281,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_theme_light">Maliwanag</string>
     <string name="settings_display_theme_dark">Madilim</string>
 
-    <string name="settings_display_charts_title">Mga Chart</string>
-    <string name="settings_display_model_spread_label">Ipakita ang pagkalat ng modelo sa mga chart</string>
-    <string name="settings_display_model_spread_description">Isinasapatong ang oras-orasang hula ng bawat pangunahing modelo ng panahon sa temperatura at mga chart ng ulan. Kapaki-pakinabang para matukoy kung kailan hindi tiyak ang hula.</string>
 
     <!-- ============================================================
          Settings — Privacy

@@ -668,9 +668,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_privacy_subtitle">Absturz- und Nutzungsberichte</string>
 
     <!-- Display — Charts section. -->
-    <string name="settings_display_charts_title">Diagramme</string>
-    <string name="settings_display_model_spread_label">Modellstreuung in Diagrammen anzeigen</string>
-    <string name="settings_display_model_spread_description">Zeigt die stündliche Vorhersage der wichtigsten Wettermodelle über die Temperatur- und Regendiagramme. Nützlich, um unsichere Vorhersagen zu erkennen.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Absturz- und Nutzungsberichte</string>

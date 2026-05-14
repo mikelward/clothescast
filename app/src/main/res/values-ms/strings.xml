@@ -269,9 +269,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_display_theme_system">Ikut sistem</string>
     <string name="settings_display_theme_light">Cerah</string>
     <string name="settings_display_theme_dark">Gelap</string>
-    <string name="settings_display_charts_title">Carta</string>
-    <string name="settings_display_model_spread_label">Tunjukkan julat model pada carta</string>
-    <string name="settings_display_model_spread_description">Memaparkan ramalan jam setiap model cuaca utama pada carta suhu dan hujan. Berguna untuk mengesan ketidakpastian ramalan.</string>
 
     <!-- Location settings subtitles -->
     <string name="settings_root_location_subtitle">Pengesan automatik atau pilih bandar</string>

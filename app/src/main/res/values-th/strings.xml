@@ -276,9 +276,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_theme_system">ตามระบบ</string>
     <string name="settings_display_theme_light">สว่าง</string>
     <string name="settings_display_theme_dark">มืด</string>
-    <string name="settings_display_charts_title">กราฟ</string>
-    <string name="settings_display_model_spread_label">แสดงช่วงต่างของแบบจำลองในกราฟ</string>
-    <string name="settings_display_model_spread_description">แสดงพยากรณ์รายชั่วโมงของแต่ละแบบจำลองสภาพอากาศหลักบนกราฟอุณหภูมิและฝน มีประโยชน์สำหรับสังเกตเมื่อพยากรณ์ไม่แน่นอน</string>
 
     <!-- Privacy settings -->
     <string name="settings_privacy_telemetry_title">รายงานข้อขัดข้องและการใช้งาน</string>

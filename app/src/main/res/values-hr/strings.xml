@@ -611,9 +611,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_root_privacy_subtitle">Izvješća o padovima i korištenju</string>
 
     <!-- Display — Charts section. -->
-    <string name="settings_display_charts_title">Grafikoni</string>
-    <string name="settings_display_model_spread_label">Prikaži raspršenost modela na grafikonima</string>
-    <string name="settings_display_model_spread_description">Prikazuje satnu prognozu svakog glavnog vremenskog modela na grafikonima temperature i kiše. Korisno za prepoznavanje kada je prognoza neizvjesna.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Izvješća o padovima i korištenju</string>

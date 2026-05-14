@@ -485,19 +485,6 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `showModelSpread defaults to false and round-trips`() = runTest {
-        // Off by default — power-user chart overlay. The data is fetched
-        // regardless, so flipping it on shows overlays immediately.
-        subject.preferences.first().showModelSpread shouldBe false
-
-        subject.setShowModelSpread(true)
-        subject.preferences.first().showModelSpread shouldBe true
-
-        subject.setShowModelSpread(false)
-        subject.preferences.first().showModelSpread shouldBe false
-    }
-
-    @Test
     fun `telemetryEnabled defaults to true and round-trips`() = runTest {
         // Default-on so the long tail of installs report crashes without the
         // user having to find the toggle. The Today banner exists to make

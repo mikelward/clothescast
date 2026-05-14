@@ -183,9 +183,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_display_theme_light">Hele</string>
     <string name="settings_display_theme_dark">Tume</string>
 
-    <string name="settings_display_charts_title">Graafikud</string>
-    <string name="settings_display_model_spread_label">Näita mudelite hajuvust graafikutel</string>
-    <string name="settings_display_model_spread_description">Kuvab iga suurema ilmamudeli tunnipõhise prognoosi temperatuuri- ja vihmagrammikutel. Kasulik ebakindla prognoosi tuvastamiseks.</string>
 
     <string name="settings_root_location_subtitle">Automaattuvastus või vali linn</string>
     <string name="settings_root_calendar_subtitle">Tänased sündmused</string>

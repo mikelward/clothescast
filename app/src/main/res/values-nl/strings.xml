@@ -600,9 +600,6 @@ the displayed label localizes.
     <string name="settings_root_privacy_subtitle">Crash- en gebruiksrapporten</string>
 
     <!-- Display — Charts section. -->
-    <string name="settings_display_charts_title">Grafieken</string>
-    <string name="settings_display_model_spread_label">Modelverspreiding in grafieken weergeven</string>
-    <string name="settings_display_model_spread_description">Toont de uurlijkse voorspelling van de belangrijkste weermodellen over de temperatuur- en regengrafieken. Handig om onzekere voorspellingen te herkennen.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Crash- en gebruiksrapporten</string>

@@ -658,9 +658,6 @@ label localises.
     <string name="settings_root_privacy_subtitle">當機與使用情況報告</string>
 
     <!-- Display — Charts section. -->
-    <string name="settings_display_charts_title">圖表</string>
-    <string name="settings_display_model_spread_label">在圖表上顯示模型分布</string>
-    <string name="settings_display_model_spread_description">將各主要氣象模型的每小時預報疊加在溫度與降雨圖表上，方便辨識預報不確定的時段。</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">當機與使用情況報告</string>

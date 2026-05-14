@@ -538,9 +538,6 @@ What is NOT overridden, by design:
     <string name="settings_display_theme_system">Systémové nastavenie</string>
     <string name="settings_display_theme_light">Svetlý</string>
     <string name="settings_display_theme_dark">Tmavý</string>
-    <string name="settings_display_charts_title">Grafy</string>
-    <string name="settings_display_model_spread_label">Zobraziť rozptyl modelov v grafoch</string>
-    <string name="settings_display_model_spread_description">Zobrazuje hodinovú predpoveď hlavných meteorologických modelov cez grafy teploty a zrážok. Užitočné na rozpoznanie neistých predpovedí.</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Správy o pádoch a využití</string>

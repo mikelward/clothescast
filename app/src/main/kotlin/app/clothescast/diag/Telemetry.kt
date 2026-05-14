@@ -89,6 +89,16 @@ object Telemetry {
                 .distinctUntilChanged()
                 .collect { snapshot -> snapshot.applyTo(analytics) }
         }
+        scope.launch {
+            settings.settingsSnapshot
+                .distinctUntilChanged()
+                .collect { snapshot -> logSettingsSnapshot(snapshot) }
+        }
+        scope.launch {
+            settings.clothesRulesSnapshot
+                .distinctUntilChanged()
+                .collect { snapshot -> logClothesRulesSnapshot(snapshot) }
+        }
     }
 
     /**
@@ -141,17 +151,121 @@ object Telemetry {
         analytics.logEvent(EVENT_NOTIFICATION_DELIVERY, params)
     }
 
+    /**
+     * Emits a `daily_refresh` event when a scheduled / force-refresh run of
+     * the FetchAndNotifyWorker reaches a terminal Result. Params:
+     *
+     *  - `slot` (string): `today` or `tonight`.
+     *  - `outcome` (string): `success`, `forecast_error`, `no_location`,
+     *    `cancelled`, or `other_error`. See [classifyDailyRefreshReason].
+     *  - `latency_ms` (long): wall-clock from `doWork()` entry to the
+     *    terminal Result.
+     *
+     * Result.retry is not terminal and does not emit — WorkManager retries
+     * silently on backoff, so the offline / transient-network case shows up
+     * only when it eventually succeeds (or gives up and fails for some other
+     * reason). That keeps the stream reflecting "did the user actually get a
+     * refresh today?" rather than "how many retry hops did it take."
+     */
+    fun logDailyRefresh(slot: String, outcome: String, latencyMs: Long) {
+        val analytics = analyticsRef ?: return
+        val params = Bundle().apply {
+            putString(PARAM_SLOT, slot)
+            putString(PARAM_OUTCOME, outcome)
+            putLong(PARAM_LATENCY_MS, latencyMs)
+        }
+        analytics.logEvent(EVENT_DAILY_REFRESH, params)
+    }
+
+    /**
+     * Emits a `settings_snapshot` event whose params mirror the non-voice user
+     * settings. Fires once per process start (the DataStore-backed flow
+     * replays its current value to each new subscriber) and again every time
+     * the resolved snapshot's `equals` changes within the process — i.e.
+     * whenever the user toggles a setting. The per-launch baseline is
+     * intentional: it lets reports see "what's the default-vs-customised
+     * mix across the population?" without requiring the user to interact.
+     */
+    private fun logSettingsSnapshot(snapshot: SettingsSnapshot) {
+        val analytics = analyticsRef ?: return
+        val params = Bundle().apply {
+            putString("temperature_unit_setting", snapshot.temperatureUnitSetting)
+            putString("temperature_unit_effective", snapshot.temperatureUnitEffective)
+            putString("distance_unit_setting", snapshot.distanceUnitSetting)
+            putString("distance_unit_effective", snapshot.distanceUnitEffective)
+            putString("delivery_mode_daily", snapshot.deliveryModeDaily)
+            putString("delivery_mode_tonight", snapshot.deliveryModeTonight)
+            putString("theme_mode", snapshot.themeMode)
+            putString("color_palette", snapshot.colorPalette)
+            putString("default_bottom", snapshot.defaultBottom)
+            putString("daily_time_bucket_hour", snapshot.dailyTimeBucketHour)
+            putLong("daily_days_count", snapshot.dailyDaysCount.toLong())
+            putLong("tonight_enabled", snapshot.tonightEnabled.toLongFlag())
+            putString("tonight_time_bucket_hour", snapshot.tonightTimeBucketHour)
+            putLong("tonight_days_count", snapshot.tonightDaysCount.toLong())
+            putLong("tonight_notify_only_on_events", snapshot.tonightNotifyOnlyOnEvents.toLongFlag())
+            putLong("daily_mention_evening_events", snapshot.dailyMentionEveningEvents.toLongFlag())
+            putLong("use_calendar_events", snapshot.useCalendarEvents.toLongFlag())
+        }
+        analytics.logEvent(EVENT_SETTINGS_SNAPSHOT, params)
+    }
+
+    /**
+     * Emits a `clothes_rules_snapshot` event whose params describe the user's
+     * clothes-rule customisation. Per-category deltas are integer Celsius
+     * differences from the catalog default, clamped to ±5°C — see
+     * [ClothesRulesSnapshot] for the bucket format.
+     *
+     * Same emission cadence as [logSettingsSnapshot]: once on process start
+     * (DataStore replay) and again on each subsequent change to the user's
+     * rule list within the process.
+     */
+    private fun logClothesRulesSnapshot(snapshot: ClothesRulesSnapshot) {
+        val analytics = analyticsRef ?: return
+        val params = Bundle().apply {
+            putLong("customised_count", snapshot.customisedCount.toLong())
+            putLong("extra_rules_count", snapshot.extraRulesCount.toLong())
+            putString("categories_customised", snapshot.categoriesCustomised)
+            putLong("all_defaults", snapshot.allDefaults.toLongFlag())
+            putString("sweater_delta_c", snapshot.sweaterDeltaC)
+            putString("jacket_delta_c", snapshot.jacketDeltaC)
+            putString("coat_delta_c", snapshot.coatDeltaC)
+            putString("shorts_delta_c", snapshot.shortsDeltaC)
+        }
+        analytics.logEvent(EVENT_CLOTHES_RULES_SNAPSHOT, params)
+    }
+
+    /** Booleans ship as `0` / `1` longs so they slice cleanly in Firebase reports. */
+    private fun Boolean.toLongFlag(): Long = if (this) 1L else 0L
+
     // Firebase Analytics caps: event names ≤40 chars, param names ≤40 chars,
     // string values ≤100 chars. All identifiers below comfortably fit.
     private const val EVENT_API_CALL = "api_call"
     private const val EVENT_NOTIFICATION_DELIVERY = "notification_delivery"
+    private const val EVENT_DAILY_REFRESH = "daily_refresh"
+    private const val EVENT_SETTINGS_SNAPSHOT = "settings_snapshot"
+    private const val EVENT_CLOTHES_RULES_SNAPSHOT = "clothes_rules_snapshot"
     private const val PARAM_ENDPOINT = "endpoint"
     private const val PARAM_OUTCOME = "outcome"
     private const val PARAM_STATUS_CODE = "status_code"
     private const val PARAM_LATENCY_MS = "latency_ms"
     private const val PARAM_PERIOD = "period"
+    private const val PARAM_SLOT = "slot"
     private const val PARAM_ALARM_DELAY_MS = "alarm_delay_ms"
     private const val PARAM_TOTAL_DELAY_MS = "total_delay_ms"
+}
+
+/**
+ * Pure mapping from a [androidx.work.ListenableWorker.Result.Failure] reason
+ * code (the `KEY_REASON` string stamped by FetchAndNotifyWorker) onto the
+ * `outcome` bucket of the `daily_refresh` event. Extracted so the
+ * classification is unit-testable without dragging WorkManager into the test
+ * classpath.
+ */
+internal fun classifyDailyRefreshReason(reason: String?): String = when (reason) {
+    "no_location" -> "no_location"
+    "unexpected_http" -> "forecast_error"
+    else -> "other_error"
 }
 
 /**

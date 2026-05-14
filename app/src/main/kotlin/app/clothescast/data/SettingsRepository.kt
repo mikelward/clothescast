@@ -28,7 +28,9 @@ import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.core.domain.model.thresholdC
 import app.clothescast.core.domain.model.withThresholdC
+import app.clothescast.diag.ClothesRulesSnapshot
 import app.clothescast.diag.SettingsAnalyticsSnapshot
+import app.clothescast.diag.SettingsSnapshot
 import app.clothescast.tts.resolve
 import app.clothescast.tts.toJavaLocale
 import kotlinx.coroutines.flow.Flow
@@ -70,6 +72,22 @@ class SettingsRepository(
      * resolves a default.
      */
     val analyticsSnapshot: Flow<SettingsAnalyticsSnapshot> = dataStore.data.map { it.toAnalyticsSnapshot() }
+
+    /**
+     * Non-voice user settings flattened for the Firebase Analytics
+     * `settings_snapshot` event. Driven by the resolved [UserPreferences] so
+     * the bucketed time-of-day and effective unit values reflect what the
+     * user actually sees, not the raw DataStore key.
+     */
+    val settingsSnapshot: Flow<SettingsSnapshot> = preferences.map { it.toSettingsSnapshot() }
+
+    /**
+     * Clothes-rule customisation flattened for the Firebase Analytics
+     * `clothes_rules_snapshot` event. Per-category deltas are integer °C
+     * differences from [ClothesRule.DEFAULTS], clamped to ±5°C.
+     */
+    val clothesRulesSnapshot: Flow<ClothesRulesSnapshot> =
+        preferences.map { ClothesRulesSnapshot.from(it.clothesRules) }
 
     /**
      * The available-version code the user has dismissed the in-app update
@@ -464,6 +482,33 @@ class SettingsRepository(
             deviceVoiceEffective = resolved.deviceVoice ?: SettingsAnalyticsSnapshot.AUTO,
         )
     }
+
+    /**
+     * Flattens [UserPreferences] into the [SettingsSnapshot] shape Firebase
+     * Analytics consumes as event params. Effective-value-only (the
+     * default-vs-override distinction lives in [SettingsAnalyticsSnapshot] for
+     * the voice / region settings, which is where it matters for SYSTEM
+     * sentinels); schedule times are hour-bucketed.
+     */
+    private fun UserPreferences.toSettingsSnapshot(): SettingsSnapshot = SettingsSnapshot(
+        temperatureUnitSetting = temperatureUnitSetting.name,
+        temperatureUnitEffective = temperatureUnit.name,
+        distanceUnitSetting = distanceUnitSetting.name,
+        distanceUnitEffective = distanceUnit.name,
+        deliveryModeDaily = deliveryMode.name,
+        deliveryModeTonight = tonightDeliveryMode.name,
+        themeMode = themeMode.name,
+        colorPalette = colorPalette.name,
+        defaultBottom = defaultBottom.name,
+        dailyTimeBucketHour = schedule.time.hour.toString().padStart(2, '0'),
+        dailyDaysCount = schedule.days.size,
+        tonightEnabled = tonightEnabled,
+        tonightTimeBucketHour = tonightSchedule.time.hour.toString().padStart(2, '0'),
+        tonightDaysCount = tonightSchedule.days.size,
+        tonightNotifyOnlyOnEvents = tonightNotifyOnlyOnEvents,
+        dailyMentionEveningEvents = dailyMentionEveningEvents,
+        useCalendarEvents = useCalendarEvents,
+    )
 
     private fun parseLocation(prefs: Preferences): Location? {
         val lat = prefs[LOCATION_LAT] ?: return null

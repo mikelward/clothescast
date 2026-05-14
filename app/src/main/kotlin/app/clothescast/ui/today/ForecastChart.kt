@@ -130,7 +130,7 @@ fun ForecastChart(
     } else {
         emptyList()
     }
-    val mainLineColor = MaterialTheme.colorScheme.primary
+    val mainLineColor = AppTheme.mainLineColor
 
     val pickModel: (PerModelHour) -> Double =
         if (showFeelsLike) { e -> e.apparentTemperatureC } else { e -> e.temperatureC }

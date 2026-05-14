@@ -1171,7 +1171,7 @@ internal fun ForecastCard(
                 ModelSpreadLegend(
                     visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
                     mainLine = MainLineLegend(
-                        color = MaterialTheme.colorScheme.primary,
+                        color = AppTheme.mainLineColor,
                         label = stringResource(R.string.today_chart_main_line_label),
                     ),
                 )
@@ -1228,7 +1228,7 @@ internal fun AirTemperatureCard(
                 ModelSpreadLegend(
                     visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
                     mainLine = MainLineLegend(
-                        color = MaterialTheme.colorScheme.primary,
+                        color = AppTheme.mainLineColor,
                         label = stringResource(R.string.today_chart_main_line_label),
                     ),
                 )
@@ -1627,7 +1627,7 @@ internal fun PrecipitationCard(
                 ModelSpreadLegend(
                     visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
                     mainLine = MainLineLegend(
-                        color = MaterialTheme.colorScheme.primary,
+                        color = AppTheme.mainLineColor,
                         label = stringResource(R.string.today_chart_main_line_label),
                     ),
                 )

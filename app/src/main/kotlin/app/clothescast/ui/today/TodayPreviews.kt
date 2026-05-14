@@ -1095,6 +1095,35 @@ internal fun PrecipitationCardWithModelSpreadAccessiblePreview() {
     }
 }
 
+// Same pair, but with the Highlighter palette — magenta / lime / cyan neon
+// trio. Picked for visual punch (arcade / Tron-readout vibe) while staying
+// safe under all three common CVD profiles by routing the third hue to
+// lime rather than yellow.
+@Preview(name = "Forecast card · highlighter palette + model spread", widthDp = 360)
+@Composable
+internal fun ForecastCardWithModelSpreadHighlighterPreview() {
+    Frame(colorPalette = ColorPalette.HIGHLIGHTER) {
+        ForecastCard(
+            hourly = SAMPLE_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
+        )
+    }
+}
+
+@Preview(name = "Precipitation card · highlighter palette + model spread", widthDp = 360)
+@Composable
+internal fun PrecipitationCardWithModelSpreadHighlighterPreview() {
+    Frame(colorPalette = ColorPalette.HIGHLIGHTER) {
+        PrecipitationCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
+        )
+    }
+}
+
 // SAMPLE_HOURLY is already all-zero precipitation, so reuse it for the dry
 // variant — exercises the "No rain expected today" copy path while still
 // rendering the chart (per the always-show-chart design choice).

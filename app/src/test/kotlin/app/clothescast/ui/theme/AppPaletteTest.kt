@@ -90,4 +90,87 @@ class AppPaletteTest {
         darkHigh.background shouldBe lightHigh.foreground
         darkHigh.foreground shouldBe lightHigh.background
     }
+
+    @Test
+    fun `HIGHLIGHTER palette carries every model id and every confidence tier`() {
+        val palette = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.HIGHLIGHTER)
+        palette.modelColors.keys shouldBe setOf(
+            "ecmwf_ifs04",
+            "gfs_seamless",
+            "icon_seamless",
+            BEST_MATCH_MODEL_ID,
+        )
+        palette.confidence.keys shouldBe ForecastConfidence.entries.toSet()
+    }
+
+    @Test
+    fun `HIGHLIGHTER palette uses distinct hues from both RAINBOW and ACCESSIBLE`() {
+        val rainbow = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.RAINBOW)
+        val accessible = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.ACCESSIBLE)
+        val highlighter = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.HIGHLIGHTER)
+        // The whole point of Highlighter is visible difference from Rainbow
+        // at a glance, so every consulted-model hue must differ from both
+        // other palettes' equivalents.
+        for (model in listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless")) {
+            highlighter.modelColors.getValue(model) shouldNotBe rainbow.modelColors.getValue(model)
+            highlighter.modelColors.getValue(model) shouldNotBe accessible.modelColors.getValue(model)
+        }
+    }
+
+    @Test
+    fun `HIGHLIGHTER dark palette pins the neon magenta yellow cyan hues`() {
+        // Pin the exact dark-theme hex values that drive the "visibly
+        // different from Rainbow" guarantee. Drift on any of these is a UX
+        // regression, not a refactor — call it out at test level so a
+        // future palette tweak surfaces in the diff. The light-theme
+        // variant uses darker counterparts for WCAG contrast; see the
+        // separate light-theme test.
+        val palette = appPaletteFor(scheme, darkTheme = true, colorPalette = ColorPalette.HIGHLIGHTER)
+        palette.modelColors.getValue("ecmwf_ifs04") shouldBe Color(0xFFFF2D95)
+        palette.modelColors.getValue("gfs_seamless") shouldBe Color(0xFFFFEB3B)
+        palette.modelColors.getValue("icon_seamless") shouldBe Color(0xFF00E5FF)
+    }
+
+    @Test
+    fun `HIGHLIGHTER light palette uses deeper counterparts that pass WCAG contrast`() {
+        // Light theme keeps magenta at full neon (already passes 3:1) but
+        // drops the yellow and cyan slots to deeper hues so they aren't
+        // washed out against the near-white card surface.
+        val palette = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.HIGHLIGHTER)
+        palette.modelColors.getValue("ecmwf_ifs04") shouldBe Color(0xFFFF2D95)
+        palette.modelColors.getValue("gfs_seamless") shouldBe Color(0xFFB58A00)
+        palette.modelColors.getValue("icon_seamless") shouldBe Color(0xFF0277BD)
+    }
+
+    @Test
+    fun `HIGHLIGHTER palette overrides the Combined main-line colour`() {
+        // Rainbow and Accessible leave mainLineColor null (fallback to
+        // Material primary). Highlighter's ICON cyan and Auto charcoal both
+        // crowd the theme primary blue on the same chart, so it sets the
+        // main line explicitly — purple on light, pure white on dark.
+        val light = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.HIGHLIGHTER)
+        val dark = appPaletteFor(scheme, darkTheme = true, colorPalette = ColorPalette.HIGHLIGHTER)
+        light.mainLineColor shouldBe Color(0xFF6200EA)
+        dark.mainLineColor shouldBe Color(0xFFFFFFFF)
+    }
+
+    @Test
+    fun `RAINBOW and ACCESSIBLE palettes leave the Combined main-line colour to the theme`() {
+        val rainbow = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.RAINBOW)
+        val accessible = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.ACCESSIBLE)
+        rainbow.mainLineColor shouldBe null
+        accessible.mainLineColor shouldBe null
+    }
+
+    @Test
+    fun `dark HIGHLIGHTER palette inverts background and foreground for legibility`() {
+        val light = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.HIGHLIGHTER)
+        val dark = appPaletteFor(scheme, darkTheme = true, colorPalette = ColorPalette.HIGHLIGHTER)
+        val lightHigh = light.confidence.getValue(ForecastConfidence.HIGH)
+        val darkHigh = dark.confidence.getValue(ForecastConfidence.HIGH)
+        // Same legibility contract as the Accessible palette: pale tint on
+        // dark text light-mode, saturated dark on pale text dark-mode.
+        darkHigh.background shouldBe lightHigh.foreground
+        darkHigh.foreground shouldBe lightHigh.background
+    }
 }

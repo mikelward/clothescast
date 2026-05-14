@@ -10,11 +10,13 @@ import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
@@ -128,8 +130,10 @@ internal fun SettingsRegionPreview() {
     SettingsFrame {
         RegionContent(
             region = Region.SYSTEM,
-            temperatureUnit = TemperatureUnit.CELSIUS,
-            distanceUnit = DistanceUnit.KILOMETERS,
+            temperatureUnitSetting = TemperatureUnitSetting.AUTO,
+            distanceUnitSetting = DistanceUnitSetting.AUTO,
+            resolvedTemperatureUnit = TemperatureUnit.CELSIUS,
+            resolvedDistanceUnit = DistanceUnit.KILOMETERS,
             padding = PaddingValues(0.dp),
             onSetRegion = {},
             onSetTemperatureUnit = {},

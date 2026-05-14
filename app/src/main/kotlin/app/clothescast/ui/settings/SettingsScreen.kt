@@ -146,12 +146,14 @@ fun SettingsScreen(
             )
             SettingsRoute.Region -> RegionContent(
                 region = state.region,
-                temperatureUnit = state.temperatureUnit,
-                distanceUnit = state.distanceUnit,
+                temperatureUnitSetting = state.temperatureUnitSetting,
+                distanceUnitSetting = state.distanceUnitSetting,
+                resolvedTemperatureUnit = state.temperatureUnit,
+                resolvedDistanceUnit = state.distanceUnit,
                 padding = padding,
                 onSetRegion = viewModel::setRegion,
-                onSetTemperatureUnit = viewModel::setTemperatureUnit,
-                onSetDistanceUnit = viewModel::setDistanceUnit,
+                onSetTemperatureUnit = viewModel::setTemperatureUnitSetting,
+                onSetDistanceUnit = viewModel::setDistanceUnitSetting,
             )
             SettingsRoute.Voice -> VoiceContent(
                 selected = state.ttsEngine,

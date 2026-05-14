@@ -9,13 +9,13 @@ import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
-import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
-import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
@@ -118,6 +118,8 @@ class SettingsViewModel(
                         region = prefs.region,
                         temperatureUnit = prefs.temperatureUnit,
                         distanceUnit = prefs.distanceUnit,
+                        temperatureUnitSetting = prefs.temperatureUnitSetting,
+                        distanceUnitSetting = prefs.distanceUnitSetting,
                         themeMode = prefs.themeMode,
                         colorPalette = prefs.colorPalette,
                         clothesRules = prefs.clothesRules,
@@ -250,12 +252,12 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setRegion(region) }
     }
 
-    fun setTemperatureUnit(unit: TemperatureUnit) {
-        viewModelScope.launch { settingsRepository.setTemperatureUnit(unit) }
+    fun setTemperatureUnitSetting(setting: TemperatureUnitSetting) {
+        viewModelScope.launch { settingsRepository.setTemperatureUnitSetting(setting) }
     }
 
-    fun setDistanceUnit(unit: DistanceUnit) {
-        viewModelScope.launch { settingsRepository.setDistanceUnit(unit) }
+    fun setDistanceUnitSetting(setting: DistanceUnitSetting) {
+        viewModelScope.launch { settingsRepository.setDistanceUnitSetting(setting) }
     }
 
     fun setThemeMode(mode: ThemeMode) {

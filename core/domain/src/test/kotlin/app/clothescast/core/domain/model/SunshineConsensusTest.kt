@@ -78,6 +78,32 @@ class SunshineConsensusTest {
     }
 
     @Test
+    fun `consensusSunshineHours sums across dates without filtering`() {
+        // Tonight's slice straddles midnight: 30m of late-evening sun on
+        // [today] + 45m of pre-alarm sun on [tomorrow] per model.
+        // consensusSunshineHoursFor(today) would only see the 30m portion;
+        // the window-total variant sees both.
+        val data = PerModelHourly(
+            byModel = mapOf(
+                "ecmwf_ifs04" to listOf(
+                    entry(today, 19, 1800.0),
+                    entry(tomorrow, 5, 2700.0),
+                ),
+                "gfs_seamless" to listOf(
+                    entry(today, 19, 1800.0),
+                    entry(tomorrow, 5, 2700.0),
+                ),
+            ),
+        )
+
+        val dateFiltered = data.consensusSunshineHoursFor(today).shouldNotBeNull()
+        dateFiltered shouldBe (0.5 plusOrMinus 0.0001)
+
+        val windowed = data.consensusSunshineHours().shouldNotBeNull()
+        windowed shouldBe (1.25 plusOrMinus 0.0001)
+    }
+
+    @Test
     fun `partial null hours within a model still count toward its total`() {
         // ecmwf has 1h + null = 1h total; gfs has 2h + 1h = 3h. Mean = 2h.
         // A partial-null hour shouldn't drag the model's total to zero or

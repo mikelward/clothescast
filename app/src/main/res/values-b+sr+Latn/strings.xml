@@ -582,4 +582,27 @@ default English (matching values-pl / values-uk).
     <string name="today_forecast_air_section_title">Temperatura vazduha</string>
     <string name="settings_default_bottom_title">Standardni donji deo</string>
     <string name="settings_default_bottom_description">Ono što predlažemo na početnom ekranu kada nije dovoljno toplo za kratke hlače.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Paleta boja</string>
+    <string name="settings_display_palette_accessible">Pristupačna</string>
+    <string name="settings_display_palette_accessible_description">Paleta izvedena iz Okabe-Ito, dizajnirana da ostane razlučiva pri deuteranopiji, protanopiji i tritanopiji. Kartice pouzdanosti koriste nebesko plavu, neutralnu i jantarnu umesto tirkizne, neutralne i crvene.</string>
+    <string name="settings_display_palette_rainbow">Duga</string>
+    <string name="settings_display_palette_rainbow_description">Roze, narandžaste i zelene linije grafikona sa tirkiznim/crvenim karticama pouzdanosti Material. Podrazumevano.</string>
+    <string name="settings_unit_auto">Auto</string>
+    <string name="today_cloud_range">Oblačnost %1$d–%2$d%%</string>
+    <string name="today_confidence_precip_spread">Modeli se ne slažu oko kiše (Δ %1$.0f%% kod %2$d modela)</string>
+    <string name="today_confidence_tap_to_hide">Dodirnite za skrivanje prognoza po modelu</string>
+    <string name="today_confidence_tap_to_show">Dodirnite za prikaz prognoze svakog modela</string>
+    <string name="today_humidity_range">Vlažnost %1$d–%2$d%%</string>
+    <string name="today_solar_subtitle">Površinska iradijansa (W/m²) po satu po modelu</string>
+    <string name="today_solar_title">Sunčevo zračenje</string>
+    <string name="today_sunshine_subtitle">Minute sunca po satu po modelu</string>
+    <string name="today_sunshine_title">Sijanje sunca</string>
+    <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm sunca danas</string>
+    <string name="today_sunshine_total_hours_only">%1$dh sunca danas</string>
+    <string name="today_sunshine_total_minutes_only">%1$dm sunca danas</string>
+    <string name="today_uv_subtitle">UV indeks po satu po modelu</string>
+    <string name="today_uv_title">UV indeks</string>
+    <string name="today_wind_peak">Vrhunac %1$d %2$s u %3$s</string>
 </resources>

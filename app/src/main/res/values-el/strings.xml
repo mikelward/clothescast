@@ -715,4 +715,27 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_forecast_air_section_title">Θερμοκρασία αέρα</string>
     <string name="settings_default_bottom_title">Κανονικό κάτω μέρος</string>
     <string name="settings_default_bottom_description">Αυτό που προτείνουμε στην αρχική οθόνη όταν δεν κάνει αρκετά ζέστη για σορτς.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Παλέτα χρωμάτων</string>
+    <string name="settings_display_palette_accessible">Προσβάσιμη</string>
+    <string name="settings_display_palette_accessible_description">Παλέτα βασισμένη στο Okabe-Ito, σχεδιασμένη να παραμένει διακριτή σε δευτερανωπία, πρωτανωπία και τριτανωπία. Οι κάρτες αξιοπιστίας χρησιμοποιούν γαλάζιο, ουδέτερο και κεχριμπαρί αντί για πετρόλ, ουδέτερο και κόκκινο.</string>
+    <string name="settings_display_palette_rainbow">Ουράνιο τόξο</string>
+    <string name="settings_display_palette_rainbow_description">Ροζ, πορτοκαλί και πράσινες γραμμές γραφημάτων με κάρτες αξιοπιστίας Material πετρόλ/κόκκινο. Προεπιλογή.</string>
+    <string name="settings_unit_auto">Αυτόματο</string>
+    <string name="today_cloud_range">Νέφωση %1$d–%2$d%%</string>
+    <string name="today_confidence_precip_spread">Τα μοντέλα διαφωνούν για τη βροχή (Δ %1$.0f%% σε %2$d μοντέλα)</string>
+    <string name="today_confidence_tap_to_hide">Πατήστε για απόκρυψη προβλέψεων μοντέλων</string>
+    <string name="today_confidence_tap_to_show">Πατήστε για εμφάνιση πρόβλεψης κάθε μοντέλου</string>
+    <string name="today_humidity_range">Υγρασία %1$d–%2$d%%</string>
+    <string name="today_solar_subtitle">Επιφανειακή ηλιακή ακτινοβολία (W/m²) ανά ώρα ανά μοντέλο</string>
+    <string name="today_solar_title">Ηλιακή ακτινοβολία</string>
+    <string name="today_sunshine_subtitle">Λεπτά ηλιοφάνειας ανά ώρα ανά μοντέλο</string>
+    <string name="today_sunshine_title">Ηλιοφάνεια</string>
+    <string name="today_sunshine_total_hours_minutes">%1$d ώ %2$d λ ηλιοφάνεια σήμερα</string>
+    <string name="today_sunshine_total_hours_only">%1$d ώρ. ηλιοφάνεια σήμερα</string>
+    <string name="today_sunshine_total_minutes_only">%1$d λ. ηλιοφάνεια σήμερα</string>
+    <string name="today_uv_subtitle">Δείκτης UV ανά ώρα ανά μοντέλο</string>
+    <string name="today_uv_title">Δείκτης UV</string>
+    <string name="today_wind_peak">Μέγιστο %1$d %2$s στις %3$s</string>
 </resources>

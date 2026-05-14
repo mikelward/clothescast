@@ -80,6 +80,7 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.ModelDivergenceSummary
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.core.domain.model.consensusSunshineHours
 import app.clothescast.core.domain.model.consensusSunshineHoursFor
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -1479,8 +1480,16 @@ internal fun SunshineCard(
     onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
-    val totalHours = remember(perModelHourly, forDate) {
-        perModelHourly.consensusSunshineHoursFor(forDate)
+    // TONIGHT's slice spans [tonightStart, next morning) and so straddles
+    // midnight; the per-date filter would drop pre-alarm tomorrow-morning sun
+    // and the "Xh of sun tonight" total would be short. Use the window-total
+    // variant for TONIGHT and keep the date-filtered call for TODAY (whose
+    // slice is single-date by construction).
+    val totalHours = remember(perModelHourly, forDate, period) {
+        when (period) {
+            ForecastPeriod.TODAY -> perModelHourly.consensusSunshineHoursFor(forDate)
+            ForecastPeriod.TONIGHT -> perModelHourly.consensusSunshineHours()
+        }
     }
     val totalBlurb = if (totalHours != null) {
         formatSunshineTotal(totalHours, period)

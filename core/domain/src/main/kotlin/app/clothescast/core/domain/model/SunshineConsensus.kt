@@ -30,3 +30,27 @@ fun PerModelHourly.consensusSunshineHoursFor(date: LocalDate): Double? {
     if (perModelTotalsSec.size < 2) return null
     return perModelTotalsSec.average() / 3600.0
 }
+
+/**
+ * Variant that totals every entry in the [PerModelHourly] regardless of date.
+ *
+ * Used by callers whose [PerModelHourly] is already sliced to the window they
+ * care about — notably the nightly insight, whose tonight slice spans
+ * `[tonightStart, next morning)` and so straddles midnight. The
+ * [consensusSunshineHoursFor] date filter would drop the post-midnight portion
+ * (early-morning sun before the morning alarm) on the night view; this variant
+ * sums the full slice instead.
+ *
+ * Same per-model-first averaging contract as [consensusSunshineHoursFor]:
+ * each consulted model's hours are summed independently, the arithmetic mean
+ * of those per-model totals is returned in fractional hours, and < 2 models
+ * with any sunshine return null.
+ */
+fun PerModelHourly.consensusSunshineHours(): Double? {
+    val perModelTotalsSec = byModel.values.mapNotNull { entries ->
+        val seconds = entries.mapNotNull { it.sunshineDurationSec }
+        if (seconds.isEmpty()) null else seconds.sum()
+    }
+    if (perModelTotalsSec.size < 2) return null
+    return perModelTotalsSec.average() / 3600.0
+}

@@ -174,7 +174,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_confidence_high">Încredere ridicată — modelele principale sunt de acord</string>
     <string name="today_confidence_medium">Încredere medie</string>
     <string name="today_confidence_low">Încredere scăzută — prognozele diferă</string>
-    <string name="today_confidence_spread">Dispersie: %1$.1f°C, %2$.0f%% precipitații la %3$d modele</string>
 
     <!-- Low-confidence callout. -->
 

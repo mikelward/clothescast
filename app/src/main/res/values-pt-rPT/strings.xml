@@ -395,7 +395,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_confidence_high">Confiança elevada — os principais modelos concordam</string>
     <string name="today_confidence_medium">Confiança média</string>
     <string name="today_confidence_low">Confiança baixa — as previsões discordam</string>
-    <string name="today_confidence_spread">Dispersão: %1$.1f°C, %2$.0fpp de precipitação em %3$d modelos</string>
 
     <string name="today_working">A obter o teu ClothesCast…</string>
     <string name="today_failed_title">A última tentativa falhou</string>

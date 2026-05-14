@@ -389,7 +389,6 @@ displayed label localizes.
     <string name="today_confidence_high">높은 신뢰도 — 주요 모델이 일치</string>
     <string name="today_confidence_medium">중간 신뢰도</string>
     <string name="today_confidence_low">낮은 신뢰도 — 예보가 일치하지 않음</string>
-    <string name="today_confidence_spread">편차: %1$.1f°C, %2$.0fpp 강수, %3$d개 모델</string>
 
     <string name="today_working">ClothesCast를 가져오는 중…</string>
     <string name="today_failed_title">마지막 시도가 실패했어요</string>

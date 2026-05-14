@@ -174,7 +174,6 @@ What is NOT overridden, by design:
     <string name="today_confidence_high">Didelis tikslumas — pagrindiniai modeliai sutaria</string>
     <string name="today_confidence_medium">Vidutinis tikslumas</string>
     <string name="today_confidence_low">Mažas tikslumas — prognozės skiriasi</string>
-    <string name="today_confidence_spread">Skirtumas: %1$.1f°C, %2$.0f%% krituliai tarp %3$d modelių</string>
 
     <!-- Low-confidence callout banner. -->
 

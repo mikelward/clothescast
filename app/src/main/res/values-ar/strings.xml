@@ -183,7 +183,6 @@ they work correctly in both the single-band and range templates.
     <string name="today_confidence_high">ثقة عالية — تتفق النماذج الرئيسية</string>
     <string name="today_confidence_medium">ثقة متوسطة</string>
     <string name="today_confidence_low">ثقة منخفضة — تتباين التوقعات</string>
-    <string name="today_confidence_spread">التباين: %1$.1f°C، %2$.0f%% أمطار عبر %3$d نماذج</string>
     <string name="today_low_confidence_callout_title">التوقعات متباينة</string>
     <string name="today_low_confidence_callout_body">يتراوح نطاق درجات الحرارة بـ %1$.1f°C واحتمالية الأمطار بـ %2$.0f%% عبر %3$d نماذج.</string>
 

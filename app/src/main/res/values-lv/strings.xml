@@ -166,7 +166,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_confidence_high">Augsta ticamība — galvenie modeļi saskan</string>
     <string name="today_confidence_medium">Vidēja ticamība</string>
     <string name="today_confidence_low">Zema ticamība — prognozes nesakrīt</string>
-    <string name="today_confidence_spread">Izkliede: %1$.1f°C, %2$.0f%% nokrišņi %3$d modeļos</string>
     <string name="today_working">Strādā — ielādē tavu ClothesCast…</string>
     <string name="today_retrying">Iepriekšējais mēģinājums neizdevās — mēģina vēlreiz…</string>
     <string name="today_failed_title">Iepriekšējais mēģinājums neizdevās</string>

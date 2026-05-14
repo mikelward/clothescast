@@ -357,7 +357,6 @@ label localises.
     <string name="today_confidence_high">高信心 — 主要模型一致</string>
     <string name="today_confidence_medium">中等信心</string>
     <string name="today_confidence_low">低信心 — 預報不一致</string>
-    <string name="today_confidence_spread">差異：%1$.1f°C，%2$.0fpp 降水，跨 %3$d 個模型</string>
 
     <string name="today_working">正在取得你的 ClothesCast…</string>
     <string name="today_failed_title">上次嘗試失敗</string>

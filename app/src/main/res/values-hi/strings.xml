@@ -381,7 +381,6 @@ Not overridden by design:
     <string name="today_confidence_high">उच्च विश्वास — प्रमुख मॉडल सहमत</string>
     <string name="today_confidence_medium">मध्यम विश्वास</string>
     <string name="today_confidence_low">कम विश्वास — पूर्वानुमान असहमत</string>
-    <string name="today_confidence_spread">अंतर: %1$.1f°C, %2$.0fpp वर्षा, %3$d मॉडल में</string>
 
     <!-- Work status / error states. -->
     <string name="today_working">ClothesCast ला रहे हैं…</string>

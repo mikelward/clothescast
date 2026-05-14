@@ -172,7 +172,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_confidence_high">Keyakinan tinggi — model utama bersetuju</string>
     <string name="today_confidence_medium">Keyakinan sederhana</string>
     <string name="today_confidence_low">Keyakinan rendah — ramalan tidak sepakat</string>
-    <string name="today_confidence_spread">Julat: %1$.1f°C, %2$.0f%% hujan merentas %3$d model</string>
 
     <!-- Working / retrying / failed states -->
     <string name="today_working">Memproses — mengambil ClothesCast anda…</string>

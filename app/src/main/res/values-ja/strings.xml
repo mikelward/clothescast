@@ -374,7 +374,6 @@ the displayed label localizes.
     <string name="today_confidence_high">信頼度：高 — 主要モデルが一致</string>
     <string name="today_confidence_medium">信頼度：中</string>
     <string name="today_confidence_low">信頼度：低 — 予報が一致していません</string>
-    <string name="today_confidence_spread">ばらつき：%1$.1f°C、%2$.0fpp 降水、%3$d モデル</string>
 
     <string name="today_working">ClothesCast を取得中…</string>
     <string name="today_failed_title">前回の試行に失敗しました</string>

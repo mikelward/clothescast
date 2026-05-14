@@ -396,7 +396,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_confidence_high">Vysoká jistota — hlavní modely se shodují</string>
     <string name="today_confidence_medium">Střední jistota</string>
     <string name="today_confidence_low">Nízká jistota — předpovědi se rozcházejí</string>
-    <string name="today_confidence_spread">Rozptyl: %1$.1f°C, %2$.0f p.b. srážky přes %3$d modelů</string>
 
     <string name="today_working">Načítám tvůj ClothesCast…</string>
     <string name="today_failed_title">Poslední pokus selhal</string>

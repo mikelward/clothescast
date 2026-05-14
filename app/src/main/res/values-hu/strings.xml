@@ -398,7 +398,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_confidence_high">Magas biztonság — a fő modellek egyetértenek</string>
     <string name="today_confidence_medium">Közepes biztonság</string>
     <string name="today_confidence_low">Alacsony biztonság — az előrejelzések eltérnek</string>
-    <string name="today_confidence_spread">Szórás: %1$.1f°C, %2$.0f százalékpont csapadék %3$d modell felett</string>
 
     <string name="today_working">ClothesCast betöltése…</string>
     <string name="today_failed_title">Az utolsó kísérlet sikertelen volt</string>

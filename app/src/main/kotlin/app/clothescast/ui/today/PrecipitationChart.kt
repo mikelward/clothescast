@@ -41,20 +41,29 @@ import kotlin.math.roundToInt
 fun PrecipitationChart(
     hourly: List<HourlyForecast>,
     modifier: Modifier = Modifier,
-    // Optional per-model overlays; see [ForecastChart] for the same pattern.
+    // Optional per-model data; see [ForecastChart] for the same pattern.
     perModelHourly: PerModelHourly? = null,
+    // When true, draw the individual model lines underneath the main line.
+    // The y-axis is pinned 0..100 regardless, so this only affects which
+    // series are emitted.
+    showModelSpread: Boolean = false,
 ) {
     if (hourly.isEmpty()) return
 
     val overlays = perModelHourly?.byModel.orEmpty()
-    val visibleModels = MODEL_DRAW_ORDER.filter { it in overlays }
+    val visibleModels = if (showModelSpread) {
+        MODEL_DRAW_ORDER.filter { it in overlays }
+    } else {
+        emptyList()
+    }
     val mainLineColor = MaterialTheme.colorScheme.primary
 
     val producer = remember { CartesianChartModelProducer() }
-    LaunchedEffect(hourly, overlays) {
+    LaunchedEffect(hourly, visibleModels) {
         producer.runTransaction {
             lineSeries {
                 // Overlays first so they render under the blended main line.
+                // Empty when [showModelSpread] is off.
                 visibleModels.forEach { modelId ->
                     overlays.getValue(modelId).let { entries ->
                         series(entries.map { it.precipitationProbabilityPct })

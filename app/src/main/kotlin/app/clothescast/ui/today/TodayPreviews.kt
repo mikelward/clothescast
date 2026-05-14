@@ -1003,6 +1003,7 @@ internal fun ForecastChartWithModelSpreadPreview() {
             temperatureUnit = TemperatureUnit.CELSIUS,
             showFeelsLike = true,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
         )
     }
 }
@@ -1019,6 +1020,7 @@ internal fun ForecastCardWithModelSpreadPreview() {
             hourly = SAMPLE_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
         )
     }
 }
@@ -1031,6 +1033,7 @@ internal fun AirTemperatureCardWithModelSpreadPreview() {
             hourly = SAMPLE_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
         )
     }
 }
@@ -1042,6 +1045,7 @@ internal fun PrecipitationCardWithModelSpreadPreview() {
         PrecipitationCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
         )
     }
 }
@@ -1061,6 +1065,7 @@ internal fun ForecastCardWithModelSpreadAccessiblePreview() {
             hourly = SAMPLE_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
         )
     }
 }
@@ -1072,6 +1077,7 @@ internal fun PrecipitationCardWithModelSpreadAccessiblePreview() {
         PrecipitationCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
         )
     }
 }

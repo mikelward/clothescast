@@ -333,23 +333,31 @@ private fun TodayContent(
                 )
             }
             if (state.insight.hourly.isNotEmpty()) {
-                val overlay = state.insight.perModelHourly?.takeIf { state.showModelSpread }
+                // Pass per-model data unconditionally so each chart's y-axis is
+                // sized to the same envelope whether the overlay is showing or
+                // not — tapping the toggle adds / removes lines but never
+                // shifts the scale. The diagnostic cards below follow the same
+                // pattern (see [PerModelDiagnosticCard]).
+                val perModelData = state.insight.perModelHourly
                 ForecastCard(
                     hourly = state.insight.hourly,
                     temperatureUnit = state.temperatureUnit,
                     distanceUnit = state.distanceUnit,
-                    perModelHourly = overlay,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
                     onToggleModelSpread = tapToggle,
                 )
                 AirTemperatureCard(
                     hourly = state.insight.hourly,
                     temperatureUnit = state.temperatureUnit,
-                    perModelHourly = overlay,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
                     onToggleModelSpread = tapToggle,
                 )
                 PrecipitationCard(
                     hourly = state.insight.hourly,
-                    perModelHourly = overlay,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
                     onToggleModelSpread = tapToggle,
                 )
                 // Diagnostic cards below the headline temp + rain pair. Each
@@ -1118,6 +1126,7 @@ internal fun ForecastCard(
     temperatureUnit: TemperatureUnit,
     distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
     perModelHourly: PerModelHourly? = null,
+    showModelSpread: Boolean = false,
     onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val symbol = temperatureUnit.symbol()
@@ -1149,13 +1158,14 @@ internal fun ForecastCard(
                 temperatureUnit = temperatureUnit,
                 showFeelsLike = true,
                 perModelHourly = perModelHourly,
+                showModelSpread = showModelSpread,
             )
             Text(
                 text = stringResource(R.string.today_forecast_legend_feels_like, symbol),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            if (perModelHourly != null) {
+            if (showModelSpread && perModelHourly != null) {
                 ModelSpreadLegend(
                     visibleModelIds = MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel },
                     mainLine = MainLineLegend(
@@ -1173,6 +1183,7 @@ internal fun AirTemperatureCard(
     hourly: List<HourlyForecast>,
     temperatureUnit: TemperatureUnit,
     perModelHourly: PerModelHourly? = null,
+    showModelSpread: Boolean = false,
     onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val symbol = temperatureUnit.symbol()
@@ -1204,13 +1215,14 @@ internal fun AirTemperatureCard(
                 temperatureUnit = temperatureUnit,
                 showFeelsLike = false,
                 perModelHourly = perModelHourly,
+                showModelSpread = showModelSpread,
             )
             Text(
                 text = stringResource(R.string.today_forecast_legend_air, symbol),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            if (perModelHourly != null) {
+            if (showModelSpread && perModelHourly != null) {
                 ModelSpreadLegend(
                     visibleModelIds = MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel },
                     mainLine = MainLineLegend(
@@ -1530,6 +1542,7 @@ internal fun UvIndexCard(
 internal fun PrecipitationCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly? = null,
+    showModelSpread: Boolean = false,
     onToggleModelSpread: (() -> Unit)? = null,
 ) {
     // Always render the chart, even on dry days — keeps the card height stable
@@ -1564,8 +1577,12 @@ internal fun PrecipitationCard(
                 },
                 style = MaterialTheme.typography.bodyMedium,
             )
-            PrecipitationChart(hourly = hourly, perModelHourly = perModelHourly)
-            if (perModelHourly != null) {
+            PrecipitationChart(
+                hourly = hourly,
+                perModelHourly = perModelHourly,
+                showModelSpread = showModelSpread,
+            )
+            if (showModelSpread && perModelHourly != null) {
                 ModelSpreadLegend(
                     visibleModelIds = MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel },
                     mainLine = MainLineLegend(

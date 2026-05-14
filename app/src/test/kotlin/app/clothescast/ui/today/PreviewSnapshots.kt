@@ -115,15 +115,7 @@ class PreviewSnapshots {
 
     private fun capture(content: @Composable () -> Unit) {
         composeRule.setContent { content() }
-        // Drain any async side-effects (e.g. Vico's CartesianChartModelProducer
-        // transaction, which runs in a LaunchedEffect and delivers data to the chart
-        // host via a separate coroutine hop). Without this, the chart snapshot can
-        // race and produce a near-blank PNG. waitForIdle() works if Vico dispatches
-        // on the composition's coroutine scope; the empty-snapshot retry below
-        // backs it up: if the captured PNG looks blank (every sampled pixel
-        // identical), we wait and re-capture before accepting the result.
-        captureWithRetryIfEmpty {
-            composeRule.waitForIdle()
+        captureUntilStable {
             composeRule.onRoot().captureRoboImage(filePath = "$outputDir/${testName.methodName}.png")
         }
     }
@@ -135,29 +127,81 @@ class PreviewSnapshots {
     // is the visible thing here).
     private fun captureDialog(content: @Composable () -> Unit) {
         composeRule.setContent { content() }
-        captureWithRetryIfEmpty {
-            composeRule.waitForIdle()
+        captureUntilStable {
             composeRule.onNode(isDialog()).captureRoboImage(filePath = "$outputDir/${testName.methodName}.png")
         }
     }
 
-    // Snapshots occasionally race async composition state — most often a chart
-    // with data delivered through a separate coroutine hop — and land a PNG
-    // that's either zero-bytes or a single flat colour. `roborazzi.test.record`
-    // means CI commits whatever lands, so a blank PNG silently becomes the new
-    // baseline. Re-run the capture a few times if it looks empty; the
-    // intervening waitForIdle + brief sleep give the missing frame time to
-    // settle. The final PNG on disk is whichever attempt wrote last.
-    private fun captureWithRetryIfEmpty(maxAttempts: Int = 3, snapshot: () -> Unit) {
+    /**
+     * Captures a snapshot to disk and re-captures until two consecutive
+     * attempts produce the same bytes — i.e. the rendering has settled.
+     *
+     * Two layers of "give async work time to drain" before each attempt:
+     *  - `waitForIdle()` drains the Compose dispatcher.
+     *  - We then pump a handful of additional frames. Vico's
+     *    `CartesianChartModelProducer` feeds the chart host via a separate
+     *    coroutine flow that `waitForIdle()` doesn't always cover, so the
+     *    first capture can land before the chart line has actually painted.
+     *    The frame pump gives the host's collection + recompose + paint
+     *    sequence room to complete. Cheap on chart-less previews (just a
+     *    few no-op frames), so we apply it uniformly rather than annotating
+     *    each chart-bearing preview by hand.
+     *
+     * If a chart is mid-paint we see different bytes on consecutive captures
+     * and keep looping; once the picture stops changing we accept it. Catches
+     * the "card chrome rendered but chart line missing" case the older
+     * [looksEmpty] backstop misses — a card with axis grid + text has many
+     * distinct colours and never trips [looksEmpty]'s all-pixels-equal
+     * check, but it's still the wrong answer compared to a stabilised
+     * second capture.
+     *
+     * [looksEmpty] stays as a separate guard so a *completely* blank
+     * capture (every sampled pixel matching the first) never gets to
+     * "stable" status just by failing the same way twice in a row.
+     *
+     * History: PR #436's CI runs flipped `precipitation_card_dry.png`
+     * between a "with chart" (29.6KB) and a "no chart" render (11.6KB)
+     * on consecutive runs of the *same* commit — the chart line was
+     * dropping out on roughly one in two captures, depending on when the
+     * snapshot landed relative to Vico's flow delivery. The two
+     * regenerations cancelled each other out at merge time, but on the
+     * next unrelated PR the same race will flip again and look like a UI
+     * regression. This helper closes that gap.
+     */
+    private fun captureUntilStable(maxAttempts: Int = 4, snapshot: () -> Unit) {
         val outputFile = File("$outputDir/${testName.methodName}.png")
+        var prior: ByteArray? = null
         repeat(maxAttempts) { attempt ->
+            composeRule.waitForIdle()
+            repeat(FRAME_PUMP_COUNT) {
+                composeRule.mainClock.advanceTimeByFrame()
+                composeRule.waitForIdle()
+            }
             snapshot()
-            if (!looksEmpty(outputFile)) return
+            if (looksEmpty(outputFile)) {
+                // Don't let a blank capture become "stable" by repeating —
+                // forget any prior bytes so the next non-blank attempt has
+                // to confirm against itself, not against the failure.
+                prior = null
+            } else {
+                val current = outputFile.readBytes()
+                if (prior != null && prior.contentEquals(current)) return
+                prior = current
+            }
             if (attempt < maxAttempts - 1) Thread.sleep(50L * (attempt + 1))
         }
         System.err.println(
-            "WARN: snapshot ${testName.methodName} still appears empty after $maxAttempts attempts",
+            "WARN: snapshot ${testName.methodName} did not stabilise after $maxAttempts attempts",
         )
+    }
+
+    // Number of additional frames to advance past Compose's idle state
+    // before each capture attempt. Three covers Vico's typical
+    // producer-flow-emit + host-recompose + paint sequence with margin;
+    // each frame is ~16ms in virtual time but ~near-zero wall-clock under
+    // Robolectric, so the cost is negligible.
+    private companion object {
+        const val FRAME_PUMP_COUNT = 3
     }
 
     // "Empty" = unreadable as a PNG, or every sampled pixel matches (0,0). The

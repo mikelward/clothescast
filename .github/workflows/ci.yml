@@ -660,15 +660,7 @@ jobs:
           packageName: app.clothescast
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
           track: internal
-          # TEMPORARY: `draft` while the app's first Play Console review is
-          # pending — the API rejects `completed` releases on a draft app
-          # ("Only releases with status draft may be created on draft app"),
-          # which fails CI on every push to main. With `draft`, the AAB still
-          # uploads to the internal track; activating it requires one click on
-          # the "Release to internal testing" button in Play Console per push.
-          # Switch back to `completed` once Google approves the listing and
-          # the app is no longer in Draft state.
-          status: draft
+          status: completed
           whatsNewDirectory: ${{ runner.temp }}/whatsnew
 
       - name: Clear prior CI comments for this job

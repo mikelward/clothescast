@@ -735,7 +735,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_sunshine_total_hours_minutes">%1$d ώ %2$d λ ηλιοφάνεια σήμερα</string>
     <string name="today_sunshine_total_hours_only">%1$d ώρ. ηλιοφάνεια σήμερα</string>
     <string name="today_sunshine_total_minutes_only">%1$d λ. ηλιοφάνεια σήμερα</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$d ώ %2$d λ ηλιοφάνεια απόψε</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$d ώρ. ηλιοφάνεια απόψε</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$d λ. ηλιοφάνεια απόψε</string>
     <string name="today_uv_subtitle">Δείκτης UV ανά ώρα</string>
+    <string name="today_uv_peak">Μέγιστο %1$d στις %2$s</string>
     <string name="today_uv_title">Δείκτης UV</string>
     <string name="today_wind_peak">Μέγιστο %1$d %2$s στις %3$s</string>
 </resources>

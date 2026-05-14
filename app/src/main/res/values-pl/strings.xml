@@ -660,7 +660,11 @@ is unchanged; only the displayed label localizes.
     <string name="today_sunshine_total_hours_minutes">%1$dg %2$dm słońca dziś</string>
     <string name="today_sunshine_total_hours_only">%1$dg słońca dziś</string>
     <string name="today_sunshine_total_minutes_only">%1$dm słońca dziś</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$dg %2$dm słońca wieczorem</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$dg słońca wieczorem</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$dm słońca wieczorem</string>
     <string name="today_uv_subtitle">Indeks UV na godzinę</string>
+    <string name="today_uv_peak">Szczyt %1$d o %2$s</string>
     <string name="today_uv_title">Indeks UV</string>
     <string name="today_wind_peak">Szczyt %1$d %2$s o %3$s</string>
 </resources>

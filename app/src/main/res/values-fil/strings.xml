@@ -636,7 +636,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm ng araw ngayon</string>
     <string name="today_sunshine_total_hours_only">%1$dh ng araw ngayon</string>
     <string name="today_sunshine_total_minutes_only">%1$dm ng araw ngayon</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$dh %2$dm ng araw ngayong gabi</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$dh ng araw ngayong gabi</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$dm ng araw ngayong gabi</string>
     <string name="today_uv_subtitle">UV index bawat oras</string>
+    <string name="today_uv_peak">Pinakamataas na %1$d sa %2$s</string>
     <string name="today_uv_title">UV index</string>
     <string name="today_wind_peak">Pinakamataas na %1$d %2$s sa %3$s</string>
 </resources>

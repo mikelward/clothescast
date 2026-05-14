@@ -474,7 +474,11 @@ they work correctly in both the single-band and range templates.
     <string name="today_sunshine_total_hours_minutes">%1$d س %2$d د من الشمس اليوم</string>
     <string name="today_sunshine_total_hours_only">%1$d س من الشمس اليوم</string>
     <string name="today_sunshine_total_minutes_only">%1$d د من الشمس اليوم</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$d س %2$d د من الشمس الليلة</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$d س من الشمس الليلة</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$d د من الشمس الليلة</string>
     <string name="today_uv_subtitle">مؤشر الأشعة فوق البنفسجية لكل ساعة</string>
+    <string name="today_uv_peak">الذروة %1$d الساعة %2$s</string>
     <string name="today_uv_title">مؤشر الأشعة فوق البنفسجية</string>
     <string name="today_wind_peak">الذروة %1$d %2$s الساعة %3$s</string>
     <string name="settings_region_language_en_us">الإنجليزية (الولايات المتحدة)</string>

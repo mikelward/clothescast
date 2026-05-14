@@ -662,7 +662,11 @@ the displayed label localizes.
     <string name="today_sunshine_total_hours_minutes">%1$du %2$dm zon vandaag</string>
     <string name="today_sunshine_total_hours_only">%1$du zon vandaag</string>
     <string name="today_sunshine_total_minutes_only">%1$dm zon vandaag</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$du %2$dm zon vanavond</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$du zon vanavond</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$dm zon vanavond</string>
     <string name="today_uv_subtitle">UV-index per uur</string>
+    <string name="today_uv_peak">Piek %1$d om %2$s</string>
     <string name="today_uv_title">UV-index</string>
     <string name="today_wind_peak">Piek %1$d %2$s om %3$s</string>
 </resources>

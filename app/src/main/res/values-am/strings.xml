@@ -444,7 +444,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_sunshine_total_hours_minutes">ዛሬ %1$d ሰ %2$d ደ ፀሐይ</string>
     <string name="today_sunshine_total_hours_only">ዛሬ %1$d ሰዓት ፀሐይ</string>
     <string name="today_sunshine_total_minutes_only">ዛሬ %1$d ደቂቃ ፀሐይ</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">ዛሬ ምሽት %1$d ሰ %2$d ደ ፀሐይ</string>
+    <string name="today_sunshine_total_hours_only_tonight">ዛሬ ምሽት %1$d ሰዓት ፀሐይ</string>
+    <string name="today_sunshine_total_minutes_only_tonight">ዛሬ ምሽት %1$d ደቂቃ ፀሐይ</string>
     <string name="today_uv_subtitle">UV ጠቋሚ በሰዓት</string>
+    <string name="today_uv_peak">ከፍተኛ %1$d በ %2$s</string>
     <string name="today_uv_title">UV ጠቋሚ</string>
     <string name="today_wind_peak">ከፍተኛ %1$d %2$s በ %3$s</string>
     <string name="settings_region_language_en_us">እንግሊዝኛ (አሜሪካ)</string>

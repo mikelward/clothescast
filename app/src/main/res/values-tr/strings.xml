@@ -595,7 +595,11 @@ displayed label localizes.
     <string name="today_sunshine_total_hours_minutes">Bugün %1$d sa %2$d dk güneş</string>
     <string name="today_sunshine_total_hours_only">Bugün %1$d sa güneş</string>
     <string name="today_sunshine_total_minutes_only">Bugün %1$d dk güneş</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">Bu gece %1$d sa %2$d dk güneş</string>
+    <string name="today_sunshine_total_hours_only_tonight">Bu gece %1$d sa güneş</string>
+    <string name="today_sunshine_total_minutes_only_tonight">Bu gece %1$d dk güneş</string>
     <string name="today_uv_subtitle">Saate göre UV endeksi</string>
+    <string name="today_uv_peak">Tepe %1$d, saat %2$s</string>
     <string name="today_uv_title">UV endeksi</string>
     <string name="today_wind_peak">Tepe %1$d %2$s, saat %3$s</string>
 </resources>

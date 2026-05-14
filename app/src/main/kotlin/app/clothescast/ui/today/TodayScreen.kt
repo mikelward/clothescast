@@ -1112,20 +1112,8 @@ internal fun ConfidenceChip(
                 // say "Forecasters disagree…" with no explanation on a precip-
                 // only LOW day. Surface the rain disagreement alongside the
                 // feels-like hint whenever it crosses the same HIGH/MEDIUM
-                // boundary the tier-picker uses
-                // (PRECIP_HIGH_AGREEMENT_PP in MultiModelConfidenceFetcher).
-                //
-                // TODO(shared-confidence-thresholds): hoist
-                //   PRECIP_HIGH_AGREEMENT_PP / TEMP_HIGH_AGREEMENT_C and the
-                //   MEDIUM siblings out of MultiModelConfidenceFetcher's
-                //   internal companion (`:core:data`) into a shared home in
-                //   `:core:domain` — e.g. a ConfidenceInfo companion or a
-                //   ConfidenceThresholds object — so this chip can reference
-                //   the same constant the tier-picker uses instead of
-                //   hardcoding 15.0 here. Currently a drift risk: change one
-                //   without changing the other and the chip's precip line
-                //   stops aligning with the HIGH/MEDIUM boundary.
-                if (info.precipSpreadPp >= 15.0) {
+                // boundary the tier-picker uses.
+                if (info.precipSpreadPp >= ConfidenceInfo.PRECIP_HIGH_AGREEMENT_PP) {
                     Text(
                         text = stringResource(
                             R.string.today_confidence_precip_spread,

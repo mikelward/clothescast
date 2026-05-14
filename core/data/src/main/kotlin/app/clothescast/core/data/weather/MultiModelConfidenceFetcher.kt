@@ -214,9 +214,11 @@ internal class MultiModelConfidenceFetcher(
         val precipSpread = precips.max() - precips.min()
 
         val level = when {
-            tempSpread <= TEMP_HIGH_AGREEMENT_C && precipSpread <= PRECIP_HIGH_AGREEMENT_PP ->
+            tempSpread <= ConfidenceInfo.TEMP_HIGH_AGREEMENT_C &&
+                precipSpread <= ConfidenceInfo.PRECIP_HIGH_AGREEMENT_PP ->
                 ForecastConfidence.HIGH
-            tempSpread <= TEMP_MEDIUM_AGREEMENT_C && precipSpread <= PRECIP_MEDIUM_AGREEMENT_PP ->
+            tempSpread <= ConfidenceInfo.TEMP_MEDIUM_AGREEMENT_C &&
+                precipSpread <= ConfidenceInfo.PRECIP_MEDIUM_AGREEMENT_PP ->
                 ForecastConfidence.MEDIUM
             else -> ForecastConfidence.LOW
         }
@@ -240,14 +242,6 @@ internal class MultiModelConfidenceFetcher(
         // Three models with global coverage so the spread is meaningful regardless of
         // where the user is. Could be made user-tunable later (MODELS.md idea).
         val DEFAULT_MODELS = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless")
-
-        // Thresholds are deliberate first-pass guesses; refine with real data.
-        // Both temp and precip have to clear the bar for HIGH; either dropping
-        // moves us down a tier.
-        internal const val TEMP_HIGH_AGREEMENT_C = 1.5
-        internal const val TEMP_MEDIUM_AGREEMENT_C = 3.0
-        internal const val PRECIP_HIGH_AGREEMENT_PP = 15.0
-        internal const val PRECIP_MEDIUM_AGREEMENT_PP = 30.0
     }
 }
 

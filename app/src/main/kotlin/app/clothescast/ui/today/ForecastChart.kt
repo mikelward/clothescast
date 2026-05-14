@@ -134,7 +134,12 @@ fun ForecastChart(
         if (showFeelsLike) { h -> h.feelsLikeC } else { h -> h.temperatureC }
 
     val producer = remember { CartesianChartModelProducer() }
-    LaunchedEffect(hourly, temperatureUnit, showFeelsLike, visibleModels) {
+    // Key on [overlays] (the underlying map) rather than [visibleModels] (just
+    // the ID list) so a refresh that updates per-model values while keeping
+    // the same model IDs still re-emits the series. [showModelSpread] is
+    // included separately so flipping the toggle on/off re-fires the effect
+    // even when [overlays] hasn't changed.
+    LaunchedEffect(hourly, temperatureUnit, showFeelsLike, overlays, showModelSpread) {
         producer.runTransaction {
             lineSeries {
                 // Overlays first so they render *under* the main blended line.

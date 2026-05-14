@@ -13,6 +13,19 @@ if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
 fi
 
 ANDROID_HOME="${ANDROID_HOME:-/opt/android-sdk}"
+# sdkmanager's LocalRepoLoaderImpl Files.walk()s the SDK root looking for
+# package.xml. If the root resolves to "/" (empty / relative ANDROID_HOME,
+# or a CWD-based fallback when the hook runs with cwd=/), the walk descends
+# into /proc and the JVM dies on /proc/self/task/<tid>/fd/<n>/... with
+# "Invalid argument" — exactly the failure we hit on a previous run. Refuse
+# anything but an absolute path so the walk always starts somewhere sane.
+case "$ANDROID_HOME" in
+  /*) ;;
+  *)
+    echo "ANDROID_HOME must be an absolute path, got: '$ANDROID_HOME'" >&2
+    exit 1
+    ;;
+esac
 ANDROID_SDK_ROOT="$ANDROID_HOME"
 CMDLINE_TOOLS_DIR="$ANDROID_HOME/cmdline-tools/latest"
 # Pinned to the version CI installs via android-actions/setup-android@v3.
@@ -64,20 +77,32 @@ fi
 export ANDROID_HOME ANDROID_SDK_ROOT
 export PATH="$CMDLINE_TOOLS_DIR/bin:$PATH"
 
+# Run sdkmanager from inside the SDK home so its cwd is a known-good
+# directory: any path resolution that falls back to cwd lands here, not
+# at "/" (where Files.walk recurses into /proc and crashes — see the
+# absolute-path guard above for the full failure mode).
+cd "$ANDROID_HOME"
+
+# Pass --sdk_root explicitly. ANDROID_HOME is exported above and sdkmanager
+# is documented to pick it up, but on at least one sandbox run the JVM
+# resolved the SDK location to "/" instead and walked /proc to its death.
+# Being explicit removes the ambiguity for ~no cost.
+SDK_ROOT_FLAG="--sdk_root=$ANDROID_HOME"
+
 # Accept every license prompt non-interactively. `printf | sdkmanager` would
 # trip `set -o pipefail` if sdkmanager closes stdin before consuming every
 # `y\n` (printf gets SIGPIPE, exits 141, pipeline fails — even though
 # sdkmanager itself succeeded). Disable pipefail just for this line and
 # read sdkmanager's exit code directly from PIPESTATUS.
 set +o pipefail
-printf 'y\n%.0s' $(seq 1 50) | sdkmanager --licenses >/dev/null
+printf 'y\n%.0s' $(seq 1 50) | sdkmanager "$SDK_ROOT_FLAG" --licenses >/dev/null
 license_rc=${PIPESTATUS[1]}
 set -o pipefail
 if [ "$license_rc" -ne 0 ]; then
   echo "sdkmanager --licenses failed (exit $license_rc)" >&2
   exit "$license_rc"
 fi
-sdkmanager --install "$PLATFORM" "$BUILD_TOOLS" "$PLATFORM_TOOLS" >/dev/null
+sdkmanager "$SDK_ROOT_FLAG" --install "$PLATFORM" "$BUILD_TOOLS" "$PLATFORM_TOOLS" >/dev/null
 
 persist_env
 echo "Android SDK ready at $ANDROID_HOME."

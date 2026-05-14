@@ -173,8 +173,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_confidence_high">اطمینان بالا — مدل‌های اصلی توافق دارند</string>
     <string name="today_confidence_medium">اطمینان متوسط</string>
     <string name="today_confidence_low">اطمینان پایین — پیش‌بینی‌ها با هم اختلاف دارند</string>
-    <string name="today_low_confidence_callout_title">پیش‌بینی‌ها اختلاف دارند</string>
-    <string name="today_low_confidence_callout_body">دمای محدوده %1$.1f°C و احتمال بارندگی %2$.0f%% در %3$d مدل متفاوت است.</string>
 
     <!-- Today — loading / error states -->
     <string name="today_working">در حال کار — در حال دریافت ClothesCast شما…</string>
@@ -272,9 +270,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_display_theme_system">پیروی از سیستم</string>
     <string name="settings_display_theme_light">روشن</string>
     <string name="settings_display_theme_dark">تیره</string>
-    <string name="settings_display_charts_title">نمودارها</string>
-    <string name="settings_display_model_spread_label">نمایش پراکندگی مدل در نمودارها</string>
-    <string name="settings_display_model_spread_description">پیش‌بینی ساعتی هر مدل آب‌وهوایی اصلی را روی نمودارهای دما و بارندگی همپوشانی می‌کند. برای تشخیص زمانی که پیش‌بینی نامطمئن است مفید است.</string>
 
     <!-- Settings — privacy -->
     <string name="settings_privacy_telemetry_title">گزارش‌های خرابی و استفاده</string>

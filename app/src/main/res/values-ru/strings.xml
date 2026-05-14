@@ -651,4 +651,27 @@ only the displayed label localizes.
     <string name="today_forecast_air_section_title">Температура воздуха</string>
     <string name="settings_default_bottom_title">Стандартный низ</string>
     <string name="settings_default_bottom_description">То, что мы предлагаем на главном экране, когда недостаточно тепло для шортов.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Палитра</string>
+    <string name="settings_display_palette_accessible">Доступная</string>
+    <string name="settings_display_palette_accessible_description">Палитра на основе Okabe-Ito, разработанная для различимости при дейтеранопии, протанопии и тританопии. Карточки достоверности используют голубой, нейтральный и янтарный вместо бирюзового, нейтрального и красного.</string>
+    <string name="settings_display_palette_rainbow">Радуга</string>
+    <string name="settings_display_palette_rainbow_description">Розовые, оранжевые и зелёные линии графиков с карточками достоверности Material бирюзово/красного цвета. По умолчанию.</string>
+    <string name="settings_unit_auto">Авто</string>
+    <string name="today_cloud_range">Облачность %1$d\u2013%2$d%%</string>
+    <string name="today_confidence_precip_spread">Модели расходятся во мнении о дожде (Δ %1$.0f%% по %2$d моделям)</string>
+    <string name="today_confidence_tap_to_hide">Нажмите, чтобы скрыть прогнозы моделей</string>
+    <string name="today_confidence_tap_to_show">Нажмите, чтобы увидеть прогноз каждой модели</string>
+    <string name="today_humidity_range">Влажность %1$d\u2013%2$d%%</string>
+    <string name="today_solar_subtitle">Поверхностная облучённость (Вт/м²) по часам по моделям</string>
+    <string name="today_solar_title">Солнечная радиация</string>
+    <string name="today_sunshine_subtitle">Минуты солнца в час по моделям</string>
+    <string name="today_sunshine_title">Солнечное сияние</string>
+    <string name="today_sunshine_total_hours_minutes">%1$d ч %2$d мин солнца сегодня</string>
+    <string name="today_sunshine_total_hours_only">%1$d ч солнца сегодня</string>
+    <string name="today_sunshine_total_minutes_only">%1$d мин солнца сегодня</string>
+    <string name="today_uv_subtitle">УФ-индекс по часам по моделям</string>
+    <string name="today_uv_title">УФ-индекс</string>
+    <string name="today_wind_peak">Максимум %1$d %2$s в %3$s</string>
 </resources>

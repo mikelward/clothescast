@@ -183,8 +183,6 @@ they work correctly in both the single-band and range templates.
     <string name="today_confidence_high">ثقة عالية — تتفق النماذج الرئيسية</string>
     <string name="today_confidence_medium">ثقة متوسطة</string>
     <string name="today_confidence_low">ثقة منخفضة — تتباين التوقعات</string>
-    <string name="today_low_confidence_callout_title">التوقعات متباينة</string>
-    <string name="today_low_confidence_callout_body">يتراوح نطاق درجات الحرارة بـ %1$.1f°C واحتمالية الأمطار بـ %2$.0f%% عبر %3$d نماذج.</string>
 
     <!-- Today — loading / error states -->
     <string name="today_working">جارٍ العمل — يتم جلب ClothesCast…</string>
@@ -277,9 +275,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_display_theme_system">اتبع النظام</string>
     <string name="settings_display_theme_light">فاتح</string>
     <string name="settings_display_theme_dark">داكن</string>
-    <string name="settings_display_charts_title">الرسوم البيانية</string>
-    <string name="settings_display_model_spread_label">إظهار انتشار النماذج في الرسوم البيانية</string>
-    <string name="settings_display_model_spread_description">يعرض التوقعات الساعية لكل نموذج طقس رئيسي على رسوم درجات الحرارة والأمطار. مفيد للكشف عن حالات عدم اليقين في التوقعات.</string>
 
     <!-- Settings — location subtitles -->
     <string name="settings_root_location_subtitle">الكشف التلقائي أو اختيار مدينة</string>

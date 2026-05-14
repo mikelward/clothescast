@@ -694,4 +694,26 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_forecast_air_section_title">Température de l\'air</string>
     <string name="settings_default_bottom_title">Bas standard</string>
     <string name="settings_default_bottom_description">Ce que nous suggérons sur l\'écran d\'accueil quand il ne fait pas assez chaud pour les shorts.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Palette</string>
+    <string name="settings_display_palette_accessible">Accessible</string>
+    <string name="settings_display_palette_accessible_description">Une palette inspirée d\'Okabe-Ito, conçue pour rester distinguable en cas de deutéranopie, protanopie et tritanopie. Les cartes de confiance utilisent bleu ciel, neutre et ambre au lieu de sarcelle, neutre et rouge.</string>
+    <string name="settings_display_palette_rainbow">Arc-en-ciel</string>
+    <string name="settings_display_palette_rainbow_description">Lignes de graphique roses, oranges et vertes avec des cartes de confiance sarcelle/rouge Material. Par défaut.</string>
+    <string name="settings_unit_auto">Auto</string>
+    <string name="today_cloud_range">Nuages %1$d\u2013%2$d%%</string>
+    <string name="today_confidence_tap_to_hide">Appuyer pour masquer les prévisions par modèle</string>
+    <string name="today_confidence_tap_to_show">Appuyer pour voir la prévision de chaque modèle</string>
+    <string name="today_humidity_range">Humidité %1$d\u2013%2$d%%</string>
+    <string name="today_solar_subtitle">Irradiance de surface (W/m²) par heure par modèle</string>
+    <string name="today_solar_title">Rayonnement solaire</string>
+    <string name="today_sunshine_subtitle">Minutes de soleil par heure par modèle</string>
+    <string name="today_sunshine_title">Ensoleillement</string>
+    <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm de soleil aujourd\'hui</string>
+    <string name="today_sunshine_total_hours_only">%1$dh de soleil aujourd\'hui</string>
+    <string name="today_sunshine_total_minutes_only">%1$dm de soleil aujourd\'hui</string>
+    <string name="today_uv_subtitle">Indice UV par heure par modèle</string>
+    <string name="today_uv_title">Indice UV</string>
+    <string name="today_wind_peak">Pointe %1$d %2$s à %3$s</string>
 </resources>

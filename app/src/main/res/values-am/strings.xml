@@ -117,8 +117,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_confidence_high">ከፍተኛ እምነት — ዋና ሞዴሎቹ ይስማማሉ</string>
     <string name="today_confidence_medium">መካከለኛ እምነት</string>
     <string name="today_confidence_low">ዝቅተኛ እምነት — ትንበያዎቹ ይለያያሉ</string>
-    <string name="today_low_confidence_callout_title">ትንበያዎቹ ይለያያሉ</string>
-    <string name="today_low_confidence_callout_body">የሙቀት ልዩነት %1$.1f°C ሲሆን የዝናብ ዕድል ልዩነት %2$.0f%% ነው በ%3$d ሞዴሎቹ።</string>
 
     <!-- Today screen states -->
     <string name="today_working">እየሰራ ነው — ClothesCast እያምጣ ነው…</string>
@@ -217,9 +215,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_theme_system">ስርዓቱን ተከተል</string>
     <string name="settings_display_theme_light">ብርሃን</string>
     <string name="settings_display_theme_dark">ጨለማ</string>
-    <string name="settings_display_charts_title">ቻርቶች</string>
-    <string name="settings_display_model_spread_label">በቻርቶቹ ላይ የሞዴል ልዩነት አሳይ</string>
-    <string name="settings_display_model_spread_description">እያንዳንዱ ዋና የአየር ሁኔታ ሞዴል ሰዓታዊ ትንበያ በሙቀት እና ዝናብ ቻርቶቹ ላይ ያሳያል። ትንበያው ዕርግጠኛ ባልሆነ ጊዜ ለማወቅ ጠቃሚ ነው።</string>
 
     <!-- Settings — privacy -->
     <string name="settings_privacy_telemetry_title">ስህተት + አጠቃቀም ሪፖርቶች</string>

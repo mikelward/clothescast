@@ -718,4 +718,26 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_forecast_air_section_title">Lufttemperatur</string>
     <string name="settings_default_bottom_title">Standard-Unterteil</string>
     <string name="settings_default_bottom_description">Was wir auf dem Startbildschirm vorschlagen, wenn es nicht warm genug für Shorts ist.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Farbpalette</string>
+    <string name="settings_display_palette_accessible">Barrierefrei</string>
+    <string name="settings_display_palette_accessible_description">Eine an Okabe-Ito angelehnte Palette, die bei Deuteranopie, Protanopie und Tritanopie unterscheidbar bleibt. Konfidenz-Karten verwenden Himmelblau, Neutral und Bernstein statt Türkis, Neutral und Rot.</string>
+    <string name="settings_display_palette_rainbow">Regenbogen</string>
+    <string name="settings_display_palette_rainbow_description">Pinke, orange und grüne Diagrammlinien sowie türkis/rote Konfidenz-Karten. Standard.</string>
+    <string name="settings_unit_auto">Auto</string>
+    <string name="today_cloud_range">Bewölkung %1$d\u2013%2$d%%</string>
+    <string name="today_confidence_tap_to_hide">Tippen zum Ausblenden der Modellvorhersagen</string>
+    <string name="today_confidence_tap_to_show">Tippen für die Vorhersage je Modell</string>
+    <string name="today_humidity_range">Luftfeuchtigkeit %1$d\u2013%2$d%%</string>
+    <string name="today_solar_subtitle">Oberflächenstrahlung (W/m²) pro Stunde je Modell</string>
+    <string name="today_solar_title">Sonneneinstrahlung</string>
+    <string name="today_sunshine_subtitle">Sonnenstunden pro Stunde je Modell</string>
+    <string name="today_sunshine_title">Sonnenschein</string>
+    <string name="today_sunshine_total_hours_minutes">%1$d Std. %2$d Min. Sonne heute</string>
+    <string name="today_sunshine_total_hours_only">%1$d Std. Sonne heute</string>
+    <string name="today_sunshine_total_minutes_only">%1$d Min. Sonne heute</string>
+    <string name="today_uv_subtitle">UV-Index pro Stunde je Modell</string>
+    <string name="today_uv_title">UV-Index</string>
+    <string name="today_wind_peak">Spitze %1$d %2$s um %3$s</string>
 </resources>

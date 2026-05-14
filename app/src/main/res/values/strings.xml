@@ -24,21 +24,11 @@
          coordinates but no friendly city name (reverse geocoding returned
          nothing useful, or the device is on AOSP without a backend). The
          link still opens the user's maps app at the actual coords. -->
-    <!-- TODO(translations): today_location_unknown, today_retrying,
-         today_crash_banner_*, onboarding_subtitle_tv,
-         onboarding_location_grant_background,
-         onboarding_location_background_needed,
-         onboarding_location_enter_manual_hint, settings_root_display/
-         _location/_calendar (+ _subtitle variants),
-         settings_display_theme_*, settings_api_key_gemini_header,
-         settings_location_use_device_description/_detecting/
-         _background_banner_*/_manual_override*,
-         settings_tts_engine_description, today_update_available_*,
-         today_update_downloaded_* are translated for
+    <!-- TODO(translations): the strings below are translated for
          de/fr/es/it/pt-BR/pt-PT/hr/nl/pl/ru/sv/da/nb/fi/tr/cs/hu
          (de-AT/CH, fr-CA, es-MX inherit via Android's base-language
          fallback and need no separate entry), but still missing from
-         all other language trees:
+         the remaining language trees:
          et, lv, lt, sk, ro, bg, sl, sr, el, uk, ca, ar, he, fa,
          bn, ja, ko, zh-CN, zh-TW, th, vi, id, ms, fil, sw, am, sq,
          and any future additions. -->

@@ -586,4 +586,27 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_forecast_air_section_title">Levegő hőmérséklete</string>
     <string name="settings_default_bottom_title">Alapértelmezett alsó ruha</string>
     <string name="settings_default_bottom_description">Amit a főképernyőn javaslunk, ha nem elég meleg a rövidnadrághoz.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Paletta</string>
+    <string name="settings_display_palette_accessible">Akadálymentes</string>
+    <string name="settings_display_palette_accessible_description">Okabe-Ito alapú paletta, amelyet deuteranópia, protanópia és tritanópia esetén is megkülönböztethetőnek terveztek. A megbízhatósági kártyák kékeszöld, semleges és piros helyett égkéket, semlegeset és borostyánsárgát használnak.</string>
+    <string name="settings_display_palette_rainbow">Szivárvány</string>
+    <string name="settings_display_palette_rainbow_description">Rózsaszín, narancssárga és zöld diagramvonalak Material kékeszöld/piros megbízhatósági kártyákkal. Az alapértelmezett.</string>
+    <string name="settings_unit_auto">Auto</string>
+    <string name="today_cloud_range">Felhőzet %1$d\u2013%2$d%%</string>
+    <string name="today_confidence_precip_spread">A modellek nem értenek egyet a csapadékban (Δ %1$.0f%% %2$d modell között)</string>
+    <string name="today_confidence_tap_to_hide">Koppintson a modell-előrejelzések elrejtéséhez</string>
+    <string name="today_confidence_tap_to_show">Koppintson az egyes modellek előrejelzésének megtekintéséhez</string>
+    <string name="today_humidity_range">Páratartalom %1$d\u2013%2$d%%</string>
+    <string name="today_solar_subtitle">Felszíni besugárzás (W/m²) óránként modellenként</string>
+    <string name="today_solar_title">Napsugárzás</string>
+    <string name="today_sunshine_subtitle">Napsütéses percek óránként modellenként</string>
+    <string name="today_sunshine_title">Napsütés</string>
+    <string name="today_sunshine_total_hours_minutes">%1$d ó %2$d p napsütés ma</string>
+    <string name="today_sunshine_total_hours_only">%1$d ó napsütés ma</string>
+    <string name="today_sunshine_total_minutes_only">%1$d p napsütés ma</string>
+    <string name="today_uv_subtitle">UV-index óránként modellenként</string>
+    <string name="today_uv_title">UV-index</string>
+    <string name="today_wind_peak">Csúcs %1$d %2$s, %3$s-kor</string>
 </resources>

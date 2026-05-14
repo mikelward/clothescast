@@ -576,4 +576,27 @@ displayed label localizes.
     <string name="today_forecast_air_section_title">Ilman lämpötila</string>
     <string name="settings_default_bottom_title">Standardialaosa</string>
     <string name="settings_default_bottom_description">Mitä suosittelemme kotinäytöllä, kun ei ole tarpeeksi lämmintä shortseja varten.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Väripaletti</string>
+    <string name="settings_display_palette_accessible">Saavutettava</string>
+    <string name="settings_display_palette_accessible_description">Okabe-Ito-pohjainen paletti, joka on suunniteltu pysymään erotettavana deuteranopian, protanopian ja tritanopian yhteydessä. Luotettavuuskortit käyttävät taivaansinistä, neutraalia ja meripihkaa tealin, neutraalin ja punaisen sijaan.</string>
+    <string name="settings_display_palette_rainbow">Sateenkaari</string>
+    <string name="settings_display_palette_rainbow_description">Vaaleanpunaiset, oranssit ja vihreät kaavioviivat sekä Material teal/punaiset luotettavuuskortit. Oletus.</string>
+    <string name="settings_unit_auto">Auto</string>
+    <string name="today_cloud_range">Pilvisyys %1$d\u2013%2$d%%</string>
+    <string name="today_confidence_precip_spread">Mallit ovat eri mieltä sateesta (Δ %1$.0f%% %2$d mallin kesken)</string>
+    <string name="today_confidence_tap_to_hide">Napauta piilottaaksesi malliennusteet</string>
+    <string name="today_confidence_tap_to_show">Napauta nähdäksesi jokaisen mallin ennuste</string>
+    <string name="today_humidity_range">Kosteus %1$d\u2013%2$d%%</string>
+    <string name="today_solar_subtitle">Pinnan säteilyvoimakkuus (W/m²) tunnissa per malli</string>
+    <string name="today_solar_title">Aurinkolämpösäteily</string>
+    <string name="today_sunshine_subtitle">Aurinkoisia minuutteja tunnissa per malli</string>
+    <string name="today_sunshine_title">Aurinkopaiste</string>
+    <string name="today_sunshine_total_hours_minutes">%1$d h %2$d min aurinkoa tänään</string>
+    <string name="today_sunshine_total_hours_only">%1$d h aurinkoa tänään</string>
+    <string name="today_sunshine_total_minutes_only">%1$d min aurinkoa tänään</string>
+    <string name="today_uv_subtitle">UV-indeksi tunnissa per malli</string>
+    <string name="today_uv_title">UV-indeksi</string>
+    <string name="today_wind_peak">Huippuarvo %1$d %2$s klo %3$s</string>
 </resources>

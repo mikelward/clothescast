@@ -179,8 +179,6 @@ standard in Israeli digital communication.
     <string name="today_confidence_high">אמון גבוה — מודלים עיקריים מסכימים</string>
     <string name="today_confidence_medium">אמון בינוני</string>
     <string name="today_confidence_low">אמון נמוך — תחזיות אינן מסכימות</string>
-    <string name="today_low_confidence_callout_title">התחזיות חלוקות</string>
-    <string name="today_low_confidence_callout_body">טווח הטמפרטורה משתנה ב-%1$.1f°C וסיכוי לגשם ב-%2$.0f%% על פני %3$d מודלים.</string>
 
     <!-- Today — loading / error states -->
     <string name="today_working">עובד/ת — מוריד/ת את ClothesCast שלך…</string>
@@ -278,9 +276,6 @@ standard in Israeli digital communication.
     <string name="settings_display_theme_system">עקוב/י אחר המערכת</string>
     <string name="settings_display_theme_light">בהיר</string>
     <string name="settings_display_theme_dark">כהה</string>
-    <string name="settings_display_charts_title">גרפים</string>
-    <string name="settings_display_model_spread_label">הצג/י פיזור מודלים בגרפים</string>
-    <string name="settings_display_model_spread_description">מציג שכבת-על של התחזית השעתית של כל מודל מזג אוויר עיקרי על גרפי הטמפרטורה והגשם. שימושי לזיהוי אי-ודאות בתחזית.</string>
 
     <!-- Settings — privacy / telemetry -->
     <string name="settings_privacy_telemetry_title">דוחות קריסה ושימוש</string>

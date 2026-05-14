@@ -583,4 +583,27 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_forecast_air_section_title">Teplota vzduchu</string>
     <string name="settings_default_bottom_title">Standardní spodní díl</string>
     <string name="settings_default_bottom_description">Co doporučujeme na domovské obrazovce, když není dost teplo na šortky.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Paleta</string>
+    <string name="settings_display_palette_accessible">Přístupná</string>
+    <string name="settings_display_palette_accessible_description">Paleta odvozená od Okabe-Ito, navržená tak, aby zůstala rozlišitelná při deuteranopii, protanopii a tritanopii. Karty spolehlivosti používají nebeskou modrou, neutrální a jantarovou místo tyrkysové, neutrální a červené.</string>
+    <string name="settings_display_palette_rainbow">Duha</string>
+    <string name="settings_display_palette_rainbow_description">Růžové, oranžové a zelené linky grafů s tyrkysovými/červenými kartami spolehlivosti Material. Výchozí.</string>
+    <string name="settings_unit_auto">Auto</string>
+    <string name="today_cloud_range">Oblačnost %1$d\u2013%2$d%%</string>
+    <string name="today_confidence_precip_spread">Modely se neshodují na srážkách (Δ %1$.0f%% pro %2$d modely)</string>
+    <string name="today_confidence_tap_to_hide">Klepnutím skryjete předpovědi modelů</string>
+    <string name="today_confidence_tap_to_show">Klepnutím zobrazíte předpověď každého modelu</string>
+    <string name="today_humidity_range">Vlhkost %1$d\u2013%2$d%%</string>
+    <string name="today_solar_subtitle">Povrchová ozářenost (W/m²) za hodinu na model</string>
+    <string name="today_solar_title">Sluneční záření</string>
+    <string name="today_sunshine_subtitle">Minuty slunce za hodinu na model</string>
+    <string name="today_sunshine_title">Sluneční svit</string>
+    <string name="today_sunshine_total_hours_minutes">%1$d hod %2$d min slunce dnes</string>
+    <string name="today_sunshine_total_hours_only">%1$d hod slunce dnes</string>
+    <string name="today_sunshine_total_minutes_only">%1$d min slunce dnes</string>
+    <string name="today_uv_subtitle">UV index za hodinu na model</string>
+    <string name="today_uv_title">UV index</string>
+    <string name="today_wind_peak">Vrchol %1$d %2$s v %3$s</string>
 </resources>

@@ -723,4 +723,27 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_forecast_air_section_title">Temperatura do ar</string>
     <string name="settings_default_bottom_title">Parte inferior padrão</string>
     <string name="settings_default_bottom_description">O que sugerimos no ecrã inicial quando não está quente o suficiente para calções.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Paleta</string>
+    <string name="settings_display_palette_accessible">Acessível</string>
+    <string name="settings_display_palette_accessible_description">Uma paleta derivada de Okabe-Ito, concebida para permanecer distinguível em deuteranopia, protanopia e tritanopia. Os cartões de confiança utilizam azul-céu, neutro e âmbar em vez de verde-azulado, neutro e vermelho.</string>
+    <string name="settings_display_palette_rainbow">Arco-íris</string>
+    <string name="settings_display_palette_rainbow_description">Linhas de gráfico rosa, cor-de-laranja e verde com cartões de confiança Material verde-azulado/vermelho. A predefinição.</string>
+    <string name="settings_unit_auto">Auto</string>
+    <string name="today_cloud_range">Nuvens %1$d\u2013%2$d%%</string>
+    <string name="today_confidence_precip_spread">Os modelos discordam sobre chuva (Δ %1$.0f%% em %2$d modelos)</string>
+    <string name="today_confidence_tap_to_hide">Toque para ocultar as previsões por modelo</string>
+    <string name="today_confidence_tap_to_show">Toque para ver a previsão de cada modelo</string>
+    <string name="today_humidity_range">Humidade %1$d\u2013%2$d%%</string>
+    <string name="today_solar_subtitle">Irradiância superficial (W/m²) por hora por modelo</string>
+    <string name="today_solar_title">Radiação solar</string>
+    <string name="today_sunshine_subtitle">Minutos de sol por hora por modelo</string>
+    <string name="today_sunshine_title">Insolação</string>
+    <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm de sol hoje</string>
+    <string name="today_sunshine_total_hours_only">%1$dh de sol hoje</string>
+    <string name="today_sunshine_total_minutes_only">%1$dm de sol hoje</string>
+    <string name="today_uv_subtitle">Índice UV por hora por modelo</string>
+    <string name="today_uv_title">Índice UV</string>
+    <string name="today_wind_peak">Pico de %1$d %2$s às %3$s</string>
 </resources>

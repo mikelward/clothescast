@@ -595,4 +595,27 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="today_forecast_air_section_title">Lufttemperatur</string>
     <string name="settings_default_bottom_title">Standard underdel</string>
     <string name="settings_default_bottom_description">Hva vi foreslår på startskjermen når det ikke er varmt nok for shorts.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Palett</string>
+    <string name="settings_display_palette_accessible">Tilgjengelig</string>
+    <string name="settings_display_palette_accessible_description">En Okabe-Ito-basert palett utformet for å forbli skillbar ved deuteranopi, protanopi og tritanopi. Tillitskorte bruker himmelblå, nøytral og rav i stedet for teal, nøytral og rød.</string>
+    <string name="settings_display_palette_rainbow">Regnbue</string>
+    <string name="settings_display_palette_rainbow_description">Rosa, oransje og grønne diagramlinjer med Material teal/røde tillitskort. Standard.</string>
+    <string name="settings_unit_auto">Auto</string>
+    <string name="today_cloud_range">Skydekke %1$d\u2013%2$d%%</string>
+    <string name="today_confidence_precip_spread">Modellene er uenige om nedbør (Δ %1$.0f%% på tvers av %2$d modeller)</string>
+    <string name="today_confidence_tap_to_hide">Trykk for å skjule modellprognoser</string>
+    <string name="today_confidence_tap_to_show">Trykk for å se hver modells prognose</string>
+    <string name="today_humidity_range">Luftfuktighet %1$d\u2013%2$d%%</string>
+    <string name="today_solar_subtitle">Overflateinnstråling (W/m²) per time per modell</string>
+    <string name="today_solar_title">Solinnstråling</string>
+    <string name="today_sunshine_subtitle">Minutter sol per time per modell</string>
+    <string name="today_sunshine_title">Solskinn</string>
+    <string name="today_sunshine_total_hours_minutes">%1$d t %2$d min sol i dag</string>
+    <string name="today_sunshine_total_hours_only">%1$d t sol i dag</string>
+    <string name="today_sunshine_total_minutes_only">%1$d min sol i dag</string>
+    <string name="today_uv_subtitle">UV-indeks per time per modell</string>
+    <string name="today_uv_title">UV-indeks</string>
+    <string name="today_wind_peak">Toppvind %1$d %2$s kl. %3$s</string>
 </resources>

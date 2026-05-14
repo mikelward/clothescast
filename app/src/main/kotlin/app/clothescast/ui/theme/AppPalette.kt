@@ -18,18 +18,26 @@ data class ConfidenceColors(val background: Color, val foreground: Color)
 
 /**
  * App-specific colour choices that aren't part of [ColorScheme] — the per-model
- * chart overlay colours and the confidence-tier chip backgrounds. Material's
- * scheme doesn't extend cleanly to "I need three distinguishable overlay hues
- * for the consulted forecast models," so we carry our own palette alongside
- * the theme and provide it via [LocalAppPalette]. Callers in the
- * `app.clothescast.ui.today` package read [modelColors] for the chart line
- * fills and [confidence] for the chip / callout backgrounds — flipping between
- * [rainbowPalette] and [accessiblePalette] swaps every consumer in
- * lockstep.
+ * chart overlay colours, the blended "Combined" main-line colour, and the
+ * confidence-tier chip backgrounds. Material's scheme doesn't extend cleanly
+ * to "I need three distinguishable overlay hues for the consulted forecast
+ * models," so we carry our own palette alongside the theme and provide it via
+ * [LocalAppPalette]. Callers in the `app.clothescast.ui.today` package read
+ * [modelColors] for the chart line fills, [confidence] for the chip / callout
+ * backgrounds, and [mainLineColor] for the blended main line.
+ *
+ * [mainLineColor] is nullable: `null` means "fall back to
+ * `MaterialTheme.colorScheme.primary`," which keeps Rainbow and Accessible's
+ * existing behaviour. Palettes that need the Combined line to stand out
+ * against their own overlay hues (e.g. [highlighterPalette], whose cyan
+ * ICON line and the default theme primary are both blue) set this
+ * explicitly. Read it via [AppTheme.mainLineColor] rather than dereferencing
+ * directly — that helper resolves the fallback for you.
  */
 data class AppPalette(
     val modelColors: Map<String, Color>,
     val confidence: Map<ForecastConfidence, ConfidenceColors>,
+    val mainLineColor: Color? = null,
 )
 
 /**
@@ -124,6 +132,126 @@ internal fun accessiblePalette(darkTheme: Boolean): AppPalette = AppPalette(
 )
 
 /**
+ * "Highlighter" — a neon magenta / yellow / cyan triad for users who want a
+ * chart that's *obviously* different from Rainbow at a glance. The vibe is
+ * arcade-cabinet / Tron-readout: saturated hues that look like they're
+ * glowing rather than printed.
+ *
+ * Why these three specifically:
+ *
+ *  - **Hot magenta** (`#FF2D95`) sits on the red end of the wheel far enough
+ *    from Rainbow's pink that the two don't read as the same hue family on a
+ *    phone screen.
+ *  - **Highlighter yellow** (`#FFEB3B`) is the bright slot in the classic
+ *    CMY (Tron-canon) trio. The trade-off is tritanopia: cyan-vs-yellow
+ *    collapses on the blue-yellow CVD axis. Tritanopia affects <0.01% of
+ *    males, so the deutan / protan / "no CVD" majority still gets the
+ *    cleanest distinction.
+ *  - **Electric cyan** (`#00E5FF`) is the canonical "Tron blue", and the
+ *    high luminance keeps it distinct from magenta and yellow.
+ *  - best_match stays neutral grey, same reasoning as the other palettes —
+ *    it's an Open-Meteo auto-selection comparison, not a consulted model.
+ *
+ * **Theme-aware luminance.** Neon hues need a dark backdrop to read — the
+ * full-saturation set above lands at ~1.2:1 contrast against the light
+ * theme's near-white `surfaceContainer` card, which makes the yellow and
+ * cyan lines practically invisible. The dark theme keeps the full neon; the
+ * light theme uses deeper saturated counterparts that clear WCAG 1.4.11's
+ * 3:1 minimum for graphical objects while staying in the same hue families:
+ *
+ *  - light ECMWF `#FF2D95` (3.2:1) — same as dark, already passes
+ *  - light GFS    `#B58A00` (3.5:1) — saturated dark amber
+ *  - light ICON   `#0277BD` (3.8:1) — deep electric blue
+ *  - light best   `#2A2A2A`         — neutral dark grey
+ *
+ * **CVD coverage** (applies to both light and dark variants, since the hue
+ * families are preserved):
+ *
+ *  - Deuteranopia / protanopia (~7% of males): magenta + yellow + cyan stay
+ *    distinguishable — magenta has a strong blue component, yellow lies on
+ *    the high-luminance red-green centroid, cyan sits in blue-yellow space.
+ *    No red-vs-green pair to collapse.
+ *  - Tritanopia (<0.01% of males): cyan + yellow is the textbook
+ *    blue-yellow collision and these two can read as similar. Accepted
+ *    trade-off — Accessible and the future tritan-safe variants exist for
+ *    that use case.
+ *
+ * **Combined main line.** The blended Combined line normally renders in
+ * `MaterialTheme.colorScheme.primary` (a blue), which on Highlighter stacks
+ * against both the cyan ICON line and the charcoal Auto best_match. We
+ * route it through [AppPalette.mainLineColor] so this palette can pick a
+ * distinct hue: deep purple on light, pure white on dark.
+ *
+ * **Confidence backgrounds** are hand-picked to match the neon mood:
+ * pale-cyan HIGH, neutral MEDIUM, pale-magenta LOW, following the same
+ * light-and-dark inversion contract as [accessiblePalette]. Hard-coded so
+ * dynamic colour on Android 12+ can't dilute the look.
+ */
+internal fun highlighterPalette(darkTheme: Boolean): AppPalette = AppPalette(
+    modelColors = if (darkTheme) {
+        mapOf(
+            // Full neon on dark — chart card is dark, every line glows.
+            "ecmwf_ifs04" to Color(0xFFFF2D95),
+            "gfs_seamless" to Color(0xFFFFEB3B),
+            "icon_seamless" to Color(0xFF00E5FF),
+            BEST_MATCH_MODEL_ID to Color(0xFFEAEAEA),
+        )
+    } else {
+        mapOf(
+            // Same hue families as the dark set, darkened just enough to
+            // clear 3:1 contrast (WCAG 1.4.11) against the light
+            // surfaceContainer card. Magenta already passes at full neon
+            // (luminance ≈ 0.25); yellow and cyan don't, so they drop to
+            // dark amber and deep electric blue. The palette still reads
+            // as "neon-ish" because saturation stays high — only luminance
+            // shifts.
+            "ecmwf_ifs04" to Color(0xFFFF2D95),
+            "gfs_seamless" to Color(0xFFB58A00),
+            "icon_seamless" to Color(0xFF0277BD),
+            BEST_MATCH_MODEL_ID to Color(0xFF2A2A2A),
+        )
+    },
+    // The Combined main line lives outside the model-overlay trio, but it
+    // sits on the same chart and needs to read as distinct from both the
+    // cyan ICON line and the charcoal Auto best_match line. Material's
+    // theme primary (a blue) collapses against either, so we route it
+    // through the palette: deep purple on light theme, bright white on
+    // dark.
+    mainLineColor = if (darkTheme) Color(0xFFFFFFFF) else Color(0xFF6200EA),
+    confidence = if (darkTheme) {
+        mapOf(
+            ForecastConfidence.HIGH to ConfidenceColors(
+                background = Color(0xFF015564),
+                foreground = Color(0xFFC9F0F6),
+            ),
+            ForecastConfidence.MEDIUM to ConfidenceColors(
+                background = Color(0xFF3A3A3F),
+                foreground = Color(0xFFE3E3E6),
+            ),
+            ForecastConfidence.LOW to ConfidenceColors(
+                background = Color(0xFF7A1448),
+                foreground = Color(0xFFF8C9E1),
+            ),
+        )
+    } else {
+        mapOf(
+            ForecastConfidence.HIGH to ConfidenceColors(
+                background = Color(0xFFC9F0F6),
+                foreground = Color(0xFF015564),
+            ),
+            ForecastConfidence.MEDIUM to ConfidenceColors(
+                background = Color(0xFFE5E5E8),
+                foreground = Color(0xFF1B1C1F),
+            ),
+            ForecastConfidence.LOW to ConfidenceColors(
+                background = Color(0xFFF8C9E1),
+                foreground = Color(0xFF7A1448),
+            ),
+        )
+    },
+)
+
+/**
  * CompositionLocal carrying the active [AppPalette]. [ClothesCastTheme]
  * provides it; downstream composables read it via [LocalAppPalette.current]
  * (or the [AppTheme.palette] shorthand). The fallback default isn't user
@@ -141,6 +269,20 @@ object AppTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalAppPalette.current
+
+    /**
+     * Effective blended-main-line colour for the current palette: the
+     * palette's [AppPalette.mainLineColor] when set, otherwise Material's
+     * scheme primary. Use this in chart wrappers instead of reading
+     * `MaterialTheme.colorScheme.primary` directly so palettes can override
+     * the main line when their model-overlay hues already include the
+     * primary's blue.
+     */
+    val mainLineColor: Color
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalAppPalette.current.mainLineColor
+            ?: androidx.compose.material3.MaterialTheme.colorScheme.primary
 }
 
 /** Resolves the palette to provide given the active scheme and user pick. */
@@ -159,4 +301,5 @@ internal fun appPaletteFor(
 ): AppPalette = when (colorPalette) {
     ColorPalette.RAINBOW -> rainbowPalette(scheme)
     ColorPalette.ACCESSIBLE -> accessiblePalette(darkTheme)
+    ColorPalette.HIGHLIGHTER -> highlighterPalette(darkTheme)
 }

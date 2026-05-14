@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.ui.theme.AppTheme
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
@@ -140,7 +141,7 @@ internal fun PerModelDiagnosticCard(
             ModelSpreadLegend(
                 visibleModelIds = if (showOverlay) availableModels else emptyList(),
                 mainLine = MainLineLegend(
-                    color = MaterialTheme.colorScheme.primary,
+                    color = AppTheme.mainLineColor,
                     label = stringResource(R.string.today_chart_main_line_label),
                 ),
             )
@@ -168,7 +169,7 @@ private fun PerModelDiagnosticChart(
     overlayModels: List<String>,
     yAxis: YAxis,
 ) {
-    val mainLineColor = MaterialTheme.colorScheme.primary
+    val mainLineColor = AppTheme.mainLineColor
     val producer = remember { CartesianChartModelProducer() }
     LaunchedEffect(seriesByModel, overlayModels, mainLine) {
         producer.runTransaction {

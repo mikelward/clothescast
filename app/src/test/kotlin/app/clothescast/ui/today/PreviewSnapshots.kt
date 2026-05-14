@@ -364,6 +364,8 @@ class PreviewSnapshots {
     @Test fun precipitation_card_with_model_spread() = capture { PrecipitationCardWithModelSpreadPreview() }
     @Test fun forecast_card_with_model_spread_accessible() = capture { ForecastCardWithModelSpreadAccessiblePreview() }
     @Test fun precipitation_card_with_model_spread_accessible() = capture { PrecipitationCardWithModelSpreadAccessiblePreview() }
+    @Test fun forecast_card_with_model_spread_highlighter() = capture { ForecastCardWithModelSpreadHighlighterPreview() }
+    @Test fun precipitation_card_with_model_spread_highlighter() = capture { PrecipitationCardWithModelSpreadHighlighterPreview() }
     @Test fun wind_card_with_model_spread() = capture { WindCardWithModelSpreadPreview() }
     @Test fun wind_card_with_model_spread_mph() = capture { WindCardWithModelSpreadMphPreview() }
     @Test fun cloud_card_with_model_spread() = capture { CloudCardWithModelSpreadPreview() }

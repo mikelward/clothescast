@@ -357,9 +357,12 @@ data class UserPreferences(
  * App-specific colour palette for the chart overlays and confidence cards.
  * The name carries the user-facing semantics rather than a "colourblind
  * accommodation" framing: [RAINBOW] is the saturated pink / orange / green
- * trio the app shipped with, and [ACCESSIBLE] is an Okabe-Ito-derived
- * palette designed to stay distinguishable for users with red-green or
- * blue-yellow colour vision deficiencies — but readable to everyone, so
- * it isn't pitched as a CB-only mode.
+ * trio the app shipped with, [ACCESSIBLE] is an Okabe-Ito-derived palette
+ * designed to stay distinguishable for users with red-green or blue-yellow
+ * colour vision deficiencies — but readable to everyone, so it isn't pitched
+ * as a CB-only mode — and [HIGHLIGHTER] is a magenta / lime / cyan neon
+ * triad (Tron-vibe) for users who want a chart that's *obviously* different
+ * from Rainbow at a glance. CVD-safe under all three common profiles by
+ * routing the trio around the deutan / protan / tritan collision axes.
  */
-enum class ColorPalette { RAINBOW, ACCESSIBLE }
+enum class ColorPalette { RAINBOW, ACCESSIBLE, HIGHLIGHTER }

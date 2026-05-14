@@ -68,9 +68,11 @@ private fun themeModeLabel(mode: ThemeMode): Int = when (mode) {
 private fun colorPaletteLabel(palette: ColorPalette): Int = when (palette) {
     ColorPalette.RAINBOW -> R.string.settings_display_palette_rainbow
     ColorPalette.ACCESSIBLE -> R.string.settings_display_palette_accessible
+    ColorPalette.HIGHLIGHTER -> R.string.settings_display_palette_highlighter
 }
 
 private fun colorPaletteDescription(palette: ColorPalette): Int = when (palette) {
     ColorPalette.RAINBOW -> R.string.settings_display_palette_rainbow_description
     ColorPalette.ACCESSIBLE -> R.string.settings_display_palette_accessible_description
+    ColorPalette.HIGHLIGHTER -> R.string.settings_display_palette_highlighter_description
 }

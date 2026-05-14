@@ -2,7 +2,6 @@ package app.clothescast.ui.today
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -10,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.ui.theme.AppTheme
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
@@ -56,7 +56,7 @@ fun PrecipitationChart(
     } else {
         emptyList()
     }
-    val mainLineColor = MaterialTheme.colorScheme.primary
+    val mainLineColor = AppTheme.mainLineColor
 
     val producer = remember { CartesianChartModelProducer() }
     // Key on [overlays] (the underlying map) rather than [visibleModels] (just

@@ -708,4 +708,27 @@ label localises.
     <string name="today_forecast_air_section_title">氣溫</string>
     <string name="settings_default_bottom_title">預設下身</string>
     <string name="settings_default_bottom_description">當天氣不夠暖和、不適合穿短褲時，主畫面顯示的建議。</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">調色板</string>
+    <string name="settings_display_palette_accessible">無障礙</string>
+    <string name="settings_display_palette_accessible_description">基於 Okabe-Ito 的調色板，設計上在綠色弱視、紅色弱視和藍色弱視情況下仍可辨識。信心卡片使用天藍色、中性色和琥珀色，而非青色、中性色和紅色。</string>
+    <string name="settings_display_palette_rainbow">彩虹</string>
+    <string name="settings_display_palette_rainbow_description">粉紅、橙色和綠色圖表線條，以及 Material 青色/紅色信心卡片。預設值。</string>
+    <string name="settings_unit_auto">自動</string>
+    <string name="today_cloud_range">雲量 %1$d〜%2$d%%</string>
+    <string name="today_confidence_precip_spread">各模型對降水意見不一（Δ %1$.0f%%，共 %2$d 個模型）</string>
+    <string name="today_confidence_tap_to_hide">點擊隱藏模型預報</string>
+    <string name="today_confidence_tap_to_show">點擊查看各模型預報</string>
+    <string name="today_humidity_range">濕度 %1$d〜%2$d%%</string>
+    <string name="today_solar_subtitle">各模型每小時地表輻照度（W/m²）</string>
+    <string name="today_solar_title">太陽輻射</string>
+    <string name="today_sunshine_subtitle">各模型每小時的日照分鐘數</string>
+    <string name="today_sunshine_title">日照</string>
+    <string name="today_sunshine_total_hours_minutes">今日日照 %1$d小時%2$d分鐘</string>
+    <string name="today_sunshine_total_hours_only">今日日照 %1$d小時</string>
+    <string name="today_sunshine_total_minutes_only">今日日照 %1$d分鐘</string>
+    <string name="today_uv_subtitle">各模型每小時紫外線指數</string>
+    <string name="today_uv_title">紫外線指數</string>
+    <string name="today_wind_peak">最高 %1$d %2$s（%3$s）</string>
 </resources>

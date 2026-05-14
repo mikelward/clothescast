@@ -700,4 +700,27 @@ the displayed label localizes.
     <string name="today_forecast_air_section_title">気温</string>
     <string name="settings_default_bottom_title">標準ボトム</string>
     <string name="settings_default_bottom_description">ショートパンツには寒すぎる時に、ホーム画面でおすすめするもの。</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">カラーパレット</string>
+    <string name="settings_display_palette_accessible">アクセシブル</string>
+    <string name="settings_display_palette_accessible_description">第二色盲・第一色盲・第三色盲でも識別しやすいOkabe-Itoベースのパレット。信頼度カードはティール・ニュートラル・レッドの代わりにスカイブルー・ニュートラル・アンバーを使用。</string>
+    <string name="settings_display_palette_rainbow">レインボー</string>
+    <string name="settings_display_palette_rainbow_description">ピンク・オレンジ・グリーンのグラフ線とMaterialのティール/レッドの信頼度カード。デフォルト設定。</string>
+    <string name="settings_unit_auto">自動</string>
+    <string name="today_cloud_range">雲量 %1$d〜%2$d%%</string>
+    <string name="today_confidence_precip_spread">降水確率でモデル間に差あり（Δ %1$.0f%%、%2$dモデル間）</string>
+    <string name="today_confidence_tap_to_hide">タップしてモデル別の予報を非表示</string>
+    <string name="today_confidence_tap_to_show">タップして各モデルの予報を表示</string>
+    <string name="today_humidity_range">湿度 %1$d〜%2$d%%</string>
+    <string name="today_solar_subtitle">モデル別の地表面日射量（W/m²）、1時間ごと</string>
+    <string name="today_solar_title">日射量</string>
+    <string name="today_sunshine_subtitle">モデル別の1時間あたりの日照分数</string>
+    <string name="today_sunshine_title">日照時間</string>
+    <string name="today_sunshine_total_hours_minutes">本日の日照時間 %1$d時間%2$d分</string>
+    <string name="today_sunshine_total_hours_only">本日の日照時間 %1$d時間</string>
+    <string name="today_sunshine_total_minutes_only">本日の日照時間 %1$d分</string>
+    <string name="today_uv_subtitle">モデル別のUV指数、1時間ごと</string>
+    <string name="today_uv_title">UV指数</string>
+    <string name="today_wind_peak">最大 %1$d %2$s（%3$s）</string>
 </resources>

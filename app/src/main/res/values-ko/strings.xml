@@ -632,11 +632,11 @@ displayed label localizes.
 
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">풍속</string>
-    <string name="today_wind_subtitle">모델별 시간당 풍속 (%1$s)</string>
+    <string name="today_wind_subtitle">시간당 풍속 (%1$s)</string>
     <string name="today_cloud_title">구름량</string>
-    <string name="today_cloud_subtitle">모델별 시간당 전체 구름량 (%)</string>
+    <string name="today_cloud_subtitle">시간당 전체 구름량 (%)</string>
     <string name="today_humidity_title">습도</string>
-    <string name="today_humidity_subtitle">모델별 시간당 상대 습도 (%)</string>
+    <string name="today_humidity_subtitle">시간당 상대 습도 (%)</string>
 
     <!-- Low-confidence callout banner. -->
 
@@ -717,14 +717,14 @@ displayed label localizes.
     <string name="today_confidence_tap_to_hide">모델 예보를 숨기려면 탭하세요</string>
     <string name="today_confidence_tap_to_show">각 모델의 예보를 보려면 탭하세요</string>
     <string name="today_humidity_range">습도 %1$d〜%2$d%%</string>
-    <string name="today_solar_subtitle">모델별 시간당 지면 일사량 (W/m²)</string>
+    <string name="today_solar_subtitle">시간당 지면 일사량 (W/m²)</string>
     <string name="today_solar_title">태양 복사량</string>
-    <string name="today_sunshine_subtitle">모델별 시간당 햇빛 분</string>
+    <string name="today_sunshine_subtitle">시간당 햇빛 분</string>
     <string name="today_sunshine_title">일조 시간</string>
     <string name="today_sunshine_total_hours_minutes">오늘 햇빛 %1$d시간 %2$d분</string>
     <string name="today_sunshine_total_hours_only">오늘 햇빛 %1$d시간</string>
     <string name="today_sunshine_total_minutes_only">오늘 햇빛 %1$d분</string>
-    <string name="today_uv_subtitle">모델별 시간당 자외선 지수</string>
+    <string name="today_uv_subtitle">시간당 자외선 지수</string>
     <string name="today_uv_title">자외선 지수</string>
     <string name="today_wind_peak">최대 %1$d %2$s (%3$s)</string>
 </resources>

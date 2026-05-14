@@ -158,11 +158,11 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_factor_cloud_cover">mākoņu daudzums</string>
     <string name="today_factor_humidity">mitrums</string>
     <string name="today_wind_title">Vēja ātrums</string>
-    <string name="today_wind_subtitle">Vēja ātrums pēc modeļiem (%1$s) pa stundām</string>
+    <string name="today_wind_subtitle">Vēja ātrums (%1$s) pa stundām</string>
     <string name="today_cloud_title">Mākoņu daudzums</string>
-    <string name="today_cloud_subtitle">Kopējais mākoņu daudzums pēc modeļiem (%) pa stundām</string>
+    <string name="today_cloud_subtitle">Kopējais mākoņu daudzums (%) pa stundām</string>
     <string name="today_humidity_title">Mitrums</string>
-    <string name="today_humidity_subtitle">Relatīvais mitrums pēc modeļiem (%) pa stundām</string>
+    <string name="today_humidity_subtitle">Relatīvais mitrums (%) pa stundām</string>
     <string name="today_confidence_high">Augsta ticamība — galvenie modeļi saskan</string>
     <string name="today_confidence_medium">Vidēja ticamība</string>
     <string name="today_confidence_low">Zema ticamība — prognozes nesakrīt</string>
@@ -551,14 +551,14 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_confidence_tap_to_hide">Pieskarieties, lai paslēptu modeļu prognozes</string>
     <string name="today_confidence_tap_to_show">Pieskarieties, lai skatītu katra modeļa prognozi</string>
     <string name="today_humidity_range">Mitrums %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">Virsmas starojums (W/m²) stundā katrā modelī</string>
+    <string name="today_solar_subtitle">Virsmas starojums (W/m²) stundā</string>
     <string name="today_solar_title">Saules starojums</string>
-    <string name="today_sunshine_subtitle">Saules spīdēšanas minūtes stundā katrā modelī</string>
+    <string name="today_sunshine_subtitle">Saules spīdēšanas minūtes stundā</string>
     <string name="today_sunshine_title">Saules spīdēšana</string>
     <string name="today_sunshine_total_hours_minutes">%1$d st %2$d min saules šodien</string>
     <string name="today_sunshine_total_hours_only">%1$d st saules šodien</string>
     <string name="today_sunshine_total_minutes_only">%1$d min saules šodien</string>
-    <string name="today_uv_subtitle">UV indekss stundā katrā modelī</string>
+    <string name="today_uv_subtitle">UV indekss stundā</string>
     <string name="today_uv_title">UV indekss</string>
     <string name="today_wind_peak">Maksimums %1$d %2$s plkst. %3$s</string>
 </resources>

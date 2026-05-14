@@ -177,11 +177,11 @@ What is NOT overridden, by design:
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Скорост на вятъра</string>
-    <string name="today_wind_subtitle">Скорост на вятъра (%1$s) по часове за всеки модел</string>
+    <string name="today_wind_subtitle">Скорост на вятъра (%1$s) по часове</string>
     <string name="today_cloud_title">Облачност</string>
-    <string name="today_cloud_subtitle">Обща облачност (%) по часове за всеки модел</string>
+    <string name="today_cloud_subtitle">Обща облачност (%) по часове</string>
     <string name="today_humidity_title">Влажност</string>
-    <string name="today_humidity_subtitle">Относителна влажност (%) по часове за всеки модел</string>
+    <string name="today_humidity_subtitle">Относителна влажност (%) по часове</string>
 
     <!-- Confidence chip. -->
     <string name="today_confidence_high">Висока достоверност — основните модели са съгласни</string>
@@ -593,14 +593,14 @@ What is NOT overridden, by design:
     <string name="today_confidence_tap_to_hide">Докоснете, за да скриете прогнозите по модел</string>
     <string name="today_confidence_tap_to_show">Докоснете, за да видите прогнозата на всеки модел</string>
     <string name="today_humidity_range">Влажност %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">Повърхностна облъченост (W/m²) по часове по модели</string>
+    <string name="today_solar_subtitle">Повърхностна облъченост (W/m²) по часове</string>
     <string name="today_solar_title">Слънчева радиация</string>
-    <string name="today_sunshine_subtitle">Минути слънце на час по модели</string>
+    <string name="today_sunshine_subtitle">Минути слънце на час</string>
     <string name="today_sunshine_title">Слънчево греене</string>
     <string name="today_sunshine_total_hours_minutes">%1$d ч %2$d мин слънце днес</string>
     <string name="today_sunshine_total_hours_only">%1$d ч слънце днес</string>
     <string name="today_sunshine_total_minutes_only">%1$d мин слънце днес</string>
-    <string name="today_uv_subtitle">УВ индекс по часове по модели</string>
+    <string name="today_uv_subtitle">УВ индекс по часове</string>
     <string name="today_uv_title">УВ индекс</string>
     <string name="today_wind_peak">Максимум %1$d %2$s в %3$s</string>
 </resources>

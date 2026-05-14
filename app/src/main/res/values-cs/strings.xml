@@ -446,11 +446,11 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Rychlost větru</string>
-    <string name="today_wind_subtitle">Rychlost větru (%1$s) za hodinu podle modelu</string>
+    <string name="today_wind_subtitle">Rychlost větru (%1$s) za hodinu</string>
     <string name="today_cloud_title">Oblačnost</string>
-    <string name="today_cloud_subtitle">Celková oblačnost (%) za hodinu podle modelu</string>
+    <string name="today_cloud_subtitle">Celková oblačnost (%) za hodinu</string>
     <string name="today_humidity_title">Vlhkost vzduchu</string>
-    <string name="today_humidity_subtitle">Relativní vlhkost vzduchu (%) za hodinu podle modelu</string>
+    <string name="today_humidity_subtitle">Relativní vlhkost vzduchu (%) za hodinu</string>
 
     <!-- Low-confidence callout. -->
 
@@ -596,14 +596,14 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_confidence_tap_to_hide">Klepnutím skryjete předpovědi modelů</string>
     <string name="today_confidence_tap_to_show">Klepnutím zobrazíte předpověď každého modelu</string>
     <string name="today_humidity_range">Vlhkost %1$d\u2013%2$d%%</string>
-    <string name="today_solar_subtitle">Povrchová ozářenost (W/m²) za hodinu na model</string>
+    <string name="today_solar_subtitle">Povrchová ozářenost (W/m²) za hodinu</string>
     <string name="today_solar_title">Sluneční záření</string>
-    <string name="today_sunshine_subtitle">Minuty slunce za hodinu na model</string>
+    <string name="today_sunshine_subtitle">Minuty slunce za hodinu</string>
     <string name="today_sunshine_title">Sluneční svit</string>
     <string name="today_sunshine_total_hours_minutes">%1$d hod %2$d min slunce dnes</string>
     <string name="today_sunshine_total_hours_only">%1$d hod slunce dnes</string>
     <string name="today_sunshine_total_minutes_only">%1$d min slunce dnes</string>
-    <string name="today_uv_subtitle">UV index za hodinu na model</string>
+    <string name="today_uv_subtitle">UV index za hodinu</string>
     <string name="today_uv_title">UV index</string>
     <string name="today_wind_peak">Vrchol %1$d %2$s v %3$s</string>
 </resources>

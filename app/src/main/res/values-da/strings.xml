@@ -461,11 +461,11 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Vindhastighed</string>
-    <string name="today_wind_subtitle">Vindhastighed (%1$s) pr. time pr. model</string>
+    <string name="today_wind_subtitle">Vindhastighed (%1$s) pr. time</string>
     <string name="today_cloud_title">Skydække</string>
-    <string name="today_cloud_subtitle">Samlet skydække (%) pr. time pr. model</string>
+    <string name="today_cloud_subtitle">Samlet skydække (%) pr. time</string>
     <string name="today_humidity_title">Luftfugtighed</string>
-    <string name="today_humidity_subtitle">Relativ luftfugtighed (%) pr. time pr. model</string>
+    <string name="today_humidity_subtitle">Relativ luftfugtighed (%) pr. time</string>
 
     <!-- Low-confidence callout. -->
 
@@ -609,14 +609,14 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_confidence_tap_to_hide">Tryk for at skjule modelforudsigelser</string>
     <string name="today_confidence_tap_to_show">Tryk for at se hver models forudsigelse</string>
     <string name="today_humidity_range">Luftfugtighed %1$d\u2013%2$d%%</string>
-    <string name="today_solar_subtitle">Overfladeindstråling (W/m²) pr. time pr. model</string>
+    <string name="today_solar_subtitle">Overfladeindstråling (W/m²) pr. time</string>
     <string name="today_solar_title">Solindstråling</string>
-    <string name="today_sunshine_subtitle">Minutter sol pr. time pr. model</string>
+    <string name="today_sunshine_subtitle">Minutter sol pr. time</string>
     <string name="today_sunshine_title">Solskin</string>
     <string name="today_sunshine_total_hours_minutes">%1$d t %2$d min sol i dag</string>
     <string name="today_sunshine_total_hours_only">%1$d t sol i dag</string>
     <string name="today_sunshine_total_minutes_only">%1$d min sol i dag</string>
-    <string name="today_uv_subtitle">UV-indeks pr. time pr. model</string>
+    <string name="today_uv_subtitle">UV-indeks pr. time</string>
     <string name="today_uv_title">UV-indeks</string>
     <string name="today_wind_peak">Topvind %1$d %2$s kl. %3$s</string>
 </resources>

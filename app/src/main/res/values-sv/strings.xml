@@ -461,11 +461,11 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Vindhastighet</string>
-    <string name="today_wind_subtitle">Vindhastighet (%1$s) per timme per modell</string>
+    <string name="today_wind_subtitle">Vindhastighet (%1$s) per timme</string>
     <string name="today_cloud_title">Molntäcke</string>
-    <string name="today_cloud_subtitle">Totalt molntäcke (%) per timme per modell</string>
+    <string name="today_cloud_subtitle">Totalt molntäcke (%) per timme</string>
     <string name="today_humidity_title">Luftfuktighet</string>
-    <string name="today_humidity_subtitle">Relativ luftfuktighet (%) per timme per modell</string>
+    <string name="today_humidity_subtitle">Relativ luftfuktighet (%) per timme</string>
 
     <!-- Low-confidence callout. -->
 
@@ -608,14 +608,14 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="today_confidence_tap_to_hide">Tryck för att dölja modellprognoser</string>
     <string name="today_confidence_tap_to_show">Tryck för att se varje modells prognos</string>
     <string name="today_humidity_range">Luftfuktighet %1$d\u2013%2$d%%</string>
-    <string name="today_solar_subtitle">Ytbestrålningsstyrka (W/m²) per timme per modell</string>
+    <string name="today_solar_subtitle">Ytbestrålningsstyrka (W/m²) per timme</string>
     <string name="today_solar_title">Solinstrålning</string>
-    <string name="today_sunshine_subtitle">Minuter sol per timme per modell</string>
+    <string name="today_sunshine_subtitle">Minuter sol per timme</string>
     <string name="today_sunshine_title">Solsken</string>
     <string name="today_sunshine_total_hours_minutes">%1$d tim %2$d min sol idag</string>
     <string name="today_sunshine_total_hours_only">%1$d tim sol idag</string>
     <string name="today_sunshine_total_minutes_only">%1$d min sol idag</string>
-    <string name="today_uv_subtitle">UV-index per timme per modell</string>
+    <string name="today_uv_subtitle">UV-index per timme</string>
     <string name="today_uv_title">UV-index</string>
     <string name="today_wind_peak">Topphastighet %1$d %2$s kl. %3$s</string>
 </resources>

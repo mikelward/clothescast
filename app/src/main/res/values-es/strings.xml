@@ -625,11 +625,11 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">Velocidad del viento</string>
-    <string name="today_wind_subtitle">Velocidad del viento (%1$s) por hora por modelo</string>
+    <string name="today_wind_subtitle">Velocidad del viento (%1$s) por hora</string>
     <string name="today_cloud_title">Cobertura de nubes</string>
-    <string name="today_cloud_subtitle">Cobertura total de nubes (%) por hora por modelo</string>
+    <string name="today_cloud_subtitle">Cobertura total de nubes (%) por hora</string>
     <string name="today_humidity_title">Humedad</string>
-    <string name="today_humidity_subtitle">Humedad relativa (%) por hora por modelo</string>
+    <string name="today_humidity_subtitle">Humedad relativa (%) por hora</string>
 
     <!-- Low-confidence callout banner. -->
 
@@ -707,14 +707,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_confidence_tap_to_hide">Toca para ocultar las previsiones por modelo</string>
     <string name="today_confidence_tap_to_show">Toca para ver la previsión de cada modelo</string>
     <string name="today_humidity_range">Humedad %1$d\u2013%2$d%%</string>
-    <string name="today_solar_subtitle">Irradiancia superficial (W/m²) por hora por modelo</string>
+    <string name="today_solar_subtitle">Irradiancia superficial (W/m²) por hora</string>
     <string name="today_solar_title">Radiación solar</string>
-    <string name="today_sunshine_subtitle">Minutos de sol por hora por modelo</string>
+    <string name="today_sunshine_subtitle">Minutos de sol por hora</string>
     <string name="today_sunshine_title">Horas de sol</string>
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm de sol hoy</string>
     <string name="today_sunshine_total_hours_only">%1$dh de sol hoy</string>
     <string name="today_sunshine_total_minutes_only">%1$dm de sol hoy</string>
-    <string name="today_uv_subtitle">Índice UV por hora por modelo</string>
+    <string name="today_uv_subtitle">Índice UV por hora</string>
     <string name="today_uv_title">Índice UV</string>
     <string name="today_wind_peak">Pico %1$d %2$s a las %3$s</string>
 </resources>

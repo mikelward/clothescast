@@ -456,11 +456,11 @@ only the displayed label localizes.
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Швидкість вітру</string>
-    <string name="today_wind_subtitle">Швидкість вітру (%1$s) погодинно за моделями</string>
+    <string name="today_wind_subtitle">Швидкість вітру (%1$s) погодинно</string>
     <string name="today_cloud_title">Хмарність</string>
-    <string name="today_cloud_subtitle">Загальна хмарність (%) погодинно за моделями</string>
+    <string name="today_cloud_subtitle">Загальна хмарність (%) погодинно</string>
     <string name="today_humidity_title">Вологість</string>
-    <string name="today_humidity_subtitle">Відносна вологість (%) погодинно за моделями</string>
+    <string name="today_humidity_subtitle">Відносна вологість (%) погодинно</string>
 
     <!-- Low-confidence callout banner. -->
 
@@ -607,14 +607,14 @@ only the displayed label localizes.
     <string name="today_confidence_tap_to_hide">Торкніться, щоб приховати прогнози моделей</string>
     <string name="today_confidence_tap_to_show">Торкніться, щоб побачити прогноз кожної моделі</string>
     <string name="today_humidity_range">Вологість %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">Поверхнева опромінюваність (Вт/м²) по годинах по моделях</string>
+    <string name="today_solar_subtitle">Поверхнева опромінюваність (Вт/м²) по годинах</string>
     <string name="today_solar_title">Сонячна радіація</string>
-    <string name="today_sunshine_subtitle">Хвилини сонця на годину по моделях</string>
+    <string name="today_sunshine_subtitle">Хвилини сонця на годину</string>
     <string name="today_sunshine_title">Сонячне сяйво</string>
     <string name="today_sunshine_total_hours_minutes">%1$d год %2$d хв сонця сьогодні</string>
     <string name="today_sunshine_total_hours_only">%1$d год сонця сьогодні</string>
     <string name="today_sunshine_total_minutes_only">%1$d хв сонця сьогодні</string>
-    <string name="today_uv_subtitle">УФ-індекс по годинах по моделях</string>
+    <string name="today_uv_subtitle">УФ-індекс по годинах</string>
     <string name="today_uv_title">УФ-індекс</string>
     <string name="today_wind_peak">Максимум %1$d %2$s о %3$s</string>
 </resources>

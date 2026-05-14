@@ -628,11 +628,11 @@ the displayed label localizes.
 
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">風速</string>
-    <string name="today_wind_subtitle">モデル別の風速（%1$s）、1時間ごと</string>
+    <string name="today_wind_subtitle">1時間ごとの風速（%1$s）</string>
     <string name="today_cloud_title">雲量</string>
-    <string name="today_cloud_subtitle">モデル別の全雲量（%）、1時間ごと</string>
+    <string name="today_cloud_subtitle">1時間ごとの全雲量（%）</string>
     <string name="today_humidity_title">湿度</string>
-    <string name="today_humidity_subtitle">モデル別の相対湿度（%）、1時間ごと</string>
+    <string name="today_humidity_subtitle">1時間ごとの相対湿度（%）</string>
 
     <!-- Low-confidence callout banner. -->
 
@@ -713,14 +713,14 @@ the displayed label localizes.
     <string name="today_confidence_tap_to_hide">タップしてモデル別の予報を非表示</string>
     <string name="today_confidence_tap_to_show">タップして各モデルの予報を表示</string>
     <string name="today_humidity_range">湿度 %1$d〜%2$d%%</string>
-    <string name="today_solar_subtitle">モデル別の地表面日射量（W/m²）、1時間ごと</string>
+    <string name="today_solar_subtitle">1時間ごとの地表面日射量（W/m²）</string>
     <string name="today_solar_title">日射量</string>
-    <string name="today_sunshine_subtitle">モデル別の1時間あたりの日照分数</string>
+    <string name="today_sunshine_subtitle">1時間あたりの日照分数</string>
     <string name="today_sunshine_title">日照時間</string>
     <string name="today_sunshine_total_hours_minutes">本日の日照時間 %1$d時間%2$d分</string>
     <string name="today_sunshine_total_hours_only">本日の日照時間 %1$d時間</string>
     <string name="today_sunshine_total_minutes_only">本日の日照時間 %1$d分</string>
-    <string name="today_uv_subtitle">モデル別のUV指数、1時間ごと</string>
+    <string name="today_uv_subtitle">1時間ごとのUV指数</string>
     <string name="today_uv_title">UV指数</string>
     <string name="today_wind_peak">最大 %1$d %2$s（%3$s）</string>
 </resources>

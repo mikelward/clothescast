@@ -396,6 +396,7 @@ private fun TodayContent(
                         hourly = state.insight.hourly,
                         perModelHourly = perModelData,
                         forDate = state.insight.forDate,
+                        period = state.insight.period,
                         showModelSpread = state.showModelSpread,
                         onToggleModelSpread = tapToggle,
                     )
@@ -1473,6 +1474,7 @@ internal fun SunshineCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly,
     forDate: java.time.LocalDate,
+    period: ForecastPeriod = ForecastPeriod.TODAY,
     showModelSpread: Boolean = false,
     onToggleModelSpread: (() -> Unit)? = null,
 ) {
@@ -1481,7 +1483,7 @@ internal fun SunshineCard(
         perModelHourly.consensusSunshineHoursFor(forDate)
     }
     val totalBlurb = if (totalHours != null) {
-        formatSunshineTotal(totalHours)
+        formatSunshineTotal(totalHours, period)
     } else {
         stringResource(R.string.today_sunshine_subtitle)
     }
@@ -1499,14 +1501,26 @@ internal fun SunshineCard(
 }
 
 @Composable
-private fun formatSunshineTotal(hours: Double): String {
+private fun formatSunshineTotal(hours: Double, period: ForecastPeriod): String {
     val totalMinutes = (hours * 60.0).roundToInt()
     val h = totalMinutes / 60
     val m = totalMinutes % 60
+    val res = when (period) {
+        ForecastPeriod.TODAY -> Triple(
+            R.string.today_sunshine_total_minutes_only,
+            R.string.today_sunshine_total_hours_only,
+            R.string.today_sunshine_total_hours_minutes,
+        )
+        ForecastPeriod.TONIGHT -> Triple(
+            R.string.today_sunshine_total_minutes_only_tonight,
+            R.string.today_sunshine_total_hours_only_tonight,
+            R.string.today_sunshine_total_hours_minutes_tonight,
+        )
+    }
     return when {
-        h == 0 -> stringResource(R.string.today_sunshine_total_minutes_only, m)
-        m == 0 -> stringResource(R.string.today_sunshine_total_hours_only, h)
-        else -> stringResource(R.string.today_sunshine_total_hours_minutes, h, m)
+        h == 0 -> stringResource(res.first, m)
+        m == 0 -> stringResource(res.second, h)
+        else -> stringResource(res.third, h, m)
     }
 }
 
@@ -1523,9 +1537,27 @@ internal fun UvIndexCard(
     onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
+    // Peak UV across the cross-model consensus series — same blend the chart
+    // draws. Suppressed when the rounded peak is below 1 (night view, deep
+    // winter) so the subtitle doesn't read "Peak 0 at 21:00".
+    val peak = remember(perModelHourly, times) {
+        perModelConsensusSeries(perModelHourly) { it.uvIndex }
+            .maxByOrNull { it.second }
+            ?.takeIf { it.second.roundToInt() >= 1 }
+            ?.let { (idx, value) ->
+                times.getOrNull(idx)?.let { time -> time to value }
+            }
+    }
+    val subtitle = peak?.let { (time, value) ->
+        stringResource(
+            R.string.today_uv_peak,
+            value.roundToInt(),
+            "%02d:00".format(time.hour),
+        )
+    } ?: stringResource(R.string.today_uv_subtitle)
     PerModelDiagnosticCard(
         title = stringResource(R.string.today_uv_title),
-        subtitle = stringResource(R.string.today_uv_subtitle),
+        subtitle = subtitle,
         times = times,
         perModelHourly = perModelHourly,
         picker = { it.uvIndex },

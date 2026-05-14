@@ -164,11 +164,11 @@ surfaces fall back to default English (matching values-pl / values-uk).
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Viteza vântului</string>
-    <string name="today_wind_subtitle">Viteza vântului (%1$s) pe oră per model</string>
+    <string name="today_wind_subtitle">Viteza vântului (%1$s) pe oră</string>
     <string name="today_cloud_title">Acoperire noroasă</string>
-    <string name="today_cloud_subtitle">Acoperire noroasă totală (%) pe oră per model</string>
+    <string name="today_cloud_subtitle">Acoperire noroasă totală (%) pe oră</string>
     <string name="today_humidity_title">Umiditate</string>
-    <string name="today_humidity_subtitle">Umiditate relativă (%) pe oră per model</string>
+    <string name="today_humidity_subtitle">Umiditate relativă (%) pe oră</string>
 
     <!-- Confidence. -->
     <string name="today_confidence_high">Încredere ridicată — modelele principale sunt de acord</string>
@@ -582,14 +582,14 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_confidence_tap_to_hide">Atingeți pentru a ascunde prognozele modelelor</string>
     <string name="today_confidence_tap_to_show">Atingeți pentru a vedea prognoza fiecărui model</string>
     <string name="today_humidity_range">Umiditate %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">Iradierea suprafeței (W/m²) pe oră pe model</string>
+    <string name="today_solar_subtitle">Iradierea suprafeței (W/m²) pe oră</string>
     <string name="today_solar_title">Radiație solară</string>
-    <string name="today_sunshine_subtitle">Minute de soare pe oră pe model</string>
+    <string name="today_sunshine_subtitle">Minute de soare pe oră</string>
     <string name="today_sunshine_title">Strălucire solară</string>
     <string name="today_sunshine_total_hours_minutes">%1$d h %2$d min soare azi</string>
     <string name="today_sunshine_total_hours_only">%1$d h soare azi</string>
     <string name="today_sunshine_total_minutes_only">%1$d min soare azi</string>
-    <string name="today_uv_subtitle">Indice UV pe oră pe model</string>
+    <string name="today_uv_subtitle">Indice UV pe oră</string>
     <string name="today_uv_title">Indice UV</string>
     <string name="today_wind_peak">Vârf %1$d %2$s la %3$s</string>
 </resources>

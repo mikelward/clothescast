@@ -147,7 +147,7 @@
     <string name="today_wind_title">Wind speed</string>
     <!-- %1$s is the user's wind-speed unit, e.g. "km/h" or "mph". Derived from
          the chosen distance unit (metric / imperial) — see DistanceUnit.windSpeedUnit(). -->
-    <string name="today_wind_subtitle">Per-model wind speed (%1$s) by hour</string>
+    <string name="today_wind_subtitle">Wind speed (%1$s) by hour</string>
     <!-- Replaces [today_wind_subtitle] when the consensus series has data: peak
          consensus wind speed for the day. %1$d = value rounded to the user's
          wind-speed unit, %2$s = unit symbol ("km/h" / "mph"), %3$s = hour
@@ -163,7 +163,7 @@
          shades the surface, and the user-facing "feels gloomy" question
          tracks the low deck. -->
     <string name="today_cloud_title">Cloud cover</string>
-    <string name="today_cloud_subtitle">Per-model low-cloud cover (%) by hour</string>
+    <string name="today_cloud_subtitle">Low-cloud cover (%) by hour</string>
     <!-- Replaces [today_cloud_subtitle] when the consensus series has data:
          min–max range of consensus low-cloud cover across today's hours. -->
     <string name="today_cloud_range">Cloud %1$d – %2$d%%</string>
@@ -173,7 +173,7 @@
          but the data ride the same Open-Meteo call for free, so we surface
          it for the warm days where it does drive feels-like. -->
     <string name="today_humidity_title">Humidity</string>
-    <string name="today_humidity_subtitle">Per-model relative humidity (%) by hour</string>
+    <string name="today_humidity_subtitle">Relative humidity (%) by hour</string>
     <!-- Replaces [today_humidity_subtitle] when the consensus series has data:
          min–max range of consensus relative humidity across today's hours. -->
     <string name="today_humidity_range">Humidity %1$d – %2$d%%</string>
@@ -182,29 +182,41 @@
          surface — bakes in cloud attenuation, so it captures "cloudy but
          bright" days more honestly than cloud cover alone. -->
     <string name="today_solar_title">Solar radiation</string>
-    <string name="today_solar_subtitle">Per-model surface irradiance (W/m²) by hour</string>
+    <string name="today_solar_subtitle">Surface irradiance (W/m²) by hour</string>
 
     <!-- Sunshine-duration diagnostic card. The chart plots minutes of sun
          per hour (0..60) per model; the card's subtitle replaces the static
          description with a consensus daily total when the data are
          available — see today_sunshine_total_*. -->
     <string name="today_sunshine_title">Sunshine</string>
-    <string name="today_sunshine_subtitle">Per-model minutes of sun per hour</string>
+    <string name="today_sunshine_subtitle">Minutes of sun per hour</string>
     <!-- Sunshine daily-total blurb shown in place of [today_sunshine_subtitle]
          when at least two consulted models reported a sunshine series. Three
          variants pick the shortest readable form: hours only when the
          minutes round to zero, minutes only when there's no full hour, and
          the combined form otherwise. %1$d = hours, %2$d = minutes (when
-         both are present). -->
+         both are present). The _tonight variants replace "today" with
+         "tonight" when the card is rendered from the nightly insight — the
+         total covers the after-tonightStart hours, not the full calendar
+         day. -->
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm of sun today</string>
     <string name="today_sunshine_total_hours_only">%1$dh of sun today</string>
     <string name="today_sunshine_total_minutes_only">%1$dm of sun today</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$dh %2$dm of sun tonight</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$dh of sun tonight</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$dm of sun tonight</string>
 
     <!-- UV-index diagnostic card. Cheap actionable signal (hat / sunscreen /
          sunglasses) even when the temperature itself doesn't trigger a
          clothes rule. -->
     <string name="today_uv_title">UV index</string>
-    <string name="today_uv_subtitle">Per-model UV index by hour</string>
+    <string name="today_uv_subtitle">UV index by hour</string>
+    <!-- Replaces [today_uv_subtitle] when the consensus series has a peak
+         UV ≥ 1: peak rounded UV index and the hour it occurs at.
+         %1$d = peak value, %2$s = hour formatted as HH:00. Below 1 we keep
+         the static subtitle — a "Peak 0 at 21:00" reading on the night
+         view is information-free. -->
+    <string name="today_uv_peak">Peak %1$d at %2$s</string>
 
     <string name="today_confidence_high">Forecasters agree</string>
     <string name="today_confidence_medium">Forecasters disagree a bit</string>

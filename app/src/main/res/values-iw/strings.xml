@@ -169,11 +169,11 @@ standard in Israeli digital communication.
 
     <!-- Today — wind / cloud / humidity charts -->
     <string name="today_wind_title">מהירות רוח</string>
-    <string name="today_wind_subtitle">מהירות רוח (%1$s) לפי מודל ושעה</string>
+    <string name="today_wind_subtitle">מהירות רוח (%1$s) לפי שעה</string>
     <string name="today_cloud_title">כיסוי ענן</string>
-    <string name="today_cloud_subtitle">כיסוי ענן כולל (%) לפי מודל ושעה</string>
+    <string name="today_cloud_subtitle">כיסוי ענן כולל (%) לפי שעה</string>
     <string name="today_humidity_title">לחות</string>
-    <string name="today_humidity_subtitle">לחות יחסית (%) לפי מודל ושעה</string>
+    <string name="today_humidity_subtitle">לחות יחסית (%) לפי שעה</string>
 
     <!-- Today — confidence callout -->
     <string name="today_confidence_high">אמון גבוה — מודלים עיקריים מסכימים</string>
@@ -463,14 +463,14 @@ standard in Israeli digital communication.
     <string name="today_confidence_tap_to_hide">הקש להסתרת תחזיות המודל</string>
     <string name="today_confidence_tap_to_show">הקש לצפייה בתחזית של כל מודל</string>
     <string name="today_humidity_range">לחות %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">עוצמת קרינת פני שטח (W/m²) לשעה לפי מודל</string>
+    <string name="today_solar_subtitle">עוצמת קרינת פני שטח (W/m²) לשעה</string>
     <string name="today_solar_title">קרינה סולארית</string>
-    <string name="today_sunshine_subtitle">דקות שמש לשעה לפי מודל</string>
+    <string name="today_sunshine_subtitle">דקות שמש לשעה</string>
     <string name="today_sunshine_title">שעות שמש</string>
     <string name="today_sunshine_total_hours_minutes">%1$d ש׳ %2$d ד׳ שמש היום</string>
     <string name="today_sunshine_total_hours_only">%1$d שעות שמש היום</string>
     <string name="today_sunshine_total_minutes_only">%1$d דקות שמש היום</string>
-    <string name="today_uv_subtitle">מדד UV לשעה לפי מודל</string>
+    <string name="today_uv_subtitle">מדד UV לשעה</string>
     <string name="today_uv_title">מדד UV</string>
     <string name="today_wind_peak">שיא %1$d %2$s בשעה %3$s</string>
     <string name="settings_region_language_en_us">אנגלית (ארצות הברית)</string>

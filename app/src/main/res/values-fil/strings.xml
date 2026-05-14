@@ -161,11 +161,11 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Diagnostic cards -->
     <string name="today_wind_title">Bilis ng hangin</string>
-    <string name="today_wind_subtitle">Bilis ng hangin bawat modelo (%1$s) bawat oras</string>
+    <string name="today_wind_subtitle">Bilis ng hangin (%1$s) bawat oras</string>
     <string name="today_cloud_title">Takip ng ulap</string>
-    <string name="today_cloud_subtitle">Kabuuang takip ng ulap bawat modelo (%) bawat oras</string>
+    <string name="today_cloud_subtitle">Kabuuang takip ng ulap (%) bawat oras</string>
     <string name="today_humidity_title">Halumigmig</string>
-    <string name="today_humidity_subtitle">Relatibong halumigmig bawat modelo (%) bawat oras</string>
+    <string name="today_humidity_subtitle">Relatibong halumigmig (%) bawat oras</string>
 
     <!-- Confidence -->
     <string name="today_confidence_high">Mataas na kumpiyansa — sumasang-ayon ang mga pangunahing modelo</string>
@@ -629,14 +629,14 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_confidence_tap_to_hide">I-tap upang itago ang mga hula ng modelo</string>
     <string name="today_confidence_tap_to_show">I-tap upang tingnan ang hula ng bawat modelo</string>
     <string name="today_humidity_range">Halumigmig %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">Surface irradiance (W/m²) bawat oras bawat modelo</string>
+    <string name="today_solar_subtitle">Surface irradiance (W/m²) bawat oras</string>
     <string name="today_solar_title">Solar radiation</string>
-    <string name="today_sunshine_subtitle">Minuto ng sikat ng araw bawat oras bawat modelo</string>
+    <string name="today_sunshine_subtitle">Minuto ng sikat ng araw bawat oras</string>
     <string name="today_sunshine_title">Sikat ng araw</string>
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm ng araw ngayon</string>
     <string name="today_sunshine_total_hours_only">%1$dh ng araw ngayon</string>
     <string name="today_sunshine_total_minutes_only">%1$dm ng araw ngayon</string>
-    <string name="today_uv_subtitle">UV index bawat oras bawat modelo</string>
+    <string name="today_uv_subtitle">UV index bawat oras</string>
     <string name="today_uv_title">UV index</string>
     <string name="today_wind_peak">Pinakamataas na %1$d %2$s sa %3$s</string>
 </resources>

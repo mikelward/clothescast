@@ -164,11 +164,11 @@ What is NOT overridden, by design:
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Vėjo greitis</string>
-    <string name="today_wind_subtitle">Vėjo greitis (%1$s) pagal valandą kiekvienam modeliui</string>
+    <string name="today_wind_subtitle">Vėjo greitis (%1$s) pagal valandą</string>
     <string name="today_cloud_title">Debesuotumas</string>
-    <string name="today_cloud_subtitle">Bendras debesuotumas (%) pagal valandą kiekvienam modeliui</string>
+    <string name="today_cloud_subtitle">Bendras debesuotumas (%) pagal valandą</string>
     <string name="today_humidity_title">Drėgmė</string>
-    <string name="today_humidity_subtitle">Santykinė drėgmė (%) pagal valandą kiekvienam modeliui</string>
+    <string name="today_humidity_subtitle">Santykinė drėgmė (%) pagal valandą</string>
 
     <!-- Confidence indicators. -->
     <string name="today_confidence_high">Didelis tikslumas — pagrindiniai modeliai sutaria</string>
@@ -598,14 +598,14 @@ What is NOT overridden, by design:
     <string name="today_confidence_tap_to_hide">Palieskite, kad paslėptumėte modelių prognozes</string>
     <string name="today_confidence_tap_to_show">Palieskite, kad pamatytumėte kiekvieno modelio prognozę</string>
     <string name="today_humidity_range">Drėgmė %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">Paviršiaus apšvieta (W/m²) per valandą pagal modelį</string>
+    <string name="today_solar_subtitle">Paviršiaus apšvieta (W/m²) per valandą</string>
     <string name="today_solar_title">Saulės spinduliuotė</string>
-    <string name="today_sunshine_subtitle">Saulėtos minutės per valandą pagal modelį</string>
+    <string name="today_sunshine_subtitle">Saulėtos minutės per valandą</string>
     <string name="today_sunshine_title">Saulės šviesa</string>
     <string name="today_sunshine_total_hours_minutes">%1$d val %2$d min saulės šiandien</string>
     <string name="today_sunshine_total_hours_only">%1$d val saulės šiandien</string>
     <string name="today_sunshine_total_minutes_only">%1$d min saulės šiandien</string>
-    <string name="today_uv_subtitle">UV indeksas per valandą pagal modelį</string>
+    <string name="today_uv_subtitle">UV indeksas per valandą</string>
     <string name="today_uv_title">UV indeksas</string>
     <string name="today_wind_peak">Smaigas %1$d %2$s %3$s val.</string>
 </resources>

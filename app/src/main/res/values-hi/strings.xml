@@ -524,11 +524,11 @@ Not overridden by design:
 
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">हवा की गति</string>
-    <string name="today_wind_subtitle">प्रति मॉडल प्रति घंटा हवा की गति (%1$s)</string>
+    <string name="today_wind_subtitle">प्रति घंटा हवा की गति (%1$s)</string>
     <string name="today_cloud_title">बादल छाव</string>
-    <string name="today_cloud_subtitle">प्रति मॉडल प्रति घंटा कुल बादल छाव (%)</string>
+    <string name="today_cloud_subtitle">प्रति घंटा कुल बादल छाव (%)</string>
     <string name="today_humidity_title">आर्द्रता</string>
-    <string name="today_humidity_subtitle">प्रति मॉडल प्रति घंटा सापेक्ष आर्द्रता (%)</string>
+    <string name="today_humidity_subtitle">प्रति घंटा सापेक्ष आर्द्रता (%)</string>
 
     <!-- Low-confidence callout banner. -->
 
@@ -609,14 +609,14 @@ Not overridden by design:
     <string name="today_confidence_tap_to_hide">मॉडल पूर्वानुमान छुपाने के लिए टैप करें</string>
     <string name="today_confidence_tap_to_show">प्रत्येक मॉडल का पूर्वानुमान देखने के लिए टैप करें</string>
     <string name="today_humidity_range">नमी %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">सतह विकिरण तीव्रता (W/m²) प्रति घंटे प्रति मॉडल</string>
+    <string name="today_solar_subtitle">सतह विकिरण तीव्रता (W/m²) प्रति घंटे</string>
     <string name="today_solar_title">सौर विकिरण</string>
-    <string name="today_sunshine_subtitle">प्रति मॉडल प्रति घंटे धूप के मिनट</string>
+    <string name="today_sunshine_subtitle">प्रति घंटे धूप के मिनट</string>
     <string name="today_sunshine_title">धूप</string>
     <string name="today_sunshine_total_hours_minutes">आज %1$d घंटे %2$d मिनट धूप</string>
     <string name="today_sunshine_total_hours_only">आज %1$d घंटे धूप</string>
     <string name="today_sunshine_total_minutes_only">आज %1$d मिनट धूप</string>
-    <string name="today_uv_subtitle">प्रति मॉडल प्रति घंटे UV सूचकांक</string>
+    <string name="today_uv_subtitle">प्रति घंटे UV सूचकांक</string>
     <string name="today_uv_title">UV सूचकांक</string>
     <string name="today_wind_peak">अधिकतम %1$d %2$s %3$s बजे</string>
 </resources>

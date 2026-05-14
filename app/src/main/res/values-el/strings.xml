@@ -599,11 +599,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_factor_cloud_cover">νέφωση</string>
     <string name="today_factor_humidity">υγρασία</string>
     <string name="today_wind_title">Ταχύτητα ανέμου</string>
-    <string name="today_wind_subtitle">Ταχύτητα ανέμου (%1$s) ανά μοντέλο και ώρα</string>
+    <string name="today_wind_subtitle">Ταχύτητα ανέμου (%1$s) ανά ώρα</string>
     <string name="today_cloud_title">Νέφωση</string>
-    <string name="today_cloud_subtitle">Συνολική νέφωση (%) ανά μοντέλο και ώρα</string>
+    <string name="today_cloud_subtitle">Συνολική νέφωση (%) ανά ώρα</string>
     <string name="today_humidity_title">Υγρασία</string>
-    <string name="today_humidity_subtitle">Σχετική υγρασία (%) ανά μοντέλο και ώρα</string>
+    <string name="today_humidity_subtitle">Σχετική υγρασία (%) ανά ώρα</string>
 
     <!-- Low-confidence callout. -->
 
@@ -728,14 +728,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_confidence_tap_to_hide">Πατήστε για απόκρυψη προβλέψεων μοντέλων</string>
     <string name="today_confidence_tap_to_show">Πατήστε για εμφάνιση πρόβλεψης κάθε μοντέλου</string>
     <string name="today_humidity_range">Υγρασία %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">Επιφανειακή ηλιακή ακτινοβολία (W/m²) ανά ώρα ανά μοντέλο</string>
+    <string name="today_solar_subtitle">Επιφανειακή ηλιακή ακτινοβολία (W/m²) ανά ώρα</string>
     <string name="today_solar_title">Ηλιακή ακτινοβολία</string>
-    <string name="today_sunshine_subtitle">Λεπτά ηλιοφάνειας ανά ώρα ανά μοντέλο</string>
+    <string name="today_sunshine_subtitle">Λεπτά ηλιοφάνειας ανά ώρα</string>
     <string name="today_sunshine_title">Ηλιοφάνεια</string>
     <string name="today_sunshine_total_hours_minutes">%1$d ώ %2$d λ ηλιοφάνεια σήμερα</string>
     <string name="today_sunshine_total_hours_only">%1$d ώρ. ηλιοφάνεια σήμερα</string>
     <string name="today_sunshine_total_minutes_only">%1$d λ. ηλιοφάνεια σήμερα</string>
-    <string name="today_uv_subtitle">Δείκτης UV ανά ώρα ανά μοντέλο</string>
+    <string name="today_uv_subtitle">Δείκτης UV ανά ώρα</string>
     <string name="today_uv_title">Δείκτης UV</string>
     <string name="today_wind_peak">Μέγιστο %1$d %2$s στις %3$s</string>
 </resources>

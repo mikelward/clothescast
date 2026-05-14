@@ -945,6 +945,19 @@ internal fun SunshineCardWithModelSpreadPreview() {
     }
 }
 
+@Preview(name = "Sunshine card · tonight wording", widthDp = 360)
+@Composable
+internal fun SunshineCardTonightPreview() {
+    Frame {
+        SunshineCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            forDate = SAMPLE_PER_MODEL_DATE,
+            period = ForecastPeriod.TONIGHT,
+        )
+    }
+}
+
 @Preview(name = "UV index card · consensus only", widthDp = 360)
 @Composable
 internal fun UvIndexCardConsensusPreview() {

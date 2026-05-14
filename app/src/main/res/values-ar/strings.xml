@@ -169,15 +169,15 @@ they work correctly in both the single-band and range templates.
 
     <!-- Today — wind chart -->
     <string name="today_wind_title">سرعة الرياح</string>
-    <string name="today_wind_subtitle">سرعة الرياح (%1$s) بالنموذج والساعة</string>
+    <string name="today_wind_subtitle">سرعة الرياح (%1$s) بالساعة</string>
 
     <!-- Today — cloud chart -->
     <string name="today_cloud_title">الغيوم</string>
-    <string name="today_cloud_subtitle">إجمالي الغطاء السحابي (%) بالنموذج والساعة</string>
+    <string name="today_cloud_subtitle">إجمالي الغطاء السحابي (%) بالساعة</string>
 
     <!-- Today — humidity chart -->
     <string name="today_humidity_title">الرطوبة</string>
-    <string name="today_humidity_subtitle">الرطوبة النسبية (%) بالنموذج والساعة</string>
+    <string name="today_humidity_subtitle">الرطوبة النسبية (%) بالساعة</string>
 
     <!-- Today — confidence / divergence -->
     <string name="today_confidence_high">ثقة عالية — تتفق النماذج الرئيسية</string>
@@ -467,14 +467,14 @@ they work correctly in both the single-band and range templates.
     <string name="today_confidence_tap_to_hide">اضغط لإخفاء توقعات النماذج</string>
     <string name="today_confidence_tap_to_show">اضغط لعرض توقعات كل نموذج</string>
     <string name="today_humidity_range">الرطوبة %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">إشعاع السطح (W/m²) لكل ساعة لكل نموذج</string>
+    <string name="today_solar_subtitle">إشعاع السطح (W/m²) لكل ساعة</string>
     <string name="today_solar_title">الإشعاع الشمسي</string>
-    <string name="today_sunshine_subtitle">دقائق الشمس لكل ساعة لكل نموذج</string>
+    <string name="today_sunshine_subtitle">دقائق الشمس لكل ساعة</string>
     <string name="today_sunshine_title">سطوع الشمس</string>
     <string name="today_sunshine_total_hours_minutes">%1$d س %2$d د من الشمس اليوم</string>
     <string name="today_sunshine_total_hours_only">%1$d س من الشمس اليوم</string>
     <string name="today_sunshine_total_minutes_only">%1$d د من الشمس اليوم</string>
-    <string name="today_uv_subtitle">مؤشر الأشعة فوق البنفسجية لكل ساعة لكل نموذج</string>
+    <string name="today_uv_subtitle">مؤشر الأشعة فوق البنفسجية لكل ساعة</string>
     <string name="today_uv_title">مؤشر الأشعة فوق البنفسجية</string>
     <string name="today_wind_peak">الذروة %1$d %2$s الساعة %3$s</string>
     <string name="settings_region_language_en_us">الإنجليزية (الولايات المتحدة)</string>

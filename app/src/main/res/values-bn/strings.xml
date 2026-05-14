@@ -165,11 +165,11 @@ West Bengal vocabulary differences in a future PR.
 
     <!-- Wind / cloud / humidity diagnostic cards -->
     <string name="today_wind_title">বাতাসের গতি</string>
-    <string name="today_wind_subtitle">প্রতি ঘণ্টায় প্রতি-মডেল বাতাসের গতি (%1$s)</string>
+    <string name="today_wind_subtitle">প্রতি ঘণ্টায় বাতাসের গতি (%1$s)</string>
     <string name="today_cloud_title">মেঘাচ্ছন্নতা</string>
-    <string name="today_cloud_subtitle">প্রতি ঘণ্টায় প্রতি-মডেল মোট মেঘাচ্ছন্নতা (%%)</string>
+    <string name="today_cloud_subtitle">প্রতি ঘণ্টায় মোট মেঘাচ্ছন্নতা (%%)</string>
     <string name="today_humidity_title">আর্দ্রতা</string>
-    <string name="today_humidity_subtitle">প্রতি ঘণ্টায় প্রতি-মডেল আপেক্ষিক আর্দ্রতা (%%)</string>
+    <string name="today_humidity_subtitle">প্রতি ঘণ্টায় আপেক্ষিক আর্দ্রতা (%%)</string>
 
     <!-- Confidence -->
     <string name="today_confidence_high">উচ্চ আস্থা — প্রধান মডেলগুলো একমত</string>
@@ -649,14 +649,14 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_confidence_tap_to_hide">মডেলের পূর্বাভাস লুকাতে ট্যাপ করুন</string>
     <string name="today_confidence_tap_to_show">প্রতিটি মডেলের পূর্বাভাস দেখতে ট্যাপ করুন</string>
     <string name="today_humidity_range">আর্দ্রতা %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">পৃষ্ঠ বিকিরণ তীব্রতা (W/m²) প্রতি ঘণ্টায় প্রতি মডেলে</string>
+    <string name="today_solar_subtitle">পৃষ্ঠ বিকিরণ তীব্রতা (W/m²) প্রতি ঘণ্টায়</string>
     <string name="today_solar_title">সৌর বিকিরণ</string>
-    <string name="today_sunshine_subtitle">প্রতি মডেলে প্রতি ঘণ্টায় রোদের মিনিট</string>
+    <string name="today_sunshine_subtitle">প্রতি ঘণ্টায় রোদের মিনিট</string>
     <string name="today_sunshine_title">রোদ</string>
     <string name="today_sunshine_total_hours_minutes">আজ %1$d ঘণ্টা %2$d মিনিট রোদ</string>
     <string name="today_sunshine_total_hours_only">আজ %1$d ঘণ্টা রোদ</string>
     <string name="today_sunshine_total_minutes_only">আজ %1$d মিনিট রোদ</string>
-    <string name="today_uv_subtitle">প্রতি মডেলে প্রতি ঘণ্টায় UV সূচক</string>
+    <string name="today_uv_subtitle">প্রতি ঘণ্টায় UV সূচক</string>
     <string name="today_uv_title">UV সূচক</string>
     <string name="today_wind_peak">সর্বোচ্চ %1$d %2$s সময় %3$s</string>
 </resources>

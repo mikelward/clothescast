@@ -79,13 +79,13 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_factor_humidity">niiskus</string>
 
     <string name="today_wind_title">Tuule kiirus</string>
-    <string name="today_wind_subtitle">Mudelihaare tuule kiirus (%1$s) tunni kaupa</string>
+    <string name="today_wind_subtitle">Tuule kiirus (%1$s) tunni kaupa</string>
 
     <string name="today_cloud_title">Pilvisus</string>
-    <string name="today_cloud_subtitle">Mudelihaare kogu pilvisus (%) tunni kaupa</string>
+    <string name="today_cloud_subtitle">Kogu pilvisus (%) tunni kaupa</string>
 
     <string name="today_humidity_title">Niiskus</string>
-    <string name="today_humidity_subtitle">Mudelihaare suhteline niiskus (%) tunni kaupa</string>
+    <string name="today_humidity_subtitle">Suhteline niiskus (%) tunni kaupa</string>
 
     <string name="today_confidence_high">Kõrge kindlus — peamised mudelid on nõus</string>
     <string name="today_confidence_medium">Keskmine kindlus</string>
@@ -554,14 +554,14 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_confidence_tap_to_hide">Puuduta mudelite prognooside peitmiseks</string>
     <string name="today_confidence_tap_to_show">Puuduta iga mudeli prognoosi nägemiseks</string>
     <string name="today_humidity_range">Niiskus %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">Pinnakiirgus (W/m²) tunnis mudeli kohta</string>
+    <string name="today_solar_subtitle">Pinnakiirgus (W/m²) tunnis</string>
     <string name="today_solar_title">Päikesekiirgus</string>
-    <string name="today_sunshine_subtitle">Päikesepaiste minutid tunnis mudeli kohta</string>
+    <string name="today_sunshine_subtitle">Päikesepaiste minutid tunnis</string>
     <string name="today_sunshine_title">Päikesepaiste</string>
     <string name="today_sunshine_total_hours_minutes">%1$d t %2$d min päikest täna</string>
     <string name="today_sunshine_total_hours_only">%1$d t päikest täna</string>
     <string name="today_sunshine_total_minutes_only">%1$d min päikest täna</string>
-    <string name="today_uv_subtitle">UV-indeks tunnis mudeli kohta</string>
+    <string name="today_uv_subtitle">UV-indeks tunnis</string>
     <string name="today_uv_title">UV-indeks</string>
     <string name="today_wind_peak">Tipp %1$d %2$s kell %3$s</string>
 </resources>

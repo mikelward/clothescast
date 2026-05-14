@@ -458,11 +458,11 @@ What is NOT overridden, by design:
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Rýchlosť vetra</string>
-    <string name="today_wind_subtitle">Rýchlosť vetra (%1$s) za hodinu podľa modelu</string>
+    <string name="today_wind_subtitle">Rýchlosť vetra (%1$s) za hodinu</string>
     <string name="today_cloud_title">Oblačnosť</string>
-    <string name="today_cloud_subtitle">Celková oblačnosť (%) za hodinu podľa modelu</string>
+    <string name="today_cloud_subtitle">Celková oblačnosť (%) za hodinu</string>
     <string name="today_humidity_title">Vlhkosť</string>
-    <string name="today_humidity_subtitle">Relatívna vlhkosť (%) za hodinu podľa modelu</string>
+    <string name="today_humidity_subtitle">Relatívna vlhkosť (%) za hodinu</string>
 
     <!-- Low-confidence callout banner. -->
 
@@ -610,14 +610,14 @@ What is NOT overridden, by design:
     <string name="today_confidence_tap_to_hide">Klepnutím skryjete predpovede modelov</string>
     <string name="today_confidence_tap_to_show">Klepnutím zobrazíte predpoveď každého modelu</string>
     <string name="today_humidity_range">Vlhkosť %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">Povrchová ožiarenosť (W/m²) za hodinu na model</string>
+    <string name="today_solar_subtitle">Povrchová ožiarenosť (W/m²) za hodinu</string>
     <string name="today_solar_title">Slnečné žiarenie</string>
-    <string name="today_sunshine_subtitle">Minúty slnka za hodinu na model</string>
+    <string name="today_sunshine_subtitle">Minúty slnka za hodinu</string>
     <string name="today_sunshine_title">Slnečný svit</string>
     <string name="today_sunshine_total_hours_minutes">%1$d hod %2$d min slnka dnes</string>
     <string name="today_sunshine_total_hours_only">%1$d hod slnka dnes</string>
     <string name="today_sunshine_total_minutes_only">%1$d min slnka dnes</string>
-    <string name="today_uv_subtitle">UV index za hodinu na model</string>
+    <string name="today_uv_subtitle">UV index za hodinu</string>
     <string name="today_uv_title">UV index</string>
     <string name="today_wind_peak">Vrchol %1$d %2$s o %3$s</string>
 </resources>

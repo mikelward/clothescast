@@ -620,11 +620,11 @@ label localizes.
 
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">风速</string>
-    <string name="today_wind_subtitle">各模型每小时风速（%1$s）</string>
+    <string name="today_wind_subtitle">每小时风速（%1$s）</string>
     <string name="today_cloud_title">云量</string>
-    <string name="today_cloud_subtitle">各模型每小时总云量（%）</string>
+    <string name="today_cloud_subtitle">每小时总云量（%）</string>
     <string name="today_humidity_title">湿度</string>
-    <string name="today_humidity_subtitle">各模型每小时相对湿度（%）</string>
+    <string name="today_humidity_subtitle">每小时相对湿度（%）</string>
 
     <!-- Low-confidence callout banner. -->
 
@@ -705,14 +705,14 @@ label localizes.
     <string name="today_confidence_tap_to_hide">点击隐藏模型预报</string>
     <string name="today_confidence_tap_to_show">点击查看各模型预报</string>
     <string name="today_humidity_range">湿度 %1$d〜%2$d%%</string>
-    <string name="today_solar_subtitle">各模型每小时地面辐照度（W/m²）</string>
+    <string name="today_solar_subtitle">每小时地面辐照度（W/m²）</string>
     <string name="today_solar_title">太阳辐射</string>
-    <string name="today_sunshine_subtitle">各模型每小时的日照分钟数</string>
+    <string name="today_sunshine_subtitle">每小时的日照分钟数</string>
     <string name="today_sunshine_title">日照</string>
     <string name="today_sunshine_total_hours_minutes">今日日照 %1$d小时%2$d分钟</string>
     <string name="today_sunshine_total_hours_only">今日日照 %1$d小时</string>
     <string name="today_sunshine_total_minutes_only">今日日照 %1$d分钟</string>
-    <string name="today_uv_subtitle">各模型每小时紫外线指数</string>
+    <string name="today_uv_subtitle">每小时紫外线指数</string>
     <string name="today_uv_title">紫外线指数</string>
     <string name="today_wind_peak">最高 %1$d %2$s（%3$s）</string>
 </resources>

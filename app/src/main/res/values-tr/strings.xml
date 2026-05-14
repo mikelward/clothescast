@@ -519,11 +519,11 @@ displayed label localizes.
     <string name="today_factor_humidity">Nem</string>
 
     <string name="today_wind_title">Rüzgar hızı</string>
-    <string name="today_wind_subtitle">Model başına saatlik rüzgar hızı (%1$s)</string>
+    <string name="today_wind_subtitle">Saatlik rüzgar hızı (%1$s)</string>
     <string name="today_cloud_title">Bulut örtüsü</string>
-    <string name="today_cloud_subtitle">Model başına saatlik toplam bulut örtüsü (%%)</string>
+    <string name="today_cloud_subtitle">Saatlik toplam bulut örtüsü (%%)</string>
     <string name="today_humidity_title">Nem</string>
-    <string name="today_humidity_subtitle">Model başına saatlik bağıl nem (%%)</string>
+    <string name="today_humidity_subtitle">Saatlik bağıl nem (%%)</string>
 
 
     <string name="today_telemetry_notice_title">Çökme ve kullanım raporları etkin</string>
@@ -588,14 +588,14 @@ displayed label localizes.
     <string name="today_confidence_tap_to_hide">Model tahminlerini gizlemek için dokunun</string>
     <string name="today_confidence_tap_to_show">Her modelin tahminini görmek için dokunun</string>
     <string name="today_humidity_range">Nem %1$d\u2013%2$d%%</string>
-    <string name="today_solar_subtitle">Yüzey ışıması (W/m²) saate göre model başına</string>
+    <string name="today_solar_subtitle">Yüzey ışıması (W/m²) saate göre</string>
     <string name="today_solar_title">Güneş ışıması</string>
-    <string name="today_sunshine_subtitle">Saate göre güneş dakikaları model başına</string>
+    <string name="today_sunshine_subtitle">Saate göre güneş dakikaları</string>
     <string name="today_sunshine_title">Güneşlenme</string>
     <string name="today_sunshine_total_hours_minutes">Bugün %1$d sa %2$d dk güneş</string>
     <string name="today_sunshine_total_hours_only">Bugün %1$d sa güneş</string>
     <string name="today_sunshine_total_minutes_only">Bugün %1$d dk güneş</string>
-    <string name="today_uv_subtitle">Saate göre UV endeksi model başına</string>
+    <string name="today_uv_subtitle">Saate göre UV endeksi</string>
     <string name="today_uv_title">UV endeksi</string>
     <string name="today_wind_peak">Tepe %1$d %2$s, saat %3$s</string>
 </resources>

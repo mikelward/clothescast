@@ -79,13 +79,13 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_factor_humidity">humitat</string>
 
     <string name="today_wind_title">Velocitat del vent</string>
-    <string name="today_wind_subtitle">Velocitat del vent (%1$s) per model i hora</string>
+    <string name="today_wind_subtitle">Velocitat del vent (%1$s) per hora</string>
 
     <string name="today_cloud_title">Nuvolositat</string>
-    <string name="today_cloud_subtitle">Nuvolositat total (%) per model i hora</string>
+    <string name="today_cloud_subtitle">Nuvolositat total (%) per hora</string>
 
     <string name="today_humidity_title">Humitat</string>
-    <string name="today_humidity_subtitle">Humitat relativa (%) per model i hora</string>
+    <string name="today_humidity_subtitle">Humitat relativa (%) per hora</string>
 
     <string name="today_confidence_high">Alta confiança — els models principals coincideixen</string>
     <string name="today_confidence_medium">Confiança mitjana</string>
@@ -546,14 +546,14 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_confidence_tap_to_hide">Toca per amagar les previsions per model</string>
     <string name="today_confidence_tap_to_show">Toca per veure la previsió de cada model</string>
     <string name="today_humidity_range">Humitat %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">Irradiància superficial (W/m²) per hora per model</string>
+    <string name="today_solar_subtitle">Irradiància superficial (W/m²) per hora</string>
     <string name="today_solar_title">Radiació solar</string>
-    <string name="today_sunshine_subtitle">Minuts de sol per hora per model</string>
+    <string name="today_sunshine_subtitle">Minuts de sol per hora</string>
     <string name="today_sunshine_title">Hores de sol</string>
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm de sol avui</string>
     <string name="today_sunshine_total_hours_only">%1$dh de sol avui</string>
     <string name="today_sunshine_total_minutes_only">%1$dm de sol avui</string>
-    <string name="today_uv_subtitle">Índex UV per hora per model</string>
+    <string name="today_uv_subtitle">Índex UV per hora</string>
     <string name="today_uv_title">Índex UV</string>
     <string name="today_wind_peak">Pic %1$d %2$s a les %3$s</string>
 

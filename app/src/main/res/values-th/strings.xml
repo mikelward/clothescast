@@ -166,11 +166,11 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Wind / cloud / humidity diagnostic cards -->
     <string name="today_wind_title">ความเร็วลม</string>
-    <string name="today_wind_subtitle">ความเร็วลมตามแบบจำลอง (%1$s) รายชั่วโมง</string>
+    <string name="today_wind_subtitle">ความเร็วลม (%1$s) รายชั่วโมง</string>
     <string name="today_cloud_title">ปริมาณเมฆ</string>
-    <string name="today_cloud_subtitle">ปริมาณเมฆรวมตามแบบจำลอง (%) รายชั่วโมง</string>
+    <string name="today_cloud_subtitle">ปริมาณเมฆรวม (%) รายชั่วโมง</string>
     <string name="today_humidity_title">ความชื้นสัมพัทธ์</string>
-    <string name="today_humidity_subtitle">ความชื้นสัมพัทธ์ตามแบบจำลอง (%) รายชั่วโมง</string>
+    <string name="today_humidity_subtitle">ความชื้นสัมพัทธ์ (%) รายชั่วโมง</string>
 
     <!-- Confidence -->
     <string name="today_confidence_high">ความเชื่อมั่นสูง — แบบจำลองหลักตรงกัน</string>
@@ -579,14 +579,14 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_confidence_tap_to_hide">แตะเพื่อซ่อนพยากรณ์ของแต่ละแบบจำลอง</string>
     <string name="today_confidence_tap_to_show">แตะเพื่อดูพยากรณ์ของแต่ละแบบจำลอง</string>
     <string name="today_humidity_range">ความชื้น %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">ความเข้มรังสีพื้นผิว (W/m²) ต่อชั่วโมงต่อแบบจำลอง</string>
+    <string name="today_solar_subtitle">ความเข้มรังสีพื้นผิว (W/m²) ต่อชั่วโมง</string>
     <string name="today_solar_title">รังสีดวงอาทิตย์</string>
-    <string name="today_sunshine_subtitle">นาทีแดดออกต่อชั่วโมงต่อแบบจำลอง</string>
+    <string name="today_sunshine_subtitle">นาทีแดดออกต่อชั่วโมง</string>
     <string name="today_sunshine_title">ชั่วโมงแดด</string>
     <string name="today_sunshine_total_hours_minutes">แดดวันนี้ %1$d ชม. %2$d นาที</string>
     <string name="today_sunshine_total_hours_only">แดดวันนี้ %1$d ชม.</string>
     <string name="today_sunshine_total_minutes_only">แดดวันนี้ %1$d นาที</string>
-    <string name="today_uv_subtitle">ดัชนี UV ต่อชั่วโมงต่อแบบจำลอง</string>
+    <string name="today_uv_subtitle">ดัชนี UV ต่อชั่วโมง</string>
     <string name="today_uv_title">ดัชนี UV</string>
     <string name="today_wind_peak">สูงสุด %1$d %2$s เวลา %3$s</string>
 </resources>

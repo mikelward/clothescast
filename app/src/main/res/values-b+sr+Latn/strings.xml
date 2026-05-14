@@ -489,11 +489,11 @@ default English (matching values-pl / values-uk).
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Brzina vetra</string>
-    <string name="today_wind_subtitle">Brzina vetra po modelu (%1$s) po satu</string>
+    <string name="today_wind_subtitle">Brzina vetra (%1$s) po satu</string>
     <string name="today_cloud_title">Oblačnost</string>
-    <string name="today_cloud_subtitle">Ukupna oblačnost po modelu (%) po satu</string>
+    <string name="today_cloud_subtitle">Ukupna oblačnost (%) po satu</string>
     <string name="today_humidity_title">Vlažnost</string>
-    <string name="today_humidity_subtitle">Relativna vlažnost po modelu (%) po satu</string>
+    <string name="today_humidity_subtitle">Relativna vlažnost (%) po satu</string>
 
     <!-- Confidence chip. -->
     <string name="today_confidence_high">Visoka pouzdanost — glavni modeli se slažu</string>
@@ -595,14 +595,14 @@ default English (matching values-pl / values-uk).
     <string name="today_confidence_tap_to_hide">Dodirnite za skrivanje prognoza po modelu</string>
     <string name="today_confidence_tap_to_show">Dodirnite za prikaz prognoze svakog modela</string>
     <string name="today_humidity_range">Vlažnost %1$d–%2$d%%</string>
-    <string name="today_solar_subtitle">Površinska iradijansa (W/m²) po satu po modelu</string>
+    <string name="today_solar_subtitle">Površinska iradijansa (W/m²) po satu</string>
     <string name="today_solar_title">Sunčevo zračenje</string>
-    <string name="today_sunshine_subtitle">Minute sunca po satu po modelu</string>
+    <string name="today_sunshine_subtitle">Minute sunca po satu</string>
     <string name="today_sunshine_title">Sijanje sunca</string>
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm sunca danas</string>
     <string name="today_sunshine_total_hours_only">%1$dh sunca danas</string>
     <string name="today_sunshine_total_minutes_only">%1$dm sunca danas</string>
-    <string name="today_uv_subtitle">UV indeks po satu po modelu</string>
+    <string name="today_uv_subtitle">UV indeks po satu</string>
     <string name="today_uv_title">UV indeks</string>
     <string name="today_wind_peak">Vrhunac %1$d %2$s u %3$s</string>
 </resources>

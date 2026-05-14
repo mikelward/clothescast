@@ -464,8 +464,6 @@ only the displayed label localizes.
     <string name="today_humidity_subtitle">Відносна вологість (%) погодинно за моделями</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">Прогнози розходяться</string>
-    <string name="today_low_confidence_callout_body">Температура розходиться на %1$.1f°C, ймовірність опадів — на %2$.0f%% за %3$d моделями.</string>
 
     <!-- Work status banners. -->
     <string name="today_working">Отримання вашого ClothesCast…</string>

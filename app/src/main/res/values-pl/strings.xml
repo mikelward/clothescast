@@ -584,8 +584,6 @@ is unchanged; only the displayed label localizes.
     <string name="today_humidity_subtitle">Wilgotność względna (%) na godzinę wg modelu</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">Prognozy się różnią</string>
-    <string name="today_low_confidence_callout_body">Temperatura waha się o %1$.1f°C, a prawdopodobieństwo opadów o %2$.0f%% wśród %3$d modeli.</string>
 
     <!-- Telemetry notice. -->
     <string name="today_telemetry_notice_title">Raporty awarii i użytkowania są włączone</string>

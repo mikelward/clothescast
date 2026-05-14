@@ -607,8 +607,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_humidity_subtitle">Σχετική υγρασία (%) ανά μοντέλο και ώρα</string>
 
     <!-- Low-confidence callout. -->
-    <string name="today_low_confidence_callout_title">Οι προβλέψεις διαφωνούν</string>
-    <string name="today_low_confidence_callout_body">Η θερμοκρασία κυμαίνεται κατά %1$.1f°C και η πιθανότητα βροχής κατά %2$.0f%% σε %3$d μοντέλα.</string>
 
     <!-- Telemetry notice banner. -->
     <string name="today_telemetry_notice_title">Αναφορές σφαλμάτων + χρήσης είναι ενεργές</string>

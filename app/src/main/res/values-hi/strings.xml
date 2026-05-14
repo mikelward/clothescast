@@ -532,8 +532,6 @@ Not overridden by design:
     <string name="today_humidity_subtitle">प्रति मॉडल प्रति घंटा सापेक्ष आर्द्रता (%)</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">पूर्वानुमान में मतभेद हैं</string>
-    <string name="today_low_confidence_callout_body">%3$d मॉडलों के बीच तापमान %1$.1f°C और बारिश की संभावना %2$.0f%% तक भिन्न है।</string>
 
     <!-- Telemetry notice (first-run banner on Today screen). -->
     <string name="today_telemetry_notice_title">क्रैश और उपयोग रिपोर्ट चालू हैं</string>

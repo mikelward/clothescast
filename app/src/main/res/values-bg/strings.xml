@@ -190,8 +190,6 @@ What is NOT overridden, by design:
     <string name="today_confidence_spread">Разлика: %1$.1f°C, %2$.0f%% валежи при %3$d модела</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">Прогнозите се разминават</string>
-    <string name="today_low_confidence_callout_body">Температурата се различава с %1$.1f°C, а шансът за дъжд — с %2$.0f%% при %3$d модела.</string>
 
     <!-- Work-status banners. -->
     <string name="today_working">Работя — получавам твоя ClothesCast…</string>

@@ -494,8 +494,6 @@ only the displayed label localizes.
     <string name="today_humidity_subtitle">Относительная влажность (%%) по часам и моделям</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">Прогнозы расходятся</string>
-    <string name="today_low_confidence_callout_body">Температура расходится на %1$.1f°C, вероятность осадков — на %2$.0f%% по %3$d моделям.</string>
 
     <!-- Telemetry notice (first-run banner on Today screen). -->
     <string name="today_telemetry_notice_title">Отчёты о сбоях и использовании включены</string>

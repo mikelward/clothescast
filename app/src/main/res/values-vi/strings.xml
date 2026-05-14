@@ -178,8 +178,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_confidence_medium">Độ tin cậy trung bình</string>
     <string name="today_confidence_low">Độ tin cậy thấp — dự báo không đồng nhất</string>
     <string name="today_confidence_spread">Biên độ: %1$.1f°C, %2$.0f%% lượng mưa trên %3$d mô hình</string>
-    <string name="today_low_confidence_callout_title">Dự báo hôm nay không đồng nhất</string>
-    <string name="today_low_confidence_callout_body">Nhiệt độ chênh lệch %1$.1f°C và khả năng mưa chênh %2$.0f%% trên %3$d mô hình.</string>
 
     <!-- Status / error states -->
     <string name="today_working">Đang xử lý — đang tải ClothesCast…</string>

@@ -634,40 +634,75 @@ private val SAMPLE_PER_MODEL_DATE: LocalDate = LocalDate.of(2026, 4, 26)
 // Three model curves spread around the blended sample. Offsets are deliberate
 // so the overlay is visually distinguishable from the main line.
 private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
-    fun shift(deltaC: Double, precipDelta: Double, windBase: Double, cloudBase: Double) =
-        SAMPLE_HOURLY_RAINY.mapIndexed { i, h ->
-            // Simple sinusoidal-ish wind curve so the per-model lines visibly
-            // diverge across the day — the diagnostic chart's whole point is
-            // showing where the spread is largest.
-            val hourPhase = (i - 6).coerceAtLeast(0).coerceAtMost(12)
-            PerModelHour(
-                time = java.time.LocalDateTime.of(SAMPLE_PER_MODEL_DATE, h.time),
-                apparentTemperatureC = h.feelsLikeC + deltaC,
-                temperatureC = h.temperatureC + deltaC,
-                precipitationProbabilityPct = (h.precipitationProbabilityPct + precipDelta)
-                    .coerceIn(0.0, 100.0),
-                windSpeedKmh = windBase + hourPhase * 0.6,
-                relativeHumidityPct = 70.0 - hourPhase * 0.5,
-                cloudCoverPct = (cloudBase + hourPhase * 2.0).coerceIn(0.0, 100.0),
-            )
-        }
+    fun shift(
+        deltaC: Double,
+        precipDelta: Double,
+        windBase: Double,
+        cloudBase: Double,
+        solarPeakWm2: Double,
+        sunshineMinutesAtMidday: Double,
+        uvPeak: Double,
+    ) = SAMPLE_HOURLY_RAINY.mapIndexed { i, h ->
+        // Simple sinusoidal-ish wind curve so the per-model lines visibly
+        // diverge across the day — the diagnostic chart's whole point is
+        // showing where the spread is largest.
+        val hourPhase = (i - 6).coerceAtLeast(0).coerceAtMost(12)
+        // Bell-shaped daytime curve peaking around noon — zero overnight,
+        // climbing to the peak between hours 6..18, falling back to zero.
+        // Matches how shortwave / sunshine / UV behave in reality.
+        val daylightFactor = if (i in 6..18) {
+            val t = (i - 6).toDouble() / 12.0
+            kotlin.math.sin(t * kotlin.math.PI)
+        } else 0.0
+        PerModelHour(
+            time = java.time.LocalDateTime.of(SAMPLE_PER_MODEL_DATE, h.time),
+            apparentTemperatureC = h.feelsLikeC + deltaC,
+            temperatureC = h.temperatureC + deltaC,
+            precipitationProbabilityPct = (h.precipitationProbabilityPct + precipDelta)
+                .coerceIn(0.0, 100.0),
+            windSpeedKmh = windBase + hourPhase * 0.6,
+            relativeHumidityPct = 70.0 - hourPhase * 0.5,
+            cloudCoverPct = (cloudBase + hourPhase * 2.0).coerceIn(0.0, 100.0),
+            shortwaveRadiationWm2 = solarPeakWm2 * daylightFactor,
+            // sunshine_duration is per-hour seconds; convert from the
+            // midday-minutes parameter so the call site reads naturally.
+            sunshineDurationSec = sunshineMinutesAtMidday * 60.0 * daylightFactor,
+            uvIndex = uvPeak * daylightFactor,
+        )
+    }
     PerModelHourly(
         byModel = mapOf(
-            "ecmwf_ifs04" to shift(deltaC = -1.5, precipDelta = -10.0, windBase = 8.0, cloudBase = 55.0),
-            "gfs_seamless" to shift(deltaC = 0.5, precipDelta = 5.0, windBase = 12.0, cloudBase = 70.0),
-            "icon_seamless" to shift(deltaC = 2.0, precipDelta = -5.0, windBase = 6.0, cloudBase = 40.0),
+            "ecmwf_ifs04" to shift(
+                deltaC = -1.5, precipDelta = -10.0, windBase = 8.0, cloudBase = 55.0,
+                solarPeakWm2 = 600.0, sunshineMinutesAtMidday = 35.0, uvPeak = 5.0,
+            ),
+            "gfs_seamless" to shift(
+                deltaC = 0.5, precipDelta = 5.0, windBase = 12.0, cloudBase = 70.0,
+                solarPeakWm2 = 500.0, sunshineMinutesAtMidday = 25.0, uvPeak = 4.0,
+            ),
+            "icon_seamless" to shift(
+                deltaC = 2.0, precipDelta = -5.0, windBase = 6.0, cloudBase = 40.0,
+                solarPeakWm2 = 800.0, sunshineMinutesAtMidday = 50.0, uvPeak = 6.5,
+            ),
             // best_match deliberately offset further than any consulted model
             // so the preview shows the "Auto" overlay diverging — the exact
-            // case the user wants the consensus to outvote. Wind/cloud are
-            // null because the primary `/v1/forecast` call doesn't fetch the
-            // diagnostic fields per best_match; the diagnostic charts will
-            // hide the Auto line on those metrics.
+            // case the user wants the consensus to outvote. Wind/cloud/solar
+            // /sunshine/UV are null because the primary `/v1/forecast` call
+            // doesn't fetch the diagnostic fields per best_match; the
+            // diagnostic charts will hide the Auto line on those metrics.
             PerModelHourly.BEST_MATCH_MODEL_ID to shift(
-                deltaC = -2.5,
-                precipDelta = -30.0,
-                windBase = 0.0,
-                cloudBase = 0.0,
-            ).map { it.copy(windSpeedKmh = null, relativeHumidityPct = null, cloudCoverPct = null) },
+                deltaC = -2.5, precipDelta = -30.0, windBase = 0.0, cloudBase = 0.0,
+                solarPeakWm2 = 0.0, sunshineMinutesAtMidday = 0.0, uvPeak = 0.0,
+            ).map {
+                it.copy(
+                    windSpeedKmh = null,
+                    relativeHumidityPct = null,
+                    cloudCoverPct = null,
+                    shortwaveRadiationWm2 = null,
+                    sunshineDurationSec = null,
+                    uvIndex = null,
+                )
+            },
         ),
     )
 }
@@ -715,6 +750,40 @@ internal fun CloudCardWithModelSpreadPreview() {
 internal fun HumidityCardWithModelSpreadPreview() {
     Frame {
         HumidityCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+        )
+    }
+}
+
+@Preview(name = "Solar radiation card · with model spread", widthDp = 360)
+@Composable
+internal fun SolarRadiationCardWithModelSpreadPreview() {
+    Frame {
+        SolarRadiationCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+        )
+    }
+}
+
+@Preview(name = "Sunshine card · with model spread", widthDp = 360)
+@Composable
+internal fun SunshineCardWithModelSpreadPreview() {
+    Frame {
+        SunshineCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            forDate = SAMPLE_PER_MODEL_DATE,
+        )
+    }
+}
+
+@Preview(name = "UV index card · with model spread", widthDp = 360)
+@Composable
+internal fun UvIndexCardWithModelSpreadPreview() {
+    Frame {
+        UvIndexCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
         )

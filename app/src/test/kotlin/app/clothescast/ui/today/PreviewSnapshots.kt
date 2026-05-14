@@ -216,6 +216,9 @@ class PreviewSnapshots {
     @Test fun wind_card_with_model_spread_mph() = capture { WindCardWithModelSpreadMphPreview() }
     @Test fun cloud_card_with_model_spread() = capture { CloudCardWithModelSpreadPreview() }
     @Test fun humidity_card_with_model_spread() = capture { HumidityCardWithModelSpreadPreview() }
+    @Test fun solar_radiation_card_with_model_spread() = capture { SolarRadiationCardWithModelSpreadPreview() }
+    @Test fun sunshine_card_with_model_spread() = capture { SunshineCardWithModelSpreadPreview() }
+    @Test fun uv_index_card_with_model_spread() = capture { UvIndexCardWithModelSpreadPreview() }
     @Test fun wind_card_sparse_trailing() = capture { WindCardSparseTrailingPreview() }
 
     @Test fun precipitation_card() = capture { PrecipitationCardPreview() }

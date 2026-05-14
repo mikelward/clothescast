@@ -76,7 +76,8 @@ class MultiModelConfidenceFetcherTest {
         req.url.parameters["daily"] shouldBe "apparent_temperature_max,precipitation_probability_max"
         req.url.parameters["hourly"] shouldBe
             "apparent_temperature,temperature_2m,precipitation_probability," +
-            "wind_speed_10m,relative_humidity_2m,cloud_cover,weather_code"
+            "wind_speed_10m,relative_humidity_2m,cloud_cover_low," +
+            "shortwave_radiation,sunshine_duration,uv_index,weather_code"
         // forecast_days=2 keeps the wrap-past-midnight evening tie-in able to
         // see tomorrow's pre-dawn rain that one model spots but the base
         // forecast under-calls.
@@ -143,7 +144,14 @@ class MultiModelConfidenceFetcherTest {
         ecmwf[0].precipitationProbabilityPct shouldBe (10.0 plusOrMinus 0.0001)
         ecmwf[0].windSpeedKmh shouldBe (8.0 plusOrMinus 0.0001)
         ecmwf[0].relativeHumidityPct shouldBe (78.0 plusOrMinus 0.0001)
+        // Domain field is still named cloudCoverPct, but it carries the
+        // low-deck value now (cloud_cover_low) — see PerModelHour kdoc.
         ecmwf[0].cloudCoverPct shouldBe (60.0 plusOrMinus 0.0001)
+        ecmwf[0].shortwaveRadiationWm2 shouldBe (0.0 plusOrMinus 0.0001)
+        ecmwf[1].shortwaveRadiationWm2 shouldBe (50.0 plusOrMinus 0.0001)
+        ecmwf[0].sunshineDurationSec shouldBe (0.0 plusOrMinus 0.0001)
+        ecmwf[2].sunshineDurationSec shouldBe (1800.0 plusOrMinus 0.0001)
+        ecmwf[1].uvIndex shouldBe (0.5 plusOrMinus 0.0001)
         // WMO 3 → CLOUDY; ensures weather_code_<model> is being parsed
         // through [WmoCodeMapper] alongside the numeric fields.
         ecmwf[0].condition shouldBe WeatherCondition.CLOUDY
@@ -165,6 +173,9 @@ class MultiModelConfidenceFetcherTest {
         ecmwf[0].windSpeedKmh.shouldBeNull()
         ecmwf[0].relativeHumidityPct.shouldBeNull()
         ecmwf[0].cloudCoverPct.shouldBeNull()
+        ecmwf[0].shortwaveRadiationWm2.shouldBeNull()
+        ecmwf[0].sunshineDurationSec.shouldBeNull()
+        ecmwf[0].uvIndex.shouldBeNull()
     }
 
     @Test
@@ -328,9 +339,18 @@ class MultiModelConfidenceFetcherTest {
                 "relative_humidity_2m_ecmwf_ifs04": [78, 80, 82],
                 "relative_humidity_2m_gfs_seamless": [76, 78, 80],
                 "relative_humidity_2m_icon_seamless": [82, 84, 85],
-                "cloud_cover_ecmwf_ifs04": [60, 70, 80],
-                "cloud_cover_gfs_seamless": [65, 72, 78],
-                "cloud_cover_icon_seamless": [40, 55, 70],
+                "cloud_cover_low_ecmwf_ifs04": [60, 70, 80],
+                "cloud_cover_low_gfs_seamless": [65, 72, 78],
+                "cloud_cover_low_icon_seamless": [40, 55, 70],
+                "shortwave_radiation_ecmwf_ifs04": [0, 50, 120],
+                "shortwave_radiation_gfs_seamless": [0, 45, 110],
+                "shortwave_radiation_icon_seamless": [0, 60, 140],
+                "sunshine_duration_ecmwf_ifs04": [0, 600, 1800],
+                "sunshine_duration_gfs_seamless": [0, 500, 1500],
+                "sunshine_duration_icon_seamless": [0, 700, 2100],
+                "uv_index_ecmwf_ifs04": [0.0, 0.5, 1.5],
+                "uv_index_gfs_seamless": [0.0, 0.4, 1.3],
+                "uv_index_icon_seamless": [0.0, 0.6, 1.8],
                 "weather_code_ecmwf_ifs04": [3, 61, 61],
                 "weather_code_gfs_seamless": [2, 61, 61],
                 "weather_code_icon_seamless": [3, 51, 51]

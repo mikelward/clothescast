@@ -70,11 +70,28 @@ data class PerModelHour(
      *  where it's the dominant feels-like contributor. Nullable — see
      *  [windSpeedKmh]. */
     val relativeHumidityPct: Double? = null,
-    /** Total cloud cover, percent (0–100). Not a feels-like input, but the
-     *  upstream driver of air-temp divergence when models disagree on solar
-     *  gain (one predicts a mid-day clearing, the other keeps it overcast).
-     *  Nullable — see [windSpeedKmh]. */
+    /** Low-deck cloud cover (below ~2 km), percent (0–100). We pick the low
+     *  deck rather than total column because cirrus inflates the total but
+     *  barely shades the surface — the user-facing "feels gloomy" question
+     *  tracks the low deck. Still the upstream driver of air-temp divergence
+     *  when models disagree on solar gain (one predicts a mid-day clearing,
+     *  the other keeps it overcast). Nullable — see [windSpeedKmh]. */
     val cloudCoverPct: Double? = null,
+    /** Surface shortwave (solar) radiation for the hour, W/m². Already bakes
+     *  in cloud attenuation, so it captures "cloudy but bright" days better
+     *  than cloud cover alone. Nullable — see [windSpeedKmh]. */
+    val shortwaveRadiationWm2: Double? = null,
+    /** Sunshine duration for the hour, in seconds (0–3600). Open-Meteo
+     *  thresholds the per-minute direct irradiance so this isn't quite the
+     *  same as "1 - cloud cover" — a partly cloudy hour can still report
+     *  most of its minutes as sunshine. Summed across the day for the
+     *  Today screen's "Xh of sun today" blurb. Nullable — see [windSpeedKmh]. */
+    val sunshineDurationSec: Double? = null,
+    /** UV index for the hour, 0–~12+. Derived from cloud cover, ozone and
+     *  solar zenith angle; surfaced so a hat / sunscreen rule can fire
+     *  even when the temperature itself doesn't trigger anything. Nullable
+     *  — see [windSpeedKmh]. */
+    val uvIndex: Double? = null,
     /** Coarse weather bucket for the hour, mapped from the model's WMO
      *  weather code. Carried per-model so [blendConsensusHourly] can pick
      *  a defensible condition for the blended main line (modal aggregation

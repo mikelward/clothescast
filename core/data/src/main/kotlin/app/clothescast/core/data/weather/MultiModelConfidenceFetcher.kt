@@ -77,10 +77,18 @@ internal class MultiModelConfidenceFetcher(
                 parameter("forecast_days", 2)
                 parameter("timezone", "auto")
                 parameter("daily", "apparent_temperature_max,precipitation_probability_max")
+                // cloud_cover_low (the deck below ~2 km) rather than total
+                // column: total picks up cirrus that looks cloudy on satellite
+                // but barely dims the sun, and the user-facing question
+                // ("will it feel gloomy / overcast?") is answered by the low
+                // deck. shortwave_radiation / sunshine_duration / uv_index
+                // ride the same call for free and feed the new solar /
+                // sunshine / UV diagnostic cards.
                 parameter(
                     "hourly",
                     "apparent_temperature,temperature_2m,precipitation_probability," +
-                        "wind_speed_10m,relative_humidity_2m,cloud_cover,weather_code",
+                        "wind_speed_10m,relative_humidity_2m,cloud_cover_low," +
+                        "shortwave_radiation,sunshine_duration,uv_index,weather_code",
                 )
                 parameter("models", models.joinToString(","))
             }.body<MultiModelResponse>()
@@ -126,7 +134,16 @@ internal class MultiModelConfidenceFetcher(
                 val precips = obj["precipitation_probability_$model"] as? JsonArray
                 val winds = obj["wind_speed_10m_$model"] as? JsonArray
                 val humidities = obj["relative_humidity_2m_$model"] as? JsonArray
-                val clouds = obj["cloud_cover_$model"] as? JsonArray
+                // We request cloud_cover_low but keep the domain field named
+                // `cloudCoverPct` — the value is still a percent, just for the
+                // low deck. See [PerModelHour.cloudCoverPct] for the rationale.
+                val clouds = obj["cloud_cover_low_$model"] as? JsonArray
+                val solar = obj["shortwave_radiation_$model"] as? JsonArray
+                val sunshine = obj["sunshine_duration_$model"] as? JsonArray
+                // UV index per-model: Open-Meteo exposes `uv_index_$model` on
+                // most models. When a particular model omits it the field is
+                // simply absent for that model and the UV card hides its line.
+                val uv = obj["uv_index_$model"] as? JsonArray
                 val weatherCodes = obj["weather_code_$model"] as? JsonArray
                 if (apparentTemps == null && airTemps == null && precips == null) continue
                 val entries = buildList {
@@ -149,6 +166,9 @@ internal class MultiModelConfidenceFetcher(
                                 windSpeedKmh = numberAt(winds, i)?.toDouble(),
                                 relativeHumidityPct = numberAt(humidities, i)?.toDouble(),
                                 cloudCoverPct = numberAt(clouds, i)?.toDouble(),
+                                shortwaveRadiationWm2 = numberAt(solar, i)?.toDouble(),
+                                sunshineDurationSec = numberAt(sunshine, i)?.toDouble(),
+                                uvIndex = numberAt(uv, i)?.toDouble(),
                                 condition = numberAt(weatherCodes, i)?.toInt()
                                     ?.let { WmoCodeMapper.map(it) },
                             ),

@@ -21,7 +21,11 @@ internal fun niceStep(span: Double): Double = when {
     span <= 12.0 -> 2.0
     span <= 30.0 -> 5.0
     span <= 60.0 -> 10.0
-    else -> 20.0
+    span <= 150.0 -> 25.0
+    span <= 300.0 -> 50.0
+    span <= 600.0 -> 100.0
+    span <= 1500.0 -> 250.0
+    else -> 500.0
 }
 
 internal fun alignToStep(rawMin: Double, rawMax: Double, step: Double): YAxisBounds =

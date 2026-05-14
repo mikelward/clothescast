@@ -38,8 +38,23 @@ class ChartAxisTest {
     }
 
     @Test
-    fun `niceStep picks 20 above 60`() {
-        niceStep(100.0) shouldBe 20.0
+    fun `niceStep picks 25 for the 60-to-150 bucket`() {
+        // Bucket added when the solar-radiation card landed — a 120 W/m²
+        // overcast peak should read "0, 25, 50, 75, 100, 125" rather than
+        // the old 20-step "0, 20, 40, 60, 80, 100, 120" which crowded labels.
+        niceStep(80.0) shouldBe 25.0
+        niceStep(120.0) shouldBe 25.0
+        niceStep(150.0) shouldBe 25.0
+    }
+
+    @Test
+    fun `niceStep picks larger buckets for solar radiation ranges`() {
+        // Sunny summer peaks around 900 W/m²; the bucket layout should keep
+        // tick counts to ~4-7 across the typical surface-irradiance range.
+        niceStep(200.0) shouldBe 50.0
+        niceStep(450.0) shouldBe 100.0
+        niceStep(900.0) shouldBe 250.0
+        niceStep(2000.0) shouldBe 500.0
     }
 
     @Test

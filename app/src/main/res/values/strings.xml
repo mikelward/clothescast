@@ -150,9 +150,12 @@
          is the upstream driver of air-temperature divergence between models
          (more clearing means more solar gain means warmer surface), so this
          is the most useful follow-up when models disagree on temperature
-         itself. -->
+         itself. The card plots the low cloud deck (below ~2 km) rather than
+         the total column — cirrus high above inflates the total but barely
+         shades the surface, and the user-facing "feels gloomy" question
+         tracks the low deck. -->
     <string name="today_cloud_title">Cloud cover</string>
-    <string name="today_cloud_subtitle">Per-model total cloud cover (%) by hour</string>
+    <string name="today_cloud_subtitle">Per-model low-cloud cover (%) by hour</string>
 
     <!-- Relative-humidity diagnostic card. Low signal at cool temperatures
          (apparent-temperature's humidity term only kicks in above ~20°C)
@@ -160,6 +163,34 @@
          it for the warm days where it does drive feels-like. -->
     <string name="today_humidity_title">Humidity</string>
     <string name="today_humidity_subtitle">Per-model relative humidity (%) by hour</string>
+
+    <!-- Shortwave-radiation ("solar radiation") diagnostic card. W/m² at the
+         surface — bakes in cloud attenuation, so it captures "cloudy but
+         bright" days more honestly than cloud cover alone. -->
+    <string name="today_solar_title">Solar radiation</string>
+    <string name="today_solar_subtitle">Per-model surface irradiance (W/m²) by hour</string>
+
+    <!-- Sunshine-duration diagnostic card. The chart plots minutes of sun
+         per hour (0..60) per model; the card's subtitle replaces the static
+         description with a consensus daily total when the data are
+         available — see today_sunshine_total_*. -->
+    <string name="today_sunshine_title">Sunshine</string>
+    <string name="today_sunshine_subtitle">Per-model minutes of sun per hour</string>
+    <!-- Sunshine daily-total blurb shown in place of [today_sunshine_subtitle]
+         when at least two consulted models reported a sunshine series. Three
+         variants pick the shortest readable form: hours only when the
+         minutes round to zero, minutes only when there's no full hour, and
+         the combined form otherwise. %1$d = hours, %2$d = minutes (when
+         both are present). -->
+    <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm of sun today</string>
+    <string name="today_sunshine_total_hours_only">%1$dh of sun today</string>
+    <string name="today_sunshine_total_minutes_only">%1$dm of sun today</string>
+
+    <!-- UV-index diagnostic card. Cheap actionable signal (hat / sunscreen /
+         sunglasses) even when the temperature itself doesn't trigger a
+         clothes rule. -->
+    <string name="today_uv_title">UV index</string>
+    <string name="today_uv_subtitle">Per-model UV index by hour</string>
 
     <string name="today_confidence_high">High confidence — major models agree</string>
     <string name="today_confidence_medium">Medium confidence</string>

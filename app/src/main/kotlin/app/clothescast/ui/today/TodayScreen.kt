@@ -79,6 +79,7 @@ import app.clothescast.core.domain.model.OutfitRationale
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.ModelDivergenceSummary
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.core.domain.model.consensusSunshineHoursFor
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WindSpeedUnit
@@ -333,6 +334,16 @@ private fun TodayContent(
                     )
                     CloudCard(hourly = state.insight.hourly, perModelHourly = perModelData)
                     HumidityCard(hourly = state.insight.hourly, perModelHourly = perModelData)
+                    SolarRadiationCard(
+                        hourly = state.insight.hourly,
+                        perModelHourly = perModelData,
+                    )
+                    SunshineCard(
+                        hourly = state.insight.hourly,
+                        perModelHourly = perModelData,
+                        forDate = state.insight.forDate,
+                    )
+                    UvIndexCard(hourly = state.insight.hourly, perModelHourly = perModelData)
                 }
             }
         }
@@ -1278,6 +1289,104 @@ internal fun HumidityCard(
         perModelHourly = perModelHourly,
         picker = { it.relativeHumidityPct },
         yAxis = YAxis.Percent,
+    )
+}
+
+/**
+ * Diagnostic shortwave-radiation card — surface solar irradiance (W/m²) per
+ * model and hour. Already bakes in cloud attenuation, so it captures
+ * "cloudy but bright" days more honestly than cloud cover alone. Same gating
+ * as the other diagnostic cards: only renders when the per-model overlay is
+ * active and at least one consulted model returned a shortwave series.
+ */
+@Composable
+internal fun SolarRadiationCard(
+    hourly: List<HourlyForecast>,
+    perModelHourly: PerModelHourly,
+) {
+    val times = remember(hourly) { hourly.map { it.time } }
+    PerModelDiagnosticCard(
+        title = stringResource(R.string.today_solar_title),
+        subtitle = stringResource(R.string.today_solar_subtitle),
+        times = times,
+        perModelHourly = perModelHourly,
+        picker = { it.shortwaveRadiationWm2 },
+        // A typical clear summer noon peaks ~900 W/m²; the floor keeps a deep
+        // overcast day's near-zero series from collapsing into a flat line on
+        // top of the x-axis.
+        yAxis = YAxis.AutoZeroBased(minSpan = 100.0),
+    )
+}
+
+/**
+ * Diagnostic sunshine-duration card with a consensus daily-total blurb on
+ * top — the single "Xh Ym of sun today" number averaged across consulted
+ * models, paired with the per-model minutes-per-hour breakdown below. Same
+ * gating as the other diagnostic cards.
+ *
+ * Open-Meteo reports sunshine in seconds per hour (0..3600). The chart
+ * displays minutes per hour for readability — "0..60" reads more naturally
+ * than "0..3600" and lines up with the way users think about sunshine.
+ */
+@Composable
+internal fun SunshineCard(
+    hourly: List<HourlyForecast>,
+    perModelHourly: PerModelHourly,
+    forDate: java.time.LocalDate,
+) {
+    val times = remember(hourly) { hourly.map { it.time } }
+    val totalHours = remember(perModelHourly, forDate) {
+        perModelHourly.consensusSunshineHoursFor(forDate)
+    }
+    val totalBlurb = if (totalHours != null) {
+        formatSunshineTotal(totalHours)
+    } else {
+        stringResource(R.string.today_sunshine_subtitle)
+    }
+    PerModelDiagnosticCard(
+        title = stringResource(R.string.today_sunshine_title),
+        subtitle = totalBlurb,
+        times = times,
+        // Seconds → minutes so the y-axis reads 0..60 instead of 0..3600.
+        picker = { it.sunshineDurationSec?.div(60.0) },
+        perModelHourly = perModelHourly,
+        yAxis = YAxis.AutoZeroBased(minSpan = 60.0),
+    )
+}
+
+@Composable
+private fun formatSunshineTotal(hours: Double): String {
+    val totalMinutes = (hours * 60.0).roundToInt()
+    val h = totalMinutes / 60
+    val m = totalMinutes % 60
+    return when {
+        h == 0 -> stringResource(R.string.today_sunshine_total_minutes_only, m)
+        m == 0 -> stringResource(R.string.today_sunshine_total_hours_only, h)
+        else -> stringResource(R.string.today_sunshine_total_hours_minutes, h, m)
+    }
+}
+
+/**
+ * Diagnostic UV-index card. Cheap actionable signal — hat / sunscreen /
+ * sunglasses — even when the temperature itself doesn't trigger anything.
+ * Same gating as the other diagnostic cards.
+ */
+@Composable
+internal fun UvIndexCard(
+    hourly: List<HourlyForecast>,
+    perModelHourly: PerModelHourly,
+) {
+    val times = remember(hourly) { hourly.map { it.time } }
+    PerModelDiagnosticCard(
+        title = stringResource(R.string.today_uv_title),
+        subtitle = stringResource(R.string.today_uv_subtitle),
+        times = times,
+        perModelHourly = perModelHourly,
+        picker = { it.uvIndex },
+        // UV peaks around 11–12 in the tropics on summer solstice; the floor
+        // keeps a winter-morning all-zero series from collapsing onto the
+        // axis. niceStep gives "0, 2, 4, 6" for typical 0..6 days.
+        yAxis = YAxis.AutoZeroBased(minSpan = 6.0),
     )
 }
 

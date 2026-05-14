@@ -291,6 +291,9 @@ class InsightCache(
         val windSpeedKmh: Double? = null,
         val relativeHumidityPct: Double? = null,
         val cloudCoverPct: Double? = null,
+        val shortwaveRadiationWm2: Double? = null,
+        val sunshineDurationSec: Double? = null,
+        val uvIndex: Double? = null,
         // Weather code bucket, stored as the enum name so a future enum
         // rename trips deserialisation rather than silently mapping to the
         // wrong bucket. Nullable for back-compat with payloads written
@@ -307,6 +310,9 @@ class InsightCache(
                 windSpeedKmh = windSpeedKmh,
                 relativeHumidityPct = relativeHumidityPct,
                 cloudCoverPct = cloudCoverPct,
+                shortwaveRadiationWm2 = shortwaveRadiationWm2,
+                sunshineDurationSec = sunshineDurationSec,
+                uvIndex = uvIndex,
                 condition = conditionName?.let {
                     runCatching { WeatherCondition.valueOf(it) }.getOrNull()
                 },
@@ -547,6 +553,9 @@ class InsightCache(
         windSpeedKmh = windSpeedKmh,
         relativeHumidityPct = relativeHumidityPct,
         cloudCoverPct = cloudCoverPct,
+        shortwaveRadiationWm2 = shortwaveRadiationWm2,
+        sunshineDurationSec = sunshineDurationSec,
+        uvIndex = uvIndex,
         conditionName = condition?.name,
     )
 

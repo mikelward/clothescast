@@ -533,4 +533,30 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_forecast_air_section_title">Temperatura de l\'aire</string>
     <string name="settings_default_bottom_title">Part de baix estàndard</string>
     <string name="settings_default_bottom_description">El que suggerim a la pantalla d\'inici quan no fa prou calor per a pantalons curts.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Paleta de colors</string>
+    <string name="settings_display_palette_accessible">Accessible</string>
+    <string name="settings_display_palette_accessible_description">Una paleta derivada d\'Okabe-Ito, dissenyada per mantenir-se distingible amb deuteranopia, protanopia i tritanopia. Les targetes de confiança utilitzen blau cel, neutre i ambre en lloc de blau verdós, neutre i vermell.</string>
+    <string name="settings_display_palette_rainbow">Arc de Sant Martí</string>
+    <string name="settings_display_palette_rainbow_description">Línies de gràfic rosa, taronja i verd amb targetes de confiança Material blau verdós/vermell. Per defecte.</string>
+    <string name="settings_unit_auto">Auto</string>
+    <string name="today_cloud_range">Nuvolositat %1$d–%2$d%%</string>
+    <string name="today_confidence_precip_spread">Els models no es posen d\'acord sobre la pluja (Δ %1$.0f%% entre %2$d models)</string>
+    <string name="today_confidence_tap_to_hide">Toca per amagar les previsions per model</string>
+    <string name="today_confidence_tap_to_show">Toca per veure la previsió de cada model</string>
+    <string name="today_humidity_range">Humitat %1$d–%2$d%%</string>
+    <string name="today_solar_subtitle">Irradiància superficial (W/m²) per hora per model</string>
+    <string name="today_solar_title">Radiació solar</string>
+    <string name="today_sunshine_subtitle">Minuts de sol per hora per model</string>
+    <string name="today_sunshine_title">Hores de sol</string>
+    <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm de sol avui</string>
+    <string name="today_sunshine_total_hours_only">%1$dh de sol avui</string>
+    <string name="today_sunshine_total_minutes_only">%1$dm de sol avui</string>
+    <string name="today_uv_subtitle">Índex UV per hora per model</string>
+    <string name="today_uv_title">Índex UV</string>
+    <string name="today_wind_peak">Pic %1$d %2$s a les %3$s</string>
+
+    <string name="settings_tts_test">Prova la veu</string>
+    <string name="settings_tts_test_in_flight">Provant — espera…</string>
 </resources>

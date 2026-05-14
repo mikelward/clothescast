@@ -14,7 +14,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.clothescast.R
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
@@ -135,11 +137,13 @@ internal fun PerModelDiagnosticCard(
                 overlayModels = if (showOverlay) availableModels else emptyList(),
                 yAxis = yAxis,
             )
-            // Legend only renders when the overlay is showing — without
-            // overlay lines, there's nothing for the swatches to refer to.
-            if (showOverlay) {
-                ModelSpreadLegend(visibleModelIds = availableModels)
-            }
+            ModelSpreadLegend(
+                visibleModelIds = if (showOverlay) availableModels else emptyList(),
+                mainLine = MainLineLegend(
+                    color = MaterialTheme.colorScheme.primary,
+                    label = stringResource(R.string.today_chart_main_line_label),
+                ),
+            )
         }
     }
 }

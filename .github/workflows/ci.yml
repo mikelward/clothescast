@@ -5,9 +5,36 @@ on:
   # Without this, every commit on a PR branch fires CI twice (once for `push`
   # to the branch, once for `pull_request`), and the two runs race on the
   # shared Gradle cache so one frequently fails while the other passes.
+  #
+  # paths: skip CI when a push/PR only touches top-level dotfiles or
+  # hidden directories (.claude/, .gitignore, .editorconfig, .github/
+  # ISSUE_TEMPLATE, dependabot.yml, …). Agent-config / repo-metadata
+  # changes don't move app or build logic, so the ~5min CI cycle is
+  # wasted there. A push that mixes a dotfile change with any non-
+  # dotfile path still runs (the include `**` matches the non-dotfile).
+  #
+  # Uses `paths` (with `!` negations) rather than `paths-ignore` because
+  # `paths-ignore` is documented as exclude-only — combining include
+  # and exclude requires the `paths` form per GitHub's workflow syntax
+  # docs. Patterns evaluate in order, with later overriding earlier:
+  #   1. `**`                     — default, every path triggers
+  #   2. `!.*` / `!.*/**`         — …except top-level dotfiles + hidden dirs
+  #   3. `.github/workflows/**`   — …re-include this file's peers, since
+  #                                 a workflow-only PR IS exactly what
+  #                                 CI most needs to validate.
   push:
     branches: [main]
+    paths:
+      - '**'
+      - '!.*'
+      - '!.*/**'
+      - '.github/workflows/**'
   pull_request:
+    paths:
+      - '**'
+      - '!.*'
+      - '!.*/**'
+      - '.github/workflows/**'
   # Manual rescue trigger so the release-AAB / Firebase / Play-upload steps
   # can be re-fired when the natural `push` event didn't produce a usable
   # build (e.g. a transient gradle / Play API failure on the original
@@ -458,14 +485,15 @@ jobs:
         # noise to a non-engineer reader: anything prefixed `ci:` (the
         # snapshot-regen bot commits "ci: regenerate UI snapshots", workflow
         # tweaks, etc.) and changes whose paths are all under `docs/`, all
-        # under `.github/` (workflow / repo metadata), or top-level `*.md`.
-        # PRIVACY.md is treated as non-docs so that privacy-policy updates
-        # still surface to users. The `.github/` filter is a safety net for
-        # workflow-only commits that forget the `ci:` subject prefix — they
-        # still get walked past on the path-based check. Falls back to the
-        # head subject after 20 hops without a match, so an unusual stretch
-        # of filtered commits still produces *some* changelog rather than
-        # nothing.
+        # top-level dotfiles or hidden directories (`.github/`, `.claude/`,
+        # `.gitignore`, `.editorconfig`, …), or top-level `*.md`. PRIVACY.md
+        # is treated as non-docs so that privacy-policy updates still surface
+        # to users. The `^\.` filter is a safety net for workflow- /
+        # agent-config-only commits that forget the `ci:` subject prefix —
+        # they still get walked past on the path-based check. Falls back to
+        # the head subject after 20 hops without a match, so an unusual
+        # stretch of filtered commits still produces *some* changelog rather
+        # than nothing.
         #
         # Outputs:
         #   - $RUNNER_TEMP/whatsnew/whatsnew-en-US  (consumed by Play upload,
@@ -505,7 +533,7 @@ jobs:
               | awk '
                   /^PRIVACY\.md$/ { count++; next }
                   /^docs\//       { next }
-                  /^\.github\//   { next }
+                  /^\./           { next }
                   /\.md$/         { next }
                                   { count++ }
                   END             { print count + 0 }

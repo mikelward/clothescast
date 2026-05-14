@@ -145,6 +145,11 @@
     <!-- %1$s is the user's wind-speed unit, e.g. "km/h" or "mph". Derived from
          the chosen distance unit (metric / imperial) — see DistanceUnit.windSpeedUnit(). -->
     <string name="today_wind_subtitle">Per-model wind speed (%1$s) by hour</string>
+    <!-- Replaces [today_wind_subtitle] when the consensus series has data: peak
+         consensus wind speed for the day. %1$d = value rounded to the user's
+         wind-speed unit, %2$s = unit symbol ("km/h" / "mph"), %3$s = hour
+         formatted as HH:00. -->
+    <string name="today_wind_peak">Peak %1$d %2$s at %3$s</string>
 
     <!-- Cloud-cover diagnostic card. Sits below the wind card; cloud cover
          is the upstream driver of air-temperature divergence between models
@@ -156,6 +161,9 @@
          tracks the low deck. -->
     <string name="today_cloud_title">Cloud cover</string>
     <string name="today_cloud_subtitle">Per-model low-cloud cover (%) by hour</string>
+    <!-- Replaces [today_cloud_subtitle] when the consensus series has data:
+         min–max range of consensus low-cloud cover across today's hours. -->
+    <string name="today_cloud_range">Cloud %1$d – %2$d%%</string>
 
     <!-- Relative-humidity diagnostic card. Low signal at cool temperatures
          (apparent-temperature's humidity term only kicks in above ~20°C)
@@ -163,6 +171,9 @@
          it for the warm days where it does drive feels-like. -->
     <string name="today_humidity_title">Humidity</string>
     <string name="today_humidity_subtitle">Per-model relative humidity (%) by hour</string>
+    <!-- Replaces [today_humidity_subtitle] when the consensus series has data:
+         min–max range of consensus relative humidity across today's hours. -->
+    <string name="today_humidity_range">Humidity %1$d – %2$d%%</string>
 
     <!-- Shortwave-radiation ("solar radiation") diagnostic card. W/m² at the
          surface — bakes in cloud attenuation, so it captures "cloudy but

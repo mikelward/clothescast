@@ -78,6 +78,7 @@ import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitRationale
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.ModelDivergenceSummary
+import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.consensusSunshineHoursFor
 import app.clothescast.core.domain.model.Region
@@ -1336,9 +1337,26 @@ internal fun WindCard(
     // floor in the user's unit so the heuristic stays equivalent (10 km/h
     // ≈ 6.2 mph) instead of shrinking to a tighter span on imperial.
     val minSpan = 10.0.toWindSpeedUnit(windSpeedUnit)
+    val peak = remember(perModelHourly, windSpeedUnit, times) {
+        perModelConsensusSeries(perModelHourly) {
+            it.windSpeedKmh?.toWindSpeedUnit(windSpeedUnit)
+        }
+            .maxByOrNull { it.second }
+            ?.let { (idx, value) ->
+                times.getOrNull(idx)?.let { time -> time to value }
+            }
+    }
+    val subtitle = peak?.let { (time, value) ->
+        stringResource(
+            R.string.today_wind_peak,
+            value.roundToInt(),
+            windSpeedUnit.symbol(),
+            "%02d:00".format(time.hour),
+        )
+    } ?: stringResource(R.string.today_wind_subtitle, windSpeedUnit.symbol())
     PerModelDiagnosticCard(
         title = stringResource(R.string.today_wind_title),
-        subtitle = stringResource(R.string.today_wind_subtitle, windSpeedUnit.symbol()),
+        subtitle = subtitle,
         times = times,
         perModelHourly = perModelHourly,
         picker = { it.windSpeedKmh?.toWindSpeedUnit(windSpeedUnit) },
@@ -1367,9 +1385,15 @@ internal fun CloudCard(
     onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
+    val range = remember(perModelHourly) {
+        perModelConsensusRange(perModelHourly) { it.cloudCoverPct }
+    }
+    val subtitle = range?.let {
+        stringResource(R.string.today_cloud_range, it.first, it.second)
+    } ?: stringResource(R.string.today_cloud_subtitle)
     PerModelDiagnosticCard(
         title = stringResource(R.string.today_cloud_title),
-        subtitle = stringResource(R.string.today_cloud_subtitle),
+        subtitle = subtitle,
         times = times,
         perModelHourly = perModelHourly,
         picker = { it.cloudCoverPct },
@@ -1394,9 +1418,15 @@ internal fun HumidityCard(
     onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
+    val range = remember(perModelHourly) {
+        perModelConsensusRange(perModelHourly) { it.relativeHumidityPct }
+    }
+    val subtitle = range?.let {
+        stringResource(R.string.today_humidity_range, it.first, it.second)
+    } ?: stringResource(R.string.today_humidity_subtitle)
     PerModelDiagnosticCard(
         title = stringResource(R.string.today_humidity_title),
-        subtitle = stringResource(R.string.today_humidity_subtitle),
+        subtitle = subtitle,
         times = times,
         perModelHourly = perModelHourly,
         picker = { it.relativeHumidityPct },
@@ -1662,6 +1692,33 @@ private fun formatMinMax(values: List<Double>, unit: TemperatureUnit): Pair<Int,
     if (values.isEmpty()) return null
     val converted = values.map { it.toUnit(unit) }
     return converted.min().roundToInt() to converted.max().roundToInt()
+}
+
+// Per-hour mean of [picker] across whichever models reported at that hour —
+// the same blend used for the diagnostic charts' main consensus line, lifted
+// out so the card subtitles can summarise the same series the chart draws.
+// Returns (originalIndex, mean) pairs sorted by index; empty when no model
+// has data for the metric.
+private fun perModelConsensusSeries(
+    perModelHourly: PerModelHourly,
+    picker: (PerModelHour) -> Double?,
+): List<Pair<Int, Double>> {
+    val byIndex = mutableMapOf<Int, MutableList<Double>>()
+    perModelHourly.byModel.values.forEach { entries ->
+        entries.forEachIndexed { i, e ->
+            picker(e)?.let { byIndex.getOrPut(i) { mutableListOf() } += it }
+        }
+    }
+    return byIndex.entries.sortedBy { it.key }.map { (idx, vs) -> idx to vs.average() }
+}
+
+private fun perModelConsensusRange(
+    perModelHourly: PerModelHourly,
+    picker: (PerModelHour) -> Double?,
+): Pair<Int, Int>? {
+    val values = perModelConsensusSeries(perModelHourly, picker).map { it.second }
+    if (values.isEmpty()) return null
+    return values.min().roundToInt() to values.max().roundToInt()
 }
 
 private fun triggerRefresh(

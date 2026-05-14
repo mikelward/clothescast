@@ -586,8 +586,6 @@ the displayed label localizes.
     <string name="today_humidity_subtitle">Relatieve luchtvochtigheid (%) per uur per model</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">Voorspellingen lopen uiteen</string>
-    <string name="today_low_confidence_callout_body">Temperatuur varieert met %1$.1f°C en kans op neerslag met %2$.0f%% over %3$d modellen.</string>
 
     <!-- Telemetry notice. -->
     <string name="today_telemetry_notice_title">Crash- en gebruiksrapporten zijn ingeschakeld</string>

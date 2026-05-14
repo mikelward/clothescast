@@ -628,8 +628,6 @@ label localizes.
     <string name="today_humidity_subtitle">各模型每小时相对湿度（%）</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">预报存在分歧</string>
-    <string name="today_low_confidence_callout_body">%3$d 个模型间，气温相差 %1$.1f°C，降雨概率相差 %2$.0f%%。</string>
 
     <!-- Telemetry notice (first-run banner on Today screen). -->
     <string name="today_telemetry_notice_title">崩溃及使用情况报告已开启</string>

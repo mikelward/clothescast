@@ -640,8 +640,6 @@ displayed label localizes.
     <string name="today_humidity_subtitle">모델별 시간당 상대 습도 (%)</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">예보가 모델마다 다릅니다</string>
-    <string name="today_low_confidence_callout_body">%3$d개 모델 간 기온이 %1$.1f°C, 강수 확률이 %2$.0f%% 차이가 납니다.</string>
 
     <!-- Telemetry notice (first-run banner on Today screen). -->
     <string name="today_telemetry_notice_title">충돌 및 사용 보고가 켜져 있습니다</string>

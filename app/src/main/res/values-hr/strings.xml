@@ -597,8 +597,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_humidity_subtitle">Relativna vlažnost (%) po satu po modelu</string>
 
     <!-- Low-confidence callout banner. -->
-    <string name="today_low_confidence_callout_title">Prognoze se razlikuju</string>
-    <string name="today_low_confidence_callout_body">Temperatura varira za %1$.1f°C, a vjerojatnost kiše za %2$.0f%% između %3$d modela.</string>
 
     <!-- Telemetry notice (first-run banner on Today screen). -->
     <string name="today_telemetry_notice_title">Izvješća o padovima i korištenju su uključena</string>

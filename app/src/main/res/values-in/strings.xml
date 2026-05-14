@@ -174,8 +174,6 @@ to values/strings.xml (English).
     <string name="today_confidence_medium">Kepercayaan sedang</string>
     <string name="today_confidence_low">Kepercayaan rendah — prakiraan tidak sepakat</string>
     <string name="today_confidence_spread">Selisih: %1$.1f°C, %2$.0f%% curah hujan di %3$d model</string>
-    <string name="today_low_confidence_callout_title">Prakiraan hari ini tidak sepakat</string>
-    <string name="today_low_confidence_callout_body">Rentang suhu %1$.1f°C dan kemungkinan hujan %2$.0f%% di %3$d model.</string>
 
     <!-- Today status messages -->
     <string name="today_working">Memproses — mengambil ClothesCast Anda…</string>

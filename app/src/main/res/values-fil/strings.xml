@@ -172,8 +172,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_confidence_medium">Katamtamang kumpiyansa</string>
     <string name="today_confidence_low">Mababang kumpiyansa — hindi nagkakasundo ang mga hula</string>
     <string name="today_confidence_spread">Pagkakaiba: %1$.1f°C, %2$.0f%% ulan sa %3$d na modelo</string>
-    <string name="today_low_confidence_callout_title">Hindi nagkakasundo ang mga hula ngayon</string>
-    <string name="today_low_confidence_callout_body">Nagkakaiba ng %1$.1f°C ang temperatura at %2$.0f%% ang tsansa ng ulan sa %3$d na modelo.</string>
 
     <!-- Status banners -->
     <string name="today_working">Nagtatrabaho — kinukuha ang iyong ClothesCast…</string>

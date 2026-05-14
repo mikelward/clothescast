@@ -176,8 +176,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_confidence_medium">মাঝারি আস্থা</string>
     <string name="today_confidence_low">কম আস্থা — পূর্বাভাসে মতভেদ</string>
     <string name="today_confidence_spread">বিস্তার: %3$d মডেলে %1$.1f°C, %2$.0f%% বৃষ্টি</string>
-    <string name="today_low_confidence_callout_title">আজকের পূর্বাভাসে মতভেদ</string>
-    <string name="today_low_confidence_callout_body">%3$d মডেলে তাপমাত্রার পার্থক্য %1$.1f°C এবং বৃষ্টির সম্ভাবনার পার্থক্য %2$.0f%%।</string>
 
     <!-- Working / error states -->
     <string name="today_working">কাজ চলছে — আপনার ClothesCast আনা হচ্ছে…</string>

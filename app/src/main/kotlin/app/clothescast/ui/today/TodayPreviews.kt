@@ -344,21 +344,6 @@ internal fun TodayInsightCardLocationUnknownPreview() {
     }
 }
 
-@Preview(name = "Low-confidence callout", widthDp = 360)
-@Composable
-internal fun LowConfidenceCalloutPreview() {
-    Frame {
-        LowConfidenceCallout(
-            ConfidenceInfo(
-                level = ForecastConfidence.LOW,
-                tempSpreadC = 4.2,
-                precipSpreadPp = 35.0,
-                modelsConsulted = listOf("ECMWF", "GFS", "ICON"),
-            ),
-        )
-    }
-}
-
 @Preview(name = "Confidence · high", widthDp = 360)
 @Composable
 internal fun ConfidenceHighPreview() {
@@ -405,8 +390,8 @@ internal fun ConfidenceLowPreview() {
 }
 
 // Tap-to-toggle hint variants — when the model-spread toggle is wired,
-// the confidence chip / callout grow an extra "Tap to ..." line so the
-// gesture is discoverable. These previews lock both sides of the hint copy
+// the confidence chip grows an extra "Tap to ..." line so the gesture
+// is discoverable. These previews lock both sides of the hint copy
 // (show vs. hide) into snapshots.
 @Preview(name = "Confidence · medium · tap to show spread", widthDp = 360)
 @Composable
@@ -437,23 +422,6 @@ internal fun ConfidenceMediumTapToHidePreview() {
                 modelsConsulted = listOf("ECMWF", "GFS"),
             ),
             showModelSpread = true,
-            onToggleModelSpread = {},
-        )
-    }
-}
-
-@Preview(name = "Low-confidence callout · tap to show spread", widthDp = 360)
-@Composable
-internal fun LowConfidenceCalloutTapToShowPreview() {
-    Frame {
-        LowConfidenceCallout(
-            info = ConfidenceInfo(
-                level = ForecastConfidence.LOW,
-                tempSpreadC = 4.2,
-                precipSpreadPp = 35.0,
-                modelsConsulted = listOf("ECMWF", "GFS", "ICON"),
-            ),
-            showModelSpread = false,
             onToggleModelSpread = {},
         )
     }

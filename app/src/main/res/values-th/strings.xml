@@ -177,8 +177,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_confidence_medium">ความเชื่อมั่นปานกลาง</string>
     <string name="today_confidence_low">ความเชื่อมั่นต่ำ — พยากรณ์ไม่ตรงกัน</string>
     <string name="today_confidence_spread">ช่วงต่าง: %1$.1f°C, %2$.0f%% ฝนใน %3$d แบบจำลอง</string>
-    <string name="today_low_confidence_callout_title">พยากรณ์ไม่ตรงกันวันนี้</string>
-    <string name="today_low_confidence_callout_body">ช่วงอุณหภูมิต่างกัน %1$.1f°C และโอกาสฝนต่างกัน %2$.0f%% ใน %3$d แบบจำลอง</string>
 
     <!-- Working / retrying / failed -->
     <string name="today_working">กำลังประมวลผล — กำลังดึง ClothesCast ของคุณ…</string>

@@ -299,26 +299,17 @@ private fun TodayContent(
             EmptyState(onRefresh = onRefresh, isWorking = isWorking)
         } else {
             // Tap-to-toggle is wired uniformly on every surface that shows a
-            // chart: the confidence chip / callout (where the hint copy
-            // explains the affordance), the three temp / feels-like / precip
-            // cards, and the six diagnostic cards below (wind / cloud /
-            // humidity / solar / sunshine / UV). Every chart draws a consensus
-            // main line by default and overlays the per-model spread when the
-            // toggle is on, so tapping any of them produces a visible change.
-            // [tapToggle] is null when there's no per-model data in the cache
-            // (e.g. older payloads) — in that case the cards stay non-clickable
-            // and the diagnostic block at the bottom hides itself.
+            // chart: the confidence chip (where the hint copy explains the
+            // affordance), the three temp / feels-like / precip cards, and the
+            // six diagnostic cards below (wind / cloud / humidity / solar /
+            // sunshine / UV). Every chart draws a consensus main line by
+            // default and overlays the per-model spread when the toggle is on,
+            // so tapping any of them produces a visible change. [tapToggle] is
+            // null when there's no per-model data in the cache (e.g. older
+            // payloads) — in that case the cards stay non-clickable and the
+            // diagnostic block at the bottom hides itself.
             val perModelAvailable = state.insight.perModelHourly != null
             val tapToggle = onToggleModelSpread.takeIf { perModelAvailable }
-            state.insight.confidence
-                ?.takeIf { it.level == ForecastConfidence.LOW }
-                ?.let {
-                    LowConfidenceCallout(
-                        info = it,
-                        showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
-                    )
-                }
             OutfitPreviewRow(
                 insight = state.insight,
                 temperatureUnit = state.temperatureUnit,
@@ -328,9 +319,14 @@ private fun TodayContent(
             InsightCard(
                 insight = state.insight,
                 region = state.region,
-                showModelSpread = state.showModelSpread,
-                onToggleModelSpread = tapToggle,
             )
+            state.insight.confidence?.let {
+                ConfidenceChip(
+                    info = it,
+                    showModelSpread = state.showModelSpread,
+                    onToggleModelSpread = tapToggle,
+                )
+            }
             if (state.insight.hourly.isNotEmpty()) {
                 val overlay = state.insight.perModelHourly?.takeIf { state.showModelSpread }
                 ForecastCard(
@@ -945,8 +941,6 @@ private fun bottomLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom)
 internal fun InsightCard(
     insight: Insight,
     region: Region,
-    showModelSpread: Boolean = false,
-    onToggleModelSpread: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val formatter = remember(context, region) { InsightFormatter.forRegion(context, region) }
@@ -990,13 +984,6 @@ internal fun InsightCard(
                     )
                 }
             }
-            insight.confidence?.let {
-                ConfidenceChip(
-                    info = it,
-                    showModelSpread = showModelSpread,
-                    onToggleModelSpread = onToggleModelSpread,
-                )
-            }
             Text(
                 text = formatter.format(insight.summary),
                 style = MaterialTheme.typography.headlineSmall,
@@ -1014,64 +1001,11 @@ internal fun InsightCard(
 }
 
 /**
- * Full-width banner shown above the outfit preview *only* at
- * [ForecastConfidence.LOW]. The compact [ConfidenceChip] inside the insight
- * card still renders for all three tiers — this is the louder "you may want to
- * second-guess today's outfit" cue that the chip alone is too subtle for. Uses
- * the same error-container tint as the LOW chip so the two reinforce each
- * other rather than fighting for the user's attention.
- */
-@Composable
-internal fun LowConfidenceCallout(
-    info: ConfidenceInfo,
-    showModelSpread: Boolean = false,
-    onToggleModelSpread: (() -> Unit)? = null,
-) {
-    val cardModifier = Modifier
-        .fillMaxWidth()
-        .let { if (onToggleModelSpread != null) it.clickable(onClick = onToggleModelSpread) else it }
-    Card(
-        modifier = cardModifier,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer,
-            contentColor = MaterialTheme.colorScheme.onErrorContainer,
-        ),
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.today_low_confidence_callout_title),
-                style = MaterialTheme.typography.titleSmall,
-            )
-            Text(
-                text = stringResource(
-                    R.string.today_low_confidence_callout_body,
-                    info.tempSpreadC,
-                    info.precipSpreadPp,
-                    info.modelsConsulted.size,
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            if (onToggleModelSpread != null) {
-                Text(
-                    text = stringResource(
-                        if (showModelSpread) R.string.today_confidence_tap_to_hide
-                        else R.string.today_confidence_tap_to_show,
-                    ),
-                    style = MaterialTheme.typography.labelMedium,
-                )
-            }
-        }
-    }
-}
-
-/**
- * Compact "How sure are we?" chip rendered inside [InsightCard]. Background color
- * tracks the level so the user gets the cue at a glance — green-ish for HIGH,
- * neutral for MEDIUM, error-tinted for LOW. Detail text shows the actual spread
- * across the consulted models so the user can judge for themselves.
+ * "How sure are we?" card rendered between [InsightCard] and the temp cards.
+ * Background color tracks the level so the user gets the cue at a glance —
+ * green-ish for HIGH, neutral for MEDIUM, error-tinted for LOW. Detail text
+ * shows the actual spread across the consulted models so the user can judge
+ * for themselves.
  */
 @Composable
 internal fun ConfidenceChip(
@@ -1092,18 +1026,20 @@ internal fun ConfidenceChip(
         ForecastConfidence.MEDIUM -> R.string.today_confidence_medium
         ForecastConfidence.LOW -> R.string.today_confidence_low
     }
+    val cardModifier = Modifier
+        .fillMaxWidth()
+        .let { if (onToggleModelSpread != null) it.clickable(onClick = onToggleModelSpread) else it }
     Card(
-        modifier = if (onToggleModelSpread != null) Modifier.clickable(onClick = onToggleModelSpread)
-        else Modifier,
+        modifier = cardModifier,
         colors = CardDefaults.cardColors(containerColor = bgColor, contentColor = fgColor),
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
                 text = stringResource(labelRes),
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.titleSmall,
             )
             Text(
                 text = stringResource(
@@ -1112,7 +1048,7 @@ internal fun ConfidenceChip(
                     info.precipSpreadPp,
                     info.modelsConsulted.size,
                 ),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
             )
             if (onToggleModelSpread != null) {
                 Text(
@@ -1120,7 +1056,7 @@ internal fun ConfidenceChip(
                         if (showModelSpread) R.string.today_confidence_tap_to_hide
                         else R.string.today_confidence_tap_to_show,
                     ),
-                    style = MaterialTheme.typography.labelSmall,
+                    style = MaterialTheme.typography.labelMedium,
                 )
             }
         }

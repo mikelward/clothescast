@@ -329,8 +329,29 @@ data class UserPreferences(
      * doesn't see the banner re-surface; once they've seen it once, it's done.
      */
     val telemetryNoticeAcked: Boolean = false,
+    /**
+     * Which app-specific colour palette to use for the per-model chart
+     * overlays and the confidence-chip / low-confidence-callout backgrounds.
+     * Defaults to [ColorPalette.RAINBOW] — the existing pink / orange /
+     * green model lines and Material teal / red confidence tints. The user
+     * can pick [ColorPalette.ACCESSIBLE] in Display settings to swap both
+     * for an Okabe-Ito-derived palette that stays distinguishable under
+     * deuteranopia, protanopia, and tritanopia.
+     */
+    val colorPalette: ColorPalette = ColorPalette.RAINBOW,
 ) {
     companion object {
         const val DEFAULT_GEMINI_VOICE = "Despina"
     }
 }
+
+/**
+ * App-specific colour palette for the chart overlays and confidence cards.
+ * The name carries the user-facing semantics rather than a "colourblind
+ * accommodation" framing: [RAINBOW] is the saturated pink / orange / green
+ * trio the app shipped with, and [ACCESSIBLE] is an Okabe-Ito-derived
+ * palette designed to stay distinguishable for users with red-green or
+ * blue-yellow colour vision deficiencies — but readable to everyone, so
+ * it isn't pitched as a CB-only mode.
+ */
+enum class ColorPalette { RAINBOW, ACCESSIBLE }

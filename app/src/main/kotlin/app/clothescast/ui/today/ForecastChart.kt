@@ -15,6 +15,7 @@ import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PerModelHourly.Companion.BEST_MATCH_MODEL_ID
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.toUnit
+import app.clothescast.ui.theme.AppTheme
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
@@ -49,23 +50,18 @@ internal val MODEL_DRAW_ORDER = listOf(
     BEST_MATCH_MODEL_ID,
 )
 
-// Pinned per-model overlay colours. Identity-based (keyed by model id), not
-// position-based, so ECMWF stays pink even when GFS happens to be missing on
-// a given run — Vico's default palette cycles by series index, which means a
-// dropped model would otherwise shift every remaining model's colour. Mid-tone
-// 600-weight hues chosen for legibility on both light and dark surfaces and
-// for distinctness from the theme primary that the blended main line uses
-// (currently a blue — see [app.clothescast.ui.theme]). The best_match
-// overlay gets a neutral grey: it's a side comparison rather than a
-// consulted model, and pairing it with a vibrant hue would imply
-// equivalence with the real models on the chart. Update the legend
-// swatches in [TodayScreen.ModelSpreadLegend] if these change.
-internal val MODEL_COLORS: Map<String, Color> = mapOf(
-    "ecmwf_ifs04" to Color(0xFFD81B60),
-    "gfs_seamless" to Color(0xFFFB8C00),
-    "icon_seamless" to Color(0xFF43A047),
-    BEST_MATCH_MODEL_ID to Color(0xFF9E9E9E),
-)
+// Pinned per-model overlay colours live on the active [app.clothescast.ui.theme.AppPalette]
+// rather than as a static map here, so the colour-blind palette can swap the
+// trio without each chart needing its own branch. Lookup is identity-based
+// (keyed by model id) so ECMWF stays its pinned hue even when GFS happens to
+// be missing on a given run — Vico's default palette cycles by series index,
+// which means a dropped model would otherwise shift every remaining model's
+// colour. Mid-tone hues are picked in `AppPalette.kt` for legibility on both
+// light and dark surfaces and for distinctness from the theme primary that
+// the blended main line uses (currently a blue — see [app.clothescast.ui.theme]).
+// The best_match overlay gets a neutral grey: it's a side comparison rather
+// than a consulted model, and pairing it with a vibrant hue would imply
+// equivalence with the real models on the chart.
 
 // Smallest y-axis span we'll display. A 1-degree-variation day padded to this
 // still shows clear hour-to-hour movement, but the chart never collapses to a
@@ -197,7 +193,8 @@ fun ForecastChart(
         CartesianValueFormatter { _, value, _ -> value.roundToInt().toString() }
     }
 
-    val lineProvider = rememberPinnedLineProvider(visibleModels, mainLineColor)
+    val modelColors = AppTheme.palette.modelColors
+    val lineProvider = rememberPinnedLineProvider(visibleModels, mainLineColor, modelColors)
 
     CartesianChartHost(
         chart = rememberCartesianChart(
@@ -225,7 +222,7 @@ fun ForecastChart(
 
 // Builds a [LineCartesianLayer.LineProvider] whose Line list lines up with the
 // series order both charts emit into their model producer: each entry in
-// [visibleModels] (in MODEL_DRAW_ORDER) gets its pinned [MODEL_COLORS] hue,
+// [visibleModels] (in MODEL_DRAW_ORDER) gets its pinned hue from [modelColors],
 // then — when [mainLineColor] is non-null — the blended main line gets that
 // colour appended. Pass null for charts that have no main line (e.g. the wind
 // diagnostic chart, where there's no single-model blended series to pair the
@@ -235,12 +232,13 @@ fun ForecastChart(
 internal fun rememberPinnedLineProvider(
     visibleModels: List<String>,
     mainLineColor: Color?,
+    modelColors: Map<String, Color> = AppTheme.palette.modelColors,
 ): LineCartesianLayer.LineProvider =
-    remember(visibleModels, mainLineColor) {
+    remember(visibleModels, mainLineColor, modelColors) {
         val perModelLines = visibleModels.map { modelId ->
             LineCartesianLayer.Line(
                 fill = LineCartesianLayer.LineFill.single(
-                    fill(MODEL_COLORS.getValue(modelId)),
+                    fill(modelColors.getValue(modelId)),
                 ),
             )
         }

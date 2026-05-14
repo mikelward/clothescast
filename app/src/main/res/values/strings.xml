@@ -338,6 +338,12 @@
     <string name="settings_display_theme_light">Light</string>
     <string name="settings_display_theme_dark">Dark</string>
 
+    <string name="settings_display_colors_title">Palette</string>
+    <string name="settings_display_palette_rainbow">Rainbow</string>
+    <string name="settings_display_palette_accessible">Accessible</string>
+    <string name="settings_display_palette_rainbow_description">Pink, orange, and green chart lines and Material teal / red confidence cards. The default.</string>
+    <string name="settings_display_palette_accessible_description">An Okabe-Ito-derived palette designed to stay distinguishable under deuteranopia, protanopia, and tritanopia. Confidence cards use sky blue, neutral, and amber instead of teal, neutral, and red.</string>
+
     <string name="settings_root_location_subtitle">Auto-detect or pick a city</string>
     <string name="settings_root_calendar_subtitle">Today\'s events</string>
     <string name="settings_root_privacy_subtitle">Crash + usage reports</string>

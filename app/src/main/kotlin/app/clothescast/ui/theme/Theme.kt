@@ -7,8 +7,10 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import app.clothescast.core.domain.model.ColorPalette
 
 private val LightScheme = lightColorScheme(
     primary = Color(0xFF1E6FFF),
@@ -28,6 +30,12 @@ private val DarkScheme = darkColorScheme(
 fun ClothesCastTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
+    // Defaults to [ColorPalette.RAINBOW] — the pink / orange / green model
+    // lines and Material teal/red confidence chips stay in place for
+    // everyone who hasn't explicitly picked [ColorPalette.ACCESSIBLE] from
+    // Display settings. See [AppPalette] for what each palette swaps and
+    // why.
+    colorPalette: ColorPalette = ColorPalette.RAINBOW,
     content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
@@ -38,5 +46,12 @@ fun ClothesCastTheme(
         darkTheme -> DarkScheme
         else -> LightScheme
     }
-    MaterialTheme(colorScheme = colorScheme, content = content)
+    val palette = rememberAppPalette(
+        scheme = colorScheme,
+        darkTheme = darkTheme,
+        colorPalette = colorPalette,
+    )
+    MaterialTheme(colorScheme = colorScheme) {
+        CompositionLocalProvider(LocalAppPalette provides palette, content = content)
+    }
 }

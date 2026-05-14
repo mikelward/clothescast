@@ -7,6 +7,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -118,6 +119,7 @@ class SettingsViewModel(
                         temperatureUnit = prefs.temperatureUnit,
                         distanceUnit = prefs.distanceUnit,
                         themeMode = prefs.themeMode,
+                        colorPalette = prefs.colorPalette,
                         clothesRules = prefs.clothesRules,
                         defaultBottom = prefs.defaultBottom,
                         location = prefs.location,
@@ -258,6 +260,10 @@ class SettingsViewModel(
 
     fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch { settingsRepository.setThemeMode(mode) }
+    }
+
+    fun setColorPalette(palette: ColorPalette) {
+        viewModelScope.launch { settingsRepository.setColorPalette(palette) }
     }
 
     fun addClothesRule(rule: ClothesRule) {

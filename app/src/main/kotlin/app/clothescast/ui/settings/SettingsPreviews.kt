@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.DistanceUnit
@@ -143,8 +144,10 @@ internal fun SettingsDisplayPreview() {
     SettingsFrame {
         DisplayContent(
             themeMode = ThemeMode.SYSTEM,
+            colorPalette = ColorPalette.RAINBOW,
             padding = PaddingValues(0.dp),
             onSetThemeMode = {},
+            onSetColorPalette = {},
         )
     }
 }

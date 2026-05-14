@@ -597,4 +597,27 @@ What is NOT overridden, by design:
     <string name="today_forecast_air_section_title">Teplota vzduchu</string>
     <string name="settings_default_bottom_title">Štandardná spodná časť</string>
     <string name="settings_default_bottom_description">Čo odporúčame na domovskej obrazovke, keď nie je dosť teplo na šortky.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Farebná paleta</string>
+    <string name="settings_display_palette_accessible">Prístupná</string>
+    <string name="settings_display_palette_accessible_description">Paleta odvodená od Okabe-Ito, navrhnutá tak, aby zostala rozlíšiteľná pri deuteranopii, protanopii a tritanopii. Karty istoty používajú nebesky modrú, neutrálnu a jantárovú namiesto tyrkysovej, neutrálnej a červenej.</string>
+    <string name="settings_display_palette_rainbow">Dúha</string>
+    <string name="settings_display_palette_rainbow_description">Ružové, oranžové a zelené čiary grafov s tyrkysovými/červenými kartami istoty Material. Predvolené.</string>
+    <string name="settings_unit_auto">Auto</string>
+    <string name="today_cloud_range">Oblačnosť %1$d–%2$d%%</string>
+    <string name="today_confidence_precip_spread">Modely sa nezhodujú na zrážkach (Δ %1$.0f%% pre %2$d modely)</string>
+    <string name="today_confidence_tap_to_hide">Klepnutím skryjete predpovede modelov</string>
+    <string name="today_confidence_tap_to_show">Klepnutím zobrazíte predpoveď každého modelu</string>
+    <string name="today_humidity_range">Vlhkosť %1$d–%2$d%%</string>
+    <string name="today_solar_subtitle">Povrchová ožiarenosť (W/m²) za hodinu na model</string>
+    <string name="today_solar_title">Slnečné žiarenie</string>
+    <string name="today_sunshine_subtitle">Minúty slnka za hodinu na model</string>
+    <string name="today_sunshine_title">Slnečný svit</string>
+    <string name="today_sunshine_total_hours_minutes">%1$d hod %2$d min slnka dnes</string>
+    <string name="today_sunshine_total_hours_only">%1$d hod slnka dnes</string>
+    <string name="today_sunshine_total_minutes_only">%1$d min slnka dnes</string>
+    <string name="today_uv_subtitle">UV index za hodinu na model</string>
+    <string name="today_uv_title">UV index</string>
+    <string name="today_wind_peak">Vrchol %1$d %2$s o %3$s</string>
 </resources>

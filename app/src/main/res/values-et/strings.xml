@@ -541,4 +541,27 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_forecast_air_section_title">Õhutemperatuur</string>
     <string name="settings_default_bottom_title">Standardne alumine rõivaese</string>
     <string name="settings_default_bottom_description">Mida soovitame avalehel, kui pole piisavalt soe, et kanda šortseid.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Värvipalett</string>
+    <string name="settings_display_palette_accessible">Juurdepääsetav</string>
+    <string name="settings_display_palette_accessible_description">Okabe-Ito põhine palett, mis on loodud olema eristatav deuteranoopiaga, protanoopiaga ja tritanoopiaga. Usaldusväärsuskaardid kasutavad taevasinist, neutraalset ja merevaigukollast teal, neutraalse ja punase asemel.</string>
+    <string name="settings_display_palette_rainbow">Vikerkaar</string>
+    <string name="settings_display_palette_rainbow_description">Roosa, oranž ja roheline diagrammijoon koos Material teal/punaste usaldusväärsuskaartidega. Vaikimisi.</string>
+    <string name="settings_unit_auto">Automaatne</string>
+    <string name="today_cloud_range">Pilvisus %1$d–%2$d%%</string>
+    <string name="today_confidence_precip_spread">Mudelid ei nõustu vihma osas (Δ %1$.0f%% %2$d mudeli vahel)</string>
+    <string name="today_confidence_tap_to_hide">Puuduta mudelite prognooside peitmiseks</string>
+    <string name="today_confidence_tap_to_show">Puuduta iga mudeli prognoosi nägemiseks</string>
+    <string name="today_humidity_range">Niiskus %1$d–%2$d%%</string>
+    <string name="today_solar_subtitle">Pinnakiirgus (W/m²) tunnis mudeli kohta</string>
+    <string name="today_solar_title">Päikesekiirgus</string>
+    <string name="today_sunshine_subtitle">Päikesepaiste minutid tunnis mudeli kohta</string>
+    <string name="today_sunshine_title">Päikesepaiste</string>
+    <string name="today_sunshine_total_hours_minutes">%1$d t %2$d min päikest täna</string>
+    <string name="today_sunshine_total_hours_only">%1$d t päikest täna</string>
+    <string name="today_sunshine_total_minutes_only">%1$d min päikest täna</string>
+    <string name="today_uv_subtitle">UV-indeks tunnis mudeli kohta</string>
+    <string name="today_uv_title">UV-indeks</string>
+    <string name="today_wind_peak">Tipp %1$d %2$s kell %3$s</string>
 </resources>

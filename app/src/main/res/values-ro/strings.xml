@@ -569,4 +569,27 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_forecast_air_section_title">Temperatura aerului</string>
     <string name="settings_default_bottom_title">Jos standard</string>
     <string name="settings_default_bottom_description">Ceea ce sugerăm pe ecranul de start când nu este suficient de cald pentru pantaloni scurți.</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Paletă de culori</string>
+    <string name="settings_display_palette_accessible">Accesibilă</string>
+    <string name="settings_display_palette_accessible_description">O paletă derivată din Okabe-Ito, concepută să rămână distinctă în caz de deuteranopie, protanopie și tritanopie. Cardurile de încredere folosesc albastru cer, neutru și chihlimbar în loc de teal, neutru și roșu.</string>
+    <string name="settings_display_palette_rainbow">Curcubeu</string>
+    <string name="settings_display_palette_rainbow_description">Linii de grafic roz, portocaliu și verde cu carduri de încredere Material teal/roșu. Implicit.</string>
+    <string name="settings_unit_auto">Auto</string>
+    <string name="today_cloud_range">Nori %1$d–%2$d%%</string>
+    <string name="today_confidence_precip_spread">Modelele nu sunt de acord cu privire la ploaie (Δ %1$.0f%% pe %2$d modele)</string>
+    <string name="today_confidence_tap_to_hide">Atingeți pentru a ascunde prognozele modelelor</string>
+    <string name="today_confidence_tap_to_show">Atingeți pentru a vedea prognoza fiecărui model</string>
+    <string name="today_humidity_range">Umiditate %1$d–%2$d%%</string>
+    <string name="today_solar_subtitle">Iradierea suprafeței (W/m²) pe oră pe model</string>
+    <string name="today_solar_title">Radiație solară</string>
+    <string name="today_sunshine_subtitle">Minute de soare pe oră pe model</string>
+    <string name="today_sunshine_title">Strălucire solară</string>
+    <string name="today_sunshine_total_hours_minutes">%1$d h %2$d min soare azi</string>
+    <string name="today_sunshine_total_hours_only">%1$d h soare azi</string>
+    <string name="today_sunshine_total_minutes_only">%1$d min soare azi</string>
+    <string name="today_uv_subtitle">Indice UV pe oră pe model</string>
+    <string name="today_uv_title">Indice UV</string>
+    <string name="today_wind_peak">Vârf %1$d %2$s la %3$s</string>
 </resources>

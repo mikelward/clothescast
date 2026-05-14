@@ -25,19 +25,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.TemperatureUnitSetting
+import app.clothescast.core.domain.model.symbol
 import java.text.Collator
 
 @Composable
 internal fun RegionContent(
     region: Region,
-    temperatureUnit: TemperatureUnit,
-    distanceUnit: DistanceUnit,
+    temperatureUnitSetting: TemperatureUnitSetting,
+    distanceUnitSetting: DistanceUnitSetting,
+    resolvedTemperatureUnit: TemperatureUnit,
+    resolvedDistanceUnit: DistanceUnit,
     padding: PaddingValues,
     onSetRegion: (Region) -> Unit,
-    onSetTemperatureUnit: (TemperatureUnit) -> Unit,
-    onSetDistanceUnit: (DistanceUnit) -> Unit,
+    onSetTemperatureUnit: (TemperatureUnitSetting) -> Unit,
+    onSetDistanceUnit: (DistanceUnitSetting) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -56,20 +61,28 @@ internal fun RegionContent(
             RegionLanguagePicker(selected = region, onSelect = onSetRegion)
         }
         SectionCard(title = stringResource(R.string.settings_temperature_unit_title)) {
-            TemperatureUnit.entries.forEach { unit ->
+            TemperatureUnitSetting.entries.forEach { setting ->
+                val label = if (setting == TemperatureUnitSetting.AUTO)
+                    "${stringResource(R.string.settings_unit_auto)} (${resolvedTemperatureUnit.symbol()})"
+                else
+                    stringResource(temperatureUnitSettingLabel(setting))
                 RadioRow(
-                    label = stringResource(temperatureUnitLabel(unit)),
-                    selected = unit == temperatureUnit,
-                    onSelect = { onSetTemperatureUnit(unit) },
+                    label = label,
+                    selected = setting == temperatureUnitSetting,
+                    onSelect = { onSetTemperatureUnit(setting) },
                 )
             }
         }
         SectionCard(title = stringResource(R.string.settings_distance_unit_title)) {
-            DistanceUnit.entries.forEach { unit ->
+            DistanceUnitSetting.entries.forEach { setting ->
+                val label = if (setting == DistanceUnitSetting.AUTO)
+                    "${stringResource(R.string.settings_unit_auto)} (${resolvedDistanceUnit.symbol()})"
+                else
+                    stringResource(distanceUnitSettingLabel(setting))
                 RadioRow(
-                    label = stringResource(distanceUnitLabel(unit)),
-                    selected = unit == distanceUnit,
-                    onSelect = { onSetDistanceUnit(unit) },
+                    label = label,
+                    selected = setting == distanceUnitSetting,
+                    onSelect = { onSetDistanceUnit(setting) },
                 )
             }
         }
@@ -209,12 +222,14 @@ private fun regionLabel(region: Region): Int = when (region) {
     Region.AM_ET -> R.string.settings_region_language_am_et
 }
 
-private fun temperatureUnitLabel(unit: TemperatureUnit): Int = when (unit) {
-    TemperatureUnit.CELSIUS -> R.string.settings_temperature_unit_celsius
-    TemperatureUnit.FAHRENHEIT -> R.string.settings_temperature_unit_fahrenheit
+private fun temperatureUnitSettingLabel(setting: TemperatureUnitSetting): Int = when (setting) {
+    TemperatureUnitSetting.AUTO -> R.string.settings_unit_auto
+    TemperatureUnitSetting.CELSIUS -> R.string.settings_temperature_unit_celsius
+    TemperatureUnitSetting.FAHRENHEIT -> R.string.settings_temperature_unit_fahrenheit
 }
 
-private fun distanceUnitLabel(unit: DistanceUnit): Int = when (unit) {
-    DistanceUnit.KILOMETERS -> R.string.settings_distance_unit_kilometers
-    DistanceUnit.MILES -> R.string.settings_distance_unit_miles
+private fun distanceUnitSettingLabel(setting: DistanceUnitSetting): Int = when (setting) {
+    DistanceUnitSetting.AUTO -> R.string.settings_unit_auto
+    DistanceUnitSetting.KILOMETERS -> R.string.settings_distance_unit_kilometers
+    DistanceUnitSetting.MILES -> R.string.settings_distance_unit_miles
 }

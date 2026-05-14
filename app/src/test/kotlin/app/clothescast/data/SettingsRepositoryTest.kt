@@ -10,10 +10,12 @@ import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.model.VoiceLocale
@@ -85,7 +87,7 @@ class SettingsRepositoryTest {
         prefs.schedule.zoneId shouldBe zone
         prefs.deliveryMode shouldBe DeliveryMode.NOTIFICATION_AND_TTS
         prefs.temperatureUnit shouldBe TemperatureUnit.CELSIUS
-        prefs.distanceUnit shouldBe DistanceUnit.KILOMETERS
+        prefs.distanceUnit shouldBe DistanceUnit.MILES   // setUp pins Locale.UK → miles
         prefs.clothesRules shouldBe ClothesRule.DEFAULTS
     }
 
@@ -181,28 +183,60 @@ class SettingsRepositoryTest {
 
     @Test
     fun `temperature default falls back to system locale when region is SYSTEM`() = runTest {
-        // Test setUp pins systemLocaleProvider to Locale.UK → metric.
+        // setUp pins systemLocaleProvider to Locale.UK → Celsius + miles.
         subject.preferences.first().temperatureUnit shouldBe TemperatureUnit.CELSIUS
-        subject.preferences.first().distanceUnit shouldBe DistanceUnit.KILOMETERS
+        subject.preferences.first().distanceUnit shouldBe DistanceUnit.MILES
+    }
+
+    @Test
+    fun `distance default follows region locale - en-GB picks miles`() = runTest {
+        subject.setRegion(Region.EN_GB)
+        subject.preferences.first().distanceUnit shouldBe DistanceUnit.MILES
+    }
+
+    @Test
+    fun `temperature default follows region locale - en-GB picks Celsius`() = runTest {
+        subject.setRegion(Region.EN_GB)
+        subject.preferences.first().temperatureUnit shouldBe TemperatureUnit.CELSIUS
     }
 
     @Test
     fun `explicitly chosen unit overrides the region-derived default`() = runTest {
         subject.setRegion(Region.EN_US)
-        subject.setTemperatureUnit(TemperatureUnit.CELSIUS)
-        subject.setDistanceUnit(DistanceUnit.KILOMETERS)
+        subject.setTemperatureUnitSetting(TemperatureUnitSetting.CELSIUS)
+        subject.setDistanceUnitSetting(DistanceUnitSetting.KILOMETERS)
 
         val prefs = subject.preferences.first()
         prefs.temperatureUnit shouldBe TemperatureUnit.CELSIUS
         prefs.distanceUnit shouldBe DistanceUnit.KILOMETERS
+        prefs.temperatureUnitSetting shouldBe TemperatureUnitSetting.CELSIUS
+        prefs.distanceUnitSetting shouldBe DistanceUnitSetting.KILOMETERS
     }
 
     @Test
     fun `setUnits round-trips both`() = runTest {
-        subject.setTemperatureUnit(TemperatureUnit.FAHRENHEIT)
-        subject.setDistanceUnit(DistanceUnit.MILES)
+        subject.setTemperatureUnitSetting(TemperatureUnitSetting.FAHRENHEIT)
+        subject.setDistanceUnitSetting(DistanceUnitSetting.MILES)
 
         val prefs = subject.preferences.first()
+        prefs.temperatureUnit shouldBe TemperatureUnit.FAHRENHEIT
+        prefs.distanceUnit shouldBe DistanceUnit.MILES
+        prefs.temperatureUnitSetting shouldBe TemperatureUnitSetting.FAHRENHEIT
+        prefs.distanceUnitSetting shouldBe DistanceUnitSetting.MILES
+    }
+
+    @Test
+    fun `AUTO re-derives from locale after explicit choice`() = runTest {
+        subject.setRegion(Region.EN_US)
+        subject.setTemperatureUnitSetting(TemperatureUnitSetting.CELSIUS)
+        subject.setDistanceUnitSetting(DistanceUnitSetting.KILOMETERS)
+        // Reset to AUTO — should re-derive from en-US → Fahrenheit + miles.
+        subject.setTemperatureUnitSetting(TemperatureUnitSetting.AUTO)
+        subject.setDistanceUnitSetting(DistanceUnitSetting.AUTO)
+
+        val prefs = subject.preferences.first()
+        prefs.temperatureUnitSetting shouldBe TemperatureUnitSetting.AUTO
+        prefs.distanceUnitSetting shouldBe DistanceUnitSetting.AUTO
         prefs.temperatureUnit shouldBe TemperatureUnit.FAHRENHEIT
         prefs.distanceUnit shouldBe DistanceUnit.MILES
     }

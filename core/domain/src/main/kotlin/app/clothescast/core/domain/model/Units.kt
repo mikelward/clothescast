@@ -27,6 +27,11 @@ fun WindSpeedUnit.symbol(): String = when (this) {
     WindSpeedUnit.MPH -> "mph"
 }
 
+fun DistanceUnit.symbol(): String = when (this) {
+    DistanceUnit.KILOMETERS -> "km"
+    DistanceUnit.MILES -> "mi"
+}
+
 /**
  * Picks the wind-speed unit that pairs naturally with a chosen distance unit:
  * metric users get km/h, imperial users get mph. Kept as a derivation rather

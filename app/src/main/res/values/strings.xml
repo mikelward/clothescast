@@ -601,6 +601,8 @@
     <string name="settings_region_language_sq_al">Albanian (Albania)</string>
     <string name="settings_region_language_am_et">Amharic (Ethiopia)</string>
 
+    <string name="settings_unit_auto">Auto</string>
+
     <string name="settings_temperature_unit_title">Temperature unit</string>
     <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>

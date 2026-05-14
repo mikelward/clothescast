@@ -7,9 +7,11 @@ import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
 import app.clothescast.tts.DeviceVoice
@@ -279,15 +281,17 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `setTemperatureUnit and setDistanceUnit persist independently`() = runTest {
-        subject.setTemperatureUnit(TemperatureUnit.FAHRENHEIT)
-        subject.setDistanceUnit(DistanceUnit.MILES)
+    fun `setTemperatureUnitSetting and setDistanceUnitSetting persist independently`() = runTest {
+        subject.setTemperatureUnitSetting(TemperatureUnitSetting.FAHRENHEIT)
+        subject.setDistanceUnitSetting(DistanceUnitSetting.MILES)
 
         val state = subject.state.first {
             it.temperatureUnit == TemperatureUnit.FAHRENHEIT && it.distanceUnit == DistanceUnit.MILES
         }
         state.temperatureUnit shouldBe TemperatureUnit.FAHRENHEIT
         state.distanceUnit shouldBe DistanceUnit.MILES
+        state.temperatureUnitSetting shouldBe TemperatureUnitSetting.FAHRENHEIT
+        state.distanceUnitSetting shouldBe DistanceUnitSetting.MILES
     }
 
     @Test

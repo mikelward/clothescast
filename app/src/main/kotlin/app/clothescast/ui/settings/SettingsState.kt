@@ -4,11 +4,13 @@ import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
@@ -38,6 +40,8 @@ data class SettingsState(
     // Region.SYSTEM falls through to the phone locale, mirroring the repository.
     val temperatureUnit: TemperatureUnit = defaultTemperatureUnitFor(Locale.getDefault()),
     val distanceUnit: DistanceUnit = defaultDistanceUnitFor(Locale.getDefault()),
+    val temperatureUnitSetting: TemperatureUnitSetting = TemperatureUnitSetting.AUTO,
+    val distanceUnitSetting: DistanceUnitSetting = DistanceUnitSetting.AUTO,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val colorPalette: ColorPalette = ColorPalette.RAINBOW,
     val clothesRules: List<ClothesRule> = ClothesRule.DEFAULTS,

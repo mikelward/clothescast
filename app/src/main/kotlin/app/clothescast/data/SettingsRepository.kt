@@ -14,11 +14,13 @@ import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
@@ -157,12 +159,22 @@ class SettingsRepository(
         dataStore.edit { it[REGION] = region.name }
     }
 
-    suspend fun setTemperatureUnit(unit: TemperatureUnit) {
-        dataStore.edit { it[TEMPERATURE_UNIT] = unit.name }
+    suspend fun setTemperatureUnitSetting(setting: TemperatureUnitSetting) {
+        dataStore.edit { prefs ->
+            when (setting) {
+                TemperatureUnitSetting.AUTO -> prefs.remove(TEMPERATURE_UNIT)
+                else -> prefs[TEMPERATURE_UNIT] = setting.name
+            }
+        }
     }
 
-    suspend fun setDistanceUnit(unit: DistanceUnit) {
-        dataStore.edit { it[DISTANCE_UNIT] = unit.name }
+    suspend fun setDistanceUnitSetting(setting: DistanceUnitSetting) {
+        dataStore.edit { prefs ->
+            when (setting) {
+                DistanceUnitSetting.AUTO -> prefs.remove(DISTANCE_UNIT)
+                else -> prefs[DISTANCE_UNIT] = setting.name
+            }
+        }
     }
 
     suspend fun setThemeMode(mode: ThemeMode) {
@@ -317,14 +329,27 @@ class SettingsRepository(
             ?: deliveryMode
         val region = this[REGION]?.let { runCatching { Region.valueOf(it) }.getOrNull() }
             ?: Region.SYSTEM
-        // Resolve units off the user's region — SYSTEM falls through to the
-        // phone locale. Once they explicitly pick a unit it sticks regardless
-        // of region.
+        // Resolve units off the user's region — SYSTEM falls through to the phone locale.
+        // AUTO (absent key) re-derives from locale on every read, so changing region or
+        // system locale takes effect immediately. An explicit CELSIUS/FAHRENHEIT/KM/MILES
+        // choice sticks until the user picks AUTO again.
         val regionLocale = region.toJavaLocale() ?: systemLocaleProvider()
-        val temperatureUnit = this[TEMPERATURE_UNIT]?.let { runCatching { TemperatureUnit.valueOf(it) }.getOrNull() }
-            ?: defaultTemperatureUnitFor(regionLocale)
-        val distanceUnit = this[DISTANCE_UNIT]?.let { runCatching { DistanceUnit.valueOf(it) }.getOrNull() }
-            ?: defaultDistanceUnitFor(regionLocale)
+        val temperatureUnitSetting = this[TEMPERATURE_UNIT]
+            ?.let { runCatching { TemperatureUnitSetting.valueOf(it) }.getOrNull() }
+            ?: TemperatureUnitSetting.AUTO
+        val temperatureUnit = when (temperatureUnitSetting) {
+            TemperatureUnitSetting.AUTO -> defaultTemperatureUnitFor(regionLocale)
+            TemperatureUnitSetting.CELSIUS -> TemperatureUnit.CELSIUS
+            TemperatureUnitSetting.FAHRENHEIT -> TemperatureUnit.FAHRENHEIT
+        }
+        val distanceUnitSetting = this[DISTANCE_UNIT]
+            ?.let { runCatching { DistanceUnitSetting.valueOf(it) }.getOrNull() }
+            ?: DistanceUnitSetting.AUTO
+        val distanceUnit = when (distanceUnitSetting) {
+            DistanceUnitSetting.AUTO -> defaultDistanceUnitFor(regionLocale)
+            DistanceUnitSetting.KILOMETERS -> DistanceUnit.KILOMETERS
+            DistanceUnitSetting.MILES -> DistanceUnit.MILES
+        }
         val themeMode = this[THEME_MODE]?.let { runCatching { ThemeMode.valueOf(it) }.getOrNull() }
             ?: ThemeMode.SYSTEM
         val rules = parseRules(this[CLOTHES_RULES])
@@ -377,6 +402,8 @@ class SettingsRepository(
             region = region,
             temperatureUnit = temperatureUnit,
             distanceUnit = distanceUnit,
+            temperatureUnitSetting = temperatureUnitSetting,
+            distanceUnitSetting = distanceUnitSetting,
             themeMode = themeMode,
             clothesRules = rules,
             defaultBottom = defaultBottom,
@@ -528,8 +555,9 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
 internal fun defaultTemperatureUnitFor(locale: Locale): TemperatureUnit =
     if (locale.country == "US") TemperatureUnit.FAHRENHEIT else TemperatureUnit.CELSIUS
 
-// Only the US sticks with imperial for weather-app distance contexts (wind
-// speed in mph, precipitation in inches). UK uses miles for *roads* but km/h
-// and mm for weather, so it lands on the metric default with everyone else.
+// US and UK both use miles for everyday distance / speed (mph on roads,
+// wind in mph). UK weather apps report wind in mph and walkers think in
+// miles, so MILES is the right default even though UK rainfall is in mm and
+// temperatures in Celsius.
 internal fun defaultDistanceUnitFor(locale: Locale): DistanceUnit =
-    if (locale.country == "US") DistanceUnit.MILES else DistanceUnit.KILOMETERS
+    if (locale.country in setOf("US", "GB")) DistanceUnit.MILES else DistanceUnit.KILOMETERS

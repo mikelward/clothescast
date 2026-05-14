@@ -4,6 +4,12 @@ enum class TemperatureUnit { CELSIUS, FAHRENHEIT }
 
 enum class DistanceUnit { KILOMETERS, MILES }
 
+/** User-facing unit preference, including [AUTO] to follow the device/region locale. */
+enum class TemperatureUnitSetting { AUTO, CELSIUS, FAHRENHEIT }
+
+/** User-facing unit preference, including [AUTO] to follow the device/region locale. */
+enum class DistanceUnitSetting { AUTO, KILOMETERS, MILES }
+
 /**
  * Wind-speed display unit. Currently derived from [DistanceUnit] at the call
  * site (see `DistanceUnit.windSpeedUnit()` in Units.kt) — a metric user sees
@@ -214,6 +220,8 @@ data class UserPreferences(
     val region: Region = Region.SYSTEM,
     val temperatureUnit: TemperatureUnit,
     val distanceUnit: DistanceUnit,
+    val temperatureUnitSetting: TemperatureUnitSetting = TemperatureUnitSetting.AUTO,
+    val distanceUnitSetting: DistanceUnitSetting = DistanceUnitSetting.AUTO,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val clothesRules: List<ClothesRule>,
     /**

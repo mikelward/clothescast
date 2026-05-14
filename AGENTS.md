@@ -7,15 +7,78 @@ new rule the first time something bites you, not the third.
 ## Working in this repo
 
 - This repo is an Android app (Kotlin + Compose) with two pure-Kotlin
-  sub-modules: `:core:domain` and `:core:data`. Only `:core:domain` builds
-  without the Android SDK; `:core:data` and `:app` need AGP loadable.
-- The Android SDK is generally **not** available in agent sandboxes, and the
-  Google Maven repo is often blocked. If you can't run `:app:assembleDebug`
-  or `:app:testDebugUnitTest` locally, **say so explicitly** and rely on CI
-  as the validation surface. Do not claim "the build passes" when you only
-  ran the domain tests.
-- `:core:domain:test` is the one thing you can usually run locally — use it
-  to validate any pure-Kotlin domain change before pushing.
+  sub-modules: `:core:domain` and `:core:data`. Both compile and test on a
+  JVM without the Android SDK; `:app` needs AGP loadable, Android Maven
+  artifacts reachable, and the Android SDK installed.
+- **The Claude Code on the web sandbox for this project is configured to
+  allowlist Google's Maven hosts**, so AGP + androidx + Firebase Gradle
+  plugins + the Android SDK (via `sdkmanager`) are all expected to be
+  reachable. When they are, the full outer `./gradlew` workflow works
+  in-sandbox — same commands as CI. See "Sandbox testing" below for how
+  to verify and what to do if you find them blocked.
+- If for any reason `:app:assembleDebug` or `:app:testDebugUnitTest` won't
+  run in your environment, **say so explicitly** and rely on CI as the
+  validation surface. Do not claim "the build passes" when you only ran
+  the core tests.
+
+## Sandbox testing
+
+- **Expected path — full parity, outer build.** The intended sandbox
+  state for this project is: Google Maven hosts allowlisted and the
+  Android SDK installed under `/opt/android-sdk` (`ANDROID_HOME` set).
+  When that's true, run the same commands CI runs:
+  ```
+  ./gradlew :core:domain:test :core:data:test :app:testDebugUnitTest
+  ./gradlew :app:assembleDebug
+  ```
+  Snapshot diffs, Compose previews, Roborazzi, everything.
+- **Verify before assuming either way.** Sandbox config drifts; new forks
+  inherit defaults; agents are easily fooled by a confidently-stated
+  premise. Spend ten seconds confirming:
+  ```
+  curl -s -o /dev/null -w "%{http_code}\n" --max-time 5 https://maven.google.com/
+  curl -s -o /dev/null -w "%{http_code}\n" --max-time 5 https://dl.google.com/
+  command -v sdkmanager >/dev/null && echo "sdkmanager OK" || echo "no SDK"
+  ```
+  200 / 302 / 404 from Google Maven = reachable. 403 from the
+  `sandbox-egress-production TLS Inspection CA` issuer = blocked, fall
+  back to the inner build below. Missing `sdkmanager` (or
+  `/opt/android-sdk` not present) = SessionStart hook didn't run or
+  hasn't been wired; `:app` tasks won't work, but `:core:*` tasks
+  still will via either build.
+- **Fallback path — inner Gradle build, pure-Kotlin only.** If Google
+  Maven is blocked or the SDK isn't installed, `:core:*:test` still
+  works through a second Gradle root scoped to the pure-Kotlin modules:
+  ```
+  cd core && ../gradlew :core:domain:test :core:data:test
+  ```
+  This is enabled by `core/settings.gradle.kts`, which uses Maven Central
+  and the Gradle Plugin Portal only — no AGP, no Google Maven. Project
+  paths match the outer build (`:core:domain`, `:core:data`), so module
+  build scripts work in both contexts unchanged. Cold first run is
+  ~1m10s; warm runs reuse the daemon. `:app` is out of reach here —
+  push and rely on CI for it.
+- **Useful regardless of sandbox state — inner build is faster.** Even
+  with the full outer build available, `cd core && ../gradlew :core:*:test`
+  is the quickest signal for a pure-Kotlin core change because it skips
+  AGP configuration entirely. Use it when iterating on `:core:domain` /
+  `:core:data`; use the outer build when you need `:app` coverage or
+  when CI fidelity matters.
+- **If you find Google Maven blocked when it shouldn't be**, flag it to
+  the user — sandbox config may have regressed. The current allowlist
+  should cover at minimum `maven.google.com` (AGP + androidx + Firebase
+  Gradle plugins) and `dl.google.com` (Android SDK platform / build-tools
+  via `sdkmanager`). `firebase.google.com` and
+  `firebaseinstallations.googleapis.com` are runtime hosts; the build
+  itself doesn't need them.
+- **TODO — standalone detekt CLI for `:app` static analysis.** Wire a
+  `detekt-cli` jar fetched from Maven Central plus a `scripts/detekt.sh`
+  runner over `app/src/main/kotlin`. Useful as a fast pre-push check
+  that doesn't need AGP loaded, and as a fallback signal for `:app` if
+  Google Maven is ever unreachable. Not done yet; do this if `:app`
+  changes start landing with avoidable lint issues that CI catches.
+- `:core:domain:test` alone is the minimum signal for any pure-Kotlin
+  domain change, regardless of which path you take.
 
 ## Commits and PRs
 

@@ -28,6 +28,7 @@ import app.clothescast.core.domain.repository.WeatherRepository
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -391,7 +392,10 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `confidence populates for both today and tonight`() = runTest {
+    fun `confidence falls back to the bundle aggregate when perModelHourly is absent`() = runTest {
+        // Older cached bundles only carry the daily-endpoint confidence,
+        // not the per-model hourly. In that case the insight should still
+        // surface the bundle's day-scope aggregate rather than nothing.
         val info = ConfidenceInfo(
             level = ForecastConfidence.LOW,
             tempSpreadC = 4.2,
@@ -403,6 +407,97 @@ class GenerateDailyInsightTest {
 
         subject(london, prefs, ForecastPeriod.TODAY).insight.confidence shouldBe info
         subject(london, prefs, ForecastPeriod.TONIGHT).insight.confidence shouldBe info
+    }
+
+    @Test
+    fun `confidence is null when perModelHourly is present but the window slice is sparse`() = runTest {
+        // perModelHourly carries only one consulted model (the other is
+        // missing from the bundle) — the windowed compute returns null.
+        // We must *not* fall back to bundle.confidence here, because the
+        // bundle's value is full-calendar-day-scope and would silently
+        // reintroduce the window mismatch this PR is fixing. The chip
+        // treats null as "unknown" and hides itself, which is the
+        // honest answer.
+        val oneModel = PerModelHourly(
+            byModel = mapOf(
+                "ecmwf_ifs04" to listOf(
+                    PerModelHour(
+                        time = LocalDateTime.of(today.date, LocalTime.of(12, 0)),
+                        apparentTemperatureC = 18.0,
+                        temperatureC = 17.0,
+                        precipitationProbabilityPct = 10.0,
+                    ),
+                ),
+            ),
+        )
+        val staleBundleConfidence = ConfidenceInfo(
+            level = ForecastConfidence.LOW,
+            tempSpreadC = 6.0,
+            precipSpreadPp = 40.0,
+            modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless"),
+        )
+        val weather = FakeWeatherRepository(
+            ForecastBundle(today, yesterday, confidence = staleBundleConfidence, perModelHourly = oneModel),
+        )
+        val subject = GenerateDailyInsight(weather, clock = clock)
+        subject(london, prefs, ForecastPeriod.TODAY).insight.confidence.shouldBeNull()
+    }
+
+    @Test
+    fun `confidence is recomputed over the rendered window when perModelHourly is present`() = runTest {
+        // Disagreeing daytime hours (HIGH-tier-busting temp spread) + a
+        // tight late-evening peak. TODAY is rendered over the daytime
+        // slice so its confidence should reflect the wide daytime spread
+        // (LOW). The bundle's full-day aggregate is *not* what the chip
+        // should see — that's the whole point of the windowed compute.
+        val ecmwf = (0..23).map { h ->
+            PerModelHour(
+                time = LocalDateTime.of(today.date, LocalTime.of(h, 0)),
+                apparentTemperatureC = if (h in 10..16) 18.0 else 14.0,
+                temperatureC = 14.0,
+                precipitationProbabilityPct = 10.0,
+            )
+        }
+        val gfs = (0..23).map { h ->
+            PerModelHour(
+                time = LocalDateTime.of(today.date, LocalTime.of(h, 0)),
+                apparentTemperatureC = if (h in 10..16) 24.5 else 14.5,
+                temperatureC = 14.0,
+                precipitationProbabilityPct = 10.0,
+            )
+        }
+        val bundleHourly = PerModelHourly(
+            byModel = mapOf("ecmwf_ifs04" to ecmwf, "gfs_seamless" to gfs),
+        )
+        val todayWithHourly = today.copy(
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(8, 0), 14.0, 14.0, 10.0, WeatherCondition.CLEAR),
+                HourlyForecast(LocalTime.of(12, 0), 21.0, 21.0, 10.0, WeatherCondition.CLEAR),
+                HourlyForecast(LocalTime.of(15, 0), 21.0, 21.0, 10.0, WeatherCondition.CLEAR),
+            ),
+        )
+        // Bundle's confidence is a HIGH-tier daily aggregate that doesn't
+        // match the daytime-window spread — confirms the insight picks
+        // the windowed value, not the bundle's fallback.
+        val staleBundleConfidence = ConfidenceInfo(
+            level = ForecastConfidence.HIGH,
+            tempSpreadC = 0.5,
+            precipSpreadPp = 5.0,
+            modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless"),
+        )
+        val weather = FakeWeatherRepository(
+            ForecastBundle(
+                todayWithHourly,
+                yesterday,
+                confidence = staleBundleConfidence,
+                perModelHourly = bundleHourly,
+            ),
+        )
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val info = subject(london, prefs, ForecastPeriod.TODAY).insight.confidence.shouldNotBeNull()
+        info.level shouldBe ForecastConfidence.LOW
+        info.tempSpreadC shouldBe (6.5 plusOrMinus 0.0001)
     }
 
     @Test

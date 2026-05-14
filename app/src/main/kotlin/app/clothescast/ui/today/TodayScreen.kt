@@ -322,40 +322,15 @@ private fun TodayContent(
                 insight = state.insight,
                 region = state.region,
             )
-            // ConfidenceInfo on Insight is always today's daily aggregate
-            // (`bundle.confidence` in GenerateDailyInsight, max/min across the
-            // full day's hours), while `insight.perModelHourly` is sliced to
-            // the period being rendered. On a TONIGHT insight the tier title
-            // and precip-spread number would describe today's daytime
-            // disagreement, but the divergence hint would pick a peak hour
-            // from the nighttime slice — two halves of the chip about
-            // different windows. Skip the whole chip on non-TODAY insights
-            // rather than show a misaligned one; addressing the tonight case
-            // properly needs a domain-side tonight-confidence aggregate.
-            //
-            // TODO(period-windowed-confidence): replace this UI-side gate
-            //   with a domain-side per-window aggregate. ConfidenceInfo
-            //   currently comes from `bundle.confidence` (daily max/min)
-            //   while perModelHourly is sliced to the render window in
-            //   `GenerateDailyInsight.buildPeriodView`. The same root
-            //   misalignment shows up on TODAY too — daily-max spread can
-            //   be driven by an evening outlier that's outside the
-            //   `[morningStart, tonightStart)` slice passed to the chip's
-            //   divergence hint (Codex P2 #6, #discussion_r3240468750).
-            //   Computing ConfidenceInfo over the same window as
-            //   perModelHourly would let the chip render correctly on both
-            //   TODAY and TONIGHT and drop this gate.
-            if (state.insight.period == ForecastPeriod.TODAY) {
-                state.insight.confidence?.let {
-                    ConfidenceChip(
-                        info = it,
-                        perModelHourly = state.insight.perModelHourly,
-                        temperatureUnit = state.temperatureUnit,
-                        windSpeedUnit = state.distanceUnit.windSpeedUnit(),
-                        showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
-                    )
-                }
+            state.insight.confidence?.let {
+                ConfidenceChip(
+                    info = it,
+                    perModelHourly = state.insight.perModelHourly,
+                    temperatureUnit = state.temperatureUnit,
+                    windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                    showModelSpread = state.showModelSpread,
+                    onToggleModelSpread = tapToggle,
+                )
             }
             if (state.insight.hourly.isNotEmpty()) {
                 val overlay = state.insight.perModelHourly?.takeIf { state.showModelSpread }

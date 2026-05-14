@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.Location
@@ -240,6 +241,10 @@ class SettingsRepository(
         dataStore.edit { it[TELEMETRY_ENABLED] = enabled }
     }
 
+    suspend fun setColorPalette(palette: ColorPalette) {
+        dataStore.edit { it[COLOR_PALETTE] = palette.name }
+    }
+
     suspend fun setTelemetryNoticeAcked(acked: Boolean) {
         dataStore.edit { it[TELEMETRY_NOTICE_ACKED] = acked }
     }
@@ -362,6 +367,8 @@ class SettingsRepository(
         // default; the one-time Today banner is what surfaces the choice to the user.
         val telemetryEnabled = this[TELEMETRY_ENABLED] != false
         val telemetryNoticeAcked = this[TELEMETRY_NOTICE_ACKED] == true
+        val colorPalette = this[COLOR_PALETTE]?.let { runCatching { ColorPalette.valueOf(it) }.getOrNull() }
+            ?: ColorPalette.RAINBOW
         val zone = zoneIdProvider()
 
         return UserPreferences(
@@ -388,6 +395,7 @@ class SettingsRepository(
             dailyMentionEveningEvents = dailyMentionEveningEvents,
             telemetryEnabled = telemetryEnabled,
             telemetryNoticeAcked = telemetryNoticeAcked,
+            colorPalette = colorPalette,
         )
     }
 
@@ -499,6 +507,7 @@ class SettingsRepository(
         private val TELEMETRY_ENABLED = booleanPreferencesKey("telemetry_enabled")
         private val TELEMETRY_NOTICE_ACKED = booleanPreferencesKey("telemetry_notice_acked")
         private val BUG_REPORT_CONSENT_ACKED = booleanPreferencesKey("bug_report_consent_acked")
+        private val COLOR_PALETTE = stringPreferencesKey("color_palette")
 
         private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
         private val DEFAULT_TIME: LocalTime = LocalTime.of(7, 0)

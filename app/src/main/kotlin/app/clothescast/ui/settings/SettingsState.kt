@@ -1,6 +1,7 @@
 package app.clothescast.ui.settings
 
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.Location
@@ -38,6 +39,7 @@ data class SettingsState(
     val temperatureUnit: TemperatureUnit = defaultTemperatureUnitFor(Locale.getDefault()),
     val distanceUnit: DistanceUnit = defaultDistanceUnitFor(Locale.getDefault()),
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    val colorPalette: ColorPalette = ColorPalette.RAINBOW,
     val clothesRules: List<ClothesRule> = ClothesRule.DEFAULTS,
     val defaultBottom: OutfitSuggestion.Bottom = OutfitSuggestion.Bottom.LONG_PANTS,
     val location: Location? = null,

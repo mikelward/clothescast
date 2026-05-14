@@ -96,6 +96,7 @@ import app.clothescast.diag.findActivity
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
+import app.clothescast.ui.theme.AppTheme
 import app.clothescast.work.FetchAndNotifyWorker
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -1003,10 +1004,12 @@ internal fun InsightCard(
 
 /**
  * "How sure are we?" card rendered between [InsightCard] and the temp cards.
- * Background color tracks the level so the user gets the cue at a glance —
- * green-ish for HIGH, neutral for MEDIUM, error-tinted for LOW. Detail text
- * shows the actual spread across the consulted models so the user can judge
- * for themselves.
+ * Background colour tracks the level via the active [app.clothescast.ui.theme.AppPalette]
+ * — Material `secondaryContainer` / `surfaceVariant` / `errorContainer` on the
+ * Rainbow palette (teal-ish HIGH, neutral MEDIUM, red-ish LOW), or the
+ * Okabe-Ito-derived sky blue / neutral / amber when the user has picked the
+ * Accessible palette in Display settings. Detail text shows the actual spread
+ * across the consulted models so the user can judge for themselves.
  */
 @Composable
 internal fun ConfidenceChip(
@@ -1014,14 +1017,9 @@ internal fun ConfidenceChip(
     showModelSpread: Boolean = false,
     onToggleModelSpread: (() -> Unit)? = null,
 ) {
-    val (bgColor, fgColor) = when (info.level) {
-        ForecastConfidence.HIGH -> MaterialTheme.colorScheme.secondaryContainer to
-            MaterialTheme.colorScheme.onSecondaryContainer
-        ForecastConfidence.MEDIUM -> MaterialTheme.colorScheme.surfaceVariant to
-            MaterialTheme.colorScheme.onSurfaceVariant
-        ForecastConfidence.LOW -> MaterialTheme.colorScheme.errorContainer to
-            MaterialTheme.colorScheme.onErrorContainer
-    }
+    val confidenceColors = AppTheme.palette.confidence.getValue(info.level)
+    val bgColor = confidenceColors.background
+    val fgColor = confidenceColors.foreground
     val labelRes = when (info.level) {
         ForecastConfidence.HIGH -> R.string.today_confidence_high
         ForecastConfidence.MEDIUM -> R.string.today_confidence_medium
@@ -1536,13 +1534,13 @@ internal fun PrecipitationCard(
 
 /**
  * Compact "Models: ● ECMWF ● GFS ● ICON · ● Best match" footer rendered under
- * the charts. Each consulted model gets a colour swatch in its pinned
- * [MODEL_COLORS] hue, and the optional [mainLine] argument tacks on a final
- * entry for the blended "main" line (theme primary) so the user can map every
- * line on the chart back to its source — including the main line, which
- * on the temperature and precipitation charts comes from Open-Meteo's
- * automatic-model-selection ("best match") default and routinely tracks a
- * different model than the consulted overlays.
+ * the charts. Each consulted model gets a colour swatch in its pinned hue from
+ * the active [app.clothescast.ui.theme.AppPalette], and the optional [mainLine]
+ * argument tacks on a final entry for the blended "main" line (theme primary)
+ * so the user can map every line on the chart back to its source — including
+ * the main line, which on the temperature and precipitation charts comes from
+ * Open-Meteo's automatic-model-selection ("best match") default and routinely
+ * tracks a different model than the consulted overlays.
  *
  * Callers pass the exact set of model ids actually plotted in
  * [visibleModelIds] (pre-refactor the legend derived this from `byModel`
@@ -1559,6 +1557,7 @@ internal fun ModelSpreadLegend(
     if (visibleModelIds.isEmpty() && mainLine == null) return
     val labelStyle = MaterialTheme.typography.bodySmall
     val labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val modelColors = AppTheme.palette.modelColors
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -1570,7 +1569,7 @@ internal fun ModelSpreadLegend(
         )
         visibleModelIds.forEach { modelId ->
             LegendChip(
-                color = MODEL_COLORS.getValue(modelId),
+                color = modelColors.getValue(modelId),
                 label = friendlyModelName(modelId),
                 style = labelStyle,
                 textColor = labelColor,

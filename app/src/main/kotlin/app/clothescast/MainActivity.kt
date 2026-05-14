@@ -76,20 +76,25 @@ class MainActivity : ComponentActivity() {
         // Read the persisted theme synchronously so the first frame already
         // matches the user's pick — same flicker-avoidance pattern used in
         // ClothesCastNav for the initial-screen decision.
-        val initialThemeMode = runBlocking {
-            app.settingsRepository.preferences.first().themeMode
+        val initialPrefs = runBlocking {
+            app.settingsRepository.preferences.first().let {
+                it.themeMode to it.colorPalette
+            }
         }
         try {
             setContent {
                 val themeMode by app.settingsRepository.preferences
                     .map { it.themeMode }
-                    .collectAsStateWithLifecycle(initialValue = initialThemeMode)
+                    .collectAsStateWithLifecycle(initialValue = initialPrefs.first)
+                val colorPalette by app.settingsRepository.preferences
+                    .map { it.colorPalette }
+                    .collectAsStateWithLifecycle(initialValue = initialPrefs.second)
                 val darkTheme = when (themeMode) {
                     ThemeMode.SYSTEM -> isSystemInDarkTheme()
                     ThemeMode.LIGHT -> false
                     ThemeMode.DARK -> true
                 }
-                ClothesCastTheme(darkTheme = darkTheme) {
+                ClothesCastTheme(darkTheme = darkTheme, colorPalette = colorPalette) {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background,

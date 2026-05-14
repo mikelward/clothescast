@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.OutfitSuggestion
@@ -496,6 +497,20 @@ class SettingsRepositoryTest {
 
         subject.setTelemetryEnabled(true)
         subject.preferences.first().telemetryEnabled shouldBe true
+    }
+
+    @Test
+    fun `colorPalette defaults to RAINBOW and round-trips`() = runTest {
+        // Default RAINBOW — the existing pink/orange/green chart palette
+        // and Material teal/red confidence chips stay in place for everyone
+        // who hasn't opted in via Display settings.
+        subject.preferences.first().colorPalette shouldBe ColorPalette.RAINBOW
+
+        subject.setColorPalette(ColorPalette.ACCESSIBLE)
+        subject.preferences.first().colorPalette shouldBe ColorPalette.ACCESSIBLE
+
+        subject.setColorPalette(ColorPalette.RAINBOW)
+        subject.preferences.first().colorPalette shouldBe ColorPalette.RAINBOW
     }
 
     @Test

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.Fact
@@ -58,8 +59,12 @@ import java.time.LocalTime
 //
 
 @Composable
-internal fun Frame(darkTheme: Boolean = false, content: @Composable () -> Unit) {
-    ClothesCastTheme(darkTheme = darkTheme, dynamicColor = false) {
+internal fun Frame(
+    darkTheme: Boolean = false,
+    colorPalette: ColorPalette = ColorPalette.RAINBOW,
+    content: @Composable () -> Unit,
+) {
+    ClothesCastTheme(darkTheme = darkTheme, dynamicColor = false, colorPalette = colorPalette) {
         Surface { Column(modifier = Modifier.padding(16.dp)) { content() } }
     }
 }
@@ -961,6 +966,36 @@ internal fun AirTemperatureCardWithModelSpreadPreview() {
 @Composable
 internal fun PrecipitationCardWithModelSpreadPreview() {
     Frame {
+        PrecipitationCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+        )
+    }
+}
+
+// Two accessible-palette previews — the temp + rain cards with the per-model
+// overlay turned on — so reviewers can see what the Okabe-Ito-derived trio
+// actually looks like on a chart before the toggle ships. We pick the two
+// cards that have a blended main line on top so the snapshot exercises both
+// the [AppPalette.modelColors] swap and the blended-vs-overlay contrast at
+// the same time; the diagnostic cards reuse the same overlay colours so they
+// don't need their own snapshot.
+@Preview(name = "Forecast card · accessible palette + model spread", widthDp = 360)
+@Composable
+internal fun ForecastCardWithModelSpreadAccessiblePreview() {
+    Frame(colorPalette = ColorPalette.ACCESSIBLE) {
+        ForecastCard(
+            hourly = SAMPLE_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+        )
+    }
+}
+
+@Preview(name = "Precipitation card · accessible palette + model spread", widthDp = 360)
+@Composable
+internal fun PrecipitationCardWithModelSpreadAccessiblePreview() {
+    Frame(colorPalette = ColorPalette.ACCESSIBLE) {
         PrecipitationCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,

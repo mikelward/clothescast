@@ -174,8 +174,10 @@ fun SettingsScreen(
             )
             SettingsRoute.Display -> DisplayContent(
                 themeMode = state.themeMode,
+                colorPalette = state.colorPalette,
                 padding = padding,
                 onSetThemeMode = viewModel::setThemeMode,
+                onSetColorPalette = viewModel::setColorPalette,
             )
             SettingsRoute.Location -> LocationContent(
                 location = state.location,

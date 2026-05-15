@@ -658,6 +658,8 @@ only the displayed label localizes.
     <string name="settings_display_palette_accessible_description">Палитра на основе Okabe-Ito, разработанная для различимости при дейтеранопии, протанопии и тританопии. Карточки достоверности используют голубой, нейтральный и янтарный вместо бирюзового, нейтрального и красного.</string>
     <string name="settings_display_palette_rainbow">Радуга</string>
     <string name="settings_display_palette_rainbow_description">Розовые, оранжевые и зелёные линии графиков с карточками достоверности Material бирюзово/красного цвета. По умолчанию.</string>
+    <string name="settings_display_palette_highlighter">Маркер</string>
+    <string name="settings_display_palette_highlighter_description">Линии графика пурпурного, жёлтого и голубого цвета — как след маркера на странице. Заметно отличаются от \"Радуги\" с первого взгляда; светлая тема использует более глубокие оттенки для читаемости. Безопасно при красно-зелёной цветовой слепоте.</string>
     <string name="settings_unit_auto">Авто</string>
     <string name="today_cloud_range">Облачность %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Модели расходятся во мнении о дожде (Δ %1$.0f%% по %2$d моделям)</string>

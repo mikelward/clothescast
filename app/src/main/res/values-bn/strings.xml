@@ -643,6 +643,8 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_display_palette_accessible_description">Okabe-Ito ভিত্তিক একটি প্যালেট যা ডিউটেরানোপিয়া, প্রোটানোপিয়া এবং ট্রিটানোপিয়ায় আলাদাভাবে চেনা যায়। আস্থা কার্ডগুলো টিল, নিরপেক্ষ এবং লাল রঙের পরিবর্তে আকাশি নীল, নিরপেক্ষ এবং অ্যাম্বার ব্যবহার করে।</string>
     <string name="settings_display_palette_rainbow">রংধনু</string>
     <string name="settings_display_palette_rainbow_description">গোলাপি, কমলা এবং সবুজ চার্ট লাইন সহ Material টিল/লাল আস্থা কার্ড। ডিফল্ট।</string>
+    <string name="settings_display_palette_highlighter">হাইলাইটার</string>
+    <string name="settings_display_palette_highlighter_description">ম্যাজেন্টা, হলুদ এবং সায়ান চার্ট লাইন — যেন পাতার উপর হাইলাইটার কলমের ছোঁয়া। এক নজরেই \"রংধনু\" থেকে দৃশ্যমানভাবে আলাদা; লাইট থিমে পঠনযোগ্যতার জন্য গভীরতর সংস্করণ ব্যবহার করা হয়। লাল-সবুজ বর্ণান্ধতার জন্য নিরাপদ।</string>
     <string name="settings_unit_auto">স্বয়ংক্রিয়</string>
     <string name="today_cloud_range">মেঘ %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">মডেলগুলো বৃষ্টি নিয়ে একমত নয় (Δ %1$.0f%%, %2$dটি মডেল)</string>

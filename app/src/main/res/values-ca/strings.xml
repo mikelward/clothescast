@@ -540,6 +540,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_display_palette_accessible_description">Una paleta derivada d\'Okabe-Ito, dissenyada per mantenir-se distingible amb deuteranopia, protanopia i tritanopia. Les targetes de confiança utilitzen blau cel, neutre i ambre en lloc de blau verdós, neutre i vermell.</string>
     <string name="settings_display_palette_rainbow">Arc de Sant Martí</string>
     <string name="settings_display_palette_rainbow_description">Línies de gràfic rosa, taronja i verd amb targetes de confiança Material blau verdós/vermell. Per defecte.</string>
+    <string name="settings_display_palette_highlighter">Marcador</string>
+    <string name="settings_display_palette_highlighter_description">Línies de gràfic en magenta, groc i cian — com una pinzellada de marcador a la pàgina. Es distingeixen clarament de l\'\"Arc de Sant Martí\" d\'un cop d\'ull; el tema clar utilitza variants més profundes per a la llegibilitat. Segures per al daltonisme vermell-verd.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Nuvolositat %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Els models no es posen d\'acord sobre la pluja (Δ %1$.0f%% entre %2$d models)</string>

@@ -604,6 +604,8 @@ What is NOT overridden, by design:
     <string name="settings_display_palette_accessible_description">Paleta odvodená od Okabe-Ito, navrhnutá tak, aby zostala rozlíšiteľná pri deuteranopii, protanopii a tritanopii. Karty istoty používajú nebesky modrú, neutrálnu a jantárovú namiesto tyrkysovej, neutrálnej a červenej.</string>
     <string name="settings_display_palette_rainbow">Dúha</string>
     <string name="settings_display_palette_rainbow_description">Ružové, oranžové a zelené čiary grafov s tyrkysovými/červenými kartami istoty Material. Predvolené.</string>
+    <string name="settings_display_palette_highlighter">Zvýrazňovač</string>
+    <string name="settings_display_palette_highlighter_description">Purpurové, žlté a azúrové čiary grafu — ako stopa zvýrazňovača na stránke. Na prvý pohľad viditeľne odlišné od \"Dúhy\"; svetlá téma používa hlbšie varianty pre čitateľnosť. Bezpečné pri červeno-zelenej farboslepote.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Oblačnosť %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Modely sa nezhodujú na zrážkach (Δ %1$.0f%% pre %2$d modely)</string>

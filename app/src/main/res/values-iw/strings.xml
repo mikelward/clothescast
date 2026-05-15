@@ -456,6 +456,8 @@ standard in Israeli digital communication.
     <string name="settings_display_colors_title">פלטת צבעים</string>
     <string name="settings_display_palette_rainbow">קשת בענן</string>
     <string name="settings_display_palette_rainbow_description">קווי גרף ורוד, כתום וירוק עם כרטיסי אמון Material בירקרק/אדום. ברירת המחדל.</string>
+    <string name="settings_display_palette_highlighter">טוש זוהר</string>
+    <string name="settings_display_palette_highlighter_description">קווי גרף בצבעי מגנטה, צהוב ותכלת — כמו טוש זוהר על הדף. נבדלים מ\"קשת בענן\" במבט ראשון; הערכת הבהיר משתמשת בגוונים עמוקים יותר לקריאות. בטוחים לעיוורי צבעים אדום-ירוק.</string>
     <string name="settings_display_palette_accessible">נגיש</string>
     <string name="settings_display_palette_accessible_description">פלטה המבוססת על Okabe-Ito, מעוצבת להישאר מבחינה בעיוורון צבעים. כרטיסי האמון משתמשים בכחול שמים, ניטרלי וענבר במקום ירקרק, ניטרלי ואדום.</string>
     <string name="today_cloud_range">ענן %1$d–%2$d%%</string>

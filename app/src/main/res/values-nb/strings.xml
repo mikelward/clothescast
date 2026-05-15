@@ -602,6 +602,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_display_palette_accessible_description">En Okabe-Ito-basert palett utformet for å forbli skillbar ved deuteranopi, protanopi og tritanopi. Tillitskorte bruker himmelblå, nøytral og rav i stedet for teal, nøytral og rød.</string>
     <string name="settings_display_palette_rainbow">Regnbue</string>
     <string name="settings_display_palette_rainbow_description">Rosa, oransje og grønne diagramlinjer med Material teal/røde tillitskort. Standard.</string>
+    <string name="settings_display_palette_highlighter">Markeringspenn</string>
+    <string name="settings_display_palette_highlighter_description">Magenta, gule og cyan grafikklinjer — som markeringspenner på siden. Ved første øyekast synlig forskjellig fra \"Regnbue\"; det lyse temaet bruker dypere varianter for lesbarhet. Trygg ved rød-grønn fargeblindhet.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Skydekke %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Modellene er uenige om nedbør (Δ %1$.0f%% på tvers av %2$d modeller)</string>

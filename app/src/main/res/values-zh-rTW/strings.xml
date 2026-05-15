@@ -715,6 +715,8 @@ label localises.
     <string name="settings_display_palette_accessible_description">基於 Okabe-Ito 的調色板，設計上在綠色弱視、紅色弱視和藍色弱視情況下仍可辨識。信心卡片使用天藍色、中性色和琥珀色，而非青色、中性色和紅色。</string>
     <string name="settings_display_palette_rainbow">彩虹</string>
     <string name="settings_display_palette_rainbow_description">粉紅、橙色和綠色圖表線條，以及 Material 青色/紅色信心卡片。預設值。</string>
+    <string name="settings_display_palette_highlighter">螢光筆</string>
+    <string name="settings_display_palette_highlighter_description">洋紅、黃色和青色的圖表線條——彷彿用螢光筆在紙上劃過。一眼即可與「彩虹」區分；淺色佈景使用更深的變體以提升可讀性。對紅綠色盲安全。</string>
     <string name="settings_unit_auto">自動</string>
     <string name="today_cloud_range">雲量 %1$d〜%2$d%%</string>
     <string name="today_confidence_precip_spread">各模型對降水意見不一（Δ %1$.0f%%，共 %2$d 個模型）</string>

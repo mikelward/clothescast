@@ -545,6 +545,8 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_display_palette_accessible_description">Okabe-Ito palete, kas paredzēta, lai paliktu atšķirama deuteranopijas, protanopijas un tritanopijas gadījumā. Ticamības kartes izmanto debesu zilu, neitrālu un dzintarkrāsu, nevis tirkīzu, neitrālu un sarkanu.</string>
     <string name="settings_display_palette_rainbow">Varavīksne</string>
     <string name="settings_display_palette_rainbow_description">Rozā, oranžas un zaļas diagrammas līnijas ar Material tirkīza/sarkanām ticamības kartēm. Noklusējums.</string>
+    <string name="settings_display_palette_highlighter">Marķieris</string>
+    <string name="settings_display_palette_highlighter_description">Fuksiju, dzeltenas un ciāna grafika līnijas — kā marķiera pēdas uz lapas. No pirmā skatiena nepārprotami atšķiras no \"Varavīksnes\"; gaišā tēma izmanto tumšākus variantus labākai lasāmībai. Droši sarkanas-zaļas krāsu akluma gadījumā.</string>
     <string name="settings_unit_auto">Automātiski</string>
     <string name="today_cloud_range">Mākoņainums %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Modeļi nepiekrīt lietus jautājumā (Δ %1$.0f%% starp %2$d modeļiem)</string>

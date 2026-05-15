@@ -603,6 +603,8 @@ Not overridden by design:
     <string name="settings_display_palette_accessible_description">Okabe-Ito पर आधारित पैलेट, जो ड्यूटेरानोपिया, प्रोटानोपिया और ट्रिटानोपिया में भी पहचाने जाने योग्य रहे। विश्वास कार्ड टील, तटस्थ और लाल की जगह आसमानी नीला, तटस्थ और एम्बर रंग का उपयोग करते हैं।</string>
     <string name="settings_display_palette_rainbow">इंद्रधनुष</string>
     <string name="settings_display_palette_rainbow_description">गुलाबी, नारंगी और हरी चार्ट लाइनें Material टील/लाल विश्वास कार्ड के साथ। डिफ़ॉल्ट।</string>
+    <string name="settings_display_palette_highlighter">हाइलाइटर</string>
+    <string name="settings_display_palette_highlighter_description">मैजेंटा, पीली और सायन रंग की चार्ट लाइनें — पन्ने पर हाइलाइटर पेन की तरह। \"इंद्रधनुष\" से एक नज़र में स्पष्ट रूप से अलग; लाइट थीम पठनीयता के लिए गहरे संस्करण उपयोग करती है। लाल-हरे रंग अंधता में सुरक्षित।</string>
     <string name="settings_unit_auto">स्वचालित</string>
     <string name="today_cloud_range">बादल %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">मॉडल बारिश पर सहमत नहीं (Δ %1$.0f%%, %2$d मॉडल में)</string>

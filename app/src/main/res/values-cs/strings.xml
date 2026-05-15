@@ -590,6 +590,8 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_display_palette_accessible_description">Paleta odvozená od Okabe-Ito, navržená tak, aby zůstala rozlišitelná při deuteranopii, protanopii a tritanopii. Karty spolehlivosti používají nebeskou modrou, neutrální a jantarovou místo tyrkysové, neutrální a červené.</string>
     <string name="settings_display_palette_rainbow">Duha</string>
     <string name="settings_display_palette_rainbow_description">Růžové, oranžové a zelené linky grafů s tyrkysovými/červenými kartami spolehlivosti Material. Výchozí.</string>
+    <string name="settings_display_palette_highlighter">Zvýrazňovač</string>
+    <string name="settings_display_palette_highlighter_description">Purpurové, žluté a azurové čáry grafu — jako stopa zvýrazňovače na stránce. Na první pohled viditelně odlišné od \"Duhy\"; světlý motiv používá hlubší varianty pro čitelnost. Bezpečné při červeno-zelené barvosleposti.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Oblačnost %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Modely se neshodují na srážkách (Δ %1$.0f%% pro %2$d modely)</string>

@@ -702,6 +702,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_palette_accessible_description">Una paleta derivada de Okabe-Ito diseñada para seguir siendo distinguible con deuteranopía, protanopía y tritanopía. Las tarjetas de confianza usan azul cielo, neutro y ámbar en lugar de verde azulado, neutro y rojo.</string>
     <string name="settings_display_palette_rainbow">Arcoíris</string>
     <string name="settings_display_palette_rainbow_description">Líneas de gráfico rosa, naranja y verde con tarjetas de confianza Material en verde azulado/rojo. La predeterminada.</string>
+    <string name="settings_display_palette_highlighter">Marcador</string>
+    <string name="settings_display_palette_highlighter_description">Líneas de gráfico en magenta, amarillo y cian — como marcadores fluorescentes sobre el papel. Visiblemente diferentes de \"Arcoíris\" a primera vista; el tema claro usa variantes más oscuras para mayor legibilidad. Seguro con daltonismo rojo-verde.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Nubosidad %1$d\u2013%2$d%%</string>
     <string name="today_confidence_tap_to_hide">Toca para ocultar las previsiones por modelo</string>

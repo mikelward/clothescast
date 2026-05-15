@@ -583,6 +583,8 @@ displayed label localizes.
     <string name="settings_display_palette_accessible_description">Okabe-Ito-pohjainen paletti, joka on suunniteltu pysymään erotettavana deuteranopian, protanopian ja tritanopian yhteydessä. Luotettavuuskortit käyttävät taivaansinistä, neutraalia ja meripihkaa tealin, neutraalin ja punaisen sijaan.</string>
     <string name="settings_display_palette_rainbow">Sateenkaari</string>
     <string name="settings_display_palette_rainbow_description">Vaaleanpunaiset, oranssit ja vihreät kaavioviivat sekä Material teal/punaiset luotettavuuskortit. Oletus.</string>
+    <string name="settings_display_palette_highlighter">Korostuskynä</string>
+    <string name="settings_display_palette_highlighter_description">Magenta, keltaiset ja syaaninväriset kaaviolinjat — kuin korostuskynänjälki sivulla. Erottuu ensisilmäyksellä \"Sateenkaaresta\"; vaalea teema käyttää syvempiä variantteja luettavuuden vuoksi. Turvallinen puna-vihersokeudelle.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Pilvisyys %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Mallit ovat eri mieltä sateesta (Δ %1$.0f%% %2$d mallin kesken)</string>

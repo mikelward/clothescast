@@ -602,6 +602,8 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_display_palette_accessible_description">En Okabe-Ito-baserad palett utformad för att förbli urskiljbar vid deuteranopi, protanopi och tritanopi. Konfidenskorten använder himmelsblått, neutralt och bärnsten i stället för teal, neutralt och rött.</string>
     <string name="settings_display_palette_rainbow">Regnbåge</string>
     <string name="settings_display_palette_rainbow_description">Rosa, orange och gröna diagramlinjer med Material teal/röda konfidenskort. Standardalternativet.</string>
+    <string name="settings_display_palette_highlighter">Överstrykningspenna</string>
+    <string name="settings_display_palette_highlighter_description">Magenta, gula och cyanfärgade diagramlinjer — som en överstrykningspenna på sidan. Vid en första anblick synligt annorlunda än \"Regnbåge\"; det ljusa temat använder djupare varianter för läsbarhet. Säker vid röd-grön färgblindhet.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Molnighet %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Modellerna är oeniga om regn (Δ %1$.0f%% för %2$d modeller)</string>

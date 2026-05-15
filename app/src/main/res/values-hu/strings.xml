@@ -593,6 +593,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_display_palette_accessible_description">Okabe-Ito alapú paletta, amelyet deuteranópia, protanópia és tritanópia esetén is megkülönböztethetőnek terveztek. A megbízhatósági kártyák kékeszöld, semleges és piros helyett égkéket, semlegeset és borostyánsárgát használnak.</string>
     <string name="settings_display_palette_rainbow">Szivárvány</string>
     <string name="settings_display_palette_rainbow_description">Rózsaszín, narancssárga és zöld diagramvonalak Material kékeszöld/piros megbízhatósági kártyákkal. Az alapértelmezett.</string>
+    <string name="settings_display_palette_highlighter">Szövegkiemelő</string>
+    <string name="settings_display_palette_highlighter_description">Magenta, sárga és ciánkék diagramvonalak — mint a szövegkiemelő nyoma a lapon. Első pillantásra láthatóan más, mint a \"Szivárvány\"; a világos téma mélyebb változatokat használ az olvashatóság érdekében. Biztonságos vörös-zöld színtévesztéshez.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Felhőzet %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">A modellek nem értenek egyet a csapadékban (Δ %1$.0f%% %2$d modell között)</string>

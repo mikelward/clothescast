@@ -573,6 +573,8 @@ to values/strings.xml (English).
     <string name="settings_display_palette_accessible_description">Palet berbasis Okabe-Ito yang dirancang agar tetap dapat dibedakan saat deuteranopia, protanopia, dan tritanopia. Kartu keyakinan menggunakan biru langit, netral, dan kuning amber, bukan teal, netral, dan merah.</string>
     <string name="settings_display_palette_rainbow">Pelangi</string>
     <string name="settings_display_palette_rainbow_description">Garis grafik merah muda, oranye, dan hijau dengan kartu keyakinan Material teal/merah. Bawaan.</string>
+    <string name="settings_display_palette_highlighter">Stabilo</string>
+    <string name="settings_display_palette_highlighter_description">Garis grafik magenta, kuning, dan cyan — seperti goresan stabilo di halaman. Sekilas tampak jelas berbeda dari \"Pelangi\"; tema terang memakai varian yang lebih gelap agar lebih mudah dibaca. Aman untuk buta warna merah-hijau.</string>
     <string name="settings_unit_auto">Otomatis</string>
     <string name="today_cloud_range">Awan %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Model tidak sepakat soal hujan (Δ %1$.0f%% dari %2$d model)</string>

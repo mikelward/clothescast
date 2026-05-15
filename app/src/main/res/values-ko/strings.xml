@@ -711,6 +711,8 @@ displayed label localizes.
     <string name="settings_display_palette_accessible_description">제2색맹, 제1색맹, 제3색맹에서도 구별 가능하도록 설계된 Okabe-Ito 기반 팔레트. 신뢰도 카드는 청록, 중립, 빨강 대신 하늘색, 중립, 호박색을 사용합니다.</string>
     <string name="settings_display_palette_rainbow">레인보우</string>
     <string name="settings_display_palette_rainbow_description">핑크, 주황, 초록 차트 선과 Material 청록/빨강 신뢰도 카드. 기본값.</string>
+    <string name="settings_display_palette_highlighter">형광펜</string>
+    <string name="settings_display_palette_highlighter_description">마젠타·노랑·시안 차트 선 — 종이 위에 형광펜으로 그은 듯한 느낌입니다. 한눈에 \"무지개\"와 분명히 구분되며, 라이트 테마는 가독성을 위해 더 짙은 색을 사용합니다. 적-녹 색각 이상에서도 안전합니다.</string>
     <string name="settings_unit_auto">자동</string>
     <string name="today_cloud_range">구름량 %1$d〜%2$d%%</string>
     <string name="today_confidence_precip_spread">강수 확률에서 모델 간 의견 불일치 (Δ %1$.0f%%, %2$d개 모델)</string>

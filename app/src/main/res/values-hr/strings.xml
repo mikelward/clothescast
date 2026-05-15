@@ -670,6 +670,8 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_display_palette_accessible_description">Paleta izvedena iz Okabe-Ito-a, dizajnirana da ostane razlučiva u slučaju deuteranopije, protanopije i tritanopije. Kartice pouzdanosti koriste nebesko plavu, neutralnu i jantarnu umjesto tirkizne, neutralne i crvene.</string>
     <string name="settings_display_palette_rainbow">Duga</string>
     <string name="settings_display_palette_rainbow_description">Ružičaste, narančaste i zelene linije grafikona s tirkiznim/crvenim karticama pouzdanosti Material. Zadano.</string>
+    <string name="settings_display_palette_highlighter">Marker</string>
+    <string name="settings_display_palette_highlighter_description">Magenta, žute i cijan linije grafikona — kao trag markera na stranici. Na prvi pogled vidno različite od \"Duge\"; svijetla tema koristi dublje varijante za čitljivost. Sigurne za crveno-zelenu sljepoću za boje.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Oblačnost %1$d\u2013%2$d%%</string>
     <string name="today_confidence_tap_to_hide">Dodirnite za skrivanje prognoza po modelu</string>

@@ -448,6 +448,8 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_display_colors_title">پالت رنگ</string>
     <string name="settings_display_palette_rainbow">رنگین‌کمان</string>
     <string name="settings_display_palette_rainbow_description">خطوط نمودار صورتی، نارنجی و سبز با کارت‌های اطمینان Material فیروزه‌ای/قرمز. پیش‌فرض.</string>
+    <string name="settings_display_palette_highlighter">ماژیک هایلایت</string>
+    <string name="settings_display_palette_highlighter_description">خطوط نمودار به رنگ‌های ارغوانی، زرد و فیروزه‌ای — مانند ردّ ماژیک هایلایت روی کاغذ. در نگاه اول به‌وضوح از \"رنگین‌کمان\" متمایزند؛ تم روشن از تنالیته‌های عمیق‌تر برای خوانایی استفاده می‌کند. برای کوررنگی قرمز-سبز ایمن است.</string>
     <string name="settings_display_palette_accessible">در دسترس</string>
     <string name="settings_display_palette_accessible_description">پالتی برگرفته از Okabe-Ito که برای تمایز در انواع کوررنگی طراحی شده. کارت‌های اطمینان از آبی آسمانی، خنثی و کهربایی به‌جای فیروزه‌ای، خنثی و قرمز استفاده می‌کنند.</string>
     <string name="today_cloud_range">ابر %1$d–%2$d%%</string>

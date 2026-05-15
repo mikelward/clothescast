@@ -15,6 +15,7 @@ import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
@@ -276,6 +277,23 @@ class SettingsRepository(
     }
 
     /**
+     * Persists the user's [ForecastModel] selection as the stored enum names.
+     * The UI guards against empty selections, but if [models] does come in
+     * empty (e.g. a hand-edited DataStore) we clear the key so the next read
+     * falls back to [ForecastModel.DEFAULTS] rather than persisting an empty
+     * set that would later trip the fetcher's degenerate-input safety net.
+     */
+    suspend fun setForecastModels(models: Set<ForecastModel>) {
+        dataStore.edit { prefs ->
+            if (models.isEmpty()) {
+                prefs.remove(FORECAST_MODELS)
+            } else {
+                prefs[FORECAST_MODELS] = models.map { it.name }.toSet()
+            }
+        }
+    }
+
+    /**
      * Sets the per-icon fill colour for [top]. `null` clears any override —
      * the icon then falls back to the baked-in XML colour. Read-modify-write
      * happens inside a single [dataStore.edit] so concurrent edits don't
@@ -437,6 +455,17 @@ class SettingsRepository(
             ?: ColorPalette.RAINBOW
         val outfitTopColors = parseOutfitTopColors(this[OUTFIT_TOP_COLORS])
         val outfitBottomColors = parseOutfitBottomColors(this[OUTFIT_BOTTOM_COLORS])
+        // Resolve stored enum names back to [ForecastModel]. Unknown / removed
+        // entries are dropped silently so a forward-compat (future enum value
+        // we didn't ship yet) or stale value from a downgrade doesn't break
+        // the picker. Empty resolved set falls back to [ForecastModel.DEFAULTS]
+        // so an install that lost the entry to corruption still gets a
+        // working confidence chip.
+        val forecastModels = this[FORECAST_MODELS]
+            ?.mapNotNull { runCatching { ForecastModel.valueOf(it) }.getOrNull() }
+            ?.toSet()
+            ?.takeIf { it.isNotEmpty() }
+            ?: ForecastModel.DEFAULTS
         val zone = zoneIdProvider()
 
         return UserPreferences(
@@ -468,6 +497,7 @@ class SettingsRepository(
             colorPalette = colorPalette,
             outfitTopColors = outfitTopColors,
             outfitBottomColors = outfitBottomColors,
+            forecastModels = forecastModels,
         )
     }
 
@@ -630,6 +660,7 @@ class SettingsRepository(
         private val COLOR_PALETTE = stringPreferencesKey("color_palette")
         private val OUTFIT_TOP_COLORS = stringPreferencesKey("outfit_top_colors_json")
         private val OUTFIT_BOTTOM_COLORS = stringPreferencesKey("outfit_bottom_colors_json")
+        private val FORECAST_MODELS = stringSetPreferencesKey("forecast_models")
 
         private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
         private val DEFAULT_TIME: LocalTime = LocalTime.of(7, 0)

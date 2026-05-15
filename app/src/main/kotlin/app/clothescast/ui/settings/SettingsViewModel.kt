@@ -10,6 +10,7 @@ import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
@@ -135,6 +136,7 @@ class SettingsViewModel(
                         voiceLocale = prefs.voiceLocale,
                         useCalendarEvents = prefs.useCalendarEvents,
                         telemetryEnabled = prefs.telemetryEnabled,
+                        forecastModels = prefs.forecastModels,
                     )
                 }
                 // Re-enumerate on first observation and whenever the effective
@@ -373,6 +375,17 @@ class SettingsViewModel(
 
     fun setTelemetryEnabled(enabled: Boolean) {
         viewModelScope.launch { settingsRepository.setTelemetryEnabled(enabled) }
+    }
+
+    /**
+     * Persists the user's [ForecastModel] selection. The picker enforces a
+     * minimum of two checked entries before calling here (the confidence
+     * chip needs at least two models to compute a spread), so an empty
+     * [models] never reaches this path from the UI; the repository still
+     * defends against it for hand-edited-DataStore safety.
+     */
+    fun setForecastModels(models: Set<ForecastModel>) {
+        viewModelScope.launch { settingsRepository.setForecastModels(models) }
     }
 
     /** Used by the data-sources page's location dialog; safe to call from any dispatcher. */

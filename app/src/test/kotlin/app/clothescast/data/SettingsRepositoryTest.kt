@@ -11,6 +11,7 @@ import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
@@ -820,6 +821,46 @@ class SettingsRepositoryTest {
         snap.coatDeltaC shouldBe ClothesRulesSnapshot.MISSING
         snap.customisedCount shouldBe 1
         snap.categoriesCustomised shouldBe "coat"
+    }
+
+    @Test
+    fun `forecast models default to the shipping trio`() = runTest {
+        subject.preferences.first().forecastModels shouldBe ForecastModel.DEFAULTS
+    }
+
+    @Test
+    fun `forecast models setter round-trips arbitrary subsets`() = runTest {
+        // Cover every ForecastModel value so adding or dropping an entry
+        // without keeping the persistence path in sync shows up here.
+        // Stored as enum names; the read-back side resolves them back.
+        for (model in ForecastModel.entries) {
+            val subset = ForecastModel.DEFAULTS + model
+            subject.setForecastModels(subset)
+            subject.preferences.first().forecastModels shouldBe subset
+        }
+    }
+
+    @Test
+    fun `setting forecast models to empty falls back to defaults on read`() = runTest {
+        // An empty set never reaches this path from the UI (the picker
+        // enforces a minimum of two), but a hand-edited DataStore could.
+        // The empty key gets cleared; the next read returns the trio.
+        subject.setForecastModels(emptySet())
+        subject.preferences.first().forecastModels shouldBe ForecastModel.DEFAULTS
+    }
+
+    @Test
+    fun `forecast models tolerate unknown stored enum names`() = runTest {
+        // Forward-compat: a future build that adds a new model variant
+        // and writes its name shouldn't break earlier installs reading
+        // it back. The unknown entry silently disappears; known entries
+        // survive.
+        dataStore.edit {
+            it[stringSetPreferencesKey("forecast_models")] =
+                setOf("ECMWF_IFS04", "FUTURE_MODEL_VARIANT", "GFS_SEAMLESS")
+        }
+        subject.preferences.first().forecastModels shouldBe
+            setOf(ForecastModel.ECMWF_IFS04, ForecastModel.GFS_SEAMLESS)
     }
 
     @Test

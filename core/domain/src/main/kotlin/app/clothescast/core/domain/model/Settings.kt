@@ -366,9 +366,61 @@ data class UserPreferences(
     val outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     /** Sibling of [outfitTopColors] for the bottom-garment icons. */
     val outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    /**
+     * Which numerical-weather-prediction models the multi-model confidence
+     * fetcher consults. Defaults to [ForecastModel.DEFAULTS] (ECMWF / GFS /
+     * ICON) — the trio the chip has shipped with. Users with a regional
+     * preference can swap in ARPEGE / GEM / UKMO / JMA / BOM via the
+     * Forecasters settings sub-screen.
+     *
+     * Stored as a [Set] because order doesn't matter — the URL builder
+     * sorts to a deterministic comma-separated list, and the confidence
+     * chip / per-model chart don't depend on a particular ordering.
+     */
+    val forecastModels: Set<ForecastModel> = ForecastModel.DEFAULTS,
 ) {
     companion object {
         const val DEFAULT_GEMINI_VOICE = "Despina"
+    }
+}
+
+/**
+ * Numerical weather prediction model the multi-model confidence fetcher can
+ * consult. Each entry's [openMeteoId] is the string Open-Meteo's `models=`
+ * parameter expects — the data layer reads it when building the URL, so the
+ * domain doesn't have to leak Open-Meteo specifics anywhere else.
+ *
+ * The set the user has enabled lives at [UserPreferences.forecastModels].
+ * Default is the trio that's been shipping: ECMWF, GFS, ICON — three
+ * independent global majors (European, American, German), chosen for
+ * dynamical-core diversity rather than for each being the most accurate
+ * individually. Users who care about the spread (or whose region has a
+ * stronger regional model) can swap in others via the Forecasters picker.
+ *
+ * Note on temporal cadence: ECMWF IFS, GEM, UKMO, JMA, and BOM are 3- or
+ * 6-hourly on the open-data feed Open-Meteo distributes, which Open-Meteo
+ * interpolates to hourly. ICON, GFS, and ARPEGE are natively hourly. This
+ * matters for the per-model chart's hour-by-hour curves but not for the
+ * daily-aggregate confidence chip.
+ */
+enum class ForecastModel(val openMeteoId: String) {
+    ECMWF_IFS04("ecmwf_ifs04"),
+    ICON_SEAMLESS("icon_seamless"),
+    GFS_SEAMLESS("gfs_seamless"),
+    GEM_SEAMLESS("gem_seamless"),
+    METEOFRANCE_SEAMLESS("meteofrance_seamless"),
+    UKMO_SEAMLESS("ukmo_seamless"),
+    JMA_SEAMLESS("jma_seamless"),
+    BOM_ACCESS_GLOBAL("bom_access_global");
+
+    companion object {
+        /**
+         * The three models the confidence chip has shipped with — ECMWF, GFS,
+         * ICON. Used as the default for [UserPreferences.forecastModels] and
+         * as the fallback when the user has somehow deselected everything
+         * (the picker's UI prevents that, but a hand-edited DataStore could).
+         */
+        val DEFAULTS: Set<ForecastModel> = setOf(ECMWF_IFS04, GFS_SEAMLESS, ICON_SEAMLESS)
     }
 }
 

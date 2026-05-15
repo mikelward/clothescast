@@ -56,6 +56,21 @@ class OpenMeteoClient(
     private val httpClient: HttpClient,
     confidenceLogger: ConfidenceFetchLogger = NoOpConfidenceFetchLogger,
     private val apiCallLogger: ApiCallLogger = NoOpApiCallLogger,
+    /**
+     * Snapshot of which Open-Meteo model IDs the multi-model confidence
+     * fetcher should consult on the next call. Read fresh on every
+     * [fetchForecast] so a Forecasters-settings change takes effect on the
+     * next refresh without rebuilding the client. Suspending so the
+     * `:app`-side wiring can `settingsRepository.preferences.first()`
+     * directly without staging through a StateFlow snapshot. DataStore
+     * caches the latest emission, so on the warm path the read is a memory
+     * hit and runs inside the same coroutine that's about to launch the
+     * parallel fetches — no measurable added latency. Defaults to the
+     * three-model trio for tests and any caller that doesn't wire a
+     * settings-backed provider.
+     */
+    private val confidenceModelsProvider: suspend () -> List<String> =
+        { MultiModelConfidenceFetcher.DEFAULT_MODELS },
 ) : WeatherRepository {
 
     // Constructed once per client. Exposing it on the public constructor would
@@ -74,7 +89,8 @@ class OpenMeteoClient(
         // latency behind the primary fetch.
         val primary = async { fetchPrimary(location) }
         val alerts = async { fetchAlerts(location) }
-        val multiModel = async { confidenceFetcher.fetch(location) }
+        val models = confidenceModelsProvider()
+        val multiModel = async { confidenceFetcher.fetch(location, models) }
 
         val bundle = OpenMeteoMapper.toBundle(primary.await())
         val multi = multiModel.await()

@@ -53,11 +53,18 @@ import java.time.LocalDateTime
  */
 internal class MultiModelConfidenceFetcher(
     private val httpClient: HttpClient,
-    private val models: List<String> = DEFAULT_MODELS,
     private val logger: ConfidenceFetchLogger = NoOpConfidenceFetchLogger,
     private val apiCallLogger: ApiCallLogger = NoOpApiCallLogger,
 ) {
-    suspend fun fetch(location: Location): MultiModelData? = try {
+    suspend fun fetch(
+        location: Location,
+        models: List<String> = DEFAULT_MODELS,
+    ): MultiModelData? = try {
+        // Tolerate a degenerate user selection by falling back to defaults rather
+        // than firing a `models=` parameter that Open-Meteo would reject. The
+        // settings UI keeps the picker pinned to ≥ 2 enabled, so this branch is
+        // a hand-edited-DataStore safety net more than a user-reachable path.
+        val effectiveModels = models.takeIf { it.isNotEmpty() } ?: DEFAULT_MODELS
         val response = apiCallLogger.instrument(ApiEndpoints.OPEN_METEO_CONFIDENCE) {
             httpClient.get {
                 expectSuccess = true
@@ -90,12 +97,12 @@ internal class MultiModelConfidenceFetcher(
                         "wind_speed_10m,relative_humidity_2m,cloud_cover_low," +
                         "shortwave_radiation,sunshine_duration,uv_index,weather_code",
                 )
-                parameter("models", models.joinToString(","))
+                parameter("models", effectiveModels.joinToString(","))
             }.body<MultiModelResponse>()
         }
 
-        val confidence = computeConfidence(response.daily)
-        val hourly = parseHourly(response.hourly)
+        val confidence = computeConfidence(response.daily, effectiveModels)
+        val hourly = parseHourly(response.hourly, effectiveModels)
         if (confidence == null && hourly == null) null else MultiModelData(confidence, hourly)
     } catch (ce: CancellationException) {
         throw ce
@@ -104,7 +111,7 @@ internal class MultiModelConfidenceFetcher(
         null
     }
 
-    private fun computeConfidence(daily: JsonObject): ConfidenceInfo? {
+    private fun computeConfidence(daily: JsonObject, models: List<String>): ConfidenceInfo? {
         val results = buildList {
             for (model in models) {
                 when (val outcome = readModelDaily(daily, model)) {
@@ -124,7 +131,7 @@ internal class MultiModelConfidenceFetcher(
         return compute(results)
     }
 
-    private fun parseHourly(hourly: JsonObject?): PerModelHourly? {
+    private fun parseHourly(hourly: JsonObject?, models: List<String>): PerModelHourly? {
         val obj = hourly ?: return null
         val times = (obj["time"] as? JsonArray) ?: return null
         val byModel = buildMap<String, List<PerModelHour>> {

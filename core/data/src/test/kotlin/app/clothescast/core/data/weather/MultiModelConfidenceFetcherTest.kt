@@ -86,6 +86,30 @@ class MultiModelConfidenceFetcherTest {
     }
 
     @Test
+    fun `caller-supplied models override the default trio in the request URL`() = runTest {
+        val captured = mutableListOf<HttpRequestData>()
+        val fetcher = fetcherWith(body = THREE_MODEL_AGREEMENT, capture = { captured += it })
+
+        fetcher.fetch(london, listOf("ukmo_seamless", "meteofrance_seamless"))
+
+        captured.single().url.parameters["models"] shouldBe "ukmo_seamless,meteofrance_seamless"
+    }
+
+    @Test
+    fun `empty caller-supplied models falls back to the default trio`() = runTest {
+        // The Forecasters settings UI keeps the picker pinned to at least
+        // two checked entries, so this path is a hand-edited-DataStore
+        // safety net. The fetcher recovers rather than firing an empty
+        // models= parameter that Open-Meteo would reject.
+        val captured = mutableListOf<HttpRequestData>()
+        val fetcher = fetcherWith(body = THREE_MODEL_AGREEMENT, capture = { captured += it })
+
+        fetcher.fetch(london, emptyList())
+
+        captured.single().url.parameters["models"] shouldBe "ecmwf_ifs04,gfs_seamless,icon_seamless"
+    }
+
+    @Test
     fun `tight spread across all three models returns HIGH confidence`() = runTest {
         val info = fetcherWith(THREE_MODEL_AGREEMENT).fetch(london)?.confidence.shouldNotBeNull()
 

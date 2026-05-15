@@ -65,7 +65,6 @@ internal fun rainbowPalette(scheme: ColorScheme): AppPalette = AppPalette(
         "meteofrance_seamless" to Color(0xFF1E88E5),
         "ukmo_seamless" to Color(0xFFFBC02D),
         "jma_seamless" to Color(0xFF00897B),
-        "bom_access_global" to Color(0xFF6D4C41),
         BEST_MATCH_MODEL_ID to Color(0xFF9E9E9E),
     ),
     confidence = mapOf(
@@ -119,7 +118,6 @@ internal fun accessiblePalette(darkTheme: Boolean): AppPalette = AppPalette(
         "meteofrance_seamless" to Color(0xFF56B4E9),
         "ukmo_seamless" to Color(0xFFB47C00),
         "jma_seamless" to Color(0xFFCC79A7),
-        "bom_access_global" to Color(0xFF6F4E37),
         BEST_MATCH_MODEL_ID to if (darkTheme) Color(0xFFBFBFBF) else Color(0xFF595959),
     ),
     confidence = if (darkTheme) {
@@ -228,7 +226,6 @@ internal fun highlighterPalette(darkTheme: Boolean): AppPalette = AppPalette(
             "meteofrance_seamless" to Color(0xFF00FFA1),
             "ukmo_seamless" to Color(0xFFFF7043),
             "jma_seamless" to Color(0xFFFF6EC7),
-            "bom_access_global" to Color(0xFFFFCA28),
             BEST_MATCH_MODEL_ID to Color(0xFFEAEAEA),
         )
     } else {
@@ -250,7 +247,6 @@ internal fun highlighterPalette(darkTheme: Boolean): AppPalette = AppPalette(
             "meteofrance_seamless" to Color(0xFF2E7D32),
             "ukmo_seamless" to Color(0xFFBF360C),
             "jma_seamless" to Color(0xFFAD1457),
-            "bom_access_global" to Color(0xFFE65100),
             BEST_MATCH_MODEL_ID to Color(0xFF2A2A2A),
         )
     },

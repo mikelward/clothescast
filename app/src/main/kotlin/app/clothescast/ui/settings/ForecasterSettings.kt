@@ -133,7 +133,6 @@ private fun forecastModelLabel(model: ForecastModel): Int = when (model) {
     ForecastModel.METEOFRANCE_SEAMLESS -> R.string.settings_forecasters_arpege
     ForecastModel.UKMO_SEAMLESS -> R.string.settings_forecasters_ukmo
     ForecastModel.JMA_SEAMLESS -> R.string.settings_forecasters_jma
-    ForecastModel.BOM_ACCESS_GLOBAL -> R.string.settings_forecasters_bom
 }
 
 private fun forecastModelSubtitle(model: ForecastModel): Int = when (model) {
@@ -144,5 +143,4 @@ private fun forecastModelSubtitle(model: ForecastModel): Int = when (model) {
     ForecastModel.METEOFRANCE_SEAMLESS -> R.string.settings_forecasters_arpege_subtitle
     ForecastModel.UKMO_SEAMLESS -> R.string.settings_forecasters_ukmo_subtitle
     ForecastModel.JMA_SEAMLESS -> R.string.settings_forecasters_jma_subtitle
-    ForecastModel.BOM_ACCESS_GLOBAL -> R.string.settings_forecasters_bom_subtitle
 }

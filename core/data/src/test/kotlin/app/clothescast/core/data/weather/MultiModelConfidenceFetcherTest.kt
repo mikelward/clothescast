@@ -208,14 +208,71 @@ class MultiModelConfidenceFetcherTest {
     }
 
     @Test
-    fun `drops a model's hourly entry when a single hour reports nulls`() = runTest {
+    fun `drops a model's hourly entry when temperature_2m is null for that hour`() = runTest {
         val hourly = fetcherWith(HOURLY_WITH_ONE_NULL_HOUR).fetch(london)?.hourly.shouldNotBeNull()
 
         val ecmwf = hourly.byModel.getValue("ecmwf_ifs04")
-        // Hour 1 had a null apparent_temperature for ecmwf; the entry is dropped,
-        // but the other two hours survive.
+        // Hour 1 had a null temperature_2m for ecmwf; the entry is dropped,
+        // but the other two hours survive. apparent_temperature and
+        // precipitation_probability are now optional per-hour — temperature_2m
+        // is the only required field — so a per-hour drop only happens when
+        // the air-temp value itself is null.
         ecmwf.map { it.time } shouldContainExactlyInAnyOrder
             listOf(LocalDateTime.parse("2026-05-12T00:00"), LocalDateTime.parse("2026-05-12T02:00"))
+    }
+
+    @Test
+    fun `model still renders when only apparent_temperature is missing`() = runTest {
+        // Open-Meteo silently omits per-model variables that a particular
+        // model doesn't expose. Pre-fix, a model missing apparent_temperature
+        // entirely would drop from the chart because every hour's `apparent`
+        // value was null and the parser `?: continue`'d each one. The fix
+        // falls back to temperature_2m for the apparent series, so the model
+        // still renders — just with the raw air-temp curve in feels-like
+        // mode rather than a wind-chill-adjusted one.
+        val logger = CapturingLogger()
+        val hourly = fetcherWith(HOURLY_MISSING_APPARENT_TEMPERATURE, logger = logger)
+            .fetch(london)?.hourly.shouldNotBeNull()
+
+        val ecmwf = hourly.byModel.getValue("ecmwf_ifs04")
+        ecmwf.size shouldBe 3
+        // apparent_temperature falls back to temperature_2m per hour
+        ecmwf[0].apparentTemperatureC shouldBe (14.0 plusOrMinus 0.0001)
+        ecmwf[0].temperatureC shouldBe (14.0 plusOrMinus 0.0001)
+        // Log entry surfaces the substitution so a Diagnostics scrape
+        // explains why the apparent series mirrors air temp.
+        logger.entries.any { "ecmwf_ifs04" in it.message && "apparent_temperature missing" in it.message } shouldBe true
+    }
+
+    @Test
+    fun `model still renders when only precipitation_probability is missing`() = runTest {
+        // BOM-like case (the variable some models don't expose): we keep the
+        // model in the chart, default per-hour precip to 0%, and log the
+        // substitution.
+        val logger = CapturingLogger()
+        val hourly = fetcherWith(HOURLY_MISSING_PRECIP_PROBABILITY, logger = logger)
+            .fetch(london)?.hourly.shouldNotBeNull()
+
+        val ecmwf = hourly.byModel.getValue("ecmwf_ifs04")
+        ecmwf.size shouldBe 3
+        ecmwf.all { it.precipitationProbabilityPct == 0.0 } shouldBe true
+        logger.entries.any { "ecmwf_ifs04" in it.message && "precipitation_probability missing" in it.message } shouldBe true
+    }
+
+    @Test
+    fun `model drops entirely when temperature_2m is wholesale missing`() = runTest {
+        // Without an air-temperature series the chart has nothing to draw,
+        // and the consensus blend has no temp signal to fold in. Log + drop.
+        val logger = CapturingLogger()
+        val hourly = fetcherWith(HOURLY_MISSING_AIR_TEMPERATURE, logger = logger)
+            .fetch(london)?.hourly
+
+        // ecmwf is the only model in this fixture; with it dropped, byModel
+        // is empty and parseHourly returns null.
+        hourly shouldBe null
+        logger.entries.any {
+            "ecmwf_ifs04" in it.message && "temperature_2m missing" in it.message
+        } shouldBe true
     }
 
     @Test
@@ -411,8 +468,9 @@ class MultiModelConfidenceFetcherTest {
             }
         """.trimIndent()
 
-        // ecmwf is missing its T+1 hour: the entry should be dropped, not the
-        // whole model. gfs + icon are fully populated.
+        // ecmwf is missing its T+1 temperature_2m: the entry should be
+        // dropped, not the whole model. gfs + icon are fully populated.
+        // temperature_2m is the only required per-hour field now.
         private val HOURLY_WITH_ONE_NULL_HOUR = """
             {
               "daily": {
@@ -426,15 +484,77 @@ class MultiModelConfidenceFetcherTest {
               },
               "hourly": {
                 "time": ["2026-05-12T00:00", "2026-05-12T01:00", "2026-05-12T02:00"],
-                "apparent_temperature_ecmwf_ifs04": [12.0, null, 11.0],
+                "apparent_temperature_ecmwf_ifs04": [12.0, 11.5, 11.0],
                 "apparent_temperature_gfs_seamless": [12.2, 11.8, 11.4],
                 "apparent_temperature_icon_seamless": [13.0, 12.6, 12.0],
-                "temperature_2m_ecmwf_ifs04": [14.0, 13.5, 13.0],
+                "temperature_2m_ecmwf_ifs04": [14.0, null, 13.0],
                 "temperature_2m_gfs_seamless": [14.2, 13.8, 13.4],
                 "temperature_2m_icon_seamless": [15.0, 14.6, 14.0],
                 "precipitation_probability_ecmwf_ifs04": [10, 15, 20],
                 "precipitation_probability_gfs_seamless": [12, 18, 22],
                 "precipitation_probability_icon_seamless": [18, 22, 28]
+              }
+            }
+        """.trimIndent()
+
+        // ecmwf's `apparent_temperature_<model>` array is omitted entirely.
+        // Pre-fix this would have silently dropped ecmwf from the per-model
+        // chart; post-fix the model still renders with apparent falling back
+        // to temperature_2m and a log entry explaining the substitution.
+        private val HOURLY_MISSING_APPARENT_TEMPERATURE = """
+            {
+              "daily": {
+                "time": ["2026-05-12"],
+                "apparent_temperature_max_ecmwf_ifs04": [21.0],
+                "apparent_temperature_max_gfs_seamless": [21.5],
+                "precipitation_probability_max_ecmwf_ifs04": [10],
+                "precipitation_probability_max_gfs_seamless": [15]
+              },
+              "hourly": {
+                "time": ["2026-05-12T00:00", "2026-05-12T01:00", "2026-05-12T02:00"],
+                "temperature_2m_ecmwf_ifs04": [14.0, 13.5, 13.0],
+                "temperature_2m_gfs_seamless": [14.2, 13.8, 13.4],
+                "precipitation_probability_ecmwf_ifs04": [10, 15, 20],
+                "precipitation_probability_gfs_seamless": [12, 18, 22]
+              }
+            }
+        """.trimIndent()
+
+        // ecmwf's `precipitation_probability_<model>` array is omitted.
+        // Model still renders; per-hour precip defaults to 0% and we log.
+        private val HOURLY_MISSING_PRECIP_PROBABILITY = """
+            {
+              "daily": {
+                "time": ["2026-05-12"],
+                "apparent_temperature_max_ecmwf_ifs04": [21.0],
+                "apparent_temperature_max_gfs_seamless": [21.5],
+                "precipitation_probability_max_ecmwf_ifs04": [10],
+                "precipitation_probability_max_gfs_seamless": [15]
+              },
+              "hourly": {
+                "time": ["2026-05-12T00:00", "2026-05-12T01:00", "2026-05-12T02:00"],
+                "apparent_temperature_ecmwf_ifs04": [12.0, 11.5, 11.0],
+                "apparent_temperature_gfs_seamless": [12.2, 11.8, 11.4],
+                "temperature_2m_ecmwf_ifs04": [14.0, 13.5, 13.0],
+                "temperature_2m_gfs_seamless": [14.2, 13.8, 13.4],
+                "precipitation_probability_gfs_seamless": [12, 18, 22]
+              }
+            }
+        """.trimIndent()
+
+        // ecmwf has no air temperature at all → chart has nothing to plot
+        // → model drops with a logged reason.
+        private val HOURLY_MISSING_AIR_TEMPERATURE = """
+            {
+              "daily": {
+                "time": ["2026-05-12"],
+                "apparent_temperature_max_ecmwf_ifs04": [21.0],
+                "precipitation_probability_max_ecmwf_ifs04": [10]
+              },
+              "hourly": {
+                "time": ["2026-05-12T00:00", "2026-05-12T01:00", "2026-05-12T02:00"],
+                "apparent_temperature_ecmwf_ifs04": [12.0, 11.5, 11.0],
+                "precipitation_probability_ecmwf_ifs04": [10, 15, 20]
               }
             }
         """.trimIndent()

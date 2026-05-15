@@ -152,18 +152,44 @@ internal class MultiModelConfidenceFetcher(
                 // simply absent for that model and the UV card hides its line.
                 val uv = obj["uv_index_$model"] as? JsonArray
                 val weatherCodes = obj["weather_code_$model"] as? JsonArray
-                if (apparentTemps == null && airTemps == null && precips == null) continue
+                // Hard requirement: temperature_2m. Without it the chart has
+                // nothing to plot for this model and the consensus blend
+                // can't average it in. Open-Meteo silently omits per-model
+                // variables when a model doesn't expose them — so log the
+                // drop with the reason rather than dropping silently like
+                // the previous code did. Mirrors readModelDaily above.
+                if (airTemps == null) {
+                    logger.log("model $model dropped from hourly: temperature_2m missing")
+                    continue
+                }
+                // Soft requirements: log per-model when apparent_temperature
+                // or precipitation_probability is wholesale missing so the
+                // user can see why a chart looks flat (precip) or follows
+                // raw air (apparent). The model still renders — `apparent`
+                // falls back to `air`, `precip` falls back to 0% per hour
+                // below — but the cause is logged so a Diagnostics scrape
+                // explains the surprise.
+                if (apparentTemps == null) {
+                    logger.log("model $model hourly: apparent_temperature missing, falling back to temperature_2m")
+                }
+                if (precips == null) {
+                    logger.log("model $model hourly: precipitation_probability missing, falling back to 0%")
+                }
                 val entries = buildList {
                     for (i in 0 until times.size) {
                         val time = parseHour(times.getOrNull(i)) ?: continue
-                        // Required: time, apparent temp, air temp, precip — drop the hour
-                        // when any of these are null. Diagnostic fields (wind, humidity,
-                        // cloud, condition) survive per-field nulls; we just carry through
-                        // what we got so the diagnostic charts and the consensus blend hide
-                        // that model only when *its* field is missing.
-                        val apparent = numberAt(apparentTemps, i)?.toDouble() ?: continue
+                        // Required per-hour: time and air temp. Apparent and
+                        // precip both fall back to a sensible default so a
+                        // model whose Open-Meteo coverage of those fields is
+                        // partial still renders its temperature curve.
+                        // Diagnostic fields (wind, humidity, cloud, condition)
+                        // survive per-field nulls; we just carry through
+                        // what we got so the diagnostic charts and the
+                        // consensus blend hide that model only when *its*
+                        // field is missing.
                         val air = numberAt(airTemps, i)?.toDouble() ?: continue
-                        val precip = numberAt(precips, i)?.toDouble() ?: continue
+                        val apparent = numberAt(apparentTemps, i)?.toDouble() ?: air
+                        val precip = numberAt(precips, i)?.toDouble() ?: 0.0
                         add(
                             PerModelHour(
                                 time = time,
@@ -182,7 +208,11 @@ internal class MultiModelConfidenceFetcher(
                         )
                     }
                 }
-                if (entries.isNotEmpty()) put(model, entries)
+                if (entries.isEmpty()) {
+                    logger.log("model $model dropped from hourly: no usable hours after parsing")
+                } else {
+                    put(model, entries)
+                }
             }
         }
         return if (byModel.isEmpty()) null else PerModelHourly(byModel)

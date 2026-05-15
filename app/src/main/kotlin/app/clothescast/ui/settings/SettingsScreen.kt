@@ -49,8 +49,8 @@ enum class SettingsRoute(@StringRes val titleRes: Int, @StringRes val subtitleRe
     Voice(R.string.settings_root_voice, R.string.settings_root_voice_subtitle),
     Display(R.string.settings_root_display, R.string.settings_root_display_subtitle),
     Location(R.string.settings_root_location, R.string.settings_root_location_subtitle),
-    Calendar(R.string.settings_root_calendar, R.string.settings_root_calendar_subtitle),
     Forecasters(R.string.settings_root_forecasters, R.string.settings_root_forecasters_subtitle),
+    Calendar(R.string.settings_root_calendar, R.string.settings_root_calendar_subtitle),
     Privacy(R.string.settings_root_privacy, R.string.settings_root_privacy_subtitle),
     About(R.string.settings_root_about),
 }

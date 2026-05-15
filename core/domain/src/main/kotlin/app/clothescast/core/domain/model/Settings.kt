@@ -416,8 +416,14 @@ enum class ForecastModel(val openMeteoId: String) {
     GEM_SEAMLESS("gem_seamless"),
     METEOFRANCE_SEAMLESS("meteofrance_seamless"),
     UKMO_SEAMLESS("ukmo_seamless"),
-    JMA_SEAMLESS("jma_seamless"),
-    BOM_ACCESS_GLOBAL("bom_access_global");
+    JMA_SEAMLESS("jma_seamless");
+    // BOM_ACCESS_GLOBAL deliberately excluded — Open-Meteo's BOM docs note
+    // that "BOM is currently upgrading its key platforms and services. During
+    // this process, open-data delivery has been temporarily suspended." With
+    // open-data suspended, requesting BOM returns no usable fields and the
+    // model silently disappears from the chart. Re-add the enum entry +
+    // string resources + palette colours when BOM resumes delivery.
+    // See https://open-meteo.com/en/docs/bom-api
 
     companion object {
         /**

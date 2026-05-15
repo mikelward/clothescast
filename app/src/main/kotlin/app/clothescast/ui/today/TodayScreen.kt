@@ -339,11 +339,23 @@ private fun TodayContent(
             // period (or a placeholder when its slot hasn't been cached
             // yet). A chevron next to each page's InsightCard hints at
             // the affordance; side-swipe anywhere on the page navigates.
+            //
+            // `weight(1f)` (not `fillMaxSize()`) on the pager is load-
+            // bearing: in a Column, `fillMaxSize` asks for the *full*
+            // parent height, ignoring earlier siblings — so the pager
+            // would render below the header but extend past the visible
+            // bottom edge, and each page's `verticalScroll` would think
+            // its viewport included the clipped-off area, leaving the
+            // bottom of the chart stack unreachable. `weight(1f)` makes
+            // the pager fill only what's left after the header so the
+            // scroll viewport matches the visible region.
             val pagerState = rememberPagerState(initialPage = 0) { 2 }
             val pagerScope = rememberCoroutineScope()
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
             ) { page ->
                 val pageInsight = if (page == 0) state.primaryInsight else state.nextInsight
                 val pagePeriod = if (page == 0) state.primaryInsight.period else state.nextPeriod

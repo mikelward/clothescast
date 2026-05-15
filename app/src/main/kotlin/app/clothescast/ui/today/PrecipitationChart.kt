@@ -15,6 +15,7 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.core.cartesian.Zoom
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
@@ -120,7 +121,10 @@ fun PrecipitationChart(
         modelProducer = producer,
         // Match ForecastChart: force-fit the full 24-hour series instead of
         // leaving the user to scroll horizontally on a glanceable summary card.
-        zoomState = rememberVicoZoomState(initialZoom = Zoom.Content),
+        // Disabling scroll/zoom gestures keeps the chart from swallowing
+        // horizontal drags meant for the parent HorizontalPager.
+        scrollState = rememberVicoScrollState(scrollEnabled = false),
+        zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
         modifier = modifier
             .fillMaxWidth()
             // Shorter than ForecastCard's 180.dp temperature chart — probability

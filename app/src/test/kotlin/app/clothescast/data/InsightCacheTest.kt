@@ -125,15 +125,15 @@ class InsightCacheTest {
     }
 
     @Test
-    fun `latest is null when nothing stored`() = runTest {
-        subject.latest.first() shouldBe null
+    fun `thisPeriod is null when nothing stored`() = runTest {
+        subject.thisPeriod.first() shouldBe null
     }
 
     @Test
-    fun `store then latest round-trips all fields`() = runTest {
+    fun `store then thisPeriod round-trips all fields`() = runTest {
         subject.store(InsightCache.Slot.THIS_PERIOD, sample)
 
-        val read = subject.latest.first()
+        val read = subject.thisPeriod.first()
         read shouldBe sample
     }
 
@@ -177,7 +177,7 @@ class InsightCacheTest {
         subject.store(InsightCache.Slot.THIS_PERIOD, sample)
         subject.clear()
 
-        subject.latest.first() shouldBe null
+        subject.thisPeriod.first() shouldBe null
     }
 
     @Test
@@ -186,7 +186,7 @@ class InsightCacheTest {
             it[stringPreferencesKey("this_period_insight_v6")] = "{not valid json"
         }
 
-        subject.latest.first() shouldBe null
+        subject.thisPeriod.first() shouldBe null
     }
 
     @Test
@@ -211,7 +211,7 @@ class InsightCacheTest {
             it[stringPreferencesKey("this_period_insight_v6")] = v2Json
         }
 
-        subject.latest.first() shouldBe null
+        subject.thisPeriod.first() shouldBe null
     }
 
     @Test
@@ -236,7 +236,7 @@ class InsightCacheTest {
 
         subject.store(InsightCache.Slot.THIS_PERIOD, withHourly)
 
-        subject.latest.first() shouldBe withHourly
+        subject.thisPeriod.first() shouldBe withHourly
     }
 
     @Test
@@ -274,7 +274,7 @@ class InsightCacheTest {
 
         subject.store(InsightCache.Slot.THIS_PERIOD, withRationale)
 
-        subject.latest.first() shouldBe withRationale
+        subject.thisPeriod.first() shouldBe withRationale
     }
 
     @Test
@@ -289,7 +289,7 @@ class InsightCacheTest {
 
         subject.store(InsightCache.Slot.THIS_PERIOD, withLocation)
 
-        subject.latest.first() shouldBe withLocation
+        subject.thisPeriod.first() shouldBe withLocation
     }
 
     @Test
@@ -316,7 +316,7 @@ class InsightCacheTest {
             it[stringPreferencesKey("this_period_insight_v6")] = minimalJson
         }
 
-        val read = subject.latest.first()
+        val read = subject.thisPeriod.first()
         // Sample carries both `confidence` and `perModelHourly` so the
         // round-trip test catches a future regression where the DTO drops
         // either; the legacy/minimal payload here can't possibly carry them,
@@ -347,7 +347,7 @@ class InsightCacheTest {
 
         subject.store(InsightCache.Slot.THIS_PERIOD, full)
 
-        subject.latest.first() shouldBe full
+        subject.thisPeriod.first() shouldBe full
     }
 
     @Test
@@ -369,7 +369,7 @@ class InsightCacheTest {
 
         subject.store(InsightCache.Slot.THIS_PERIOD, bareRain)
 
-        val tie = subject.latest.first()?.summary?.eveningEventTieIn
+        val tie = subject.thisPeriod.first()?.summary?.eveningEventTieIn
         tie?.items shouldBe emptyList()
         tie?.rainTime shouldBe LocalTime.of(21, 0)
         tie?.likelihood shouldBe PrecipLikelihood.POSSIBLE
@@ -401,7 +401,7 @@ class InsightCacheTest {
             it[stringPreferencesKey("this_period_insight_v6")] = legacyJson
         }
 
-        val tie = subject.latest.first()?.summary?.eveningEventTieIn
+        val tie = subject.thisPeriod.first()?.summary?.eveningEventTieIn
         tie?.items shouldBe listOf("jacket")
         tie?.rainTime shouldBe LocalTime.of(21, 0)
         tie?.likelihood shouldBe PrecipLikelihood.LIKELY
@@ -438,7 +438,7 @@ class InsightCacheTest {
 
         subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
 
-        subject.latest.first()?.outfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
+        subject.thisPeriod.first()?.outfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
     }
 
     @Test
@@ -600,7 +600,7 @@ class InsightCacheTest {
 
         subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
 
-        subject.latest.first()?.outfit?.bottom shouldBe storedBottom
+        subject.thisPeriod.first()?.outfit?.bottom shouldBe storedBottom
     }
 
     @Test
@@ -617,6 +617,6 @@ class InsightCacheTest {
 
         subject.store(InsightCache.Slot.THIS_PERIOD, possible)
 
-        subject.latest.first()?.summary?.precip?.likelihood shouldBe PrecipLikelihood.POSSIBLE
+        subject.thisPeriod.first()?.summary?.precip?.likelihood shouldBe PrecipLikelihood.POSSIBLE
     }
 }

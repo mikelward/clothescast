@@ -430,6 +430,7 @@ displayed label localizes.
     <string name="onboarding_continue">계속</string>
 
     <string name="insight_lead_today">오늘</string>
+    <string name="insight_lead_tomorrow">내일</string>
     <string name="insight_lead_tonight">오늘 밤</string>
     <!-- "오늘 포근한 날씨입니다." -->
     <string name="insight_band_single">%1$s %2$s 날씨입니다.</string>

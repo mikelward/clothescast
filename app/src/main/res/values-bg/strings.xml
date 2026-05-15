@@ -58,6 +58,7 @@ What is NOT overridden, by design:
     <string name="today_outfit_bottom_long_pants">Панталон</string>
 
     <string name="insight_lead_today">Днес</string>
+    <string name="insight_lead_tomorrow">Утре</string>
     <string name="insight_lead_tonight">Тази вечер</string>
     <string name="insight_band_single">%1$s ще бъде %2$s.</string>
     <string name="insight_band_range">%1$s ще бъде от %2$s до %3$s.</string>

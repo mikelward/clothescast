@@ -550,6 +550,7 @@ only the displayed label localizes.
     -->
 
     <string name="insight_lead_today">Сьогодні</string>
+    <string name="insight_lead_tomorrow">Завтра</string>
     <string name="insight_lead_tonight">Сьогодні ввечері</string>
     <string name="insight_band_single">%1$s буде %2$s.</string>
     <string name="insight_band_range">%1$s буде від %2$s до %3$s.</string>

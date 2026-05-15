@@ -415,6 +415,7 @@ the displayed label localizes.
     <string name="onboarding_continue">続ける</string>
 
     <string name="insight_lead_today">今日</string>
+    <string name="insight_lead_tomorrow">明日</string>
     <string name="insight_lead_tonight">今夜</string>
     <!-- "今日は穏やかでしょう。" — は marks the topic. -->
     <string name="insight_band_single">%1$sは%2$sでしょう。</string>

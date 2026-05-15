@@ -46,6 +46,7 @@ to values/strings.xml (English).
     <string name="today_outfit_bottom_long_pants">Celana panjang</string>
 
     <string name="insight_lead_today">Hari ini</string>
+    <string name="insight_lead_tomorrow">Besok</string>
     <string name="insight_lead_tonight">Malam ini</string>
     <!-- Indonesian SVO: "Hari ini cuacanya sejuk." -->
     <string name="insight_band_single">%1$s cuacanya %2$s.</string>

@@ -408,6 +408,7 @@ label localizes.
     <string name="onboarding_continue">继续</string>
 
     <string name="insight_lead_today">今天</string>
+    <string name="insight_lead_tomorrow">明天</string>
     <string name="insight_lead_tonight">今晚</string>
     <!-- "今天天气温和。" / "今晚天气寒冷至凉爽。" -->
     <string name="insight_band_single">%1$s天气%2$s。</string>

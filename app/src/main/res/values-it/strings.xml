@@ -404,6 +404,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="onboarding_continue">Continua</string>
 
     <string name="insight_lead_today">Oggi</string>
+    <string name="insight_lead_tomorrow">Domani</string>
     <string name="insight_lead_tonight">Stasera</string>
     <string name="insight_band_single">%1$s sarà %2$s.</string>
     <string name="insight_band_range">%1$s sarà tra %2$s e %3$s.</string>

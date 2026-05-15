@@ -378,6 +378,7 @@ the displayed label localizes.
 
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Vandaag</string>
+    <string name="insight_lead_tomorrow">Morgen</string>
     <string name="insight_lead_tonight">Vanavond</string>
 
     <!-- Dutch V2 word order: "Vandaag wordt het mild." -->

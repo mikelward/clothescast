@@ -781,9 +781,13 @@
     args let translations rearrange tokens.
     -->
 
-    <!-- "Today" / "Tonight" lead-in for the band-temperature sentence. -->
+    <!-- "Today" / "Tonight" / "Tomorrow" lead-in for the band-temperature sentence.
+         "Tomorrow" is used on page 2 when the evening worker has cached
+         tomorrow's daytime insight; in every other case the daytime forecast
+         shows "Today". -->
     <string name="insight_lead_today">Today</string>
     <string name="insight_lead_tonight">Tonight</string>
+    <string name="insight_lead_tomorrow">Tomorrow</string>
 
     <!-- Single-band sentence: %1$s = lead-in ("Today"), %2$s = band label ("mild").
          The comma-fronted "Today, it will be …" / "Tonight, it will be …" structure

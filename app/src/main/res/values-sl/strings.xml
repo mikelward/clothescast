@@ -44,6 +44,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_outfit_bottom_long_pants">Dolge hlače</string>
 
     <string name="insight_lead_today">Danes</string>
+    <string name="insight_lead_tomorrow">Jutri</string>
     <string name="insight_lead_tonight">Nocoj</string>
     <!-- "Danes bo mrzlo." — leading time adverb + "bo" + adjective. -->
     <string name="insight_band_single">%1$s bo %2$s.</string>

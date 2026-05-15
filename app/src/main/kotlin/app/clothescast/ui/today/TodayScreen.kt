@@ -105,6 +105,7 @@ import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
 import app.clothescast.ui.theme.AppTheme
 import app.clothescast.work.FetchAndNotifyWorker
+import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -1242,8 +1243,12 @@ internal fun InsightCard(
                     }
                 }
             }
+            // Page 2 caches tomorrow's daytime insight after the evening
+            // worker run; without this flag the prose would lead with "Today"
+            // even though the date row above says e.g. "Saturday, May 16".
+            val isFutureDay = insight.forDate.isAfter(LocalDate.now())
             Text(
-                text = formatter.format(insight.summary),
+                text = formatter.format(insight.summary, isFutureDay = isFutureDay),
                 style = MaterialTheme.typography.headlineSmall,
             )
             Text(

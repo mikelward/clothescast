@@ -475,6 +475,7 @@ zh-CN) is unchanged; only the displayed label localizes.
          "%1$s θα είναι %2$s" template. Time format uses the standard
          Greek 24-hour colon notation ("15:00" / "15:30"). -->
     <string name="insight_lead_today">Σήμερα</string>
+    <string name="insight_lead_tomorrow">Αύριο</string>
     <string name="insight_lead_tonight">Απόψε</string>
     <string name="insight_band_single">%1$s θα κάνει %2$s.</string>
     <string name="insight_band_range">%1$s θα έχει %2$s έως %3$s.</string>

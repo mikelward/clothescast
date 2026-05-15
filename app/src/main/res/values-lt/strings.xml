@@ -51,6 +51,7 @@ What is NOT overridden, by design:
     <string name="today_outfit_bottom_long_pants">Ilgos kelnės</string>
 
     <string name="insight_lead_today">Šiandien</string>
+    <string name="insight_lead_tomorrow">Rytoj</string>
     <string name="insight_lead_tonight">Šįvakar</string>
     <!-- Lithuanian neuter short-form weather: "Šiandien bus šalta." -->
     <string name="insight_band_single">%1$s bus %2$s.</string>

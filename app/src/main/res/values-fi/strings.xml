@@ -334,6 +334,7 @@ displayed label localizes.
     <string name="onboarding_continue">Jatka</string>
 
     <string name="insight_lead_today">Tänään</string>
+    <string name="insight_lead_tomorrow">Huomenna</string>
     <string name="insight_lead_tonight">Tänä iltana</string>
 
     <!-- Finnish predicative-partitive: "Tänään on kylmää." -->

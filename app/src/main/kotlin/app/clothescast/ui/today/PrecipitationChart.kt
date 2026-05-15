@@ -52,8 +52,15 @@ fun PrecipitationChart(
     if (hourly.isEmpty()) return
 
     val overlays = perModelHourly?.byModel.orEmpty()
+    // A model whose precip series is all-null (Open-Meteo doesn't expose
+    // `precipitation_probability_<model>` for it) has nothing to plot on
+    // this chart — skip it so we don't draw an empty Vico series and the
+    // legend doesn't list a phantom line. The model still appears on the
+    // temperature chart via [ForecastChart], which only needs air-temp.
     val visibleModels = if (showModelSpread) {
-        MODEL_DRAW_ORDER.filter { it in overlays }
+        MODEL_DRAW_ORDER.filter { modelId ->
+            overlays[modelId]?.any { it.precipitationProbabilityPct != null } == true
+        }
     } else {
         emptyList()
     }
@@ -77,7 +84,11 @@ fun PrecipitationChart(
                 series(hourly.map { it.precipitationProbabilityPct })
                 visibleModels.forEach { modelId ->
                     overlays.getValue(modelId).let { entries ->
-                        series(entries.map { it.precipitationProbabilityPct })
+                        // Per-hour null precip becomes "no data point at that x"
+                        // — Vico bridges the gap visually between the surviving
+                        // points. Avoids drawing a misleading 0% baseline for
+                        // hours where the model simply didn't report.
+                        series(entries.mapNotNull { it.precipitationProbabilityPct })
                     }
                 }
             }

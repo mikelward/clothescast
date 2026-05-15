@@ -79,9 +79,18 @@ data class ConfidenceInfo(
                 .filterValues { it.isNotEmpty() }
             if (consulted.size < 2) return null
             val tempMaxes = consulted.values.map { hours -> hours.maxOf { it.apparentTemperatureC } }
-            val precipMaxes = consulted.values.map { hours -> hours.maxOf { it.precipitationProbabilityPct } }
+            // Models whose precipitation_probability is wholesale missing (Open-Meteo
+            // omits the per-model series for some models) contribute nothing to the
+            // precip-spread metric — including them with a fake zero would have
+            // silently inflated divergence on a calm day and downgraded confidence.
+            // When fewer than two models have any precip readings we ignore the
+            // precip dimension entirely and let the tier fall through to a temp-only
+            // decision.
+            val precipMaxes = consulted.values.mapNotNull { hours ->
+                hours.mapNotNull { it.precipitationProbabilityPct }.maxOrNull()
+            }
             val tempSpread = tempMaxes.max() - tempMaxes.min()
-            val precipSpread = precipMaxes.max() - precipMaxes.min()
+            val precipSpread = if (precipMaxes.size >= 2) precipMaxes.max() - precipMaxes.min() else 0.0
             val level = when {
                 tempSpread <= TEMP_HIGH_AGREEMENT_C && precipSpread <= PRECIP_HIGH_AGREEMENT_PP ->
                     ForecastConfidence.HIGH

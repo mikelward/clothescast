@@ -56,8 +56,17 @@ data class PerModelHour(
      *  the chart can overlay model lines in air-temp mode (tap-to-toggle) too,
      *  not just in feels-like mode. */
     val temperatureC: Double,
-    /** Probability of measurable precipitation for the hour, 0–100. */
-    val precipitationProbabilityPct: Double,
+    /** Probability of measurable precipitation for the hour, 0–100. Nullable
+     *  because Open-Meteo doesn't expose `precipitation_probability_<model>`
+     *  for every model in its `&models=` set — UKMO / JMA / GEM / ARPEGE
+     *  routinely omit it. `null` means "this model didn't provide a precip
+     *  forecast for this hour", which consumers handle distinctly from
+     *  "this model predicted 0% rain": precip-specific aggregates
+     *  (consensus blend, insight rain prose, precipitation chart) skip
+     *  null values rather than treating them as zero, so a missing-data
+     *  model doesn't silently downgrade the morning rain forecast or
+     *  draw a misleading flat-0% line on the precip chart. */
+    val precipitationProbabilityPct: Double?,
     /** 10 m wind speed for the hour, km/h. Drives wind-chill in the
      *  feels-like formula — when models agree on air temp but disagree on
      *  feels-like, this is usually the culprit. Nullable: older cache

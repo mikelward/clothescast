@@ -311,7 +311,14 @@ class InsightCache(
         // Nullable for backwards compat: pre-temperatureC cache payloads omit it,
         // and we surface that as "no overlay" rather than a fake 0°C line.
         val temperatureC: Double? = null,
-        val precipitationProbabilityPct: Double,
+        // Nullable: Open-Meteo omits `precipitation_probability_<model>` for
+        // models that don't expose it (UKMO, JMA, GEM, ARPEGE, …); the
+        // domain models that as null so precip aggregates can skip the
+        // model rather than treating it as a 0% rain vote. Pre-fix cache
+        // payloads carried a non-null value, so the default of null only
+        // applies on a write from a model that legitimately lacks precip;
+        // existing entries deserialise their stored number unchanged.
+        val precipitationProbabilityPct: Double? = null,
         // Diagnostic fields — nullable in the domain too, so missing values just
         // hide that model from the wind / humidity / cloud chart rather than
         // dropping the temperature overlay entirely.

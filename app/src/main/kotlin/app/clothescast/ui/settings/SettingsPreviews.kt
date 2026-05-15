@@ -11,6 +11,7 @@ import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
@@ -237,6 +238,31 @@ internal fun SettingsLocationPreview() {
             onSelectLocation = {},
             onClearLocation = {},
             onSearchLocations = { emptyList() },
+        )
+    }
+}
+
+// London anchors the location-aware Auto default so the preview shows a
+// stable, recognisable region (UKMO in the resolved trio) rather than
+// shifting with hardware locale. Custom mode also exercises the disabled-
+// row paths (BOM and below-cap unchecked rows).
+@Preview(name = "Settings · Forecasters", widthDp = 360)
+@Composable
+internal fun SettingsForecastersPreview() {
+    SettingsFrame {
+        ForecastersContent(
+            forecastModels = setOf(
+                ForecastModel.ECMWF_IFS04,
+                ForecastModel.GFS_SEAMLESS,
+                ForecastModel.ICON_SEAMLESS,
+                ForecastModel.UKMO_SEAMLESS,
+            ),
+            location = Location(
+                latitude = 51.5074,
+                longitude = -0.1278,
+            ),
+            padding = PaddingValues(0.dp),
+            onSetForecastModels = {},
         )
     }
 }

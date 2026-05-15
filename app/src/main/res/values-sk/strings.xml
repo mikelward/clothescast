@@ -156,7 +156,7 @@ What is NOT overridden, by design:
     <string name="settings_root_clothes_subtitle">Teploty a outfity</string>
     <string name="settings_root_region_subtitle">Jazyky a jednotky</string>
     <string name="settings_root_voice_subtitle">Poskytovatelia a prízvuky</string>
-    <string name="settings_root_display_subtitle">Motív</string>
+    <string name="settings_root_display_subtitle">Motívy a farby</string>
     <string name="settings_root_location_subtitle">Automaticky alebo vyber mesto</string>
     <string name="settings_root_calendar_subtitle">Dnešné udalosti</string>
     <string name="settings_root_privacy_subtitle">Správy o pádoch a využití</string>

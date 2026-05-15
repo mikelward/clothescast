@@ -560,7 +560,7 @@ label localizes.
     <string name="settings_root_display">显示</string>
     <string name="settings_root_location">位置</string>
     <string name="settings_root_calendar">日历</string>
-    <string name="settings_root_display_subtitle">主题</string>
+    <string name="settings_root_display_subtitle">主题和颜色</string>
     <string name="settings_root_location_subtitle">自动检测或选择城市</string>
     <string name="settings_root_calendar_subtitle">今天的日程</string>
 

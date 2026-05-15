@@ -582,7 +582,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_display">Anzeige</string>
     <string name="settings_root_location">Standort</string>
     <string name="settings_root_calendar">Kalender</string>
-    <string name="settings_root_display_subtitle">Design</string>
+    <string name="settings_root_display_subtitle">Designs und Farben</string>
     <string name="settings_root_location_subtitle">Automatisch oder Stadt wählen</string>
     <string name="settings_root_calendar_subtitle">Heutige Termine</string>
 

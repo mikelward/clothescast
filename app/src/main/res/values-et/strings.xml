@@ -173,7 +173,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_root_clothes_subtitle">Temperatuurid ja riietus</string>
     <string name="settings_root_region_subtitle">Keeled ja ühikud</string>
     <string name="settings_root_voice_subtitle">Teenusepakkujad ja aktsendid</string>
-    <string name="settings_root_display_subtitle">Teema</string>
+    <string name="settings_root_display_subtitle">Teemad ja värvid</string>
 
     <string name="settings_display_theme_title">Teema</string>
     <string name="settings_display_theme_system">Järgi süsteemi</string>

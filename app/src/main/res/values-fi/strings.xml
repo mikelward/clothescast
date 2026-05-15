@@ -467,7 +467,7 @@ displayed label localizes.
     <string name="settings_root_display">Näyttö</string>
     <string name="settings_root_location">Sijainti</string>
     <string name="settings_root_calendar">Kalenteri</string>
-    <string name="settings_root_display_subtitle">Teema</string>
+    <string name="settings_root_display_subtitle">Teemat ja värit</string>
     <string name="settings_root_location_subtitle">Automaattinen tai valitse kaupunki</string>
     <string name="settings_root_calendar_subtitle">Tämän päivän tapahtumat</string>
 

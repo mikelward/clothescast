@@ -514,7 +514,7 @@ the displayed label localizes.
     <string name="settings_root_display">Weergave</string>
     <string name="settings_root_location">Locatie</string>
     <string name="settings_root_calendar">Agenda</string>
-    <string name="settings_root_display_subtitle">Thema</string>
+    <string name="settings_root_display_subtitle">Thema\'s en kleuren</string>
     <string name="settings_root_location_subtitle">Automatisch of stad kiezen</string>
     <string name="settings_root_calendar_subtitle">Afspraken van vandaag</string>
 

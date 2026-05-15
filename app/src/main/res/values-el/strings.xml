@@ -648,7 +648,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Missing settings root nav entries. -->
     <string name="settings_root_display">Εμφάνιση</string>
-    <string name="settings_root_display_subtitle">Θέμα</string>
+    <string name="settings_root_display_subtitle">Θέματα και χρώματα</string>
     <string name="settings_root_location">Τοποθεσία</string>
     <string name="settings_root_location_subtitle">Αυτόματος εντοπισμός ή επιλογή πόλης</string>
     <string name="settings_root_calendar">Ημερολόγιο</string>

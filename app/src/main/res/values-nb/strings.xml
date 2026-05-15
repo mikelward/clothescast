@@ -38,7 +38,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_root_clothes_subtitle">Temperaturer og antrekk</string>
     <string name="settings_root_region_subtitle">Språk og enheter</string>
     <string name="settings_root_voice_subtitle">Leverandør og aksenter</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Temaer og farger</string>
     <string name="settings_root_location_subtitle">Automatisk eller velg by</string>
     <string name="settings_root_calendar_subtitle">Dagens hendelser</string>
     <string name="settings_root_privacy_subtitle">Krasjrapporter og bruksrapporter</string>

@@ -272,7 +272,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_root_clothes_subtitle">Nhiệt độ và trang phục</string>
     <string name="settings_root_region_subtitle">Ngôn ngữ và đơn vị</string>
     <string name="settings_root_voice_subtitle">Nhà cung cấp và giọng</string>
-    <string name="settings_root_display_subtitle">Giao diện</string>
+    <string name="settings_root_display_subtitle">Giao diện và màu sắc</string>
     <string name="settings_root_location_subtitle">Tự động phát hiện hoặc chọn thành phố</string>
     <string name="settings_root_calendar_subtitle">Sự kiện hôm nay</string>
     <string name="settings_root_privacy_subtitle">Báo cáo sự cố + sử dụng</string>

@@ -37,7 +37,7 @@ Not overridden by design:
     <string name="settings_root_clothes_subtitle">तापमान और पोशाक</string>
     <string name="settings_root_region_subtitle">भाषाएँ और इकाइयाँ</string>
     <string name="settings_root_voice_subtitle">प्रदाता और लहजा</string>
-    <string name="settings_root_display_subtitle">थीम</string>
+    <string name="settings_root_display_subtitle">थीम और रंग</string>
     <string name="settings_root_location_subtitle">स्वतः पहचान या शहर चुनें</string>
     <string name="settings_root_calendar_subtitle">आज की घटनाएँ</string>
 

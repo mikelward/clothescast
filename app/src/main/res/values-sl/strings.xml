@@ -273,7 +273,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_root_clothes_subtitle">Temperature in oblačilne kombinacije</string>
     <string name="settings_root_region_subtitle">Jeziki in enote</string>
     <string name="settings_root_voice_subtitle">Ponudniki in naglasi</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Teme in barve</string>
     <string name="settings_root_location_subtitle">Samodejno ali izberi mesto</string>
     <string name="settings_root_calendar_subtitle">Današnji dogodki</string>
     <string name="settings_root_privacy_subtitle">Poročila o sesutjih in uporabi</string>

@@ -561,7 +561,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_display">Tela</string>
     <string name="settings_root_location">Localização</string>
     <string name="settings_root_calendar">Calendário</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Temas e cores</string>
     <string name="settings_root_location_subtitle">Automático ou escolha uma cidade</string>
     <string name="settings_root_calendar_subtitle">Compromissos de hoje</string>
 

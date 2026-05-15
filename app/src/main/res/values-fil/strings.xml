@@ -265,7 +265,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_clothes_subtitle">Mga Temperatura at Outfit</string>
     <string name="settings_root_region_subtitle">Mga Wika at Yunit</string>
     <string name="settings_root_voice_subtitle">Mga Tagapagbigay at Punto</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Mga tema at kulay</string>
     <string name="settings_root_location_subtitle">Auto-detect o pumili ng lungsod</string>
     <string name="settings_root_calendar_subtitle">Mga evento ngayon</string>
     <string name="settings_root_privacy_subtitle">Mga ulat ng crash + paggamit</string>

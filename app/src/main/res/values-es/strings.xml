@@ -560,7 +560,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_display">Pantalla</string>
     <string name="settings_root_location">Ubicación</string>
     <string name="settings_root_calendar">Calendario</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Temas y colores</string>
     <string name="settings_root_location_subtitle">Detección automática o elegir ciudad</string>
     <string name="settings_root_calendar_subtitle">Eventos de hoy</string>
 

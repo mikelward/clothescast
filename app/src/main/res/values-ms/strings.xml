@@ -259,7 +259,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_root_clothes_subtitle">Suhu dan Pakaian</string>
     <string name="settings_root_region_subtitle">Bahasa dan Unit</string>
     <string name="settings_root_voice_subtitle">Pembekal dan Loghat</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Tema dan warna</string>
 
     <!-- Display settings -->
     <string name="settings_display_theme_title">Tema</string>

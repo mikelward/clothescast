@@ -205,7 +205,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_clothes_subtitle">ሙቀት እና ልብሶች</string>
     <string name="settings_root_region_subtitle">ቋንቋዎች እና ክፍሎች</string>
     <string name="settings_root_voice_subtitle">አቅራቢዎች እና ዘዬዎች</string>
-    <string name="settings_root_display_subtitle">ጭብጥ</string>
+    <string name="settings_root_display_subtitle">ጭብጦችና ቀለሞች</string>
     <string name="settings_root_location_subtitle">ራስ-ፈልጎ ወይም ከተማ ምረጥ</string>
     <string name="settings_root_calendar_subtitle">የዛሬ ዝግጅቶች</string>
     <string name="settings_root_privacy_subtitle">ስህተት + አጠቃቀም ሪፖርቶች</string>

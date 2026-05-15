@@ -466,7 +466,7 @@ displayed label localizes.
     <string name="settings_root_display">Görünüm</string>
     <string name="settings_root_location">Konum</string>
     <string name="settings_root_calendar">Takvim</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Temalar ve renkler</string>
     <string name="settings_root_location_subtitle">Otomatik veya şehir seç</string>
     <string name="settings_root_calendar_subtitle">Bugünün etkinlikleri</string>
 

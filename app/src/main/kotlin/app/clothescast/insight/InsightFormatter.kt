@@ -44,7 +44,15 @@ class InsightFormatter(
 ) {
     private val phraser: ClothesPhraser = ClothesPhraser.forLocale(resources, locale)
 
-    fun format(summary: InsightSummary): String {
+    /**
+     * Render [summary] as prose. When [isFutureDay] is true the [ForecastPeriod.TODAY]
+     * lead-in switches from "Today" to "Tomorrow" — this is the page-2 case where
+     * the evening worker has cached a daytime insight for the next calendar date
+     * and rendering "Today, …" would be wrong. The TONIGHT lead is left alone:
+     * the worker never pairs a primary insight with tomorrow night, so the only
+     * tomorrow-shaped payload that reaches the formatter is a daytime one.
+     */
+    fun format(summary: InsightSummary, isFutureDay: Boolean = false): String {
         // Accessories (umbrella, etc.) are filtered out of the rendered prose
         // entirely — we only surface temperature-driven clothing for now. The
         // user's umbrella rule still triggers and the precip clause still
@@ -63,7 +71,7 @@ class InsightFormatter(
         val mentionedKeys = wearItems.map(::normalizeItemKey).toSet()
         return buildList {
             summary.alert?.let { add(formatAlert(it)) }
-            add(formatBand(summary.period, summary.band))
+            add(formatBand(summary.period, summary.band, isFutureDay))
             summary.delta?.let { add(formatDelta(it)) }
             if (wearItems.isNotEmpty()) formatClothesWear(wearItems)?.let(::add)
             summary.precip?.let { add(formatPrecip(it)) }
@@ -101,8 +109,8 @@ class InsightFormatter(
     private fun formatAlert(alert: AlertClause): String =
         resources.getString(R.string.insight_alert, alert.event)
 
-    private fun formatBand(period: ForecastPeriod, band: BandClause): String {
-        val lead = resources.getString(leadRes(period))
+    private fun formatBand(period: ForecastPeriod, band: BandClause, isFutureDay: Boolean): String {
+        val lead = resources.getString(leadRes(period, isFutureDay))
         val low = resources.getString(bandRes(band.low))
         return if (band.low == band.high) {
             resources.getString(R.string.insight_band_single, lead, low)
@@ -203,8 +211,8 @@ class InsightFormatter(
         return resources.getString(template, renderedItems, spokenTime(rainTime))
     }
 
-    private fun leadRes(period: ForecastPeriod): Int = when (period) {
-        ForecastPeriod.TODAY -> R.string.insight_lead_today
+    private fun leadRes(period: ForecastPeriod, isFutureDay: Boolean): Int = when (period) {
+        ForecastPeriod.TODAY -> if (isFutureDay) R.string.insight_lead_tomorrow else R.string.insight_lead_today
         ForecastPeriod.TONIGHT -> R.string.insight_lead_tonight
     }
 

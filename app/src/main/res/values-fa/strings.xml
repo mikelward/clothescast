@@ -48,6 +48,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_outfit_bottom_long_pants">شلوار بلند</string>
 
     <string name="insight_lead_today">امروز</string>
+    <string name="insight_lead_tomorrow">فردا</string>
     <string name="insight_lead_tonight">امشب</string>
     <!-- "امروز هوا معتدل خواهد بود." — SOV with lead first. -->
     <string name="insight_band_single">%1$s هوا %2$s خواهد بود.</string>

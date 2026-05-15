@@ -541,6 +541,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
 
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Idag</string>
+    <string name="insight_lead_tomorrow">Imorgon</string>
     <string name="insight_lead_tonight">I kväll</string>
     <!-- Swedish V2 word order: "Idag blir det milt." -->
     <string name="insight_band_single">%1$s blir det %2$s.</string>

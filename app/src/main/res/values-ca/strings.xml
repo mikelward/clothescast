@@ -488,6 +488,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="bug_report_consent_cancel">Cancel·la</string>
 
     <string name="insight_lead_today">Avui</string>
+    <string name="insight_lead_tomorrow">Demà</string>
     <string name="insight_lead_tonight">Aquesta nit</string>
     <!-- Catalan weather-as-verb: "Avui farà fred." (today will-make cold). -->
     <string name="insight_band_single">%1$s farà %2$s.</string>

@@ -50,6 +50,7 @@ they work correctly in both the single-band and range templates.
     <string name="today_outfit_bottom_long_pants">بنطلون طويل</string>
 
     <string name="insight_lead_today">اليوم</string>
+    <string name="insight_lead_tomorrow">غدًا</string>
     <string name="insight_lead_tonight">الليلة</string>
     <!-- "اليوم سيكون الجو معتدل." -->
     <string name="insight_band_single">%1$s سيكون الجو %2$s.</string>

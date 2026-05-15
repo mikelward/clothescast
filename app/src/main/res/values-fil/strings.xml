@@ -44,6 +44,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_outfit_bottom_long_pants">Mahabang pantalon</string>
 
     <string name="insight_lead_today">Ngayon</string>
+    <string name="insight_lead_tomorrow">Bukas</string>
     <string name="insight_lead_tonight">Ngayong gabi</string>
     <!-- Filipino: "Ngayon, magiging malamig." -->
     <string name="insight_band_single">%1$s, magiging %2$s.</string>

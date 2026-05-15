@@ -609,6 +609,7 @@ only the displayed label localizes.
 
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Сегодня</string>
+    <string name="insight_lead_tomorrow">Завтра</string>
     <string name="insight_lead_tonight">Сегодня вечером</string>
     <string name="insight_band_single">%1$s будет %2$s.</string>
     <string name="insight_band_range">%1$s будет от %2$s до %3$s.</string>

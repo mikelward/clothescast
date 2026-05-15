@@ -49,6 +49,7 @@ standard in Israeli digital communication.
     <string name="today_outfit_bottom_long_pants">מכנסיים ארוכים</string>
 
     <string name="insight_lead_today">היום</string>
+    <string name="insight_lead_tomorrow">מחר</string>
     <string name="insight_lead_tonight">הלילה</string>
     <!-- "היום יהיה נעים." -->
     <string name="insight_band_single">%1$s יהיה %2$s.</string>

@@ -494,6 +494,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="bug_report_consent_cancel">Tühista</string>
 
     <string name="insight_lead_today">Täna</string>
+    <string name="insight_lead_tomorrow">Homme</string>
     <string name="insight_lead_tonight">Täna õhtul</string>
     <!-- Estonian copular shape: "Täna on külm." -->
     <string name="insight_band_single">%1$s on %2$s.</string>

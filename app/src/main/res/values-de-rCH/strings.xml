@@ -424,6 +424,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Insight prose templates — German equivalents of the keys in values/strings.xml. -->
     <string name="insight_lead_today">Heute</string>
+    <string name="insight_lead_tomorrow">Morgen</string>
     <string name="insight_lead_tonight">Heute Abend</string>
 
     <!-- "Heute wird es mild." / "Heute wird es kühl bis mild." Subject-second

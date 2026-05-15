@@ -44,6 +44,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_outfit_bottom_long_pants">Suruali ndefu</string>
 
     <string name="insight_lead_today">Leo</string>
+    <string name="insight_lead_tomorrow">Kesho</string>
     <string name="insight_lead_tonight">Usiku huu</string>
     <!-- Swahili: "Leo itakuwa baridi." -->
     <string name="insight_band_single">%1$s itakuwa %2$s.</string>

@@ -454,6 +454,7 @@ Not overridden by design:
 
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">आज</string>
+    <string name="insight_lead_tomorrow">कल</string>
     <string name="insight_lead_tonight">आज रात</string>
     <!-- "आज मौसम सुहाना रहेगा।" -->
     <string name="insight_band_single">%1$s मौसम %2$s रहेगा।</string>

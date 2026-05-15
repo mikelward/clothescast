@@ -8,13 +8,16 @@ import android.os.Bundle
 import android.view.Gravity
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -70,6 +73,12 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Edge-to-edge is forced by the system on targetSdk 35; opting in
+        // explicitly lets us drive the status / nav bar icon contrast from
+        // our own theme choice (see the DisposableEffect below) instead of
+        // leaving the icons mismatched against our surface — light icons on
+        // our light background, or vice versa.
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         consumeNavigateToTodayExtra(intent)
         val app = application as ClothesCastApplication
@@ -93,6 +102,24 @@ class MainActivity : ComponentActivity() {
                     ThemeMode.SYSTEM -> isSystemInDarkTheme()
                     ThemeMode.LIGHT -> false
                     ThemeMode.DARK -> true
+                }
+                // Re-apply edge-to-edge with the in-app darkTheme as the
+                // dark-mode source so the bar icons flip when the user picks
+                // Light or Dark explicitly (not just when the system theme
+                // changes). Transparent scrims on both bars — the surface
+                // background shows through directly.
+                DisposableEffect(darkTheme) {
+                    enableEdgeToEdge(
+                        statusBarStyle = SystemBarStyle.auto(
+                            android.graphics.Color.TRANSPARENT,
+                            android.graphics.Color.TRANSPARENT,
+                        ) { darkTheme },
+                        navigationBarStyle = SystemBarStyle.auto(
+                            android.graphics.Color.TRANSPARENT,
+                            android.graphics.Color.TRANSPARENT,
+                        ) { darkTheme },
+                    )
+                    onDispose {}
                 }
                 ClothesCastTheme(darkTheme = darkTheme, colorPalette = colorPalette) {
                     Surface(

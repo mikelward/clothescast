@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -141,10 +142,21 @@ fun TodayScreen(
         coroutineScope.launch { BugReport.share(act, includeScreenshot = true) }
     }
 
+    // Hoisted out of TodayContent so the TopAppBar title can swap with the
+    // visible page — page 0 is the user's current 12-hour window ("Today" or
+    // "Tonight"), page 1 is the next window ("Tonight" or "Tomorrow"). Page
+    // count is constant; when thisPeriodInsight is null the pager doesn't
+    // render but the state is harmlessly retained at page 0.
+    val pagerState = rememberPagerState(initialPage = 0) { 2 }
+    val titleRes = topBarTitleRes(
+        period = state.thisPeriodInsight?.period,
+        page = pagerState.currentPage,
+    )
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.today_title)) },
+                title = { Text(stringResource(titleRes)) },
                 actions = {
                     // While the worker is enqueued or running we disable Refresh and swap
                     // the icon for a spinner. The work makes a billed Gemini insight call
@@ -211,6 +223,7 @@ fun TodayScreen(
             state = state,
             padding = padding,
             isWorking = isWorking,
+            pagerState = pagerState,
             onRefresh = { triggerRefresh(context, state.morningTime, state.tonightTime) },
             onSetUpLocation = onNavigateToLocation,
             onOpenPrivacy = onNavigateToPrivacy,
@@ -240,6 +253,7 @@ private fun TodayContent(
     state: TodayState,
     padding: PaddingValues,
     isWorking: Boolean,
+    pagerState: PagerState,
     onRefresh: () -> Unit,
     onSetUpLocation: () -> Unit,
     onOpenPrivacy: () -> Unit,
@@ -343,7 +357,6 @@ private fun TodayContent(
             // bottom of the chart stack unreachable. `weight(1f)` makes
             // the pager fill only what's left after the header so the
             // scroll viewport matches the visible region.
-            val pagerState = rememberPagerState(initialPage = 0) { 2 }
             val pagerScope = rememberCoroutineScope()
             // Placeholder period for page 2 when its slot is empty —
             // whatever the next 12-hour window after `thisPeriodInsight` is.
@@ -801,6 +814,16 @@ internal fun OutfitPreviewRow(
 private fun outfitLabels(period: ForecastPeriod): Pair<Int, Int> = when (period) {
     ForecastPeriod.TODAY -> R.string.today_outfit_label_today to R.string.today_outfit_label_tonight
     ForecastPeriod.TONIGHT -> R.string.today_outfit_label_tonight to R.string.today_outfit_label_tomorrow
+}
+
+// Title shown in the TopAppBar — tracks the visible pager page so swiping
+// right from a morning view flips "Today" to "Tonight" (and the evening
+// equivalent flips "Tonight" to "Tomorrow"). Falls back to "Today" when no
+// insight is cached yet (pager isn't rendered in that state).
+internal fun topBarTitleRes(period: ForecastPeriod?, page: Int): Int = when (period) {
+    null -> R.string.today_title
+    ForecastPeriod.TODAY -> if (page == 0) R.string.today_title else R.string.today_outfit_label_tonight
+    ForecastPeriod.TONIGHT -> if (page == 0) R.string.today_outfit_label_tonight else R.string.today_outfit_label_tomorrow
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

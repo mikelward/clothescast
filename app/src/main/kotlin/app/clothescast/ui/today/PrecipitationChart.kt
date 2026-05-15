@@ -84,11 +84,24 @@ fun PrecipitationChart(
                 series(hourly.map { it.precipitationProbabilityPct })
                 visibleModels.forEach { modelId ->
                     overlays.getValue(modelId).let { entries ->
-                        // Per-hour null precip becomes "no data point at that x"
-                        // — Vico bridges the gap visually between the surviving
-                        // points. Avoids drawing a misleading 0% baseline for
-                        // hours where the model simply didn't report.
-                        series(entries.mapNotNull { it.precipitationProbabilityPct })
+                        // Build (x, y) pairs so a sparse precip series plots
+                        // at its real hour positions on the chart, mirroring
+                        // [PerModelDiagnosticCard]. A bare `series(y)` would
+                        // compact surviving y values to indices 0..n which
+                        // misaligns the line under the bottom axis when a
+                        // model omits its leading or trailing hours. The
+                        // x index is the entry's position in the parser's
+                        // hourly list — entries.size == hours-in-window
+                        // because the parser only drops hours when
+                        // temperature_2m itself is null, so iteration index
+                        // equals hour-since-window-start. Nulls inside the
+                        // precip series are skipped via mapIndexedNotNull;
+                        // Vico bridges the gap visually between surviving
+                        // points without drawing a fake-0 baseline.
+                        val points = entries.mapIndexedNotNull { i, e ->
+                            e.precipitationProbabilityPct?.let { i to it }
+                        }
+                        series(x = points.map { it.first }, y = points.map { it.second })
                     }
                 }
             }
@@ -102,15 +115,26 @@ fun PrecipitationChart(
         }
     }
 
-    // Fixed 0..100 axis — probability is a percentage, so a calm day with a
+    // Y: fixed 0..100 — probability is a percentage, so a calm day with a
     // few-percent peak should still show a flat baseline near the bottom of
     // the chart rather than autoscaling to amplify the noise. Keeps the chart
     // visually comparable across days too: a 20% line on a quiet day and a 20%
     // line on a wet day land at the same height.
-    val rangeProvider = remember {
+    //
+    // X: pinned to the full hourly window so a sparse per-model precip series
+    // that's missing the leading or trailing hours doesn't get stretched across
+    // the whole card by Zoom.Content. Without this anchor, if every visible
+    // model is missing (say) hours 0..18 of the day, the chart only sees
+    // x = 19..23 and fits those four points to the full width, visually
+    // misaligning the line with the temperature card's 0..23 axis and hiding
+    // the gap that's the whole point of plotting at original indices.
+    val xMax = hourly.lastIndex.toDouble()
+    val rangeProvider = remember(xMax) {
         object : CartesianLayerRangeProvider {
             override fun getMinY(minY: Double, maxY: Double, extraStore: ExtraStore) = 0.0
             override fun getMaxY(minY: Double, maxY: Double, extraStore: ExtraStore) = 100.0
+            override fun getMinX(minX: Double, maxX: Double, extraStore: ExtraStore) = 0.0
+            override fun getMaxX(minX: Double, maxX: Double, extraStore: ExtraStore) = xMax
         }
     }
 

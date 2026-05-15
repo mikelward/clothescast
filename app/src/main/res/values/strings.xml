@@ -334,7 +334,7 @@
     <string name="settings_title">Settings</string>
     <string name="settings_back">Back</string>
 
-    <string name="settings_root_voice">Speech</string>
+    <string name="settings_root_voice">Voice</string>
     <string name="settings_root_schedule">Schedule</string>
     <string name="settings_root_region">Region</string>
     <string name="settings_root_clothes">Clothes</string>
@@ -348,7 +348,7 @@
     <string name="settings_root_schedule_subtitle">Notifications and Times</string>
     <string name="settings_root_clothes_subtitle">Temperatures and Outfits</string>
     <string name="settings_root_region_subtitle">Languages and Units</string>
-    <string name="settings_root_voice_subtitle">Voices and Accents</string>
+    <string name="settings_root_voice_subtitle">Speech and Accents</string>
     <string name="settings_root_display_subtitle">Themes and Colors</string>
 
     <string name="settings_display_theme_title">Theme</string>

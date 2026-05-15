@@ -71,12 +71,6 @@ new rule the first time something bites you, not the third.
   via `sdkmanager`). `firebase.google.com` and
   `firebaseinstallations.googleapis.com` are runtime hosts; the build
   itself doesn't need them.
-- **TODO — standalone detekt CLI for `:app` static analysis.** Wire a
-  `detekt-cli` jar fetched from Maven Central plus a `scripts/detekt.sh`
-  runner over `app/src/main/kotlin`. Useful as a fast pre-push check
-  that doesn't need AGP loaded, and as a fallback signal for `:app` if
-  Google Maven is ever unreachable. Not done yet; do this if `:app`
-  changes start landing with avoidable lint issues that CI catches.
 - `:core:domain:test` alone is the minimum signal for any pure-Kotlin
   domain change, regardless of which path you take.
 

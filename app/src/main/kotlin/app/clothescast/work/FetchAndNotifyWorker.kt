@@ -45,6 +45,7 @@ import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 import kotlin.math.cos
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 /**
  * Performs one daily fetch + insight + notify cycle. Runs in a WorkManager
@@ -243,6 +244,29 @@ class FetchAndNotifyWorker(
         prefs: UserPreferences,
         period: ForecastPeriod,
     ): Result {
+        // Spread alarm-triggered fetches across a small window so multiple
+        // devices on the same home IP (alarms armed for the same wall-clock
+        // time) don't all hit Open-Meteo at the same instant. Without this,
+        // the API answers one device and rate-limits the rest with HTTP 429
+        // "Too many concurrent requests" — and re-rolled on every retry,
+        // since WorkManager's exponential backoff would otherwise re-sync
+        // the collision on each attempt. Force-refresh taps and location-cache
+        // runs (KEY_ALARM_FIRED_AT_MS == 0) skip the wait — the user expects
+        // immediate work in those paths.
+        //
+        // Pair with [awaitDeliveryAlignment] in deliver*: jitter spreads the
+        // API calls; alignment then resyncs every device's notification post
+        // and TTS start to alarm + [DELIVERY_ALIGN_AFTER_ALARM_MS]. The
+        // user-visible morning briefing time stays deterministic regardless
+        // of how the jitter rolled.
+        val alarmFiredAtMs = inputData.getLong(KEY_ALARM_FIRED_AT_MS, 0L)
+        if (alarmFiredAtMs != 0L) {
+            val jitterMs = Random.Default.nextLong(0L, ALARM_FETCH_JITTER_MS)
+            if (jitterMs > 0L) {
+                DiagLog.i(TAG, "Jittering alarm-triggered fetch by ${jitterMs}ms.")
+                delay(jitterMs)
+            }
+        }
         return try {
             val result = app.generateDailyInsight(location, prefs, period)
             // Stamp the resolved location onto the insight so the home screen
@@ -277,14 +301,26 @@ class FetchAndNotifyWorker(
             DiagLog.i(TAG, "Insight delivered for ${insight.forDate}: $prose")
             Result.success()
         } catch (e: ResponseException) {
-            // OpenMeteo 4xx → fail; 5xx → retry with backoff.
+            // OpenMeteo 4xx → fail; 5xx → retry with backoff. 429 is the one
+            // 4xx we *also* retry — "Too many concurrent requests" is transient
+            // by definition and surfaces when several devices on the same home
+            // IP wake at 7am together. The per-run jitter above already spreads
+            // them, but if a burst still collides we want the backoff to clear
+            // it rather than burning today's slot on a permanent failure.
             val status = e.response.status
-            if (status.value in 500..599) {
-                DiagLog.w(TAG, "Server error $status from OpenMeteo; retrying.")
-                Result.retry()
-            } else {
-                DiagLog.e(TAG, "Unexpected HTTP status $status from OpenMeteo", e)
-                Result.failure(reason(REASON_UNEXPECTED_HTTP, "$status"))
+            when {
+                status.value == 429 -> {
+                    DiagLog.w(TAG, "Rate-limited by OpenMeteo ($status); retrying.")
+                    Result.retry()
+                }
+                status.value in 500..599 -> {
+                    DiagLog.w(TAG, "Server error $status from OpenMeteo; retrying.")
+                    Result.retry()
+                }
+                else -> {
+                    DiagLog.e(TAG, "Unexpected HTTP status $status from OpenMeteo", e)
+                    Result.failure(reason(REASON_UNEXPECTED_HTTP, "$status"))
+                }
             }
         } catch (e: ConnectTimeoutException) {
             DiagLog.w(TAG, "Connect timeout; retrying.", e); Result.retry()
@@ -440,36 +476,43 @@ class FetchAndNotifyWorker(
     }
 
     private suspend fun deliverToday(insight: Insight, prefs: UserPreferences, prose: String) {
+        awaitDeliveryAlignment()
         val mode = prefs.deliveryMode
-        val includesTts = mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
-        if (includesTts) awaitSpeakTime()
         if (mode == DeliveryMode.NOTIFICATION_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS) {
             app.insightNotifier.notify(insight, prose)
             recordDeliveryDelay(ForecastPeriod.TODAY)
         }
-        if (includesTts) {
+        if (mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS) {
             speakWithFallback(ttsUtterance(insight, prefs), prefs)
         }
     }
 
     /**
-     * Delays TTS until [TTS_DEFER_AFTER_ALARM_MS] past the alarm-fire timestamp so
-     * the spoken briefing doesn't overlap the ringing alarm. Alarm audio uses
-     * STREAM_ALARM which bypasses AudioFocus entirely, so focus-based ducking has no
-     * effect on alarm volume; a time-based gap is the only reliable approach.
+     * Holds the worker until [DELIVERY_ALIGN_AFTER_ALARM_MS] past the alarm-fire
+     * timestamp before posting the notification or speaking TTS. Two reasons:
+     *
+     *  - Originally: the spoken briefing must not overlap the ringing alarm.
+     *    Alarm audio uses STREAM_ALARM which bypasses AudioFocus entirely, so
+     *    focus-based ducking has no effect on alarm volume; a time-based gap is
+     *    the only reliable approach.
+     *  - Added later: deterministic delivery time across a multi-device home.
+     *    The per-run jitter in [fresh] spreads the API calls across a
+     *    [ALARM_FETCH_JITTER_MS] window so devices on the same IP don't
+     *    rate-limit each other; we then realign here so every device's
+     *    notification posts (and TTS starts) at the same wall-clock moment.
      *
      * The target time is derived from [KEY_ALARM_FIRED_AT_MS] set by [AlarmReceiver].
      * If the key is absent (force-refresh tap, location-cache run) or the target has
-     * already passed (slow fetch, retry backoff), the wait is skipped so TTS starts
-     * immediately.
+     * already passed (slow fetch, retry backoff), the wait is skipped and delivery
+     * starts immediately.
      */
-    private suspend fun awaitSpeakTime() {
+    private suspend fun awaitDeliveryAlignment() {
         val alarmFiredAtMs = inputData.getLong(KEY_ALARM_FIRED_AT_MS, 0L)
         if (alarmFiredAtMs == 0L) return
-        val speakAfterMs = alarmFiredAtMs + TTS_DEFER_AFTER_ALARM_MS
-        val waitMs = speakAfterMs - System.currentTimeMillis()
+        val alignAtMs = alarmFiredAtMs + DELIVERY_ALIGN_AFTER_ALARM_MS
+        val waitMs = alignAtMs - System.currentTimeMillis()
         if (waitMs > 0) {
-            DiagLog.i(TAG, "Deferring TTS for ${waitMs}ms (alarm + ${TTS_DEFER_AFTER_ALARM_MS}ms window).")
+            DiagLog.i(TAG, "Aligning delivery to alarm + ${DELIVERY_ALIGN_AFTER_ALARM_MS}ms (waiting ${waitMs}ms).")
             delay(waitMs)
         }
     }
@@ -550,6 +593,7 @@ class FetchAndNotifyWorker(
         )
 
     private suspend fun deliverTonight(insight: Insight, prefs: UserPreferences, prose: String) {
+        awaitDeliveryAlignment()
         val mode = prefs.tonightDeliveryMode
         val canNotify = mode == DeliveryMode.NOTIFICATION_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
         // The notify-only-on-events toggle skips the notification entirely on
@@ -667,7 +711,7 @@ class FetchAndNotifyWorker(
         /**
          * Wall-clock millis at which the alarm fired. Set by [AlarmReceiver] for
          * scheduled morning runs; absent (0) for force-refresh taps and other
-         * non-alarm-triggered enqueues. Read by [awaitSpeakTime] to compute the
+         * non-alarm-triggered enqueues. Read by [awaitDeliveryAlignment] to compute the
          * earliest moment TTS should start speaking, and by [recordDeliveryDelay]
          * to split the scheduled→delivered gap into "doze deferral" vs "worker
          * wait".
@@ -685,12 +729,33 @@ class FetchAndNotifyWorker(
         private const val KEY_ALARM_SCHEDULED_AT_MS = "alarm_scheduled_at_ms"
 
         /**
-         * How long after the alarm fires before TTS is allowed to speak. One minute
-         * gives the user time to silence the alarm before the briefing begins.
-         * STREAM_ALARM bypasses AudioFocus so this time-based gap is the only
-         * reliable way to avoid talking over a ringing alarm.
+         * Sync point for the notification post and the spoken briefing on
+         * alarm-triggered runs: both fire at `alarmFiredAt + this`. Originally
+         * a TTS-only "wait for the alarm to stop ringing" gap; now also the
+         * realignment after [ALARM_FETCH_JITTER_MS] so every device in a
+         * multi-device home delivers at the same wall-clock moment. One
+         * minute leaves plenty of slack for the longest jitter roll plus a
+         * slow fetch.
          */
-        private const val TTS_DEFER_AFTER_ALARM_MS = 30_000L
+        private const val DELIVERY_ALIGN_AFTER_ALARM_MS = 60_000L
+
+        /**
+         * Upper bound (exclusive) of the randomized wait before an alarm-triggered
+         * fetch. Spreads multiple devices on the same home IP across this window
+         * so Open-Meteo doesn't see them as a synchronized concurrent-request
+         * burst. Held strictly below [DELIVERY_ALIGN_AFTER_ALARM_MS] so the
+         * post-fetch alignment is *reliable* — worst-case jitter (30 s) plus
+         * a slow fetch (a few seconds) still leaves headroom to land before
+         * the 60 s deadline, and every device delivers at exactly alarm + 60 s.
+         * Going wider would let some rolls overshoot the deadline and reintroduce
+         * the staggered-delivery problem alignment exists to fix.
+         *
+         * The math for the 429 case still works at 30 s: 4 devices land
+         * ~6 s apart on average, well over Open-Meteo's per-IP concurrent
+         * budget for the ~1–2 s connections we make, and the 429 retry covers
+         * the unlucky tail where rolls bunch up.
+         */
+        private const val ALARM_FETCH_JITTER_MS = 30_000L
 
         /**
          * Epoch-day of the calendar date the force-refresh was requested for. Used

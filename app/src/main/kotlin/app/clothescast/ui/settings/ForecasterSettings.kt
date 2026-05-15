@@ -11,7 +11,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -23,6 +25,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.ForecastModel
+import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.defaultsFor
 
 /**
  * Minimum number of models the confidence fetcher needs to compute a spread.
@@ -46,11 +50,22 @@ private const val MAX_MODELS = 5
 
 @Composable
 internal fun ForecastersContent(
-    forecastModels: Set<ForecastModel>,
+    forecastModels: Set<ForecastModel>?,
+    location: Location?,
     padding: PaddingValues,
-    onSetForecastModels: (Set<ForecastModel>) -> Unit,
+    onSetForecastModels: (Set<ForecastModel>?) -> Unit,
 ) {
     val context = LocalContext.current
+    // When the stored selection is null we're in Auto mode: derive a
+    // location-aware trio for display via [ForecastModel.defaultsFor] and
+    // disable the per-model checkboxes. When non-null, the user has
+    // explicitly customised: show their set, enable the checkboxes, and
+    // the Auto switch is off. Toggling Auto on clears the stored set to
+    // null; toggling any checkbox switches to a non-null effective set
+    // with the toggle applied (so an Auto user who unchecks one model
+    // ends up explicitly customised, starting from what Auto picked).
+    val isAuto = forecastModels == null
+    val effective = forecastModels ?: ForecastModel.defaultsFor(location)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -65,8 +80,23 @@ internal fun ForecastersContent(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            val atCap = forecastModels.size >= MAX_MODELS
-            if (atCap) {
+            AutoSwitchRow(
+                isAuto = isAuto,
+                onToggle = { nowAuto ->
+                    if (nowAuto) {
+                        onSetForecastModels(null)
+                    } else {
+                        // Flipping Auto off persists whatever Auto was
+                        // already resolving to, so the visible checkboxes
+                        // don't suddenly jump — the user then explicitly
+                        // edits from that starting point.
+                        onSetForecastModels(effective)
+                    }
+                },
+            )
+            HorizontalDivider()
+            val atCap = effective.size >= MAX_MODELS
+            if (atCap && !isAuto) {
                 Text(
                     text = stringResource(R.string.settings_forecasters_cap_hint, MAX_MODELS),
                     style = MaterialTheme.typography.bodySmall,
@@ -74,20 +104,23 @@ internal fun ForecastersContent(
                 )
             }
             ForecastModel.entries.forEach { model ->
-                val checked = model in forecastModels
-                // Block unchecking when we'd drop below MIN_MODELS. Block
-                // checking when we'd exceed MAX_MODELS. An already-checked
-                // row stays interactable above the cap so the user can
-                // still toggle it off to free a slot.
-                val canToggleOff = forecastModels.size > MIN_MODELS
+                val checked = model in effective
+                // Auto mode: every row reflects the resolver's pick but is
+                // not toggleable — user has to flip Auto off first. Custom
+                // mode: block unchecking when we'd drop below MIN_MODELS,
+                // block checking when we'd exceed MAX_MODELS. An already-
+                // checked row stays interactable above the cap so the user
+                // can still toggle it off to free a slot.
+                val canToggleOff = effective.size > MIN_MODELS
                 val canToggleOn = !atCap
+                val enabled = !isAuto && (if (checked) canToggleOff else canToggleOn)
                 ForecasterRow(
                     label = stringResource(forecastModelLabel(model)),
                     subtitle = stringResource(forecastModelSubtitle(model)),
                     checked = checked,
-                    enabled = if (checked) canToggleOff else canToggleOn,
+                    enabled = enabled,
                     onToggle = { nowChecked ->
-                        val updated = if (nowChecked) forecastModels + model else forecastModels - model
+                        val updated = if (nowChecked) effective + model else effective - model
                         if (updated.size in MIN_MODELS..MAX_MODELS) onSetForecastModels(updated)
                     },
                 )
@@ -97,6 +130,37 @@ internal fun ForecastersContent(
                 modifier = Modifier.fillMaxWidth(),
             ) { Text(stringResource(R.string.settings_about_open_meteo)) }
         }
+    }
+}
+
+@Composable
+private fun AutoSwitchRow(
+    isAuto: Boolean,
+    onToggle: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .toggleable(
+                value = isAuto,
+                role = Role.Switch,
+                onValueChange = onToggle,
+            )
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.settings_forecasters_auto_title),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            Text(
+                text = stringResource(R.string.settings_forecasters_auto_subtitle),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Switch(checked = isAuto, onCheckedChange = null)
     }
 }
 

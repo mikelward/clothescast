@@ -277,15 +277,17 @@ class SettingsRepository(
     }
 
     /**
-     * Persists the user's [ForecastModel] selection as the stored enum names.
-     * The UI guards against empty selections, but if [models] does come in
-     * empty (e.g. a hand-edited DataStore) we clear the key so the next read
-     * falls back to [ForecastModel.DEFAULTS] rather than persisting an empty
-     * set that would later trip the fetcher's degenerate-input safety net.
+     * Persists the user's [ForecastModel] selection as the stored enum names,
+     * or clears the key when [models] is null — which is the "Auto, derive
+     * from current location" state the Forecasters picker exposes via the
+     * Auto switch. An explicitly-passed empty set is treated the same as
+     * null (clear), guarding against a hand-edited DataStore persisting an
+     * empty set that would later trip the fetcher's degenerate-input
+     * safety net.
      */
-    suspend fun setForecastModels(models: Set<ForecastModel>) {
+    suspend fun setForecastModels(models: Set<ForecastModel>?) {
         dataStore.edit { prefs ->
-            if (models.isEmpty()) {
+            if (models.isNullOrEmpty()) {
                 prefs.remove(FORECAST_MODELS)
             } else {
                 prefs[FORECAST_MODELS] = models.map { it.name }.toSet()
@@ -458,14 +460,16 @@ class SettingsRepository(
         // Resolve stored enum names back to [ForecastModel]. Unknown / removed
         // entries are dropped silently so a forward-compat (future enum value
         // we didn't ship yet) or stale value from a downgrade doesn't break
-        // the picker. Empty resolved set falls back to [ForecastModel.DEFAULTS]
-        // so an install that lost the entry to corruption still gets a
-        // working confidence chip.
-        val forecastModels = this[FORECAST_MODELS]
+        // the picker. A missing key or one that resolves to an empty set
+        // becomes null — that's "Auto", and downstream code resolves the
+        // location-aware default via [ForecastModel.defaultsFor]. The previous
+        // behaviour ("fall back to DEFAULTS") was equivalent to a global trio
+        // forced on every install; null lets fresh installs follow the user's
+        // region.
+        val forecastModels: Set<ForecastModel>? = this[FORECAST_MODELS]
             ?.mapNotNull { runCatching { ForecastModel.valueOf(it) }.getOrNull() }
             ?.toSet()
             ?.takeIf { it.isNotEmpty() }
-            ?: ForecastModel.DEFAULTS
         val zone = zoneIdProvider()
 
         return UserPreferences(

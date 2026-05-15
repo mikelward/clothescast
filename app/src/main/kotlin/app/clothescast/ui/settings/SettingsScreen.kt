@@ -203,6 +203,7 @@ fun SettingsScreen(
             )
             SettingsRoute.Forecasters -> ForecastersContent(
                 forecastModels = state.forecastModels,
+                location = state.location,
                 padding = padding,
                 onSetForecastModels = viewModel::setForecastModels,
             )

@@ -384,7 +384,7 @@ class SettingsViewModel(
      * [models] never reaches this path from the UI; the repository still
      * defends against it for hand-edited-DataStore safety.
      */
-    fun setForecastModels(models: Set<ForecastModel>) {
+    fun setForecastModels(models: Set<ForecastModel>?) {
         viewModelScope.launch { settingsRepository.setForecastModels(models) }
     }
 

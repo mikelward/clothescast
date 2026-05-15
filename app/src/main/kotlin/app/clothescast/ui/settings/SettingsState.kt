@@ -91,5 +91,13 @@ data class SettingsState(
      * can't get stuck after the worker finishes without resolving a fix.
      */
     val locationDetecting: Boolean = false,
-    val forecastModels: Set<ForecastModel> = ForecastModel.DEFAULTS,
+    /**
+     * The user's explicit [ForecastModel] selection, or `null` for "Auto"
+     * (location-derived defaults). Auto is the default for fresh installs;
+     * the first explicit pick in the Forecasters picker switches it to a
+     * non-null Set; flipping the Auto switch on clears it back to null.
+     * See [app.clothescast.core.domain.model.defaultsFor] for the region
+     * mapping the Auto state resolves through.
+     */
+    val forecastModels: Set<ForecastModel>? = null,
 )

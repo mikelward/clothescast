@@ -83,8 +83,10 @@ Code TODOs in source files are linked from here when they exist.
 - [ ] **Clothes rule presets** ("Cyclist", "Commuter", "Dog walker") — pick a
       preset, customise from there.
 - [ ] **Quiet hours** — don't fire if the device is in DND.
-- [ ] **Per-locale defaults** — Fahrenheit / miles when the system locale is
-      en-US.
+- [x] **Per-locale defaults** — Fahrenheit / miles when the system locale is
+      en-US. Shipped via `TemperatureUnitSetting.AUTO` / `DistanceUnitSetting.AUTO`
+      (the defaults in `UserPreferences`), which resolve from the device/region
+      locale at read time.
 - [ ] **Multiple schedule profiles** — weekday vs weekend.
 - [x] **Gemini model picker** — Flash Lite (cheapest), Flash (default), Pro
       (highest quality, slowest, costliest). User picks from Settings; the

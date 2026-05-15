@@ -15,6 +15,7 @@ import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PerModelHourly.Companion.BEST_MATCH_MODEL_ID
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.bestMatchSourceBy
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.ui.theme.AppTheme
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
@@ -60,6 +61,27 @@ import kotlin.math.roundToInt
 // legend order; the [AppPalette.modelColors] maps follow the same order.
 internal val MODEL_DRAW_ORDER: List<String> =
     listOf(BEST_MATCH_MODEL_ID) + ForecastModel.entries.map { it.openMeteoId }
+
+// Picks the overlays the chart and its legend should draw, given the metric
+// the chart actually plots. Filters MODEL_DRAW_ORDER to the models with an
+// entry in [perModelHourly]'s byModel map, then drops best_match if one of
+// the consulted models carries an identical series on this metric — the
+// grey Auto overlay would otherwise obscure the named regional model
+// Open-Meteo's best_match routes to (UKMO in the UK, JMA in Japan, etc.).
+// The selector is the same field the chart plots so the dedup decision
+// matches what's visible; per-metric is intentional, because best_match
+// can resolve to UKMO on apparent temp while resolving to a different
+// model on precip (UKMO doesn't expose precipitation_probability).
+internal fun visibleOverlayIds(
+    perModelHourly: PerModelHourly,
+    metric: (PerModelHour) -> Double?,
+): List<String> {
+    val duplicateOf = perModelHourly.bestMatchSourceBy(metric)
+    return MODEL_DRAW_ORDER.filter { id ->
+        id in perModelHourly.byModel &&
+            (duplicateOf == null || id != BEST_MATCH_MODEL_ID)
+    }
+}
 
 // Pinned per-model overlay colours live on the active [app.clothescast.ui.theme.AppPalette]
 // rather than as a static map here, so the colour-blind palette can swap the
@@ -132,17 +154,16 @@ fun ForecastChart(
     if (hourly.isEmpty()) return
 
     val overlays = perModelHourly?.byModel.orEmpty()
-    val visibleModels = if (showModelSpread) {
-        MODEL_DRAW_ORDER.filter { it in overlays }
-    } else {
-        emptyList()
-    }
-    val mainLineColor = AppTheme.mainLineColor
-
     val pickModel: (PerModelHour) -> Double =
         if (showFeelsLike) { e -> e.apparentTemperatureC } else { e -> e.temperatureC }
     val pickHourly: (HourlyForecast) -> Double =
         if (showFeelsLike) { h -> h.feelsLikeC } else { h -> h.temperatureC }
+    val visibleModels = if (showModelSpread && perModelHourly != null) {
+        visibleOverlayIds(perModelHourly, pickModel)
+    } else {
+        emptyList()
+    }
+    val mainLineColor = AppTheme.mainLineColor
 
     val producer = remember { CartesianChartModelProducer() }
     // Key on [overlays] (the underlying map) rather than [visibleModels] (just

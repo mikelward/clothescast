@@ -84,6 +84,7 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.ModelDivergenceSummary
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.core.domain.model.bestMatchSourceBy
 import app.clothescast.core.domain.model.consensusSunshineHours
 import app.clothescast.core.domain.model.consensusSunshineHoursFor
 import app.clothescast.core.domain.model.Region
@@ -1417,7 +1418,11 @@ internal fun ForecastCard(
             )
             if (perModelHourly != null) {
                 ModelSpreadLegend(
-                    visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
+                    visibleModelIds = if (showModelSpread) {
+                        visibleOverlayIds(perModelHourly) { it.apparentTemperatureC }
+                    } else {
+                        emptyList()
+                    },
                     mainLine = MainLineLegend(
                         color = AppTheme.mainLineColor,
                         label = stringResource(R.string.today_chart_main_line_label),
@@ -1474,7 +1479,11 @@ internal fun AirTemperatureCard(
             )
             if (perModelHourly != null) {
                 ModelSpreadLegend(
-                    visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
+                    visibleModelIds = if (showModelSpread) {
+                        visibleOverlayIds(perModelHourly) { it.temperatureC }
+                    } else {
+                        emptyList()
+                    },
                     mainLine = MainLineLegend(
                         color = AppTheme.mainLineColor,
                         label = stringResource(R.string.today_chart_main_line_label),
@@ -1873,7 +1882,11 @@ internal fun PrecipitationCard(
             )
             if (perModelHourly != null) {
                 ModelSpreadLegend(
-                    visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
+                    visibleModelIds = if (showModelSpread) {
+                        visibleOverlayIds(perModelHourly) { it.precipitationProbabilityPct }
+                    } else {
+                        emptyList()
+                    },
                     mainLine = MainLineLegend(
                         color = AppTheme.mainLineColor,
                         label = stringResource(R.string.today_chart_main_line_label),

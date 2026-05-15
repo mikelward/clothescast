@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.core.domain.model.bestMatchSourceBy
 import app.clothescast.ui.theme.AppTheme
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
@@ -57,9 +58,17 @@ fun PrecipitationChart(
     // this chart — skip it so we don't draw an empty Vico series and the
     // legend doesn't list a phantom line. The model still appears on the
     // temperature chart via [ForecastChart], which only needs air-temp.
+    // Best_match is additionally dropped when one of the consulted models
+    // carries an identical precip series (see [visibleOverlayIds] /
+    // [bestMatchSourceBy]) so the grey Auto line doesn't obscure the
+    // named model Open-Meteo picked for precip in this region.
+    val duplicateBestMatchOf =
+        perModelHourly?.bestMatchSourceBy { it.precipitationProbabilityPct }
     val visibleModels = if (showModelSpread) {
         MODEL_DRAW_ORDER.filter { modelId ->
-            overlays[modelId]?.any { it.precipitationProbabilityPct != null } == true
+            val entries = overlays[modelId] ?: return@filter false
+            if (entries.none { it.precipitationProbabilityPct != null }) return@filter false
+            duplicateBestMatchOf == null || modelId != PerModelHourly.BEST_MATCH_MODEL_ID
         }
     } else {
         emptyList()

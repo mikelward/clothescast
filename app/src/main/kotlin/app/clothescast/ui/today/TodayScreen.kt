@@ -53,7 +53,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -61,7 +60,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -96,6 +94,8 @@ import app.clothescast.core.domain.model.toUnit
 import app.clothescast.core.domain.model.toWindSpeedUnit
 import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.ClothesCastApplication
+import app.clothescast.ui.garment.GarmentBottomIcon
+import app.clothescast.ui.garment.GarmentTopIcon
 import app.clothescast.diag.BugReport
 import app.clothescast.diag.BugReportConsentDialog
 import app.clothescast.diag.findActivity
@@ -320,6 +320,8 @@ private fun TodayContent(
                     insight = primary,
                     temperatureUnit = state.temperatureUnit,
                     clothesRules = state.clothesRules,
+                    outfitTopColors = state.outfitTopColors,
+                    outfitBottomColors = state.outfitBottomColors,
                     onAdjustThreshold = onAdjustThreshold,
                 )
             }
@@ -740,6 +742,8 @@ internal fun OutfitPreviewRow(
     insight: Insight,
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     clothesRules: List<ClothesRule> = emptyList(),
+    outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onAdjustThreshold: (String, Double) -> Unit = { _, _ -> },
 ) {
     val primary = insight.outfit ?: return
@@ -754,6 +758,8 @@ internal fun OutfitPreviewRow(
             rationale = insight.outfitRationale,
             temperatureUnit = temperatureUnit,
             clothesRules = clothesRules,
+            outfitTopColors = outfitTopColors,
+            outfitBottomColors = outfitBottomColors,
             onAdjustThreshold = onAdjustThreshold,
             modifier = Modifier.weight(1f),
         )
@@ -764,6 +770,8 @@ internal fun OutfitPreviewRow(
                 rationale = insight.nextOutfitRationale,
                 temperatureUnit = temperatureUnit,
                 clothesRules = clothesRules,
+                outfitTopColors = outfitTopColors,
+                outfitBottomColors = outfitBottomColors,
                 onAdjustThreshold = onAdjustThreshold,
                 modifier = Modifier.weight(1f),
             )
@@ -785,6 +793,8 @@ internal fun OutfitPreviewCard(
     rationale: OutfitRationale? = null,
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     clothesRules: List<ClothesRule> = emptyList(),
+    outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onAdjustThreshold: (String, Double) -> Unit = { _, _ -> },
 ) {
     var showRationale by remember { mutableStateOf(false) }
@@ -812,13 +822,15 @@ internal fun OutfitPreviewCard(
                 verticalArrangement = Arrangement.spacedBy(0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Image(
-                    painter = painterResource(id = topIconRes(outfit.top)),
+                GarmentTopIcon(
+                    top = outfit.top,
+                    customFill = outfitTopColors[outfit.top]?.let { Color(it.toInt()) },
                     contentDescription = stringResource(topLabelRes(outfit.top)),
                     modifier = Modifier.width(80.dp),
                 )
-                Image(
-                    painter = painterResource(id = bottomIconRes(outfit.bottom)),
+                GarmentBottomIcon(
+                    bottom = outfit.bottom,
+                    customFill = outfitBottomColors[outfit.bottom]?.let { Color(it.toInt()) },
                     contentDescription = stringResource(bottomLabelRes(outfit.bottom)),
                     modifier = Modifier.width(80.dp),
                 )
@@ -1087,16 +1099,6 @@ private val ONE_DECIMAL_FORMAT: java.text.NumberFormat =
         maximumFractionDigits = 1
     }
 
-private fun topIconRes(top: OutfitSuggestion.Top): Int = when (top) {
-    OutfitSuggestion.Top.TSHIRT -> R.drawable.ic_outfit_tshirt
-    OutfitSuggestion.Top.POLO -> R.drawable.ic_outfit_polo
-    OutfitSuggestion.Top.SWEATER -> R.drawable.ic_outfit_sweater
-    OutfitSuggestion.Top.THIN_JACKET -> R.drawable.ic_outfit_thin_jacket
-    OutfitSuggestion.Top.THICK_JACKET -> R.drawable.ic_outfit_thick_jacket
-    OutfitSuggestion.Top.THICK_COAT -> R.drawable.ic_outfit_thick_coat
-    OutfitSuggestion.Top.PUFFER_JACKET -> R.drawable.ic_outfit_puffer_jacket
-}
-
 private fun topLabelRes(top: OutfitSuggestion.Top): Int = when (top) {
     OutfitSuggestion.Top.TSHIRT -> R.string.today_outfit_top_tshirt
     OutfitSuggestion.Top.POLO -> R.string.today_outfit_top_polo
@@ -1105,13 +1107,6 @@ private fun topLabelRes(top: OutfitSuggestion.Top): Int = when (top) {
     OutfitSuggestion.Top.THICK_JACKET -> R.string.today_outfit_top_thick_jacket
     OutfitSuggestion.Top.THICK_COAT -> R.string.today_outfit_top_thick_coat
     OutfitSuggestion.Top.PUFFER_JACKET -> R.string.today_outfit_top_puffer_jacket
-}
-
-private fun bottomIconRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom) {
-    OutfitSuggestion.Bottom.SHORTS -> R.drawable.ic_outfit_shorts
-    OutfitSuggestion.Bottom.LONG_SKIRT -> R.drawable.ic_outfit_skirt
-    OutfitSuggestion.Bottom.JEANS -> R.drawable.ic_outfit_jeans
-    OutfitSuggestion.Bottom.LONG_PANTS -> R.drawable.ic_outfit_long_pants
 }
 
 private fun bottomLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom) {

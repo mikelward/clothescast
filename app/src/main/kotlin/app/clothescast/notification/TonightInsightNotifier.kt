@@ -8,6 +8,7 @@ import androidx.core.app.NotificationManagerCompat
 import app.clothescast.MainActivity
 import app.clothescast.R
 import app.clothescast.core.domain.model.Insight
+import app.clothescast.core.domain.model.OutfitSuggestion
 
 /**
  * Posts the tonight insight as a system notification. Picks one of two channels
@@ -25,7 +26,11 @@ import app.clothescast.core.domain.model.Insight
  */
 class TonightInsightNotifier(private val context: Context) {
 
-    fun notify(insight: Insight, prose: String) {
+    fun notify(
+        insight: Insight,
+        prose: String,
+        topColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    ) {
         if (!NotificationPermission.isGranted(context)) return
 
         val tapIntent = Intent(context, MainActivity::class.java).apply {
@@ -42,9 +47,10 @@ class TonightInsightNotifier(private val context: Context) {
         val channel = if (insight.hasEvents) CHANNEL_TONIGHT_INSIGHT_DEFAULT else CHANNEL_TONIGHT_INSIGHT_SILENT
         val priority = if (insight.hasEvents) NotificationCompat.PRIORITY_DEFAULT else NotificationCompat.PRIORITY_LOW
 
+        val top = insight.outfit?.top
         val notification = NotificationCompat.Builder(context, channel)
-            .setSmallIcon(InsightNotifier.smallIconFor(insight.outfit?.top))
-            .setLargeIcon(InsightNotifier.largeIconForTop(context, insight.outfit?.top))
+            .setSmallIcon(InsightNotifier.smallIconFor(top))
+            .setLargeIcon(InsightNotifier.largeIconForTop(context, top, top?.let { topColors[it] }))
             .setContentTitle(context.getString(R.string.notification_tonight_insight_title))
             .setContentText(prose)
             .setStyle(NotificationCompat.BigTextStyle().bigText(prose))

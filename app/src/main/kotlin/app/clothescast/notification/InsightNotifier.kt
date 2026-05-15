@@ -4,15 +4,15 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.toBitmap
 import app.clothescast.MainActivity
 import app.clothescast.R
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.ui.garment.outfitTopDefaults
+import app.clothescast.ui.garment.renderOutfitBitmap
+import app.clothescast.ui.garment.topDrawable
 
 /**
  * Posts the daily insight as a system notification. Tapping the notification opens
@@ -22,7 +22,11 @@ import app.clothescast.core.domain.model.OutfitSuggestion
  */
 class InsightNotifier(private val context: Context) {
 
-    fun notify(insight: Insight, prose: String) {
+    fun notify(
+        insight: Insight,
+        prose: String,
+        topColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    ) {
         if (!NotificationPermission.isGranted(context)) return
 
         val tapIntent = Intent(context, MainActivity::class.java).apply {
@@ -39,10 +43,12 @@ class InsightNotifier(private val context: Context) {
         // The small status-bar icon mirrors the recommended top (silhouette).
         // The large icon picks up the same top in full colour so the expanded
         // notification carries the same glanceable "what to wear today" cue the
-        // Today screen's OutfitPreviewCard does.
+        // Today screen's OutfitPreviewCard does — recoloured if the user has
+        // customised the icon's fill.
+        val top = insight.outfit?.top
         val notification = NotificationCompat.Builder(context, CHANNEL_DAILY_INSIGHT)
-            .setSmallIcon(smallIconFor(insight.outfit?.top))
-            .setLargeIcon(largeIconForTop(context, insight.outfit?.top))
+            .setSmallIcon(smallIconFor(top))
+            .setLargeIcon(largeIconForTop(context, top, top?.let { topColors[it] }))
             .setContentTitle(context.getString(R.string.notification_daily_insight_title))
             .setContentText(prose)
             .setStyle(NotificationCompat.BigTextStyle().bigText(prose))
@@ -81,18 +87,27 @@ class InsightNotifier(private val context: Context) {
          * Renders the recommended top as a Bitmap for [NotificationCompat.Builder.setLargeIcon].
          * Reuses the full-colour `ic_outfit_tshirt` / `ic_outfit_sweater` /
          * `ic_outfit_thick_jacket` drawables from `OutfitPreviewCard` so the
-         * notification visual matches the home-screen card. Returns null when the
-         * outfit is missing (older cached payloads), letting the system fall back
-         * to no large icon.
+         * notification visual matches the home-screen card — including any
+         * user-picked colour override passed in via [customFillArgb]. Returns
+         * null when [top] is missing (older cached payloads), letting the
+         * system fall back to no large icon.
          */
-        internal fun largeIconForTop(context: Context, top: OutfitSuggestion.Top?): Bitmap? {
-            val drawableRes = largeTopDrawable(top) ?: return null
-            val drawable = ResourcesCompat.getDrawable(context.resources, drawableRes, context.theme)
-                ?: return null
+        internal fun largeIconForTop(
+            context: Context,
+            top: OutfitSuggestion.Top?,
+            customFillArgb: Long? = null,
+        ): Bitmap? {
+            if (top == null) return null
             val sizePx = context.resources.getDimensionPixelSize(android.R.dimen.notification_large_icon_width)
                 .takeIf { it > 0 }
                 ?: LARGE_ICON_FALLBACK_PX
-            return drawable.toBitmap(width = sizePx, height = sizePx)
+            return renderOutfitBitmap(
+                context = context,
+                drawableRes = topDrawable(top),
+                defaults = outfitTopDefaults.getValue(top),
+                customFillArgb = customFillArgb,
+                sizePx = sizePx,
+            )
         }
 
         // Fallback large-icon size in raw pixels for the rare case where
@@ -100,17 +115,5 @@ class InsightNotifier(private val context: Context) {
         // Robolectric configs and a handful of stripped-down OEM ROMs do this).
         // 192px ≈ 64dp on xxhdpi, which is the recommended large-icon target.
         private const val LARGE_ICON_FALLBACK_PX = 192
-
-        @DrawableRes
-        private fun largeTopDrawable(top: OutfitSuggestion.Top?): Int? = when (top) {
-            OutfitSuggestion.Top.TSHIRT -> R.drawable.ic_outfit_tshirt
-            OutfitSuggestion.Top.POLO -> R.drawable.ic_outfit_polo
-            OutfitSuggestion.Top.SWEATER -> R.drawable.ic_outfit_sweater
-            OutfitSuggestion.Top.THIN_JACKET -> R.drawable.ic_outfit_thin_jacket
-            OutfitSuggestion.Top.THICK_JACKET -> R.drawable.ic_outfit_thick_jacket
-            OutfitSuggestion.Top.THICK_COAT -> R.drawable.ic_outfit_thick_coat
-            OutfitSuggestion.Top.PUFFER_JACKET -> R.drawable.ic_outfit_puffer_jacket
-            null -> null
-        }
     }
 }

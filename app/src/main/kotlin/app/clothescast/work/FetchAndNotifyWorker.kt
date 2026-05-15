@@ -479,7 +479,7 @@ class FetchAndNotifyWorker(
         awaitDeliveryAlignment()
         val mode = prefs.deliveryMode
         if (mode == DeliveryMode.NOTIFICATION_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS) {
-            app.insightNotifier.notify(insight, prose)
+            app.insightNotifier.notify(insight, prose, prefs.outfitTopColors)
             recordDeliveryDelay(ForecastPeriod.TODAY)
         }
         if (mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS) {
@@ -604,7 +604,7 @@ class FetchAndNotifyWorker(
         if (skipEmptyEveningNotification) {
             DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping notification.")
         } else if (canNotify) {
-            app.tonightInsightNotifier.notify(insight, prose)
+            app.tonightInsightNotifier.notify(insight, prose, prefs.outfitTopColors)
             recordDeliveryDelay(ForecastPeriod.TONIGHT)
         }
         if (!insight.hasEvents) {

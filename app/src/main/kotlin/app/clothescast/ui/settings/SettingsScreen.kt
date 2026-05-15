@@ -138,11 +138,15 @@ fun SettingsScreen(
                 rules = state.clothesRules,
                 defaultBottom = state.defaultBottom,
                 temperatureUnit = state.temperatureUnit,
+                outfitTopColors = state.outfitTopColors,
+                outfitBottomColors = state.outfitBottomColors,
                 padding = padding,
                 onAdd = viewModel::addClothesRule,
                 onReplace = viewModel::replaceClothesRule,
                 onDelete = viewModel::deleteClothesRule,
                 onSetDefaultBottom = viewModel::setDefaultBottom,
+                onSetOutfitTopColor = viewModel::setOutfitTopColor,
+                onSetOutfitBottomColor = viewModel::setOutfitBottomColor,
             )
             SettingsRoute.Region -> RegionContent(
                 region = state.region,

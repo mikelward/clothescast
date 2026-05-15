@@ -366,6 +366,14 @@
     <string name="settings_display_palette_accessible_description">An Okabe-Ito-derived palette designed to stay distinguishable under deuteranopia, protanopia, and tritanopia. Confidence cards use sky blue, neutral, and amber instead of teal, neutral, and red.</string>
     <string name="settings_display_palette_highlighter_description">Magenta, yellow, and cyan chart lines — like highlighter pens on the page. Visibly different from Rainbow at a glance; the light theme uses deeper variants for readability. Safe under red-green colour blindness.</string>
 
+    <string name="settings_display_garment_colors_title">Garment colours</string>
+    <string name="settings_display_garment_colors_description">Pick a colour for each clothing icon shown on Today, the home-screen widget, and notifications. The stroke darkens automatically.</string>
+    <string name="settings_garment_color_default">Default</string>
+    <string name="settings_garment_color_picker_title">Pick a colour</string>
+    <string name="settings_garment_color_swatch_description">Colour swatch %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Reset %1$s to the default colour</string>
+    <string name="settings_garment_color_dialog_close">Close</string>
+
     <string name="settings_root_location_subtitle">Auto-detect or pick a city</string>
     <string name="settings_root_calendar_subtitle">Today\'s events</string>
     <string name="settings_root_privacy_subtitle">Crash + usage reports</string>

@@ -347,6 +347,25 @@ data class UserPreferences(
      * deuteranopia, protanopia, and tritanopia.
      */
     val colorPalette: ColorPalette = ColorPalette.RAINBOW,
+    /**
+     * User overrides for the fill colour of each top-garment icon (the
+     * shirt / sweater / jacket pictures shown on Today, the home-screen
+     * widget, and notification large icons). Keyed by [OutfitSuggestion.Top]
+     * since that's the rendered icon tier — `Garment` (the rule-list
+     * catalogue) has entries like `hoodie` and `shirt` that share an icon
+     * with `sweater` / `polo`, so colouring per icon is what matches the
+     * user's mental model of "the jacket icon."
+     *
+     * Stored as packed ARGB ([Int.toLong] of an ARGB int — a `Long` so the
+     * top byte's alpha doesn't sign-extend). A missing entry means "use the
+     * baked-in default colour from the XML," so existing installs read empty
+     * and render byte-identical to today. The stroke is auto-derived as a
+     * darker shade of the chosen fill at render time; only the fill is
+     * persisted.
+     */
+    val outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    /** Sibling of [outfitTopColors] for the bottom-garment icons. */
+    val outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
 ) {
     companion object {
         const val DEFAULT_GEMINI_VOICE = "Despina"

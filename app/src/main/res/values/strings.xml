@@ -407,9 +407,13 @@
     <string name="settings_forecasters_ukmo_subtitle">British (UK Met Office) — historically second only to ECMWF. 3-hourly on the open feed.</string>
     <string name="settings_forecasters_jma">JMA</string>
     <string name="settings_forecasters_jma_subtitle">Japanese — strong over Asia-Pacific. 3- to 6-hourly on the open feed.</string>
-    <!-- BOM_ACCESS_GLOBAL deliberately omitted from the picker — Open-Meteo's
-         BOM open-data delivery is suspended at the moment. Add settings_forecasters_bom*
-         back when BOM_ACCESS_GLOBAL is restored to the ForecastModel enum. -->
+    <!-- BOM is still omitted from the ForecastModel enum while Open-Meteo's
+         BOM open-data delivery is suspended, but the picker surfaces it as a
+         permanently-disabled row so users looking for the Australian model
+         see it's known-missing rather than wonder where it went. Drop the
+         disabled row and wire BOM through the enum when delivery resumes. -->
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australian — under maintenance, back as soon as possible.</string>
 
     <!-- Privacy settings sub-page. The toggle controls Firebase Analytics +
          Crashlytics collection at runtime; PRIVACY.md spells out the data

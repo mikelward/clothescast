@@ -425,7 +425,9 @@ enum class ForecastModel(val openMeteoId: String) {
     // this process, open-data delivery has been temporarily suspended." With
     // open-data suspended, requesting BOM returns no usable fields and the
     // model silently disappears from the chart. Re-add the enum entry +
-    // string resources + palette colours when BOM resumes delivery.
+    // palette colours when BOM resumes delivery (the Forecasters picker
+    // already shows a disabled BOM row with an "under maintenance" subtitle
+    // so the option's discoverable while we wait).
     // See https://open-meteo.com/en/docs/bom-api
 
     companion object {

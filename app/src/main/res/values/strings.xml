@@ -341,6 +341,7 @@
     <string name="settings_root_display">Display</string>
     <string name="settings_root_location">Location</string>
     <string name="settings_root_calendar">Calendar</string>
+    <string name="settings_root_forecasters">Forecasters</string>
     <string name="settings_root_privacy">Privacy</string>
     <string name="settings_root_about">About</string>
 
@@ -379,7 +380,32 @@
 
     <string name="settings_root_location_subtitle">Auto-detect or pick a city</string>
     <string name="settings_root_calendar_subtitle">Today\'s events</string>
+    <string name="settings_root_forecasters_subtitle">Which weather models to consult</string>
     <string name="settings_root_privacy_subtitle">Crash + usage reports</string>
+
+    <!-- Forecasters sub-page: lets the user pick which numerical weather
+         prediction models feed the confidence chip and the per-model chart.
+         Display labels are the agency / model acronyms — short, unambiguous
+         for the small audience that cares about this picker, and stable
+         across translations. -->
+    <string name="settings_forecasters_title">Forecast models</string>
+    <string name="settings_forecasters_description">The confidence chip and the per-model chart pull from these models. Picking more gives a richer spread; fewer means a tighter focus. At least two stay selected.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">European — generally the most accurate global model. 3-hourly on the open feed.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">German (DWD) — strong in Europe and at short range. Native hourly.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">American (NOAA) — strong over North America. Native hourly.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Canadian (ECCC) — strong over North America. 3-hourly on the open feed.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">French (Météo-France) — strong over France and Western Europe. Native hourly.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">British (UK Met Office) — historically second only to ECMWF. 3-hourly on the open feed.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japanese — strong over Asia-Pacific. 3- to 6-hourly on the open feed.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australian — strong over Australasia. 3-hourly on the open feed.</string>
 
     <!-- Privacy settings sub-page. The toggle controls Firebase Analytics +
          Crashlytics collection at runtime; PRIVACY.md spells out the data

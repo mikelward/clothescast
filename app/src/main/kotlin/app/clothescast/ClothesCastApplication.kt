@@ -109,6 +109,14 @@ class ClothesCastApplication : Application() {
                     DiagLog.w("ConfidenceFetcher", message, throwable)
                 },
                 apiCallLogger = apiCallLogger,
+                // Read the user's Forecasters selection on every fetch so a
+                // settings change takes effect on the next manual refresh
+                // without rebuilding the client. DataStore caches the latest
+                // emission, so this is a memory read after the first call.
+                confidenceModelsProvider = {
+                    settingsRepository.preferences.first().forecastModels
+                        .map { it.openMeteoId }
+                },
             ),
         )
     }

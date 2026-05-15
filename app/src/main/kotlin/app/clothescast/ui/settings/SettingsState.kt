@@ -5,6 +5,7 @@ import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
@@ -90,4 +91,5 @@ data class SettingsState(
      * can't get stuck after the worker finishes without resolving a fix.
      */
     val locationDetecting: Boolean = false,
+    val forecastModels: Set<ForecastModel> = ForecastModel.DEFAULTS,
 )

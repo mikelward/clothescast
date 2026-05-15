@@ -19,7 +19,6 @@ import androidx.core.content.FileProvider
 import app.clothescast.BuildConfig
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.ClothesRule
-import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.UserPreferences
@@ -38,7 +37,7 @@ import kotlin.coroutines.resume
 
 /**
  * Builds a "paste-into-Claude" bug-report payload (version, device, settings,
- * the latest cached today + tonight ClothesCasts, recent log lines, last crash
+ * the latest cached this-period + next-period ClothesCasts, recent log lines, last crash
  * if any) and hands it off via [Intent.ACTION_SEND] so the share sheet can
  * deliver it to whichever app the user picks. Also drops the text on the
  * clipboard as a paste fallback.
@@ -64,11 +63,11 @@ object BugReport {
         val geminiKeyConfigured = runCatching {
             app.secureKeyStore.geminiKeyConfiguredFlow.first()
         }.getOrDefault(false)
-        val today = runCatching {
-            app.insightCache.latestForPeriod(ForecastPeriod.TODAY).first()
+        val thisPeriod = runCatching {
+            app.insightCache.thisPeriod.first()
         }.getOrNull()
-        val tonight = runCatching {
-            app.insightCache.latestForPeriod(ForecastPeriod.TONIGHT).first()
+        val nextPeriod = runCatching {
+            app.insightCache.nextPeriod.first()
         }.getOrNull()
         val crash = DiagLog.readPersistedCrash()
         val recent = DiagLog.snapshot()
@@ -98,8 +97,8 @@ object BugReport {
             appendLine()
             appendLine("--- Current ClothesCasts ---")
             val region = prefs?.region ?: Region.SYSTEM
-            appendInsight("Today (TODAY)", today, context, region)
-            appendInsight("Tonight (TONIGHT)", tonight, context, region)
+            appendInsight("This period", thisPeriod, context, region)
+            appendInsight("Next period", nextPeriod, context, region)
             if (!crash.isNullOrBlank()) {
                 appendLine("--- Last crash (from previous run) ---")
                 appendLine(crash.trim())

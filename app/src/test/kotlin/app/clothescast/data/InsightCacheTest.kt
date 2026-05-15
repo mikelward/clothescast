@@ -131,29 +131,50 @@ class InsightCacheTest {
 
     @Test
     fun `store then latest round-trips all fields`() = runTest {
-        subject.store(sample)
+        subject.store(InsightCache.Slot.THIS_PERIOD, sample)
 
         val read = subject.latest.first()
         read shouldBe sample
     }
 
     @Test
-    fun `forToday returns the cached insight when forDate matches`() = runTest {
-        subject.store(sample)
+    fun `deliveredForToday returns the cached insight when forDate and period match`() = runTest {
+        subject.store(InsightCache.Slot.THIS_PERIOD, sample)
 
-        subject.forToday(today) shouldBe sample
+        subject.deliveredForToday(today, sample.period) shouldBe sample
     }
 
     @Test
-    fun `forToday returns null when the cached insight is for a different day`() = runTest {
-        subject.store(sample)
+    fun `deliveredForToday returns null when the cached insight is for a different day`() = runTest {
+        subject.store(InsightCache.Slot.THIS_PERIOD, sample)
 
-        subject.forToday(today.plusDays(1)) shouldBe null
+        subject.deliveredForToday(today.plusDays(1), sample.period) shouldBe null
+    }
+
+    @Test
+    fun `deliveredForToday returns null when the cached insight is for a different period`() = runTest {
+        // The morning alarm fires for TODAY; if THIS_PERIOD holds a TONIGHT
+        // insight (e.g. last night's evening delivery), the dedup check
+        // misses and the worker refetches — fresh forecast instead of
+        // redelivering yesterday's payload.
+        subject.store(InsightCache.Slot.THIS_PERIOD, sample.copy(period = ForecastPeriod.TONIGHT))
+
+        subject.deliveredForToday(today, ForecastPeriod.TODAY) shouldBe null
+    }
+
+    @Test
+    fun `deliveredForToday ignores the NEXT_PERIOD slot`() = runTest {
+        // The morning alarm shouldn't dedup against yesterday-evening's
+        // pre-cached tomorrow-daytime insight in NEXT_PERIOD; otherwise it
+        // would silently redeliver 12-hour-old forecast data.
+        subject.store(InsightCache.Slot.NEXT_PERIOD, sample)
+
+        subject.deliveredForToday(today, sample.period) shouldBe null
     }
 
     @Test
     fun `clear removes the stored insight`() = runTest {
-        subject.store(sample)
+        subject.store(InsightCache.Slot.THIS_PERIOD, sample)
         subject.clear()
 
         subject.latest.first() shouldBe null
@@ -162,7 +183,7 @@ class InsightCacheTest {
     @Test
     fun `corrupt JSON in the slot maps to null rather than crashing`() = runTest {
         dataStore.edit {
-            it[stringPreferencesKey("latest_insight_v5")] = "{not valid json"
+            it[stringPreferencesKey("this_period_insight_v6")] = "{not valid json"
         }
 
         subject.latest.first() shouldBe null
@@ -187,7 +208,7 @@ class InsightCacheTest {
         dataStore.edit {
             // v5 key, v2-shaped payload — the decoder fails on the `summary`
             // field and the runCatching in the cache returns null.
-            it[stringPreferencesKey("latest_insight_v5")] = v2Json
+            it[stringPreferencesKey("this_period_insight_v6")] = v2Json
         }
 
         subject.latest.first() shouldBe null
@@ -213,7 +234,7 @@ class InsightCacheTest {
         )
         val withHourly = sample.copy(hourly = hourly)
 
-        subject.store(withHourly)
+        subject.store(InsightCache.Slot.THIS_PERIOD, withHourly)
 
         subject.latest.first() shouldBe withHourly
     }
@@ -251,7 +272,7 @@ class InsightCacheTest {
             outfitRationale = rationale,
         )
 
-        subject.store(withRationale)
+        subject.store(InsightCache.Slot.THIS_PERIOD, withRationale)
 
         subject.latest.first() shouldBe withRationale
     }
@@ -266,7 +287,7 @@ class InsightCacheTest {
             ),
         )
 
-        subject.store(withLocation)
+        subject.store(InsightCache.Slot.THIS_PERIOD, withLocation)
 
         subject.latest.first() shouldBe withLocation
     }
@@ -292,7 +313,7 @@ class InsightCacheTest {
             }
         """.trimIndent()
         dataStore.edit {
-            it[stringPreferencesKey("latest_insight_v5")] = minimalJson
+            it[stringPreferencesKey("this_period_insight_v6")] = minimalJson
         }
 
         val read = subject.latest.first()
@@ -324,7 +345,7 @@ class InsightCacheTest {
             ),
         )
 
-        subject.store(full)
+        subject.store(InsightCache.Slot.THIS_PERIOD, full)
 
         subject.latest.first() shouldBe full
     }
@@ -346,7 +367,7 @@ class InsightCacheTest {
             ),
         )
 
-        subject.store(bareRain)
+        subject.store(InsightCache.Slot.THIS_PERIOD, bareRain)
 
         val tie = subject.latest.first()?.summary?.eveningEventTieIn
         tie?.items shouldBe emptyList()
@@ -377,7 +398,7 @@ class InsightCacheTest {
             }
         """.trimIndent()
         dataStore.edit {
-            it[stringPreferencesKey("latest_insight_v5")] = legacyJson
+            it[stringPreferencesKey("this_period_insight_v6")] = legacyJson
         }
 
         val tie = subject.latest.first()?.summary?.eveningEventTieIn
@@ -413,7 +434,7 @@ class InsightCacheTest {
             hourly = hourly,
             outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
         )
-        subject.store(stored)
+        subject.store(InsightCache.Slot.THIS_PERIOD, stored)
 
         subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
 
@@ -455,12 +476,12 @@ class InsightCacheTest {
             hourly = mildHourly,
             outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
         )
-        subject.store(todayInsight)
-        subject.store(tonightInsight)
+        subject.store(InsightCache.Slot.THIS_PERIOD, todayInsight)
+        subject.store(InsightCache.Slot.NEXT_PERIOD, tonightInsight)
 
         subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
 
-        val refreshedToday = subject.forPeriodToday(today, ForecastPeriod.TODAY)
+        val refreshedToday = subject.deliveredForToday(today, ForecastPeriod.TODAY)
         refreshedToday?.outfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
         refreshedToday?.nextOutfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
     }
@@ -482,6 +503,7 @@ class InsightCacheTest {
         )
         val storedNext = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS)
         subject.store(
+            InsightCache.Slot.THIS_PERIOD,
             sample.copy(
                 period = ForecastPeriod.TODAY,
                 hourly = mildHourly,
@@ -492,20 +514,21 @@ class InsightCacheTest {
 
         subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
 
-        val refreshed = subject.forPeriodToday(today, ForecastPeriod.TODAY)
+        val refreshed = subject.deliveredForToday(today, ForecastPeriod.TODAY)
         refreshed?.outfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
         refreshed?.nextOutfit shouldBe storedNext
     }
 
     @Test
-    fun `recomputeOutfits preserves todays nextOutfit when tonight slot is from a previous day`() = runTest {
-        // Morning settings edit: the TODAY slot was rewritten by the morning
-        // worker (forDate = today), but the TONIGHT slot is still yesterday
-        // evening's insight (forDate = yesterday). Borrowing the stale TONIGHT
-        // hourly to rewrite today's `nextOutfit` would silently backdate the
-        // home-screen "Tonight" icon to last night's conditions — which have
-        // already happened. The date guard preserves the existing nextOutfit
-        // and lets the next TONIGHT worker run repair it properly.
+    fun `recomputeOutfits preserves nextOutfit when NEXT_PERIOD slot has the same period kind as THIS_PERIOD`() = runTest {
+        // A partial-write degraded state: the morning worker wrote
+        // THIS_PERIOD (today daytime) but the paired NEXT_PERIOD write
+        // failed, so NEXT_PERIOD still holds yesterday-evening's paired
+        // write (also a daytime insight, ~12 h stale). Borrowing the
+        // stale daytime hourly to rewrite today's `nextOutfit` (which
+        // represents *tonight*) would mis-describe the upcoming window —
+        // the opposite-period guard preserves the existing `nextOutfit`
+        // until the next worker run repairs the pairing.
         val todayHourly = listOf(
             HourlyForecast(
                 time = LocalTime.of(7, 0),
@@ -515,12 +538,13 @@ class InsightCacheTest {
                 condition = WeatherCondition.CLEAR,
             ),
         )
-        // Yesterday's overnight was cold — if we mis-pair this with today's
-        // TODAY slot we'd compute a colder `nextOutfit` than today's actual
-        // upcoming evening warrants.
-        val yesterdayOvernightHourly = listOf(
+        // Yesterday's stale daytime hourly — if we mis-pair this with
+        // today's THIS_PERIOD slot's `nextOutfit` (which represents
+        // *tonight*) we'd describe an evening's clothes off morning
+        // weather data.
+        val stalePairedHourly = listOf(
             HourlyForecast(
-                time = LocalTime.of(21, 0),
+                time = LocalTime.of(12, 0),
                 temperatureC = 2.0,
                 feelsLikeC = 0.0,
                 precipitationProbabilityPct = 5.0,
@@ -529,6 +553,7 @@ class InsightCacheTest {
         )
         val storedNext = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS)
         subject.store(
+            InsightCache.Slot.THIS_PERIOD,
             sample.copy(
                 period = ForecastPeriod.TODAY,
                 forDate = today,
@@ -538,20 +563,24 @@ class InsightCacheTest {
             ),
         )
         subject.store(
+            InsightCache.Slot.NEXT_PERIOD,
             sample.copy(
-                period = ForecastPeriod.TONIGHT,
+                // Same period kind as THIS_PERIOD — partial-paired-write
+                // signature. Should NOT be borrowed for THIS_PERIOD's
+                // nextOutfit.
+                period = ForecastPeriod.TODAY,
                 forDate = today.minusDays(1),
-                hourly = yesterdayOvernightHourly,
+                hourly = stalePairedHourly,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.THICK_COAT, OutfitSuggestion.Bottom.LONG_PANTS),
             ),
         )
 
         subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
 
-        val refreshed = subject.forPeriodToday(today, ForecastPeriod.TODAY)
+        val refreshed = subject.deliveredForToday(today, ForecastPeriod.TODAY)
         refreshed?.outfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
-        // nextOutfit preserved verbatim — not silently rebuilt from yesterday's
-        // overnight data.
+        // nextOutfit preserved verbatim — not silently rebuilt from the
+        // same-period-kind partial-write leftover.
         refreshed?.nextOutfit shouldBe storedNext
     }
 
@@ -562,6 +591,7 @@ class InsightCacheTest {
         // last written and refreshes on the next worker run.
         val storedBottom = OutfitSuggestion.Bottom.LONG_PANTS
         subject.store(
+            InsightCache.Slot.THIS_PERIOD,
             sample.copy(
                 hourly = emptyList(),
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, storedBottom),
@@ -585,7 +615,7 @@ class InsightCacheTest {
             ),
         )
 
-        subject.store(possible)
+        subject.store(InsightCache.Slot.THIS_PERIOD, possible)
 
         subject.latest.first()?.summary?.precip?.likelihood shouldBe PrecipLikelihood.POSSIBLE
     }

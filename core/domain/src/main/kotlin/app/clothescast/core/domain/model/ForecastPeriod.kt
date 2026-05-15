@@ -12,4 +12,15 @@ package app.clothescast.core.domain.model
  *    The summary leads with "Tonight will be …" and the clothes / outfit reflect
  *    the actual overnight low.
  */
-enum class ForecastPeriod { TODAY, TONIGHT }
+enum class ForecastPeriod {
+    TODAY, TONIGHT;
+
+    /**
+     * The other period kind. Used by the Today screen's pager to pick the
+     * placeholder copy for page 2 when its cache slot is empty.
+     */
+    fun opposite(): ForecastPeriod = when (this) {
+        TODAY -> TONIGHT
+        TONIGHT -> TODAY
+    }
+}

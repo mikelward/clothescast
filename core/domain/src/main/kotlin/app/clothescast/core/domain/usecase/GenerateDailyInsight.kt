@@ -56,8 +56,27 @@ class GenerateDailyInsight(
         location: Location,
         prefs: UserPreferences,
         period: ForecastPeriod = ForecastPeriod.TODAY,
+        // Which day's window the caller wants generated. 0 == today (the
+        // default; the user-facing alarm path), 1 == tomorrow. The evening
+        // alarm uses `dayOffset = 1` with `period = TODAY` to pre-render
+        // tomorrow's daytime insight for the Today screen's "next" card —
+        // Open-Meteo's `forecast_days=2` response already carries tomorrow's
+        // daily aggregates and hourly, so no extra fetch is needed. Only
+        // `(TODAY, 1)` is supported — there's no day-after-tomorrow data in
+        // the bundle to wrap a tomorrow-tonight window around.
+        dayOffset: Int = 0,
     ): DailyInsightResult {
-        val bundle = weatherRepository.fetchForecast(location)
+        require(dayOffset == 0 || (dayOffset == 1 && period == ForecastPeriod.TODAY)) {
+            "Only same-day (dayOffset=0) and tomorrow-daytime (dayOffset=1, period=TODAY) generation are supported."
+        }
+        val fetched = weatherRepository.fetchForecast(location)
+        val bundle = if (dayOffset == 1) {
+            requireNotNull(fetched.shiftedToTomorrow()) {
+                "Bundle has no tomorrow forecast; cannot generate next-day insight (was the fetch a forecast_days=1 response?)."
+            }
+        } else {
+            fetched
+        }
         val activeAlerts = bundle.alerts.filter { it.expires.isAfter(clock.instant()) }
         val morningStart = prefs.schedule.time
         val tonightStart = prefs.tonightSchedule.time
@@ -315,6 +334,31 @@ class GenerateDailyInsight(
         val perModelForRender: PerModelHourly?,
         val deltaToday: DailyForecast,
         val deltaYesterday: DailyForecast,
+    )
+}
+
+/**
+ * Returns a view of this bundle with tomorrow promoted to today. Used by the
+ * evening worker's "next" pre-render path: the same fetch covers both the
+ * tonight window the alarm is delivering *and* the tomorrow-daytime window
+ * the Today screen's pager will show on page 2. Returns null when the bundle
+ * has no tomorrow data (legacy `forecast_days=1` fixtures); the caller drops
+ * the next-card pre-render rather than fabricate data.
+ *
+ * Yesterday becomes today's daily forecast so the delta clause still has an
+ * apples-to-apples comparison (tomorrow vs. today). The `tomorrow` and
+ * `tomorrowHourly` fields drop to empty — we don't have day-after-tomorrow
+ * data, so a hypothetical tonight-period generation off the shifted bundle
+ * would lose its overnight wrap; that's why the public `dayOffset=1` path is
+ * gated to TODAY-period only.
+ */
+private fun ForecastBundle.shiftedToTomorrow(): ForecastBundle? {
+    val tmrw = tomorrow ?: return null
+    return copy(
+        today = tmrw,
+        yesterday = today,
+        tomorrow = null,
+        tomorrowHourly = emptyList(),
     )
 }
 

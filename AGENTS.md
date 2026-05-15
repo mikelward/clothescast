@@ -111,15 +111,27 @@ new rule the first time something bites you, not the third.
 
 ## Commit messages
 
-- **The subject line ships verbatim to the Play Store changelog** (CI writes
-  it to `whatsnew-en-US`, which becomes the "What's new" blurb internal
-  testers and, eventually, production users see). Treat it as end-user
-  copy: sentence case, no jargon, no scope prefix, ≤ ~80 chars.
-  e.g. `Bigger outfit icons on the Today screen`, not `:app + :core —
-  glanceable outfit-preview icons on Today screen`. Move scope, module
-  names, and engineering detail (file paths, refactor reasoning, "fixes
-  #123") into the commit body — reviewers see the body on the PR, but
-  the Play release notes don't.
+- **Every commit subject ships verbatim to the Play Store changelog.** CI
+  collects the subject line of *every* commit landed since the previous
+  successful main CI run, formats them as `• `-prefixed bullets (oldest →
+  newest), and writes the result to `whatsnew-en-US` — that's the "What's
+  new" blurb internal testers and, eventually, production users see. So
+  treat each subject as end-user copy: sentence case, no jargon, no scope
+  prefix, ≤ ~80 chars. e.g. `Bigger outfit icons on the Today screen`,
+  not `:app + :core — glanceable outfit-preview icons on Today screen`.
+  Move scope, module names, and engineering detail (file paths, refactor
+  reasoning, "fixes #123") into the commit body — reviewers see the body
+  on the PR, but the Play release notes don't.
+- **`ci:` prefix and docs-only commits are filtered out** of the
+  changelog (see the "Prepare release notes" step in `ci.yml`) so the
+  snapshot-regen bot's commits and `docs/` / dotfile / `*.md` changes
+  don't surface as bullets. Anything else *will* appear — if a commit
+  shouldn't ship in the changelog, either squash it into a sibling or
+  give it a `ci:` subject prefix.
+- **Play caps `whatsnew-en-US` at 500 bytes.** When the bullet list
+  exceeds that, CI truncates and appends `…`. Avoid lining up a long
+  stack of small commits if any one of them tells the user-facing story
+  on its own — squash the supporting work in.
 
 ## GitHub
 

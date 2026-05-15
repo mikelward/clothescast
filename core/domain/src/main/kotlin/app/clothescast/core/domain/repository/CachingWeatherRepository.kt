@@ -41,10 +41,27 @@ class CachingWeatherRepository(
     private val clock: Clock = Clock.systemDefaultZone(),
     private val ttl: Duration = Duration.ofHours(1),
     private val locationGridDegrees: Double = 0.01,
+    /**
+     * Pull-based opaque discriminator for inputs *other than location* that
+     * change which forecast the delegate would return — currently the user's
+     * Forecasters model selection (see [ClothesCastApplication]). The cache
+     * stores whatever value this returned at fetch time and treats the entry
+     * as stale on mismatch, so a settings change takes effect on the next
+     * refresh instead of waiting out the TTL. Default returns [Unit] (a
+     * single value that matches itself), preserving the location-only
+     * behaviour for tests and any delegate whose output doesn't depend on
+     * out-of-band state.
+     *
+     * Suspend so a settings-backed provider can `dataStore.first()` without
+     * needing a separately-maintained snapshot. DataStore caches the latest
+     * emission in memory, so on the warm path this is a memory hit.
+     */
+    private val freshnessKeyProvider: suspend () -> Any = { Unit },
 ) : WeatherRepository {
 
     private data class Entry(
         val key: LocationKey,
+        val freshnessKey: Any,
         val fetchedAt: Instant,
         val bundle: ForecastBundle,
     )
@@ -56,6 +73,7 @@ class CachingWeatherRepository(
 
     override suspend fun fetchForecast(location: Location): ForecastBundle = mutex.withLock {
         val key = keyOf(location)
+        val freshnessKey = freshnessKeyProvider()
         val now = clock.instant()
         val today = LocalDate.now(clock)
         val cached = entry
@@ -67,13 +85,14 @@ class CachingWeatherRepository(
         if (
             cached != null &&
             cached.key == key &&
+            cached.freshnessKey == freshnessKey &&
             !cached.bundle.today.date.isBefore(today) &&
             Duration.between(cached.fetchedAt, now) < ttl
         ) {
             return@withLock cached.bundle
         }
         val fresh = delegate.fetchForecast(location)
-        entry = Entry(key = key, fetchedAt = now, bundle = fresh)
+        entry = Entry(key = key, freshnessKey = freshnessKey, fetchedAt = now, bundle = fresh)
         fresh
     }
 

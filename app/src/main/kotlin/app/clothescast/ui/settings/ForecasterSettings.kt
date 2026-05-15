@@ -32,6 +32,16 @@ import app.clothescast.core.domain.model.ForecastModel
  */
 private const val MIN_MODELS = 2
 
+/**
+ * Cap on the number of models the picker accepts. The chart palette covers
+ * all eight [ForecastModel] entries, so this isn't a "we'd crash above" limit
+ * — it's a readability floor. Five overlay lines on the per-model chart is
+ * already busy; eight turns it into a rainbow nobody can read. The picker
+ * disables unchecked rows when the user is at the cap, with a one-line hint
+ * directing them to deselect first.
+ */
+private const val MAX_MODELS = 5
+
 @Composable
 internal fun ForecastersContent(
     forecastModels: Set<ForecastModel>,
@@ -52,24 +62,30 @@ internal fun ForecastersContent(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            val atCap = forecastModels.size >= MAX_MODELS
+            if (atCap) {
+                Text(
+                    text = stringResource(R.string.settings_forecasters_cap_hint, MAX_MODELS),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             ForecastModel.entries.forEach { model ->
                 val checked = model in forecastModels
-                // Block unchecking when we'd drop below MIN_MODELS. Checking
-                // is never blocked — adding always raises the count.
+                // Block unchecking when we'd drop below MIN_MODELS. Block
+                // checking when we'd exceed MAX_MODELS. An already-checked
+                // row stays interactable above the cap so the user can
+                // still toggle it off to free a slot.
                 val canToggleOff = forecastModels.size > MIN_MODELS
+                val canToggleOn = !atCap
                 ForecasterRow(
                     label = stringResource(forecastModelLabel(model)),
                     subtitle = stringResource(forecastModelSubtitle(model)),
                     checked = checked,
-                    // Block unchecking the second-to-last selection — toggle on
-                    // is always allowed. The repository's empty-set guard would
-                    // recover the defaults if a deselection slipped past, but
-                    // greying out the box keeps the UI's "you can't break it"
-                    // affordance honest.
-                    enabled = !checked || canToggleOff,
+                    enabled = if (checked) canToggleOff else canToggleOn,
                     onToggle = { nowChecked ->
                         val updated = if (nowChecked) forecastModels + model else forecastModels - model
-                        if (updated.size >= MIN_MODELS) onSetForecastModels(updated)
+                        if (updated.size in MIN_MODELS..MAX_MODELS) onSetForecastModels(updated)
                     },
                 )
             }

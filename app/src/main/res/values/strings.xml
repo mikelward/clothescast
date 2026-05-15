@@ -390,6 +390,7 @@
          across translations. -->
     <string name="settings_forecasters_title">Forecast models</string>
     <string name="settings_forecasters_description">The confidence chip and the per-model chart pull from these models. Picking more gives a richer spread; fewer means a tighter focus. At least two stay selected.</string>
+    <string name="settings_forecasters_cap_hint">You\'ve picked %1$d models — the most the chart stays readable for. Deselect one to add a different model.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">European — generally the most accurate global model. 3-hourly on the open feed.</string>
     <string name="settings_forecasters_icon">ICON</string>

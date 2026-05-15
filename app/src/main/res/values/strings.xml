@@ -286,6 +286,12 @@
     <string name="today_telemetry_notice_open_settings">Open Privacy settings</string>
     <string name="today_telemetry_notice_dismiss">Dismiss</string>
 
+    <string name="today_view_other_period">View other forecast</string>
+    <string name="today_back_to_primary">Back</string>
+    <string name="today_placeholder_today_title">Today\'s forecast</string>
+    <string name="today_placeholder_tonight_title">Tonight\'s forecast</string>
+    <string name="today_placeholder_body">Will be ready around %1$s.</string>
+
     <string name="onboarding_title">Welcome to ClothesCast</string>
     <string name="onboarding_subtitle">Three quick choices and you\'re set. Tweak later in Settings.</string>
     <string name="onboarding_subtitle_tv">Two quick choices and you\'re set. Tweak later in Settings.</string>

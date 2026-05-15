@@ -8,6 +8,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -24,7 +25,24 @@ import kotlinx.coroutines.launch
 import java.time.LocalTime
 
 data class TodayState(
-    val insight: Insight? = null,
+    /**
+     * The insight shown on page 1 of the pager — whichever period's slot was
+     * most recently generated. Mirrors the previous `state.insight` contract
+     * so existing screen behaviour is unchanged on first open.
+     */
+    val primaryInsight: Insight? = null,
+    /**
+     * The insight shown on page 2 of the pager — the paired period's cached
+     * slot, or `null` if the worker hasn't generated it yet. When null, the
+     * screen renders a `MissingPeriodPlaceholder` for `nextPeriod`.
+     */
+    val nextInsight: Insight? = null,
+    /**
+     * Which period page 2 would show even when `nextInsight` is null — so the
+     * placeholder copy reads correctly the first time the user swipes to it.
+     * Always the opposite of `primaryInsight.period` when both are present.
+     */
+    val nextPeriod: ForecastPeriod = ForecastPeriod.TONIGHT,
     val workStatus: WorkStatus = WorkStatus.Idle,
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     val distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
@@ -148,6 +166,32 @@ internal fun selectStatus(infos: List<WorkInfoLite>): WorkStatus {
  * ended in one. Comparing run-attempt counts across two unrelated unique-work
  * chains was the previous source of "old failure on the wrong chain wins".
  */
+/**
+ * Picks which of the two cached insights is the "primary" (page 1) and which
+ * is "next" (page 2). Tie-break: the one with the later `generatedAt` wins
+ * primary, mirroring [InsightCache.latest]'s semantics so the screen's page-1
+ * default doesn't drift from the pre-pager behaviour.
+ *
+ * Returns `Triple(primary, next, nextPeriod)`. `nextPeriod` is always the
+ * *opposite* of `primary`'s period when primary exists; when both inputs are
+ * null we default to TONIGHT so the empty-state path still has a sensible
+ * placeholder period to surface.
+ */
+internal fun pickPrimary(
+    today: Insight?,
+    tonight: Insight?,
+): Triple<Insight?, Insight?, ForecastPeriod> {
+    val todayAt = today?.generatedAt?.toEpochMilli() ?: Long.MIN_VALUE
+    val tonightAt = tonight?.generatedAt?.toEpochMilli() ?: Long.MIN_VALUE
+    return when {
+        today == null && tonight == null -> Triple(null, null, ForecastPeriod.TONIGHT)
+        today == null -> Triple(tonight, null, ForecastPeriod.TODAY)
+        tonight == null -> Triple(today, null, ForecastPeriod.TONIGHT)
+        tonightAt > todayAt -> Triple(tonight, today, ForecastPeriod.TODAY)
+        else -> Triple(today, tonight, ForecastPeriod.TONIGHT)
+    }
+}
+
 internal fun mergeWorkStatus(a: WorkStatus, b: WorkStatus): WorkStatus = when {
     a is WorkStatus.Running || b is WorkStatus.Running -> WorkStatus.Running
     a is WorkStatus.Retrying || b is WorkStatus.Retrying -> WorkStatus.Retrying
@@ -178,17 +222,30 @@ class TodayViewModel(
 
     // Combine status across both unique-work names so the spinner / failure
     // banner reflects an in-flight tonight refresh too — the Refresh button
-    // routes to TONIGHT when it's tapped between 19:00 and 07:00.
-    val state: StateFlow<TodayState> = combine(
-        insightCache.latest,
+    // routes to TONIGHT when it's tapped between 19:00 and 07:00. Collapsed
+    // upstream into a single flow so [state]'s `combine` stays under the
+    // 5-flow overload cap now that the pager reads both period slots
+    // separately.
+    private val workStatusFlow = combine(
         workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME),
         workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT),
+    ) { todayInfos, tonightInfos ->
+        mergeWorkStatus(selectStatus(todayInfos.toLite()), selectStatus(tonightInfos.toLite()))
+    }
+
+    val state: StateFlow<TodayState> = combine(
+        insightCache.latestForPeriod(ForecastPeriod.TODAY),
+        insightCache.latestForPeriod(ForecastPeriod.TONIGHT),
+        workStatusFlow,
         settingsRepository.preferences,
         showModelSpread,
-    ) { insight, todayInfos, tonightInfos, prefs, spread ->
+    ) { todayInsight, tonightInsight, workStatus, prefs, spread ->
+        val (primary, next, nextPeriod) = pickPrimary(todayInsight, tonightInsight)
         TodayState(
-            insight = insight,
-            workStatus = mergeWorkStatus(selectStatus(todayInfos.toLite()), selectStatus(tonightInfos.toLite())),
+            primaryInsight = primary,
+            nextInsight = next,
+            nextPeriod = nextPeriod,
+            workStatus = workStatus,
             temperatureUnit = prefs.temperatureUnit,
             distanceUnit = prefs.distanceUnit,
             region = prefs.region,

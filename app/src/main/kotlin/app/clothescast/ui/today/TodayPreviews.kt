@@ -349,6 +349,99 @@ internal fun TodayInsightCardLocationUnknownPreview() {
     }
 }
 
+// Pager affordances. Two variants of the insight card so the chevron's
+// rendering — placement at the trailing edge of the date row, plus the
+// IconButton's tonal background — is locked into a snapshot for both
+// directions. The default-arg `TodayInsightCardPreview` above still
+// captures the no-chevron baseline, so the existence of the chevron
+// state is reviewable side-by-side without the cluttering snapshots
+// from existing previews shifting.
+@Preview(name = "Today · insight with chevron right", widthDp = 360)
+@Composable
+internal fun TodayInsightCardWithChevronRightPreview() {
+    Frame {
+        InsightCard(
+            SAMPLE_INSIGHT,
+            Region.SYSTEM,
+            showChevronRight = true,
+            onChevronTap = {},
+        )
+    }
+}
+
+@Preview(name = "Today · insight with chevron left", widthDp = 360)
+@Composable
+internal fun TodayInsightCardWithChevronLeftPreview() {
+    Frame {
+        InsightCard(
+            SAMPLE_INSIGHT.copy(period = ForecastPeriod.TONIGHT),
+            Region.SYSTEM,
+            showChevronLeft = true,
+            onChevronTap = {},
+        )
+    }
+}
+
+@Preview(name = "Today · insight with chevron (dark)", widthDp = 360)
+@Composable
+internal fun TodayInsightCardWithChevronDarkPreview() {
+    Frame(darkTheme = true) {
+        InsightCard(
+            SAMPLE_INSIGHT,
+            Region.SYSTEM,
+            showChevronRight = true,
+            onChevronTap = {},
+        )
+    }
+}
+
+// Page-2 placeholder shown when the paired period hasn't been generated
+// yet. Two variants cover the wording for either direction (TONIGHT is
+// the typical case — open the app in the morning, swipe right before
+// the evening worker has run; TODAY is the after-evening-only-refresh
+// case) plus a dark variant.
+@Preview(name = "Today · missing tonight placeholder", widthDp = 360)
+@Composable
+internal fun MissingTonightPlaceholderPreview() {
+    Frame {
+        MissingPeriodPlaceholder(
+            period = ForecastPeriod.TONIGHT,
+            morningTime = LocalTime.of(7, 0),
+            tonightTime = LocalTime.of(19, 0),
+            showChevronLeft = true,
+            onChevronTap = {},
+        )
+    }
+}
+
+@Preview(name = "Today · missing today placeholder", widthDp = 360)
+@Composable
+internal fun MissingTodayPlaceholderPreview() {
+    Frame {
+        MissingPeriodPlaceholder(
+            period = ForecastPeriod.TODAY,
+            morningTime = LocalTime.of(7, 0),
+            tonightTime = LocalTime.of(19, 0),
+            showChevronLeft = true,
+            onChevronTap = {},
+        )
+    }
+}
+
+@Preview(name = "Today · missing tonight placeholder (dark)", widthDp = 360)
+@Composable
+internal fun MissingTonightPlaceholderDarkPreview() {
+    Frame(darkTheme = true) {
+        MissingPeriodPlaceholder(
+            period = ForecastPeriod.TONIGHT,
+            morningTime = LocalTime.of(7, 0),
+            tonightTime = LocalTime.of(19, 0),
+            showChevronLeft = true,
+            onChevronTap = {},
+        )
+    }
+}
+
 @Preview(name = "Confidence · high", widthDp = 360)
 @Composable
 internal fun ConfidenceHighPreview() {

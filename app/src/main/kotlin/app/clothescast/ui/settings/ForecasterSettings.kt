@@ -125,6 +125,18 @@ internal fun ForecastersContent(
                     },
                 )
             }
+            // BOM is omitted from ForecastModel while Open-Meteo's BOM
+            // open-data delivery is suspended; surface it as a permanently-
+            // disabled row so users searching for the Australian model see
+            // it's known-missing rather than wonder where it went. Remove
+            // this row and wire BOM through the enum when delivery resumes.
+            ForecasterRow(
+                label = stringResource(R.string.settings_forecasters_bom),
+                subtitle = stringResource(R.string.settings_forecasters_bom_subtitle),
+                checked = false,
+                enabled = false,
+                onToggle = {},
+            )
             TextButton(
                 onClick = { openUrl(context, OPEN_METEO_URL) },
                 modifier = Modifier.fillMaxWidth(),

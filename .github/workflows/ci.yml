@@ -338,6 +338,11 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      # Needed by the "Prepare release notes" step's Actions-API fallback,
+      # which queries the most recent successful main CI run when
+      # `github.event.before` isn't usable (workflow_dispatch, first push
+      # to a fresh branch).
+      actions: read
     # workflow_dispatch can be invoked against any ref by any user with
     # `actions: write`. The job-level env block below populates the runner
     # with FIREBASE_* / PLAY_* secrets; without this guard, a manual dispatch
@@ -478,55 +483,138 @@ jobs:
         # Single source of truth for "what changed in this build" copy. Both
         # Firebase App Distribution (tester push-notification + release page)
         # and Play Store internal track (whatsnew-en-US) ship this string to
-        # humans, so they MUST agree — and they MUST be the curated, end-user
-        # subject line, not the raw head-commit message.
+        # humans, so they MUST agree — and they MUST be a curated, end-user
+        # bullet list, not raw head-commit content.
         #
-        # Walks back from the head commit past commits whose subject would be
-        # noise to a non-engineer reader: anything prefixed `ci:` (the
+        # Lists every commit's subject as a `• `-prefixed bullet, oldest →
+        # newest, for the range between the previous *released* main build
+        # and this one. We deliberately don't use `github.event.before` as
+        # the range base: if a prior main push failed before distribution,
+        # `before` would be that failed-push tip and the next run's notes
+        # would silently omit the unreleased commits from the failed run.
+        # The Actions API gives us "last *released* tip" instead — walking
+        # main's recent workflow runs newest-first and picking the first
+        # one whose `android-build` JOB concluded with success. Gating on
+        # the job rather than the workflow run matters because
+        # `unit-tests` and `android-build` run in parallel without
+        # `needs:` and the publish steps live only in `android-build`: a
+        # run where `unit-tests` fails but `android-build` succeeds DID
+        # publish, so its head SHA is the right base — querying the
+        # workflow's overall conclusion would skip it and double-bullet
+        # its commits in the next fully-green run's notes. The current
+        # run is filtered out (no job conclusion yet); we also skip any
+        # prior runs of the same head SHA (manual re-runs). When no
+        # prior released build is reachable (fresh repo, fork, history
+        # rewrite), the range collapses to the head commit alone.
+        #
+        # Per-commit filter: a commit's subject is skipped if it would read
+        # as noise to a non-engineer — anything prefixed `ci:` (the
         # snapshot-regen bot commits "ci: regenerate UI snapshots", workflow
         # tweaks, etc.) and changes whose paths are all under `docs/`, all
         # top-level dotfiles or hidden directories (`.github/`, `.claude/`,
         # `.gitignore`, `.editorconfig`, …), or top-level `*.md`. PRIVACY.md
         # is treated as non-docs so that privacy-policy updates still surface
-        # to users. The `^\.` filter is a safety net for workflow- /
-        # agent-config-only commits that forget the `ci:` subject prefix —
-        # they still get walked past on the path-based check. Falls back to
-        # the head subject after 20 hops without a match, so an unusual
-        # stretch of filtered commits still produces *some* changelog rather
-        # than nothing.
+        # to users.
+        #
+        # Fallback chain when the range yields no bullets (every commit in
+        # it was filtered out — e.g. a `.github/workflows/**`-only push,
+        # which still triggers main CI per the workflow's `paths:` block):
+        #   1. Walk back through up to 20 ancestors of the head commit
+        #      looking for a non-filtered subject; emit that as a single
+        #      bullet. Matches the pre-multi-commit behaviour so unusual
+        #      stretches of filtered commits still surface *something*
+        #      user-readable.
+        #   2. If even that turns up nothing, emit the head subject as a
+        #      single bullet, filtered or not — better a slightly noisy
+        #      changelog than an empty one.
+        #
+        # Play's `whatsnew-en-US` is capped at 500 bytes; if the bullet list
+        # would exceed that, we truncate at byte 497 (via `iconv -c` to
+        # avoid leaving a partial UTF-8 sequence) and append `…` so the
+        # user can tell something was cut. The 50-commit `--max-count` on
+        # `git rev-list` is a safety net for unusually long ranges; in
+        # practice the 500-byte cap bites first.
         #
         # Outputs:
-        #   - $RUNNER_TEMP/whatsnew/whatsnew-en-US  (consumed by Play upload,
-        #     capped at 500 chars per Play API)
-        #   - $RELEASE_SUBJECT in $GITHUB_ENV       (consumed by the FAD step's
-        #     releaseNotes input)
+        #   - $RUNNER_TEMP/whatsnew/whatsnew-en-US  (consumed by Play upload)
+        #   - $RELEASE_NOTES in $GITHUB_ENV         (multi-line via heredoc;
+        #     consumed by the FAD step's releaseNotes input, which composes
+        #     it with a `---` divider + `Build: N · SHA` trailer)
         #
         # Gated on push/dispatch to main only — feature-branch CI runs don't
         # distribute, so the prep work would be wasted there. No secret gate:
         # FAD and Play each have their own secret gates downstream, but the
-        # subject should be computed even when only one of the two is wired up.
+        # notes should be computed even when only one of the two is wired up.
         if: |
           success() &&
           (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
           github.ref == 'refs/heads/main'
         env:
-          COMMIT_SHA: ${{ github.sha }}
+          # `gh api` needs the token explicitly; everything else uses the
+          # auto-provided $GITHUB_SHA / $GITHUB_REPOSITORY rather than
+          # re-aliasing into step-local names.
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/whatsnew"
-          sha="$COMMIT_SHA"
-          subject=""
-          for _ in $(seq 1 20); do
-            if ! s=$(git log -1 --pretty=%s "$sha" 2>/dev/null); then
+          head_sha="$GITHUB_SHA"
+
+          # Walk the most recent main runs of this workflow (newest first)
+          # and pick the head SHA of the first one whose `android-build`
+          # job *specifically* concluded with success. We gate on the job,
+          # not the workflow run, because `unit-tests` and `android-build`
+          # run in parallel without `needs:` and the publish steps live
+          # only in `android-build`: a run where `unit-tests` fails but
+          # `android-build` succeeds still publishes, so its head SHA is
+          # the correct base for "since the last released build."
+          # Filtering on workflow `status=success` instead would skip
+          # such runs and double-bullet their commits in the next
+          # fully-green run's changelog. The job name below must match
+          # this job's `name:` value verbatim — rename here in lockstep
+          # if you ever rename the job.
+          prev_sha=""
+          while IFS=$'\t' read -r run_id run_head; do
+            [ -z "$run_id" ] && continue
+            # Skip the current run (in_progress, doesn't have a conclusion
+            # yet anyway) and any prior runs of the same head SHA — those
+            # are manual re-runs of this commit.
+            [ "$run_head" = "$head_sha" ] && continue
+            job_conclusion=$(gh api \
+              "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/jobs" \
+              --jq '.jobs[] | select(.name == "Android debug build") | .conclusion' \
+              2>/dev/null || true)
+            if [ "$job_conclusion" = "success" ]; then
+              prev_sha="$run_head"
               break
             fi
-            case "$s" in
-              ci:*)
-                if ! sha=$(git rev-parse "$sha^" 2>/dev/null); then
-                  break
-                fi
-                continue
-                ;;
+          done < <(gh api \
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/ci.yml/runs?branch=main&per_page=20" \
+            --jq '.workflow_runs[]? | [.id, .head_sha] | @tsv' \
+            2>/dev/null || true)
+
+          base_sha=""
+          if [ -n "$prev_sha" ] && git cat-file -e "$prev_sha" 2>/dev/null; then
+            base_sha="$prev_sha"
+          fi
+
+          if [ -n "$base_sha" ]; then
+            mapfile -t shas < <(git rev-list --reverse --max-count=50 \
+              "$base_sha..$head_sha")
+            if [ "${#shas[@]}" -eq 0 ]; then
+              shas=("$head_sha")
+            fi
+          else
+            shas=("$head_sha")
+          fi
+
+          # Predicate: returns 0 if the commit subject + paths should be
+          # filtered out of the changelog. Shared by the range walk and
+          # the ancestor-walk fallback below.
+          is_noise() {
+            local sha="$1" subject non_doc_count
+            subject=$(git log -1 --pretty=%s "$sha")
+            case "$subject" in
+              ci:*) return 0 ;;
             esac
             non_doc_count=$(git show --no-renames --name-only --pretty=format: "$sha" \
               | sed '/^$/d' \
@@ -538,23 +626,64 @@ jobs:
                                   { count++ }
                   END             { print count + 0 }
                 ')
-            if [ "$non_doc_count" -eq 0 ]; then
-              if ! sha=$(git rev-parse "$sha^" 2>/dev/null); then
-                break
-              fi
+            [ "$non_doc_count" -eq 0 ]
+          }
+
+          bullets=""
+          for sha in "${shas[@]}"; do
+            [ -z "$sha" ] && continue
+            if is_noise "$sha"; then
               continue
             fi
-            subject="$s"
-            break
+            subject=$(git log -1 --pretty=%s "$sha")
+            if [ -z "$bullets" ]; then
+              bullets="• $subject"
+            else
+              bullets="$bullets"$'\n'"• $subject"
+            fi
           done
-          if [ -z "$subject" ]; then
-            subject=$(git log -1 --pretty=%s "$COMMIT_SHA")
+
+          # Range was all-filtered — walk back through ancestors of the
+          # head commit for up to 20 hops to find the most recent
+          # non-filtered subject.
+          if [ -z "$bullets" ]; then
+            walk_sha="$head_sha"
+            for _ in $(seq 1 20); do
+              if ! git cat-file -e "$walk_sha" 2>/dev/null; then
+                break
+              fi
+              if ! is_noise "$walk_sha"; then
+                bullets="• $(git log -1 --pretty=%s "$walk_sha")"
+                break
+              fi
+              if ! walk_sha=$(git rev-parse "$walk_sha^" 2>/dev/null); then
+                break
+              fi
+            done
           fi
-          printf '%s\n' "$subject" | head -c 500 > "$RUNNER_TEMP/whatsnew/whatsnew-en-US"
-          # Single-line for the FAD step's releaseNotes. No newlines so it
-          # composes cleanly with the `Build: N · SHA` trailer below.
-          printf 'RELEASE_SUBJECT=%s\n' "$subject" >> "$GITHUB_ENV"
-          echo "Release notes subject: $subject"
+
+          # Absolute last resort: even the ancestor walk found nothing
+          # (shallow history, or 20+ consecutive filtered commits). Emit
+          # the filtered head subject rather than nothing.
+          if [ -z "$bullets" ]; then
+            bullets="• $(git log -1 --pretty=%s "$head_sha")"
+          fi
+
+          # `…` is 3 bytes in UTF-8; cap content at 497 so total ≤ 500.
+          # `iconv -c` drops any partial multi-byte sequence at the cut
+          # point, so the truncated bullets remain valid UTF-8.
+          if [ "$(printf '%s' "$bullets" | wc -c)" -gt 500 ]; then
+            bullets="$(printf '%s' "$bullets" | head -c 497 | iconv -f UTF-8 -t UTF-8 -c)…"
+          fi
+
+          printf '%s' "$bullets" > "$RUNNER_TEMP/whatsnew/whatsnew-en-US"
+          {
+            printf 'RELEASE_NOTES<<EOF_RELEASE_NOTES\n'
+            printf '%s\n' "$bullets"
+            printf 'EOF_RELEASE_NOTES\n'
+          } >> "$GITHUB_ENV"
+          echo "Release notes:"
+          printf '%s\n' "$bullets"
 
       - name: Distribute via Firebase App Distribution
         # On push to main (or manual workflow_dispatch on main) only —
@@ -597,7 +726,7 @@ jobs:
           # too (file paths, engineering reasoning), which CLAUDE.md reserves
           # for reviewers, not end users.
           releaseNotes: |
-            ${{ env.RELEASE_SUBJECT }}
+            ${{ env.RELEASE_NOTES }}
             ---
             Build: ${{ github.run_number }} · ${{ github.sha }}
 

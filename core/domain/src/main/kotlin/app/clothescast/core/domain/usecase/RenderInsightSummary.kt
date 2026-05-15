@@ -203,13 +203,24 @@ class RenderInsightSummary {
         val hours = models.flatMap { entries -> entries.map { it.time } }.toSortedSet()
         val likelyHour = hours
             .mapNotNull { hour ->
-                val readings = models.mapNotNull { entries -> entries.firstOrNull { it.time == hour } }
+                // Readings with usable precip only: a model that reported
+                // temperature for this hour but no precipitation_probability
+                // (per the parser's null-precip handling) shouldn't count
+                // toward the per-hour majority for a rain decision. Filtering
+                // here also keeps the rain peak honest in mixed selections
+                // (e.g. ECMWF + UKMO) where one model has no precip series
+                // at all — without it, the missing-data model would be
+                // implicitly counted as "below threshold" and could veto
+                // the rain call.
+                val readings = models
+                    .mapNotNull { entries -> entries.firstOrNull { it.time == hour } }
+                    .filter { it.precipitationProbabilityPct != null }
                 if (readings.size < 2) return@mapNotNull null
                 val majorityOfReporters = readings.size / 2 + 1
-                val likelyCount = readings.count { it.precipitationProbabilityPct >= LIKELY_THRESHOLD }
+                val likelyCount = readings.count { (it.precipitationProbabilityPct ?: 0.0) >= LIKELY_THRESHOLD }
                 if (likelyCount >= majorityOfReporters) hour to readings else null
             }
-            .maxByOrNull { (_, readings) -> readings.maxOf { it.precipitationProbabilityPct } }
+            .maxByOrNull { (_, readings) -> readings.maxOf { it.precipitationProbabilityPct ?: 0.0 } }
             ?.first
             ?.toLocalTime()
         if (likelyHour != null) {
@@ -218,8 +229,8 @@ class RenderInsightSummary {
 
         val possibleHour = models.asSequence()
             .flatten()
-            .filter { it.precipitationProbabilityPct >= POSSIBLE_THRESHOLD }
-            .maxByOrNull { it.precipitationProbabilityPct }
+            .filter { (it.precipitationProbabilityPct ?: 0.0) >= POSSIBLE_THRESHOLD }
+            .maxByOrNull { it.precipitationProbabilityPct ?: 0.0 }
             ?.time
             ?.toLocalTime()
         if (possibleHour != null) {

@@ -65,10 +65,23 @@ fun blendConsensusHourly(
             hour
         } else {
             anyBlended = true
+            // Precip is averaged only over candidates that actually
+            // provided a value — Open-Meteo omits per-model precipitation
+            // probability for some models (UKMO, JMA, GEM, ARPEGE, …) and
+            // including a synthetic 0 for those would silently downgrade
+            // the blended rain probability when *other* models predict
+            // rain. When no candidate had a precip reading at this hour,
+            // fall back to best_match's own value rather than NaN'ing.
+            val precipCandidates = candidates.mapNotNull { it.precipitationProbabilityPct }
+            val blendedPrecip = if (precipCandidates.isEmpty()) {
+                hour.precipitationProbabilityPct
+            } else {
+                precipCandidates.average()
+            }
             hour.copy(
                 temperatureC = candidates.map { it.temperatureC }.average(),
                 feelsLikeC = candidates.map { it.apparentTemperatureC }.average(),
-                precipitationProbabilityPct = candidates.map { it.precipitationProbabilityPct }.average(),
+                precipitationProbabilityPct = blendedPrecip,
                 condition = consensusCondition(
                     fallback = hour.condition,
                     candidates = candidates.mapNotNull { it.condition },

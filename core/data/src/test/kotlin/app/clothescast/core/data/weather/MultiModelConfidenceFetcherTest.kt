@@ -246,16 +246,20 @@ class MultiModelConfidenceFetcherTest {
 
     @Test
     fun `model still renders when only precipitation_probability is missing`() = runTest {
-        // BOM-like case (the variable some models don't expose): we keep the
-        // model in the chart, default per-hour precip to 0%, and log the
-        // substitution.
+        // The case some models hit (UKMO / JMA / GEM / ARPEGE): Open-Meteo
+        // doesn't expose `precipitation_probability_<model>` for them. We keep
+        // the model in the chart on the strength of its temperature series,
+        // leave precip null per hour so precip-specific aggregates (consensus
+        // blend, insight rain prose, precipitation chart) can skip the model
+        // rather than treating it as a 0% rain vote, and log the substitution
+        // so the cause is observable from Diagnostics.
         val logger = CapturingLogger()
         val hourly = fetcherWith(HOURLY_MISSING_PRECIP_PROBABILITY, logger = logger)
             .fetch(london)?.hourly.shouldNotBeNull()
 
         val ecmwf = hourly.byModel.getValue("ecmwf_ifs04")
         ecmwf.size shouldBe 3
-        ecmwf.all { it.precipitationProbabilityPct == 0.0 } shouldBe true
+        ecmwf.all { it.precipitationProbabilityPct == null } shouldBe true
         logger.entries.any { "ecmwf_ifs04" in it.message && "precipitation_probability missing" in it.message } shouldBe true
     }
 

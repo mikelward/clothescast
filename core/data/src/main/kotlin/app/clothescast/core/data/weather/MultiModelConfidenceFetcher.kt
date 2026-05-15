@@ -173,23 +173,25 @@ internal class MultiModelConfidenceFetcher(
                     logger.log("model $model hourly: apparent_temperature missing, falling back to temperature_2m")
                 }
                 if (precips == null) {
-                    logger.log("model $model hourly: precipitation_probability missing, falling back to 0%")
+                    logger.log("model $model hourly: precipitation_probability missing, precip-specific aggregates will skip this model")
                 }
                 val entries = buildList {
                     for (i in 0 until times.size) {
                         val time = parseHour(times.getOrNull(i)) ?: continue
-                        // Required per-hour: time and air temp. Apparent and
-                        // precip both fall back to a sensible default so a
-                        // model whose Open-Meteo coverage of those fields is
-                        // partial still renders its temperature curve.
-                        // Diagnostic fields (wind, humidity, cloud, condition)
-                        // survive per-field nulls; we just carry through
-                        // what we got so the diagnostic charts and the
-                        // consensus blend hide that model only when *its*
-                        // field is missing.
+                        // Required per-hour: time and air temp. Apparent
+                        // falls back to air temp when missing (the
+                        // feels-like curve degrades to raw 2 m air for
+                        // that model). Precip stays null when missing —
+                        // do NOT fall back to 0 because the precipitation
+                        // chart, consensus blend, and insight rain prose
+                        // all need to distinguish "model predicts no rain"
+                        // from "model didn't provide a precip forecast"
+                        // and a synthetic zero silently downgrades all of
+                        // them. Diagnostic fields (wind, humidity, cloud,
+                        // condition) survive per-field nulls.
                         val air = numberAt(airTemps, i)?.toDouble() ?: continue
                         val apparent = numberAt(apparentTemps, i)?.toDouble() ?: air
-                        val precip = numberAt(precips, i)?.toDouble() ?: 0.0
+                        val precip = numberAt(precips, i)?.toDouble()
                         add(
                             PerModelHour(
                                 time = time,

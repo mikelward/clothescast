@@ -890,14 +890,18 @@ private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
                 deltaC = 2.0, precipDelta = -5.0, windBase = 6.0, cloudBase = 40.0,
                 solarPeakWm2 = 800.0, sunshineMinutesAtMidday = 50.0, uvPeak = 6.5,
             ),
-            // best_match deliberately offset further than any consulted model
-            // so the preview shows the "Auto" overlay diverging — the exact
-            // case the user wants the consensus to outvote. Wind/cloud/solar
-            // /sunshine/UV are null because the primary `/v1/forecast` call
-            // doesn't fetch the diagnostic fields per best_match; the
-            // diagnostic charts will hide the Auto line on those metrics.
+            // best_match shares ECMWF's offsets so the preview reflects the
+            // realistic case — Open-Meteo's "Auto" pick typically *is* one of
+            // the consulted models for the region, not a wild outlier. With
+            // matching timeseries, the layered render becomes the visual
+            // test: the thicker (4 dp) grey best_match line should peek out
+            // either side of the thinner (2 dp) ECMWF line drawn on top of
+            // it. Wind/cloud/solar/sunshine/UV are null because the primary
+            // `/v1/forecast` call doesn't fetch the diagnostic fields per
+            // best_match; the diagnostic charts will hide the Auto line on
+            // those metrics.
             PerModelHourly.BEST_MATCH_MODEL_ID to shift(
-                deltaC = -2.5, precipDelta = -30.0, windBase = 0.0, cloudBase = 0.0,
+                deltaC = -1.5, precipDelta = -10.0, windBase = 0.0, cloudBase = 0.0,
                 solarPeakWm2 = 0.0, sunshineMinutesAtMidday = 0.0, uvPeak = 0.0,
             ).map {
                 it.copy(

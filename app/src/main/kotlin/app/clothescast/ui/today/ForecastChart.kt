@@ -42,13 +42,16 @@ import kotlin.math.roundToInt
 // mapping stays stable across recompositions and renders. Internal so the
 // adjacent [PrecipitationChart] and the legend in [TodayScreen] iterate the
 // models in the same left-to-right order the chart draws them. The
-// best_match overlay sits last so it draws on top of the consulted models.
-// The blended "Combined" main line is emitted *before* these overlays
-// (series index 0) so it keeps the same index — and the same legend
-// position — whether or not the per-model spread is showing; that pins
-// Vico's identity-by-index animation so the combined line no longer fades
-// out and back in when the overlay toggles. The trade-off is that the
-// per-model overlays now draw over the combined line in the spread view.
+// best_match overlay sits *first* among the per-model series so it draws
+// underneath the consulted models — paired with a thicker stroke in
+// [rememberPinnedLineProvider] it reads as a reference baseline that the
+// thinner consulted-model lines sit on top of. The blended "Combined" main
+// line is emitted *before* these overlays (series index 0) so it keeps
+// the same index — and the same legend position — whether or not the
+// per-model spread is showing; that pins Vico's identity-by-index
+// animation so the combined line no longer fades out and back in when
+// the overlay toggles. The trade-off is that the per-model overlays now
+// draw over the combined line in the spread view.
 //
 // Derived from [ForecastModel] so adding a new entry in the domain enum
 // automatically widens the chart without an additional edit here — and so
@@ -56,7 +59,7 @@ import kotlin.math.roundToInt
 // position. Enum declaration order doubles as the chart's left-to-right
 // legend order; the [AppPalette.modelColors] maps follow the same order.
 internal val MODEL_DRAW_ORDER: List<String> =
-    ForecastModel.entries.map { it.openMeteoId } + BEST_MATCH_MODEL_ID
+    listOf(BEST_MATCH_MODEL_ID) + ForecastModel.entries.map { it.openMeteoId }
 
 // Pinned per-model overlay colours live on the active [app.clothescast.ui.theme.AppPalette]
 // rather than as a static map here, so the colour-blind palette can swap the
@@ -287,8 +290,20 @@ internal fun rememberPinnedLineProvider(
         val mainLine = mainLineColor?.let {
             LineCartesianLayer.Line(fill = LineCartesianLayer.LineFill.single(fill(it)))
         }
-        val perModelLines = visibleColors.map { color ->
-            LineCartesianLayer.Line(fill = LineCartesianLayer.LineFill.single(fill(color)))
+        // best_match draws at 4 dp so it reads as a reference baseline
+        // through the thinner 2-dp consulted-model lines on top of it.
+        // Combined and the consulted models keep Vico's default 2 dp.
+        val perModelLines = visibleModels.map { modelId ->
+            val color = modelColors.getValue(modelId)
+            val stroke = if (modelId == BEST_MATCH_MODEL_ID) {
+                LineCartesianLayer.LineStroke.Continuous(thicknessDp = 4f)
+            } else {
+                LineCartesianLayer.LineStroke.Continuous()
+            }
+            LineCartesianLayer.Line(
+                fill = LineCartesianLayer.LineFill.single(fill(color)),
+                stroke = stroke,
+            )
         }
         val lines = listOfNotNull(mainLine) + perModelLines
         LineCartesianLayer.LineProvider.series(lines)

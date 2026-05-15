@@ -1963,6 +1963,11 @@ private fun friendlyModelName(modelId: String): String = when (modelId) {
     "ecmwf_ifs04" -> "ECMWF"
     "gfs_seamless" -> "GFS"
     "icon_seamless" -> "ICON"
+    "gem_seamless" -> "GEM"
+    "meteofrance_seamless" -> "ARPEGE"
+    "ukmo_seamless" -> "UKMO"
+    "jma_seamless" -> "JMA"
+    "bom_access_global" -> "BOM"
     PerModelHourly.BEST_MATCH_MODEL_ID -> "Auto"
     else -> modelId
 }

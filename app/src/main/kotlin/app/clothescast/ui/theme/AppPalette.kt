@@ -48,12 +48,24 @@ data class AppPalette(
  * `secondaryContainer` for HIGH, `surfaceVariant` for MEDIUM,
  * `errorContainer` for LOW — so dynamic colour stays in play on Android
  * 12+.
+ *
+ * Additional global models (GEM / ARPEGE / UKMO / JMA / BOM) added with the
+ * Forecasters picker pull from Material-600 saturated hues hand-tuned for
+ * distinguishability against the original trio and against each other:
+ * purple, blue, amber, teal, brown. Eight chart lines is visually busy and
+ * we'd suggest the user not enable all of them, but the palette covers it
+ * so the chart never crashes on a `modelColors.getValue` lookup.
  */
 internal fun rainbowPalette(scheme: ColorScheme): AppPalette = AppPalette(
     modelColors = mapOf(
         "ecmwf_ifs04" to Color(0xFFD81B60),
         "gfs_seamless" to Color(0xFFFB8C00),
         "icon_seamless" to Color(0xFF43A047),
+        "gem_seamless" to Color(0xFF8E24AA),
+        "meteofrance_seamless" to Color(0xFF1E88E5),
+        "ukmo_seamless" to Color(0xFFFBC02D),
+        "jma_seamless" to Color(0xFF00897B),
+        "bom_access_global" to Color(0xFF6D4C41),
         BEST_MATCH_MODEL_ID to Color(0xFF9E9E9E),
     ),
     confidence = mapOf(
@@ -96,6 +108,18 @@ internal fun accessiblePalette(darkTheme: Boolean): AppPalette = AppPalette(
         "ecmwf_ifs04" to Color(0xFFD55E00),
         "gfs_seamless" to Color(0xFFE69F00),
         "icon_seamless" to Color(0xFF009E73),
+        // Additional Okabe-Ito-derived hues for the models added in the
+        // Forecasters picker. Yellow (#F0E442) is famously low-contrast on
+        // white in the original palette, so UKMO drops to a dark amber that
+        // still reads as the same hue family but clears WCAG 3:1 against
+        // the light surfaceContainer. BOM uses a coffee brown — outside
+        // Okabe-Ito strictly but with sufficient hue separation from the
+        // rest to stay distinguishable under all three CVD profiles.
+        "gem_seamless" to Color(0xFF0072B2),
+        "meteofrance_seamless" to Color(0xFF56B4E9),
+        "ukmo_seamless" to Color(0xFFB47C00),
+        "jma_seamless" to Color(0xFFCC79A7),
+        "bom_access_global" to Color(0xFF6F4E37),
         BEST_MATCH_MODEL_ID to if (darkTheme) Color(0xFFBFBFBF) else Color(0xFF595959),
     ),
     confidence = if (darkTheme) {
@@ -194,6 +218,17 @@ internal fun highlighterPalette(darkTheme: Boolean): AppPalette = AppPalette(
             "ecmwf_ifs04" to Color(0xFFFF2D95),
             "gfs_seamless" to Color(0xFFFFEB3B),
             "icon_seamless" to Color(0xFF00E5FF),
+            // Five more neon-ish hues for the Forecasters picker additions.
+            // Saturation stays high; luminance is similar to the original
+            // trio so they read as the same arcade-cabinet family.
+            // Distinguishability across 8 lines is a stretch — at full
+            // selection the chart turns into a noisy rainbow — but every
+            // pair stays separable, and most users will pick 3-4 models.
+            "gem_seamless" to Color(0xFFB388FF),
+            "meteofrance_seamless" to Color(0xFF00FFA1),
+            "ukmo_seamless" to Color(0xFFFF7043),
+            "jma_seamless" to Color(0xFFFF6EC7),
+            "bom_access_global" to Color(0xFFFFCA28),
             BEST_MATCH_MODEL_ID to Color(0xFFEAEAEA),
         )
     } else {
@@ -208,6 +243,14 @@ internal fun highlighterPalette(darkTheme: Boolean): AppPalette = AppPalette(
             "ecmwf_ifs04" to Color(0xFFFF2D95),
             "gfs_seamless" to Color(0xFFB58A00),
             "icon_seamless" to Color(0xFF0277BD),
+            // Light-theme variants of the Forecasters additions — same hue
+            // family as the dark map, darkened to clear the 3:1 contrast
+            // floor on the near-white surfaceContainer.
+            "gem_seamless" to Color(0xFF6A1B9A),
+            "meteofrance_seamless" to Color(0xFF2E7D32),
+            "ukmo_seamless" to Color(0xFFBF360C),
+            "jma_seamless" to Color(0xFFAD1457),
+            "bom_access_global" to Color(0xFFE65100),
             BEST_MATCH_MODEL_ID to Color(0xFF2A2A2A),
         )
     },

@@ -404,9 +404,15 @@ data class UserPreferences(
  * daily-aggregate confidence chip.
  */
 enum class ForecastModel(val openMeteoId: String) {
+    // Order matters: the chart's MODEL_DRAW_ORDER and the per-model legend
+    // derive from `entries`, so the per-overlay z-order on Today's charts is
+    // the entry order below + best_match last. Keep the original shipping
+    // trio (ECMWF / GFS / ICON) at the head so the layered render stays
+    // pixel-identical to pre-picker builds; new models append in
+    // geographical-spread order (NA → Europe → Asia-Pacific).
     ECMWF_IFS04("ecmwf_ifs04"),
-    ICON_SEAMLESS("icon_seamless"),
     GFS_SEAMLESS("gfs_seamless"),
+    ICON_SEAMLESS("icon_seamless"),
     GEM_SEAMLESS("gem_seamless"),
     METEOFRANCE_SEAMLESS("meteofrance_seamless"),
     UKMO_SEAMLESS("ukmo_seamless"),

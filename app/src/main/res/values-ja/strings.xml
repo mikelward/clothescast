@@ -568,7 +568,7 @@ the displayed label localizes.
     <string name="settings_root_display">表示</string>
     <string name="settings_root_location">位置情報</string>
     <string name="settings_root_calendar">カレンダー</string>
-    <string name="settings_root_display_subtitle">テーマ</string>
+    <string name="settings_root_display_subtitle">テーマとカラー</string>
     <string name="settings_root_location_subtitle">自動検出または都市を選択</string>
     <string name="settings_root_calendar_subtitle">今日の予定</string>
 

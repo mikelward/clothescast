@@ -153,7 +153,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_root_clothes_subtitle">Teploty a outfity</string>
     <string name="settings_root_region_subtitle">Jazyky a jednotky</string>
     <string name="settings_root_voice_subtitle">Poskytovatel a přízvuky</string>
-    <string name="settings_root_display_subtitle">Motiv</string>
+    <string name="settings_root_display_subtitle">Motivy a barvy</string>
     <string name="settings_root_location_subtitle">Automaticky nebo vyber město</string>
     <string name="settings_root_calendar_subtitle">Dnešní události</string>
     <string name="settings_root_privacy_subtitle">Zprávy o pádech a využití</string>

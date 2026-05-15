@@ -263,7 +263,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_clothes_subtitle">อุณหภูมิและชุดแต่งกาย</string>
     <string name="settings_root_region_subtitle">ภาษาและหน่วย</string>
     <string name="settings_root_voice_subtitle">ผู้ให้บริการและสำเนียง</string>
-    <string name="settings_root_display_subtitle">ธีม</string>
+    <string name="settings_root_display_subtitle">ธีมและสี</string>
     <string name="settings_root_location_subtitle">ตรวจจับอัตโนมัติหรือเลือกเมือง</string>
     <string name="settings_root_calendar_subtitle">กิจกรรมวันนี้</string>
     <string name="settings_root_privacy_subtitle">รายงานข้อขัดข้องและการใช้งาน</string>

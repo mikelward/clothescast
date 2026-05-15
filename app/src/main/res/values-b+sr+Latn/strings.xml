@@ -133,7 +133,7 @@ default English (matching values-pl / values-uk).
     <string name="settings_root_clothes_subtitle">Temperature i kombinacije</string>
     <string name="settings_root_region_subtitle">Jezici i jedinice</string>
     <string name="settings_root_voice_subtitle">Provajderi i akcenti</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Teme i boje</string>
     <string name="settings_root_location_subtitle">Automatski ili odaberi grad</string>
     <string name="settings_root_calendar_subtitle">Današnji događaji</string>
     <string name="settings_root_privacy_subtitle">Izveštaji o greškama i korišćenju</string>

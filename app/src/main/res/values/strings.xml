@@ -351,7 +351,7 @@
          update values-*/ translations to match (currently only el is
          translated: "Πάροχοι και προφορές"). -->
     <string name="settings_root_voice_subtitle">Providers and Accents</string>
-    <string name="settings_root_display_subtitle">Theme</string>
+    <string name="settings_root_display_subtitle">Themes and Colors</string>
 
     <string name="settings_display_theme_title">Theme</string>
     <string name="settings_display_theme_system">Follow system</string>

@@ -265,7 +265,7 @@ What is NOT overridden, by design:
     <string name="settings_root_clothes_subtitle">Temperatūros ir aprangos rinkiniai</string>
     <string name="settings_root_region_subtitle">Kalbos ir vienetai</string>
     <string name="settings_root_voice_subtitle">Teikėjai ir akcentai</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Temos ir spalvos</string>
     <string name="settings_root_location_subtitle">Automatinis aptikimas arba miesto pasirinkimas</string>
     <string name="settings_root_calendar_subtitle">Šiandienos renginiai</string>
     <string name="settings_root_privacy_subtitle">Gedimų ir naudojimo ataskaitos</string>

@@ -53,7 +53,7 @@ only the displayed label localizes.
     <string name="settings_root_clothes_subtitle">Температуры и наряды</string>
     <string name="settings_root_region_subtitle">Языки и единицы</string>
     <string name="settings_root_voice_subtitle">Провайдеры и акценты</string>
-    <string name="settings_root_display_subtitle">Тема</string>
+    <string name="settings_root_display_subtitle">Темы и цвета</string>
     <string name="settings_root_location_subtitle">Авто или выбор города</string>
     <string name="settings_root_calendar_subtitle">События на сегодня</string>
     <string name="settings_root_privacy_subtitle">Отчёты о сбоях и использовании</string>

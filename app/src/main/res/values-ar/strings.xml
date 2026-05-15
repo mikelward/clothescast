@@ -268,7 +268,7 @@ they work correctly in both the single-band and range templates.
     <string name="settings_root_clothes_subtitle">درجات الحرارة والأزياء</string>
     <string name="settings_root_region_subtitle">اللغات والوحدات</string>
     <string name="settings_root_voice_subtitle">مزودو الخدمة واللهجات</string>
-    <string name="settings_root_display_subtitle">المظهر</string>
+    <string name="settings_root_display_subtitle">المظهر والألوان</string>
 
     <!-- Settings — display -->
     <string name="settings_display_theme_title">المظهر</string>

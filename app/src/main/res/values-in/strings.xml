@@ -260,7 +260,7 @@ to values/strings.xml (English).
     <string name="settings_root_clothes_subtitle">Suhu dan Pakaian</string>
     <string name="settings_root_region_subtitle">Bahasa dan Satuan</string>
     <string name="settings_root_voice_subtitle">Penyedia dan Aksen</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Tema dan warna</string>
     <string name="settings_root_location_subtitle">Deteksi otomatis atau pilih kota</string>
     <string name="settings_root_calendar_subtitle">Acara hari ini</string>
     <string name="settings_root_privacy_subtitle">Laporan crash + penggunaan</string>

@@ -280,7 +280,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_root_clothes_subtitle">তাপমাত্রা ও পোশাক</string>
     <string name="settings_root_region_subtitle">ভাষা ও একক</string>
     <string name="settings_root_voice_subtitle">প্রদানকারী ও উচ্চারণভঙ্গি</string>
-    <string name="settings_root_display_subtitle">থিম</string>
+    <string name="settings_root_display_subtitle">থিম এবং রঙ</string>
     <string name="settings_root_location_subtitle">স্বয়ংক্রিয় শনাক্ত বা শহর বেছে নিন</string>
     <string name="settings_root_calendar_subtitle">আজকের ইভেন্ট</string>
     <string name="settings_root_privacy_subtitle">ক্র্যাশ ও ব্যবহারের রিপোর্ট</string>

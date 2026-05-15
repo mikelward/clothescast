@@ -260,7 +260,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_root_clothes_subtitle">دماها و لباس‌ها</string>
     <string name="settings_root_region_subtitle">زبان‌ها و واحدها</string>
     <string name="settings_root_voice_subtitle">ارائه‌دهندگان و لهجه‌ها</string>
-    <string name="settings_root_display_subtitle">قالب</string>
+    <string name="settings_root_display_subtitle">قالب‌ها و رنگ‌ها</string>
     <string name="settings_root_location_subtitle">تشخیص خودکار یا انتخاب شهر</string>
     <string name="settings_root_calendar_subtitle">رویدادهای امروز</string>
     <string name="settings_root_privacy_subtitle">گزارش‌های خرابی و استفاده</string>

@@ -513,7 +513,7 @@ label localises.
     <string name="settings_root_display">顯示</string>
     <string name="settings_root_location">位置</string>
     <string name="settings_root_calendar">行事曆</string>
-    <string name="settings_root_display_subtitle">佈景主題</string>
+    <string name="settings_root_display_subtitle">主題和顏色</string>
     <string name="settings_root_location_subtitle">自動偵測或選擇城市</string>
     <string name="settings_root_calendar_subtitle">今天的行程</string>
     <string name="settings_root_schedule_subtitle">通知與時間</string>

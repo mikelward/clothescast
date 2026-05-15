@@ -241,7 +241,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_clothes_subtitle">Halijoto na Mavazi</string>
     <string name="settings_root_region_subtitle">Lugha na Vitengo</string>
     <string name="settings_root_voice_subtitle">Watoa huduma na Lafudhi</string>
-    <string name="settings_root_display_subtitle">Mandhari</string>
+    <string name="settings_root_display_subtitle">Mandhari na rangi</string>
 
     <!-- Settings: display -->
     <string name="settings_display_theme_title">Mandhari</string>

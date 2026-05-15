@@ -172,7 +172,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_root_clothes_subtitle">Temperatures i roba</string>
     <string name="settings_root_region_subtitle">Idiomes i unitats</string>
     <string name="settings_root_voice_subtitle">Proveïdors i accents</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Temes i colors</string>
     <string name="settings_root_location_subtitle">Detecció automàtica o tria una ciutat</string>
     <string name="settings_root_calendar_subtitle">Esdeveniments d\'avui</string>
     <string name="settings_root_privacy_subtitle">Informes d\'errors + ús</string>

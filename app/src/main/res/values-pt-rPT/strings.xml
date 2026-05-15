@@ -553,7 +553,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_root_display">Ecrã</string>
     <string name="settings_root_location">Localização</string>
     <string name="settings_root_calendar">Calendário</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Temas e cores</string>
     <string name="settings_root_location_subtitle">Automático ou escolhe uma cidade</string>
     <string name="settings_root_calendar_subtitle">Compromissos de hoje</string>
     <string name="settings_root_clothes_subtitle">Temperaturas e roupas</string>

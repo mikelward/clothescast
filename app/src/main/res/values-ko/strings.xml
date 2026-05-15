@@ -572,7 +572,7 @@ displayed label localizes.
     <string name="settings_root_display">디스플레이</string>
     <string name="settings_root_location">위치</string>
     <string name="settings_root_calendar">캘린더</string>
-    <string name="settings_root_display_subtitle">테마</string>
+    <string name="settings_root_display_subtitle">테마 및 색상</string>
     <string name="settings_root_location_subtitle">자동 감지 또는 도시 선택</string>
     <string name="settings_root_calendar_subtitle">오늘의 일정</string>
 

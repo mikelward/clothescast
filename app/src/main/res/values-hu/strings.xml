@@ -155,7 +155,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_root_clothes_subtitle">Hőmérsékletek és outfitek</string>
     <string name="settings_root_region_subtitle">Nyelvek és mértékegységek</string>
     <string name="settings_root_voice_subtitle">Szolgáltató és akcentusok</string>
-    <string name="settings_root_display_subtitle">Téma</string>
+    <string name="settings_root_display_subtitle">Témák és színek</string>
     <string name="settings_root_location_subtitle">Automatikus vagy válassz várost</string>
     <string name="settings_root_calendar_subtitle">Mai események</string>
     <string name="settings_root_privacy_subtitle">Összeomlás- és használati jelentések</string>

@@ -243,7 +243,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_root_clothes_subtitle">Temperatūras un apģērbs</string>
     <string name="settings_root_region_subtitle">Valodas un vienības</string>
     <string name="settings_root_voice_subtitle">Pakalpojumi un akcenti</string>
-    <string name="settings_root_display_subtitle">Motīvs</string>
+    <string name="settings_root_display_subtitle">Motīvi un krāsas</string>
     <string name="settings_root_location_subtitle">Automātiska noteikšana vai pilsētas izvēle</string>
     <string name="settings_root_calendar_subtitle">Šodienas notikumi</string>
     <string name="settings_root_privacy_subtitle">Avāriju un lietošanas ziņojumi</string>

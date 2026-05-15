@@ -525,7 +525,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_root_display">Zaslon</string>
     <string name="settings_root_location">Lokacija</string>
     <string name="settings_root_calendar">Kalendar</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Teme i boje</string>
     <string name="settings_root_location_subtitle">Automatski ili odaberi grad</string>
     <string name="settings_root_calendar_subtitle">Današnji termini</string>
 

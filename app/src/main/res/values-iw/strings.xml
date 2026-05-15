@@ -266,7 +266,7 @@ standard in Israeli digital communication.
     <string name="settings_root_clothes_subtitle">טמפרטורות ולבוש</string>
     <string name="settings_root_region_subtitle">שפות ויחידות</string>
     <string name="settings_root_voice_subtitle">ספקים ומבטאים</string>
-    <string name="settings_root_display_subtitle">ערכת נושא</string>
+    <string name="settings_root_display_subtitle">ערכות נושא וצבעים</string>
     <string name="settings_root_location_subtitle">זיהוי אוטומטי או בחירת עיר</string>
     <string name="settings_root_calendar_subtitle">אירועי היום</string>
     <string name="settings_root_privacy_subtitle">דוחות קריסה ושימוש</string>

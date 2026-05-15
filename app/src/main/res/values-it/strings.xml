@@ -543,7 +543,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_display">Schermo</string>
     <string name="settings_root_location">Posizione</string>
     <string name="settings_root_calendar">Calendario</string>
-    <string name="settings_root_display_subtitle">Tema</string>
+    <string name="settings_root_display_subtitle">Temi e colori</string>
     <string name="settings_root_location_subtitle">Automatico o scegli una città</string>
     <string name="settings_root_calendar_subtitle">Appuntamenti di oggi</string>
 

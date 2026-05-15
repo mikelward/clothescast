@@ -512,7 +512,7 @@ is unchanged; only the displayed label localizes.
     <string name="settings_root_display">Wyświetlanie</string>
     <string name="settings_root_location">Lokalizacja</string>
     <string name="settings_root_calendar">Kalendarz</string>
-    <string name="settings_root_display_subtitle">Motyw</string>
+    <string name="settings_root_display_subtitle">Motywy i kolory</string>
     <string name="settings_root_location_subtitle">Automatycznie lub wybierz miasto</string>
     <string name="settings_root_calendar_subtitle">Dzisiejsze wydarzenia</string>
 

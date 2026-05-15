@@ -9,7 +9,9 @@ import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.data.tts.GeminiTtsClient
 import app.clothescast.core.data.weather.ConfidenceFetchLogger
 import app.clothescast.core.data.weather.OpenMeteoClient
+import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.defaultsFor
 import app.clothescast.core.domain.repository.CachingWeatherRepository
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.repository.WeatherRepository
@@ -111,21 +113,30 @@ class ClothesCastApplication : Application() {
                 apiCallLogger = apiCallLogger,
                 // Read the user's Forecasters selection on every fetch so a
                 // settings change takes effect on the next manual refresh
-                // without rebuilding the client. DataStore caches the latest
-                // emission, so this is a memory read after the first call.
-                confidenceModelsProvider = {
-                    settingsRepository.preferences.first().forecastModels
-                        .map { it.openMeteoId }
+                // without rebuilding the client. When the user is on Auto
+                // (stored selection is null), resolve a location-aware
+                // default trio via [ForecastModel.defaultsFor] — so a UK
+                // user gets UKMO + ECMWF + ICON without ever opening the
+                // picker, a North American gets GFS + GEM + ECMWF, etc.
+                // DataStore caches the latest emission, so this is a memory
+                // read after the first call.
+                confidenceModelsProvider = { location ->
+                    val prefs = settingsRepository.preferences.first()
+                    val effective = prefs.forecastModels ?: ForecastModel.defaultsFor(location)
+                    effective.map { it.openMeteoId }
                 },
             ),
-            // Make the cache invalidate when the Forecasters selection
-            // changes — otherwise a Settings edit followed by a Today
-            // refresh within the 1 h TTL would silently return the previous
-            // model set's bundle, because the cache keys only on location.
-            // Passing the Set itself as the discriminator lets equals() do
-            // the comparison; insertion order doesn't matter for a Set.
-            freshnessKeyProvider = {
-                settingsRepository.preferences.first().forecastModels
+            // Make the cache invalidate when the *effective* Forecasters set
+            // changes — otherwise a Settings edit (or a move to a different
+            // region while on Auto) followed by a Today refresh within the
+            // 1 h TTL would silently return the previous model set's bundle.
+            // Resolving the same null-or-Set chain as confidenceModelsProvider
+            // means an Auto user crossing regions invalidates the cache,
+            // and an explicit-pick user's invalidation is unaffected by
+            // location.
+            freshnessKeyProvider = { location ->
+                val prefs = settingsRepository.preferences.first()
+                prefs.forecastModels ?: ForecastModel.defaultsFor(location)
             },
         )
     }

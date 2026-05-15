@@ -824,8 +824,12 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `forecast models default to the shipping trio`() = runTest {
-        subject.preferences.first().forecastModels shouldBe ForecastModel.DEFAULTS
+    fun `forecast models default to null on fresh install`() = runTest {
+        // Auto mode: no stored key means the location-aware resolver runs
+        // in [ClothesCastApplication] instead of forcing the global trio.
+        // The picker shows the Auto switch as on and the per-model
+        // checkboxes derive from the user's location.
+        subject.preferences.first().forecastModels shouldBe null
     }
 
     @Test
@@ -841,12 +845,24 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `setting forecast models to empty falls back to defaults on read`() = runTest {
+    fun `setting forecast models to empty clears the key to Auto`() = runTest {
         // An empty set never reaches this path from the UI (the picker
         // enforces a minimum of two), but a hand-edited DataStore could.
-        // The empty key gets cleared; the next read returns the trio.
+        // The empty key gets cleared and the next read returns null —
+        // i.e. the user is back in Auto mode.
         subject.setForecastModels(emptySet())
-        subject.preferences.first().forecastModels shouldBe ForecastModel.DEFAULTS
+        subject.preferences.first().forecastModels shouldBe null
+    }
+
+    @Test
+    fun `setting forecast models to null clears the key to Auto`() = runTest {
+        // First persist an explicit set, then clear by passing null —
+        // mirrors the picker's Auto-switch-on flow.
+        subject.setForecastModels(setOf(ForecastModel.UKMO_SEAMLESS, ForecastModel.ECMWF_IFS04))
+        subject.preferences.first().forecastModels shouldBe
+            setOf(ForecastModel.UKMO_SEAMLESS, ForecastModel.ECMWF_IFS04)
+        subject.setForecastModels(null)
+        subject.preferences.first().forecastModels shouldBe null
     }
 
     @Test

@@ -368,16 +368,19 @@ data class UserPreferences(
     val outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     /**
      * Which numerical-weather-prediction models the multi-model confidence
-     * fetcher consults. Defaults to [ForecastModel.DEFAULTS] (ECMWF / GFS /
-     * ICON) — the trio the chip has shipped with. Users with a regional
-     * preference can swap in ARPEGE / GEM / UKMO / JMA / BOM via the
-     * Forecasters settings sub-screen.
+     * fetcher consults — or `null` for "auto, derive from current location"
+     * (see [ForecastModel.defaultsFor]). Fresh installs default to null so
+     * a user who never opens the Forecasters picker gets a region-appropriate
+     * trio (UKMO + ECMWF + ICON over the British Isles, JMA over Japan,
+     * GFS + GEM + ECMWF over North America, etc.) that follows them if they
+     * move. The first explicit pick in the picker switches this to a non-null
+     * Set; flipping the Auto switch back on clears it to null again.
      *
      * Stored as a [Set] because order doesn't matter — the URL builder
      * sorts to a deterministic comma-separated list, and the confidence
      * chip / per-model chart don't depend on a particular ordering.
      */
-    val forecastModels: Set<ForecastModel> = ForecastModel.DEFAULTS,
+    val forecastModels: Set<ForecastModel>? = null,
 ) {
     companion object {
         const val DEFAULT_GEMINI_VOICE = "Despina"
@@ -428,8 +431,10 @@ enum class ForecastModel(val openMeteoId: String) {
     companion object {
         /**
          * The three models the confidence chip has shipped with — ECMWF, GFS,
-         * ICON. Used as the default for [UserPreferences.forecastModels] and
-         * as the fallback when the user has somehow deselected everything
+         * ICON. The location-agnostic fallback used by [defaultsFor] when no
+         * location is known yet (fresh install before first GPS fix) or when
+         * the location doesn't sit in any of the regional branches, and as
+         * the recovery set when the user has somehow deselected everything
          * (the picker's UI prevents that, but a hand-edited DataStore could).
          */
         val DEFAULTS: Set<ForecastModel> = setOf(ECMWF_IFS04, GFS_SEAMLESS, ICON_SEAMLESS)

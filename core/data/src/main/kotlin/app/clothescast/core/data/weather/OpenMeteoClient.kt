@@ -60,17 +60,22 @@ class OpenMeteoClient(
      * Snapshot of which Open-Meteo model IDs the multi-model confidence
      * fetcher should consult on the next call. Read fresh on every
      * [fetchForecast] so a Forecasters-settings change takes effect on the
-     * next refresh without rebuilding the client. Suspending so the
-     * `:app`-side wiring can `settingsRepository.preferences.first()`
-     * directly without staging through a StateFlow snapshot. DataStore
-     * caches the latest emission, so on the warm path the read is a memory
-     * hit and runs inside the same coroutine that's about to launch the
-     * parallel fetches — no measurable added latency. Defaults to the
-     * three-model trio for tests and any caller that doesn't wire a
+     * next refresh without rebuilding the client. Takes the request's
+     * [Location] because an Auto-mode Forecasters selection resolves to a
+     * different model trio depending on which region the user is in (UKMO
+     * trio over the British Isles, GFS trio over North America, etc.);
+     * passing it through lets the `:app` wiring run the [Location]-aware
+     * resolver. Suspending so the `:app`-side wiring can
+     * `settingsRepository.preferences.first()` directly without staging
+     * through a StateFlow snapshot. DataStore caches the latest emission,
+     * so on the warm path the read is a memory hit and runs inside the
+     * same coroutine that's about to launch the parallel fetches — no
+     * measurable added latency. Defaults to the three-model trio,
+     * ignoring location, for tests and any caller that doesn't wire a
      * settings-backed provider.
      */
-    private val confidenceModelsProvider: suspend () -> List<String> =
-        { MultiModelConfidenceFetcher.DEFAULT_MODELS },
+    private val confidenceModelsProvider: suspend (Location) -> List<String> =
+        { _ -> MultiModelConfidenceFetcher.DEFAULT_MODELS },
 ) : WeatherRepository {
 
     // Constructed once per client. Exposing it on the public constructor would
@@ -89,7 +94,7 @@ class OpenMeteoClient(
         // latency behind the primary fetch.
         val primary = async { fetchPrimary(location) }
         val alerts = async { fetchAlerts(location) }
-        val models = confidenceModelsProvider()
+        val models = confidenceModelsProvider(location)
         val multiModel = async { confidenceFetcher.fetch(location, models) }
 
         val bundle = OpenMeteoMapper.toBundle(primary.await())

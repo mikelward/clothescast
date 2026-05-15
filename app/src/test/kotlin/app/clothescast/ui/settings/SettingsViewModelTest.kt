@@ -3,6 +3,8 @@ package app.clothescast.ui.settings
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStore
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DeliveryMode
@@ -68,9 +70,27 @@ class SettingsViewModelTest {
     private lateinit var settingsRepository: SettingsRepository
     private lateinit var keyStore: SecureKeyStore
     private lateinit var subject: SettingsViewModel
+    // SettingsState's auto-unit defaults read Locale.getDefault(), so an en-US JVM
+    // (e.g. the Cursor Cloud VM) flips the unit defaults to Fahrenheit / miles and
+    // breaks the "initial state reflects repository defaults" assertion. Pin a
+    // metric locale for the test class so the defaults are deterministic.
+    private lateinit var originalLocale: Locale
+    // viewModelScope owns an infinite preferences.collect loop and the device-voice
+    // load job. Without bounding it to the test, those coroutines can outlive
+    // runTest's body and resume with an exception (after the test's DataStore is
+    // cancelled in tearDown), occasionally surfacing as UncaughtExceptionsBeforeTest
+    // on the next test. ViewModelStore.clear() cancels every registered viewmodel's
+    // scope in one call, matching the existing DataStore-scope cleanup pattern above.
+    private val viewModelStore = ViewModelStore()
+    private var nextViewModelKey = 0
+    private fun <T : ViewModel> track(vm: T): T = vm.also {
+        viewModelStore.put("vm-${nextViewModelKey++}", it)
+    }
 
     @BeforeEach
     fun setUp() {
+        originalLocale = Locale.getDefault()
+        Locale.setDefault(Locale.FRANCE)
         Dispatchers.setMain(dispatcher)
         dataStoreScope = CoroutineScope(dispatcher + SupervisorJob())
         settingsDataStore = PreferenceDataStoreFactory.create(
@@ -94,13 +114,15 @@ class SettingsViewModelTest {
                 )
             },
         ) { install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) } }
-        subject = SettingsViewModel(
-            settingsRepository,
-            keyStore,
-            rearmAlarm = { _, _ -> },
-            cancelAlarm = { _ -> },
-            geocodingClient = OpenMeteoGeocodingClient(emptyGeocoding),
-            voiceEnumerator = EmptyVoiceEnumerator,
+        subject = track(
+            SettingsViewModel(
+                settingsRepository,
+                keyStore,
+                rearmAlarm = { _, _ -> },
+                cancelAlarm = { _ -> },
+                geocodingClient = OpenMeteoGeocodingClient(emptyGeocoding),
+                voiceEnumerator = EmptyVoiceEnumerator,
+            ),
         )
     }
 
@@ -117,8 +139,10 @@ class SettingsViewModelTest {
 
     @AfterEach
     fun tearDown() {
+        viewModelStore.clear()
         dataStoreScope.cancel()
         Dispatchers.resetMain()
+        Locale.setDefault(originalLocale)
     }
 
     @Test
@@ -218,18 +242,20 @@ class SettingsViewModelTest {
         // morning worker run. Toggle-off must NOT enqueue — there's nothing
         // for the worker to refresh once device-location is off.
         var refreshCount = 0
-        val refreshSubject = SettingsViewModel(
-            settingsRepository = settingsRepository,
-            keyStore = keyStore,
-            rearmAlarm = { _, _ -> },
-            cancelAlarm = { _ -> },
-            geocodingClient = OpenMeteoGeocodingClient(
-                HttpClient(MockEngine { respond("""{"results":[]}""") }) {
-                    install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) }
-                },
+        val refreshSubject = track(
+            SettingsViewModel(
+                settingsRepository = settingsRepository,
+                keyStore = keyStore,
+                rearmAlarm = { _, _ -> },
+                cancelAlarm = { _ -> },
+                geocodingClient = OpenMeteoGeocodingClient(
+                    HttpClient(MockEngine { respond("""{"results":[]}""") }) {
+                        install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) }
+                    },
+                ),
+                voiceEnumerator = EmptyVoiceEnumerator,
+                refreshLocationCache = { refreshCount++ },
             ),
-            voiceEnumerator = EmptyVoiceEnumerator,
-            refreshLocationCache = { refreshCount++ },
         )
 
         refreshSubject.setUseDeviceLocation(true)
@@ -249,18 +275,20 @@ class SettingsViewModelTest {
         // Today screen at the next worker run — the bug Codex flagged on PR
         // #419.
         var refreshCount = 0
-        val refreshSubject = SettingsViewModel(
-            settingsRepository = settingsRepository,
-            keyStore = keyStore,
-            rearmAlarm = { _, _ -> },
-            cancelAlarm = { _ -> },
-            geocodingClient = OpenMeteoGeocodingClient(
-                HttpClient(MockEngine { respond("""{"results":[]}""") }) {
-                    install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) }
-                },
+        val refreshSubject = track(
+            SettingsViewModel(
+                settingsRepository = settingsRepository,
+                keyStore = keyStore,
+                rearmAlarm = { _, _ -> },
+                cancelAlarm = { _ -> },
+                geocodingClient = OpenMeteoGeocodingClient(
+                    HttpClient(MockEngine { respond("""{"results":[]}""") }) {
+                        install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) }
+                    },
+                ),
+                voiceEnumerator = EmptyVoiceEnumerator,
+                refreshCachedOutfits = { refreshCount++ },
             ),
-            voiceEnumerator = EmptyVoiceEnumerator,
-            refreshCachedOutfits = { refreshCount++ },
         )
 
         refreshSubject.addClothesRule(ClothesRule("hat", ClothesRule.TemperatureBelow(0.0)))
@@ -317,17 +345,19 @@ class SettingsViewModelTest {
                 override suspend fun resolveAutoPick(locale: Locale): DeviceVoice? = null
                 override suspend fun findVoice(id: String): DeviceVoice? = null
             }
-            val countingSubject = SettingsViewModel(
-                settingsRepository = settingsRepository,
-                keyStore = keyStore,
-                rearmAlarm = { _, _ -> },
-                cancelAlarm = { _ -> },
-                geocodingClient = OpenMeteoGeocodingClient(
-                    HttpClient(MockEngine { respond("""{"results":[]}""") }) {
-                        install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) }
-                    },
+            val countingSubject = track(
+                SettingsViewModel(
+                    settingsRepository = settingsRepository,
+                    keyStore = keyStore,
+                    rearmAlarm = { _, _ -> },
+                    cancelAlarm = { _ -> },
+                    geocodingClient = OpenMeteoGeocodingClient(
+                        HttpClient(MockEngine { respond("""{"results":[]}""") }) {
+                            install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) }
+                        },
+                    ),
+                    voiceEnumerator = countingEnumerator,
                 ),
-                voiceEnumerator = countingEnumerator,
             )
             // Drain the initial enumeration triggered by the first prefs
             // emission (effective locale is the JVM default while region is

@@ -173,11 +173,18 @@ private fun PerModelDiagnosticChart(
     LaunchedEffect(seriesByModel, overlayModels, mainLine) {
         producer.runTransaction {
             lineSeries {
-                // Overlay first so the consensus main line draws over the
-                // per-model lines (when the overlay is on). When the overlay
-                // is off, [overlayModels] is empty and only the main line
-                // is emitted — but the y-bounds below still use the full
-                // per-model envelope so the axis labels don't jump.
+                // Main consensus line first so it stays at series index 0
+                // whether or not the overlay is on — see [ForecastChart] for
+                // the rationale (Vico animates by index, so pinning the main
+                // line stops it fading in/out on toggle). Per-model overlays
+                // follow and end up drawn on top of the consensus line. When
+                // the overlay is off, [overlayModels] is empty and only the
+                // main line is emitted — but the y-bounds below still use the
+                // full per-model envelope so the axis labels don't jump.
+                series(
+                    x = mainLine.map { it.first },
+                    y = mainLine.map { it.second },
+                )
                 overlayModels.forEach { modelId ->
                     val data = seriesByModel.getValue(modelId)
                     series(
@@ -185,10 +192,6 @@ private fun PerModelDiagnosticChart(
                         y = data.map { it.second },
                     )
                 }
-                series(
-                    x = mainLine.map { it.first },
-                    y = mainLine.map { it.second },
-                )
             }
         }
     }

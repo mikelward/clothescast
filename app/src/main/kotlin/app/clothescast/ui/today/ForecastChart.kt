@@ -40,9 +40,13 @@ import kotlin.math.roundToInt
 // mapping stays stable across recompositions and renders. Internal so the
 // adjacent [PrecipitationChart] and the legend in [TodayScreen] iterate the
 // models in the same left-to-right order the chart draws them. The
-// best_match overlay sits last so it draws on top of the consulted models;
-// the blended "Combined" main line is drawn after that, on top of every
-// overlay, by the temp + rain card scaffolding.
+// best_match overlay sits last so it draws on top of the consulted models.
+// The blended "Combined" main line is emitted *before* these overlays
+// (series index 0) so it keeps the same index — and the same legend
+// position — whether or not the per-model spread is showing; that pins
+// Vico's identity-by-index animation so the combined line no longer fades
+// out and back in when the overlay toggles. The trade-off is that the
+// per-model overlays now draw over the combined line in the spread view.
 internal val MODEL_DRAW_ORDER = listOf(
     "ecmwf_ifs04",
     "gfs_seamless",
@@ -142,16 +146,19 @@ fun ForecastChart(
     LaunchedEffect(hourly, temperatureUnit, showFeelsLike, overlays, showModelSpread) {
         producer.runTransaction {
             lineSeries {
-                // Overlays first so they render *under* the main blended line.
-                // Iterate in a fixed model order so the legend's color mapping
-                // is stable across recompositions. Empty when [showModelSpread]
-                // is off — only the main line is emitted in that case.
+                // Main blended line first so it occupies series index 0 in
+                // both single and per-model views — keeps Vico's identity-
+                // by-index animation stable when the spread toggles, so the
+                // combined line no longer fades out and back in. Per-model
+                // overlays follow in MODEL_DRAW_ORDER (and end up drawn on
+                // top of the combined line); empty when [showModelSpread] is
+                // off, in which case only the main line is emitted.
+                series(hourly.map { pickHourly(it).toUnit(temperatureUnit) })
                 visibleModels.forEach { modelId ->
                     overlays.getValue(modelId).let { entries ->
                         series(entries.map { pickModel(it).toUnit(temperatureUnit) })
                     }
                 }
-                series(hourly.map { pickHourly(it).toUnit(temperatureUnit) })
             }
         }
     }
@@ -242,13 +249,15 @@ fun ForecastChart(
 }
 
 // Builds a [LineCartesianLayer.LineProvider] whose Line list lines up with the
-// series order both charts emit into their model producer: each entry in
-// [visibleModels] (in MODEL_DRAW_ORDER) gets its pinned hue from [modelColors],
-// then — when [mainLineColor] is non-null — the blended main line gets that
-// colour appended. Pass null for charts that have no main line (e.g. the wind
-// diagnostic chart, where there's no single-model blended series to pair the
-// overlays with). LineProvider.series matches lines to series by index, so
-// this ordering must mirror the lineSeries builder in the caller.
+// series order both charts emit into their model producer: when [mainLineColor]
+// is non-null the blended main line comes first (matching the index-0 series
+// the callers emit), then each entry in [visibleModels] (in MODEL_DRAW_ORDER)
+// gets its pinned hue from [modelColors]. Pass null for charts that have no
+// main line (e.g. the wind diagnostic chart, where there's no single-model
+// blended series to pair the overlays with) — in that case only the per-model
+// lines are returned and they start at index 0. LineProvider.series matches
+// lines to series by index, so this ordering must mirror the lineSeries
+// builder in the caller.
 @Composable
 internal fun rememberPinnedLineProvider(
     visibleModels: List<String>,
@@ -256,6 +265,9 @@ internal fun rememberPinnedLineProvider(
     modelColors: Map<String, Color> = AppTheme.palette.modelColors,
 ): LineCartesianLayer.LineProvider =
     remember(visibleModels, mainLineColor, modelColors) {
+        val mainLine = mainLineColor?.let {
+            LineCartesianLayer.Line(fill = LineCartesianLayer.LineFill.single(fill(it)))
+        }
         val perModelLines = visibleModels.map { modelId ->
             LineCartesianLayer.Line(
                 fill = LineCartesianLayer.LineFill.single(
@@ -263,9 +275,6 @@ internal fun rememberPinnedLineProvider(
                 ),
             )
         }
-        val mainLine = mainLineColor?.let {
-            LineCartesianLayer.Line(fill = LineCartesianLayer.LineFill.single(fill(it)))
-        }
-        val lines = perModelLines + listOfNotNull(mainLine)
+        val lines = listOfNotNull(mainLine) + perModelLines
         LineCartesianLayer.LineProvider.series(lines)
     }

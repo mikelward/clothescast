@@ -67,14 +67,18 @@ fun PrecipitationChart(
     LaunchedEffect(hourly, overlays, showModelSpread) {
         producer.runTransaction {
             lineSeries {
-                // Overlays first so they render under the blended main line.
-                // Empty when [showModelSpread] is off.
+                // Main blended line first so it stays at series index 0 in
+                // both single and per-model views — see [ForecastChart] for
+                // the rationale (keeps Vico's by-index animation stable so
+                // the combined line doesn't fade in/out on toggle). Per-model
+                // overlays follow and end up drawn on top; empty when
+                // [showModelSpread] is off.
+                series(hourly.map { it.precipitationProbabilityPct })
                 visibleModels.forEach { modelId ->
                     overlays.getValue(modelId).let { entries ->
                         series(entries.map { it.precipitationProbabilityPct })
                     }
                 }
-                series(hourly.map { it.precipitationProbabilityPct })
             }
         }
     }

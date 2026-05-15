@@ -152,6 +152,11 @@ internal fun LinkifiedText(
     Text(text = annotated, modifier = modifier, style = style, color = color)
 }
 
+// Open-Meteo's free tier is CC BY 4.0 and asks for a "Weather data by
+// Open-Meteo.com" credit with a link back to the site. Surfaced from both
+// the About page and the Forecasters picker.
+internal const val OPEN_METEO_URL = "https://open-meteo.com/"
+
 internal fun openUrl(context: android.content.Context, url: String) {
     val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url))
         .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)

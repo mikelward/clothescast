@@ -13,9 +13,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -48,6 +50,7 @@ internal fun ForecastersContent(
     padding: PaddingValues,
     onSetForecastModels: (Set<ForecastModel>) -> Unit,
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -89,6 +92,10 @@ internal fun ForecastersContent(
                     },
                 )
             }
+            TextButton(
+                onClick = { openUrl(context, OPEN_METEO_URL) },
+                modifier = Modifier.fillMaxWidth(),
+            ) { Text(stringResource(R.string.settings_about_open_meteo)) }
         }
     }
 }

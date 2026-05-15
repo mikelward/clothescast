@@ -623,6 +623,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_palette_accessible_description">Isang palette batay sa Okabe-Ito, dinisenyo upang manatiling makilala sa deuteranopia, protanopia, at tritanopia. Gumagamit ang mga confidence card ng sky blue, neutral, at amber sa halip na teal, neutral, at pula.</string>
     <string name="settings_display_palette_rainbow">Bahaghari</string>
     <string name="settings_display_palette_rainbow_description">Pink, orange, at berdeng linya ng tsart na may teal/pulang confidence card na Material. Default.</string>
+    <string name="settings_display_palette_highlighter">Highlighter</string>
+    <string name="settings_display_palette_highlighter_description">Mga linya ng tsart sa magenta, dilaw, at cyan — parang gurit ng highlighter sa pahina. Madaling makita ang pagkaiba sa \"Bahaghari\"; gumagamit ang light theme ng mas matingkad na bersyon para sa kabasahan. Ligtas para sa pagkabulag sa pula-berde.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Ulap %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Hindi nagkakasundo ang mga modelo sa ulan (Δ %1$.0f%% sa %2$d modelo)</string>

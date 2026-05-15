@@ -725,6 +725,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_palette_accessible_description">Eine an Okabe-Ito angelehnte Palette, die bei Deuteranopie, Protanopie und Tritanopie unterscheidbar bleibt. Konfidenz-Karten verwenden Himmelblau, Neutral und Bernstein statt Türkis, Neutral und Rot.</string>
     <string name="settings_display_palette_rainbow">Regenbogen</string>
     <string name="settings_display_palette_rainbow_description">Pinke, orange und grüne Diagrammlinien sowie türkis/rote Konfidenz-Karten. Standard.</string>
+    <string name="settings_display_palette_highlighter">Textmarker</string>
+    <string name="settings_display_palette_highlighter_description">Magenta, gelbe und cyanfarbene Diagrammlinien — wie Textmarker auf dem Papier. Auf einen Blick sichtbar anders als \"Regenbogen\"; das helle Design verwendet tiefere Varianten für bessere Lesbarkeit. Sicher bei Rot-Grün-Sehschwäche.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Bewölkung %1$d\u2013%2$d%%</string>
     <string name="today_confidence_tap_to_hide">Tippen zum Ausblenden der Modellvorhersagen</string>

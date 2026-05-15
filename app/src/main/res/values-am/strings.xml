@@ -430,6 +430,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_colors_title">የቀለም ፓሌት</string>
     <string name="settings_display_palette_rainbow">ቀስተ ደመና</string>
     <string name="settings_display_palette_rainbow_description">ሮዝ፣ ብርቱካናማ እና አረንጓዴ ሰንጠረዥ መስመሮች የ Material ቲያ/ቀይ የአስተማማኝነት ካርዶች ጋር። ነባሪ።</string>
+    <string name="settings_display_palette_highlighter">ማድመቂያ</string>
+    <string name="settings_display_palette_highlighter_description">ማጄንታ፣ ቢጫ እና ሳያን የግራፍ መስመሮች — በወረቀት ላይ እንዳለ የማስታወቂያ ብዕር ሁሉ። ከ\"ቀስተ ደመና\" በቅጽበት ይለያያሉ፤ የብርሃን ጭብጥ ለንባብ ምቾት ጥልቅ ቅርጾች ይጠቀማል። ለቀይ-አረንጓዴ የቀለም ዕውር ሁኔታ ደህንነቱ የተጠበቀ።</string>
     <string name="settings_display_palette_accessible">ተደራሽ</string>
     <string name="settings_display_palette_accessible_description">ዲዩተራኖፒያ፣ ፕሮቶናኖፒያ እና ትሪታኖፒያ ሲኖር ሊለዩ የሚችሉ Okabe-Ito ፓሌት። ካርዶቹ ቲያ፣ ገለልተኛ እና ቀይ ፋንታ ሰማያዊ፣ ገለልተኛ እና ሀምበር ይጠቀማሉ።</string>
     <string name="today_cloud_range">ደመና %1$d–%2$d%%</string>

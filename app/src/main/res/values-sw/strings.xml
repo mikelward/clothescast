@@ -431,6 +431,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_colors_title">Rangi ya paleti</string>
     <string name="settings_display_palette_rainbow">Upinde wa mvua</string>
     <string name="settings_display_palette_rainbow_description">Mistari ya chati ya rangi waridi, machungwa na kijani na kadi za imani za Material bluu-kijani/nyekundu. Chaguo-msingi.</string>
+    <string name="settings_display_palette_highlighter">Highlighter</string>
+    <string name="settings_display_palette_highlighter_description">Mistari ya chati ya magenta, manjano, na cyan — kama alama ya kalamu ya kuangaza kwenye karatasi. Inatofautiana wazi na \"Upinde wa Mvua\" kwa mtazamo wa kwanza; mandhari nyepesi hutumia rangi za kina zaidi kwa kusomeka kwa urahisi. Salama kwa upofu wa rangi nyekundu-kijani.</string>
     <string name="settings_display_palette_accessible">Inayopatikana</string>
     <string name="settings_display_palette_accessible_description">Paleti inayotokana na Okabe-Ito, iliyoundwa kubaki inayoweza kutofautishwa katika hali za upofu wa rangi. Kadi za imani hutumia bluu ya anga, ya wastani na ya amber badala ya bluu-kijani, ya wastani na nyekundu.</string>
     <string name="today_cloud_range">Mawingu %1$d–%2$d%%</string>

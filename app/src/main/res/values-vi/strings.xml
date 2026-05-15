@@ -634,6 +634,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_display_palette_accessible_description">Bảng màu dựa trên Okabe-Ito, được thiết kế để vẫn phân biệt được khi bị mù màu đỏ-xanh lá và xanh lam. Thẻ độ tin cậy dùng xanh trời, trung tính và hổ phách thay vì xanh mòng két, trung tính và đỏ.</string>
     <string name="settings_display_palette_rainbow">Cầu vồng</string>
     <string name="settings_display_palette_rainbow_description">Đường biểu đồ màu hồng, cam và xanh lá với thẻ độ tin cậy Material xanh mòng két/đỏ. Mặc định.</string>
+    <string name="settings_display_palette_highlighter">Bút dạ quang</string>
+    <string name="settings_display_palette_highlighter_description">Các đường biểu đồ màu hồng cánh sen, vàng và xanh lơ — như nét bút dạ quang trên trang giấy. Khác biệt rõ rệt so với \"Cầu vồng\" ngay từ cái nhìn đầu tiên; chủ đề sáng dùng các biến thể đậm hơn để dễ đọc. An toàn cho người mù màu đỏ-xanh lục.</string>
     <string name="settings_unit_auto">Tự động</string>
     <string name="today_cloud_range">Mây %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Các mô hình không đồng thuận về mưa (Δ %1$.0f%% trên %2$d mô hình)</string>

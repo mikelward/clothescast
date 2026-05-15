@@ -687,6 +687,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_palette_accessible_description">Una tavolozza derivata da Okabe-Ito, progettata per rimanere distinguibile in caso di deuteranopia, protanopia e tritanopia. Le schede di affidabilità usano azzurro cielo, neutro e ambra al posto di verde acqua, neutro e rosso.</string>
     <string name="settings_display_palette_rainbow">Arcobaleno</string>
     <string name="settings_display_palette_rainbow_description">Linee del grafico rosa, arancione e verde con schede di affidabilità Material verde acqua/rosso. Il valore predefinito.</string>
+    <string name="settings_display_palette_highlighter">Evidenziatore</string>
+    <string name="settings_display_palette_highlighter_description">Linee del grafico magenta, gialle e ciano — come tratti di evidenziatore sulla pagina. Visivamente diverse da \"Arcobaleno\" al primo sguardo; il tema chiaro usa varianti più scure per la leggibilità. Sicuro per il daltonismo rosso-verde.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Nuvolosità %1$d\u2013%2$d%%</string>
     <string name="today_confidence_tap_to_hide">Tocca per nascondere le previsioni per modello</string>

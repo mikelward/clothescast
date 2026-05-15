@@ -601,6 +601,8 @@ only the displayed label localizes.
     <string name="settings_display_palette_accessible_description">Палітра на основі Okabe-Ito, розроблена для розрізнення при дейтеранопії, протанопії та тританопії. Картки достовірності використовують блакитний, нейтральний і бурштиновий замість бірюзового, нейтрального і червоного.</string>
     <string name="settings_display_palette_rainbow">Веселка</string>
     <string name="settings_display_palette_rainbow_description">Рожеві, помаранчеві та зелені лінії графіків з картками достовірності Material бірюзово/червоного. За замовчуванням.</string>
+    <string name="settings_display_palette_highlighter">Маркер</string>
+    <string name="settings_display_palette_highlighter_description">Лінії графіка пурпурового, жовтого та блакитного кольорів — наче слід маркера на сторінці. Помітно відрізняються від \"Райдуги\" з першого погляду; світла тема використовує глибші варіанти для читабельності. Безпечно для червоно-зеленої цветової сліпоти.</string>
     <string name="settings_unit_auto">Авто</string>
     <string name="today_cloud_range">Хмарність %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Моделі розходяться щодо дощу (Δ %1$.0f%% по %2$d моделях)</string>

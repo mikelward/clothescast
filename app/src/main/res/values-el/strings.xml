@@ -722,6 +722,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_palette_accessible_description">Παλέτα βασισμένη στο Okabe-Ito, σχεδιασμένη να παραμένει διακριτή σε δευτερανωπία, πρωτανωπία και τριτανωπία. Οι κάρτες αξιοπιστίας χρησιμοποιούν γαλάζιο, ουδέτερο και κεχριμπαρί αντί για πετρόλ, ουδέτερο και κόκκινο.</string>
     <string name="settings_display_palette_rainbow">Ουράνιο τόξο</string>
     <string name="settings_display_palette_rainbow_description">Ροζ, πορτοκαλί και πράσινες γραμμές γραφημάτων με κάρτες αξιοπιστίας Material πετρόλ/κόκκινο. Προεπιλογή.</string>
+    <string name="settings_display_palette_highlighter">Μαρκαδόρος</string>
+    <string name="settings_display_palette_highlighter_description">Γραμμές γραφήματος σε ματζέντα, κίτρινο και κυανό — σαν ίχνος μαρκαδόρου στη σελίδα. Με μια ματιά διακρίνονται από το \"Ουράνιο τόξο\"· το ανοιχτό θέμα χρησιμοποιεί πιο σκούρες εκδοχές για αναγνωσιμότητα. Ασφαλές για κόκκινη-πράσινη αχρωματοψία.</string>
     <string name="settings_unit_auto">Αυτόματο</string>
     <string name="today_cloud_range">Νέφωση %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Τα μοντέλα διαφωνούν για τη βροχή (Δ %1$.0f%% σε %2$d μοντέλα)</string>

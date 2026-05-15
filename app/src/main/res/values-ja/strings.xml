@@ -707,6 +707,8 @@ the displayed label localizes.
     <string name="settings_display_palette_accessible_description">第二色盲・第一色盲・第三色盲でも識別しやすいOkabe-Itoベースのパレット。信頼度カードはティール・ニュートラル・レッドの代わりにスカイブルー・ニュートラル・アンバーを使用。</string>
     <string name="settings_display_palette_rainbow">レインボー</string>
     <string name="settings_display_palette_rainbow_description">ピンク・オレンジ・グリーンのグラフ線とMaterialのティール/レッドの信頼度カード。デフォルト設定。</string>
+    <string name="settings_display_palette_highlighter">ハイライト</string>
+    <string name="settings_display_palette_highlighter_description">マゼンタ・イエロー・シアンのグラフ線。ページの上の蛍光ペンのよう。「レインボー」とひと目で見分けがつき、ライトテーマでは読みやすさのため少し濃いバージョンを使います。赤緑の色覚特性でも安全です。</string>
     <string name="settings_unit_auto">自動</string>
     <string name="today_cloud_range">雲量 %1$d〜%2$d%%</string>
     <string name="today_confidence_precip_spread">降水確率でモデル間に差あり（Δ %1$.0f%%、%2$dモデル間）</string>

@@ -647,6 +647,8 @@ is unchanged; only the displayed label localizes.
     <string name="settings_display_palette_accessible_description">Paleta wywodząca się z Okabe-Ito, zaprojektowana tak, aby pozostała rozróżnialna przy deuteranopii, protanopii i tritanopii. Karty pewności używają błękitu nieba, neutralnego i bursztynowego zamiast turkusowego, neutralnego i czerwonego.</string>
     <string name="settings_display_palette_rainbow">Tęcza</string>
     <string name="settings_display_palette_rainbow_description">Różowe, pomarańczowe i zielone linie wykresów z turkusowo/czerwonymi kartami pewności Material. Domyślna.</string>
+    <string name="settings_display_palette_highlighter">Zakreślacz</string>
+    <string name="settings_display_palette_highlighter_description">Magentowe, żółte i cyjanowe linie wykresu — jak ślad zakreślacza na stronie. Na pierwszy rzut oka widocznie inne niż \"Tęcza\"; jasny motyw używa głębszych wariantów dla czytelności. Bezpieczne przy daltonizmie czerwono-zielonym.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Zachmurzenie %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Modele nie zgadzają się co do opadów (Δ %1$.0f%% dla %2$d modeli)</string>

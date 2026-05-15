@@ -579,6 +579,8 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_display_palette_accessible_description">Palet berasaskan Okabe-Ito yang direka untuk kekal dapat dibezakan semasa deuteranopia, protanopia, dan tritanopia. Kad keyakinan menggunakan biru langit, neutral, dan kuning amber, bukan teal, neutral, dan merah.</string>
     <string name="settings_display_palette_rainbow">Pelangi</string>
     <string name="settings_display_palette_rainbow_description">Garis carta merah jambu, oren, dan hijau dengan kad keyakinan Material teal/merah. Lalai.</string>
+    <string name="settings_display_palette_highlighter">Stabilo</string>
+    <string name="settings_display_palette_highlighter_description">Garis carta magenta, kuning, dan biru kehijauan — seperti coretan stabilo di muka surat. Sekilas pandang ternyata berbeza daripada \"Pelangi\"; tema cerah menggunakan varian yang lebih gelap untuk kebolehbacaan. Selamat untuk buta warna merah-hijau.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Awan %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Model tidak bersetuju tentang hujan (Δ %1$.0f%% merentasi %2$d model)</string>

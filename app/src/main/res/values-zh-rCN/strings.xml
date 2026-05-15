@@ -699,6 +699,8 @@ label localizes.
     <string name="settings_display_palette_accessible_description">基于 Okabe-Ito 的调色板，设计上在绿色弱视、红色弱视和蓝色弱视情况下仍可辨识。置信度卡片使用天蓝色、中性色和琥珀色，而非青色、中性色和红色。</string>
     <string name="settings_display_palette_rainbow">彩虹</string>
     <string name="settings_display_palette_rainbow_description">粉红、橙色和绿色图表线条，以及 Material 青色/红色置信度卡片。默认设置。</string>
+    <string name="settings_display_palette_highlighter">荧光笔</string>
+    <string name="settings_display_palette_highlighter_description">洋红、黄色和青色的图表线条——像是用荧光笔在纸上画过。一眼就能与\"彩虹\"区分；浅色主题使用更深的变体以提高可读性。对红绿色盲安全。</string>
     <string name="settings_unit_auto">自动</string>
     <string name="today_cloud_range">云量 %1$d〜%2$d%%</string>
     <string name="today_confidence_precip_spread">各模型对降水意见不一（Δ %1$.0f%%，共 %2$d 个模型）</string>

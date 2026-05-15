@@ -548,6 +548,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_display_palette_accessible_description">Okabe-Ito põhine palett, mis on loodud olema eristatav deuteranoopiaga, protanoopiaga ja tritanoopiaga. Usaldusväärsuskaardid kasutavad taevasinist, neutraalset ja merevaigukollast teal, neutraalse ja punase asemel.</string>
     <string name="settings_display_palette_rainbow">Vikerkaar</string>
     <string name="settings_display_palette_rainbow_description">Roosa, oranž ja roheline diagrammijoon koos Material teal/punaste usaldusväärsuskaartidega. Vaikimisi.</string>
+    <string name="settings_display_palette_highlighter">Esiletõstja</string>
+    <string name="settings_display_palette_highlighter_description">Magenta, kollased ja tsüaani värvi graafiku jooned — nagu esiletõstja jälg lehel. Ühe pilguga selgelt erinevad \"Vikerkaarest\"; hele teema kasutab loetavuse jaoks tumedamaid variante. Ohutu punase-rohelise värvipimeduse korral.</string>
     <string name="settings_unit_auto">Automaatne</string>
     <string name="today_cloud_range">Pilvisus %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Mudelid ei nõustu vihma osas (Δ %1$.0f%% %2$d mudeli vahel)</string>

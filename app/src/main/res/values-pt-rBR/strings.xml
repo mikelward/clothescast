@@ -688,6 +688,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_palette_accessible_description">Uma paleta derivada de Okabe-Ito, projetada para permanecer distinguível em deuteranopia, protanopia e tritanopia. Os cartões de confiança usam azul-céu, neutro e âmbar em vez de verde-azulado, neutro e vermelho.</string>
     <string name="settings_display_palette_rainbow">Arco-íris</string>
     <string name="settings_display_palette_rainbow_description">Linhas de gráfico rosa, laranja e verde com cartões de confiança Material verde-azulado/vermelho. O padrão.</string>
+    <string name="settings_display_palette_highlighter">Marca-texto</string>
+    <string name="settings_display_palette_highlighter_description">Linhas de gráfico magenta, amarelas e ciano — como marcadores fluorescentes na página. Visivelmente diferentes de \"Arco-íris\" à primeira vista; o tema claro usa variantes mais escuras para legibilidade. Seguro para daltonismo vermelho-verde.</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Nuvens %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Os modelos discordam sobre chuva (Δ %1$.0f%% em %2$d modelos)</string>

@@ -25,6 +25,7 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.core.cartesian.Zoom
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
@@ -271,7 +272,11 @@ private fun PerModelDiagnosticChart(
             bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
         ),
         modelProducer = producer,
-        zoomState = rememberVicoZoomState(initialZoom = Zoom.Content),
+        // Disable scroll/zoom gestures so the chart doesn't swallow horizontal
+        // drags meant for the parent HorizontalPager — same fix as the temp /
+        // precip cards above.
+        scrollState = rememberVicoScrollState(scrollEnabled = false),
+        zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
         modifier = Modifier
             .fillMaxWidth()
             .height(140.dp),

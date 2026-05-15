@@ -21,6 +21,7 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.Zoom
@@ -241,7 +242,12 @@ fun ForecastChart(
         // hourly series renders only the first ~10 hours and hides the rest behind
         // a scroll. Force-fit instead so the full day is visible at a glance — this
         // is a glanceable summary card, not an interactive explorer.
-        zoomState = rememberVicoZoomState(initialZoom = Zoom.Content),
+        //
+        // Disable scroll and zoom gestures: the chart fits, so there's nothing
+        // to scroll or zoom — and Vico's default gesture handlers would otherwise
+        // swallow horizontal drags, blocking the parent HorizontalPager's swipe.
+        scrollState = rememberVicoScrollState(scrollEnabled = false),
+        zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
         modifier = modifier
             .fillMaxWidth()
             .height(180.dp),

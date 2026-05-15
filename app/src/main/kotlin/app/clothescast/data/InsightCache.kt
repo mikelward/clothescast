@@ -84,19 +84,6 @@ class InsightCache(
      */
     enum class Slot { THIS_PERIOD, NEXT_PERIOD }
 
-    /**
-     * The most recent insight written to either slot. The home-screen widget
-     * uses this to show whichever payload is freshest — opening it after the
-     * tonight alarm fired surfaces the tonight insight, while opening it at
-     * noon still surfaces the morning insight.
-     */
-    val latest: Flow<Insight?> = dataStore.data.map { prefs ->
-        listOfNotNull(
-            prefs.readSlot(THIS_PERIOD_INSIGHT_JSON),
-            prefs.readSlot(NEXT_PERIOD_INSIGHT_JSON),
-        ).maxByOrNull { it.generatedAt }
-    }
-
     /** The insight on page 1 of the pager — the 12-hour window the user is currently in. */
     val thisPeriod: Flow<Insight?> = dataStore.data.map { it.readSlot(THIS_PERIOD_INSIGHT_JSON) }
 

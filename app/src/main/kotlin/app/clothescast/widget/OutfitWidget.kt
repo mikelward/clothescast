@@ -74,10 +74,12 @@ class OutfitWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val app = context.applicationContext as ClothesCastApplication
         // Read once on each provideGlance() pass — the worker calls updateAll()
-        // after writing to the cache, which re-invokes this function. The flow
-        // emits the freshest of the two cached periods (TODAY / TONIGHT), which
-        // is the same "what's relevant right now" choice the Today screen makes.
-        val insight = runCatching { app.insightCache.latest.first() }.getOrNull()
+        // after writing to the cache, which re-invokes this function. We read
+        // THIS_PERIOD specifically (not "freshest of either slot") because
+        // NEXT_PERIOD is a pre-render of the upcoming window — taking the
+        // newer-generated-at would surface "Tonight" while the user is still
+        // in the daytime window the morning worker just delivered.
+        val insight = runCatching { app.insightCache.thisPeriod.first() }.getOrNull()
         // Per-garment colour overrides — empty when the user hasn't customised.
         // Pulled here (not inside the Composable) so the bitmap rasterizer can
         // run on this dispatcher rather than during composition.

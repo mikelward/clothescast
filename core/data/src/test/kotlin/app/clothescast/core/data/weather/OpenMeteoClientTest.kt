@@ -10,6 +10,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.respondError
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestData
@@ -178,5 +179,35 @@ class OpenMeteoClientTest {
         )
 
         shouldThrow<ServerResponseException> { client.fetchForecast(london) }
+    }
+
+    @Test
+    fun `429 from the primary forecast surfaces as ClientRequestException with the status`() = runTest {
+        // When several devices on the same home IP wake at 07:00 the primary
+        // fetch can come back with "Too many concurrent requests". FetchAndNotifyWorker
+        // distinguishes 429 from other 4xx via response.status so it can retry —
+        // verify the client surfaces the exception type and status the worker
+        // expects rather than swallowing it as a deserialization error.
+        val engine = MockEngine { request ->
+            when (request.url.encodedPath) {
+                "/v1/forecast" -> respond(
+                    content = """{"error":true,"reason":"Too many concurrent requests"}""",
+                    status = HttpStatusCode.TooManyRequests,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                )
+                "/v1/warnings" -> respondError(HttpStatusCode.InternalServerError)
+                else -> error("unexpected path ${request.url.encodedPath}")
+            }
+        }
+        val client = OpenMeteoClient(
+            HttpClient(engine) {
+                install(ContentNegotiation) {
+                    json(Json { ignoreUnknownKeys = true })
+                }
+            },
+        )
+
+        val ex = shouldThrow<ClientRequestException> { client.fetchForecast(london) }
+        ex.response.status shouldBe HttpStatusCode.TooManyRequests
     }
 }

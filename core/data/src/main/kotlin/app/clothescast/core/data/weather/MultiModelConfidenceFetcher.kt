@@ -175,6 +175,37 @@ internal class MultiModelConfidenceFetcher(
                 if (precips == null) {
                     logger.log("model $model hourly: precipitation_probability missing, precip-specific aggregates will skip this model")
                 }
+                // Diagnostic fields — each chart hides this model's line on
+                // its own card when the field is wholesale absent, so the
+                // user-visible failure mode is "model X has no UV line" with
+                // no explanation. Log each missing diagnostic series so a
+                // Diagnostics scrape carries the per-model per-variable
+                // coverage map. Open-Meteo's per-model coverage varies
+                // widely (GFS exposes uv_index, ICON doesn't; ECMWF exposes
+                // sunshine_duration, GFS doesn't; etc.) and surfacing the
+                // gaps explicitly turns a silent-empty chart into an
+                // observable contract miss.
+                if (winds == null) {
+                    logger.log("model $model hourly: wind_speed_10m missing, wind chart will skip this model")
+                }
+                if (humidities == null) {
+                    logger.log("model $model hourly: relative_humidity_2m missing, humidity chart will skip this model")
+                }
+                if (clouds == null) {
+                    logger.log("model $model hourly: cloud_cover_low missing, cloud chart will skip this model")
+                }
+                if (solar == null) {
+                    logger.log("model $model hourly: shortwave_radiation missing, solar chart will skip this model")
+                }
+                if (sunshine == null) {
+                    logger.log("model $model hourly: sunshine_duration missing, sunshine chart will skip this model")
+                }
+                if (uv == null) {
+                    logger.log("model $model hourly: uv_index missing, UV chart will skip this model")
+                }
+                if (weatherCodes == null) {
+                    logger.log("model $model hourly: weather_code missing, consensus condition will skip this model's vote")
+                }
                 val entries = buildList {
                     for (i in 0 until times.size) {
                         val time = parseHour(times.getOrNull(i)) ?: continue

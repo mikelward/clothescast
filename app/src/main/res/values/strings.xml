@@ -272,6 +272,9 @@
     <string name="today_update_available_body">A newer version of ClothesCast is on the Play Store.</string>
     <string name="today_update_available_action">Update</string>
     <string name="today_update_available_dismiss">Not now</string>
+    <string name="today_update_downloading_body">Downloading update…</string>
+    <string name="today_update_downloading_action">Updating</string>
+    <string name="today_update_downloading_dismiss">Cancel</string>
     <string name="today_update_downloaded_body">Update downloaded. Restart to finish installing.</string>
     <string name="today_update_downloaded_action">Restart</string>
 

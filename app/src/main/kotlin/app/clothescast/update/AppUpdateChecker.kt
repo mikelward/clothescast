@@ -28,16 +28,17 @@ import kotlinx.coroutines.flow.asStateFlow
  * hidden rather than surfacing a confusing error: a missing update prompt
  * is the right default when we can't determine the answer.
  *
- * Two states drive the banner: [UpdateState.Available] (a newer build is
- * published — show "Update") and [UpdateState.ReadyToInstall] (a flexible
- * download has finished — show "Restart"). The latter is reachable both
- * within a session (the install-state listener fires when the download
- * completes while the app is running) and across process recreation
- * ([refresh] consults `installStatus()` directly, which handles the case
- * where the user backgrounded the app between download and install — Play
- * returns `installStatus == DOWNLOADED` with `updateAvailability ==
+ * Three states drive the banner: [UpdateState.Available] (a newer build is
+ * published — show "Update"), [UpdateState.Downloading] (the flexible
+ * download is in flight — show progress), and [UpdateState.ReadyToInstall]
+ * (download finished — show "Restart"). All three are reachable both
+ * within a session (the install-state listener drives the transitions live)
+ * and across process recreation ([refresh] consults `installStatus()`
+ * directly, which handles the case where the user backgrounded the app
+ * between phases — Play returns `installStatus == DOWNLOADED` /
+ * `DOWNLOADING` with `updateAvailability ==
  * DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS`, so a naive `updateAvailability`
- * check alone would lose the user's downloaded update).
+ * check alone would lose the user's in-flight or downloaded update).
  */
 class AppUpdateChecker(private val context: Context) {
     private val manager: AppUpdateManager by lazy { AppUpdateManagerFactory.create(context) }
@@ -47,17 +48,26 @@ class AppUpdateChecker(private val context: Context) {
 
     @Volatile private var listenerRegistered = false
     private val listener = InstallStateUpdatedListener { installState ->
-        // Live-session promotion: the moment the background download finishes,
-        // flip Available → ReadyToInstall so the banner switches from "Update"
-        // to "Restart" without waiting for the next ON_RESUME refresh. Across
-        // process recreation, `refresh()` is the source of truth instead.
-        if (installState.installStatus() == InstallStatus.DOWNLOADED) {
-            (_state.value as? UpdateState.Available)?.let { available ->
-                _state.value = UpdateState.ReadyToInstall(
-                    availableVersionCode = available.availableVersionCode,
-                    info = available.info,
+        // Live-session state machine: Available → Downloading (PENDING /
+        // DOWNLOADING, with progress) → ReadyToInstall (DOWNLOADED). On
+        // FAILED / CANCELED we drop back to Available so the user can retry.
+        // Across process recreation, `refresh()` is the source of truth.
+        val active = _state.value.activeUpdate() ?: return@InstallStateUpdatedListener
+        _state.value = when (installState.installStatus()) {
+            InstallStatus.PENDING,
+            InstallStatus.DOWNLOADING ->
+                UpdateState.Downloading(
+                    availableVersionCode = active.availableVersionCode,
+                    info = active.info,
+                    bytesDownloaded = installState.bytesDownloaded(),
+                    totalBytes = installState.totalBytesToDownload(),
                 )
-            }
+            InstallStatus.DOWNLOADED ->
+                UpdateState.ReadyToInstall(active.availableVersionCode, active.info)
+            InstallStatus.FAILED,
+            InstallStatus.CANCELED ->
+                UpdateState.Available(active.availableVersionCode, active.info)
+            else -> _state.value
         }
     }
 
@@ -82,21 +92,22 @@ class AppUpdateChecker(private val context: Context) {
             // we'd silently strand a downloaded update behind a hidden banner.
             info.installStatus() == InstallStatus.DOWNLOADED ->
                 UpdateState.ReadyToInstall(info.availableVersionCode(), info)
+            // In-flight download recovered from a previous foreground or session:
+            // Play returns DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS while a FLEXIBLE
+            // download is still pending or in progress. Surface it as Downloading
+            // so the banner shows progress instead of looking idle, and so the
+            // listener can promote it to ReadyToInstall when DOWNLOADED arrives.
+            info.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
+                info.installStatus() in setOf(InstallStatus.PENDING, InstallStatus.DOWNLOADING) ->
+                UpdateState.Downloading(
+                    availableVersionCode = info.availableVersionCode(),
+                    info = info,
+                    bytesDownloaded = info.bytesDownloaded(),
+                    totalBytes = info.totalBytesToDownload(),
+                )
             info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                 info.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) ->
                 UpdateState.Available(info.availableVersionCode(), info)
-            // In-flight download: Play returns DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
-            // while the FLEXIBLE download is still pending or in progress. Preserve the
-            // current Available state (or re-establish it) so the install-state listener
-            // can still promote to ReadyToInstall when DOWNLOADED arrives. Without this,
-            // a resume-triggered refresh() during a download clears Available to UpToDate
-            // and the listener's `_state.value as? Available` cast fails — leaving the
-            // banner dark until the user backgrounds and foregrounds again after the
-            // download completes.
-            info.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
-                info.installStatus() in setOf(InstallStatus.PENDING, InstallStatus.DOWNLOADING) ->
-                (_state.value as? UpdateState.Available)
-                    ?: UpdateState.Available(info.availableVersionCode(), info)
             else -> UpdateState.UpToDate
         }
     }
@@ -132,5 +143,26 @@ sealed interface UpdateState {
     data object NotChecked : UpdateState
     data object UpToDate : UpdateState
     data class Available(val availableVersionCode: Int, val info: AppUpdateInfo) : UpdateState
+    data class Downloading(
+        val availableVersionCode: Int,
+        val info: AppUpdateInfo,
+        val bytesDownloaded: Long,
+        val totalBytes: Long,
+    ) : UpdateState
     data class ReadyToInstall(val availableVersionCode: Int, val info: AppUpdateInfo) : UpdateState
+}
+
+/**
+ * Carrier for the version + Play handle shared by the three "we have an
+ * update for this version" states. Used by the install-state listener to
+ * carry forward the right `AppUpdateInfo` when transitioning between them
+ * without needing a separate cast for each.
+ */
+private data class ActiveUpdate(val availableVersionCode: Int, val info: AppUpdateInfo)
+
+private fun UpdateState.activeUpdate(): ActiveUpdate? = when (this) {
+    is UpdateState.Available -> ActiveUpdate(availableVersionCode, info)
+    is UpdateState.Downloading -> ActiveUpdate(availableVersionCode, info)
+    is UpdateState.ReadyToInstall -> ActiveUpdate(availableVersionCode, info)
+    UpdateState.NotChecked, UpdateState.UpToDate -> null
 }

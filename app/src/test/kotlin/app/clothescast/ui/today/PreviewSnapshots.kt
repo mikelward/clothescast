@@ -416,6 +416,7 @@ class PreviewSnapshots {
     @Test fun last_crash_banner() = capture { LastCrashBannerPreview() }
     @Test fun bug_report_consent_dialog() = captureDialog { BugReportConsentDialogPreview() }
     @Test fun update_available_banner() = capture { UpdateAvailableBannerPreview() }
+    @Test fun update_downloading_banner() = capture { UpdateDownloadingBannerPreview() }
     @Test fun update_downloaded_banner() = capture { UpdateDownloadedBannerPreview() }
     @Test fun local_build_banner() = capture { LocalBuildBannerPreview() }
     @Test fun local_build_banner_dirty() = capture { LocalBuildBannerDirtyPreview() }

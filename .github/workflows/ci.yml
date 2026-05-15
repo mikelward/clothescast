@@ -242,8 +242,12 @@ jobs:
             # Remove PNGs for deleted or renamed @Test methods (orphaned snapshots).
             # The expected set is the @Test method names in PreviewSnapshots.kt, since
             # captureRoboImage uses testName.methodName as the output filename.
+            # Slurped perl match handles both `@Test fun foo()` and
+            # multi-line `@Test\n@Config(...)\nfun foo()` styles — a single-line
+            # `(?<=@Test fun )` regex misses the latter and would prune the PNG
+            # as orphaned even though the test still runs.
             snapshots_test="app/src/test/kotlin/app/clothescast/ui/today/PreviewSnapshots.kt"
-            expected=$(grep -oP '(?<=@Test fun )\w+' "$snapshots_test")
+            expected=$(perl -0777 -ne 'while (/\@Test\b(?:\s|\@\w+(?:\([^)]*\))?)*?\bfun\s+(\w+)/g) { print "$1\n" }' "$snapshots_test")
             for png in app/snapshots/*.png; do
               [ -f "$png" ] || continue
               name=$(basename "$png" .png)

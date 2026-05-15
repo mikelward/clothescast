@@ -746,6 +746,13 @@
     <string name="settings_about_build_type_suffix"> · %1$s build</string>
     <string name="settings_about_source">Source code on GitHub</string>
     <string name="settings_about_dontkillmyapp">Background restrictions (dontkillmyapp.com)</string>
+    <!-- Attribution link surfaced on both the About page and the Forecasters
+         picker. Open-Meteo's free tier publishes its data under CC BY 4.0 and
+         asks for a "Weather data by Open-Meteo.com" credit with a link back
+         to open-meteo.com. The string is kept short so it fits a TextButton
+         row alongside the other About links. "Open-Meteo" is a brand name
+         and stays Latin in CJK / other non-Latin locales. -->
+    <string name="settings_about_open_meteo">Weather data by Open-Meteo</string>
     <string name="settings_about_share_bug_report">Share bug report</string>
     <string name="settings_about_version_copied">Version copied to clipboard</string>
 

@@ -334,7 +334,7 @@
     <string name="settings_title">Settings</string>
     <string name="settings_back">Back</string>
 
-    <string name="settings_root_voice">Voice</string>
+    <string name="settings_root_voice">Speech</string>
     <string name="settings_root_schedule">Schedule</string>
     <string name="settings_root_region">Region</string>
     <string name="settings_root_clothes">Clothes</string>
@@ -348,13 +348,7 @@
     <string name="settings_root_schedule_subtitle">Notifications and Times</string>
     <string name="settings_root_clothes_subtitle">Temperatures and Outfits</string>
     <string name="settings_root_region_subtitle">Languages and Units</string>
-    <!-- TODO(voice-subtitle): decide final wording and reorder so the
-         per-locale "Accent" picker (now the topmost card on the Voice
-         sub-screen) reads first. Candidates: "Accents and engines",
-         "Accents and APIs", "Accents and providers". Once chosen,
-         update values-*/ translations to match (currently only el is
-         translated: "Πάροχοι και προφορές"). -->
-    <string name="settings_root_voice_subtitle">Providers and Accents</string>
+    <string name="settings_root_voice_subtitle">Voices and Accents</string>
     <string name="settings_root_display_subtitle">Themes and Colors</string>
 
     <string name="settings_display_theme_title">Theme</string>
@@ -378,9 +372,9 @@
     <string name="settings_garment_color_default_swatch_description">Reset %1$s to the default colour</string>
     <string name="settings_garment_color_dialog_close">Close</string>
 
-    <string name="settings_root_location_subtitle">Auto-detect or pick a city</string>
+    <string name="settings_root_location_subtitle">Automatic and Manual Location</string>
     <string name="settings_root_calendar_subtitle">Today\'s events</string>
-    <string name="settings_root_forecasters_subtitle">Which weather models to consult</string>
+    <string name="settings_root_forecasters_subtitle">Weather Sources and Models</string>
     <string name="settings_root_privacy_subtitle">Crash + usage reports</string>
 
     <!-- Forecasters sub-page: lets the user pick which numerical weather

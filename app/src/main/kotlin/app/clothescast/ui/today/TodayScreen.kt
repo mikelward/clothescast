@@ -1637,20 +1637,23 @@ internal fun PrecipitationCard(
 }
 
 /**
- * Compact "Models: ● ECMWF ● GFS ● ICON · ● Best match" footer rendered under
- * the charts. Each consulted model gets a colour swatch in its pinned hue from
- * the active [app.clothescast.ui.theme.AppPalette], and the optional [mainLine]
- * argument tacks on a final entry for the blended "main" line (theme primary)
- * so the user can map every line on the chart back to its source — including
- * the main line, which on the temperature and precipitation charts comes from
- * Open-Meteo's automatic-model-selection ("best match") default and routinely
- * tracks a different model than the consulted overlays.
+ * Compact "Models: ● Combined ● ECMWF ● GFS ● ICON · ● Best match" footer
+ * rendered under the charts. The optional [mainLine] entry (theme primary)
+ * comes first so its position in the legend is the same in the single and
+ * per-model views — i.e. when the overlay is off and the legend has only
+ * "Combined" in it, that chip sits where it sits in the spread view too.
+ * Each consulted model then follows in its pinned hue from the active
+ * [app.clothescast.ui.theme.AppPalette]. The main line on the temperature
+ * and precipitation charts comes from Open-Meteo's automatic-model-selection
+ * ("best match") default and routinely tracks a different model than the
+ * consulted overlays — surfacing it lets the user map every line on the
+ * chart back to its source.
  *
  * Callers pass the exact set of model ids actually plotted in
  * [visibleModelIds] (pre-refactor the legend derived this from `byModel`
  * directly, which silently listed models whose lines had been filtered out of
  * a chart — e.g. wind diagnostic lines for models that didn't report wind).
- * Pass [mainLine] when the chart has a blended main line on top of the
+ * Pass [mainLine] when the chart has a blended main line alongside the
  * overlays (temp + rain cards); the diagnostic cards leave it null.
  */
 @Composable
@@ -1671,14 +1674,6 @@ internal fun ModelSpreadLegend(
             style = labelStyle,
             color = labelColor,
         )
-        visibleModelIds.forEach { modelId ->
-            LegendChip(
-                color = modelColors.getValue(modelId),
-                label = friendlyModelName(modelId),
-                style = labelStyle,
-                textColor = labelColor,
-            )
-        }
         mainLine?.let {
             LegendChip(
                 color = it.color,
@@ -1687,10 +1682,18 @@ internal fun ModelSpreadLegend(
                 textColor = labelColor,
             )
         }
+        visibleModelIds.forEach { modelId ->
+            LegendChip(
+                color = modelColors.getValue(modelId),
+                label = friendlyModelName(modelId),
+                style = labelStyle,
+                textColor = labelColor,
+            )
+        }
     }
 }
 
-/** Optional main-line entry rendered after the per-model entries in [ModelSpreadLegend]. */
+/** Optional main-line entry rendered before the per-model entries in [ModelSpreadLegend]. */
 internal data class MainLineLegend(val color: Color, val label: String)
 
 @Composable

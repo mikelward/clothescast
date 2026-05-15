@@ -20,6 +20,7 @@ import app.clothescast.ui.settings.SettingsCalendarPreview
 import app.clothescast.ui.settings.SettingsClothesFahrenheitPreview
 import app.clothescast.ui.settings.SettingsClothesPreview
 import app.clothescast.ui.settings.SettingsDisplayPreview
+import app.clothescast.ui.settings.SettingsForecastersPreview
 import app.clothescast.ui.settings.SettingsLocationPreview
 import app.clothescast.ui.settings.SettingsPrivacyPreview
 import app.clothescast.ui.settings.SettingsRegionPreview
@@ -448,6 +449,16 @@ class PreviewSnapshots {
     @Test fun settings_voice_device() = capture { SettingsVoiceDevicePreview() }
     @Test fun settings_voice_gemini() = capture { SettingsVoiceGeminiPreview() }
     @Test fun settings_location() = capture { SettingsLocationPreview() }
+
+    // Forecasters has seven enabled rows + the disabled BOM placeholder +
+    // the Open-Meteo attribution button, which together overflow the
+    // class-level 640dp viewport. Stretch to 1024dp so the whole picker
+    // (including the BOM row that's the point of the regression net) is
+    // in-frame.
+    @Test
+    @Config(qualifiers = "w360dp-h1024dp-xhdpi")
+    fun settings_forecasters() = capture { SettingsForecastersPreview() }
+
     @Test fun settings_calendar() = capture { SettingsCalendarPreview() }
     @Test fun settings_privacy() = capture { SettingsPrivacyPreview() }
 

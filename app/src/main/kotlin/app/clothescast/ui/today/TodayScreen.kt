@@ -11,13 +11,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
@@ -99,6 +104,7 @@ import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
 import app.clothescast.ui.theme.AppTheme
 import app.clothescast.work.FetchAndNotifyWorker
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -266,149 +272,300 @@ private fun TodayContent(
     // know what to tap.
     val locationActionRequired = !state.hasFallbackLocation &&
         !(state.useDeviceLocation && coarseGranted && backgroundGranted)
+    // Suppress the redundant generic failure card when the action banner
+    // already explains the no-location case; other failure reasons still
+    // show through.
+    val workStatusToShow = if (
+        locationActionRequired &&
+        state.workStatus is WorkStatus.Failed &&
+        (state.workStatus as WorkStatus.Failed).reason == FetchAndNotifyWorker.REASON_NO_LOCATION
+    ) WorkStatus.Idle else state.workStatus
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(padding)
+            .padding(padding),
+    ) {
+        // Pinned header — banners + outfit row. Outside the pager so the
+        // outfit row's at-a-glance today+tonight icons stay visible
+        // regardless of which page is in view, and so critical banners
+        // (update available, crash report, telemetry notice, location
+        // required, work status) aren't duplicated per page.
+        //
+        // First in the stack on purpose: a stale build is the upstream
+        // cause of many bug reports, so giving the user the chance to
+        // update before they notice anything else is the highest-leverage
+        // placement.
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(top = 24.dp, bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            UpdateAvailableBanner()
+            LocalBuildBanner()
+            LastCrashBanner()
+            // One-shot privacy disclosure for the default-on Firebase
+            // telemetry, so the default isn't silent. Auto-hides once the
+            // user dismisses it (or taps through to Privacy from it).
+            // Stays out of the way of the crash banner: that's a current
+            // problem to action; this is just disclosure.
+            TelemetryNoticeBanner(onOpenPrivacy = onOpenPrivacy)
+            if (locationActionRequired) {
+                LocationActionRequiredBanner(onSetUpLocation = onSetUpLocation)
+            }
+            WorkStatusBanner(status = workStatusToShow)
+            state.primaryInsight?.let { primary ->
+                OutfitPreviewRow(
+                    insight = primary,
+                    temperatureUnit = state.temperatureUnit,
+                    clothesRules = state.clothesRules,
+                    onAdjustThreshold = onAdjustThreshold,
+                )
+            }
+        }
+        if (state.primaryInsight == null) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 24.dp),
+            ) {
+                EmptyState(onRefresh = onRefresh, isWorking = isWorking)
+            }
+        } else {
+            // Two-page pager — page 0 is the primary insight (the period
+            // that was "latest" before this change), page 1 is the paired
+            // period (or a placeholder when its slot hasn't been cached
+            // yet). A chevron next to each page's InsightCard hints at
+            // the affordance; side-swipe anywhere on the page navigates.
+            val pagerState = rememberPagerState(initialPage = 0) { 2 }
+            val pagerScope = rememberCoroutineScope()
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize(),
+            ) { page ->
+                val pageInsight = if (page == 0) state.primaryInsight else state.nextInsight
+                val pagePeriod = if (page == 0) state.primaryInsight.period else state.nextPeriod
+                TodayPage(
+                    insight = pageInsight,
+                    fallbackPeriod = pagePeriod,
+                    state = state,
+                    showChevronRight = (page == 0),
+                    showChevronLeft = (page == 1),
+                    onChevronTap = {
+                        pagerScope.launch {
+                            pagerState.animateScrollToPage(if (page == 0) 1 else 0)
+                        }
+                    },
+                    onToggleModelSpread = onToggleModelSpread,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * One page inside the Today pager. When [insight] is non-null it renders the
+ * existing InsightCard + ConfidenceChip + chart-card stack for that period;
+ * when null (the paired slot hasn't been cached yet) it surfaces a
+ * [MissingPeriodPlaceholder] for [fallbackPeriod] so the user understands
+ * when to expect content there.
+ *
+ * Each page owns its own [rememberScrollState] so vertical scroll position
+ * on page 2 doesn't drag page 1.
+ */
+@Composable
+private fun TodayPage(
+    insight: Insight?,
+    fallbackPeriod: ForecastPeriod,
+    state: TodayState,
+    showChevronRight: Boolean,
+    showChevronLeft: Boolean,
+    onChevronTap: () -> Unit,
+    onToggleModelSpread: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 24.dp),
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        // First in the stack on purpose: a stale build is the upstream cause of
-        // many bug reports, so giving the user the chance to update before they
-        // notice anything else is the highest-leverage placement.
-        UpdateAvailableBanner()
-        LocalBuildBanner()
-        LastCrashBanner()
-        // One-shot privacy disclosure for the default-on Firebase telemetry,
-        // so the default isn't silent. Auto-hides once the user dismisses it
-        // (or taps through to Privacy from it). Stays out of the way of the
-        // crash banner: that's a current problem to action; this is just
-        // disclosure.
-        TelemetryNoticeBanner(onOpenPrivacy = onOpenPrivacy)
-        if (locationActionRequired) {
-            LocationActionRequiredBanner(onSetUpLocation = onSetUpLocation)
+        if (insight == null) {
+            MissingPeriodPlaceholder(
+                period = fallbackPeriod,
+                morningTime = state.morningTime,
+                tonightTime = state.tonightTime,
+                showChevronLeft = showChevronLeft,
+                onChevronTap = onChevronTap,
+            )
+            return@Column
         }
-        // Suppress the redundant generic failure card when the action banner
-        // already explains the no-location case; other failure reasons still
-        // show through.
-        val workStatusToShow = if (
-            locationActionRequired &&
-            state.workStatus is WorkStatus.Failed &&
-            (state.workStatus as WorkStatus.Failed).reason == FetchAndNotifyWorker.REASON_NO_LOCATION
-        ) WorkStatus.Idle else state.workStatus
-        WorkStatusBanner(status = workStatusToShow)
-        if (state.insight == null) {
-            EmptyState(onRefresh = onRefresh, isWorking = isWorking)
-        } else {
-            // Tap-to-toggle is wired uniformly on every surface that shows a
-            // chart: the confidence chip (where the hint copy explains the
-            // affordance), the three temp / feels-like / precip cards, and the
-            // six diagnostic cards below (wind / cloud / humidity / solar /
-            // sunshine / UV). Every chart draws a consensus main line by
-            // default and overlays the per-model spread when the toggle is on,
-            // so tapping any of them produces a visible change. [tapToggle] is
-            // null when there's no per-model data in the cache (e.g. older
-            // payloads) — in that case the cards stay non-clickable and the
-            // diagnostic block at the bottom hides itself.
-            val perModelAvailable = state.insight.perModelHourly != null
-            val tapToggle = onToggleModelSpread.takeIf { perModelAvailable }
-            OutfitPreviewRow(
-                insight = state.insight,
+        // Tap-to-toggle is wired uniformly on every surface that shows a
+        // chart: the confidence chip (where the hint copy explains the
+        // affordance), the three temp / feels-like / precip cards, and the
+        // six diagnostic cards below (wind / cloud / humidity / solar /
+        // sunshine / UV). Every chart draws a consensus main line by
+        // default and overlays the per-model spread when the toggle is on,
+        // so tapping any of them produces a visible change. [tapToggle] is
+        // null when there's no per-model data in the cache (e.g. older
+        // payloads) — in that case the cards stay non-clickable and the
+        // diagnostic block at the bottom hides itself.
+        val perModelAvailable = insight.perModelHourly != null
+        val tapToggle = onToggleModelSpread.takeIf { perModelAvailable }
+        InsightCard(
+            insight = insight,
+            region = state.region,
+            showChevronRight = showChevronRight,
+            showChevronLeft = showChevronLeft,
+            onChevronTap = onChevronTap,
+        )
+        insight.confidence?.let {
+            ConfidenceChip(
+                info = it,
+                perModelHourly = insight.perModelHourly,
                 temperatureUnit = state.temperatureUnit,
-                clothesRules = state.clothesRules,
-                onAdjustThreshold = onAdjustThreshold,
+                windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                showModelSpread = state.showModelSpread,
+                onToggleModelSpread = tapToggle,
             )
-            InsightCard(
-                insight = state.insight,
-                region = state.region,
+        }
+        if (insight.hourly.isNotEmpty()) {
+            // Pass per-model data unconditionally so each chart's y-axis is
+            // sized to the same envelope whether the overlay is showing or
+            // not — tapping the toggle adds / removes lines but never
+            // shifts the scale. The diagnostic cards below follow the same
+            // pattern (see [PerModelDiagnosticCard]).
+            val perModelData = insight.perModelHourly
+            ForecastCard(
+                hourly = insight.hourly,
+                temperatureUnit = state.temperatureUnit,
+                distanceUnit = state.distanceUnit,
+                perModelHourly = perModelData,
+                showModelSpread = state.showModelSpread,
+                onToggleModelSpread = tapToggle,
             )
-            state.insight.confidence?.let {
-                ConfidenceChip(
-                    info = it,
-                    perModelHourly = state.insight.perModelHourly,
-                    temperatureUnit = state.temperatureUnit,
+            AirTemperatureCard(
+                hourly = insight.hourly,
+                temperatureUnit = state.temperatureUnit,
+                perModelHourly = perModelData,
+                showModelSpread = state.showModelSpread,
+                onToggleModelSpread = tapToggle,
+            )
+            PrecipitationCard(
+                hourly = insight.hourly,
+                perModelHourly = perModelData,
+                showModelSpread = state.showModelSpread,
+                onToggleModelSpread = tapToggle,
+            )
+            // Diagnostic cards below the headline temp + rain pair. Each
+            // draws a consensus main line by default and overlays the
+            // per-model spread when [showModelSpread] is on — same pattern
+            // as the temp / precip cards. Each card auto-hides when every
+            // consulted model is missing its metric outright (older cached
+            // payloads don't carry wind / humidity / cloud).
+            insight.perModelHourly?.let { perModelData ->
+                WindCard(
+                    hourly = insight.hourly,
+                    perModelHourly = perModelData,
                     windSpeedUnit = state.distanceUnit.windSpeedUnit(),
                     showModelSpread = state.showModelSpread,
                     onToggleModelSpread = tapToggle,
                 )
+                CloudCard(
+                    hourly = insight.hourly,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
+                    onToggleModelSpread = tapToggle,
+                )
+                HumidityCard(
+                    hourly = insight.hourly,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
+                    onToggleModelSpread = tapToggle,
+                )
+                SolarRadiationCard(
+                    hourly = insight.hourly,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
+                    onToggleModelSpread = tapToggle,
+                )
+                SunshineCard(
+                    hourly = insight.hourly,
+                    perModelHourly = perModelData,
+                    forDate = insight.forDate,
+                    period = insight.period,
+                    showModelSpread = state.showModelSpread,
+                    onToggleModelSpread = tapToggle,
+                )
+                UvIndexCard(
+                    hourly = insight.hourly,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
+                    onToggleModelSpread = tapToggle,
+                )
             }
-            if (state.insight.hourly.isNotEmpty()) {
-                // Pass per-model data unconditionally so each chart's y-axis is
-                // sized to the same envelope whether the overlay is showing or
-                // not — tapping the toggle adds / removes lines but never
-                // shifts the scale. The diagnostic cards below follow the same
-                // pattern (see [PerModelDiagnosticCard]).
-                val perModelData = state.insight.perModelHourly
-                ForecastCard(
-                    hourly = state.insight.hourly,
-                    temperatureUnit = state.temperatureUnit,
-                    distanceUnit = state.distanceUnit,
-                    perModelHourly = perModelData,
-                    showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = tapToggle,
+        }
+    }
+}
+
+/**
+ * Page-2 stand-in when the paired period's slot hasn't been generated yet
+ * (e.g. mid-morning on the day of first install before the evening worker
+ * has run). Names the period and the time of day the user can expect a
+ * result, plus a back-chevron to return to the primary page.
+ */
+@Composable
+internal fun MissingPeriodPlaceholder(
+    period: ForecastPeriod,
+    morningTime: LocalTime,
+    tonightTime: LocalTime,
+    showChevronLeft: Boolean,
+    onChevronTap: () -> Unit,
+) {
+    val readyAt = if (period == ForecastPeriod.TODAY) morningTime else tonightTime
+    val locale = LocalConfiguration.current.locales[0]
+    val timeFormatter = remember(locale) {
+        DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(locale)
+    }
+    val titleRes = if (period == ForecastPeriod.TODAY) {
+        R.string.today_placeholder_today_title
+    } else {
+        R.string.today_placeholder_tonight_title
+    }
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(titleRes),
+                    style = MaterialTheme.typography.titleMedium,
                 )
-                AirTemperatureCard(
-                    hourly = state.insight.hourly,
-                    temperatureUnit = state.temperatureUnit,
-                    perModelHourly = perModelData,
-                    showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = tapToggle,
-                )
-                PrecipitationCard(
-                    hourly = state.insight.hourly,
-                    perModelHourly = perModelData,
-                    showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = tapToggle,
-                )
-                // Diagnostic cards below the headline temp + rain pair. Each
-                // draws a consensus main line by default and overlays the
-                // per-model spread when [showModelSpread] is on — same pattern
-                // as the temp / precip cards. Each card auto-hides when every
-                // consulted model is missing its metric outright (older cached
-                // payloads don't carry wind / humidity / cloud).
-                state.insight.perModelHourly?.let { perModelData ->
-                    WindCard(
-                        hourly = state.insight.hourly,
-                        perModelHourly = perModelData,
-                        windSpeedUnit = state.distanceUnit.windSpeedUnit(),
-                        showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
-                    )
-                    CloudCard(
-                        hourly = state.insight.hourly,
-                        perModelHourly = perModelData,
-                        showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
-                    )
-                    HumidityCard(
-                        hourly = state.insight.hourly,
-                        perModelHourly = perModelData,
-                        showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
-                    )
-                    SolarRadiationCard(
-                        hourly = state.insight.hourly,
-                        perModelHourly = perModelData,
-                        showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
-                    )
-                    SunshineCard(
-                        hourly = state.insight.hourly,
-                        perModelHourly = perModelData,
-                        forDate = state.insight.forDate,
-                        period = state.insight.period,
-                        showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
-                    )
-                    UvIndexCard(
-                        hourly = state.insight.hourly,
-                        perModelHourly = perModelData,
-                        showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
-                    )
+                if (showChevronLeft) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(
+                        onClick = onChevronTap,
+                        modifier = Modifier.size(28.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                            contentDescription = stringResource(R.string.today_back_to_primary),
+                        )
+                    }
                 }
             }
+            Text(
+                text = stringResource(
+                    R.string.today_placeholder_body,
+                    timeFormatter.format(readyAt),
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }
@@ -956,6 +1113,21 @@ private fun bottomLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom)
 internal fun InsightCard(
     insight: Insight,
     region: Region,
+    /**
+     * Page-1 affordance: when true, a tappable chevron-right is rendered at
+     * the trailing edge of the date row, hinting that the user can swipe (or
+     * tap) to see the paired period's charts.
+     */
+    showChevronRight: Boolean = false,
+    /**
+     * Page-2 affordance: a tappable chevron-left at the trailing edge of the
+     * date row, jumping back to the primary period. Mutually exclusive with
+     * [showChevronRight] in practice; both default to false so existing
+     * non-pager call sites — and every default-arg preview — keep their
+     * snapshots byte-identical.
+     */
+    showChevronLeft: Boolean = false,
+    onChevronTap: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val formatter = remember(context, region) { InsightFormatter.forRegion(context, region) }
@@ -967,6 +1139,7 @@ internal fun InsightCard(
     // nothing useful — we still have coords, so the maps link is worth keeping.
     val locationLabel = shortLocationLabel(location?.displayName)
         ?: location?.let { stringResource(R.string.today_location_unknown) }
+    val showChevron = (showChevronRight || showChevronLeft) && onChevronTap != null
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -997,6 +1170,27 @@ internal fun InsightCard(
                             )
                         },
                     )
+                }
+                // Spacer + chevron are *only* added when the caller asked for
+                // one, so default-arg call sites produce a byte-identical Row
+                // measure pass and the existing InsightCard snapshots don't
+                // churn. AutoMirrored variants flip in RTL automatically (the
+                // RTL preview covers InsightCard via the outfit row, but the
+                // chevron itself only ships on the pager which routes
+                // direction the same way).
+                if (showChevron) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(
+                        onClick = { onChevronTap?.invoke() },
+                        modifier = Modifier.size(28.dp),
+                    ) {
+                        val (icon, cdRes) = if (showChevronRight) {
+                            Icons.AutoMirrored.Filled.KeyboardArrowRight to R.string.today_view_other_period
+                        } else {
+                            Icons.AutoMirrored.Filled.KeyboardArrowLeft to R.string.today_back_to_primary
+                        }
+                        Icon(imageVector = icon, contentDescription = stringResource(cdRes))
+                    }
                 }
             }
             Text(

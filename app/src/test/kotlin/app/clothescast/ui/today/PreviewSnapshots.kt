@@ -355,6 +355,12 @@ class PreviewSnapshots {
     @Test fun today_insight_card_with_location() = capture { TodayInsightCardWithLocationPreview() }
     @Test fun today_insight_card_location_unknown() = capture { TodayInsightCardLocationUnknownPreview() }
     @Test fun today_insight_card_long() = capture { TodayInsightCardLongPreview() }
+    @Test fun today_insight_card_with_chevron_right() = capture { TodayInsightCardWithChevronRightPreview() }
+    @Test fun today_insight_card_with_chevron_left() = capture { TodayInsightCardWithChevronLeftPreview() }
+    @Test fun today_insight_card_with_chevron_dark() = capture { TodayInsightCardWithChevronDarkPreview() }
+    @Test fun missing_tonight_placeholder() = capture { MissingTonightPlaceholderPreview() }
+    @Test fun missing_today_placeholder() = capture { MissingTodayPlaceholderPreview() }
+    @Test fun missing_tonight_placeholder_dark() = capture { MissingTonightPlaceholderDarkPreview() }
 
     @Test fun forecast_chart() = capture { ForecastChartPreview() }
     @Test fun forecast_chart_dark() = capture { ForecastChartDarkPreview() }

@@ -353,6 +353,57 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `outfit colour overrides default to empty maps`() = runTest {
+        val prefs = subject.preferences.first()
+        prefs.outfitTopColors shouldBe emptyMap()
+        prefs.outfitBottomColors shouldBe emptyMap()
+    }
+
+    @Test
+    fun `setOutfitTopColor round-trips a fill and clears with null`() = runTest {
+        subject.setOutfitTopColor(OutfitSuggestion.Top.SWEATER, 0xFFE53935L)
+        subject.setOutfitTopColor(OutfitSuggestion.Top.TSHIRT, 0xFF1E88E5L)
+        val withTwo = subject.preferences.first().outfitTopColors
+        withTwo[OutfitSuggestion.Top.SWEATER] shouldBe 0xFFE53935L
+        withTwo[OutfitSuggestion.Top.TSHIRT] shouldBe 0xFF1E88E5L
+
+        // Clearing one entry leaves the other intact — the partial update path
+        // is what the picker's "Default" tile relies on.
+        subject.setOutfitTopColor(OutfitSuggestion.Top.SWEATER, null)
+        val afterClear = subject.preferences.first().outfitTopColors
+        afterClear.containsKey(OutfitSuggestion.Top.SWEATER) shouldBe false
+        afterClear[OutfitSuggestion.Top.TSHIRT] shouldBe 0xFF1E88E5L
+    }
+
+    @Test
+    fun `setOutfitBottomColor round-trips`() = runTest {
+        subject.setOutfitBottomColor(OutfitSuggestion.Bottom.JEANS, 0xFF7CB342L)
+        subject.preferences.first().outfitBottomColors[OutfitSuggestion.Bottom.JEANS] shouldBe 0xFF7CB342L
+    }
+
+    @Test
+    fun `outfit colours tolerate unknown enum names in stored JSON`() = runTest {
+        // Forward-compat — a future build that adds a new Top variant and
+        // writes its colour shouldn't crash earlier installs that read it
+        // back. The unknown entry silently disappears; known entries survive.
+        // Numbers are positive Longs (the writer normalises ARGB ints into
+        // the unsigned-Long range so JSON output stays human-readable).
+        dataStore.edit {
+            it[stringPreferencesKey("outfit_top_colors_json")] =
+                """{"SWEATER":4294901760,"FUTURE_VARIANT":4278255360}"""
+        }
+        val prefs = subject.preferences.first()
+        prefs.outfitTopColors[OutfitSuggestion.Top.SWEATER] shouldBe 0xFFFF0000L
+        prefs.outfitTopColors.size shouldBe 1
+    }
+
+    @Test
+    fun `corrupt outfit colours JSON falls back to empty`() = runTest {
+        dataStore.edit { it[stringPreferencesKey("outfit_top_colors_json")] = "not json" }
+        subject.preferences.first().outfitTopColors shouldBe emptyMap()
+    }
+
+    @Test
     fun `gemini voice setter round-trips`() = runTest {
         subject.setGeminiVoice("Puck")
         subject.preferences.first().geminiVoice shouldBe "Puck"

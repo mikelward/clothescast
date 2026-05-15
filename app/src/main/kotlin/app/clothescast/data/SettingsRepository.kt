@@ -275,6 +275,29 @@ class SettingsRepository(
         dataStore.edit { it[COLOR_PALETTE] = palette.name }
     }
 
+    /**
+     * Sets the per-icon fill colour for [top]. `null` clears any override —
+     * the icon then falls back to the baked-in XML colour. Read-modify-write
+     * happens inside a single [dataStore.edit] so concurrent edits don't
+     * drop entries; serialisation matches [parseOutfitTopColors] below.
+     */
+    suspend fun setOutfitTopColor(top: OutfitSuggestion.Top, argb: Long?) {
+        dataStore.edit { prefs ->
+            val current = parseOutfitTopColors(prefs[OUTFIT_TOP_COLORS])
+            val updated = if (argb == null) current - top else current + (top to argb)
+            prefs[OUTFIT_TOP_COLORS] = json.encodeToString(updated.mapKeys { it.key.name })
+        }
+    }
+
+    /** Sibling of [setOutfitTopColor] for the bottom-garment slot. */
+    suspend fun setOutfitBottomColor(bottom: OutfitSuggestion.Bottom, argb: Long?) {
+        dataStore.edit { prefs ->
+            val current = parseOutfitBottomColors(prefs[OUTFIT_BOTTOM_COLORS])
+            val updated = if (argb == null) current - bottom else current + (bottom to argb)
+            prefs[OUTFIT_BOTTOM_COLORS] = json.encodeToString(updated.mapKeys { it.key.name })
+        }
+    }
+
     suspend fun setTelemetryNoticeAcked(acked: Boolean) {
         dataStore.edit { it[TELEMETRY_NOTICE_ACKED] = acked }
     }
@@ -412,6 +435,8 @@ class SettingsRepository(
         val telemetryNoticeAcked = this[TELEMETRY_NOTICE_ACKED] == true
         val colorPalette = this[COLOR_PALETTE]?.let { runCatching { ColorPalette.valueOf(it) }.getOrNull() }
             ?: ColorPalette.RAINBOW
+        val outfitTopColors = parseOutfitTopColors(this[OUTFIT_TOP_COLORS])
+        val outfitBottomColors = parseOutfitBottomColors(this[OUTFIT_BOTTOM_COLORS])
         val zone = zoneIdProvider()
 
         return UserPreferences(
@@ -441,6 +466,8 @@ class SettingsRepository(
             telemetryEnabled = telemetryEnabled,
             telemetryNoticeAcked = telemetryNoticeAcked,
             colorPalette = colorPalette,
+            outfitTopColors = outfitTopColors,
+            outfitBottomColors = outfitBottomColors,
         )
     }
 
@@ -522,6 +549,27 @@ class SettingsRepository(
         }.getOrNull()
     }
 
+    private fun parseOutfitTopColors(raw: String?): Map<OutfitSuggestion.Top, Long> =
+        parseOutfitColors(raw) { name -> runCatching { OutfitSuggestion.Top.valueOf(name) }.getOrNull() }
+
+    private fun parseOutfitBottomColors(raw: String?): Map<OutfitSuggestion.Bottom, Long> =
+        parseOutfitColors(raw) { name -> runCatching { OutfitSuggestion.Bottom.valueOf(name) }.getOrNull() }
+
+    /**
+     * Decodes a `Map<String, Long>` JSON blob and projects keys through
+     * [resolveKey], dropping entries with unknown enum names. Tolerant of
+     * forward-compat values (a future-added `Top` variant in stored JSON
+     * silently disappears on read rather than crashing the whole flow).
+     */
+    private fun <K : Any> parseOutfitColors(raw: String?, resolveKey: (String) -> K?): Map<K, Long> {
+        if (raw.isNullOrBlank()) return emptyMap()
+        return runCatching {
+            json.decodeFromString<Map<String, Long>>(raw)
+                .mapNotNull { (key, value) -> resolveKey(key)?.let { it to value } }
+                .toMap()
+        }.getOrDefault(emptyMap())
+    }
+
     private fun parseRules(raw: String?): List<ClothesRule> {
         if (raw.isNullOrBlank()) return ClothesRule.DEFAULTS
         return runCatching {
@@ -580,6 +628,8 @@ class SettingsRepository(
         private val TELEMETRY_NOTICE_ACKED = booleanPreferencesKey("telemetry_notice_acked")
         private val BUG_REPORT_CONSENT_ACKED = booleanPreferencesKey("bug_report_consent_acked")
         private val COLOR_PALETTE = stringPreferencesKey("color_palette")
+        private val OUTFIT_TOP_COLORS = stringPreferencesKey("outfit_top_colors_json")
+        private val OUTFIT_BOTTOM_COLORS = stringPreferencesKey("outfit_bottom_colors_json")
 
         private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
         private val DEFAULT_TIME: LocalTime = LocalTime.of(7, 0)

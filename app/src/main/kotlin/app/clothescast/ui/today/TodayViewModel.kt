@@ -10,6 +10,7 @@ import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Insight
+import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.data.InsightCache
@@ -76,6 +77,10 @@ data class TodayState(
      * [Insight.perModelHourly] is present.
      */
     val showModelSpread: Boolean = false,
+    /** User-picked fill colour overrides for each top-icon tier. Empty = baked-in defaults. */
+    val outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    /** Sibling of [outfitTopColors] for the bottom-icon tier. */
+    val outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
 )
 
 sealed class WorkStatus {
@@ -255,6 +260,8 @@ class TodayViewModel(
             hasFallbackLocation = prefs.location != null,
             clothesRules = prefs.clothesRules,
             showModelSpread = spread,
+            outfitTopColors = prefs.outfitTopColors,
+            outfitBottomColors = prefs.outfitBottomColors,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayState())
 

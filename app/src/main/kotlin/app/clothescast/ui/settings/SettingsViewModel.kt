@@ -122,6 +122,8 @@ class SettingsViewModel(
                         distanceUnitSetting = prefs.distanceUnitSetting,
                         themeMode = prefs.themeMode,
                         colorPalette = prefs.colorPalette,
+                        outfitTopColors = prefs.outfitTopColors,
+                        outfitBottomColors = prefs.outfitBottomColors,
                         clothesRules = prefs.clothesRules,
                         defaultBottom = prefs.defaultBottom,
                         location = prefs.location,
@@ -266,6 +268,27 @@ class SettingsViewModel(
 
     fun setColorPalette(palette: ColorPalette) {
         viewModelScope.launch { settingsRepository.setColorPalette(palette) }
+    }
+
+    /**
+     * Sets the user's fill-colour override for the [top] icon (or clears it
+     * with `argb = null`). Re-renders the cached outfit + widget so the
+     * Today screen and any home-screen widget pick up the new colour in
+     * the same frame as the picker dismisses.
+     */
+    fun setOutfitTopColor(top: OutfitSuggestion.Top, argb: Long?) {
+        viewModelScope.launch {
+            settingsRepository.setOutfitTopColor(top, argb)
+            refreshCachedOutfits()
+        }
+    }
+
+    /** Sibling of [setOutfitTopColor] for the bottom-icon tier. */
+    fun setOutfitBottomColor(bottom: OutfitSuggestion.Bottom, argb: Long?) {
+        viewModelScope.launch {
+            settingsRepository.setOutfitBottomColor(bottom, argb)
+            refreshCachedOutfits()
+        }
     }
 
     fun addClothesRule(rule: ClothesRule) {

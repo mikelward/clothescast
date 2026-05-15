@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.TextUnit
@@ -42,6 +43,11 @@ import app.clothescast.R
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.ui.garment.bottomDrawable
+import app.clothescast.ui.garment.outfitBottomDefaults
+import app.clothescast.ui.garment.outfitTopDefaults
+import app.clothescast.ui.garment.renderOutfitBitmap
+import app.clothescast.ui.garment.topDrawable
 import kotlinx.coroutines.flow.first
 
 /**
@@ -72,9 +78,15 @@ class OutfitWidget : GlanceAppWidget() {
         // emits the freshest of the two cached periods (TODAY / TONIGHT), which
         // is the same "what's relevant right now" choice the Today screen makes.
         val insight = runCatching { app.insightCache.latest.first() }.getOrNull()
+        // Per-garment colour overrides — empty when the user hasn't customised.
+        // Pulled here (not inside the Composable) so the bitmap rasterizer can
+        // run on this dispatcher rather than during composition.
+        val prefs = runCatching { app.settingsRepository.preferences.first() }.getOrNull()
+        val topColors = prefs?.outfitTopColors ?: emptyMap()
+        val bottomColors = prefs?.outfitBottomColors ?: emptyMap()
         provideContent {
             GlanceTheme {
-                OutfitWidgetContent(insight)
+                OutfitWidgetContent(insight, topColors, bottomColors)
             }
         }
     }
@@ -100,7 +112,11 @@ private fun launchAppIntent(context: Context): Intent =
         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
 @Composable
-private fun OutfitWidgetContent(insight: Insight?) {
+private fun OutfitWidgetContent(
+    insight: Insight?,
+    topColors: Map<OutfitSuggestion.Top, Long>,
+    bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+) {
     val size = LocalSize.current
     val context = LocalContext.current
     val outfit = insight?.outfit
@@ -116,21 +132,30 @@ private fun OutfitWidgetContent(insight: Insight?) {
         if (insight == null || outfit == null) {
             EmptyContent(size)
         } else if (size.width >= SIDE_BY_SIDE_MIN_WIDTH && insight.nextOutfit != null) {
-            SideBySideContent(insight, size)
+            SideBySideContent(insight, size, topColors, bottomColors)
         } else {
             SingleColumnContent(
                 label = context.getString(periodLabelRes(insight.period)),
                 outfit = outfit,
                 size = size,
+                topColors = topColors,
+                bottomColors = bottomColors,
             )
         }
     }
 }
 
 @Composable
-private fun SingleColumnContent(label: String, outfit: OutfitSuggestion, size: DpSize) {
+private fun SingleColumnContent(
+    label: String,
+    outfit: OutfitSuggestion,
+    size: DpSize,
+    topColors: Map<OutfitSuggestion.Top, Long>,
+    bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+) {
     val context = LocalContext.current
     val iconSize = scaledIconSize(size)
+    val iconPx = with(Density(context)) { iconSize.toPx() }.toInt().coerceAtLeast(1)
     Column(
         modifier = GlanceModifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -142,12 +167,28 @@ private fun SingleColumnContent(label: String, outfit: OutfitSuggestion, size: D
         // OutfitPreviewCard so the home-screen glance reads the same way as
         // the in-app card the user already knows.
         Image(
-            provider = ImageProvider(topIconRes(outfit.top)),
+            provider = ImageProvider(
+                renderOutfitBitmap(
+                    context = context,
+                    drawableRes = topDrawable(outfit.top),
+                    defaults = outfitTopDefaults.getValue(outfit.top),
+                    customFillArgb = topColors[outfit.top],
+                    sizePx = iconPx,
+                ),
+            ),
             contentDescription = context.getString(topLabelRes(outfit.top)),
             modifier = GlanceModifier.size(iconSize),
         )
         Image(
-            provider = ImageProvider(bottomIconRes(outfit.bottom)),
+            provider = ImageProvider(
+                renderOutfitBitmap(
+                    context = context,
+                    drawableRes = bottomDrawable(outfit.bottom),
+                    defaults = outfitBottomDefaults.getValue(outfit.bottom),
+                    customFillArgb = bottomColors[outfit.bottom],
+                    sizePx = iconPx,
+                ),
+            ),
             contentDescription = context.getString(bottomLabelRes(outfit.bottom)),
             modifier = GlanceModifier.size(iconSize),
         )
@@ -162,7 +203,12 @@ private fun SingleColumnContent(label: String, outfit: OutfitSuggestion, size: D
 }
 
 @Composable
-private fun SideBySideContent(insight: Insight, size: DpSize) {
+private fun SideBySideContent(
+    insight: Insight,
+    size: DpSize,
+    topColors: Map<OutfitSuggestion.Top, Long>,
+    bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+) {
     val context = LocalContext.current
     val primaryOutfit = insight.outfit ?: return
     val nextOutfit = insight.nextOutfit ?: return
@@ -183,6 +229,8 @@ private fun SideBySideContent(insight: Insight, size: DpSize) {
                 label = context.getString(primaryLabelRes),
                 outfit = primaryOutfit,
                 size = columnSize,
+                topColors = topColors,
+                bottomColors = bottomColors,
             )
         }
         Box(
@@ -193,6 +241,8 @@ private fun SideBySideContent(insight: Insight, size: DpSize) {
                 label = context.getString(nextLabelRes),
                 outfit = nextOutfit,
                 size = columnSize,
+                topColors = topColors,
+                bottomColors = bottomColors,
             )
         }
     }
@@ -264,16 +314,6 @@ private fun sideBySideLabelRes(period: ForecastPeriod): Pair<Int, Int> = when (p
         R.string.today_outfit_label_tonight to R.string.today_outfit_label_tomorrow
 }
 
-private fun topIconRes(top: OutfitSuggestion.Top): Int = when (top) {
-    OutfitSuggestion.Top.TSHIRT -> R.drawable.ic_outfit_tshirt
-    OutfitSuggestion.Top.POLO -> R.drawable.ic_outfit_polo
-    OutfitSuggestion.Top.SWEATER -> R.drawable.ic_outfit_sweater
-    OutfitSuggestion.Top.THIN_JACKET -> R.drawable.ic_outfit_thin_jacket
-    OutfitSuggestion.Top.THICK_JACKET -> R.drawable.ic_outfit_thick_jacket
-    OutfitSuggestion.Top.THICK_COAT -> R.drawable.ic_outfit_thick_coat
-    OutfitSuggestion.Top.PUFFER_JACKET -> R.drawable.ic_outfit_puffer_jacket
-}
-
 private fun topLabelRes(top: OutfitSuggestion.Top): Int = when (top) {
     OutfitSuggestion.Top.TSHIRT -> R.string.today_outfit_top_tshirt
     OutfitSuggestion.Top.POLO -> R.string.today_outfit_top_polo
@@ -282,13 +322,6 @@ private fun topLabelRes(top: OutfitSuggestion.Top): Int = when (top) {
     OutfitSuggestion.Top.THICK_JACKET -> R.string.today_outfit_top_thick_jacket
     OutfitSuggestion.Top.THICK_COAT -> R.string.today_outfit_top_thick_coat
     OutfitSuggestion.Top.PUFFER_JACKET -> R.string.today_outfit_top_puffer_jacket
-}
-
-private fun bottomIconRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom) {
-    OutfitSuggestion.Bottom.SHORTS -> R.drawable.ic_outfit_shorts
-    OutfitSuggestion.Bottom.LONG_SKIRT -> R.drawable.ic_outfit_skirt
-    OutfitSuggestion.Bottom.JEANS -> R.drawable.ic_outfit_jeans
-    OutfitSuggestion.Bottom.LONG_PANTS -> R.drawable.ic_outfit_long_pants
 }
 
 private fun bottomLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom) {

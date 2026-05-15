@@ -44,6 +44,10 @@ data class SettingsState(
     val distanceUnitSetting: DistanceUnitSetting = DistanceUnitSetting.AUTO,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val colorPalette: ColorPalette = ColorPalette.RAINBOW,
+    /** User-picked fill colour overrides for each top-icon tier. Empty = baked-in defaults. */
+    val outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    /** Sibling of [outfitTopColors] for the bottom-icon tier. */
+    val outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     val clothesRules: List<ClothesRule> = ClothesRule.DEFAULTS,
     val defaultBottom: OutfitSuggestion.Bottom = OutfitSuggestion.Bottom.LONG_PANTS,
     val location: Location? = null,

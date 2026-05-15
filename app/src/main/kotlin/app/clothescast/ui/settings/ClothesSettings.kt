@@ -1,14 +1,20 @@
 package app.clothescast.ui.settings
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -33,6 +39,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -44,6 +52,8 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.fromUnit
 import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
+import app.clothescast.ui.garment.outfitBottomDefaults
+import app.clothescast.ui.garment.outfitTopDefaults
 import kotlin.math.roundToInt
 
 /**
@@ -60,11 +70,15 @@ internal fun ClothesContent(
     rules: List<ClothesRule>,
     defaultBottom: OutfitSuggestion.Bottom,
     temperatureUnit: TemperatureUnit,
+    outfitTopColors: Map<OutfitSuggestion.Top, Long>,
+    outfitBottomColors: Map<OutfitSuggestion.Bottom, Long>,
     padding: PaddingValues,
     onAdd: (ClothesRule) -> Unit,
     onReplace: (Int, ClothesRule) -> Unit,
     onDelete: (Int) -> Unit,
     onSetDefaultBottom: (OutfitSuggestion.Bottom) -> Unit,
+    onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
+    onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -76,7 +90,130 @@ internal fun ClothesContent(
     ) {
         ClothesRulesCard(rules, temperatureUnit, onAdd, onReplace, onDelete)
         DefaultBottomCard(defaultBottom, onSetDefaultBottom)
+        GarmentColorsCard(
+            outfitTopColors = outfitTopColors,
+            outfitBottomColors = outfitBottomColors,
+            onSetOutfitTopColor = onSetOutfitTopColor,
+            onSetOutfitBottomColor = onSetOutfitBottomColor,
+        )
     }
+}
+
+/**
+ * Lets the user pick a fill colour for each rendered outfit-icon tier.
+ * Lives under Clothes (alongside the rule list and the default-bottom
+ * picker) rather than Display because it's a per-garment customisation
+ * keyed off the same icon catalogue the rules drive — not a global
+ * appearance preference like the chart palette.
+ */
+@Composable
+private fun GarmentColorsCard(
+    outfitTopColors: Map<OutfitSuggestion.Top, Long>,
+    outfitBottomColors: Map<OutfitSuggestion.Bottom, Long>,
+    onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
+    onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
+) {
+    var pickerTarget by remember { mutableStateOf<GarmentPickerTarget?>(null) }
+    SectionCard(title = stringResource(R.string.settings_display_garment_colors_title)) {
+        Text(
+            text = stringResource(R.string.settings_display_garment_colors_description),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        // Tops first (in OutfitSuggestion's declaration order — coldest tier
+        // last), then bottoms, matching the reading order of the Today
+        // screen's stacked icons.
+        OutfitSuggestion.Top.entries.forEach { top ->
+            GarmentColorRow(
+                label = stringResource(topOutfitLabelRes(top)),
+                effectiveColor = colorFor(outfitTopColors[top], outfitTopDefaults.getValue(top).fillArgb),
+                onClick = { pickerTarget = GarmentPickerTarget.Top(top) },
+            )
+        }
+        OutfitSuggestion.Bottom.entries.forEach { bottom ->
+            GarmentColorRow(
+                label = stringResource(bottomOutfitLabelRes(bottom)),
+                effectiveColor = colorFor(outfitBottomColors[bottom], outfitBottomDefaults.getValue(bottom).fillArgb),
+                onClick = { pickerTarget = GarmentPickerTarget.Bottom(bottom) },
+            )
+        }
+    }
+    pickerTarget?.let { target ->
+        val (label, current) = when (target) {
+            is GarmentPickerTarget.Top -> stringResource(topOutfitLabelRes(target.top)) to outfitTopColors[target.top]
+            is GarmentPickerTarget.Bottom -> stringResource(bottomOutfitLabelRes(target.bottom)) to outfitBottomColors[target.bottom]
+        }
+        GarmentColorPickerDialog(
+            garmentLabel = label,
+            currentArgb = current,
+            onPick = { picked ->
+                when (target) {
+                    is GarmentPickerTarget.Top -> onSetOutfitTopColor(target.top, picked)
+                    is GarmentPickerTarget.Bottom -> onSetOutfitBottomColor(target.bottom, picked)
+                }
+            },
+            onDismiss = { pickerTarget = null },
+        )
+    }
+}
+
+private sealed interface GarmentPickerTarget {
+    data class Top(val top: OutfitSuggestion.Top) : GarmentPickerTarget
+    data class Bottom(val bottom: OutfitSuggestion.Bottom) : GarmentPickerTarget
+}
+
+@Composable
+private fun GarmentColorRow(
+    label: String,
+    effectiveColor: Color,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .clip(CircleShape)
+                .background(effectiveColor)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    shape = CircleShape,
+                ),
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(start = 16.dp),
+        )
+    }
+}
+
+private fun colorFor(customArgb: Long?, defaultArgb: Int): Color =
+    Color((customArgb?.toInt()) ?: defaultArgb)
+
+@StringRes
+private fun topOutfitLabelRes(top: OutfitSuggestion.Top): Int = when (top) {
+    OutfitSuggestion.Top.TSHIRT -> R.string.today_outfit_top_tshirt
+    OutfitSuggestion.Top.POLO -> R.string.today_outfit_top_polo
+    OutfitSuggestion.Top.SWEATER -> R.string.today_outfit_top_sweater
+    OutfitSuggestion.Top.THIN_JACKET -> R.string.today_outfit_top_thin_jacket
+    OutfitSuggestion.Top.THICK_JACKET -> R.string.today_outfit_top_thick_jacket
+    OutfitSuggestion.Top.THICK_COAT -> R.string.today_outfit_top_thick_coat
+    OutfitSuggestion.Top.PUFFER_JACKET -> R.string.today_outfit_top_puffer_jacket
+}
+
+@StringRes
+private fun bottomOutfitLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom) {
+    OutfitSuggestion.Bottom.SHORTS -> R.string.today_outfit_bottom_shorts
+    OutfitSuggestion.Bottom.LONG_SKIRT -> R.string.today_outfit_bottom_long_skirt
+    OutfitSuggestion.Bottom.JEANS -> R.string.today_outfit_bottom_jeans
+    OutfitSuggestion.Bottom.LONG_PANTS -> R.string.today_outfit_bottom_long_pants
 }
 
 /**

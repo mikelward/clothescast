@@ -285,16 +285,18 @@ private fun TodayContent(
             .fillMaxSize()
             .padding(padding),
     ) {
-        // Pinned header — banners + outfit row. Outside the pager so the
-        // outfit row's at-a-glance today+tonight icons stay visible
-        // regardless of which page is in view, and so critical banners
-        // (update available, crash report, telemetry notice, location
-        // required, work status) aren't duplicated per page.
+        // Pinned header — banners only. Outside the pager so critical
+        // banners (update available, crash report, telemetry notice,
+        // location required, work status) aren't duplicated per page.
+        // The outfit row used to live here too, but it pinned a lot of
+        // vertical space at the top regardless of which page was in
+        // view; it now scrolls with each page (rendered inside TodayPage
+        // below) so more chart cards fit in a single screen of scroll.
         //
-        // First in the stack on purpose: a stale build is the upstream
-        // cause of many bug reports, so giving the user the chance to
-        // update before they notice anything else is the highest-leverage
-        // placement.
+        // UpdateAvailableBanner is first on purpose: a stale build is
+        // the upstream cause of many bug reports, so giving the user
+        // the chance to update before they notice anything else is the
+        // highest-leverage placement.
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -315,16 +317,6 @@ private fun TodayContent(
                 LocationActionRequiredBanner(onSetUpLocation = onSetUpLocation)
             }
             WorkStatusBanner(status = workStatusToShow)
-            state.thisPeriodInsight?.let { thisPeriod ->
-                OutfitPreviewRow(
-                    insight = thisPeriod,
-                    temperatureUnit = state.temperatureUnit,
-                    clothesRules = state.clothesRules,
-                    outfitTopColors = state.outfitTopColors,
-                    outfitBottomColors = state.outfitBottomColors,
-                    onAdjustThreshold = onAdjustThreshold,
-                )
-            }
         }
         if (state.thisPeriodInsight == null) {
             Column(
@@ -371,6 +363,11 @@ private fun TodayContent(
                     insight = pageInsight,
                     fallbackPeriod = pagePeriod,
                     state = state,
+                    // Same outfit row on both pages — page 2 shows this
+                    // period's pair too, not the page-2 period's pair. We
+                    // don't surface a 3rd period (tomorrow) on page 2; the
+                    // outfit row stays the at-a-glance today+tonight summary.
+                    outfitInsight = state.thisPeriodInsight,
                     showChevronRight = (page == 0),
                     showChevronLeft = (page == 1),
                     onChevronTap = {
@@ -378,6 +375,7 @@ private fun TodayContent(
                             pagerState.animateScrollToPage(if (page == 0) 1 else 0)
                         }
                     },
+                    onAdjustThreshold = onAdjustThreshold,
                     onToggleModelSpread = onToggleModelSpread,
                 )
             }
@@ -400,9 +398,11 @@ private fun TodayPage(
     insight: Insight?,
     fallbackPeriod: ForecastPeriod,
     state: TodayState,
+    outfitInsight: Insight,
     showChevronRight: Boolean,
     showChevronLeft: Boolean,
     onChevronTap: () -> Unit,
+    onAdjustThreshold: (String, Double) -> Unit,
     onToggleModelSpread: () -> Unit,
 ) {
     Column(
@@ -413,6 +413,19 @@ private fun TodayPage(
             .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        // Outfit row sits above the null-insight short-circuit so it
+        // also renders on page 2 when [insight] (the next-period
+        // insight) is null and we fall back to MissingPeriodPlaceholder.
+        // [outfitInsight] is always this period's insight, so this is
+        // independent of whether the page's own insight is cached yet.
+        OutfitPreviewRow(
+            insight = outfitInsight,
+            temperatureUnit = state.temperatureUnit,
+            clothesRules = state.clothesRules,
+            outfitTopColors = state.outfitTopColors,
+            outfitBottomColors = state.outfitBottomColors,
+            onAdjustThreshold = onAdjustThreshold,
+        )
         if (insight == null) {
             MissingPeriodPlaceholder(
                 period = fallbackPeriod,

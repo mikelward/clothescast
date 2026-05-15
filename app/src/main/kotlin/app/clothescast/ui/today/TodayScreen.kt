@@ -315,9 +315,9 @@ private fun TodayContent(
                 LocationActionRequiredBanner(onSetUpLocation = onSetUpLocation)
             }
             WorkStatusBanner(status = workStatusToShow)
-            state.primaryInsight?.let { primary ->
+            state.thisPeriodInsight?.let { thisPeriod ->
                 OutfitPreviewRow(
-                    insight = primary,
+                    insight = thisPeriod,
                     temperatureUnit = state.temperatureUnit,
                     clothesRules = state.clothesRules,
                     outfitTopColors = state.outfitTopColors,
@@ -326,7 +326,7 @@ private fun TodayContent(
                 )
             }
         }
-        if (state.primaryInsight == null) {
+        if (state.thisPeriodInsight == null) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -336,9 +336,9 @@ private fun TodayContent(
                 EmptyState(onRefresh = onRefresh, isWorking = isWorking)
             }
         } else {
-            // Two-page pager — page 0 is the primary insight (the period
-            // that was "latest" before this change), page 1 is the paired
-            // period (or a placeholder when its slot hasn't been cached
+            // Two-page pager — page 0 is the this-period insight (the 12-hour
+            // window the user is currently in), page 1 is the next-period
+            // insight (or a placeholder when its slot hasn't been cached
             // yet). A chevron next to each page's InsightCard hints at
             // the affordance; side-swipe anywhere on the page navigates.
             //
@@ -353,14 +353,20 @@ private fun TodayContent(
             // scroll viewport matches the visible region.
             val pagerState = rememberPagerState(initialPage = 0) { 2 }
             val pagerScope = rememberCoroutineScope()
+            // Placeholder period for page 2 when its slot is empty —
+            // whatever the next 12-hour window after `thisPeriodInsight` is.
+            // The worker writes [InsightCache.Slot.NEXT_PERIOD] paired with
+            // each delivery, so this fallback only fires before the first
+            // post-upgrade worker run.
+            val nextPeriodFallback = state.thisPeriodInsight.period.opposite()
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
             ) { page ->
-                val pageInsight = if (page == 0) state.primaryInsight else state.nextInsight
-                val pagePeriod = if (page == 0) state.primaryInsight.period else state.nextPeriod
+                val pageInsight = if (page == 0) state.thisPeriodInsight else state.nextPeriodInsight
+                val pagePeriod = if (page == 0) state.thisPeriodInsight.period else nextPeriodFallback
                 TodayPage(
                     insight = pageInsight,
                     fallbackPeriod = pagePeriod,

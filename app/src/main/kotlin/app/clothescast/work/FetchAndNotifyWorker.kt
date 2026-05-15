@@ -22,6 +22,7 @@ import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
+import app.clothescast.data.InsightCache
 import app.clothescast.diag.Telemetry
 import app.clothescast.diag.classifyDailyRefreshReason
 import app.clothescast.insight.InsightFormatter
@@ -223,7 +224,7 @@ class FetchAndNotifyWorker(
             DiagLog.i(TAG, "Force refresh requested; bypassing today's cache.")
             null
         } else {
-            runCatching { app.insightCache.forPeriodToday(today, period) }.getOrNull()
+            runCatching { app.insightCache.deliveredForToday(today, period) }.getOrNull()
         }
         if (cached != null) {
             DiagLog.i(TAG, "Using cached $period insight for ${cached.forDate}.")
@@ -281,7 +282,7 @@ class FetchAndNotifyWorker(
                 runCatching { app.weatherAlertNotifier.notify(alert) }
                     .onFailure { DiagLog.w(TAG, "Severe alert notification failed for ${alert.event}.", it) }
             }
-            runCatching { app.insightCache.store(insight) }
+            runCatching { app.insightCache.store(InsightCache.Slot.THIS_PERIOD, insight) }
                 .onSuccess {
                     // Push the fresh outfit out to any home-screen widgets.
                     // Gated on cache success because provideGlance() reads
@@ -293,6 +294,27 @@ class FetchAndNotifyWorker(
                         .onFailure { DiagLog.w(TAG, "Outfit widget update failed.", it) }
                 }
                 .onFailure { DiagLog.w(TAG, "Insight cache write failed; not blocking delivery.", it) }
+            // Also generate and cache the *next* 12-hour window's insight off
+            // the same Open-Meteo bundle so the Today screen's pager always
+            // surfaces the current + next windows, never a previous one.
+            // CachingWeatherRepository keeps the bundle for 1h, so this is a
+            // re-render rather than a refetch — no extra network call, no
+            // extra Gemini call, no extra TTS.
+            //
+            // What "next" means depends on which alarm fired:
+            //  - Morning (period=TODAY): next is *tonight* of the same date
+            //    (the morning fetch already includes the tonight slice for
+            //    the evening tie-in).
+            //  - Evening (period=TONIGHT): next is *tomorrow's daytime*
+            //    (Open-Meteo's `forecast_days=2` response includes tomorrow's
+            //    full daily aggregates + hourly, so the day-after-the-alarm
+            //    window is fully covered).
+            //
+            // The pre-rendered insight goes into Slot.NEXT_PERIOD; dedup only
+            // consults Slot.THIS_PERIOD so the next morning's fresh fetch
+            // isn't suppressed by yesterday-evening's tomorrow-daytime
+            // pre-render.
+            generatePairedInsight(location, prefs, period)
             // Render once per delivery so notification, TTS, and the audit log
             // all share the same string and we don't reconfigure the
             // Configuration-overridden Resources three times per fire.
@@ -345,6 +367,46 @@ class FetchAndNotifyWorker(
         } catch (t: Throwable) {
             DiagLog.e(TAG, "Unhandled error; failing.", t)
             Result.failure(reason(REASON_UNHANDLED, summarize(t)))
+        }
+    }
+
+    /**
+     * Builds and caches the insight for the *next* 12-hour window after the
+     * one the current alarm is delivering, sharing the just-fetched Open-Meteo
+     * bundle via [app.clothescast.core.domain.repository.CachingWeatherRepository]'s
+     * in-memory cache so this is a re-render rather than a second network
+     * call.
+     *
+     * What "next" means depends on which alarm fired:
+     *  - Morning (`primaryPeriod = TODAY`): the next window is tonight of the
+     *    same date — generated with `dayOffset = 0`, `period = TONIGHT`.
+     *  - Evening (`primaryPeriod = TONIGHT`): the next window is tomorrow's
+     *    daytime — generated with `dayOffset = 1`, `period = TODAY`. The
+     *    bundle's `forecast_days=2` response carries tomorrow's full daily
+     *    aggregates + hourly, so no extra fetch is needed.
+     *
+     * Silent — no notification, no TTS, no widget update. Failures are
+     * logged and swallowed; the Today screen's pager falls back to its
+     * placeholder for the NEXT_PERIOD slot in that case.
+     */
+    private suspend fun generatePairedInsight(
+        location: Location,
+        prefs: UserPreferences,
+        primaryPeriod: ForecastPeriod,
+    ) {
+        val nextWindowPeriod = when (primaryPeriod) {
+            ForecastPeriod.TODAY -> ForecastPeriod.TONIGHT
+            ForecastPeriod.TONIGHT -> ForecastPeriod.TODAY
+        }
+        val dayOffset = if (primaryPeriod == ForecastPeriod.TONIGHT) 1 else 0
+        runCatching {
+            val result = app.generateDailyInsight(location, prefs, nextWindowPeriod, dayOffset)
+            val pairedInsight = result.insight.copy(location = location)
+            app.insightCache.store(InsightCache.Slot.NEXT_PERIOD, pairedInsight)
+            DiagLog.i(TAG, "Next-window $nextWindowPeriod insight cached for ${pairedInsight.forDate}.")
+        }.onFailure {
+            if (it is CancellationException) throw it
+            DiagLog.w(TAG, "Next-window $nextWindowPeriod insight generation failed; not blocking $primaryPeriod delivery.", it)
         }
     }
 

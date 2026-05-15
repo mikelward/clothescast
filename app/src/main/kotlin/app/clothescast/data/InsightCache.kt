@@ -44,42 +44,67 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 
 /**
- * Persists the most recently generated [Insight] so the daily worker can avoid
- * regenerating twice for the same day. The cache key is the insight's `forDate`
- * (LocalDate), which means two runs on the same calendar day reuse the same
- * insight even across process kills, reboots, or "Fire insight now" debug taps.
+ * Persists the most recently generated [Insight]s so the daily worker can avoid
+ * regenerating twice for the same day. The cache holds two slots:
+ *
+ *  - [Slot.THIS_PERIOD] — the insight covering the 12-hour window the user is
+ *    currently in (daytime in the morning, tonight in the evening). The Today
+ *    screen's pager surfaces this on page 1. May be a few hours old by the
+ *    time the user opens the app — the period itself is still "this one",
+ *    even if the bytes were generated at the period's start.
+ *  - [Slot.NEXT_PERIOD] — the insight pre-rendered for the next 12-hour window.
+ *    The morning alarm pre-renders tonight (same date); the evening alarm
+ *    pre-renders tomorrow's daytime. The Today screen's pager surfaces this
+ *    on page 2 so the "next" card always reads the next 12 hours, never the
+ *    previous one.
+ *
+ * The role-based naming keeps the pager logic trivial — page 1 shows
+ * [Slot.THIS_PERIOD], page 2 shows [Slot.NEXT_PERIOD] — and decouples the
+ * cache layout from the [ForecastPeriod] kind (which is recorded inside the
+ * stored insight).
  *
  * The cache stores the structured [InsightSummary] (each clause as typed data)
  * rather than rendered prose, so a Region-setting change re-renders the cached
  * insight in the new locale without re-fetching the forecast.
  *
- * The cache is intentionally a single slot per period — there's no historical
- * browsing planned, and bounding storage at 2 entries (TODAY + TONIGHT) keeps the
- * cost of corruption (deserialization failure → drop and regenerate) trivial.
+ * The cache is intentionally a single slot per role — there's no historical
+ * browsing planned, and bounding storage at 2 entries keeps the cost of
+ * corruption (deserialization failure → drop and regenerate) trivial.
  */
 class InsightCache(
     private val dataStore: DataStore<Preferences>,
     private val json: Json = Json { ignoreUnknownKeys = true },
 ) {
     /**
-     * The most recent insight written to the cache, regardless of period. The Today
-     * screen surfaces this so opening the app after the tonight alarm fired shows
-     * the tonight insight (the freshest read of what the user is about to walk
-     * into), while opening the app at noon still shows the morning insight.
+     * Which 12-hour window an insight occupies relative to the rendering surface:
+     * the window the user is currently inside ([THIS_PERIOD], page 1 of the pager
+     * / the home-screen widget) or the upcoming one ([NEXT_PERIOD], page 2).
+     * Stored in separate DataStore keys so the worker can overwrite each
+     * independently.
+     */
+    enum class Slot { THIS_PERIOD, NEXT_PERIOD }
+
+    /**
+     * The most recent insight written to either slot. The home-screen widget
+     * uses this to show whichever payload is freshest — opening it after the
+     * tonight alarm fired surfaces the tonight insight, while opening it at
+     * noon still surfaces the morning insight.
      */
     val latest: Flow<Insight?> = dataStore.data.map { prefs ->
         listOfNotNull(
-            prefs.readSlot(TODAY_INSIGHT_JSON),
-            prefs.readSlot(TONIGHT_INSIGHT_JSON),
+            prefs.readSlot(THIS_PERIOD_INSIGHT_JSON),
+            prefs.readSlot(NEXT_PERIOD_INSIGHT_JSON),
         ).maxByOrNull { it.generatedAt }
     }
 
-    fun latestForPeriod(period: ForecastPeriod): Flow<Insight?> = dataStore.data.map { prefs ->
-        prefs.readSlot(keyFor(period))
-    }
+    /** The insight on page 1 of the pager — the 12-hour window the user is currently in. */
+    val thisPeriod: Flow<Insight?> = dataStore.data.map { it.readSlot(THIS_PERIOD_INSIGHT_JSON) }
 
-    suspend fun store(insight: Insight) {
-        dataStore.edit { it[keyFor(insight.period)] = json.encodeToString(insight.toDto()) }
+    /** The insight on page 2 of the pager — the pre-rendered next 12-hour window. */
+    val nextPeriod: Flow<Insight?> = dataStore.data.map { it.readSlot(NEXT_PERIOD_INSIGHT_JSON) }
+
+    suspend fun store(slot: Slot, insight: Insight) {
+        dataStore.edit { it[keyFor(slot)] = json.encodeToString(insight.toDto()) }
     }
 
     /**
@@ -107,28 +132,32 @@ class InsightCache(
         defaultBottom: OutfitSuggestion.Bottom,
     ) {
         dataStore.edit { prefs ->
-            // Read both slots up front so TODAY's `nextOutfit` can borrow
-            // TONIGHT's hourly when re-deriving.
-            val todayInsight = prefs[TODAY_INSIGHT_JSON]?.let { decodeInsight(it) }
-            val tonightInsight = prefs[TONIGHT_INSIGHT_JSON]?.let { decodeInsight(it) }
-            // Only pair the slots when their forDate matches — during a morning
-            // settings edit, the TONIGHT slot may still be yesterday's evening
-            // insight while the TODAY slot is current. Rewriting today's
-            // `nextOutfit` from yesterday's overnight hourly would silently
-            // backdate the home-screen "Tonight" icon to last night's conditions
-            // (which already happened); preserving the existing `nextOutfit` is
-            // the honest choice until the next worker run rebuilds TONIGHT.
-            val tonightPair = tonightInsight?.takeIf { it.forDate == todayInsight?.forDate }
-            todayInsight?.recomputed(
+            // Read both slots up front so THIS_PERIOD's `nextOutfit` can
+            // borrow NEXT_PERIOD's hourly when re-deriving. NEXT_PERIOD's
+            // own `nextOutfit` has no peer to borrow from in the cache (we
+            // don't store a third slot), so it stays as whatever the worker
+            // last wrote.
+            val thisPeriodInsight = prefs[THIS_PERIOD_INSIGHT_JSON]?.let { decodeInsight(it) }
+            val nextPeriodInsight = prefs[NEXT_PERIOD_INSIGHT_JSON]?.let { decodeInsight(it) }
+            // Only borrow when NEXT_PERIOD actually represents the window
+            // that follows THIS_PERIOD's — opposite period kinds. After a
+            // healthy paired worker run this always holds; the guard
+            // protects against a partial-write degraded state where
+            // NEXT_PERIOD is left over from the previous worker run (same
+            // period kind, ~12 h stale).
+            val nextForBorrow = nextPeriodInsight?.takeIf {
+                it.period == thisPeriodInsight?.period?.opposite()
+            }
+            thisPeriodInsight?.recomputed(
                 clothesRules = clothesRules,
                 defaultBottom = defaultBottom,
-                nextSlot = tonightPair,
-            )?.let { prefs[TODAY_INSIGHT_JSON] = json.encodeToString(it.toDto()) }
-            tonightInsight?.recomputed(
+                nextSlot = nextForBorrow,
+            )?.let { prefs[THIS_PERIOD_INSIGHT_JSON] = json.encodeToString(it.toDto()) }
+            nextPeriodInsight?.recomputed(
                 clothesRules = clothesRules,
                 defaultBottom = defaultBottom,
                 nextSlot = null,
-            )?.let { prefs[TONIGHT_INSIGHT_JSON] = json.encodeToString(it.toDto()) }
+            )?.let { prefs[NEXT_PERIOD_INSIGHT_JSON] = json.encodeToString(it.toDto()) }
         }
     }
 
@@ -187,17 +216,28 @@ class InsightCache(
         )
     }
 
-    suspend fun forToday(today: LocalDate): Insight? = forPeriodToday(today, ForecastPeriod.TODAY)
-
-    suspend fun forPeriodToday(today: LocalDate, period: ForecastPeriod): Insight? {
-        val cached = latestForPeriod(period).first() ?: return null
-        return cached.takeIf { it.forDate == today }
+    /**
+     * The just-delivered insight matching [today] and [period], or null when
+     * the THIS_PERIOD slot holds nothing matching. Used by the worker to
+     * dedup "Fire insight now" debug taps against the same-day alarm — the
+     * second call redelivers the cached payload instead of burning another
+     * fetch.
+     *
+     * Only the THIS_PERIOD slot is consulted; the NEXT_PERIOD slot is a
+     * pre-render that hasn't been delivered yet, and dedup-matching against
+     * it would silently cause the morning alarm to redeliver yesterday-
+     * evening's pre-cached Saturday-daytime insight instead of fetching a
+     * fresh Saturday forecast.
+     */
+    suspend fun deliveredForToday(today: LocalDate, period: ForecastPeriod): Insight? {
+        val cached = thisPeriod.first() ?: return null
+        return cached.takeIf { it.forDate == today && it.period == period }
     }
 
     suspend fun clear() {
         dataStore.edit {
-            it.remove(TODAY_INSIGHT_JSON)
-            it.remove(TONIGHT_INSIGHT_JSON)
+            it.remove(THIS_PERIOD_INSIGHT_JSON)
+            it.remove(NEXT_PERIOD_INSIGHT_JSON)
         }
     }
 
@@ -206,10 +246,10 @@ class InsightCache(
         return runCatching { json.decodeFromString<InsightDto>(raw).toDomain() }.getOrNull()
     }
 
-    private fun keyFor(period: ForecastPeriod): androidx.datastore.preferences.core.Preferences.Key<String> =
-        when (period) {
-            ForecastPeriod.TODAY -> TODAY_INSIGHT_JSON
-            ForecastPeriod.TONIGHT -> TONIGHT_INSIGHT_JSON
+    private fun keyFor(slot: Slot): androidx.datastore.preferences.core.Preferences.Key<String> =
+        when (slot) {
+            Slot.THIS_PERIOD -> THIS_PERIOD_INSIGHT_JSON
+            Slot.NEXT_PERIOD -> NEXT_PERIOD_INSIGHT_JSON
         }
 
     @Serializable
@@ -609,13 +649,20 @@ class InsightCache(
     )
 
     companion object {
-        // Bumped when [Fact] swapped its `thresholdKind` enum for a free-form
-        // [Fact.ruleItem] string keyed to a [ClothesRule.item] — old payloads
-        // carried the enum name and the serializer can't infer a clothes-rule
-        // key from it. Old payloads are dropped on first read; the next worker
-        // run repopulates with the new schema.
-        private val TODAY_INSIGHT_JSON = stringPreferencesKey("latest_insight_v5")
-        private val TONIGHT_INSIGHT_JSON = stringPreferencesKey("latest_tonight_insight_v4")
+        // Bumped when the cache layout switched from period-keyed
+        // (TODAY / TONIGHT) slots to role-keyed (CURRENT / NEXT) slots so the
+        // pager can always show the current + next 12-hour window. Old
+        // period-keyed payloads stay readable from the legacy keys for one
+        // upgrade cycle; on the next worker run the new keys are populated
+        // and the legacy ones are dropped.
+        //
+        // The `_v6` suffix continues the existing schema-version pattern (the
+        // previous bump was `_v5` when [Fact] swapped its `thresholdKind` enum
+        // for a free-form [Fact.ruleItem] string), so any same-day-old cached
+        // payload with the previous shape is dropped on first read rather
+        // than silently misinterpreted.
+        private val THIS_PERIOD_INSIGHT_JSON = stringPreferencesKey("this_period_insight_v6")
+        private val NEXT_PERIOD_INSIGHT_JSON = stringPreferencesKey("next_period_insight_v6")
 
         fun create(context: Context): InsightCache = InsightCache(context.insightDataStore)
     }

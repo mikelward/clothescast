@@ -111,11 +111,14 @@ small set since Firebase caps custom user properties at 25 per app.
 
 Open work:
 
-- [ ] **Codify the do-not-transmit list in tests.** PRIVACY.md and the
-      Settings → Privacy card describe the contract; we don't yet have
-      a regression test asserting no Telemetry call site reads insight
-      prose, calendar data, location, or API keys. PR-time review
-      catches it today; lock it in code.
+- [x] **Codify the do-not-transmit list in tests.** `TelemetryPrivacyContractTest`
+      structurally locks the surface: event-name / param-key / user-property
+      allowlists in `Telemetry.kt`, literal-only Crashlytics custom keys, no
+      `setUserId`, `logEvent` / `setUserProperty` channelled through
+      `Telemetry.kt`, and the three snapshot data classes constrained to
+      primitive fields so a `Location` / `CalendarEvent` / insight prose can't
+      be passed in at the type level. New entries trip the allowlists and
+      force a conscious PR-time decision.
 - [ ] **Insight-composition events — decide separately.** Which evening
       tie-in path fired (clothes-rule vs per-model rain bare warning vs
       none), which confidence tier emitted, whether tonight was

@@ -145,13 +145,17 @@ class AppPaletteTest {
     @Test
     fun `HIGHLIGHTER palette overrides the Combined main-line colour`() {
         // Rainbow and Accessible leave mainLineColor null (fallback to
-        // Material primary). Highlighter's ICON cyan and Auto charcoal both
-        // crowd the theme primary blue on the same chart, so it sets the
-        // main line explicitly — purple on light, pure white on dark.
+        // Material primary). Highlighter's ICON cyan crowds the theme
+        // primary blue on the same chart, and the pale Auto best_match
+        // overlay (#EAEAEA on dark) would crowd pure white — so it sets
+        // the main line explicitly. Deep purple on light, Material's
+        // recommended dark-theme purple #BB86FC on dark: both sit clearly
+        // off the grey-white axis while staying readable against the
+        // surface.
         val light = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.HIGHLIGHTER)
         val dark = appPaletteFor(scheme, darkTheme = true, colorPalette = ColorPalette.HIGHLIGHTER)
         light.mainLineColor shouldBe Color(0xFF6200EA)
-        dark.mainLineColor shouldBe Color(0xFFFFFFFF)
+        dark.mainLineColor shouldBe Color(0xFFBB86FC)
     }
 
     @Test

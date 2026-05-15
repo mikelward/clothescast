@@ -213,11 +213,15 @@ internal fun highlighterPalette(darkTheme: Boolean): AppPalette = AppPalette(
     },
     // The Combined main line lives outside the model-overlay trio, but it
     // sits on the same chart and needs to read as distinct from both the
-    // cyan ICON line and the charcoal Auto best_match line. Material's
-    // theme primary (a blue) collapses against either, so we route it
-    // through the palette: deep purple on light theme, bright white on
-    // dark.
-    mainLineColor = if (darkTheme) Color(0xFFFFFFFF) else Color(0xFF6200EA),
+    // cyan ICON line and the pale Auto best_match line. Material's theme
+    // primary (a blue) collapses against the cyan, so we route it through
+    // the palette: deep purple on light theme, light purple on dark. We
+    // can't use pure white on dark because the best_match overlay is
+    // #EAEAEA — the two reads as the same pale line. Material's
+    // recommended dark-theme purple (`#BB86FC`) sits clearly off the
+    // grey-white axis while staying high-luminance enough to read against
+    // a dark surface.
+    mainLineColor = if (darkTheme) Color(0xFFBB86FC) else Color(0xFF6200EA),
     confidence = if (darkTheme) {
         mapOf(
             ForecastConfidence.HIGH to ConfidenceColors(

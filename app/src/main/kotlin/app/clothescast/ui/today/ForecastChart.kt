@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
@@ -48,12 +49,14 @@ import kotlin.math.roundToInt
 // Vico's identity-by-index animation so the combined line no longer fades
 // out and back in when the overlay toggles. The trade-off is that the
 // per-model overlays now draw over the combined line in the spread view.
-internal val MODEL_DRAW_ORDER = listOf(
-    "ecmwf_ifs04",
-    "gfs_seamless",
-    "icon_seamless",
-    BEST_MATCH_MODEL_ID,
-)
+//
+// Derived from [ForecastModel] so adding a new entry in the domain enum
+// automatically widens the chart without an additional edit here — and so
+// every model the user can pick in Settings ▸ Forecasters has a stable
+// position. Enum declaration order doubles as the chart's left-to-right
+// legend order; the [AppPalette.modelColors] maps follow the same order.
+internal val MODEL_DRAW_ORDER: List<String> =
+    ForecastModel.entries.map { it.openMeteoId } + BEST_MATCH_MODEL_ID
 
 // Pinned per-model overlay colours live on the active [app.clothescast.ui.theme.AppPalette]
 // rather than as a static map here, so the colour-blind palette can swap the
@@ -269,18 +272,25 @@ internal fun rememberPinnedLineProvider(
     visibleModels: List<String>,
     mainLineColor: Color?,
     modelColors: Map<String, Color> = AppTheme.palette.modelColors,
-): LineCartesianLayer.LineProvider =
-    remember(visibleModels, mainLineColor, modelColors) {
+): LineCartesianLayer.LineProvider {
+    // Key the remember on the colours actually used (mainline + per-visible-model)
+    // rather than the whole [modelColors] map. The map widened to cover all eight
+    // [ForecastModel] entries when the Forecasters picker landed, so its identity
+    // changed; without this projection, every chart in the tree would invalidate
+    // its LineProvider on first composition after the upgrade — re-running Vico's
+    // line setup yields visually identical output but flickers any in-flight
+    // line-fade animation and rewrites Roborazzi snapshots even though the
+    // visible lines are the same. Including only the visible colours keeps the
+    // key stable when the underlying map gains entries we don't read.
+    val visibleColors = visibleModels.map { modelColors.getValue(it) }
+    return remember(visibleModels, mainLineColor, visibleColors) {
         val mainLine = mainLineColor?.let {
             LineCartesianLayer.Line(fill = LineCartesianLayer.LineFill.single(fill(it)))
         }
-        val perModelLines = visibleModels.map { modelId ->
-            LineCartesianLayer.Line(
-                fill = LineCartesianLayer.LineFill.single(
-                    fill(modelColors.getValue(modelId)),
-                ),
-            )
+        val perModelLines = visibleColors.map { color ->
+            LineCartesianLayer.Line(fill = LineCartesianLayer.LineFill.single(fill(color)))
         }
         val lines = listOfNotNull(mainLine) + perModelLines
         LineCartesianLayer.LineProvider.series(lines)
     }
+}

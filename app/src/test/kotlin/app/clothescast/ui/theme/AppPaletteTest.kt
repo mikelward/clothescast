@@ -4,6 +4,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.ForecastConfidence
+import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.PerModelHourly.Companion.BEST_MATCH_MODEL_ID
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -28,12 +29,7 @@ class AppPaletteTest {
     @Test
     fun `RAINBOW palette carries every model id and every confidence tier`() {
         val palette = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.RAINBOW)
-        palette.modelColors.keys shouldBe setOf(
-            "ecmwf_ifs04",
-            "gfs_seamless",
-            "icon_seamless",
-            BEST_MATCH_MODEL_ID,
-        )
+        palette.modelColors.keys shouldBe expectedModelKeys()
         palette.confidence.keys shouldBe ForecastConfidence.entries.toSet()
         palette.confidence.size shouldBe 3
     }
@@ -41,12 +37,7 @@ class AppPaletteTest {
     @Test
     fun `ACCESSIBLE palette carries every model id and every confidence tier`() {
         val palette = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.ACCESSIBLE)
-        palette.modelColors.keys shouldBe setOf(
-            "ecmwf_ifs04",
-            "gfs_seamless",
-            "icon_seamless",
-            BEST_MATCH_MODEL_ID,
-        )
+        palette.modelColors.keys shouldBe expectedModelKeys()
         palette.confidence.keys shouldBe ForecastConfidence.entries.toSet()
     }
 
@@ -94,14 +85,19 @@ class AppPaletteTest {
     @Test
     fun `HIGHLIGHTER palette carries every model id and every confidence tier`() {
         val palette = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.HIGHLIGHTER)
-        palette.modelColors.keys shouldBe setOf(
-            "ecmwf_ifs04",
-            "gfs_seamless",
-            "icon_seamless",
-            BEST_MATCH_MODEL_ID,
-        )
+        palette.modelColors.keys shouldBe expectedModelKeys()
         palette.confidence.keys shouldBe ForecastConfidence.entries.toSet()
     }
+
+    /**
+     * Every [ForecastModel] the user can select in Settings ▸ Forecasters
+     * plus the synthetic best-match overlay. Derived from the enum so adding
+     * a new model in the domain layer trips this test until the palettes
+     * gain a matching colour, rather than crashing at chart render via a
+     * `.getValue(modelId)` lookup miss.
+     */
+    private fun expectedModelKeys(): Set<String> =
+        ForecastModel.entries.map { it.openMeteoId }.toSet() + BEST_MATCH_MODEL_ID
 
     @Test
     fun `HIGHLIGHTER palette uses distinct hues from both RAINBOW and ACCESSIBLE`() {

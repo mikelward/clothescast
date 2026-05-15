@@ -679,7 +679,19 @@ internal fun UpdateAvailableBannerPreview() {
     // app at test time.
     Frame {
         UpdateAvailableBannerCard(
-            downloadComplete = false,
+            phase = UpdatePhase.Available,
+            onAction = {},
+            onDismiss = {},
+        )
+    }
+}
+
+@Preview(name = "Banner · update downloading", widthDp = 360)
+@Composable
+internal fun UpdateDownloadingBannerPreview() {
+    Frame {
+        UpdateAvailableBannerCard(
+            phase = UpdatePhase.Downloading(progress = 0.42f),
             onAction = {},
             onDismiss = {},
         )
@@ -691,7 +703,7 @@ internal fun UpdateAvailableBannerPreview() {
 internal fun UpdateDownloadedBannerPreview() {
     Frame {
         UpdateAvailableBannerCard(
-            downloadComplete = true,
+            phase = UpdatePhase.ReadyToInstall,
             onAction = {},
             onDismiss = {},
         )

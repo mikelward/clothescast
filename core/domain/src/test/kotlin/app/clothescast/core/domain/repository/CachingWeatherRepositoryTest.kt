@@ -168,6 +168,57 @@ class CachingWeatherRepositoryTest {
     }
 
     @Test
+    fun `cache invalidates when the freshness key changes`() = runTest {
+        // Simulates the Forecasters-settings flow: a user changes the model
+        // set mid-TTL and refreshes. The cache must miss, not silently return
+        // the prior model set's bundle. The freshness key is opaque to the
+        // cache — we use Set<String> here as a stand-in for the real
+        // Set<ForecastModel> the app wires in.
+        val delegate = CountingRepository(response = ::bundle)
+        var currentKey: Set<String> = setOf("ecmwf", "gfs", "icon")
+        val subject = CachingWeatherRepository(
+            delegate = delegate,
+            clock = Clock.fixed(Instant.parse("2026-04-25T07:00:00Z"), ZoneOffset.UTC),
+            freshnessKeyProvider = { currentKey },
+        )
+
+        subject.fetchForecast(london)
+        delegate.callCount.get() shouldBe 1
+
+        // Identical key → cache hit.
+        subject.fetchForecast(london)
+        delegate.callCount.get() shouldBe 1
+
+        // User swaps GFS for UKMO mid-TTL → cache must miss.
+        currentKey = setOf("ecmwf", "ukmo", "icon")
+        subject.fetchForecast(london)
+        delegate.callCount.get() shouldBe 2
+
+        // Subsequent fetch with the new key is cached again.
+        subject.fetchForecast(london)
+        delegate.callCount.get() shouldBe 2
+    }
+
+    @Test
+    fun `freshness keys are compared by value not identity`() = runTest {
+        // The provider returns a fresh Set instance on every call (typical
+        // for a flow.first()-backed implementation). The cache must compare
+        // by value or it would invalidate on every fetch and the TTL would
+        // never bite.
+        val delegate = CountingRepository(response = ::bundle)
+        val subject = CachingWeatherRepository(
+            delegate = delegate,
+            clock = Clock.fixed(Instant.parse("2026-04-25T07:00:00Z"), ZoneOffset.UTC),
+            freshnessKeyProvider = { setOf("ecmwf", "gfs", "icon") },
+        )
+
+        subject.fetchForecast(london)
+        subject.fetchForecast(london)
+        subject.fetchForecast(london)
+        delegate.callCount.get() shouldBe 1
+    }
+
+    @Test
     fun `delegate errors propagate and the cache stays empty`() = runTest {
         val delegate = CountingRepository(response = { throw IOException("boom") })
         val clock = MutableClock(Instant.parse("2026-04-25T07:00:00Z"))

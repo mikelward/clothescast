@@ -118,6 +118,15 @@ class ClothesCastApplication : Application() {
                         .map { it.openMeteoId }
                 },
             ),
+            // Make the cache invalidate when the Forecasters selection
+            // changes — otherwise a Settings edit followed by a Today
+            // refresh within the 1 h TTL would silently return the previous
+            // model set's bundle, because the cache keys only on location.
+            // Passing the Set itself as the discriminator lets equals() do
+            // the comparison; insertion order doesn't matter for a Set.
+            freshnessKeyProvider = {
+                settingsRepository.preferences.first().forecastModels
+            },
         )
     }
     val geocodingClient: OpenMeteoGeocodingClient by lazy {

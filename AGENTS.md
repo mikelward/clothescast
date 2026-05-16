@@ -116,12 +116,21 @@ new rule the first time something bites you, not the third.
   Move scope, module names, and engineering detail (file paths, refactor
   reasoning, "fixes #123") into the commit body — reviewers see the body
   on the PR, but the Play release notes don't.
-- **`ci:` prefix and docs-only commits are filtered out** of the
-  changelog (see the "Prepare release notes" step in `ci.yml`) so the
-  snapshot-regen bot's commits and `docs/` / dotfile / `*.md` changes
-  don't surface as bullets. Anything else *will* appear — if a commit
-  shouldn't ship in the changelog, either squash it into a sibling or
-  give it a `ci:` subject prefix.
+- **`ci:` / `test:` prefixes and docs-only commits are filtered out** of
+  the changelog (see the "Prepare release notes" step in `ci.yml`) so the
+  snapshot-regen bot's commits, test-only changes, and `docs/` / dotfile
+  / `*.md` changes don't surface as bullets. Anything else *will* appear
+  — if a commit shouldn't ship in the changelog, either squash it into a
+  sibling or give it the appropriate prefix.
+- **Test-only commits use a `test:` subject prefix.** A commit that
+  touches only test sources / fixtures / snapshots (anything under
+  `src/test/`, `src/androidTest/`, `app/snapshots/`, or equivalent —
+  nothing shipped in the APK) ships no user-visible change, so it
+  doesn't belong in the Play "What's new". Prefix the subject `test:`
+  (e.g. `test: cover evening-rain fallthrough in InsightTextTest`) and
+  CI will skip it the same way it skips `ci:`. Mixed commits (test +
+  production code) stay un-prefixed and ship as normal bullets —
+  squash the test work into the feature commit instead of splitting.
 - **Play caps `whatsnew-en-US` at 500 bytes.** When the bullet list
   exceeds that, CI truncates and appends `…`. Avoid lining up a long
   stack of small commits if any one of them tells the user-facing story

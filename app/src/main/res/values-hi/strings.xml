@@ -36,9 +36,9 @@ Not overridden by design:
     <string name="settings_root_schedule_subtitle">सूचनाएँ और समय</string>
     <string name="settings_root_clothes_subtitle">तापमान और पोशाक</string>
     <string name="settings_root_region_subtitle">भाषाएँ और इकाइयाँ</string>
-    <string name="settings_root_voice_subtitle">प्रदाता और लहजा</string>
+    <string name="settings_root_voice_subtitle">आवाज़ें और लहजे</string>
     <string name="settings_root_display_subtitle">थीम और रंग</string>
-    <string name="settings_root_location_subtitle">स्वतः पहचान या शहर चुनें</string>
+    <string name="settings_root_location_subtitle">स्वचालित और मैनुअल स्थान</string>
     <string name="settings_root_calendar_subtitle">आज की घटनाएँ</string>
 
     <!-- Garments -->
@@ -626,4 +626,55 @@ Not overridden by design:
     <string name="today_uv_peak">अधिकतम %1$d %2$s बजे</string>
     <string name="today_uv_title">UV सूचकांक</string>
     <string name="today_wind_peak">अधिकतम %1$d %2$s %3$s बजे</string>
+
+    <!-- Today screen pager. -->
+    <string name="today_view_other_period">अन्य पूर्वानुमान देखें</string>
+    <string name="today_back_to_primary">वापस</string>
+    <string name="today_placeholder_today_title">आज का पूर्वानुमान</string>
+    <string name="today_placeholder_tonight_title">आज रात का पूर्वानुमान</string>
+    <string name="today_placeholder_body">लगभग %1$s तक तैयार होगा।</string>
+
+    <!-- Settings root — Forecasters row. -->
+    <string name="settings_root_forecasters">पूर्वानुमानकर्ता</string>
+    <string name="settings_root_forecasters_subtitle">मौसम स्रोत और मॉडल</string>
+
+    <!-- About — Open-Meteo attribution (brand stays Latin). -->
+    <string name="settings_about_open_meteo">मौसम डेटा Open-Meteo से</string>
+
+    <!-- Display — per-garment colour picker. -->
+    <string name="settings_display_garment_colors_title">कपड़ों के रंग</string>
+    <string name="settings_display_garment_colors_description">आज स्क्रीन, होम-स्क्रीन विजेट और सूचनाओं पर दिखाए जाने वाले प्रत्येक कपड़े के आइकन के लिए एक रंग चुनें। बाहरी रेखा अपने आप गहरी हो जाती है।</string>
+    <string name="settings_garment_color_default">डिफ़ॉल्ट</string>
+    <string name="settings_garment_color_picker_title">रंग चुनें</string>
+    <string name="settings_garment_color_swatch_description">रंग नमूना %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">%1$s को डिफ़ॉल्ट रंग पर रीसेट करें</string>
+    <string name="settings_garment_color_dialog_close">बंद करें</string>
+
+    <!-- Update banner — Downloading state. -->
+    <string name="today_update_downloading_body">अपडेट डाउनलोड हो रहा है…</string>
+    <string name="today_update_downloading_action">अपडेट हो रहा है</string>
+    <string name="today_update_downloading_dismiss">रद्द करें</string>
+
+    <!-- Forecasters sub-page — picker of NWP models. -->
+    <string name="settings_forecasters_title">पूर्वानुमान मॉडल</string>
+    <string name="settings_forecasters_description">कॉन्फिडेंस चिप और प्रति-मॉडल चार्ट इन मॉडलों से डेटा लेते हैं। ज़्यादा चुनने पर अधिक विस्तार मिलता है; कम चुनने पर ध्यान केंद्रित रहता है। कम से कम दो हमेशा चयनित रहते हैं।</string>
+    <string name="settings_forecasters_auto_title">स्वतः (आपके स्थान के लिए सर्वोत्तम)</string>
+    <string name="settings_forecasters_auto_subtitle">क्षेत्रीय पूर्वानुमानकर्ता स्वतः चुनें — ब्रिटिश आइल्स में UKMO, जापान में JMA, उत्तरी अमेरिका में GFS + GEM, इत्यादि। स्वयं मॉडल चुनने के लिए बंद करें।</string>
+    <string name="settings_forecasters_cap_hint">आपने %1$d मॉडल चुने हैं — चार्ट जितने पर पठनीय रहता है उसकी सीमा। दूसरा मॉडल जोड़ने के लिए एक का चयन हटाएँ।</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">यूरोपीय — आम तौर पर सबसे सटीक वैश्विक मॉडल। ओपन फ़ीड पर 3-घंटे का अंतराल।</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">जर्मन (DWD) — यूरोप और अल्प-दूरी पर मजबूत। नेटिव प्रति घंटा।</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">अमेरिकी (NOAA) — उत्तरी अमेरिका पर मजबूत। नेटिव प्रति घंटा।</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">कनाडाई (ECCC) — उत्तरी अमेरिका पर मजबूत। ओपन फ़ीड पर 3-घंटे का अंतराल।</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">फ्रांसीसी (Météo-France) — फ्रांस और पश्चिमी यूरोप पर मजबूत। नेटिव प्रति घंटा।</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">ब्रिटिश (UK Met Office) — ऐतिहासिक रूप से ECMWF के बाद। ओपन फ़ीड पर 3-घंटे का अंतराल।</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">जापानी — एशिया-प्रशांत पर मजबूत। ओपन फ़ीड पर 3 से 6 घंटे का अंतराल।</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">ऑस्ट्रेलियाई — रखरखाव के तहत, जल्द से जल्द लौट आएगा।</string>
 </resources>

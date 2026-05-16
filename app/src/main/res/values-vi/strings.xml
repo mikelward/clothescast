@@ -272,9 +272,9 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_root_schedule_subtitle">Thông báo và giờ</string>
     <string name="settings_root_clothes_subtitle">Nhiệt độ và trang phục</string>
     <string name="settings_root_region_subtitle">Ngôn ngữ và đơn vị</string>
-    <string name="settings_root_voice_subtitle">Nhà cung cấp và giọng</string>
+    <string name="settings_root_voice_subtitle">Giọng nói và Chất giọng</string>
     <string name="settings_root_display_subtitle">Giao diện và màu sắc</string>
-    <string name="settings_root_location_subtitle">Tự động phát hiện hoặc chọn thành phố</string>
+    <string name="settings_root_location_subtitle">Vị trí tự động và thủ công</string>
     <string name="settings_root_calendar_subtitle">Sự kiện hôm nay</string>
     <string name="settings_root_privacy_subtitle">Báo cáo sự cố + sử dụng</string>
 
@@ -657,4 +657,55 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_uv_peak">Đỉnh %1$d lúc %2$s</string>
     <string name="today_uv_title">Chỉ số UV</string>
     <string name="today_wind_peak">Đỉnh %1$d %2$s lúc %3$s</string>
+
+    <!-- Today screen pager. -->
+    <string name="today_view_other_period">Xem dự báo khác</string>
+    <string name="today_back_to_primary">Quay lại</string>
+    <string name="today_placeholder_today_title">Dự báo hôm nay</string>
+    <string name="today_placeholder_tonight_title">Dự báo tối nay</string>
+    <string name="today_placeholder_body">Sẽ sẵn sàng vào khoảng %1$s.</string>
+
+    <!-- Settings root — Forecasters row. -->
+    <string name="settings_root_forecasters">Nguồn dự báo</string>
+    <string name="settings_root_forecasters_subtitle">Nguồn và mô hình thời tiết</string>
+
+    <!-- About — Open-Meteo attribution (brand stays Latin). -->
+    <string name="settings_about_open_meteo">Dữ liệu thời tiết từ Open-Meteo</string>
+
+    <!-- Display — per-garment colour picker. -->
+    <string name="settings_display_garment_colors_title">Màu trang phục</string>
+    <string name="settings_display_garment_colors_description">Chọn màu cho từng biểu tượng trang phục hiển thị trên Hôm nay, tiện ích màn hình chính và thông báo. Đường viền tự động đậm hơn.</string>
+    <string name="settings_garment_color_default">Mặc định</string>
+    <string name="settings_garment_color_picker_title">Chọn màu</string>
+    <string name="settings_garment_color_swatch_description">Mẫu màu %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Đặt lại %1$s về màu mặc định</string>
+    <string name="settings_garment_color_dialog_close">Đóng</string>
+
+    <!-- Update banner — Downloading state. -->
+    <string name="today_update_downloading_body">Đang tải xuống bản cập nhật…</string>
+    <string name="today_update_downloading_action">Đang cập nhật</string>
+    <string name="today_update_downloading_dismiss">Huỷ</string>
+
+    <!-- Forecasters sub-page — picker of NWP models. -->
+    <string name="settings_forecasters_title">Mô hình dự báo</string>
+    <string name="settings_forecasters_description">Chỉ báo độ tin cậy và biểu đồ theo mô hình lấy dữ liệu từ các mô hình này. Chọn nhiều hơn cho phổ rộng hơn; chọn ít hơn cho tiêu điểm hẹp hơn. Tối thiểu hai mô hình luôn được chọn.</string>
+    <string name="settings_forecasters_auto_title">Tự động (tốt nhất cho vị trí của bạn)</string>
+    <string name="settings_forecasters_auto_subtitle">Tự động chọn nguồn dự báo theo khu vực — UKMO ở Quần đảo Anh, JMA ở Nhật Bản, GFS + GEM ở Bắc Mỹ, v.v. Tắt để tự chọn mô hình.</string>
+    <string name="settings_forecasters_cap_hint">Bạn đã chọn %1$d mô hình — mức tối đa để biểu đồ vẫn dễ đọc. Bỏ chọn một để thêm mô hình khác.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Châu Âu — thường là mô hình toàn cầu chính xác nhất. Cập nhật 3 giờ một lần trên nguồn mở.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Đức (DWD) — mạnh ở châu Âu và dự báo ngắn hạn. Gốc theo giờ.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Mỹ (NOAA) — mạnh ở Bắc Mỹ. Gốc theo giờ.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Canada (ECCC) — mạnh ở Bắc Mỹ. Cập nhật 3 giờ một lần trên nguồn mở.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Pháp (Météo-France) — mạnh ở Pháp và Tây Âu. Gốc theo giờ.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Anh (UK Met Office) — trong lịch sử chỉ đứng sau ECMWF. Cập nhật 3 giờ một lần trên nguồn mở.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Nhật Bản — mạnh ở châu Á – Thái Bình Dương. Cập nhật 3 đến 6 giờ một lần trên nguồn mở.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Úc — đang bảo trì, sẽ trở lại sớm nhất có thể.</string>
 </resources>

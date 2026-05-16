@@ -265,9 +265,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_schedule_subtitle">Mga Notipikasyon at Oras</string>
     <string name="settings_root_clothes_subtitle">Mga Temperatura at Outfit</string>
     <string name="settings_root_region_subtitle">Mga Wika at Yunit</string>
-    <string name="settings_root_voice_subtitle">Mga Tagapagbigay at Punto</string>
+    <string name="settings_root_voice_subtitle">Mga Boses at Punto</string>
     <string name="settings_root_display_subtitle">Mga tema at kulay</string>
-    <string name="settings_root_location_subtitle">Auto-detect o pumili ng lungsod</string>
+    <string name="settings_root_location_subtitle">Awtomatiko at Manual na Lokasyon</string>
     <string name="settings_root_calendar_subtitle">Mga evento ngayon</string>
     <string name="settings_root_privacy_subtitle">Mga ulat ng crash + paggamit</string>
 
@@ -646,4 +646,55 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_uv_peak">Pinakamataas na %1$d sa %2$s</string>
     <string name="today_uv_title">UV index</string>
     <string name="today_wind_peak">Pinakamataas na %1$d %2$s sa %3$s</string>
+
+    <!-- Today screen pager. -->
+    <string name="today_view_other_period">Tingnan ang ibang forecast</string>
+    <string name="today_back_to_primary">Bumalik</string>
+    <string name="today_placeholder_today_title">Forecast ngayong araw</string>
+    <string name="today_placeholder_tonight_title">Forecast ngayong gabi</string>
+    <string name="today_placeholder_body">Magiging handa nang humigit-kumulang %1$s.</string>
+
+    <!-- Settings root — Forecasters row. -->
+    <string name="settings_root_forecasters">Mga Forecaster</string>
+    <string name="settings_root_forecasters_subtitle">Mga Pinagmumulan at Modelo ng Panahon</string>
+
+    <!-- About — Open-Meteo attribution (brand stays Latin). -->
+    <string name="settings_about_open_meteo">Datos ng panahon mula sa Open-Meteo</string>
+
+    <!-- Display — per-garment colour picker. -->
+    <string name="settings_display_garment_colors_title">Mga kulay ng damit</string>
+    <string name="settings_display_garment_colors_description">Pumili ng kulay para sa bawat icon ng damit na ipinapakita sa Ngayon, sa home-screen widget, at sa mga notification. Awtomatikong pumupusyaw ang gilid.</string>
+    <string name="settings_garment_color_default">Default</string>
+    <string name="settings_garment_color_picker_title">Pumili ng kulay</string>
+    <string name="settings_garment_color_swatch_description">Swatch ng kulay %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">I-reset ang %1$s sa default na kulay</string>
+    <string name="settings_garment_color_dialog_close">Isara</string>
+
+    <!-- Update banner — Downloading state. -->
+    <string name="today_update_downloading_body">Dina-download ang update…</string>
+    <string name="today_update_downloading_action">Ina-update</string>
+    <string name="today_update_downloading_dismiss">Kanselahin</string>
+
+    <!-- Forecasters sub-page — picker of NWP models. -->
+    <string name="settings_forecasters_title">Mga modelo ng forecast</string>
+    <string name="settings_forecasters_description">Ang confidence chip at chart ng bawat modelo ay kinukuha mula sa mga modelong ito. Mas maraming napiling modelo, mas malawak ang spread; mas konti, mas pokus. Hindi bababa sa dalawa ang mananatiling napili.</string>
+    <string name="settings_forecasters_auto_title">Awtomatiko (pinakamainam para sa iyong lokasyon)</string>
+    <string name="settings_forecasters_auto_subtitle">Awtomatikong pinipili ang panrehiyong forecaster — UKMO sa British Isles, JMA sa Japan, GFS + GEM sa North America, atbp. I-off para mamili ka mismo ng mga modelo.</string>
+    <string name="settings_forecasters_cap_hint">Pumili ka ng %1$d na modelo — ang pinakamarami na nababasa pa ang chart. Mag-alis ng isa para makapagdagdag ng iba.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">European — kadalasang pinakatumpak na global model. 3 oras kada update sa open feed.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">German (DWD) — malakas sa Europe at sa short-range. Native oras-oras.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">American (NOAA) — malakas sa North America. Native oras-oras.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Canadian (ECCC) — malakas sa North America. 3 oras kada update sa open feed.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">French (Météo-France) — malakas sa France at Western Europe. Native oras-oras.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">British (UK Met Office) — historically pumapangalawa lang sa ECMWF. 3 oras kada update sa open feed.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japanese — malakas sa Asia-Pacific. 3 hanggang 6 oras kada update sa open feed.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australian — kasalukuyang maintenance, babalik sa lalong madaling panahon.</string>
 </resources>

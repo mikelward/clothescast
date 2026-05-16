@@ -260,9 +260,9 @@ to values/strings.xml (English).
     <string name="settings_root_schedule_subtitle">Notifikasi dan Waktu</string>
     <string name="settings_root_clothes_subtitle">Suhu dan Pakaian</string>
     <string name="settings_root_region_subtitle">Bahasa dan Satuan</string>
-    <string name="settings_root_voice_subtitle">Penyedia dan Aksen</string>
+    <string name="settings_root_voice_subtitle">Suara dan Aksen</string>
     <string name="settings_root_display_subtitle">Tema dan warna</string>
-    <string name="settings_root_location_subtitle">Deteksi otomatis atau pilih kota</string>
+    <string name="settings_root_location_subtitle">Lokasi Otomatis dan Manual</string>
     <string name="settings_root_calendar_subtitle">Acara hari ini</string>
     <string name="settings_root_privacy_subtitle">Laporan crash + penggunaan</string>
 
@@ -596,4 +596,55 @@ to values/strings.xml (English).
     <string name="today_uv_peak">Puncak %1$d pukul %2$s</string>
     <string name="today_uv_title">Indeks UV</string>
     <string name="today_wind_peak">Puncak %1$d %2$s pukul %3$s</string>
+
+    <!-- Today screen pager. -->
+    <string name="today_view_other_period">Lihat prakiraan lain</string>
+    <string name="today_back_to_primary">Kembali</string>
+    <string name="today_placeholder_today_title">Prakiraan hari ini</string>
+    <string name="today_placeholder_tonight_title">Prakiraan malam ini</string>
+    <string name="today_placeholder_body">Akan siap sekitar pukul %1$s.</string>
+
+    <!-- Settings root — Forecasters row. -->
+    <string name="settings_root_forecasters">Prakiraan</string>
+    <string name="settings_root_forecasters_subtitle">Sumber dan Model Cuaca</string>
+
+    <!-- About — Open-Meteo attribution (brand stays Latin). -->
+    <string name="settings_about_open_meteo">Data cuaca dari Open-Meteo</string>
+
+    <!-- Display — per-garment colour picker. -->
+    <string name="settings_display_garment_colors_title">Warna pakaian</string>
+    <string name="settings_display_garment_colors_description">Pilih warna untuk setiap ikon pakaian yang ditampilkan di Hari Ini, widget layar utama, dan notifikasi. Garis tepi otomatis menjadi lebih gelap.</string>
+    <string name="settings_garment_color_default">Default</string>
+    <string name="settings_garment_color_picker_title">Pilih warna</string>
+    <string name="settings_garment_color_swatch_description">Sampel warna %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Setel ulang %1$s ke warna default</string>
+    <string name="settings_garment_color_dialog_close">Tutup</string>
+
+    <!-- Update banner — Downloading state. -->
+    <string name="today_update_downloading_body">Mengunduh pembaruan…</string>
+    <string name="today_update_downloading_action">Memperbarui</string>
+    <string name="today_update_downloading_dismiss">Batal</string>
+
+    <!-- Forecasters sub-page — picker of NWP models. -->
+    <string name="settings_forecasters_title">Model prakiraan</string>
+    <string name="settings_forecasters_description">Indikator kepercayaan dan diagram per model mengambil data dari model-model ini. Memilih lebih banyak memberi sebaran yang lebih luas; lebih sedikit berarti fokus yang lebih sempit. Minimal dua tetap dipilih.</string>
+    <string name="settings_forecasters_auto_title">Otomatis (terbaik untuk lokasi Anda)</string>
+    <string name="settings_forecasters_auto_subtitle">Memilih prakiraan regional secara otomatis — UKMO di Kepulauan Inggris, JMA di Jepang, GFS + GEM di Amerika Utara, dsb. Matikan untuk memilih model sendiri.</string>
+    <string name="settings_forecasters_cap_hint">Anda memilih %1$d model — batas maksimum agar diagram tetap mudah dibaca. Hapus pilihan satu untuk menambahkan model lain.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Eropa — umumnya model global paling akurat. Tiap 3 jam pada open feed.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Jerman (DWD) — kuat di Eropa dan jangka pendek. Native per jam.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerika (NOAA) — kuat di Amerika Utara. Native per jam.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Kanada (ECCC) — kuat di Amerika Utara. Tiap 3 jam pada open feed.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Prancis (Météo-France) — kuat di Prancis dan Eropa Barat. Native per jam.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Inggris (UK Met Office) — secara historis hanya kalah dari ECMWF. Tiap 3 jam pada open feed.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Jepang — kuat di Asia-Pasifik. Tiap 3 sampai 6 jam pada open feed.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australia — sedang dalam pemeliharaan, akan kembali secepatnya.</string>
 </resources>

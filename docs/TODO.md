@@ -70,6 +70,90 @@ Code TODOs in source files are linked from here when they exist.
       `PerModelHourly.byModel`, so no changes there. Same Open-Meteo
       endpoint either way — no privacy change.
 
+## Smart Home / Home Assistant bridge
+
+Opt-in MQTT bridge that publishes the rendered insight prose to a
+user-hosted broker (typically the Mosquitto add-on inside HA) so
+automations can speak the forecast on a sensor trigger — wardrobe
+door, bathroom humidity, fixed time of day, etc. Setup guide at
+[docs/smart-home.md](smart-home.md); the data-handling note is in
+PRIVACY.md.
+
+Done:
+
+- [x] **MQTT publisher in the worker.** Twice-daily refresh publishes
+      `clothescast/insight/today` and `clothescast/insight/tonight` as
+      retained QoS 1 messages. Configured from a new Settings → Smart
+      Home page (host, port, TLS, username, password, topic prefix).
+      Password stored in SecureKeyStore under a separate Tink AEAD
+      slot from the Gemini key. Initial PR #504, hardened against R8
+      in #506 / #508 / #509, then the HiveMQ + Netty + JCTools +
+      RxJava graph swapped for a hand-rolled MQTT 3.1.1 publisher
+      (`RawMqttClient.kt`) on `java.net.Socket` /
+      `javax.net.ssl.SSLSocketFactory` — saved 5.9 MB on the APK,
+      removed ~70 lines of keep rules, RFC-6125 hostname verification
+      enabled on the TLS socket so a CA-trusted cert for the wrong
+      name fails before CONNECT is sent (PR #510).
+
+Open:
+
+- [ ] **"Publish now" button + persistent last-error card** on the
+      Smart Home settings page. The bridge's failure modes (broker
+      unreachable, IPv6 link-local mDNS resolution, TLS on a
+      plain-only broker, wrong credentials) all surface today only
+      via the diag log after a manual Refresh + Share-bug-report
+      round-trip. A direct trigger that runs the publisher against
+      the most recent cached insight, plus a card that pins the most
+      recent error (or "last published OK at HH:MM" on success),
+      collapses that loop to one tap. Architecturally needs an
+      observable status flow on `MqttPublisher` or wrapping
+      VM-state, plus a VM action that calls the publisher directly
+      against `InsightCache.deliveredForToday(...)`. Worth combining
+      with a "test connection" pre-flight (CONNECT/CONNACK only, no
+      PUBLISH) so a misconfigured broker fails on Save without
+      surfacing as a delivered-but-not-published surprise on the
+      next refresh.
+- [ ] **Publish the outfit image alongside the prose.** Nest Hubs and
+      Nest Hub Maxes have displays; HA's
+      [`image.mqtt`](https://www.home-assistant.io/integrations/image.mqtt/)
+      platform consumes binary image payloads off MQTT and exposes
+      them as `image.*` entities. The shape: rasterise the
+      OutfitWidget composition (top + bottom icons, ~1280x800 for
+      Hub Max scaling) to PNG, publish to
+      `clothescast/insight/<period>/image` as a retained binary
+      payload. HA picks it up via `mqtt: image: - state_topic:` and a
+      downstream automation calls `media_player.play_media` with the
+      entity's `entity_picture` URL targeting the Hub's
+      `media_player.*`. New code: ~50 lines (PNG rasteriser +
+      binary MQTT publish branch in `RawMqttClient`; the wire format
+      is identical to the text publish, just `byte[]` payload).
+      Voice + visual on the kitchen / bathroom Hub at 07:00 is a
+      much nicer UX than a disembodied audio broadcast. Privacy
+      story is identical to the prose bridge — same
+      "user-hosted-broker only" caveat, same opt-in.
+- [ ] **HA MQTT discovery for the sensors.** Publish a discovery
+      payload on `homeassistant/sensor/clothescast_today/config` so
+      a fresh HA install picks up the `sensor.clothescast_today` and
+      `sensor.clothescast_tonight` entities without the user editing
+      `configuration.yaml` or pasting YAML into Devices & Services.
+      The discovery JSON is small (`{"name": "...", "state_topic":
+      "...", "unique_id": "..."}`). Same trick for `image.*` when
+      the image feature lands above. Worth it for "drop in the
+      Mosquitto add-on + flip the toggle in ClothesCast" zero-YAML
+      setup.
+- [ ] **Music Assistant `mass.announce` quick-start in the setup
+      guide.** docs/smart-home.md now describes the three speaking
+      options at a high level, but for users picking Option B the
+      install-and-discover flow ("Add-on Store → Music Assistant →
+      auto-discovers Cast devices → use `media_player.<entity>` as
+      the `target_player`") could be a numbered walkthrough rather
+      than a paragraph.
+- [ ] **Standalone Mosquitto-broker setup walkthrough.** The current
+      doc has a one-sentence aside on `mosquitto_passwd` /
+      `mosquitto.conf` ACL syntax for users not running HA's add-on.
+      Worth either expanding into a sibling sub-section or splitting
+      to a dedicated `docs/smart-home-standalone-broker.md`.
+
 ## Feature ideas (queued)
 
 - [ ] **Multiple daily insights** — morning + evening, configurable per slot.

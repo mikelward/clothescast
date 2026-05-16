@@ -42,11 +42,6 @@ const val DEFAULT_GEMINI_TTS_MODEL: String = "gemini-2.5-flash-preview-tts"
 // rather than dazzling — it's the most consistently-acceptable voice across
 // the languages we ship. See docs/voice-evals.md → "Despina-as-default
 // decision".
-// TODO: revisit default — Erinome may actually be the winner now that the
-//  clarity-trim (#351) and B3 routing (#353) have rescued her on en-GB and
-//  en-AU. Needs a head-to-head Despina vs. Erinome eval across the same
-//  six locales (en-GB / en-AU B3 / en-US / de / de-AT / de-CH) before any
-//  switch.
 const val DEFAULT_GEMINI_TTS_VOICE: String = "Despina"
 
 internal const val GEMINI_HOST = "generativelanguage.googleapis.com"

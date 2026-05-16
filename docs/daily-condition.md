@@ -64,17 +64,37 @@ recommendation made out:
 
 The `slicedForToday` / `slicedForTonight` rewrites already do the
 heavy lifting — `today.condition` post-slice is the condition of the
-wettest hour in the consensus-blended hourly. The only remaining
-consumer is `RenderInsightSummary`'s fallback for the `PrecipClause`
-condition when the peak hour's own condition isn't a precipitating
-bucket.
+wettest hour in the consensus-blended hourly, except when that hour's
+condition is `UNKNOWN` (which is when the slice rewrite falls through
+to the pre-slice day-level value).
 
 *Pro:* zero change. **This is the leading recommendation post-audit
 correction.**
-*Con:* on edge cases the prose's `PrecipClause` falls back to a
-day-level condition that might originate from best_match alone.
-Audible only on "all hourly conditions are CLEAR but the daily
-forecast says rain" days, which is rare.
+*Con:* on edge cases, `RenderInsightSummary`'s two day-level
+fallbacks read the pre-slice (best_match-derived) condition that the
+slice rewrite couldn't replace. There are two distinct sites:
+
+  - **`peakPrecip`** (line 197): falls back to `today.condition`
+    when no hourly hits `POSSIBLE_THRESHOLD` (and daily precipMax
+    does), or when the peak hour's own condition is `UNKNOWN`.
+    Audible when the wettest hour came back as `UNKNOWN` from
+    every consulted model — by then the slice rewrite has already
+    fallen through to best_match's day-level value, and
+    `peakPrecip` reads that.
+  - **`perModelConditionAt`** (line 246): falls back to
+    `today.condition` when the matched hour's condition isn't a
+    precipitating bucket but daily precipMax indicates rain.
+    Audible whenever the wettest sliced hour's condition is
+    non-precip (e.g. `CLOUDY`) — the slice rewrite stores that
+    `CLOUDY` as `today.condition`, but `perModelConditionAt`
+    re-reads it and treats it as the non-precip fallback path,
+    landing on the default `RAIN`. The day-level field's role
+    here is to satisfy the `isPrecipitation()` short-circuit; if
+    the slice has already replaced it with `CLOUDY`, that
+    short-circuit can't kick in either, so the fallback to
+    `RAIN` is the actual behaviour.
+
+Neither failure mode is loud, but they exist.
 
 ### 2. Rewrite once at `OpenMeteoClient.fetchForecast` — most-severe blended hourly
 

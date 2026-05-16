@@ -40,6 +40,10 @@ import app.clothescast.ui.onboarding.OnboardingScreen
 import app.clothescast.ui.onboarding.OnboardingViewModel
 import app.clothescast.ui.pairing.PairingScreen
 import app.clothescast.ui.pairing.PairingViewModel
+import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.insight.InsightFormatter
+import app.clothescast.mqtt.MqttPublishOutcome
+import app.clothescast.ui.garment.renderOutfitCard
 import app.clothescast.ui.settings.SettingsRoute
 import app.clothescast.ui.settings.SettingsScreen
 import app.clothescast.ui.settings.SettingsViewModel
@@ -339,6 +343,29 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                     },
                     workManager = WorkManager.getInstance(app),
                     mqttPublisher = app.mqttPublisher,
+                    fullPublish = {
+                        val prefs = app.settingsRepository.preferences.first()
+                        val insight = app.insightCache.thisPeriod.first()
+                            ?: return@Factory app.mqttPublisher.publishTest()
+                        val prose = InsightFormatter.forRegion(context, prefs.region)
+                            .format(insight.summary)
+                        val outcome = app.mqttPublisher.publishIfEnabled(insight.period, prose)
+                        insight.outfit?.let { outfit ->
+                            runCatching {
+                                val label = if (insight.period == ForecastPeriod.TODAY) "Today" else "Tonight"
+                                val png = renderOutfitCard(
+                                    context = context,
+                                    outfit = outfit,
+                                    periodLabel = label,
+                                    prose = prose,
+                                    topColors = prefs.outfitTopColors,
+                                    bottomColors = prefs.outfitBottomColors,
+                                )
+                                app.mqttPublisher.publishImageIfEnabled(insight.period, png)
+                            }
+                        }
+                        outcome
+                    },
                 ),
             )
             SettingsScreen(

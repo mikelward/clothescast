@@ -3,6 +3,8 @@ package app.clothescast.ui.settings
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.clothescast.core.domain.model.ClothesRule
@@ -129,6 +131,24 @@ internal fun SettingsClothesFahrenheitPreview() {
             onSetDefaultBottom = {},
             onSetOutfitTopColor = { _, _ -> },
             onSetOutfitBottomColor = { _, _ -> },
+        )
+    }
+}
+
+// Pre-selects the first preset (red) so the snapshot also covers the
+// selection-ring styling, not just the swatch grid layout. The label and
+// `currentArgb` are the only two visible inputs to the dialog — picking a
+// recognisable colour and a short garment name keeps the snapshot small
+// and the regression net obvious.
+@Preview(name = "Settings · Garment colour picker", widthDp = 360)
+@Composable
+internal fun SettingsGarmentColorPickerPreview() {
+    SettingsFrame {
+        GarmentColorPickerDialog(
+            garmentLabel = "T-shirt",
+            currentArgb = Color(0xFFE53935).toArgb().toLong() and 0xFFFFFFFFL,
+            onPick = {},
+            onDismiss = {},
         )
     }
 }

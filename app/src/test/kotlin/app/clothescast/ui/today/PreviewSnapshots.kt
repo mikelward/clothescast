@@ -32,6 +32,7 @@ import app.clothescast.ui.settings.SettingsClothesFahrenheitPreview
 import app.clothescast.ui.settings.SettingsClothesPreview
 import app.clothescast.ui.settings.SettingsDisplayPreview
 import app.clothescast.ui.settings.SettingsForecastersPreview
+import app.clothescast.ui.settings.SettingsGarmentColorPickerPreview
 import app.clothescast.ui.settings.SettingsLocationPreview
 import app.clothescast.ui.settings.SettingsPrivacyPreview
 import app.clothescast.ui.settings.SettingsRegionPreview
@@ -484,6 +485,7 @@ class PreviewSnapshots {
 
     @Test fun settings_calendar() = capture { SettingsCalendarPreview() }
     @Test fun settings_privacy() = capture { SettingsPrivacyPreview() }
+    @Test fun settings_garment_color_picker() = captureDialog { SettingsGarmentColorPickerPreview() }
 
     // Onboarding's notification + location step cards derive their "complete"
     // checkmark from runtime permission state (POST_NOTIFICATIONS,

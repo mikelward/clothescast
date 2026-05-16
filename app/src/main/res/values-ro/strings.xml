@@ -599,4 +599,50 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_uv_peak">Vârf %1$d la %2$s</string>
     <string name="today_uv_title">Indice UV</string>
     <string name="today_wind_peak">Vârf %1$d %2$s la %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Se descarcă actualizarea…</string>
+    <string name="today_update_downloading_action">Se actualizează</string>
+    <string name="today_update_downloading_dismiss">Anulează</string>
+    <string name="today_view_other_period">Vezi cealaltă prognoză</string>
+    <string name="today_back_to_primary">Înapoi</string>
+    <string name="today_placeholder_today_title">Prognoza de azi</string>
+    <string name="today_placeholder_tonight_title">Prognoza pentru diseară</string>
+    <string name="today_placeholder_body">Gata în jur de %1$s.</string>
+
+    <string name="settings_root_forecasters">Modele de prognoză</string>
+    <string name="settings_root_forecasters_subtitle">Surse și modele meteo</string>
+
+    <string name="settings_display_garment_colors_title">Culorile hainelor</string>
+    <string name="settings_display_garment_colors_description">Alege o culoare pentru fiecare pictogramă de haină afișată în Azi, în widgetul de pe ecranul de pornire și în notificări. Conturul se închide automat.</string>
+    <string name="settings_garment_color_default">Implicit</string>
+    <string name="settings_garment_color_picker_title">Alege o culoare</string>
+    <string name="settings_garment_color_swatch_description">Mostră de culoare %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Resetează %1$s la culoarea implicită</string>
+    <string name="settings_garment_color_dialog_close">Închide</string>
+
+    <string name="settings_forecasters_title">Modele de prognoză</string>
+    <string name="settings_forecasters_description">Indicatorul de încredere și graficul per model se bazează pe aceste modele. Mai multe extind paleta; mai puține o restrâng. Cel puțin două rămân selectate.</string>
+    <string name="settings_forecasters_auto_title">Auto (cel mai bun pentru locația ta)</string>
+    <string name="settings_forecasters_auto_subtitle">Alege automat modelul regional — UKMO în Insulele Britanice, JMA în Japonia, GFS + GEM în America de Nord etc. Dezactivează pentru a alege tu modelele.</string>
+    <string name="settings_forecasters_cap_hint">Ai ales %1$d modele — maximul pentru ca graficul să rămână lizibil. Deselectează unul pentru a adăuga altul.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">European — în general cel mai precis model global. La 3 ore în feedul deschis.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">German (DWD) — solid în Europa și pe termen scurt. Orar nativ.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">American (NOAA) — solid în America de Nord. Orar nativ.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Canadian (ECCC) — solid în America de Nord. La 3 ore în feedul deschis.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Francez (Météo-France) — solid în Franța și Europa de Vest. Orar nativ.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Britanic (UK Met Office) — istoric, secund doar după ECMWF. La 3 ore în feedul deschis.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japonez — solid în Asia-Pacific. La 3-6 ore în feedul deschis.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australian — în mentenanță, revine cât mai curând posibil.</string>
+
+    <string name="settings_about_open_meteo">Date meteo de la Open-Meteo</string>
 </resources>

@@ -723,4 +723,50 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_uv_peak">Pointe %1$d à %2$s</string>
     <string name="today_uv_title">Indice UV</string>
     <string name="today_wind_peak">Pointe %1$d %2$s à %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Téléchargement de la mise à jour…</string>
+    <string name="today_update_downloading_action">Mise à jour…</string>
+    <string name="today_update_downloading_dismiss">Annuler</string>
+    <string name="today_view_other_period">Voir l\'autre prévision</string>
+    <string name="today_back_to_primary">Retour</string>
+    <string name="today_placeholder_today_title">Prévision du jour</string>
+    <string name="today_placeholder_tonight_title">Prévision de ce soir</string>
+    <string name="today_placeholder_body">Prête vers %1$s.</string>
+
+    <string name="settings_root_forecasters">Modèles de prévision</string>
+    <string name="settings_root_forecasters_subtitle">Sources et modèles météo</string>
+
+    <string name="settings_display_garment_colors_title">Couleurs des vêtements</string>
+    <string name="settings_display_garment_colors_description">Choisis une couleur pour chaque icône de vêtement affichée sur Aujourd\'hui, sur le widget de l\'écran d\'accueil et dans les notifications. Le contour s\'assombrit automatiquement.</string>
+    <string name="settings_garment_color_default">Par défaut</string>
+    <string name="settings_garment_color_picker_title">Choisis une couleur</string>
+    <string name="settings_garment_color_swatch_description">Échantillon de couleur %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Rétablir la couleur par défaut de %1$s</string>
+    <string name="settings_garment_color_dialog_close">Fermer</string>
+
+    <string name="settings_forecasters_title">Modèles de prévision</string>
+    <string name="settings_forecasters_description">La puce de confiance et le graphique par modèle s\'appuient sur ces modèles. En choisir plus élargit l\'éventail ; en choisir moins resserre le focus. Au moins deux restent sélectionnés.</string>
+    <string name="settings_forecasters_auto_title">Auto (le mieux pour ta position)</string>
+    <string name="settings_forecasters_auto_subtitle">Choisit automatiquement le modèle régional — UKMO sur les îles Britanniques, JMA au Japon, GFS + GEM en Amérique du Nord, etc. Désactive pour choisir tes modèles toi-même.</string>
+    <string name="settings_forecasters_cap_hint">Tu as sélectionné %1$d modèles — le maximum pour que le graphique reste lisible. Désélectionnes-en un pour en ajouter un autre.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Européen — généralement le modèle global le plus précis. Toutes les 3 h sur le flux ouvert.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Allemand (DWD) — solide en Europe et à courte échéance. Pas horaire natif.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Américain (NOAA) — solide sur l\'Amérique du Nord. Pas horaire natif.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Canadien (ECCC) — solide sur l\'Amérique du Nord. Toutes les 3 h sur le flux ouvert.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Français (Météo-France) — solide sur la France et l\'Europe de l\'Ouest. Pas horaire natif.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Britannique (UK Met Office) — historiquement second derrière ECMWF. Toutes les 3 h sur le flux ouvert.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japonais — solide sur l\'Asie-Pacifique. Toutes les 3 à 6 h sur le flux ouvert.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australien — en maintenance, de retour dès que possible.</string>
+
+    <string name="settings_about_open_meteo">Données météo fournies par Open-Meteo</string>
 </resources>

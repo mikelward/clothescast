@@ -135,6 +135,11 @@ object BugReport {
             "%.4f, %.4f — %s".format(Locale.US, loc.latitude, loc.longitude, name)
         } ?: "(unset)"
         appendLine("Location: $locDesc")
+        // Home pin coordinates intentionally elided — they're a privacy-sensitive
+        // pinpoint that doesn't help debug forecast issues. Whether one is
+        // configured at all is enough to diagnose the at-home TTS gate.
+        appendLine("Home location: ${if (prefs.homeLocation != null) "configured" else "(unset)"}")
+        appendLine("Skip TTS at home: ${prefs.skipTtsAtHome}")
         appendLine("Use calendar events: ${prefs.useCalendarEvents}")
         appendLine("Clothes rules (${prefs.clothesRules.size}):")
         prefs.clothesRules.forEach { appendLine("  - ${describeRule(it)}") }

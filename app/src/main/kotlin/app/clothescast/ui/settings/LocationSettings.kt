@@ -47,11 +47,16 @@ import kotlinx.coroutines.launch
 internal fun LocationContent(
     location: Location?,
     useDeviceLocation: Boolean,
+    homeLocation: Location?,
+    homeLocationResolving: Boolean = false,
     locationDetecting: Boolean = false,
     padding: PaddingValues,
     onSetUseDeviceLocation: (Boolean) -> Unit,
     onSelectLocation: (Location) -> Unit,
     onClearLocation: () -> Unit,
+    onSelectHomeLocation: (Location) -> Unit,
+    onClearHomeLocation: () -> Unit,
+    onUseCurrentLocationForHome: () -> Unit,
     onSearchLocations: suspend (String) -> List<Location>,
 ) {
     Column(
@@ -70,6 +75,100 @@ internal fun LocationContent(
             onSelect = onSelectLocation,
             onClear = onClearLocation,
             onSearch = onSearchLocations,
+        )
+        HomeLocationCard(
+            current = homeLocation,
+            resolving = homeLocationResolving,
+            onSelect = onSelectHomeLocation,
+            onClear = onClearHomeLocation,
+            onUseCurrent = onUseCurrentLocationForHome,
+            onSearch = onSearchLocations,
+        )
+    }
+}
+
+@Composable
+private fun HomeLocationCard(
+    current: Location?,
+    resolving: Boolean,
+    onSelect: (Location) -> Unit,
+    onClear: () -> Unit,
+    onUseCurrent: () -> Unit,
+    onSearch: suspend (String) -> List<Location>,
+) {
+    val context = LocalContext.current
+    var dialogOpen by remember { mutableStateOf(false) }
+    // Foreground-only permission for the "Use my current location" tap.
+    // The background grant matters at speak time (worker), not here — the
+    // SkipTtsAtHomeCard surfaces its own warning for that.
+    val coarseLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        if (granted) onUseCurrent()
+    }
+
+    SectionCard(title = stringResource(R.string.settings_home_location_title)) {
+        Text(
+            text = stringResource(R.string.settings_home_location_description),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = when {
+                resolving -> stringResource(R.string.settings_location_detecting)
+                current != null -> current.displayName ?: "${current.latitude}, ${current.longitude}"
+                else -> stringResource(R.string.settings_home_location_unset)
+            },
+            style = MaterialTheme.typography.bodyLarge,
+        )
+        TextButton(
+            enabled = !resolving,
+            onClick = {
+                if (hasCoarseLocationPermission(context)) onUseCurrent()
+                else coarseLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(stringResource(R.string.settings_home_location_use_current))
+        }
+        TextButton(
+            enabled = !resolving,
+            onClick = { dialogOpen = true },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(stringResource(
+                if (current == null) R.string.settings_home_location_search
+                else R.string.settings_home_location_change
+            ))
+        }
+        // Surface the geocoder-imprecision caveat right next to the search
+        // button so users who pick by city understand why a centroid 3 km
+        // from their actual house will leave the at-home gate firing
+        // "away from home" while they're at the kitchen table.
+        Text(
+            text = stringResource(R.string.settings_home_location_search_caveat),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        if (current != null) {
+            TextButton(
+                enabled = !resolving,
+                onClick = onClear,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.settings_home_location_clear))
+            }
+        }
+    }
+
+    if (dialogOpen) {
+        LocationSearchDialog(
+            onDismiss = { dialogOpen = false },
+            onSelect = {
+                onSelect(it)
+                dialogOpen = false
+            },
+            onSearch = onSearch,
         )
     }
 }

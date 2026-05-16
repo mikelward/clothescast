@@ -75,6 +75,17 @@ class SettingsViewModel(
      */
     private val refreshLocationCache: () -> Unit = {},
     /**
+     * Resolves the device's current coarse fix and reverse-geocodes its
+     * displayName for the "Use my current location" button on the home-pin
+     * card. Returns null on any failure (permission missing at call time,
+     * provider unavailable, timeout) — the caller surfaces that as a
+     * no-op. Foreground action, so this only needs coarse permission;
+     * the deeper background grant is checked separately at the at-home
+     * gate. Defaulted to no-op so pure-VM tests don't need a real
+     * [LocationResolver]; the Activity wires the real one.
+     */
+    private val resolveDeviceLocationWithCity: suspend () -> Location? = { null },
+    /**
      * WorkManager for observing the location-cache-refresh job state and for
      * cancelling it when device location is toggled off mid-flight. Null in
      * tests — JVM test host has no Android services; [locationDetecting] then
@@ -129,6 +140,8 @@ class SettingsViewModel(
                         defaultBottom = prefs.defaultBottom,
                         location = prefs.location,
                         useDeviceLocation = prefs.useDeviceLocation,
+                        homeLocation = prefs.homeLocation,
+                        skipTtsAtHome = prefs.skipTtsAtHome,
                         ttsEngine = prefs.ttsEngine,
                         geminiVoice = prefs.geminiVoice,
                         ttsStyle = prefs.ttsStyle,
@@ -352,6 +365,46 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.clearLocation() }
     }
 
+    fun selectHomeLocation(location: Location) {
+        viewModelScope.launch { settingsRepository.setHomeLocation(location) }
+    }
+
+    fun clearHomeLocation() {
+        viewModelScope.launch { settingsRepository.setHomeLocation(null) }
+    }
+
+    /**
+     * Snapshots the device's current coarse fix and stores it as the home
+     * pin. Called by the "Use my current location" button on the home-pin
+     * card. Necessary because the search-by-name picker returns geocoder
+     * place candidates (city / admin centroids); for the 1 km at-home
+     * radius to actually fire, the home pin needs to be at the user's
+     * actual house, not the centroid of their city — and a coarse device
+     * fix is precise enough (~hundreds of metres). Caller is expected to
+     * have requested ACCESS_COARSE_LOCATION before calling.
+     *
+     * No-ops silently when the resolver returns null (provider off,
+     * timeout, permission revoked between request and call). The
+     * preferences flow re-emits when the write lands; the UI updates
+     * from there.
+     */
+    fun useCurrentLocationForHome() {
+        if (_state.value.homeLocationResolving) return
+        _state.update { it.copy(homeLocationResolving = true) }
+        viewModelScope.launch {
+            try {
+                val fix = resolveDeviceLocationWithCity()
+                if (fix != null) settingsRepository.setHomeLocation(fix)
+            } finally {
+                _state.update { it.copy(homeLocationResolving = false) }
+            }
+        }
+    }
+
+    fun setSkipTtsAtHome(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setSkipTtsAtHome(enabled) }
+    }
+
     fun setUseDeviceLocation(enabled: Boolean) {
         viewModelScope.launch {
             settingsRepository.setUseDeviceLocation(enabled)
@@ -495,6 +548,7 @@ class SettingsViewModel(
         private val applyAppLocale: (Region) -> Unit,
         private val refreshLocationCache: () -> Unit,
         private val refreshCachedOutfits: suspend () -> Unit,
+        private val resolveDeviceLocationWithCity: suspend () -> Location? = { null },
         private val workManager: WorkManager? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
@@ -512,6 +566,7 @@ class SettingsViewModel(
                 refreshCachedOutfits = refreshCachedOutfits,
                 applyAppLocale = applyAppLocale,
                 refreshLocationCache = refreshLocationCache,
+                resolveDeviceLocationWithCity = resolveDeviceLocationWithCity,
                 workManager = workManager,
             ) as T
         }

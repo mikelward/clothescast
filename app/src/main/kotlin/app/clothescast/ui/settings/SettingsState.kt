@@ -53,6 +53,16 @@ data class SettingsState(
     val defaultBottom: OutfitSuggestion.Bottom = OutfitSuggestion.Bottom.LONG_PANTS,
     val location: Location? = null,
     val useDeviceLocation: Boolean = false,
+    val homeLocation: Location? = null,
+    val skipTtsAtHome: Boolean = false,
+    /**
+     * True while a "Use my current location" tap on the home-pin card is
+     * in flight — covers the permission prompt, the device-fix resolve, and
+     * the reverse-geocode. The button is disabled and the row shows a
+     * "Detecting…" label until the resolved Location lands via the
+     * preferences flow.
+     */
+    val homeLocationResolving: Boolean = false,
     val ttsEngine: TtsEngine = TtsEngine.DEVICE,
     val geminiVoice: String = UserPreferences.DEFAULT_GEMINI_VOICE,
     val ttsStyle: TtsStyle = TtsStyle.WEATHER_FORECASTER,

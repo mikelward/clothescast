@@ -33,6 +33,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.WorkManager
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.locale.AppLocale
+import app.clothescast.location.LocationResolver
 import app.clothescast.notification.NotificationPermission
 import app.clothescast.ui.isTelevision
 import app.clothescast.ui.onboarding.OnboardingScreen
@@ -316,6 +317,25 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                         val prefs = app.settingsRepository.preferences.first()
                         app.insightCache.recomputeOutfits(prefs.clothesRules, prefs.defaultBottom)
                         runCatching { OutfitWidget().updateAll(context.applicationContext) }
+                    },
+                    resolveDeviceLocationWithCity = {
+                        // "Use my current location" tap on the home-pin card.
+                        // We want a precise lat/lon (not a geocoder centroid)
+                        // so the at-home gate's 1 km radius actually fires;
+                        // resolveFresh enforces the same 5-minute ceiling
+                        // the worker uses, so a stale "I was at work
+                        // yesterday" cache miss can't silently land as the
+                        // user's home — better to no-op the button and let
+                        // them retry than save the wrong coordinate.
+                        // resolveCityName labels the fix for UI display. Both
+                        // swallow failures internally — null falls through to
+                        // a no-op in the VM.
+                        app.locationResolver.resolveFresh(
+                            LocationResolver.FRESH_FIX_MAX_AGE_MS,
+                        )?.let { fix ->
+                            val city = app.reverseGeocoder.resolveCityName(fix.latitude, fix.longitude)
+                            if (city != null) fix.copy(displayName = city) else fix
+                        }
                     },
                     workManager = WorkManager.getInstance(app),
                 ),

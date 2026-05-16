@@ -45,15 +45,44 @@ class LocationResolver(
      * grant, `IllegalArgumentException` from a non-existent provider on
      * unusual devices, etc.) is caught and logged here rather than crashing
      * the worker. Callers can rely on `resolve()` never throwing.
+     *
+     * Returns the cached last-known fix if it's newer than [maxAgeMillis]
+     * (the instance default — 1 hour); on stale cache it requests a fresh
+     * live fix and falls back to the stale cached value on timeout. The
+     * stale-fallback is right for the weather path (last hour's fix is
+     * close enough to "current" for forecast purposes) but wrong for
+     * callers that need to detect movement — use [resolveFresh] for those.
      */
     suspend fun resolve(): Location? = try {
-        resolveInner()
+        resolveInner(maxAgeMillis = this.maxAgeMillis, allowStaleFallback = true)
     } catch (t: Throwable) {
         DiagLog.w(TAG, "Unexpected ${t.javaClass.simpleName} from resolve(); returning null.", t)
         null
     }
 
-    private suspend fun resolveInner(): Location? {
+    /**
+     * Strict variant of [resolve] for callers that must distinguish "user has
+     * moved recently" from "user hasn't moved in a while." [maxAgeMillis]
+     * applies to BOTH the early cached-fix return AND the post-timeout
+     * fallback — if no fix newer than [maxAgeMillis] is reachable, returns
+     * null instead of yesterday's coordinates.
+     *
+     * The at-home TTS gate calls this with a short [maxAgeMillis] so a user
+     * who left home in the past hour doesn't get suppressed by their own
+     * stale at-home fix in the system's last-known cache. Caller is expected
+     * to fail open on null (no fresh fix = don't trust the gate, speak).
+     *
+     * Same provider strategy and [timeoutMillis] as [resolve]; only the
+     * staleness semantics differ.
+     */
+    suspend fun resolveFresh(maxAgeMillis: Long): Location? = try {
+        resolveInner(maxAgeMillis = maxAgeMillis, allowStaleFallback = false)
+    } catch (t: Throwable) {
+        DiagLog.w(TAG, "Unexpected ${t.javaClass.simpleName} from resolveFresh(); returning null.", t)
+        null
+    }
+
+    private suspend fun resolveInner(maxAgeMillis: Long, allowStaleFallback: Boolean): Location? {
         if (!hasCoarsePermission()) {
             DiagLog.i(TAG, "Coarse location not granted; not resolving.")
             return null
@@ -72,15 +101,21 @@ class LocationResolver(
         }
 
         val cached = lastKnown(manager)
-        if (cached != null && cached.isFresh()) {
+        if (cached != null && cached.isFresh(maxAgeMillis)) {
             return cached.toDomain()
         }
 
         val live = withTimeoutOrNull(timeoutMillis) { requestSingle(manager) }
-        if (live == null && cached == null) {
+        if (live != null) return live.toDomain()
+        if (cached == null) {
             DiagLog.w(TAG, "No live or cached location available within ${timeoutMillis}ms.")
+            return null
         }
-        return live?.toDomain() ?: cached?.toDomain()
+        if (!allowStaleFallback) {
+            DiagLog.i(TAG, "Cached fix older than ${maxAgeMillis}ms; treating as unavailable.")
+            return null
+        }
+        return cached.toDomain()
     }
 
     private fun hasCoarsePermission(): Boolean = ContextCompat.checkSelfPermission(
@@ -172,7 +207,7 @@ class LocationResolver(
         }
     }
 
-    private fun AndroidLocation.isFresh(): Boolean =
+    private fun AndroidLocation.isFresh(maxAgeMillis: Long): Boolean =
         System.currentTimeMillis() - time < maxAgeMillis
 
     private fun AndroidLocation.toDomain(): Location = Location(
@@ -183,5 +218,17 @@ class LocationResolver(
 
     companion object {
         private const val TAG = "LocationResolver"
+
+        /**
+         * Sensible "treat as the user's current location" ceiling for
+         * [resolveFresh] callers. Short enough that a user who's moved in
+         * the past hour can't be served their old position; long enough
+         * that a fix from a co-located app (weather refresh, a maps
+         * background read) still counts as current. Shared by
+         * `FetchAndNotifyWorker`'s at-home gate and `MainActivity`'s
+         * "Use my current location" home-pin capture so both reject
+         * stale fixes by the same standard.
+         */
+        const val FRESH_FIX_MAX_AGE_MS: Long = 5L * 60 * 1000L
     }
 }

@@ -22,10 +22,12 @@ import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
+import app.clothescast.core.domain.usecase.shouldSpeak
 import app.clothescast.data.InsightCache
 import app.clothescast.diag.Telemetry
 import app.clothescast.diag.classifyDailyRefreshReason
 import app.clothescast.insight.InsightFormatter
+import app.clothescast.location.LocationResolver
 import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
 import app.clothescast.tts.GeminiTtsSpeaker
@@ -553,7 +555,8 @@ class FetchAndNotifyWorker(
             app.insightNotifier.notify(insight, prose, prefs.outfitTopColors)
             recordDeliveryDelay(ForecastPeriod.TODAY)
         }
-        if (mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS) {
+        val ttsRequested = mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
+        if (shouldSpeakNow(ttsRequested, prefs)) {
             speakWithFallback(ttsUtterance(insight, prefs), prefs)
         }
     }
@@ -682,9 +685,37 @@ class FetchAndNotifyWorker(
             DiagLog.i(TAG, "Tonight insight has no events; skipping TTS.")
             return
         }
-        if (mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS) {
+        val ttsRequested = mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
+        if (shouldSpeakNow(ttsRequested, prefs)) {
             speakWithFallback(ttsUtterance(insight, prefs), prefs)
         }
+    }
+
+    /**
+     * Wraps [shouldSpeak] with the per-run device-location read. Resolves the
+     * coarse fix via [LocationResolver.resolveFresh] (network provider; no
+     * GPS; ~hundreds of metres accuracy) only when the gate is on and a home
+     * pin is configured — otherwise we'd be paying a permission-checked
+     * resolver call on every run for nothing.
+     *
+     * Uses [resolveFresh] rather than [LocationResolver.resolve] so a stale
+     * at-home fix from before the user left can't suppress TTS once they've
+     * gone away — exactly the failure mode this feature exists to avoid.
+     * [SKIP_TTS_AT_HOME_MAX_AGE_MS] is the freshness ceiling: anything older
+     * is treated as unavailable, which falls open to speaking.
+     */
+    private suspend fun shouldSpeakNow(ttsRequested: Boolean, prefs: UserPreferences): Boolean {
+        if (!ttsRequested) return false
+        if (!prefs.skipTtsAtHome || prefs.homeLocation == null) return true
+        val current = app.locationResolver.resolveFresh(LocationResolver.FRESH_FIX_MAX_AGE_MS)
+        val speak = shouldSpeak(
+            ttsRequested = true,
+            skipTtsAtHome = true,
+            homeLocation = prefs.homeLocation,
+            currentLocation = current,
+        )
+        if (!speak) DiagLog.i(TAG, "At home and skip-TTS-at-home is on; skipping TTS.")
+        return speak
     }
 
     /**

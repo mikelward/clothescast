@@ -247,6 +247,27 @@ data class UserPreferences(
      * platform default if the read fails or permission is not granted.
      */
     val useDeviceLocation: Boolean = false,
+    /**
+     * Optional "home" pin used by [skipTtsAtHome] to decide whether the device is
+     * physically at home at speak time. Stored at fine precision — the picker
+     * yields a specific lat/lon (reverse-geocoded "use current location" or a
+     * named search result) so the displayName stays precision-consistent with
+     * the coordinates. The lat/lon never leaves the device; the displayName is
+     * a UI label only and is not used for matching event-location strings.
+     * Independent of [location] (the weather-fallback pin), which the user may
+     * have set to a different place (e.g. travel destination, hometown).
+     */
+    val homeLocation: Location? = null,
+    /**
+     * When true, the worker suppresses TTS playback when the device is within
+     * the at-home radius of [homeLocation]. Notifications are unaffected. Fail
+     * open: if no home is configured or the device location can't be resolved,
+     * we still speak — silence away from home is the worst case we're trying
+     * to avoid. Off by default; the user enables it when they have a separate
+     * at-home announcer (e.g. Home Assistant) and don't want the phone to
+     * duplicate it.
+     */
+    val skipTtsAtHome: Boolean = false,
     val ttsEngine: TtsEngine = TtsEngine.DEVICE,
     /**
      * Prebuilt Gemini voice name (e.g. "Erinome", "Kore"). Only consulted when

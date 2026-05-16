@@ -206,6 +206,8 @@ object Telemetry {
             putLong("tonight_notify_only_on_events", snapshot.tonightNotifyOnlyOnEvents.toLongFlag())
             putLong("daily_mention_evening_events", snapshot.dailyMentionEveningEvents.toLongFlag())
             putLong("use_calendar_events", snapshot.useCalendarEvents.toLongFlag())
+            putLong("skip_tts_at_home", snapshot.skipTtsAtHome.toLongFlag())
+            putLong("home_location_configured", snapshot.homeLocationConfigured.toLongFlag())
         }
         analytics.logEvent(EVENT_SETTINGS_SNAPSHOT, params)
     }

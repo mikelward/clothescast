@@ -12,6 +12,7 @@ import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
+import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
@@ -159,6 +160,29 @@ class SettingsRepositoryTest {
 
         subject.setTonightNotifyOnlyOnEvents(false)
         subject.preferences.first().tonightNotifyOnlyOnEvents shouldBe false
+    }
+
+    @Test
+    fun `skipTtsAtHome defaults to false and round-trips`() = runTest {
+        subject.preferences.first().skipTtsAtHome shouldBe false
+
+        subject.setSkipTtsAtHome(true)
+        subject.preferences.first().skipTtsAtHome shouldBe true
+
+        subject.setSkipTtsAtHome(false)
+        subject.preferences.first().skipTtsAtHome shouldBe false
+    }
+
+    @Test
+    fun `homeLocation defaults to null and round-trips`() = runTest {
+        subject.preferences.first().homeLocation shouldBe null
+
+        val home = Location(latitude = 51.5074, longitude = -0.1278, displayName = "London")
+        subject.setHomeLocation(home)
+        subject.preferences.first().homeLocation shouldBe home
+
+        subject.setHomeLocation(null)
+        subject.preferences.first().homeLocation shouldBe null
     }
 
     @Test
@@ -756,6 +780,8 @@ class SettingsRepositoryTest {
         defaults.tonightNotifyOnlyOnEvents shouldBe false
         defaults.dailyMentionEveningEvents shouldBe true
         defaults.useCalendarEvents shouldBe false
+        defaults.skipTtsAtHome shouldBe false
+        defaults.homeLocationConfigured shouldBe false
 
         subject.setSchedule(
             time = LocalTime.of(6, 30),

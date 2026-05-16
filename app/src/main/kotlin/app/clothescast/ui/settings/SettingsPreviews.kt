@@ -72,6 +72,8 @@ internal fun SettingsSchedulePreview() {
             dailyMentionEveningEvents = false,
             deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
             tonightDeliveryMode = DeliveryMode.NOTIFICATION_ONLY,
+            skipTtsAtHome = false,
+            homeLocationConfigured = false,
             padding = PaddingValues(0.dp),
             onSetSchedule = { _, _ -> },
             onSetTonightSchedule = { _, _ -> },
@@ -80,6 +82,7 @@ internal fun SettingsSchedulePreview() {
             onSetDailyMentionEveningEvents = {},
             onSetDeliveryMode = {},
             onSetTonightDeliveryMode = {},
+            onSetSkipTtsAtHome = {},
         )
     }
 }
@@ -253,10 +256,14 @@ internal fun SettingsLocationPreview() {
                 displayName = "London",
             ),
             useDeviceLocation = true,
+            homeLocation = null,
             padding = PaddingValues(0.dp),
             onSetUseDeviceLocation = {},
             onSelectLocation = {},
             onClearLocation = {},
+            onSelectHomeLocation = {},
+            onClearHomeLocation = {},
+            onUseCurrentLocationForHome = {},
             onSearchLocations = { emptyList() },
         )
     }

@@ -24,6 +24,8 @@ import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
+import app.clothescast.mqtt.MqttPublishOutcome
+import app.clothescast.mqtt.MqttPublisher
 import app.clothescast.work.FetchAndNotifyWorker
 import app.clothescast.tts.TtsVoiceEnumerator
 import app.clothescast.tts.resolve
@@ -92,6 +94,12 @@ class SettingsViewModel(
      * stays permanently false.
      */
     private val workManager: WorkManager? = null,
+    /**
+     * Publisher used by the "Publish now" button to test the current saved
+     * MQTT configuration on demand. Null in pure-VM tests that don't need
+     * network; the Activity/Application wires the real publisher.
+     */
+    private val mqttPublisher: MqttPublisher? = null,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
@@ -174,6 +182,16 @@ class SettingsViewModel(
         viewModelScope.launch {
             keyStore.mqttPasswordConfiguredFlow.collect { set ->
                 _state.update { it.copy(mqttPasswordSet = set) }
+            }
+        }
+        viewModelScope.launch {
+            settingsRepository.mqttPublishStatus.collect { status ->
+                _state.update {
+                    it.copy(
+                        mqttLastError = status?.errorMessage,
+                        mqttLastErrorAt = status?.recordedAtMs ?: 0L,
+                    )
+                }
             }
         }
         workManager?.let { wm ->
@@ -477,6 +495,31 @@ class SettingsViewModel(
     }
 
     /**
+     * Publishes a test message to the configured broker immediately, using the
+     * current saved configuration. Intended for the "Publish now" button on the
+     * Smart Home settings page so the user can verify connectivity without
+     * waiting for the next scheduled refresh. Clears or sets the last-error
+     * indicator based on the outcome; [SettingsState.mqttPublishing] is true
+     * for the duration.
+     */
+    fun publishNow() {
+        val publisher = mqttPublisher ?: return
+        if (_state.value.mqttPublishing) return
+        viewModelScope.launch {
+            _state.update { it.copy(mqttPublishing = true) }
+            try {
+                when (val outcome = publisher.publishTest()) {
+                    is MqttPublishOutcome.NotConfigured -> Unit
+                    is MqttPublishOutcome.Success -> settingsRepository.setMqttLastError(null)
+                    is MqttPublishOutcome.Failure -> settingsRepository.setMqttLastError(outcome.message)
+                }
+            } finally {
+                _state.update { it.copy(mqttPublishing = false) }
+            }
+        }
+    }
+
+    /**
      * Persists the user's [ForecastModel] selection. The picker enforces a
      * minimum of two checked entries before calling here (the confidence
      * chip needs at least two models to compute a spread), so an empty
@@ -550,6 +593,7 @@ class SettingsViewModel(
         private val refreshCachedOutfits: suspend () -> Unit,
         private val resolveDeviceLocationWithCity: suspend () -> Location? = { null },
         private val workManager: WorkManager? = null,
+        private val mqttPublisher: MqttPublisher? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -568,6 +612,7 @@ class SettingsViewModel(
                 refreshLocationCache = refreshLocationCache,
                 resolveDeviceLocationWithCity = resolveDeviceLocationWithCity,
                 workManager = workManager,
+                mqttPublisher = mqttPublisher,
             ) as T
         }
     }

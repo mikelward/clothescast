@@ -445,6 +445,9 @@
     <string name="settings_smart_home_mqtt_topic">Topic prefix</string>
     <string name="settings_smart_home_mqtt_topic_hint">Today publishes to {prefix}/today; tonight to {prefix}/tonight.</string>
     <string name="settings_smart_home_mqtt_save">Save</string>
+    <string name="settings_smart_home_mqtt_publish_now">Publish now</string>
+    <string name="settings_smart_home_mqtt_publishing">Publishing…</string>
+    <string name="settings_smart_home_mqtt_last_error_title">Last publish failed</string>
     <string name="settings_smart_home_mqtt_setup_guide">Setup guide</string>
     <string name="settings_smart_home_mqtt_open_privacy">Read privacy details</string>
 

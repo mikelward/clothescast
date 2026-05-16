@@ -24,6 +24,7 @@ import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.usecase.shouldSpeak
 import app.clothescast.data.InsightCache
+import app.clothescast.mqtt.MqttPublishOutcome
 import app.clothescast.diag.Telemetry
 import app.clothescast.diag.classifyDailyRefreshReason
 import app.clothescast.insight.InsightFormatter
@@ -544,8 +545,20 @@ class FetchAndNotifyWorker(
         // The publisher logs and swallows broker / network failures so a
         // dead broker can't break notification or TTS delivery — by the
         // time this runs the user-facing delivery above has already
-        // completed.
-        app.mqttPublisher.publishIfEnabled(insight.period, prose)
+        // completed. The outcome is persisted so the Smart Home settings
+        // page can surface the last error for troubleshooting.
+        val mqttOutcome = app.mqttPublisher.publishIfEnabled(insight.period, prose)
+        // Status persistence is best-effort: a DataStore I/O failure here must
+        // not surface as a deliver() exception, which would cause the
+        // cached-delivery path to fall through to a fresh fetch and duplicate
+        // the user-facing notification.
+        runCatching {
+            when (mqttOutcome) {
+                is MqttPublishOutcome.NotConfigured -> Unit
+                is MqttPublishOutcome.Success -> app.settingsRepository.setMqttLastError(null)
+                is MqttPublishOutcome.Failure -> app.settingsRepository.setMqttLastError(mqttOutcome.message)
+            }
+        }
     }
 
     private suspend fun deliverToday(insight: Insight, prefs: UserPreferences, prose: String) {

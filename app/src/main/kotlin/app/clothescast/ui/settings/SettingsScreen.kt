@@ -224,10 +224,14 @@ fun SettingsScreen(
                 username = state.mqttUsername,
                 topic = state.mqttTopic,
                 passwordSet = state.mqttPasswordSet,
+                lastError = state.mqttLastError,
+                lastErrorAt = state.mqttLastErrorAt,
+                publishing = state.mqttPublishing,
                 padding = padding,
                 onSetBridgeEnabled = viewModel::setMqttBridgeEnabled,
                 onSaveConfig = viewModel::setMqttConfig,
                 onClearPassword = viewModel::clearMqttPassword,
+                onPublishNow = viewModel::publishNow,
             )
             SettingsRoute.Privacy -> PrivacyContent(
                 telemetryEnabled = state.telemetryEnabled,

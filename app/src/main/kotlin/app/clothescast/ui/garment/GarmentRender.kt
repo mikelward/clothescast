@@ -265,11 +265,11 @@ private data class BitmapCacheKey(
  * Layout (800 × 480 px, white background, landscape):
  * ```
  * ┌──────────────────────────────────────────┐
- * │     TODAY'S CLOTHESCAST                  │  ← period-aware header
- * │  [top icon]  A warm one today. Wear a    │    shifted right so
- * │  [        ]  t-shirt and shorts. High…   │    "TODAY" centres
- * │  [bot icon]                               │    above the torso
- * │  [        ]  🌡 18–28°C                  │  ← feels-like low/high
+ * │  [top icon]  TODAY'S CLOTHESCAST         │  ← header over the prose
+ * │  [        ]  A warm one today. Wear a    │    column, not the icons
+ * │  [bot icon]  t-shirt and shorts. High…   │
+ * │  [        ]                               │
+ * │              🌡 18–28°C                   │  ← feels-like low/high
  * │              💧 Peak 60% at 3pm           │  ← only when peak ≥ 30%
  * └──────────────────────────────────────────┘
  * ```
@@ -292,26 +292,26 @@ internal fun renderOutfitCard(
     val canvas = Canvas(bmp)
     canvas.drawColor(android.graphics.Color.WHITE)
 
-    // Period-aware header along the top, shifted right of CARD_PAD by
-    // HEADER_X_OFFSET_PX so the leading word reads as sitting over the
-    // outfit's torso rather than its sleeve. Fixed offset (not measure-
-    // and-centre) because "TONIGHT'S CLOTHESCAST" is too wide to centre.
+    val proseX = CARD_PAD + ICON_PX + ICON_H_GAP
+
+    // Icons go in the left column from the top, independent of the header
+    // which lives above the prose on the right.
+    val topBmp = renderOutfitBitmap(context, topDrawable(outfit.top), outfitTopDefaults.getValue(outfit.top), topColors[outfit.top], ICON_PX)
+    val botBmp = renderOutfitBitmap(context, bottomDrawable(outfit.bottom), outfitBottomDefaults.getValue(outfit.bottom), bottomColors[outfit.bottom], ICON_PX)
+    canvas.drawBitmap(topBmp, CARD_PAD.toFloat(), CARD_PAD.toFloat(), null)
+    canvas.drawBitmap(botBmp, CARD_PAD.toFloat(), (CARD_PAD + ICON_PX + ICON_V_GAP).toFloat(), null)
+
+    // Period-aware header along the top of the right column — sits over
+    // the prose rather than the icons. Fixed at proseX so it left-aligns
+    // with the prose underneath.
     val headerPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         textSize = HEADER_PX
         color = android.graphics.Color.BLACK
     }
     val headerBaseline = CARD_PAD - headerPaint.fontMetrics.ascent
-    canvas.drawText(header.uppercase(), HEADER_X.toFloat(), headerBaseline, headerPaint)
-    val contentTop = (headerBaseline + headerPaint.fontMetrics.descent + HEADER_GAP_PX).toInt()
-
-    // Top garment icon stacked above bottom garment icon in the left column.
-    val topBmp = renderOutfitBitmap(context, topDrawable(outfit.top), outfitTopDefaults.getValue(outfit.top), topColors[outfit.top], ICON_PX)
-    val botBmp = renderOutfitBitmap(context, bottomDrawable(outfit.bottom), outfitBottomDefaults.getValue(outfit.bottom), bottomColors[outfit.bottom], ICON_PX)
-    canvas.drawBitmap(topBmp, CARD_PAD.toFloat(), contentTop.toFloat(), null)
-    canvas.drawBitmap(botBmp, CARD_PAD.toFloat(), (contentTop + ICON_PX + ICON_V_GAP).toFloat(), null)
-
-    val proseX = CARD_PAD + ICON_PX + ICON_H_GAP
+    canvas.drawText(header.uppercase(), proseX.toFloat(), headerBaseline, headerPaint)
+    val proseTop = (headerBaseline + headerPaint.fontMetrics.descent + HEADER_GAP_PX).toInt()
 
     // Prose wraps in the column to the right of the icon stack.
     if (prose.isNotBlank()) {
@@ -326,7 +326,7 @@ internal fun renderOutfitCard(
             .setMaxLines(PROSE_MAX_LINES)
             .build()
         canvas.save()
-        canvas.translate(proseX.toFloat(), contentTop.toFloat())
+        canvas.translate(proseX.toFloat(), proseTop.toFloat())
         layout.draw(canvas)
         canvas.restore()
     }
@@ -411,14 +411,13 @@ internal fun outfitCardInfoLines(
 private const val RAIN_PEAK_THRESHOLD_PCT = 30
 
 // Card: 800×480 px (Nest Hub 7" display resolution).
-// Layout: header along the top, shifted right of CARD_PAD by a fixed
-// HEADER_X so it reads over the outfit torso rather than the sleeve;
-// icons and prose start at contentTop; info rows are anchored to the
-// bottom so their position is stable regardless of prose length.
+// Layout: icons fill the left column from the top; the header sits on
+// top of the right column (above the prose, at proseX); info rows are
+// anchored to the bottom of the right column so their position is
+// stable regardless of how long the prose runs.
 private const val CARD_W = 800
 private const val CARD_H = 480
 private const val CARD_PAD = 36
-private const val HEADER_X = 80        // CARD_PAD + ≈ 44 px (~0.85 cm on a 7" hub)
 private const val HEADER_PX = 38f
 private const val HEADER_GAP_PX = 16   // gap between header bottom and content top
 private const val ICON_PX = 160

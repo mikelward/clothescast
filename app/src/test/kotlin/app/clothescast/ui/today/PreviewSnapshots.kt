@@ -38,6 +38,7 @@ import app.clothescast.ui.settings.SettingsPrivacyPreview
 import app.clothescast.ui.settings.SettingsRegionPreview
 import app.clothescast.ui.settings.SettingsRootPreview
 import app.clothescast.ui.settings.SettingsSchedulePreview
+import app.clothescast.ui.settings.SettingsSmartHomePreview
 import app.clothescast.ui.settings.SettingsVoiceDevicePreview
 import app.clothescast.ui.settings.SettingsVoiceGeminiPreview
 import app.clothescast.widget.WidgetEmptyPreview
@@ -485,6 +486,14 @@ class PreviewSnapshots {
 
     @Test fun settings_calendar() = capture { SettingsCalendarPreview() }
     @Test fun settings_privacy() = capture { SettingsPrivacyPreview() }
+    // The MQTT card stretches well past the 640dp class-level viewport once
+    // the discovery picker is showing hits + the full form (host / port /
+    // TLS / username / password / topic + Save / Publish now / setup-guide
+    // links). Same workaround as the Forecasters preview above but with a
+    // taller viewport so every row fits in one frame.
+    @Test
+    @Config(qualifiers = "w360dp-h1600dp-xhdpi")
+    fun settings_smart_home() = capture { SettingsSmartHomePreview() }
     @Test fun settings_garment_color_picker() = captureDialog { SettingsGarmentColorPickerPreview() }
 
     // Onboarding's notification + location step cards derive their "complete"

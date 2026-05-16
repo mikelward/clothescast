@@ -16,6 +16,9 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
+import app.clothescast.discovery.DiscoveredService
+import app.clothescast.discovery.HomeAssistantDiscovery
+import app.clothescast.discovery.ServiceType
 import app.clothescast.tts.DeviceVoice
 import app.clothescast.tts.TtsVoiceEnumerator
 import java.util.Locale
@@ -37,6 +40,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -374,10 +379,172 @@ class SettingsViewModelTest {
             Locale.setDefault(originalDefault)
         }
     }
+
+    @Test
+    fun `discovery surfaces NSD hits as state and clears on a fresh scan`() = runTest {
+        val discovery = FakeDiscovery()
+        val vm = track(buildSubject(discovery = discovery))
+
+        vm.startDiscovery()
+        vm.state.first { it.discoveryRunning }.discoveredServices shouldBe emptyList()
+
+        val ha = DiscoveredService(
+            type = ServiceType.HOME_ASSISTANT,
+            name = "Home Assistant",
+            host = "192.168.1.20",
+            port = 8123,
+        )
+        val mqtt = DiscoveredService(
+            type = ServiceType.MQTT,
+            name = "mosquitto",
+            host = "192.168.1.20",
+            port = 1883,
+        )
+        discovery.emissions.value = listOf(ha, mqtt)
+        vm.state.first { it.discoveredServices.size == 2 }.discoveredServices shouldBe listOf(ha, mqtt)
+
+        // Restarting the scan blanks the previous batch — otherwise stale hits
+        // from a different network would linger in the picker.
+        discovery.emissions.value = emptyList()
+        vm.stopDiscovery()
+        vm.state.first { !it.discoveryRunning }
+        vm.startDiscovery()
+        vm.state.first { it.discoveryRunning }.discoveredServices shouldBe emptyList()
+    }
+
+    @Test
+    fun `useDiscoveredService writes MQTT host and port and stops the scan`() = runTest {
+        val discovery = FakeDiscovery()
+        val vm = track(buildSubject(discovery = discovery))
+        val mqtt = DiscoveredService(
+            type = ServiceType.MQTT,
+            name = "mosquitto",
+            host = "192.168.1.30",
+            port = 8883,
+        )
+
+        vm.startDiscovery()
+        discovery.emissions.value = listOf(mqtt)
+        vm.state.first { it.discoveredServices.size == 1 }
+
+        vm.useDiscoveredService(mqtt)
+        val applied = vm.state.first { it.mqttHost == "192.168.1.30" }
+        applied.mqttPort shouldBe 8883
+        applied.discoveryRunning shouldBe false
+    }
+
+    @Test
+    fun `discoveryRunning resets when the source flow completes naturally`() = runTest {
+        // Mirrors the NSD-startup-failed path Codex flagged on PR #517:
+        // when the underlying discovery source closes the channel (every
+        // discoverServices call rejected, NSD off, etc.), the VM must
+        // reset discoveryRunning so the UI doesn't sit on "Stop searching"
+        // indefinitely.
+        val vm = track(buildSubject(discovery = ImmediatelyEndingDiscovery()))
+
+        vm.startDiscovery()
+        vm.state.first { !it.discoveryRunning }
+    }
+
+    @Test
+    fun `stop then immediately start preserves discoveryRunning against the stale finally`() = runTest {
+        // Regression for the race Codex flagged on PR #517: when a scan is
+        // stopped and a new one starts before the cancelled collector's
+        // finally has run, the stale finally must NOT clear
+        // discoveryRunning out from under the new scan.
+        val discovery = FakeDiscovery()
+        val vm = track(buildSubject(discovery = discovery))
+
+        vm.startDiscovery()
+        vm.state.first { it.discoveryRunning }
+        vm.stopDiscovery()
+        vm.startDiscovery()
+        // Let any pending continuations resolve.
+        kotlinx.coroutines.yield()
+        vm.state.first { it.discoveryRunning }.discoveryRunning shouldBe true
+    }
+
+    @Test
+    fun `setMqttBridgeEnabled false cancels an in-flight discovery scan`() = runTest {
+        // The picker UI is gated on bridgeEnabled, so without this the
+        // listener leak Codex flagged on PR #517 (NSD keeps running after
+        // the user toggles the bridge off) sneaks past until the route
+        // unmounts.
+        val discovery = FakeDiscovery()
+        val vm = track(buildSubject(discovery = discovery))
+
+        vm.startDiscovery()
+        vm.state.first { it.discoveryRunning }
+
+        vm.setMqttBridgeEnabled(false)
+        vm.state.first { !it.discoveryRunning }
+    }
+
+    @Test
+    fun `useDiscoveredService for Home Assistant keeps existing port`() = runTest {
+        val discovery = FakeDiscovery()
+        val vm = track(buildSubject(discovery = discovery))
+        // Seed a non-default port so we can prove the HA pick doesn't clobber it.
+        settingsRepository.setMqttConfig(host = "old", port = 9999, useTls = false, username = null, topic = "x")
+        vm.state.first { it.mqttPort == 9999 }
+
+        val ha = DiscoveredService(
+            type = ServiceType.HOME_ASSISTANT,
+            name = "Home Assistant",
+            host = "homeassistant.local",
+            port = 8123,
+        )
+        vm.useDiscoveredService(ha)
+        val applied = vm.state.first { it.mqttHost == "homeassistant.local" }
+        applied.mqttPort shouldBe 9999
+    }
+
+    private fun buildSubject(discovery: HomeAssistantDiscovery): SettingsViewModel {
+        val emptyGeocoding = HttpClient(
+            MockEngine {
+                respond(
+                    content = ByteReadChannel("""{"results":[]}"""),
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                )
+            },
+        ) { install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) } }
+        return SettingsViewModel(
+            settingsRepository = settingsRepository,
+            keyStore = keyStore,
+            rearmAlarm = { _, _ -> },
+            cancelAlarm = { _ -> },
+            geocodingClient = OpenMeteoGeocodingClient(emptyGeocoding),
+            voiceEnumerator = EmptyVoiceEnumerator,
+            discovery = discovery,
+        )
+    }
 }
 
 /** Pass-through AEAD: encrypt/decrypt are identity. Sufficient for round-trip tests. */
 private object IdentityFakeAead : Aead {
     override fun encrypt(plaintext: ByteArray, associatedData: ByteArray?): ByteArray = plaintext
     override fun decrypt(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = ciphertext
+}
+
+/**
+ * Hand-controlled [HomeAssistantDiscovery] for the discovery tests below.
+ * `emissions` is a hot flow the test pushes into; the VM observes whatever
+ * the latest emission is. Cancelling the VM's collect cancels the underlying
+ * collector, mirroring the real NsdManager-backed flow's cold semantics.
+ */
+private class FakeDiscovery : HomeAssistantDiscovery {
+    val emissions = MutableStateFlow<List<DiscoveredService>>(emptyList())
+    override fun discover(): Flow<List<DiscoveredService>> = emissions
+}
+
+/**
+ * Discovery whose flow completes immediately — the natural shape of an
+ * NsdManager-backed source whose every `discoverServices` call fails to
+ * start (NSD off, permission denied, etc.). The VM should treat this the
+ * same as a stopped scan: clear `discoveryRunning` so the UI doesn't sit on
+ * "Stop searching" forever.
+ */
+private class ImmediatelyEndingDiscovery : HomeAssistantDiscovery {
+    override fun discover(): Flow<List<DiscoveredService>> = kotlinx.coroutines.flow.emptyFlow()
 }

@@ -24,17 +24,22 @@ import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
+import app.clothescast.discovery.DiscoveredService
+import app.clothescast.discovery.HomeAssistantDiscovery
+import app.clothescast.discovery.ServiceType
 import app.clothescast.mqtt.MqttPublishOutcome
 import app.clothescast.mqtt.MqttPublisher
 import app.clothescast.work.FetchAndNotifyWorker
 import app.clothescast.tts.TtsVoiceEnumerator
 import app.clothescast.tts.resolve
 import app.clothescast.tts.toJavaLocale
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -106,6 +111,14 @@ class SettingsViewModel(
      * falls back to the connectivity probe when null (pure-VM tests).
      */
     private val fullPublish: (suspend () -> MqttPublishOutcome)? = null,
+    /**
+     * mDNS / DNS-SD source for Home Assistant + MQTT broker hits on the
+     * local network. Null in pure-VM tests that don't need an Android
+     * NsdManager; the Activity wires the real [HomeAssistantDiscovery]. When
+     * null, "Find broker" is a no-op (the UI hides the affordance via
+     * [SettingsState.discoveryRunning] never flipping true).
+     */
+    private val discovery: HomeAssistantDiscovery? = null,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
@@ -117,6 +130,11 @@ class SettingsViewModel(
      * after the user has already switched to en-GB.
      */
     private var deviceVoiceLoadJob: Job? = null
+    /**
+     * Tracks the in-flight mDNS scan so we can cancel it on stop or when the
+     * VM is cleared, even if the user navigates away mid-scan.
+     */
+    private var discoveryJob: Job? = null
     /**
      * The most recently enumerated effective locale, used to detect when
      * re-enumeration is needed. Stored as a resolved [Locale] rather than
@@ -466,6 +484,13 @@ class SettingsViewModel(
     }
 
     fun setMqttBridgeEnabled(enabled: Boolean) {
+        // Toggling the bridge off also cancels any in-flight discovery scan.
+        // The picker UI is gated on the same `enabled` flag, so without this
+        // a scan started before the user flipped the toggle would keep the
+        // NsdManager listeners running invisibly until the screen left
+        // composition (the SmartHomeContent DisposableEffect only fires on
+        // route exit, not on toggle).
+        if (!enabled) stopDiscovery()
         viewModelScope.launch { settingsRepository.setMqttBridgeEnabled(enabled) }
     }
 
@@ -537,6 +562,90 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setForecastModels(models) }
     }
 
+    /**
+     * Starts an mDNS / DNS-SD scan for Home Assistant and MQTT brokers on
+     * the local network. Subsequent batches arrive via the discovery flow
+     * and are folded into [SettingsState.discoveredServices]. Idempotent —
+     * a second call while a scan is running is a no-op. No-ops when the VM
+     * was constructed without a [discovery] backend (pure-VM tests).
+     */
+    fun startDiscovery() {
+        val source = discovery ?: return
+        if (discoveryJob?.isActive == true) return
+        _state.update { it.copy(discoveryRunning = true, discoveredServices = emptyList()) }
+        // Launch LAZY so we can assign `discoveryJob` before the body has any
+        // chance to run; the finally block's `discoveryJob === coroutineContext[Job]`
+        // guard would otherwise miss under inline dispatchers (the body
+        // could complete before the assignment lands).
+        val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
+            try {
+                source.discover().collect { hits ->
+                    _state.update { it.copy(discoveredServices = hits) }
+                }
+            } finally {
+                // Reset the running flag whenever the flow ends — natural
+                // completion (NSD start failed on every service type and the
+                // impl closed the channel), cancellation from stopDiscovery /
+                // useDiscoveredService, or VM clear. Without this the UI
+                // can sit on "Stop searching" forever after a startup
+                // failure even though no listener is alive.
+                //
+                // Guard against a stop-then-start race: stopDiscovery cancels
+                // this job, but its cancellation handler can run *after* a
+                // subsequent startDiscovery has assigned a new job and
+                // flipped discoveryRunning back to true. Only clear when
+                // we're still the current job.
+                if (discoveryJob === coroutineContext[Job]) {
+                    _state.update { it.copy(discoveryRunning = false) }
+                }
+            }
+        }
+        discoveryJob = job
+        job.start()
+    }
+
+    /**
+     * Stops the in-flight scan. Safe to call when no scan is running.
+     * Leaves the last batch of [SettingsState.discoveredServices] in place
+     * so the user can pick from the results after the scan ends.
+     */
+    fun stopDiscovery() {
+        discoveryJob?.cancel()
+        discoveryJob = null
+        _state.update { it.copy(discoveryRunning = false) }
+    }
+
+    /**
+     * Pre-fills the MQTT broker config with a discovered service. For an
+     * MQTT advert the resolved port is the broker port; for a Home
+     * Assistant advert we keep the existing port (the HA web port itself
+     * isn't useful and the user's Mosquitto addon usually sits on the
+     * default 1883 / 8883). Stops the scan so the picker collapses.
+     */
+    fun useDiscoveredService(service: DiscoveredService) {
+        stopDiscovery()
+        viewModelScope.launch {
+            val current = settingsRepository.preferences.first()
+            val port = when (service.type) {
+                ServiceType.MQTT -> service.port
+                ServiceType.HOME_ASSISTANT -> current.mqttPort
+            }
+            settingsRepository.setMqttConfig(
+                host = service.host,
+                port = port,
+                useTls = current.mqttUseTls,
+                username = current.mqttUsername.orEmpty(),
+                topic = current.mqttTopic,
+            )
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        discoveryJob?.cancel()
+        discoveryJob = null
+    }
+
     /** Used by the data-sources page's location dialog; safe to call from any dispatcher. */
     suspend fun searchLocations(query: String): List<Location> = geocodingClient.search(query)
 
@@ -602,6 +711,7 @@ class SettingsViewModel(
         private val workManager: WorkManager? = null,
         private val mqttPublisher: MqttPublisher? = null,
         private val fullPublish: (suspend () -> MqttPublishOutcome)? = null,
+        private val discovery: HomeAssistantDiscovery? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -622,6 +732,7 @@ class SettingsViewModel(
                 workManager = workManager,
                 mqttPublisher = mqttPublisher,
                 fullPublish = fullPublish,
+                discovery = discovery,
             ) as T
         }
     }

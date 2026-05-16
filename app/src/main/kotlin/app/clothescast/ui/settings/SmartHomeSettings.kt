@@ -32,8 +32,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.DisposableEffect
 import app.clothescast.R
 import app.clothescast.core.domain.model.UserPreferences
+import app.clothescast.discovery.DiscoveredService
+import app.clothescast.discovery.ServiceType
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -55,12 +58,23 @@ internal fun SmartHomeContent(
     lastError: String?,
     lastErrorAt: Long,
     publishing: Boolean,
+    discoveryRunning: Boolean,
+    discoveredServices: List<DiscoveredService>,
     padding: PaddingValues,
     onSetBridgeEnabled: (Boolean) -> Unit,
     onSaveConfig: (host: String, port: Int, useTls: Boolean, username: String, topic: String, password: String?) -> Unit,
     onClearPassword: () -> Unit,
     onPublishNow: () -> Unit,
+    onStartDiscovery: () -> Unit,
+    onStopDiscovery: () -> Unit,
+    onUseDiscoveredService: (DiscoveredService) -> Unit,
 ) {
+    // Cancel any in-flight scan when this screen leaves the composition —
+    // the user backing out of Smart Home shouldn't leave the NsdManager
+    // listeners chewing battery in the background.
+    DisposableEffect(Unit) {
+        onDispose { onStopDiscovery() }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -80,10 +94,15 @@ internal fun SmartHomeContent(
             lastError = lastError,
             lastErrorAt = lastErrorAt,
             publishing = publishing,
+            discoveryRunning = discoveryRunning,
+            discoveredServices = discoveredServices,
             onSetEnabled = onSetBridgeEnabled,
             onSaveConfig = onSaveConfig,
             onClearPassword = onClearPassword,
             onPublishNow = onPublishNow,
+            onStartDiscovery = onStartDiscovery,
+            onStopDiscovery = onStopDiscovery,
+            onUseDiscoveredService = onUseDiscoveredService,
         )
     }
 }
@@ -100,10 +119,15 @@ private fun MqttBridgeCard(
     lastError: String?,
     lastErrorAt: Long,
     publishing: Boolean,
+    discoveryRunning: Boolean,
+    discoveredServices: List<DiscoveredService>,
     onSetEnabled: (Boolean) -> Unit,
     onSaveConfig: (host: String, port: Int, useTls: Boolean, username: String, topic: String, password: String?) -> Unit,
     onClearPassword: () -> Unit,
     onPublishNow: () -> Unit,
+    onStartDiscovery: () -> Unit,
+    onStopDiscovery: () -> Unit,
+    onUseDiscoveredService: (DiscoveredService) -> Unit,
 ) {
     val context = LocalContext.current
     // Local form state seeded from the persisted prefs, rebuilt whenever the
@@ -149,6 +173,20 @@ private fun MqttBridgeCard(
         )
 
         if (enabled) {
+            DiscoveryPicker(
+                running = discoveryRunning,
+                services = discoveredServices,
+                onStart = onStartDiscovery,
+                onStop = onStopDiscovery,
+                onUse = { service ->
+                    // Mirror the saved config back into local form state so
+                    // the textfields show the pick immediately, without
+                    // waiting on the round-trip through DataStore.
+                    hostField = service.host
+                    if (service.type == ServiceType.MQTT) portField = service.port.toString()
+                    onUseDiscoveredService(service)
+                },
+            )
             OutlinedTextField(
                 value = hostField,
                 onValueChange = { hostField = it.trim() },
@@ -330,3 +368,99 @@ private fun MqttLastErrorBanner(message: String, recordedAtMs: Long) {
 
 private val ERROR_TIMESTAMP_FORMAT: DateTimeFormatter =
     DateTimeFormatter.ofPattern("d MMM yyyy, HH:mm")
+
+@Composable
+private fun DiscoveryPicker(
+    running: Boolean,
+    services: List<DiscoveredService>,
+    onStart: () -> Unit,
+    onStop: () -> Unit,
+    onUse: (DiscoveredService) -> Unit,
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        OutlinedButton(
+            onClick = if (running) onStop else onStart,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(
+                stringResource(
+                    when {
+                        running -> R.string.settings_smart_home_discover_stop
+                        else -> R.string.settings_smart_home_discover_scan
+                    },
+                ),
+            )
+        }
+        if (running && services.isEmpty()) {
+            Text(
+                text = stringResource(R.string.settings_smart_home_discover_scanning),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = stringResource(R.string.settings_smart_home_discover_empty),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        if (services.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.settings_smart_home_discover_results),
+                style = MaterialTheme.typography.labelMedium,
+            )
+            services.forEach { service ->
+                DiscoveredServiceRow(service = service, onUse = { onUse(service) })
+            }
+        }
+    }
+}
+
+@Composable
+private fun DiscoveredServiceRow(
+    service: DiscoveredService,
+    onUse: () -> Unit,
+) {
+    val typeLabel = stringResource(
+        when (service.type) {
+            ServiceType.HOME_ASSISTANT -> R.string.settings_smart_home_discover_label_ha
+            ServiceType.MQTT -> R.string.settings_smart_home_discover_label_mqtt
+        },
+    )
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shape = MaterialTheme.shapes.small,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = typeLabel,
+                    style = MaterialTheme.typography.labelMedium,
+                )
+                Text(
+                    text = "${service.host}:${service.port}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontFamily = FontFamily.Monospace,
+                )
+                if (service.name.isNotBlank() && service.name != service.host) {
+                    Text(
+                        text = service.name,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            TextButton(onClick = onUse) {
+                Text(stringResource(R.string.settings_smart_home_discover_use))
+            }
+        }
+    }
+}

@@ -20,7 +20,11 @@ yourself; no developer-operated service ever sees the payload.
 
 1. Open **Settings → Smart Home → Home Assistant bridge (MQTT)** and
    toggle "Publish forecast to MQTT" on.
-2. Enter your broker's hostname (e.g. `homeassistant.local`).
+2. Tap **Find broker** if your Home Assistant instance or MQTT broker
+   advertises itself over mDNS — the typical Home Assistant OS install
+   does. Tap "Use" on the result and the host (and port, for an MQTT
+   advert) populate themselves. If nothing shows up, fall back to
+   typing the broker's hostname (e.g. `homeassistant.local`) manually.
 3. Set the port. Defaults to `1883` plain / `8883` TLS — the toggle
    swaps the port for you when you flip TLS.
 4. Optionally enter a username + password. The password is stored

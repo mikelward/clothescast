@@ -25,6 +25,8 @@ import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.VoiceLocale
+import app.clothescast.discovery.DiscoveredService
+import app.clothescast.discovery.ServiceType
 import app.clothescast.ui.theme.ClothesCastTheme
 import java.time.LocalTime
 
@@ -314,6 +316,53 @@ internal fun SettingsPrivacyPreview() {
             telemetryEnabled = true,
             padding = PaddingValues(0.dp),
             onSetTelemetryEnabled = {},
+        )
+    }
+}
+
+// MQTT bridge enabled with a live scan that's already surfaced two hits
+// (a Home Assistant advert and a Mosquitto MQTT advert on the same host).
+// This covers the discovery picker + the existing host / port / TLS /
+// password / topic form rows in one frame so the regression net catches
+// layout changes to either band.
+@Preview(name = "Settings · Smart Home", widthDp = 360)
+@Composable
+internal fun SettingsSmartHomePreview() {
+    SettingsFrame {
+        SmartHomeContent(
+            bridgeEnabled = true,
+            host = "homeassistant.local",
+            port = 1883,
+            useTls = false,
+            username = "clothescast",
+            topic = UserPreferences.DEFAULT_MQTT_TOPIC,
+            passwordSet = true,
+            lastError = null,
+            lastErrorAt = 0L,
+            publishing = false,
+            discoveryRunning = true,
+            discoveredServices = listOf(
+                DiscoveredService(
+                    type = ServiceType.HOME_ASSISTANT,
+                    name = "Home Assistant",
+                    host = "192.168.1.20",
+                    port = 8123,
+                ),
+                DiscoveredService(
+                    type = ServiceType.MQTT,
+                    name = "mosquitto",
+                    host = "192.168.1.20",
+                    port = 1883,
+                ),
+            ),
+            padding = PaddingValues(0.dp),
+            onSetBridgeEnabled = {},
+            onSaveConfig = { _, _, _, _, _, _ -> },
+            onClearPassword = {},
+            onPublishNow = {},
+            onStartDiscovery = {},
+            onStopDiscovery = {},
+            onUseDiscoveredService = {},
         )
     }
 }

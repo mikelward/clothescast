@@ -450,6 +450,14 @@
     <string name="settings_smart_home_mqtt_last_error_title">Last publish failed</string>
     <string name="settings_smart_home_mqtt_setup_guide">Setup guide</string>
     <string name="settings_smart_home_mqtt_open_privacy">Read privacy details</string>
+    <string name="settings_smart_home_discover_scan">Find broker</string>
+    <string name="settings_smart_home_discover_scanning">Searching…</string>
+    <string name="settings_smart_home_discover_stop">Stop searching</string>
+    <string name="settings_smart_home_discover_empty">No broker found yet. Keep searching, or type the broker host manually.</string>
+    <string name="settings_smart_home_discover_results">Found on your network</string>
+    <string name="settings_smart_home_discover_use">Use</string>
+    <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
+    <string name="settings_smart_home_discover_label_mqtt">MQTT broker</string>
 
     <string name="settings_api_key_gemini_label">Gemini</string>
 

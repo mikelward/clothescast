@@ -166,6 +166,14 @@ The source code is at <https://github.com/mikelward/clothescast>.
 - **Setup guide:** See [docs/smart-home.md](docs/smart-home.md) for
   step-by-step configuration on both the ClothesCast side and the
   Home Assistant side.
+- **Local-network discovery:** When you tap "Find broker" on the
+  Smart Home settings page, ClothesCast issues standard mDNS / DNS-SD
+  queries (`_home-assistant._tcp.` and `_mqtt._tcp.`) over your local
+  network multicast group so it can offer to pre-fill the broker
+  host. Nothing about you or your forecast is included in the queries
+  — they're indistinguishable from any other mDNS browser on your
+  network — and discovery stops as soon as you leave the page or pick
+  a result. No discovery happens unless you tap the button.
 
 ### API keys you provide
 

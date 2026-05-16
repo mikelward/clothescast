@@ -34,3 +34,25 @@
 -dontwarn org.eclipse.jetty.alpn.**
 -dontwarn org.eclipse.jetty.npn.**
 -dontwarn reactor.blockhound.integration.**
+
+# HiveMQ MQTT Client wires its Netty pipeline through an internal Dagger 2
+# graph. The generated factories (e.g. *_Factory, DoubleCheck Provider chains)
+# are resolved by name at runtime when buildAsync() constructs the client, so
+# R8 must not strip or rename them. Without these rules the publisher crashes
+# at the first publishWith() call with NoClassDefFoundError on an obfuscated
+# Dagger factory (z5.b etc.). Keeping the whole package is heavier than the
+# minimum set but is the only reliable shape — picking individual generated
+# classes is brittle across HiveMQ versions.
+-keep class com.hivemq.client.** { *; }
+-keepclassmembers class com.hivemq.client.** { *; }
+
+# Netty resolves its logger and event-loop implementations via service-loader
+# style reflection on a string class name. Without the keep rules below R8
+# can devirtualize / strip the JDK-logger backstop, leaving HiveMQ unable to
+# install a logger at startup. The transitive Netty deps the MQTT client
+# uses (buffer, codec, handler, transport, resolver) all rely on this path.
+-keep class io.netty.util.internal.logging.** { *; }
+-keep class io.netty.util.concurrent.** { *; }
+-keepclassmembers class io.netty.** {
+    private <init>(...);
+}

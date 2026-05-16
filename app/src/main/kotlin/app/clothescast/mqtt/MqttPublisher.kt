@@ -112,6 +112,27 @@ class MqttPublisher(
     }
 
     /**
+     * Fire-and-forget publish of a WAV-wrapped TTS clip to
+     * `${baseTopic}/${period.lowercased()}/audio`. Same bridge toggle as the
+     * prose and image topics — no separate setting. Only emitted when the
+     * Gemini engine actually synthesised audio for local playback (device
+     * TTS doesn't expose bytes), so the published clip matches what the
+     * phone speaks. The companion HA automation can either fetch this as a
+     * media URL or use the retained payload to trigger `media_player`.
+     */
+    suspend fun publishAudioIfEnabled(period: ForecastPeriod, wavBytes: ByteArray) {
+        val prepared = preparePublish(context = "${period.name.lowercase()} TTS audio") ?: return
+        val topic = audioTopicFor(prepared.baseTopic, period)
+        DiagLog.i(
+            TAG,
+            "MQTT bridge enabled; publishing ${period.name.lowercase()} TTS audio " +
+                "(${wavBytes.size} bytes) to " +
+                "${prepared.scheme}://${prepared.host}:${prepared.port}/$topic.",
+        )
+        executePublish(prepared, topic, wavBytes)
+    }
+
+    /**
      * Reads the current preferences and resolves credentials; returns null
      * (with appropriate logging) when the bridge is not configured. [context]
      * is a short label used in warning messages only (e.g. "today", "test").
@@ -222,6 +243,9 @@ class MqttPublisher(
 
         fun imageTopicFor(baseTopic: String, period: ForecastPeriod): String =
             "${topicFor(baseTopic, period)}/image"
+
+        fun audioTopicFor(baseTopic: String, period: ForecastPeriod): String =
+            "${topicFor(baseTopic, period)}/audio"
     }
 }
 

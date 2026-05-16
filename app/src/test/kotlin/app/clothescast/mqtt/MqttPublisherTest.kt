@@ -314,6 +314,16 @@ class MqttPublisherTest {
     }
 
     @Test
+    fun `audioTopicFor appends audio suffix to prose topic`() {
+        MqttPublisher.audioTopicFor("clothescast/insight", ForecastPeriod.TODAY) shouldBe
+            "clothescast/insight/today/audio"
+        MqttPublisher.audioTopicFor("home/forecast", ForecastPeriod.TONIGHT) shouldBe
+            "home/forecast/tonight/audio"
+        MqttPublisher.audioTopicFor("", ForecastPeriod.TODAY) shouldBe
+            "clothescast/insight/today/audio"
+    }
+
+    @Test
     fun `publishImageIfEnabled publishes PNG bytes to image topic`() = runTest {
         val captured = mutableListOf<PublishCall>()
         val subject = MqttPublisher(
@@ -347,6 +357,44 @@ class MqttPublisherTest {
         )
 
         subject.publishImageIfEnabled(ForecastPeriod.TODAY, byteArrayOf(1, 2, 3))
+
+        captured shouldHaveSize 0
+    }
+
+    @Test
+    fun `publishAudioIfEnabled publishes WAV bytes to audio topic`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttTopic = "clothescast/insight",
+                ),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+        val fakeWav = byteArrayOf(0x52, 0x49, 0x46, 0x46) // "RIFF" header magic
+
+        subject.publishAudioIfEnabled(ForecastPeriod.TONIGHT, fakeWav)
+
+        captured shouldHaveSize 1
+        val call = captured.single()
+        call.topic shouldBe "clothescast/insight/tonight/audio"
+        (call.payload contentEquals fakeWav).shouldBeTrue()
+    }
+
+    @Test
+    fun `publishAudioIfEnabled no-op when bridge disabled`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(basePrefs.copy(mqttBridgeEnabled = false, mqttHost = "broker.local")),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+
+        subject.publishAudioIfEnabled(ForecastPeriod.TODAY, byteArrayOf(1, 2, 3))
 
         captured shouldHaveSize 0
     }

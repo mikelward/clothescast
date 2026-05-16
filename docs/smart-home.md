@@ -214,6 +214,38 @@ picture *and* speaks the forecast at the same moment.
 > (`https://your-ha.duckdns.org`) instead. The camera proxy path and
 > access token are the same either way.
 
+## Home Assistant — TTS audio clip on the audio topic
+
+When the Gemini TTS engine is selected (Settings → Voice → Gemini),
+ClothesCast publishes the synthesised audio as a WAV clip to
+`<prefix>/<period>/audio` (e.g. `clothescast/insight/today/audio`).
+The payload is signed 16-bit mono PCM at the sample rate Gemini
+returned, wrapped in a canonical 44-byte RIFF/WAVE header — playable
+as-is by ffmpeg, browsers, and `media_player.play_media` when handed
+via an HTTP fetch (HA doesn't read MQTT binary payloads directly into
+the media player). It's exactly the bytes the phone speaks, so any
+"speak it on the Hub" automation built around the prose sensor or one
+of the TTS options below stays in lockstep with the phone.
+
+Two things to know before you wire anything up:
+
+- **Gemini-only.** Device TTS doesn't expose its audio buffer before
+  playback, so the audio topic stays empty when the on-device engine
+  is selected. Switch to Gemini in Settings → Voice to populate it.
+- **Skip-TTS-at-home applies.** The audio is published from the same
+  code path that plays it on the phone, so if "Don't speak the
+  forecast at home" is on and you're at home, neither the phone nor
+  the Hub gets the clip. Toggle that off if you want the Hub to speak
+  even when you're home.
+
+The simplest way to make the Hub actually speak is still options A /
+B / C below: trigger an automation on the prose sensor's update and
+let HA's TTS service synthesise — that path is already paved end to
+end. The audio topic is here for setups that already prefer a fixed
+voice clip over re-synthesising in HA (e.g. mass.announce → media URL
+flows), and for users who want to capture the rendered briefing for
+their own pipelines.
+
 ## Home Assistant — speaking the sensor on Google Home
 
 As of mid-2026, getting Google Home / Nest devices to actually *speak*

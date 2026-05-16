@@ -338,6 +338,7 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                         }
                     },
                     workManager = WorkManager.getInstance(app),
+                    mqttPublisher = app.mqttPublisher,
                 ),
             )
             SettingsScreen(

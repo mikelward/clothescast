@@ -125,4 +125,15 @@ data class SettingsState(
     val mqttUsername: String = "",
     val mqttTopic: String = UserPreferences.DEFAULT_MQTT_TOPIC,
     val mqttPasswordSet: Boolean = false,
+    /**
+     * Error message from the last MQTT publish attempt, or null if the last
+     * attempt succeeded (or no publish has been attempted yet). Persisted
+     * across app launches so the user can see a previous failure without
+     * waiting for the next scheduled refresh.
+     */
+    val mqttLastError: String? = null,
+    /** Epoch-ms wall-clock of the last recorded publish outcome (0 = no record). */
+    val mqttLastErrorAt: Long = 0L,
+    /** True while a "Publish now" action is in flight. */
+    val mqttPublishing: Boolean = false,
 )

@@ -14,6 +14,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -27,11 +28,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.UserPreferences
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 private const val SETUP_GUIDE_URL =
     "https://github.com/mikelward/clothescast/blob/main/docs/smart-home.md"
@@ -47,10 +52,14 @@ internal fun SmartHomeContent(
     username: String,
     topic: String,
     passwordSet: Boolean,
+    lastError: String?,
+    lastErrorAt: Long,
+    publishing: Boolean,
     padding: PaddingValues,
     onSetBridgeEnabled: (Boolean) -> Unit,
     onSaveConfig: (host: String, port: Int, useTls: Boolean, username: String, topic: String, password: String?) -> Unit,
     onClearPassword: () -> Unit,
+    onPublishNow: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -68,9 +77,13 @@ internal fun SmartHomeContent(
             username = username,
             topic = topic,
             passwordSet = passwordSet,
+            lastError = lastError,
+            lastErrorAt = lastErrorAt,
+            publishing = publishing,
             onSetEnabled = onSetBridgeEnabled,
             onSaveConfig = onSaveConfig,
             onClearPassword = onClearPassword,
+            onPublishNow = onPublishNow,
         )
     }
 }
@@ -84,9 +97,13 @@ private fun MqttBridgeCard(
     username: String,
     topic: String,
     passwordSet: Boolean,
+    lastError: String?,
+    lastErrorAt: Long,
+    publishing: Boolean,
     onSetEnabled: (Boolean) -> Unit,
     onSaveConfig: (host: String, port: Int, useTls: Boolean, username: String, topic: String, password: String?) -> Unit,
     onClearPassword: () -> Unit,
+    onPublishNow: () -> Unit,
 ) {
     val context = LocalContext.current
     // Local form state seeded from the persisted prefs, rebuilt whenever the
@@ -247,6 +264,24 @@ private fun MqttBridgeCard(
                 enabled = canSave,
                 modifier = Modifier.fillMaxWidth(),
             ) { Text(stringResource(R.string.settings_smart_home_mqtt_save)) }
+
+            if (lastError != null && lastErrorAt > 0L) {
+                MqttLastErrorBanner(message = lastError, recordedAtMs = lastErrorAt)
+            }
+
+            OutlinedButton(
+                onClick = onPublishNow,
+                enabled = host.isNotBlank() && !publishing,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    if (publishing) {
+                        stringResource(R.string.settings_smart_home_mqtt_publishing)
+                    } else {
+                        stringResource(R.string.settings_smart_home_mqtt_publish_now)
+                    },
+                )
+            }
         }
 
         TextButton(
@@ -259,3 +294,39 @@ private fun MqttBridgeCard(
         ) { Text(stringResource(R.string.settings_smart_home_mqtt_open_privacy)) }
     }
 }
+
+@Composable
+private fun MqttLastErrorBanner(message: String, recordedAtMs: Long) {
+    val timestamp = remember(recordedAtMs) {
+        Instant.ofEpochMilli(recordedAtMs)
+            .atZone(ZoneId.systemDefault())
+            .format(ERROR_TIMESTAMP_FORMAT)
+    }
+    Surface(
+        color = MaterialTheme.colorScheme.errorContainer,
+        shape = MaterialTheme.shapes.small,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(
+                text = stringResource(R.string.settings_smart_home_mqtt_last_error_title),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onErrorContainer,
+            )
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                fontFamily = FontFamily.Monospace,
+            )
+            Text(
+                text = timestamp,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.7f),
+            )
+        }
+    }
+}
+
+private val ERROR_TIMESTAMP_FORMAT: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("d MMM yyyy, HH:mm")

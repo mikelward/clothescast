@@ -10,6 +10,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.ensureActive
@@ -196,6 +197,98 @@ class MqttPublisherTest {
         subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
 
         attempted.shouldBeTrue()
+    }
+
+    @Test
+    fun `successful publish returns Success outcome`() = runTest {
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = capturing(mutableListOf()),
+        )
+
+        val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
+
+        outcome shouldBe MqttPublishOutcome.Success
+    }
+
+    @Test
+    fun `disabled bridge returns NotConfigured`() = runTest {
+        val subject = MqttPublisher(
+            preferences = flowOf(basePrefs.copy(mqttBridgeEnabled = false, mqttHost = "broker.local")),
+            passwordProvider = { null },
+            publish = { _, _, _ -> },
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "x") shouldBe MqttPublishOutcome.NotConfigured
+    }
+
+    @Test
+    fun `blank host returns NotConfigured`() = runTest {
+        val subject = MqttPublisher(
+            preferences = flowOf(basePrefs.copy(mqttBridgeEnabled = true, mqttHost = null)),
+            passwordProvider = { null },
+            publish = { _, _, _ -> },
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "x") shouldBe MqttPublishOutcome.NotConfigured
+    }
+
+    @Test
+    fun `publish failure returns Failure outcome with message`() = runTest {
+        val subject = MqttPublisher(
+            preferences = flowOf(basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local")),
+            passwordProvider = { null },
+            publish = { _, _, _ -> error("simulated broker rejection") },
+        )
+
+        val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
+
+        val failure = outcome.shouldBeInstanceOf<MqttPublishOutcome.Failure>()
+        failure.message shouldBe "IllegalStateException: simulated broker rejection"
+    }
+
+    @Test
+    fun `timeout returns Failure outcome`() = runTest {
+        val subject = MqttPublisher(
+            preferences = flowOf(basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local")),
+            passwordProvider = { null },
+            publish = { _, _, _ ->
+                while (true) {
+                    coroutineContext.ensureActive()
+                    kotlinx.coroutines.delay(1_000)
+                }
+            },
+            publishTimeoutMs = 50L,
+        )
+
+        val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
+
+        outcome.shouldBeInstanceOf<MqttPublishOutcome.Failure>()
+    }
+
+    @Test
+    fun `publishTest routes to test topic, not today or tonight`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttTopic = "home/forecast",
+                ),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+
+        val outcome = subject.publishTest()
+
+        outcome shouldBe MqttPublishOutcome.Success
+        captured shouldHaveSize 1
+        captured.single().topic shouldBe "home/forecast/test"
     }
 
     @Test

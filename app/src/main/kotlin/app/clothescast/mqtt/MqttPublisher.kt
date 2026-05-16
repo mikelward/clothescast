@@ -17,6 +17,19 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 /**
+ * Outcome of a [MqttPublisher.publishIfEnabled] call. Callers use this to
+ * persist the last publish result for display in the Smart Home settings UI.
+ */
+sealed interface MqttPublishOutcome {
+    /** Bridge not enabled or no host configured — intentional no-op, not an error. */
+    data object NotConfigured : MqttPublishOutcome
+    /** Message published successfully. */
+    data object Success : MqttPublishOutcome
+    /** Publish was attempted but failed — [message] is a short, user-readable description. */
+    data class Failure(val message: String) : MqttPublishOutcome
+}
+
+/**
  * Publishes the rendered insight prose to a user-hosted MQTT broker as a
  * retained message, so Home Assistant (or any other MQTT consumer) can read
  * the latest "what to wear today" sentence and speak it on a trigger of the
@@ -37,12 +50,53 @@ class MqttPublisher(
 ) {
 
     /**
-     * Fire-and-forget publish to `${baseTopic}/${period.lowercased()}`. No-op
-     * when the bridge is disabled or no host is configured. Any failure (DNS,
-     * connection, broker rejection, timeout) is logged and swallowed — the
-     * caller's worker must succeed regardless of broker reachability.
+     * Publishes to `${baseTopic}/${period.lowercased()}` and returns an
+     * [MqttPublishOutcome] so the caller can persist the result for display.
+     * Returns [MqttPublishOutcome.NotConfigured] (silently) when the bridge is
+     * disabled or no host is set. Any network failure (DNS, connection, broker
+     * rejection, timeout) is logged, swallowed, and returned as
+     * [MqttPublishOutcome.Failure] — the caller's worker must succeed regardless
+     * of broker reachability.
      */
-    suspend fun publishIfEnabled(period: ForecastPeriod, prose: String) {
+    suspend fun publishIfEnabled(period: ForecastPeriod, prose: String): MqttPublishOutcome {
+        val prepared = preparePublish(context = period.name.lowercase()) ?: return MqttPublishOutcome.NotConfigured
+        val topic = topicFor(prepared.baseTopic, period)
+        DiagLog.i(
+            TAG,
+            "MQTT bridge enabled; publishing ${period.name.lowercase()} insight to " +
+                "${prepared.scheme}://${prepared.host}:${prepared.port}/$topic " +
+                "(auth=${!prepared.config.username.isNullOrBlank()}, " +
+                "password=${if (prepared.config.password != null) "set" else "none"}, " +
+                "payload=${prose.length} chars).",
+        )
+        return executePublish(prepared, topic, prose)
+    }
+
+    /**
+     * Publishes a test message to `${baseTopic}/test` and returns the outcome.
+     * Intended for the "Publish now" button — uses a dedicated topic suffix so
+     * the retained forecast on `${baseTopic}/today` and `tonight` is never
+     * overwritten by a connectivity probe. Returns
+     * [MqttPublishOutcome.NotConfigured] when the bridge is disabled or no host
+     * is configured.
+     */
+    suspend fun publishTest(): MqttPublishOutcome {
+        val prepared = preparePublish(context = "test") ?: return MqttPublishOutcome.NotConfigured
+        val baseTrimmed = prepared.baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
+        val topic = "$baseTrimmed/test"
+        DiagLog.i(
+            TAG,
+            "MQTT test publish to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic.",
+        )
+        return executePublish(prepared, topic, "ClothesCast: connection test")
+    }
+
+    /**
+     * Reads the current preferences and resolves credentials; returns null
+     * (with appropriate logging) when the bridge is not configured. [context]
+     * is a short label used in warning messages only (e.g. "today", "test").
+     */
+    private suspend fun preparePublish(context: String): PreparedPublish? {
         // CancellationException must propagate at every catch point so a
         // WorkManager stop or withTimeoutOrNull abort unwinds the worker
         // cleanly instead of being silently logged as an MQTT failure (which
@@ -52,20 +106,20 @@ class MqttPublisher(
         } catch (ce: CancellationException) {
             throw ce
         } catch (t: Throwable) {
-            DiagLog.w(TAG, "Failed to read settings for ${period.name.lowercase()} insight MQTT publish; skipping.", t)
-            return
+            DiagLog.w(TAG, "Failed to read settings for $context MQTT publish; skipping.", t)
+            return null
         }
         // Bridge-off is the silent-no-op path for users who haven't opted in;
         // not logged to keep the diag stream clean for the 99% no-bridge case.
-        if (!prefs.mqttBridgeEnabled) return
+        if (!prefs.mqttBridgeEnabled) return null
         val host = prefs.mqttHost?.takeIf { it.isNotBlank() } ?: run {
             DiagLog.w(
                 TAG,
                 "MQTT bridge is enabled but no broker host is configured; " +
-                    "${period.name.lowercase()} insight not published. " +
+                    "$context message not published. " +
                     "Set the host in Settings → Smart Home.",
             )
-            return
+            return null
         }
         val password = if (prefs.mqttUsername.isNullOrBlank()) {
             null
@@ -79,42 +133,54 @@ class MqttPublisher(
                 null
             }
         }
-        val config = MqttConfig(
+        return PreparedPublish(
+            config = MqttConfig(
+                host = host,
+                port = prefs.mqttPort,
+                useTls = prefs.mqttUseTls,
+                username = prefs.mqttUsername,
+                password = password,
+            ),
+            baseTopic = prefs.mqttTopic,
+            scheme = if (prefs.mqttUseTls) "mqtts" else "mqtt",
             host = host,
             port = prefs.mqttPort,
-            useTls = prefs.mqttUseTls,
-            username = prefs.mqttUsername,
-            password = password,
         )
-        val topic = topicFor(prefs.mqttTopic, period)
-        val scheme = if (prefs.mqttUseTls) "mqtts" else "mqtt"
-        // Entry log: fires only when the bridge is enabled and the host is set.
-        // If you see this line in the diag log, the publisher reached the
-        // network attempt; if you don't, the bridge is either off or the host
-        // is blank (and the warn above will tell you which).
-        DiagLog.i(
-            TAG,
-            "MQTT bridge enabled; publishing ${period.name.lowercase()} insight to " +
-                "$scheme://$host:${prefs.mqttPort}/$topic " +
-                "(auth=${!prefs.mqttUsername.isNullOrBlank()}, " +
-                "password=${if (password != null) "set" else "none"}, " +
-                "payload=${prose.length} chars).",
-        )
-        withTimeoutOrNull(publishTimeoutMs) {
-            try {
-                publish(config, topic, prose)
-                DiagLog.i(TAG, "Published ${period.name.lowercase()} insight to $scheme://$host:${prefs.mqttPort}/$topic")
-            } catch (ce: CancellationException) {
-                // Re-raise so withTimeoutOrNull sees a timeout (returns null
-                // and we log "timed out" below) and so a WorkManager-issued
-                // cancel propagates out of the worker rather than being
-                // shadowed by a misleading "MQTT publish failed" line.
-                throw ce
-            } catch (t: Throwable) {
-                DiagLog.w(TAG, "MQTT publish failed to $scheme://$host:${prefs.mqttPort}/$topic", t)
-            }
-        } ?: DiagLog.w(TAG, "MQTT publish timed out after ${publishTimeoutMs}ms to $scheme://$host:${prefs.mqttPort}/$topic")
     }
+
+    private suspend fun executePublish(
+        prepared: PreparedPublish,
+        topic: String,
+        payload: String,
+    ): MqttPublishOutcome = withTimeoutOrNull(publishTimeoutMs) {
+        var result: MqttPublishOutcome = MqttPublishOutcome.Success
+        try {
+            publish(prepared.config, topic, payload)
+            DiagLog.i(TAG, "Published to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic")
+        } catch (ce: CancellationException) {
+            // Re-raise so withTimeoutOrNull sees a timeout (returns null
+            // and we return Failure below) and so a WorkManager-issued
+            // cancel propagates out of the worker rather than being
+            // shadowed by a misleading "MQTT publish failed" line.
+            throw ce
+        } catch (t: Throwable) {
+            val msg = "${t.javaClass.simpleName}: ${t.message ?: "unknown error"}".take(250)
+            DiagLog.w(TAG, "MQTT publish failed to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic", t)
+            result = MqttPublishOutcome.Failure(msg)
+        }
+        result
+    } ?: run {
+        DiagLog.w(TAG, "MQTT publish timed out after ${publishTimeoutMs}ms to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic")
+        MqttPublishOutcome.Failure("Connection timed out (>${publishTimeoutMs}ms)")
+    }
+
+    private data class PreparedPublish(
+        val config: MqttConfig,
+        val baseTopic: String,
+        val scheme: String,
+        val host: String,
+        val port: Int,
+    )
 
     companion object {
         private const val TAG = "MqttPublisher"

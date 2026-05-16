@@ -21,6 +21,7 @@ import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Region
+import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.symbol
 import app.clothescast.insight.InsightFormatter
@@ -97,8 +98,9 @@ object BugReport {
             appendLine()
             appendLine("--- Current ClothesCasts ---")
             val region = prefs?.region ?: Region.SYSTEM
-            appendInsight("This period", thisPeriod, context, region)
-            appendInsight("Next period", nextPeriod, context, region)
+            val tempUnit = prefs?.temperatureUnit ?: TemperatureUnit.CELSIUS
+            appendInsight("This period", thisPeriod, context, region, tempUnit)
+            appendInsight("Next period", nextPeriod, context, region, tempUnit)
             if (!crash.isNullOrBlank()) {
                 appendLine("--- Last crash (from previous run) ---")
                 appendLine(crash.trim())
@@ -177,6 +179,7 @@ object BugReport {
         insight: Insight?,
         context: Context,
         region: Region,
+        temperatureUnit: TemperatureUnit,
     ) {
         appendLine("$label:")
         if (insight == null) {
@@ -184,7 +187,9 @@ object BugReport {
             appendLine()
             return
         }
-        val prose = runCatching { InsightFormatter.forRegion(context, region).format(insight.summary) }
+        val prose = runCatching {
+            InsightFormatter.forRegion(context, region, temperatureUnit).format(insight.summary)
+        }
             .getOrElse { "(prose render failed: ${it.javaClass.simpleName})" }
         appendLine("  Prose: $prose")
         appendLine("  Generated: ${insight.generatedAt} (${humanAge(insight.generatedAt)})")

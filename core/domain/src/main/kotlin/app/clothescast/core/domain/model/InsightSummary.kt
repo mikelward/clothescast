@@ -58,11 +58,22 @@ data class InsightSummary(
 data class AlertClause(val event: String)
 
 /**
- * The feels-like temperature band(s) for the period. When [low] == [high] the
- * formatter emits a single label ("Today will be mild."); otherwise it emits a
- * range ("Today will be cool to mild.") in low-to-high order.
+ * The feels-like temperature window for the period, carried both as bands
+ * (for legacy consumers and for the cache's pre-temp back-compat fallback)
+ * and as the raw °C extremes the band is derived from. The formatter renders
+ * the raw temps — rounded to whole degrees in the user's chosen unit — as
+ * "Today, it will be 8° to 14°." (or "Today, it will be 14°." when the
+ * rounded extremes collapse to a single value). [feelsLikeMinC] /
+ * [feelsLikeMaxC] default to a representative midpoint of their respective
+ * band so legacy construction sites and pre-temp cache reads still render
+ * sensibly without explicit temps.
  */
-data class BandClause(val low: TemperatureBand, val high: TemperatureBand)
+data class BandClause(
+    val low: TemperatureBand,
+    val high: TemperatureBand,
+    val feelsLikeMinC: Double = low.midpointC(),
+    val feelsLikeMaxC: Double = high.midpointC(),
+)
 
 /**
  * Yesterday-to-today feels-like delta, rounded to whole degrees. [degrees] is
@@ -166,6 +177,21 @@ enum class TemperatureBand {
     MILD,
     WARM,
     HOT;
+
+    /**
+     * A representative °C inside this band. Used as the fallback temp when a
+     * [BandClause] is constructed without explicit feels-like values — e.g.
+     * legacy cached payloads written before the temps were carried, or test
+     * fixtures that only care about the band classification.
+     */
+    fun midpointC(): Double = when (this) {
+        FREEZING -> 0.0
+        COLD -> 8.0
+        COOL -> 15.0
+        MILD -> 21.0
+        WARM -> 26.0
+        HOT -> 30.0
+    }
 
     companion object {
         fun forCelsius(c: Double): TemperatureBand = when {

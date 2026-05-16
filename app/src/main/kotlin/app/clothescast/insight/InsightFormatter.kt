@@ -13,10 +13,12 @@ import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.Region
-import app.clothescast.core.domain.model.TemperatureBand
+import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WeatherCondition
+import app.clothescast.core.domain.model.toUnit
 import java.time.LocalTime
 import java.util.Locale
+import kotlin.math.roundToInt
 
 /**
  * Renders a structured [InsightSummary] into the spoken / displayed prose.
@@ -41,6 +43,7 @@ import java.util.Locale
 class InsightFormatter(
     private val resources: Resources,
     private val locale: Locale = Locale.getDefault(),
+    private val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
 ) {
     private val phraser: ClothesPhraser = ClothesPhraser.forLocale(resources, locale)
 
@@ -111,11 +114,11 @@ class InsightFormatter(
 
     private fun formatBand(period: ForecastPeriod, band: BandClause, isFutureDay: Boolean): String {
         val lead = resources.getString(leadRes(period, isFutureDay))
-        val low = resources.getString(bandRes(band.low))
-        return if (band.low == band.high) {
+        val low = band.feelsLikeMinC.toUnit(temperatureUnit).roundToInt()
+        val high = band.feelsLikeMaxC.toUnit(temperatureUnit).roundToInt()
+        return if (low == high) {
             resources.getString(R.string.insight_band_single, lead, low)
         } else {
-            val high = resources.getString(bandRes(band.high))
             resources.getString(R.string.insight_band_range, lead, low, high)
         }
     }
@@ -125,7 +128,16 @@ class InsightFormatter(
             DeltaClause.Direction.WARMER -> R.string.insight_delta_warmer
             DeltaClause.Direction.COOLER -> R.string.insight_delta_cooler
         }
-        return resources.getString(template, delta.degrees)
+        // DeltaClause.degrees is the absolute Celsius delta. Temperature
+        // *differences* convert with the ratio only (no +32 offset), so
+        // 5°C of warming surfaces as 9°F to a Fahrenheit user — without
+        // this the band sentence would say "46° to 57°" while the delta
+        // beside it still said "5° warmer", reading as mixed units.
+        val degrees = when (temperatureUnit) {
+            TemperatureUnit.CELSIUS -> delta.degrees
+            TemperatureUnit.FAHRENHEIT -> (delta.degrees * 9.0 / 5.0).roundToInt()
+        }
+        return resources.getString(template, degrees)
     }
 
     private fun formatClothesWear(items: List<String>): String? {
@@ -216,15 +228,6 @@ class InsightFormatter(
         ForecastPeriod.TONIGHT -> R.string.insight_lead_tonight
     }
 
-    private fun bandRes(band: TemperatureBand): Int = when (band) {
-        TemperatureBand.FREEZING -> R.string.insight_band_freezing
-        TemperatureBand.COLD -> R.string.insight_band_cold
-        TemperatureBand.COOL -> R.string.insight_band_cool
-        TemperatureBand.MILD -> R.string.insight_band_mild
-        TemperatureBand.WARM -> R.string.insight_band_warm
-        TemperatureBand.HOT -> R.string.insight_band_hot
-    }
-
     private fun conditionRes(condition: WeatherCondition): Int = when (condition) {
         WeatherCondition.CLEAR -> R.string.insight_condition_clear
         WeatherCondition.PARTLY_CLOUDY -> R.string.insight_condition_partly_cloudy
@@ -292,13 +295,21 @@ class InsightFormatter(
         private val OVERNIGHT_HOURS = 0..4
 
         /** Build a formatter that renders prose in [locale] using [context]'s resources. */
-        fun forContext(context: Context, locale: Locale = context.currentResourcesLocale()): InsightFormatter =
-            InsightFormatter(context.localizedResources(locale), locale)
+        fun forContext(
+            context: Context,
+            locale: Locale = context.currentResourcesLocale(),
+            temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
+        ): InsightFormatter =
+            InsightFormatter(context.localizedResources(locale), locale, temperatureUnit)
 
         /** Convenience for the common path: render in the user's [Region]-derived locale. */
-        fun forRegion(context: Context, region: Region): InsightFormatter {
+        fun forRegion(
+            context: Context,
+            region: Region,
+            temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
+        ): InsightFormatter {
             val locale = region.toJavaLocale() ?: context.currentResourcesLocale()
-            return forContext(context, locale)
+            return forContext(context, locale, temperatureUnit)
         }
     }
 }

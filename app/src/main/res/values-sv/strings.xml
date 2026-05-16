@@ -544,8 +544,8 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="insight_lead_tomorrow">Imorgon</string>
     <string name="insight_lead_tonight">I kväll</string>
     <!-- Swedish V2 word order: "Idag blir det milt." -->
-    <string name="insight_band_single">%1$s blir det %2$s.</string>
-    <string name="insight_band_range">%1$s blir det %2$s till %3$s.</string>
+    <string name="insight_band_single">%1$s blir det %2$d°.</string>
+    <string name="insight_band_range">%1$s blir det %2$d° till %3$d°.</string>
 
     <string name="insight_band_freezing">iskallt</string>
     <string name="insight_band_cold">kallt</string>

@@ -462,6 +462,7 @@ private fun TodayPage(
         InsightCard(
             insight = insight,
             region = state.region,
+            temperatureUnit = state.temperatureUnit,
             showChevronRight = showChevronRight,
             showChevronLeft = showChevronLeft,
             onChevronTap = onChevronTap,
@@ -1192,6 +1193,7 @@ private fun bottomLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom)
 internal fun InsightCard(
     insight: Insight,
     region: Region,
+    temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     /**
      * Page-1 affordance: when true, a tappable chevron-right is rendered at
      * the trailing edge of the date row, hinting that the user can swipe (or
@@ -1209,7 +1211,9 @@ internal fun InsightCard(
     onChevronTap: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
-    val formatter = remember(context, region) { InsightFormatter.forRegion(context, region) }
+    val formatter = remember(context, region, temperatureUnit) {
+        InsightFormatter.forRegion(context, region, temperatureUnit)
+    }
     val locale = LocalConfiguration.current.locales[0]
     val dateFormatter = remember(locale) { DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale) }
     val generatedAtFormatter = remember(locale) { DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(locale) }

@@ -28,7 +28,7 @@ class GeminiTtsSpeaker(
 
     suspend fun synthesize(text: String, locale: Locale = Locale.getDefault()): PcmAudio =
         client.synthesize(
-            text = prepareForTts(text),
+            text = prepareForTts(text, locale),
             voiceName = voiceName,
             locale = locale,
             style = style,

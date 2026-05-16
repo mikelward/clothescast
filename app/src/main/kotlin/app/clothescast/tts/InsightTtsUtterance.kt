@@ -3,6 +3,7 @@ package app.clothescast.tts
 import android.content.Context
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.Region
+import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.insight.InsightFormatter
 import java.util.Locale
@@ -23,11 +24,12 @@ internal fun insightTtsUtterance(
     summary: InsightSummary,
     region: Region,
     voiceLocale: VoiceLocale,
+    temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     fallbackLocale: Locale = Locale.getDefault(),
 ): InsightTtsUtterance {
     val locale = voiceLocale.resolve(region.toJavaLocale() ?: fallbackLocale)
     return InsightTtsUtterance(
-        text = InsightFormatter.forContext(context, locale).format(summary),
+        text = InsightFormatter.forContext(context, locale, temperatureUnit).format(summary),
         locale = locale,
     )
 }

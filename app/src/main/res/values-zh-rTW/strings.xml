@@ -402,8 +402,8 @@ label localises.
     <string name="insight_lead_tomorrow">明天</string>
     <string name="insight_lead_tonight">今晚</string>
     <!-- "今天天氣溫和。" / "今晚天氣寒冷至涼爽。" -->
-    <string name="insight_band_single">%1$s天氣%2$s。</string>
-    <string name="insight_band_range">%1$s天氣%2$s至%3$s。</string>
+    <string name="insight_band_single">%1$s天氣%2$d°。</string>
+    <string name="insight_band_range">%1$s天氣%2$d°至%3$d°。</string>
     <string name="insight_band_freezing">極寒</string>
     <string name="insight_band_cold">寒冷</string>
     <string name="insight_band_cool">涼爽</string>

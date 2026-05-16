@@ -60,8 +60,8 @@ What is NOT overridden, by design:
     <string name="insight_lead_today">Днес</string>
     <string name="insight_lead_tomorrow">Утре</string>
     <string name="insight_lead_tonight">Тази вечер</string>
-    <string name="insight_band_single">%1$s ще бъде %2$s.</string>
-    <string name="insight_band_range">%1$s ще бъде от %2$s до %3$s.</string>
+    <string name="insight_band_single">%1$s ще бъде %2$d°.</string>
+    <string name="insight_band_range">%1$s ще бъде от %2$d° до %3$d°.</string>
     <string name="insight_band_freezing">мразовито</string>
     <string name="insight_band_cold">студено</string>
     <string name="insight_band_cool">хладно</string>

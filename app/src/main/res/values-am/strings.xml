@@ -374,8 +374,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_lead_tomorrow">ነገ</string>
     <string name="insight_lead_tonight">ዛሬ ምሽት</string>
     <!-- Amharic: "ዛሬ ምቹ ይሆናል።" -->
-    <string name="insight_band_single">%1$s %2$s ይሆናል።</string>
-    <string name="insight_band_range">%1$s ከ%2$s እስከ %3$s ይሆናል።</string>
+    <string name="insight_band_single">%1$s %2$d° ይሆናል።</string>
+    <string name="insight_band_range">%1$s ከ%2$d° እስከ %3$d° ይሆናል።</string>
     <string name="insight_band_freezing">በጣም ቀዝቃዛ</string>
     <string name="insight_band_cold">ቀዝቃዛ</string>
     <string name="insight_band_cool">ትንሽ ቀዝቃዛ</string>

@@ -338,8 +338,8 @@ displayed label localizes.
     <string name="insight_lead_tonight">Bu gece</string>
 
     <!-- Turkish SOV word order: subject-object-verb; predicate at the end. -->
-    <string name="insight_band_single">%1$s %2$s olacak.</string>
-    <string name="insight_band_range">%1$s %2$s ile %3$s arasında olacak.</string>
+    <string name="insight_band_single">%1$s %2$d° olacak.</string>
+    <string name="insight_band_range">%1$s %2$d° ile %3$d° arasında olacak.</string>
 
     <string name="insight_band_freezing">dondurucu soğuk</string>
     <string name="insight_band_cold">soğuk</string>

@@ -46,24 +46,36 @@ class InsightFormatterTest {
     ) = InsightSummary(period, band, alert, delta, clothes, precip, calendarTieIn, eveningEventTieIn)
 
     @Test
-    fun `band-only insight emits the lead-in and label`() {
-        subject.format(summary()) shouldBe "Today, it will be mild."
+    fun `band-only insight emits the lead-in and single feels-like temp`() {
+        // BandClause(MILD, MILD) defaults both temps to MILD's midpoint (21°C)
+        // so the rendered prose lands on "Today, it will be 21°."
+        subject.format(summary()) shouldBe "Today, it will be 21°."
     }
 
     @Test
-    fun `band emits a low-to-high range when min and max fall in different bands`() {
-        subject.format(summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.MILD))) shouldBe
-            "Today, it will be cool to mild."
+    fun `band emits a low-to-high range when min and max round to different ints`() {
+        subject.format(
+            summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.MILD, 14.0, 20.0)),
+        ) shouldBe "Today, it will be 14° to 20°."
+    }
+
+    @Test
+    fun `band collapses to single form when rounded extremes land on the same int`() {
+        // 14.2 and 14.4 both round to 14 — the formatter folds them into the
+        // single-value template rather than emitting "14° to 14°".
+        subject.format(
+            summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.COOL, 14.2, 14.4)),
+        ) shouldBe "Today, it will be 14°."
     }
 
     @Test
     fun `tonight period switches the lead-in`() {
-        subject.format(summary(period = ForecastPeriod.TONIGHT)) shouldBe "Tonight, it will be mild."
+        subject.format(summary(period = ForecastPeriod.TONIGHT)) shouldBe "Tonight, it will be 21°."
     }
 
     @Test
     fun `isFutureDay swaps the today lead-in for tomorrow`() {
-        subject.format(summary(), isFutureDay = true) shouldBe "Tomorrow, it will be mild."
+        subject.format(summary(), isFutureDay = true) shouldBe "Tomorrow, it will be 21°."
     }
 
     @Test
@@ -73,25 +85,59 @@ class InsightFormatterTest {
         // path — but if it ever arrived we'd rather say "Tonight" than
         // accidentally promote it to tomorrow.
         subject.format(summary(period = ForecastPeriod.TONIGHT), isFutureDay = true) shouldBe
-            "Tonight, it will be mild."
+            "Tonight, it will be 21°."
     }
 
     @Test
     fun `delta clause emits warmer with rounded degrees`() {
         val out = subject.format(summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)))
-        out shouldBe "Today, it will be mild. 5° warmer than yesterday."
+        out shouldBe "Today, it will be 21°. 5° warmer than yesterday."
     }
 
     @Test
     fun `delta clause emits cooler`() {
         val out = subject.format(summary(delta = DeltaClause(6, DeltaClause.Direction.COOLER)))
-        out shouldBe "Today, it will be mild. 6° cooler than yesterday."
+        out shouldBe "Today, it will be 21°. 6° cooler than yesterday."
+    }
+
+    @Test
+    fun `formatter renders fahrenheit when the user's unit is FAHRENHEIT`() {
+        val fahrenheitSubject = InsightFormatter.forContext(
+            context = context,
+            locale = Locale.ENGLISH,
+            temperatureUnit = app.clothescast.core.domain.model.TemperatureUnit.FAHRENHEIT,
+        )
+        // 8°C → 46.4°F → rounds to 46; 14°C → 57.2°F → rounds to 57.
+        fahrenheitSubject.format(
+            summary(band = BandClause(TemperatureBand.COLD, TemperatureBand.COOL, 8.0, 14.0)),
+        ) shouldBe "Today, it will be 46° to 57°."
+    }
+
+    @Test
+    fun `fahrenheit delta is the Celsius value times 9 over 5 — no mixed units in one briefing`() {
+        // Regression for a mixed-unit briefing: with the band rendered in
+        // Fahrenheit, the delta clause used to ship the Celsius degree count
+        // beside it ("46° to 57°. 5° warmer than yesterday.") — both numbers
+        // are degrees, so the listener couldn't tell they meant different
+        // things. The formatter now converts the delta on the same axis.
+        val fahrenheitSubject = InsightFormatter.forContext(
+            context = context,
+            locale = Locale.ENGLISH,
+            temperatureUnit = app.clothescast.core.domain.model.TemperatureUnit.FAHRENHEIT,
+        )
+        // 5°C of warming = 9°F (ratio only, no +32 offset on a delta).
+        fahrenheitSubject.format(
+            summary(
+                band = BandClause(TemperatureBand.COLD, TemperatureBand.COOL, 8.0, 14.0),
+                delta = DeltaClause(5, DeltaClause.Direction.WARMER),
+            ),
+        ) shouldBe "Today, it will be 46° to 57°. 9° warmer than yesterday."
     }
 
     @Test
     fun `clothes with a single article-able item emits 'a sweater'`() {
         subject.format(summary(clothes = ClothesClause(listOf("sweater")))) shouldBe
-            "Today, it will be mild. Wear a sweater."
+            "Today, it will be 21°. Wear a sweater."
     }
 
     @Test
@@ -101,38 +147,38 @@ class InsightFormatterTest {
         // (and a precip clause would still warn about rain elsewhere), but
         // there's no garment to "Wear" so the clothes sentence drops out.
         subject.format(summary(clothes = ClothesClause(listOf("umbrella")))) shouldBe
-            "Today, it will be mild."
+            "Today, it will be 21°."
     }
 
     @Test
     fun `clothes normalizes capitalized english items mid-sentence`() {
         subject.format(summary(clothes = ClothesClause(listOf("Sweater", "Jacket")))) shouldBe
-            "Today, it will be mild. Wear a sweater and jacket."
+            "Today, it will be 21°. Wear a sweater and jacket."
     }
 
     @Test
     fun `clothes drops the article on plural-looking items`() {
         subject.format(summary(clothes = ClothesClause(listOf("shorts")))) shouldBe
-            "Today, it will be mild. Wear shorts."
+            "Today, it will be 21°. Wear shorts."
     }
 
     @Test
     fun `clothes joins two items with 'and' and only the first item gets an article`() {
         subject.format(summary(clothes = ClothesClause(listOf("sweater", "jacket")))) shouldBe
-            "Today, it will be mild. Wear a sweater and jacket."
+            "Today, it will be 21°. Wear a sweater and jacket."
     }
 
     @Test
     fun `clothes Oxford-joins three garments with article only on the first`() {
         subject.format(summary(clothes = ClothesClause(listOf("sweater", "jacket", "coat")))) shouldBe
-            "Today, it will be mild. Wear a sweater, jacket, and coat."
+            "Today, it will be 21°. Wear a sweater, jacket, and coat."
     }
 
     @Test
     fun `clothes Oxford-joins four garments`() {
         subject.format(
             summary(clothes = ClothesClause(listOf("sweater", "jacket", "shorts", "coat"))),
-        ) shouldBe "Today, it will be mild. Wear a sweater, jacket, shorts, and coat."
+        ) shouldBe "Today, it will be 21°. Wear a sweater, jacket, shorts, and coat."
     }
 
     @Test
@@ -140,43 +186,43 @@ class InsightFormatterTest {
         // Umbrella is silenced; the wear sentence carries the surviving
         // garments.
         subject.format(summary(clothes = ClothesClause(listOf("sweater", "jacket", "umbrella")))) shouldBe
-            "Today, it will be mild. Wear a sweater and jacket."
+            "Today, it will be 21°. Wear a sweater and jacket."
     }
 
     @Test
     fun `precip clause emits with spoken peak hour and capitalised type`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)))) shouldBe
-            "Today, it will be mild. Rain at 3pm."
+            "Today, it will be 21°. Rain at 3pm."
     }
 
     @Test
     fun `precip clause says 'noon' for 12-00`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.DRIZZLE, LocalTime.NOON))) shouldBe
-            "Today, it will be mild. Drizzle at noon."
+            "Today, it will be 21°. Drizzle at noon."
     }
 
     @Test
     fun `precip clause says 'overnight' for early-morning peak`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(2, 0)))) shouldBe
-            "Today, it will be mild. Rain overnight."
+            "Today, it will be 21°. Rain overnight."
     }
 
     @Test
     fun `precip clause says 'overnight' for midnight peak`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.SNOW, LocalTime.MIDNIGHT))) shouldBe
-            "Today, it will be mild. Snow overnight."
+            "Today, it will be 21°. Snow overnight."
     }
 
     @Test
     fun `precip clause uses 12-hour pm form for late-evening peak`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(23, 0)))) shouldBe
-            "Today, it will be mild. Rain at 11pm."
+            "Today, it will be 21°. Rain at 11pm."
     }
 
     @Test
     fun `precip clause renders non-zero minutes`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 30)))) shouldBe
-            "Today, it will be mild. Rain at 3:30pm."
+            "Today, it will be 21°. Rain at 3:30pm."
     }
 
     @Test
@@ -189,7 +235,7 @@ class InsightFormatterTest {
                     PrecipLikelihood.POSSIBLE,
                 ),
             ),
-        ) shouldBe "Today, it will be mild. Chance of rain at 3pm."
+        ) shouldBe "Today, it will be 21°. Chance of rain at 3pm."
     }
 
     @Test
@@ -205,13 +251,13 @@ class InsightFormatterTest {
                     PrecipLikelihood.POSSIBLE,
                 ),
             ),
-        ) shouldBe "Today, it will be mild. Chance of drizzle at noon."
+        ) shouldBe "Today, it will be 21°. Chance of drizzle at noon."
     }
 
     @Test
     fun `alert clause emits before the band`() {
         val out = subject.format(summary(alert = AlertClause("Tornado Warning")))
-        out shouldBe "Alert: Tornado Warning. Today, it will be mild."
+        out shouldBe "Alert: Tornado Warning. Today, it will be 21°."
     }
 
     @Test
@@ -229,7 +275,7 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause("umbrella"),
             ),
         )
-        out shouldBe "Tonight, it will be mild. Rain at 9pm."
+        out shouldBe "Tonight, it will be 21°. Rain at 9pm."
     }
 
     @Test
@@ -244,7 +290,7 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause("sweater"),
             ),
         )
-        out shouldBe "Tonight, it will be mild. Bring a sweater."
+        out shouldBe "Tonight, it will be 21°. Bring a sweater."
     }
 
     @Test
@@ -259,7 +305,7 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause("sweater"),
             ),
         )
-        out shouldBe "Tonight, it will be mild. Wear a sweater."
+        out shouldBe "Tonight, it will be 21°. Wear a sweater."
     }
 
     @Test
@@ -272,7 +318,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be mild. Tonight, rain at 9pm."
+        out shouldBe "Today, it will be 21°. Tonight, rain at 9pm."
     }
 
     @Test
@@ -286,7 +332,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be mild. Tonight, chance of rain at 9pm."
+        out shouldBe "Today, it will be 21°. Tonight, chance of rain at 9pm."
     }
 
     @Test
@@ -296,7 +342,7 @@ class InsightFormatterTest {
                 eveningEventTieIn = EveningEventTieInClause(items = emptyList(), rainTime = null),
             ),
         )
-        out shouldBe "Today, it will be mild."
+        out shouldBe "Today, it will be 21°."
     }
 
     @Test
@@ -306,7 +352,7 @@ class InsightFormatterTest {
                 eveningEventTieIn = EveningEventTieInClause(items = listOf("jacket")),
             ),
         )
-        out shouldBe "Today, it will be mild. Tonight, bring a jacket."
+        out shouldBe "Today, it will be 21°. Tonight, bring a jacket."
     }
 
     @Test
@@ -319,7 +365,7 @@ class InsightFormatterTest {
                 eveningEventTieIn = EveningEventTieInClause(items = listOf("jacket", "coat")),
             ),
         )
-        out shouldBe "Today, it will be mild. Tonight, bring a jacket and coat."
+        out shouldBe "Today, it will be 21°. Tonight, bring a jacket and coat."
     }
 
     @Test
@@ -329,7 +375,7 @@ class InsightFormatterTest {
                 eveningEventTieIn = EveningEventTieInClause(items = listOf("sweater", "jacket", "scarf")),
             ),
         )
-        out shouldBe "Today, it will be mild. Tonight, bring a sweater, jacket, and scarf."
+        out shouldBe "Today, it will be 21°. Tonight, bring a sweater, jacket, and scarf."
     }
 
     @Test
@@ -342,7 +388,7 @@ class InsightFormatterTest {
                 eveningEventTieIn = EveningEventTieInClause(items = listOf("jacket"), rainTime = LocalTime.of(21, 0)),
             ),
         )
-        out shouldBe "Today, it will be mild. Tonight, rain at 9pm, bring a jacket."
+        out shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring a jacket."
     }
 
     @Test
@@ -358,7 +404,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be mild. Tonight, rain at 9pm."
+        out shouldBe "Today, it will be 21°. Tonight, rain at 9pm."
     }
 
     @Test
@@ -371,7 +417,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be mild. Tonight, rain at 9pm, bring a jacket."
+        out shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring a jacket."
     }
 
     @Test
@@ -383,7 +429,7 @@ class InsightFormatterTest {
                 eveningEventTieIn = EveningEventTieInClause(items = listOf("umbrella")),
             ),
         )
-        out shouldBe "Today, it will be mild."
+        out shouldBe "Today, it will be 21°."
     }
 
     @Test
@@ -401,7 +447,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be mild. Tonight, chance of rain at 9pm, bring a jacket."
+        out shouldBe "Today, it will be 21°. Tonight, chance of rain at 9pm, bring a jacket."
     }
 
     @Test
@@ -412,7 +458,7 @@ class InsightFormatterTest {
                 eveningEventTieIn = EveningEventTieInClause(items = listOf("jacket")),
             ),
         )
-        out shouldBe "Today, it will be mild. Wear shorts. Tonight, bring a jacket."
+        out shouldBe "Today, it will be 21°. Wear shorts. Tonight, bring a jacket."
     }
 
     @Test
@@ -428,7 +474,7 @@ class InsightFormatterTest {
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
             ),
         )
-        out shouldBe "Alert: Flood Warning. Today, it will be cool to mild. 6° warmer than yesterday. " +
+        out shouldBe "Alert: Flood Warning. Today, it will be 15° to 21°. 6° warmer than yesterday. " +
             "Wear a sweater. Rain at 3pm."
     }
 
@@ -442,7 +488,7 @@ class InsightFormatterTest {
                 clothes = ClothesClause(listOf("sweater", "umbrella")),
             ),
         )
-        out shouldBe "Today, it will be mild. Wear a sweater."
+        out shouldBe "Today, it will be 21°. Wear a sweater."
     }
 
     @Test
@@ -456,7 +502,7 @@ class InsightFormatterTest {
             val germanContext = context.createConfigurationContext(deConfig)
 
             InsightFormatter.forRegion(germanContext, Region.SYSTEM).format(summary()) shouldBe
-                "Heute wird es mild."
+                "Heute wird es 21°."
         } finally {
             Locale.setDefault(originalDefault)
         }
@@ -483,7 +529,7 @@ class InsightFormatterTest {
                 band = BandClause(TemperatureBand.COLD, TemperatureBand.COOL),
                 clothes = ClothesClause(listOf("sweater", "jacket")),
             ),
-        ) shouldBe "Heute Abend wird es kalt bis kühl. Trag Pullover und Jacke."
+        ) shouldBe "Heute Abend wird es 8° bis 15°. Trag Pullover und Jacke."
     }
 
     // ---------------------------------------------------------------------
@@ -498,13 +544,13 @@ class InsightFormatterTest {
     @Test
     fun `en-GB — sweater key renders as 'a jumper'`() {
         britishSubject.format(summary(clothes = ClothesClause(listOf("sweater")))) shouldBe
-            "Today, it will be mild. Wear a jumper."
+            "Today, it will be 21°. Wear a jumper."
     }
 
     @Test
     fun `en-GB — pants key renders bare as 'trousers' (plural ending)`() {
         britishSubject.format(summary(clothes = ClothesClause(listOf("pants")))) shouldBe
-            "Today, it will be mild. Wear trousers."
+            "Today, it will be 21°. Wear trousers."
     }
 
     @Test
@@ -513,7 +559,7 @@ class InsightFormatterTest {
         // vocabulary.
         britishSubject.format(
             summary(clothes = ClothesClause(listOf("sweater", "pants", "umbrella"))),
-        ) shouldBe "Today, it will be mild. Wear a jumper and trousers."
+        ) shouldBe "Today, it will be 21°. Wear a jumper and trousers."
     }
 
     @Test
@@ -524,7 +570,7 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause("sweater"),
             ),
         )
-        out shouldBe "Tonight, it will be mild. Bring a jumper."
+        out shouldBe "Tonight, it will be 21°. Bring a jumper."
     }
 
     @Test
@@ -537,7 +583,7 @@ class InsightFormatterTest {
         // natural Aussie usage.
         australianSubject.format(
             summary(clothes = ClothesClause(listOf("sweater", "pants"))),
-        ) shouldBe "Today, it will be mild. Wear a jumper and pants."
+        ) shouldBe "Today, it will be 21°. Wear a jumper and pants."
     }
 
     // ---------------------------------------------------------------------
@@ -550,27 +596,27 @@ class InsightFormatterTest {
     private val germanSubject = InsightFormatter.forContext(context, Locale.GERMAN)
 
     @Test
-    fun `de — single band reads 'Heute wird es mild'`() {
-        germanSubject.format(summary()) shouldBe "Heute wird es mild."
+    fun `de — single band reads 'Heute wird es 21°'`() {
+        germanSubject.format(summary()) shouldBe "Heute wird es 21°."
     }
 
     @Test
     fun `de — band range uses 'bis'`() {
         germanSubject.format(summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.MILD))) shouldBe
-            "Heute wird es kühl bis mild."
+            "Heute wird es 15° bis 21°."
     }
 
     @Test
     fun `de — tonight lead-in becomes 'Heute Abend'`() {
         germanSubject.format(summary(period = ForecastPeriod.TONIGHT)) shouldBe
-            "Heute Abend wird es mild."
+            "Heute Abend wird es 21°."
     }
 
     @Test
     fun `de — clothes list is bare comma + und with no articles`() {
         germanSubject.format(
             summary(clothes = ClothesClause(listOf("Pullover", "Jacke", "Regenschirm"))),
-        ) shouldBe "Heute wird es mild. Trag Pullover, Jacke und Regenschirm."
+        ) shouldBe "Heute wird es 21°. Trag Pullover, Jacke und Regenschirm."
     }
 
     @Test
@@ -582,13 +628,13 @@ class InsightFormatterTest {
         // through unchanged.
         germanSubject.format(
             summary(clothes = ClothesClause(listOf("sweater", "jacket", "shorts"))),
-        ) shouldBe "Heute wird es mild. Trag Pullover, Jacke und kurze Hose."
+        ) shouldBe "Heute wird es 21°. Trag Pullover, Jacke und kurze Hose."
     }
 
     @Test
     fun `de — precip uses 'um' between condition and time`() {
         germanSubject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)))) shouldBe
-            "Heute wird es mild. Regen um 15 Uhr."
+            "Heute wird es 21°. Regen um 15 Uhr."
     }
 
     @Test
@@ -603,7 +649,7 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause("Regenschirm"),
             ),
         )
-        out shouldBe "Heute Abend wird es mild. Trag Regenschirm."
+        out shouldBe "Heute Abend wird es 21°. Trag Regenschirm."
     }
 
     @Test
@@ -617,7 +663,7 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause("Regenschirm"),
             ),
         )
-        out shouldBe "Heute Abend wird es mild. Denk an Regenschirm."
+        out shouldBe "Heute Abend wird es 21°. Denk an Regenschirm."
     }
 
     @Test
@@ -630,7 +676,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Heute wird es mild. Denk an Regenschirm für heute Abend, Regen um 21 Uhr."
+        out shouldBe "Heute wird es 21°. Denk an Regenschirm für heute Abend, Regen um 21 Uhr."
     }
 
     // ---------------------------------------------------------------------
@@ -652,7 +698,7 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause("paraguas"),
             ),
         )
-        out shouldBe "Esta noche hará templado. Lleva paraguas."
+        out shouldBe "Esta noche hará 21°. Lleva paraguas."
     }
 
     @Test
@@ -665,7 +711,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Hoy hará templado. Lleva paraguas esta noche, lluvia a las 21."
+        out shouldBe "Hoy hará 21°. Lleva paraguas esta noche, lluvia a las 21."
     }
 
     @Test
@@ -675,7 +721,7 @@ class InsightFormatterTest {
                 clothes = ClothesClause(listOf(" Sweater ", "JACKET")),
             ),
         )
-        out shouldBe "Hoy hará templado. Lleva jersey y chaqueta."
+        out shouldBe "Hoy hará 21°. Lleva jersey y chaqueta."
     }
 
     @Test
@@ -685,7 +731,7 @@ class InsightFormatterTest {
                 clothes = ClothesClause(listOf(" ", "sweater", "")),
             ),
         )
-        out shouldBe "Today, it will be mild. Wear a sweater."
+        out shouldBe "Today, it will be 21°. Wear a sweater."
     }
 
     @Test
@@ -695,7 +741,7 @@ class InsightFormatterTest {
                 clothes = ClothesClause(listOf(" ", "\t", "")),
             ),
         )
-        out shouldBe "Today, it will be mild."
+        out shouldBe "Today, it will be 21°."
     }
 
     @Test
@@ -706,7 +752,7 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause(" "),
             ),
         )
-        out shouldBe "Tonight, it will be mild."
+        out shouldBe "Tonight, it will be 21°."
     }
 
     @Test
@@ -722,6 +768,6 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be mild. Tonight, rain at 9pm."
+        out shouldBe "Today, it will be 21°. Tonight, rain at 9pm."
     }
 }

@@ -407,11 +407,26 @@ class InsightCache(
     }
 
     @Serializable
-    private data class BandDto(val low: String, val high: String) {
-        fun toDomain(): BandClause = BandClause(
-            low = runCatching { TemperatureBand.valueOf(low) }.getOrDefault(TemperatureBand.MILD),
-            high = runCatching { TemperatureBand.valueOf(high) }.getOrDefault(TemperatureBand.MILD),
-        )
+    private data class BandDto(
+        val low: String,
+        val high: String,
+        // Nullable + default null so payloads written before the feels-like
+        // temps were carried round-trip through this DTO unchanged. When
+        // absent, the domain object falls back to the band's midpoint °C
+        // (see TemperatureBand.midpointC) so the prose still renders.
+        val lowC: Double? = null,
+        val highC: Double? = null,
+    ) {
+        fun toDomain(): BandClause {
+            val lowBand = runCatching { TemperatureBand.valueOf(low) }.getOrDefault(TemperatureBand.MILD)
+            val highBand = runCatching { TemperatureBand.valueOf(high) }.getOrDefault(TemperatureBand.MILD)
+            return BandClause(
+                low = lowBand,
+                high = highBand,
+                feelsLikeMinC = lowC ?: lowBand.midpointC(),
+                feelsLikeMaxC = highC ?: highBand.midpointC(),
+            )
+        }
     }
 
     @Serializable
@@ -612,7 +627,7 @@ class InsightCache(
 
     private fun InsightSummary.toDto(): InsightSummaryDto = InsightSummaryDto(
         period = period.name,
-        band = BandDto(band.low.name, band.high.name),
+        band = BandDto(band.low.name, band.high.name, band.feelsLikeMinC, band.feelsLikeMaxC),
         alert = alert?.let { AlertDto(it.event) },
         delta = delta?.let { DeltaDto(it.degrees, it.direction.name) },
         clothes = clothes?.let { ClothesDto(it.items) },

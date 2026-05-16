@@ -116,6 +116,8 @@ class RenderInsightSummary {
     private fun bandClause(today: DailyForecast): BandClause = BandClause(
         low = TemperatureBand.forCelsius(today.feelsLikeMinC),
         high = TemperatureBand.forCelsius(today.feelsLikeMaxC),
+        feelsLikeMinC = today.feelsLikeMinC,
+        feelsLikeMaxC = today.feelsLikeMaxC,
     )
 
     private fun deltaClause(today: DailyForecast, yesterday: DailyForecast): DeltaClause? {

@@ -510,7 +510,7 @@ displayed label localizes.
     <string name="settings_root_schedule_subtitle">알림 및 시간</string>
     <string name="settings_root_clothes_subtitle">온도 및 의상</string>
     <string name="settings_root_region_subtitle">언어 및 단위</string>
-    <string name="settings_root_voice_subtitle">공급자 및 억양</string>
+    <string name="settings_root_voice_subtitle">음성 및 억양</string>
 
     <string name="settings_tts_voice_locale_am_et">암하라어 (에티오피아)</string>
     <string name="settings_tts_voice_locale_da_dk">덴마크어 (덴마크)</string>
@@ -555,6 +555,9 @@ displayed label localizes.
     <string name="today_update_available_body">Play 스토어에 ClothesCast의 새 버전이 있습니다.</string>
     <string name="today_update_available_action">업데이트</string>
     <string name="today_update_available_dismiss">나중에</string>
+    <string name="today_update_downloading_body">업데이트 다운로드 중…</string>
+    <string name="today_update_downloading_action">업데이트 중</string>
+    <string name="today_update_downloading_dismiss">취소</string>
     <string name="today_update_downloaded_body">업데이트가 다운로드되었습니다. 설치를 완료하려면 다시 시작하세요.</string>
     <string name="today_update_downloaded_action">다시 시작</string>
 
@@ -574,7 +577,7 @@ displayed label localizes.
     <string name="settings_root_location">위치</string>
     <string name="settings_root_calendar">캘린더</string>
     <string name="settings_root_display_subtitle">테마 및 색상</string>
-    <string name="settings_root_location_subtitle">자동 감지 또는 도시 선택</string>
+    <string name="settings_root_location_subtitle">자동 및 수동 위치</string>
     <string name="settings_root_calendar_subtitle">오늘의 일정</string>
 
     <!-- Display screen — theme picker (system / light / dark). -->
@@ -734,4 +737,55 @@ displayed label localizes.
     <string name="today_uv_peak">최대 %1$d (%2$s)</string>
     <string name="today_uv_title">자외선 지수</string>
     <string name="today_wind_peak">최대 %1$d %2$s (%3$s)</string>
+
+    <!-- Today screen pager — second page (other-period forecast) and the
+         placeholder shown before the worker has generated either insight. -->
+    <string name="today_view_other_period">다른 예보 보기</string>
+    <string name="today_back_to_primary">뒤로</string>
+    <string name="today_placeholder_today_title">오늘의 예보</string>
+    <string name="today_placeholder_tonight_title">오늘 밤 예보</string>
+    <string name="today_placeholder_body">%1$s 즈음에 준비됩니다.</string>
+
+    <!-- Settings root list — Forecasters row and subtitle. -->
+    <string name="settings_root_forecasters">예보 모델</string>
+    <string name="settings_root_forecasters_subtitle">기상 출처 및 모델</string>
+
+    <!-- About screen — Open-Meteo attribution. "Open-Meteo" is a Latin brand
+         name and stays Latin. -->
+    <string name="settings_about_open_meteo">기상 데이터: Open-Meteo</string>
+
+    <!-- Display screen — per-garment colour picker. Pick a fill colour for
+         each clothing icon; the stroke darkens automatically. -->
+    <string name="settings_display_garment_colors_title">의상 색상</string>
+    <string name="settings_display_garment_colors_description">「오늘」 화면, 홈 화면 위젯, 알림에 표시되는 각 의상 아이콘의 색을 선택하세요. 테두리는 자동으로 어두워집니다.</string>
+    <string name="settings_garment_color_default">기본값</string>
+    <string name="settings_garment_color_picker_title">색상 선택</string>
+    <string name="settings_garment_color_swatch_description">색상 견본 %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">%1$s을(를) 기본 색상으로 재설정</string>
+    <string name="settings_garment_color_dialog_close">닫기</string>
+
+    <!-- Forecasters sub-page — picker of numerical weather prediction
+         models. Display labels are the agency / model acronyms (ECMWF,
+         GFS, ICON, …) — short, unambiguous, stable across translations. -->
+    <string name="settings_forecasters_title">예보 모델</string>
+    <string name="settings_forecasters_description">신뢰도 칩과 모델별 차트는 이 모델들에서 값을 가져옵니다. 더 많이 선택하면 분포가 넓어지고, 적게 선택하면 초점이 좁아집니다. 최소 2개는 선택된 상태로 유지됩니다.</string>
+    <string name="settings_forecasters_auto_title">자동 (현재 위치에 가장 적합)</string>
+    <string name="settings_forecasters_auto_subtitle">지역 예보 모델을 자동으로 선택합니다 — 영국 제도에서는 UKMO, 일본에서는 JMA, 북미에서는 GFS + GEM 등. 끄면 직접 모델을 선택할 수 있습니다.</string>
+    <string name="settings_forecasters_cap_hint">모델을 %1$d개 선택했습니다 — 차트가 읽기 좋게 유지되는 최대치입니다. 다른 모델을 추가하려면 하나를 해제하세요.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">유럽 — 일반적으로 가장 정확한 전 지구 모델. 오픈 피드에서는 3시간 간격.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">독일 (DWD) — 유럽 및 단기 예보에 강함. 기본 1시간 간격.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">미국 (NOAA) — 북미에 강함. 기본 1시간 간격.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">캐나다 (ECCC) — 북미에 강함. 오픈 피드에서는 3시간 간격.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">프랑스 (Météo-France) — 프랑스 및 서유럽에 강함. 기본 1시간 간격.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">영국 (UK Met Office) — 역사적으로 ECMWF 다음으로 정확한 모델. 오픈 피드에서는 3시간 간격.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">일본 — 아시아 태평양에 강함. 오픈 피드에서는 3~6시간 간격.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">호주 — 점검 중입니다. 가능한 한 빨리 복구됩니다.</string>
 </resources>

@@ -497,7 +497,7 @@ the displayed label localizes.
     <string name="settings_root_schedule_subtitle">通知と時刻</string>
     <string name="settings_root_clothes_subtitle">気温と服装</string>
     <string name="settings_root_region_subtitle">言語と単位</string>
-    <string name="settings_root_voice_subtitle">プロバイダーとアクセント</string>
+    <string name="settings_root_voice_subtitle">音声とアクセント</string>
 
     <string name="settings_tts_device_voice_label">デバイスの音声</string>
     <string name="settings_tts_device_voice_auto">自動（アクセントに最適）</string>
@@ -551,6 +551,9 @@ the displayed label localizes.
     <string name="today_update_available_body">ClothesCast の新しいバージョンが Play ストアで公開されています。</string>
     <string name="today_update_available_action">アップデート</string>
     <string name="today_update_available_dismiss">後で</string>
+    <string name="today_update_downloading_body">アップデートをダウンロード中…</string>
+    <string name="today_update_downloading_action">アップデート中</string>
+    <string name="today_update_downloading_dismiss">キャンセル</string>
     <string name="today_update_downloaded_body">アップデートをダウンロードしました。インストールを完了するには再起動してください。</string>
     <string name="today_update_downloaded_action">再起動</string>
 
@@ -570,7 +573,7 @@ the displayed label localizes.
     <string name="settings_root_location">位置情報</string>
     <string name="settings_root_calendar">カレンダー</string>
     <string name="settings_root_display_subtitle">テーマとカラー</string>
-    <string name="settings_root_location_subtitle">自動検出または都市を選択</string>
+    <string name="settings_root_location_subtitle">自動と手動の位置</string>
     <string name="settings_root_calendar_subtitle">今日の予定</string>
 
     <!-- Display screen — theme picker (system / light / dark). -->
@@ -730,4 +733,55 @@ the displayed label localizes.
     <string name="today_uv_peak">最大 %1$d（%2$s）</string>
     <string name="today_uv_title">UV指数</string>
     <string name="today_wind_peak">最大 %1$d %2$s（%3$s）</string>
+
+    <!-- Today screen pager — second page (other-period forecast) and the
+         placeholder shown before the worker has generated either insight. -->
+    <string name="today_view_other_period">別の予報を表示</string>
+    <string name="today_back_to_primary">戻る</string>
+    <string name="today_placeholder_today_title">今日の予報</string>
+    <string name="today_placeholder_tonight_title">今夜の予報</string>
+    <string name="today_placeholder_body">%1$s 頃に表示されます。</string>
+
+    <!-- Settings root list — Forecasters row and subtitle. -->
+    <string name="settings_root_forecasters">予報モデル</string>
+    <string name="settings_root_forecasters_subtitle">気象情報源とモデル</string>
+
+    <!-- About screen — Open-Meteo attribution. "Open-Meteo" is a Latin brand
+         name and stays Latin. -->
+    <string name="settings_about_open_meteo">気象データ提供：Open-Meteo</string>
+
+    <!-- Display screen — per-garment colour picker. Pick a fill colour for
+         each clothing icon; the stroke darkens automatically. -->
+    <string name="settings_display_garment_colors_title">服装の色</string>
+    <string name="settings_display_garment_colors_description">「今日」、ホーム画面のウィジェット、通知に表示される各服装アイコンの色を選びます。輪郭は自動的に濃くなります。</string>
+    <string name="settings_garment_color_default">デフォルト</string>
+    <string name="settings_garment_color_picker_title">色を選択</string>
+    <string name="settings_garment_color_swatch_description">カラーサンプル %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">%1$s をデフォルトの色にリセット</string>
+    <string name="settings_garment_color_dialog_close">閉じる</string>
+
+    <!-- Forecasters sub-page — picker of numerical weather prediction
+         models. Display labels are the agency / model acronyms (ECMWF,
+         GFS, ICON, …) — short, unambiguous, stable across translations. -->
+    <string name="settings_forecasters_title">予報モデル</string>
+    <string name="settings_forecasters_description">信頼度チップとモデル別チャートは、これらのモデルから値を取得します。多く選ぶほど分布が広くなり、少なくするほど焦点が絞られます。最低2つは選択されたままになります。</string>
+    <string name="settings_forecasters_auto_title">自動（あなたの場所に最適）</string>
+    <string name="settings_forecasters_auto_subtitle">地域の予報モデルを自動で選択します — 英国諸島では UKMO、日本では JMA、北米では GFS + GEM など。オフにすると自分でモデルを選べます。</string>
+    <string name="settings_forecasters_cap_hint">%1$d 個のモデルを選択しています — チャートが読みやすく保てる上限です。別のモデルを追加するには1つ解除してください。</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">ヨーロッパ — 一般的に最も正確な全球モデル。オープンフィードでは3時間ごと。</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">ドイツ（DWD）— ヨーロッパおよび短期予報に強い。ネイティブで1時間ごと。</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">アメリカ（NOAA）— 北米に強い。ネイティブで1時間ごと。</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">カナダ（ECCC）— 北米に強い。オープンフィードでは3時間ごと。</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">フランス（Météo-France）— フランスおよび西ヨーロッパに強い。ネイティブで1時間ごと。</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">イギリス（UK Met Office）— 歴史的に ECMWF に次ぐ精度。オープンフィードでは3時間ごと。</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">日本（気象庁）— アジア・太平洋に強い。オープンフィードでは3〜6時間ごと。</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">オーストラリア — メンテナンス中。できるだけ早く復旧する予定です。</string>
 </resources>

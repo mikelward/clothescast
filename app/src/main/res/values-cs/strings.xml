@@ -613,4 +613,50 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_uv_peak">Vrchol %1$d v %2$s</string>
     <string name="today_uv_title">UV index</string>
     <string name="today_wind_peak">Vrchol %1$d %2$s v %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Stahuje se aktualizace…</string>
+    <string name="today_update_downloading_action">Aktualizuji…</string>
+    <string name="today_update_downloading_dismiss">Zrušit</string>
+    <string name="today_view_other_period">Zobrazit druhou předpověď</string>
+    <string name="today_back_to_primary">Zpět</string>
+    <string name="today_placeholder_today_title">Dnešní předpověď</string>
+    <string name="today_placeholder_tonight_title">Večerní předpověď</string>
+    <string name="today_placeholder_body">Bude připravena okolo %1$s.</string>
+
+    <string name="settings_root_forecasters">Modely předpovědi</string>
+    <string name="settings_root_forecasters_subtitle">Zdroje a modely počasí</string>
+
+    <string name="settings_display_garment_colors_title">Barvy oblečení</string>
+    <string name="settings_display_garment_colors_description">Vyber barvu pro každou ikonu oblečení zobrazenou na obrazovce Dnes, ve widgetu na domovské obrazovce a v oznámeních. Obrys se automaticky ztmaví.</string>
+    <string name="settings_garment_color_default">Výchozí</string>
+    <string name="settings_garment_color_picker_title">Vyber barvu</string>
+    <string name="settings_garment_color_swatch_description">Vzorek barvy %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Obnovit výchozí barvu %1$s</string>
+    <string name="settings_garment_color_dialog_close">Zavřít</string>
+
+    <string name="settings_forecasters_title">Modely předpovědi</string>
+    <string name="settings_forecasters_description">Indikátor jistoty a graf podle modelů čerpají z těchto modelů. Více vybraných znamená širší rozptyl; méně znamená užší zaměření. Alespoň dva zůstávají vybrané.</string>
+    <string name="settings_forecasters_auto_title">Automaticky (nejlepší pro tvou polohu)</string>
+    <string name="settings_forecasters_auto_subtitle">Automaticky vybere regionální model — UKMO na Britských ostrovech, JMA v Japonsku, GFS + GEM v Severní Americe atd. Vypni, pokud si chceš modely zvolit sám.</string>
+    <string name="settings_forecasters_cap_hint">Vybral jsi %1$d modelů — nejvíc, kolik graf udrží čitelný. Odznač jeden, abys mohl přidat jiný model.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Evropský — obecně nejpřesnější globální model. Tříhodinový krok na otevřeném feedu.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Německý (DWD) — silný v Evropě a na krátký horizont. Nativně hodinový.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Americký (NOAA) — silný nad Severní Amerikou. Nativně hodinový.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Kanadský (ECCC) — silný nad Severní Amerikou. Tříhodinový krok na otevřeném feedu.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Francouzský (Météo-France) — silný nad Francií a Západní Evropou. Nativně hodinový.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Britský (UK Met Office) — historicky druhý hned za ECMWF. Tříhodinový krok na otevřeném feedu.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japonský — silný nad asijsko-tichomořskou oblastí. Tří- až šestihodinový krok na otevřeném feedu.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australský — v údržbě, vrátí se co nejdříve.</string>
+
+    <string name="settings_about_open_meteo">Data o počasí poskytuje Open-Meteo</string>
 </resources>

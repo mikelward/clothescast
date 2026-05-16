@@ -612,4 +612,50 @@ default English (matching values-pl / values-uk).
     <string name="today_uv_peak">Vrhunac %1$d u %2$s</string>
     <string name="today_uv_title">UV indeks</string>
     <string name="today_wind_peak">Vrhunac %1$d %2$s u %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Preuzimanje ažuriranja…</string>
+    <string name="today_update_downloading_action">Ažuriram…</string>
+    <string name="today_update_downloading_dismiss">Otkaži</string>
+    <string name="today_view_other_period">Pogledaj drugu prognozu</string>
+    <string name="today_back_to_primary">Nazad</string>
+    <string name="today_placeholder_today_title">Današnja prognoza</string>
+    <string name="today_placeholder_tonight_title">Večerašnja prognoza</string>
+    <string name="today_placeholder_body">Biće spremna oko %1$s.</string>
+
+    <string name="settings_root_forecasters">Modeli prognoze</string>
+    <string name="settings_root_forecasters_subtitle">Izvori i modeli vremena</string>
+
+    <string name="settings_display_garment_colors_title">Boje odeće</string>
+    <string name="settings_display_garment_colors_description">Izaberi boju za svaku ikonu odeće prikazanu na ekranu Danas, u vidžetu na početnom ekranu i u obaveštenjima. Obrub se automatski zatamnjuje.</string>
+    <string name="settings_garment_color_default">Podrazumevano</string>
+    <string name="settings_garment_color_picker_title">Izaberi boju</string>
+    <string name="settings_garment_color_swatch_description">Uzorak boje %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Vrati %1$s na podrazumevanu boju</string>
+    <string name="settings_garment_color_dialog_close">Zatvori</string>
+
+    <string name="settings_forecasters_title">Modeli prognoze</string>
+    <string name="settings_forecasters_description">Oznaka pouzdanosti i grafikon po modelu povlače podatke iz ovih modela. Više izabranih daje širi raspon; manje znači uži fokus. Najmanje dva ostaju izabrana.</string>
+    <string name="settings_forecasters_auto_title">Automatski (najbolje za tvoju lokaciju)</string>
+    <string name="settings_forecasters_auto_subtitle">Automatski bira regionalni model — UKMO na Britanskim ostrvima, JMA u Japanu, GFS + GEM u Severnoj Americi itd. Isključi da modele biraš sam.</string>
+    <string name="settings_forecasters_cap_hint">Izabrao si %1$d modela — najviše koliko grafikon ostaje čitljiv. Odznači jedan da dodaš drugi.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Evropski — uglavnom najtačniji globalni model. Trosatni korak na otvorenom fidu.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Nemački (DWD) — jak u Evropi i na kratke rokove. Nativno satni.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Američki (NOAA) — jak nad Severnom Amerikom. Nativno satni.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Kanadski (ECCC) — jak nad Severnom Amerikom. Trosatni korak na otvorenom fidu.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Francuski (Météo-France) — jak nad Francuskom i Zapadnom Evropom. Nativno satni.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Britanski (UK Met Office) — istorijski drugi odmah iza ECMWF-a. Trosatni korak na otvorenom fidu.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japanski — jak nad azijsko-pacifičkim regionom. Tro- do šestosatni korak na otvorenom fidu.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australijski — na održavanju, vraća se čim pre.</string>
+
+    <string name="settings_about_open_meteo">Vremenske podatke obezbeđuje Open-Meteo</string>
 </resources>

@@ -610,4 +610,50 @@ What is NOT overridden, by design:
     <string name="today_uv_peak">Максимум %1$d в %2$s</string>
     <string name="today_uv_title">УВ индекс</string>
     <string name="today_wind_peak">Максимум %1$d %2$s в %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Изтегля се актуализация…</string>
+    <string name="today_update_downloading_action">Актуализира се</string>
+    <string name="today_update_downloading_dismiss">Откажи</string>
+    <string name="today_view_other_period">Покажи другата прогноза</string>
+    <string name="today_back_to_primary">Назад</string>
+    <string name="today_placeholder_today_title">Прогноза за днес</string>
+    <string name="today_placeholder_tonight_title">Прогноза за тази вечер</string>
+    <string name="today_placeholder_body">Ще е готова около %1$s.</string>
+
+    <string name="settings_root_forecasters">Прогностици</string>
+    <string name="settings_root_forecasters_subtitle">Източници на време и модели</string>
+
+    <string name="settings_display_garment_colors_title">Цветове на дрехите</string>
+    <string name="settings_display_garment_colors_description">Избери цвят за всяка икона на дреха на „Днес“, в притурката на началния екран и в известията. Контурът автоматично потъмнява.</string>
+    <string name="settings_garment_color_default">По подразбиране</string>
+    <string name="settings_garment_color_picker_title">Избери цвят</string>
+    <string name="settings_garment_color_swatch_description">Мостра на цвят „%1$s“</string>
+    <string name="settings_garment_color_default_swatch_description">Възстанови „%1$s“ към цвета по подразбиране</string>
+    <string name="settings_garment_color_dialog_close">Затвори</string>
+
+    <string name="settings_forecasters_title">Модели за прогноза</string>
+    <string name="settings_forecasters_description">Чипът за увереност и графиката по модели се захранват от тези модели. Повече избрани модели дават по-широк разсейв; по-малко — по-стегнат фокус. Поне два остават избрани.</string>
+    <string name="settings_forecasters_auto_title">Авто (най-добро за твоето местоположение)</string>
+    <string name="settings_forecasters_auto_subtitle">Избира регионалния модел автоматично — UKMO на Британските острови, JMA в Япония, GFS + GEM в Северна Америка и т.н. Изключи, за да избираш моделите сам.</string>
+    <string name="settings_forecasters_cap_hint">Избрал си %1$d модела — максимумът, при който графиката остава четлива. Махни отметката от един, за да добавиш друг.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Европейски — като правило най-точният глобален модел. На отворения канал — на всеки 3 часа.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Немски (DWD) — силен в Европа и в краткосрочен план. По принцип на час.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Американски (NOAA) — силен над Северна Америка. По принцип на час.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Канадски (ECCC) — силен над Северна Америка. На отворения канал — на всеки 3 часа.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Френски (Météo-France) — силен над Франция и Западна Европа. По принцип на час.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Британски (UK Met Office) — исторически отстъпва само на ECMWF. На отворения канал — на всеки 3 часа.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Японски — силен над Азиатско-тихоокеанския регион. На отворения канал — на всеки 3 до 6 часа.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Австралийски — в поддръжка, ще се върне възможно най-скоро.</string>
+
+    <string name="settings_about_open_meteo">Данни за времето от Open-Meteo</string>
 </resources>

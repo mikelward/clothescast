@@ -616,4 +616,50 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_uv_peak">Csúcs %1$d, %2$s-kor</string>
     <string name="today_uv_title">UV-index</string>
     <string name="today_wind_peak">Csúcs %1$d %2$s, %3$s-kor</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Frissítés letöltése…</string>
+    <string name="today_update_downloading_action">Frissítés folyamatban</string>
+    <string name="today_update_downloading_dismiss">Mégse</string>
+    <string name="today_view_other_period">Másik előrejelzés megtekintése</string>
+    <string name="today_back_to_primary">Vissza</string>
+    <string name="today_placeholder_today_title">Mai előrejelzés</string>
+    <string name="today_placeholder_tonight_title">Esti előrejelzés</string>
+    <string name="today_placeholder_body">Körülbelül %1$s-kor lesz kész.</string>
+
+    <string name="settings_root_forecasters">Előrejelzők</string>
+    <string name="settings_root_forecasters_subtitle">Időjárás-források és modellek</string>
+
+    <string name="settings_display_garment_colors_title">Ruhák színei</string>
+    <string name="settings_display_garment_colors_description">Válassz színt minden ruhaikonhoz, amely a Ma képernyőn, a kezdőképernyő-modulban és az értesítésekben jelenik meg. A körvonal automatikusan sötétebb lesz.</string>
+    <string name="settings_garment_color_default">Alapértelmezett</string>
+    <string name="settings_garment_color_picker_title">Válassz színt</string>
+    <string name="settings_garment_color_swatch_description">„%1$s” színminta</string>
+    <string name="settings_garment_color_default_swatch_description">„%1$s” visszaállítása az alapértelmezett színre</string>
+    <string name="settings_garment_color_dialog_close">Bezárás</string>
+
+    <string name="settings_forecasters_title">Előrejelzési modellek</string>
+    <string name="settings_forecasters_description">A megbízhatósági címke és a modellenkénti grafikon ezekből a modellekből merít. Több kiválasztott modell szélesebb szórást ad, kevesebb feszesebb fókuszt. Legalább kettő mindig kiválasztva marad.</string>
+    <string name="settings_forecasters_auto_title">Auto (a helyedhez legjobb)</string>
+    <string name="settings_forecasters_auto_subtitle">A regionális előrejelzőt automatikusan választja — UKMO a Brit-szigeteken, JMA Japánban, GFS + GEM Észak-Amerikában stb. Kapcsold ki, ha magad szeretnéd kiválasztani a modelleket.</string>
+    <string name="settings_forecasters_cap_hint">%1$d modellt választottál — ennyinél marad még olvasható a grafikon. Vegyél le egyet a listáról, hogy másikat tehess hozzá.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Európai — általában a legpontosabb globális modell. A nyílt csatornán 3 óránként.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Német (DWD) — erős Európában és rövid távon. Eredetileg óránkénti.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikai (NOAA) — erős Észak-Amerika felett. Eredetileg óránkénti.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Kanadai (ECCC) — erős Észak-Amerika felett. A nyílt csatornán 3 óránként.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Francia (Météo-France) — erős Franciaország és Nyugat-Európa felett. Eredetileg óránkénti.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Brit (UK Met Office) — történelmileg csak az ECMWF előzte meg. A nyílt csatornán 3 óránként.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japán — erős az ázsiai–csendes-óceáni térségben. A nyílt csatornán 3–6 óránként.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Ausztrál — karbantartás alatt, amint lehet, visszatér.</string>
+
+    <string name="settings_about_open_meteo">Időjárási adatok az Open-Meteótól</string>
 </resources>

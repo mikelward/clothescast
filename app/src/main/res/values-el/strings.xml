@@ -745,4 +745,50 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_uv_peak">Μέγιστο %1$d στις %2$s</string>
     <string name="today_uv_title">Δείκτης UV</string>
     <string name="today_wind_peak">Μέγιστο %1$d %2$s στις %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Λήψη ενημέρωσης…</string>
+    <string name="today_update_downloading_action">Ενημέρωση</string>
+    <string name="today_update_downloading_dismiss">Άκυρο</string>
+    <string name="today_view_other_period">Δες την άλλη πρόβλεψη</string>
+    <string name="today_back_to_primary">Πίσω</string>
+    <string name="today_placeholder_today_title">Πρόβλεψη για σήμερα</string>
+    <string name="today_placeholder_tonight_title">Πρόβλεψη για απόψε</string>
+    <string name="today_placeholder_body">Θα είναι έτοιμη γύρω στις %1$s.</string>
+
+    <string name="settings_root_forecasters">Μοντέλα πρόβλεψης</string>
+    <string name="settings_root_forecasters_subtitle">Πηγές καιρού και μοντέλα</string>
+
+    <string name="settings_display_garment_colors_title">Χρώματα ρούχων</string>
+    <string name="settings_display_garment_colors_description">Διάλεξε ένα χρώμα για κάθε εικονίδιο ρούχου που εμφανίζεται στο Σήμερα, στο widget της αρχικής οθόνης και στις ειδοποιήσεις. Το περίγραμμα σκουραίνει αυτόματα.</string>
+    <string name="settings_garment_color_default">Προεπιλογή</string>
+    <string name="settings_garment_color_picker_title">Διάλεξε χρώμα</string>
+    <string name="settings_garment_color_swatch_description">Δείγμα χρώματος %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Επανέφερε το %1$s στο προεπιλεγμένο χρώμα</string>
+    <string name="settings_garment_color_dialog_close">Κλείσιμο</string>
+
+    <string name="settings_forecasters_title">Μοντέλα πρόβλεψης</string>
+    <string name="settings_forecasters_description">Το chip βεβαιότητας και το διάγραμμα ανά μοντέλο αντλούν από αυτά τα μοντέλα. Όσα περισσότερα διαλέξεις, τόσο πιο πλούσια η διασπορά· όσα λιγότερα, τόσο πιο εστιασμένη η εικόνα. Τουλάχιστον δύο παραμένουν επιλεγμένα.</string>
+    <string name="settings_forecasters_auto_title">Αυτόματο (το καλύτερο για την τοποθεσία σου)</string>
+    <string name="settings_forecasters_auto_subtitle">Διαλέγει αυτόματα το περιφερειακό μοντέλο — UKMO στις Βρετανικές Νήσους, JMA στην Ιαπωνία, GFS + GEM στη Βόρεια Αμερική κ.ο.κ. Απενεργοποίησέ το για να διαλέξεις μοντέλα μόνος σου.</string>
+    <string name="settings_forecasters_cap_hint">Έχεις διαλέξει %1$d μοντέλα — ο μέγιστος αριθμός στον οποίο το διάγραμμα παραμένει ευανάγνωστο. Αποεπίλεξε ένα για να προσθέσεις άλλο.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Ευρωπαϊκό — γενικά το πιο ακριβές παγκόσμιο μοντέλο. 3-ωρη ανάλυση στο ανοιχτό feed.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Γερμανικό (DWD) — ισχυρό στην Ευρώπη και σε μικρή χρονική εμβέλεια. Εγγενώς ωριαία ανάλυση.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Αμερικανικό (NOAA) — ισχυρό στη Βόρεια Αμερική. Εγγενώς ωριαία ανάλυση.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Καναδικό (ECCC) — ισχυρό στη Βόρεια Αμερική. 3-ωρη ανάλυση στο ανοιχτό feed.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Γαλλικό (Météo-France) — ισχυρό στη Γαλλία και τη Δυτική Ευρώπη. Εγγενώς ωριαία ανάλυση.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Βρετανικό (UK Met Office) — ιστορικά μόλις πίσω από το ECMWF. 3-ωρη ανάλυση στο ανοιχτό feed.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Ιαπωνικό — ισχυρό στην περιοχή Ασίας-Ειρηνικού. 3- έως 6-ωρη ανάλυση στο ανοιχτό feed.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Αυστραλιανό — υπό συντήρηση, επιστρέφει το συντομότερο δυνατό.</string>
+
+    <string name="settings_about_open_meteo">Δεδομένα καιρού από το Open-Meteo</string>
 </resources>

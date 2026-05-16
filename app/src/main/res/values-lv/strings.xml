@@ -568,4 +568,50 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_uv_peak">Maksimums %1$d plkst. %2$s</string>
     <string name="today_uv_title">UV indekss</string>
     <string name="today_wind_peak">Maksimums %1$d %2$s plkst. %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Lejupielādē atjauninājumu…</string>
+    <string name="today_update_downloading_action">Atjaunina</string>
+    <string name="today_update_downloading_dismiss">Atcelt</string>
+    <string name="today_view_other_period">Skatīt otru prognozi</string>
+    <string name="today_back_to_primary">Atpakaļ</string>
+    <string name="today_placeholder_today_title">Šodienas prognoze</string>
+    <string name="today_placeholder_tonight_title">Vakara prognoze</string>
+    <string name="today_placeholder_body">Būs gatava aptuveni plkst. %1$s.</string>
+
+    <string name="settings_root_forecasters">Prognozētāji</string>
+    <string name="settings_root_forecasters_subtitle">Laika avoti un modeļi</string>
+
+    <string name="settings_display_garment_colors_title">Apģērba krāsas</string>
+    <string name="settings_display_garment_colors_description">Izvēlies krāsu katrai apģērba ikonai, kas redzama sadaļā „Šodien“, mājas ekrāna logrīkā un paziņojumos. Kontūra automātiski kļūst tumšāka.</string>
+    <string name="settings_garment_color_default">Noklusējums</string>
+    <string name="settings_garment_color_picker_title">Izvēlies krāsu</string>
+    <string name="settings_garment_color_swatch_description">Krāsas paraugs „%1$s“</string>
+    <string name="settings_garment_color_default_swatch_description">Atiestatīt „%1$s“ uz noklusējuma krāsu</string>
+    <string name="settings_garment_color_dialog_close">Aizvērt</string>
+
+    <string name="settings_forecasters_title">Prognozes modeļi</string>
+    <string name="settings_forecasters_description">Pārliecības čips un modeļu diagramma balstās uz šiem modeļiem. Vairāk izvēlētu modeļu dod plašāku izkliedi; mazāk — ciešāku fokusu. Vismaz divi paliek izvēlēti.</string>
+    <string name="settings_forecasters_auto_title">Auto (vislabākais tavai atrašanās vietai)</string>
+    <string name="settings_forecasters_auto_subtitle">Automātiski izvēlas reģionālo modeli — UKMO Britu salās, JMA Japānā, GFS + GEM Ziemeļamerikā utt. Izslēdz, lai izvēlētos modeļus pats.</string>
+    <string name="settings_forecasters_cap_hint">Esi izvēlējies %1$d modeļus — maksimums, pie kura diagramma paliek lasāma. Atzīmē kādu, lai pievienotu citu.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Eiropas — parasti precīzākais globālais modelis. Atvērtajā plūsmā ik pēc 3 stundām.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Vācu (DWD) — spēcīgs Eiropā un īsā termiņā. Sākotnēji ik stundu.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikāņu (NOAA) — spēcīgs pār Ziemeļameriku. Sākotnēji ik stundu.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Kanādas (ECCC) — spēcīgs pār Ziemeļameriku. Atvērtajā plūsmā ik pēc 3 stundām.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Franču (Météo-France) — spēcīgs pār Franciju un Rietumeiropu. Sākotnēji ik stundu.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Britu (UK Met Office) — vēsturiski uzreiz aiz ECMWF. Atvērtajā plūsmā ik pēc 3 stundām.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japāņu — spēcīgs pār Āzijas un Klusā okeāna reģionu. Atvērtajā plūsmā ik pēc 3–6 stundām.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Austrālijas — apkopē, atgriezīsies, cik drīz vien iespējams.</string>
+
+    <string name="settings_about_open_meteo">Laika dati no Open-Meteo</string>
 </resources>

@@ -87,3 +87,27 @@
 # / BlockHound) to keep references to classes we don't ship.
 -keep class io.netty.** { *; }
 -keepclassmembers class io.netty.** { *; }
+
+# JCTools (org.jctools) is Netty's high-performance queue library, used for
+# MpscArrayQueue / MpmcArrayQueue inside Netty's event loop and inside
+# HiveMQ's outgoing-QoS handler. JCTools resolves the byte offset of fields
+# like `consumerIndex` and `producerIndex` via
+# Unsafe.objectFieldOffset(getDeclaredField(...)) in each queue base class's
+# static initializer. R8 can't see that reflective name and will rename the
+# field — JCTools then crashes at first class-load with
+# "NoSuchFieldException: No field consumerIndex in class L<obfuscated>;".
+# Keeping the whole package preserves the field names the Unsafe lookup
+# depends on; trying to pick individual classes is brittle across JCTools
+# point releases.
+-keep class org.jctools.** { *; }
+-keepclassmembers class org.jctools.** { *; }
+
+# RxJava 2 (io.reactivex.**) is HiveMQ's reactive backbone — every connect /
+# publish / subscribe call goes through a Single / Observable before the
+# CompletableFutures we await on. RxJava resolves AtomicFieldUpdaters via
+# class+field names, so it falls under the same reflective-Unsafe pattern as
+# JCTools above. org.reactivestreams is the public interface surface; kept
+# for completeness so subclass relationships survive.
+-keep class io.reactivex.** { *; }
+-keepclassmembers class io.reactivex.** { *; }
+-keep class org.reactivestreams.** { *; }

@@ -456,6 +456,7 @@ private fun GeminiKeyStep(
                 statusText = stringResource(R.string.settings_api_key_status_unset),
                 placeholder = stringResource(R.string.settings_api_key_placeholder),
                 saveLabel = stringResource(R.string.settings_api_key_save),
+                replaceLabel = stringResource(R.string.settings_api_key_replace),
                 clearLabel = stringResource(R.string.settings_api_key_clear),
                 onSave = onSave,
                 onClear = {},

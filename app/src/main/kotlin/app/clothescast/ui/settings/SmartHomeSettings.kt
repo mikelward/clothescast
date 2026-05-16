@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -98,6 +99,10 @@ private fun MqttBridgeCard(
     var userField by rememberSaveable(username) { mutableStateOf(username) }
     var topicField by rememberSaveable(topic) { mutableStateOf(topic) }
     var passwordField by rememberSaveable { mutableStateOf("") }
+    // Default the password input to hidden when one is already saved; re-key on
+    // `passwordSet` so a Clear (true → false) re-expands and a first-time Save
+    // (false → true) collapses without extra wiring.
+    var showPasswordField by rememberSaveable(passwordSet) { mutableStateOf(!passwordSet) }
 
     val parsedPort = remember(portField) { portField.toIntOrNull() }
     val canSave = hostField.isNotBlank() && parsedPort != null && parsedPort in 1..65535 &&
@@ -176,22 +181,33 @@ private fun MqttBridgeCard(
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
-            OutlinedTextField(
-                value = passwordField,
-                onValueChange = { passwordField = it },
-                label = {
-                    Text(
-                        if (passwordSet) {
-                            stringResource(R.string.settings_smart_home_mqtt_password_replace)
-                        } else {
-                            stringResource(R.string.settings_smart_home_mqtt_password)
-                        },
-                    )
-                },
-                visualTransformation = PasswordVisualTransformation(),
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
+            if (showPasswordField) {
+                OutlinedTextField(
+                    value = passwordField,
+                    onValueChange = { passwordField = it },
+                    label = {
+                        Text(
+                            if (passwordSet) {
+                                stringResource(R.string.settings_smart_home_mqtt_password_replace)
+                            } else {
+                                stringResource(R.string.settings_smart_home_mqtt_password)
+                            },
+                        )
+                    },
+                    visualTransformation = PasswordVisualTransformation(),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            } else {
+                Text(
+                    text = stringResource(R.string.settings_smart_home_mqtt_password_status_set),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                OutlinedButton(
+                    onClick = { showPasswordField = true },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text(stringResource(R.string.settings_smart_home_mqtt_password_replace)) }
+            }
             if (passwordSet) {
                 TextButton(
                     onClick = {
@@ -213,6 +229,7 @@ private fun MqttBridgeCard(
 
             Button(
                 onClick = {
+                    val replacingExisting = passwordSet && passwordField.isNotEmpty()
                     onSaveConfig(
                         hostField,
                         parsedPort ?: UserPreferences.DEFAULT_MQTT_PORT,
@@ -222,6 +239,10 @@ private fun MqttBridgeCard(
                         passwordField.ifEmpty { null },
                     )
                     passwordField = ""
+                    // First-time save (passwordSet false → true) collapses via
+                    // the rememberSaveable key; replace of an existing password
+                    // leaves passwordSet unchanged, so collapse manually here.
+                    if (replacingExisting) showPasswordField = false
                 },
                 enabled = canSave,
                 modifier = Modifier.fillMaxWidth(),

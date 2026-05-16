@@ -439,6 +439,7 @@
     <string name="settings_smart_home_mqtt_username">Username (optional)</string>
     <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
     <string name="settings_smart_home_mqtt_password">Password (optional)</string>
+    <string name="settings_smart_home_mqtt_password_status_set">Password is configured.</string>
     <string name="settings_smart_home_mqtt_password_replace">Replace password</string>
     <string name="settings_smart_home_mqtt_password_clear">Clear saved password</string>
     <string name="settings_smart_home_mqtt_topic">Topic prefix</string>
@@ -454,6 +455,7 @@
     <string name="settings_api_key_status_unset">Get a free API key at aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Paste your Gemini API key</string>
     <string name="settings_api_key_save">Save Gemini key</string>
+    <string name="settings_api_key_replace">Replace Gemini key</string>
     <string name="settings_api_key_clear">Clear stored Gemini key</string>
 
     <string name="settings_location_title">Location</string>

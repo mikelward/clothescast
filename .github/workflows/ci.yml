@@ -260,8 +260,11 @@ jobs:
             # multi-line `@Test\n@Config(...)\nfun foo()` styles — a single-line
             # `(?<=@Test fun )` regex misses the latter and would prune the PNG
             # as orphaned even though the test still runs.
-            snapshots_test="app/src/test/kotlin/app/clothescast/ui/today/PreviewSnapshots.kt"
-            expected=$(perl -0777 -ne 'while (/\@Test\b(?:\s|\@\w+(?:\([^)]*\))?)*?\bfun\s+(\w+)/g) { print "$1\n" }' "$snapshots_test")
+            snapshot_sources=(
+              "app/src/test/kotlin/app/clothescast/ui/today/PreviewSnapshots.kt"
+              "app/src/test/kotlin/app/clothescast/ui/garment/OutfitCardSnapshotTest.kt"
+            )
+            expected=$(perl -0777 -ne 'while (/\@Test\b(?:\s|\@\w+(?:\([^)]*\))?)*?\bfun\s+(\w+)/g) { print "$1\n" }' "${snapshot_sources[@]}")
             for png in app/snapshots/*.png; do
               [ -f "$png" ] || continue
               name=$(basename "$png" .png)

@@ -54,21 +54,13 @@ Code TODOs in source files are linked from here when they exist.
 - [x] **Multi-model confidence badge** (MODELS.md idea #1) — Today shows
       a chip indicating how much ECMWF / GFS / ICON disagree about today's
       apparent high and peak precip probability.
-- [ ] **User-selectable models for the spread overlay.** The consulted set
-      is hard-coded in `MultiModelConfidenceFetcher.DEFAULT_MODELS` to
-      ECMWF + GFS + ICON (with `best_match` folded in as "Auto"). A user
-      whose region is better served by MeteoFrance / GEM / JMA / BOM
-      can't add them, and a model that returns no usable hourly data for
-      a given cell (ECMWF over high latitudes or some coastal grid
-      points) silently disappears from the chart legend — reads as a bug
-      rather than an empty model. Plan: multi-select picker in Display
-      settings under the existing "Show model spread" toggle, defaulting
-      to today's trio; thread the chosen list through the fetcher's
-      already-pluggable `models` constructor argument. `best_match` stays
-      always-on (rides the primary call, no extra slot needed). Consensus
-      blend in `ConsensusBlend.kt` already iterates whatever's in
-      `PerModelHourly.byModel`, so no changes there. Same Open-Meteo
-      endpoint either way — no privacy change.
+- [x] **User-selectable models for the spread overlay.** Multi-select
+      Forecasters picker in Settings; threads the chosen set through
+      `OpenMeteoClient`'s pluggable `confidenceModelsProvider`. Auto
+      mode (default for fresh installs) picks a region-appropriate trio
+      via `ForecastModel.defaultsFor(location)`. Picker capped at 5
+      models for chart readability; BOM shown but disabled while
+      Open-Meteo's BOM open-data feed is suspended.
 
 ## Smart Home / Home Assistant bridge
 
@@ -228,7 +220,6 @@ Open work:
 - [ ] **Maestro flows** — `.maestro/first_launch.yaml`,
       `.maestro/daily_insight_debug_fire.yaml`. Plan called for both; need
       Firebase Test Lab in CI to run them automatically.
-- [ ] **`detekt` + `ktlintCheck` in CI.** Neither plugin applied today.
 - [ ] **JaCoCo coverage** — plan target ≥85% on `:core:domain` +
       `:core:data`. No coverage measurement wired up.
 - [ ] **`docs/acceptance.md`** — manual checklist (TTS audio, real 7am fire,

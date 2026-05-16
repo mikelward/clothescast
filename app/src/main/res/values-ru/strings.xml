@@ -681,4 +681,50 @@ only the displayed label localizes.
     <string name="today_uv_peak">Максимум %1$d в %2$s</string>
     <string name="today_uv_title">УФ-индекс</string>
     <string name="today_wind_peak">Максимум %1$d %2$s в %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Загружается обновление…</string>
+    <string name="today_update_downloading_action">Обновляется</string>
+    <string name="today_update_downloading_dismiss">Отмена</string>
+    <string name="today_view_other_period">Показать другой прогноз</string>
+    <string name="today_back_to_primary">Назад</string>
+    <string name="today_placeholder_today_title">Прогноз на сегодня</string>
+    <string name="today_placeholder_tonight_title">Прогноз на вечер</string>
+    <string name="today_placeholder_body">Будет готов примерно к %1$s.</string>
+
+    <string name="settings_root_forecasters">Прогнозисты</string>
+    <string name="settings_root_forecasters_subtitle">Источники погоды и модели</string>
+
+    <string name="settings_display_garment_colors_title">Цвета одежды</string>
+    <string name="settings_display_garment_colors_description">Выбери цвет для каждой иконки одежды на экране «Сегодня», в виджете и в уведомлениях. Контур автоматически становится темнее.</string>
+    <string name="settings_garment_color_default">По умолчанию</string>
+    <string name="settings_garment_color_picker_title">Выбери цвет</string>
+    <string name="settings_garment_color_swatch_description">Образец цвета «%1$s»</string>
+    <string name="settings_garment_color_default_swatch_description">Сбросить «%1$s» на цвет по умолчанию</string>
+    <string name="settings_garment_color_dialog_close">Закрыть</string>
+
+    <string name="settings_forecasters_title">Модели прогноза</string>
+    <string name="settings_forecasters_description">Чип уверенности и график по моделям опираются на эти модели. Чем больше моделей выбрано, тем шире разброс; чем меньше — тем чётче фокус. Минимум две модели остаются выбранными.</string>
+    <string name="settings_forecasters_auto_title">Авто (лучшее для твоего местоположения)</string>
+    <string name="settings_forecasters_auto_subtitle">Автоматически выбирает региональную модель — UKMO на Британских островах, JMA в Японии, GFS + GEM в Северной Америке и т. д. Отключи, чтобы выбирать модели самостоятельно.</string>
+    <string name="settings_forecasters_cap_hint">Выбрано %1$d моделей — максимум, при котором график остаётся читаемым. Сними отметку с одной, чтобы добавить другую.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Европейская — как правило, самая точная глобальная модель. На открытом канале каждые 3 часа.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Немецкая (DWD) — сильна в Европе и на коротких сроках. Изначально почасовая.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Американская (NOAA) — сильна над Северной Америкой. Изначально почасовая.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Канадская (ECCC) — сильна над Северной Америкой. На открытом канале каждые 3 часа.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Французская (Météo-France) — сильна над Францией и Западной Европой. Изначально почасовая.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Британская (UK Met Office) — исторически уступает только ECMWF. На открытом канале каждые 3 часа.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Японская — сильна над Азиатско-Тихоокеанским регионом. На открытом канале с шагом 3–6 часов.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Австралийская — на обслуживании, вернётся как можно скорее.</string>
+
+    <string name="settings_about_open_meteo">Данные о погоде от Open-Meteo</string>
 </resources>

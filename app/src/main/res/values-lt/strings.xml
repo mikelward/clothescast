@@ -615,4 +615,50 @@ What is NOT overridden, by design:
     <string name="today_uv_peak">Smaigas %1$d %2$s val.</string>
     <string name="today_uv_title">UV indeksas</string>
     <string name="today_wind_peak">Smaigas %1$d %2$s %3$s val.</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Atsisiunčiamas atnaujinimas…</string>
+    <string name="today_update_downloading_action">Atnaujinama</string>
+    <string name="today_update_downloading_dismiss">Atšaukti</string>
+    <string name="today_view_other_period">Rodyti kitą prognozę</string>
+    <string name="today_back_to_primary">Atgal</string>
+    <string name="today_placeholder_today_title">Šios dienos prognozė</string>
+    <string name="today_placeholder_tonight_title">Šio vakaro prognozė</string>
+    <string name="today_placeholder_body">Bus paruošta apie %1$s.</string>
+
+    <string name="settings_root_forecasters">Prognozuotojai</string>
+    <string name="settings_root_forecasters_subtitle">Orų šaltiniai ir modeliai</string>
+
+    <string name="settings_display_garment_colors_title">Drabužių spalvos</string>
+    <string name="settings_display_garment_colors_description">Pasirink spalvą kiekvienai drabužio piktogramai ekrane „Šiandien“, pradžios ekrano valdiklyje ir pranešimuose. Kontūras automatiškai tamsėja.</string>
+    <string name="settings_garment_color_default">Numatytoji</string>
+    <string name="settings_garment_color_picker_title">Pasirink spalvą</string>
+    <string name="settings_garment_color_swatch_description">Spalvos pavyzdys „%1$s“</string>
+    <string name="settings_garment_color_default_swatch_description">Atkurti „%1$s“ numatytąją spalvą</string>
+    <string name="settings_garment_color_dialog_close">Uždaryti</string>
+
+    <string name="settings_forecasters_title">Prognozės modeliai</string>
+    <string name="settings_forecasters_description">Pasitikėjimo žetonas ir modelių diagrama remiasi šiais modeliais. Pasirinkus daugiau, sklaida platesnė; pasirinkus mažiau — fokusas tikslesnis. Bent du modeliai lieka pasirinkti.</string>
+    <string name="settings_forecasters_auto_title">Auto (geriausia tavo vietovei)</string>
+    <string name="settings_forecasters_auto_subtitle">Automatiškai parenka regioninį modelį — UKMO Britų salose, JMA Japonijoje, GFS + GEM Šiaurės Amerikoje ir t. t. Išjunk, kad rinktumeisi modelius pats.</string>
+    <string name="settings_forecasters_cap_hint">Pasirinkai %1$d modelių — daugiausia, kiek diagrama išlieka įskaitoma. Atžymėk vieną, kad pridėtum kitą.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Europos — paprastai tiksliausias pasaulinis modelis. Atvirame sraute kas 3 valandas.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Vokiečių (DWD) — stiprus Europoje ir trumpalaikėje prognozėje. Iš prigimties kas valandą.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikiečių (NOAA) — stiprus virš Šiaurės Amerikos. Iš prigimties kas valandą.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Kanados (ECCC) — stiprus virš Šiaurės Amerikos. Atvirame sraute kas 3 valandas.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Prancūzų (Météo-France) — stiprus virš Prancūzijos ir Vakarų Europos. Iš prigimties kas valandą.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Britų (UK Met Office) — istoriškai nusileido tik ECMWF. Atvirame sraute kas 3 valandas.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japonų — stiprus virš Azijos ir Ramiojo vandenyno regiono. Atvirame sraute kas 3–6 valandas.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australijos — atliekama techninė priežiūra, sugrįš kuo greičiau.</string>
+
+    <string name="settings_about_open_meteo">Orų duomenys iš Open-Meteo</string>
 </resources>

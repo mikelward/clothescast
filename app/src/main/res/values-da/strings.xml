@@ -626,4 +626,50 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_uv_peak">Top %1$d kl. %2$s</string>
     <string name="today_uv_title">UV-indeks</string>
     <string name="today_wind_peak">Topvind %1$d %2$s kl. %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Opdatering hentes…</string>
+    <string name="today_update_downloading_action">Opdaterer</string>
+    <string name="today_update_downloading_dismiss">Annuller</string>
+    <string name="today_view_other_period">Vis anden prognose</string>
+    <string name="today_back_to_primary">Tilbage</string>
+    <string name="today_placeholder_today_title">Dagens prognose</string>
+    <string name="today_placeholder_tonight_title">Prognose for i aften</string>
+    <string name="today_placeholder_body">Klar omkring kl. %1$s.</string>
+
+    <string name="settings_root_forecasters">Prognosemodeller</string>
+    <string name="settings_root_forecasters_subtitle">Vejrkilder og modeller</string>
+
+    <string name="settings_display_garment_colors_title">Tøjfarver</string>
+    <string name="settings_display_garment_colors_description">Vælg en farve til hvert tøjikon, der vises i Dag, på hjemmeskærms-widgetten og i notifikationer. Konturen mørkner automatisk.</string>
+    <string name="settings_garment_color_default">Standard</string>
+    <string name="settings_garment_color_picker_title">Vælg en farve</string>
+    <string name="settings_garment_color_swatch_description">Farveprøve %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Nulstil %1$s til standardfarven</string>
+    <string name="settings_garment_color_dialog_close">Luk</string>
+
+    <string name="settings_forecasters_title">Prognosemodeller</string>
+    <string name="settings_forecasters_description">Sikkerhedschippen og modeldiagrammet trækker på disse modeller. Flere valgte giver en bredere spredning, færre giver et snævrere fokus. Mindst to forbliver valgt.</string>
+    <string name="settings_forecasters_auto_title">Auto (bedst for din placering)</string>
+    <string name="settings_forecasters_auto_subtitle">Vælger den regionale model automatisk — UKMO på De Britiske Øer, JMA i Japan, GFS + GEM i Nordamerika osv. Slå fra for at vælge modeller selv.</string>
+    <string name="settings_forecasters_cap_hint">Du har valgt %1$d modeller — det maksimale antal, hvor diagrammet forbliver læsbart. Fravælg en for at tilføje en anden model.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Europæisk — generelt den mest præcise globale model. 3-timers opløsning i det åbne feed.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Tysk (DWD) — stærk i Europa og på kort sigt. Nativ timeopløsning.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikansk (NOAA) — stærk over Nordamerika. Nativ timeopløsning.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Canadisk (ECCC) — stærk over Nordamerika. 3-timers opløsning i det åbne feed.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Fransk (Météo-France) — stærk over Frankrig og Vesteuropa. Nativ timeopløsning.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Britisk (UK Met Office) — historisk kun lige efter ECMWF. 3-timers opløsning i det åbne feed.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japansk — stærk over Asien-Stillehavet. 3- til 6-timers opløsning i det åbne feed.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australsk — under vedligeholdelse, tilbage så hurtigt som muligt.</string>
+
+    <string name="settings_about_open_meteo">Vejrdata fra Open-Meteo</string>
 </resources>

@@ -670,4 +670,50 @@ is unchanged; only the displayed label localizes.
     <string name="today_uv_peak">Szczyt %1$d o %2$s</string>
     <string name="today_uv_title">Indeks UV</string>
     <string name="today_wind_peak">Szczyt %1$d %2$s o %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Pobieranie aktualizacji…</string>
+    <string name="today_update_downloading_action">Aktualizowanie…</string>
+    <string name="today_update_downloading_dismiss">Anuluj</string>
+    <string name="today_view_other_period">Zobacz drugą prognozę</string>
+    <string name="today_back_to_primary">Wstecz</string>
+    <string name="today_placeholder_today_title">Dzisiejsza prognoza</string>
+    <string name="today_placeholder_tonight_title">Wieczorna prognoza</string>
+    <string name="today_placeholder_body">Będzie gotowa około %1$s.</string>
+
+    <string name="settings_root_forecasters">Modele prognoz</string>
+    <string name="settings_root_forecasters_subtitle">Źródła i modele pogody</string>
+
+    <string name="settings_display_garment_colors_title">Kolory ubrań</string>
+    <string name="settings_display_garment_colors_description">Wybierz kolor dla każdej ikony ubrania pokazywanej na ekranie Dziś, w widżecie ekranu głównego i w powiadomieniach. Obrys automatycznie ciemnieje.</string>
+    <string name="settings_garment_color_default">Domyślny</string>
+    <string name="settings_garment_color_picker_title">Wybierz kolor</string>
+    <string name="settings_garment_color_swatch_description">Próbka koloru %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Przywróć domyślny kolor: %1$s</string>
+    <string name="settings_garment_color_dialog_close">Zamknij</string>
+
+    <string name="settings_forecasters_title">Modele prognoz</string>
+    <string name="settings_forecasters_description">Wskaźnik pewności i wykres dla poszczególnych modeli korzystają z tych modeli. Więcej wybranych daje szerszy rozrzut; mniej oznacza węższy fokus. Co najmniej dwa pozostają wybrane.</string>
+    <string name="settings_forecasters_auto_title">Automatycznie (najlepiej dla Twojej lokalizacji)</string>
+    <string name="settings_forecasters_auto_subtitle">Automatycznie dobiera regionalny model — UKMO na Wyspach Brytyjskich, JMA w Japonii, GFS + GEM w Ameryce Północnej itd. Wyłącz, aby wybrać modele samodzielnie.</string>
+    <string name="settings_forecasters_cap_hint">Wybrałeś %1$d modeli — najwięcej, ile wykres pozostaje czytelny. Odznacz jeden, aby dodać inny.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Europejski — generalnie najdokładniejszy model globalny. Co 3 godziny w otwartym kanale.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Niemiecki (DWD) — mocny w Europie i na krótki horyzont. Natywnie godzinowy.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerykański (NOAA) — mocny nad Ameryką Północną. Natywnie godzinowy.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Kanadyjski (ECCC) — mocny nad Ameryką Północną. Co 3 godziny w otwartym kanale.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Francuski (Météo-France) — mocny nad Francją i Europą Zachodnią. Natywnie godzinowy.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Brytyjski (UK Met Office) — historycznie drugi zaraz za ECMWF. Co 3 godziny w otwartym kanale.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japoński — mocny nad regionem Azji i Pacyfiku. Co 3–6 godzin w otwartym kanale.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australijski — w konserwacji, wraca tak szybko, jak to możliwe.</string>
+
+    <string name="settings_about_open_meteo">Dane pogodowe od Open-Meteo</string>
 </resources>

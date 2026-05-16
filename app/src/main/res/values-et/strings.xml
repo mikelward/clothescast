@@ -571,4 +571,50 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_uv_peak">Tipp %1$d kell %2$s</string>
     <string name="today_uv_title">UV-indeks</string>
     <string name="today_wind_peak">Tipp %1$d %2$s kell %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Uuendust laaditakse alla…</string>
+    <string name="today_update_downloading_action">Uuendatakse</string>
+    <string name="today_update_downloading_dismiss">Tühista</string>
+    <string name="today_view_other_period">Vaata teist prognoosi</string>
+    <string name="today_back_to_primary">Tagasi</string>
+    <string name="today_placeholder_today_title">Tänane prognoos</string>
+    <string name="today_placeholder_tonight_title">Tänaõhtune prognoos</string>
+    <string name="today_placeholder_body">Valmib umbes kell %1$s.</string>
+
+    <string name="settings_root_forecasters">Prognoosijad</string>
+    <string name="settings_root_forecasters_subtitle">Ilmaallikad ja mudelid</string>
+
+    <string name="settings_display_garment_colors_title">Riietuse värvid</string>
+    <string name="settings_display_garment_colors_description">Vali värv igale rõivaikoonile, mida näidatakse vaates „Täna“, avaekraani vidinas ja teavitustes. Kontuur tumeneb automaatselt.</string>
+    <string name="settings_garment_color_default">Vaikimisi</string>
+    <string name="settings_garment_color_picker_title">Vali värv</string>
+    <string name="settings_garment_color_swatch_description">Värvinäidis „%1$s“</string>
+    <string name="settings_garment_color_default_swatch_description">Lähtesta „%1$s“ vaikevärvile</string>
+    <string name="settings_garment_color_dialog_close">Sulge</string>
+
+    <string name="settings_forecasters_title">Prognoosimudelid</string>
+    <string name="settings_forecasters_description">Kindlustunde silt ja mudelite graafik tuginevad neile mudelitele. Rohkem mudeleid annab laiema hajumise; vähem — kitsama fookuse. Vähemalt kaks jäävad valituks.</string>
+    <string name="settings_forecasters_auto_title">Auto (parim sinu asukohale)</string>
+    <string name="settings_forecasters_auto_subtitle">Valib piirkondliku mudeli automaatselt — UKMO Briti saartel, JMA Jaapanis, GFS + GEM Põhja-Ameerikas jne. Lülita välja, et valida mudelid ise.</string>
+    <string name="settings_forecasters_cap_hint">Oled valinud %1$d mudelit — maksimum, mille puhul graafik püsib loetav. Eemalda valik ühelt, et lisada teine.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Euroopa — üldjuhul kõige täpsem globaalne mudel. Avatud kanalil iga 3 tunni järel.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Saksa (DWD) — tugev Euroopas ja lühikeses prognoosis. Algselt tunnipõhine.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Ameerika (NOAA) — tugev Põhja-Ameerika kohal. Algselt tunnipõhine.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Kanada (ECCC) — tugev Põhja-Ameerika kohal. Avatud kanalil iga 3 tunni järel.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Prantsuse (Météo-France) — tugev Prantsusmaa ja Lääne-Euroopa kohal. Algselt tunnipõhine.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Briti (UK Met Office) — ajalooliselt vaid ECMWF-i järel. Avatud kanalil iga 3 tunni järel.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Jaapani — tugev Aasia-Vaikse ookeani piirkonnas. Avatud kanalil iga 3–6 tunni järel.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Austraalia — hoolduses, naaseb nii ruttu kui võimalik.</string>
+
+    <string name="settings_about_open_meteo">Ilmaandmed Open-Meteolt</string>
 </resources>

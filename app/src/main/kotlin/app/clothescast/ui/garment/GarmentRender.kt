@@ -338,7 +338,7 @@ internal fun renderOutfitCard(
         textSize = INFO_PX
         color = 0xFF444444.toInt()
     }
-    val rainRowTop = CARD_H - CARD_PAD - INFO_ICON_PX
+    val rainRowTop = CARD_H - INFO_BOTTOM_PAD - INFO_ICON_PX
     val tempRowTop = rainRowTop - INFO_ICON_PX - INFO_ROW_GAP_PX
     drawInfoRow(canvas, context, R.drawable.ic_outfit_card_thermometer, tempLine, proseX, tempRowTop, infoPaint)
     if (rainLine != null) {
@@ -414,21 +414,26 @@ private const val RAIN_PEAK_THRESHOLD_PCT = 30
 // Layout: icons fill the left column from the top; the header sits on
 // top of the right column (above the prose, at proseX); info rows are
 // anchored to the bottom of the right column so their position is
-// stable regardless of how long the prose runs.
+// stable regardless of how long the prose runs. Info rows use
+// INFO_BOTTOM_PAD (larger than CARD_PAD) so they clear the Nest Hub's
+// bottom bezel / status overlay and don't read as cut off.
 private const val CARD_W = 800
 private const val CARD_H = 480
 private const val CARD_PAD = 36
 private const val HEADER_PX = 38f
-private const val HEADER_GAP_PX = 16   // gap between header bottom and content top
+private const val HEADER_GAP_PX = 28   // gap between header bottom and prose top
 private const val ICON_PX = 160
 private const val ICON_V_GAP = 8       // vertical gap between top and bottom icon
 private const val ICON_H_GAP = 24      // horizontal gap from icon column to prose
 private const val PROSE_PX = 22f
-private const val PROSE_MAX_LINES = 8  // leaves room for the two info rows
+private const val PROSE_MAX_LINES = 7  // leaves room for the two info rows
 private const val INFO_PX = 26f        // larger than prose so it reads at-a-glance
 private const val INFO_ICON_PX = 36
 private const val INFO_ICON_GAP_PX = 12
 private const val INFO_ROW_GAP_PX = 10
+// Bottom-of-card padding for the info rows — larger than CARD_PAD so the
+// rain / temp lines clear the Nest Hub's bezel + bottom status overlay.
+private const val INFO_BOTTOM_PAD = 60
 
 /**
  * LRU-ish bitmap cache. Most users have ≤2 widget cells × ≤4 garment slots ×

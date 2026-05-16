@@ -47,10 +47,10 @@ class OutfitCardSnapshotTest {
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
                 header = "Today's ClothesCast",
-                prose = "A warm one today. Wear a t-shirt and shorts. " +
-                    "High of 28°C, feels like 30°C. Don't forget sunscreen.",
-                tempLine = "20–30°C",
-                rainLine = "Peak 60% at 3pm",
+                prose = "Today, it will be warm. 3° warmer than yesterday. " +
+                    "Wear a t-shirt and shorts. Chance of rain at 3pm.",
+                tempLine = "22–30°C",
+                rainLine = "Peak 40% at 3pm",
                 topColors = emptyMap(),
                 bottomColors = emptyMap(),
             ),
@@ -65,8 +65,7 @@ class OutfitCardSnapshotTest {
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
                 header = "Tonight's ClothesCast",
-                prose = "Cooling down this evening. Wear a sweater and long pants. " +
-                    "Low of 14°C, feels like 11°C. Bring a jacket if heading out after 10pm.",
+                prose = "Tonight, it will be cool. Wear a sweater and long pants.",
                 tempLine = "11–18°C",
                 // Peak below threshold — rain row hidden.
                 rainLine = null,
@@ -84,8 +83,8 @@ class OutfitCardSnapshotTest {
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.THIN_JACKET, OutfitSuggestion.Bottom.JEANS),
                 header = "Today's ClothesCast",
-                prose = "Chilly but dry. Wear a light jacket and jeans. " +
-                    "High of 15°C, feels like 13°C.",
+                prose = "Today, it will be cool. 2° cooler than yesterday. " +
+                    "Wear a jacket and jeans.",
                 tempLine = "9–15°C",
                 rainLine = null,
                 topColors = mapOf(OutfitSuggestion.Top.THIN_JACKET to 0xFFE53935L), // red jacket

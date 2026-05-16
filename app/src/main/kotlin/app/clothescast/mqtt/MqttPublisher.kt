@@ -51,11 +51,22 @@ class MqttPublisher(
             preferences.first()
         } catch (ce: CancellationException) {
             throw ce
-        } catch (_: Throwable) {
+        } catch (t: Throwable) {
+            DiagLog.w(TAG, "Failed to read settings for ${period.name.lowercase()} insight MQTT publish; skipping.", t)
             return
         }
+        // Bridge-off is the silent-no-op path for users who haven't opted in;
+        // not logged to keep the diag stream clean for the 99% no-bridge case.
         if (!prefs.mqttBridgeEnabled) return
-        val host = prefs.mqttHost?.takeIf { it.isNotBlank() } ?: return
+        val host = prefs.mqttHost?.takeIf { it.isNotBlank() } ?: run {
+            DiagLog.w(
+                TAG,
+                "MQTT bridge is enabled but no broker host is configured; " +
+                    "${period.name.lowercase()} insight not published. " +
+                    "Set the host in Settings → Smart Home.",
+            )
+            return
+        }
         val password = if (prefs.mqttUsername.isNullOrBlank()) {
             null
         } else {
@@ -63,7 +74,8 @@ class MqttPublisher(
                 passwordProvider()
             } catch (ce: CancellationException) {
                 throw ce
-            } catch (_: Throwable) {
+            } catch (t: Throwable) {
+                DiagLog.w(TAG, "Failed to read MQTT password from keystore; attempting anonymous connect.", t)
                 null
             }
         }
@@ -75,10 +87,23 @@ class MqttPublisher(
             password = password,
         )
         val topic = topicFor(prefs.mqttTopic, period)
+        val scheme = if (prefs.mqttUseTls) "mqtts" else "mqtt"
+        // Entry log: fires only when the bridge is enabled and the host is set.
+        // If you see this line in the diag log, the publisher reached the
+        // network attempt; if you don't, the bridge is either off or the host
+        // is blank (and the warn above will tell you which).
+        DiagLog.i(
+            TAG,
+            "MQTT bridge enabled; publishing ${period.name.lowercase()} insight to " +
+                "$scheme://$host:${prefs.mqttPort}/$topic " +
+                "(auth=${!prefs.mqttUsername.isNullOrBlank()}, " +
+                "password=${if (password != null) "set" else "none"}, " +
+                "payload=${prose.length} chars).",
+        )
         withTimeoutOrNull(publishTimeoutMs) {
             try {
                 publish(config, topic, prose)
-                DiagLog.i(TAG, "Published ${period.name.lowercase()} insight to mqtt://$host:${prefs.mqttPort}/$topic")
+                DiagLog.i(TAG, "Published ${period.name.lowercase()} insight to $scheme://$host:${prefs.mqttPort}/$topic")
             } catch (ce: CancellationException) {
                 // Re-raise so withTimeoutOrNull sees a timeout (returns null
                 // and we log "timed out" below) and so a WorkManager-issued
@@ -86,9 +111,9 @@ class MqttPublisher(
                 // shadowed by a misleading "MQTT publish failed" line.
                 throw ce
             } catch (t: Throwable) {
-                DiagLog.w(TAG, "MQTT publish failed to $host:${prefs.mqttPort}/$topic", t)
+                DiagLog.w(TAG, "MQTT publish failed to $scheme://$host:${prefs.mqttPort}/$topic", t)
             }
-        } ?: DiagLog.w(TAG, "MQTT publish timed out after ${publishTimeoutMs}ms to $host:${prefs.mqttPort}/$topic")
+        } ?: DiagLog.w(TAG, "MQTT publish timed out after ${publishTimeoutMs}ms to $scheme://$host:${prefs.mqttPort}/$topic")
     }
 
     companion object {

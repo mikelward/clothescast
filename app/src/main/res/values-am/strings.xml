@@ -568,4 +568,55 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_voice_locale_ar_eg">አረብኛ (ግብጽ)</string>
     <string name="settings_region_language_ar_ma">አረብኛ (ሞሮኮ)</string>
     <string name="settings_tts_voice_locale_ar_ma">አረብኛ (ሞሮኮ)</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit, + debug screen. -->
+    <string name="today_update_downloading_body">ዝመና በመውረድ ላይ…</string>
+    <string name="today_update_downloading_action">በመዘመን ላይ</string>
+    <string name="today_update_downloading_dismiss">ሰርዝ</string>
+    <string name="today_view_other_period">ሌላ ትንበያ ይመልከቱ</string>
+    <string name="today_back_to_primary">ተመለስ</string>
+    <string name="today_placeholder_today_title">የዛሬ ትንበያ</string>
+    <string name="today_placeholder_tonight_title">የዛሬ ምሽት ትንበያ</string>
+    <string name="today_placeholder_body">በ %1$s አካባቢ ዝግጁ ይሆናል።</string>
+
+    <string name="settings_root_forecasters">የትንበያ ሞዴሎች</string>
+    <string name="settings_root_forecasters_subtitle">የአየር ሁኔታ ምንጮችና ሞዴሎች</string>
+
+    <string name="settings_display_garment_colors_title">የልብስ ቀለሞች</string>
+    <string name="settings_display_garment_colors_description">በዛሬ ማያ፣ በመነሻ ማያ ዊጅት እና በማሳወቂያዎች ላይ ለሚታይ ለእያንዳንዱ የልብስ አዶ ቀለም ይምረጡ። የጠርዙ ቀለም በራሱ ይጠቁራል።</string>
+    <string name="settings_garment_color_default">ነባሪ</string>
+    <string name="settings_garment_color_picker_title">ቀለም ይምረጡ</string>
+    <string name="settings_garment_color_swatch_description">የቀለም ናሙና %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">%1$s ን ወደ ነባሪ ቀለም ይመልሱ</string>
+    <string name="settings_garment_color_dialog_close">ዝጋ</string>
+
+    <string name="settings_forecasters_title">የትንበያ ሞዴሎች</string>
+    <string name="settings_forecasters_description">የእምነት ምልክቱና በሞዴል የተከፋፈለው ቻርት ከእነዚህ ሞዴሎች ይነሳሉ። ብዙ መምረጥ ሰፊ ድርሻ ይሰጣል፤ ጥቂት መምረጥ ትኩረት ያጠብባል። ቢያንስ ሁለት ሞዴሎች ሁልጊዜ ተመርጠው ይቆያሉ።</string>
+    <string name="settings_forecasters_auto_title">ራስ-ሰር (ለቦታዎ ምርጥ)</string>
+    <string name="settings_forecasters_auto_subtitle">የክልል ትንበያ ሞዴሉን በራሱ ይመርጣል — በብሪታኒያ ደሴቶች UKMO፣ በጃፓን JMA፣ በሰሜን አሜሪካ GFS + GEM ወዘተ። ሞዴሎቹን በራስዎ ለመምረጥ ካስፈለገ ያጥፉ።</string>
+    <string name="settings_forecasters_cap_hint">%1$d ሞዴሎችን መርጠዋል — ቻርቱ ለማንበብ የሚቀልበት ከፍተኛ ቁጥር። ሌላ ሞዴል ለመጨመር አንዱን ምርጫ ይሰርዙ።</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">አውሮፓዊ — በአጠቃላይ በጣም ትክክለኛው ዓለም አቀፍ ሞዴል። በክፍት ምግብ በሰዓታት ሶስት።</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">ጀርመናዊ (DWD) — በአውሮፓ እና በአጭር ጊዜ ጠንካራ። የራሱ ሰዓታዊ።</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">አሜሪካዊ (NOAA) — በሰሜን አሜሪካ ጠንካራ። የራሱ ሰዓታዊ።</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">ካናዳዊ (ECCC) — በሰሜን አሜሪካ ጠንካራ። በክፍት ምግብ በሰዓታት ሶስት።</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">ፈረንሳዊ (Météo-France) — በፈረንሳይና በምዕራብ አውሮፓ ጠንካራ። የራሱ ሰዓታዊ።</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">ብሪታኒያዊ (UK Met Office) — በታሪክ ከ ECMWF በቀር ሁለተኛ። በክፍት ምግብ በሰዓታት ሶስት።</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">ጃፓናዊ — በእስያ-ፓሲፊክ ጠንካራ። በክፍት ምግብ በሰዓታት ሶስት እስከ ስድስት።</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">አውስትራሊያዊ — በጥገና ላይ፣ በተቻለ ፍጥነት ይመለሳል።</string>
+
+    <string name="settings_about_open_meteo">የአየር ሁኔታ ውሂብ በ Open-Meteo</string>
+
+    <string name="settings_debug_title">ማረሚያ (የልማት ግንባታ ብቻ)</string>
+    <string name="settings_debug_description">ዕለታዊውን የClothesCast ሂደት ወዲያው ያስነሳል። የተያዘውን ጊዜ ሳይጠብቅ ለማረጋገጥ ይጠቅማል።</string>
+    <string name="settings_debug_fire_now">ClothesCast አሁን አስኪድ</string>
+    <string name="settings_debug_fire_toast">የClothesCast ሠራተኛ በወረፋ ተቀመጠ</string>
 </resources>

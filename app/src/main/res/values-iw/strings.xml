@@ -594,4 +594,55 @@ standard in Israeli digital communication.
     <string name="settings_tts_voice_locale_ar_eg">ערבית (מצרים)</string>
     <string name="settings_region_language_ar_ma">ערבית (מרוקו)</string>
     <string name="settings_tts_voice_locale_ar_ma">ערבית (מרוקו)</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit, + debug screen. -->
+    <string name="today_update_downloading_body">מוריד עדכון…</string>
+    <string name="today_update_downloading_action">מעדכן</string>
+    <string name="today_update_downloading_dismiss">ביטול</string>
+    <string name="today_view_other_period">הצג/י תחזית אחרת</string>
+    <string name="today_back_to_primary">חזור/י</string>
+    <string name="today_placeholder_today_title">תחזית להיום</string>
+    <string name="today_placeholder_tonight_title">תחזית להלילה</string>
+    <string name="today_placeholder_body">תהיה מוכנה בסביבות %1$s.</string>
+
+    <string name="settings_root_forecasters">מודלי תחזית</string>
+    <string name="settings_root_forecasters_subtitle">מקורות ומודלי מזג אוויר</string>
+
+    <string name="settings_display_garment_colors_title">צבעי בגדים</string>
+    <string name="settings_display_garment_colors_description">בחר/י צבע לכל אייקון בגד שמופיע במסך היום, בווידג׳ט של מסך הבית ובהתראות. קו המתאר יוכהה אוטומטית.</string>
+    <string name="settings_garment_color_default">ברירת מחדל</string>
+    <string name="settings_garment_color_picker_title">בחר/י צבע</string>
+    <string name="settings_garment_color_swatch_description">דגימת צבע %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">איפוס %1$s לצבע ברירת המחדל</string>
+    <string name="settings_garment_color_dialog_close">סגור/י</string>
+
+    <string name="settings_forecasters_title">מודלי תחזית</string>
+    <string name="settings_forecasters_description">תווית הביטחון והגרף לפי מודל ניזונים מהמודלים האלה. בחירת יותר מודלים מרחיבה את הפיזור; פחות מודלים מצמצמים את המיקוד. לפחות שניים נשארים מסומנים תמיד.</string>
+    <string name="settings_forecasters_auto_title">אוטומטי (הכי טוב למיקום שלך)</string>
+    <string name="settings_forecasters_auto_subtitle">בוחר אוטומטית את מודל התחזית האזורי — UKMO באיים הבריטיים, JMA ביפן, GFS + GEM בצפון אמריקה וכו׳. כבה/י כדי לבחור מודלים בעצמך.</string>
+    <string name="settings_forecasters_cap_hint">בחרת %1$d מודלים — המספר המרבי שבו הגרף נשאר קריא. בטל/י בחירה של אחד כדי להוסיף מודל אחר.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">אירופי — בדרך כלל המודל הגלובלי המדויק ביותר. כל 3 שעות בפיד הפתוח.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">גרמני (DWD) — חזק באירופה ובטווח קצר. שעתי מקורי.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">אמריקאי (NOAA) — חזק מעל צפון אמריקה. שעתי מקורי.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">קנדי (ECCC) — חזק מעל צפון אמריקה. כל 3 שעות בפיד הפתוח.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">צרפתי (Météo-France) — חזק מעל צרפת ומערב אירופה. שעתי מקורי.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">בריטי (UK Met Office) — היסטורית במקום השני, אחרי ECMWF בלבד. כל 3 שעות בפיד הפתוח.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">יפני — חזק מעל אסיה-פסיפיק. כל 3 עד 6 שעות בפיד הפתוח.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">אוסטרלי — בתחזוקה, חוזר ברגע שאפשר.</string>
+
+    <string name="settings_about_open_meteo">נתוני מזג אוויר באדיבות Open-Meteo</string>
+
+    <string name="settings_debug_title">ניפוי שגיאות (גרסאות פיתוח בלבד)</string>
+    <string name="settings_debug_description">הפעלה מיידית של תהליך ClothesCast היומי. שימושי לאימות בלי להמתין לשעה המתוזמנת.</string>
+    <string name="settings_debug_fire_now">הפעל/י את ClothesCast עכשיו</string>
+    <string name="settings_debug_fire_toast">עובד ClothesCast הוכנס לתור</string>
 </resources>

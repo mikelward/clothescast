@@ -586,4 +586,55 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_tts_voice_locale_ar_eg">عربی (مصر)</string>
     <string name="settings_region_language_ar_ma">عربی (مراکش)</string>
     <string name="settings_tts_voice_locale_ar_ma">عربی (مراکش)</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit, + debug screen. -->
+    <string name="today_update_downloading_body">در حال دانلود به‌روزرسانی…</string>
+    <string name="today_update_downloading_action">در حال به‌روزرسانی</string>
+    <string name="today_update_downloading_dismiss">لغو</string>
+    <string name="today_view_other_period">مشاهده پیش‌بینی دیگر</string>
+    <string name="today_back_to_primary">بازگشت</string>
+    <string name="today_placeholder_today_title">پیش‌بینی امروز</string>
+    <string name="today_placeholder_tonight_title">پیش‌بینی امشب</string>
+    <string name="today_placeholder_body">حدود %1$s آماده می‌شود.</string>
+
+    <string name="settings_root_forecasters">مدل‌های پیش‌بینی</string>
+    <string name="settings_root_forecasters_subtitle">منابع و مدل‌های آب‌وهوا</string>
+
+    <string name="settings_display_garment_colors_title">رنگ لباس‌ها</string>
+    <string name="settings_display_garment_colors_description">برای هر آیکن لباسی که در امروز، ابزارک صفحه اصلی و اعلان‌ها نمایش داده می‌شود یک رنگ انتخاب کنید. خط دور به‌طور خودکار تیره‌تر می‌شود.</string>
+    <string name="settings_garment_color_default">پیش‌فرض</string>
+    <string name="settings_garment_color_picker_title">یک رنگ انتخاب کنید</string>
+    <string name="settings_garment_color_swatch_description">نمونه رنگ %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">بازنشانی %1$s به رنگ پیش‌فرض</string>
+    <string name="settings_garment_color_dialog_close">بستن</string>
+
+    <string name="settings_forecasters_title">مدل‌های پیش‌بینی</string>
+    <string name="settings_forecasters_description">نشان اطمینان و نمودار هر مدل از این مدل‌ها تغذیه می‌شود. انتخاب تعداد بیشتر گستره‌ای غنی‌تر می‌دهد؛ تعداد کمتر تمرکز را محدودتر می‌کند. دست‌کم دو مدل همیشه انتخاب باقی می‌ماند.</string>
+    <string name="settings_forecasters_auto_title">خودکار (بهترین برای موقعیت شما)</string>
+    <string name="settings_forecasters_auto_subtitle">مدل پیش‌بینی منطقه‌ای را به‌طور خودکار انتخاب می‌کند — UKMO در جزایر بریتانیا، JMA در ژاپن، GFS + GEM در آمریکای شمالی و غیره. برای انتخاب دستی مدل‌ها، آن را خاموش کنید.</string>
+    <string name="settings_forecasters_cap_hint">%1$d مدل انتخاب کرده‌اید — بیشترین تعدادی که نمودار خوانا می‌ماند. برای افزودن مدل دیگر، انتخاب یکی را بردارید.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">اروپایی — معمولاً دقیق‌ترین مدل جهانی. روی خوراک باز، هر 3 ساعت یک بار.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">آلمانی (DWD) — قوی در اروپا و در برد کوتاه. ساعتی بومی.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">آمریکایی (NOAA) — قوی روی آمریکای شمالی. ساعتی بومی.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">کانادایی (ECCC) — قوی روی آمریکای شمالی. روی خوراک باز، هر 3 ساعت یک بار.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">فرانسوی (Météo-France) — قوی روی فرانسه و اروپای غربی. ساعتی بومی.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">بریتانیایی (UK Met Office) — از نظر تاریخی تنها پس از ECMWF در رتبه دوم. روی خوراک باز، هر 3 ساعت یک بار.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">ژاپنی — قوی روی آسیا-اقیانوسیه. روی خوراک باز، هر 3 تا 6 ساعت یک بار.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">استرالیایی — در حال نگهداری، در اسرع وقت بازمی‌گردد.</string>
+
+    <string name="settings_about_open_meteo">داده‌های آب‌وهوا از Open-Meteo</string>
+
+    <string name="settings_debug_title">اشکال‌زدایی (فقط در نسخه‌های توسعه)</string>
+    <string name="settings_debug_description">فرایند روزانه ClothesCast را بلافاصله اجرا می‌کند. برای بررسی بدون انتظار تا زمان زمان‌بندی‌شده مفید است.</string>
+    <string name="settings_debug_fire_now">اجرای ClothesCast هم‌اکنون</string>
+    <string name="settings_debug_fire_toast">کارگر ClothesCast در صف قرار گرفت</string>
 </resources>

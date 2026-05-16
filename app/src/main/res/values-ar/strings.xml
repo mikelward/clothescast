@@ -595,4 +595,55 @@ they work correctly in both the single-band and range templates.
     <string name="settings_region_language_ar_ae">العربية (الإمارات العربية المتحدة)</string>
     <string name="settings_region_language_ar_eg">العربية (مصر)</string>
     <string name="settings_region_language_ar_ma">العربية (المغرب)</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit, + debug screen. -->
+    <string name="today_update_downloading_body">جارٍ تنزيل التحديث…</string>
+    <string name="today_update_downloading_action">جارٍ التحديث</string>
+    <string name="today_update_downloading_dismiss">إلغاء</string>
+    <string name="today_view_other_period">عرض توقعات أخرى</string>
+    <string name="today_back_to_primary">رجوع</string>
+    <string name="today_placeholder_today_title">توقعات اليوم</string>
+    <string name="today_placeholder_tonight_title">توقعات الليلة</string>
+    <string name="today_placeholder_body">ستكون جاهزة حوالي %1$s.</string>
+
+    <string name="settings_root_forecasters">نماذج التنبؤ</string>
+    <string name="settings_root_forecasters_subtitle">مصادر الطقس والنماذج</string>
+
+    <string name="settings_display_garment_colors_title">ألوان الملابس</string>
+    <string name="settings_display_garment_colors_description">اختر لونًا لكل أيقونة ملابس تظهر في شاشة اليوم وفي أداة الشاشة الرئيسية والإشعارات. يصبح الحد الخارجي أغمق تلقائيًا.</string>
+    <string name="settings_garment_color_default">افتراضي</string>
+    <string name="settings_garment_color_picker_title">اختر لونًا</string>
+    <string name="settings_garment_color_swatch_description">عينة لون %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">إعادة تعيين %1$s إلى اللون الافتراضي</string>
+    <string name="settings_garment_color_dialog_close">إغلاق</string>
+
+    <string name="settings_forecasters_title">نماذج التنبؤ</string>
+    <string name="settings_forecasters_description">يعتمد مؤشر الثقة والرسم البياني لكل نموذج على هذه النماذج. اختيار عدد أكبر يمنح تشتتًا أوسع؛ وعدد أقل يمنح تركيزًا أضيق. يظل نموذجان مختاران على الأقل في كل الأحوال.</string>
+    <string name="settings_forecasters_auto_title">تلقائي (الأفضل لموقعك)</string>
+    <string name="settings_forecasters_auto_subtitle">يختار نموذج التنبؤ الإقليمي تلقائيًا — UKMO في الجزر البريطانية، وJMA في اليابان، وGFS مع GEM في أمريكا الشمالية، وهكذا. أوقف هذا لاختيار النماذج بنفسك.</string>
+    <string name="settings_forecasters_cap_hint">اخترت %1$d نماذج — الحد الأقصى الذي يظل عنده الرسم البياني واضحًا. ألغِ اختيار أحدها لإضافة نموذج مختلف.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">أوروبي — يُعد عمومًا النموذج العالمي الأدق. كل ثلاث ساعات على البيانات المفتوحة.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">ألماني (DWD) — قوي في أوروبا وعلى المدى القصير. ساعي أصلي.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">أمريكي (NOAA) — قوي فوق أمريكا الشمالية. ساعي أصلي.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">كندي (ECCC) — قوي فوق أمريكا الشمالية. كل ثلاث ساعات على البيانات المفتوحة.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">فرنسي (Météo-France) — قوي فوق فرنسا وأوروبا الغربية. ساعي أصلي.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">بريطاني (UK Met Office) — تاريخيًا الثاني بعد ECMWF فقط. كل ثلاث ساعات على البيانات المفتوحة.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">ياباني — قوي فوق آسيا والمحيط الهادئ. كل 3 إلى 6 ساعات على البيانات المفتوحة.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">أسترالي — قيد الصيانة، سيعود في أقرب وقت ممكن.</string>
+
+    <string name="settings_about_open_meteo">بيانات الطقس من Open-Meteo</string>
+
+    <string name="settings_debug_title">تصحيح الأخطاء (إصدارات التطوير فقط)</string>
+    <string name="settings_debug_description">تشغيل مسار ClothesCast اليومي على الفور. مفيد للتحقق دون انتظار الموعد المجدول.</string>
+    <string name="settings_debug_fire_now">تشغيل ClothesCast الآن</string>
+    <string name="settings_debug_fire_toast">تم وضع عامل ClothesCast في قائمة الانتظار</string>
 </resources>

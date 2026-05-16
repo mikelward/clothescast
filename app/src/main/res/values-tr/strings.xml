@@ -605,4 +605,50 @@ displayed label localizes.
     <string name="today_uv_peak">Tepe %1$d, saat %2$s</string>
     <string name="today_uv_title">UV endeksi</string>
     <string name="today_wind_peak">Tepe %1$d %2$s, saat %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Güncelleme indiriliyor…</string>
+    <string name="today_update_downloading_action">Güncelleniyor</string>
+    <string name="today_update_downloading_dismiss">İptal</string>
+    <string name="today_view_other_period">Diğer tahmini gör</string>
+    <string name="today_back_to_primary">Geri</string>
+    <string name="today_placeholder_today_title">Bugünün tahmini</string>
+    <string name="today_placeholder_tonight_title">Bu gecenin tahmini</string>
+    <string name="today_placeholder_body">Yaklaşık %1$s\'de hazır olur.</string>
+
+    <string name="settings_root_forecasters">Tahmin modelleri</string>
+    <string name="settings_root_forecasters_subtitle">Hava kaynakları ve modeller</string>
+
+    <string name="settings_display_garment_colors_title">Giysi renkleri</string>
+    <string name="settings_display_garment_colors_description">Bugün ekranında, ana ekran widget\'ında ve bildirimlerde gösterilen her giysi simgesi için bir renk seç. Kontur otomatik olarak koyulaşır.</string>
+    <string name="settings_garment_color_default">Varsayılan</string>
+    <string name="settings_garment_color_picker_title">Bir renk seç</string>
+    <string name="settings_garment_color_swatch_description">%1$s renk örneği</string>
+    <string name="settings_garment_color_default_swatch_description">%1$s rengini varsayılana sıfırla</string>
+    <string name="settings_garment_color_dialog_close">Kapat</string>
+
+    <string name="settings_forecasters_title">Tahmin modelleri</string>
+    <string name="settings_forecasters_description">Güven rozeti ve model bazlı grafik bu modellerden beslenir. Daha fazla seçmek dağılımı zenginleştirir; daha az seçmek odağı daraltır. En az iki model her zaman seçili kalır.</string>
+    <string name="settings_forecasters_auto_title">Otomatik (konumun için en iyisi)</string>
+    <string name="settings_forecasters_auto_subtitle">Bölgesel tahmin sağlayıcıyı otomatik olarak seçer — Britanya Adaları\'nda UKMO, Japonya\'da JMA, Kuzey Amerika\'da GFS + GEM gibi. Modelleri kendin seçmek istersen kapat.</string>
+    <string name="settings_forecasters_cap_hint">%1$d model seçtin — grafiğin okunabilir kaldığı en yüksek sayı. Farklı bir model eklemek için birinin seçimini kaldır.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Avrupa — genelde en doğru küresel model. Açık akışta 3 saatte bir.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Alman (DWD) — Avrupa\'da ve kısa vadede güçlü. Saatlik veri sağlar.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikan (NOAA) — Kuzey Amerika üzerinde güçlü. Saatlik veri sağlar.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Kanadalı (ECCC) — Kuzey Amerika üzerinde güçlü. Açık akışta 3 saatte bir.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Fransız (Météo-France) — Fransa ve Batı Avrupa üzerinde güçlü. Saatlik veri sağlar.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">İngiliz (UK Met Office) — tarihsel olarak yalnızca ECMWF\'nin ardından ikinci. Açık akışta 3 saatte bir.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japon — Asya-Pasifik üzerinde güçlü. Açık akışta 3 ila 6 saatte bir.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Avustralyalı — bakım altında, mümkün olan en kısa sürede geri dönecek.</string>
+
+    <string name="settings_about_open_meteo">Hava durumu verileri Open-Meteo tarafından sağlanır</string>
 </resources>

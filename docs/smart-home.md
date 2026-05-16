@@ -127,6 +127,88 @@ populate within seconds of the next ClothesCast refresh (or instantly,
 if you've already done one — retained messages are delivered to new
 subscribers on connect).
 
+## Home Assistant — outfit image on Nest Hub
+
+Alongside the prose sensor, ClothesCast publishes a PNG outfit card to
+`<prefix>/<period>/image` (e.g. `clothescast/insight/today/image`). The
+card is 800 × 480 px (Nest Hub 7" native resolution) and shows:
+
+- Period label ("TODAY" / "TONIGHT") in Roboto Bold at the top
+- Top and bottom garment icons stacked in the left column
+- The full insight prose sentence wrapped in Roboto Regular on the right
+
+HA's `image.mqtt` integration turns the retained binary payload into an
+`image.*` entity; a one-line automation then pushes it to the Nest Hub
+display via `media_player.play_media`.
+
+The result: at your morning alarm time the Hub shows the outfit picture
+alongside the spoken briefing — "T-shirt and shorts" on screen while
+the voice reads the full forecast.
+
+### Add the image sensors to `configuration.yaml`
+
+```yaml
+mqtt:
+  image:
+    - name: "Clothescast today outfit"
+      unique_id: clothescast_today_outfit
+      image_topic: "clothescast/insight/today/image"
+      content_type: "image/png"
+    - name: "Clothescast tonight outfit"
+      unique_id: clothescast_tonight_outfit
+      image_topic: "clothescast/insight/tonight/image"
+      content_type: "image/png"
+```
+
+Restart HA (or reload MQTT) so the entities appear as
+`image.clothescast_today_outfit` and `image.clothescast_tonight_outfit`.
+
+### Automation to push the image to the Hub
+
+The Nest Hub accepts images via `media_player.play_media` when pointed
+at an accessible URL. HA automatically hosts each `image.*` entity
+under its internal API, so the Hub just needs to be able to reach your
+HA instance over your home network.
+
+```yaml
+alias: Show outfit on kitchen Hub at 07:01
+description: ""
+mode: single
+
+triggers:
+  - trigger: time
+    at: "07:01:00"
+
+conditions: []
+
+actions:
+  - action: media_player.play_media
+    target:
+      entity_id: media_player.kitchen_hub
+    data:
+      media_content_id: >-
+        http://homeassistant.local:8123{{
+          state_attr('image.clothescast_today_outfit', 'entity_picture')
+        }}
+      media_content_type: image/png
+```
+
+Replace `media_player.kitchen_hub` with your actual Nest Hub entity ID
+(find it under Settings → Devices & Services → Google Cast) and
+`homeassistant.local` with your HA hostname or local IP if mDNS doesn't
+resolve on your network.
+
+The `entity_picture` attribute is a relative path with an auth token
+baked in — it stays valid until the entity's picture changes (i.e. the
+next ClothesCast refresh). You can combine this action with Option A/B/C
+below in a single automation so the Hub shows the picture *and* speaks
+the forecast at the same moment.
+
+> **Note on external URLs.** If your Nest Hub is in a different network
+> segment from HA (unlikely in a typical home setup), use HA's external
+> URL (`https://your-ha.duckdns.org`) instead of the `homeassistant.local`
+> internal one. The `entity_picture` path is the same either way.
+
 ## Home Assistant — speaking the sensor on Google Home
 
 As of mid-2026, getting Google Home / Nest devices to actually *speak*

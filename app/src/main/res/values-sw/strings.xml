@@ -569,4 +569,55 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_voice_locale_ar_eg">Kiarabu (Misri)</string>
     <string name="settings_region_language_ar_ma">Kiarabu (Moroko)</string>
     <string name="settings_tts_voice_locale_ar_ma">Kiarabu (Moroko)</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit, + debug screen. -->
+    <string name="today_update_downloading_body">Inapakua sasisho…</string>
+    <string name="today_update_downloading_action">Inasasisha</string>
+    <string name="today_update_downloading_dismiss">Ghairi</string>
+    <string name="today_view_other_period">Tazama utabiri mwingine</string>
+    <string name="today_back_to_primary">Rudi</string>
+    <string name="today_placeholder_today_title">Utabiri wa leo</string>
+    <string name="today_placeholder_tonight_title">Utabiri wa usiku huu</string>
+    <string name="today_placeholder_body">Utakuwa tayari karibu na %1$s.</string>
+
+    <string name="settings_root_forecasters">Modeli za utabiri</string>
+    <string name="settings_root_forecasters_subtitle">Vyanzo na modeli za hali ya hewa</string>
+
+    <string name="settings_display_garment_colors_title">Rangi za mavazi</string>
+    <string name="settings_display_garment_colors_description">Chagua rangi kwa kila aikoni ya vazi inayoonekana kwenye Leo, kwenye wijeti ya skrini ya nyumbani, na kwenye arifa. Mstari wa nje hutiwa giza moja kwa moja.</string>
+    <string name="settings_garment_color_default">Chaguo-msingi</string>
+    <string name="settings_garment_color_picker_title">Chagua rangi</string>
+    <string name="settings_garment_color_swatch_description">Sampuli ya rangi ya %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Rejesha %1$s kwa rangi ya chaguo-msingi</string>
+    <string name="settings_garment_color_dialog_close">Funga</string>
+
+    <string name="settings_forecasters_title">Modeli za utabiri</string>
+    <string name="settings_forecasters_description">Beji ya uhakika na chati ya kila modeli hutegemea modeli hizi. Kuchagua zaidi hutoa mtawanyiko mpana; chache hupunguza umakini. Angalau mbili hubaki zikiwa zimechaguliwa kila wakati.</string>
+    <string name="settings_forecasters_auto_title">Otomatiki (bora kwa eneo lako)</string>
+    <string name="settings_forecasters_auto_subtitle">Huchagua modeli ya utabiri ya kanda kiotomatiki — UKMO katika Visiwa vya Uingereza, JMA Japani, GFS + GEM Amerika Kaskazini, n.k. Zima ili uchague modeli mwenyewe.</string>
+    <string name="settings_forecasters_cap_hint">Umechagua modeli %1$d — idadi kubwa zaidi ambapo chati hubaki ikisomeka. Ondoa moja ili kuongeza modeli nyingine.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Ulaya — kwa kawaida modeli sahihi zaidi duniani. Kila saa 3 kwenye mlisho wa wazi.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Kijerumani (DWD) — imara Ulaya na kwa muda mfupi. Kila saa moja kwa asili.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Kimarekani (NOAA) — imara juu ya Amerika Kaskazini. Kila saa moja kwa asili.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Kikanada (ECCC) — imara juu ya Amerika Kaskazini. Kila saa 3 kwenye mlisho wa wazi.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Kifaransa (Météo-France) — imara juu ya Ufaransa na Ulaya Magharibi. Kila saa moja kwa asili.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Kiingereza (UK Met Office) — kihistoria ya pili nyuma ya ECMWF tu. Kila saa 3 kwenye mlisho wa wazi.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Kijapani — imara juu ya Asia-Pasifiki. Kila saa 3 hadi 6 kwenye mlisho wa wazi.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Kiaustralia — chini ya matengenezo, itarudi haraka iwezekanavyo.</string>
+
+    <string name="settings_about_open_meteo">Data ya hali ya hewa kutoka Open-Meteo</string>
+
+    <string name="settings_debug_title">Utatuzi (miundo ya utatuzi pekee)</string>
+    <string name="settings_debug_description">Endesha mara moja mtiririko wa kila siku wa ClothesCast. Inafaa kwa uthibitisho bila kusubiri muda uliopangwa.</string>
+    <string name="settings_debug_fire_now">Endesha ClothesCast sasa</string>
+    <string name="settings_debug_fire_toast">Mfanyakazi wa ClothesCast amewekwa kwenye foleni</string>
 </resources>

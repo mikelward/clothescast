@@ -10,10 +10,13 @@
         android:strokeWidth="2.25"
         android:strokeLineJoin="round"
         android:strokeLineCap="round"
-        android:pathData="M14,20 L32,12 Q37,3 48,3 Q59,3 64,12 L82,20 L95,70 L81,80 L72,43 L72,96 L24,96 L24,43 L15,80 L1,70 Z" />
+        android:pathData="M14,20 L32,12 Q37,3 48,3 Q59,3 64,12 L82,20 L95,80 L81,90 L72,43 L72,96 L24,96 L24,43 L15,90 L1,80 Z" />
+    <path
+        android:fillColor="#6D4C41"
+        android:pathData="M26,16 Q37,-2 48,-2 Q59,-2 70,16 Q58,34 48,42 Q38,34 26,16 Z" />
     <path
         android:fillColor="#4E342E"
-        android:pathData="M32,12 Q37,3 48,3 Q59,3 64,12 Q58,28 48,35 Q38,28 32,12 Z" />
+        android:pathData="M36,12 Q42,5 48,5 Q54,5 60,12 Q54,24 48,30 Q42,24 36,12 Z" />
     <path
         android:fillColor="#4E342E"
         android:pathData="M46,54 L50,54 L50,58 L46,58 Z" />

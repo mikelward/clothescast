@@ -132,9 +132,39 @@ subscribers on connect).
 As of mid-2026, getting Google Home / Nest devices to actually *speak*
 arbitrary text on demand is genuinely fiddly — Google has been actively
 churning the Cast pipeline and several "obvious" paths are flaky on
-Nest Minis specifically. Three options, ranked by "should work":
+Nest Minis specifically. Three options below; quick comparison first.
 
-### Option A (recommended): `notify.google_assistant_sdk`
+| | **A. notify.google_assistant_sdk** | **B. mass.announce** (Music Assistant) | **C. tts.cloud_say / tts.google_translate_say** |
+|---|---|---|---|
+| Setup cost | Google Cloud project + OAuth in HA | One add-on install | Nabu Casa sub (`cloud_say`) or none (`google_translate_say`) |
+| Preamble before the text | **Yes** — Google's broadcast service prepends "There's a message, it says…" / "Here's a message for X: …" with no flag to suppress | **No** | No |
+| Targets a specific speaker | Yes — if HA language is bare "English" (en-US). Other "English (XX)" entries fall back to broadcast-to-all. | Yes — always, via `media_player.*` entity ID; no locale dependency | Yes — always, via `entity_id: media_player.*` |
+| Target value format | Bare room name from Google Home (`Master Bathroom`) | HA entity ID (`media_player.master_bathroom_display`) | HA entity ID (`media_player.master_bathroom_display`) |
+| Voice quality | Google Assistant voice (good) | Cast TTS — either Google Translate (free) or Nabu Casa (good) | Same as Music Assistant uses, just without the player-state restoration |
+| Reliability on Nest Mini | Best (sidesteps Cast pipe entirely) | OK — wraps Cast with state-restoration, masks some flakiness | Worst on Nest Mini specifically as of early 2026 |
+| Reliability on Nest Hub | Good | Good — Hubs tolerate Cast TTS better than Minis do | OK |
+| State restoration (resumes previous playback) | N/A — broadcast doesn't take over playback | **Yes** | No |
+
+Rough decision tree:
+
+- Want the **simplest setup** and don't mind a preamble: **Option A**.
+- Want the speaker to **just speak the forecast** (no preamble), or
+  you're on a non-en-US English variant, or you have Nest Hubs with
+  displays: **Option B**.
+- You already have `tts.cloud_say` working on your hardware and don't
+  want to install Music Assistant: **Option C**.
+
+Three options in detail:
+
+The YAML below is in the **UI-editor format** Home Assistant 2024.10+
+uses: top-level `alias:` / `triggers:` / `actions:`, with `trigger:`
+inside each trigger item and `action:` inside each action item. Paste
+directly into Settings → Automations → New automation → Edit in YAML.
+If you maintain `configuration.yaml` by hand, wrap each example in
+`automation:` and convert `triggers:` / `trigger:` / `actions:` /
+`action:` to the old plural-less form yourself.
+
+### Option A (simplest): `notify.google_assistant_sdk`
 
 Uses Google's *own* broadcast pipeline — the same backend as a spoken
 "Hey Google, broadcast …" — rather than pushing audio over Cast.
@@ -145,40 +175,125 @@ Setup needs a Google Cloud project with OAuth credentials added to
 Home Assistant (one-time setup, documented in the
 [google_assistant_sdk integration page](https://www.home-assistant.io/integrations/google_assistant_sdk/)).
 
-**Known quirk:** the `target:` field only honours specific speakers
-when Home Assistant's language is `en-US`; non-en-US installs broadcast
-to all speakers regardless of `target:`. For a wardrobe-door
-announcement that's probably fine.
-
 ```yaml
-automation:
-  - alias: "Speak forecast when wardrobe opens"
-    trigger:
-      platform: state
-      entity_id: binary_sensor.wardrobe_door
-      to: "on"
-    action:
-      service: notify.google_assistant_sdk
-      data:
-        message: "{{ states('sensor.clothescast_today') }}"
+alias: Speak forecast when wardrobe opens
+description: ""
+mode: single
+
+triggers:
+  - trigger: state
+    entity_id: binary_sensor.wardrobe_door
+    to: "on"
+
+conditions: []
+
+actions:
+  - action: notify.google_assistant_sdk
+    data:
+      message: "{{ states('sensor.clothescast_today') }}"
+      target:
+        - Master Bathroom
 ```
 
-### Option B: Music Assistant `mass.announce`
+**Two caveats specific to this path:**
 
-Cast-based, but wraps Cast TTS with state-restoration (it resumes
-whatever the speaker was playing) and is the community-recommended
-modern replacement for ad-hoc `tts.cloud_say` automations. Still rides
-the Cast pipe, so subject to the early-2026 "Nest Mini intermittently
-silent" reports — but Music Assistant's player-state handling masks a
-lot of the flakiness. See the
-[Music Assistant announcement docs](https://www.music-assistant.io/integration/announcements/).
+1. **A Google broadcast preamble is baked into the service** ("There's
+   a message, it says…", or for a targeted broadcast something like
+   "Here's a message for Master Bathroom: …") and there is no flag to
+   suppress it. If you want the speaker to just speak the forecast
+   with no preamble, use Option B below.
+
+2. **The `target:` field is the room name as it appears in Google
+   Home, on its own.** Just `Master Bathroom` — not the combined
+   "Master Bathroom Display - Master Bathroom" string Google Home
+   shows in its device listing, and not the device name on its own.
+   Targeting only routes when HA's interface language resolves to
+   English (US). Settings → System → General → Language: **"English"**
+   (no country suffix) resolves to en-US under the hood — that's the
+   one that works, and matches what most installs default to.
+   "English (United Kingdom)" is a *distinct* option in HA's language
+   picker — if you've explicitly chosen that one, the integration
+   silently appends the target string to the broadcast text instead
+   of routing, and you'll hear "to master bathroom" spoken out loud
+   followed by the forecast going to every speaker.
+
+   (HA's **Country** field on the Home Information page is separate
+   metadata — sun position, currency, etc. — and doesn't affect the
+   SDK locale.)
+
+   If you've intentionally picked "English (United Kingdom)" for date
+   / number formatting and want to keep it, use Option B below; it
+   routes via `media_player.*` entities and is locale-independent.
+
+### Option B (preamble-free, locale-independent): Music Assistant `mass.announce`
+
+Drives speakers via their HA `media_player.*` entities directly,
+bypassing Google's broadcast pipeline — so no "There's a message, it
+says…" preamble, and targeting works regardless of HA's language.
+Music Assistant additionally wraps Cast TTS with state-restoration
+(resumes whatever was playing on the speaker before the announcement).
+
+The price of admission is one add-on install: **Settings → Add-ons →
+Add-on Store → Music Assistant → Install → Start**. Once running, it
+auto-discovers your Cast devices and exposes them as
+`media_player.*` entities. Then:
+
+```yaml
+alias: Speak forecast when wardrobe opens
+description: ""
+mode: single
+
+triggers:
+  - trigger: state
+    entity_id: binary_sensor.wardrobe_door
+    to: "on"
+
+conditions: []
+
+actions:
+  - action: mass.announce
+    data:
+      message: "{{ states('sensor.clothescast_today') }}"
+      target_player: media_player.master_bathroom_display
+```
+
+See the
+[Music Assistant announcement docs](https://www.music-assistant.io/integration/announcements/)
+for the full surface (volume override, "use pre-announce chime",
+multiple targets, etc.). Still rides the Cast pipe under the hood, so
+subject to the early-2026 "Nest Mini intermittently silent" reports —
+but Music Assistant's player-state handling masks a lot of the
+flakiness, and Nest Hubs (with displays) generally behave better on
+the Cast path than the smaller Minis do.
 
 ### Option C: `tts.cloud_say` → `media_player.*` Cast
 
 The classic, simplest setup — but currently the **least** reliable on
 Nest Mini specifically. Listed for completeness; not recommended as
 the first thing to try. If it works on your hardware, great; if it
-doesn't, jump to Option A.
+doesn't, jump to Option A or B.
+
+```yaml
+alias: Speak forecast when wardrobe opens
+description: ""
+mode: single
+
+triggers:
+  - trigger: state
+    entity_id: binary_sensor.wardrobe_door
+    to: "on"
+
+conditions: []
+
+actions:
+  - action: tts.cloud_say
+    data:
+      entity_id: media_player.master_bathroom_display
+      message: "{{ states('sensor.clothescast_today') }}"
+```
+
+(`tts.google_translate_say` is the free alternative if you don't have
+Nabu Casa — same shape, robot-Google-Translate voice.)
 
 ## Troubleshooting
 

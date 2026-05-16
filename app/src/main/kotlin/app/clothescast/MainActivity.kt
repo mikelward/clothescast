@@ -366,6 +366,7 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                         }
                         outcome
                     },
+                    discovery = app.homeAssistantDiscovery,
                 ),
             )
             SettingsScreen(

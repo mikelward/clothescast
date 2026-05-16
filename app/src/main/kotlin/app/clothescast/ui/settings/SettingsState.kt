@@ -19,6 +19,7 @@ import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.data.defaultDistanceUnitFor
 import app.clothescast.data.defaultTemperatureUnitFor
+import app.clothescast.discovery.DiscoveredService
 import app.clothescast.tts.DeviceVoice
 import java.time.DayOfWeek
 import java.time.LocalTime
@@ -136,4 +137,17 @@ data class SettingsState(
     val mqttLastErrorAt: Long = 0L,
     /** True while a "Publish now" action is in flight. */
     val mqttPublishing: Boolean = false,
+    /**
+     * True while a local-network mDNS scan for Home Assistant / MQTT brokers
+     * is in flight (the user tapped "Scan local network" on the Smart Home
+     * card). Discovery is cold — toggling this off cancels the underlying
+     * NsdManager listeners.
+     */
+    val discoveryRunning: Boolean = false,
+    /**
+     * Most recent batch of mDNS hits from the in-flight scan, or the final
+     * snapshot from the previous scan. Empty list before any scan and
+     * cleared back to empty when the user starts a new one.
+     */
+    val discoveredServices: List<DiscoveredService> = emptyList(),
 )

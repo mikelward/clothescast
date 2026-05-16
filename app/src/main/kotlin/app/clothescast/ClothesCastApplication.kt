@@ -20,6 +20,8 @@ import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
 import app.clothescast.diag.DiagLog
+import app.clothescast.discovery.HomeAssistantDiscovery
+import app.clothescast.discovery.NsdHomeAssistantDiscovery
 import app.clothescast.diag.Telemetry
 import app.clothescast.diag.TelemetryApiCallLogger
 import app.clothescast.locale.AppLocale
@@ -97,6 +99,16 @@ class ClothesCastApplication : Application() {
             preferences = settingsRepository.preferences,
             passwordProvider = { secureKeyStore.getMqttPassword() },
         )
+    }
+
+    /**
+     * mDNS / DNS-SD discovery for the Smart Home settings page's "Scan local
+     * network" affordance. Stateless — each subscription starts its own pair
+     * of NsdManager listeners and tears them down on unsubscribe — so a
+     * single shared instance is fine.
+     */
+    val homeAssistantDiscovery: HomeAssistantDiscovery by lazy {
+        NsdHomeAssistantDiscovery(this)
     }
 
     private val httpClient: HttpClient by lazy {

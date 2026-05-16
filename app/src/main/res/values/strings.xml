@@ -458,6 +458,22 @@
     <string name="settings_location_background_denied_open">Open Settings</string>
     <string name="settings_location_background_denied_keep">Not now</string>
 
+    <string name="settings_home_location_title">Home location</string>
+    <string name="settings_home_location_description">Used by \'Only speak when away from home\' to decide whether the phone reads the forecast aloud. Stays on this device.</string>
+    <string name="settings_home_location_unset">No home set</string>
+    <string name="settings_home_location_use_current">Use my current location</string>
+    <string name="settings_home_location_search">Search for an address</string>
+    <string name="settings_home_location_change">Change home location</string>
+    <string name="settings_home_location_search_caveat">Search picks a city centroid, which can sit a few kilometres from your actual home. For the 1 km at-home radius to fire, prefer \'Use my current location\' while you\'re at home.</string>
+    <string name="settings_home_location_clear">Clear home location</string>
+
+    <string name="settings_skip_tts_at_home_title">Only speak when away from home</string>
+    <string name="settings_skip_tts_at_home_description">When you\'re at home, the phone stays quiet — handy if a home speaker already reads the forecast for you. Notifications still post.</string>
+    <string name="settings_skip_tts_at_home_label">Only speak when away from home</string>
+    <string name="settings_skip_tts_at_home_needs_home">Set a home location above to enable this. Without one the phone will always speak.</string>
+    <string name="settings_skip_tts_at_home_needs_permission">Needs background location access to tell when you\'re home. Without it the phone will always speak.</string>
+    <string name="settings_skip_tts_at_home_open_settings">Grant in system settings</string>
+
     <string name="settings_schedule_title">Daily ClothesCast</string>
     <string name="settings_schedule_time_label">Time</string>
     <string name="settings_schedule_days_label">Days of the week</string>

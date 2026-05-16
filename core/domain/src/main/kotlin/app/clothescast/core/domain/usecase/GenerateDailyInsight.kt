@@ -273,8 +273,17 @@ class GenerateDailyInsight(
     ): EveningEventTieInClause? {
         val nightEvents = filterEventsForPeriod(allEvents, ForecastPeriod.TONIGHT, tonightStart)
         // "Away from home" = any non-all-day event with a non-blank location.
-        // TODO: refine by filtering out events whose location matches a
-        // user-configured home location (settings-side, when that pref ships).
+        // A user-configured home pin now exists (UserPreferences.homeLocation,
+        // used by FetchAndNotifyWorker for the at-home TTS gate) but we
+        // deliberately don't fold it in here: the home displayName is a
+        // specific reverse-geocoded label that almost never byte-matches a
+        // calendar event's free-form location string, and lat/lon-based event
+        // matching isn't reachable — CalendarContract.Instances.EVENT_LOCATION
+        // is text only, off-device geocoding of event data is blocked by
+        // PRIVACY.md, and on-device Android Geocoder is unreliable. If we ever
+        // gain structured event lat/lon (e.g. via Google Calendar extended
+        // properties), revisit then; for now the blank-location assumption
+        // does the heavy lifting and is correct for the common case.
         val awayFromHome = nightEvents.any { !it.allDay && !it.location.isNullOrBlank() }
         if (!awayFromHome) return null
 

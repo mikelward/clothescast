@@ -41,6 +41,7 @@ class TelemetryPrivacyContractTest {
         "tonight_enabled", "tonight_time_bucket_hour", "tonight_days_count",
         "tonight_notify_only_on_events", "daily_mention_evening_events",
         "use_calendar_events",
+        "skip_tts_at_home", "home_location_configured",
         "customised_count", "extra_rules_count", "categories_customised",
         "all_defaults",
         "sweater_delta_c", "jacket_delta_c", "coat_delta_c", "shorts_delta_c",

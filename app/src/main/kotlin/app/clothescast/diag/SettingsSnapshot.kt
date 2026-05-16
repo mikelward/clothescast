@@ -33,4 +33,8 @@ data class SettingsSnapshot(
     val tonightNotifyOnlyOnEvents: Boolean,
     val dailyMentionEveningEvents: Boolean,
     val useCalendarEvents: Boolean,
+    /** True when the user has enabled the at-home TTS suppression gate. */
+    val skipTtsAtHome: Boolean,
+    /** True when a home pin has been configured (coordinates stay local). */
+    val homeLocationConfigured: Boolean,
 )

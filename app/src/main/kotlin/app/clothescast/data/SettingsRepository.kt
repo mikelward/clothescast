@@ -228,6 +228,26 @@ class SettingsRepository(
         dataStore.edit { it[USE_DEVICE_LOCATION] = enabled }
     }
 
+    suspend fun setHomeLocation(location: Location?) {
+        dataStore.edit { prefs ->
+            if (location == null) {
+                prefs.remove(HOME_LAT)
+                prefs.remove(HOME_LON)
+                prefs.remove(HOME_NAME)
+            } else {
+                prefs[HOME_LAT] = location.latitude
+                prefs[HOME_LON] = location.longitude
+                location.displayName
+                    ?.let { prefs[HOME_NAME] = it }
+                    ?: prefs.remove(HOME_NAME)
+            }
+        }
+    }
+
+    suspend fun setSkipTtsAtHome(enabled: Boolean) {
+        dataStore.edit { it[SKIP_TTS_AT_HOME] = enabled }
+    }
+
     suspend fun setTtsEngine(engine: TtsEngine) {
         dataStore.edit { it[TTS_ENGINE] = engine.name }
     }
@@ -427,6 +447,8 @@ class SettingsRepository(
             ?: OutfitSuggestion.Bottom.LONG_PANTS
         val location = parseLocation(this)
         val useDeviceLocation = this[USE_DEVICE_LOCATION] == true
+        val homeLocation = parseHomeLocation(this)
+        val skipTtsAtHome = this[SKIP_TTS_AT_HOME] == true
         val ttsEngine = this[TTS_ENGINE]?.let { runCatching { TtsEngine.valueOf(it) }.getOrNull() }
             ?: TtsEngine.DEVICE
         val geminiVoice = this[GEMINI_VOICE]?.takeIf { it.isNotBlank() }
@@ -485,6 +507,8 @@ class SettingsRepository(
             defaultBottom = defaultBottom,
             location = location,
             useDeviceLocation = useDeviceLocation,
+            homeLocation = homeLocation,
+            skipTtsAtHome = skipTtsAtHome,
             ttsEngine = ttsEngine,
             geminiVoice = geminiVoice,
             ttsStyle = ttsStyle,
@@ -569,6 +593,8 @@ class SettingsRepository(
         tonightNotifyOnlyOnEvents = tonightNotifyOnlyOnEvents,
         dailyMentionEveningEvents = dailyMentionEveningEvents,
         useCalendarEvents = useCalendarEvents,
+        skipTtsAtHome = skipTtsAtHome,
+        homeLocationConfigured = homeLocation != null,
     )
 
     private fun parseLocation(prefs: Preferences): Location? {
@@ -579,6 +605,18 @@ class SettingsRepository(
                 latitude = lat,
                 longitude = lon,
                 displayName = prefs[LOCATION_NAME],
+            )
+        }.getOrNull()
+    }
+
+    private fun parseHomeLocation(prefs: Preferences): Location? {
+        val lat = prefs[HOME_LAT] ?: return null
+        val lon = prefs[HOME_LON] ?: return null
+        return runCatching {
+            Location(
+                latitude = lat,
+                longitude = lon,
+                displayName = prefs[HOME_NAME],
             )
         }.getOrNull()
     }
@@ -644,6 +682,10 @@ class SettingsRepository(
         private val LOCATION_LON = doublePreferencesKey("location_longitude")
         private val LOCATION_NAME = stringPreferencesKey("location_display_name")
         private val USE_DEVICE_LOCATION = booleanPreferencesKey("use_device_location")
+        private val HOME_LAT = doublePreferencesKey("home_latitude")
+        private val HOME_LON = doublePreferencesKey("home_longitude")
+        private val HOME_NAME = stringPreferencesKey("home_display_name")
+        private val SKIP_TTS_AT_HOME = booleanPreferencesKey("skip_tts_at_home")
         private val TTS_ENGINE = stringPreferencesKey("tts_engine")
         private val GEMINI_VOICE = stringPreferencesKey("gemini_voice")
         private val TTS_STYLE = stringPreferencesKey("tts_style")

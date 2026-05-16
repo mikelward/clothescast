@@ -280,9 +280,9 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_root_schedule_subtitle">বিজ্ঞপ্তি ও সময়</string>
     <string name="settings_root_clothes_subtitle">তাপমাত্রা ও পোশাক</string>
     <string name="settings_root_region_subtitle">ভাষা ও একক</string>
-    <string name="settings_root_voice_subtitle">প্রদানকারী ও উচ্চারণভঙ্গি</string>
+    <string name="settings_root_voice_subtitle">ভয়েস ও উচ্চারণভঙ্গি</string>
     <string name="settings_root_display_subtitle">থিম এবং রঙ</string>
-    <string name="settings_root_location_subtitle">স্বয়ংক্রিয় শনাক্ত বা শহর বেছে নিন</string>
+    <string name="settings_root_location_subtitle">স্বয়ংক্রিয় ও ম্যানুয়াল অবস্থান</string>
     <string name="settings_root_calendar_subtitle">আজকের ইভেন্ট</string>
     <string name="settings_root_privacy_subtitle">ক্র্যাশ ও ব্যবহারের রিপোর্ট</string>
 
@@ -666,4 +666,55 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_uv_peak">সর্বোচ্চ %1$d সময় %2$s</string>
     <string name="today_uv_title">UV সূচক</string>
     <string name="today_wind_peak">সর্বোচ্চ %1$d %2$s সময় %3$s</string>
+
+    <!-- Today screen pager. -->
+    <string name="today_view_other_period">অন্য পূর্বাভাস দেখুন</string>
+    <string name="today_back_to_primary">ফিরুন</string>
+    <string name="today_placeholder_today_title">আজকের পূর্বাভাস</string>
+    <string name="today_placeholder_tonight_title">আজ রাতের পূর্বাভাস</string>
+    <string name="today_placeholder_body">প্রায় %1$s-এ প্রস্তুত হবে।</string>
+
+    <!-- Settings root — Forecasters row. -->
+    <string name="settings_root_forecasters">পূর্বাভাসদাতা</string>
+    <string name="settings_root_forecasters_subtitle">আবহাওয়া উৎস ও মডেল</string>
+
+    <!-- About — Open-Meteo attribution (brand stays Latin). -->
+    <string name="settings_about_open_meteo">আবহাওয়ার তথ্য Open-Meteo থেকে</string>
+
+    <!-- Display — per-garment colour picker. -->
+    <string name="settings_display_garment_colors_title">পোশাকের রং</string>
+    <string name="settings_display_garment_colors_description">আজ, হোম স্ক্রিন উইজেট এবং বিজ্ঞপ্তিতে দেখানো প্রতিটি পোশাক আইকনের জন্য একটি রং বেছে নিন। আউটলাইন স্বয়ংক্রিয়ভাবে গাঢ় হয়ে যায়।</string>
+    <string name="settings_garment_color_default">ডিফল্ট</string>
+    <string name="settings_garment_color_picker_title">একটি রং বেছে নিন</string>
+    <string name="settings_garment_color_swatch_description">রঙের সোয়াচ %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">%1$s কে ডিফল্ট রঙে রিসেট করুন</string>
+    <string name="settings_garment_color_dialog_close">বন্ধ করুন</string>
+
+    <!-- Update banner — Downloading state. -->
+    <string name="today_update_downloading_body">আপডেট ডাউনলোড হচ্ছে…</string>
+    <string name="today_update_downloading_action">আপডেট হচ্ছে</string>
+    <string name="today_update_downloading_dismiss">বাতিল করুন</string>
+
+    <!-- Forecasters sub-page — picker of NWP models. -->
+    <string name="settings_forecasters_title">পূর্বাভাস মডেল</string>
+    <string name="settings_forecasters_description">কনফিডেন্স চিপ এবং প্রতি-মডেল চার্ট এই মডেলগুলো থেকে তথ্য নেয়। বেশি বেছে নিলে বিস্তার বাড়ে; কম হলে ফোকাস সংকীর্ণ হয়। অন্তত দুটি নির্বাচিত থাকে।</string>
+    <string name="settings_forecasters_auto_title">স্বয়ংক্রিয় (আপনার অবস্থানের জন্য সেরা)</string>
+    <string name="settings_forecasters_auto_subtitle">আঞ্চলিক পূর্বাভাসদাতা স্বয়ংক্রিয়ভাবে বেছে নেয় — ব্রিটিশ আইলসে UKMO, জাপানে JMA, উত্তর আমেরিকায় GFS + GEM ইত্যাদি। নিজে মডেল বেছে নিতে হলে বন্ধ করুন।</string>
+    <string name="settings_forecasters_cap_hint">আপনি %1$d টি মডেল বেছেছেন — চার্ট পাঠযোগ্য রাখার সর্বোচ্চ। অন্য মডেল যোগ করতে একটি অনির্বাচিত করুন।</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">ইউরোপীয় — সাধারণত সবচেয়ে নির্ভুল বৈশ্বিক মডেল। উন্মুক্ত ফিডে ৩-ঘণ্টা পরপর।</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">জার্মান (DWD) — ইউরোপে ও স্বল্প-পরিসরে শক্তিশালী। নেটিভ ঘণ্টায়।</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">আমেরিকান (NOAA) — উত্তর আমেরিকায় শক্তিশালী। নেটিভ ঘণ্টায়।</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">কানাডিয়ান (ECCC) — উত্তর আমেরিকায় শক্তিশালী। উন্মুক্ত ফিডে ৩-ঘণ্টা পরপর।</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">ফরাসি (Météo-France) — ফ্রান্স ও পশ্চিম ইউরোপে শক্তিশালী। নেটিভ ঘণ্টায়।</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">ব্রিটিশ (UK Met Office) — ঐতিহাসিকভাবে ECMWF-এর পরই। উন্মুক্ত ফিডে ৩-ঘণ্টা পরপর।</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">জাপানি — এশিয়া-প্যাসিফিকে শক্তিশালী। উন্মুক্ত ফিডে ৩ থেকে ৬ ঘণ্টা পরপর।</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">অস্ট্রেলিয়ান — রক্ষণাবেক্ষণ চলছে, যত দ্রুত সম্ভব ফিরবে।</string>
 </resources>

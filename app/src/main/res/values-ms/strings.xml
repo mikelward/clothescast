@@ -259,7 +259,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_root_schedule_subtitle">Pemberitahuan dan Masa</string>
     <string name="settings_root_clothes_subtitle">Suhu dan Pakaian</string>
     <string name="settings_root_region_subtitle">Bahasa dan Unit</string>
-    <string name="settings_root_voice_subtitle">Pembekal dan Loghat</string>
+    <string name="settings_root_voice_subtitle">Suara dan Loghat</string>
     <string name="settings_root_display_subtitle">Tema dan warna</string>
 
     <!-- Display settings -->
@@ -269,7 +269,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_display_theme_dark">Gelap</string>
 
     <!-- Location settings subtitles -->
-    <string name="settings_root_location_subtitle">Pengesan automatik atau pilih bandar</string>
+    <string name="settings_root_location_subtitle">Lokasi Automatik dan Manual</string>
     <string name="settings_root_calendar_subtitle">Acara hari ini</string>
     <string name="settings_root_privacy_subtitle">Laporan ranap + penggunaan</string>
 
@@ -602,4 +602,55 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_uv_peak">Puncak %1$d pukul %2$s</string>
     <string name="today_uv_title">Indeks UV</string>
     <string name="today_wind_peak">Puncak %1$d %2$s pukul %3$s</string>
+
+    <!-- Today screen pager. -->
+    <string name="today_view_other_period">Lihat ramalan lain</string>
+    <string name="today_back_to_primary">Kembali</string>
+    <string name="today_placeholder_today_title">Ramalan hari ini</string>
+    <string name="today_placeholder_tonight_title">Ramalan malam ini</string>
+    <string name="today_placeholder_body">Akan siap sekitar pukul %1$s.</string>
+
+    <!-- Settings root — Forecasters row. -->
+    <string name="settings_root_forecasters">Peramal cuaca</string>
+    <string name="settings_root_forecasters_subtitle">Sumber dan Model Cuaca</string>
+
+    <!-- About — Open-Meteo attribution (brand stays Latin). -->
+    <string name="settings_about_open_meteo">Data cuaca daripada Open-Meteo</string>
+
+    <!-- Display — per-garment colour picker. -->
+    <string name="settings_display_garment_colors_title">Warna pakaian</string>
+    <string name="settings_display_garment_colors_description">Pilih warna untuk setiap ikon pakaian yang dipaparkan di Hari Ini, widget skrin utama dan pemberitahuan. Garis luar akan menjadi lebih gelap secara automatik.</string>
+    <string name="settings_garment_color_default">Lalai</string>
+    <string name="settings_garment_color_picker_title">Pilih warna</string>
+    <string name="settings_garment_color_swatch_description">Sampel warna %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Tetapkan semula %1$s kepada warna lalai</string>
+    <string name="settings_garment_color_dialog_close">Tutup</string>
+
+    <!-- Update banner — Downloading state. -->
+    <string name="today_update_downloading_body">Memuat turun kemaskini…</string>
+    <string name="today_update_downloading_action">Mengemaskini</string>
+    <string name="today_update_downloading_dismiss">Batal</string>
+
+    <!-- Forecasters sub-page — picker of NWP models. -->
+    <string name="settings_forecasters_title">Model ramalan</string>
+    <string name="settings_forecasters_description">Cip keyakinan dan carta setiap model mengambil data daripada model-model ini. Memilih lebih banyak memberi taburan yang lebih luas; lebih sedikit memberi tumpuan yang lebih sempit. Sekurang-kurangnya dua kekal dipilih.</string>
+    <string name="settings_forecasters_auto_title">Auto (terbaik untuk lokasi anda)</string>
+    <string name="settings_forecasters_auto_subtitle">Memilih peramal cuaca serantau secara automatik — UKMO di Kepulauan British, JMA di Jepun, GFS + GEM di Amerika Utara, dll. Matikan untuk memilih model sendiri.</string>
+    <string name="settings_forecasters_cap_hint">Anda memilih %1$d model — had maksimum supaya carta kekal boleh dibaca. Nyahpilih satu untuk menambah model lain.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Eropah — secara amnya model global paling tepat. Setiap 3 jam pada suapan terbuka.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Jerman (DWD) — kuat di Eropah dan jangka pendek. Asli setiap jam.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerika (NOAA) — kuat di Amerika Utara. Asli setiap jam.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Kanada (ECCC) — kuat di Amerika Utara. Setiap 3 jam pada suapan terbuka.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Perancis (Météo-France) — kuat di Perancis dan Eropah Barat. Asli setiap jam.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">British (UK Met Office) — sejarahnya hanya selepas ECMWF. Setiap 3 jam pada suapan terbuka.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Jepun — kuat di Asia-Pasifik. Setiap 3 hingga 6 jam pada suapan terbuka.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australia — dalam penyelenggaraan, akan kembali secepat mungkin.</string>
 </resources>

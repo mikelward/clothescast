@@ -263,9 +263,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_schedule_subtitle">การแจ้งเตือนและเวลา</string>
     <string name="settings_root_clothes_subtitle">อุณหภูมิและชุดแต่งกาย</string>
     <string name="settings_root_region_subtitle">ภาษาและหน่วย</string>
-    <string name="settings_root_voice_subtitle">ผู้ให้บริการและสำเนียง</string>
+    <string name="settings_root_voice_subtitle">เสียงและสำเนียง</string>
     <string name="settings_root_display_subtitle">ธีมและสี</string>
-    <string name="settings_root_location_subtitle">ตรวจจับอัตโนมัติหรือเลือกเมือง</string>
+    <string name="settings_root_location_subtitle">ตำแหน่งอัตโนมัติและด้วยตนเอง</string>
     <string name="settings_root_calendar_subtitle">กิจกรรมวันนี้</string>
     <string name="settings_root_privacy_subtitle">รายงานข้อขัดข้องและการใช้งาน</string>
 
@@ -596,4 +596,55 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_uv_peak">สูงสุด %1$d เวลา %2$s</string>
     <string name="today_uv_title">ดัชนี UV</string>
     <string name="today_wind_peak">สูงสุด %1$d %2$s เวลา %3$s</string>
+
+    <!-- Today screen pager. -->
+    <string name="today_view_other_period">ดูพยากรณ์อื่น</string>
+    <string name="today_back_to_primary">กลับ</string>
+    <string name="today_placeholder_today_title">พยากรณ์วันนี้</string>
+    <string name="today_placeholder_tonight_title">พยากรณ์คืนนี้</string>
+    <string name="today_placeholder_body">จะพร้อมประมาณ %1$s</string>
+
+    <!-- Settings root — Forecasters row. -->
+    <string name="settings_root_forecasters">ผู้พยากรณ์</string>
+    <string name="settings_root_forecasters_subtitle">แหล่งข้อมูลและแบบจำลองสภาพอากาศ</string>
+
+    <!-- About — Open-Meteo attribution (brand stays Latin). -->
+    <string name="settings_about_open_meteo">ข้อมูลสภาพอากาศจาก Open-Meteo</string>
+
+    <!-- Display — per-garment colour picker. -->
+    <string name="settings_display_garment_colors_title">สีของเสื้อผ้า</string>
+    <string name="settings_display_garment_colors_description">เลือกสีให้ไอคอนเสื้อผ้าแต่ละชิ้นที่แสดงในหน้าวันนี้ วิดเจ็ตหน้าจอหลัก และการแจ้งเตือน เส้นขอบจะเข้มขึ้นโดยอัตโนมัติ</string>
+    <string name="settings_garment_color_default">ค่าเริ่มต้น</string>
+    <string name="settings_garment_color_picker_title">เลือกสี</string>
+    <string name="settings_garment_color_swatch_description">ตัวอย่างสี %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">รีเซ็ต %1$s เป็นสีเริ่มต้น</string>
+    <string name="settings_garment_color_dialog_close">ปิด</string>
+
+    <!-- Update banner — Downloading state. -->
+    <string name="today_update_downloading_body">กำลังดาวน์โหลดอัปเดต…</string>
+    <string name="today_update_downloading_action">กำลังอัปเดต</string>
+    <string name="today_update_downloading_dismiss">ยกเลิก</string>
+
+    <!-- Forecasters sub-page — picker of NWP models. -->
+    <string name="settings_forecasters_title">แบบจำลองพยากรณ์</string>
+    <string name="settings_forecasters_description">ป้ายความเชื่อมั่นและแผนภูมิตามแบบจำลองดึงข้อมูลจากแบบจำลองเหล่านี้ เลือกเพิ่มเพื่อให้ขอบเขตกว้างขึ้น เลือกน้อยลงเพื่อโฟกัสมากขึ้น อย่างน้อยสองตัวจะถูกเลือกอยู่เสมอ</string>
+    <string name="settings_forecasters_auto_title">อัตโนมัติ (เหมาะสมที่สุดสำหรับตำแหน่งของคุณ)</string>
+    <string name="settings_forecasters_auto_subtitle">เลือกแบบจำลองพยากรณ์ระดับภูมิภาคโดยอัตโนมัติ — UKMO ในหมู่เกาะอังกฤษ JMA ในญี่ปุ่น GFS + GEM ในอเมริกาเหนือ ฯลฯ ปิดเพื่อเลือกแบบจำลองด้วยตนเอง</string>
+    <string name="settings_forecasters_cap_hint">คุณเลือก %1$d แบบจำลอง — สูงสุดที่แผนภูมิยังคงอ่านง่าย ยกเลิกการเลือกหนึ่งตัวเพื่อเพิ่มแบบจำลองอื่น</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">ยุโรป — โดยทั่วไปแม่นยำที่สุดในระดับโลก ฟีดเปิด 3 ชั่วโมงต่อครั้ง</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">เยอรมัน (DWD) — แม่นยำในยุโรปและพยากรณ์ระยะสั้น เนทีฟทุกชั่วโมง</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">อเมริกัน (NOAA) — แม่นยำในอเมริกาเหนือ เนทีฟทุกชั่วโมง</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">แคนาดา (ECCC) — แม่นยำในอเมริกาเหนือ ฟีดเปิด 3 ชั่วโมงต่อครั้ง</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">ฝรั่งเศส (Météo-France) — แม่นยำในฝรั่งเศสและยุโรปตะวันตก เนทีฟทุกชั่วโมง</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">อังกฤษ (UK Met Office) — ในอดีตเป็นอันดับสองรองจาก ECMWF ฟีดเปิด 3 ชั่วโมงต่อครั้ง</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">ญี่ปุ่น — แม่นยำในเอเชีย-แปซิฟิก ฟีดเปิด 3 ถึง 6 ชั่วโมงต่อครั้ง</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">ออสเตรเลีย — อยู่ระหว่างการบำรุงรักษา กลับมาให้บริการโดยเร็วที่สุด</string>
 </resources>

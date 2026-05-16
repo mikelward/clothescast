@@ -106,26 +106,39 @@ forecast.
 
 ## Home Assistant — reading the sensor
 
-Add the following to `configuration.yaml` (or anywhere your
-`mqtt:` block lives):
+ClothesCast publishes [MQTT Discovery](https://www.home-assistant.io/integrations/mqtt/#mqtt-discovery)
+config alongside each forecast push, so the sensors register themselves
+automatically — no YAML required. On the next refresh after you save
+your broker settings (or right after tapping **Publish now**), look in
+HA under **Settings → Devices & services → MQTT → ClothesCast**: two
+entities will appear, `sensor.clothescast_today` and
+`sensor.clothescast_tonight`. Both surface the rendered forecast prose
+as their state, ready for automations to read.
 
-```yaml
-mqtt:
-  sensor:
-    - name: "Clothescast today"
-      unique_id: clothescast_today
-      state_topic: "clothescast/insight/today"
-      value_template: "{{ value }}"
-    - name: "Clothescast tonight"
-      unique_id: clothescast_tonight
-      state_topic: "clothescast/insight/tonight"
-      value_template: "{{ value }}"
-```
+If you'd previously hand-added a `mqtt:` block to `configuration.yaml`
+to expose these sensors, the discovery message will collide with your
+manual entity registration and HA will keep the YAML version. You can
+remove the YAML block on your own schedule — the discovery-managed
+entity will take over once the manual one is gone.
 
-Restart Home Assistant or reload MQTT entries; the sensors should
-populate within seconds of the next ClothesCast refresh (or instantly,
-if you've already done one — retained messages are delivered to new
-subscribers on connect).
+> If your Home Assistant install uses a non-default MQTT discovery
+> prefix (the **MQTT Discovery prefix** field on the MQTT integration's
+> options page — almost always left at `homeassistant`), the
+> auto-registered entities won't appear; fall back to the manual YAML
+> below by un-commenting it:
+>
+> ```yaml
+> mqtt:
+>   sensor:
+>     - name: "Clothescast today"
+>       unique_id: clothescast_today
+>       state_topic: "clothescast/insight/today"
+>       value_template: "{{ value }}"
+>     - name: "Clothescast tonight"
+>       unique_id: clothescast_tonight
+>       state_topic: "clothescast/insight/tonight"
+>       value_template: "{{ value }}"
+> ```
 
 ## Home Assistant — outfit image on Nest Hub
 
@@ -145,23 +158,30 @@ The result: at your morning alarm time the Hub shows the outfit picture
 alongside the spoken briefing — "T-shirt and shorts" on screen while
 the voice reads the full forecast.
 
-### Add the image sensors to `configuration.yaml`
+### Image entities (auto-registered)
 
-```yaml
-mqtt:
-  image:
-    - name: "Clothescast today outfit"
-      unique_id: clothescast_today_outfit
-      image_topic: "clothescast/insight/today/image"
-      content_type: "image/png"
-    - name: "Clothescast tonight outfit"
-      unique_id: clothescast_tonight_outfit
-      image_topic: "clothescast/insight/tonight/image"
-      content_type: "image/png"
-```
+The outfit-card entities — `image.clothescast_today_outfit` and
+`image.clothescast_tonight_outfit` — register themselves via the same
+[MQTT Discovery](https://www.home-assistant.io/integrations/mqtt/#mqtt-discovery)
+mechanism the prose sensors use, alongside each forecast push. They
+land under the same **ClothesCast** device card in HA — no
+`configuration.yaml` block required.
 
-Restart HA (or reload MQTT) so the entities appear as
-`image.clothescast_today_outfit` and `image.clothescast_tonight_outfit`.
+> If your HA install uses a non-default MQTT discovery prefix, fall
+> back to a manual `mqtt: image:` block:
+>
+> ```yaml
+> mqtt:
+>   image:
+>     - name: "Clothescast today outfit"
+>       unique_id: clothescast_today_outfit
+>       image_topic: "clothescast/insight/today/image"
+>       content_type: "image/png"
+>     - name: "Clothescast tonight outfit"
+>       unique_id: clothescast_tonight_outfit
+>       image_topic: "clothescast/insight/tonight/image"
+>       content_type: "image/png"
+> ```
 
 ### Automation to push the image to the Hub
 

@@ -155,6 +155,16 @@ The source code is at <https://github.com/mikelward/clothescast>.
   calendar tie-in enabled, because that clause is part of the
   rendered sentence. No coordinates, no API keys, no settings values,
   no device identifiers travel with the message.
+- **MQTT Discovery configs:** Alongside each forecast push, the bridge
+  also publishes two retained Home Assistant MQTT Discovery config
+  messages to `homeassistant/sensor/clothescast_today/config` and
+  `homeassistant/sensor/clothescast_tonight/config`, so HA can
+  auto-register the sensors without a hand-edited YAML block. These
+  payloads are static metadata — entity names ("Today" / "Tonight"),
+  the device card label ("ClothesCast"), and the state topic path
+  itself — and contain no user content, location, or device
+  identifier. They go to the same broker as the forecast strings
+  above; nothing leaves your network.
 - **Authentication:** If you set a broker username, the bridge sends
   it on connect; the corresponding password is stored on your device
   encrypted at rest (same Tink-AEAD pattern as the Gemini API key

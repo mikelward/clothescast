@@ -8,8 +8,10 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.UserPreferences
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -64,11 +66,65 @@ class MqttPublisherTest {
 
         captured shouldHaveSize 1
         val call = captured.single()
-        call.topic shouldBe "clothescast/insight/today"
-        call.payload.decodeToString() shouldBe "Today, cool and mild. Wear a sweater."
+        val state = call.messages.single { it.topic == "clothescast/insight/today" }
+        state.payload.decodeToString() shouldBe "Today, cool and mild. Wear a sweater."
+        state.retain shouldBe true
         call.config.host shouldBe "192.168.1.10"
         call.config.port shouldBe 1883
         call.config.useTls shouldBe false
+    }
+
+    @Test
+    fun `each refresh re-publishes the HA sensor discovery config alongside the state`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "Today, cool and mild.")
+
+        val messages = captured.single().messages
+        messages shouldHaveSize 2
+        val discovery = messages.single { it.topic.startsWith("homeassistant/") }
+        discovery.topic shouldBe "homeassistant/sensor/clothescast_today/config"
+        discovery.retain shouldBe true
+        val discoveryJson = discovery.payload.decodeToString()
+        discoveryJson shouldContain "\"state_topic\":\"clothescast/insight/today\""
+        discoveryJson shouldContain "\"unique_id\":\"clothescast_today\""
+        discoveryJson shouldContain "\"name\":\"Today\""
+        discoveryJson shouldContain "\"identifiers\":[\"clothescast\"]"
+        discoveryJson shouldContain "\"manufacturer\":\"ClothesCast\""
+    }
+
+    @Test
+    fun `discovery state_topic mirrors the user's custom prefix`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttTopic = "home/forecast",
+                ),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TONIGHT, "Tonight, clear and cool.")
+
+        val messages = captured.single().messages
+        val discovery = messages.single { it.topic == "homeassistant/sensor/clothescast_tonight/config" }
+        val discoveryJson = discovery.payload.decodeToString()
+        discoveryJson shouldContain "\"state_topic\":\"home/forecast/tonight\""
+        discoveryJson shouldContain "\"unique_id\":\"clothescast_tonight\""
+        discoveryJson shouldContain "\"name\":\"Tonight\""
+        messages.single { it.topic == "home/forecast/tonight" }
+            .payload.decodeToString() shouldBe "Tonight, clear and cool."
     }
 
     @Test
@@ -88,7 +144,10 @@ class MqttPublisherTest {
 
         subject.publishIfEnabled(ForecastPeriod.TONIGHT, "Tonight, clear and cool.")
 
-        captured.single().topic shouldBe "home/forecast/tonight"
+        captured.single().messages.map { it.topic } shouldContainExactly listOf(
+            "homeassistant/sensor/clothescast_tonight/config",
+            "home/forecast/tonight",
+        )
     }
 
     @Test
@@ -187,7 +246,7 @@ class MqttPublisherTest {
                 ),
             ),
             passwordProvider = { null },
-            publish = { _, _, _ ->
+            publish = { _, _ ->
                 attempted = true
                 error("simulated broker rejection")
             },
@@ -219,7 +278,7 @@ class MqttPublisherTest {
         val subject = MqttPublisher(
             preferences = flowOf(basePrefs.copy(mqttBridgeEnabled = false, mqttHost = "broker.local")),
             passwordProvider = { null },
-            publish = { _, _, _ -> },
+            publish = { _, _ -> },
         )
 
         subject.publishIfEnabled(ForecastPeriod.TODAY, "x") shouldBe MqttPublishOutcome.NotConfigured
@@ -230,7 +289,7 @@ class MqttPublisherTest {
         val subject = MqttPublisher(
             preferences = flowOf(basePrefs.copy(mqttBridgeEnabled = true, mqttHost = null)),
             passwordProvider = { null },
-            publish = { _, _, _ -> },
+            publish = { _, _ -> },
         )
 
         subject.publishIfEnabled(ForecastPeriod.TODAY, "x") shouldBe MqttPublishOutcome.NotConfigured
@@ -241,7 +300,7 @@ class MqttPublisherTest {
         val subject = MqttPublisher(
             preferences = flowOf(basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local")),
             passwordProvider = { null },
-            publish = { _, _, _ -> error("simulated broker rejection") },
+            publish = { _, _ -> error("simulated broker rejection") },
         )
 
         val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
@@ -255,7 +314,7 @@ class MqttPublisherTest {
         val subject = MqttPublisher(
             preferences = flowOf(basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local")),
             passwordProvider = { null },
-            publish = { _, _, _ ->
+            publish = { _, _ ->
                 while (true) {
                     coroutineContext.ensureActive()
                     kotlinx.coroutines.delay(1_000)
@@ -270,7 +329,7 @@ class MqttPublisherTest {
     }
 
     @Test
-    fun `publishTest routes to test topic, not today or tonight`() = runTest {
+    fun `publishTest routes to test topic and emits discovery for every sensor and image entity`() = runTest {
         val captured = mutableListOf<PublishCall>()
         val subject = MqttPublisher(
             preferences = flowOf(
@@ -287,8 +346,14 @@ class MqttPublisherTest {
         val outcome = subject.publishTest()
 
         outcome shouldBe MqttPublishOutcome.Success
-        captured shouldHaveSize 1
-        captured.single().topic shouldBe "home/forecast/test"
+        val messages = captured.single().messages
+        messages.map { it.topic } shouldContainExactly listOf(
+            "homeassistant/sensor/clothescast_today/config",
+            "homeassistant/sensor/clothescast_tonight/config",
+            "homeassistant/image/clothescast_today_image/config",
+            "homeassistant/image/clothescast_tonight_image/config",
+            "home/forecast/test",
+        )
     }
 
     @Test
@@ -314,7 +379,19 @@ class MqttPublisherTest {
     }
 
     @Test
-    fun `publishImageIfEnabled publishes PNG bytes to image topic`() = runTest {
+    fun `discovery topic shapes match the HA-standard config-topic layout`() {
+        MqttPublisher.discoveryTopicFor(ForecastPeriod.TODAY, MqttPublisher.Component.SENSOR) shouldBe
+            "homeassistant/sensor/clothescast_today/config"
+        MqttPublisher.discoveryTopicFor(ForecastPeriod.TONIGHT, MqttPublisher.Component.SENSOR) shouldBe
+            "homeassistant/sensor/clothescast_tonight/config"
+        MqttPublisher.discoveryTopicFor(ForecastPeriod.TODAY, MqttPublisher.Component.IMAGE) shouldBe
+            "homeassistant/image/clothescast_today_image/config"
+        MqttPublisher.discoveryTopicFor(ForecastPeriod.TONIGHT, MqttPublisher.Component.IMAGE) shouldBe
+            "homeassistant/image/clothescast_tonight_image/config"
+    }
+
+    @Test
+    fun `publishImageIfEnabled publishes PNG bytes alongside image-entity discovery config`() = runTest {
         val captured = mutableListOf<PublishCall>()
         val subject = MqttPublisher(
             preferences = flowOf(
@@ -332,9 +409,17 @@ class MqttPublisherTest {
         subject.publishImageIfEnabled(ForecastPeriod.TODAY, fakeImage)
 
         captured shouldHaveSize 1
-        val call = captured.single()
-        call.topic shouldBe "clothescast/insight/today/image"
-        (call.payload contentEquals fakeImage).shouldBeTrue()
+        val messages = captured.single().messages
+        messages.map { it.topic } shouldContainExactly listOf(
+            "homeassistant/image/clothescast_today_image/config",
+            "clothescast/insight/today/image",
+        )
+        val imageMessage = messages.last()
+        imageMessage.payload contentEquals fakeImage shouldBe true
+        val discoveryJson = messages.first().payload.decodeToString()
+        discoveryJson shouldContain "\"image_topic\":\"clothescast/insight/today/image\""
+        discoveryJson shouldContain "\"content_type\":\"image/png\""
+        discoveryJson shouldContain "\"unique_id\":\"clothescast_today_outfit\""
     }
 
     @Test
@@ -358,7 +443,7 @@ class MqttPublisherTest {
                 basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
             ),
             passwordProvider = { null },
-            publish = { _, _, _ -> throw CancellationException("simulated worker cancel") },
+            publish = { _, _ -> throw CancellationException("simulated worker cancel") },
         )
 
         // Without explicit CancellationException rethrow inside the publish
@@ -375,7 +460,7 @@ class MqttPublisherTest {
         val subject = MqttPublisher(
             preferences = flow { throw CancellationException("flow cancelled") },
             passwordProvider = { null },
-            publish = { _, _, _ -> error("must not run when prefs read is cancelled") },
+            publish = { _, _ -> error("must not run when prefs read is cancelled") },
         )
 
         shouldThrow<CancellationException> {
@@ -394,7 +479,7 @@ class MqttPublisherTest {
                 ),
             ),
             passwordProvider = { throw CancellationException("keystore read cancelled") },
-            publish = { _, _, _ -> error("must not run when password read is cancelled") },
+            publish = { _, _ -> error("must not run when password read is cancelled") },
         )
 
         shouldThrow<CancellationException> {
@@ -412,7 +497,7 @@ class MqttPublisherTest {
                 ),
             ),
             passwordProvider = { null },
-            publish = { _, _, _ ->
+            publish = { _, _ ->
                 // Hang past the configured timeout. Yields so withTimeoutOrNull
                 // can fire; runTest's virtual time skips ahead deterministically.
                 while (true) {
@@ -428,10 +513,10 @@ class MqttPublisherTest {
         // a TimeoutCancellationException — the contract the worker relies on.
     }
 
-    private data class PublishCall(val config: MqttConfig, val topic: String, val payload: ByteArray)
+    private data class PublishCall(val config: MqttConfig, val messages: List<MqttMessage>)
 
-    private fun capturing(into: MutableList<PublishCall>): suspend (MqttConfig, String, ByteArray) -> Unit =
-        { config, topic, payload -> into.add(PublishCall(config, topic, payload)) }
+    private fun capturing(into: MutableList<PublishCall>): suspend (MqttConfig, List<MqttMessage>) -> Unit =
+        { config, messages -> into.add(PublishCall(config, messages)) }
 
     private val basePrefs = UserPreferences(
         schedule = Schedule(time = LocalTime.of(7, 0), days = Schedule.EVERY_DAY, zoneId = ZoneId.of("UTC")),

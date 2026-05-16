@@ -82,17 +82,21 @@ slice rewrite couldn't replace. There are two distinct sites:
     fallen through to best_match's day-level value, and
     `peakPrecip` reads that.
   - **`perModelConditionAt`** (line 246): falls back to
-    `today.condition` when the matched hour's condition isn't a
-    precipitating bucket but daily precipMax indicates rain.
-    Audible whenever the wettest sliced hour's condition is
-    non-precip (e.g. `CLOUDY`) — the slice rewrite stores that
-    `CLOUDY` as `today.condition`, but `perModelConditionAt`
-    re-reads it and treats it as the non-precip fallback path,
-    landing on the default `RAIN`. The day-level field's role
-    here is to satisfy the `isPrecipitation()` short-circuit; if
-    the slice has already replaced it with `CLOUDY`, that
-    short-circuit can't kick in either, so the fallback to
-    `RAIN` is the actual behaviour.
+    `today.condition` whenever the matched hour's condition is
+    non-precipitating (or `UNKNOWN`) — this function itself
+    doesn't gate on daily precipMax; the per-model tier in the
+    caller (`pickPerModelPeak`) triggered solely because the
+    per-model readings crossed the possible/likely thresholds,
+    which is precisely the base-under-called-probability case the
+    per-model tier was added to catch. So this fallback fires
+    even on days where the blended/base daily max stayed below
+    the threshold but at least one consulted model called it
+    rainy. Audible whenever the sliced hour at the per-model peak
+    time is non-precip (e.g. `CLOUDY`); the slice rewrite stores
+    `CLOUDY` as `today.condition`, `perModelConditionAt` reads
+    that back, the `isPrecipitation()` short-circuit on
+    `today.condition` doesn't kick in either, and the function
+    lands on the default `RAIN`.
 
 Neither failure mode is loud, but they exist.
 
@@ -161,11 +165,14 @@ wettest-hour rewrite alone.
 
 Same edge cases, different answers per option:
 
-- **One hour of drizzle in an otherwise clear day** — (1) ignores it
-  (rewrite picks the wettest hour, which is the drizzle, but the prose
-  may already mention "Light rain at 13:00" via `PrecipClause`). (2)
-  calls the day `DRIZZLE`. (3) calls the day `CLEAR` (mode). (4)
-  defers to per-model daily mode. (5) calls it `CLEAR` if 1 hour
+- **One hour of drizzle in an otherwise clear day** — (1) calls the
+  day `DRIZZLE` too, because the slice rewrite copies the wettest
+  hour's condition into `today.condition` and the drizzle hour IS
+  the wettest. So (1) and (2) agree here: a 1-hour drizzle event
+  flips the day's label. The insight prose adds a "Light rain at
+  13:00" via `PrecipClause` either way. (3) calls the day `CLEAR`
+  (mode across 24 hours dominated by clear). (4) defers to
+  per-model daily mode. (5) calls it `CLEAR` if 1 hour
   doesn't clear the threshold.
 
 - **Morning fog burns off to clear afternoon** — (1) picks the wettest

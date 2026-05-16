@@ -51,8 +51,8 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="insight_lead_tomorrow">فردا</string>
     <string name="insight_lead_tonight">امشب</string>
     <!-- "امروز هوا معتدل خواهد بود." — SOV with lead first. -->
-    <string name="insight_band_single">%1$s هوا %2$s خواهد بود.</string>
-    <string name="insight_band_range">%1$s هوا بین %2$s و %3$s خواهد بود.</string>
+    <string name="insight_band_single">%1$s هوا %2$d° خواهد بود.</string>
+    <string name="insight_band_range">%1$s هوا بین %2$d° و %3$d° خواهد بود.</string>
     <string name="insight_band_freezing">یخ‌زده</string>
     <string name="insight_band_cold">سرد</string>
     <string name="insight_band_cool">خنک</string>

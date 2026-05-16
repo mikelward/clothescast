@@ -47,8 +47,8 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="insight_lead_today">Astăzi</string>
     <string name="insight_lead_tomorrow">Mâine</string>
     <string name="insight_lead_tonight">Diseară</string>
-    <string name="insight_band_single">%1$s va fi %2$s.</string>
-    <string name="insight_band_range">%1$s va fi între %2$s și %3$s.</string>
+    <string name="insight_band_single">%1$s va fi %2$d°.</string>
+    <string name="insight_band_range">%1$s va fi între %2$d° și %3$d°.</string>
     <string name="insight_band_freezing">geros</string>
     <string name="insight_band_cold">frig</string>
     <string name="insight_band_cool">răcoare</string>

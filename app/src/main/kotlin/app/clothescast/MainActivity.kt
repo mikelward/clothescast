@@ -348,7 +348,7 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                         val prefs = app.settingsRepository.preferences.first()
                         val insight = app.insightCache.thisPeriod.first()
                             ?: return@Factory app.mqttPublisher.publishTest()
-                        val formatter = InsightFormatter.forRegion(context, prefs.region)
+                        val formatter = InsightFormatter.forRegion(context, prefs.region, prefs.temperatureUnit)
                         val prose = formatter.format(insight.summary)
                         val outcome = app.mqttPublisher.publishIfEnabled(insight.period, prose)
                         insight.outfit?.let { outfit ->

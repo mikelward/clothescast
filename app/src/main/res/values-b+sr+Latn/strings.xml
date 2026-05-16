@@ -74,8 +74,8 @@ default English (matching values-pl / values-uk).
     <string name="insight_lead_today">Danas</string>
     <string name="insight_lead_tomorrow">Sutra</string>
     <string name="insight_lead_tonight">Večeras</string>
-    <string name="insight_band_single">%1$s će biti %2$s.</string>
-    <string name="insight_band_range">%1$s će biti od %2$s do %3$s.</string>
+    <string name="insight_band_single">%1$s će biti %2$d°.</string>
+    <string name="insight_band_range">%1$s će biti od %2$d° do %3$d°.</string>
     <string name="insight_band_freezing">ledeno</string>
     <string name="insight_band_cold">hladno</string>
     <string name="insight_band_cool">sveže</string>

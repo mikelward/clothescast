@@ -47,8 +47,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_lead_tomorrow">Bukas</string>
     <string name="insight_lead_tonight">Ngayong gabi</string>
     <!-- Filipino: "Ngayon, magiging malamig." -->
-    <string name="insight_band_single">%1$s, magiging %2$s.</string>
-    <string name="insight_band_range">%1$s, magiging %2$s hanggang %3$s.</string>
+    <string name="insight_band_single">%1$s, magiging %2$d°.</string>
+    <string name="insight_band_range">%1$s, magiging %2$d° hanggang %3$d°.</string>
     <string name="insight_band_freezing">napakalamig</string>
     <string name="insight_band_cold">malamig</string>
     <string name="insight_band_cool">medyo malamig</string>

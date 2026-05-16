@@ -673,10 +673,10 @@ private fun ttsEngineLabel(engine: TtsEngine): Int = when (engine) {
 }
 
 // Canned forecast for the voice preview: a cold day 7° down on yesterday with
-// sweater + jacket as the clothes pick. Renders (en-US) as "Today will be cold.
-// It will be 7° cooler than yesterday. Wear a sweater and jacket." — exercises
-// band, delta, and a multi-item clothes clause without dragging in a precip /
-// tie-in time that would force a different number of TTS tokens per locale.
+// sweater + jacket as the clothes pick. Renders (en-US) as "Today, it will be
+// 8°. 7° cooler than yesterday. Wear a sweater and jacket." — exercises band,
+// delta, and a multi-item clothes clause without dragging in a precip / tie-in
+// time that would force a different number of TTS tokens per locale.
 private val SAMPLE_SUMMARY = InsightSummary(
     period = ForecastPeriod.TODAY,
     band = BandClause(TemperatureBand.COLD, TemperatureBand.COLD),

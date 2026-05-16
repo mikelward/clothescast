@@ -854,14 +854,15 @@
     <string name="insight_lead_tonight">Tonight</string>
     <string name="insight_lead_tomorrow">Tomorrow</string>
 
-    <!-- Single-band sentence: %1$s = lead-in ("Today"), %2$s = band label ("mild").
-         The comma-fronted "Today, it will be …" / "Tonight, it will be …" structure
-         is symmetric with how tie-in sentences front their own time marker
+    <!-- Single-band sentence: %1$s = lead-in ("Today"), %2$d = feels-like
+         degrees (rounded, in the user's chosen unit). The comma-fronted
+         "Today, it will be …" / "Tonight, it will be …" structure is
+         symmetric with how tie-in sentences front their own time marker
          ("Tonight, bring a jacket.") so the insight reads as a series of
          "<time>, <content>" beats. -->
-    <string name="insight_band_single">%1$s, it will be %2$s.</string>
-    <!-- Range-band sentence: %1$s = lead-in, %2$s = low band, %3$s = high band. -->
-    <string name="insight_band_range">%1$s, it will be %2$s to %3$s.</string>
+    <string name="insight_band_single">%1$s, it will be %2$d°.</string>
+    <!-- Range-band sentence: %1$s = lead-in, %2$d = low °, %3$d = high °. -->
+    <string name="insight_band_range">%1$s, it will be %2$d° to %3$d°.</string>
 
     <!-- Band labels — used inside the band-sentence templates above. -->
     <string name="insight_band_freezing">freezing</string>

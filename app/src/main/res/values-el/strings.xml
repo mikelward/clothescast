@@ -477,8 +477,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_lead_today">Σήμερα</string>
     <string name="insight_lead_tomorrow">Αύριο</string>
     <string name="insight_lead_tonight">Απόψε</string>
-    <string name="insight_band_single">%1$s θα κάνει %2$s.</string>
-    <string name="insight_band_range">%1$s θα έχει %2$s έως %3$s.</string>
+    <string name="insight_band_single">%1$s θα κάνει %2$d°.</string>
+    <string name="insight_band_range">%1$s θα έχει %2$d° έως %3$d°.</string>
     <string name="insight_band_freezing">παγωνιά</string>
     <string name="insight_band_cold">κρύο</string>
     <string name="insight_band_cool">δροσιά</string>

@@ -29,7 +29,9 @@ class InsightTtsUtteranceTest {
         )
 
         utterance.locale.toLanguageTag() shouldBe "de-AT"
-        utterance.text shouldBe "Heute wird es kalt bis kühl. Trag Pullover und Jacke."
+        // BandClause(COLD, COOL) defaults to the bands' midpoints (8°C / 15°C);
+        // German prose uses "bis" as the range connector.
+        utterance.text shouldBe "Heute wird es 8° bis 15°. Trag Pullover und Jacke."
     }
 
     @Test
@@ -43,7 +45,7 @@ class InsightTtsUtteranceTest {
         )
 
         utterance.locale.toLanguageTag() shouldBe "en-GB"
-        utterance.text shouldBe "Today, it will be cold to cool. Wear a jumper and jacket."
+        utterance.text shouldBe "Today, it will be 8° to 15°. Wear a jumper and jacket."
     }
 
     private companion object {

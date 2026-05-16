@@ -457,8 +457,8 @@ Not overridden by design:
     <string name="insight_lead_tomorrow">कल</string>
     <string name="insight_lead_tonight">आज रात</string>
     <!-- "आज मौसम सुहाना रहेगा।" -->
-    <string name="insight_band_single">%1$s मौसम %2$s रहेगा।</string>
-    <string name="insight_band_range">%1$s मौसम %2$s से %3$s रहेगा।</string>
+    <string name="insight_band_single">%1$s मौसम %2$d° रहेगा।</string>
+    <string name="insight_band_range">%1$s मौसम %2$d° से %3$d° रहेगा।</string>
     <string name="insight_band_freezing">बेहद ठंडा</string>
     <string name="insight_band_cold">ठंडा</string>
     <string name="insight_band_cool">ठंडक भरा</string>

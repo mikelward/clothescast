@@ -696,7 +696,8 @@ class FetchAndNotifyWorker(
     // playback is rendered separately through ttsUtterance() so explicit voice
     // locales like de-AT speak German even when the app UI remains English.
     private fun formatProse(insight: Insight, prefs: UserPreferences): String =
-        InsightFormatter.forRegion(applicationContext, prefs.region).format(insight.summary)
+        InsightFormatter.forRegion(applicationContext, prefs.region, prefs.temperatureUnit)
+            .format(insight.summary)
 
     // TODO(brand-intro): consider prepending "Today's ClothesCast: " / "Tonight's ClothesCast: "
     // here (and mirror it in the SAMPLE_SUMMARY render used by the top-level
@@ -710,6 +711,7 @@ class FetchAndNotifyWorker(
             summary = insight.summary,
             region = prefs.region,
             voiceLocale = prefs.voiceLocale,
+            temperatureUnit = prefs.temperatureUnit,
         )
 
     private suspend fun deliverTonight(insight: Insight, prefs: UserPreferences, prose: String) {

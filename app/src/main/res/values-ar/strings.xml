@@ -53,8 +53,8 @@ they work correctly in both the single-band and range templates.
     <string name="insight_lead_tomorrow">غدًا</string>
     <string name="insight_lead_tonight">الليلة</string>
     <!-- "اليوم سيكون الجو معتدل." -->
-    <string name="insight_band_single">%1$s سيكون الجو %2$s.</string>
-    <string name="insight_band_range">%1$s سيكون الجو بين %2$s و%3$s.</string>
+    <string name="insight_band_single">%1$s سيكون الجو %2$d°.</string>
+    <string name="insight_band_range">%1$s سيكون الجو بين %2$d° و%3$d°.</string>
     <string name="insight_band_freezing">شديد البرودة</string>
     <string name="insight_band_cold">بارد</string>
     <string name="insight_band_cool">لطيف</string>

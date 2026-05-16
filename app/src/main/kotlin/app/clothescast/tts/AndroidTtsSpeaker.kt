@@ -45,7 +45,7 @@ class AndroidTtsSpeaker(
         try {
             tts.setAudioAttributes(SPEECH_AUDIO_ATTRS)
             applyVoice(tts, locale)
-            speakAndAwait(tts, prepareForTts(text))
+            speakAndAwait(tts, prepareForTts(text, locale))
         } finally {
             tts.shutdown()
         }

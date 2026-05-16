@@ -49,8 +49,8 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="insight_lead_tomorrow">Esok</string>
     <string name="insight_lead_tonight">Malam ini</string>
     <!-- Malay topic-comment shape: "Hari ini cuacanya sejuk." -->
-    <string name="insight_band_single">%1$s cuacanya %2$s.</string>
-    <string name="insight_band_range">%1$s cuacanya antara %2$s hingga %3$s.</string>
+    <string name="insight_band_single">%1$s cuacanya %2$d°.</string>
+    <string name="insight_band_range">%1$s cuacanya antara %2$d° hingga %3$d°.</string>
     <string name="insight_band_freezing">amat sejuk</string>
     <string name="insight_band_cold">sejuk</string>
     <string name="insight_band_cool">nyaman</string>

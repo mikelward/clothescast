@@ -421,8 +421,8 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- "Heute wird es mild." / "Heute wird es kühl bis mild." Subject-second
          word order means the lead-in flows into "wird es ...". -->
-    <string name="insight_band_single">%1$s wird es %2$s.</string>
-    <string name="insight_band_range">%1$s wird es %2$s bis %3$s.</string>
+    <string name="insight_band_single">%1$s wird es %2$d°.</string>
+    <string name="insight_band_range">%1$s wird es %2$d° bis %3$d°.</string>
 
     <string name="insight_band_freezing">eiskalt</string>
     <string name="insight_band_cold">kalt</string>

@@ -424,8 +424,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_lead_today">Hoje</string>
     <string name="insight_lead_tomorrow">Amanhã</string>
     <string name="insight_lead_tonight">Esta noite</string>
-    <string name="insight_band_single">%1$s será %2$s.</string>
-    <string name="insight_band_range">%1$s estará entre %2$s e %3$s.</string>
+    <string name="insight_band_single">%1$s será %2$d°.</string>
+    <string name="insight_band_range">%1$s estará entre %2$d° e %3$d°.</string>
     <string name="insight_band_freezing">gelado</string>
     <string name="insight_band_cold">frio</string>
     <string name="insight_band_cool">fresco</string>

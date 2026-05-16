@@ -47,8 +47,8 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="insight_lead_tomorrow">Jutri</string>
     <string name="insight_lead_tonight">Nocoj</string>
     <!-- "Danes bo mrzlo." — leading time adverb + "bo" + adjective. -->
-    <string name="insight_band_single">%1$s bo %2$s.</string>
-    <string name="insight_band_range">%1$s bo %2$s do %3$s.</string>
+    <string name="insight_band_single">%1$s bo %2$d°.</string>
+    <string name="insight_band_range">%1$s bo %2$d° do %3$d°.</string>
     <string name="insight_band_freezing">ledeno</string>
     <string name="insight_band_cold">mrzlo</string>
     <string name="insight_band_cool">hladno</string>

@@ -382,8 +382,8 @@ the displayed label localizes.
     <string name="insight_lead_tonight">Vanavond</string>
 
     <!-- Dutch V2 word order: "Vandaag wordt het mild." -->
-    <string name="insight_band_single">%1$s wordt het %2$s.</string>
-    <string name="insight_band_range">%1$s wordt het %2$s tot %3$s.</string>
+    <string name="insight_band_single">%1$s wordt het %2$d°.</string>
+    <string name="insight_band_range">%1$s wordt het %2$d° tot %3$d°.</string>
 
     <string name="insight_band_freezing">vriezend koud</string>
     <string name="insight_band_cold">koud</string>

@@ -49,8 +49,8 @@ West Bengal vocabulary differences in a future PR.
     <string name="insight_lead_tomorrow">আগামীকাল</string>
     <string name="insight_lead_tonight">আজ রাতে</string>
     <!-- "আজ আবহাওয়া মনোরম থাকবে।" -->
-    <string name="insight_band_single">%1$s আবহাওয়া %2$s থাকবে।</string>
-    <string name="insight_band_range">%1$s আবহাওয়া %2$s থেকে %3$s থাকবে।</string>
+    <string name="insight_band_single">%1$s আবহাওয়া %2$d° থাকবে।</string>
+    <string name="insight_band_range">%1$s আবহাওয়া %2$d° থেকে %3$d° থাকবে।</string>
     <string name="insight_band_freezing">হিমশীতল</string>
     <string name="insight_band_cold">ঠান্ডা</string>
     <string name="insight_band_cool">শীতল</string>

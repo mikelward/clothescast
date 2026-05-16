@@ -338,8 +338,8 @@ displayed label localizes.
     <string name="insight_lead_tonight">Tänä iltana</string>
 
     <!-- Finnish predicative-partitive: "Tänään on kylmää." -->
-    <string name="insight_band_single">%1$s on %2$s.</string>
-    <string name="insight_band_range">%1$s on %2$s tai %3$s.</string>
+    <string name="insight_band_single">%1$s on %2$d°.</string>
+    <string name="insight_band_range">%1$s on %2$d° tai %3$d°.</string>
 
     <string name="insight_band_freezing">pakkasta</string>
     <string name="insight_band_cold">kylmää</string>

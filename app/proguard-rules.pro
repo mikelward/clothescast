@@ -33,7 +33,28 @@
 -dontwarn org.apache.logging.log4j.**
 -dontwarn org.eclipse.jetty.alpn.**
 -dontwarn org.eclipse.jetty.npn.**
--dontwarn reactor.blockhound.integration.**
+-dontwarn reactor.blockhound.**
+
+# Keeping all of io.netty.** (below) brings every optional codec / native /
+# Graal / JDK-internal class that Netty conditionally references back into the
+# R8 input. None are reachable from an MQTT publisher that just opens a TLS
+# socket and publishes a UTF-8 string — they're all alternative codec paths
+# (Brotli, Zstd, jzlib, LZ4, LZF, LZMA), protobuf serialization, JBoss
+# marshalling, GraalVM/SVM substitution annotations, and JDK-private SSL
+# self-signed cert utilities — but their references would trip R8 without
+# these warnings suppressed. List harvested from missing_rules.txt; if a
+# Netty version bump adds new optional integrations, re-run assembleDebug
+# and append any new ones here.
+-dontwarn com.aayushatharva.brotli4j.**
+-dontwarn com.github.luben.zstd.**
+-dontwarn com.google.protobuf.**
+-dontwarn com.jcraft.jzlib.**
+-dontwarn com.ning.compress.**
+-dontwarn com.oracle.svm.core.annotate.**
+-dontwarn lzma.sdk.**
+-dontwarn net.jpountz.**
+-dontwarn org.jboss.marshalling.**
+-dontwarn sun.security.x509.**
 
 # HiveMQ MQTT Client wires its Netty pipeline through an internal Dagger 2
 # graph. The generated factories (e.g. *_Factory, DoubleCheck Provider chains)
@@ -51,8 +72,18 @@
 # can devirtualize / strip the JDK-logger backstop, leaving HiveMQ unable to
 # install a logger at startup. The transitive Netty deps the MQTT client
 # uses (buffer, codec, handler, transport, resolver) all rely on this path.
--keep class io.netty.util.internal.logging.** { *; }
--keep class io.netty.util.concurrent.** { *; }
--keepclassmembers class io.netty.** {
-    private <init>(...);
-}
+#
+# Beyond logging, Netty's buffer layer reflectively resolves methods like
+# `AbstractByteBufAllocator#toLeakAwareBuffer` from its `ResourceLeakDetector`
+# static init — R8 has no way to see that call graph and will both rename and
+# strip the target methods, blowing up the encoder construction chain at the
+# first publish with
+# "Can't find '[toLeakAwareBuffer]' in <obfuscated>". The reliable fix is to
+# keep all of `io.netty.**` intact: the buffer/codec/handler classes are
+# transitively referenced through reflection from initializers we can't fully
+# enumerate, and trying to pick individual classes is brittle across Netty
+# point releases. The `-dontwarn` lines above already permit the optional
+# integrations (epoll / tcnative / websockets / log4j / Jetty ALPN / proxy
+# / BlockHound) to keep references to classes we don't ship.
+-keep class io.netty.** { *; }
+-keepclassmembers class io.netty.** { *; }

@@ -25,6 +25,7 @@ import app.clothescast.diag.TelemetryApiCallLogger
 import app.clothescast.locale.AppLocale
 import app.clothescast.location.LocationResolver
 import app.clothescast.location.ReverseGeocoder
+import app.clothescast.mqtt.MqttPublisher
 import app.clothescast.notification.InsightNotifier
 import app.clothescast.notification.NotificationChannelRegistrar
 import app.clothescast.notification.TonightInsightNotifier
@@ -82,6 +83,20 @@ class ClothesCastApplication : Application() {
     val appUpdateChecker: AppUpdateChecker by lazy { AppUpdateChecker(this) }
     val geminiTtsClient: GeminiTtsClient by lazy {
         GeminiTtsClient(httpClient, secureKeyStore, apiCallLogger = apiCallLogger)
+    }
+
+    /**
+     * Optional Smart Home / Home Assistant bridge. Off until the user enables
+     * it in Settings → Smart Home; the worker calls
+     * [MqttPublisher.publishIfEnabled] after each delivered insight, and the
+     * publisher itself gates on the runtime config — so the lazy stays cheap
+     * for users who never opt in.
+     */
+    val mqttPublisher: MqttPublisher by lazy {
+        MqttPublisher(
+            preferences = settingsRepository.preferences,
+            passwordProvider = { secureKeyStore.getMqttPassword() },
+        )
     }
 
     private val httpClient: HttpClient by lazy {

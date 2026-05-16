@@ -137,6 +137,12 @@ class SettingsViewModel(
                         useCalendarEvents = prefs.useCalendarEvents,
                         telemetryEnabled = prefs.telemetryEnabled,
                         forecastModels = prefs.forecastModels,
+                        mqttBridgeEnabled = prefs.mqttBridgeEnabled,
+                        mqttHost = prefs.mqttHost.orEmpty(),
+                        mqttPort = prefs.mqttPort,
+                        mqttUseTls = prefs.mqttUseTls,
+                        mqttUsername = prefs.mqttUsername.orEmpty(),
+                        mqttTopic = prefs.mqttTopic,
                     )
                 }
                 // Re-enumerate on first observation and whenever the effective
@@ -152,6 +158,11 @@ class SettingsViewModel(
             }
         }
         viewModelScope.launch { refreshApiKeyStatus() }
+        viewModelScope.launch {
+            keyStore.mqttPasswordConfiguredFlow.collect { set ->
+                _state.update { it.copy(mqttPasswordSet = set) }
+            }
+        }
         workManager?.let { wm ->
             viewModelScope.launch {
                 wm.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_LOCATION_CACHE)
@@ -375,6 +386,41 @@ class SettingsViewModel(
 
     fun setTelemetryEnabled(enabled: Boolean) {
         viewModelScope.launch { settingsRepository.setTelemetryEnabled(enabled) }
+    }
+
+    fun setMqttBridgeEnabled(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setMqttBridgeEnabled(enabled) }
+    }
+
+    /**
+     * Persists the broker connection settings. A null / blank [password]
+     * leaves the stored password untouched (useful when the user edits the
+     * host without re-typing the secret); pass an empty string explicitly via
+     * [clearMqttPassword] to clear it. Non-blank passwords are written to
+     * [SecureKeyStore] under a separate Tink AEAD slot from the Gemini key.
+     */
+    fun setMqttConfig(
+        host: String,
+        port: Int,
+        useTls: Boolean,
+        username: String,
+        topic: String,
+        password: String? = null,
+    ) {
+        viewModelScope.launch {
+            settingsRepository.setMqttConfig(
+                host = host,
+                port = port,
+                useTls = useTls,
+                username = username,
+                topic = topic,
+            )
+            if (password != null && password.isNotEmpty()) keyStore.setMqttPassword(password)
+        }
+    }
+
+    fun clearMqttPassword() {
+        viewModelScope.launch { keyStore.clearMqttPassword() }
     }
 
     /**

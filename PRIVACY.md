@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026-05-14_
+_Last updated: 2026-05-16_
 
 ClothesCast is a daily weather-insight app for Android. This policy
 describes what data the app handles, where it goes, and what control you
@@ -25,6 +25,13 @@ have over it.
   (e.g. _"Bring a jacket for your concert tonight"_), and is therefore
   also sent to the TTS provider in that one case — only when both calendar
   tie-in and online TTS are enabled.
+- If you opt in to the **Smart Home / Home Assistant MQTT bridge**
+  (Settings → Smart Home, off by default), the rendered forecast
+  sentence is published as a retained MQTT message to a broker you
+  configure — typically the Mosquitto add-on running on your own Home
+  Assistant. The broker host and credentials are entirely yours; nothing
+  ClothesCast sends goes to a service the developer operates. See "Smart
+  Home / Home Assistant bridge" below for what's in the payload.
 - Nothing is sold, no advertising, no ad-targeting profiles, no
   third-party data sharing beyond the services listed below. (The
   aggregate usage analytics + crash reports above _do_ count as
@@ -121,6 +128,45 @@ The source code is at <https://github.com/mikelward/clothescast>.
   automatically to the crash-reporting service is governed by that
   service's privacy policy.
 
+### Smart Home / Home Assistant bridge _(optional, off by default)_
+
+- **What:** The rendered forecast sentence — the same one displayed in
+  the notification, e.g. _"Today, cool and mild. Wear a sweater. Chance
+  of rain at 3pm."_ The bridge publishes this string as a retained MQTT
+  message after each scheduled twice-daily refresh, so Home Assistant
+  (or any MQTT-aware consumer) can read the latest value and speak it
+  on a trigger of your choice (a wardrobe door opening, a humidity
+  spike, a fixed time of day, etc.).
+- **Why:** To let you hear your tuned ClothesCast forecast on a
+  Google Home, Nest Hub, Echo, or any other speaker your home
+  automation can reach — without reimplementing the clothes-rule and
+  insight logic in Home Assistant.
+- **Where it goes:** The MQTT broker you configure in Settings → Smart
+  Home. That's typically the Mosquitto add-on running inside your own
+  Home Assistant instance on your local network. The broker host,
+  port, optional TLS, optional username, and topic prefix are all
+  values you supply; ClothesCast never sends this payload anywhere you
+  haven't pointed it at. The broker is **not** a service the developer
+  operates; it's your infrastructure under your control.
+- **What's in the payload:** Only the rendered sentence string,
+  UTF-8 encoded — the same text you see in the notification. The
+  payload includes any calendar-event tie-in clause that fires (e.g.
+  _"Bring a jacket for your concert tonight"_) when you have the
+  calendar tie-in enabled, because that clause is part of the
+  rendered sentence. No coordinates, no API keys, no settings values,
+  no device identifiers travel with the message.
+- **Authentication:** If you set a broker username, the bridge sends
+  it on connect; the corresponding password is stored on your device
+  encrypted at rest (same Tink-AEAD pattern as the Gemini API key
+  storage above) and only sent to the broker you configured.
+- **Retention:** Retained MQTT messages persist on your broker until
+  you delete them or publish a new value to the same topic. The next
+  twice-daily refresh overwrites the previous payload. Retention by
+  the broker is governed by your own broker configuration.
+- **Setup guide:** See [docs/smart-home.md](docs/smart-home.md) for
+  step-by-step configuration on both the ClothesCast side and the
+  Home Assistant side.
+
 ### API keys you provide
 
 - If you use online TTS, you supply your own Google Gemini API key.
@@ -138,6 +184,7 @@ policies apply to anything they receive:
 |---|---|---|
 | [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate | Always (forecast + geocoding) |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence | Only if you select Gemini TTS |
+| Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence, as a retained MQTT message | Only if you opt in to the Smart Home bridge and configure a broker |
 | Analytics / crash-reporting service (e.g. Firebase Crashlytics + Google Analytics for Firebase) | Aggregate usage events and crash diagnostics — see "Analytics and crash reporting" below for what's in and out | Possibly always, in all builds |
 
 These providers act as service providers fulfilling a single request and
@@ -255,7 +302,10 @@ What's **not** sent — these are hard limits, not "best-effort":
   info.
 - **No location coordinates** or geocoded place names.
 - **No insight prose**, notification text, or anything else that could
-  carry free-form user content.
+  carry free-form user content. _Exception:_ if you opt in to the Smart
+  Home / Home Assistant MQTT bridge in Settings → Smart Home and
+  configure a broker, the rendered insight sentence is sent to **that
+  broker** — your own infrastructure, not the analytics service.
 - **No API keys** or other credentials.
 - **No precise GPS** or advertising identifiers.
 
@@ -289,6 +339,17 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-05-16** — Added an optional **Smart Home / Home Assistant MQTT
+  bridge** (Settings → Smart Home; off by default). When enabled, the
+  app publishes the rendered forecast sentence as a retained MQTT
+  message to a broker you configure (typically the Mosquitto add-on
+  inside your own Home Assistant). This relaxes the existing "insight
+  prose never leaves the device" hard limit — but only to your own
+  broker, never to a developer-operated service or analytics endpoint.
+  The broker password, if you set one, is stored on-device encrypted
+  with the same Tink-AEAD pattern as the Gemini API key. See the new
+  "Smart Home / Home Assistant bridge" section above and
+  [docs/smart-home.md](docs/smart-home.md) for the full setup.
 - **2026-05-14** — Added three new aggregate analytics events:
   `daily_refresh` (slot + outcome bucket + latency, one per terminal
   result of the scheduled fetch + notify pipeline; WorkManager retries

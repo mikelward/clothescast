@@ -53,12 +53,36 @@ class SecureKeyStore(
     suspend fun clear() = remove(GEMINI_PREF_KEY)
 
     /**
+     * MQTT broker password for the optional Smart Home bridge. Returns `null`
+     * if no password is set — anonymous-auth brokers and the bridge-disabled
+     * state are both indistinguishable from "unset" by design.
+     */
+    suspend fun getMqttPassword(): String? = try {
+        read(MQTT_PASS_PREF_KEY, MQTT_PASS_AAD, "MQTT")
+    } catch (_: MissingApiKeyException) {
+        null
+    }
+
+    suspend fun setMqttPassword(password: String) = write(MQTT_PASS_PREF_KEY, MQTT_PASS_AAD, password)
+
+    suspend fun clearMqttPassword() = remove(MQTT_PASS_PREF_KEY)
+
+    /**
      * Reactive view of "is a Gemini key currently stored." Used by the Today screen's
      * welcome card to decide whether to nudge the user to set a key. Reads only the
      * presence of ciphertext, not the plaintext value, so no decrypt happens here.
      */
     val geminiKeyConfiguredFlow: Flow<Boolean> = dataStore.data
         .map { it[GEMINI_PREF_KEY] != null }
+        .distinctUntilChanged()
+
+    /**
+     * Sibling of [geminiKeyConfiguredFlow] for the MQTT broker password. The
+     * Smart Home settings card uses it to render the "Password set" indicator
+     * without ever decrypting the stored value.
+     */
+    val mqttPasswordConfiguredFlow: Flow<Boolean> = dataStore.data
+        .map { it[MQTT_PASS_PREF_KEY] != null }
         .distinctUntilChanged()
 
     private suspend fun read(prefKey: Preferences.Key<String>, aad: ByteArray, provider: String): String {
@@ -88,6 +112,8 @@ class SecureKeyStore(
     companion object {
         private val GEMINI_PREF_KEY = stringPreferencesKey("gemini_api_key_v1")
         private val GEMINI_AAD = "clothescast:gemini_api_key:v1".toByteArray(Charsets.UTF_8)
+        private val MQTT_PASS_PREF_KEY = stringPreferencesKey("mqtt_password_v1")
+        private val MQTT_PASS_AAD = "clothescast:mqtt_password:v1".toByteArray(Charsets.UTF_8)
 
         private const val MASTER_KEY_URI = "android-keystore://clothescast_master_key"
         private const val KEYSET_PREFS = "clothescast_master_prefs"

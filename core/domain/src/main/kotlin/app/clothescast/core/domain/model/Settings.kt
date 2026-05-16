@@ -381,9 +381,33 @@ data class UserPreferences(
      * chip / per-model chart don't depend on a particular ordering.
      */
     val forecastModels: Set<ForecastModel>? = null,
+    /**
+     * Optional Smart Home / Home Assistant MQTT bridge. When [mqttBridgeEnabled]
+     * is true and [mqttHost] is set, the worker publishes the rendered insight
+     * prose to a retained topic on the user's MQTT broker after each twice-daily
+     * refresh, so Home Assistant (or any MQTT-aware consumer) can speak it on
+     * a sensor trigger without reimplementing the clothes / insight logic in HA.
+     * Off by default — this relaxes the "insight prose never leaves the device"
+     * guarantee, so it's opt-in and surfaced in Settings → Smart Home with an
+     * inline privacy note that links to PRIVACY.md.
+     *
+     * Topics are derived from [mqttTopic] as the prefix + the lowercased
+     * [ForecastPeriod] name (e.g. `clothescast/insight/today` and
+     * `clothescast/insight/tonight`), so morning and evening insights are
+     * separately addressable from HA automations.
+     */
+    val mqttBridgeEnabled: Boolean = false,
+    val mqttHost: String? = null,
+    val mqttPort: Int = DEFAULT_MQTT_PORT,
+    val mqttUseTls: Boolean = false,
+    val mqttUsername: String? = null,
+    val mqttTopic: String = DEFAULT_MQTT_TOPIC,
 ) {
     companion object {
         const val DEFAULT_GEMINI_VOICE = "Despina"
+        const val DEFAULT_MQTT_PORT = 1883
+        const val DEFAULT_MQTT_TLS_PORT = 8883
+        const val DEFAULT_MQTT_TOPIC = "clothescast/insight"
     }
 }
 

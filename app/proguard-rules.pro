@@ -14,3 +14,23 @@
 # the reflection guard with a direct GETFIELD, causing NoSuchFieldError on
 # those devices. Keeping the class prevents that optimization path.
 -keep class androidx.compose.ui.text.font.FontWeightAdjustmentHelper { *; }
+
+# HiveMQ MQTT Client pulls Netty in. Netty's binaries reference a long list of
+# optional integrations (epoll, tcnative, log4j adapters, Jetty ALPN/NPN,
+# BlockHound, websocket / proxy handlers) that aren't on the Android classpath
+# because the MQTT bridge uses plain-TCP / TLS-via-JSSE, no websockets, no
+# proxies, no native epoll. R8 surfaces every cross-reference as a hard error;
+# these -dontwarn lines tell it those gaps are intentional. List taken from
+# app/build/outputs/mapping/<variant>/missing_rules.txt after a fresh
+# assembleDebug. If you bump the HiveMQ / Netty version and the list grows,
+# re-run that build and append any new -dontwarn lines here.
+-dontwarn io.netty.channel.epoll.**
+-dontwarn io.netty.handler.codec.http.**
+-dontwarn io.netty.handler.codec.http.websocketx.**
+-dontwarn io.netty.handler.proxy.**
+-dontwarn io.netty.internal.tcnative.**
+-dontwarn org.apache.log4j.**
+-dontwarn org.apache.logging.log4j.**
+-dontwarn org.eclipse.jetty.alpn.**
+-dontwarn org.eclipse.jetty.npn.**
+-dontwarn reactor.blockhound.integration.**

@@ -260,6 +260,14 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            // HiveMQ MQTT Client pulls in six Netty submodules (netty-buffer,
+            // netty-codec, netty-handler, netty-resolver, netty-transport,
+            // netty-transport-native-unix-common), each of which ships its
+            // own META-INF/INDEX.LIST + io.netty.versions.properties. AGP's
+            // resource merger refuses to pick a winner; exclude the duplicate
+            // metadata since neither file is referenced at runtime.
+            excludes += "/META-INF/INDEX.LIST"
+            excludes += "/META-INF/io.netty.versions.properties"
         }
     }
 
@@ -343,6 +351,13 @@ dependencies {
     // QR code generation: encodes the pairing URL into a BitMatrix that we render
     // as an Android Bitmap. Pure-Java, no Android SDK dependency.
     implementation(libs.zxing.core)
+
+    // HiveMQ MQTT Client — drives the optional Smart Home bridge that publishes
+    // the rendered insight prose to a user-hosted MQTT broker so Home Assistant
+    // (or any MQTT consumer) can speak it on a sensor trigger. Pulled into :app
+    // because the bridge is an Android-side feature that piggybacks on the
+    // existing twice-daily refresh; :core stays pure-Kotlin and broker-free.
+    implementation(libs.hivemq.mqtt.client)
 
     // Play in-app updates. Used to check whether a newer build is on the Play
     // Store and to drive the FLEXIBLE update flow (background download +

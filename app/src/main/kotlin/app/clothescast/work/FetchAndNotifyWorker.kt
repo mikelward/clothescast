@@ -535,34 +535,16 @@ class FetchAndNotifyWorker(
     }
 
     private suspend fun deliver(insight: Insight, prefs: UserPreferences, prose: String) {
-        when (insight.period) {
-            ForecastPeriod.TODAY -> deliverToday(insight, prefs, prose)
-            ForecastPeriod.TONIGHT -> deliverTonight(insight, prefs, prose)
-        }
-        // Publish the rendered prose to the user's MQTT broker if the
-        // Smart Home bridge is enabled. Both the fresh-fetch and same-day
-        // cache redelivery paths route through this single call site, so
-        // each twice-daily refresh pushes one retained message per period.
-        // The publisher logs and swallows broker / network failures so a
-        // dead broker can't break notification or TTS delivery — by the
-        // time this runs the user-facing delivery above has already
-        // completed. The outcome is persisted so the Smart Home settings
-        // page can surface the last error for troubleshooting.
+        // Publish to MQTT before waiting for the delivery-alignment delay so
+        // that retained topics are current by the time HA automations fire.
+        // deliverToday/Tonight both start with awaitDeliveryAlignment() (60 s
+        // window) and then await TTS — Home Assistant automations timed to the
+        // scheduled alarm would race with the retained topics if we published
+        // after that. The 5-second publish timeout means an unreachable broker
+        // delays notification by at most 5 s, which is within the 60-second window.
+        // Prose publish — outcome persisted for the Smart Home settings UI.
         val mqttOutcome = app.mqttPublisher.publishIfEnabled(insight.period, prose)
-        // Status persistence is best-effort: a DataStore I/O failure here must
-        // not surface as a deliver() exception, which would cause the
-        // cached-delivery path to fall through to a fresh fetch and duplicate
-        // the user-facing notification.
-        runCatching {
-            when (mqttOutcome) {
-                is MqttPublishOutcome.NotConfigured -> Unit
-                is MqttPublishOutcome.Success -> app.settingsRepository.setMqttLastError(null)
-                is MqttPublishOutcome.Failure -> app.settingsRepository.setMqttLastError(mqttOutcome.message)
-            }
-        }
-        // Also publish a typeset PNG card to the sibling …/image topic so
-        // HA's image.mqtt integration can surface it as an image.* entity
-        // and push it to a Nest Hub display via media_player.play_media.
+        // Image publish — fire-and-forget alongside the prose.
         insight.outfit?.let { outfit ->
             runCatching {
                 val label = if (insight.period == ForecastPeriod.TODAY) "Today" else "Tonight"
@@ -578,6 +560,21 @@ class FetchAndNotifyWorker(
             }.onFailure { t ->
                 if (t is CancellationException) throw t
                 DiagLog.w(TAG, "Outfit image MQTT publish failed.", t)
+            }
+        }
+        when (insight.period) {
+            ForecastPeriod.TODAY -> deliverToday(insight, prefs, prose)
+            ForecastPeriod.TONIGHT -> deliverTonight(insight, prefs, prose)
+        }
+        // Status persistence is best-effort: a DataStore I/O failure here must
+        // not surface as a deliver() exception, which would cause the
+        // cached-delivery path to fall through to a fresh fetch and duplicate
+        // the user-facing notification.
+        runCatching {
+            when (mqttOutcome) {
+                is MqttPublishOutcome.NotConfigured -> Unit
+                is MqttPublishOutcome.Success -> app.settingsRepository.setMqttLastError(null)
+                is MqttPublishOutcome.Failure -> app.settingsRepository.setMqttLastError(mqttOutcome.message)
             }
         }
     }

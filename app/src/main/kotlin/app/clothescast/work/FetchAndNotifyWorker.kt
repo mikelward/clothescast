@@ -23,6 +23,7 @@ import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.usecase.shouldSpeak
+import app.clothescast.core.data.tts.WavEncoder
 import app.clothescast.data.InsightCache
 import app.clothescast.mqtt.MqttPublishOutcome
 import app.clothescast.diag.Telemetry
@@ -588,7 +589,7 @@ class FetchAndNotifyWorker(
         }
         val ttsRequested = mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
         if (shouldSpeakNow(ttsRequested, prefs)) {
-            speakWithFallback(ttsUtterance(insight, prefs), prefs)
+            speakWithFallback(insight.period, ttsUtterance(insight, prefs), prefs)
         }
     }
 
@@ -718,7 +719,7 @@ class FetchAndNotifyWorker(
         }
         val ttsRequested = mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
         if (shouldSpeakNow(ttsRequested, prefs)) {
-            speakWithFallback(ttsUtterance(insight, prefs), prefs)
+            speakWithFallback(insight.period, ttsUtterance(insight, prefs), prefs)
         }
     }
 
@@ -755,16 +756,36 @@ class FetchAndNotifyWorker(
      * something. We never let a TTS error fail the worker — the notification
      * path is the primary delivery channel and has already fired by this point.
      */
-    private suspend fun speakWithFallback(utterance: InsightTtsUtterance, prefs: UserPreferences) {
+    private suspend fun speakWithFallback(
+        period: ForecastPeriod,
+        utterance: InsightTtsUtterance,
+        prefs: UserPreferences,
+    ) {
         withSpeechAudioFocus(applicationContext) {
             when (prefs.ttsEngine) {
                 TtsEngine.GEMINI -> {
                     try {
-                        GeminiTtsSpeaker(
+                        val speaker = GeminiTtsSpeaker(
                             app.geminiTtsClient,
                             voiceName = prefs.geminiVoice,
                             style = prefs.ttsStyle,
-                        ).speak(utterance.text, utterance.locale)
+                        )
+                        val audio = speaker.synthesize(utterance.text, utterance.locale)
+                        // Publish before local playback so a Hub speaking off
+                        // the retained audio topic doesn't trail the phone.
+                        // Mirrors the image publish in deliver(): the call is
+                        // capped at MqttPublisher.DEFAULT_PUBLISH_TIMEOUT_MS,
+                        // so a broker outage costs at most that 5 s budget.
+                        runCatching {
+                            app.mqttPublisher.publishAudioIfEnabled(
+                                period,
+                                WavEncoder.encode(audio),
+                            )
+                        }.onFailure { t ->
+                            if (t is CancellationException) throw t
+                            DiagLog.w(TAG, "TTS audio MQTT publish failed.", t)
+                        }
+                        speaker.play(audio)
                         return@withSpeechAudioFocus
                     } catch (t: Throwable) {
                         DiagLog.w(TAG, "Gemini TTS failed; falling back to device TTS.", t)

@@ -131,10 +131,10 @@ private fun hslToRgb(h: Float, s: Float, l: Float): Triple<Int, Int, Int> {
 
 /**
  * Curated swatches for the garment-colour picker. Hand-picked to span the
- * hue circle while staying visually pleasant when paired with their derived
- * stroke. Avoids near-black entries — those collapse against the
- * derived-stroke clamp in [deriveStrokeArgb] and look identical to mid-grey
- * after the recolour.
+ * hue circle plus common wardrobe neutrals, while staying visually pleasant
+ * when paired with their derived stroke. Avoids near-black entries — those
+ * collapse against the derived-stroke clamp in [deriveStrokeArgb] and look
+ * identical to mid-grey after the recolour.
  */
 internal val garmentColorPresets: List<Color> = listOf(
     Color(0xFFE53935), // red
@@ -143,12 +143,18 @@ internal val garmentColorPresets: List<Color> = listOf(
     Color(0xFFFDD835), // yellow
     Color(0xFF7CB342), // light green
     Color(0xFF43A047), // green
+    Color(0xFF2E7D32), // dark green
     Color(0xFF26A69A), // teal
     Color(0xFF29B6F6), // light blue
     Color(0xFF1E88E5), // blue
+    Color(0xFF1A237E), // navy blue
     Color(0xFF5E35B1), // purple
     Color(0xFFAB47BC), // magenta
     Color(0xFFEC407A), // pink
     Color(0xFF8D6E63), // brown
+    Color(0xFFE8D5B7), // beige
+    Color(0xFFFFFFFF), // white
+    Color(0xFF9E9E9E), // grey
+    Color(0xFF424242), // dark grey
     Color(0xFF78909C), // blue-grey
 )

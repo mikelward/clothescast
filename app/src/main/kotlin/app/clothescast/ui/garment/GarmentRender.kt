@@ -4,6 +4,12 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Typeface
+import android.text.StaticLayout
+import android.text.TextPaint
+import android.text.TextUtils
+import app.clothescast.core.domain.model.OutfitSuggestion
+import java.io.ByteArrayOutputStream
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas as ComposeCanvas
 import androidx.compose.foundation.Image
@@ -245,6 +251,90 @@ private data class BitmapCacheKey(
     val customFillArgb: Long?,
     val sizePx: Int,
 )
+
+/**
+ * Renders a Nest-Hub-ready outfit card as a PNG.
+ *
+ * Layout (800 × 480 px, white background, landscape):
+ * ```
+ * ┌──────────────────────────────────────────┐
+ * │  TODAY                                    │  ← Roboto Bold 38 px
+ * │  [top icon ]  Wear a t-shirt and shorts. │  ← icons stacked left,
+ * │  [          ]  High 28 °C, feels like…   │    prose wraps right
+ * │  [bot icon ]                              │
+ * └──────────────────────────────────────────┘
+ * ```
+ * The `TextUtils` import is used only for prose ellipsis; the prose column
+ * is tall enough (≈ 12 lines at 22 px) that truncation is unlikely in
+ * practice.
+ */
+internal fun renderOutfitCard(
+    context: Context,
+    outfit: OutfitSuggestion,
+    periodLabel: String,
+    prose: String,
+    topColors: Map<OutfitSuggestion.Top, Long>,
+    bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+): ByteArray {
+    val bmp = Bitmap.createBitmap(CARD_W, CARD_H, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bmp)
+    canvas.drawColor(android.graphics.Color.WHITE)
+
+    val labelPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+        typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        textSize = LABEL_PX
+        color = android.graphics.Color.BLACK
+    }
+    // Position the baseline so the label's visual top lands at CARD_PAD.
+    val labelBaseline = CARD_PAD - labelPaint.fontMetrics.ascent
+    canvas.drawText(periodLabel.uppercase(), CARD_PAD.toFloat(), labelBaseline, labelPaint)
+    val contentTop = (labelBaseline + labelPaint.fontMetrics.descent + LABEL_GAP_PX).toInt()
+
+    // Top garment icon stacked above bottom garment icon in the left column.
+    val topBmp = renderOutfitBitmap(context, topDrawable(outfit.top), outfitTopDefaults.getValue(outfit.top), topColors[outfit.top], ICON_PX)
+    val botBmp = renderOutfitBitmap(context, bottomDrawable(outfit.bottom), outfitBottomDefaults.getValue(outfit.bottom), bottomColors[outfit.bottom], ICON_PX)
+    canvas.drawBitmap(topBmp, CARD_PAD.toFloat(), contentTop.toFloat(), null)
+    canvas.drawBitmap(botBmp, CARD_PAD.toFloat(), (contentTop + ICON_PX + ICON_V_GAP).toFloat(), null)
+
+    // Prose wraps in the column to the right of the icon stack.
+    if (prose.isNotBlank()) {
+        val proseX = CARD_PAD + ICON_PX + ICON_H_GAP
+        val prosePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = Typeface.DEFAULT
+            textSize = PROSE_PX
+            color = 0xFF444444.toInt()
+        }
+        val layout = StaticLayout.Builder
+            .obtain(prose, 0, prose.length, prosePaint, CARD_W - proseX - CARD_PAD)
+            .setEllipsize(TextUtils.TruncateAt.END)
+            .setMaxLines(PROSE_MAX_LINES)
+            .build()
+        canvas.save()
+        canvas.translate(proseX.toFloat(), contentTop.toFloat())
+        layout.draw(canvas)
+        canvas.restore()
+    }
+
+    val out = ByteArrayOutputStream()
+    bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
+    bmp.recycle()
+    return out.toByteArray()
+}
+
+// Card: 800×480 px (Nest Hub 7" display resolution).
+// Layout maths: pad=36, label 38px bold → contentTop ≈ 96,
+// left column: 160+8+160=328px tall, bottom ≈ 424px < 480-36=444 ✓
+// Prose column width: 800 - 36 - 160 - 24 - 36 = 544 px (~12 lines at 22 px)
+private const val CARD_W = 800
+private const val CARD_H = 480
+private const val CARD_PAD = 36
+private const val LABEL_PX = 38f
+private const val LABEL_GAP_PX = 20    // gap between label bottom and content
+private const val ICON_PX = 160
+private const val ICON_V_GAP = 8       // vertical gap between top and bottom icon
+private const val ICON_H_GAP = 24      // horizontal gap from icon column to prose
+private const val PROSE_PX = 22f
+private const val PROSE_MAX_LINES = 12
 
 /**
  * LRU-ish bitmap cache. Most users have ≤2 widget cells × ≤4 garment slots ×

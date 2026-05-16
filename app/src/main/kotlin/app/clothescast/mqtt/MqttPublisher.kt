@@ -45,7 +45,7 @@ sealed interface MqttPublishOutcome {
 class MqttPublisher(
     private val preferences: Flow<UserPreferences>,
     private val passwordProvider: suspend () -> String?,
-    private val publish: suspend (config: MqttConfig, topic: String, payload: String) -> Unit = ::publishWithHiveMq,
+    private val publish: suspend (config: MqttConfig, topic: String, payload: ByteArray) -> Unit = ::publishWithHiveMq,
     private val publishTimeoutMs: Long = DEFAULT_PUBLISH_TIMEOUT_MS,
 ) {
 
@@ -69,7 +69,7 @@ class MqttPublisher(
                 "password=${if (prepared.config.password != null) "set" else "none"}, " +
                 "payload=${prose.length} chars).",
         )
-        return executePublish(prepared, topic, prose)
+        return executePublish(prepared, topic, prose.toByteArray(Charsets.UTF_8))
     }
 
     /**
@@ -88,7 +88,27 @@ class MqttPublisher(
             TAG,
             "MQTT test publish to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic.",
         )
-        return executePublish(prepared, topic, "ClothesCast: connection test")
+        return executePublish(prepared, topic, "ClothesCast: connection test".toByteArray(Charsets.UTF_8))
+    }
+
+    /**
+     * Fire-and-forget publish of a PNG outfit image to
+     * `${baseTopic}/${period.lowercased()}/image`. Piggybacks on the same
+     * MQTT bridge toggle as [publishIfEnabled] — no separate setting needed.
+     * HA's `image.mqtt` integration subscribes to this topic and surfaces
+     * the outfit as an `image.*` entity, which a downstream automation can
+     * push to a Nest Hub via `media_player.play_media`.
+     */
+    suspend fun publishImageIfEnabled(period: ForecastPeriod, imageBytes: ByteArray) {
+        val prepared = preparePublish(context = "${period.name.lowercase()} outfit image") ?: return
+        val topic = imageTopicFor(prepared.baseTopic, period)
+        DiagLog.i(
+            TAG,
+            "MQTT bridge enabled; publishing ${period.name.lowercase()} outfit image " +
+                "(${imageBytes.size} bytes) to " +
+                "${prepared.scheme}://${prepared.host}:${prepared.port}/$topic.",
+        )
+        executePublish(prepared, topic, imageBytes)
     }
 
     /**
@@ -151,7 +171,7 @@ class MqttPublisher(
     private suspend fun executePublish(
         prepared: PreparedPublish,
         topic: String,
-        payload: String,
+        payload: ByteArray,
     ): MqttPublishOutcome = withTimeoutOrNull(publishTimeoutMs) {
         var result: MqttPublishOutcome = MqttPublishOutcome.Success
         try {
@@ -199,6 +219,9 @@ class MqttPublisher(
             val trimmed = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
             return "$trimmed/${period.name.lowercase()}"
         }
+
+        fun imageTopicFor(baseTopic: String, period: ForecastPeriod): String =
+            "${topicFor(baseTopic, period)}/image"
     }
 }
 
@@ -218,7 +241,7 @@ data class MqttConfig(
 private suspend fun publishWithHiveMq(
     config: MqttConfig,
     topic: String,
-    payload: String,
+    payload: ByteArray,
 ) {
     // Async client + awaited CompletableFutures (rather than the blocking
     // client wrapped in Dispatchers.IO) so the outer withTimeoutOrNull and any
@@ -250,7 +273,7 @@ private suspend fun publishWithHiveMq(
         connect.send().await()
         client.publishWith()
             .topic(topic)
-            .payload(payload.toByteArray(Charsets.UTF_8))
+            .payload(payload)
             .qos(MqttQos.AT_LEAST_ONCE)
             .retain(true)
             .send()
@@ -268,4 +291,3 @@ private suspend fun publishWithHiveMq(
         }
     }
 }
-

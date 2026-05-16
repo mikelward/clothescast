@@ -35,6 +35,7 @@ import app.clothescast.tts.GeminiTtsSpeaker
 import app.clothescast.tts.InsightTtsUtterance
 import app.clothescast.tts.insightTtsUtterance
 import app.clothescast.tts.withSpeechAudioFocus
+import app.clothescast.ui.garment.renderOutfitCard
 import app.clothescast.widget.OutfitWidget
 import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.network.sockets.ConnectTimeoutException
@@ -557,6 +558,26 @@ class FetchAndNotifyWorker(
                 is MqttPublishOutcome.NotConfigured -> Unit
                 is MqttPublishOutcome.Success -> app.settingsRepository.setMqttLastError(null)
                 is MqttPublishOutcome.Failure -> app.settingsRepository.setMqttLastError(mqttOutcome.message)
+            }
+        }
+        // Also publish a typeset PNG card to the sibling …/image topic so
+        // HA's image.mqtt integration can surface it as an image.* entity
+        // and push it to a Nest Hub display via media_player.play_media.
+        insight.outfit?.let { outfit ->
+            runCatching {
+                val label = if (insight.period == ForecastPeriod.TODAY) "Today" else "Tonight"
+                val png = renderOutfitCard(
+                    context = applicationContext,
+                    outfit = outfit,
+                    periodLabel = label,
+                    prose = prose,
+                    topColors = prefs.outfitTopColors,
+                    bottomColors = prefs.outfitBottomColors,
+                )
+                app.mqttPublisher.publishImageIfEnabled(insight.period, png)
+            }.onFailure { t ->
+                if (t is CancellationException) throw t
+                DiagLog.w(TAG, "Outfit image MQTT publish failed.", t)
             }
         }
     }

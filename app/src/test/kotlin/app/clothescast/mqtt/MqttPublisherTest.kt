@@ -65,7 +65,7 @@ class MqttPublisherTest {
         captured shouldHaveSize 1
         val call = captured.single()
         call.topic shouldBe "clothescast/insight/today"
-        call.payload shouldBe "Today, cool and mild. Wear a sweater."
+        call.payload.decodeToString() shouldBe "Today, cool and mild. Wear a sweater."
         call.config.host shouldBe "192.168.1.10"
         call.config.port shouldBe 1883
         call.config.useTls shouldBe false
@@ -304,6 +304,54 @@ class MqttPublisherTest {
     }
 
     @Test
+    fun `imageTopicFor appends image suffix to prose topic`() {
+        MqttPublisher.imageTopicFor("clothescast/insight", ForecastPeriod.TODAY) shouldBe
+            "clothescast/insight/today/image"
+        MqttPublisher.imageTopicFor("home/forecast", ForecastPeriod.TONIGHT) shouldBe
+            "home/forecast/tonight/image"
+        MqttPublisher.imageTopicFor("", ForecastPeriod.TODAY) shouldBe
+            "clothescast/insight/today/image"
+    }
+
+    @Test
+    fun `publishImageIfEnabled publishes PNG bytes to image topic`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttTopic = "clothescast/insight",
+                ),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+        val fakeImage = byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47) // PNG magic bytes
+
+        subject.publishImageIfEnabled(ForecastPeriod.TODAY, fakeImage)
+
+        captured shouldHaveSize 1
+        val call = captured.single()
+        call.topic shouldBe "clothescast/insight/today/image"
+        (call.payload contentEquals fakeImage).shouldBeTrue()
+    }
+
+    @Test
+    fun `publishImageIfEnabled no-op when bridge disabled`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(basePrefs.copy(mqttBridgeEnabled = false, mqttHost = "broker.local")),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+
+        subject.publishImageIfEnabled(ForecastPeriod.TODAY, byteArrayOf(1, 2, 3))
+
+        captured shouldHaveSize 0
+    }
+
+    @Test
     fun `publish throwing CancellationException propagates upward`() = runTest {
         val subject = MqttPublisher(
             preferences = flowOf(
@@ -380,9 +428,9 @@ class MqttPublisherTest {
         // a TimeoutCancellationException — the contract the worker relies on.
     }
 
-    private data class PublishCall(val config: MqttConfig, val topic: String, val payload: String)
+    private data class PublishCall(val config: MqttConfig, val topic: String, val payload: ByteArray)
 
-    private fun capturing(into: MutableList<PublishCall>): suspend (MqttConfig, String, String) -> Unit =
+    private fun capturing(into: MutableList<PublishCall>): suspend (MqttConfig, String, ByteArray) -> Unit =
         { config, topic, payload -> into.add(PublishCall(config, topic, payload)) }
 
     private val basePrefs = UserPreferences(

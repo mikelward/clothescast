@@ -672,4 +672,50 @@ the displayed label localizes.
     <string name="today_uv_peak">Piek %1$d om %2$s</string>
     <string name="today_uv_title">UV-index</string>
     <string name="today_wind_peak">Piek %1$d %2$s om %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Update wordt gedownload…</string>
+    <string name="today_update_downloading_action">Bezig met bijwerken</string>
+    <string name="today_update_downloading_dismiss">Annuleren</string>
+    <string name="today_view_other_period">Andere voorspelling bekijken</string>
+    <string name="today_back_to_primary">Terug</string>
+    <string name="today_placeholder_today_title">Voorspelling van vandaag</string>
+    <string name="today_placeholder_tonight_title">Voorspelling voor vanavond</string>
+    <string name="today_placeholder_body">Klaar rond %1$s.</string>
+
+    <string name="settings_root_forecasters">Voorspellingsmodellen</string>
+    <string name="settings_root_forecasters_subtitle">Weerbronnen en modellen</string>
+
+    <string name="settings_display_garment_colors_title">Kledingkleuren</string>
+    <string name="settings_display_garment_colors_description">Kies een kleur voor elk kledingicoon op Vandaag, in de homescreen-widget en in meldingen. De rand wordt automatisch donkerder.</string>
+    <string name="settings_garment_color_default">Standaard</string>
+    <string name="settings_garment_color_picker_title">Kies een kleur</string>
+    <string name="settings_garment_color_swatch_description">Kleurstaal %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">%1$s terugzetten naar de standaardkleur</string>
+    <string name="settings_garment_color_dialog_close">Sluiten</string>
+
+    <string name="settings_forecasters_title">Voorspellingsmodellen</string>
+    <string name="settings_forecasters_description">De betrouwbaarheidschip en de grafiek per model komen uit deze modellen. Meer keuzes geven een breder bereik; minder een scherpere focus. Minstens twee blijven geselecteerd.</string>
+    <string name="settings_forecasters_auto_title">Auto (het beste voor jouw locatie)</string>
+    <string name="settings_forecasters_auto_subtitle">Kiest automatisch het regionale model — UKMO op de Britse eilanden, JMA in Japan, GFS + GEM in Noord-Amerika, enz. Zet uit om zelf modellen te kiezen.</string>
+    <string name="settings_forecasters_cap_hint">Je hebt %1$d modellen gekozen — het maximum waarbij de grafiek leesbaar blijft. Schakel er een uit om een ander toe te voegen.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Europees — doorgaans het meest nauwkeurige wereldwijde model. Om de 3 uur op de open feed.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Duits (DWD) — sterk in Europa en op korte termijn. Natief per uur.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikaans (NOAA) — sterk in Noord-Amerika. Natief per uur.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Canadees (ECCC) — sterk in Noord-Amerika. Om de 3 uur op de open feed.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Frans (Météo-France) — sterk in Frankrijk en West-Europa. Natief per uur.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Brits (UK Met Office) — historisch alleen na ECMWF. Om de 3 uur op de open feed.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japans — sterk in Azië-Pacific. Om de 3 tot 6 uur op de open feed.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australisch — in onderhoud, komt zo snel mogelijk terug.</string>
+
+    <string name="settings_about_open_meteo">Weergegevens door Open-Meteo</string>
 </resources>

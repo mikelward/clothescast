@@ -566,4 +566,50 @@ the in-app clock is digit-driven and reads consistently across locales.
 
     <string name="settings_tts_test">Prova la veu</string>
     <string name="settings_tts_test_in_flight">Provant — espera…</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Baixant l\'actualització…</string>
+    <string name="today_update_downloading_action">Actualitzant</string>
+    <string name="today_update_downloading_dismiss">Cancel·la</string>
+    <string name="today_view_other_period">Mostra l\'altra previsió</string>
+    <string name="today_back_to_primary">Enrere</string>
+    <string name="today_placeholder_today_title">Previsió d\'avui</string>
+    <string name="today_placeholder_tonight_title">Previsió d\'aquesta nit</string>
+    <string name="today_placeholder_body">Llesta cap a les %1$s.</string>
+
+    <string name="settings_root_forecasters">Models de previsió</string>
+    <string name="settings_root_forecasters_subtitle">Fonts i models meteorològics</string>
+
+    <string name="settings_display_garment_colors_title">Colors de la roba</string>
+    <string name="settings_display_garment_colors_description">Tria un color per a cada icona de peça de roba que apareix a Avui, al widget de la pantalla d\'inici i a les notificacions. El contorn s\'enfosqueix automàticament.</string>
+    <string name="settings_garment_color_default">Per defecte</string>
+    <string name="settings_garment_color_picker_title">Tria un color</string>
+    <string name="settings_garment_color_swatch_description">Mostra de color %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Restableix %1$s al color per defecte</string>
+    <string name="settings_garment_color_dialog_close">Tanca</string>
+
+    <string name="settings_forecasters_title">Models de previsió</string>
+    <string name="settings_forecasters_description">L\'indicador de confiança i el gràfic per model es basen en aquests models. Triar-ne més amplia el ventall; menys, el concentra. Almenys dos resten seleccionats.</string>
+    <string name="settings_forecasters_auto_title">Auto (el millor per a la teva ubicació)</string>
+    <string name="settings_forecasters_auto_subtitle">Tria automàticament el model regional — UKMO a les illes britàniques, JMA al Japó, GFS + GEM a Amèrica del Nord, etc. Desactiva\'l per triar tu mateix els models.</string>
+    <string name="settings_forecasters_cap_hint">Has triat %1$d models — el màxim perquè el gràfic continuï llegible. Desselecciona\'n un per afegir-ne un altre.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Europeu — generalment el model global més precís. Cada 3 h al canal obert.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Alemany (DWD) — sòlid a Europa i a curt termini. Horari natiu.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Americà (NOAA) — sòlid a Amèrica del Nord. Horari natiu.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Canadenc (ECCC) — sòlid a Amèrica del Nord. Cada 3 h al canal obert.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Francès (Météo-France) — sòlid sobre França i Europa occidental. Horari natiu.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Britànic (UK Met Office) — històricament només per darrere de l\'ECMWF. Cada 3 h al canal obert.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Japonès — sòlid a l\'Àsia-Pacífic. Cada 3 a 6 h al canal obert.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australià — en manteniment; tornarà al més aviat possible.</string>
+
+    <string name="settings_about_open_meteo">Dades meteorològiques d\'Open-Meteo</string>
 </resources>

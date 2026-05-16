@@ -709,4 +709,50 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_uv_peak">Picco %1$d alle %2$s</string>
     <string name="today_uv_title">Indice UV</string>
     <string name="today_wind_peak">Picco %1$d %2$s alle %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Download dell\'aggiornamento…</string>
+    <string name="today_update_downloading_action">Aggiornamento…</string>
+    <string name="today_update_downloading_dismiss">Annulla</string>
+    <string name="today_view_other_period">Mostra l\'altra previsione</string>
+    <string name="today_back_to_primary">Indietro</string>
+    <string name="today_placeholder_today_title">Previsione di oggi</string>
+    <string name="today_placeholder_tonight_title">Previsione di stasera</string>
+    <string name="today_placeholder_body">Pronta verso le %1$s.</string>
+
+    <string name="settings_root_forecasters">Modelli di previsione</string>
+    <string name="settings_root_forecasters_subtitle">Sorgenti e modelli meteo</string>
+
+    <string name="settings_display_garment_colors_title">Colori degli indumenti</string>
+    <string name="settings_display_garment_colors_description">Scegli un colore per ogni icona di indumento mostrata su Oggi, sul widget della schermata Home e nelle notifiche. Il contorno si scurisce automaticamente.</string>
+    <string name="settings_garment_color_default">Predefinito</string>
+    <string name="settings_garment_color_picker_title">Scegli un colore</string>
+    <string name="settings_garment_color_swatch_description">Campione di colore %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Ripristina %1$s al colore predefinito</string>
+    <string name="settings_garment_color_dialog_close">Chiudi</string>
+
+    <string name="settings_forecasters_title">Modelli di previsione</string>
+    <string name="settings_forecasters_description">L\'indicatore di confidenza e il grafico per modello attingono da questi modelli. Sceglierne di più amplia la gamma; meno restringe il fuoco. Almeno due restano selezionati.</string>
+    <string name="settings_forecasters_auto_title">Auto (il migliore per la tua posizione)</string>
+    <string name="settings_forecasters_auto_subtitle">Sceglie automaticamente il modello regionale: UKMO nelle isole britanniche, JMA in Giappone, GFS + GEM in Nord America, ecc. Disattiva per scegliere i modelli da solo.</string>
+    <string name="settings_forecasters_cap_hint">Hai selezionato %1$d modelli — il massimo per cui il grafico resta leggibile. Deselezionane uno per aggiungerne un altro.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Europeo — in genere il modello globale più accurato. Ogni 3 ore sul feed aperto.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Tedesco (DWD) — solido in Europa e a breve termine. Orario nativo.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Americano (NOAA) — solido sul Nord America. Orario nativo.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Canadese (ECCC) — solido sul Nord America. Ogni 3 ore sul feed aperto.</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">Francese (Météo-France) — solido su Francia ed Europa occidentale. Orario nativo.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Britannico (UK Met Office) — storicamente secondo solo a ECMWF. Ogni 3 ore sul feed aperto.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Giapponese — solido sull\'Asia-Pacifico. Ogni 3-6 ore sul feed aperto.</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">Australiano — in manutenzione, torna appena possibile.</string>
+
+    <string name="settings_about_open_meteo">Dati meteo forniti da Open-Meteo</string>
 </resources>

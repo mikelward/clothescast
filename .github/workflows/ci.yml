@@ -78,7 +78,11 @@ jobs:
         # AGP must be loadable for Gradle to configure :app, even when only
         # running :core:* tasks. Pre-installing platform 35 + build-tools 35.0.0
         # avoids on-demand downloads at configure time.
-        uses: android-actions/setup-android@v3
+        # Pinned to a specific commit SHA (rather than the floating @v3 tag)
+        # so a compromised upstream release can't silently swap in malicious
+        # code on our next CI run — same discipline as the FAD / Play upload
+        # actions below. SHA is android-actions/setup-android v3.2.2.
+        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
         with:
           packages: 'platforms;android-35 build-tools;35.0.0 platform-tools'
 
@@ -234,6 +238,16 @@ jobs:
           success() &&
           github.event_name == 'pull_request' &&
           github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          # Pass the PR branch name through an env var rather than expanding
+          # `${{ github.event.pull_request.head.ref }}` directly into the
+          # shell script: git's check-ref-format allows characters like `'`,
+          # `$`, `;`, `|`, `&` and backticks in branch names, so a same-repo
+          # collaborator could create a branch named e.g. `feat';evil;'` and
+          # have it injected as shell code via the `git push` line below.
+          # As an env var, the value is exposed to the shell as data and
+          # safely quoted at the use site.
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
@@ -266,7 +280,7 @@ jobs:
             exit 0
           fi
           git commit -m "ci: regenerate UI snapshots"
-          git push origin HEAD:'${{ github.event.pull_request.head.ref }}'
+          git push origin "HEAD:$HEAD_REF"
           echo "SNAPSHOTS_REGENERATED=true" >> "$GITHUB_ENV"
           echo "SNAPSHOT_COMMIT_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
@@ -348,25 +362,15 @@ jobs:
       # to a fresh branch).
       actions: read
     # workflow_dispatch can be invoked against any ref by any user with
-    # `actions: write`. The job-level env block below populates the runner
-    # with FIREBASE_* / PLAY_* secrets; without this guard, a manual dispatch
-    # against a feature branch that ships a malicious `ci.yml` modification
-    # would have those secrets in scope. The publishing steps' own
-    # `refs/heads/main` gates aren't enough — they only short-circuit the
-    # *publish* steps; the job env vars themselves are still populated for
-    # any other step that runs. push and pull_request events are unaffected
-    # (push is already filtered to main by the `on:` block; pull_request
-    # secrets are blocked by GitHub for fork PRs anyway).
+    # `actions: write`; a manual dispatch against a feature branch that
+    # ships a malicious `ci.yml` modification would otherwise have job
+    # secrets in scope. push events are already filtered to main by the
+    # `on:` block, and pull_request secrets are blocked by GitHub for fork
+    # PRs — but *same-repo* PRs still receive secrets unless we gate
+    # individual secret-loading steps to main (see the "Probe publish
+    # secrets" / debug-keystore-decode / Firebase / Play steps below,
+    # each of which `if:`-gates secret access to push/dispatch on main).
     if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
-    # Job-level env: the Firebase distribute step's `if:` reads these via
-    # env.FIREBASE_APP_ID / env.FIREBASE_SERVICE_ACCOUNT_JSON. The `secrets`
-    # context isn't available in `if:` expressions ("Unrecognized named-value:
-    # 'secrets'"); job-level env is. Step-level env is also out of scope when
-    # evaluating that same step's `if`, so this must live at the job level.
-    env:
-      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-      FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
-      PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -380,7 +384,8 @@ jobs:
           java-version: 21
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        # SHA-pinned — see rationale on the unit-tests job's copy of this step.
+        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3.2.2
         with:
           packages: 'platforms;android-35 build-tools;35.0.0 platform-tools'
 
@@ -422,11 +427,22 @@ jobs:
       - name: Decode debug keystore from secret
         # Stable signing identity across CI builds so the installed app upgrades
         # in place instead of failing "App not installed (signature mismatch)"
-        # on every new APK. If the secret isn't set (e.g. a PR from a fork
-        # without secret access, or a fresh repo before the secret is added),
-        # the step quietly no-ops and AGP falls back to its auto-generated
-        # debug keystore — the build still works, you just lose in-place
-        # upgrades on the next install.
+        # on every new APK. Gated to push / workflow_dispatch on main only:
+        # PR `assembleDebug` runs (incl. same-repo PRs) deliberately don't
+        # decode this keystore so a malicious Gradle modification in a PR
+        # can't exfiltrate DEBUG_KEYSTORE_PASSWORD / KEY_ALIAS / KEY_PASSWORD
+        # or read /tmp/debug.keystore. AGP falls back to its auto-generated
+        # debug keystore on PR builds — the APK still builds and runs, just
+        # without the stable signing identity. FAD distribution is main-only
+        # anyway (see Firebase step below), so PR-built APKs aren't pushed
+        # to testers and the lost in-place-upgrade property doesn't matter.
+        # Skipped quietly when DEBUG_KEYSTORE_BASE64 isn't set (fresh repo).
+        #
+        # On success this step propagates all four DEBUG_* values to
+        # $GITHUB_ENV so the Assemble step below picks them up without
+        # re-referencing secrets — i.e. secrets enter this job's process
+        # environment only in this step (main-gated), nowhere else.
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
         env:
           DEBUG_KEYSTORE_BASE64: ${{ secrets.DEBUG_KEYSTORE_BASE64 }}
           DEBUG_KEYSTORE_PASSWORD: ${{ secrets.DEBUG_KEYSTORE_PASSWORD }}
@@ -461,14 +477,27 @@ jobs:
             echo "::error::Decoded keystore at /tmp/debug.keystore is not a valid keystore or DEBUG_KEYSTORE_PASSWORD is wrong."
             exit 1
           fi
-          echo "DEBUG_KEYSTORE_FILE=/tmp/debug.keystore" >> "$GITHUB_ENV"
+          # Propagate to $GITHUB_ENV so the Assemble step picks them up
+          # without itself referencing `${{ secrets.* }}`. Values are still
+          # masked in logs (`add-mask` was applied when GitHub injected them
+          # as `env:` here). Heredoc form is robust if a value ever contains
+          # newlines; KEY_ALIAS realistically won't, but uniform style is
+          # cheaper than knowing-the-edge-cases.
+          {
+            echo "DEBUG_KEYSTORE_FILE=/tmp/debug.keystore"
+            printf 'DEBUG_KEYSTORE_PASSWORD<<__EOF__\n%s\n__EOF__\n' "$DEBUG_KEYSTORE_PASSWORD"
+            printf 'DEBUG_KEY_ALIAS<<__EOF__\n%s\n__EOF__\n' "$DEBUG_KEY_ALIAS"
+            printf 'DEBUG_KEY_PASSWORD<<__EOF__\n%s\n__EOF__\n' "$DEBUG_KEY_PASSWORD"
+          } >> "$GITHUB_ENV"
 
       - name: Assemble debug APK
+        # No step-level `env:` referencing secrets here: on main, the four
+        # DEBUG_* env vars arrive via $GITHUB_ENV from the decode step
+        # above; on PRs (where the decode step is skipped) they're absent
+        # and AGP's signingConfigs block in app/build.gradle.kts falls back
+        # to the auto-generated debug keystore. This keeps PR builds from
+        # ever seeing the secret values in their gradle process.
         id: gradle
-        env:
-          DEBUG_KEYSTORE_PASSWORD: ${{ secrets.DEBUG_KEYSTORE_PASSWORD }}
-          DEBUG_KEY_ALIAS: ${{ secrets.DEBUG_KEY_ALIAS }}
-          DEBUG_KEY_PASSWORD: ${{ secrets.DEBUG_KEY_PASSWORD }}
         run: |
           set -o pipefail
           ./gradlew :app:assembleDebug --stacktrace --info 2>&1 | tee /tmp/android-build.log
@@ -690,15 +719,44 @@ jobs:
           echo "Release notes:"
           printf '%s\n' "$bullets"
 
+      - name: Probe publish secrets
+        # Sets FIREBASE_AVAILABLE / PLAY_AVAILABLE boolean flags in
+        # $GITHUB_ENV so the downstream FAD and Play upload steps can use
+        # them in their `if:` conditions (which can't read `secrets.*`
+        # directly). Gated to push / workflow_dispatch on main: this is the
+        # ONLY step in this job where FIREBASE_* / PLAY_* secrets are ever
+        # expanded into env vars. On PR runs (incl. same-repo) the flags
+        # remain unset, the FAD and Play steps short-circuit on the flag
+        # check, and their `with:` blocks (which also reference these
+        # secrets) are never evaluated — so a malicious Gradle change in
+        # a PR has no path to read these secret values from the runner's
+        # process environment.
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+        env:
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -n "$FIREBASE_APP_ID" ] && [ -n "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
+            echo "FIREBASE_AVAILABLE=true" >> "$GITHUB_ENV"
+          else
+            echo "FIREBASE_AVAILABLE=false" >> "$GITHUB_ENV"
+          fi
+          if [ -n "$PLAY_SERVICE_ACCOUNT_JSON" ]; then
+            echo "PLAY_AVAILABLE=true" >> "$GITHUB_ENV"
+          else
+            echo "PLAY_AVAILABLE=false" >> "$GITHUB_ENV"
+          fi
+
       - name: Distribute via Firebase App Distribution
         # On push to main (or manual workflow_dispatch on main) only —
         # feature-branch CI runs would otherwise spam testers with WIP builds.
         # workflow_dispatch is the rescue path when the natural push event
         # was suppressed by `[skip ci]` on the head commit. Skipped when
-        # secrets aren't set so the build still finishes on a fresh repo /
-        # fork. The env vars referenced here are populated at the job level
-        # (see env: block above) — the secrets context isn't allowed in step
-        # `if:` and step-level env isn't in scope.
+        # the Firebase secrets aren't set so the build still finishes on a
+        # fresh repo / fork — see "Probe publish secrets" above for how the
+        # FIREBASE_AVAILABLE flag is computed (only on main, so the secret
+        # values never enter the runner env on PRs).
         #
         # Ordered before the release-AAB steps so a bundleRelease failure on
         # main doesn't skip FAD distribution under the `success()` gate — debug
@@ -707,8 +765,7 @@ jobs:
           success() &&
           (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
           github.ref == 'refs/heads/main' &&
-          env.FIREBASE_APP_ID != '' &&
-          env.FIREBASE_SERVICE_ACCOUNT_JSON != ''
+          env.FIREBASE_AVAILABLE == 'true'
         # Pinned to a specific commit SHA (rather than the floating @v1 tag) so
         # a compromised upstream release can't silently swap in malicious code
         # on our next CI run. Bump deliberately. SHA below is wzieba/Firebase-
@@ -806,16 +863,17 @@ jobs:
 
       - name: Upload AAB to Play Store internal track
         # Push-to-main (or manual workflow_dispatch on main) only; skipped
-        # when PLAY_SERVICE_ACCOUNT_JSON isn't set so a fresh repo / fork
-        # still completes CI. Ordered AFTER the release-AAB artifact upload
-        # so a Play API failure (e.g. listing not yet approved, versionCode
+        # when PLAY_SERVICE_ACCOUNT_JSON isn't set (PLAY_AVAILABLE comes from
+        # the "Probe publish secrets" step) so a fresh repo / fork still
+        # completes CI. Ordered AFTER the release-AAB artifact upload so a
+        # Play API failure (e.g. listing not yet approved, versionCode
         # collision) doesn't gate the artifact behind `success()`. Pinned to
         # the v1.1.5 commit SHA — bump deliberately.
         if: |
           success() &&
           (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
           github.ref == 'refs/heads/main' &&
-          env.PLAY_SERVICE_ACCOUNT_JSON != ''
+          env.PLAY_AVAILABLE == 'true'
         uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5 # v1.1.5
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}

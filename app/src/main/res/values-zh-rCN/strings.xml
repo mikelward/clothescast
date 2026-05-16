@@ -489,7 +489,7 @@ label localizes.
     <string name="settings_root_schedule_subtitle">通知与时间</string>
     <string name="settings_root_clothes_subtitle">温度与穿搭</string>
     <string name="settings_root_region_subtitle">语言与单位</string>
-    <string name="settings_root_voice_subtitle">提供商与口音</string>
+    <string name="settings_root_voice_subtitle">声音和口音</string>
 
     <string name="settings_tts_device_voice_label">设备语音</string>
     <string name="settings_tts_device_voice_auto">自动（最适合口音）</string>
@@ -543,6 +543,9 @@ label localizes.
     <string name="today_update_available_body">Play 商店上有 ClothesCast 的新版本。</string>
     <string name="today_update_available_action">更新</string>
     <string name="today_update_available_dismiss">暂不</string>
+    <string name="today_update_downloading_body">正在下载更新…</string>
+    <string name="today_update_downloading_action">正在更新</string>
+    <string name="today_update_downloading_dismiss">取消</string>
     <string name="today_update_downloaded_body">更新已下载。重启以完成安装。</string>
     <string name="today_update_downloaded_action">重启</string>
 
@@ -562,7 +565,7 @@ label localizes.
     <string name="settings_root_location">位置</string>
     <string name="settings_root_calendar">日历</string>
     <string name="settings_root_display_subtitle">主题和颜色</string>
-    <string name="settings_root_location_subtitle">自动检测或选择城市</string>
+    <string name="settings_root_location_subtitle">自动和手动位置</string>
     <string name="settings_root_calendar_subtitle">今天的日程</string>
 
     <!-- Display screen — theme picker (system / light / dark). -->
@@ -722,4 +725,55 @@ label localizes.
     <string name="today_uv_peak">最高 %1$d（%2$s）</string>
     <string name="today_uv_title">紫外线指数</string>
     <string name="today_wind_peak">最高 %1$d %2$s（%3$s）</string>
+
+    <!-- Today screen pager — second page (other-period forecast) and the
+         placeholder shown before the worker has generated either insight. -->
+    <string name="today_view_other_period">查看其他预报</string>
+    <string name="today_back_to_primary">返回</string>
+    <string name="today_placeholder_today_title">今天的预报</string>
+    <string name="today_placeholder_tonight_title">今晚的预报</string>
+    <string name="today_placeholder_body">大约 %1$s 准备就绪。</string>
+
+    <!-- Settings root list — Forecasters row and subtitle. -->
+    <string name="settings_root_forecasters">预报模型</string>
+    <string name="settings_root_forecasters_subtitle">天气来源和模型</string>
+
+    <!-- About screen — Open-Meteo attribution. "Open-Meteo" is a Latin brand
+         name and stays Latin. -->
+    <string name="settings_about_open_meteo">天气数据来自 Open-Meteo</string>
+
+    <!-- Display screen — per-garment colour picker. Pick a fill colour for
+         each clothing icon; the stroke darkens automatically. -->
+    <string name="settings_display_garment_colors_title">服装颜色</string>
+    <string name="settings_display_garment_colors_description">为「今日」页面、主屏幕小部件以及通知中显示的每个服装图标选择颜色。描边会自动加深。</string>
+    <string name="settings_garment_color_default">默认</string>
+    <string name="settings_garment_color_picker_title">选择颜色</string>
+    <string name="settings_garment_color_swatch_description">颜色色块 %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">将 %1$s 重置为默认颜色</string>
+    <string name="settings_garment_color_dialog_close">关闭</string>
+
+    <!-- Forecasters sub-page — picker of numerical weather prediction
+         models. Display labels are the agency / model acronyms (ECMWF,
+         GFS, ICON, …) — short, unambiguous, stable across translations. -->
+    <string name="settings_forecasters_title">预报模型</string>
+    <string name="settings_forecasters_description">信心标签和分模型图表都来自这些模型。选得多分布更宽，选得少更聚焦。至少保留两个。</string>
+    <string name="settings_forecasters_auto_title">自动（最适合你所在位置）</string>
+    <string name="settings_forecasters_auto_subtitle">根据所在位置自动选择区域预报模型——英伦三岛使用 UKMO，日本使用 JMA，北美使用 GFS + GEM 等。关闭后可自行选择模型。</string>
+    <string name="settings_forecasters_cap_hint">你已选择 %1$d 个模型——这是图表仍能保持可读的上限。先取消选择一个，再添加其他模型。</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">欧洲——通常是最准确的全球模型。开放数据源为每 3 小时。</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">德国（DWD）——在欧洲及短期预报方面表现出色。原生每小时。</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">美国（NOAA）——北美地区表现出色。原生每小时。</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">加拿大（ECCC）——北美地区表现出色。开放数据源为每 3 小时。</string>
+    <string name="settings_forecasters_arpege">ARPEGE</string>
+    <string name="settings_forecasters_arpege_subtitle">法国（Météo-France）——法国及西欧表现出色。原生每小时。</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">英国（UK Met Office）——历史上仅次于 ECMWF。开放数据源为每 3 小时。</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">日本——亚太地区表现出色。开放数据源为每 3 至 6 小时。</string>
+    <string name="settings_forecasters_bom">BOM</string>
+    <string name="settings_forecasters_bom_subtitle">澳大利亚——维护中，将尽快恢复。</string>
 </resources>

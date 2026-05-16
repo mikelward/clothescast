@@ -144,6 +144,80 @@ class TodayWorkStatusSelectionTest {
         mergeWorkStatus(WorkStatus.Idle, WorkStatus.Idle) shouldBe WorkStatus.Idle
     }
 
+    @Test
+    fun `cold-open retry without an insight reads as Running`() {
+        // WorkManager parks work back in ENQUEUED with runAttemptCount > 1
+        // whenever a run is interrupted — not just when our code returned
+        // Result.retry(). Killing the process during an app update leaves
+        // the same on-disk state as a real transient failure, so on first
+        // open after an update the banner would shout "Last attempt failed
+        // — retrying" even though nothing went wrong. With no insight on
+        // screen for the user to anchor "last attempt" against, soften the
+        // status to Running so the banner reads as plain "Fetching".
+        bannerStatus(
+            workStatus = WorkStatus.Retrying,
+            hasInsight = false,
+            locationActionRequired = false,
+        ) shouldBe WorkStatus.Running
+    }
+
+    @Test
+    fun `retry with an existing insight keeps the retrying framing`() {
+        // When there's a previous insight on screen, "retrying" tells the
+        // user why what they're looking at might be stale — keep it.
+        bannerStatus(
+            workStatus = WorkStatus.Retrying,
+            hasInsight = true,
+            locationActionRequired = false,
+        ) shouldBe WorkStatus.Retrying
+    }
+
+    @Test
+    fun `failed status passes through on a cold open`() {
+        // A real terminal failure isn't going to auto-retry — keep the
+        // failure card so the user knows to act (tap Refresh, check
+        // settings, etc.) rather than burying it as a spinner.
+        val failed = WorkStatus.Failed(
+            reason = FetchAndNotifyWorker.REASON_UNEXPECTED_HTTP,
+            detail = "503",
+        )
+        bannerStatus(
+            workStatus = failed,
+            hasInsight = false,
+            locationActionRequired = false,
+        ) shouldBe failed
+    }
+
+    @Test
+    fun `no-location failure is suppressed when the action banner is showing`() {
+        // The LocationActionRequiredBanner already explains the cause and
+        // offers the fix; the generic failure card would just duplicate it.
+        bannerStatus(
+            workStatus = WorkStatus.Failed(
+                reason = FetchAndNotifyWorker.REASON_NO_LOCATION,
+                detail = null,
+            ),
+            hasInsight = false,
+            locationActionRequired = true,
+        ) shouldBe WorkStatus.Idle
+    }
+
+    @Test
+    fun `other failures still surface when the action banner is showing`() {
+        // The suppression is keyed specifically to REASON_NO_LOCATION —
+        // unrelated failures still need to reach the user even when the
+        // location-required banner is also up.
+        val failed = WorkStatus.Failed(
+            reason = FetchAndNotifyWorker.REASON_UNEXPECTED_HTTP,
+            detail = "503",
+        )
+        bannerStatus(
+            workStatus = failed,
+            hasInsight = false,
+            locationActionRequired = true,
+        ) shouldBe failed
+    }
+
     private fun active(state: WorkInfo.State, runAttemptCount: Int): WorkInfoLite =
         WorkInfoLite(state = state, runAttemptCount = runAttemptCount, outputData = Data.EMPTY)
 

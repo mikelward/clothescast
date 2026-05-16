@@ -287,14 +287,11 @@ private fun TodayContent(
     // know what to tap.
     val locationActionRequired = !state.hasFallbackLocation &&
         !(state.useDeviceLocation && coarseGranted && backgroundGranted)
-    // Suppress the redundant generic failure card when the action banner
-    // already explains the no-location case; other failure reasons still
-    // show through.
-    val workStatusToShow = if (
-        locationActionRequired &&
-        state.workStatus is WorkStatus.Failed &&
-        (state.workStatus as WorkStatus.Failed).reason == FetchAndNotifyWorker.REASON_NO_LOCATION
-    ) WorkStatus.Idle else state.workStatus
+    val workStatusToShow = bannerStatus(
+        workStatus = state.workStatus,
+        hasInsight = state.thisPeriodInsight != null,
+        locationActionRequired = locationActionRequired,
+    )
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -641,6 +638,38 @@ internal fun LocationActionRequiredBanner(onSetUpLocation: () -> Unit) {
             ) { Text(stringResource(R.string.today_location_required_action)) }
         }
     }
+}
+
+/**
+ * Picks the [WorkStatus] the Today screen's banner should render, given the
+ * raw status from WorkManager plus the local UI predicates that suppress or
+ * soften it.
+ *
+ *  - **No-location failure with the location-required banner already showing.**
+ *    Hide the generic failure card — the action banner above already explains
+ *    the cause and offers the fix.
+ *  - **Retrying with nothing in the cache yet (cold open).** "Last attempt
+ *    failed — retrying" reads as a real error to the user, but WorkManager
+ *    bumps `runAttemptCount` and parks the work back in ENQUEUED whenever a
+ *    run is interrupted — not just when our code returned `Result.retry()`.
+ *    An OS-initiated kill (process death during an app update, low-memory
+ *    eviction, the JobScheduler rescheduling around doze) leaves the same
+ *    state on disk as a real transient failure. With no prior insight on
+ *    screen to anchor "last attempt", the error framing is misleading; treat
+ *    it as a generic "Fetching" so the user just sees that work is in flight.
+ *    When an existing insight *is* on screen, the "retrying" framing helps
+ *    the user understand why what they're looking at is stale, so we keep it.
+ */
+internal fun bannerStatus(
+    workStatus: WorkStatus,
+    hasInsight: Boolean,
+    locationActionRequired: Boolean,
+): WorkStatus = when {
+    locationActionRequired &&
+        workStatus is WorkStatus.Failed &&
+        workStatus.reason == FetchAndNotifyWorker.REASON_NO_LOCATION -> WorkStatus.Idle
+    !hasInsight && workStatus is WorkStatus.Retrying -> WorkStatus.Running
+    else -> workStatus
 }
 
 @Composable

@@ -26,7 +26,7 @@ import kotlin.math.roundToInt
 internal data class GarmentDefaults(val fillArgb: Int, val strokeArgb: Int)
 
 internal val outfitTopDefaults: Map<OutfitSuggestion.Top, GarmentDefaults> = mapOf(
-    OutfitSuggestion.Top.TSHIRT to GarmentDefaults(0xFF4FC3F7.toInt(), 0xFF0288D1.toInt()),
+    OutfitSuggestion.Top.TSHIRT to GarmentDefaults(0xFFFFFFFF.toInt(), 0xFFE0E0E0.toInt()),
     OutfitSuggestion.Top.POLO to GarmentDefaults(0xFF26C6DA.toInt(), 0xFF00838F.toInt()),
     OutfitSuggestion.Top.SWEATER to GarmentDefaults(0xFF8D6E63.toInt(), 0xFF5D4037.toInt()),
     OutfitSuggestion.Top.THIN_JACKET to GarmentDefaults(0xFF3949AB.toInt(), 0xFF1A237E.toInt()),

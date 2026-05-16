@@ -8,8 +8,15 @@ import android.graphics.Typeface
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.text.TextUtils
+import app.clothescast.R
+import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.symbol
+import app.clothescast.core.domain.model.toUnit
+import app.clothescast.insight.InsightFormatter
 import java.io.ByteArrayOutputStream
+import kotlin.math.roundToInt
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas as ComposeCanvas
 import androidx.compose.foundation.Image
@@ -258,21 +265,26 @@ private data class BitmapCacheKey(
  * Layout (800 × 480 px, white background, landscape):
  * ```
  * ┌──────────────────────────────────────────┐
- * │  TODAY                                    │  ← Roboto Bold 38 px
- * │  [top icon ]  Wear a t-shirt and shorts. │  ← icons stacked left,
- * │  [          ]  High 28 °C, feels like…   │    prose wraps right
- * │  [bot icon ]                              │
+ * │     TODAY'S CLOTHESCAST                  │  ← period-aware header
+ * │  [top icon]  A warm one today. Wear a    │    shifted right so
+ * │  [        ]  t-shirt and shorts. High…   │    "TODAY" centres
+ * │  [bot icon]                               │    above the torso
+ * │  [        ]  🌡 18–28°C                  │  ← feels-like low/high
+ * │              💧 Peak 60% at 3pm           │  ← only when peak ≥ 30%
  * └──────────────────────────────────────────┘
  * ```
- * The `TextUtils` import is used only for prose ellipsis; the prose column
- * is tall enough (≈ 12 lines at 22 px) that truncation is unlikely in
- * practice.
+ * [header] is the localised, mixed-case "Today's ClothesCast" string from
+ * resources — the renderer uppercases it. [tempLine] and [rainLine] are
+ * pre-formatted by the caller (units and "3pm"-style time come from
+ * `InsightFormatter`). Pass `rainLine = null` to hide the rain row.
  */
 internal fun renderOutfitCard(
     context: Context,
     outfit: OutfitSuggestion,
-    periodLabel: String,
+    header: String,
     prose: String,
+    tempLine: String,
+    rainLine: String?,
     topColors: Map<OutfitSuggestion.Top, Long>,
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
 ): ByteArray {
@@ -280,15 +292,18 @@ internal fun renderOutfitCard(
     val canvas = Canvas(bmp)
     canvas.drawColor(android.graphics.Color.WHITE)
 
-    val labelPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+    // Period-aware header along the top, shifted right of CARD_PAD by
+    // HEADER_X_OFFSET_PX so the leading word reads as sitting over the
+    // outfit's torso rather than its sleeve. Fixed offset (not measure-
+    // and-centre) because "TONIGHT'S CLOTHESCAST" is too wide to centre.
+    val headerPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        textSize = LABEL_PX
+        textSize = HEADER_PX
         color = android.graphics.Color.BLACK
     }
-    // Position the baseline so the label's visual top lands at CARD_PAD.
-    val labelBaseline = CARD_PAD - labelPaint.fontMetrics.ascent
-    canvas.drawText(periodLabel.uppercase(), CARD_PAD.toFloat(), labelBaseline, labelPaint)
-    val contentTop = (labelBaseline + labelPaint.fontMetrics.descent + LABEL_GAP_PX).toInt()
+    val headerBaseline = CARD_PAD - headerPaint.fontMetrics.ascent
+    canvas.drawText(header.uppercase(), HEADER_X.toFloat(), headerBaseline, headerPaint)
+    val contentTop = (headerBaseline + headerPaint.fontMetrics.descent + HEADER_GAP_PX).toInt()
 
     // Top garment icon stacked above bottom garment icon in the left column.
     val topBmp = renderOutfitBitmap(context, topDrawable(outfit.top), outfitTopDefaults.getValue(outfit.top), topColors[outfit.top], ICON_PX)
@@ -296,9 +311,10 @@ internal fun renderOutfitCard(
     canvas.drawBitmap(topBmp, CARD_PAD.toFloat(), contentTop.toFloat(), null)
     canvas.drawBitmap(botBmp, CARD_PAD.toFloat(), (contentTop + ICON_PX + ICON_V_GAP).toFloat(), null)
 
+    val proseX = CARD_PAD + ICON_PX + ICON_H_GAP
+
     // Prose wraps in the column to the right of the icon stack.
     if (prose.isNotBlank()) {
-        val proseX = CARD_PAD + ICON_PX + ICON_H_GAP
         val prosePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
             typeface = Typeface.DEFAULT
             textSize = PROSE_PX
@@ -315,26 +331,105 @@ internal fun renderOutfitCard(
         canvas.restore()
     }
 
+    // Info rows anchored to the bottom of the right column so they sit in
+    // the same place whether the prose is short or long.
+    val infoPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+        typeface = Typeface.DEFAULT
+        textSize = INFO_PX
+        color = 0xFF444444.toInt()
+    }
+    val rainRowTop = CARD_H - CARD_PAD - INFO_ICON_PX
+    val tempRowTop = rainRowTop - INFO_ICON_PX - INFO_ROW_GAP_PX
+    drawInfoRow(canvas, context, R.drawable.ic_outfit_card_thermometer, tempLine, proseX, tempRowTop, infoPaint)
+    if (rainLine != null) {
+        drawInfoRow(canvas, context, R.drawable.ic_outfit_card_rain, rainLine, proseX, rainRowTop, infoPaint)
+    }
+
     val out = ByteArrayOutputStream()
     bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
     bmp.recycle()
     return out.toByteArray()
 }
 
+private fun drawInfoRow(
+    canvas: Canvas,
+    context: Context,
+    @DrawableRes iconRes: Int,
+    text: String,
+    x: Int,
+    y: Int,
+    paint: TextPaint,
+) {
+    val icon = ResourcesCompat.getDrawable(context.resources, iconRes, context.theme)
+        ?: return
+    val iconBmp = icon.toBitmap(width = INFO_ICON_PX, height = INFO_ICON_PX)
+    canvas.drawBitmap(iconBmp, x.toFloat(), y.toFloat(), null)
+    // Centre the text vertically against the icon.
+    val textX = x + INFO_ICON_PX + INFO_ICON_GAP_PX
+    val textCenterY = y + INFO_ICON_PX / 2f
+    val textBaseline = textCenterY - (paint.fontMetrics.ascent + paint.fontMetrics.descent) / 2f
+    canvas.drawText(text, textX.toFloat(), textBaseline, paint)
+}
+
+/**
+ * Computes the two info-row strings shown beneath the prose on the outfit
+ * card. Pulled out so [MainActivity] and [FetchAndNotifyWorker] share the
+ * same min/max feels-like and peak-rain logic. Returns `tempLine` empty
+ * when [hourly] is empty (no horizontal info to show), and `rainLine`
+ * null when the windowed peak rain probability is below
+ * [RAIN_PEAK_THRESHOLD_PCT] — the renderer then hides that row entirely.
+ */
+internal data class OutfitCardInfoLines(val tempLine: String, val rainLine: String?)
+
+internal fun outfitCardInfoLines(
+    context: Context,
+    formatter: InsightFormatter,
+    hourly: List<HourlyForecast>,
+    temperatureUnit: TemperatureUnit,
+): OutfitCardInfoLines {
+    val lowC = hourly.minOfOrNull { it.feelsLikeC }
+    val highC = hourly.maxOfOrNull { it.feelsLikeC }
+    val tempLine = if (lowC != null && highC != null) {
+        context.getString(
+            R.string.outfit_card_temperature_range,
+            lowC.toUnit(temperatureUnit).roundToInt(),
+            highC.toUnit(temperatureUnit).roundToInt(),
+            temperatureUnit.symbol(),
+        )
+    } else {
+        ""
+    }
+    val peak = hourly.maxByOrNull { it.precipitationProbabilityPct }
+    val rainLine = peak?.let {
+        val pct = it.precipitationProbabilityPct.roundToInt()
+        if (pct < RAIN_PEAK_THRESHOLD_PCT) null
+        else formatter.formatPeakRain(pct, it.time)
+    }
+    return OutfitCardInfoLines(tempLine, rainLine)
+}
+
+private const val RAIN_PEAK_THRESHOLD_PCT = 30
+
 // Card: 800×480 px (Nest Hub 7" display resolution).
-// Layout maths: pad=36, label 38px bold → contentTop ≈ 96,
-// left column: 160+8+160=328px tall, bottom ≈ 424px < 480-36=444 ✓
-// Prose column width: 800 - 36 - 160 - 24 - 36 = 544 px (~12 lines at 22 px)
+// Layout: header along the top, shifted right of CARD_PAD by a fixed
+// HEADER_X so it reads over the outfit torso rather than the sleeve;
+// icons and prose start at contentTop; info rows are anchored to the
+// bottom so their position is stable regardless of prose length.
 private const val CARD_W = 800
 private const val CARD_H = 480
 private const val CARD_PAD = 36
-private const val LABEL_PX = 38f
-private const val LABEL_GAP_PX = 20    // gap between label bottom and content
+private const val HEADER_X = 80        // CARD_PAD + ≈ 44 px (~0.85 cm on a 7" hub)
+private const val HEADER_PX = 38f
+private const val HEADER_GAP_PX = 16   // gap between header bottom and content top
 private const val ICON_PX = 160
 private const val ICON_V_GAP = 8       // vertical gap between top and bottom icon
 private const val ICON_H_GAP = 24      // horizontal gap from icon column to prose
 private const val PROSE_PX = 22f
-private const val PROSE_MAX_LINES = 12
+private const val PROSE_MAX_LINES = 8  // leaves room for the two info rows
+private const val INFO_PX = 26f        // larger than prose so it reads at-a-glance
+private const val INFO_ICON_PX = 36
+private const val INFO_ICON_GAP_PX = 12
+private const val INFO_ROW_GAP_PX = 10
 
 /**
  * LRU-ish bitmap cache. Most users have ≤2 widget cells × ≤4 garment slots ×

@@ -46,9 +46,11 @@ class OutfitCardSnapshotTest {
             renderOutfitCard(
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
-                periodLabel = "Today",
+                header = "Today's ClothesCast",
                 prose = "A warm one today. Wear a t-shirt and shorts. " +
                     "High of 28°C, feels like 30°C. Don't forget sunscreen.",
+                tempLine = "20–30°C",
+                rainLine = "Peak 60% at 3pm",
                 topColors = emptyMap(),
                 bottomColors = emptyMap(),
             ),
@@ -62,9 +64,12 @@ class OutfitCardSnapshotTest {
             renderOutfitCard(
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
-                periodLabel = "Tonight",
+                header = "Tonight's ClothesCast",
                 prose = "Cooling down this evening. Wear a sweater and long pants. " +
                     "Low of 14°C, feels like 11°C. Bring a jacket if heading out after 10pm.",
+                tempLine = "11–18°C",
+                // Peak below threshold — rain row hidden.
+                rainLine = null,
                 topColors = emptyMap(),
                 bottomColors = emptyMap(),
             ),
@@ -78,9 +83,11 @@ class OutfitCardSnapshotTest {
             renderOutfitCard(
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.THIN_JACKET, OutfitSuggestion.Bottom.JEANS),
-                periodLabel = "Today",
+                header = "Today's ClothesCast",
                 prose = "Chilly but dry. Wear a light jacket and jeans. " +
                     "High of 15°C, feels like 13°C.",
+                tempLine = "9–15°C",
+                rainLine = null,
                 topColors = mapOf(OutfitSuggestion.Top.THIN_JACKET to 0xFFE53935L), // red jacket
                 bottomColors = mapOf(OutfitSuggestion.Bottom.JEANS to 0xFF1A237EL),  // navy jeans
             ),

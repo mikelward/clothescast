@@ -98,6 +98,17 @@
     <string name="today_precipitation_peak">Peak %1$d%% at %2$s</string>
     <string name="today_precipitation_dry">No rain expected today</string>
 
+    <!-- Low–high feels-like temperature row shown on the Nest-Hub outfit card.
+         %1$d = rounded low, %2$d = rounded high, %3$s = unit symbol (e.g. °C). -->
+    <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+
+    <!-- Top-of-card header on the Nest-Hub outfit image. Drawn in all-caps via
+         the renderer; keep the source string in the form you'd want spoken.
+         Period-specific so the user sees "TODAY\'S CLOTHESCAST" in the morning
+         and "TONIGHT\'S CLOTHESCAST" on the evening pass. -->
+    <string name="outfit_card_header_today">Today\'s ClothesCast</string>
+    <string name="outfit_card_header_tonight">Tonight\'s ClothesCast</string>
+
     <!-- Footer label below the forecast / precipitation charts when "Show model
          spread" is enabled. Each model name is rendered alongside a coloured
          swatch matching the overlay line; this is just the leading label. -->

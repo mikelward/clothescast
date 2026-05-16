@@ -35,6 +35,8 @@ import app.clothescast.tts.GeminiTtsSpeaker
 import app.clothescast.tts.InsightTtsUtterance
 import app.clothescast.tts.insightTtsUtterance
 import app.clothescast.tts.withSpeechAudioFocus
+import app.clothescast.R
+import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.renderOutfitCard
 import app.clothescast.widget.OutfitWidget
 import io.ktor.client.call.NoTransformationFoundException
@@ -547,12 +549,24 @@ class FetchAndNotifyWorker(
         // Image publish — fire-and-forget alongside the prose.
         insight.outfit?.let { outfit ->
             runCatching {
-                val label = if (insight.period == ForecastPeriod.TODAY) "Today" else "Tonight"
+                val formatter = InsightFormatter.forRegion(applicationContext, prefs.region)
+                val info = outfitCardInfoLines(
+                    context = applicationContext,
+                    formatter = formatter,
+                    hourly = insight.hourly,
+                    temperatureUnit = prefs.temperatureUnit,
+                )
+                val header = applicationContext.getString(
+                    if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today
+                    else R.string.outfit_card_header_tonight
+                )
                 val png = renderOutfitCard(
                     context = applicationContext,
                     outfit = outfit,
-                    periodLabel = label,
+                    header = header,
                     prose = prose,
+                    tempLine = info.tempLine,
+                    rainLine = info.rainLine,
                     topColors = prefs.outfitTopColors,
                     bottomColors = prefs.outfitBottomColors,
                 )

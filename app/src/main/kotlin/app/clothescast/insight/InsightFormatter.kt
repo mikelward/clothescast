@@ -238,6 +238,23 @@ class InsightFormatter(
     }
 
     /**
+     * Public entry point for callers (e.g. the Nest-Hub outfit card) that
+     * want a single time rendered the same way the prose renders it —
+     * "3pm" in English, "15 Uhr" in German, etc. — without having to build
+     * a full [InsightSummary] first.
+     */
+    fun formatTime(time: LocalTime): String = spokenTime(time)
+
+    /**
+     * "Peak 60% at 3pm" — the localized peak-rain row shown on the Nest-Hub
+     * outfit card and the Today screen's precipitation card. Uses the same
+     * resources / locale as the prose so the card matches what the prose
+     * would say for the same hour.
+     */
+    fun formatPeakRain(percent: Int, time: LocalTime): String =
+        resources.getString(R.string.today_precipitation_peak, percent, spokenTime(time))
+
+    /**
      * 24h LocalTime → spoken form for TTS and display.
      *
      * English (`en-*`): 12h named forms ("midnight", "2am", "noon", "3:30pm").

@@ -3,7 +3,7 @@
 
     <path android:fillColor="#F5F7FA" android:strokeColor="#90A4AE" android:strokeWidth="2.25" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M14,21 L35,13 Q48,0 61,13 L82,21 L96,68 L80,78 L68,43 L68,96 L28,96 L28,43 L16,78 L0,68 Z" />
 
-    <path android:fillColor="#CFD8DC" android:pathData="M35,13 Q48,0 61,13 Q56,30 48,30 Q40,30 35,13 Z" />
+    <path android:fillColor="#CFD8DC" android:pathData="M35,13 Q40,30 48,30 Q56,30 61,13 Q48,0 35,13 Z" />
 
     <path android:fillColor="#CFD8DC" android:pathData="M28,38 L68,38 L68,43 L28,43 Z" />
 

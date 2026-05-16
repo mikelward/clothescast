@@ -169,6 +169,50 @@ internal fun OutfitJacketPantsPreview() {
     }
 }
 
+@Preview(name = "Outfit · polo + jeans", widthDp = 360)
+@Composable
+internal fun OutfitPoloJeansPreview() {
+    Frame {
+        OutfitPreviewCard(
+            outfit = OutfitSuggestion(OutfitSuggestion.Top.POLO, OutfitSuggestion.Bottom.JEANS),
+            label = "Today",
+        )
+    }
+}
+
+@Preview(name = "Outfit · thin jacket + skirt", widthDp = 360)
+@Composable
+internal fun OutfitThinJacketSkirtPreview() {
+    Frame {
+        OutfitPreviewCard(
+            outfit = OutfitSuggestion(OutfitSuggestion.Top.THIN_JACKET, OutfitSuggestion.Bottom.LONG_SKIRT),
+            label = "Tonight",
+        )
+    }
+}
+
+@Preview(name = "Outfit · thick coat + long pants", widthDp = 360)
+@Composable
+internal fun OutfitThickCoatPantsPreview() {
+    Frame {
+        OutfitPreviewCard(
+            outfit = OutfitSuggestion(OutfitSuggestion.Top.THICK_COAT, OutfitSuggestion.Bottom.LONG_PANTS),
+            label = "Tomorrow",
+        )
+    }
+}
+
+@Preview(name = "Outfit · puffer jacket + jeans", widthDp = 360)
+@Composable
+internal fun OutfitPufferJacketJeansPreview() {
+    Frame {
+        OutfitPreviewCard(
+            outfit = OutfitSuggestion(OutfitSuggestion.Top.PUFFER_JACKET, OutfitSuggestion.Bottom.JEANS),
+            label = "Tomorrow",
+        )
+    }
+}
+
 @Preview(name = "Outfit · sweater + pants (dark)", widthDp = 360)
 @Composable
 internal fun OutfitSweaterPantsDarkPreview() {

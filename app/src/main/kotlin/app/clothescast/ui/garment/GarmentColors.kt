@@ -27,18 +27,18 @@ internal data class GarmentDefaults(val fillArgb: Int, val strokeArgb: Int)
 
 internal val outfitTopDefaults: Map<OutfitSuggestion.Top, GarmentDefaults> = mapOf(
     OutfitSuggestion.Top.TSHIRT to GarmentDefaults(0xFF4FC3F7.toInt(), 0xFF0288D1.toInt()),
-    OutfitSuggestion.Top.POLO to GarmentDefaults(0xFF26C6DA.toInt(), 0xFF00838F.toInt()),
-    OutfitSuggestion.Top.SWEATER to GarmentDefaults(0xFF8D6E63.toInt(), 0xFF5D4037.toInt()),
-    OutfitSuggestion.Top.THIN_JACKET to GarmentDefaults(0xFF3949AB.toInt(), 0xFF1A237E.toInt()),
-    OutfitSuggestion.Top.THICK_JACKET to GarmentDefaults(0xFF7E57C2.toInt(), 0xFF4527A0.toInt()),
-    OutfitSuggestion.Top.THICK_COAT to GarmentDefaults(0xFFFFB74D.toInt(), 0xFFEF6C00.toInt()),
+    OutfitSuggestion.Top.POLO to GarmentDefaults(0xFF2C9AA0.toInt(), 0xFF006D73.toInt()),
+    OutfitSuggestion.Top.SWEATER to GarmentDefaults(0xFF8E5A50.toInt(), 0xFF5D4037.toInt()),
+    OutfitSuggestion.Top.THIN_JACKET to GarmentDefaults(0xFF3F5F8A.toInt(), 0xFF20364F.toInt()),
+    OutfitSuggestion.Top.THICK_JACKET to GarmentDefaults(0xFF2E7D50.toInt(), 0xFF1B5E3A.toInt()),
+    OutfitSuggestion.Top.THICK_COAT to GarmentDefaults(0xFF8D6E4F.toInt(), 0xFF5D4037.toInt()),
     OutfitSuggestion.Top.PUFFER_JACKET to GarmentDefaults(0xFFF5F7FA.toInt(), 0xFF90A4AE.toInt()),
 )
 
 internal val outfitBottomDefaults: Map<OutfitSuggestion.Bottom, GarmentDefaults> = mapOf(
     OutfitSuggestion.Bottom.SHORTS to GarmentDefaults(0xFFC8B27A.toInt(), 0xFF8D743F.toInt()),
     OutfitSuggestion.Bottom.LONG_SKIRT to GarmentDefaults(0xFFF06292.toInt(), 0xFFC2185B.toInt()),
-    OutfitSuggestion.Bottom.JEANS to GarmentDefaults(0xFF5C6BC0.toInt(), 0xFF303F9F.toInt()),
+    OutfitSuggestion.Bottom.JEANS to GarmentDefaults(0xFF546A7B.toInt(), 0xFF2F3E4A.toInt()),
     OutfitSuggestion.Bottom.LONG_PANTS to GarmentDefaults(0xFF455A64.toInt(), 0xFF263238.toInt()),
 )
 

@@ -344,6 +344,10 @@ class PreviewSnapshots {
     @Test fun outfit_sweater_pants() = capture { OutfitSweaterPantsPreview() }
     @Test fun outfit_jacket_shorts() = capture { OutfitJacketShortsPreview() }
     @Test fun outfit_jacket_pants() = capture { OutfitJacketPantsPreview() }
+    @Test fun outfit_polo_jeans() = capture { OutfitPoloJeansPreview() }
+    @Test fun outfit_thin_jacket_skirt() = capture { OutfitThinJacketSkirtPreview() }
+    @Test fun outfit_thick_coat_pants() = capture { OutfitThickCoatPantsPreview() }
+    @Test fun outfit_puffer_jacket_jeans() = capture { OutfitPufferJacketJeansPreview() }
     @Test fun outfit_sweater_pants_dark() = capture { OutfitSweaterPantsDarkPreview() }
     @Test fun outfit_row_today_tonight() = capture { OutfitRowTodayTonightPreview() }
     @Test fun outfit_row_tonight_tomorrow() = capture { OutfitRowTonightTomorrowPreview() }

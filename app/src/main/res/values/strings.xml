@@ -342,6 +342,7 @@
     <string name="settings_root_location">Location</string>
     <string name="settings_root_calendar">Calendar</string>
     <string name="settings_root_forecasters">Forecasters</string>
+    <string name="settings_root_smart_home">Smart Home</string>
     <string name="settings_root_privacy">Privacy</string>
     <string name="settings_root_about">About</string>
 
@@ -375,6 +376,7 @@
     <string name="settings_root_location_subtitle">Automatic and Manual Location</string>
     <string name="settings_root_calendar_subtitle">Today\'s events</string>
     <string name="settings_root_forecasters_subtitle">Weather Sources and Models</string>
+    <string name="settings_root_smart_home_subtitle">Home Assistant, MQTT, voice announcements</string>
     <string name="settings_root_privacy_subtitle">Crash + usage reports</string>
 
     <!-- Forecasters sub-page: lets the user pick which numerical weather
@@ -419,6 +421,31 @@
     <string name="settings_privacy_telemetry_description">Sends anonymous crash reports and aggregate usage stats to help the developer fix bugs and decide which features to keep.</string>
     <string name="settings_privacy_telemetry_limits">Never sent: calendar events, location coordinates or place names, insight text or notification text, API keys, precise GPS, advertising IDs.</string>
     <string name="settings_privacy_open_policy">Read full privacy policy</string>
+
+    <!-- Smart Home settings sub-page. The MQTT bridge publishes the rendered
+         insight prose to a user-hosted broker (typically the Mosquitto add-on
+         inside Home Assistant) so HA can speak it on a sensor trigger. Off by
+         default; turning it on relaxes the "insight prose never leaves the
+         device" guarantee documented in PRIVACY.md, so the description spells
+         that out inline. -->
+    <string name="settings_smart_home_mqtt_title">Home Assistant bridge (MQTT)</string>
+    <string name="settings_smart_home_mqtt_label">Publish forecast to MQTT</string>
+    <string name="settings_smart_home_mqtt_description">After each scheduled refresh, ClothesCast publishes today\'s and tonight\'s rendered forecast to your MQTT broker as retained messages, so Home Assistant (or any MQTT consumer) can read the latest value and speak it on a sensor trigger.</string>
+    <string name="settings_smart_home_mqtt_privacy_note">When on, the rendered forecast sentence leaves your device over your network to the broker you configure. See the privacy policy.</string>
+    <string name="settings_smart_home_mqtt_host">Broker host</string>
+    <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
+    <string name="settings_smart_home_mqtt_port">Port</string>
+    <string name="settings_smart_home_mqtt_tls">Use TLS</string>
+    <string name="settings_smart_home_mqtt_username">Username (optional)</string>
+    <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
+    <string name="settings_smart_home_mqtt_password">Password (optional)</string>
+    <string name="settings_smart_home_mqtt_password_replace">Replace password</string>
+    <string name="settings_smart_home_mqtt_password_clear">Clear saved password</string>
+    <string name="settings_smart_home_mqtt_topic">Topic prefix</string>
+    <string name="settings_smart_home_mqtt_topic_hint">Today publishes to {prefix}/today; tonight to {prefix}/tonight.</string>
+    <string name="settings_smart_home_mqtt_save">Save</string>
+    <string name="settings_smart_home_mqtt_setup_guide">Setup guide</string>
+    <string name="settings_smart_home_mqtt_open_privacy">Read privacy details</string>
 
     <string name="settings_api_key_gemini_label">Gemini</string>
 

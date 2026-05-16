@@ -52,6 +52,12 @@ playAppUpdate = "2.1.0"
 firebaseBom = "33.7.0"
 gmsGoogleServices = "4.4.2"
 firebaseCrashlyticsPlugin = "3.0.2"
+# HiveMQ MQTT Client — used by the optional Smart Home bridge to publish the
+# rendered insight prose to a user-hosted MQTT broker (Mosquitto add-on inside
+# Home Assistant, typically). Pure-Java + Netty; no JNI. The publisher uses the
+# blocking client wrapped in withContext(Dispatchers.IO), so no Reactor /
+# CompletableFuture await plumbing is needed in :app.
+hivemqMqttClient = "1.3.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -117,6 +123,8 @@ play-app-update-ktx = { group = "com.google.android.play", name = "app-update-kt
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+
+hivemq-mqtt-client = { group = "com.hivemq", name = "hivemq-mqtt-client", version.ref = "hivemqMqttClient" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -100,4 +100,19 @@ data class SettingsState(
      * mapping the Auto state resolves through.
      */
     val forecastModels: Set<ForecastModel>? = null,
+    /**
+     * Smart Home / Home Assistant MQTT bridge configuration. Master toggle
+     * (`mqttBridgeEnabled`) gates the publisher; the rest mirror the values
+     * in [UserPreferences] so the Smart Home settings card can render the
+     * config without subscribing to a second flow. `mqttPasswordSet` is a
+     * presence-only mirror of [SecureKeyStore.mqttPasswordConfiguredFlow] so
+     * the "Password saved" indicator never decrypts the stored secret.
+     */
+    val mqttBridgeEnabled: Boolean = false,
+    val mqttHost: String = "",
+    val mqttPort: Int = UserPreferences.DEFAULT_MQTT_PORT,
+    val mqttUseTls: Boolean = false,
+    val mqttUsername: String = "",
+    val mqttTopic: String = UserPreferences.DEFAULT_MQTT_TOPIC,
+    val mqttPasswordSet: Boolean = false,
 )

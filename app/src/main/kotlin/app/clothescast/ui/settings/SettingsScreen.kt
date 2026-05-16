@@ -51,6 +51,7 @@ enum class SettingsRoute(@StringRes val titleRes: Int, @StringRes val subtitleRe
     Location(R.string.settings_root_location, R.string.settings_root_location_subtitle),
     Forecasters(R.string.settings_root_forecasters, R.string.settings_root_forecasters_subtitle),
     Calendar(R.string.settings_root_calendar, R.string.settings_root_calendar_subtitle),
+    SmartHome(R.string.settings_root_smart_home, R.string.settings_root_smart_home_subtitle),
     Privacy(R.string.settings_root_privacy, R.string.settings_root_privacy_subtitle),
     About(R.string.settings_root_about),
 }
@@ -206,6 +207,19 @@ fun SettingsScreen(
                 location = state.location,
                 padding = padding,
                 onSetForecastModels = viewModel::setForecastModels,
+            )
+            SettingsRoute.SmartHome -> SmartHomeContent(
+                bridgeEnabled = state.mqttBridgeEnabled,
+                host = state.mqttHost,
+                port = state.mqttPort,
+                useTls = state.mqttUseTls,
+                username = state.mqttUsername,
+                topic = state.mqttTopic,
+                passwordSet = state.mqttPasswordSet,
+                padding = padding,
+                onSetBridgeEnabled = viewModel::setMqttBridgeEnabled,
+                onSaveConfig = viewModel::setMqttConfig,
+                onClearPassword = viewModel::clearMqttPassword,
             )
             SettingsRoute.Privacy -> PrivacyContent(
                 telemetryEnabled = state.telemetryEnabled,

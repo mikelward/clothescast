@@ -535,6 +535,15 @@ class FetchAndNotifyWorker(
             ForecastPeriod.TODAY -> deliverToday(insight, prefs, prose)
             ForecastPeriod.TONIGHT -> deliverTonight(insight, prefs, prose)
         }
+        // Publish the rendered prose to the user's MQTT broker if the
+        // Smart Home bridge is enabled. Both the fresh-fetch and same-day
+        // cache redelivery paths route through this single call site, so
+        // each twice-daily refresh pushes one retained message per period.
+        // The publisher logs and swallows broker / network failures so a
+        // dead broker can't break notification or TTS delivery — by the
+        // time this runs the user-facing delivery above has already
+        // completed.
+        app.mqttPublisher.publishIfEnabled(insight.period, prose)
     }
 
     private suspend fun deliverToday(insight: Insight, prefs: UserPreferences, prose: String) {

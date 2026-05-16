@@ -272,6 +272,39 @@ class SettingsRepository(
         dataStore.edit { it[TELEMETRY_ENABLED] = enabled }
     }
 
+    suspend fun setMqttBridgeEnabled(enabled: Boolean) {
+        dataStore.edit { it[MQTT_BRIDGE_ENABLED] = enabled }
+    }
+
+    /**
+     * Persists the MQTT broker connection settings for the optional Smart Home
+     * bridge. Blank host clears it (and effectively disables the bridge even
+     * if [setMqttBridgeEnabled] is true — the publisher gates on a non-blank
+     * host). The password is stored separately via [SecureKeyStore] and not
+     * touched here. A null [username] is interpreted as "anonymous auth";
+     * blank values are coerced to null so a half-typed field doesn't surface
+     * as an empty string on the next emission.
+     */
+    suspend fun setMqttConfig(
+        host: String?,
+        port: Int,
+        useTls: Boolean,
+        username: String?,
+        topic: String,
+    ) {
+        dataStore.edit { prefs ->
+            val cleanHost = host?.trim()?.takeIf { it.isNotBlank() }
+            if (cleanHost == null) prefs.remove(MQTT_HOST) else prefs[MQTT_HOST] = cleanHost
+            prefs[MQTT_PORT] = port
+            prefs[MQTT_USE_TLS] = useTls
+            val cleanUser = username?.trim()?.takeIf { it.isNotBlank() }
+            if (cleanUser == null) prefs.remove(MQTT_USER) else prefs[MQTT_USER] = cleanUser
+            val cleanTopic = topic.trim().takeIf { it.isNotBlank() }
+                ?: UserPreferences.DEFAULT_MQTT_TOPIC
+            prefs[MQTT_TOPIC] = cleanTopic
+        }
+    }
+
     suspend fun setColorPalette(palette: ColorPalette) {
         dataStore.edit { it[COLOR_PALETTE] = palette.name }
     }
@@ -470,6 +503,13 @@ class SettingsRepository(
             ?.mapNotNull { runCatching { ForecastModel.valueOf(it) }.getOrNull() }
             ?.toSet()
             ?.takeIf { it.isNotEmpty() }
+        val mqttBridgeEnabled = this[MQTT_BRIDGE_ENABLED] == true
+        val mqttHost = this[MQTT_HOST]?.takeIf { it.isNotBlank() }
+        val mqttPort = this[MQTT_PORT] ?: UserPreferences.DEFAULT_MQTT_PORT
+        val mqttUseTls = this[MQTT_USE_TLS] == true
+        val mqttUsername = this[MQTT_USER]?.takeIf { it.isNotBlank() }
+        val mqttTopic = this[MQTT_TOPIC]?.takeIf { it.isNotBlank() }
+            ?: UserPreferences.DEFAULT_MQTT_TOPIC
         val zone = zoneIdProvider()
 
         return UserPreferences(
@@ -502,6 +542,12 @@ class SettingsRepository(
             outfitTopColors = outfitTopColors,
             outfitBottomColors = outfitBottomColors,
             forecastModels = forecastModels,
+            mqttBridgeEnabled = mqttBridgeEnabled,
+            mqttHost = mqttHost,
+            mqttPort = mqttPort,
+            mqttUseTls = mqttUseTls,
+            mqttUsername = mqttUsername,
+            mqttTopic = mqttTopic,
         )
     }
 
@@ -665,6 +711,12 @@ class SettingsRepository(
         private val OUTFIT_TOP_COLORS = stringPreferencesKey("outfit_top_colors_json")
         private val OUTFIT_BOTTOM_COLORS = stringPreferencesKey("outfit_bottom_colors_json")
         private val FORECAST_MODELS = stringSetPreferencesKey("forecast_models")
+        private val MQTT_BRIDGE_ENABLED = booleanPreferencesKey("mqtt_bridge_enabled")
+        private val MQTT_HOST = stringPreferencesKey("mqtt_host")
+        private val MQTT_PORT = intPreferencesKey("mqtt_port")
+        private val MQTT_USE_TLS = booleanPreferencesKey("mqtt_use_tls")
+        private val MQTT_USER = stringPreferencesKey("mqtt_user")
+        private val MQTT_TOPIC = stringPreferencesKey("mqtt_topic")
 
         private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
         private val DEFAULT_TIME: LocalTime = LocalTime.of(7, 0)

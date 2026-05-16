@@ -141,8 +141,10 @@ day precipitating. Else fall back to mode." `N` tunable. Bypasses the
 "single-hour drizzle pollutes the day" problem of (2) without losing
 real rain events like (3).
 
-*Pro:* tuned to the actual product question ("should the day's prose /
-clothes rules treat this as a rainy day?").
+*Pro:* tuned to the actual product question ("should the day's
+prose treat this as a rainy day?"). Clothes rules don't observe
+this either way — that premise was scrubbed earlier in this doc —
+so the value is purely in the prose / icon affordance.
 *Con:* hand-tuned threshold. Bikesheddable.
 
 ### 6. Hybrid: change consumers, not the field
@@ -175,10 +177,15 @@ Same edge cases, different answers per option:
   per-model daily mode. (5) calls it `CLEAR` if 1 hour
   doesn't clear the threshold.
 
-- **Morning fog burns off to clear afternoon** — (1) picks the wettest
-  hour's condition; fog has 0% precip → may fall back to day-level
-  `FOG`. (2) → `FOG` (most severe of `FOG` and `CLEAR`). (3) →
-  whichever has more hours. (4) → per-model daily.
+- **Morning fog burns off to clear afternoon** — (1) `maxByOrNull`
+  on an all-0%-precip slice returns whichever hour comes first
+  among the ties, so the slice picks the first hour's condition
+  directly. Foggy hours are chronologically early, so option (1)
+  ends up with `FOG` via the slice rewrite — no fallback needed,
+  because the picked hour's condition isn't `UNKNOWN`. (2) → `FOG`
+  (severity max of `FOG` and `CLEAR`). (3) → whichever bucket has
+  more hours (likely `CLEAR` if afternoon dominates). (4) → per-
+  model daily aggregator.
 
 - **Mixed snow-then-rain day** — (1) picks the wettest hour's
   condition; usually `RAIN`. (2) → `SNOW` (more severe). (3) → mode.

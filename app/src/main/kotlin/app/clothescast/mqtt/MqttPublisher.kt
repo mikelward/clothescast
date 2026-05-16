@@ -3,18 +3,10 @@ package app.clothescast.mqtt
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.diag.DiagLog
-import com.hivemq.client.mqtt.MqttClient
-import com.hivemq.client.mqtt.datatypes.MqttQos
-import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.future.await
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.cancellation.CancellationException
-import java.util.UUID
-import java.util.concurrent.TimeUnit
 
 /**
  * Publishes the rendered insight prose to a user-hosted MQTT broker as a
@@ -32,7 +24,7 @@ import java.util.concurrent.TimeUnit
 class MqttPublisher(
     private val preferences: Flow<UserPreferences>,
     private val passwordProvider: suspend () -> String?,
-    private val publish: suspend (config: MqttConfig, topic: String, payload: String) -> Unit = ::publishWithHiveMq,
+    private val publish: suspend (config: MqttConfig, topic: String, payload: String) -> Unit = ::publishViaRawSocket,
     private val publishTimeoutMs: Long = DEFAULT_PUBLISH_TIMEOUT_MS,
 ) {
 
@@ -120,15 +112,6 @@ class MqttPublisher(
         private const val TAG = "MqttPublisher"
         const val DEFAULT_PUBLISH_TIMEOUT_MS = 5_000L
 
-        // Inner HiveMQ timeouts kept tighter than [DEFAULT_PUBLISH_TIMEOUT_MS]
-        // so the connect phase fails cleanly (with a ConnectionFailedException
-        // we can log) before the outer withTimeoutOrNull has to abort. Without
-        // these, a black-holed broker host would let TCP connect block past the
-        // outer timeout — coroutine cancellation can't interrupt a blocked
-        // socket call by itself.
-        internal const val SOCKET_CONNECT_TIMEOUT_MS = 4_000L
-        internal const val MQTT_CONNECT_TIMEOUT_MS = 4_000L
-
         fun topicFor(baseTopic: String, period: ForecastPeriod): String {
             val trimmed = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
             return "$trimmed/${period.name.lowercase()}"
@@ -148,58 +131,3 @@ data class MqttConfig(
     val username: String?,
     val password: String?,
 )
-
-private suspend fun publishWithHiveMq(
-    config: MqttConfig,
-    topic: String,
-    payload: String,
-) {
-    // Async client + awaited CompletableFutures (rather than the blocking
-    // client wrapped in Dispatchers.IO) so the outer withTimeoutOrNull and any
-    // WorkManager-issued cancel actually unwind the publish path. Coroutine
-    // cancellation cannot interrupt a blocked socket call from the blocking
-    // client; awaiting HiveMQ's CompletableFutures via kotlinx.coroutines.future
-    // is suspension-aware. The HiveMQ-level timeouts below cap the TCP +
-    // MQTT-CONNECT phase independently so a black-holed host fails clean even
-    // before the outer timeout fires.
-    val client: Mqtt3AsyncClient = MqttClient.builder()
-        .useMqttVersion3()
-        .identifier("clothescast-${UUID.randomUUID()}")
-        .serverHost(config.host)
-        .serverPort(config.port)
-        .apply { if (config.useTls) sslWithDefaultConfig() }
-        .transportConfig()
-            .mqttConnectTimeout(MqttPublisher.MQTT_CONNECT_TIMEOUT_MS, TimeUnit.MILLISECONDS)
-            .socketConnectTimeout(MqttPublisher.SOCKET_CONNECT_TIMEOUT_MS, TimeUnit.MILLISECONDS)
-            .applyTransportConfig()
-        .buildAsync()
-    try {
-        val connect = client.connectWith()
-        if (!config.username.isNullOrBlank()) {
-            connect.simpleAuth()
-                .username(config.username)
-                .apply { if (!config.password.isNullOrEmpty()) password(config.password.toByteArray(Charsets.UTF_8)) }
-                .applySimpleAuth()
-        }
-        connect.send().await()
-        client.publishWith()
-            .topic(topic)
-            .payload(payload.toByteArray(Charsets.UTF_8))
-            .qos(MqttQos.AT_LEAST_ONCE)
-            .retain(true)
-            .send()
-            .await()
-    } finally {
-        // Run disconnect in a NonCancellable context so that when the outer
-        // coroutine is cancelled mid-publish we still send a clean DISCONNECT
-        // (no half-open connection left on the broker) before unwinding.
-        withContext(NonCancellable) {
-            try {
-                client.disconnect().await()
-            } catch (_: Throwable) {
-                // Best-effort cleanup; nothing actionable for the caller here.
-            }
-        }
-    }
-}
-

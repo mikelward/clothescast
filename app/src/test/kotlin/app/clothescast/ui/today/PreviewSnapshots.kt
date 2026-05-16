@@ -13,6 +13,17 @@ import app.clothescast.notification.NotificationIconTShirtPreview
 import app.clothescast.notification.NotificationIconThickJacketPreview
 import app.clothescast.ui.LauncherIconDevPreview
 import app.clothescast.ui.LauncherIconPreview
+import app.clothescast.ui.garment.ClothingJeansPreview
+import app.clothescast.ui.garment.ClothingLongPantsPreview
+import app.clothescast.ui.garment.ClothingLongSkirtPreview
+import app.clothescast.ui.garment.ClothingPoloPreview
+import app.clothescast.ui.garment.ClothingPufferJacketPreview
+import app.clothescast.ui.garment.ClothingShortsPreview
+import app.clothescast.ui.garment.ClothingSweaterPreview
+import app.clothescast.ui.garment.ClothingTShirtPreview
+import app.clothescast.ui.garment.ClothingThickCoatPreview
+import app.clothescast.ui.garment.ClothingThickJacketPreview
+import app.clothescast.ui.garment.ClothingThinJacketPreview
 import app.clothescast.ui.onboarding.OnboardingCompletePreview
 import app.clothescast.ui.onboarding.OnboardingFreshPreview
 import app.clothescast.ui.onboarding.OnboardingPartialPreview
@@ -430,6 +441,18 @@ class PreviewSnapshots {
     @Test fun notification_icon_sweater() = capture { NotificationIconSweaterPreview() }
     @Test fun notification_icon_thick_jacket() = capture { NotificationIconThickJacketPreview() }
 
+    @Test fun clothing_tshirt() = capture { ClothingTShirtPreview() }
+    @Test fun clothing_polo() = capture { ClothingPoloPreview() }
+    @Test fun clothing_sweater() = capture { ClothingSweaterPreview() }
+    @Test fun clothing_thin_jacket() = capture { ClothingThinJacketPreview() }
+    @Test fun clothing_thick_jacket() = capture { ClothingThickJacketPreview() }
+    @Test fun clothing_thick_coat() = capture { ClothingThickCoatPreview() }
+    @Test fun clothing_puffer_jacket() = capture { ClothingPufferJacketPreview() }
+    @Test fun clothing_shorts() = capture { ClothingShortsPreview() }
+    @Test fun clothing_long_skirt() = capture { ClothingLongSkirtPreview() }
+    @Test fun clothing_jeans() = capture { ClothingJeansPreview() }
+    @Test fun clothing_long_pants() = capture { ClothingLongPantsPreview() }
+
     @Test fun widget_today_tshirt_shorts() = capture { WidgetTodayTShirtShortsPreview() }
     @Test fun widget_tonight_sweater_pants() = capture { WidgetTonightSweaterPantsPreview() }
     @Test fun widget_today_jacket_pants() = capture { WidgetTodayJacketPantsPreview() }
@@ -500,6 +523,7 @@ class PreviewSnapshots {
             "app.clothescast.ui.today.TodayPreviewsKt",
             "app.clothescast.ui.onboarding.OnboardingPreviewsKt",
             "app.clothescast.ui.settings.SettingsPreviewsKt",
+            "app.clothescast.ui.garment.GarmentDrawablePreviewsKt",
             "app.clothescast.notification.NotificationIconPreviewsKt",
             "app.clothescast.widget.WidgetPreviewsKt",
         ).map { Class.forName(it) }

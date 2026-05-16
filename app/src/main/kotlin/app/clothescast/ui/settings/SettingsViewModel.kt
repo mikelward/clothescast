@@ -100,6 +100,12 @@ class SettingsViewModel(
      * network; the Activity/Application wires the real publisher.
      */
     private val mqttPublisher: MqttPublisher? = null,
+    /**
+     * Full prose + image publish using the most recently cached insight.
+     * When non-null, [publishNow] calls this instead of [MqttPublisher.publishTest];
+     * falls back to the connectivity probe when null (pure-VM tests).
+     */
+    private val fullPublish: (suspend () -> MqttPublishOutcome)? = null,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
@@ -508,7 +514,8 @@ class SettingsViewModel(
         viewModelScope.launch {
             _state.update { it.copy(mqttPublishing = true) }
             try {
-                when (val outcome = publisher.publishTest()) {
+                val action = fullPublish ?: { publisher.publishTest() }
+                when (val outcome = action()) {
                     is MqttPublishOutcome.NotConfigured -> Unit
                     is MqttPublishOutcome.Success -> settingsRepository.setMqttLastError(null)
                     is MqttPublishOutcome.Failure -> settingsRepository.setMqttLastError(outcome.message)
@@ -594,6 +601,7 @@ class SettingsViewModel(
         private val resolveDeviceLocationWithCity: suspend () -> Location? = { null },
         private val workManager: WorkManager? = null,
         private val mqttPublisher: MqttPublisher? = null,
+        private val fullPublish: (suspend () -> MqttPublishOutcome)? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -613,6 +621,7 @@ class SettingsViewModel(
                 resolveDeviceLocationWithCity = resolveDeviceLocationWithCity,
                 workManager = workManager,
                 mqttPublisher = mqttPublisher,
+                fullPublish = fullPublish,
             ) as T
         }
     }

@@ -153,6 +153,8 @@ internal val garmentColorPresets: List<Color> = listOf(
     Color(0xFFEC407A), // pink
     Color(0xFFF8BBD0), // light pink
     Color(0xFF8D6E63), // brown
+    Color(0xFF6D4C41), // medium brown
+    Color(0xFF4E342E), // dark brown
     Color(0xFFE8D5B7), // beige
     Color(0xFFFFFFFF), // white
     Color(0xFF9E9E9E), // grey

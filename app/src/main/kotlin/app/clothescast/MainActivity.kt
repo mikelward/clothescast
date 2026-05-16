@@ -43,6 +43,7 @@ import app.clothescast.ui.pairing.PairingViewModel
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.mqtt.MqttPublishOutcome
+import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.renderOutfitCard
 import app.clothescast.ui.settings.SettingsRoute
 import app.clothescast.ui.settings.SettingsScreen
@@ -347,17 +348,28 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                         val prefs = app.settingsRepository.preferences.first()
                         val insight = app.insightCache.thisPeriod.first()
                             ?: return@Factory app.mqttPublisher.publishTest()
-                        val prose = InsightFormatter.forRegion(context, prefs.region)
-                            .format(insight.summary)
+                        val formatter = InsightFormatter.forRegion(context, prefs.region)
+                        val prose = formatter.format(insight.summary)
                         val outcome = app.mqttPublisher.publishIfEnabled(insight.period, prose)
                         insight.outfit?.let { outfit ->
                             runCatching {
-                                val label = if (insight.period == ForecastPeriod.TODAY) "Today" else "Tonight"
+                                val info = outfitCardInfoLines(
+                                    context = context,
+                                    formatter = formatter,
+                                    hourly = insight.hourly,
+                                    temperatureUnit = prefs.temperatureUnit,
+                                )
+                                val header = context.getString(
+                                    if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today
+                                    else R.string.outfit_card_header_tonight
+                                )
                                 val png = renderOutfitCard(
                                     context = context,
                                     outfit = outfit,
-                                    periodLabel = label,
+                                    header = header,
                                     prose = prose,
+                                    tempLine = info.tempLine,
+                                    rainLine = info.rainLine,
                                     topColors = prefs.outfitTopColors,
                                     bottomColors = prefs.outfitBottomColors,
                                 )

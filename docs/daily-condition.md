@@ -124,16 +124,18 @@ clothes rules treat this as a rainy day?").
 ### 6. Hybrid: change consumers, not the field
 
 Leave `DailyForecast.condition` as best_match's day-level value (or
-whatever upstream gave us), and *change the clothes-rule + insight
-consumers* to read from `today.hourly` directly with their own
-aggregation per consumer. The day-level field becomes "what does Open-
-Meteo think the day is, full stop", and each consumer derives what it
-needs.
+whatever upstream gave us) and change the (single) insight-prose
+consumer to derive what it needs from `today.hourly` directly
+rather than reading the day-level field. `RenderInsightSummary`'s
+`PrecipClause` fallback becomes self-contained instead of leaning
+on a value that may or may not be the right summary.
 
-*Pro:* most accurate per-use-case (umbrella rule cares about "any rain
-window in the daytime"; insight prose cares about "biggest weather
-event").
-*Con:* spreads the aggregation logic. Repeats. More to test.
+*Pro:* the aggregation lives where it's used; no
+"`DailyForecast.condition` must be exactly right" contract for
+downstream.
+*Con:* one more place to keep in step with future condition-
+related changes. Marginal vs. just leaving the existing
+wettest-hour rewrite alone.
 
 ## Edge cases each option has to answer
 
@@ -194,14 +196,23 @@ Until then, keep the change cost where it belongs (zero).
   legible.
 - Recommendation flipped from (2) to (1) as a consequence.
 - Options (2)–(6) left intact as reference — useful if the picture
-  changes again.
+  changes again. Note that (4) is the "purest" alternative if we
+  later add daily-level cross-model fields or if the wettest-hour
+  rewrite turns out to read wrong in practice.
 
-(4) is the "purest" option, and the right one to pick if we later add
-more daily-level cross-model fields (or if (2) feels noisy in practice
-and we want to delegate to each model's own daily aggregator).
+## What would justify revisiting
 
-## Open question worth your call
+Concrete signals to watch for that would flip the recommendation
+back toward (2)/(4)/(6):
 
-How important is **clothes-rule correctness on divergent days vs.
-prose readability on quiet days**? If the former wins, lean (2)/(4)/
-(5). If the latter, (1)/(3) suffice.
+- A future day-summary icon that reads `DailyForecast.condition`
+  directly and visibly disagrees with the chart on divergent days.
+- A new `ClothesRule` subtype that actually does key off
+  `forecast.condition` (today's variants don't, but nothing
+  stops a future one).
+- Recurring user reports of the `PrecipClause` fallback prose
+  surfacing the wrong condition on dry days where the peak hour
+  isn't precipitating.
+
+Until any of those land, leaving the existing rewrite alone is the
+right call.

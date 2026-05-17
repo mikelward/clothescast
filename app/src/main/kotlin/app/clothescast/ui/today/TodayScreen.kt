@@ -303,45 +303,48 @@ private fun TodayContent(
             .fillMaxSize()
             .padding(padding),
     ) {
-        // Pinned header — banners only. Outside the pager so critical
-        // banners (update available, crash report, telemetry notice,
-        // location required, work status) aren't duplicated per page.
-        // The outfit row used to live here too, but it pinned a lot of
-        // vertical space at the top regardless of which page was in
-        // view; it now scrolls with each page (rendered inside TodayPage
-        // below) so more chart cards fit in a single screen of scroll.
+        // Pinned banners — outside the pager so critical banners (update
+        // available, crash report, telemetry notice, location required,
+        // work status) aren't duplicated per page. The outfit row used to
+        // live here too, but it pinned a lot of vertical space at the top
+        // regardless of which page was in view; it now scrolls with each
+        // page (rendered inside TodayPage below) so more chart cards fit
+        // in a single screen of scroll.
+        //
+        // Each banner carries its own top + horizontal padding so that
+        // hidden banners (every banner here early-returns when its
+        // condition isn't met) contribute zero vertical space — that's
+        // what keeps the outfit row from sitting under a permanent 40dp
+        // blank strip in the steady state. Adjacent visible banners are
+        // 16dp apart (the top padding of the lower one).
         //
         // UpdateAvailableBanner is first on purpose: a stale build is
         // the upstream cause of many bug reports, so giving the user
         // the chance to update before they notice anything else is the
         // highest-leverage placement.
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 24.dp, bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            UpdateAvailableBanner()
-            LocalBuildBanner()
-            LastCrashBanner()
-            // One-shot privacy disclosure for the default-on Firebase
-            // telemetry, so the default isn't silent. Auto-hides once the
-            // user dismisses it (or taps through to Privacy from it).
-            // Stays out of the way of the crash banner: that's a current
-            // problem to action; this is just disclosure.
-            TelemetryNoticeBanner(onOpenPrivacy = onOpenPrivacy)
-            if (locationActionRequired) {
-                LocationActionRequiredBanner(onSetUpLocation = onSetUpLocation)
-            }
-            WorkStatusBanner(status = workStatusToShow)
+        val bannerModifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
+        UpdateAvailableBanner(modifier = bannerModifier)
+        LocalBuildBanner(modifier = bannerModifier)
+        LastCrashBanner(modifier = bannerModifier)
+        // One-shot privacy disclosure for the default-on Firebase
+        // telemetry, so the default isn't silent. Auto-hides once the
+        // user dismisses it (or taps through to Privacy from it).
+        // Stays out of the way of the crash banner: that's a current
+        // problem to action; this is just disclosure.
+        TelemetryNoticeBanner(onOpenPrivacy = onOpenPrivacy, modifier = bannerModifier)
+        if (locationActionRequired) {
+            LocationActionRequiredBanner(
+                onSetUpLocation = onSetUpLocation,
+                modifier = bannerModifier,
+            )
         }
+        WorkStatusBanner(status = workStatusToShow, modifier = bannerModifier)
         if (state.thisPeriodInsight == null) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .padding(bottom = 24.dp),
+                    .padding(top = 16.dp, bottom = 24.dp),
             ) {
                 EmptyState(onRefresh = onRefresh, isWorking = isWorking)
             }
@@ -435,7 +438,7 @@ private fun TodayPage(
             .fillMaxSize()
             .verticalScroll(scrollState)
             .padding(horizontal = 16.dp)
-            .padding(bottom = 24.dp),
+            .padding(top = 16.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         // Outfit row sits above the null-insight short-circuit so it
@@ -644,9 +647,12 @@ internal fun MissingPeriodPlaceholder(
 }
 
 @Composable
-internal fun LocationActionRequiredBanner(onSetUpLocation: () -> Unit) {
+internal fun LocationActionRequiredBanner(
+    onSetUpLocation: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.errorContainer,
             contentColor = MaterialTheme.colorScheme.onErrorContainer,
@@ -702,14 +708,17 @@ internal fun bannerStatus(
 }
 
 @Composable
-internal fun WorkStatusBanner(status: WorkStatus) {
+internal fun WorkStatusBanner(
+    status: WorkStatus,
+    modifier: Modifier = Modifier,
+) {
     when (status) {
         is WorkStatus.Idle -> Unit
-        is WorkStatus.Running -> SpinnerBanner(stringResource(R.string.today_working))
-        is WorkStatus.Retrying -> SpinnerBanner(stringResource(R.string.today_retrying))
+        is WorkStatus.Running -> SpinnerBanner(stringResource(R.string.today_working), modifier)
+        is WorkStatus.Retrying -> SpinnerBanner(stringResource(R.string.today_retrying), modifier)
         is WorkStatus.Failed -> {
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.errorContainer,
                     contentColor = MaterialTheme.colorScheme.onErrorContainer,
@@ -751,8 +760,8 @@ internal fun WorkStatusBanner(status: WorkStatus) {
 }
 
 @Composable
-private fun SpinnerBanner(message: String) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+private fun SpinnerBanner(message: String, modifier: Modifier = Modifier) {
+    Card(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,

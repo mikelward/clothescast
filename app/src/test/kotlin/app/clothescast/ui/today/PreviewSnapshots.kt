@@ -537,7 +537,12 @@ class PreviewSnapshots {
     fun settings_forecasters() = capture { SettingsForecastersPreview() }
 
     @Test fun settings_calendar() = capture { SettingsCalendarPreview() }
-    @Test fun settings_holidays() = capture { SettingsHolidaysPreview() }
+    // The Holidays page renders a top toggle card + one collapsible per
+    // country (15) + a flat "All" collapsible — well past the class-level
+    // 640dp viewport. Stretch tall enough to capture the whole stack.
+    @Test
+    @Config(qualifiers = "w360dp-h1600dp-xhdpi")
+    fun settings_holidays() = capture { SettingsHolidaysPreview() }
     @Test fun settings_privacy() = capture { SettingsPrivacyPreview() }
     // The MQTT card stretches well past the 640dp class-level viewport once
     // the discovery picker is showing hits + the full form (host / port /

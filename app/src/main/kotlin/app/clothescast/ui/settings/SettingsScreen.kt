@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.R
+import app.clothescast.tts.toJavaLocale
 import app.clothescast.ui.EdgeFadeOverlay
 
 /**
@@ -204,15 +205,18 @@ fun SettingsScreen(
                 onSetColorPalette = viewModel::setColorPalette,
             )
             SettingsRoute.Holidays -> HolidaysContent(
-                enabledHolidays = state.enabledHolidays,
-                holidayCountryMode = state.holidayCountryMode,
-                enabledHolidayCountries = state.enabledHolidayCountries,
-                autoEnabledHolidayCountries = state.autoEnabledHolidayCountries,
+                holidayCountrySelection = state.holidayCountrySelection,
+                holidayOverrides = state.holidayOverrides,
                 effectiveEnabledHolidayCountries = state.effectiveEnabledHolidayCountries,
+                localeCountry = state.region.toJavaLocale()?.country
+                    ?: java.util.Locale.getDefault().country,
+                weatherLocationCountry = state.location?.countryCode,
                 padding = padding,
-                onSetEnabled = viewModel::setEnabledHoliday,
-                onSetCountryMode = viewModel::setHolidayCountryMode,
+                onSetCountryHome = viewModel::setHolidayCountryHome,
+                onSetCountryCurrent = viewModel::setHolidayCountryCurrent,
+                onSetCountryAll = viewModel::setHolidayCountryAll,
                 onSetCountryEnabled = viewModel::setHolidayCountryEnabled,
+                onSetHolidayOverride = viewModel::setHolidayOverride,
             )
             SettingsRoute.Location -> LocationContent(
                 location = state.location,

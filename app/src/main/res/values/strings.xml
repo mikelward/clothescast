@@ -1031,25 +1031,41 @@
     so :core:domain doesn't need to depend on R. Order below mirrors
     HolidayCatalog.all (calendar order).
     -->
-    <string name="settings_holidays_title">Holiday themes</string>
-    <string name="settings_holidays_description">On each day below, the outfit preview switches to themed colours and a small banner appears.</string>
+    <string name="settings_holidays_title">Holidays</string>
 
-    <!-- Country filter for the holiday list. Auto = locale + weather-location
-         country + Global; All = every country in the catalogue; Custom =
-         the user picks individually from the country toggles below. -->
-    <string name="settings_holiday_countries_title">Countries</string>
-    <string name="settings_holiday_countries_description">Choose which countries\' holidays appear in the list below.</string>
-    <string name="settings_holiday_country_mode_auto_format">Auto (%1$s)</string>
-    <string name="settings_holiday_country_mode_all">All countries</string>
-    <string name="settings_holiday_country_mode_custom">Custom</string>
-    <string name="settings_holiday_countries_pick_title">Pick countries</string>
-    <string name="settings_holidays_empty_for_country_filter">No holidays match the current country selection. Add a country above or switch to All.</string>
+    <!-- Country picker for the holiday filter. Settings → Holidays has a
+         top-of-page card with the country-source toggles (Home / Current
+         / All), then one collapsible per country listing that country's
+         holidays plus the four universal globals (Christmas, NYE,
+         Halloween, Valentine's). An "All" section at the bottom shows
+         every holiday flat for power-user search. Section headers carry
+         a "(n/m)" summary so the user can see active vs total at a
+         glance without expanding. -->
+    <!-- "%1$s" is the resolved locale country / weather-location country
+         name, or the "Unknown" fallback when the country is not
+         available. -->
+    <string name="settings_holiday_country_home">Home (%1$s)</string>
+    <string name="settings_holiday_country_current">Current location (%1$s)</string>
+    <string name="settings_holiday_country_unknown">Unknown</string>
+    <string name="settings_holiday_country_all_label">All</string>
+    <string name="settings_holiday_all_section_title">All</string>
+    <string name="settings_holidays_expand">Expand</string>
+    <string name="settings_holidays_collapse">Collapse</string>
 
-    <!-- Country display names for the Settings → Holidays picker. Order
-         matches HolidayCatalog.allCountries (calendar-order union); the
-         GLOBAL bucket renders the universal holidays (Christmas, New
-         Year\'s, Valentine\'s, Halloween). -->
-    <string name="settings_holiday_country_global">Global</string>
+    <!-- Per-holiday override dropdown. Auto resolves via the country
+         picker; the trigger label includes the current resolution in
+         parentheses so the user can see what Auto is doing without
+         flipping it. On / Off bypass the country picker in either
+         direction. -->
+    <string name="settings_holiday_override_auto_on">Auto (on)</string>
+    <string name="settings_holiday_override_auto_off">Auto (off)</string>
+    <string name="settings_holiday_override_on">On</string>
+    <string name="settings_holiday_override_off">Off</string>
+
+    <!-- Country display names for the Settings → Holidays picker.
+         Universal holidays (Christmas, NYE, Valentine's, Halloween) are
+         folded into every country's list instead of getting their own
+         section. -->
     <string name="settings_holiday_country_au">Australia</string>
     <string name="settings_holiday_country_br">Brazil</string>
     <string name="settings_holiday_country_ca">Canada</string>

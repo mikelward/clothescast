@@ -6,9 +6,9 @@ import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
-import app.clothescast.core.domain.model.HolidayCatalog
-import app.clothescast.core.domain.model.HolidayCountryMode
+import app.clothescast.core.domain.model.HolidayCountrySelection
 import app.clothescast.core.domain.model.HolidayId
+import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
@@ -54,37 +54,26 @@ data class SettingsState(
     /** Sibling of [outfitTopColors] for the bottom-icon tier. */
     val outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     /**
-     * Holiday themes the user has opted into. Default is "all on" — the per-
-     * holiday switches in Settings → Holidays let the user pare it down.
+     * Country picker checkboxes — Home / Current / All plus per-country
+     * opt-ins. Defaults to Home + Current on (the previous "Auto"
+     * behaviour) so a fresh install surfaces the locale + weather-
+     * location country plus the universal globals (which ride along
+     * automatically whenever any country is enabled).
      */
-    val enabledHolidays: Set<HolidayId> = HolidayId.entries.toSet(),
+    val holidayCountrySelection: HolidayCountrySelection = HolidayCountrySelection(),
     /**
-     * How the per-holiday list filters by country. AUTO (the default) shows
-     * the locale country + weather-location country + the Global bucket;
-     * ALL shows everything; CUSTOM honours [enabledHolidayCountries].
+     * Per-holiday explicit overrides. Missing entries are [HolidayOverride.AUTO]
+     * (the default — follow the country picker). Only ON / OFF are stored.
      */
-    val holidayCountryMode: HolidayCountryMode = HolidayCountryMode.AUTO,
+    val holidayOverrides: Map<HolidayId, HolidayOverride> = emptyMap(),
     /**
-     * Explicit per-country pick when [holidayCountryMode] is CUSTOM. ISO
-     * 3166-1 alpha-2 codes plus [HolidayCatalog.GLOBAL_COUNTRY]. Defaults
-     * to all countries so the first switch to CUSTOM starts from the
-     * existing universe rather than nothing.
+     * The effective enabled-country set the resolver uses today, derived
+     * from [holidayCountrySelection] + the user's locale + the weather
+     * location's country. Exposed to the UI so each per-holiday row can
+     * label its "Auto" dropdown option with the currently-resolved state
+     * ("Auto (on)" vs "Auto (off)").
      */
-    val enabledHolidayCountries: Set<String> = HolidayCatalog.allCountries,
-    /**
-     * What the AUTO mode currently resolves to — used by the Settings UI
-     * to render the "Auto (Australia, United Kingdom, Global)" subtitle.
-     * Mirrors the pattern [SettingsState.temperatureUnit] uses for the
-     * "Auto (°C)" label on the unit picker.
-     */
-    val autoEnabledHolidayCountries: Set<String> = setOf(HolidayCatalog.GLOBAL_COUNTRY),
-    /**
-     * The set the resolver actually uses today — computed from
-     * [holidayCountryMode], [enabledHolidayCountries], and
-     * [autoEnabledHolidayCountries] so the per-holiday list can filter
-     * itself without redoing the mode switch in the composable.
-     */
-    val effectiveEnabledHolidayCountries: Set<String> = setOf(HolidayCatalog.GLOBAL_COUNTRY),
+    val effectiveEnabledHolidayCountries: Set<String> = emptySet(),
     val clothesRules: List<ClothesRule> = ClothesRule.DEFAULTS,
     val defaultBottom: OutfitSuggestion.Bottom = OutfitSuggestion.Bottom.LONG_PANTS,
     val location: Location? = null,

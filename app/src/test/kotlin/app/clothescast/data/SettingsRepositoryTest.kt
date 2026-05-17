@@ -18,6 +18,8 @@ import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TemperatureUnitSetting
+import app.clothescast.core.domain.model.HolidayId
+import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.model.VoiceLocale
@@ -207,39 +209,54 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `holidayCountryMode defaults to AUTO and round-trips`() = runTest {
-        subject.preferences.first().holidayCountryMode shouldBe
-            app.clothescast.core.domain.model.HolidayCountryMode.AUTO
-
-        subject.setHolidayCountryMode(app.clothescast.core.domain.model.HolidayCountryMode.ALL)
-        subject.preferences.first().holidayCountryMode shouldBe
-            app.clothescast.core.domain.model.HolidayCountryMode.ALL
-
-        subject.setHolidayCountryMode(app.clothescast.core.domain.model.HolidayCountryMode.CUSTOM)
-        subject.preferences.first().holidayCountryMode shouldBe
-            app.clothescast.core.domain.model.HolidayCountryMode.CUSTOM
+    fun `holidayCountrySelection defaults to home+current on with all off`() = runTest {
+        val selection = subject.preferences.first().holidayCountrySelection
+        selection.home shouldBe true
+        selection.current shouldBe true
+        selection.all shouldBe false
+        selection.countries shouldBe emptySet()
     }
 
     @Test
-    fun `enabledHolidayCountries defaults to allCountries and round-trips per toggle`() = runTest {
-        val all = app.clothescast.core.domain.model.HolidayCatalog.allCountries
-        subject.preferences.first().enabledHolidayCountries shouldBe all
+    fun `holiday country picker flags round-trip independently`() = runTest {
+        subject.setHolidayCountryHome(false)
+        subject.preferences.first().holidayCountrySelection.home shouldBe false
 
-        // Turning off "US" subtracts from the default-on full set.
-        subject.setHolidayCountryEnabled("US", enabled = false)
-        subject.preferences.first().enabledHolidayCountries shouldBe (all - "US")
+        subject.setHolidayCountryCurrent(false)
+        subject.preferences.first().holidayCountrySelection.current shouldBe false
 
-        // Lowercase input normalises to uppercase storage.
-        subject.setHolidayCountryEnabled("us", enabled = true)
-        subject.preferences.first().enabledHolidayCountries shouldBe all
+        subject.setHolidayCountryAll(true)
+        subject.preferences.first().holidayCountrySelection.all shouldBe true
+    }
 
-        // Adding a country not previously in the set (Global bucket) works too.
-        subject.setHolidayCountryEnabled(
-            app.clothescast.core.domain.model.HolidayCatalog.GLOBAL_COUNTRY,
-            enabled = false,
-        )
-        val withoutGlobal = all - app.clothescast.core.domain.model.HolidayCatalog.GLOBAL_COUNTRY
-        subject.preferences.first().enabledHolidayCountries shouldBe withoutGlobal
+    @Test
+    fun `per-country opt-ins round-trip with uppercase normalisation`() = runTest {
+        subject.preferences.first().holidayCountrySelection.countries shouldBe emptySet()
+
+        subject.setHolidayCountryEnabled("fr", enabled = true)
+        subject.preferences.first().holidayCountrySelection.countries shouldBe setOf("FR")
+
+        subject.setHolidayCountryEnabled("DE", enabled = true)
+        subject.preferences.first().holidayCountrySelection.countries shouldBe setOf("FR", "DE")
+
+        subject.setHolidayCountryEnabled("FR", enabled = false)
+        subject.preferences.first().holidayCountrySelection.countries shouldBe setOf("DE")
+    }
+
+    @Test
+    fun `holidayOverrides defaults to empty and round-trips per holiday`() = runTest {
+        val id = HolidayId.CHRISTMAS_DAY
+        subject.preferences.first().holidayOverrides shouldBe emptyMap()
+
+        subject.setHolidayOverride(id, HolidayOverride.ON)
+        subject.preferences.first().holidayOverrides shouldBe mapOf(id to HolidayOverride.ON)
+
+        subject.setHolidayOverride(id, HolidayOverride.OFF)
+        subject.preferences.first().holidayOverrides shouldBe mapOf(id to HolidayOverride.OFF)
+
+        // AUTO clears the override (sparse storage — missing means AUTO).
+        subject.setHolidayOverride(id, HolidayOverride.AUTO)
+        subject.preferences.first().holidayOverrides shouldBe emptyMap()
     }
 
     @Test

@@ -570,6 +570,8 @@ class FetchAndNotifyWorker(
                     prose = prose,
                     tempLine = info.tempLine,
                     rainLine = info.rainLine,
+                    tempFillFraction = info.tempFillFraction,
+                    rainFillFraction = info.rainFillFraction,
                     topColors = prefs.outfitTopColors,
                     bottomColors = prefs.outfitBottomColors,
                 )

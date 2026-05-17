@@ -187,7 +187,11 @@ class HolidayResolverTest {
     @Test
     fun `Halloween matches Oct 31`() {
         subject.resolve(LocalDate.of(2026, 10, 31), noOverrides, allCountries)?.id shouldBe HolidayId.HALLOWEEN
-        subject.resolve(LocalDate.of(2026, 11, 1), noOverrides, allCountries).shouldBeNull()
+        // Nov 1 fires All Saints' Day under all-countries enabled — the
+        // catalog entry covers AT, DE, ES, FR, HR, IT. Asserting the
+        // resolved id keeps this test's scope on the Halloween entry's
+        // dateboundary without sliding into a wider "nothing else fires".
+        subject.resolve(LocalDate.of(2026, 11, 1), noOverrides, allCountries)?.id shouldBe HolidayId.ALL_SAINTS_DAY
     }
 
     @Test

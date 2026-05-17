@@ -125,6 +125,17 @@ class MainActivity : ComponentActivity() {
                             android.graphics.Color.TRANSPARENT,
                         ) { darkTheme },
                     )
+                    // enableEdgeToEdge with SystemBarStyle.auto leaves
+                    // isNavigationBarContrastEnforced = true (the AUTO night-mode
+                    // path), so the system overlays its own translucent scrim
+                    // across the nav-bar area "for contrast." With gesture nav
+                    // the inset is only ~16-24 dp tall, so the top edge of that
+                    // scrim reads as a sharp horizontal line on top of our
+                    // content — especially against the scroll-fade gradient that
+                    // lands at the same vertical position. The app already paints
+                    // its own uniform background through that band, so the system
+                    // scrim is both unnecessary and visually jarring.
+                    window.isNavigationBarContrastEnforced = false
                     onDispose {}
                 }
                 ClothesCastTheme(darkTheme = darkTheme, colorPalette = colorPalette) {

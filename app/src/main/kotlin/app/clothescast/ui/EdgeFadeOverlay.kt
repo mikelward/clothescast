@@ -51,6 +51,12 @@ internal fun EdgeFadeOverlay(
         targetValue = if (bottomFadeVisible) 1f else 0f,
         label = "bottomFade",
     )
+    // Color.Transparent is fully transparent *black*, so a linear gradient
+    // between it and the (light) background colour passes through a darker
+    // mid-tone — a faint band the eye picks up where it crosses the cards.
+    // Keep RGB constant through the gradient by fading the same colour's
+    // alpha instead.
+    val transparentColor = color.copy(alpha = 0f)
     Box(modifier = modifier.fillMaxSize()) {
         content()
         Box(
@@ -61,7 +67,7 @@ internal fun EdgeFadeOverlay(
                 .alpha(topAlpha)
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(color, Color.Transparent),
+                        colors = listOf(color, transparentColor),
                     ),
                 ),
         )
@@ -83,7 +89,7 @@ internal fun EdgeFadeOverlay(
                 .alpha(bottomAlpha)
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, color),
+                        colors = listOf(transparentColor, color),
                     ),
                 ),
         )

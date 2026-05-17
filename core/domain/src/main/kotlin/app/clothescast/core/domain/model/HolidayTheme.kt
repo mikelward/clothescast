@@ -91,9 +91,24 @@ enum class HolidayId {
 sealed interface HolidayDate {
     fun matches(date: LocalDate): Boolean
 
+    /**
+     * Materialises the predicate into the actual [LocalDate] the holiday
+     * falls on in [year]. Used by the Settings UI to sort entries within
+     * each country bucket chronologically; the caller picks a
+     * representative year (typically the current one) and the sort
+     * comparison reads only month + day, so the relative ordering is
+     * effectively year-agnostic for the vast majority of catalog
+     * entries (movable holidays that straddle a neighbouring fixed
+     * date are the only edge cases, and they're still locally
+     * coherent).
+     */
+    fun dateIn(year: Int): LocalDate
+
     data class Fixed(val month: Month, val day: Int) : HolidayDate {
         override fun matches(date: LocalDate): Boolean =
             date.month == month && date.dayOfMonth == day
+
+        override fun dateIn(year: Int): LocalDate = LocalDate.of(year, month, day)
     }
 
     /**
@@ -106,6 +121,12 @@ sealed interface HolidayDate {
             // 1st of the month's day-of-month is 1..7; 2nd is 8..14; etc.
             // Equivalent to: ((dayOfMonth - 1) / 7) + 1 == nth.
             return (date.dayOfMonth - 1) / 7 + 1 == nth
+        }
+
+        override fun dateIn(year: Int): LocalDate {
+            val first = LocalDate.of(year, month, 1)
+            val shift = (day.value - first.dayOfWeek.value + 7) % 7
+            return first.plusDays(shift.toLong() + (nth - 1) * 7L)
         }
     }
 
@@ -122,6 +143,13 @@ sealed interface HolidayDate {
             // crosses into the next month — i.e. there's no further
             // occurrence of the same weekday inside [month].
             return date.plusDays(7).month != month
+        }
+
+        override fun dateIn(year: Int): LocalDate {
+            val lastOfMonth = LocalDate.of(year, month, 1)
+                .with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())
+            val shiftBack = (lastOfMonth.dayOfWeek.value - day.value + 7) % 7
+            return lastOfMonth.minusDays(shiftBack.toLong())
         }
     }
 }

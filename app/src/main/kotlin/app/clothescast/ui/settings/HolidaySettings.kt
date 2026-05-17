@@ -44,6 +44,7 @@ import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.ui.EdgeFadeOverlay
 import java.text.Collator
+import java.time.LocalDate
 import java.util.Locale
 
 /**
@@ -88,10 +89,25 @@ internal fun HolidaysContent(
         context.resources.configuration.locales.get(0) ?: Locale.getDefault()
     }
 
+    // Sort holidays chronologically within each bucket. Movable holidays
+    // (NthWeekday / LastWeekday) are materialised against [sortYear] —
+    // today's year — and the comparator reads only (month, dayOfMonth)
+    // so the relative ordering is effectively year-agnostic. We re-derive
+    // when the year ticks over (a midnight-on-Dec-31 edge case in
+    // practice, but cheap to key on).
+    val sortYear = remember { LocalDate.now().year }
+    val sortedCatalog = remember(sortYear) {
+        HolidayCatalog.all.sortedWith(
+            compareBy(
+                { (date, _) -> date.dateIn(sortYear).monthValue },
+                { (date, _) -> date.dateIn(sortYear).dayOfMonth },
+            ),
+        )
+    }
     // Globals (countries = {GLOBAL_COUNTRY}) live in their own collapsible
     // above the ISO list, no longer folded into every country's bucket.
-    val globalThemes = remember {
-        HolidayCatalog.all
+    val globalThemes = remember(sortedCatalog) {
+        sortedCatalog
             .map { it.second }
             .filter { HolidayCatalog.GLOBAL_COUNTRY in it.countries }
     }
@@ -100,15 +116,15 @@ internal fun HolidaysContent(
             .filter { it != HolidayCatalog.GLOBAL_COUNTRY }
             .sortedForDisplay(context, uiLocale)
     }
-    val themesByCountry = remember {
+    val themesByCountry = remember(sortedCatalog) {
         isoCountries.associateWith { code ->
-            HolidayCatalog.all
+            sortedCatalog
                 .map { it.second }
                 .filter { code in it.countries }
         }
     }
-    val allThemes = remember {
-        HolidayCatalog.all.map { it.second }
+    val allThemes = remember(sortedCatalog) {
+        sortedCatalog.map { it.second }
     }
 
     EdgeFadeOverlay(

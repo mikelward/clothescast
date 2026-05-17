@@ -220,9 +220,18 @@ class GenerateDailyInsight(
         // extra API call. Null when the underlying data isn't there (e.g.
         // evening insight on a legacy bundle without tomorrow's daily
         // aggregates) — the screen falls back to a single card.
+        //
+        // Slice tomorrow to the user's daytime window so the "Why this
+        // outfit?" rationale (and the outfit picker) cite an in-window
+        // hour — otherwise a pre-dawn 06:00 trough drives "Feels-like low
+        // 5.8°C at 06:00" on the Tomorrow card for a user who won't be
+        // outside until 07:00.
         val nextForecast = when (period) {
             ForecastPeriod.TODAY -> tonightForecast.takeIf { it.hourly.isNotEmpty() }
-            ForecastPeriod.TONIGHT -> bundle.tomorrow
+            ForecastPeriod.TONIGHT -> bundle.tomorrow?.slicedForToday(
+                morningStart = morningStart,
+                eveningEnd = tonightStart,
+            )
         }
         val triggeredRules = evaluateClothesRules(periodForecast, prefs.clothesRules)
         val perModelForRender = bundle.perModelHourly?.slicedTo(

@@ -110,6 +110,15 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <!-- Opt out of Firebase Analytics advertising-ID (GAID) collection.
+             The app's privacy policy explicitly states no advertising identifiers
+             are collected; this flag enforces that at the SDK level on all API
+             levels, not just Android 13+ where the missing AD_ID permission
+             already blocks access. -->
+        <meta-data
+            android:name="google_analytics_adid_collection_enabled"
+            android:value="false" />
+
         <!-- Home-screen App Widget showing the current period's outfit.
              exported=true is required for the OS launcher to bind. -->
         <receiver

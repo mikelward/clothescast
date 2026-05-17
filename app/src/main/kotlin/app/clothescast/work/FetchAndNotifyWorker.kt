@@ -472,16 +472,21 @@ class FetchAndNotifyWorker(
                 // clobbering "London" with the placeholder. Without this
                 // a single transient geocoder timeout permanently degrades
                 // the home screen to the localised "Your location" fallback
-                // until reverse-geo next succeeds. The country fallback
-                // is gated on the same nearby check — reusing a GB country
-                // code for a fresh FR fix would silently misfilter the
-                // holiday list until the next geocode succeeds.
-                val resolvedName = geo.city ?: reuseNearby(prefs.location, device) { it.displayName }
-                val resolvedCountry = geo.countryCode
-                    ?: reuseNearby(prefs.location, device) { it.countryCode }
+                // until reverse-geo next succeeds.
+                //
+                // The country code intentionally has no proximity fallback:
+                // even a 25 km radius straddles real borders (Basel sits at
+                // the CH / FR / DE corner; US / Canada border towns are
+                // similar), so reusing the prior country whenever the new
+                // fix is "nearby" would silently misfilter AUTO holidays
+                // after a brief cross-border move. If the geocoder didn't
+                // resolve a country this time, we leave it null and AUTO
+                // falls back to the locale country until the next
+                // successful geocode.
+                val resolvedName = geo.city ?: reuseNearbyDisplayName(prefs.location, device)
                 val resolved = device.copy(
                     displayName = resolvedName ?: device.displayName,
-                    countryCode = resolvedCountry ?: device.countryCode,
+                    countryCode = geo.countryCode ?: device.countryCode,
                 )
                 // Persist the resolved fix as the fallback so the next run can
                 // use the most recent good read when the device read fails
@@ -501,23 +506,18 @@ class FetchAndNotifyWorker(
         return prefs.location
     }
 
-    // Reuse a field from the previously cached location when the new
-    // device fix is close enough that the cached value is still
-    // meaningful. ~25km covers a typical commute / errand radius while
-    // still rejecting yesterday's trip to a different city — and, for
-    // the country code, a flight that crossed a border. Each extracted
-    // value is also filtered against the LocationResolver placeholder
-    // and blank strings so a degenerate prior pin doesn't bleed through.
-    private fun <T : Any> reuseNearby(
-        prior: Location?,
-        device: Location,
-        extract: (Location) -> T?,
-    ): T? {
+    // Reuse the previously cached displayName when it's a real city (not
+    // blank / not the LocationResolver placeholder) and the new device fix
+    // is close enough that the cached name is still meaningful. ~25km
+    // covers a typical commute / errand radius while still rejecting
+    // yesterday's trip to a different city. The country code intentionally
+    // doesn't follow the same fallback — see the call site for why.
+    private fun reuseNearbyDisplayName(prior: Location?, device: Location): String? {
         if (prior == null) return null
-        val value = extract(prior)
-            ?.takeUnless { it is String && (it.isBlank() || it == DEVICE_LOCATION_PLACEHOLDER) }
+        val priorName = prior.displayName
+            ?.takeUnless { it.isBlank() || it == DEVICE_LOCATION_PLACEHOLDER }
             ?: return null
-        return if (approxDistanceKm(prior, device) < REUSE_LABEL_RADIUS_KM) value else null
+        return if (approxDistanceKm(prior, device) < REUSE_LABEL_RADIUS_KM) priorName else null
     }
 
     // Equirectangular approximation. Accurate to well under a kilometre

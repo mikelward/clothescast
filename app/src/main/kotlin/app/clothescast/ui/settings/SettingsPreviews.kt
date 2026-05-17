@@ -340,6 +340,7 @@ internal fun SettingsHolidaysPreview() {
             padding = PaddingValues(0.dp),
             onSetCountryHome = {},
             onSetCountryCurrent = {},
+            onSetCountryGlobal = {},
             onSetCountryAll = {},
             onSetCountryOverride = { _, _ -> },
             onSetHolidayOverride = { _, _ -> },

@@ -42,36 +42,40 @@ enum class HolidayOverride { AUTO, ON, OFF }
 
 /**
  * Country picker state. Two layers stack: top-level buckets ([home] /
- * [current] / [all]) drive each country's *auto* resolution, and
- * [countryOverrides] lets the user force an individual country on or off
- * regardless of those buckets.
+ * [current] / [global] / [all]) drive each country's *auto* resolution,
+ * and [countryOverrides] lets the user force an individual country on
+ * or off regardless of those buckets.
  *
  *  - [home] — when on, the user's locale country (e.g. en-GB → "GB")
  *    resolves to effective-on under AUTO.
  *  - [current] — when on, the weather location's country (reverse-
  *    geocoded from the active forecast pin) resolves to effective-on
  *    under AUTO.
- *  - [all] — short-circuits every country to effective-on under AUTO.
+ *  - [global] — when on, the universal-holiday bucket
+ *    ([HolidayCatalog.GLOBAL_COUNTRY]: Christmas, New Year's,
+ *    Valentine's, Halloween) resolves to effective-on under AUTO.
+ *    Peer to [home] / [current] rather than riding along
+ *    automatically, so a user can mute every global holiday as a
+ *    group without flipping per-holiday rows.
+ *  - [all] — short-circuits every country (including
+ *    [HolidayCatalog.GLOBAL_COUNTRY]) to effective-on under AUTO.
  *    Per-country [HolidayOverride.OFF] still wins (a user can opt
  *    out of a single country even with All on).
  *  - [countryOverrides] — explicit per-country overrides. Missing /
  *    [HolidayOverride.AUTO] entries follow the buckets above;
  *    [HolidayOverride.ON] forces the country on regardless;
  *    [HolidayOverride.OFF] forces it off regardless. Keys are
- *    ISO 3166-1 alpha-2 uppercase.
+ *    ISO 3166-1 alpha-2 uppercase, or [HolidayCatalog.GLOBAL_COUNTRY]
+ *    for the universal-holiday bucket.
  *
- * The [HolidayCatalog.GLOBAL_COUNTRY] bucket (Christmas, New Year's,
- * Valentine's, Halloween) rides along automatically whenever any
- * country is effectively enabled — there's no separate user-facing
- * toggle. Per-holiday on/off overrides ([HolidayOverride]) handle the
- * case where a user wants to mute a specific global holiday.
- *
- * Default ([home]=true, [current]=true) matches the previous "Auto"
- * behaviour: locale + weather location + universal holidays.
+ * Default ([home]=true, [current]=true, [global]=true) matches the
+ * previous "Auto" behaviour: locale + weather location + universal
+ * holidays.
  */
 data class HolidayCountrySelection(
     val home: Boolean = true,
     val current: Boolean = true,
+    val global: Boolean = true,
     val all: Boolean = false,
     val countryOverrides: Map<String, HolidayOverride> = emptyMap(),
 ) {
@@ -88,6 +92,7 @@ data class HolidayCountrySelection(
     ): Boolean {
         if (all) return true
         val normalised = code.trim().takeIf { it.isNotEmpty() }?.uppercase() ?: return false
+        if (normalised == HolidayCatalog.GLOBAL_COUNTRY) return global
         if (home && normalised == localeCountry?.trim()?.takeIf { it.isNotEmpty() }?.uppercase()) {
             return true
         }
@@ -124,8 +129,9 @@ data class HolidayCountrySelection(
      * Country codes are ISO 3166-1 alpha-2 uppercase plus the sentinel
      * [HolidayCatalog.GLOBAL_COUNTRY]. [localeCountry] and
      * [weatherLocationCountry] are case-insensitive — null or blank values
-     * are ignored. [HolidayCatalog.GLOBAL_COUNTRY] is added automatically
-     * whenever at least one ISO country is in the set.
+     * are ignored. [HolidayCatalog.GLOBAL_COUNTRY] is gated by its own
+     * [global] bucket (or an explicit [countryOverrides] entry), the same
+     * way ISO codes are gated by [home] / [current].
      */
     fun resolveEnabledCountries(
         localeCountry: String?,
@@ -133,7 +139,6 @@ data class HolidayCountrySelection(
         allCountries: Set<String>,
     ): Set<String> = buildSet {
         for (code in allCountries) {
-            if (code == HolidayCatalog.GLOBAL_COUNTRY) continue
             if (countryEffective(code, localeCountry, weatherLocationCountry)) add(code)
         }
         // Pick up ON-override countries that aren't in `allCountries` (e.g.
@@ -141,9 +146,6 @@ data class HolidayCountrySelection(
         // are never added.
         for ((code, override) in countryOverrides) {
             if (override == HolidayOverride.ON) add(code)
-        }
-        if (isNotEmpty() && HolidayCatalog.GLOBAL_COUNTRY in allCountries) {
-            add(HolidayCatalog.GLOBAL_COUNTRY)
         }
     }
 }

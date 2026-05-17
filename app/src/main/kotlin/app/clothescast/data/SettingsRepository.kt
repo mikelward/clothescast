@@ -449,6 +449,10 @@ class SettingsRepository(
         dataStore.edit { it[HOLIDAY_COUNTRY_CURRENT] = enabled }
     }
 
+    suspend fun setHolidayCountryGlobal(enabled: Boolean) {
+        dataStore.edit { it[HOLIDAY_COUNTRY_GLOBAL] = enabled }
+    }
+
     suspend fun setHolidayCountryAll(enabled: Boolean) {
         dataStore.edit { it[HOLIDAY_COUNTRY_ALL] = enabled }
     }
@@ -613,6 +617,10 @@ class SettingsRepository(
         val holidayCountrySelection = HolidayCountrySelection(
             home = this[HOLIDAY_COUNTRY_HOME] != false,
             current = this[HOLIDAY_COUNTRY_CURRENT] != false,
+            // Default-true on missing key so pre-upgrade installs keep their
+            // universal-holiday themes (Christmas / NYE / Valentine's /
+            // Halloween) firing — the new toggle is opt-out, not opt-in.
+            global = this[HOLIDAY_COUNTRY_GLOBAL] != false,
             all = this[HOLIDAY_COUNTRY_ALL] == true,
             countryOverrides = parseHolidayCountryOverrides(this[HOLIDAY_COUNTRY_OVERRIDES]),
         )
@@ -913,6 +921,7 @@ class SettingsRepository(
         private val HOLIDAY_OVERRIDES = stringSetPreferencesKey("holiday_overrides")
         private val HOLIDAY_COUNTRY_HOME = booleanPreferencesKey("holiday_country_home")
         private val HOLIDAY_COUNTRY_CURRENT = booleanPreferencesKey("holiday_country_current")
+        private val HOLIDAY_COUNTRY_GLOBAL = booleanPreferencesKey("holiday_country_global")
         private val HOLIDAY_COUNTRY_ALL = booleanPreferencesKey("holiday_country_all")
         private val HOLIDAY_COUNTRY_OVERRIDES = stringSetPreferencesKey("holiday_country_overrides")
         private val FORECAST_MODELS = stringSetPreferencesKey("forecast_models")

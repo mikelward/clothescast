@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -61,6 +63,7 @@ internal fun SmartHomeContent(
     passwordSet: Boolean,
     lastError: String?,
     lastErrorAt: Long,
+    lastPublishAt: Long,
     publishing: Boolean,
     discoveryRunning: Boolean,
     discoveredServices: List<DiscoveredService>,
@@ -102,6 +105,7 @@ internal fun SmartHomeContent(
                 passwordSet = passwordSet,
                 lastError = lastError,
                 lastErrorAt = lastErrorAt,
+                lastPublishAt = lastPublishAt,
                 publishing = publishing,
                 discoveryRunning = discoveryRunning,
                 discoveredServices = discoveredServices,
@@ -128,6 +132,7 @@ private fun MqttBridgeCard(
     passwordSet: Boolean,
     lastError: String?,
     lastErrorAt: Long,
+    lastPublishAt: Long,
     publishing: Boolean,
     discoveryRunning: Boolean,
     discoveredServices: List<DiscoveredService>,
@@ -322,6 +327,14 @@ private fun MqttBridgeCard(
                 enabled = host.isNotBlank() && !publishing,
                 modifier = Modifier.fillMaxWidth(),
             ) {
+                if (publishing) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .size(16.dp),
+                        strokeWidth = 2.dp,
+                    )
+                }
                 Text(
                     if (publishing) {
                         stringResource(R.string.settings_smart_home_mqtt_publishing)
@@ -330,6 +343,8 @@ private fun MqttBridgeCard(
                     },
                 )
             }
+
+            MqttLastPublishStatus(publishing = publishing, lastPublishAt = lastPublishAt)
         }
 
         TextButton(
@@ -378,6 +393,27 @@ private fun MqttLastErrorBanner(message: String, recordedAtMs: Long) {
 
 private val ERROR_TIMESTAMP_FORMAT: DateTimeFormatter =
     DateTimeFormatter.ofPattern("d MMM yyyy, HH:mm")
+
+@Composable
+private fun MqttLastPublishStatus(publishing: Boolean, lastPublishAt: Long) {
+    val text = when {
+        publishing -> stringResource(R.string.settings_smart_home_mqtt_publishing)
+        lastPublishAt > 0L -> {
+            val timestamp = remember(lastPublishAt) {
+                Instant.ofEpochMilli(lastPublishAt)
+                    .atZone(ZoneId.systemDefault())
+                    .format(ERROR_TIMESTAMP_FORMAT)
+            }
+            stringResource(R.string.settings_smart_home_mqtt_last_published, timestamp)
+        }
+        else -> stringResource(R.string.settings_smart_home_mqtt_never_published)
+    }
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+}
 
 @Composable
 private fun DiscoveryPicker(

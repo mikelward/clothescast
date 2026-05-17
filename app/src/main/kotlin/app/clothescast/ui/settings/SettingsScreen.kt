@@ -244,6 +244,7 @@ fun SettingsScreen(
                 passwordSet = state.mqttPasswordSet,
                 lastError = state.mqttLastError,
                 lastErrorAt = state.mqttLastErrorAt,
+                lastPublishAt = state.mqttLastPublishAt,
                 publishing = state.mqttPublishing,
                 discoveryRunning = state.discoveryRunning,
                 discoveredServices = state.discoveredServices,

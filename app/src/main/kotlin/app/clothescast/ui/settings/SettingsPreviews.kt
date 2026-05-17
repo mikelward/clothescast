@@ -362,6 +362,7 @@ internal fun SettingsSmartHomePreview() {
             passwordSet = true,
             lastError = null,
             lastErrorAt = 0L,
+            lastPublishAt = 0L,
             publishing = false,
             discoveryRunning = true,
             discoveredServices = listOf(

@@ -303,8 +303,15 @@ class SettingsRepository(
      * preferences. [errorMessage] is null on success (or no record yet); non-null
      * is the human-readable failure reason. [recordedAtMs] is the epoch-ms wall
      * clock of the attempt (0 when no publish has ever been recorded).
+     * [lastSuccessAtMs] is the most recent successful publish (0 when none),
+     * tracked separately so the UI can still show "last published" after a
+     * later failure has overwritten the attempt timestamp.
      */
-    data class MqttPublishStatus(val errorMessage: String?, val recordedAtMs: Long)
+    data class MqttPublishStatus(
+        val errorMessage: String?,
+        val recordedAtMs: Long,
+        val lastSuccessAtMs: Long = 0L,
+    )
 
     /**
      * Emits the result of the last MQTT publish attempt. Null until the first
@@ -314,12 +321,17 @@ class SettingsRepository(
     val mqttPublishStatus: Flow<MqttPublishStatus?> = dataStore.data.map { prefs ->
         val ms = prefs[MQTT_LAST_ERROR_AT_MS] ?: return@map null
         val msg = prefs[MQTT_LAST_ERROR_MSG]  // null = success
-        MqttPublishStatus(errorMessage = msg, recordedAtMs = ms)
+        MqttPublishStatus(
+            errorMessage = msg,
+            recordedAtMs = ms,
+            lastSuccessAtMs = prefs[MQTT_LAST_SUCCESS_AT_MS] ?: 0L,
+        )
     }
 
     /**
      * Persists the outcome of an MQTT publish attempt. Pass null [errorMessage]
-     * to record a success (clears any displayed error).
+     * to record a success (clears any displayed error and stamps the
+     * last-published timestamp).
      */
     suspend fun setMqttLastError(errorMessage: String?, atMs: Long = System.currentTimeMillis()) {
         dataStore.edit { prefs ->
@@ -328,6 +340,7 @@ class SettingsRepository(
                 prefs[MQTT_LAST_ERROR_MSG] = errorMessage
             } else {
                 prefs.remove(MQTT_LAST_ERROR_MSG)
+                prefs[MQTT_LAST_SUCCESS_AT_MS] = atMs
             }
         }
     }
@@ -831,6 +844,7 @@ class SettingsRepository(
         private val MQTT_TOPIC = stringPreferencesKey("mqtt_topic")
         private val MQTT_LAST_ERROR_MSG = stringPreferencesKey("mqtt_last_error_msg")
         private val MQTT_LAST_ERROR_AT_MS = longPreferencesKey("mqtt_last_error_at_ms")
+        private val MQTT_LAST_SUCCESS_AT_MS = longPreferencesKey("mqtt_last_success_at_ms")
 
         private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
         private val DEFAULT_TIME: LocalTime = LocalTime.of(7, 0)

@@ -216,6 +216,7 @@ class SettingsViewModel(
                     it.copy(
                         mqttLastError = status?.errorMessage,
                         mqttLastErrorAt = status?.recordedAtMs ?: 0L,
+                        mqttLastPublishAt = status?.lastSuccessAtMs ?: 0L,
                     )
                 }
             }

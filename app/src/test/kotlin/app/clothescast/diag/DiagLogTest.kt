@@ -1,6 +1,9 @@
 package app.clothescast.diag
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
+import io.kotest.matchers.string.shouldStartWith
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
@@ -108,6 +111,79 @@ class DiagLogTest {
         file.writeText("only-current\n")
         rotated.exists() shouldBe false
         DiagLog.readTail(file, rotated, maxLines = 100) shouldBe listOf("only-current")
+    }
+
+    @Test
+    fun `compactStackTraceString starts with exception class and message`() {
+        val t = IllegalStateException("simulated broker rejection")
+        val s = DiagLog.compactStackTraceString(t)
+        s shouldStartWith "java.lang.IllegalStateException: simulated broker rejection"
+    }
+
+    @Test
+    fun `compactStackTraceString caps frames per throwable and drops the rest silently`() {
+        val t = makeWithStackDepth(10)
+        val s = DiagLog.compactStackTraceString(t, maxFrames = 1)
+        // Exactly one retained `at` line; no `... N more` summary so each
+        // Throwable costs a flat `1 + maxFrames` lines in the snapshot.
+        s.lines().count { it.startsWith("\tat ") } shouldBe 1
+        s shouldNotContain "more"
+    }
+
+    @Test
+    fun `compactStackTraceString preserves the cause chain with a 'Caused by' prefix`() {
+        val cause = RuntimeException("inner")
+        val outer = IllegalStateException("outer", cause)
+        val s = DiagLog.compactStackTraceString(outer, maxFrames = 1)
+        s shouldContain "java.lang.IllegalStateException: outer"
+        s shouldContain "Caused by: java.lang.RuntimeException: inner"
+    }
+
+    @Test
+    fun `compactStackTraceString does not duplicate frames for empty traces`() {
+        // A Throwable whose stack we've cleared (mirrors R8-stripped wrappers
+        // that arrive with no frames — common with HiveMQ's
+        // ConnectionFailedException in release builds).
+        val t = IllegalStateException("no frames here").apply { stackTrace = emptyArray() }
+        val s = DiagLog.compactStackTraceString(t, maxFrames = 3)
+        s shouldNotContain "\tat "
+        s shouldNotContain "... "
+    }
+
+    @Test
+    fun `compactStackTraceString terminates on a circular cause chain`() {
+        // a.cause = b, b.cause = a — printStackTrace handles this by tracking
+        // already-seen throwables; the compact formatter must do the same so a
+        // pathological Throwable can't spin the calling thread.
+        val a = IllegalStateException("a")
+        val b = IllegalStateException("b")
+        a.initCause(b)
+        b.initCause(a)
+        val s = DiagLog.compactStackTraceString(a, maxFrames = 1)
+        s shouldContain "java.lang.IllegalStateException: a"
+        s shouldContain "Caused by: java.lang.IllegalStateException: b"
+        s shouldContain "[CIRCULAR REFERENCE: java.lang.IllegalStateException]"
+    }
+
+    @Test
+    fun `compactStackTraceString surfaces suppressed exceptions as a one-line summary`() {
+        // try-with-resources / .use add a close failure as a suppressed
+        // exception on the primary throwable. Drop frames to keep the budget
+        // tight, but keep class + message so the actionable bit isn't lost.
+        val primary = IllegalStateException("primary")
+        primary.addSuppressed(RuntimeException("close failed"))
+        val s = DiagLog.compactStackTraceString(primary, maxFrames = 1)
+        s shouldContain "java.lang.IllegalStateException: primary"
+        s shouldContain "\tSuppressed: java.lang.RuntimeException: close failed"
+    }
+
+    /**
+     * Builds a Throwable whose `stackTrace` has exactly [depth] entries — no
+     * implicit dependency on the test runner's actual call depth (which
+     * differs between JUnit and IDE).
+     */
+    private fun makeWithStackDepth(depth: Int): Throwable = IllegalStateException("deep").apply {
+        stackTrace = Array(depth) { i -> StackTraceElement("Foo$i", "bar", "Foo$i.kt", i + 1) }
     }
 
     private fun files(dir: Path): Pair<File, File> =

@@ -34,6 +34,17 @@ object DiagLog {
     private const val MAX_BYTES = 200L * 1024L
     private const val SYNC_TIMEOUT_MS = 2_000L
 
+    /**
+     * How many `at …` frames per Throwable in the chain to keep in diag-log
+     * entries. The full trace still goes to `last-crash.txt` for uncaught
+     * exceptions, so the snapshot just needs the call site. One frame
+     * trims a typical `MqttPublisher: publish failed` block from 13 lines
+     * to 4 — the cause chain text + the top frame for each link is enough
+     * to read on its own, and the ten-deep Netty / executor noise that
+     * otherwise dominates the 300-line buffer goes away.
+     */
+    private const val COMPACT_STACK_FRAMES = 1
+
     private val executor = Executors.newSingleThreadExecutor { r ->
         Thread(r, "DiagLog-writer").apply { isDaemon = true }
     }
@@ -182,12 +193,59 @@ object DiagLog {
         StringWriter().also { sw -> PrintWriter(sw).use { t.printStackTrace(it) } }
             .toString().trimEnd()
 
+    /**
+     * Formats [t] like [Throwable.printStackTrace] but keeps only the top
+     * [maxFrames] frames per Throwable in the cause chain. The dropped
+     * deeper frames aren't summarised — the omitted-count line `... N more`
+     * is intentionally absent so each Throwable costs `1 + maxFrames` lines
+     * flat, maximising how much pre-failure history fits in the 300-line
+     * snapshot budget. The full trace still goes to `last-crash.txt` via
+     * [writeCrashLog] for uncaught exceptions, so post-mortem debugging
+     * loses nothing.
+     *
+     * Cyclic cause chains (`a.cause = b; b.cause = a`) are guarded via an
+     * identity set so a pathological Throwable can't spin the calling
+     * thread before the executor submit runs — printStackTrace does the
+     * same. Suppressed exceptions surface as a one-line `Suppressed: …`
+     * summary per parent so try-with-resources / `.use` close failures
+     * aren't silently lost; their frames are intentionally dropped to
+     * keep the budget tight. Visible for tests.
+     */
+    internal fun compactStackTraceString(t: Throwable, maxFrames: Int = COMPACT_STACK_FRAMES): String {
+        val sb = StringBuilder()
+        val seen = java.util.IdentityHashMap<Throwable, Boolean>()
+        var current: Throwable? = t
+        var depth = 0
+        while (current != null) {
+            if (seen.put(current, true) != null) {
+                sb.append('\n').append("\t[CIRCULAR REFERENCE: ")
+                    .append(current.javaClass.name).append(']')
+                break
+            }
+            if (depth > 0) sb.append('\n').append("Caused by: ")
+            sb.append(current.javaClass.name)
+            current.message?.let { sb.append(": ").append(it) }
+            val frames = current.stackTrace
+            val keep = minOf(maxFrames, frames.size)
+            for (i in 0 until keep) {
+                sb.append('\n').append("\tat ").append(frames[i])
+            }
+            for (suppressed in current.suppressed) {
+                sb.append('\n').append("\tSuppressed: ").append(suppressed.javaClass.name)
+                suppressed.message?.let { sb.append(": ").append(it) }
+            }
+            current = current.cause
+            depth++
+        }
+        return sb.toString()
+    }
+
     private fun log(level: Char, tag: String, msg: String, t: Throwable?) {
         val timestamp = timestampFormat.get().format(Date())
         val formatted = if (t == null) {
             "$timestamp $level $tag: $msg"
         } else {
-            "$timestamp $level $tag: $msg\n${stackTraceString(t)}"
+            "$timestamp $level $tag: $msg\n${compactStackTraceString(t)}"
         }
         val file = diagFileProvider?.invoke() ?: return
         val rotated = diagRotatedProvider?.invoke() ?: return

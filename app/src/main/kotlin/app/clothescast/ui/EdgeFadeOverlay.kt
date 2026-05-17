@@ -5,11 +5,11 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -71,25 +71,34 @@ internal fun EdgeFadeOverlay(
                     ),
                 ),
         )
+        // Bottom fade: a 32 dp gradient in the content area, *continued* as a
+        // solid band of [color] through the nav-bar inset down to the screen
+        // edge. The fade marks the visible-content edge (transparent → opaque
+        // across 32 dp just above the nav bar), and the solid extension keeps
+        // any scrollable content that's been clipped at the viewport bottom
+        // from bleeding through behind the translucent nav bar — without it,
+        // the boundary where the gradient stops and the unfaded card surface
+        // resumes reads as a hard horizontal line right at the top of the nav
+        // area. In contexts with no nav-bar inset (e.g. Robolectric snapshots),
+        // the extension collapses to zero height and the fade behaves the same
+        // as a plain 32 dp gradient anchored to the bottom edge.
+        val navBarBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+        val fadeHeight = 32.dp
+        val totalHeight = fadeHeight + navBarBottom
+        val fadeFraction = if (navBarBottom > 0.dp) fadeHeight.value / totalHeight.value else 1f
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                // The nav-bar inset wraps the 32 dp fade — outer height is
-                // (32 dp + nav-bar height), aligned to the screen bottom by
-                // `align(BottomCenter)`, with the painted gradient occupying
-                // the inner 32 dp at the *top* of that outer box. Net: the
-                // fade sits in the band just above the translucent nav bar,
-                // so it marks the visible-content edge rather than hiding
-                // behind the bar. In contexts with no nav-bar inset (e.g.
-                // Robolectric snapshots), this is a no-op and the fade still
-                // sits at the absolute bottom edge.
-                .windowInsetsPadding(WindowInsets.navigationBars)
-                .height(32.dp)
+                .height(totalHeight)
                 .alpha(bottomAlpha)
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(transparentColor, color),
+                        colorStops = arrayOf(
+                            0f to transparentColor,
+                            fadeFraction to color,
+                            1f to color,
+                        ),
                     ),
                 ),
         )

@@ -32,6 +32,9 @@ import app.clothescast.core.domain.model.Fact
 import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.GarmentReason
+import app.clothescast.core.domain.model.HolidayCatalog
+import app.clothescast.core.domain.model.HolidayId
+import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
@@ -696,6 +699,126 @@ internal fun ConfidenceMediumNoDetailPreview() {
         )
     }
 }
+
+// Holiday banner + outfit-row previews. One per [HolidayId] so reviewers
+// can eyeball each palette against the holiday it represents. Each preview
+// renders the banner (its colour + emoji + text) immediately above an
+// outfit row whose top and bottom slots are recoloured by the holiday's
+// overrides — i.e. the exact pairing the user sees on the matching day.
+//
+// The "sample" insight is fixed at a cool spring temperature so the rule-
+// driven outfit picker resolves to a SWEATER + LONG_PANTS tier in every
+// holiday, keeping the per-holiday diffs to colour alone (icon shapes don't
+// shift). The recolour map for the secondary "nextOutfit" tier sits empty
+// — we override only the primary outfit's tiers so the diff focuses on
+// what the banner actually highlights.
+@Composable
+private fun HolidayShowcase(holidayId: HolidayId, darkTheme: Boolean = false) {
+    val theme = HolidayCatalog.themeFor(holidayId)
+        ?: error("HolidayCatalog has no entry for $holidayId")
+    Frame(darkTheme = darkTheme) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            HolidayBanner(theme = theme, modifier = Modifier.fillMaxWidth())
+            OutfitPreviewRow(
+                SAMPLE_INSIGHT.copy(
+                    period = ForecastPeriod.TODAY,
+                    outfit = OutfitSuggestion(
+                        OutfitSuggestion.Top.SWEATER,
+                        OutfitSuggestion.Bottom.LONG_PANTS,
+                    ),
+                    nextOutfit = OutfitSuggestion(
+                        OutfitSuggestion.Top.THICK_JACKET,
+                        OutfitSuggestion.Bottom.LONG_PANTS,
+                    ),
+                ),
+                outfitTopColors = theme.topOverrides,
+                outfitBottomColors = theme.bottomOverrides,
+                outfitTopStrokes = theme.topStrokeOverrides,
+                outfitBottomStrokes = theme.bottomStrokeOverrides,
+            )
+        }
+    }
+}
+
+@Preview(name = "Holiday · New Year", widthDp = 360)
+@Composable
+internal fun HolidayNewYearsDayPreview() = HolidayShowcase(HolidayId.NEW_YEARS_DAY)
+
+@Preview(name = "Holiday · Australia Day", widthDp = 360)
+@Composable
+internal fun HolidayAustraliaDayPreview() = HolidayShowcase(HolidayId.AUSTRALIA_DAY)
+
+@Preview(name = "Holiday · Valentine's Day", widthDp = 360)
+@Composable
+internal fun HolidayValentinesDayPreview() = HolidayShowcase(HolidayId.VALENTINES_DAY)
+
+@Preview(name = "Holiday · St David's Day", widthDp = 360)
+@Composable
+internal fun HolidayStDavidsDayPreview() = HolidayShowcase(HolidayId.ST_DAVIDS_DAY)
+
+@Preview(name = "Holiday · St Patrick's Day", widthDp = 360)
+@Composable
+internal fun HolidayStPatricksDayPreview() = HolidayShowcase(HolidayId.ST_PATRICKS_DAY)
+
+@Preview(name = "Holiday · St George's Day", widthDp = 360)
+@Composable
+internal fun HolidayStGeorgesDayPreview() = HolidayShowcase(HolidayId.ST_GEORGES_DAY)
+
+@Preview(name = "Holiday · Anzac Day", widthDp = 360)
+@Composable
+internal fun HolidayAnzacDayPreview() = HolidayShowcase(HolidayId.ANZAC_DAY)
+
+@Preview(name = "Holiday · Italian Republic Day", widthDp = 360)
+@Composable
+internal fun HolidayItalyRepublicDayPreview() = HolidayShowcase(HolidayId.ITALY_REPUBLIC_DAY)
+
+@Preview(name = "Holiday · Canada Day", widthDp = 360)
+@Composable
+internal fun HolidayCanadaDayPreview() = HolidayShowcase(HolidayId.CANADA_DAY)
+
+@Preview(name = "Holiday · US Independence Day", widthDp = 360)
+@Composable
+internal fun HolidayUsIndependenceDayPreview() = HolidayShowcase(HolidayId.US_INDEPENDENCE_DAY)
+
+@Preview(name = "Holiday · Bastille Day", widthDp = 360)
+@Composable
+internal fun HolidayBastilleDayPreview() = HolidayShowcase(HolidayId.BASTILLE_DAY)
+
+@Preview(name = "Holiday · Brazil Independence", widthDp = 360)
+@Composable
+internal fun HolidayBrazilIndependenceDayPreview() = HolidayShowcase(HolidayId.BRAZIL_INDEPENDENCE_DAY)
+
+@Preview(name = "Holiday · German Unity Day", widthDp = 360)
+@Composable
+internal fun HolidayGermanUnityDayPreview() = HolidayShowcase(HolidayId.GERMAN_UNITY_DAY)
+
+@Preview(name = "Holiday · Hispanic Day", widthDp = 360)
+@Composable
+internal fun HolidaySpainHispanicDayPreview() = HolidayShowcase(HolidayId.SPAIN_HISPANIC_DAY)
+
+@Preview(name = "Holiday · Halloween", widthDp = 360)
+@Composable
+internal fun HolidayHalloweenPreview() = HolidayShowcase(HolidayId.HALLOWEEN)
+
+@Preview(name = "Holiday · Bonfire Night", widthDp = 360)
+@Composable
+internal fun HolidayBonfireNightPreview() = HolidayShowcase(HolidayId.BONFIRE_NIGHT)
+
+@Preview(name = "Holiday · US Thanksgiving", widthDp = 360)
+@Composable
+internal fun HolidayUsThanksgivingPreview() = HolidayShowcase(HolidayId.US_THANKSGIVING)
+
+@Preview(name = "Holiday · St Andrew's Day", widthDp = 360)
+@Composable
+internal fun HolidayStAndrewsDayPreview() = HolidayShowcase(HolidayId.ST_ANDREWS_DAY)
+
+@Preview(name = "Holiday · Christmas Day", widthDp = 360)
+@Composable
+internal fun HolidayChristmasDayPreview() = HolidayShowcase(HolidayId.CHRISTMAS_DAY)
+
+@Preview(name = "Holiday · Christmas (dark)", widthDp = 360)
+@Composable
+internal fun HolidayChristmasDayDarkPreview() = HolidayShowcase(HolidayId.CHRISTMAS_DAY, darkTheme = true)
 
 @Preview(name = "Banner · running", widthDp = 360)
 @Composable

@@ -33,6 +33,7 @@ import app.clothescast.ui.settings.SettingsClothesPreview
 import app.clothescast.ui.settings.SettingsDisplayPreview
 import app.clothescast.ui.settings.SettingsForecastersPreview
 import app.clothescast.ui.settings.SettingsGarmentColorPickerPreview
+import app.clothescast.ui.settings.SettingsHolidaysPreview
 import app.clothescast.ui.settings.SettingsLocationPreview
 import app.clothescast.ui.settings.SettingsPrivacyPreview
 import app.clothescast.ui.settings.SettingsRegionPreview
@@ -426,6 +427,29 @@ class PreviewSnapshots {
     @Test fun confidence_medium_precip_only() = capture { ConfidenceMediumPrecipOnlyPreview() }
     @Test fun confidence_medium_no_detail() = capture { ConfidenceMediumNoDetailPreview() }
 
+    // Holiday-themed banner + outfit-row previews. One per HolidayId so each
+    // palette is reviewable as an inline image diff in the PR.
+    @Test fun holiday_new_years_day() = capture { HolidayNewYearsDayPreview() }
+    @Test fun holiday_australia_day() = capture { HolidayAustraliaDayPreview() }
+    @Test fun holiday_valentines_day() = capture { HolidayValentinesDayPreview() }
+    @Test fun holiday_st_davids_day() = capture { HolidayStDavidsDayPreview() }
+    @Test fun holiday_st_patricks_day() = capture { HolidayStPatricksDayPreview() }
+    @Test fun holiday_st_georges_day() = capture { HolidayStGeorgesDayPreview() }
+    @Test fun holiday_anzac_day() = capture { HolidayAnzacDayPreview() }
+    @Test fun holiday_italy_republic_day() = capture { HolidayItalyRepublicDayPreview() }
+    @Test fun holiday_canada_day() = capture { HolidayCanadaDayPreview() }
+    @Test fun holiday_us_independence_day() = capture { HolidayUsIndependenceDayPreview() }
+    @Test fun holiday_bastille_day() = capture { HolidayBastilleDayPreview() }
+    @Test fun holiday_brazil_independence_day() = capture { HolidayBrazilIndependenceDayPreview() }
+    @Test fun holiday_german_unity_day() = capture { HolidayGermanUnityDayPreview() }
+    @Test fun holiday_spain_hispanic_day() = capture { HolidaySpainHispanicDayPreview() }
+    @Test fun holiday_halloween() = capture { HolidayHalloweenPreview() }
+    @Test fun holiday_bonfire_night() = capture { HolidayBonfireNightPreview() }
+    @Test fun holiday_us_thanksgiving() = capture { HolidayUsThanksgivingPreview() }
+    @Test fun holiday_st_andrews_day() = capture { HolidayStAndrewsDayPreview() }
+    @Test fun holiday_christmas_day() = capture { HolidayChristmasDayPreview() }
+    @Test fun holiday_christmas_day_dark() = capture { HolidayChristmasDayDarkPreview() }
+
     @Test fun work_status_running() = capture { WorkStatusRunningPreview() }
     @Test fun work_status_retrying() = capture { WorkStatusRetryingPreview() }
     @Test fun work_status_failed() = capture { WorkStatusFailedPreview() }
@@ -490,6 +514,7 @@ class PreviewSnapshots {
     fun settings_forecasters() = capture { SettingsForecastersPreview() }
 
     @Test fun settings_calendar() = capture { SettingsCalendarPreview() }
+    @Test fun settings_holidays() = capture { SettingsHolidaysPreview() }
     @Test fun settings_privacy() = capture { SettingsPrivacyPreview() }
     // The MQTT card stretches well past the 640dp class-level viewport once
     // the discovery picker is showing hits + the full form (host / port /

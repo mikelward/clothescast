@@ -83,6 +83,7 @@ import app.clothescast.core.domain.model.Fact
 import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.GarmentReason
+import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitRationale
@@ -351,6 +352,11 @@ private fun TodayContent(
             )
         }
         WorkStatusBanner(status = workStatusToShow, modifier = bannerModifier)
+        // Holiday banner sits last in the banner stack so it ends up closest
+        // to the outfit row whose palette it explains. Hidden on days with
+        // no enabled holiday match — `HolidayBanner` early-returns on null
+        // so the stack contributes zero vertical space in the steady state.
+        HolidayBanner(theme = state.activeHoliday, modifier = bannerModifier)
         if (state.thisPeriodInsight == null) {
             Column(
                 modifier = Modifier
@@ -480,6 +486,8 @@ private fun TodayPage(
                 clothesRules = state.clothesRules,
                 outfitTopColors = state.outfitTopColors,
                 outfitBottomColors = state.outfitBottomColors,
+                outfitTopStrokes = state.outfitTopStrokes,
+                outfitBottomStrokes = state.outfitBottomStrokes,
                 onAdjustThreshold = onAdjustThreshold,
                 onNavigateToClothes = onNavigateToClothes,
             )
@@ -736,6 +744,67 @@ internal fun bannerStatus(
     else -> workStatus
 }
 
+/**
+ * A small festive chip that appears above the outfit preview row whenever the
+ * day matches an enabled holiday. The banner colour is the theme's
+ * [HolidayTheme.bannerArgb]; the text reads "{emoji} {localised banner copy}"
+ * — the emoji is part of the visible glyph run rather than a separate Icon so
+ * the line wraps as one unit at large fontScale.
+ *
+ * Text colour is computed from the banner colour's luminance so the chip is
+ * readable on both light (Christmas red) and dark (Anzac khaki) palettes
+ * without keeping a parallel light/dark table for every holiday.
+ *
+ * The composable early-returns when [theme] is null so the banner stack's
+ * "hidden banners take zero vertical space" invariant still holds on
+ * non-holiday days.
+ */
+@Composable
+internal fun HolidayBanner(
+    theme: HolidayTheme?,
+    modifier: Modifier = Modifier,
+) {
+    if (theme == null) return
+    val context = LocalContext.current
+    val bannerText = remember(theme.bannerTextKey) {
+        val resId = context.resources.getIdentifier(
+            theme.bannerTextKey, "string", context.packageName,
+        )
+        if (resId == 0) theme.id.name else context.getString(resId)
+    }
+    val bannerColor = remember(theme.bannerArgb) { Color(theme.bannerArgb.toInt()) }
+    val textColor = remember(theme.bannerArgb) {
+        // sRGB luminance via the 0.299/0.587/0.114 weights — bright banners
+        // (Australia Day gold, Brazil yellow) get dark text; deep banners
+        // (Christmas red, St Andrew's blue) get white. Threshold 0.55 is a
+        // visual compromise that keeps Halloween's medium-orange on white
+        // text rather than flipping at the midpoint.
+        val argb = theme.bannerArgb.toInt()
+        val r = ((argb shr 16) and 0xFF) / 255f
+        val g = ((argb shr 8) and 0xFF) / 255f
+        val b = (argb and 0xFF) / 255f
+        val luminance = 0.299f * r + 0.587f * g + 0.114f * b
+        if (luminance > 0.55f) Color.Black else Color.White
+    }
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = bannerColor,
+            contentColor = textColor,
+        ),
+    ) {
+        Text(
+            text = "${theme.emoji}  $bannerText",
+            style = MaterialTheme.typography.titleSmall,
+            color = textColor,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
 @Composable
 internal fun WorkStatusBanner(
     status: WorkStatus,
@@ -873,6 +942,8 @@ internal fun OutfitPreviewRow(
     clothesRules: List<ClothesRule> = emptyList(),
     outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onAdjustThreshold: (String, Double) -> Unit = { _, _ -> },
     onNavigateToClothes: () -> Unit = {},
 ) {
@@ -890,6 +961,8 @@ internal fun OutfitPreviewRow(
             clothesRules = clothesRules,
             outfitTopColors = outfitTopColors,
             outfitBottomColors = outfitBottomColors,
+            outfitTopStrokes = outfitTopStrokes,
+            outfitBottomStrokes = outfitBottomStrokes,
             onAdjustThreshold = onAdjustThreshold,
             onNavigateToClothes = onNavigateToClothes,
             modifier = Modifier.weight(1f),
@@ -903,6 +976,8 @@ internal fun OutfitPreviewRow(
                 clothesRules = clothesRules,
                 outfitTopColors = outfitTopColors,
                 outfitBottomColors = outfitBottomColors,
+                outfitTopStrokes = outfitTopStrokes,
+                outfitBottomStrokes = outfitBottomStrokes,
                 onAdjustThreshold = onAdjustThreshold,
                 onNavigateToClothes = onNavigateToClothes,
                 modifier = Modifier.weight(1f),
@@ -937,6 +1012,8 @@ internal fun OutfitPreviewCard(
     clothesRules: List<ClothesRule> = emptyList(),
     outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onAdjustThreshold: (String, Double) -> Unit = { _, _ -> },
     onNavigateToClothes: () -> Unit = {},
 ) {
@@ -968,12 +1045,14 @@ internal fun OutfitPreviewCard(
                 GarmentTopIcon(
                     top = outfit.top,
                     customFill = outfitTopColors[outfit.top]?.let { Color(it.toInt()) },
+                    customStroke = outfitTopStrokes[outfit.top]?.let { Color(it.toInt()) },
                     contentDescription = stringResource(topLabelRes(outfit.top)),
                     modifier = Modifier.width(80.dp),
                 )
                 GarmentBottomIcon(
                     bottom = outfit.bottom,
                     customFill = outfitBottomColors[outfit.bottom]?.let { Color(it.toInt()) },
+                    customStroke = outfitBottomStrokes[outfit.bottom]?.let { Color(it.toInt()) },
                     contentDescription = stringResource(bottomLabelRes(outfit.bottom)),
                     modifier = Modifier.width(80.dp),
                 )

@@ -353,6 +353,7 @@
     <string name="settings_root_display">Display</string>
     <string name="settings_root_location">Location</string>
     <string name="settings_root_calendar">Calendar</string>
+    <string name="settings_root_holidays">Holidays</string>
     <string name="settings_root_forecasters">Forecasters</string>
     <string name="settings_root_smart_home">Smart Home</string>
     <string name="settings_root_privacy">Privacy</string>
@@ -387,6 +388,7 @@
 
     <string name="settings_root_location_subtitle">Automatic and Manual Location</string>
     <string name="settings_root_calendar_subtitle">Today\'s events</string>
+    <string name="settings_root_holidays_subtitle">Themed colours and banners</string>
     <string name="settings_root_forecasters_subtitle">Weather Sources and Models</string>
     <string name="settings_root_smart_home_subtitle">Home Assistant, MQTT, voice announcements</string>
     <string name="settings_root_privacy_subtitle">Crash + usage reports</string>
@@ -1018,4 +1020,60 @@
     insight_precip_chance's "Chance of rain" pattern. %1$s = spoken time.
     -->
     <string name="insight_evening_rain_chance">Tonight, chance of rain at %1$s.</string>
+
+    <!--
+    Holidays sub-page: per-holiday opt-in toggles. On the matching calendar
+    date, an enabled holiday swaps the outfit-preview palette to themed
+    colours and shows a small banner above the outfit row.
+
+    Names are keyed by HolidayId via HolidayTheme.displayNameKey /
+    .bannerTextKey — the resource lookup is by name (Context.getIdentifier)
+    so :core:domain doesn't need to depend on R. Order below mirrors
+    HolidayCatalog.all (calendar order).
+    -->
+    <string name="settings_holidays_title">Holiday themes</string>
+    <string name="settings_holidays_description">On each day below, the outfit preview switches to themed colours and a small banner appears.</string>
+
+    <string name="holiday_name_new_years_day">New Year\'s Day</string>
+    <string name="holiday_name_australia_day">Australia Day</string>
+    <string name="holiday_name_valentines_day">Valentine\'s Day</string>
+    <string name="holiday_name_st_davids_day">St David\'s Day</string>
+    <string name="holiday_name_st_patricks_day">St Patrick\'s Day</string>
+    <string name="holiday_name_st_georges_day">St George\'s Day</string>
+    <string name="holiday_name_anzac_day">Anzac Day</string>
+    <string name="holiday_name_italy_republic_day">Italian Republic Day</string>
+    <string name="holiday_name_canada_day">Canada Day</string>
+    <string name="holiday_name_us_independence_day">US Independence Day</string>
+    <string name="holiday_name_bastille_day">Bastille Day</string>
+    <string name="holiday_name_brazil_independence_day">Brazil Independence Day</string>
+    <string name="holiday_name_german_unity_day">German Unity Day</string>
+    <string name="holiday_name_spain_hispanic_day">Hispanic Day</string>
+    <string name="holiday_name_halloween">Halloween</string>
+    <string name="holiday_name_bonfire_night">Bonfire Night</string>
+    <string name="holiday_name_us_thanksgiving">US Thanksgiving</string>
+    <string name="holiday_name_st_andrews_day">St Andrew\'s Day</string>
+    <string name="holiday_name_christmas_day">Christmas Day</string>
+
+    <!-- Banner copy. Short, single-line, sentence case. The emoji from
+         HolidayTheme.emoji is prepended in code so it isn\'t baked into
+         the translation. -->
+    <string name="holiday_banner_new_years_day">Happy New Year</string>
+    <string name="holiday_banner_australia_day">Happy Australia Day</string>
+    <string name="holiday_banner_valentines_day">Happy Valentine\'s Day</string>
+    <string name="holiday_banner_st_davids_day">Dydd Gŵyl Dewi Hapus</string>
+    <string name="holiday_banner_st_patricks_day">Happy St Patrick\'s Day</string>
+    <string name="holiday_banner_st_georges_day">Happy St George\'s Day</string>
+    <string name="holiday_banner_anzac_day">Lest we forget</string>
+    <string name="holiday_banner_italy_republic_day">Buona Festa della Repubblica</string>
+    <string name="holiday_banner_canada_day">Happy Canada Day</string>
+    <string name="holiday_banner_us_independence_day">Happy 4th of July</string>
+    <string name="holiday_banner_bastille_day">Joyeux 14 juillet</string>
+    <string name="holiday_banner_brazil_independence_day">Feliz Dia da Independência</string>
+    <string name="holiday_banner_german_unity_day">Tag der Deutschen Einheit</string>
+    <string name="holiday_banner_spain_hispanic_day">Feliz Día de la Hispanidad</string>
+    <string name="holiday_banner_halloween">Happy Halloween</string>
+    <string name="holiday_banner_bonfire_night">Remember, remember</string>
+    <string name="holiday_banner_us_thanksgiving">Happy Thanksgiving</string>
+    <string name="holiday_banner_st_andrews_day">Happy St Andrew\'s Day</string>
+    <string name="holiday_banner_christmas_day">Merry Christmas</string>
 </resources>

@@ -8,21 +8,29 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.usecase.HolidayResolver
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SettingsRepository
 import app.clothescast.work.FetchAndNotifyWorker
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.Clock
+import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZoneId
 
 data class TodayState(
     /**
@@ -73,10 +81,35 @@ data class TodayState(
      * [Insight.perModelHourly] is present.
      */
     val showModelSpread: Boolean = false,
-    /** User-picked fill colour overrides for each top-icon tier. Empty = baked-in defaults. */
+    /**
+     * Fill colour overrides for each top-icon tier. Empty = baked-in
+     * defaults. On a date matching an enabled holiday this map carries the
+     * holiday's palette overlaid on top of the user's [UserPreferences.outfitTopColors]
+     * — see [TodayViewModel.state]'s combine builder. Holiday wins for the
+     * day; the user's custom colour is restored at the next render after
+     * the calendar rolls over.
+     */
     val outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     /** Sibling of [outfitTopColors] for the bottom-icon tier. */
     val outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    /**
+     * Holiday-theme accent colour overrides for the *stroke* / outline of
+     * each top tier. Empty = no override; the renderer auto-derives a
+     * darker shade of the fill (the long-standing two-tone look). Used by
+     * 2-colour holidays to put the alternate colour on top-icon outlines
+     * (e.g. yellow Australia-Day shirt with green collar) and by 3-colour
+     * holidays to put the unifying third colour on both top + bottom (e.g.
+     * white trim on US Independence Day's red top + blue bottom).
+     */
+    val outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    /** Sibling of [outfitTopStrokes] for the bottom-icon tier. */
+    val outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    /**
+     * The holiday theme firing on today's calendar date — `null` when no
+     * enabled holiday matches. The Today screen reads this to render a small
+     * themed banner above the outfit preview row.
+     */
+    val activeHoliday: HolidayTheme? = null,
 )
 
 sealed class WorkStatus {
@@ -186,6 +219,19 @@ class TodayViewModel(
      * the Activity wires `OutfitWidget().updateAll(applicationContext)`.
      */
     private val refreshOutfitWidget: suspend () -> Unit = {},
+    /**
+     * Source of "today" for the holiday resolver. Held as a [Clock] (not
+     * `() -> LocalDate`) so tests can pin a specific instant while production
+     * uses the system zone. Defaulted to system clock so callers that don't
+     * care about deterministic dates can omit it.
+     */
+    private val clock: Clock = Clock.systemDefaultZone(),
+    /**
+     * Resolves today's date + the user's enabled-holidays set into a
+     * [HolidayTheme]. Defaulted to a fresh resolver reading the full v1
+     * catalogue; tests can inject a smaller list.
+     */
+    private val holidayResolver: HolidayResolver = HolidayResolver(),
 ) : ViewModel() {
     /**
      * Session-scoped "show model spread" flag. Held in the ViewModel rather
@@ -208,13 +254,59 @@ class TodayViewModel(
         mergeWorkStatus(selectStatus(todayInfos.toLite()), selectStatus(tonightInfos.toLite()))
     }
 
+    /**
+     * Emits the current [LocalDate] and re-emits at every local midnight. Fused
+     * into the [state] combine so a screen left open across midnight (no
+     * settings change, no fetch, no work-status update) still flips its
+     * holiday theme deterministically on the day rollover — without it, the
+     * combine wouldn't re-execute until *some* unrelated input emitted, and
+     * yesterday's banner could linger into the morning. The minimum delay
+     * guards against zero / negative durations from a clock skew that's
+     * already past midnight by the time we compute it.
+     */
+    private val dateTicker: Flow<LocalDate> = flow {
+        while (true) {
+            val zone = clock.zone ?: ZoneId.systemDefault()
+            val today = LocalDate.now(clock)
+            emit(today)
+            val nextMidnightMs = today.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli()
+            val nowMs = clock.instant().toEpochMilli()
+            delay((nextMidnightMs - nowMs).coerceAtLeast(MIN_DATE_TICK_MS))
+        }
+    }
+
+    // Fuse the user's preferences with the date tick upstream so the outer
+    // [state] combine stays at five inputs (the typed-overload cap) and the
+    // resolver still gets a freshly-read date every time it runs.
+    private val preferencesAndDate = combine(settingsRepository.preferences, dateTicker, ::Pair)
+
     val state: StateFlow<TodayState> = combine(
         insightCache.thisPeriod,
         insightCache.nextPeriod,
         workStatusFlow,
-        settingsRepository.preferences,
+        preferencesAndDate,
         showModelSpread,
-    ) { thisPeriodInsight, nextPeriodInsight, workStatus, prefs, spread ->
+    ) { thisPeriodInsight, nextPeriodInsight, workStatus, prefsAndDate, spread ->
+        val (prefs, today) = prefsAndDate
+        // Resolve "is today a holiday the user wants themed?" — `today`
+        // comes from the [dateTicker] flow above so the rollover at local
+        // midnight re-fires combine even when no other input changes.
+        val theme = holidayResolver.resolve(today, prefs.enabledHolidays)
+        // Merge holiday overrides on top of the user's custom colours. The
+        // user's choices populate the base map; the holiday's per-tier
+        // entries replace any user pick for that tier *for today only*
+        // (this map is computed at render time and never persisted, so
+        // tomorrow's render restores the user's pick).
+        //
+        // Strokes only come from the holiday theme — the user has no
+        // stroke-customisation UI today. Empty map ⇒ the garment renderer
+        // auto-derives the stroke as a darker shade of the fill (the
+        // existing two-tone behaviour); a non-empty map paints the
+        // holiday's chosen accent colour as a contrasting outline.
+        val topColors = prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())
+        val bottomColors = prefs.outfitBottomColors + (theme?.bottomOverrides ?: emptyMap())
+        val topStrokes = theme?.topStrokeOverrides ?: emptyMap()
+        val bottomStrokes = theme?.bottomStrokeOverrides ?: emptyMap()
         TodayState(
             thisPeriodInsight = thisPeriodInsight,
             nextPeriodInsight = nextPeriodInsight,
@@ -228,8 +320,11 @@ class TodayViewModel(
             hasFallbackLocation = prefs.location != null,
             clothesRules = prefs.clothesRules,
             showModelSpread = spread,
-            outfitTopColors = prefs.outfitTopColors,
-            outfitBottomColors = prefs.outfitBottomColors,
+            outfitTopColors = topColors,
+            outfitBottomColors = bottomColors,
+            outfitTopStrokes = topStrokes,
+            outfitBottomStrokes = bottomStrokes,
+            activeHoliday = theme,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayState())
 
@@ -284,5 +379,14 @@ class TodayViewModel(
                 refreshOutfitWidget = refreshOutfitWidget,
             ) as T
         }
+    }
+
+    private companion object {
+        // Floor on the inter-tick delay so a clock that's nudged backward
+        // (manual time change, NTP correction) doesn't cause the date ticker
+        // to busy-loop while it waits for "midnight" to come back into the
+        // future. One second is plenty — the ticker is a once-per-day event
+        // in steady state.
+        const val MIN_DATE_TICK_MS = 1_000L
     }
 }

@@ -12,6 +12,7 @@ import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
@@ -168,6 +169,7 @@ class SettingsViewModel(
                         colorPalette = prefs.colorPalette,
                         outfitTopColors = prefs.outfitTopColors,
                         outfitBottomColors = prefs.outfitBottomColors,
+                        enabledHolidays = prefs.enabledHolidays,
                         clothesRules = prefs.clothesRules,
                         defaultBottom = prefs.defaultBottom,
                         location = prefs.location,
@@ -356,6 +358,17 @@ class SettingsViewModel(
         viewModelScope.launch {
             settingsRepository.setOutfitBottomColor(bottom, argb)
             refreshCachedOutfits()
+        }
+    }
+
+    /**
+     * Flips a single holiday theme on or off in the user's preferences. The
+     * Today screen reads the resulting set every time it builds state, so a
+     * toggle takes effect on the next frame — no cache invalidation needed.
+     */
+    fun setEnabledHoliday(id: HolidayId, enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setEnabledHoliday(id, enabled)
         }
     }
 

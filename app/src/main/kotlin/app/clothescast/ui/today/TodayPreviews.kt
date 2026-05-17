@@ -243,6 +243,7 @@ internal fun OutfitRationaleDialogPreview() {
             temperatureUnit = TemperatureUnit.CELSIUS,
             clothesRules = ClothesRule.DEFAULTS,
             onAdjustThreshold = { _, _ -> },
+            onNavigateToClothes = {},
             onDismiss = {},
         )
     }
@@ -289,6 +290,7 @@ internal fun OutfitRationaleDialogTunedPreview() {
                 if (it.item == "sweater") it.copy(condition = ClothesRule.TemperatureBelow(15.0)) else it
             },
             onAdjustThreshold = { _, _ -> },
+            onNavigateToClothes = {},
             onDismiss = {},
         )
     }

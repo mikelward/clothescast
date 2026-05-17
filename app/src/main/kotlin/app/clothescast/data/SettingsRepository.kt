@@ -454,17 +454,18 @@ class SettingsRepository(
     }
 
     /**
-     * Flips a single country (ISO 3166-1 alpha-2) on or off in the
-     * user's per-country opt-in list. The Home / Current / All buckets
-     * are independent of this set — this only carries countries the user
-     * adds explicitly via the per-country checkbox column.
+     * Persists an explicit per-country override (ISO 3166-1 alpha-2).
+     * [HolidayOverride.AUTO] clears the override so the country falls
+     * back to the Home / Current / All buckets; [HolidayOverride.ON] and
+     * [HolidayOverride.OFF] are stored explicitly.
      */
-    suspend fun setHolidayCountryEnabled(code: String, enabled: Boolean) {
+    suspend fun setHolidayCountryOverride(code: String, override: HolidayOverride) {
         val normalised = code.trim().takeIf { it.isNotEmpty() }?.uppercase() ?: return
         dataStore.edit { prefs ->
-            val current = prefs[HOLIDAY_COUNTRIES].orEmpty()
-            val updated = if (enabled) current + normalised else current - normalised
-            prefs[HOLIDAY_COUNTRIES] = updated
+            val current = parseHolidayCountryOverrides(prefs[HOLIDAY_COUNTRY_OVERRIDES])
+            val updated = if (override == HolidayOverride.AUTO) current - normalised
+                else current + (normalised to override)
+            prefs[HOLIDAY_COUNTRY_OVERRIDES] = encodeHolidayCountryOverrides(updated)
         }
     }
 
@@ -613,9 +614,7 @@ class SettingsRepository(
             home = this[HOLIDAY_COUNTRY_HOME] != false,
             current = this[HOLIDAY_COUNTRY_CURRENT] != false,
             all = this[HOLIDAY_COUNTRY_ALL] == true,
-            countries = this[HOLIDAY_COUNTRIES].orEmpty().mapNotNull {
-                it.trim().takeIf { c -> c.isNotEmpty() }?.uppercase()
-            }.toSet(),
+            countryOverrides = parseHolidayCountryOverrides(this[HOLIDAY_COUNTRY_OVERRIDES]),
         )
         val holidayOverrides = parseHolidayOverrides(this[HOLIDAY_OVERRIDES])
         // Resolve stored enum names back to [ForecastModel]. Unknown / removed
@@ -801,6 +800,29 @@ class SettingsRepository(
             if (state == HolidayOverride.AUTO) null else "${id.name}:${state.name}"
         }
 
+    /**
+     * Decodes the persisted per-country override map. Each set entry is
+     * `CODE:STATE` where CODE is an ISO 3166-1 alpha-2 (case-normalised to
+     * uppercase on read) and STATE is `ON` or `OFF`; missing codes implicitly
+     * mean [HolidayOverride.AUTO]. Unknown / malformed entries drop silently.
+     */
+    private fun parseHolidayCountryOverrides(raw: Set<String>?): Map<String, HolidayOverride> {
+        if (raw.isNullOrEmpty()) return emptyMap()
+        return raw.mapNotNull { entry ->
+            val parts = entry.split(":", limit = 2)
+            if (parts.size != 2) return@mapNotNull null
+            val code = parts[0].trim().takeIf { it.isNotEmpty() }?.uppercase() ?: return@mapNotNull null
+            val state = runCatching { HolidayOverride.valueOf(parts[1]) }.getOrNull()
+                ?: return@mapNotNull null
+            if (state == HolidayOverride.AUTO) null else code to state
+        }.toMap()
+    }
+
+    private fun encodeHolidayCountryOverrides(overrides: Map<String, HolidayOverride>): Set<String> =
+        overrides.entries.mapNotNullTo(mutableSetOf()) { (code, state) ->
+            if (state == HolidayOverride.AUTO) null else "$code:${state.name}"
+        }
+
     private fun parseOutfitTopColors(raw: String?): Map<OutfitSuggestion.Top, Long> =
         parseOutfitColors(raw) { name -> runCatching { OutfitSuggestion.Top.valueOf(name) }.getOrNull() }
 
@@ -892,7 +914,7 @@ class SettingsRepository(
         private val HOLIDAY_COUNTRY_HOME = booleanPreferencesKey("holiday_country_home")
         private val HOLIDAY_COUNTRY_CURRENT = booleanPreferencesKey("holiday_country_current")
         private val HOLIDAY_COUNTRY_ALL = booleanPreferencesKey("holiday_country_all")
-        private val HOLIDAY_COUNTRIES = stringSetPreferencesKey("holiday_countries")
+        private val HOLIDAY_COUNTRY_OVERRIDES = stringSetPreferencesKey("holiday_country_overrides")
         private val FORECAST_MODELS = stringSetPreferencesKey("forecast_models")
         private val MQTT_BRIDGE_ENABLED = booleanPreferencesKey("mqtt_bridge_enabled")
         private val MQTT_HOST = stringPreferencesKey("mqtt_host")

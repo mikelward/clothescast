@@ -54,11 +54,11 @@ data class SettingsState(
     /** Sibling of [outfitTopColors] for the bottom-icon tier. */
     val outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     /**
-     * Country picker checkboxes — Home / Current / All plus per-country
-     * opt-ins. Defaults to Home + Current on (the previous "Auto"
-     * behaviour) so a fresh install surfaces the locale + weather-
-     * location country plus the universal globals (which ride along
-     * automatically whenever any country is enabled).
+     * Country picker: Home / Current / All bucket flags plus per-country
+     * AUTO / ON / OFF overrides ([HolidayCountrySelection.countryOverrides]).
+     * Defaults to Home + Current on so a fresh install surfaces the locale
+     * + weather-location country plus the universal globals (which ride
+     * along automatically whenever any country is effectively enabled).
      */
     val holidayCountrySelection: HolidayCountrySelection = HolidayCountrySelection(),
     /**

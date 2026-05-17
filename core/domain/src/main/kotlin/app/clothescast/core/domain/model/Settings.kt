@@ -41,23 +41,30 @@ enum class DeliveryMode { NOTIFICATION_ONLY, TTS_ONLY, NOTIFICATION_AND_TTS }
 enum class HolidayOverride { AUTO, ON, OFF }
 
 /**
- * Which buckets feed the holiday country filter.
+ * Country picker state. Two layers stack: top-level buckets ([home] /
+ * [current] / [all]) drive each country's *auto* resolution, and
+ * [countryOverrides] lets the user force an individual country on or off
+ * regardless of those buckets.
  *
- *  - [home] — include the user's locale country (e.g. en-GB → "GB").
- *  - [current] — include the weather location's country, when known
- *    (reverse-geocoded from the active forecast pin).
- *  - [all] — short-circuit to every country in
- *    [HolidayCatalog.allCountries]. When this is on, the other fields
- *    are ignored (the picker still shows their checked state, but it
- *    doesn't affect resolution until [all] is unchecked).
- *  - [countries] — additional individual country opt-ins beyond Home /
- *    Current. ISO 3166-1 alpha-2 uppercase.
+ *  - [home] — when on, the user's locale country (e.g. en-GB → "GB")
+ *    resolves to effective-on under AUTO.
+ *  - [current] — when on, the weather location's country (reverse-
+ *    geocoded from the active forecast pin) resolves to effective-on
+ *    under AUTO.
+ *  - [all] — short-circuits every country to effective-on under AUTO.
+ *    Per-country [HolidayOverride.OFF] still wins (a user can opt
+ *    out of a single country even with All on).
+ *  - [countryOverrides] — explicit per-country overrides. Missing /
+ *    [HolidayOverride.AUTO] entries follow the buckets above;
+ *    [HolidayOverride.ON] forces the country on regardless;
+ *    [HolidayOverride.OFF] forces it off regardless. Keys are
+ *    ISO 3166-1 alpha-2 uppercase.
  *
  * The [HolidayCatalog.GLOBAL_COUNTRY] bucket (Christmas, New Year's,
  * Valentine's, Halloween) rides along automatically whenever any
- * country is enabled — there's no separate user-facing toggle. Per-
- * holiday on/off overrides ([HolidayOverride]) handle the case where
- * a user wants to mute a specific global holiday.
+ * country is effectively enabled — there's no separate user-facing
+ * toggle. Per-holiday on/off overrides ([HolidayOverride]) handle the
+ * case where a user wants to mute a specific global holiday.
  *
  * Default ([home]=true, [current]=true) matches the previous "Auto"
  * behaviour: locale + weather location + universal holidays.
@@ -66,8 +73,48 @@ data class HolidayCountrySelection(
     val home: Boolean = true,
     val current: Boolean = true,
     val all: Boolean = false,
-    val countries: Set<String> = emptySet(),
+    val countryOverrides: Map<String, HolidayOverride> = emptyMap(),
 ) {
+    /**
+     * Effective state a country would have if its [HolidayOverride] were
+     * [HolidayOverride.AUTO] — i.e. whether the [home] / [current] /
+     * [all] buckets pick it up. Used to label the per-country dropdown's
+     * `Auto` option as "Auto (on)" / "Auto (off)".
+     */
+    fun countryAutoEffective(
+        code: String,
+        localeCountry: String?,
+        weatherLocationCountry: String?,
+    ): Boolean {
+        if (all) return true
+        val normalised = code.trim().takeIf { it.isNotEmpty() }?.uppercase() ?: return false
+        if (home && normalised == localeCountry?.trim()?.takeIf { it.isNotEmpty() }?.uppercase()) {
+            return true
+        }
+        if (current && normalised == weatherLocationCountry?.trim()?.takeIf { it.isNotEmpty() }?.uppercase()) {
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Effective state for a country, honouring [countryOverrides] first
+     * and falling through to [countryAutoEffective] when the override is
+     * [HolidayOverride.AUTO] or absent.
+     */
+    fun countryEffective(
+        code: String,
+        localeCountry: String?,
+        weatherLocationCountry: String?,
+    ): Boolean {
+        val normalised = code.trim().takeIf { it.isNotEmpty() }?.uppercase() ?: return false
+        return when (countryOverrides[normalised] ?: HolidayOverride.AUTO) {
+            HolidayOverride.ON -> true
+            HolidayOverride.OFF -> false
+            HolidayOverride.AUTO -> countryAutoEffective(normalised, localeCountry, weatherLocationCountry)
+        }
+    }
+
     /**
      * Resolves the effective enabled-country set used by [HolidayResolver]
      * (and by the Settings UI to render the per-holiday Auto subtitle).
@@ -84,15 +131,20 @@ data class HolidayCountrySelection(
         localeCountry: String?,
         weatherLocationCountry: String?,
         allCountries: Set<String>,
-    ): Set<String> = if (all) allCountries else buildSet {
-        if (home) {
-            localeCountry?.trim()?.takeIf { it.isNotEmpty() }?.let { add(it.uppercase()) }
+    ): Set<String> = buildSet {
+        for (code in allCountries) {
+            if (code == HolidayCatalog.GLOBAL_COUNTRY) continue
+            if (countryEffective(code, localeCountry, weatherLocationCountry)) add(code)
         }
-        if (current) {
-            weatherLocationCountry?.trim()?.takeIf { it.isNotEmpty() }?.let { add(it.uppercase()) }
+        // Pick up ON-override countries that aren't in `allCountries` (e.g.
+        // a forward-compat catalog entry we haven't shipped yet). OFF entries
+        // are never added.
+        for ((code, override) in countryOverrides) {
+            if (override == HolidayOverride.ON) add(code)
         }
-        countries.mapNotNull { it.trim().takeIf { c -> c.isNotEmpty() }?.uppercase() }.let(::addAll)
-        if (isNotEmpty()) add(HolidayCatalog.GLOBAL_COUNTRY)
+        if (isNotEmpty() && HolidayCatalog.GLOBAL_COUNTRY in allCountries) {
+            add(HolidayCatalog.GLOBAL_COUNTRY)
+        }
     }
 }
 
@@ -477,9 +529,12 @@ data class UserPreferences(
      */
     /**
      * Country picker for the holiday filter. Default ([home]=true,
-     * [current]=true, [global]=true) shows locale + weather-location
-     * country + universal holidays. Drives the auto resolution of every
-     * holiday's [HolidayOverride.AUTO] state.
+     * [current]=true) shows locale + weather-location country + universal
+     * holidays. Per-country ON / OFF overrides
+     * ([HolidayCountrySelection.countryOverrides]) layer on top — a user
+     * can pin France even from Australia or hide their own country.
+     * Drives the auto resolution of every holiday's [HolidayOverride.AUTO]
+     * state.
      */
     val holidayCountrySelection: HolidayCountrySelection = HolidayCountrySelection(),
     /**

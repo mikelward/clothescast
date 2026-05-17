@@ -313,27 +313,35 @@ internal fun SettingsCalendarPreview() {
 }
 
 // Holidays page with a representative mix of enabled / disabled rows so the
-// snapshot covers both Switch states and the section's typography.
-// Long names (St Patrick's, US Independence) are kept enabled so the row's
-// "emoji + name + switch" wrap behaviour is exercised under default fontScale.
+// snapshot covers both per-country and per-holiday dropdown states.
+// France carries an explicit ON country override (the user pinned it from
+// abroad); Japan an explicit OFF (muted even if it matched location);
+// Australia is the locale + weather country and shows Auto (on); everything
+// else shows Auto (off). Bastille Day is force-on at the holiday tier;
+// MLK Day is force-off.
 @Preview(name = "Settings · Holidays", widthDp = 360)
 @Composable
 internal fun SettingsHolidaysPreview() {
     SettingsFrame {
         HolidaysContent(
-            holidayCountrySelection = HolidayCountrySelection(),
+            holidayCountrySelection = HolidayCountrySelection(
+                countryOverrides = mapOf(
+                    "FR" to HolidayOverride.ON,
+                    "JP" to HolidayOverride.OFF,
+                ),
+            ),
             holidayOverrides = mapOf(
                 HolidayId.BASTILLE_DAY to HolidayOverride.ON,
                 HolidayId.MLK_DAY to HolidayOverride.OFF,
             ),
-            effectiveEnabledHolidayCountries = setOf("AU", HolidayCatalog.GLOBAL_COUNTRY),
+            effectiveEnabledHolidayCountries = setOf("AU", "FR", HolidayCatalog.GLOBAL_COUNTRY),
             localeCountry = "AU",
             weatherLocationCountry = "AU",
             padding = PaddingValues(0.dp),
             onSetCountryHome = {},
             onSetCountryCurrent = {},
             onSetCountryAll = {},
-            onSetCountryEnabled = { _, _ -> },
+            onSetCountryOverride = { _, _ -> },
             onSetHolidayOverride = { _, _ -> },
         )
     }

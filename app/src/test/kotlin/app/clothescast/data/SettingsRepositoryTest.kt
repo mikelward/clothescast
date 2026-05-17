@@ -214,7 +214,7 @@ class SettingsRepositoryTest {
         selection.home shouldBe true
         selection.current shouldBe true
         selection.all shouldBe false
-        selection.countries shouldBe emptySet()
+        selection.countryOverrides shouldBe emptyMap()
     }
 
     @Test
@@ -230,17 +230,21 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `per-country opt-ins round-trip with uppercase normalisation`() = runTest {
-        subject.preferences.first().holidayCountrySelection.countries shouldBe emptySet()
+    fun `per-country overrides round-trip with uppercase normalisation`() = runTest {
+        subject.preferences.first().holidayCountrySelection.countryOverrides shouldBe emptyMap()
 
-        subject.setHolidayCountryEnabled("fr", enabled = true)
-        subject.preferences.first().holidayCountrySelection.countries shouldBe setOf("FR")
+        subject.setHolidayCountryOverride("fr", HolidayOverride.ON)
+        subject.preferences.first().holidayCountrySelection.countryOverrides shouldBe
+            mapOf("FR" to HolidayOverride.ON)
 
-        subject.setHolidayCountryEnabled("DE", enabled = true)
-        subject.preferences.first().holidayCountrySelection.countries shouldBe setOf("FR", "DE")
+        subject.setHolidayCountryOverride("DE", HolidayOverride.OFF)
+        subject.preferences.first().holidayCountrySelection.countryOverrides shouldBe
+            mapOf("FR" to HolidayOverride.ON, "DE" to HolidayOverride.OFF)
 
-        subject.setHolidayCountryEnabled("FR", enabled = false)
-        subject.preferences.first().holidayCountrySelection.countries shouldBe setOf("DE")
+        // AUTO clears the override (sparse storage — missing means AUTO).
+        subject.setHolidayCountryOverride("FR", HolidayOverride.AUTO)
+        subject.preferences.first().holidayCountrySelection.countryOverrides shouldBe
+            mapOf("DE" to HolidayOverride.OFF)
     }
 
     @Test

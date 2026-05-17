@@ -451,6 +451,65 @@ class MqttPublisherTest {
     }
 
     @Test
+    fun `failed first attempt is retried and a successful second attempt returns Success`() = runTest {
+        val attempts = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = { config, topic, payload ->
+                attempts.add(PublishCall(config, topic, payload))
+                if (attempts.size == 1) error("first-attempt failure")
+            },
+            retryDelayMs = 1L,
+        )
+
+        val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
+
+        outcome shouldBe MqttPublishOutcome.Success
+        attempts shouldHaveSize 2
+    }
+
+    @Test
+    fun `both attempts failing returns the last attempt's Failure message`() = runTest {
+        var attempts = 0
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = { _, _, _ ->
+                attempts += 1
+                error("attempt $attempts failure")
+            },
+            retryDelayMs = 1L,
+        )
+
+        val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
+
+        val failure = outcome.shouldBeInstanceOf<MqttPublishOutcome.Failure>()
+        attempts shouldBe 2
+        failure.message shouldBe "IllegalStateException: attempt 2 failure"
+    }
+
+    @Test
+    fun `successful first attempt does not retry`() = runTest {
+        var attempts = 0
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = { _, _, _ -> attempts += 1 },
+            retryDelayMs = 1L,
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "x") shouldBe MqttPublishOutcome.Success
+        attempts shouldBe 1
+    }
+
+    @Test
     fun `publish timeout triggers a no-throw fallthrough`() = runTest {
         val subject = MqttPublisher(
             preferences = flowOf(

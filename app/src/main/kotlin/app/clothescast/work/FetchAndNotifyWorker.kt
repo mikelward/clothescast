@@ -543,8 +543,10 @@ class FetchAndNotifyWorker(
         // deliverToday/Tonight both start with awaitDeliveryAlignment() (60 s
         // window) and then await TTS — Home Assistant automations timed to the
         // scheduled alarm would race with the retained topics if we published
-        // after that. The 5-second publish timeout means an unreachable broker
-        // delays notification by at most 5 s, which is within the 60-second window.
+        // after that. The publisher caps each prose / image / audio publish at
+        // ~11 s (two attempts × the 5-second timeout + a short retry delay), so
+        // a permanently-down broker delays notification by at most that, well
+        // within the 60-second alignment window.
         // Prose publish — outcome persisted for the Smart Home settings UI.
         val mqttOutcome = app.mqttPublisher.publishIfEnabled(insight.period, prose)
         // Image publish — fire-and-forget alongside the prose.
@@ -790,8 +792,9 @@ class FetchAndNotifyWorker(
                         // Publish before local playback so a Hub speaking off
                         // the retained audio topic doesn't trail the phone.
                         // Mirrors the image publish in deliver(): the call is
-                        // capped at MqttPublisher.DEFAULT_PUBLISH_TIMEOUT_MS,
-                        // so a broker outage costs at most that 5 s budget.
+                        // capped at two attempts × MqttPublisher.DEFAULT_PUBLISH_TIMEOUT_MS
+                        // plus the retry delay, so a broker outage costs at
+                        // most ~11 s of TTS-path latency.
                         runCatching {
                             app.mqttPublisher.publishAudioIfEnabled(
                                 period,

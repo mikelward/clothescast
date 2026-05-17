@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
@@ -217,6 +218,13 @@ internal fun UpdateAvailableBannerCard(
                     onClick = onAction,
                     enabled = phase !is UpdatePhase.Downloading,
                     modifier = Modifier.padding(start = 8.dp),
+                    // Default disabled colors derive from onSurface, which is
+                    // near-invisible against the card's primaryContainer
+                    // background. Anchor to onPrimaryContainer instead.
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.12f),
+                        disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.38f),
+                    ),
                 ) {
                     Text(
                         stringResource(

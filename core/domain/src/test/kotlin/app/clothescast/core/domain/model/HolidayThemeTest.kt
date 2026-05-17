@@ -1,6 +1,9 @@
 package app.clothescast.core.domain.model
 
 import io.kotest.matchers.shouldBe
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.Month
 import org.junit.jupiter.api.Test
 
 class HolidayThemeTest {
@@ -54,5 +57,36 @@ class HolidayThemeTest {
             ?: error("CHRISTMAS_DAY missing from catalog")
         theme.bannerTextKeyFor("US") shouldBe "holiday_banner_christmas_day"
         theme.bannerTextKeyFor("GB") shouldBe "holiday_banner_christmas_day"
+    }
+
+    @Test
+    fun `dateIn materialises Fixed at month and day`() {
+        HolidayDate.Fixed(Month.JULY, 4).dateIn(2026) shouldBe LocalDate.of(2026, 7, 4)
+        HolidayDate.Fixed(Month.DECEMBER, 25).dateIn(2027) shouldBe LocalDate.of(2027, 12, 25)
+    }
+
+    @Test
+    fun `dateIn materialises NthWeekday correctly`() {
+        // 2026 — May 10 is 2nd Sunday (May 3 is 1st), Nov 26 is 4th Thursday.
+        HolidayDate.NthWeekday(Month.MAY, 2, DayOfWeek.SUNDAY).dateIn(2026) shouldBe
+            LocalDate.of(2026, 5, 10)
+        HolidayDate.NthWeekday(Month.NOVEMBER, 4, DayOfWeek.THURSDAY).dateIn(2026) shouldBe
+            LocalDate.of(2026, 11, 26)
+        // First-of-month edge: when month starts on the target weekday, nth=1 IS day 1.
+        HolidayDate.NthWeekday(Month.NOVEMBER, 1, DayOfWeek.SUNDAY).dateIn(2026) shouldBe
+            LocalDate.of(2026, 11, 1)
+    }
+
+    @Test
+    fun `dateIn materialises LastWeekday correctly`() {
+        // 2026 — May 25 (Mon) is the last Monday of May; Feb 28 (Sat) the last
+        // Saturday of February in a non-leap year.
+        HolidayDate.LastWeekday(Month.MAY, DayOfWeek.MONDAY).dateIn(2026) shouldBe
+            LocalDate.of(2026, 5, 25)
+        HolidayDate.LastWeekday(Month.FEBRUARY, DayOfWeek.SATURDAY).dateIn(2026) shouldBe
+            LocalDate.of(2026, 2, 28)
+        // 2024 was a leap year — Feb 29 was a Thursday, so the last Thursday is the 29th.
+        HolidayDate.LastWeekday(Month.FEBRUARY, DayOfWeek.THURSDAY).dateIn(2024) shouldBe
+            LocalDate.of(2024, 2, 29)
     }
 }

@@ -376,6 +376,11 @@ class PreviewSnapshots {
     @Test fun missing_today_placeholder() = capture { MissingTodayPlaceholderPreview() }
     @Test fun missing_tonight_placeholder_dark() = capture { MissingTonightPlaceholderDarkPreview() }
 
+    @Test fun edge_fade_bottom_only() = capture { EdgeFadeBottomOnlyPreview() }
+    @Test fun edge_fade_both() = capture { EdgeFadeBothPreview() }
+    @Test fun edge_fade_top_only() = capture { EdgeFadeTopOnlyPreview() }
+    @Test fun edge_fade_both_dark() = capture { EdgeFadeBothDarkPreview() }
+
     @Test fun forecast_chart() = capture { ForecastChartPreview() }
     @Test fun forecast_chart_dark() = capture { ForecastChartDarkPreview() }
     @Test fun forecast_chart_with_model_spread() = capture { ForecastChartWithModelSpreadPreview() }

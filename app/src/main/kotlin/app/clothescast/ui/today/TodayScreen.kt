@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -54,6 +55,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
@@ -433,157 +436,224 @@ private fun TodayPage(
     // tap handler can scroll the chip to the top of the viewport without
     // hard-coding offsets above it (outfit row + insight card heights vary).
     var chipScrollOffset by remember { mutableIntStateOf(0) }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-            .padding(horizontal = 16.dp)
-            .padding(top = 16.dp, bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+    // Edge fades hint at off-screen content above / below — drawn at the
+    // page's outer Box bounds (the pager-page edges), so cards pass cleanly
+    // under them as the user scrolls.
+    EdgeFadeOverlay(
+        topFadeVisible = scrollState.canScrollBackward,
+        bottomFadeVisible = scrollState.canScrollForward,
     ) {
-        // Outfit row sits above the null-insight short-circuit so it
-        // also renders on page 2 when [insight] (the next-period
-        // insight) is null and we fall back to MissingPeriodPlaceholder.
-        // [outfitInsight] is always this period's insight, so this is
-        // independent of whether the page's own insight is cached yet.
-        OutfitPreviewRow(
-            insight = outfitInsight,
-            temperatureUnit = state.temperatureUnit,
-            clothesRules = state.clothesRules,
-            outfitTopColors = state.outfitTopColors,
-            outfitBottomColors = state.outfitBottomColors,
-            onAdjustThreshold = onAdjustThreshold,
-            onNavigateToClothes = onNavigateToClothes,
-        )
-        if (insight == null) {
-            MissingPeriodPlaceholder(
-                period = fallbackPeriod,
-                morningTime = state.morningTime,
-                tonightTime = state.tonightTime,
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp, bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            // Outfit row sits above the null-insight short-circuit so it
+            // also renders on page 2 when [insight] (the next-period
+            // insight) is null and we fall back to MissingPeriodPlaceholder.
+            // [outfitInsight] is always this period's insight, so this is
+            // independent of whether the page's own insight is cached yet.
+            OutfitPreviewRow(
+                insight = outfitInsight,
+                temperatureUnit = state.temperatureUnit,
+                clothesRules = state.clothesRules,
+                outfitTopColors = state.outfitTopColors,
+                outfitBottomColors = state.outfitBottomColors,
+                onAdjustThreshold = onAdjustThreshold,
+                onNavigateToClothes = onNavigateToClothes,
+            )
+            if (insight == null) {
+                MissingPeriodPlaceholder(
+                    period = fallbackPeriod,
+                    morningTime = state.morningTime,
+                    tonightTime = state.tonightTime,
+                    showChevronLeft = showChevronLeft,
+                    onChevronTap = onChevronTap,
+                )
+                return@Column
+            }
+            // Tap-to-toggle is wired uniformly on every surface that shows a
+            // chart: the confidence chip (where the hint copy explains the
+            // affordance), the three temp / feels-like / precip cards, and the
+            // six diagnostic cards below (wind / cloud / humidity / solar /
+            // sunshine / UV). Every chart draws a consensus main line by
+            // default and overlays the per-model spread when the toggle is on,
+            // so tapping any of them produces a visible change. [tapToggle] is
+            // null when there's no per-model data in the cache (e.g. older
+            // payloads) — in that case the cards stay non-clickable and the
+            // diagnostic block at the bottom hides itself.
+            val perModelAvailable = insight.perModelHourly != null
+            val tapToggle = onToggleModelSpread.takeIf { perModelAvailable }
+            InsightCard(
+                insight = insight,
+                region = state.region,
+                temperatureUnit = state.temperatureUnit,
+                showChevronRight = showChevronRight,
                 showChevronLeft = showChevronLeft,
                 onChevronTap = onChevronTap,
             )
-            return@Column
-        }
-        // Tap-to-toggle is wired uniformly on every surface that shows a
-        // chart: the confidence chip (where the hint copy explains the
-        // affordance), the three temp / feels-like / precip cards, and the
-        // six diagnostic cards below (wind / cloud / humidity / solar /
-        // sunshine / UV). Every chart draws a consensus main line by
-        // default and overlays the per-model spread when the toggle is on,
-        // so tapping any of them produces a visible change. [tapToggle] is
-        // null when there's no per-model data in the cache (e.g. older
-        // payloads) — in that case the cards stay non-clickable and the
-        // diagnostic block at the bottom hides itself.
-        val perModelAvailable = insight.perModelHourly != null
-        val tapToggle = onToggleModelSpread.takeIf { perModelAvailable }
-        InsightCard(
-            insight = insight,
-            region = state.region,
-            temperatureUnit = state.temperatureUnit,
-            showChevronRight = showChevronRight,
-            showChevronLeft = showChevronLeft,
-            onChevronTap = onChevronTap,
-        )
-        insight.confidence?.let {
-            // Wrap the per-model toggle so a tap also scrolls the chip to the
-            // top of the viewport — the per-model overlay renders on the
-            // charts below the chip, so scrolling them into view is part of
-            // the same gesture's payoff.
-            val onChipTap: (() -> Unit)? = tapToggle?.let { toggle ->
-                {
-                    toggle()
-                    scrollScope.launch { scrollState.animateScrollTo(chipScrollOffset) }
+            insight.confidence?.let {
+                // Wrap the per-model toggle so a tap also scrolls the chip to the
+                // top of the viewport — the per-model overlay renders on the
+                // charts below the chip, so scrolling them into view is part of
+                // the same gesture's payoff.
+                val onChipTap: (() -> Unit)? = tapToggle?.let { toggle ->
+                    {
+                        toggle()
+                        scrollScope.launch { scrollState.animateScrollTo(chipScrollOffset) }
+                    }
                 }
-            }
-            ConfidenceChip(
-                modifier = Modifier.onGloballyPositioned { coords ->
-                    chipScrollOffset = coords.positionInParent().y.roundToInt()
-                },
-                info = it,
-                perModelHourly = insight.perModelHourly,
-                temperatureUnit = state.temperatureUnit,
-                windSpeedUnit = state.distanceUnit.windSpeedUnit(),
-                showModelSpread = state.showModelSpread,
-                onToggleModelSpread = onChipTap,
-            )
-        }
-        if (insight.hourly.isNotEmpty()) {
-            // Pass per-model data unconditionally so each chart's y-axis is
-            // sized to the same envelope whether the overlay is showing or
-            // not — tapping the toggle adds / removes lines but never
-            // shifts the scale. The diagnostic cards below follow the same
-            // pattern (see [PerModelDiagnosticCard]).
-            val perModelData = insight.perModelHourly
-            ForecastCard(
-                hourly = insight.hourly,
-                temperatureUnit = state.temperatureUnit,
-                distanceUnit = state.distanceUnit,
-                perModelHourly = perModelData,
-                showModelSpread = state.showModelSpread,
-                onToggleModelSpread = tapToggle,
-            )
-            AirTemperatureCard(
-                hourly = insight.hourly,
-                temperatureUnit = state.temperatureUnit,
-                perModelHourly = perModelData,
-                showModelSpread = state.showModelSpread,
-                onToggleModelSpread = tapToggle,
-            )
-            PrecipitationCard(
-                hourly = insight.hourly,
-                perModelHourly = perModelData,
-                showModelSpread = state.showModelSpread,
-                onToggleModelSpread = tapToggle,
-            )
-            // Diagnostic cards below the headline temp + rain pair. Each
-            // draws a consensus main line by default and overlays the
-            // per-model spread when [showModelSpread] is on — same pattern
-            // as the temp / precip cards. Each card auto-hides when every
-            // consulted model is missing its metric outright (older cached
-            // payloads don't carry wind / humidity / cloud).
-            insight.perModelHourly?.let { perModelData ->
-                WindCard(
-                    hourly = insight.hourly,
-                    perModelHourly = perModelData,
+                ConfidenceChip(
+                    modifier = Modifier.onGloballyPositioned { coords ->
+                        chipScrollOffset = coords.positionInParent().y.roundToInt()
+                    },
+                    info = it,
+                    perModelHourly = insight.perModelHourly,
+                    temperatureUnit = state.temperatureUnit,
                     windSpeedUnit = state.distanceUnit.windSpeedUnit(),
                     showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = tapToggle,
-                )
-                CloudCard(
-                    hourly = insight.hourly,
-                    perModelHourly = perModelData,
-                    showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = tapToggle,
-                )
-                HumidityCard(
-                    hourly = insight.hourly,
-                    perModelHourly = perModelData,
-                    showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = tapToggle,
-                )
-                SolarRadiationCard(
-                    hourly = insight.hourly,
-                    perModelHourly = perModelData,
-                    showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = tapToggle,
-                )
-                SunshineCard(
-                    hourly = insight.hourly,
-                    perModelHourly = perModelData,
-                    forDate = insight.forDate,
-                    period = insight.period,
-                    showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = tapToggle,
-                )
-                UvIndexCard(
-                    hourly = insight.hourly,
-                    perModelHourly = perModelData,
-                    showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = tapToggle,
+                    onToggleModelSpread = onChipTap,
                 )
             }
+            if (insight.hourly.isNotEmpty()) {
+                // Pass per-model data unconditionally so each chart's y-axis is
+                // sized to the same envelope whether the overlay is showing or
+                // not — tapping the toggle adds / removes lines but never
+                // shifts the scale. The diagnostic cards below follow the same
+                // pattern (see [PerModelDiagnosticCard]).
+                val perModelData = insight.perModelHourly
+                ForecastCard(
+                    hourly = insight.hourly,
+                    temperatureUnit = state.temperatureUnit,
+                    distanceUnit = state.distanceUnit,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
+                    onToggleModelSpread = tapToggle,
+                )
+                AirTemperatureCard(
+                    hourly = insight.hourly,
+                    temperatureUnit = state.temperatureUnit,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
+                    onToggleModelSpread = tapToggle,
+                )
+                PrecipitationCard(
+                    hourly = insight.hourly,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
+                    onToggleModelSpread = tapToggle,
+                )
+                // Diagnostic cards below the headline temp + rain pair. Each
+                // draws a consensus main line by default and overlays the
+                // per-model spread when [showModelSpread] is on — same pattern
+                // as the temp / precip cards. Each card auto-hides when every
+                // consulted model is missing its metric outright (older cached
+                // payloads don't carry wind / humidity / cloud).
+                insight.perModelHourly?.let { perModelData ->
+                    WindCard(
+                        hourly = insight.hourly,
+                        perModelHourly = perModelData,
+                        windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
+                    )
+                    CloudCard(
+                        hourly = insight.hourly,
+                        perModelHourly = perModelData,
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
+                    )
+                    HumidityCard(
+                        hourly = insight.hourly,
+                        perModelHourly = perModelData,
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
+                    )
+                    SolarRadiationCard(
+                        hourly = insight.hourly,
+                        perModelHourly = perModelData,
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
+                    )
+                    SunshineCard(
+                        hourly = insight.hourly,
+                        perModelHourly = perModelData,
+                        forDate = insight.forDate,
+                        period = insight.period,
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
+                    )
+                    UvIndexCard(
+                        hourly = insight.hourly,
+                        perModelHourly = perModelData,
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = tapToggle,
+                    )
+                }
+            }
         }
+    }
+}
+
+/**
+ * Wraps [content] in a Box and overlays two 32 dp gradient fades — one at the
+ * top, one at the bottom — to hint at off-screen content. Each fades in when
+ * its visibility flag is true and out when false, animated via
+ * [animateFloatAsState], so the page lands in the right state on first paint
+ * and transitions smoothly thereafter. The caller usually wires
+ * [topFadeVisible] / [bottomFadeVisible] to a `ScrollState`'s
+ * `canScrollBackward` / `canScrollForward`, but accepting raw booleans keeps
+ * the composable testable from previews that drive the alphas directly.
+ *
+ * The overlays have no `clickable` modifier, so drag gestures fall through to
+ * the content underneath — wrapping a scrollable column doesn't break its
+ * scroll, and a pager swipe still works.
+ */
+@Composable
+internal fun EdgeFadeOverlay(
+    topFadeVisible: Boolean,
+    bottomFadeVisible: Boolean,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.background,
+    content: @Composable () -> Unit,
+) {
+    val topAlpha by animateFloatAsState(
+        targetValue = if (topFadeVisible) 1f else 0f,
+        label = "topFade",
+    )
+    val bottomAlpha by animateFloatAsState(
+        targetValue = if (bottomFadeVisible) 1f else 0f,
+        label = "bottomFade",
+    )
+    Box(modifier = modifier.fillMaxSize()) {
+        content()
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .height(32.dp)
+                .alpha(topAlpha)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(color, Color.Transparent),
+                    ),
+                ),
+        )
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(32.dp)
+                .alpha(bottomAlpha)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, color),
+                    ),
+                ),
+        )
     }
 }
 

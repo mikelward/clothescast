@@ -111,10 +111,74 @@ class HolidayResolverTest {
     }
 
     @Test
+    fun `Remembrance Day matches Nov 11`() {
+        subject.resolve(LocalDate.of(2026, 11, 11), allOn)?.id shouldBe HolidayId.REMEMBRANCE_DAY
+        subject.resolve(LocalDate.of(2026, 11, 10), allOn).shouldBeNull()
+        subject.resolve(LocalDate.of(2026, 11, 12), allOn).shouldBeNull()
+    }
+
+    @Test
     fun `St Andrews Day matches Nov 30`() {
         subject.resolve(LocalDate.of(2026, 11, 30), allOn)?.id shouldBe HolidayId.ST_ANDREWS_DAY
         // End-of-month boundary — make sure December 1 is not a match.
         subject.resolve(LocalDate.of(2026, 12, 1), allOn).shouldBeNull()
+    }
+
+    // --- Nth-weekday holidays. Several years per entry so the date maths
+    // is checked across a span where the leading day-of-month shifts.
+
+    @Test
+    fun `Mothers Day matches 2nd Sunday of May`() {
+        // Reference dates (Wikipedia): 2025-05-11, 2026-05-10, 2027-05-09,
+        // 2028-05-14, 2029-05-13.
+        listOf(
+            LocalDate.of(2025, 5, 11),
+            LocalDate.of(2026, 5, 10),
+            LocalDate.of(2027, 5, 9),
+            LocalDate.of(2028, 5, 14),
+            LocalDate.of(2029, 5, 13),
+        ).forEach { d ->
+            withClue(d.toString()) {
+                d.dayOfWeek shouldBe DayOfWeek.SUNDAY
+                subject.resolve(d, allOn)?.id shouldBe HolidayId.MOTHERS_DAY
+            }
+        }
+        // First Sunday of May 2026 (May 3) shouldn't match.
+        subject.resolve(LocalDate.of(2026, 5, 3), allOn).shouldBeNull()
+    }
+
+    @Test
+    fun `Fathers Day Jun matches 3rd Sunday of June`() {
+        // 2025-06-15, 2026-06-21, 2027-06-20, 2028-06-18, 2029-06-17.
+        listOf(
+            LocalDate.of(2025, 6, 15),
+            LocalDate.of(2026, 6, 21),
+            LocalDate.of(2027, 6, 20),
+            LocalDate.of(2028, 6, 18),
+            LocalDate.of(2029, 6, 17),
+        ).forEach { d ->
+            withClue(d.toString()) {
+                d.dayOfWeek shouldBe DayOfWeek.SUNDAY
+                subject.resolve(d, allOn)?.id shouldBe HolidayId.FATHERS_DAY_JUN
+            }
+        }
+    }
+
+    @Test
+    fun `Fathers Day Sep matches 1st Sunday of September`() {
+        // 2025-09-07, 2026-09-06, 2027-09-05, 2028-09-03, 2029-09-02.
+        listOf(
+            LocalDate.of(2025, 9, 7),
+            LocalDate.of(2026, 9, 6),
+            LocalDate.of(2027, 9, 5),
+            LocalDate.of(2028, 9, 3),
+            LocalDate.of(2029, 9, 2),
+        ).forEach { d ->
+            withClue(d.toString()) {
+                d.dayOfWeek shouldBe DayOfWeek.SUNDAY
+                subject.resolve(d, allOn)?.id shouldBe HolidayId.FATHERS_DAY_SEP
+            }
+        }
     }
 
     // --- Thanksgiving = 4th Thursday of November. Five real years so the

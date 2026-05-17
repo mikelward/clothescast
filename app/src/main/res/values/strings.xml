@@ -1041,15 +1041,22 @@
     <string name="holiday_name_st_patricks_day">St Patrick\'s Day</string>
     <string name="holiday_name_st_georges_day">St George\'s Day</string>
     <string name="holiday_name_anzac_day">Anzac Day</string>
+    <string name="holiday_name_mothers_day">Mother\'s Day</string>
     <string name="holiday_name_italy_republic_day">Italian Republic Day</string>
+    <string name="holiday_name_fathers_day_jun">Father\'s Day (Jun)</string>
     <string name="holiday_name_canada_day">Canada Day</string>
     <string name="holiday_name_us_independence_day">US Independence Day</string>
     <string name="holiday_name_bastille_day">Bastille Day</string>
+    <string name="holiday_name_fathers_day_sep">Father\'s Day (Sep)</string>
     <string name="holiday_name_brazil_independence_day">Brazil Independence Day</string>
     <string name="holiday_name_german_unity_day">German Unity Day</string>
     <string name="holiday_name_spain_hispanic_day">Hispanic Day</string>
     <string name="holiday_name_halloween">Halloween</string>
     <string name="holiday_name_bonfire_night">Bonfire Night</string>
+    <!-- The settings label uses the universal name; the banner copy on the
+         day itself varies by country (Veterans Day in the US, Remembrance
+         Day everywhere else). See HolidayTheme.bannerTextKeyByCountry. -->
+    <string name="holiday_name_remembrance_day">Remembrance Day / Veterans Day</string>
     <string name="holiday_name_us_thanksgiving">US Thanksgiving</string>
     <string name="holiday_name_st_andrews_day">St Andrew\'s Day</string>
     <string name="holiday_name_christmas_day">Christmas Day</string>
@@ -1064,15 +1071,24 @@
     <string name="holiday_banner_st_patricks_day">Happy St Patrick\'s Day</string>
     <string name="holiday_banner_st_georges_day">Happy St George\'s Day</string>
     <string name="holiday_banner_anzac_day">Lest we forget</string>
+    <string name="holiday_banner_mothers_day">Happy Mother\'s Day</string>
     <string name="holiday_banner_italy_republic_day">Buona Festa della Repubblica</string>
+    <string name="holiday_banner_fathers_day_jun">Happy Father\'s Day</string>
     <string name="holiday_banner_canada_day">Happy Canada Day</string>
     <string name="holiday_banner_us_independence_day">Happy 4th of July</string>
     <string name="holiday_banner_bastille_day">Joyeux 14 juillet</string>
+    <string name="holiday_banner_fathers_day_sep">Happy Father\'s Day</string>
     <string name="holiday_banner_brazil_independence_day">Feliz Dia da Independência</string>
     <string name="holiday_banner_german_unity_day">Tag der Deutschen Einheit</string>
     <string name="holiday_banner_spain_hispanic_day">Feliz Día de la Hispanidad</string>
     <string name="holiday_banner_halloween">Happy Halloween</string>
     <string name="holiday_banner_bonfire_night">Remember, remember</string>
+    <!-- Default banner for Nov 11 — used everywhere except the US. -->
+    <string name="holiday_banner_remembrance_day">Lest we forget</string>
+    <!-- US-specific banner override for Nov 11. Selected via
+         HolidayTheme.bannerTextKeyByCountry when the user's effective
+         country is "US". -->
+    <string name="holiday_banner_us_veterans_day">Honoring our Veterans</string>
     <string name="holiday_banner_us_thanksgiving">Happy Thanksgiving</string>
     <string name="holiday_banner_st_andrews_day">Happy St Andrew\'s Day</string>
     <string name="holiday_banner_christmas_day">Merry Christmas</string>

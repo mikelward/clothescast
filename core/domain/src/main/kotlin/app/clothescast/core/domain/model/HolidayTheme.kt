@@ -23,38 +23,44 @@ enum class HolidayId {
     ST_PATRICKS_DAY,
     ST_GEORGES_DAY,
     ANZAC_DAY,
+    MOTHERS_DAY,
     ITALY_REPUBLIC_DAY,
+    FATHERS_DAY_JUN,
     CANADA_DAY,
     US_INDEPENDENCE_DAY,
     BASTILLE_DAY,
+    FATHERS_DAY_SEP,
     BRAZIL_INDEPENDENCE_DAY,
     GERMAN_UNITY_DAY,
     SPAIN_HISPANIC_DAY,
     HALLOWEEN,
     BONFIRE_NIGHT,
+    REMEMBRANCE_DAY,
     US_THANKSGIVING,
     ST_ANDREWS_DAY,
     CHRISTMAS_DAY,
-    // TODO(holidays-v2): Mother's Day and Father's Day are nth-weekday *and*
-    // country-variant — Mother's Day = 2nd Sun May for most but Mothering
-    // Sunday in UK/IE (movable); Father's Day = 3rd Sun Jun in US/UK/CA but
-    // 1st Sun Sep in AU/NZ. Add when we have a region-gating story, or split
-    // into MOTHERS_DAY_MAY / FATHERS_DAY_JUN / FATHERS_DAY_SEP entries.
+    // TODO(holidays-v3): UK Mothering Sunday — 4th Sun of Lent, i.e. movable
+    // and tied to Easter (Computus). The current [MOTHERS_DAY] entry uses
+    // 2nd Sun of May which is correct for US/AU/CA/NZ but not UK/IE. Adding
+    // a Computus implementation unlocks both Easter Sunday and Mothering
+    // Sunday at the same time.
     //
-    // TODO(holidays-v2): the wider military-remembrance cluster — same shape
-    // as Anzac Day (solemn monochrome palette, sober banner copy):
-    //   - US Memorial Day — last Mon of May
-    //   - UK Remembrance Day — Nov 11 (and Remembrance Sunday, 2nd Sun of Nov)
-    //   - US Veterans Day — Nov 11
-    //   - Canadian Remembrance Day — Nov 11
-    //   - Australian Remembrance Day — Nov 11
-    // Most share Nov 11 so the resolver's precedence ordering will need
-    // a deliberate choice (or these all share a single REMEMBRANCE_DAY id
-    // with region-aware banner copy).
+    // TODO(holidays-v3): US Memorial Day (last Mon of May) — same monochrome
+    // shape as [REMEMBRANCE_DAY], distinct date.
     //
-    // TODO(holidays-v2): movable / lunisolar holidays (Easter, Lunar New Year,
+    // TODO(holidays-v3): UK Remembrance Sunday — 2nd Sun of Nov, sits
+    // alongside [REMEMBRANCE_DAY] on Nov 11 in the UK (one's the formal
+    // observance, the other the day itself).
+    //
+    // TODO(holidays-v3): movable / lunisolar holidays (Easter, Lunar New Year,
     // Diwali, Hanukkah, Eid, Holi). Need either a Computus implementation for
     // Easter or per-year lookup tables for the others.
+    //
+    // TODO(holidays-v3): switch the [REMEMBRANCE_DAY] banner-name lookup
+    // from [Region]-derived country to location-derived country once the
+    // app's reverse-geocoding plumbing exposes a stable country code.
+    // Region is the right *user-controlled* signal short-term; location is
+    // the more accurate one once available.
 }
 
 /**
@@ -116,7 +122,29 @@ data class HolidayTheme(
     val bannerArgb: Long,
     val topStrokeOverrides: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     val bottomStrokeOverrides: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    /**
+     * Optional per-country overrides for [bannerTextKey]. Keyed by ISO 3166-1
+     * alpha-2 uppercase country code (e.g. "US", "GB", "AU"). When the user's
+     * effective country matches a key, that override resolves instead of the
+     * default. Used today for the [HolidayId.REMEMBRANCE_DAY] / Veterans Day
+     * naming split on Nov 11 — most countries call it Remembrance Day, the US
+     * calls it Veterans Day. Country resolution lives at the UI seam (see
+     * [bannerTextKeyFor]) so this data carrier stays Region-agnostic.
+     */
+    val bannerTextKeyByCountry: Map<String, String> = emptyMap(),
 )
+
+/**
+ * Resolves [HolidayTheme.bannerTextKey] honouring [HolidayTheme.bannerTextKeyByCountry].
+ * [countryCode] is the user's effective country (typically from
+ * `Region.toJavaLocale()?.country` falling back to `Locale.getDefault().country`).
+ * Empty or null country falls through to the default key. Case-insensitive
+ * matching — callers don't have to upper-case before calling.
+ */
+fun HolidayTheme.bannerTextKeyFor(countryCode: String?): String {
+    if (countryCode.isNullOrBlank()) return bannerTextKey
+    return bannerTextKeyByCountry[countryCode.uppercase()] ?: bannerTextKey
+}
 
 /**
  * The full v1 list of holidays with their date predicate, palette, and
@@ -216,9 +244,8 @@ object HolidayCatalog {
 
         // Apr 25 — Anzac Day. Solemn day — uniform-evoking khaki across
         // every garment. Monochrome on purpose: a celebratory two-colour
-        // palette would read wrong for a remembrance day. The same shape
-        // covers the other military-remembrance days in the TODO list at
-        // the top of [HolidayId].
+        // palette would read wrong for a remembrance day. Same shape as
+        // [REMEMBRANCE_DAY] below.
         HolidayDate.Fixed(Month.APRIL, 25) to HolidayTheme(
             id = HolidayId.ANZAC_DAY,
             displayNameKey = "holiday_name_anzac_day",
@@ -227,6 +254,20 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(ANZAC_KHAKI),
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
+        ),
+
+        // 2nd Sunday of May — Mother's Day. Same date in the US, AU, CA,
+        // NZ and most non-UK countries. UK / IE use Mothering Sunday
+        // (4th Sun of Lent, movable) — TODO at the top of [HolidayId].
+        // Rose-pink top + leaf-green bottom evokes a bouquet.
+        HolidayDate.NthWeekday(Month.MAY, 2, DayOfWeek.SUNDAY) to HolidayTheme(
+            id = HolidayId.MOTHERS_DAY,
+            displayNameKey = "holiday_name_mothers_day",
+            bannerTextKey = "holiday_banner_mothers_day",
+            emoji = "💐", // 💐
+            topOverrides = topPaletteAll(MOTHER_PINK),
+            bottomOverrides = bottomPaletteAll(MOTHER_GREEN),
+            bannerArgb = MOTHER_PINK,
         ),
 
         // Jun 2 — Italian Republic Day. Green tops + red bottoms with the
@@ -241,6 +282,21 @@ object HolidayCatalog {
             topStrokeOverrides = topStrokeAll(ITALY_WHITE),
             bottomStrokeOverrides = bottomStrokeAll(ITALY_WHITE),
             bannerArgb = ITALY_GREEN,
+        ),
+
+        // 3rd Sunday of June — Father's Day (US / UK / CA / IE and most of
+        // Europe). AU / NZ get the September entry below instead. Both are
+        // on by default; users can disable whichever doesn't apply.
+        // Navy-blue top + brown bottom is the stereotypical "dad" palette
+        // — same brown as Thanksgiving.
+        HolidayDate.NthWeekday(Month.JUNE, 3, DayOfWeek.SUNDAY) to HolidayTheme(
+            id = HolidayId.FATHERS_DAY_JUN,
+            displayNameKey = "holiday_name_fathers_day_jun",
+            bannerTextKey = "holiday_banner_fathers_day_jun",
+            emoji = "👔", // 👔
+            topOverrides = topPaletteAll(FATHER_NAVY),
+            bottomOverrides = bottomPaletteAll(FATHER_BROWN),
+            bannerArgb = FATHER_NAVY,
         ),
 
         // Jul 1 — Canada Day. White tops + red bottoms — same flag-halves
@@ -283,6 +339,19 @@ object HolidayCatalog {
             topStrokeOverrides = topStrokeAll(FRANCE_WHITE),
             bottomStrokeOverrides = bottomStrokeAll(FRANCE_WHITE),
             bannerArgb = FRANCE_BLUE,
+        ),
+
+        // 1st Sunday of September — Father's Day (AU / NZ). See the June
+        // entry above for the international one; both ship on-by-default
+        // and users disable the one that doesn't apply.
+        HolidayDate.NthWeekday(Month.SEPTEMBER, 1, DayOfWeek.SUNDAY) to HolidayTheme(
+            id = HolidayId.FATHERS_DAY_SEP,
+            displayNameKey = "holiday_name_fathers_day_sep",
+            bannerTextKey = "holiday_banner_fathers_day_sep",
+            emoji = "👔", // 👔
+            topOverrides = topPaletteAll(FATHER_NAVY),
+            bottomOverrides = bottomPaletteAll(FATHER_BROWN),
+            bannerArgb = FATHER_NAVY,
         ),
 
         // Sep 7 — Brazil Independence Day. Green tops + yellow bottoms.
@@ -344,6 +413,23 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(BONFIRE_ORANGE),
             bottomOverrides = bottomPaletteAll(BONFIRE_RED),
             bannerArgb = BONFIRE_RED,
+        ),
+
+        // Nov 11 — Remembrance Day (US calls it Veterans Day). Solemn
+        // monochrome khaki, same shape as Anzac. Banner text varies by
+        // country: "Veterans Day" for US users, "Remembrance Day" everywhere
+        // else. The country-aware lookup happens at the UI seam via
+        // [bannerTextKeyFor]. UK Remembrance Sunday (2nd Sun of Nov) is a
+        // TODO at the top of [HolidayId] — separate observance.
+        HolidayDate.Fixed(Month.NOVEMBER, 11) to HolidayTheme(
+            id = HolidayId.REMEMBRANCE_DAY,
+            displayNameKey = "holiday_name_remembrance_day",
+            bannerTextKey = "holiday_banner_remembrance_day",
+            bannerTextKeyByCountry = mapOf("US" to "holiday_banner_us_veterans_day"),
+            emoji = "🔺", // 🔺 — match Anzac's abstract glyph for visual continuity
+            topOverrides = topPaletteAll(ANZAC_KHAKI),
+            bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
+            bannerArgb = ANZAC_KHAKI,
         ),
 
         // 4th Thursday of November — US Thanksgiving. Pumpkin-orange tops +
@@ -430,6 +516,12 @@ private const val ENGLAND_RED = 0xFFCE1124L
 private const val ENGLAND_WHITE = 0xFFF5F5F5L
 
 private const val ANZAC_KHAKI = 0xFF6D6748L
+
+private const val MOTHER_PINK = 0xFFEC407AL
+private const val MOTHER_GREEN = 0xFF66BB6AL
+
+private const val FATHER_NAVY = 0xFF1A237EL
+private const val FATHER_BROWN = 0xFF5D4037L
 
 private const val ITALY_GREEN = 0xFF008C45L
 private const val ITALY_WHITE = 0xFFF4F5F0L

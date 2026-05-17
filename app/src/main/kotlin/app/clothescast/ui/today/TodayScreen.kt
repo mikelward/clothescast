@@ -46,6 +46,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -54,6 +55,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -416,10 +419,16 @@ private fun TodayPage(
     onAdjustThreshold: (String, Double) -> Unit,
     onToggleModelSpread: () -> Unit,
 ) {
+    val scrollState = rememberScrollState()
+    val scrollScope = rememberCoroutineScope()
+    // Captured via onGloballyPositioned on the ConfidenceChip below so the
+    // tap handler can scroll the chip to the top of the viewport without
+    // hard-coding offsets above it (outfit row + insight card heights vary).
+    var chipScrollOffset by remember { mutableIntStateOf(0) }
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState)
             .padding(horizontal = 16.dp)
             .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -468,13 +477,26 @@ private fun TodayPage(
             onChevronTap = onChevronTap,
         )
         insight.confidence?.let {
+            // Wrap the per-model toggle so a tap also scrolls the chip to the
+            // top of the viewport — the per-model overlay renders on the
+            // charts below the chip, so scrolling them into view is part of
+            // the same gesture's payoff.
+            val onChipTap: (() -> Unit)? = tapToggle?.let { toggle ->
+                {
+                    toggle()
+                    scrollScope.launch { scrollState.animateScrollTo(chipScrollOffset) }
+                }
+            }
             ConfidenceChip(
+                modifier = Modifier.onGloballyPositioned { coords ->
+                    chipScrollOffset = coords.positionInParent().y.roundToInt()
+                },
                 info = it,
                 perModelHourly = insight.perModelHourly,
                 temperatureUnit = state.temperatureUnit,
                 windSpeedUnit = state.distanceUnit.windSpeedUnit(),
                 showModelSpread = state.showModelSpread,
-                onToggleModelSpread = tapToggle,
+                onToggleModelSpread = onChipTap,
             )
         }
         if (insight.hourly.isNotEmpty()) {
@@ -1318,6 +1340,7 @@ internal fun ConfidenceChip(
     windSpeedUnit: WindSpeedUnit,
     showModelSpread: Boolean = false,
     onToggleModelSpread: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
 ) {
     val confidenceColors = AppTheme.palette.confidence.getValue(info.level)
     val bgColor = confidenceColors.background
@@ -1327,7 +1350,7 @@ internal fun ConfidenceChip(
         ForecastConfidence.MEDIUM -> R.string.today_confidence_medium
         ForecastConfidence.LOW -> R.string.today_confidence_low
     }
-    val cardModifier = Modifier
+    val cardModifier = modifier
         .fillMaxWidth()
         .let { if (onToggleModelSpread != null) it.clickable(onClick = onToggleModelSpread) else it }
     Card(

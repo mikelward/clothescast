@@ -13,10 +13,9 @@ import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HolidayCatalog
-import app.clothescast.core.domain.model.HolidayCountryMode
 import app.clothescast.core.domain.model.HolidayId
+import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.Location
-import app.clothescast.core.domain.model.resolveEffectiveHolidayCountries
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
@@ -153,19 +152,9 @@ class SettingsViewModel(
         viewModelScope.launch {
             settingsRepository.preferences.collect { prefs ->
                 val regionLocale = prefs.region.toJavaLocale() ?: Locale.getDefault()
-                val weatherLocationCountry = prefs.location?.countryCode
-                val autoCountries = resolveEffectiveHolidayCountries(
-                    mode = HolidayCountryMode.AUTO,
-                    customCountries = prefs.enabledHolidayCountries,
+                val effectiveCountries = prefs.holidayCountrySelection.resolveEnabledCountries(
                     localeCountry = regionLocale.country,
-                    weatherLocationCountry = weatherLocationCountry,
-                    allCountries = HolidayCatalog.allCountries,
-                )
-                val effectiveCountries = resolveEffectiveHolidayCountries(
-                    mode = prefs.holidayCountryMode,
-                    customCountries = prefs.enabledHolidayCountries,
-                    localeCountry = regionLocale.country,
-                    weatherLocationCountry = weatherLocationCountry,
+                    weatherLocationCountry = prefs.location?.countryCode,
                     allCountries = HolidayCatalog.allCountries,
                 )
                 _state.update {
@@ -188,10 +177,8 @@ class SettingsViewModel(
                         colorPalette = prefs.colorPalette,
                         outfitTopColors = prefs.outfitTopColors,
                         outfitBottomColors = prefs.outfitBottomColors,
-                        enabledHolidays = prefs.enabledHolidays,
-                        holidayCountryMode = prefs.holidayCountryMode,
-                        enabledHolidayCountries = prefs.enabledHolidayCountries,
-                        autoEnabledHolidayCountries = autoCountries,
+                        holidayCountrySelection = prefs.holidayCountrySelection,
+                        holidayOverrides = prefs.holidayOverrides,
                         effectiveEnabledHolidayCountries = effectiveCountries,
                         clothesRules = prefs.clothesRules,
                         defaultBottom = prefs.defaultBottom,
@@ -389,14 +376,20 @@ class SettingsViewModel(
      * Today screen reads the resulting set every time it builds state, so a
      * toggle takes effect on the next frame — no cache invalidation needed.
      */
-    fun setEnabledHoliday(id: HolidayId, enabled: Boolean) {
-        viewModelScope.launch {
-            settingsRepository.setEnabledHoliday(id, enabled)
-        }
+    fun setHolidayOverride(id: HolidayId, override: HolidayOverride) {
+        viewModelScope.launch { settingsRepository.setHolidayOverride(id, override) }
     }
 
-    fun setHolidayCountryMode(mode: HolidayCountryMode) {
-        viewModelScope.launch { settingsRepository.setHolidayCountryMode(mode) }
+    fun setHolidayCountryHome(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setHolidayCountryHome(enabled) }
+    }
+
+    fun setHolidayCountryCurrent(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setHolidayCountryCurrent(enabled) }
+    }
+
+    fun setHolidayCountryAll(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setHolidayCountryAll(enabled) }
     }
 
     fun setHolidayCountryEnabled(code: String, enabled: Boolean) {

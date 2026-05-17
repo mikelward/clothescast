@@ -14,7 +14,6 @@ import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
-import app.clothescast.core.domain.model.resolveEffectiveHolidayCountries
 import app.clothescast.core.domain.usecase.HolidayResolver
 import app.clothescast.tts.toJavaLocale
 import java.util.Locale
@@ -295,18 +294,17 @@ class TodayViewModel(
         // Resolve "is today a holiday the user wants themed?" — `today`
         // comes from the [dateTicker] flow above so the rollover at local
         // midnight re-fires combine even when no other input changes. The
-        // effective country set narrows resolution to the user's locale +
-        // weather-location country + Global in AUTO mode (the default).
+        // country picker narrows AUTO holidays to the user's locale +
+        // weather-location country + Global (the default); per-holiday
+        // ON / OFF overrides bypass the filter in either direction.
         val localeCountry = prefs.region.toJavaLocale()?.country
             ?: Locale.getDefault().country
-        val effectiveCountries = resolveEffectiveHolidayCountries(
-            mode = prefs.holidayCountryMode,
-            customCountries = prefs.enabledHolidayCountries,
+        val effectiveCountries = prefs.holidayCountrySelection.resolveEnabledCountries(
             localeCountry = localeCountry,
             weatherLocationCountry = prefs.location?.countryCode,
             allCountries = HolidayCatalog.allCountries,
         )
-        val theme = holidayResolver.resolve(today, prefs.enabledHolidays, effectiveCountries)
+        val theme = holidayResolver.resolve(today, prefs.holidayOverrides, effectiveCountries)
         // Merge holiday overrides on top of the user's custom colours. The
         // user's choices populate the base map; the holiday's per-tier
         // entries replace any user pick for that tier *for today only*

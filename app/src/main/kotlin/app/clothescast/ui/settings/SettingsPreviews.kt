@@ -15,8 +15,9 @@ import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.HolidayCatalog
-import app.clothescast.core.domain.model.HolidayCountryMode
+import app.clothescast.core.domain.model.HolidayCountrySelection
 import app.clothescast.core.domain.model.HolidayId
+import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
@@ -320,21 +321,20 @@ internal fun SettingsCalendarPreview() {
 internal fun SettingsHolidaysPreview() {
     SettingsFrame {
         HolidaysContent(
-            enabledHolidays = setOf(
-                HolidayId.AUSTRALIA_DAY,
-                HolidayId.ST_PATRICKS_DAY,
-                HolidayId.US_INDEPENDENCE_DAY,
-                HolidayId.HALLOWEEN,
-                HolidayId.CHRISTMAS_DAY,
+            holidayCountrySelection = HolidayCountrySelection(),
+            holidayOverrides = mapOf(
+                HolidayId.BASTILLE_DAY to HolidayOverride.ON,
+                HolidayId.MLK_DAY to HolidayOverride.OFF,
             ),
-            holidayCountryMode = HolidayCountryMode.AUTO,
-            enabledHolidayCountries = HolidayCatalog.allCountries,
-            autoEnabledHolidayCountries = setOf("AU", HolidayCatalog.GLOBAL_COUNTRY),
             effectiveEnabledHolidayCountries = setOf("AU", HolidayCatalog.GLOBAL_COUNTRY),
+            localeCountry = "AU",
+            weatherLocationCountry = "AU",
             padding = PaddingValues(0.dp),
-            onSetEnabled = { _, _ -> },
-            onSetCountryMode = {},
+            onSetCountryHome = {},
+            onSetCountryCurrent = {},
+            onSetCountryAll = {},
             onSetCountryEnabled = { _, _ -> },
+            onSetHolidayOverride = { _, _ -> },
         )
     }
 }

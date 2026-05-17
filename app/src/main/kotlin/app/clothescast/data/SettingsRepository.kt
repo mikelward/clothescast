@@ -17,9 +17,9 @@ import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
-import app.clothescast.core.domain.model.HolidayCatalog
-import app.clothescast.core.domain.model.HolidayCountryMode
+import app.clothescast.core.domain.model.HolidayCountrySelection
 import app.clothescast.core.domain.model.HolidayId
+import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
@@ -432,46 +432,39 @@ class SettingsRepository(
         }
     }
 
-    /**
-     * Flips a single holiday theme on or off. The full set is read, modified,
-     * and rewritten inside one [dataStore.edit] so a rapid sequence of toggles
-     * from the Settings UI doesn't race itself.
-     *
-     * Missing-key reads default to "all enabled" (see [parseEnabledHolidays]),
-     * so the first call from an existing install seeds the full set before
-     * subtracting the user's choice — preserving the "all on by default"
-     * contract even after the first explicit toggle.
-     */
-    suspend fun setEnabledHoliday(id: HolidayId, enabled: Boolean) {
+    /** Persists the per-holiday override (or clears it back to AUTO). */
+    suspend fun setHolidayOverride(id: HolidayId, override: HolidayOverride) {
         dataStore.edit { prefs ->
-            val current = parseEnabledHolidays(prefs[ENABLED_HOLIDAYS])
-            val updated = if (enabled) current + id else current - id
-            prefs[ENABLED_HOLIDAYS] = updated.map { it.name }.toSet()
+            val current = parseHolidayOverrides(prefs[HOLIDAY_OVERRIDES])
+            val updated = if (override == HolidayOverride.AUTO) current - id else current + (id to override)
+            prefs[HOLIDAY_OVERRIDES] = encodeHolidayOverrides(updated)
         }
     }
 
-    suspend fun setHolidayCountryMode(mode: HolidayCountryMode) {
-        dataStore.edit { it[HOLIDAY_COUNTRY_MODE] = mode.name }
+    suspend fun setHolidayCountryHome(enabled: Boolean) {
+        dataStore.edit { it[HOLIDAY_COUNTRY_HOME] = enabled }
+    }
+
+    suspend fun setHolidayCountryCurrent(enabled: Boolean) {
+        dataStore.edit { it[HOLIDAY_COUNTRY_CURRENT] = enabled }
+    }
+
+    suspend fun setHolidayCountryAll(enabled: Boolean) {
+        dataStore.edit { it[HOLIDAY_COUNTRY_ALL] = enabled }
     }
 
     /**
-     * Flips a single country (ISO 3166-1 alpha-2 or [HolidayCatalog.GLOBAL_COUNTRY])
-     * on or off in the user's per-country pick. Mirrors [setEnabledHoliday]
-     * — read-modify-write inside a single [dataStore.edit] so rapid taps
-     * from the Settings UI don't race. Missing-key reads default to "all
-     * countries enabled" (see [parseEnabledHolidayCountries]), so the
-     * first toggle from a fresh install seeds the full set before
-     * subtracting the user's pick. Only consulted by the resolver when
-     * [UserPreferences.holidayCountryMode] is
-     * [HolidayCountryMode.CUSTOM]; AUTO / ALL derive their effective set
-     * on the fly.
+     * Flips a single country (ISO 3166-1 alpha-2) on or off in the
+     * user's per-country opt-in list. The Home / Current / All buckets
+     * are independent of this set — this only carries countries the user
+     * adds explicitly via the per-country checkbox column.
      */
     suspend fun setHolidayCountryEnabled(code: String, enabled: Boolean) {
         val normalised = code.trim().takeIf { it.isNotEmpty() }?.uppercase() ?: return
         dataStore.edit { prefs ->
-            val current = parseEnabledHolidayCountries(prefs[ENABLED_HOLIDAY_COUNTRIES])
+            val current = prefs[HOLIDAY_COUNTRIES].orEmpty()
             val updated = if (enabled) current + normalised else current - normalised
-            prefs[ENABLED_HOLIDAY_COUNTRIES] = updated
+            prefs[HOLIDAY_COUNTRIES] = updated
         }
     }
 
@@ -616,11 +609,15 @@ class SettingsRepository(
             ?: ColorPalette.RAINBOW
         val outfitTopColors = parseOutfitTopColors(this[OUTFIT_TOP_COLORS])
         val outfitBottomColors = parseOutfitBottomColors(this[OUTFIT_BOTTOM_COLORS])
-        val enabledHolidays = parseEnabledHolidays(this[ENABLED_HOLIDAYS])
-        val holidayCountryMode = this[HOLIDAY_COUNTRY_MODE]
-            ?.let { runCatching { HolidayCountryMode.valueOf(it) }.getOrNull() }
-            ?: HolidayCountryMode.AUTO
-        val enabledHolidayCountries = parseEnabledHolidayCountries(this[ENABLED_HOLIDAY_COUNTRIES])
+        val holidayCountrySelection = HolidayCountrySelection(
+            home = this[HOLIDAY_COUNTRY_HOME] != false,
+            current = this[HOLIDAY_COUNTRY_CURRENT] != false,
+            all = this[HOLIDAY_COUNTRY_ALL] == true,
+            countries = this[HOLIDAY_COUNTRIES].orEmpty().mapNotNull {
+                it.trim().takeIf { c -> c.isNotEmpty() }?.uppercase()
+            }.toSet(),
+        )
+        val holidayOverrides = parseHolidayOverrides(this[HOLIDAY_OVERRIDES])
         // Resolve stored enum names back to [ForecastModel]. Unknown / removed
         // entries are dropped silently so a forward-compat (future enum value
         // we didn't ship yet) or stale value from a downgrade doesn't break
@@ -674,9 +671,8 @@ class SettingsRepository(
             colorPalette = colorPalette,
             outfitTopColors = outfitTopColors,
             outfitBottomColors = outfitBottomColors,
-            enabledHolidays = enabledHolidays,
-            holidayCountryMode = holidayCountryMode,
-            enabledHolidayCountries = enabledHolidayCountries,
+            holidayCountrySelection = holidayCountrySelection,
+            holidayOverrides = holidayOverrides,
             forecastModels = forecastModels,
             mqttBridgeEnabled = mqttBridgeEnabled,
             mqttHost = mqttHost,
@@ -782,18 +778,28 @@ class SettingsRepository(
     }
 
     /**
-     * Resolves the persisted enabled-country set. Missing key (fresh
-     * install, or an existing install that predates the country filter)
-     * seeds the full set so the first toggle in CUSTOM mode starts from
-     * the user's existing universe of holidays rather than from nothing.
-     * Blank entries drop silently; values are normalised to uppercase to
-     * match catalog tagging.
+     * Decodes the persisted per-holiday override map. Each set entry is
+     * `ID:STATE` where STATE is `ON` or `OFF`; missing ids implicitly mean
+     * [HolidayOverride.AUTO]. Unknown ids (downgrade across a future-added
+     * entry) drop silently. An empty / missing key is a fresh install:
+     * every holiday is AUTO.
      */
-    private fun parseEnabledHolidayCountries(raw: Set<String>?): Set<String> {
-        if (raw == null) return HolidayCatalog.allCountries
-        return raw.mapNotNull { it.trim().takeIf { code -> code.isNotEmpty() }?.uppercase() }
-            .toSet()
+    private fun parseHolidayOverrides(raw: Set<String>?): Map<HolidayId, HolidayOverride> {
+        if (raw.isNullOrEmpty()) return emptyMap()
+        return raw.mapNotNull { entry ->
+            val parts = entry.split(":", limit = 2)
+            if (parts.size != 2) return@mapNotNull null
+            val id = runCatching { HolidayId.valueOf(parts[0]) }.getOrNull() ?: return@mapNotNull null
+            val state = runCatching { HolidayOverride.valueOf(parts[1]) }.getOrNull()
+                ?: return@mapNotNull null
+            if (state == HolidayOverride.AUTO) null else id to state
+        }.toMap()
     }
+
+    private fun encodeHolidayOverrides(overrides: Map<HolidayId, HolidayOverride>): Set<String> =
+        overrides.entries.mapNotNullTo(mutableSetOf()) { (id, state) ->
+            if (state == HolidayOverride.AUTO) null else "${id.name}:${state.name}"
+        }
 
     private fun parseOutfitTopColors(raw: String?): Map<OutfitSuggestion.Top, Long> =
         parseOutfitColors(raw) { name -> runCatching { OutfitSuggestion.Top.valueOf(name) }.getOrNull() }
@@ -814,19 +820,6 @@ class SettingsRepository(
                 .mapNotNull { (key, value) -> resolveKey(key)?.let { it to value } }
                 .toMap()
         }.getOrDefault(emptyMap())
-    }
-
-    /**
-     * Resolves the persisted holiday-enabled set. Missing key (fresh install,
-     * or an existing install that predates the holiday feature) seeds the
-     * full set — every holiday is on by default. Unknown enum names (e.g.
-     * the user downgraded across a future-added holiday) drop silently.
-     * An explicit empty set is honoured as "every holiday is off."
-     */
-    private fun parseEnabledHolidays(raw: Set<String>?): Set<HolidayId> {
-        if (raw == null) return HolidayId.entries.toSet()
-        return raw.mapNotNull { name -> runCatching { HolidayId.valueOf(name) }.getOrNull() }
-            .toSet()
     }
 
     private fun parseRules(raw: String?): List<ClothesRule> {
@@ -895,9 +888,11 @@ class SettingsRepository(
         private val COLOR_PALETTE = stringPreferencesKey("color_palette")
         private val OUTFIT_TOP_COLORS = stringPreferencesKey("outfit_top_colors_json")
         private val OUTFIT_BOTTOM_COLORS = stringPreferencesKey("outfit_bottom_colors_json")
-        private val ENABLED_HOLIDAYS = stringSetPreferencesKey("enabled_holidays")
-        private val HOLIDAY_COUNTRY_MODE = stringPreferencesKey("holiday_country_mode")
-        private val ENABLED_HOLIDAY_COUNTRIES = stringSetPreferencesKey("enabled_holiday_countries")
+        private val HOLIDAY_OVERRIDES = stringSetPreferencesKey("holiday_overrides")
+        private val HOLIDAY_COUNTRY_HOME = booleanPreferencesKey("holiday_country_home")
+        private val HOLIDAY_COUNTRY_CURRENT = booleanPreferencesKey("holiday_country_current")
+        private val HOLIDAY_COUNTRY_ALL = booleanPreferencesKey("holiday_country_all")
+        private val HOLIDAY_COUNTRIES = stringSetPreferencesKey("holiday_countries")
         private val FORECAST_MODELS = stringSetPreferencesKey("forecast_models")
         private val MQTT_BRIDGE_ENABLED = booleanPreferencesKey("mqtt_bridge_enabled")
         private val MQTT_HOST = stringPreferencesKey("mqtt_host")

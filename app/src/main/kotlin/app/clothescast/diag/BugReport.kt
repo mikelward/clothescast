@@ -24,6 +24,7 @@ import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.symbol
+import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -32,6 +33,8 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import kotlin.coroutines.resume
@@ -45,6 +48,8 @@ import kotlin.coroutines.resume
  */
 object BugReport {
     private const val FILE_PROVIDER_AUTHORITY_SUFFIX = ".fileprovider"
+    private val STATUS_TIMESTAMP_FORMAT: DateTimeFormatter =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss zzz")
 
     /**
      * Captures the screen, builds the text payload, copies the text to the
@@ -64,6 +69,12 @@ object BugReport {
         val geminiKeyConfigured = runCatching {
             app.secureKeyStore.geminiKeyConfiguredFlow.first()
         }.getOrDefault(false)
+        val mqttPasswordConfigured = runCatching {
+            app.secureKeyStore.mqttPasswordConfiguredFlow.first()
+        }.getOrDefault(false)
+        val mqttPublishStatus = runCatching {
+            app.settingsRepository.mqttPublishStatus.first()
+        }.getOrNull()
         val thisPeriod = runCatching {
             app.insightCache.thisPeriod.first()
         }.getOrNull()
@@ -92,7 +103,7 @@ object BugReport {
             if (prefs == null) {
                 appendLine("(failed to read preferences)")
             } else {
-                appendPreferences(prefs)
+                appendPreferences(prefs, mqttPasswordConfigured, mqttPublishStatus)
             }
             appendLine("API keys: Gemini=${if (geminiKeyConfigured) "set" else "unset"}")
             appendLine()
@@ -115,7 +126,11 @@ object BugReport {
         }
     }
 
-    private fun StringBuilder.appendPreferences(prefs: UserPreferences) {
+    private fun StringBuilder.appendPreferences(
+        prefs: UserPreferences,
+        mqttPasswordConfigured: Boolean,
+        mqttPublishStatus: SettingsRepository.MqttPublishStatus?,
+    ) {
         appendLine("Region: ${prefs.region.name} (${prefs.region.bcp47 ?: "system"})")
         appendLine("Temperature unit: ${prefs.temperatureUnit.name}")
         appendLine("Distance unit: ${prefs.distanceUnit.name}")
@@ -145,7 +160,34 @@ object BugReport {
         appendLine("Use calendar events: ${prefs.useCalendarEvents}")
         appendLine("Clothes rules (${prefs.clothesRules.size}):")
         prefs.clothesRules.forEach { appendLine("  - ${describeRule(it)}") }
+        appendMqttSettings(prefs, mqttPasswordConfigured, mqttPublishStatus)
     }
+
+    private fun StringBuilder.appendMqttSettings(
+        prefs: UserPreferences,
+        mqttPasswordConfigured: Boolean,
+        mqttPublishStatus: SettingsRepository.MqttPublishStatus?,
+    ) {
+        appendLine("MQTT bridge enabled: ${prefs.mqttBridgeEnabled}")
+        val hostLine = prefs.mqttHost?.takeIf { it.isNotBlank() }?.let { "$it:${prefs.mqttPort}" }
+            ?: "(unset)"
+        appendLine("MQTT broker: $hostLine")
+        appendLine("MQTT TLS: ${prefs.mqttUseTls}")
+        appendLine("MQTT topic: ${prefs.mqttTopic}")
+        appendLine("MQTT username: ${if (!prefs.mqttUsername.isNullOrBlank()) "set" else "unset"}")
+        appendLine("MQTT password: ${if (mqttPasswordConfigured) "set" else "unset"}")
+        val statusLine = when {
+            mqttPublishStatus == null -> "(no publish attempted)"
+            mqttPublishStatus.errorMessage == null -> "success at ${formatTimestamp(mqttPublishStatus.recordedAtMs)}"
+            else -> "failed at ${formatTimestamp(mqttPublishStatus.recordedAtMs)} — ${mqttPublishStatus.errorMessage}"
+        }
+        appendLine("MQTT last publish: $statusLine")
+    }
+
+    private fun formatTimestamp(epochMs: Long): String =
+        Instant.ofEpochMilli(epochMs)
+            .atZone(ZoneId.systemDefault())
+            .format(STATUS_TIMESTAMP_FORMAT)
 
     /**
      * Humanises age relative to now so a glance at the bug report tells you

@@ -13,6 +13,14 @@
         android:name="android.hardware.touchscreen"
         android:required="false" />
 
+    <!-- play-services-ads-identifier (pulled in transitively by firebase-analytics)
+         declares AD_ID in its own manifest; that merges into ours and triggers
+         Play's advertising-ID declaration requirement even though we never use it.
+         Remove it explicitly so the merged APK manifest is clean. -->
+    <uses-permission
+        android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove" />
+
     <!-- Network for Open-Meteo + Gemini. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

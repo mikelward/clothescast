@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -392,6 +393,11 @@ private fun TodayContent(
             // the pager fill only what's left after the header so the
             // scroll viewport matches the visible region.
             val pagerScope = rememberCoroutineScope()
+            // Shared across both pages so swiping from page 1 to page 2
+            // lands at the same vertical offset — if the user is reading
+            // the rain chart on Today, swiping to Tomorrow keeps them
+            // on the rain chart rather than snapping back to the top.
+            val scrollState = rememberScrollState()
             // Placeholder period for page 2 when its slot is empty —
             // whatever the next 12-hour window after `thisPeriodInsight` is.
             // The worker writes [InsightCache.Slot.NEXT_PERIOD] paired with
@@ -410,6 +416,7 @@ private fun TodayContent(
                     insight = pageInsight,
                     fallbackPeriod = pagePeriod,
                     state = state,
+                    scrollState = scrollState,
                     // Same outfit row on both pages — page 2 shows this
                     // period's pair too, not the page-2 period's pair. We
                     // don't surface a 3rd period (tomorrow) on page 2; the
@@ -438,14 +445,16 @@ private fun TodayContent(
  * [MissingPeriodPlaceholder] for [fallbackPeriod] so the user understands
  * when to expect content there.
  *
- * Each page owns its own [rememberScrollState] so vertical scroll position
- * on page 2 doesn't drag page 1.
+ * [scrollState] is hoisted to the pager so both pages share a single
+ * vertical offset — swiping mid-page lands the user at the same row on
+ * the other day's content.
  */
 @Composable
 private fun TodayPage(
     insight: Insight?,
     fallbackPeriod: ForecastPeriod,
     state: TodayState,
+    scrollState: ScrollState,
     outfitInsight: Insight,
     showChevronRight: Boolean,
     showChevronLeft: Boolean,
@@ -454,7 +463,6 @@ private fun TodayPage(
     onNavigateToClothes: () -> Unit,
     onToggleModelSpread: () -> Unit,
 ) {
-    val scrollState = rememberScrollState()
     val scrollScope = rememberCoroutineScope()
     // Captured via onGloballyPositioned on the ConfidenceChip below so the
     // tap handler can scroll the chip to the top of the viewport without

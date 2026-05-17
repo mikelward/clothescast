@@ -168,6 +168,23 @@ data class HolidayTheme(
      * [bannerTextKeyFor]) so this data carrier stays Region-agnostic.
      */
     val bannerTextKeyByCountry: Map<String, String> = emptyMap(),
+    /**
+     * Which countries observe this holiday, as ISO 3166-1 alpha-2 uppercase
+     * codes (e.g. "US", "GB"). Universal holidays (Christmas, New Year's,
+     * Valentine's, Halloween) carry [HolidayCatalog.GLOBAL_COUNTRY] instead
+     * of any specific country — the Global bucket in the Settings UI is its
+     * own toggleable "country." The resolver only fires a theme when at
+     * least one of its [countries] is in the user's effective enabled-
+     * country set, so an Australian on the default "Auto" mode never sees
+     * Bastille Day even with its per-holiday toggle on.
+     *
+     * A holiday observed in multiple countries lists them all (e.g.
+     * Remembrance Day → AU/CA/GB/IE/NZ/US/FR). One holiday-name-per-country
+     * is intentional: the same calendar date with different names lives as
+     * separate [HolidayId] entries (e.g. KOREAN_INDEPENDENCE_MOVEMENT_DAY
+     * vs ST_DAVIDS_DAY).
+     */
+    val countries: Set<String> = emptySet(),
 )
 
 /**
@@ -198,8 +215,30 @@ fun HolidayTheme.bannerTextKeyFor(countryCode: String?): String {
  */
 object HolidayCatalog {
 
+    /**
+     * Sentinel "country" for holidays observed everywhere — Christmas, New
+     * Year's, Valentine's, Halloween. Sits in [HolidayTheme.countries]
+     * alongside ISO 3166-1 alpha-2 codes (uppercase by convention) and is
+     * surfaced in Settings as its own toggleable bucket. Not an ISO code,
+     * so it can't collide with one.
+     */
+    const val GLOBAL_COUNTRY: String = "GLOBAL"
+
     /** Lookup for the (sub)set of UI surfaces that need a theme by id. */
     fun themeFor(id: HolidayId): HolidayTheme? = byId[id]
+
+    /**
+     * Distinct country codes across the catalog, including
+     * [GLOBAL_COUNTRY]. Used by the Settings UI to render the per-country
+     * toggle list and by the "All" mode of the holiday country filter as
+     * its effective enabled-country set. Order is insertion order — every
+     * catalog entry contributes its codes in catalog (calendar) order.
+     */
+    val allCountries: Set<String> by lazy {
+        buildSet {
+            all.forEach { (_, theme) -> addAll(theme.countries) }
+        }
+    }
 
     val all: List<Pair<HolidayDate, HolidayTheme>> = listOf(
         // Jan 1 — black + gold. Top fill gold + black outline; bottom fill
@@ -214,6 +253,7 @@ object HolidayCatalog {
             topStrokeOverrides = topStrokeAll(NY_BLACK),
             bottomStrokeOverrides = bottomStrokeAll(NY_GOLD),
             bannerArgb = NY_GOLD,
+            countries = setOf(GLOBAL_COUNTRY),
         ),
 
         // 2nd Monday of January — Japan's Coming of Age Day (成人の日).
@@ -226,6 +266,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(JAPAN_SAKURA_PINK),
             bottomOverrides = bottomPaletteAll(JAPAN_BLACK),
             bannerArgb = JAPAN_SAKURA_PINK,
+            countries = setOf("JP"),
         ),
 
         // 3rd Monday of January — US Martin Luther King Jr Day. Sober,
@@ -240,6 +281,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(MLK_CHARCOAL),
             bottomOverrides = bottomPaletteAll(MLK_CHARCOAL),
             bannerArgb = MLK_CHARCOAL,
+            countries = setOf("US"),
         ),
 
         // Jan 25 — Burns Night (Scotland). Tartan-evoking dark green top +
@@ -252,6 +294,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(BURNS_TARTAN_GREEN),
             bottomOverrides = bottomPaletteAll(BURNS_TARTAN_RED),
             bannerArgb = BURNS_TARTAN_GREEN,
+            countries = setOf("GB"),
         ),
 
         // Jan 26 — Australia Day. Sporting green tops + gold bottoms.
@@ -264,6 +307,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(AUS_GREEN),
             bottomOverrides = bottomPaletteAll(AUS_GOLD),
             bannerArgb = AUS_GREEN,
+            countries = setOf("AU"),
         ),
 
         // Feb 6 — Waitangi Day (NZ). All Blacks-evoking palette: black tops
@@ -278,6 +322,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(NZ_BLACK),
             bottomOverrides = bottomPaletteAll(NZ_SILVER),
             bannerArgb = NZ_BLACK,
+            countries = setOf("NZ"),
         ),
 
         // Feb 14 — Valentine's. Pink tops + red bottoms. The deep-red third
@@ -291,6 +336,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(VAL_PINK),
             bottomOverrides = bottomPaletteAll(VAL_RED),
             bannerArgb = VAL_RED,
+            countries = setOf(GLOBAL_COUNTRY),
         ),
 
         // Mar 1 — St David's Day. Daffodil yellow tops + leek-green bottoms.
@@ -302,6 +348,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(WALES_YELLOW),
             bottomOverrides = bottomPaletteAll(WALES_GREEN),
             bannerArgb = WALES_GREEN,
+            countries = setOf("GB"),
         ),
 
         // Mar 1 — Korean Independence Movement Day (삼일절). Red top + blue
@@ -317,6 +364,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(KOREA_RED),
             bottomOverrides = bottomPaletteAll(KOREA_BLUE),
             bannerArgb = KOREA_RED,
+            countries = setOf("KR"),
         ),
 
         // Mar 17 — St Patrick's Day. Green, green, more green. Monochrome,
@@ -331,6 +379,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(IRELAND_GREEN),
             bottomOverrides = bottomPaletteAll(IRELAND_GREEN),
             bannerArgb = IRELAND_DEEP,
+            countries = setOf("IE", "GB"),
         ),
 
         // Apr 23 — St George's Day. White tops + red bottoms — the flag's
@@ -343,6 +392,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(ENGLAND_WHITE),
             bottomOverrides = bottomPaletteAll(ENGLAND_RED),
             bannerArgb = ENGLAND_RED,
+            countries = setOf("GB"),
         ),
 
         // Apr 25 — Anzac Day. Solemn day — uniform-evoking khaki across
@@ -357,6 +407,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(ANZAC_KHAKI),
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
+            countries = setOf("AU", "NZ"),
         ),
 
         // 2nd Sunday of May — Mother's Day. Same date in the US, AU, CA,
@@ -371,6 +422,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(MOTHER_PINK),
             bottomOverrides = bottomPaletteAll(MOTHER_GREEN),
             bannerArgb = MOTHER_PINK,
+            countries = setOf("US", "AU", "CA", "NZ"),
         ),
 
         // May 4 — Japan's Greenery Day (みどりの日). Literally green-themed
@@ -383,6 +435,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(GREENERY_GREEN),
             bottomOverrides = bottomPaletteAll(GREENERY_BROWN),
             bannerArgb = GREENERY_GREEN,
+            countries = setOf("JP"),
         ),
 
         // May 30 — Croatia Statehood Day. True flag tricolour
@@ -399,6 +452,7 @@ object HolidayCatalog {
             topStrokeOverrides = topStrokeAll(CROATIA_WHITE),
             bottomStrokeOverrides = bottomStrokeAll(CROATIA_WHITE),
             bannerArgb = CROATIA_RED,
+            countries = setOf("HR"),
         ),
 
         // Last Monday of May — US Memorial Day. Solemn monochrome khaki,
@@ -412,6 +466,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(ANZAC_KHAKI),
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
+            countries = setOf("US"),
         ),
 
         // Jun 2 — Italian Republic Day. Green tops + red bottoms with the
@@ -426,6 +481,7 @@ object HolidayCatalog {
             topStrokeOverrides = topStrokeAll(ITALY_WHITE),
             bottomStrokeOverrides = bottomStrokeAll(ITALY_WHITE),
             bannerArgb = ITALY_GREEN,
+            countries = setOf("IT"),
         ),
 
         // Jun 6 — South Korean Memorial Day (현충일). Same solemn shape as
@@ -438,6 +494,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(ANZAC_KHAKI),
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
+            countries = setOf("KR"),
         ),
 
         // Jun 19 — Juneteenth (US). Pan-African flag colours: red top +
@@ -453,6 +510,7 @@ object HolidayCatalog {
             topStrokeOverrides = topStrokeAll(PAN_AFRICAN_BLACK),
             bottomStrokeOverrides = bottomStrokeAll(PAN_AFRICAN_BLACK),
             bannerArgb = PAN_AFRICAN_RED,
+            countries = setOf("US"),
         ),
 
         // 3rd Sunday of June — Father's Day (US / UK / CA / IE and most of
@@ -468,6 +526,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(FATHER_NAVY),
             bottomOverrides = bottomPaletteAll(FATHER_BROWN),
             bannerArgb = FATHER_NAVY,
+            countries = setOf("US", "CA", "IE", "GB"),
         ),
 
         // Jul 1 — Canada Day. White tops + red bottoms — same flag-halves
@@ -480,6 +539,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(CANADA_WHITE),
             bottomOverrides = bottomPaletteAll(CANADA_RED),
             bannerArgb = CANADA_RED,
+            countries = setOf("CA"),
         ),
 
         // Jul 4 — US Independence Day. Red tops + blue bottoms with white
@@ -495,6 +555,7 @@ object HolidayCatalog {
             topStrokeOverrides = topStrokeAll(USA_WHITE),
             bottomStrokeOverrides = bottomStrokeAll(USA_WHITE),
             bannerArgb = USA_BLUE,
+            countries = setOf("US"),
         ),
 
         // Jul 14 — Bastille Day. French tricolour blue/white/red. Lead with
@@ -510,6 +571,7 @@ object HolidayCatalog {
             topStrokeOverrides = topStrokeAll(FRANCE_WHITE),
             bottomStrokeOverrides = bottomStrokeAll(FRANCE_WHITE),
             bannerArgb = FRANCE_BLUE,
+            countries = setOf("FR"),
         ),
 
         // 3rd Monday of July — Japan's Marine Day (海の日). Ocean blue tops
@@ -522,6 +584,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(MARINE_BLUE),
             bottomOverrides = bottomPaletteAll(MARINE_SAND),
             bannerArgb = MARINE_BLUE,
+            countries = setOf("JP"),
         ),
 
         // Aug 15 — South Korean Liberation Day (광복절). Mirror image of
@@ -535,6 +598,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(KOREA_BLUE),
             bottomOverrides = bottomPaletteAll(KOREA_RED),
             bannerArgb = KOREA_BLUE,
+            countries = setOf("KR"),
         ),
 
         // 1st Sunday of September — Father's Day (AU / NZ). See the June
@@ -548,6 +612,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(FATHER_NAVY),
             bottomOverrides = bottomPaletteAll(FATHER_BROWN),
             bannerArgb = FATHER_NAVY,
+            countries = setOf("AU", "NZ"),
         ),
 
         // Sep 7 — Brazil Independence Day. Green tops + yellow bottoms.
@@ -559,6 +624,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(BRAZIL_GREEN),
             bottomOverrides = bottomPaletteAll(BRAZIL_YELLOW),
             bannerArgb = BRAZIL_GREEN,
+            countries = setOf("BR"),
         ),
 
         // Oct 3 — German Unity Day. Black tops + red bottoms with gold as
@@ -573,6 +639,7 @@ object HolidayCatalog {
             topStrokeOverrides = topStrokeAll(GERMANY_GOLD),
             bottomStrokeOverrides = bottomStrokeAll(GERMANY_GOLD),
             bannerArgb = GERMANY_RED,
+            countries = setOf("DE"),
         ),
 
         // Oct 9 — South Korean Hangeul Day (한글날), celebrating the Korean
@@ -585,6 +652,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(KOREA_BLUE),
             bottomOverrides = bottomPaletteAll(KOREA_WHITE),
             bannerArgb = KOREA_BLUE,
+            countries = setOf("KR"),
         ),
 
         // 2nd Monday of October — Canadian Thanksgiving. Same autumn
@@ -599,6 +667,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(THANKS_PUMPKIN),
             bottomOverrides = bottomPaletteAll(THANKS_BROWN),
             bannerArgb = THANKS_BROWN,
+            countries = setOf("CA"),
         ),
 
         // Oct 12 — Hispanic Day (Spain national day). Red tops + yellow
@@ -611,6 +680,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(SPAIN_RED),
             bottomOverrides = bottomPaletteAll(SPAIN_YELLOW),
             bannerArgb = SPAIN_RED,
+            countries = setOf("ES"),
         ),
 
         // Oct 31 — Halloween. Pumpkin-orange tops + black bottoms. Purple
@@ -624,6 +694,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(HALLOWEEN_ORANGE),
             bottomOverrides = bottomPaletteAll(HALLOWEEN_BLACK),
             bannerArgb = HALLOWEEN_ORANGE,
+            countries = setOf(GLOBAL_COUNTRY),
         ),
 
         // Nov 3 — Japan's Culture Day (文化の日). Japan flag colours:
@@ -636,6 +707,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(JAPAN_WHITE),
             bottomOverrides = bottomPaletteAll(JAPAN_RED),
             bannerArgb = JAPAN_RED,
+            countries = setOf("JP"),
         ),
 
         // Nov 5 — Bonfire Night. Orange-flame tops + smoke-red bottoms.
@@ -647,6 +719,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(BONFIRE_ORANGE),
             bottomOverrides = bottomPaletteAll(BONFIRE_RED),
             bannerArgb = BONFIRE_RED,
+            countries = setOf("GB"),
         ),
 
         // Nov 11 — Remembrance Day (US calls it Veterans Day, FR calls it
@@ -666,6 +739,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(ANZAC_KHAKI),
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
+            countries = setOf("AU", "CA", "GB", "IE", "NZ", "US", "FR"),
         ),
 
         // 4th Thursday of November — US Thanksgiving. Pumpkin-orange tops +
@@ -680,6 +754,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(THANKS_PUMPKIN),
             bottomOverrides = bottomPaletteAll(THANKS_BROWN),
             bannerArgb = THANKS_BROWN,
+            countries = setOf("US"),
         ),
 
         // Nov 30 — St Andrew's Day. Saltire blue tops + white bottoms.
@@ -691,6 +766,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(SCOTLAND_BLUE),
             bottomOverrides = bottomPaletteAll(SCOTLAND_WHITE),
             bannerArgb = SCOTLAND_BLUE,
+            countries = setOf("GB"),
         ),
 
         // Dec 25 — Christmas Day. Pillarbox-red tops + holly-green bottoms.
@@ -704,6 +780,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(XMAS_RED),
             bottomOverrides = bottomPaletteAll(XMAS_GREEN),
             bannerArgb = XMAS_RED,
+            countries = setOf(GLOBAL_COUNTRY),
         ),
 
         // Dec 26 — Boxing Day (UK / AU / NZ / CA / IE and most of the
@@ -718,6 +795,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(XMAS_GREEN),
             bottomOverrides = bottomPaletteAll(XMAS_RED),
             bannerArgb = XMAS_GREEN,
+            countries = setOf("GB", "AU", "NZ", "CA", "IE"),
         ),
     )
 

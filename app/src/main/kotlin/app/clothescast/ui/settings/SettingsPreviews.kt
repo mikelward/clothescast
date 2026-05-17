@@ -14,6 +14,8 @@ import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
+import app.clothescast.core.domain.model.HolidayCatalog
+import app.clothescast.core.domain.model.HolidayCountryMode
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
@@ -325,8 +327,14 @@ internal fun SettingsHolidaysPreview() {
                 HolidayId.HALLOWEEN,
                 HolidayId.CHRISTMAS_DAY,
             ),
+            holidayCountryMode = HolidayCountryMode.AUTO,
+            enabledHolidayCountries = HolidayCatalog.allCountries,
+            autoEnabledHolidayCountries = setOf("AU", HolidayCatalog.GLOBAL_COUNTRY),
+            effectiveEnabledHolidayCountries = setOf("AU", HolidayCatalog.GLOBAL_COUNTRY),
             padding = PaddingValues(0.dp),
             onSetEnabled = { _, _ -> },
+            onSetCountryMode = {},
+            onSetCountryEnabled = { _, _ -> },
         )
     }
 }

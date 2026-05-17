@@ -205,8 +205,14 @@ fun SettingsScreen(
             )
             SettingsRoute.Holidays -> HolidaysContent(
                 enabledHolidays = state.enabledHolidays,
+                holidayCountryMode = state.holidayCountryMode,
+                enabledHolidayCountries = state.enabledHolidayCountries,
+                autoEnabledHolidayCountries = state.autoEnabledHolidayCountries,
+                effectiveEnabledHolidayCountries = state.effectiveEnabledHolidayCountries,
                 padding = padding,
                 onSetEnabled = viewModel::setEnabledHoliday,
+                onSetCountryMode = viewModel::setHolidayCountryMode,
+                onSetCountryEnabled = viewModel::setHolidayCountryEnabled,
             )
             SettingsRoute.Location -> LocationContent(
                 location = state.location,

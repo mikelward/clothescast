@@ -1034,6 +1034,37 @@
     <string name="settings_holidays_title">Holiday themes</string>
     <string name="settings_holidays_description">On each day below, the outfit preview switches to themed colours and a small banner appears.</string>
 
+    <!-- Country filter for the holiday list. Auto = locale + weather-location
+         country + Global; All = every country in the catalogue; Custom =
+         the user picks individually from the country toggles below. -->
+    <string name="settings_holiday_countries_title">Countries</string>
+    <string name="settings_holiday_countries_description">Choose which countries\' holidays appear in the list below.</string>
+    <string name="settings_holiday_country_mode_auto_format">Auto (%1$s)</string>
+    <string name="settings_holiday_country_mode_all">All countries</string>
+    <string name="settings_holiday_country_mode_custom">Custom</string>
+    <string name="settings_holiday_countries_pick_title">Pick countries</string>
+    <string name="settings_holidays_empty_for_country_filter">No holidays match the current country selection. Add a country above or switch to All.</string>
+
+    <!-- Country display names for the Settings → Holidays picker. Order
+         matches HolidayCatalog.allCountries (calendar-order union); the
+         GLOBAL bucket renders the universal holidays (Christmas, New
+         Year\'s, Valentine\'s, Halloween). -->
+    <string name="settings_holiday_country_global">Global holidays</string>
+    <string name="settings_holiday_country_au">Australia</string>
+    <string name="settings_holiday_country_br">Brazil</string>
+    <string name="settings_holiday_country_ca">Canada</string>
+    <string name="settings_holiday_country_de">Germany</string>
+    <string name="settings_holiday_country_es">Spain</string>
+    <string name="settings_holiday_country_fr">France</string>
+    <string name="settings_holiday_country_gb">United Kingdom</string>
+    <string name="settings_holiday_country_hr">Croatia</string>
+    <string name="settings_holiday_country_ie">Ireland</string>
+    <string name="settings_holiday_country_it">Italy</string>
+    <string name="settings_holiday_country_jp">Japan</string>
+    <string name="settings_holiday_country_kr">South Korea</string>
+    <string name="settings_holiday_country_nz">New Zealand</string>
+    <string name="settings_holiday_country_us">United States</string>
+
     <string name="holiday_name_new_years_day">New Year\'s Day</string>
     <string name="holiday_name_japan_coming_of_age_day">Coming of Age Day (Japan)</string>
     <string name="holiday_name_mlk_day">Martin Luther King Jr. Day</string>

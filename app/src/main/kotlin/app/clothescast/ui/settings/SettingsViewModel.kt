@@ -12,8 +12,11 @@ import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.HolidayCatalog
+import app.clothescast.core.domain.model.HolidayCountryMode
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.resolveEffectiveHolidayCountries
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
@@ -149,6 +152,22 @@ class SettingsViewModel(
     init {
         viewModelScope.launch {
             settingsRepository.preferences.collect { prefs ->
+                val regionLocale = prefs.region.toJavaLocale() ?: Locale.getDefault()
+                val weatherLocationCountry = prefs.location?.countryCode
+                val autoCountries = resolveEffectiveHolidayCountries(
+                    mode = HolidayCountryMode.AUTO,
+                    customCountries = prefs.enabledHolidayCountries,
+                    localeCountry = regionLocale.country,
+                    weatherLocationCountry = weatherLocationCountry,
+                    allCountries = HolidayCatalog.allCountries,
+                )
+                val effectiveCountries = resolveEffectiveHolidayCountries(
+                    mode = prefs.holidayCountryMode,
+                    customCountries = prefs.enabledHolidayCountries,
+                    localeCountry = regionLocale.country,
+                    weatherLocationCountry = weatherLocationCountry,
+                    allCountries = HolidayCatalog.allCountries,
+                )
                 _state.update {
                     it.copy(
                         scheduleTime = prefs.schedule.time,
@@ -170,6 +189,10 @@ class SettingsViewModel(
                         outfitTopColors = prefs.outfitTopColors,
                         outfitBottomColors = prefs.outfitBottomColors,
                         enabledHolidays = prefs.enabledHolidays,
+                        holidayCountryMode = prefs.holidayCountryMode,
+                        enabledHolidayCountries = prefs.enabledHolidayCountries,
+                        autoEnabledHolidayCountries = autoCountries,
+                        effectiveEnabledHolidayCountries = effectiveCountries,
                         clothesRules = prefs.clothesRules,
                         defaultBottom = prefs.defaultBottom,
                         location = prefs.location,
@@ -196,7 +219,6 @@ class SettingsViewModel(
                 // voice locale changes — from a voiceLocale flip *or* (when
                 // voiceLocale is SYSTEM) a region change that shifts the
                 // fallback locale.
-                val regionLocale = prefs.region.toJavaLocale() ?: Locale.getDefault()
                 val effectiveLocale = prefs.voiceLocale.resolve(regionLocale)
                 if (lastEnumeratedLocale != effectiveLocale) {
                     lastEnumeratedLocale = effectiveLocale
@@ -370,6 +392,14 @@ class SettingsViewModel(
         viewModelScope.launch {
             settingsRepository.setEnabledHoliday(id, enabled)
         }
+    }
+
+    fun setHolidayCountryMode(mode: HolidayCountryMode) {
+        viewModelScope.launch { settingsRepository.setHolidayCountryMode(mode) }
+    }
+
+    fun setHolidayCountryEnabled(code: String, enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setHolidayCountryEnabled(code, enabled) }
     }
 
     fun addClothesRule(rule: ClothesRule) {

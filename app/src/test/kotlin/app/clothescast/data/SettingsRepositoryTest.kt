@@ -186,6 +186,63 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `Location countryCode round-trips on weather and home pins`() = runTest {
+        val weather = Location(
+            latitude = -33.8688,
+            longitude = 151.2093,
+            displayName = "Sydney",
+            countryCode = "AU",
+        )
+        subject.setLocation(weather)
+        subject.preferences.first().location shouldBe weather
+
+        val home = Location(
+            latitude = 51.5074,
+            longitude = -0.1278,
+            displayName = "London",
+            countryCode = "GB",
+        )
+        subject.setHomeLocation(home)
+        subject.preferences.first().homeLocation shouldBe home
+    }
+
+    @Test
+    fun `holidayCountryMode defaults to AUTO and round-trips`() = runTest {
+        subject.preferences.first().holidayCountryMode shouldBe
+            app.clothescast.core.domain.model.HolidayCountryMode.AUTO
+
+        subject.setHolidayCountryMode(app.clothescast.core.domain.model.HolidayCountryMode.ALL)
+        subject.preferences.first().holidayCountryMode shouldBe
+            app.clothescast.core.domain.model.HolidayCountryMode.ALL
+
+        subject.setHolidayCountryMode(app.clothescast.core.domain.model.HolidayCountryMode.CUSTOM)
+        subject.preferences.first().holidayCountryMode shouldBe
+            app.clothescast.core.domain.model.HolidayCountryMode.CUSTOM
+    }
+
+    @Test
+    fun `enabledHolidayCountries defaults to allCountries and round-trips per toggle`() = runTest {
+        val all = app.clothescast.core.domain.model.HolidayCatalog.allCountries
+        subject.preferences.first().enabledHolidayCountries shouldBe all
+
+        // Turning off "US" subtracts from the default-on full set.
+        subject.setHolidayCountryEnabled("US", enabled = false)
+        subject.preferences.first().enabledHolidayCountries shouldBe (all - "US")
+
+        // Lowercase input normalises to uppercase storage.
+        subject.setHolidayCountryEnabled("us", enabled = true)
+        subject.preferences.first().enabledHolidayCountries shouldBe all
+
+        // Adding a country not previously in the set (Global bucket) works too.
+        subject.setHolidayCountryEnabled(
+            app.clothescast.core.domain.model.HolidayCatalog.GLOBAL_COUNTRY,
+            enabled = false,
+        )
+        val withoutGlobal = all - app.clothescast.core.domain.model.HolidayCatalog.GLOBAL_COUNTRY
+        subject.preferences.first().enabledHolidayCountries shouldBe withoutGlobal
+    }
+
+    @Test
     fun `region defaults to SYSTEM when nothing stored`() = runTest {
         subject.preferences.first().region shouldBe Region.SYSTEM
     }

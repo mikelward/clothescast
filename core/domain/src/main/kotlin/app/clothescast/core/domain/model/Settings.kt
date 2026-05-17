@@ -21,6 +21,52 @@ enum class WindSpeedUnit { KMH, MPH }
 
 enum class DeliveryMode { NOTIFICATION_ONLY, TTS_ONLY, NOTIFICATION_AND_TTS }
 
+/**
+ * How the per-holiday list filters by country.
+ *
+ *  - [AUTO] — show holidays from the user's locale country, the weather
+ *    location's country (when known via reverse-geocoding), and the
+ *    [HolidayCatalog.GLOBAL_COUNTRY] bucket. Re-resolves on every preference
+ *    emission so changing locale or moving overseas surfaces the relevant
+ *    holidays without a settings edit.
+ *  - [ALL] — show every country in [HolidayCatalog.allCountries] (the
+ *    pre-filter behaviour).
+ *  - [CUSTOM] — honour the user's explicit per-country toggles in
+ *    [UserPreferences.enabledHolidayCountries].
+ *
+ * Default is [AUTO] for new and existing installs.
+ */
+enum class HolidayCountryMode { AUTO, ALL, CUSTOM }
+
+/**
+ * Resolves the effective enabled-country set used by [HolidayResolver].
+ * Centralised so [SettingsViewModel] (for "Auto (AU, GB, Global)" subtitle
+ * rendering) and [TodayViewModel] (for the actual resolver call) compute
+ * the same thing from the same inputs.
+ *
+ * Country codes are ISO 3166-1 alpha-2 uppercase plus the sentinel
+ * [HolidayCatalog.GLOBAL_COUNTRY]. [localeCountry] and
+ * [weatherLocationCountry] are case-insensitive — null or blank values are
+ * ignored. AUTO always includes [HolidayCatalog.GLOBAL_COUNTRY] so the
+ * universal-bucket holidays (Christmas, New Year's, Valentine's,
+ * Halloween) surface for every user out of the box.
+ */
+fun resolveEffectiveHolidayCountries(
+    mode: HolidayCountryMode,
+    customCountries: Set<String>,
+    localeCountry: String?,
+    weatherLocationCountry: String?,
+    allCountries: Set<String>,
+): Set<String> = when (mode) {
+    HolidayCountryMode.ALL -> allCountries
+    HolidayCountryMode.CUSTOM -> customCountries
+    HolidayCountryMode.AUTO -> buildSet {
+        add(HolidayCatalog.GLOBAL_COUNTRY)
+        localeCountry?.trim()?.takeIf { it.isNotEmpty() }?.let { add(it.uppercase()) }
+        weatherLocationCountry?.trim()?.takeIf { it.isNotEmpty() }?.let { add(it.uppercase()) }
+    }
+}
+
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
 /**
@@ -401,6 +447,25 @@ data class UserPreferences(
      * the flow. Missing key on first read seeds the default (all on).
      */
     val enabledHolidays: Set<HolidayId> = HolidayId.entries.toSet(),
+    /**
+     * How the per-holiday list filters by country. Default is
+     * [HolidayCountryMode.AUTO] — locale country + reverse-geocoded weather
+     * location's country + the Global bucket. The Settings UI exposes the
+     * three modes inline above the existing per-holiday toggles.
+     */
+    val holidayCountryMode: HolidayCountryMode = HolidayCountryMode.AUTO,
+    /**
+     * The user's explicit per-country pick when [holidayCountryMode] is
+     * [HolidayCountryMode.CUSTOM]. ISO 3166-1 alpha-2 codes (uppercase) plus
+     * the [HolidayCatalog.GLOBAL_COUNTRY] sentinel for the Global bucket.
+     * Ignored in AUTO / ALL modes — those derive their effective set on
+     * the fly via [resolveEffectiveHolidayCountries] so changing locale or
+     * weather location takes effect immediately. Default is all countries
+     * (the same shape as the [enabledHolidays] all-on default) so the
+     * first switch to CUSTOM starts from the user's existing universe of
+     * holidays rather than from nothing.
+     */
+    val enabledHolidayCountries: Set<String> = HolidayCatalog.allCountries,
     /**
      * Which numerical-weather-prediction models the multi-model confidence
      * fetcher consults — or `null` for "auto, derive from current location"

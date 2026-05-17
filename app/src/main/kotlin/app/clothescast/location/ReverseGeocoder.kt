@@ -16,10 +16,12 @@ import java.util.Locale
 import kotlin.coroutines.resume
 
 /**
- * Resolves a `(lat, lon)` pair to a city-friendly name using Android's built-in
- * [Geocoder]. The Today screen uses the result to label the forecast next to
- * the date when the user is on device location (saved-fallback users already
- * carry a forward-geocoded `displayName`).
+ * Resolves a `(lat, lon)` pair to a city-friendly name and an ISO 3166-1
+ * alpha-2 country code using Android's built-in [Geocoder]. The Today screen
+ * uses the city name to label the forecast next to the date when the user is
+ * on device location (saved-fallback users already carry a forward-geocoded
+ * `displayName`); the country code feeds the holiday country filter in
+ * Settings.
  *
  * Privacy: on Play Services devices the framework's `Geocoder` implementation
  * sends the coordinates to Google's geocoding service; on AOSP-only or stripped
@@ -27,8 +29,9 @@ import kotlin.coroutines.resume
  * separate off-device send from the Open-Meteo forecast call — Open-Meteo
  * doesn't (yet) offer reverse geocoding.
  *
- * Returns null on every failure path; the worker treats null as "no friendly
- * name available" and the UI falls back to a date-only header.
+ * Returns an [Empty][ReverseGeocodeResult.EMPTY] result on every failure path;
+ * callers treat blank fields as "no value available" and surface a date-only
+ * header / no-country fallback.
  */
 class ReverseGeocoder(
     private val context: Context,
@@ -36,9 +39,21 @@ class ReverseGeocoder(
     private val maxAttempts: Int = 2,
     private val retryBackoffMillis: Long = 1_000L,
 ) {
-    /** Best-effort city/locality name, or null if the geocoder is unavailable
-     *  / times out / returns nothing useful. */
-    suspend fun resolveCityName(latitude: Double, longitude: Double): String? = try {
+    /**
+     * Best-effort city/locality name + country code. Either field can be null
+     * independently (e.g. the geocoder returned a usable city but the address
+     * lacked a country code, or vice versa); callers handle each as missing
+     * data without crashing.
+     */
+    data class Result(val city: String?, val countryCode: String?) {
+        companion object {
+            val EMPTY = Result(city = null, countryCode = null)
+        }
+    }
+
+    /** Best-effort city name + country code, or [Result.EMPTY] if the
+     *  geocoder is unavailable / times out / returns nothing useful. */
+    suspend fun resolve(latitude: Double, longitude: Double): Result = try {
         resolveInner(latitude, longitude)
     } catch (t: CancellationException) {
         // Coroutine cancellation must propagate — otherwise a Settings
@@ -47,14 +62,14 @@ class ReverseGeocoder(
         // setLocation. The broad catch below would otherwise swallow it.
         throw t
     } catch (t: Throwable) {
-        DiagLog.w(TAG, "Unexpected ${t.javaClass.simpleName} from resolveCityName; returning null.", t)
-        null
+        DiagLog.w(TAG, "Unexpected ${t.javaClass.simpleName} from resolve; returning empty.", t)
+        Result.EMPTY
     }
 
-    private suspend fun resolveInner(latitude: Double, longitude: Double): String? {
+    private suspend fun resolveInner(latitude: Double, longitude: Double): Result {
         if (!Geocoder.isPresent()) {
             DiagLog.i(TAG, "Geocoder backend not available on this device; skipping reverse lookup.")
-            return null
+            return Result.EMPTY
         }
         val geocoder = Geocoder(context, Locale.getDefault())
         // Retry only on timeout — empty results / framework `onError`
@@ -67,7 +82,7 @@ class ReverseGeocoder(
         // returns immediately.
         repeat(maxAttempts) { attempt ->
             val addresses = withTimeoutOrNull(timeoutMillis) { fetch(geocoder, latitude, longitude) }
-            if (addresses != null) return addresses.firstOrNull()?.toCityName()
+            if (addresses != null) return addresses.firstOrNull()?.toResult() ?: Result.EMPTY
             val isLastAttempt = attempt == maxAttempts - 1
             if (isLastAttempt) {
                 DiagLog.w(TAG, "Reverse geocode timed out after ${timeoutMillis}ms (final of $maxAttempts).")
@@ -76,7 +91,7 @@ class ReverseGeocoder(
                 delay(retryBackoffMillis)
             }
         }
-        return null
+        return Result.EMPTY
     }
 
     private suspend fun fetch(geocoder: Geocoder, lat: Double, lon: Double): List<Address> =
@@ -129,11 +144,11 @@ class ReverseGeocoder(
             }
         }
 
-    private fun Address.toCityName(): String? {
+    private fun Address.toResult(): Result {
         val maxIdx = maxAddressLineIndex
         val lines = if (maxIdx < 0) emptyList<String>()
         else (0..maxIdx).mapNotNull { getAddressLine(it) }
-        return pickCityName(
+        val city = pickCityName(
             locality = locality,
             subLocality = subLocality,
             subAdminArea = subAdminArea,
@@ -143,6 +158,8 @@ class ReverseGeocoder(
             postalCode = postalCode,
             addressLines = lines,
         )
+        val normalisedCountry = countryCode?.takeIf { it.isNotBlank() }?.uppercase()
+        return Result(city = city, countryCode = normalisedCountry)
     }
 
     companion object {

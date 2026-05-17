@@ -347,14 +347,18 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                         // yesterday" cache miss can't silently land as the
                         // user's home — better to no-op the button and let
                         // them retry than save the wrong coordinate.
-                        // resolveCityName labels the fix for UI display. Both
-                        // swallow failures internally — null falls through to
-                        // a no-op in the VM.
+                        // Reverse-geocode labels the fix for UI display and
+                        // captures the country code for the holiday filter.
+                        // Both swallow failures internally — null falls
+                        // through to a no-op in the VM.
                         app.locationResolver.resolveFresh(
                             LocationResolver.FRESH_FIX_MAX_AGE_MS,
                         )?.let { fix ->
-                            val city = app.reverseGeocoder.resolveCityName(fix.latitude, fix.longitude)
-                            if (city != null) fix.copy(displayName = city) else fix
+                            val geo = app.reverseGeocoder.resolve(fix.latitude, fix.longitude)
+                            fix.copy(
+                                displayName = geo.city ?: fix.displayName,
+                                countryCode = geo.countryCode ?: fix.countryCode,
+                            )
                         }
                     },
                     workManager = WorkManager.getInstance(app),

@@ -51,6 +51,11 @@ class OpenMeteoGeocodingClient(
 
     private fun GeocodingResult.toDomain(): Location {
         val displayName = listOfNotNull(name, admin1, country).joinToString(", ")
-        return Location(latitude = latitude, longitude = longitude, displayName = displayName)
+        return Location(
+            latitude = latitude,
+            longitude = longitude,
+            displayName = displayName,
+            countryCode = countryCode?.takeIf { it.isNotBlank() }?.uppercase(),
+        )
     }
 }

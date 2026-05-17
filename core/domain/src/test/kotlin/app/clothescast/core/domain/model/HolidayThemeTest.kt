@@ -32,6 +32,14 @@ class HolidayThemeTest {
     }
 
     @Test
+    fun `bannerTextKeyFor returns Armistice Day for FR`() {
+        val theme = HolidayCatalog.themeFor(HolidayId.REMEMBRANCE_DAY)
+            ?: error("REMEMBRANCE_DAY missing from catalog")
+        theme.bannerTextKeyFor("FR") shouldBe "holiday_banner_fr_armistice_day"
+        theme.bannerTextKeyFor("fr") shouldBe "holiday_banner_fr_armistice_day"
+    }
+
+    @Test
     fun `bannerTextKeyFor falls back to default on null or blank country`() {
         val theme = HolidayCatalog.themeFor(HolidayId.REMEMBRANCE_DAY)
             ?: error("REMEMBRANCE_DAY missing from catalog")

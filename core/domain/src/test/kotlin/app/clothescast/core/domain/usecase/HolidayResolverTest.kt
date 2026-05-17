@@ -21,10 +21,11 @@ class HolidayResolverTest {
     // and end-of-month dates cover the obvious off-by-one traps.
 
     @Test
-    fun `Christmas matches Dec 25`() {
+    fun `Christmas matches Dec 25 with Boxing Day immediately after`() {
         subject.resolve(LocalDate.of(2026, 12, 25), allOn)?.id shouldBe HolidayId.CHRISTMAS_DAY
         subject.resolve(LocalDate.of(2026, 12, 24), allOn).shouldBeNull()
-        subject.resolve(LocalDate.of(2026, 12, 26), allOn).shouldBeNull()
+        // Dec 26 is Boxing Day — the catalog entry just after Christmas.
+        subject.resolve(LocalDate.of(2026, 12, 26), allOn)?.id shouldBe HolidayId.BOXING_DAY
     }
 
     @Test
@@ -35,8 +36,72 @@ class HolidayResolverTest {
     }
 
     @Test
+    fun `Burns Night matches Jan 25`() {
+        subject.resolve(LocalDate.of(2026, 1, 25), allOn)?.id shouldBe HolidayId.BURNS_NIGHT
+    }
+
+    @Test
     fun `Australia Day matches Jan 26`() {
         subject.resolve(LocalDate.of(2026, 1, 26), allOn)?.id shouldBe HolidayId.AUSTRALIA_DAY
+    }
+
+    @Test
+    fun `Waitangi Day matches Feb 6`() {
+        subject.resolve(LocalDate.of(2026, 2, 6), allOn)?.id shouldBe HolidayId.WAITANGI_DAY
+    }
+
+    @Test
+    fun `Japan Greenery Day matches May 4`() {
+        subject.resolve(LocalDate.of(2026, 5, 4), allOn)?.id shouldBe HolidayId.JAPAN_GREENERY_DAY
+    }
+
+    @Test
+    fun `Croatia Statehood Day matches May 30`() {
+        subject.resolve(LocalDate.of(2026, 5, 30), allOn)?.id shouldBe HolidayId.CROATIA_STATEHOOD_DAY
+    }
+
+    @Test
+    fun `Korean Memorial Day matches Jun 6`() {
+        subject.resolve(LocalDate.of(2026, 6, 6), allOn)?.id shouldBe HolidayId.KOREAN_MEMORIAL_DAY
+    }
+
+    @Test
+    fun `Juneteenth matches Jun 19`() {
+        subject.resolve(LocalDate.of(2026, 6, 19), allOn)?.id shouldBe HolidayId.JUNETEENTH
+    }
+
+    @Test
+    fun `Korean Liberation Day matches Aug 15`() {
+        subject.resolve(LocalDate.of(2026, 8, 15), allOn)?.id shouldBe HolidayId.KOREAN_LIBERATION_DAY
+    }
+
+    @Test
+    fun `Korean Hangeul Day matches Oct 9`() {
+        subject.resolve(LocalDate.of(2026, 10, 9), allOn)?.id shouldBe HolidayId.KOREAN_HANGEUL_DAY
+    }
+
+    @Test
+    fun `Japan Culture Day matches Nov 3`() {
+        subject.resolve(LocalDate.of(2026, 11, 3), allOn)?.id shouldBe HolidayId.JAPAN_CULTURE_DAY
+    }
+
+    @Test
+    fun `Boxing Day matches Dec 26`() {
+        subject.resolve(LocalDate.of(2026, 12, 26), allOn)?.id shouldBe HolidayId.BOXING_DAY
+    }
+
+    @Test
+    fun `St Davids wins over Korean Independence Movement Day on Mar 1`() {
+        // Same calendar date; catalog order picks St David's first. Tracked
+        // by the same-date-collision TODO at the top of HolidayId — when
+        // location-aware resolution lands, a Korean user will see the
+        // Korean entry instead.
+        subject.resolve(LocalDate.of(2026, 3, 1), allOn)?.id shouldBe HolidayId.ST_DAVIDS_DAY
+        // With only Korean enabled, the Korean entry still resolves.
+        subject.resolve(
+            LocalDate.of(2026, 3, 1),
+            setOf(HolidayId.KOREAN_INDEPENDENCE_MOVEMENT_DAY),
+        )?.id shouldBe HolidayId.KOREAN_INDEPENDENCE_MOVEMENT_DAY
     }
 
     @Test
@@ -96,7 +161,20 @@ class HolidayResolverTest {
 
     @Test
     fun `Spain Hispanic Day matches Oct 12`() {
-        subject.resolve(LocalDate.of(2026, 10, 12), allOn)?.id shouldBe HolidayId.SPAIN_HISPANIC_DAY
+        // Use a year where Oct 12 isn't the 2nd Monday — in years where it
+        // is (e.g. 2026), Canadian Thanksgiving wins under allOn since it's
+        // listed first. Single-holiday set isolates Spain to confirm its
+        // predicate fires on any Oct 12.
+        val spainOnly = setOf(HolidayId.SPAIN_HISPANIC_DAY)
+        listOf(
+            LocalDate.of(2025, 10, 12), // Sunday
+            LocalDate.of(2026, 10, 12), // Monday — would clash with Canadian Thanksgiving under allOn
+            LocalDate.of(2027, 10, 12), // Tuesday
+        ).forEach { d ->
+            withClue(d.toString()) {
+                subject.resolve(d, spainOnly)?.id shouldBe HolidayId.SPAIN_HISPANIC_DAY
+            }
+        }
     }
 
     @Test
@@ -126,6 +204,108 @@ class HolidayResolverTest {
 
     // --- Nth-weekday holidays. Several years per entry so the date maths
     // is checked across a span where the leading day-of-month shifts.
+
+    @Test
+    fun `MLK Day matches 3rd Monday of January`() {
+        // 2025-01-20, 2026-01-19, 2027-01-18, 2028-01-17, 2029-01-15.
+        listOf(
+            LocalDate.of(2025, 1, 20),
+            LocalDate.of(2026, 1, 19),
+            LocalDate.of(2027, 1, 18),
+            LocalDate.of(2028, 1, 17),
+            LocalDate.of(2029, 1, 15),
+        ).forEach { d ->
+            withClue(d.toString()) {
+                d.dayOfWeek shouldBe DayOfWeek.MONDAY
+                subject.resolve(d, allOn)?.id shouldBe HolidayId.MLK_DAY
+            }
+        }
+    }
+
+    @Test
+    fun `Japan Coming of Age Day matches 2nd Monday of January`() {
+        // 2025-01-13, 2026-01-12, 2027-01-11, 2028-01-10, 2029-01-08.
+        listOf(
+            LocalDate.of(2025, 1, 13),
+            LocalDate.of(2026, 1, 12),
+            LocalDate.of(2027, 1, 11),
+            LocalDate.of(2028, 1, 10),
+            LocalDate.of(2029, 1, 8),
+        ).forEach { d ->
+            withClue(d.toString()) {
+                d.dayOfWeek shouldBe DayOfWeek.MONDAY
+                subject.resolve(d, allOn)?.id shouldBe HolidayId.JAPAN_COMING_OF_AGE_DAY
+            }
+        }
+    }
+
+    @Test
+    fun `US Memorial Day matches the LAST Monday of May`() {
+        // Last Mon May: 2025-05-26, 2026-05-25, 2027-05-31, 2028-05-29, 2029-05-28.
+        // Note 2027 has 5 Mondays — Memorial Day is the 5th, not the 4th.
+        listOf(
+            LocalDate.of(2025, 5, 26),
+            LocalDate.of(2026, 5, 25),
+            LocalDate.of(2027, 5, 31),
+            LocalDate.of(2028, 5, 29),
+            LocalDate.of(2029, 5, 28),
+        ).forEach { d ->
+            withClue(d.toString()) {
+                d.dayOfWeek shouldBe DayOfWeek.MONDAY
+                subject.resolve(d, allOn)?.id shouldBe HolidayId.US_MEMORIAL_DAY
+            }
+        }
+        // Non-last Mondays in May should NOT match Memorial Day.
+        val thanksgivingOnly = setOf(HolidayId.US_MEMORIAL_DAY)
+        // 2027 — first four Mondays (3, 10, 17, 24) should not match the
+        // Last-Mon predicate; the 5th (31) does.
+        listOf(3, 10, 17, 24).forEach { dom ->
+            val d = LocalDate.of(2027, 5, dom)
+            withClue(d.toString()) {
+                d.dayOfWeek shouldBe DayOfWeek.MONDAY
+                subject.resolve(d, thanksgivingOnly).shouldBeNull()
+            }
+        }
+    }
+
+    @Test
+    fun `Japan Marine Day matches 3rd Monday of July`() {
+        // 2025-07-21, 2026-07-20, 2027-07-19, 2028-07-17, 2029-07-16.
+        listOf(
+            LocalDate.of(2025, 7, 21),
+            LocalDate.of(2026, 7, 20),
+            LocalDate.of(2027, 7, 19),
+            LocalDate.of(2028, 7, 17),
+            LocalDate.of(2029, 7, 16),
+        ).forEach { d ->
+            withClue(d.toString()) {
+                d.dayOfWeek shouldBe DayOfWeek.MONDAY
+                subject.resolve(d, allOn)?.id shouldBe HolidayId.JAPAN_MARINE_DAY
+            }
+        }
+    }
+
+    @Test
+    fun `Canadian Thanksgiving matches 2nd Monday of October`() {
+        // 2025-10-13, 2026-10-12, 2027-10-11, 2028-10-09, 2029-10-08.
+        // In 2028 the 2nd Mon is Oct 9, which also matches Hangeul Day
+        // (Oct 9 fixed); in 2026 it's Oct 12 which also matches Hispanic
+        // Day. Single-holiday set isolates Canadian Thanksgiving's predicate
+        // from those catalog-order collisions.
+        val canadianOnly = setOf(HolidayId.CANADIAN_THANKSGIVING)
+        listOf(
+            LocalDate.of(2025, 10, 13),
+            LocalDate.of(2026, 10, 12),
+            LocalDate.of(2027, 10, 11),
+            LocalDate.of(2028, 10, 9),
+            LocalDate.of(2029, 10, 8),
+        ).forEach { d ->
+            withClue(d.toString()) {
+                d.dayOfWeek shouldBe DayOfWeek.MONDAY
+                subject.resolve(d, canadianOnly)?.id shouldBe HolidayId.CANADIAN_THANKSGIVING
+            }
+        }
+    }
 
     @Test
     fun `Mothers Day matches 2nd Sunday of May`() {

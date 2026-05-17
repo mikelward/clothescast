@@ -17,6 +17,7 @@ import java.time.Month
  */
 enum class HolidayId {
     NEW_YEARS_DAY,
+    EPIPHANY,
     JAPAN_COMING_OF_AGE_DAY,
     MLK_DAY,
     BURNS_NIGHT,
@@ -28,31 +29,42 @@ enum class HolidayId {
     ST_PATRICKS_DAY,
     ST_GEORGES_DAY,
     ANZAC_DAY,
-    MOTHERS_DAY,
+    LABOUR_DAY,
     JAPAN_GREENERY_DAY,
+    UK_EARLY_MAY_BANK_HOLIDAY,
+    MOTHERS_DAY,
     CROATIA_STATEHOOD_DAY,
     US_MEMORIAL_DAY,
+    UK_SPRING_BANK_HOLIDAY,
     ITALY_REPUBLIC_DAY,
     KOREAN_MEMORIAL_DAY,
+    UK_KINGS_BIRTHDAY,
     JUNETEENTH,
     FATHERS_DAY_JUN,
     CANADA_DAY,
     US_INDEPENDENCE_DAY,
     BASTILLE_DAY,
     JAPAN_MARINE_DAY,
+    CROATIA_VICTORY_DAY,
     KOREAN_LIBERATION_DAY,
+    ASSUMPTION,
+    UK_SUMMER_BANK_HOLIDAY,
     FATHERS_DAY_SEP,
     BRAZIL_INDEPENDENCE_DAY,
     GERMAN_UNITY_DAY,
+    CROATIA_INDEPENDENCE_DAY,
     KOREAN_HANGEUL_DAY,
     CANADIAN_THANKSGIVING,
     SPAIN_HISPANIC_DAY,
+    AUSTRIA_NATIONAL_DAY,
     HALLOWEEN,
+    ALL_SAINTS_DAY,
     JAPAN_CULTURE_DAY,
     BONFIRE_NIGHT,
     REMEMBRANCE_DAY,
     US_THANKSGIVING,
     ST_ANDREWS_DAY,
+    IMMACULATE_CONCEPTION,
     CHRISTMAS_DAY,
     BOXING_DAY,
     // TODO(holidays-v4): UK Mothering Sunday — 4th Sun of Lent, i.e. movable
@@ -284,6 +296,21 @@ object HolidayCatalog {
             countries = setOf(GLOBAL_COUNTRY),
         ),
 
+        // Jan 6 — Epiphany / Three Kings' Day. Catholic observance in
+        // Austria, Spain, Italy, Croatia (and several German Länder, but
+        // catalog stays at country granularity). Royal gold top + deep
+        // purple bottom evokes the Magi's gifts.
+        HolidayDate.Fixed(Month.JANUARY, 6) to HolidayTheme(
+            id = HolidayId.EPIPHANY,
+            displayNameKey = "holiday_name_epiphany",
+            bannerTextKey = "holiday_banner_epiphany",
+            emoji = "⭐", // ⭐ — Star of Bethlehem
+            topOverrides = topPaletteAll(EPIPHANY_GOLD),
+            bottomOverrides = bottomPaletteAll(EPIPHANY_PURPLE),
+            bannerArgb = EPIPHANY_GOLD,
+            countries = setOf("AT", "ES", "HR", "IT"),
+        ),
+
         // 2nd Monday of January — Japan's Coming of Age Day (成人の日).
         // Celebratory; sakura-pink top + black bottom evokes a kimono.
         HolidayDate.NthWeekday(Month.JANUARY, 2, DayOfWeek.MONDAY) to HolidayTheme(
@@ -438,6 +465,55 @@ object HolidayCatalog {
             countries = setOf("AU", "NZ"),
         ),
 
+        // May 1 — Labour Day / International Workers' Day. Public holiday
+        // across most of continental Europe. Solid labour-movement red
+        // top + workwear-black bottom; the carnation emoji nods to the
+        // traditional May Day buttonhole.
+        HolidayDate.Fixed(Month.MAY, 1) to HolidayTheme(
+            id = HolidayId.LABOUR_DAY,
+            displayNameKey = "holiday_name_labour_day",
+            bannerTextKey = "holiday_banner_labour_day",
+            emoji = "🌹", // 🌹 — red carnation, the May Day symbol
+            topOverrides = topPaletteAll(LABOUR_RED),
+            bottomOverrides = bottomPaletteAll(LABOUR_BLACK),
+            bannerArgb = LABOUR_RED,
+            countries = setOf("AT", "DE", "ES", "FR", "HR", "IT"),
+        ),
+
+        // May 4 — Japan's Greenery Day (みどりの日). Literally green-themed
+        // — green tops + earth-brown bottoms (nature / wood). Listed
+        // before [UK_EARLY_MAY_BANK_HOLIDAY] so a multi-country user
+        // resolves Greenery on May 4 in years where May 4 is also the
+        // 1st Monday of May (e.g. 2026); single-country JP / GB users
+        // are unaffected since the country tags don't overlap.
+        HolidayDate.Fixed(Month.MAY, 4) to HolidayTheme(
+            id = HolidayId.JAPAN_GREENERY_DAY,
+            displayNameKey = "holiday_name_japan_greenery_day",
+            bannerTextKey = "holiday_banner_japan_greenery_day",
+            emoji = "🌿", // 🌿
+            topOverrides = topPaletteAll(GREENERY_GREEN),
+            bottomOverrides = bottomPaletteAll(GREENERY_BROWN),
+            bannerArgb = GREENERY_GREEN,
+            countries = setOf("JP"),
+        ),
+
+        // 1st Monday of May — UK Early May Bank Holiday. Union Jack
+        // tricolour: red top + blue bottom with white as the unifying
+        // accent stroke. Same option-3 stroke pattern as the existing
+        // flag tricolours (US July 4, Bastille, Germany, Italy).
+        HolidayDate.NthWeekday(Month.MAY, 1, DayOfWeek.MONDAY) to HolidayTheme(
+            id = HolidayId.UK_EARLY_MAY_BANK_HOLIDAY,
+            displayNameKey = "holiday_name_uk_early_may_bank_holiday",
+            bannerTextKey = "holiday_banner_uk_bank_holiday",
+            emoji = "🇬🇧", // 🇬🇧
+            topOverrides = topPaletteAll(UK_RED),
+            bottomOverrides = bottomPaletteAll(UK_BLUE),
+            topStrokeOverrides = topStrokeAll(UK_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(UK_WHITE),
+            bannerArgb = UK_RED,
+            countries = setOf("GB"),
+        ),
+
         // 2nd Sunday of May — Mother's Day. Same date in the US, AU, CA,
         // NZ and most non-UK countries. UK / IE use Mothering Sunday
         // (4th Sun of Lent, movable) — TODO at the top of [HolidayId].
@@ -451,19 +527,6 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(MOTHER_GREEN),
             bannerArgb = MOTHER_PINK,
             countries = setOf("US", "AU", "CA", "NZ"),
-        ),
-
-        // May 4 — Japan's Greenery Day (みどりの日). Literally green-themed
-        // — green tops + earth-brown bottoms (nature / wood).
-        HolidayDate.Fixed(Month.MAY, 4) to HolidayTheme(
-            id = HolidayId.JAPAN_GREENERY_DAY,
-            displayNameKey = "holiday_name_japan_greenery_day",
-            bannerTextKey = "holiday_banner_japan_greenery_day",
-            emoji = "🌿", // 🌿
-            topOverrides = topPaletteAll(GREENERY_GREEN),
-            bottomOverrides = bottomPaletteAll(GREENERY_BROWN),
-            bannerArgb = GREENERY_GREEN,
-            countries = setOf("JP"),
         ),
 
         // May 30 — Croatia Statehood Day. True flag tricolour
@@ -486,6 +549,10 @@ object HolidayCatalog {
         // Last Monday of May — US Memorial Day. Solemn monochrome khaki,
         // same shape as Anzac. Different from US Veterans Day (Nov 11),
         // which is the Remembrance Day banner with a US country override.
+        // Same-date collision with [UK_SPRING_BANK_HOLIDAY] below; the
+        // catalog-order tiebreak means a US user resolves Memorial Day
+        // (US tag), a GB user resolves Spring BH (GB tag), and a
+        // multi-country user (US+GB) falls to US Memorial first.
         HolidayDate.LastWeekday(Month.MAY, DayOfWeek.MONDAY) to HolidayTheme(
             id = HolidayId.US_MEMORIAL_DAY,
             displayNameKey = "holiday_name_us_memorial_day",
@@ -495,6 +562,21 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
             countries = setOf("US"),
+        ),
+
+        // Last Monday of May — UK Spring Bank Holiday. Union Jack
+        // tricolour, same as the other UK bank holidays.
+        HolidayDate.LastWeekday(Month.MAY, DayOfWeek.MONDAY) to HolidayTheme(
+            id = HolidayId.UK_SPRING_BANK_HOLIDAY,
+            displayNameKey = "holiday_name_uk_spring_bank_holiday",
+            bannerTextKey = "holiday_banner_uk_bank_holiday",
+            emoji = "🇬🇧", // 🇬🇧
+            topOverrides = topPaletteAll(UK_RED),
+            bottomOverrides = bottomPaletteAll(UK_BLUE),
+            topStrokeOverrides = topStrokeAll(UK_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(UK_WHITE),
+            bannerArgb = UK_RED,
+            countries = setOf("GB"),
         ),
 
         // Jun 2 — Italian Republic Day. Green tops + red bottoms with the
@@ -523,6 +605,22 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
             countries = setOf("KR"),
+        ),
+
+        // 2nd Saturday of June — UK King's Official Birthday (Trooping
+        // the Colour). Not a UK bank holiday per se, but the date is
+        // observed annually. Same Union Jack palette as the bank holidays.
+        HolidayDate.NthWeekday(Month.JUNE, 2, DayOfWeek.SATURDAY) to HolidayTheme(
+            id = HolidayId.UK_KINGS_BIRTHDAY,
+            displayNameKey = "holiday_name_uk_kings_birthday",
+            bannerTextKey = "holiday_banner_uk_kings_birthday",
+            emoji = "🇬🇧", // 🇬🇧
+            topOverrides = topPaletteAll(UK_RED),
+            bottomOverrides = bottomPaletteAll(UK_BLUE),
+            topStrokeOverrides = topStrokeAll(UK_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(UK_WHITE),
+            bannerArgb = UK_RED,
+            countries = setOf("GB"),
         ),
 
         // Jun 19 — Juneteenth (US). Pan-African flag colours: red top +
@@ -615,9 +713,30 @@ object HolidayCatalog {
             countries = setOf("JP"),
         ),
 
+        // Aug 5 — Croatia's Victory and Homeland Thanksgiving Day
+        // ("Dan pobjede i domovinske zahvalnosti"). Same flag tricolour
+        // pattern as Croatia Statehood — red top + blue bottom with white
+        // unifying stroke.
+        HolidayDate.Fixed(Month.AUGUST, 5) to HolidayTheme(
+            id = HolidayId.CROATIA_VICTORY_DAY,
+            displayNameKey = "holiday_name_croatia_victory_day",
+            bannerTextKey = "holiday_banner_croatia_victory_day",
+            emoji = "🇭🇷", // 🇭🇷
+            topOverrides = topPaletteAll(CROATIA_RED),
+            bottomOverrides = bottomPaletteAll(CROATIA_BLUE),
+            topStrokeOverrides = topStrokeAll(CROATIA_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(CROATIA_WHITE),
+            bannerArgb = CROATIA_RED,
+            countries = setOf("HR"),
+        ),
+
         // Aug 15 — South Korean Liberation Day (광복절). Mirror image of
         // Korean Independence Movement Day above — blue top + red bottom —
         // so the two Korean celebratory holidays read as visibly distinct.
+        // Same-date collision with Catholic [ASSUMPTION] below; first-match
+        // catalog order means a KR user with default settings still
+        // gets Liberation Day, while non-KR Catholic-country users see
+        // Assumption since their country tags miss this entry.
         HolidayDate.Fixed(Month.AUGUST, 15) to HolidayTheme(
             id = HolidayId.KOREAN_LIBERATION_DAY,
             displayNameKey = "holiday_name_korean_liberation_day",
@@ -627,6 +746,37 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(KOREA_RED),
             bannerArgb = KOREA_BLUE,
             countries = setOf("KR"),
+        ),
+
+        // Aug 15 — Assumption of Mary. Catholic high feast observed as a
+        // public holiday in AT, ES, FR, HR, IT. Marian white top + sky
+        // blue bottom. Same calendar date as Korean Liberation Day above;
+        // catalog order means KR users see Liberation, non-KR Catholic-
+        // country users see Assumption (no country overlap).
+        HolidayDate.Fixed(Month.AUGUST, 15) to HolidayTheme(
+            id = HolidayId.ASSUMPTION,
+            displayNameKey = "holiday_name_assumption",
+            bannerTextKey = "holiday_banner_assumption",
+            emoji = "⛪", // ⛪ — church
+            topOverrides = topPaletteAll(MARIAN_WHITE),
+            bottomOverrides = bottomPaletteAll(MARIAN_BLUE),
+            bannerArgb = MARIAN_BLUE,
+            countries = setOf("AT", "ES", "FR", "HR", "IT"),
+        ),
+
+        // Last Monday of August — UK Summer Bank Holiday. Union Jack
+        // tricolour, same as the other UK bank holidays.
+        HolidayDate.LastWeekday(Month.AUGUST, DayOfWeek.MONDAY) to HolidayTheme(
+            id = HolidayId.UK_SUMMER_BANK_HOLIDAY,
+            displayNameKey = "holiday_name_uk_summer_bank_holiday",
+            bannerTextKey = "holiday_banner_uk_bank_holiday",
+            emoji = "🇬🇧", // 🇬🇧
+            topOverrides = topPaletteAll(UK_RED),
+            bottomOverrides = bottomPaletteAll(UK_BLUE),
+            topStrokeOverrides = topStrokeAll(UK_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(UK_WHITE),
+            bannerArgb = UK_RED,
+            countries = setOf("GB"),
         ),
 
         // 1st Sunday of September — Father's Day (AU / NZ). See the June
@@ -670,6 +820,21 @@ object HolidayCatalog {
             countries = setOf("DE"),
         ),
 
+        // Oct 8 — Croatia's Independence Day ("Dan neovisnosti"). Same
+        // flag tricolour pattern as the other Croatia entries.
+        HolidayDate.Fixed(Month.OCTOBER, 8) to HolidayTheme(
+            id = HolidayId.CROATIA_INDEPENDENCE_DAY,
+            displayNameKey = "holiday_name_croatia_independence_day",
+            bannerTextKey = "holiday_banner_croatia_independence_day",
+            emoji = "🇭🇷", // 🇭🇷
+            topOverrides = topPaletteAll(CROATIA_RED),
+            bottomOverrides = bottomPaletteAll(CROATIA_BLUE),
+            topStrokeOverrides = topStrokeAll(CROATIA_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(CROATIA_WHITE),
+            bannerArgb = CROATIA_RED,
+            countries = setOf("HR"),
+        ),
+
         // Oct 9 — South Korean Hangeul Day (한글날), celebrating the Korean
         // alphabet. Blue top + white bottom evokes ink-on-page.
         HolidayDate.Fixed(Month.OCTOBER, 9) to HolidayTheme(
@@ -711,6 +876,23 @@ object HolidayCatalog {
             countries = setOf("ES"),
         ),
 
+        // Oct 26 — Austrian National Day (Nationalfeiertag), marking the
+        // 1955 declaration of permanent neutrality. Flag-tricolour pattern:
+        // red top + red bottom with white as the unifying stroke across
+        // both, matching the red-white-red horizontal flag.
+        HolidayDate.Fixed(Month.OCTOBER, 26) to HolidayTheme(
+            id = HolidayId.AUSTRIA_NATIONAL_DAY,
+            displayNameKey = "holiday_name_austria_national_day",
+            bannerTextKey = "holiday_banner_austria_national_day",
+            emoji = "🇦🇹", // 🇦🇹
+            topOverrides = topPaletteAll(AUSTRIA_RED),
+            bottomOverrides = bottomPaletteAll(AUSTRIA_RED),
+            topStrokeOverrides = topStrokeAll(AUSTRIA_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(AUSTRIA_WHITE),
+            bannerArgb = AUSTRIA_RED,
+            countries = setOf("AT"),
+        ),
+
         // Oct 31 — Halloween. Pumpkin-orange tops + black bottoms. Purple
         // was originally a third hue but dropped to keep the palette focused
         // on the two colours that read unambiguously as Halloween.
@@ -723,6 +905,21 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(HALLOWEEN_BLACK),
             bannerArgb = HALLOWEEN_ORANGE,
             countries = setOf(GLOBAL_COUNTRY),
+        ),
+
+        // Nov 1 — All Saints' Day. Catholic public holiday in AT, DE
+        // (some Länder), ES, FR, HR, IT. White top + charcoal bottom keeps
+        // the reverent-but-not-celebratory feel; same shape as the
+        // remembrance entries below without their stark monochrome.
+        HolidayDate.Fixed(Month.NOVEMBER, 1) to HolidayTheme(
+            id = HolidayId.ALL_SAINTS_DAY,
+            displayNameKey = "holiday_name_all_saints_day",
+            bannerTextKey = "holiday_banner_all_saints_day",
+            emoji = "🕯", // 🕯 — candle
+            topOverrides = topPaletteAll(SAINTS_WHITE),
+            bottomOverrides = bottomPaletteAll(SAINTS_CHARCOAL),
+            bannerArgb = SAINTS_CHARCOAL,
+            countries = setOf("AT", "DE", "ES", "FR", "HR", "IT"),
         ),
 
         // Nov 3 — Japan's Culture Day (文化の日). Japan flag colours:
@@ -795,6 +992,20 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(SCOTLAND_WHITE),
             bannerArgb = SCOTLAND_BLUE,
             countries = setOf("GB"),
+        ),
+
+        // Dec 8 — Immaculate Conception. Catholic high feast (AT, ES, IT).
+        // Marian palette shared with [ASSUMPTION] — white top + Marian
+        // blue bottom.
+        HolidayDate.Fixed(Month.DECEMBER, 8) to HolidayTheme(
+            id = HolidayId.IMMACULATE_CONCEPTION,
+            displayNameKey = "holiday_name_immaculate_conception",
+            bannerTextKey = "holiday_banner_immaculate_conception",
+            emoji = "🕊", // 🕊 — dove
+            topOverrides = topPaletteAll(MARIAN_WHITE),
+            bottomOverrides = bottomPaletteAll(MARIAN_BLUE),
+            bannerArgb = MARIAN_BLUE,
+            countries = setOf("AT", "ES", "IT"),
         ),
 
         // Dec 25 — Christmas Day. Pillarbox-red tops + holly-green bottoms.
@@ -960,3 +1171,37 @@ private const val SCOTLAND_WHITE = 0xFFF5F5F5L
 
 private const val XMAS_RED = 0xFFC62828L
 private const val XMAS_GREEN = 0xFF2E7D32L
+
+// Austrian flag — red-white-red horizontal tricolour. Red is the
+// official #ED2939 shade rather than reusing Croatia's slightly bluer
+// red so AT and HR themes remain visibly distinct.
+private const val AUSTRIA_RED = 0xFFED2939L
+private const val AUSTRIA_WHITE = 0xFFF5F5F5L
+
+// Union Jack tricolour — shared by the UK bank holidays and the
+// King's Birthday. Pantone-186 red + Pantone-280 blue (the flag's
+// official shades) with an off-white that matches the catalog's
+// other near-whites.
+private const val UK_RED = 0xFFC8102EL
+private const val UK_BLUE = 0xFF012169L
+private const val UK_WHITE = 0xFFF5F5F5L
+
+// Labour Day / International Workers' Day — universal labour-movement
+// red, with a workwear black for the bottom tier.
+private const val LABOUR_RED = 0xFFD32F2FL
+private const val LABOUR_BLACK = 0xFF212121L
+
+// Epiphany — Magi gold + royal-robe purple.
+private const val EPIPHANY_GOLD = 0xFFD4AF37L
+private const val EPIPHANY_PURPLE = 0xFF4A148CL
+
+// Marian palette — shared by Assumption and Immaculate Conception so
+// the Catholic-Marian feasts read as a continuous visual cluster.
+// White Marian tunic + Marian-blue mantle.
+private const val MARIAN_WHITE = 0xFFF5F5F5L
+private const val MARIAN_BLUE = 0xFF1976D2L
+
+// All Saints' Day — reverent without the stark monochrome of Anzac /
+// Memorial Day. White vestment top + charcoal bottom.
+private const val SAINTS_WHITE = 0xFFF5F5F5L
+private const val SAINTS_CHARCOAL = 0xFF424242L

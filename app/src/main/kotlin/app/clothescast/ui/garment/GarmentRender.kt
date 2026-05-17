@@ -8,9 +8,11 @@ import android.graphics.Typeface
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.text.TextUtils
+import androidx.core.graphics.PathParser as AndroidPathParser
 import app.clothescast.R
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
@@ -285,6 +287,8 @@ internal fun renderOutfitCard(
     prose: String,
     tempLine: String,
     rainLine: String?,
+    tempFillFraction: Float,
+    rainFillFraction: Float?,
     topColors: Map<OutfitSuggestion.Top, Long>,
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
 ): ByteArray {
@@ -340,9 +344,13 @@ internal fun renderOutfitCard(
     }
     val rainRowTop = CARD_H - INFO_BOTTOM_PAD - INFO_ICON_PX
     val tempRowTop = rainRowTop - INFO_ICON_PX - INFO_ROW_GAP_PX
-    drawInfoRow(canvas, context, R.drawable.ic_outfit_card_thermometer, tempLine, proseX, tempRowTop, infoPaint)
-    if (rainLine != null) {
-        drawInfoRow(canvas, context, R.drawable.ic_outfit_card_rain, rainLine, proseX, rainRowTop, infoPaint)
+    drawInfoRow(canvas, tempLine, proseX, tempRowTop, infoPaint) { c, ix, iy ->
+        drawThermometerIcon(c, ix, iy, INFO_ICON_PX, tempFillFraction)
+    }
+    if (rainLine != null && rainFillFraction != null) {
+        drawInfoRow(canvas, rainLine, proseX, rainRowTop, infoPaint) { c, ix, iy ->
+            drawRainDropletIcon(c, ix, iy, INFO_ICON_PX, rainFillFraction)
+        }
     }
 
     val out = ByteArrayOutputStream()
@@ -353,22 +361,132 @@ internal fun renderOutfitCard(
 
 private fun drawInfoRow(
     canvas: Canvas,
-    context: Context,
-    @DrawableRes iconRes: Int,
     text: String,
     x: Int,
     y: Int,
     paint: TextPaint,
+    drawIcon: (Canvas, Int, Int) -> Unit,
 ) {
-    val icon = ResourcesCompat.getDrawable(context.resources, iconRes, context.theme)
-        ?: return
-    val iconBmp = icon.toBitmap(width = INFO_ICON_PX, height = INFO_ICON_PX)
-    canvas.drawBitmap(iconBmp, x.toFloat(), y.toFloat(), null)
+    drawIcon(canvas, x, y)
     // Centre the text vertically against the icon.
     val textX = x + INFO_ICON_PX + INFO_ICON_GAP_PX
     val textCenterY = y + INFO_ICON_PX / 2f
     val textBaseline = textCenterY - (paint.fontMetrics.ascent + paint.fontMetrics.descent) / 2f
     canvas.drawText(text, textX.toFloat(), textBaseline, paint)
+}
+
+// Material thermostat / thermometer silhouette in a 24×24 viewport. Same
+// path data that previously lived in res/drawable/ic_outfit_card_thermometer.xml,
+// inlined here so the renderer can draw it procedurally with a partial fill.
+private const val THERMOMETER_PATH =
+    "M15,13V5c0,-1.66 -1.34,-3 -3,-3S9,3.34 9,5v8c-1.21,0.91 -2,2.37 -2,4 0,2.76 " +
+        "2.24,5 5,5s5,-2.24 5,-5c0,-1.63 -0.79,-3.09 -2,-4z"
+// y-extent of the slender stem in the 24-unit viewport. Top of the rounded
+// cap sits at y=2; the stem widens into the bulb at y≈13. Used as the
+// liquid-column travel: fillFraction=0 leaves only the bulb red; fillFraction=1
+// runs the column right up to the top of the stem.
+private const val THERMOMETER_STEM_TOP = 2f
+private const val THERMOMETER_STEM_BOTTOM = 13f
+
+// Material rain-droplet silhouette in a 24×24 viewport. Previously lived in
+// res/drawable/ic_outfit_card_rain.xml.
+private const val DROPLET_PATH =
+    "M12,3.77L11.25,4.61C11.25,4.61 9.97,6.06 8.68,7.94C7.39,9.82 6,12.07 6," +
+        "14.23A6,6 0 0,0 12,20.23A6,6 0 0,0 18,14.23C18,12.07 16.61,9.82 15.32," +
+        "7.94C14.03,6.06 12.75,4.61 12.75,4.61L12,3.77Z"
+private const val DROPLET_TOP = 3.77f
+private const val DROPLET_BOTTOM = 20.23f
+
+// Coloured icon palette for the outfit-card info rows. Outline reads as a
+// thin dark line against the white card; fill colours pop against it.
+private const val THERMOMETER_FILL_ARGB = 0xFFE53935.toInt()
+private const val DROPLET_FILL_ARGB = 0xFF1E88E5.toInt()
+private const val INFO_ICON_OUTLINE_ARGB = 0xFF333333.toInt()
+// Stroke width in 24-unit viewport coordinates; ≈2.25 px at INFO_ICON_PX=36.
+private const val INFO_ICON_STROKE_WIDTH = 1.5f
+
+/**
+ * Draws a coloured thermometer at ([x], [y]) sized [size]×[size]. The bulb
+ * is always red; the stem fills upward in proportion to [fillFraction]
+ * (clamped to 0..1). A thin dark outline traces the silhouette so the icon
+ * stays legible against the white card even when the column is empty.
+ */
+private fun drawThermometerIcon(canvas: Canvas, x: Int, y: Int, size: Int, fillFraction: Float) {
+    val fill = fillFraction.coerceIn(0f, 1f)
+    val liquidTopY = THERMOMETER_STEM_TOP +
+        (1f - fill) * (THERMOMETER_STEM_BOTTOM - THERMOMETER_STEM_TOP)
+    drawFillableInfoIcon(
+        canvas = canvas,
+        x = x,
+        y = y,
+        size = size,
+        pathData = THERMOMETER_PATH,
+        fillArgb = THERMOMETER_FILL_ARGB,
+        liquidTopY = liquidTopY,
+    )
+}
+
+/**
+ * Draws a coloured rain droplet at ([x], [y]) sized [size]×[size]. The
+ * droplet fills from the bottom upward in proportion to [fillFraction]
+ * (clamped to 0..1) — at the 30 % display threshold the droplet still
+ * carries a clear sliver of blue; at 100 % the whole droplet is filled.
+ */
+private fun drawRainDropletIcon(canvas: Canvas, x: Int, y: Int, size: Int, fillFraction: Float) {
+    val fill = fillFraction.coerceIn(0f, 1f)
+    val liquidTopY = DROPLET_TOP + (1f - fill) * (DROPLET_BOTTOM - DROPLET_TOP)
+    drawFillableInfoIcon(
+        canvas = canvas,
+        x = x,
+        y = y,
+        size = size,
+        pathData = DROPLET_PATH,
+        fillArgb = DROPLET_FILL_ARGB,
+        liquidTopY = liquidTopY,
+    )
+}
+
+/**
+ * Shared render path for the partial-fill info-row glyphs. Order:
+ * white interior → coloured fill clipped to `[liquidTopY, 24]` → dark
+ * outline on top. Doing the outline last keeps the silhouette crisp at
+ * every fill level — drawing it underneath would let the fill paint hide
+ * the inner edge.
+ */
+private fun drawFillableInfoIcon(
+    canvas: Canvas,
+    x: Int,
+    y: Int,
+    size: Int,
+    pathData: String,
+    fillArgb: Int,
+    liquidTopY: Float,
+) {
+    val path = AndroidPathParser.createPathFromPathData(pathData)
+    val scale = size.toFloat() / 24f
+    val whitePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        color = android.graphics.Color.WHITE
+    }
+    val colourPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        color = fillArgb
+    }
+    val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        color = INFO_ICON_OUTLINE_ARGB
+        strokeWidth = INFO_ICON_STROKE_WIDTH
+    }
+    canvas.save()
+    canvas.translate(x.toFloat(), y.toFloat())
+    canvas.scale(scale, scale)
+    canvas.drawPath(path, whitePaint)
+    canvas.save()
+    canvas.clipRect(0f, liquidTopY, 24f, 24f)
+    canvas.drawPath(path, colourPaint)
+    canvas.restore()
+    canvas.drawPath(path, strokePaint)
+    canvas.restore()
 }
 
 /**
@@ -379,7 +497,17 @@ private fun drawInfoRow(
  * null when the windowed peak rain probability is below
  * [RAIN_PEAK_THRESHOLD_PCT] — the renderer then hides that row entirely.
  */
-internal data class OutfitCardInfoLines(val tempLine: String, val rainLine: String?)
+internal data class OutfitCardInfoLines(
+    val tempLine: String,
+    val rainLine: String?,
+    // Day's high feels-like mapped over 0..40 °C, clamped — drives the
+    // thermometer's red liquid height. Calculation runs in °C regardless of
+    // the user's display unit (which only affects [tempLine]).
+    val tempFillFraction: Float,
+    // Peak precipitation probability / 100 — drives the droplet's blue fill.
+    // Null whenever [rainLine] is null (row hidden below the 30 % threshold).
+    val rainFillFraction: Float?,
+)
 
 internal fun outfitCardInfoLines(
     context: Context,
@@ -399,16 +527,57 @@ internal fun outfitCardInfoLines(
     } else {
         ""
     }
+    val tempFillFraction = highC?.let { thermometerFillFractionFor(it) } ?: 0f
     val peak = hourly.maxByOrNull { it.precipitationProbabilityPct }
-    val rainLine = peak?.let {
-        val pct = it.precipitationProbabilityPct.roundToInt()
-        if (pct < RAIN_PEAK_THRESHOLD_PCT) null
-        else formatter.formatPeakRain(pct, it.time)
+    val peakPct = peak?.precipitationProbabilityPct?.roundToInt()
+    val rainLine: String?
+    val rainFillFraction: Float?
+    if (peak != null && peakPct != null && peakPct >= RAIN_PEAK_THRESHOLD_PCT) {
+        rainLine = formatter.formatPeakRain(peakPct, peak.time)
+        rainFillFraction = (peakPct / 100f).coerceIn(0f, 1f)
+    } else {
+        rainLine = null
+        rainFillFraction = null
     }
-    return OutfitCardInfoLines(tempLine, rainLine)
+    return OutfitCardInfoLines(tempLine, rainLine, tempFillFraction, rainFillFraction)
 }
 
 private const val RAIN_PEAK_THRESHOLD_PCT = 30
+
+// Anchors for the saturated tails of the thermometer scale — below
+// [THERMOMETER_FREEZING_FLOOR_C] the column reads empty, above
+// [THERMOMETER_HOT_CAP_C] it reads full. The interior breakpoints come
+// from [TemperatureBand].
+private const val THERMOMETER_FREEZING_FLOOR_C = -10.0
+private const val THERMOMETER_HOT_CAP_C = 40.0
+
+/**
+ * Maps a feels-like temperature in °C to a 0..1 thermometer fill that
+ * lines up with the domain's [TemperatureBand] classification — the same
+ * bands the user sees in their clothing rules (FREEZING, COLD, COOL,
+ * MILD, WARM, HOT). Each band occupies one sixth of the column, so the
+ * "MILD" band (18–24 °C) reads as 50–67 % full, "WARM" as 67–83 %, and
+ * so on. Within a band the fill interpolates linearly, so a barely-HOT
+ * 28 °C reads lower than a 38 °C scorcher.
+ *
+ * Mirrors the breakpoints in [TemperatureBand.forCelsius] (4 / 12 / 18 /
+ * 24 / 28 °C). The outer anchors clamp anything below
+ * [THERMOMETER_FREEZING_FLOOR_C] or above [THERMOMETER_HOT_CAP_C].
+ */
+internal fun thermometerFillFractionFor(c: Double): Float {
+    val band = TemperatureBand.forCelsius(c)
+    val (lower, upper) = when (band) {
+        TemperatureBand.FREEZING -> THERMOMETER_FREEZING_FLOOR_C to 4.0
+        TemperatureBand.COLD -> 4.0 to 12.0
+        TemperatureBand.COOL -> 12.0 to 18.0
+        TemperatureBand.MILD -> 18.0 to 24.0
+        TemperatureBand.WARM -> 24.0 to 28.0
+        TemperatureBand.HOT -> 28.0 to THERMOMETER_HOT_CAP_C
+    }
+    val withinBand = ((c - lower) / (upper - lower)).coerceIn(0.0, 1.0)
+    val bandCount = TemperatureBand.values().size
+    return ((band.ordinal + withinBand) / bandCount).toFloat().coerceIn(0f, 1f)
+}
 
 // Card: 800×480 px (Nest Hub 7" display resolution).
 // Layout: icons fill the left column from the top; the header sits on

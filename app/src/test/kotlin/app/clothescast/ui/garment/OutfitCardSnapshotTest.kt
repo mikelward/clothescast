@@ -51,6 +51,10 @@ class OutfitCardSnapshotTest {
                     "Wear a t-shirt and shorts. Chance of rain at 3pm.",
                 tempLine = "22–30°C",
                 rainLine = "Peak 40% at 3pm",
+                // Warm day: high 30°C, HOT band → (5 + (30-28)/12) / 6 ≈ 0.86.
+                tempFillFraction = thermometerFillFractionFor(30.0),
+                // Peak 40% rain → droplet 40% full.
+                rainFillFraction = 0.40f,
                 topColors = emptyMap(),
                 bottomColors = emptyMap(),
             ),
@@ -69,6 +73,9 @@ class OutfitCardSnapshotTest {
                 tempLine = "11–18°C",
                 // Peak below threshold — rain row hidden.
                 rainLine = null,
+                // Cool evening: high 18°C, start of MILD band → exactly 0.5 fill.
+                tempFillFraction = thermometerFillFractionFor(18.0),
+                rainFillFraction = null,
                 topColors = emptyMap(),
                 bottomColors = emptyMap(),
             ),
@@ -87,6 +94,9 @@ class OutfitCardSnapshotTest {
                     "Wear a jacket and jeans.",
                 tempLine = "9–15°C",
                 rainLine = null,
+                // Cool day: high 15°C, midpoint of COOL band → 0.417 fill.
+                tempFillFraction = thermometerFillFractionFor(15.0),
+                rainFillFraction = null,
                 topColors = mapOf(OutfitSuggestion.Top.THIN_JACKET to 0xFFE53935L), // red jacket
                 bottomColors = mapOf(OutfitSuggestion.Bottom.JEANS to 0xFF1A237EL),  // navy jeans
             ),

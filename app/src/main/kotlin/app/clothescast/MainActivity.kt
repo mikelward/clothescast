@@ -374,6 +374,8 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                                     prose = prose,
                                     tempLine = info.tempLine,
                                     rainLine = info.rainLine,
+                                    tempFillFraction = info.tempFillFraction,
+                                    rainFillFraction = info.rainFillFraction,
                                     topColors = prefs.outfitTopColors,
                                     bottomColors = prefs.outfitBottomColors,
                                 )

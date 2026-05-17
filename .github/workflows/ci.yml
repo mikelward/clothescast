@@ -44,7 +44,10 @@ on:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Cancel in-progress runs on PR branches (fast-iteration pushes) but let
+  # main runs finish — the AAB build + Play upload only happen on main and
+  # a second push would otherwise cancel the release before the AAB is signed.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   unit-tests:

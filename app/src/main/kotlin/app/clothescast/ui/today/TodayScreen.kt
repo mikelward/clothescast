@@ -84,6 +84,7 @@ import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.GarmentReason
 import app.clothescast.core.domain.model.HolidayTheme
+import app.clothescast.core.domain.model.bannerTextKeyFor
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitRationale
@@ -102,6 +103,7 @@ import app.clothescast.core.domain.model.toUnit
 import app.clothescast.core.domain.model.toWindSpeedUnit
 import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.ClothesCastApplication
+import app.clothescast.tts.toJavaLocale
 import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.garment.GarmentBottomIcon
 import app.clothescast.ui.garment.GarmentTopIcon
@@ -356,7 +358,7 @@ private fun TodayContent(
         // to the outfit row whose palette it explains. Hidden on days with
         // no enabled holiday match — `HolidayBanner` early-returns on null
         // so the stack contributes zero vertical space in the steady state.
-        HolidayBanner(theme = state.activeHoliday, modifier = bannerModifier)
+        HolidayBanner(theme = state.activeHoliday, region = state.region, modifier = bannerModifier)
         if (state.thisPeriodInsight == null) {
             Column(
                 modifier = Modifier
@@ -755,6 +757,11 @@ internal fun bannerStatus(
  * readable on both light (Christmas red) and dark (Anzac khaki) palettes
  * without keeping a parallel light/dark table for every holiday.
  *
+ * [region] is consulted only when the active theme defines a per-country
+ * banner-text override (currently just Remembrance Day → Veterans Day for the
+ * US). Region.SYSTEM falls through to the device's default locale, so the
+ * Veterans Day label still surfaces for an SYSTEM-region user on a US phone.
+ *
  * The composable early-returns when [theme] is null so the banner stack's
  * "hidden banners take zero vertical space" invariant still holds on
  * non-holiday days.
@@ -762,13 +769,18 @@ internal fun bannerStatus(
 @Composable
 internal fun HolidayBanner(
     theme: HolidayTheme?,
+    region: Region = Region.SYSTEM,
     modifier: Modifier = Modifier,
 ) {
     if (theme == null) return
     val context = LocalContext.current
-    val bannerText = remember(theme.bannerTextKey) {
+    val effectiveCountry = remember(region) {
+        (region.toJavaLocale() ?: Locale.getDefault()).country
+    }
+    val bannerKey = theme.bannerTextKeyFor(effectiveCountry)
+    val bannerText = remember(bannerKey) {
         val resId = context.resources.getIdentifier(
-            theme.bannerTextKey, "string", context.packageName,
+            bannerKey, "string", context.packageName,
         )
         if (resId == 0) theme.id.name else context.getString(resId)
     }

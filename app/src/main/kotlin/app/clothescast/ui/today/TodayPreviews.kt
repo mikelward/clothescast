@@ -713,12 +713,16 @@ internal fun ConfidenceMediumNoDetailPreview() {
 // — we override only the primary outfit's tiers so the diff focuses on
 // what the banner actually highlights.
 @Composable
-private fun HolidayShowcase(holidayId: HolidayId, darkTheme: Boolean = false) {
+private fun HolidayShowcase(
+    holidayId: HolidayId,
+    darkTheme: Boolean = false,
+    region: Region = Region.SYSTEM,
+) {
     val theme = HolidayCatalog.themeFor(holidayId)
         ?: error("HolidayCatalog has no entry for $holidayId")
     Frame(darkTheme = darkTheme) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            HolidayBanner(theme = theme, modifier = Modifier.fillMaxWidth())
+            HolidayBanner(theme = theme, region = region, modifier = Modifier.fillMaxWidth())
             OutfitPreviewRow(
                 SAMPLE_INSIGHT.copy(
                     period = ForecastPeriod.TODAY,
@@ -768,9 +772,17 @@ internal fun HolidayStGeorgesDayPreview() = HolidayShowcase(HolidayId.ST_GEORGES
 @Composable
 internal fun HolidayAnzacDayPreview() = HolidayShowcase(HolidayId.ANZAC_DAY)
 
+@Preview(name = "Holiday · Mother's Day", widthDp = 360)
+@Composable
+internal fun HolidayMothersDayPreview() = HolidayShowcase(HolidayId.MOTHERS_DAY)
+
 @Preview(name = "Holiday · Italian Republic Day", widthDp = 360)
 @Composable
 internal fun HolidayItalyRepublicDayPreview() = HolidayShowcase(HolidayId.ITALY_REPUBLIC_DAY)
+
+@Preview(name = "Holiday · Father's Day (Jun)", widthDp = 360)
+@Composable
+internal fun HolidayFathersDayJunPreview() = HolidayShowcase(HolidayId.FATHERS_DAY_JUN)
 
 @Preview(name = "Holiday · Canada Day", widthDp = 360)
 @Composable
@@ -783,6 +795,10 @@ internal fun HolidayUsIndependenceDayPreview() = HolidayShowcase(HolidayId.US_IN
 @Preview(name = "Holiday · Bastille Day", widthDp = 360)
 @Composable
 internal fun HolidayBastilleDayPreview() = HolidayShowcase(HolidayId.BASTILLE_DAY)
+
+@Preview(name = "Holiday · Father's Day (Sep)", widthDp = 360)
+@Composable
+internal fun HolidayFathersDaySepPreview() = HolidayShowcase(HolidayId.FATHERS_DAY_SEP)
 
 @Preview(name = "Holiday · Brazil Independence", widthDp = 360)
 @Composable
@@ -803,6 +819,18 @@ internal fun HolidayHalloweenPreview() = HolidayShowcase(HolidayId.HALLOWEEN)
 @Preview(name = "Holiday · Bonfire Night", widthDp = 360)
 @Composable
 internal fun HolidayBonfireNightPreview() = HolidayShowcase(HolidayId.BONFIRE_NIGHT)
+
+@Preview(name = "Holiday · Remembrance Day", widthDp = 360)
+@Composable
+internal fun HolidayRemembranceDayPreview() = HolidayShowcase(HolidayId.REMEMBRANCE_DAY)
+
+// US variant of Nov 11 — same monochrome khaki palette, different banner
+// copy ("Honoring our Veterans" vs "Lest we forget"). Wired by passing
+// Region.EN_US into the showcase helper, which forwards it to HolidayBanner.
+@Preview(name = "Holiday · Veterans Day (US)", widthDp = 360)
+@Composable
+internal fun HolidayRemembranceDayUsPreview() =
+    HolidayShowcase(HolidayId.REMEMBRANCE_DAY, region = Region.EN_US)
 
 @Preview(name = "Holiday · US Thanksgiving", widthDp = 360)
 @Composable

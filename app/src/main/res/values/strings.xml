@@ -1099,6 +1099,10 @@
     <string name="holiday_name_st_davids_day">St David\'s Day</string>
     <string name="holiday_name_korean_independence_movement_day">Korean Independence Movement Day</string>
     <string name="holiday_name_st_patricks_day">St Patrick\'s Day</string>
+    <string name="holiday_name_uk_mothering_sunday">Mothering Sunday</string>
+    <string name="holiday_name_good_friday">Good Friday</string>
+    <string name="holiday_name_easter_sunday">Easter Sunday</string>
+    <string name="holiday_name_easter_monday">Easter Monday</string>
     <string name="holiday_name_st_georges_day">St George\'s Day</string>
     <string name="holiday_name_anzac_day">Anzac Day</string>
     <string name="holiday_name_labour_day">Labour Day</string>
@@ -1158,6 +1162,10 @@
     <string name="holiday_banner_st_davids_day">Dydd Gŵyl Dewi Hapus</string>
     <string name="holiday_banner_korean_independence_movement_day">삼일절</string>
     <string name="holiday_banner_st_patricks_day">Happy St Patrick\'s Day</string>
+    <string name="holiday_banner_uk_mothering_sunday">Happy Mothering Sunday</string>
+    <string name="holiday_banner_good_friday">Good Friday</string>
+    <string name="holiday_banner_easter_sunday">Happy Easter</string>
+    <string name="holiday_banner_easter_monday">Happy Easter Monday</string>
     <string name="holiday_banner_st_georges_day">Happy St George\'s Day</string>
     <string name="holiday_banner_anzac_day">Lest we forget</string>
     <string name="holiday_banner_labour_day">Happy Labour Day</string>

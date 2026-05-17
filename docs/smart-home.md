@@ -207,7 +207,10 @@ The access token is long-lived and stable across refreshes — unlike the
 `entity_picture` session token it does not rotate on each payload
 change, so you only need to paste it once. You can combine this action
 with Option A/B/C below in a single automation so the Hub shows the
-picture *and* speaks the forecast at the same moment.
+picture *and* speaks the forecast — either at the same moment, or
+serially (speak first, then show the picture). See "Chaining the
+spoken forecast and the outfit image" further down for the YAML
+shape.
 
 > **Note on external URLs.** If your Nest Hub cannot reach your HA
 > instance's local IP directly, use HA's external URL
@@ -242,9 +245,9 @@ The simplest way to make the Hub actually speak is still options A /
 B / C below: trigger an automation on the prose sensor's update and
 let HA's TTS service synthesise — that path is already paved end to
 end. The audio topic is here for setups that already prefer a fixed
-voice clip over re-synthesising in HA (e.g. mass.announce → media URL
-flows), and for users who want to capture the rendered briefing for
-their own pipelines.
+voice clip over re-synthesising in HA (e.g. `music_assistant.play_announcement`
+→ media URL flows), and for users who want to capture the rendered
+briefing for their own pipelines.
 
 ## Home Assistant — speaking the sensor on Google Home
 
@@ -253,7 +256,7 @@ arbitrary text on demand is genuinely fiddly — Google has been actively
 churning the Cast pipeline and several "obvious" paths are flaky on
 Nest Minis specifically. Three options below; quick comparison first.
 
-| | **A. notify.google_assistant_sdk** | **B. mass.announce** (Music Assistant) | **C. tts.cloud_say / tts.google_translate_say** |
+| | **A. notify.google_assistant_sdk** | **B. `tts.speak` → MA `media_player`** | **C. tts.cloud_say / tts.google_translate_say** |
 |---|---|---|---|
 | Setup cost | Google Cloud project + OAuth in HA | One add-on install | Nabu Casa sub (`cloud_say`) or none (`google_translate_say`) |
 | Preamble before the text | **Yes** — Google's broadcast service prepends "There's a message, it says…" / "Here's a message for X: …" with no flag to suppress | **No** | No |
@@ -288,7 +291,8 @@ If you maintain `configuration.yaml` by hand, wrap each example in
 Uses Google's *own* broadcast pipeline — the same backend as a spoken
 "Hey Google, broadcast …" — rather than pushing audio over Cast.
 Because it sidesteps Cast TTS entirely, it tends to work where
-`tts.cloud_say` and Music Assistant `mass.announce` currently fail.
+`tts.cloud_say` and the Music Assistant TTS-via-announce path
+currently fail.
 
 Setup needs a Google Cloud project with OAuth credentials added to
 Home Assistant (one-time setup, documented in the
@@ -344,18 +348,28 @@ actions:
    / number formatting and want to keep it, use Option B below; it
    routes via `media_player.*` entities and is locale-independent.
 
-### Option B (preamble-free, locale-independent): Music Assistant `mass.announce`
+### Option B (preamble-free, locale-independent): HA `tts.speak` → Music Assistant `media_player`
 
-Drives speakers via their HA `media_player.*` entities directly,
-bypassing Google's broadcast pipeline — so no "There's a message, it
-says…" preamble, and targeting works regardless of HA's language.
-Music Assistant additionally wraps Cast TTS with state-restoration
-(resumes whatever was playing on the speaker before the announcement).
+Plays HA TTS through a Music Assistant-owned `media_player.*` entity.
+MA exposes the player's `MEDIA_ANNOUNCE` capability, so HA's `tts.speak`
+routes through MA's announcement queue automatically — you get state
+restoration (whatever was playing before the announcement resumes
+after) without naming an MA-specific service. No "There's a message,
+it says…" preamble; targeting is by HA entity ID so it's
+locale-independent.
 
-The price of admission is one add-on install: **Settings → Add-ons →
-Add-on Store → Music Assistant → Install → Start**. Once running, it
-auto-discovers your Cast devices and exposes them as
-`media_player.*` entities. Then:
+The price of admission is the **Music Assistant Server** add-on
+(Settings → Add-ons → Add-on Store → Music Assistant → Install →
+Start) plus the **Music Assistant** core HA integration
+(Settings → Devices & Services → Add Integration → Music Assistant —
+auto-detects a Server running on the same HA instance). Once both are
+up, MA auto-discovers your Cast devices and exposes them as
+`media_player.*` entities. You'll also need at least one TTS engine
+configured — `tts.home_assistant_cloud` if you have Nabu Casa,
+otherwise the free Google Translate integration (Settings →
+Devices & Services → Add Integration → Google Translate text-to-speech).
+It generates a per-language `tts.*` entity (e.g. `tts.google_en_com`),
+which is what you'll target in the example below.
 
 ```yaml
 alias: Speak forecast when wardrobe opens
@@ -370,20 +384,40 @@ triggers:
 conditions: []
 
 actions:
-  - action: mass.announce
+  - action: tts.speak
+    target:
+      entity_id: tts.home_assistant_cloud
     data:
+      media_player_entity_id: media_player.master_bathroom_display
       message: "{{ states('sensor.clothescast_today') }}"
-      target_player: media_player.master_bathroom_display
 ```
 
-See the
-[Music Assistant announcement docs](https://www.music-assistant.io/integration/announcements/)
-for the full surface (volume override, "use pre-announce chime",
-multiple targets, etc.). Still rides the Cast pipe under the hood, so
-subject to the early-2026 "Nest Mini intermittently silent" reports —
-but Music Assistant's player-state handling masks a lot of the
-flakiness, and Nest Hubs (with displays) generally behave better on
-the Cast path than the smaller Minis do.
+`tts.home_assistant_cloud` is the canonical entity for Nabu Casa
+TTS. If you're using a different TTS engine, replace the
+`target.entity_id` with whatever `tts.*` entity HA created for it —
+the Google Translate integration, for instance, generates a
+per-language entity like `tts.google_en_com`, not a bare
+`tts.google_translate`; find the actual ID in Developer Tools →
+States → search `tts.`.
+
+The `media_player_entity_id` here is the **MA-owned** entity for that
+speaker (it appears under HA's Music Assistant integration after
+discovery completes). Pointing at it is what triggers MA's
+announcement-queue / state-restoration behaviour; pointing the same
+field at the raw Cast `media_player.*` entity instead works too,
+that's Option C below, but skips the state-restoration wrapper.
+
+> **Note on legacy `mass.announce`.** Older guides (including earlier
+> revisions of this one) use `mass.announce` with `message:` +
+> `target_player:`. That was the HACS-era custom integration's
+> service and is no longer available in the Music Assistant core
+> integration as of 2025 — swap in the `tts.speak` shape above.
+
+Still rides the Cast pipe under the hood, so subject to the early-2026
+"Nest Mini intermittently silent" reports — but Music Assistant's
+player-state handling masks a lot of the flakiness, and Nest Hubs
+(with displays) generally behave better on the Cast path than the
+smaller Minis do.
 
 ### Option C: `tts.cloud_say` → `media_player.*` Cast
 
@@ -413,6 +447,136 @@ actions:
 
 (`tts.google_translate_say` is the free alternative if you don't have
 Nabu Casa — same shape, robot-Google-Translate voice.)
+
+## Home Assistant — chaining the spoken forecast and the outfit image
+
+Two automations side by side work fine, but a single automation is
+easier to keep in sync (one trigger time, one entity to retarget when
+you move the Hub). Two patterns, depending on whether you want them
+at the same moment or one after the other.
+
+Both examples below use the Option A (`notify.google_assistant_sdk`)
+shape, since that's the path verified end-to-end on this project's
+own setup. The picker below the serial example covers what to swap
+in if you're on Option B or C instead. Each TTS service expects a
+different `data:` shape — `target:` for Option A,
+`media_player_entity_id:` for B, `entity_id:` for C — so don't
+hot-swap the service inside an example; copy the YAML for the
+service you're actually using from the option section above and
+slot it into the chaining shape.
+
+**Parallel — speak and show together.** Drop both actions in the same
+`actions:` list with no wait between them. Cast pipes the TTS to the
+speaker channel and `play_media` to the display channel; on a Nest
+Hub they don't collide:
+
+```yaml
+alias: ClothesCast on kitchen Hub at 07:01 (parallel)
+mode: single
+
+triggers:
+  - trigger: time
+    at: "07:01:00"
+
+actions:
+  - action: notify.google_assistant_sdk
+    data:
+      message: "{{ states('sensor.clothescast_today') }}"
+      target:
+        - Kitchen
+  - action: media_player.play_media
+    target:
+      entity_id: media_player.kitchen_hub
+    data:
+      media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
+      media_content_type: image/jpeg
+```
+
+**Serial — speak first, then show.** Cast's `media_player.play_media`
+with `image/jpeg` interrupts whatever's currently rendering, including
+in-flight TTS, so for the serial pattern you wait for the speech to
+finish before pushing the picture. A fixed `delay:` sized to your
+longest spoken briefing is the simplest reliable wait, and works
+regardless of which TTS service you've picked — see the picker
+under the example for the small B/C swap-in note (and why a
+state-based wait isn't recommended even when the player exposes
+state).
+
+```yaml
+alias: ClothesCast on kitchen Hub at 07:01 (serial)
+mode: single
+
+triggers:
+  - trigger: time
+    at: "07:01:00"
+
+actions:
+  # 1. Speak the forecast.
+  - action: notify.google_assistant_sdk
+    data:
+      message: "{{ states('sensor.clothescast_today') }}"
+      target:
+        - Kitchen
+
+  # 2. Wait for the spoken clip to finish before swapping the display.
+  #    Pad a few seconds past your longest briefing — the SDK includes
+  #    a "There's a message…" preamble, so allow for that too.
+  - delay: "00:00:18"
+
+  # 3. Push the outfit picture.
+  - action: media_player.play_media
+    target:
+      entity_id: media_player.kitchen_hub
+    data:
+      media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
+      media_content_type: image/jpeg
+```
+
+**Picker — swapping in Option B or C.** Replace the step-1 action
+with the Option B or Option C YAML from those sections. The fixed
+`delay:` in step 2 stays as-is — it works for any TTS service that
+takes roughly a known time to speak.
+
+> **Edge case — speaker was already playing music (Option B
+> specifically).** Music Assistant restores the prior playback
+> *after* the announcement finishes, so if the Hub was playing
+> music when the automation fired, the image step at the end of
+> the serial recipe will fire while MA is back to playing music
+> and interrupt it. This applies regardless of wait mechanism
+> (fixed `delay:` or state-based) because the restored playback
+> happens before the delay even runs out. If your setup can have
+> the Hub playing music at trigger time, gate the automation with
+> `condition: state … idle` on the player up front, or pause the
+> player before step 1.
+
+If you're tempted to swap the `delay:` for a state-based wait on
+`media_player.*` instead, don't, at least not without testing it
+end-to-end on your specific setup. Options B and C *do* expose
+`playing` → `idle` transitions on the player, but the obvious
+two-stage `wait_template` (wait for non-idle, then wait for idle)
+has two failure modes specific to the state-based approach:
+>
+> 1. **Slow TTS start.** If the TTS service takes more than the
+>    initial wait's timeout to actually start playing, the first
+>    `wait_template` times out with `continue_on_timeout: true`, the
+>    second one then sees `idle` (because TTS hasn't started yet) and
+>    trips immediately, and the image fires just as the spoken clip
+>    finally arrives. You'd need a `wait.completed` check to abort
+>    cleanly when the start wait times out.
+> 2. **Variable briefing length saves at most a few seconds.** A
+>    fixed `delay:` is conservative by design; the state-based wait
+>    only saves you the slack you padded into the delay. Rarely
+>    worth the complexity for a once-a-day automation.
+
+(The "already playing" edge case above isn't on this list because
+it's not specific to wait_template — it's an MA-restoration
+property that applies to any wait shape.)
+
+> **What's verified.** The Option A (`notify.google_assistant_sdk`)
+> path above is the one this project's author runs day-to-day. The
+> Option B and C variants follow current HA service shapes but
+> haven't been tested end-to-end on this setup — if you wire one up
+> and find a wrinkle, a PR-fix is welcome.
 
 ## Troubleshooting
 

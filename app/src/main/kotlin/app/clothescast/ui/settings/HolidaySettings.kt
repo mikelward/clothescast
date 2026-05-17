@@ -48,20 +48,20 @@ import java.util.Locale
 
 /**
  * A top-of-page card with the country-source toggles (Home / Current
- * location / All), followed by one collapsible per country listing that
- * country's holidays (plus the universal globals — Christmas, NYE,
- * Halloween, Valentine's — which apply everywhere) and finally an "All"
- * collapsible showing every holiday in the catalogue flat for power-user
- * search.
+ * location / Global / All), followed by a Global collapsible listing
+ * the four universal holidays (Christmas, NYE, Halloween, Valentine's),
+ * then one collapsible per ISO country listing that country's
+ * holidays, and finally an "All" collapsible showing every holiday in
+ * the catalogue flat for power-user search.
  *
- * Both country headers and individual holiday rows carry a tri-state
+ * Both section headers and individual holiday rows carry a tri-state
  * dropdown (`Auto` / `On` / `Off`). The `Auto` label includes the
  * current resolution ("Auto (on)" / "Auto (off)") so the user can see
  * what the country picker (or the country override) is doing without
  * flipping it in their head.
  *
- * Country headers also show an `(n/m)` summary — holidays currently
- * active / total for that country (including globals).
+ * Section headers also show an `(n/m)` summary — holidays currently
+ * active / total for that bucket.
  *
  * Resource IDs are looked up via [LocalContext]'s `getIdentifier` so the
  * theme catalogue can live in `:core:domain` without depending on `R`.
@@ -77,6 +77,7 @@ internal fun HolidaysContent(
     padding: PaddingValues,
     onSetCountryHome: (Boolean) -> Unit,
     onSetCountryCurrent: (Boolean) -> Unit,
+    onSetCountryGlobal: (Boolean) -> Unit,
     onSetCountryAll: (Boolean) -> Unit,
     onSetCountryOverride: (String, HolidayOverride) -> Unit,
     onSetHolidayOverride: (HolidayId, HolidayOverride) -> Unit,
@@ -87,10 +88,8 @@ internal fun HolidaysContent(
         context.resources.configuration.locales.get(0) ?: Locale.getDefault()
     }
 
-    // Holidays grouped by their owning country. Globals (countries =
-    // {GLOBAL_COUNTRY}) are duplicated into every ISO country's bucket so
-    // expanding a country shows both its country-specific holidays and the
-    // four universal ones.
+    // Globals (countries = {GLOBAL_COUNTRY}) live in their own collapsible
+    // above the ISO list, no longer folded into every country's bucket.
     val globalThemes = remember {
         HolidayCatalog.all
             .map { it.second }
@@ -101,12 +100,11 @@ internal fun HolidaysContent(
             .filter { it != HolidayCatalog.GLOBAL_COUNTRY }
             .sortedForDisplay(context, uiLocale)
     }
-    val themesByCountry = remember(globalThemes) {
+    val themesByCountry = remember {
         isoCountries.associateWith { code ->
-            val countrySpecific = HolidayCatalog.all
+            HolidayCatalog.all
                 .map { it.second }
                 .filter { code in it.countries }
-            (countrySpecific + globalThemes).distinctBy { it.id }
         }
     }
     val allThemes = remember {
@@ -151,9 +149,49 @@ internal fun HolidaysContent(
                         onCheckedChange = onSetCountryCurrent,
                     )
                     CheckboxRow(
+                        label = stringResource(R.string.settings_holiday_country_global_label),
+                        checked = holidayCountrySelection.global,
+                        enabled = !holidayCountrySelection.all,
+                        onCheckedChange = onSetCountryGlobal,
+                    )
+                    CheckboxRow(
                         label = stringResource(R.string.settings_holiday_country_all_label),
                         checked = holidayCountrySelection.all,
                         onCheckedChange = onSetCountryAll,
+                    )
+                }
+            }
+
+            val globalActiveCount = globalThemes.count { theme ->
+                theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries)
+            }
+            val globalOverride = holidayCountrySelection.countryOverrides[HolidayCatalog.GLOBAL_COUNTRY]
+                ?: HolidayOverride.AUTO
+            val globalAutoOn = holidayCountrySelection.countryAutoEffective(
+                HolidayCatalog.GLOBAL_COUNTRY,
+                localeCountry,
+                weatherLocationCountry,
+            )
+            CollapsibleSection(
+                title = stringResource(R.string.settings_holiday_country_global_label),
+                summary = "$globalActiveCount/${globalThemes.size}",
+                rememberKey = "holidays-country-${HolidayCatalog.GLOBAL_COUNTRY}",
+                trailing = {
+                    OverrideDropdown(
+                        current = globalOverride,
+                        autoOn = globalAutoOn,
+                        onChange = { newState ->
+                            onSetCountryOverride(HolidayCatalog.GLOBAL_COUNTRY, newState)
+                        },
+                    )
+                },
+            ) {
+                globalThemes.forEach { theme ->
+                    HolidayOverrideRow(
+                        theme = theme,
+                        override = holidayOverrides[theme.id] ?: HolidayOverride.AUTO,
+                        autoOn = theme.countries.any { it in effectiveEnabledHolidayCountries },
+                        onChange = { newState -> onSetHolidayOverride(theme.id, newState) },
                     )
                 }
             }

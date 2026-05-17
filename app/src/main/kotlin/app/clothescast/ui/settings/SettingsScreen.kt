@@ -214,6 +214,7 @@ fun SettingsScreen(
                 padding = padding,
                 onSetCountryHome = viewModel::setHolidayCountryHome,
                 onSetCountryCurrent = viewModel::setHolidayCountryCurrent,
+                onSetCountryGlobal = viewModel::setHolidayCountryGlobal,
                 onSetCountryAll = viewModel::setHolidayCountryAll,
                 onSetCountryOverride = viewModel::setHolidayCountryOverride,
                 onSetHolidayOverride = viewModel::setHolidayOverride,

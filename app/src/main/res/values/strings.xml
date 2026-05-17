@@ -1037,18 +1037,23 @@
 
     <!-- Country picker for the holiday filter. Settings → Holidays has a
          top-of-page card with the country-source toggles (Home / Current
-         / All), then one collapsible per country listing that country's
-         holidays plus the four universal globals (Christmas, NYE,
-         Halloween, Valentine's). An "All" section at the bottom shows
-         every holiday flat for power-user search. Section headers carry
-         a "(n/m)" summary so the user can see active vs total at a
-         glance without expanding. -->
+         / Global / All), then a Global collapsible listing the four
+         universal holidays (Christmas, NYE, Valentine's, Halloween),
+         then one collapsible per ISO country listing that country's
+         holidays. An "All" section at the bottom shows every holiday
+         flat for power-user search. Section headers carry a "(n/m)"
+         summary so the user can see active vs total at a glance without
+         expanding. -->
     <!-- "%1$s" is the resolved locale country / weather-location country
          name, or the "Unknown" fallback when the country is not
          available. -->
     <string name="settings_holiday_country_home">Home (%1$s)</string>
     <string name="settings_holiday_country_current">Current location (%1$s)</string>
     <string name="settings_holiday_country_unknown">Unknown</string>
+    <!-- Doubles as both the top-card checkbox label and the collapsible
+         header title for the Global bucket (Christmas, NYE, Valentine's,
+         Halloween) — same name everywhere keeps the two surfaces in sync. -->
+    <string name="settings_holiday_country_global_label">Global</string>
     <string name="settings_holiday_country_all_label">All</string>
     <string name="settings_holiday_all_section_title">All</string>
     <string name="settings_holidays_expand">Expand</string>
@@ -1065,9 +1070,8 @@
     <string name="settings_holiday_override_off">Off</string>
 
     <!-- Country display names for the Settings → Holidays picker.
-         Universal holidays (Christmas, NYE, Valentine's, Halloween) are
-         folded into every country's list instead of getting their own
-         section. -->
+         Universal holidays (Christmas, NYE, Valentine's, Halloween) have
+         their own Global section above the ISO list. -->
     <string name="settings_holiday_country_au">Australia</string>
     <string name="settings_holiday_country_br">Brazil</string>
     <string name="settings_holiday_country_ca">Canada</string>

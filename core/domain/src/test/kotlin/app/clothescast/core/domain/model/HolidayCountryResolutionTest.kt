@@ -81,8 +81,17 @@ class HolidayCountryResolutionTest {
     }
 
     @Test
-    fun `null or blank locale and weather country with no overrides returns empty set`() {
+    fun `null or blank locale and weather country still keeps GLOBAL_COUNTRY by default`() {
         HolidayCountrySelection().resolveEnabledCountries(
+            localeCountry = null,
+            weatherLocationCountry = "   ",
+            allCountries = allCountries,
+        ).shouldContainExactlyInAnyOrder(HolidayCatalog.GLOBAL_COUNTRY)
+    }
+
+    @Test
+    fun `null locale and weather with global=false returns empty set`() {
+        HolidayCountrySelection(global = false).resolveEnabledCountries(
             localeCountry = null,
             weatherLocationCountry = "   ",
             allCountries = allCountries,
@@ -100,7 +109,7 @@ class HolidayCountryResolutionTest {
 
     @Test
     fun `everything off returns empty set`() {
-        HolidayCountrySelection(home = false, current = false, all = false)
+        HolidayCountrySelection(home = false, current = false, global = false, all = false)
             .resolveEnabledCountries(
                 localeCountry = "AU",
                 weatherLocationCountry = "GB",
@@ -109,16 +118,74 @@ class HolidayCountryResolutionTest {
     }
 
     @Test
-    fun `per-country ON override alone enables Global without home or current`() {
+    fun `per-country ON override enables a country without home or current`() {
         HolidayCountrySelection(
             home = false,
             current = false,
+            global = false,
             countryOverrides = mapOf("FR" to HolidayOverride.ON),
         ).resolveEnabledCountries(
             localeCountry = "AU",
             weatherLocationCountry = "GB",
             allCountries = allCountries,
-        ).shouldContainExactlyInAnyOrder("FR", HolidayCatalog.GLOBAL_COUNTRY)
+        ).shouldContainExactlyInAnyOrder("FR")
+    }
+
+    @Test
+    fun `global=false drops GLOBAL_COUNTRY even with home and current on`() {
+        HolidayCountrySelection(global = false).resolveEnabledCountries(
+            localeCountry = "AU",
+            weatherLocationCountry = "GB",
+            allCountries = allCountries,
+        ).shouldContainExactlyInAnyOrder("AU", "GB")
+    }
+
+    @Test
+    fun `global=true alone keeps GLOBAL_COUNTRY when home and current are off`() {
+        HolidayCountrySelection(home = false, current = false).resolveEnabledCountries(
+            localeCountry = "AU",
+            weatherLocationCountry = "GB",
+            allCountries = allCountries,
+        ).shouldContainExactlyInAnyOrder(HolidayCatalog.GLOBAL_COUNTRY)
+    }
+
+    @Test
+    fun `per-country OFF on GLOBAL wins over global=true`() {
+        HolidayCountrySelection(
+            countryOverrides = mapOf(HolidayCatalog.GLOBAL_COUNTRY to HolidayOverride.OFF),
+        ).resolveEnabledCountries(
+            localeCountry = "AU",
+            weatherLocationCountry = "GB",
+            allCountries = allCountries,
+        ).shouldContainExactlyInAnyOrder("AU", "GB")
+    }
+
+    @Test
+    fun `per-country ON on GLOBAL wins over global=false`() {
+        HolidayCountrySelection(
+            home = false,
+            current = false,
+            global = false,
+            countryOverrides = mapOf(HolidayCatalog.GLOBAL_COUNTRY to HolidayOverride.ON),
+        ).resolveEnabledCountries(
+            localeCountry = "AU",
+            weatherLocationCountry = "GB",
+            allCountries = allCountries,
+        ).shouldContainExactlyInAnyOrder(HolidayCatalog.GLOBAL_COUNTRY)
+    }
+
+    @Test
+    fun `all=true short-circuits global=false to include GLOBAL_COUNTRY`() {
+        HolidayCountrySelection(
+            home = false,
+            current = false,
+            global = false,
+            all = true,
+        ).resolveEnabledCountries(
+            localeCountry = null,
+            weatherLocationCountry = null,
+            allCountries = allCountries,
+        ).shouldContainExactlyInAnyOrder("AU", "GB", "US", "FR", "DE", HolidayCatalog.GLOBAL_COUNTRY)
     }
 
     @Test

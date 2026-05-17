@@ -147,16 +147,32 @@ class FetchAndNotifyWorker(
             ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() }
             ?: ForecastPeriod.TODAY
 
+        // Honour force-refresh only when it's still the day the user tapped on. If
+        // the request was enqueued near midnight and only ran after the date rolled
+        // over (offline retries, deferred backoff), the *new* day's cache should
+        // win — otherwise we'd silently bypass it and burn an extra Gemini call on
+        // a stale tap. The tonight gate below also keys off this same-day check so
+        // a stale tap from yesterday can't bypass a tonight-disabled toggle either.
+        val today = LocalDate.now()
+        val requestedEpochDay = inputData.getLong(KEY_REQUESTED_EPOCH_DAY, Long.MIN_VALUE)
+        val isUserForcedRefresh = inputData.getBoolean(KEY_FORCE_REFRESH, false)
+        val forceRefresh = isUserForcedRefresh && requestedEpochDay == today.toEpochDay()
+        if (isUserForcedRefresh && !forceRefresh) {
+            DiagLog.i(TAG, "Ignoring force refresh from a previous day (requested=$requestedEpochDay, today=${today.toEpochDay()}).")
+        }
+
         // The tonight alarm rearms blindly via AlarmReceiver; the user's enable
         // toggle is honoured here so a stale alarm doesn't ship a tonight insight
-        // after the user disabled the feature.
-        if (period == ForecastPeriod.TONIGHT && !prefs.tonightEnabled) {
+        // after the user disabled the feature. Same-day manual Refresh taps from
+        // the Today screen bypass this gate — a user inside the tonight window
+        // who taps Refresh wants fresh data regardless of whether the scheduled
+        // tonight notification is on, otherwise the screen sits on stale morning
+        // insights all evening with no way to update them. A force-refresh that
+        // crossed midnight loses its bypass: by then the user's "evening tap"
+        // intent is stale, and delivering a tonight insight after midnight with
+        // tonight disabled is exactly the surprise the gate exists to prevent.
+        if (period == ForecastPeriod.TONIGHT && !prefs.tonightEnabled && !forceRefresh) {
             DiagLog.i(TAG, "Tonight insight is disabled; skipping.")
-            // Stamp KEY_SKIP_TELEMETRY so the daily_refresh outcome event
-            // doesn't count this as a success. TodayScreen.triggerRefresh
-            // enqueues a TONIGHT run purely on the clock, so any user who
-            // turned the feature off would otherwise show a steady stream
-            // of "successful" tonight refreshes that delivered nothing.
             return Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
         }
 
@@ -200,19 +216,6 @@ class FetchAndNotifyWorker(
                 DiagLog.w(TAG, "No location available; failing run.")
                 return Result.failure(reason(REASON_NO_LOCATION))
             }
-        val today = LocalDate.now()
-
-        // Honour force-refresh only when it's still the day the user tapped on. If
-        // the request was enqueued near midnight and only ran after the date rolled
-        // over (offline retries, deferred backoff), the *new* day's cache should
-        // win — otherwise we'd silently bypass it and burn an extra Gemini call on
-        // a stale tap.
-        val requestedEpochDay = inputData.getLong(KEY_REQUESTED_EPOCH_DAY, Long.MIN_VALUE)
-        val forceRequested = inputData.getBoolean(KEY_FORCE_REFRESH, false)
-        val forceRefresh = forceRequested && requestedEpochDay == today.toEpochDay()
-        if (forceRequested && !forceRefresh) {
-            DiagLog.i(TAG, "Ignoring force refresh from a previous day (requested=$requestedEpochDay, today=${today.toEpochDay()}).")
-        }
 
         // 24h cost cap: if we already generated an insight for today, redeliver it
         // rather than refetching. Same path serves the morning alarm and any

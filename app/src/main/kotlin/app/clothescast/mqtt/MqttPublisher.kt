@@ -7,6 +7,7 @@ import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.datatypes.MqttQos
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.future.await
@@ -47,6 +48,8 @@ class MqttPublisher(
     private val passwordProvider: suspend () -> String?,
     private val publish: suspend (config: MqttConfig, topic: String, payload: ByteArray) -> Unit = ::publishWithHiveMq,
     private val publishTimeoutMs: Long = DEFAULT_PUBLISH_TIMEOUT_MS,
+    private val retryDelayMs: Long = DEFAULT_RETRY_DELAY_MS,
+    private val maxAttempts: Int = DEFAULT_MAX_PUBLISH_ATTEMPTS,
 ) {
 
     /**
@@ -193,6 +196,37 @@ class MqttPublisher(
         prepared: PreparedPublish,
         topic: String,
         payload: ByteArray,
+    ): MqttPublishOutcome {
+        // Retry once on failure to absorb transient broker unreachability —
+        // the most common report path is the morning alarm firing while
+        // Wi-Fi is still re-associating from doze, where the first connect
+        // times out but the second a second later succeeds. A
+        // CancellationException still unwinds the worker immediately because
+        // attemptPublish re-raises it before this loop sees an outcome.
+        var lastFailure: MqttPublishOutcome.Failure? = null
+        repeat(maxAttempts.coerceAtLeast(1)) { attempt ->
+            if (attempt > 0) {
+                DiagLog.i(
+                    TAG,
+                    "Retrying MQTT publish (attempt ${attempt + 1}/$maxAttempts) to " +
+                        "${prepared.scheme}://${prepared.host}:${prepared.port}/$topic " +
+                        "after ${retryDelayMs}ms",
+                )
+                delay(retryDelayMs)
+            }
+            when (val outcome = attemptPublish(prepared, topic, payload)) {
+                is MqttPublishOutcome.Success -> return outcome
+                is MqttPublishOutcome.Failure -> lastFailure = outcome
+                is MqttPublishOutcome.NotConfigured -> return outcome
+            }
+        }
+        return lastFailure ?: MqttPublishOutcome.Failure("no attempts")
+    }
+
+    private suspend fun attemptPublish(
+        prepared: PreparedPublish,
+        topic: String,
+        payload: ByteArray,
     ): MqttPublishOutcome = withTimeoutOrNull(publishTimeoutMs) {
         var result: MqttPublishOutcome = MqttPublishOutcome.Success
         try {
@@ -226,6 +260,14 @@ class MqttPublisher(
     companion object {
         private const val TAG = "MqttPublisher"
         const val DEFAULT_PUBLISH_TIMEOUT_MS = 5_000L
+
+        // Two attempts caps the cost of a permanently-down broker at
+        // ~2 × DEFAULT_PUBLISH_TIMEOUT_MS + DEFAULT_RETRY_DELAY_MS (~11 s) per
+        // publish — still within the 60-second alignment window the worker
+        // uses before notification delivery, even with subsequent image / TTS
+        // publishes on the same hot path.
+        const val DEFAULT_MAX_PUBLISH_ATTEMPTS = 2
+        const val DEFAULT_RETRY_DELAY_MS = 750L
 
         // Inner HiveMQ timeouts kept tighter than [DEFAULT_PUBLISH_TIMEOUT_MS]
         // so the connect phase fails cleanly (with a ConnectionFailedException

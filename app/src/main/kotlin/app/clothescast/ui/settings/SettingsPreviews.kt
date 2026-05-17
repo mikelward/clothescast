@@ -159,6 +159,11 @@ internal fun SettingsGarmentColorPickerPreview() {
     }
 }
 
+// Region & Units now also hosts the Holiday themes section (formerly its own
+// page). A representative mix of enabled / disabled holidays covers both
+// Switch states; long names like St Patrick's and US Independence stay
+// enabled so the "emoji + name + switch" wrap is exercised under default
+// fontScale.
 @Preview(name = "Settings · Region & Units", widthDp = 360)
 @Composable
 internal fun SettingsRegionPreview() {
@@ -169,10 +174,18 @@ internal fun SettingsRegionPreview() {
             distanceUnitSetting = DistanceUnitSetting.AUTO,
             resolvedTemperatureUnit = TemperatureUnit.CELSIUS,
             resolvedDistanceUnit = DistanceUnit.KILOMETERS,
+            enabledHolidays = setOf(
+                HolidayId.AUSTRALIA_DAY,
+                HolidayId.ST_PATRICKS_DAY,
+                HolidayId.US_INDEPENDENCE_DAY,
+                HolidayId.HALLOWEEN,
+                HolidayId.CHRISTMAS_DAY,
+            ),
             padding = PaddingValues(0.dp),
             onSetRegion = {},
             onSetTemperatureUnit = {},
             onSetDistanceUnit = {},
+            onSetEnabledHoliday = { _, _ -> },
         )
     }
 }
@@ -305,28 +318,6 @@ internal fun SettingsCalendarPreview() {
             useCalendarEvents = false,
             padding = PaddingValues(0.dp),
             onSetUseCalendarEvents = {},
-        )
-    }
-}
-
-// Holidays page with a representative mix of enabled / disabled rows so the
-// snapshot covers both Switch states and the section's typography.
-// Long names (St Patrick's, US Independence) are kept enabled so the row's
-// "emoji + name + switch" wrap behaviour is exercised under default fontScale.
-@Preview(name = "Settings · Holidays", widthDp = 360)
-@Composable
-internal fun SettingsHolidaysPreview() {
-    SettingsFrame {
-        HolidaysContent(
-            enabledHolidays = setOf(
-                HolidayId.AUSTRALIA_DAY,
-                HolidayId.ST_PATRICKS_DAY,
-                HolidayId.US_INDEPENDENCE_DAY,
-                HolidayId.HALLOWEEN,
-                HolidayId.CHRISTMAS_DAY,
-            ),
-            padding = PaddingValues(0.dp),
-            onSetEnabled = { _, _ -> },
         )
     }
 }

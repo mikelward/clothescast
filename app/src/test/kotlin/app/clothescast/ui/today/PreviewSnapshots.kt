@@ -33,7 +33,6 @@ import app.clothescast.ui.settings.SettingsClothesPreview
 import app.clothescast.ui.settings.SettingsDisplayPreview
 import app.clothescast.ui.settings.SettingsForecastersPreview
 import app.clothescast.ui.settings.SettingsGarmentColorPickerPreview
-import app.clothescast.ui.settings.SettingsHolidaysPreview
 import app.clothescast.ui.settings.SettingsLocationPreview
 import app.clothescast.ui.settings.SettingsPrivacyPreview
 import app.clothescast.ui.settings.SettingsRegionPreview
@@ -503,7 +502,15 @@ class PreviewSnapshots {
     @Test fun settings_schedule() = capture { SettingsSchedulePreview() }
     @Test fun settings_clothes() = capture { SettingsClothesPreview() }
     @Test fun settings_clothes_fahrenheit() = capture { SettingsClothesFahrenheitPreview() }
-    @Test fun settings_region() = capture { SettingsRegionPreview() }
+
+    // Region now includes the Holiday themes section (formerly its own page),
+    // pushing the page well past the class-level 640dp viewport. Stretch to
+    // 1600dp so the language picker, both unit cards, and every holiday row
+    // are in-frame in one snapshot.
+    @Test
+    @Config(qualifiers = "w360dp-h1600dp-xhdpi")
+    fun settings_region() = capture { SettingsRegionPreview() }
+
     @Test fun settings_display() = capture { SettingsDisplayPreview() }
     @Test fun settings_voice_device() = capture { SettingsVoiceDevicePreview() }
     @Test fun settings_voice_gemini() = capture { SettingsVoiceGeminiPreview() }
@@ -519,7 +526,6 @@ class PreviewSnapshots {
     fun settings_forecasters() = capture { SettingsForecastersPreview() }
 
     @Test fun settings_calendar() = capture { SettingsCalendarPreview() }
-    @Test fun settings_holidays() = capture { SettingsHolidaysPreview() }
     @Test fun settings_privacy() = capture { SettingsPrivacyPreview() }
     // The MQTT card stretches well past the 640dp class-level viewport once
     // the discovery picker is showing hits + the full form (host / port /

@@ -52,7 +52,6 @@ enum class SettingsRoute(@StringRes val titleRes: Int, @StringRes val subtitleRe
     Region(R.string.settings_root_region, R.string.settings_root_region_subtitle),
     Voice(R.string.settings_root_voice, R.string.settings_root_voice_subtitle),
     Display(R.string.settings_root_display, R.string.settings_root_display_subtitle),
-    Holidays(R.string.settings_root_holidays, R.string.settings_root_holidays_subtitle),
     Location(R.string.settings_root_location, R.string.settings_root_location_subtitle),
     Forecasters(R.string.settings_root_forecasters, R.string.settings_root_forecasters_subtitle),
     Calendar(R.string.settings_root_calendar, R.string.settings_root_calendar_subtitle),
@@ -62,8 +61,8 @@ enum class SettingsRoute(@StringRes val titleRes: Int, @StringRes val subtitleRe
 }
 
 // Saved as the enum name string with a runCatching restore so an old install
-// that had the page open at process death (e.g. on the now-removed
-// `DataSources` route) doesn't crash on restore — it falls back to Root.
+// that had the page open at process death (e.g. on now-removed routes like
+// `DataSources` or `Holidays`) doesn't crash on restore — it falls back to Root.
 private val SettingsRouteSaver: Saver<SettingsRoute, String> = Saver(
     save = { it.name },
     restore = { runCatching { SettingsRoute.valueOf(it) }.getOrDefault(SettingsRoute.Root) },
@@ -172,10 +171,12 @@ fun SettingsScreen(
                 distanceUnitSetting = state.distanceUnitSetting,
                 resolvedTemperatureUnit = state.temperatureUnit,
                 resolvedDistanceUnit = state.distanceUnit,
+                enabledHolidays = state.enabledHolidays,
                 padding = padding,
                 onSetRegion = viewModel::setRegion,
                 onSetTemperatureUnit = viewModel::setTemperatureUnitSetting,
                 onSetDistanceUnit = viewModel::setDistanceUnitSetting,
+                onSetEnabledHoliday = viewModel::setEnabledHoliday,
             )
             SettingsRoute.Voice -> VoiceContent(
                 selected = state.ttsEngine,
@@ -202,11 +203,6 @@ fun SettingsScreen(
                 padding = padding,
                 onSetThemeMode = viewModel::setThemeMode,
                 onSetColorPalette = viewModel::setColorPalette,
-            )
-            SettingsRoute.Holidays -> HolidaysContent(
-                enabledHolidays = state.enabledHolidays,
-                padding = padding,
-                onSetEnabled = viewModel::setEnabledHoliday,
             )
             SettingsRoute.Location -> LocationContent(
                 location = state.location,

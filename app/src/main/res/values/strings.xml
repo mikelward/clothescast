@@ -353,7 +353,6 @@
     <string name="settings_root_display">Display</string>
     <string name="settings_root_location">Location</string>
     <string name="settings_root_calendar">Calendar</string>
-    <string name="settings_root_holidays">Holidays</string>
     <string name="settings_root_forecasters">Forecasters</string>
     <string name="settings_root_smart_home">Smart Home</string>
     <string name="settings_root_privacy">Privacy</string>
@@ -388,7 +387,6 @@
 
     <string name="settings_root_location_subtitle">Automatic and Manual Location</string>
     <string name="settings_root_calendar_subtitle">Today\'s events</string>
-    <string name="settings_root_holidays_subtitle">Themed colours and banners</string>
     <string name="settings_root_forecasters_subtitle">Weather Sources and Models</string>
     <string name="settings_root_smart_home_subtitle">Home Assistant, MQTT, voice announcements</string>
     <string name="settings_root_privacy_subtitle">Crash + usage reports</string>

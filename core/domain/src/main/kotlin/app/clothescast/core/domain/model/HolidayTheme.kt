@@ -39,6 +39,30 @@ enum class HolidayId {
     US_THANKSGIVING,
     ST_ANDREWS_DAY,
     CHRISTMAS_DAY,
+    // TODO(holidays-v3): country mapping + sensitive-holiday opt-out.
+    //
+    // The settings flow today shows all holidays to everyone — a Brazilian
+    // user sees St Andrew's Day, an Australian sees Bastille Day. The Today
+    // screen already resolves *naming* per country via
+    // [HolidayTheme.bannerTextKeyByCountry] (Veterans Day vs. Remembrance
+    // Day) — the next step is gating *visibility* the same way. Plan:
+    //
+    //   1. Tag every holiday with one or more ISO 3166-1 alpha-2 country
+    //      codes (e.g. Canada Day → {CA}; St Patrick's → {IE}; Christmas →
+    //      many; Anzac Day → {AU, NZ}; Remembrance Day → {GB, CA, AU, NZ,
+    //      US}). Add a `countries: Set<String>` field on [HolidayTheme].
+    //      The bannerTextKeyByCountry keys are a natural overlap.
+    //   2. Add a "Countries" picker under Region (default: derive from the
+    //      user's Region setting via [Region.toJavaLocale]'s country, then
+    //      let them tick / untick). Only holidays whose `countries`
+    //      intersect the user's chosen set surface in the holiday-toggle
+    //      list, defaulting to on.
+    //   3. Keep the existing per-holiday switch as a second layer — a
+    //      *tactful* opt-out for individual days. Mother's Day, Father's
+    //      Day, and the military-remembrance days can be painful for users
+    //      who've lost someone. Frame the section copy something like:
+    //      "Some of these days can be hard. Switch any of them off."
+    //
     // TODO(holidays-v3): UK Mothering Sunday — 4th Sun of Lent, i.e. movable
     // and tied to Easter (Computus). The current [MOTHERS_DAY] entry uses
     // 2nd Sun of May which is correct for US/AU/CA/NZ but not UK/IE. Adding
@@ -60,7 +84,9 @@ enum class HolidayId {
     // from [Region]-derived country to location-derived country once the
     // app's reverse-geocoding plumbing exposes a stable country code.
     // Region is the right *user-controlled* signal short-term; location is
-    // the more accurate one once available.
+    // the more accurate one once available. The country-filtering plan
+    // above should follow the same signal source so naming and visibility
+    // stay in lockstep.
 }
 
 /**

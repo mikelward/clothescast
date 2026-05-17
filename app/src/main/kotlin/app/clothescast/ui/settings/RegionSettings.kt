@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.WindowInsets
@@ -15,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -22,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -29,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.HolidayCatalog
+import app.clothescast.core.domain.model.HolidayId
+import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TemperatureUnitSetting
@@ -43,10 +49,12 @@ internal fun RegionContent(
     distanceUnitSetting: DistanceUnitSetting,
     resolvedTemperatureUnit: TemperatureUnit,
     resolvedDistanceUnit: DistanceUnit,
+    enabledHolidays: Set<HolidayId>,
     padding: PaddingValues,
     onSetRegion: (Region) -> Unit,
     onSetTemperatureUnit: (TemperatureUnitSetting) -> Unit,
     onSetDistanceUnit: (DistanceUnitSetting) -> Unit,
+    onSetEnabledHoliday: (HolidayId, Boolean) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
@@ -95,8 +103,59 @@ internal fun RegionContent(
                     )
                 }
             }
+            // Holiday themes live under Region because the holidays that
+            // matter to a user are largely determined by where they live —
+            // see the v2 plan in HolidayTheme.kt's HolidayId comment.
+            // Order matches HolidayCatalog.all (calendar order) so the list
+            // reads like a wall calendar: New Year's at the top, Christmas
+            // at the bottom.
+            SectionCard(title = stringResource(R.string.settings_holidays_title)) {
+                Text(
+                    text = stringResource(R.string.settings_holidays_description),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                HolidayCatalog.all.forEach { (_, theme) ->
+                    HolidayRow(
+                        theme = theme,
+                        checked = theme.id in enabledHolidays,
+                        onCheckedChange = { wantsOn -> onSetEnabledHoliday(theme.id, wantsOn) },
+                    )
+                }
+            }
         }
     }
+}
+
+@Composable
+private fun HolidayRow(
+    theme: HolidayTheme,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    val displayName = resolveHolidayString(theme.displayNameKey) ?: theme.id.name
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = "${theme.emoji}  $displayName",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f),
+        )
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
+}
+
+// Resolves a string by name without holding a compile-time R reference, so
+// :core:domain doesn't have to know about Android resource IDs. Returns null
+// when the name is unknown (typo / not localised yet) so callers can fall
+// back to a developer-visible default rather than crashing.
+@Composable
+private fun resolveHolidayString(name: String): String? {
+    val context = LocalContext.current
+    val resId = context.resources.getIdentifier(name, "string", context.packageName)
+    return if (resId == 0) null else context.getString(resId)
 }
 
 @Composable

@@ -52,6 +52,7 @@ enum class SettingsRoute(@StringRes val titleRes: Int, @StringRes val subtitleRe
     Region(R.string.settings_root_region, R.string.settings_root_region_subtitle),
     Voice(R.string.settings_root_voice, R.string.settings_root_voice_subtitle),
     Display(R.string.settings_root_display, R.string.settings_root_display_subtitle),
+    Holidays(R.string.settings_root_holidays, R.string.settings_root_holidays_subtitle),
     Location(R.string.settings_root_location, R.string.settings_root_location_subtitle),
     Forecasters(R.string.settings_root_forecasters, R.string.settings_root_forecasters_subtitle),
     Calendar(R.string.settings_root_calendar, R.string.settings_root_calendar_subtitle),
@@ -201,6 +202,11 @@ fun SettingsScreen(
                 padding = padding,
                 onSetThemeMode = viewModel::setThemeMode,
                 onSetColorPalette = viewModel::setColorPalette,
+            )
+            SettingsRoute.Holidays -> HolidaysContent(
+                enabledHolidays = state.enabledHolidays,
+                padding = padding,
+                onSetEnabled = viewModel::setEnabledHoliday,
             )
             SettingsRoute.Location -> LocationContent(
                 location = state.location,

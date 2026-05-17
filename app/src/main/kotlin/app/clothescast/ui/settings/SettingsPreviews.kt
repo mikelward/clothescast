@@ -14,6 +14,7 @@ import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
+import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
@@ -304,6 +305,28 @@ internal fun SettingsCalendarPreview() {
             useCalendarEvents = false,
             padding = PaddingValues(0.dp),
             onSetUseCalendarEvents = {},
+        )
+    }
+}
+
+// Holidays page with a representative mix of enabled / disabled rows so the
+// snapshot covers both Switch states and the section's typography.
+// Long names (St Patrick's, US Independence) are kept enabled so the row's
+// "emoji + name + switch" wrap behaviour is exercised under default fontScale.
+@Preview(name = "Settings · Holidays", widthDp = 360)
+@Composable
+internal fun SettingsHolidaysPreview() {
+    SettingsFrame {
+        HolidaysContent(
+            enabledHolidays = setOf(
+                HolidayId.AUSTRALIA_DAY,
+                HolidayId.ST_PATRICKS_DAY,
+                HolidayId.US_INDEPENDENCE_DAY,
+                HolidayId.HALLOWEEN,
+                HolidayId.CHRISTMAS_DAY,
+            ),
+            padding = PaddingValues(0.dp),
+            onSetEnabled = { _, _ -> },
         )
     }
 }

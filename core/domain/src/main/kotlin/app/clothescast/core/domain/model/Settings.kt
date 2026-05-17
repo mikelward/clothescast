@@ -388,6 +388,20 @@ data class UserPreferences(
     /** Sibling of [outfitTopColors] for the bottom-garment icons. */
     val outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     /**
+     * Holiday themes the user wants to participate in. When today matches an
+     * enabled holiday's date predicate, the Today screen recolours the outfit
+     * preview to the holiday palette and shows a small banner. Default is
+     * all-on — every holiday surfaces until the user opts out; the per-holiday
+     * checkboxes in Settings → Holidays make the list discoverable so a user
+     * who only cares about Christmas can pare it down to one. No region gate:
+     * the toggle is the user's signal, not their locale.
+     *
+     * Stored as the enum-name [Set] (DataStore stringSet); unknown names on
+     * read are dropped silently so a forward-compat downgrade doesn't crash
+     * the flow. Missing key on first read seeds the default (all on).
+     */
+    val enabledHolidays: Set<HolidayId> = HolidayId.entries.toSet(),
+    /**
      * Which numerical-weather-prediction models the multi-model confidence
      * fetcher consults — or `null` for "auto, derive from current location"
      * (see [ForecastModel.defaultsFor]). Fresh installs default to null so

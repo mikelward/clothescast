@@ -17,6 +17,7 @@ import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
+import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
@@ -406,6 +407,24 @@ class SettingsRepository(
         }
     }
 
+    /**
+     * Flips a single holiday theme on or off. The full set is read, modified,
+     * and rewritten inside one [dataStore.edit] so a rapid sequence of toggles
+     * from the Settings UI doesn't race itself.
+     *
+     * Missing-key reads default to "all enabled" (see [parseEnabledHolidays]),
+     * so the first call from an existing install seeds the full set before
+     * subtracting the user's choice — preserving the "all on by default"
+     * contract even after the first explicit toggle.
+     */
+    suspend fun setEnabledHoliday(id: HolidayId, enabled: Boolean) {
+        dataStore.edit { prefs ->
+            val current = parseEnabledHolidays(prefs[ENABLED_HOLIDAYS])
+            val updated = if (enabled) current + id else current - id
+            prefs[ENABLED_HOLIDAYS] = updated.map { it.name }.toSet()
+        }
+    }
+
     suspend fun setTelemetryNoticeAcked(acked: Boolean) {
         dataStore.edit { it[TELEMETRY_NOTICE_ACKED] = acked }
     }
@@ -547,6 +566,7 @@ class SettingsRepository(
             ?: ColorPalette.RAINBOW
         val outfitTopColors = parseOutfitTopColors(this[OUTFIT_TOP_COLORS])
         val outfitBottomColors = parseOutfitBottomColors(this[OUTFIT_BOTTOM_COLORS])
+        val enabledHolidays = parseEnabledHolidays(this[ENABLED_HOLIDAYS])
         // Resolve stored enum names back to [ForecastModel]. Unknown / removed
         // entries are dropped silently so a forward-compat (future enum value
         // we didn't ship yet) or stale value from a downgrade doesn't break
@@ -600,6 +620,7 @@ class SettingsRepository(
             colorPalette = colorPalette,
             outfitTopColors = outfitTopColors,
             outfitBottomColors = outfitBottomColors,
+            enabledHolidays = enabledHolidays,
             forecastModels = forecastModels,
             mqttBridgeEnabled = mqttBridgeEnabled,
             mqttHost = mqttHost,
@@ -723,6 +744,19 @@ class SettingsRepository(
         }.getOrDefault(emptyMap())
     }
 
+    /**
+     * Resolves the persisted holiday-enabled set. Missing key (fresh install,
+     * or an existing install that predates the holiday feature) seeds the
+     * full set — every holiday is on by default. Unknown enum names (e.g.
+     * the user downgraded across a future-added holiday) drop silently.
+     * An explicit empty set is honoured as "every holiday is off."
+     */
+    private fun parseEnabledHolidays(raw: Set<String>?): Set<HolidayId> {
+        if (raw == null) return HolidayId.entries.toSet()
+        return raw.mapNotNull { name -> runCatching { HolidayId.valueOf(name) }.getOrNull() }
+            .toSet()
+    }
+
     private fun parseRules(raw: String?): List<ClothesRule> {
         if (raw.isNullOrBlank()) return ClothesRule.DEFAULTS
         return runCatching {
@@ -787,6 +821,7 @@ class SettingsRepository(
         private val COLOR_PALETTE = stringPreferencesKey("color_palette")
         private val OUTFIT_TOP_COLORS = stringPreferencesKey("outfit_top_colors_json")
         private val OUTFIT_BOTTOM_COLORS = stringPreferencesKey("outfit_bottom_colors_json")
+        private val ENABLED_HOLIDAYS = stringSetPreferencesKey("enabled_holidays")
         private val FORECAST_MODELS = stringSetPreferencesKey("forecast_models")
         private val MQTT_BRIDGE_ENABLED = booleanPreferencesKey("mqtt_bridge_enabled")
         private val MQTT_HOST = stringPreferencesKey("mqtt_host")

@@ -46,9 +46,12 @@ import androidx.core.graphics.drawable.toBitmap
 
 /**
  * Renders a top-tier garment icon with the user's chosen [customFill]
- * (or the baked-in default when [customFill] is null). The auto-derived
- * stroke colour comes from [deriveStroke] so the two-tone look survives
- * the recolour.
+ * (or the baked-in default when [customFill] is null). The stroke / outline
+ * detail colour normally auto-derives as a darker shade of [customFill]
+ * (the two-tone look that survives the recolour); pass a non-null
+ * [customStroke] to override that with a chosen colour — used by the
+ * holiday-theme palette to put a contrasting accent (e.g. a green collar
+ * on a yellow Australia-Day shirt) on top of the primary fill.
  */
 @Composable
 internal fun GarmentTopIcon(
@@ -56,12 +59,14 @@ internal fun GarmentTopIcon(
     customFill: Color?,
     contentDescription: String,
     modifier: Modifier = Modifier,
+    customStroke: Color? = null,
 ) {
     val defaults = outfitTopDefaults.getValue(top)
     GarmentIconImpl(
         drawableRes = topDrawable(top),
         defaults = defaults,
         customFill = customFill,
+        customStroke = customStroke,
         contentDescription = contentDescription,
         modifier = modifier,
     )
@@ -73,12 +78,14 @@ internal fun GarmentBottomIcon(
     customFill: Color?,
     contentDescription: String,
     modifier: Modifier = Modifier,
+    customStroke: Color? = null,
 ) {
     val defaults = outfitBottomDefaults.getValue(bottom)
     GarmentIconImpl(
         drawableRes = bottomDrawable(bottom),
         defaults = defaults,
         customFill = customFill,
+        customStroke = customStroke,
         contentDescription = contentDescription,
         modifier = modifier,
     )
@@ -89,14 +96,17 @@ private fun GarmentIconImpl(
     @DrawableRes drawableRes: Int,
     defaults: GarmentDefaults,
     customFill: Color?,
+    customStroke: Color?,
     contentDescription: String,
     modifier: Modifier,
 ) {
     // Default-colour fast path: render the original vector via painterResource
     // so the existing snapshot tests stay byte-identical for users who haven't
     // customised. The Canvas-based recolour path only kicks in when a custom
-    // fill is set.
-    if (customFill == null) {
+    // fill (or stroke) is set. A customStroke without a customFill is a
+    // misconfiguration — there's no original-colour fast-path that mixes a
+    // baked fill with a chosen stroke, so we still need the recolour path.
+    if (customFill == null && customStroke == null) {
         Image(
             painter = painterResource(drawableRes),
             contentDescription = contentDescription,
@@ -106,7 +116,9 @@ private fun GarmentIconImpl(
     }
     val context = LocalContext.current
     val vector = remember(drawableRes) { loadOutfitVector(context, drawableRes) }
-    val recolor = remember(customFill, defaults) { buildRecolorMap(defaults, customFill) }
+    val recolor = remember(customFill, customStroke, defaults) {
+        buildRecolorMap(defaults, customFill, customStroke)
+    }
     val composePaths = remember(vector) {
         // Convert pathData to Compose Path once; re-rendering on customFill change
         // only swaps the colour entries, not the geometry.
@@ -617,16 +629,26 @@ private val bitmapCache = object : LinkedHashMap<BitmapCacheKey, Bitmap>(16, 0.7
 
 /**
  * Builds the original-ARGB → new-ARGB substitution map for one garment.
- * [customFill] of null returns an empty map — the renderer then leaves
- * every path's colour untouched, which is byte-identical to the unchanged
- * XML.
+ *
+ * - Both args null → empty map; renderer leaves the vector's colours
+ *   untouched (byte-identical to the unchanged XML).
+ * - [customFill] only → fill is swapped, stroke auto-derives as a darker
+ *   shade of the fill via [deriveStroke] (the long-standing two-tone look).
+ * - [customStroke] non-null → stroke is set to that exact colour, overriding
+ *   the auto-derive. Used by holiday themes to paint a contrasting accent
+ *   (yellow shirt with green collar / sleeves; red bottom with white trim).
+ * - [customStroke] without [customFill] is supported for completeness but
+ *   leaves the original fill colour intact.
  */
-private fun buildRecolorMap(defaults: GarmentDefaults, customFill: Color?): Map<Int, Int> {
-    if (customFill == null) return emptyMap()
-    val newFill = customFill.toArgb()
-    val newStroke = deriveStroke(customFill).toArgb()
-    return mapOf(
-        defaults.fillArgb to newFill,
-        defaults.strokeArgb to newStroke,
-    )
+private fun buildRecolorMap(
+    defaults: GarmentDefaults,
+    customFill: Color?,
+    customStroke: Color? = null,
+): Map<Int, Int> {
+    if (customFill == null && customStroke == null) return emptyMap()
+    val newStroke = (customStroke ?: customFill?.let { deriveStroke(it) })?.toArgb()
+    val entries = mutableMapOf<Int, Int>()
+    customFill?.let { entries[defaults.fillArgb] = it.toArgb() }
+    newStroke?.let { entries[defaults.strokeArgb] = it }
+    return entries
 }

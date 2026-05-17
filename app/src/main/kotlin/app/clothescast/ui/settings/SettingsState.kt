@@ -6,6 +6,7 @@ import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
+import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
@@ -50,6 +51,11 @@ data class SettingsState(
     val outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     /** Sibling of [outfitTopColors] for the bottom-icon tier. */
     val outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    /**
+     * Holiday themes the user has opted into. Default is "all on" — the per-
+     * holiday switches in Settings → Holidays let the user pare it down.
+     */
+    val enabledHolidays: Set<HolidayId> = HolidayId.entries.toSet(),
     val clothesRules: List<ClothesRule> = ClothesRule.DEFAULTS,
     val defaultBottom: OutfitSuggestion.Bottom = OutfitSuggestion.Bottom.LONG_PANTS,
     val location: Location? = null,

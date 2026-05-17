@@ -1049,7 +1049,7 @@
          matches HolidayCatalog.allCountries (calendar-order union); the
          GLOBAL bucket renders the universal holidays (Christmas, New
          Year\'s, Valentine\'s, Halloween). -->
-    <string name="settings_holiday_country_global">Global holidays</string>
+    <string name="settings_holiday_country_global">Global</string>
     <string name="settings_holiday_country_au">Australia</string>
     <string name="settings_holiday_country_br">Brazil</string>
     <string name="settings_holiday_country_ca">Canada</string>

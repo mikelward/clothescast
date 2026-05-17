@@ -59,6 +59,7 @@
     <string name="today_rationale_title">Why this outfit?</string>
     <string name="today_rationale_show">Why?</string>
     <string name="today_rationale_dismiss">Got it</string>
+    <string name="today_rationale_open_clothes_settings">Clothes settings</string>
     <string name="today_rationale_threshold_decrease">Lower threshold by 1 degree</string>
     <string name="today_rationale_threshold_increase">Raise threshold by 1 degree</string>
     <string name="today_rationale_threshold_changed_hint">Refresh to see the new outfit.</string>

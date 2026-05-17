@@ -125,6 +125,7 @@ fun TodayScreen(
     onNavigateToAbout: () -> Unit,
     onNavigateToLocation: () -> Unit = onNavigateToSettings,
     onNavigateToPrivacy: () -> Unit = onNavigateToSettings,
+    onNavigateToClothes: () -> Unit = onNavigateToSettings,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -232,6 +233,7 @@ fun TodayScreen(
             onSetUpLocation = onNavigateToLocation,
             onOpenPrivacy = onNavigateToPrivacy,
             onAdjustThreshold = viewModel::adjustClothesRuleThreshold,
+            onNavigateToClothes = onNavigateToClothes,
             onToggleModelSpread = viewModel::toggleModelSpread,
         )
     }
@@ -262,6 +264,7 @@ private fun TodayContent(
     onSetUpLocation: () -> Unit,
     onOpenPrivacy: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
+    onNavigateToClothes: () -> Unit,
     onToggleModelSpread: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -390,6 +393,7 @@ private fun TodayContent(
                         }
                     },
                     onAdjustThreshold = onAdjustThreshold,
+                    onNavigateToClothes = onNavigateToClothes,
                     onToggleModelSpread = onToggleModelSpread,
                 )
             }
@@ -417,6 +421,7 @@ private fun TodayPage(
     showChevronLeft: Boolean,
     onChevronTap: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
+    onNavigateToClothes: () -> Unit,
     onToggleModelSpread: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
@@ -445,6 +450,7 @@ private fun TodayPage(
             outfitTopColors = state.outfitTopColors,
             outfitBottomColors = state.outfitBottomColors,
             onAdjustThreshold = onAdjustThreshold,
+            onNavigateToClothes = onNavigateToClothes,
         )
         if (insight == null) {
             MissingPeriodPlaceholder(
@@ -830,6 +836,7 @@ internal fun OutfitPreviewRow(
     outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onAdjustThreshold: (String, Double) -> Unit = { _, _ -> },
+    onNavigateToClothes: () -> Unit = {},
 ) {
     val primary = insight.outfit ?: return
     val (primaryLabel, nextLabel) = outfitLabels(insight.period)
@@ -846,6 +853,7 @@ internal fun OutfitPreviewRow(
             outfitTopColors = outfitTopColors,
             outfitBottomColors = outfitBottomColors,
             onAdjustThreshold = onAdjustThreshold,
+            onNavigateToClothes = onNavigateToClothes,
             modifier = Modifier.weight(1f),
         )
         insight.nextOutfit?.let {
@@ -858,6 +866,7 @@ internal fun OutfitPreviewRow(
                 outfitTopColors = outfitTopColors,
                 outfitBottomColors = outfitBottomColors,
                 onAdjustThreshold = onAdjustThreshold,
+                onNavigateToClothes = onNavigateToClothes,
                 modifier = Modifier.weight(1f),
             )
         }
@@ -891,6 +900,7 @@ internal fun OutfitPreviewCard(
     outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onAdjustThreshold: (String, Double) -> Unit = { _, _ -> },
+    onNavigateToClothes: () -> Unit = {},
 ) {
     var showRationale by remember { mutableStateOf(false) }
     // Material3's `Card(onClick = …)` overload is preferred over a bare
@@ -951,6 +961,10 @@ internal fun OutfitPreviewCard(
             temperatureUnit = temperatureUnit,
             clothesRules = clothesRules,
             onAdjustThreshold = onAdjustThreshold,
+            onNavigateToClothes = {
+                showRationale = false
+                onNavigateToClothes()
+            },
             onDismiss = { showRationale = false },
         )
     }
@@ -978,6 +992,7 @@ internal fun OutfitRationaleDialog(
     temperatureUnit: TemperatureUnit,
     clothesRules: List<ClothesRule>,
     onAdjustThreshold: (String, Double) -> Unit,
+    onNavigateToClothes: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     var thresholdsTouched by remember { mutableStateOf(false) }
@@ -1025,6 +1040,11 @@ internal fun OutfitRationaleDialog(
         confirmButton = {
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.today_rationale_dismiss))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onNavigateToClothes) {
+                Text(stringResource(R.string.today_rationale_open_clothes_settings))
             }
         },
     )

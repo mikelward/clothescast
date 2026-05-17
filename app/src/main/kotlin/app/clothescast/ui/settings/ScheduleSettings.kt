@@ -47,6 +47,7 @@ import app.clothescast.R
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
+import app.clothescast.ui.EdgeFadeOverlay
 import java.time.DayOfWeek
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -77,47 +78,52 @@ internal fun ScheduleContent(
     onSetSkipTtsAtHome: (Boolean) -> Unit,
     onDone: (() -> Unit)? = null,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    val scrollState = rememberScrollState()
+    EdgeFadeOverlay(
+        scrollState = scrollState,
+        modifier = Modifier.padding(padding),
     ) {
-        DayCard(
-            time = time,
-            days = days,
-            deliveryMode = deliveryMode,
-            mentionEveningEvents = dailyMentionEveningEvents,
-            onChange = onSetSchedule,
-            onSetDeliveryMode = onSetDeliveryMode,
-            onSetMentionEveningEvents = onSetDailyMentionEveningEvents,
-        )
-        NightCard(
-            time = tonightTime,
-            days = tonightDays,
-            enabled = tonightEnabled,
-            notifyOnlyOnEvents = tonightNotifyOnlyOnEvents,
-            deliveryMode = tonightDeliveryMode,
-            onSetEnabled = onSetTonightEnabled,
-            onSetNotifyOnlyOnEvents = onSetTonightNotifyOnlyOnEvents,
-            onChange = onSetTonightSchedule,
-            onSetDeliveryMode = onSetTonightDeliveryMode,
-        )
-        SkipTtsAtHomeCard(
-            skipTtsAtHome = skipTtsAtHome,
-            homeLocationConfigured = homeLocationConfigured,
-            onSetSkipTtsAtHome = onSetSkipTtsAtHome,
-        )
-        if (onDone != null) {
-            Button(
-                onClick = onDone,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-            ) {
-                Text(stringResource(R.string.onboarding_step_done))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            DayCard(
+                time = time,
+                days = days,
+                deliveryMode = deliveryMode,
+                mentionEveningEvents = dailyMentionEveningEvents,
+                onChange = onSetSchedule,
+                onSetDeliveryMode = onSetDeliveryMode,
+                onSetMentionEveningEvents = onSetDailyMentionEveningEvents,
+            )
+            NightCard(
+                time = tonightTime,
+                days = tonightDays,
+                enabled = tonightEnabled,
+                notifyOnlyOnEvents = tonightNotifyOnlyOnEvents,
+                deliveryMode = tonightDeliveryMode,
+                onSetEnabled = onSetTonightEnabled,
+                onSetNotifyOnlyOnEvents = onSetTonightNotifyOnlyOnEvents,
+                onChange = onSetTonightSchedule,
+                onSetDeliveryMode = onSetTonightDeliveryMode,
+            )
+            SkipTtsAtHomeCard(
+                skipTtsAtHome = skipTtsAtHome,
+                homeLocationConfigured = homeLocationConfigured,
+                onSetSkipTtsAtHome = onSetSkipTtsAtHome,
+            )
+            if (onDone != null) {
+                Button(
+                    onClick = onDone,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                ) {
+                    Text(stringResource(R.string.onboarding_step_done))
+                }
             }
         }
     }

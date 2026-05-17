@@ -34,22 +34,28 @@ import app.clothescast.R
 import app.clothescast.diag.BugReport
 import app.clothescast.diag.BugReportConsentDialog
 import app.clothescast.diag.findActivity
+import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.work.FetchAndNotifyWorker
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun AboutContent(padding: PaddingValues) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    val scrollState = rememberScrollState()
+    EdgeFadeOverlay(
+        scrollState = scrollState,
+        modifier = Modifier.padding(padding),
     ) {
-        AboutCard()
-        if (BuildConfig.DEBUG) {
-            DebugCard()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            AboutCard()
+            if (BuildConfig.DEBUG) {
+                DebugCard()
+            }
         }
     }
 }

@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
+import app.clothescast.ui.EdgeFadeOverlay
 
 private const val PRIVACY_POLICY_URL =
     "https://github.com/mikelward/clothescast/blob/main/PRIVACY.md"
@@ -30,18 +31,23 @@ internal fun PrivacyContent(
     padding: PaddingValues,
     onSetTelemetryEnabled: (Boolean) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    val scrollState = rememberScrollState()
+    EdgeFadeOverlay(
+        scrollState = scrollState,
+        modifier = Modifier.padding(padding),
     ) {
-        TelemetryCard(
-            enabled = telemetryEnabled,
-            onSetEnabled = onSetTelemetryEnabled,
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            TelemetryCard(
+                enabled = telemetryEnabled,
+                onSetEnabled = onSetTelemetryEnabled,
+            )
+        }
     }
 }
 

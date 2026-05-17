@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.ThemeMode
+import app.clothescast.ui.EdgeFadeOverlay
 
 @Composable
 internal fun DisplayContent(
@@ -25,36 +26,41 @@ internal fun DisplayContent(
     onSetThemeMode: (ThemeMode) -> Unit,
     onSetColorPalette: (ColorPalette) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    val scrollState = rememberScrollState()
+    EdgeFadeOverlay(
+        scrollState = scrollState,
+        modifier = Modifier.padding(padding),
     ) {
-        SectionCard(title = stringResource(R.string.settings_display_theme_title)) {
-            ThemeMode.entries.forEach { mode ->
-                RadioRow(
-                    label = stringResource(themeModeLabel(mode)),
-                    selected = mode == themeMode,
-                    onSelect = { onSetThemeMode(mode) },
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            SectionCard(title = stringResource(R.string.settings_display_theme_title)) {
+                ThemeMode.entries.forEach { mode ->
+                    RadioRow(
+                        label = stringResource(themeModeLabel(mode)),
+                        selected = mode == themeMode,
+                        onSelect = { onSetThemeMode(mode) },
+                    )
+                }
+            }
+            SectionCard(title = stringResource(R.string.settings_display_colors_title)) {
+                ColorPalette.entries.forEach { palette ->
+                    RadioRow(
+                        label = stringResource(colorPaletteLabel(palette)),
+                        selected = palette == colorPalette,
+                        onSelect = { onSetColorPalette(palette) },
+                    )
+                }
+                Text(
+                    text = stringResource(colorPaletteDescription(colorPalette)),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-        }
-        SectionCard(title = stringResource(R.string.settings_display_colors_title)) {
-            ColorPalette.entries.forEach { palette ->
-                RadioRow(
-                    label = stringResource(colorPaletteLabel(palette)),
-                    selected = palette == colorPalette,
-                    onSelect = { onSetColorPalette(palette) },
-                )
-            }
-            Text(
-                text = stringResource(colorPaletteDescription(colorPalette)),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
 }

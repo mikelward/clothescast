@@ -42,6 +42,7 @@ import app.clothescast.core.domain.model.Location
 import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
 import app.clothescast.notification.NotificationPermission
+import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.isTelevision
 import app.clothescast.ui.settings.KeyEntryFields
 import app.clothescast.ui.settings.LinkifiedText
@@ -104,57 +105,62 @@ internal fun OnboardingContent(
     onContinue: () -> Unit,
     onSkip: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+    val scrollState = rememberScrollState()
+    EdgeFadeOverlay(
+        scrollState = scrollState,
+        modifier = Modifier.padding(padding),
     ) {
-        Text(
-            text = stringResource(R.string.onboarding_title),
-            style = MaterialTheme.typography.headlineMedium,
-        )
-        Text(
-            text = stringResource(if (isTelevision) R.string.onboarding_subtitle_tv else R.string.onboarding_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-
-        // TV OS does not expose POST_NOTIFICATIONS as a runtime permission — skip it.
-        if (!isTelevision) {
-            NotificationStep()
-            HorizontalDivider()
-        }
-        LocationStep(
-            location = location,
-            useDeviceLocation = useDeviceLocation,
-            locationDetecting = locationDetecting,
-            isTelevision = isTelevision,
-            onSetUseDeviceLocation = onSetUseDeviceLocation,
-            onSelectLocation = onSelectLocation,
-            onSearchLocations = onSearchLocations,
-        )
-        HorizontalDivider()
-        GeminiKeyStep(
-            configured = geminiKeyConfigured,
-            onSave = onSetApiKey,
-            onPairFromPhone = onPairFromPhone,
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            TextButton(
-                onClick = onSkip,
-                modifier = Modifier.weight(1f),
-            ) { Text(stringResource(R.string.onboarding_skip)) }
-            Button(
-                onClick = onContinue,
-                modifier = Modifier.weight(1f),
-            ) { Text(stringResource(R.string.onboarding_continue)) }
+            Text(
+                text = stringResource(R.string.onboarding_title),
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Text(
+                text = stringResource(if (isTelevision) R.string.onboarding_subtitle_tv else R.string.onboarding_subtitle),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            // TV OS does not expose POST_NOTIFICATIONS as a runtime permission — skip it.
+            if (!isTelevision) {
+                NotificationStep()
+                HorizontalDivider()
+            }
+            LocationStep(
+                location = location,
+                useDeviceLocation = useDeviceLocation,
+                locationDetecting = locationDetecting,
+                isTelevision = isTelevision,
+                onSetUseDeviceLocation = onSetUseDeviceLocation,
+                onSelectLocation = onSelectLocation,
+                onSearchLocations = onSearchLocations,
+            )
+            HorizontalDivider()
+            GeminiKeyStep(
+                configured = geminiKeyConfigured,
+                onSave = onSetApiKey,
+                onPairFromPhone = onPairFromPhone,
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                TextButton(
+                    onClick = onSkip,
+                    modifier = Modifier.weight(1f),
+                ) { Text(stringResource(R.string.onboarding_skip)) }
+                Button(
+                    onClick = onContinue,
+                    modifier = Modifier.weight(1f),
+                ) { Text(stringResource(R.string.onboarding_continue)) }
+            }
         }
     }
 }

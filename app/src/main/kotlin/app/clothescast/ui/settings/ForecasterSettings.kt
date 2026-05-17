@@ -27,6 +27,7 @@ import app.clothescast.R
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.defaultsFor
+import app.clothescast.ui.EdgeFadeOverlay
 
 /**
  * Minimum number of models the confidence fetcher needs to compute a spread.
@@ -66,81 +67,86 @@ internal fun ForecastersContent(
     // ends up explicitly customised, starting from what Auto picked).
     val isAuto = forecastModels == null
     val effective = forecastModels ?: ForecastModel.defaultsFor(location)
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    val scrollState = rememberScrollState()
+    EdgeFadeOverlay(
+        scrollState = scrollState,
+        modifier = Modifier.padding(padding),
     ) {
-        SectionCard(title = stringResource(R.string.settings_forecasters_title)) {
-            Text(
-                text = stringResource(R.string.settings_forecasters_description),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            AutoSwitchRow(
-                isAuto = isAuto,
-                onToggle = { nowAuto ->
-                    if (nowAuto) {
-                        onSetForecastModels(null)
-                    } else {
-                        // Flipping Auto off persists whatever Auto was
-                        // already resolving to, so the visible checkboxes
-                        // don't suddenly jump — the user then explicitly
-                        // edits from that starting point.
-                        onSetForecastModels(effective)
-                    }
-                },
-            )
-            HorizontalDivider()
-            val atCap = effective.size >= MAX_MODELS
-            if (atCap && !isAuto) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            SectionCard(title = stringResource(R.string.settings_forecasters_title)) {
                 Text(
-                    text = stringResource(R.string.settings_forecasters_cap_hint, MAX_MODELS),
+                    text = stringResource(R.string.settings_forecasters_description),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-            }
-            ForecastModel.entries.forEach { model ->
-                val checked = model in effective
-                // Auto mode: every row reflects the resolver's pick but is
-                // not toggleable — user has to flip Auto off first. Custom
-                // mode: block unchecking when we'd drop below MIN_MODELS,
-                // block checking when we'd exceed MAX_MODELS. An already-
-                // checked row stays interactable above the cap so the user
-                // can still toggle it off to free a slot.
-                val canToggleOff = effective.size > MIN_MODELS
-                val canToggleOn = !atCap
-                val enabled = !isAuto && (if (checked) canToggleOff else canToggleOn)
-                ForecasterRow(
-                    label = stringResource(forecastModelLabel(model)),
-                    subtitle = stringResource(forecastModelSubtitle(model)),
-                    checked = checked,
-                    enabled = enabled,
-                    onToggle = { nowChecked ->
-                        val updated = if (nowChecked) effective + model else effective - model
-                        if (updated.size in MIN_MODELS..MAX_MODELS) onSetForecastModels(updated)
+                AutoSwitchRow(
+                    isAuto = isAuto,
+                    onToggle = { nowAuto ->
+                        if (nowAuto) {
+                            onSetForecastModels(null)
+                        } else {
+                            // Flipping Auto off persists whatever Auto was
+                            // already resolving to, so the visible checkboxes
+                            // don't suddenly jump — the user then explicitly
+                            // edits from that starting point.
+                            onSetForecastModels(effective)
+                        }
                     },
                 )
+                HorizontalDivider()
+                val atCap = effective.size >= MAX_MODELS
+                if (atCap && !isAuto) {
+                    Text(
+                        text = stringResource(R.string.settings_forecasters_cap_hint, MAX_MODELS),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                ForecastModel.entries.forEach { model ->
+                    val checked = model in effective
+                    // Auto mode: every row reflects the resolver's pick but is
+                    // not toggleable — user has to flip Auto off first. Custom
+                    // mode: block unchecking when we'd drop below MIN_MODELS,
+                    // block checking when we'd exceed MAX_MODELS. An already-
+                    // checked row stays interactable above the cap so the user
+                    // can still toggle it off to free a slot.
+                    val canToggleOff = effective.size > MIN_MODELS
+                    val canToggleOn = !atCap
+                    val enabled = !isAuto && (if (checked) canToggleOff else canToggleOn)
+                    ForecasterRow(
+                        label = stringResource(forecastModelLabel(model)),
+                        subtitle = stringResource(forecastModelSubtitle(model)),
+                        checked = checked,
+                        enabled = enabled,
+                        onToggle = { nowChecked ->
+                            val updated = if (nowChecked) effective + model else effective - model
+                            if (updated.size in MIN_MODELS..MAX_MODELS) onSetForecastModels(updated)
+                        },
+                    )
+                }
+                // BOM is omitted from ForecastModel while Open-Meteo's BOM
+                // open-data delivery is suspended; surface it as a permanently-
+                // disabled row so users searching for the Australian model see
+                // it's known-missing rather than wonder where it went. Remove
+                // this row and wire BOM through the enum when delivery resumes.
+                ForecasterRow(
+                    label = stringResource(R.string.settings_forecasters_bom),
+                    subtitle = stringResource(R.string.settings_forecasters_bom_subtitle),
+                    checked = false,
+                    enabled = false,
+                    onToggle = {},
+                )
+                TextButton(
+                    onClick = { openUrl(context, OPEN_METEO_URL) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text(stringResource(R.string.settings_about_open_meteo)) }
             }
-            // BOM is omitted from ForecastModel while Open-Meteo's BOM
-            // open-data delivery is suspended; surface it as a permanently-
-            // disabled row so users searching for the Australian model see
-            // it's known-missing rather than wonder where it went. Remove
-            // this row and wire BOM through the enum when delivery resumes.
-            ForecasterRow(
-                label = stringResource(R.string.settings_forecasters_bom),
-                subtitle = stringResource(R.string.settings_forecasters_bom_subtitle),
-                checked = false,
-                enabled = false,
-                onToggle = {},
-            )
-            TextButton(
-                onClick = { openUrl(context, OPEN_METEO_URL) },
-                modifier = Modifier.fillMaxWidth(),
-            ) { Text(stringResource(R.string.settings_about_open_meteo)) }
         }
     }
 }

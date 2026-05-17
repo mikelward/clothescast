@@ -32,6 +32,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import app.clothescast.R
 import app.clothescast.calendar.CalendarPermission
+import app.clothescast.ui.EdgeFadeOverlay
 
 @Composable
 internal fun CalendarContent(
@@ -39,18 +40,23 @@ internal fun CalendarContent(
     padding: PaddingValues,
     onSetUseCalendarEvents: (Boolean) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    val scrollState = rememberScrollState()
+    EdgeFadeOverlay(
+        scrollState = scrollState,
+        modifier = Modifier.padding(padding),
     ) {
-        CalendarCard(
-            useEvents = useCalendarEvents,
-            onSetUseEvents = onSetUseCalendarEvents,
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            CalendarCard(
+                useEvents = useCalendarEvents,
+                onSetUseEvents = onSetUseCalendarEvents,
+            )
+        }
     }
 }
 

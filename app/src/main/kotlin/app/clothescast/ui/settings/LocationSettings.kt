@@ -41,6 +41,7 @@ import app.clothescast.R
 import app.clothescast.core.domain.model.Location
 import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
+import app.clothescast.ui.EdgeFadeOverlay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -59,31 +60,36 @@ internal fun LocationContent(
     onUseCurrentLocationForHome: () -> Unit,
     onSearchLocations: suspend (String) -> List<Location>,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    val scrollState = rememberScrollState()
+    EdgeFadeOverlay(
+        scrollState = scrollState,
+        modifier = Modifier.padding(padding),
     ) {
-        LocationCard(
-            current = location,
-            useDeviceLocation = useDeviceLocation,
-            locationDetecting = locationDetecting,
-            onSetUseDeviceLocation = onSetUseDeviceLocation,
-            onSelect = onSelectLocation,
-            onClear = onClearLocation,
-            onSearch = onSearchLocations,
-        )
-        HomeLocationCard(
-            current = homeLocation,
-            resolving = homeLocationResolving,
-            onSelect = onSelectHomeLocation,
-            onClear = onClearHomeLocation,
-            onUseCurrent = onUseCurrentLocationForHome,
-            onSearch = onSearchLocations,
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            LocationCard(
+                current = location,
+                useDeviceLocation = useDeviceLocation,
+                locationDetecting = locationDetecting,
+                onSetUseDeviceLocation = onSetUseDeviceLocation,
+                onSelect = onSelectLocation,
+                onClear = onClearLocation,
+                onSearch = onSearchLocations,
+            )
+            HomeLocationCard(
+                current = homeLocation,
+                resolving = homeLocationResolving,
+                onSelect = onSelectHomeLocation,
+                onClear = onClearHomeLocation,
+                onUseCurrent = onUseCurrentLocationForHome,
+                onSearch = onSearchLocations,
+            )
+        }
     }
 }
 

@@ -392,8 +392,8 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setHolidayCountryAll(enabled) }
     }
 
-    fun setHolidayCountryEnabled(code: String, enabled: Boolean) {
-        viewModelScope.launch { settingsRepository.setHolidayCountryEnabled(code, enabled) }
+    fun setHolidayCountryOverride(code: String, override: HolidayOverride) {
+        viewModelScope.launch { settingsRepository.setHolidayCountryOverride(code, override) }
     }
 
     fun addClothesRule(rule: ClothesRule) {

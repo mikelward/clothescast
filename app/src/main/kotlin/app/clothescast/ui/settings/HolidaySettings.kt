@@ -54,13 +54,14 @@ import java.util.Locale
  * collapsible showing every holiday in the catalogue flat for power-user
  * search.
  *
- * Each holiday row carries a tri-state dropdown (`Auto` / `On` / `Off`).
- * The `Auto` label includes the current resolution ("Auto (on)" / "Auto
- * (off)") so the user can see what the country picker is doing without
+ * Both country headers and individual holiday rows carry a tri-state
+ * dropdown (`Auto` / `On` / `Off`). The `Auto` label includes the
+ * current resolution ("Auto (on)" / "Auto (off)") so the user can see
+ * what the country picker (or the country override) is doing without
  * flipping it in their head.
  *
- * Country headers show an `(n/m)` summary — holidays currently active /
- * total for that country (including globals).
+ * Country headers also show an `(n/m)` summary — holidays currently
+ * active / total for that country (including globals).
  *
  * Resource IDs are looked up via [LocalContext]'s `getIdentifier` so the
  * theme catalogue can live in `:core:domain` without depending on `R`.
@@ -77,7 +78,7 @@ internal fun HolidaysContent(
     onSetCountryHome: (Boolean) -> Unit,
     onSetCountryCurrent: (Boolean) -> Unit,
     onSetCountryAll: (Boolean) -> Unit,
-    onSetCountryEnabled: (String, Boolean) -> Unit,
+    onSetCountryOverride: (String, HolidayOverride) -> Unit,
     onSetHolidayOverride: (HolidayId, HolidayOverride) -> Unit,
 ) {
     val scrollState = rememberScrollState()
@@ -160,10 +161,23 @@ internal fun HolidaysContent(
             isoCountries.forEach { code ->
                 val themes = themesByCountry[code].orEmpty()
                 val activeCount = themes.count { theme -> theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries) }
+                val countryOverride = holidayCountrySelection.countryOverrides[code] ?: HolidayOverride.AUTO
+                val countryAutoOn = holidayCountrySelection.countryAutoEffective(
+                    code,
+                    localeCountry,
+                    weatherLocationCountry,
+                )
                 CollapsibleSection(
                     title = resolveCountryDisplayName(context, uiLocale, code),
                     summary = "$activeCount/${themes.size}",
                     rememberKey = "holidays-country-$code",
+                    trailing = {
+                        OverrideDropdown(
+                            current = countryOverride,
+                            autoOn = countryAutoOn,
+                            onChange = { newState -> onSetCountryOverride(code, newState) },
+                        )
+                    },
                 ) {
                     themes.forEach { theme ->
                         HolidayOverrideRow(
@@ -207,8 +221,9 @@ private fun HolidayTheme.isActive(
 /**
  * Card with a tap-to-expand header. The summary text (e.g. `3/15`) sits
  * to the right of the title and the expand/collapse chevron is at the
- * far right. `rememberKey` scopes the expansion state via
- * [rememberSaveable] so it survives config changes.
+ * far right. An optional [trailing] slot (e.g. the country override
+ * dropdown) sits between summary and chevron. `rememberKey` scopes the
+ * expansion state via [rememberSaveable] so it survives config changes.
  */
 @Composable
 private fun CollapsibleSection(
@@ -216,6 +231,7 @@ private fun CollapsibleSection(
     summary: String,
     rememberKey: String,
     initiallyExpanded: Boolean = false,
+    trailing: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     var expanded by rememberSaveable(rememberKey) { mutableStateOf(initiallyExpanded) }
@@ -241,6 +257,9 @@ private fun CollapsibleSection(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(end = 8.dp),
                 )
+                if (trailing != null) {
+                    trailing()
+                }
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
                         imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,

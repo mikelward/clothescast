@@ -215,7 +215,7 @@ fun SettingsScreen(
                 onSetCountryHome = viewModel::setHolidayCountryHome,
                 onSetCountryCurrent = viewModel::setHolidayCountryCurrent,
                 onSetCountryAll = viewModel::setHolidayCountryAll,
-                onSetCountryEnabled = viewModel::setHolidayCountryEnabled,
+                onSetCountryOverride = viewModel::setHolidayCountryOverride,
                 onSetHolidayOverride = viewModel::setHolidayOverride,
             )
             SettingsRoute.Location -> LocationContent(

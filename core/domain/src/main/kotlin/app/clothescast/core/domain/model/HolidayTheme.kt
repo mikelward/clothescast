@@ -27,6 +27,10 @@ enum class HolidayId {
     ST_DAVIDS_DAY,
     KOREAN_INDEPENDENCE_MOVEMENT_DAY,
     ST_PATRICKS_DAY,
+    UK_MOTHERING_SUNDAY,
+    GOOD_FRIDAY,
+    EASTER_SUNDAY,
+    EASTER_MONDAY,
     ST_GEORGES_DAY,
     ANZAC_DAY,
     LABOUR_DAY,
@@ -67,19 +71,24 @@ enum class HolidayId {
     IMMACULATE_CONCEPTION,
     CHRISTMAS_DAY,
     BOXING_DAY,
-    // TODO(holidays-v4): UK Mothering Sunday — 4th Sun of Lent, i.e. movable
-    // and tied to Easter (Computus). The current [MOTHERS_DAY] entry uses
-    // 2nd Sun of May which is correct for US/AU/CA/NZ but not UK/IE. Adding
-    // a Computus implementation unlocks both Easter Sunday and Mothering
-    // Sunday at the same time.
-    //
     // TODO(holidays-v4): UK Remembrance Sunday — 2nd Sun of Nov, sits
     // alongside [REMEMBRANCE_DAY] on Nov 11 in the UK (one's the formal
     // observance, the other the day itself).
     //
-    // TODO(holidays-v4): movable / lunisolar holidays (Easter, Lunar New Year,
-    // Diwali, Hanukkah, Eid, Holi). Need either a Computus implementation for
-    // Easter or per-year lookup tables for the others.
+    // TODO(holidays-v4): Christian / Catholic religious bucket. The four
+    // Easter-cluster entries ([GOOD_FRIDAY], [EASTER_SUNDAY],
+    // [EASTER_MONDAY], plus Ascension / Pentecost / Whit Monday /
+    // Corpus Christi when added) currently ride the [GLOBAL_COUNTRY]
+    // bucket so they auto-fire for everyone who hasn't muted Global —
+    // a pragmatic v1 punt that sidesteps the "which countries are
+    // nominally Christian?" classification. Long term these belong in
+    // a [HolidayCatalog.CHRISTIAN] (or split into CATHOLIC / PROTESTANT)
+    // sentinel, with its own checkbox alongside Home / Current / Global
+    // in the picker.
+    //
+    // TODO(holidays-v4): lunisolar holidays (Lunar New Year, Diwali,
+    // Hanukkah, Eid, Holi). Need per-year lookup tables — none of them
+    // has a closed-form Gregorian computus the way Easter does.
     //
     // TODO(holidays-v4): switch the [REMEMBRANCE_DAY] banner-name lookup
     // from [Region]-derived country to location-derived country once the
@@ -97,8 +106,10 @@ enum class HolidayId {
 
 /**
  * How a holiday's date is computed from a [LocalDate]. Most are [Fixed] —
- * the same Month+day every year. [NthWeekday] covers the only v1 movable
- * date (Thanksgiving = 4th Thu of November).
+ * the same Month+day every year. [NthWeekday] / [LastWeekday] cover the
+ * fixed-weekday movables (US Thanksgiving = 4th Thu of November, US
+ * Memorial Day = last Mon of May, UK bank holidays). [EasterRelative]
+ * covers Western Easter and the holidays anchored to it.
  */
 sealed interface HolidayDate {
     fun matches(date: LocalDate): Boolean
@@ -162,6 +173,53 @@ sealed interface HolidayDate {
                 .with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())
             val shiftBack = (lastOfMonth.dayOfWeek.value - day.value + 7) % 7
             return lastOfMonth.minusDays(shiftBack.toLong())
+        }
+    }
+
+    /**
+     * Date relative to Western (Gregorian) Easter Sunday, expressed as
+     * a signed day offset. Easter Sunday itself is `EasterRelative(0)`;
+     * Good Friday is `EasterRelative(-2)`; Easter Monday is `EasterRelative(+1)`;
+     * UK Mothering Sunday (4th Sun of Lent) is `EasterRelative(-21)`.
+     *
+     * Movable date, so the cached materialisation is year-keyed inside
+     * [dateIn] rather than memoised on the data class. Orthodox Easter
+     * (Julian Computus) is *not* covered by this variant — when we
+     * add Orthodox holidays they'll get their own sibling type so the
+     * Western / Orthodox split stays explicit at the predicate level.
+     */
+    data class EasterRelative(val daysOffset: Int) : HolidayDate {
+        override fun matches(date: LocalDate): Boolean = date == dateIn(date.year)
+
+        override fun dateIn(year: Int): LocalDate =
+            easterSundayGregorian(year).plusDays(daysOffset.toLong())
+
+        companion object {
+            /**
+             * Anonymous Gregorian algorithm (a.k.a. Meeus / Jones / Butcher
+             * algorithm) for Western Easter Sunday. Pure integer arithmetic;
+             * no exception handling needed inside the catalog year range
+             * since the result always lands on a real calendar date between
+             * March 22 and April 25 inclusive.
+             */
+            fun easterSundayGregorian(year: Int): LocalDate {
+                val a = year % 19
+                val b = year / 100
+                val c = year % 100
+                val d = b / 4
+                val e = b % 4
+                val f = (b + 8) / 25
+                val g = (b - f + 1) / 3
+                val h = (19 * a + b - d - g + 15) % 30
+                val i = c / 4
+                val k = c % 4
+                val l = (32 + 2 * e + 2 * i - h - k) % 7
+                val m = (a + 11 * h + 22 * l) / 451
+                val rawMonth = h + l - 7 * m + 114
+                val month = rawMonth / 31
+                val day = rawMonth % 31 + 1
+                return LocalDate.of(year, month, day)
+            }
         }
     }
 }
@@ -435,6 +493,68 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(IRELAND_GREEN),
             bannerArgb = IRELAND_DEEP,
             countries = setOf("IE", "GB"),
+        ),
+
+        // 4th Sunday of Lent (Easter − 21) — UK / Irish Mothering Sunday.
+        // Tagged GB / IE only rather than GLOBAL_COUNTRY because the
+        // existing [MOTHERS_DAY] entry (2nd Sun of May) covers
+        // US / AU / CA / NZ — putting Mothering Sunday in the global
+        // bucket would surface it to those users too and double up.
+        // Soft-rose top + cream bottom keeps it visibly distinct from
+        // Mother's Day's deeper pink / green bouquet palette.
+        HolidayDate.EasterRelative(-21) to HolidayTheme(
+            id = HolidayId.UK_MOTHERING_SUNDAY,
+            displayNameKey = "holiday_name_uk_mothering_sunday",
+            bannerTextKey = "holiday_banner_uk_mothering_sunday",
+            emoji = "💐", // 💐 — shared with Mother's Day on purpose
+            topOverrides = topPaletteAll(MOTHERING_ROSE),
+            bottomOverrides = bottomPaletteAll(MOTHERING_CREAM),
+            bannerArgb = MOTHERING_ROSE,
+            countries = setOf("GB", "IE"),
+        ),
+
+        // Easter − 2 — Western Good Friday. Solemn, monochrome aubergine
+        // (Passion-week liturgical purple). Same single-colour shape as
+        // Anzac / MLK / US Memorial — a celebratory two-colour palette
+        // would read wrong here. Tagged [GLOBAL_COUNTRY] as a v1 punt;
+        // see the Christian-bucket TODO at the top of [HolidayId].
+        HolidayDate.EasterRelative(-2) to HolidayTheme(
+            id = HolidayId.GOOD_FRIDAY,
+            displayNameKey = "holiday_name_good_friday",
+            bannerTextKey = "holiday_banner_good_friday",
+            emoji = "✝", // ✝
+            topOverrides = topPaletteAll(GOOD_FRIDAY_AUBERGINE),
+            bottomOverrides = bottomPaletteAll(GOOD_FRIDAY_AUBERGINE),
+            bannerArgb = GOOD_FRIDAY_AUBERGINE,
+            countries = setOf(GLOBAL_COUNTRY),
+        ),
+
+        // Easter Sunday. Pastel-lemon top + pastel-mint bottom — egg-
+        // decorating spring-renewal palette, no flag association.
+        // Tagged [GLOBAL_COUNTRY] for the same v1 reason as Good Friday.
+        HolidayDate.EasterRelative(0) to HolidayTheme(
+            id = HolidayId.EASTER_SUNDAY,
+            displayNameKey = "holiday_name_easter_sunday",
+            bannerTextKey = "holiday_banner_easter_sunday",
+            emoji = "🥚", // 🥚 — Easter egg
+            topOverrides = topPaletteAll(EASTER_LEMON),
+            bottomOverrides = bottomPaletteAll(EASTER_MINT),
+            bannerArgb = EASTER_LEMON,
+            countries = setOf(GLOBAL_COUNTRY),
+        ),
+
+        // Easter Monday. Same pastel palette as Easter Sunday so the
+        // Sun→Mon weekend reads as a continuous theme rather than two
+        // different days. Tagged [GLOBAL_COUNTRY] like the others above.
+        HolidayDate.EasterRelative(1) to HolidayTheme(
+            id = HolidayId.EASTER_MONDAY,
+            displayNameKey = "holiday_name_easter_monday",
+            bannerTextKey = "holiday_banner_easter_monday",
+            emoji = "🐰", // 🐰
+            topOverrides = topPaletteAll(EASTER_LEMON),
+            bottomOverrides = bottomPaletteAll(EASTER_MINT),
+            bannerArgb = EASTER_LEMON,
+            countries = setOf(GLOBAL_COUNTRY),
         ),
 
         // Apr 23 — St George's Day. White tops + red bottoms — the flag's
@@ -1205,3 +1325,19 @@ private const val MARIAN_BLUE = 0xFF1976D2L
 // Memorial Day. White vestment top + charcoal bottom.
 private const val SAINTS_WHITE = 0xFFF5F5F5L
 private const val SAINTS_CHARCOAL = 0xFF424242L
+
+// Easter Sunday + Easter Monday — pastel egg-decorating palette, no
+// flag association. Shared by both days so the Sun→Mon weekend reads
+// as one theme.
+private const val EASTER_LEMON = 0xFFFFF59DL
+private const val EASTER_MINT = 0xFFB5E6C9L
+
+// Good Friday — solemn Passion-week liturgical aubergine. Monochrome
+// across both tiers, same shape as Anzac / Memorial Day.
+private const val GOOD_FRIDAY_AUBERGINE = 0xFF4A148CL
+
+// UK / IE Mothering Sunday — soft rose top + cream bottom. Lighter
+// than the [MOTHER_PINK]/[MOTHER_GREEN] palette so the same emoji
+// (💐) reads as a different occasion on a different date.
+private const val MOTHERING_ROSE = 0xFFF8BBD0L
+private const val MOTHERING_CREAM = 0xFFFFF8E1L

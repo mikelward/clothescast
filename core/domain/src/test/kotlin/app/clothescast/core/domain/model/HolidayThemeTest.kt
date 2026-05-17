@@ -89,4 +89,38 @@ class HolidayThemeTest {
         HolidayDate.LastWeekday(Month.FEBRUARY, DayOfWeek.THURSDAY).dateIn(2024) shouldBe
             LocalDate.of(2024, 2, 29)
     }
+
+    @Test
+    fun `easterSundayGregorian computes the known reference years`() {
+        // Cross-checked against published Western Easter tables.
+        HolidayDate.EasterRelative.easterSundayGregorian(2024) shouldBe LocalDate.of(2024, 3, 31)
+        HolidayDate.EasterRelative.easterSundayGregorian(2025) shouldBe LocalDate.of(2025, 4, 20)
+        HolidayDate.EasterRelative.easterSundayGregorian(2026) shouldBe LocalDate.of(2026, 4, 5)
+        HolidayDate.EasterRelative.easterSundayGregorian(2027) shouldBe LocalDate.of(2027, 3, 28)
+        HolidayDate.EasterRelative.easterSundayGregorian(2028) shouldBe LocalDate.of(2028, 4, 16)
+        HolidayDate.EasterRelative.easterSundayGregorian(2029) shouldBe LocalDate.of(2029, 4, 1)
+        HolidayDate.EasterRelative.easterSundayGregorian(2030) shouldBe LocalDate.of(2030, 4, 21)
+    }
+
+    @Test
+    fun `dateIn materialises EasterRelative against the per-year Easter`() {
+        // 2026: Easter Sunday Apr 5 → Good Friday Apr 3, Easter Monday Apr 6,
+        // Mothering Sunday (4th Sun of Lent, Easter − 21) → Mar 15.
+        HolidayDate.EasterRelative(0).dateIn(2026) shouldBe LocalDate.of(2026, 4, 5)
+        HolidayDate.EasterRelative(-2).dateIn(2026) shouldBe LocalDate.of(2026, 4, 3)
+        HolidayDate.EasterRelative(1).dateIn(2026) shouldBe LocalDate.of(2026, 4, 6)
+        HolidayDate.EasterRelative(-21).dateIn(2026) shouldBe LocalDate.of(2026, 3, 15)
+    }
+
+    @Test
+    fun `EasterRelative matches only the materialised date for that year`() {
+        val goodFriday = HolidayDate.EasterRelative(-2)
+        // Apr 3 2026 = Good Friday in 2026.
+        goodFriday.matches(LocalDate.of(2026, 4, 3)) shouldBe true
+        // Apr 3 in another year is *not* Good Friday — matches() recomputes
+        // per-year rather than hard-coding the 2026 date.
+        goodFriday.matches(LocalDate.of(2027, 4, 3)) shouldBe false
+        // Mar 26 2027 is the right Good Friday for that year.
+        goodFriday.matches(LocalDate.of(2027, 3, 26)) shouldBe true
+    }
 }

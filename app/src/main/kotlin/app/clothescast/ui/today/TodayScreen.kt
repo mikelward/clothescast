@@ -12,9 +12,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -160,6 +163,14 @@ fun TodayScreen(
     )
 
     Scaffold(
+        // Drop the default `safeDrawing` content insets so the pager extends
+        // edge-to-edge under the (transparent) nav bar. The padding lambda
+        // below still includes the TopAppBar's height; the empty-state Column
+        // and each TodayPage's scrolling Column add
+        // `windowInsetsPadding(WindowInsets.navigationBars)` themselves so
+        // content stays reachable above the nav bar, and the bottom fade in
+        // `EdgeFadeOverlay` does the same so it sits just above the bar.
+        contentWindowInsets = WindowInsets(0),
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(titleRes)) },
@@ -344,6 +355,13 @@ private fun TodayContent(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    // Match the nav-bar inset added inside each TodayPage's
+                    // scroll viewport — this branch isn't scrollable, so the
+                    // Fetch-now button has to be padded out of the nav-bar
+                    // zone directly. Without this the button would sit under
+                    // the (translucent) nav bar on devices where banners
+                    // push it down to the bottom of the screen.
+                    .windowInsetsPadding(WindowInsets.navigationBars)
                     .padding(horizontal = 16.dp)
                     .padding(top = 16.dp, bottom = 24.dp),
             ) {
@@ -442,6 +460,11 @@ private fun TodayPage(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
+                // Nav-bar inset goes here — *inside* the scroll viewport, as
+                // content padding — so the last diagnostic card can scroll
+                // fully above the (translucent) nav bar while the viewport
+                // itself still extends to the screen edge.
+                .windowInsetsPadding(WindowInsets.navigationBars)
                 .padding(horizontal = 16.dp)
                 .padding(top = 16.dp, bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),

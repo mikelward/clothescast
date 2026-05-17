@@ -5,8 +5,11 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -93,6 +96,14 @@ fun SettingsScreen(
     }
 
     Scaffold(
+        // Drop the default `safeDrawing` content insets so each sub-screen's
+        // scroll viewport extends edge-to-edge under the (transparent) nav
+        // bar. Each sub-screen's inner Column adds
+        // `windowInsetsPadding(WindowInsets.navigationBars)` as content
+        // padding so the last item can scroll above the nav bar; the bottom
+        // fade in `EdgeFadeOverlay` does the same so it sits just above
+        // the bar.
+        contentWindowInsets = WindowInsets(0),
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(route.titleRes)) },
@@ -264,6 +275,7 @@ internal fun SettingsRoot(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
+                .windowInsetsPadding(WindowInsets.navigationBars)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {

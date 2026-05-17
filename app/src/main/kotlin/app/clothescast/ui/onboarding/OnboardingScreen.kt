@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -70,7 +73,13 @@ fun OnboardingScreen(
     val context = LocalContext.current
     val isTV = remember(context) { isTelevision(context) }
 
-    Scaffold { padding ->
+    Scaffold(
+        // Drop the default `safeDrawing` content insets so the onboarding
+        // content extends edge-to-edge. The inner Column adds
+        // `windowInsetsPadding(WindowInsets.navigationBars)` so its content
+        // can scroll above the nav bar.
+        contentWindowInsets = WindowInsets(0),
+    ) { padding ->
         OnboardingContent(
             geminiKeyConfigured = state.geminiKeyConfigured,
             location = state.location,
@@ -114,6 +123,12 @@ internal fun OnboardingContent(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
+                // Onboarding has no TopAppBar to consume the status-bar /
+                // cutout insets, so use `safeDrawing` (= status + navigation
+                // + cutout + IME) here rather than just `navigationBars`.
+                // Without the top inset the title can start under the
+                // status bar on devices with a tall bar or a display cutout.
+                .windowInsetsPadding(WindowInsets.safeDrawing)
                 .padding(horizontal = 16.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {

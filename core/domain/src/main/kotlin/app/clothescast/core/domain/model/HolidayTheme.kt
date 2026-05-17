@@ -30,8 +30,8 @@ enum class HolidayId {
     ANZAC_DAY,
     MOTHERS_DAY,
     JAPAN_GREENERY_DAY,
-    CROATIA_STATEHOOD_DAY,
     US_MEMORIAL_DAY,
+    CROATIA_STATEHOOD_DAY,
     ITALY_REPUBLIC_DAY,
     KOREAN_MEMORIAL_DAY,
     JUNETEENTH,
@@ -385,6 +385,27 @@ object HolidayCatalog {
             bannerArgb = GREENERY_GREEN,
         ),
 
+        // Last Monday of May — US Memorial Day. Solemn monochrome khaki,
+        // same shape as Anzac. Different from US Veterans Day (Nov 11),
+        // which is the Remembrance Day banner with a US country override.
+        //
+        // Listed before Croatia Statehood Day (May 30, fixed) on purpose:
+        // in years where the last Mon of May *is* May 30 (2033, 2039,
+        // 2044, …), both predicates match and the resolver's first-match
+        // rule would otherwise let Croatia shadow Memorial Day under
+        // allOn — a regression flagged in code review for the merged
+        // 16-holiday addition. Memorial Day is the more globally-
+        // recognised holiday for the app's audience, so it wins the tie.
+        HolidayDate.LastWeekday(Month.MAY, DayOfWeek.MONDAY) to HolidayTheme(
+            id = HolidayId.US_MEMORIAL_DAY,
+            displayNameKey = "holiday_name_us_memorial_day",
+            bannerTextKey = "holiday_banner_us_memorial_day",
+            emoji = "🔺", // 🔺 — match Anzac / Remembrance for visual continuity
+            topOverrides = topPaletteAll(ANZAC_KHAKI),
+            bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
+            bannerArgb = ANZAC_KHAKI,
+        ),
+
         // May 30 — Croatia Statehood Day. True flag tricolour
         // (red/white/blue, top-middle-bottom). Same option-3 stroke pattern
         // as US July 4 / Bastille: red tops + blue bottoms with white as
@@ -399,19 +420,6 @@ object HolidayCatalog {
             topStrokeOverrides = topStrokeAll(CROATIA_WHITE),
             bottomStrokeOverrides = bottomStrokeAll(CROATIA_WHITE),
             bannerArgb = CROATIA_RED,
-        ),
-
-        // Last Monday of May — US Memorial Day. Solemn monochrome khaki,
-        // same shape as Anzac. Different from US Veterans Day (Nov 11),
-        // which is the Remembrance Day banner with a US country override.
-        HolidayDate.LastWeekday(Month.MAY, DayOfWeek.MONDAY) to HolidayTheme(
-            id = HolidayId.US_MEMORIAL_DAY,
-            displayNameKey = "holiday_name_us_memorial_day",
-            bannerTextKey = "holiday_banner_us_memorial_day",
-            emoji = "🔺", // 🔺 — match Anzac / Remembrance for visual continuity
-            topOverrides = topPaletteAll(ANZAC_KHAKI),
-            bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
-            bannerArgb = ANZAC_KHAKI,
         ),
 
         // Jun 2 — Italian Republic Day. Green tops + red bottoms with the

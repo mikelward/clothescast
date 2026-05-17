@@ -61,6 +61,23 @@ class HolidayResolverTest {
     }
 
     @Test
+    fun `US Memorial Day wins over Croatia Statehood Day when May 30 is a Monday`() {
+        // 2033-05-30 is a Monday → it's both the last Mon of May (US
+        // Memorial Day) AND Croatia Statehood Day (May 30 fixed). Catalog
+        // order puts Memorial Day first so the more universally-recognised
+        // US holiday doesn't get silently shadowed under allOn — see the
+        // collision note in HolidayTheme.kt's catalog block.
+        val d = LocalDate.of(2033, 5, 30)
+        d.dayOfWeek shouldBe DayOfWeek.MONDAY
+        subject.resolve(d, allOn)?.id shouldBe HolidayId.US_MEMORIAL_DAY
+        // Croatia Statehood Day still fires for a Croatian user with
+        // Memorial Day disabled — the predicate works, it's just the
+        // ordering that decides ties.
+        subject.resolve(d, setOf(HolidayId.CROATIA_STATEHOOD_DAY))?.id shouldBe
+            HolidayId.CROATIA_STATEHOOD_DAY
+    }
+
+    @Test
     fun `Korean Memorial Day matches Jun 6`() {
         subject.resolve(LocalDate.of(2026, 6, 6), allOn)?.id shouldBe HolidayId.KOREAN_MEMORIAL_DAY
     }

@@ -41,6 +41,17 @@ enum class HolidayId {
     // 1st Sun Sep in AU/NZ. Add when we have a region-gating story, or split
     // into MOTHERS_DAY_MAY / FATHERS_DAY_JUN / FATHERS_DAY_SEP entries.
     //
+    // TODO(holidays-v2): the wider military-remembrance cluster — same shape
+    // as Anzac Day (solemn monochrome palette, sober banner copy):
+    //   - US Memorial Day — last Mon of May
+    //   - UK Remembrance Day — Nov 11 (and Remembrance Sunday, 2nd Sun of Nov)
+    //   - US Veterans Day — Nov 11
+    //   - Canadian Remembrance Day — Nov 11
+    //   - Australian Remembrance Day — Nov 11
+    // Most share Nov 11 so the resolver's precedence ordering will need
+    // a deliberate choice (or these all share a single REMEMBRANCE_DAY id
+    // with region-aware banner copy).
+    //
     // TODO(holidays-v2): movable / lunisolar holidays (Easter, Lunar New Year,
     // Diwali, Hanukkah, Eid, Holi). Need either a Computus implementation for
     // Easter or per-year lookup tables for the others.
@@ -84,11 +95,13 @@ sealed interface HolidayDate {
  * Fill (`*Overrides`) is the primary colour of the garment body. Stroke
  * (`*StrokeOverrides`) is the colour of the outline / collar / cuff /
  * trim — the SVG's secondary detail colour. Empty stroke map ⇒ the
- * existing auto-derive-from-fill logic kicks in (monochrome holidays
- * like St Patrick's get an unobtrusive darker-green outline). A
- * non-empty stroke map paints a contrasting accent: yellow Australia-
- * Day shirt with green collar / sleeves, red Christmas top with white
- * trim, etc.
+ * existing auto-derive-from-fill logic kicks in, producing an unobtrusive
+ * darker shade of the fill (the default for two-colour holidays where the
+ * second colour lives on the opposite garment, not as a contrasting trim).
+ * A non-empty stroke map paints an explicit contrasting accent — reserved
+ * for the true tricolour holidays (US July 4, Bastille Day, Italy,
+ * Germany, New Year's) where a third flag colour needs to appear on
+ * every garment alongside the fill.
  *
  * [emoji] is a single glyph rendered alongside the banner text — keep it to
  * one visible code point so RTL / fontScale doesn't reflow the line.
@@ -110,12 +123,14 @@ data class HolidayTheme(
  * banner copy. Catalog order is calendar order — also the resolver's
  * first-match precedence order if two ever clash (none do in v1).
  *
- * Palette philosophy: anchor on the holiday's flag / iconic colours, and
- * spread them across the outfit tiers so a Christmas-day THICK_COAT user
- * gets a different fill than a Christmas-day TSHIRT user but both feel
- * Christmasy. Where a holiday has only two flag colours we double up — same
- * colour on adjacent tiers — rather than inventing a third that's not in
- * the holiday's visual vocabulary.
+ * Palette philosophy: anchor on the holiday's flag / iconic colours, with
+ * one solid colour across every top tier and the second solid colour
+ * across every bottom tier — so any outfit pair on the day reads as two
+ * colours (red top + green bottom for Christmas, white top + red bottom
+ * for St George's). Solemn remembrance days (Anzac) use a single
+ * monochrome colour across both tiers. The five true tricolour holidays
+ * (US July 4, Bastille Day, Italy, Germany, New Year's) layer a third
+ * accent colour on top via [HolidayTheme.topStrokeOverrides] / [bottomStrokeOverrides].
  */
 object HolidayCatalog {
 
@@ -137,24 +152,21 @@ object HolidayCatalog {
             bannerArgb = NY_GOLD,
         ),
 
-        // Jan 26 — Australia Day. Sporting green + gold. Yellow shirt with
-        // green collar / sleeves; green shorts with yellow trim. Distinct
-        // from the actual flag colours (blue/red/white).
+        // Jan 26 — Australia Day. Sporting green tops + gold bottoms.
+        // Distinct from the actual flag colours (blue/red/white).
         HolidayDate.Fixed(Month.JANUARY, 26) to HolidayTheme(
             id = HolidayId.AUSTRALIA_DAY,
             displayNameKey = "holiday_name_australia_day",
             bannerTextKey = "holiday_banner_australia_day",
             emoji = "🦎", // 🦎 — a nod that doesn't lean on the flag
-            topOverrides = topPaletteAll(AUS_GOLD),
-            bottomOverrides = bottomPaletteAll(AUS_GREEN),
-            topStrokeOverrides = topStrokeAll(AUS_GREEN),
-            bottomStrokeOverrides = bottomStrokeAll(AUS_GOLD),
+            topOverrides = topPaletteAll(AUS_GREEN),
+            bottomOverrides = bottomPaletteAll(AUS_GOLD),
             bannerArgb = AUS_GREEN,
         ),
 
-        // Feb 14 — Valentine's. Pink shirts with red trim; red bottoms with
-        // pink trim. The deep-red third hue from v1 was dropped — pink and
-        // red alone read unambiguously as Valentine's.
+        // Feb 14 — Valentine's. Pink tops + red bottoms. The deep-red third
+        // hue from v1 was dropped — pink and red alone read unambiguously
+        // as Valentine's.
         HolidayDate.Fixed(Month.FEBRUARY, 14) to HolidayTheme(
             id = HolidayId.VALENTINES_DAY,
             displayNameKey = "holiday_name_valentines_day",
@@ -162,13 +174,10 @@ object HolidayCatalog {
             emoji = "❤️", // ❤️
             topOverrides = topPaletteAll(VAL_PINK),
             bottomOverrides = bottomPaletteAll(VAL_RED),
-            topStrokeOverrides = topStrokeAll(VAL_RED),
-            bottomStrokeOverrides = bottomStrokeAll(VAL_PINK),
             bannerArgb = VAL_RED,
         ),
 
-        // Mar 1 — St David's Day. Daffodil yellow tops with leek-green
-        // trim; green bottoms with yellow trim.
+        // Mar 1 — St David's Day. Daffodil yellow tops + leek-green bottoms.
         HolidayDate.Fixed(Month.MARCH, 1) to HolidayTheme(
             id = HolidayId.ST_DAVIDS_DAY,
             displayNameKey = "holiday_name_st_davids_day",
@@ -176,8 +185,6 @@ object HolidayCatalog {
             emoji = "🌼", // 🌼
             topOverrides = topPaletteAll(WALES_YELLOW),
             bottomOverrides = bottomPaletteAll(WALES_GREEN),
-            topStrokeOverrides = topStrokeAll(WALES_GREEN),
-            bottomStrokeOverrides = bottomStrokeAll(WALES_YELLOW),
             bannerArgb = WALES_GREEN,
         ),
 
@@ -195,8 +202,8 @@ object HolidayCatalog {
             bannerArgb = IRELAND_DEEP,
         ),
 
-        // Apr 23 — St George's Day. White shirts with red trim (a hint of
-        // the flag's red cross); red bottoms with white trim.
+        // Apr 23 — St George's Day. White tops + red bottoms — the flag's
+        // two halves.
         HolidayDate.Fixed(Month.APRIL, 23) to HolidayTheme(
             id = HolidayId.ST_GEORGES_DAY,
             displayNameKey = "holiday_name_st_georges_day",
@@ -204,13 +211,14 @@ object HolidayCatalog {
             emoji = "🏴‍☠️", // 🏴‍☠️ — closest single glyph
             topOverrides = topPaletteAll(ENGLAND_WHITE),
             bottomOverrides = bottomPaletteAll(ENGLAND_RED),
-            topStrokeOverrides = topStrokeAll(ENGLAND_RED),
-            bottomStrokeOverrides = bottomStrokeAll(ENGLAND_WHITE),
             bannerArgb = ENGLAND_RED,
         ),
 
-        // Apr 25 — Anzac Day. Solemn day — khaki uniform-evoking palette
-        // with a single red-poppy outline thread through every garment.
+        // Apr 25 — Anzac Day. Solemn day — uniform-evoking khaki across
+        // every garment. Monochrome on purpose: a celebratory two-colour
+        // palette would read wrong for a remembrance day. The same shape
+        // covers the other military-remembrance days in the TODO list at
+        // the top of [HolidayId].
         HolidayDate.Fixed(Month.APRIL, 25) to HolidayTheme(
             id = HolidayId.ANZAC_DAY,
             displayNameKey = "holiday_name_anzac_day",
@@ -218,9 +226,7 @@ object HolidayCatalog {
             emoji = "🔺", // 🔺 — abstract; avoids lighter / flower vibe
             topOverrides = topPaletteAll(ANZAC_KHAKI),
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
-            topStrokeOverrides = topStrokeAll(ANZAC_POPPY),
-            bottomStrokeOverrides = bottomStrokeAll(ANZAC_POPPY),
-            bannerArgb = ANZAC_POPPY,
+            bannerArgb = ANZAC_KHAKI,
         ),
 
         // Jun 2 — Italian Republic Day. Green tops + red bottoms with the
@@ -237,8 +243,8 @@ object HolidayCatalog {
             bannerArgb = ITALY_GREEN,
         ),
 
-        // Jul 1 — Canada Day. White tops with red trim; red bottoms with
-        // white trim — same flag-cross pattern as St George's.
+        // Jul 1 — Canada Day. White tops + red bottoms — same flag-halves
+        // pattern as St George's.
         HolidayDate.Fixed(Month.JULY, 1) to HolidayTheme(
             id = HolidayId.CANADA_DAY,
             displayNameKey = "holiday_name_canada_day",
@@ -246,8 +252,6 @@ object HolidayCatalog {
             emoji = "🇨🇦", // 🇨🇦
             topOverrides = topPaletteAll(CANADA_WHITE),
             bottomOverrides = bottomPaletteAll(CANADA_RED),
-            topStrokeOverrides = topStrokeAll(CANADA_RED),
-            bottomStrokeOverrides = bottomStrokeAll(CANADA_WHITE),
             bannerArgb = CANADA_RED,
         ),
 
@@ -281,8 +285,7 @@ object HolidayCatalog {
             bannerArgb = FRANCE_BLUE,
         ),
 
-        // Sep 7 — Brazil Independence Day. Green tops with yellow trim;
-        // yellow bottoms with green trim.
+        // Sep 7 — Brazil Independence Day. Green tops + yellow bottoms.
         HolidayDate.Fixed(Month.SEPTEMBER, 7) to HolidayTheme(
             id = HolidayId.BRAZIL_INDEPENDENCE_DAY,
             displayNameKey = "holiday_name_brazil_independence_day",
@@ -290,8 +293,6 @@ object HolidayCatalog {
             emoji = "🇧🇷", // 🇧🇷
             topOverrides = topPaletteAll(BRAZIL_GREEN),
             bottomOverrides = bottomPaletteAll(BRAZIL_YELLOW),
-            topStrokeOverrides = topStrokeAll(BRAZIL_YELLOW),
-            bottomStrokeOverrides = bottomStrokeAll(BRAZIL_GREEN),
             bannerArgb = BRAZIL_GREEN,
         ),
 
@@ -309,8 +310,8 @@ object HolidayCatalog {
             bannerArgb = GERMANY_RED,
         ),
 
-        // Oct 12 — Hispanic Day (Spain national day). Red tops with yellow
-        // trim; yellow bottoms with red trim.
+        // Oct 12 — Hispanic Day (Spain national day). Red tops + yellow
+        // bottoms.
         HolidayDate.Fixed(Month.OCTOBER, 12) to HolidayTheme(
             id = HolidayId.SPAIN_HISPANIC_DAY,
             displayNameKey = "holiday_name_spain_hispanic_day",
@@ -318,15 +319,12 @@ object HolidayCatalog {
             emoji = "🇪🇸", // 🇪🇸
             topOverrides = topPaletteAll(SPAIN_RED),
             bottomOverrides = bottomPaletteAll(SPAIN_YELLOW),
-            topStrokeOverrides = topStrokeAll(SPAIN_YELLOW),
-            bottomStrokeOverrides = bottomStrokeAll(SPAIN_RED),
             bannerArgb = SPAIN_RED,
         ),
 
-        // Oct 31 — Halloween. Pumpkin-orange tops with black trim; black
-        // bottoms with orange trim. Purple was originally a third hue but
-        // dropped to keep the palette focused on the two colours that read
-        // unambiguously as Halloween.
+        // Oct 31 — Halloween. Pumpkin-orange tops + black bottoms. Purple
+        // was originally a third hue but dropped to keep the palette focused
+        // on the two colours that read unambiguously as Halloween.
         HolidayDate.Fixed(Month.OCTOBER, 31) to HolidayTheme(
             id = HolidayId.HALLOWEEN,
             displayNameKey = "holiday_name_halloween",
@@ -334,13 +332,10 @@ object HolidayCatalog {
             emoji = "🎃", // 🎃
             topOverrides = topPaletteAll(HALLOWEEN_ORANGE),
             bottomOverrides = bottomPaletteAll(HALLOWEEN_BLACK),
-            topStrokeOverrides = topStrokeAll(HALLOWEEN_BLACK),
-            bottomStrokeOverrides = bottomStrokeAll(HALLOWEEN_ORANGE),
             bannerArgb = HALLOWEEN_ORANGE,
         ),
 
-        // Nov 5 — Bonfire Night. Fire orange + smoke red. Orange tops with
-        // red trim; red bottoms with orange trim.
+        // Nov 5 — Bonfire Night. Orange-flame tops + smoke-red bottoms.
         HolidayDate.Fixed(Month.NOVEMBER, 5) to HolidayTheme(
             id = HolidayId.BONFIRE_NIGHT,
             displayNameKey = "holiday_name_bonfire_night",
@@ -348,27 +343,24 @@ object HolidayCatalog {
             emoji = "🎆", // 🎆
             topOverrides = topPaletteAll(BONFIRE_ORANGE),
             bottomOverrides = bottomPaletteAll(BONFIRE_RED),
-            topStrokeOverrides = topStrokeAll(BONFIRE_RED),
-            bottomStrokeOverrides = bottomStrokeAll(BONFIRE_ORANGE),
             bannerArgb = BONFIRE_RED,
         ),
 
-        // 4th Thursday of November — US Thanksgiving. Pumpkin tops + rust
-        // bottoms with deep-autumn brown as the unifying accent trim.
+        // 4th Thursday of November — US Thanksgiving. Pumpkin-orange tops +
+        // deep-autumn brown bottoms. Rust was a third hue in the v1
+        // tricolour palette but dropped — pumpkin and brown alone read as
+        // autumnal without the extra layer.
         HolidayDate.NthWeekday(Month.NOVEMBER, 4, DayOfWeek.THURSDAY) to HolidayTheme(
             id = HolidayId.US_THANKSGIVING,
             displayNameKey = "holiday_name_us_thanksgiving",
             bannerTextKey = "holiday_banner_us_thanksgiving",
             emoji = "🦃", // 🦃
             topOverrides = topPaletteAll(THANKS_PUMPKIN),
-            bottomOverrides = bottomPaletteAll(THANKS_RUST),
-            topStrokeOverrides = topStrokeAll(THANKS_BROWN),
-            bottomStrokeOverrides = bottomStrokeAll(THANKS_BROWN),
-            bannerArgb = THANKS_RUST,
+            bottomOverrides = bottomPaletteAll(THANKS_BROWN),
+            bannerArgb = THANKS_BROWN,
         ),
 
-        // Nov 30 — St Andrew's Day. Saltire blue tops with white trim;
-        // white bottoms with blue trim.
+        // Nov 30 — St Andrew's Day. Saltire blue tops + white bottoms.
         HolidayDate.Fixed(Month.NOVEMBER, 30) to HolidayTheme(
             id = HolidayId.ST_ANDREWS_DAY,
             displayNameKey = "holiday_name_st_andrews_day",
@@ -376,14 +368,12 @@ object HolidayCatalog {
             emoji = "🏴󠁧󠁢󠁳󠁣󠁴󠁿", // 🏴󠁧󠁢󠁳󠁣󠁴󠁿
             topOverrides = topPaletteAll(SCOTLAND_BLUE),
             bottomOverrides = bottomPaletteAll(SCOTLAND_WHITE),
-            topStrokeOverrides = topStrokeAll(SCOTLAND_WHITE),
-            bottomStrokeOverrides = bottomStrokeAll(SCOTLAND_BLUE),
             bannerArgb = SCOTLAND_BLUE,
         ),
 
-        // Dec 25 — Christmas Day. Pillarbox-red tops + holly-green bottoms
-        // with snow-white as the unifying accent trim — three classic
-        // Christmas hues simultaneously visible on every outfit.
+        // Dec 25 — Christmas Day. Pillarbox-red tops + holly-green bottoms.
+        // The white-trim third hue was tried but read as too busy for the
+        // holiday's iconic "just red and green" mental model.
         HolidayDate.Fixed(Month.DECEMBER, 25) to HolidayTheme(
             id = HolidayId.CHRISTMAS_DAY,
             displayNameKey = "holiday_name_christmas_day",
@@ -391,8 +381,6 @@ object HolidayCatalog {
             emoji = "🎄", // 🎄
             topOverrides = topPaletteAll(XMAS_RED),
             bottomOverrides = bottomPaletteAll(XMAS_GREEN),
-            topStrokeOverrides = topStrokeAll(XMAS_WHITE),
-            bottomStrokeOverrides = bottomStrokeAll(XMAS_WHITE),
             bannerArgb = XMAS_RED,
         ),
     )
@@ -441,7 +429,6 @@ private const val IRELAND_DEEP = 0xFF0E5C2BL
 private const val ENGLAND_RED = 0xFFCE1124L
 private const val ENGLAND_WHITE = 0xFFF5F5F5L
 
-private const val ANZAC_POPPY = 0xFFB71C1CL
 private const val ANZAC_KHAKI = 0xFF6D6748L
 
 private const val ITALY_GREEN = 0xFF008C45L
@@ -476,7 +463,6 @@ private const val BONFIRE_ORANGE = 0xFFEF6C00L
 private const val BONFIRE_RED = 0xFFC62828L
 
 private const val THANKS_PUMPKIN = 0xFFEF6C00L
-private const val THANKS_RUST = 0xFFBF360CL
 private const val THANKS_BROWN = 0xFF5D4037L
 
 private const val SCOTLAND_BLUE = 0xFF005EB8L
@@ -484,4 +470,3 @@ private const val SCOTLAND_WHITE = 0xFFF5F5F5L
 
 private const val XMAS_RED = 0xFFC62828L
 private const val XMAS_GREEN = 0xFF2E7D32L
-private const val XMAS_WHITE = 0xFFF5F5F5L

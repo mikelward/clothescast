@@ -1,8 +1,18 @@
 package app.clothescast.ui.today
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
@@ -441,6 +451,92 @@ internal fun MissingTonightPlaceholderDarkPreview() {
             showChevronLeft = true,
             onChevronTap = {},
         )
+    }
+}
+
+// EdgeFadeOverlay previews — three captures locking in the fade affordance's
+// visible states (top-only / bottom-only / both). Stand-in card content fills
+// a fixed 400 dp region so the 32 dp gradient bands sit at known offsets and
+// regressions in fade height, colour blend, or alpha animation surface as a
+// visible pixel diff. The fade colour is `colorScheme.background`, which is
+// what the Scaffold's default `containerColor` resolves to on the real Today
+// screen — so we wrap the demo in a Surface tinted to that same colour rather
+// than the Frame helper's `colorScheme.surface`, otherwise the gradient's
+// "fade-to-background" end would visibly mismatch the underlying surface.
+@Composable
+private fun EdgeFadeDemoFrame(
+    darkTheme: Boolean = false,
+    content: @Composable () -> Unit,
+) {
+    ClothesCastTheme(darkTheme = darkTheme, dynamicColor = false, colorPalette = ColorPalette.RAINBOW) {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            Box(modifier = Modifier.fillMaxWidth().height(400.dp)) {
+                content()
+            }
+        }
+    }
+}
+
+@Composable
+private fun EdgeFadeDemoContent() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth().height(130.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        ) { Box(modifier = Modifier.fillMaxSize().padding(16.dp)) { Text("Card 1") } }
+        Card(
+            modifier = Modifier.fillMaxWidth().height(130.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        ) { Box(modifier = Modifier.fillMaxSize().padding(16.dp)) { Text("Card 2") } }
+        Card(
+            modifier = Modifier.fillMaxWidth().height(130.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
+        ) { Box(modifier = Modifier.fillMaxSize().padding(16.dp)) { Text("Card 3") } }
+    }
+}
+
+@Preview(name = "Edge fade · bottom only (scrolled to top)", widthDp = 360)
+@Composable
+internal fun EdgeFadeBottomOnlyPreview() {
+    EdgeFadeDemoFrame {
+        EdgeFadeOverlay(topFadeVisible = false, bottomFadeVisible = true) {
+            EdgeFadeDemoContent()
+        }
+    }
+}
+
+@Preview(name = "Edge fade · both (mid-scroll)", widthDp = 360)
+@Composable
+internal fun EdgeFadeBothPreview() {
+    EdgeFadeDemoFrame {
+        EdgeFadeOverlay(topFadeVisible = true, bottomFadeVisible = true) {
+            EdgeFadeDemoContent()
+        }
+    }
+}
+
+@Preview(name = "Edge fade · top only (scrolled to bottom)", widthDp = 360)
+@Composable
+internal fun EdgeFadeTopOnlyPreview() {
+    EdgeFadeDemoFrame {
+        EdgeFadeOverlay(topFadeVisible = true, bottomFadeVisible = false) {
+            EdgeFadeDemoContent()
+        }
+    }
+}
+
+@Preview(name = "Edge fade · both (dark)", widthDp = 360)
+@Composable
+internal fun EdgeFadeBothDarkPreview() {
+    EdgeFadeDemoFrame(darkTheme = true) {
+        EdgeFadeOverlay(topFadeVisible = true, bottomFadeVisible = true) {
+            EdgeFadeDemoContent()
+        }
     }
 }
 

@@ -469,19 +469,22 @@ class FetchAndNotifyWorker(
                 // resolver's "Device location" placeholder. Null on AOSP /
                 // network failure / nothing useful in the address — the UI
                 // falls back to a date-only header in that case.
-                val cityName = app.reverseGeocoder.resolveCityName(device.latitude, device.longitude)
+                val geo = app.reverseGeocoder.resolve(device.latitude, device.longitude)
                 // When reverse-geo fails for a fix close to the previously
                 // cached one, reuse the cached friendly name rather than
                 // clobbering "London" with the placeholder. Without this
                 // a single transient geocoder timeout permanently degrades
                 // the home screen to the localised "Your location" fallback
-                // until reverse-geo next succeeds.
-                val resolved = when {
-                    cityName != null -> device.copy(displayName = cityName)
-                    else -> reuseNearbyDisplayName(prefs.location, device)
-                        ?.let { device.copy(displayName = it) }
-                        ?: device
-                }
+                // until reverse-geo next succeeds. Country code is captured
+                // independently — even a city-name miss can leave a usable
+                // country for the holiday filter (and vice versa).
+                val resolvedName = geo.city
+                    ?: reuseNearbyDisplayName(prefs.location, device)
+                val resolvedCountry = geo.countryCode ?: prefs.location?.countryCode
+                val resolved = device.copy(
+                    displayName = resolvedName ?: device.displayName,
+                    countryCode = resolvedCountry ?: device.countryCode,
+                )
                 // Persist the resolved fix as the fallback so the next run can
                 // use the most recent good read when the device read fails
                 // (provider blip, no fix, services briefly off). With this in

@@ -17,6 +17,8 @@ import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
+import app.clothescast.core.domain.model.HolidayCatalog
+import app.clothescast.core.domain.model.HolidayCountryMode
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
@@ -215,6 +217,10 @@ class SettingsRepository(
             prefs[LOCATION_LAT] = location.latitude
             prefs[LOCATION_LON] = location.longitude
             location.displayName?.let { prefs[LOCATION_NAME] = it } ?: prefs.remove(LOCATION_NAME)
+            location.countryCode
+                ?.takeIf { it.isNotBlank() }
+                ?.let { prefs[LOCATION_COUNTRY] = it.uppercase() }
+                ?: prefs.remove(LOCATION_COUNTRY)
         }
     }
 
@@ -223,6 +229,7 @@ class SettingsRepository(
             prefs.remove(LOCATION_LAT)
             prefs.remove(LOCATION_LON)
             prefs.remove(LOCATION_NAME)
+            prefs.remove(LOCATION_COUNTRY)
         }
     }
 
@@ -236,12 +243,17 @@ class SettingsRepository(
                 prefs.remove(HOME_LAT)
                 prefs.remove(HOME_LON)
                 prefs.remove(HOME_NAME)
+                prefs.remove(HOME_COUNTRY)
             } else {
                 prefs[HOME_LAT] = location.latitude
                 prefs[HOME_LON] = location.longitude
                 location.displayName
                     ?.let { prefs[HOME_NAME] = it }
                     ?: prefs.remove(HOME_NAME)
+                location.countryCode
+                    ?.takeIf { it.isNotBlank() }
+                    ?.let { prefs[HOME_COUNTRY] = it.uppercase() }
+                    ?: prefs.remove(HOME_COUNTRY)
             }
         }
     }
@@ -438,6 +450,31 @@ class SettingsRepository(
         }
     }
 
+    suspend fun setHolidayCountryMode(mode: HolidayCountryMode) {
+        dataStore.edit { it[HOLIDAY_COUNTRY_MODE] = mode.name }
+    }
+
+    /**
+     * Flips a single country (ISO 3166-1 alpha-2 or [HolidayCatalog.GLOBAL_COUNTRY])
+     * on or off in the user's per-country pick. Mirrors [setEnabledHoliday]
+     * — read-modify-write inside a single [dataStore.edit] so rapid taps
+     * from the Settings UI don't race. Missing-key reads default to "all
+     * countries enabled" (see [parseEnabledHolidayCountries]), so the
+     * first toggle from a fresh install seeds the full set before
+     * subtracting the user's pick. Only consulted by the resolver when
+     * [UserPreferences.holidayCountryMode] is
+     * [HolidayCountryMode.CUSTOM]; AUTO / ALL derive their effective set
+     * on the fly.
+     */
+    suspend fun setHolidayCountryEnabled(code: String, enabled: Boolean) {
+        val normalised = code.trim().takeIf { it.isNotEmpty() }?.uppercase() ?: return
+        dataStore.edit { prefs ->
+            val current = parseEnabledHolidayCountries(prefs[ENABLED_HOLIDAY_COUNTRIES])
+            val updated = if (enabled) current + normalised else current - normalised
+            prefs[ENABLED_HOLIDAY_COUNTRIES] = updated
+        }
+    }
+
     suspend fun setTelemetryNoticeAcked(acked: Boolean) {
         dataStore.edit { it[TELEMETRY_NOTICE_ACKED] = acked }
     }
@@ -580,6 +617,10 @@ class SettingsRepository(
         val outfitTopColors = parseOutfitTopColors(this[OUTFIT_TOP_COLORS])
         val outfitBottomColors = parseOutfitBottomColors(this[OUTFIT_BOTTOM_COLORS])
         val enabledHolidays = parseEnabledHolidays(this[ENABLED_HOLIDAYS])
+        val holidayCountryMode = this[HOLIDAY_COUNTRY_MODE]
+            ?.let { runCatching { HolidayCountryMode.valueOf(it) }.getOrNull() }
+            ?: HolidayCountryMode.AUTO
+        val enabledHolidayCountries = parseEnabledHolidayCountries(this[ENABLED_HOLIDAY_COUNTRIES])
         // Resolve stored enum names back to [ForecastModel]. Unknown / removed
         // entries are dropped silently so a forward-compat (future enum value
         // we didn't ship yet) or stale value from a downgrade doesn't break
@@ -634,6 +675,8 @@ class SettingsRepository(
             outfitTopColors = outfitTopColors,
             outfitBottomColors = outfitBottomColors,
             enabledHolidays = enabledHolidays,
+            holidayCountryMode = holidayCountryMode,
+            enabledHolidayCountries = enabledHolidayCountries,
             forecastModels = forecastModels,
             mqttBridgeEnabled = mqttBridgeEnabled,
             mqttHost = mqttHost,
@@ -720,6 +763,7 @@ class SettingsRepository(
                 latitude = lat,
                 longitude = lon,
                 displayName = prefs[LOCATION_NAME],
+                countryCode = prefs[LOCATION_COUNTRY]?.takeIf { it.isNotBlank() },
             )
         }.getOrNull()
     }
@@ -732,8 +776,23 @@ class SettingsRepository(
                 latitude = lat,
                 longitude = lon,
                 displayName = prefs[HOME_NAME],
+                countryCode = prefs[HOME_COUNTRY]?.takeIf { it.isNotBlank() },
             )
         }.getOrNull()
+    }
+
+    /**
+     * Resolves the persisted enabled-country set. Missing key (fresh
+     * install, or an existing install that predates the country filter)
+     * seeds the full set so the first toggle in CUSTOM mode starts from
+     * the user's existing universe of holidays rather than from nothing.
+     * Blank entries drop silently; values are normalised to uppercase to
+     * match catalog tagging.
+     */
+    private fun parseEnabledHolidayCountries(raw: Set<String>?): Set<String> {
+        if (raw == null) return HolidayCatalog.allCountries
+        return raw.mapNotNull { it.trim().takeIf { code -> code.isNotEmpty() }?.uppercase() }
+            .toSet()
     }
 
     private fun parseOutfitTopColors(raw: String?): Map<OutfitSuggestion.Top, Long> =
@@ -809,10 +868,12 @@ class SettingsRepository(
         private val LOCATION_LAT = doublePreferencesKey("location_latitude")
         private val LOCATION_LON = doublePreferencesKey("location_longitude")
         private val LOCATION_NAME = stringPreferencesKey("location_display_name")
+        private val LOCATION_COUNTRY = stringPreferencesKey("location_country_code")
         private val USE_DEVICE_LOCATION = booleanPreferencesKey("use_device_location")
         private val HOME_LAT = doublePreferencesKey("home_latitude")
         private val HOME_LON = doublePreferencesKey("home_longitude")
         private val HOME_NAME = stringPreferencesKey("home_display_name")
+        private val HOME_COUNTRY = stringPreferencesKey("home_country_code")
         private val SKIP_TTS_AT_HOME = booleanPreferencesKey("skip_tts_at_home")
         private val TTS_ENGINE = stringPreferencesKey("tts_engine")
         private val GEMINI_VOICE = stringPreferencesKey("gemini_voice")
@@ -835,6 +896,8 @@ class SettingsRepository(
         private val OUTFIT_TOP_COLORS = stringPreferencesKey("outfit_top_colors_json")
         private val OUTFIT_BOTTOM_COLORS = stringPreferencesKey("outfit_bottom_colors_json")
         private val ENABLED_HOLIDAYS = stringSetPreferencesKey("enabled_holidays")
+        private val HOLIDAY_COUNTRY_MODE = stringPreferencesKey("holiday_country_mode")
+        private val ENABLED_HOLIDAY_COUNTRIES = stringSetPreferencesKey("enabled_holiday_countries")
         private val FORECAST_MODELS = stringSetPreferencesKey("forecast_models")
         private val MQTT_BRIDGE_ENABLED = booleanPreferencesKey("mqtt_bridge_enabled")
         private val MQTT_HOST = stringPreferencesKey("mqtt_host")

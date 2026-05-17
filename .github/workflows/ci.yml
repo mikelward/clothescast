@@ -43,10 +43,13 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.ref }}
-  # Cancel in-progress runs on PR branches (fast-iteration pushes) but let
-  # main runs finish — the AAB build + Play upload only happen on main and
-  # a second push would otherwise cancel the release before the AAB is signed.
+  # PR branches share a group per-ref so a new push cancels the old run.
+  # Main (and workflow_dispatch) each get a unique group via run_id — no two
+  # main runs compete, so a burst of merges can't cancel each other's pending
+  # AAB builds. GitHub only keeps one pending run per group, so sharing a
+  # group on main would silently drop the queued build when a third merge
+  # arrived, even with cancel-in-progress: false.
+  group: ${{ github.event_name == 'pull_request' && format('ci-{0}', github.ref) || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:

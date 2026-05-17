@@ -182,6 +182,12 @@ object BugReport {
             else -> "failed at ${formatTimestamp(mqttPublishStatus.recordedAtMs)} — ${mqttPublishStatus.errorMessage}"
         }
         appendLine("MQTT last publish: $statusLine")
+        if (mqttPublishStatus != null &&
+            mqttPublishStatus.errorMessage != null &&
+            mqttPublishStatus.lastSuccessAtMs > 0L
+        ) {
+            appendLine("MQTT last success: ${formatTimestamp(mqttPublishStatus.lastSuccessAtMs)}")
+        }
     }
 
     private fun formatTimestamp(epochMs: Long): String =

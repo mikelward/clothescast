@@ -141,6 +141,12 @@ data class SettingsState(
     val mqttLastError: String? = null,
     /** Epoch-ms wall-clock of the last recorded publish outcome (0 = no record). */
     val mqttLastErrorAt: Long = 0L,
+    /**
+     * Epoch-ms wall-clock of the most recent successful MQTT publish (0 = no
+     * success yet). Tracked separately from [mqttLastErrorAt] so a later
+     * failure doesn't hide that we did succeed earlier.
+     */
+    val mqttLastPublishAt: Long = 0L,
     /** True while a "Publish now" action is in flight. */
     val mqttPublishing: Boolean = false,
     /**

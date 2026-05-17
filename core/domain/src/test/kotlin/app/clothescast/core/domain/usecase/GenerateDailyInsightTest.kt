@@ -1128,6 +1128,48 @@ class GenerateDailyInsightTest {
     }
 
     @Test
+    fun `tonight period slices tomorrow to the user's daytime window for nextOutfit and rationale`() = runTest {
+        // Regression: a pre-dawn 06:00 trough was leaking into the
+        // "Tomorrow" card's "Why this outfit?" rationale ("Feels-like
+        // low 5.8°C at 06:00") even though the user's schedule kept
+        // them indoors until 07:00. The unsliced tomorrow forecast
+        // also let that 06:00 low drive a heavier outfit pick than
+        // the user's actual daytime experience.
+        val tomorrowHourly = listOf(
+            // Pre-dawn trough — must be excluded by the daytime slice.
+            HourlyForecast(LocalTime.of(6, 0), 6.0, 5.8, 0.0, WeatherCondition.CLEAR),
+            // In-window hours stay above the jacket cutoff (12°C).
+            HourlyForecast(LocalTime.of(9, 0), 14.0, 13.0, 0.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 22.0, 21.0, 0.0, WeatherCondition.CLEAR),
+        )
+        val tomorrow = DailyForecast(
+            date = LocalDate.of(2026, 4, 26),
+            temperatureMinC = 6.0,
+            temperatureMaxC = 22.0,
+            feelsLikeMinC = 5.8,
+            feelsLikeMaxC = 21.0,
+            precipitationProbabilityMaxPct = 0.0,
+            precipitationMmTotal = 0.0,
+            condition = WeatherCondition.CLEAR,
+            hourly = tomorrowHourly,
+        )
+        val weather = FakeWeatherRepository(
+            ForecastBundle(today, yesterday, tomorrow = tomorrow),
+        )
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val result = subject(london, prefs, ForecastPeriod.TONIGHT)
+
+        // In-window min is 13°C at 09:00, not 5.8°C at 06:00 — so the
+        // jacket rule (12°C) doesn't fire and the rationale cites the
+        // 09:00 hour.
+        val topFact = result.insight.nextOutfitRationale!!.top.facts.single()
+        topFact.observedAt shouldBe LocalTime.of(9, 0)
+        topFact.observedC shouldBe 13.0
+        result.insight.nextOutfit!!.top shouldBe OutfitSuggestion.Top.SWEATER
+    }
+
+    @Test
     fun `tonight period leaves nextOutfit null when tomorrow daily is unavailable`() = runTest {
         val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
         val subject = GenerateDailyInsight(weather, clock = clock)

@@ -416,7 +416,7 @@ object HolidayCatalog {
             id = HolidayId.AUSTRALIA_DAY,
             displayNameKey = "holiday_name_australia_day",
             bannerTextKey = "holiday_banner_australia_day",
-            emoji = "🦎", // 🦎 — a nod that doesn't lean on the flag
+            emoji = "🇦🇺", // 🇦🇺
             topOverrides = topPaletteAll(AUS_GREEN),
             bottomOverrides = bottomPaletteAll(AUS_GOLD),
             bannerArgb = AUS_GREEN,
@@ -431,7 +431,7 @@ object HolidayCatalog {
             id = HolidayId.WAITANGI_DAY,
             displayNameKey = "holiday_name_waitangi_day",
             bannerTextKey = "holiday_banner_waitangi_day",
-            emoji = "🥝", // 🥝 — kiwi fruit, recognisably NZ
+            emoji = "🇳🇿", // 🇳🇿
             topOverrides = topPaletteAll(NZ_BLACK),
             bottomOverrides = bottomPaletteAll(NZ_SILVER),
             bannerArgb = NZ_BLACK,
@@ -563,7 +563,7 @@ object HolidayCatalog {
             id = HolidayId.ST_GEORGES_DAY,
             displayNameKey = "holiday_name_st_georges_day",
             bannerTextKey = "holiday_banner_st_georges_day",
-            emoji = "🏴‍☠️", // 🏴‍☠️ — closest single glyph
+            emoji = "🏴󠁧󠁢󠁥󠁮󠁧󠁿", // 🏴󠁧󠁢󠁥󠁮󠁧󠁿 — England subdivision flag
             topOverrides = topPaletteAll(ENGLAND_WHITE),
             bottomOverrides = bottomPaletteAll(ENGLAND_RED),
             bannerArgb = ENGLAND_RED,

@@ -26,11 +26,11 @@ import kotlin.math.roundToInt
 internal data class GarmentDefaults(val fillArgb: Int, val strokeArgb: Int)
 
 internal val outfitTopDefaults: Map<OutfitSuggestion.Top, GarmentDefaults> = mapOf(
-    OutfitSuggestion.Top.TSHIRT to GarmentDefaults(0xFFFFFFFF.toInt(), 0xFFE0E0E0.toInt()),
-    OutfitSuggestion.Top.POLO to GarmentDefaults(0xFF26C6DA.toInt(), 0xFF00838F.toInt()),
+    OutfitSuggestion.Top.TSHIRT to GarmentDefaults(0xFFFBD0CC.toInt(), 0xFFB87672.toInt()),
+    OutfitSuggestion.Top.POLO to GarmentDefaults(0xFFE8DFD0.toInt(), 0xFF8E8474.toInt()),
     OutfitSuggestion.Top.SWEATER to GarmentDefaults(0xFF8D6E63.toInt(), 0xFF5D4037.toInt()),
-    OutfitSuggestion.Top.THIN_JACKET to GarmentDefaults(0xFF3949AB.toInt(), 0xFF1A237E.toInt()),
-    OutfitSuggestion.Top.THICK_JACKET to GarmentDefaults(0xFF7E57C2.toInt(), 0xFF4527A0.toInt()),
+    OutfitSuggestion.Top.THIN_JACKET to GarmentDefaults(0xFF64B5F6.toInt(), 0xFF1976D2.toInt()),
+    OutfitSuggestion.Top.THICK_JACKET to GarmentDefaults(0xFF1976D2.toInt(), 0xFF0D47A1.toInt()),
     OutfitSuggestion.Top.THICK_COAT to GarmentDefaults(0xFFFFB74D.toInt(), 0xFFEF6C00.toInt()),
     OutfitSuggestion.Top.PUFFER_JACKET to GarmentDefaults(0xFFF5F7FA.toInt(), 0xFF90A4AE.toInt()),
 )

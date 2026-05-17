@@ -1050,17 +1050,31 @@ internal fun OutfitPreviewCard(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
             )
+            // Reserve a fixed 80dp-tall slot for the top icon so the card's
+            // height stays the same regardless of which top is shown — the
+            // top SVGs have inconsistent viewport heights (THICK_JACKET is
+            // 96×90, THICK_COAT is 96×96, T-SHIRT/SWEATER are 96×86), which
+            // would otherwise leave one card a few dp taller than its
+            // neighbour. Align the icon to BottomCenter so any unused space
+            // sits above it; the icons still meet flush at the waistline
+            // (bottom icons are all 96×96, so width(80.dp) already gives an
+            // 80dp-square — no slot needed).
             Column(
                 verticalArrangement = Arrangement.spacedBy(0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                GarmentTopIcon(
-                    top = outfit.top,
-                    customFill = outfitTopColors[outfit.top]?.let { Color(it.toInt()) },
-                    customStroke = outfitTopStrokes[outfit.top]?.let { Color(it.toInt()) },
-                    contentDescription = stringResource(topLabelRes(outfit.top)),
-                    modifier = Modifier.width(80.dp),
-                )
+                Box(
+                    modifier = Modifier.size(80.dp),
+                    contentAlignment = Alignment.BottomCenter,
+                ) {
+                    GarmentTopIcon(
+                        top = outfit.top,
+                        customFill = outfitTopColors[outfit.top]?.let { Color(it.toInt()) },
+                        customStroke = outfitTopStrokes[outfit.top]?.let { Color(it.toInt()) },
+                        contentDescription = stringResource(topLabelRes(outfit.top)),
+                        modifier = Modifier.width(80.dp),
+                    )
+                }
                 GarmentBottomIcon(
                     bottom = outfit.bottom,
                     customFill = outfitBottomColors[outfit.bottom]?.let { Color(it.toInt()) },
@@ -1069,12 +1083,17 @@ internal fun OutfitPreviewCard(
                     modifier = Modifier.width(80.dp),
                 )
             }
+            // Reserve two lines for the garment-name text so cards match
+            // even when one combination wraps and the other doesn't (e.g.
+            // "Thick jacket · Long pants" wraps at the row's per-card width
+            // but "Sweater · Long pants" doesn't).
             Text(
                 text = stringResource(topLabelRes(outfit.top)) +
                     " · " +
                     stringResource(bottomLabelRes(outfit.bottom)),
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
+                minLines = 2,
             )
             Text(
                 text = stringResource(R.string.today_rationale_show),

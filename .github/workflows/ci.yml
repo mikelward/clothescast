@@ -871,18 +871,18 @@ jobs:
         # completes CI. Ordered AFTER the release-AAB artifact upload so a
         # Play API failure (e.g. listing not yet approved, versionCode
         # collision) doesn't gate the artifact behind `success()`. Pinned to
-        # the v1.1.5 commit SHA — bump deliberately.
+        # a specific commit SHA — bump deliberately.
         if: |
           success() &&
           (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
           github.ref == 'refs/heads/main' &&
           env.PLAY_AVAILABLE == 'true'
-        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5 # v1.1.5
+        uses: r0adkll/upload-google-play@a80b0bcdcfdfcc2d026f2bc73f726760b2cbc967 # post-v1.1.5: fixes DEP0040/DEP0169 Node.js deprecation warnings
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: app.clothescast
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
-          track: internal
+          tracks: internal
           status: completed
           whatsNewDirectory: ${{ runner.temp }}/whatsnew
 

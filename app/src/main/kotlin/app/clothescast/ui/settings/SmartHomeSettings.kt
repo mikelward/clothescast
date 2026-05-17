@@ -37,6 +37,7 @@ import app.clothescast.R
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.discovery.DiscoveredService
 import app.clothescast.discovery.ServiceType
+import app.clothescast.ui.EdgeFadeOverlay
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -75,35 +76,40 @@ internal fun SmartHomeContent(
     DisposableEffect(Unit) {
         onDispose { onStopDiscovery() }
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    val scrollState = rememberScrollState()
+    EdgeFadeOverlay(
+        scrollState = scrollState,
+        modifier = Modifier.padding(padding),
     ) {
-        MqttBridgeCard(
-            enabled = bridgeEnabled,
-            host = host,
-            port = port,
-            useTls = useTls,
-            username = username,
-            topic = topic,
-            passwordSet = passwordSet,
-            lastError = lastError,
-            lastErrorAt = lastErrorAt,
-            publishing = publishing,
-            discoveryRunning = discoveryRunning,
-            discoveredServices = discoveredServices,
-            onSetEnabled = onSetBridgeEnabled,
-            onSaveConfig = onSaveConfig,
-            onClearPassword = onClearPassword,
-            onPublishNow = onPublishNow,
-            onStartDiscovery = onStartDiscovery,
-            onStopDiscovery = onStopDiscovery,
-            onUseDiscoveredService = onUseDiscoveredService,
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            MqttBridgeCard(
+                enabled = bridgeEnabled,
+                host = host,
+                port = port,
+                useTls = useTls,
+                username = username,
+                topic = topic,
+                passwordSet = passwordSet,
+                lastError = lastError,
+                lastErrorAt = lastErrorAt,
+                publishing = publishing,
+                discoveryRunning = discoveryRunning,
+                discoveredServices = discoveredServices,
+                onSetEnabled = onSetBridgeEnabled,
+                onSaveConfig = onSaveConfig,
+                onClearPassword = onClearPassword,
+                onPublishNow = onPublishNow,
+                onStartDiscovery = onStartDiscovery,
+                onStopDiscovery = onStopDiscovery,
+                onUseDiscoveredService = onUseDiscoveredService,
+            )
+        }
     }
 }
 

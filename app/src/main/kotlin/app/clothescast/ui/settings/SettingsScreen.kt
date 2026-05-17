@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.R
+import app.clothescast.ui.EdgeFadeOverlay
 
 /**
  * One sub-page per concern. Order in the enum matches the order shown in the
@@ -254,31 +255,36 @@ internal fun SettingsRoot(
     padding: PaddingValues,
     onNavigate: (SettingsRoute) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    val scrollState = rememberScrollState()
+    EdgeFadeOverlay(
+        scrollState = scrollState,
+        modifier = Modifier.padding(padding),
     ) {
-        NotificationPermissionBanner()
-        // Surface a missing always-on grant from the settings root too so the
-        // user sees the broken state without having to drill into Location.
-        // Tapping the card deep-links into Location where the launcher and
-        // rationale dialogs live.
-        BackgroundLocationWarningCard(
-            useDeviceLocation = useDeviceLocation,
-            onClick = { onNavigate(SettingsRoute.Location) },
-        )
-        SettingsRoute.entries
-            .filter { it != SettingsRoute.Root && it != SettingsRoute.About }
-            .forEach { destination ->
-                SettingsNavRow(
-                    title = stringResource(destination.titleRes),
-                    subtitle = destination.subtitleRes?.let { stringResource(it) },
-                    onClick = { onNavigate(destination) },
-                )
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            NotificationPermissionBanner()
+            // Surface a missing always-on grant from the settings root too so the
+            // user sees the broken state without having to drill into Location.
+            // Tapping the card deep-links into Location where the launcher and
+            // rationale dialogs live.
+            BackgroundLocationWarningCard(
+                useDeviceLocation = useDeviceLocation,
+                onClick = { onNavigate(SettingsRoute.Location) },
+            )
+            SettingsRoute.entries
+                .filter { it != SettingsRoute.Root && it != SettingsRoute.About }
+                .forEach { destination ->
+                    SettingsNavRow(
+                        title = stringResource(destination.titleRes),
+                        subtitle = destination.subtitleRes?.let { stringResource(it) },
+                        onClick = { onNavigate(destination) },
+                    )
+                }
+        }
     }
 }

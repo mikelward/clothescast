@@ -47,6 +47,7 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.diag.BugReportConsentDialog
+import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.theme.ClothesCastTheme
 import app.clothescast.work.FetchAndNotifyWorker
 import java.time.Instant

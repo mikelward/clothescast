@@ -30,6 +30,7 @@ import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.core.domain.model.symbol
+import app.clothescast.ui.EdgeFadeOverlay
 import java.text.Collator
 
 @Composable
@@ -44,46 +45,51 @@ internal fun RegionContent(
     onSetTemperatureUnit: (TemperatureUnitSetting) -> Unit,
     onSetDistanceUnit: (DistanceUnitSetting) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    val scrollState = rememberScrollState()
+    EdgeFadeOverlay(
+        scrollState = scrollState,
+        modifier = Modifier.padding(padding),
     ) {
-        SectionCard(title = stringResource(R.string.settings_region_language_title)) {
-            Text(
-                text = stringResource(R.string.settings_region_language_description),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            RegionLanguagePicker(selected = region, onSelect = onSetRegion)
-        }
-        SectionCard(title = stringResource(R.string.settings_temperature_unit_title)) {
-            TemperatureUnitSetting.entries.forEach { setting ->
-                val label = if (setting == TemperatureUnitSetting.AUTO)
-                    "${stringResource(R.string.settings_unit_auto)} (${resolvedTemperatureUnit.symbol()})"
-                else
-                    stringResource(temperatureUnitSettingLabel(setting))
-                RadioRow(
-                    label = label,
-                    selected = setting == temperatureUnitSetting,
-                    onSelect = { onSetTemperatureUnit(setting) },
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            SectionCard(title = stringResource(R.string.settings_region_language_title)) {
+                Text(
+                    text = stringResource(R.string.settings_region_language_description),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                RegionLanguagePicker(selected = region, onSelect = onSetRegion)
             }
-        }
-        SectionCard(title = stringResource(R.string.settings_distance_unit_title)) {
-            DistanceUnitSetting.entries.forEach { setting ->
-                val label = if (setting == DistanceUnitSetting.AUTO)
-                    "${stringResource(R.string.settings_unit_auto)} (${resolvedDistanceUnit.symbol()})"
-                else
-                    stringResource(distanceUnitSettingLabel(setting))
-                RadioRow(
-                    label = label,
-                    selected = setting == distanceUnitSetting,
-                    onSelect = { onSetDistanceUnit(setting) },
-                )
+            SectionCard(title = stringResource(R.string.settings_temperature_unit_title)) {
+                TemperatureUnitSetting.entries.forEach { setting ->
+                    val label = if (setting == TemperatureUnitSetting.AUTO)
+                        "${stringResource(R.string.settings_unit_auto)} (${resolvedTemperatureUnit.symbol()})"
+                    else
+                        stringResource(temperatureUnitSettingLabel(setting))
+                    RadioRow(
+                        label = label,
+                        selected = setting == temperatureUnitSetting,
+                        onSelect = { onSetTemperatureUnit(setting) },
+                    )
+                }
+            }
+            SectionCard(title = stringResource(R.string.settings_distance_unit_title)) {
+                DistanceUnitSetting.entries.forEach { setting ->
+                    val label = if (setting == DistanceUnitSetting.AUTO)
+                        "${stringResource(R.string.settings_unit_auto)} (${resolvedDistanceUnit.symbol()})"
+                    else
+                        stringResource(distanceUnitSettingLabel(setting))
+                    RadioRow(
+                        label = label,
+                        selected = setting == distanceUnitSetting,
+                        onSelect = { onSetDistanceUnit(setting) },
+                    )
+                }
             }
         }
     }

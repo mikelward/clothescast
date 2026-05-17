@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -55,8 +54,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
@@ -101,6 +98,7 @@ import app.clothescast.core.domain.model.toUnit
 import app.clothescast.core.domain.model.toWindSpeedUnit
 import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.ClothesCastApplication
+import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.garment.GarmentBottomIcon
 import app.clothescast.ui.garment.GarmentTopIcon
 import app.clothescast.diag.BugReport
@@ -439,10 +437,7 @@ private fun TodayPage(
     // Edge fades hint at off-screen content above / below — drawn at the
     // page's outer Box bounds (the pager-page edges), so cards pass cleanly
     // under them as the user scrolls.
-    EdgeFadeOverlay(
-        topFadeVisible = scrollState.canScrollBackward,
-        bottomFadeVisible = scrollState.canScrollForward,
-    ) {
+    EdgeFadeOverlay(scrollState = scrollState) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -595,65 +590,6 @@ private fun TodayPage(
                 }
             }
         }
-    }
-}
-
-/**
- * Wraps [content] in a Box and overlays two 32 dp gradient fades — one at the
- * top, one at the bottom — to hint at off-screen content. Each fades in when
- * its visibility flag is true and out when false, animated via
- * [animateFloatAsState], so the page lands in the right state on first paint
- * and transitions smoothly thereafter. The caller usually wires
- * [topFadeVisible] / [bottomFadeVisible] to a `ScrollState`'s
- * `canScrollBackward` / `canScrollForward`, but accepting raw booleans keeps
- * the composable testable from previews that drive the alphas directly.
- *
- * The overlays have no `clickable` modifier, so drag gestures fall through to
- * the content underneath — wrapping a scrollable column doesn't break its
- * scroll, and a pager swipe still works.
- */
-@Composable
-internal fun EdgeFadeOverlay(
-    topFadeVisible: Boolean,
-    bottomFadeVisible: Boolean,
-    modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.background,
-    content: @Composable () -> Unit,
-) {
-    val topAlpha by animateFloatAsState(
-        targetValue = if (topFadeVisible) 1f else 0f,
-        label = "topFade",
-    )
-    val bottomAlpha by animateFloatAsState(
-        targetValue = if (bottomFadeVisible) 1f else 0f,
-        label = "bottomFade",
-    )
-    Box(modifier = modifier.fillMaxSize()) {
-        content()
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .fillMaxWidth()
-                .height(32.dp)
-                .alpha(topAlpha)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(color, Color.Transparent),
-                    ),
-                ),
-        )
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(32.dp)
-                .alpha(bottomAlpha)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, color),
-                    ),
-                ),
-        )
     }
 }
 

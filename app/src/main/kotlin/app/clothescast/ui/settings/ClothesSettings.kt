@@ -52,6 +52,7 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.fromUnit
 import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
+import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.garment.outfitBottomDefaults
 import app.clothescast.ui.garment.outfitTopDefaults
 import kotlin.math.roundToInt
@@ -80,22 +81,27 @@ internal fun ClothesContent(
     onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
     onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    val scrollState = rememberScrollState()
+    EdgeFadeOverlay(
+        scrollState = scrollState,
+        modifier = Modifier.padding(padding),
     ) {
-        ClothesRulesCard(rules, temperatureUnit, onAdd, onReplace, onDelete)
-        DefaultBottomCard(defaultBottom, onSetDefaultBottom)
-        GarmentColorsCard(
-            outfitTopColors = outfitTopColors,
-            outfitBottomColors = outfitBottomColors,
-            onSetOutfitTopColor = onSetOutfitTopColor,
-            onSetOutfitBottomColor = onSetOutfitBottomColor,
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            ClothesRulesCard(rules, temperatureUnit, onAdd, onReplace, onDelete)
+            DefaultBottomCard(defaultBottom, onSetDefaultBottom)
+            GarmentColorsCard(
+                outfitTopColors = outfitTopColors,
+                outfitBottomColors = outfitBottomColors,
+                onSetOutfitTopColor = onSetOutfitTopColor,
+                onSetOutfitBottomColor = onSetOutfitBottomColor,
+            )
+        }
     }
 }
 

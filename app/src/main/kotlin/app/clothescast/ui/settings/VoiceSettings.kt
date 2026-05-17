@@ -53,6 +53,7 @@ import app.clothescast.tts.insightTtsUtterance
 import app.clothescast.tts.resolve
 import app.clothescast.tts.toJavaLocale
 import app.clothescast.tts.withSpeechAudioFocus
+import app.clothescast.ui.EdgeFadeOverlay
 import java.text.Collator
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -116,106 +117,111 @@ internal fun VoiceContent(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+    val scrollState = rememberScrollState()
+    EdgeFadeOverlay(
+        scrollState = scrollState,
+        modifier = Modifier.padding(padding),
     ) {
-        SectionCard(title = stringResource(R.string.settings_tts_voice_locale_label)) {
-            Text(
-                text = stringResource(R.string.settings_tts_voice_locale_description),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            VoiceLocalePicker(
-                selected = voiceLocale,
-                region = region,
-                enabled = !isPreviewing,
-                onSelect = {
-                    onSetVoiceLocale(it)
-                    preview(selected, geminiVoice, ttsStyle, deviceVoice, it)
-                },
-            )
-        }
-
-        SectionCard(title = stringResource(R.string.settings_tts_engine_title)) {
-            Text(
-                text = stringResource(R.string.settings_tts_engine_description),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            TtsEngine.entries.forEach { engine ->
-                RadioRow(
-                    label = stringResource(ttsEngineLabel(engine)),
-                    selected = engine == selected,
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            SectionCard(title = stringResource(R.string.settings_tts_voice_locale_label)) {
+                Text(
+                    text = stringResource(R.string.settings_tts_voice_locale_description),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                VoiceLocalePicker(
+                    selected = voiceLocale,
+                    region = region,
                     enabled = !isPreviewing,
                     onSelect = {
-                        onSetTtsEngine(engine)
-                        preview(engine, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
+                        onSetVoiceLocale(it)
+                        preview(selected, geminiVoice, ttsStyle, deviceVoice, it)
                     },
                 )
             }
-            when (selected) {
-                TtsEngine.GEMINI -> {
-                    Text(
-                        text = stringResource(R.string.settings_api_key_gemini_header),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    KeyEntryFields(
-                        configured = geminiKeyConfigured,
-                        statusText = stringResource(
-                            if (geminiKeyConfigured) R.string.settings_api_key_status_set
-                            else R.string.settings_api_key_status_unset,
-                        ),
-                        placeholder = stringResource(R.string.settings_api_key_placeholder),
-                        saveLabel = stringResource(R.string.settings_api_key_save),
-                        replaceLabel = stringResource(R.string.settings_api_key_replace),
-                        clearLabel = stringResource(R.string.settings_api_key_clear),
-                        onSave = onSetGeminiKey,
-                        onClear = onClearGeminiKey,
-                    )
-                    VoicePicker(
-                        title = stringResource(R.string.settings_tts_voice_label),
-                        voices = GEMINI_VOICES,
-                        selectedId = geminiVoice,
+
+            SectionCard(title = stringResource(R.string.settings_tts_engine_title)) {
+                Text(
+                    text = stringResource(R.string.settings_tts_engine_description),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                TtsEngine.entries.forEach { engine ->
+                    RadioRow(
+                        label = stringResource(ttsEngineLabel(engine)),
+                        selected = engine == selected,
                         enabled = !isPreviewing,
                         onSelect = {
-                            onSetGeminiVoice(it)
-                            preview(TtsEngine.GEMINI, it, ttsStyle, deviceVoice, voiceLocale)
+                            onSetTtsEngine(engine)
+                            preview(engine, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
                         },
                     )
-                    StylePicker(
-                        selected = ttsStyle,
-                        enabled = !isPreviewing,
-                        onSelect = { picked ->
-                            onSetTtsStyle(picked)
-                            preview(TtsEngine.GEMINI, geminiVoice, picked, deviceVoice, voiceLocale)
-                        },
-                    )
-                    TestVoiceButton(isPreviewing = isPreviewing) {
-                        preview(selected, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
-                    }
                 }
-                TtsEngine.DEVICE -> {
-                    if (!rememberIsGoogleTtsInstalled()) {
-                        InstallGoogleTtsHint()
+                when (selected) {
+                    TtsEngine.GEMINI -> {
+                        Text(
+                            text = stringResource(R.string.settings_api_key_gemini_header),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        KeyEntryFields(
+                            configured = geminiKeyConfigured,
+                            statusText = stringResource(
+                                if (geminiKeyConfigured) R.string.settings_api_key_status_set
+                                else R.string.settings_api_key_status_unset,
+                            ),
+                            placeholder = stringResource(R.string.settings_api_key_placeholder),
+                            saveLabel = stringResource(R.string.settings_api_key_save),
+                            replaceLabel = stringResource(R.string.settings_api_key_replace),
+                            clearLabel = stringResource(R.string.settings_api_key_clear),
+                            onSave = onSetGeminiKey,
+                            onClear = onClearGeminiKey,
+                        )
+                        VoicePicker(
+                            title = stringResource(R.string.settings_tts_voice_label),
+                            voices = GEMINI_VOICES,
+                            selectedId = geminiVoice,
+                            enabled = !isPreviewing,
+                            onSelect = {
+                                onSetGeminiVoice(it)
+                                preview(TtsEngine.GEMINI, it, ttsStyle, deviceVoice, voiceLocale)
+                            },
+                        )
+                        StylePicker(
+                            selected = ttsStyle,
+                            enabled = !isPreviewing,
+                            onSelect = { picked ->
+                                onSetTtsStyle(picked)
+                                preview(TtsEngine.GEMINI, geminiVoice, picked, deviceVoice, voiceLocale)
+                            },
+                        )
+                        TestVoiceButton(isPreviewing = isPreviewing) {
+                            preview(selected, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
+                        }
                     }
-                    DeviceVoicePicker(
-                        voices = deviceVoices,
-                        selectedId = deviceVoice,
-                        effectiveDeviceVoice = effectiveDeviceVoice,
-                        enabled = !isPreviewing,
-                        onSelect = { picked ->
-                            onSetDeviceVoice(picked)
-                            preview(selected, geminiVoice, ttsStyle, picked, voiceLocale)
-                        },
-                    )
-                    TestVoiceButton(isPreviewing = isPreviewing) {
-                        preview(selected, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
+                    TtsEngine.DEVICE -> {
+                        if (!rememberIsGoogleTtsInstalled()) {
+                            InstallGoogleTtsHint()
+                        }
+                        DeviceVoicePicker(
+                            voices = deviceVoices,
+                            selectedId = deviceVoice,
+                            effectiveDeviceVoice = effectiveDeviceVoice,
+                            enabled = !isPreviewing,
+                            onSelect = { picked ->
+                                onSetDeviceVoice(picked)
+                                preview(selected, geminiVoice, ttsStyle, picked, voiceLocale)
+                            },
+                        )
+                        TestVoiceButton(isPreviewing = isPreviewing) {
+                            preview(selected, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
+                        }
                     }
                 }
             }

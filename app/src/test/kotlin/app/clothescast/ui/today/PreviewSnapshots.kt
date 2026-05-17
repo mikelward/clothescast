@@ -428,32 +428,50 @@ class PreviewSnapshots {
     @Test fun confidence_medium_no_detail() = capture { ConfidenceMediumNoDetailPreview() }
 
     // Holiday-themed banner + outfit-row previews. One per HolidayId so each
-    // palette is reviewable as an inline image diff in the PR.
+    // palette is reviewable as an inline image diff in the PR. Calendar
+    // order matches HolidayCatalog.all.
     @Test fun holiday_new_years_day() = capture { HolidayNewYearsDayPreview() }
+    @Test fun holiday_japan_coming_of_age_day() = capture { HolidayJapanComingOfAgeDayPreview() }
+    @Test fun holiday_mlk_day() = capture { HolidayMlkDayPreview() }
+    @Test fun holiday_burns_night() = capture { HolidayBurnsNightPreview() }
     @Test fun holiday_australia_day() = capture { HolidayAustraliaDayPreview() }
+    @Test fun holiday_waitangi_day() = capture { HolidayWaitangiDayPreview() }
     @Test fun holiday_valentines_day() = capture { HolidayValentinesDayPreview() }
     @Test fun holiday_st_davids_day() = capture { HolidayStDavidsDayPreview() }
+    @Test fun holiday_korean_independence_movement_day() = capture { HolidayKoreanIndependenceMovementDayPreview() }
     @Test fun holiday_st_patricks_day() = capture { HolidayStPatricksDayPreview() }
     @Test fun holiday_st_georges_day() = capture { HolidayStGeorgesDayPreview() }
     @Test fun holiday_anzac_day() = capture { HolidayAnzacDayPreview() }
     @Test fun holiday_mothers_day() = capture { HolidayMothersDayPreview() }
+    @Test fun holiday_japan_greenery_day() = capture { HolidayJapanGreeneryDayPreview() }
+    @Test fun holiday_croatia_statehood_day() = capture { HolidayCroatiaStatehoodDayPreview() }
+    @Test fun holiday_us_memorial_day() = capture { HolidayUsMemorialDayPreview() }
     @Test fun holiday_italy_republic_day() = capture { HolidayItalyRepublicDayPreview() }
+    @Test fun holiday_korean_memorial_day() = capture { HolidayKoreanMemorialDayPreview() }
+    @Test fun holiday_juneteenth() = capture { HolidayJuneteenthPreview() }
     @Test fun holiday_fathers_day_jun() = capture { HolidayFathersDayJunPreview() }
     @Test fun holiday_canada_day() = capture { HolidayCanadaDayPreview() }
     @Test fun holiday_us_independence_day() = capture { HolidayUsIndependenceDayPreview() }
     @Test fun holiday_bastille_day() = capture { HolidayBastilleDayPreview() }
+    @Test fun holiday_japan_marine_day() = capture { HolidayJapanMarineDayPreview() }
+    @Test fun holiday_korean_liberation_day() = capture { HolidayKoreanLiberationDayPreview() }
     @Test fun holiday_fathers_day_sep() = capture { HolidayFathersDaySepPreview() }
     @Test fun holiday_brazil_independence_day() = capture { HolidayBrazilIndependenceDayPreview() }
     @Test fun holiday_german_unity_day() = capture { HolidayGermanUnityDayPreview() }
+    @Test fun holiday_korean_hangeul_day() = capture { HolidayKoreanHangeulDayPreview() }
+    @Test fun holiday_canadian_thanksgiving() = capture { HolidayCanadianThanksgivingPreview() }
     @Test fun holiday_spain_hispanic_day() = capture { HolidaySpainHispanicDayPreview() }
     @Test fun holiday_halloween() = capture { HolidayHalloweenPreview() }
+    @Test fun holiday_japan_culture_day() = capture { HolidayJapanCultureDayPreview() }
     @Test fun holiday_bonfire_night() = capture { HolidayBonfireNightPreview() }
     @Test fun holiday_remembrance_day() = capture { HolidayRemembranceDayPreview() }
     @Test fun holiday_remembrance_day_us() = capture { HolidayRemembranceDayUsPreview() }
+    @Test fun holiday_remembrance_day_fr() = capture { HolidayRemembranceDayFrPreview() }
     @Test fun holiday_us_thanksgiving() = capture { HolidayUsThanksgivingPreview() }
     @Test fun holiday_st_andrews_day() = capture { HolidayStAndrewsDayPreview() }
     @Test fun holiday_christmas_day() = capture { HolidayChristmasDayPreview() }
     @Test fun holiday_christmas_day_dark() = capture { HolidayChristmasDayDarkPreview() }
+    @Test fun holiday_boxing_day() = capture { HolidayBoxingDayPreview() }
 
     @Test fun work_status_running() = capture { WorkStatusRunningPreview() }
     @Test fun work_status_retrying() = capture { WorkStatusRetryingPreview() }

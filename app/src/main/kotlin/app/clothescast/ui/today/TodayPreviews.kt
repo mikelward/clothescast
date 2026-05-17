@@ -748,9 +748,25 @@ private fun HolidayShowcase(
 @Composable
 internal fun HolidayNewYearsDayPreview() = HolidayShowcase(HolidayId.NEW_YEARS_DAY)
 
+@Preview(name = "Holiday · Coming of Age (JP)", widthDp = 360)
+@Composable
+internal fun HolidayJapanComingOfAgeDayPreview() = HolidayShowcase(HolidayId.JAPAN_COMING_OF_AGE_DAY)
+
+@Preview(name = "Holiday · MLK Day", widthDp = 360)
+@Composable
+internal fun HolidayMlkDayPreview() = HolidayShowcase(HolidayId.MLK_DAY)
+
+@Preview(name = "Holiday · Burns Night", widthDp = 360)
+@Composable
+internal fun HolidayBurnsNightPreview() = HolidayShowcase(HolidayId.BURNS_NIGHT)
+
 @Preview(name = "Holiday · Australia Day", widthDp = 360)
 @Composable
 internal fun HolidayAustraliaDayPreview() = HolidayShowcase(HolidayId.AUSTRALIA_DAY)
+
+@Preview(name = "Holiday · Waitangi Day", widthDp = 360)
+@Composable
+internal fun HolidayWaitangiDayPreview() = HolidayShowcase(HolidayId.WAITANGI_DAY)
 
 @Preview(name = "Holiday · Valentine's Day", widthDp = 360)
 @Composable
@@ -759,6 +775,11 @@ internal fun HolidayValentinesDayPreview() = HolidayShowcase(HolidayId.VALENTINE
 @Preview(name = "Holiday · St David's Day", widthDp = 360)
 @Composable
 internal fun HolidayStDavidsDayPreview() = HolidayShowcase(HolidayId.ST_DAVIDS_DAY)
+
+@Preview(name = "Holiday · Korean Independence Movement Day", widthDp = 360)
+@Composable
+internal fun HolidayKoreanIndependenceMovementDayPreview() =
+    HolidayShowcase(HolidayId.KOREAN_INDEPENDENCE_MOVEMENT_DAY)
 
 @Preview(name = "Holiday · St Patrick's Day", widthDp = 360)
 @Composable
@@ -776,9 +797,29 @@ internal fun HolidayAnzacDayPreview() = HolidayShowcase(HolidayId.ANZAC_DAY)
 @Composable
 internal fun HolidayMothersDayPreview() = HolidayShowcase(HolidayId.MOTHERS_DAY)
 
+@Preview(name = "Holiday · Greenery Day (JP)", widthDp = 360)
+@Composable
+internal fun HolidayJapanGreeneryDayPreview() = HolidayShowcase(HolidayId.JAPAN_GREENERY_DAY)
+
+@Preview(name = "Holiday · Croatia Statehood Day", widthDp = 360)
+@Composable
+internal fun HolidayCroatiaStatehoodDayPreview() = HolidayShowcase(HolidayId.CROATIA_STATEHOOD_DAY)
+
+@Preview(name = "Holiday · US Memorial Day", widthDp = 360)
+@Composable
+internal fun HolidayUsMemorialDayPreview() = HolidayShowcase(HolidayId.US_MEMORIAL_DAY)
+
 @Preview(name = "Holiday · Italian Republic Day", widthDp = 360)
 @Composable
 internal fun HolidayItalyRepublicDayPreview() = HolidayShowcase(HolidayId.ITALY_REPUBLIC_DAY)
+
+@Preview(name = "Holiday · Korean Memorial Day", widthDp = 360)
+@Composable
+internal fun HolidayKoreanMemorialDayPreview() = HolidayShowcase(HolidayId.KOREAN_MEMORIAL_DAY)
+
+@Preview(name = "Holiday · Juneteenth", widthDp = 360)
+@Composable
+internal fun HolidayJuneteenthPreview() = HolidayShowcase(HolidayId.JUNETEENTH)
 
 @Preview(name = "Holiday · Father's Day (Jun)", widthDp = 360)
 @Composable
@@ -796,6 +837,14 @@ internal fun HolidayUsIndependenceDayPreview() = HolidayShowcase(HolidayId.US_IN
 @Composable
 internal fun HolidayBastilleDayPreview() = HolidayShowcase(HolidayId.BASTILLE_DAY)
 
+@Preview(name = "Holiday · Marine Day (JP)", widthDp = 360)
+@Composable
+internal fun HolidayJapanMarineDayPreview() = HolidayShowcase(HolidayId.JAPAN_MARINE_DAY)
+
+@Preview(name = "Holiday · Korean Liberation Day", widthDp = 360)
+@Composable
+internal fun HolidayKoreanLiberationDayPreview() = HolidayShowcase(HolidayId.KOREAN_LIBERATION_DAY)
+
 @Preview(name = "Holiday · Father's Day (Sep)", widthDp = 360)
 @Composable
 internal fun HolidayFathersDaySepPreview() = HolidayShowcase(HolidayId.FATHERS_DAY_SEP)
@@ -808,6 +857,14 @@ internal fun HolidayBrazilIndependenceDayPreview() = HolidayShowcase(HolidayId.B
 @Composable
 internal fun HolidayGermanUnityDayPreview() = HolidayShowcase(HolidayId.GERMAN_UNITY_DAY)
 
+@Preview(name = "Holiday · Hangeul Day (KR)", widthDp = 360)
+@Composable
+internal fun HolidayKoreanHangeulDayPreview() = HolidayShowcase(HolidayId.KOREAN_HANGEUL_DAY)
+
+@Preview(name = "Holiday · Canadian Thanksgiving", widthDp = 360)
+@Composable
+internal fun HolidayCanadianThanksgivingPreview() = HolidayShowcase(HolidayId.CANADIAN_THANKSGIVING)
+
 @Preview(name = "Holiday · Hispanic Day", widthDp = 360)
 @Composable
 internal fun HolidaySpainHispanicDayPreview() = HolidayShowcase(HolidayId.SPAIN_HISPANIC_DAY)
@@ -815,6 +872,10 @@ internal fun HolidaySpainHispanicDayPreview() = HolidayShowcase(HolidayId.SPAIN_
 @Preview(name = "Holiday · Halloween", widthDp = 360)
 @Composable
 internal fun HolidayHalloweenPreview() = HolidayShowcase(HolidayId.HALLOWEEN)
+
+@Preview(name = "Holiday · Culture Day (JP)", widthDp = 360)
+@Composable
+internal fun HolidayJapanCultureDayPreview() = HolidayShowcase(HolidayId.JAPAN_CULTURE_DAY)
 
 @Preview(name = "Holiday · Bonfire Night", widthDp = 360)
 @Composable
@@ -832,6 +893,13 @@ internal fun HolidayRemembranceDayPreview() = HolidayShowcase(HolidayId.REMEMBRA
 internal fun HolidayRemembranceDayUsPreview() =
     HolidayShowcase(HolidayId.REMEMBRANCE_DAY, region = Region.EN_US)
 
+// French variant of Nov 11 — same khaki, "Souvenons-nous" instead of
+// "Lest we forget". Exercises the FR country override added in v3.
+@Preview(name = "Holiday · Armistice Day (FR)", widthDp = 360)
+@Composable
+internal fun HolidayRemembranceDayFrPreview() =
+    HolidayShowcase(HolidayId.REMEMBRANCE_DAY, region = Region.FR_FR)
+
 @Preview(name = "Holiday · US Thanksgiving", widthDp = 360)
 @Composable
 internal fun HolidayUsThanksgivingPreview() = HolidayShowcase(HolidayId.US_THANKSGIVING)
@@ -843,6 +911,10 @@ internal fun HolidayStAndrewsDayPreview() = HolidayShowcase(HolidayId.ST_ANDREWS
 @Preview(name = "Holiday · Christmas Day", widthDp = 360)
 @Composable
 internal fun HolidayChristmasDayPreview() = HolidayShowcase(HolidayId.CHRISTMAS_DAY)
+
+@Preview(name = "Holiday · Boxing Day", widthDp = 360)
+@Composable
+internal fun HolidayBoxingDayPreview() = HolidayShowcase(HolidayId.BOXING_DAY)
 
 @Preview(name = "Holiday · Christmas (dark)", widthDp = 360)
 @Composable

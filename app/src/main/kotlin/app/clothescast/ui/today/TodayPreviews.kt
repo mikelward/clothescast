@@ -32,6 +32,7 @@ import app.clothescast.core.domain.model.Fact
 import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.GarmentReason
+import app.clothescast.core.domain.model.FestiveThemes
 import app.clothescast.core.domain.model.HolidayCatalog
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayTheme
@@ -923,6 +924,39 @@ internal fun HolidayBoxingDayPreview() = HolidayShowcase(HolidayId.BOXING_DAY)
 @Preview(name = "Holiday · Christmas (dark)", widthDp = 360)
 @Composable
 internal fun HolidayChristmasDayDarkPreview() = HolidayShowcase(HolidayId.CHRISTMAS_DAY, darkTheme = true)
+
+// Canonical preview for the synthetic birthday theme. Parallels the
+// HolidayShowcase block above, but FestiveThemes.birthday() builds the
+// theme at runtime from a calendar event title rather than looking it
+// up in HolidayCatalog, so HolidayShowcase (which requires a HolidayId)
+// can't render it.
+@Preview(name = "Birthday", widthDp = 360)
+@Composable
+internal fun BirthdayPreview() {
+    val theme = FestiveThemes.birthday("Alice's birthday")
+    Frame {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            HolidayBanner(theme = theme, modifier = Modifier.fillMaxWidth())
+            OutfitPreviewRow(
+                SAMPLE_INSIGHT.copy(
+                    period = ForecastPeriod.TODAY,
+                    outfit = OutfitSuggestion(
+                        OutfitSuggestion.Top.SWEATER,
+                        OutfitSuggestion.Bottom.LONG_PANTS,
+                    ),
+                    nextOutfit = OutfitSuggestion(
+                        OutfitSuggestion.Top.THICK_JACKET,
+                        OutfitSuggestion.Bottom.LONG_PANTS,
+                    ),
+                ),
+                outfitTopColors = theme.topOverrides,
+                outfitBottomColors = theme.bottomOverrides,
+                outfitTopStrokes = theme.topStrokeOverrides,
+                outfitBottomStrokes = theme.bottomStrokeOverrides,
+            )
+        }
+    }
+}
 
 @Preview(name = "Banner · running", widthDp = 360)
 @Composable

@@ -1398,12 +1398,15 @@ private const val MOTHERING_CREAM = 0xFFFFF8E1L
 // Synthetic themes used by [FestiveThemes] when the user has opted into
 // calendar-sourced theming and a row arrives carrying [EventKind.PUBLIC_HOLIDAY]
 // or [EventKind.BIRTHDAY]. Generic festive gold/purple for a holiday name we
-// don't recognise (Diwali, Eid, Lunar New Year — catalog gaps), and a party
-// pink/teal for a detected birthday.
+// don't recognise (Diwali, Eid, Lunar New Year — catalog gaps), and a confetti
+// yellow/magenta for a detected birthday — gender-neutral, maximum party pop,
+// and visually distinct from every catalog holiday and the generic-holiday
+// fallback above so a "Bob's birthday" in the banner never gets mistaken
+// for a recognised holiday.
 private const val FESTIVE_GOLD = 0xFFD4AF37L
 private const val FESTIVE_PURPLE = 0xFF6A1B9AL
-private const val BIRTHDAY_PINK = 0xFFEC407AL
-private const val BIRTHDAY_TEAL = 0xFF26A69AL
+private const val BIRTHDAY_YELLOW = 0xFFFFD54FL
+private const val BIRTHDAY_MAGENTA = 0xFFD81B60L
 
 /**
  * Runtime-constructed [HolidayTheme]s for calendar-sourced events. The
@@ -1437,9 +1440,9 @@ object FestiveThemes {
         displayNameKey = title,
         bannerTextKey = title,
         emoji = "🎂",
-        topOverrides = topPaletteAll(BIRTHDAY_PINK),
-        bottomOverrides = bottomPaletteAll(BIRTHDAY_TEAL),
-        bannerArgb = BIRTHDAY_PINK,
+        topOverrides = topPaletteAll(BIRTHDAY_YELLOW),
+        bottomOverrides = bottomPaletteAll(BIRTHDAY_MAGENTA),
+        bannerArgb = BIRTHDAY_MAGENTA,
         countries = emptySet(),
         isSynthetic = true,
         displayTitleOverride = title,

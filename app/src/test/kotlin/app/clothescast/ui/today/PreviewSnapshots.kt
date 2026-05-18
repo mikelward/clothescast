@@ -474,6 +474,10 @@ class PreviewSnapshots {
     @Test fun holiday_christmas_day_dark() = capture { HolidayChristmasDayDarkPreview() }
     @Test fun holiday_boxing_day() = capture { HolidayBoxingDayPreview() }
 
+    // Synthetic birthday theme — calendar-sourced, no HolidayId entry, so
+    // it can't be rendered via HolidayShowcase like the entries above.
+    @Test fun birthday() = capture { BirthdayPreview() }
+
     @Test fun work_status_running() = capture { WorkStatusRunningPreview() }
     @Test fun work_status_retrying() = capture { WorkStatusRetryingPreview() }
     @Test fun work_status_failed() = capture { WorkStatusFailedPreview() }

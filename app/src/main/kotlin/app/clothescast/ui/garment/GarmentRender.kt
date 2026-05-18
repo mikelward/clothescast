@@ -199,8 +199,11 @@ private fun Paint.Join.toComposeJoin(): StrokeJoin = when (this) {
  * can't render Compose composables — notification large icons (via
  * [androidx.core.app.NotificationCompat.Builder.setLargeIcon]) and the
  * Glance widget (via [androidx.glance.ImageProvider]). Memoised by
- * `(drawableRes, fillArgb, sizePx)` so rapid widget refreshes don't
- * re-rasterize. [customFillArgb] = null preserves the baked-in two-tone.
+ * `(drawableRes, fillArgb, strokeArgb, sizePx)` so rapid widget refreshes
+ * don't re-rasterize. [customFillArgb] = null preserves the baked-in
+ * two-tone; [customStrokeArgb] when non-null overrides the auto-derived
+ * darker stroke with a chosen accent colour (e.g. the contrasting third
+ * colour in tricolour holiday themes).
  */
 internal fun renderOutfitBitmap(
     context: Context,
@@ -208,17 +211,18 @@ internal fun renderOutfitBitmap(
     defaults: GarmentDefaults,
     customFillArgb: Long?,
     sizePx: Int,
+    customStrokeArgb: Long? = null,
 ): Bitmap {
     require(sizePx > 0) { "sizePx must be positive, got $sizePx" }
-    val cacheKey = BitmapCacheKey(drawableRes, customFillArgb, sizePx)
+    val cacheKey = BitmapCacheKey(drawableRes, customFillArgb, customStrokeArgb, sizePx)
     bitmapCache[cacheKey]?.let { return it }
-    val bitmap = if (customFillArgb == null) {
+    val bitmap = if (customFillArgb == null && customStrokeArgb == null) {
         // Default-colour fast path: lean on the platform's VectorDrawable
         // rasterizer so the bitmap matches what users have always seen on
         // notifications + widgets pre-customisation.
         renderDefaultBitmap(context, drawableRes, sizePx)
     } else {
-        renderRecoloredBitmap(context, drawableRes, defaults, customFillArgb, sizePx)
+        renderRecoloredBitmap(context, drawableRes, defaults, customFillArgb, customStrokeArgb, sizePx)
     }
     bitmapCache[cacheKey] = bitmap
     return bitmap
@@ -238,11 +242,16 @@ private fun renderRecoloredBitmap(
     context: Context,
     @DrawableRes drawableRes: Int,
     defaults: GarmentDefaults,
-    customFillArgb: Long,
+    customFillArgb: Long?,
+    customStrokeArgb: Long?,
     sizePx: Int,
 ): Bitmap {
     val vector = loadOutfitVector(context, drawableRes)
-    val recolor = buildRecolorMap(defaults, Color(customFillArgb.toInt()))
+    val recolor = buildRecolorMap(
+        defaults,
+        customFillArgb?.let { Color(it.toInt()) },
+        customStrokeArgb?.let { Color(it.toInt()) },
+    )
     val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
     val scaleX = sizePx / vector.viewportWidth
@@ -271,6 +280,7 @@ private fun renderRecoloredBitmap(
 private data class BitmapCacheKey(
     @DrawableRes val drawableRes: Int,
     val customFillArgb: Long?,
+    val customStrokeArgb: Long?,
     val sizePx: Int,
 )
 
@@ -304,6 +314,8 @@ internal fun renderOutfitCard(
     rainFillFraction: Float?,
     topColors: Map<OutfitSuggestion.Top, Long>,
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+    topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    bottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
 ): ByteArray {
     val bmp = Bitmap.createBitmap(CARD_W, CARD_H, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bmp)
@@ -313,8 +325,22 @@ internal fun renderOutfitCard(
 
     // Icons go in the left column from the top, independent of the header
     // which lives above the prose on the right.
-    val topBmp = renderOutfitBitmap(context, topDrawable(outfit.top), outfitTopDefaults.getValue(outfit.top), topColors[outfit.top], ICON_PX)
-    val botBmp = renderOutfitBitmap(context, bottomDrawable(outfit.bottom), outfitBottomDefaults.getValue(outfit.bottom), bottomColors[outfit.bottom], ICON_PX)
+    val topBmp = renderOutfitBitmap(
+        context = context,
+        drawableRes = topDrawable(outfit.top),
+        defaults = outfitTopDefaults.getValue(outfit.top),
+        customFillArgb = topColors[outfit.top],
+        sizePx = ICON_PX,
+        customStrokeArgb = topStrokes[outfit.top],
+    )
+    val botBmp = renderOutfitBitmap(
+        context = context,
+        drawableRes = bottomDrawable(outfit.bottom),
+        defaults = outfitBottomDefaults.getValue(outfit.bottom),
+        customFillArgb = bottomColors[outfit.bottom],
+        sizePx = ICON_PX,
+        customStrokeArgb = bottomStrokes[outfit.bottom],
+    )
     canvas.drawBitmap(topBmp, CARD_PAD.toFloat(), CARD_PAD.toFloat(), null)
     canvas.drawBitmap(botBmp, CARD_PAD.toFloat(), (CARD_PAD + ICON_PX + ICON_V_GAP).toFloat(), null)
 

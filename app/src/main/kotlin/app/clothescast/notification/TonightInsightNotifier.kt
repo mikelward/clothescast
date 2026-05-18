@@ -30,6 +30,7 @@ class TonightInsightNotifier(private val context: Context) {
         insight: Insight,
         prose: String,
         topColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+        topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     ) {
         if (!NotificationPermission.isGranted(context)) return
 
@@ -50,7 +51,14 @@ class TonightInsightNotifier(private val context: Context) {
         val top = insight.outfit?.top
         val notification = NotificationCompat.Builder(context, channel)
             .setSmallIcon(InsightNotifier.smallIconFor(top))
-            .setLargeIcon(InsightNotifier.largeIconForTop(context, top, top?.let { topColors[it] }))
+            .setLargeIcon(
+                InsightNotifier.largeIconForTop(
+                    context = context,
+                    top = top,
+                    customFillArgb = top?.let { topColors[it] },
+                    customStrokeArgb = top?.let { topStrokes[it] },
+                ),
+            )
             .setContentTitle(context.getString(R.string.notification_tonight_insight_title))
             .setContentText(prose)
             .setStyle(NotificationCompat.BigTextStyle().bigText(prose))

@@ -31,7 +31,7 @@ internal val outfitTopDefaults: Map<OutfitSuggestion.Top, GarmentDefaults> = map
     OutfitSuggestion.Top.SWEATER to GarmentDefaults(0xFF8D6E63.toInt(), 0xFF5D4037.toInt()),
     OutfitSuggestion.Top.THIN_JACKET to GarmentDefaults(0xFF3949AB.toInt(), 0xFF1A237E.toInt()),
     OutfitSuggestion.Top.THICK_JACKET to GarmentDefaults(0xFF7E57C2.toInt(), 0xFF4527A0.toInt()),
-    OutfitSuggestion.Top.THICK_COAT to GarmentDefaults(0xFFFFB74D.toInt(), 0xFFEF6C00.toInt()),
+    OutfitSuggestion.Top.THICK_COAT to GarmentDefaults(0xFF8D6E63.toInt(), 0xFF4E342E.toInt()),
     OutfitSuggestion.Top.PUFFER_JACKET to GarmentDefaults(0xFFF5F7FA.toInt(), 0xFF90A4AE.toInt()),
 )
 

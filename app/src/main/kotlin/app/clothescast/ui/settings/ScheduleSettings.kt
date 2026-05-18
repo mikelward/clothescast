@@ -147,6 +147,11 @@ private fun DayCard(
     var pickerOpen by remember { mutableStateOf(false) }
 
     SectionCard(title = stringResource(R.string.settings_schedule_title)) {
+        Text(
+            text = stringResource(R.string.settings_schedule_description),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
         TimeRow(
             label = stringResource(R.string.settings_schedule_time_label),
             time = time,

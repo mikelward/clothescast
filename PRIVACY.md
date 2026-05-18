@@ -78,6 +78,25 @@ The source code is at <https://github.com/mikelward/clothescast>.
 - **Retention by us:** Replaced on the next daily refresh; cleared on
   uninstall.
 
+### Calendar-sourced theming _(optional, off by default)_
+
+- **What:** When you enable "Holidays" or "Birthdays" in the Holiday
+  settings screen, ClothesCast reads your synced device calendars to
+  detect holiday and birthday events. Detection runs entirely on-device
+  (event title pattern matching + source-calendar account inspection).
+- **Why:** To theme today's outfit on holidays your curated catalog
+  doesn't cover (Diwali, Eid, Lunar New Year, etc.) and on detected
+  birthdays — a celebratory palette + a banner naming the day.
+- **Where it goes:** Nowhere off-device. Detected event titles
+  (including contact names on birthday events) are shown only in the
+  themed banner on your screen — they are **never** read aloud through
+  online TTS, **never** sent to Gemini, and **never** written to
+  Firebase Analytics or Crashlytics.
+- **Permission:** Both toggles require `READ_CALENDAR`, prompted by
+  the toggle itself. Revoking permission later from system Settings
+  doesn't auto-flip the toggle off; the reader simply returns no events
+  until permission is restored.
+
 ### Notifications
 
 - ClothesCast posts a local notification at the time you choose. The
@@ -305,9 +324,13 @@ What's sent:
 What's **not** sent — these are hard limits, not "best-effort":
 
 - **No calendar event data.** Not titles, not times, not locations, not
-  attendees, not whether you have any events at all.
+  attendees, not whether you have any events at all. The calendar-sourced
+  holiday/birthday classifications described above stay on-device — the
+  themed banner is rendered locally and never read aloud through online
+  TTS, never sent to Gemini, and never written to Firebase.
 - **No user names**, account identifiers, email addresses, or contact
-  info.
+  info. This explicitly includes contact names that may appear on
+  birthday-themed banners on the Today screen.
 - **No location coordinates** or geocoded place names.
 - **No insight prose**, notification text, or anything else that could
   carry free-form user content. _Exception:_ if you opt in to the Smart

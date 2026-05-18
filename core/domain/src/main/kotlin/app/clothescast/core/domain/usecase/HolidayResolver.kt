@@ -56,4 +56,31 @@ class HolidayResolver(
         val theme = catalog.firstOrNull { it.second.id == id }?.second ?: return false
         return theme.countries.any { it in enabledCountries }
     }
+
+    /**
+     * `true` iff any catalog entry's date predicate matches [date] AND
+     * the entry is one the user could see — i.e. at least one of its
+     * countries is in [enabledCountries]. Used by [ThemeForToday] to
+     * suppress calendar-sourced holiday fallbacks on dates the curated
+     * catalog has an *eligible* opinion about.
+     *
+     * The country filter is what keeps unrelated catalog entries from
+     * silencing legitimate calendar holidays. Example: a Portuguese
+     * user opting into calendar holidays sees Apr 25's "Freedom Day"
+     * from their PT holiday calendar, even though the catalog has
+     * Anzac Day (AU/NZ) and Italian Liberation Day (IT) on the same
+     * date — the PT user has none of those countries enabled, so the
+     * catalog has no opinion *they* could act on, and the calendar
+     * fallback fires correctly.
+     *
+     * Per-holiday overrides aren't checked here: an ON override falls
+     * out of [resolve] before this is called, so we only reach the
+     * fallback when resolve returned null. An OFF override on a holiday
+     * whose country *is* enabled still suppresses the fallback — the
+     * user's explicit opt-out beats a calendar event with the same date.
+     */
+    fun hasCatalogMatch(date: LocalDate, enabledCountries: Set<String>): Boolean =
+        catalog.any { (predicate, theme) ->
+            predicate.matches(date) && theme.countries.any { it in enabledCountries }
+        }
 }

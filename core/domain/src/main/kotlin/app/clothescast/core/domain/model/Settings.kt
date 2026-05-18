@@ -430,6 +430,41 @@ data class UserPreferences(
      */
     val useCalendarEvents: Boolean = false,
     /**
+     * Opt-in: theme the Today screen on holidays detected in synced Google
+     * calendars (Diwali, Eid, Lunar New Year, etc. — gaps in the curated
+     * [HolidayCatalog]). Curated holiday theming is unaffected and keeps
+     * firing by default; this toggle only controls Google-calendar
+     * augmentation. Reading the calendar requires `READ_CALENDAR`, prompted
+     * by the toggle on the Holiday settings screen.
+     */
+    val themeFromCalendarHolidays: Boolean = false,
+    /**
+     * Opt-in: theme the Today screen on birthdays detected in synced
+     * calendars (Google's auto-Birthdays calendar, the new Birthday event
+     * type, or user-entered "<name>'s birthday" events). Off by default.
+     * Like [themeFromCalendarHolidays], requires `READ_CALENDAR`.
+     */
+    val themeFromCalendarBirthdays: Boolean = false,
+    /**
+     * Set to true once the user dismisses the Today-screen "Celebration
+     * themes" promo card via its X button. Hides the card permanently even
+     * if both theming toggles remain off — same pattern as
+     * [telemetryNoticeAcked]. The card also auto-hides when either theming
+     * toggle is on.
+     */
+    val celebrationCardDismissed: Boolean = false,
+    /**
+     * Bumped to `System.currentTimeMillis()` whenever the user re-grants
+     * `READ_CALENDAR` via the in-app permission flow. Exists purely to
+     * force the [SettingsRepository.preferences] flow to re-emit so any
+     * downstream consumer that derives state from a calendar read (today
+     * the [HolidayResolver]+[ThemeForToday] combine in `TodayViewModel`)
+     * picks up the new permission state immediately, instead of waiting
+     * for the next pref edit or midnight rollover. Carries no other
+     * semantic — readers should not branch on its value.
+     */
+    val calendarPermissionRecheckTick: Long = 0L,
+    /**
      * When the evening / "tonight" insight should fire. Distinct from [schedule]
      * (the morning slot) so the user can keep the morning at 07:00 and still
      * tweak the evening time independently. Default is 19:00 every day.

@@ -1,5 +1,7 @@
 package app.clothescast.ui.settings
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,9 +28,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,7 +40,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import app.clothescast.R
+import app.clothescast.calendar.CalendarPermission
 import app.clothescast.core.domain.model.HolidayCatalog
 import app.clothescast.core.domain.model.HolidayCountrySelection
 import app.clothescast.core.domain.model.HolidayId
@@ -75,6 +83,8 @@ internal fun HolidaysContent(
     effectiveEnabledHolidayCountries: Set<String>,
     localeCountry: String?,
     weatherLocationCountry: String?,
+    themeFromCalendarHolidays: Boolean,
+    themeFromCalendarBirthdays: Boolean,
     padding: PaddingValues,
     onSetCountryHome: (Boolean) -> Unit,
     onSetCountryCurrent: (Boolean) -> Unit,
@@ -82,6 +92,9 @@ internal fun HolidaysContent(
     onSetCountryAll: (Boolean) -> Unit,
     onSetCountryOverride: (String, HolidayOverride) -> Unit,
     onSetHolidayOverride: (HolidayId, HolidayOverride) -> Unit,
+    onSetThemeFromCalendarHolidays: (Boolean) -> Unit,
+    onSetThemeFromCalendarBirthdays: (Boolean) -> Unit,
+    onCalendarPermissionRechecked: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -139,6 +152,8 @@ internal fun HolidaysContent(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            IntroBlurb()
+
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -174,6 +189,18 @@ internal fun HolidaysContent(
                         label = stringResource(R.string.settings_holiday_country_all_label),
                         checked = holidayCountrySelection.all,
                         onCheckedChange = onSetCountryAll,
+                    )
+                    CalendarToggleRow(
+                        label = stringResource(R.string.settings_holidays_my_calendar_holidays),
+                        checked = themeFromCalendarHolidays,
+                        onSetChecked = onSetThemeFromCalendarHolidays,
+                        onPermissionRechecked = onCalendarPermissionRechecked,
+                    )
+                    CalendarToggleRow(
+                        label = stringResource(R.string.settings_holidays_my_calendar_birthdays),
+                        checked = themeFromCalendarBirthdays,
+                        onSetChecked = onSetThemeFromCalendarBirthdays,
+                        onPermissionRechecked = onCalendarPermissionRechecked,
                     )
                 }
             }
@@ -243,6 +270,17 @@ internal fun HolidaysContent(
                     }
                 }
             }
+
+            // TODO(celebrations-v2): when the "My calendar holidays" /
+            // "My calendar birthdays" toggles are on, add two extra
+            // collapsibles at the bottom listing the actual events
+            // detected in the user's synced calendars for the next
+            // ~30 days, each with a per-event override dropdown (same
+            // pattern as the country sections above). Lets the user
+            // mute a specific event ("Boxing day" they don't celebrate;
+            // a noisy birthday import) without disabling the whole
+            // toggle. Needs a CalendarEvent → HolidayId stable-key
+            // scheme that survives event-recurrence renames.
 
             val allActiveCount = allThemes.count { theme -> theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries) }
             CollapsibleSection(
@@ -486,3 +524,129 @@ private fun Collection<String>.sortedForDisplay(
     val labelled = map { code -> code to resolveCountryDisplayName(context, uiLocale, code) }
     return labelled.sortedWith(compareBy(collator) { it.second }).map { it.first }
 }
+
+/**
+ * Intro for the Celebrations settings page. One sentence explaining the
+ * page's job, plus two flat help links pointing at Google Calendar's own
+ * "add holidays" and "manage birthdays" docs — those are the only place
+ * the user can actually subscribe to / configure the source calendars.
+ */
+@Composable
+private fun IntroBlurb() {
+    val context = LocalContext.current
+    val addUrl = stringResource(R.string.settings_holidays_theme_calendar_holidays_help_url)
+    val manageUrl = stringResource(R.string.settings_holidays_theme_calendar_birthdays_help_url)
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = stringResource(R.string.settings_holidays_intro),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(0.dp)) {
+            TextButton(
+                onClick = { openUrl(context, addUrl) },
+                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
+            ) {
+                Text(stringResource(R.string.settings_holidays_theme_calendar_holidays_help))
+            }
+            Text(
+                text = " · ",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 6.dp),
+            )
+            TextButton(
+                onClick = { openUrl(context, manageUrl) },
+                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
+            ) {
+                Text(stringResource(R.string.settings_holidays_theme_calendar_birthdays_help))
+            }
+        }
+    }
+}
+
+/**
+ * Country-card row for one of the calendar-sourced theming toggles
+ * (My calendar holidays, My calendar birthdays). Flips the pref through
+ * the supplied callback when permission is already granted; otherwise
+ * fires the `READ_CALENDAR` prompt and only flips on grant.
+ *
+ * Revocation handling: per the PR plan, if the user revokes permission
+ * later from system Settings, the persisted pref is **not** auto-flipped
+ * off — the reader returns no events until permission is restored, and
+ * the [onPermissionRechecked] nudge fires on grant or transition so
+ * `TodayViewModel`'s cached events list refreshes promptly.
+ */
+@Composable
+private fun CalendarToggleRow(
+    label: String,
+    checked: Boolean,
+    onSetChecked: (Boolean) -> Unit,
+    onPermissionRechecked: () -> Unit,
+) {
+    val context = LocalContext.current
+    var permissionGranted by remember { mutableStateOf(CalendarPermission.isGranted(context)) }
+    val currentChecked by rememberUpdatedState(checked)
+    val currentOnPermissionRechecked by rememberUpdatedState(onPermissionRechecked)
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                val wasGranted = permissionGranted
+                val nowGranted = CalendarPermission.isGranted(context)
+                permissionGranted = nowGranted
+                // Fire on EITHER transition direction when this toggle is
+                // on — revokes need to invalidate Today's cached events
+                // just as much as grants do (a stale birthday/holiday
+                // banner would otherwise linger until midnight).
+                if (wasGranted != nowGranted && currentChecked) {
+                    currentOnPermissionRechecked()
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        permissionGranted = granted
+        if (granted) onSetChecked(true)
+    }
+
+    // Visual `checked` follows the stored pref directly, NOT the
+    // permission state. Without this, a user who revoked READ_CALENDAR
+    // would see the checkbox flip to unchecked while the pref stays
+    // true — and a subsequent tap on the visually-unchecked box would
+    // re-prompt for permission instead of letting them disable the
+    // feature. The inline warning row below makes the "pref says on
+    // but permission missing" state visible and offers a re-grant.
+    CheckboxRow(
+        label = label,
+        checked = checked,
+        onCheckedChange = { wantsOn ->
+            if (!wantsOn) {
+                onSetChecked(false)
+            } else if (permissionGranted) {
+                onSetChecked(true)
+            } else {
+                launcher.launch(CalendarPermission.MANIFEST_PERMISSION)
+            }
+        },
+    )
+    if (checked && !permissionGranted) {
+        TextButton(
+            onClick = { launcher.launch(CalendarPermission.MANIFEST_PERMISSION) },
+            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
+            modifier = Modifier.padding(start = 48.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.settings_holidays_permission_revoked),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+    }
+}
+

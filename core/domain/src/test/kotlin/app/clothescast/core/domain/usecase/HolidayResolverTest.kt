@@ -528,22 +528,26 @@ class HolidayResolverTest {
     }
 
     @Test
-    fun `every HolidayId appears in the catalog`() {
+    fun `every non-synthetic HolidayId appears in the catalog`() {
         val ids = HolidayCatalog.all.map { it.second.id }.toSet()
-        HolidayId.entries.forEach { id ->
-            withClue(id.name) { (id in ids) shouldBe true }
-        }
+        HolidayId.entries
+            .filterNot { it in HolidayCatalog.SYNTHETIC_IDS }
+            .forEach { id ->
+                withClue(id.name) { (id in ids) shouldBe true }
+            }
     }
 
     @Test
-    fun `themeFor returns the catalog entry`() {
-        HolidayId.entries.forEach { id ->
-            withClue(id.name) {
-                val theme = HolidayCatalog.themeFor(id)
-                theme.shouldNotBeNull()
-                theme.id shouldBe id
+    fun `themeFor returns the catalog entry for every non-synthetic id`() {
+        HolidayId.entries
+            .filterNot { it in HolidayCatalog.SYNTHETIC_IDS }
+            .forEach { id ->
+                withClue(id.name) {
+                    val theme = HolidayCatalog.themeFor(id)
+                    theme.shouldNotBeNull()
+                    theme.id shouldBe id
+                }
             }
-        }
     }
 
     @Test

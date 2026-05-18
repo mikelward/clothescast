@@ -225,10 +225,10 @@ ClothesCast publishes the synthesised audio as a WAV clip to
 The payload is signed 16-bit mono PCM at the sample rate Gemini
 returned, wrapped in a canonical 44-byte RIFF/WAVE header — playable
 as-is by ffmpeg, browsers, and `media_player.play_media` when handed
-via an HTTP fetch (HA doesn't read MQTT binary payloads directly into
-the media player). It's exactly the bytes the phone speaks, so any
-"speak it on the Hub" automation built around the prose sensor or one
-of the TTS options below stays in lockstep with the phone.
+via an HTTP fetch. It's exactly the bytes the phone speaks, so the
+Hub stays in lockstep with the phone without HA re-synthesising the
+prose through its own TTS stack — same Gemini voice, same prosody,
+no Google-broadcast preamble.
 
 Two things to know before you wire anything up:
 
@@ -241,13 +241,150 @@ Two things to know before you wire anything up:
   the Hub gets the clip. Toggle that off if you want the Hub to speak
   even when you're home.
 
-The simplest way to make the Hub actually speak is still options A /
-B / C below: trigger an automation on the prose sensor's update and
-let HA's TTS service synthesise — that path is already paved end to
-end. The audio topic is here for setups that already prefer a fixed
-voice clip over re-synthesising in HA (e.g. `music_assistant.play_announcement`
-→ media URL flows), and for users who want to capture the rendered
-briefing for their own pipelines.
+If you'd rather have HA re-synthesise the prose sensor through its
+own TTS (Google Translate, Nabu Casa, etc.), skip this section and
+use options A / B / C below — those paths key off the prose sensor
+and don't need the audio topic at all. This section is the path for
+playing **the same bytes the phone speaks**.
+
+### Bridging the WAV bytes to an HTTP URL
+
+HA's `media_player.play_media` action takes a URL it can fetch over
+HTTP, not an MQTT topic — there's no `mqtt.audio` platform analogous
+to `mqtt.camera`. So the first step is a small bridge that copies
+the retained MQTT WAV payload to a file under HA's `/config/www/`
+directory, which HA serves at `http://<ha-ip>:8123/local/<filename>`.
+
+> **Privacy: `/local/` is unauthenticated.** Unlike the
+> `camera_proxy?token=…` URL the outfit-image recipe uses, files under
+> `/config/www/` are served by HA's static-file route with **no auth**.
+> Anyone who can reach the URL — anyone on the LAN, or anyone on the
+> internet if you've exposed HA externally — can fetch the latest
+> briefing if they know (or guess) the filename. The audio is the
+> rendered insight prose your phone speaks, including any
+> calendar-tie-in clause you've enabled, so treat it like the same
+> sensitivity class as the prose topic itself (see
+> [PRIVACY.md](../PRIVACY.md)). Recommendations:
+>
+> - **Keep this on the LAN.** Don't swap the IP for HA's external URL
+>   on the WAV's `media_content_id` the way the outfit-image example
+>   does — the camera-proxy URL has a per-entity access token; the
+>   `/local/` URL doesn't.
+> - **Pick a non-guessable filename** if the LAN itself is shared
+>   (housemates, guest Wi-Fi on the same VLAN). e.g.
+>   `/config/www/cc-<random-hex>.wav`. The URL still has to be a fixed
+>   string in the automation, but it's no longer a guessable default.
+> - **Or skip this section entirely** and use options A / B / C below.
+>   Those don't expose a fetchable WAV on the LAN at all — but they
+>   don't keep the prose on-device either; A sends it to Google's
+>   broadcast service, B to whichever HA TTS engine you've
+>   configured (Nabu Casa, Google Translate), C the same. That's a
+>   separate privacy surface (TTS-provider logging) to weigh against
+>   the on-LAN fetch surface this section opens.
+
+**Recommended — Node-RED.** Install the **Node-RED** add-on
+(Settings → Add-ons → Add-on Store → Node-RED → Install → Start) if
+you don't already have it. The flow needs two nodes per period:
+
+```
+[mqtt-in: clothescast/insight/today/audio]   → [file: /config/www/clothescast_today.wav   (overwrite, no newline)]
+[mqtt-in: clothescast/insight/tonight/audio] → [file: /config/www/clothescast_tonight.wav (overwrite, no newline)]
+```
+
+In each MQTT-in node, set **Output: a Buffer** — not "auto-detect",
+which tries to JSON-decode the WAV and corrupts the file. In each
+File node, set Action to "overwrite file" and untick "Add newline to
+each payload". That's the whole bridge: every refresh ClothesCast
+publishes to the topic, Node-RED rewrites the file in place, and HA
+serves the new bytes from the same URL.
+
+**Alternative — `shell_command` + `mosquitto_sub`.** If you don't
+want Node-RED and your HA install has the Mosquitto client tools on
+the PATH HA sees (HAOS users may need to install them via the SSH
+& Web Terminal add-on with "Protection mode" off), add to
+`configuration.yaml`:
+
+```yaml
+shell_command:
+  fetch_clothescast_today_audio: >
+    mosquitto_sub -h <broker-host> -u clothescast -P '<pass>'
+    -t 'clothescast/insight/today/audio' -C 1 -W 5 -N
+    > /config/clothescast_today.wav.part
+    && mv /config/clothescast_today.wav.part /config/www/clothescast_today.wav
+  fetch_clothescast_tonight_audio: >
+    mosquitto_sub -h <broker-host> -u clothescast -P '<pass>'
+    -t 'clothescast/insight/tonight/audio' -C 1 -W 5 -N
+    > /config/clothescast_tonight.wav.part
+    && mv /config/clothescast_tonight.wav.part /config/www/clothescast_tonight.wav
+```
+
+A few small but important details in that command:
+
+- **Single-quote the password substitution.** The `<pass>` placeholder
+  is wrapped in single quotes (`-P '<pass>'`) so a strong password
+  containing shell metacharacters — `&`, `$`, spaces, `|`, etc. — is
+  passed to `mosquitto_sub` literally instead of being expanded or
+  split by HA's shell. If your actual password contains a literal
+  single quote, escape it the standard way (`'\''`) or rotate to a
+  password that doesn't.
+- `-C 1` exits after the first message; `-W 5` caps the wait at 5
+  seconds. The audio topic is retained, so the broker hands you the
+  latest WAV the moment you subscribe — no need to subscribe
+  continuously.
+- **`-N` is essential.** Without it, `mosquitto_sub` appends a
+  trailing `\n` to every printed message, which for a binary WAV
+  lands a stray byte after the `data` chunk that stricter players
+  reject.
+- **The `> ….part && mv …` pattern matters.** A plain
+  `> /config/www/clothescast_today.wav` would truncate the live
+  file *before* `mosquitto_sub` ran, so a broker timeout or
+  unreachable host would leave HA serving a 0-byte WAV until the
+  next successful fetch. Writing to a `.part` file in `/config/`
+  (same filesystem as `/config/www/`, so `mv` is atomic) and only
+  renaming on `mosquitto_sub` exit 0 keeps the previous good WAV in
+  place when a fetch fails. `chmod` isn't needed — HA's default
+  umask gives the new file the same permissions as the rest of
+  `/config/www/`.
+
+Call `shell_command.fetch_clothescast_today_audio` as the first
+action of any automation that wants to play the latest audio (see
+the chaining example further down).
+
+### Playing the WAV on a Nest Hub or other speaker
+
+Once `/config/www/clothescast_today.wav` exists, point
+`media_player.play_media` at it via the `/local/` HTTP path. Use
+`media_content_type: music` so Cast treats it as audio rather than
+guessing from the URL:
+
+```yaml
+alias: Speak Gemini forecast on kitchen Hub at 07:01
+description: ""
+mode: single
+
+triggers:
+  - trigger: time
+    at: "07:01:00"
+
+actions:
+  - action: media_player.play_media
+    target:
+      entity_id: media_player.kitchen_hub
+    data:
+      media_content_id: "http://192.168.x.x:8123/local/clothescast_today.wav"
+      media_content_type: music
+```
+
+One URL caveat carries over from the camera-proxy automation — use
+the IP, not `homeassistant.local` (mDNS doesn't cross VLANs). The
+other one does **not**: don't substitute HA's external URL here the
+way the image example allows. The camera-proxy URL carries an access
+token; `/local/` doesn't, so swapping in `https://your-ha.duckdns.org`
+would publish the latest briefing at an unauthenticated
+internet-reachable URL. If your Hub can't reach the LAN IP, keep the
+audio path on the LAN and use one of the HA-TTS options (A / B / C)
+for the spoken briefing instead. The chaining example below combines
+the local-IP play with the outfit-image push.
 
 ## Home Assistant — speaking the sensor on Google Home
 
@@ -458,12 +595,14 @@ at the same moment or one after the other.
 Both examples below use the Option A (`notify.google_assistant_sdk`)
 shape, since that's the path verified end-to-end on this project's
 own setup. The picker below the serial example covers what to swap
-in if you're on Option B or C instead. Each TTS service expects a
-different `data:` shape — `target:` for Option A,
-`media_player_entity_id:` for B, `entity_id:` for C — so don't
-hot-swap the service inside an example; copy the YAML for the
-service you're actually using from the option section above and
-slot it into the chaining shape.
+in if you're on Option B or C, plus a variant for playing the
+Gemini-rendered WAV from the audio topic instead of having HA
+re-synthesise the prose. Each TTS service expects a different
+`data:` shape — `target:` for Option A, `media_player_entity_id:`
+for B, `entity_id:` for C, `media_content_id:` for the audio-topic
+variant — so don't hot-swap the service inside an example; copy the
+YAML for the path you're actually using from the option section
+above and slot it into the chaining shape.
 
 **Parallel — speak and show together.** Drop both actions in the same
 `actions:` list with no wait between them. Cast pipes the TTS to the
@@ -537,6 +676,52 @@ with the Option B or Option C YAML from those sections. The fixed
 `delay:` in step 2 stays as-is — it works for any TTS service that
 takes roughly a known time to speak.
 
+**Variant — Gemini-rendered audio in place of HA TTS.** If you've
+set up the audio-topic bridge from "TTS audio clip on the audio
+topic" above, swap step 1 for a `media_player.play_media` call
+against the `/local/clothescast_today.wav` URL. The result speaks
+the same Gemini voice as the phone, with no broadcast preamble — but
+the audio rides the same Cast pipe as the image push, so parallel
+isn't safe here; the second `play_media` call would overwrite the
+first. Use the serial shape only:
+
+```yaml
+alias: ClothesCast (Gemini audio + image) on kitchen Hub at 07:01
+mode: single
+
+triggers:
+  - trigger: time
+    at: "07:01:00"
+
+actions:
+  # 1. (Optional, shell_command bridge only.) Refresh the WAV from
+  #    the retained MQTT payload. Skip if you're using the Node-RED
+  #    bridge — it rewrites the file on every publish already.
+  - action: shell_command.fetch_clothescast_today_audio
+
+  # 2. Speak the Gemini-rendered briefing.
+  - action: media_player.play_media
+    target:
+      entity_id: media_player.kitchen_hub
+    data:
+      media_content_id: "http://192.168.x.x:8123/local/clothescast_today.wav"
+      media_content_type: music
+
+  # 3. Wait for the audio to finish before swapping in the picture.
+  #    No SDK preamble on this path, so 15 s is usually plenty for a
+  #    full briefing. Pad longer if you've enabled the calendar
+  #    tie-in clause and your evenings get talky.
+  - delay: "00:00:15"
+
+  # 4. Push the outfit picture.
+  - action: media_player.play_media
+    target:
+      entity_id: media_player.kitchen_hub
+    data:
+      media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
+      media_content_type: image/jpeg
+```
+
 > **Edge case — speaker was already playing music (Option B
 > specifically).** Music Assistant restores the prior playback
 > *after* the announcement finishes, so if the Hub was playing
@@ -574,9 +759,10 @@ property that applies to any wait shape.)
 
 > **What's verified.** The Option A (`notify.google_assistant_sdk`)
 > path above is the one this project's author runs day-to-day. The
-> Option B and C variants follow current HA service shapes but
-> haven't been tested end-to-end on this setup — if you wire one up
-> and find a wrinkle, a PR-fix is welcome.
+> Option B / C and Gemini-audio variants follow current HA service
+> shapes and the audio topic's documented payload, but haven't been
+> tested end-to-end on this setup — if you wire one up and find a
+> wrinkle, a PR-fix is welcome.
 
 ## Troubleshooting
 

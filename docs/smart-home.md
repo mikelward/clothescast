@@ -101,6 +101,35 @@ only constrains the ClothesCast publisher — it doesn't break HA's
 ability to subscribe to the topic for the automation that speaks the
 forecast.
 
+> **Heads-up if you wire up the audio-topic bridge below.** The
+> Node-RED / `shell_command` audio bridge documented further down
+> subscribes to `clothescast/insight/.../audio` to copy the WAV to
+> `www/`, and by default the example uses `-u clothescast` for those
+> credentials. With the write-only ACL above in place, Mosquitto
+> rejects the SUBSCRIBE and the WAV file never refreshes. Two ways
+> to handle it:
+>
+> - **Switch the ACL to `readwrite`** for the same `clothescast`
+>   user — simplest, gives the phone-side publisher unnecessary
+>   read access but that's a minor concern on a personal LAN:
+>   ```
+>   user clothescast
+>   topic readwrite clothescast/insight/#
+>   ```
+> - **Or add a separate read-only user** for the bridge, keeping
+>   the phone-side credential publish-only:
+>   ```
+>   user clothescast
+>   topic write clothescast/insight/#
+>
+>   user clothescast-reader
+>   topic read clothescast/insight/#
+>   ```
+>   Create the reader user the same way you created `clothescast`
+>   (HA users page or `mosquitto_passwd`), and use *its* credentials
+>   in the `shell_command` examples (`-u clothescast-reader`) and
+>   Node-RED's MQTT-in broker config.
+
 > If you're running a **standalone Mosquitto** outside Home Assistant
 > instead of the HA add-on, the user creation step uses
 > `mosquitto_passwd -c /etc/mosquitto/passwd clothescast` and the

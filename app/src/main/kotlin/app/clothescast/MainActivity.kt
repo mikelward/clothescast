@@ -268,6 +268,7 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                     refreshOutfitWidget = {
                         runCatching { OutfitWidget().updateAll(context.applicationContext) }
                     },
+                    calendarEventReader = app.calendarEventReader,
                 ),
             )
             TodayScreen(
@@ -290,6 +291,10 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                 },
                 onNavigateToClothes = {
                     settingsInitialRoute = SettingsRoute.Clothes.name
+                    screen = Screen.Settings
+                },
+                onNavigateToHolidays = {
+                    settingsInitialRoute = SettingsRoute.Holidays.name
                     screen = Screen.Settings
                 },
             )

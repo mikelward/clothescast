@@ -192,6 +192,8 @@ class SettingsViewModel(
                         deviceVoice = prefs.deviceVoice,
                         voiceLocale = prefs.voiceLocale,
                         useCalendarEvents = prefs.useCalendarEvents,
+                        themeFromCalendarHolidays = prefs.themeFromCalendarHolidays,
+                        themeFromCalendarBirthdays = prefs.themeFromCalendarBirthdays,
                         telemetryEnabled = prefs.telemetryEnabled,
                         forecastModels = prefs.forecastModels,
                         mqttBridgeEnabled = prefs.mqttBridgeEnabled,
@@ -518,6 +520,23 @@ class SettingsViewModel(
 
     fun setUseCalendarEvents(enabled: Boolean) {
         viewModelScope.launch { settingsRepository.setUseCalendarEvents(enabled) }
+    }
+
+    fun setThemeFromCalendarHolidays(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setThemeFromCalendarHolidays(enabled) }
+    }
+
+    fun setThemeFromCalendarBirthdays(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setThemeFromCalendarBirthdays(enabled) }
+    }
+
+    /**
+     * Call after the user re-grants READ_CALENDAR via the in-app chip.
+     * Bumps a tick pref so the prefs flow re-emits and `TodayViewModel`
+     * re-reads calendar events without waiting for the next pref edit.
+     */
+    fun markCalendarPermissionRechecked() {
+        viewModelScope.launch { settingsRepository.markCalendarPermissionRechecked() }
     }
 
     fun setTelemetryEnabled(enabled: Boolean) {

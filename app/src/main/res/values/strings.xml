@@ -301,6 +301,14 @@
     <string name="today_telemetry_notice_open_settings">Open Privacy settings</string>
     <string name="today_telemetry_notice_dismiss">Dismiss</string>
 
+    <!-- Promo card on the Today screen nudging users toward the new
+         calendar-sourced holiday + birthday theming. Auto-hides once
+         either Holiday-settings toggle is on, OR after the user X-dismisses. -->
+    <string name="today_celebration_card_title">Celebration themes</string>
+    <string name="today_celebration_card_body">Enable special colors and messages for holidays and birthdays.</string>
+    <string name="today_celebration_card_cta">Celebration settings</string>
+    <string name="today_celebration_card_dismiss">Dismiss</string>
+
     <string name="today_view_other_period">View other forecast</string>
     <string name="today_back_to_primary">Back</string>
     <string name="today_placeholder_today_title">Today\'s forecast</string>
@@ -353,7 +361,7 @@
     <string name="settings_root_display">Display</string>
     <string name="settings_root_location">Location</string>
     <string name="settings_root_calendar">Calendar</string>
-    <string name="settings_root_holidays">Holidays</string>
+    <string name="settings_root_holidays">Celebrations</string>
     <string name="settings_root_forecasters">Forecasters</string>
     <string name="settings_root_smart_home">Smart Home</string>
     <string name="settings_root_privacy">Privacy</string>
@@ -388,7 +396,7 @@
 
     <string name="settings_root_location_subtitle">Automatic and Manual Location</string>
     <string name="settings_root_calendar_subtitle">Today\'s events</string>
-    <string name="settings_root_holidays_subtitle">Themed colours and banners</string>
+    <string name="settings_root_holidays_subtitle">Themes for holidays and birthdays</string>
     <string name="settings_root_forecasters_subtitle">Weather Sources and Models</string>
     <string name="settings_root_smart_home_subtitle">Home Assistant, MQTT, voice announcements</string>
     <string name="settings_root_privacy_subtitle">Crash + usage reports</string>
@@ -1055,6 +1063,38 @@
          Halloween) — same name everywhere keeps the two surfaces in sync. -->
     <string name="settings_holiday_country_global_label">Global</string>
     <string name="settings_holiday_country_all_label">All</string>
+
+    <!-- Calendar-sourced theming toggles on the Holiday settings screen.
+         Each toggle prompts for READ_CALENDAR permission when first
+         enabled; the inline chip below appears if permission is later
+         revoked from system Settings. -->
+    <!-- One-line intro at the top of the Celebrations settings page, above the
+         country picker and the calendar-sourced theming checkboxes. -->
+    <string name="settings_holidays_intro">Theme today\'s outfit on holidays and birthdays — from a curated list of public holidays plus events in your synced calendars.</string>
+
+    <!-- Labels for the two calendar-sourced theming checkboxes that sit
+         alongside Home / Current location / Global / All in the country card. -->
+    <string name="settings_holidays_my_calendar_holidays">My calendar holidays</string>
+    <string name="settings_holidays_my_calendar_birthdays">My calendar birthdays</string>
+
+    <!-- Help-link labels shown under the intro blurb. Point at Google
+         Calendar's own docs for adding holiday calendars / managing
+         birthdays — the source-of-truth surfaces clothescast can't
+         configure for the user. -->
+    <string name="settings_holidays_theme_calendar_holidays_help">Add calendars</string>
+    <string name="settings_holidays_theme_calendar_birthdays_help">Manage birthdays</string>
+
+    <!-- Inline warning shown under a calendar-themes checkbox when the
+         stored pref is on but READ_CALENDAR was revoked from system
+         Settings. Tappable: fires the permission prompt. -->
+    <string name="settings_holidays_permission_revoked">Calendar permission needed. Tap to re-grant.</string>
+
+    <!-- URLs to Google Calendar help articles linked from the
+         Celebrations settings page. Kept in strings.xml so they're
+         translatable per-locale if Google ever ships locale-specific
+         help URLs (`hl` query param works on most). -->
+    <string name="settings_holidays_theme_calendar_holidays_help_url" translatable="false">https://support.google.com/calendar/answer/6004615</string>
+    <string name="settings_holidays_theme_calendar_birthdays_help_url" translatable="false">https://support.google.com/calendar/answer/6084644</string>
     <string name="settings_holiday_all_section_title">All</string>
     <string name="settings_holidays_expand">Expand</string>
     <string name="settings_holidays_collapse">Collapse</string>

@@ -337,6 +337,8 @@ internal fun SettingsHolidaysPreview() {
             effectiveEnabledHolidayCountries = setOf("AU", "FR", HolidayCatalog.GLOBAL_COUNTRY),
             localeCountry = "AU",
             weatherLocationCountry = "AU",
+            themeFromCalendarHolidays = false,
+            themeFromCalendarBirthdays = false,
             padding = PaddingValues(0.dp),
             onSetCountryHome = {},
             onSetCountryCurrent = {},
@@ -344,6 +346,9 @@ internal fun SettingsHolidaysPreview() {
             onSetCountryAll = {},
             onSetCountryOverride = { _, _ -> },
             onSetHolidayOverride = { _, _ -> },
+            onSetThemeFromCalendarHolidays = {},
+            onSetThemeFromCalendarBirthdays = {},
+            onCalendarPermissionRechecked = {},
         )
     }
 }

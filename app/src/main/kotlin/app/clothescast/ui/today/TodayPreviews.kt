@@ -1050,6 +1050,17 @@ internal fun TelemetryNoticeBannerPreview() {
     }
 }
 
+@Preview(name = "Banner · celebration themes", widthDp = 360)
+@Composable
+internal fun CelebrationThemesCardPreview() {
+    Frame {
+        CelebrationThemesCardContent(
+            onOpenSettings = {},
+            onDismiss = {},
+        )
+    }
+}
+
 @Preview(name = "Banner · local build (clean)", widthDp = 360)
 @Composable
 internal fun LocalBuildBannerPreview() {

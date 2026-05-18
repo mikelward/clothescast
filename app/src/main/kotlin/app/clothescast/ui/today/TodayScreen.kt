@@ -54,6 +54,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -134,6 +135,7 @@ fun TodayScreen(
     onNavigateToLocation: () -> Unit = onNavigateToSettings,
     onNavigateToPrivacy: () -> Unit = onNavigateToSettings,
     onNavigateToClothes: () -> Unit = onNavigateToSettings,
+    onNavigateToHolidays: () -> Unit = onNavigateToSettings,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -248,6 +250,9 @@ fun TodayScreen(
             onRefresh = { triggerRefresh(context, state.morningTime, state.tonightTime) },
             onSetUpLocation = onNavigateToLocation,
             onOpenPrivacy = onNavigateToPrivacy,
+            onOpenHolidaySettings = onNavigateToHolidays,
+            onDismissCelebrationCard = viewModel::dismissCelebrationCard,
+            onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
             onAdjustThreshold = viewModel::adjustClothesRuleThreshold,
             onNavigateToClothes = onNavigateToClothes,
             onToggleModelSpread = viewModel::toggleModelSpread,
@@ -279,6 +284,9 @@ private fun TodayContent(
     onRefresh: () -> Unit,
     onSetUpLocation: () -> Unit,
     onOpenPrivacy: () -> Unit,
+    onOpenHolidaySettings: () -> Unit,
+    onDismissCelebrationCard: () -> Unit,
+    onCalendarPermissionChanged: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
     onToggleModelSpread: () -> Unit,
@@ -290,12 +298,26 @@ private fun TodayContent(
     // honest while the user is looking at it.
     var coarseGranted by remember { mutableStateOf(hasCoarseLocationPermission(context)) }
     var backgroundGranted by remember { mutableStateOf(hasBackgroundLocationPermission(context)) }
+    // Calendar themes: nudge the recheck tick on every ON_RESUME when at
+    // least one theming toggle is on. We can't reliably detect a
+    // permission *transition* here because `remember` re-initialises when
+    // the user navigates away and back, so a true→false revoke while Today
+    // is off-screen would re-init `calendarGranted=false` on return and
+    // never see the transition — leaving a cached birthday/holiday banner
+    // (with its event title) on screen until midnight. Unconditional nudge
+    // is cheap (a DataStore long write off-thread) and only fires when the
+    // user has opted into the feature.
+    val currentUsesCalendarThemes by rememberUpdatedState(state.usesCalendarThemes)
+    val currentOnCalendarPermissionChanged by rememberUpdatedState(onCalendarPermissionChanged)
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 coarseGranted = hasCoarseLocationPermission(context)
                 backgroundGranted = hasBackgroundLocationPermission(context)
+                if (currentUsesCalendarThemes) {
+                    currentOnCalendarPermissionChanged()
+                }
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -348,6 +370,16 @@ private fun TodayContent(
         // Stays out of the way of the crash banner: that's a current
         // problem to action; this is just disclosure.
         TelemetryNoticeBanner(onOpenPrivacy = onOpenPrivacy, modifier = bannerModifier)
+        // Promo card for the calendar-sourced holiday + birthday theming.
+        // Driven by [TodayState.celebrationCardVisible] (gated upstream on
+        // toggles + dismissal) so it disappears the moment either toggle
+        // goes on or the X is tapped.
+        CelebrationThemesCard(
+            visible = state.celebrationCardVisible,
+            onOpenHolidaySettings = onOpenHolidaySettings,
+            onDismiss = onDismissCelebrationCard,
+            modifier = bannerModifier,
+        )
         if (locationActionRequired) {
             LocationActionRequiredBanner(
                 onSetUpLocation = onSetUpLocation,
@@ -786,11 +818,16 @@ internal fun HolidayBanner(
         (region.toJavaLocale() ?: Locale.getDefault()).country
     }
     val bannerKey = theme.bannerTextKeyFor(effectiveCountry)
-    val bannerText = remember(bannerKey) {
-        val resId = context.resources.getIdentifier(
-            bannerKey, "string", context.packageName,
-        )
-        if (resId == 0) theme.id.name else context.getString(resId)
+    val bannerText = remember(bannerKey, theme.displayTitleOverride) {
+        // Synthetic themes (calendar-sourced holidays/birthdays) carry the
+        // event title as [displayTitleOverride]; bypass the resource lookup
+        // because the key is a runtime string, not a `@string/...` id.
+        theme.displayTitleOverride ?: run {
+            val resId = context.resources.getIdentifier(
+                bannerKey, "string", context.packageName,
+            )
+            if (resId == 0) theme.id.name else context.getString(resId)
+        }
     }
     val bannerColor = remember(theme.bannerArgb) { Color(theme.bannerArgb.toInt()) }
     val textColor = remember(theme.bannerArgb) {

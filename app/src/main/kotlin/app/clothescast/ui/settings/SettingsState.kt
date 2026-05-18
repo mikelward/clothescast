@@ -117,6 +117,8 @@ data class SettingsState(
     val effectiveDeviceVoice: DeviceVoice? = null,
     val voiceLocale: VoiceLocale = VoiceLocale.SYSTEM,
     val useCalendarEvents: Boolean = false,
+    val themeFromCalendarHolidays: Boolean = false,
+    val themeFromCalendarBirthdays: Boolean = false,
     val telemetryEnabled: Boolean = true,
     val apiKeyConfigured: Boolean = false,
     /**

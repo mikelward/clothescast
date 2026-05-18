@@ -14,7 +14,11 @@ import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.UserPreferences
+import app.clothescast.core.domain.model.CalendarEvent
+import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.usecase.HolidayResolver
+import app.clothescast.core.domain.usecase.ThemeForToday
 import app.clothescast.tts.toJavaLocale
 import java.util.Locale
 import app.clothescast.data.InsightCache
@@ -27,6 +31,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -113,6 +118,21 @@ data class TodayState(
      * themed banner above the outfit preview row.
      */
     val activeHoliday: HolidayTheme? = null,
+    /**
+     * Whether the Today-screen "Celebration themes" promo card should
+     * render. True iff the user hasn't dismissed it AND neither of the
+     * two calendar-sourced theming toggles is on yet — the moment either
+     * goes on, the card hides regardless of dismissal state.
+     */
+    val celebrationCardVisible: Boolean = false,
+    /**
+     * True iff either calendar-sourced theming toggle is on. The Today
+     * screen reads this to decide whether an ON_RESUME nudge of the
+     * permission-recheck tick is worth its DataStore-write cost: if no
+     * calendar theming is on, there's no point invalidating an event
+     * read that wouldn't fire anyway.
+     */
+    val usesCalendarThemes: Boolean = false,
 )
 
 sealed class WorkStatus {
@@ -235,6 +255,20 @@ class TodayViewModel(
      * catalogue; tests can inject a smaller list.
      */
     private val holidayResolver: HolidayResolver = HolidayResolver(),
+    /**
+     * Combines [holidayResolver] with calendar-sourced holiday/birthday
+     * events to produce the day's theme. The two opt-in toggles
+     * (`themeFromCalendarHolidays`, `themeFromCalendarBirthdays`) are
+     * checked inside, and the curated catalog wins when it matches.
+     */
+    private val themeForToday: ThemeForToday = ThemeForToday(holidayResolver),
+    /**
+     * Reads device calendar events for the day so the calendar-sourced
+     * theming can fire. Nullable so production wiring can omit it on
+     * builds without `READ_CALENDAR`; ViewModel tests pass a fake. When
+     * null, [ThemeForToday] simply sees an empty event list.
+     */
+    private val calendarEventReader: CalendarEventReader? = null,
 ) : ViewModel() {
     /**
      * Session-scoped "show model spread" flag. Held in the ViewModel rather
@@ -280,17 +314,35 @@ class TodayViewModel(
 
     // Fuse the user's preferences with the date tick upstream so the outer
     // [state] combine stays at five inputs (the typed-overload cap) and the
-    // resolver still gets a freshly-read date every time it runs.
-    private val preferencesAndDate = combine(settingsRepository.preferences, dateTicker, ::Pair)
+    // resolver still gets a freshly-read date every time it runs. Calendar
+    // events fold into this same flow via flatMapLatest so we don't need a
+    // sixth combine input; the read only fires when the user has opted into
+    // calendar-sourced theming (or the reader is null in tests).
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    private val preferencesDateEvents: Flow<Triple<UserPreferences, LocalDate, List<CalendarEvent>>> =
+        combine(settingsRepository.preferences, dateTicker, ::Pair).flatMapLatest { (prefs, date) ->
+            flow {
+                val needEvents = calendarEventReader != null &&
+                    (prefs.themeFromCalendarHolidays || prefs.themeFromCalendarBirthdays)
+                val events: List<CalendarEvent> = if (needEvents) {
+                    runCatching {
+                        calendarEventReader!!.eventsForDay(date, prefs.schedule.zoneId)
+                    }.getOrDefault(emptyList())
+                } else {
+                    emptyList()
+                }
+                emit(Triple(prefs, date, events))
+            }
+        }
 
     val state: StateFlow<TodayState> = combine(
         insightCache.thisPeriod,
         insightCache.nextPeriod,
         workStatusFlow,
-        preferencesAndDate,
+        preferencesDateEvents,
         showModelSpread,
-    ) { thisPeriodInsight, nextPeriodInsight, workStatus, prefsAndDate, spread ->
-        val (prefs, today) = prefsAndDate
+    ) { thisPeriodInsight, nextPeriodInsight, workStatus, prefsDateEvents, spread ->
+        val (prefs, today, events) = prefsDateEvents
         // Resolve "is today a holiday the user wants themed?" — `today`
         // comes from the [dateTicker] flow above so the rollover at local
         // midnight re-fires combine even when no other input changes. The
@@ -304,7 +356,14 @@ class TodayViewModel(
             weatherLocationCountry = prefs.location?.countryCode,
             allCountries = HolidayCatalog.allCountries,
         )
-        val theme = holidayResolver.resolve(today, prefs.holidayOverrides, effectiveCountries)
+        val theme = themeForToday.resolve(
+            date = today,
+            overrides = prefs.holidayOverrides,
+            enabledCountries = effectiveCountries,
+            events = events,
+            themeFromCalendarHolidays = prefs.themeFromCalendarHolidays,
+            themeFromCalendarBirthdays = prefs.themeFromCalendarBirthdays,
+        )
         // Merge holiday overrides on top of the user's custom colours. The
         // user's choices populate the base map; the holiday's per-tier
         // entries replace any user pick for that tier *for today only*
@@ -338,8 +397,39 @@ class TodayViewModel(
             outfitTopStrokes = topStrokes,
             outfitBottomStrokes = bottomStrokes,
             activeHoliday = theme,
+            celebrationCardVisible = !prefs.celebrationCardDismissed &&
+                !prefs.themeFromCalendarHolidays &&
+                !prefs.themeFromCalendarBirthdays,
+            usesCalendarThemes = prefs.themeFromCalendarHolidays || prefs.themeFromCalendarBirthdays,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayState())
+
+    /**
+     * Persists the user's dismissal of the Today-screen "Celebration
+     * themes" promo card. The card hides immediately on the next state
+     * emission. Mirrors [SettingsRepository.setTelemetryNoticeAcked]'s
+     * pattern.
+     */
+    fun dismissCelebrationCard() {
+        viewModelScope.launch {
+            settingsRepository.setCelebrationCardDismissed(true)
+        }
+    }
+
+    /**
+     * Bumps the calendar-permission recheck tick so the prefs flow re-emits
+     * and the [preferencesDateEvents] combine re-reads calendar events. The
+     * Today screen calls this on `ON_RESUME` when it detects the user has
+     * changed `READ_CALENDAR` outside the app — either *granted* it (so a
+     * fresh read can populate the holiday/birthday banner) or *revoked*
+     * it (so the cached events list drops back to empty and the synthetic
+     * banner disappears immediately, instead of lingering until midnight).
+     */
+    fun notifyCalendarPermissionChanged() {
+        viewModelScope.launch {
+            settingsRepository.markCalendarPermissionRechecked()
+        }
+    }
 
     /**
      * Flip the session-scoped model-spread overlay on the temp / feels-like /
@@ -379,6 +469,7 @@ class TodayViewModel(
         private val workManager: WorkManager,
         private val settingsRepository: SettingsRepository,
         private val refreshOutfitWidget: suspend () -> Unit,
+        private val calendarEventReader: CalendarEventReader? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -390,6 +481,7 @@ class TodayViewModel(
                 workManager = workManager,
                 settingsRepository = settingsRepository,
                 refreshOutfitWidget = refreshOutfitWidget,
+                calendarEventReader = calendarEventReader,
             ) as T
         }
     }

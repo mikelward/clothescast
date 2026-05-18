@@ -302,6 +302,31 @@ class SettingsRepository(
         dataStore.edit { it[USE_CALENDAR_EVENTS] = enabled }
     }
 
+    suspend fun setThemeFromCalendarHolidays(enabled: Boolean) {
+        dataStore.edit { it[THEME_FROM_CALENDAR_HOLIDAYS] = enabled }
+    }
+
+    suspend fun setThemeFromCalendarBirthdays(enabled: Boolean) {
+        dataStore.edit { it[THEME_FROM_CALENDAR_BIRTHDAYS] = enabled }
+    }
+
+    suspend fun setCelebrationCardDismissed(dismissed: Boolean) {
+        dataStore.edit { it[CELEBRATION_CARD_DISMISSED] = dismissed }
+    }
+
+    /**
+     * Bumps [UserPreferences.calendarPermissionRecheckTick] to the current
+     * wall-clock millis so the preferences flow re-emits. Use after the
+     * user re-grants `READ_CALENDAR` from the in-app permission chip so
+     * downstream consumers (the `TodayViewModel` calendar-events read)
+     * pick up the new permission state without waiting for a midnight
+     * rollover or unrelated pref edit. Always writes a fresh value so
+     * DataStore's equal-value short-circuit can't swallow the emit.
+     */
+    suspend fun markCalendarPermissionRechecked() {
+        dataStore.edit { it[CALENDAR_PERMISSION_RECHECK_TICK] = System.currentTimeMillis() }
+    }
+
     suspend fun setTelemetryEnabled(enabled: Boolean) {
         dataStore.edit { it[TELEMETRY_ENABLED] = enabled }
     }
@@ -594,6 +619,10 @@ class SettingsRepository(
             ?: VoiceLocale.SYSTEM
         val deviceVoice = this[DEVICE_VOICE]?.takeIf { it.isNotBlank() }
         val useCalendarEvents = this[USE_CALENDAR_EVENTS] == true
+        val themeFromCalendarHolidays = this[THEME_FROM_CALENDAR_HOLIDAYS] == true
+        val themeFromCalendarBirthdays = this[THEME_FROM_CALENDAR_BIRTHDAYS] == true
+        val celebrationCardDismissed = this[CELEBRATION_CARD_DISMISSED] == true
+        val calendarPermissionRecheckTick = this[CALENDAR_PERMISSION_RECHECK_TICK] ?: 0L
         val tonightTime = this[TONIGHT_TIME]?.let { LocalTime.parse(it, TIME_FORMAT) }
             ?: DEFAULT_TONIGHT_TIME
         val tonightDays = this[TONIGHT_DAYS]?.mapNotNull { runCatching { DayOfWeek.valueOf(it) }.getOrNull() }
@@ -668,6 +697,10 @@ class SettingsRepository(
             deviceVoice = deviceVoice,
             voiceLocale = voiceLocale,
             useCalendarEvents = useCalendarEvents,
+            themeFromCalendarHolidays = themeFromCalendarHolidays,
+            themeFromCalendarBirthdays = themeFromCalendarBirthdays,
+            celebrationCardDismissed = celebrationCardDismissed,
+            calendarPermissionRecheckTick = calendarPermissionRecheckTick,
             tonightSchedule = Schedule(time = tonightTime, days = tonightDays, zoneId = zone),
             tonightEnabled = tonightEnabled,
             tonightDeliveryMode = tonightDeliveryMode,
@@ -904,6 +937,10 @@ class SettingsRepository(
         private val DEVICE_VOICE = stringPreferencesKey("device_voice")
         private val VOICE_LOCALE = stringPreferencesKey("voice_locale")
         private val USE_CALENDAR_EVENTS = booleanPreferencesKey("use_calendar_events")
+        private val THEME_FROM_CALENDAR_HOLIDAYS = booleanPreferencesKey("theme_from_calendar_holidays")
+        private val THEME_FROM_CALENDAR_BIRTHDAYS = booleanPreferencesKey("theme_from_calendar_birthdays")
+        private val CELEBRATION_CARD_DISMISSED = booleanPreferencesKey("celebration_card_dismissed")
+        private val CALENDAR_PERMISSION_RECHECK_TICK = longPreferencesKey("calendar_permission_recheck_tick")
         private val TONIGHT_TIME = stringPreferencesKey("tonight_time_hhmm")
         private val TONIGHT_DAYS = stringSetPreferencesKey("tonight_days")
         private val TONIGHT_ENABLED = booleanPreferencesKey("tonight_enabled")

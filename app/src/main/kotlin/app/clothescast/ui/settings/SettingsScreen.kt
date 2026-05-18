@@ -211,6 +211,8 @@ fun SettingsScreen(
                 localeCountry = state.region.toJavaLocale()?.country
                     ?: java.util.Locale.getDefault().country,
                 weatherLocationCountry = state.location?.countryCode,
+                themeFromCalendarHolidays = state.themeFromCalendarHolidays,
+                themeFromCalendarBirthdays = state.themeFromCalendarBirthdays,
                 padding = padding,
                 onSetCountryHome = viewModel::setHolidayCountryHome,
                 onSetCountryCurrent = viewModel::setHolidayCountryCurrent,
@@ -218,6 +220,9 @@ fun SettingsScreen(
                 onSetCountryAll = viewModel::setHolidayCountryAll,
                 onSetCountryOverride = viewModel::setHolidayCountryOverride,
                 onSetHolidayOverride = viewModel::setHolidayOverride,
+                onSetThemeFromCalendarHolidays = viewModel::setThemeFromCalendarHolidays,
+                onSetThemeFromCalendarBirthdays = viewModel::setThemeFromCalendarBirthdays,
+                onCalendarPermissionRechecked = viewModel::markCalendarPermissionRechecked,
             )
             SettingsRoute.Location -> LocationContent(
                 location = state.location,

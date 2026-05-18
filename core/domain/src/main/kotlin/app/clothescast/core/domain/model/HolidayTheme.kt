@@ -103,6 +103,15 @@ enum class HolidayId {
     // and an Italian user can't see Liberation Day because Anzac (same
     // Apr 25 date) gets in first. Resolver should pick by country once
     // location-derived country lands, with first-match as the fallback.
+
+    // Synthetic ids — kept at the end of the enum so older persisted
+    // override sets (which serialise as enum names) continue to deserialise
+    // without producing unknown-name errors. These never resolve through
+    // the catalog; they're produced at runtime by [FestiveThemes] when a
+    // calendar event arrives carrying [EventKind.PUBLIC_HOLIDAY] or
+    // [EventKind.BIRTHDAY] and the user has opted in.
+    GENERIC_PUBLIC_HOLIDAY,
+    BIRTHDAY,
 }
 
 /**
@@ -284,6 +293,20 @@ data class HolidayTheme(
      * vs ST_DAVIDS_DAY).
      */
     val countries: Set<String> = emptySet(),
+    /**
+     * `true` for themes synthesised at runtime from a `CalendarEvent` rather
+     * than entries in [HolidayCatalog]. The Holiday settings picker filters
+     * these out (they have no fixed date / country and shouldn't render as
+     * user-toggleable rows). See [FestiveThemes].
+     */
+    val isSynthetic: Boolean = false,
+    /**
+     * When non-null, the banner uses this raw string instead of looking up
+     * a localised resource by [bannerTextKey]. Set by synthetic themes
+     * whose "display name" is a runtime value (e.g. a calendar event's
+     * title — "Diwali", "Alice's birthday") rather than a resource id.
+     */
+    val displayTitleOverride: String? = null,
 )
 
 /**
@@ -322,6 +345,18 @@ object HolidayCatalog {
      * so it can't collide with one.
      */
     const val GLOBAL_COUNTRY: String = "GLOBAL"
+
+    /**
+     * [HolidayId]s constructed at runtime by [FestiveThemes] from calendar
+     * events rather than living in this catalog. The Holiday-settings
+     * picker filters these out (no fixed date / country, nothing to toggle
+     * per-holiday) and the catalog-completeness invariant in
+     * [HolidayResolverTest] skips them too.
+     */
+    val SYNTHETIC_IDS: Set<HolidayId> = setOf(
+        HolidayId.GENERIC_PUBLIC_HOLIDAY,
+        HolidayId.BIRTHDAY,
+    )
 
     /** Lookup for the (sub)set of UI surfaces that need a theme by id. */
     fun themeFor(id: HolidayId): HolidayTheme? = byId[id]
@@ -1359,3 +1394,54 @@ private const val GOOD_FRIDAY_AUBERGINE = 0xFF4A148CL
 // (💐) reads as a different occasion on a different date.
 private const val MOTHERING_ROSE = 0xFFF8BBD0L
 private const val MOTHERING_CREAM = 0xFFFFF8E1L
+
+// Synthetic themes used by [FestiveThemes] when the user has opted into
+// calendar-sourced theming and a row arrives carrying [EventKind.PUBLIC_HOLIDAY]
+// or [EventKind.BIRTHDAY]. Generic festive gold/purple for a holiday name we
+// don't recognise (Diwali, Eid, Lunar New Year — catalog gaps), and a party
+// pink/teal for a detected birthday.
+private const val FESTIVE_GOLD = 0xFFD4AF37L
+private const val FESTIVE_PURPLE = 0xFF6A1B9AL
+private const val BIRTHDAY_PINK = 0xFFEC407AL
+private const val BIRTHDAY_TEAL = 0xFF26A69AL
+
+/**
+ * Runtime-constructed [HolidayTheme]s for calendar-sourced events. The
+ * `title` becomes the banner's display string verbatim (it's the calendar
+ * event's own title — "Diwali", "Alice's birthday"); these themes are
+ * marked [HolidayTheme.isSynthetic] so the per-holiday picker filters
+ * them out, and they carry an empty [HolidayTheme.countries] set so the
+ * country-resolver never re-fires them.
+ *
+ * Privacy note: the `title` originates from a calendar event the user
+ * has opted into reading. It surfaces on-device in the Today banner and
+ * **must never** flow into insight prose, TTS, or Firebase — same rule
+ * as [CalendarEvent.title].
+ */
+object FestiveThemes {
+    fun publicHoliday(title: String): HolidayTheme = HolidayTheme(
+        id = HolidayId.GENERIC_PUBLIC_HOLIDAY,
+        displayNameKey = title,
+        bannerTextKey = title,
+        emoji = "🎊",
+        topOverrides = topPaletteAll(FESTIVE_GOLD),
+        bottomOverrides = bottomPaletteAll(FESTIVE_PURPLE),
+        bannerArgb = FESTIVE_GOLD,
+        countries = emptySet(),
+        isSynthetic = true,
+        displayTitleOverride = title,
+    )
+
+    fun birthday(title: String): HolidayTheme = HolidayTheme(
+        id = HolidayId.BIRTHDAY,
+        displayNameKey = title,
+        bannerTextKey = title,
+        emoji = "🎂",
+        topOverrides = topPaletteAll(BIRTHDAY_PINK),
+        bottomOverrides = bottomPaletteAll(BIRTHDAY_TEAL),
+        bannerArgb = BIRTHDAY_PINK,
+        countries = emptySet(),
+        isSynthetic = true,
+        displayTitleOverride = title,
+    )
+}

@@ -396,7 +396,7 @@
 
     <string name="settings_root_location_subtitle">Automatic and Manual Location</string>
     <string name="settings_root_calendar_subtitle">Today\'s events</string>
-    <string name="settings_root_holidays_subtitle">Themes for holidays and birthdays</string>
+    <string name="settings_root_holidays_subtitle">Holidays and Birthdays</string>
     <string name="settings_root_forecasters_subtitle">Weather Sources and Models</string>
     <string name="settings_root_smart_home_subtitle">Home Assistant, MQTT, voice announcements</string>
     <string name="settings_root_privacy_subtitle">Crash + usage reports</string>

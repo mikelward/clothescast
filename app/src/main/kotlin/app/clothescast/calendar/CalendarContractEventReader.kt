@@ -16,6 +16,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 
 /**
  * Reads device calendar events for a single local day via [CalendarContract.Instances].
@@ -124,6 +125,16 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
                 val end = if (endIdx >= 0) cursor.getLong(endIdx) else continue
                 val location = locationIdx.takeIf { it >= 0 }?.let { cursor.getString(it) }?.takeIf { it.isNotBlank() }
                 val allDay = allDayIdx >= 0 && cursor.getInt(allDayIdx) != 0
+                // All-day rows are stored as UTC-midnight-to-UTC-midnight of the event's
+                // nominal date. The Instances window for our local day translates to a UTC
+                // range that, in zones east of UTC, dips into the previous UTC day — and
+                // yesterday's all-day event (ending at today's UTC midnight) overlaps that
+                // dip. Drop those rows by comparing the event's UTC date to the query date;
+                // otherwise yesterday's birthday bleeds in and wins the BEGIN-ASC sort.
+                if (allDay) {
+                    val eventDate = Instant.ofEpochMilli(begin).atZone(ZoneOffset.UTC).toLocalDate()
+                    if (eventDate != date) continue
+                }
                 val calendarId = if (calendarIdIdx >= 0) cursor.getLong(calendarIdIdx) else -1L
                 val eventType = if (eventTypeIdx >= 0 && !cursor.isNull(eventTypeIdx)) cursor.getInt(eventTypeIdx) else null
                 val availability = if (availabilityIdx >= 0) cursor.getInt(availabilityIdx) else CalendarContract.Instances.AVAILABILITY_BUSY

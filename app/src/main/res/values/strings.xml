@@ -1096,6 +1096,7 @@
     <string name="holiday_name_australia_day">Australia Day</string>
     <string name="holiday_name_waitangi_day">Waitangi Day</string>
     <string name="holiday_name_valentines_day">Valentine\'s Day</string>
+    <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
     <string name="holiday_name_st_davids_day">St David\'s Day</string>
     <string name="holiday_name_korean_independence_movement_day">Korean Independence Movement Day</string>
     <string name="holiday_name_st_patricks_day">St Patrick\'s Day</string>
@@ -1159,6 +1160,7 @@
     <string name="holiday_banner_australia_day">Happy Australia Day</string>
     <string name="holiday_banner_waitangi_day">Happy Waitangi Day</string>
     <string name="holiday_banner_valentines_day">Happy Valentine\'s Day</string>
+    <string name="holiday_banner_us_presidents_day">Happy Presidents\' Day</string>
     <string name="holiday_banner_st_davids_day">Dydd Gŵyl Dewi Hapus</string>
     <string name="holiday_banner_korean_independence_movement_day">삼일절</string>
     <string name="holiday_banner_st_patricks_day">Happy St Patrick\'s Day</string>

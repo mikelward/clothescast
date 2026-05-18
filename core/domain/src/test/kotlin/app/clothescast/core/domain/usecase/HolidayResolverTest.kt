@@ -231,6 +231,31 @@ class HolidayResolverTest {
     }
 
     @Test
+    fun `US Presidents Day matches 3rd Monday of February`() {
+        listOf(
+            LocalDate.of(2025, 2, 17),
+            LocalDate.of(2026, 2, 16),
+            LocalDate.of(2027, 2, 15),
+            LocalDate.of(2028, 2, 21),
+            LocalDate.of(2029, 2, 19),
+        ).forEach { d ->
+            withClue(d.toString()) {
+                d.dayOfWeek shouldBe DayOfWeek.MONDAY
+                subject.resolve(d, noOverrides, allCountries)?.id shouldBe HolidayId.US_PRESIDENTS_DAY
+            }
+        }
+        // Non-3rd Mondays in February should NOT match Presidents' Day.
+        val presidentsOnly = onlyOn(HolidayId.US_PRESIDENTS_DAY)
+        listOf(2, 9, 23).forEach { dom ->
+            val d = LocalDate.of(2026, 2, dom)
+            withClue(d.toString()) {
+                d.dayOfWeek shouldBe DayOfWeek.MONDAY
+                subject.resolve(d, presidentsOnly, allCountries).shouldBeNull()
+            }
+        }
+    }
+
+    @Test
     fun `Japan Coming of Age Day matches 2nd Monday of January`() {
         listOf(
             LocalDate.of(2025, 1, 13),

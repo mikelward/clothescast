@@ -437,6 +437,7 @@ class PreviewSnapshots {
     @Test fun holiday_australia_day() = capture { HolidayAustraliaDayPreview() }
     @Test fun holiday_waitangi_day() = capture { HolidayWaitangiDayPreview() }
     @Test fun holiday_valentines_day() = capture { HolidayValentinesDayPreview() }
+    @Test fun holiday_us_presidents_day() = capture { HolidayUsPresidentsDayPreview() }
     @Test fun holiday_st_davids_day() = capture { HolidayStDavidsDayPreview() }
     @Test fun holiday_korean_independence_movement_day() = capture { HolidayKoreanIndependenceMovementDayPreview() }
     @Test fun holiday_st_patricks_day() = capture { HolidayStPatricksDayPreview() }

@@ -884,4 +884,8 @@ displayed label localizes.
     <string name="holiday_name_immaculate_conception">원죄 없는 잉태</string>
     <string name="holiday_name_christmas_day">크리스마스</string>
     <string name="holiday_name_boxing_day">박싱 데이</string>
+    <string name="holiday_banner_korean_independence_movement_day">삼일절</string>
+    <string name="holiday_banner_korean_memorial_day">현충일</string>
+    <string name="holiday_banner_korean_liberation_day">광복절</string>
+    <string name="holiday_banner_korean_hangeul_day">한글날</string>
 </resources>

@@ -757,4 +757,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_forecasters_bom_subtitle">Australiano — em manutenção, voltará assim que possível.</string>
 
     <string name="settings_about_open_meteo">Dados meteorológicos pela Open-Meteo</string>
+
+    <string name="holiday_banner_brazil_independence_day">Feliz Dia da Independência</string>
 </resources>

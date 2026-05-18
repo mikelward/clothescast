@@ -880,4 +880,8 @@ the displayed label localizes.
     <string name="holiday_name_immaculate_conception">無原罪の御宿り</string>
     <string name="holiday_name_christmas_day">クリスマス</string>
     <string name="holiday_name_boxing_day">ボクシングデー</string>
+    <string name="holiday_banner_japan_coming_of_age_day">成人の日</string>
+    <string name="holiday_banner_japan_greenery_day">みどりの日</string>
+    <string name="holiday_banner_japan_marine_day">海の日</string>
+    <string name="holiday_banner_japan_culture_day">文化の日</string>
 </resources>

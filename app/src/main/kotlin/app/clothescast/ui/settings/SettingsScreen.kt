@@ -223,6 +223,9 @@ fun SettingsScreen(
                 onSetThemeFromCalendarHolidays = viewModel::setThemeFromCalendarHolidays,
                 onSetThemeFromCalendarBirthdays = viewModel::setThemeFromCalendarBirthdays,
                 onCalendarPermissionRechecked = viewModel::markCalendarPermissionRechecked,
+                onNavigateToRegionSettings = { route = SettingsRoute.Region },
+                onNavigateToLocationSettings = { route = SettingsRoute.Location },
+                onNavigateToCalendarSettings = { route = SettingsRoute.Calendar },
             )
             SettingsRoute.Location -> LocationContent(
                 location = state.location,

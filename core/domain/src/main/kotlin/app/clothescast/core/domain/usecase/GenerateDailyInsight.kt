@@ -161,7 +161,13 @@ class GenerateDailyInsight(
                 OutfitSuggestion.explainFromForecast(it, rules)
             },
             period = period,
-            hasEvents = periodView.events.isNotEmpty(),
+            // Mirrors the "away from home" gate used by `buildEveningEventTieIn`
+            // below: a tonight notification fires loud / through the "only on
+            // events" pref only when the user has somewhere to be, i.e. a
+            // non-all-day event with a location. Holiday and birthday rows
+            // (all-day, no location — and now preserved by the reader for
+            // classification) naturally fall out.
+            hasEvents = periodView.events.any { !it.allDay && !it.location.isNullOrBlank() },
         )
         return DailyInsightResult(insight = insight, alerts = activeAlerts)
     }

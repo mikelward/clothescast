@@ -12,6 +12,7 @@ import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Location
@@ -1217,6 +1218,7 @@ class GenerateDailyInsightTest {
             title = "gig",
             start = LocalTime.of(20, 0),
             end = LocalTime.of(22, 0),
+            location = "Brixton Academy",
         )
         val weather = FakeWeatherRepository(ForecastBundle(rainyEvening, yesterday))
         val calendar = FakeCalendarEventReader(events = listOf(morningStandup, eveningGig))
@@ -1239,6 +1241,65 @@ class GenerateDailyInsightTest {
         tieIn!!.item shouldBe "sweater"
         result.insight.summary.precip!!.time shouldBe LocalTime.of(20, 0)
         result.insight.hasEvents shouldBe true
+    }
+
+    @Test
+    fun `tonight hasEvents is false when the evening event has no location`() = runTest {
+        // hasEvents drives the tonight notification loudness and the
+        // tonight-notify-only-on-events pref. We treat "no location" as
+        // "user is at home", same gate buildEveningEventTieIn uses; an
+        // unlabelled evening hold shouldn't make tonight notifications
+        // chirp.
+        val zone = ZoneId.of("Europe/London")
+        val unlocatedHold = CalendarEvent(
+            title = "block",
+            start = LocalTime.of(20, 0),
+            end = LocalTime.of(21, 0),
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(unlocatedHold))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(useCalendarEvents = true, schedule = Schedule.default(zone)),
+            period = ForecastPeriod.TONIGHT,
+        )
+
+        result.insight.hasEvents shouldBe false
+    }
+
+    @Test
+    fun `tonight hasEvents is false when the only events are all-day holidays or birthdays`() = runTest {
+        // FREE-availability holiday / birthday rows now reach the use-case
+        // (preserved for classification) but are all-day with no location,
+        // so they fall through the same predicate as unlocated holds.
+        val zone = ZoneId.of("Europe/London")
+        val christmas = CalendarEvent(
+            title = "Christmas Day",
+            start = LocalTime.MIDNIGHT,
+            end = LocalTime.MIDNIGHT,
+            allDay = true,
+            kind = EventKind.PUBLIC_HOLIDAY,
+        )
+        val aliceBirthday = CalendarEvent(
+            title = "Alice's birthday",
+            start = LocalTime.MIDNIGHT,
+            end = LocalTime.MIDNIGHT,
+            allDay = true,
+            kind = EventKind.BIRTHDAY,
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(christmas, aliceBirthday))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(useCalendarEvents = true, schedule = Schedule.default(zone)),
+            period = ForecastPeriod.TONIGHT,
+        )
+
+        result.insight.hasEvents shouldBe false
     }
 
     @Test

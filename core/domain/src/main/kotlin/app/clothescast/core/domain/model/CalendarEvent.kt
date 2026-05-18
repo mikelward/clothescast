@@ -3,6 +3,17 @@ package app.clothescast.core.domain.model
 import java.time.LocalTime
 
 /**
+ * Classification applied to each [CalendarEvent] by the reader, so downstream code
+ * can branch on it without inspecting the title. Always derived on-device and never
+ * carried into any off-device payload — see the privacy note on [CalendarEvent].
+ */
+enum class EventKind {
+    NORMAL,
+    BIRTHDAY,
+    PUBLIC_HOLIDAY,
+}
+
+/**
  * One scheduled event read from the user's device calendar, projected into the
  * local day the daily insight is being generated for. Times are wall-clock in the
  * user's zone — the reader is responsible for applying timezone conversion before
@@ -13,6 +24,12 @@ import java.time.LocalTime
  * surfaced. The current consumer [app.clothescast.core.domain.usecase.RenderInsightSummary]
  * never includes the location in the rendered string, but the field is kept so a
  * future "what to bring + where" sentence can use it without a model migration.
+ *
+ * [kind] is a reader-set classification (birthday / public holiday / normal) so
+ * UI code can pick a themed palette without scraping the title at the use-case
+ * layer. [ownerAccount] carries the source-calendar account so the reader can
+ * recognise Google's "Holidays in <country>" calendar; both fields stay on
+ * device and must never appear in insight prose, TTS payloads, or Firebase.
  */
 data class CalendarEvent(
     val title: String,
@@ -20,6 +37,8 @@ data class CalendarEvent(
     val end: LocalTime,
     val location: String? = null,
     val allDay: Boolean = false,
+    val kind: EventKind = EventKind.NORMAL,
+    val ownerAccount: String? = null,
 ) {
     /**
      * True when [time] falls within `[start, end)`. All-day events match every

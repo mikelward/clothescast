@@ -730,14 +730,13 @@ class FetchAndNotifyWorker(
     /**
      * Tonight delivery honours the user's tonight-specific [DeliveryMode]
      * (the night card has its own delivery selector, separate from the day
-     * card's) and is also event-gated:
+     * card's):
      *  - Notification posts only when the delivery mode includes notifications,
      *    matching today's behaviour. The notifier still picks the silent channel
      *    vs the default-priority channel based on whether there are calendar
      *    events tonight.
-     *  - TTS only speaks when the delivery mode includes TTS *and* there are
-     *    events tonight. If the evening is empty there's nothing to interrupt
-     *    for, even on a TTS-enabled mode.
+     *  - TTS speaks when the delivery mode includes TTS, unless
+     *    notify-only-on-events is on and the evening has no calendar events.
      */
     // Region-language prose for notification text and the audit log. Spoken
     // playback is rendered separately through ttsUtterance() so explicit voice
@@ -782,8 +781,9 @@ class FetchAndNotifyWorker(
             app.tonightInsightNotifier.notify(insight, prose, topColors, topStrokes)
             recordDeliveryDelay(ForecastPeriod.TONIGHT)
         }
-        if (!insight.hasEvents) {
-            DiagLog.i(TAG, "Tonight insight has no events; skipping TTS.")
+        val skipEmptyEveningTts = prefs.tonightNotifyOnlyOnEvents && !insight.hasEvents
+        if (skipEmptyEveningTts) {
+            DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping TTS.")
             return
         }
         val ttsRequested = mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS

@@ -18,16 +18,13 @@ import androidx.work.workDataOf
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.ForecastPeriod
-import app.clothescast.core.domain.model.HolidayCatalog
-import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
-import app.clothescast.core.domain.usecase.ThemeForToday
+import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.core.domain.usecase.shouldSpeak
-import app.clothescast.tts.toJavaLocale
 import app.clothescast.core.data.tts.WavEncoder
 import app.clothescast.data.InsightCache
 import app.clothescast.mqtt.MqttPublishOutcome
@@ -55,7 +52,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import java.io.IOException
 import java.time.LocalDate
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.math.cos
 import kotlin.math.sqrt
@@ -556,40 +552,6 @@ class FetchAndNotifyWorker(
         }
     }
 
-    /**
-     * Mirrors [TodayViewModel]'s holiday-theme resolution so the worker's
-     * notification / MQTT card pick up the same palette the Today screen
-     * draws. Calendar events are only read when the user has opted into
-     * calendar-sourced theming; the read is wrapped in [runCatching] so a
-     * missing READ_CALENDAR permission silently falls through to "no events".
-     */
-    private suspend fun resolveHolidayTheme(prefs: UserPreferences): HolidayTheme? {
-        val today = LocalDate.now(prefs.schedule.zoneId)
-        val needEvents = prefs.themeFromCalendarHolidays || prefs.themeFromCalendarBirthdays
-        val events = if (needEvents) {
-            runCatching {
-                app.calendarEventReader.eventsForDay(today, prefs.schedule.zoneId)
-            }.getOrDefault(emptyList())
-        } else {
-            emptyList()
-        }
-        val localeCountry = prefs.region.toJavaLocale()?.country
-            ?: Locale.getDefault().country
-        val effectiveCountries = prefs.holidayCountrySelection.resolveEnabledCountries(
-            localeCountry = localeCountry,
-            weatherLocationCountry = prefs.location?.countryCode,
-            allCountries = HolidayCatalog.allCountries,
-        )
-        return ThemeForToday().resolve(
-            date = today,
-            overrides = prefs.holidayOverrides,
-            enabledCountries = effectiveCountries,
-            events = events,
-            themeFromCalendarHolidays = prefs.themeFromCalendarHolidays,
-            themeFromCalendarBirthdays = prefs.themeFromCalendarBirthdays,
-        )
-    }
-
     private suspend fun deliver(insight: Insight, prefs: UserPreferences, prose: String) {
         // Apply today's holiday theme on top of the user's persisted outfit
         // colour customisations so the notification's large icon and the
@@ -599,8 +561,10 @@ class FetchAndNotifyWorker(
         // New Year's. The screen's TodayViewModel does the same merge;
         // without it the off-screen renderers would silently fall back to
         // user defaults (or the auto-derived darker-shade stroke) on
-        // themed days.
-        val theme = resolveHolidayTheme(prefs)
+        // themed days. The manual "Publish now" path in MainActivity uses
+        // the same helper so the retained MQTT image stays themed after a
+        // user-initiated refresh too.
+        val theme = resolveHolidayTheme(prefs, app.calendarEventReader)
         val topColors: Map<OutfitSuggestion.Top, Long> =
             prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())
         val bottomColors: Map<OutfitSuggestion.Bottom, Long> =

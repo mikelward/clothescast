@@ -31,6 +31,8 @@ import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.WorkManager
+import app.clothescast.calendar.resolveHolidayTheme
+import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.locale.AppLocale
 import app.clothescast.location.LocationResolver
@@ -387,6 +389,22 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                                     if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today
                                     else R.string.outfit_card_header_tonight
                                 )
+                                // Apply today's holiday / birthday theme on
+                                // top of the user's outfit colours — same
+                                // merge FetchAndNotifyWorker.deliver does for
+                                // the scheduled publish. Without it the
+                                // user-initiated refresh would overwrite the
+                                // worker's themed retained image with an
+                                // unthemed one.
+                                val theme = resolveHolidayTheme(prefs, app.calendarEventReader)
+                                val topColors: Map<OutfitSuggestion.Top, Long> =
+                                    prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())
+                                val bottomColors: Map<OutfitSuggestion.Bottom, Long> =
+                                    prefs.outfitBottomColors + (theme?.bottomOverrides ?: emptyMap())
+                                val topStrokes: Map<OutfitSuggestion.Top, Long> =
+                                    theme?.topStrokeOverrides ?: emptyMap()
+                                val bottomStrokes: Map<OutfitSuggestion.Bottom, Long> =
+                                    theme?.bottomStrokeOverrides ?: emptyMap()
                                 val png = renderOutfitCard(
                                     context = context,
                                     outfit = outfit,
@@ -396,8 +414,10 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                                     rainLine = info.rainLine,
                                     tempFillFraction = info.tempFillFraction,
                                     rainFillFraction = info.rainFillFraction,
-                                    topColors = prefs.outfitTopColors,
-                                    bottomColors = prefs.outfitBottomColors,
+                                    topColors = topColors,
+                                    bottomColors = bottomColors,
+                                    topStrokes = topStrokes,
+                                    bottomStrokes = bottomStrokes,
                                 )
                                 app.mqttPublisher.publishImageIfEnabled(insight.period, png)
                             }

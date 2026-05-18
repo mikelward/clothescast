@@ -24,6 +24,7 @@ enum class HolidayId {
     AUSTRALIA_DAY,
     WAITANGI_DAY,
     VALENTINES_DAY,
+    US_PRESIDENTS_DAY,
     ST_DAVIDS_DAY,
     KOREAN_INDEPENDENCE_MOVEMENT_DAY,
     ST_PATRICKS_DAY,
@@ -450,6 +451,23 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(VAL_RED),
             bannerArgb = VAL_RED,
             countries = setOf(GLOBAL_COUNTRY),
+        ),
+
+        // 3rd Monday of February — US Presidents' Day (officially Washington's
+        // Birthday). Civic palette anchored on the flag's canton: navy-blue
+        // tops + white bottoms, no contrasting stroke — auto-derived darker
+        // shade reads as understated trim. Distinct from the full red-white-
+        // blue tricolour reserved for [US_INDEPENDENCE_DAY], and from the
+        // solemn monochromes of [MLK_DAY] / [US_MEMORIAL_DAY].
+        HolidayDate.NthWeekday(Month.FEBRUARY, 3, DayOfWeek.MONDAY) to HolidayTheme(
+            id = HolidayId.US_PRESIDENTS_DAY,
+            displayNameKey = "holiday_name_us_presidents_day",
+            bannerTextKey = "holiday_banner_us_presidents_day",
+            emoji = "🎩", // 🎩 — top hat, presidential
+            topOverrides = topPaletteAll(USA_BLUE),
+            bottomOverrides = bottomPaletteAll(USA_WHITE),
+            bannerArgb = USA_BLUE,
+            countries = setOf("US"),
         ),
 
         // Mar 1 — St David's Day. Daffodil yellow tops + leek-green bottoms.

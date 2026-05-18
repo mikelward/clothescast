@@ -772,6 +772,10 @@ internal fun HolidayWaitangiDayPreview() = HolidayShowcase(HolidayId.WAITANGI_DA
 @Composable
 internal fun HolidayValentinesDayPreview() = HolidayShowcase(HolidayId.VALENTINES_DAY)
 
+@Preview(name = "Holiday · US Presidents' Day", widthDp = 360)
+@Composable
+internal fun HolidayUsPresidentsDayPreview() = HolidayShowcase(HolidayId.US_PRESIDENTS_DAY)
+
 @Preview(name = "Holiday · St David's Day", widthDp = 360)
 @Composable
 internal fun HolidayStDavidsDayPreview() = HolidayShowcase(HolidayId.ST_DAVIDS_DAY)

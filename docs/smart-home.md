@@ -287,9 +287,26 @@ directory, which HA serves at `http://<ha-ip>:8123/local/<filename>`.
 you don't already have it. The flow needs two nodes per period:
 
 ```
-[mqtt-in: clothescast/insight/today/audio]   → [file: /config/www/clothescast_today.wav   (overwrite, no newline)]
-[mqtt-in: clothescast/insight/tonight/audio] → [file: /config/www/clothescast_tonight.wav (overwrite, no newline)]
+[mqtt-in: clothescast/insight/today/audio]   → [file: <ha-config>/www/clothescast_today.wav   (overwrite, no newline)]
+[mqtt-in: clothescast/insight/tonight/audio] → [file: <ha-config>/www/clothescast_tonight.wav (overwrite, no newline)]
 ```
+
+Where `<ha-config>` is HA's config directory as the Node-RED add-on
+container sees it — which **depends on the add-on**:
+
+- Community add-on (`hassio-addons/addon-node-red`, the dominant one):
+  HA's config is mounted at `/config/`, so the file path is
+  `/config/www/clothescast_today.wav`.
+- Official Node-RED add-on (newer container framework): HA's config
+  is mounted at `/homeassistant/`, so the path is
+  `/homeassistant/www/clothescast_today.wav`. The add-on's own
+  config lives at `/config/` separately — writing there would put the
+  WAV under add-on storage, not where HA's `/local/` serves from.
+
+If unsure which you have, the add-on's "Documentation" tab on its
+add-on page lists its mount points; or try writing a small text file
+through Node-RED and check from HA's File Editor add-on whether it
+appears under `/config/www/` (HA-side path).
 
 In each MQTT-in node, set **Output: a Buffer** — not "auto-detect",
 which tries to JSON-decode the WAV and corrupts the file. In each
@@ -298,11 +315,25 @@ each payload". That's the whole bridge: every refresh ClothesCast
 publishes to the topic, Node-RED rewrites the file in place, and HA
 serves the new bytes from the same URL.
 
-**Alternative — `shell_command` + `mosquitto_sub`.** If you don't
-want Node-RED and your HA install has the Mosquitto client tools on
-the PATH HA sees (HAOS users may need to install them via the SSH
-& Web Terminal add-on with "Protection mode" off), add to
-`configuration.yaml`:
+**Alternative — `shell_command` + `mosquitto_sub`.** HA's
+`shell_command:` runs inside the `homeassistant` container, so
+`mosquitto_sub` must exist *there* — installing it via the SSH /
+Terminal add-on doesn't help, because that add-on is a separate
+container. This effectively limits the path to:
+
+- **HA Core installs**, where HA runs directly on the host and you
+  can install `mosquitto-clients` via the host's package manager
+  (`apt install mosquitto-clients`, etc.).
+- **HA Container installs** with a custom image that bakes
+  `mosquitto-clients` in (e.g. a `Dockerfile` that adds
+  `RUN apk add --no-cache mosquitto-clients` on top of
+  `ghcr.io/home-assistant/home-assistant`).
+
+**HAOS / HA Supervised installs can't reach `mosquitto_sub` from
+`shell_command`** — the `homeassistant` container is managed by
+Supervisor and not user-editable. Use the Node-RED bridge above
+instead. With that in mind, on a Core or custom-Container install,
+add to `configuration.yaml`:
 
 ```yaml
 shell_command:
@@ -694,12 +725,7 @@ triggers:
     at: "07:01:00"
 
 actions:
-  # 1. (Optional, shell_command bridge only.) Refresh the WAV from
-  #    the retained MQTT payload. Skip if you're using the Node-RED
-  #    bridge — it rewrites the file on every publish already.
-  - action: shell_command.fetch_clothescast_today_audio
-
-  # 2. Speak the Gemini-rendered briefing.
+  # 1. Speak the Gemini-rendered briefing.
   - action: media_player.play_media
     target:
       entity_id: media_player.kitchen_hub
@@ -707,13 +733,13 @@ actions:
       media_content_id: "http://192.168.x.x:8123/local/clothescast_today.wav"
       media_content_type: music
 
-  # 3. Wait for the audio to finish before swapping in the picture.
+  # 2. Wait for the audio to finish before swapping in the picture.
   #    No SDK preamble on this path, so 15 s is usually plenty for a
   #    full briefing. Pad longer if you've enabled the calendar
   #    tie-in clause and your evenings get talky.
   - delay: "00:00:15"
 
-  # 4. Push the outfit picture.
+  # 3. Push the outfit picture.
   - action: media_player.play_media
     target:
       entity_id: media_player.kitchen_hub
@@ -721,6 +747,22 @@ actions:
       media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
       media_content_type: image/png
 ```
+
+The YAML above assumes the Node-RED bridge is keeping the WAV at
+`/local/clothescast_today.wav` fresh. **If you went with the
+`shell_command` bridge instead**, prepend a refresh step *before*
+the `play_media` audio call so the retained MQTT payload is copied
+to the live file first:
+
+```yaml
+actions:
+  - action: shell_command.fetch_clothescast_today_audio
+  # …then the same three steps from above (speak / delay / image)
+```
+
+Don't paste that line in if you're not running the `shell_command`
+bridge — HA errors on the unknown action and the automation stops
+before the speaker plays anything.
 
 > **Edge case — speaker was already playing music (Option B
 > specifically).** Music Assistant restores the prior playback

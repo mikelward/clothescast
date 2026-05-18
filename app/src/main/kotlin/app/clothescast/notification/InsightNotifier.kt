@@ -26,6 +26,7 @@ class InsightNotifier(private val context: Context) {
         insight: Insight,
         prose: String,
         topColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+        topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     ) {
         if (!NotificationPermission.isGranted(context)) return
 
@@ -48,7 +49,14 @@ class InsightNotifier(private val context: Context) {
         val top = insight.outfit?.top
         val notification = NotificationCompat.Builder(context, CHANNEL_DAILY_INSIGHT)
             .setSmallIcon(smallIconFor(top))
-            .setLargeIcon(largeIconForTop(context, top, top?.let { topColors[it] }))
+            .setLargeIcon(
+                largeIconForTop(
+                    context = context,
+                    top = top,
+                    customFillArgb = top?.let { topColors[it] },
+                    customStrokeArgb = top?.let { topStrokes[it] },
+                ),
+            )
             .setContentTitle(context.getString(R.string.notification_daily_insight_title))
             .setContentText(prose)
             .setStyle(NotificationCompat.BigTextStyle().bigText(prose))
@@ -88,14 +96,16 @@ class InsightNotifier(private val context: Context) {
          * Reuses the full-colour `ic_outfit_tshirt` / `ic_outfit_sweater` /
          * `ic_outfit_thick_jacket` drawables from `OutfitPreviewCard` so the
          * notification visual matches the home-screen card — including any
-         * user-picked colour override passed in via [customFillArgb]. Returns
-         * null when [top] is missing (older cached payloads), letting the
-         * system fall back to no large icon.
+         * user-picked colour override passed in via [customFillArgb], and
+         * the tricolour-holiday accent passed in via [customStrokeArgb].
+         * Returns null when [top] is missing (older cached payloads),
+         * letting the system fall back to no large icon.
          */
         internal fun largeIconForTop(
             context: Context,
             top: OutfitSuggestion.Top?,
             customFillArgb: Long? = null,
+            customStrokeArgb: Long? = null,
         ): Bitmap? {
             if (top == null) return null
             val sizePx = context.resources.getDimensionPixelSize(android.R.dimen.notification_large_icon_width)
@@ -107,6 +117,7 @@ class InsightNotifier(private val context: Context) {
                 defaults = outfitTopDefaults.getValue(top),
                 customFillArgb = customFillArgb,
                 sizePx = sizePx,
+                customStrokeArgb = customStrokeArgb,
             )
         }
 

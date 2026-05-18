@@ -18,11 +18,16 @@ import androidx.work.workDataOf
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.HolidayCatalog
+import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
+import app.clothescast.core.domain.usecase.ThemeForToday
 import app.clothescast.core.domain.usecase.shouldSpeak
+import app.clothescast.tts.toJavaLocale
 import app.clothescast.core.data.tts.WavEncoder
 import app.clothescast.data.InsightCache
 import app.clothescast.mqtt.MqttPublishOutcome
@@ -50,6 +55,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import java.io.IOException
 import java.time.LocalDate
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.math.cos
 import kotlin.math.sqrt
@@ -550,7 +556,59 @@ class FetchAndNotifyWorker(
         }
     }
 
+    /**
+     * Mirrors [TodayViewModel]'s holiday-theme resolution so the worker's
+     * notification / MQTT card pick up the same palette the Today screen
+     * draws. Calendar events are only read when the user has opted into
+     * calendar-sourced theming; the read is wrapped in [runCatching] so a
+     * missing READ_CALENDAR permission silently falls through to "no events".
+     */
+    private suspend fun resolveHolidayTheme(prefs: UserPreferences): HolidayTheme? {
+        val today = LocalDate.now(prefs.schedule.zoneId)
+        val needEvents = prefs.themeFromCalendarHolidays || prefs.themeFromCalendarBirthdays
+        val events = if (needEvents) {
+            runCatching {
+                app.calendarEventReader.eventsForDay(today, prefs.schedule.zoneId)
+            }.getOrDefault(emptyList())
+        } else {
+            emptyList()
+        }
+        val localeCountry = prefs.region.toJavaLocale()?.country
+            ?: Locale.getDefault().country
+        val effectiveCountries = prefs.holidayCountrySelection.resolveEnabledCountries(
+            localeCountry = localeCountry,
+            weatherLocationCountry = prefs.location?.countryCode,
+            allCountries = HolidayCatalog.allCountries,
+        )
+        return ThemeForToday().resolve(
+            date = today,
+            overrides = prefs.holidayOverrides,
+            enabledCountries = effectiveCountries,
+            events = events,
+            themeFromCalendarHolidays = prefs.themeFromCalendarHolidays,
+            themeFromCalendarBirthdays = prefs.themeFromCalendarBirthdays,
+        )
+    }
+
     private suspend fun deliver(insight: Insight, prefs: UserPreferences, prose: String) {
+        // Apply today's holiday theme on top of the user's persisted outfit
+        // colour customisations so the notification's large icon and the
+        // Home-Assistant outfit card match what the Today screen renders —
+        // birthday yellows / Christmas reds, plus the tricolour stroke
+        // accents on themes like July 4 / Bastille Day / Italy / Germany /
+        // New Year's. The screen's TodayViewModel does the same merge;
+        // without it the off-screen renderers would silently fall back to
+        // user defaults (or the auto-derived darker-shade stroke) on
+        // themed days.
+        val theme = resolveHolidayTheme(prefs)
+        val topColors: Map<OutfitSuggestion.Top, Long> =
+            prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())
+        val bottomColors: Map<OutfitSuggestion.Bottom, Long> =
+            prefs.outfitBottomColors + (theme?.bottomOverrides ?: emptyMap())
+        val topStrokes: Map<OutfitSuggestion.Top, Long> =
+            theme?.topStrokeOverrides ?: emptyMap()
+        val bottomStrokes: Map<OutfitSuggestion.Bottom, Long> =
+            theme?.bottomStrokeOverrides ?: emptyMap()
         // Publish to MQTT before waiting for the delivery-alignment delay so
         // that retained topics are current by the time HA automations fire.
         // deliverToday/Tonight both start with awaitDeliveryAlignment() (60 s
@@ -585,8 +643,10 @@ class FetchAndNotifyWorker(
                     rainLine = info.rainLine,
                     tempFillFraction = info.tempFillFraction,
                     rainFillFraction = info.rainFillFraction,
-                    topColors = prefs.outfitTopColors,
-                    bottomColors = prefs.outfitBottomColors,
+                    topColors = topColors,
+                    bottomColors = bottomColors,
+                    topStrokes = topStrokes,
+                    bottomStrokes = bottomStrokes,
                 )
                 app.mqttPublisher.publishImageIfEnabled(insight.period, png)
             }.onFailure { t ->
@@ -595,8 +655,8 @@ class FetchAndNotifyWorker(
             }
         }
         when (insight.period) {
-            ForecastPeriod.TODAY -> deliverToday(insight, prefs, prose)
-            ForecastPeriod.TONIGHT -> deliverTonight(insight, prefs, prose)
+            ForecastPeriod.TODAY -> deliverToday(insight, prefs, prose, topColors, topStrokes)
+            ForecastPeriod.TONIGHT -> deliverTonight(insight, prefs, prose, topColors, topStrokes)
         }
         // Status persistence is best-effort: a DataStore I/O failure here must
         // not surface as a deliver() exception, which would cause the
@@ -611,11 +671,17 @@ class FetchAndNotifyWorker(
         }
     }
 
-    private suspend fun deliverToday(insight: Insight, prefs: UserPreferences, prose: String) {
+    private suspend fun deliverToday(
+        insight: Insight,
+        prefs: UserPreferences,
+        prose: String,
+        topColors: Map<OutfitSuggestion.Top, Long>,
+        topStrokes: Map<OutfitSuggestion.Top, Long>,
+    ) {
         awaitDeliveryAlignment()
         val mode = prefs.deliveryMode
         if (mode == DeliveryMode.NOTIFICATION_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS) {
-            app.insightNotifier.notify(insight, prose, prefs.outfitTopColors)
+            app.insightNotifier.notify(insight, prose, topColors, topStrokes)
             recordDeliveryDelay(ForecastPeriod.TODAY)
         }
         val ttsRequested = mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
@@ -731,7 +797,13 @@ class FetchAndNotifyWorker(
             temperatureUnit = prefs.temperatureUnit,
         )
 
-    private suspend fun deliverTonight(insight: Insight, prefs: UserPreferences, prose: String) {
+    private suspend fun deliverTonight(
+        insight: Insight,
+        prefs: UserPreferences,
+        prose: String,
+        topColors: Map<OutfitSuggestion.Top, Long>,
+        topStrokes: Map<OutfitSuggestion.Top, Long>,
+    ) {
         awaitDeliveryAlignment()
         val mode = prefs.tonightDeliveryMode
         val canNotify = mode == DeliveryMode.NOTIFICATION_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
@@ -743,7 +815,7 @@ class FetchAndNotifyWorker(
         if (skipEmptyEveningNotification) {
             DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping notification.")
         } else if (canNotify) {
-            app.tonightInsightNotifier.notify(insight, prose, prefs.outfitTopColors)
+            app.tonightInsightNotifier.notify(insight, prose, topColors, topStrokes)
             recordDeliveryDelay(ForecastPeriod.TONIGHT)
         }
         if (!insight.hasEvents) {

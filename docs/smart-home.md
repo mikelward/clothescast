@@ -382,14 +382,22 @@ shell_command:
   fetch_clothescast_today_audio: >
     mosquitto_sub -h <broker-host> -u clothescast -P '<pass>'
     -t 'clothescast/insight/today/audio' -C 1 -W 5 -N
-    > /config/clothescast_today.wav.part
-    && mv /config/clothescast_today.wav.part /config/www/clothescast_today.wav
+    > clothescast_today.wav.part
+    && mv clothescast_today.wav.part www/clothescast_today.wav
   fetch_clothescast_tonight_audio: >
     mosquitto_sub -h <broker-host> -u clothescast -P '<pass>'
     -t 'clothescast/insight/tonight/audio' -C 1 -W 5 -N
-    > /config/clothescast_tonight.wav.part
-    && mv /config/clothescast_tonight.wav.part /config/www/clothescast_tonight.wav
+    > clothescast_tonight.wav.part
+    && mv clothescast_tonight.wav.part www/clothescast_tonight.wav
 ```
+
+The paths are **relative** on purpose. `shell_command:` runs with
+HA's config directory as the working directory, which is `/config/`
+on HAOS / HA Container but typically `~/.homeassistant/` on HA Core
+(or wherever you passed to `hass --config`). Relative paths
+(`clothescast_today.wav.part`, `www/clothescast_today.wav`) land
+correctly under whichever config directory HA is using; absolute
+`/config/…` paths only work on the container installs.
 
 A few small but important details in that command:
 
@@ -409,15 +417,14 @@ A few small but important details in that command:
   lands a stray byte after the `data` chunk that stricter players
   reject.
 - **The `> ….part && mv …` pattern matters.** A plain
-  `> /config/www/clothescast_today.wav` would truncate the live
-  file *before* `mosquitto_sub` ran, so a broker timeout or
-  unreachable host would leave HA serving a 0-byte WAV until the
-  next successful fetch. Writing to a `.part` file in `/config/`
-  (same filesystem as `/config/www/`, so `mv` is atomic) and only
-  renaming on `mosquitto_sub` exit 0 keeps the previous good WAV in
-  place when a fetch fails. `chmod` isn't needed — HA's default
-  umask gives the new file the same permissions as the rest of
-  `/config/www/`.
+  `> www/clothescast_today.wav` would truncate the live file
+  *before* `mosquitto_sub` ran, so a broker timeout or unreachable
+  host would leave HA serving a 0-byte WAV until the next successful
+  fetch. Writing to a `.part` file in the config-dir root (same
+  filesystem as `www/`, so `mv` is atomic) and only renaming on
+  `mosquitto_sub` exit 0 keeps the previous good WAV in place when
+  a fetch fails. `chmod` isn't needed — HA's default umask gives
+  the new file the same permissions as the rest of `www/`.
 
 Call `shell_command.fetch_clothescast_today_audio` as the first
 action of any automation that wants to play the latest audio (see

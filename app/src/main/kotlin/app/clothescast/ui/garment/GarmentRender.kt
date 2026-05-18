@@ -393,12 +393,15 @@ private fun drawInfoRow(
 private const val THERMOMETER_PATH =
     "M15,13V5c0,-1.66 -1.34,-3 -3,-3S9,3.34 9,5v8c-1.21,0.91 -2,2.37 -2,4 0,2.76 " +
         "2.24,5 5,5s5,-2.24 5,-5c0,-1.63 -0.79,-3.09 -2,-4z"
-// y-extent of the slender stem in the 24-unit viewport. Top of the rounded
-// cap sits at y=2; the stem widens into the bulb at y≈13. Used as the
-// liquid-column travel: fillFraction=0 leaves only the bulb red; fillFraction=1
-// runs the column right up to the top of the stem.
-private const val THERMOMETER_STEM_TOP = 2f
-private const val THERMOMETER_STEM_BOTTOM = 13f
+// y-extent of the full thermometer silhouette in the 24-unit viewport.
+// Top of the rounded cap sits at y=2; the bulb bottoms out at y≈22. Used
+// as the liquid-column travel so the visible red area is proportional to
+// fillFraction across the *whole* icon — a 19 % fill reads as 19 % red,
+// not "stem 19 % full + bulb 100 % full" which previously made anything
+// above freezing look at least half-coloured because the bulb alone is
+// roughly 45 % of the icon's height.
+private const val THERMOMETER_FILL_TOP = 2f
+private const val THERMOMETER_FILL_BOTTOM = 22f
 
 // Material rain-droplet silhouette in a 24×24 viewport. Previously lived in
 // res/drawable/ic_outfit_card_rain.xml.
@@ -418,15 +421,16 @@ private const val INFO_ICON_OUTLINE_ARGB = 0xFF333333.toInt()
 private const val INFO_ICON_STROKE_WIDTH = 1.5f
 
 /**
- * Draws a coloured thermometer at ([x], [y]) sized [size]×[size]. The bulb
- * is always red; the stem fills upward in proportion to [fillFraction]
- * (clamped to 0..1). A thin dark outline traces the silhouette so the icon
- * stays legible against the white card even when the column is empty.
+ * Draws a coloured thermometer at ([x], [y]) sized [size]×[size]. The
+ * whole silhouette — bulb included — fills upward in proportion to
+ * [fillFraction] (clamped to 0..1), so the visible red area tracks
+ * temperature linearly. A thin dark outline traces the silhouette so the
+ * icon stays legible against the white card even when the column is empty.
  */
 private fun drawThermometerIcon(canvas: Canvas, x: Int, y: Int, size: Int, fillFraction: Float) {
     val fill = fillFraction.coerceIn(0f, 1f)
-    val liquidTopY = THERMOMETER_STEM_TOP +
-        (1f - fill) * (THERMOMETER_STEM_BOTTOM - THERMOMETER_STEM_TOP)
+    val liquidTopY = THERMOMETER_FILL_TOP +
+        (1f - fill) * (THERMOMETER_FILL_BOTTOM - THERMOMETER_FILL_TOP)
     drawFillableInfoIcon(
         canvas = canvas,
         x = x,

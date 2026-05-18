@@ -230,7 +230,7 @@ Hub stays in lockstep with the phone without HA re-synthesising the
 prose through its own TTS stack — same Gemini voice, same prosody,
 no Google-broadcast preamble.
 
-Two things to know before you wire anything up:
+Three things to know before you wire anything up:
 
 - **Gemini-only.** Device TTS doesn't expose its audio buffer before
   playback, so the audio topic stays empty when the on-device engine
@@ -240,6 +240,29 @@ Two things to know before you wire anything up:
   forecast at home" is on and you're at home, neither the phone nor
   the Hub gets the clip. Toggle that off if you want the Hub to speak
   even when you're home.
+- **The retained WAV doesn't auto-clear on a skipped publish.** MQTT
+  keeps the last WAV on the topic until something overwrites it. So
+  if a later refresh doesn't generate audio (skip-TTS-at-home
+  suppressed it, Gemini synthesis hit an error and fell back to
+  Device TTS, etc.), an HA automation playing the cached file will
+  speak **yesterday's** briefing rather than staying silent. The
+  simplest HA-side guard is a template condition gating on the prose
+  sensor's `last_changed` being recent — prose publishes on every
+  successful refresh, so:
+
+  ```yaml
+  conditions:
+    - condition: template
+      value_template: >
+        {{ (now() - states.sensor.clothescast_today.last_changed).total_seconds() < 1800 }}
+  ```
+
+  catches the "ClothesCast didn't fire at all" case. It does **not**
+  catch the "refreshed but audio missing" case (prose updates, audio
+  doesn't) — for that, the cleanest fix is at the publisher, and
+  there's currently no app-side flag to detect it from HA. If matching
+  the spoken bytes to the prose matters, keep Gemini selected and
+  skip-TTS-at-home off for the periods this automation runs.
 
 If you'd rather have HA re-synthesise the prose sensor through its
 own TTS (Google Translate, Nabu Casa, etc.), skip this section and

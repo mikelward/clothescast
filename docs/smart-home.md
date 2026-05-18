@@ -196,21 +196,6 @@ Reload MQTT (Developer Tools → YAML → Reload MQTT) or restart HA so
 the entities appear as `camera.clothescast_today_outfit` and
 `camera.clothescast_tonight_outfit`.
 
-Then find the Cast **device ID** for the Hub you want to push to:
-Settings → Devices & Services → **Google Cast** → tap your Hub —
-the browser URL bar now shows `…/config/devices/device/<id>`. Copy
-the hex string after `/device/` — that's what the automation will
-target.
-
-> **Why device, not entity?** Audio play_media on a Nest Hub works
-> fine targeted at the Hub's `media_player.*` entity, but images
-> only render when the action targets the underlying *device*. HA's
-> Cast integration routes image content through a separate
-> device-level Cast API; `entity_id:` targeting silently no-ops on
-> the display (the action "succeeds", the picture never appears).
-> If you ever see "URL works in a browser, image stays blank on the
-> Hub", swapping `entity_id:` for `device_id:` is the fix.
-
 You don't need to copy the camera entity's `access_token` — the
 automation pulls it dynamically with `state_attr(…, 'access_token')`
 at fire-time, so token rotation across HA restarts is handled
@@ -232,7 +217,7 @@ conditions: []
 actions:
   - action: media_player.play_media
     target:
-      device_id: <your-hub-device-id>
+      entity_id: media_player.kitchen_hub
     data:
       media_content_id: >-
         http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token={{
@@ -240,8 +225,9 @@ actions:
       media_content_type: image/png
 ```
 
-Replace `<your-hub-device-id>` with the device ID you copied above
-and `192.168.x.x` with your HA instance's local IP address. The
+Replace `media_player.kitchen_hub` with your actual Nest Hub entity
+ID (find it under Settings → Devices & Services → Google Cast) and
+`192.168.x.x` with your HA instance's local IP address. The
 `access_token` template is resolved at fire-time, so you don't paste
 a captured value — HA reads the live attribute off the camera entity
 each time the automation runs.
@@ -734,7 +720,7 @@ actions:
         - Kitchen
   - action: media_player.play_media
     target:
-      device_id: <your-hub-device-id>
+      entity_id: media_player.kitchen_hub
     data:
       media_content_id: >-
         http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token={{
@@ -776,7 +762,7 @@ actions:
   # 3. Push the outfit picture.
   - action: media_player.play_media
     target:
-      device_id: <your-hub-device-id>
+      entity_id: media_player.kitchen_hub
     data:
       media_content_id: >-
         http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token={{
@@ -824,7 +810,7 @@ actions:
   # 3. Push the outfit picture.
   - action: media_player.play_media
     target:
-      device_id: <your-hub-device-id>
+      entity_id: media_player.kitchen_hub
     data:
       media_content_id: >-
         http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token={{

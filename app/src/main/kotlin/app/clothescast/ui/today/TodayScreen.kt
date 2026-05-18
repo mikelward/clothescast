@@ -109,6 +109,11 @@ import app.clothescast.tts.toJavaLocale
 import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.garment.GarmentBottomIcon
 import app.clothescast.ui.garment.GarmentTopIcon
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.mediarouter.app.MediaRouteButton
+import com.google.android.gms.cast.framework.CastButtonFactory
+import com.google.android.gms.cast.framework.CastSession
+import com.google.android.gms.cast.framework.SessionManagerListener
 import app.clothescast.diag.BugReport
 import app.clothescast.diag.BugReportConsentDialog
 import app.clothescast.diag.findActivity
@@ -168,6 +173,62 @@ fun TodayScreen(
         page = pagerState.currentPage,
     )
 
+    // Cast: when the user has paired with a Cast device — i.e. a session
+    // starts or resumes — auto-publish the current insight to the receiver.
+    // [castInsightController] / [castContext] are null on builds without
+    // Google Play Services (Cast-less emulators, GMS-free AOSP); we skip the
+    // listener and hide the toolbar button in that case.
+    val castController = app.castInsightController
+    val castContext = app.castContext
+    val latestState by rememberUpdatedState(state)
+    val configuration = LocalConfiguration.current
+    val deviceLocale = remember(configuration) { configuration.locales[0] }
+    if (castController != null && castContext != null) {
+        DisposableEffect(Unit) {
+            castController.bind()
+            val listener = object : SessionManagerListener<CastSession> {
+                override fun onSessionStarting(session: CastSession) {}
+                override fun onSessionStarted(session: CastSession, sessionId: String) {
+                    dispatchCastFromState(
+                        scope = coroutineScope,
+                        context = context,
+                        app = app,
+                        controller = castController,
+                        state = latestState,
+                        locale = deviceLocale,
+                    )
+                }
+                override fun onSessionStartFailed(session: CastSession, error: Int) {}
+                override fun onSessionEnding(session: CastSession) {}
+                override fun onSessionEnded(session: CastSession, error: Int) {}
+                override fun onSessionResuming(session: CastSession, sessionId: String) {}
+                override fun onSessionResumed(session: CastSession, wasSuspended: Boolean) {
+                    dispatchCastFromState(
+                        scope = coroutineScope,
+                        context = context,
+                        app = app,
+                        controller = castController,
+                        state = latestState,
+                        locale = deviceLocale,
+                    )
+                }
+                override fun onSessionResumeFailed(session: CastSession, error: Int) {}
+                override fun onSessionSuspended(session: CastSession, reason: Int) {}
+            }
+            castContext.sessionManager.addSessionManagerListener(
+                listener,
+                CastSession::class.java,
+            )
+            onDispose {
+                castContext.sessionManager.removeSessionManagerListener(
+                    listener,
+                    CastSession::class.java,
+                )
+                castController.unbind()
+            }
+        }
+    }
+
     Scaffold(
         // Drop the default `safeDrawing` content insets so the pager extends
         // edge-to-edge under the (transparent) nav bar. The padding lambda
@@ -202,6 +263,23 @@ fun TodayScreen(
                                 contentDescription = stringResource(R.string.today_refresh),
                             )
                         }
+                    }
+                    // The MediaRouteButton hides itself when no Cast routes are in
+                    // range, so on phones without a Chromecast on the LAN this
+                    // action is invisible. Cast framework wires the click handler
+                    // in `setUpMediaRouteButton`; we don't get a Compose-level
+                    // callback to override.
+                    if (castContext != null) {
+                        AndroidView(
+                            factory = { ctx ->
+                                MediaRouteButton(ctx).also {
+                                    CastButtonFactory.setUpMediaRouteButton(ctx, it)
+                                }
+                            },
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp)
+                                .size(48.dp),
+                        )
                     }
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(

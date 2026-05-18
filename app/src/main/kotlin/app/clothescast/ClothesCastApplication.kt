@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import app.clothescast.alarm.DailyAlarmScheduler
 import app.clothescast.calendar.CalendarContractEventReader
+import app.clothescast.cast.CastInsightController
 import app.clothescast.core.data.diag.ApiCallLogger
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.data.tts.GeminiTtsClient
@@ -36,6 +37,7 @@ import app.clothescast.tts.AndroidTtsSpeaker
 import app.clothescast.tts.AndroidTtsVoiceEnumerator
 import app.clothescast.tts.TtsSpeaker
 import app.clothescast.update.AppUpdateChecker
+import com.google.android.gms.cast.framework.CastContext
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -109,6 +111,37 @@ class ClothesCastApplication : Application() {
      */
     val homeAssistantDiscovery: HomeAssistantDiscovery by lazy {
         NsdHomeAssistantDiscovery(this)
+    }
+
+    /**
+     * Cast SDK entry point. Returns `null` when Google Play Services isn't
+     * available (Cast-less emulators, AOSP / GMS-free builds) — the Today
+     * screen hides the Cast button in that case rather than crashing on
+     * [com.google.android.gms.cast.framework.CastContext.getSharedInstance].
+     */
+    val castContext: CastContext? by lazy {
+        try {
+            CastContext.getSharedInstance(this)
+        } catch (t: Throwable) {
+            DiagLog.w(TAG, "CastContext.getSharedInstance failed; Cast disabled", t)
+            null
+        }
+    }
+
+    /**
+     * Orchestrates "cast today's insight" — synth + WAV-wrap + LAN-host the
+     * outfit PNG + load into the active session. Null whenever [castContext]
+     * is, so the UI can skip wiring listeners on Cast-less builds.
+     */
+    val castInsightController: CastInsightController? by lazy {
+        castContext?.let {
+            CastInsightController(
+                context = this,
+                castContext = it,
+                ttsClient = geminiTtsClient,
+                applicationScope = applicationScope,
+            )
+        }
     }
 
     private val httpClient: HttpClient by lazy {

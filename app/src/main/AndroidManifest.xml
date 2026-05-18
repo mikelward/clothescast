@@ -127,6 +127,12 @@
             android:name="google_analytics_adid_collection_enabled"
             android:value="false" />
 
+        <!-- Cast SDK loads CastOptionsProvider via reflection from this name.
+             Receiver app id and discovery filters live in that class. -->
+        <meta-data
+            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="app.clothescast.cast.CastOptionsProvider" />
+
         <!-- Home-screen App Widget showing the current period's outfit.
              exported=true is required for the OS launcher to bind. -->
         <receiver

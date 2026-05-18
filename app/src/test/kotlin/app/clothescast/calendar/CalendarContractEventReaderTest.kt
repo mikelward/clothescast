@@ -51,13 +51,28 @@ class CalendarContractEventReaderTest {
         ) as FakeCalendarProvider
     }
 
+    private fun allDayInstance(
+        calendarId: Long,
+        title: String,
+        forDate: LocalDate = date,
+        availability: Int = CalendarContract.Instances.AVAILABILITY_BUSY,
+        eventType: Int? = null,
+    ): FakeInstance = FakeInstance(
+        calendarId = calendarId,
+        title = title,
+        allDay = true,
+        beginMillis = forDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(),
+        endMillis = forDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(),
+        availability = availability,
+        eventType = eventType,
+    )
+
     @Test
     fun `classifies birthday-shaped title as BIRTHDAY`(): Unit = runBlocking {
         provider.calendars[10L] = "user@gmail.com"
-        provider.instances += FakeInstance(
+        provider.instances += allDayInstance(
             calendarId = 10L,
             title = "Alice's birthday",
-            allDay = true,
         )
 
         val events = CalendarContractEventReader(context).eventsForDay(date, zone)
@@ -71,10 +86,9 @@ class CalendarContractEventReaderTest {
     @Test
     fun `classifies google holiday-calendar event as PUBLIC_HOLIDAY`(): Unit = runBlocking {
         provider.calendars[20L] = "en.indian#holiday@group.v.calendar.google.com"
-        provider.instances += FakeInstance(
+        provider.instances += allDayInstance(
             calendarId = 20L,
             title = "Diwali",
-            allDay = true,
         )
 
         val events = CalendarContractEventReader(context).eventsForDay(date, zone)
@@ -105,8 +119,8 @@ class CalendarContractEventReaderTest {
     fun `mixed-source rows classify independently`(): Unit = runBlocking {
         provider.calendars[40L] = "user@gmail.com"
         provider.calendars[41L] = "en.usa#holiday@group.v.calendar.google.com"
-        provider.instances += FakeInstance(40L, "Alice's birthday", allDay = true)
-        provider.instances += FakeInstance(41L, "Thanksgiving", allDay = true)
+        provider.instances += allDayInstance(40L, "Alice's birthday")
+        provider.instances += allDayInstance(41L, "Thanksgiving")
         provider.instances += FakeInstance(
             40L,
             "Project review",
@@ -130,10 +144,9 @@ class CalendarContractEventReaderTest {
         // The classifier exists to recognise these, so the FREE filter must run
         // after classification, not before.
         provider.calendars[70L] = "en.uk#holiday@group.v.calendar.google.com"
-        provider.instances += FakeInstance(
+        provider.instances += allDayInstance(
             calendarId = 70L,
             title = "Christmas Day",
-            allDay = true,
             availability = CalendarContract.Instances.AVAILABILITY_FREE,
         )
 
@@ -148,10 +161,9 @@ class CalendarContractEventReaderTest {
         // Google's auto-Birthdays calendar (and the new Birthday-event-type
         // entries on the primary calendar) sync as FREE for the same reason.
         provider.calendars[71L] = "user@gmail.com"
-        provider.instances += FakeInstance(
+        provider.instances += allDayInstance(
             calendarId = 71L,
             title = "Alice's birthday",
-            allDay = true,
             availability = CalendarContract.Instances.AVAILABILITY_FREE,
         )
 
@@ -186,10 +198,9 @@ class CalendarContractEventReaderTest {
         // Closes the locale gap on devices that expose the eventType column:
         // the title's not English-shaped but the row carries the explicit type.
         provider.calendars[50L] = "user@gmail.com"
-        provider.instances += FakeInstance(
+        provider.instances += allDayInstance(
             calendarId = 50L,
             title = "Anniversaire de Marie",
-            allDay = true,
             eventType = CalendarEventClassifier.EVENT_TYPE_BIRTHDAY,
         )
 
@@ -207,10 +218,9 @@ class CalendarContractEventReaderTest {
         // entirely instead of degrading to title-regex-only birthday detection.
         provider.exposeEventTypeColumn = false
         provider.calendars[60L] = "user@gmail.com"
-        provider.instances += FakeInstance(
+        provider.instances += allDayInstance(
             calendarId = 60L,
             title = "Alice's birthday",
-            allDay = true,
         )
         provider.instances += FakeInstance(
             calendarId = 60L,
@@ -225,6 +235,27 @@ class CalendarContractEventReaderTest {
         events shouldHaveSize 2
         events.first { it.title == "Alice's birthday" }.kind shouldBe EventKind.BIRTHDAY
         events.first { it.title == "Lunch with Sam" }.kind shouldBe EventKind.NORMAL
+    }
+
+    @Test
+    fun `yesterday's all-day birthday does not leak into today's query in a UTC-east zone`(): Unit = runBlocking {
+        // CalendarContract.Instances returns events whose [begin, end] overlap the
+        // query window. All-day rows are stored as UTC midnight-to-midnight, so for
+        // a London user (BST = UTC+1) yesterday's all-day event (end = today UTC
+        // midnight) overlaps the start of today's local-day query window by 1 hour.
+        // Without filtering by UTC date, yesterday's birthday wins the BEGIN-ASC sort
+        // and themes today's outfit instead of an actual today birthday.
+        val london = ZoneId.of("Europe/London")
+        val today = LocalDate.of(2026, 5, 18)
+        provider.calendars[80L] = "user@gmail.com"
+        provider.instances += allDayInstance(80L, "Yesterday's birthday", forDate = today.minusDays(1))
+        provider.instances += allDayInstance(80L, "Test's birthday", forDate = today)
+
+        val events = CalendarContractEventReader(context).eventsForDay(today, london)
+
+        events shouldHaveSize 1
+        events[0].title shouldBe "Test's birthday"
+        events[0].kind shouldBe EventKind.BIRTHDAY
     }
 
     @Test

@@ -167,9 +167,25 @@ Reload MQTT (Developer Tools → YAML → Reload MQTT) or restart HA so
 the entities appear as `camera.clothescast_today_outfit` and
 `camera.clothescast_tonight_outfit`.
 
-Then find each entity's access token in Developer Tools → States →
-search `camera.clothescast` → open Details. Copy the `access_token`
-value — you'll need it in the automation below.
+Then find the Cast **device ID** for the Hub you want to push to:
+Settings → Devices & Services → **Google Cast** → tap your Hub —
+the browser URL bar now shows `…/config/devices/device/<id>`. Copy
+the hex string after `/device/` — that's what the automation will
+target.
+
+> **Why device, not entity?** Audio play_media on a Nest Hub works
+> fine targeted at the Hub's `media_player.*` entity, but images
+> only render when the action targets the underlying *device*. HA's
+> Cast integration routes image content through a separate
+> device-level Cast API; `entity_id:` targeting silently no-ops on
+> the display (the action "succeeds", the picture never appears).
+> If you ever see "URL works in a browser, image stays blank on the
+> Hub", swapping `entity_id:` for `device_id:` is the fix.
+
+You don't need to copy the camera entity's `access_token` — the
+automation pulls it dynamically with `state_attr(…, 'access_token')`
+at fire-time, so token rotation across HA restarts is handled
+automatically.
 
 ### Automation to push the image to the Hub
 
@@ -187,30 +203,30 @@ conditions: []
 actions:
   - action: media_player.play_media
     target:
-      entity_id: media_player.kitchen_hub
+      device_id: <your-hub-device-id>
     data:
-      media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
+      media_content_id: >-
+        http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token={{
+        state_attr('camera.clothescast_today_outfit', 'access_token') }}
       media_content_type: image/png
 ```
 
-Replace `media_player.kitchen_hub` with your actual Nest Hub entity ID
-(find it under Settings → Devices & Services → Google Cast),
-`192.168.x.x` with your HA instance's local IP address, and
-`<access_token>` with the token you copied from the entity details.
+Replace `<your-hub-device-id>` with the device ID you copied above
+and `192.168.x.x` with your HA instance's local IP address. The
+`access_token` template is resolved at fire-time, so you don't paste
+a captured value — HA reads the live attribute off the camera entity
+each time the automation runs.
 
 **Use the IP address, not `homeassistant.local`.** mDNS does not
 resolve across VLANs or subnets, so the Hub will fail to fetch the
 image if you use a hostname. The IP address works regardless of network
 topology as long as the Hub can reach your HA instance on port 8123.
 
-The access token is long-lived and stable across refreshes — unlike the
-`entity_picture` session token it does not rotate on each payload
-change, so you only need to paste it once. You can combine this action
-with Option A/B/C below in a single automation so the Hub shows the
-picture *and* speaks the forecast — either at the same moment, or
-serially (speak first, then show the picture). See "Chaining the
-spoken forecast and the outfit image" further down for the YAML
-shape.
+You can combine this action with Option A/B/C below in a single
+automation so the Hub shows the picture *and* speaks the forecast —
+either at the same moment, or serially (speak first, then show the
+picture). See "Chaining the spoken forecast and the outfit image"
+further down for the YAML shape.
 
 > **Note on external URLs.** If your Nest Hub cannot reach your HA
 > instance's local IP directly, use HA's external URL
@@ -247,17 +263,20 @@ Three things to know before you wire anything up:
   Device TTS, etc.), an HA automation playing the cached file will
   speak **yesterday's** briefing rather than staying silent. The
   simplest HA-side guard is a template condition gating on the prose
-  sensor's `last_changed` being recent — prose publishes on every
-  successful refresh, so:
+  sensor's `last_updated` being recent — prose publishes on every
+  successful refresh, and `last_updated` advances on every MQTT
+  receive (unlike `last_changed`, which only fires when the state
+  *value* changes and would silently reject a fresh WAV on a
+  back-to-back identical briefing):
 
   ```yaml
   conditions:
     - condition: template
       value_template: >
-        {{ (now() - states.sensor.clothescast_today.last_changed).total_seconds() < 1800 }}
+        {{ (now() - states.sensor.clothescast_today.last_updated).total_seconds() < 1800 }}
   ```
 
-  catches the "ClothesCast didn't fire at all" case. It does **not**
+  This catches the "ClothesCast didn't fire at all" case. It does **not**
   catch the "refreshed but audio missing" case (prose updates, audio
   doesn't) — for that, the cleanest fix is at the publisher, and
   there's currently no app-side flag to detect it from HA. If matching
@@ -679,9 +698,11 @@ actions:
         - Kitchen
   - action: media_player.play_media
     target:
-      entity_id: media_player.kitchen_hub
+      device_id: <your-hub-device-id>
     data:
-      media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
+      media_content_id: >-
+        http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token={{
+        state_attr('camera.clothescast_today_outfit', 'access_token') }}
       media_content_type: image/png
 ```
 
@@ -719,9 +740,11 @@ actions:
   # 3. Push the outfit picture.
   - action: media_player.play_media
     target:
-      entity_id: media_player.kitchen_hub
+      device_id: <your-hub-device-id>
     data:
-      media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
+      media_content_id: >-
+        http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token={{
+        state_attr('camera.clothescast_today_outfit', 'access_token') }}
       media_content_type: image/png
 ```
 
@@ -765,9 +788,11 @@ actions:
   # 3. Push the outfit picture.
   - action: media_player.play_media
     target:
-      entity_id: media_player.kitchen_hub
+      device_id: <your-hub-device-id>
     data:
-      media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
+      media_content_id: >-
+        http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token={{
+        state_attr('camera.clothescast_today_outfit', 'access_token') }}
       media_content_type: image/png
 ```
 

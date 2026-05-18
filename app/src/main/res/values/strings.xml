@@ -1087,10 +1087,17 @@
          turn it off without scrubbing app data. -->
     <string name="settings_holidays_source_all">All countries</string>
 
-    <!-- Deep-link buttons rendered under each top-section checkbox. -->
-    <string name="settings_holidays_link_region_settings">Region settings</string>
-    <string name="settings_holidays_link_location_settings">Location settings</string>
-    <string name="settings_holidays_link_calendar_settings">Calendar settings</string>
+    <!-- Visible label on the deep-link button on each top-section row that
+         has an associated settings sub-page. Kept short so the button fits
+         on the same row as the checkbox + label even on narrow displays;
+         the row label visually disambiguates which "Settings" the button
+         opens. Accessible name is overridden per-button via the *_a11y
+         strings below so screen readers (TalkBack / Voice Access) hear a
+         unique action for each row. -->
+    <string name="settings_holidays_link_settings">Settings</string>
+    <string name="settings_holidays_link_region_settings_a11y">Region settings</string>
+    <string name="settings_holidays_link_location_settings_a11y">Location settings</string>
+    <string name="settings_holidays_link_calendar_settings_a11y">Calendar settings</string>
 
     <!-- Placeholder body for the Calendar Holidays / Birthdays collapsibles
          (first pass — real per-event listing + overrides land in a follow-up). -->

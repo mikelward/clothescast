@@ -39,6 +39,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -173,7 +175,8 @@ internal fun HolidaysContent(
                         ),
                         checked = holidayCountrySelection.home,
                         onCheckedChange = onSetCountryHome,
-                        linkLabel = stringResource(R.string.settings_holidays_link_region_settings),
+                        linkLabel = stringResource(R.string.settings_holidays_link_settings),
+                        linkContentDescription = stringResource(R.string.settings_holidays_link_region_settings_a11y),
                         onLinkClick = onNavigateToRegionSettings,
                     )
                     SourceRow(
@@ -184,7 +187,8 @@ internal fun HolidaysContent(
                         ),
                         checked = holidayCountrySelection.current,
                         onCheckedChange = onSetCountryCurrent,
-                        linkLabel = stringResource(R.string.settings_holidays_link_location_settings),
+                        linkLabel = stringResource(R.string.settings_holidays_link_settings),
+                        linkContentDescription = stringResource(R.string.settings_holidays_link_location_settings_a11y),
                         onLinkClick = onNavigateToLocationSettings,
                     )
                     SourceRow(
@@ -197,7 +201,8 @@ internal fun HolidaysContent(
                         checked = themeFromCalendarHolidays,
                         onSetChecked = onSetThemeFromCalendarHolidays,
                         onPermissionRechecked = onCalendarPermissionRechecked,
-                        linkLabel = stringResource(R.string.settings_holidays_link_calendar_settings),
+                        linkLabel = stringResource(R.string.settings_holidays_link_settings),
+                        linkContentDescription = stringResource(R.string.settings_holidays_link_calendar_settings_a11y),
                         onLinkClick = onNavigateToCalendarSettings,
                     )
                     CalendarSourceRow(
@@ -205,7 +210,8 @@ internal fun HolidaysContent(
                         checked = themeFromCalendarBirthdays,
                         onSetChecked = onSetThemeFromCalendarBirthdays,
                         onPermissionRechecked = onCalendarPermissionRechecked,
-                        linkLabel = stringResource(R.string.settings_holidays_link_calendar_settings),
+                        linkLabel = stringResource(R.string.settings_holidays_link_settings),
+                        linkContentDescription = stringResource(R.string.settings_holidays_link_calendar_settings_a11y),
                         onLinkClick = onNavigateToCalendarSettings,
                     )
                     // Legacy "All countries" toggle, conditionally rendered so
@@ -567,10 +573,15 @@ private fun Collection<String>.sortedForDisplay(
 }
 
 /**
- * Top-section toggle row: a checkbox + an optional indented deep-link
- * button below it. Used for the Region / Location / Global rows in the
- * sources card. Calendar-sourced rows use [CalendarSourceRow] instead
- * since they need permission-prompt + revocation-warning behaviour.
+ * Top-section toggle row: a checkbox + label, with an optional trailing
+ * deep-link button right-aligned on the same row. Used for the Region /
+ * Location / Global rows in the sources card. Calendar-sourced rows use
+ * [CalendarSourceRow] instead since they need permission-prompt +
+ * revocation-warning behaviour.
+ *
+ * The label takes `weight(1f)` so on narrow displays / long country
+ * names it ellipsises before the trailing button gets squeezed off
+ * (e.g. "Region (United Kingdom)" → "Region (United Kingd…)").
  */
 @Composable
 private fun SourceRow(
@@ -578,18 +589,57 @@ private fun SourceRow(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     linkLabel: String? = null,
+    linkContentDescription: String? = null,
     onLinkClick: (() -> Unit)? = null,
 ) {
-    Column {
-        CheckboxRow(label = label, checked = checked, onCheckedChange = onCheckedChange)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Checkbox(checked = checked, onCheckedChange = onCheckedChange)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .weight(1f),
+            maxLines = 1,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+        )
         if (linkLabel != null && onLinkClick != null) {
-            TextButton(
+            SettingsLinkButton(
+                label = linkLabel,
+                contentDescription = linkContentDescription,
                 onClick = onLinkClick,
-                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
-                modifier = Modifier.padding(start = 56.dp),
-            ) { Text(linkLabel) }
+            )
         }
     }
+}
+
+/**
+ * `TextButton` whose visible text is intentionally short (just "Settings")
+ * but whose accessible name is overridden via [Modifier.semantics] when a
+ * [contentDescription] is supplied. Lets TalkBack / Voice Access users
+ * distinguish the four otherwise-identical Settings buttons in the
+ * Celebrations sources card (Region / Location / Calendar Holidays /
+ * Calendar Birthdays).
+ */
+@Composable
+private fun SettingsLinkButton(
+    label: String,
+    contentDescription: String?,
+    onClick: () -> Unit,
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = if (contentDescription != null) {
+            Modifier.semantics(mergeDescendants = true) {
+                this.contentDescription = contentDescription
+            }
+        } else {
+            Modifier
+        },
+    ) { Text(label) }
 }
 
 /**
@@ -617,6 +667,7 @@ private fun CalendarSourceRow(
     onSetChecked: (Boolean) -> Unit,
     onPermissionRechecked: () -> Unit,
     linkLabel: String,
+    linkContentDescription: String,
     onLinkClick: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -648,24 +699,37 @@ private fun CalendarSourceRow(
     }
 
     Column {
-        CheckboxRow(
-            label = label,
-            checked = checked,
-            onCheckedChange = { wantsOn ->
-                if (!wantsOn) {
-                    onSetChecked(false)
-                } else if (permissionGranted) {
-                    onSetChecked(true)
-                } else {
-                    launcher.launch(CalendarPermission.MANIFEST_PERMISSION)
-                }
-            },
-        )
-        TextButton(
-            onClick = onLinkClick,
-            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
-            modifier = Modifier.padding(start = 56.dp),
-        ) { Text(linkLabel) }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Checkbox(
+                checked = checked,
+                onCheckedChange = { wantsOn ->
+                    if (!wantsOn) {
+                        onSetChecked(false)
+                    } else if (permissionGranted) {
+                        onSetChecked(true)
+                    } else {
+                        launcher.launch(CalendarPermission.MANIFEST_PERMISSION)
+                    }
+                },
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .weight(1f),
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            )
+            SettingsLinkButton(
+                label = linkLabel,
+                contentDescription = linkContentDescription,
+                onClick = onLinkClick,
+            )
+        }
         if (checked && !permissionGranted) {
             TextButton(
                 onClick = { launcher.launch(CalendarPermission.MANIFEST_PERMISSION) },

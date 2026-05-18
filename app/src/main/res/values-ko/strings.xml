@@ -788,4 +788,100 @@ displayed label localizes.
     <string name="settings_forecasters_jma_subtitle">일본 — 아시아 태평양에 강함. 오픈 피드에서는 3~6시간 간격.</string>
     <string name="settings_forecasters_bom">BOM</string>
     <string name="settings_forecasters_bom_subtitle">호주 — 점검 중입니다. 가능한 한 빨리 복구됩니다.</string>
+
+    <!-- Settings root — Holidays row and subtitle. -->
+    <string name="settings_root_holidays">공휴일</string>
+    <string name="settings_root_holidays_subtitle">테마 색상 및 배너</string>
+
+    <!--
+    Holidays sub-page — page title, country picker controls,
+    expand/collapse toggles, and per-holiday override states.
+    -->
+    <string name="settings_holidays_title">공휴일</string>
+    <string name="settings_holiday_country_home">홈 (%1$s)</string>
+    <string name="settings_holiday_country_current">현재 위치 (%1$s)</string>
+    <string name="settings_holiday_country_unknown">알 수 없음</string>
+    <string name="settings_holiday_country_global_label">글로벌</string>
+    <string name="settings_holiday_country_all_label">전체</string>
+    <string name="settings_holiday_all_section_title">전체</string>
+    <string name="settings_holidays_expand">펼치기</string>
+    <string name="settings_holidays_collapse">접기</string>
+    <string name="settings_holiday_override_auto_on">자동 (켜짐)</string>
+    <string name="settings_holiday_override_auto_off">자동 (꺼짐)</string>
+    <string name="settings_holiday_override_on">켜짐</string>
+    <string name="settings_holiday_override_off">꺼짐</string>
+
+    <!-- Country names for the holiday country picker. -->
+    <string name="settings_holiday_country_at">오스트리아</string>
+    <string name="settings_holiday_country_au">호주</string>
+    <string name="settings_holiday_country_br">브라질</string>
+    <string name="settings_holiday_country_ca">캐나다</string>
+    <string name="settings_holiday_country_de">독일</string>
+    <string name="settings_holiday_country_es">스페인</string>
+    <string name="settings_holiday_country_fr">프랑스</string>
+    <string name="settings_holiday_country_gb">영국</string>
+    <string name="settings_holiday_country_hr">크로아티아</string>
+    <string name="settings_holiday_country_ie">아일랜드</string>
+    <string name="settings_holiday_country_it">이탈리아</string>
+    <string name="settings_holiday_country_jp">일본</string>
+    <string name="settings_holiday_country_kr">대한민국</string>
+    <string name="settings_holiday_country_nz">뉴질랜드</string>
+    <string name="settings_holiday_country_us">미국</string>
+
+    <!-- Holiday display names (shown in Settings → Holidays list). -->
+    <string name="holiday_name_new_years_day">새해 첫날</string>
+    <string name="holiday_name_epiphany">주현절</string>
+    <string name="holiday_name_japan_coming_of_age_day">성인의 날 (일본)</string>
+    <string name="holiday_name_mlk_day">마틴 루서 킹의 날</string>
+    <string name="holiday_name_burns_night">번스 나이트</string>
+    <string name="holiday_name_australia_day">호주의 날</string>
+    <string name="holiday_name_waitangi_day">와이탕이 데이</string>
+    <string name="holiday_name_valentines_day">발렌타인데이</string>
+    <string name="holiday_name_st_davids_day">성 다윗의 날</string>
+    <string name="holiday_name_korean_independence_movement_day">삼일절</string>
+    <string name="holiday_name_st_patricks_day">성 패트릭의 날</string>
+    <string name="holiday_name_uk_mothering_sunday">어머니 주일 (영국)</string>
+    <string name="holiday_name_good_friday">성금요일</string>
+    <string name="holiday_name_easter_sunday">부활주일</string>
+    <string name="holiday_name_easter_monday">부활절 월요일</string>
+    <string name="holiday_name_st_georges_day">성 조지의 날</string>
+    <string name="holiday_name_anzac_day">안작 데이</string>
+    <string name="holiday_name_labour_day">노동절</string>
+    <string name="holiday_name_uk_early_may_bank_holiday">5월 초 공휴일 (영국)</string>
+    <string name="holiday_name_mothers_day">어버이날</string>
+    <string name="holiday_name_japan_greenery_day">녹색의 날 (일본)</string>
+    <string name="holiday_name_croatia_statehood_day">크로아티아 건국기념일</string>
+    <string name="holiday_name_us_memorial_day">전몰장병 추모일 (미국)</string>
+    <string name="holiday_name_uk_spring_bank_holiday">봄 공휴일 (영국)</string>
+    <string name="holiday_name_italy_republic_day">이탈리아 공화국의 날</string>
+    <string name="holiday_name_korean_memorial_day">현충일</string>
+    <string name="holiday_name_uk_kings_birthday">국왕 생일</string>
+    <string name="holiday_name_juneteenth">준틴스</string>
+    <string name="holiday_name_fathers_day_jun">아버지의 날 (6월)</string>
+    <string name="holiday_name_canada_day">캐나다 데이</string>
+    <string name="holiday_name_us_independence_day">미국 독립기념일</string>
+    <string name="holiday_name_bastille_day">바스티유 데이</string>
+    <string name="holiday_name_japan_marine_day">바다의 날 (일본)</string>
+    <string name="holiday_name_croatia_victory_day">크로아티아 전승기념일</string>
+    <string name="holiday_name_uk_summer_bank_holiday">여름 공휴일 (영국)</string>
+    <string name="holiday_name_korean_liberation_day">광복절</string>
+    <string name="holiday_name_assumption">성모 승천 대축일</string>
+    <string name="holiday_name_fathers_day_sep">아버지의 날 (9월)</string>
+    <string name="holiday_name_brazil_independence_day">브라질 독립기념일</string>
+    <string name="holiday_name_german_unity_day">독일 통일의 날</string>
+    <string name="holiday_name_croatia_independence_day">크로아티아 독립기념일</string>
+    <string name="holiday_name_korean_hangeul_day">한글날</string>
+    <string name="holiday_name_canadian_thanksgiving">캐나다 추수감사절</string>
+    <string name="holiday_name_spain_hispanic_day">스페인 국경일</string>
+    <string name="holiday_name_austria_national_day">오스트리아 국경일</string>
+    <string name="holiday_name_halloween">핼러윈</string>
+    <string name="holiday_name_all_saints_day">만성절</string>
+    <string name="holiday_name_japan_culture_day">문화의 날 (일본)</string>
+    <string name="holiday_name_bonfire_night">가이 포크스의 밤</string>
+    <string name="holiday_name_remembrance_day">현충일 / 재향군인의 날</string>
+    <string name="holiday_name_us_thanksgiving">미국 추수감사절</string>
+    <string name="holiday_name_st_andrews_day">성 앤드루스의 날</string>
+    <string name="holiday_name_immaculate_conception">원죄 없는 잉태</string>
+    <string name="holiday_name_christmas_day">크리스마스</string>
+    <string name="holiday_name_boxing_day">박싱 데이</string>
 </resources>

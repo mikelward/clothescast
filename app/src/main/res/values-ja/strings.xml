@@ -784,4 +784,100 @@ the displayed label localizes.
     <string name="settings_forecasters_jma_subtitle">日本（気象庁）— アジア・太平洋に強い。オープンフィードでは3〜6時間ごと。</string>
     <string name="settings_forecasters_bom">BOM</string>
     <string name="settings_forecasters_bom_subtitle">オーストラリア — メンテナンス中。できるだけ早く復旧する予定です。</string>
+
+    <!-- Settings root — Holidays row and subtitle. -->
+    <string name="settings_root_holidays">祝日</string>
+    <string name="settings_root_holidays_subtitle">テーマカラーとバナー</string>
+
+    <!--
+    Holidays sub-page — page title, country picker controls,
+    expand/collapse toggles, and per-holiday override states.
+    -->
+    <string name="settings_holidays_title">祝日</string>
+    <string name="settings_holiday_country_home">ホーム（%1$s）</string>
+    <string name="settings_holiday_country_current">現在地（%1$s）</string>
+    <string name="settings_holiday_country_unknown">不明</string>
+    <string name="settings_holiday_country_global_label">グローバル</string>
+    <string name="settings_holiday_country_all_label">すべて</string>
+    <string name="settings_holiday_all_section_title">すべて</string>
+    <string name="settings_holidays_expand">展開</string>
+    <string name="settings_holidays_collapse">折りたたむ</string>
+    <string name="settings_holiday_override_auto_on">自動（オン）</string>
+    <string name="settings_holiday_override_auto_off">自動（オフ）</string>
+    <string name="settings_holiday_override_on">オン</string>
+    <string name="settings_holiday_override_off">オフ</string>
+
+    <!-- Country names for the holiday country picker. -->
+    <string name="settings_holiday_country_at">オーストリア</string>
+    <string name="settings_holiday_country_au">オーストラリア</string>
+    <string name="settings_holiday_country_br">ブラジル</string>
+    <string name="settings_holiday_country_ca">カナダ</string>
+    <string name="settings_holiday_country_de">ドイツ</string>
+    <string name="settings_holiday_country_es">スペイン</string>
+    <string name="settings_holiday_country_fr">フランス</string>
+    <string name="settings_holiday_country_gb">イギリス</string>
+    <string name="settings_holiday_country_hr">クロアチア</string>
+    <string name="settings_holiday_country_ie">アイルランド</string>
+    <string name="settings_holiday_country_it">イタリア</string>
+    <string name="settings_holiday_country_jp">日本</string>
+    <string name="settings_holiday_country_kr">韓国</string>
+    <string name="settings_holiday_country_nz">ニュージーランド</string>
+    <string name="settings_holiday_country_us">アメリカ</string>
+
+    <!-- Holiday display names (shown in Settings → Holidays list). -->
+    <string name="holiday_name_new_years_day">元日</string>
+    <string name="holiday_name_epiphany">公現祭</string>
+    <string name="holiday_name_japan_coming_of_age_day">成人の日</string>
+    <string name="holiday_name_mlk_day">キング牧師記念日</string>
+    <string name="holiday_name_burns_night">バーンズナイト</string>
+    <string name="holiday_name_australia_day">オーストラリアデー</string>
+    <string name="holiday_name_waitangi_day">ワイタンギデー</string>
+    <string name="holiday_name_valentines_day">バレンタインデー</string>
+    <string name="holiday_name_st_davids_day">聖デイビッズの日</string>
+    <string name="holiday_name_korean_independence_movement_day">三一節（韓国）</string>
+    <string name="holiday_name_st_patricks_day">聖パトリックの日</string>
+    <string name="holiday_name_uk_mothering_sunday">母の日（英国）</string>
+    <string name="holiday_name_good_friday">聖金曜日</string>
+    <string name="holiday_name_easter_sunday">復活の主日</string>
+    <string name="holiday_name_easter_monday">復活節月曜日</string>
+    <string name="holiday_name_st_georges_day">聖ジョージの日</string>
+    <string name="holiday_name_anzac_day">アンザックデー</string>
+    <string name="holiday_name_labour_day">労働祭</string>
+    <string name="holiday_name_uk_early_may_bank_holiday">5月初旬の祝日（英国）</string>
+    <string name="holiday_name_mothers_day">母の日</string>
+    <string name="holiday_name_japan_greenery_day">みどりの日</string>
+    <string name="holiday_name_croatia_statehood_day">クロアチア建国記念日</string>
+    <string name="holiday_name_us_memorial_day">戦没将兵記念日（米）</string>
+    <string name="holiday_name_uk_spring_bank_holiday">春季祝日（英国）</string>
+    <string name="holiday_name_italy_republic_day">共和国記念日（伊）</string>
+    <string name="holiday_name_korean_memorial_day">顕忠日（韓国）</string>
+    <string name="holiday_name_uk_kings_birthday">国王誕生日</string>
+    <string name="holiday_name_juneteenth">ジューンティーンス</string>
+    <string name="holiday_name_fathers_day_jun">父の日（6月）</string>
+    <string name="holiday_name_canada_day">カナダデー</string>
+    <string name="holiday_name_us_independence_day">独立記念日（米）</string>
+    <string name="holiday_name_bastille_day">フランス革命記念日</string>
+    <string name="holiday_name_japan_marine_day">海の日</string>
+    <string name="holiday_name_croatia_victory_day">戦勝記念日（クロアチア）</string>
+    <string name="holiday_name_uk_summer_bank_holiday">夏季祝日（英国）</string>
+    <string name="holiday_name_korean_liberation_day">光復節（韓国）</string>
+    <string name="holiday_name_assumption">聖母被昇天</string>
+    <string name="holiday_name_fathers_day_sep">父の日（9月）</string>
+    <string name="holiday_name_brazil_independence_day">ブラジル独立記念日</string>
+    <string name="holiday_name_german_unity_day">ドイツ統一の日</string>
+    <string name="holiday_name_croatia_independence_day">独立記念日（クロアチア）</string>
+    <string name="holiday_name_korean_hangeul_day">ハングルの日（韓国）</string>
+    <string name="holiday_name_canadian_thanksgiving">カナダの感謝祭</string>
+    <string name="holiday_name_spain_hispanic_day">スペイン国民の日</string>
+    <string name="holiday_name_austria_national_day">国民の日（オーストリア）</string>
+    <string name="holiday_name_halloween">ハロウィン</string>
+    <string name="holiday_name_all_saints_day">諸聖人の日</string>
+    <string name="holiday_name_japan_culture_day">文化の日</string>
+    <string name="holiday_name_bonfire_night">ガイ・フォークスの夜</string>
+    <string name="holiday_name_remembrance_day">戦没者追悼記念日 / 退役軍人の日</string>
+    <string name="holiday_name_us_thanksgiving">感謝祭（米）</string>
+    <string name="holiday_name_st_andrews_day">聖アンドリューの日</string>
+    <string name="holiday_name_immaculate_conception">無原罪の御宿り</string>
+    <string name="holiday_name_christmas_day">クリスマス</string>
+    <string name="holiday_name_boxing_day">ボクシングデー</string>
 </resources>

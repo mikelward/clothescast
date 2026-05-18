@@ -792,4 +792,100 @@ label localises.
     <string name="settings_forecasters_jma_subtitle">日本——亞太地區表現出色。開放資料來源為每 3 至 6 小時。</string>
     <string name="settings_forecasters_bom">BOM</string>
     <string name="settings_forecasters_bom_subtitle">澳洲——維護中，將盡快恢復。</string>
+
+    <!-- Settings root — Holidays row and subtitle. -->
+    <string name="settings_root_holidays">節日</string>
+    <string name="settings_root_holidays_subtitle">主題色彩和橫幅</string>
+
+    <!--
+    Holidays sub-page — page title, country picker controls,
+    expand/collapse toggles, and per-holiday override states.
+    -->
+    <string name="settings_holidays_title">節日</string>
+    <string name="settings_holiday_country_home">家鄉（%1$s）</string>
+    <string name="settings_holiday_country_current">目前位置（%1$s）</string>
+    <string name="settings_holiday_country_unknown">未知</string>
+    <string name="settings_holiday_country_global_label">全球</string>
+    <string name="settings_holiday_country_all_label">全部</string>
+    <string name="settings_holiday_all_section_title">全部</string>
+    <string name="settings_holidays_expand">展開</string>
+    <string name="settings_holidays_collapse">收合</string>
+    <string name="settings_holiday_override_auto_on">自動（開啟）</string>
+    <string name="settings_holiday_override_auto_off">自動（關閉）</string>
+    <string name="settings_holiday_override_on">開啟</string>
+    <string name="settings_holiday_override_off">關閉</string>
+
+    <!-- Country names for the holiday country picker. -->
+    <string name="settings_holiday_country_at">奧地利</string>
+    <string name="settings_holiday_country_au">澳洲</string>
+    <string name="settings_holiday_country_br">巴西</string>
+    <string name="settings_holiday_country_ca">加拿大</string>
+    <string name="settings_holiday_country_de">德國</string>
+    <string name="settings_holiday_country_es">西班牙</string>
+    <string name="settings_holiday_country_fr">法國</string>
+    <string name="settings_holiday_country_gb">英國</string>
+    <string name="settings_holiday_country_hr">克羅埃西亞</string>
+    <string name="settings_holiday_country_ie">愛爾蘭</string>
+    <string name="settings_holiday_country_it">義大利</string>
+    <string name="settings_holiday_country_jp">日本</string>
+    <string name="settings_holiday_country_kr">韓國</string>
+    <string name="settings_holiday_country_nz">紐西蘭</string>
+    <string name="settings_holiday_country_us">美國</string>
+
+    <!-- Holiday display names (shown in Settings → Holidays list). -->
+    <string name="holiday_name_new_years_day">元旦</string>
+    <string name="holiday_name_epiphany">主顯節</string>
+    <string name="holiday_name_japan_coming_of_age_day">成人節（日本）</string>
+    <string name="holiday_name_mlk_day">馬丁·路德·金紀念日</string>
+    <string name="holiday_name_burns_night">彭斯之夜</string>
+    <string name="holiday_name_australia_day">澳洲日</string>
+    <string name="holiday_name_waitangi_day">懷唐伊日</string>
+    <string name="holiday_name_valentines_day">情人節</string>
+    <string name="holiday_name_st_davids_day">聖大衛節</string>
+    <string name="holiday_name_korean_independence_movement_day">三一節（韓國）</string>
+    <string name="holiday_name_st_patricks_day">聖派翠克節</string>
+    <string name="holiday_name_uk_mothering_sunday">母親節（英國）</string>
+    <string name="holiday_name_good_friday">耶穌受難日</string>
+    <string name="holiday_name_easter_sunday">復活節</string>
+    <string name="holiday_name_easter_monday">復活節星期一</string>
+    <string name="holiday_name_st_georges_day">聖喬治節</string>
+    <string name="holiday_name_anzac_day">澳紐軍團紀念日</string>
+    <string name="holiday_name_labour_day">勞動節</string>
+    <string name="holiday_name_uk_early_may_bank_holiday">五月初公假日（英國）</string>
+    <string name="holiday_name_mothers_day">母親節</string>
+    <string name="holiday_name_japan_greenery_day">綠之日（日本）</string>
+    <string name="holiday_name_croatia_statehood_day">克羅埃西亞建國紀念日</string>
+    <string name="holiday_name_us_memorial_day">陣亡將士紀念日（美國）</string>
+    <string name="holiday_name_uk_spring_bank_holiday">春季公假日（英國）</string>
+    <string name="holiday_name_italy_republic_day">義大利共和國紀念日</string>
+    <string name="holiday_name_korean_memorial_day">顯忠日（韓國）</string>
+    <string name="holiday_name_uk_kings_birthday">國王生日</string>
+    <string name="holiday_name_juneteenth">六月節</string>
+    <string name="holiday_name_fathers_day_jun">父親節（6月）</string>
+    <string name="holiday_name_canada_day">加拿大日</string>
+    <string name="holiday_name_us_independence_day">獨立日（美國）</string>
+    <string name="holiday_name_bastille_day">法國國慶日</string>
+    <string name="holiday_name_japan_marine_day">海之日（日本）</string>
+    <string name="holiday_name_croatia_victory_day">克羅埃西亞勝利紀念日</string>
+    <string name="holiday_name_uk_summer_bank_holiday">夏季公假日（英國）</string>
+    <string name="holiday_name_korean_liberation_day">光復節（韓國）</string>
+    <string name="holiday_name_assumption">聖母升天節</string>
+    <string name="holiday_name_fathers_day_sep">父親節（9月）</string>
+    <string name="holiday_name_brazil_independence_day">巴西獨立紀念日</string>
+    <string name="holiday_name_german_unity_day">德國統一日</string>
+    <string name="holiday_name_croatia_independence_day">克羅埃西亞獨立紀念日</string>
+    <string name="holiday_name_korean_hangeul_day">韓文節（韓國）</string>
+    <string name="holiday_name_canadian_thanksgiving">加拿大感恩節</string>
+    <string name="holiday_name_spain_hispanic_day">西班牙國慶日</string>
+    <string name="holiday_name_austria_national_day">奧地利國慶日</string>
+    <string name="holiday_name_halloween">萬聖節前夕</string>
+    <string name="holiday_name_all_saints_day">萬聖節</string>
+    <string name="holiday_name_japan_culture_day">文化節（日本）</string>
+    <string name="holiday_name_bonfire_night">蓋伊·福克斯之夜</string>
+    <string name="holiday_name_remembrance_day">陣亡將士紀念日 / 退伍軍人節</string>
+    <string name="holiday_name_us_thanksgiving">感恩節（美國）</string>
+    <string name="holiday_name_st_andrews_day">聖安德魯節</string>
+    <string name="holiday_name_immaculate_conception">聖母無染原罪</string>
+    <string name="holiday_name_christmas_day">聖誕節</string>
+    <string name="holiday_name_boxing_day">節禮日</string>
 </resources>

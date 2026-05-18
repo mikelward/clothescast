@@ -856,4 +856,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_boxing_day">Buon Santo Stefano</string>
     <string name="holiday_banner_fathers_day_jun">Buona Festa del Papà</string>
     <string name="holiday_banner_fathers_day_sep">Buona Festa del Papà</string>
+    <string name="holiday_banner_italy_republic_day">Buona Festa della Repubblica</string>
+    <string name="holiday_banner_assumption">Buona Assunzione</string>
+    <string name="holiday_banner_all_saints_day">Tutti i Santi</string>
+    <string name="holiday_banner_immaculate_conception">Immacolata Concezione</string>
 </resources>

@@ -871,4 +871,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_immaculate_conception">Bonne Immaculée Conception</string>
     <string name="holiday_banner_christmas_day">Joyeux Noël</string>
     <string name="holiday_banner_boxing_day">Joyeux lendemain de Noël</string>
+    <string name="holiday_banner_bastille_day">Joyeux 14 juillet</string>
+    <string name="holiday_banner_fr_armistice_day">Souvenons-nous</string>
 </resources>

@@ -896,4 +896,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_immaculate_conception">Frohe Mariä Empfängnis</string>
     <string name="holiday_banner_christmas_day">Frohe Weihnachten</string>
     <string name="holiday_banner_boxing_day">Frohen 2. Weihnachtstag</string>
+    <string name="holiday_banner_german_unity_day">Tag der Deutschen Einheit</string>
+    <string name="holiday_banner_austria_national_day">Frohen Nationalfeiertag</string>
 </resources>

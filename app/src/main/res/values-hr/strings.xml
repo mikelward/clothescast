@@ -840,4 +840,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="holiday_banner_immaculate_conception">Sretno Bezgrješno Začeće</string>
     <string name="holiday_banner_christmas_day">Sretan Božić</string>
     <string name="holiday_banner_boxing_day">Sretan Drugi dan Božića</string>
+    <string name="holiday_banner_croatia_statehood_day">Sretan Dan državnosti</string>
+    <string name="holiday_banner_croatia_victory_day">Sretan Dan pobjede</string>
+    <string name="holiday_banner_croatia_independence_day">Sretan Dan neovisnosti</string>
 </resources>

@@ -1154,15 +1154,15 @@
          the translation. -->
     <string name="holiday_banner_new_years_day">Happy New Year</string>
     <string name="holiday_banner_epiphany">Happy Epiphany</string>
-    <string name="holiday_banner_japan_coming_of_age_day">成人の日</string>
+    <string name="holiday_banner_japan_coming_of_age_day">Happy Japanese Coming of Age Day</string>
     <string name="holiday_banner_mlk_day">Honoring Dr. King</string>
     <string name="holiday_banner_burns_night">Happy Burns Night</string>
     <string name="holiday_banner_australia_day">Happy Australia Day</string>
     <string name="holiday_banner_waitangi_day">Happy Waitangi Day</string>
     <string name="holiday_banner_valentines_day">Happy Valentine\'s Day</string>
     <string name="holiday_banner_us_presidents_day">Happy Presidents\' Day</string>
-    <string name="holiday_banner_st_davids_day">Dydd Gŵyl Dewi Hapus</string>
-    <string name="holiday_banner_korean_independence_movement_day">삼일절</string>
+    <string name="holiday_banner_st_davids_day">Happy St David\'s Day</string>
+    <string name="holiday_banner_korean_independence_movement_day">Happy Korean Independence Movement Day</string>
     <string name="holiday_banner_st_patricks_day">Happy St Patrick\'s Day</string>
     <string name="holiday_banner_uk_mothering_sunday">Happy Mothering Sunday</string>
     <string name="holiday_banner_good_friday">Good Friday</string>
@@ -1177,31 +1177,31 @@
     <string name="holiday_banner_uk_bank_holiday">Happy bank holiday</string>
     <string name="holiday_banner_uk_kings_birthday">God save the King</string>
     <string name="holiday_banner_mothers_day">Happy Mother\'s Day</string>
-    <string name="holiday_banner_japan_greenery_day">みどりの日</string>
-    <string name="holiday_banner_croatia_statehood_day">Sretan Dan državnosti</string>
+    <string name="holiday_banner_japan_greenery_day">Happy Japanese Greenery Day</string>
+    <string name="holiday_banner_croatia_statehood_day">Happy Croatian Statehood Day</string>
     <string name="holiday_banner_us_memorial_day">Honoring our fallen</string>
-    <string name="holiday_banner_italy_republic_day">Buona Festa della Repubblica</string>
-    <string name="holiday_banner_korean_memorial_day">현충일</string>
+    <string name="holiday_banner_italy_republic_day">Happy Italian Republic Day</string>
+    <string name="holiday_banner_korean_memorial_day">Honoring Korea\'s fallen</string>
     <string name="holiday_banner_juneteenth">Happy Juneteenth</string>
     <string name="holiday_banner_fathers_day_jun">Happy Father\'s Day</string>
     <string name="holiday_banner_canada_day">Happy Canada Day</string>
     <string name="holiday_banner_us_independence_day">Happy 4th of July</string>
-    <string name="holiday_banner_bastille_day">Joyeux 14 juillet</string>
-    <string name="holiday_banner_japan_marine_day">海の日</string>
-    <string name="holiday_banner_croatia_victory_day">Sretan Dan pobjede</string>
-    <string name="holiday_banner_korean_liberation_day">광복절</string>
-    <string name="holiday_banner_assumption">Buona Assunzione</string>
+    <string name="holiday_banner_bastille_day">Happy Bastille Day</string>
+    <string name="holiday_banner_japan_marine_day">Happy Japanese Marine Day</string>
+    <string name="holiday_banner_croatia_victory_day">Happy Croatian Victory Day</string>
+    <string name="holiday_banner_korean_liberation_day">Happy Korean Liberation Day</string>
+    <string name="holiday_banner_assumption">Happy Assumption Day</string>
     <string name="holiday_banner_fathers_day_sep">Happy Father\'s Day</string>
-    <string name="holiday_banner_brazil_independence_day">Feliz Dia da Independência</string>
-    <string name="holiday_banner_german_unity_day">Tag der Deutschen Einheit</string>
-    <string name="holiday_banner_croatia_independence_day">Sretan Dan neovisnosti</string>
-    <string name="holiday_banner_korean_hangeul_day">한글날</string>
+    <string name="holiday_banner_brazil_independence_day">Happy Brazilian Independence Day</string>
+    <string name="holiday_banner_german_unity_day">Happy German Unity Day</string>
+    <string name="holiday_banner_croatia_independence_day">Happy Croatian Independence Day</string>
+    <string name="holiday_banner_korean_hangeul_day">Happy Hangeul Day</string>
     <string name="holiday_banner_canadian_thanksgiving">Happy Thanksgiving</string>
-    <string name="holiday_banner_spain_hispanic_day">Feliz Día de la Hispanidad</string>
-    <string name="holiday_banner_austria_national_day">Frohen Nationalfeiertag</string>
+    <string name="holiday_banner_spain_hispanic_day">Happy Día de la Hispanidad</string>
+    <string name="holiday_banner_austria_national_day">Happy Austrian National Day</string>
     <string name="holiday_banner_halloween">Happy Halloween</string>
-    <string name="holiday_banner_all_saints_day">Tutti i Santi</string>
-    <string name="holiday_banner_japan_culture_day">文化の日</string>
+    <string name="holiday_banner_all_saints_day">Happy All Saints\' Day</string>
+    <string name="holiday_banner_japan_culture_day">Happy Japanese Culture Day</string>
     <string name="holiday_banner_bonfire_night">Remember, remember</string>
     <!-- Default banner for Nov 11 — used everywhere except countries with
          an explicit override (see HolidayTheme.bannerTextKeyByCountry). -->
@@ -1209,10 +1209,10 @@
     <!-- US-specific banner override for Nov 11. -->
     <string name="holiday_banner_us_veterans_day">Honoring our Veterans</string>
     <!-- French-specific banner override for Nov 11 (Jour de l'Armistice). -->
-    <string name="holiday_banner_fr_armistice_day">Souvenons-nous</string>
+    <string name="holiday_banner_fr_armistice_day">Lest we forget</string>
     <string name="holiday_banner_us_thanksgiving">Happy Thanksgiving</string>
     <string name="holiday_banner_st_andrews_day">Happy St Andrew\'s Day</string>
-    <string name="holiday_banner_immaculate_conception">Immacolata Concezione</string>
+    <string name="holiday_banner_immaculate_conception">Happy Immaculate Conception</string>
     <string name="holiday_banner_christmas_day">Merry Christmas</string>
     <string name="holiday_banner_boxing_day">Happy Boxing Day</string>
 </resources>

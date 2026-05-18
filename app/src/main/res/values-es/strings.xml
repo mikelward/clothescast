@@ -872,4 +872,5 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_immaculate_conception">Feliz Inmaculada Concepción</string>
     <string name="holiday_banner_christmas_day">Feliz Navidad</string>
     <string name="holiday_banner_boxing_day">Feliz Boxing Day</string>
+    <string name="holiday_banner_spain_hispanic_day">Feliz Día de la Hispanidad</string>
 </resources>

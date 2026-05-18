@@ -190,7 +190,7 @@ actions:
       entity_id: media_player.kitchen_hub
     data:
       media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
-      media_content_type: image/jpeg
+      media_content_type: image/png
 ```
 
 Replace `media_player.kitchen_hub` with your actual Nest Hub entity ID
@@ -628,11 +628,11 @@ actions:
       entity_id: media_player.kitchen_hub
     data:
       media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
-      media_content_type: image/jpeg
+      media_content_type: image/png
 ```
 
 **Serial — speak first, then show.** Cast's `media_player.play_media`
-with `image/jpeg` interrupts whatever's currently rendering, including
+with `image/png` interrupts whatever's currently rendering, including
 in-flight TTS, so for the serial pattern you wait for the speech to
 finish before pushing the picture. A fixed `delay:` sized to your
 longest spoken briefing is the simplest reliable wait, and works
@@ -668,7 +668,7 @@ actions:
       entity_id: media_player.kitchen_hub
     data:
       media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
-      media_content_type: image/jpeg
+      media_content_type: image/png
 ```
 
 **Picker — swapping in Option B or C.** Replace the step-1 action
@@ -719,7 +719,7 @@ actions:
       entity_id: media_player.kitchen_hub
     data:
       media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
-      media_content_type: image/jpeg
+      media_content_type: image/png
 ```
 
 > **Edge case — speaker was already playing music (Option B

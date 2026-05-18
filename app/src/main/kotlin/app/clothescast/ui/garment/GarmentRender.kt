@@ -18,6 +18,7 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.insight.InsightFormatter
 import java.io.ByteArrayOutputStream
+import kotlin.math.pow
 import kotlin.math.roundToInt
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas as ComposeCanvas
@@ -411,6 +412,12 @@ private const val DROPLET_PATH =
         "7.94C14.03,6.06 12.75,4.61 12.75,4.61L12,3.77Z"
 private const val DROPLET_TOP = 3.77f
 private const val DROPLET_BOTTOM = 20.23f
+// Exponent applied to (1 − fill) before scaling across the droplet's
+// y-range. < 1 raises [liquidTopY] for high fill values to compensate
+// for the teardrop's narrow tip carrying very little area — 0.7 is a
+// rough fit to the path's cumulative-area-vs-height curve so 50 % fill
+// looks ≈ 50 % blue and 85 % fill looks meaningfully less than 100 %.
+private const val DROPLET_AREA_EXPONENT = 0.7
 
 // Coloured icon palette for the outfit-card info rows. Outline reads as a
 // thin dark line against the white card; fill colours pop against it.
@@ -447,10 +454,19 @@ private fun drawThermometerIcon(canvas: Canvas, x: Int, y: Int, size: Int, fillF
  * droplet fills from the bottom upward in proportion to [fillFraction]
  * (clamped to 0..1) — at the 30 % display threshold the droplet still
  * carries a clear sliver of blue; at 100 % the whole droplet is filled.
+ *
+ * The teardrop's area is concentrated in the rounded bottom and tapers
+ * to a narrow point at the top, so a linear y-fill made high values
+ * (e.g. 85 %) read as visually ~97 % filled — only the thin tip stayed
+ * empty. The [DROPLET_AREA_EXPONENT] correction lifts [liquidTopY] so
+ * the visible blue area tracks fillFraction more closely; e.g. 85 %
+ * fill now leaves a visible empty cap, distinct from a 100 % full
+ * droplet.
  */
 private fun drawRainDropletIcon(canvas: Canvas, x: Int, y: Int, size: Int, fillFraction: Float) {
     val fill = fillFraction.coerceIn(0f, 1f)
-    val liquidTopY = DROPLET_TOP + (1f - fill) * (DROPLET_BOTTOM - DROPLET_TOP)
+    val emptyFraction = (1f - fill).toDouble().pow(DROPLET_AREA_EXPONENT).toFloat()
+    val liquidTopY = DROPLET_TOP + emptyFraction * (DROPLET_BOTTOM - DROPLET_TOP)
     drawFillableInfoIcon(
         canvas = canvas,
         x = x,

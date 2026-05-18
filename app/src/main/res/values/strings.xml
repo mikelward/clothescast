@@ -1068,33 +1068,39 @@
          Each toggle prompts for READ_CALENDAR permission when first
          enabled; the inline chip below appears if permission is later
          revoked from system Settings. -->
-    <!-- One-line intro at the top of the Celebrations settings page, above the
-         country picker and the calendar-sourced theming checkboxes. -->
-    <string name="settings_holidays_intro">Theme today\'s outfit on holidays and birthdays — from a curated list of public holidays plus events in your synced calendars.</string>
+    <!-- Source-of-holidays toggles at the top of the Celebrations page.
+         Region/Location's label includes the current country in parens
+         (resolved at render). Global has no country qualifier. The two
+         "Calendar" toggles each carry a deep-link to Calendar settings;
+         tapping the checkbox when permission is missing prompts for
+         READ_CALENDAR. -->
+    <string name="settings_holidays_source_region">Region (%1$s)</string>
+    <string name="settings_holidays_source_location">Location (%1$s)</string>
+    <string name="settings_holidays_source_global">Global</string>
+    <string name="settings_holidays_source_calendar_holidays">Calendar Holidays</string>
+    <string name="settings_holidays_source_calendar_birthdays">Calendar Birthdays</string>
 
-    <!-- Labels for the two calendar-sourced theming checkboxes that sit
-         alongside Home / Current location / Global / All in the country card. -->
-    <string name="settings_holidays_my_calendar_holidays">My calendar holidays</string>
-    <string name="settings_holidays_my_calendar_birthdays">My calendar birthdays</string>
+    <!-- Legacy "All countries" toggle. The previous UI exposed an "All"
+         checkbox that short-circuited every country on; this is dropped
+         from the new layout but rendered conditionally here when the
+         persisted value is still true, so users who'd enabled it can
+         turn it off without scrubbing app data. -->
+    <string name="settings_holidays_source_all">All countries</string>
 
-    <!-- Help-link labels shown under the intro blurb. Point at Google
-         Calendar's own docs for adding holiday calendars / managing
-         birthdays — the source-of-truth surfaces clothescast can't
-         configure for the user. -->
-    <string name="settings_holidays_theme_calendar_holidays_help">Add calendars</string>
-    <string name="settings_holidays_theme_calendar_birthdays_help">Manage birthdays</string>
+    <!-- Deep-link buttons rendered under each top-section checkbox. -->
+    <string name="settings_holidays_link_region_settings">Region settings</string>
+    <string name="settings_holidays_link_location_settings">Location settings</string>
+    <string name="settings_holidays_link_calendar_settings">Calendar settings</string>
 
-    <!-- Inline warning shown under a calendar-themes checkbox when the
-         stored pref is on but READ_CALENDAR was revoked from system
-         Settings. Tappable: fires the permission prompt. -->
+    <!-- Placeholder body for the Calendar Holidays / Birthdays collapsibles
+         (first pass — real per-event listing + overrides land in a follow-up). -->
+    <string name="settings_holidays_calendar_section_placeholder_off">Turn on the toggle above to theme today\'s outfit on detected events from your synced calendars.</string>
+    <string name="settings_holidays_calendar_section_placeholder_on">Detected events from your synced calendars will appear here in a future update.</string>
+
+    <!-- Inline warning shown under a calendar source toggle when the stored
+         pref is on but READ_CALENDAR was revoked from system Settings.
+         Tappable: fires the permission prompt. -->
     <string name="settings_holidays_permission_revoked">Calendar permission needed. Tap to re-grant.</string>
-
-    <!-- URLs to Google Calendar help articles linked from the
-         Celebrations settings page. Kept in strings.xml so they're
-         translatable per-locale if Google ever ships locale-specific
-         help URLs (`hl` query param works on most). -->
-    <string name="settings_holidays_theme_calendar_holidays_help_url" translatable="false">https://support.google.com/calendar/answer/6004615</string>
-    <string name="settings_holidays_theme_calendar_birthdays_help_url" translatable="false">https://support.google.com/calendar/answer/6084644</string>
     <string name="settings_holiday_all_section_title">All</string>
     <string name="settings_holidays_expand">Expand</string>
     <string name="settings_holidays_collapse">Collapse</string>

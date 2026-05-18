@@ -95,6 +95,9 @@ internal fun HolidaysContent(
     onSetThemeFromCalendarHolidays: (Boolean) -> Unit,
     onSetThemeFromCalendarBirthdays: (Boolean) -> Unit,
     onCalendarPermissionRechecked: () -> Unit,
+    onNavigateToRegionSettings: () -> Unit,
+    onNavigateToLocationSettings: () -> Unit,
+    onNavigateToCalendarSettings: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -152,58 +155,88 @@ internal fun HolidaysContent(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            IntroBlurb()
-
+            // Sources card — five holiday-source toggles, each in its own
+            // row. Region / Location / Calendar Holidays / Calendar Birthdays
+            // carry a deep-link to the corresponding settings page. Global
+            // is the universal-holiday bucket (Christmas, NYE, Halloween,
+            // Valentine's) with no dedicated settings target.
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
-                    CheckboxRow(
+                    SourceRow(
                         label = stringResource(
-                            R.string.settings_holiday_country_home,
+                            R.string.settings_holidays_source_region,
                             localeCountry?.let { resolveCountryDisplayName(context, uiLocale, it) }
                                 ?: stringResource(R.string.settings_holiday_country_unknown),
                         ),
                         checked = holidayCountrySelection.home,
-                        enabled = !holidayCountrySelection.all,
                         onCheckedChange = onSetCountryHome,
+                        linkLabel = stringResource(R.string.settings_holidays_link_region_settings),
+                        onLinkClick = onNavigateToRegionSettings,
                     )
-                    CheckboxRow(
+                    SourceRow(
                         label = stringResource(
-                            R.string.settings_holiday_country_current,
+                            R.string.settings_holidays_source_location,
                             weatherLocationCountry?.let { resolveCountryDisplayName(context, uiLocale, it) }
                                 ?: stringResource(R.string.settings_holiday_country_unknown),
                         ),
                         checked = holidayCountrySelection.current,
-                        enabled = !holidayCountrySelection.all,
                         onCheckedChange = onSetCountryCurrent,
+                        linkLabel = stringResource(R.string.settings_holidays_link_location_settings),
+                        onLinkClick = onNavigateToLocationSettings,
                     )
-                    CheckboxRow(
-                        label = stringResource(R.string.settings_holiday_country_global_label),
+                    SourceRow(
+                        label = stringResource(R.string.settings_holidays_source_global),
                         checked = holidayCountrySelection.global,
-                        enabled = !holidayCountrySelection.all,
                         onCheckedChange = onSetCountryGlobal,
                     )
-                    CheckboxRow(
-                        label = stringResource(R.string.settings_holiday_country_all_label),
-                        checked = holidayCountrySelection.all,
-                        onCheckedChange = onSetCountryAll,
-                    )
-                    CalendarToggleRow(
-                        label = stringResource(R.string.settings_holidays_my_calendar_holidays),
+                    CalendarSourceRow(
+                        label = stringResource(R.string.settings_holidays_source_calendar_holidays),
                         checked = themeFromCalendarHolidays,
                         onSetChecked = onSetThemeFromCalendarHolidays,
                         onPermissionRechecked = onCalendarPermissionRechecked,
+                        linkLabel = stringResource(R.string.settings_holidays_link_calendar_settings),
+                        onLinkClick = onNavigateToCalendarSettings,
                     )
-                    CalendarToggleRow(
-                        label = stringResource(R.string.settings_holidays_my_calendar_birthdays),
+                    CalendarSourceRow(
+                        label = stringResource(R.string.settings_holidays_source_calendar_birthdays),
                         checked = themeFromCalendarBirthdays,
                         onSetChecked = onSetThemeFromCalendarBirthdays,
                         onPermissionRechecked = onCalendarPermissionRechecked,
+                        linkLabel = stringResource(R.string.settings_holidays_link_calendar_settings),
+                        onLinkClick = onNavigateToCalendarSettings,
                     )
+                    // Legacy "All countries" toggle, conditionally rendered so
+                    // users who'd enabled the previous UI's All checkbox can
+                    // turn it off from here. With `all=true` the resolver
+                    // short-circuits every country on, making Region/Location/
+                    // Global toggles below visually-meaningless — surface a
+                    // clear opt-out instead of forcing app-data wipe.
+                    if (holidayCountrySelection.all) {
+                        SourceRow(
+                            label = stringResource(R.string.settings_holidays_source_all),
+                            checked = true,
+                            onCheckedChange = onSetCountryAll,
+                        )
+                    }
                 }
             }
+
+            // Calendar Holidays / Birthdays placeholder collapsibles.
+            // First-pass stubs — the real per-event listing + overrides
+            // land in a follow-up PR (see TODO at the end of this file).
+            CalendarSectionPlaceholder(
+                title = stringResource(R.string.settings_holidays_source_calendar_holidays),
+                checked = themeFromCalendarHolidays,
+                rememberKey = "holidays-calendar-holidays-section",
+            )
+            CalendarSectionPlaceholder(
+                title = stringResource(R.string.settings_holidays_source_calendar_birthdays),
+                checked = themeFromCalendarBirthdays,
+                rememberKey = "holidays-calendar-birthdays-section",
+            )
 
             val globalActiveCount = globalThemes.count { theme ->
                 theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries)
@@ -239,7 +272,15 @@ internal fun HolidaysContent(
                 }
             }
 
-            isoCountries.forEach { code ->
+            // Pull the Region and Location countries (if any) to the top of
+            // the per-country list — the user's "own" countries first, then
+            // the rest of the catalog alphabetically.
+            val pinnedCountries = listOfNotNull(localeCountry?.uppercase(), weatherLocationCountry?.uppercase())
+                .filter { it in isoCountries }
+                .distinct()
+            val orderedCountries = pinnedCountries + isoCountries.filterNot { it in pinnedCountries }
+
+            orderedCountries.forEach { code ->
                 val themes = themesByCountry[code].orEmpty()
                 val activeCount = themes.count { theme -> theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries) }
                 val countryOverride = holidayCountrySelection.countryOverrides[code] ?: HolidayOverride.AUTO
@@ -526,62 +567,57 @@ private fun Collection<String>.sortedForDisplay(
 }
 
 /**
- * Intro for the Celebrations settings page. One sentence explaining the
- * page's job, plus two flat help links pointing at Google Calendar's own
- * "add holidays" and "manage birthdays" docs — those are the only place
- * the user can actually subscribe to / configure the source calendars.
+ * Top-section toggle row: a checkbox + an optional indented deep-link
+ * button below it. Used for the Region / Location / Global rows in the
+ * sources card. Calendar-sourced rows use [CalendarSourceRow] instead
+ * since they need permission-prompt + revocation-warning behaviour.
  */
 @Composable
-private fun IntroBlurb() {
-    val context = LocalContext.current
-    val addUrl = stringResource(R.string.settings_holidays_theme_calendar_holidays_help_url)
-    val manageUrl = stringResource(R.string.settings_holidays_theme_calendar_birthdays_help_url)
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(
-            text = stringResource(R.string.settings_holidays_intro),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Row(horizontalArrangement = Arrangement.spacedBy(0.dp)) {
+private fun SourceRow(
+    label: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    linkLabel: String? = null,
+    onLinkClick: (() -> Unit)? = null,
+) {
+    Column {
+        CheckboxRow(label = label, checked = checked, onCheckedChange = onCheckedChange)
+        if (linkLabel != null && onLinkClick != null) {
             TextButton(
-                onClick = { openUrl(context, addUrl) },
+                onClick = onLinkClick,
                 contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
-            ) {
-                Text(stringResource(R.string.settings_holidays_theme_calendar_holidays_help))
-            }
-            Text(
-                text = " · ",
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 6.dp),
-            )
-            TextButton(
-                onClick = { openUrl(context, manageUrl) },
-                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
-            ) {
-                Text(stringResource(R.string.settings_holidays_theme_calendar_birthdays_help))
-            }
+                modifier = Modifier.padding(start = 56.dp),
+            ) { Text(linkLabel) }
         }
     }
 }
 
 /**
- * Country-card row for one of the calendar-sourced theming toggles
- * (My calendar holidays, My calendar birthdays). Flips the pref through
- * the supplied callback when permission is already granted; otherwise
- * fires the `READ_CALENDAR` prompt and only flips on grant.
+ * Top-section toggle row for one of the calendar-sourced theming options
+ * (Calendar Holidays, Calendar Birthdays). Flips the pref through the
+ * supplied callback when permission is already granted; otherwise fires
+ * the `READ_CALENDAR` prompt and only flips on grant. Disabling leaves
+ * permissions unchanged.
  *
- * Revocation handling: per the PR plan, if the user revokes permission
- * later from system Settings, the persisted pref is **not** auto-flipped
- * off — the reader returns no events until permission is restored, and
- * the [onPermissionRechecked] nudge fires on grant or transition so
- * `TodayViewModel`'s cached events list refreshes promptly.
+ * Visual `checked` follows the stored pref directly (NOT `pref && permission`)
+ * so a user who revoked READ_CALENDAR can still tap the visually-checked
+ * box to disable the feature without re-granting. An inline warning row
+ * surfaces the "pref says on but permission missing" state and offers a
+ * re-grant.
+ *
+ * Revocation propagation: an ON_RESUME observer notices grant/revoke
+ * transitions from system Settings and fires [onPermissionRechecked] so
+ * `TodayViewModel`'s cached events list refreshes promptly instead of
+ * lingering until midnight.
  */
 @Composable
-private fun CalendarToggleRow(
+private fun CalendarSourceRow(
     label: String,
     checked: Boolean,
     onSetChecked: (Boolean) -> Unit,
     onPermissionRechecked: () -> Unit,
+    linkLabel: String,
+    onLinkClick: () -> Unit,
 ) {
     val context = LocalContext.current
     var permissionGranted by remember { mutableStateOf(CalendarPermission.isGranted(context)) }
@@ -595,10 +631,6 @@ private fun CalendarToggleRow(
                 val wasGranted = permissionGranted
                 val nowGranted = CalendarPermission.isGranted(context)
                 permissionGranted = nowGranted
-                // Fire on EITHER transition direction when this toggle is
-                // on — revokes need to invalidate Today's cached events
-                // just as much as grants do (a stale birthday/holiday
-                // banner would otherwise linger until midnight).
                 if (wasGranted != nowGranted && currentChecked) {
                     currentOnPermissionRechecked()
                 }
@@ -615,38 +647,75 @@ private fun CalendarToggleRow(
         if (granted) onSetChecked(true)
     }
 
-    // Visual `checked` follows the stored pref directly, NOT the
-    // permission state. Without this, a user who revoked READ_CALENDAR
-    // would see the checkbox flip to unchecked while the pref stays
-    // true — and a subsequent tap on the visually-unchecked box would
-    // re-prompt for permission instead of letting them disable the
-    // feature. The inline warning row below makes the "pref says on
-    // but permission missing" state visible and offers a re-grant.
-    CheckboxRow(
-        label = label,
-        checked = checked,
-        onCheckedChange = { wantsOn ->
-            if (!wantsOn) {
-                onSetChecked(false)
-            } else if (permissionGranted) {
-                onSetChecked(true)
-            } else {
-                launcher.launch(CalendarPermission.MANIFEST_PERMISSION)
-            }
-        },
-    )
-    if (checked && !permissionGranted) {
+    Column {
+        CheckboxRow(
+            label = label,
+            checked = checked,
+            onCheckedChange = { wantsOn ->
+                if (!wantsOn) {
+                    onSetChecked(false)
+                } else if (permissionGranted) {
+                    onSetChecked(true)
+                } else {
+                    launcher.launch(CalendarPermission.MANIFEST_PERMISSION)
+                }
+            },
+        )
         TextButton(
-            onClick = { launcher.launch(CalendarPermission.MANIFEST_PERMISSION) },
+            onClick = onLinkClick,
             contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
-            modifier = Modifier.padding(start = 48.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.settings_holidays_permission_revoked),
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-            )
+            modifier = Modifier.padding(start = 56.dp),
+        ) { Text(linkLabel) }
+        if (checked && !permissionGranted) {
+            TextButton(
+                onClick = { launcher.launch(CalendarPermission.MANIFEST_PERMISSION) },
+                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
+                modifier = Modifier.padding(start = 56.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.settings_holidays_permission_revoked),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
         }
     }
 }
 
+/**
+ * First-pass placeholder for the Calendar Holidays / Calendar Birthdays
+ * collapsibles in the lower list. Renders the same [CollapsibleSection]
+ * chrome as the country sections so it visually fits, but the body is a
+ * static message until follow-up work lands per-event listing + override
+ * dropdowns. Summary is `—/—` until we have real event data.
+ *
+ * TODO(celebrations-v2): swap the placeholder body for a list of
+ * detected events from the user's synced calendar (today plus a small
+ * forward window), each with an On/Off override stored against a stable
+ * per-event key. Requires a `CalendarEvent → HolidayOverride` storage
+ * scheme that survives event-recurrence renames.
+ */
+@Composable
+private fun CalendarSectionPlaceholder(
+    title: String,
+    checked: Boolean,
+    rememberKey: String,
+) {
+    CollapsibleSection(
+        title = title,
+        summary = "—/—",
+        rememberKey = rememberKey,
+    ) {
+        val message = if (checked) {
+            stringResource(R.string.settings_holidays_calendar_section_placeholder_on)
+        } else {
+            stringResource(R.string.settings_holidays_calendar_section_placeholder_off)
+        }
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+    }
+}

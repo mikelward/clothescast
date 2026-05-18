@@ -349,6 +349,9 @@ internal fun SettingsHolidaysPreview() {
             onSetThemeFromCalendarHolidays = {},
             onSetThemeFromCalendarBirthdays = {},
             onCalendarPermissionRechecked = {},
+            onNavigateToRegionSettings = {},
+            onNavigateToLocationSettings = {},
+            onNavigateToCalendarSettings = {},
         )
     }
 }

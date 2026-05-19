@@ -182,4 +182,29 @@ data class SettingsState(
      * cleared back to empty when the user starts a new one.
      */
     val discoveredServices: List<DiscoveredService> = emptyList(),
+
+    // ─── Cast ───────────────────────────────────────────────────────────
+    // The smart display the user picked. id stays in [UserPreferences];
+    // [castRouteName] is held here so the row can read "Living-room display"
+    // even when the device is powered off and live discovery is empty.
+    val castRouteName: String? = null,
+    /** True while the "Choose smart display" picker dialog is open. */
+    val castPickerOpen: Boolean = false,
+    /** Live snapshot of routes from the in-flight discovery scan. */
+    val castDiscoveredRoutes: List<app.clothescast.cast.DiscoveredCastRoute> = emptyList(),
+    /** True while a "Cast now" test cast is in flight. */
+    val castInProgress: Boolean = false,
+    /** Mirrors [mqttLastError] — last cast failure message, null on success / no record. */
+    val castLastError: String? = null,
+    /** Epoch-ms wall-clock of the last recorded cast outcome (0 = no record). */
+    val castLastErrorAt: Long = 0L,
+    /** Epoch-ms wall-clock of the most recent successful cast (0 = no success yet). */
+    val castLastSuccessAt: Long = 0L,
+    /**
+     * True when [ClothesCastApplication.castContext] resolved — i.e. Google
+     * Play Services Cast framework is available on this device. Cast-less
+     * emulators and GMS-free AOSP builds return false; the UI hides the
+     * whole Cast section in that case.
+     */
+    val castAvailable: Boolean = false,
 )

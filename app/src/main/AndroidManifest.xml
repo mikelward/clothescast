@@ -25,6 +25,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- Cast SDK uses Wi-Fi state to gate discovery, and mDNS multicast to
+         find smart displays on the LAN. Both are normal-level permissions —
+         granted automatically, no runtime prompt. -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+
     <!-- Location at notify time (coarse is sufficient for weather).
          BACKGROUND is required so the WorkManager worker can read location when the
          app is not in the foreground. The user must grant it explicitly via the
@@ -126,6 +132,13 @@
         <meta-data
             android:name="google_analytics_adid_collection_enabled"
             android:value="false" />
+
+        <!-- Cast SDK loads CastOptionsProvider via reflection from this name.
+             Receiver app id (Default Media Receiver) and discovery filters
+             live in that class. -->
+        <meta-data
+            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="app.clothescast.cast.CastOptionsProvider" />
 
         <!-- Home-screen App Widget showing the current period's outfit.
              exported=true is required for the OS launcher to bind. -->

@@ -336,6 +336,63 @@ class SettingsRepository(
     }
 
     /**
+     * Persists the user's chosen Cast destination. Pass null [routeId] to
+     * clear the pick (Settings shows "No display selected"); blank values
+     * are coerced to null so a partially-cleared field doesn't surface as
+     * an empty string on the next emission. [routeName] is the friendly
+     * label captured at pick time — cached so the Settings row stays
+     * readable when the display is powered off.
+     */
+    suspend fun setCastRoute(routeId: String?, routeName: String?) {
+        dataStore.edit { prefs ->
+            val cleanId = routeId?.trim()?.takeIf { it.isNotBlank() }
+            val cleanName = routeName?.trim()?.takeIf { it.isNotBlank() }
+            if (cleanId == null) {
+                prefs.remove(CAST_ROUTE_ID)
+                prefs.remove(CAST_ROUTE_NAME)
+            } else {
+                prefs[CAST_ROUTE_ID] = cleanId
+                if (cleanName != null) prefs[CAST_ROUTE_NAME] = cleanName else prefs.remove(CAST_ROUTE_NAME)
+            }
+        }
+    }
+
+    /**
+     * Runtime status of the last cast attempt, separate from user
+     * preferences. Mirrors [MqttPublishStatus]; the status row in
+     * Settings → Smart Home → Cast reads this to surface "Cast failed:
+     * device not found" without polluting [UserPreferences].
+     */
+    data class CastStatus(
+        val errorMessage: String?,
+        val recordedAtMs: Long,
+        val lastSuccessAtMs: Long = 0L,
+    )
+
+    /** Null until the first cast attempt is recorded; thereafter always non-null. */
+    val castStatus: Flow<CastStatus?> = dataStore.data.map { prefs ->
+        val ms = prefs[CAST_LAST_ERROR_AT_MS] ?: return@map null
+        CastStatus(
+            errorMessage = prefs[CAST_LAST_ERROR_MSG],
+            recordedAtMs = ms,
+            lastSuccessAtMs = prefs[CAST_LAST_SUCCESS_AT_MS] ?: 0L,
+        )
+    }
+
+    /** Pass null [errorMessage] to record a success. */
+    suspend fun setCastLastError(errorMessage: String?, atMs: Long = System.currentTimeMillis()) {
+        dataStore.edit { prefs ->
+            prefs[CAST_LAST_ERROR_AT_MS] = atMs
+            if (errorMessage != null) {
+                prefs[CAST_LAST_ERROR_MSG] = errorMessage
+            } else {
+                prefs.remove(CAST_LAST_ERROR_MSG)
+                prefs[CAST_LAST_SUCCESS_AT_MS] = atMs
+            }
+        }
+    }
+
+    /**
      * Runtime status of the last MQTT publish attempt, separate from user
      * preferences. [errorMessage] is null on success (or no record yet); non-null
      * is the human-readable failure reason. [recordedAtMs] is the epoch-ms wall
@@ -674,6 +731,8 @@ class SettingsRepository(
         val mqttUsername = this[MQTT_USER]?.takeIf { it.isNotBlank() }
         val mqttTopic = this[MQTT_TOPIC]?.takeIf { it.isNotBlank() }
             ?: UserPreferences.DEFAULT_MQTT_TOPIC
+        val castRouteId = this[CAST_ROUTE_ID]?.takeIf { it.isNotBlank() }
+        val castRouteName = this[CAST_ROUTE_NAME]?.takeIf { it.isNotBlank() }
         val zone = zoneIdProvider()
 
         return UserPreferences(
@@ -720,6 +779,8 @@ class SettingsRepository(
             mqttUseTls = mqttUseTls,
             mqttUsername = mqttUsername,
             mqttTopic = mqttTopic,
+            castRouteId = castRouteId,
+            castRouteName = castRouteName,
         )
     }
 
@@ -971,6 +1032,17 @@ class SettingsRepository(
         private val MQTT_LAST_ERROR_MSG = stringPreferencesKey("mqtt_last_error_msg")
         private val MQTT_LAST_ERROR_AT_MS = longPreferencesKey("mqtt_last_error_at_ms")
         private val MQTT_LAST_SUCCESS_AT_MS = longPreferencesKey("mqtt_last_success_at_ms")
+
+        // Cast destination — the smart display the user picked in Settings.
+        // routeId is the Cast SDK's stable identifier; routeName is the
+        // friendly label cached at pick time so the Settings row stays
+        // readable when the device is powered off and live discovery
+        // returns nothing.
+        private val CAST_ROUTE_ID = stringPreferencesKey("cast_route_id")
+        private val CAST_ROUTE_NAME = stringPreferencesKey("cast_route_name")
+        private val CAST_LAST_ERROR_MSG = stringPreferencesKey("cast_last_error_msg")
+        private val CAST_LAST_ERROR_AT_MS = longPreferencesKey("cast_last_error_at_ms")
+        private val CAST_LAST_SUCCESS_AT_MS = longPreferencesKey("cast_last_success_at_ms")
 
         private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
         private val DEFAULT_TIME: LocalTime = LocalTime.of(7, 0)

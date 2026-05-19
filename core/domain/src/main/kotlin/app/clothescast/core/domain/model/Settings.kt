@@ -620,6 +620,23 @@ data class UserPreferences(
     val mqttUseTls: Boolean = false,
     val mqttUsername: String? = null,
     val mqttTopic: String = DEFAULT_MQTT_TOPIC,
+    /**
+     * The Cast receiver the user picked in Settings → Smart Home → Cast.
+     * Null when no device has been chosen — the cast pipeline no-ops until
+     * the user picks one from the discovered routes. Stable across reboots;
+     * the friendly name is cached separately in [castRouteName] because the
+     * route only re-appears in the discovery list when the device is on the
+     * LAN, and we want the Settings row to keep showing the chosen device
+     * even while it's powered off.
+     */
+    val castRouteId: String? = null,
+    /**
+     * Friendly display name for [castRouteId], captured at pick time so the
+     * Settings row reads "Living-room display" even when the device is off
+     * and live discovery returns nothing. Refreshed opportunistically when
+     * the device next surfaces in a discovery scan.
+     */
+    val castRouteName: String? = null,
 ) {
     companion object {
         const val DEFAULT_GEMINI_VOICE = "Despina"

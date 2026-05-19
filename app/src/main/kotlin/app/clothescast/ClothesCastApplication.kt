@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import app.clothescast.alarm.DailyAlarmScheduler
 import app.clothescast.calendar.CalendarContractEventReader
+import app.clothescast.cast.CastInsightController
+import app.clothescast.cast.CastRouteDiscovery
 import app.clothescast.core.data.diag.ApiCallLogger
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.data.tts.GeminiTtsClient
@@ -36,6 +38,7 @@ import app.clothescast.tts.AndroidTtsSpeaker
 import app.clothescast.tts.AndroidTtsVoiceEnumerator
 import app.clothescast.tts.TtsSpeaker
 import app.clothescast.update.AppUpdateChecker
+import com.google.android.gms.cast.framework.CastContext
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -110,6 +113,41 @@ class ClothesCastApplication : Application() {
     val homeAssistantDiscovery: HomeAssistantDiscovery by lazy {
         NsdHomeAssistantDiscovery(this)
     }
+
+    /**
+     * Cast SDK entry point. Returns `null` when Google Play Services isn't
+     * available (Cast-less emulators, AOSP / GMS-free builds); Settings
+     * → Smart Home → Cast hides the section in that case rather than
+     * crashing on [com.google.android.gms.cast.framework.CastContext.getSharedInstance].
+     */
+    val castContext: CastContext? by lazy {
+        try {
+            CastContext.getSharedInstance(this)
+        } catch (t: Throwable) {
+            DiagLog.w(TAG, "CastContext.getSharedInstance failed; Cast disabled", t)
+            null
+        }
+    }
+
+    /**
+     * Orchestrates "cast today's insight" — synth + WAV-wrap + LAN-host
+     * the outfit PNG + load into the active session. Null whenever
+     * [castContext] is, so the UI can skip wiring listeners on Cast-less
+     * builds.
+     */
+    val castInsightController: CastInsightController? by lazy {
+        castContext?.let {
+            CastInsightController(
+                context = this,
+                castContext = it,
+                ttsClient = geminiTtsClient,
+                applicationScope = applicationScope,
+            )
+        }
+    }
+
+    /** MediaRouter wrapper for the Settings → Cast picker. */
+    val castRouteDiscovery: CastRouteDiscovery by lazy { CastRouteDiscovery(this) }
 
     private val httpClient: HttpClient by lazy {
         HttpClient(OkHttp) {
@@ -198,6 +236,15 @@ class ClothesCastApplication : Application() {
         // and DiagLog's wrapper above — no manual chaining needed here.
         Telemetry.start(this, settingsRepository, applicationScope)
         NotificationChannelRegistrar.register(this)
+        // Register the Cast session-end listener so [CastMediaServer.stop]
+        // fires whenever a cast session ends — user-initiated disconnect on
+        // the receiver, network failure, route switch — and the LAN HTTP
+        // server doesn't keep serving the last WAV / PNG until process
+        // death. Process-scoped on purpose: every cast session-end runs
+        // through this listener regardless of which screen is active.
+        // No-op when Cast SDK init failed (null controller on Cast-less
+        // builds, see [castContext] above).
+        castInsightController?.bind()
         applicationScope.launch {
             try {
                 val prefs = settingsRepository.preferences.first()

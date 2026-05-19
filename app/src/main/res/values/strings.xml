@@ -455,7 +455,7 @@
          either test a cast manually now (this PR) or have the worker
          send each scheduled forecast there automatically (next PR). -->
     <string name="settings_smart_home_cast_title">Cast</string>
-    <string name="settings_smart_home_cast_description">Send today\'s outfit and forecast to a smart display on your home network.</string>
+    <string name="settings_smart_home_cast_description">Send scheduled ClothesCasts to a smart display on your home network.</string>
     <string name="settings_smart_home_cast_privacy_note">Audio and image are served from your phone over your local network. They don\'t leave your home.</string>
     <string name="settings_smart_home_cast_device_label">Smart display</string>
     <string name="settings_smart_home_cast_device_none">No display picked</string>

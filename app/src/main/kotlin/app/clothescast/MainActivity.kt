@@ -378,7 +378,14 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                             ?: return@Factory app.mqttPublisher.publishTest()
                         val formatter = InsightFormatter.forRegion(context, prefs.region, prefs.temperatureUnit)
                         val prose = formatter.format(insight.summary)
-                        val outcome = app.mqttPublisher.publishIfEnabled(insight.period, prose)
+                        // Defer the /now/text mirror to after the image
+                        // publish below so HA automations subscribed to
+                        // `/now/text` find `/now/image` already updated
+                        // when the trigger fires — same atomic ordering
+                        // FetchAndNotifyWorker.deliver uses for the
+                        // scheduled publish.
+                        val outcome = app.mqttPublisher.publishIfEnabled(insight.period, prose, mirrorNow = false)
+                        var canMirrorNow = outcome is MqttPublishOutcome.Success
                         insight.outfit?.let { outfit ->
                             runCatching {
                                 val info = outfitCardInfoLines(
@@ -421,9 +428,27 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                                     topStrokes = topStrokes,
                                     bottomStrokes = bottomStrokes,
                                 )
-                                app.mqttPublisher.publishImageIfEnabled(insight.period, png)
-                            }
+                                val imageOutcome = app.mqttPublisher.publishImageIfEnabled(
+                                    insight.period, png, mirrorNow = canMirrorNow,
+                                )
+                                canMirrorNow = canMirrorNow &&
+                                    imageOutcome is MqttPublishOutcome.Success && imageOutcome.nowMirrored
+                            }.onFailure { canMirrorNow = false }
                         }
+                        // Clear `<prefix>/now/audio` (and the period audio
+                        // topic) before the `/now/text` trigger. The
+                        // manual flow doesn't synthesise audio, so any
+                        // previously-retained clip from a scheduled run
+                        // would otherwise pair this re-broadcast's
+                        // `/now/text` with stale audio on the next HA
+                        // trigger. Empty + `retain=true` = MQTT's drop-
+                        // retained semantics.
+                        val audioOutcome = app.mqttPublisher.publishAudioIfEnabled(
+                            insight.period, ByteArray(0), mirrorNow = canMirrorNow,
+                        )
+                        canMirrorNow = canMirrorNow &&
+                            audioOutcome is MqttPublishOutcome.Success && audioOutcome.nowMirrored
+                        if (canMirrorNow) app.mqttPublisher.mirrorProseToNow(insight.period, prose)
                         outcome
                     },
                     discovery = app.homeAssistantDiscovery,

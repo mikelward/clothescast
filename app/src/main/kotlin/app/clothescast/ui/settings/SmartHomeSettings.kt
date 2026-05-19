@@ -324,7 +324,14 @@ private fun MqttBridgeCard(
                 onValueChange = { topicField = it.trim() },
                 label = { Text(stringResource(R.string.settings_smart_home_mqtt_topic)) },
                 supportingText = {
-                    Text(stringResource(R.string.settings_smart_home_mqtt_topic_hint))
+                    // Live-substitute the user's current prefix into the
+                    // example so a custom `home/forecast` shows as
+                    // `e.g. home/forecast/now/text`, and a blank field
+                    // falls back to the documented default the publisher
+                    // would use anyway.
+                    val effectivePrefix = topicField.trim().trim('/')
+                        .ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
+                    Text(stringResource(R.string.settings_smart_home_mqtt_topic_hint, effectivePrefix))
                 },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),

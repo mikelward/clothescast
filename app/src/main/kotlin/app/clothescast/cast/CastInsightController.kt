@@ -19,12 +19,14 @@ import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.images.WebImage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.Locale
 import kotlin.coroutines.resume
@@ -266,11 +268,24 @@ class CastInsightController(
         loadTimeoutMs: Long = 15_000,
     ): CastWorkerOutcome {
         return try {
-            val route = findRoute(routeId, discoveryTimeoutMs)
-                ?: return CastWorkerOutcome.SkippedNoRoute
-            val session = ensureSession(route, sessionTimeoutMs)
-            val client = session.remoteMediaClient
-                ?: return CastWorkerOutcome.Failed(CastFailure.NoRemoteMediaClient.message ?: "No media client")
+            // MediaRouter / SessionManager / RemoteMediaClient calls
+            // are documented main-thread-only. The worker reaches us
+            // from Dispatchers.Default; Main.immediate is a no-op
+            // when the Settings "Cast now" path enters from
+            // viewModelScope (already on Main). Off-main work
+            // (resolveLanIp → ConnectivityManager, server.publish →
+            // Ktor) stays outside the hop so we don't block the UI
+            // thread on network I/O.
+            val routeAndClient = withContext(Dispatchers.Main.immediate) {
+                val route = findRoute(routeId, discoveryTimeoutMs)
+                    ?: return@withContext null
+                val session = ensureSession(route, sessionTimeoutMs)
+                session.remoteMediaClient
+            }
+            val client = when (routeAndClient) {
+                null -> return CastWorkerOutcome.SkippedNoRoute
+                else -> routeAndClient
+            }
             val host = resolveLanIp(context)
                 ?: return CastWorkerOutcome.Failed(CastFailure.NoLanAddress.message ?: "No LAN IP")
             val urls = server.publish(host = host, audio = wav, image = png)
@@ -321,12 +336,19 @@ class CastInsightController(
         request: MediaLoadRequestData,
         timeoutMs: Long,
     ): RemoteMediaClient.MediaChannelResult? = withTimeoutOrNull(timeoutMs) {
-        suspendCancellableCoroutine { cont ->
-            val pending = client.load(request)
-            pending.setResultCallback { result ->
-                if (cont.isActive) cont.resume(result)
+        // RemoteMediaClient.load is documented main-thread-only; hop
+        // here too rather than relying on the caller (Main.immediate
+        // is a no-op when we already are on Main). The PendingResult
+        // callback can fire on any thread per Cast SDK docs, so the
+        // continuation resume from any thread is safe.
+        withContext(Dispatchers.Main.immediate) {
+            suspendCancellableCoroutine { cont ->
+                val pending = client.load(request)
+                pending.setResultCallback { result ->
+                    if (cont.isActive) cont.resume(result)
+                }
+                cont.invokeOnCancellation { runCatching { pending.cancel() } }
             }
-            cont.invokeOnCancellation { runCatching { pending.cancel() } }
         }
     }
 

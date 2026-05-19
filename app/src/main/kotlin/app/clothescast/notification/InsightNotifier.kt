@@ -1,5 +1,6 @@
 package app.clothescast.notification
 
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -29,7 +30,28 @@ class InsightNotifier(private val context: Context) {
         topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     ) {
         if (!NotificationPermission.isGranted(context)) return
+        NotificationManagerCompat.from(context).notify(
+            NOTIFICATION_ID_DAILY_INSIGHT,
+            buildNotification(insight, prose, topColors, topStrokes),
+        )
+    }
 
+    /**
+     * Builds the insight notification without posting. The worker uses this
+     * to feed [androidx.work.ForegroundInfo] when it goes foreground for a
+     * cast — the same notification doubles as the foreground-service tile
+     * and the persistent insight notification once the worker ends.
+     *
+     * Skips the POST_NOTIFICATIONS check on purpose: foreground-service
+     * notifications are exempt from that gate. The caller decides whether
+     * to actually post.
+     */
+    fun buildNotification(
+        insight: Insight,
+        prose: String,
+        topColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+        topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    ): Notification {
         val tapIntent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra(MainActivity.EXTRA_NAVIGATE_TO_TODAY, true)
@@ -47,7 +69,7 @@ class InsightNotifier(private val context: Context) {
         // Today screen's OutfitPreviewCard does — recoloured if the user has
         // customised the icon's fill.
         val top = insight.outfit?.top
-        val notification = NotificationCompat.Builder(context, CHANNEL_DAILY_INSIGHT)
+        return NotificationCompat.Builder(context, CHANNEL_DAILY_INSIGHT)
             .setSmallIcon(smallIconFor(top))
             .setLargeIcon(
                 largeIconForTop(
@@ -66,8 +88,6 @@ class InsightNotifier(private val context: Context) {
             .setContentIntent(pendingIntent)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .build()
-
-        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID_DAILY_INSIGHT, notification)
     }
 
     companion object {

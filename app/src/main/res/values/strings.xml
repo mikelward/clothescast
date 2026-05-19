@@ -363,7 +363,7 @@
     <string name="settings_root_calendar">Calendar</string>
     <string name="settings_root_holidays">Celebrations</string>
     <string name="settings_root_forecasters">Forecasters</string>
-    <string name="settings_root_smart_home">Smart Home</string>
+    <string name="settings_root_smart_home">Smart Displays and Home Automation</string>
     <string name="settings_root_privacy">Privacy</string>
     <string name="settings_root_about">About</string>
 
@@ -474,6 +474,20 @@
     <string name="cast_error_no_route_picked">Pick a smart display first.</string>
     <string name="cast_error_no_insight_yet">No forecast available yet. Wait for the next scheduled run, or tap Refresh on the Today screen.</string>
     <string name="cast_error_unknown">Cast failed.</string>
+    <string name="cast_error_skipped_display_asleep">Skipped — smart display is asleep.</string>
+    <string name="cast_error_skipped_display_in_use">Skipped — smart display is in use.</string>
+    <!-- Shown above the toggles when the user has picked a Cast device but
+         Gemini isn't ready (engine is the on-device TTS, or the API key
+         isn't set). The cast pipeline needs Gemini's PCM output, so
+         casting silently no-ops until the user fixes one or the other. -->
+    <string name="settings_smart_home_cast_gemini_warning">Cast needs a working Gemini voice. Switch your voice engine to Gemini and add an API key in voice settings.</string>
+    <string name="settings_smart_home_cast_gemini_warning_action">Open voice settings</string>
+    <!-- Cast behaviour toggles. Terse labels only — no helper text. -->
+    <string name="settings_smart_home_cast_morning_toggle">Cast morning forecast</string>
+    <string name="settings_smart_home_cast_tonight_toggle">Cast tonight forecast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_toggle">Skip phone speech if cast succeeded</string>
+    <string name="settings_smart_home_cast_wake_display_toggle">Power on smart display</string>
+    <string name="settings_smart_home_cast_interrupt_toggle">Interrupt if already playing</string>
 
     <string name="settings_smart_home_mqtt_title">Home Assistant bridge (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publish forecast to MQTT</string>

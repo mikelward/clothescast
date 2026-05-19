@@ -18,6 +18,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -56,11 +57,23 @@ internal fun CastDestinationCard(
     lastError: String?,
     lastErrorAt: Long,
     lastSuccessAt: Long,
+    morningEnabled: Boolean,
+    tonightEnabled: Boolean,
+    skipPhoneSpeech: Boolean,
+    wakeDisplay: Boolean,
+    interruptPlaying: Boolean,
+    geminiWarningVisible: Boolean,
+    onOpenVoiceSettings: () -> Unit,
     onOpenPicker: () -> Unit,
     onClosePicker: () -> Unit,
     onPickRoute: (DiscoveredCastRoute) -> Unit,
     onClearRoute: () -> Unit,
     onCastNow: () -> Unit,
+    onSetMorningEnabled: (Boolean) -> Unit,
+    onSetTonightEnabled: (Boolean) -> Unit,
+    onSetSkipPhoneSpeech: (Boolean) -> Unit,
+    onSetWakeDisplay: (Boolean) -> Unit,
+    onSetInterruptPlaying: (Boolean) -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -86,10 +99,51 @@ internal fun CastDestinationCard(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
+            // TODO: revisit "what enables casting?" UX. Today it's implicit
+            // — picking a smart display in CastDeviceRow turns the feature
+            // on; clearing it turns the feature off. Options to consider:
+            //   (a) An explicit "Cast to a smart display" master toggle
+            //       above the picker — clearer affordance, costs one extra
+            //       row of vertical space and a small ceremony to enable.
+            //   (b) A muted helper line "Pick a smart display to enable
+            //       casting" under the section header when routeName is
+            //       null — keeps the implicit model but signposts it.
+            // (b) is probably enough; revisit once users have given
+            // feedback on whether the implicit model is confusing.
             CastDeviceRow(
                 routeName = routeName,
                 onOpenPicker = onOpenPicker,
                 onClearRoute = onClearRoute,
+            )
+
+            if (geminiWarningVisible) {
+                CastGeminiWarning(onOpenVoiceSettings = onOpenVoiceSettings)
+            }
+
+            CastToggleRow(
+                label = stringResource(R.string.settings_smart_home_cast_morning_toggle),
+                checked = morningEnabled,
+                onCheckedChange = onSetMorningEnabled,
+            )
+            CastToggleRow(
+                label = stringResource(R.string.settings_smart_home_cast_tonight_toggle),
+                checked = tonightEnabled,
+                onCheckedChange = onSetTonightEnabled,
+            )
+            CastToggleRow(
+                label = stringResource(R.string.settings_smart_home_cast_skip_phone_speech_toggle),
+                checked = skipPhoneSpeech,
+                onCheckedChange = onSetSkipPhoneSpeech,
+            )
+            CastToggleRow(
+                label = stringResource(R.string.settings_smart_home_cast_wake_display_toggle),
+                checked = wakeDisplay,
+                onCheckedChange = onSetWakeDisplay,
+            )
+            CastToggleRow(
+                label = stringResource(R.string.settings_smart_home_cast_interrupt_toggle),
+                checked = interruptPlaying,
+                onCheckedChange = onSetInterruptPlaying,
             )
 
             Row(
@@ -278,6 +332,51 @@ private fun CastPickerDialog(
             }
         },
     )
+}
+
+@Composable
+private fun CastGeminiWarning(onOpenVoiceSettings: () -> Unit) {
+    Surface(
+        color = MaterialTheme.colorScheme.errorContainer,
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.settings_smart_home_cast_gemini_warning),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onErrorContainer,
+            )
+            TextButton(onClick = onOpenVoiceSettings) {
+                Text(stringResource(R.string.settings_smart_home_cast_gemini_warning_action))
+            }
+        }
+    }
+}
+
+@Composable
+private fun CastToggleRow(
+    label: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onCheckedChange(!checked) }
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f),
+        )
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
 }
 
 private val TIME_FORMATTER: DateTimeFormatter =

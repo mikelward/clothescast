@@ -33,7 +33,28 @@ class TonightInsightNotifier(private val context: Context) {
         topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     ) {
         if (!NotificationPermission.isGranted(context)) return
+        NotificationManagerCompat.from(context).notify(
+            NOTIFICATION_ID_TONIGHT_INSIGHT,
+            buildNotification(insight, prose, topColors, topStrokes),
+        )
+    }
 
+    /**
+     * Builds the tonight insight notification without posting. The worker
+     * uses this to feed [androidx.work.ForegroundInfo] when it goes
+     * foreground for a cast — the same notification doubles as the
+     * foreground-service tile and the persistent insight notification once
+     * the worker ends.
+     *
+     * Skips the POST_NOTIFICATIONS check on purpose: foreground-service
+     * notifications are exempt from that gate.
+     */
+    fun buildNotification(
+        insight: Insight,
+        prose: String,
+        topColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+        topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    ): android.app.Notification {
         val tapIntent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra(MainActivity.EXTRA_NAVIGATE_TO_TODAY, true)
@@ -49,7 +70,7 @@ class TonightInsightNotifier(private val context: Context) {
         val priority = if (insight.hasEvents) NotificationCompat.PRIORITY_DEFAULT else NotificationCompat.PRIORITY_LOW
 
         val top = insight.outfit?.top
-        val notification = NotificationCompat.Builder(context, channel)
+        return NotificationCompat.Builder(context, channel)
             .setSmallIcon(InsightNotifier.smallIconFor(top))
             .setLargeIcon(
                 InsightNotifier.largeIconForTop(
@@ -74,8 +95,6 @@ class TonightInsightNotifier(private val context: Context) {
                 if (!insight.hasEvents) setSilent(true)
             }
             .build()
-
-        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID_TONIGHT_INSIGHT, notification)
     }
 
     companion object {

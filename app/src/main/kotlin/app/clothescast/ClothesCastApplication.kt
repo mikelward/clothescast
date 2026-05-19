@@ -5,6 +5,7 @@ import android.content.Context
 import app.clothescast.alarm.DailyAlarmScheduler
 import app.clothescast.calendar.CalendarContractEventReader
 import app.clothescast.cast.CastInsightController
+import app.clothescast.cast.CastPublisher
 import app.clothescast.cast.CastRouteDiscovery
 import app.clothescast.core.data.diag.ApiCallLogger
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
@@ -148,6 +149,24 @@ class ClothesCastApplication : Application() {
 
     /** MediaRouter wrapper for the Settings → Cast picker. */
     val castRouteDiscovery: CastRouteDiscovery by lazy { CastRouteDiscovery(this) }
+
+    /**
+     * Worker-side publisher analog of [mqttPublisher]. The
+     * [FetchAndNotifyWorker] calls [CastPublisher.publishIfEnabled]
+     * after synthesising + WAV-encoding the forecast; the same WAV
+     * + PNG that MQTT publishes are reused here.
+     *
+     * Null inner fields (castContext / castInsightController) are
+     * fine — CastPublisher returns NotConfigured in those cases.
+     */
+    val castPublisher: CastPublisher by lazy {
+        CastPublisher(
+            context = this,
+            preferences = settingsRepository.preferences,
+            castContext = castContext,
+            controller = castInsightController,
+        )
+    }
 
     private val httpClient: HttpClient by lazy {
         HttpClient(OkHttp) {

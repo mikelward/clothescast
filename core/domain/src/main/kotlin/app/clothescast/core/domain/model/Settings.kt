@@ -637,6 +637,45 @@ data class UserPreferences(
      * the device next surfaces in a discovery scan.
      */
     val castRouteName: String? = null,
+    /**
+     * Whether the morning forecast worker run should also cast to the
+     * picked smart display. Defaults on so a user who picked a display in
+     * Settings sees their next morning's forecast there without a second
+     * toggle to find. Off skips the cast and leaves the existing phone +
+     * MQTT delivery untouched.
+     */
+    val castMorningEnabled: Boolean = true,
+    /** Sibling of [castMorningEnabled] for the evening worker run. */
+    val castTonightEnabled: Boolean = true,
+    /**
+     * When a cast succeeds, suppress the phone's spoken forecast — the
+     * smart display takes care of the audio. The phone *notification*
+     * still fires per [deliveryMode]; only the TTS playback is silenced.
+     *
+     * Phone TTS is still gated by [deliveryMode] first: a
+     * [DeliveryMode.NOTIFICATION_ONLY] user explicitly opted out of
+     * phone TTS, so we never speak there regardless of cast success
+     * or failure. This toggle only matters when phone TTS *would* have
+     * played — it just adds a "but if cast succeeded, stay quiet" gate
+     * on top.
+     */
+    val castSkipPhoneSpeech: Boolean = true,
+    /**
+     * When on, the worker casts even if the smart display is currently
+     * asleep — the Cast SDK wakes it for the duration. When off, the
+     * worker skips the cast if the display isn't already in use (the
+     * heuristic is `RouteInfo.connectionState != CONNECTED`), so a
+     * morning forecast doesn't power on the kitchen Nest Hub while no
+     * one's around.
+     */
+    val castWakeDisplay: Boolean = true,
+    /**
+     * When on, the worker casts even if the smart display is currently
+     * playing something from another app (Spotify, YouTube, etc.) — the
+     * Cast SDK takes over the route. When off, the worker skips the
+     * cast if another app holds the route.
+     */
+    val castInterruptPlaying: Boolean = true,
 ) {
     companion object {
         const val DEFAULT_GEMINI_VOICE = "Despina"

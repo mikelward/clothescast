@@ -207,4 +207,13 @@ data class SettingsState(
      * whole Cast section in that case.
      */
     val castAvailable: Boolean = false,
+    /** Per-period auto-cast toggles. Default true; see UserPreferences KDoc. */
+    val castMorningEnabled: Boolean = true,
+    val castTonightEnabled: Boolean = true,
+    /** When true (default), suppress the phone's spoken forecast after a successful cast. */
+    val castSkipPhoneSpeech: Boolean = true,
+    /** When true (default), the worker will wake the smart display if it's asleep. */
+    val castWakeDisplay: Boolean = true,
+    /** When true (default), the worker will take over the route from another casting app. */
+    val castInterruptPlaying: Boolean = true,
 )

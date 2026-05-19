@@ -11,18 +11,21 @@ import com.google.android.gms.cast.CastMediaControlIntent
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaLoadRequestData
 import com.google.android.gms.cast.MediaMetadata
+import com.google.android.gms.cast.framework.media.RemoteMediaClient.MediaChannelResult
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.SessionManager
 import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.common.images.WebImage
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.Locale
 import kotlin.coroutines.resume
@@ -171,14 +174,9 @@ class CastInsightController(
         discoveryTimeoutMs: Long = 5_000,
         sessionTimeoutMs: Long = 10_000,
     ) {
-        val route = findRoute(routeId, discoveryTimeoutMs)
-            ?: throw CastFailure.DeviceNotFound
-        val session = ensureSession(route, sessionTimeoutMs)
-        val client = session.remoteMediaClient
-            ?: throw CastFailure.NoRemoteMediaClient
-        val host = resolveLanIp(context)
-            ?: throw CastFailure.NoLanAddress
-
+        // Synth runs off-main (network call); switch to Main only for the
+        // MediaRouter / SessionManager / RemoteMediaClient block since
+        // those APIs are documented main-thread-only.
         val pcm = ttsClient.synthesize(
             text = prose,
             voiceName = voiceName,
@@ -186,12 +184,140 @@ class CastInsightController(
             style = style,
         )
         val wav = WavEncoder.encode(pcm)
+        runOnMainThreadCast {
+            val route = findRoute(routeId, discoveryTimeoutMs)
+                ?: throw CastFailure.DeviceNotFound
+            val session = ensureSession(route, sessionTimeoutMs)
+            val client = session.remoteMediaClient
+                ?: throw CastFailure.NoRemoteMediaClient
+            val host = resolveLanIp(context)
+                ?: throw CastFailure.NoLanAddress
+            loadOnSession(client, host, wav, outfitPng, title, subtitle)
+        }
+    }
+
+    /**
+     * Worker-path variant of [castToSavedRoute] that accepts pre-encoded
+     * audio (the worker already synthesised via Gemini for the phone +
+     * MQTT pipeline, so we reuse that WAV instead of paying a second
+     * Gemini call). Same find-route → select → wait-for-session → load
+     * orchestration; throws the same [CastFailure] types on failure.
+     *
+     * The [allowWake] and [allowInterrupt] gates are checked *after*
+     * [findRoute] has resolved the route's current state — running them
+     * upstream of discovery (in the publisher) lets stale or
+     * not-yet-discovered routes silently pass with `routeBusy = false`.
+     */
+    suspend fun dispatchToSavedRoute(
+        routeId: String,
+        wav: ByteArray,
+        outfitPng: ByteArray,
+        title: String,
+        subtitle: String?,
+        allowWake: Boolean = true,
+        allowInterrupt: Boolean = true,
+        discoveryTimeoutMs: Long = 5_000,
+        sessionTimeoutMs: Long = 10_000,
+    ) = runOnMainThreadCast {
+        // The whole block touches Cast SDK / MediaRouter APIs that are
+        // documented main-thread-only. Worker path invokes us on
+        // Dispatchers.Default; settings test path is already on Main —
+        // [Dispatchers.Main.immediate] is a no-op in that case.
+        val route = findRoute(routeId, discoveryTimeoutMs)
+            ?: throw CastFailure.DeviceNotFound
+        checkRouteGates(route, allowWake, allowInterrupt)
+        val session = ensureSession(route, sessionTimeoutMs)
+        val client = session.remoteMediaClient
+            ?: throw CastFailure.NoRemoteMediaClient
+        val host = resolveLanIp(context)
+            ?: throw CastFailure.NoLanAddress
+        loadOnSession(client, host, wav, outfitPng, title, subtitle)
+    }
+
+    /**
+     * Cast SDK's `MediaRouter.addCallback`, `selectRoute`,
+     * `SessionManager.addSessionManagerListener`, and
+     * `RemoteMediaClient.load` are all documented as main-thread-only.
+     * The Settings test path runs from `viewModelScope` (Main) so it
+     * worked accidentally; the worker path is on
+     * [Dispatchers.Default], so without this switch scheduled casts
+     * would crash or no-op silently. `.immediate` skips the dispatch
+     * when the caller is already on Main, so the test path pays no
+     * overhead.
+     */
+    private suspend inline fun <T> runOnMainThreadCast(crossinline block: suspend () -> T): T =
+        withContext(Dispatchers.Main.immediate) { block() }
+
+    /**
+     * Wake / interrupt gates, evaluated against the post-discovery route
+     * state. Throws [CastFailure.DisplayAsleep] when the user has off'd
+     * "Power on smart display" and we don't already have a session on
+     * the saved route. Throws [CastFailure.DisplayInUse] when the user
+     * has off'd "Interrupt if already playing" and the route is
+     * CONNECTED to something other than our app.
+     */
+    private fun checkRouteGates(
+        route: MediaRouter.RouteInfo,
+        allowWake: Boolean,
+        allowInterrupt: Boolean,
+    ) {
+        val router = MediaRouter.getInstance(context)
+        val isConnected = route.connectionState == MediaRouter.RouteInfo.CONNECTION_STATE_CONNECTED
+        val sessionOnThisRoute = sessionManager.currentCastSession?.isConnected == true &&
+            router.selectedRoute.id == route.id
+        // "Awake" = the SDK already sees the route as CONNECTED, whether
+        // by our app or another. A display playing Spotify is awake;
+        // [allowWake = false] only needs to skip the case where nobody's
+        // using it. The interrupt gate below handles the "awake but
+        // owned by another app" case separately.
+        if (!allowWake && !isConnected) {
+            throw CastFailure.DisplayAsleep
+        }
+        if (!allowInterrupt && isConnected && !sessionOnThisRoute) {
+            throw CastFailure.DisplayInUse
+        }
+    }
+
+    private suspend fun loadOnSession(
+        client: com.google.android.gms.cast.framework.media.RemoteMediaClient,
+        host: String,
+        wav: ByteArray,
+        outfitPng: ByteArray,
+        title: String,
+        subtitle: String?,
+    ) {
         val urls = server.publish(host = host, audio = wav, image = outfitPng)
-        client.load(
+        val pending = client.load(
             MediaLoadRequestData.Builder()
                 .setMediaInfo(buildMediaInfo(urls, title, subtitle))
                 .build(),
         )
+        // Await the receiver's response so a [CastOutcome.Success]
+        // upstream actually means "the smart display accepted the
+        // media", not just "we issued the load request." Without
+        // this, [castSkipPhoneSpeech] would suppress the phone
+        // fallback even when the receiver rejected the media or
+        // disconnected mid-load — user hears nothing.
+        //
+        // Any non-success outcome — load rejected, cancellation mid-load,
+        // unexpected throwable — has to stop the server so the WAV / PNG
+        // don't linger on the LAN waiting for a playback that never
+        // started. The bound session listener already handles the
+        // natural-session-end case; this rescue covers everything else.
+        val result = try {
+            suspendCancellableCoroutine<MediaChannelResult> { cont ->
+                pending.setResultCallback { result ->
+                    if (cont.isActive) cont.resume(result)
+                }
+            }
+        } catch (t: Throwable) {
+            server.stop()
+            throw t
+        }
+        if (!result.status.isSuccess) {
+            server.stop()
+            throw CastFailure.LoadRejected(result.status.statusCode)
+        }
     }
 
     private suspend fun findRoute(
@@ -291,6 +417,13 @@ class CastInsightController(
             CastFailure("Smart display rejected the session (code $errorCode).")
         data object NoRemoteMediaClient : CastFailure("Smart display did not accept playback.")
         data object NoLanAddress : CastFailure("Phone has no Wi-Fi address — connect to the same network as the smart display.")
+        /** [allowWake] off + the saved route isn't already in use by our app. */
+        data object DisplayAsleep : CastFailure("Skipped — smart display is asleep.")
+        /** [allowInterrupt] off + the route is CONNECTED to another app. */
+        data object DisplayInUse : CastFailure("Skipped — smart display is in use.")
+        /** Receiver rejected the load request post-session. */
+        data class LoadRejected(val statusCode: Int) :
+            CastFailure("Smart display rejected the media (code $statusCode).")
     }
 
     companion object {
@@ -301,6 +434,17 @@ class CastInsightController(
             title: String,
             subtitle: String?,
         ): MediaInfo {
+            // TODO: outfit image renders at album-art size (~1/4 of the
+            // screen) on smart displays because the Default Media Receiver
+            // classifies this as audio playback. Two follow-up paths to
+            // get a bigger image:
+            //   1. Swap MEDIA_TYPE_GENERIC → MEDIA_TYPE_PHOTO and see if
+            //      the receiver gives the metadata image more screen real
+            //      estate. Cheap experiment.
+            //   2. Pack the outfit PNG + WAV into a still-frame MP4 (one
+            //      H.264 keyframe held for the duration of the audio) and
+            //      load as video/mp4 — receiver shows it full-screen.
+            //      ~150 lines of MediaMuxer + MediaCodec work.
             val metadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_GENERIC).apply {
                 putString(MediaMetadata.KEY_TITLE, title)
                 if (!subtitle.isNullOrBlank()) {

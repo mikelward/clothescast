@@ -2,6 +2,7 @@ package app.clothescast.ui.settings
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
+import app.clothescast.core.domain.model.TtsEngine
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -275,6 +276,20 @@ fun SettingsScreen(
                 castLastError = state.castLastError,
                 castLastErrorAt = state.castLastErrorAt,
                 castLastSuccessAt = state.castLastSuccessAt,
+                castMorningEnabled = state.castMorningEnabled,
+                castTonightEnabled = state.castTonightEnabled,
+                castSkipPhoneSpeech = state.castSkipPhoneSpeech,
+                castWakeDisplay = state.castWakeDisplay,
+                castInterruptPlaying = state.castInterruptPlaying,
+                // Cast needs Gemini's PCM output. Surface a warning row
+                // when the user has picked a display but either the TTS
+                // engine isn't Gemini or the Gemini API key isn't set —
+                // both cases silently no-op the cast pipeline. One
+                // warning, one button (open Voice settings); the user
+                // fixes whichever case applies from there.
+                castGeminiWarningVisible = state.castRouteName != null &&
+                    (state.ttsEngine != TtsEngine.GEMINI || !state.apiKeyConfigured),
+                onOpenVoiceSettings = { route = SettingsRoute.Voice },
                 padding = padding,
                 onSetBridgeEnabled = viewModel::setMqttBridgeEnabled,
                 onSaveConfig = viewModel::setMqttConfig,
@@ -288,6 +303,11 @@ fun SettingsScreen(
                 onPickCastRoute = viewModel::pickCastRoute,
                 onClearCastRoute = viewModel::clearCastRoute,
                 onCastNow = viewModel::castNow,
+                onSetCastMorningEnabled = viewModel::setCastMorningEnabled,
+                onSetCastTonightEnabled = viewModel::setCastTonightEnabled,
+                onSetCastSkipPhoneSpeech = viewModel::setCastSkipPhoneSpeech,
+                onSetCastWakeDisplay = viewModel::setCastWakeDisplay,
+                onSetCastInterruptPlaying = viewModel::setCastInterruptPlaying,
             )
             SettingsRoute.Privacy -> PrivacyContent(
                 telemetryEnabled = state.telemetryEnabled,

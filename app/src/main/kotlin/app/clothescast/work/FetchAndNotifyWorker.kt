@@ -27,7 +27,10 @@ import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.core.domain.usecase.shouldSpeak
 import app.clothescast.core.data.tts.WavEncoder
 import app.clothescast.data.InsightCache
+import app.clothescast.cast.CastOutcome
 import app.clothescast.mqtt.MqttPublishOutcome
+import app.clothescast.notification.InsightNotifier
+import app.clothescast.notification.TonightInsightNotifier
 import app.clothescast.diag.Telemetry
 import app.clothescast.diag.classifyDailyRefreshReason
 import app.clothescast.insight.InsightFormatter
@@ -584,8 +587,11 @@ class FetchAndNotifyWorker(
         // within the 60-second alignment window.
         // Prose publish — outcome persisted for the Smart Home settings UI.
         val mqttOutcome = app.mqttPublisher.publishIfEnabled(insight.period, prose)
-        // Image publish — fire-and-forget alongside the prose.
-        insight.outfit?.let { outfit ->
+        // Render the outfit card once. The same ByteArray feeds the MQTT
+        // image topic AND the cast publish downstream (in [speakWithFallback]),
+        // so we never re-render — single source of truth for "what does the
+        // outfit look like right now."
+        val outfitPng: ByteArray? = insight.outfit?.let { outfit ->
             runCatching {
                 val formatter = InsightFormatter.forRegion(applicationContext, prefs.region)
                 val info = outfitCardInfoLines(
@@ -598,7 +604,7 @@ class FetchAndNotifyWorker(
                     if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today
                     else R.string.outfit_card_header_tonight
                 )
-                val png = renderOutfitCard(
+                renderOutfitCard(
                     context = applicationContext,
                     outfit = outfit,
                     header = header,
@@ -612,15 +618,23 @@ class FetchAndNotifyWorker(
                     topStrokes = topStrokes,
                     bottomStrokes = bottomStrokes,
                 )
-                app.mqttPublisher.publishImageIfEnabled(insight.period, png)
             }.onFailure { t ->
                 if (t is CancellationException) throw t
-                DiagLog.w(TAG, "Outfit image MQTT publish failed.", t)
-            }
+                DiagLog.w(TAG, "Outfit card render failed.", t)
+            }.getOrNull()
+        }
+        // Image publish — fire-and-forget alongside the prose, off the
+        // shared render above.
+        outfitPng?.let { png ->
+            runCatching { app.mqttPublisher.publishImageIfEnabled(insight.period, png) }
+                .onFailure { t ->
+                    if (t is CancellationException) throw t
+                    DiagLog.w(TAG, "Outfit image MQTT publish failed.", t)
+                }
         }
         when (insight.period) {
-            ForecastPeriod.TODAY -> deliverToday(insight, prefs, prose, topColors, topStrokes)
-            ForecastPeriod.TONIGHT -> deliverTonight(insight, prefs, prose, topColors, topStrokes)
+            ForecastPeriod.TODAY -> deliverToday(insight, prefs, prose, topColors, topStrokes, outfitPng)
+            ForecastPeriod.TONIGHT -> deliverTonight(insight, prefs, prose, topColors, topStrokes, outfitPng)
         }
         // Status persistence is best-effort: a DataStore I/O failure here must
         // not surface as a deliver() exception, which would cause the
@@ -641,16 +655,43 @@ class FetchAndNotifyWorker(
         prose: String,
         topColors: Map<OutfitSuggestion.Top, Long>,
         topStrokes: Map<OutfitSuggestion.Top, Long>,
+        outfitPng: ByteArray?,
     ) {
         awaitDeliveryAlignment()
         val mode = prefs.deliveryMode
-        if (mode == DeliveryMode.NOTIFICATION_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS) {
+        val shouldNotify = mode == DeliveryMode.NOTIFICATION_ONLY ||
+            mode == DeliveryMode.NOTIFICATION_AND_TTS
+        val ttsRequested = mode == DeliveryMode.TTS_ONLY ||
+            mode == DeliveryMode.NOTIFICATION_AND_TTS
+        val willCast = willCastForPeriod(prefs, ForecastPeriod.TODAY, outfitPng)
+        // Cast runs as plain background work inside [speakWithFallback].
+        // Earlier drafts promoted the insight notification to the worker's
+        // FGS notification (one tray tile, "officially supported"
+        // MediaRouter.selectRoute), but WorkManager calls stopForeground
+        // with STOP_FOREGROUND_REMOVE when the worker completes — so the
+        // insight tile would vanish from the tray the moment the cast
+        // finished. Worse UX than the alternative (no FGS, accept some
+        // OEM flakiness for background cast SDK calls).
+        if (shouldNotify) {
             app.insightNotifier.notify(insight, prose, topColors, topStrokes)
             recordDeliveryDelay(ForecastPeriod.TODAY)
         }
-        val ttsRequested = mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
-        if (shouldSpeakNow(ttsRequested, prefs)) {
-            speakWithFallback(insight.period, ttsUtterance(insight, prefs), prefs)
+        // Speak — synth once, then deliver to whichever TTS endpoints
+        // are enabled (phone speech, cast, MQTT audio). Each endpoint
+        // gates itself internally; we don't preflight runtime
+        // reachability before synth because the user has already
+        // consented to the Gemini call by enabling at least one
+        // endpoint that consumes the audio.
+        val phoneRequested = shouldSpeakNow(ttsRequested, prefs)
+        if (phoneRequested || willCast) {
+            speakWithFallback(
+                insight.period,
+                ttsUtterance(insight, prefs),
+                prefs,
+                outfitPng,
+                phoneRequested,
+                insight.location?.displayName,
+            )
         }
     }
 
@@ -766,29 +807,66 @@ class FetchAndNotifyWorker(
         prose: String,
         topColors: Map<OutfitSuggestion.Top, Long>,
         topStrokes: Map<OutfitSuggestion.Top, Long>,
+        outfitPng: ByteArray?,
     ) {
         awaitDeliveryAlignment()
         val mode = prefs.tonightDeliveryMode
         val canNotify = mode == DeliveryMode.NOTIFICATION_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
-        // The notify-only-on-events toggle skips the notification entirely on
-        // empty evenings — the cache is still written and the widget updated
-        // upstream, so the user sees fresh state when they open the app. Only
-        // log "skipping" when a notification would otherwise have posted.
-        val skipEmptyEveningNotification = canNotify && prefs.tonightNotifyOnlyOnEvents && !insight.hasEvents
-        if (skipEmptyEveningNotification) {
-            DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping notification.")
-        } else if (canNotify) {
+        // [tonightNotifyOnlyOnEvents] is the user's explicit "don't bother
+        // me on empty evenings" preference. It silences every destination —
+        // notification, phone TTS, MQTT audio publish (downstream of
+        // [speakWithFallback]), and cast. We could try to be clever and
+        // still cast when [willCastForPeriod] looks promising, but the
+        // wake / interrupt gates inside [CastPublisher] mean we'd have
+        // promoted an FGS notification and burned a Gemini synth for an
+        // evening that was supposed to be silent. Cleaner to respect the
+        // user's preference uniformly. The cache is still written and the
+        // widget updated upstream of [deliver], so they see fresh state
+        // when they open the app.
+        if (prefs.tonightNotifyOnlyOnEvents && !insight.hasEvents) {
+            DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping notification, TTS, and cast.")
+            return
+        }
+        val willCast = willCastForPeriod(prefs, ForecastPeriod.TONIGHT, outfitPng)
+        // Same FGS-removal trade-off as deliverToday — see comment there.
+        if (canNotify) {
             app.tonightInsightNotifier.notify(insight, prose, topColors, topStrokes)
             recordDeliveryDelay(ForecastPeriod.TONIGHT)
         }
-        val skipEmptyEveningTts = prefs.tonightNotifyOnlyOnEvents && !insight.hasEvents
-        if (skipEmptyEveningTts) {
-            DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping TTS.")
-            return
-        }
         val ttsRequested = mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
-        if (shouldSpeakNow(ttsRequested, prefs)) {
-            speakWithFallback(insight.period, ttsUtterance(insight, prefs), prefs)
+        val phoneRequested = shouldSpeakNow(ttsRequested, prefs)
+        if (phoneRequested || willCast) {
+            speakWithFallback(
+                insight.period,
+                ttsUtterance(insight, prefs),
+                prefs,
+                outfitPng,
+                phoneRequested,
+                insight.location?.displayName,
+            )
+        }
+    }
+
+    /**
+     * Whether the worker should cast this run's insight to the saved
+     * smart display. Requires:
+     *  - An outfit card was rendered successfully (we need the PNG).
+     *  - The user picked a display in Settings.
+     *  - The period toggle is on.
+     *  - The user's TTS engine is Gemini — the cast pipeline reuses the
+     *    PCM buffer, and the on-device engine doesn't expose one.
+     */
+    private fun willCastForPeriod(
+        prefs: UserPreferences,
+        period: ForecastPeriod,
+        outfitPng: ByteArray?,
+    ): Boolean {
+        if (outfitPng == null) return false
+        if (prefs.castRouteId == null) return false
+        if (prefs.ttsEngine != TtsEngine.GEMINI) return false
+        return when (period) {
+            ForecastPeriod.TODAY -> prefs.castMorningEnabled
+            ForecastPeriod.TONIGHT -> prefs.castTonightEnabled
         }
     }
 
@@ -829,44 +907,97 @@ class FetchAndNotifyWorker(
         period: ForecastPeriod,
         utterance: InsightTtsUtterance,
         prefs: UserPreferences,
+        outfitPng: ByteArray?,
+        phoneRequested: Boolean,
+        castSubtitle: String?,
     ) {
-        withSpeechAudioFocus(applicationContext) {
-            when (prefs.ttsEngine) {
-                TtsEngine.GEMINI -> {
-                    try {
-                        val speaker = GeminiTtsSpeaker(
-                            app.geminiTtsClient,
-                            voiceName = prefs.geminiVoice,
-                            style = prefs.ttsStyle,
-                        )
-                        val audio = speaker.synthesize(utterance.text, utterance.locale)
-                        // Publish before local playback so a Hub speaking off
-                        // the retained audio topic doesn't trail the phone.
-                        // Mirrors the image publish in deliver(): the call is
-                        // capped at two attempts × MqttPublisher.DEFAULT_PUBLISH_TIMEOUT_MS
-                        // plus the retry delay, so a broker outage costs at
-                        // most ~11 s of TTS-path latency.
-                        runCatching {
-                            app.mqttPublisher.publishAudioIfEnabled(
-                                period,
-                                WavEncoder.encode(audio),
-                            )
-                        }.onFailure { t ->
-                            if (t is CancellationException) throw t
-                            DiagLog.w(TAG, "TTS audio MQTT publish failed.", t)
-                        }
-                        speaker.play(audio)
-                        return@withSpeechAudioFocus
-                    } catch (t: Throwable) {
-                        DiagLog.w(TAG, "Gemini TTS failed; falling back to device TTS.", t)
+        // Audio focus is only needed for the actual phone playback step;
+        // synthesis, MQTT publish, and cast publish all run without it.
+        // Wrapping the whole flow in withSpeechAudioFocus on a cast-only
+        // delivery (phoneRequested=false but willCast=true) would
+        // unnecessarily duck other phone media — or wait up to the
+        // delayed-focus timeout during a call — for several seconds while
+        // we synth + cast and never play anything locally.
+        when (prefs.ttsEngine) {
+            TtsEngine.GEMINI -> {
+                try {
+                    val speaker = GeminiTtsSpeaker(
+                        app.geminiTtsClient,
+                        voiceName = prefs.geminiVoice,
+                        style = prefs.ttsStyle,
+                    )
+                    val audio = speaker.synthesize(utterance.text, utterance.locale)
+                    val wav = WavEncoder.encode(audio)
+                    // Once a TTS endpoint has triggered synthesis, every
+                    // *enabled* endpoint gets the audio — phone speaker,
+                    // cast receiver, MQTT bridge. Each endpoint checks
+                    // its own enablement internally; MQTT no-ops when the
+                    // bridge is off, Cast no-ops when no display is
+                    // picked, phone playback is gated below.
+                    runCatching {
+                        app.mqttPublisher.publishAudioIfEnabled(period, wav)
+                    }.onFailure { t ->
+                        if (t is CancellationException) throw t
+                        DiagLog.w(TAG, "TTS audio MQTT publish failed.", t)
                     }
+                    // Cast — reuses the same WAV + the PNG rendered
+                    // up in deliver(). Returns NotConfigured silently
+                    // when no display picked / period toggle off /
+                    // Cast SDK unavailable; failures are persisted
+                    // for the Settings status row by [setCastLastError].
+                    val castOutcome = if (outfitPng != null) {
+                        app.castPublisher.publishIfEnabled(period, wav, outfitPng, castSubtitle)
+                    } else {
+                        CastOutcome.NotConfigured
+                    }
+                    runCatching {
+                        when (castOutcome) {
+                            is CastOutcome.NotConfigured -> Unit
+                            is CastOutcome.Success -> app.settingsRepository.setCastLastError(null)
+                            is CastOutcome.Failure -> app.settingsRepository.setCastLastError(castOutcome.message)
+                        }
+                    }.onFailure { t ->
+                        // Best-effort status write — but worker cancellation
+                        // must still propagate. Mirrors the MQTT publish
+                        // rescue blocks in this method and in deliver().
+                        if (t is CancellationException) throw t
+                        DiagLog.w(TAG, "Persisting cast status failed.", t)
+                    }
+                    val skipPhoneSpeech = castOutcome.isSuccess && prefs.castSkipPhoneSpeech
+                    if (phoneRequested && !skipPhoneSpeech) {
+                        withSpeechAudioFocus(applicationContext) {
+                            speaker.play(audio)
+                        }
+                    } else if (skipPhoneSpeech) {
+                        DiagLog.i(TAG, "Cast succeeded; skipping phone TTS per castSkipPhoneSpeech.")
+                    }
+                    return
+                } catch (t: Throwable) {
+                    // Worker cancellation (REPLACE refresh, OS stop, etc.)
+                    // must unwind cleanly — propagate it instead of
+                    // treating it as a Gemini failure and falling back
+                    // to device TTS. Mirrors the MQTT publish-path's
+                    // pattern in deliver(). Applies to synthesize,
+                    // play, and CastPublisher.publishIfEnabled — all
+                    // of them rethrow cancellation.
+                    if (t is CancellationException) throw t
+                    DiagLog.w(TAG, "Gemini TTS failed; falling back to device TTS.", t)
                 }
-                TtsEngine.DEVICE -> Unit
             }
-            try {
-                app.deviceTtsSpeaker(prefs.deviceVoice).speak(utterance.text, utterance.locale)
-            } catch (t: Throwable) {
-                DiagLog.w(TAG, "Device TTS failed; insight is still posted as notification.", t)
+            TtsEngine.DEVICE -> Unit
+        }
+        // Device TTS path. No cast support — the on-device engine
+        // doesn't expose a PCM buffer for off-device routing. Cast
+        // requires the Gemini engine; the Settings status row would
+        // surface this if the user tries to test-cast on Device TTS.
+        if (phoneRequested) {
+            withSpeechAudioFocus(applicationContext) {
+                try {
+                    app.deviceTtsSpeaker(prefs.deviceVoice).speak(utterance.text, utterance.locale)
+                } catch (t: Throwable) {
+                    if (t is CancellationException) throw t
+                    DiagLog.w(TAG, "Device TTS failed; insight is still posted as notification.", t)
+                }
             }
         }
     }

@@ -392,6 +392,26 @@ class SettingsRepository(
         }
     }
 
+    suspend fun setCastMorningEnabled(enabled: Boolean) {
+        dataStore.edit { it[CAST_MORNING_ENABLED] = enabled }
+    }
+
+    suspend fun setCastTonightEnabled(enabled: Boolean) {
+        dataStore.edit { it[CAST_TONIGHT_ENABLED] = enabled }
+    }
+
+    suspend fun setCastSkipPhoneSpeech(enabled: Boolean) {
+        dataStore.edit { it[CAST_SKIP_PHONE_SPEECH] = enabled }
+    }
+
+    suspend fun setCastWakeDisplay(enabled: Boolean) {
+        dataStore.edit { it[CAST_WAKE_DISPLAY] = enabled }
+    }
+
+    suspend fun setCastInterruptPlaying(enabled: Boolean) {
+        dataStore.edit { it[CAST_INTERRUPT_PLAYING] = enabled }
+    }
+
     /**
      * Runtime status of the last MQTT publish attempt, separate from user
      * preferences. [errorMessage] is null on success (or no record yet); non-null
@@ -733,6 +753,13 @@ class SettingsRepository(
             ?: UserPreferences.DEFAULT_MQTT_TOPIC
         val castRouteId = this[CAST_ROUTE_ID]?.takeIf { it.isNotBlank() }
         val castRouteName = this[CAST_ROUTE_NAME]?.takeIf { it.isNotBlank() }
+        // All cast behaviour gates default true — see [UserPreferences] field
+        // KDoc for the "polite variant" rationale.
+        val castMorningEnabled = this[CAST_MORNING_ENABLED] ?: true
+        val castTonightEnabled = this[CAST_TONIGHT_ENABLED] ?: true
+        val castSkipPhoneSpeech = this[CAST_SKIP_PHONE_SPEECH] ?: true
+        val castWakeDisplay = this[CAST_WAKE_DISPLAY] ?: true
+        val castInterruptPlaying = this[CAST_INTERRUPT_PLAYING] ?: true
         val zone = zoneIdProvider()
 
         return UserPreferences(
@@ -781,6 +808,11 @@ class SettingsRepository(
             mqttTopic = mqttTopic,
             castRouteId = castRouteId,
             castRouteName = castRouteName,
+            castMorningEnabled = castMorningEnabled,
+            castTonightEnabled = castTonightEnabled,
+            castSkipPhoneSpeech = castSkipPhoneSpeech,
+            castWakeDisplay = castWakeDisplay,
+            castInterruptPlaying = castInterruptPlaying,
         )
     }
 
@@ -1043,6 +1075,17 @@ class SettingsRepository(
         private val CAST_LAST_ERROR_MSG = stringPreferencesKey("cast_last_error_msg")
         private val CAST_LAST_ERROR_AT_MS = longPreferencesKey("cast_last_error_at_ms")
         private val CAST_LAST_SUCCESS_AT_MS = longPreferencesKey("cast_last_success_at_ms")
+        // Per-period + behaviour gates the worker reads when deciding
+        // whether to cast. All default-true so the user who picks a
+        // display in Settings gets the eager "cast everything" behaviour
+        // immediately; the toggles exist for users who want the polite
+        // variants ("don't wake my Hub at 7am", "don't barge into
+        // Spotify").
+        private val CAST_MORNING_ENABLED = booleanPreferencesKey("cast_morning_enabled")
+        private val CAST_TONIGHT_ENABLED = booleanPreferencesKey("cast_tonight_enabled")
+        private val CAST_SKIP_PHONE_SPEECH = booleanPreferencesKey("cast_skip_phone_speech")
+        private val CAST_WAKE_DISPLAY = booleanPreferencesKey("cast_wake_display")
+        private val CAST_INTERRUPT_PLAYING = booleanPreferencesKey("cast_interrupt_playing")
 
         private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
         private val DEFAULT_TIME: LocalTime = LocalTime.of(7, 0)

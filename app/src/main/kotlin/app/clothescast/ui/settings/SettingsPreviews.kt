@@ -412,6 +412,13 @@ internal fun SettingsSmartHomePreview() {
             castLastError = null,
             castLastErrorAt = 0L,
             castLastSuccessAt = 0L,
+            castMorningEnabled = true,
+            castTonightEnabled = true,
+            castSkipPhoneSpeech = true,
+            castWakeDisplay = true,
+            castInterruptPlaying = true,
+            castGeminiWarningVisible = false,
+            onOpenVoiceSettings = {},
             padding = PaddingValues(0.dp),
             onSetBridgeEnabled = {},
             onSaveConfig = { _, _, _, _, _, _ -> },
@@ -425,6 +432,11 @@ internal fun SettingsSmartHomePreview() {
             onPickCastRoute = {},
             onClearCastRoute = {},
             onCastNow = {},
+            onSetCastMorningEnabled = {},
+            onSetCastTonightEnabled = {},
+            onSetCastSkipPhoneSpeech = {},
+            onSetCastWakeDisplay = {},
+            onSetCastInterruptPlaying = {},
         )
     }
 }

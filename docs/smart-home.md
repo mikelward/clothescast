@@ -30,8 +30,10 @@ yourself; no developer-operated service ever sees the payload.
 4. Optionally enter a username + password. The password is stored
    encrypted on-device under the same Tink-AEAD slot the Gemini API
    key uses.
-5. Topic prefix defaults to `clothescast/insight`. Today's forecast
-   publishes to `<prefix>/today`; tonight's to `<prefix>/tonight`.
+5. Topic prefix defaults to `clothescast/default`. Today's forecast
+   publishes to `<prefix>/today/text`; tonight's to `<prefix>/tonight/text`.
+   The outfit image and TTS audio (when published) land on
+   `<prefix>/<period>/image` and `<prefix>/<period>/audio` respectively.
 6. Tap **Save**.
 
 The next scheduled refresh (07:00 by default for today, 19:00 for
@@ -81,7 +83,7 @@ topics ClothesCast actually writes:
    add-on, the **Studio Code Server** add-on, or SSH) with:
    ```
    user clothescast
-   topic write clothescast/insight/#
+   topic write clothescast/default/#
    ```
    That grants write-only access on the topic prefix and nothing else.
    Adjust the topic if you customised the prefix in the ClothesCast
@@ -118,11 +120,11 @@ mqtt:
   sensor:
     - name: "Clothescast today"
       unique_id: clothescast_today
-      state_topic: "clothescast/insight/today"
+      state_topic: "clothescast/default/today/text"
       value_template: "{{ value }}"
     - name: "Clothescast tonight"
       unique_id: clothescast_tonight
-      state_topic: "clothescast/insight/tonight"
+      state_topic: "clothescast/default/tonight/text"
       value_template: "{{ value }}"
 ```
 
@@ -134,7 +136,7 @@ subscribers on connect).
 ## Home Assistant — outfit image on Nest Hub
 
 Alongside the prose sensor, ClothesCast publishes a PNG outfit card to
-`<prefix>/<period>/image` (e.g. `clothescast/insight/today/image`). The
+`<prefix>/<period>/image` (e.g. `clothescast/default/today/image`). The
 card is 800 × 480 px (Nest Hub 7" native resolution) and shows:
 
 - Period label ("TODAY" / "TONIGHT") in Roboto Bold at the top
@@ -158,9 +160,9 @@ is implied when the entry sits under `mqtt:`):
 mqtt:
   camera:
     - name: "Clothescast today outfit"
-      topic: "clothescast/insight/today/image"
+      topic: "clothescast/default/today/image"
     - name: "Clothescast tonight outfit"
-      topic: "clothescast/insight/tonight/image"
+      topic: "clothescast/default/tonight/image"
 ```
 
 Reload MQTT (Developer Tools → YAML → Reload MQTT) or restart HA so
@@ -221,7 +223,7 @@ shape.
 
 When the Gemini TTS engine is selected (Settings → Voice → Gemini),
 ClothesCast publishes the synthesised audio as a WAV clip to
-`<prefix>/<period>/audio` (e.g. `clothescast/insight/today/audio`).
+`<prefix>/<period>/audio` (e.g. `clothescast/default/today/audio`).
 The payload is signed 16-bit mono PCM at the sample rate Gemini
 returned, wrapped in a canonical 44-byte RIFF/WAVE header — playable
 as-is by ffmpeg, browsers, and `media_player.play_media` when handed
@@ -583,7 +585,7 @@ property that applies to any wait shape.)
 - **No payload arriving.** Subscribe from a terminal that's on the
   same network as the broker:
   ```
-  mosquitto_sub -h <broker-host> -u <user> -P <pass> -t 'clothescast/insight/#' -v
+  mosquitto_sub -h <broker-host> -u <user> -P <pass> -t 'clothescast/default/#' -v
   ```
   Then trigger a refresh from the ClothesCast Today screen. The
   payload should appear within ~5 seconds of the

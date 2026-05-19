@@ -74,8 +74,8 @@ PRIVACY.md.
 Done:
 
 - [x] **MQTT publisher in the worker.** Twice-daily refresh publishes
-      `clothescast/insight/today` and `clothescast/insight/tonight` as
-      retained QoS 1 messages. Configured from a new Settings → Smart
+      `clothescast/default/today/text` and
+      `clothescast/default/tonight/text` as retained QoS 1 messages. Configured from a new Settings → Smart
       Home page (host, port, TLS, username, password, topic prefix).
       Password stored in SecureKeyStore under a separate Tink AEAD
       slot from the Gemini key. Initial PR #504, hardened against R8
@@ -112,7 +112,7 @@ Open:
       them as `image.*` entities. The shape: rasterise the
       OutfitWidget composition (top + bottom icons, ~1280x800 for
       Hub Max scaling) to PNG, publish to
-      `clothescast/insight/<period>/image` as a retained binary
+      `clothescast/default/<period>/image` as a retained binary
       payload. HA picks it up via `mqtt: image: - state_topic:` and a
       downstream automation calls `media_player.play_media` with the
       entity's `entity_picture` URL targeting the Hub's

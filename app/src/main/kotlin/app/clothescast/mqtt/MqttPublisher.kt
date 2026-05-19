@@ -53,7 +53,7 @@ class MqttPublisher(
 ) {
 
     /**
-     * Publishes to `${baseTopic}/${period.lowercased()}` and returns an
+     * Publishes to `${baseTopic}/${period.lowercased()}/text` and returns an
      * [MqttPublishOutcome] so the caller can persist the result for display.
      * Returns [MqttPublishOutcome.NotConfigured] (silently) when the bridge is
      * disabled or no host is set. Any network failure (DNS, connection, broker
@@ -78,7 +78,7 @@ class MqttPublisher(
     /**
      * Publishes a test message to `${baseTopic}/test` and returns the outcome.
      * Intended for the "Publish now" button — uses a dedicated topic suffix so
-     * the retained forecast on `${baseTopic}/today` and `tonight` is never
+     * the retained forecast on `${baseTopic}/<period>/text` is never
      * overwritten by a connectivity probe. Returns
      * [MqttPublishOutcome.NotConfigured] when the bridge is disabled or no host
      * is configured.
@@ -96,7 +96,8 @@ class MqttPublisher(
 
     /**
      * Fire-and-forget publish of a PNG outfit image to
-     * `${baseTopic}/${period.lowercased()}/image`. Piggybacks on the same
+     * `${baseTopic}/${period.lowercased()}/image`, sibling of the prose
+     * (`/text`) and audio (`/audio`) topics. Piggybacks on the same
      * MQTT bridge toggle as [publishIfEnabled] — no separate setting needed.
      * HA's `image.mqtt` integration subscribes to this topic and surfaces
      * the outfit as an `image.*` entity, which a downstream automation can
@@ -116,7 +117,8 @@ class MqttPublisher(
 
     /**
      * Fire-and-forget publish of a WAV-wrapped TTS clip to
-     * `${baseTopic}/${period.lowercased()}/audio`. Same bridge toggle as the
+     * `${baseTopic}/${period.lowercased()}/audio`, sibling of the prose
+     * (`/text`) and image (`/image`) topics. Same bridge toggle as the
      * prose and image topics — no separate setting. Only emitted when the
      * Gemini engine actually synthesised audio for local playback (device
      * TTS doesn't expose bytes), so the published clip matches what the
@@ -278,16 +280,23 @@ class MqttPublisher(
         internal const val SOCKET_CONNECT_TIMEOUT_MS = 4_000L
         internal const val MQTT_CONNECT_TIMEOUT_MS = 4_000L
 
-        fun topicFor(baseTopic: String, period: ForecastPeriod): String {
-            val trimmed = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
-            return "$trimmed/${period.name.lowercase()}"
-        }
+        // Prose / image / audio all live under `<base>/<period>/<kind>` so
+        // each payload modality is independently subscribable from HA. The
+        // text suffix keeps the prose topic symmetrical with its image and
+        // audio siblings rather than living at a bare `<base>/<period>`.
+        fun topicFor(baseTopic: String, period: ForecastPeriod): String =
+            periodTopicFor(baseTopic, period, "text")
 
         fun imageTopicFor(baseTopic: String, period: ForecastPeriod): String =
-            "${topicFor(baseTopic, period)}/image"
+            periodTopicFor(baseTopic, period, "image")
 
         fun audioTopicFor(baseTopic: String, period: ForecastPeriod): String =
-            "${topicFor(baseTopic, period)}/audio"
+            periodTopicFor(baseTopic, period, "audio")
+
+        private fun periodTopicFor(baseTopic: String, period: ForecastPeriod, kind: String): String {
+            val trimmed = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
+            return "$trimmed/${period.name.lowercase()}/$kind"
+        }
     }
 }
 

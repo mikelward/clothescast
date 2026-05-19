@@ -46,7 +46,7 @@ class MqttPublisherTest {
     }
 
     @Test
-    fun `publishes today insight to today topic with retained payload`() = runTest {
+    fun `publishes today insight to today text topic with retained payload`() = runTest {
         val captured = mutableListOf<PublishCall>()
         val subject = MqttPublisher(
             preferences = flowOf(
@@ -64,7 +64,7 @@ class MqttPublisherTest {
 
         captured shouldHaveSize 1
         val call = captured.single()
-        call.topic shouldBe "clothescast/insight/today"
+        call.topic shouldBe "clothescast/default/today/text"
         call.payload.decodeToString() shouldBe "Today, cool and mild. Wear a sweater."
         call.config.host shouldBe "192.168.1.10"
         call.config.port shouldBe 1883
@@ -72,7 +72,7 @@ class MqttPublisherTest {
     }
 
     @Test
-    fun `tonight period publishes to tonight topic`() = runTest {
+    fun `tonight period publishes to tonight text topic`() = runTest {
         val captured = mutableListOf<PublishCall>()
         val subject = MqttPublisher(
             preferences = flowOf(
@@ -88,7 +88,7 @@ class MqttPublisherTest {
 
         subject.publishIfEnabled(ForecastPeriod.TONIGHT, "Tonight, clear and cool.")
 
-        captured.single().topic shouldBe "home/forecast/tonight"
+        captured.single().topic shouldBe "home/forecast/tonight/text"
     }
 
     @Test
@@ -293,34 +293,34 @@ class MqttPublisherTest {
 
     @Test
     fun `topic prefix is sanitised — leading and trailing slashes trimmed`() {
-        MqttPublisher.topicFor("/clothescast/insight/", ForecastPeriod.TODAY) shouldBe
-            "clothescast/insight/today"
+        MqttPublisher.topicFor("/clothescast/default/", ForecastPeriod.TODAY) shouldBe
+            "clothescast/default/today/text"
         MqttPublisher.topicFor("home/forecast", ForecastPeriod.TONIGHT) shouldBe
-            "home/forecast/tonight"
+            "home/forecast/tonight/text"
         // Empty / blank base falls back to the documented default so a
-        // hand-edited DataStore can't produce a bare "/today" topic.
-        MqttPublisher.topicFor("", ForecastPeriod.TODAY) shouldBe "clothescast/insight/today"
-        MqttPublisher.topicFor("   ", ForecastPeriod.TONIGHT) shouldBe "clothescast/insight/tonight"
+        // hand-edited DataStore can't produce a bare "/today/text" topic.
+        MqttPublisher.topicFor("", ForecastPeriod.TODAY) shouldBe "clothescast/default/today/text"
+        MqttPublisher.topicFor("   ", ForecastPeriod.TONIGHT) shouldBe "clothescast/default/tonight/text"
     }
 
     @Test
-    fun `imageTopicFor appends image suffix to prose topic`() {
-        MqttPublisher.imageTopicFor("clothescast/insight", ForecastPeriod.TODAY) shouldBe
-            "clothescast/insight/today/image"
+    fun `imageTopicFor builds image-suffixed topic`() {
+        MqttPublisher.imageTopicFor("clothescast/default", ForecastPeriod.TODAY) shouldBe
+            "clothescast/default/today/image"
         MqttPublisher.imageTopicFor("home/forecast", ForecastPeriod.TONIGHT) shouldBe
             "home/forecast/tonight/image"
         MqttPublisher.imageTopicFor("", ForecastPeriod.TODAY) shouldBe
-            "clothescast/insight/today/image"
+            "clothescast/default/today/image"
     }
 
     @Test
-    fun `audioTopicFor appends audio suffix to prose topic`() {
-        MqttPublisher.audioTopicFor("clothescast/insight", ForecastPeriod.TODAY) shouldBe
-            "clothescast/insight/today/audio"
+    fun `audioTopicFor builds audio-suffixed topic`() {
+        MqttPublisher.audioTopicFor("clothescast/default", ForecastPeriod.TODAY) shouldBe
+            "clothescast/default/today/audio"
         MqttPublisher.audioTopicFor("home/forecast", ForecastPeriod.TONIGHT) shouldBe
             "home/forecast/tonight/audio"
         MqttPublisher.audioTopicFor("", ForecastPeriod.TODAY) shouldBe
-            "clothescast/insight/today/audio"
+            "clothescast/default/today/audio"
     }
 
     @Test
@@ -331,7 +331,7 @@ class MqttPublisherTest {
                 basePrefs.copy(
                     mqttBridgeEnabled = true,
                     mqttHost = "broker.local",
-                    mqttTopic = "clothescast/insight",
+                    mqttTopic = "clothescast/default",
                 ),
             ),
             passwordProvider = { null },
@@ -343,7 +343,7 @@ class MqttPublisherTest {
 
         captured shouldHaveSize 1
         val call = captured.single()
-        call.topic shouldBe "clothescast/insight/today/image"
+        call.topic shouldBe "clothescast/default/today/image"
         (call.payload contentEquals fakeImage).shouldBeTrue()
     }
 
@@ -369,7 +369,7 @@ class MqttPublisherTest {
                 basePrefs.copy(
                     mqttBridgeEnabled = true,
                     mqttHost = "broker.local",
-                    mqttTopic = "clothescast/insight",
+                    mqttTopic = "clothescast/default",
                 ),
             ),
             passwordProvider = { null },
@@ -381,7 +381,7 @@ class MqttPublisherTest {
 
         captured shouldHaveSize 1
         val call = captured.single()
-        call.topic shouldBe "clothescast/insight/tonight/audio"
+        call.topic shouldBe "clothescast/default/tonight/audio"
         (call.payload contentEquals fakeWav).shouldBeTrue()
     }
 

@@ -639,6 +639,25 @@ data class UserPreferences(
      * the device next surfaces in a discovery scan.
      */
     val castRouteName: String? = null,
+    /**
+     * Per-period cast toggles. When off, the worker doesn't cast at that
+     * period even if a route is picked — useful for users who want the
+     * morning forecast on the smart display but not a tonight follow-up
+     * (or vice versa). Default on for both; the picker itself is the
+     * primary on/off switch.
+     */
+    val castMorning: Boolean = true,
+    val castTonight: Boolean = true,
+    /**
+     * When on (default), suppresses the phone speaker when an
+     * audio-carrying cast actually plays. The smart display is handling
+     * the audio; doubling up on the phone is redundant. Image-only casts
+     * (Gemini unavailable, smart display showing the outfit PNG silently)
+     * don't trigger the suppression — the phone speaker is what speaks in
+     * that path. The phone *notification* still posts per [deliveryMode];
+     * only TTS playback is affected.
+     */
+    val castSkipPhoneSpeech: Boolean = true,
 ) {
     companion object {
         const val DEFAULT_GEMINI_VOICE = "Despina"

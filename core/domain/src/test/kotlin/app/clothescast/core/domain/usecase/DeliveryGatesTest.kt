@@ -17,10 +17,6 @@ import java.time.ZoneOffset
  * coroutine plumbing is intentionally out of scope here — these tests
  * pin the gate algebra so the spec's branching logic stays inspectable
  * without spinning up Robolectric or a fake Cast/MQTT/TTS stack.
- *
- * Cast-destination gates land in a follow-up; for now the matrix
- * covers the existing destinations (phone notification, phone TTS,
- * MQTT bridge).
  */
 class DeliveryGatesTest {
 
@@ -203,5 +199,157 @@ class DeliveryGatesTest {
         isMqttPublishable(
             basePrefs.copy(mqttBridgeEnabled = false, mqttHost = "homeassistant.local"),
         ) shouldBe false
+    }
+
+    // ─── Cast gates ────────────────────────────────────────────────────
+
+    @Test
+    fun `no route picked — willCast false even when both period toggles on`() {
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                castRouteId = null,
+                castMorning = true,
+                castTonight = true,
+            ),
+            period = ForecastPeriod.TODAY,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = false,
+        )
+        gates.willCast shouldBe false
+        gates.castWillHaveAudio shouldBe false
+    }
+
+    @Test
+    fun `route picked + morning toggle on — willCast on TODAY`() {
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                castRouteId = "route-1",
+                castMorning = true,
+                castTonight = false,
+                ttsEngine = TtsEngine.GEMINI,
+            ),
+            period = ForecastPeriod.TODAY,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = false,
+        )
+        gates.willCast shouldBe true
+        gates.castWillHaveAudio shouldBe true
+        gates.needsSynth shouldBe true
+    }
+
+    @Test
+    fun `route picked + morning toggle off — willCast off on TODAY`() {
+        // Tonight-only user — morning runs skip cast even with route picked.
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                castRouteId = "route-1",
+                castMorning = false,
+                castTonight = true,
+            ),
+            period = ForecastPeriod.TODAY,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = false,
+        )
+        gates.willCast shouldBe false
+        gates.castWillHaveAudio shouldBe false
+    }
+
+    @Test
+    fun `route picked + tonight toggle on — willCast on TONIGHT`() {
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                castRouteId = "route-1",
+                castMorning = false,
+                castTonight = true,
+                ttsEngine = TtsEngine.GEMINI,
+            ),
+            period = ForecastPeriod.TONIGHT,
+            insightHasEvents = true,
+            geminiAvailable = true,
+            mqttPublishable = false,
+        )
+        gates.willCast shouldBe true
+        gates.castWillHaveAudio shouldBe true
+        gates.needsSynth shouldBe true
+    }
+
+    @Test
+    fun `willCast + Gemini unavailable — castWillHaveAudio false, no synth`() {
+        // Image-only cast path: smart display will show the outfit
+        // PNG silently with a stub WAV; no Gemini call fires.
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                castRouteId = "route-1",
+                ttsEngine = TtsEngine.DEVICE,
+                deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
+            ),
+            period = ForecastPeriod.TODAY,
+            insightHasEvents = false,
+            geminiAvailable = false,
+            mqttPublishable = false,
+        )
+        gates.willCast shouldBe true
+        gates.castWillHaveAudio shouldBe false
+        gates.needsSynth shouldBe false
+    }
+
+    @Test
+    fun `willCast + Gemini + notification-only mode — synth fires for cast`() {
+        // No phone TTS configured, but the audio-carrying cast still
+        // needs a buffer — synth must run.
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                castRouteId = "route-1",
+                ttsEngine = TtsEngine.GEMINI,
+                deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
+            ),
+            period = ForecastPeriod.TODAY,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = false,
+        )
+        gates.phoneTtsConfigured shouldBe false
+        gates.willCast shouldBe true
+        gates.castWillHaveAudio shouldBe true
+        gates.needsSynth shouldBe true
+    }
+
+    @Test
+    fun `willCast + emptyEveningSkip — no cast synth, MQTT still drives`() {
+        // emptyEveningSkip suppresses the cast destination. Without
+        // a publishable bridge there's no consumer for the buffer.
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                castRouteId = "route-1",
+                ttsEngine = TtsEngine.GEMINI,
+                tonightDeliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
+                tonightNotifyOnlyOnEvents = true,
+            ),
+            period = ForecastPeriod.TONIGHT,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = false,
+        )
+        gates.emptyEveningSkip shouldBe true
+        gates.willCast shouldBe true  // pre-skip prediction unchanged
+        gates.needsSynth shouldBe false
+
+        // Same row + publishable bridge → bridge still wants the buffer.
+        val withBridge = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                castRouteId = "route-1",
+                ttsEngine = TtsEngine.GEMINI,
+                tonightDeliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
+                tonightNotifyOnlyOnEvents = true,
+            ),
+            period = ForecastPeriod.TONIGHT,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = true,
+        )
+        withBridge.needsSynth shouldBe true
     }
 }

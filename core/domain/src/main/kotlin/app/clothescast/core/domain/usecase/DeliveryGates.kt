@@ -24,11 +24,6 @@ import app.clothescast.core.domain.model.UserPreferences
  * Keeping the gates pure means the spec's behaviour-matrix rows
  * become straight unit tests, independent of the worker's coroutine
  * scaffolding.
- *
- * Pre-cast-feature scope. The Cast destination's gates
- * (`willCast`, `castWillHaveAudio`) will join this struct when the
- * cast wiring lands; the disjunction in [needsSynth] is shaped to
- * extend cleanly when they do.
  */
 data class DeliveryGates(
     /**
@@ -37,10 +32,28 @@ data class DeliveryGates(
      */
     val phoneTtsConfigured: Boolean,
     /**
+     * A smart display is picked AND the period's cast toggle is on.
+     * Lights up the cast destination in the post-alignment fan-out.
+     */
+    val willCast: Boolean,
+    /**
+     * Pre-synth prediction: "based on settings, this run should try
+     * to carry audio on the cast." True iff [willCast] AND
+     * `geminiAvailable`. Drives the cast-side contribution to
+     * [needsSynth].
+     *
+     * Doesn't guarantee a buffer will exist by the cast-load step —
+     * a runtime synth failure can leave us with
+     * `castWillHaveAudio = true` but no PCM. The runtime "does the
+     * cast actually have audio?" decision is `willCast && (synth
+     * produced a buffer)`, evaluated in the worker post-synth.
+     */
+    val castWillHaveAudio: Boolean,
+    /**
      * Tonight runs with "only notify on events" AND no events in the
-     * evening window. Suppresses notification and phone speaker.
-     * **Does not suppress MQTT publishes** — HA still wants fresh
-     * retained topics on every run.
+     * evening window. Suppresses notification, phone speaker, **and
+     * cast**. Does not suppress MQTT publishes — HA still wants
+     * fresh retained topics on every run.
      */
     val emptyEveningSkip: Boolean,
     /**
@@ -51,10 +64,10 @@ data class DeliveryGates(
     val mqttPublishable: Boolean,
     /**
      * True when a Gemini PCM buffer is needed by some destination:
-     * MQTT audio publish, or phone speaker on the Gemini engine when
-     * the evening isn't being skipped.
+     * MQTT audio publish, audio-carrying cast, or phone speaker on
+     * the Gemini engine when the evening isn't being skipped.
      *
-     * Gemini is the only producer of routable PCM, so [geminiAvailable]
+     * Gemini is the only producer of routable PCM, so `geminiAvailable`
      * is a hard prerequisite — Device TTS does its own synth at
      * playback time and exposes no buffer.
      */
@@ -91,6 +104,13 @@ fun computeDeliveryGates(
     val phoneTtsConfigured = mode == DeliveryMode.TTS_ONLY ||
         mode == DeliveryMode.NOTIFICATION_AND_TTS
 
+    val castPeriodEnabled = when (period) {
+        ForecastPeriod.TODAY -> prefs.castMorning
+        ForecastPeriod.TONIGHT -> prefs.castTonight
+    }
+    val willCast = prefs.castRouteId != null && castPeriodEnabled
+    val castWillHaveAudio = willCast && geminiAvailable
+
     // Empty-evening only applies to TONIGHT. TODAY is never skipped
     // here regardless of `tonightNotifyOnlyOnEvents`.
     val emptyEveningSkip = period == ForecastPeriod.TONIGHT &&
@@ -99,23 +119,29 @@ fun computeDeliveryGates(
 
     // Gemini is the only producer of routable PCM. When the engine is
     // Device, on-device TTS synthesises at playback time with no
-    // exposed buffer — there's nothing to route to MQTT, so needsSynth
-    // stays false on the default Device-TTS path and a BYOK Gemini
-    // request never fires there.
+    // exposed buffer — there's nothing to route to MQTT or cast, so
+    // needsSynth stays false on the default Device-TTS / no-cast path
+    // and a BYOK Gemini request never fires there.
     //
-    // Two consumers want a buffer pre-alignment:
+    // Three consumers want a buffer pre-alignment:
     //   - mqttPublishable: the retained ${topic}/audio is a destination
     //     in its own right and survives skip-at-home / emptyEveningSkip
     //     (HA automations want fresh audio regardless).
     //   - phoneTtsConfigured && !emptyEveningSkip: phone speaker on
     //     Gemini, evening isn't being skipped.
+    //   - willCast && !emptyEveningSkip: audio-carrying cast — under
+    //     the outer geminiAvailable guard, bare willCast is sufficient.
+    //     Image-only cast (willCast && !geminiAvailable) doesn't drive
+    //     synth; the worker attaches a silent WAV stub instead.
     val needsSynth = geminiAvailable && (
         mqttPublishable ||
-            (phoneTtsConfigured && !emptyEveningSkip)
+            (!emptyEveningSkip && (phoneTtsConfigured || willCast))
         )
 
     return DeliveryGates(
         phoneTtsConfigured = phoneTtsConfigured,
+        willCast = willCast,
+        castWillHaveAudio = castWillHaveAudio,
         emptyEveningSkip = emptyEveningSkip,
         mqttPublishable = mqttPublishable,
         needsSynth = needsSynth,

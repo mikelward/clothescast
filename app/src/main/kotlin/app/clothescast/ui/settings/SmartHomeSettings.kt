@@ -76,6 +76,9 @@ internal fun SmartHomeContent(
     castLastError: String?,
     castLastErrorAt: Long,
     castLastSuccessAt: Long,
+    castMorning: Boolean,
+    castTonight: Boolean,
+    castSkipPhoneSpeech: Boolean,
     padding: PaddingValues,
     onSetBridgeEnabled: (Boolean) -> Unit,
     onSaveConfig: (host: String, port: Int, useTls: Boolean, username: String, topic: String, password: String?) -> Unit,
@@ -89,6 +92,9 @@ internal fun SmartHomeContent(
     onPickCastRoute: (DiscoveredCastRoute) -> Unit,
     onClearCastRoute: () -> Unit,
     onCastNow: () -> Unit,
+    onSetCastMorning: (Boolean) -> Unit,
+    onSetCastTonight: (Boolean) -> Unit,
+    onSetCastSkipPhoneSpeech: (Boolean) -> Unit,
 ) {
     // Cancel any in-flight scan when this screen leaves the composition —
     // the user backing out of Smart Home shouldn't leave the NsdManager
@@ -121,11 +127,17 @@ internal fun SmartHomeContent(
                     lastError = castLastError,
                     lastErrorAt = castLastErrorAt,
                     lastSuccessAt = castLastSuccessAt,
+                    castMorning = castMorning,
+                    castTonight = castTonight,
+                    castSkipPhoneSpeech = castSkipPhoneSpeech,
                     onOpenPicker = onOpenCastPicker,
                     onClosePicker = onCloseCastPicker,
                     onPickRoute = onPickCastRoute,
                     onClearRoute = onClearCastRoute,
                     onCastNow = onCastNow,
+                    onSetCastMorning = onSetCastMorning,
+                    onSetCastTonight = onSetCastTonight,
+                    onSetCastSkipPhoneSpeech = onSetCastSkipPhoneSpeech,
                 )
             }
             MqttBridgeCard(

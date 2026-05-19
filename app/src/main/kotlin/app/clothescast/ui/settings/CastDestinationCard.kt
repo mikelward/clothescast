@@ -15,9 +15,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -25,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.cast.DiscoveredCastRoute
@@ -56,11 +59,17 @@ internal fun CastDestinationCard(
     lastError: String?,
     lastErrorAt: Long,
     lastSuccessAt: Long,
+    castMorning: Boolean,
+    castTonight: Boolean,
+    castSkipPhoneSpeech: Boolean,
     onOpenPicker: () -> Unit,
     onClosePicker: () -> Unit,
     onPickRoute: (DiscoveredCastRoute) -> Unit,
     onClearRoute: () -> Unit,
     onCastNow: () -> Unit,
+    onSetCastMorning: (Boolean) -> Unit,
+    onSetCastTonight: (Boolean) -> Unit,
+    onSetCastSkipPhoneSpeech: (Boolean) -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -123,6 +132,32 @@ internal fun CastDestinationCard(
                 lastErrorAt = lastErrorAt,
                 lastSuccessAt = lastSuccessAt,
             )
+
+            // Per-period toggles + the audio-handoff toggle gate
+            // scheduled-run cast deliveries; the picker above is the
+            // overall on/off. Disabled when no route is picked so the
+            // user notices that the picker is the precondition.
+            CastToggleRow(
+                title = stringResource(R.string.settings_smart_home_cast_morning_title),
+                description = stringResource(R.string.settings_smart_home_cast_morning_description),
+                checked = castMorning,
+                enabled = routeName != null,
+                onCheckedChange = onSetCastMorning,
+            )
+            CastToggleRow(
+                title = stringResource(R.string.settings_smart_home_cast_tonight_title),
+                description = stringResource(R.string.settings_smart_home_cast_tonight_description),
+                checked = castTonight,
+                enabled = routeName != null,
+                onCheckedChange = onSetCastTonight,
+            )
+            CastToggleRow(
+                title = stringResource(R.string.settings_smart_home_cast_skip_phone_speech_title),
+                description = stringResource(R.string.settings_smart_home_cast_skip_phone_speech_description),
+                checked = castSkipPhoneSpeech,
+                enabled = routeName != null,
+                onCheckedChange = onSetCastSkipPhoneSpeech,
+            )
         }
     }
 
@@ -132,6 +167,42 @@ internal fun CastDestinationCard(
             onDismiss = onClosePicker,
             onPick = onPickRoute,
         )
+    }
+}
+
+@Composable
+private fun CastToggleRow(
+    title: String,
+    description: String,
+    checked: Boolean,
+    enabled: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .toggleable(
+                value = checked,
+                enabled = enabled,
+                role = Role.Switch,
+                onValueChange = onCheckedChange,
+            )
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Switch(checked = checked, onCheckedChange = null, enabled = enabled)
     }
 }
 

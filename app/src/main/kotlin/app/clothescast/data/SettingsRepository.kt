@@ -392,6 +392,18 @@ class SettingsRepository(
         }
     }
 
+    suspend fun setCastMorning(enabled: Boolean) {
+        dataStore.edit { it[CAST_MORNING] = enabled }
+    }
+
+    suspend fun setCastTonight(enabled: Boolean) {
+        dataStore.edit { it[CAST_TONIGHT] = enabled }
+    }
+
+    suspend fun setCastSkipPhoneSpeech(enabled: Boolean) {
+        dataStore.edit { it[CAST_SKIP_PHONE_SPEECH] = enabled }
+    }
+
     /**
      * Runtime status of the last MQTT publish attempt, separate from user
      * preferences. [errorMessage] is null on success (or no record yet); non-null
@@ -733,6 +745,9 @@ class SettingsRepository(
             ?: UserPreferences.DEFAULT_MQTT_TOPIC
         val castRouteId = this[CAST_ROUTE_ID]?.takeIf { it.isNotBlank() }
         val castRouteName = this[CAST_ROUTE_NAME]?.takeIf { it.isNotBlank() }
+        val castMorning = this[CAST_MORNING] ?: true
+        val castTonight = this[CAST_TONIGHT] ?: true
+        val castSkipPhoneSpeech = this[CAST_SKIP_PHONE_SPEECH] ?: true
         val zone = zoneIdProvider()
 
         return UserPreferences(
@@ -781,6 +796,9 @@ class SettingsRepository(
             mqttTopic = mqttTopic,
             castRouteId = castRouteId,
             castRouteName = castRouteName,
+            castMorning = castMorning,
+            castTonight = castTonight,
+            castSkipPhoneSpeech = castSkipPhoneSpeech,
         )
     }
 
@@ -1043,6 +1061,14 @@ class SettingsRepository(
         private val CAST_LAST_ERROR_MSG = stringPreferencesKey("cast_last_error_msg")
         private val CAST_LAST_ERROR_AT_MS = longPreferencesKey("cast_last_error_at_ms")
         private val CAST_LAST_SUCCESS_AT_MS = longPreferencesKey("cast_last_success_at_ms")
+        // Per-period cast toggles + the "smart display speaks, mute the
+        // phone" suppression. Stored separately from CAST_ROUTE_ID so the
+        // user's picked display survives an off / on flip of either
+        // period; default true on first read (mirrors the data-class
+        // defaults).
+        private val CAST_MORNING = booleanPreferencesKey("cast_morning")
+        private val CAST_TONIGHT = booleanPreferencesKey("cast_tonight")
+        private val CAST_SKIP_PHONE_SPEECH = booleanPreferencesKey("cast_skip_phone_speech")
 
         private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
         private val DEFAULT_TIME: LocalTime = LocalTime.of(7, 0)

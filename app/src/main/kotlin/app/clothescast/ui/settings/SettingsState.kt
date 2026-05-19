@@ -207,4 +207,9 @@ data class SettingsState(
      * whole Cast section in that case.
      */
     val castAvailable: Boolean = false,
+    /** Per-period cast toggles; default true. */
+    val castMorning: Boolean = true,
+    val castTonight: Boolean = true,
+    /** When true, audio-carrying cast suppresses the phone speaker. */
+    val castSkipPhoneSpeech: Boolean = true,
 )

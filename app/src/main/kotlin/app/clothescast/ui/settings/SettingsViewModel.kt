@@ -228,6 +228,9 @@ class SettingsViewModel(
                         mqttTopic = prefs.mqttTopic,
                         castAvailable = castAvailable,
                         castRouteName = prefs.castRouteName,
+                        castMorning = prefs.castMorning,
+                        castTonight = prefs.castTonight,
+                        castSkipPhoneSpeech = prefs.castSkipPhoneSpeech,
                     )
                 }
                 // Re-enumerate on first observation and whenever the effective
@@ -759,6 +762,18 @@ class SettingsViewModel(
     /** Clears the saved Cast route (Settings row reverts to "No display picked"). */
     fun clearCastRoute() {
         viewModelScope.launch { settingsRepository.setCastRoute(routeId = null, routeName = null) }
+    }
+
+    fun setCastMorning(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setCastMorning(enabled) }
+    }
+
+    fun setCastTonight(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setCastTonight(enabled) }
+    }
+
+    fun setCastSkipPhoneSpeech(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setCastSkipPhoneSpeech(enabled) }
     }
 
     /**

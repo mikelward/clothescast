@@ -412,6 +412,9 @@ internal fun SettingsSmartHomePreview() {
             castLastError = null,
             castLastErrorAt = 0L,
             castLastSuccessAt = 0L,
+            castMorning = true,
+            castTonight = true,
+            castSkipPhoneSpeech = true,
             padding = PaddingValues(0.dp),
             onSetBridgeEnabled = {},
             onSaveConfig = { _, _, _, _, _, _ -> },
@@ -425,6 +428,9 @@ internal fun SettingsSmartHomePreview() {
             onPickCastRoute = {},
             onClearCastRoute = {},
             onCastNow = {},
+            onSetCastMorning = {},
+            onSetCastTonight = {},
+            onSetCastSkipPhoneSpeech = {},
         )
     }
 }

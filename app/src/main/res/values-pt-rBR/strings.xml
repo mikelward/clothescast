@@ -930,12 +930,12 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_smart_home_discover_label_mqtt">Broker MQTT</string>
     <string name="settings_api_key_replace">Substituir chave Gemini</string>
     <string name="settings_home_location_title">Localização de casa</string>
-    <string name="settings_home_location_description">Utilizado por 'Falar apenas quando fora de casa' para decidir se o celular lê a previsão em voz alta. Fica neste dispositivo.</string>
+    <string name="settings_home_location_description">Utilizado por \'Falar apenas quando fora de casa\' para decidir se o celular lê a previsão em voz alta. Fica neste dispositivo.</string>
     <string name="settings_home_location_unset">Nenhuma localização definida</string>
     <string name="settings_home_location_use_current">Usar minha localização atual</string>
     <string name="settings_home_location_search">Procurar um endereço</string>
     <string name="settings_home_location_change">Alterar localização de casa</string>
-    <string name="settings_home_location_search_caveat">A pesquisa obtém o centroide de uma cidade, que pode ficar a alguns quilômetros da sua casa real. Para o raio de 1 km em casa funcionar, prefira 'Usar minha localização atual' enquanto estiver em casa.</string>
+    <string name="settings_home_location_search_caveat">A pesquisa obtém o centroide de uma cidade, que pode ficar a alguns quilômetros da sua casa real. Para o raio de 1 km em casa funcionar, prefira \'Usar minha localização atual\' enquanto estiver em casa.</string>
     <string name="settings_home_location_clear">Limpar localização de casa</string>
     <string name="settings_skip_tts_at_home_title">Falar apenas quando fora de casa</string>
     <string name="settings_skip_tts_at_home_description">Quando você está em casa, o celular fica em silêncio — útil se uma caixa de som doméstica já lê a previsão para você. As notificações continuam a aparecer.</string>

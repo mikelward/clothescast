@@ -884,4 +884,184 @@ the displayed label localizes.
     <string name="holiday_banner_japan_greenery_day">みどりの日</string>
     <string name="holiday_banner_japan_marine_day">海の日</string>
     <string name="holiday_banner_japan_culture_day">文化の日</string>
+
+    <!-- Holiday banners — greeting messages shown on the Today screen. -->
+    <string name="holiday_banner_all_saints_day">諸聖人の日おめでとうございます</string>
+    <string name="holiday_banner_anzac_day">忘れまじ</string>
+    <string name="holiday_banner_assumption">聖母被昇天おめでとうございます</string>
+    <string name="holiday_banner_australia_day">オーストラリアデーおめでとうございます</string>
+    <string name="holiday_banner_austria_national_day">オーストリア国民の日おめでとうございます</string>
+    <string name="holiday_banner_bastille_day">フランス革命記念日おめでとうございます</string>
+    <string name="holiday_banner_bonfire_night">忘れるな、忘れるな</string>
+    <string name="holiday_banner_boxing_day">ボクシングデーおめでとうございます</string>
+    <string name="holiday_banner_brazil_independence_day">ブラジル独立記念日おめでとうございます</string>
+    <string name="holiday_banner_burns_night">バーンズナイトおめでとうございます</string>
+    <string name="holiday_banner_canada_day">カナダデーおめでとうございます</string>
+    <string name="holiday_banner_canadian_thanksgiving">感謝祭おめでとうございます</string>
+    <string name="holiday_banner_christmas_day">メリークリスマス</string>
+    <string name="holiday_banner_croatia_independence_day">クロアチア独立記念日おめでとうございます</string>
+    <string name="holiday_banner_croatia_statehood_day">クロアチア建国記念日おめでとうございます</string>
+    <string name="holiday_banner_croatia_victory_day">クロアチア戦勝記念日おめでとうございます</string>
+    <string name="holiday_banner_easter_monday">復活節月曜日おめでとうございます</string>
+    <string name="holiday_banner_easter_sunday">イースターおめでとうございます</string>
+    <string name="holiday_banner_epiphany">公現祭おめでとうございます</string>
+    <string name="holiday_banner_fathers_day_jun">父の日おめでとうございます</string>
+    <string name="holiday_banner_fathers_day_sep">父の日おめでとうございます</string>
+    <string name="holiday_banner_fr_armistice_day">忘れまじ</string>
+    <string name="holiday_banner_german_unity_day">ドイツ統一の日おめでとうございます</string>
+    <string name="holiday_banner_good_friday">聖金曜日</string>
+    <string name="holiday_banner_halloween">ハッピーハロウィン</string>
+    <string name="holiday_banner_immaculate_conception">無原罪の御宿りおめでとうございます</string>
+    <string name="holiday_banner_italy_republic_day">イタリア共和国記念日おめでとうございます</string>
+    <string name="holiday_banner_juneteenth">ジューンティーンスおめでとうございます</string>
+    <string name="holiday_banner_korean_hangeul_day">ハングルの日おめでとうございます</string>
+    <string name="holiday_banner_korean_independence_movement_day">三一節おめでとうございます</string>
+    <string name="holiday_banner_korean_liberation_day">光復節おめでとうございます</string>
+    <string name="holiday_banner_korean_memorial_day">顕忠日に先人の勇気を称えます</string>
+    <string name="holiday_banner_labour_day">労働祭おめでとうございます</string>
+    <string name="holiday_banner_mlk_day">キング博士の遺志を讃えます</string>
+    <string name="holiday_banner_mothers_day">母の日おめでとうございます</string>
+    <string name="holiday_banner_new_years_day">明けましておめでとうございます</string>
+    <string name="holiday_banner_remembrance_day">忘れまじ</string>
+    <string name="holiday_banner_spain_hispanic_day">スペイン国民の日おめでとうございます</string>
+    <string name="holiday_banner_st_andrews_day">聖アンドリューの日おめでとうございます</string>
+    <string name="holiday_banner_st_davids_day">聖デイビッズの日おめでとうございます</string>
+    <string name="holiday_banner_st_georges_day">聖ジョージの日おめでとうございます</string>
+    <string name="holiday_banner_st_patricks_day">聖パトリックの日おめでとうございます</string>
+    <string name="holiday_banner_uk_bank_holiday">祝日おめでとうございます</string>
+    <string name="holiday_banner_uk_kings_birthday">国王陛下万歳</string>
+    <string name="holiday_banner_uk_mothering_sunday">母の日おめでとうございます</string>
+    <string name="holiday_banner_us_independence_day">独立記念日おめでとうございます</string>
+    <string name="holiday_banner_us_memorial_day">先人の勇気を称えます</string>
+    <string name="holiday_banner_us_presidents_day">大統領の日おめでとうございます</string>
+    <string name="holiday_banner_us_thanksgiving">感謝祭おめでとうございます</string>
+    <string name="holiday_banner_us_veterans_day">退役軍人の皆様に敬意を表します</string>
+    <string name="holiday_banner_valentines_day">バレンタインデーおめでとうございます</string>
+    <string name="holiday_banner_waitangi_day">ワイタンギデーおめでとうございます</string>
+
+    <!-- Holiday display name. -->
+    <string name="holiday_name_us_presidents_day">大統領の日</string>
+
+    <!-- Outfit card headers and temperature range. -->
+    <string name="outfit_card_header_today">今日のコーデ</string>
+    <string name="outfit_card_header_tonight">今夜のコーデ</string>
+    <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+
+    <!-- API key screen — replace action. -->
+    <string name="settings_api_key_replace">Gemini キーを変更</string>
+
+    <!-- Holidays settings — calendar section placeholders and links. -->
+    <string name="settings_holidays_calendar_section_placeholder_off">上のトグルをオンにすると、同期したカレンダーで検出したイベントに合わせて今日のコーデにテーマが適用されます。</string>
+    <string name="settings_holidays_calendar_section_placeholder_on">同期したカレンダーで検出したイベントは、将来のアップデートでここに表示されます。</string>
+    <string name="settings_holidays_link_calendar_settings_a11y">カレンダー設定</string>
+    <string name="settings_holidays_link_location_settings_a11y">位置情報設定</string>
+    <string name="settings_holidays_link_region_settings_a11y">地域設定</string>
+    <string name="settings_holidays_link_settings">設定</string>
+    <string name="settings_holidays_permission_revoked">カレンダーの許可が必要です。タップして再許可してください。</string>
+    <string name="settings_holidays_source_all">すべての国</string>
+    <string name="settings_holidays_source_calendar_birthdays">カレンダーの誕生日</string>
+    <string name="settings_holidays_source_calendar_holidays">カレンダーの祝日</string>
+    <string name="settings_holidays_source_global">グローバル</string>
+    <string name="settings_holidays_source_location">現在地（%1$s）</string>
+    <string name="settings_holidays_source_region">地域（%1$s）</string>
+
+    <!-- Home location settings. -->
+    <string name="settings_home_location_title">自宅の場所</string>
+    <string name="settings_home_location_change">自宅の場所を変更</string>
+    <string name="settings_home_location_clear">自宅の場所をクリア</string>
+    <string name="settings_home_location_description">「外出時のみ読み上げる」が自宅にいるかどうかを判断するために使用します。この端末にのみ保存されます。</string>
+    <string name="settings_home_location_search">住所を検索</string>
+    <string name="settings_home_location_search_caveat">検索は都市の中心点を選ぶため、実際の自宅から数キロ離れることがあります。1 km の「自宅にいる」判定を正しく動作させるには、自宅にいる状態で「現在地を使用」を選ぶことをお勧めします。</string>
+    <string name="settings_home_location_unset">自宅が未設定です</string>
+    <string name="settings_home_location_use_current">現在地を使用</string>
+
+    <!-- Settings root — Smart Home row. -->
+    <string name="settings_root_smart_home">スマートホーム</string>
+    <string name="settings_root_smart_home_subtitle">スマートディスプレイとホームオートメーション</string>
+
+    <!-- Schedule screen description. -->
+    <string name="settings_schedule_description">その日の天気をお知らせする、毎朝の ClothesCast です。</string>
+
+    <!-- Skip TTS at home settings. -->
+    <string name="settings_skip_tts_at_home_title">外出時のみ読み上げる</string>
+    <string name="settings_skip_tts_at_home_label">外出時のみ読み上げる</string>
+    <string name="settings_skip_tts_at_home_description">自宅にいるときは端末が静かなままになります — ホームスピーカーがすでに予報を読み上げている場合に便利です。通知は引き続き表示されます。</string>
+    <string name="settings_skip_tts_at_home_needs_home">これを有効にするには、上で自宅の場所を設定してください。設定しない場合は常に読み上げます。</string>
+    <string name="settings_skip_tts_at_home_needs_permission">自宅にいるかどうかを判断するためにバックグラウンド位置情報のアクセスが必要です。許可しない場合は常に読み上げます。</string>
+    <string name="settings_skip_tts_at_home_open_settings">システム設定で許可</string>
+
+    <!-- Smart Home — Cast settings. -->
+    <string name="settings_smart_home_cast_title">キャスト</string>
+    <string name="settings_smart_home_cast_description">ホームネットワーク上のスマートディスプレイに、スケジュールされた ClothesCast を送信します。</string>
+    <string name="settings_smart_home_cast_device_label">スマートディスプレイ</string>
+    <string name="settings_smart_home_cast_device_none">ディスプレイが選択されていません</string>
+    <string name="settings_smart_home_cast_choose">スマートディスプレイを選択</string>
+    <string name="settings_smart_home_cast_change">変更</string>
+    <string name="settings_smart_home_cast_clear">クリア</string>
+    <string name="settings_smart_home_cast_now">今すぐキャスト</string>
+    <string name="settings_smart_home_cast_casting">キャスト中…</string>
+    <string name="settings_smart_home_cast_never">まだキャストされていません</string>
+    <string name="settings_smart_home_cast_last_success">最終キャスト %1$s</string>
+    <string name="settings_smart_home_cast_last_error_title">前回のキャストに失敗しました</string>
+    <string name="settings_smart_home_cast_morning_title">毎日の ClothesCast</string>
+    <string name="settings_smart_home_cast_morning_description">朝のアラームが鳴ったときに、その日の ClothesCast をスマートディスプレイに送信します。</string>
+    <string name="settings_smart_home_cast_tonight_title">夜間の ClothesCast</string>
+    <string name="settings_smart_home_cast_tonight_description">夜のアラームが鳴ったときに、今夜の ClothesCast をスマートディスプレイに送信します。</string>
+    <string name="settings_smart_home_cast_picker_title">スマートディスプレイを選択</string>
+    <string name="settings_smart_home_cast_picker_scanning">ネットワーク上のスマートディスプレイを探しています…</string>
+    <string name="settings_smart_home_cast_picker_empty">スマートディスプレイが見つかりません。ディスプレイの電源が入っており、同じ Wi-Fi に接続されているか確認してください。</string>
+    <string name="settings_smart_home_cast_picker_cancel">キャンセル</string>
+    <string name="settings_smart_home_cast_privacy_note">音声と画像はご自宅のネットワークを通じてスマートフォンから直接配信されます。自宅の外には出ません。</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">キャスト成功時はスマートフォンの読み上げをスキップ</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">スマートディスプレイが予報を読み上げる場合、スマートフォンは静かなままになります。スマートフォンの通知は引き続き表示されます。</string>
+
+    <!-- Smart Home — broker discovery. -->
+    <string name="settings_smart_home_discover_scan">ブローカーを探す</string>
+    <string name="settings_smart_home_discover_scanning">検索中…</string>
+    <string name="settings_smart_home_discover_stop">検索を停止</string>
+    <string name="settings_smart_home_discover_results">ネットワーク上で見つかりました</string>
+    <string name="settings_smart_home_discover_empty">ブローカーがまだ見つかりません。検索を続けるか、ブローカーのホストを手動で入力してください。</string>
+    <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
+    <string name="settings_smart_home_discover_label_mqtt">MQTT ブローカー</string>
+    <string name="settings_smart_home_discover_use">使用する</string>
+
+    <!-- Smart Home — MQTT settings. -->
+    <string name="settings_smart_home_mqtt_title">Home Assistant ブリッジ（MQTT）</string>
+    <string name="settings_smart_home_mqtt_label">予報を MQTT に公開</string>
+    <string name="settings_smart_home_mqtt_description">スケジュールされた更新のたびに、ClothesCast は今日と今夜のレンダリング済み予報をリテインドメッセージとして MQTT ブローカーに公開します。これにより、Home Assistant（またはその他の MQTT コンシューマー）がセンサートリガーで最新の値を読み取り、読み上げることができます。</string>
+    <string name="settings_smart_home_mqtt_host">ブローカーホスト</string>
+    <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
+    <string name="settings_smart_home_mqtt_port">ポート</string>
+    <string name="settings_smart_home_mqtt_tls">TLS を使用</string>
+    <string name="settings_smart_home_mqtt_username">ユーザー名（任意）</string>
+    <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
+    <string name="settings_smart_home_mqtt_password">パスワード（任意）</string>
+    <string name="settings_smart_home_mqtt_password_replace">パスワードを変更</string>
+    <string name="settings_smart_home_mqtt_password_clear">保存されたパスワードをクリア</string>
+    <string name="settings_smart_home_mqtt_password_status_set">パスワードが設定されています。</string>
+    <string name="settings_smart_home_mqtt_topic">トピックプレフィックス</string>
+    <string name="settings_smart_home_mqtt_topic_hint">今日は {prefix}/today/text に、今夜は {prefix}/tonight/text に公開されます。画像と音声は {prefix}/&lt;period&gt;/image と /audio に保存されます。各公開は {prefix}/now/&lt;text|image|audio&gt; にもミラーリングされるため、today と tonight を区別せずに「最新」トピックを購読できます。</string>
+    <string name="settings_smart_home_mqtt_save">保存</string>
+    <string name="settings_smart_home_mqtt_publish_now">今すぐ公開</string>
+    <string name="settings_smart_home_mqtt_publishing">公開中…</string>
+    <string name="settings_smart_home_mqtt_never_published">まだ公開されていません</string>
+    <string name="settings_smart_home_mqtt_last_published">最終公開 %1$s</string>
+    <string name="settings_smart_home_mqtt_last_error_title">前回の公開に失敗しました</string>
+    <string name="settings_smart_home_mqtt_privacy_note">オンにすると、レンダリングされた予報テキストが、設定したブローカーへネットワーク経由で端末から送信されます。プライバシーポリシーをご確認ください。</string>
+    <string name="settings_smart_home_mqtt_open_privacy">プライバシーの詳細を読む</string>
+    <string name="settings_smart_home_mqtt_setup_guide">セットアップガイド</string>
+
+    <!-- Cast error messages. -->
+    <string name="cast_error_no_insight_yet">まだ予報がありません。次回のスケジュール実行をお待ちいただくか、「今日」画面で「更新」をタップしてください。</string>
+    <string name="cast_error_no_route_picked">先にスマートディスプレイを選択してください。</string>
+    <string name="cast_error_unknown">キャストに失敗しました。</string>
+
+    <!-- Today screen — celebration card. -->
+    <string name="today_celebration_card_title">お祝いのテーマ</string>
+    <string name="today_celebration_card_body">祝日や誕生日に特別なカラーとメッセージを表示します。</string>
+    <string name="today_celebration_card_cta">お祝い設定</string>
+    <string name="today_celebration_card_dismiss">閉じる</string>
+
+    <!-- Today screen — rationale: open clothes settings link. -->
+    <string name="today_rationale_open_clothes_settings">服装設定を開く</string>
 </resources>

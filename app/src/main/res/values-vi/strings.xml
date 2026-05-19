@@ -794,4 +794,186 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="holiday_name_immaculate_conception">Lễ Đức Mẹ Vô Nhiễm Nguyên Tội</string>
     <string name="holiday_name_christmas_day">Lễ Giáng Sinh</string>
     <string name="holiday_name_boxing_day">Ngày Boxing</string>
+
+    <!-- Cast errors -->
+    <string name="cast_error_no_insight_yet">Chưa có dự báo. Chờ lần chạy tiếp theo hoặc nhấn Làm mới trên màn hình Hôm nay.</string>
+    <string name="cast_error_no_route_picked">Chọn màn hình thông minh trước.</string>
+    <string name="cast_error_unknown">Cast thất bại.</string>
+
+    <!-- Holiday banners -->
+    <string name="holiday_banner_all_saints_day">Chúc mừng Lễ Các Thánh</string>
+    <string name="holiday_banner_anzac_day">Lest we forget</string>
+    <string name="holiday_banner_assumption">Chúc mừng Lễ Đức Mẹ Lên Trời</string>
+    <string name="holiday_banner_australia_day">Chúc mừng Ngày Quốc khánh Úc</string>
+    <string name="holiday_banner_austria_national_day">Chúc mừng Ngày Quốc khánh Áo</string>
+    <string name="holiday_banner_bastille_day">Chúc mừng Ngày Quốc khánh Pháp</string>
+    <string name="holiday_banner_bonfire_night">Remember, remember</string>
+    <string name="holiday_banner_boxing_day">Chúc mừng Ngày Boxing</string>
+    <string name="holiday_banner_brazil_independence_day">Chúc mừng Ngày Độc lập Brazil</string>
+    <string name="holiday_banner_burns_night">Chúc mừng Đêm Burns</string>
+    <string name="holiday_banner_canada_day">Chúc mừng Ngày Quốc khánh Canada</string>
+    <string name="holiday_banner_canadian_thanksgiving">Chúc mừng Lễ Tạ ơn</string>
+    <string name="holiday_banner_christmas_day">Giáng Sinh vui vẻ</string>
+    <string name="holiday_banner_croatia_independence_day">Chúc mừng Ngày Độc lập Croatia</string>
+    <string name="holiday_banner_croatia_statehood_day">Chúc mừng Ngày Lập quốc Croatia</string>
+    <string name="holiday_banner_croatia_victory_day">Chúc mừng Ngày Chiến thắng Croatia</string>
+    <string name="holiday_banner_easter_monday">Chúc mừng Thứ Hai Phục Sinh</string>
+    <string name="holiday_banner_easter_sunday">Chúc mừng Lễ Phục Sinh</string>
+    <string name="holiday_banner_epiphany">Chúc mừng Lễ Hiển Linh</string>
+    <string name="holiday_banner_fathers_day_jun">Chúc mừng Ngày của Cha</string>
+    <string name="holiday_banner_fathers_day_sep">Chúc mừng Ngày của Cha</string>
+    <string name="holiday_banner_fr_armistice_day">Lest we forget</string>
+    <string name="holiday_banner_german_unity_day">Chúc mừng Ngày Thống nhất Đức</string>
+    <string name="holiday_banner_good_friday">Thứ Sáu Tuần Thánh</string>
+    <string name="holiday_banner_halloween">Chúc mừng Halloween</string>
+    <string name="holiday_banner_immaculate_conception">Chúc mừng Lễ Đức Mẹ Vô Nhiễm Nguyên Tội</string>
+    <string name="holiday_banner_italy_republic_day">Chúc mừng Ngày Cộng hòa Ý</string>
+    <string name="holiday_banner_japan_coming_of_age_day">Chúc mừng Ngày Trưởng thành Nhật Bản</string>
+    <string name="holiday_banner_japan_culture_day">Chúc mừng Ngày Văn hóa Nhật Bản</string>
+    <string name="holiday_banner_japan_greenery_day">Chúc mừng Ngày Cây xanh Nhật Bản</string>
+    <string name="holiday_banner_japan_marine_day">Chúc mừng Ngày Biển Nhật Bản</string>
+    <string name="holiday_banner_juneteenth">Chúc mừng Juneteenth</string>
+    <string name="holiday_banner_korean_hangeul_day">Chúc mừng Ngày Hangul</string>
+    <string name="holiday_banner_korean_independence_movement_day">Chúc mừng Ngày Phong trào Độc lập Hàn Quốc</string>
+    <string name="holiday_banner_korean_liberation_day">Chúc mừng Ngày Giải phóng Hàn Quốc</string>
+    <string name="holiday_banner_korean_memorial_day">Tưởng niệm những người đã ngã xuống vì Hàn Quốc</string>
+    <string name="holiday_banner_labour_day">Chúc mừng Ngày Lao động</string>
+    <string name="holiday_banner_mlk_day">Tưởng nhớ Tiến sĩ King</string>
+    <string name="holiday_banner_mothers_day">Chúc mừng Ngày của Mẹ</string>
+    <string name="holiday_banner_new_years_day">Chúc mừng Năm Mới</string>
+    <string name="holiday_banner_remembrance_day">Lest we forget</string>
+    <string name="holiday_banner_spain_hispanic_day">Chúc mừng Día de la Hispanidad</string>
+    <string name="holiday_banner_st_andrews_day">Chúc mừng Ngày Thánh Andrew</string>
+    <string name="holiday_banner_st_davids_day">Chúc mừng Ngày Thánh David</string>
+    <string name="holiday_banner_st_georges_day">Chúc mừng Ngày Thánh George</string>
+    <string name="holiday_banner_st_patricks_day">Chúc mừng Ngày Thánh Patrick</string>
+    <string name="holiday_banner_uk_bank_holiday">Chúc mừng ngày nghỉ lễ</string>
+    <string name="holiday_banner_uk_kings_birthday">God save the King</string>
+    <string name="holiday_banner_uk_mothering_sunday">Chúc mừng Chủ nhật Tôn vinh Mẹ</string>
+    <string name="holiday_banner_us_independence_day">Chúc mừng Ngày 4 tháng 7</string>
+    <string name="holiday_banner_us_memorial_day">Tưởng niệm những người đã ngã xuống</string>
+    <string name="holiday_banner_us_presidents_day">Chúc mừng Ngày Tổng thống</string>
+    <string name="holiday_banner_us_thanksgiving">Chúc mừng Lễ Tạ ơn</string>
+    <string name="holiday_banner_us_veterans_day">Tôn vinh các Cựu chiến binh</string>
+    <string name="holiday_banner_valentines_day">Chúc mừng Ngày Valentine</string>
+    <string name="holiday_banner_waitangi_day">Chúc mừng Ngày Waitangi</string>
+    <string name="holiday_name_us_presidents_day">Ngày Tổng thống</string>
+
+    <!-- Outfit card -->
+    <string name="outfit_card_header_today">ClothesCast Hôm nay</string>
+    <string name="outfit_card_header_tonight">ClothesCast Tối nay</string>
+    <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+
+    <!-- Settings — API key -->
+    <string name="settings_api_key_replace">Thay khóa Gemini</string>
+
+    <!-- Settings — Holidays / calendar -->
+    <string name="settings_holidays_calendar_section_placeholder_off">Bật nút gạt ở trên để tô màu trang phục hôm nay theo sự kiện được phát hiện từ lịch đã đồng bộ.</string>
+    <string name="settings_holidays_calendar_section_placeholder_on">Các sự kiện được phát hiện từ lịch đã đồng bộ sẽ xuất hiện ở đây trong bản cập nhật tiếp theo.</string>
+    <string name="settings_holidays_link_calendar_settings_a11y">Cài đặt lịch</string>
+    <string name="settings_holidays_link_location_settings_a11y">Cài đặt vị trí</string>
+    <string name="settings_holidays_link_region_settings_a11y">Cài đặt khu vực</string>
+    <string name="settings_holidays_link_settings">Cài đặt</string>
+    <string name="settings_holidays_permission_revoked">Cần quyền lịch. Nhấn để cấp lại.</string>
+    <string name="settings_holidays_source_all">Tất cả quốc gia</string>
+    <string name="settings_holidays_source_calendar_birthdays">Sinh nhật trong lịch</string>
+    <string name="settings_holidays_source_calendar_holidays">Ngày lễ trong lịch</string>
+    <string name="settings_holidays_source_global">Toàn cầu</string>
+    <string name="settings_holidays_source_location">Vị trí (%1$s)</string>
+    <string name="settings_holidays_source_region">Khu vực (%1$s)</string>
+
+    <!-- Settings — Home location -->
+    <string name="settings_home_location_change">Đổi vị trí nhà</string>
+    <string name="settings_home_location_clear">Xóa vị trí nhà</string>
+    <string name="settings_home_location_description">Dùng bởi \'Chỉ đọc khi ra ngoài nhà\' để quyết định có đọc dự báo to không. Lưu trên thiết bị này.</string>
+    <string name="settings_home_location_search">Tìm kiếm địa chỉ</string>
+    <string name="settings_home_location_search_caveat">Tìm kiếm chọn trung tâm thành phố, có thể cách nhà thực tế vài kilômét. Để bán kính 1 km xác định đúng vị trí nhà, nên dùng \'Dùng vị trí hiện tại\' khi đang ở nhà.</string>
+    <string name="settings_home_location_title">Vị trí nhà</string>
+    <string name="settings_home_location_unset">Chưa đặt vị trí nhà</string>
+    <string name="settings_home_location_use_current">Dùng vị trí hiện tại của tôi</string>
+
+    <!-- Settings root — Smart Home -->
+    <string name="settings_root_smart_home">Smart Home</string>
+    <string name="settings_root_smart_home_subtitle">Màn hình thông minh và tự động hóa nhà</string>
+
+    <!-- Settings — Schedule description -->
+    <string name="settings_schedule_description">ClothesCast buổi sáng bao gồm thời tiết trong ngày.</string>
+
+    <!-- Settings — Skip TTS at home -->
+    <string name="settings_skip_tts_at_home_description">Khi bạn ở nhà, điện thoại sẽ im lặng — tiện nếu loa trong nhà đã đọc dự báo. Thông báo vẫn được gửi.</string>
+    <string name="settings_skip_tts_at_home_label">Chỉ đọc khi ra ngoài nhà</string>
+    <string name="settings_skip_tts_at_home_needs_home">Đặt vị trí nhà ở trên để bật tính năng này. Nếu không có, điện thoại sẽ luôn đọc.</string>
+    <string name="settings_skip_tts_at_home_needs_permission">Cần quyền vị trí nền để biết bạn đang ở nhà. Nếu không có, điện thoại sẽ luôn đọc.</string>
+    <string name="settings_skip_tts_at_home_open_settings">Cấp trong cài đặt hệ thống</string>
+    <string name="settings_skip_tts_at_home_title">Chỉ đọc khi ra ngoài nhà</string>
+
+    <!-- Settings — Smart Home / Cast -->
+    <string name="settings_smart_home_cast_casting">Đang Cast…</string>
+    <string name="settings_smart_home_cast_change">Đổi</string>
+    <string name="settings_smart_home_cast_choose">Chọn màn hình thông minh</string>
+    <string name="settings_smart_home_cast_clear">Xóa</string>
+    <string name="settings_smart_home_cast_description">Gửi ClothesCast theo lịch đến màn hình thông minh trên mạng nhà bạn.</string>
+    <string name="settings_smart_home_cast_device_label">Màn hình thông minh</string>
+    <string name="settings_smart_home_cast_device_none">Chưa chọn màn hình</string>
+    <string name="settings_smart_home_cast_last_error_title">Lần cast cuối thất bại</string>
+    <string name="settings_smart_home_cast_last_success">Cast lần cuối %1$s</string>
+    <string name="settings_smart_home_cast_morning_description">Gửi ClothesCast hàng ngày đến màn hình thông minh khi chuông báo sáng kích hoạt.</string>
+    <string name="settings_smart_home_cast_morning_title">ClothesCast hàng ngày</string>
+    <string name="settings_smart_home_cast_never">Chưa cast lần nào</string>
+    <string name="settings_smart_home_cast_now">Cast ngay</string>
+    <string name="settings_smart_home_cast_picker_cancel">Hủy</string>
+    <string name="settings_smart_home_cast_picker_empty">Chưa tìm thấy màn hình thông minh nào. Đảm bảo màn hình đang bật và kết nối cùng Wi-Fi.</string>
+    <string name="settings_smart_home_cast_picker_scanning">Đang quét mạng để tìm màn hình thông minh…</string>
+    <string name="settings_smart_home_cast_picker_title">Chọn màn hình thông minh</string>
+    <string name="settings_smart_home_cast_privacy_note">Âm thanh và hình ảnh được phát từ điện thoại qua mạng nội bộ. Không ra ngoài nhà.</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Nếu màn hình thông minh đọc dự báo, điện thoại sẽ im lặng. Thông báo trên điện thoại vẫn được gửi.</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Bỏ qua tiếng điện thoại nếu cast thành công</string>
+    <string name="settings_smart_home_cast_title">Cast</string>
+    <string name="settings_smart_home_cast_tonight_description">Gửi ClothesCast buổi tối đến màn hình thông minh khi chuông báo tối kích hoạt.</string>
+    <string name="settings_smart_home_cast_tonight_title">ClothesCast buổi tối</string>
+
+    <!-- Settings — Smart Home / Discover -->
+    <string name="settings_smart_home_discover_empty">Chưa tìm thấy broker. Tiếp tục tìm hoặc nhập thủ công địa chỉ broker.</string>
+    <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
+    <string name="settings_smart_home_discover_label_mqtt">MQTT broker</string>
+    <string name="settings_smart_home_discover_results">Tìm thấy trên mạng của bạn</string>
+    <string name="settings_smart_home_discover_scan">Tìm broker</string>
+    <string name="settings_smart_home_discover_scanning">Đang tìm kiếm…</string>
+    <string name="settings_smart_home_discover_stop">Dừng tìm kiếm</string>
+    <string name="settings_smart_home_discover_use">Dùng</string>
+
+    <!-- Settings — Smart Home / MQTT -->
+    <string name="settings_smart_home_mqtt_description">Sau mỗi lần làm mới theo lịch, ClothesCast đăng dự báo hôm nay và tối nay đã kết xuất lên MQTT broker dưới dạng retained messages, để Home Assistant (hoặc bất kỳ MQTT consumer nào) có thể đọc giá trị mới nhất và đọc to khi cảm biến kích hoạt.</string>
+    <string name="settings_smart_home_mqtt_host">Địa chỉ broker</string>
+    <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
+    <string name="settings_smart_home_mqtt_label">Đăng dự báo lên MQTT</string>
+    <string name="settings_smart_home_mqtt_last_error_title">Lần đăng cuối thất bại</string>
+    <string name="settings_smart_home_mqtt_last_published">Đăng lần cuối %1$s</string>
+    <string name="settings_smart_home_mqtt_never_published">Chưa đăng lần nào</string>
+    <string name="settings_smart_home_mqtt_open_privacy">Đọc chi tiết quyền riêng tư</string>
+    <string name="settings_smart_home_mqtt_password">Mật khẩu (tùy chọn)</string>
+    <string name="settings_smart_home_mqtt_password_clear">Xóa mật khẩu đã lưu</string>
+    <string name="settings_smart_home_mqtt_password_replace">Thay mật khẩu</string>
+    <string name="settings_smart_home_mqtt_password_status_set">Đã cấu hình mật khẩu.</string>
+    <string name="settings_smart_home_mqtt_port">Cổng</string>
+    <string name="settings_smart_home_mqtt_privacy_note">Khi bật, câu dự báo đã kết xuất sẽ rời khỏi thiết bị qua mạng đến broker bạn cấu hình. Xem chính sách quyền riêng tư.</string>
+    <string name="settings_smart_home_mqtt_publish_now">Đăng ngay</string>
+    <string name="settings_smart_home_mqtt_publishing">Đang đăng…</string>
+    <string name="settings_smart_home_mqtt_save">Lưu</string>
+    <string name="settings_smart_home_mqtt_setup_guide">Hướng dẫn cài đặt</string>
+    <string name="settings_smart_home_mqtt_title">Home Assistant bridge (MQTT)</string>
+    <string name="settings_smart_home_mqtt_tls">Dùng TLS</string>
+    <string name="settings_smart_home_mqtt_topic">Tiền tố topic</string>
+    <string name="settings_smart_home_mqtt_topic_hint">Hôm nay đăng lên {prefix}/today/text; tối nay lên {prefix}/tonight/text. Hình ảnh và âm thanh ở {prefix}/&lt;period&gt;/image và /audio. Mỗi lần đăng cũng được sao chép sang {prefix}/now/&lt;text|image|audio&gt; để subscriber theo dõi một topic "mới nhất" mà không cần chọn hôm nay hay tối nay.</string>
+    <string name="settings_smart_home_mqtt_username">Tên người dùng (tùy chọn)</string>
+    <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
+
+    <!-- Today — Celebration card -->
+    <string name="today_celebration_card_body">Bật màu sắc và thông điệp đặc biệt cho ngày lễ và sinh nhật.</string>
+    <string name="today_celebration_card_cta">Cài đặt lễ kỷ niệm</string>
+    <string name="today_celebration_card_dismiss">Đóng</string>
+    <string name="today_celebration_card_title">Chủ đề lễ kỷ niệm</string>
+
+    <!-- Today — Rationale dialog -->
+    <string name="today_rationale_open_clothes_settings">Cài đặt quần áo</string>
 </resources>

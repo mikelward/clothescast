@@ -24,10 +24,19 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.calendar.resolveHolidayTheme
+import app.clothescast.core.domain.usecase.computeDeliveryGates
+import app.clothescast.core.domain.usecase.isGeminiEngineSelected
+import app.clothescast.core.domain.usecase.isMqttPublishable
 import app.clothescast.core.domain.usecase.shouldSpeak
+import app.clothescast.core.data.tts.PcmAudio
 import app.clothescast.core.data.tts.WavEncoder
 import app.clothescast.data.InsightCache
 import app.clothescast.mqtt.MqttPublishOutcome
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import app.clothescast.diag.Telemetry
 import app.clothescast.diag.classifyDailyRefreshReason
 import app.clothescast.insight.InsightFormatter
@@ -573,84 +582,273 @@ class FetchAndNotifyWorker(
             theme?.topStrokeOverrides ?: emptyMap()
         val bottomStrokes: Map<OutfitSuggestion.Bottom, Long> =
             theme?.bottomStrokeOverrides ?: emptyMap()
-        // Publish to MQTT before waiting for the delivery-alignment delay so
-        // that retained topics are current by the time HA automations fire.
-        // deliverToday/Tonight both start with awaitDeliveryAlignment() (60 s
-        // window) and then await TTS — Home Assistant automations timed to the
-        // scheduled alarm would race with the retained topics if we published
-        // after that. The publisher caps each prose / image / audio publish at
-        // ~11 s (two attempts × the 5-second timeout + a short retry delay), so
-        // a permanently-down broker delays notification by at most that, well
-        // within the 60-second alignment window.
-        // Prose publish — outcome persisted for the Smart Home settings UI.
-        val mqttOutcome = app.mqttPublisher.publishIfEnabled(insight.period, prose)
-        // Image publish — fire-and-forget alongside the prose.
-        insight.outfit?.let { outfit ->
-            runCatching {
-                val formatter = InsightFormatter.forRegion(applicationContext, prefs.region)
-                val info = outfitCardInfoLines(
-                    context = applicationContext,
-                    formatter = formatter,
-                    hourly = insight.hourly,
-                    temperatureUnit = prefs.temperatureUnit,
-                )
-                val header = applicationContext.getString(
-                    if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today
-                    else R.string.outfit_card_header_tonight
-                )
-                val png = renderOutfitCard(
-                    context = applicationContext,
-                    outfit = outfit,
-                    header = header,
+
+        // Compute every "should this fire?" decision from one snapshot
+        // of prefs so the pre- and post-alignment fan-outs stay
+        // consistent and the gate algebra is unit-testable (see
+        // DeliveryGatesTest in :core:domain).
+        val geminiAvailable = isGeminiEngineSelected(prefs) &&
+            runCatching { app.secureKeyStore.geminiKeyConfiguredFlow.first() }.getOrDefault(false)
+        val gates = computeDeliveryGates(
+            prefs = prefs,
+            period = insight.period,
+            insightHasEvents = insight.hasEvents,
+            geminiAvailable = geminiAvailable,
+            mqttPublishable = isMqttPublishable(prefs),
+        )
+
+        // Two-phase fan-out per SPEC.md §Sequencing:
+        //
+        //  Pre-alignment — two concurrent tracks (synth + render).
+        //    Both finish before the alignment barrier so the
+        //    post-alignment steps are user-visible at a predictable
+        //    moment.
+        //
+        //  Alignment barrier — awaitDeliveryAlignment(): pause until
+        //    ~60 s past the alarm-fire timestamp so a multi-device
+        //    household sees / hears the new forecast at the same
+        //    wall-clock instant.
+        //
+        //  Post-alignment — notification, MQTT prose / image / audio,
+        //    and the phone speaker fire in parallel. The MQTT publishes
+        //    moved here from pre-alignment so HA's "speak the prose when
+        //    the wardrobe opens" automation fires with the phone
+        //    notification, not 30 s ahead of it.
+        //
+        // supervisorScope so one destination's failure (e.g. MQTT broker
+        // unreachable) doesn't cancel the siblings. Each launch /
+        // async runs its own runCatching; CancellationException
+        // propagates so WorkManager stops unwind cleanly.
+        supervisorScope {
+            val synthDeferred: Deferred<PcmAudio?>? = if (gates.needsSynth) {
+                async(Dispatchers.IO) { synthesizeForDelivery(insight, prefs) }
+            } else null
+
+            val renderDeferred: Deferred<ByteArray?> = async(Dispatchers.Default) {
+                renderOutfitPngIfPossible(
+                    insight = insight,
+                    prefs = prefs,
                     prose = prose,
-                    tempLine = info.tempLine,
-                    rainLine = info.rainLine,
-                    tempFillFraction = info.tempFillFraction,
-                    rainFillFraction = info.rainFillFraction,
                     topColors = topColors,
                     bottomColors = bottomColors,
                     topStrokes = topStrokes,
                     bottomStrokes = bottomStrokes,
                 )
-                app.mqttPublisher.publishImageIfEnabled(insight.period, png)
-            }.onFailure { t ->
-                if (t is CancellationException) throw t
-                DiagLog.w(TAG, "Outfit image MQTT publish failed.", t)
             }
-        }
-        when (insight.period) {
-            ForecastPeriod.TODAY -> deliverToday(insight, prefs, prose, topColors, topStrokes)
-            ForecastPeriod.TONIGHT -> deliverTonight(insight, prefs, prose, topColors, topStrokes)
-        }
-        // Status persistence is best-effort: a DataStore I/O failure here must
-        // not surface as a deliver() exception, which would cause the
-        // cached-delivery path to fall through to a fresh fetch and duplicate
-        // the user-facing notification.
-        runCatching {
-            when (mqttOutcome) {
-                is MqttPublishOutcome.NotConfigured -> Unit
-                is MqttPublishOutcome.Success -> app.settingsRepository.setMqttLastError(null)
-                is MqttPublishOutcome.Failure -> app.settingsRepository.setMqttLastError(mqttOutcome.message)
+
+            val pcm: PcmAudio? = synthDeferred?.await()
+            val png: ByteArray? = renderDeferred.await()
+            val wav: ByteArray? = pcm?.let { WavEncoder.encode(it) }
+
+            awaitDeliveryAlignment()
+
+            val notifyJob = launch { postPeriodNotification(insight, prefs, prose, topColors, topStrokes, gates) }
+
+            // Prose-publish outcome drives the Smart Home settings
+            // status row; the await + persistence runs after the
+            // sibling jobs join so the call doesn't block them.
+            val mqttProseDeferred: Deferred<MqttPublishOutcome?> = async {
+                if (!gates.mqttPublishable) null
+                else runCatching { app.mqttPublisher.publishIfEnabled(insight.period, prose) }
+                    .onFailure { t ->
+                        if (t is CancellationException) throw t
+                        DiagLog.w(TAG, "MQTT prose publish failed.", t)
+                    }
+                    .getOrNull()
+            }
+
+            val mqttImageJob = launch {
+                if (!gates.mqttPublishable || png == null) return@launch
+                runCatching { app.mqttPublisher.publishImageIfEnabled(insight.period, png) }
+                    .onFailure { t ->
+                        if (t is CancellationException) throw t
+                        DiagLog.w(TAG, "MQTT image publish failed.", t)
+                    }
+            }
+
+            val mqttAudioJob = launch {
+                if (!gates.mqttPublishable || wav == null) return@launch
+                runCatching { app.mqttPublisher.publishAudioIfEnabled(insight.period, wav) }
+                    .onFailure { t ->
+                        if (t is CancellationException) throw t
+                        DiagLog.w(TAG, "MQTT audio publish failed.", t)
+                    }
+            }
+
+            val phoneSpeakerJob = launch { playPhoneSpeaker(insight, prefs, gates, pcm) }
+
+            notifyJob.join()
+            mqttImageJob.join()
+            mqttAudioJob.join()
+            phoneSpeakerJob.join()
+            val mqttOutcome = mqttProseDeferred.await()
+
+            // Status persistence is best-effort: a DataStore I/O
+            // failure here must not surface as a deliver() exception,
+            // which would cause the cached-delivery path to fall
+            // through to a fresh fetch and duplicate the user-facing
+            // notification.
+            runCatching {
+                when (mqttOutcome) {
+                    null, is MqttPublishOutcome.NotConfigured -> Unit
+                    is MqttPublishOutcome.Success -> app.settingsRepository.setMqttLastError(null)
+                    is MqttPublishOutcome.Failure -> app.settingsRepository.setMqttLastError(mqttOutcome.message)
+                }
             }
         }
     }
 
-    private suspend fun deliverToday(
+    /**
+     * Synthesises insight prose via Gemini TTS for the pre-alignment
+     * synth track. Returns null on any failure so downstream
+     * consumers (MQTT audio, phone speaker) can degrade gracefully:
+     * the bridge skips its audio publish, the phone speaker falls back
+     * to the device engine. Logs the failure with enough context to
+     * diagnose without spamming successes.
+     */
+    private suspend fun synthesizeForDelivery(insight: Insight, prefs: UserPreferences): PcmAudio? {
+        val utterance = ttsUtterance(insight, prefs)
+        return runCatching {
+            GeminiTtsSpeaker(
+                app.geminiTtsClient,
+                voiceName = prefs.geminiVoice,
+                style = prefs.ttsStyle,
+            ).synthesize(utterance.text, utterance.locale)
+        }
+            .onFailure { t ->
+                if (t is CancellationException) throw t
+                DiagLog.w(TAG, "Gemini TTS synth failed; downstream audio destinations degrade.", t)
+            }
+            .getOrNull()
+    }
+
+    /**
+     * Renders the outfit card PNG for the pre-alignment render track.
+     * Same render the MQTT image publish has always used; returns
+     * null when there's no outfit (e.g. early-morning fetch with no
+     * recommendation) or when the renderer throws. The MQTT image
+     * publish is the only consumer in PR1; the cast destination joins
+     * in PR2.
+     */
+    private fun renderOutfitPngIfPossible(
+        insight: Insight,
+        prefs: UserPreferences,
+        prose: String,
+        topColors: Map<OutfitSuggestion.Top, Long>,
+        bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+        topStrokes: Map<OutfitSuggestion.Top, Long>,
+        bottomStrokes: Map<OutfitSuggestion.Bottom, Long>,
+    ): ByteArray? {
+        val outfit = insight.outfit ?: return null
+        return runCatching {
+            val formatter = InsightFormatter.forRegion(applicationContext, prefs.region)
+            val info = outfitCardInfoLines(
+                context = applicationContext,
+                formatter = formatter,
+                hourly = insight.hourly,
+                temperatureUnit = prefs.temperatureUnit,
+            )
+            val header = applicationContext.getString(
+                if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today
+                else R.string.outfit_card_header_tonight,
+            )
+            renderOutfitCard(
+                context = applicationContext,
+                outfit = outfit,
+                header = header,
+                prose = prose,
+                tempLine = info.tempLine,
+                rainLine = info.rainLine,
+                tempFillFraction = info.tempFillFraction,
+                rainFillFraction = info.rainFillFraction,
+                topColors = topColors,
+                bottomColors = bottomColors,
+                topStrokes = topStrokes,
+                bottomStrokes = bottomStrokes,
+            )
+        }
+            .onFailure { t ->
+                if (t is CancellationException) throw t
+                DiagLog.w(TAG, "Outfit render failed; MQTT image publish skipped.", t)
+            }
+            .getOrNull()
+    }
+
+    private fun postPeriodNotification(
         insight: Insight,
         prefs: UserPreferences,
         prose: String,
         topColors: Map<OutfitSuggestion.Top, Long>,
         topStrokes: Map<OutfitSuggestion.Top, Long>,
+        gates: app.clothescast.core.domain.usecase.DeliveryGates,
     ) {
-        awaitDeliveryAlignment()
-        val mode = prefs.deliveryMode
-        if (mode == DeliveryMode.NOTIFICATION_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS) {
-            app.insightNotifier.notify(insight, prose, topColors, topStrokes)
-            recordDeliveryDelay(ForecastPeriod.TODAY)
+        if (gates.emptyEveningSkip) {
+            DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping notification.")
+            return
         }
-        val ttsRequested = mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
-        if (shouldSpeakNow(ttsRequested, prefs)) {
-            speakWithFallback(insight.period, ttsUtterance(insight, prefs), prefs)
+        val mode = when (insight.period) {
+            ForecastPeriod.TODAY -> prefs.deliveryMode
+            ForecastPeriod.TONIGHT -> prefs.tonightDeliveryMode
+        }
+        val canNotify = mode == DeliveryMode.NOTIFICATION_ONLY ||
+            mode == DeliveryMode.NOTIFICATION_AND_TTS
+        if (!canNotify) return
+        when (insight.period) {
+            ForecastPeriod.TODAY ->
+                app.insightNotifier.notify(insight, prose, topColors, topStrokes)
+            ForecastPeriod.TONIGHT ->
+                app.tonightInsightNotifier.notify(insight, prose, topColors, topStrokes)
+        }
+        recordDeliveryDelay(insight.period)
+    }
+
+    /**
+     * Plays the spoken briefing on the phone speaker (or skips it).
+     * Reads the pre-synthesised [pcm] when available: on the Gemini
+     * engine that's a same-buffer playback with no synth latency at
+     * the post-alignment moment. On the Device engine, or when synth
+     * failed, falls back to [app.clothescast.tts.AndroidTtsSpeaker]
+     * which synths + plays in one call. The audio focus block wraps
+     * only the playback — the synth ran pre-alignment, outside any
+     * focus claim.
+     */
+    private suspend fun playPhoneSpeaker(
+        insight: Insight,
+        prefs: UserPreferences,
+        gates: app.clothescast.core.domain.usecase.DeliveryGates,
+        pcm: PcmAudio?,
+    ) {
+        if (gates.emptyEveningSkip) {
+            DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping TTS.")
+            return
+        }
+        if (!gates.phoneTtsConfigured) return
+        if (!shouldSpeakNow(prefs)) return
+        val utterance = ttsUtterance(insight, prefs)
+        withSpeechAudioFocus(applicationContext) {
+            if (prefs.ttsEngine == TtsEngine.GEMINI && pcm != null) {
+                runCatching {
+                    GeminiTtsSpeaker(
+                        app.geminiTtsClient,
+                        voiceName = prefs.geminiVoice,
+                        style = prefs.ttsStyle,
+                    ).play(pcm)
+                }.onFailure { t ->
+                    if (t is CancellationException) throw t
+                    DiagLog.w(TAG, "Gemini playback failed; insight is still posted as notification.", t)
+                }
+                return@withSpeechAudioFocus
+            }
+            // Device engine, or Gemini synth failed pre-alignment.
+            // Either way, on-device TTS synthesises at playback time
+            // and gets the user audio without burning another Gemini
+            // call.
+            runCatching {
+                app.deviceTtsSpeaker(prefs.deviceVoice).speak(utterance.text, utterance.locale)
+            }.onFailure { t ->
+                if (t is CancellationException) throw t
+                DiagLog.w(TAG, "Device TTS failed; insight is still posted as notification.", t)
+            }
         }
     }
 
@@ -727,17 +925,6 @@ class FetchAndNotifyWorker(
         )
     }
 
-    /**
-     * Tonight delivery honours the user's tonight-specific [DeliveryMode]
-     * (the night card has its own delivery selector, separate from the day
-     * card's):
-     *  - Notification posts only when the delivery mode includes notifications,
-     *    matching today's behaviour. The notifier still picks the silent channel
-     *    vs the default-priority channel based on whether there are calendar
-     *    events tonight.
-     *  - TTS speaks when the delivery mode includes TTS, unless
-     *    notify-only-on-events is on and the evening has no calendar events.
-     */
     // Region-language prose for notification text and the audit log. Spoken
     // playback is rendered separately through ttsUtterance() so explicit voice
     // locales like de-AT speak German even when the app UI remains English.
@@ -760,38 +947,6 @@ class FetchAndNotifyWorker(
             temperatureUnit = prefs.temperatureUnit,
         )
 
-    private suspend fun deliverTonight(
-        insight: Insight,
-        prefs: UserPreferences,
-        prose: String,
-        topColors: Map<OutfitSuggestion.Top, Long>,
-        topStrokes: Map<OutfitSuggestion.Top, Long>,
-    ) {
-        awaitDeliveryAlignment()
-        val mode = prefs.tonightDeliveryMode
-        val canNotify = mode == DeliveryMode.NOTIFICATION_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
-        // The notify-only-on-events toggle skips the notification entirely on
-        // empty evenings — the cache is still written and the widget updated
-        // upstream, so the user sees fresh state when they open the app. Only
-        // log "skipping" when a notification would otherwise have posted.
-        val skipEmptyEveningNotification = canNotify && prefs.tonightNotifyOnlyOnEvents && !insight.hasEvents
-        if (skipEmptyEveningNotification) {
-            DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping notification.")
-        } else if (canNotify) {
-            app.tonightInsightNotifier.notify(insight, prose, topColors, topStrokes)
-            recordDeliveryDelay(ForecastPeriod.TONIGHT)
-        }
-        val skipEmptyEveningTts = prefs.tonightNotifyOnlyOnEvents && !insight.hasEvents
-        if (skipEmptyEveningTts) {
-            DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping TTS.")
-            return
-        }
-        val ttsRequested = mode == DeliveryMode.TTS_ONLY || mode == DeliveryMode.NOTIFICATION_AND_TTS
-        if (shouldSpeakNow(ttsRequested, prefs)) {
-            speakWithFallback(insight.period, ttsUtterance(insight, prefs), prefs)
-        }
-    }
-
     /**
      * Wraps [shouldSpeak] with the per-run device-location read. Resolves the
      * coarse fix via [LocationResolver.resolveFresh] (network provider; no
@@ -802,11 +957,13 @@ class FetchAndNotifyWorker(
      * Uses [resolveFresh] rather than [LocationResolver.resolve] so a stale
      * at-home fix from before the user left can't suppress TTS once they've
      * gone away — exactly the failure mode this feature exists to avoid.
-     * [SKIP_TTS_AT_HOME_MAX_AGE_MS] is the freshness ceiling: anything older
-     * is treated as unavailable, which falls open to speaking.
+     *
+     * The caller is responsible for already gating on
+     * [DeliveryGates.phoneTtsConfigured] / [DeliveryGates.emptyEveningSkip]
+     * before reaching here; this function only handles the runtime
+     * at-home check.
      */
-    private suspend fun shouldSpeakNow(ttsRequested: Boolean, prefs: UserPreferences): Boolean {
-        if (!ttsRequested) return false
+    private suspend fun shouldSpeakNow(prefs: UserPreferences): Boolean {
         if (!prefs.skipTtsAtHome || prefs.homeLocation == null) return true
         val current = app.locationResolver.resolveFresh(LocationResolver.FRESH_FIX_MAX_AGE_MS)
         val speak = shouldSpeak(
@@ -817,58 +974,6 @@ class FetchAndNotifyWorker(
         )
         if (!speak) DiagLog.i(TAG, "At home and skip-TTS-at-home is on; skipping TTS.")
         return speak
-    }
-
-    /**
-     * Speaks via the user-preferred engine; on Gemini failure (network, quota,
-     * missing key) falls back to the on-device engine so the user still hears
-     * something. We never let a TTS error fail the worker — the notification
-     * path is the primary delivery channel and has already fired by this point.
-     */
-    private suspend fun speakWithFallback(
-        period: ForecastPeriod,
-        utterance: InsightTtsUtterance,
-        prefs: UserPreferences,
-    ) {
-        withSpeechAudioFocus(applicationContext) {
-            when (prefs.ttsEngine) {
-                TtsEngine.GEMINI -> {
-                    try {
-                        val speaker = GeminiTtsSpeaker(
-                            app.geminiTtsClient,
-                            voiceName = prefs.geminiVoice,
-                            style = prefs.ttsStyle,
-                        )
-                        val audio = speaker.synthesize(utterance.text, utterance.locale)
-                        // Publish before local playback so a Hub speaking off
-                        // the retained audio topic doesn't trail the phone.
-                        // Mirrors the image publish in deliver(): the call is
-                        // capped at two attempts × MqttPublisher.DEFAULT_PUBLISH_TIMEOUT_MS
-                        // plus the retry delay, so a broker outage costs at
-                        // most ~11 s of TTS-path latency.
-                        runCatching {
-                            app.mqttPublisher.publishAudioIfEnabled(
-                                period,
-                                WavEncoder.encode(audio),
-                            )
-                        }.onFailure { t ->
-                            if (t is CancellationException) throw t
-                            DiagLog.w(TAG, "TTS audio MQTT publish failed.", t)
-                        }
-                        speaker.play(audio)
-                        return@withSpeechAudioFocus
-                    } catch (t: Throwable) {
-                        DiagLog.w(TAG, "Gemini TTS failed; falling back to device TTS.", t)
-                    }
-                }
-                TtsEngine.DEVICE -> Unit
-            }
-            try {
-                app.deviceTtsSpeaker(prefs.deviceVoice).speak(utterance.text, utterance.locale)
-            } catch (t: Throwable) {
-                DiagLog.w(TAG, "Device TTS failed; insight is still posted as notification.", t)
-            }
-        }
     }
 
     companion object {

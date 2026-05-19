@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.DisposableEffect
 import app.clothescast.R
+import app.clothescast.cast.DiscoveredCastRoute
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.discovery.DiscoveredService
 import app.clothescast.discovery.ServiceType
@@ -67,6 +68,14 @@ internal fun SmartHomeContent(
     publishing: Boolean,
     discoveryRunning: Boolean,
     discoveredServices: List<DiscoveredService>,
+    castAvailable: Boolean,
+    castRouteName: String?,
+    castPickerOpen: Boolean,
+    castDiscoveredRoutes: List<DiscoveredCastRoute>,
+    castInProgress: Boolean,
+    castLastError: String?,
+    castLastErrorAt: Long,
+    castLastSuccessAt: Long,
     padding: PaddingValues,
     onSetBridgeEnabled: (Boolean) -> Unit,
     onSaveConfig: (host: String, port: Int, useTls: Boolean, username: String, topic: String, password: String?) -> Unit,
@@ -75,12 +84,20 @@ internal fun SmartHomeContent(
     onStartDiscovery: () -> Unit,
     onStopDiscovery: () -> Unit,
     onUseDiscoveredService: (DiscoveredService) -> Unit,
+    onOpenCastPicker: () -> Unit,
+    onCloseCastPicker: () -> Unit,
+    onPickCastRoute: (DiscoveredCastRoute) -> Unit,
+    onClearCastRoute: () -> Unit,
+    onCastNow: () -> Unit,
 ) {
     // Cancel any in-flight scan when this screen leaves the composition —
     // the user backing out of Smart Home shouldn't leave the NsdManager
     // listeners chewing battery in the background.
     DisposableEffect(Unit) {
-        onDispose { onStopDiscovery() }
+        onDispose {
+            onStopDiscovery()
+            onCloseCastPicker()
+        }
     }
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
@@ -95,6 +112,22 @@ internal fun SmartHomeContent(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            if (castAvailable) {
+                CastDestinationCard(
+                    routeName = castRouteName,
+                    pickerOpen = castPickerOpen,
+                    discoveredRoutes = castDiscoveredRoutes,
+                    castInProgress = castInProgress,
+                    lastError = castLastError,
+                    lastErrorAt = castLastErrorAt,
+                    lastSuccessAt = castLastSuccessAt,
+                    onOpenPicker = onOpenCastPicker,
+                    onClosePicker = onCloseCastPicker,
+                    onPickRoute = onPickCastRoute,
+                    onClearRoute = onClearCastRoute,
+                    onCastNow = onCastNow,
+                )
+            }
             MqttBridgeCard(
                 enabled = bridgeEnabled,
                 host = host,

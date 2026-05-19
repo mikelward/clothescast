@@ -27,6 +27,8 @@ import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
+import app.clothescast.cast.CastRouteDiscovery
+import app.clothescast.cast.DiscoveredCastRoute
 import app.clothescast.discovery.DiscoveredService
 import app.clothescast.discovery.HomeAssistantDiscovery
 import app.clothescast.discovery.ServiceType
@@ -122,6 +124,28 @@ class SettingsViewModel(
      * [SettingsState.discoveryRunning] never flipping true).
      */
     private val discovery: HomeAssistantDiscovery? = null,
+    /**
+     * MediaRouter wrapper for the Settings → Cast picker. Null in pure-VM
+     * tests; the Activity wires the real [CastRouteDiscovery]. When null,
+     * the picker stays empty (the UI hides the section via
+     * [SettingsState.castAvailable] not flipping true).
+     */
+    private val castRouteDiscovery: CastRouteDiscovery? = null,
+    /**
+     * "Cast now" action — synthesises + renders + casts the current
+     * insight to the saved smart display, returning null on success or
+     * a user-facing error string. The Activity wires this with the
+     * real [castCurrentInsight] closure over Context + InsightCache +
+     * [CastInsightController]. Null in pure-VM tests; the button is
+     * inert in that case.
+     */
+    private val castNowAction: (suspend () -> String?)? = null,
+    /**
+     * True when [com.google.android.gms.cast.framework.CastContext] is
+     * available on this device. Cast-less emulators / GMS-free builds
+     * pass false; the Settings UI hides the whole Cast section then.
+     */
+    private val castAvailable: Boolean = false,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
@@ -202,6 +226,8 @@ class SettingsViewModel(
                         mqttUseTls = prefs.mqttUseTls,
                         mqttUsername = prefs.mqttUsername.orEmpty(),
                         mqttTopic = prefs.mqttTopic,
+                        castAvailable = castAvailable,
+                        castRouteName = prefs.castRouteName,
                     )
                 }
                 // Re-enumerate on first observation and whenever the effective
@@ -228,6 +254,17 @@ class SettingsViewModel(
                         mqttLastError = status?.errorMessage,
                         mqttLastErrorAt = status?.recordedAtMs ?: 0L,
                         mqttLastPublishAt = status?.lastSuccessAtMs ?: 0L,
+                    )
+                }
+            }
+        }
+        viewModelScope.launch {
+            settingsRepository.castStatus.collect { status ->
+                _state.update {
+                    it.copy(
+                        castLastError = status?.errorMessage,
+                        castLastErrorAt = status?.recordedAtMs ?: 0L,
+                        castLastSuccessAt = status?.lastSuccessAtMs ?: 0L,
                     )
                 }
             }
@@ -675,6 +712,75 @@ class SettingsViewModel(
         _state.update { it.copy(discoveryRunning = false) }
     }
 
+    private var castDiscoveryJob: Job? = null
+
+    /**
+     * Opens the Settings → Cast picker and starts a [MediaRouter] scan
+     * for Cast routes on the LAN. The flow folds emissions into
+     * [SettingsState.castDiscoveredRoutes]; the picker dialog renders
+     * them. Idempotent — a second call while the picker is open does
+     * nothing. No-op when the VM was constructed without a
+     * [castRouteDiscovery] backend (pure-VM tests).
+     */
+    fun openCastPicker() {
+        val source = castRouteDiscovery ?: return
+        if (castDiscoveryJob?.isActive == true) return
+        _state.update { it.copy(castPickerOpen = true, castDiscoveredRoutes = emptyList()) }
+        val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
+            try {
+                source.discoverRoutes().collect { routes ->
+                    _state.update { it.copy(castDiscoveredRoutes = routes) }
+                }
+            } finally {
+                if (castDiscoveryJob === coroutineContext[Job]) {
+                    _state.update { it.copy(castPickerOpen = false) }
+                }
+            }
+        }
+        castDiscoveryJob = job
+        job.start()
+    }
+
+    /** Closes the cast picker and cancels the in-flight discovery scan. */
+    fun closeCastPicker() {
+        castDiscoveryJob?.cancel()
+        castDiscoveryJob = null
+        _state.update { it.copy(castPickerOpen = false) }
+    }
+
+    /** Persists the user's choice and closes the picker. */
+    fun pickCastRoute(route: DiscoveredCastRoute) {
+        viewModelScope.launch {
+            settingsRepository.setCastRoute(routeId = route.id, routeName = route.name)
+            closeCastPicker()
+        }
+    }
+
+    /** Clears the saved Cast route (Settings row reverts to "No display picked"). */
+    fun clearCastRoute() {
+        viewModelScope.launch { settingsRepository.setCastRoute(routeId = null, routeName = null) }
+    }
+
+    /**
+     * Runs the "Cast now" test. Reuses the worker's render + synth
+     * pipeline so the test cast is visually identical to what the
+     * scheduled cast will (in PR B) produce. No-op when the VM was
+     * constructed without a [castNowAction] (pure-VM tests).
+     */
+    fun castNow() {
+        val action = castNowAction ?: return
+        if (_state.value.castInProgress) return
+        viewModelScope.launch {
+            _state.update { it.copy(castInProgress = true) }
+            try {
+                val error = action()
+                settingsRepository.setCastLastError(error)
+            } finally {
+                _state.update { it.copy(castInProgress = false) }
+            }
+        }
+    }
+
     /**
      * Pre-fills the MQTT broker config with a discovered service. For an
      * MQTT advert the resolved port is the broker port; for a Home
@@ -772,6 +878,9 @@ class SettingsViewModel(
         private val mqttPublisher: MqttPublisher? = null,
         private val fullPublish: (suspend () -> MqttPublishOutcome)? = null,
         private val discovery: HomeAssistantDiscovery? = null,
+        private val castRouteDiscovery: CastRouteDiscovery? = null,
+        private val castNowAction: (suspend () -> String?)? = null,
+        private val castAvailable: Boolean = false,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -793,6 +902,9 @@ class SettingsViewModel(
                 mqttPublisher = mqttPublisher,
                 fullPublish = fullPublish,
                 discovery = discovery,
+                castRouteDiscovery = castRouteDiscovery,
+                castNowAction = castNowAction,
+                castAvailable = castAvailable,
             ) as T
         }
     }

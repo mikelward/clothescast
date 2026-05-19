@@ -12,6 +12,8 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.os.LocaleListCompat
+import app.clothescast.cast.castCurrentInsight
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -425,6 +427,21 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                         outcome
                     },
                     discovery = app.homeAssistantDiscovery,
+                    castRouteDiscovery = app.castRouteDiscovery,
+                    castAvailable = app.castContext != null,
+                    castNowAction = app.castInsightController?.let { controller ->
+                        {
+                            castCurrentInsight(
+                                context = context,
+                                settingsRepository = app.settingsRepository,
+                                insightCache = app.insightCache,
+                                calendarEventReader = app.calendarEventReader,
+                                controller = controller,
+                                locale = LocaleListCompat.getAdjustedDefault().get(0)
+                                    ?: java.util.Locale.getDefault(),
+                            )
+                        }
+                    },
                 ),
             )
             SettingsScreen(

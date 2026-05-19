@@ -404,6 +404,14 @@ internal fun SettingsSmartHomePreview() {
                     port = 1883,
                 ),
             ),
+            castAvailable = true,
+            castRouteName = "Living-room display",
+            castPickerOpen = false,
+            castDiscoveredRoutes = emptyList(),
+            castInProgress = false,
+            castLastError = null,
+            castLastErrorAt = 0L,
+            castLastSuccessAt = 0L,
             padding = PaddingValues(0.dp),
             onSetBridgeEnabled = {},
             onSaveConfig = { _, _, _, _, _, _ -> },
@@ -412,6 +420,11 @@ internal fun SettingsSmartHomePreview() {
             onStartDiscovery = {},
             onStopDiscovery = {},
             onUseDiscoveredService = {},
+            onOpenCastPicker = {},
+            onCloseCastPicker = {},
+            onPickCastRoute = {},
+            onClearCastRoute = {},
+            onCastNow = {},
         )
     }
 }

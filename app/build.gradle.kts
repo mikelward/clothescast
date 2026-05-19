@@ -343,10 +343,16 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
 
-    // Ktor CIO server for the local phone-pairing HTTP endpoint. TV shows a QR code
-    // encoding the server URL; the phone browser opens the page, pastes the API key,
-    // and POSTs it back — no cloud relay, no new permissions, LAN-local only.
+    // Ktor CIO server for the local phone-pairing HTTP endpoint plus the
+    // Cast media-hosting endpoint (the receiver fetches PNG + WAV from a
+    // tiny LAN server on the phone — Cast doesn't accept sender-pushed bytes).
     implementation(libs.ktor.server.cio)
+
+    // Google Cast — adds the route discovery / session APIs (via
+    // androidx.mediarouter) and RemoteMediaClient. Initialised lazily in
+    // ClothesCastApplication; the call is wrapped in try/catch so non-Play
+    // devices and Cast-less emulators don't crash on startup.
+    implementation(libs.play.services.cast.framework)
 
     // QR code generation: encodes the pairing URL into a BitMatrix that we render
     // as an Android Bitmap. Pure-Java, no Android SDK dependency.

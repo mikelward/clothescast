@@ -123,7 +123,7 @@ class CastInsightController(
                     locale = locale,
                     style = style,
                 )
-                val wav = WavEncoder.encode(pcm)
+                val wav = WavEncoder.encode(padPcmToMinimumDuration(pcm))
                 val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(outfitPng, wav) }
                 val urls = server.publish(host = host, video = mp4)
                 client.load(
@@ -188,7 +188,7 @@ class CastInsightController(
             locale = locale,
             style = style,
         )
-        val wav = WavEncoder.encode(pcm)
+        val wav = WavEncoder.encode(padPcmToMinimumDuration(pcm))
         val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(outfitPng, wav) }
         val urls = server.publish(host = host, video = mp4)
         client.load(
@@ -288,7 +288,8 @@ class CastInsightController(
             }
             val host = resolveLanIp(context)
                 ?: return CastWorkerOutcome.Failed(CastFailure.NoLanAddress.message ?: "No LAN IP")
-            val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(png, wav) }
+            val paddedWav = padWavToMinimumDuration(wav)
+            val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(png, paddedWav) }
             val urls = server.publish(host = host, video = mp4)
             val request = MediaLoadRequestData.Builder()
                 .setMediaInfo(buildMediaInfo(urls, title, subtitle))
@@ -456,7 +457,7 @@ class CastInsightController(
         private const val TAG = "CastInsightController"
 
         /**
-         * 24 kHz mono 16-bit PCM, [SILENT_STUB_SECONDS] of zeros,
+         * 24 kHz mono 16-bit PCM, [MIN_CAST_DURATION_SECONDS] of zeros,
          * wrapped in a standard RIFF/WAVE header. Default Media
          * Receiver requires some media to load, so the image-only
          * cast path (Gemini unavailable, or synth failed) uses this
@@ -467,15 +468,50 @@ class CastInsightController(
          */
         val silentWavStub: ByteArray by lazy {
             val sampleRate = 24_000
-            val sampleCount = sampleRate * SILENT_STUB_SECONDS
+            val sampleCount = sampleRate * MIN_CAST_DURATION_SECONDS
             val pcm = ByteArray(sampleCount * 2) // 16-bit
             WavEncoder.encode(PcmAudio(bytes = pcm, sampleRate = sampleRate))
         }
 
-        // Long enough that a glance at the smart display registers
-        // the outfit image, short enough that the receiver returns
-        // to ambient soon after the user looks away.
-        private const val SILENT_STUB_SECONDS = 15
+        /**
+         * Minimum on-display time for any cast. Short TTS audio
+         * gets trailing silence appended so the outfit image stays
+         * on the smart display long enough for a glance from across
+         * the room to register it; audio longer than this plays in
+         * full and the cast naturally runs to the end of the speech.
+         * Also sizes [silentWavStub] for the image-only fallback.
+         */
+        internal const val MIN_CAST_DURATION_SECONDS = 30
+
+        /**
+         * Pads [pcm] with trailing silence so the resulting buffer
+         * carries at least [MIN_CAST_DURATION_SECONDS] of audio.
+         * Returns the input unchanged when it's already long enough.
+         */
+        internal fun padPcmToMinimumDuration(pcm: PcmAudio): PcmAudio {
+            // 16-bit mono → 2 bytes per frame.
+            val minBytes = pcm.sampleRate * MIN_CAST_DURATION_SECONDS * 2
+            if (pcm.bytes.size >= minBytes) return pcm
+            val padded = ByteArray(minBytes)
+            pcm.bytes.copyInto(padded)
+            return PcmAudio(bytes = padded, sampleRate = pcm.sampleRate)
+        }
+
+        /**
+         * WAV-level equivalent of [padPcmToMinimumDuration] for the
+         * worker path, which holds the cast media as already-encoded
+         * WAV bytes shared with MQTT — MQTT consumers want the raw
+         * TTS length, so padding has to happen inside the cast
+         * branch, not upstream.
+         */
+        internal fun padWavToMinimumDuration(wav: ByteArray): ByteArray {
+            val info = Mp4Encoder.WavInfo.parse(wav)
+            val minBytes = info.sampleRate * MIN_CAST_DURATION_SECONDS * 2 * info.channels
+            if (info.pcm.size >= minBytes) return wav
+            val padded = ByteArray(minBytes)
+            info.pcm.copyInto(padded)
+            return WavEncoder.encode(PcmAudio(bytes = padded, sampleRate = info.sampleRate))
+        }
 
         internal fun buildMediaInfo(
             urls: CastMediaServer.MediaUrl,

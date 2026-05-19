@@ -695,8 +695,14 @@ class FetchAndNotifyWorker(
             mqttAudioJob.join()
             phoneSpeakerJob.join()
             val mqttOutcome = mqttProseDeferred.await()
+            // Only persist a cast outcome when we actually attempted
+            // one — same condition that gates castDeferred above.
+            // An empty-evening tonight skip with a picked route still
+            // has willCast = true, but the cast was intentionally not
+            // attempted; recording a "failure" here would surface a
+            // false error in Settings on every such skipped run.
             val castOutcome = castDeferred?.await()
-            if (gates.willCast) {
+            if (castOutcome != null) {
                 runCatching { app.settingsRepository.setCastLastError(castOutcomeToError(castOutcome)) }
             }
 
@@ -836,10 +842,12 @@ class FetchAndNotifyWorker(
      * Null result means "record a success": [SettingsRepository.setCastLastError]
      * stamps the last-success timestamp and clears any prior error
      * message. Non-null is a short, ready-to-display reason string.
+     *
+     * Only called after a cast was actually attempted — callers gate
+     * on a non-null outcome.
      */
-    private fun castOutcomeToError(outcome: CastInsightController.CastWorkerOutcome?): String? =
+    private fun castOutcomeToError(outcome: CastInsightController.CastWorkerOutcome): String? =
         when (outcome) {
-            null -> "Cast unavailable on this device"
             is CastInsightController.CastWorkerOutcome.Success -> null
             is CastInsightController.CastWorkerOutcome.SkippedNoRoute ->
                 "Smart display not reachable"

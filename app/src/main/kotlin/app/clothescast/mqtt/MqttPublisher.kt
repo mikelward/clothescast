@@ -7,6 +7,8 @@ import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.datatypes.MqttQos
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -53,26 +55,137 @@ class MqttPublisher(
 ) {
 
     /**
-     * Publishes to `${baseTopic}/${period.lowercased()}/text` and returns an
-     * [MqttPublishOutcome] so the caller can persist the result for display.
-     * Returns [MqttPublishOutcome.NotConfigured] (silently) when the bridge is
-     * disabled or no host is set. Any network failure (DNS, connection, broker
-     * rejection, timeout) is logged, swallowed, and returned as
-     * [MqttPublishOutcome.Failure] — the caller's worker must succeed regardless
-     * of broker reachability.
+     * Publishes a delivery's prose, optional outfit image, and optional TTS
+     * audio as a single coordinated bundle. The period-specific topics
+     * (`${baseTopic}/${period.lowercased()}/{text,image,audio}`) fan out in
+     * parallel — they're independent surfaces and a slow image upload
+     * shouldn't hold up the prose.
+     *
+     * The `${baseTopic}/now/{text,image,audio}` mirrors are treated as an
+     * atomic three-topic bundle. They fire only when **every** submitted
+     * modality's period publish succeeded; then `now/image` and `now/audio`
+     * publish in parallel and `now/text` lands **last**. The text-last
+     * ordering matters because `now/text` is the natural state-change
+     * trigger surface for an HA automation — having it update last
+     * guarantees a consumer subscribing to `now/text` reads a `now/image`
+     * and `now/audio` from the same forecast.
+     *
+     * Modalities absent from the current delivery (e.g. an outfit render
+     * failed, or the user is on device TTS so no audio bytes exist) still
+     * touch their now slot: an empty retained payload is published, the
+     * MQTT convention for "delete the retained message". Without that
+     * clear, a `now/text` consumer would read the previous bundle's image
+     * or audio mixed with the new prose. `now/text` is additionally held
+     * back if either `now/image` or `now/audio` publish fails, so a
+     * `now/text` update always implies a coherent `now/image` and
+     * `now/audio` settled successfully.
+     *
+     * If any submitted modality's *period* publish fails, the entire
+     * `now` mirror is skipped: a stale-but-coherent retained bundle from
+     * the last fully-successful run is more honest than a half-updated mix
+     * of new and old payloads on the unified surface. Mirror failures on
+     * any of the `now` topics themselves do not override the returned
+     * prose outcome — the Settings UI status row continues to reflect only
+     * the authoritative period prose publish, the modality the user
+     * actually sees in notifications.
+     *
+     * **Limit of MQTT-level atomicity.** MQTT has no transactional primitive
+     * across topics: once `now/image` has been accepted by the broker as a
+     * retained message, a subsequent `now/audio` rejection (per-topic ACL,
+     * payload-size limit) cannot un-publish it. For a continuously-
+     * subscribed consumer this is fine — they watch `now/text`, which is
+     * the trigger surface and stays held back when sibling mirrors fail —
+     * but a *fresh-reconnect* consumer that reads all three retained
+     * topics during a partial-failure window may briefly observe a new
+     * `now/image` paired with an old `now/audio` and `now/text`. True
+     * atomicity across the bundle would require a versioned-topic +
+     * pointer protocol (publish to `now/v123/{text,image,audio}`, then
+     * update a `now/version` pointer last) and a corresponding change to
+     * the consumer contract; out of scope for the current "subscribe to
+     * `now/text`" surface.
+     *
+     * Returns the prose primary's outcome. Network failures (DNS,
+     * connection, broker rejection, timeout) are logged, swallowed, and
+     * surfaced as [MqttPublishOutcome.Failure]; the caller's worker must
+     * succeed regardless of broker reachability.
      */
-    suspend fun publishIfEnabled(period: ForecastPeriod, prose: String): MqttPublishOutcome {
-        val prepared = preparePublish(context = period.name.lowercase()) ?: return MqttPublishOutcome.NotConfigured
-        val topic = topicFor(prepared.baseTopic, period)
+    suspend fun publishIfEnabled(
+        period: ForecastPeriod,
+        prose: String,
+        image: ByteArray? = null,
+        audio: ByteArray? = null,
+    ): MqttPublishOutcome = coroutineScope {
+        val prepared = preparePublish(context = period.name.lowercase())
+            ?: return@coroutineScope MqttPublishOutcome.NotConfigured
+        val proseBytes = prose.toByteArray(Charsets.UTF_8)
+        val proseTopic = topicFor(prepared.baseTopic, period)
+        val imageTopic = imageTopicFor(prepared.baseTopic, period)
+        val audioTopic = audioTopicFor(prepared.baseTopic, period)
+        val nowTextTopic = nowTopicFor(prepared.baseTopic)
+        val nowImageTopic = nowImageTopicFor(prepared.baseTopic)
+        val nowAudioTopic = nowAudioTopicFor(prepared.baseTopic)
         DiagLog.i(
             TAG,
-            "MQTT bridge enabled; publishing ${period.name.lowercase()} insight to " +
-                "${prepared.scheme}://${prepared.host}:${prepared.port}/$topic " +
-                "(auth=${!prepared.config.username.isNullOrBlank()}, " +
+            "MQTT bridge enabled; publishing ${period.name.lowercase()} insight bundle to " +
+                "${prepared.scheme}://${prepared.host}:${prepared.port}/$proseTopic " +
+                "(image=${image != null}, audio=${audio != null}, " +
+                "mirrored to $nowTextTopic with $nowImageTopic / $nowAudioTopic landing first, " +
+                "auth=${!prepared.config.username.isNullOrBlank()}, " +
                 "password=${if (prepared.config.password != null) "set" else "none"}, " +
                 "payload=${prose.length} chars).",
         )
-        return executePublish(prepared, topic, prose.toByteArray(Charsets.UTF_8))
+
+        val proseDeferred = async { executePublish(prepared, proseTopic, proseBytes) }
+        val imageDeferred = image?.let { bytes -> async { executePublish(prepared, imageTopic, bytes) } }
+        val audioDeferred = audio?.let { bytes -> async { executePublish(prepared, audioTopic, bytes) } }
+        val proseOutcome = proseDeferred.await()
+        val imageOutcome = imageDeferred?.await()
+        val audioOutcome = audioDeferred?.await()
+
+        val everySubmittedSucceeded = proseOutcome is MqttPublishOutcome.Success &&
+            (imageOutcome == null || imageOutcome is MqttPublishOutcome.Success) &&
+            (audioOutcome == null || audioOutcome is MqttPublishOutcome.Success)
+
+        if (everySubmittedSucceeded) {
+            // The now surface is treated as an atomic three-topic bundle. Any
+            // modality absent from this delivery clears its retained slot via
+            // an empty-payload publish (the MQTT convention for "delete the
+            // retained message") so a now/text-triggered consumer can't read
+            // a stale image or audio left over from a previous bundle that
+            // *did* carry one. now/text is then held back until both image
+            // and audio mirrors settle successfully, so an automation
+            // subscribing to now/text never sees the trigger advance before
+            // the rest of the now bundle is coherent.
+            val emptyPayload = ByteArray(0)
+            val nowImageMirror = async {
+                executePublish(prepared, nowImageTopic, image ?: emptyPayload)
+            }
+            val nowAudioMirror = async {
+                executePublish(prepared, nowAudioTopic, audio ?: emptyPayload)
+            }
+            val nowImageOutcome = nowImageMirror.await()
+            val nowAudioOutcome = nowAudioMirror.await()
+            if (nowImageOutcome is MqttPublishOutcome.Success &&
+                nowAudioOutcome is MqttPublishOutcome.Success
+            ) {
+                executePublish(prepared, nowTextTopic, proseBytes)
+            } else {
+                DiagLog.i(
+                    TAG,
+                    "Holding back $nowTextTopic mirror for ${period.name.lowercase()} " +
+                        "bundle (now/image=$nowImageOutcome, now/audio=$nowAudioOutcome); " +
+                        "trigger topic stays at the previous bundle to keep the now set coherent.",
+                )
+            }
+        } else {
+            DiagLog.i(
+                TAG,
+                "Skipping /now mirror for ${period.name.lowercase()} bundle " +
+                    "(prose=$proseOutcome, image=$imageOutcome, audio=$audioOutcome); " +
+                    "previous retained /now bundle stays intact.",
+            )
+        }
+        proseOutcome
     }
 
     /**
@@ -92,49 +205,6 @@ class MqttPublisher(
             "MQTT test publish to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic.",
         )
         return executePublish(prepared, topic, "ClothesCast: connection test".toByteArray(Charsets.UTF_8))
-    }
-
-    /**
-     * Fire-and-forget publish of a PNG outfit image to
-     * `${baseTopic}/${period.lowercased()}/image`, sibling of the prose
-     * (`/text`) and audio (`/audio`) topics. Piggybacks on the same
-     * MQTT bridge toggle as [publishIfEnabled] — no separate setting needed.
-     * HA's `image.mqtt` integration subscribes to this topic and surfaces
-     * the outfit as an `image.*` entity, which a downstream automation can
-     * push to a Nest Hub via `media_player.play_media`.
-     */
-    suspend fun publishImageIfEnabled(period: ForecastPeriod, imageBytes: ByteArray) {
-        val prepared = preparePublish(context = "${period.name.lowercase()} outfit image") ?: return
-        val topic = imageTopicFor(prepared.baseTopic, period)
-        DiagLog.i(
-            TAG,
-            "MQTT bridge enabled; publishing ${period.name.lowercase()} outfit image " +
-                "(${imageBytes.size} bytes) to " +
-                "${prepared.scheme}://${prepared.host}:${prepared.port}/$topic.",
-        )
-        executePublish(prepared, topic, imageBytes)
-    }
-
-    /**
-     * Fire-and-forget publish of a WAV-wrapped TTS clip to
-     * `${baseTopic}/${period.lowercased()}/audio`, sibling of the prose
-     * (`/text`) and image (`/image`) topics. Same bridge toggle as the
-     * prose and image topics — no separate setting. Only emitted when the
-     * Gemini engine actually synthesised audio for local playback (device
-     * TTS doesn't expose bytes), so the published clip matches what the
-     * phone speaks. The companion HA automation can either fetch this as a
-     * media URL or use the retained payload to trigger `media_player`.
-     */
-    suspend fun publishAudioIfEnabled(period: ForecastPeriod, wavBytes: ByteArray) {
-        val prepared = preparePublish(context = "${period.name.lowercase()} TTS audio") ?: return
-        val topic = audioTopicFor(prepared.baseTopic, period)
-        DiagLog.i(
-            TAG,
-            "MQTT bridge enabled; publishing ${period.name.lowercase()} TTS audio " +
-                "(${wavBytes.size} bytes) to " +
-                "${prepared.scheme}://${prepared.host}:${prepared.port}/$topic.",
-        )
-        executePublish(prepared, topic, wavBytes)
     }
 
     /**
@@ -293,9 +363,24 @@ class MqttPublisher(
         fun audioTopicFor(baseTopic: String, period: ForecastPeriod): String =
             periodTopicFor(baseTopic, period, "audio")
 
+        // `<base>/now/<kind>` mirrors the most recently published period
+        // payload (today or tonight) so a consumer can subscribe to a single
+        // topic without having to reason about which window is "current" or
+        // chase recency timestamps across the two period topics.
+        fun nowTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "text")
+
+        fun nowImageTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "image")
+
+        fun nowAudioTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "audio")
+
         private fun periodTopicFor(baseTopic: String, period: ForecastPeriod, kind: String): String {
             val trimmed = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
             return "$trimmed/${period.name.lowercase()}/$kind"
+        }
+
+        private fun nowTopicForKind(baseTopic: String, kind: String): String {
+            val trimmed = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
+            return "$trimmed/now/$kind"
         }
     }
 }

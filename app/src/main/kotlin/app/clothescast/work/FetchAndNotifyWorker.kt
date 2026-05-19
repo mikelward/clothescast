@@ -655,35 +655,23 @@ class FetchAndNotifyWorker(
                     castDestination(insight, prefs, wav = wav, png = png)
                 } else null
 
-            // Prose-publish outcome drives the Smart Home settings
-            // status row; the await + persistence runs after the
-            // sibling jobs join so the call doesn't block them.
-            val mqttProseDeferred: Deferred<MqttPublishOutcome?> = async {
+            // Prose-publish outcome drives the Smart Home settings status
+            // row; the bundle publish handles prose + image + audio for the
+            // period and then mirrors the lot to /now in a coordinated
+            // order (image/audio first, text last) so an HA automation
+            // triggered on `/now/text` sees a consistent `/now/image` /
+            // `/now/audio` from the same forecast rather than a stale
+            // payload from the previous period.
+            val mqttDeferred: Deferred<MqttPublishOutcome?> = async {
                 if (!gates.mqttPublishable) null
-                else runCatching { app.mqttPublisher.publishIfEnabled(insight.period, prose) }
+                else runCatching {
+                    app.mqttPublisher.publishIfEnabled(insight.period, prose, image = png, audio = wav)
+                }
                     .onFailure { t ->
                         if (t is CancellationException) throw t
-                        DiagLog.w(TAG, "MQTT prose publish failed.", t)
+                        DiagLog.w(TAG, "MQTT insight bundle publish failed.", t)
                     }
                     .getOrNull()
-            }
-
-            val mqttImageJob = launch {
-                if (!gates.mqttPublishable || png == null) return@launch
-                runCatching { app.mqttPublisher.publishImageIfEnabled(insight.period, png) }
-                    .onFailure { t ->
-                        if (t is CancellationException) throw t
-                        DiagLog.w(TAG, "MQTT image publish failed.", t)
-                    }
-            }
-
-            val mqttAudioJob = launch {
-                if (!gates.mqttPublishable || wav == null) return@launch
-                runCatching { app.mqttPublisher.publishAudioIfEnabled(insight.period, wav) }
-                    .onFailure { t ->
-                        if (t is CancellationException) throw t
-                        DiagLog.w(TAG, "MQTT audio publish failed.", t)
-                    }
             }
 
             val phoneSpeakerJob = launch {
@@ -691,10 +679,8 @@ class FetchAndNotifyWorker(
             }
 
             notifyJob.join()
-            mqttImageJob.join()
-            mqttAudioJob.join()
             phoneSpeakerJob.join()
-            val mqttOutcome = mqttProseDeferred.await()
+            val mqttOutcome = mqttDeferred.await()
             // Only persist a cast outcome when we actually attempted
             // one — same condition that gates castDeferred above.
             // An empty-evening tonight skip with a picked route still

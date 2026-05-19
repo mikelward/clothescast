@@ -378,8 +378,11 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                             ?: return@Factory app.mqttPublisher.publishTest()
                         val formatter = InsightFormatter.forRegion(context, prefs.region, prefs.temperatureUnit)
                         val prose = formatter.format(insight.summary)
-                        val outcome = app.mqttPublisher.publishIfEnabled(insight.period, prose)
-                        insight.outfit?.let { outfit ->
+                        // Render the outfit card up-front so the bundle publish
+                        // can co-ordinate prose + image and emit a consistent
+                        // /now/* set. A render failure degrades to a prose-only
+                        // bundle rather than skipping the publish entirely.
+                        val png: ByteArray? = insight.outfit?.let { outfit ->
                             runCatching {
                                 val info = outfitCardInfoLines(
                                     context = context,
@@ -407,7 +410,7 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                                     theme?.topStrokeOverrides ?: emptyMap()
                                 val bottomStrokes: Map<OutfitSuggestion.Bottom, Long> =
                                     theme?.bottomStrokeOverrides ?: emptyMap()
-                                val png = renderOutfitCard(
+                                renderOutfitCard(
                                     context = context,
                                     outfit = outfit,
                                     header = header,
@@ -421,10 +424,9 @@ private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: 
                                     topStrokes = topStrokes,
                                     bottomStrokes = bottomStrokes,
                                 )
-                                app.mqttPublisher.publishImageIfEnabled(insight.period, png)
-                            }
+                            }.getOrNull()
                         }
-                        outcome
+                        app.mqttPublisher.publishIfEnabled(insight.period, prose, image = png)
                     },
                     discovery = app.homeAssistantDiscovery,
                     castRouteDiscovery = app.castRouteDiscovery,

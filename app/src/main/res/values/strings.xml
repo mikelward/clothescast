@@ -496,7 +496,7 @@
     <string name="settings_smart_home_mqtt_password_replace">Replace password</string>
     <string name="settings_smart_home_mqtt_password_clear">Clear saved password</string>
     <string name="settings_smart_home_mqtt_topic">Topic prefix</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Today publishes to {prefix}/today/text; tonight to {prefix}/tonight/text. Image and audio land on {prefix}/&lt;period&gt;/image and /audio.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">Today publishes to {prefix}/today/text; tonight to {prefix}/tonight/text. Image and audio land on {prefix}/&lt;period&gt;/image and /audio. Each publish is also mirrored to {prefix}/now/&lt;text|image|audio&gt; so a consumer can subscribe to one \"latest\" topic without choosing today vs tonight.</string>
     <string name="settings_smart_home_mqtt_save">Save</string>
     <string name="settings_smart_home_mqtt_publish_now">Publish now</string>
     <string name="settings_smart_home_mqtt_publishing">Publishing…</string>

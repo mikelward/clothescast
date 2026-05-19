@@ -1,7 +1,6 @@
 package app.clothescast.cast
 
 import android.content.Context
-import android.net.Uri
 import androidx.mediarouter.media.MediaRouteSelector
 import androidx.mediarouter.media.MediaRouter
 import app.clothescast.core.data.tts.GeminiTtsClient
@@ -17,7 +16,6 @@ import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.SessionManager
 import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
-import com.google.android.gms.common.images.WebImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -126,7 +124,8 @@ class CastInsightController(
                     style = style,
                 )
                 val wav = WavEncoder.encode(pcm)
-                val urls = server.publish(host = host, audio = wav, image = outfitPng)
+                val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(outfitPng, wav) }
+                val urls = server.publish(host = host, video = mp4)
                 client.load(
                     MediaLoadRequestData.Builder()
                         .setMediaInfo(buildMediaInfo(urls, title, subtitle))
@@ -190,7 +189,8 @@ class CastInsightController(
             style = style,
         )
         val wav = WavEncoder.encode(pcm)
-        val urls = server.publish(host = host, audio = wav, image = outfitPng)
+        val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(outfitPng, wav) }
+        val urls = server.publish(host = host, video = mp4)
         client.load(
             MediaLoadRequestData.Builder()
                 .setMediaInfo(buildMediaInfo(urls, title, subtitle))
@@ -288,7 +288,8 @@ class CastInsightController(
             }
             val host = resolveLanIp(context)
                 ?: return CastWorkerOutcome.Failed(CastFailure.NoLanAddress.message ?: "No LAN IP")
-            val urls = server.publish(host = host, audio = wav, image = png)
+            val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(png, wav) }
+            val urls = server.publish(host = host, video = mp4)
             val request = MediaLoadRequestData.Builder()
                 .setMediaInfo(buildMediaInfo(urls, title, subtitle))
                 .build()
@@ -455,34 +456,40 @@ class CastInsightController(
         private const val TAG = "CastInsightController"
 
         /**
-         * 24 kHz mono 16-bit PCM, half a second of zeros, wrapped in
-         * a standard RIFF/WAVE header. Default Media Receiver requires
-         * some media to load, so the image-only cast path (Gemini
-         * unavailable, or synth failed) attaches this as a loading
-         * carrier — nothing audible plays on the receiver. Cached
-         * after first computation; the bytes are immutable.
+         * 24 kHz mono 16-bit PCM, [SILENT_STUB_SECONDS] of zeros,
+         * wrapped in a standard RIFF/WAVE header. Default Media
+         * Receiver requires some media to load, so the image-only
+         * cast path (Gemini unavailable, or synth failed) uses this
+         * as the audio side of the muxed MP4 — nothing audible
+         * plays on the receiver but the outfit image stays visible
+         * for the duration of the video track. Cached after first
+         * computation; the bytes are immutable.
          */
         val silentWavStub: ByteArray by lazy {
             val sampleRate = 24_000
-            val sampleCount = sampleRate / 2 // 0.5 s of silence
+            val sampleCount = sampleRate * SILENT_STUB_SECONDS
             val pcm = ByteArray(sampleCount * 2) // 16-bit
             WavEncoder.encode(PcmAudio(bytes = pcm, sampleRate = sampleRate))
         }
 
+        // Long enough that a glance at the smart display registers
+        // the outfit image, short enough that the receiver returns
+        // to ambient soon after the user looks away.
+        private const val SILENT_STUB_SECONDS = 15
+
         internal fun buildMediaInfo(
-            urls: CastMediaServer.MediaUrls,
+            urls: CastMediaServer.MediaUrl,
             title: String,
             subtitle: String?,
         ): MediaInfo {
-            val metadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_GENERIC).apply {
+            val metadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE).apply {
                 putString(MediaMetadata.KEY_TITLE, title)
                 if (!subtitle.isNullOrBlank()) {
                     putString(MediaMetadata.KEY_SUBTITLE, subtitle)
                 }
-                addImage(WebImage(Uri.parse(urls.image)))
             }
-            return MediaInfo.Builder(urls.audio)
-                .setContentType("audio/wav")
+            return MediaInfo.Builder(urls.video)
+                .setContentType("video/mp4")
                 .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
                 .setMetadata(metadata)
                 .build()

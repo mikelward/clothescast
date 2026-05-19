@@ -14,23 +14,27 @@ import java.net.ServerSocket
 import java.security.SecureRandom
 
 /**
- * Tiny HTTP server that exposes one outfit PNG and one TTS WAV to a Cast
- * receiver on the same LAN. Cast receivers fetch media by URL — they
- * don't accept raw bytes pushed from the sender — so the phone briefly
- * hosts the two payloads at per-publish, token-gated paths while the
- * cast is active.
+ * Tiny HTTP server that exposes one MP4 (outfit image as a static video
+ * track + TTS audio as the audio track) to a Cast receiver on the same
+ * LAN. Cast receivers fetch media by URL — they don't accept raw bytes
+ * pushed from the sender — so the phone briefly hosts the payload at a
+ * per-publish, token-gated path while the cast is active.
+ *
+ * Packing image + audio into a single MP4 lets the Default Media Receiver
+ * render the outfit full-screen while the audio plays (a metadata
+ * WebImage gets framed by audio-player chrome — a video track doesn't).
  *
  * Lifecycle:
- *   1. [publish] writes the audio + image buffers into memory, rotates a
- *      128-bit path token, and lazily starts the server. Returns HTTP
- *      URLs the receiver can fetch.
- *   2. The caller hands those URLs to a `MediaInfo` and loads them via
+ *   1. [publish] writes the MP4 buffer into memory, rotates a 128-bit
+ *      path token, and lazily starts the server. Returns an HTTP URL
+ *      the receiver can fetch.
+ *   2. The caller hands that URL to a `MediaInfo` and loads it via
  *      `RemoteMediaClient.load(...)`.
- *   3. Subsequent [publish] calls swap the buffers and the path token in
+ *   3. Subsequent [publish] calls swap the buffer and the path token in
  *      place — old URLs stop serving and the receiver picks up the new
- *      ones from the next `load(...)`.
- *   4. [stop] when the cast ends; the server thread exits, the buffers
- *      drop out of scope, and the token is cleared so any straggling
+ *      one from the next `load(...)`.
+ *   4. [stop] when the cast ends; the server thread exits, the buffer
+ *      drops out of scope, and the token is cleared so any straggling
  *      request 404s.
  *
  * Privacy / threat model:
@@ -39,19 +43,19 @@ import java.security.SecureRandom
  *     traversal and no auth beyond the per-publish path token.
  *   - **Path-token gating.** Each [publish] mints a fresh 128-bit
  *     [SecureRandom] secret and embeds it as the first path segment
- *     (e.g. `/<32 hex chars>/insight.wav`). Anything else — including
+ *     (e.g. `/<32 hex chars>/insight.mp4`). Anything else — including
  *     known-suffix probes and the previous publish's token — returns
  *     404. A co-LAN device that scans the ephemeral port for open
- *     services can't enumerate the buffers without observing the
+ *     services can't enumerate the buffer without observing the
  *     issued URL.
  *   - Cleartext HTTP-to-LAN is the standard Cast path (receivers won't
  *     trust a self-signed cert).
- *   - Nothing is persisted: the buffers live entirely in heap, are
- *     dropped on [stop], and rotate on every [publish].
+ *   - Nothing is persisted: the buffer lives entirely in heap, is
+ *     dropped on [stop], and rotates on every [publish].
  *
  * Threading:
  *   - Ktor CIO runs its accept / handler loop on its own threads. The
- *     buffer references and the token are `@Volatile` so a handler
+ *     buffer reference and the token are `@Volatile` so a handler
  *     racing a [publish] sees one set or the other, never a torn write.
  *   - [start] / [stop] / [publish] are intended to be called from a
  *     single thread (the cast session listener); concurrent calls
@@ -63,40 +67,32 @@ class CastMediaServer {
     private var port: Int = 0
 
     @Volatile
-    private var audio: ByteArray? = null
-
-    @Volatile
-    private var image: ByteArray? = null
+    private var video: ByteArray? = null
 
     @Volatile
     private var pathToken: String = ""
 
     /**
-     * Replaces the in-memory audio + image buffers, rotates the path
-     * token, ensures the server is running, and returns the URLs the
-     * receiver should fetch.
+     * Replaces the in-memory MP4 buffer, rotates the path token, ensures
+     * the server is running, and returns the URL the receiver should
+     * fetch.
      *
      * @param host the LAN address the receiver should reach the phone on
      *   (e.g. "192.168.1.42"). The caller resolves it from
      *   `ConnectivityManager.getLinkProperties`.
      */
-    fun publish(host: String, audio: ByteArray, image: ByteArray): MediaUrls {
-        this.audio = audio
-        this.image = image
+    fun publish(host: String, video: ByteArray): MediaUrl {
+        this.video = video
         this.pathToken = generateToken()
         if (server == null) start()
-        return MediaUrls(
-            audio = "http://$host:$port/$pathToken$AUDIO_SUFFIX",
-            image = "http://$host:$port/$pathToken$IMAGE_SUFFIX",
-        )
+        return MediaUrl(video = "http://$host:$port/$pathToken$VIDEO_SUFFIX")
     }
 
-    /** Stops the server, if running, and clears all buffered media + the path token. */
+    /** Stops the server, if running, and clears the buffered media + the path token. */
     fun stop() {
         server?.stop(gracePeriodMillis = 0, timeoutMillis = 500)
         server = null
-        audio = null
-        image = null
+        video = null
         pathToken = ""
         port = 0
     }
@@ -108,20 +104,11 @@ class CastMediaServer {
         port = ServerSocket(0).use { it.localPort }
         val srv = embeddedServer(CIO, port = port) {
             routing {
-                get("/{token}/insight.wav") {
-                    val buf = audio
+                get("/{token}/insight.mp4") {
+                    val buf = video
                     val incoming = call.parameters["token"]
                     if (buf != null && tokenMatches(incoming)) {
-                        call.respondBytes(buf, AUDIO_CONTENT_TYPE)
-                    } else {
-                        call.respond(HttpStatusCode.NotFound)
-                    }
-                }
-                get("/{token}/outfit.png") {
-                    val buf = image
-                    val incoming = call.parameters["token"]
-                    if (buf != null && tokenMatches(incoming)) {
-                        call.respondBytes(buf, ContentType.Image.PNG)
+                        call.respondBytes(buf, VIDEO_CONTENT_TYPE)
                     } else {
                         call.respond(HttpStatusCode.NotFound)
                     }
@@ -148,15 +135,14 @@ class CastMediaServer {
         return bytes.joinToString("") { "%02x".format(it) }
     }
 
-    data class MediaUrls(val audio: String, val image: String)
+    data class MediaUrl(val video: String)
 
     companion object {
         // 128 bits of entropy in the URL path. Enough that scanning the
-        // open ephemeral port for the buffers is computationally hopeless
+        // open ephemeral port for the buffer is computationally hopeless
         // even on a fast LAN; same order as a UUID4.
         private const val TOKEN_BYTES = 16
-        private const val AUDIO_SUFFIX = "/insight.wav"
-        private const val IMAGE_SUFFIX = "/outfit.png"
-        private val AUDIO_CONTENT_TYPE = ContentType("audio", "wav")
+        private const val VIDEO_SUFFIX = "/insight.mp4"
+        private val VIDEO_CONTENT_TYPE = ContentType("video", "mp4")
     }
 }

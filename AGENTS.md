@@ -256,6 +256,27 @@ new rule the first time something bites you, not the third.
   If you see "no tests found" after adding a `@Test`-annotated JUnit 4
   class, check that `vintage-engine` is on the test classpath.
 
+## Error handling
+
+- **Don't silently swallow exceptions.** A bare `catch (_: Throwable) {}` or
+  `catch (e: Exception) { /* ignore */ }` hides real failures in the field
+  and burns hours when something eventually breaks. Every catch block needs
+  to do three things: **log** the exception with enough context for a reader
+  to identify the failed call and its inputs (route through the usual
+  logger, not `println` or `Log.e` with a bare message); **clean up** what
+  the `try` block acquired — closeables, network handles, partial writes,
+  in-progress UI state — so a failure doesn't leak resources or leave the
+  app half-mutated (`use { … }` / `finally` blocks for closeables);
+  and **handle the edge case explicitly** — pick how the caller sees this
+  failure (default value, null, sentinel error result, rethrow as a domain
+  exception) rather than letting control fall through. Catching
+  `Throwable` (or `Exception` blanket) also swallows `CancellationException`
+  in coroutine code, which breaks structured concurrency — narrow the type,
+  or rethrow `CancellationException` first. If you genuinely do want to
+  ignore a specific failure, name the reason in a one-line comment
+  ("Open-Meteo returns 4xx for unknown geocodes, treat as empty result")
+  and still log at debug so it's traceable.
+
 ## Privacy
 
 - **Surface any change to what we send off device.** When a change touches

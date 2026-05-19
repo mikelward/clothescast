@@ -167,8 +167,8 @@ Automation → Cast**, above the MQTT card.
 - **Picked display** — `castRouteId` + cached `castRouteName`. Null
   means cast is disabled. The Settings row reads the cached name
   even when the device is asleep so the picker stays readable.
-- **Cast morning forecast** — per-period toggle. Default on.
-- **Cast tonight forecast** — per-period toggle. Default on.
+- **Daily ClothesCast** — per-period toggle. Default on.
+- **Nightly ClothesCast** — per-period toggle. Default on.
 - **Cast does not require Gemini.** When the Gemini engine is
   available (engine = Gemini AND API key set), the cast carries
   the synthesised WAV and the smart display speaks the forecast.

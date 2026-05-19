@@ -619,4 +619,269 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_debug_description">ዕለታዊውን የClothesCast ሂደት ወዲያው ያስነሳል። የተያዘውን ጊዜ ሳይጠብቅ ለማረጋገጥ ይጠቅማል።</string>
     <string name="settings_debug_fire_now">ClothesCast አሁን አስኪድ</string>
     <string name="settings_debug_fire_toast">የClothesCast ሠራተኛ በወረፋ ተቀመጠ</string>
+
+    <!-- Cast errors -->
+    <string name="cast_error_no_insight_yet">እስካሁን ትንበያ የለም። ቀጣዩን መርሃ ግብር ይጠብቁ፣ ወይም በዛሬ ማያ ላይ አድስ ን ይጫኑ።</string>
+    <string name="cast_error_no_route_picked">መጀመሪያ ስማርት ማሳያ ይምረጡ።</string>
+    <string name="cast_error_unknown">Cast ተሳናል።</string>
+
+    <!-- Holiday banners -->
+    <string name="holiday_banner_all_saints_day">የሁሉም ቅዱሳን በዓልዎ ይብሰርዎ</string>
+    <string name="holiday_banner_anzac_day">አንዘ ቀን</string>
+    <string name="holiday_banner_assumption">የእናታችን ማርያም ዕርገት</string>
+    <string name="holiday_banner_australia_day">የአውስትራሊያ ቀን</string>
+    <string name="holiday_banner_austria_national_day">የኦስትሪያ ብሔራዊ ቀን</string>
+    <string name="holiday_banner_bastille_day">የባስቲይ ቀን</string>
+    <string name="holiday_banner_bonfire_night">ያስታውሱ፣ ያስታውሱ</string>
+    <string name="holiday_banner_boxing_day">ቦክሲንግ ዴይ</string>
+    <string name="holiday_banner_brazil_independence_day">የብራዚል ነጻነት ቀን</string>
+    <string name="holiday_banner_burns_night">ቡርንስ ናይት</string>
+    <string name="holiday_banner_canada_day">የካናዳ ቀን</string>
+    <string name="holiday_banner_canadian_thanksgiving">ምስጋና</string>
+    <string name="holiday_banner_christmas_day">ጽጌ ልደት ይሁንልዎ</string>
+    <string name="holiday_banner_croatia_independence_day">የክሮኤሺያ ነጻነት ቀን</string>
+    <string name="holiday_banner_croatia_statehood_day">የክሮኤሺያ ግዛት ቀን</string>
+    <string name="holiday_banner_croatia_victory_day">የክሮኤሺያ ድል ቀን</string>
+    <string name="holiday_banner_easter_monday">ትንሳኤ ሰኞ</string>
+    <string name="holiday_banner_easter_sunday">ዘበፋሲካ</string>
+    <string name="holiday_banner_epiphany">ቅዱስ ጥምቀት</string>
+    <string name="holiday_banner_fathers_day_jun">የአባቶች ቀን</string>
+    <string name="holiday_banner_fathers_day_sep">የአባቶች ቀን</string>
+    <string name="holiday_banner_fr_armistice_day">አንዘ ቀን</string>
+    <string name="holiday_banner_german_unity_day">የጀርመን አንድነት ቀን</string>
+    <string name="holiday_banner_good_friday">ዓርብ ስቅለት</string>
+    <string name="holiday_banner_halloween">ሃሎዊን</string>
+    <string name="holiday_banner_immaculate_conception">ኢማኩሌት ኮንሴፕሽን</string>
+    <string name="holiday_banner_italy_republic_day">የጣሊያን ሪፐብሊክ ቀን</string>
+    <string name="holiday_banner_japan_coming_of_age_day">ጃፓናዊ የጉልምስና ቀን</string>
+    <string name="holiday_banner_japan_culture_day">ጃፓናዊ የባህል ቀን</string>
+    <string name="holiday_banner_japan_greenery_day">ጃፓናዊ የአረንጓዴ ቀን</string>
+    <string name="holiday_banner_japan_marine_day">ጃፓናዊ የባህር ቀን</string>
+    <string name="holiday_banner_juneteenth">ጁኒቲዝ</string>
+    <string name="holiday_banner_korean_hangeul_day">ሃንጉል ቀን</string>
+    <string name="holiday_banner_korean_independence_movement_day">የኮሪያ ነጻነት ቀን</string>
+    <string name="holiday_banner_korean_liberation_day">የኮሪያ ነጻ መሆን ቀን</string>
+    <string name="holiday_banner_korean_memorial_day">ለወደቁ ኮሪያውያን</string>
+    <string name="holiday_banner_labour_day">የሰራተኞች ቀን</string>
+    <string name="holiday_banner_mlk_day">ለዶ/ር ኪንግ መስዋዕትነት</string>
+    <string name="holiday_banner_mothers_day">የእናቶች ቀን</string>
+    <string name="holiday_banner_new_years_day">መልካም አዲስ ዓመት</string>
+    <string name="holiday_banner_remembrance_day">አንዘ ቀን</string>
+    <string name="holiday_banner_spain_hispanic_day">ሂስፓኒዳድ ቀን</string>
+    <string name="holiday_banner_st_andrews_day">የቅዱስ አንድሩ ቀን</string>
+    <string name="holiday_banner_st_davids_day">የቅዱስ ዳዊት ቀን</string>
+    <string name="holiday_banner_st_georges_day">የቅዱስ ጊዮርጊስ ቀን</string>
+    <string name="holiday_banner_st_patricks_day">የቅዱስ ፓትሪክ ቀን</string>
+    <string name="holiday_banner_uk_bank_holiday">ብሔራዊ ዕረፍት</string>
+    <string name="holiday_banner_uk_kings_birthday">ሞናርኩ ይጠብቅ</string>
+    <string name="holiday_banner_uk_mothering_sunday">የእናቶች እሁድ</string>
+    <string name="holiday_banner_us_independence_day">ሐምሌ 4 ደስ ይሁንዎ</string>
+    <string name="holiday_banner_us_memorial_day">ለወደቁ ወታደሮቻችን</string>
+    <string name="holiday_banner_us_presidents_day">የፕሬዝዳንቶች ቀን</string>
+    <string name="holiday_banner_us_thanksgiving">ምስጋና</string>
+    <string name="holiday_banner_us_veterans_day">ለቀድሞ ወታደሮቻችን</string>
+    <string name="holiday_banner_valentines_day">ቫለንቲን ቀን</string>
+    <string name="holiday_banner_waitangi_day">ዋይታንጊ ቀን</string>
+
+    <!-- Holiday names -->
+    <string name="holiday_name_all_saints_day">የሁሉም ቅዱሳን ቀን</string>
+    <string name="holiday_name_anzac_day">አንዘ ቀን</string>
+    <string name="holiday_name_assumption">ዕርገት</string>
+    <string name="holiday_name_australia_day">የአውስትራሊያ ቀን</string>
+    <string name="holiday_name_austria_national_day">የኦስትሪያ ብሔራዊ ቀን</string>
+    <string name="holiday_name_bastille_day">የባስቲይ ቀን</string>
+    <string name="holiday_name_bonfire_night">ቦንፋይር ናይት</string>
+    <string name="holiday_name_boxing_day">ቦክሲንግ ዴይ</string>
+    <string name="holiday_name_brazil_independence_day">የብራዚል ነጻነት ቀን</string>
+    <string name="holiday_name_burns_night">ቡርንስ ናይት</string>
+    <string name="holiday_name_canada_day">የካናዳ ቀን</string>
+    <string name="holiday_name_canadian_thanksgiving">የካናዳ ምስጋና</string>
+    <string name="holiday_name_christmas_day">ልደት</string>
+    <string name="holiday_name_croatia_independence_day">የክሮኤሺያ ነጻነት ቀን</string>
+    <string name="holiday_name_croatia_statehood_day">የክሮኤሺያ ግዛት ቀን</string>
+    <string name="holiday_name_croatia_victory_day">የክሮኤሺያ ድል ቀን</string>
+    <string name="holiday_name_easter_monday">ትንሳኤ ሰኞ</string>
+    <string name="holiday_name_easter_sunday">ትንሳኤ እሁድ</string>
+    <string name="holiday_name_epiphany">ጥምቀት</string>
+    <string name="holiday_name_fathers_day_jun">የአባቶች ቀን (ሰኔ)</string>
+    <string name="holiday_name_fathers_day_sep">የአባቶች ቀን (መስከረም)</string>
+    <string name="holiday_name_german_unity_day">የጀርመን አንድነት ቀን</string>
+    <string name="holiday_name_good_friday">ዓርብ ስቅለት</string>
+    <string name="holiday_name_halloween">ሃሎዊን</string>
+    <string name="holiday_name_immaculate_conception">ኢማኩሌት ኮንሴፕሽን</string>
+    <string name="holiday_name_italy_republic_day">የጣሊያን ሪፐብሊክ ቀን</string>
+    <string name="holiday_name_japan_coming_of_age_day">የጉልምስና ቀን (ጃፓን)</string>
+    <string name="holiday_name_japan_culture_day">የባህል ቀን (ጃፓን)</string>
+    <string name="holiday_name_japan_greenery_day">የአረንጓዴ ቀን (ጃፓን)</string>
+    <string name="holiday_name_japan_marine_day">የባህር ቀን (ጃፓን)</string>
+    <string name="holiday_name_juneteenth">ጁኒቲዝ</string>
+    <string name="holiday_name_korean_hangeul_day">ሃንጉል ቀን (ኮሪያ)</string>
+    <string name="holiday_name_korean_independence_movement_day">የኮሪያ ነጻነት ንቅናቄ ቀን</string>
+    <string name="holiday_name_korean_liberation_day">የኮሪያ ነጻ መሆን ቀን</string>
+    <string name="holiday_name_korean_memorial_day">የኮሪያ መታሰቢያ ቀን</string>
+    <string name="holiday_name_labour_day">የሰራተኞች ቀን</string>
+    <string name="holiday_name_mlk_day">ማርቲን ሉተር ኪንግ ጁኒዮር ቀን</string>
+    <string name="holiday_name_mothers_day">የእናቶች ቀን</string>
+    <string name="holiday_name_new_years_day">አዲስ ዓመት</string>
+    <string name="holiday_name_remembrance_day">የሃዘን ቀን / ቬተራን ቀን</string>
+    <string name="holiday_name_spain_hispanic_day">ሂስፓኒዳድ ቀን</string>
+    <string name="holiday_name_st_andrews_day">የቅዱስ አንድሩ ቀን</string>
+    <string name="holiday_name_st_davids_day">የቅዱስ ዳዊት ቀን</string>
+    <string name="holiday_name_st_georges_day">የቅዱስ ጊዮርጊስ ቀን</string>
+    <string name="holiday_name_st_patricks_day">የቅዱስ ፓትሪክ ቀን</string>
+    <string name="holiday_name_uk_early_may_bank_holiday">የቀደምት ግንቦት ብሔራዊ ዕረፍት</string>
+    <string name="holiday_name_uk_kings_birthday">የንጉሱ ልደት</string>
+    <string name="holiday_name_uk_mothering_sunday">የእናቶች እሁድ</string>
+    <string name="holiday_name_uk_spring_bank_holiday">የፀደይ ብሔራዊ ዕረፍት</string>
+    <string name="holiday_name_uk_summer_bank_holiday">የበጋ ብሔራዊ ዕረፍት</string>
+    <string name="holiday_name_us_independence_day">የአሜሪካ ነጻነት ቀን</string>
+    <string name="holiday_name_us_memorial_day">የአሜሪካ መታሰቢያ ቀን</string>
+    <string name="holiday_name_us_presidents_day">የፕሬዝዳንቶች ቀን</string>
+    <string name="holiday_name_us_thanksgiving">የአሜሪካ ምስጋና</string>
+    <string name="holiday_name_valentines_day">ቫለንቲን ቀን</string>
+    <string name="holiday_name_waitangi_day">ዋይታንጊ ቀን</string>
+
+    <!-- Outfit card -->
+    <string name="outfit_card_header_today">የዛሬ ClothesCast</string>
+    <string name="outfit_card_header_tonight">የዛሬ ምሽት ClothesCast</string>
+    <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+
+    <!-- API key -->
+    <string name="settings_api_key_replace">Gemini ቁልፍ ተካ</string>
+
+    <!-- Holidays settings -->
+    <string name="settings_holiday_all_section_title">ሁሉም</string>
+    <string name="settings_holiday_country_all_label">ሁሉም</string>
+    <string name="settings_holiday_country_at">ኦስትሪያ</string>
+    <string name="settings_holiday_country_au">አውስትራሊያ</string>
+    <string name="settings_holiday_country_br">ብራዚል</string>
+    <string name="settings_holiday_country_ca">ካናዳ</string>
+    <string name="settings_holiday_country_current">ያሁኑ ቦታ (%1$s)</string>
+    <string name="settings_holiday_country_de">ጀርመን</string>
+    <string name="settings_holiday_country_es">ስፔን</string>
+    <string name="settings_holiday_country_fr">ፈረንሳይ</string>
+    <string name="settings_holiday_country_gb">ዩናይትድ ኪንግደም</string>
+    <string name="settings_holiday_country_global_label">ዓለም አቀፍ</string>
+    <string name="settings_holiday_country_home">ቤት (%1$s)</string>
+    <string name="settings_holiday_country_hr">ክሮኤሺያ</string>
+    <string name="settings_holiday_country_ie">አየርላንድ</string>
+    <string name="settings_holiday_country_it">ጣሊያን</string>
+    <string name="settings_holiday_country_jp">ጃፓን</string>
+    <string name="settings_holiday_country_kr">ደቡብ ኮሪያ</string>
+    <string name="settings_holiday_country_nz">ኒውዚላንድ</string>
+    <string name="settings_holiday_country_unknown">ያልታወቀ</string>
+    <string name="settings_holiday_country_us">አሜሪካ</string>
+    <string name="settings_holiday_override_auto_off">ራስ-ሰር (ጠፍቷል)</string>
+    <string name="settings_holiday_override_auto_on">ራስ-ሰር (ነቅቷል)</string>
+    <string name="settings_holiday_override_off">ጠፍቷል</string>
+    <string name="settings_holiday_override_on">ነቅቷል</string>
+    <string name="settings_holidays_calendar_section_placeholder_off">ከላይ ያለውን ማብሪያ ይክፈቱ፣ ከዚያ ከተመሳሰሉ ቀን መቁጠሪያዎች የተገኙ ዝግጅቶች የዛሬ ልብስ ጭብጥ ይሆናሉ።</string>
+    <string name="settings_holidays_calendar_section_placeholder_on">ከተመሳሰሉ ቀን መቁጠሪያዎች የተገኙ ዝግጅቶች በቀጣይ ዝማኔ እዚህ ይታያሉ።</string>
+    <string name="settings_holidays_collapse">ሰብስብ</string>
+    <string name="settings_holidays_expand">ዘርጋ</string>
+    <string name="settings_holidays_link_calendar_settings_a11y">የቀን መቁጠሪያ ቅንብሮች</string>
+    <string name="settings_holidays_link_location_settings_a11y">የቦታ ቅንብሮች</string>
+    <string name="settings_holidays_link_region_settings_a11y">የክልል ቅንብሮች</string>
+    <string name="settings_holidays_link_settings">ቅንብሮች</string>
+    <string name="settings_holidays_permission_revoked">የቀን መቁጠሪያ ፍቃድ ያስፈልጋል። ለመፍቀድ ይጫኑ።</string>
+    <string name="settings_holidays_source_all">ሁሉም ሃገሮች</string>
+    <string name="settings_holidays_source_calendar_birthdays">የቀን መቁጠሪያ ልደቶች</string>
+    <string name="settings_holidays_source_calendar_holidays">የቀን መቁጠሪያ በዓሎች</string>
+    <string name="settings_holidays_source_global">ዓለም አቀፍ</string>
+    <string name="settings_holidays_source_location">ቦታ (%1$s)</string>
+    <string name="settings_holidays_source_region">ክልል (%1$s)</string>
+    <string name="settings_holidays_title">በዓሎች</string>
+    <string name="settings_home_location_change">የቤት ቦታ ቀይር</string>
+    <string name="settings_home_location_clear">የቤት ቦታ ሰርዝ</string>
+    <string name="settings_home_location_description">ስልኩ ትንበያ በደምፅ ያነብ ወይ ብሎ ለ\'ከቤት ውጭ ብቻ ተናገር\' ጥቅም ላይ ይውላል። በዚህ መሳሪያ ብቻ ይቀራል።</string>
+    <string name="settings_home_location_search">አድራሻ ፈልግ</string>
+    <string name="settings_home_location_search_caveat">ፍለጋ የከተማ ማዕከልን ይመርጣል፣ ይህም ከቤትዎ ጥቂት ኪሎሜትሮች ሊርቅ ይችላል። 1 ኪሜ ክልሉ እንዲሰራ ቤት ሳሉ \'ያሁኑን ቦታ ተጠቀም\' ይምረጡ።</string>
+    <string name="settings_home_location_title">የቤት ቦታ</string>
+    <string name="settings_home_location_unset">ቤት አልተቀመጠም</string>
+    <string name="settings_home_location_use_current">ያሁኑን ቦታ ተጠቀም</string>
+    <string name="settings_root_holidays">ክብረ በዓሎች</string>
+    <string name="settings_root_holidays_subtitle">በዓሎች እና ልደቶች</string>
+    <string name="settings_root_smart_home">ስማርት ቤት</string>
+    <string name="settings_root_smart_home_subtitle">ስማርት ማሳያዎች እና የቤት አውቶሜሽን</string>
+
+    <!-- Schedule description -->
+    <string name="settings_schedule_description">የዕለቱን የአየር ሁኔታ የሚሸፍን የጠዋቱ ClothesCast።</string>
+
+    <!-- Skip TTS at home -->
+    <string name="settings_skip_tts_at_home_description">ቤት ሲሆኑ ስልኩ ዝምታ ይይዛል — ቤት ውስጥ ያለ ድምፅ ቀድሞ ትንበያ የሚያነብ ከሆነ ይረዳል። ማሳወቂያዎች አሁንም ይለጠፋሉ።</string>
+    <string name="settings_skip_tts_at_home_label">ከቤት ውጭ ብቻ ተናገር</string>
+    <string name="settings_skip_tts_at_home_needs_home">ይህን ለማንቃት ከላይ የቤት ቦታ ያስቀምጡ። ያለሱ ስልኩ ሁሌ ይናገራል።</string>
+    <string name="settings_skip_tts_at_home_needs_permission">ቤት መሆንዎን ለማወቅ ዳራ ቦታ ፍቃድ ያስፈልጋል። ያለሱ ስልኩ ሁሌ ይናገራል።</string>
+    <string name="settings_skip_tts_at_home_open_settings">በስርዓት ቅንብሮች ፍቀዱ</string>
+    <string name="settings_skip_tts_at_home_title">ከቤት ውጭ ብቻ ተናገር</string>
+
+    <!-- Smart home cast -->
+    <string name="settings_smart_home_cast_casting">እያስተላለፈ ነው…</string>
+    <string name="settings_smart_home_cast_change">ቀይር</string>
+    <string name="settings_smart_home_cast_choose">ስማርት ማሳያ ምረጥ</string>
+    <string name="settings_smart_home_cast_clear">ሰርዝ</string>
+    <string name="settings_smart_home_cast_description">ዕቅደ-ጊዜ ClothesCastsን ወደ ቤት ኔትወርኩ ስማርት ማሳያ ላክ።</string>
+    <string name="settings_smart_home_cast_device_label">ስማርት ማሳያ</string>
+    <string name="settings_smart_home_cast_device_none">ምንም ማሳያ አልተመረጠም</string>
+    <string name="settings_smart_home_cast_last_error_title">የመጨረሻ Cast ሳይሳካ ቀረ</string>
+    <string name="settings_smart_home_cast_last_success">የመጨረሻ Cast %1$s</string>
+    <string name="settings_smart_home_cast_morning_description">ዕለታዊ ClothesCastን ወደ ስማርት ማሳያ የጠዋቱ ሰዓት ሲጠናቀቅ ላክ።</string>
+    <string name="settings_smart_home_cast_morning_title">ዕለታዊ ClothesCast</string>
+    <string name="settings_smart_home_cast_never">እስካሁን Cast አልተደረገም</string>
+    <string name="settings_smart_home_cast_now">አሁን Cast አድርግ</string>
+    <string name="settings_smart_home_cast_picker_cancel">ሰርዝ</string>
+    <string name="settings_smart_home_cast_picker_empty">እስካሁን ምንም ስማርት ማሳያ አልተገኘም። ማሳያዎ ነቅቶ ወደ ተመሳሳዩ Wi-Fi መገናኘቱን ያረጋግጡ።</string>
+    <string name="settings_smart_home_cast_picker_scanning">ኔትወርኩን ለስማርት ማሳያዎች እየቃኘ ነው…</string>
+    <string name="settings_smart_home_cast_picker_title">ስማርት ማሳያ ምረጥ</string>
+    <string name="settings_smart_home_cast_privacy_note">ድምፅ እና ምስል ከስልክዎ ወደ ቤት ኔትወርክ ይቀርባሉ። ቤትዎን አይወጡም።</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">ስማርት ማሳያ ትንበያ ካነበበ ስልኩ ዝምታ ይይዛል። የስልኩ ማሳወቂያ አሁንም ይለጠፋል።</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Cast ከተሳካ የስልክ ድምፅ ዝለሉ</string>
+    <string name="settings_smart_home_cast_title">Cast</string>
+    <string name="settings_smart_home_cast_tonight_description">ምሽታዊ ClothesCastን ወደ ስማርት ማሳያ ምሽቱ ሰዓት ሲጠናቀቅ ላክ።</string>
+    <string name="settings_smart_home_cast_tonight_title">ምሽታዊ ClothesCast</string>
+
+    <!-- Smart home discover -->
+    <string name="settings_smart_home_discover_empty">እስካሁን ምንም ብሮከር አልተገኘም። መፈለጉን ይቀጥሉ፣ ወይም ብሮከር አስተናጋጁን በእጅ ያስገቡ።</string>
+    <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
+    <string name="settings_smart_home_discover_label_mqtt">MQTT ብሮከር</string>
+    <string name="settings_smart_home_discover_results">በኔትወርክዎ ተገኘ</string>
+    <string name="settings_smart_home_discover_scan">ብሮከር ፈልግ</string>
+    <string name="settings_smart_home_discover_scanning">እየፈለገ ነው…</string>
+    <string name="settings_smart_home_discover_stop">መፈለጉን አቁም</string>
+    <string name="settings_smart_home_discover_use">ተጠቀም</string>
+
+    <!-- Smart home MQTT -->
+    <string name="settings_smart_home_mqtt_description">ከእያንዳንዱ ዕቅደ-ጊዜ ዳግም ሙከራ በኋላ ClothesCast የዛሬውንና የዛሬ ምሽቱን ትንበያ ወደ MQTT ብሮከርዎ እንደ ቀሩ መልዕክቶች ያሳትማል፣ ስለዚህ Home Assistant (ወይም ማንኛውም MQTT ሸማች) ቀዳሚ ዋጋ ሊያነብ እና በሴንሰር ምልክት ሊናገር ይችላል።</string>
+    <string name="settings_smart_home_mqtt_host">ብሮከር አስተናጋጅ</string>
+    <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
+    <string name="settings_smart_home_mqtt_label">ትንበያ ወደ MQTT አሳትም</string>
+    <string name="settings_smart_home_mqtt_last_error_title">የመጨረሻ ህትመት ሳይሳካ ቀረ</string>
+    <string name="settings_smart_home_mqtt_last_published">የመጨረሻ ህትመት %1$s</string>
+    <string name="settings_smart_home_mqtt_never_published">እስካሁን አልታተመም</string>
+    <string name="settings_smart_home_mqtt_open_privacy">የግለነት ዝርዝሮች አንብብ</string>
+    <string name="settings_smart_home_mqtt_password">የይለፍ ቃል (ፈቃደኛ)</string>
+    <string name="settings_smart_home_mqtt_password_clear">የተቀመጠ የይለፍ ቃል ሰርዝ</string>
+    <string name="settings_smart_home_mqtt_password_replace">የይለፍ ቃል ተካ</string>
+    <string name="settings_smart_home_mqtt_password_status_set">የይለፍ ቃል ተዋቅሯል።</string>
+    <string name="settings_smart_home_mqtt_port">ወደብ</string>
+    <string name="settings_smart_home_mqtt_privacy_note">ሲነቃ የተሰራው ትንበያ ዓረፍተ-ነገር ወደ ባዘጋጁት ብሮከር ከመሳሪያዎ ኔትወርክ ላይ ይወጣል። የግለነት ፖሊሲ ይመልከቱ።</string>
+    <string name="settings_smart_home_mqtt_publish_now">አሁን አሳትም</string>
+    <string name="settings_smart_home_mqtt_publishing">እያሳተመ ነው…</string>
+    <string name="settings_smart_home_mqtt_save">አስቀምጥ</string>
+    <string name="settings_smart_home_mqtt_setup_guide">የማዋቀሪያ መምሪያ</string>
+    <string name="settings_smart_home_mqtt_title">Home Assistant ድልድይ (MQTT)</string>
+    <string name="settings_smart_home_mqtt_tls">TLS ተጠቀም</string>
+    <string name="settings_smart_home_mqtt_topic">ርዕሰ-ጉዳይ ቅጥያ</string>
+    <string name="settings_smart_home_mqtt_topic_hint">ዛሬ ወደ {prefix}/today/text ያሳትማል፤ ምሽቱ ወደ {prefix}/tonight/text። ምስልና ድምፅ ወደ {prefix}/&lt;period&gt;/image እና /audio ይሄዳሉ። እያንዳንዱ ህትመት ደግሞ ወደ {prefix}/now/&lt;text|image|audio&gt; ይስተናፎርድ ስለዚህ ሸማቹ ዛሬን ወይም ምሽቱን ሳይመርጥ ወደ አንድ "ቅዳሴ" ርዕሰ-ጉዳይ ሊያዳምጥ ይችላል።</string>
+    <string name="settings_smart_home_mqtt_username">የተጠቃሚ ስም (ፈቃደኛ)</string>
+    <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
+
+    <!-- Today celebration card -->
+    <string name="today_celebration_card_body">ለበዓሎች እና ልደቶች ልዩ ቀለሞች እና መልዕክቶችን ያንቃሉ።</string>
+    <string name="today_celebration_card_cta">የክብረ በዓሎች ቅንብሮች</string>
+    <string name="today_celebration_card_dismiss">ዝጋ</string>
+    <string name="today_celebration_card_title">የክብረ በዓሎች ጭብጦች</string>
+
+    <!-- Today rationale extras -->
+    <string name="today_rationale_open_clothes_settings">የልብስ ቅንብሮች</string>
 </resources>

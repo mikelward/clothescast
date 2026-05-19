@@ -651,4 +651,269 @@ displayed label localizes.
     <string name="settings_forecasters_bom_subtitle">Avustralyalı — bakım altında, mümkün olan en kısa sürede geri dönecek.</string>
 
     <string name="settings_about_open_meteo">Hava durumu verileri Open-Meteo tarafından sağlanır</string>
+
+    <!-- Cast errors -->
+    <string name="cast_error_no_insight_yet">Henüz tahmin yok. Bir sonraki zamanlanmış çalışmayı bekle veya Bugün ekranında Yenile\'ye dokun.</string>
+    <string name="cast_error_no_route_picked">Önce bir akıllı ekran seç.</string>
+    <string name="cast_error_unknown">Cast başarısız oldu.</string>
+
+    <!-- Holiday banners -->
+    <string name="holiday_banner_all_saints_day">Tüm Azizler Günün kutlu olsun</string>
+    <string name="holiday_banner_anzac_day">Unutmayalım</string>
+    <string name="holiday_banner_assumption">Meryem Ana\'nın Göğe Yükselişi</string>
+    <string name="holiday_banner_australia_day">Avustralya Günün kutlu olsun</string>
+    <string name="holiday_banner_austria_national_day">Avusturya Millî Günün kutlu olsun</string>
+    <string name="holiday_banner_bastille_day">Bastille Günün kutlu olsun</string>
+    <string name="holiday_banner_bonfire_night">Unutma, unutma</string>
+    <string name="holiday_banner_boxing_day">Boxing Day kutlu olsun</string>
+    <string name="holiday_banner_brazil_independence_day">Brezilya Bağımsızlık Günün kutlu olsun</string>
+    <string name="holiday_banner_burns_night">Burns Gecen kutlu olsun</string>
+    <string name="holiday_banner_canada_day">Kanada Günün kutlu olsun</string>
+    <string name="holiday_banner_canadian_thanksgiving">Şükran Günün kutlu olsun</string>
+    <string name="holiday_banner_christmas_day">Mutlu Noeller</string>
+    <string name="holiday_banner_croatia_independence_day">Hırvatistan Bağımsızlık Günün kutlu olsun</string>
+    <string name="holiday_banner_croatia_statehood_day">Hırvatistan Devlet Günün kutlu olsun</string>
+    <string name="holiday_banner_croatia_victory_day">Hırvatistan Zafer Günün kutlu olsun</string>
+    <string name="holiday_banner_easter_monday">Paskalya Pazartesi</string>
+    <string name="holiday_banner_easter_sunday">Mutlu Paskalyalar</string>
+    <string name="holiday_banner_epiphany">Üç Bilge Adamlar Günün kutlu olsun</string>
+    <string name="holiday_banner_fathers_day_jun">Babalar Günün kutlu olsun</string>
+    <string name="holiday_banner_fathers_day_sep">Babalar Günün kutlu olsun</string>
+    <string name="holiday_banner_fr_armistice_day">Unutmayalım</string>
+    <string name="holiday_banner_german_unity_day">Alman Birliği Günün kutlu olsun</string>
+    <string name="holiday_banner_good_friday">Hayırlı Cumalar</string>
+    <string name="holiday_banner_halloween">Mutlu Cadılar Bayramı</string>
+    <string name="holiday_banner_immaculate_conception">Meryem Ana\'nın Günahsız Hamileliği</string>
+    <string name="holiday_banner_italy_republic_day">İtalya Cumhuriyet Günün kutlu olsun</string>
+    <string name="holiday_banner_japan_coming_of_age_day">Japon Yetişkinlik Günün kutlu olsun</string>
+    <string name="holiday_banner_japan_culture_day">Japon Kültür Günün kutlu olsun</string>
+    <string name="holiday_banner_japan_greenery_day">Japon Yeşillik Günün kutlu olsun</string>
+    <string name="holiday_banner_japan_marine_day">Japon Deniz Günün kutlu olsun</string>
+    <string name="holiday_banner_juneteenth">Mutlu Juneteenth</string>
+    <string name="holiday_banner_korean_hangeul_day">Hangeul Günün kutlu olsun</string>
+    <string name="holiday_banner_korean_independence_movement_day">Kore Bağımsızlık Hareketi Günün kutlu olsun</string>
+    <string name="holiday_banner_korean_liberation_day">Kore Kurtuluş Günün kutlu olsun</string>
+    <string name="holiday_banner_korean_memorial_day">Kore\'nin şehitleri onuruna</string>
+    <string name="holiday_banner_labour_day">İşçi Bayramın kutlu olsun</string>
+    <string name="holiday_banner_mlk_day">Dr. King\'i anıyoruz</string>
+    <string name="holiday_banner_mothers_day">Anneler Günün kutlu olsun</string>
+    <string name="holiday_banner_new_years_day">Mutlu Yıllar</string>
+    <string name="holiday_banner_remembrance_day">Unutmayalım</string>
+    <string name="holiday_banner_spain_hispanic_day">Día de la Hispanidad kutlu olsun</string>
+    <string name="holiday_banner_st_andrews_day">Aziz Andreas Günün kutlu olsun</string>
+    <string name="holiday_banner_st_davids_day">Aziz Davut Günün kutlu olsun</string>
+    <string name="holiday_banner_st_georges_day">Aziz Georgios Günün kutlu olsun</string>
+    <string name="holiday_banner_st_patricks_day">Aziz Patrick Günün kutlu olsun</string>
+    <string name="holiday_banner_uk_bank_holiday">Resmî tatil kutlu olsun</string>
+    <string name="holiday_banner_uk_kings_birthday">Tanrı Kral\'ı korusun</string>
+    <string name="holiday_banner_uk_mothering_sunday">Anneler Pazar Günün kutlu olsun</string>
+    <string name="holiday_banner_us_independence_day">4 Temmuz\'unuz kutlu olsun</string>
+    <string name="holiday_banner_us_memorial_day">Şehitlerimizi anıyoruz</string>
+    <string name="holiday_banner_us_presidents_day">Cumhurbaşkanları Günün kutlu olsun</string>
+    <string name="holiday_banner_us_thanksgiving">Şükran Günün kutlu olsun</string>
+    <string name="holiday_banner_us_veterans_day">Gazilerimizi onurlandırıyoruz</string>
+    <string name="holiday_banner_valentines_day">Mutlu Sevgililer Günü</string>
+    <string name="holiday_banner_waitangi_day">Waitangi Günün kutlu olsun</string>
+
+    <!-- Holiday names -->
+    <string name="holiday_name_all_saints_day">Tüm Azizler Günü</string>
+    <string name="holiday_name_anzac_day">Anzac Günü</string>
+    <string name="holiday_name_assumption">Meryem Ana\'nın Göğe Yükselişi</string>
+    <string name="holiday_name_australia_day">Avustralya Günü</string>
+    <string name="holiday_name_austria_national_day">Avusturya Millî Günü</string>
+    <string name="holiday_name_bastille_day">Bastille Günü</string>
+    <string name="holiday_name_bonfire_night">Ateş Gecesi</string>
+    <string name="holiday_name_boxing_day">Boxing Day</string>
+    <string name="holiday_name_brazil_independence_day">Brezilya Bağımsızlık Günü</string>
+    <string name="holiday_name_burns_night">Burns Gecesi</string>
+    <string name="holiday_name_canada_day">Kanada Günü</string>
+    <string name="holiday_name_canadian_thanksgiving">Kanada Şükran Günü</string>
+    <string name="holiday_name_christmas_day">Noel</string>
+    <string name="holiday_name_croatia_independence_day">Hırvatistan Bağımsızlık Günü</string>
+    <string name="holiday_name_croatia_statehood_day">Hırvatistan Devlet Günü</string>
+    <string name="holiday_name_croatia_victory_day">Hırvatistan Zafer Günü</string>
+    <string name="holiday_name_easter_monday">Paskalya Pazartesi</string>
+    <string name="holiday_name_easter_sunday">Paskalya Pazar</string>
+    <string name="holiday_name_epiphany">Üç Bilge Adamlar Günü</string>
+    <string name="holiday_name_fathers_day_jun">Babalar Günü (Haz)</string>
+    <string name="holiday_name_fathers_day_sep">Babalar Günü (Eyl)</string>
+    <string name="holiday_name_german_unity_day">Alman Birliği Günü</string>
+    <string name="holiday_name_good_friday">Büyük Cuma</string>
+    <string name="holiday_name_halloween">Cadılar Bayramı</string>
+    <string name="holiday_name_immaculate_conception">Meryem Ana\'nın Günahsız Hamileliği</string>
+    <string name="holiday_name_italy_republic_day">İtalya Cumhuriyet Günü</string>
+    <string name="holiday_name_japan_coming_of_age_day">Yetişkinlik Günü (Japonya)</string>
+    <string name="holiday_name_japan_culture_day">Kültür Günü (Japonya)</string>
+    <string name="holiday_name_japan_greenery_day">Yeşillik Günü (Japonya)</string>
+    <string name="holiday_name_japan_marine_day">Deniz Günü (Japonya)</string>
+    <string name="holiday_name_juneteenth">Juneteenth</string>
+    <string name="holiday_name_korean_hangeul_day">Hangeul Günü (Kore)</string>
+    <string name="holiday_name_korean_independence_movement_day">Kore Bağımsızlık Hareketi Günü</string>
+    <string name="holiday_name_korean_liberation_day">Kore Kurtuluş Günü</string>
+    <string name="holiday_name_korean_memorial_day">Kore Anma Günü</string>
+    <string name="holiday_name_labour_day">İşçi Bayramı</string>
+    <string name="holiday_name_mlk_day">Martin Luther King Jr. Günü</string>
+    <string name="holiday_name_mothers_day">Anneler Günü</string>
+    <string name="holiday_name_new_years_day">Yılbaşı</string>
+    <string name="holiday_name_remembrance_day">Anma Günü / Gaziler Günü</string>
+    <string name="holiday_name_spain_hispanic_day">Hispanidad Günü</string>
+    <string name="holiday_name_st_andrews_day">Aziz Andreas Günü</string>
+    <string name="holiday_name_st_davids_day">Aziz Davut Günü</string>
+    <string name="holiday_name_st_georges_day">Aziz Georgios Günü</string>
+    <string name="holiday_name_st_patricks_day">Aziz Patrick Günü</string>
+    <string name="holiday_name_uk_early_may_bank_holiday">Mayıs Başı Resmî Tatili</string>
+    <string name="holiday_name_uk_kings_birthday">Kral\'ın Doğum Günü</string>
+    <string name="holiday_name_uk_mothering_sunday">Anneler Pazar Günü</string>
+    <string name="holiday_name_uk_spring_bank_holiday">İlkbahar Resmî Tatili</string>
+    <string name="holiday_name_uk_summer_bank_holiday">Yaz Resmî Tatili</string>
+    <string name="holiday_name_us_independence_day">ABD Bağımsızlık Günü</string>
+    <string name="holiday_name_us_memorial_day">ABD Anma Günü</string>
+    <string name="holiday_name_us_presidents_day">Cumhurbaşkanları Günü</string>
+    <string name="holiday_name_us_thanksgiving">ABD Şükran Günü</string>
+    <string name="holiday_name_valentines_day">Sevgililer Günü</string>
+    <string name="holiday_name_waitangi_day">Waitangi Günü</string>
+
+    <!-- Outfit card -->
+    <string name="outfit_card_header_today">Bugünün ClothesCast\'ı</string>
+    <string name="outfit_card_header_tonight">Bu akşamın ClothesCast\'ı</string>
+    <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+
+    <!-- API key -->
+    <string name="settings_api_key_replace">Gemini anahtarını değiştir</string>
+
+    <!-- Holidays settings -->
+    <string name="settings_holiday_all_section_title">Tümü</string>
+    <string name="settings_holiday_country_all_label">Tümü</string>
+    <string name="settings_holiday_country_at">Avusturya</string>
+    <string name="settings_holiday_country_au">Avustralya</string>
+    <string name="settings_holiday_country_br">Brezilya</string>
+    <string name="settings_holiday_country_ca">Kanada</string>
+    <string name="settings_holiday_country_current">Mevcut konum (%1$s)</string>
+    <string name="settings_holiday_country_de">Almanya</string>
+    <string name="settings_holiday_country_es">İspanya</string>
+    <string name="settings_holiday_country_fr">Fransa</string>
+    <string name="settings_holiday_country_gb">Birleşik Krallık</string>
+    <string name="settings_holiday_country_global_label">Küresel</string>
+    <string name="settings_holiday_country_home">Ev (%1$s)</string>
+    <string name="settings_holiday_country_hr">Hırvatistan</string>
+    <string name="settings_holiday_country_ie">İrlanda</string>
+    <string name="settings_holiday_country_it">İtalya</string>
+    <string name="settings_holiday_country_jp">Japonya</string>
+    <string name="settings_holiday_country_kr">Güney Kore</string>
+    <string name="settings_holiday_country_nz">Yeni Zelanda</string>
+    <string name="settings_holiday_country_unknown">Bilinmiyor</string>
+    <string name="settings_holiday_country_us">Amerika Birleşik Devletleri</string>
+    <string name="settings_holiday_override_auto_off">Otomatik (kapalı)</string>
+    <string name="settings_holiday_override_auto_on">Otomatik (açık)</string>
+    <string name="settings_holiday_override_off">Kapalı</string>
+    <string name="settings_holiday_override_on">Açık</string>
+    <string name="settings_holidays_calendar_section_placeholder_off">Senkronize takvimlerdeki etkinlikleri bugünün kıyafet temasına uygulamak için yukarıdaki geçişi açın.</string>
+    <string name="settings_holidays_calendar_section_placeholder_on">Senkronize takvimlerdeki algılanan etkinlikler gelecekteki bir güncellemede burada görünecek.</string>
+    <string name="settings_holidays_collapse">Daralt</string>
+    <string name="settings_holidays_expand">Genişlet</string>
+    <string name="settings_holidays_link_calendar_settings_a11y">Takvim ayarları</string>
+    <string name="settings_holidays_link_location_settings_a11y">Konum ayarları</string>
+    <string name="settings_holidays_link_region_settings_a11y">Bölge ayarları</string>
+    <string name="settings_holidays_link_settings">Ayarlar</string>
+    <string name="settings_holidays_permission_revoked">Takvim izni gerekli. Yeniden vermek için dokun.</string>
+    <string name="settings_holidays_source_all">Tüm ülkeler</string>
+    <string name="settings_holidays_source_calendar_birthdays">Takvim Doğum Günleri</string>
+    <string name="settings_holidays_source_calendar_holidays">Takvim Tatilleri</string>
+    <string name="settings_holidays_source_global">Küresel</string>
+    <string name="settings_holidays_source_location">Konum (%1$s)</string>
+    <string name="settings_holidays_source_region">Bölge (%1$s)</string>
+    <string name="settings_holidays_title">Tatiller</string>
+    <string name="settings_home_location_change">Ev konumunu değiştir</string>
+    <string name="settings_home_location_clear">Ev konumunu temizle</string>
+    <string name="settings_home_location_description">Telefonun tahmini sesli okuyup okumayacağına karar vermek için \'Yalnızca evden uzaktayken konuş\' tarafından kullanılır. Bu cihazda kalır.</string>
+    <string name="settings_home_location_search">Adres ara</string>
+    <string name="settings_home_location_search_caveat">Arama, gerçek evinden birkaç kilometre uzakta olabilecek bir şehir merkezini seçer. 1 km ev yarıçapının çalışması için evdeyken \'Mevcut konumumu kullan\'ı tercih et.</string>
+    <string name="settings_home_location_title">Ev konumu</string>
+    <string name="settings_home_location_unset">Ev ayarlanmadı</string>
+    <string name="settings_home_location_use_current">Mevcut konumumu kullan</string>
+    <string name="settings_root_holidays">Kutlamalar</string>
+    <string name="settings_root_holidays_subtitle">Tatiller ve Doğum Günleri</string>
+    <string name="settings_root_smart_home">Akıllı Ev</string>
+    <string name="settings_root_smart_home_subtitle">Akıllı Ekranlar ve Ev Otomasyonu</string>
+
+    <!-- Schedule description -->
+    <string name="settings_schedule_description">O günün hava durumunu kapsayan sabah ClothesCast\'ı.</string>
+
+    <!-- Skip TTS at home -->
+    <string name="settings_skip_tts_at_home_description">Evdeyken telefon sessiz kalır — evdeki bir hoparlör tahmini zaten okuyorsa kullanışlıdır. Bildirimler yine de gönderilir.</string>
+    <string name="settings_skip_tts_at_home_label">Yalnızca evden uzaktayken konuş</string>
+    <string name="settings_skip_tts_at_home_needs_home">Bunu etkinleştirmek için yukarıda bir ev konumu belirle. Olmadan telefon her zaman konuşur.</string>
+    <string name="settings_skip_tts_at_home_needs_permission">Evde olup olmadığını anlamak için arka plan konum erişimi gerekli. Olmadan telefon her zaman konuşur.</string>
+    <string name="settings_skip_tts_at_home_open_settings">Sistem ayarlarında izin ver</string>
+    <string name="settings_skip_tts_at_home_title">Yalnızca evden uzaktayken konuş</string>
+
+    <!-- Smart home cast -->
+    <string name="settings_smart_home_cast_casting">Yayınlanıyor…</string>
+    <string name="settings_smart_home_cast_change">Değiştir</string>
+    <string name="settings_smart_home_cast_choose">Akıllı ekran seç</string>
+    <string name="settings_smart_home_cast_clear">Temizle</string>
+    <string name="settings_smart_home_cast_description">Zamanlanmış ClothesCast\'ları ev ağındaki akıllı ekrana gönder.</string>
+    <string name="settings_smart_home_cast_device_label">Akıllı ekran</string>
+    <string name="settings_smart_home_cast_device_none">Ekran seçilmedi</string>
+    <string name="settings_smart_home_cast_last_error_title">Son yayın başarısız oldu</string>
+    <string name="settings_smart_home_cast_last_success">Son yayın %1$s</string>
+    <string name="settings_smart_home_cast_morning_description">Sabah alarmı çaldığında günlük ClothesCast\'ı akıllı ekrana gönder.</string>
+    <string name="settings_smart_home_cast_morning_title">Günlük ClothesCast</string>
+    <string name="settings_smart_home_cast_never">Henüz yayınlanmadı</string>
+    <string name="settings_smart_home_cast_now">Şimdi yayınla</string>
+    <string name="settings_smart_home_cast_picker_cancel">İptal</string>
+    <string name="settings_smart_home_cast_picker_empty">Henüz akıllı ekran bulunamadı. Ekranınızın açık ve aynı Wi-Fi\'ye bağlı olduğundan emin olun.</string>
+    <string name="settings_smart_home_cast_picker_scanning">Ağınızda akıllı ekran aranıyor…</string>
+    <string name="settings_smart_home_cast_picker_title">Akıllı ekran seç</string>
+    <string name="settings_smart_home_cast_privacy_note">Ses ve görüntü telefonunuzdan yerel ağınız üzerinden sunulur. Evinizi terk etmez.</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Akıllı ekran tahmini sesli okursa telefon sessiz kalır. Telefon bildirimi yine de gönderilir.</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Başarılı yayında telefon sesini atla</string>
+    <string name="settings_smart_home_cast_title">Cast</string>
+    <string name="settings_smart_home_cast_tonight_description">Gece alarmı çaldığında gecelik ClothesCast\'ı akıllı ekrana gönder.</string>
+    <string name="settings_smart_home_cast_tonight_title">Gecelik ClothesCast</string>
+
+    <!-- Smart home discover -->
+    <string name="settings_smart_home_discover_empty">Henüz broker bulunamadı. Aramayı sürdür veya broker sunucusunu manuel olarak yaz.</string>
+    <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
+    <string name="settings_smart_home_discover_label_mqtt">MQTT broker</string>
+    <string name="settings_smart_home_discover_results">Ağınızda bulundu</string>
+    <string name="settings_smart_home_discover_scan">Broker bul</string>
+    <string name="settings_smart_home_discover_scanning">Aranıyor…</string>
+    <string name="settings_smart_home_discover_stop">Aramayı durdur</string>
+    <string name="settings_smart_home_discover_use">Kullan</string>
+
+    <!-- Smart home MQTT -->
+    <string name="settings_smart_home_mqtt_description">Her zamanlanmış yenilemeden sonra ClothesCast, bugünün ve bu gecenin hazırlanmış tahminini MQTT broker\'ına kalıcı mesajlar olarak yayınlar; böylece Home Assistant (veya herhangi bir MQTT tüketicisi) en son değeri okuyabilir ve sensör tetikleyicisinde seslendirebilir.</string>
+    <string name="settings_smart_home_mqtt_host">Broker sunucusu</string>
+    <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
+    <string name="settings_smart_home_mqtt_label">Tahmini MQTT\'ye yayınla</string>
+    <string name="settings_smart_home_mqtt_last_error_title">Son yayın başarısız oldu</string>
+    <string name="settings_smart_home_mqtt_last_published">Son yayın %1$s</string>
+    <string name="settings_smart_home_mqtt_never_published">Henüz yayınlanmadı</string>
+    <string name="settings_smart_home_mqtt_open_privacy">Gizlilik ayrıntılarını oku</string>
+    <string name="settings_smart_home_mqtt_password">Şifre (isteğe bağlı)</string>
+    <string name="settings_smart_home_mqtt_password_clear">Kayıtlı şifreyi temizle</string>
+    <string name="settings_smart_home_mqtt_password_replace">Şifreyi değiştir</string>
+    <string name="settings_smart_home_mqtt_password_status_set">Şifre yapılandırıldı.</string>
+    <string name="settings_smart_home_mqtt_port">Port</string>
+    <string name="settings_smart_home_mqtt_privacy_note">Açıkken hazırlanan tahmin cümlesi cihazınızdan ağınız üzerinden yapılandırdığınız broker\'a iletilir. Gizlilik politikasına bakın.</string>
+    <string name="settings_smart_home_mqtt_publish_now">Şimdi yayınla</string>
+    <string name="settings_smart_home_mqtt_publishing">Yayınlanıyor…</string>
+    <string name="settings_smart_home_mqtt_save">Kaydet</string>
+    <string name="settings_smart_home_mqtt_setup_guide">Kurulum kılavuzu</string>
+    <string name="settings_smart_home_mqtt_title">Home Assistant köprüsü (MQTT)</string>
+    <string name="settings_smart_home_mqtt_tls">TLS kullan</string>
+    <string name="settings_smart_home_mqtt_topic">Konu öneki</string>
+    <string name="settings_smart_home_mqtt_topic_hint">Bugün {prefix}/today/text adresine yayınlar; bu gece {prefix}/tonight/text adresine. Görüntü ve ses {prefix}/&lt;period&gt;/image ve /audio konumlarına gider. Her yayın aynı zamanda {prefix}/now/&lt;text|image|audio&gt; adresine yansıtılır; böylece tüketici bugün ve bu gece arasında seçim yapmadan tek bir "son" konusuna abone olabilir.</string>
+    <string name="settings_smart_home_mqtt_username">Kullanıcı adı (isteğe bağlı)</string>
+    <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
+
+    <!-- Today celebration card -->
+    <string name="today_celebration_card_body">Tatiller ve doğum günleri için özel renkleri ve mesajları etkinleştir.</string>
+    <string name="today_celebration_card_cta">Kutlama ayarları</string>
+    <string name="today_celebration_card_dismiss">Kapat</string>
+    <string name="today_celebration_card_title">Kutlama temaları</string>
+
+    <!-- Today rationale extras -->
+    <string name="today_rationale_open_clothes_settings">Kıyafet ayarları</string>
 </resources>

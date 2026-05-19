@@ -733,4 +733,186 @@ to values/strings.xml (English).
     <string name="holiday_name_immaculate_conception">Immaculata</string>
     <string name="holiday_name_christmas_day">Hari Natal</string>
     <string name="holiday_name_boxing_day">Hari Boxing</string>
+
+    <!-- Cast errors -->
+    <string name="cast_error_no_insight_yet">Prakiraan belum tersedia. Tunggu jadwal berikutnya, atau ketuk Perbarui di layar Hari ini.</string>
+    <string name="cast_error_no_route_picked">Pilih layar pintar terlebih dahulu.</string>
+    <string name="cast_error_unknown">Cast gagal.</string>
+
+    <!-- Holiday banners -->
+    <string name="holiday_banner_all_saints_day">Selamat Hari Semua Orang Kudus</string>
+    <string name="holiday_banner_anzac_day">Lest we forget</string>
+    <string name="holiday_banner_assumption">Selamat Hari Assumsi</string>
+    <string name="holiday_banner_australia_day">Selamat Hari Australia</string>
+    <string name="holiday_banner_austria_national_day">Selamat Hari Nasional Austria</string>
+    <string name="holiday_banner_bastille_day">Selamat Hari Bastille</string>
+    <string name="holiday_banner_bonfire_night">Remember, remember</string>
+    <string name="holiday_banner_boxing_day">Selamat Hari Boxing</string>
+    <string name="holiday_banner_brazil_independence_day">Selamat Hari Kemerdekaan Brasil</string>
+    <string name="holiday_banner_burns_night">Selamat Malam Burns</string>
+    <string name="holiday_banner_canada_day">Selamat Hari Kanada</string>
+    <string name="holiday_banner_canadian_thanksgiving">Selamat Thanksgiving</string>
+    <string name="holiday_banner_christmas_day">Selamat Natal</string>
+    <string name="holiday_banner_croatia_independence_day">Selamat Hari Kemerdekaan Kroasia</string>
+    <string name="holiday_banner_croatia_statehood_day">Selamat Hari Negara Kroasia</string>
+    <string name="holiday_banner_croatia_victory_day">Selamat Hari Kemenangan Kroasia</string>
+    <string name="holiday_banner_easter_monday">Selamat Senin Paskah</string>
+    <string name="holiday_banner_easter_sunday">Selamat Paskah</string>
+    <string name="holiday_banner_epiphany">Selamat Hari Epifani</string>
+    <string name="holiday_banner_fathers_day_jun">Selamat Hari Ayah</string>
+    <string name="holiday_banner_fathers_day_sep">Selamat Hari Ayah</string>
+    <string name="holiday_banner_fr_armistice_day">Lest we forget</string>
+    <string name="holiday_banner_german_unity_day">Selamat Hari Persatuan Jerman</string>
+    <string name="holiday_banner_good_friday">Jumat Agung</string>
+    <string name="holiday_banner_halloween">Selamat Halloween</string>
+    <string name="holiday_banner_immaculate_conception">Selamat Hari Immaculata</string>
+    <string name="holiday_banner_italy_republic_day">Selamat Hari Republik Italia</string>
+    <string name="holiday_banner_japan_coming_of_age_day">Selamat Hari Kedewasaan Jepang</string>
+    <string name="holiday_banner_japan_culture_day">Selamat Hari Budaya Jepang</string>
+    <string name="holiday_banner_japan_greenery_day">Selamat Hari Hijau Jepang</string>
+    <string name="holiday_banner_japan_marine_day">Selamat Hari Laut Jepang</string>
+    <string name="holiday_banner_juneteenth">Selamat Juneteenth</string>
+    <string name="holiday_banner_korean_hangeul_day">Selamat Hari Hangul</string>
+    <string name="holiday_banner_korean_independence_movement_day">Selamat Hari Gerakan Kemerdekaan Korea</string>
+    <string name="holiday_banner_korean_liberation_day">Selamat Hari Pembebasan Korea</string>
+    <string name="holiday_banner_korean_memorial_day">Menghormati pahlawan Korea</string>
+    <string name="holiday_banner_labour_day">Selamat Hari Buruh</string>
+    <string name="holiday_banner_mlk_day">Menghormati Dr. King</string>
+    <string name="holiday_banner_mothers_day">Selamat Hari Ibu</string>
+    <string name="holiday_banner_new_years_day">Selamat Tahun Baru</string>
+    <string name="holiday_banner_remembrance_day">Lest we forget</string>
+    <string name="holiday_banner_spain_hispanic_day">Selamat Día de la Hispanidad</string>
+    <string name="holiday_banner_st_andrews_day">Selamat Hari Santo Andrew</string>
+    <string name="holiday_banner_st_davids_day">Selamat Hari Santo David</string>
+    <string name="holiday_banner_st_georges_day">Selamat Hari Santo George</string>
+    <string name="holiday_banner_st_patricks_day">Selamat Hari Santo Patrick</string>
+    <string name="holiday_banner_uk_bank_holiday">Selamat hari libur bank</string>
+    <string name="holiday_banner_uk_kings_birthday">God save the King</string>
+    <string name="holiday_banner_uk_mothering_sunday">Selamat Hari Ibu</string>
+    <string name="holiday_banner_us_independence_day">Selamat 4 Juli</string>
+    <string name="holiday_banner_us_memorial_day">Menghormati pahlawan kita</string>
+    <string name="holiday_banner_us_presidents_day">Selamat Hari Presiden</string>
+    <string name="holiday_banner_us_thanksgiving">Selamat Thanksgiving</string>
+    <string name="holiday_banner_us_veterans_day">Menghormati para Veteran kita</string>
+    <string name="holiday_banner_valentines_day">Selamat Hari Valentine</string>
+    <string name="holiday_banner_waitangi_day">Selamat Hari Waitangi</string>
+    <string name="holiday_name_us_presidents_day">Hari Presiden</string>
+
+    <!-- Outfit card headers -->
+    <string name="outfit_card_header_today">ClothesCast Hari Ini</string>
+    <string name="outfit_card_header_tonight">ClothesCast Malam Ini</string>
+    <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+
+    <!-- API key -->
+    <string name="settings_api_key_replace">Ganti kunci Gemini</string>
+
+    <!-- Holidays settings -->
+    <string name="settings_holidays_calendar_section_placeholder_off">Aktifkan tombol di atas untuk menampilkan tema outfit hari ini berdasarkan acara yang terdeteksi dari kalender tersinkron Anda.</string>
+    <string name="settings_holidays_calendar_section_placeholder_on">Acara yang terdeteksi dari kalender tersinkron Anda akan muncul di sini dalam pembaruan mendatang.</string>
+    <string name="settings_holidays_link_calendar_settings_a11y">Pengaturan kalender</string>
+    <string name="settings_holidays_link_location_settings_a11y">Pengaturan lokasi</string>
+    <string name="settings_holidays_link_region_settings_a11y">Pengaturan wilayah</string>
+    <string name="settings_holidays_link_settings">Pengaturan</string>
+    <string name="settings_holidays_permission_revoked">Izin kalender diperlukan. Ketuk untuk memberikan kembali.</string>
+    <string name="settings_holidays_source_all">Semua negara</string>
+    <string name="settings_holidays_source_calendar_birthdays">Ulang Tahun Kalender</string>
+    <string name="settings_holidays_source_calendar_holidays">Hari Libur Kalender</string>
+    <string name="settings_holidays_source_global">Global</string>
+    <string name="settings_holidays_source_location">Lokasi (%1$s)</string>
+    <string name="settings_holidays_source_region">Wilayah (%1$s)</string>
+
+    <!-- Home location settings -->
+    <string name="settings_home_location_change">Ubah lokasi rumah</string>
+    <string name="settings_home_location_clear">Hapus lokasi rumah</string>
+    <string name="settings_home_location_description">Digunakan oleh \'Hanya bicara saat jauh dari rumah\' untuk memutuskan apakah ponsel membacakan prakiraan dengan suara. Disimpan di perangkat ini.</string>
+    <string name="settings_home_location_search">Cari alamat</string>
+    <string name="settings_home_location_search_caveat">Pencarian memilih titik pusat kota, yang mungkin beberapa kilometer dari rumah Anda. Agar radius 1 km di rumah aktif, lebih baik gunakan \'Gunakan lokasi saya saat ini\' saat Anda berada di rumah.</string>
+    <string name="settings_home_location_title">Lokasi rumah</string>
+    <string name="settings_home_location_unset">Belum ada rumah yang diatur</string>
+    <string name="settings_home_location_use_current">Gunakan lokasi saya saat ini</string>
+
+    <!-- Smart Home settings root -->
+    <string name="settings_root_smart_home">Rumah Pintar</string>
+    <string name="settings_root_smart_home_subtitle">Layar Pintar dan Otomasi Rumah</string>
+
+    <!-- Schedule description -->
+    <string name="settings_schedule_description">ClothesCast pagi yang mencakup cuaca hari itu.</string>
+
+    <!-- Skip TTS at home -->
+    <string name="settings_skip_tts_at_home_description">Saat Anda di rumah, ponsel tetap diam — berguna jika speaker rumah sudah membacakan prakiraan untuk Anda. Notifikasi tetap muncul.</string>
+    <string name="settings_skip_tts_at_home_label">Hanya bicara saat jauh dari rumah</string>
+    <string name="settings_skip_tts_at_home_needs_home">Atur lokasi rumah di atas untuk mengaktifkan ini. Tanpa lokasi, ponsel akan selalu berbicara.</string>
+    <string name="settings_skip_tts_at_home_needs_permission">Memerlukan akses lokasi latar belakang untuk mengetahui kapan Anda di rumah. Tanpanya, ponsel akan selalu berbicara.</string>
+    <string name="settings_skip_tts_at_home_open_settings">Berikan di pengaturan sistem</string>
+    <string name="settings_skip_tts_at_home_title">Hanya bicara saat jauh dari rumah</string>
+
+    <!-- Cast settings -->
+    <string name="settings_smart_home_cast_casting">Sedang di-cast…</string>
+    <string name="settings_smart_home_cast_change">Ubah</string>
+    <string name="settings_smart_home_cast_choose">Pilih layar pintar</string>
+    <string name="settings_smart_home_cast_clear">Hapus</string>
+    <string name="settings_smart_home_cast_description">Kirim ClothesCast terjadwal ke layar pintar di jaringan rumah Anda.</string>
+    <string name="settings_smart_home_cast_device_label">Layar pintar</string>
+    <string name="settings_smart_home_cast_device_none">Belum ada layar yang dipilih</string>
+    <string name="settings_smart_home_cast_last_error_title">Cast terakhir gagal</string>
+    <string name="settings_smart_home_cast_last_success">Cast terakhir %1$s</string>
+    <string name="settings_smart_home_cast_morning_description">Kirim ClothesCast harian ke layar pintar saat alarm pagi berbunyi.</string>
+    <string name="settings_smart_home_cast_morning_title">ClothesCast Harian</string>
+    <string name="settings_smart_home_cast_never">Belum pernah di-cast</string>
+    <string name="settings_smart_home_cast_now">Cast sekarang</string>
+    <string name="settings_smart_home_cast_picker_cancel">Batal</string>
+    <string name="settings_smart_home_cast_picker_empty">Belum ada layar pintar yang ditemukan. Pastikan layar Anda menyala dan terhubung ke Wi-Fi yang sama.</string>
+    <string name="settings_smart_home_cast_picker_scanning">Memindai jaringan untuk layar pintar…</string>
+    <string name="settings_smart_home_cast_picker_title">Pilih layar pintar</string>
+    <string name="settings_smart_home_cast_privacy_note">Audio dan gambar disajikan dari ponsel Anda melalui jaringan lokal. Keduanya tidak meninggalkan rumah Anda.</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Jika layar pintar membacakan prakiraan dengan suara, ponsel tetap diam. Notifikasi ponsel tetap muncul.</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Lewati suara ponsel jika cast berhasil</string>
+    <string name="settings_smart_home_cast_title">Cast</string>
+    <string name="settings_smart_home_cast_tonight_description">Kirim ClothesCast malam ke layar pintar saat alarm malam berbunyi.</string>
+    <string name="settings_smart_home_cast_tonight_title">ClothesCast Malam</string>
+
+    <!-- MQTT broker discovery -->
+    <string name="settings_smart_home_discover_empty">Belum ada broker yang ditemukan. Lanjutkan pencarian, atau ketik host broker secara manual.</string>
+    <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
+    <string name="settings_smart_home_discover_label_mqtt">Broker MQTT</string>
+    <string name="settings_smart_home_discover_results">Ditemukan di jaringan Anda</string>
+    <string name="settings_smart_home_discover_scan">Temukan broker</string>
+    <string name="settings_smart_home_discover_scanning">Mencari…</string>
+    <string name="settings_smart_home_discover_stop">Hentikan pencarian</string>
+    <string name="settings_smart_home_discover_use">Gunakan</string>
+
+    <!-- MQTT settings -->
+    <string name="settings_smart_home_mqtt_description">Setelah setiap pembaruan terjadwal, ClothesCast menerbitkan prakiraan hari ini dan malam ini yang telah dirender ke broker MQTT Anda sebagai pesan yang disimpan, sehingga Home Assistant (atau konsumen MQTT lainnya) dapat membaca nilai terbaru dan membicarakannya saat pemicu sensor.</string>
+    <string name="settings_smart_home_mqtt_host">Host broker</string>
+    <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
+    <string name="settings_smart_home_mqtt_label">Terbitkan prakiraan ke MQTT</string>
+    <string name="settings_smart_home_mqtt_last_error_title">Penerbitan terakhir gagal</string>
+    <string name="settings_smart_home_mqtt_last_published">Terakhir diterbitkan %1$s</string>
+    <string name="settings_smart_home_mqtt_never_published">Belum pernah diterbitkan</string>
+    <string name="settings_smart_home_mqtt_open_privacy">Baca detail privasi</string>
+    <string name="settings_smart_home_mqtt_password">Kata sandi (opsional)</string>
+    <string name="settings_smart_home_mqtt_password_clear">Hapus kata sandi tersimpan</string>
+    <string name="settings_smart_home_mqtt_password_replace">Ganti kata sandi</string>
+    <string name="settings_smart_home_mqtt_password_status_set">Kata sandi telah dikonfigurasi.</string>
+    <string name="settings_smart_home_mqtt_port">Port</string>
+    <string name="settings_smart_home_mqtt_privacy_note">Jika aktif, kalimat prakiraan yang dirender meninggalkan perangkat Anda melalui jaringan ke broker yang Anda konfigurasi. Lihat kebijakan privasi.</string>
+    <string name="settings_smart_home_mqtt_publish_now">Terbitkan sekarang</string>
+    <string name="settings_smart_home_mqtt_publishing">Menerbitkan…</string>
+    <string name="settings_smart_home_mqtt_save">Simpan</string>
+    <string name="settings_smart_home_mqtt_setup_guide">Panduan pengaturan</string>
+    <string name="settings_smart_home_mqtt_title">Jembatan Home Assistant (MQTT)</string>
+    <string name="settings_smart_home_mqtt_tls">Gunakan TLS</string>
+    <string name="settings_smart_home_mqtt_topic">Awalan topik</string>
+    <string name="settings_smart_home_mqtt_topic_hint">Hari ini diterbitkan ke {prefix}/today/text; malam ini ke {prefix}/tonight/text. Gambar dan audio ada di {prefix}/&lt;period&gt;/image dan /audio. Setiap penerbitan juga dicerminkan ke {prefix}/now/&lt;text|image|audio&gt; sehingga konsumen dapat berlangganan satu topik "terbaru" tanpa memilih hari ini atau malam ini.</string>
+    <string name="settings_smart_home_mqtt_username">Nama pengguna (opsional)</string>
+    <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
+
+    <!-- Celebration card -->
+    <string name="today_celebration_card_body">Aktifkan warna dan pesan khusus untuk hari libur dan ulang tahun.</string>
+    <string name="today_celebration_card_cta">Pengaturan perayaan</string>
+    <string name="today_celebration_card_dismiss">Tutup</string>
+    <string name="today_celebration_card_title">Tema perayaan</string>
+
+    <!-- Rationale open clothes settings -->
+    <string name="today_rationale_open_clothes_settings">Pengaturan pakaian</string>
 </resources>

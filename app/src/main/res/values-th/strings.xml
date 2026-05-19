@@ -733,4 +733,186 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_name_immaculate_conception">วันพระแม่มารีย์ปฏิสนธินิรมล</string>
     <string name="holiday_name_christmas_day">วันคริสต์มาส</string>
     <string name="holiday_name_boxing_day">วันบ็อกซิ่งเดย์</string>
+
+    <!-- Cast errors -->
+    <string name="cast_error_no_insight_yet">ยังไม่มีพยากรณ์อากาศ รอรอบถัดไป หรือแตะ รีเฟรช บนหน้าวันนี้</string>
+    <string name="cast_error_no_route_picked">เลือกสมาร์ทดิสเพลย์ก่อน</string>
+    <string name="cast_error_unknown">การ Cast ล้มเหลว</string>
+
+    <!-- Holiday banners -->
+    <string name="holiday_banner_all_saints_day">สุขสันต์วันนักบุญทั้งหลาย</string>
+    <string name="holiday_banner_anzac_day">อย่าลืมพวกเขา</string>
+    <string name="holiday_banner_assumption">สุขสันต์วันอัสสัมชัญ</string>
+    <string name="holiday_banner_australia_day">สุขสันต์วันออสเตรเลีย</string>
+    <string name="holiday_banner_austria_national_day">สุขสันต์วันชาติออสเตรีย</string>
+    <string name="holiday_banner_bastille_day">สุขสันต์วันบาสตีย์</string>
+    <string name="holiday_banner_bonfire_night">จำไว้ จำไว้</string>
+    <string name="holiday_banner_boxing_day">สุขสันต์วันบ็อกซิ่งเดย์</string>
+    <string name="holiday_banner_brazil_independence_day">สุขสันต์วันชาติบราซิล</string>
+    <string name="holiday_banner_burns_night">สุขสันต์คืนเบิร์นส์</string>
+    <string name="holiday_banner_canada_day">สุขสันต์วันชาติแคนาดา</string>
+    <string name="holiday_banner_canadian_thanksgiving">สุขสันต์วันขอบคุณพระเจ้า</string>
+    <string name="holiday_banner_christmas_day">สุขสันต์วันคริสต์มาส</string>
+    <string name="holiday_banner_croatia_independence_day">สุขสันต์วันเอกราชโครเอเชีย</string>
+    <string name="holiday_banner_croatia_statehood_day">สุขสันต์วันก่อตั้งรัฐโครเอเชีย</string>
+    <string name="holiday_banner_croatia_victory_day">สุขสันต์วันชัยชนะโครเอเชีย</string>
+    <string name="holiday_banner_easter_monday">สุขสันต์วันจันทร์อีสเตอร์</string>
+    <string name="holiday_banner_easter_sunday">สุขสันต์วันอีสเตอร์</string>
+    <string name="holiday_banner_epiphany">สุขสันต์วันเอพิฟานี</string>
+    <string name="holiday_banner_fathers_day_jun">สุขสันต์วันพ่อ</string>
+    <string name="holiday_banner_fathers_day_sep">สุขสันต์วันพ่อ</string>
+    <string name="holiday_banner_fr_armistice_day">อย่าลืมพวกเขา</string>
+    <string name="holiday_banner_german_unity_day">สุขสันต์วันรวมชาติเยอรมัน</string>
+    <string name="holiday_banner_good_friday">วันศุกร์ประเสริฐ</string>
+    <string name="holiday_banner_halloween">สุขสันต์วันฮาโลวีน</string>
+    <string name="holiday_banner_immaculate_conception">สุขสันต์วันพระแม่มารีย์ปฏิสนธินิรมล</string>
+    <string name="holiday_banner_italy_republic_day">สุขสันต์วันสาธารณรัฐอิตาลี</string>
+    <string name="holiday_banner_japan_coming_of_age_day">สุขสันต์วันบรรลุนิติภาวะ</string>
+    <string name="holiday_banner_japan_culture_day">สุขสันต์วันวัฒนธรรมญี่ปุ่น</string>
+    <string name="holiday_banner_japan_greenery_day">สุขสันต์วันสีเขียวญี่ปุ่น</string>
+    <string name="holiday_banner_japan_marine_day">สุขสันต์วันทะเลญี่ปุ่น</string>
+    <string name="holiday_banner_juneteenth">สุขสันต์วันจูนทีนท์</string>
+    <string name="holiday_banner_korean_hangeul_day">สุขสันต์วันฮันกึล</string>
+    <string name="holiday_banner_korean_independence_movement_day">สุขสันต์วันขบวนการเอกราชเกาหลี</string>
+    <string name="holiday_banner_korean_liberation_day">สุขสันต์วันปลดปล่อยเกาหลี</string>
+    <string name="holiday_banner_korean_memorial_day">ระลึกถึงวีรชนเกาหลี</string>
+    <string name="holiday_banner_labour_day">สุขสันต์วันแรงงาน</string>
+    <string name="holiday_banner_mlk_day">รำลึกถึง ดร. คิง</string>
+    <string name="holiday_banner_mothers_day">สุขสันต์วันแม่</string>
+    <string name="holiday_banner_new_years_day">สุขสันต์วันปีใหม่</string>
+    <string name="holiday_banner_remembrance_day">อย่าลืมพวกเขา</string>
+    <string name="holiday_banner_spain_hispanic_day">สุขสันต์ Día de la Hispanidad</string>
+    <string name="holiday_banner_st_andrews_day">สุขสันต์วันนักบุญแอนดรูว์</string>
+    <string name="holiday_banner_st_davids_day">สุขสันต์วันนักบุญเดวิด</string>
+    <string name="holiday_banner_st_georges_day">สุขสันต์วันนักบุญจอร์จ</string>
+    <string name="holiday_banner_st_patricks_day">สุขสันต์วันนักบุญแพทริก</string>
+    <string name="holiday_banner_uk_bank_holiday">สุขสันต์วันหยุดธนาคาร</string>
+    <string name="holiday_banner_uk_kings_birthday">ทรงพระเจริญ</string>
+    <string name="holiday_banner_uk_mothering_sunday">สุขสันต์วันแม่</string>
+    <string name="holiday_banner_us_independence_day">สุขสันต์วันที่ 4 กรกฎาคม</string>
+    <string name="holiday_banner_us_memorial_day">รำลึกถึงวีรชน</string>
+    <string name="holiday_banner_us_presidents_day">สุขสันต์วันประธานาธิบดี</string>
+    <string name="holiday_banner_us_thanksgiving">สุขสันต์วันขอบคุณพระเจ้า</string>
+    <string name="holiday_banner_us_veterans_day">รำลึกถึงทหารผ่านศึก</string>
+    <string name="holiday_banner_valentines_day">สุขสันต์วันวาเลนไทน์</string>
+    <string name="holiday_banner_waitangi_day">สุขสันต์วันไวตังงี</string>
+    <string name="holiday_name_us_presidents_day">วันประธานาธิบดี</string>
+
+    <!-- Outfit card -->
+    <string name="outfit_card_header_today">ClothesCast วันนี้</string>
+    <string name="outfit_card_header_tonight">ClothesCast คืนนี้</string>
+    <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+
+    <!-- Settings — API key -->
+    <string name="settings_api_key_replace">เปลี่ยน Gemini key</string>
+
+    <!-- Settings — Holidays / calendar -->
+    <string name="settings_holidays_calendar_section_placeholder_off">เปิดสวิตช์ด้านบนเพื่อตกแต่งชุดวันนี้ตามกิจกรรมที่ตรวจพบจากปฏิทินที่ซิงค์ไว้</string>
+    <string name="settings_holidays_calendar_section_placeholder_on">กิจกรรมที่ตรวจพบจากปฏิทินที่ซิงค์ไว้จะปรากฏที่นี่ในการอัปเดตครั้งหน้า</string>
+    <string name="settings_holidays_link_calendar_settings_a11y">การตั้งค่าปฏิทิน</string>
+    <string name="settings_holidays_link_location_settings_a11y">การตั้งค่าตำแหน่ง</string>
+    <string name="settings_holidays_link_region_settings_a11y">การตั้งค่าภูมิภาค</string>
+    <string name="settings_holidays_link_settings">การตั้งค่า</string>
+    <string name="settings_holidays_permission_revoked">ต้องการสิทธิ์ปฏิทิน แตะเพื่ออนุญาตอีกครั้ง</string>
+    <string name="settings_holidays_source_all">ทุกประเทศ</string>
+    <string name="settings_holidays_source_calendar_birthdays">วันเกิดในปฏิทิน</string>
+    <string name="settings_holidays_source_calendar_holidays">วันหยุดในปฏิทิน</string>
+    <string name="settings_holidays_source_global">ทั่วโลก</string>
+    <string name="settings_holidays_source_location">ตำแหน่ง (%1$s)</string>
+    <string name="settings_holidays_source_region">ภูมิภาค (%1$s)</string>
+
+    <!-- Settings — Home location -->
+    <string name="settings_home_location_change">เปลี่ยนตำแหน่งบ้าน</string>
+    <string name="settings_home_location_clear">ล้างตำแหน่งบ้าน</string>
+    <string name="settings_home_location_description">ใช้โดย \'อ่านออกเสียงเฉพาะเมื่ออยู่นอกบ้าน\' เพื่อตัดสินว่าโทรศัพท์จะอ่านพยากรณ์อากาศออกเสียงหรือไม่ บันทึกไว้บนอุปกรณ์นี้เท่านั้น</string>
+    <string name="settings_home_location_search">ค้นหาที่อยู่</string>
+    <string name="settings_home_location_search_caveat">การค้นหาจะเลือกจุดศูนย์กลางของเมือง ซึ่งอาจอยู่ห่างบ้านจริงไม่กี่กิโลเมตร เพื่อให้รัศมี 1 กม. ทำงานได้แม่นยำ ควรใช้ \'ใช้ตำแหน่งปัจจุบัน\' ขณะอยู่ที่บ้าน</string>
+    <string name="settings_home_location_title">ตำแหน่งบ้าน</string>
+    <string name="settings_home_location_unset">ยังไม่ได้ตั้งค่าบ้าน</string>
+    <string name="settings_home_location_use_current">ใช้ตำแหน่งปัจจุบันของฉัน</string>
+
+    <!-- Settings root — Smart Home -->
+    <string name="settings_root_smart_home">Smart Home</string>
+    <string name="settings_root_smart_home_subtitle">สมาร์ทดิสเพลย์และระบบบ้านอัตโนมัติ</string>
+
+    <!-- Settings — Schedule description -->
+    <string name="settings_schedule_description">ClothesCast ช่วงเช้าที่ครอบคลุมสภาพอากาศของวันนั้น</string>
+
+    <!-- Settings — Skip TTS at home -->
+    <string name="settings_skip_tts_at_home_description">เมื่อคุณอยู่ที่บ้าน โทรศัพท์จะเงียบ — สะดวกหากลำโพงในบ้านอ่านพยากรณ์อากาศให้แล้ว การแจ้งเตือนยังคงส่งตามปกติ</string>
+    <string name="settings_skip_tts_at_home_label">อ่านออกเสียงเฉพาะเมื่ออยู่นอกบ้าน</string>
+    <string name="settings_skip_tts_at_home_needs_home">ตั้งค่าตำแหน่งบ้านด้านบนเพื่อเปิดใช้งาน หากไม่มี โทรศัพท์จะอ่านออกเสียงเสมอ</string>
+    <string name="settings_skip_tts_at_home_needs_permission">ต้องการการเข้าถึงตำแหน่งพื้นหลังเพื่อรู้ว่าคุณอยู่ที่บ้าน หากไม่มี โทรศัพท์จะอ่านออกเสียงเสมอ</string>
+    <string name="settings_skip_tts_at_home_open_settings">อนุญาตในการตั้งค่าระบบ</string>
+    <string name="settings_skip_tts_at_home_title">อ่านออกเสียงเฉพาะเมื่ออยู่นอกบ้าน</string>
+
+    <!-- Settings — Smart Home / Cast -->
+    <string name="settings_smart_home_cast_casting">กำลัง Cast…</string>
+    <string name="settings_smart_home_cast_change">เปลี่ยน</string>
+    <string name="settings_smart_home_cast_choose">เลือกสมาร์ทดิสเพลย์</string>
+    <string name="settings_smart_home_cast_clear">ล้าง</string>
+    <string name="settings_smart_home_cast_description">ส่ง ClothesCast ตามกำหนดการไปยังสมาร์ทดิสเพลย์บนเครือข่ายในบ้าน</string>
+    <string name="settings_smart_home_cast_device_label">สมาร์ทดิสเพลย์</string>
+    <string name="settings_smart_home_cast_device_none">ยังไม่ได้เลือกดิสเพลย์</string>
+    <string name="settings_smart_home_cast_last_error_title">การ Cast ครั้งล่าสุดล้มเหลว</string>
+    <string name="settings_smart_home_cast_last_success">Cast ครั้งล่าสุด %1$s</string>
+    <string name="settings_smart_home_cast_morning_description">ส่ง ClothesCast รายวันไปยังสมาร์ทดิสเพลย์เมื่อแจ้งเตือนช่วงเช้าทำงาน</string>
+    <string name="settings_smart_home_cast_morning_title">ClothesCast รายวัน</string>
+    <string name="settings_smart_home_cast_never">ยังไม่เคย Cast</string>
+    <string name="settings_smart_home_cast_now">Cast เดี๋ยวนี้</string>
+    <string name="settings_smart_home_cast_picker_cancel">ยกเลิก</string>
+    <string name="settings_smart_home_cast_picker_empty">ยังไม่พบสมาร์ทดิสเพลย์ ตรวจสอบให้แน่ใจว่าดิสเพลย์เปิดอยู่และเชื่อมต่อ Wi-Fi เดียวกัน</string>
+    <string name="settings_smart_home_cast_picker_scanning">กำลังสแกนเครือข่ายเพื่อหาสมาร์ทดิสเพลย์…</string>
+    <string name="settings_smart_home_cast_picker_title">เลือกสมาร์ทดิสเพลย์</string>
+    <string name="settings_smart_home_cast_privacy_note">เสียงและภาพถูกส่งจากโทรศัพท์ผ่านเครือข่ายในบ้าน ไม่ออกนอกบ้าน</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">หากสมาร์ทดิสเพลย์อ่านพยากรณ์อากาศออกเสียง โทรศัพท์จะเงียบ การแจ้งเตือนบนโทรศัพท์ยังคงส่งตามปกติ</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">ข้ามเสียงโทรศัพท์หาก Cast สำเร็จ</string>
+    <string name="settings_smart_home_cast_title">Cast</string>
+    <string name="settings_smart_home_cast_tonight_description">ส่ง ClothesCast รายคืนไปยังสมาร์ทดิสเพลย์เมื่อแจ้งเตือนช่วงคืนทำงาน</string>
+    <string name="settings_smart_home_cast_tonight_title">ClothesCast รายคืน</string>
+
+    <!-- Settings — Smart Home / Discover -->
+    <string name="settings_smart_home_discover_empty">ยังไม่พบโบรกเกอร์ ลองค้นหาต่อ หรือพิมพ์โฮสต์โบรกเกอร์ด้วยตนเอง</string>
+    <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
+    <string name="settings_smart_home_discover_label_mqtt">MQTT broker</string>
+    <string name="settings_smart_home_discover_results">พบในเครือข่ายของคุณ</string>
+    <string name="settings_smart_home_discover_scan">ค้นหาโบรกเกอร์</string>
+    <string name="settings_smart_home_discover_scanning">กำลังค้นหา…</string>
+    <string name="settings_smart_home_discover_stop">หยุดค้นหา</string>
+    <string name="settings_smart_home_discover_use">ใช้</string>
+
+    <!-- Settings — Smart Home / MQTT -->
+    <string name="settings_smart_home_mqtt_description">หลังจากรีเฟรชตามกำหนดการแต่ละครั้ง ClothesCast จะเผยแพร่พยากรณ์อากาศวันนี้และคืนนี้ที่แสดงผลแล้วไปยัง MQTT broker เป็น retained messages เพื่อให้ Home Assistant (หรือ MQTT consumer ใดก็ได้) อ่านค่าล่าสุดและอ่านออกเสียงเมื่อ sensor ทำงาน</string>
+    <string name="settings_smart_home_mqtt_host">โฮสต์โบรกเกอร์</string>
+    <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
+    <string name="settings_smart_home_mqtt_label">เผยแพร่พยากรณ์ไปยัง MQTT</string>
+    <string name="settings_smart_home_mqtt_last_error_title">การเผยแพร่ครั้งล่าสุดล้มเหลว</string>
+    <string name="settings_smart_home_mqtt_last_published">เผยแพร่ล่าสุด %1$s</string>
+    <string name="settings_smart_home_mqtt_never_published">ยังไม่เคยเผยแพร่</string>
+    <string name="settings_smart_home_mqtt_open_privacy">อ่านรายละเอียดความเป็นส่วนตัว</string>
+    <string name="settings_smart_home_mqtt_password">รหัสผ่าน (ไม่บังคับ)</string>
+    <string name="settings_smart_home_mqtt_password_clear">ล้างรหัสผ่านที่บันทึกไว้</string>
+    <string name="settings_smart_home_mqtt_password_replace">เปลี่ยนรหัสผ่าน</string>
+    <string name="settings_smart_home_mqtt_password_status_set">กำหนดรหัสผ่านแล้ว</string>
+    <string name="settings_smart_home_mqtt_port">พอร์ต</string>
+    <string name="settings_smart_home_mqtt_privacy_note">เมื่อเปิดใช้งาน ประโยคพยากรณ์อากาศที่แสดงผลแล้วจะออกจากอุปกรณ์ผ่านเครือข่ายไปยังโบรกเกอร์ที่คุณกำหนด ดูนโยบายความเป็นส่วนตัว</string>
+    <string name="settings_smart_home_mqtt_publish_now">เผยแพร่เดี๋ยวนี้</string>
+    <string name="settings_smart_home_mqtt_publishing">กำลังเผยแพร่…</string>
+    <string name="settings_smart_home_mqtt_save">บันทึก</string>
+    <string name="settings_smart_home_mqtt_setup_guide">คู่มือการตั้งค่า</string>
+    <string name="settings_smart_home_mqtt_title">Home Assistant bridge (MQTT)</string>
+    <string name="settings_smart_home_mqtt_tls">ใช้ TLS</string>
+    <string name="settings_smart_home_mqtt_topic">คำนำหน้า topic</string>
+    <string name="settings_smart_home_mqtt_topic_hint">วันนี้เผยแพร่ที่ {prefix}/today/text; คืนนี้ที่ {prefix}/tonight/text รูปภาพและเสียงอยู่ที่ {prefix}/&lt;period&gt;/image และ /audio แต่ละรายการจะมิเรอร์ไปที่ {prefix}/now/&lt;text|image|audio&gt; ด้วย เพื่อให้ผู้รับสมัครสมาชิก topic "ล่าสุด" เดียวโดยไม่ต้องเลือกวันนี้หรือคืนนี้</string>
+    <string name="settings_smart_home_mqtt_username">ชื่อผู้ใช้ (ไม่บังคับ)</string>
+    <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
+
+    <!-- Today — Celebration card -->
+    <string name="today_celebration_card_body">เปิดใช้สีพิเศษและข้อความสำหรับวันหยุดและวันเกิด</string>
+    <string name="today_celebration_card_cta">การตั้งค่าการเฉลิมฉลอง</string>
+    <string name="today_celebration_card_dismiss">ปิด</string>
+    <string name="today_celebration_card_title">ธีมเฉลิมฉลอง</string>
+
+    <!-- Today — Rationale dialog -->
+    <string name="today_rationale_open_clothes_settings">การตั้งค่าเสื้อผ้า</string>
 </resources>

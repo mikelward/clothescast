@@ -872,4 +872,194 @@ label localizes.
     <string name="holiday_name_immaculate_conception">圣母无染原罪</string>
     <string name="holiday_name_christmas_day">圣诞节</string>
     <string name="holiday_name_boxing_day">节礼日</string>
+
+    <!-- Cast errors. -->
+    <string name="cast_error_no_insight_yet">还没有可用的预报。等待下次计划运行，或在今天页面点击刷新。</string>
+    <string name="cast_error_no_route_picked">请先选择一个智能显示器。</string>
+    <string name="cast_error_unknown">投屏失败。</string>
+
+    <!-- Holiday banners. -->
+    <string name="holiday_banner_all_saints_day">万圣节快乐</string>
+    <string name="holiday_banner_anzac_day">铭记历史</string>
+    <string name="holiday_banner_assumption">圣母升天节快乐</string>
+    <string name="holiday_banner_australia_day">澳大利亚日快乐</string>
+    <string name="holiday_banner_austria_national_day">奥地利国庆节快乐</string>
+    <string name="holiday_banner_bastille_day">法国国庆节快乐</string>
+    <string name="holiday_banner_bonfire_night">铭记，铭记</string>
+    <string name="holiday_banner_boxing_day">节礼日快乐</string>
+    <string name="holiday_banner_brazil_independence_day">巴西独立日快乐</string>
+    <string name="holiday_banner_burns_night">彭斯之夜快乐</string>
+    <string name="holiday_banner_canada_day">加拿大日快乐</string>
+    <string name="holiday_banner_canadian_thanksgiving">感恩节快乐</string>
+    <string name="holiday_banner_christmas_day">圣诞节快乐</string>
+    <string name="holiday_banner_croatia_independence_day">克罗地亚独立纪念日快乐</string>
+    <string name="holiday_banner_croatia_statehood_day">克罗地亚建国纪念日快乐</string>
+    <string name="holiday_banner_croatia_victory_day">克罗地亚胜利纪念日快乐</string>
+    <string name="holiday_banner_easter_monday">复活节星期一快乐</string>
+    <string name="holiday_banner_easter_sunday">复活节快乐</string>
+    <string name="holiday_banner_epiphany">主显节快乐</string>
+    <string name="holiday_banner_fathers_day_jun">父亲节快乐</string>
+    <string name="holiday_banner_fathers_day_sep">父亲节快乐</string>
+    <string name="holiday_banner_fr_armistice_day">铭记历史</string>
+    <string name="holiday_banner_german_unity_day">德国统一日快乐</string>
+    <string name="holiday_banner_good_friday">耶稣受难日</string>
+    <string name="holiday_banner_halloween">万圣节快乐</string>
+    <string name="holiday_banner_immaculate_conception">圣母无染原罪节快乐</string>
+    <string name="holiday_banner_italy_republic_day">意大利共和国纪念日快乐</string>
+    <string name="holiday_banner_japan_coming_of_age_day">成人节快乐</string>
+    <string name="holiday_banner_japan_culture_day">文化节快乐</string>
+    <string name="holiday_banner_japan_greenery_day">绿之日快乐</string>
+    <string name="holiday_banner_japan_marine_day">海之日快乐</string>
+    <string name="holiday_banner_juneteenth">六月节快乐</string>
+    <string name="holiday_banner_korean_hangeul_day">韩文节快乐</string>
+    <string name="holiday_banner_korean_independence_movement_day">三一节快乐</string>
+    <string name="holiday_banner_korean_liberation_day">光复节快乐</string>
+    <string name="holiday_banner_korean_memorial_day">铭记韩国英烈</string>
+    <string name="holiday_banner_labour_day">劳动节快乐</string>
+    <string name="holiday_banner_mlk_day">缅怀马丁·路德·金博士</string>
+    <string name="holiday_banner_mothers_day">母亲节快乐</string>
+    <string name="holiday_banner_new_years_day">新年快乐</string>
+    <string name="holiday_banner_remembrance_day">铭记历史</string>
+    <string name="holiday_banner_spain_hispanic_day">西班牙国庆节快乐</string>
+    <string name="holiday_banner_st_andrews_day">圣安德鲁节快乐</string>
+    <string name="holiday_banner_st_davids_day">圣大卫节快乐</string>
+    <string name="holiday_banner_st_georges_day">圣乔治节快乐</string>
+    <string name="holiday_banner_st_patricks_day">圣帕特里克节快乐</string>
+    <string name="holiday_banner_uk_bank_holiday">公假日快乐</string>
+    <string name="holiday_banner_uk_kings_birthday">天佑国王</string>
+    <string name="holiday_banner_uk_mothering_sunday">母亲节快乐</string>
+    <string name="holiday_banner_us_independence_day">7月4日快乐</string>
+    <string name="holiday_banner_us_memorial_day">铭记英烈</string>
+    <string name="holiday_banner_us_presidents_day">总统日快乐</string>
+    <string name="holiday_banner_us_thanksgiving">感恩节快乐</string>
+    <string name="holiday_banner_us_veterans_day">缅怀退伍军人</string>
+    <string name="holiday_banner_valentines_day">情人节快乐</string>
+    <string name="holiday_banner_waitangi_day">怀唐伊日快乐</string>
+
+    <!-- Holiday display name — US Presidents\' Day. -->
+    <string name="holiday_name_us_presidents_day">总统日</string>
+
+    <!-- Outfit card headers and temperature range. -->
+    <string name="outfit_card_header_today">今天的 ClothesCast</string>
+    <string name="outfit_card_header_tonight">今晚的 ClothesCast</string>
+    <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+
+    <!-- API key replace button. -->
+    <string name="settings_api_key_replace">更换 Gemini 密钥</string>
+
+    <!-- Holidays calendar section placeholders. -->
+    <string name="settings_holidays_calendar_section_placeholder_off">打开上方开关，根据你同步日历中检测到的日程为今天的穿搭添加主题色。</string>
+    <string name="settings_holidays_calendar_section_placeholder_on">你同步日历中检测到的日程将在后续版本中显示在这里。</string>
+
+    <!-- Holidays settings links (accessibility labels). -->
+    <string name="settings_holidays_link_calendar_settings_a11y">日历设置</string>
+    <string name="settings_holidays_link_location_settings_a11y">位置设置</string>
+    <string name="settings_holidays_link_region_settings_a11y">地区设置</string>
+    <string name="settings_holidays_link_settings">设置</string>
+
+    <!-- Holidays calendar permission revoked. -->
+    <string name="settings_holidays_permission_revoked">需要日历权限。点击重新授予。</string>
+
+    <!-- Holidays source picker. -->
+    <string name="settings_holidays_source_all">全部国家</string>
+    <string name="settings_holidays_source_calendar_birthdays">日历生日</string>
+    <string name="settings_holidays_source_calendar_holidays">日历节假日</string>
+    <string name="settings_holidays_source_global">全球</string>
+    <string name="settings_holidays_source_location">位置（%1$s）</string>
+    <string name="settings_holidays_source_region">地区（%1$s）</string>
+
+    <!-- Home location settings. -->
+    <string name="settings_home_location_title">家庭位置</string>
+    <string name="settings_home_location_change">更换家庭位置</string>
+    <string name="settings_home_location_clear">清除家庭位置</string>
+    <string name="settings_home_location_description">用于"仅在离家时播报"功能，判断手机是否在家时是否朗读天气预报。数据保存在本设备上。</string>
+    <string name="settings_home_location_search">搜索地址</string>
+    <string name="settings_home_location_search_caveat">搜索结果使用城市中心点，可能与你实际家的位置相差几公里。要让 1 公里在家判定准确生效，建议在家时选择"使用我的当前位置"。</string>
+    <string name="settings_home_location_unset">未设置家庭位置</string>
+    <string name="settings_home_location_use_current">使用我的当前位置</string>
+
+    <!-- Settings root — Smart Home row. -->
+    <string name="settings_root_smart_home">智能家居</string>
+    <string name="settings_root_smart_home_subtitle">智能显示器与家庭自动化</string>
+
+    <!-- Schedule screen description. -->
+    <string name="settings_schedule_description">每天早晨发送一份覆盖当日天气的 ClothesCast。</string>
+
+    <!-- Skip TTS at home. -->
+    <string name="settings_skip_tts_at_home_title">仅在离家时播报</string>
+    <string name="settings_skip_tts_at_home_label">仅在离家时播报</string>
+    <string name="settings_skip_tts_at_home_description">在家时手机保持静音 — 如果家里的音箱已经播报天气预报，这个功能就很方便。通知仍会照常发送。</string>
+    <string name="settings_skip_tts_at_home_needs_home">请先在上方设置家庭位置以启用此功能。没有家庭位置时手机将始终播报。</string>
+    <string name="settings_skip_tts_at_home_needs_permission">需要后台位置权限才能判断你是否在家。没有此权限时手机将始终播报。</string>
+    <string name="settings_skip_tts_at_home_open_settings">在系统设置中授权</string>
+
+    <!-- Smart Home — Cast section. -->
+    <string name="settings_smart_home_cast_title">投屏</string>
+    <string name="settings_smart_home_cast_description">将每次计划推送的 ClothesCast 发送到家庭网络中的智能显示器。</string>
+    <string name="settings_smart_home_cast_device_label">智能显示器</string>
+    <string name="settings_smart_home_cast_device_none">未选择显示器</string>
+    <string name="settings_smart_home_cast_choose">选择智能显示器</string>
+    <string name="settings_smart_home_cast_change">更换</string>
+    <string name="settings_smart_home_cast_clear">清除</string>
+    <string name="settings_smart_home_cast_now">立即投屏</string>
+    <string name="settings_smart_home_cast_casting">投屏中…</string>
+    <string name="settings_smart_home_cast_never">尚未投屏</string>
+    <string name="settings_smart_home_cast_last_success">上次投屏：%1$s</string>
+    <string name="settings_smart_home_cast_last_error_title">上次投屏失败</string>
+    <string name="settings_smart_home_cast_morning_title">每日 ClothesCast</string>
+    <string name="settings_smart_home_cast_morning_description">早晨闹钟触发时将每日 ClothesCast 发送到智能显示器。</string>
+    <string name="settings_smart_home_cast_tonight_title">夜间 ClothesCast</string>
+    <string name="settings_smart_home_cast_tonight_description">夜间闹钟触发时将夜间 ClothesCast 发送到智能显示器。</string>
+    <string name="settings_smart_home_cast_picker_title">选择智能显示器</string>
+    <string name="settings_smart_home_cast_picker_scanning">正在扫描网络上的智能显示器…</string>
+    <string name="settings_smart_home_cast_picker_empty">暂未发现智能显示器。请确认显示器已开启并连接到同一 Wi-Fi。</string>
+    <string name="settings_smart_home_cast_picker_cancel">取消</string>
+    <string name="settings_smart_home_cast_privacy_note">音频和图像通过本地网络从手机传输，不会离开家庭网络。</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">投屏成功后跳过手机播报</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">如果智能显示器已朗读天气预报，手机将保持静音。手机通知仍会照常发送。</string>
+
+    <!-- Smart Home — Discover section. -->
+    <string name="settings_smart_home_discover_scan">查找 Broker</string>
+    <string name="settings_smart_home_discover_scanning">搜索中…</string>
+    <string name="settings_smart_home_discover_stop">停止搜索</string>
+    <string name="settings_smart_home_discover_results">已在你的网络中发现</string>
+    <string name="settings_smart_home_discover_empty">暂未发现 Broker。继续搜索，或手动输入 Broker 主机地址。</string>
+    <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
+    <string name="settings_smart_home_discover_label_mqtt">MQTT Broker</string>
+    <string name="settings_smart_home_discover_use">使用</string>
+
+    <!-- Smart Home — MQTT section. -->
+    <string name="settings_smart_home_mqtt_title">Home Assistant 桥接（MQTT）</string>
+    <string name="settings_smart_home_mqtt_description">每次计划刷新后，ClothesCast 会将今天和今晚的预报文本以保留消息的形式发布到你的 MQTT Broker，让 Home Assistant（或任何 MQTT 客户端）在传感器触发时读取最新值并播报。</string>
+    <string name="settings_smart_home_mqtt_label">将预报发布到 MQTT</string>
+    <string name="settings_smart_home_mqtt_host">Broker 主机</string>
+    <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
+    <string name="settings_smart_home_mqtt_port">端口</string>
+    <string name="settings_smart_home_mqtt_tls">使用 TLS</string>
+    <string name="settings_smart_home_mqtt_username">用户名（可选）</string>
+    <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
+    <string name="settings_smart_home_mqtt_password">密码（可选）</string>
+    <string name="settings_smart_home_mqtt_password_clear">清除已保存的密码</string>
+    <string name="settings_smart_home_mqtt_password_replace">更换密码</string>
+    <string name="settings_smart_home_mqtt_password_status_set">密码已配置。</string>
+    <string name="settings_smart_home_mqtt_topic">主题前缀</string>
+    <string name="settings_smart_home_mqtt_topic_hint">今日预报发布到 {prefix}/today/text；今晚预报发布到 {prefix}/tonight/text。图像和音频分别发布到 {prefix}/&lt;period&gt;/image 和 /audio。每次发布同时镜像到 {prefix}/now/&lt;text|image|audio&gt;，便于订阅者无需区分今天还是今晚即可订阅一个"最新"主题。</string>
+    <string name="settings_smart_home_mqtt_save">保存</string>
+    <string name="settings_smart_home_mqtt_publish_now">立即发布</string>
+    <string name="settings_smart_home_mqtt_publishing">发布中…</string>
+    <string name="settings_smart_home_mqtt_never_published">尚未发布</string>
+    <string name="settings_smart_home_mqtt_last_published">上次发布：%1$s</string>
+    <string name="settings_smart_home_mqtt_last_error_title">上次发布失败</string>
+    <string name="settings_smart_home_mqtt_privacy_note">开启后，生成的预报文本将通过你的网络传输到你配置的 Broker。请参阅隐私政策。</string>
+    <string name="settings_smart_home_mqtt_open_privacy">查看隐私详情</string>
+    <string name="settings_smart_home_mqtt_setup_guide">设置指南</string>
+
+    <!-- Today screen — celebration card. -->
+    <string name="today_celebration_card_title">节日主题</string>
+    <string name="today_celebration_card_body">为节假日和生日启用特殊颜色和祝福语。</string>
+    <string name="today_celebration_card_cta">节日设置</string>
+    <string name="today_celebration_card_dismiss">关闭</string>
+
+    <!-- Today screen — rationale open clothes settings. -->
+    <string name="today_rationale_open_clothes_settings">服装设置</string>
 </resources>

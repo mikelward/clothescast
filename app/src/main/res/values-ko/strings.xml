@@ -888,4 +888,184 @@ displayed label localizes.
     <string name="holiday_banner_korean_memorial_day">현충일</string>
     <string name="holiday_banner_korean_liberation_day">광복절</string>
     <string name="holiday_banner_korean_hangeul_day">한글날</string>
+
+    <!-- Holiday banners — non-Korean public holidays. -->
+    <string name="holiday_banner_all_saints_day">만성절을 기념합니다</string>
+    <string name="holiday_banner_anzac_day">우리는 기억합니다</string>
+    <string name="holiday_banner_assumption">성모 승천 대축일을 기념합니다</string>
+    <string name="holiday_banner_australia_day">호주의 날을 기념합니다</string>
+    <string name="holiday_banner_austria_national_day">오스트리아 국경일을 기념합니다</string>
+    <string name="holiday_banner_bastille_day">바스티유 데이를 기념합니다</string>
+    <string name="holiday_banner_bonfire_night">기억하세요, 기억하세요</string>
+    <string name="holiday_banner_boxing_day">박싱 데이를 기념합니다</string>
+    <string name="holiday_banner_brazil_independence_day">브라질 독립기념일을 기념합니다</string>
+    <string name="holiday_banner_burns_night">번스 나이트를 기념합니다</string>
+    <string name="holiday_banner_canada_day">캐나다 데이를 기념합니다</string>
+    <string name="holiday_banner_canadian_thanksgiving">추수감사절을 기념합니다</string>
+    <string name="holiday_banner_christmas_day">메리 크리스마스</string>
+    <string name="holiday_banner_croatia_independence_day">크로아티아 독립기념일을 기념합니다</string>
+    <string name="holiday_banner_croatia_statehood_day">크로아티아 건국기념일을 기념합니다</string>
+    <string name="holiday_banner_croatia_victory_day">크로아티아 전승기념일을 기념합니다</string>
+    <string name="holiday_banner_easter_monday">부활절 월요일을 기념합니다</string>
+    <string name="holiday_banner_easter_sunday">부활절을 기념합니다</string>
+    <string name="holiday_banner_epiphany">주현절을 기념합니다</string>
+    <string name="holiday_banner_fathers_day_jun">아버지의 날을 기념합니다</string>
+    <string name="holiday_banner_fathers_day_sep">아버지의 날을 기념합니다</string>
+    <string name="holiday_banner_fr_armistice_day">우리는 기억합니다</string>
+    <string name="holiday_banner_german_unity_day">독일 통일의 날을 기념합니다</string>
+    <string name="holiday_banner_good_friday">성금요일</string>
+    <string name="holiday_banner_halloween">해피 핼러윈</string>
+    <string name="holiday_banner_immaculate_conception">원죄 없는 잉태 대축일을 기념합니다</string>
+    <string name="holiday_banner_italy_republic_day">이탈리아 공화국의 날을 기념합니다</string>
+    <string name="holiday_banner_japan_coming_of_age_day">성인의 날을 기념합니다</string>
+    <string name="holiday_banner_japan_culture_day">문화의 날을 기념합니다</string>
+    <string name="holiday_banner_japan_greenery_day">녹색의 날을 기념합니다</string>
+    <string name="holiday_banner_japan_marine_day">바다의 날을 기념합니다</string>
+    <string name="holiday_banner_juneteenth">준틴스를 기념합니다</string>
+    <string name="holiday_banner_labour_day">노동절을 기념합니다</string>
+    <string name="holiday_banner_mlk_day">킹 박사를 기립니다</string>
+    <string name="holiday_banner_mothers_day">어머니의 날을 기념합니다</string>
+    <string name="holiday_banner_new_years_day">새해 복 많이 받으세요</string>
+    <string name="holiday_banner_remembrance_day">우리는 기억합니다</string>
+    <string name="holiday_banner_spain_hispanic_day">Día de la Hispanidad을 기념합니다</string>
+    <string name="holiday_banner_st_andrews_day">성 앤드루스의 날을 기념합니다</string>
+    <string name="holiday_banner_st_davids_day">성 다윗의 날을 기념합니다</string>
+    <string name="holiday_banner_st_georges_day">성 조지의 날을 기념합니다</string>
+    <string name="holiday_banner_st_patricks_day">성 패트릭의 날을 기념합니다</string>
+    <string name="holiday_banner_uk_bank_holiday">공휴일을 기념합니다</string>
+    <string name="holiday_banner_uk_kings_birthday">국왕 폐하 만세</string>
+    <string name="holiday_banner_uk_mothering_sunday">어머니 주일을 기념합니다</string>
+    <string name="holiday_banner_us_independence_day">미국 독립기념일을 기념합니다</string>
+    <string name="holiday_banner_us_memorial_day">전몰용사를 기립니다</string>
+    <string name="holiday_banner_us_presidents_day">대통령의 날을 기념합니다</string>
+    <string name="holiday_banner_us_thanksgiving">추수감사절을 기념합니다</string>
+    <string name="holiday_banner_us_veterans_day">참전용사를 기립니다</string>
+    <string name="holiday_banner_valentines_day">발렌타인데이를 기념합니다</string>
+    <string name="holiday_banner_waitangi_day">와이탕이 데이를 기념합니다</string>
+
+    <!-- Holiday display name — US Presidents' Day. -->
+    <string name="holiday_name_us_presidents_day">대통령의 날</string>
+
+    <!-- Outfit card — header labels and temperature range. -->
+    <string name="outfit_card_header_today">오늘의 ClothesCast</string>
+    <string name="outfit_card_header_tonight">오늘 밤의 ClothesCast</string>
+    <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+
+    <!-- API keys screen — replace key action. -->
+    <string name="settings_api_key_replace">Gemini 키 교체</string>
+
+    <!-- Holidays sub-page — calendar section placeholders and links. -->
+    <string name="settings_holidays_calendar_section_placeholder_off">위의 토글을 켜면 동기화된 캘린더에서 감지된 일정에 맞춰 오늘의 의상 테마가 바뀌어요.</string>
+    <string name="settings_holidays_calendar_section_placeholder_on">동기화된 캘린더에서 감지된 일정은 향후 업데이트에서 여기에 표시됩니다.</string>
+    <string name="settings_holidays_link_calendar_settings_a11y">캘린더 설정</string>
+    <string name="settings_holidays_link_location_settings_a11y">위치 설정</string>
+    <string name="settings_holidays_link_region_settings_a11y">지역 설정</string>
+    <string name="settings_holidays_link_settings">설정</string>
+    <string name="settings_holidays_permission_revoked">캘린더 권한이 필요합니다. 탭하여 다시 허용하세요.</string>
+    <string name="settings_holidays_source_all">전체 국가</string>
+    <string name="settings_holidays_source_calendar_birthdays">캘린더 생일</string>
+    <string name="settings_holidays_source_calendar_holidays">캘린더 공휴일</string>
+    <string name="settings_holidays_source_global">글로벌</string>
+    <string name="settings_holidays_source_location">위치 (%1$s)</string>
+    <string name="settings_holidays_source_region">지역 (%1$s)</string>
+
+    <!-- Home location settings. -->
+    <string name="settings_home_location_title">집 위치</string>
+    <string name="settings_home_location_change">집 위치 변경</string>
+    <string name="settings_home_location_clear">집 위치 삭제</string>
+    <string name="settings_home_location_description">「집에 있을 때 음성 읽기 생략」 기능이 전화기 소리를 낼지 결정하는 데 사용돼요. 이 기기에만 저장됩니다.</string>
+    <string name="settings_home_location_search">주소 검색</string>
+    <string name="settings_home_location_search_caveat">검색은 도시 중심점을 선택하므로 실제 집에서 몇 킬로미터 떨어질 수 있어요. 반경 1km 재택 감지가 정확히 작동하려면 집에 있을 때 「현재 위치 사용」을 선택하는 것이 좋아요.</string>
+    <string name="settings_home_location_unset">집 위치가 설정되지 않았어요</string>
+    <string name="settings_home_location_use_current">현재 위치 사용</string>
+
+    <!-- Settings root — Smart Home row. -->
+    <string name="settings_root_smart_home">스마트 홈</string>
+    <string name="settings_root_smart_home_subtitle">스마트 디스플레이 및 홈 자동화</string>
+
+    <!-- Schedule screen — description. -->
+    <string name="settings_schedule_description">당일 날씨를 안내하는 아침 ClothesCast입니다.</string>
+
+    <!-- Skip TTS at home settings. -->
+    <string name="settings_skip_tts_at_home_title">집 밖에서만 음성 읽기</string>
+    <string name="settings_skip_tts_at_home_label">집 밖에서만 음성 읽기</string>
+    <string name="settings_skip_tts_at_home_description">집에 있을 때는 전화기가 조용히 있어요 — 홈 스피커가 이미 예보를 읽어주는 경우 유용해요. 알림은 계속 표시됩니다.</string>
+    <string name="settings_skip_tts_at_home_needs_home">이 기능을 사용하려면 위에서 집 위치를 설정하세요. 설정하지 않으면 전화기가 항상 소리를 내요.</string>
+    <string name="settings_skip_tts_at_home_needs_permission">집에 있는지 확인하려면 백그라운드 위치 권한이 필요합니다. 없으면 전화기가 항상 소리를 내요.</string>
+    <string name="settings_skip_tts_at_home_open_settings">시스템 설정에서 허용</string>
+
+    <!-- Smart Home — Cast section. -->
+    <string name="settings_smart_home_cast_title">캐스트</string>
+    <string name="settings_smart_home_cast_description">홈 네트워크의 스마트 디스플레이로 예약된 ClothesCast를 전송해요.</string>
+    <string name="settings_smart_home_cast_device_label">스마트 디스플레이</string>
+    <string name="settings_smart_home_cast_device_none">디스플레이가 선택되지 않았어요</string>
+    <string name="settings_smart_home_cast_choose">스마트 디스플레이 선택</string>
+    <string name="settings_smart_home_cast_change">변경</string>
+    <string name="settings_smart_home_cast_clear">삭제</string>
+    <string name="settings_smart_home_cast_now">지금 캐스트</string>
+    <string name="settings_smart_home_cast_casting">캐스트 중…</string>
+    <string name="settings_smart_home_cast_never">아직 캐스트하지 않았어요</string>
+    <string name="settings_smart_home_cast_last_success">마지막 캐스트: %1$s</string>
+    <string name="settings_smart_home_cast_last_error_title">마지막 캐스트가 실패했어요</string>
+    <string name="settings_smart_home_cast_morning_title">매일 ClothesCast</string>
+    <string name="settings_smart_home_cast_morning_description">아침 알람이 울릴 때 스마트 디스플레이로 매일 ClothesCast를 전송해요.</string>
+    <string name="settings_smart_home_cast_tonight_title">야간 ClothesCast</string>
+    <string name="settings_smart_home_cast_tonight_description">야간 알람이 울릴 때 스마트 디스플레이로 야간 ClothesCast를 전송해요.</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">캐스트 성공 시 전화기 음성 생략</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">스마트 디스플레이가 예보를 소리로 읽어주면 전화기는 조용히 있어요. 전화기 알림은 계속 표시됩니다.</string>
+    <string name="settings_smart_home_cast_privacy_note">오디오와 이미지는 로컬 네트워크를 통해 전화기에서 직접 서비스됩니다. 집 밖으로 나가지 않아요.</string>
+    <string name="settings_smart_home_cast_picker_title">스마트 디스플레이 선택</string>
+    <string name="settings_smart_home_cast_picker_scanning">네트워크에서 스마트 디스플레이를 검색 중…</string>
+    <string name="settings_smart_home_cast_picker_empty">아직 스마트 디스플레이를 찾지 못했어요. 디스플레이가 켜져 있고 같은 Wi-Fi에 연결되어 있는지 확인하세요.</string>
+    <string name="settings_smart_home_cast_picker_cancel">취소</string>
+
+    <!-- Smart Home — Discovery section. -->
+    <string name="settings_smart_home_discover_scan">브로커 찾기</string>
+    <string name="settings_smart_home_discover_scanning">검색 중…</string>
+    <string name="settings_smart_home_discover_stop">검색 중지</string>
+    <string name="settings_smart_home_discover_results">네트워크에서 발견됨</string>
+    <string name="settings_smart_home_discover_empty">아직 브로커를 찾지 못했어요. 계속 검색하거나 브로커 호스트를 직접 입력하세요.</string>
+    <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
+    <string name="settings_smart_home_discover_label_mqtt">MQTT 브로커</string>
+    <string name="settings_smart_home_discover_use">사용</string>
+
+    <!-- Smart Home — MQTT section. -->
+    <string name="settings_smart_home_mqtt_title">Home Assistant 연동 (MQTT)</string>
+    <string name="settings_smart_home_mqtt_label">MQTT에 예보 게시</string>
+    <string name="settings_smart_home_mqtt_description">예약된 새로고침마다 ClothesCast가 오늘과 오늘 밤의 렌더링된 예보를 보존 메시지로 MQTT 브로커에 게시해요. Home Assistant(또는 모든 MQTT 소비자)가 최신 값을 읽고 센서 트리거 시 음성으로 알려줄 수 있어요.</string>
+    <string name="settings_smart_home_mqtt_host">브로커 호스트</string>
+    <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
+    <string name="settings_smart_home_mqtt_port">포트</string>
+    <string name="settings_smart_home_mqtt_tls">TLS 사용</string>
+    <string name="settings_smart_home_mqtt_username">사용자 이름 (선택)</string>
+    <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
+    <string name="settings_smart_home_mqtt_password">비밀번호 (선택)</string>
+    <string name="settings_smart_home_mqtt_password_replace">비밀번호 교체</string>
+    <string name="settings_smart_home_mqtt_password_clear">저장된 비밀번호 삭제</string>
+    <string name="settings_smart_home_mqtt_password_status_set">비밀번호가 설정되어 있어요.</string>
+    <string name="settings_smart_home_mqtt_topic">토픽 접두사</string>
+    <string name="settings_smart_home_mqtt_topic_hint">오늘 예보는 {prefix}/today/text에, 오늘 밤 예보는 {prefix}/tonight/text에 게시돼요. 이미지와 오디오는 {prefix}/&lt;period&gt;/image 및 /audio에 저장됩니다. 각 게시는 {prefix}/now/&lt;text|image|audio&gt;에도 미러링되어 오늘/오늘 밤을 선택하지 않고도 최신 항목을 구독할 수 있어요.</string>
+    <string name="settings_smart_home_mqtt_save">저장</string>
+    <string name="settings_smart_home_mqtt_publish_now">지금 게시</string>
+    <string name="settings_smart_home_mqtt_publishing">게시 중…</string>
+    <string name="settings_smart_home_mqtt_never_published">아직 게시되지 않았어요</string>
+    <string name="settings_smart_home_mqtt_last_published">마지막 게시: %1$s</string>
+    <string name="settings_smart_home_mqtt_last_error_title">마지막 게시가 실패했어요</string>
+    <string name="settings_smart_home_mqtt_privacy_note">켜져 있으면 렌더링된 예보 문장이 설정한 브로커로 네트워크를 통해 기기를 떠납니다. 개인정보 처리방침을 확인하세요.</string>
+    <string name="settings_smart_home_mqtt_open_privacy">개인정보 세부 내용 보기</string>
+    <string name="settings_smart_home_mqtt_setup_guide">설정 가이드</string>
+
+    <!-- Cast error strings. -->
+    <string name="cast_error_no_insight_yet">아직 예보가 없어요. 다음 예약 실행을 기다리거나 「오늘」 화면에서 새로고침을 탭하세요.</string>
+    <string name="cast_error_no_route_picked">먼저 스마트 디스플레이를 선택하세요.</string>
+    <string name="cast_error_unknown">캐스트에 실패했어요.</string>
+
+    <!-- Today screen — Celebration card. -->
+    <string name="today_celebration_card_title">기념일 테마</string>
+    <string name="today_celebration_card_body">공휴일과 생일에 특별한 색상과 메시지를 활성화하세요.</string>
+    <string name="today_celebration_card_cta">기념일 설정</string>
+    <string name="today_celebration_card_dismiss">닫기</string>
+
+    <!-- Today screen — Rationale: open clothes settings link. -->
+    <string name="today_rationale_open_clothes_settings">옷 설정</string>
 </resources>

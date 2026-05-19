@@ -16,6 +16,7 @@ import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.SessionManager
 import com.google.android.gms.cast.framework.SessionManagerListener
+import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.images.WebImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -262,6 +263,7 @@ class CastInsightController(
         subtitle: String?,
         discoveryTimeoutMs: Long = 5_000,
         sessionTimeoutMs: Long = 10_000,
+        loadTimeoutMs: Long = 15_000,
     ): CastWorkerOutcome {
         return try {
             val route = findRoute(routeId, discoveryTimeoutMs)
@@ -272,12 +274,26 @@ class CastInsightController(
             val host = resolveLanIp(context)
                 ?: return CastWorkerOutcome.Failed(CastFailure.NoLanAddress.message ?: "No LAN IP")
             val urls = server.publish(host = host, audio = wav, image = png)
-            client.load(
-                MediaLoadRequestData.Builder()
-                    .setMediaInfo(buildMediaInfo(urls, title, subtitle))
-                    .build(),
-            )
-            CastWorkerOutcome.Success
+            val request = MediaLoadRequestData.Builder()
+                .setMediaInfo(buildMediaInfo(urls, title, subtitle))
+                .build()
+            // Await the receiver's load result rather than reporting
+            // Success on enqueue. Without this, a receiver that
+            // accepts the request but later fails to fetch / decode
+            // (codec mismatch, LAN URL unreachable) would clear the
+            // status row AND — when castSkipPhoneSpeech is on —
+            // suppress phone TTS off a premature "success", leaving
+            // the user with no spoken forecast.
+            val result = awaitLoad(client, request, loadTimeoutMs)
+                ?: return CastWorkerOutcome.Failed("Smart display did not respond to the load request")
+            if (result.status.isSuccess) {
+                CastWorkerOutcome.Success
+            } else {
+                val message = result.status.statusMessage?.takeIf { it.isNotBlank() }
+                    ?: "Smart display rejected the media (code ${result.status.statusCode})"
+                DiagLog.w(TAG, "Cast load rejected by receiver: $message")
+                CastWorkerOutcome.Failed(message)
+            }
         } catch (ce: kotlinx.coroutines.CancellationException) {
             // CancellationException must propagate so WorkManager
             // stops unwind cleanly — same convention as
@@ -289,6 +305,28 @@ class CastInsightController(
         } catch (t: Throwable) {
             DiagLog.w(TAG, "Cast load failed unexpectedly", t)
             CastWorkerOutcome.Failed(t.message ?: "Cast failed")
+        }
+    }
+
+    /**
+     * Wraps [RemoteMediaClient.load]'s [PendingResult][com.google.android.gms.common.api.PendingResult]
+     * in a suspending call with a timeout, so the worker can decide
+     * Success vs. Failed off the receiver's actual outcome rather
+     * than off "request enqueued." Returns null on timeout so the
+     * caller surfaces a no-response error instead of waiting
+     * indefinitely.
+     */
+    private suspend fun awaitLoad(
+        client: RemoteMediaClient,
+        request: MediaLoadRequestData,
+        timeoutMs: Long,
+    ): RemoteMediaClient.MediaChannelResult? = withTimeoutOrNull(timeoutMs) {
+        suspendCancellableCoroutine { cont ->
+            val pending = client.load(request)
+            pending.setResultCallback { result ->
+                if (cont.isActive) cont.resume(result)
+            }
+            cont.invokeOnCancellation { runCatching { pending.cancel() } }
         }
     }
 

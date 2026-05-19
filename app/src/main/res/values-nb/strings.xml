@@ -773,4 +773,173 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="holiday_banner_immaculate_conception">Ubesmittet unnfangelse</string>
     <string name="holiday_banner_christmas_day">God Jul</string>
     <string name="holiday_banner_boxing_day">God Andre juledag</string>
+
+    <!-- Missing strings: Smart Home, holiday banners, outfit card, settings. -->
+
+    <!-- Settings root navigation -->
+    <string name="settings_root_smart_home">Smart hjem</string>
+    <string name="settings_root_smart_home_subtitle">Smarte skjermer og hjemautomatisering</string>
+
+    <!-- Schedule description -->
+    <string name="settings_schedule_description">En ClothesCast om morgenen som dekker dagens vær.</string>
+
+    <!-- API key -->
+    <string name="settings_api_key_replace">Erstatt Gemini-nøkkel</string>
+
+    <!-- Outfit card headers -->
+    <string name="outfit_card_header_today">Dagens ClothesCast</string>
+    <string name="outfit_card_header_tonight">Kveldets ClothesCast</string>
+    <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+
+    <!-- Today screen -->
+    <string name="today_rationale_open_clothes_settings">Klesinnstillinger</string>
+    <string name="today_celebration_card_title">Festtemaer</string>
+    <string name="today_celebration_card_body">Aktiver spesialfarger og meldinger for helligdager og bursdager.</string>
+    <string name="today_celebration_card_cta">Innstillinger for feiringer</string>
+    <string name="today_celebration_card_dismiss">Lukk</string>
+
+    <!-- Holidays settings -->
+    <string name="settings_holidays_source_global">Globalt</string>
+    <string name="settings_holidays_source_location">Sted (%1$s)</string>
+    <string name="settings_holidays_source_region">Region (%1$s)</string>
+    <string name="settings_holidays_source_all">Alle land</string>
+    <string name="settings_holidays_source_calendar_birthdays">Kalenderbursdag</string>
+    <string name="settings_holidays_source_calendar_holidays">Kalenderhelligdager</string>
+    <string name="settings_holidays_link_settings">Innstillinger</string>
+    <string name="settings_holidays_link_calendar_settings_a11y">Kalenderinnstillinger</string>
+    <string name="settings_holidays_link_location_settings_a11y">Stedsinnstillinger</string>
+    <string name="settings_holidays_link_region_settings_a11y">Regioninnstillinger</string>
+    <string name="settings_holidays_permission_revoked">Kalendertillatelse kreves. Trykk for å gi tillatelse på nytt.</string>
+    <string name="settings_holidays_calendar_section_placeholder_off">Aktiver bryteren ovenfor for å tilpasse dagens antrekk basert på oppdagede hendelser fra de synkroniserte kalendrene dine.</string>
+    <string name="settings_holidays_calendar_section_placeholder_on">Oppdagede hendelser fra de synkroniserte kalendrene dine vises her i en fremtidig oppdatering.</string>
+
+    <!-- Holiday name -->
+    <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
+
+    <!-- Home location settings -->
+    <string name="settings_home_location_title">Hjemsted</string>
+    <string name="settings_home_location_description">Brukes av \'Snakk kun når du er borte hjemmefra\' for å avgjøre om telefonen leser opp værvarselet. Lagres på denne enheten.</string>
+    <string name="settings_home_location_unset">Intet hjem angitt</string>
+    <string name="settings_home_location_use_current">Bruk min nåværende posisjon</string>
+    <string name="settings_home_location_search">Søk etter en adresse</string>
+    <string name="settings_home_location_search_caveat">Søket velger et bysenter som kan ligge noen kilometer fra ditt faktiske hjem. Bruk \'Bruk min nåværende posisjon\' når du er hjemme for 1 km-radien.</string>
+    <string name="settings_home_location_change">Endre hjemsted</string>
+    <string name="settings_home_location_clear">Fjern hjemsted</string>
+
+    <!-- Skip TTS at home -->
+    <string name="settings_skip_tts_at_home_title">Snakk kun når du er borte hjemmefra</string>
+    <string name="settings_skip_tts_at_home_label">Snakk kun når du er borte hjemmefra</string>
+    <string name="settings_skip_tts_at_home_description">Når du er hjemme forblir telefonen stille — praktisk hvis en hjemtaler allerede leser opp varselet. Varsler sendes fortsatt.</string>
+    <string name="settings_skip_tts_at_home_needs_home">Angi et hjemsted ovenfor for å aktivere dette. Uten det snakker telefonen alltid.</string>
+    <string name="settings_skip_tts_at_home_needs_permission">Trenger bakgrunnsposisjonstilgang for å vite når du er hjemme. Uten det snakker telefonen alltid.</string>
+    <string name="settings_skip_tts_at_home_open_settings">Gi tillatelse i systeminnstillinger</string>
+
+    <!-- Smart Home — Cast -->
+    <string name="settings_smart_home_cast_title">Cast</string>
+    <string name="settings_smart_home_cast_description">Send planlagte ClothesCasts til en smart skjerm på hjemmenettverket ditt.</string>
+    <string name="settings_smart_home_cast_privacy_note">Lyd og bilde leveres fra telefonen din via det lokale nettverket. De forlater ikke hjemmet ditt.</string>
+    <string name="settings_smart_home_cast_device_label">Smart skjerm</string>
+    <string name="settings_smart_home_cast_device_none">Ingen skjerm valgt</string>
+    <string name="settings_smart_home_cast_choose">Velg smart skjerm</string>
+    <string name="settings_smart_home_cast_change">Endre</string>
+    <string name="settings_smart_home_cast_clear">Fjern</string>
+    <string name="settings_smart_home_cast_now">Cast nå</string>
+    <string name="settings_smart_home_cast_casting">Caster…</string>
+    <string name="settings_smart_home_cast_picker_title">Velg en smart skjerm</string>
+    <string name="settings_smart_home_cast_picker_scanning">Søker etter smarte skjermer på nettverket…</string>
+    <string name="settings_smart_home_cast_picker_empty">Ingen smarte skjermer funnet. Kontroller at skjermen er på og koblet til samme Wi-Fi.</string>
+    <string name="settings_smart_home_cast_picker_cancel">Avbryt</string>
+    <string name="settings_smart_home_cast_last_success">Sist castet %1$s</string>
+    <string name="settings_smart_home_cast_never">Ikke castet ennå</string>
+    <string name="settings_smart_home_cast_last_error_title">Siste casting mislyktes</string>
+    <string name="settings_smart_home_cast_morning_title">Daglig ClothesCast</string>
+    <string name="settings_smart_home_cast_morning_description">Send den daglige ClothesCast til den smarte skjermen når morgenalarmen utløses.</string>
+    <string name="settings_smart_home_cast_tonight_title">Nattlig ClothesCast</string>
+    <string name="settings_smart_home_cast_tonight_description">Send den nattlige ClothesCast til den smarte skjermen når kveldsalarmen utløses.</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Hopp over telefonlyd hvis casting lyktes</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Hvis den smarte skjermen leser opp varselet, forblir telefonen stille. Telefonvarslet sendes fortsatt.</string>
+
+    <!-- Smart Home — Discover -->
+    <string name="settings_smart_home_discover_scan">Finn broker</string>
+    <string name="settings_smart_home_discover_scanning">Søker…</string>
+    <string name="settings_smart_home_discover_stop">Stopp søk</string>
+    <string name="settings_smart_home_discover_empty">Ingen broker funnet. Fortsett å søke eller skriv inn brokerverten manuelt.</string>
+    <string name="settings_smart_home_discover_results">Funnet på nettverket ditt</string>
+    <string name="settings_smart_home_discover_use">Bruk</string>
+    <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
+    <string name="settings_smart_home_discover_label_mqtt">MQTT-broker</string>
+
+    <!-- Smart Home — MQTT -->
+    <string name="settings_smart_home_mqtt_title">Home Assistant-bro (MQTT)</string>
+    <string name="settings_smart_home_mqtt_label">Publiser varsel til MQTT</string>
+    <string name="settings_smart_home_mqtt_description">Etter hver planlagte oppdatering publiserer ClothesCast dagens og kveldets varsel som beholdte meldinger til MQTT-brokeren din, slik at Home Assistant (eller en MQTT-konsument) kan lese siste verdi og lese den opp ved en sensorutløser.</string>
+    <string name="settings_smart_home_mqtt_privacy_note">Når aktivert forlater det gjengitte varselet enheten din via nettverket ditt til den konfigurerte brokeren. Se personvernreglene.</string>
+    <string name="settings_smart_home_mqtt_host">Brokervert</string>
+    <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
+    <string name="settings_smart_home_mqtt_port">Port</string>
+    <string name="settings_smart_home_mqtt_tls">Bruk TLS</string>
+    <string name="settings_smart_home_mqtt_username">Brukernavn (valgfritt)</string>
+    <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
+    <string name="settings_smart_home_mqtt_password">Passord (valgfritt)</string>
+    <string name="settings_smart_home_mqtt_password_status_set">Passord er konfigurert.</string>
+    <string name="settings_smart_home_mqtt_password_replace">Erstatt passord</string>
+    <string name="settings_smart_home_mqtt_password_clear">Fjern lagret passord</string>
+    <string name="settings_smart_home_mqtt_topic">Emneprefix</string>
+    <string name="settings_smart_home_mqtt_topic_hint">I dag publiseres til {prefix}/today/text; i kveld til {prefix}/tonight/text. Bilde og lyd til {prefix}/&lt;period&gt;/image og /audio. Hver publisering speiles til {prefix}/now/&lt;text|image|audio&gt; slik at en konsument kan abonnere på ett \'siste\' emne uten å velge mellom i dag og i kveld.</string>
+    <string name="settings_smart_home_mqtt_save">Lagre</string>
+    <string name="settings_smart_home_mqtt_publish_now">Publiser nå</string>
+    <string name="settings_smart_home_mqtt_publishing">Publiserer…</string>
+    <string name="settings_smart_home_mqtt_last_published">Sist publisert %1$s</string>
+    <string name="settings_smart_home_mqtt_never_published">Ikke publisert ennå</string>
+    <string name="settings_smart_home_mqtt_last_error_title">Siste publisering mislyktes</string>
+    <string name="settings_smart_home_mqtt_setup_guide">Installasjonsveiledning</string>
+    <string name="settings_smart_home_mqtt_open_privacy">Les personverndetaljer</string>
+
+    <!-- Cast errors -->
+    <string name="cast_error_no_route_picked">Velg en smart skjerm først.</string>
+    <string name="cast_error_no_insight_yet">Ingen prognose tilgjengelig ennå. Vent på neste planlagte kjøring eller trykk på Oppdater på I dag-skjermen.</string>
+    <string name="cast_error_unknown">Casting mislyktes.</string>
+
+    <!-- Holiday banners (missing ones) -->
+    <string name="holiday_banner_anzac_day">Vi glemmer aldri</string>
+    <string name="holiday_banner_australia_day">God Australia Day</string>
+    <string name="holiday_banner_austria_national_day">God Østerrikes nasjonaldag</string>
+    <string name="holiday_banner_bastille_day">God Bastiljedagen</string>
+    <string name="holiday_banner_bonfire_night">Remember, remember</string>
+    <string name="holiday_banner_brazil_independence_day">God Brasilias selvstendighetsdag</string>
+    <string name="holiday_banner_burns_night">God Burns Night</string>
+    <string name="holiday_banner_canada_day">God Canada Day</string>
+    <string name="holiday_banner_canadian_thanksgiving">God Thanksgiving</string>
+    <string name="holiday_banner_croatia_independence_day">God Kroatias selvstendighetsdag</string>
+    <string name="holiday_banner_croatia_statehood_day">God Kroatias statsdag</string>
+    <string name="holiday_banner_croatia_victory_day">God Kroatias seierdag</string>
+    <string name="holiday_banner_fathers_day_jun">God Farsdag</string>
+    <string name="holiday_banner_fathers_day_sep">God Farsdag</string>
+    <string name="holiday_banner_fr_armistice_day">Vi glemmer aldri</string>
+    <string name="holiday_banner_german_unity_day">God Tysk enhetsdag</string>
+    <string name="holiday_banner_italy_republic_day">God Italiensk republikkdag</string>
+    <string name="holiday_banner_japan_coming_of_age_day">God Japansk myndighetsdag</string>
+    <string name="holiday_banner_japan_culture_day">God Japansk kulturdag</string>
+    <string name="holiday_banner_japan_greenery_day">God Japansk grønndag</string>
+    <string name="holiday_banner_japan_marine_day">God Japansk havdag</string>
+    <string name="holiday_banner_juneteenth">God Juneteenth</string>
+    <string name="holiday_banner_korean_hangeul_day">God Hangeul-dagen</string>
+    <string name="holiday_banner_korean_independence_movement_day">God Koreansk uavhengighetsdag</string>
+    <string name="holiday_banner_korean_liberation_day">God Koreansk frigjøringsdag</string>
+    <string name="holiday_banner_korean_memorial_day">Vi hedrer Koreas falne</string>
+    <string name="holiday_banner_mlk_day">Vi hedrer dr. King</string>
+    <string name="holiday_banner_remembrance_day">Vi glemmer aldri</string>
+    <string name="holiday_banner_spain_hispanic_day">God Día de la Hispanidad</string>
+    <string name="holiday_banner_st_andrews_day">God Sankta Andreas dag</string>
+    <string name="holiday_banner_st_davids_day">God Sankta Davids dag</string>
+    <string name="holiday_banner_st_georges_day">God Sankta Georgs dag</string>
+    <string name="holiday_banner_uk_bank_holiday">God helligdag</string>
+    <string name="holiday_banner_uk_kings_birthday">God save the King</string>
+    <string name="holiday_banner_uk_mothering_sunday">God Morsdag (UK)</string>
+    <string name="holiday_banner_us_independence_day">God 4. juli</string>
+    <string name="holiday_banner_us_memorial_day">Vi hedrer våre falne</string>
+    <string name="holiday_banner_us_presidents_day">God Presidents\' Day</string>
+    <string name="holiday_banner_us_thanksgiving">God Thanksgiving</string>
+    <string name="holiday_banner_us_veterans_day">Vi hedrer våre veteraner</string>
+    <string name="holiday_banner_waitangi_day">God Waitangi Day</string>
 </resources>

@@ -754,4 +754,173 @@ displayed label localizes.
     <string name="holiday_banner_immaculate_conception">Neitsyt Marian sikiäminen</string>
     <string name="holiday_banner_christmas_day">Hyvää joulua</string>
     <string name="holiday_banner_boxing_day">Hyvää Tapaninpäivää</string>
+
+    <!-- Missing strings: Smart Home, holiday banners, outfit card, settings. -->
+
+    <!-- Settings root navigation -->
+    <string name="settings_root_smart_home">Älykoti</string>
+    <string name="settings_root_smart_home_subtitle">Älykkäät näytöt ja kotiautomaatio</string>
+
+    <!-- Schedule description -->
+    <string name="settings_schedule_description">ClothesCast aamuisin päivän säästä.</string>
+
+    <!-- API key -->
+    <string name="settings_api_key_replace">Vaihda Gemini-avain</string>
+
+    <!-- Outfit card headers -->
+    <string name="outfit_card_header_today">Tämän päivän ClothesCast</string>
+    <string name="outfit_card_header_tonight">Tänä iltana ClothesCast</string>
+    <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+
+    <!-- Today screen -->
+    <string name="today_rationale_open_clothes_settings">Vaateasetukset</string>
+    <string name="today_celebration_card_title">Juhlateemat</string>
+    <string name="today_celebration_card_body">Ota käyttöön erikoisvärit ja -viestit juhlapyhinä ja syntymäpäivinä.</string>
+    <string name="today_celebration_card_cta">Juhla-asetukset</string>
+    <string name="today_celebration_card_dismiss">Sulje</string>
+
+    <!-- Holidays settings -->
+    <string name="settings_holidays_source_global">Maailmanlaajuinen</string>
+    <string name="settings_holidays_source_location">Sijainti (%1$s)</string>
+    <string name="settings_holidays_source_region">Alue (%1$s)</string>
+    <string name="settings_holidays_source_all">Kaikki maat</string>
+    <string name="settings_holidays_source_calendar_birthdays">Kalenterin syntymäpäivät</string>
+    <string name="settings_holidays_source_calendar_holidays">Kalenterin juhlapyhät</string>
+    <string name="settings_holidays_link_settings">Asetukset</string>
+    <string name="settings_holidays_link_calendar_settings_a11y">Kalenterin asetukset</string>
+    <string name="settings_holidays_link_location_settings_a11y">Sijaintiasetukset</string>
+    <string name="settings_holidays_link_region_settings_a11y">Alueasetukset</string>
+    <string name="settings_holidays_permission_revoked">Kalenterilupa vaaditaan. Napauta myöntääksesi luvan uudelleen.</string>
+    <string name="settings_holidays_calendar_section_placeholder_off">Ota yllä oleva kytkin käyttöön mukauttaaksesi päivän asun synkronoitujen kalenterien havaittujen tapahtumien perusteella.</string>
+    <string name="settings_holidays_calendar_section_placeholder_on">Synkronoitujen kalenterien havaitut tapahtumat näkyvät tässä tulevassa päivityksessä.</string>
+
+    <!-- Holiday name -->
+    <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
+
+    <!-- Home location settings -->
+    <string name="settings_home_location_title">Kotiosoite</string>
+    <string name="settings_home_location_description">Käyttää \'Puhu vain kun olet poissa kotoa\' -toiminto selvittääkseen, lukeeko puhelin ennusteen ääneen. Pysyy tällä laitteella.</string>
+    <string name="settings_home_location_unset">Kotia ei ole asetettu</string>
+    <string name="settings_home_location_use_current">Käytä nykyistä sijaintiani</string>
+    <string name="settings_home_location_search">Etsi osoitetta</string>
+    <string name="settings_home_location_search_caveat">Haku valitsee kaupungin keskustan, joka voi olla muutaman kilometrin päässä todellisesta kodistasi. Käytä \'Käytä nykyistä sijaintiani\' kotona ollessasi 1 km:n säteelle.</string>
+    <string name="settings_home_location_change">Vaihda kotiosoite</string>
+    <string name="settings_home_location_clear">Poista kotiosoite</string>
+
+    <!-- Skip TTS at home -->
+    <string name="settings_skip_tts_at_home_title">Puhu vain kun olet poissa kotoa</string>
+    <string name="settings_skip_tts_at_home_label">Puhu vain kun olet poissa kotoa</string>
+    <string name="settings_skip_tts_at_home_description">Kun olet kotona, puhelin pysyy hiljaa — kätevää jos kotikaiutin jo lukee ennusteen ääneen. Ilmoitukset lähetetään silti.</string>
+    <string name="settings_skip_tts_at_home_needs_home">Aseta kotiosoite yllä ottaaksesi tämän käyttöön. Ilman sitä puhelin puhuu aina.</string>
+    <string name="settings_skip_tts_at_home_needs_permission">Tarvitsee taustasijaintipääsyn tietääkseen, milloin olet kotona. Ilman sitä puhelin puhuu aina.</string>
+    <string name="settings_skip_tts_at_home_open_settings">Myönnä järjestelmäasetuksissa</string>
+
+    <!-- Smart Home — Cast -->
+    <string name="settings_smart_home_cast_title">Cast</string>
+    <string name="settings_smart_home_cast_description">Lähetä ajoitetut ClothesCast-ennusteet älykkäälle näytölle kotiverkossasi.</string>
+    <string name="settings_smart_home_cast_privacy_note">Ääni ja kuva lähetetään puhelimestasi paikallisverkon kautta. Ne eivät poistu kotoasi.</string>
+    <string name="settings_smart_home_cast_device_label">Älykäs näyttö</string>
+    <string name="settings_smart_home_cast_device_none">Ei näyttöä valittuna</string>
+    <string name="settings_smart_home_cast_choose">Valitse älykäs näyttö</string>
+    <string name="settings_smart_home_cast_change">Vaihda</string>
+    <string name="settings_smart_home_cast_clear">Tyhjennä</string>
+    <string name="settings_smart_home_cast_now">Cast nyt</string>
+    <string name="settings_smart_home_cast_casting">Lähetetään…</string>
+    <string name="settings_smart_home_cast_picker_title">Valitse älykäs näyttö</string>
+    <string name="settings_smart_home_cast_picker_scanning">Etsitään älykkäitä näyttöjä verkosta…</string>
+    <string name="settings_smart_home_cast_picker_empty">Älykkäitä näyttöjä ei löydy. Varmista, että näyttö on päällä ja yhdistettynä samaan Wi-Fi-verkkoon.</string>
+    <string name="settings_smart_home_cast_picker_cancel">Peruuta</string>
+    <string name="settings_smart_home_cast_last_success">Viimeksi lähetetty %1$s</string>
+    <string name="settings_smart_home_cast_never">Ei vielä lähetetty</string>
+    <string name="settings_smart_home_cast_last_error_title">Viimeisin lähetys epäonnistui</string>
+    <string name="settings_smart_home_cast_morning_title">Päivittäinen ClothesCast</string>
+    <string name="settings_smart_home_cast_morning_description">Lähetä päivittäinen ClothesCast älykkäälle näytölle, kun aamuherätys laukeaa.</string>
+    <string name="settings_smart_home_cast_tonight_title">Iltainen ClothesCast</string>
+    <string name="settings_smart_home_cast_tonight_description">Lähetä iltainen ClothesCast älykkäälle näytölle, kun iltaherätys laukeaa.</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Ohita puhelimen puhe, jos lähetys onnistui</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Jos älykäs näyttö lukee ennusteen ääneen, puhelin pysyy hiljaa. Puhelimen ilmoitus lähetetään silti.</string>
+
+    <!-- Smart Home — Discover -->
+    <string name="settings_smart_home_discover_scan">Etsi broker</string>
+    <string name="settings_smart_home_discover_scanning">Etsitään…</string>
+    <string name="settings_smart_home_discover_stop">Lopeta etsintä</string>
+    <string name="settings_smart_home_discover_empty">Brokeria ei löydy. Jatka etsintää tai syötä brokerin osoite manuaalisesti.</string>
+    <string name="settings_smart_home_discover_results">Löydetty verkostasi</string>
+    <string name="settings_smart_home_discover_use">Käytä</string>
+    <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
+    <string name="settings_smart_home_discover_label_mqtt">MQTT-broker</string>
+
+    <!-- Smart Home — MQTT -->
+    <string name="settings_smart_home_mqtt_title">Home Assistant -silta (MQTT)</string>
+    <string name="settings_smart_home_mqtt_label">Julkaise ennuste MQTT:lle</string>
+    <string name="settings_smart_home_mqtt_description">Jokaisen ajoitetun päivityksen jälkeen ClothesCast julkaisee tämän päivän ja illan ennusteet säilytettyinä viesteinä MQTT-brokerillesi, jotta Home Assistant (tai mikä tahansa MQTT-kuluttaja) voi lukea viimeisimmän arvon ja lukea sen ääneen anturilaukaisimella.</string>
+    <string name="settings_smart_home_mqtt_privacy_note">Kun käytössä, renderöity ennuste poistuu laitteeltasi verkon kautta määritettyyn brokeriin. Katso tietosuojakäytäntö.</string>
+    <string name="settings_smart_home_mqtt_host">Brokerin osoite</string>
+    <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
+    <string name="settings_smart_home_mqtt_port">Portti</string>
+    <string name="settings_smart_home_mqtt_tls">Käytä TLS:ää</string>
+    <string name="settings_smart_home_mqtt_username">Käyttäjänimi (valinnainen)</string>
+    <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
+    <string name="settings_smart_home_mqtt_password">Salasana (valinnainen)</string>
+    <string name="settings_smart_home_mqtt_password_status_set">Salasana on määritetty.</string>
+    <string name="settings_smart_home_mqtt_password_replace">Vaihda salasana</string>
+    <string name="settings_smart_home_mqtt_password_clear">Tyhjennä tallennettu salasana</string>
+    <string name="settings_smart_home_mqtt_topic">Aiheen etuliite</string>
+    <string name="settings_smart_home_mqtt_topic_hint">Tänään julkaistaan {prefix}/today/text; illalla {prefix}/tonight/text. Kuva ja ääni {prefix}/&lt;period&gt;/image ja /audio. Jokainen julkaisu peilataan {prefix}/now/&lt;text|image|audio&gt;, jotta kuluttaja voi tilata yhden \'uusimman\' aiheen valitsematta tänään ja illalla välillä.</string>
+    <string name="settings_smart_home_mqtt_save">Tallenna</string>
+    <string name="settings_smart_home_mqtt_publish_now">Julkaise nyt</string>
+    <string name="settings_smart_home_mqtt_publishing">Julkaistaan…</string>
+    <string name="settings_smart_home_mqtt_last_published">Viimeksi julkaistu %1$s</string>
+    <string name="settings_smart_home_mqtt_never_published">Ei vielä julkaistu</string>
+    <string name="settings_smart_home_mqtt_last_error_title">Viimeisin julkaisu epäonnistui</string>
+    <string name="settings_smart_home_mqtt_setup_guide">Asennusopas</string>
+    <string name="settings_smart_home_mqtt_open_privacy">Lue tietosuojatiedot</string>
+
+    <!-- Cast errors -->
+    <string name="cast_error_no_route_picked">Valitse ensin älykäs näyttö.</string>
+    <string name="cast_error_no_insight_yet">Ennustetta ei ole vielä saatavilla. Odota seuraavaa ajoitettua ajoa tai napauta Päivitä Tänään-näytöllä.</string>
+    <string name="cast_error_unknown">Lähetys epäonnistui.</string>
+
+    <!-- Holiday banners (missing ones) -->
+    <string name="holiday_banner_anzac_day">Emme unohda</string>
+    <string name="holiday_banner_australia_day">Hyvää Australia Day -päivää</string>
+    <string name="holiday_banner_austria_national_day">Hyvää Itävallan kansallispäivää</string>
+    <string name="holiday_banner_bastille_day">Hyvää Bastiljenpäivää</string>
+    <string name="holiday_banner_bonfire_night">Remember, remember</string>
+    <string name="holiday_banner_brazil_independence_day">Hyvää Brasilian itsenäisyyspäivää</string>
+    <string name="holiday_banner_burns_night">Hyvää Burns Night -iltaa</string>
+    <string name="holiday_banner_canada_day">Hyvää Kanadan päivää</string>
+    <string name="holiday_banner_canadian_thanksgiving">Hyvää Thanksgiving-päivää</string>
+    <string name="holiday_banner_croatia_independence_day">Hyvää Kroatian itsenäisyyspäivää</string>
+    <string name="holiday_banner_croatia_statehood_day">Hyvää Kroatian valtiopäivää</string>
+    <string name="holiday_banner_croatia_victory_day">Hyvää Kroatian voitonpäivää</string>
+    <string name="holiday_banner_fathers_day_jun">Hyvää isänpäivää</string>
+    <string name="holiday_banner_fathers_day_sep">Hyvää isänpäivää</string>
+    <string name="holiday_banner_fr_armistice_day">Emme unohda</string>
+    <string name="holiday_banner_german_unity_day">Hyvää Saksan yhtenäisyyspäivää</string>
+    <string name="holiday_banner_italy_republic_day">Hyvää Italian tasavaltapäivää</string>
+    <string name="holiday_banner_japan_coming_of_age_day">Hyvää japanilaista täysi-ikäisyyspäivää</string>
+    <string name="holiday_banner_japan_culture_day">Hyvää japanilaista kulttuuripäivää</string>
+    <string name="holiday_banner_japan_greenery_day">Hyvää japanilaista vihreyttä</string>
+    <string name="holiday_banner_japan_marine_day">Hyvää japanilaista meripäivää</string>
+    <string name="holiday_banner_juneteenth">Hyvää Juneteenthia</string>
+    <string name="holiday_banner_korean_hangeul_day">Hyvää Hangeul-päivää</string>
+    <string name="holiday_banner_korean_independence_movement_day">Hyvää Korean itsenäisyysliikepäivää</string>
+    <string name="holiday_banner_korean_liberation_day">Hyvää Korean vapautuspäivää</string>
+    <string name="holiday_banner_korean_memorial_day">Kunnioitamme Korean kaatuneita</string>
+    <string name="holiday_banner_mlk_day">Kunnioitamme tohtori Kingiä</string>
+    <string name="holiday_banner_remembrance_day">Emme unohda</string>
+    <string name="holiday_banner_spain_hispanic_day">Hyvää Día de la Hispanidad -päivää</string>
+    <string name="holiday_banner_st_andrews_day">Hyvää Pyhän Andreaksen päivää</string>
+    <string name="holiday_banner_st_davids_day">Hyvää Pyhän Daavidin päivää</string>
+    <string name="holiday_banner_st_georges_day">Hyvää Pyhän Yrjön päivää</string>
+    <string name="holiday_banner_uk_bank_holiday">Hyvää vapaapäivää</string>
+    <string name="holiday_banner_uk_kings_birthday">God save the King</string>
+    <string name="holiday_banner_uk_mothering_sunday">Hyvää äitienpäivää (UK)</string>
+    <string name="holiday_banner_us_independence_day">Hyvää 4. heinäkuuta</string>
+    <string name="holiday_banner_us_memorial_day">Kunnioitamme kaatuneita</string>
+    <string name="holiday_banner_us_presidents_day">Hyvää Presidents\' Day -päivää</string>
+    <string name="holiday_banner_us_thanksgiving">Hyvää Thanksgiving-päivää</string>
+    <string name="holiday_banner_us_veterans_day">Kunnioitamme veteraanejamme</string>
+    <string name="holiday_banner_waitangi_day">Hyvää Waitangi-päivää</string>
 </resources>

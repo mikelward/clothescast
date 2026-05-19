@@ -18,85 +18,63 @@ class CastMediaServerTest {
     }
 
     @Test
-    fun `serves the published WAV at the audio path`() {
-        val wav = byteArrayOf(0x52, 0x49, 0x46, 0x46, 1, 2, 3, 4)
-        val urls = server.publish(host = "127.0.0.1", audio = wav, image = ByteArray(0))
+    fun `serves the published MP4 at the video path`() {
+        // First eight bytes of an MP4: an `ftyp` box header. Magic is
+        // arbitrary here — we just need bytes to round-trip.
+        val mp4 = byteArrayOf(0, 0, 0, 0x18, 0x66, 0x74, 0x79, 0x70)
+        val urls = server.publish(host = "127.0.0.1", video = mp4)
 
-        val resp = fetch(urls.audio)
+        val resp = fetch(urls.video)
         resp.status shouldBe 200
-        resp.contentType shouldBe "audio/wav"
-        resp.body shouldBe wav
+        resp.contentType shouldBe "video/mp4"
+        resp.body shouldBe mp4
     }
 
     @Test
-    fun `serves the published PNG at the image path`() {
-        val png = byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A)
-        val urls = server.publish(host = "127.0.0.1", audio = ByteArray(0), image = png)
-
-        val resp = fetch(urls.image)
-        resp.status shouldBe 200
-        resp.contentType shouldBe "image/png"
-        resp.body shouldBe png
-    }
-
-    @Test
-    fun `URLs carry a 32 hex character path token`() {
-        val urls = server.publish(host = "127.0.0.1", audio = ByteArray(0), image = ByteArray(0))
-        // http://127.0.0.1:<port>/<32 hex>/insight.wav
-        urls.audio shouldMatch Regex("""http://127\.0\.0\.1:\d+/[0-9a-f]{32}/insight\.wav""")
-        urls.image shouldMatch Regex("""http://127\.0\.0\.1:\d+/[0-9a-f]{32}/outfit\.png""")
+    fun `URL carries a 32 hex character path token`() {
+        val urls = server.publish(host = "127.0.0.1", video = ByteArray(0))
+        // http://127.0.0.1:<port>/<32 hex>/insight.mp4
+        urls.video shouldMatch Regex("""http://127\.0\.0\.1:\d+/[0-9a-f]{32}/insight\.mp4""")
     }
 
     @Test
     fun `republish rotates the path token and old URLs stop serving`() {
-        val first = server.publish(
-            host = "127.0.0.1",
-            audio = "first-audio".toByteArray(),
-            image = "first-image".toByteArray(),
-        )
-        val second = server.publish(
-            host = "127.0.0.1",
-            audio = "second-audio".toByteArray(),
-            image = "second-image".toByteArray(),
-        )
+        val first = server.publish(host = "127.0.0.1", video = "first".toByteArray())
+        val second = server.publish(host = "127.0.0.1", video = "second".toByteArray())
 
-        second.audio shouldNotBe first.audio
-        second.image shouldNotBe first.image
+        second.video shouldNotBe first.video
 
-        // Old URLs 404 — the previous publish's token no longer matches.
-        fetch(first.audio).status shouldBe 404
-        fetch(first.image).status shouldBe 404
+        // Old URL 404s — the previous publish's token no longer matches.
+        fetch(first.video).status shouldBe 404
 
-        // New URLs serve the new buffers on the same port.
-        fetch(second.audio).body shouldBe "second-audio".toByteArray()
-        fetch(second.image).body shouldBe "second-image".toByteArray()
-        URL(second.audio).port shouldBe URL(first.audio).port
+        // New URL serves the new buffer on the same port.
+        fetch(second.video).body shouldBe "second".toByteArray()
+        URL(second.video).port shouldBe URL(first.video).port
     }
 
     @Test
     fun `requests with a wrong token return 404`() {
-        val wav = byteArrayOf(1, 2, 3, 4)
-        val urls = server.publish(host = "127.0.0.1", audio = wav, image = byteArrayOf(5, 6))
-        val origin = URL(urls.audio).let { "http://${it.host}:${it.port}" }
+        val mp4 = byteArrayOf(1, 2, 3, 4)
+        val urls = server.publish(host = "127.0.0.1", video = mp4)
+        val origin = URL(urls.video).let { "http://${it.host}:${it.port}" }
 
-        fetch("$origin/deadbeefdeadbeefdeadbeefdeadbeef/insight.wav").status shouldBe 404
-        fetch("$origin/deadbeefdeadbeefdeadbeefdeadbeef/outfit.png").status shouldBe 404
+        fetch("$origin/deadbeefdeadbeefdeadbeefdeadbeef/insight.mp4").status shouldBe 404
     }
 
     @Test
     fun `unknown paths return 404`() {
-        val urls = server.publish(host = "127.0.0.1", audio = ByteArray(0), image = ByteArray(0))
-        val origin = URL(urls.audio).let { "http://${it.host}:${it.port}" }
+        val urls = server.publish(host = "127.0.0.1", video = ByteArray(0))
+        val origin = URL(urls.video).let { "http://${it.host}:${it.port}" }
 
         fetch("$origin/nope").status shouldBe 404
     }
 
     @Test
     fun `stop releases the port`() {
-        val urls = server.publish(host = "127.0.0.1", audio = ByteArray(0), image = ByteArray(0))
+        val urls = server.publish(host = "127.0.0.1", video = ByteArray(0))
         val port = server.port()
         (port > 0) shouldBe true
-        URL(urls.audio).port shouldBe port
+        URL(urls.video).port shouldBe port
 
         server.stop()
         server.port() shouldBe 0

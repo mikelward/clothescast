@@ -804,7 +804,7 @@ only the displayed label localizes.
     <string name="settings_smart_home_cast_tonight_title">Вечірній ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Надсилати вечірній ClothesCast на розумний дисплей при спрацьовуванні вечірнього будильника.</string>
     <string name="settings_smart_home_cast_skip_phone_speech_title">Вимкнути звук телефону при успішній трансляції</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Якщо розумний дисплей зачитає прогноз вголос, телефон залишається беззвучним. Сповіщення на телефоні все одно з'являється.</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Якщо розумний дисплей зачитає прогноз вголос, телефон залишається беззвучним. Сповіщення на телефоні все одно з\'являється.</string>
     <string name="cast_error_no_route_picked">Спочатку виберіть розумний дисплей.</string>
     <string name="cast_error_no_insight_yet">Прогноз ще недоступний. Зачекайте наступного запланованого оновлення або натисніть «Оновити» на екрані «Сьогодні».</string>
     <string name="cast_error_unknown">Трансляція не вдалася.</string>
@@ -816,9 +816,9 @@ only the displayed label localizes.
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Порт</string>
     <string name="settings_smart_home_mqtt_tls">Використовувати TLS</string>
-    <string name="settings_smart_home_mqtt_username">Ім'я користувача (необов'язково)</string>
+    <string name="settings_smart_home_mqtt_username">Ім\'я користувача (необов\'язково)</string>
     <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
-    <string name="settings_smart_home_mqtt_password">Пароль (необов'язково)</string>
+    <string name="settings_smart_home_mqtt_password">Пароль (необов\'язково)</string>
     <string name="settings_smart_home_mqtt_password_status_set">Пароль налаштовано.</string>
     <string name="settings_smart_home_mqtt_password_replace">Замінити пароль</string>
     <string name="settings_smart_home_mqtt_password_clear">Очистити збережений пароль</string>
@@ -867,7 +867,7 @@ only the displayed label localizes.
     <string name="settings_holidays_link_location_settings_a11y">Налаштування місцезнаходження</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Налаштування календаря</string>
     <string name="settings_holidays_calendar_section_placeholder_off">Увімкніть перемикач вище, щоб тематизувати сьогоднішній образ відповідно до подій із синхронізованих календарів.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Виявлені події з ваших синхронізованих календарів з'являться тут у майбутньому оновленні.</string>
+    <string name="settings_holidays_calendar_section_placeholder_on">Виявлені події з ваших синхронізованих календарів з\'являться тут у майбутньому оновленні.</string>
     <string name="settings_holidays_permission_revoked">Потрібен дозвіл на доступ до календаря. Натисніть, щоб надати знову.</string>
     <string name="holiday_name_us_presidents_day">День президентів</string>
     <string name="holiday_banner_japan_coming_of_age_day">З японським Днем повноліття</string>
@@ -880,7 +880,7 @@ only the displayed label localizes.
     <string name="holiday_banner_korean_independence_movement_day">З Днем руху за незалежність Кореї</string>
     <string name="holiday_banner_uk_mothering_sunday">З Днем матері</string>
     <string name="holiday_banner_st_georges_day">З Днем святого Георгія</string>
-    <string name="holiday_banner_anzac_day">Пам'ятаємо</string>
+    <string name="holiday_banner_anzac_day">Пам\'ятаємо</string>
     <string name="holiday_banner_uk_bank_holiday">З банківським святом</string>
     <string name="holiday_banner_uk_kings_birthday">Боже, бережи Короля</string>
     <string name="holiday_banner_japan_greenery_day">З японським Днем зелені</string>
@@ -905,10 +905,10 @@ only the displayed label localizes.
     <string name="holiday_banner_spain_hispanic_day">З Днем Іспанщини</string>
     <string name="holiday_banner_austria_national_day">З Національним днем Австрії</string>
     <string name="holiday_banner_japan_culture_day">З японським Днем культури</string>
-    <string name="holiday_banner_bonfire_night">Пам'ятай, пам'ятай</string>
-    <string name="holiday_banner_remembrance_day">Пам'ятаємо</string>
+    <string name="holiday_banner_bonfire_night">Пам\'ятай, пам\'ятай</string>
+    <string name="holiday_banner_remembrance_day">Пам\'ятаємо</string>
     <string name="holiday_banner_us_veterans_day">Вшановуємо ветеранів</string>
-    <string name="holiday_banner_fr_armistice_day">Пам'ятаємо</string>
+    <string name="holiday_banner_fr_armistice_day">Пам\'ятаємо</string>
     <string name="holiday_banner_us_thanksgiving">З Днем подяки</string>
     <string name="holiday_banner_st_andrews_day">З Днем святого Андрія</string>
 </resources>

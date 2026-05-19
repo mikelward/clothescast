@@ -730,7 +730,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_root_smart_home">Nutikodu</string>
     <string name="settings_root_smart_home_subtitle">Nutiekraanid ja koduautomaatika</string>
     <string name="settings_smart_home_cast_title">Ülekanne</string>
-    <string name="settings_smart_home_cast_description">Saada ajastatud ClothesCast'id oma koduvõrgu nutikas ekraanile.</string>
+    <string name="settings_smart_home_cast_description">Saada ajastatud ClothesCast\'id oma koduvõrgu nutikas ekraanile.</string>
     <string name="settings_smart_home_cast_privacy_note">Heli ja pilt edastatakse teie telefonist kohaliku võrgu kaudu. Need ei lahku teie kodust.</string>
     <string name="settings_smart_home_cast_device_label">Nutikas ekraan</string>
     <string name="settings_smart_home_cast_device_none">Ekraani pole valitud</string>
@@ -835,11 +835,11 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="holiday_banner_us_memorial_day">Austame langenuid</string>
     <string name="holiday_banner_italy_republic_day">Head Itaalia vabariigipäeva</string>
     <string name="holiday_banner_korean_memorial_day">Austame Korea langenuid</string>
-    <string name="holiday_banner_juneteenth">Head Juneteenth'i</string>
+    <string name="holiday_banner_juneteenth">Head Juneteenth\'i</string>
     <string name="holiday_banner_fathers_day_jun">Head isadepäeva</string>
     <string name="holiday_banner_canada_day">Head Kanada päeva</string>
     <string name="holiday_banner_us_independence_day">Head 4. juulit</string>
-    <string name="holiday_banner_bastille_day">Head Bastille'i päeva</string>
+    <string name="holiday_banner_bastille_day">Head Bastille\'i päeva</string>
     <string name="holiday_banner_japan_marine_day">Head Jaapani merepäeva</string>
     <string name="holiday_banner_croatia_victory_day">Head Horvaatia võidupäeva</string>
     <string name="holiday_banner_korean_liberation_day">Head Korea vabanemispäeva</string>

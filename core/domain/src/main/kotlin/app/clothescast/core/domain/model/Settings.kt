@@ -610,9 +610,11 @@ data class UserPreferences(
      * inline privacy note that links to PRIVACY.md.
      *
      * Topics are derived from [mqttTopic] as the prefix + the lowercased
-     * [ForecastPeriod] name (e.g. `clothescast/insight/today` and
-     * `clothescast/insight/tonight`), so morning and evening insights are
-     * separately addressable from HA automations.
+     * [ForecastPeriod] name + a payload-kind suffix (`text`, `image`,
+     * `audio`), so morning and evening insights are separately addressable
+     * from HA automations and each modality lives on its own retained
+     * topic — e.g. `clothescast/default/today/text`,
+     * `clothescast/default/today/image`, `clothescast/default/today/audio`.
      */
     val mqttBridgeEnabled: Boolean = false,
     val mqttHost: String? = null,
@@ -642,7 +644,7 @@ data class UserPreferences(
         const val DEFAULT_GEMINI_VOICE = "Despina"
         const val DEFAULT_MQTT_PORT = 1883
         const val DEFAULT_MQTT_TLS_PORT = 8883
-        const val DEFAULT_MQTT_TOPIC = "clothescast/insight"
+        const val DEFAULT_MQTT_TOPIC = "clothescast/default"
     }
 }
 

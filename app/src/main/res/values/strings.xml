@@ -363,7 +363,7 @@
     <string name="settings_root_calendar">Calendar</string>
     <string name="settings_root_holidays">Celebrations</string>
     <string name="settings_root_forecasters">Forecasters</string>
-    <string name="settings_root_smart_home">Smart Displays and Home Automation</string>
+    <string name="settings_root_smart_home">Smart Home</string>
     <string name="settings_root_privacy">Privacy</string>
     <string name="settings_root_about">About</string>
 
@@ -398,7 +398,7 @@
     <string name="settings_root_calendar_subtitle">Today\'s events</string>
     <string name="settings_root_holidays_subtitle">Holidays and Birthdays</string>
     <string name="settings_root_forecasters_subtitle">Weather Sources and Models</string>
-    <string name="settings_root_smart_home_subtitle">Cast to smart displays, Home Assistant, MQTT</string>
+    <string name="settings_root_smart_home_subtitle">Smart Displays and Home Automation</string>
     <string name="settings_root_privacy_subtitle">Crash + usage reports</string>
 
     <!-- Forecasters sub-page: lets the user pick which numerical weather

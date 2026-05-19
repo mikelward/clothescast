@@ -24,6 +24,7 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.calendar.resolveHolidayTheme
+import app.clothescast.cast.CastInsightController
 import app.clothescast.core.domain.usecase.computeDeliveryGates
 import app.clothescast.core.domain.usecase.isGeminiEngineSelected
 import app.clothescast.core.domain.usecase.isMqttPublishable
@@ -644,6 +645,16 @@ class FetchAndNotifyWorker(
 
             val notifyJob = launch { postPeriodNotification(insight, prefs, prose, topColors, topStrokes, gates) }
 
+            // Cast load — runs in parallel with notification + MQTT.
+            // The phone speaker awaits this when castWillHaveAudio so
+            // `castSkipPhoneSpeech` can actually suppress double audio;
+            // when willCast is false or the cast has no real audio
+            // (image-only fallback), phone speech fires immediately.
+            val castDeferred: Deferred<CastInsightController.CastWorkerOutcome>? =
+                if (gates.willCast && !gates.emptyEveningSkip) async {
+                    castDestination(insight, prefs, wav = wav, png = png)
+                } else null
+
             // Prose-publish outcome drives the Smart Home settings
             // status row; the await + persistence runs after the
             // sibling jobs join so the call doesn't block them.
@@ -675,13 +686,19 @@ class FetchAndNotifyWorker(
                     }
             }
 
-            val phoneSpeakerJob = launch { playPhoneSpeaker(insight, prefs, gates, pcm) }
+            val phoneSpeakerJob = launch {
+                playPhoneSpeaker(insight, prefs, gates, pcm, wav = wav, castDeferred = castDeferred)
+            }
 
             notifyJob.join()
             mqttImageJob.join()
             mqttAudioJob.join()
             phoneSpeakerJob.join()
             val mqttOutcome = mqttProseDeferred.await()
+            val castOutcome = castDeferred?.await()
+            if (gates.willCast) {
+                runCatching { app.settingsRepository.setCastLastError(castOutcomeToError(castOutcome)) }
+            }
 
             // Status persistence is best-effort: a DataStore I/O
             // failure here must not surface as a deliver() exception,
@@ -774,6 +791,61 @@ class FetchAndNotifyWorker(
             .getOrNull()
     }
 
+    /**
+     * Hands the pre-rendered media to [CastInsightController] for
+     * the smart display load. The cast destination follows the same
+     * "fire-and-forget but capture outcome" pattern as MQTT: the
+     * controller swallows all failures into [CastWorkerOutcome], so
+     * a route-not-found or load-rejected case doesn't cancel sibling
+     * destinations.
+     *
+     * When the synth buffer is null (Gemini unavailable or synth
+     * failed pre-alignment), feeds [CastInsightController.silentWavStub]
+     * as the loading carrier — the receiver still shows the outfit
+     * PNG, just without speaking. SPEC.md's image-only fallback.
+     */
+    private suspend fun castDestination(
+        insight: Insight,
+        prefs: UserPreferences,
+        wav: ByteArray?,
+        png: ByteArray?,
+    ): CastInsightController.CastWorkerOutcome {
+        val controller = app.castInsightController
+            ?: return CastInsightController.CastWorkerOutcome.Failed("Cast unavailable on this device")
+        val routeId = prefs.castRouteId
+            ?: return CastInsightController.CastWorkerOutcome.Failed("No smart display picked")
+        val pngBytes = png
+            ?: return CastInsightController.CastWorkerOutcome.Failed("Outfit render unavailable")
+        // Silent stub keeps Default Media Receiver happy on the
+        // image-only path — receiver won't load with no audio media.
+        val wavBytes = wav ?: CastInsightController.silentWavStub
+        return controller.castWithPreparedMedia(
+            routeId = routeId,
+            wav = wavBytes,
+            hasRealAudio = wav != null,
+            png = pngBytes,
+            title = applicationContext.getString(R.string.app_name),
+            subtitle = insight.location?.displayName,
+        )
+    }
+
+    /**
+     * Maps a cast outcome onto the user-facing string that lands in
+     * the Settings → Smart Home → Cast status row.
+     *
+     * Null result means "record a success": [SettingsRepository.setCastLastError]
+     * stamps the last-success timestamp and clears any prior error
+     * message. Non-null is a short, ready-to-display reason string.
+     */
+    private fun castOutcomeToError(outcome: CastInsightController.CastWorkerOutcome?): String? =
+        when (outcome) {
+            null -> "Cast unavailable on this device"
+            is CastInsightController.CastWorkerOutcome.Success -> null
+            is CastInsightController.CastWorkerOutcome.SkippedNoRoute ->
+                "Smart display not reachable"
+            is CastInsightController.CastWorkerOutcome.Failed -> outcome.reason
+        }
+
     private fun postPeriodNotification(
         insight: Insight,
         prefs: UserPreferences,
@@ -811,12 +883,23 @@ class FetchAndNotifyWorker(
      * which synths + plays in one call. The audio focus block wraps
      * only the playback — the synth ran pre-alignment, outside any
      * focus claim.
+     *
+     * When the cast destination is carrying real audio (defined as
+     * `gates.willCast && wav != null` — willCast may be true with no
+     * buffer if the synth track failed), the speaker awaits the cast
+     * outcome before deciding whether to play: a successful
+     * audio-carrying cast + `castSkipPhoneSpeech` suppresses the
+     * phone speaker (the smart display is the speaker for this run).
+     * Image-only casts don't suppress phone speech — the display
+     * isn't doing the audio.
      */
     private suspend fun playPhoneSpeaker(
         insight: Insight,
         prefs: UserPreferences,
         gates: app.clothescast.core.domain.usecase.DeliveryGates,
         pcm: PcmAudio?,
+        wav: ByteArray?,
+        castDeferred: Deferred<CastInsightController.CastWorkerOutcome>?,
     ) {
         if (gates.emptyEveningSkip) {
             DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping TTS.")
@@ -824,6 +907,21 @@ class FetchAndNotifyWorker(
         }
         if (!gates.phoneTtsConfigured) return
         if (!shouldSpeakNow(prefs)) return
+
+        // Cast suppression: only when this cast is genuinely playing
+        // audio (willCast AND a synth buffer exists). An image-only
+        // cast (Gemini unavailable / synth failed → silent WAV stub)
+        // doesn't trigger suppression — the smart display isn't the
+        // speaker in that path.
+        val castHasAudio = gates.willCast && wav != null
+        if (castHasAudio && castDeferred != null && prefs.castSkipPhoneSpeech) {
+            val castOutcome = castDeferred.await()
+            if (castOutcome is CastInsightController.CastWorkerOutcome.Success) {
+                DiagLog.i(TAG, "Phone speech suppressed — smart display is playing the forecast.")
+                return
+            }
+        }
+
         val utterance = ttsUtterance(insight, prefs)
         withSpeechAudioFocus(applicationContext) {
             if (prefs.ttsEngine == TtsEngine.GEMINI && pcm != null) {

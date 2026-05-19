@@ -275,6 +275,9 @@ fun SettingsScreen(
                 castLastError = state.castLastError,
                 castLastErrorAt = state.castLastErrorAt,
                 castLastSuccessAt = state.castLastSuccessAt,
+                castMorning = state.castMorning,
+                castTonight = state.castTonight,
+                castSkipPhoneSpeech = state.castSkipPhoneSpeech,
                 padding = padding,
                 onSetBridgeEnabled = viewModel::setMqttBridgeEnabled,
                 onSaveConfig = viewModel::setMqttConfig,
@@ -288,6 +291,9 @@ fun SettingsScreen(
                 onPickCastRoute = viewModel::pickCastRoute,
                 onClearCastRoute = viewModel::clearCastRoute,
                 onCastNow = viewModel::castNow,
+                onSetCastMorning = viewModel::setCastMorning,
+                onSetCastTonight = viewModel::setCastTonight,
+                onSetCastSkipPhoneSpeech = viewModel::setCastSkipPhoneSpeech,
             )
             SettingsRoute.Privacy -> PrivacyContent(
                 telemetryEnabled = state.telemetryEnabled,

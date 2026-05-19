@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.mediarouter.media.MediaRouteSelector
 import androidx.mediarouter.media.MediaRouter
 import app.clothescast.core.data.tts.GeminiTtsClient
+import app.clothescast.core.data.tts.PcmAudio
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.diag.DiagLog
 import com.google.android.gms.cast.CastMediaControlIntent
@@ -194,6 +195,103 @@ class CastInsightController(
         )
     }
 
+    /**
+     * Outcome of the worker-driven cast attempt. Distinct from the
+     * Settings "Cast now" path's typed exceptions because the worker
+     * never throws on cast failure — the notification and MQTT
+     * publishes have already fired by the time we get here, and the
+     * spec is explicit that no destination's failure cancels another.
+     */
+    sealed interface CastWorkerOutcome {
+        /** `RemoteMediaClient.load` accepted the media. */
+        data object Success : CastWorkerOutcome
+
+        /**
+         * Route id no longer resolves on the LAN — display fully off,
+         * mDNS lapsed, or the user replaced the saved id with one
+         * that's no longer discoverable. Surfaces as a "Smart display
+         * not reachable" status row in Settings.
+         */
+        data object SkippedNoRoute : CastWorkerOutcome
+
+        /**
+         * Any other failure (no LAN IPv4 on the phone, session start
+         * rejected, receiver refused the load, etc.). [reason] is a
+         * short user-facing string — pre-formatted, ready to drop
+         * into `castLastError`.
+         */
+        data class Failed(val reason: String) : CastWorkerOutcome
+    }
+
+    /**
+     * Worker entrypoint. Same select-route-and-load flow as
+     * [castToSavedRoute], but accepts pre-rendered media so the
+     * worker can synthesise and render pre-alignment and load the
+     * exact same buffers it fed to MQTT.
+     *
+     * @param wav WAV-wrapped audio. Pass [silentWavStub] when no real
+     *   audio is available (Gemini unavailable or synth failed) —
+     *   Default Media Receiver requires some media to load, so the
+     *   silent stub is the image-only path's loading carrier.
+     *   Nothing audible plays on the receiver in that case.
+     * @param hasRealAudio false on the image-only path, true when
+     *   [wav] carries the synth result. The worker reads this to
+     *   decide whether [castSkipPhoneSpeech] applies (image-only
+     *   casts don't suppress phone speech because the display isn't
+     *   doing the audio).
+     *
+     * TODO(cast-edge-cases): handle the cases where casting would
+     *  be disruptive — destination is a TV in standby on a different
+     *  HDMI input (CEC could force the TV on / switch input), or
+     *  another app currently holds an active Cast session on the
+     *  route. SPEC.md's original "Power on smart display" and
+     *  "Interrupt if already playing" toggles were dropped pending a
+     *  signal that reliably distinguishes "Nest Hub idling on
+     *  ambient" (no active session, screen on, casting welcome)
+     *  from "TV in standby" (no active session, screen off, casting
+     *  disruptive). For now we always attempt the cast when a route
+     *  is picked and the period toggle is on; users who don't want
+     *  disruption can clear the picked display in Settings.
+     */
+    suspend fun castWithPreparedMedia(
+        routeId: String,
+        wav: ByteArray,
+        @Suppress("UNUSED_PARAMETER") hasRealAudio: Boolean,
+        png: ByteArray,
+        title: String,
+        subtitle: String?,
+        discoveryTimeoutMs: Long = 5_000,
+        sessionTimeoutMs: Long = 10_000,
+    ): CastWorkerOutcome {
+        return try {
+            val route = findRoute(routeId, discoveryTimeoutMs)
+                ?: return CastWorkerOutcome.SkippedNoRoute
+            val session = ensureSession(route, sessionTimeoutMs)
+            val client = session.remoteMediaClient
+                ?: return CastWorkerOutcome.Failed(CastFailure.NoRemoteMediaClient.message ?: "No media client")
+            val host = resolveLanIp(context)
+                ?: return CastWorkerOutcome.Failed(CastFailure.NoLanAddress.message ?: "No LAN IP")
+            val urls = server.publish(host = host, audio = wav, image = png)
+            client.load(
+                MediaLoadRequestData.Builder()
+                    .setMediaInfo(buildMediaInfo(urls, title, subtitle))
+                    .build(),
+            )
+            CastWorkerOutcome.Success
+        } catch (ce: kotlinx.coroutines.CancellationException) {
+            // CancellationException must propagate so WorkManager
+            // stops unwind cleanly — same convention as
+            // MqttPublisher.preparePublish.
+            throw ce
+        } catch (failure: CastFailure) {
+            DiagLog.w(TAG, "Cast load failed: ${failure.message}", failure)
+            CastWorkerOutcome.Failed(failure.message ?: "Cast failed")
+        } catch (t: Throwable) {
+            DiagLog.w(TAG, "Cast load failed unexpectedly", t)
+            CastWorkerOutcome.Failed(t.message ?: "Cast failed")
+        }
+    }
+
     private suspend fun findRoute(
         routeId: String,
         timeoutMs: Long,
@@ -295,6 +393,21 @@ class CastInsightController(
 
     companion object {
         private const val TAG = "CastInsightController"
+
+        /**
+         * 24 kHz mono 16-bit PCM, half a second of zeros, wrapped in
+         * a standard RIFF/WAVE header. Default Media Receiver requires
+         * some media to load, so the image-only cast path (Gemini
+         * unavailable, or synth failed) attaches this as a loading
+         * carrier — nothing audible plays on the receiver. Cached
+         * after first computation; the bytes are immutable.
+         */
+        val silentWavStub: ByteArray by lazy {
+            val sampleRate = 24_000
+            val sampleCount = sampleRate / 2 // 0.5 s of silence
+            val pcm = ByteArray(sampleCount * 2) // 16-bit
+            WavEncoder.encode(PcmAudio(bytes = pcm, sampleRate = sampleRate))
+        }
 
         internal fun buildMediaInfo(
             urls: CastMediaServer.MediaUrls,

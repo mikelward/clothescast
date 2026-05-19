@@ -471,6 +471,12 @@
     <string name="settings_smart_home_cast_last_success">Last cast %1$s</string>
     <string name="settings_smart_home_cast_never">Not cast yet</string>
     <string name="settings_smart_home_cast_last_error_title">Last cast failed</string>
+    <string name="settings_smart_home_cast_morning_title">Cast morning forecast</string>
+    <string name="settings_smart_home_cast_morning_description">Send today\'s forecast to the smart display when the morning alarm fires.</string>
+    <string name="settings_smart_home_cast_tonight_title">Cast tonight forecast</string>
+    <string name="settings_smart_home_cast_tonight_description">Send the evening forecast to the smart display when the tonight alarm fires.</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Skip phone speech when smart display plays</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">If the smart display reads the forecast aloud, the phone stays silent. The phone notification still posts.</string>
     <string name="cast_error_no_route_picked">Pick a smart display first.</string>
     <string name="cast_error_no_insight_yet">No forecast available yet. Wait for the next scheduled run, or tap Refresh on the Today screen.</string>
     <string name="cast_error_unknown">Cast failed.</string>

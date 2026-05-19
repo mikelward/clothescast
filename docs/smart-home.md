@@ -34,6 +34,31 @@ yourself; no developer-operated service ever sees the payload.
    publishes to `<prefix>/today/text`; tonight's to `<prefix>/tonight/text`.
    The outfit image and TTS audio (when published) land on
    `<prefix>/<period>/image` and `<prefix>/<period>/audio` respectively.
+   Each fully-successful publish is also mirrored to `<prefix>/now/<kind>` —
+   `<prefix>/now/text`, `<prefix>/now/image`, `<prefix>/now/audio` —
+   so a consumer can subscribe to a single "latest" topic without
+   having to switch on today vs tonight or chase recency timestamps.
+   Whichever period most recently published is what `now` reflects.
+   The `now` set updates as an atomic bundle: `now/text` is published
+   *last* (after `now/image` / `now/audio`), so an HA automation
+   triggered on `now/text` reads a `now/image` / `now/audio` from the
+   same forecast rather than a stale payload from the previous period.
+   Modalities absent from the current delivery (e.g. an outfit render
+   failed, or you're on device TTS so no audio bytes exist) clear their
+   `now/*` slot with an empty retained payload — MQTT's convention for
+   "delete the retained message" — so a `now/text` consumer never reads
+   a stale image/audio left over from a previous bundle. `now/text` is
+   additionally held back if either `now/image` or `now/audio` mirror
+   publish fails, so a `now/text` update always implies a coherent
+   image/audio pair settled successfully. If any period publish in the
+   bundle fails outright, the entire `now` mirror is skipped — the
+   previous fully-successful `now` set stays intact rather than being
+   half-overwritten. MQTT itself has no transactional primitive across
+   topics, so a fresh-reconnect consumer reading all three retained
+   `now/*` topics during a partial-failure window (e.g. broker accepts
+   `now/image` but rejects `now/audio`) may briefly observe a mismatch;
+   subscribing continuously to `now/text` and gating reads on its
+   updates sidesteps this.
 6. Tap **Save**.
 
 The next scheduled refresh (07:00 by default for today, 19:00 for
@@ -125,6 +150,13 @@ mqtt:
     - name: "Clothescast tonight"
       unique_id: clothescast_tonight
       state_topic: "clothescast/default/tonight/text"
+      value_template: "{{ value }}"
+    # Single "latest" sensor — mirrors whichever period last published, so
+    # an automation can speak the most recent forecast without branching
+    # on today vs tonight or comparing timestamps.
+    - name: "Clothescast now"
+      unique_id: clothescast_now
+      state_topic: "clothescast/default/now/text"
       value_template: "{{ value }}"
 ```
 

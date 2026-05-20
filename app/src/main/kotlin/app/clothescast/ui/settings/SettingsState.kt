@@ -28,7 +28,7 @@ import java.time.DayOfWeek
 import java.time.LocalTime
 import java.util.Locale
 
-/** What [SettingsScreen] needs to render. */
+/** What [SettingsSubPage] needs to render. */
 data class SettingsState(
     val scheduleTime: LocalTime = LocalTime.of(7, 0),
     val scheduleDays: Set<DayOfWeek> = Schedule.EVERY_DAY,

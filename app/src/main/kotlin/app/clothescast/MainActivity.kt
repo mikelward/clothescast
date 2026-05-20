@@ -1,76 +1,42 @@
 package app.clothescast
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.core.os.LocaleListCompat
-import app.clothescast.cast.castCurrentInsight
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.work.WorkManager
-import app.clothescast.calendar.resolveHolidayTheme
-import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.locale.AppLocale
-import app.clothescast.location.LocationResolver
 import app.clothescast.notification.NotificationPermission
 import app.clothescast.ui.isTelevision
-import app.clothescast.ui.onboarding.OnboardingScreen
-import app.clothescast.ui.onboarding.OnboardingViewModel
-import app.clothescast.ui.pairing.PairingScreen
-import app.clothescast.ui.pairing.PairingViewModel
-import app.clothescast.core.domain.model.ForecastPeriod
-import app.clothescast.insight.InsightFormatter
-import app.clothescast.mqtt.MqttPublishOutcome
-import app.clothescast.ui.garment.outfitCardInfoLines
-import app.clothescast.ui.garment.renderOutfitCard
-import app.clothescast.ui.settings.SettingsRoute
-import app.clothescast.ui.settings.SettingsScreen
-import app.clothescast.ui.settings.SettingsViewModel
+import app.clothescast.ui.nav.ClothesCastNavHost
 import app.clothescast.ui.theme.ClothesCastTheme
-import app.clothescast.ui.today.TodayScreen
-import app.clothescast.ui.today.TodayViewModel
-import app.clothescast.widget.OutfitWidget
-import app.clothescast.work.FetchAndNotifyWorker
 import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
-private enum class Screen { Today, Settings, Onboarding, Pairing }
-
 class MainActivity : ComponentActivity() {
     // Incremented every time a notification tap delivers EXTRA_NAVIGATE_TO_TODAY —
     // both via onNewIntent (activity already running) and via the launching intent
     // in onCreate (cold start / activity recreated after process death, where
     // rememberSaveable would otherwise restore the previously-saved screen, e.g.
-    // Settings). ClothesCastNav observes this counter and snaps back to Today
+    // Settings). ClothesCastNavHost observes this counter and snaps back to Today
     // whenever it ticks, so a notification tap reliably lands the user on Today
     // regardless of cold/warm start.
     private var navigateToTodayVersion by mutableIntStateOf(0)
@@ -94,12 +60,17 @@ class MainActivity : ComponentActivity() {
         val app = application as ClothesCastApplication
         // Read the persisted theme synchronously so the first frame already
         // matches the user's pick — same flicker-avoidance pattern used in
-        // ClothesCastNav for the initial-screen decision.
+        // shouldStartOnboarding for the initial-screen decision.
         val initialPrefs = runBlocking {
             app.settingsRepository.preferences.first().let {
                 it.themeMode to it.colorPalette
             }
         }
+        // Decide the start destination once, synchronously, so the first frame
+        // is already correct (no flash of Today before snapping to Onboarding).
+        // NavHost ignores this after process death — it restores its own saved
+        // back stack — so it only governs a genuine first launch.
+        val startOnboarding = shouldStartOnboarding(this, app)
         try {
             setContent {
                 val themeMode by app.settingsRepository.preferences
@@ -147,7 +118,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background,
                     ) {
-                        ClothesCastNav(app, navigateToTodayVersion)
+                        ClothesCastNavHost(app, navigateToTodayVersion, startOnboarding)
                     }
                 }
             }
@@ -206,299 +177,33 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         /** Extra set by all notification tap intents. MainActivity increments its
-         *  navigation counter when this is present so ClothesCastNav snaps to Today. */
+         *  navigation counter when this is present so the nav host snaps to Today. */
         const val EXTRA_NAVIGATE_TO_TODAY = "navigate_to_today"
     }
 }
 
-@Composable
-private fun ClothesCastNav(app: ClothesCastApplication, navigateToTodayVersion: Int) {
-    val context = LocalContext.current
-
-    // Decide initial screen once on first composition. Permission checks are sync;
-    // DataStore reads (Gemini key + preferences) go through one Preferences fetch
-    // each, microseconds in practice — runBlocking here keeps the UX flicker-free
-    // (no flash of Today before snapping to Onboarding) at a negligible startup cost.
-    val initialScreen = remember {
-        val tv = isTelevision(context)
-        // TV OS does not expose POST_NOTIFICATIONS or GPS-based location; skip
-        // both checks so a configured-key + city TV install goes straight to Today.
-        val notificationOk = tv || NotificationPermission.isGranted(context)
-        val keyOk = runBlocking { app.secureKeyStore.geminiKeyConfiguredFlow.first() }
-        val prefs = runBlocking { app.settingsRepository.preferences.first() }
-        val locationOk = if (tv) {
-            // On TV only a manually picked city counts — device location is unavailable.
-            prefs.location != null
-        } else {
-            // Location is "configured" if either branch is filled in — device-location
-            // toggle on (with permission) or a manual city stored.
-            val coarseGranted = androidx.core.content.ContextCompat.checkSelfPermission(
-                context,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-            (prefs.useDeviceLocation && coarseGranted) || prefs.location != null
-        }
-        if (notificationOk && keyOk && locationOk) Screen.Today else Screen.Onboarding
+// Decide the start destination once, synchronously. Permission checks are sync;
+// DataStore reads (Gemini key + preferences) go through one Preferences fetch
+// each, microseconds in practice — runBlocking here keeps the UX flicker-free
+// (no flash of Today before snapping to Onboarding) at a negligible startup cost.
+private fun shouldStartOnboarding(context: Context, app: ClothesCastApplication): Boolean {
+    val tv = isTelevision(context)
+    // TV OS does not expose POST_NOTIFICATIONS or GPS-based location; skip
+    // both checks so a configured-key + city TV install goes straight to Today.
+    val notificationOk = tv || NotificationPermission.isGranted(context)
+    val keyOk = runBlocking { app.secureKeyStore.geminiKeyConfiguredFlow.first() }
+    val prefs = runBlocking { app.settingsRepository.preferences.first() }
+    val locationOk = if (tv) {
+        // On TV only a manually picked city counts — device location is unavailable.
+        prefs.location != null
+    } else {
+        // Location is "configured" if either branch is filled in — device-location
+        // toggle on (with permission) or a manual city stored.
+        val coarseGranted = androidx.core.content.ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        (prefs.useDeviceLocation && coarseGranted) || prefs.location != null
     }
-
-    var screen by rememberSaveable { mutableStateOf(initialScreen) }
-    // Holds the SettingsRoute we want to land on when entering Settings programmatically
-    // (e.g. from onboarding's "Continue"). Saved as a name string so rememberSaveable
-    // doesn't need a custom Saver. Consumed once and reset to null on the way out.
-    var settingsInitialRoute by rememberSaveable { mutableStateOf<String?>(null) }
-
-    // When the user taps a notification while the app is already running, MainActivity
-    // increments navigateToTodayVersion via onNewIntent. Snap back to Today so the
-    // user always lands on the screen that actually shows the insight/alert they tapped.
-    LaunchedEffect(navigateToTodayVersion) {
-        if (navigateToTodayVersion > 0) {
-            screen = Screen.Today
-            settingsInitialRoute = null
-        }
-    }
-
-    BackHandler(enabled = screen == Screen.Settings) {
-        screen = Screen.Today
-        settingsInitialRoute = null
-    }
-
-    when (screen) {
-        Screen.Today -> {
-            val today: TodayViewModel = viewModel(
-                factory = TodayViewModel.Factory(
-                    insightCache = app.insightCache,
-                    workManager = WorkManager.getInstance(app),
-                    settingsRepository = app.settingsRepository,
-                    refreshOutfitWidget = {
-                        runCatching { OutfitWidget().updateAll(context.applicationContext) }
-                    },
-                    calendarEventReader = app.calendarEventReader,
-                ),
-            )
-            TodayScreen(
-                viewModel = today,
-                onNavigateToSettings = {
-                    settingsInitialRoute = null
-                    screen = Screen.Settings
-                },
-                onNavigateToAbout = {
-                    settingsInitialRoute = SettingsRoute.About.name
-                    screen = Screen.Settings
-                },
-                onNavigateToLocation = {
-                    settingsInitialRoute = SettingsRoute.Location.name
-                    screen = Screen.Settings
-                },
-                onNavigateToPrivacy = {
-                    settingsInitialRoute = SettingsRoute.Privacy.name
-                    screen = Screen.Settings
-                },
-                onNavigateToClothes = {
-                    settingsInitialRoute = SettingsRoute.Clothes.name
-                    screen = Screen.Settings
-                },
-                onNavigateToHolidays = {
-                    settingsInitialRoute = SettingsRoute.Holidays.name
-                    screen = Screen.Settings
-                },
-            )
-        }
-        Screen.Settings -> {
-            val settings: SettingsViewModel = viewModel(
-                factory = SettingsViewModel.Factory(
-                    settingsRepository = app.settingsRepository,
-                    keyStore = app.secureKeyStore,
-                    rearmAlarm = app.dailyAlarmScheduler::schedule,
-                    cancelAlarm = app.dailyAlarmScheduler::cancel,
-                    geocodingClient = app.geocodingClient,
-                    voiceEnumerator = app.androidTtsVoiceEnumerator,
-                    applyAppLocale = { region ->
-                        AppLocale.apply(app, region)
-                        // API 33+ recreates Activities automatically when
-                        // applicationLocales changes; below that we have to
-                        // do it ourselves so the currently visible screen
-                        // re-renders in the new language instead of waiting
-                        // until the user navigates away and back.
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                            (context as? Activity)?.recreate()
-                        }
-                    },
-                    refreshLocationCache = {
-                        // Eager device-location populate when the user flips
-                        // device-location ON. Cache-only path — resolves the
-                        // fix and writes through to settings without running
-                        // the insight / notify / TTS pipeline, so toggling at
-                        // 10am after the morning run already fired doesn't
-                        // double-notify.
-                        FetchAndNotifyWorker.enqueueLocationCacheRefresh(context)
-                    },
-                    refreshCachedOutfits = {
-                        // Re-pick the home-screen outfit against the just-written
-                        // clothes-rule preferences so the icon flips immediately
-                        // when the user edits a rule or the default-bottom
-                        // picker. The cache is the canonical source for the
-                        // Today screen and the widget; mutating it here means
-                        // the user doesn't have to wait for the next scheduled
-                        // or manual refresh to see their choice take effect.
-                        // We also push the widget update — the cache flow
-                        // wakes the Today screen automatically, but the widget
-                        // only refreshes when we explicitly tell it to.
-                        val prefs = app.settingsRepository.preferences.first()
-                        app.insightCache.recomputeOutfits(prefs.clothesRules, prefs.defaultBottom)
-                        runCatching { OutfitWidget().updateAll(context.applicationContext) }
-                    },
-                    resolveDeviceLocationWithCity = {
-                        // "Use my current location" tap on the home-pin card.
-                        // We want a precise lat/lon (not a geocoder centroid)
-                        // so the at-home gate's 1 km radius actually fires;
-                        // resolveFresh enforces the same 5-minute ceiling
-                        // the worker uses, so a stale "I was at work
-                        // yesterday" cache miss can't silently land as the
-                        // user's home — better to no-op the button and let
-                        // them retry than save the wrong coordinate.
-                        // Reverse-geocode labels the fix for UI display and
-                        // captures the country code for the holiday filter.
-                        // Both swallow failures internally — null falls
-                        // through to a no-op in the VM.
-                        app.locationResolver.resolveFresh(
-                            LocationResolver.FRESH_FIX_MAX_AGE_MS,
-                        )?.let { fix ->
-                            val geo = app.reverseGeocoder.resolve(fix.latitude, fix.longitude)
-                            fix.copy(
-                                displayName = geo.city ?: fix.displayName,
-                                countryCode = geo.countryCode ?: fix.countryCode,
-                            )
-                        }
-                    },
-                    workManager = WorkManager.getInstance(app),
-                    mqttPublisher = app.mqttPublisher,
-                    fullPublish = {
-                        val prefs = app.settingsRepository.preferences.first()
-                        val insight = app.insightCache.thisPeriod.first()
-                            ?: return@Factory app.mqttPublisher.publishTest()
-                        val formatter = InsightFormatter.forRegion(context, prefs.region, prefs.temperatureUnit)
-                        val prose = formatter.format(insight.summary)
-                        // Render the outfit card up-front so the bundle publish
-                        // can co-ordinate prose + image and emit a consistent
-                        // /now/* set. A render failure degrades to a prose-only
-                        // bundle rather than skipping the publish entirely.
-                        val png: ByteArray? = insight.outfit?.let { outfit ->
-                            runCatching {
-                                val info = outfitCardInfoLines(
-                                    context = context,
-                                    formatter = formatter,
-                                    hourly = insight.hourly,
-                                    temperatureUnit = prefs.temperatureUnit,
-                                )
-                                val header = context.getString(
-                                    if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today
-                                    else R.string.outfit_card_header_tonight
-                                )
-                                // Apply today's holiday / birthday theme on
-                                // top of the user's outfit colours — same
-                                // merge FetchAndNotifyWorker.deliver does for
-                                // the scheduled publish. Without it the
-                                // user-initiated refresh would overwrite the
-                                // worker's themed retained image with an
-                                // unthemed one.
-                                val theme = resolveHolidayTheme(prefs, app.calendarEventReader)
-                                val topColors: Map<OutfitSuggestion.Top, Long> =
-                                    prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())
-                                val bottomColors: Map<OutfitSuggestion.Bottom, Long> =
-                                    prefs.outfitBottomColors + (theme?.bottomOverrides ?: emptyMap())
-                                val topStrokes: Map<OutfitSuggestion.Top, Long> =
-                                    theme?.topStrokeOverrides ?: emptyMap()
-                                val bottomStrokes: Map<OutfitSuggestion.Bottom, Long> =
-                                    theme?.bottomStrokeOverrides ?: emptyMap()
-                                renderOutfitCard(
-                                    context = context,
-                                    outfit = outfit,
-                                    header = header,
-                                    prose = prose,
-                                    tempLine = info.tempLine,
-                                    rainLine = info.rainLine,
-                                    tempFillFraction = info.tempFillFraction,
-                                    rainFillFraction = info.rainFillFraction,
-                                    topColors = topColors,
-                                    bottomColors = bottomColors,
-                                    topStrokes = topStrokes,
-                                    bottomStrokes = bottomStrokes,
-                                )
-                            }.getOrNull()
-                        }
-                        app.mqttPublisher.publishIfEnabled(insight.period, prose, image = png)
-                    },
-                    discovery = app.homeAssistantDiscovery,
-                    castRouteDiscovery = app.castRouteDiscovery,
-                    castAvailable = app.castContext != null,
-                    castNowAction = app.castInsightController?.let { controller ->
-                        {
-                            castCurrentInsight(
-                                context = context,
-                                settingsRepository = app.settingsRepository,
-                                insightCache = app.insightCache,
-                                calendarEventReader = app.calendarEventReader,
-                                controller = controller,
-                                locale = LocaleListCompat.getAdjustedDefault().get(0)
-                                    ?: java.util.Locale.getDefault(),
-                            )
-                        }
-                    },
-                ),
-            )
-            SettingsScreen(
-                viewModel = settings,
-                onNavigateBack = {
-                    screen = Screen.Today
-                    settingsInitialRoute = null
-                },
-                initialRoute = settingsInitialRoute
-                    ?.let { runCatching { SettingsRoute.valueOf(it) }.getOrNull() },
-            )
-        }
-        Screen.Onboarding -> {
-            val onboarding: OnboardingViewModel = viewModel(
-                factory = OnboardingViewModel.Factory(
-                    secureKeyStore = app.secureKeyStore,
-                    settingsRepository = app.settingsRepository,
-                    geocodingClient = app.geocodingClient,
-                    refreshLocationCache = {
-                        // Eager device-location populate when the user grants
-                        // location permission during onboarding. Cache-only
-                        // path — same worker used by Settings — so the
-                        // resolved city surfaces in seconds and the user can
-                        // tell at a glance whether they need to enter a
-                        // manual fallback instead.
-                        FetchAndNotifyWorker.enqueueLocationCacheRefresh(context)
-                    },
-                    workManager = WorkManager.getInstance(app),
-                ),
-            )
-            OnboardingScreen(
-                viewModel = onboarding,
-                onPairFromPhone = { screen = Screen.Pairing },
-                onContinue = {
-                    settingsInitialRoute = SettingsRoute.Schedule.name
-                    screen = Screen.Settings
-                },
-                onSkip = {
-                    settingsInitialRoute = null
-                    screen = Screen.Today
-                },
-            )
-        }
-        Screen.Pairing -> {
-            val pairing: PairingViewModel = viewModel(
-                factory = PairingViewModel.Factory(
-                    secureKeyStore = app.secureKeyStore,
-                    settingsRepository = app.settingsRepository,
-                ),
-            )
-            PairingScreen(
-                viewModel = pairing,
-                onSuccess = { screen = Screen.Onboarding },
-                onCancel = { screen = Screen.Onboarding },
-            )
-        }
-    }
+    return !(notificationOk && keyOk && locationOk)
 }

@@ -9,6 +9,19 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git push:*)",
+            "suppressOutput": true,
+            "command": "printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"git push detected. Re-read the full branch diff vs the base branch and check whether the PR title and body still describe what is landing. If anything significant changed since the PR opened (scope grew, narrowed, or pivoted), update them via mcp__github__update_pull_request: title stays Play-Store-ready (sentence case, end-user copy, <= 80 chars, matches the squash-merge subject); body covers scope, rationale, privacy-relevant changes, and test plan. If nothing material changed, no update needed.\"}}'"
+          }
+        ]
+      }
     ]
   }
 }

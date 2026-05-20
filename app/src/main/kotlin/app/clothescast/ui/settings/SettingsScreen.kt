@@ -1,6 +1,5 @@
 package app.clothescast.ui.settings
 
-import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,10 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -43,8 +38,8 @@ import app.clothescast.ui.EdgeFadeOverlay
  * About is reachable as a deep-link target only — it's surfaced from Today's
  * overflow menu, not from the settings root list.
  *
- * Public so callers (e.g. the onboarding flow, Today's overflow) can deep-link
- * into a specific sub-page via [SettingsScreen]'s `initialRoute` param.
+ * Each entry maps to a navigation destination in the Settings nested graph
+ * (see ClothesCastNavHost); the framework's back stack owns up-navigation.
  */
 enum class SettingsRoute(@StringRes val titleRes: Int, @StringRes val subtitleRes: Int? = null) {
     Root(R.string.settings_title),
@@ -62,56 +57,26 @@ enum class SettingsRoute(@StringRes val titleRes: Int, @StringRes val subtitleRe
     About(R.string.settings_root_about),
 }
 
-// Saved as a comma-joined list of enum names (innermost page last) so the full
-// in-Settings back stack survives process death, not just the visible page.
-// Each name is restored with a runCatching skip so an old install that had a
-// now-removed route on the stack (e.g. the old `DataSources`) doesn't crash —
-// unknown entries are dropped and an empty result falls back to Root. A value
-// saved by the previous single-enum saver (a bare name like "Calendar")
-// restores cleanly as a one-element stack.
-private val SettingsBackStackSaver: Saver<List<SettingsRoute>, String> = Saver(
-    save = { stack -> stack.joinToString(",") { it.name } },
-    restore = { saved ->
-        saved.split(",")
-            .mapNotNull { name -> runCatching { SettingsRoute.valueOf(name) }.getOrNull() }
-            .ifEmpty { listOf(SettingsRoute.Root) }
-    },
-)
-
+/**
+ * Renders one Settings sub-page. Each [SettingsRoute] is its own navigation
+ * destination, so there's no internal route state and no custom back handling
+ * here — [onBack] just pops the nav back stack and the framework restores the
+ * previous destination. Cross-page links (and the root list) call [onNavigate].
+ *
+ * [onboardingLanding] marks the Schedule page when it's the onboarding
+ * "Continue" target, surfacing a Done button that calls [onFinishOnboarding].
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(
+fun SettingsSubPage(
+    route: SettingsRoute,
     viewModel: SettingsViewModel,
-    onNavigateBack: () -> Unit,
-    initialRoute: SettingsRoute? = null,
+    onBack: () -> Unit,
+    onNavigate: (SettingsRoute) -> Unit,
+    onboardingLanding: Boolean = false,
+    onFinishOnboarding: () -> Unit = {},
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    // The in-Settings navigation back stack, innermost page last. Navigating
-    // deeper pushes; back pops; popping the last entry exits Settings. A deep
-    // link seeds the stack with just its target (not Root underneath), so back
-    // from the landing page exits straight to the caller — onboarding's
-    // "Continue → Schedule" reaches Today in one back, not two.
-    var backStack by rememberSaveable(stateSaver = SettingsBackStackSaver) {
-        val start = initialRoute?.takeIf { it != SettingsRoute.Root } ?: SettingsRoute.Root
-        mutableStateOf(listOf(start))
-    }
-    val route = backStack.last()
-
-    fun navigateTo(destination: SettingsRoute) {
-        backStack = backStack + destination
-    }
-
-    fun goBackOrUp() {
-        if (backStack.size > 1) {
-            backStack = backStack.dropLast(1)
-        } else {
-            onNavigateBack()
-        }
-    }
-
-    BackHandler(enabled = backStack.size > 1 || initialRoute != null) {
-        goBackOrUp()
-    }
 
     Scaffold(
         // Drop the default `safeDrawing` content insets so each sub-screen's
@@ -126,7 +91,7 @@ fun SettingsScreen(
             TopAppBar(
                 title = { Text(stringResource(route.titleRes)) },
                 navigationIcon = {
-                    IconButton(onClick = ::goBackOrUp) {
+                    IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.settings_back),
@@ -140,7 +105,7 @@ fun SettingsScreen(
             SettingsRoute.Root -> SettingsRoot(
                 useDeviceLocation = state.useDeviceLocation,
                 padding = padding,
-                onNavigate = ::navigateTo,
+                onNavigate = onNavigate,
             )
             SettingsRoute.Schedule -> ScheduleContent(
                 time = state.scheduleTime,
@@ -167,7 +132,7 @@ fun SettingsScreen(
                 // landing from onboarding's "Continue" — gives the user an
                 // obvious way to finish setup and reach Today. In the regular
                 // settings flow they exit via the top-bar back arrow.
-                onDone = if (initialRoute == SettingsRoute.Schedule) onNavigateBack else null,
+                onDone = if (onboardingLanding) onFinishOnboarding else null,
             )
             SettingsRoute.Clothes -> ClothesContent(
                 rules = state.clothesRules,
@@ -239,9 +204,9 @@ fun SettingsScreen(
                 onSetThemeFromCalendarHolidays = viewModel::setThemeFromCalendarHolidays,
                 onSetThemeFromCalendarBirthdays = viewModel::setThemeFromCalendarBirthdays,
                 onCalendarPermissionRechecked = viewModel::markCalendarPermissionRechecked,
-                onNavigateToRegionSettings = { navigateTo(SettingsRoute.Region) },
-                onNavigateToLocationSettings = { navigateTo(SettingsRoute.Location) },
-                onNavigateToCalendarSettings = { navigateTo(SettingsRoute.Calendar) },
+                onNavigateToRegionSettings = { onNavigate(SettingsRoute.Region) },
+                onNavigateToLocationSettings = { onNavigate(SettingsRoute.Location) },
+                onNavigateToCalendarSettings = { onNavigate(SettingsRoute.Calendar) },
             )
             SettingsRoute.Location -> LocationContent(
                 location = state.location,

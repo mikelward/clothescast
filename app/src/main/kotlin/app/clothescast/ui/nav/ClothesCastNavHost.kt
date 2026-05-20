@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -59,6 +61,11 @@ import app.clothescast.work.FetchAndNotifyWorker
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.Serializable
 
+// Duration of the push/pop slide between destinations. Short enough to feel
+// snappy (and to keep the can't-tap-yet window small), long enough to read as a
+// directional transition rather than a jump.
+private const val NAV_ANIM_MS = 200
+
 // Type-safe destinations. The four top-level screens plus a nested graph for
 // Settings — each settings sub-page is its own destination so the framework's
 // back stack handles up-navigation. No hand-maintained "current route" state,
@@ -104,6 +111,18 @@ fun ClothesCastNavHost(
     NavHost(
         navController = nav,
         startDestination = if (startOnboarding) OnboardingRoute else TodayRoute,
+        // Push/pop slide so sub-pages animate in from the leading edge (and back
+        // out the same way on up-navigation). The library default is a 700ms
+        // crossfade, which both reads as "appearing from nowhere" and overlaps the
+        // outgoing and incoming screens in the same spot — a low-alpha layer still
+        // eats touches, so a quick tap on a freshly-shown list can hit the wrong
+        // screen. A short directional slide fixes the look and stops the screens
+        // sitting on top of each other. Start/End (not Left/Right) so the motion
+        // mirrors correctly in RTL locales (ar/fa/iw).
+        enterTransition = { slideIntoContainer(SlideDirection.Start, tween(NAV_ANIM_MS)) },
+        exitTransition = { slideOutOfContainer(SlideDirection.Start, tween(NAV_ANIM_MS)) },
+        popEnterTransition = { slideIntoContainer(SlideDirection.End, tween(NAV_ANIM_MS)) },
+        popExitTransition = { slideOutOfContainer(SlideDirection.End, tween(NAV_ANIM_MS)) },
     ) {
         composable<TodayRoute>(
             deepLinks = listOf(navDeepLink<TodayRoute>(basePath = MainActivity.DEEP_LINK_TODAY)),

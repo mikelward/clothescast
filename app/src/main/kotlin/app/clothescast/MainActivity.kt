@@ -2,6 +2,7 @@ package app.clothescast
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.TextView
@@ -15,7 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,14 +33,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
-    // Incremented every time a notification tap delivers EXTRA_NAVIGATE_TO_TODAY —
-    // both via onNewIntent (activity already running) and via the launching intent
-    // in onCreate (cold start / activity recreated after process death, where
-    // rememberSaveable would otherwise restore the previously-saved screen, e.g.
-    // Settings). ClothesCastNavHost observes this counter and snaps back to Today
-    // whenever it ticks, so a notification tap reliably lands the user on Today
-    // regardless of cold/warm start.
-    private var navigateToTodayVersion by mutableIntStateOf(0)
+    // The latest intent delivered while the activity is already running (a
+    // notification tap → onNewIntent). ClothesCastNavHost forwards it to the
+    // NavController, which matches the Today deep link and navigates there.
+    // Cold-start / post-process-death intents are handled automatically by the
+    // NavController from the launch intent, so they don't go through here.
+    private var deepLinkIntent by mutableStateOf<Intent?>(null)
 
     override fun attachBaseContext(newBase: Context) {
         // Wrap with the persisted per-app locale so Activity Resources render
@@ -56,7 +55,6 @@ class MainActivity : ComponentActivity() {
         // our light background, or vice versa.
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        consumeNavigateToTodayExtra(intent)
         val app = application as ClothesCastApplication
         // Read the persisted theme synchronously so the first frame already
         // matches the user's pick — same flicker-avoidance pattern used in
@@ -118,7 +116,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background,
                     ) {
-                        ClothesCastNavHost(app, navigateToTodayVersion, startOnboarding)
+                        ClothesCastNavHost(app, startOnboarding, deepLinkIntent)
                     }
                 }
             }
@@ -159,26 +157,24 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        // Update the stored intent so a later configuration change replays this
-        // (already-consumed) intent rather than the original launching one.
+        // Replace the stored intent (so a later config-change replays this one,
+        // already marked handled by the NavController) and hand it to the nav
+        // host to match against the Today deep link.
         setIntent(intent)
-        consumeNavigateToTodayExtra(intent)
-    }
-
-    // Removes the extra after handling so a later onCreate (rotation, process
-    // recreation) replaying the same intent doesn't snap the user back to Today
-    // after they've navigated away.
-    private fun consumeNavigateToTodayExtra(intent: Intent?) {
-        if (intent?.getBooleanExtra(EXTRA_NAVIGATE_TO_TODAY, false) == true) {
-            navigateToTodayVersion++
-            intent.removeExtra(EXTRA_NAVIGATE_TO_TODAY)
-        }
+        deepLinkIntent = intent
     }
 
     companion object {
-        /** Extra set by all notification tap intents. MainActivity increments its
-         *  navigation counter when this is present so the nav host snaps to Today. */
-        const val EXTRA_NAVIGATE_TO_TODAY = "navigate_to_today"
+        /** Deep-link URI that lands on the Today screen. Notification taps target
+         *  this; ClothesCastNavHost declares a matching navDeepLink on TodayRoute. */
+        const val DEEP_LINK_TODAY = "clothescast://today"
+
+        /** Tap intent for notifications: opens (or brings forward) MainActivity and
+         *  deep-links to Today. SINGLE_TOP/CLEAR_TOP reuses a running task. */
+        fun todayTapIntent(context: Context): Intent =
+            Intent(Intent.ACTION_VIEW, Uri.parse(DEEP_LINK_TODAY), context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
     }
 }
 

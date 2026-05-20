@@ -2,7 +2,6 @@ package app.clothescast.notification
 
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -30,14 +29,10 @@ class InsightNotifier(private val context: Context) {
     ) {
         if (!NotificationPermission.isGranted(context)) return
 
-        val tapIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            putExtra(MainActivity.EXTRA_NAVIGATE_TO_TODAY, true)
-        }
         val pendingIntent = PendingIntent.getActivity(
             context,
             REQUEST_OPEN_APP,
-            tapIntent,
+            MainActivity.todayTapIntent(context),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
 

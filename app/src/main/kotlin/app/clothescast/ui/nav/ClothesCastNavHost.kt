@@ -2,6 +2,7 @@ package app.clothescast.ui.nav
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,10 +17,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import androidx.glance.appwidget.updateAll
 import androidx.work.WorkManager
 import app.clothescast.ClothesCastApplication
+import app.clothescast.MainActivity
 import app.clothescast.R
 import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.cast.castCurrentInsight
@@ -34,9 +37,21 @@ import app.clothescast.ui.onboarding.OnboardingScreen
 import app.clothescast.ui.onboarding.OnboardingViewModel
 import app.clothescast.ui.pairing.PairingScreen
 import app.clothescast.ui.pairing.PairingViewModel
-import app.clothescast.ui.settings.SettingsRoute
-import app.clothescast.ui.settings.SettingsSubPage
+import app.clothescast.ui.settings.AboutPage
+import app.clothescast.ui.settings.CalendarPage
+import app.clothescast.ui.settings.ClothesPage
+import app.clothescast.ui.settings.DisplayPage
+import app.clothescast.ui.settings.ForecastersPage
+import app.clothescast.ui.settings.HolidaysPage
+import app.clothescast.ui.settings.LocationPage
+import app.clothescast.ui.settings.PrivacyPage
+import app.clothescast.ui.settings.RegionPage
+import app.clothescast.ui.settings.SchedulePage
+import app.clothescast.ui.settings.SettingsMenuItem
+import app.clothescast.ui.settings.SettingsRootPage
 import app.clothescast.ui.settings.SettingsViewModel
+import app.clothescast.ui.settings.SmartHomePage
+import app.clothescast.ui.settings.VoicePage
 import app.clothescast.ui.today.TodayScreen
 import app.clothescast.ui.today.TodayViewModel
 import app.clothescast.widget.OutfitWidget
@@ -69,47 +84,30 @@ import kotlinx.serialization.Serializable
 @Serializable internal object PrivacyDest
 @Serializable internal object AboutDest
 
-private fun SettingsRoute.toDestination(): Any = when (this) {
-    SettingsRoute.Root -> SettingsRootDest
-    SettingsRoute.Schedule -> ScheduleDest()
-    SettingsRoute.Clothes -> ClothesDest
-    SettingsRoute.Region -> RegionDest
-    SettingsRoute.Voice -> VoiceDest
-    SettingsRoute.Display -> DisplayDest
-    SettingsRoute.Holidays -> HolidaysDest
-    SettingsRoute.Location -> LocationDest
-    SettingsRoute.Calendar -> CalendarDest
-    SettingsRoute.Forecasters -> ForecastersDest
-    SettingsRoute.SmartHome -> SmartHomeDest
-    SettingsRoute.Privacy -> PrivacyDest
-    SettingsRoute.About -> AboutDest
-}
-
 @Composable
 fun ClothesCastNavHost(
     app: ClothesCastApplication,
-    navigateToTodayVersion: Int,
     startOnboarding: Boolean,
+    newIntent: Intent?,
 ) {
     val nav = rememberNavController()
 
-    // Notification taps snap to Today regardless of where the user was. The
-    // back stack is cleared so a subsequent back exits the app rather than
-    // walking back into a half-finished settings drill-down.
-    LaunchedEffect(navigateToTodayVersion) {
-        if (navigateToTodayVersion > 0) {
-            nav.navigate(TodayRoute) {
-                popUpTo(nav.graph.id) { inclusive = true }
-                launchSingleTop = true
-            }
-        }
+    // Intents that arrive while the activity is already running (a notification
+    // tap → onNewIntent) are forwarded here and matched against the Today deep
+    // link below, so the user lands on Today regardless of where they were.
+    // Cold-start / post-process-death intents are handled automatically by the
+    // NavController from the launch intent, so they don't need this path.
+    LaunchedEffect(newIntent) {
+        if (newIntent != null) nav.handleDeepLink(newIntent)
     }
 
     NavHost(
         navController = nav,
         startDestination = if (startOnboarding) OnboardingRoute else TodayRoute,
     ) {
-        composable<TodayRoute> {
+        composable<TodayRoute>(
+            deepLinks = listOf(navDeepLink<TodayRoute>(basePath = MainActivity.DEEP_LINK_TODAY)),
+        ) {
             val context = LocalContext.current
             val today: TodayViewModel = viewModel(factory = todayViewModelFactory(app, context))
             TodayScreen(
@@ -175,36 +173,64 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
             popUpTo(nav.graph.id) { inclusive = true }
         }
     }
-    val onNavigate: (SettingsRoute) -> Unit = { nav.navigate(it.toDestination()) }
     val onBack: () -> Unit = { nav.popBackStack() }
 
     navigation<SettingsGraph>(startDestination = SettingsRootDest) {
-        composable<SettingsRootDest> { entry ->
-            SettingsSubPage(SettingsRoute.Root, entry.settingsViewModel(nav, app), onBack, onNavigate)
-        }
-        composable<ScheduleDest> { entry ->
-            SettingsSubPage(
-                route = SettingsRoute.Schedule,
-                viewModel = entry.settingsViewModel(nav, app),
+        composable<SettingsRootDest> { e ->
+            SettingsRootPage(
+                viewModel = e.settingsViewModel(nav, app),
+                items = settingsMenu(nav),
                 onBack = onBack,
-                onNavigate = onNavigate,
-                onboardingLanding = entry.toRoute<ScheduleDest>().fromOnboarding,
+                onOpenLocation = { nav.navigate(LocationDest) },
+            )
+        }
+        composable<ScheduleDest> { e ->
+            SchedulePage(
+                viewModel = e.settingsViewModel(nav, app),
+                onBack = onBack,
+                onboardingLanding = e.toRoute<ScheduleDest>().fromOnboarding,
                 onFinishOnboarding = finishOnboarding,
             )
         }
-        composable<ClothesDest> { e -> SettingsSubPage(SettingsRoute.Clothes, e.settingsViewModel(nav, app), onBack, onNavigate) }
-        composable<RegionDest> { e -> SettingsSubPage(SettingsRoute.Region, e.settingsViewModel(nav, app), onBack, onNavigate) }
-        composable<VoiceDest> { e -> SettingsSubPage(SettingsRoute.Voice, e.settingsViewModel(nav, app), onBack, onNavigate) }
-        composable<DisplayDest> { e -> SettingsSubPage(SettingsRoute.Display, e.settingsViewModel(nav, app), onBack, onNavigate) }
-        composable<HolidaysDest> { e -> SettingsSubPage(SettingsRoute.Holidays, e.settingsViewModel(nav, app), onBack, onNavigate) }
-        composable<LocationDest> { e -> SettingsSubPage(SettingsRoute.Location, e.settingsViewModel(nav, app), onBack, onNavigate) }
-        composable<CalendarDest> { e -> SettingsSubPage(SettingsRoute.Calendar, e.settingsViewModel(nav, app), onBack, onNavigate) }
-        composable<ForecastersDest> { e -> SettingsSubPage(SettingsRoute.Forecasters, e.settingsViewModel(nav, app), onBack, onNavigate) }
-        composable<SmartHomeDest> { e -> SettingsSubPage(SettingsRoute.SmartHome, e.settingsViewModel(nav, app), onBack, onNavigate) }
-        composable<PrivacyDest> { e -> SettingsSubPage(SettingsRoute.Privacy, e.settingsViewModel(nav, app), onBack, onNavigate) }
-        composable<AboutDest> { e -> SettingsSubPage(SettingsRoute.About, e.settingsViewModel(nav, app), onBack, onNavigate) }
+        composable<ClothesDest> { e -> ClothesPage(e.settingsViewModel(nav, app), onBack) }
+        composable<RegionDest> { e -> RegionPage(e.settingsViewModel(nav, app), onBack) }
+        composable<VoiceDest> { e -> VoicePage(e.settingsViewModel(nav, app), onBack) }
+        composable<DisplayDest> { e -> DisplayPage(e.settingsViewModel(nav, app), onBack) }
+        composable<HolidaysDest> { e ->
+            HolidaysPage(
+                viewModel = e.settingsViewModel(nav, app),
+                onBack = onBack,
+                onNavigateToRegion = { nav.navigate(RegionDest) },
+                onNavigateToLocation = { nav.navigate(LocationDest) },
+                onNavigateToCalendar = { nav.navigate(CalendarDest) },
+            )
+        }
+        composable<LocationDest> { e -> LocationPage(e.settingsViewModel(nav, app), onBack) }
+        composable<CalendarDest> { e -> CalendarPage(e.settingsViewModel(nav, app), onBack) }
+        composable<ForecastersDest> { e -> ForecastersPage(e.settingsViewModel(nav, app), onBack) }
+        composable<SmartHomeDest> { e -> SmartHomePage(e.settingsViewModel(nav, app), onBack) }
+        composable<PrivacyDest> { e -> PrivacyPage(e.settingsViewModel(nav, app), onBack) }
+        composable<AboutDest> { AboutPage(onBack) }
     }
 }
+
+// The ordered Settings root menu. Title + subtitle live here next to the
+// destination each row opens; Root and About aren't listed (Root is the menu
+// itself, About is reached only from Today's overflow). Order matches the list
+// the user sees: most-tweaked rules first, set-once config next, data sources last.
+private fun settingsMenu(nav: NavController): List<SettingsMenuItem> = listOf(
+    SettingsMenuItem(R.string.settings_root_schedule, R.string.settings_root_schedule_subtitle) { nav.navigate(ScheduleDest()) },
+    SettingsMenuItem(R.string.settings_root_clothes, R.string.settings_root_clothes_subtitle) { nav.navigate(ClothesDest) },
+    SettingsMenuItem(R.string.settings_root_region, R.string.settings_root_region_subtitle) { nav.navigate(RegionDest) },
+    SettingsMenuItem(R.string.settings_root_voice, R.string.settings_root_voice_subtitle) { nav.navigate(VoiceDest) },
+    SettingsMenuItem(R.string.settings_root_display, R.string.settings_root_display_subtitle) { nav.navigate(DisplayDest) },
+    SettingsMenuItem(R.string.settings_root_holidays, R.string.settings_root_holidays_subtitle) { nav.navigate(HolidaysDest) },
+    SettingsMenuItem(R.string.settings_root_location, R.string.settings_root_location_subtitle) { nav.navigate(LocationDest) },
+    SettingsMenuItem(R.string.settings_root_forecasters, R.string.settings_root_forecasters_subtitle) { nav.navigate(ForecastersDest) },
+    SettingsMenuItem(R.string.settings_root_calendar, R.string.settings_root_calendar_subtitle) { nav.navigate(CalendarDest) },
+    SettingsMenuItem(R.string.settings_root_smart_home, R.string.settings_root_smart_home_subtitle) { nav.navigate(SmartHomeDest) },
+    SettingsMenuItem(R.string.settings_root_privacy, R.string.settings_root_privacy_subtitle) { nav.navigate(PrivacyDest) },
+)
 
 // One SettingsViewModel shared across every settings destination, scoped to the
 // SettingsGraph back-stack entry. Replaces the single VM the old monolithic

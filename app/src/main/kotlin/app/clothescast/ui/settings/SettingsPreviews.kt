@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.clothescast.R
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
@@ -58,8 +59,21 @@ internal fun SettingsRootPreview() {
     SettingsFrame {
         SettingsRoot(
             useDeviceLocation = false,
+            items = listOf(
+                SettingsMenuItem(R.string.settings_root_schedule, R.string.settings_root_schedule_subtitle) {},
+                SettingsMenuItem(R.string.settings_root_clothes, R.string.settings_root_clothes_subtitle) {},
+                SettingsMenuItem(R.string.settings_root_region, R.string.settings_root_region_subtitle) {},
+                SettingsMenuItem(R.string.settings_root_voice, R.string.settings_root_voice_subtitle) {},
+                SettingsMenuItem(R.string.settings_root_display, R.string.settings_root_display_subtitle) {},
+                SettingsMenuItem(R.string.settings_root_holidays, R.string.settings_root_holidays_subtitle) {},
+                SettingsMenuItem(R.string.settings_root_location, R.string.settings_root_location_subtitle) {},
+                SettingsMenuItem(R.string.settings_root_forecasters, R.string.settings_root_forecasters_subtitle) {},
+                SettingsMenuItem(R.string.settings_root_calendar, R.string.settings_root_calendar_subtitle) {},
+                SettingsMenuItem(R.string.settings_root_smart_home, R.string.settings_root_smart_home_subtitle) {},
+                SettingsMenuItem(R.string.settings_root_privacy, R.string.settings_root_privacy_subtitle) {},
+            ),
             padding = PaddingValues(0.dp),
-            onNavigate = {},
+            onOpenLocation = {},
         )
     }
 }

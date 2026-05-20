@@ -62,12 +62,20 @@ enum class SettingsRoute(@StringRes val titleRes: Int, @StringRes val subtitleRe
     About(R.string.settings_root_about),
 }
 
-// Saved as the enum name string with a runCatching restore so an old install
-// that had the page open at process death (e.g. on the now-removed
-// `DataSources` route) doesn't crash on restore — it falls back to Root.
-private val SettingsRouteSaver: Saver<SettingsRoute, String> = Saver(
-    save = { it.name },
-    restore = { runCatching { SettingsRoute.valueOf(it) }.getOrDefault(SettingsRoute.Root) },
+// Saved as a comma-joined list of enum names (innermost page last) so the full
+// in-Settings back stack survives process death, not just the visible page.
+// Each name is restored with a runCatching skip so an old install that had a
+// now-removed route on the stack (e.g. the old `DataSources`) doesn't crash —
+// unknown entries are dropped and an empty result falls back to Root. A value
+// saved by the previous single-enum saver (a bare name like "Calendar")
+// restores cleanly as a one-element stack.
+private val SettingsBackStackSaver: Saver<List<SettingsRoute>, String> = Saver(
+    save = { stack -> stack.joinToString(",") { it.name } },
+    restore = { saved ->
+        saved.split(",")
+            .mapNotNull { name -> runCatching { SettingsRoute.valueOf(name) }.getOrNull() }
+            .ifEmpty { listOf(SettingsRoute.Root) }
+    },
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,22 +86,30 @@ fun SettingsScreen(
     initialRoute: SettingsRoute? = null,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    var route by rememberSaveable(stateSaver = SettingsRouteSaver) {
-        mutableStateOf(initialRoute ?: SettingsRoute.Root)
+    // The in-Settings navigation back stack, innermost page last. Navigating
+    // deeper pushes; back pops; popping the last entry exits Settings. A deep
+    // link seeds the stack with just its target (not Root underneath), so back
+    // from the landing page exits straight to the caller — onboarding's
+    // "Continue → Schedule" reaches Today in one back, not two.
+    var backStack by rememberSaveable(stateSaver = SettingsBackStackSaver) {
+        val start = initialRoute?.takeIf { it != SettingsRoute.Root } ?: SettingsRoute.Root
+        mutableStateOf(listOf(start))
+    }
+    val route = backStack.last()
+
+    fun navigateTo(destination: SettingsRoute) {
+        backStack = backStack + destination
     }
 
-    // When entered via deep link (initialRoute is non-null), back from the deep-linked
-    // sub-page exits Settings entirely instead of going to Root — so onboarding's
-    // "Continue → Schedule" needs only one back to reach Today, not two.
     fun goBackOrUp() {
-        when {
-            route == SettingsRoute.Root -> onNavigateBack()
-            initialRoute != null && route == initialRoute -> onNavigateBack()
-            else -> route = SettingsRoute.Root
+        if (backStack.size > 1) {
+            backStack = backStack.dropLast(1)
+        } else {
+            onNavigateBack()
         }
     }
 
-    BackHandler(enabled = route != SettingsRoute.Root || initialRoute != null) {
+    BackHandler(enabled = backStack.size > 1 || initialRoute != null) {
         goBackOrUp()
     }
 
@@ -124,7 +140,7 @@ fun SettingsScreen(
             SettingsRoute.Root -> SettingsRoot(
                 useDeviceLocation = state.useDeviceLocation,
                 padding = padding,
-                onNavigate = { route = it },
+                onNavigate = ::navigateTo,
             )
             SettingsRoute.Schedule -> ScheduleContent(
                 time = state.scheduleTime,
@@ -223,9 +239,9 @@ fun SettingsScreen(
                 onSetThemeFromCalendarHolidays = viewModel::setThemeFromCalendarHolidays,
                 onSetThemeFromCalendarBirthdays = viewModel::setThemeFromCalendarBirthdays,
                 onCalendarPermissionRechecked = viewModel::markCalendarPermissionRechecked,
-                onNavigateToRegionSettings = { route = SettingsRoute.Region },
-                onNavigateToLocationSettings = { route = SettingsRoute.Location },
-                onNavigateToCalendarSettings = { route = SettingsRoute.Calendar },
+                onNavigateToRegionSettings = { navigateTo(SettingsRoute.Region) },
+                onNavigateToLocationSettings = { navigateTo(SettingsRoute.Location) },
+                onNavigateToCalendarSettings = { navigateTo(SettingsRoute.Calendar) },
             )
             SettingsRoute.Location -> LocationContent(
                 location = state.location,

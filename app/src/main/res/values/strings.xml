@@ -858,7 +858,7 @@
     <string name="settings_notification_permission_description">Without notification permission, your daily ClothesCast has nowhere to go. Grant it so ClothesCast can post tomorrow morning.</string>
     <string name="settings_notification_permission_grant">Grant notification permission</string>
 
-    <string name="settings_calendar_title">Calendar access</string>
+    <string name="settings_calendar_title">Calendar permission</string>
     <!-- Master calendar-access switch + its sub-features. The master gates all
          calendar reading; the three toggles below it pick which features use the
          calendar. Turning any sub-feature on prompts for permission and switches
@@ -874,8 +874,11 @@
     <string name="settings_calendar_birthdays_description">Theme the outfit on birthdays detected in your calendars.</string>
     <string name="settings_calendar_public_holidays">Public holidays</string>
     <string name="settings_calendar_public_holidays_description">Theme the outfit on public holidays from your synced calendars.</string>
-    <string name="settings_calendar_grant_permission">Grant calendar permission</string>
-    <string name="settings_calendar_open_settings">Calendar permission denied. Grant it from system Settings.</string>
+    <!-- Shown only when calendar permission is permanently denied ("don't ask
+         again"), where the in-app toggle can no longer trigger the system
+         prompt — the button opens the app's system-settings screen. -->
+    <string name="settings_calendar_open_settings">Calendar permission is blocked. Allow it from system Settings to use these features.</string>
+    <string name="settings_calendar_open_system_settings">Open system settings</string>
 
     <string name="settings_debug_title">Debug (debug builds only)</string>
     <string name="settings_debug_description">Fire the daily ClothesCast pipeline immediately. Useful for verifying without waiting until the scheduled time.</string>

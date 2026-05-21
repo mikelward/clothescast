@@ -36,14 +36,28 @@ class HolidayResolver(
         date: LocalDate,
         overrides: Map<HolidayId, HolidayOverride>,
         enabledCountries: Set<String>,
-    ): HolidayTheme? = catalog.firstOrNull { (predicate, theme) ->
-        if (!predicate.matches(date)) return@firstOrNull false
+    ): HolidayTheme? = resolveAll(date, overrides, enabledCountries).firstOrNull()
+
+    /**
+     * Every catalog theme that fires on [date] for this user, in catalog
+     * (calendar / precedence) order. Same per-theme firing rule as
+     * [resolve] — [HolidayOverride.ON] always, [HolidayOverride.OFF] never,
+     * [HolidayOverride.AUTO] when a country matches. [ThemeForToday] uses
+     * this to compose a joined banner when several celebrations land on the
+     * same day (e.g. a UK Spring Bank Holiday alongside Towel Day).
+     */
+    fun resolveAll(
+        date: LocalDate,
+        overrides: Map<HolidayId, HolidayOverride>,
+        enabledCountries: Set<String>,
+    ): List<HolidayTheme> = catalog.filter { (predicate, theme) ->
+        if (!predicate.matches(date)) return@filter false
         when (overrides[theme.id] ?: HolidayOverride.AUTO) {
             HolidayOverride.ON -> true
             HolidayOverride.OFF -> false
             HolidayOverride.AUTO -> theme.countries.any { it in enabledCountries }
         }
-    }?.second
+    }.map { it.second }
 
     /**
      * Computes the effective Auto state for [id] given the current country

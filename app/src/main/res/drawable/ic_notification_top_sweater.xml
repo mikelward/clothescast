@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Notification small icon variant: sweater / thin-jacket silhouette. The
+    neckline scoops down between the shoulders to mirror the scoop neck of
+    ic_outfit_sweater (rather than a raised crew-neck collar), and the sleeves
+    reach lower than the t-shirt's so it still reads as a heavier top. No hood,
+    which is what separates it from the thick-jacket variant. Used by
+    [InsightNotifier] for SWEATER / THIN_JACKET tops. Silhouette fills ~92% of
+    the 24dp viewport so it carries the same visual weight as other status-bar
+    icons.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
@@ -6,5 +16,5 @@
     android:viewportHeight="24">
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M4,6 L8.8,3.2 Q9.8,1 12,1 Q14.2,1 15.2,3.2 L20,6 L23,12.5 L19.5,14.5 L17.5,11 L17.5,24 L6.5,24 L6.5,11 L4.5,14.5 L1,12.5 Z" />
+        android:pathData="M10,3.5 L8.5,1.5 L1,4.5 L3.5,15 L6,12 L6,24 L18,24 L18,12 L20.5,15 L23,4.5 L15.5,1.5 L14,3.5 Q12,6 10,3.5 Z" />
 </vector>

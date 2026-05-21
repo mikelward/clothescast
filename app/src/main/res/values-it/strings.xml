@@ -842,6 +842,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_name_immaculate_conception">Immacolata Concezione</string>
     <string name="holiday_name_christmas_day">Natale</string>
     <string name="holiday_name_boxing_day">Santo Stefano</string>
+    <string name="tts_greeting_birthday">Buon compleanno</string>
     <string name="holiday_banner_new_years_day">Felice Anno Nuovo</string>
     <string name="holiday_banner_epiphany">Buona Epifania</string>
     <string name="holiday_banner_valentines_day">Buon San Valentino</string>

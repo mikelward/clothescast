@@ -779,6 +779,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_labour_day">สุขสันต์วันแรงงาน</string>
     <string name="holiday_banner_mlk_day">รำลึกถึง ดร. คิง</string>
     <string name="holiday_banner_mothers_day">สุขสันต์วันแม่</string>
+    <string name="tts_greeting_birthday">สุขสันต์วันเกิด</string>
     <string name="holiday_banner_new_years_day">สุขสันต์วันปีใหม่</string>
     <string name="holiday_banner_remembrance_day">อย่าลืมพวกเขา</string>
     <string name="holiday_banner_spain_hispanic_day">สุขสันต์ Día de la Hispanidad</string>

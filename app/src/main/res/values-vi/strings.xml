@@ -840,6 +840,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="holiday_banner_labour_day">Chúc mừng Ngày Lao động</string>
     <string name="holiday_banner_mlk_day">Tưởng nhớ Tiến sĩ King</string>
     <string name="holiday_banner_mothers_day">Chúc mừng Ngày của Mẹ</string>
+    <string name="tts_greeting_birthday">Chúc mừng sinh nhật</string>
     <string name="holiday_banner_new_years_day">Chúc mừng Năm Mới</string>
     <string name="holiday_banner_remembrance_day">Lest we forget</string>
     <string name="holiday_banner_spain_hispanic_day">Chúc mừng Día de la Hispanidad</string>

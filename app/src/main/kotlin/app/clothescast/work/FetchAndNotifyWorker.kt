@@ -18,7 +18,7 @@ import androidx.work.workDataOf
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.ForecastPeriod
-import app.clothescast.core.domain.model.HolidayId
+import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
@@ -624,7 +624,7 @@ class FetchAndNotifyWorker(
         // propagates so WorkManager stops unwind cleanly.
         supervisorScope {
             val synthDeferred: Deferred<PcmAudio?>? = if (gates.needsSynth) {
-                async(Dispatchers.IO) { synthesizeForDelivery(insight, prefs, theme?.id) }
+                async(Dispatchers.IO) { synthesizeForDelivery(insight, prefs, theme) }
             } else null
 
             val renderDeferred: Deferred<ByteArray?> = async(Dispatchers.Default) {
@@ -677,7 +677,7 @@ class FetchAndNotifyWorker(
             }
 
             val phoneSpeakerJob = launch {
-                playPhoneSpeaker(insight, prefs, gates, pcm, wav = wav, castDeferred = castDeferred)
+                playPhoneSpeaker(insight, prefs, gates, pcm, wav = wav, castDeferred = castDeferred, theme = theme)
             }
 
             notifyJob.join()
@@ -720,13 +720,13 @@ class FetchAndNotifyWorker(
     private suspend fun synthesizeForDelivery(
         insight: Insight,
         prefs: UserPreferences,
-        holidayId: HolidayId?,
+        theme: HolidayTheme?,
     ): PcmAudio? {
-        val utterance = ttsUtterance(insight, prefs)
+        val utterance = ttsUtterance(insight, prefs, theme)
         // On a themed day with no deliberate persona pick, speak in the
         // holiday's voice (Father Christmas on Dec 25, a president on
         // Presidents' Day, …) and switch to a matching-gender voice.
-        val selection = resolveHolidayVoice(holidayId, prefs.geminiVoice, prefs.ttsStyle)
+        val selection = resolveHolidayVoice(theme?.id, prefs.geminiVoice, prefs.ttsStyle)
         return runCatching {
             GeminiTtsSpeaker(
                 app.geminiTtsClient,
@@ -904,6 +904,7 @@ class FetchAndNotifyWorker(
         pcm: PcmAudio?,
         wav: ByteArray?,
         castDeferred: Deferred<CastInsightController.CastWorkerOutcome>?,
+        theme: HolidayTheme?,
     ) {
         if (gates.emptyEveningSkip) {
             DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping TTS.")
@@ -926,7 +927,7 @@ class FetchAndNotifyWorker(
             }
         }
 
-        val utterance = ttsUtterance(insight, prefs)
+        val utterance = ttsUtterance(insight, prefs, theme)
         withSpeechAudioFocus(applicationContext) {
             if (prefs.ttsEngine == TtsEngine.GEMINI && pcm != null) {
                 runCatching {
@@ -1040,13 +1041,18 @@ class FetchAndNotifyWorker(
     // preview's phrasing settles — the brand-name pronunciation check that the
     // per-locale settings_tts_test_sample used to give us is currently absent
     // from both the preview and the real briefing.
-    private fun ttsUtterance(insight: Insight, prefs: UserPreferences): InsightTtsUtterance =
+    private fun ttsUtterance(
+        insight: Insight,
+        prefs: UserPreferences,
+        theme: HolidayTheme?,
+    ): InsightTtsUtterance =
         insightTtsUtterance(
             context = applicationContext,
             summary = insight.summary,
             region = prefs.region,
             voiceLocale = prefs.voiceLocale,
             temperatureUnit = prefs.temperatureUnit,
+            holidayTheme = theme,
         )
 
     /**

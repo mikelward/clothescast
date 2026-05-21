@@ -697,6 +697,7 @@ displayed label localizes.
     <string name="holiday_banner_labour_day">İşçi Bayramın kutlu olsun</string>
     <string name="holiday_banner_mlk_day">Dr. King\'i anıyoruz</string>
     <string name="holiday_banner_mothers_day">Anneler Günün kutlu olsun</string>
+    <string name="tts_greeting_birthday">Doğum günün kutlu olsun</string>
     <string name="holiday_banner_new_years_day">Mutlu Yıllar</string>
     <string name="holiday_banner_remembrance_day">Unutmayalım</string>
     <string name="holiday_banner_spain_hispanic_day">Día de la Hispanidad kutlu olsun</string>

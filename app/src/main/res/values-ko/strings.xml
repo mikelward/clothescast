@@ -925,6 +925,7 @@ displayed label localizes.
     <string name="holiday_banner_labour_day">노동절을 기념합니다</string>
     <string name="holiday_banner_mlk_day">킹 박사를 기립니다</string>
     <string name="holiday_banner_mothers_day">어머니의 날을 기념합니다</string>
+    <string name="tts_greeting_birthday">생일 축하합니다</string>
     <string name="holiday_banner_new_years_day">새해 복 많이 받으세요</string>
     <string name="holiday_banner_remembrance_day">우리는 기억합니다</string>
     <string name="holiday_banner_spain_hispanic_day">Día de la Hispanidad을 기념합니다</string>

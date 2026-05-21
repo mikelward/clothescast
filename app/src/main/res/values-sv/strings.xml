@@ -758,6 +758,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="holiday_name_immaculate_conception">Obefläckade avlelsen</string>
     <string name="holiday_name_christmas_day">Juldagen</string>
     <string name="holiday_name_boxing_day">Annandag jul</string>
+    <string name="tts_greeting_birthday">Grattis på födelsedagen</string>
     <string name="holiday_banner_new_years_day">Gott nytt år</string>
     <string name="holiday_banner_epiphany">Glad Trettondag</string>
     <string name="holiday_banner_valentines_day">Glad Alla hjärtans dag</string>

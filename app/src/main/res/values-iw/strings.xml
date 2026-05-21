@@ -691,6 +691,7 @@ standard in Israeli digital communication.
     <string name="holiday_banner_labour_day">יום העמל שמח</string>
     <string name="holiday_banner_mlk_day">מכבדים את ד״ר קינג</string>
     <string name="holiday_banner_mothers_day">יום האם שמח</string>
+    <string name="tts_greeting_birthday">יום הולדת שמח</string>
     <string name="holiday_banner_new_years_day">שנה טובה</string>
     <string name="holiday_banner_remembrance_day">לא נשכח</string>
     <string name="holiday_banner_spain_hispanic_day">יום ההיספניות שמח</string>

@@ -683,6 +683,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="holiday_banner_labour_day">روز کارگر مبارک</string>
     <string name="holiday_banner_mlk_day">گرامی‌داشت دکتر کینگ</string>
     <string name="holiday_banner_mothers_day">روز مادر مبارک</string>
+    <string name="tts_greeting_birthday">تولدت مبارک</string>
     <string name="holiday_banner_new_years_day">سال نو مبارک</string>
     <string name="holiday_banner_remembrance_day">فراموش نمی‌کنیم</string>
     <string name="holiday_banner_spain_hispanic_day">روز هیسپانیداد مبارک</string>

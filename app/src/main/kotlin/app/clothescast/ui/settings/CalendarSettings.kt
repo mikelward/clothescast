@@ -31,10 +31,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import app.clothescast.R
 import app.clothescast.calendar.CalendarPermission
+import app.clothescast.diag.findActivity
 import app.clothescast.ui.EdgeFadeOverlay
 
 @Composable
@@ -58,6 +60,12 @@ internal fun CalendarContent(
     // a revoke flips the master switch off (and pings consumers to refresh) so we
     // don't keep claiming calendar access we no longer have.
     var permissionGranted by remember { mutableStateOf(CalendarPermission.isGranted(context)) }
+    // True once a permission request comes back denied *and* the system won't
+    // show the rationale dialog again ("don't ask again" / permanently denied).
+    // In that state tapping the toggle does nothing — the OS suppresses the
+    // prompt — so the only way back is the app's system-settings screen, which
+    // is the sole reason we surface a button at all.
+    var permanentlyDenied by remember { mutableStateOf(false) }
     val currentCalendarEnabled by rememberUpdatedState(calendarEnabled)
     val currentOnSetCalendarEnabled by rememberUpdatedState(onSetCalendarEnabled)
     val currentOnRechecked by rememberUpdatedState(onCalendarPermissionRechecked)
@@ -67,7 +75,11 @@ internal fun CalendarContent(
             if (event == Lifecycle.Event.ON_RESUME) {
                 val granted = CalendarPermission.isGranted(context)
                 permissionGranted = granted
-                if (!granted && currentCalendarEnabled) {
+                if (granted) {
+                    // Granted out-of-band (e.g. via system settings) — clear the
+                    // permanently-denied affordance.
+                    permanentlyDenied = false
+                } else if (currentCalendarEnabled) {
                     currentOnSetCalendarEnabled(false)
                     currentOnRechecked()
                 }
@@ -87,8 +99,19 @@ internal fun CalendarContent(
     ) { granted ->
         permissionGranted = granted
         if (granted) {
+            permanentlyDenied = false
             pendingEnable?.invoke()
             currentOnRechecked()
+        } else {
+            // Denied. If the system would still show the rationale dialog the
+            // user can just try the toggle again; if not, they're permanently
+            // denied and we point them at system settings.
+            val activity = context.findActivity()
+            permanentlyDenied = activity != null &&
+                !ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity,
+                    CalendarPermission.MANIFEST_PERMISSION,
+                )
         }
         pendingEnable = null
     }
@@ -116,6 +139,15 @@ internal fun CalendarContent(
                     label = stringResource(R.string.settings_calendar_master),
                     checked = calendarEnabled && permissionGranted,
                     onToggle = { wantsOn ->
+                        // On: the toggle itself is the permission prompt — no
+                        // separate "grant" button needed. Off: we just stop
+                        // reading the calendar in-app (the *Active gates). We
+                        // deliberately don't relinquish the OS permission:
+                        // there's no immediate API for it, and
+                        // `revokeSelfPermissionsOnKill` is API 33+ (minSdk is 31)
+                        // and only takes effect after the process is killed, so
+                        // it'd add a version-gated, surprising code path for no
+                        // real benefit until we bump minSdk to Android 13+.
                         if (wantsOn) requestThenEnable { onSetCalendarEnabled(true) }
                         else onSetCalendarEnabled(false)
                     },
@@ -128,7 +160,7 @@ internal fun CalendarContent(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                if (calendarEnabled && !permissionGranted) {
+                if (permanentlyDenied && !permissionGranted) {
                     Text(
                         text = stringResource(R.string.settings_calendar_open_settings),
                         style = MaterialTheme.typography.bodySmall,
@@ -137,7 +169,7 @@ internal fun CalendarContent(
                     TextButton(
                         onClick = { openAppDetails(context) },
                         modifier = Modifier.fillMaxWidth(),
-                    ) { Text(stringResource(R.string.settings_calendar_grant_permission)) }
+                    ) { Text(stringResource(R.string.settings_calendar_open_system_settings)) }
                 }
             }
 

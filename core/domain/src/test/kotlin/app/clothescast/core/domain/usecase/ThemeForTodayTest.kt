@@ -183,6 +183,43 @@ class ThemeForTodayTest {
     }
 
     @Test
+    fun `same birthday synced from two calendars dedupes to one contributor`() {
+        // Eva's birthday lives in both the personal calendar ("Eva's birthday")
+        // and a shared one ("Eva's birthday!"). They should collapse to a single
+        // standalone birthday banner, not double up as "Eva and Eva".
+        val theme = subject.resolve(
+            date = random,
+            overrides = noOverrides,
+            enabledCountries = allCountries,
+            events = listOf(birthday("Eva's birthday"), birthday("Eva's birthday!")),
+            themeFromCalendarHolidays = false,
+            themeFromCalendarBirthdays = true,
+        )
+        theme.shouldNotBeNull()
+        theme.id shouldBe HolidayId.BIRTHDAY
+        // A single contributor renders its standalone banner (no join segments).
+        theme.bannerSegments.shouldBeNull()
+        theme.displayTitleOverride shouldBe "Eva's birthday"
+    }
+
+    @Test
+    fun `two different people with birthdays today both surface`() {
+        val theme = subject.resolve(
+            date = random,
+            overrides = noOverrides,
+            enabledCountries = allCountries,
+            events = listOf(birthday("Alice's birthday"), birthday("Bob's birthday")),
+            themeFromCalendarHolidays = false,
+            themeFromCalendarBirthdays = true,
+        )
+        theme.shouldNotBeNull()
+        theme.id shouldBe HolidayId.BIRTHDAY
+        val segments = theme.bannerSegments
+        segments.shouldNotBeNull()
+        segments.map { it.literalText } shouldBe listOf("Alice's birthday", "Bob's birthday")
+    }
+
+    @Test
     fun `public holiday and birthday on the same day join into one banner`() {
         val theme = subject.resolve(
             date = random,

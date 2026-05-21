@@ -63,9 +63,17 @@ class ThemeForToday(
             emptyList()
         }
         val birthdays = if (themeFromCalendarBirthdays) {
-            events.firstOrNull { it.kind == EventKind.BIRTHDAY }
-                ?.let { listOf(FestiveThemes.birthday(it.title)) }
-                .orEmpty()
+            // The same birthday often lands in more than one synced calendar
+            // (e.g. a personal "Eva's birthday" and a shared "Eva's birthday!"),
+            // and two different people can share a day. Collect every distinct
+            // birthday — deduped on a punctuation/case-insensitive key so the
+            // same person across calendars merges instead of doubling up — and
+            // keep the first-seen title for display.
+            events.asSequence()
+                .filter { it.kind == EventKind.BIRTHDAY }
+                .distinctBy { birthdayDedupeKey(it.title) }
+                .map { FestiveThemes.birthday(it.title) }
+                .toList()
         } else {
             emptyList()
         }
@@ -99,4 +107,13 @@ class ThemeForToday(
         }
         return colourSource.copy(bannerSegments = segments)
     }
+
+    // Normalises a birthday title so the same person syncing in from several
+    // calendars collapses to one contributor: lower-cased, curly apostrophe
+    // folded to straight, trailing whitespace and punctuation stripped.
+    private fun birthdayDedupeKey(title: String): String =
+        title.lowercase()
+            .replace('’', '\'')
+            .trim()
+            .trimEnd('!', '?', '.', ',', ' ')
 }

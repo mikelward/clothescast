@@ -160,6 +160,19 @@ data class HolidayCountrySelection(
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
 /**
+ * How the insight prose renders the temperature-range clause ("…it will be …").
+ *
+ *  - [NONE] drops the range sentence entirely, folding its "Today" / "Tonight"
+ *    lead into the next clause ("Today, wear a sweater."). This is the old
+ *    `omitTemperatureRange = true` behaviour.
+ *  - [DEGREES] (default) renders the numeric feels-like range in the user's unit
+ *    ("Today, it will be 14° to 20°.").
+ *  - [BANDS] renders the [TemperatureBand] classification as words
+ *    ("Today, it will be cool to mild.").
+ */
+enum class RangeFormat { NONE, DEGREES, BANDS }
+
+/**
  * Where the spoken-aloud audio comes from.
  *
  * - [DEVICE] uses Android's on-device TextToSpeech engine. Free, fully offline once
@@ -549,14 +562,20 @@ data class UserPreferences(
      */
     val dailyMentionEveningEvents: Boolean = true,
     /**
-     * When true, the spoken / displayed insight prose omits the temperature
-     * range sentence ("Today, it will be 14° to 20°"), collapsing it to a bare
-     * "Today, …" lead that flows into the next clause. The numbers still show
-     * beside the thermometer on the smart-display outfit card — those come
-     * straight from the hourly forecast, not the prose. Off by default. See
-     * [InsightFormatter] for the rendering.
+     * How the insight prose renders the temperature-range clause: dropped
+     * ([RangeFormat.NONE]), numeric ([RangeFormat.DEGREES], default), or band
+     * words ([RangeFormat.BANDS]). The numbers still show beside the thermometer
+     * on the smart-display outfit card regardless — those come straight from the
+     * hourly forecast, not the prose. See [InsightFormatter] for the rendering.
      */
-    val omitTemperatureRange: Boolean = false,
+    val rangeFormat: RangeFormat = RangeFormat.DEGREES,
+    /**
+     * Feels-like delta (in °C) the day must differ from yesterday by before the
+     * "…warmer/cooler than yesterday" clause is emitted. `null` turns the clause
+     * off entirely. Defaults to 3.0°C, the historical hard-coded threshold. See
+     * [app.clothescast.core.domain.usecase.RenderInsightSummary].
+     */
+    val deltaThresholdC: Double? = 3.0,
     /**
      * Master switch for sending Firebase Analytics + Crashlytics payloads off
      * device. Default on so crash reports for the long tail of installs reach

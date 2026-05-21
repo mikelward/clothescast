@@ -27,6 +27,7 @@ import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -99,7 +100,6 @@ internal fun SettingsSchedulePreview() {
             tonightEnabled = true,
             tonightNotifyOnlyOnEvents = false,
             dailyMentionEveningEvents = false,
-            omitTemperatureRange = false,
             deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
             tonightDeliveryMode = DeliveryMode.NOTIFICATION_ONLY,
             skipTtsAtHome = false,
@@ -110,10 +110,25 @@ internal fun SettingsSchedulePreview() {
             onSetTonightEnabled = {},
             onSetTonightNotifyOnlyOnEvents = {},
             onSetDailyMentionEveningEvents = {},
-            onSetOmitTemperatureRange = {},
             onSetDeliveryMode = {},
             onSetTonightDeliveryMode = {},
             onSetSkipTtsAtHome = {},
+        )
+    }
+}
+
+@Preview(name = "Settings · Format", widthDp = 360)
+@Composable
+internal fun SettingsFormatPreview() {
+    SettingsFrame {
+        FormatContent(
+            rangeFormat = RangeFormat.BANDS,
+            deltaThresholdC = 3.0,
+            region = Region.SYSTEM,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            padding = PaddingValues(0.dp),
+            onSetRangeFormat = {},
+            onSetDeltaThresholdC = {},
         )
     }
 }

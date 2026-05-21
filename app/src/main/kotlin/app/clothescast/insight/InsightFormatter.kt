@@ -12,7 +12,9 @@ import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
+import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
+import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.toUnit
@@ -45,14 +47,16 @@ class InsightFormatter(
     private val locale: Locale = Locale.getDefault(),
     private val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     /**
-     * When true, the band-temperature sentence ("Today, it will be 14° to 20°")
-     * is dropped and its "Today" / "Tonight" lead is folded into the next clause
-     * ("Today, wear a sweater."). The user opts into this to keep the spoken /
-     * written prose free of numbers they can already read off the smart-display
-     * thermometer; the [BandClause] still rides along in the summary for that
-     * card. Off by default.
+     * How the temperature-range sentence is rendered:
+     *  - [RangeFormat.NONE] drops it and folds the "Today" / "Tonight" lead into
+     *    the next clause ("Today, wear a sweater.") — the user keeps the prose
+     *    free of numbers they can already read off the smart-display thermometer.
+     *  - [RangeFormat.DEGREES] (default) renders the numeric range
+     *    ("Today, it will be 14° to 20°.").
+     *  - [RangeFormat.BANDS] renders band words ("Today, it will be cool to mild.").
+     * The [BandClause] always rides along in the summary for the smart-display card.
      */
-    private val omitTemperatureRange: Boolean = false,
+    private val rangeFormat: RangeFormat = RangeFormat.DEGREES,
 ) {
     private val phraser: ClothesPhraser = ClothesPhraser.forLocale(resources, locale)
 
@@ -89,7 +93,11 @@ class InsightFormatter(
         // See [renderLeadOnly].
         val alert = summary.alert?.let(::formatAlert)
         val primaryClauses = buildList {
-            if (!omitTemperatureRange) add(formatBand(summary.period, summary.band, isFutureDay))
+            when (rangeFormat) {
+                RangeFormat.NONE -> Unit
+                RangeFormat.DEGREES -> add(formatBand(summary.period, summary.band, isFutureDay))
+                RangeFormat.BANDS -> add(formatBandWords(summary.period, summary.band, isFutureDay))
+            }
             summary.delta?.let { add(formatDelta(it)) }
             if (wearItems.isNotEmpty()) formatClothesWear(wearItems)?.let(::add)
             summary.precip?.let { add(formatPrecip(it)) }
@@ -102,7 +110,7 @@ class InsightFormatter(
             }
             summary.eveningEventTieIn?.let(::formatEveningEventTieIn)?.let(::add)
         }
-        val body = if (omitTemperatureRange) {
+        val body = if (rangeFormat == RangeFormat.NONE) {
             renderLeadOnly(summary.period, isFutureDay, primaryClauses, tieInClauses)
         } else {
             (primaryClauses + tieInClauses).joinToString(" ")
@@ -179,6 +187,26 @@ class InsightFormatter(
         } else {
             resources.getString(R.string.insight_band_range, lead, low, high)
         }
+    }
+
+    private fun formatBandWords(period: ForecastPeriod, band: BandClause, isFutureDay: Boolean): String {
+        val lead = resources.getString(leadRes(period, isFutureDay))
+        val low = resources.getString(bandRes(band.low))
+        val high = resources.getString(bandRes(band.high))
+        return if (band.low == band.high) {
+            resources.getString(R.string.insight_band_words_single, lead, low)
+        } else {
+            resources.getString(R.string.insight_band_words_range, lead, low, high)
+        }
+    }
+
+    private fun bandRes(band: TemperatureBand): Int = when (band) {
+        TemperatureBand.FREEZING -> R.string.insight_band_freezing
+        TemperatureBand.COLD -> R.string.insight_band_cold
+        TemperatureBand.COOL -> R.string.insight_band_cool
+        TemperatureBand.MILD -> R.string.insight_band_mild
+        TemperatureBand.WARM -> R.string.insight_band_warm
+        TemperatureBand.HOT -> R.string.insight_band_hot
     }
 
     private fun formatDelta(delta: DeltaClause): String {
@@ -357,19 +385,19 @@ class InsightFormatter(
             context: Context,
             locale: Locale = context.currentResourcesLocale(),
             temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
-            omitTemperatureRange: Boolean = false,
+            rangeFormat: RangeFormat = RangeFormat.DEGREES,
         ): InsightFormatter =
-            InsightFormatter(context.localizedResources(locale), locale, temperatureUnit, omitTemperatureRange)
+            InsightFormatter(context.localizedResources(locale), locale, temperatureUnit, rangeFormat)
 
         /** Convenience for the common path: render in the user's [Region]-derived locale. */
         fun forRegion(
             context: Context,
             region: Region,
             temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
-            omitTemperatureRange: Boolean = false,
+            rangeFormat: RangeFormat = RangeFormat.DEGREES,
         ): InsightFormatter {
             val locale = region.toJavaLocale() ?: context.currentResourcesLocale()
-            return forContext(context, locale, temperatureUnit, omitTemperatureRange)
+            return forContext(context, locale, temperatureUnit, rangeFormat)
         }
     }
 }

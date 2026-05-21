@@ -20,6 +20,8 @@
     <string name="today_empty_subtitle">Your morning ClothesCast will appear here once it has been generated. Set your location in Settings, then tap Fetch now.</string>
     <string name="today_fetch_now">Fetch now</string>
     <string name="today_generated_at">Generated at %1$s</string>
+    <!-- Link in the insight card's bottom-right corner that opens Format settings. -->
+    <string name="today_insight_format_link">Format</string>
     <!-- Fallback label for the maps link beside the date when we have GPS
          coordinates but no friendly city name (reverse geocoding returned
          nothing useful, or the device is on AOSP without a backend). The
@@ -356,6 +358,7 @@
 
     <string name="settings_root_voice">Speech</string>
     <string name="settings_root_schedule">Schedule</string>
+    <string name="settings_root_format">Format</string>
     <string name="settings_root_region">Region</string>
     <string name="settings_root_clothes">Clothes</string>
     <string name="settings_root_display">Display</string>
@@ -369,6 +372,7 @@
     <string name="settings_root_developer">Developer</string>
 
     <string name="settings_root_schedule_subtitle">Notifications and Times</string>
+    <string name="settings_root_format_subtitle">What to say</string>
     <string name="settings_root_clothes_subtitle">Temperatures and Outfits</string>
     <string name="settings_root_region_subtitle">Languages and Units</string>
     <string name="settings_root_voice_subtitle">Voices and Accents</string>
@@ -595,10 +599,17 @@
     <string name="settings_tonight_days_label">Days of the week</string>
     <string name="settings_tonight_notify_only_on_events">Only notify when there are evening events</string>
 
-    <string name="settings_insight_title">ClothesCast wording</string>
-    <string name="settings_insight_description">Choose what the morning and evening ClothesCast say.</string>
-    <string name="settings_omit_temperature_range">Omit temperature range</string>
-    <string name="settings_omit_temperature_range_description">Leaves the high and low out of the spoken and written ClothesCast. The numbers still show next to the thermometer on the smart display.</string>
+    <!-- Format settings: choose how each clause of the ClothesCast prose reads. -->
+    <string name="settings_format_preview_title">Preview</string>
+    <string name="settings_format_what_to_say">What to say</string>
+    <string name="settings_format_range_label">Temperature range</string>
+    <string name="settings_format_range_none">None</string>
+    <string name="settings_format_range_degrees">Degrees</string>
+    <string name="settings_format_range_bands">Bands</string>
+    <string name="settings_format_change_label">Significant change</string>
+    <string name="settings_format_change_off">Off</string>
+    <!-- Significant-change threshold option: %1$d = whole degrees in the user's unit. -->
+    <string name="settings_format_change_degrees">%1$d°</string>
 
     <string name="settings_delivery_label">Delivery</string>
     <string name="settings_delivery_notification_only">Notification only</string>
@@ -949,6 +960,12 @@
     <string name="insight_band_single">%1$s, it will be %2$d°.</string>
     <!-- Range-band sentence: %1$s = lead-in, %2$d = low °, %3$d = high °. -->
     <string name="insight_band_range">%1$s, it will be %2$d° to %3$d°.</string>
+    <!-- Band-word sentence (Range format "Bands"): %1$s = lead-in, %2$s = band
+         word (e.g. "cool"). Renders "Today, it will be cool.". -->
+    <string name="insight_band_words_single">%1$s, it will be %2$s.</string>
+    <!-- Band-word range sentence: %1$s = lead-in, %2$s = low band, %3$s = high
+         band. Renders "Today, it will be cool to mild.". -->
+    <string name="insight_band_words_range">%1$s, it will be %2$s to %3$s.</string>
     <!-- When the user opts to omit the temperature range, the band sentence
          collapses to a bare lead that flows into the next clause: %1$s = lead-in
          ("Today"), %2$s = the following clause with its first letter lowercased

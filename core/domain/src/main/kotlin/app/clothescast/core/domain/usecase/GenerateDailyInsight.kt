@@ -121,6 +121,7 @@ class GenerateDailyInsight(
             todayForDelta = periodView.deltaToday,
             perModelHourly = periodView.perModelForRender,
             eveningEventTieIn = eveningEventTieIn,
+            deltaThresholdC = prefs.deltaThresholdC,
         )
 
         val rules = prefs.clothesRules
@@ -320,6 +321,7 @@ class GenerateDailyInsight(
             todayForDelta = nightView.deltaToday,
             perModelHourly = nightView.perModelForRender,
             eveningEventTieIn = null,
+            deltaThresholdC = prefs.deltaThresholdC,
         )
         val nightItems = nightSummary.clothes?.items.orEmpty()
         val precip = nightSummary.precip

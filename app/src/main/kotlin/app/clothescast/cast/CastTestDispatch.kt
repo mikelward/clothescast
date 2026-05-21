@@ -48,7 +48,7 @@ internal suspend fun castCurrentInsight(
         context,
         prefs.region,
         prefs.temperatureUnit,
-        prefs.omitTemperatureRange,
+        prefs.rangeFormat,
     )
     val isFutureDay = insight.forDate.isAfter(LocalDate.now())
     val prose = formatter.format(insight.summary, isFutureDay = isFutureDay)

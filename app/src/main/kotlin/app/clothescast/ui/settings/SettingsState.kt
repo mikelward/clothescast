@@ -11,6 +11,7 @@ import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -40,7 +41,8 @@ data class SettingsState(
     val deliveryMode: DeliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
     val tonightDeliveryMode: DeliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
     val dailyMentionEveningEvents: Boolean = true,
-    val omitTemperatureRange: Boolean = false,
+    val rangeFormat: RangeFormat = RangeFormat.DEGREES,
+    val deltaThresholdC: Double? = 3.0,
     val region: Region = Region.SYSTEM,
     // Match SettingsRepository's locale-aware defaults so en-US devices don't
     // briefly render °C / km before the first DataStore emission overrides it.

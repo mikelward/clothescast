@@ -22,6 +22,7 @@ import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -43,6 +44,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlin.math.roundToInt
 import java.time.DayOfWeek
 import java.time.LocalTime
 import java.time.ZoneId
@@ -170,8 +172,15 @@ class SettingsRepository(
         dataStore.edit { it[DAILY_MENTION_EVENING_EVENTS] = enabled }
     }
 
-    suspend fun setOmitTemperatureRange(omit: Boolean) {
-        dataStore.edit { it[OMIT_TEMPERATURE_RANGE] = omit }
+    suspend fun setRangeFormat(format: RangeFormat) {
+        dataStore.edit { it[INSIGHT_RANGE_FORMAT] = format.name }
+    }
+
+    suspend fun setDeltaThresholdC(thresholdC: Double?) {
+        dataStore.edit { prefs ->
+            if (thresholdC == null) prefs[INSIGHT_DELTA_THRESHOLD_C] = DELTA_THRESHOLD_OFF
+            else prefs[INSIGHT_DELTA_THRESHOLD_C] = thresholdC
+        }
     }
 
     suspend fun setDeliveryMode(mode: DeliveryMode) {
@@ -750,7 +759,19 @@ class SettingsRepository(
         val tonightEnabled = this[TONIGHT_ENABLED] != false
         val tonightNotifyOnlyOnEvents = this[TONIGHT_NOTIFY_ONLY_ON_EVENTS] == true
         val dailyMentionEveningEvents = this[DAILY_MENTION_EVENING_EVENTS] != false
-        val omitTemperatureRange = this[OMIT_TEMPERATURE_RANGE] == true
+        // Range-format clause rendering. Falls back to migrating the legacy
+        // boolean: a stored omit-range=true seeds NONE; otherwise DEGREES (the
+        // historical default when the range was shown).
+        val rangeFormat = this[INSIGHT_RANGE_FORMAT]
+            ?.let { runCatching { RangeFormat.valueOf(it) }.getOrNull() }
+            ?: if (this[OMIT_TEMPERATURE_RANGE] == true) RangeFormat.NONE else RangeFormat.DEGREES
+        // Delta-clause threshold in °C; the OFF sentinel maps to null (clause
+        // disabled). Absent key keeps the historical 3°C default.
+        val deltaThresholdC = when (val stored = this[INSIGHT_DELTA_THRESHOLD_C]) {
+            null -> 3.0
+            DELTA_THRESHOLD_OFF -> null
+            else -> stored
+        }
         // Default on for installs that predate the toggle, matching the new-install
         // default; the one-time Today banner is what surfaces the choice to the user.
         val telemetryEnabled = this[TELEMETRY_ENABLED] != false
@@ -832,7 +853,8 @@ class SettingsRepository(
             tonightDeliveryMode = tonightDeliveryMode,
             tonightNotifyOnlyOnEvents = tonightNotifyOnlyOnEvents,
             dailyMentionEveningEvents = dailyMentionEveningEvents,
-            omitTemperatureRange = omitTemperatureRange,
+            rangeFormat = rangeFormat,
+            deltaThresholdC = deltaThresholdC,
             telemetryEnabled = telemetryEnabled,
             telemetryNoticeAcked = telemetryNoticeAcked,
             colorPalette = colorPalette,
@@ -918,7 +940,8 @@ class SettingsRepository(
         tonightDaysCount = tonightSchedule.days.size,
         tonightNotifyOnlyOnEvents = tonightNotifyOnlyOnEvents,
         dailyMentionEveningEvents = dailyMentionEveningEvents,
-        omitTemperatureRange = omitTemperatureRange,
+        rangeFormat = rangeFormat.name,
+        deltaThresholdC = deltaThresholdC?.roundToInt() ?: -1,
         useCalendarEvents = useCalendarEvents,
         skipTtsAtHome = skipTtsAtHome,
         homeLocationConfigured = homeLocation != null,
@@ -1081,7 +1104,13 @@ class SettingsRepository(
         private val TONIGHT_DELIVERY_MODE = stringPreferencesKey("tonight_delivery_mode")
         private val TONIGHT_NOTIFY_ONLY_ON_EVENTS = booleanPreferencesKey("tonight_notify_only_on_events")
         private val DAILY_MENTION_EVENING_EVENTS = booleanPreferencesKey("daily_mention_evening_events")
+        // Legacy boolean, read on migration only — superseded by INSIGHT_RANGE_FORMAT.
         private val OMIT_TEMPERATURE_RANGE = booleanPreferencesKey("omit_temperature_range")
+        private val INSIGHT_RANGE_FORMAT = stringPreferencesKey("insight_range_format")
+        private val INSIGHT_DELTA_THRESHOLD_C = doublePreferencesKey("insight_delta_threshold_c")
+        // Sentinel stored for "Significant change: Off" — distinct from an absent
+        // key (which keeps the historical 3°C default).
+        private const val DELTA_THRESHOLD_OFF = -1.0
         private val DISMISSED_UPDATE_VERSION = intPreferencesKey("dismissed_update_version")
         private val DISMISSED_LOCAL_BUILD_SHA = stringPreferencesKey("dismissed_local_build_sha")
         private val TELEMETRY_ENABLED = booleanPreferencesKey("telemetry_enabled")

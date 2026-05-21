@@ -20,6 +20,7 @@ import app.clothescast.BuildConfig
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.Insight
+import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.UserPreferences
@@ -110,9 +111,9 @@ object BugReport {
             appendLine("--- Current ClothesCasts ---")
             val region = prefs?.region ?: Region.SYSTEM
             val tempUnit = prefs?.temperatureUnit ?: TemperatureUnit.CELSIUS
-            val omitRange = prefs?.omitTemperatureRange ?: false
-            appendInsight("This period", thisPeriod, context, region, tempUnit, omitRange)
-            appendInsight("Next period", nextPeriod, context, region, tempUnit, omitRange)
+            val rangeFormat = prefs?.rangeFormat ?: RangeFormat.DEGREES
+            appendInsight("This period", thisPeriod, context, region, tempUnit, rangeFormat)
+            appendInsight("Next period", nextPeriod, context, region, tempUnit, rangeFormat)
             if (!crash.isNullOrBlank()) {
                 appendLine("--- Last crash (from previous run) ---")
                 appendLine(crash.trim())
@@ -140,7 +141,8 @@ object BugReport {
         appendLine("Tonight schedule: ${prefs.tonightSchedule.time} ${prefs.tonightSchedule.days.sorted()}")
         appendLine("Tonight notify only on events: ${prefs.tonightNotifyOnlyOnEvents}")
         appendLine("Daily mention evening events: ${prefs.dailyMentionEveningEvents}")
-        appendLine("Omit temperature range: ${prefs.omitTemperatureRange}")
+        appendLine("Range format: ${prefs.rangeFormat}")
+        appendLine("Delta threshold: ${prefs.deltaThresholdC?.let { "${it}C" } ?: "off"}")
         appendLine("Delivery (morning): ${prefs.deliveryMode}")
         appendLine("Delivery (tonight): ${prefs.tonightDeliveryMode}")
         appendLine("TTS engine: ${prefs.ttsEngine}")
@@ -231,7 +233,7 @@ object BugReport {
         context: Context,
         region: Region,
         temperatureUnit: TemperatureUnit,
-        omitTemperatureRange: Boolean,
+        rangeFormat: RangeFormat,
     ) {
         appendLine("$label:")
         if (insight == null) {
@@ -240,7 +242,7 @@ object BugReport {
             return
         }
         val prose = runCatching {
-            InsightFormatter.forRegion(context, region, temperatureUnit, omitTemperatureRange)
+            InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat)
                 .format(insight.summary)
         }
             .getOrElse { "(prose render failed: ${it.javaClass.simpleName})" }

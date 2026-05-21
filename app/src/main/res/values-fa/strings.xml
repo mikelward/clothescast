@@ -207,7 +207,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <!-- Today — telemetry notice -->
     <string name="today_telemetry_notice_title">گزارش‌های خرابی و استفاده روشن هستند</string>
     <string name="today_telemetry_notice_body">ClothesCast گزارش‌های خرابی ناشناس و آمار استفاده را برای کمک به رفع اشکال ارسال می‌کند. هیچ داده تقویم، موقعیت یا متن بینش‌ای درج نشده. هر زمان در تنظیمات خاموش کنید.</string>
-    <string name="today_telemetry_notice_open_settings">باز کردن تنظیمات حریم خصوصی</string>
+    <string name="today_telemetry_notice_open_settings">تنظیمات حریم خصوصی</string>
     <string name="today_telemetry_notice_dismiss">رد کردن</string>
 
     <!-- Onboarding -->

@@ -188,7 +188,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_update_downloaded_action">Anzisha upya</string>
     <string name="today_telemetry_notice_title">Ripoti za hitilafu na matumizi zimewashwa</string>
     <string name="today_telemetry_notice_body">ClothesCast inatuma ripoti za hitilafu zisizo na jina na takwimu za matumizi kusaidia kurekebisha hitilafu. Hakuna data ya kalenda, mahali, au maandishi ya ufahamu yanayojumuishwa. Izime wakati wowote katika Mipangilio.</string>
-    <string name="today_telemetry_notice_open_settings">Fungua Mipangilio ya Faragha</string>
+    <string name="today_telemetry_notice_open_settings">Mipangilio ya Faragha</string>
     <string name="today_telemetry_notice_dismiss">Ondoa</string>
 
     <!-- Onboarding -->

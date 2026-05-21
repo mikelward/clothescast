@@ -637,7 +637,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Telemetry notice (first-run banner on Today screen). -->
     <string name="today_telemetry_notice_title">Los informes de fallos y uso están activados</string>
     <string name="today_telemetry_notice_body">ClothesCast envía informes de fallos anónimos y analíticas de uso para ayudar a corregir errores. No se incluyen datos del calendario, ubicación ni texto de los resúmenes. Puedes desactivarlo en cualquier momento en Ajustes.</string>
-    <string name="today_telemetry_notice_open_settings">Abrir ajustes de privacidad</string>
+    <string name="today_telemetry_notice_open_settings">Ajustes de privacidad</string>
     <string name="today_telemetry_notice_dismiss">Ignorar</string>
 
     <!-- Settings root — Privacy row. -->

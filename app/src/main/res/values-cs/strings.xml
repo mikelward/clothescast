@@ -457,7 +457,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <!-- Telemetry notice. -->
     <string name="today_telemetry_notice_title">Zprávy o pádech a využití jsou zapnuty</string>
     <string name="today_telemetry_notice_body">ClothesCast odesílá anonymní zprávy o pádech a analýzy využití pro opravy chyb. Žádná data z kalendáře, polohy ani obsahu nejsou přenášena. Kdykoli deaktivovatelné v nastavení.</string>
-    <string name="today_telemetry_notice_open_settings">Otevřít nastavení ochrany soukromí</string>
+    <string name="today_telemetry_notice_open_settings">Nastavení ochrany soukromí</string>
     <string name="today_telemetry_notice_dismiss">Zavřít</string>
 
     <!-- Crash banner. -->

@@ -119,7 +119,7 @@ the in-app clock is digit-driven and reads consistently across locales.
 
     <string name="today_telemetry_notice_title">Informes d\'errors + ús activats</string>
     <string name="today_telemetry_notice_body">ClothesCast envia informes d\'errors anònims i analítiques d\'ús per ajudar a solucionar errors. No s\'inclouen dades del calendari, ubicació ni text de les previsions. Desactiva-ho quan vulguis a Configuració.</string>
-    <string name="today_telemetry_notice_open_settings">Obre la configuració de privadesa</string>
+    <string name="today_telemetry_notice_open_settings">Configuració de privadesa</string>
     <string name="today_telemetry_notice_dismiss">Descarta</string>
 
     <string name="onboarding_title">Benvingut a ClothesCast</string>

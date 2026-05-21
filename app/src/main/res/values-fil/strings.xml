@@ -204,7 +204,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Telemetry notice banner -->
     <string name="today_telemetry_notice_title">Naka-on ang mga ulat ng crash + paggamit</string>
     <string name="today_telemetry_notice_body">Nagpapadala ang ClothesCast ng mga anonymous na ulat ng crash at analytics ng paggamit para matulungan ang pag-aayos ng mga bug. Walang kalendaryo, lokasyon, o teksto ng insight na kasama. I-off ito anumang oras sa Mga Setting.</string>
-    <string name="today_telemetry_notice_open_settings">Buksan ang mga setting ng Privacy</string>
+    <string name="today_telemetry_notice_open_settings">Mga setting ng Privacy</string>
     <string name="today_telemetry_notice_dismiss">Isara</string>
 
     <!-- ============================================================

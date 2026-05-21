@@ -215,7 +215,7 @@ they work correctly in both the single-band and range templates.
     <!-- Today — telemetry notice -->
     <string name="today_telemetry_notice_title">تقارير الأعطال والاستخدام مفعّلة</string>
     <string name="today_telemetry_notice_body">ترسل ClothesCast تقارير أعطال مجهولة وإحصاءات استخدام للمساعدة في إصلاح الأخطاء. لا تُضمَّن بيانات التقويم أو الموقع أو نص التحليل. أوقفها في أي وقت من الإعدادات.</string>
-    <string name="today_telemetry_notice_open_settings">فتح إعدادات الخصوصية</string>
+    <string name="today_telemetry_notice_open_settings">إعدادات الخصوصية</string>
     <string name="today_telemetry_notice_dismiss">إغلاق</string>
 
     <!-- Onboarding -->

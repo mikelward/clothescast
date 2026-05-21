@@ -142,7 +142,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_update_downloaded_action">እንደገና ጀምር</string>
     <string name="today_telemetry_notice_title">ስህተት + አጠቃቀም ሪፖርቶች ተከፍቷል</string>
     <string name="today_telemetry_notice_body">ClothesCast ስህተቶችን ለማስተካከል익익 익ስምን-አልባ ስህተት ሪፖርቶችና የአጠቃቀም ትንታኔዎችን ይልካል። የቀን መቁጠሪያ ውሂብ፣ ቦታ ወይም የናሙና ጽሑፍ አይካተትም። በቅንብሮች ውስጥ በማናቸውም ጊዜ ያጥፉ።</string>
-    <string name="today_telemetry_notice_open_settings">የግለነት ቅንብሮችን ክፈት</string>
+    <string name="today_telemetry_notice_open_settings">የግለነት ቅንብሮች</string>
     <string name="today_telemetry_notice_dismiss">ዝጋ</string>
 
     <!-- Error -->

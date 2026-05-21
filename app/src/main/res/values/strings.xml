@@ -298,7 +298,7 @@
          the hard limits on what may / may not be sent. -->
     <string name="today_telemetry_notice_title">Crash + usage reports are on</string>
     <string name="today_telemetry_notice_body">ClothesCast sends anonymous crash reports and usage analytics to help fix bugs. No calendar data, location, or insight text is included. Turn it off any time in Settings.</string>
-    <string name="today_telemetry_notice_open_settings">Open Privacy settings</string>
+    <string name="today_telemetry_notice_open_settings">Privacy settings</string>
     <string name="today_telemetry_notice_dismiss">Dismiss</string>
 
     <!-- Promo card on the Today screen nudging users toward the new

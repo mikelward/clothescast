@@ -631,7 +631,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <string name="today_telemetry_notice_title">Relatórios de falhas e uso estão ativados</string>
     <string name="today_telemetry_notice_body">O ClothesCast envia relatórios anônimos de falhas e dados de uso para ajudar a corrigir bugs. Nenhum dado do calendário, localização ou texto de resumo é incluído. Desative a qualquer momento nas Configurações.</string>
-    <string name="today_telemetry_notice_open_settings">Abrir configurações de privacidade</string>
+    <string name="today_telemetry_notice_open_settings">Configurações de privacidade</string>
     <string name="today_telemetry_notice_dismiss">Fechar</string>
 
     <string name="settings_root_privacy">Privacidade</string>

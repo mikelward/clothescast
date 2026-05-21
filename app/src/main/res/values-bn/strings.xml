@@ -209,7 +209,7 @@ West Bengal vocabulary differences in a future PR.
     <!-- Telemetry notice banner -->
     <string name="today_telemetry_notice_title">ক্র্যাশ ও ব্যবহারের রিপোর্ট চালু আছে</string>
     <string name="today_telemetry_notice_body">ClothesCast বাগ ঠিক করতে সাহায্যের জন্য বেনামীভাবে ক্র্যাশ রিপোর্ট ও ব্যবহারের পরিসংখ্যান পাঠায়। কোনো ক্যালেন্ডার ডেটা, অবস্থান বা অন্তর্দৃষ্টির লেখা অন্তর্ভুক্ত নয়। যেকোনো সময় সেটিংসে বন্ধ করুন।</string>
-    <string name="today_telemetry_notice_open_settings">গোপনীয়তা সেটিংস খুলুন</string>
+    <string name="today_telemetry_notice_open_settings">গোপনীয়তা সেটিংস</string>
     <string name="today_telemetry_notice_dismiss">বন্ধ করুন</string>
 
     <!-- ============================================================

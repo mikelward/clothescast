@@ -497,7 +497,7 @@ only the displayed label localizes.
     <!-- Telemetry notice (first-run banner on Today screen). -->
     <string name="today_telemetry_notice_title">Отчёты о сбоях и использовании включены</string>
     <string name="today_telemetry_notice_body">ClothesCast отправляет анонимные отчёты о сбоях и аналитику использования для исправления ошибок. Данные календаря, местоположения и текст прогноза не включаются. Отключи в любое время в настройках.</string>
-    <string name="today_telemetry_notice_open_settings">Открыть настройки конфиденциальности</string>
+    <string name="today_telemetry_notice_open_settings">Настройки конфиденциальности</string>
     <string name="today_telemetry_notice_dismiss">Закрыть</string>
 
     <!-- Crash-report banner shown on the Today screen after a previous crash. -->

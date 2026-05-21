@@ -213,7 +213,7 @@ standard in Israeli digital communication.
     <!-- Today — telemetry notice -->
     <string name="today_telemetry_notice_title">דוחות קריסה ושימוש פועלים</string>
     <string name="today_telemetry_notice_body">ClothesCast שולח דוחות קריסה אנונימיים וסטטיסטיקות שימוש כדי לסייע בתיקון באגים. אין נתוני לוח שנה, מיקום או טקסט תובנה. כבה/י בכל עת בהגדרות.</string>
-    <string name="today_telemetry_notice_open_settings">פתח/י הגדרות פרטיות</string>
+    <string name="today_telemetry_notice_open_settings">הגדרות פרטיות</string>
     <string name="today_telemetry_notice_dismiss">סגור/י</string>
 
     <!-- Onboarding -->

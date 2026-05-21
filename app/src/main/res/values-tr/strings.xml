@@ -529,7 +529,7 @@ displayed label localizes.
 
     <string name="today_telemetry_notice_title">Çökme ve kullanım raporları etkin</string>
     <string name="today_telemetry_notice_body">ClothesCast hataları düzeltmek için anonim çökme raporları ve kullanım analitiği gönderir. Takvim verileri, konum bilgileri veya içerik metni iletilmez. Ayarlardan istediğiniz zaman devre dışı bırakılabilir.</string>
-    <string name="today_telemetry_notice_open_settings">Gizlilik ayarlarını aç</string>
+    <string name="today_telemetry_notice_open_settings">Gizlilik ayarları</string>
     <string name="today_telemetry_notice_dismiss">Kapat</string>
 
     <string name="settings_root_privacy">Gizlilik</string>

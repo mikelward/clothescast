@@ -218,7 +218,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <!-- Telemetry notice banner. -->
     <string name="today_telemetry_notice_title">Poročila o sesutjih in uporabi so vklopljena</string>
     <string name="today_telemetry_notice_body">ClothesCast pošilja anonimna poročila o sesutjih in analitiko uporabe za odpravljanje napak. Podatki iz koledarja, lokacija ali besedilo napovedi niso vključeni. Izklopi kadar koli v Nastavitvah.</string>
-    <string name="today_telemetry_notice_open_settings">Odpri nastavitve zasebnosti</string>
+    <string name="today_telemetry_notice_open_settings">Nastavitve zasebnosti</string>
     <string name="today_telemetry_notice_dismiss">Zapri</string>
 
     <!-- Onboarding. -->

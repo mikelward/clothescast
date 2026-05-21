@@ -659,7 +659,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Telemetry notice (first-run banner on Today screen). -->
     <string name="today_telemetry_notice_title">Absturz- und Nutzungsberichte sind aktiviert</string>
     <string name="today_telemetry_notice_body">ClothesCast sendet anonyme Absturzberichte und Nutzungsanalysen, um Fehler zu beheben. Keine Kalenderdaten, Standortdaten oder Inhaltstexte werden übermittelt. Jederzeit in den Einstellungen deaktivierbar.</string>
-    <string name="today_telemetry_notice_open_settings">Datenschutzeinstellungen öffnen</string>
+    <string name="today_telemetry_notice_open_settings">Datenschutzeinstellungen</string>
     <string name="today_telemetry_notice_dismiss">Schließen</string>
 
     <!-- Settings root — Privacy row. -->

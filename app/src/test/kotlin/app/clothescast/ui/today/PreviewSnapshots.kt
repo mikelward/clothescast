@@ -32,6 +32,7 @@ import app.clothescast.ui.settings.SettingsClothesFahrenheitPreview
 import app.clothescast.ui.settings.SettingsClothesPreview
 import app.clothescast.ui.settings.SettingsDisplayPreview
 import app.clothescast.ui.settings.SettingsForecastersPreview
+import app.clothescast.ui.settings.SettingsDeveloperPreview
 import app.clothescast.ui.settings.SettingsGarmentColorPickerPreview
 import app.clothescast.ui.settings.SettingsHolidaysPreview
 import app.clothescast.ui.settings.SettingsLocationPreview
@@ -552,6 +553,9 @@ class PreviewSnapshots {
     @Test
     @Config(qualifiers = "w360dp-h1600dp-xhdpi")
     fun settings_holidays() = capture { SettingsHolidaysPreview() }
+    @Test
+    @Config(qualifiers = "w360dp-h1200dp-xhdpi")
+    fun settings_developer() = capture { SettingsDeveloperPreview() }
     @Test fun settings_privacy() = capture { SettingsPrivacyPreview() }
     // The MQTT card stretches well past the 640dp class-level viewport once
     // the discovery picker is showing hits + the full form (host / port /

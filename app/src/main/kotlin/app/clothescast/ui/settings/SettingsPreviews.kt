@@ -33,6 +33,7 @@ import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.discovery.DiscoveredService
 import app.clothescast.discovery.ServiceType
 import app.clothescast.ui.theme.ClothesCastTheme
+import java.time.LocalDate
 import java.time.LocalTime
 
 //
@@ -367,6 +368,24 @@ internal fun SettingsHolidaysPreview() {
             onNavigateToRegionSettings = {},
             onNavigateToLocationSettings = {},
             onNavigateToCalendarSettings = {},
+        )
+    }
+}
+
+// Pinned to a year where the last Monday of May is the 25th, so the
+// preview shows a real same-day collision (Spring Bank Holiday + Towel Day)
+// composed banner rather than a lone theme.
+@Preview(name = "Settings · Developer", widthDp = 360)
+@Composable
+internal fun SettingsDeveloperPreview() {
+    SettingsFrame {
+        DeveloperContent(
+            region = Region.SYSTEM,
+            holidayOverrides = emptyMap(),
+            enabledCountries = setOf("GB", HolidayCatalog.FUNNY),
+            padding = PaddingValues(0.dp),
+            onSpeak = {},
+            initialDate = LocalDate.of(2026, 5, 25),
         )
     }
 }

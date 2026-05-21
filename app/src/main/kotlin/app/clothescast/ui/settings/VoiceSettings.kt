@@ -625,7 +625,7 @@ private fun TestVoiceButton(isPreviewing: Boolean, onClick: () -> Unit) {
  * Errors are surfaced as a Toast so the user can see *why* the voice failed
  * (most often: missing or wrong API key for the chosen provider).
  */
-private suspend fun runTtsPreview(
+internal suspend fun runTtsPreview(
     context: android.content.Context,
     engine: TtsEngine,
     geminiVoice: String,

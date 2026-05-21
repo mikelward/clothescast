@@ -42,6 +42,7 @@ import app.clothescast.ui.pairing.PairingViewModel
 import app.clothescast.ui.settings.AboutPage
 import app.clothescast.ui.settings.CalendarPage
 import app.clothescast.ui.settings.ClothesPage
+import app.clothescast.ui.settings.DeveloperPage
 import app.clothescast.ui.settings.DisplayPage
 import app.clothescast.ui.settings.ForecastersPage
 import app.clothescast.ui.settings.HolidaysPage
@@ -90,6 +91,7 @@ private const val NAV_ANIM_MS = 200
 @Serializable internal object SmartHomeDest
 @Serializable internal object PrivacyDest
 @Serializable internal object AboutDest
+@Serializable internal object DeveloperDest
 
 @Composable
 fun ClothesCastNavHost(
@@ -139,6 +141,7 @@ fun ClothesCastNavHost(
                 onNavigateToPrivacy = { nav.navigate(PrivacyDest) },
                 onNavigateToClothes = { nav.navigate(ClothesDest) },
                 onNavigateToHolidays = { nav.navigate(HolidaysDest) },
+                onNavigateToDeveloper = { nav.navigate(DeveloperDest) },
             )
         }
 
@@ -230,6 +233,7 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
         composable<SmartHomeDest> { e -> SmartHomePage(e.settingsViewModel(nav, app), onBack) }
         composable<PrivacyDest> { e -> PrivacyPage(e.settingsViewModel(nav, app), onBack) }
         composable<AboutDest> { AboutPage(onBack) }
+        composable<DeveloperDest> { e -> DeveloperPage(e.settingsViewModel(nav, app), onBack) }
     }
 }
 
@@ -249,6 +253,7 @@ private fun settingsMenu(nav: NavController): List<SettingsMenuItem> = listOf(
     SettingsMenuItem(R.string.settings_root_calendar, R.string.settings_root_calendar_subtitle) { nav.navigate(CalendarDest) },
     SettingsMenuItem(R.string.settings_root_smart_home, R.string.settings_root_smart_home_subtitle) { nav.navigate(SmartHomeDest) },
     SettingsMenuItem(R.string.settings_root_privacy, R.string.settings_root_privacy_subtitle) { nav.navigate(PrivacyDest) },
+    SettingsMenuItem(R.string.settings_root_developer, R.string.settings_root_developer_subtitle) { nav.navigate(DeveloperDest) },
 )
 
 // One SettingsViewModel shared across every settings destination, scoped to the

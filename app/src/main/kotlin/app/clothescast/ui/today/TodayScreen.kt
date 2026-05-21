@@ -7,6 +7,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,6 +67,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -136,6 +138,7 @@ fun TodayScreen(
     onNavigateToPrivacy: () -> Unit = onNavigateToSettings,
     onNavigateToClothes: () -> Unit = onNavigateToSettings,
     onNavigateToHolidays: () -> Unit = onNavigateToSettings,
+    onNavigateToDeveloper: () -> Unit = onNavigateToSettings,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -256,6 +259,7 @@ fun TodayScreen(
             onAdjustThreshold = viewModel::adjustClothesRuleThreshold,
             onNavigateToClothes = onNavigateToClothes,
             onToggleModelSpread = viewModel::toggleModelSpread,
+            onLongPressDate = onNavigateToDeveloper,
         )
     }
 
@@ -290,6 +294,7 @@ private fun TodayContent(
     onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
     onToggleModelSpread: () -> Unit,
+    onLongPressDate: () -> Unit,
 ) {
     val context = LocalContext.current
     // Permission state is observed live, not snapshotted, so granting from system
@@ -464,6 +469,7 @@ private fun TodayContent(
                     onAdjustThreshold = onAdjustThreshold,
                     onNavigateToClothes = onNavigateToClothes,
                     onToggleModelSpread = onToggleModelSpread,
+                    onLongPressDate = onLongPressDate,
                 )
             }
         }
@@ -494,6 +500,7 @@ private fun TodayPage(
     onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
     onToggleModelSpread: () -> Unit,
+    onLongPressDate: () -> Unit,
 ) {
     val scrollScope = rememberCoroutineScope()
     // Captured via onGloballyPositioned on the ConfidenceChip below so the
@@ -562,6 +569,7 @@ private fun TodayPage(
                 showChevronRight = showChevronRight,
                 showChevronLeft = showChevronLeft,
                 onChevronTap = onChevronTap,
+                onLongPressDate = onLongPressDate,
             )
             insight.confidence?.let {
                 // Wrap the per-model toggle so a tap also scrolls the chip to the
@@ -1470,6 +1478,14 @@ internal fun InsightCard(
      */
     showChevronLeft: Boolean = false,
     onChevronTap: (() -> Unit)? = null,
+    /**
+     * Hidden developer shortcut: long-pressing the date label invokes this
+     * (the Today screen wires it to open Developer settings). Null disables
+     * it — a plain tap on the date never does anything, so it can't be
+     * triggered accidentally. Default null keeps every preview / non-live
+     * call site unchanged.
+     */
+    onLongPressDate: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val formatter = remember(context, region, temperatureUnit) {
@@ -1494,6 +1510,13 @@ internal fun InsightCard(
                     text = dateFormatter.format(insight.forDate),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = if (onLongPressDate != null) {
+                        Modifier.pointerInput(onLongPressDate) {
+                            detectTapGestures(onLongPress = { onLongPressDate() })
+                        }
+                    } else {
+                        Modifier
+                    },
                 )
                 if (location != null && locationLabel != null) {
                     Text(

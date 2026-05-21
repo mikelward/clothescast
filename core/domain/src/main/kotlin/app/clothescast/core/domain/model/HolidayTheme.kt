@@ -56,6 +56,7 @@ enum class HolidayId {
     UK_SUMMER_BANK_HOLIDAY,
     FATHERS_DAY_SEP,
     BRAZIL_INDEPENDENCE_DAY,
+    TALK_LIKE_A_PIRATE_DAY,
     GERMAN_UNITY_DAY,
     CROATIA_INDEPENDENCE_DAY,
     KOREAN_HANGEUL_DAY,
@@ -345,6 +346,16 @@ object HolidayCatalog {
      * so it can't collide with one.
      */
     const val GLOBAL_COUNTRY: String = "GLOBAL"
+
+    /**
+     * Sentinel "country" for the Funny bucket — playful, non-national
+     * observances like Talk Like a Pirate Day that aren't tied to any one
+     * place. Like [GLOBAL_COUNTRY] it sits in [HolidayTheme.countries]
+     * alongside real ISO codes and is surfaced in Settings as its own
+     * toggleable bucket (on by default). Not an ISO code, so it can't
+     * collide with one.
+     */
+    const val FUNNY: String = "FUNNY"
 
     /**
      * [HolidayId]s constructed at runtime by [FestiveThemes] from calendar
@@ -978,6 +989,20 @@ object HolidayCatalog {
             countries = setOf("BR"),
         ),
 
+        // Sep 19 — Talk Like a Pirate Day. A playful, non-national
+        // observance, so it rides the [FUNNY] bucket rather than any ISO
+        // country. White tops + black bottoms (Jolly Roger).
+        HolidayDate.Fixed(Month.SEPTEMBER, 19) to HolidayTheme(
+            id = HolidayId.TALK_LIKE_A_PIRATE_DAY,
+            displayNameKey = "holiday_name_talk_like_a_pirate_day",
+            bannerTextKey = "holiday_banner_talk_like_a_pirate_day",
+            emoji = "🦜", // 🦜
+            topOverrides = topPaletteAll(PIRATE_WHITE),
+            bottomOverrides = bottomPaletteAll(PIRATE_BLACK),
+            bannerArgb = PIRATE_BLACK,
+            countries = setOf(FUNNY),
+        ),
+
         // Oct 3 — German Unity Day. Black tops + red bottoms with gold as
         // the unifying flag-accent trim across both.
         HolidayDate.Fixed(Month.OCTOBER, 3) to HolidayTheme(
@@ -1332,6 +1357,9 @@ private const val SPAIN_YELLOW = 0xFFF1BF00L
 
 private const val HALLOWEEN_ORANGE = 0xFFE65100L
 private const val HALLOWEEN_BLACK = 0xFF212121L
+
+private const val PIRATE_WHITE = 0xFFF5F5F5L
+private const val PIRATE_BLACK = 0xFF1A1A1AL
 
 private const val BONFIRE_ORANGE = 0xFFEF6C00L
 private const val BONFIRE_RED = 0xFFC62828L

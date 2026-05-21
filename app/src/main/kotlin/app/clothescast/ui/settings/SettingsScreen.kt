@@ -239,6 +239,7 @@ internal fun HolidaysPage(
             onSetCountryHome = viewModel::setHolidayCountryHome,
             onSetCountryCurrent = viewModel::setHolidayCountryCurrent,
             onSetCountryGlobal = viewModel::setHolidayCountryGlobal,
+            onSetCountryFunny = viewModel::setHolidayCountryFunny,
             onSetCountryAll = viewModel::setHolidayCountryAll,
             onSetCountryOverride = viewModel::setHolidayCountryOverride,
             onSetHolidayOverride = viewModel::setHolidayOverride,

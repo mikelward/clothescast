@@ -458,6 +458,7 @@ class PreviewSnapshots {
     @Test fun holiday_korean_liberation_day() = capture { HolidayKoreanLiberationDayPreview() }
     @Test fun holiday_fathers_day_sep() = capture { HolidayFathersDaySepPreview() }
     @Test fun holiday_brazil_independence_day() = capture { HolidayBrazilIndependenceDayPreview() }
+    @Test fun holiday_pirate_day() = capture { HolidayPirateDayPreview() }
     @Test fun holiday_german_unity_day() = capture { HolidayGermanUnityDayPreview() }
     @Test fun holiday_korean_hangeul_day() = capture { HolidayKoreanHangeulDayPreview() }
     @Test fun holiday_canadian_thanksgiving() = capture { HolidayCanadianThanksgivingPreview() }

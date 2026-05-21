@@ -59,11 +59,12 @@ import java.util.Locale
 
 /**
  * A top-of-page card with the country-source toggles (Home / Current
- * location / Global / All), followed by a Global collapsible listing
- * the four universal holidays (Christmas, NYE, Halloween, Valentine's),
- * then one collapsible per ISO country listing that country's
- * holidays, and finally an "All" collapsible showing every holiday in
- * the catalogue flat for power-user search.
+ * location / Global / Funny / All), followed by a Global collapsible
+ * listing the four universal holidays (Christmas, NYE, Halloween,
+ * Valentine's), a Funny collapsible listing the playful observances
+ * (Talk Like a Pirate Day), then one collapsible per ISO country
+ * listing that country's holidays, and finally an "All" collapsible
+ * showing every holiday in the catalogue flat for power-user search.
  *
  * Both section headers and individual holiday rows carry a tri-state
  * dropdown (`Auto` / `On` / `Off`). The `Auto` label includes the
@@ -91,6 +92,7 @@ internal fun HolidaysContent(
     onSetCountryHome: (Boolean) -> Unit,
     onSetCountryCurrent: (Boolean) -> Unit,
     onSetCountryGlobal: (Boolean) -> Unit,
+    onSetCountryFunny: (Boolean) -> Unit,
     onSetCountryAll: (Boolean) -> Unit,
     onSetCountryOverride: (String, HolidayOverride) -> Unit,
     onSetHolidayOverride: (HolidayId, HolidayOverride) -> Unit,
@@ -129,9 +131,16 @@ internal fun HolidaysContent(
             .map { it.second }
             .filter { HolidayCatalog.GLOBAL_COUNTRY in it.countries }
     }
+    // Funny (countries = {FUNNY}) lives in its own collapsible like Global,
+    // separate from the ISO country list below.
+    val funnyThemes = remember(sortedCatalog) {
+        sortedCatalog
+            .map { it.second }
+            .filter { HolidayCatalog.FUNNY in it.countries }
+    }
     val isoCountries = remember(uiLocale) {
         HolidayCatalog.allCountries
-            .filter { it != HolidayCatalog.GLOBAL_COUNTRY }
+            .filter { it != HolidayCatalog.GLOBAL_COUNTRY && it != HolidayCatalog.FUNNY }
             .sortedForDisplay(context, uiLocale)
     }
     val themesByCountry = remember(sortedCatalog) {
@@ -195,6 +204,11 @@ internal fun HolidaysContent(
                         label = stringResource(R.string.settings_holidays_source_global),
                         checked = holidayCountrySelection.global,
                         onCheckedChange = onSetCountryGlobal,
+                    )
+                    SourceRow(
+                        label = stringResource(R.string.settings_holidays_source_funny),
+                        checked = holidayCountrySelection.funny,
+                        onCheckedChange = onSetCountryFunny,
                     )
                     CalendarSourceRow(
                         label = stringResource(R.string.settings_holidays_source_calendar_holidays),
@@ -269,6 +283,40 @@ internal fun HolidaysContent(
                 },
             ) {
                 globalThemes.forEach { theme ->
+                    HolidayOverrideRow(
+                        theme = theme,
+                        override = holidayOverrides[theme.id] ?: HolidayOverride.AUTO,
+                        autoOn = theme.countries.any { it in effectiveEnabledHolidayCountries },
+                        onChange = { newState -> onSetHolidayOverride(theme.id, newState) },
+                    )
+                }
+            }
+
+            val funnyActiveCount = funnyThemes.count { theme ->
+                theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries)
+            }
+            val funnyOverride = holidayCountrySelection.countryOverrides[HolidayCatalog.FUNNY]
+                ?: HolidayOverride.AUTO
+            val funnyAutoOn = holidayCountrySelection.countryAutoEffective(
+                HolidayCatalog.FUNNY,
+                localeCountry,
+                weatherLocationCountry,
+            )
+            CollapsibleSection(
+                title = stringResource(R.string.settings_holiday_country_funny_label),
+                summary = "$funnyActiveCount/${funnyThemes.size}",
+                rememberKey = "holidays-country-${HolidayCatalog.FUNNY}",
+                trailing = {
+                    OverrideDropdown(
+                        current = funnyOverride,
+                        autoOn = funnyAutoOn,
+                        onChange = { newState ->
+                            onSetCountryOverride(HolidayCatalog.FUNNY, newState)
+                        },
+                    )
+                },
+            ) {
+                funnyThemes.forEach { theme ->
                     HolidayOverrideRow(
                         theme = theme,
                         override = holidayOverrides[theme.id] ?: HolidayOverride.AUTO,

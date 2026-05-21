@@ -34,6 +34,9 @@ class HolidayThemeResolverTest {
         temperatureUnit = TemperatureUnit.CELSIUS,
         distanceUnit = DistanceUnit.KILOMETERS,
         clothesRules = emptyList(),
+        // Master calendar switch on; the per-source theming toggles are flipped
+        // per-test (theming reads only when master AND the toggle are on).
+        calendarEnabled = true,
     )
 
     @Test

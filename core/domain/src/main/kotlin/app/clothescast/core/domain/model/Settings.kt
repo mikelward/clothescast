@@ -448,11 +448,29 @@ data class UserPreferences(
     val deviceVoice: String? = null,
     val voiceLocale: VoiceLocale = VoiceLocale.SYSTEM,
     /**
+     * Master switch for all calendar access. When off, nothing reads the
+     * device calendar regardless of the per-feature toggles below — event
+     * mentions, holiday / birthday theming, and the Celebrations listing all
+     * stay dark. The `READ_CALENDAR` prompt hangs off this toggle (on the
+     * Calendar settings page). Off by default for fresh installs; the
+     * repository derives `true` on read for existing installs that already had
+     * any per-feature toggle on, so an upgrade never silently disables a
+     * calendar feature the user had enabled. The per-feature toggles
+     * ([useCalendarEvents], [themeFromCalendarHolidays],
+     * [themeFromCalendarBirthdays]) are only consulted when this is on — see
+     * [calendarEventMentionsActive] and friends. Turning the master off clears
+     * those toggles (atomically, in the repository) so that re-enabling one
+     * feature later — which flips the master back on — doesn't silently revive
+     * the others.
+     */
+    val calendarEnabled: Boolean = false,
+    /**
      * When true, the worker reads today's calendar events (via `READ_CALENDAR`)
      * and feeds them into the insight summary so the rendered string can tie a
      * clothes suggestion to a specific event ("bring an umbrella for your 3pm
-     * standup"). Off by default — the user must both enable the toggle and grant
-     * the runtime permission for events to actually be read.
+     * standup"). Gated by [calendarEnabled] — see [calendarEventMentionsActive].
+     * Off by default — the user must both enable the toggle and grant the
+     * runtime permission for events to actually be read.
      */
     val useCalendarEvents: Boolean = false,
     /**
@@ -685,6 +703,16 @@ data class UserPreferences(
      */
     val castSkipPhoneSpeech: Boolean = true,
 ) {
+    /**
+     * Effective per-feature flags: a feature reads the calendar only when the
+     * master [calendarEnabled] switch is on *and* its own toggle is on. Every
+     * calendar consumer should branch on these rather than the raw toggles so
+     * the master switch can't be bypassed.
+     */
+    val calendarEventMentionsActive: Boolean get() = calendarEnabled && useCalendarEvents
+    val calendarHolidayThemingActive: Boolean get() = calendarEnabled && themeFromCalendarHolidays
+    val calendarBirthdayThemingActive: Boolean get() = calendarEnabled && themeFromCalendarBirthdays
+
     companion object {
         const val DEFAULT_GEMINI_VOICE = "Despina"
         const val DEFAULT_MQTT_PORT = 1883

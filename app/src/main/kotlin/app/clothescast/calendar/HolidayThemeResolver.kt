@@ -26,7 +26,7 @@ suspend fun resolveHolidayTheme(
     calendarEventReader: CalendarEventReader,
 ): HolidayTheme? {
     val today = LocalDate.now(prefs.schedule.zoneId)
-    val needEvents = prefs.themeFromCalendarHolidays || prefs.themeFromCalendarBirthdays
+    val needEvents = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive
     val events = if (needEvents) {
         runCatching {
             calendarEventReader.eventsForDay(today, prefs.schedule.zoneId)
@@ -46,7 +46,7 @@ suspend fun resolveHolidayTheme(
         overrides = prefs.holidayOverrides,
         enabledCountries = effectiveCountries,
         events = events,
-        themeFromCalendarHolidays = prefs.themeFromCalendarHolidays,
-        themeFromCalendarBirthdays = prefs.themeFromCalendarBirthdays,
+        themeFromCalendarHolidays = prefs.calendarHolidayThemingActive,
+        themeFromCalendarBirthdays = prefs.calendarBirthdayThemingActive,
     )
 }

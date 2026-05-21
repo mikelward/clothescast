@@ -298,16 +298,47 @@ class SettingsRepository(
         dataStore.edit { it[VOICE_LOCALE] = locale.name }
     }
 
+    /**
+     * Master calendar-access switch. Turning it off clears the three
+     * per-feature toggles in the *same* edit, so a later single-feature
+     * re-enable (which switches the master back on) doesn't silently revive the
+     * others. Done as one atomic [androidx.datastore.preferences.core.edit] so a
+     * rapid enable-then-disable can't interleave with [setUseCalendarEvents] and
+     * co. and leave the master stuck on against the user's last action.
+     */
+    suspend fun setCalendarEnabled(enabled: Boolean) {
+        dataStore.edit {
+            it[CALENDAR_ENABLED] = enabled
+            if (!enabled) {
+                it[USE_CALENDAR_EVENTS] = false
+                it[THEME_FROM_CALENDAR_HOLIDAYS] = false
+                it[THEME_FROM_CALENDAR_BIRTHDAYS] = false
+            }
+        }
+    }
+
+    // Enabling any per-feature toggle implies calendar access, so each setter
+    // also flips the master on in the same atomic edit — never as a separate
+    // write that could be reordered against a concurrent master change.
     suspend fun setUseCalendarEvents(enabled: Boolean) {
-        dataStore.edit { it[USE_CALENDAR_EVENTS] = enabled }
+        dataStore.edit {
+            it[USE_CALENDAR_EVENTS] = enabled
+            if (enabled) it[CALENDAR_ENABLED] = true
+        }
     }
 
     suspend fun setThemeFromCalendarHolidays(enabled: Boolean) {
-        dataStore.edit { it[THEME_FROM_CALENDAR_HOLIDAYS] = enabled }
+        dataStore.edit {
+            it[THEME_FROM_CALENDAR_HOLIDAYS] = enabled
+            if (enabled) it[CALENDAR_ENABLED] = true
+        }
     }
 
     suspend fun setThemeFromCalendarBirthdays(enabled: Boolean) {
-        dataStore.edit { it[THEME_FROM_CALENDAR_BIRTHDAYS] = enabled }
+        dataStore.edit {
+            it[THEME_FROM_CALENDAR_BIRTHDAYS] = enabled
+            if (enabled) it[CALENDAR_ENABLED] = true
+        }
     }
 
     suspend fun setCelebrationCardDismissed(dismissed: Boolean) {
@@ -694,6 +725,13 @@ class SettingsRepository(
         val useCalendarEvents = this[USE_CALENDAR_EVENTS] == true
         val themeFromCalendarHolidays = this[THEME_FROM_CALENDAR_HOLIDAYS] == true
         val themeFromCalendarBirthdays = this[THEME_FROM_CALENDAR_BIRTHDAYS] == true
+        // Master calendar switch. Absent on installs that predate it, so derive
+        // its value from the per-feature toggles: if the user already had any
+        // calendar feature on, calendar access is implicitly on — never silently
+        // disable a feature they were using. Once the user flips the master
+        // toggle, the stored value wins.
+        val calendarEnabled = this[CALENDAR_ENABLED]
+            ?: (useCalendarEvents || themeFromCalendarHolidays || themeFromCalendarBirthdays)
         val celebrationCardDismissed = this[CELEBRATION_CARD_DISMISSED] == true
         val calendarPermissionRecheckTick = this[CALENDAR_PERMISSION_RECHECK_TICK] ?: 0L
         val tonightTime = this[TONIGHT_TIME]?.let { LocalTime.parse(it, TIME_FORMAT) }
@@ -778,6 +816,7 @@ class SettingsRepository(
             ttsStyle = ttsStyle,
             deviceVoice = deviceVoice,
             voiceLocale = voiceLocale,
+            calendarEnabled = calendarEnabled,
             useCalendarEvents = useCalendarEvents,
             themeFromCalendarHolidays = themeFromCalendarHolidays,
             themeFromCalendarBirthdays = themeFromCalendarBirthdays,
@@ -1023,6 +1062,7 @@ class SettingsRepository(
         private val TTS_STYLE = stringPreferencesKey("tts_style")
         private val DEVICE_VOICE = stringPreferencesKey("device_voice")
         private val VOICE_LOCALE = stringPreferencesKey("voice_locale")
+        private val CALENDAR_ENABLED = booleanPreferencesKey("calendar_enabled")
         private val USE_CALENDAR_EVENTS = booleanPreferencesKey("use_calendar_events")
         private val THEME_FROM_CALENDAR_HOLIDAYS = booleanPreferencesKey("theme_from_calendar_holidays")
         private val THEME_FROM_CALENDAR_BIRTHDAYS = booleanPreferencesKey("theme_from_calendar_birthdays")

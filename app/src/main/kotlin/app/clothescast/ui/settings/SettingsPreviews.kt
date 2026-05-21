@@ -328,9 +328,16 @@ internal fun SettingsForecastersPreview() {
 internal fun SettingsCalendarPreview() {
     SettingsFrame {
         CalendarContent(
-            useCalendarEvents = false,
+            calendarEnabled = true,
+            useCalendarEvents = true,
+            themeFromCalendarHolidays = true,
+            themeFromCalendarBirthdays = false,
             padding = PaddingValues(0.dp),
+            onSetCalendarEnabled = {},
             onSetUseCalendarEvents = {},
+            onSetThemeFromCalendarHolidays = {},
+            onSetThemeFromCalendarBirthdays = {},
+            onCalendarPermissionRechecked = {},
         )
     }
 }
@@ -360,6 +367,7 @@ internal fun SettingsHolidaysPreview() {
             effectiveEnabledHolidayCountries = setOf("AU", "FR", HolidayCatalog.GLOBAL_COUNTRY, HolidayCatalog.FUNNY),
             localeCountry = "AU",
             weatherLocationCountry = "AU",
+            calendarEnabled = false,
             themeFromCalendarHolidays = false,
             themeFromCalendarBirthdays = false,
             calendarCelebrations = null,
@@ -398,6 +406,7 @@ internal fun SettingsCalendarCelebrationsPreview() {
             CalendarCelebrationsSection(
                 title = stringResource(R.string.settings_holidays_source_calendar_holidays),
                 rememberKey = "preview-calendar-holidays",
+                calendarEnabled = true,
                 permissionGranted = true,
                 events = listOf(
                     UpcomingCalendarEvent(today.plusDays(4), "Victoria Day", EventKind.PUBLIC_HOLIDAY),
@@ -407,11 +416,13 @@ internal fun SettingsCalendarCelebrationsPreview() {
                 emptyMessage = stringResource(R.string.settings_holidays_calendar_no_holidays),
                 uiLocale = Locale.US,
                 onRequestPermission = {},
+                onEnableCalendar = {},
                 initiallyExpanded = true,
             )
             CalendarCelebrationsSection(
                 title = stringResource(R.string.settings_holidays_source_calendar_birthdays),
                 rememberKey = "preview-calendar-birthdays",
+                calendarEnabled = true,
                 permissionGranted = true,
                 events = listOf(
                     UpcomingCalendarEvent(today.plusDays(9), "Alex’s birthday", EventKind.BIRTHDAY),
@@ -420,6 +431,7 @@ internal fun SettingsCalendarCelebrationsPreview() {
                 emptyMessage = stringResource(R.string.settings_holidays_calendar_no_birthdays),
                 uiLocale = Locale.US,
                 onRequestPermission = {},
+                onEnableCalendar = {},
                 initiallyExpanded = true,
             )
         }

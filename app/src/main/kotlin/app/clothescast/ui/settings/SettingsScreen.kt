@@ -233,6 +233,7 @@ internal fun HolidaysPage(
             localeCountry = state.region.toJavaLocale()?.country
                 ?: java.util.Locale.getDefault().country,
             weatherLocationCountry = state.location?.countryCode,
+            calendarEnabled = state.calendarEnabled,
             themeFromCalendarHolidays = state.themeFromCalendarHolidays,
             themeFromCalendarBirthdays = state.themeFromCalendarBirthdays,
             calendarCelebrations = state.calendarCelebrations,
@@ -282,9 +283,16 @@ internal fun CalendarPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     SettingsScaffold(R.string.settings_root_calendar, onBack) { padding ->
         CalendarContent(
+            calendarEnabled = state.calendarEnabled,
             useCalendarEvents = state.useCalendarEvents,
+            themeFromCalendarHolidays = state.themeFromCalendarHolidays,
+            themeFromCalendarBirthdays = state.themeFromCalendarBirthdays,
             padding = padding,
+            onSetCalendarEnabled = viewModel::setCalendarEnabled,
             onSetUseCalendarEvents = viewModel::setUseCalendarEvents,
+            onSetThemeFromCalendarHolidays = viewModel::setThemeFromCalendarHolidays,
+            onSetThemeFromCalendarBirthdays = viewModel::setThemeFromCalendarBirthdays,
+            onCalendarPermissionRechecked = viewModel::markCalendarPermissionRechecked,
         )
     }
 }

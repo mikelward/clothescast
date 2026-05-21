@@ -78,6 +78,9 @@ class GenerateDailyInsightTest {
         temperatureUnit = TemperatureUnit.CELSIUS,
         distanceUnit = DistanceUnit.KILOMETERS,
         clothesRules = ClothesRule.DEFAULTS,
+        // Master calendar switch on; individual cases flip useCalendarEvents to
+        // exercise the per-feature gate (events read only when both are on).
+        calendarEnabled = true,
     )
 
     private class FakeWeatherRepository(private val bundle: ForecastBundle) : WeatherRepository {

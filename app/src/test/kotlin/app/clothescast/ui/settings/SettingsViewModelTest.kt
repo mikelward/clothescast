@@ -220,6 +220,45 @@ class SettingsViewModelTest {
     }
 
     @Test
+    fun `enabling a sub-feature switches the master on`() = runTest {
+        subject.state.first { !it.calendarEnabled }
+
+        subject.setThemeFromCalendarBirthdays(true)
+
+        val state = subject.state.first { it.themeFromCalendarBirthdays }
+        state.calendarEnabled shouldBe true
+        // The other sub-features stay off — enabling one doesn't enable the rest.
+        state.useCalendarEvents shouldBe false
+        state.themeFromCalendarHolidays shouldBe false
+    }
+
+    @Test
+    fun `disabling the master switch clears the per-feature toggles`() = runTest {
+        subject.setUseCalendarEvents(true)
+        subject.setThemeFromCalendarHolidays(true)
+        subject.setThemeFromCalendarBirthdays(true)
+        subject.state.first {
+            it.calendarEnabled && it.useCalendarEvents &&
+                it.themeFromCalendarHolidays && it.themeFromCalendarBirthdays
+        }
+
+        subject.setCalendarEnabled(false)
+
+        val off = subject.state.first { !it.calendarEnabled }
+        off.useCalendarEvents shouldBe false
+        off.themeFromCalendarHolidays shouldBe false
+        off.themeFromCalendarBirthdays shouldBe false
+
+        // Re-enabling a single feature flips the master back on without
+        // silently reviving the features that were cleared.
+        subject.setThemeFromCalendarBirthdays(true)
+        val back = subject.state.first { it.themeFromCalendarBirthdays }
+        back.calendarEnabled shouldBe true
+        back.useCalendarEvents shouldBe false
+        back.themeFromCalendarHolidays shouldBe false
+    }
+
+    @Test
     fun `loadCalendarCelebrations collapses only true duplicates, keeping same-name events on different dates`() = runTest {
         // Regression for the dedupe key: two contacts who share a name with
         // different birthdays (or a same-named holiday recurring on different

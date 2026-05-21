@@ -283,6 +283,59 @@ voice clip over re-synthesising in HA (e.g. `music_assistant.play_announcement`
 → media URL flows), and for users who want to capture the rendered
 briefing for their own pipelines.
 
+### Recipe: serve the clip as a static file (Node-RED)
+
+`media_player.play_media` needs an HTTP URL, and HA won't read an MQTT
+binary payload into the media player directly — so the WAV has to land
+on disk somewhere HA serves over HTTP. HA exposes the `config/www/`
+directory at `/local/`, so a file written to
+`config/www/clothescast_now.wav` is fetchable at
+`http://<ha-ip>:8123/local/clothescast_now.wav`.
+
+The Node-RED add-on is the least-fiddly way to do that write — it holds
+an always-on subscription and dumps the raw bytes in three nodes:
+
+1. **`mqtt in`** — topic `clothescast/default/now/audio`, **Output** set
+   to *a Buffer* (not "a parsed JSON object" or "a String"). The payload
+   is binary WAV; decoding it as a string corrupts it.
+2. **`switch`** — drop the empty retained "clear" payloads. Add one rule,
+   `msg.payload` → *length* (or a `function` node returning the message
+   only when `msg.payload.length > 0`). Without this guard a clear
+   message (see the empty-retained-payload note near the top of this
+   doc) truncates `clothescast_now.wav` to zero bytes the moment a
+   period publishes with no audio.
+3. **`file`** (write) — filename `/config/www/clothescast_now.wav`,
+   action *overwrite file*, "add newline to each payload" **off**. Wire
+   `mqtt in` → `switch` → `file`.
+
+Create `config/www/` first if it doesn't already exist (HA only
+auto-creates it in some installs). After the next ClothesCast refresh —
+or immediately, since the audio topic is retained — the file appears and
+is served at `http://<ha-ip>:8123/local/clothescast_now.wav`.
+
+Then play it from any automation:
+
+```yaml
+- action: media_player.play_media
+  target:
+    entity_id: media_player.kitchen_hub
+  data:
+    media_content_id: "http://192.168.x.x:8123/local/clothescast_now.wav"
+    media_content_type: music
+```
+
+Use the IP address, not `homeassistant.local`, for the same cross-VLAN
+mDNS reason as the outfit-image automation above. `music` is the most
+broadly accepted `media_content_type` for a raw audio URL on Cast
+targets; `audio/x-wav` also works on most.
+
+**No-Node-RED alternative.** A `shell_command` wrapping
+`mosquitto_sub -C 1 -t clothescast/default/now/audio > /config/www/clothescast_now.wav`
+does the same write, but it re-subscribes on every call and you have to
+guard the empty-payload clears yourself (a zero-byte capture overwrites
+the good clip). Node-RED's persistent subscription plus the `switch`
+guard handle both cleanly, which is why it's the recommended path.
+
 ## Home Assistant — speaking the sensor on Google Home
 
 As of mid-2026, getting Google Home / Nest devices to actually *speak*

@@ -472,7 +472,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <!-- Telemetry notice. -->
     <string name="today_telemetry_notice_title">Nedbrud- og brugsrapporter er aktiveret</string>
     <string name="today_telemetry_notice_body">ClothesCast sender anonyme nedbrudrapporter og brugsanalyser for at rette fejl. Ingen kalenderdata, placeringsdata eller indholdstekster sendes. Kan deaktiveres når som helst i indstillingerne.</string>
-    <string name="today_telemetry_notice_open_settings">Åbn privatlivsindstillinger</string>
+    <string name="today_telemetry_notice_open_settings">Privatlivsindstillinger</string>
     <string name="today_telemetry_notice_dismiss">Luk</string>
 
     <!-- Widget. -->

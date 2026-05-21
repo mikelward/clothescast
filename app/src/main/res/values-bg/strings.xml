@@ -223,7 +223,7 @@ What is NOT overridden, by design:
     <!-- Telemetry notice. -->
     <string name="today_telemetry_notice_title">Докладите за сривове и използване са включени</string>
     <string name="today_telemetry_notice_body">ClothesCast изпраща анонимни доклади за сривове и статистика за използване, за да помогне за отстраняване на грешки. Не се включват данни от календара, местоположение или текст на прозрението. Изключи го по всяко време от Настройките.</string>
-    <string name="today_telemetry_notice_open_settings">Отвори настройките за поверителност</string>
+    <string name="today_telemetry_notice_open_settings">Настройки за поверителност</string>
     <string name="today_telemetry_notice_dismiss">Затвори</string>
 
     <!-- Onboarding flow. -->

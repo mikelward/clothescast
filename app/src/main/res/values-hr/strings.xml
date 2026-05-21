@@ -602,7 +602,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <!-- Telemetry notice (first-run banner on Today screen). -->
     <string name="today_telemetry_notice_title">Izvješća o padovima i korištenju su uključena</string>
     <string name="today_telemetry_notice_body">ClothesCast šalje anonimna izvješća o padovima i analitiku korištenja za ispravljanje grešaka. Podaci kalendara, lokacija ili tekst sažetaka nisu uključeni. Isključi u bilo kom trenutku u Postavkama.</string>
-    <string name="today_telemetry_notice_open_settings">Otvori postavke privatnosti</string>
+    <string name="today_telemetry_notice_open_settings">Postavke privatnosti</string>
     <string name="today_telemetry_notice_dismiss">Zatvori</string>
 
     <!-- Settings root — Privacy row. -->

@@ -210,7 +210,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <!-- Telemetry notice. -->
     <string name="today_telemetry_notice_title">Rapoartele de erori și utilizare sunt activate</string>
     <string name="today_telemetry_notice_body">ClothesCast trimite rapoarte anonime de erori și analize de utilizare pentru a ajuta la remedierea bug-urilor. Nu sunt incluse date din calendar, locație sau textul rezumatului. Le poți dezactiva oricând din Setări.</string>
-    <string name="today_telemetry_notice_open_settings">Deschide setările de Confidențialitate</string>
+    <string name="today_telemetry_notice_open_settings">Setări de confidențialitate</string>
     <string name="today_telemetry_notice_dismiss">Închide</string>
 
     <!-- Onboarding. -->

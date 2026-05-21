@@ -535,7 +535,7 @@ default English (matching values-pl / values-uk).
     <!-- Telemetry notice banner. -->
     <string name="today_telemetry_notice_title">Izveštaji o greškama i korišćenju su uključeni</string>
     <string name="today_telemetry_notice_body">ClothesCast šalje anonimne izveštaje o greškama i analitiku korišćenja radi ispravljanja grešaka. Podaci kalendara, lokacija ili tekst rezimea nisu uključeni. Isključi u bilo kom trenutku u podešavanjima.</string>
-    <string name="today_telemetry_notice_open_settings">Otvori podešavanja privatnosti</string>
+    <string name="today_telemetry_notice_open_settings">Podešavanja privatnosti</string>
     <string name="today_telemetry_notice_dismiss">Zatvori</string>
 
     <!-- Onboarding flow. -->

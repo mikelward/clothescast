@@ -206,7 +206,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <!-- Telemetry notice banner -->
     <string name="today_telemetry_notice_title">Laporan ranap + penggunaan diaktifkan</string>
     <string name="today_telemetry_notice_body">ClothesCast menghantar laporan ranap tanpa nama dan analitik penggunaan untuk membantu pembaikan pepijat. Tiada data kalendar, lokasi, atau teks pandangan disertakan. Matikan pada bila-bila masa dalam Tetapan.</string>
-    <string name="today_telemetry_notice_open_settings">Buka Tetapan Privasi</string>
+    <string name="today_telemetry_notice_open_settings">Tetapan Privasi</string>
     <string name="today_telemetry_notice_dismiss">Tutup</string>
 
     <!-- Onboarding -->

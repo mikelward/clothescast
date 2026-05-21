@@ -496,7 +496,7 @@ only the displayed label localizes.
     <!-- Telemetry notice. -->
     <string name="today_telemetry_notice_title">Звіти про збої та використання увімкнено</string>
     <string name="today_telemetry_notice_body">ClothesCast надсилає анонімні звіти про збої та аналітику використання для виправлення помилок. Дані календаря, місцезнаходження та текст прогнозу не включаються. Вимкніть у будь-який час у налаштуваннях.</string>
-    <string name="today_telemetry_notice_open_settings">Відкрити налаштування конфіденційності</string>
+    <string name="today_telemetry_notice_open_settings">Налаштування конфіденційності</string>
     <string name="today_telemetry_notice_dismiss">Закрити</string>
 
     <!-- Onboarding flow. -->

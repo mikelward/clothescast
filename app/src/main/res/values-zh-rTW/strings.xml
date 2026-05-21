@@ -651,7 +651,7 @@ label localises.
     <!-- Telemetry notice (first-run banner on Today screen). -->
     <string name="today_telemetry_notice_title">當機與使用情況報告已開啟</string>
     <string name="today_telemetry_notice_body">ClothesCast 會傳送匿名當機報告和使用情況分析，協助修正錯誤。不含行事曆資料、位置或預報文字。可隨時在「設定」中關閉。</string>
-    <string name="today_telemetry_notice_open_settings">開啟隱私設定</string>
+    <string name="today_telemetry_notice_open_settings">隱私設定</string>
     <string name="today_telemetry_notice_dismiss">略過</string>
 
     <!-- Settings root — Privacy row. -->

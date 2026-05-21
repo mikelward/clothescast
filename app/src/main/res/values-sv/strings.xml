@@ -472,7 +472,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <!-- Telemetry notice. -->
     <string name="today_telemetry_notice_title">Krasch- och användningsrapporter är aktiverade</string>
     <string name="today_telemetry_notice_body">ClothesCast skickar anonyma kraschrapporter och användningsanalyser för att åtgärda fel. Inga kalenderdata, platsdata eller innehållstexter skickas. Kan inaktiveras när som helst i inställningarna.</string>
-    <string name="today_telemetry_notice_open_settings">Öppna integritetsinställningar</string>
+    <string name="today_telemetry_notice_open_settings">Integritetsinställningar</string>
     <string name="today_telemetry_notice_dismiss">Stäng</string>
 
     <!-- Widget. -->

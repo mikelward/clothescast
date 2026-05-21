@@ -611,7 +611,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Telemetry notice banner. -->
     <string name="today_telemetry_notice_title">Αναφορές σφαλμάτων + χρήσης είναι ενεργές</string>
     <string name="today_telemetry_notice_body">Ο ClothesCast στέλνει ανώνυμες αναφορές σφαλμάτων και αναλυτικά χρήσης για βελτίωση. Δεν περιλαμβάνονται ημερολογιακά δεδομένα, τοποθεσία ή κείμενο πρόβλεψης. Μπορείς να το απενεργοποιήσεις οποτεδήποτε στις Ρυθμίσεις.</string>
-    <string name="today_telemetry_notice_open_settings">Άνοιγμα Ρυθμίσεων Απορρήτου</string>
+    <string name="today_telemetry_notice_open_settings">Ρυθμίσεις απορρήτου</string>
     <string name="today_telemetry_notice_dismiss">Κλείσιμο</string>
 
     <!-- Privacy settings root. -->

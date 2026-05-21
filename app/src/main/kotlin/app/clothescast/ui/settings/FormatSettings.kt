@@ -152,9 +152,11 @@ private fun PreviewCard(
         precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(17, 0), PrecipLikelihood.LIKELY),
     )
     SectionCard(title = stringResource(R.string.settings_format_preview_title)) {
+        // Match the Today screen's insight card (headlineSmall) so the preview
+        // reads like the real thing — larger than body text, normal weight.
         Text(
             text = formatter.format(sample),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.headlineSmall,
         )
     }
 }

@@ -335,6 +335,21 @@ class InsightFormatterTest {
     }
 
     @Test
+    fun `omit range does not double the lead on a self-leading localized delta`() {
+        // The German delta string is a full sentence that already opens with
+        // "Heute" ("Heute wird es 5° wärmer."). Folding the period lead in
+        // front of it would double the word ("Heute, heute wird es …"); the
+        // self-leading clause must be emitted verbatim instead.
+        val germanOmit = InsightFormatter.forContext(
+            context,
+            Locale.GERMAN,
+            rangeFormat = RangeFormat.NONE,
+        )
+        germanOmit.format(summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER))) shouldBe
+            "Heute wird es 5° wärmer."
+    }
+
+    @Test
     fun `omit range with no other clause leaves a bare lead`() {
         omitSubject.format(summary()) shouldBe "Today."
     }

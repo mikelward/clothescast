@@ -409,6 +409,7 @@ private fun ttsStyleLabel(style: TtsStyle): Int = when (style) {
     TtsStyle.WEATHER_FORECASTER -> R.string.settings_tts_style_weather_forecaster
     TtsStyle.PIRATE -> R.string.settings_tts_style_pirate
     TtsStyle.COWBOY -> R.string.settings_tts_style_cowboy
+    TtsStyle.SCIFI_NARRATOR -> R.string.settings_tts_style_scifi_narrator
     TtsStyle.SCIENCE_TEACHER -> R.string.settings_tts_style_science_teacher
     TtsStyle.HISTORIAN -> R.string.settings_tts_style_historian
     TtsStyle.SPORTSCASTER -> R.string.settings_tts_style_sportscaster
@@ -416,6 +417,13 @@ private fun ttsStyleLabel(style: TtsStyle): Int = when (style) {
     TtsStyle.STORYTELLER -> R.string.settings_tts_style_storyteller
     TtsStyle.FITNESS_INSTRUCTOR -> R.string.settings_tts_style_fitness_instructor
     TtsStyle.MORNING_PRESENTER -> R.string.settings_tts_style_morning_presenter
+    TtsStyle.FATHER_CHRISTMAS -> R.string.settings_tts_style_father_christmas
+    TtsStyle.SPOOKY_NARRATOR -> R.string.settings_tts_style_spooky_narrator
+    TtsStyle.NEW_YEARS_HOST -> R.string.settings_tts_style_new_years_host
+    TtsStyle.LEPRECHAUN -> R.string.settings_tts_style_leprechaun
+    TtsStyle.KING -> R.string.settings_tts_style_king
+    TtsStyle.QUEEN -> R.string.settings_tts_style_queen
+    TtsStyle.PRESIDENT -> R.string.settings_tts_style_president
 }
 
 @Composable

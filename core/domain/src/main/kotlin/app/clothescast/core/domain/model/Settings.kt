@@ -172,9 +172,19 @@ enum class TtsEngine { DEVICE, GEMINI }
  * - [SCIENCE_TEACHER], [HISTORIAN], [SPORTSCASTER], [STADIUM_ANNOUNCER],
  *   [STORYTELLER], [FITNESS_INSTRUCTOR], [MORNING_PRESENTER] — persona
  *   registers that shape *delivery* without rewriting the text.
- * - [PIRATE] and [COWBOY] are novelty registers at the end of the picker;
- *   their directives permit brief in-character exclamations ("Arrr",
- *   "Howdy") so the result is more obviously playful.
+ * - [PIRATE], [COWBOY] and [SCIFI_NARRATOR] are non-seasonal novelty
+ *   registers; the playful ones permit brief in-character exclamations
+ *   ("Arrr", "Howdy") and [SCIFI_NARRATOR] is a dry, deadpan British
+ *   science-fiction guidebook voice (no named IP — just the register).
+ * - [FATHER_CHRISTMAS], [SPOOKY_NARRATOR], [NEW_YEARS_HOST], [LEPRECHAUN],
+ *   [KING], [QUEEN] and [PRESIDENT] are seasonal novelty registers ([KING] /
+ *   [QUEEN] evoke King Charles III / Queen Elizabeth II for occasions with a
+ *   royal in the name; [PRESIDENT] evokes the solemn oratory of George
+ *   Washington / Abraham Lincoln for Presidents' Day and the like). For now
+ *   they're always available in the picker; TODO: surface each one
+ *   automatically around its holiday (Christmas, Halloween, New Year's Eve,
+ *   St Patrick's Day, royal occasions, Presidents' Day) once the Celebrations
+ *   calendar wiring can drive a default style.
  *
  * Only consulted when [TtsEngine] == [TtsEngine.GEMINI]; the on-device engine
  * doesn't accept style prompts.
@@ -190,6 +200,14 @@ enum class TtsStyle {
     MORNING_PRESENTER,
     PIRATE,
     COWBOY,
+    SCIFI_NARRATOR,
+    FATHER_CHRISTMAS,
+    SPOOKY_NARRATOR,
+    NEW_YEARS_HOST,
+    LEPRECHAUN,
+    KING,
+    QUEEN,
+    PRESIDENT,
 }
 
 /**

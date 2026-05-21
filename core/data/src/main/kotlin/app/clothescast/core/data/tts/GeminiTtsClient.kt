@@ -96,6 +96,57 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_COWBOY: String =
         "add brief in-character exclamations such as 'Howdy' or 'Well, partner'. " +
         "No audio effects, background noise, or vinyl-style texture.\n\n"
 
+internal const val GEMINI_TTS_STYLE_DIRECTIVE_SCIFI_NARRATOR: String =
+    "Read the following as a dry, witty British science-fiction narrator — the " +
+        "wry, deadpan voice of an omniscient interstellar guidebook, delivering " +
+        "everyday facts with cosmic grandeur and a knowing twinkle. No audio " +
+        "effects, background noise, or vinyl-style texture.\n\n"
+
+internal const val GEMINI_TTS_STYLE_DIRECTIVE_FATHER_CHRISTMAS: String =
+    "Read the following as a jolly, warm-hearted Father Christmas — a deep, " +
+        "booming, good-natured voice brimming with festive cheer. You may add " +
+        "brief in-character exclamations such as 'Ho ho ho' or 'Merry " +
+        "Christmas'. No audio effects, background noise, or vinyl-style " +
+        "texture.\n\n"
+
+internal const val GEMINI_TTS_STYLE_DIRECTIVE_SPOOKY_NARRATOR: String =
+    "Read the following as a spooky Halloween narrator — hushed, eerie, and " +
+        "theatrically sinister, savouring each ominous pause. Brief in-character " +
+        "interjections such as a low, ghostly laugh are fine. No audio effects, " +
+        "background noise, or vinyl-style texture.\n\n"
+
+internal const val GEMINI_TTS_STYLE_DIRECTIVE_NEW_YEARS_HOST: String =
+    "Read the following as an exuberant New Year's Eve party host counting down " +
+        "to midnight — celebratory, building excitement, full of warmth and " +
+        "anticipation. Brief in-character interjections such as 'Happy New " +
+        "Year!' are fine. No audio effects, background noise, or vinyl-style " +
+        "texture.\n\n"
+
+internal const val GEMINI_TTS_STYLE_DIRECTIVE_LEPRECHAUN: String =
+    "Read the following as a playful, mischievous leprechaun with a lilting " +
+        "Irish brogue and a twinkle in the eye. You may add brief in-character " +
+        "exclamations such as 'Top o' the morning'. No audio effects, " +
+        "background noise, or vinyl-style texture.\n\n"
+
+internal const val GEMINI_TTS_STYLE_DIRECTIVE_KING: String =
+    "Read the following in the style of King Charles III delivering a formal " +
+        "royal address — measured, dignified Received Pronunciation, warm yet " +
+        "reserved, with a gentle gravitas at the close of each sentence. No " +
+        "audio effects, background noise, or vinyl-style texture.\n\n"
+
+internal const val GEMINI_TTS_STYLE_DIRECTIVE_QUEEN: String =
+    "Read the following in the style of Queen Elizabeth II giving her Christmas " +
+        "broadcast — crisp, precise Received Pronunciation, poised and gracious, " +
+        "with quiet warmth. No audio effects, background noise, or vinyl-style " +
+        "texture.\n\n"
+
+internal const val GEMINI_TTS_STYLE_DIRECTIVE_PRESIDENT: String =
+    "Read the following in the style of a revered American president addressing " +
+        "the nation — the solemn oratory of George Washington or Abraham " +
+        "Lincoln, stately and resolute, with weighty pauses and quiet " +
+        "conviction. No audio effects, background noise, or vinyl-style " +
+        "texture.\n\n"
+
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_STADIUM_ANNOUNCER: String =
     "Read the following as a booming stadium announcer — big voice, dramatic " +
         "pauses, each fact delivered like a headline moment. Brief interjections " +
@@ -140,6 +191,7 @@ internal fun styleDirectiveFor(style: TtsStyle): String = when (style) {
     TtsStyle.WEATHER_FORECASTER -> GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER
     TtsStyle.PIRATE -> GEMINI_TTS_STYLE_DIRECTIVE_PIRATE
     TtsStyle.COWBOY -> GEMINI_TTS_STYLE_DIRECTIVE_COWBOY
+    TtsStyle.SCIFI_NARRATOR -> GEMINI_TTS_STYLE_DIRECTIVE_SCIFI_NARRATOR
     TtsStyle.SCIENCE_TEACHER -> GEMINI_TTS_STYLE_DIRECTIVE_SCIENCE_TEACHER
     TtsStyle.HISTORIAN -> GEMINI_TTS_STYLE_DIRECTIVE_HISTORIAN
     TtsStyle.SPORTSCASTER -> GEMINI_TTS_STYLE_DIRECTIVE_SPORTSCASTER
@@ -147,6 +199,13 @@ internal fun styleDirectiveFor(style: TtsStyle): String = when (style) {
     TtsStyle.STORYTELLER -> GEMINI_TTS_STYLE_DIRECTIVE_STORYTELLER
     TtsStyle.FITNESS_INSTRUCTOR -> GEMINI_TTS_STYLE_DIRECTIVE_FITNESS_INSTRUCTOR
     TtsStyle.MORNING_PRESENTER -> GEMINI_TTS_STYLE_DIRECTIVE_MORNING_PRESENTER
+    TtsStyle.FATHER_CHRISTMAS -> GEMINI_TTS_STYLE_DIRECTIVE_FATHER_CHRISTMAS
+    TtsStyle.SPOOKY_NARRATOR -> GEMINI_TTS_STYLE_DIRECTIVE_SPOOKY_NARRATOR
+    TtsStyle.NEW_YEARS_HOST -> GEMINI_TTS_STYLE_DIRECTIVE_NEW_YEARS_HOST
+    TtsStyle.LEPRECHAUN -> GEMINI_TTS_STYLE_DIRECTIVE_LEPRECHAUN
+    TtsStyle.KING -> GEMINI_TTS_STYLE_DIRECTIVE_KING
+    TtsStyle.QUEEN -> GEMINI_TTS_STYLE_DIRECTIVE_QUEEN
+    TtsStyle.PRESIDENT -> GEMINI_TTS_STYLE_DIRECTIVE_PRESIDENT
 }
 
 /**

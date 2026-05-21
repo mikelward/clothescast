@@ -1102,6 +1102,10 @@
          header title for the Global bucket (Christmas, NYE, Valentine's,
          Halloween) — same name everywhere keeps the two surfaces in sync. -->
     <string name="settings_holiday_country_global_label">Global</string>
+    <!-- Doubles as both the top-card checkbox label and the collapsible
+         header title for the Funny bucket (Talk Like a Pirate Day) —
+         same name everywhere keeps the two surfaces in sync. -->
+    <string name="settings_holiday_country_funny_label">Funny</string>
     <string name="settings_holiday_country_all_label">All</string>
 
     <!-- Calendar-sourced theming toggles on the Holiday settings screen.
@@ -1117,6 +1121,7 @@
     <string name="settings_holidays_source_region">Region (%1$s)</string>
     <string name="settings_holidays_source_location">Location (%1$s)</string>
     <string name="settings_holidays_source_global">Global</string>
+    <string name="settings_holidays_source_funny">Funny</string>
     <string name="settings_holidays_source_calendar_holidays">Calendar Holidays</string>
     <string name="settings_holidays_source_calendar_birthdays">Calendar Birthdays</string>
 
@@ -1221,6 +1226,7 @@
     <string name="holiday_name_assumption">Assumption</string>
     <string name="holiday_name_fathers_day_sep">Father\'s Day (Sep)</string>
     <string name="holiday_name_brazil_independence_day">Brazil Independence Day</string>
+    <string name="holiday_name_talk_like_a_pirate_day">Talk Like a Pirate Day</string>
     <string name="holiday_name_german_unity_day">German Unity Day</string>
     <string name="holiday_name_croatia_independence_day">Croatia Independence Day</string>
     <string name="holiday_name_korean_hangeul_day">Hangeul Day (Korea)</string>
@@ -1286,6 +1292,7 @@
     <string name="holiday_banner_assumption">Happy Assumption Day</string>
     <string name="holiday_banner_fathers_day_sep">Happy Father\'s Day</string>
     <string name="holiday_banner_brazil_independence_day">Happy Brazilian Independence Day</string>
+    <string name="holiday_banner_talk_like_a_pirate_day">Ahoy, matey!</string>
     <string name="holiday_banner_german_unity_day">Happy German Unity Day</string>
     <string name="holiday_banner_croatia_independence_day">Happy Croatian Independence Day</string>
     <string name="holiday_banner_korean_hangeul_day">Happy Hangeul Day</string>

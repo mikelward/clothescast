@@ -212,4 +212,65 @@ class HolidayCountryResolutionTest {
         selection.countryEffective("GB", "AU", "GB") shouldBe true
         selection.countryEffective("US", "AU", "GB") shouldBe false
     }
+
+    // --- Funny bucket: mirrors the Global bucket, on by default. ---
+
+    private val funnyCountries = setOf("AU", "GB", HolidayCatalog.FUNNY, HolidayCatalog.GLOBAL_COUNTRY)
+
+    @Test
+    fun `funny=true by default rides along with home and current`() {
+        HolidayCountrySelection().resolveEnabledCountries(
+            localeCountry = "AU",
+            weatherLocationCountry = "GB",
+            allCountries = funnyCountries,
+        ).shouldContainExactlyInAnyOrder(
+            "AU", "GB", HolidayCatalog.FUNNY, HolidayCatalog.GLOBAL_COUNTRY,
+        )
+    }
+
+    @Test
+    fun `funny=false drops FUNNY even with home and current on`() {
+        HolidayCountrySelection(funny = false).resolveEnabledCountries(
+            localeCountry = "AU",
+            weatherLocationCountry = "GB",
+            allCountries = funnyCountries,
+        ).shouldContainExactlyInAnyOrder("AU", "GB", HolidayCatalog.GLOBAL_COUNTRY)
+    }
+
+    @Test
+    fun `funny=true alone keeps FUNNY when home current and global are off`() {
+        HolidayCountrySelection(home = false, current = false, global = false)
+            .resolveEnabledCountries(
+                localeCountry = "AU",
+                weatherLocationCountry = "GB",
+                allCountries = funnyCountries,
+            ).shouldContainExactlyInAnyOrder(HolidayCatalog.FUNNY)
+    }
+
+    @Test
+    fun `per-country OFF on FUNNY wins over funny=true`() {
+        HolidayCountrySelection(
+            countryOverrides = mapOf(HolidayCatalog.FUNNY to HolidayOverride.OFF),
+        ).resolveEnabledCountries(
+            localeCountry = "AU",
+            weatherLocationCountry = "GB",
+            allCountries = funnyCountries,
+        ).shouldContainExactlyInAnyOrder("AU", "GB", HolidayCatalog.GLOBAL_COUNTRY)
+    }
+
+    @Test
+    fun `all=true short-circuits funny=false to include FUNNY`() {
+        HolidayCountrySelection(
+            home = false,
+            current = false,
+            funny = false,
+            all = true,
+        ).resolveEnabledCountries(
+            localeCountry = null,
+            weatherLocationCountry = null,
+            allCountries = funnyCountries,
+        ).shouldContainExactlyInAnyOrder(
+            "AU", "GB", HolidayCatalog.FUNNY, HolidayCatalog.GLOBAL_COUNTRY,
+        )
+    }
 }

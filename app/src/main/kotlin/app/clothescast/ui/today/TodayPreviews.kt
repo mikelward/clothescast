@@ -858,6 +858,10 @@ internal fun HolidayFathersDaySepPreview() = HolidayShowcase(HolidayId.FATHERS_D
 @Composable
 internal fun HolidayBrazilIndependenceDayPreview() = HolidayShowcase(HolidayId.BRAZIL_INDEPENDENCE_DAY)
 
+@Preview(name = "Holiday · Talk Like a Pirate Day", widthDp = 360)
+@Composable
+internal fun HolidayPirateDayPreview() = HolidayShowcase(HolidayId.TALK_LIKE_A_PIRATE_DAY)
+
 @Preview(name = "Holiday · German Unity Day", widthDp = 360)
 @Composable
 internal fun HolidayGermanUnityDayPreview() = HolidayShowcase(HolidayId.GERMAN_UNITY_DAY)

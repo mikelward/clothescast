@@ -475,6 +475,16 @@ class HolidayResolverTest {
     }
 
     @Test
+    fun `FUNNY bucket resolves Talk Like a Pirate Day without any ISO country enabled`() {
+        val funnyOnly = setOf(HolidayCatalog.FUNNY)
+        subject.resolve(LocalDate.of(2026, 9, 19), noOverrides, funnyOnly)?.id shouldBe
+            HolidayId.TALK_LIKE_A_PIRATE_DAY
+        // Pirate Day isn't tagged GLOBAL → doesn't fire under GLOBAL-only.
+        subject.resolve(LocalDate.of(2026, 9, 19), noOverrides, setOf(HolidayCatalog.GLOBAL_COUNTRY))
+            .shouldBeNull()
+    }
+
+    @Test
     fun `same-date collision picks the country-enabled holiday`() {
         subject.resolve(LocalDate.of(2026, 3, 1), noOverrides, setOf("KR"))?.id shouldBe
             HolidayId.KOREAN_INDEPENDENCE_MOVEMENT_DAY

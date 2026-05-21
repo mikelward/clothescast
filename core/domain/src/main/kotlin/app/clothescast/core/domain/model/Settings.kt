@@ -57,6 +57,10 @@ enum class HolidayOverride { AUTO, ON, OFF }
  *    Peer to [home] / [current] rather than riding along
  *    automatically, so a user can mute every global holiday as a
  *    group without flipping per-holiday rows.
+ *  - [funny] — when on, the Funny bucket
+ *    ([HolidayCatalog.FUNNY]: Talk Like a Pirate Day) resolves to
+ *    effective-on under AUTO. A peer toggle like [global], on by
+ *    default, so a user can mute the playful observances as a group.
  *  - [all] — short-circuits every country (including
  *    [HolidayCatalog.GLOBAL_COUNTRY]) to effective-on under AUTO.
  *    Per-country [HolidayOverride.OFF] still wins (a user can opt
@@ -76,6 +80,7 @@ data class HolidayCountrySelection(
     val home: Boolean = true,
     val current: Boolean = true,
     val global: Boolean = true,
+    val funny: Boolean = true,
     val all: Boolean = false,
     val countryOverrides: Map<String, HolidayOverride> = emptyMap(),
 ) {
@@ -93,6 +98,7 @@ data class HolidayCountrySelection(
         if (all) return true
         val normalised = code.trim().takeIf { it.isNotEmpty() }?.uppercase() ?: return false
         if (normalised == HolidayCatalog.GLOBAL_COUNTRY) return global
+        if (normalised == HolidayCatalog.FUNNY) return funny
         if (home && normalised == localeCountry?.trim()?.takeIf { it.isNotEmpty() }?.uppercase()) {
             return true
         }
@@ -130,7 +136,8 @@ data class HolidayCountrySelection(
      * [HolidayCatalog.GLOBAL_COUNTRY]. [localeCountry] and
      * [weatherLocationCountry] are case-insensitive — null or blank values
      * are ignored. [HolidayCatalog.GLOBAL_COUNTRY] is gated by its own
-     * [global] bucket (or an explicit [countryOverrides] entry), the same
+     * [global] bucket, and [HolidayCatalog.FUNNY] by its own [funny]
+     * bucket (or an explicit [countryOverrides] entry), the same
      * way ISO codes are gated by [home] / [current].
      */
     fun resolveEnabledCountries(

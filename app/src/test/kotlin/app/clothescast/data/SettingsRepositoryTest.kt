@@ -209,11 +209,12 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `holidayCountrySelection defaults to home+current+global on with all off`() = runTest {
+    fun `holidayCountrySelection defaults to home+current+global+funny on with all off`() = runTest {
         val selection = subject.preferences.first().holidayCountrySelection
         selection.home shouldBe true
         selection.current shouldBe true
         selection.global shouldBe true
+        selection.funny shouldBe true
         selection.all shouldBe false
         selection.countryOverrides shouldBe emptyMap()
     }
@@ -228,6 +229,9 @@ class SettingsRepositoryTest {
 
         subject.setHolidayCountryGlobal(false)
         subject.preferences.first().holidayCountrySelection.global shouldBe false
+
+        subject.setHolidayCountryFunny(false)
+        subject.preferences.first().holidayCountrySelection.funny shouldBe false
 
         subject.setHolidayCountryAll(true)
         subject.preferences.first().holidayCountrySelection.all shouldBe true

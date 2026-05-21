@@ -434,6 +434,10 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setHolidayCountryGlobal(enabled) }
     }
 
+    fun setHolidayCountryFunny(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setHolidayCountryFunny(enabled) }
+    }
+
     fun setHolidayCountryAll(enabled: Boolean) {
         viewModelScope.launch { settingsRepository.setHolidayCountryAll(enabled) }
     }

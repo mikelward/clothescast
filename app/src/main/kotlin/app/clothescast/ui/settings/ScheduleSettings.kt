@@ -47,7 +47,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import app.clothescast.R
-import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
@@ -67,7 +66,6 @@ internal fun ScheduleContent(
     tonightEnabled: Boolean,
     tonightNotifyOnlyOnEvents: Boolean,
     dailyMentionEveningEvents: Boolean,
-    clothesMentionMode: ClothesMentionMode,
     deliveryMode: DeliveryMode,
     tonightDeliveryMode: DeliveryMode,
     skipTtsAtHome: Boolean,
@@ -78,7 +76,6 @@ internal fun ScheduleContent(
     onSetTonightEnabled: (Boolean) -> Unit,
     onSetTonightNotifyOnlyOnEvents: (Boolean) -> Unit,
     onSetDailyMentionEveningEvents: (Boolean) -> Unit,
-    onSetClothesMentionMode: (ClothesMentionMode) -> Unit,
     onSetDeliveryMode: (DeliveryMode) -> Unit,
     onSetTonightDeliveryMode: (DeliveryMode) -> Unit,
     onSetSkipTtsAtHome: (Boolean) -> Unit,
@@ -102,11 +99,9 @@ internal fun ScheduleContent(
                 days = days,
                 deliveryMode = deliveryMode,
                 mentionEveningEvents = dailyMentionEveningEvents,
-                clothesMentionMode = clothesMentionMode,
                 onChange = onSetSchedule,
                 onSetDeliveryMode = onSetDeliveryMode,
                 onSetMentionEveningEvents = onSetDailyMentionEveningEvents,
-                onSetClothesMentionMode = onSetClothesMentionMode,
             )
             NightCard(
                 time = tonightTime,
@@ -145,11 +140,9 @@ private fun DayCard(
     days: Set<DayOfWeek>,
     deliveryMode: DeliveryMode,
     mentionEveningEvents: Boolean,
-    clothesMentionMode: ClothesMentionMode,
     onChange: (LocalTime, Set<DayOfWeek>) -> Unit,
     onSetDeliveryMode: (DeliveryMode) -> Unit,
     onSetMentionEveningEvents: (Boolean) -> Unit,
-    onSetClothesMentionMode: (ClothesMentionMode) -> Unit,
 ) {
     var pickerOpen by remember { mutableStateOf(false) }
 
@@ -175,7 +168,6 @@ private fun DayCard(
             checked = mentionEveningEvents,
             onCheckedChange = onSetMentionEveningEvents,
         )
-        ClothesMentionSection(clothesMentionMode, onSetClothesMentionMode)
     }
 
     if (pickerOpen) {
@@ -454,30 +446,6 @@ private fun deliveryModeLabel(mode: DeliveryMode): Int = when (mode) {
     DeliveryMode.NOTIFICATION_ONLY -> R.string.settings_delivery_notification_only
     DeliveryMode.TTS_ONLY -> R.string.settings_delivery_tts_only
     DeliveryMode.NOTIFICATION_AND_TTS -> R.string.settings_delivery_notification_and_tts
-}
-
-@Composable
-private fun ClothesMentionSection(
-    selected: ClothesMentionMode,
-    onSelect: (ClothesMentionMode) -> Unit,
-) {
-    Text(
-        text = stringResource(R.string.settings_clothes_mention_label),
-        style = MaterialTheme.typography.bodyMedium,
-    )
-    ClothesMentionMode.entries.forEach { mode ->
-        RadioRow(
-            label = stringResource(clothesMentionModeLabel(mode)),
-            selected = mode == selected,
-            onSelect = { onSelect(mode) },
-        )
-    }
-}
-
-private fun clothesMentionModeLabel(mode: ClothesMentionMode): Int = when (mode) {
-    ClothesMentionMode.ALWAYS -> R.string.settings_clothes_mention_always
-    ClothesMentionMode.IF_CHANGED -> R.string.settings_clothes_mention_if_changed
-    ClothesMentionMode.NEVER -> R.string.settings_clothes_mention_never
 }
 
 private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")

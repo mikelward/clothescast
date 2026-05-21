@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.ClothesClause
+import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
@@ -68,11 +69,13 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
         FormatContent(
             rangeFormat = state.rangeFormat,
             deltaThresholdC = state.deltaThresholdC,
+            clothesMentionMode = state.clothesMentionMode,
             region = state.region,
             temperatureUnit = state.temperatureUnit,
             padding = padding,
             onSetRangeFormat = viewModel::setRangeFormat,
             onSetDeltaThresholdC = viewModel::setDeltaThresholdC,
+            onSetClothesMentionMode = viewModel::setClothesMentionMode,
         )
     }
 }
@@ -81,11 +84,13 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
 internal fun FormatContent(
     rangeFormat: RangeFormat,
     deltaThresholdC: Double?,
+    clothesMentionMode: ClothesMentionMode,
     region: Region,
     temperatureUnit: TemperatureUnit,
     padding: PaddingValues,
     onSetRangeFormat: (RangeFormat) -> Unit,
     onSetDeltaThresholdC: (Double?) -> Unit,
+    onSetClothesMentionMode: (ClothesMentionMode) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
@@ -100,7 +105,7 @@ internal fun FormatContent(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            PreviewCard(rangeFormat, deltaThresholdC, region, temperatureUnit)
+            PreviewCard(rangeFormat, deltaThresholdC, clothesMentionMode, region, temperatureUnit)
             SectionCard(title = stringResource(R.string.settings_format_what_to_say)) {
                 FormatDropdownRow(
                     label = stringResource(R.string.settings_format_range_label),
@@ -116,15 +121,29 @@ internal fun FormatContent(
                     optionLabel = { thresholdLabel(it, temperatureUnit) },
                     onSelect = onSetDeltaThresholdC,
                 )
+                FormatDropdownRow(
+                    label = stringResource(R.string.settings_clothes_mention_label),
+                    options = ClothesMentionMode.entries,
+                    selected = clothesMentionMode,
+                    optionLabel = { stringResource(clothesMentionModeLabel(it)) },
+                    onSelect = onSetClothesMentionMode,
+                )
             }
         }
     }
+}
+
+private fun clothesMentionModeLabel(mode: ClothesMentionMode): Int = when (mode) {
+    ClothesMentionMode.ALWAYS -> R.string.settings_clothes_mention_always
+    ClothesMentionMode.IF_CHANGED -> R.string.settings_clothes_mention_if_changed
+    ClothesMentionMode.NEVER -> R.string.settings_clothes_mention_never
 }
 
 @Composable
 private fun PreviewCard(
     rangeFormat: RangeFormat,
     deltaThresholdC: Double?,
+    clothesMentionMode: ClothesMentionMode,
     region: Region,
     temperatureUnit: TemperatureUnit,
 ) {
@@ -148,7 +167,15 @@ private fun PreviewCard(
         } else {
             null
         },
-        clothes = ClothesClause(items = listOf("sweater")),
+        // Mirror RenderInsightSummary's mode gating: NEVER drops the clause,
+        // ALWAYS keeps it, and IF_CHANGED keeps it here because the sample
+        // depicts a changed day (it already shows a "warmer than yesterday"
+        // delta), so today's clothes would differ from yesterday's.
+        clothes = if (clothesMentionMode == ClothesMentionMode.NEVER) {
+            null
+        } else {
+            ClothesClause(items = listOf("sweater"))
+        },
         precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(17, 0), PrecipLikelihood.LIKELY),
     )
     SectionCard(title = stringResource(R.string.settings_format_preview_title)) {

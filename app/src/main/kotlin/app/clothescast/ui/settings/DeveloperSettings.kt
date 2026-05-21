@@ -42,6 +42,7 @@ import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
+import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.usecase.ThemeForToday
 import app.clothescast.tts.resolveHolidayVoice
 import app.clothescast.ui.today.HolidayBanner
@@ -97,8 +98,15 @@ internal fun DeveloperPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
                 isSpeaking = true
                 // Speak the picked day in its holiday voice so the preview
                 // demonstrates the auto-selected persona, not just the
-                // user's default voice.
-                val selection = resolveHolidayVoice(holidayId, state.geminiVoice, state.ttsStyle)
+                // user's default voice. Resolve against the everyday
+                // forecaster style, not the user's saved one: a deliberate
+                // persona pick (e.g. Father Christmas) wins over the holiday
+                // in the real briefing, but here that would mask the day's
+                // own persona — every previewed day would speak in the
+                // saved voice (Towel Day saying "Ho ho ho"), defeating the
+                // point of the preview.
+                val selection =
+                    resolveHolidayVoice(holidayId, state.geminiVoice, TtsStyle.WEATHER_FORECASTER)
                 scope.launch {
                     try {
                         runTtsPreview(

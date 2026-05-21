@@ -546,6 +546,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <!-- Norwegian V2 word order: "I dag blir det mildt." -->
     <string name="insight_band_single">%1$s blir det %2$d°.</string>
     <string name="insight_band_range">%1$s blir det %2$d° til %3$d°.</string>
+    <string name="insight_band_words_single">%1$s blir det %2$s.</string>
+    <string name="insight_band_words_range">%1$s blir det %2$s til %3$s.</string>
 
     <string name="insight_band_freezing">iskaldt</string>
     <string name="insight_band_cold">kaldt</string>

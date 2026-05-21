@@ -413,6 +413,8 @@ label localizes.
     <!-- "今天天气温和。" / "今晚天气寒冷至凉爽。" -->
     <string name="insight_band_single">%1$s天气%2$d°。</string>
     <string name="insight_band_range">%1$s天气%2$d°至%3$d°。</string>
+    <string name="insight_band_words_single">%1$s天气%2$s。</string>
+    <string name="insight_band_words_range">%1$s天气%2$s至%3$s。</string>
     <string name="insight_band_freezing">极寒</string>
     <string name="insight_band_cold">寒冷</string>
     <string name="insight_band_cool">凉爽</string>

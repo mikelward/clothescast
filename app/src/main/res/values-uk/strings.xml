@@ -554,6 +554,8 @@ only the displayed label localizes.
     <string name="insight_lead_tonight">Сьогодні ввечері</string>
     <string name="insight_band_single">%1$s буде %2$d°.</string>
     <string name="insight_band_range">%1$s буде від %2$d° до %3$d°.</string>
+    <string name="insight_band_words_single">%1$s буде %2$s.</string>
+    <string name="insight_band_words_range">%1$s буде від %2$s до %3$s.</string>
     <string name="insight_band_freezing">морозно</string>
     <string name="insight_band_cold">холодно</string>
     <string name="insight_band_cool">прохолодно</string>

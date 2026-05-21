@@ -849,6 +849,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="holiday_banner_labour_day">শ্রম দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_mlk_day">ড. কিংয়ের প্রতি শ্রদ্ধা</string>
     <string name="holiday_banner_mothers_day">শুভ মা দিবস</string>
+    <string name="tts_greeting_birthday">শুভ জন্মদিন</string>
     <string name="holiday_banner_new_years_day">শুভ নববর্ষ</string>
     <string name="holiday_banner_remembrance_day">আমরা ভুলি না</string>
     <string name="holiday_banner_spain_hispanic_day">শুভ Día de la Hispanidad</string>

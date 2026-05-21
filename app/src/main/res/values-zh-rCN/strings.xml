@@ -918,6 +918,7 @@ label localizes.
     <string name="holiday_banner_labour_day">劳动节快乐</string>
     <string name="holiday_banner_mlk_day">缅怀马丁·路德·金博士</string>
     <string name="holiday_banner_mothers_day">母亲节快乐</string>
+    <string name="tts_greeting_birthday">生日快乐</string>
     <string name="holiday_banner_new_years_day">新年快乐</string>
     <string name="holiday_banner_remembrance_day">铭记历史</string>
     <string name="holiday_banner_spain_hispanic_day">西班牙国庆节快乐</string>

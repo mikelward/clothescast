@@ -785,6 +785,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="holiday_banner_labour_day">Selamat Hari Pekerja</string>
     <string name="holiday_banner_mlk_day">Menghormati Dr. King</string>
     <string name="holiday_banner_mothers_day">Selamat Hari Ibu</string>
+    <string name="tts_greeting_birthday">Selamat hari lahir</string>
     <string name="holiday_banner_new_years_day">Selamat Tahun Baru</string>
     <string name="holiday_banner_remembrance_day">Lest we forget</string>
     <string name="holiday_banner_spain_hispanic_day">Selamat Día de la Hispanidad</string>

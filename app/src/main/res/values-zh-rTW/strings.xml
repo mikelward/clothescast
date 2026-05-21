@@ -934,6 +934,7 @@ label localises.
     <string name="holiday_banner_labour_day">勞動節快樂</string>
     <string name="holiday_banner_mlk_day">緬懷馬丁·路德·金博士</string>
     <string name="holiday_banner_mothers_day">母親節快樂</string>
+    <string name="tts_greeting_birthday">生日快樂</string>
     <string name="holiday_banner_new_years_day">新年快樂</string>
     <string name="holiday_banner_remembrance_day">銘記歷史</string>
     <string name="holiday_banner_spain_hispanic_day">西班牙國慶節快樂</string>

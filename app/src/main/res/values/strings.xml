@@ -1269,6 +1269,11 @@
          celebration falls on the same day ("Merry Christmas and Alice\'s
          birthday"). A bare word, padded with spaces in code. -->
     <string name="holiday_banner_and">and</string>
+    <!-- Spoken greeting prepended to the TTS briefing on a calendar-sourced
+         birthday. Deliberately generic — the birthday event\'s title (e.g.
+         "Alice\'s birthday") must never reach off-device TTS, so the spoken
+         greeting drops the name the on-screen banner shows. -->
+    <string name="tts_greeting_birthday">Happy birthday</string>
     <string name="holiday_banner_new_years_day">Happy New Year</string>
     <string name="holiday_banner_epiphany">Happy Epiphany</string>
     <string name="holiday_banner_japan_coming_of_age_day">Happy Japanese Coming of Age Day</string>

@@ -825,6 +825,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="holiday_name_immaculate_conception">Bezgrješno začeće</string>
     <string name="holiday_name_christmas_day">Božić</string>
     <string name="holiday_name_boxing_day">Drugi dan Božića</string>
+    <string name="tts_greeting_birthday">Sretan rođendan</string>
     <string name="holiday_banner_new_years_day">Sretna Nova Godina</string>
     <string name="holiday_banner_epiphany">Sretna Sveta Tri Kralja</string>
     <string name="holiday_banner_valentines_day">Sretan Valentinovo</string>

@@ -921,6 +921,7 @@ the displayed label localizes.
     <string name="holiday_banner_labour_day">労働祭おめでとうございます</string>
     <string name="holiday_banner_mlk_day">キング博士の遺志を讃えます</string>
     <string name="holiday_banner_mothers_day">母の日おめでとうございます</string>
+    <string name="tts_greeting_birthday">お誕生日おめでとうございます</string>
     <string name="holiday_banner_new_years_day">明けましておめでとうございます</string>
     <string name="holiday_banner_remembrance_day">忘れまじ</string>
     <string name="holiday_banner_spain_hispanic_day">スペイン国民の日おめでとうございます</string>

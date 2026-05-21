@@ -1,6 +1,7 @@
 package app.clothescast.tts
 
 import android.content.Context
+import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -18,6 +19,10 @@ internal data class InsightTtsUtterance(
  * app-display region. This keeps notifications in the UI language while a
  * de-AT voice request speaks Austrian German text instead of English prose with
  * an Austrian accent.
+ *
+ * On a themed day [holidayTheme] prepends a spoken greeting ("Merry Christmas!
+ * Today, it will be …") localised to the same voice locale. See
+ * [holidayTtsGreeting] for the privacy rules around calendar-sourced titles.
  */
 internal fun insightTtsUtterance(
     context: Context,
@@ -26,10 +31,16 @@ internal fun insightTtsUtterance(
     voiceLocale: VoiceLocale,
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     fallbackLocale: Locale = Locale.getDefault(),
+    holidayTheme: HolidayTheme? = null,
 ): InsightTtsUtterance {
-    val locale = voiceLocale.resolve(region.toJavaLocale() ?: fallbackLocale)
+    val regionLocale = region.toJavaLocale() ?: fallbackLocale
+    val locale = voiceLocale.resolve(regionLocale)
+    val forecast = InsightFormatter.forContext(context, locale, temperatureUnit).format(summary)
+    // Override country tracks the app region (mirrors HolidayBanner) while the
+    // greeting's language follows the voice locale.
+    val greeting = holidayTtsGreeting(context, holidayTheme, locale, regionLocale.country)
     return InsightTtsUtterance(
-        text = InsightFormatter.forContext(context, locale, temperatureUnit).format(summary),
+        text = if (greeting == null) forecast else "$greeting $forecast",
         locale = locale,
     )
 }

@@ -746,6 +746,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="holiday_name_immaculate_conception">Neposkvrněné početí</string>
     <string name="holiday_name_christmas_day">Vánoce</string>
     <string name="holiday_name_boxing_day">Druhý svátek vánoční</string>
+    <string name="tts_greeting_birthday">Všechno nejlepší k narozeninám</string>
     <string name="holiday_banner_new_years_day">Šťastný nový rok</string>
     <string name="holiday_banner_epiphany">Veselé Tři krále</string>
     <string name="holiday_banner_valentines_day">Šťastný Valentýn</string>

@@ -36,6 +36,7 @@ enum class HolidayId {
     ANZAC_DAY,
     LABOUR_DAY,
     JAPAN_GREENERY_DAY,
+    CINCO_DE_MAYO,
     UK_EARLY_MAY_BANK_HOLIDAY,
     MOTHERS_DAY,
     CROATIA_STATEHOOD_DAY,
@@ -56,6 +57,7 @@ enum class HolidayId {
     ASSUMPTION,
     UK_SUMMER_BANK_HOLIDAY,
     FATHERS_DAY_SEP,
+    US_LABOR_DAY,
     BRAZIL_INDEPENDENCE_DAY,
     TALK_LIKE_A_PIRATE_DAY,
     GERMAN_UNITY_DAY,
@@ -64,9 +66,12 @@ enum class HolidayId {
     CANADIAN_THANKSGIVING,
     SPAIN_HISPANIC_DAY,
     AUSTRIA_NATIONAL_DAY,
+    NZ_LABOUR_DAY,
     HALLOWEEN,
     ALL_SAINTS_DAY,
     JAPAN_CULTURE_DAY,
+    MELBOURNE_CUP_DAY,
+    US_ELECTION_DAY,
     BONFIRE_NIGHT,
     REMEMBRANCE_DAY,
     US_THANKSGIVING,
@@ -185,6 +190,31 @@ sealed interface HolidayDate {
                 .with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())
             val shiftBack = (lastOfMonth.dayOfWeek.value - day.value + 7) % 7
             return lastOfMonth.minusDays(shiftBack.toLong())
+        }
+    }
+
+    /**
+     * The first [day] falling on or after [dayOfMonth] within [month] — the
+     * only occurrence of that weekday inside the seven-day window
+     * `[dayOfMonth, dayOfMonth + 6]`. Covers "Tuesday after the first Monday"
+     * style anchors: US Election Day is the Tuesday on or after Nov 2
+     * (`FirstWeekdayOnOrAfter(NOVEMBER, TUESDAY, 2)`), which is exactly the
+     * Tuesday immediately following the first Monday.
+     */
+    data class FirstWeekdayOnOrAfter(
+        val month: Month,
+        val day: DayOfWeek,
+        val dayOfMonth: Int,
+    ) : HolidayDate {
+        override fun matches(date: LocalDate): Boolean {
+            if (date.month != month || date.dayOfWeek != day) return false
+            return date.dayOfMonth in dayOfMonth..(dayOfMonth + 6)
+        }
+
+        override fun dateIn(year: Int): LocalDate {
+            val floor = LocalDate.of(year, month, dayOfMonth)
+            val shift = (day.value - floor.dayOfWeek.value + 7) % 7
+            return floor.plusDays(shift.toLong())
         }
     }
 
@@ -732,6 +762,23 @@ object HolidayCatalog {
             countries = setOf("JP"),
         ),
 
+        // May 5 — Cinco de Mayo. Mexican flag tricolour: green top + red
+        // bottom with the flag's white field threaded through as accent
+        // trim on both, same option-3 stroke pattern as the other
+        // tricolours. Tagged MX (and US, where it's widely celebrated).
+        HolidayDate.Fixed(Month.MAY, 5) to HolidayTheme(
+            id = HolidayId.CINCO_DE_MAYO,
+            displayNameKey = "holiday_name_cinco_de_mayo",
+            bannerTextKey = "holiday_banner_cinco_de_mayo",
+            emoji = "🇲🇽", // 🇲🇽
+            topOverrides = topPaletteAll(MEXICO_GREEN),
+            bottomOverrides = bottomPaletteAll(MEXICO_RED),
+            topStrokeOverrides = topStrokeAll(MEXICO_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(MEXICO_WHITE),
+            bannerArgb = MEXICO_GREEN,
+            countries = setOf("MX", "US"),
+        ),
+
         // 1st Monday of May — UK Early May Bank Holiday. Union Jack
         // tricolour: red top + blue bottom with white as the unifying
         // accent stroke. Same option-3 stroke pattern as the existing
@@ -1051,6 +1098,11 @@ object HolidayCatalog {
         ),
 
         // Sep 7 — Brazil Independence Day. Green tops + yellow bottoms.
+        // Listed before [US_LABOR_DAY] so that in years where the 1st Monday
+        // of September lands on the 7th (e.g. 2026) a multi-country user
+        // resolves Brazil's fixed national day rather than the movable Labor
+        // Day; single-country US / CA users are unaffected (no country
+        // overlap with BR).
         HolidayDate.Fixed(Month.SEPTEMBER, 7) to HolidayTheme(
             id = HolidayId.BRAZIL_INDEPENDENCE_DAY,
             displayNameKey = "holiday_name_brazil_independence_day",
@@ -1060,6 +1112,27 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(BRAZIL_YELLOW),
             bannerArgb = BRAZIL_GREEN,
             countries = setOf("BR"),
+        ),
+
+        // 1st Monday of September — North American Labor Day (US / CA).
+        // Distinct from the May 1 [LABOUR_DAY] (continental Europe) in both
+        // date and palette: end-of-summer workwear here — hard-hat safety
+        // yellow top + denim-blue bottom — rather than the May Day
+        // labour-movement red. Canada spells it "Labour Day" (banner
+        // override below); the shared settings label carries both spellings.
+        // See the Brazil entry above for the Sep 7 collision tiebreak.
+        HolidayDate.NthWeekday(Month.SEPTEMBER, 1, DayOfWeek.MONDAY) to HolidayTheme(
+            id = HolidayId.US_LABOR_DAY,
+            displayNameKey = "holiday_name_us_labor_day",
+            bannerTextKey = "holiday_banner_us_labor_day",
+            bannerTextKeyByCountry = mapOf(
+                "CA" to "holiday_banner_ca_labour_day",
+            ),
+            emoji = "🛠", // 🛠 — hammer and wrench, the worker's tools
+            topOverrides = topPaletteAll(HARDHAT_YELLOW),
+            bottomOverrides = bottomPaletteAll(DENIM_BLUE),
+            bannerArgb = DENIM_BLUE,
+            countries = setOf("US", "CA"),
         ),
 
         // Sep 19 — Talk Like a Pirate Day. A playful, non-national
@@ -1165,6 +1238,22 @@ object HolidayCatalog {
             countries = setOf("AT"),
         ),
 
+        // 4th Monday of October — New Zealand Labour Day, marking the
+        // eight-hour-workday campaign. Shares the May Day labour-movement
+        // palette (red top + workwear black) and rose emoji — same
+        // movement, different hemisphere and date, so no visual clash with
+        // the continental [LABOUR_DAY].
+        HolidayDate.NthWeekday(Month.OCTOBER, 4, DayOfWeek.MONDAY) to HolidayTheme(
+            id = HolidayId.NZ_LABOUR_DAY,
+            displayNameKey = "holiday_name_nz_labour_day",
+            bannerTextKey = "holiday_banner_labour_day",
+            emoji = "🌹", // 🌹 — red carnation / rose, the labour-movement symbol
+            topOverrides = topPaletteAll(LABOUR_RED),
+            bottomOverrides = bottomPaletteAll(LABOUR_BLACK),
+            bannerArgb = LABOUR_RED,
+            countries = setOf("NZ"),
+        ),
+
         // Oct 31 — Halloween. Pumpkin-orange tops + black bottoms. Purple
         // was originally a third hue but dropped to keep the palette focused
         // on the two colours that read unambiguously as Halloween.
@@ -1207,7 +1296,41 @@ object HolidayCatalog {
             countries = setOf("JP"),
         ),
 
-        // Nov 5 — Bonfire Night. Orange-flame tops + smoke-red bottoms.
+        // 1st Tuesday of November — Melbourne Cup Day ("the race that stops
+        // a nation"). A Victorian public holiday but watched Australia-wide,
+        // so it's tagged AU rather than gated to a state the catalog can't
+        // express. Racing-silks palette: Flemington-rose top + trophy-gold
+        // bottom, kept clear of Australia Day's green / gold.
+        HolidayDate.NthWeekday(Month.NOVEMBER, 1, DayOfWeek.TUESDAY) to HolidayTheme(
+            id = HolidayId.MELBOURNE_CUP_DAY,
+            displayNameKey = "holiday_name_melbourne_cup_day",
+            bannerTextKey = "holiday_banner_melbourne_cup_day",
+            emoji = "🏇", // 🏇 — horse racing
+            topOverrides = topPaletteAll(CUP_ROSE),
+            bottomOverrides = bottomPaletteAll(CUP_GOLD),
+            bannerArgb = CUP_ROSE,
+            countries = setOf("AU"),
+        ),
+
+        // Tuesday on or after Nov 2 — US Election Day (the Tuesday after the
+        // first Monday in November). Civic palette: navy top + red bottom,
+        // no white stroke, so it reads as patriotic without duplicating the
+        // [US_INDEPENDENCE_DAY] tricolour or [US_PRESIDENTS_DAY] navy / white.
+        HolidayDate.FirstWeekdayOnOrAfter(Month.NOVEMBER, DayOfWeek.TUESDAY, 2) to HolidayTheme(
+            id = HolidayId.US_ELECTION_DAY,
+            displayNameKey = "holiday_name_us_election_day",
+            bannerTextKey = "holiday_banner_us_election_day",
+            emoji = "🗳", // 🗳 — ballot box
+            topOverrides = topPaletteAll(USA_BLUE),
+            bottomOverrides = bottomPaletteAll(USA_RED),
+            bannerArgb = USA_BLUE,
+            countries = setOf("US"),
+        ),
+
+        // Nov 5 — Bonfire Night / Guy Fawkes Night. Orange-flame tops +
+        // smoke-red bottoms. Observed in the UK and New Zealand (where it's
+        // commonly called Guy Fawkes Night); the banner copy stays the
+        // universal "Remember, remember" rhyme for both.
         HolidayDate.Fixed(Month.NOVEMBER, 5) to HolidayTheme(
             id = HolidayId.BONFIRE_NIGHT,
             displayNameKey = "holiday_name_bonfire_night",
@@ -1216,7 +1339,7 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(BONFIRE_ORANGE),
             bottomOverrides = bottomPaletteAll(BONFIRE_RED),
             bannerArgb = BONFIRE_RED,
-            countries = setOf("GB"),
+            countries = setOf("GB", "NZ"),
         ),
 
         // Nov 11 — Remembrance Day (US calls it Veterans Day, FR calls it
@@ -1466,9 +1589,25 @@ private const val UK_BLUE = 0xFF012169L
 private const val UK_WHITE = 0xFFF5F5F5L
 
 // Labour Day / International Workers' Day — universal labour-movement
-// red, with a workwear black for the bottom tier.
+// red, with a workwear black for the bottom tier. Shared by the May 1
+// continental holiday and NZ's October Labour Day.
 private const val LABOUR_RED = 0xFFD32F2FL
 private const val LABOUR_BLACK = 0xFF212121L
+
+// North American Labor Day (US / CA) — end-of-summer workwear, kept
+// distinct from the May Day red: hard-hat safety yellow + denim blue.
+private const val HARDHAT_YELLOW = 0xFFF9A825L
+private const val DENIM_BLUE = 0xFF34568BL
+
+// Cinco de Mayo — Mexican flag tricolour (green / white / red).
+private const val MEXICO_GREEN = 0xFF006847L
+private const val MEXICO_WHITE = 0xFFF5F5F5L
+private const val MEXICO_RED = 0xFFCE1126L
+
+// Melbourne Cup Day — racing silks: Flemington-rose + trophy gold.
+// Deliberately clear of Australia Day's green / gold.
+private const val CUP_ROSE = 0xFFC2185BL
+private const val CUP_GOLD = 0xFFFBC02DL
 
 // Epiphany — Magi gold + royal-robe purple.
 private const val EPIPHANY_GOLD = 0xFFD4AF37L
@@ -1515,6 +1654,33 @@ private const val BIRTHDAY_YELLOW = 0xFFFFD54FL
 private const val BIRTHDAY_MAGENTA = 0xFFD81B60L
 
 /**
+ * Cleans up a calendar-sourced public-holiday title for display in the
+ * Today banner. Google's holiday calendars routinely append a region in
+ * parentheses ("King's Birthday (Western Australia)", "Labour Day (most
+ * regions)") — strip a single trailing parenthetical so the banner reads
+ * as the holiday's plain name. Also folds a curly apostrophe to a straight
+ * one and trims trailing punctuation / whitespace, so the various forms a
+ * title can arrive in ("Presidents' Day", "Presidents’ Day.",
+ * "Presidents' Day (Observed)") all collapse to the same clean string.
+ *
+ * Display-only: the raw title never crosses the device boundary (see the
+ * privacy note on [FestiveThemes] / [CalendarEvent.title]); this only
+ * tidies what the on-screen banner shows.
+ */
+fun normalizeCalendarHolidayTitle(raw: String): String =
+    raw.replace('’', '\'')
+        .trim()
+        // Drop trailing punctuation first so a region suffix is still flush
+        // with the end of the string ("King's Birthday (WA)!" → strip "!" →
+        // strip "(WA)").
+        .trimEnd('!', '?', '.', ',', ';', ':', ' ')
+        .replace(Regex("\\s*\\([^()]*\\)$"), "")
+        .trim()
+        .trimEnd('!', '?', '.', ',', ';', ':', ' ')
+        .trim()
+        .ifBlank { raw.trim() }
+
+/**
  * Runtime-constructed [HolidayTheme]s for calendar-sourced events. The
  * `title` becomes the banner's display string verbatim (it's the calendar
  * event's own title — "Diwali", "Alice's birthday"); these themes are
@@ -1528,18 +1694,21 @@ private const val BIRTHDAY_MAGENTA = 0xFFD81B60L
  * as [CalendarEvent.title].
  */
 object FestiveThemes {
-    fun publicHoliday(title: String): HolidayTheme = HolidayTheme(
-        id = HolidayId.GENERIC_PUBLIC_HOLIDAY,
-        displayNameKey = title,
-        bannerTextKey = title,
-        emoji = "🎊",
-        topOverrides = topPaletteAll(FESTIVE_GOLD),
-        bottomOverrides = bottomPaletteAll(FESTIVE_PURPLE),
-        bannerArgb = FESTIVE_GOLD,
-        countries = emptySet(),
-        isSynthetic = true,
-        displayTitleOverride = title,
-    )
+    fun publicHoliday(title: String): HolidayTheme {
+        val display = normalizeCalendarHolidayTitle(title)
+        return HolidayTheme(
+            id = HolidayId.GENERIC_PUBLIC_HOLIDAY,
+            displayNameKey = display,
+            bannerTextKey = display,
+            emoji = "🎊",
+            topOverrides = topPaletteAll(FESTIVE_GOLD),
+            bottomOverrides = bottomPaletteAll(FESTIVE_PURPLE),
+            bannerArgb = FESTIVE_GOLD,
+            countries = emptySet(),
+            isSynthetic = true,
+            displayTitleOverride = display,
+        )
+    }
 
     fun birthday(title: String): HolidayTheme = HolidayTheme(
         id = HolidayId.BIRTHDAY,

@@ -123,4 +123,68 @@ class HolidayThemeTest {
         // Mar 26 2027 is the right Good Friday for that year.
         goodFriday.matches(LocalDate.of(2027, 3, 26)) shouldBe true
     }
+
+    @Test
+    fun `dateIn materialises US Election Day as the Tuesday after the first Monday`() {
+        val electionDay = HolidayDate.FirstWeekdayOnOrAfter(Month.NOVEMBER, DayOfWeek.TUESDAY, 2)
+        // Cross-checked against published US general-election dates.
+        electionDay.dateIn(2024) shouldBe LocalDate.of(2024, 11, 5)
+        electionDay.dateIn(2026) shouldBe LocalDate.of(2026, 11, 3)
+        electionDay.dateIn(2028) shouldBe LocalDate.of(2028, 11, 7)
+    }
+
+    @Test
+    fun `FirstWeekdayOnOrAfter matches only the single weekday in its window`() {
+        val electionDay = HolidayDate.FirstWeekdayOnOrAfter(Month.NOVEMBER, DayOfWeek.TUESDAY, 2)
+        electionDay.matches(LocalDate.of(2026, 11, 3)) shouldBe true
+        // A later Tuesday in November is outside the Nov 2–8 window.
+        electionDay.matches(LocalDate.of(2026, 11, 10)) shouldBe false
+        // Nov 1 (before the floor) never qualifies even when it's a Tuesday.
+        val nov1Tuesday = HolidayDate.FirstWeekdayOnOrAfter(Month.NOVEMBER, DayOfWeek.TUESDAY, 2)
+        nov1Tuesday.matches(LocalDate.of(2027, 11, 1)) shouldBe false
+        // Wrong weekday in range is rejected.
+        electionDay.matches(LocalDate.of(2026, 11, 4)) shouldBe false
+    }
+
+    @Test
+    fun `dateIn materialises Melbourne Cup as the first Tuesday of November`() {
+        HolidayDate.NthWeekday(Month.NOVEMBER, 1, DayOfWeek.TUESDAY).dateIn(2025) shouldBe
+            LocalDate.of(2025, 11, 4)
+        HolidayDate.NthWeekday(Month.NOVEMBER, 1, DayOfWeek.TUESDAY).dateIn(2026) shouldBe
+            LocalDate.of(2026, 11, 3)
+    }
+
+    @Test
+    fun `Labor Day banner uses the Canadian spelling for CA`() {
+        val theme = HolidayCatalog.themeFor(HolidayId.US_LABOR_DAY)
+            ?: error("US_LABOR_DAY missing from catalog")
+        theme.bannerTextKeyFor("US") shouldBe "holiday_banner_us_labor_day"
+        theme.bannerTextKeyFor("CA") shouldBe "holiday_banner_ca_labour_day"
+        theme.bannerTextKeyFor("ca") shouldBe "holiday_banner_ca_labour_day"
+    }
+
+    @Test
+    fun `normalizeCalendarHolidayTitle strips a trailing region in parentheses`() {
+        normalizeCalendarHolidayTitle("King's Birthday (Western Australia)") shouldBe
+            "King's Birthday"
+        normalizeCalendarHolidayTitle("Labour Day (most regions)") shouldBe "Labour Day"
+        normalizeCalendarHolidayTitle("Presidents' Day (Observed)") shouldBe "Presidents' Day"
+    }
+
+    @Test
+    fun `normalizeCalendarHolidayTitle folds apostrophes and trims trailing punctuation`() {
+        // Curly apostrophe folded to straight; trailing period dropped.
+        normalizeCalendarHolidayTitle("Presidents’ Day.") shouldBe "Presidents' Day"
+        // Region suffix plus trailing punctuation in combination.
+        normalizeCalendarHolidayTitle("King’s Birthday (WA)!") shouldBe "King's Birthday"
+        // No region, no punctuation — passes through unchanged.
+        normalizeCalendarHolidayTitle("Cinco de Mayo") shouldBe "Cinco de Mayo"
+    }
+
+    @Test
+    fun `normalizeCalendarHolidayTitle keeps the raw text when stripping would empty it`() {
+        // A title that is *only* a parenthetical falls back to the raw trim so
+        // the banner never goes blank.
+        normalizeCalendarHolidayTitle("(Western Australia)") shouldBe "(Western Australia)"
+    }
 }

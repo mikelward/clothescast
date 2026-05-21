@@ -538,6 +538,59 @@ class HolidayResolverTest {
         }
     }
 
+    // --- Holidays added in the colours-and-themes expansion. Each is gated
+    // by country and several share a date with a neighbour, so the cases pin
+    // both the date predicate and the country tiebreak.
+
+    @Test
+    fun `Cinco de Mayo matches May 5 for MX and US`() {
+        subject.resolve(LocalDate.of(2026, 5, 5), noOverrides, setOf("MX"))?.id shouldBe
+            HolidayId.CINCO_DE_MAYO
+        subject.resolve(LocalDate.of(2026, 5, 5), noOverrides, setOf("US"))?.id shouldBe
+            HolidayId.CINCO_DE_MAYO
+        subject.resolve(LocalDate.of(2026, 5, 4), noOverrides, setOf("MX")).shouldBeNull()
+    }
+
+    @Test
+    fun `US Labor Day matches the first Monday of September`() {
+        // 2025: Sep 1 is itself the first Monday — no collision with Brazil (Sep 7).
+        subject.resolve(LocalDate.of(2025, 9, 1), noOverrides, setOf("US"))?.id shouldBe
+            HolidayId.US_LABOR_DAY
+        subject.resolve(LocalDate.of(2025, 9, 1), noOverrides, setOf("CA"))?.id shouldBe
+            HolidayId.US_LABOR_DAY
+    }
+
+    @Test
+    fun `NZ Labour Day matches the fourth Monday of October for NZ`() {
+        // 2026: 4th Monday of October is the 26th (shared with Austria's fixed
+        // national day, but country gating keeps an NZ user on Labour Day).
+        subject.resolve(LocalDate.of(2026, 10, 26), noOverrides, setOf("NZ"))?.id shouldBe
+            HolidayId.NZ_LABOUR_DAY
+        subject.resolve(LocalDate.of(2026, 10, 26), noOverrides, setOf("AT"))?.id shouldBe
+            HolidayId.AUSTRIA_NATIONAL_DAY
+    }
+
+    @Test
+    fun `Melbourne Cup and US Election share Nov 3 2026 but split by country`() {
+        // Nov 3 2026 is the first Tuesday (Melbourne Cup), the Tuesday after
+        // the first Monday (US Election), and Japan's Culture Day — country
+        // gating sends each user to their own theme.
+        subject.resolve(LocalDate.of(2026, 11, 3), noOverrides, setOf("AU"))?.id shouldBe
+            HolidayId.MELBOURNE_CUP_DAY
+        subject.resolve(LocalDate.of(2026, 11, 3), noOverrides, setOf("US"))?.id shouldBe
+            HolidayId.US_ELECTION_DAY
+        subject.resolve(LocalDate.of(2026, 11, 3), noOverrides, setOf("JP"))?.id shouldBe
+            HolidayId.JAPAN_CULTURE_DAY
+    }
+
+    @Test
+    fun `Bonfire Night fires for both GB and NZ`() {
+        subject.resolve(LocalDate.of(2026, 11, 5), noOverrides, setOf("GB"))?.id shouldBe
+            HolidayId.BONFIRE_NIGHT
+        subject.resolve(LocalDate.of(2026, 11, 5), noOverrides, setOf("NZ"))?.id shouldBe
+            HolidayId.BONFIRE_NIGHT
+    }
+
     // --- Auto-resolution helper used by Settings UI for dropdown labels.
 
     @Test

@@ -447,6 +447,7 @@ class PreviewSnapshots {
     @Test fun holiday_anzac_day() = capture { HolidayAnzacDayPreview() }
     @Test fun holiday_mothers_day() = capture { HolidayMothersDayPreview() }
     @Test fun holiday_japan_greenery_day() = capture { HolidayJapanGreeneryDayPreview() }
+    @Test fun holiday_cinco_de_mayo() = capture { HolidayCincoDeMayoPreview() }
     @Test fun holiday_croatia_statehood_day() = capture { HolidayCroatiaStatehoodDayPreview() }
     @Test fun holiday_us_memorial_day() = capture { HolidayUsMemorialDayPreview() }
     @Test fun holiday_towel_day() = capture { HolidayTowelDayPreview() }
@@ -461,14 +462,18 @@ class PreviewSnapshots {
     @Test fun holiday_japan_marine_day() = capture { HolidayJapanMarineDayPreview() }
     @Test fun holiday_korean_liberation_day() = capture { HolidayKoreanLiberationDayPreview() }
     @Test fun holiday_fathers_day_sep() = capture { HolidayFathersDaySepPreview() }
+    @Test fun holiday_us_labor_day() = capture { HolidayUsLaborDayPreview() }
     @Test fun holiday_brazil_independence_day() = capture { HolidayBrazilIndependenceDayPreview() }
     @Test fun holiday_pirate_day() = capture { HolidayPirateDayPreview() }
     @Test fun holiday_german_unity_day() = capture { HolidayGermanUnityDayPreview() }
     @Test fun holiday_korean_hangeul_day() = capture { HolidayKoreanHangeulDayPreview() }
     @Test fun holiday_canadian_thanksgiving() = capture { HolidayCanadianThanksgivingPreview() }
     @Test fun holiday_spain_hispanic_day() = capture { HolidaySpainHispanicDayPreview() }
+    @Test fun holiday_nz_labour_day() = capture { HolidayNzLabourDayPreview() }
     @Test fun holiday_halloween() = capture { HolidayHalloweenPreview() }
     @Test fun holiday_japan_culture_day() = capture { HolidayJapanCultureDayPreview() }
+    @Test fun holiday_melbourne_cup_day() = capture { HolidayMelbourneCupDayPreview() }
+    @Test fun holiday_us_election_day() = capture { HolidayUsElectionDayPreview() }
     @Test fun holiday_bonfire_night() = capture { HolidayBonfireNightPreview() }
     @Test fun holiday_remembrance_day() = capture { HolidayRemembranceDayPreview() }
     @Test fun holiday_remembrance_day_us() = capture { HolidayRemembranceDayUsPreview() }

@@ -187,11 +187,12 @@ enum class TtsEngine { DEVICE, GEMINI }
  *   [KING], [QUEEN] and [PRESIDENT] are seasonal novelty registers ([KING] /
  *   [QUEEN] evoke King Charles III / Queen Elizabeth II for occasions with a
  *   royal in the name; [PRESIDENT] evokes the solemn oratory of George
- *   Washington / Abraham Lincoln for Presidents' Day and the like). For now
- *   they're always available in the picker; TODO: surface each one
- *   automatically around its holiday (Christmas, Halloween, New Year's Eve,
- *   St Patrick's Day, royal occasions, Presidents' Day) once the Celebrations
- *   calendar wiring can drive a default style.
+ *   Washington / Abraham Lincoln for Presidents' Day and the like). They're
+ *   always available in the picker, and `holidayTtsStyle` (see HolidayVoice.kt)
+ *   auto-selects the matching one around its holiday (Christmas, Halloween,
+ *   New Year's, St Patrick's Day, the King's birthday, Presidents' Day, plus
+ *   Talk Like a Pirate Day and Towel Day) for users who haven't picked a
+ *   deliberate non-default style.
  *
  * Only consulted when [TtsEngine] == [TtsEngine.GEMINI]; the on-device engine
  * doesn't accept style prompts.

@@ -80,23 +80,34 @@ internal fun DeveloperPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    // Serialize Speak the same way VoiceSettings serializes its preview:
+    // cloud TTS is billable and cancellation isn't a reliable cost control,
+    // so an in-flight guard stops rapid taps queuing duplicate paid requests.
+    var isSpeaking by remember { mutableStateOf(false) }
     SettingsScaffold(R.string.settings_root_developer, onBack) { padding ->
         DeveloperContent(
             region = state.region,
             holidayOverrides = state.holidayOverrides,
             enabledCountries = state.effectiveEnabledHolidayCountries,
             padding = padding,
-            onSpeak = {
+            speaking = isSpeaking,
+            onSpeak = onSpeak@{
+                if (isSpeaking) return@onSpeak
+                isSpeaking = true
                 scope.launch {
-                    runTtsPreview(
-                        context = context,
-                        engine = state.ttsEngine,
-                        geminiVoice = state.geminiVoice,
-                        ttsStyle = state.ttsStyle,
-                        deviceVoice = state.deviceVoice,
-                        voiceLocale = state.voiceLocale,
-                        region = state.region,
-                    )
+                    try {
+                        runTtsPreview(
+                            context = context,
+                            engine = state.ttsEngine,
+                            geminiVoice = state.geminiVoice,
+                            ttsStyle = state.ttsStyle,
+                            deviceVoice = state.deviceVoice,
+                            voiceLocale = state.voiceLocale,
+                            region = state.region,
+                        )
+                    } finally {
+                        isSpeaking = false
+                    }
                 }
             },
         )
@@ -111,6 +122,7 @@ internal fun DeveloperContent(
     enabledCountries: Set<String>,
     padding: PaddingValues,
     onSpeak: () -> Unit,
+    speaking: Boolean = false,
     initialDate: LocalDate = LocalDate.now(),
 ) {
     var epochDay by rememberSaveable { mutableStateOf(initialDate.toEpochDay()) }
@@ -192,7 +204,11 @@ internal fun DeveloperContent(
             outfitBottomStrokes = theme?.bottomStrokeOverrides ?: emptyMap(),
         )
 
-        Button(onClick = onSpeak, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = onSpeak,
+            enabled = !speaking,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
             Text(stringResource(R.string.settings_developer_speak))
         }
     }

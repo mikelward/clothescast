@@ -110,8 +110,9 @@ object BugReport {
             appendLine("--- Current ClothesCasts ---")
             val region = prefs?.region ?: Region.SYSTEM
             val tempUnit = prefs?.temperatureUnit ?: TemperatureUnit.CELSIUS
-            appendInsight("This period", thisPeriod, context, region, tempUnit)
-            appendInsight("Next period", nextPeriod, context, region, tempUnit)
+            val omitRange = prefs?.omitTemperatureRange ?: false
+            appendInsight("This period", thisPeriod, context, region, tempUnit, omitRange)
+            appendInsight("Next period", nextPeriod, context, region, tempUnit, omitRange)
             if (!crash.isNullOrBlank()) {
                 appendLine("--- Last crash (from previous run) ---")
                 appendLine(crash.trim())
@@ -139,6 +140,7 @@ object BugReport {
         appendLine("Tonight schedule: ${prefs.tonightSchedule.time} ${prefs.tonightSchedule.days.sorted()}")
         appendLine("Tonight notify only on events: ${prefs.tonightNotifyOnlyOnEvents}")
         appendLine("Daily mention evening events: ${prefs.dailyMentionEveningEvents}")
+        appendLine("Omit temperature range: ${prefs.omitTemperatureRange}")
         appendLine("Delivery (morning): ${prefs.deliveryMode}")
         appendLine("Delivery (tonight): ${prefs.tonightDeliveryMode}")
         appendLine("TTS engine: ${prefs.ttsEngine}")
@@ -229,6 +231,7 @@ object BugReport {
         context: Context,
         region: Region,
         temperatureUnit: TemperatureUnit,
+        omitTemperatureRange: Boolean,
     ) {
         appendLine("$label:")
         if (insight == null) {
@@ -237,7 +240,8 @@ object BugReport {
             return
         }
         val prose = runCatching {
-            InsightFormatter.forRegion(context, region, temperatureUnit).format(insight.summary)
+            InsightFormatter.forRegion(context, region, temperatureUnit, omitTemperatureRange)
+                .format(insight.summary)
         }
             .getOrElse { "(prose render failed: ${it.javaClass.simpleName})" }
         appendLine("  Prose: $prose")

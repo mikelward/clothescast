@@ -203,6 +203,7 @@ class SettingsViewModel(
                         deliveryMode = prefs.deliveryMode,
                         tonightDeliveryMode = prefs.tonightDeliveryMode,
                         dailyMentionEveningEvents = prefs.dailyMentionEveningEvents,
+                        omitTemperatureRange = prefs.omitTemperatureRange,
                         region = prefs.region,
                         temperatureUnit = prefs.temperatureUnit,
                         distanceUnit = prefs.distanceUnit,
@@ -910,6 +911,10 @@ class SettingsViewModel(
 
     fun setDailyMentionEveningEvents(enabled: Boolean) {
         viewModelScope.launch { settingsRepository.setDailyMentionEveningEvents(enabled) }
+    }
+
+    fun setOmitTemperatureRange(omit: Boolean) {
+        viewModelScope.launch { settingsRepository.setOmitTemperatureRange(omit) }
     }
 
     fun setTonightEnabled(enabled: Boolean) {

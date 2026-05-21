@@ -205,6 +205,7 @@ object Telemetry {
             putLong("tonight_days_count", snapshot.tonightDaysCount.toLong())
             putLong("tonight_notify_only_on_events", snapshot.tonightNotifyOnlyOnEvents.toLongFlag())
             putLong("daily_mention_evening_events", snapshot.dailyMentionEveningEvents.toLongFlag())
+            putLong("omit_temperature_range", snapshot.omitTemperatureRange.toLongFlag())
             putLong("use_calendar_events", snapshot.useCalendarEvents.toLongFlag())
             putLong("skip_tts_at_home", snapshot.skipTtsAtHome.toLongFlag())
             putLong("home_location_configured", snapshot.homeLocationConfigured.toLongFlag())

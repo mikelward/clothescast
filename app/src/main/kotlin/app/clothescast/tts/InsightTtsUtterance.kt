@@ -30,12 +30,14 @@ internal fun insightTtsUtterance(
     region: Region,
     voiceLocale: VoiceLocale,
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
+    omitTemperatureRange: Boolean = false,
     fallbackLocale: Locale = Locale.getDefault(),
     holidayTheme: HolidayTheme? = null,
 ): InsightTtsUtterance {
     val regionLocale = region.toJavaLocale() ?: fallbackLocale
     val locale = voiceLocale.resolve(regionLocale)
-    val forecast = InsightFormatter.forContext(context, locale, temperatureUnit).format(summary)
+    val forecast = InsightFormatter.forContext(context, locale, temperatureUnit, omitTemperatureRange)
+        .format(summary)
     // Override country tracks the app region (mirrors HolidayBanner) while the
     // greeting's language follows the voice locale.
     val greeting = holidayTtsGreeting(context, holidayTheme, locale, regionLocale.country)

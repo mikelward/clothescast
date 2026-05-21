@@ -548,6 +548,15 @@ data class UserPreferences(
      */
     val dailyMentionEveningEvents: Boolean = true,
     /**
+     * When true, the spoken / displayed insight prose omits the temperature
+     * range sentence ("Today, it will be 14° to 20°"), collapsing it to a bare
+     * "Today, …" lead that flows into the next clause. The numbers still show
+     * beside the thermometer on the smart-display outfit card — those come
+     * straight from the hourly forecast, not the prose. Off by default. See
+     * [InsightFormatter] for the rendering.
+     */
+    val omitTemperatureRange: Boolean = false,
+    /**
      * Master switch for sending Firebase Analytics + Crashlytics payloads off
      * device. Default on so crash reports for the long tail of installs reach
      * the developer without each user finding the toggle, but a non-blocking

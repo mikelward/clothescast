@@ -40,6 +40,7 @@ data class SettingsState(
     val deliveryMode: DeliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
     val tonightDeliveryMode: DeliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
     val dailyMentionEveningEvents: Boolean = true,
+    val omitTemperatureRange: Boolean = false,
     val region: Region = Region.SYSTEM,
     // Match SettingsRepository's locale-aware defaults so en-US devices don't
     // briefly render °C / km before the first DataStore emission overrides it.

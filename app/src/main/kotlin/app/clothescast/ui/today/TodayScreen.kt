@@ -566,6 +566,7 @@ private fun TodayPage(
                 insight = insight,
                 region = state.region,
                 temperatureUnit = state.temperatureUnit,
+                omitTemperatureRange = state.omitTemperatureRange,
                 showChevronRight = showChevronRight,
                 showChevronLeft = showChevronLeft,
                 onChevronTap = onChevronTap,
@@ -1464,6 +1465,12 @@ internal fun InsightCard(
     region: Region,
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     /**
+     * When true, the rendered prose drops the temperature-range sentence and
+     * folds its "Today" / "Tonight" lead into the next clause. Defaults to
+     * false so existing previews stay byte-identical.
+     */
+    omitTemperatureRange: Boolean = false,
+    /**
      * Page-1 affordance: when true, a tappable chevron-right is rendered at
      * the trailing edge of the date row, hinting that the user can swipe (or
      * tap) to see the paired period's charts.
@@ -1488,8 +1495,8 @@ internal fun InsightCard(
     onLongPressDate: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
-    val formatter = remember(context, region, temperatureUnit) {
-        InsightFormatter.forRegion(context, region, temperatureUnit)
+    val formatter = remember(context, region, temperatureUnit, omitTemperatureRange) {
+        InsightFormatter.forRegion(context, region, temperatureUnit, omitTemperatureRange)
     }
     val locale = LocalConfiguration.current.locales[0]
     val dateFormatter = remember(locale) { DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale) }

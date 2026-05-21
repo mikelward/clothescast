@@ -44,7 +44,12 @@ internal suspend fun castCurrentInsight(
     val outfit = insight.outfit
         ?: return context.getString(R.string.cast_error_no_insight_yet)
 
-    val formatter = InsightFormatter.forRegion(context, prefs.region, prefs.temperatureUnit)
+    val formatter = InsightFormatter.forRegion(
+        context,
+        prefs.region,
+        prefs.temperatureUnit,
+        prefs.omitTemperatureRange,
+    )
     val isFutureDay = insight.forDate.isAfter(LocalDate.now())
     val prose = formatter.format(insight.summary, isFutureDay = isFutureDay)
     val info = outfitCardInfoLines(

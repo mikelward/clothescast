@@ -66,6 +66,7 @@ internal fun ScheduleContent(
     tonightEnabled: Boolean,
     tonightNotifyOnlyOnEvents: Boolean,
     dailyMentionEveningEvents: Boolean,
+    omitTemperatureRange: Boolean,
     deliveryMode: DeliveryMode,
     tonightDeliveryMode: DeliveryMode,
     skipTtsAtHome: Boolean,
@@ -76,6 +77,7 @@ internal fun ScheduleContent(
     onSetTonightEnabled: (Boolean) -> Unit,
     onSetTonightNotifyOnlyOnEvents: (Boolean) -> Unit,
     onSetDailyMentionEveningEvents: (Boolean) -> Unit,
+    onSetOmitTemperatureRange: (Boolean) -> Unit,
     onSetDeliveryMode: (DeliveryMode) -> Unit,
     onSetTonightDeliveryMode: (DeliveryMode) -> Unit,
     onSetSkipTtsAtHome: (Boolean) -> Unit,
@@ -113,6 +115,10 @@ internal fun ScheduleContent(
                 onSetNotifyOnlyOnEvents = onSetTonightNotifyOnlyOnEvents,
                 onChange = onSetTonightSchedule,
                 onSetDeliveryMode = onSetTonightDeliveryMode,
+            )
+            InsightWordingCard(
+                omitTemperatureRange = omitTemperatureRange,
+                onSetOmitTemperatureRange = onSetOmitTemperatureRange,
             )
             SkipTtsAtHomeCard(
                 skipTtsAtHome = skipTtsAtHome,
@@ -264,6 +270,30 @@ private fun NightCard(
                 pickerOpen = false
                 onChange(newTime, days)
             },
+        )
+    }
+}
+
+@Composable
+private fun InsightWordingCard(
+    omitTemperatureRange: Boolean,
+    onSetOmitTemperatureRange: (Boolean) -> Unit,
+) {
+    SectionCard(title = stringResource(R.string.settings_insight_title)) {
+        Text(
+            text = stringResource(R.string.settings_insight_description),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        ToggleRow(
+            label = stringResource(R.string.settings_omit_temperature_range),
+            checked = omitTemperatureRange,
+            onCheckedChange = onSetOmitTemperatureRange,
+        )
+        Text(
+            text = stringResource(R.string.settings_omit_temperature_range_description),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

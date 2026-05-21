@@ -595,6 +595,11 @@
     <string name="settings_tonight_days_label">Days of the week</string>
     <string name="settings_tonight_notify_only_on_events">Only notify when there are evening events</string>
 
+    <string name="settings_insight_title">ClothesCast wording</string>
+    <string name="settings_insight_description">Choose what the morning and evening ClothesCast say.</string>
+    <string name="settings_omit_temperature_range">Omit temperature range</string>
+    <string name="settings_omit_temperature_range_description">Leaves the high and low out of the spoken and written ClothesCast. The numbers still show next to the thermometer on the smart display.</string>
+
     <string name="settings_delivery_label">Delivery</string>
     <string name="settings_delivery_notification_only">Notification only</string>
     <string name="settings_delivery_tts_only">Spoken aloud only</string>
@@ -944,6 +949,14 @@
     <string name="insight_band_single">%1$s, it will be %2$d°.</string>
     <!-- Range-band sentence: %1$s = lead-in, %2$d = low °, %3$d = high °. -->
     <string name="insight_band_range">%1$s, it will be %2$d° to %3$d°.</string>
+    <!-- When the user opts to omit the temperature range, the band sentence
+         collapses to a bare lead that flows into the next clause: %1$s = lead-in
+         ("Today"), %2$s = the following clause with its first letter lowercased
+         ("wear a sweater."), giving "Today, wear a sweater.". -->
+    <string name="insight_lead_continues">%1$s, %2$s</string>
+    <!-- Lead with nothing to introduce (range omitted and no other clause fired):
+         %1$s = lead-in, rendered as a standalone "Today.". -->
+    <string name="insight_lead_only">%1$s.</string>
 
     <!-- Band labels — used inside the band-sentence templates above. -->
     <string name="insight_band_freezing">freezing</string>

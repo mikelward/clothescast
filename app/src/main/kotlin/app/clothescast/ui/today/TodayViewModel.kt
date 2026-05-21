@@ -58,6 +58,7 @@ data class TodayState(
     val nextPeriodInsight: Insight? = null,
     val workStatus: WorkStatus = WorkStatus.Idle,
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
+    val omitTemperatureRange: Boolean = false,
     val distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
     val region: Region = Region.SYSTEM,
     // Window boundaries used by manual Refresh to decide TODAY vs TONIGHT.
@@ -384,6 +385,7 @@ class TodayViewModel(
             nextPeriodInsight = nextPeriodInsight,
             workStatus = workStatus,
             temperatureUnit = prefs.temperatureUnit,
+            omitTemperatureRange = prefs.omitTemperatureRange,
             distanceUnit = prefs.distanceUnit,
             region = prefs.region,
             morningTime = prefs.schedule.time,

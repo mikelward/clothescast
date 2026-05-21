@@ -309,6 +309,46 @@ data class HolidayTheme(
      * title — "Diwali", "Alice's birthday") rather than a resource id.
      */
     val displayTitleOverride: String? = null,
+    /**
+     * Funny-bucket themes carry two banner forms. [bannerTextKey] is the
+     * punchy standalone copy shown when the theme is the *only* celebration
+     * that day ("Don't panic!"); [bannerJoinKey] is the lower-case clause
+     * folded in when the day also has other celebrations ("…and don't
+     * forget your towel"). Null on non-Funny themes, which always use
+     * [bannerTextKey] in both positions.
+     */
+    val bannerJoinKey: String? = null,
+    /**
+     * `true` for solemn remembrance days (Anzac, Memorial Day, Remembrance
+     * Day, Korean Memorial Day). When any solemn theme fires, the day's
+     * composed banner drops every Funny clause — "Honoring our fallen"
+     * never reads "…and don't forget your towel".
+     */
+    val solemn: Boolean = false,
+    /**
+     * Set only on an *ephemeral composed* theme produced by [ThemeForToday]
+     * when more than one celebration fires today. Lists the banner pieces
+     * to join with "and", in display order. Null on every catalog and
+     * synthetic theme — those render the single [bannerTextKey] /
+     * [displayTitleOverride] path. The palette / [bannerArgb] / [emoji] on
+     * a composed theme are copied from whichever member supplies the
+     * colours (the Funny theme when present, else the first primary).
+     */
+    val bannerSegments: List<BannerSegment>? = null,
+)
+
+/**
+ * One piece of a composed (multi-celebration) banner. Resolves to
+ * [literalText] when set (a synthetic calendar title), otherwise to the
+ * per-country override in [textKeyByCountry] for the user's country, else
+ * the default [textKey] resource. Mirrors the resolution
+ * [HolidayTheme.bannerTextKeyFor] does for a single theme so a joined
+ * banner still honours the Remembrance Day → Veterans Day naming split.
+ */
+data class BannerSegment(
+    val textKey: String? = null,
+    val textKeyByCountry: Map<String, String> = emptyMap(),
+    val literalText: String? = null,
 )
 
 /**
@@ -322,6 +362,15 @@ fun HolidayTheme.bannerTextKeyFor(countryCode: String?): String {
     if (countryCode.isNullOrBlank()) return bannerTextKey
     return bannerTextKeyByCountry[countryCode.uppercase()] ?: bannerTextKey
 }
+
+/**
+ * `true` for Funny-bucket themes — playful overlays (Talk Like a Pirate
+ * Day, Towel Day) that decorate a day's primary celebration rather than
+ * standing as a national/global holiday. Drives the colour-source pick and
+ * the standalone-vs-join banner form in [ThemeForToday].
+ */
+val HolidayTheme.isFunny: Boolean
+    get() = HolidayCatalog.FUNNY in countries
 
 /**
  * The full v1 list of holidays with their date predicate, palette, and
@@ -648,6 +697,7 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
             countries = setOf("AU", "NZ"),
+            solemn = true,
         ),
 
         // May 1 — Labour Day / International Workers' Day. Public holiday
@@ -747,6 +797,7 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
             countries = setOf("US"),
+            solemn = true,
         ),
 
         // Last Monday of May — UK Spring Bank Holiday. Union Jack
@@ -776,6 +827,7 @@ object HolidayCatalog {
             id = HolidayId.TOWEL_DAY,
             displayNameKey = "holiday_name_towel_day",
             bannerTextKey = "holiday_banner_towel_day",
+            bannerJoinKey = "holiday_banner_join_towel_day",
             emoji = "🪐", // 🪐
             topOverrides = topPaletteAll(TOWEL_TEAL),
             bottomOverrides = bottomPaletteAll(TOWEL_SAND),
@@ -809,6 +861,7 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
             countries = setOf("KR"),
+            solemn = true,
         ),
 
         // 2nd Saturday of June — UK King's Official Birthday (Trooping
@@ -1016,6 +1069,7 @@ object HolidayCatalog {
             id = HolidayId.TALK_LIKE_A_PIRATE_DAY,
             displayNameKey = "holiday_name_talk_like_a_pirate_day",
             bannerTextKey = "holiday_banner_talk_like_a_pirate_day",
+            bannerJoinKey = "holiday_banner_join_talk_like_a_pirate_day",
             emoji = "🦜", // 🦜
             topOverrides = topPaletteAll(PIRATE_WHITE),
             bottomOverrides = bottomPaletteAll(PIRATE_BLACK),
@@ -1183,6 +1237,7 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
             countries = setOf("AU", "CA", "GB", "IE", "NZ", "US", "FR"),
+            solemn = true,
         ),
 
         // 4th Thursday of November — US Thanksgiving. Pumpkin-orange tops +

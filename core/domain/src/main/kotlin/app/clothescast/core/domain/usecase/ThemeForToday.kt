@@ -1,11 +1,13 @@
 package app.clothescast.core.domain.usecase
 
+import app.clothescast.core.domain.model.BannerSegment
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.FestiveThemes
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.HolidayTheme
+import app.clothescast.core.domain.model.isFunny
 import java.time.LocalDate
 
 /**
@@ -13,25 +15,27 @@ import java.time.LocalDate
  * combining the curated [HolidayCatalog] (via [HolidayResolver]) with
  * calendar-sourced holiday and birthday events.
  *
- * Priority (highest to lowest):
- * 1. **Curated holiday match.** [HolidayCatalog] entries always win — a
- *    user with a Google holiday-calendar subscription that also has its
- *    own "Christmas Day" row still sees clothescast's curated Christmas
- *    palette + localised banner.
- * 2. **Calendar-sourced public holiday** (if [themeFromCalendarHolidays]).
- *    The first event in the day's list that classifies as
- *    [EventKind.PUBLIC_HOLIDAY] becomes a [FestiveThemes.publicHoliday].
- *    This fills the curated catalog's known lunisolar gap — Diwali, Eid,
- *    Lunar New Year, Hanukkah, Holi — for users who've subscribed to
- *    "Holidays in <country>" in Google Calendar.
- * 3. **Calendar-sourced birthday** (if [themeFromCalendarBirthdays]).
- *    The first event classified as [EventKind.BIRTHDAY] becomes a
- *    [FestiveThemes.birthday].
- * 4. `null` — no theme today.
+ * Unlike a single-winner lookup, this collects *every* celebration that
+ * fires today and composes them into one theme:
+ *  - **Banner** — each celebration's copy joined with "and". A lone
+ *    celebration uses its standalone banner; when several share a day,
+ *    Funny themes switch to their lower-case join clause ("Happy bank
+ *    holiday and don't forget your towel").
+ *  - **Colours** — taken from the Funny theme when one is present (the
+ *    fun palette is the point), otherwise the first primary holiday.
+ *  - **Solemn suppression** — when a remembrance day fires (Anzac,
+ *    Memorial Day, Remembrance Day, Korean Memorial Day), every Funny
+ *    clause is dropped so the day stays solemn.
  *
- * Both feature toggles default off in [UserPreferences]; the use-case
- * receives the user's current intent each call and ignores any classified
- * events if the matching toggle is off.
+ * Ordering of contributors (which is also banner order): curated primaries
+ * in calendar order, then a calendar public holiday, then a birthday, then
+ * Funny clauses last.
+ *
+ * Calendar contributors only count when the matching toggle is on. A
+ * calendar public holiday is ignored when the curated catalog already has
+ * an eligible entry for the date (dedupe — a Google "Christmas Day" event
+ * shouldn't double up clothescast's curated Christmas). Birthdays always
+ * join.
  */
 class ThemeForToday(
     private val holidayResolver: HolidayResolver = HolidayResolver(),
@@ -44,23 +48,55 @@ class ThemeForToday(
         themeFromCalendarHolidays: Boolean,
         themeFromCalendarBirthdays: Boolean,
     ): HolidayTheme? {
-        holidayResolver.resolve(date, overrides, enabledCountries)?.let { return it }
-        // If the curated catalog has an entry for this date but it didn't
-        // fire (user OFF'd it, or its country bucket is off), honour the
-        // user's choice and skip the calendar-holiday fallback. Without
-        // this, turning Christmas off via the per-holiday dropdown would
-        // still surface a "Christmas Day" event from a Google holiday
-        // calendar as a synthetic theme. Birthdays don't go through the
-        // catalog, so they're unaffected.
-        val curatedDateOccupied = holidayResolver.hasCatalogMatch(date, enabledCountries)
-        if (themeFromCalendarHolidays && !curatedDateOccupied) {
+        val catalogMatches = holidayResolver.resolveAll(date, overrides, enabledCountries)
+        val primaries = catalogMatches.filterNot { it.isFunny }
+        // A remembrance day mutes every playful clause for the day.
+        val funnies = if (primaries.any { it.solemn }) emptyList() else catalogMatches.filter { it.isFunny }
+
+        val calendarHolidays = if (themeFromCalendarHolidays &&
+            !holidayResolver.hasCatalogMatch(date, enabledCountries)
+        ) {
             events.firstOrNull { it.kind == EventKind.PUBLIC_HOLIDAY }
-                ?.let { return FestiveThemes.publicHoliday(it.title) }
+                ?.let { listOf(FestiveThemes.publicHoliday(it.title)) }
+                .orEmpty()
+        } else {
+            emptyList()
         }
-        if (themeFromCalendarBirthdays) {
+        val birthdays = if (themeFromCalendarBirthdays) {
             events.firstOrNull { it.kind == EventKind.BIRTHDAY }
-                ?.let { return FestiveThemes.birthday(it.title) }
+                ?.let { listOf(FestiveThemes.birthday(it.title)) }
+                .orEmpty()
+        } else {
+            emptyList()
         }
-        return null
+
+        // Banner / contributor order: primaries → calendar holiday →
+        // birthday → Funny clause last.
+        val contributors = primaries + calendarHolidays + birthdays + funnies
+        if (contributors.isEmpty()) return null
+
+        // Colours come from the Funny theme when present (suppressed on
+        // solemn days), else the first primary, else the synthetic.
+        val colourSource = funnies.firstOrNull()
+            ?: primaries.firstOrNull()
+            ?: contributors.first()
+
+        // A single celebration renders its own standalone banner — no join.
+        if (contributors.size == 1) return contributors.first()
+
+        val segments = contributors.map { theme ->
+            when {
+                theme.displayTitleOverride != null ->
+                    BannerSegment(literalText = theme.displayTitleOverride)
+                theme.isFunny ->
+                    BannerSegment(textKey = theme.bannerJoinKey ?: theme.bannerTextKey)
+                else ->
+                    BannerSegment(
+                        textKey = theme.bannerTextKey,
+                        textKeyByCountry = theme.bannerTextKeyByCountry,
+                    )
+            }
+        }
+        return colourSource.copy(bannerSegments = segments)
     }
 }

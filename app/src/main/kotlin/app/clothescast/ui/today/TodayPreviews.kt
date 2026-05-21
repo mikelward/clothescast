@@ -50,6 +50,7 @@ import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.WindSpeedUnit
+import app.clothescast.core.domain.usecase.ThemeForToday
 import app.clothescast.diag.BugReportConsentDialog
 import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.theme.ClothesCastTheme
@@ -721,6 +722,15 @@ private fun HolidayShowcase(
 ) {
     val theme = HolidayCatalog.themeFor(holidayId)
         ?: error("HolidayCatalog has no entry for $holidayId")
+    HolidayShowcase(theme = theme, darkTheme = darkTheme, region = region)
+}
+
+@Composable
+private fun HolidayShowcase(
+    theme: HolidayTheme,
+    darkTheme: Boolean = false,
+    region: Region = Region.SYSTEM,
+) {
     Frame(darkTheme = darkTheme) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             HolidayBanner(theme = theme, region = region, modifier = Modifier.fillMaxWidth())
@@ -817,6 +827,25 @@ internal fun HolidayUsMemorialDayPreview() = HolidayShowcase(HolidayId.US_MEMORI
 @Preview(name = "Holiday · Towel Day", widthDp = 360)
 @Composable
 internal fun HolidayTowelDayPreview() = HolidayShowcase(HolidayId.TOWEL_DAY)
+
+// Composed (multi-celebration) banner: a GB user on a year where the last
+// Monday of May lands on the 25th sees Spring Bank Holiday joined with
+// Towel Day — bank-holiday title, Towel Day's teal/sand palette, and the
+// "don't forget your towel" join clause. Built through the real
+// ThemeForToday path so the snapshot exercises the composition end-to-end.
+@Preview(name = "Holiday · Bank Holiday + Towel Day", widthDp = 360)
+@Composable
+internal fun HolidayBankHolidayWithTowelPreview() {
+    val theme = ThemeForToday().resolve(
+        date = java.time.LocalDate.of(2026, java.time.Month.MAY, 25),
+        overrides = emptyMap(),
+        enabledCountries = setOf("GB", HolidayCatalog.FUNNY),
+        events = emptyList(),
+        themeFromCalendarHolidays = false,
+        themeFromCalendarBirthdays = false,
+    ) ?: error("expected a composed Bank Holiday + Towel Day theme")
+    HolidayShowcase(theme = theme)
+}
 
 @Preview(name = "Holiday · Italian Republic Day", widthDp = 360)
 @Composable

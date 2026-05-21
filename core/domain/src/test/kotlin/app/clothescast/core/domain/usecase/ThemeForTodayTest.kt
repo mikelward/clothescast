@@ -183,7 +183,7 @@ class ThemeForTodayTest {
     }
 
     @Test
-    fun `public holiday takes precedence over birthday when both are present`() {
+    fun `public holiday and birthday on the same day join into one banner`() {
         val theme = subject.resolve(
             date = random,
             overrides = noOverrides,
@@ -193,7 +193,88 @@ class ThemeForTodayTest {
             themeFromCalendarBirthdays = true,
         )
         theme.shouldNotBeNull()
+        // Colours come from the public holiday (no Funny theme present).
         theme.id shouldBe HolidayId.GENERIC_PUBLIC_HOLIDAY
+        // Both celebrations surface, public holiday first, birthday second.
+        val segments = theme.bannerSegments
+        segments.shouldNotBeNull()
+        segments.map { it.literalText } shouldBe listOf("Diwali", "Alice's birthday")
+    }
+
+    @Test
+    fun `curated holiday and birthday on the same day join`() {
+        val theme = subject.resolve(
+            date = christmas,
+            overrides = noOverrides,
+            enabledCountries = allCountries,
+            events = listOf(birthday("Alice's birthday")),
+            themeFromCalendarHolidays = true,
+            themeFromCalendarBirthdays = true,
+        )
+        theme.shouldNotBeNull()
+        // Christmas supplies identity + colours; birthday joins the banner.
+        theme.id shouldBe HolidayId.CHRISTMAS_DAY
+        theme.isSynthetic shouldBe false
+        val segments = theme.bannerSegments
+        segments.shouldNotBeNull()
+        segments[0].textKey shouldBe "holiday_banner_christmas_day"
+        segments[1].literalText shouldBe "Alice's birthday"
+    }
+
+    @Test
+    fun `bank holiday and Towel Day collision composes with funny colours and join clause`() {
+        // 2026-05-25 is the last Monday of May, so UK Spring Bank Holiday
+        // coincides with Towel Day for a GB user with Funny on.
+        val theme = subject.resolve(
+            date = LocalDate.of(2026, Month.MAY, 25),
+            overrides = noOverrides,
+            enabledCountries = setOf("GB", HolidayCatalog.FUNNY),
+            events = emptyList(),
+            themeFromCalendarHolidays = false,
+            themeFromCalendarBirthdays = false,
+        )
+        theme.shouldNotBeNull()
+        // Colours/emoji come from Towel Day (the Funny theme).
+        theme.id shouldBe HolidayId.TOWEL_DAY
+        theme.emoji shouldBe "🪐"
+        val segments = theme.bannerSegments
+        segments.shouldNotBeNull()
+        // Primary banner first, funny *join* clause (not the standalone) last.
+        segments[0].textKey shouldBe "holiday_banner_uk_bank_holiday"
+        segments[1].textKey shouldBe "holiday_banner_join_towel_day"
+    }
+
+    @Test
+    fun `solemn day suppresses the Towel Day clause on a collision`() {
+        // Same date, but a US user: Memorial Day is solemn, so Towel Day is
+        // dropped entirely — no playful clause beside "Honoring our fallen".
+        val theme = subject.resolve(
+            date = LocalDate.of(2026, Month.MAY, 25),
+            overrides = noOverrides,
+            enabledCountries = setOf("US", HolidayCatalog.FUNNY),
+            events = emptyList(),
+            themeFromCalendarHolidays = false,
+            themeFromCalendarBirthdays = false,
+        )
+        theme.shouldNotBeNull()
+        theme.id shouldBe HolidayId.US_MEMORIAL_DAY
+        theme.bannerSegments.shouldBeNull()
+    }
+
+    @Test
+    fun `lone Funny theme uses its standalone banner, not the join clause`() {
+        val theme = subject.resolve(
+            date = LocalDate.of(2026, Month.MAY, 25),
+            overrides = noOverrides,
+            enabledCountries = setOf(HolidayCatalog.FUNNY),
+            events = emptyList(),
+            themeFromCalendarHolidays = false,
+            themeFromCalendarBirthdays = false,
+        )
+        theme.shouldNotBeNull()
+        theme.id shouldBe HolidayId.TOWEL_DAY
+        theme.bannerSegments.shouldBeNull()
+        theme.bannerTextKey shouldBe "holiday_banner_towel_day"
     }
 
     @Test

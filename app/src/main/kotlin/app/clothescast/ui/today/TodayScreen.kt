@@ -817,16 +817,25 @@ internal fun HolidayBanner(
     val effectiveCountry = remember(region) {
         (region.toJavaLocale() ?: Locale.getDefault()).country
     }
-    val bannerKey = theme.bannerTextKeyFor(effectiveCountry)
-    val bannerText = remember(bannerKey, theme.displayTitleOverride) {
-        // Synthetic themes (calendar-sourced holidays/birthdays) carry the
-        // event title as [displayTitleOverride]; bypass the resource lookup
-        // because the key is a runtime string, not a `@string/...` id.
-        theme.displayTitleOverride ?: run {
-            val resId = context.resources.getIdentifier(
-                bannerKey, "string", context.packageName,
-            )
-            if (resId == 0) theme.id.name else context.getString(resId)
+    val bannerText = remember(theme, effectiveCountry) {
+        val segments = theme.bannerSegments
+        if (!segments.isNullOrEmpty()) {
+            // Composed multi-celebration banner: join each piece with the
+            // localised "and" ("Happy bank holiday and don't forget your
+            // towel").
+            val and = context.getString(R.string.holiday_banner_and)
+            segments.joinToString(separator = " $and ") { segment ->
+                segment.literalText ?: run {
+                    val key = segment.textKeyByCountry[effectiveCountry.uppercase()] ?: segment.textKey
+                    resolveBannerString(context, key, theme.id.name)
+                }
+            }
+        } else {
+            // Synthetic themes (calendar-sourced holidays/birthdays) carry the
+            // event title as [displayTitleOverride]; bypass the resource lookup
+            // because the key is a runtime string, not a `@string/...` id.
+            theme.displayTitleOverride
+                ?: resolveBannerString(context, theme.bannerTextKeyFor(effectiveCountry), theme.id.name)
         }
     }
     val bannerColor = remember(theme.bannerArgb) { Color(theme.bannerArgb.toInt()) }
@@ -860,6 +869,23 @@ internal fun HolidayBanner(
             textAlign = TextAlign.Center,
         )
     }
+}
+
+/**
+ * Resolves a `@string/<name>` banner key by name (the theme catalogue lives
+ * in `:core:domain` and can't hold compile-time `R` ids). Falls back to
+ * [fallback] (the holiday's enum name) when the key is null or unknown so a
+ * missing translation degrades to something developer-readable rather than
+ * blank.
+ */
+private fun resolveBannerString(
+    context: android.content.Context,
+    key: String?,
+    fallback: String,
+): String {
+    if (key == null) return fallback
+    val resId = context.resources.getIdentifier(key, "string", context.packageName)
+    return if (resId == 0) fallback else context.getString(resId)
 }
 
 @Composable

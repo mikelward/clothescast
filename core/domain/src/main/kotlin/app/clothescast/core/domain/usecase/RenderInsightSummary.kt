@@ -6,6 +6,7 @@ import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.CalendarTieInClause
 import app.clothescast.core.domain.model.ClothesClause
+import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeltaClause
@@ -19,6 +20,7 @@ import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
 import java.time.LocalTime
+import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -88,6 +90,14 @@ class RenderInsightSummary {
         // emitted. null disables the clause entirely. Defaults to the historical
         // 3°C threshold so existing callers/tests are unchanged.
         deltaThresholdC: Double? = 3.0,
+        // Controls emission of the clothes clause on [ForecastPeriod.TODAY]. See
+        // [ClothesMentionMode]. Ignored on TONIGHT (always behaves as ALWAYS),
+        // since [yesterdayTriggeredItems] has no overnight counterpart. Defaults
+        // to ALWAYS so existing callers/tests are unchanged.
+        clothesMentionMode: ClothesMentionMode = ClothesMentionMode.ALWAYS,
+        // Yesterday's triggered clothing items, used only by
+        // [ClothesMentionMode.IF_CHANGED] to decide whether today's set differs.
+        yesterdayTriggeredItems: List<String> = emptyList(),
     ): InsightSummary {
         val items = todayTriggeredRules.map { it.item }
         val peak = peakPrecip(today, perModelHourly)
@@ -96,7 +106,7 @@ class RenderInsightSummary {
             alert = alertClause(alerts),
             band = bandClause(today),
             delta = if (period == ForecastPeriod.TODAY) deltaClause(todayForDelta, yesterday, deltaThresholdC) else null,
-            clothes = clothesClause(items),
+            clothes = clothesClause(items, period, clothesMentionMode, yesterdayTriggeredItems),
             precip = peak?.let { PrecipClause(it.condition, it.time, it.likelihood) },
             // Calendar tie-in only fires on TONIGHT — pairing the precip peak
             // with an event the listener hasn't started yet ("Bring an umbrella
@@ -138,8 +148,32 @@ class RenderInsightSummary {
         return DeltaClause(degrees = abs(rounded), direction = direction)
     }
 
-    private fun clothesClause(items: List<String>): ClothesClause? =
-        if (items.isEmpty()) null else ClothesClause(items)
+    private fun clothesClause(
+        items: List<String>,
+        period: ForecastPeriod,
+        mode: ClothesMentionMode,
+        yesterdayItems: List<String>,
+    ): ClothesClause? {
+        if (items.isEmpty()) return null
+        // Mode gating is morning-only: TONIGHT has no yesterday-overnight
+        // comparison, so it always names clothing (the historical behaviour).
+        if (period != ForecastPeriod.TODAY) return ClothesClause(items)
+        return when (mode) {
+            ClothesMentionMode.ALWAYS -> ClothesClause(items)
+            ClothesMentionMode.NEVER -> null
+            ClothesMentionMode.IF_CHANGED -> {
+                // Case- and whitespace-insensitive set comparison, matching the
+                // evening tie-in's delta check and tolerating "Jacket" / "jacket"
+                // mismatches from legacy free-form ClothesRule.item values.
+                val normalize: (String) -> String = { it.trim().lowercase(Locale.ROOT) }
+                if (items.map(normalize).toSet() == yesterdayItems.map(normalize).toSet()) {
+                    null
+                } else {
+                    ClothesClause(items)
+                }
+            }
+        }
+    }
 
     /**
      * Resolves the precipitation peak hour the way the precip rule needs it. Lifted

@@ -2,6 +2,7 @@ package app.clothescast.core.domain.usecase
 
 import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.CalendarEvent
+import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeltaClause
@@ -139,6 +140,69 @@ class RenderInsightSummaryTest {
     @Test
     fun `clothes clause is omitted when no rules trigger`() {
         subject(mildToday, yesterday, emptyList()).clothes.shouldBeNull()
+    }
+
+    @Test
+    fun `clothes mention ALWAYS emits regardless of yesterday`() {
+        val out = subject(
+            mildToday,
+            yesterday,
+            listOf(sweaterRule),
+            clothesMentionMode = ClothesMentionMode.ALWAYS,
+            yesterdayTriggeredItems = listOf("sweater"),
+        )
+        out.clothes.shouldNotBeNull()
+        out.clothes!!.items.shouldContainExactly("sweater")
+    }
+
+    @Test
+    fun `clothes mention NEVER suppresses the clause even when rules fire`() {
+        subject(
+            mildToday,
+            yesterday,
+            listOf(sweaterRule),
+            clothesMentionMode = ClothesMentionMode.NEVER,
+        ).clothes.shouldBeNull()
+    }
+
+    @Test
+    fun `clothes mention IF_CHANGED suppresses when items match yesterday`() {
+        subject(
+            mildToday,
+            yesterday,
+            listOf(sweaterRule, jacketRule),
+            clothesMentionMode = ClothesMentionMode.IF_CHANGED,
+            // Same set, different case/whitespace — still counts as unchanged.
+            yesterdayTriggeredItems = listOf(" Jacket ", "SWEATER"),
+        ).clothes.shouldBeNull()
+    }
+
+    @Test
+    fun `clothes mention IF_CHANGED emits when items differ from yesterday`() {
+        val out = subject(
+            mildToday,
+            yesterday,
+            listOf(sweaterRule, jacketRule),
+            clothesMentionMode = ClothesMentionMode.IF_CHANGED,
+            yesterdayTriggeredItems = listOf("sweater"),
+        )
+        out.clothes.shouldNotBeNull()
+        out.clothes!!.items.shouldContainExactly("sweater", "jacket")
+    }
+
+    @Test
+    fun `clothes mention mode is ignored on TONIGHT`() {
+        // TONIGHT has no yesterday-overnight comparison, so it always names
+        // clothing regardless of mode.
+        val out = subject(
+            mildToday,
+            yesterday,
+            listOf(sweaterRule),
+            period = ForecastPeriod.TONIGHT,
+            clothesMentionMode = ClothesMentionMode.NEVER,
+        )
+        out.clothes.shouldNotBeNull()
+        out.clothes!!.items.shouldContainExactly("sweater")
     }
 
     @Test

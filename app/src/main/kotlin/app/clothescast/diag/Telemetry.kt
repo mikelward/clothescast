@@ -205,6 +205,7 @@ object Telemetry {
             putLong("tonight_days_count", snapshot.tonightDaysCount.toLong())
             putLong("tonight_notify_only_on_events", snapshot.tonightNotifyOnlyOnEvents.toLongFlag())
             putLong("daily_mention_evening_events", snapshot.dailyMentionEveningEvents.toLongFlag())
+            putString("clothes_mention_mode", snapshot.clothesMentionMode)
             putString("range_format", snapshot.rangeFormat)
             putLong("delta_threshold_c", snapshot.deltaThresholdC.toLong())
             putLong("use_calendar_events", snapshot.useCalendarEvents.toLongFlag())

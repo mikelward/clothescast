@@ -1,5 +1,6 @@
 package app.clothescast.ui.settings
 
+import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
@@ -41,6 +42,7 @@ data class SettingsState(
     val deliveryMode: DeliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
     val tonightDeliveryMode: DeliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
     val dailyMentionEveningEvents: Boolean = true,
+    val clothesMentionMode: ClothesMentionMode = ClothesMentionMode.ALWAYS,
     val rangeFormat: RangeFormat = RangeFormat.DEGREES,
     val deltaThresholdC: Double? = 3.0,
     val region: Region = Region.SYSTEM,

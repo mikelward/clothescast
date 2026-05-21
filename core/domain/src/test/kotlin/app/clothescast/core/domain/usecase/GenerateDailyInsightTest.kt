@@ -2,6 +2,7 @@ package app.clothescast.core.domain.usecase
 
 import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.CalendarEvent
+import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DailyForecast
@@ -138,6 +139,50 @@ class GenerateDailyInsightTest {
         insight.recommendedItems.shouldContainExactly("sweater", "jacket", "shorts")
         insight.generatedAt shouldBe clockInstant
         insight.forDate shouldBe today.date
+    }
+
+    @Test
+    fun `IF_CHANGED suppresses the clothes clause when clothing matches yesterday, keeping the outfit`() = runTest {
+        // Both days trigger only "sweater" (feels-like 15→17): unchanged.
+        val sameYesterday = yesterday.copy(feelsLikeMinC = 15.0, feelsLikeMaxC = 17.0)
+        val sameToday = today.copy(
+            feelsLikeMinC = 15.0,
+            feelsLikeMaxC = 17.0,
+            precipitationProbabilityMaxPct = 5.0,
+            condition = WeatherCondition.PARTLY_CLOUDY,
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(sameToday, sameYesterday))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val insight = subject(london, prefs.copy(clothesMentionMode = ClothesMentionMode.IF_CHANGED)).insight
+
+        insight.summary.clothes.shouldBeNull()
+        // Prose is suppressed, but the recommendation and outfit card stand.
+        insight.recommendedItems.shouldContainExactly("sweater")
+        insight.outfit.shouldNotBeNull()
+    }
+
+    @Test
+    fun `IF_CHANGED emits the clothes clause when clothing differs from yesterday`() = runTest {
+        // yesterday (10→17) triggers sweater + jacket; today (6→25) adds shorts.
+        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val insight = subject(london, prefs.copy(clothesMentionMode = ClothesMentionMode.IF_CHANGED)).insight
+
+        insight.summary.clothes!!.items.shouldContainExactly("sweater", "jacket", "shorts")
+    }
+
+    @Test
+    fun `NEVER suppresses the clothes clause but keeps the recommendation and outfit`() = runTest {
+        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val insight = subject(london, prefs.copy(clothesMentionMode = ClothesMentionMode.NEVER)).insight
+
+        insight.summary.clothes.shouldBeNull()
+        insight.recommendedItems.shouldContainExactly("sweater", "jacket", "shorts")
+        insight.outfit.shouldNotBeNull()
     }
 
     @Test

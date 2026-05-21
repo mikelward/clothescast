@@ -45,6 +45,7 @@ import app.clothescast.ui.settings.ClothesPage
 import app.clothescast.ui.settings.DeveloperPage
 import app.clothescast.ui.settings.DisplayPage
 import app.clothescast.ui.settings.ForecastersPage
+import app.clothescast.ui.settings.FormatPage
 import app.clothescast.ui.settings.HolidaysPage
 import app.clothescast.ui.settings.LocationPage
 import app.clothescast.ui.settings.PrivacyPage
@@ -80,6 +81,7 @@ private const val NAV_ANIM_MS = 200
 // fromOnboarding rides as a typed nav argument (was a stringly-typed
 // `settingsInitialRoute` round-trip through MainActivity before).
 @Serializable internal data class ScheduleDest(val fromOnboarding: Boolean = false)
+@Serializable internal object FormatDest
 @Serializable internal object ClothesDest
 @Serializable internal object RegionDest
 @Serializable internal object VoiceDest
@@ -142,6 +144,7 @@ fun ClothesCastNavHost(
                 onNavigateToClothes = { nav.navigate(ClothesDest) },
                 onNavigateToHolidays = { nav.navigate(HolidaysDest) },
                 onNavigateToDeveloper = { nav.navigate(DeveloperDest) },
+                onNavigateToFormat = { nav.navigate(FormatDest) },
             )
         }
 
@@ -214,6 +217,7 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
                 onFinishOnboarding = finishOnboarding,
             )
         }
+        composable<FormatDest> { e -> FormatPage(e.settingsViewModel(nav, app), onBack) }
         composable<ClothesDest> { e -> ClothesPage(e.settingsViewModel(nav, app), onBack) }
         composable<RegionDest> { e -> RegionPage(e.settingsViewModel(nav, app), onBack) }
         composable<VoiceDest> { e -> VoicePage(e.settingsViewModel(nav, app), onBack) }
@@ -244,6 +248,7 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
 private fun settingsMenu(nav: NavController): List<SettingsMenuItem> = listOf(
     SettingsMenuItem(R.string.settings_root_schedule, R.string.settings_root_schedule_subtitle) { nav.navigate(ScheduleDest()) },
     SettingsMenuItem(R.string.settings_root_clothes, R.string.settings_root_clothes_subtitle) { nav.navigate(ClothesDest) },
+    SettingsMenuItem(R.string.settings_root_format, R.string.settings_root_format_subtitle) { nav.navigate(FormatDest) },
     SettingsMenuItem(R.string.settings_root_region, R.string.settings_root_region_subtitle) { nav.navigate(RegionDest) },
     SettingsMenuItem(R.string.settings_root_voice, R.string.settings_root_voice_subtitle) { nav.navigate(VoiceDest) },
     SettingsMenuItem(R.string.settings_root_display, R.string.settings_root_display_subtitle) { nav.navigate(DisplayDest) },
@@ -323,7 +328,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
                 context,
                 prefs.region,
                 prefs.temperatureUnit,
-                prefs.omitTemperatureRange,
+                prefs.rangeFormat,
             )
             val prose = formatter.format(insight.summary)
             val png: ByteArray? = insight.outfit?.let { outfit ->

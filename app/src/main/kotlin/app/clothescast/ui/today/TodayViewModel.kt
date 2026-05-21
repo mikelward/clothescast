@@ -12,6 +12,7 @@ import app.clothescast.core.domain.model.HolidayCatalog
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.UserPreferences
@@ -58,7 +59,7 @@ data class TodayState(
     val nextPeriodInsight: Insight? = null,
     val workStatus: WorkStatus = WorkStatus.Idle,
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
-    val omitTemperatureRange: Boolean = false,
+    val rangeFormat: RangeFormat = RangeFormat.DEGREES,
     val distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
     val region: Region = Region.SYSTEM,
     // Window boundaries used by manual Refresh to decide TODAY vs TONIGHT.
@@ -385,7 +386,7 @@ class TodayViewModel(
             nextPeriodInsight = nextPeriodInsight,
             workStatus = workStatus,
             temperatureUnit = prefs.temperatureUnit,
-            omitTemperatureRange = prefs.omitTemperatureRange,
+            rangeFormat = prefs.rangeFormat,
             distanceUnit = prefs.distanceUnit,
             region = prefs.region,
             morningTime = prefs.schedule.time,

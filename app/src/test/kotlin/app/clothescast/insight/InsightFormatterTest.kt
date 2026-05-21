@@ -13,6 +13,7 @@ import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
+import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherCondition
@@ -263,8 +264,28 @@ class InsightFormatterTest {
     private val omitSubject = InsightFormatter.forContext(
         context,
         Locale.ENGLISH,
-        omitTemperatureRange = true,
+        rangeFormat = RangeFormat.NONE,
     )
+
+    private val bandsSubject = InsightFormatter.forContext(
+        context,
+        Locale.ENGLISH,
+        rangeFormat = RangeFormat.BANDS,
+    )
+
+    @Test
+    fun `bands format renders a low-to-high band-word range`() {
+        bandsSubject.format(
+            summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.MILD, 14.0, 20.0)),
+        ) shouldBe "Today, it will be cool to mild."
+    }
+
+    @Test
+    fun `bands format collapses to a single band word when low and high match`() {
+        bandsSubject.format(
+            summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.COOL, 14.0, 16.0)),
+        ) shouldBe "Today, it will be cool."
+    }
 
     @Test
     fun `omit range folds the lead into the clothes clause`() {

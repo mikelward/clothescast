@@ -3,6 +3,7 @@ package app.clothescast.tts
 import android.content.Context
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.InsightSummary
+import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.VoiceLocale
@@ -30,13 +31,13 @@ internal fun insightTtsUtterance(
     region: Region,
     voiceLocale: VoiceLocale,
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
-    omitTemperatureRange: Boolean = false,
+    rangeFormat: RangeFormat = RangeFormat.DEGREES,
     fallbackLocale: Locale = Locale.getDefault(),
     holidayTheme: HolidayTheme? = null,
 ): InsightTtsUtterance {
     val regionLocale = region.toJavaLocale() ?: fallbackLocale
     val locale = voiceLocale.resolve(regionLocale)
-    val forecast = InsightFormatter.forContext(context, locale, temperatureUnit, omitTemperatureRange)
+    val forecast = InsightFormatter.forContext(context, locale, temperatureUnit, rangeFormat)
         .format(summary)
     // Override country tracks the app region (mirrors HolidayBanner) while the
     // greeting's language follows the voice locale.

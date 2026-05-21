@@ -106,6 +106,22 @@ class RenderInsightSummaryTest {
     }
 
     @Test
+    fun `delta clause is omitted when the threshold is null off`() {
+        // +5 would clear the default 3° rule, but a null threshold disables the
+        // clause entirely.
+        val today = mildToday.copy(feelsLikeMaxC = 22.0, feelsLikeMinC = yesterday.feelsLikeMinC)
+        subject(today, yesterday, emptyList(), deltaThresholdC = null).delta.shouldBeNull()
+    }
+
+    @Test
+    fun `delta clause respects a custom threshold above the actual delta`() {
+        // +5 clears the 3° default but not an 8° threshold.
+        val today = mildToday.copy(feelsLikeMaxC = 22.0, feelsLikeMinC = yesterday.feelsLikeMinC)
+        subject(today, yesterday, emptyList(), deltaThresholdC = 8.0).delta.shouldBeNull()
+        subject(today, yesterday, emptyList(), deltaThresholdC = 5.0).delta.shouldNotBeNull()
+    }
+
+    @Test
     fun `delta clause is omitted for the tonight period`() {
         // The morning pass already covered the yesterday-vs-today comparison; tonight
         // shouldn't repeat it even when the threshold is crossed.

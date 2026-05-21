@@ -98,6 +98,7 @@ import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.consensusSunshineHours
 import app.clothescast.core.domain.model.consensusSunshineHoursFor
+import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WindSpeedUnit
@@ -139,6 +140,7 @@ fun TodayScreen(
     onNavigateToClothes: () -> Unit = onNavigateToSettings,
     onNavigateToHolidays: () -> Unit = onNavigateToSettings,
     onNavigateToDeveloper: () -> Unit = onNavigateToSettings,
+    onNavigateToFormat: () -> Unit = onNavigateToSettings,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -258,6 +260,7 @@ fun TodayScreen(
             onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
             onAdjustThreshold = viewModel::adjustClothesRuleThreshold,
             onNavigateToClothes = onNavigateToClothes,
+            onNavigateToFormat = onNavigateToFormat,
             onToggleModelSpread = viewModel::toggleModelSpread,
             onLongPressDate = onNavigateToDeveloper,
         )
@@ -293,6 +296,7 @@ private fun TodayContent(
     onCalendarPermissionChanged: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
+    onNavigateToFormat: () -> Unit,
     onToggleModelSpread: () -> Unit,
     onLongPressDate: () -> Unit,
 ) {
@@ -468,6 +472,7 @@ private fun TodayContent(
                     },
                     onAdjustThreshold = onAdjustThreshold,
                     onNavigateToClothes = onNavigateToClothes,
+                    onNavigateToFormat = onNavigateToFormat,
                     onToggleModelSpread = onToggleModelSpread,
                     onLongPressDate = onLongPressDate,
                 )
@@ -499,6 +504,7 @@ private fun TodayPage(
     onChevronTap: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
+    onNavigateToFormat: () -> Unit,
     onToggleModelSpread: () -> Unit,
     onLongPressDate: () -> Unit,
 ) {
@@ -566,11 +572,12 @@ private fun TodayPage(
                 insight = insight,
                 region = state.region,
                 temperatureUnit = state.temperatureUnit,
-                omitTemperatureRange = state.omitTemperatureRange,
+                rangeFormat = state.rangeFormat,
                 showChevronRight = showChevronRight,
                 showChevronLeft = showChevronLeft,
                 onChevronTap = onChevronTap,
                 onLongPressDate = onLongPressDate,
+                onNavigateToFormat = onNavigateToFormat,
             )
             insight.confidence?.let {
                 // Wrap the per-model toggle so a tap also scrolls the chip to the
@@ -1465,11 +1472,11 @@ internal fun InsightCard(
     region: Region,
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     /**
-     * When true, the rendered prose drops the temperature-range sentence and
-     * folds its "Today" / "Tonight" lead into the next clause. Defaults to
-     * false so existing previews stay byte-identical.
+     * How the rendered prose presents the temperature-range clause (none /
+     * numeric degrees / band words). Defaults to [RangeFormat.DEGREES] so
+     * existing previews stay byte-identical.
      */
-    omitTemperatureRange: Boolean = false,
+    rangeFormat: RangeFormat = RangeFormat.DEGREES,
     /**
      * Page-1 affordance: when true, a tappable chevron-right is rendered at
      * the trailing edge of the date row, hinting that the user can swipe (or
@@ -1493,10 +1500,18 @@ internal fun InsightCard(
      * call site unchanged.
      */
     onLongPressDate: (() -> Unit)? = null,
+    /**
+     * Opens the Format settings page. Wired to two affordances: long-pressing
+     * the prose body (only the prose — not the date / location header or the
+     * generated-at footer) and a small "Format" link in the card's bottom-right
+     * corner. Null disables both; default null keeps every preview / non-live
+     * call site unchanged.
+     */
+    onNavigateToFormat: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
-    val formatter = remember(context, region, temperatureUnit, omitTemperatureRange) {
-        InsightFormatter.forRegion(context, region, temperatureUnit, omitTemperatureRange)
+    val formatter = remember(context, region, temperatureUnit, rangeFormat) {
+        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat)
     }
     val locale = LocalConfiguration.current.locales[0]
     val dateFormatter = remember(locale) { DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale) }
@@ -1574,15 +1589,36 @@ internal fun InsightCard(
             Text(
                 text = formatter.format(insight.summary, isFutureDay = isFutureDay),
                 style = MaterialTheme.typography.headlineSmall,
+                modifier = if (onNavigateToFormat != null) {
+                    Modifier.pointerInput(onNavigateToFormat) {
+                        detectTapGestures(onLongPress = { onNavigateToFormat() })
+                    }
+                } else {
+                    Modifier
+                },
             )
-            Text(
-                text = stringResource(
-                    R.string.today_generated_at,
-                    generatedAtFormatter.format(insight.generatedAt.atZone(ZoneId.systemDefault())),
-                ),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = stringResource(
+                        R.string.today_generated_at,
+                        generatedAtFormatter.format(insight.generatedAt.atZone(ZoneId.systemDefault())),
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                if (onNavigateToFormat != null) {
+                    Text(
+                        text = stringResource(R.string.today_insight_format_link),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.clickable { onNavigateToFormat() },
+                    )
+                }
+            }
         }
     }
 }

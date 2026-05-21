@@ -17,6 +17,7 @@ import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnitSetting
@@ -203,7 +204,8 @@ class SettingsViewModel(
                         deliveryMode = prefs.deliveryMode,
                         tonightDeliveryMode = prefs.tonightDeliveryMode,
                         dailyMentionEveningEvents = prefs.dailyMentionEveningEvents,
-                        omitTemperatureRange = prefs.omitTemperatureRange,
+                        rangeFormat = prefs.rangeFormat,
+                        deltaThresholdC = prefs.deltaThresholdC,
                         region = prefs.region,
                         temperatureUnit = prefs.temperatureUnit,
                         distanceUnit = prefs.distanceUnit,
@@ -913,8 +915,12 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setDailyMentionEveningEvents(enabled) }
     }
 
-    fun setOmitTemperatureRange(omit: Boolean) {
-        viewModelScope.launch { settingsRepository.setOmitTemperatureRange(omit) }
+    fun setRangeFormat(format: RangeFormat) {
+        viewModelScope.launch { settingsRepository.setRangeFormat(format) }
+    }
+
+    fun setDeltaThresholdC(thresholdC: Double?) {
+        viewModelScope.launch { settingsRepository.setDeltaThresholdC(thresholdC) }
     }
 
     fun setTonightEnabled(enabled: Boolean) {

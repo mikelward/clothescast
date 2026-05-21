@@ -84,6 +84,10 @@ class RenderInsightSummary {
         // event away from home that night. This renderer is period-local and
         // doesn't compose it.
         eveningEventTieIn: EveningEventTieInClause? = null,
+        // Feels-like delta (°C) the day must clear before the delta clause is
+        // emitted. null disables the clause entirely. Defaults to the historical
+        // 3°C threshold so existing callers/tests are unchanged.
+        deltaThresholdC: Double? = 3.0,
     ): InsightSummary {
         val items = todayTriggeredRules.map { it.item }
         val peak = peakPrecip(today, perModelHourly)
@@ -91,7 +95,7 @@ class RenderInsightSummary {
             period = period,
             alert = alertClause(alerts),
             band = bandClause(today),
-            delta = if (period == ForecastPeriod.TODAY) deltaClause(todayForDelta, yesterday) else null,
+            delta = if (period == ForecastPeriod.TODAY) deltaClause(todayForDelta, yesterday, deltaThresholdC) else null,
             clothes = clothesClause(items),
             precip = peak?.let { PrecipClause(it.condition, it.time, it.likelihood) },
             // Calendar tie-in only fires on TONIGHT — pairing the precip peak
@@ -120,14 +124,15 @@ class RenderInsightSummary {
         feelsLikeMaxC = today.feelsLikeMaxC,
     )
 
-    private fun deltaClause(today: DailyForecast, yesterday: DailyForecast): DeltaClause? {
+    private fun deltaClause(today: DailyForecast, yesterday: DailyForecast, thresholdC: Double?): DeltaClause? {
+        if (thresholdC == null) return null
         val highDelta = today.feelsLikeMaxC - yesterday.feelsLikeMaxC
         val lowDelta = today.feelsLikeMinC - yesterday.feelsLikeMinC
         val biggest = if (abs(highDelta) >= abs(lowDelta)) highDelta else lowDelta
         // Apply the threshold against the *unrounded* delta. Otherwise 2.6°C rounds
         // to 3 and would emit a clause even though the actual delta is under the
-        // 3° rule.
-        if (abs(biggest) < 3.0) return null
+        // configured rule.
+        if (abs(biggest) < thresholdC) return null
         val rounded = biggest.roundToInt()
         val direction = if (rounded > 0) DeltaClause.Direction.WARMER else DeltaClause.Direction.COOLER
         return DeltaClause(degrees = abs(rounded), direction = direction)

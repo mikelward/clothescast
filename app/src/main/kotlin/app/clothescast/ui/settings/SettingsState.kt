@@ -18,6 +18,7 @@ import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
+import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.data.defaultDistanceUnitFor
@@ -119,6 +120,14 @@ data class SettingsState(
     val useCalendarEvents: Boolean = false,
     val themeFromCalendarHolidays: Boolean = false,
     val themeFromCalendarBirthdays: Boolean = false,
+    /**
+     * Birthdays + public holidays detected in the user's synced calendars over
+     * the next year, listed (collapsed) on the Celebrations screen. `null` until
+     * the first read completes — the UI shows a brief "checking…" line — then a
+     * (possibly empty) list. Loaded lazily once READ_CALENDAR is granted and
+     * never carried off device.
+     */
+    val calendarCelebrations: List<UpcomingCalendarEvent>? = null,
     val telemetryEnabled: Boolean = true,
     val apiKeyConfigured: Boolean = false,
     /**

@@ -24,6 +24,7 @@ import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.model.VoiceLocale
+import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
@@ -50,6 +51,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Locale
 
@@ -146,6 +148,13 @@ class SettingsViewModel(
      * pass false; the Settings UI hides the whole Cast section then.
      */
     private val castAvailable: Boolean = false,
+    /**
+     * Reads the user's synced calendars for the Celebrations screen's
+     * upcoming-birthdays / -holidays listing. Null in pure-VM tests that don't
+     * need an Android ContentResolver; [loadCalendarCelebrations] then no-ops
+     * and the listing stays empty.
+     */
+    private val calendarEventReader: CalendarEventReader? = null,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
@@ -162,6 +171,8 @@ class SettingsViewModel(
      * VM is cleared, even if the user navigates away mid-scan.
      */
     private var discoveryJob: Job? = null
+    /** In-flight upcoming-celebrations read; guards against overlapping loads. */
+    private var calendarCelebrationsJob: Job? = null
     /**
      * The most recently enumerated effective locale, used to detect when
      * re-enumeration is needed. Stored as a resolved [Locale] rather than
@@ -583,6 +594,30 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.markCalendarPermissionRechecked() }
     }
 
+    /**
+     * Reads the next year of synced-calendar birthdays + public holidays into
+     * [SettingsState.calendarCelebrations] for the Celebrations screen's listing.
+     * Called when the screen sees READ_CALENDAR granted (and again on re-grant).
+     * Only *true* duplicates collapse — same (date, title, kind) — so two
+     * contacts who share a name with different birthdays, or a same-named
+     * holiday recurring on different dates, both stay listed; only the same
+     * event imported into two synced calendars folds together. No-ops when no
+     * reader was wired (pure-VM tests) or a read is already in flight. The
+     * reader degrades to an empty list on any failure, so the listing simply
+     * shows "none found" rather than surfacing an error.
+     */
+    fun loadCalendarCelebrations() {
+        val reader = calendarEventReader ?: return
+        if (calendarCelebrationsJob?.isActive == true) return
+        calendarCelebrationsJob = viewModelScope.launch {
+            val zone = settingsRepository.preferences.first().schedule.zoneId
+            val today = LocalDate.now(zone)
+            val events = reader.upcomingCelebrations(today, today.plusYears(1), zone)
+                .distinctBy { Triple(it.date, it.title, it.kind) }
+            _state.update { it.copy(calendarCelebrations = events) }
+        }
+    }
+
     fun setTelemetryEnabled(enabled: Boolean) {
         viewModelScope.launch { settingsRepository.setTelemetryEnabled(enabled) }
     }
@@ -900,6 +935,7 @@ class SettingsViewModel(
         private val castRouteDiscovery: CastRouteDiscovery? = null,
         private val castNowAction: (suspend () -> String?)? = null,
         private val castAvailable: Boolean = false,
+        private val calendarEventReader: CalendarEventReader? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -924,6 +960,7 @@ class SettingsViewModel(
                 castRouteDiscovery = castRouteDiscovery,
                 castNowAction = castNowAction,
                 castAvailable = castAvailable,
+                calendarEventReader = calendarEventReader,
             ) as T
         }
     }

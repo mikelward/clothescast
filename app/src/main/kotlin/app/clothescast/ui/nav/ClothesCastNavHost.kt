@@ -362,6 +362,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
         },
         discovery = app.homeAssistantDiscovery,
         castRouteDiscovery = app.castRouteDiscovery,
+        calendarEventReader = app.calendarEventReader,
         castAvailable = app.castContext != null,
         castNowAction = app.castInsightController?.let { controller ->
             {

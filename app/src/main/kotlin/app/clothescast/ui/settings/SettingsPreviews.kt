@@ -1,16 +1,22 @@
 package app.clothescast.ui.settings
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
+import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
@@ -28,6 +34,7 @@ import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
+import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.discovery.DiscoveredService
@@ -35,6 +42,7 @@ import app.clothescast.discovery.ServiceType
 import app.clothescast.ui.theme.ClothesCastTheme
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.Locale
 
 //
 // Preview wrappers for the Settings screens. Same pattern as `TodayPreviews.kt`:
@@ -354,6 +362,7 @@ internal fun SettingsHolidaysPreview() {
             weatherLocationCountry = "AU",
             themeFromCalendarHolidays = false,
             themeFromCalendarBirthdays = false,
+            calendarCelebrations = null,
             padding = PaddingValues(0.dp),
             onSetCountryHome = {},
             onSetCountryCurrent = {},
@@ -365,10 +374,55 @@ internal fun SettingsHolidaysPreview() {
             onSetThemeFromCalendarHolidays = {},
             onSetThemeFromCalendarBirthdays = {},
             onCalendarPermissionRechecked = {},
+            onLoadCalendarCelebrations = {},
             onNavigateToRegionSettings = {},
             onNavigateToLocationSettings = {},
             onNavigateToCalendarSettings = {},
         )
+    }
+}
+
+// The calendar-sourced listing sections expanded with sample data and
+// permission granted — the populated state the device shows once READ_CALENDAR
+// is granted. The on-screen default (collapsed, permission-gated) is captured by
+// the Holidays preview above; this one demonstrates the actual event listing.
+@Preview(name = "Settings · Calendar celebrations", widthDp = 360)
+@Composable
+internal fun SettingsCalendarCelebrationsPreview() {
+    val today = LocalDate.of(2026, 5, 21)
+    SettingsFrame {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            CalendarCelebrationsSection(
+                title = stringResource(R.string.settings_holidays_source_calendar_holidays),
+                rememberKey = "preview-calendar-holidays",
+                permissionGranted = true,
+                events = listOf(
+                    UpcomingCalendarEvent(today.plusDays(4), "Victoria Day", EventKind.PUBLIC_HOLIDAY),
+                    UpcomingCalendarEvent(today.plusMonths(1).plusDays(10), "Canada Day", EventKind.PUBLIC_HOLIDAY),
+                    UpcomingCalendarEvent(today.plusMonths(7), "Christmas Day", EventKind.PUBLIC_HOLIDAY),
+                ),
+                emptyMessage = stringResource(R.string.settings_holidays_calendar_no_holidays),
+                uiLocale = Locale.US,
+                onRequestPermission = {},
+                initiallyExpanded = true,
+            )
+            CalendarCelebrationsSection(
+                title = stringResource(R.string.settings_holidays_source_calendar_birthdays),
+                rememberKey = "preview-calendar-birthdays",
+                permissionGranted = true,
+                events = listOf(
+                    UpcomingCalendarEvent(today.plusDays(9), "Alex’s birthday", EventKind.BIRTHDAY),
+                    UpcomingCalendarEvent(today.plusMonths(2), "Sam’s birthday", EventKind.BIRTHDAY),
+                ),
+                emptyMessage = stringResource(R.string.settings_holidays_calendar_no_birthdays),
+                uiLocale = Locale.US,
+                onRequestPermission = {},
+                initiallyExpanded = true,
+            )
+        }
     }
 }
 

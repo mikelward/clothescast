@@ -1157,10 +1157,15 @@
     <string name="settings_holidays_link_location_settings_a11y">Location settings</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Calendar settings</string>
 
-    <!-- Placeholder body for the Calendar Holidays / Birthdays collapsibles
-         (first pass — real per-event listing + overrides land in a follow-up). -->
-    <string name="settings_holidays_calendar_section_placeholder_off">Turn on the toggle above to theme today\'s outfit on detected events from your synced calendars.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Detected events from your synced calendars will appear here in a future update.</string>
+    <!-- Bodies for the Calendar Holidays / Birthdays listing collapsibles.
+         Shown inside the collapsed-by-default section depending on state:
+         a grant prompt when permission is missing, a brief checking line
+         while the first read runs, or a "none found" line when the synced
+         calendars hold no upcoming events of that kind. -->
+    <string name="settings_holidays_calendar_grant_permission">Grant calendar permission to list upcoming celebrations from your synced calendars.</string>
+    <string name="settings_holidays_calendar_loading">Checking your calendars…</string>
+    <string name="settings_holidays_calendar_no_holidays">No upcoming holidays found in your synced calendars.</string>
+    <string name="settings_holidays_calendar_no_birthdays">No upcoming birthdays found in your synced calendars.</string>
 
     <!-- Inline warning shown under a calendar source toggle when the stored
          pref is on but READ_CALENDAR was revoked from system Settings.

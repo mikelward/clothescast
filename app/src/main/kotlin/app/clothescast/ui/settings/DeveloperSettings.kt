@@ -43,6 +43,7 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.usecase.ThemeForToday
+import app.clothescast.tts.resolveHolidayVoice
 import app.clothescast.ui.today.HolidayBanner
 import app.clothescast.ui.today.OutfitPreviewRow
 import kotlinx.coroutines.launch
@@ -91,16 +92,20 @@ internal fun DeveloperPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             enabledCountries = state.effectiveEnabledHolidayCountries,
             padding = padding,
             speaking = isSpeaking,
-            onSpeak = onSpeak@{
+            onSpeak = onSpeak@{ holidayId ->
                 if (isSpeaking) return@onSpeak
                 isSpeaking = true
+                // Speak the picked day in its holiday voice so the preview
+                // demonstrates the auto-selected persona, not just the
+                // user's default voice.
+                val selection = resolveHolidayVoice(holidayId, state.geminiVoice, state.ttsStyle)
                 scope.launch {
                     try {
                         runTtsPreview(
                             context = context,
                             engine = state.ttsEngine,
-                            geminiVoice = state.geminiVoice,
-                            ttsStyle = state.ttsStyle,
+                            geminiVoice = selection.voiceName,
+                            ttsStyle = selection.style,
                             deviceVoice = state.deviceVoice,
                             voiceLocale = state.voiceLocale,
                             region = state.region,
@@ -121,7 +126,7 @@ internal fun DeveloperContent(
     holidayOverrides: Map<HolidayId, HolidayOverride>,
     enabledCountries: Set<String>,
     padding: PaddingValues,
-    onSpeak: () -> Unit,
+    onSpeak: (HolidayId?) -> Unit,
     speaking: Boolean = false,
     initialDate: LocalDate = LocalDate.now(),
 ) {
@@ -205,7 +210,7 @@ internal fun DeveloperContent(
         )
 
         Button(
-            onClick = onSpeak,
+            onClick = { onSpeak(theme?.id) },
             enabled = !speaking,
             modifier = Modifier.fillMaxWidth(),
         ) {

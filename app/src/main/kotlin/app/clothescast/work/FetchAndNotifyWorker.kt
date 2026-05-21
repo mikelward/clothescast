@@ -18,6 +18,7 @@ import androidx.work.workDataOf
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
@@ -47,6 +48,7 @@ import app.clothescast.location.hasCoarseLocationPermission
 import app.clothescast.tts.GeminiTtsSpeaker
 import app.clothescast.tts.InsightTtsUtterance
 import app.clothescast.tts.insightTtsUtterance
+import app.clothescast.tts.resolveHolidayVoice
 import app.clothescast.tts.withSpeechAudioFocus
 import app.clothescast.R
 import app.clothescast.ui.garment.outfitCardInfoLines
@@ -622,7 +624,7 @@ class FetchAndNotifyWorker(
         // propagates so WorkManager stops unwind cleanly.
         supervisorScope {
             val synthDeferred: Deferred<PcmAudio?>? = if (gates.needsSynth) {
-                async(Dispatchers.IO) { synthesizeForDelivery(insight, prefs) }
+                async(Dispatchers.IO) { synthesizeForDelivery(insight, prefs, theme?.id) }
             } else null
 
             val renderDeferred: Deferred<ByteArray?> = async(Dispatchers.Default) {
@@ -715,13 +717,21 @@ class FetchAndNotifyWorker(
      * to the device engine. Logs the failure with enough context to
      * diagnose without spamming successes.
      */
-    private suspend fun synthesizeForDelivery(insight: Insight, prefs: UserPreferences): PcmAudio? {
+    private suspend fun synthesizeForDelivery(
+        insight: Insight,
+        prefs: UserPreferences,
+        holidayId: HolidayId?,
+    ): PcmAudio? {
         val utterance = ttsUtterance(insight, prefs)
+        // On a themed day with no deliberate persona pick, speak in the
+        // holiday's voice (Father Christmas on Dec 25, a president on
+        // Presidents' Day, …) and switch to a matching-gender voice.
+        val selection = resolveHolidayVoice(holidayId, prefs.geminiVoice, prefs.ttsStyle)
         return runCatching {
             GeminiTtsSpeaker(
                 app.geminiTtsClient,
-                voiceName = prefs.geminiVoice,
-                style = prefs.ttsStyle,
+                voiceName = selection.voiceName,
+                style = selection.style,
             ).synthesize(utterance.text, utterance.locale)
         }
             .onFailure { t ->

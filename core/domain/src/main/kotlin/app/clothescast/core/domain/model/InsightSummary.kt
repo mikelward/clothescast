@@ -38,14 +38,13 @@ data class InsightSummary(
     /**
      * A second tie-in for morning insights: an evening event paired with a
      * clothing tip derived from the *evening* forecast slice. Renders as
-     * "Bring a jacket for your dinner tonight." — no time, since the user
-     * already knows when their event is and the wording reads more like a
-     * conversational heads-up than a calendar reminder.
+     * "Tonight, bring a jacket." — no event title (see [EveningEventTieInClause]
+     * for why a calendar event name never reaches the rendered prose).
      *
      * Only emitted on TODAY when the user has the "Mention evening events"
      * setting on. The TONIGHT pass uses [calendarTieIn] for its own event
-     * tie-ins, which keeps the time + title because it's anchored to a
-     * precip-peak hour the listener doesn't already know about.
+     * tie-ins; that clause is anchored to a precip-peak hour the listener
+     * doesn't already know about, and likewise carries no event title.
      */
     val eveningEventTieIn: EveningEventTieInClause? = null,
 )

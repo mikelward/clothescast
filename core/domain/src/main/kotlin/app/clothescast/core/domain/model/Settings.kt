@@ -540,11 +540,12 @@ data class UserPreferences(
      */
     val tonightNotifyOnlyOnEvents: Boolean = false,
     /**
-     * When true, the morning insight tacks on a brief mention of any evening
-     * calendar events with a clothing tip keyed to the *evening* forecast — e.g.
-     * "Bring a jacket for your 9pm dinner." The tip is gated on
-     * [useCalendarEvents] (no events without that), and only fires when at least
-     * one clothes rule triggers against the evening hourly slice. On by default.
+     * When true, the morning insight tacks on a clothing tip keyed to any
+     * evening calendar event's *evening* forecast slice — e.g. "Tonight, bring
+     * a jacket." The event itself is never named in the prose (it stays on
+     * device). The tip is gated on [useCalendarEvents] (no events without
+     * that), and only fires when at least one clothes rule triggers against
+     * the evening hourly slice. On by default.
      */
     val dailyMentionEveningEvents: Boolean = true,
     /**

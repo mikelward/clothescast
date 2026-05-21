@@ -178,7 +178,7 @@ class GenerateDailyInsight(
         // property as a local so the smart-cast survives across the runCatching
         // lambda boundary.
         val reader = calendarEventReader
-        if (!prefs.useCalendarEvents || reader == null) return emptyList()
+        if (!prefs.calendarEventMentionsActive || reader == null) return emptyList()
         return runCatching {
             reader.eventsForDay(date, prefs.schedule.zoneId)
         }.getOrDefault(emptyList())

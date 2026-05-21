@@ -858,10 +858,22 @@
     <string name="settings_notification_permission_description">Without notification permission, your daily ClothesCast has nowhere to go. Grant it so ClothesCast can post tomorrow morning.</string>
     <string name="settings_notification_permission_grant">Grant notification permission</string>
 
-    <string name="settings_calendar_title">Calendar</string>
-    <string name="settings_calendar_use_events">Use today\'s calendar events</string>
-    <string name="settings_calendar_description_off">Tailor the morning forecast to today\'s events — only titles and times are used, and nothing leaves the device.</string>
-    <string name="settings_calendar_description_on">Tailoring the morning forecast to today\'s events. Only titles and times are used; nothing leaves the device.</string>
+    <string name="settings_calendar_title">Calendar access</string>
+    <!-- Master calendar-access switch + its sub-features. The master gates all
+         calendar reading; the three toggles below it pick which features use the
+         calendar. Turning any sub-feature on prompts for permission and switches
+         the master on automatically. Nothing read from the calendar leaves the
+         device. -->
+    <string name="settings_calendar_master">Use my calendar</string>
+    <string name="settings_calendar_master_description_off">Let ClothesCast read your calendar to personalise forecasts and outfits. Only event titles, dates, and times are used, and nothing leaves the device.</string>
+    <string name="settings_calendar_master_description_on">ClothesCast can read your calendar. Pick what it\'s used for below. Only event titles, dates, and times are used; nothing leaves the device.</string>
+    <string name="settings_calendar_features_title">What to use it for</string>
+    <string name="settings_calendar_evening_tie_ins">Evening tie-ins</string>
+    <string name="settings_calendar_evening_tie_ins_description">Mention tonight\'s events in the morning forecast — e.g. \"Bring a jacket for your 9pm dinner.\"</string>
+    <string name="settings_calendar_birthdays">Birthdays</string>
+    <string name="settings_calendar_birthdays_description">Theme the outfit on birthdays detected in your calendars.</string>
+    <string name="settings_calendar_public_holidays">Public holidays</string>
+    <string name="settings_calendar_public_holidays_description">Theme the outfit on public holidays from your synced calendars.</string>
     <string name="settings_calendar_grant_permission">Grant calendar permission</string>
     <string name="settings_calendar_open_settings">Calendar permission denied. Grant it from system Settings.</string>
 
@@ -1162,6 +1174,7 @@
          a grant prompt when permission is missing, a brief checking line
          while the first read runs, or a "none found" line when the synced
          calendars hold no upcoming events of that kind. -->
+    <string name="settings_holidays_calendar_enable_master">Turn on \"Use my calendar\" in Calendar settings to list upcoming celebrations.</string>
     <string name="settings_holidays_calendar_grant_permission">Grant calendar permission to list upcoming celebrations from your synced calendars.</string>
     <string name="settings_holidays_calendar_loading">Checking your calendars…</string>
     <string name="settings_holidays_calendar_no_holidays">No upcoming holidays found in your synced calendars.</string>

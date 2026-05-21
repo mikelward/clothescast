@@ -91,6 +91,7 @@ internal fun HolidaysContent(
     effectiveEnabledHolidayCountries: Set<String>,
     localeCountry: String?,
     weatherLocationCountry: String?,
+    calendarEnabled: Boolean,
     themeFromCalendarHolidays: Boolean,
     themeFromCalendarBirthdays: Boolean,
     calendarCelebrations: List<UpcomingCalendarEvent>?,
@@ -119,9 +120,9 @@ internal fun HolidaysContent(
     // Calendar-permission state for the upcoming-celebrations listings below.
     // Tracked once here (shared by both the Holidays and Birthdays sections)
     // and re-checked on resume so a grant/revoke from system Settings flips the
-    // sections between their "grant" prompt and the live list. Loading kicks off
-    // whenever permission is present — the listing previews what calendars hold
-    // regardless of whether the theming toggle is on.
+    // sections between their prompt and the live list. The listing reads only
+    // when the master calendar switch is on AND permission is granted — turning
+    // the whole calendar feature off (in Calendar settings) stops the read.
     var calendarPermissionGranted by remember { mutableStateOf(CalendarPermission.isGranted(context)) }
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -136,8 +137,8 @@ internal fun HolidaysContent(
     val calendarPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) { granted -> calendarPermissionGranted = granted }
-    LaunchedEffect(calendarPermissionGranted) {
-        if (calendarPermissionGranted) onLoadCalendarCelebrations()
+    LaunchedEffect(calendarEnabled, calendarPermissionGranted) {
+        if (calendarEnabled && calendarPermissionGranted) onLoadCalendarCelebrations()
     }
     val calendarHolidays = calendarCelebrations?.filter { it.kind == EventKind.PUBLIC_HOLIDAY }
     val calendarBirthdays = calendarCelebrations?.filter { it.kind == EventKind.BIRTHDAY }
@@ -245,7 +246,7 @@ internal fun HolidaysContent(
                     )
                     CalendarSourceRow(
                         label = stringResource(R.string.settings_holidays_source_calendar_holidays),
-                        checked = themeFromCalendarHolidays,
+                        checked = calendarEnabled && themeFromCalendarHolidays,
                         onSetChecked = onSetThemeFromCalendarHolidays,
                         onPermissionRechecked = onCalendarPermissionRechecked,
                         linkLabel = stringResource(R.string.settings_holidays_link_settings),
@@ -254,7 +255,7 @@ internal fun HolidaysContent(
                     )
                     CalendarSourceRow(
                         label = stringResource(R.string.settings_holidays_source_calendar_birthdays),
-                        checked = themeFromCalendarBirthdays,
+                        checked = calendarEnabled && themeFromCalendarBirthdays,
                         onSetChecked = onSetThemeFromCalendarBirthdays,
                         onPermissionRechecked = onCalendarPermissionRechecked,
                         linkLabel = stringResource(R.string.settings_holidays_link_settings),
@@ -284,6 +285,7 @@ internal fun HolidaysContent(
             CalendarCelebrationsSection(
                 title = stringResource(R.string.settings_holidays_source_calendar_holidays),
                 rememberKey = "holidays-calendar-holidays-section",
+                calendarEnabled = calendarEnabled,
                 permissionGranted = calendarPermissionGranted,
                 events = calendarHolidays,
                 emptyMessage = stringResource(R.string.settings_holidays_calendar_no_holidays),
@@ -291,10 +293,12 @@ internal fun HolidaysContent(
                 onRequestPermission = {
                     calendarPermissionLauncher.launch(CalendarPermission.MANIFEST_PERMISSION)
                 },
+                onEnableCalendar = onNavigateToCalendarSettings,
             )
             CalendarCelebrationsSection(
                 title = stringResource(R.string.settings_holidays_source_calendar_birthdays),
                 rememberKey = "holidays-calendar-birthdays-section",
+                calendarEnabled = calendarEnabled,
                 permissionGranted = calendarPermissionGranted,
                 events = calendarBirthdays,
                 emptyMessage = stringResource(R.string.settings_holidays_calendar_no_birthdays),
@@ -302,6 +306,7 @@ internal fun HolidaysContent(
                 onRequestPermission = {
                     calendarPermissionLauncher.launch(CalendarPermission.MANIFEST_PERMISSION)
                 },
+                onEnableCalendar = onNavigateToCalendarSettings,
             )
 
             val globalActiveCount = globalThemes.count { theme ->
@@ -841,13 +846,16 @@ private fun CalendarSourceRow(
  * One of the two calendar-sourced listing collapsibles (Holidays / Birthdays).
  * Renders the same [CollapsibleSection] chrome as the country sections so it
  * visually fits, with a forward-year list of detected [events] inside —
- * collapsed by default. The whole thing is gated on READ_CALENDAR:
+ * collapsed by default. Gated on the master [calendarEnabled] switch and
+ * READ_CALENDAR, in that order:
  *
- *  - permission missing → a tappable "grant permission" prompt that fires the
+ *  - master off → a tappable prompt that deep-links to Calendar settings via
+ *    [onEnableCalendar];
+ *  - master on, permission missing → a "grant permission" prompt that fires the
  *    system dialog via [onRequestPermission];
- *  - permission present but [events] still `null` → a brief "checking…" line
- *    while the first read runs;
- *  - permission present, list empty → [emptyMessage];
+ *  - active but [events] still `null` → a brief "checking…" line while the
+ *    first read runs;
+ *  - active, list empty → [emptyMessage];
  *  - otherwise → one row per event (title + localised date).
  *
  * [events] is pre-filtered by the caller to this section's [EventKind]; the
@@ -858,14 +866,17 @@ private fun CalendarSourceRow(
 internal fun CalendarCelebrationsSection(
     title: String,
     rememberKey: String,
+    calendarEnabled: Boolean,
     permissionGranted: Boolean,
     events: List<UpcomingCalendarEvent>?,
     emptyMessage: String,
     uiLocale: Locale,
     onRequestPermission: () -> Unit,
+    onEnableCalendar: () -> Unit,
     initiallyExpanded: Boolean = false,
 ) {
-    val summary = if (permissionGranted && events != null) events.size.toString() else "—"
+    val active = calendarEnabled && permissionGranted
+    val summary = if (active && events != null) events.size.toString() else "—"
     CollapsibleSection(
         title = title,
         summary = summary,
@@ -873,6 +884,18 @@ internal fun CalendarCelebrationsSection(
         initiallyExpanded = initiallyExpanded,
     ) {
         when {
+            !calendarEnabled -> {
+                TextButton(
+                    onClick = onEnableCalendar,
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.settings_holidays_calendar_enable_master),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            }
             !permissionGranted -> {
                 TextButton(
                     onClick = onRequestPermission,

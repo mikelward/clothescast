@@ -157,6 +157,7 @@ object BugReport {
         // configured at all is enough to diagnose the at-home TTS gate.
         appendLine("Home location: ${if (prefs.homeLocation != null) "configured" else "(unset)"}")
         appendLine("Skip TTS at home: ${prefs.skipTtsAtHome}")
+        appendLine("Calendar access: ${prefs.calendarEnabled}")
         appendLine("Use calendar events: ${prefs.useCalendarEvents}")
         appendLine("Clothes rules (${prefs.clothesRules.size}):")
         prefs.clothesRules.forEach { appendLine("  - ${describeRule(it)}") }

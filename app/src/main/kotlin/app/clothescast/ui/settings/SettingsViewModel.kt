@@ -226,6 +226,7 @@ class SettingsViewModel(
                         ttsStyle = prefs.ttsStyle,
                         deviceVoice = prefs.deviceVoice,
                         voiceLocale = prefs.voiceLocale,
+                        calendarEnabled = prefs.calendarEnabled,
                         useCalendarEvents = prefs.useCalendarEvents,
                         themeFromCalendarHolidays = prefs.themeFromCalendarHolidays,
                         themeFromCalendarBirthdays = prefs.themeFromCalendarBirthdays,
@@ -571,6 +572,17 @@ class SettingsViewModel(
 
     fun setVoiceLocale(locale: VoiceLocale) {
         viewModelScope.launch { settingsRepository.setVoiceLocale(locale) }
+    }
+
+    /**
+     * Master calendar-access switch. The repository handles the coupling
+     * atomically: turning it off clears the three per-feature toggles (so a
+     * later single-feature re-enable doesn't silently revive the others), and
+     * enabling any sub-feature flips the master on in the same edit. The UI
+     * prompts `READ_CALENDAR` before enabling.
+     */
+    fun setCalendarEnabled(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setCalendarEnabled(enabled) }
     }
 
     fun setUseCalendarEvents(enabled: Boolean) {

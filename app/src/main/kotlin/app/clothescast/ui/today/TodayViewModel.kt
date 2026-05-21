@@ -323,7 +323,7 @@ class TodayViewModel(
         combine(settingsRepository.preferences, dateTicker, ::Pair).flatMapLatest { (prefs, date) ->
             flow {
                 val needEvents = calendarEventReader != null &&
-                    (prefs.themeFromCalendarHolidays || prefs.themeFromCalendarBirthdays)
+                    (prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive)
                 val events: List<CalendarEvent> = if (needEvents) {
                     runCatching {
                         calendarEventReader!!.eventsForDay(date, prefs.schedule.zoneId)
@@ -361,8 +361,8 @@ class TodayViewModel(
             overrides = prefs.holidayOverrides,
             enabledCountries = effectiveCountries,
             events = events,
-            themeFromCalendarHolidays = prefs.themeFromCalendarHolidays,
-            themeFromCalendarBirthdays = prefs.themeFromCalendarBirthdays,
+            themeFromCalendarHolidays = prefs.calendarHolidayThemingActive,
+            themeFromCalendarBirthdays = prefs.calendarBirthdayThemingActive,
         )
         // Merge holiday overrides on top of the user's custom colours. The
         // user's choices populate the base map; the holiday's per-tier
@@ -398,9 +398,9 @@ class TodayViewModel(
             outfitBottomStrokes = bottomStrokes,
             activeHoliday = theme,
             celebrationCardVisible = !prefs.celebrationCardDismissed &&
-                !prefs.themeFromCalendarHolidays &&
-                !prefs.themeFromCalendarBirthdays,
-            usesCalendarThemes = prefs.themeFromCalendarHolidays || prefs.themeFromCalendarBirthdays,
+                !prefs.calendarHolidayThemingActive &&
+                !prefs.calendarBirthdayThemingActive,
+            usesCalendarThemes = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayState())
 

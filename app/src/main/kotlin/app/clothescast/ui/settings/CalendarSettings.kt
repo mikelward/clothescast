@@ -39,11 +39,66 @@ import app.clothescast.ui.EdgeFadeOverlay
 
 @Composable
 internal fun CalendarContent(
+    calendarEnabled: Boolean,
     useCalendarEvents: Boolean,
+    themeFromCalendarHolidays: Boolean,
+    themeFromCalendarBirthdays: Boolean,
     padding: PaddingValues,
+    onSetCalendarEnabled: (Boolean) -> Unit,
     onSetUseCalendarEvents: (Boolean) -> Unit,
+    onSetThemeFromCalendarHolidays: (Boolean) -> Unit,
+    onSetThemeFromCalendarBirthdays: (Boolean) -> Unit,
+    onCalendarPermissionRechecked: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
+
+    // One source of permission truth for the whole page. Re-checked on resume so
+    // a grant/revoke from system Settings is reflected without leaving the page;
+    // a revoke flips the master switch off (and pings consumers to refresh) so we
+    // don't keep claiming calendar access we no longer have.
+    var permissionGranted by remember { mutableStateOf(CalendarPermission.isGranted(context)) }
+    val currentCalendarEnabled by rememberUpdatedState(calendarEnabled)
+    val currentOnSetCalendarEnabled by rememberUpdatedState(onSetCalendarEnabled)
+    val currentOnRechecked by rememberUpdatedState(onCalendarPermissionRechecked)
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                val granted = CalendarPermission.isGranted(context)
+                permissionGranted = granted
+                if (!granted && currentCalendarEnabled) {
+                    currentOnSetCalendarEnabled(false)
+                    currentOnRechecked()
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    // Single permission launcher with a pending action: whichever toggle asked
+    // to turn on runs its enable callback once permission is granted. The VM
+    // flips the master switch on when any sub-feature is enabled, so enabling a
+    // sub-feature from scratch (master off) prompts once and lights up both.
+    var pendingEnable by remember { mutableStateOf<(() -> Unit)?>(null) }
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        permissionGranted = granted
+        if (granted) {
+            pendingEnable?.invoke()
+            currentOnRechecked()
+        }
+        pendingEnable = null
+    }
+    val requestThenEnable: (() -> Unit) -> Unit = { action ->
+        if (permissionGranted) action() else {
+            pendingEnable = action
+            launcher.launch(CalendarPermission.MANIFEST_PERMISSION)
+        }
+    }
+
     EdgeFadeOverlay(
         scrollState = scrollState,
         modifier = Modifier.padding(padding),
@@ -56,96 +111,109 @@ internal fun CalendarContent(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            CalendarCard(
-                useEvents = useCalendarEvents,
-                onSetUseEvents = onSetUseCalendarEvents,
-            )
+            SectionCard(title = stringResource(R.string.settings_calendar_title)) {
+                CalendarToggleRow(
+                    label = stringResource(R.string.settings_calendar_master),
+                    checked = calendarEnabled && permissionGranted,
+                    onToggle = { wantsOn ->
+                        if (wantsOn) requestThenEnable { onSetCalendarEnabled(true) }
+                        else onSetCalendarEnabled(false)
+                    },
+                )
+                Text(
+                    text = stringResource(
+                        if (calendarEnabled && permissionGranted) R.string.settings_calendar_master_description_on
+                        else R.string.settings_calendar_master_description_off,
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                if (calendarEnabled && !permissionGranted) {
+                    Text(
+                        text = stringResource(R.string.settings_calendar_open_settings),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                    TextButton(
+                        onClick = { openAppDetails(context) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) { Text(stringResource(R.string.settings_calendar_grant_permission)) }
+                }
+            }
+
+            SectionCard(title = stringResource(R.string.settings_calendar_features_title)) {
+                CalendarFeatureRow(
+                    label = stringResource(R.string.settings_calendar_evening_tie_ins),
+                    description = stringResource(R.string.settings_calendar_evening_tie_ins_description),
+                    checked = calendarEnabled && useCalendarEvents && permissionGranted,
+                    onToggle = { wantsOn ->
+                        if (wantsOn) requestThenEnable { onSetUseCalendarEvents(true) }
+                        else onSetUseCalendarEvents(false)
+                    },
+                )
+                CalendarFeatureRow(
+                    label = stringResource(R.string.settings_calendar_birthdays),
+                    description = stringResource(R.string.settings_calendar_birthdays_description),
+                    checked = calendarEnabled && themeFromCalendarBirthdays && permissionGranted,
+                    onToggle = { wantsOn ->
+                        if (wantsOn) requestThenEnable { onSetThemeFromCalendarBirthdays(true) }
+                        else onSetThemeFromCalendarBirthdays(false)
+                    },
+                )
+                CalendarFeatureRow(
+                    label = stringResource(R.string.settings_calendar_public_holidays),
+                    description = stringResource(R.string.settings_calendar_public_holidays_description),
+                    checked = calendarEnabled && themeFromCalendarHolidays && permissionGranted,
+                    onToggle = { wantsOn ->
+                        if (wantsOn) requestThenEnable { onSetThemeFromCalendarHolidays(true) }
+                        else onSetThemeFromCalendarHolidays(false)
+                    },
+                )
+            }
         }
     }
 }
 
+/** A bare label + switch row (master toggle). */
 @Composable
-private fun CalendarCard(
-    useEvents: Boolean,
-    onSetUseEvents: (Boolean) -> Unit,
+private fun CalendarToggleRow(
+    label: String,
+    checked: Boolean,
+    onToggle: (Boolean) -> Unit,
 ) {
-    val context = LocalContext.current
-    var permissionGranted by remember { mutableStateOf(CalendarPermission.isGranted(context)) }
-
-    val currentUseEvents by rememberUpdatedState(useEvents)
-    val currentOnSetUseEvents by rememberUpdatedState(onSetUseEvents)
-
-    val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
-        // Re-check on resume so the toggle reflects whatever the user did in system
-        // Settings while we were backgrounded. If permission was revoked, also flip
-        // the persisted pref off so the worker stops consulting the reader.
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                val granted = CalendarPermission.isGranted(context)
-                permissionGranted = granted
-                if (!granted && currentUseEvents) {
-                    currentOnSetUseEvents(false)
-                }
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-    }
-
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-    ) { granted ->
-        permissionGranted = granted
-        // Only flip the toggle on if the user granted; otherwise the worker would
-        // consult the reader, get an empty list every morning, and silently log a
-        // permission-denied warning forever.
-        onSetUseEvents(granted)
-    }
-
-    SectionCard(title = stringResource(R.string.settings_calendar_title)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = stringResource(R.string.settings_calendar_use_events),
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.weight(1f),
-            )
-            Switch(
-                checked = useEvents && permissionGranted,
-                onCheckedChange = { wantsOn ->
-                    if (!wantsOn) {
-                        onSetUseEvents(false)
-                        return@Switch
-                    }
-                    if (permissionGranted) {
-                        onSetUseEvents(true)
-                    } else {
-                        launcher.launch(CalendarPermission.MANIFEST_PERMISSION)
-                    }
-                },
-            )
-        }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Text(
-            text = stringResource(
-                if (useEvents && permissionGranted) R.string.settings_calendar_description_on
-                else R.string.settings_calendar_description_off,
-            ),
+            text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
         )
-        if (useEvents && !permissionGranted) {
+        Switch(checked = checked, onCheckedChange = onToggle)
+    }
+}
+
+/** A sub-feature row: label + supporting description on the left, switch right. */
+@Composable
+private fun CalendarFeatureRow(
+    label: String,
+    description: String,
+    checked: Boolean,
+    onToggle: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = label, style = MaterialTheme.typography.bodyMedium)
             Text(
-                text = stringResource(R.string.settings_calendar_open_settings),
+                text = description,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            TextButton(
-                onClick = { openAppDetails(context) },
-                modifier = Modifier.fillMaxWidth(),
-            ) { Text(stringResource(R.string.settings_calendar_grant_permission)) }
         }
+        Switch(checked = checked, onCheckedChange = onToggle)
     }
 }

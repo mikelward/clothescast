@@ -1211,6 +1211,7 @@
     <string name="holiday_name_croatia_statehood_day">Croatia Statehood Day</string>
     <string name="holiday_name_us_memorial_day">US Memorial Day</string>
     <string name="holiday_name_uk_spring_bank_holiday">Spring Bank Holiday</string>
+    <string name="holiday_name_towel_day">Towel Day</string>
     <string name="holiday_name_italy_republic_day">Italian Republic Day</string>
     <string name="holiday_name_korean_memorial_day">Korean Memorial Day</string>
     <string name="holiday_name_uk_kings_birthday">King\'s Birthday</string>
@@ -1279,6 +1280,7 @@
     <string name="holiday_banner_japan_greenery_day">Happy Japanese Greenery Day</string>
     <string name="holiday_banner_croatia_statehood_day">Happy Croatian Statehood Day</string>
     <string name="holiday_banner_us_memorial_day">Honoring our fallen</string>
+    <string name="holiday_banner_towel_day">Don\'t panic!</string>
     <string name="holiday_banner_italy_republic_day">Happy Italian Republic Day</string>
     <string name="holiday_banner_korean_memorial_day">Honoring Korea\'s fallen</string>
     <string name="holiday_banner_juneteenth">Happy Juneteenth</string>

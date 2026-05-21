@@ -485,6 +485,31 @@ class HolidayResolverTest {
     }
 
     @Test
+    fun `FUNNY bucket resolves Towel Day on May 25`() {
+        val funnyOnly = setOf(HolidayCatalog.FUNNY)
+        subject.resolve(LocalDate.of(2027, 5, 25), noOverrides, funnyOnly)?.id shouldBe
+            HolidayId.TOWEL_DAY
+        // Not tagged GLOBAL → doesn't fire under GLOBAL-only.
+        subject.resolve(LocalDate.of(2027, 5, 25), noOverrides, setOf(HolidayCatalog.GLOBAL_COUNTRY))
+            .shouldBeNull()
+    }
+
+    @Test
+    fun `last-Monday national holiday wins over Towel Day on a May 25 collision`() {
+        // May 25 2026 is the last Monday of May, so US Memorial Day collides
+        // with Towel Day. Catalog order places Memorial Day first, so a US
+        // user (Funny on by default) still sees Memorial Day; a GB user sees
+        // Spring Bank Holiday; a Funny-only user sees Towel Day.
+        val date = LocalDate.of(2026, 5, 25)
+        subject.resolve(date, noOverrides, setOf("US", HolidayCatalog.FUNNY))?.id shouldBe
+            HolidayId.US_MEMORIAL_DAY
+        subject.resolve(date, noOverrides, setOf("GB", HolidayCatalog.FUNNY))?.id shouldBe
+            HolidayId.UK_SPRING_BANK_HOLIDAY
+        subject.resolve(date, noOverrides, setOf(HolidayCatalog.FUNNY))?.id shouldBe
+            HolidayId.TOWEL_DAY
+    }
+
+    @Test
     fun `same-date collision picks the country-enabled holiday`() {
         subject.resolve(LocalDate.of(2026, 3, 1), noOverrides, setOf("KR"))?.id shouldBe
             HolidayId.KOREAN_INDEPENDENCE_MOVEMENT_DAY

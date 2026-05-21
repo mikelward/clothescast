@@ -41,6 +41,7 @@ enum class HolidayId {
     CROATIA_STATEHOOD_DAY,
     US_MEMORIAL_DAY,
     UK_SPRING_BANK_HOLIDAY,
+    TOWEL_DAY,
     ITALY_REPUBLIC_DAY,
     KOREAN_MEMORIAL_DAY,
     UK_KINGS_BIRTHDAY,
@@ -763,6 +764,25 @@ object HolidayCatalog {
             countries = setOf("GB"),
         ),
 
+        // May 25 — Towel Day. A playful, non-national observance, so it
+        // rides the [FUNNY] bucket. Deliberately placed *after* the two
+        // last-Monday-of-May
+        // national holidays above: in years where the last Monday lands on
+        // May 25, catalog-order precedence lets a US user still resolve
+        // Memorial Day and a GB user Spring Bank Holiday, while everyone
+        // else (and Funny-only) gets Towel Day. Beach-towel teal top +
+        // sandy bottom.
+        HolidayDate.Fixed(Month.MAY, 25) to HolidayTheme(
+            id = HolidayId.TOWEL_DAY,
+            displayNameKey = "holiday_name_towel_day",
+            bannerTextKey = "holiday_banner_towel_day",
+            emoji = "🪐", // 🪐
+            topOverrides = topPaletteAll(TOWEL_TEAL),
+            bottomOverrides = bottomPaletteAll(TOWEL_SAND),
+            bannerArgb = TOWEL_TEAL,
+            countries = setOf(FUNNY),
+        ),
+
         // Jun 2 — Italian Republic Day. Green tops + red bottoms with the
         // flag's white field threaded through as accent trim on both.
         HolidayDate.Fixed(Month.JUNE, 2) to HolidayTheme(
@@ -1360,6 +1380,9 @@ private const val HALLOWEEN_BLACK = 0xFF212121L
 
 private const val PIRATE_WHITE = 0xFFF5F5F5L
 private const val PIRATE_BLACK = 0xFF1A1A1AL
+
+private const val TOWEL_TEAL = 0xFF00B3A4L
+private const val TOWEL_SAND = 0xFFE6C58CL
 
 private const val BONFIRE_ORANGE = 0xFFEF6C00L
 private const val BONFIRE_RED = 0xFFC62828L

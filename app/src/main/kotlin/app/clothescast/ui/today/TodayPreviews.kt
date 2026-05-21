@@ -814,6 +814,10 @@ internal fun HolidayCroatiaStatehoodDayPreview() = HolidayShowcase(HolidayId.CRO
 @Composable
 internal fun HolidayUsMemorialDayPreview() = HolidayShowcase(HolidayId.US_MEMORIAL_DAY)
 
+@Preview(name = "Holiday · Towel Day", widthDp = 360)
+@Composable
+internal fun HolidayTowelDayPreview() = HolidayShowcase(HolidayId.TOWEL_DAY)
+
 @Preview(name = "Holiday · Italian Republic Day", widthDp = 360)
 @Composable
 internal fun HolidayItalyRepublicDayPreview() = HolidayShowcase(HolidayId.ITALY_REPUBLIC_DAY)

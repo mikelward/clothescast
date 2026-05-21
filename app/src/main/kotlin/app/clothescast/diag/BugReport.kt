@@ -141,6 +141,7 @@ object BugReport {
         appendLine("Tonight schedule: ${prefs.tonightSchedule.time} ${prefs.tonightSchedule.days.sorted()}")
         appendLine("Tonight notify only on events: ${prefs.tonightNotifyOnlyOnEvents}")
         appendLine("Daily mention evening events: ${prefs.dailyMentionEveningEvents}")
+        appendLine("Clothes mention mode: ${prefs.clothesMentionMode}")
         appendLine("Range format: ${prefs.rangeFormat}")
         appendLine("Delta threshold: ${prefs.deltaThresholdC?.let { "${it}C" } ?: "off"}")
         appendLine("Delivery (morning): ${prefs.deliveryMode}")

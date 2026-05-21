@@ -591,6 +591,10 @@
     <string name="settings_schedule_time_label">Time</string>
     <string name="settings_schedule_days_label">Days of the week</string>
     <string name="settings_daily_mention_evening_events">Mention evening events</string>
+    <string name="settings_clothes_mention_label">Clothes</string>
+    <string name="settings_clothes_mention_always">Always</string>
+    <string name="settings_clothes_mention_if_changed">Change</string>
+    <string name="settings_clothes_mention_never">Never</string>
 
     <string name="settings_tonight_title">Nightly ClothesCast</string>
     <string name="settings_tonight_description">A ClothesCast in the evening that covers that night\'s weather.</string>
@@ -606,7 +610,7 @@
     <string name="settings_format_range_none">None</string>
     <string name="settings_format_range_degrees">Degrees</string>
     <string name="settings_format_range_bands">Bands</string>
-    <string name="settings_format_change_label">Significant change</string>
+    <string name="settings_format_change_label">Temp change</string>
     <string name="settings_format_change_off">Off</string>
     <!-- Significant-change threshold option: %1$d = whole degrees in the user's unit. -->
     <string name="settings_format_change_degrees">%1$d°</string>

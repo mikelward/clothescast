@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
@@ -151,6 +152,20 @@ class SettingsRepositoryTest {
 
         subject.setDailyMentionEveningEvents(true)
         subject.preferences.first().dailyMentionEveningEvents shouldBe true
+    }
+
+    @Test
+    fun `clothesMentionMode defaults to ALWAYS and round-trips all values`() = runTest {
+        subject.preferences.first().clothesMentionMode shouldBe ClothesMentionMode.ALWAYS
+
+        subject.setClothesMentionMode(ClothesMentionMode.IF_CHANGED)
+        subject.preferences.first().clothesMentionMode shouldBe ClothesMentionMode.IF_CHANGED
+
+        subject.setClothesMentionMode(ClothesMentionMode.NEVER)
+        subject.preferences.first().clothesMentionMode shouldBe ClothesMentionMode.NEVER
+
+        subject.setClothesMentionMode(ClothesMentionMode.ALWAYS)
+        subject.preferences.first().clothesMentionMode shouldBe ClothesMentionMode.ALWAYS
     }
 
     @Test

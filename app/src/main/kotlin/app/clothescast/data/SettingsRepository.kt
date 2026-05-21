@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
@@ -170,6 +171,10 @@ class SettingsRepository(
 
     suspend fun setDailyMentionEveningEvents(enabled: Boolean) {
         dataStore.edit { it[DAILY_MENTION_EVENING_EVENTS] = enabled }
+    }
+
+    suspend fun setClothesMentionMode(mode: ClothesMentionMode) {
+        dataStore.edit { it[CLOTHES_MENTION_MODE] = mode.name }
     }
 
     suspend fun setRangeFormat(format: RangeFormat) {
@@ -759,6 +764,9 @@ class SettingsRepository(
         val tonightEnabled = this[TONIGHT_ENABLED] != false
         val tonightNotifyOnlyOnEvents = this[TONIGHT_NOTIFY_ONLY_ON_EVENTS] == true
         val dailyMentionEveningEvents = this[DAILY_MENTION_EVENING_EVENTS] != false
+        val clothesMentionMode = this[CLOTHES_MENTION_MODE]
+            ?.let { runCatching { ClothesMentionMode.valueOf(it) }.getOrNull() }
+            ?: ClothesMentionMode.ALWAYS
         // Range-format clause rendering. Falls back to migrating the legacy
         // boolean: a stored omit-range=true seeds NONE; otherwise DEGREES (the
         // historical default when the range was shown).
@@ -853,6 +861,7 @@ class SettingsRepository(
             tonightDeliveryMode = tonightDeliveryMode,
             tonightNotifyOnlyOnEvents = tonightNotifyOnlyOnEvents,
             dailyMentionEveningEvents = dailyMentionEveningEvents,
+            clothesMentionMode = clothesMentionMode,
             rangeFormat = rangeFormat,
             deltaThresholdC = deltaThresholdC,
             telemetryEnabled = telemetryEnabled,
@@ -940,6 +949,7 @@ class SettingsRepository(
         tonightDaysCount = tonightSchedule.days.size,
         tonightNotifyOnlyOnEvents = tonightNotifyOnlyOnEvents,
         dailyMentionEveningEvents = dailyMentionEveningEvents,
+        clothesMentionMode = clothesMentionMode.name,
         rangeFormat = rangeFormat.name,
         deltaThresholdC = deltaThresholdC?.roundToInt() ?: -1,
         useCalendarEvents = useCalendarEvents,
@@ -1104,6 +1114,7 @@ class SettingsRepository(
         private val TONIGHT_DELIVERY_MODE = stringPreferencesKey("tonight_delivery_mode")
         private val TONIGHT_NOTIFY_ONLY_ON_EVENTS = booleanPreferencesKey("tonight_notify_only_on_events")
         private val DAILY_MENTION_EVENING_EVENTS = booleanPreferencesKey("daily_mention_evening_events")
+        private val CLOTHES_MENTION_MODE = stringPreferencesKey("clothes_mention_mode")
         // Legacy boolean, read on migration only — superseded by INSIGHT_RANGE_FORMAT.
         private val OMIT_TEMPERATURE_RANGE = booleanPreferencesKey("omit_temperature_range")
         private val INSIGHT_RANGE_FORMAT = stringPreferencesKey("insight_range_format")

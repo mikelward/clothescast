@@ -173,6 +173,23 @@ enum class ThemeMode { SYSTEM, LIGHT, DARK }
 enum class RangeFormat { NONE, DEGREES, BANDS }
 
 /**
+ * Controls whether the morning insight's spoken clothes clause ("Wear a
+ * jacket.") is emitted.
+ *
+ *  - [ALWAYS] (default) names the triggered clothing every morning — the
+ *    historical behaviour.
+ *  - [IF_CHANGED] names clothing only when today's recommended items differ
+ *    from yesterday's, so an unchanged forecast stays silent on clothes.
+ *  - [NEVER] never puts clothing in the morning prose.
+ *
+ * Affects the spoken/prose clause only — the outfit card, recommended items,
+ * and "Why this outfit?" rationale are unaffected. Morning ([ForecastPeriod.TODAY])
+ * only: yesterday's overnight data isn't available for a tonight comparison,
+ * so the tonight insight always names clothing.
+ */
+enum class ClothesMentionMode { ALWAYS, IF_CHANGED, NEVER }
+
+/**
  * Where the spoken-aloud audio comes from.
  *
  * - [DEVICE] uses Android's on-device TextToSpeech engine. Free, fully offline once
@@ -561,6 +578,13 @@ data class UserPreferences(
      * the evening hourly slice. On by default.
      */
     val dailyMentionEveningEvents: Boolean = true,
+    /**
+     * Whether — and when — the morning insight names the clothing its rules
+     * trigger. See [ClothesMentionMode]. Morning ([ForecastPeriod.TODAY]) and
+     * prose only; defaults to [ClothesMentionMode.ALWAYS] to preserve the
+     * existing behaviour.
+     */
+    val clothesMentionMode: ClothesMentionMode = ClothesMentionMode.ALWAYS,
     /**
      * How the insight prose renders the temperature-range clause: dropped
      * ([RangeFormat.NONE]), numeric ([RangeFormat.DEGREES], default), or band

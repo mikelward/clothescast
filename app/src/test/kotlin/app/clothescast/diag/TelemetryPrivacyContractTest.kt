@@ -40,6 +40,7 @@ class TelemetryPrivacyContractTest {
         "daily_time_bucket_hour", "daily_days_count",
         "tonight_enabled", "tonight_time_bucket_hour", "tonight_days_count",
         "tonight_notify_only_on_events", "daily_mention_evening_events",
+        "clothes_mention_mode",
         "range_format", "delta_threshold_c",
         "use_calendar_events",
         "skip_tts_at_home", "home_location_configured",

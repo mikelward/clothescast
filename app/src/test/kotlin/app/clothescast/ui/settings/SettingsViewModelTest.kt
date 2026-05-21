@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.domain.model.CalendarEvent
+import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
@@ -217,6 +218,19 @@ class SettingsViewModelTest {
         subject.setUseCalendarEvents(false)
         subject.state.first { !it.useCalendarEvents }
         settingsRepository.preferences.first().useCalendarEvents shouldBe false
+    }
+
+    @Test
+    fun `setClothesMentionMode persists and surfaces in state`() = runTest {
+        subject.state.first { it.clothesMentionMode == ClothesMentionMode.ALWAYS }
+
+        subject.setClothesMentionMode(ClothesMentionMode.IF_CHANGED)
+        subject.state.first { it.clothesMentionMode == ClothesMentionMode.IF_CHANGED }
+        settingsRepository.preferences.first().clothesMentionMode shouldBe ClothesMentionMode.IF_CHANGED
+
+        subject.setClothesMentionMode(ClothesMentionMode.NEVER)
+        subject.state.first { it.clothesMentionMode == ClothesMentionMode.NEVER }
+        settingsRepository.preferences.first().clothesMentionMode shouldBe ClothesMentionMode.NEVER
     }
 
     @Test

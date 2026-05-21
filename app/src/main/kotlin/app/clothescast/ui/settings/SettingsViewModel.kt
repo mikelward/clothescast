@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
+import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
@@ -204,6 +205,7 @@ class SettingsViewModel(
                         deliveryMode = prefs.deliveryMode,
                         tonightDeliveryMode = prefs.tonightDeliveryMode,
                         dailyMentionEveningEvents = prefs.dailyMentionEveningEvents,
+                        clothesMentionMode = prefs.clothesMentionMode,
                         rangeFormat = prefs.rangeFormat,
                         deltaThresholdC = prefs.deltaThresholdC,
                         region = prefs.region,
@@ -913,6 +915,10 @@ class SettingsViewModel(
 
     fun setDailyMentionEveningEvents(enabled: Boolean) {
         viewModelScope.launch { settingsRepository.setDailyMentionEveningEvents(enabled) }
+    }
+
+    fun setClothesMentionMode(mode: ClothesMentionMode) {
+        viewModelScope.launch { settingsRepository.setClothesMentionMode(mode) }
     }
 
     fun setRangeFormat(format: RangeFormat) {

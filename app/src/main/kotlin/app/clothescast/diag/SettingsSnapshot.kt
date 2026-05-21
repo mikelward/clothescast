@@ -32,6 +32,8 @@ data class SettingsSnapshot(
     val tonightDaysCount: Int,
     val tonightNotifyOnlyOnEvents: Boolean,
     val dailyMentionEveningEvents: Boolean,
+    /** When the morning insight names clothing: ALWAYS / IF_CHANGED / NEVER. */
+    val clothesMentionMode: String,
     /** How the insight prose renders the temperature range: NONE / DEGREES / BANDS. */
     val rangeFormat: String,
     /** Significant-change threshold in whole °C, or -1 when the clause is off. */

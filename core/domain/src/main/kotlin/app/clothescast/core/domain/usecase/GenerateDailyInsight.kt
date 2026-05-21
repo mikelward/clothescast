@@ -122,6 +122,8 @@ class GenerateDailyInsight(
             perModelHourly = periodView.perModelForRender,
             eveningEventTieIn = eveningEventTieIn,
             deltaThresholdC = prefs.deltaThresholdC,
+            clothesMentionMode = prefs.clothesMentionMode,
+            yesterdayTriggeredItems = periodView.yesterdayTriggeredItems,
         )
 
         val rules = prefs.clothesRules
@@ -241,6 +243,10 @@ class GenerateDailyInsight(
             )
         }
         val triggeredRules = evaluateClothesRules(periodForecast, prefs.clothesRules)
+        // Yesterday's clothing, evaluated against the same yesterday slice the
+        // delta uses, so ClothesMentionMode.IF_CHANGED compares apples to apples
+        // (daytime-vs-daytime, or 24h fallback when hourly is missing).
+        val yesterdayTriggeredItems = evaluateClothesRules(deltaYesterday, prefs.clothesRules).map { it.item }
         val perModelForRender = bundle.perModelHourly?.slicedTo(
             when (period) {
                 ForecastPeriod.TODAY -> todayWindow(periodForecast.hourly, bundle.today.date)
@@ -255,6 +261,7 @@ class GenerateDailyInsight(
             perModelForRender = perModelForRender,
             deltaToday = deltaToday,
             deltaYesterday = deltaYesterday,
+            yesterdayTriggeredItems = yesterdayTriggeredItems,
         )
     }
 
@@ -360,6 +367,7 @@ class GenerateDailyInsight(
         val perModelForRender: PerModelHourly?,
         val deltaToday: DailyForecast,
         val deltaYesterday: DailyForecast,
+        val yesterdayTriggeredItems: List<String>,
     )
 }
 

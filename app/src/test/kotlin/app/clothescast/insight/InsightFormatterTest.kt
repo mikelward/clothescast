@@ -18,6 +18,7 @@ import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherCondition
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldNotContain
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.LocalTime
@@ -311,9 +312,26 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `omit range leaves a non-letter first clause untouched`() {
+    fun `omit range gives the leading delta an it-will-be subject`() {
+        // With the band sentence dropped, the delta is the first temperature
+        // field, so it introduces itself rather than reading as a bare
+        // fragment ("Today, 5° warmer than yesterday.").
         omitSubject.format(summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER))) shouldBe
-            "Today, 5° warmer than yesterday."
+            "Today, it will be 5° warmer than yesterday."
+    }
+
+    @Test
+    fun `omit range keeps the leading delta localized for non-English`() {
+        // The "it will be …" lead template is English-only; a non-English
+        // locale must keep its own localized delta string rather than splice
+        // the English clause into otherwise-localized prose.
+        val germanOmit = InsightFormatter.forContext(
+            context,
+            Locale.GERMAN,
+            rangeFormat = RangeFormat.NONE,
+        )
+        germanOmit.format(summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)))
+            .shouldNotContain("it will be")
     }
 
     @Test

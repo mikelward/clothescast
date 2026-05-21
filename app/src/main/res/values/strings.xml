@@ -994,6 +994,13 @@
          delta line stands as a short factual addendum. -->
     <string name="insight_delta_warmer">%1$d° warmer than yesterday.</string>
     <string name="insight_delta_cooler">%1$d° cooler than yesterday.</string>
+    <!-- Delta as the leading temperature field: when the range is omitted there's
+         no band sentence ahead to supply the subject, so the delta introduces
+         itself with "it will be …". %1$d is the rounded degree difference. The
+         renderLeadOnly path folds the period lead in front, giving
+         "Today, it will be 5° warmer than yesterday.". -->
+    <string name="insight_delta_warmer_lead">it will be %1$d° warmer than yesterday.</string>
+    <string name="insight_delta_cooler_lead">it will be %1$d° cooler than yesterday.</string>
 
     <!-- Severe-weather alert prefix. %1$s = event name (e.g. "Tornado Warning"). -->
     <string name="insight_alert">Alert: %1$s.</string>

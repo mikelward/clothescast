@@ -98,7 +98,12 @@ class InsightFormatter(
                 RangeFormat.DEGREES -> add(formatBand(summary.period, summary.band, isFutureDay))
                 RangeFormat.BANDS -> add(formatBandWords(summary.period, summary.band, isFutureDay))
             }
-            summary.delta?.let { add(formatDelta(it)) }
+            // When the range is omitted there's no band sentence ahead of the
+            // delta, so it leads the temperature content and must introduce
+            // itself ("it will be 5° warmer than yesterday.") rather than ride
+            // as a bare fragment that the period lead folds into subject-less
+            // ("Today, 5° warmer than yesterday.").
+            summary.delta?.let { add(formatDelta(it, leadsTemperature = rangeFormat == RangeFormat.NONE)) }
             if (wearItems.isNotEmpty()) formatClothesWear(wearItems)?.let(::add)
             summary.precip?.let { add(formatPrecip(it)) }
         }
@@ -209,10 +214,22 @@ class InsightFormatter(
         TemperatureBand.HOT -> R.string.insight_band_hot
     }
 
-    private fun formatDelta(delta: DeltaClause): String {
+    private fun formatDelta(delta: DeltaClause, leadsTemperature: Boolean = false): String {
+        // The English delta is a bare fragment ("5° warmer than yesterday.")
+        // built to trail a band sentence; when it instead leads the temperature
+        // content it needs the "it will be …" subject. That self-introducing
+        // form has a localized template (insight_delta_*_lead) only for English
+        // so far. Other locales phrase their own delta as a full sentence
+        // already (German "Heute wird es 5° wärmer."), so they keep their
+        // existing string rather than have English spliced into localized
+        // prose — same en-only gating as spokenTime(). Widen the gate per
+        // locale as the _lead keys get translated.
+        val lead = leadsTemperature && locale.language == "en"
         val template = when (delta.direction) {
-            DeltaClause.Direction.WARMER -> R.string.insight_delta_warmer
-            DeltaClause.Direction.COOLER -> R.string.insight_delta_cooler
+            DeltaClause.Direction.WARMER ->
+                if (lead) R.string.insight_delta_warmer_lead else R.string.insight_delta_warmer
+            DeltaClause.Direction.COOLER ->
+                if (lead) R.string.insight_delta_cooler_lead else R.string.insight_delta_cooler
         }
         // DeltaClause.degrees is the absolute Celsius delta. Temperature
         // *differences* convert with the ratio only (no +32 offset), so

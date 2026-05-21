@@ -32,6 +32,7 @@ import app.clothescast.ui.settings.SettingsClothesFahrenheitPreview
 import app.clothescast.ui.settings.SettingsClothesPreview
 import app.clothescast.ui.settings.SettingsDisplayPreview
 import app.clothescast.ui.settings.SettingsForecastersPreview
+import app.clothescast.ui.settings.SettingsFormatClothesNeverPreview
 import app.clothescast.ui.settings.SettingsFormatPreview
 import app.clothescast.ui.settings.SettingsDeveloperPreview
 import app.clothescast.ui.settings.SettingsGarmentColorPickerPreview
@@ -537,6 +538,7 @@ class PreviewSnapshots {
     @Test fun settings_root() = capture { SettingsRootPreview() }
     @Test fun settings_schedule() = capture { SettingsSchedulePreview() }
     @Test fun settings_format() = capture { SettingsFormatPreview() }
+    @Test fun settings_format_clothes_never() = capture { SettingsFormatClothesNeverPreview() }
     @Test fun settings_clothes() = capture { SettingsClothesPreview() }
     @Test fun settings_clothes_fahrenheit() = capture { SettingsClothesFahrenheitPreview() }
     @Test fun settings_region() = capture { SettingsRegionPreview() }

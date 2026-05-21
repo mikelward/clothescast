@@ -101,7 +101,6 @@ internal fun SettingsSchedulePreview() {
             tonightEnabled = true,
             tonightNotifyOnlyOnEvents = false,
             dailyMentionEveningEvents = false,
-            clothesMentionMode = ClothesMentionMode.ALWAYS,
             deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
             tonightDeliveryMode = DeliveryMode.NOTIFICATION_ONLY,
             skipTtsAtHome = false,
@@ -112,7 +111,6 @@ internal fun SettingsSchedulePreview() {
             onSetTonightEnabled = {},
             onSetTonightNotifyOnlyOnEvents = {},
             onSetDailyMentionEveningEvents = {},
-            onSetClothesMentionMode = {},
             onSetDeliveryMode = {},
             onSetTonightDeliveryMode = {},
             onSetSkipTtsAtHome = {},
@@ -127,11 +125,33 @@ internal fun SettingsFormatPreview() {
         FormatContent(
             rangeFormat = RangeFormat.BANDS,
             deltaThresholdC = 3.0,
+            clothesMentionMode = ClothesMentionMode.ALWAYS,
             region = Region.SYSTEM,
             temperatureUnit = TemperatureUnit.CELSIUS,
             padding = PaddingValues(0.dp),
             onSetRangeFormat = {},
             onSetDeltaThresholdC = {},
+            onSetClothesMentionMode = {},
+        )
+    }
+}
+
+// Covers the mode gating: with NEVER the preview drops the "Wear a sweater."
+// clause so it matches what the generated insight would actually say.
+@Preview(name = "Settings · Format (clothes never)", widthDp = 360)
+@Composable
+internal fun SettingsFormatClothesNeverPreview() {
+    SettingsFrame {
+        FormatContent(
+            rangeFormat = RangeFormat.BANDS,
+            deltaThresholdC = 3.0,
+            clothesMentionMode = ClothesMentionMode.NEVER,
+            region = Region.SYSTEM,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            padding = PaddingValues(0.dp),
+            onSetRangeFormat = {},
+            onSetDeltaThresholdC = {},
+            onSetClothesMentionMode = {},
         )
     }
 }

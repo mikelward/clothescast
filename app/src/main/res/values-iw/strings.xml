@@ -54,6 +54,8 @@ standard in Israeli digital communication.
     <!-- "היום יהיה נעים." -->
     <string name="insight_band_single">%1$s יהיה %2$d°.</string>
     <string name="insight_band_range">%1$s יהיה %2$d° עד %3$d°.</string>
+    <string name="insight_band_words_single">%1$s יהיה %2$s.</string>
+    <string name="insight_band_words_range">%1$s יהיה %2$s עד %3$s.</string>
     <string name="insight_band_freezing">קפוא</string>
     <string name="insight_band_cold">קר</string>
     <string name="insight_band_cool">קריר</string>

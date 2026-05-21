@@ -62,6 +62,8 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
          "Šodien būs auksts." -->
     <string name="insight_band_single">%1$s būs %2$d°.</string>
     <string name="insight_band_range">%1$s būs %2$d° līdz %3$d°.</string>
+    <string name="insight_band_words_single">%1$s būs %2$s.</string>
+    <string name="insight_band_words_range">%1$s būs %2$s līdz %3$s.</string>
     <string name="insight_band_freezing">ledains</string>
     <string name="insight_band_cold">auksts</string>
     <string name="insight_band_cool">vēss</string>

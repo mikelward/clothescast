@@ -499,6 +499,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <!-- Estonian copular shape: "Täna on külm." -->
     <string name="insight_band_single">%1$s on %2$d°.</string>
     <string name="insight_band_range">%1$s on %2$d° kuni %3$d°.</string>
+    <string name="insight_band_words_single">%1$s on %2$s.</string>
+    <string name="insight_band_words_range">%1$s on %2$s kuni %3$s.</string>
     <string name="insight_band_freezing">jäine</string>
     <string name="insight_band_cold">külm</string>
     <string name="insight_band_cool">jahe</string>

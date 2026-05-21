@@ -420,6 +420,8 @@ the displayed label localizes.
     <!-- "今日は穏やかでしょう。" — は marks the topic. -->
     <string name="insight_band_single">%1$sは%2$d°でしょう。</string>
     <string name="insight_band_range">%1$sは%2$d°から%3$d°でしょう。</string>
+    <string name="insight_band_words_single">%1$sは%2$sでしょう。</string>
+    <string name="insight_band_words_range">%1$sは%2$sから%3$sでしょう。</string>
     <string name="insight_band_freezing">氷点下</string>
     <string name="insight_band_cold">寒い</string>
     <string name="insight_band_cool">涼しい</string>

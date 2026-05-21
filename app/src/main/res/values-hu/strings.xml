@@ -545,6 +545,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <!-- "%1$s %2$s lesz." → "Ma hideg lesz." Lead first, then band, copula at end. -->
     <string name="insight_band_single">%1$s %2$d° lesz.</string>
     <string name="insight_band_range">%1$s %2$d° és %3$d° között lesz.</string>
+    <string name="insight_band_words_single">%1$s %2$s lesz.</string>
+    <string name="insight_band_words_range">%1$s %2$s és %3$s között lesz.</string>
     <string name="insight_band_freezing">fagyos</string>
     <string name="insight_band_cold">hideg</string>
     <string name="insight_band_cool">hűvös</string>

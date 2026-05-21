@@ -29,6 +29,17 @@ class CalendarEventClassifierTest {
     }
 
     @Test
+    fun `trailing exclamation mark still classifies as BIRTHDAY`() {
+        CalendarEventClassifier.classify("Eva's birthday!", ownerAccount = null).kind shouldBe EventKind.BIRTHDAY
+    }
+
+    @Test
+    fun `trailing punctuation and whitespace still classifies as BIRTHDAY`() {
+        CalendarEventClassifier.classify("Eva's birthday...", ownerAccount = null).kind shouldBe EventKind.BIRTHDAY
+        CalendarEventClassifier.classify("Eva's birthday! ", ownerAccount = null).kind shouldBe EventKind.BIRTHDAY
+    }
+
+    @Test
     fun `birthday classification is case-insensitive`() {
         CalendarEventClassifier.classify("ALICE'S BIRTHDAY", ownerAccount = null).kind shouldBe EventKind.BIRTHDAY
     }

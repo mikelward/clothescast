@@ -42,8 +42,10 @@ object CalendarEventClassifier {
         RegexOption.IGNORE_CASE,
     )
 
+    // Trailing punctuation ("Eva's birthday!", "Eva's birthday...") is common
+    // in user-entered titles, so allow it after the match.
     private val BIRTHDAY_TITLE_REGEX = Regex(
-        "^(?:.+['’]s birthday|birthday\\s*[:\\-]\\s*.+)$",
+        "^(?:.+['’]s birthday|birthday\\s*[:\\-]\\s*.+)[\\s!?.]*$",
         RegexOption.IGNORE_CASE,
     )
 

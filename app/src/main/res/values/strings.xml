@@ -1217,6 +1217,7 @@
     <string name="settings_holiday_country_it">Italy</string>
     <string name="settings_holiday_country_jp">Japan</string>
     <string name="settings_holiday_country_kr">South Korea</string>
+    <string name="settings_holiday_country_mx">Mexico</string>
     <string name="settings_holiday_country_nz">New Zealand</string>
     <string name="settings_holiday_country_us">United States</string>
 
@@ -1242,6 +1243,7 @@
     <string name="holiday_name_uk_early_may_bank_holiday">Early May Bank Holiday</string>
     <string name="holiday_name_mothers_day">Mother\'s Day</string>
     <string name="holiday_name_japan_greenery_day">Greenery Day (Japan)</string>
+    <string name="holiday_name_cinco_de_mayo">Cinco de Mayo</string>
     <string name="holiday_name_croatia_statehood_day">Croatia Statehood Day</string>
     <string name="holiday_name_us_memorial_day">US Memorial Day</string>
     <string name="holiday_name_uk_spring_bank_holiday">Spring Bank Holiday</string>
@@ -1260,6 +1262,7 @@
     <string name="holiday_name_korean_liberation_day">Korean Liberation Day</string>
     <string name="holiday_name_assumption">Assumption</string>
     <string name="holiday_name_fathers_day_sep">Father\'s Day (Sep)</string>
+    <string name="holiday_name_us_labor_day">Labor Day / Labour Day</string>
     <string name="holiday_name_brazil_independence_day">Brazil Independence Day</string>
     <string name="holiday_name_talk_like_a_pirate_day">Talk Like a Pirate Day</string>
     <string name="holiday_name_german_unity_day">German Unity Day</string>
@@ -1268,10 +1271,13 @@
     <string name="holiday_name_canadian_thanksgiving">Canadian Thanksgiving</string>
     <string name="holiday_name_spain_hispanic_day">Hispanic Day</string>
     <string name="holiday_name_austria_national_day">Austrian National Day</string>
+    <string name="holiday_name_nz_labour_day">Labour Day</string>
     <string name="holiday_name_halloween">Halloween</string>
     <string name="holiday_name_all_saints_day">All Saints\' Day</string>
     <string name="holiday_name_japan_culture_day">Culture Day (Japan)</string>
-    <string name="holiday_name_bonfire_night">Bonfire Night</string>
+    <string name="holiday_name_melbourne_cup_day">Melbourne Cup Day</string>
+    <string name="holiday_name_us_election_day">Election Day</string>
+    <string name="holiday_name_bonfire_night">Bonfire Night / Guy Fawkes Night</string>
     <!-- The settings label uses the universal name; the banner copy on the
          day itself varies by country (Veterans Day in the US, Armistice
          Day in France, Remembrance Day everywhere else). See
@@ -1321,6 +1327,7 @@
     <string name="holiday_banner_uk_kings_birthday">God save the King</string>
     <string name="holiday_banner_mothers_day">Happy Mother\'s Day</string>
     <string name="holiday_banner_japan_greenery_day">Happy Japanese Greenery Day</string>
+    <string name="holiday_banner_cinco_de_mayo">¡Feliz Cinco de Mayo!</string>
     <string name="holiday_banner_croatia_statehood_day">Happy Croatian Statehood Day</string>
     <string name="holiday_banner_us_memorial_day">Honoring our fallen</string>
     <string name="holiday_banner_towel_day">Don\'t panic!</string>
@@ -1341,6 +1348,9 @@
     <string name="holiday_banner_korean_liberation_day">Happy Korean Liberation Day</string>
     <string name="holiday_banner_assumption">Happy Assumption Day</string>
     <string name="holiday_banner_fathers_day_sep">Happy Father\'s Day</string>
+    <string name="holiday_banner_us_labor_day">Happy Labor Day</string>
+    <!-- Canada-specific banner override for Labor Day (Canadian spelling). -->
+    <string name="holiday_banner_ca_labour_day">Happy Labour Day</string>
     <string name="holiday_banner_brazil_independence_day">Happy Brazilian Independence Day</string>
     <string name="holiday_banner_talk_like_a_pirate_day">Ahoy, matey!</string>
     <!-- Lower-case clause folded into a joined banner when Pirate Day shares
@@ -1355,6 +1365,8 @@
     <string name="holiday_banner_halloween">Happy Halloween</string>
     <string name="holiday_banner_all_saints_day">Happy All Saints\' Day</string>
     <string name="holiday_banner_japan_culture_day">Happy Japanese Culture Day</string>
+    <string name="holiday_banner_melbourne_cup_day">The race that stops a nation</string>
+    <string name="holiday_banner_us_election_day">Get out and vote</string>
     <string name="holiday_banner_bonfire_night">Remember, remember</string>
     <!-- Default banner for Nov 11 — used everywhere except countries with
          an explicit override (see HolidayTheme.bannerTextKeyByCountry). -->

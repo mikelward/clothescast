@@ -816,6 +816,10 @@ internal fun HolidayMothersDayPreview() = HolidayShowcase(HolidayId.MOTHERS_DAY)
 @Composable
 internal fun HolidayJapanGreeneryDayPreview() = HolidayShowcase(HolidayId.JAPAN_GREENERY_DAY)
 
+@Preview(name = "Holiday · Cinco de Mayo", widthDp = 360)
+@Composable
+internal fun HolidayCincoDeMayoPreview() = HolidayShowcase(HolidayId.CINCO_DE_MAYO)
+
 @Preview(name = "Holiday · Croatia Statehood Day", widthDp = 360)
 @Composable
 internal fun HolidayCroatiaStatehoodDayPreview() = HolidayShowcase(HolidayId.CROATIA_STATEHOOD_DAY)
@@ -887,6 +891,10 @@ internal fun HolidayKoreanLiberationDayPreview() = HolidayShowcase(HolidayId.KOR
 @Composable
 internal fun HolidayFathersDaySepPreview() = HolidayShowcase(HolidayId.FATHERS_DAY_SEP)
 
+@Preview(name = "Holiday · Labor Day (US/CA)", widthDp = 360)
+@Composable
+internal fun HolidayUsLaborDayPreview() = HolidayShowcase(HolidayId.US_LABOR_DAY)
+
 @Preview(name = "Holiday · Brazil Independence", widthDp = 360)
 @Composable
 internal fun HolidayBrazilIndependenceDayPreview() = HolidayShowcase(HolidayId.BRAZIL_INDEPENDENCE_DAY)
@@ -911,6 +919,10 @@ internal fun HolidayCanadianThanksgivingPreview() = HolidayShowcase(HolidayId.CA
 @Composable
 internal fun HolidaySpainHispanicDayPreview() = HolidayShowcase(HolidayId.SPAIN_HISPANIC_DAY)
 
+@Preview(name = "Holiday · Labour Day (NZ)", widthDp = 360)
+@Composable
+internal fun HolidayNzLabourDayPreview() = HolidayShowcase(HolidayId.NZ_LABOUR_DAY)
+
 @Preview(name = "Holiday · Halloween", widthDp = 360)
 @Composable
 internal fun HolidayHalloweenPreview() = HolidayShowcase(HolidayId.HALLOWEEN)
@@ -918,6 +930,14 @@ internal fun HolidayHalloweenPreview() = HolidayShowcase(HolidayId.HALLOWEEN)
 @Preview(name = "Holiday · Culture Day (JP)", widthDp = 360)
 @Composable
 internal fun HolidayJapanCultureDayPreview() = HolidayShowcase(HolidayId.JAPAN_CULTURE_DAY)
+
+@Preview(name = "Holiday · Melbourne Cup Day", widthDp = 360)
+@Composable
+internal fun HolidayMelbourneCupDayPreview() = HolidayShowcase(HolidayId.MELBOURNE_CUP_DAY)
+
+@Preview(name = "Holiday · US Election Day", widthDp = 360)
+@Composable
+internal fun HolidayUsElectionDayPreview() = HolidayShowcase(HolidayId.US_ELECTION_DAY)
 
 @Preview(name = "Holiday · Bonfire Night", widthDp = 360)
 @Composable

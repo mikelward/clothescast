@@ -6,14 +6,18 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
+import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TemperatureUnitSetting
+import app.clothescast.core.domain.model.UpcomingCalendarEvent
+import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
 import app.clothescast.discovery.DiscoveredService
@@ -33,6 +37,7 @@ import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.serialization.json.Json as KotlinxJson
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -212,6 +217,54 @@ class SettingsViewModelTest {
         subject.setUseCalendarEvents(false)
         subject.state.first { !it.useCalendarEvents }
         settingsRepository.preferences.first().useCalendarEvents shouldBe false
+    }
+
+    @Test
+    fun `loadCalendarCelebrations collapses only true duplicates, keeping same-name events on different dates`() = runTest {
+        // Regression for the dedupe key: two contacts who share a name with
+        // different birthdays (or a same-named holiday recurring on different
+        // dates) must both stay listed; only the same event imported into two
+        // synced calendars — identical (date, title, kind) — folds together.
+        val june = java.time.LocalDate.of(2026, 6, 1)
+        val september = java.time.LocalDate.of(2026, 9, 1)
+        val reader = object : CalendarEventReader {
+            override suspend fun eventsForDay(
+                date: java.time.LocalDate,
+                zoneId: java.time.ZoneId,
+            ): List<CalendarEvent> = emptyList()
+
+            override suspend fun upcomingCelebrations(
+                startInclusive: java.time.LocalDate,
+                endExclusive: java.time.LocalDate,
+                zoneId: java.time.ZoneId,
+            ): List<UpcomingCalendarEvent> = listOf(
+                UpcomingCalendarEvent(june, "Alex’s birthday", EventKind.BIRTHDAY),
+                UpcomingCalendarEvent(june, "Alex’s birthday", EventKind.BIRTHDAY), // exact dup → collapse
+                UpcomingCalendarEvent(september, "Alex’s birthday", EventKind.BIRTHDAY), // same name, later date → keep
+                UpcomingCalendarEvent(june, "Christmas Day", EventKind.PUBLIC_HOLIDAY),
+            )
+        }
+        val vm = track(
+            SettingsViewModel(
+                settingsRepository = settingsRepository,
+                keyStore = keyStore,
+                rearmAlarm = { _, _ -> },
+                cancelAlarm = { _ -> },
+                geocodingClient = OpenMeteoGeocodingClient(
+                    HttpClient(MockEngine { respond("""{"results":[]}""") }) {
+                        install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) }
+                    },
+                ),
+                voiceEnumerator = EmptyVoiceEnumerator,
+                calendarEventReader = reader,
+            ),
+        )
+
+        vm.loadCalendarCelebrations()
+        val state = vm.state.first { it.calendarCelebrations != null }
+
+        state.calendarCelebrations!! shouldHaveSize 3
+        state.calendarCelebrations!!.count { it.title == "Alex’s birthday" } shouldBe 2
     }
 
     @Test

@@ -8,6 +8,7 @@ import android.provider.CalendarContract
 import app.clothescast.diag.DiagLog
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.EventKind
+import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.usecase.CalendarEventClassifier
 import kotlinx.coroutines.Dispatchers
@@ -38,20 +39,73 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
             return emptyList()
         }
         return withContext(Dispatchers.IO) {
-            runCatching { query(date, zoneId) }
+            runCatching {
+                // Drop all-day rows whose UTC date isn't today: in zones east of
+                // UTC, yesterday's all-day event overlaps the start of today's
+                // local-day window and would otherwise bleed in. Timed rows are
+                // kept as-is — the Instances window already scoped them.
+                query(date, date.plusDays(1), zoneId)
+                    .filterNot { it.event.allDay && it.date != date }
+                    .map { it.event }
+            }
                 .onFailure { DiagLog.w(TAG, "Calendar query failed; degrading to no events.", it) }
                 .getOrDefault(emptyList())
         }
     }
 
+    override suspend fun upcomingCelebrations(
+        startInclusive: LocalDate,
+        endExclusive: LocalDate,
+        zoneId: ZoneId,
+    ): List<UpcomingCalendarEvent> {
+        if (!CalendarPermission.isGranted(context)) {
+            DiagLog.i(TAG, "READ_CALENDAR not granted; skipping calendar read.")
+            return emptyList()
+        }
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                // Narrow the year-long window to all-day rows at the provider
+                // level: birthdays (Contacts / the Birthday event type) and the
+                // synced "Holidays in <country>" calendars are all-day, so this
+                // keeps dense calendars' timed meeting recurrences from being
+                // materialised and classified just to be filtered out. The kind
+                // filter below still drops any all-day NORMAL holds that slip
+                // through.
+                // TODO(celebrations): a user's *timed* birthday entry (e.g. a
+                // "Sam's birthday" event the title regex would catch at 7pm)
+                // still themes the day via eventsForDay but is excluded from this
+                // listing by the all-day narrowing. There's no portable
+                // ContentResolver selection for "title looks like a birthday", so
+                // surfacing timed celebrations here needs a different approach
+                // (e.g. also select eventType = birthday, or widen + cap the
+                // scan) without re-materialising every meeting recurrence.
+                query(startInclusive, endExclusive, zoneId, allDayOnly = true)
+                    .filter { it.event.kind != EventKind.NORMAL }
+                    .filter { it.date >= startInclusive && it.date < endExclusive }
+                    .map { UpcomingCalendarEvent(it.date, it.event.title, it.event.kind) }
+                    .sortedWith(compareBy({ it.date }, { it.title }))
+            }
+                .onFailure { DiagLog.w(TAG, "Calendar query failed; degrading to no events.", it) }
+                .getOrDefault(emptyList())
+        }
+    }
+
+    /** A classified event paired with the local date it falls on. */
+    private data class DatedEvent(val date: LocalDate, val event: CalendarEvent)
+
     @SuppressLint("MissingPermission")
-    private fun query(date: LocalDate, zoneId: ZoneId): List<CalendarEvent> {
-        val startOfDay = date.atStartOfDay(zoneId).toInstant().toEpochMilli()
-        val endOfDay = date.plusDays(1).atStartOfDay(zoneId).toInstant().toEpochMilli()
+    private fun query(
+        startInclusive: LocalDate,
+        endExclusive: LocalDate,
+        zoneId: ZoneId,
+        allDayOnly: Boolean = false,
+    ): List<DatedEvent> {
+        val startMillis = startInclusive.atStartOfDay(zoneId).toInstant().toEpochMilli()
+        val endMillis = endExclusive.atStartOfDay(zoneId).toInstant().toEpochMilli()
 
         val uriBuilder = CalendarContract.Instances.CONTENT_URI.buildUpon()
-        ContentUris.appendId(uriBuilder, startOfDay)
-        ContentUris.appendId(uriBuilder, endOfDay)
+        ContentUris.appendId(uriBuilder, startMillis)
+        ContentUris.appendId(uriBuilder, endMillis)
         val uri: Uri = uriBuilder.build()
 
         val baseProjection = arrayOf(
@@ -74,6 +128,7 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
         // projection and live without the locale-independent birthday hint.
         val withEventType = baseProjection + EVENT_TYPE_COLUMN
         val sortOrder = "${CalendarContract.Instances.BEGIN} ASC"
+        val selection = if (allDayOnly) "${CalendarContract.Instances.ALL_DAY} = 1" else null
 
         // First pass: read every row into a tuple, accumulating the set of calendar
         // ids we touched. The owner-account lookup happens once afterwards instead
@@ -82,6 +137,7 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
         // their rows as AVAILABILITY_FREE — we have to know the row's classified
         // kind before deciding whether the FREE filter applies.
         data class Row(
+            val date: LocalDate,
             val title: String,
             val start: LocalTime,
             val end: LocalTime,
@@ -95,10 +151,10 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
         val rows = mutableListOf<Row>()
         val calendarIds = mutableSetOf<Long>()
         val rawCursor = try {
-            context.contentResolver.query(uri, withEventType, null, null, sortOrder)
+            context.contentResolver.query(uri, withEventType, selection, null, sortOrder)
         } catch (e: IllegalArgumentException) {
             DiagLog.i(TAG, "Provider rejected `eventType` column; retrying without it.", e)
-            context.contentResolver.query(uri, baseProjection, null, null, sortOrder)
+            context.contentResolver.query(uri, baseProjection, selection, null, sortOrder)
         }
         rawCursor?.use { cursor ->
             val titleIdx = cursor.getColumnIndex(CalendarContract.Instances.TITLE)
@@ -125,32 +181,27 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
                 val end = if (endIdx >= 0) cursor.getLong(endIdx) else continue
                 val location = locationIdx.takeIf { it >= 0 }?.let { cursor.getString(it) }?.takeIf { it.isNotBlank() }
                 val allDay = allDayIdx >= 0 && cursor.getInt(allDayIdx) != 0
-                // All-day rows are stored as UTC-midnight-to-UTC-midnight of the event's
-                // nominal date. The Instances window for our local day translates to a UTC
-                // range that, in zones east of UTC, dips into the previous UTC day — and
-                // yesterday's all-day event (ending at today's UTC midnight) overlaps that
-                // dip. Drop those rows by comparing the event's UTC date to the query date;
-                // otherwise yesterday's birthday bleeds in and wins the BEGIN-ASC sort.
-                if (allDay) {
-                    val eventDate = Instant.ofEpochMilli(begin).atZone(ZoneOffset.UTC).toLocalDate()
-                    if (eventDate != date) continue
-                }
                 val calendarId = if (calendarIdIdx >= 0) cursor.getLong(calendarIdIdx) else -1L
                 val eventType = if (eventTypeIdx >= 0 && !cursor.isNull(eventTypeIdx)) cursor.getInt(eventTypeIdx) else null
                 val availability = if (availabilityIdx >= 0) cursor.getInt(availabilityIdx) else CalendarContract.Instances.AVAILABILITY_BUSY
 
                 // CalendarContract stores all-day events in UTC midnight-to-midnight; converting
                 // those into the user's zone shifts them off the day boundary. Keep them as
-                // pure all-day markers and project the rest into wall-clock in the user zone.
-                val (start, finish) = if (allDay) {
-                    LocalTime.MIDNIGHT to LocalTime.MIDNIGHT
+                // pure all-day markers (dated by their UTC date) and project the rest into
+                // wall-clock in the user zone (dated by the begin instant in that zone).
+                // Callers apply their own window filter on [date]: a single-day read drops
+                // adjacent-day all-day bleed (an east-of-UTC zone overlaps the previous UTC
+                // day), a forward-window read keeps every row inside its range.
+                val (date, start, finish) = if (allDay) {
+                    val eventDate = Instant.ofEpochMilli(begin).atZone(ZoneOffset.UTC).toLocalDate()
+                    Triple(eventDate, LocalTime.MIDNIGHT, LocalTime.MIDNIGHT)
                 } else {
-                    val s = Instant.ofEpochMilli(begin).atZone(zoneId).toLocalTime()
+                    val zoned = Instant.ofEpochMilli(begin).atZone(zoneId)
                     val e = Instant.ofEpochMilli(end).atZone(zoneId).toLocalTime()
-                    s to e
+                    Triple(zoned.toLocalDate(), zoned.toLocalTime(), e)
                 }
 
-                rows += Row(title, start, finish, location, allDay, calendarId, eventType, availability)
+                rows += Row(date, title, start, finish, location, allDay, calendarId, eventType, availability)
                 if (calendarId >= 0) calendarIds += calendarId
             }
         }
@@ -174,14 +225,17 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
                 "Classified calendarId=${row.calendarId} as ${result.kind} via ${result.reason}" +
                     (row.eventType?.let { " (eventType=$it)" } ?: " (eventType column unavailable)"),
             )
-            CalendarEvent(
-                title = row.title,
-                start = row.start,
-                end = row.end,
-                location = row.location,
-                allDay = row.allDay,
-                kind = result.kind,
-                ownerAccount = owner,
+            DatedEvent(
+                date = row.date,
+                event = CalendarEvent(
+                    title = row.title,
+                    start = row.start,
+                    end = row.end,
+                    location = row.location,
+                    allDay = row.allDay,
+                    kind = result.kind,
+                    ownerAccount = owner,
+                ),
             )
         }
     }

@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,14 +48,18 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import app.clothescast.R
 import app.clothescast.calendar.CalendarPermission
+import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.HolidayCatalog
 import app.clothescast.core.domain.model.HolidayCountrySelection
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.HolidayTheme
+import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.ui.EdgeFadeOverlay
 import java.text.Collator
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Locale
 
 /**
@@ -88,6 +93,7 @@ internal fun HolidaysContent(
     weatherLocationCountry: String?,
     themeFromCalendarHolidays: Boolean,
     themeFromCalendarBirthdays: Boolean,
+    calendarCelebrations: List<UpcomingCalendarEvent>?,
     padding: PaddingValues,
     onSetCountryHome: (Boolean) -> Unit,
     onSetCountryCurrent: (Boolean) -> Unit,
@@ -99,6 +105,7 @@ internal fun HolidaysContent(
     onSetThemeFromCalendarHolidays: (Boolean) -> Unit,
     onSetThemeFromCalendarBirthdays: (Boolean) -> Unit,
     onCalendarPermissionRechecked: () -> Unit,
+    onLoadCalendarCelebrations: () -> Unit,
     onNavigateToRegionSettings: () -> Unit,
     onNavigateToLocationSettings: () -> Unit,
     onNavigateToCalendarSettings: () -> Unit,
@@ -108,6 +115,32 @@ internal fun HolidaysContent(
     val uiLocale = remember(context.resources.configuration) {
         context.resources.configuration.locales.get(0) ?: Locale.getDefault()
     }
+
+    // Calendar-permission state for the upcoming-celebrations listings below.
+    // Tracked once here (shared by both the Holidays and Birthdays sections)
+    // and re-checked on resume so a grant/revoke from system Settings flips the
+    // sections between their "grant" prompt and the live list. Loading kicks off
+    // whenever permission is present — the listing previews what calendars hold
+    // regardless of whether the theming toggle is on.
+    var calendarPermissionGranted by remember { mutableStateOf(CalendarPermission.isGranted(context)) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                calendarPermissionGranted = CalendarPermission.isGranted(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+    val calendarPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { granted -> calendarPermissionGranted = granted }
+    LaunchedEffect(calendarPermissionGranted) {
+        if (calendarPermissionGranted) onLoadCalendarCelebrations()
+    }
+    val calendarHolidays = calendarCelebrations?.filter { it.kind == EventKind.PUBLIC_HOLIDAY }
+    val calendarBirthdays = calendarCelebrations?.filter { it.kind == EventKind.BIRTHDAY }
 
     // Sort holidays chronologically within each bucket. Movable holidays
     // (NthWeekday / LastWeekday) are materialised against [sortYear] —
@@ -244,18 +277,31 @@ internal fun HolidaysContent(
                 }
             }
 
-            // Calendar Holidays / Birthdays placeholder collapsibles.
-            // First-pass stubs — the real per-event listing + overrides
-            // land in a follow-up PR (see TODO at the end of this file).
-            CalendarSectionPlaceholder(
+            // Calendar Holidays / Birthdays listings — the next year of detected
+            // events from the user's synced calendars, collapsed by default and
+            // gated on READ_CALENDAR. When permission is missing each section
+            // offers an in-place grant prompt instead of a list.
+            CalendarCelebrationsSection(
                 title = stringResource(R.string.settings_holidays_source_calendar_holidays),
-                checked = themeFromCalendarHolidays,
                 rememberKey = "holidays-calendar-holidays-section",
+                permissionGranted = calendarPermissionGranted,
+                events = calendarHolidays,
+                emptyMessage = stringResource(R.string.settings_holidays_calendar_no_holidays),
+                uiLocale = uiLocale,
+                onRequestPermission = {
+                    calendarPermissionLauncher.launch(CalendarPermission.MANIFEST_PERMISSION)
+                },
             )
-            CalendarSectionPlaceholder(
+            CalendarCelebrationsSection(
                 title = stringResource(R.string.settings_holidays_source_calendar_birthdays),
-                checked = themeFromCalendarBirthdays,
                 rememberKey = "holidays-calendar-birthdays-section",
+                permissionGranted = calendarPermissionGranted,
+                events = calendarBirthdays,
+                emptyMessage = stringResource(R.string.settings_holidays_calendar_no_birthdays),
+                uiLocale = uiLocale,
+                onRequestPermission = {
+                    calendarPermissionLauncher.launch(CalendarPermission.MANIFEST_PERMISSION)
+                },
             )
 
             val globalActiveCount = globalThemes.count { theme ->
@@ -366,16 +412,13 @@ internal fun HolidaysContent(
                 }
             }
 
-            // TODO(celebrations-v2): when the "My calendar holidays" /
-            // "My calendar birthdays" toggles are on, add two extra
-            // collapsibles at the bottom listing the actual events
-            // detected in the user's synced calendars for the next
-            // ~30 days, each with a per-event override dropdown (same
-            // pattern as the country sections above). Lets the user
-            // mute a specific event ("Boxing day" they don't celebrate;
-            // a noisy birthday import) without disabling the whole
-            // toggle. Needs a CalendarEvent → HolidayId stable-key
-            // scheme that survives event-recurrence renames.
+            // TODO(celebrations-v2): give each row in the Calendar Holidays /
+            // Birthdays listings above a per-event override dropdown (same
+            // pattern as the country sections) so the user can mute a specific
+            // event ("Boxing Day" they don't celebrate; a noisy birthday import)
+            // without disabling the whole source. Needs a CalendarEvent → stable
+            // key scheme that survives event-recurrence renames, persisted
+            // alongside holidayOverrides.
 
             val allActiveCount = allThemes.count { theme -> theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries) }
             CollapsibleSection(
@@ -795,39 +838,92 @@ private fun CalendarSourceRow(
 }
 
 /**
- * First-pass placeholder for the Calendar Holidays / Calendar Birthdays
- * collapsibles in the lower list. Renders the same [CollapsibleSection]
- * chrome as the country sections so it visually fits, but the body is a
- * static message until follow-up work lands per-event listing + override
- * dropdowns. Summary is `—/—` until we have real event data.
+ * One of the two calendar-sourced listing collapsibles (Holidays / Birthdays).
+ * Renders the same [CollapsibleSection] chrome as the country sections so it
+ * visually fits, with a forward-year list of detected [events] inside —
+ * collapsed by default. The whole thing is gated on READ_CALENDAR:
  *
- * TODO(celebrations-v2): swap the placeholder body for a list of
- * detected events from the user's synced calendar (today plus a small
- * forward window), each with an On/Off override stored against a stable
- * per-event key. Requires a `CalendarEvent → HolidayOverride` storage
- * scheme that survives event-recurrence renames.
+ *  - permission missing → a tappable "grant permission" prompt that fires the
+ *    system dialog via [onRequestPermission];
+ *  - permission present but [events] still `null` → a brief "checking…" line
+ *    while the first read runs;
+ *  - permission present, list empty → [emptyMessage];
+ *  - otherwise → one row per event (title + localised date).
+ *
+ * [events] is pre-filtered by the caller to this section's [EventKind]; the
+ * header summary shows the count once known (`—` while gated / loading). Event
+ * titles are device-local and never leave the device.
  */
 @Composable
-private fun CalendarSectionPlaceholder(
+internal fun CalendarCelebrationsSection(
     title: String,
-    checked: Boolean,
     rememberKey: String,
+    permissionGranted: Boolean,
+    events: List<UpcomingCalendarEvent>?,
+    emptyMessage: String,
+    uiLocale: Locale,
+    onRequestPermission: () -> Unit,
+    initiallyExpanded: Boolean = false,
 ) {
+    val summary = if (permissionGranted && events != null) events.size.toString() else "—"
     CollapsibleSection(
         title = title,
-        summary = "—/—",
+        summary = summary,
         rememberKey = rememberKey,
+        initiallyExpanded = initiallyExpanded,
     ) {
-        val message = if (checked) {
-            stringResource(R.string.settings_holidays_calendar_section_placeholder_on)
-        } else {
-            stringResource(R.string.settings_holidays_calendar_section_placeholder_off)
+        when {
+            !permissionGranted -> {
+                TextButton(
+                    onClick = onRequestPermission,
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.settings_holidays_calendar_grant_permission),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            }
+            events == null -> {
+                Text(
+                    text = stringResource(R.string.settings_holidays_calendar_loading),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+            }
+            events.isEmpty() -> {
+                Text(
+                    text = emptyMessage,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+            }
+            else -> {
+                val dateFormatter = remember(uiLocale) {
+                    DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(uiLocale)
+                }
+                events.forEach { event ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = event.title,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Text(
+                            text = event.date.format(dateFormatter),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(start = 8.dp),
+                        )
+                    }
+                }
+            }
         }
-        Text(
-            text = message,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        )
     }
 }

@@ -20,6 +20,7 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
@@ -104,6 +105,12 @@ class GenerateDailyInsightTest {
             throws?.let { throw it }
             return events
         }
+
+        override suspend fun upcomingCelebrations(
+            startInclusive: LocalDate,
+            endExclusive: LocalDate,
+            zoneId: ZoneId,
+        ): List<UpcomingCalendarEvent> = emptyList()
     }
 
     @Test

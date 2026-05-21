@@ -259,6 +259,45 @@ class CalendarContractEventReaderTest {
     }
 
     @Test
+    fun `upcomingCelebrations lists all-day birthdays and holidays in date order, excluding timed and out-of-window events`(): Unit = runBlocking {
+        // The Celebrations settings listing reads a forward window and surfaces
+        // only birthdays + public holidays, chronologically. It narrows to
+        // all-day rows at the provider level, so a timed birthday entry is
+        // intentionally excluded here (it still themes the day via eventsForDay —
+        // see the TODO in upcomingCelebrations). The fake provider ignores the
+        // URI's begin/end range, so the reader's own date filter is what keeps
+        // the far-future holiday out of the one-year window.
+        provider.calendars[10L] = "user@gmail.com"
+        provider.calendars[20L] = "en.usa#holiday@group.v.calendar.google.com"
+        val start = LocalDate.of(2026, 5, 21)
+        provider.instances += allDayInstance(20L, "Independence Day", forDate = LocalDate.of(2026, 7, 4))
+        provider.instances += allDayInstance(10L, "Alex's birthday", forDate = LocalDate.of(2026, 6, 3))
+        provider.instances += allDayInstance(20L, "Out of range holiday", forDate = LocalDate.of(2030, 1, 1))
+        provider.instances += FakeInstance(
+            calendarId = 10L,
+            title = "Dana's birthday", // timed — dropped by the all-day narrowing
+            allDay = false,
+            beginMillis = LocalDate.of(2026, 5, 25).atTime(18, 0).toInstant(ZoneOffset.UTC).toEpochMilli(),
+            endMillis = LocalDate.of(2026, 5, 25).atTime(19, 0).toInstant(ZoneOffset.UTC).toEpochMilli(),
+        )
+        provider.instances += FakeInstance(
+            calendarId = 10L,
+            title = "Project review",
+            allDay = false,
+            beginMillis = LocalDate.of(2026, 6, 10).atTime(15, 0).toInstant(ZoneOffset.UTC).toEpochMilli(),
+            endMillis = LocalDate.of(2026, 6, 10).atTime(16, 0).toInstant(ZoneOffset.UTC).toEpochMilli(),
+        )
+
+        val events = CalendarContractEventReader(context).upcomingCelebrations(start, start.plusYears(1), zone)
+
+        events shouldHaveSize 2
+        events[0].title shouldBe "Alex's birthday"
+        events[0].kind shouldBe EventKind.BIRTHDAY
+        events[1].title shouldBe "Independence Day"
+        events[1].kind shouldBe EventKind.PUBLIC_HOLIDAY
+    }
+
+    @Test
     fun `missing owner account falls through to NORMAL`(): Unit = runBlocking {
         // No row in the Calendars table for this id — owner lookup returns null,
         // classifier falls back to NORMAL since title isn't birthday-shaped.
@@ -325,8 +364,13 @@ class FakeCalendarProvider : ContentProvider() {
                 if (!exposeEventTypeColumn && cols.any { it == "eventType" }) {
                     throw IllegalArgumentException("Invalid column eventType")
                 }
+                // Honour the `allDay = 1` selection the celebrations read passes,
+                // so tests can verify the all-day narrowing actually drops timed
+                // rows at the provider level (the daily read passes no selection).
+                val allDayOnly = selection?.contains(CalendarContract.Instances.ALL_DAY) == true
+                val visible = if (allDayOnly) instances.filter { it.allDay } else instances
                 val cursor = MatrixCursor(cols)
-                instances.forEach { inst ->
+                visible.forEach { inst ->
                     cursor.addRow(cols.map { col -> instanceValue(inst, col) }.toTypedArray())
                 }
                 cursor

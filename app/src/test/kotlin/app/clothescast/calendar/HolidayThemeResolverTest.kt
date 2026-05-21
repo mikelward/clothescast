@@ -7,6 +7,7 @@ import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.repository.CalendarEventReader
 import io.kotest.matchers.nulls.shouldBeNull
@@ -49,6 +50,12 @@ class HolidayThemeResolverTest {
                         kind = EventKind.BIRTHDAY,
                     ),
                 )
+
+            override suspend fun upcomingCelebrations(
+                startInclusive: LocalDate,
+                endExclusive: LocalDate,
+                zoneId: ZoneId,
+            ): List<UpcomingCalendarEvent> = emptyList()
         }
 
         val theme = resolveHolidayTheme(prefs, reader)
@@ -68,6 +75,12 @@ class HolidayThemeResolverTest {
         val reader = object : CalendarEventReader {
             override suspend fun eventsForDay(date: LocalDate, zoneId: ZoneId): List<CalendarEvent> =
                 error("reader must not be queried when both calendar toggles are off")
+
+            override suspend fun upcomingCelebrations(
+                startInclusive: LocalDate,
+                endExclusive: LocalDate,
+                zoneId: ZoneId,
+            ): List<UpcomingCalendarEvent> = emptyList()
         }
 
         resolveHolidayTheme(prefs, reader).shouldBeNull()
@@ -79,6 +92,12 @@ class HolidayThemeResolverTest {
         val reader = object : CalendarEventReader {
             override suspend fun eventsForDay(date: LocalDate, zoneId: ZoneId): List<CalendarEvent> =
                 throw SecurityException("READ_CALENDAR not granted")
+
+            override suspend fun upcomingCelebrations(
+                startInclusive: LocalDate,
+                endExclusive: LocalDate,
+                zoneId: ZoneId,
+            ): List<UpcomingCalendarEvent> = emptyList()
         }
 
         resolveHolidayTheme(prefs, reader).shouldBeNull()

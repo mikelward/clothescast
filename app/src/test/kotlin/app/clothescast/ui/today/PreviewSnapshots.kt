@@ -34,6 +34,7 @@ import app.clothescast.ui.settings.SettingsDisplayPreview
 import app.clothescast.ui.settings.SettingsForecastersPreview
 import app.clothescast.ui.settings.SettingsDeveloperPreview
 import app.clothescast.ui.settings.SettingsGarmentColorPickerPreview
+import app.clothescast.ui.settings.SettingsCalendarCelebrationsPreview
 import app.clothescast.ui.settings.SettingsHolidaysPreview
 import app.clothescast.ui.settings.SettingsLocationPreview
 import app.clothescast.ui.settings.SettingsPrivacyPreview
@@ -553,6 +554,7 @@ class PreviewSnapshots {
     @Test
     @Config(qualifiers = "w360dp-h1600dp-xhdpi")
     fun settings_holidays() = capture { SettingsHolidaysPreview() }
+    @Test fun settings_calendar_celebrations() = capture { SettingsCalendarCelebrationsPreview() }
     @Test
     @Config(qualifiers = "w360dp-h1200dp-xhdpi")
     fun settings_developer() = capture { SettingsDeveloperPreview() }

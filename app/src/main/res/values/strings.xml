@@ -604,6 +604,7 @@
     <string name="settings_tts_style_weather_forecaster">Weather Forecaster</string>
     <string name="settings_tts_style_pirate">Pirate</string>
     <string name="settings_tts_style_cowboy">Cowboy</string>
+    <string name="settings_tts_style_scifi_narrator">Sci-fi narrator</string>
     <string name="settings_tts_style_shakespearean">Shakespearean</string>
     <string name="settings_tts_style_surfer">Surfer</string>
     <string name="settings_tts_style_parent">Parent</string>
@@ -620,6 +621,13 @@
     <string name="settings_tts_style_storyteller">Storyteller</string>
     <string name="settings_tts_style_fitness_instructor">Fitness instructor</string>
     <string name="settings_tts_style_morning_presenter">Morning radio presenter</string>
+    <string name="settings_tts_style_father_christmas">Father Christmas</string>
+    <string name="settings_tts_style_spooky_narrator">Spooky narrator</string>
+    <string name="settings_tts_style_new_years_host">New Year\'s host</string>
+    <string name="settings_tts_style_leprechaun">Leprechaun</string>
+    <string name="settings_tts_style_king">King</string>
+    <string name="settings_tts_style_queen">Queen</string>
+    <string name="settings_tts_style_president">President</string>
     <string name="settings_tts_style_custom">Custom…</string>
     <string name="settings_tts_style_custom_label">Custom directive</string>
     <string name="settings_tts_style_custom_placeholder">e.g. Read the following as a stern librarian whispering</string>

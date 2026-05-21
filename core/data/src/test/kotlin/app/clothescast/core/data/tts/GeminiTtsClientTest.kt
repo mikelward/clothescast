@@ -573,6 +573,7 @@ class GeminiTtsClientTest {
         val signatures: Map<TtsStyle, String> = mapOf(
             TtsStyle.PIRATE to "swaggering pirate",
             TtsStyle.COWBOY to "Old West drawl",
+            TtsStyle.SCIFI_NARRATOR to "British science-fiction narrator",
             TtsStyle.SCIENCE_TEACHER to "high school science teacher",
             TtsStyle.HISTORIAN to "history documentary",
             TtsStyle.SPORTSCASTER to "animated sportscaster",
@@ -580,6 +581,13 @@ class GeminiTtsClientTest {
             TtsStyle.STORYTELLER to "storyteller",
             TtsStyle.FITNESS_INSTRUCTOR to "fitness instructor",
             TtsStyle.MORNING_PRESENTER to "morning radio presenter",
+            TtsStyle.FATHER_CHRISTMAS to "Father Christmas",
+            TtsStyle.SPOOKY_NARRATOR to "spooky Halloween narrator",
+            TtsStyle.NEW_YEARS_HOST to "New Year's Eve party host",
+            TtsStyle.LEPRECHAUN to "mischievous leprechaun",
+            TtsStyle.KING to "King Charles III",
+            TtsStyle.QUEEN to "Queen Elizabeth II",
+            TtsStyle.PRESIDENT to "revered American president",
         )
 
         for ((style, signature) in signatures) {

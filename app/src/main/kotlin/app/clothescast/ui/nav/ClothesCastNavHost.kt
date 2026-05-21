@@ -319,7 +319,12 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
             val prefs = app.settingsRepository.preferences.first()
             val insight = app.insightCache.thisPeriod.first()
                 ?: return@Factory app.mqttPublisher.publishTest()
-            val formatter = InsightFormatter.forRegion(context, prefs.region, prefs.temperatureUnit)
+            val formatter = InsightFormatter.forRegion(
+                context,
+                prefs.region,
+                prefs.temperatureUnit,
+                prefs.omitTemperatureRange,
+            )
             val prose = formatter.format(insight.summary)
             val png: ByteArray? = insight.outfit?.let { outfit ->
                 runCatching {

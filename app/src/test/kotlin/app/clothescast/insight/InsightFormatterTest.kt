@@ -260,6 +260,73 @@ class InsightFormatterTest {
         out shouldBe "Alert: Tornado Warning. Today, it will be 21°."
     }
 
+    private val omitSubject = InsightFormatter.forContext(
+        context,
+        Locale.ENGLISH,
+        omitTemperatureRange = true,
+    )
+
+    @Test
+    fun `omit range folds the lead into the clothes clause`() {
+        omitSubject.format(summary(clothes = ClothesClause(listOf("sweater")))) shouldBe
+            "Today, wear a sweater."
+    }
+
+    @Test
+    fun `omit range keeps following clauses after the merged lead`() {
+        omitSubject.format(
+            summary(
+                clothes = ClothesClause(listOf("sweater")),
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
+            ),
+        ) shouldBe "Today, wear a sweater. Rain at 3pm."
+    }
+
+    @Test
+    fun `omit range on tonight uses the tonight lead`() {
+        omitSubject.format(
+            summary(period = ForecastPeriod.TONIGHT, clothes = ClothesClause(listOf("jacket"))),
+        ) shouldBe "Tonight, wear a jacket."
+    }
+
+    @Test
+    fun `omit range leaves a non-letter first clause untouched`() {
+        omitSubject.format(summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER))) shouldBe
+            "Today, 5° warmer than yesterday."
+    }
+
+    @Test
+    fun `omit range with no other clause leaves a bare lead`() {
+        omitSubject.format(summary()) shouldBe "Today."
+    }
+
+    @Test
+    fun `omit range keeps the alert ahead of the merged lead`() {
+        omitSubject.format(
+            summary(alert = AlertClause("Tornado Warning"), clothes = ClothesClause(listOf("sweater"))),
+        ) shouldBe "Alert: Tornado Warning. Today, wear a sweater."
+    }
+
+    @Test
+    fun `omit range does not double the lead when only a self-leading tie-in remains`() {
+        // The evening tie-in already fronts "Tonight, …"; folding "Today," in
+        // would read "Today, tonight, bring a jacket." With no daytime clause to
+        // introduce, the tie-in stands on its own.
+        omitSubject.format(
+            summary(eveningEventTieIn = EveningEventTieInClause(items = listOf("jacket"))),
+        ) shouldBe "Tonight, bring a jacket."
+    }
+
+    @Test
+    fun `omit range folds the lead into daytime content but leaves the tie-in intact`() {
+        omitSubject.format(
+            summary(
+                clothes = ClothesClause(listOf("sweater")),
+                eveningEventTieIn = EveningEventTieInClause(items = listOf("jacket")),
+            ),
+        ) shouldBe "Today, wear a sweater. Tonight, bring a jacket."
+    }
+
     @Test
     fun `umbrella-with-rain on TONIGHT renders just the precip clause`() {
         // Pre-PR this rendered "Wear an umbrella. Rain at 9pm. Bring an

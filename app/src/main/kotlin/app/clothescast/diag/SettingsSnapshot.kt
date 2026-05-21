@@ -32,6 +32,8 @@ data class SettingsSnapshot(
     val tonightDaysCount: Int,
     val tonightNotifyOnlyOnEvents: Boolean,
     val dailyMentionEveningEvents: Boolean,
+    /** True when the user has chosen to omit the temperature range from the insight prose. */
+    val omitTemperatureRange: Boolean,
     val useCalendarEvents: Boolean,
     /** True when the user has enabled the at-home TTS suppression gate. */
     val skipTtsAtHome: Boolean,

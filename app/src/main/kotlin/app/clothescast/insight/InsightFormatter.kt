@@ -44,6 +44,15 @@ class InsightFormatter(
     private val resources: Resources,
     private val locale: Locale = Locale.getDefault(),
     private val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
+    /**
+     * When true, the band-temperature sentence ("Today, it will be 14° to 20°")
+     * is dropped and its "Today" / "Tonight" lead is folded into the next clause
+     * ("Today, wear a sweater."). The user opts into this to keep the spoken /
+     * written prose free of numbers they can already read off the smart-display
+     * thermometer; the [BandClause] still rides along in the summary for that
+     * card. Off by default.
+     */
+    private val omitTemperatureRange: Boolean = false,
 ) {
     private val phraser: ClothesPhraser = ClothesPhraser.forLocale(resources, locale)
 
@@ -72,19 +81,68 @@ class InsightFormatter(
         // post-filter list (umbrella isn't surfaced anywhere, so it can't
         // dedup against anything either).
         val mentionedKeys = wearItems.map(::normalizeItemKey).toSet()
-        return buildList {
-            summary.alert?.let { add(formatAlert(it)) }
-            add(formatBand(summary.period, summary.band, isFutureDay))
+        // The alert (if any) always leads. The rest splits into daytime content
+        // (band / delta / clothes / precip) and tie-in clauses. Tie-ins carry
+        // their own temporal lead ("Tonight, bring …"), so when we omit the
+        // range the day lead is folded only into the first daytime clause —
+        // never a tie-in, which would double the lead ("Today, tonight, …").
+        // See [renderLeadOnly].
+        val alert = summary.alert?.let(::formatAlert)
+        val primaryClauses = buildList {
+            if (!omitTemperatureRange) add(formatBand(summary.period, summary.band, isFutureDay))
             summary.delta?.let { add(formatDelta(it)) }
             if (wearItems.isNotEmpty()) formatClothesWear(wearItems)?.let(::add)
             summary.precip?.let { add(formatPrecip(it)) }
+        }
+        val tieInClauses = buildList {
             summary.calendarTieIn?.let { tieIn ->
                 if (isAccessory(tieIn.item)) return@let
                 if (normalizeItemKey(tieIn.item) in mentionedKeys) return@let
                 formatTieIn(summary.period, tieIn.item)?.let(::add)
             }
             summary.eveningEventTieIn?.let(::formatEveningEventTieIn)?.let(::add)
-        }.joinToString(" ")
+        }
+        val body = if (omitTemperatureRange) {
+            renderLeadOnly(summary.period, isFutureDay, primaryClauses, tieInClauses)
+        } else {
+            (primaryClauses + tieInClauses).joinToString(" ")
+        }
+        return listOfNotNull(alert, body.ifBlank { null }).joinToString(" ")
+    }
+
+    /**
+     * Build the body when the temperature range is omitted. The period lead
+     * ("Today" / "Tonight" / "Tomorrow") is folded into the first daytime
+     * clause, lowercasing its first letter so it reads as a continuation —
+     * "Today, wear a sweater. Rain at 3pm." Tie-in clauses are appended as-is:
+     * they already front their own "Tonight, …" lead, so prepending the day
+     * lead would double it. When there's no daytime clause the tie-ins stand
+     * on their own ("Tonight, bring a jacket."); when nothing survives at all
+     * the lead stands alone as "Today." so the prose is never empty.
+     */
+    private fun renderLeadOnly(
+        period: ForecastPeriod,
+        isFutureDay: Boolean,
+        primaryClauses: List<String>,
+        tieInClauses: List<String>,
+    ): String {
+        val lead = resources.getString(leadRes(period, isFutureDay))
+        if (primaryClauses.isEmpty()) {
+            if (tieInClauses.isEmpty()) return resources.getString(R.string.insight_lead_only, lead)
+            return tieInClauses.joinToString(" ")
+        }
+        val first = resources.getString(
+            R.string.insight_lead_continues,
+            lead,
+            decapitalize(primaryClauses.first()),
+        )
+        return (listOf(first) + primaryClauses.drop(1) + tieInClauses).joinToString(" ")
+    }
+
+    /** Lowercase only the first character (locale-aware), leaving the rest untouched. */
+    private fun decapitalize(text: String): String {
+        if (text.isEmpty()) return text
+        return text.substring(0, 1).lowercase(locale) + text.substring(1)
     }
 
     // TODO(insight-tweak): when the morning precip clause already names a
@@ -299,17 +357,19 @@ class InsightFormatter(
             context: Context,
             locale: Locale = context.currentResourcesLocale(),
             temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
+            omitTemperatureRange: Boolean = false,
         ): InsightFormatter =
-            InsightFormatter(context.localizedResources(locale), locale, temperatureUnit)
+            InsightFormatter(context.localizedResources(locale), locale, temperatureUnit, omitTemperatureRange)
 
         /** Convenience for the common path: render in the user's [Region]-derived locale. */
         fun forRegion(
             context: Context,
             region: Region,
             temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
+            omitTemperatureRange: Boolean = false,
         ): InsightFormatter {
             val locale = region.toJavaLocale() ?: context.currentResourcesLocale()
-            return forContext(context, locale, temperatureUnit)
+            return forContext(context, locale, temperatureUnit, omitTemperatureRange)
         }
     }
 }

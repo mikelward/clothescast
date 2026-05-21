@@ -170,6 +170,10 @@ class SettingsRepository(
         dataStore.edit { it[DAILY_MENTION_EVENING_EVENTS] = enabled }
     }
 
+    suspend fun setOmitTemperatureRange(omit: Boolean) {
+        dataStore.edit { it[OMIT_TEMPERATURE_RANGE] = omit }
+    }
+
     suspend fun setDeliveryMode(mode: DeliveryMode) {
         dataStore.edit { it[DELIVERY_MODE] = mode.name }
     }
@@ -746,6 +750,7 @@ class SettingsRepository(
         val tonightEnabled = this[TONIGHT_ENABLED] != false
         val tonightNotifyOnlyOnEvents = this[TONIGHT_NOTIFY_ONLY_ON_EVENTS] == true
         val dailyMentionEveningEvents = this[DAILY_MENTION_EVENING_EVENTS] != false
+        val omitTemperatureRange = this[OMIT_TEMPERATURE_RANGE] == true
         // Default on for installs that predate the toggle, matching the new-install
         // default; the one-time Today banner is what surfaces the choice to the user.
         val telemetryEnabled = this[TELEMETRY_ENABLED] != false
@@ -827,6 +832,7 @@ class SettingsRepository(
             tonightDeliveryMode = tonightDeliveryMode,
             tonightNotifyOnlyOnEvents = tonightNotifyOnlyOnEvents,
             dailyMentionEveningEvents = dailyMentionEveningEvents,
+            omitTemperatureRange = omitTemperatureRange,
             telemetryEnabled = telemetryEnabled,
             telemetryNoticeAcked = telemetryNoticeAcked,
             colorPalette = colorPalette,
@@ -912,6 +918,7 @@ class SettingsRepository(
         tonightDaysCount = tonightSchedule.days.size,
         tonightNotifyOnlyOnEvents = tonightNotifyOnlyOnEvents,
         dailyMentionEveningEvents = dailyMentionEveningEvents,
+        omitTemperatureRange = omitTemperatureRange,
         useCalendarEvents = useCalendarEvents,
         skipTtsAtHome = skipTtsAtHome,
         homeLocationConfigured = homeLocation != null,
@@ -1074,6 +1081,7 @@ class SettingsRepository(
         private val TONIGHT_DELIVERY_MODE = stringPreferencesKey("tonight_delivery_mode")
         private val TONIGHT_NOTIFY_ONLY_ON_EVENTS = booleanPreferencesKey("tonight_notify_only_on_events")
         private val DAILY_MENTION_EVENING_EVENTS = booleanPreferencesKey("daily_mention_evening_events")
+        private val OMIT_TEMPERATURE_RANGE = booleanPreferencesKey("omit_temperature_range")
         private val DISMISSED_UPDATE_VERSION = intPreferencesKey("dismissed_update_version")
         private val DISMISSED_LOCAL_BUILD_SHA = stringPreferencesKey("dismissed_local_build_sha")
         private val TELEMETRY_ENABLED = booleanPreferencesKey("telemetry_enabled")

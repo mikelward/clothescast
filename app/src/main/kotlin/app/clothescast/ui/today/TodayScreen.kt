@@ -1501,8 +1501,8 @@ internal fun InsightCard(
      */
     onLongPressDate: (() -> Unit)? = null,
     /**
-     * Opens the Format settings page. Wired to two affordances: long-pressing
-     * the prose body (only the prose — not the date / location header or the
+     * Opens the Format settings page. Wired to two affordances: tapping the
+     * prose body (only the prose — not the date / location header or the
      * generated-at footer) and a small "Format" link in the card's bottom-right
      * corner. Null disables both; default null keeps every preview / non-live
      * call site unchanged.
@@ -1590,9 +1590,7 @@ internal fun InsightCard(
                 text = formatter.format(insight.summary, isFutureDay = isFutureDay),
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = if (onNavigateToFormat != null) {
-                    Modifier.pointerInput(onNavigateToFormat) {
-                        detectTapGestures(onLongPress = { onNavigateToFormat() })
-                    }
+                    Modifier.clickable { onNavigateToFormat() }
                 } else {
                     Modifier
                 },

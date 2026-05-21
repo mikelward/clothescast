@@ -116,7 +116,16 @@ class InsightFormatter(
             summary.eveningEventTieIn?.let(::formatEveningEventTieIn)?.let(::add)
         }
         val body = if (rangeFormat == RangeFormat.NONE) {
-            renderLeadOnly(summary.period, isFutureDay, primaryClauses, tieInClauses)
+            // In NONE mode the band is dropped, so when a delta is present it's
+            // the first primary clause. English renders it as the
+            // self-introducing "it will be …" fragment that the period lead
+            // folds into ("Today, it will be 5° warmer …"); every other locale
+            // keeps its full, self-leading delta sentence ("Heute wird es 5°
+            // wärmer."), which already carries its own "today" word and must
+            // NOT have a second lead prepended — otherwise the prose doubles it
+            // ("Heute, heute wird es 5° wärmer.").
+            val firstClauseSelfLeads = summary.delta != null && !deltaHasLeadFragment()
+            renderLeadOnly(summary.period, isFutureDay, primaryClauses, tieInClauses, firstClauseSelfLeads)
         } else {
             (primaryClauses + tieInClauses).joinToString(" ")
         }
@@ -138,17 +147,25 @@ class InsightFormatter(
         isFutureDay: Boolean,
         primaryClauses: List<String>,
         tieInClauses: List<String>,
+        firstClauseSelfLeads: Boolean,
     ): String {
         val lead = resources.getString(leadRes(period, isFutureDay))
         if (primaryClauses.isEmpty()) {
             if (tieInClauses.isEmpty()) return resources.getString(R.string.insight_lead_only, lead)
             return tieInClauses.joinToString(" ")
         }
-        val first = resources.getString(
-            R.string.insight_lead_continues,
-            lead,
-            decapitalize(primaryClauses.first()),
-        )
+        // A self-leading first clause (a localized full-sentence delta) already
+        // opens with its own "today" word, so emit it verbatim instead of
+        // folding the period lead in front of it.
+        val first = if (firstClauseSelfLeads) {
+            primaryClauses.first()
+        } else {
+            resources.getString(
+                R.string.insight_lead_continues,
+                lead,
+                decapitalize(primaryClauses.first()),
+            )
+        }
         return (listOf(first) + primaryClauses.drop(1) + tieInClauses).joinToString(" ")
     }
 
@@ -224,7 +241,7 @@ class InsightFormatter(
         // existing string rather than have English spliced into localized
         // prose — same en-only gating as spokenTime(). Widen the gate per
         // locale as the _lead keys get translated.
-        val lead = leadsTemperature && locale.language == "en"
+        val lead = leadsTemperature && deltaHasLeadFragment()
         val template = when (delta.direction) {
             DeltaClause.Direction.WARMER ->
                 if (lead) R.string.insight_delta_warmer_lead else R.string.insight_delta_warmer
@@ -242,6 +259,17 @@ class InsightFormatter(
         }
         return resources.getString(template, degrees)
     }
+
+    /**
+     * Whether this locale ships the self-introducing `insight_delta_*_lead`
+     * fragment ("it will be 5° warmer …"). Only English does so far; every
+     * other locale phrases its delta as a full self-leading sentence
+     * ("Heute wird es 5° wärmer."). [format] uses the inverse to decide
+     * whether [renderLeadOnly] should fold the period lead in front of the
+     * delta — keep the two in sync, and widen this gate as the `_lead` keys
+     * get translated.
+     */
+    private fun deltaHasLeadFragment(): Boolean = locale.language == "en"
 
     private fun formatClothesWear(items: List<String>): String? {
         val phrase = phraser.joinItems(items)

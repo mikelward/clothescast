@@ -350,8 +350,35 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `omit range with no other clause leaves a bare lead`() {
-        omitSubject.format(summary()) shouldBe "Today."
+    fun `omit range with no other clause shows the unchanged line by default`() {
+        // A lone period word ("Today.") carries no information; display surfaces
+        // get a full "the same as yesterday." line instead so the card isn't blank.
+        omitSubject.format(summary()) shouldBe "Today, it will be the same as yesterday."
+    }
+
+    @Test
+    fun `omit range with no other clause compares to last night for tonight`() {
+        omitSubject.format(summary(period = ForecastPeriod.TONIGHT)) shouldBe
+            "Tonight, it will be the same as last night."
+    }
+
+    @Test
+    fun `omit range with no other clause compares to today on a future day`() {
+        omitSubject.format(summary(), isFutureDay = true) shouldBe
+            "Tomorrow, it will be the same as today."
+    }
+
+    @Test
+    fun `omit range with no other clause emits nothing when placeholder is opted out`() {
+        // The TTS path opts out so spoken playback stays silent rather than
+        // reading out a content-free filler line.
+        omitSubject.format(summary(), placeholderWhenEmpty = false) shouldBe ""
+    }
+
+    @Test
+    fun `omit range with no clause but an alert still emits the alert`() {
+        omitSubject.format(summary(alert = AlertClause("Tornado Warning"))) shouldBe
+            "Alert: Tornado Warning."
     }
 
     @Test

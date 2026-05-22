@@ -975,9 +975,15 @@
          ("Today"), %2$s = the following clause with its first letter lowercased
          ("wear a sweater."), giving "Today, wear a sweater.". -->
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <!-- Lead with nothing to introduce (range omitted and no other clause fired):
-         %1$s = lead-in, rendered as a standalone "Today.". -->
-    <string name="insight_lead_only">%1$s.</string>
+    <!-- Shown on display surfaces (Today screen, smart-display / cast card,
+         notification) when the range is omitted and no other clause fired, so
+         the card isn't blank. The spoken TTS path stays silent instead. The
+         comparison reference tracks the period: "yesterday" for the daytime
+         pass, "last night" for the evening pass, "today" for the page-2
+         tomorrow pass. -->
+    <string name="insight_unchanged_today">Today, it will be the same as yesterday.</string>
+    <string name="insight_unchanged_tonight">Tonight, it will be the same as last night.</string>
+    <string name="insight_unchanged_tomorrow">Tomorrow, it will be the same as today.</string>
 
     <!-- Band labels — used inside the band-sentence templates above. -->
     <string name="insight_band_freezing">freezing</string>

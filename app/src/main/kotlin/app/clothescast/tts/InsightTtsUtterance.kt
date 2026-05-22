@@ -38,12 +38,14 @@ internal fun insightTtsUtterance(
     val regionLocale = region.toJavaLocale() ?: fallbackLocale
     val locale = voiceLocale.resolve(regionLocale)
     val forecast = InsightFormatter.forContext(context, locale, temperatureUnit, rangeFormat)
-        .format(summary)
+        // Spoken playback stays silent when nothing fired — no "it will be the
+        // same as yesterday." filler read aloud — unlike the display surfaces.
+        .format(summary, placeholderWhenEmpty = false)
     // Override country tracks the app region (mirrors HolidayBanner) while the
     // greeting's language follows the voice locale.
     val greeting = holidayTtsGreeting(context, holidayTheme, locale, regionLocale.country)
     return InsightTtsUtterance(
-        text = if (greeting == null) forecast else "$greeting $forecast",
+        text = listOfNotNull(greeting, forecast.ifBlank { null }).joinToString(" "),
         locale = locale,
     )
 }

@@ -9,6 +9,7 @@ import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HolidayCatalog
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.InsightSummary
+import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.VoiceLocale
@@ -125,6 +126,44 @@ class InsightTtsUtteranceTest {
         )
 
         utterance.text shouldBe "Honoring our Veterans. Today, it will be 8° to 15°. Wear a jumper and jacket."
+    }
+
+    @Test
+    fun `nothing-to-say insight stays silent rather than speaking a placeholder`() {
+        // RangeFormat.NONE drops the band; with no other clause the spoken
+        // briefing is empty (the display card shows "Today, it will be the same
+        // as yesterday.").
+        val utterance = insightTtsUtterance(
+            context = context,
+            summary = InsightSummary(
+                period = ForecastPeriod.TODAY,
+                band = BandClause(TemperatureBand.COLD, TemperatureBand.COOL),
+            ),
+            region = Region.EN_GB,
+            voiceLocale = VoiceLocale.SYSTEM,
+            fallbackLocale = Locale.US,
+            rangeFormat = RangeFormat.NONE,
+        )
+
+        utterance.text shouldBe ""
+    }
+
+    @Test
+    fun `nothing-to-say insight still speaks the holiday greeting alone`() {
+        val utterance = insightTtsUtterance(
+            context = context,
+            summary = InsightSummary(
+                period = ForecastPeriod.TODAY,
+                band = BandClause(TemperatureBand.COLD, TemperatureBand.COOL),
+            ),
+            region = Region.EN_GB,
+            voiceLocale = VoiceLocale.SYSTEM,
+            fallbackLocale = Locale.US,
+            rangeFormat = RangeFormat.NONE,
+            holidayTheme = christmas,
+        )
+
+        utterance.text shouldBe "Merry Christmas!"
     }
 
     private companion object {

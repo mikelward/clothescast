@@ -52,6 +52,9 @@ What is NOT overridden, by design:
 
     <string name="insight_lead_today">Šiandien</string>
     <string name="insight_lead_tomorrow">Rytoj</string>
+    <string name="insight_unchanged_today">Šiandien bus taip pat kaip vakar.</string>
+    <string name="insight_unchanged_tonight">Šįvakar bus taip pat kaip vakar vakare.</string>
+    <string name="insight_unchanged_tomorrow">Rytoj bus taip pat kaip šiandien.</string>
     <string name="insight_lead_tonight">Šįvakar</string>
     <!-- Lithuanian neuter short-form weather: "Šiandien bus šalta." -->
     <string name="insight_band_single">%1$s bus %2$d°.</string>

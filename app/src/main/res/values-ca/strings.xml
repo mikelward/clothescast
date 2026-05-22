@@ -489,6 +489,9 @@ the in-app clock is digit-driven and reads consistently across locales.
 
     <string name="insight_lead_today">Avui</string>
     <string name="insight_lead_tomorrow">Demà</string>
+    <string name="insight_unchanged_today">Avui farà el mateix temps que ahir.</string>
+    <string name="insight_unchanged_tonight">Aquesta nit farà el mateix temps que anit.</string>
+    <string name="insight_unchanged_tomorrow">Demà farà el mateix temps que avui.</string>
     <string name="insight_lead_tonight">Aquesta nit</string>
     <!-- Catalan weather-as-verb: "Avui farà fred." (today will-make cold). -->
     <string name="insight_band_single">%1$s farà %2$d°.</string>

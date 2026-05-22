@@ -551,6 +551,9 @@ only the displayed label localizes.
 
     <string name="insight_lead_today">Сьогодні</string>
     <string name="insight_lead_tomorrow">Завтра</string>
+    <string name="insight_unchanged_today">Сьогодні буде так само, як учора.</string>
+    <string name="insight_unchanged_tonight">Сьогодні ввечері буде так само, як учора ввечері.</string>
+    <string name="insight_unchanged_tomorrow">Завтра буде так само, як сьогодні.</string>
     <string name="insight_lead_tonight">Сьогодні ввечері</string>
     <string name="insight_band_single">%1$s буде %2$d°.</string>
     <string name="insight_band_range">%1$s буде від %2$d° до %3$d°.</string>

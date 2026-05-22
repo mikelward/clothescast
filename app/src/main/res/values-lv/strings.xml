@@ -57,6 +57,9 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
 
     <string name="insight_lead_today">Šodien</string>
     <string name="insight_lead_tomorrow">Rīt</string>
+    <string name="insight_unchanged_today">Šodien būs tāpat kā vakar.</string>
+    <string name="insight_unchanged_tonight">Šovakar būs tāpat kā vakar vakarā.</string>
+    <string name="insight_unchanged_tomorrow">Rīt būs tāpat kā šodien.</string>
     <string name="insight_lead_tonight">Šovakar</string>
     <!-- Latvian masculine-nominative agreement (implicit subject "laiks"):
          "Šodien būs auksts." -->

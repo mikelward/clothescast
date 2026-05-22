@@ -379,6 +379,9 @@ the displayed label localizes.
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Vandaag</string>
     <string name="insight_lead_tomorrow">Morgen</string>
+    <string name="insight_unchanged_today">Vandaag wordt het hetzelfde als gisteren.</string>
+    <string name="insight_unchanged_tonight">Vanavond wordt het hetzelfde als gisteravond.</string>
+    <string name="insight_unchanged_tomorrow">Morgen wordt het hetzelfde als vandaag.</string>
     <string name="insight_lead_tonight">Vanavond</string>
 
     <!-- Dutch V2 word order: "Vandaag wordt het mild." -->

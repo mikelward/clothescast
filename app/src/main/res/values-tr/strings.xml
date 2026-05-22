@@ -335,6 +335,9 @@ displayed label localizes.
 
     <string name="insight_lead_today">Bugün</string>
     <string name="insight_lead_tomorrow">Yarın</string>
+    <string name="insight_unchanged_today">Bugün dünkü gibi olacak.</string>
+    <string name="insight_unchanged_tonight">Bu gece dün geceki gibi olacak.</string>
+    <string name="insight_unchanged_tomorrow">Yarın bugünkü gibi olacak.</string>
     <string name="insight_lead_tonight">Bu gece</string>
 
     <!-- Turkish SOV word order: subject-object-verb; predicate at the end. -->

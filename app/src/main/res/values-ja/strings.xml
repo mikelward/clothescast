@@ -416,6 +416,9 @@ the displayed label localizes.
 
     <string name="insight_lead_today">今日</string>
     <string name="insight_lead_tomorrow">明日</string>
+    <string name="insight_unchanged_today">今日は昨日と同じでしょう。</string>
+    <string name="insight_unchanged_tonight">今夜は昨夜と同じでしょう。</string>
+    <string name="insight_unchanged_tomorrow">明日は今日と同じでしょう。</string>
     <string name="insight_lead_tonight">今夜</string>
     <!-- "今日は穏やかでしょう。" — は marks the topic. -->
     <string name="insight_band_single">%1$sは%2$d°でしょう。</string>

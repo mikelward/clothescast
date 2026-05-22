@@ -47,6 +47,9 @@ to values/strings.xml (English).
 
     <string name="insight_lead_today">Hari ini</string>
     <string name="insight_lead_tomorrow">Besok</string>
+    <string name="insight_unchanged_today">Hari ini cuacanya sama seperti kemarin.</string>
+    <string name="insight_unchanged_tonight">Malam ini cuacanya sama seperti tadi malam.</string>
+    <string name="insight_unchanged_tomorrow">Besok cuacanya sama seperti hari ini.</string>
     <string name="insight_lead_tonight">Malam ini</string>
     <!-- Indonesian SVO: "Hari ini cuacanya sejuk." -->
     <string name="insight_band_single">%1$s cuacanya %2$d°.</string>

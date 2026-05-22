@@ -400,6 +400,9 @@ label localises.
 
     <string name="insight_lead_today">今天</string>
     <string name="insight_lead_tomorrow">明天</string>
+    <string name="insight_unchanged_today">今天天氣和昨天一樣。</string>
+    <string name="insight_unchanged_tonight">今晚天氣和昨晚一樣。</string>
+    <string name="insight_unchanged_tomorrow">明天天氣和今天一樣。</string>
     <string name="insight_lead_tonight">今晚</string>
     <!-- "今天天氣溫和。" / "今晚天氣寒冷至涼爽。" -->
     <string name="insight_band_single">%1$s天氣%2$d°。</string>

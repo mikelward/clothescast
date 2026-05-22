@@ -45,6 +45,9 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <string name="insight_lead_today">วันนี้</string>
     <string name="insight_lead_tomorrow">พรุ่งนี้</string>
+    <string name="insight_unchanged_today">วันนี้อากาศเหมือนเมื่อวาน</string>
+    <string name="insight_unchanged_tonight">คืนนี้อากาศเหมือนเมื่อคืน</string>
+    <string name="insight_unchanged_tomorrow">พรุ่งนี้อากาศเหมือนวันนี้</string>
     <string name="insight_lead_tonight">คืนนี้</string>
     <!-- Thai: "วันนี้อากาศเย็น" (time + topic + predicate, no copula). -->
     <string name="insight_band_single">%1$sอากาศ%2$d°</string>

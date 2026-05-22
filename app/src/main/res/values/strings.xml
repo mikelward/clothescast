@@ -604,7 +604,9 @@
     <string name="settings_tonight_notify_only_on_events">Only notify when there are evening events</string>
 
     <!-- Format settings: choose how each clause of the ClothesCast prose reads. -->
-    <string name="settings_format_preview_title">Preview</string>
+    <string name="settings_format_preview_example_title">Example</string>
+    <string name="settings_format_preview_current_title">Current forecast</string>
+    <string name="settings_format_preview_current_empty">No forecast yet — check back after your next ClothesCast.</string>
     <string name="settings_format_what_to_say">What to say</string>
     <string name="settings_format_range_label">Temperature range</string>
     <string name="settings_format_range_none">None</string>

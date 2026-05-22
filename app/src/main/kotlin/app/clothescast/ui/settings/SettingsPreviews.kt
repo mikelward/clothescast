@@ -13,11 +13,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
+import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
+import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.EventKind
+import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
@@ -26,11 +30,15 @@ import app.clothescast.core.domain.model.HolidayCatalog
 import app.clothescast.core.domain.model.HolidayCountrySelection
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
+import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.PrecipClause
+import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
+import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.core.domain.model.ThemeMode
@@ -39,6 +47,7 @@ import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.VoiceLocale
+import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.discovery.DiscoveredService
 import app.clothescast.discovery.ServiceType
 import app.clothescast.ui.theme.ClothesCastTheme
@@ -148,6 +157,39 @@ internal fun SettingsFormatClothesNeverPreview() {
             clothesMentionMode = ClothesMentionMode.NEVER,
             region = Region.SYSTEM,
             temperatureUnit = TemperatureUnit.CELSIUS,
+            padding = PaddingValues(0.dp),
+            onSetRangeFormat = {},
+            onSetDeltaThresholdC = {},
+            onSetClothesMentionMode = {},
+        )
+    }
+}
+
+// Covers the second preview card with a populated current forecast — the
+// example card stays synthetic, the current-forecast card renders a real
+// cached summary through the same formatter the Today screen uses.
+@Preview(name = "Settings · Format (current forecast)", widthDp = 360)
+@Composable
+internal fun SettingsFormatCurrentForecastPreview() {
+    SettingsFrame {
+        FormatContent(
+            rangeFormat = RangeFormat.DEGREES,
+            deltaThresholdC = 3.0,
+            clothesMentionMode = ClothesMentionMode.ALWAYS,
+            region = Region.SYSTEM,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            currentInsightSummary = InsightSummary(
+                period = ForecastPeriod.TONIGHT,
+                band = BandClause(
+                    low = TemperatureBand.COLD,
+                    high = TemperatureBand.COOL,
+                    feelsLikeMinC = 6.0,
+                    feelsLikeMaxC = 11.0,
+                ),
+                delta = DeltaClause(degrees = 4, direction = DeltaClause.Direction.COOLER),
+                clothes = ClothesClause(items = listOf("jacket")),
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(21, 0), PrecipLikelihood.LIKELY),
+            ),
             padding = PaddingValues(0.dp),
             onSetRangeFormat = {},
             onSetDeltaThresholdC = {},

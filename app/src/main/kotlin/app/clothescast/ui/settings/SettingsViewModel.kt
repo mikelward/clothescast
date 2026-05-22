@@ -157,6 +157,14 @@ class SettingsViewModel(
      * and the listing stays empty.
      */
     private val calendarEventReader: CalendarEventReader? = null,
+    /**
+     * Read-only access to the cached current insight so the Format settings
+     * page can preview the user's *real* ClothesCast next to the synthetic
+     * example. Null in pure-VM tests that don't need the cache; the Activity
+     * wires the real [InsightCache] and [SettingsState.currentInsightSummary]
+     * then tracks page 1 of the Today pager.
+     */
+    private val insightCache: InsightCache? = null,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
@@ -258,6 +266,13 @@ class SettingsViewModel(
                 if (lastEnumeratedLocale != effectiveLocale) {
                     lastEnumeratedLocale = effectiveLocale
                     refreshDeviceVoices(prefs.voiceLocale)
+                }
+            }
+        }
+        insightCache?.let { cache ->
+            viewModelScope.launch {
+                cache.thisPeriod.collect { insight ->
+                    _state.update { it.copy(currentInsightSummary = insight?.summary) }
                 }
             }
         }
@@ -965,6 +980,7 @@ class SettingsViewModel(
         private val castNowAction: (suspend () -> String?)? = null,
         private val castAvailable: Boolean = false,
         private val calendarEventReader: CalendarEventReader? = null,
+        private val insightCache: InsightCache? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -990,6 +1006,7 @@ class SettingsViewModel(
                 castNowAction = castNowAction,
                 castAvailable = castAvailable,
                 calendarEventReader = calendarEventReader,
+                insightCache = insightCache,
             ) as T
         }
     }

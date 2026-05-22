@@ -72,6 +72,7 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             clothesMentionMode = state.clothesMentionMode,
             region = state.region,
             temperatureUnit = state.temperatureUnit,
+            currentInsightSummary = state.currentInsightSummary,
             padding = padding,
             onSetRangeFormat = viewModel::setRangeFormat,
             onSetDeltaThresholdC = viewModel::setDeltaThresholdC,
@@ -87,6 +88,7 @@ internal fun FormatContent(
     clothesMentionMode: ClothesMentionMode,
     region: Region,
     temperatureUnit: TemperatureUnit,
+    currentInsightSummary: InsightSummary? = null,
     padding: PaddingValues,
     onSetRangeFormat: (RangeFormat) -> Unit,
     onSetDeltaThresholdC: (Double?) -> Unit,
@@ -106,6 +108,7 @@ internal fun FormatContent(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             PreviewCard(rangeFormat, deltaThresholdC, clothesMentionMode, region, temperatureUnit)
+            CurrentForecastPreviewCard(currentInsightSummary, region, temperatureUnit, rangeFormat)
             SectionCard(title = stringResource(R.string.settings_format_what_to_say)) {
                 FormatDropdownRow(
                     label = stringResource(R.string.settings_format_range_label),
@@ -178,11 +181,40 @@ private fun PreviewCard(
         },
         precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(17, 0), PrecipLikelihood.LIKELY),
     )
-    SectionCard(title = stringResource(R.string.settings_format_preview_title)) {
+    SectionCard(title = stringResource(R.string.settings_format_preview_example_title)) {
         // Match the Today screen's insight card (headlineSmall) so the preview
         // reads like the real thing — larger than body text, normal weight.
         Text(
             text = formatter.format(sample),
+            style = MaterialTheme.typography.headlineSmall,
+        )
+    }
+}
+
+/**
+ * Renders the user's *real* cached current forecast through the same formatter
+ * the Today screen uses, so the range-format setting is previewed against their
+ * actual ClothesCast — not just the synthetic example. The delta-threshold and
+ * clothes-mention settings are baked into the cached summary at generation time
+ * (they re-take effect on the next refresh), so only the range format updates
+ * live here, exactly as it does on the Today screen. Falls back to a short
+ * placeholder when nothing's cached yet.
+ */
+@Composable
+private fun CurrentForecastPreviewCard(
+    summary: InsightSummary?,
+    region: Region,
+    temperatureUnit: TemperatureUnit,
+    rangeFormat: RangeFormat,
+) {
+    val context = LocalContext.current
+    val formatter = remember(context, region, temperatureUnit, rangeFormat) {
+        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat)
+    }
+    SectionCard(title = stringResource(R.string.settings_format_preview_current_title)) {
+        Text(
+            text = summary?.let { formatter.format(it) }
+                ?: stringResource(R.string.settings_format_preview_current_empty),
             style = MaterialTheme.typography.headlineSmall,
         )
     }

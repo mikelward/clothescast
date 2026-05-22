@@ -610,7 +610,7 @@
     <string name="settings_format_range_none">None</string>
     <string name="settings_format_range_degrees">Degrees</string>
     <string name="settings_format_range_bands">Bands</string>
-    <string name="settings_format_change_label">Temp change</string>
+    <string name="settings_format_change_label">Temperature change</string>
     <string name="settings_format_change_off">Off</string>
     <!-- Significant-change threshold option: %1$d = whole degrees in the user's unit. -->
     <string name="settings_format_change_degrees">%1$d°</string>

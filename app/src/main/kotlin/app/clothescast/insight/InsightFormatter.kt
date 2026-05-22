@@ -67,8 +67,20 @@ class InsightFormatter(
      * and rendering "Today, …" would be wrong. The TONIGHT lead is left alone:
      * the worker never pairs a primary insight with tomorrow night, so the only
      * tomorrow-shaped payload that reaches the formatter is a daytime one.
+     *
+     * When no clause produces any prose (only reachable with [RangeFormat.NONE],
+     * where the temperature range is dropped and nothing else fired),
+     * [placeholderWhenEmpty] decides what comes back. Display surfaces (Today
+     * screen, smart-display / cast card, notification) want a visible
+     * "Today, it will be the same as yesterday." line so the card never renders
+     * blank; the spoken TTS path passes `false` to stay silent rather than read
+     * out a content-free filler line.
      */
-    fun format(summary: InsightSummary, isFutureDay: Boolean = false): String {
+    fun format(
+        summary: InsightSummary,
+        isFutureDay: Boolean = false,
+        placeholderWhenEmpty: Boolean = true,
+    ): String {
         // Accessories (umbrella, etc.) are filtered out of the rendered prose
         // entirely — we only surface temperature-driven clothing for now. The
         // user's umbrella rule still triggers and the precip clause still
@@ -129,7 +141,19 @@ class InsightFormatter(
         } else {
             (primaryClauses + tieInClauses).joinToString(" ")
         }
-        return listOfNotNull(alert, body.ifBlank { null }).joinToString(" ")
+        val rendered = listOfNotNull(alert, body.ifBlank { null }).joinToString(" ")
+        if (rendered.isNotBlank()) return rendered
+        // Nothing fired. Display surfaces show a "Today, it will be the same as
+        // yesterday." line so the card isn't blank; TTS opts out via
+        // placeholderWhenEmpty=false to stay silent.
+        if (!placeholderWhenEmpty) return ""
+        return resources.getString(unchangedRes(summary.period, isFutureDay))
+    }
+
+    private fun unchangedRes(period: ForecastPeriod, isFutureDay: Boolean): Int = when (period) {
+        ForecastPeriod.TODAY ->
+            if (isFutureDay) R.string.insight_unchanged_tomorrow else R.string.insight_unchanged_today
+        ForecastPeriod.TONIGHT -> R.string.insight_unchanged_tonight
     }
 
     /**
@@ -140,7 +164,9 @@ class InsightFormatter(
      * they already front their own "Tonight, …" lead, so prepending the day
      * lead would double it. When there's no daytime clause the tie-ins stand
      * on their own ("Tonight, bring a jacket."); when nothing survives at all
-     * the lead stands alone as "Today." so the prose is never empty.
+     * the body is empty — [format] turns that into "Today, it will be the same
+     * as yesterday." for display or an empty string for TTS, so we never emit a
+     * bare "Today." that tells the user nothing.
      */
     private fun renderLeadOnly(
         period: ForecastPeriod,
@@ -151,7 +177,6 @@ class InsightFormatter(
     ): String {
         val lead = resources.getString(leadRes(period, isFutureDay))
         if (primaryClauses.isEmpty()) {
-            if (tieInClauses.isEmpty()) return resources.getString(R.string.insight_lead_only, lead)
             return tieInClauses.joinToString(" ")
         }
         // A self-leading first clause (a localized full-sentence delta) already

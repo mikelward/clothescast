@@ -167,13 +167,22 @@ The source code is at <https://github.com/mikelward/clothescast>.
   values you supply; ClothesCast never sends this payload anywhere you
   haven't pointed it at. The broker is **not** a service the developer
   operates; it's your infrastructure under your control.
-- **What's in the payload:** Only the rendered sentence string,
-  UTF-8 encoded — the same text you see in the notification. The
-  payload includes any calendar-event tie-in clause that fires (e.g.
-  _"Bring a jacket for your concert tonight"_) when you have the
-  calendar tie-in enabled, because that clause is part of the
-  rendered sentence. No coordinates, no API keys, no settings values,
-  no device identifiers travel with the message.
+- **What's in the payload:** The rendered sentence string, UTF-8
+  encoded — the same text you see in the notification — and, on their
+  own sibling topics when available, the outfit-card image (the same
+  800 × 480 PNG shown on a Nest Hub), the spoken TTS audio clip (the
+  same bytes the phone speaks, Gemini engine only), and a combined MP4
+  that simply muxes that image and audio together for one-shot casting.
+  The image and audio carry the same insight — the card renders the
+  sentence, the audio speaks it — so the MP4 introduces no new data; it
+  only repackages what the image and audio topics already publish. A
+  small `now/timestamp` topic carries the epoch-millis time of the most
+  recent publish so a consumer can tell a fresh forecast from a retained
+  one. The payload includes any calendar-event tie-in clause that fires
+  (e.g. _"Bring a jacket for your concert tonight"_) when you have the
+  calendar tie-in enabled, because that clause is part of the rendered
+  sentence. No coordinates, no API keys, no settings values, no device
+  identifiers travel with any of these messages.
 - **Authentication:** If you set a broker username, the bridge sends
   it on connect; the corresponding password is stored on your device
   encrypted at rest (same Tink-AEAD pattern as the Gemini API key

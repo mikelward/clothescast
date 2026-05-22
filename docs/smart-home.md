@@ -32,33 +32,45 @@ yourself; no developer-operated service ever sees the payload.
    key uses.
 5. Topic prefix defaults to `clothescast/default`. Today's forecast
    publishes to `<prefix>/today/text`; tonight's to `<prefix>/tonight/text`.
-   The outfit image and TTS audio (when published) land on
-   `<prefix>/<period>/image` and `<prefix>/<period>/audio` respectively.
+   The outfit image, the TTS audio, and a combined card-plus-announcement
+   MP4 (when published) land on `<prefix>/<period>/image`,
+   `<prefix>/<period>/audio`, and `<prefix>/<period>/video` respectively.
    Each fully-successful publish is also mirrored to `<prefix>/now/<kind>` —
-   `<prefix>/now/text`, `<prefix>/now/image`, `<prefix>/now/audio` —
-   so a consumer can subscribe to a single "latest" topic without
-   having to switch on today vs tonight or chase recency timestamps.
-   Whichever period most recently published is what `now` reflects.
-   The `now` set updates as an atomic bundle: `now/text` is published
-   *last* (after `now/image` / `now/audio`), so an HA automation
-   triggered on `now/text` reads a `now/image` / `now/audio` from the
-   same forecast rather than a stale payload from the previous period.
+   `<prefix>/now/text`, `<prefix>/now/image`, `<prefix>/now/audio`,
+   `<prefix>/now/video`, and `<prefix>/now/timestamp` — so a consumer can
+   subscribe to a single "latest" topic without having to switch on today
+   vs tonight. Whichever period most recently published is what `now`
+   reflects.
+
+   **Trigger your automations on `<prefix>/now/timestamp`.** The `now`
+   set updates as an atomic bundle, and `now/timestamp` (epoch
+   milliseconds, as a string) is written *last of all* — only after
+   `now/image`, `now/audio`, `now/video`, and `now/text` have each
+   settled. So a change on `now/timestamp` is the single signal that the
+   whole bundle is in place: trigger on it and read the sibling `now/*`
+   topics, and you'll never pick up a `now/image` / `now/audio` /
+   `now/video` / `now/text` left over from a different forecast. It also
+   doubles as a dedupe key — every topic is **retained**, so a consumer
+   that reconnects (HA restart, network blip) is re-delivered the last
+   bundle on connect; remembering the last `now/timestamp` you acted on
+   lets you skip re-announcing it rather than replaying a stale clip at
+   reboot.
+
    Modalities absent from the current delivery (e.g. an outfit render
    failed, or you're on device TTS so no audio bytes exist) clear their
    `now/*` slot with an empty retained payload — MQTT's convention for
-   "delete the retained message" — so a `now/text` consumer never reads
-   a stale image/audio left over from a previous bundle. `now/text` is
-   additionally held back if either `now/image` or `now/audio` mirror
-   publish fails, so a `now/text` update always implies a coherent
-   image/audio pair settled successfully. If any period publish in the
-   bundle fails outright, the entire `now` mirror is skipped — the
-   previous fully-successful `now` set stays intact rather than being
-   half-overwritten. MQTT itself has no transactional primitive across
-   topics, so a fresh-reconnect consumer reading all three retained
-   `now/*` topics during a partial-failure window (e.g. broker accepts
-   `now/image` but rejects `now/audio`) may briefly observe a mismatch;
-   subscribing continuously to `now/text` and gating reads on its
-   updates sidesteps this.
+   "delete the retained message" — so you never read a stale
+   image/audio/video left over from a previous bundle. `now/text` is held
+   back if any of `now/image` / `now/audio` / `now/video` fails, and
+   `now/timestamp` is held back if `now/text` fails, so a `now/timestamp`
+   update always implies a fully coherent bundle settled successfully. If
+   any period publish in the bundle fails outright, the entire `now`
+   mirror is skipped — the previous fully-successful `now` set stays
+   intact rather than being half-overwritten. MQTT itself has no
+   transactional primitive across topics, so a fresh-reconnect consumer
+   reading the retained `now/*` topics during a partial-failure window may
+   briefly observe a mismatch; triggering on `now/timestamp` — the last
+   write — and gating reads on its updates sidesteps this.
 6. Tap **Save**.
 
 The next scheduled refresh (07:00 by default for today, 19:00 for
@@ -153,17 +165,44 @@ mqtt:
       value_template: "{{ value }}"
     # Single "latest" sensor — mirrors whichever period last published, so
     # an automation can speak the most recent forecast without branching
-    # on today vs tonight or comparing timestamps.
+    # on today vs tonight.
     - name: "Clothescast now"
       unique_id: clothescast_now
       state_topic: "clothescast/default/now/text"
       value_template: "{{ value }}"
+    # Commit marker — epoch-millis written *last* once the whole `now`
+    # bundle is in place. Trigger your automations on a state change of
+    # this sensor (not on the prose sensor) when you want them to fire on
+    # each new forecast: by the time it changes, now/text, now/image,
+    # now/audio, and now/video are all settled and coherent.
+    - name: "Clothescast now updated"
+      unique_id: clothescast_now_updated
+      state_topic: "clothescast/default/now/timestamp"
+      device_class: timestamp
+      # Topic carries epoch milliseconds; the timestamp device_class wants a
+      # timezone-aware datetime, which as_datetime() returns (UTC) for a
+      # numeric unix timestamp in seconds.
+      value_template: "{{ as_datetime((value | int) / 1000) }}"
 ```
 
 Restart Home Assistant or reload MQTT entries; the sensors should
 populate within seconds of the next ClothesCast refresh (or instantly,
 if you've already done one — retained messages are delivered to new
 subscribers on connect).
+
+To fire an automation each time a fresh forecast lands, trigger on the
+commit marker rather than the prose sensor:
+
+```yaml
+triggers:
+  - trigger: state
+    entity_id: sensor.clothescast_now_updated
+```
+
+This guarantees every `now/*` topic is already in place when the
+automation runs, and — because the marker only advances on a genuinely
+new bundle — it won't re-fire when HA reconnects and re-reads the
+retained set.
 
 ## Home Assistant — outfit image on Nest Hub
 
@@ -251,6 +290,49 @@ shape.
 > (`https://your-ha.duckdns.org`) instead. The camera proxy path and
 > access token are the same either way.
 
+## Home Assistant — combined card + announcement video
+
+For a Nest Hub, the tidiest result is one media item that shows the
+outfit card *and* plays the spoken briefing over it, with no parallel
+TTS + image dance. ClothesCast publishes exactly that to
+`<prefix>/<period>/video` (mirrored to `<prefix>/now/video`): an MP4
+with the 800 × 480 outfit card as a static video frame and the Gemini
+TTS audio as the audio track. Hand it to a Cast receiver and the card
+fills the screen while the forecast plays.
+
+This is published only when **both** an outfit image and Gemini TTS
+audio exist for the delivery (Gemini engine selected, audio not
+suppressed by "don't speak at home"); otherwise the slot is cleared
+with an empty retained payload like any other absent modality.
+
+Like the audio clip, `media_player.play_media` needs an HTTP URL and HA
+won't read an MQTT binary payload into the media player directly — so
+the MP4 has to land somewhere HA serves over HTTP (e.g.
+`config/www/clothescast_now.mp4`, fetchable at
+`http://<ha-ip>:8123/local/clothescast_now.mp4`). Use the same
+write-to-file recipe as the audio clip below (Node-RED `mqtt in` →
+`file`, or a `shell_command` running `mosquitto_sub`), pointed at
+`clothescast/default/now/video`, then cast it:
+
+```yaml
+triggers:
+  - trigger: state
+    entity_id: sensor.clothescast_now_updated
+
+actions:
+  - action: media_player.play_media
+    target:
+      entity_id: media_player.kitchen_hub
+    data:
+      media_content_id: "http://192.168.x.x:8123/local/clothescast_now.mp4"
+      media_content_type: video/mp4
+```
+
+> **The card disappears when the clip ends.** A Cast receiver returns to
+> its idle / photo screen once the MP4 finishes, so the card stays up
+> only for the length of the announcement. Keeping it up longer is a
+> known follow-up (a configurable post-speech hold baked into the clip).
+
 ## Home Assistant — TTS audio clip on the audio topic
 
 When the Gemini TTS engine is selected (Settings → Voice → Gemini),
@@ -276,9 +358,11 @@ Two things to know before you wire anything up:
   even when you're home.
 
 The simplest way to make the Hub actually speak is still options A /
-B / C below: trigger an automation on the prose sensor's update and
-let HA's TTS service synthesise — that path is already paved end to
-end. The audio topic is here for setups that already prefer a fixed
+B / C below: trigger an automation on the `now/timestamp` commit marker
+(the `sensor.clothescast_now_updated` sensor above) and let HA's TTS
+service synthesise — that path is already paved end to end. Triggering
+on the commit marker rather than the prose sensor guarantees the audio
+and image are already in place when the automation runs. The audio topic is here for setups that already prefer a fixed
 voice clip over re-synthesising in HA (e.g. `music_assistant.play_announcement`
 → media URL flows), and for users who want to capture the rendered
 briefing for their own pipelines.

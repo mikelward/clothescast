@@ -446,6 +446,27 @@ class MqttPublisherTest {
     }
 
     @Test
+    fun `videoTopicFor and nowVideoTopicFor build video-suffixed topics`() {
+        MqttPublisher.videoTopicFor("clothescast/default", ForecastPeriod.TODAY) shouldBe
+            "clothescast/default/today/video"
+        MqttPublisher.videoTopicFor("home/forecast", ForecastPeriod.TONIGHT) shouldBe
+            "home/forecast/tonight/video"
+        MqttPublisher.videoTopicFor("", ForecastPeriod.TODAY) shouldBe
+            "clothescast/default/today/video"
+        MqttPublisher.nowVideoTopicFor("/clothescast/default/") shouldBe
+            "clothescast/default/now/video"
+    }
+
+    @Test
+    fun `nowTimestampTopicFor builds timestamp-suffixed now topic`() {
+        MqttPublisher.nowTimestampTopicFor("clothescast/default") shouldBe
+            "clothescast/default/now/timestamp"
+        MqttPublisher.nowTimestampTopicFor("home/forecast") shouldBe
+            "home/forecast/now/timestamp"
+        MqttPublisher.nowTimestampTopicFor("") shouldBe "clothescast/default/now/timestamp"
+    }
+
+    @Test
     fun `bundle with image publishes period prose and image, mirrors both with text last and audio cleared`() = runTest {
         val captured = mutableListOf<PublishCall>()
         val subject = MqttPublisher(
@@ -513,6 +534,155 @@ class MqttPublisherTest {
         val nowTextIdx = topics.indexOf("clothescast/default/now/text")
         nowTextIdx shouldBeGreaterThan topics.indexOf("clothescast/default/now/image")
         nowTextIdx shouldBeGreaterThan topics.indexOf("clothescast/default/now/audio")
+    }
+
+    @Test
+    fun `bundle with video publishes period and now video and a fresh now timestamp last`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttTopic = "clothescast/default",
+                ),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+        val fakeImage = byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47)
+        val fakeWav = byteArrayOf(0x52, 0x49, 0x46, 0x46)
+        val fakeMp4 = byteArrayOf(0x00, 0x00, 0x00, 0x18) // ftyp box size prefix-ish
+
+        subject.publishIfEnabled(
+            ForecastPeriod.TODAY,
+            "prose",
+            image = fakeImage,
+            audio = fakeWav,
+            video = fakeMp4,
+        )
+
+        val topics = captured.map { it.topic }
+        topics shouldContainAll listOf(
+            "clothescast/default/today/video",
+            "clothescast/default/now/video",
+            "clothescast/default/now/timestamp",
+            "clothescast/default/now/text",
+        )
+        // now/video lands before now/text, and now/timestamp lands *last* of
+        // all — it's the commit marker a consumer triggers on, so it must
+        // follow every content mirror including now/text.
+        val nowTextIdx = topics.indexOf("clothescast/default/now/text")
+        nowTextIdx shouldBeGreaterThan topics.indexOf("clothescast/default/now/video")
+        topics.indexOf("clothescast/default/now/timestamp") shouldBeGreaterThan nowTextIdx
+        // Period + now video carry the muxed MP4 bytes verbatim.
+        captured.first { it.topic == "clothescast/default/today/video" }.payload contentEquals fakeMp4 shouldBe true
+        captured.first { it.topic == "clothescast/default/now/video" }.payload contentEquals fakeMp4 shouldBe true
+        // Timestamp is a non-empty decimal epoch-millis string.
+        val ts = captured.first { it.topic == "clothescast/default/now/timestamp" }.payload.decodeToString()
+        ts.toLongOrNull().shouldBeInstanceOf<Long>()
+    }
+
+    @Test
+    fun `video absent clears now video with empty payload`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        // No period video topic is touched when no video is submitted, but the
+        // now/video mirror is cleared so a stale clip can't outlive its bundle.
+        captured.none { it.topic == "clothescast/default/today/video" }.shouldBeTrue()
+        captured.first { it.topic == "clothescast/default/now/video" }.payload.size shouldBe 0
+    }
+
+    @Test
+    fun `now video clear failure holds back the marker so a stale video can't outlive its bundle`() = runTest {
+        // Even with no video this delivery, now/video carries an empty "delete
+        // retained" clear and still gates the marker: if that clear fails, a
+        // stale video from a prior bundle could otherwise survive and pair with
+        // the fresh timestamp. So now/text and now/timestamp are held back.
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = { config, topic, payload ->
+                captured.add(PublishCall(config, topic, payload))
+                if (topic == "clothescast/default/now/video") error("now/video clear rejected")
+            },
+            retryDelayMs = 1L,
+        )
+
+        val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        outcome shouldBe MqttPublishOutcome.Success
+        captured.none { it.topic == "clothescast/default/now/text" }.shouldBeTrue()
+        captured.none { it.topic == "clothescast/default/now/timestamp" }.shouldBeTrue()
+    }
+
+    @Test
+    fun `now text and timestamp held back when a submitted video's now mirror fails`() = runTest {
+        // When a video *was* produced this delivery, now/video gates the
+        // commit marker — a consumer that triggers on now/timestamp must not
+        // act on a bundle whose video failed to publish.
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = { config, topic, payload ->
+                captured.add(PublishCall(config, topic, payload))
+                if (topic == "clothescast/default/now/video") error("now/video mirror failure")
+            },
+            retryDelayMs = 1L,
+        )
+
+        val outcome = subject.publishIfEnabled(
+            ForecastPeriod.TODAY,
+            "prose",
+            image = byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47),
+            audio = byteArrayOf(0x52, 0x49, 0x46, 0x46),
+            video = byteArrayOf(0x00, 0x00, 0x00, 0x18),
+        )
+
+        outcome shouldBe MqttPublishOutcome.Success
+        captured.none { it.topic == "clothescast/default/now/text" }.shouldBeTrue()
+        captured.none { it.topic == "clothescast/default/now/timestamp" }.shouldBeTrue()
+    }
+
+    @Test
+    fun `now timestamp mirror failure does not override period success outcome`() = runTest {
+        // The commit marker advances last; if it fails the content mirrors have
+        // already settled, so the prose primary's Success still stands (the
+        // failure is logged, not surfaced as the call's outcome).
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = { config, topic, payload ->
+                captured.add(PublishCall(config, topic, payload))
+                if (topic.endsWith("/now/timestamp")) error("commit marker rejected")
+            },
+            retryDelayMs = 1L,
+        )
+
+        val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        outcome shouldBe MqttPublishOutcome.Success
+        // now/text still landed (content advanced); the marker exhausts retries.
+        captured.any { it.topic == "clothescast/default/now/text" }.shouldBeTrue()
+        captured.count { it.topic == "clothescast/default/now/timestamp" } shouldBe 2
     }
 
     @Test
@@ -658,15 +828,18 @@ class MqttPublisherTest {
         val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
 
         outcome shouldBe MqttPublishOutcome.Success
-        // Period prose retries once, then the /now bundle (image clear, audio
-        // clear, text) all succeed. First two attempts are the retried period
-        // publish; the remaining three are the coordinated /now mirrors.
+        // Period prose retries once, then the /now bundle (image/audio/video
+        // clears, text, then timestamp last as the commit marker) all succeed.
+        // First two attempts are the retried period publish; the rest are the
+        // coordinated /now mirrors.
         attempts.map { it.topic } shouldBe listOf(
             "clothescast/default/today/text",
             "clothescast/default/today/text",
             "clothescast/default/now/image",
             "clothescast/default/now/audio",
+            "clothescast/default/now/video",
             "clothescast/default/now/text",
+            "clothescast/default/now/timestamp",
         )
     }
 
@@ -706,12 +879,15 @@ class MqttPublisherTest {
 
         subject.publishIfEnabled(ForecastPeriod.TODAY, "x") shouldBe MqttPublishOutcome.Success
         // No retries on the period publish; the remaining attempts are the
-        // coordinated /now bundle (image clear, audio clear, then text last).
+        // coordinated /now bundle (image/audio/video clears, text, then
+        // timestamp last as the commit marker).
         attempts shouldBe listOf(
             "clothescast/default/today/text",
             "clothescast/default/now/image",
             "clothescast/default/now/audio",
+            "clothescast/default/now/video",
             "clothescast/default/now/text",
+            "clothescast/default/now/timestamp",
         )
     }
 

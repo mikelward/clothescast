@@ -46,7 +46,6 @@ import app.clothescast.ui.settings.DeveloperPage
 import app.clothescast.ui.settings.DisplayPage
 import app.clothescast.ui.settings.ForecastersPage
 import app.clothescast.ui.settings.FormatPage
-import app.clothescast.ui.settings.HolidaysPage
 import app.clothescast.ui.settings.LocationPage
 import app.clothescast.ui.settings.PrivacyPage
 import app.clothescast.ui.settings.RegionPage
@@ -86,7 +85,6 @@ private const val NAV_ANIM_MS = 200
 @Serializable internal object RegionDest
 @Serializable internal object VoiceDest
 @Serializable internal object DisplayDest
-@Serializable internal object HolidaysDest
 @Serializable internal object LocationDest
 @Serializable internal object CalendarDest
 @Serializable internal object ForecastersDest
@@ -142,7 +140,7 @@ fun ClothesCastNavHost(
                 onNavigateToLocation = { nav.navigate(LocationDest) },
                 onNavigateToPrivacy = { nav.navigate(PrivacyDest) },
                 onNavigateToClothes = { nav.navigate(ClothesDest) },
-                onNavigateToHolidays = { nav.navigate(HolidaysDest) },
+                onNavigateToCalendar = { nav.navigate(CalendarDest) },
                 onNavigateToDeveloper = { nav.navigate(DeveloperDest) },
                 onNavigateToFormat = { nav.navigate(FormatDest) },
             )
@@ -222,17 +220,15 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
         composable<RegionDest> { e -> RegionPage(e.settingsViewModel(nav, app), onBack) }
         composable<VoiceDest> { e -> VoicePage(e.settingsViewModel(nav, app), onBack) }
         composable<DisplayDest> { e -> DisplayPage(e.settingsViewModel(nav, app), onBack) }
-        composable<HolidaysDest> { e ->
-            HolidaysPage(
+        composable<LocationDest> { e -> LocationPage(e.settingsViewModel(nav, app), onBack) }
+        composable<CalendarDest> { e ->
+            CalendarPage(
                 viewModel = e.settingsViewModel(nav, app),
                 onBack = onBack,
                 onNavigateToRegion = { nav.navigate(RegionDest) },
                 onNavigateToLocation = { nav.navigate(LocationDest) },
-                onNavigateToCalendar = { nav.navigate(CalendarDest) },
             )
         }
-        composable<LocationDest> { e -> LocationPage(e.settingsViewModel(nav, app), onBack) }
-        composable<CalendarDest> { e -> CalendarPage(e.settingsViewModel(nav, app), onBack) }
         composable<ForecastersDest> { e -> ForecastersPage(e.settingsViewModel(nav, app), onBack) }
         composable<SmartHomeDest> { e -> SmartHomePage(e.settingsViewModel(nav, app), onBack) }
         composable<PrivacyDest> { e -> PrivacyPage(e.settingsViewModel(nav, app), onBack) }
@@ -253,7 +249,6 @@ private fun settingsMenu(nav: NavController): List<SettingsMenuItem> = listOf(
     SettingsMenuItem(R.string.settings_root_region, R.string.settings_root_region_subtitle) { nav.navigate(RegionDest) },
     SettingsMenuItem(R.string.settings_root_voice, R.string.settings_root_voice_subtitle) { nav.navigate(VoiceDest) },
     SettingsMenuItem(R.string.settings_root_display, R.string.settings_root_display_subtitle) { nav.navigate(DisplayDest) },
-    SettingsMenuItem(R.string.settings_root_holidays, R.string.settings_root_holidays_subtitle) { nav.navigate(HolidaysDest) },
     SettingsMenuItem(R.string.settings_root_calendar, R.string.settings_root_calendar_subtitle) { nav.navigate(CalendarDest) },
     SettingsMenuItem(R.string.settings_root_forecasters, R.string.settings_root_forecasters_subtitle) { nav.navigate(ForecastersDest) },
     SettingsMenuItem(R.string.settings_root_smart_home, R.string.settings_root_smart_home_subtitle) { nav.navigate(SmartHomeDest) },

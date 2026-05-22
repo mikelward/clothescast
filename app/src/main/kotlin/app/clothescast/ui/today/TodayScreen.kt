@@ -138,7 +138,7 @@ fun TodayScreen(
     onNavigateToLocation: () -> Unit = onNavigateToSettings,
     onNavigateToPrivacy: () -> Unit = onNavigateToSettings,
     onNavigateToClothes: () -> Unit = onNavigateToSettings,
-    onNavigateToHolidays: () -> Unit = onNavigateToSettings,
+    onNavigateToCalendar: () -> Unit = onNavigateToSettings,
     onNavigateToDeveloper: () -> Unit = onNavigateToSettings,
     onNavigateToFormat: () -> Unit = onNavigateToSettings,
 ) {
@@ -255,7 +255,7 @@ fun TodayScreen(
             onRefresh = { triggerRefresh(context, state.morningTime, state.tonightTime) },
             onSetUpLocation = onNavigateToLocation,
             onOpenPrivacy = onNavigateToPrivacy,
-            onOpenHolidaySettings = onNavigateToHolidays,
+            onOpenCalendarSettings = onNavigateToCalendar,
             onDismissCelebrationCard = viewModel::dismissCelebrationCard,
             onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
             onAdjustThreshold = viewModel::adjustClothesRuleThreshold,
@@ -291,7 +291,7 @@ private fun TodayContent(
     onRefresh: () -> Unit,
     onSetUpLocation: () -> Unit,
     onOpenPrivacy: () -> Unit,
-    onOpenHolidaySettings: () -> Unit,
+    onOpenCalendarSettings: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
     onCalendarPermissionChanged: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
@@ -385,7 +385,7 @@ private fun TodayContent(
         // goes on or the X is tapped.
         CelebrationThemesCard(
             visible = state.celebrationCardVisible,
-            onOpenHolidaySettings = onOpenHolidaySettings,
+            onOpenCalendarSettings = onOpenCalendarSettings,
             onDismiss = onDismissCelebrationCard,
             modifier = bannerModifier,
         )

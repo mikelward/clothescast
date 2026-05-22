@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HolidayId
@@ -91,6 +93,9 @@ internal fun DeveloperPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             region = state.region,
             holidayOverrides = state.holidayOverrides,
             enabledCountries = state.effectiveEnabledHolidayCountries,
+            themeFromCalendarHolidays = state.calendarEnabled && state.themeFromCalendarHolidays,
+            themeFromCalendarBirthdays = state.calendarEnabled && state.themeFromCalendarBirthdays,
+            loadEventsForDay = viewModel::calendarEventsForDay,
             padding = padding,
             speaking = isSpeaking,
             onSpeak = onSpeak@{ holidayId ->
@@ -135,6 +140,9 @@ internal fun DeveloperContent(
     enabledCountries: Set<String>,
     padding: PaddingValues,
     onSpeak: (HolidayId?) -> Unit,
+    themeFromCalendarHolidays: Boolean = false,
+    themeFromCalendarBirthdays: Boolean = false,
+    loadEventsForDay: suspend (LocalDate) -> List<CalendarEvent> = { emptyList() },
     speaking: Boolean = false,
     initialDate: LocalDate = LocalDate.now(),
 ) {
@@ -142,14 +150,35 @@ internal fun DeveloperContent(
     val selectedDate = LocalDate.ofEpochDay(epochDay)
     var showPicker by rememberSaveable { mutableStateOf(false) }
 
-    val theme = remember(selectedDate, holidayOverrides, enabledCountries) {
+    // Pull the picked day's calendar events so the preview themes from
+    // calendar holidays / birthdays the same way the Today screen does. Only
+    // read when a calendar-sourced toggle is on — matches the Today screen's
+    // gate and avoids a needless calendar query (and permission surprise)
+    // otherwise.
+    var events by remember { mutableStateOf<List<CalendarEvent>>(emptyList()) }
+    LaunchedEffect(selectedDate, themeFromCalendarHolidays, themeFromCalendarBirthdays) {
+        events = if (themeFromCalendarHolidays || themeFromCalendarBirthdays) {
+            loadEventsForDay(selectedDate)
+        } else {
+            emptyList()
+        }
+    }
+
+    val theme = remember(
+        selectedDate,
+        holidayOverrides,
+        enabledCountries,
+        events,
+        themeFromCalendarHolidays,
+        themeFromCalendarBirthdays,
+    ) {
         ThemeForToday().resolve(
             date = selectedDate,
             overrides = holidayOverrides,
             enabledCountries = enabledCountries,
-            events = emptyList(),
-            themeFromCalendarHolidays = false,
-            themeFromCalendarBirthdays = false,
+            events = events,
+            themeFromCalendarHolidays = themeFromCalendarHolidays,
+            themeFromCalendarBirthdays = themeFromCalendarBirthdays,
         )
     }
 

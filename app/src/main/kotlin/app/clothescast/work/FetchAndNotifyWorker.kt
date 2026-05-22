@@ -26,6 +26,7 @@ import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.cast.CastInsightController
+import app.clothescast.cast.Mp4Encoder
 import app.clothescast.core.domain.usecase.computeDeliveryGates
 import app.clothescast.core.domain.usecase.isGeminiEngineSelected
 import app.clothescast.core.domain.usecase.isMqttPublishable
@@ -612,8 +613,8 @@ class FetchAndNotifyWorker(
         //    household sees / hears the new forecast at the same
         //    wall-clock instant.
         //
-        //  Post-alignment — notification, MQTT prose / image / audio,
-        //    and the phone speaker fire in parallel. The MQTT publishes
+        //  Post-alignment — notification, MQTT prose / image / audio /
+        //    video, and the phone speaker fire in parallel. The MQTT publishes
         //    moved here from pre-alignment so HA's "speak the prose when
         //    the wardrobe opens" automation fires with the phone
         //    notification, not 30 s ahead of it.
@@ -643,6 +644,26 @@ class FetchAndNotifyWorker(
             val png: ByteArray? = renderDeferred.await()
             val wav: ByteArray? = pcm?.let { WavEncoder.encode(it) }
 
+            // Mux the outfit card + TTS audio into a single MP4 for the MQTT
+            // video topic, so a consumer (e.g. Home Assistant) can hand one
+            // media item to a Cast receiver / Home Hub and get the card and
+            // the announcement together. Muxing runs during the alignment
+            // wait below to stay off the post-alignment hot path, and only
+            // when the bridge will publish and both inputs exist. A mux
+            // failure degrades to a video-less bundle rather than failing the
+            // whole publish.
+            val mqttVideoDeferred: Deferred<ByteArray?>? =
+                if (gates.mqttPublishable && png != null && wav != null) {
+                    async(Dispatchers.Default) {
+                        runCatching { Mp4Encoder.encode(png, wav) }
+                            .onFailure { t ->
+                                if (t is CancellationException) throw t
+                                DiagLog.w(TAG, "MQTT video mux failed; publishing bundle without video.", t)
+                            }
+                            .getOrNull()
+                    }
+                } else null
+
             awaitDeliveryAlignment()
 
             val notifyJob = launch { postPeriodNotification(insight, prefs, prose, topColors, topStrokes, gates) }
@@ -667,7 +688,14 @@ class FetchAndNotifyWorker(
             val mqttDeferred: Deferred<MqttPublishOutcome?> = async {
                 if (!gates.mqttPublishable) null
                 else runCatching {
-                    app.mqttPublisher.publishIfEnabled(insight.period, prose, image = png, audio = wav)
+                    val video = mqttVideoDeferred?.await()
+                    app.mqttPublisher.publishIfEnabled(
+                        insight.period,
+                        prose,
+                        image = png,
+                        audio = wav,
+                        video = video,
+                    )
                 }
                     .onFailure { t ->
                         if (t is CancellationException) throw t

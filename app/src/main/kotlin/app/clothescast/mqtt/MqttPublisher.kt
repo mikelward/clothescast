@@ -55,20 +55,38 @@ class MqttPublisher(
 ) {
 
     /**
-     * Publishes a delivery's prose, optional outfit image, and optional TTS
-     * audio as a single coordinated bundle. The period-specific topics
-     * (`${baseTopic}/${period.lowercased()}/{text,image,audio}`) fan out in
-     * parallel — they're independent surfaces and a slow image upload
+     * Publishes a delivery's prose, optional outfit image, optional TTS
+     * audio, and optional muxed video (PNG frame + TTS audio as an MP4) as a
+     * single coordinated bundle. The period-specific topics
+     * (`${baseTopic}/${period.lowercased()}/{text,image,audio,video}`) fan out
+     * in parallel — they're independent surfaces and a slow image upload
      * shouldn't hold up the prose.
      *
-     * The `${baseTopic}/now/{text,image,audio}` mirrors are treated as an
-     * atomic three-topic bundle. They fire only when **every** submitted
-     * modality's period publish succeeded; then `now/image` and `now/audio`
-     * publish in parallel and `now/text` lands **last**. The text-last
-     * ordering matters because `now/text` is the natural state-change
-     * trigger surface for an HA automation — having it update last
-     * guarantees a consumer subscribing to `now/text` reads a `now/image`
-     * and `now/audio` from the same forecast.
+     * The `${baseTopic}/now/{text,image,audio,video,timestamp}` mirrors are
+     * treated as an atomic bundle. They fire only when every **gating**
+     * modality's period publish (prose + any submitted image / audio)
+     * succeeded; then `now/image`, `now/audio` and `now/video` publish in
+     * parallel, `now/text` lands after them, and `now/timestamp` lands
+     * **last** of all. `now/timestamp` is the bundle's commit marker —
+     * epoch-millis written only once the gating content mirrors have settled,
+     * so its update is the single signal that the `now` set is in place. A
+     * consumer triggers on `now/timestamp` and dedupes on its value: a new
+     * timestamp guarantees a coherent `now/image` / `now/audio` / `now/text`
+     * from the same forecast, and a value it has already acted on means skip —
+     * so a retained bundle isn't replayed on reconnect. (MQTT 3.1.1 carries no
+     * native publish timestamp, hence the explicit topic.)
+     *
+     * `now/video` **always** gates the commit marker: its payload is the video
+     * when one was produced and an empty "delete retained" clear when not.
+     * Gating on the clear too is what keeps the set coherent — were it
+     * best-effort, a failed clear would leave a stale video from a prior bundle
+     * paired with the fresh timestamp. The cost is that a broker whose ACL
+     * denies `now/video` stalls the bundle; that's a hand-rolled per-topic ACL
+     * the setup guide never recommends (it grants `<prefix>/#`), and any ACL
+     * that ever accepted a real `now/video` accepts the clear too. A timestamp
+     * publish that fails after the content mirrors advanced is logged (the
+     * marker silently lagging its content is the one missed-update case the
+     * trigger contract must surface) but does not change the returned outcome.
      *
      * Modalities absent from the current delivery (e.g. an outfit render
      * failed, or the user is on device TTS so no audio bytes exist) still
@@ -114,6 +132,7 @@ class MqttPublisher(
         prose: String,
         image: ByteArray? = null,
         audio: ByteArray? = null,
+        video: ByteArray? = null,
     ): MqttPublishOutcome = coroutineScope {
         val prepared = preparePublish(context = period.name.lowercase())
             ?: return@coroutineScope MqttPublishOutcome.NotConfigured
@@ -121,15 +140,27 @@ class MqttPublisher(
         val proseTopic = topicFor(prepared.baseTopic, period)
         val imageTopic = imageTopicFor(prepared.baseTopic, period)
         val audioTopic = audioTopicFor(prepared.baseTopic, period)
+        val videoTopic = videoTopicFor(prepared.baseTopic, period)
         val nowTextTopic = nowTopicFor(prepared.baseTopic)
         val nowImageTopic = nowImageTopicFor(prepared.baseTopic)
         val nowAudioTopic = nowAudioTopicFor(prepared.baseTopic)
+        val nowVideoTopic = nowVideoTopicFor(prepared.baseTopic)
+        val nowTimestampTopic = nowTimestampTopicFor(prepared.baseTopic)
+        // MQTT 3.1.1 carries no native publish timestamp (and the MQTT 5
+        // user-property route isn't available on this v3 client), so we
+        // publish one ourselves: epoch-millis as a decimal string on the
+        // /now/timestamp surface. A retained consumer (e.g. HA casting the
+        // video to a Home Hub) reads it to dedupe — on reconnect it sees the
+        // same timestamp it already played and skips replaying the clip
+        // rather than re-announcing a stale bundle.
+        val timestampBytes = System.currentTimeMillis().toString().toByteArray(Charsets.UTF_8)
         DiagLog.i(
             TAG,
             "MQTT bridge enabled; publishing ${period.name.lowercase()} insight bundle to " +
                 "${prepared.scheme}://${prepared.host}:${prepared.port}/$proseTopic " +
-                "(image=${image != null}, audio=${audio != null}, " +
-                "mirrored to $nowTextTopic with $nowImageTopic / $nowAudioTopic landing first, " +
+                "(image=${image != null}, audio=${audio != null}, video=${video != null}, " +
+                "mirrored to /now as $nowImageTopic / $nowAudioTopic / $nowVideoTopic, " +
+                "then $nowTextTopic, then $nowTimestampTopic last as the commit marker, " +
                 "auth=${!prepared.config.username.isNullOrBlank()}, " +
                 "password=${if (prepared.config.password != null) "set" else "none"}, " +
                 "payload=${prose.length} chars).",
@@ -138,13 +169,20 @@ class MqttPublisher(
         val proseDeferred = async { executePublish(prepared, proseTopic, proseBytes) }
         val imageDeferred = image?.let { bytes -> async { executePublish(prepared, imageTopic, bytes) } }
         val audioDeferred = audio?.let { bytes -> async { executePublish(prepared, audioTopic, bytes) } }
+        // The period today/video publish is attempted only when a video was
+        // produced this delivery (videoOutcome stays null otherwise) and gates
+        // the now mirror the same way image/audio do. The now/video clear for a
+        // no-video delivery — and its gating — lives in the now block below.
+        val videoDeferred = video?.let { bytes -> async { executePublish(prepared, videoTopic, bytes) } }
         val proseOutcome = proseDeferred.await()
         val imageOutcome = imageDeferred?.await()
         val audioOutcome = audioDeferred?.await()
+        val videoOutcome = videoDeferred?.await()
 
         val everySubmittedSucceeded = proseOutcome is MqttPublishOutcome.Success &&
             (imageOutcome == null || imageOutcome is MqttPublishOutcome.Success) &&
-            (audioOutcome == null || audioOutcome is MqttPublishOutcome.Success)
+            (audioOutcome == null || audioOutcome is MqttPublishOutcome.Success) &&
+            (videoOutcome == null || videoOutcome is MqttPublishOutcome.Success)
 
         if (everySubmittedSucceeded) {
             // The now surface is treated as an atomic three-topic bundle. Any
@@ -163,18 +201,69 @@ class MqttPublisher(
             val nowAudioMirror = async {
                 executePublish(prepared, nowAudioTopic, audio ?: emptyPayload)
             }
+            // now/video always gates the commit marker: its payload is the
+            // video when we have one and an empty clear (the MQTT "delete
+            // retained" convention) when we don't. Gating on the clear too is
+            // what keeps the set coherent — if a no-video delivery's clear were
+            // best-effort and failed, a stale video from a prior bundle would
+            // outlive it and pair with the fresh timestamp. The cost is that a
+            // broker whose ACL denies now/video stalls the bundle; that's a
+            // hand-rolled per-topic ACL we don't document (the guide grants
+            // `<prefix>/#`), and any ACL that ever accepted a real now/video
+            // accepts the clear too, so the practical blast radius is small.
+            val nowVideoMirror = async {
+                executePublish(prepared, nowVideoTopic, video ?: emptyPayload)
+            }
             val nowImageOutcome = nowImageMirror.await()
             val nowAudioOutcome = nowAudioMirror.await()
+            val nowVideoOutcome = nowVideoMirror.await()
             if (nowImageOutcome is MqttPublishOutcome.Success &&
-                nowAudioOutcome is MqttPublishOutcome.Success
+                nowAudioOutcome is MqttPublishOutcome.Success &&
+                nowVideoOutcome is MqttPublishOutcome.Success
             ) {
-                executePublish(prepared, nowTextTopic, proseBytes)
+                val nowTextOutcome = executePublish(prepared, nowTextTopic, proseBytes)
+                if (nowTextOutcome is MqttPublishOutcome.Success) {
+                    // now/timestamp is the very last write, after every gating
+                    // content mirror (image/audio/text) has settled, so its
+                    // update is the single "bundle complete" marker. A consumer
+                    // triggers on now/timestamp and dedupes on its value: a new
+                    // timestamp guarantees the rest of the now bundle is already
+                    // in place, and the same value it last acted on means skip —
+                    // don't replay a retained announcement on reconnect.
+                    val nowTimestampOutcome = executePublish(prepared, nowTimestampTopic, timestampBytes)
+                    if (nowTimestampOutcome !is MqttPublishOutcome.Success) {
+                        // The content mirrors already advanced but the commit
+                        // marker didn't, so timestamp-triggered consumers won't
+                        // act on this bundle until a later publish moves the
+                        // marker. Surface it: a marker that silently lags its
+                        // content is exactly the missed-update case the trigger
+                        // contract has to make debuggable. (executePublish has
+                        // already retried per its policy.)
+                        DiagLog.w(
+                            TAG,
+                            "Commit marker $nowTimestampTopic failed for " +
+                                "${period.name.lowercase()} bundle ($nowTimestampOutcome); " +
+                                "now/* content advanced but the trigger marker did not, so " +
+                                "timestamp-triggered consumers will skip this bundle until " +
+                                "the next successful publish.",
+                        )
+                    }
+                } else {
+                    DiagLog.i(
+                        TAG,
+                        "Holding back $nowTimestampTopic for ${period.name.lowercase()} " +
+                            "bundle (now/text=$nowTextOutcome); the commit marker stays at the " +
+                            "previous bundle so a consumer doesn't act on a half-updated set.",
+                    )
+                }
             } else {
                 DiagLog.i(
                     TAG,
-                    "Holding back $nowTextTopic mirror for ${period.name.lowercase()} " +
-                        "bundle (now/image=$nowImageOutcome, now/audio=$nowAudioOutcome); " +
-                        "trigger topic stays at the previous bundle to keep the now set coherent.",
+                    "Holding back $nowTextTopic and $nowTimestampTopic mirrors for " +
+                        "${period.name.lowercase()} bundle (now/image=$nowImageOutcome, " +
+                        "now/audio=$nowAudioOutcome, now/video=$nowVideoOutcome, " +
+                        "videoSubmitted=${video != null}); the now set stays at the previous " +
+                        "bundle to keep it coherent.",
                 )
             }
         } else {
@@ -363,6 +452,12 @@ class MqttPublisher(
         fun audioTopicFor(baseTopic: String, period: ForecastPeriod): String =
             periodTopicFor(baseTopic, period, "audio")
 
+        // The muxed PNG-frame + TTS-audio MP4 — a single media item a
+        // consumer (e.g. HA) can hand straight to a Cast receiver / Home Hub
+        // so the outfit card and announcement play together.
+        fun videoTopicFor(baseTopic: String, period: ForecastPeriod): String =
+            periodTopicFor(baseTopic, period, "video")
+
         // `<base>/now/<kind>` mirrors the most recently published period
         // payload (today or tonight) so a consumer can subscribe to a single
         // topic without having to reason about which window is "current" or
@@ -372,6 +467,13 @@ class MqttPublisher(
         fun nowImageTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "image")
 
         fun nowAudioTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "audio")
+
+        fun nowVideoTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "video")
+
+        // Epoch-millis (decimal string) of the most recent /now bundle. Not a
+        // payload modality — it's the recency marker consumers use to dedupe a
+        // retained bundle they've already acted on.
+        fun nowTimestampTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "timestamp")
 
         private fun periodTopicFor(baseTopic: String, period: ForecastPeriod, kind: String): String {
             val trimmed = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
@@ -431,6 +533,14 @@ private suspend fun publishWithHiveMq(
                 .applySimpleAuth()
         }
         connect.send().await()
+        // TODO: revisit retention / QoS / TTL strategy now that the bundle
+        // carries audio + video. Everything is published QoS 1, retained — good
+        // for the image/text a dashboard reads on reconnect, but a retained
+        // audio/video clip means a freshly-reconnecting consumer can replay a
+        // stale announcement. The /now/timestamp topic is the current dedupe
+        // hook; longer term consider MQTT 5 (message-expiry as a real TTL,
+        // user-property timestamp) and per-kind retain/QoS rather than one
+        // policy for the whole bundle.
         client.publishWith()
             .topic(topic)
             .payload(payload)

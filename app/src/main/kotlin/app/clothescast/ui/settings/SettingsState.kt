@@ -10,6 +10,7 @@ import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.HolidayCountrySelection
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
+import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.RangeFormat
@@ -45,6 +46,15 @@ data class SettingsState(
     val clothesMentionMode: ClothesMentionMode = ClothesMentionMode.ALWAYS,
     val rangeFormat: RangeFormat = RangeFormat.DEGREES,
     val deltaThresholdC: Double? = 3.0,
+    /**
+     * Structured summary of the user's current cached forecast (page 1 of the
+     * Today pager), or `null` when nothing's cached yet. The Format settings
+     * page renders it through [app.clothescast.insight.InsightFormatter] beside
+     * the synthetic example so the user sees their real ClothesCast respond to
+     * the range-format setting live. Carries only the on-device summary — no
+     * extra data leaves the device.
+     */
+    val currentInsightSummary: InsightSummary? = null,
     val region: Region = Region.SYSTEM,
     // Match SettingsRepository's locale-aware defaults so en-US devices don't
     // briefly render °C / km before the first DataStore emission overrides it.

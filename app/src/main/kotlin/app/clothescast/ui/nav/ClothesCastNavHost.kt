@@ -319,6 +319,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
             }
         },
         workManager = WorkManager.getInstance(app),
+        insightCache = app.insightCache,
         mqttPublisher = app.mqttPublisher,
         fullPublish = {
             val prefs = app.settingsRepository.preferences.first()

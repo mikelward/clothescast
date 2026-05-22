@@ -38,7 +38,6 @@ import app.clothescast.ui.settings.SettingsFormatPreview
 import app.clothescast.ui.settings.SettingsDeveloperPreview
 import app.clothescast.ui.settings.SettingsGarmentColorPickerPreview
 import app.clothescast.ui.settings.SettingsCalendarCelebrationsPreview
-import app.clothescast.ui.settings.SettingsHolidaysPreview
 import app.clothescast.ui.settings.SettingsLocationPreview
 import app.clothescast.ui.settings.SettingsPrivacyPreview
 import app.clothescast.ui.settings.SettingsRegionPreview
@@ -536,7 +535,13 @@ class PreviewSnapshots {
     @Test fun widget_today_tonight_wide() = capture { WidgetTodayTonightWidePreview() }
     @Test fun widget_tonight_tomorrow_wide() = capture { WidgetTonightTomorrowWidePreview() }
 
-    @Test fun settings_root() = capture { SettingsRootPreview() }
+    // Stretch tall enough to capture every menu row in one frame — the
+    // default class-level 640dp viewport clips at "Speech", which leaves
+    // Calendar / Forecasters / Smart Home / Privacy invisible in the
+    // snapshot and means changes to that part of the list aren't caught.
+    @Test
+    @Config(qualifiers = "w360dp-h1600dp-xhdpi")
+    fun settings_root() = capture { SettingsRootPreview() }
     @Test fun settings_schedule() = capture { SettingsSchedulePreview() }
     @Test fun settings_format() = capture { SettingsFormatPreview() }
     @Test fun settings_format_clothes_never() = capture { SettingsFormatClothesNeverPreview() }
@@ -558,13 +563,13 @@ class PreviewSnapshots {
     @Config(qualifiers = "w360dp-h1024dp-xhdpi")
     fun settings_forecasters() = capture { SettingsForecastersPreview() }
 
-    @Test fun settings_calendar() = capture { SettingsCalendarPreview() }
-    // The Holidays page renders a top toggle card + one collapsible per
-    // country (15) + a flat "All" collapsible — well past the class-level
-    // 640dp viewport. Stretch tall enough to capture the whole stack.
+    // The merged Calendar page renders the permission + feature toggle cards,
+    // the celebration sources card, the two calendar listings, one collapsible
+    // per country (15), and a flat "All" collapsible — well past the
+    // class-level 640dp viewport. Stretch tall enough to capture the whole stack.
     @Test
     @Config(qualifiers = "w360dp-h1600dp-xhdpi")
-    fun settings_holidays() = capture { SettingsHolidaysPreview() }
+    fun settings_calendar() = capture { SettingsCalendarPreview() }
     @Test fun settings_calendar_celebrations() = capture { SettingsCalendarCelebrationsPreview() }
     @Test
     @Config(qualifiers = "w360dp-h1200dp-xhdpi")

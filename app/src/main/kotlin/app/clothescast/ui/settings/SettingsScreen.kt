@@ -219,46 +219,6 @@ internal fun DisplayPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
 }
 
 @Composable
-internal fun HolidaysPage(
-    viewModel: SettingsViewModel,
-    onBack: () -> Unit,
-    onNavigateToRegion: () -> Unit,
-    onNavigateToLocation: () -> Unit,
-    onNavigateToCalendar: () -> Unit,
-) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScaffold(R.string.settings_root_holidays, onBack) { padding ->
-        HolidaysContent(
-            holidayCountrySelection = state.holidayCountrySelection,
-            holidayOverrides = state.holidayOverrides,
-            effectiveEnabledHolidayCountries = state.effectiveEnabledHolidayCountries,
-            localeCountry = state.region.toJavaLocale()?.country
-                ?: java.util.Locale.getDefault().country,
-            weatherLocationCountry = state.location?.countryCode,
-            calendarEnabled = state.calendarEnabled,
-            themeFromCalendarHolidays = state.themeFromCalendarHolidays,
-            themeFromCalendarBirthdays = state.themeFromCalendarBirthdays,
-            calendarCelebrations = state.calendarCelebrations,
-            padding = padding,
-            onSetCountryHome = viewModel::setHolidayCountryHome,
-            onSetCountryCurrent = viewModel::setHolidayCountryCurrent,
-            onSetCountryGlobal = viewModel::setHolidayCountryGlobal,
-            onSetCountryFunny = viewModel::setHolidayCountryFunny,
-            onSetCountryAll = viewModel::setHolidayCountryAll,
-            onSetCountryOverride = viewModel::setHolidayCountryOverride,
-            onSetHolidayOverride = viewModel::setHolidayOverride,
-            onSetThemeFromCalendarHolidays = viewModel::setThemeFromCalendarHolidays,
-            onSetThemeFromCalendarBirthdays = viewModel::setThemeFromCalendarBirthdays,
-            onCalendarPermissionRechecked = viewModel::markCalendarPermissionRechecked,
-            onLoadCalendarCelebrations = viewModel::loadCalendarCelebrations,
-            onNavigateToRegionSettings = onNavigateToRegion,
-            onNavigateToLocationSettings = onNavigateToLocation,
-            onNavigateToCalendarSettings = onNavigateToCalendar,
-        )
-    }
-}
-
-@Composable
 internal fun LocationPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     SettingsScaffold(R.string.settings_root_location, onBack) { padding ->
@@ -281,20 +241,42 @@ internal fun LocationPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
 }
 
 @Composable
-internal fun CalendarPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
+internal fun CalendarPage(
+    viewModel: SettingsViewModel,
+    onBack: () -> Unit,
+    onNavigateToRegion: () -> Unit,
+    onNavigateToLocation: () -> Unit,
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     SettingsScaffold(R.string.settings_root_calendar, onBack) { padding ->
         CalendarContent(
+            holidayCountrySelection = state.holidayCountrySelection,
+            holidayOverrides = state.holidayOverrides,
+            effectiveEnabledHolidayCountries = state.effectiveEnabledHolidayCountries,
+            localeCountry = state.region.toJavaLocale()?.country
+                ?: java.util.Locale.getDefault().country,
+            weatherLocationCountry = state.location?.countryCode,
             calendarEnabled = state.calendarEnabled,
             useCalendarEvents = state.useCalendarEvents,
             themeFromCalendarHolidays = state.themeFromCalendarHolidays,
             themeFromCalendarBirthdays = state.themeFromCalendarBirthdays,
+            calendarCelebrations = state.calendarCelebrations,
             padding = padding,
             onSetCalendarEnabled = viewModel::setCalendarEnabled,
             onSetUseCalendarEvents = viewModel::setUseCalendarEvents,
+            onSetCountryHome = viewModel::setHolidayCountryHome,
+            onSetCountryCurrent = viewModel::setHolidayCountryCurrent,
+            onSetCountryGlobal = viewModel::setHolidayCountryGlobal,
+            onSetCountryFunny = viewModel::setHolidayCountryFunny,
+            onSetCountryAll = viewModel::setHolidayCountryAll,
+            onSetCountryOverride = viewModel::setHolidayCountryOverride,
+            onSetHolidayOverride = viewModel::setHolidayOverride,
             onSetThemeFromCalendarHolidays = viewModel::setThemeFromCalendarHolidays,
             onSetThemeFromCalendarBirthdays = viewModel::setThemeFromCalendarBirthdays,
             onCalendarPermissionRechecked = viewModel::markCalendarPermissionRechecked,
+            onLoadCalendarCelebrations = viewModel::loadCalendarCelebrations,
+            onNavigateToRegionSettings = onNavigateToRegion,
+            onNavigateToLocationSettings = onNavigateToLocation,
         )
     }
 }

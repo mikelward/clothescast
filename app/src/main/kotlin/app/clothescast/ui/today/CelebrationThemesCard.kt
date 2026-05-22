@@ -35,13 +35,13 @@ import app.clothescast.R
 @Composable
 internal fun CelebrationThemesCard(
     visible: Boolean,
-    onOpenHolidaySettings: () -> Unit,
+    onOpenCalendarSettings: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (!visible) return
     CelebrationThemesCardContent(
-        onOpenSettings = onOpenHolidaySettings,
+        onOpenSettings = onOpenCalendarSettings,
         onDismiss = onDismiss,
         modifier = modifier,
     )

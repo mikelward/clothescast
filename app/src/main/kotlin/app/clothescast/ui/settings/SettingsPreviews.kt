@@ -86,7 +86,6 @@ internal fun SettingsRootPreview() {
                 SettingsMenuItem(R.string.settings_root_region, R.string.settings_root_region_subtitle) {},
                 SettingsMenuItem(R.string.settings_root_voice, R.string.settings_root_voice_subtitle) {},
                 SettingsMenuItem(R.string.settings_root_display, R.string.settings_root_display_subtitle) {},
-                SettingsMenuItem(R.string.settings_root_holidays, R.string.settings_root_holidays_subtitle) {},
                 SettingsMenuItem(R.string.settings_root_calendar, R.string.settings_root_calendar_subtitle) {},
                 SettingsMenuItem(R.string.settings_root_forecasters, R.string.settings_root_forecasters_subtitle) {},
                 SettingsMenuItem(R.string.settings_root_smart_home, R.string.settings_root_smart_home_subtitle) {},
@@ -409,37 +408,19 @@ internal fun SettingsForecastersPreview() {
     }
 }
 
+// The merged Calendar page: the permission master + feature toggles on top,
+// then the curated celebration sources and catalogue with a representative
+// mix of enabled / disabled rows so the snapshot covers both per-country and
+// per-holiday dropdown states. France carries an explicit ON country override
+// (the user pinned it from abroad); Japan an explicit OFF (muted even if it
+// matched location); Australia is the locale + weather country and shows
+// Auto (on); everything else shows Auto (off). Bastille Day is force-on at
+// the holiday tier; MLK Day is force-off.
 @Preview(name = "Settings · Calendar", widthDp = 360)
 @Composable
 internal fun SettingsCalendarPreview() {
     SettingsFrame {
         CalendarContent(
-            calendarEnabled = true,
-            useCalendarEvents = true,
-            themeFromCalendarHolidays = true,
-            themeFromCalendarBirthdays = false,
-            padding = PaddingValues(0.dp),
-            onSetCalendarEnabled = {},
-            onSetUseCalendarEvents = {},
-            onSetThemeFromCalendarHolidays = {},
-            onSetThemeFromCalendarBirthdays = {},
-            onCalendarPermissionRechecked = {},
-        )
-    }
-}
-
-// Holidays page with a representative mix of enabled / disabled rows so the
-// snapshot covers both per-country and per-holiday dropdown states.
-// France carries an explicit ON country override (the user pinned it from
-// abroad); Japan an explicit OFF (muted even if it matched location);
-// Australia is the locale + weather country and shows Auto (on); everything
-// else shows Auto (off). Bastille Day is force-on at the holiday tier;
-// MLK Day is force-off.
-@Preview(name = "Settings · Holidays", widthDp = 360)
-@Composable
-internal fun SettingsHolidaysPreview() {
-    SettingsFrame {
-        HolidaysContent(
             holidayCountrySelection = HolidayCountrySelection(
                 countryOverrides = mapOf(
                     "FR" to HolidayOverride.ON,
@@ -453,11 +434,14 @@ internal fun SettingsHolidaysPreview() {
             effectiveEnabledHolidayCountries = setOf("AU", "FR", HolidayCatalog.GLOBAL_COUNTRY, HolidayCatalog.FUNNY),
             localeCountry = "AU",
             weatherLocationCountry = "AU",
-            calendarEnabled = false,
-            themeFromCalendarHolidays = false,
+            calendarEnabled = true,
+            useCalendarEvents = true,
+            themeFromCalendarHolidays = true,
             themeFromCalendarBirthdays = false,
             calendarCelebrations = null,
             padding = PaddingValues(0.dp),
+            onSetCalendarEnabled = {},
+            onSetUseCalendarEvents = {},
             onSetCountryHome = {},
             onSetCountryCurrent = {},
             onSetCountryGlobal = {},
@@ -471,7 +455,6 @@ internal fun SettingsHolidaysPreview() {
             onLoadCalendarCelebrations = {},
             onNavigateToRegionSettings = {},
             onNavigateToLocationSettings = {},
-            onNavigateToCalendarSettings = {},
         )
     }
 }

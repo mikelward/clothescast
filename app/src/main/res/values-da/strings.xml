@@ -542,6 +542,9 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">I dag</string>
     <string name="insight_lead_tomorrow">I morgen</string>
+    <string name="insight_unchanged_today">I dag bliver det det samme som i går.</string>
+    <string name="insight_unchanged_tonight">I aften bliver det det samme som i går aftes.</string>
+    <string name="insight_unchanged_tomorrow">I morgen bliver det det samme som i dag.</string>
     <string name="insight_lead_tonight">I aften</string>
     <!-- Danish V2 word order: "I dag bliver det mildt." -->
     <string name="insight_band_single">%1$s bliver det %2$d°.</string>

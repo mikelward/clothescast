@@ -416,6 +416,9 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <string name="insight_lead_today">Hoy</string>
     <string name="insight_lead_tomorrow">Mañana</string>
+    <string name="insight_unchanged_today">Hoy hará el mismo tiempo que ayer.</string>
+    <string name="insight_unchanged_tonight">Esta noche hará el mismo tiempo que anoche.</string>
+    <string name="insight_unchanged_tomorrow">Mañana hará el mismo tiempo que hoy.</string>
     <string name="insight_lead_tonight">Esta noche</string>
     <string name="insight_band_single">%1$s hará %2$d°.</string>
     <string name="insight_band_range">%1$s hará entre %2$d° y %3$d°.</string>

@@ -372,6 +372,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Insight prose -->
     <string name="insight_lead_today">ዛሬ</string>
     <string name="insight_lead_tomorrow">ነገ</string>
+    <string name="insight_unchanged_today">ዛሬ እንደ ትናንቱ ይሆናል።</string>
+    <string name="insight_unchanged_tonight">ዛሬ ምሽት እንደ ትናንት ምሽቱ ይሆናል።</string>
+    <string name="insight_unchanged_tomorrow">ነገ እንደ ዛሬው ይሆናል።</string>
     <string name="insight_lead_tonight">ዛሬ ምሽት</string>
     <!-- Amharic: "ዛሬ ምቹ ይሆናል።" -->
     <string name="insight_band_single">%1$s %2$d° ይሆናል።</string>

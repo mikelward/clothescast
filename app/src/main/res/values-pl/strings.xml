@@ -379,6 +379,9 @@ is unchanged; only the displayed label localizes.
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Dziś</string>
     <string name="insight_lead_tomorrow">Jutro</string>
+    <string name="insight_unchanged_today">Dziś będzie tak samo jak wczoraj.</string>
+    <string name="insight_unchanged_tonight">Wieczorem będzie tak samo jak wczoraj wieczorem.</string>
+    <string name="insight_unchanged_tomorrow">Jutro będzie tak samo jak dziś.</string>
     <string name="insight_lead_tonight">Wieczorem</string>
 
     <string name="insight_band_single">%1$s będzie %2$d°.</string>

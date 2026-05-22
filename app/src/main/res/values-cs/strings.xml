@@ -539,6 +539,9 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Dnes</string>
     <string name="insight_lead_tomorrow">Zítra</string>
+    <string name="insight_unchanged_today">Dnes bude stejně jako včera.</string>
+    <string name="insight_unchanged_tonight">Dnes večer bude stejně jako včera večer.</string>
+    <string name="insight_unchanged_tomorrow">Zítra bude stejně jako dnes.</string>
     <string name="insight_lead_tonight">Dnes večer</string>
     <string name="insight_band_single">%1$s bude %2$d°.</string>
     <string name="insight_band_range">%1$s bude od %2$d° do %3$d°.</string>

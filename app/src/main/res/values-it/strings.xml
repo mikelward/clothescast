@@ -405,6 +405,9 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <string name="insight_lead_today">Oggi</string>
     <string name="insight_lead_tomorrow">Domani</string>
+    <string name="insight_unchanged_today">Oggi sarà come ieri.</string>
+    <string name="insight_unchanged_tonight">Stasera sarà come ieri sera.</string>
+    <string name="insight_unchanged_tomorrow">Domani sarà come oggi.</string>
     <string name="insight_lead_tonight">Stasera</string>
     <string name="insight_band_single">%1$s sarà %2$d°.</string>
     <string name="insight_band_range">%1$s sarà tra %2$d° e %3$d°.</string>

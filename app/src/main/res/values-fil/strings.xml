@@ -45,6 +45,9 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <string name="insight_lead_today">Ngayon</string>
     <string name="insight_lead_tomorrow">Bukas</string>
+    <string name="insight_unchanged_today">Ngayon, magiging katulad ng kahapon.</string>
+    <string name="insight_unchanged_tonight">Ngayong gabi, magiging katulad ng kagabi.</string>
+    <string name="insight_unchanged_tomorrow">Bukas, magiging katulad ng ngayon.</string>
     <string name="insight_lead_tonight">Ngayong gabi</string>
     <!-- Filipino: "Ngayon, magiging malamig." -->
     <string name="insight_band_single">%1$s, magiging %2$d°.</string>

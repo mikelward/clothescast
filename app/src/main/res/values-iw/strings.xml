@@ -50,6 +50,9 @@ standard in Israeli digital communication.
 
     <string name="insight_lead_today">היום</string>
     <string name="insight_lead_tomorrow">מחר</string>
+    <string name="insight_unchanged_today">היום יהיה כמו אתמול.</string>
+    <string name="insight_unchanged_tonight">הלילה יהיה כמו אתמול בלילה.</string>
+    <string name="insight_unchanged_tomorrow">מחר יהיה כמו היום.</string>
     <string name="insight_lead_tonight">הלילה</string>
     <!-- "היום יהיה נעים." -->
     <string name="insight_band_single">%1$s יהיה %2$d°.</string>

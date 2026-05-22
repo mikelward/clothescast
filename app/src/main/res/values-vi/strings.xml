@@ -50,6 +50,9 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
 
     <string name="insight_lead_today">Hôm nay</string>
     <string name="insight_lead_tomorrow">Ngày mai</string>
+    <string name="insight_unchanged_today">Hôm nay trời giống như hôm qua.</string>
+    <string name="insight_unchanged_tonight">Tối nay trời giống như tối qua.</string>
+    <string name="insight_unchanged_tomorrow">Ngày mai trời giống như hôm nay.</string>
     <string name="insight_lead_tonight">Tối nay</string>
     <!-- Vietnamese: "Hôm nay trời mát." (time + topic + predicate) -->
     <string name="insight_band_single">%1$s trời %2$d°.</string>

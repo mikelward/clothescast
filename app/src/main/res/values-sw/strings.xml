@@ -45,6 +45,9 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <string name="insight_lead_today">Leo</string>
     <string name="insight_lead_tomorrow">Kesho</string>
+    <string name="insight_unchanged_today">Leo hali ya hewa itakuwa sawa na jana.</string>
+    <string name="insight_unchanged_tonight">Usiku huu hali ya hewa itakuwa sawa na jana usiku.</string>
+    <string name="insight_unchanged_tomorrow">Kesho hali ya hewa itakuwa sawa na leo.</string>
     <string name="insight_lead_tonight">Usiku huu</string>
     <!-- Swahili: "Leo itakuwa baridi." -->
     <string name="insight_band_single">%1$s itakuwa %2$d°.</string>

@@ -46,6 +46,9 @@ surfaces fall back to default English (matching values-pl / values-uk).
 
     <string name="insight_lead_today">Astăzi</string>
     <string name="insight_lead_tomorrow">Mâine</string>
+    <string name="insight_unchanged_today">Astăzi va fi la fel ca ieri.</string>
+    <string name="insight_unchanged_tonight">Diseară va fi la fel ca aseară.</string>
+    <string name="insight_unchanged_tomorrow">Mâine va fi la fel ca astăzi.</string>
     <string name="insight_lead_tonight">Diseară</string>
     <string name="insight_band_single">%1$s va fi %2$d°.</string>
     <string name="insight_band_range">%1$s va fi între %2$d° și %3$d°.</string>

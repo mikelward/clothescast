@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
+import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
@@ -648,6 +649,19 @@ class SettingsViewModel(
                 .distinctBy { Triple(it.date, it.title, it.kind) }
             _state.update { it.copy(calendarCelebrations = events) }
         }
+    }
+
+    /**
+     * Reads the calendar events for a single [date] so the Developer
+     * "Preview a day" screen can theme an arbitrary date exactly as the Today
+     * screen would. Returns an empty list when no reader is wired (pure-VM
+     * tests) or the read fails (e.g. READ_CALENDAR not granted), so the
+     * preview degrades to curated-catalog theming only.
+     */
+    suspend fun calendarEventsForDay(date: LocalDate): List<CalendarEvent> {
+        val reader = calendarEventReader ?: return emptyList()
+        val zone = settingsRepository.preferences.first().schedule.zoneId
+        return runCatching { reader.eventsForDay(date, zone) }.getOrDefault(emptyList())
     }
 
     fun setTelemetryEnabled(enabled: Boolean) {

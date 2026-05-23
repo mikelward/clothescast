@@ -24,6 +24,7 @@ import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
@@ -184,6 +185,10 @@ class SettingsRepository(
 
     suspend fun setClothesFormat(format: ClothesFormat) {
         dataStore.edit { it[INSIGHT_CLOTHES_FORMAT] = format.name }
+    }
+
+    suspend fun setRainAccessory(accessory: RainAccessory) {
+        dataStore.edit { it[RAIN_ACCESSORY] = accessory.name }
     }
 
     suspend fun setDeltaThresholdC(thresholdC: Double?) {
@@ -786,6 +791,9 @@ class SettingsRepository(
         val clothesFormat = this[INSIGHT_CLOTHES_FORMAT]
             ?.let { runCatching { ClothesFormat.valueOf(it) }.getOrNull() }
             ?: ClothesFormat.ITEMS
+        val rainAccessory = this[RAIN_ACCESSORY]
+            ?.let { runCatching { RainAccessory.valueOf(it) }.getOrNull() }
+            ?: RainAccessory.NONE
         // Delta-clause threshold in °C; the OFF sentinel maps to null (clause
         // disabled). Absent key keeps the historical 3°C default.
         val deltaThresholdC = when (val stored = this[INSIGHT_DELTA_THRESHOLD_C]) {
@@ -878,6 +886,7 @@ class SettingsRepository(
             clothesMentionMode = clothesMentionMode,
             rangeFormat = rangeFormat,
             clothesFormat = clothesFormat,
+            rainAccessory = rainAccessory,
             deltaThresholdC = deltaThresholdC,
             telemetryEnabled = telemetryEnabled,
             telemetryNoticeAcked = telemetryNoticeAcked,
@@ -968,6 +977,7 @@ class SettingsRepository(
         clothesMentionMode = clothesMentionMode.name,
         rangeFormat = rangeFormat.name,
         clothesFormat = clothesFormat.name,
+        rainAccessory = rainAccessory.name,
         deltaThresholdC = deltaThresholdC?.roundToInt() ?: -1,
         useCalendarEvents = useCalendarEvents,
         skipTtsAtHome = skipTtsAtHome,
@@ -1124,6 +1134,7 @@ class SettingsRepository(
         private val OMIT_TEMPERATURE_RANGE = booleanPreferencesKey("omit_temperature_range")
         private val INSIGHT_RANGE_FORMAT = stringPreferencesKey("insight_range_format")
         private val INSIGHT_CLOTHES_FORMAT = stringPreferencesKey("insight_clothes_format")
+        private val RAIN_ACCESSORY = stringPreferencesKey("rain_accessory")
         private val INSIGHT_DELTA_THRESHOLD_C = doublePreferencesKey("insight_delta_threshold_c")
         // Sentinel stored for "Significant change: Off" — distinct from an absent
         // key (which keeps the historical 3°C default).

@@ -262,6 +262,7 @@ class DeriveInsight(
             items = deltaItems,
             rainTime = precip?.time,
             likelihood = precip?.likelihood ?: PrecipLikelihood.LIKELY,
+            precipCondition = precip?.condition,
         )
     }
 

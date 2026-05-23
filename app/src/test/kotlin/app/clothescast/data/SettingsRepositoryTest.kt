@@ -15,6 +15,7 @@ import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -166,6 +167,17 @@ class SettingsRepositoryTest {
 
         subject.setClothesMentionMode(ClothesMentionMode.ALWAYS)
         subject.preferences.first().clothesMentionMode shouldBe ClothesMentionMode.ALWAYS
+    }
+
+    @Test
+    fun `rainAccessory defaults to NONE and round-trips all values`() = runTest {
+        subject.preferences.first().rainAccessory shouldBe RainAccessory.NONE
+
+        subject.setRainAccessory(RainAccessory.UMBRELLA)
+        subject.preferences.first().rainAccessory shouldBe RainAccessory.UMBRELLA
+
+        subject.setRainAccessory(RainAccessory.NONE)
+        subject.preferences.first().rainAccessory shouldBe RainAccessory.NONE
     }
 
     @Test

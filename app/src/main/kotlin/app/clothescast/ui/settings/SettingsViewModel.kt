@@ -20,6 +20,7 @@ import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
@@ -222,6 +223,7 @@ class SettingsViewModel(
                         clothesMentionMode = prefs.clothesMentionMode,
                         rangeFormat = prefs.rangeFormat,
                         clothesFormat = prefs.clothesFormat,
+                        rainAccessory = prefs.rainAccessory,
                         deltaThresholdC = prefs.deltaThresholdC,
                         region = prefs.region,
                         temperatureUnit = prefs.temperatureUnit,
@@ -977,6 +979,10 @@ class SettingsViewModel(
 
     fun setClothesFormat(format: ClothesFormat) {
         viewModelScope.launch { settingsRepository.setClothesFormat(format) }
+    }
+
+    fun setRainAccessory(accessory: RainAccessory) {
+        viewModelScope.launch { settingsRepository.setRainAccessory(accessory) }
     }
 
     fun setDeltaThresholdC(thresholdC: Double?) {

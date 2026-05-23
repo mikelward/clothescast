@@ -14,6 +14,7 @@ import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
+import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
@@ -66,6 +67,17 @@ class InsightFormatter(
      * names the bottom (if one fired) alongside — "Wear 2 layers and shorts."
      */
     private val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
+    /**
+     * Optional wet-weather accessory named alongside the rain mention. With
+     * [RainAccessory.NONE] (default) the precip clause stays a bare "Rain at
+     * 3pm." and the evening tie-in keeps its existing prose; with
+     * [RainAccessory.UMBRELLA] the precip clause becomes "Rain at 3pm, bring
+     * an umbrella." and the evening tie-in folds the same accessory into its
+     * items list ("Tonight, rain at 9pm, bring an umbrella."). Triggered on
+     * the same threshold the rain mention already uses (POSSIBLE ≥ 30%), so
+     * the accessory and the rain mention always travel together.
+     */
+    private val rainAccessory: RainAccessory = RainAccessory.NONE,
 ) {
     private val phraser: ClothesPhraser = ClothesPhraser.forLocale(resources, locale)
 
@@ -350,18 +362,69 @@ class InsightFormatter(
         } else {
             resources.getString(R.string.insight_precip_at_time, spokenTime(precip.time))
         }
+        // The accessory is rain-keyed by name ("Rain accessory: Umbrella");
+        // gate it to RAIN / DRIZZLE so "Snow overnight, bring an umbrella."
+        // doesn't slip through. THUNDERSTORM is intentionally excluded too —
+        // an umbrella under lightning is bad practice, and the user will
+        // hear "Thunderstorm at 3pm." either way.
+        val accessoryPhrase = rainAccessoryItemKey()
+            ?.takeIf { precip.condition.warrantsRainAccessory() }
+            ?.let(phraser::withArticle)
         return when (precip.likelihood) {
-            PrecipLikelihood.LIKELY ->
+            PrecipLikelihood.LIKELY -> if (accessoryPhrase != null) {
+                resources.getString(R.string.insight_precip_with_accessory, rawType, timePhrase, accessoryPhrase)
+            } else {
                 resources.getString(R.string.insight_precip, rawType, timePhrase)
+            }
             // "Chance of Rain at 3pm" reads odd with the condition title-cased
             // mid-sentence; downcase the noun so the lead "Chance of" sits
             // naturally. Other locales' condition resources may already be
             // lowercase or have grammatical case to handle — this lowering is
             // safe for English ("Rain" → "rain") and a no-op for languages
             // where the condition resource is already in lower form.
-            PrecipLikelihood.POSSIBLE ->
+            PrecipLikelihood.POSSIBLE -> if (accessoryPhrase != null) {
+                resources.getString(
+                    R.string.insight_precip_chance_with_accessory,
+                    rawType.lowercase(locale),
+                    timePhrase,
+                    accessoryPhrase,
+                )
+            } else {
                 resources.getString(R.string.insight_precip_chance, rawType.lowercase(locale), timePhrase)
+            }
         }
+    }
+
+    /**
+     * The item key the user's [RainAccessory] choice maps to ("umbrella" for
+     * [RainAccessory.UMBRELLA]), or null when the user picked
+     * [RainAccessory.NONE]. The key flows through the same [ClothesPhraser]
+     * the wear-list uses, so the English path renders "an umbrella" and the
+     * German EN→DE map renders "Regenschirm" without a phraser change.
+     */
+    private fun rainAccessoryItemKey(): String? = when (rainAccessory) {
+        RainAccessory.NONE -> null
+        RainAccessory.UMBRELLA -> "umbrella"
+    }
+
+    /**
+     * Conditions where a "bring an umbrella" mention reads correctly. SNOW
+     * and FOG aren't actually wet-in-the-umbrella sense; THUNDERSTORM has
+     * rain but recommending an umbrella under lightning is bad practice.
+     * Anything else (CLEAR / cloud / UNKNOWN) doesn't reach the precip
+     * clause at all (RenderInsightSummary already filters via
+     * isPrecipitation()).
+     */
+    private fun WeatherCondition.warrantsRainAccessory(): Boolean = when (this) {
+        WeatherCondition.RAIN,
+        WeatherCondition.DRIZZLE -> true
+        WeatherCondition.SNOW,
+        WeatherCondition.THUNDERSTORM,
+        WeatherCondition.FOG,
+        WeatherCondition.CLEAR,
+        WeatherCondition.PARTLY_CLOUDY,
+        WeatherCondition.CLOUDY,
+        WeatherCondition.UNKNOWN -> false
     }
 
     /**
@@ -387,11 +450,22 @@ class InsightFormatter(
 
     private fun formatEveningEventTieIn(tieIn: EveningEventTieInClause): String? {
         val rainTime = tieIn.rainTime
-        // Accessories (umbrella) are silenced here for the same reason they're
-        // silenced in the main wear-list: until the accessory catalog lands,
-        // we only name temperature-driven clothing. The rain mention, if any,
-        // still surfaces through the bare-rain path below.
-        val items = tieIn.items.filterNot(::isAccessory)
+        // Accessories (umbrella) are silenced from the incoming items list for
+        // the same reason they're silenced in the main wear-list: until the
+        // accessory catalog lands we only name temperature-driven clothing
+        // there. If the user has opted into [RainAccessory] and the evening's
+        // peak condition is rain-like (RAIN / DRIZZLE), we re-inject the
+        // chosen accessory below so the existing insight_tie_in_with_rain
+        // template carries it ("…, bring a jacket and an umbrella.") and the
+        // bare-rain path is promoted to the item-led template. SNOW /
+        // THUNDERSTORM peaks (or a null condition on a pre-field cached
+        // payload) skip the injection — same gating as formatPrecip — so
+        // "Tonight, rain at 9pm, bring an umbrella." doesn't slip out when
+        // the underlying peak is actually snow.
+        val filteredItems = tieIn.items.filterNot(::isAccessory)
+        val accessoryKey = rainAccessoryItemKey()
+            ?.takeIf { rainTime != null && tieIn.precipCondition?.warrantsRainAccessory() == true }
+        val items = if (accessoryKey != null) filteredItems + accessoryKey else filteredItems
         val renderedItems = if (items.isEmpty()) "" else phraser.joinItems(items)
         if (renderedItems.isBlank()) {
             // No items left to name. If there's a rain time, the clause
@@ -496,8 +570,16 @@ class InsightFormatter(
             temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
             rangeFormat: RangeFormat = RangeFormat.DEGREES,
             clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
+            rainAccessory: RainAccessory = RainAccessory.NONE,
         ): InsightFormatter =
-            InsightFormatter(context.localizedResources(locale), locale, temperatureUnit, rangeFormat, clothesFormat)
+            InsightFormatter(
+                context.localizedResources(locale),
+                locale,
+                temperatureUnit,
+                rangeFormat,
+                clothesFormat,
+                rainAccessory,
+            )
 
         /** Convenience for the common path: render in the user's [Region]-derived locale. */
         fun forRegion(
@@ -506,9 +588,10 @@ class InsightFormatter(
             temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
             rangeFormat: RangeFormat = RangeFormat.DEGREES,
             clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
+            rainAccessory: RainAccessory = RainAccessory.NONE,
         ): InsightFormatter {
             val locale = region.toJavaLocale() ?: context.currentResourcesLocale()
-            return forContext(context, locale, temperatureUnit, rangeFormat, clothesFormat)
+            return forContext(context, locale, temperatureUnit, rangeFormat, clothesFormat, rainAccessory)
         }
     }
 }

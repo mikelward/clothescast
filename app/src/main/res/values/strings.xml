@@ -617,6 +617,10 @@
     <string name="settings_format_clothes_label">Clothes wording</string>
     <string name="settings_format_clothes_items">Garments</string>
     <string name="settings_format_clothes_layer_count">Layer count</string>
+    <!-- Rain-accessory picker: "Off" vs "Umbrella" — opts in to "bring an umbrella" alongside the rain mention. -->
+    <string name="settings_format_rain_accessory_label">Rain accessory</string>
+    <string name="settings_format_rain_accessory_none">Off</string>
+    <string name="settings_format_rain_accessory_umbrella">Umbrella</string>
 
     <string name="settings_delivery_label">Delivery</string>
     <string name="settings_delivery_notification_only">Notification only</string>
@@ -1055,6 +1059,21 @@
     a hedge, not a contradiction.
     -->
     <string name="insight_precip_chance">Chance of %1$s %2$s.</string>
+    <!--
+    Variant of insight_precip with a trailing accessory carry. Used when the
+    user opts into a non-NONE RainAccessory in Format settings — the precip
+    clause then names rain *and* the accessory ("Rain at 3pm, bring an
+    umbrella."). %1$s = humanised condition, %2$s = time phrase, %3$s =
+    accessory phrase (article-prefixed via the phraser, e.g. "an umbrella").
+    -->
+    <string name="insight_precip_with_accessory">%1$s %2$s, bring %3$s.</string>
+    <!--
+    POSSIBLE-tier counterpart of insight_precip_with_accessory. Hedges the
+    rain wording the same way insight_precip_chance does, and downcases the
+    condition mid-sentence ("Chance of rain at 3pm, bring an umbrella.").
+    %1$s = condition (downcased), %2$s = time phrase, %3$s = accessory phrase.
+    -->
+    <string name="insight_precip_chance_with_accessory">Chance of %1$s %2$s, bring %3$s.</string>
     <!-- Inserted as %2$s above when the peak hour is named — e.g. "at 3pm". -->
     <string name="insight_precip_at_time">at %1$s</string>
     <!-- Replaces the time phrase entirely for early-morning peaks

@@ -67,14 +67,16 @@ class SettingsViewModel(
     private val geocodingClient: OpenMeteoGeocodingClient,
     private val voiceEnumerator: TtsVoiceEnumerator,
     /**
-     * Cache the home-screen / widget read [Insight.outfit] from. Settings VM
-     * mutates it directly after each clothes-rule edit (add / replace / delete
-     * a rule, flip the default-bottom picker) so the icon updates in the same
-     * frame instead of waiting for the next scheduled or manual refresh.
-     * Defaulted to a no-op for pure-VM tests that don't care about the cache;
-     * the Activity wires the real [InsightCache].
+     * Pokes the home-screen widget after a settings change so the launcher
+     * icon catches up in the same frame as the Today screen. The cache no
+     * longer needs a recompute — the snapshot it holds is settings-
+     * independent and the widget re-derives at every `provideGlance()` —
+     * but the widget doesn't observe the settings flow itself, so a `+1°`
+     * tap that flips the icon tier needs this nudge to repaint the launcher.
+     * Defaulted to a no-op for pure-VM tests; the Activity wires the real
+     * `OutfitWidget().updateAll(...)` call.
      */
-    private val refreshCachedOutfits: suspend () -> Unit = {},
+    private val refreshOutfitWidget: suspend () -> Unit = {},
     /**
      * Pushes the chosen [Region] into the platform locale machinery
      * (Locale.setDefault + LocaleManager / attachBaseContext cache) so the
@@ -160,11 +162,13 @@ class SettingsViewModel(
      */
     private val calendarEventReader: CalendarEventReader? = null,
     /**
-     * Read-only access to the cached current insight so the Format settings
+     * Read-only access to the cached current snapshot so the Format settings
      * page can preview the user's *real* ClothesCast next to the synthetic
      * example. Null in pure-VM tests that don't need the cache; the Activity
      * wires the real [InsightCache] and [SettingsState.currentInsightSummary]
-     * then tracks page 1 of the Today pager.
+     * then tracks page 1 of the Today pager, derived against the current
+     * preferences flow so every setting that affects the prose updates the
+     * preview in the same frame as the dropdown closes.
      */
     private val insightCache: InsightCache? = null,
 ) : ViewModel() {
@@ -275,8 +279,11 @@ class SettingsViewModel(
         }
         insightCache?.let { cache ->
             viewModelScope.launch {
-                cache.thisPeriod.collect { insight ->
-                    _state.update { it.copy(currentInsightSummary = insight?.summary) }
+                cache.deriveFlow(
+                    slot = InsightCache.Slot.THIS_PERIOD,
+                    prefsFlow = settingsRepository.preferences,
+                ).collect { result ->
+                    _state.update { it.copy(currentInsightSummary = result?.insight?.summary) }
                 }
             }
         }
@@ -437,7 +444,7 @@ class SettingsViewModel(
     fun setOutfitTopColor(top: OutfitSuggestion.Top, argb: Long?) {
         viewModelScope.launch {
             settingsRepository.setOutfitTopColor(top, argb)
-            refreshCachedOutfits()
+            refreshOutfitWidget()
         }
     }
 
@@ -445,7 +452,7 @@ class SettingsViewModel(
     fun setOutfitBottomColor(bottom: OutfitSuggestion.Bottom, argb: Long?) {
         viewModelScope.launch {
             settingsRepository.setOutfitBottomColor(bottom, argb)
-            refreshCachedOutfits()
+            refreshOutfitWidget()
         }
     }
 
@@ -485,7 +492,7 @@ class SettingsViewModel(
     fun addClothesRule(rule: ClothesRule) {
         viewModelScope.launch {
             settingsRepository.setClothesRules(_state.value.clothesRules + rule)
-            refreshCachedOutfits()
+            refreshOutfitWidget()
         }
     }
 
@@ -494,7 +501,7 @@ class SettingsViewModel(
             val current = _state.value.clothesRules
             if (index !in current.indices) return@launch
             settingsRepository.setClothesRules(current.toMutableList().apply { this[index] = rule })
-            refreshCachedOutfits()
+            refreshOutfitWidget()
         }
     }
 
@@ -503,21 +510,21 @@ class SettingsViewModel(
             val current = _state.value.clothesRules
             if (index !in current.indices) return@launch
             settingsRepository.setClothesRules(current.toMutableList().apply { removeAt(index) })
-            refreshCachedOutfits()
+            refreshOutfitWidget()
         }
     }
 
     fun setDefaultBottom(bottom: OutfitSuggestion.Bottom) {
         viewModelScope.launch {
             settingsRepository.setDefaultBottom(bottom)
-            refreshCachedOutfits()
+            refreshOutfitWidget()
         }
     }
 
     fun setDefaultTop(top: OutfitSuggestion.Top) {
         viewModelScope.launch {
             settingsRepository.setDefaultTop(top)
-            refreshCachedOutfits()
+            refreshOutfitWidget()
         }
     }
 
@@ -957,6 +964,10 @@ class SettingsViewModel(
     }
 
     fun setClothesMentionMode(mode: ClothesMentionMode) {
+        // Prose-only setting — the Today screen / Format settings preview
+        // / cast / MQTT all re-derive off the cached snapshot reactively
+        // through the prefs flow, so no widget poke is needed (the widget
+        // only renders the outfit icon, which this mode doesn't touch).
         viewModelScope.launch { settingsRepository.setClothesMentionMode(mode) }
     }
 
@@ -969,6 +980,9 @@ class SettingsViewModel(
     }
 
     fun setDeltaThresholdC(thresholdC: Double?) {
+        // Prose-only — gates the DeltaClause for the Today screen / Format
+        // settings preview / cast / MQTT, all of which re-derive from the
+        // cached snapshot reactively. The widget doesn't show delta.
         viewModelScope.launch { settingsRepository.setDeltaThresholdC(thresholdC) }
     }
 
@@ -998,7 +1012,7 @@ class SettingsViewModel(
         private val voiceEnumerator: TtsVoiceEnumerator,
         private val applyAppLocale: (Region) -> Unit,
         private val refreshLocationCache: () -> Unit,
-        private val refreshCachedOutfits: suspend () -> Unit,
+        private val refreshOutfitWidget: suspend () -> Unit,
         private val resolveDeviceLocationWithCity: suspend () -> Location? = { null },
         private val workManager: WorkManager? = null,
         private val mqttPublisher: MqttPublisher? = null,
@@ -1022,7 +1036,7 @@ class SettingsViewModel(
                 cancelAlarm = cancelAlarm,
                 geocodingClient = geocodingClient,
                 voiceEnumerator = voiceEnumerator,
-                refreshCachedOutfits = refreshCachedOutfits,
+                refreshOutfitWidget = refreshOutfitWidget,
                 applyAppLocale = applyAppLocale,
                 refreshLocationCache = refreshLocationCache,
                 resolveDeviceLocationWithCity = resolveDeviceLocationWithCity,

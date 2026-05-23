@@ -211,12 +211,13 @@ private fun PreviewCard(
 
 /**
  * Renders the user's *real* cached current forecast through the same formatter
- * the Today screen uses, so the range-format setting is previewed against their
- * actual ClothesCast — not just the synthetic example. The delta-threshold and
- * clothes-mention settings are baked into the cached summary at generation time
- * (they re-take effect on the next refresh), so only the range format updates
- * live here, exactly as it does on the Today screen. Falls back to a short
- * placeholder when nothing's cached yet.
+ * the Today screen uses, so the format-settings preview reflects their actual
+ * ClothesCast — not just the synthetic example. Every setting on this page
+ * updates the preview live because the cache stores the raw upstream forecast
+ * snapshot, and [SettingsViewModel] derives the [InsightSummary] reactively
+ * against the preferences flow; the range-format and clothes-format settings
+ * also apply at format time. Falls back to a short placeholder when nothing's
+ * cached yet.
  */
 @Composable
 private fun CurrentForecastPreviewCard(

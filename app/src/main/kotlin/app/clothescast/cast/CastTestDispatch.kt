@@ -5,6 +5,7 @@ import app.clothescast.R
 import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.repository.CalendarEventReader
+import app.clothescast.core.domain.usecase.DeriveInsight
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
@@ -32,6 +33,7 @@ internal suspend fun castCurrentInsight(
     context: Context,
     settingsRepository: SettingsRepository,
     insightCache: InsightCache,
+    deriveInsight: DeriveInsight,
     calendarEventReader: CalendarEventReader,
     controller: CastInsightController,
     locale: java.util.Locale,
@@ -39,8 +41,9 @@ internal suspend fun castCurrentInsight(
     val prefs = settingsRepository.preferences.first()
     val routeId = prefs.castRouteId
         ?: return context.getString(R.string.cast_error_no_route_picked)
-    val insight = insightCache.thisPeriod.first()
+    val snapshot = insightCache.thisPeriod.first()
         ?: return context.getString(R.string.cast_error_no_insight_yet)
+    val insight = deriveInsight(snapshot, prefs).insight
     val outfit = insight.outfit
         ?: return context.getString(R.string.cast_error_no_insight_yet)
 

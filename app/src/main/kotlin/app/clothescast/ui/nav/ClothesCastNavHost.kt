@@ -277,6 +277,7 @@ private fun todayViewModelFactory(app: ClothesCastApplication, context: Context)
         refreshOutfitWidget = {
             runCatching { OutfitWidget().updateAll(context.applicationContext) }
         },
+        deriveInsight = app.deriveInsight,
         calendarEventReader = app.calendarEventReader,
     )
 
@@ -297,9 +298,13 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
         refreshLocationCache = {
             FetchAndNotifyWorker.enqueueLocationCacheRefresh(context)
         },
-        refreshCachedOutfits = {
-            val prefs = app.settingsRepository.preferences.first()
-            app.insightCache.recomputeOutfits(prefs.clothesRules, prefs.defaultBottom, prefs.defaultTop)
+        refreshOutfitWidget = {
+            // No cache work needed — the cache holds the raw ForecastSnapshot,
+            // and every consumer (Today screen, Format settings preview, cast,
+            // MQTT) re-derives off the current prefs reactively. The widget
+            // doesn't subscribe to the prefs flow itself, so a settings write
+            // that changes what icon should render needs an explicit nudge to
+            // repaint the launcher.
             runCatching { OutfitWidget().updateAll(context.applicationContext) }
         },
         resolveDeviceLocationWithCity = {
@@ -318,8 +323,9 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
         mqttPublisher = app.mqttPublisher,
         fullPublish = {
             val prefs = app.settingsRepository.preferences.first()
-            val insight = app.insightCache.thisPeriod.first()
+            val snapshot = app.insightCache.thisPeriod.first()
                 ?: return@Factory app.mqttPublisher.publishTest()
+            val insight = app.deriveInsight(snapshot, prefs).insight
             val formatter = InsightFormatter.forRegion(
                 context,
                 prefs.region,
@@ -377,6 +383,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
                     context = context,
                     settingsRepository = app.settingsRepository,
                     insightCache = app.insightCache,
+                    deriveInsight = app.deriveInsight,
                     calendarEventReader = app.calendarEventReader,
                     controller = controller,
                     locale = LocaleListCompat.getAdjustedDefault().get(0)

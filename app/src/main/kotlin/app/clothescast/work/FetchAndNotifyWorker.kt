@@ -249,11 +249,12 @@ class FetchAndNotifyWorker(
             DiagLog.i(TAG, "Force refresh requested; bypassing today's cache.")
             null
         } else {
-            runCatching { app.insightCache.deliveredForToday(today, period) }.getOrNull()
+            runCatching { app.insightCache.deliveredForToday(today, period, prefs) }.getOrNull()
         }
         if (cached != null) {
-            DiagLog.i(TAG, "Using cached $period insight for ${cached.forDate}.")
-            return runCatching { deliver(cached, prefs, formatProse(cached, prefs)) }
+            val cachedInsight = cached.insight
+            DiagLog.i(TAG, "Using cached $period insight for ${cachedInsight.forDate}.")
+            return runCatching { deliver(cachedInsight, prefs, formatProse(cachedInsight, prefs)) }
                 .map { Result.success() }
                 .getOrElse {
                     if (it is CancellationException) throw it
@@ -294,12 +295,13 @@ class FetchAndNotifyWorker(
             }
         }
         return try {
-            val result = app.generateDailyInsight(location, prefs, period)
-            // Stamp the resolved location onto the insight so the home screen
-            // can show the city next to the date and deep-link to maps. UI-only
-            // — never read by InsightFormatter / RenderInsightSummary, so it
-            // can't leak into LLM / TTS prose.
-            val insight = result.insight.copy(location = location)
+            // Two-phase: capture the snapshot (fetch + read events), then derive
+            // the insight from it against current prefs. The snapshot is what
+            // lands in the cache so any later settings change re-renders
+            // off the same upstream data for free; the derive call here is the
+            // one we deliver on this run.
+            val snapshot = app.generateDailyInsight.snapshot(location, prefs, period)
+            val result = app.deriveInsight(snapshot, prefs)
             // Severe alerts are out-of-band: post them as separate high-priority
             // notifications on every fresh fetch, regardless of whether the daily
             // summary itself is blank or suppressed.
@@ -307,7 +309,8 @@ class FetchAndNotifyWorker(
                 runCatching { app.weatherAlertNotifier.notify(alert) }
                     .onFailure { DiagLog.w(TAG, "Severe alert notification failed for ${alert.event}.", it) }
             }
-            runCatching { app.insightCache.store(InsightCache.Slot.THIS_PERIOD, insight) }
+            val insight = result.insight
+            runCatching { app.insightCache.store(InsightCache.Slot.THIS_PERIOD, snapshot) }
                 .onSuccess {
                     // Push the fresh outfit out to any home-screen widgets.
                     // Gated on cache success because provideGlance() reads
@@ -425,10 +428,9 @@ class FetchAndNotifyWorker(
         }
         val dayOffset = if (primaryPeriod == ForecastPeriod.TONIGHT) 1 else 0
         runCatching {
-            val result = app.generateDailyInsight(location, prefs, nextWindowPeriod, dayOffset)
-            val pairedInsight = result.insight.copy(location = location)
-            app.insightCache.store(InsightCache.Slot.NEXT_PERIOD, pairedInsight)
-            DiagLog.i(TAG, "Next-window $nextWindowPeriod insight cached for ${pairedInsight.forDate}.")
+            val snapshot = app.generateDailyInsight.snapshot(location, prefs, nextWindowPeriod, dayOffset)
+            app.insightCache.store(InsightCache.Slot.NEXT_PERIOD, snapshot)
+            DiagLog.i(TAG, "Next-window $nextWindowPeriod snapshot cached for ${snapshot.bundle.today.date}.")
         }.onFailure {
             if (it is CancellationException) throw it
             DiagLog.w(TAG, "Next-window $nextWindowPeriod insight generation failed; not blocking $primaryPeriod delivery.", it)

@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026-05-16_
+_Last updated: 2026-05-23_
 
 ClothesCast is a daily weather-insight app for Android. This policy
 describes what data the app handles, where it goes, and what control you
@@ -72,9 +72,11 @@ The source code is at <https://github.com/mikelward/clothescast>.
   for today's forecast _and_ (b) you have online TTS enabled — in which
   case the rendered sentence (which can include the event title) is sent
   to your chosen TTS provider for vocalization.
-- **Stored on device:** The most recent rendered insight (which may
-  contain that sentence) is cached for up to one day so the app doesn't
-  recompute it on every launch.
+- **Stored on device:** The most recent forecast snapshot is cached for
+  up to one day so the app doesn't refetch on every launch. Event titles
+  and locations are never written to disk; only event timing (start,
+  end, all-day) and a "has a location" flag are persisted, since that's
+  all the insight renderer needs to re-derive the prose.
 - **Retention by us:** Replaced on the next daily refresh; cleared on
   uninstall.
 
@@ -379,6 +381,13 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-05-23** — Internal change to how the daily insight is cached on
+  device: the cache now stores the upstream forecast snapshot plus
+  minimal event timing (start, end, all-day, a "has a location" flag),
+  and re-derives the insight against your current settings on read.
+  Event titles and free-form locations are not written to disk. No
+  material change to what leaves the device. See the updated "Calendar
+  events" section above.
 - **2026-05-16** — Added an optional **Smart Home / Home Assistant MQTT
   bridge** (Settings → Smart Home; off by default). When enabled, the
   app publishes the rendered forecast sentence as a retained MQTT

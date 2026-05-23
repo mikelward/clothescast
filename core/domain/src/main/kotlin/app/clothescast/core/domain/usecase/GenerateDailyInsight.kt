@@ -181,6 +181,7 @@ class GenerateDailyInsight(
             // (all-day, no location — and now preserved by the reader for
             // classification) naturally fall out.
             hasEvents = periodView.events.any { !it.allDay && !it.location.isNullOrBlank() },
+            forecastZone = bundle.forecastZone,
         )
         return DailyInsightResult(insight = insight, alerts = activeAlerts)
     }

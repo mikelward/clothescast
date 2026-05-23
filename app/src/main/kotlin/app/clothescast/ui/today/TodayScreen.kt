@@ -49,7 +49,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -122,12 +124,14 @@ import app.clothescast.location.hasCoarseLocationPermission
 import app.clothescast.ui.theme.AppTheme
 import app.clothescast.work.FetchAndNotifyWorker
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
 import kotlin.math.roundToInt
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -611,73 +615,110 @@ private fun TodayPage(
                 // shifts the scale. The diagnostic cards below follow the same
                 // pattern (see [PerModelDiagnosticCard]).
                 val perModelData = insight.perModelHourly
-                ForecastCard(
-                    hourly = insight.hourly,
-                    temperatureUnit = state.temperatureUnit,
-                    distanceUnit = state.distanceUnit,
-                    perModelHourly = perModelData,
-                    showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = tapToggle,
-                )
-                AirTemperatureCard(
-                    hourly = insight.hourly,
-                    temperatureUnit = state.temperatureUnit,
-                    perModelHourly = perModelData,
-                    showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = tapToggle,
-                )
-                PrecipitationCard(
-                    hourly = insight.hourly,
-                    perModelHourly = perModelData,
-                    showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = tapToggle,
-                )
-                // Diagnostic cards below the headline temp + rain pair. Each
-                // draws a consensus main line by default and overlays the
-                // per-model spread when [showModelSpread] is on — same pattern
-                // as the temp / precip cards. Each card auto-hides when every
-                // consulted model is missing its metric outright (older cached
-                // payloads don't carry wind / humidity / cloud).
-                insight.perModelHourly?.let { perModelData ->
-                    WindCard(
+                // Compute the "now" x-position and route it to every chart on
+                // the screen via a composition local — see
+                // [LocalChartCurrentTimeX] for the reasoning. Tick once a
+                // minute via a side effect so the line keeps tracking the
+                // clock when the user leaves the screen open: keying the
+                // calculation on `insight.hourly` + `insight.forDate` alone
+                // would freeze it at whatever `now()` was when the insight
+                // first landed. Per-minute is plenty — 24h chart at ~300dp
+                // wide ≈ 0.2dp per minute, so any faster tick is invisible.
+                // The effect is scoped to the composable, so it cancels when
+                // the user navigates away.
+                //
+                // Read `now` in the *forecast* zone (Open-Meteo's `timezone=auto`,
+                // surfaced on [Insight.forecastZone]) rather than the device's,
+                // because [HourlyForecast.time] is wall-clock local to that
+                // zone. For the common auto-location case the two are equal;
+                // for a manual location in a different zone, using the device
+                // zone would shift the indicator by the offset (or hide it
+                // out of window). Fall back to the device default on legacy
+                // cached insights that predate `forecastZone`.
+                val zone = insight.forecastZone ?: ZoneId.systemDefault()
+                var now by remember(zone) { mutableStateOf(LocalDateTime.now(zone)) }
+                LaunchedEffect(zone) {
+                    while (true) {
+                        delay(60_000L)
+                        now = LocalDateTime.now(zone)
+                    }
+                }
+                val currentTimeX = remember(insight.hourly, insight.forDate, now) {
+                    currentTimeChartX(
                         hourly = insight.hourly,
-                        perModelHourly = perModelData,
-                        windSpeedUnit = state.distanceUnit.windSpeedUnit(),
-                        showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
+                        startDate = insight.forDate,
+                        now = now,
                     )
-                    CloudCard(
+                }
+                CompositionLocalProvider(LocalChartCurrentTimeX provides currentTimeX) {
+                    ForecastCard(
                         hourly = insight.hourly,
-                        perModelHourly = perModelData,
-                        showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
-                    )
-                    HumidityCard(
-                        hourly = insight.hourly,
+                        temperatureUnit = state.temperatureUnit,
+                        distanceUnit = state.distanceUnit,
                         perModelHourly = perModelData,
                         showModelSpread = state.showModelSpread,
                         onToggleModelSpread = tapToggle,
                     )
-                    SolarRadiationCard(
+                    AirTemperatureCard(
                         hourly = insight.hourly,
+                        temperatureUnit = state.temperatureUnit,
                         perModelHourly = perModelData,
                         showModelSpread = state.showModelSpread,
                         onToggleModelSpread = tapToggle,
                     )
-                    SunshineCard(
-                        hourly = insight.hourly,
-                        perModelHourly = perModelData,
-                        forDate = insight.forDate,
-                        period = insight.period,
-                        showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
-                    )
-                    UvIndexCard(
+                    PrecipitationCard(
                         hourly = insight.hourly,
                         perModelHourly = perModelData,
                         showModelSpread = state.showModelSpread,
                         onToggleModelSpread = tapToggle,
                     )
+                    // Diagnostic cards below the headline temp + rain pair. Each
+                    // draws a consensus main line by default and overlays the
+                    // per-model spread when [showModelSpread] is on — same pattern
+                    // as the temp / precip cards. Each card auto-hides when every
+                    // consulted model is missing its metric outright (older cached
+                    // payloads don't carry wind / humidity / cloud).
+                    insight.perModelHourly?.let { perModelData ->
+                        WindCard(
+                            hourly = insight.hourly,
+                            perModelHourly = perModelData,
+                            windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                            showModelSpread = state.showModelSpread,
+                            onToggleModelSpread = tapToggle,
+                        )
+                        CloudCard(
+                            hourly = insight.hourly,
+                            perModelHourly = perModelData,
+                            showModelSpread = state.showModelSpread,
+                            onToggleModelSpread = tapToggle,
+                        )
+                        HumidityCard(
+                            hourly = insight.hourly,
+                            perModelHourly = perModelData,
+                            showModelSpread = state.showModelSpread,
+                            onToggleModelSpread = tapToggle,
+                        )
+                        SolarRadiationCard(
+                            hourly = insight.hourly,
+                            perModelHourly = perModelData,
+                            showModelSpread = state.showModelSpread,
+                            onToggleModelSpread = tapToggle,
+                        )
+                        SunshineCard(
+                            hourly = insight.hourly,
+                            perModelHourly = perModelData,
+                            forDate = insight.forDate,
+                            period = insight.period,
+                            showModelSpread = state.showModelSpread,
+                            onToggleModelSpread = tapToggle,
+                        )
+                        UvIndexCard(
+                            hourly = insight.hourly,
+                            perModelHourly = perModelData,
+                            showModelSpread = state.showModelSpread,
+                            onToggleModelSpread = tapToggle,
+                        )
+                    }
                 }
             }
         }

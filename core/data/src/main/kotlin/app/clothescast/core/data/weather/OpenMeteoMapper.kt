@@ -6,6 +6,7 @@ import app.clothescast.core.domain.repository.ForecastBundle
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneId
 
 /**
  * Maps an [OpenMeteoResponse] (queried with past_days=1&forecast_days=2) into a
@@ -53,6 +54,12 @@ internal object OpenMeteoMapper {
             yesterday = yesterday,
             tomorrowHourly = tomorrowHourly,
             tomorrow = tomorrow,
+            // Open-Meteo's `timezone=auto` echoes the resolved IANA zone in the
+            // response (`America/Los_Angeles`, `Europe/London`, …). Parse
+            // defensively — an unparseable / `"GMT+1"`-style value collapses to
+            // null so consumers fall back to the device default rather than
+            // throwing on a perfectly-good forecast payload.
+            forecastZone = runCatching { ZoneId.of(response.timezone) }.getOrNull(),
         )
     }
 

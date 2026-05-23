@@ -144,6 +144,8 @@ fun PrecipitationChart(
 
     val lineProvider = rememberPinnedLineProvider(visibleModels, mainLineColor)
 
+    val decorations = rememberCurrentTimeDecorations()
+
     CartesianChartHost(
         chart = rememberCartesianChart(
             rememberLineCartesianLayer(
@@ -152,6 +154,7 @@ fun PrecipitationChart(
             ),
             startAxis = VerticalAxis.rememberStart(valueFormatter = startFormatter),
             bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
+            decorations = decorations,
         ),
         modelProducer = producer,
         // Match ForecastChart: force-fit the full 24-hour series instead of

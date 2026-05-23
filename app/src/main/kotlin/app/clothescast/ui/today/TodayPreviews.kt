@@ -1257,6 +1257,25 @@ internal fun ForecastChartDarkPreview() {
     }
 }
 
+// Pins the "now" indicator at a fractional position so the snapshot locks in
+// where the line lands relative to the axes and the data. Picks 14.5
+// (mid-afternoon, between the curve's two warmest hours) so the indicator
+// sits roughly centred and is clearly visible against both the line and the
+// gridlines.
+@Preview(name = "Forecast chart · with current time", widthDp = 360)
+@Composable
+internal fun ForecastChartWithCurrentTimePreview() {
+    Frame {
+        CompositionLocalProvider(LocalChartCurrentTimeX provides 14.5) {
+            ForecastChart(
+                hourly = SAMPLE_HOURLY,
+                temperatureUnit = TemperatureUnit.CELSIUS,
+                showFeelsLike = true,
+            )
+        }
+    }
+}
+
 // 24-hour rain probability tracking a wet day with a mid-afternoon peak. Values
 // in percent. Reuses SAMPLE_HOURLY's temperature curve as a base and overrides
 // just the precipitation probabilities, so the rainy preview shares the same

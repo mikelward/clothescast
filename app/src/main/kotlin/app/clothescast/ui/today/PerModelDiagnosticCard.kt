@@ -259,6 +259,8 @@ private fun PerModelDiagnosticChart(
     // convention.
     val lineProvider = rememberPinnedLineProvider(overlayModels, mainLineColor)
 
+    val decorations = rememberCurrentTimeDecorations()
+
     CartesianChartHost(
         chart = rememberCartesianChart(
             rememberLineCartesianLayer(
@@ -270,6 +272,7 @@ private fun PerModelDiagnosticChart(
                 valueFormatter = startFormatter,
             ),
             bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
+            decorations = decorations,
         ),
         modelProducer = producer,
         // Disable scroll/zoom gestures so the chart doesn't swallow horizontal

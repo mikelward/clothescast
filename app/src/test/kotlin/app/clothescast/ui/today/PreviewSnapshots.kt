@@ -389,6 +389,7 @@ class PreviewSnapshots {
 
     @Test fun forecast_chart() = capture { ForecastChartPreview() }
     @Test fun forecast_chart_dark() = capture { ForecastChartDarkPreview() }
+    @Test fun forecast_chart_with_current_time() = capture { ForecastChartWithCurrentTimePreview() }
     @Test fun forecast_chart_with_model_spread() = capture { ForecastChartWithModelSpreadPreview() }
     @Test fun forecast_card_with_model_spread() = capture { ForecastCardWithModelSpreadPreview() }
     @Test fun air_temperature_card_with_model_spread() = capture { AirTemperatureCardWithModelSpreadPreview() }

@@ -6,6 +6,7 @@ import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.WeatherAlert
+import java.time.ZoneId
 
 /**
  * Source of weather data. Implementations are responsible for combining yesterday's
@@ -56,6 +57,15 @@ data class ForecastBundle(
      * falls back to a single-card layout in that case.
      */
     val tomorrow: DailyForecast? = null,
+    /**
+     * IANA zone the upstream forecast is in — Open-Meteo's `timezone=auto`
+     * resolves to the forecast location's zone rather than the device's.
+     * Propagated up to [app.clothescast.core.domain.model.Insight.forecastZone]
+     * so UI surfaces that compare wall-clock hours against `now()` read
+     * `now` in the right zone. Null on legacy fixtures / fetch paths that
+     * don't surface the field; consumers fall back to the device default.
+     */
+    val forecastZone: ZoneId? = null,
 ) {
     init {
         require(yesterday.date.isBefore(today.date)) {

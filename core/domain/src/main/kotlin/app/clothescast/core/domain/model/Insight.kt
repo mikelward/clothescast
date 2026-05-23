@@ -2,6 +2,7 @@ package app.clothescast.core.domain.model
 
 import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 
 /**
  * The output of a daily generation pass: the structured [InsightSummary] (clauses
@@ -88,4 +89,17 @@ data class Insight(
      * house tonight," which warrants a sound and TTS read-out.
      */
     val hasEvents: Boolean = false,
+    /**
+     * Zone the upstream forecast was generated in — Open-Meteo's `timezone=auto`
+     * resolves to the forecast location's IANA zone (e.g. `America/Los_Angeles`)
+     * rather than the device's. [HourlyForecast.time] is wall-clock local to
+     * this zone, so any UI that compares the chart's hour axis against `now()`
+     * (the chart "current time" indicator, future schedule hints) must read
+     * `now` in this zone instead of the device's default. Null on insights
+     * from older caches that predate the field — callers fall back to
+     * [ZoneId.systemDefault] in that case, which matches the auto-location
+     * case (the vast majority) but mis-shifts the now-line for a manual
+     * location in a different zone.
+     */
+    val forecastZone: ZoneId? = null,
 )

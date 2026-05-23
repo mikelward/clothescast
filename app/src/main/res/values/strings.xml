@@ -615,7 +615,7 @@
     <string name="settings_format_change_degrees">%1$d°</string>
     <!-- Clothes-format picker: "Wear a sweater." vs "Wear 2 layers." -->
     <string name="settings_format_clothes_label">Clothes wording</string>
-    <string name="settings_format_clothes_items">Items</string>
+    <string name="settings_format_clothes_items">Garments</string>
     <string name="settings_format_clothes_layer_count">Layer count</string>
 
     <string name="settings_delivery_label">Delivery</string>

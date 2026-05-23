@@ -42,6 +42,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneId
 
 /**
  * Persists the most recently generated [Insight]s so the daily worker can avoid
@@ -260,6 +261,11 @@ class InsightCache(
         val location: LocationDto? = null,
         val confidence: ConfidenceInfoDto? = null,
         val perModelHourly: PerModelHourlyDto? = null,
+        // IANA zone id of the upstream forecast (Open-Meteo `timezone=auto`).
+        // Null on payloads written by an older version; the consumer falls
+        // back to the device zone, which matches the auto-location case but
+        // not a manual location in a different zone.
+        val forecastZoneId: String? = null,
     ) {
         fun toDomain(): Insight {
             val date = LocalDate.ofEpochDay(forDateEpochDays)
@@ -278,6 +284,7 @@ class InsightCache(
                 nextOutfitRationale = nextOutfitRationale?.toDomain(),
                 period = runCatching { ForecastPeriod.valueOf(period) }.getOrDefault(ForecastPeriod.TODAY),
                 hasEvents = hasEvents,
+                forecastZone = forecastZoneId?.let { runCatching { ZoneId.of(it) }.getOrNull() },
             )
         }
     }
@@ -582,6 +589,7 @@ class InsightCache(
         location = location?.let { LocationDto(it.latitude, it.longitude, it.displayName) },
         confidence = confidence?.toDto(),
         perModelHourly = perModelHourly?.toDto(),
+        forecastZoneId = forecastZone?.id,
     )
 
     private fun ConfidenceInfo.toDto(): ConfidenceInfoDto = ConfidenceInfoDto(

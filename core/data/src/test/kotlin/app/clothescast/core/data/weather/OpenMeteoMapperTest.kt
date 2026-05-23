@@ -8,6 +8,7 @@ import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZoneId
 import java.util.Locale
 
 class OpenMeteoMapperTest {
@@ -74,6 +75,42 @@ class OpenMeteoMapperTest {
         t.hourly shouldHaveSize 8
         t.hourly.first().time shouldBe LocalTime.of(0, 0)
         t.hourly.last().time shouldBe LocalTime.of(21, 0)
+    }
+
+    @Test
+    fun `forecast zone is parsed from response timezone`() {
+        val bundle = OpenMeteoMapper.toBundle(loadFixture())
+
+        bundle.forecastZone shouldBe ZoneId.of("Europe/London")
+    }
+
+    @Test
+    fun `forecast zone collapses to null on an unparseable timezone string`() {
+        // Defensive: an upstream proxy that rewrote the field to something
+        // ZoneId can't accept (or a future Open-Meteo format change) must not
+        // fail the whole forecast — the caller falls back to the device zone.
+        val response = OpenMeteoResponse(
+            timezone = "not a real zone",
+            daily = DailyData(
+                time = listOf("2026-04-24", "2026-04-25"),
+                temperatureMin = listOf(10.0, 12.0),
+                temperatureMax = listOf(18.0, 20.0),
+                feelsLikeMin = listOf(10.0, 12.0),
+                feelsLikeMax = listOf(18.0, 20.0),
+                precipitationProbabilityMax = listOf(0, 0),
+                precipitationSum = listOf(0.0, 0.0),
+                weatherCode = listOf(0, 0),
+            ),
+            hourly = HourlyData(
+                time = listOf("2026-04-25T00:00"),
+                temperature = listOf(10.0),
+                feelsLike = listOf(10.0),
+                precipitationProbability = listOf(0),
+                weatherCode = listOf(0),
+            ),
+        )
+
+        OpenMeteoMapper.toBundle(response).forecastZone shouldBe null
     }
 
     @Test

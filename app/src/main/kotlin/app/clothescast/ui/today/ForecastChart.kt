@@ -231,6 +231,8 @@ fun ForecastChart(
     val modelColors = AppTheme.palette.modelColors
     val lineProvider = rememberPinnedLineProvider(visibleModels, mainLineColor, modelColors)
 
+    val decorations = rememberCurrentTimeDecorations()
+
     CartesianChartHost(
         chart = rememberCartesianChart(
             rememberLineCartesianLayer(
@@ -242,6 +244,7 @@ fun ForecastChart(
                 valueFormatter = startFormatter,
             ),
             bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
+            decorations = decorations,
         ),
         modelProducer = producer,
         // Vico's default initial zoom is `max(fixed, content)`, which on a 24-point

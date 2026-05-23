@@ -42,6 +42,7 @@ import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
+import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
@@ -70,6 +71,7 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
         FormatContent(
             rangeFormat = state.rangeFormat,
             clothesFormat = state.clothesFormat,
+            rainAccessory = state.rainAccessory,
             deltaThresholdC = state.deltaThresholdC,
             clothesMentionMode = state.clothesMentionMode,
             region = state.region,
@@ -78,6 +80,7 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             padding = padding,
             onSetRangeFormat = viewModel::setRangeFormat,
             onSetClothesFormat = viewModel::setClothesFormat,
+            onSetRainAccessory = viewModel::setRainAccessory,
             onSetDeltaThresholdC = viewModel::setDeltaThresholdC,
             onSetClothesMentionMode = viewModel::setClothesMentionMode,
         )
@@ -88,6 +91,7 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
 internal fun FormatContent(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
+    rainAccessory: RainAccessory,
     deltaThresholdC: Double?,
     clothesMentionMode: ClothesMentionMode,
     region: Region,
@@ -96,6 +100,7 @@ internal fun FormatContent(
     padding: PaddingValues,
     onSetRangeFormat: (RangeFormat) -> Unit,
     onSetClothesFormat: (ClothesFormat) -> Unit,
+    onSetRainAccessory: (RainAccessory) -> Unit,
     onSetDeltaThresholdC: (Double?) -> Unit,
     onSetClothesMentionMode: (ClothesMentionMode) -> Unit,
 ) {
@@ -112,8 +117,23 @@ internal fun FormatContent(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            PreviewCard(rangeFormat, clothesFormat, deltaThresholdC, clothesMentionMode, region, temperatureUnit)
-            CurrentForecastPreviewCard(currentInsightSummary, region, temperatureUnit, rangeFormat, clothesFormat)
+            PreviewCard(
+                rangeFormat,
+                clothesFormat,
+                rainAccessory,
+                deltaThresholdC,
+                clothesMentionMode,
+                region,
+                temperatureUnit,
+            )
+            CurrentForecastPreviewCard(
+                currentInsightSummary,
+                region,
+                temperatureUnit,
+                rangeFormat,
+                clothesFormat,
+                rainAccessory,
+            )
             SectionCard(title = stringResource(R.string.settings_format_what_to_say)) {
                 FormatDropdownRow(
                     label = stringResource(R.string.settings_format_range_label),
@@ -143,6 +163,13 @@ internal fun FormatContent(
                     optionLabel = { stringResource(clothesFormatLabel(it)) },
                     onSelect = onSetClothesFormat,
                 )
+                FormatDropdownRow(
+                    label = stringResource(R.string.settings_format_rain_accessory_label),
+                    options = RainAccessory.entries,
+                    selected = rainAccessory,
+                    optionLabel = { stringResource(rainAccessoryLabel(it)) },
+                    onSelect = onSetRainAccessory,
+                )
             }
         }
     }
@@ -159,18 +186,24 @@ private fun clothesFormatLabel(format: ClothesFormat): Int = when (format) {
     ClothesFormat.LAYER_COUNT -> R.string.settings_format_clothes_layer_count
 }
 
+private fun rainAccessoryLabel(accessory: RainAccessory): Int = when (accessory) {
+    RainAccessory.NONE -> R.string.settings_format_rain_accessory_none
+    RainAccessory.UMBRELLA -> R.string.settings_format_rain_accessory_umbrella
+}
+
 @Composable
 private fun PreviewCard(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
+    rainAccessory: RainAccessory,
     deltaThresholdC: Double?,
     clothesMentionMode: ClothesMentionMode,
     region: Region,
     temperatureUnit: TemperatureUnit,
 ) {
     val context = LocalContext.current
-    val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat) {
-        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat)
+    val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat, rainAccessory) {
+        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, rainAccessory)
     }
     // Drop the delta clause when the selected threshold is above the sample's
     // delta, so the preview reflects the significant-change setting too.
@@ -226,10 +259,11 @@ private fun CurrentForecastPreviewCard(
     temperatureUnit: TemperatureUnit,
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
+    rainAccessory: RainAccessory,
 ) {
     val context = LocalContext.current
-    val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat) {
-        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat)
+    val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat, rainAccessory) {
+        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, rainAccessory)
     }
     SectionCard(title = stringResource(R.string.settings_format_preview_current_title)) {
         Text(

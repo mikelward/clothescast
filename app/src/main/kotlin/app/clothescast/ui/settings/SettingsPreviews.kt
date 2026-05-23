@@ -36,6 +36,7 @@ import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
+import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
@@ -134,6 +135,7 @@ internal fun SettingsFormatPreview() {
         FormatContent(
             rangeFormat = RangeFormat.BANDS,
             clothesFormat = ClothesFormat.ITEMS,
+            rainAccessory = RainAccessory.NONE,
             deltaThresholdC = 3.0,
             clothesMentionMode = ClothesMentionMode.ALWAYS,
             region = Region.SYSTEM,
@@ -141,6 +143,7 @@ internal fun SettingsFormatPreview() {
             padding = PaddingValues(0.dp),
             onSetRangeFormat = {},
             onSetClothesFormat = {},
+            onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
         )
@@ -156,6 +159,7 @@ internal fun SettingsFormatClothesNeverPreview() {
         FormatContent(
             rangeFormat = RangeFormat.BANDS,
             clothesFormat = ClothesFormat.ITEMS,
+            rainAccessory = RainAccessory.NONE,
             deltaThresholdC = 3.0,
             clothesMentionMode = ClothesMentionMode.NEVER,
             region = Region.SYSTEM,
@@ -163,6 +167,7 @@ internal fun SettingsFormatClothesNeverPreview() {
             padding = PaddingValues(0.dp),
             onSetRangeFormat = {},
             onSetClothesFormat = {},
+            onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
         )
@@ -179,6 +184,7 @@ internal fun SettingsFormatCurrentForecastPreview() {
         FormatContent(
             rangeFormat = RangeFormat.DEGREES,
             clothesFormat = ClothesFormat.ITEMS,
+            rainAccessory = RainAccessory.NONE,
             deltaThresholdC = 3.0,
             clothesMentionMode = ClothesMentionMode.ALWAYS,
             region = Region.SYSTEM,
@@ -198,6 +204,44 @@ internal fun SettingsFormatCurrentForecastPreview() {
             padding = PaddingValues(0.dp),
             onSetRangeFormat = {},
             onSetClothesFormat = {},
+            onSetRainAccessory = {},
+            onSetDeltaThresholdC = {},
+            onSetClothesMentionMode = {},
+        )
+    }
+}
+
+// Covers the rain-accessory path with both preview cards showing the
+// accessory clause: the synthetic example renders "Rain at 5pm, bring an
+// umbrella." and the current-forecast card folds the umbrella into the
+// evening tie-in.
+@Preview(name = "Settings · Format (rain accessory)", widthDp = 360)
+@Composable
+internal fun SettingsFormatRainAccessoryPreview() {
+    SettingsFrame {
+        FormatContent(
+            rangeFormat = RangeFormat.DEGREES,
+            clothesFormat = ClothesFormat.ITEMS,
+            rainAccessory = RainAccessory.UMBRELLA,
+            deltaThresholdC = 3.0,
+            clothesMentionMode = ClothesMentionMode.ALWAYS,
+            region = Region.SYSTEM,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            currentInsightSummary = InsightSummary(
+                period = ForecastPeriod.TODAY,
+                band = BandClause(
+                    low = TemperatureBand.COOL,
+                    high = TemperatureBand.MILD,
+                    feelsLikeMinC = 12.0,
+                    feelsLikeMaxC = 20.0,
+                ),
+                clothes = ClothesClause(items = listOf("sweater")),
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0), PrecipLikelihood.LIKELY),
+            ),
+            padding = PaddingValues(0.dp),
+            onSetRangeFormat = {},
+            onSetClothesFormat = {},
+            onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
         )

@@ -4,6 +4,7 @@ import android.content.Context
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.InsightSummary
+import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -34,12 +35,13 @@ internal fun insightTtsUtterance(
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     rangeFormat: RangeFormat = RangeFormat.DEGREES,
     clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
+    rainAccessory: RainAccessory = RainAccessory.NONE,
     fallbackLocale: Locale = Locale.getDefault(),
     holidayTheme: HolidayTheme? = null,
 ): InsightTtsUtterance {
     val regionLocale = region.toJavaLocale() ?: fallbackLocale
     val locale = voiceLocale.resolve(regionLocale)
-    val forecast = InsightFormatter.forContext(context, locale, temperatureUnit, rangeFormat, clothesFormat)
+    val forecast = InsightFormatter.forContext(context, locale, temperatureUnit, rangeFormat, clothesFormat, rainAccessory)
         // Spoken playback stays silent when nothing fired — no "it will be the
         // same as yesterday." filler read aloud — unlike the display surfaces.
         .format(summary, placeholderWhenEmpty = false)

@@ -718,6 +718,9 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_tie_in_with_rain_chance">Evtl. Regen um %2$s — denk an %1$s für heute Abend.</string>
     <string name="insight_evening_rain">Heute Abend Regen um %1$s.</string>
     <string name="insight_evening_rain_chance">Evtl. Regen heute Abend um %1$s.</string>
+    <!-- Precip + accessory carry: "Regen um 15 Uhr, denk an Regenschirm." %1$s = condition, %2$s = time, %3$s = accessory. -->
+    <string name="insight_precip_with_accessory">%1$s %2$s, denk an %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Evtl. %1$s %2$s, denk an %3$s.</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast kann auf diesem Gerät nicht ausgeführt werden — deinem Android-Build fehlt eine Funktion, die die App-Oberfläche benötigt (Configuration.fontWeightAdjustment, erwartet ab Android 12 aufwärts). Bitte wende dich an deinen Gerätehersteller für ein System-Update.</string>

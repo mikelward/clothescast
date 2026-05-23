@@ -155,11 +155,18 @@ data class CalendarTieInClause(val item: String)
  * [likelihood] is only meaningful when [rainTime] is set; it defaults to
  * LIKELY for back-compat with cached payloads written before the field
  * existed.
+ *
+ * [precipCondition] mirrors the same per-model peak's [WeatherCondition] so
+ * the formatter can decide whether a wet-weather accessory mention makes
+ * sense (umbrella for RAIN / DRIZZLE, but never for SNOW or THUNDERSTORM).
+ * Null on cached payloads written before this field existed — the formatter
+ * treats that as "unknown, skip the accessory" rather than guess.
  */
 data class EveningEventTieInClause(
     val items: List<String> = emptyList(),
     val rainTime: LocalTime? = null,
     val likelihood: PrecipLikelihood = PrecipLikelihood.LIKELY,
+    val precipCondition: WeatherCondition? = null,
 )
 
 /**

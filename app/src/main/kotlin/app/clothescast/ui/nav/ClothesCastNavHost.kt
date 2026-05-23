@@ -332,6 +332,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
                 prefs.temperatureUnit,
                 prefs.rangeFormat,
                 prefs.clothesFormat,
+                prefs.rainAccessory,
             )
             val prose = formatter.format(insight.summary)
             val png: ByteArray? = insight.outfit?.let { outfit ->

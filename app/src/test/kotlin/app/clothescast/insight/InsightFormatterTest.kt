@@ -14,6 +14,7 @@ import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
+import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
@@ -696,6 +697,222 @@ class InsightFormatterTest {
             ),
         )
         out shouldBe "Today, it will be 21°. Wear shorts. Tonight, bring a jacket."
+    }
+
+    // ---------------------------------------------------------------------
+    // RainAccessory.UMBRELLA — opts in to "bring an umbrella" alongside the
+    // existing rain mention. The accessory rides on the precip clause and
+    // the evening event tie-in (whenever a rain time is present); it's
+    // never injected when rain isn't being mentioned.
+    // ---------------------------------------------------------------------
+
+    private val umbrellaSubject = InsightFormatter.forContext(
+        context,
+        Locale.ENGLISH,
+        rainAccessory = RainAccessory.UMBRELLA,
+    )
+
+    @Test
+    fun `umbrella accessory appends 'bring an umbrella' to the LIKELY precip clause`() {
+        umbrellaSubject.format(
+            summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0))),
+        ) shouldBe "Today, it will be 21°. Rain at 3pm, bring an umbrella."
+    }
+
+    @Test
+    fun `umbrella accessory appends 'bring an umbrella' to the POSSIBLE precip clause`() {
+        umbrellaSubject.format(
+            summary(
+                precip = PrecipClause(
+                    WeatherCondition.RAIN,
+                    LocalTime.of(15, 0),
+                    PrecipLikelihood.POSSIBLE,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Chance of rain at 3pm, bring an umbrella."
+    }
+
+    @Test
+    fun `umbrella accessory appends to the overnight-collapsed precip clause`() {
+        umbrellaSubject.format(
+            summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(2, 0))),
+        ) shouldBe "Today, it will be 21°. Rain overnight, bring an umbrella."
+    }
+
+    @Test
+    fun `umbrella accessory rides a drizzle precip clause`() {
+        // DRIZZLE is rain-like enough that an umbrella still reads correctly.
+        umbrellaSubject.format(
+            summary(precip = PrecipClause(WeatherCondition.DRIZZLE, LocalTime.NOON)),
+        ) shouldBe "Today, it will be 21°. Drizzle at noon, bring an umbrella."
+    }
+
+    @Test
+    fun `umbrella accessory is suppressed when the precip is snow`() {
+        // Regression: "Snow overnight, bring an umbrella." reads wrong — the
+        // accessory is rain-keyed by name and an umbrella isn't the right tool
+        // for snow.
+        umbrellaSubject.format(
+            summary(precip = PrecipClause(WeatherCondition.SNOW, LocalTime.MIDNIGHT)),
+        ) shouldBe "Today, it will be 21°. Snow overnight."
+    }
+
+    @Test
+    fun `umbrella accessory is suppressed when the precip is a thunderstorm`() {
+        // Lightning + umbrella is bad practice; the precip clause already
+        // names the thunderstorm, the listener doesn't need an unsafe carry.
+        umbrellaSubject.format(
+            summary(precip = PrecipClause(WeatherCondition.THUNDERSTORM, LocalTime.of(15, 0))),
+        ) shouldBe "Today, it will be 21°. Thunderstorm at 3pm."
+    }
+
+    @Test
+    fun `umbrella accessory is suppressed on a snow chance-of clause`() {
+        // Same condition-gating applies to the POSSIBLE-tier template — a
+        // hedged snow mention shouldn't pick up the accessory either.
+        umbrellaSubject.format(
+            summary(
+                precip = PrecipClause(
+                    WeatherCondition.SNOW,
+                    LocalTime.of(15, 0),
+                    PrecipLikelihood.POSSIBLE,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Chance of snow at 3pm."
+    }
+
+    @Test
+    fun `umbrella accessory does not surface when there is no precip clause`() {
+        umbrellaSubject.format(
+            summary(clothes = ClothesClause(listOf("sweater"))),
+        ) shouldBe "Today, it will be 21°. Wear a sweater."
+    }
+
+    @Test
+    fun `umbrella accessory is injected alongside items in the evening tie-in with rain`() {
+        umbrellaSubject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("jacket"),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = WeatherCondition.RAIN,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring a jacket and umbrella."
+    }
+
+    @Test
+    fun `umbrella accessory promotes the bare-rain evening tie-in to the item-led template`() {
+        // With RainAccessory.NONE this path renders "Tonight, rain at 9pm.".
+        // The umbrella choice promotes it to the item-led template with the
+        // accessory as the lone item.
+        umbrellaSubject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = emptyList(),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = WeatherCondition.RAIN,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring an umbrella."
+    }
+
+    @Test
+    fun `umbrella accessory rides the hedged evening tie-in when likelihood is POSSIBLE`() {
+        umbrellaSubject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = emptyList(),
+                    rainTime = LocalTime.of(21, 0),
+                    likelihood = PrecipLikelihood.POSSIBLE,
+                    precipCondition = WeatherCondition.RAIN,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, chance of rain at 9pm, bring an umbrella."
+    }
+
+    @Test
+    fun `umbrella accessory is not injected into the evening tie-in when rain time is null`() {
+        umbrellaSubject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(items = listOf("jacket")),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, bring a jacket."
+    }
+
+    @Test
+    fun `umbrella accessory dedupes — a stray umbrella in items list stays silenced before injection`() {
+        // The filter still strips every accessory from the incoming items
+        // list; injection happens after. So an umbrella-keyed ClothesRule
+        // that fired into items doesn't double-up with the format-option
+        // injection.
+        umbrellaSubject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("jacket", "umbrella"),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = WeatherCondition.RAIN,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring a jacket and umbrella."
+    }
+
+    @Test
+    fun `umbrella accessory is suppressed in the evening tie-in when the peak is snow`() {
+        // The clause's rainTime field gets populated from any precip peak
+        // (DeriveInsight aliases it across condition types), so we explicitly
+        // check the precipCondition before injecting. SNOW → bare-rain
+        // template, no umbrella ride-along.
+        umbrellaSubject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = emptyList(),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = WeatherCondition.SNOW,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, rain at 9pm."
+    }
+
+    @Test
+    fun `umbrella accessory is suppressed in the evening tie-in when the peak is thunderstorm`() {
+        umbrellaSubject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("jacket"),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = WeatherCondition.THUNDERSTORM,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring a jacket."
+    }
+
+    @Test
+    fun `umbrella accessory is suppressed in the evening tie-in when precipCondition is null`() {
+        // Pre-field cached payloads land with precipCondition=null. Treat
+        // that as "unknown, skip" rather than guess — next forecast cycle
+        // populates the field.
+        umbrellaSubject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("jacket"),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = null,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring a jacket."
+    }
+
+    @Test
+    fun `de — umbrella accessory renders Regenschirm via the German phraser`() {
+        val germanUmbrellaSubject = InsightFormatter.forContext(
+            context,
+            Locale.GERMAN,
+            rainAccessory = RainAccessory.UMBRELLA,
+        )
+        germanUmbrellaSubject.format(
+            summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0))),
+        ) shouldBe "Heute wird es 21°. Regen um 15 Uhr, denk an Regenschirm."
     }
 
     @Test

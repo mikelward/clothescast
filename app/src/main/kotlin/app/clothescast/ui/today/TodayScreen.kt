@@ -101,6 +101,7 @@ import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.consensusSunshineHours
 import app.clothescast.core.domain.model.consensusSunshineHoursFor
 import app.clothescast.core.domain.model.ClothesFormat
+import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -579,6 +580,7 @@ private fun TodayPage(
                 temperatureUnit = state.temperatureUnit,
                 rangeFormat = state.rangeFormat,
                 clothesFormat = state.clothesFormat,
+                rainAccessory = state.rainAccessory,
                 showChevronRight = showChevronRight,
                 showChevronLeft = showChevronLeft,
                 onChevronTap = onChevronTap,
@@ -1527,6 +1529,12 @@ internal fun InsightCard(
      */
     clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     /**
+     * Optional wet-weather accessory named alongside the rain mention.
+     * Defaults to [RainAccessory.NONE] so existing previews stay
+     * byte-identical.
+     */
+    rainAccessory: RainAccessory = RainAccessory.NONE,
+    /**
      * Page-1 affordance: when true, a tappable chevron-right is rendered at
      * the trailing edge of the date row, hinting that the user can swipe (or
      * tap) to see the paired period's charts.
@@ -1559,8 +1567,8 @@ internal fun InsightCard(
     onNavigateToFormat: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
-    val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat) {
-        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat)
+    val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat, rainAccessory) {
+        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, rainAccessory)
     }
     val locale = LocalConfiguration.current.locales[0]
     val dateFormatter = remember(locale) { DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale) }

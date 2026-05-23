@@ -622,7 +622,6 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <!-- Display — per-garment colour picker. -->
     <string name="settings_display_garment_colors_title">Warna pakaian</string>
-    <string name="settings_display_garment_colors_description">Pilih warna untuk setiap ikon pakaian yang dipaparkan di Hari Ini, widget skrin utama dan pemberitahuan. Garis luar akan menjadi lebih gelap secara automatik.</string>
     <string name="settings_garment_color_default">Lalai</string>
     <string name="settings_garment_color_picker_title">Pilih warna</string>
     <string name="settings_garment_color_swatch_description">Sampel warna %1$s</string>

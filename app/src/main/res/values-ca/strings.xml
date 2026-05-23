@@ -585,7 +585,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_root_forecasters_subtitle">Fonts i models meteorològics</string>
 
     <string name="settings_display_garment_colors_title">Colors de la roba</string>
-    <string name="settings_display_garment_colors_description">Tria un color per a cada icona de peça de roba que apareix a Avui, al widget de la pantalla d\'inici i a les notificacions. El contorn s\'enfosqueix automàticament.</string>
     <string name="settings_garment_color_default">Per defecte</string>
     <string name="settings_garment_color_picker_title">Tria un color</string>
     <string name="settings_garment_color_swatch_description">Mostra de color %1$s</string>

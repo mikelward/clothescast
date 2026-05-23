@@ -632,7 +632,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_root_forecasters_subtitle">Zdroje a modely počasí</string>
 
     <string name="settings_display_garment_colors_title">Barvy oblečení</string>
-    <string name="settings_display_garment_colors_description">Vyber barvu pro každou ikonu oblečení zobrazenou na obrazovce Dnes, ve widgetu na domovské obrazovce a v oznámeních. Obrys se automaticky ztmaví.</string>
     <string name="settings_garment_color_default">Výchozí</string>
     <string name="settings_garment_color_picker_title">Vyber barvu</string>
     <string name="settings_garment_color_swatch_description">Vzorek barvy %1$s</string>

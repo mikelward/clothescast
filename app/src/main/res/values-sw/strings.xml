@@ -588,7 +588,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_forecasters_subtitle">Vyanzo na modeli za hali ya hewa</string>
 
     <string name="settings_display_garment_colors_title">Rangi za mavazi</string>
-    <string name="settings_display_garment_colors_description">Chagua rangi kwa kila aikoni ya vazi inayoonekana kwenye Leo, kwenye wijeti ya skrini ya nyumbani, na kwenye arifa. Mstari wa nje hutiwa giza moja kwa moja.</string>
     <string name="settings_garment_color_default">Chaguo-msingi</string>
     <string name="settings_garment_color_picker_title">Chagua rangi</string>
     <string name="settings_garment_color_swatch_description">Sampuli ya rangi ya %1$s</string>

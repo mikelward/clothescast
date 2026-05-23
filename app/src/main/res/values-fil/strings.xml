@@ -666,7 +666,6 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Display — per-garment colour picker. -->
     <string name="settings_display_garment_colors_title">Mga kulay ng damit</string>
-    <string name="settings_display_garment_colors_description">Pumili ng kulay para sa bawat icon ng damit na ipinapakita sa Ngayon, sa home-screen widget, at sa mga notification. Awtomatikong pumupusyaw ang gilid.</string>
     <string name="settings_garment_color_default">Default</string>
     <string name="settings_garment_color_picker_title">Pumili ng kulay</string>
     <string name="settings_garment_color_swatch_description">Swatch ng kulay %1$s</string>

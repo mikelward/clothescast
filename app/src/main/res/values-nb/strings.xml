@@ -644,7 +644,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_root_forecasters_subtitle">Værkilder og modeller</string>
 
     <string name="settings_display_garment_colors_title">Plaggfarger</string>
-    <string name="settings_display_garment_colors_description">Velg en farge for hvert plaggikon som vises på I dag, i hjemskjermwidgeten og i varsler. Konturen mørkner automatisk.</string>
     <string name="settings_garment_color_default">Standard</string>
     <string name="settings_garment_color_picker_title">Velg en farge</string>
     <string name="settings_garment_color_swatch_description">Fargeprøve %1$s</string>

@@ -700,7 +700,6 @@ only the displayed label localizes.
     <string name="settings_root_forecasters_subtitle">Источники погоды и модели</string>
 
     <string name="settings_display_garment_colors_title">Цвета одежды</string>
-    <string name="settings_display_garment_colors_description">Выбери цвет для каждой иконки одежды на экране «Сегодня», в виджете и в уведомлениях. Контур автоматически становится темнее.</string>
     <string name="settings_garment_color_default">По умолчанию</string>
     <string name="settings_garment_color_picker_title">Выбери цвет</string>
     <string name="settings_garment_color_swatch_description">Образец цвета «%1$s»</string>

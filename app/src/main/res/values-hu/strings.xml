@@ -635,7 +635,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_root_forecasters_subtitle">Időjárás-források és modellek</string>
 
     <string name="settings_display_garment_colors_title">Ruhák színei</string>
-    <string name="settings_display_garment_colors_description">Válassz színt minden ruhaikonhoz, amely a Ma képernyőn, a kezdőképernyő-modulban és az értesítésekben jelenik meg. A körvonal automatikusan sötétebb lesz.</string>
     <string name="settings_garment_color_default">Alapértelmezett</string>
     <string name="settings_garment_color_picker_title">Válassz színt</string>
     <string name="settings_garment_color_swatch_description">„%1$s” színminta</string>

@@ -644,7 +644,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_root_forecasters_subtitle">Väderkällor och modeller</string>
 
     <string name="settings_display_garment_colors_title">Plaggfärger</string>
-    <string name="settings_display_garment_colors_description">Välj en färg för varje plaggikon som visas på Idag, i hemskärmswidgeten och i aviseringar. Konturen mörknar automatiskt.</string>
     <string name="settings_garment_color_default">Standard</string>
     <string name="settings_garment_color_picker_title">Välj en färg</string>
     <string name="settings_garment_color_swatch_description">Färgprov %1$s</string>

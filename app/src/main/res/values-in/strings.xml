@@ -616,7 +616,6 @@ to values/strings.xml (English).
 
     <!-- Display — per-garment colour picker. -->
     <string name="settings_display_garment_colors_title">Warna pakaian</string>
-    <string name="settings_display_garment_colors_description">Pilih warna untuk setiap ikon pakaian yang ditampilkan di Hari Ini, widget layar utama, dan notifikasi. Garis tepi otomatis menjadi lebih gelap.</string>
     <string name="settings_garment_color_default">Default</string>
     <string name="settings_garment_color_picker_title">Pilih warna</string>
     <string name="settings_garment_color_swatch_description">Sampel warna %1$s</string>

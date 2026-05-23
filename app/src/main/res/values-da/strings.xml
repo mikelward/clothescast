@@ -645,7 +645,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_root_forecasters_subtitle">Vejrkilder og modeller</string>
 
     <string name="settings_display_garment_colors_title">Tøjfarver</string>
-    <string name="settings_display_garment_colors_description">Vælg en farve til hvert tøjikon, der vises i Dag, på hjemmeskærms-widgetten og i notifikationer. Konturen mørkner automatisk.</string>
     <string name="settings_garment_color_default">Standard</string>
     <string name="settings_garment_color_picker_title">Vælg en farve</string>
     <string name="settings_garment_color_swatch_description">Farveprøve %1$s</string>

@@ -631,7 +631,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_root_forecasters_subtitle">Izvori i modeli vremena</string>
 
     <string name="settings_display_garment_colors_title">Boje odeće</string>
-    <string name="settings_display_garment_colors_description">Izaberi boju za svaku ikonu odeće prikazanu na ekranu Danas, u vidžetu na početnom ekranu i u obaveštenjima. Obrub se automatski zatamnjuje.</string>
     <string name="settings_garment_color_default">Podrazumevano</string>
     <string name="settings_garment_color_picker_title">Izaberi boju</string>
     <string name="settings_garment_color_swatch_description">Uzorak boje %1$s</string>

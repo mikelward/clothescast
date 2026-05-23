@@ -689,7 +689,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_root_forecasters_subtitle">Źródła i modele pogody</string>
 
     <string name="settings_display_garment_colors_title">Kolory ubrań</string>
-    <string name="settings_display_garment_colors_description">Wybierz kolor dla każdej ikony ubrania pokazywanej na ekranie Dziś, w widżecie ekranu głównego i w powiadomieniach. Obrys automatycznie ciemnieje.</string>
     <string name="settings_garment_color_default">Domyślny</string>
     <string name="settings_garment_color_picker_title">Wybierz kolor</string>
     <string name="settings_garment_color_swatch_description">Próbka koloru %1$s</string>

@@ -625,7 +625,6 @@ displayed label localizes.
     <string name="settings_root_forecasters_subtitle">Sääpalvelut ja mallit</string>
 
     <string name="settings_display_garment_colors_title">Vaatteiden värit</string>
-    <string name="settings_display_garment_colors_description">Valitse väri jokaiselle vaatekuvakkeelle, joka näkyy Tänään-näytöllä, aloitusnäytön widgetissä ja ilmoituksissa. Reuna tummenee automaattisesti.</string>
     <string name="settings_garment_color_default">Oletus</string>
     <string name="settings_garment_color_picker_title">Valitse väri</string>
     <string name="settings_garment_color_swatch_description">Värinäyte %1$s</string>

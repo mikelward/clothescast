@@ -711,7 +711,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_root_forecasters_subtitle">Izvori i modeli vremena</string>
 
     <string name="settings_display_garment_colors_title">Boje odjeće</string>
-    <string name="settings_display_garment_colors_description">Odaberi boju za svaku ikonu odjeće prikazanu na Danas, u widgetu na početnom zaslonu i u obavijestima. Obrub se automatski zatamnjuje.</string>
     <string name="settings_garment_color_default">Zadano</string>
     <string name="settings_garment_color_picker_title">Odaberi boju</string>
     <string name="settings_garment_color_swatch_description">Uzorak boje %1$s</string>

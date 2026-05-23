@@ -613,7 +613,6 @@ standard in Israeli digital communication.
     <string name="settings_root_forecasters_subtitle">מקורות ומודלי מזג אוויר</string>
 
     <string name="settings_display_garment_colors_title">צבעי בגדים</string>
-    <string name="settings_display_garment_colors_description">בחר/י צבע לכל אייקון בגד שמופיע במסך היום, בווידג׳ט של מסך הבית ובהתראות. קו המתאר יוכהה אוטומטית.</string>
     <string name="settings_garment_color_default">ברירת מחדל</string>
     <string name="settings_garment_color_picker_title">בחר/י צבע</string>
     <string name="settings_garment_color_swatch_description">דגימת צבע %1$s</string>

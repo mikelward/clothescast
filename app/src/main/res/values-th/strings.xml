@@ -616,7 +616,6 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Display — per-garment colour picker. -->
     <string name="settings_display_garment_colors_title">สีของเสื้อผ้า</string>
-    <string name="settings_display_garment_colors_description">เลือกสีให้ไอคอนเสื้อผ้าแต่ละชิ้นที่แสดงในหน้าวันนี้ วิดเจ็ตหน้าจอหลัก และการแจ้งเตือน เส้นขอบจะเข้มขึ้นโดยอัตโนมัติ</string>
     <string name="settings_garment_color_default">ค่าเริ่มต้น</string>
     <string name="settings_garment_color_picker_title">เลือกสี</string>
     <string name="settings_garment_color_swatch_description">ตัวอย่างสี %1$s</string>

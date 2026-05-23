@@ -764,7 +764,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_forecasters_subtitle">Πηγές καιρού και μοντέλα</string>
 
     <string name="settings_display_garment_colors_title">Χρώματα ρούχων</string>
-    <string name="settings_display_garment_colors_description">Διάλεξε ένα χρώμα για κάθε εικονίδιο ρούχου που εμφανίζεται στο Σήμερα, στο widget της αρχικής οθόνης και στις ειδοποιήσεις. Το περίγραμμα σκουραίνει αυτόματα.</string>
     <string name="settings_garment_color_default">Προεπιλογή</string>
     <string name="settings_garment_color_picker_title">Διάλεξε χρώμα</string>
     <string name="settings_garment_color_swatch_description">Δείγμα χρώματος %1$s</string>

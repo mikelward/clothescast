@@ -627,7 +627,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_root_forecasters_subtitle">Viri in modeli vremena</string>
 
     <string name="settings_display_garment_colors_title">Barve oblačil</string>
-    <string name="settings_display_garment_colors_description">Izberi barvo za vsako ikono oblačila, prikazano na zaslonu Danes, v pripomočku domačega zaslona in v obvestilih. Obroba se samodejno potemni.</string>
     <string name="settings_garment_color_default">Privzeto</string>
     <string name="settings_garment_color_picker_title">Izberi barvo</string>
     <string name="settings_garment_color_swatch_description">Barvni vzorec %1$s</string>

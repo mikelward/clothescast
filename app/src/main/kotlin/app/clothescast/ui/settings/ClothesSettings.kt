@@ -137,11 +137,6 @@ private fun GarmentColorsCard(
 ) {
     var pickerTarget by remember { mutableStateOf<GarmentPickerTarget?>(null) }
     SectionCard(title = stringResource(R.string.settings_display_garment_colors_title)) {
-        Text(
-            text = stringResource(R.string.settings_display_garment_colors_description),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
         // Tops first (in OutfitSuggestion's declaration order — coldest tier
         // last), then bottoms, matching the reading order of the Today
         // screen's stacked icons.

@@ -743,7 +743,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_forecasters_subtitle">Fuentes y modelos meteorológicos</string>
 
     <string name="settings_display_garment_colors_title">Colores de la ropa</string>
-    <string name="settings_display_garment_colors_description">Elige un color para cada icono de prenda que aparece en Hoy, en el widget de la pantalla de inicio y en las notificaciones. El contorno se oscurece automáticamente.</string>
     <string name="settings_garment_color_default">Predeterminado</string>
     <string name="settings_garment_color_picker_title">Elige un color</string>
     <string name="settings_garment_color_swatch_description">Muestra de color %1$s</string>

@@ -249,6 +249,31 @@ class GenerateDailyInsightTest {
     }
 
     @Test
+    fun `warm day with shorts rule and t-shirt fallback lists the t-shirt first`() = runTest {
+        // Feels-like 22-28°C trips the shorts >24°C threshold but no top
+        // threshold rule fires, so the t-shirt comes from the default
+        // fallback. Items put tops before bottoms regardless of which
+        // clause produced them, so the prose's article picker lands on the
+        // singular t-shirt ("Wear a t-shirt and shorts.") rather than the
+        // leading plural shorts ("Wear shorts and t-shirt." — the regression
+        // this guards against).
+        val hotToday = today.copy(
+            temperatureMinC = 22.0,
+            temperatureMaxC = 28.0,
+            feelsLikeMinC = 22.0,
+            feelsLikeMaxC = 28.0,
+            precipitationProbabilityMaxPct = 10.0,
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(hotToday, yesterday))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val insight = subject(london, prefs).insight
+
+        insight.summary.clothes!!.items.shouldContainExactly("t-shirt", "shorts")
+        insight.recommendedItems.shouldContainExactly("t-shirt", "shorts")
+    }
+
+    @Test
     fun `outfit baseline honours the user-selected default bottom`() = runTest {
         // A denim-everyday user flips defaultBottom to JEANS in Settings; the
         // default rule that resolves the bottom slot should match the

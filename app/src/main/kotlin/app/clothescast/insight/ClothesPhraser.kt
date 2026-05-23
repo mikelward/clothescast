@@ -42,8 +42,23 @@ internal interface ClothesPhraser {
  *  - Items ending in 's' are treated as plural (shorts, boots, gloves) and take
  *    no article.
  *  - Items starting with a vowel letter take "an"; everything else takes "a".
- * Subsequent items in the list are emitted bare per the user-preferred phrasing
- * "Wear a sweater and jacket." rather than fully grammatical "a sweater and a jacket."
+ *
+ * For the join, "a"/"an" lands on (a) the first item that takes an article,
+ * and (b) in an Oxford-comma list of three or more, also on the *last* item
+ * if it takes one. Middle items render bare, and plurals never take an
+ * article anywhere. Concretely:
+ *  - "Wear a sweater."
+ *  - "Wear a sweater and jacket." (two items — first only)
+ *  - "Wear shorts and a t-shirt." (first article-taking item)
+ *  - "Wear a sweater, jacket, and a coat." (three items — first + last)
+ *  - "Wear a sweater, jacket, scarf, and gloves." (last is plural, so no
+ *    trailing article)
+ *  - "Wear shorts, gloves, and a scarf." (first article-taking item is also
+ *    the Oxford-last, so just one article)
+ *
+ * This is the existing two-item "Wear a sweater and jacket" style extended
+ * to the Oxford case, so the final singular in a longer list keeps its
+ * article rather than reading as a bare noun ("…, and jacket.").
  */
 internal class EnglishClothesPhraser(private val resources: Resources) : ClothesPhraser {
     override fun withArticle(item: String): String = prefixArticle(translate(item))
@@ -53,18 +68,31 @@ internal class EnglishClothesPhraser(private val resources: Resources) : Clothes
             .map(::translate)
             .filter { it.isNotBlank() }
             .toList()
-        return when (translated.size) {
-            0 -> ""
-            1 -> prefixArticle(translated[0])
-            2 -> resources.getString(R.string.insight_clothes_join_two, prefixArticle(translated[0]), translated[1])
+        if (translated.isEmpty()) return ""
+        val firstArticleIdx = translated.indexOfFirst(::takesArticle)
+        val lastIdx = translated.lastIndex
+        val rendered = translated.mapIndexed { i, item ->
+            val articleHere = when {
+                i == firstArticleIdx -> true
+                translated.size >= 3 && i == lastIdx && takesArticle(item) -> true
+                else -> false
+            }
+            if (articleHere) prefixArticle(item) else item
+        }
+        return when (rendered.size) {
+            1 -> rendered[0]
+            2 -> resources.getString(R.string.insight_clothes_join_two, rendered[0], rendered[1])
             else -> resources.getString(
                 R.string.insight_clothes_join_many,
-                prefixArticle(translated[0]),
-                translated.subList(1, translated.size - 1).joinToString(", "),
-                translated.last(),
+                rendered[0],
+                rendered.subList(1, rendered.size - 1).joinToString(", "),
+                rendered.last(),
             )
         }
     }
+
+    private fun takesArticle(display: String): Boolean =
+        !display.endsWith("s", ignoreCase = true)
 
     private fun prefixArticle(display: String): String = when {
         display.endsWith("s", ignoreCase = true) -> display

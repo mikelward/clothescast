@@ -62,10 +62,13 @@ class EvaluateClothesRulesTest {
     fun `matching bottom-tier threshold rule replaces the default bottom, top still defaults`() {
         // Hot day — shorts matches, no top-tier threshold rule does.
         // Bottom slot gets the matching rule's item; top slot gets the default.
+        // items orders tops before bottoms so the prose reads
+        // "Wear a t-shirt and shorts." regardless of which clause produced
+        // the t-shirt (rule vs default fallback).
         val out = subject(forecast(min = 22.0, max = 28.0), ClothesRule.DEFAULTS)
         out.rules.map { it.item }.shouldContainExactly("shorts")
         out.fallbacks.shouldContainExactly("t-shirt")
-        out.items.shouldContainExactly("shorts", "t-shirt")
+        out.items.shouldContainExactly("t-shirt", "shorts")
     }
 
     @Test

@@ -629,7 +629,6 @@ What is NOT overridden, by design:
     <string name="settings_root_forecasters_subtitle">Източници на време и модели</string>
 
     <string name="settings_display_garment_colors_title">Цветове на дрехите</string>
-    <string name="settings_display_garment_colors_description">Избери цвят за всяка икона на дреха на „Днес“, в притурката на началния екран и в известията. Контурът автоматично потъмнява.</string>
     <string name="settings_garment_color_default">По подразбиране</string>
     <string name="settings_garment_color_picker_title">Избери цвят</string>
     <string name="settings_garment_color_swatch_description">Мостра на цвят „%1$s“</string>

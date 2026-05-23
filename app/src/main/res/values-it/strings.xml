@@ -728,7 +728,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_forecasters_subtitle">Sorgenti e modelli meteo</string>
 
     <string name="settings_display_garment_colors_title">Colori degli indumenti</string>
-    <string name="settings_display_garment_colors_description">Scegli un colore per ogni icona di indumento mostrata su Oggi, sul widget della schermata Home e nelle notifiche. Il contorno si scurisce automaticamente.</string>
     <string name="settings_garment_color_default">Predefinito</string>
     <string name="settings_garment_color_picker_title">Scegli un colore</string>
     <string name="settings_garment_color_swatch_description">Campione di colore %1$s</string>

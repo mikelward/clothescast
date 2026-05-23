@@ -634,7 +634,6 @@ What is NOT overridden, by design:
     <string name="settings_root_forecasters_subtitle">Orų šaltiniai ir modeliai</string>
 
     <string name="settings_display_garment_colors_title">Drabužių spalvos</string>
-    <string name="settings_display_garment_colors_description">Pasirink spalvą kiekvienai drabužio piktogramai ekrane „Šiandien“, pradžios ekrano valdiklyje ir pranešimuose. Kontūras automatiškai tamsėja.</string>
     <string name="settings_garment_color_default">Numatytoji</string>
     <string name="settings_garment_color_picker_title">Pasirink spalvą</string>
     <string name="settings_garment_color_swatch_description">Spalvos pavyzdys „%1$s“</string>

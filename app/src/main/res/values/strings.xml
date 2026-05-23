@@ -404,7 +404,6 @@
     <string name="settings_display_palette_highlighter_description">Magenta, yellow, and cyan chart lines — like highlighter pens on the page. Visibly different from Rainbow at a glance; the light theme uses deeper variants for readability. Safe under red-green colour blindness.</string>
 
     <string name="settings_display_garment_colors_title">Garment colours</string>
-    <string name="settings_display_garment_colors_description">Pick a colour for each clothing icon shown on Today, the home-screen widget, and notifications. The stroke darkens automatically.</string>
     <string name="settings_garment_color_default">Default</string>
     <string name="settings_garment_color_picker_title">Pick a colour</string>
     <string name="settings_garment_color_swatch_description">Colour swatch %1$s</string>

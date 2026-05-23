@@ -624,7 +624,6 @@ displayed label localizes.
     <string name="settings_root_forecasters_subtitle">Hava kaynakları ve modeller</string>
 
     <string name="settings_display_garment_colors_title">Giysi renkleri</string>
-    <string name="settings_display_garment_colors_description">Bugün ekranında, ana ekran widget\'ında ve bildirimlerde gösterilen her giysi simgesi için bir renk seç. Kontur otomatik olarak koyulaşır.</string>
     <string name="settings_garment_color_default">Varsayılan</string>
     <string name="settings_garment_color_picker_title">Bir renk seç</string>
     <string name="settings_garment_color_swatch_description">%1$s renk örneği</string>

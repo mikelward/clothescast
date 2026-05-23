@@ -614,7 +614,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_root_forecasters_subtitle">مصادر الطقس والنماذج</string>
 
     <string name="settings_display_garment_colors_title">ألوان الملابس</string>
-    <string name="settings_display_garment_colors_description">اختر لونًا لكل أيقونة ملابس تظهر في شاشة اليوم وفي أداة الشاشة الرئيسية والإشعارات. يصبح الحد الخارجي أغمق تلقائيًا.</string>
     <string name="settings_garment_color_default">افتراضي</string>
     <string name="settings_garment_color_picker_title">اختر لونًا</string>
     <string name="settings_garment_color_swatch_description">عينة لون %1$s</string>

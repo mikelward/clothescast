@@ -766,7 +766,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_forecasters_subtitle">Wetterquellen und Modelle</string>
 
     <string name="settings_display_garment_colors_title">Kleidungsfarben</string>
-    <string name="settings_display_garment_colors_description">Wähle eine Farbe für jedes Kleidungssymbol auf „Heute“, im Homescreen-Widget und in Benachrichtigungen. Die Umrandung wird automatisch dunkler.</string>
     <string name="settings_garment_color_default">Standard</string>
     <string name="settings_garment_color_picker_title">Farbe wählen</string>
     <string name="settings_garment_color_swatch_description">Farbmuster %1$s</string>

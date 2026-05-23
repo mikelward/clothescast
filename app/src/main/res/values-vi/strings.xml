@@ -677,7 +677,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
 
     <!-- Display — per-garment colour picker. -->
     <string name="settings_display_garment_colors_title">Màu trang phục</string>
-    <string name="settings_display_garment_colors_description">Chọn màu cho từng biểu tượng trang phục hiển thị trên Hôm nay, tiện ích màn hình chính và thông báo. Đường viền tự động đậm hơn.</string>
     <string name="settings_garment_color_default">Mặc định</string>
     <string name="settings_garment_color_picker_title">Chọn màu</string>
     <string name="settings_garment_color_swatch_description">Mẫu màu %1$s</string>

@@ -686,7 +686,6 @@ West Bengal vocabulary differences in a future PR.
 
     <!-- Display — per-garment colour picker. -->
     <string name="settings_display_garment_colors_title">পোশাকের রং</string>
-    <string name="settings_display_garment_colors_description">আজ, হোম স্ক্রিন উইজেট এবং বিজ্ঞপ্তিতে দেখানো প্রতিটি পোশাক আইকনের জন্য একটি রং বেছে নিন। আউটলাইন স্বয়ংক্রিয়ভাবে গাঢ় হয়ে যায়।</string>
     <string name="settings_garment_color_default">ডিফল্ট</string>
     <string name="settings_garment_color_picker_title">একটি রং বেছে নিন</string>
     <string name="settings_garment_color_swatch_description">রঙের সোয়াচ %1$s</string>

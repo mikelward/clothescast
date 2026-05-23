@@ -646,7 +646,6 @@ Not overridden by design:
 
     <!-- Display — per-garment colour picker. -->
     <string name="settings_display_garment_colors_title">कपड़ों के रंग</string>
-    <string name="settings_display_garment_colors_description">आज स्क्रीन, होम-स्क्रीन विजेट और सूचनाओं पर दिखाए जाने वाले प्रत्येक कपड़े के आइकन के लिए एक रंग चुनें। बाहरी रेखा अपने आप गहरी हो जाती है।</string>
     <string name="settings_garment_color_default">डिफ़ॉल्ट</string>
     <string name="settings_garment_color_picker_title">रंग चुनें</string>
     <string name="settings_garment_color_swatch_description">रंग नमूना %1$s</string>

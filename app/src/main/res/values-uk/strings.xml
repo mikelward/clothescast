@@ -643,7 +643,6 @@ only the displayed label localizes.
     <string name="settings_root_forecasters_subtitle">Джерела погоди та моделі</string>
 
     <string name="settings_display_garment_colors_title">Кольори одягу</string>
-    <string name="settings_display_garment_colors_description">Виберіть колір для кожної піктограми одягу, що відображається на екрані «Сьогодні», у віджеті на головному екрані та у сповіщеннях. Контур автоматично темнішає.</string>
     <string name="settings_garment_color_default">За замовчуванням</string>
     <string name="settings_garment_color_picker_title">Виберіть колір</string>
     <string name="settings_garment_color_swatch_description">Зразок кольору «%1$s»</string>

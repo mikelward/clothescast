@@ -618,7 +618,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_root_forecasters_subtitle">Surse și modele meteo</string>
 
     <string name="settings_display_garment_colors_title">Culorile hainelor</string>
-    <string name="settings_display_garment_colors_description">Alege o culoare pentru fiecare pictogramă de haină afișată în Azi, în widgetul de pe ecranul de pornire și în notificări. Conturul se închide automat.</string>
     <string name="settings_garment_color_default">Implicit</string>
     <string name="settings_garment_color_picker_title">Alege o culoare</string>
     <string name="settings_garment_color_swatch_description">Mostră de culoare %1$s</string>

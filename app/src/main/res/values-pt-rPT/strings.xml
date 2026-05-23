@@ -772,7 +772,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_root_forecasters_subtitle">Fontes e modelos meteorológicos</string>
 
     <string name="settings_display_garment_colors_title">Cores das peças de roupa</string>
-    <string name="settings_display_garment_colors_description">Escolhe uma cor para cada ícone de peça de roupa mostrado em Hoje, no widget do ecrã inicial e nas notificações. O contorno escurece automaticamente.</string>
     <string name="settings_garment_color_default">Predefinido</string>
     <string name="settings_garment_color_picker_title">Escolhe uma cor</string>
     <string name="settings_garment_color_swatch_description">Amostra de cor %1$s</string>

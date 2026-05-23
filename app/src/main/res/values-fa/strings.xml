@@ -605,7 +605,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_root_forecasters_subtitle">منابع و مدل‌های آب‌وهوا</string>
 
     <string name="settings_display_garment_colors_title">رنگ لباس‌ها</string>
-    <string name="settings_display_garment_colors_description">برای هر آیکن لباسی که در امروز، ابزارک صفحه اصلی و اعلان‌ها نمایش داده می‌شود یک رنگ انتخاب کنید. خط دور به‌طور خودکار تیره‌تر می‌شود.</string>
     <string name="settings_garment_color_default">پیش‌فرض</string>
     <string name="settings_garment_color_picker_title">یک رنگ انتخاب کنید</string>
     <string name="settings_garment_color_swatch_description">نمونه رنگ %1$s</string>

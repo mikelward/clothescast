@@ -762,9 +762,8 @@ label localises.
     <string name="settings_about_open_meteo">天氣資料來自 Open-Meteo</string>
 
     <!-- Display screen — per-garment colour picker. Pick a fill colour for
-         each clothing icon; the stroke darkens automatically. -->
+         each clothing icon. -->
     <string name="settings_display_garment_colors_title">服裝顏色</string>
-    <string name="settings_display_garment_colors_description">為「今日」畫面、主畫面小工具以及通知中顯示的每個服裝圖示選擇顏色。外框會自動加深。</string>
     <string name="settings_garment_color_default">預設</string>
     <string name="settings_garment_color_picker_title">選擇顏色</string>
     <string name="settings_garment_color_swatch_description">顏色色塊 %1$s</string>

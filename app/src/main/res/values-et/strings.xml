@@ -590,7 +590,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_root_forecasters_subtitle">Ilmaallikad ja mudelid</string>
 
     <string name="settings_display_garment_colors_title">Riietuse värvid</string>
-    <string name="settings_display_garment_colors_description">Vali värv igale rõivaikoonile, mida näidatakse vaates „Täna“, avaekraani vidinas ja teavitustes. Kontuur tumeneb automaatselt.</string>
     <string name="settings_garment_color_default">Vaikimisi</string>
     <string name="settings_garment_color_picker_title">Vali värv</string>
     <string name="settings_garment_color_swatch_description">Värvinäidis „%1$s“</string>

@@ -646,7 +646,6 @@ What is NOT overridden, by design:
     <string name="settings_root_forecasters_subtitle">Zdroje a modely počasia</string>
 
     <string name="settings_display_garment_colors_title">Farby oblečenia</string>
-    <string name="settings_display_garment_colors_description">Vyber farbu pre každú ikonu oblečenia zobrazenú na obrazovke Dnes, vo widgete na domovskej obrazovke a v upozorneniach. Obrys sa automaticky stmaví.</string>
     <string name="settings_garment_color_default">Predvolené</string>
     <string name="settings_garment_color_picker_title">Vyber farbu</string>
     <string name="settings_garment_color_swatch_description">Vzorka farby %1$s</string>

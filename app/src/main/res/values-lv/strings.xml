@@ -587,7 +587,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_root_forecasters_subtitle">Laika avoti un modeļi</string>
 
     <string name="settings_display_garment_colors_title">Apģērba krāsas</string>
-    <string name="settings_display_garment_colors_description">Izvēlies krāsu katrai apģērba ikonai, kas redzama sadaļā „Šodien“, mājas ekrāna logrīkā un paziņojumos. Kontūra automātiski kļūst tumšāka.</string>
     <string name="settings_garment_color_default">Noklusējums</string>
     <string name="settings_garment_color_picker_title">Izvēlies krāsu</string>
     <string name="settings_garment_color_swatch_description">Krāsas paraugs „%1$s“</string>

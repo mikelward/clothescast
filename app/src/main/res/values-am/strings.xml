@@ -587,7 +587,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_forecasters_subtitle">የአየር ሁኔታ ምንጮችና ሞዴሎች</string>
 
     <string name="settings_display_garment_colors_title">የልብስ ቀለሞች</string>
-    <string name="settings_display_garment_colors_description">በዛሬ ማያ፣ በመነሻ ማያ ዊጅት እና በማሳወቂያዎች ላይ ለሚታይ ለእያንዳንዱ የልብስ አዶ ቀለም ይምረጡ። የጠርዙ ቀለም በራሱ ይጠቁራል።</string>
     <string name="settings_garment_color_default">ነባሪ</string>
     <string name="settings_garment_color_picker_title">ቀለም ይምረጡ</string>
     <string name="settings_garment_color_swatch_description">የቀለም ናሙና %1$s</string>

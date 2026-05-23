@@ -691,7 +691,6 @@ the displayed label localizes.
     <string name="settings_root_forecasters_subtitle">Weerbronnen en modellen</string>
 
     <string name="settings_display_garment_colors_title">Kledingkleuren</string>
-    <string name="settings_display_garment_colors_description">Kies een kleur voor elk kledingicoon op Vandaag, in de homescreen-widget en in meldingen. De rand wordt automatisch donkerder.</string>
     <string name="settings_garment_color_default">Standaard</string>
     <string name="settings_garment_color_picker_title">Kies een kleur</string>
     <string name="settings_garment_color_swatch_description">Kleurstaal %1$s</string>

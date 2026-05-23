@@ -758,9 +758,8 @@ displayed label localizes.
     <string name="settings_about_open_meteo">기상 데이터: Open-Meteo</string>
 
     <!-- Display screen — per-garment colour picker. Pick a fill colour for
-         each clothing icon; the stroke darkens automatically. -->
+         each clothing icon. -->
     <string name="settings_display_garment_colors_title">의상 색상</string>
-    <string name="settings_display_garment_colors_description">「오늘」 화면, 홈 화면 위젯, 알림에 표시되는 각 의상 아이콘의 색을 선택하세요. 테두리는 자동으로 어두워집니다.</string>
     <string name="settings_garment_color_default">기본값</string>
     <string name="settings_garment_color_picker_title">색상 선택</string>
     <string name="settings_garment_color_swatch_description">색상 견본 %1$s</string>

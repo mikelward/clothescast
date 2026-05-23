@@ -31,20 +31,20 @@ enum class FallbackTier { TOP, BOTTOM }
  * given the user's current [rules] list. Precipitation rules are ignored —
  * they don't constrain the fallback in temperature space.
  *
- * Only rules whose `item` key matches one of the tier's rule-driven icon
- * tiers count (see [OutfitSuggestion.TOP_TIER_KEYS] /
- * [OutfitSuggestion.BOTTOM_TIER_KEYS]); a `sweater` rule narrows the top
- * fallback, but a `shorts` rule doesn't.
+ * Only rules whose item belongs to the tier's slot count (resolved via
+ * [Garment.fromKey], so legacy `"Jacket"` / `" jacket "` items normalize
+ * the same as `"jacket"`); a `sweater` rule narrows the top fallback, but
+ * a `shorts` rule doesn't.
  */
 fun fallbackRange(rules: List<ClothesRule>, tier: FallbackTier): FallbackRange {
-    val keys = when (tier) {
-        FallbackTier.TOP -> OutfitSuggestion.TOP_TIER_KEYS
-        FallbackTier.BOTTOM -> OutfitSuggestion.BOTTOM_TIER_KEYS
+    val expectedSlot = when (tier) {
+        FallbackTier.TOP -> Garment.Slot.TOP
+        FallbackTier.BOTTOM -> Garment.Slot.BOTTOM
     }
     var lower: Double? = null
     var upper: Double? = null
     for (rule in rules) {
-        if (rule.item !in keys) continue
+        if (Garment.fromKey(rule.item)?.slot != expectedSlot) continue
         val threshold = rule.thresholdC() ?: continue
         when (rule.condition) {
             is ClothesRule.TemperatureBelow -> {

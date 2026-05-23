@@ -158,7 +158,10 @@ class GenerateDailyInsightTest {
 
         insight.summary.clothes.shouldBeNull()
         // Prose is suppressed, but the recommendation and outfit card stand.
-        insight.recommendedItems.shouldContainExactly("sweater")
+        // No threshold rule matches in the bottom tier, so the engine
+        // resolves it via the user's default bottom rule ("pants") alongside
+        // the matching sweater rule.
+        insight.recommendedItems.shouldContainExactly("sweater", "pants")
         insight.outfit.shouldNotBeNull()
     }
 
@@ -196,7 +199,11 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `recommended items reflect rule evaluation, not raw rule list`() = runTest {
+    fun `recommended items resolve to the per-tier default rule when no threshold rule matches`() = runTest {
+        // Feels-like 19-22°C sits in the comfort gap of DEFAULTS (sweater <18°C,
+        // jacket <12°C, coat <6°C, shorts >24°C) — no threshold rule in
+        // either tier matches. The engine resolves both slots via the user's
+        // per-tier default rules (defaultTop + defaultBottom).
         val mildToday = today.copy(
             temperatureMinC = 19.0,
             temperatureMaxC = 22.0,
@@ -209,7 +216,60 @@ class GenerateDailyInsightTest {
 
         val result = subject(london, prefs)
 
-        result.insight.recommendedItems shouldBe emptyList()
+        result.insight.recommendedItems.shouldContainExactly("t-shirt", "pants")
+    }
+
+    @Test
+    fun `ALWAYS names the outfit baseline on a mild day when only the default rule matches`() = runTest {
+        // Feels-like 19-22°C sits in the comfort gap between sweater (<18°C)
+        // and shorts (>24°C), so no threshold rule matches. The per-tier
+        // defaults (defaultTop + defaultBottom) are themselves rules — their
+        // condition is "no threshold rule in my tier matched today" — and
+        // the engine surfaces them in `recommendedItems` so "Always" lives
+        // up to its name and the prose, the bulleted list, and the icon all
+        // agree.
+        val mildToday = today.copy(
+            temperatureMinC = 19.0,
+            temperatureMaxC = 22.0,
+            feelsLikeMinC = 19.0,
+            feelsLikeMaxC = 22.0,
+            precipitationProbabilityMaxPct = 10.0,
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(mildToday, yesterday))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val insight = subject(london, prefs).insight
+
+        insight.summary.clothes!!.items.shouldContainExactly("t-shirt", "pants")
+        insight.recommendedItems.shouldContainExactly("t-shirt", "pants")
+        insight.outfit shouldBe OutfitSuggestion(
+            top = OutfitSuggestion.Top.TSHIRT,
+            bottom = OutfitSuggestion.Bottom.LONG_PANTS,
+        )
+    }
+
+    @Test
+    fun `outfit baseline honours the user-selected default bottom`() = runTest {
+        // A denim-everyday user flips defaultBottom to JEANS in Settings; the
+        // default rule that resolves the bottom slot should match the
+        // home-screen icon — so "jeans" not "pants" — without the user
+        // adding any threshold rules.
+        val mildToday = today.copy(
+            temperatureMinC = 19.0,
+            temperatureMaxC = 22.0,
+            feelsLikeMinC = 19.0,
+            feelsLikeMaxC = 22.0,
+            precipitationProbabilityMaxPct = 10.0,
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(mildToday, yesterday))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val insight = subject(
+            london,
+            prefs.copy(defaultBottom = OutfitSuggestion.Bottom.JEANS),
+        ).insight
+
+        insight.summary.clothes!!.items.shouldContainExactly("t-shirt", "jeans")
     }
 
     @Test
@@ -1061,6 +1121,245 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
+        result.insight.summary.eveningEventTieIn.shouldBeNull()
+    }
+
+    @Test
+    fun `evening tie-in is silent when the day already wears the night's rule garment as the user's default top`() = runTest {
+        // Codex-flagged: defaultTop = SWEATER for someone who runs cold.
+        // Daytime is mild (no threshold rule matches) so they wear their
+        // default sweater all day. Night drops below the sweater rule's
+        // 18°C threshold, so the rule matches at night. The tie-in must
+        // NOT say "Bring a sweater tonight" — they had it on all day.
+        // Tops layer, so a night top-tier match already covered by the
+        // day's outfit (whether via rule or default) means no action.
+        val zone = ZoneId.of("Europe/London")
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 20.0, 19.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 22.0, 21.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val evening = listOf(
+            HourlyForecast(LocalTime.of(19, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(21, 0), 15.0, 14.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val baseHourly = today.copy(
+            hourly = daytime + evening,
+            precipitationProbabilityMaxPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val diner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(23, 0),
+            location = "Restaurant",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(diner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val sweaterRule = listOf(ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)))
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = sweaterRule,
+                defaultTop = OutfitSuggestion.Top.SWEATER,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        result.insight.summary.eveningEventTieIn.shouldBeNull()
+    }
+
+    @Test
+    fun `evening tie-in is silent when the night top resolves to a default the day was wearing as a rule`() = runTest {
+        // Cold day with a sweater rule, mild night where no threshold rule
+        // matches → the night's top tier resolves to the default top
+        // (TSHIRT). Tops layer, so dropping back to t-shirt is just
+        // removing a layer — no need to "bring" anything. Tie-in stays
+        // silent.
+        val zone = ZoneId.of("Europe/London")
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 17.0, 16.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 17.0, 16.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val evening = listOf(
+            HourlyForecast(LocalTime.of(19, 0), 22.0, 21.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(21, 0), 21.0, 20.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val baseHourly = today.copy(
+            hourly = daytime + evening,
+            precipitationProbabilityMaxPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val diner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(23, 0),
+            location = "Restaurant",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(diner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val sweaterRule = listOf(ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)))
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = sweaterRule,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        result.insight.summary.eveningEventTieIn.shouldBeNull()
+    }
+
+    @Test
+    fun `evening tie-in surfaces the night's bottom substitution when the day's bottom was a different rule`() = runTest {
+        // Hot day fires the shorts rule, evening cools off enough that
+        // shorts no longer applies and the bottom tier resolves to the
+        // default (PANTS). Bottoms substitute (you swap, not layer), so
+        // the tie-in surfaces "Bring pants tonight" — a real action the
+        // user needs to take when leaving for the evening event.
+        val zone = ZoneId.of("Europe/London")
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 25.0, 25.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 28.0, 27.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val evening = listOf(
+            HourlyForecast(LocalTime.of(19, 0), 19.0, 18.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(21, 0), 18.0, 17.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val baseHourly = today.copy(
+            hourly = daytime + evening,
+            precipitationProbabilityMaxPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val diner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(23, 0),
+            location = "Restaurant",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(diner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val shortsRule = listOf(ClothesRule("shorts", ClothesRule.TemperatureAbove(24.0)))
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = shortsRule,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        val tie = result.insight.summary.eveningEventTieIn
+        tie.shouldNotBeNull()
+        tie!!.items shouldBe listOf("pants")
+    }
+
+    @Test
+    fun `evening tie-in still carries genuinely new night-only top rules when the day was driven by defaults`() = runTest {
+        // Counterpart to the "default sweater" silent case: a mild
+        // daytime resolving to defaults (defaultTop = TSHIRT) but a
+        // *cold* night that triggers BOTH the sweater rule AND the
+        // jacket rule. The user actually does need to bring the
+        // night-only layers — they had t-shirt + pants on all day.
+        val zone = ZoneId.of("Europe/London")
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 20.0, 19.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 22.0, 21.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val evening = listOf(
+            HourlyForecast(LocalTime.of(19, 0), 11.0, 9.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(21, 0), 10.0, 8.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val baseHourly = today.copy(
+            hourly = daytime + evening,
+            precipitationProbabilityMaxPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val diner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(23, 0),
+            location = "Restaurant",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(diner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val rules = listOf(
+            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
+            ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)),
+        )
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = rules,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        val tie = result.insight.summary.eveningEventTieIn
+        tie.shouldNotBeNull()
+        tie!!.items shouldBe listOf("sweater", "jacket")
+    }
+
+    @Test
+    fun `evening tie-in canonicalizes legacy aliases so trousers and pants don't cross-fire`() = runTest {
+        // Codex-flagged: a legacy rule item like "trousers" (a recognized
+        // Garment alias for PANTS) shouldn't surface as different from the
+        // night's default "pants" — the user is already wearing the same
+        // garment. Membership has to go through Garment.fromKey().itemKey,
+        // not just lowercase-and-trim.
+        val zone = ZoneId.of("Europe/London")
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 17.0, 16.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val evening = listOf(
+            HourlyForecast(LocalTime.of(19, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(21, 0), 15.0, 14.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val baseHourly = today.copy(
+            hourly = daytime + evening,
+            precipitationProbabilityMaxPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val diner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(23, 0),
+            location = "Restaurant",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(diner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        // A legacy free-form rule typed as "trousers" — recognized by
+        // Garment.fromKey as PANTS but stored verbatim on disk.
+        val rules = listOf(ClothesRule("trousers", ClothesRule.TemperatureBelow(20.0)))
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = rules,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        // The day fires "trousers" (PANTS), night defaults to "pants"
+        // (PANTS). Same garment — no tie-in should emit "Bring pants."
         result.insight.summary.eveningEventTieIn.shouldBeNull()
     }
 

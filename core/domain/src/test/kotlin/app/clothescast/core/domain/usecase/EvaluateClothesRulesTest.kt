@@ -2,6 +2,7 @@ package app.clothescast.core.domain.usecase
 
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DailyForecast
+import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.WeatherCondition
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
@@ -25,43 +26,192 @@ class EvaluateClothesRulesTest {
         )
 
     @Test
-    fun `empty rule list yields empty result`() {
-        subject(forecast(min = 5.0, max = 15.0), rules = emptyList()).shouldBeEmpty()
+    fun `empty threshold rule list resolves both tiers to their default rules`() {
+        // Even with no threshold rules at all, the user has a baseline outfit
+        // they've configured (defaultTop + defaultBottom) — that's the
+        // per-tier default rule, and it always matches the "no threshold
+        // rule in my tier did" condition.
+        val out = subject(forecast(min = 5.0, max = 15.0), rules = emptyList())
+        out.rules.shouldBeEmpty()
+        out.fallbacks.shouldContainExactly("t-shirt", "pants")
+        out.items.shouldContainExactly("t-shirt", "pants")
     }
 
     @Test
-    fun `temperate day with no rules triggered yields empty result`() {
-        subject(forecast(min = 18.0, max = 22.0), ClothesRule.DEFAULTS).shouldBeEmpty()
+    fun `temperate day with no matching threshold rule resolves to both defaults`() {
+        // The comfort gap: feels-like 18-22°C, nothing in DEFAULTS matches
+        // (sweater <18°C, jacket <12°C, coat <6°C, shorts >24°C). Each
+        // tier's default rule resolves its slot.
+        val out = subject(forecast(min = 18.0, max = 22.0), ClothesRule.DEFAULTS)
+        out.rules.shouldBeEmpty()
+        out.items.shouldContainExactly("t-shirt", "pants")
     }
 
     @Test
-    fun `crisp morning warm afternoon triggers expected items in input order`() {
-        val triggered = subject(forecast(min = 8.0, max = 25.0), ClothesRule.DEFAULTS)
-        triggered.map { it.item }.shouldContainExactly("sweater", "jacket", "shorts")
+    fun `matching top-tier threshold rule replaces the default top, bottom still defaults`() {
+        // Cold morning, mild afternoon — sweater matches, no bottom-tier
+        // threshold rule does. Top slot gets the matching rule's item; bottom
+        // slot gets the default.
+        val out = subject(forecast(min = 14.0, max = 20.0), ClothesRule.DEFAULTS)
+        out.rules.map { it.item }.shouldContainExactly("sweater")
+        out.fallbacks.shouldContainExactly("pants")
+        out.items.shouldContainExactly("sweater", "pants")
     }
 
     @Test
-    fun `wet cold day triggers cold-weather items only`() {
+    fun `matching bottom-tier threshold rule replaces the default bottom, top still defaults`() {
+        // Hot day — shorts matches, no top-tier threshold rule does.
+        // Bottom slot gets the matching rule's item; top slot gets the default.
+        val out = subject(forecast(min = 22.0, max = 28.0), ClothesRule.DEFAULTS)
+        out.rules.map { it.item }.shouldContainExactly("shorts")
+        out.fallbacks.shouldContainExactly("t-shirt")
+        out.items.shouldContainExactly("shorts", "t-shirt")
+    }
+
+    @Test
+    fun `cold morning warm afternoon resolves both tiers via threshold rules, no default needed`() {
+        // Sweater + jacket match on the cold morning; shorts matches on the
+        // warm afternoon. Both tiers have a matching threshold rule → no
+        // default contributes.
+        val out = subject(forecast(min = 8.0, max = 25.0), ClothesRule.DEFAULTS)
+        out.rules.map { it.item }.shouldContainExactly("sweater", "jacket", "shorts")
+        out.fallbacks.shouldBeEmpty()
+    }
+
+    @Test
+    fun `wet cold day matches cold-weather rules, bottom slot resolves to the default`() {
         // Defaults no longer include umbrella — the precip clause announces rain,
         // and the wet-weather accessory will become a personalised setting.
-        val triggered = subject(forecast(min = 10.0, max = 16.0, precip = 70.0), ClothesRule.DEFAULTS)
-        triggered.map { it.item }.shouldContainExactly("sweater", "jacket")
+        val out = subject(forecast(min = 10.0, max = 16.0, precip = 70.0), ClothesRule.DEFAULTS)
+        out.rules.map { it.item }.shouldContainExactly("sweater", "jacket")
+        out.items.shouldContainExactly("sweater", "jacket", "pants")
     }
 
     @Test
-    fun `mild wet day triggers only sweater`() {
-        val triggered = subject(forecast(min = 14.0, max = 20.0, precip = 70.0), ClothesRule.DEFAULTS)
-        triggered.map { it.item }.shouldContainExactly("sweater")
+    fun `matching non-tier threshold rule does not displace either tier default`() {
+        // Umbrella is a precip-keyed threshold rule and doesn't claim either
+        // outfit tier, so a mild rainy day still resolves to both tier
+        // defaults alongside it.
+        val rules = listOf(
+            ClothesRule("umbrella", ClothesRule.PrecipitationProbabilityAbove(50.0)),
+        )
+        val out = subject(forecast(min = 18.0, max = 22.0, precip = 80.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("umbrella")
+        out.items.shouldContainExactly("umbrella", "t-shirt", "pants")
     }
 
     @Test
-    fun `input order is preserved`() {
+    fun `user-selected default rules flow through to the resolved items`() {
+        // The default rule honours the user's Settings picks — a denim-everyday
+        // user sees "jeans"; a polo-everyday user sees "polo".
+        val out = subject(
+            forecast(min = 18.0, max = 22.0),
+            rules = emptyList(),
+            defaultTop = OutfitSuggestion.Top.POLO,
+            defaultBottom = OutfitSuggestion.Bottom.JEANS,
+        )
+        out.items.shouldContainExactly("polo", "jeans")
+    }
+
+    @Test
+    fun `matching rule with the same item as the default suppresses the default rather than duplicating it`() {
+        // A legitimate threshold rule like "wear a t-shirt above 20°C"
+        // matches the same item the default would otherwise contribute.
+        // Both shouldn't land in the items list — the rule covers the top
+        // slot, so the top default sits this one out (bottom default still
+        // fires because no bottom-slot rule matched).
+        val rules = listOf(ClothesRule("t-shirt", ClothesRule.TemperatureAbove(20.0)))
+        val out = subject(forecast(min = 21.0, max = 25.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("t-shirt")
+        // Top slot covered by the rule; only the bottom default contributes.
+        out.fallbacks.shouldContainExactly("pants")
+        out.items.shouldContainExactly("t-shirt", "pants")
+    }
+
+    @Test
+    fun `matching rule whose item is any top-slot garment suppresses the default top`() {
+        // Garments like SHIRT, POLO, TSHIRT live in the top slot but aren't
+        // in the icon picker's cold-priority key sets. A rule whose item is
+        // any of them still covers the top slot, so the default shouldn't
+        // also fire — otherwise the user gets "wear a shirt and a t-shirt"
+        // for a single tier.
+        val rules = listOf(ClothesRule("shirt", ClothesRule.TemperatureAbove(15.0)))
+        val out = subject(forecast(min = 16.0, max = 22.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("shirt")
+        // Top covered by "shirt", bottom slot has no firing rule → defaults to pants.
+        out.items.shouldContainExactly("shirt", "pants")
+    }
+
+    @Test
+    fun `legacy case and whitespace variants normalize for tier membership`() {
+        // Pre-catalog rules saved with capitalized or whitespace-padded items
+        // ("Jacket", " jacket ") still fire on the forecast, and they should
+        // also be recognized as top-slot for default-suppression — Garment.fromKey
+        // already normalizes for the rest of the pipeline (tie-in delta,
+        // formatter), and the evaluator follows the same contract.
+        val rules = listOf(ClothesRule("Jacket", ClothesRule.TemperatureBelow(12.0)))
+        val out = subject(forecast(min = 5.0, max = 10.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("Jacket")
+        // Without normalization, the engine would add "t-shirt" on top of
+        // "Jacket" — contradictory advice. With normalization the top slot
+        // is correctly covered.
+        out.items.shouldContainExactly("Jacket", "pants")
+    }
+
+    @Test
+    fun `unclassified temperature rule suppresses both fallbacks instead of duplicating them`() {
+        // Codex-flagged: a legacy free-form temperature rule like "cardigan"
+        // (typed before the Garment catalog landed and not recognized today)
+        // still represents a garment the user is wearing — we just can't
+        // tell which slot it occupies. Pre-fix: the engine couldn't classify
+        // it and appended both defaults on top, producing the contradictory
+        // "cardigan + t-shirt + pants" prose. Now: suppress both fallbacks
+        // so the user's rule stands as written.
+        val rules = listOf(ClothesRule("cardigan", ClothesRule.TemperatureBelow(15.0)))
+        val out = subject(forecast(min = 8.0, max = 14.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("cardigan")
+        out.fallbacks.shouldBeEmpty()
+        out.items.shouldContainExactly("cardigan")
+    }
+
+    @Test
+    fun `unclassified precipitation rule does not suppress slot fallbacks`() {
+        // An unclassified precipitation rule (umbrella-style) describes a
+        // carried accessory, not a garment that takes up an outfit slot.
+        // It shouldn't suppress either default — the user still needs the
+        // baseline t-shirt + pants alongside it.
+        val rules = listOf(ClothesRule("umbrella", ClothesRule.PrecipitationProbabilityAbove(50.0)))
+        val out = subject(forecast(min = 18.0, max = 22.0, precip = 80.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("umbrella")
+        out.fallbacks.shouldContainExactly("t-shirt", "pants")
+        out.items.shouldContainExactly("umbrella", "t-shirt", "pants")
+    }
+
+    @Test
+    fun `classified rule covers its slot even when an unclassified accessory rule also fires`() {
+        // Mixed-condition cold rainy day: sweater rule (classified, TOP) +
+        // umbrella rule (unclassified, precip). Top slot is covered by
+        // sweater so its default doesn't fire; umbrella is an accessory so
+        // it doesn't claim a slot; bottom default still applies normally.
+        val rules = listOf(
+            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
+            ClothesRule("umbrella", ClothesRule.PrecipitationProbabilityAbove(50.0)),
+        )
+        val out = subject(forecast(min = 10.0, max = 16.0, precip = 70.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("sweater", "umbrella")
+        out.items.shouldContainExactly("sweater", "umbrella", "pants")
+    }
+
+    @Test
+    fun `input order is preserved across matching threshold rules`() {
+        // Same as before — the user picks presentation order via input order
+        // of their threshold rules.
         val rules = listOf(
             ClothesRule("umbrella", ClothesRule.PrecipitationProbabilityAbove(50.0)),
             ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
             ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)),
         )
-        val triggered = subject(forecast(min = 5.0, max = 12.0, precip = 80.0), rules)
-        triggered.map { it.item }.shouldContainExactly("umbrella", "sweater", "jacket")
+        val out = subject(forecast(min = 5.0, max = 12.0, precip = 80.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("umbrella", "sweater", "jacket")
     }
 }

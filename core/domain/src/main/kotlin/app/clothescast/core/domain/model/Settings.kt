@@ -502,11 +502,14 @@ data class UserPreferences(
     val calendarEnabled: Boolean = false,
     /**
      * When true, the worker reads today's calendar events (via `READ_CALENDAR`)
-     * and feeds them into the insight summary so the rendered string can tie a
-     * clothes suggestion to a specific event ("bring an umbrella for your 3pm
-     * standup"). Gated by [calendarEnabled] — see [calendarEventMentionsActive].
-     * Off by default — the user must both enable the toggle and grant the
-     * runtime permission for events to actually be read.
+     * and feeds them into the insight summary so the rendered string can
+     * surface a heads-up motivated by an upcoming event (e.g. "Bring an
+     * umbrella." when rain peaks during an event window). Event titles and
+     * times never appear in the rendered prose — they only gate emission —
+     * because the prose flows to Gemini TTS off-device. Gated by
+     * [calendarEnabled] — see [calendarEventMentionsActive]. Off by default —
+     * the user must both enable the toggle and grant the runtime permission
+     * for events to actually be read.
      */
     val useCalendarEvents: Boolean = false,
     /**

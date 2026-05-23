@@ -273,6 +273,61 @@ class GenerateDailyInsightTest {
     }
 
     @Test
+    fun `base layer is suppressed from prose and recommendations when a mid layer fires`() = runTest {
+        // A user has both a "wear a t-shirt below 30°C" rule (BASE) and the
+        // default jumper / jeans rules. On a 14°C morning every one of those
+        // rules fires, but the t-shirt is implicit under the jumper — the
+        // insight should read "Wear a jumper and jeans." not "Wear a jumper,
+        // t-shirt, and jeans." The same suppression drives the bulleted
+        // recommendation list and the cached outfit snapshot, so the prose,
+        // the bullets, and the home-screen card all agree.
+        val coldToday = today.copy(
+            temperatureMinC = 10.0,
+            temperatureMaxC = 14.0,
+            feelsLikeMinC = 10.0,
+            feelsLikeMaxC = 14.0,
+            precipitationProbabilityMaxPct = 10.0,
+        )
+        val rules = listOf(
+            ClothesRule("t-shirt", ClothesRule.TemperatureBelow(30.0)),
+            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
+            ClothesRule("jeans", ClothesRule.TemperatureBelow(20.0)),
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(coldToday, yesterday))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val insight = subject(london, prefs.copy(clothesRules = rules)).insight
+
+        insight.summary.clothes!!.items.shouldContainExactly("sweater", "jeans")
+        insight.recommendedItems.shouldContainExactly("sweater", "jeans")
+    }
+
+    @Test
+    fun `within-shell-layer also-rans are dropped on a very cold day`() = runTest {
+        // Default rules: sweater (<18), jacket (<12), coat (<6), shorts (>24).
+        // At feels-like 2-8°C all three cold rules fire — sweater on MID,
+        // jacket + coat both on SHELL. The user only wears one outer layer,
+        // so the engine picks coat (heaviest tier) and silently drops jacket
+        // rather than read out every match. Verified at the integration
+        // boundary so the prose + recommendations stay in sync with the
+        // home-screen icon, which already picks the shell-most top.
+        val freezingToday = today.copy(
+            temperatureMinC = 2.0,
+            temperatureMaxC = 8.0,
+            feelsLikeMinC = 2.0,
+            feelsLikeMaxC = 8.0,
+            precipitationProbabilityMaxPct = 10.0,
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(freezingToday, yesterday))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val insight = subject(london, prefs).insight
+
+        insight.summary.clothes!!.items.shouldContainExactly("sweater", "coat", "pants")
+        insight.recommendedItems.shouldContainExactly("sweater", "coat", "pants")
+    }
+
+    @Test
     fun `severe alerts are surfaced in result and woven into the summary`() = runTest {
         val severe = WeatherAlert(
             event = "Severe Thunderstorm Warning",

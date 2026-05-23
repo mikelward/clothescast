@@ -26,7 +26,20 @@ data class OutfitSuggestion(
     val top: Top,
     val bottom: Bottom,
 ) {
-    enum class Top { TSHIRT, POLO, SWEATER, THIN_JACKET, THICK_JACKET, THICK_COAT, PUFFER_JACKET }
+    enum class Top {
+        TSHIRT, POLO, SWEATER, THIN_JACKET, THICK_JACKET, THICK_COAT, PUFFER_JACKET;
+
+        /** Catalog key (matches [Garment.itemKey]) for prose / persistence. */
+        fun itemKey(): String = when (this) {
+            TSHIRT -> "t-shirt"
+            POLO -> "polo"
+            SWEATER -> "sweater"
+            THIN_JACKET -> "thin-jacket"
+            THICK_JACKET -> "jacket"
+            THICK_COAT -> "coat"
+            PUFFER_JACKET -> "puffer"
+        }
+    }
 
     // TODO: add SHORT_SKIRT (mini) and DRESS tiers — both warrant their own
     // icons and labels. Today's `LONG_SKIRT` reuses the full-length skirt
@@ -34,7 +47,17 @@ data class OutfitSuggestion(
     // dress is a single-piece outfit so it'll need either a new Top + Bottom
     // pair (DRESS top / DRESS bottom) or a new combined tier — settle the
     // shape when we get there.
-    enum class Bottom { SHORTS, LONG_SKIRT, JEANS, LONG_PANTS }
+    enum class Bottom {
+        SHORTS, LONG_SKIRT, JEANS, LONG_PANTS;
+
+        /** Catalog key (matches [Garment.itemKey]) for prose / persistence. */
+        fun itemKey(): String = when (this) {
+            SHORTS -> "shorts"
+            LONG_SKIRT -> "skirt"
+            JEANS -> "jeans"
+            LONG_PANTS -> "pants"
+        }
+    }
 
     companion object {
         // Catalog item keys (see [Garment.itemKey]) that drive each icon tier.
@@ -46,30 +69,18 @@ data class OutfitSuggestion(
         // the heavier garment icon wins rather than the first match.
         // Bottom tiers: shorts → SHORTS, skirt → LONG_SKIRT, jeans → JEANS, fallback →
         // user's chosen defaultBottom (LONG_PANTS by default).
-        // Internal so the [FallbackRange] helper can compute the temperature
-        // window where each fallback would apply, using the same key set the
-        // picker consults.
-        internal val THICK_JACKET_KEYS = listOf("jacket")
-        internal val THICK_COAT_KEYS = listOf("coat")
-        internal val PUFFER_JACKET_KEYS = listOf("puffer")
-        internal val THIN_JACKET_KEYS = listOf("thin-jacket")
-        internal val SWEATER_KEYS = listOf("sweater", "hoodie")
-        internal val POLO_KEYS = listOf("polo")
-        internal val SHORTS_KEYS = listOf("shorts")
+        private val THICK_JACKET_KEYS = listOf("jacket")
+        private val THICK_COAT_KEYS = listOf("coat")
+        private val PUFFER_JACKET_KEYS = listOf("puffer")
+        private val THIN_JACKET_KEYS = listOf("thin-jacket")
+        private val SWEATER_KEYS = listOf("sweater", "hoodie")
+        private val POLO_KEYS = listOf("polo")
+        private val SHORTS_KEYS = listOf("shorts")
         // The `skirt` clothes-rule key (catalogue Garment.SKIRT) maps to the
         // Bottom.LONG_SKIRT icon — there's only one skirt icon today and it's
         // full-length. A short-skirt tier will land here as a sibling later.
-        internal val LONG_SKIRT_KEYS = listOf("skirt")
-        internal val JEANS_KEYS = listOf("jeans")
-
-        /** Every rule-keyed top tier — the set the fallback fires *outside* of. */
-        internal val TOP_TIER_KEYS: List<String> =
-            THICK_COAT_KEYS + PUFFER_JACKET_KEYS + THICK_JACKET_KEYS +
-                THIN_JACKET_KEYS + SWEATER_KEYS + POLO_KEYS
-
-        /** Every rule-keyed bottom tier — sibling of [TOP_TIER_KEYS]. */
-        internal val BOTTOM_TIER_KEYS: List<String> =
-            SHORTS_KEYS + LONG_SKIRT_KEYS + JEANS_KEYS
+        private val LONG_SKIRT_KEYS = listOf("skirt")
+        private val JEANS_KEYS = listOf("jeans")
 
         fun fromForecast(
             forecast: DailyForecast,

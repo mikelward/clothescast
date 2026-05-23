@@ -24,23 +24,30 @@ import java.util.Locale
  * (e.g. TSHIRT's "t-shirt" key is exposed as `garment_tshirt`, since hyphens
  * are illegal in Android resource names).
  */
-enum class Garment(val itemKey: String) {
+enum class Garment(val itemKey: String, val slot: Slot) {
     // Tops, coldest-leaning first. Sweater + jacket are shipped as defaults.
-    SWEATER("sweater"),
-    HOODIE("hoodie"),
-    JACKET("jacket"),
-    COAT("coat"),
-    PUFFER("puffer"),
-    THIN_JACKET("thin-jacket"),
-    TSHIRT("t-shirt"),
-    POLO("polo"),
-    SHIRT("shirt"),
+    SWEATER("sweater", Slot.TOP),
+    HOODIE("hoodie", Slot.TOP),
+    JACKET("jacket", Slot.TOP),
+    COAT("coat", Slot.TOP),
+    PUFFER("puffer", Slot.TOP),
+    THIN_JACKET("thin-jacket", Slot.TOP),
+    TSHIRT("t-shirt", Slot.TOP),
+    POLO("polo", Slot.TOP),
+    SHIRT("shirt", Slot.TOP),
 
     // Bottoms. Shorts is shipped as a default; en-GB renders "pants" as "Trousers".
-    SHORTS("shorts"),
-    SKIRT("skirt"),
-    PANTS("pants"),
-    JEANS("jeans");
+    SHORTS("shorts", Slot.BOTTOM),
+    SKIRT("skirt", Slot.BOTTOM),
+    PANTS("pants", Slot.BOTTOM),
+    JEANS("jeans", Slot.BOTTOM);
+
+    /** Which outfit slot this garment occupies. Drives "does any matched rule
+     *  cover this slot?" decisions in [EvaluateClothesRules] and "what
+     *  temperature window does the fallback apply in?" in [FallbackRange],
+     *  without those callers re-encoding the tier classification as string
+     *  key sets. */
+    enum class Slot { TOP, BOTTOM }
 
     companion object {
         /**

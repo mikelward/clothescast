@@ -1,11 +1,11 @@
 package app.clothescast.core.domain.usecase
 
 import app.clothescast.core.domain.model.CalendarEvent
-import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.InsightSummary
@@ -13,6 +13,7 @@ import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PrecipLikelihood
+import app.clothescast.core.domain.model.TriggeredOutfit
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
@@ -23,7 +24,6 @@ import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.util.Locale
 
 /**
  * The product. Fetches the forecast, evaluates clothes rules, renders the
@@ -105,16 +105,20 @@ class GenerateDailyInsight(
                 tonightStart = tonightStart,
                 allEvents = allEvents,
                 alerts = activeAlerts,
-                todayItems = periodView.triggeredRules.map { it.item },
+                todayItems = periodView.triggeredOutfit.items,
             )
         } else {
             null
         }
 
+        val rules = prefs.clothesRules
+        val defaultBottom = prefs.defaultBottom
+        val defaultTop = prefs.defaultTop
+
         val summary = renderInsightSummary(
             today = periodView.forecast,
             yesterday = periodView.deltaYesterday,
-            todayTriggeredRules = periodView.triggeredRules,
+            todayItems = periodView.triggeredOutfit.items,
             alerts = activeAlerts,
             events = periodView.events,
             period = period,
@@ -124,14 +128,12 @@ class GenerateDailyInsight(
             deltaThresholdC = prefs.deltaThresholdC,
             clothesMentionMode = prefs.clothesMentionMode,
             yesterdayTriggeredItems = periodView.yesterdayTriggeredItems,
+            todayRuleItems = periodView.triggeredOutfit.rules.map { it.item },
         )
 
-        val rules = prefs.clothesRules
-        val defaultBottom = prefs.defaultBottom
-        val defaultTop = prefs.defaultTop
         val insight = Insight(
             summary = summary,
-            recommendedItems = periodView.triggeredRules.map { it.item },
+            recommendedItems = periodView.triggeredOutfit.items,
             generatedAt = clock.instant(),
             forDate = bundle.today.date,
             hourly = periodView.forecast.hourly,
@@ -245,11 +247,25 @@ class GenerateDailyInsight(
                 eveningEnd = tonightStart,
             )
         }
-        val triggeredRules = evaluateClothesRules(periodForecast, prefs.clothesRules)
+        val triggeredOutfit = evaluateClothesRules(
+            periodForecast,
+            prefs.clothesRules,
+            prefs.defaultTop,
+            prefs.defaultBottom,
+        )
         // Yesterday's clothing, evaluated against the same yesterday slice the
         // delta uses, so ClothesMentionMode.IF_CHANGED compares apples to apples
-        // (daytime-vs-daytime, or 24h fallback when hourly is missing).
-        val yesterdayTriggeredItems = evaluateClothesRules(deltaYesterday, prefs.clothesRules).map { it.item }
+        // (daytime-vs-daytime, or 24h fallback when hourly is missing). Includes
+        // the per-tier default rule's items on both sides so a stretch of mild
+        // days reads as unchanged (rather than the engine emitting an empty
+        // list yesterday and a populated one today, with IF_CHANGED triggering
+        // every morning).
+        val yesterdayTriggeredItems = evaluateClothesRules(
+            deltaYesterday,
+            prefs.clothesRules,
+            prefs.defaultTop,
+            prefs.defaultBottom,
+        ).items
         val perModelForRender = bundle.perModelHourly?.slicedTo(
             when (period) {
                 ForecastPeriod.TODAY -> todayWindow(periodForecast.hourly, bundle.today.date)
@@ -259,7 +275,7 @@ class GenerateDailyInsight(
         return PeriodView(
             forecast = periodForecast,
             nextForecast = nextForecast,
-            triggeredRules = triggeredRules,
+            triggeredOutfit = triggeredOutfit,
             events = filterEventsForPeriod(events, period, tonightStart),
             perModelForRender = perModelForRender,
             deltaToday = deltaToday,
@@ -324,7 +340,7 @@ class GenerateDailyInsight(
         val nightSummary: InsightSummary = renderInsightSummary(
             today = nightView.forecast,
             yesterday = nightView.deltaYesterday,
-            todayTriggeredRules = nightView.triggeredRules,
+            todayItems = nightView.triggeredOutfit.items,
             alerts = alerts,
             events = nightView.events,
             period = ForecastPeriod.TONIGHT,
@@ -332,15 +348,67 @@ class GenerateDailyInsight(
             perModelHourly = nightView.perModelForRender,
             eveningEventTieIn = null,
             deltaThresholdC = prefs.deltaThresholdC,
+            todayRuleItems = nightView.triggeredOutfit.rules.map { it.item },
         )
-        val nightItems = nightSummary.clothes?.items.orEmpty()
+        // Delta is computed per-tier because tops layer and bottoms substitute,
+        // and those two relationships imply different ways the morning's outfit
+        // already covers (or doesn't cover) the night's:
+        //
+        //  - **Tops layer.** A sweater goes over a t-shirt. So if the day's
+        //    outfit already includes a sweater-tier garment (whether from a
+        //    matched threshold rule OR the user's defaultTop, e.g. someone
+        //    who runs cold picking defaultTop = SWEATER), and the night
+        //    needs no additional layer, the tie-in stays silent — the user
+        //    just removes a layer when they get warm, no need to "bring"
+        //    anything. Only night-side *threshold-rule matches* contribute
+        //    to the top delta; a night-side default top is the baseline,
+        //    not an extra.
+        //  - **Bottoms substitute.** You don't wear pants over shorts; you
+        //    swap. So a hot day's shorts → mild evening's defaultBottom
+        //    pants IS a real action the user needs to take, and "Bring
+        //    pants tonight" reads right. Both sides of the bottom delta
+        //    use full items (rules + defaults).
+        //
+        // Items that don't map to a [Garment] catalog entry (e.g. "umbrella")
+        // don't contribute to either delta — they surface through the precip
+        // clause, not the clothes delta.
+        //
+        // TODO(rules-redesign): replace the per-tier dispatch with explicit
+        //  per-garment relationship metadata on [Garment]
+        //  (`layersOver` / `substitutesFor`). Today's heuristic is correct
+        //  for the catalog as it stands (all tops layer, all bottoms
+        //  substitute), but a future catalog entry could break that
+        //  assumption (e.g. a "dress" garment that substitutes for the
+        //  whole outfit, or a "scarf" that layers independently of the
+        //  top slot). At that point the dispatch wants to read from
+        //  Garment, not from the tier.
         val precip = nightSummary.precip
-        // Case- and whitespace-insensitive set comparison, matching the
-        // formatter's umbrella check and avoiding "Jacket" / "jacket"
-        // mismatches from legacy free-form ClothesRule.item values.
-        val normalize: (String) -> String = { it.trim().lowercase(Locale.ROOT) }
-        val todayKey = todayItems.map(normalize).toSet()
-        val deltaItems = nightItems.filter { normalize(it) !in todayKey }
+        // Membership comparison canonicalizes through Garment.fromKey().itemKey
+        // — not just normalize(item) — so legacy aliases collapse before the
+        // set lookup ("trousers" yesterday vs "pants" tonight both resolve to
+        // PANTS / "pants", same garment, no spurious "Bring pants." emission).
+        // fromKey already trims and lowercases internally and maps the
+        // tolerated aliases (trousers, jumper, tshirt) onto the canonical key,
+        // so this also picks up the case / whitespace tolerance the previous
+        // normalize() pass was doing.
+        val dayKeysBySlot = todayItems
+            .mapNotNull { Garment.fromKey(it) }
+            .groupBy({ it.slot }, { it.itemKey })
+            .mapValues { it.value.toSet() }
+        val dayTopKey = dayKeysBySlot[Garment.Slot.TOP].orEmpty()
+        val dayBottomKey = dayKeysBySlot[Garment.Slot.BOTTOM].orEmpty()
+        val topDelta = nightView.triggeredOutfit.rules
+            .map { it.item }
+            .filter { item ->
+                val g = Garment.fromKey(item)
+                g?.slot == Garment.Slot.TOP && g.itemKey !in dayTopKey
+            }
+        val bottomDelta = nightView.triggeredOutfit.items
+            .filter { item ->
+                val g = Garment.fromKey(item)
+                g?.slot == Garment.Slot.BOTTOM && g.itemKey !in dayBottomKey
+            }
+        val deltaItems = topDelta + bottomDelta
 
         if (deltaItems.isEmpty() && precip == null) return null
 
@@ -365,7 +433,7 @@ class GenerateDailyInsight(
     private data class PeriodView(
         val forecast: DailyForecast,
         val nextForecast: DailyForecast?,
-        val triggeredRules: List<ClothesRule>,
+        val triggeredOutfit: TriggeredOutfit,
         val events: List<CalendarEvent>,
         val perModelForRender: PerModelHourly?,
         val deltaToday: DailyForecast,

@@ -3,7 +3,6 @@ package app.clothescast.core.domain.usecase
 import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesMentionMode
-import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.EveningEventTieInClause
@@ -49,10 +48,6 @@ class RenderInsightSummaryTest {
         precipitationMmTotal = 0.0,
         condition = WeatherCondition.PARTLY_CLOUDY,
     )
-
-    private val sweaterRule = ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0))
-    private val jacketRule = ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0))
-    private val umbrellaRule = ClothesRule("umbrella", ClothesRule.PrecipitationProbabilityAbove(50.0))
 
     @Test
     fun `band clause is always emitted`() {
@@ -132,7 +127,7 @@ class RenderInsightSummaryTest {
 
     @Test
     fun `clothes clause carries items in rule order`() {
-        val out = subject(mildToday, yesterday, listOf(sweaterRule, jacketRule, umbrellaRule))
+        val out = subject(mildToday, yesterday, listOf("sweater", "jacket", "umbrella"))
         out.clothes.shouldNotBeNull()
         out.clothes!!.items.shouldContainExactly("sweater", "jacket", "umbrella")
     }
@@ -147,7 +142,7 @@ class RenderInsightSummaryTest {
         val out = subject(
             mildToday,
             yesterday,
-            listOf(sweaterRule),
+            listOf("sweater"),
             clothesMentionMode = ClothesMentionMode.ALWAYS,
             yesterdayTriggeredItems = listOf("sweater"),
         )
@@ -160,7 +155,7 @@ class RenderInsightSummaryTest {
         subject(
             mildToday,
             yesterday,
-            listOf(sweaterRule),
+            listOf("sweater"),
             clothesMentionMode = ClothesMentionMode.NEVER,
         ).clothes.shouldBeNull()
     }
@@ -170,7 +165,7 @@ class RenderInsightSummaryTest {
         subject(
             mildToday,
             yesterday,
-            listOf(sweaterRule, jacketRule),
+            listOf("sweater", "jacket"),
             clothesMentionMode = ClothesMentionMode.IF_CHANGED,
             // Same set, different case/whitespace — still counts as unchanged.
             yesterdayTriggeredItems = listOf(" Jacket ", "SWEATER"),
@@ -182,12 +177,29 @@ class RenderInsightSummaryTest {
         val out = subject(
             mildToday,
             yesterday,
-            listOf(sweaterRule, jacketRule),
+            listOf("sweater", "jacket"),
             clothesMentionMode = ClothesMentionMode.IF_CHANGED,
             yesterdayTriggeredItems = listOf("sweater"),
         )
         out.clothes.shouldNotBeNull()
         out.clothes!!.items.shouldContainExactly("sweater", "jacket")
+    }
+
+    @Test
+    fun `clothes mention IF_CHANGED canonicalizes legacy aliases when comparing to yesterday`() {
+        // Codex-flagged: yesterday fires a legacy "trousers" rule, today
+        // falls back to the canonical "pants" default. Same garment
+        // semantically (Garment.fromKey resolves both to PANTS), but a
+        // raw lowercase comparison treats them as different and emits the
+        // clause even though the outfit hasn't changed. Canonicalize via
+        // Garment.fromKey().itemKey before comparing.
+        subject(
+            mildToday,
+            yesterday,
+            listOf("t-shirt", "pants"),
+            clothesMentionMode = ClothesMentionMode.IF_CHANGED,
+            yesterdayTriggeredItems = listOf("t-shirt", "trousers"),
+        ).clothes.shouldBeNull()
     }
 
     @Test
@@ -197,7 +209,7 @@ class RenderInsightSummaryTest {
         val out = subject(
             mildToday,
             yesterday,
-            listOf(sweaterRule),
+            listOf("sweater"),
             period = ForecastPeriod.TONIGHT,
             clothesMentionMode = ClothesMentionMode.NEVER,
         )
@@ -281,7 +293,7 @@ class RenderInsightSummaryTest {
         val out = subject(
             today = mildToday,
             yesterday = yesterday,
-            todayTriggeredRules = emptyList(),
+            todayItems = emptyList(),
             eveningEventTieIn = tieIn,
         )
         out.eveningEventTieIn shouldBe tieIn
@@ -294,8 +306,8 @@ class RenderInsightSummaryTest {
 
     @Test
     fun `calendar tie-in is suppressed on the today period`() {
-        // The morning insight no longer chains a "Bring an umbrella for your 3pm
-        // standup" sentence after "Rain at 3pm." — the listener already knows
+        // The morning insight no longer chains a "Bring an umbrella." sentence
+        // after "Rain at 3pm." — the listener already knows
         // about their morning event and the bare precip clause is enough.
         // Tonight events get a separate evening-event tie-in via
         // [eveningEventTieIn] when the user has the "Mention evening events"
@@ -306,7 +318,7 @@ class RenderInsightSummaryTest {
             hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.RAIN)),
         )
         val event = CalendarEvent("standup", LocalTime.of(14, 30), LocalTime.of(16, 0))
-        subject(today, yesterday, listOf(umbrellaRule), events = listOf(event)).calendarTieIn.shouldBeNull()
+        subject(today, yesterday, listOf("umbrella"), events = listOf(event)).calendarTieIn.shouldBeNull()
     }
 
     @Test
@@ -321,7 +333,7 @@ class RenderInsightSummaryTest {
         )
         val event = CalendarEvent("park run", LocalTime.of(14, 30), LocalTime.of(16, 0))
         subject(
-            today, yesterday, listOf(umbrellaRule),
+            today, yesterday, listOf("umbrella"),
             events = listOf(event),
             period = ForecastPeriod.TONIGHT,
         ).calendarTieIn.shouldBeNull()
@@ -380,7 +392,7 @@ class RenderInsightSummaryTest {
         )
         val out = subject(
             today, yesterday,
-            todayTriggeredRules = listOf(sweaterRule, umbrellaRule),
+            todayItems = listOf("sweater", "umbrella"),
             alerts = listOf(severe),
         )
         out.alert!!.event shouldBe "Flood Warning"
@@ -392,6 +404,31 @@ class RenderInsightSummaryTest {
         out.precip!!.condition shouldBe WeatherCondition.RAIN
         out.precip!!.time shouldBe LocalTime.of(15, 0)
         out.calendarTieIn.shouldBeNull()
+    }
+
+    @Test
+    fun `calendar tie-in is omitted when the only clothes items are tier defaults`() {
+        // Codex-flagged: passing the full TriggeredOutfit.items into the
+        // renderer (so the prose `clothes` clause can name the baseline
+        // outfit on mild days) used to also feed the calendar tie-in,
+        // which would then surface "Bring a t-shirt." on
+        // any rainy mild evening with an overlapping event. The tie-in
+        // takes a separate todayRuleItems list now — defaults aren't
+        // "extras to bring," so they shouldn't trigger the clause.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 60.0,
+            condition = WeatherCondition.RAIN,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.RAIN),
+            ),
+        )
+        val event = CalendarEvent("park run", LocalTime.of(14, 30), LocalTime.of(16, 0))
+        subject(
+            today, yesterday, listOf("t-shirt", "pants"),
+            events = listOf(event),
+            period = ForecastPeriod.TONIGHT,
+            todayRuleItems = emptyList(),
+        ).calendarTieIn.shouldBeNull()
     }
 
     @Test
@@ -409,7 +446,7 @@ class RenderInsightSummaryTest {
             end = LocalTime.of(16, 0),
         )
         val out = subject(
-            today, yesterday, listOf(umbrellaRule),
+            today, yesterday, listOf("umbrella"),
             events = listOf(event),
             period = ForecastPeriod.TONIGHT,
         ).calendarTieIn
@@ -430,7 +467,7 @@ class RenderInsightSummaryTest {
         )
         val event = CalendarEvent("park run", LocalTime.of(14, 0), LocalTime.of(16, 0))
         val out = subject(
-            today, yesterday, listOf(sweaterRule, jacketRule),
+            today, yesterday, listOf("sweater", "jacket"),
             events = listOf(event),
             period = ForecastPeriod.TONIGHT,
         ).calendarTieIn
@@ -447,7 +484,7 @@ class RenderInsightSummaryTest {
         )
         val event = CalendarEvent("breakfast", LocalTime.of(8, 0), LocalTime.of(9, 0))
         subject(
-            today, yesterday, listOf(umbrellaRule),
+            today, yesterday, listOf("umbrella"),
             events = listOf(event),
             period = ForecastPeriod.TONIGHT,
         ).calendarTieIn.shouldBeNull()
@@ -472,7 +509,7 @@ class RenderInsightSummaryTest {
     fun `calendar tie-in is omitted on a dry day even when an event exists`() {
         val event = CalendarEvent("park run", LocalTime.of(11, 0), LocalTime.of(13, 0))
         subject(
-            mildToday, yesterday, listOf(umbrellaRule),
+            mildToday, yesterday, listOf("umbrella"),
             events = listOf(event),
             period = ForecastPeriod.TONIGHT,
         ).calendarTieIn.shouldBeNull()
@@ -487,7 +524,7 @@ class RenderInsightSummaryTest {
         )
         val holiday = CalendarEvent("public holiday", LocalTime.MIDNIGHT, LocalTime.MIDNIGHT, allDay = true)
         subject(
-            today, yesterday, listOf(umbrellaRule),
+            today, yesterday, listOf("umbrella"),
             events = listOf(holiday),
             period = ForecastPeriod.TONIGHT,
         ).calendarTieIn.shouldBeNull()

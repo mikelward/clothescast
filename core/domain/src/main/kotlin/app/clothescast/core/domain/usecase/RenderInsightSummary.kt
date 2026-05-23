@@ -7,11 +7,11 @@ import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.CalendarTieInClause
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesMentionMode
-import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PrecipClause
@@ -63,7 +63,7 @@ class RenderInsightSummary {
     operator fun invoke(
         today: DailyForecast,
         yesterday: DailyForecast,
-        todayTriggeredRules: List<ClothesRule>,
+        todayItems: List<String>,
         alerts: List<WeatherAlert> = emptyList(),
         events: List<CalendarEvent> = emptyList(),
         period: ForecastPeriod = ForecastPeriod.TODAY,
@@ -98,24 +98,40 @@ class RenderInsightSummary {
         // Yesterday's triggered clothing items, used only by
         // [ClothesMentionMode.IF_CHANGED] to decide whether today's set differs.
         yesterdayTriggeredItems: List<String> = emptyList(),
+        // Threshold-rule matches only, separate from [todayItems] (which
+        // includes per-tier default items). Drives "bring X for your
+        // event" tie-ins, where a default isn't an "extra" the user
+        // needs to bring — it's the baseline outfit they already have
+        // on. Defaults to [todayItems] for backward-compat with callers
+        // that don't distinguish (mostly tests passing synthetic rule
+        // items directly); the use case `GenerateDailyInsight` plumbs
+        // the two through separately so a rainy mild evening doesn't
+        // emit "Bring a t-shirt." purely because TriggeredOutfit has
+        // baseline items.
+        todayRuleItems: List<String> = todayItems,
     ): InsightSummary {
-        val items = todayTriggeredRules.map { it.item }
         val peak = peakPrecip(today, perModelHourly)
         return InsightSummary(
             period = period,
             alert = alertClause(alerts),
             band = bandClause(today),
             delta = if (period == ForecastPeriod.TODAY) deltaClause(todayForDelta, yesterday, deltaThresholdC) else null,
-            clothes = clothesClause(items, period, clothesMentionMode, yesterdayTriggeredItems),
+            clothes = clothesClause(todayItems, period, clothesMentionMode, yesterdayTriggeredItems),
             precip = peak?.let { PrecipClause(it.condition, it.time, it.likelihood) },
             // Calendar tie-in only fires on TONIGHT — pairing the precip peak
-            // with an event the listener hasn't started yet ("Bring an umbrella
-            // for your 8pm dinner") is the case where it adds value. On TODAY
-            // the listener already knows about the event their morning is
-            // built around, so the bare precip clause ("Rain at 3pm.") is
-            // enough; chaining "Bring an umbrella for your 3pm standup." after
-            // it just repeats what the user already heard.
-            calendarTieIn = if (period == ForecastPeriod.TONIGHT) calendarTieInClause(items, peak, events) else null,
+            // with an event the listener hasn't yet attended ("Bring an
+            // umbrella.") is the case where it adds value. Event titles and
+            // times never appear in the rendered prose — they don't flow
+            // off-device through Gemini TTS — but their existence motivates
+            // the heads-up. On TODAY the listener already knows about the
+            // event their morning is built around, so the bare precip clause
+            // ("Rain at 3pm.") is enough; chaining another "Bring an
+            // umbrella." after it just repeats what the user already heard.
+            //
+            // Threshold-rule matches only — a tier's default isn't an
+            // "extra to bring," so it shouldn't be what the tie-in
+            // points at.
+            calendarTieIn = if (period == ForecastPeriod.TONIGHT) calendarTieInClause(todayRuleItems, peak, events) else null,
             eveningEventTieIn = eveningEventTieIn,
         )
     }
@@ -162,11 +178,20 @@ class RenderInsightSummary {
             ClothesMentionMode.ALWAYS -> ClothesClause(items)
             ClothesMentionMode.NEVER -> null
             ClothesMentionMode.IF_CHANGED -> {
-                // Case- and whitespace-insensitive set comparison, matching the
-                // evening tie-in's delta check and tolerating "Jacket" / "jacket"
-                // mismatches from legacy free-form ClothesRule.item values.
-                val normalize: (String) -> String = { it.trim().lowercase(Locale.ROOT) }
-                if (items.map(normalize).toSet() == yesterdayItems.map(normalize).toSet()) {
+                // Comparison canonicalizes through Garment.fromKey().itemKey so
+                // legacy aliases collapse to the same garment: yesterday's
+                // "trousers" rule and today's default "pants" both resolve to
+                // PANTS / "pants" and the clause is correctly suppressed as
+                // unchanged. fromKey internally trims + lowercases and maps
+                // the tolerated aliases (trousers, jumper, tshirt) onto the
+                // canonical key, so this also picks up the case / whitespace
+                // tolerance the previous normalize() pass was doing. Unknown
+                // items (umbrella, anything else off-catalog) fall back to the
+                // trimmed lowercase string so they still compare consistently.
+                val canonicalize: (String) -> String = { item ->
+                    Garment.fromKey(item)?.itemKey ?: item.trim().lowercase(Locale.ROOT)
+                }
+                if (items.map(canonicalize).toSet() == yesterdayItems.map(canonicalize).toSet()) {
                     null
                 } else {
                     ClothesClause(items)

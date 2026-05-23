@@ -986,19 +986,23 @@ class GenerateDailyInsightTest {
 
     @Test
     fun `evening tie-in carries every night-only item, not just the first`() = runTest {
-        // Today triggers sweater (mild daytime); the night drops to freezing
-        // and triggers sweater + jacket + coat. The delta is jacket + coat —
-        // both surface in the tie-in's items list so the morning insight can
-        // render "Tonight, bring a jacket and coat." rather than dropping
-        // coat silently.
+        // Today triggers shorts (warm afternoon, mild evening); the night
+        // drops cold enough for jeans + a sweater. Delta straddles both slots
+        // — bottom (jeans, swapping in for the warm-day shorts) plus top
+        // (sweater, new since the day was bare) — and both surface in the
+        // tie-in's items list rather than the engine dropping one silently.
+        // Picked across slots rather than two SHELL tops because tops
+        // layer-reduce within their layer: jacket + coat firing together
+        // would collapse to coat alone (you wear one outer, not both),
+        // which is correct but doesn't exercise "multiple delta items".
         val zone = ZoneId.of("Europe/London")
         val daytime = listOf(
-            HourlyForecast(LocalTime.of(8, 0), 17.0, 16.0, 5.0, WeatherCondition.CLEAR),
-            HourlyForecast(LocalTime.of(15, 0), 17.0, 16.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(8, 0), 26.0, 25.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 28.0, 27.0, 5.0, WeatherCondition.CLEAR),
         )
         val evening = listOf(
-            HourlyForecast(LocalTime.of(19, 0), 5.0, 3.0, 5.0, WeatherCondition.CLEAR),
-            HourlyForecast(LocalTime.of(21, 0), 4.0, 2.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(19, 0), 14.0, 13.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(21, 0), 12.0, 11.0, 5.0, WeatherCondition.CLEAR),
         )
         val baseHourly = today.copy(
             hourly = daytime + evening,
@@ -1017,8 +1021,8 @@ class GenerateDailyInsightTest {
 
         val rules = listOf(
             ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
-            ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)),
-            ClothesRule("coat", ClothesRule.TemperatureBelow(6.0)),
+            ClothesRule("jeans", ClothesRule.TemperatureBelow(20.0)),
+            ClothesRule("shorts", ClothesRule.TemperatureAbove(24.0)),
         )
         val result = subject(
             location = london,
@@ -1032,7 +1036,7 @@ class GenerateDailyInsightTest {
 
         val tie = result.insight.summary.eveningEventTieIn
         tie.shouldNotBeNull()
-        tie!!.items shouldBe listOf("jacket", "coat")
+        tie!!.items shouldBe listOf("sweater", "jeans")
         tie.rainTime.shouldBeNull()
     }
 

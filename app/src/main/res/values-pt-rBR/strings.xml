@@ -685,8 +685,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_custom_label">Diretriz personalizada</string>
     <string name="settings_tts_style_custom_placeholder">ex.: Leia o seguinte como um bibliotecário severo sussurrando</string>
     <string name="today_forecast_air_section_title">Temperatura do ar</string>
-    <string name="settings_default_bottom_title">Parte inferior padrão</string>
-    <string name="settings_default_bottom_description">O que sugerimos na tela inicial quando não está quente o suficiente para shorts.</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">Paleta</string>

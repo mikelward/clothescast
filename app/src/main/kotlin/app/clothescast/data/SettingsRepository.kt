@@ -230,6 +230,10 @@ class SettingsRepository(
         dataStore.edit { it[DEFAULT_BOTTOM] = bottom.name }
     }
 
+    suspend fun setDefaultTop(top: OutfitSuggestion.Top) {
+        dataStore.edit { it[DEFAULT_TOP] = top.name }
+    }
+
     suspend fun setLocation(location: Location) {
         dataStore.edit { prefs ->
             prefs[LOCATION_LAT] = location.latitude
@@ -716,17 +720,18 @@ class SettingsRepository(
         val themeMode = this[THEME_MODE]?.let { runCatching { ThemeMode.valueOf(it) }.getOrNull() }
             ?: ThemeMode.SYSTEM
         val rules = parseRules(this[CLOTHES_RULES])
-        // Constrain the stored value to the picker's three options so a hand-edited
+        // Constrain the stored value to the catalog enum so a hand-edited
         // DataStore (or a forward-compat value from a future build) can't drop
-        // SHORTS into the fallback slot — shorts have a rule-driven warm-weather
-        // path and shouldn't ever be the "no rule fires" answer. LONG_SKIRT is
-        // allowed even though it also has a rule-driven path: the catalog's skirt
-        // icon is a full-length / long skirt, and a user who picks it as their
-        // standard wants it everywhere the fallback fires, not just on hot days.
+        // an unknown variant into the fallback slot. Any valid Bottom is a
+        // legitimate "If no rules match" pick — including SHORTS, which a
+        // hot-climate user who removed the shorts rule may want as their
+        // standard.
         val defaultBottom = this[DEFAULT_BOTTOM]
             ?.let { runCatching { OutfitSuggestion.Bottom.valueOf(it) }.getOrNull() }
-            ?.takeIf { it in DEFAULT_BOTTOM_OPTIONS }
             ?: OutfitSuggestion.Bottom.LONG_PANTS
+        val defaultTop = this[DEFAULT_TOP]
+            ?.let { runCatching { OutfitSuggestion.Top.valueOf(it) }.getOrNull() }
+            ?: OutfitSuggestion.Top.TSHIRT
         val location = parseLocation(this)
         val useDeviceLocation = this[USE_DEVICE_LOCATION] == true
         val homeLocation = parseHomeLocation(this)
@@ -841,6 +846,7 @@ class SettingsRepository(
             themeMode = themeMode,
             clothesRules = rules,
             defaultBottom = defaultBottom,
+            defaultTop = defaultTop,
             location = location,
             useDeviceLocation = useDeviceLocation,
             homeLocation = homeLocation,
@@ -942,6 +948,7 @@ class SettingsRepository(
         themeMode = themeMode.name,
         colorPalette = colorPalette.name,
         defaultBottom = defaultBottom.name,
+        defaultTop = defaultTop.name,
         dailyTimeBucketHour = schedule.time.hour.toString().padStart(2, '0'),
         dailyDaysCount = schedule.days.size,
         tonightEnabled = tonightEnabled,
@@ -1074,19 +1081,7 @@ class SettingsRepository(
         private val THEME_MODE = stringPreferencesKey("theme_mode")
         private val CLOTHES_RULES = stringPreferencesKey("clothes_rules_json")
         private val DEFAULT_BOTTOM = stringPreferencesKey("default_bottom")
-
-        /**
-         * Which [OutfitSuggestion.Bottom] values the Settings picker exposes
-         * as fallback choices. SHORTS is excluded — it's the warm-weather
-         * special case driven by the user's shorts rule and would defeat
-         * itself as a fallback (i.e. "what to wear when no warm rule fires"
-         * landing on shorts).
-         */
-        val DEFAULT_BOTTOM_OPTIONS: List<OutfitSuggestion.Bottom> = listOf(
-            OutfitSuggestion.Bottom.LONG_PANTS,
-            OutfitSuggestion.Bottom.JEANS,
-            OutfitSuggestion.Bottom.LONG_SKIRT,
-        )
+        private val DEFAULT_TOP = stringPreferencesKey("default_top")
         private val LOCATION_LAT = doublePreferencesKey("location_latitude")
         private val LOCATION_LON = doublePreferencesKey("location_longitude")
         private val LOCATION_NAME = stringPreferencesKey("location_display_name")

@@ -11,13 +11,12 @@ import java.time.LocalTime
  * populate [Insight.recommendedItems]. Top tier (coldest first): a firing `jacket` rule
  * promotes to [Top.THICK_JACKET]; a firing `coat` rule promotes to [Top.THICK_COAT]; a
  * firing `sweater`/`hoodie` rule promotes to [Top.SWEATER]; a firing `polo` rule lands
- * on [Top.POLO]; otherwise [Top.TSHIRT]. Bottom tier: a firing `shorts` rule picks
- * [Bottom.SHORTS]; `skirt` picks [Bottom.LONG_SKIRT]; `jeans` picks [Bottom.JEANS];
- * otherwise the user's chosen `defaultBottom` ([Bottom.LONG_PANTS] by default; the
- * Settings picker also lets a denim-everyday or skirt-everyday user flip it to
- * [Bottom.JEANS] / [Bottom.LONG_SKIRT] so the home-screen icon matches their actual
- * standard outfit). That keeps the home-screen icon and the bulleted recommendations
- * honest about the same set of cutoffs — no second mental model, no shadow defaults.
+ * on [Top.POLO]; otherwise the user's chosen `defaultTop` ([Top.TSHIRT] by default).
+ * Bottom tier: a firing `shorts` rule picks [Bottom.SHORTS]; `skirt` picks
+ * [Bottom.LONG_SKIRT]; `jeans` picks [Bottom.JEANS]; otherwise the user's chosen
+ * `defaultBottom` ([Bottom.LONG_PANTS] by default). The Settings "If no rules match"
+ * card lets the user point each fallback at any catalog garment so the home-screen
+ * icon matches what they actually wear when no rule fires.
  *
  * Rule conditions are checked against feels-like temperatures (wind chill / humidity
  * adjusted) — that's what people experience on the way out the door, and it's already
@@ -41,30 +40,42 @@ data class OutfitSuggestion(
         // Catalog item keys (see [Garment.itemKey]) that drive each icon tier.
         // Top tiers (coldest first): coat → THICK_COAT, puffer → PUFFER_JACKET,
         // jacket → THICK_JACKET, thin-jacket/sweater/hoodie → mid-layer, polo → POLO,
-        // fallback → TSHIRT. Colder tiers are checked before warmer ones so that when
-        // multiple rules fire simultaneously (e.g. both coat ≤6°C and jacket ≤12°C fire
-        // at 4°C), the heavier garment icon wins rather than the first match.
+        // fallback → user's chosen defaultTop (TSHIRT by default). Colder tiers
+        // are checked before warmer ones so that when multiple rules fire
+        // simultaneously (e.g. both coat ≤6°C and jacket ≤12°C fire at 4°C),
+        // the heavier garment icon wins rather than the first match.
         // Bottom tiers: shorts → SHORTS, skirt → LONG_SKIRT, jeans → JEANS, fallback →
-        // user's chosen defaultBottom (LONG_PANTS unless the Settings picker flipped
-        // it to JEANS or LONG_SKIRT).
-        // A user who deleted all cold rules gets TSHIRT regardless of temperature.
-        private val THICK_JACKET_KEYS = listOf("jacket")
-        private val THICK_COAT_KEYS = listOf("coat")
-        private val PUFFER_JACKET_KEYS = listOf("puffer")
-        private val THIN_JACKET_KEYS = listOf("thin-jacket")
-        private val SWEATER_KEYS = listOf("sweater", "hoodie")
-        private val POLO_KEYS = listOf("polo")
-        private val SHORTS_KEYS = listOf("shorts")
+        // user's chosen defaultBottom (LONG_PANTS by default).
+        // Internal so the [FallbackRange] helper can compute the temperature
+        // window where each fallback would apply, using the same key set the
+        // picker consults.
+        internal val THICK_JACKET_KEYS = listOf("jacket")
+        internal val THICK_COAT_KEYS = listOf("coat")
+        internal val PUFFER_JACKET_KEYS = listOf("puffer")
+        internal val THIN_JACKET_KEYS = listOf("thin-jacket")
+        internal val SWEATER_KEYS = listOf("sweater", "hoodie")
+        internal val POLO_KEYS = listOf("polo")
+        internal val SHORTS_KEYS = listOf("shorts")
         // The `skirt` clothes-rule key (catalogue Garment.SKIRT) maps to the
         // Bottom.LONG_SKIRT icon — there's only one skirt icon today and it's
         // full-length. A short-skirt tier will land here as a sibling later.
-        private val LONG_SKIRT_KEYS = listOf("skirt")
-        private val JEANS_KEYS = listOf("jeans")
+        internal val LONG_SKIRT_KEYS = listOf("skirt")
+        internal val JEANS_KEYS = listOf("jeans")
+
+        /** Every rule-keyed top tier — the set the fallback fires *outside* of. */
+        internal val TOP_TIER_KEYS: List<String> =
+            THICK_COAT_KEYS + PUFFER_JACKET_KEYS + THICK_JACKET_KEYS +
+                THIN_JACKET_KEYS + SWEATER_KEYS + POLO_KEYS
+
+        /** Every rule-keyed bottom tier — sibling of [TOP_TIER_KEYS]. */
+        internal val BOTTOM_TIER_KEYS: List<String> =
+            SHORTS_KEYS + LONG_SKIRT_KEYS + JEANS_KEYS
 
         fun fromForecast(
             forecast: DailyForecast,
             clothesRules: List<ClothesRule>,
             defaultBottom: Bottom = Bottom.LONG_PANTS,
+            defaultTop: Top = Top.TSHIRT,
         ): OutfitSuggestion {
             val top = when {
                 clothesRules.firstFiring(forecast, THICK_COAT_KEYS) != null -> Top.THICK_COAT
@@ -73,7 +84,7 @@ data class OutfitSuggestion(
                 clothesRules.firstFiring(forecast, THIN_JACKET_KEYS) != null -> Top.THIN_JACKET
                 clothesRules.firstFiring(forecast, SWEATER_KEYS) != null -> Top.SWEATER
                 clothesRules.firstFiring(forecast, POLO_KEYS) != null -> Top.POLO
-                else -> Top.TSHIRT
+                else -> defaultTop
             }
             val bottom = when {
                 clothesRules.firstFiring(forecast, SHORTS_KEYS) != null -> Bottom.SHORTS

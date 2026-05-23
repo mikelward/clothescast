@@ -655,8 +655,6 @@ only the displayed label localizes.
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
     <string name="today_forecast_air_section_title">Температура воздуха</string>
-    <string name="settings_default_bottom_title">Стандартный низ</string>
-    <string name="settings_default_bottom_description">То, что мы предлагаем на главном экране, когда недостаточно тепло для шортов.</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">Палитра</string>

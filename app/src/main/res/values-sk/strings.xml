@@ -601,8 +601,6 @@ What is NOT overridden, by design:
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast nemôže bežať na tomto zariadení — tvoja zostava Androidu nemá funkciu, ktorú vyžaduje rozhranie aplikácie (Configuration.fontWeightAdjustment, očakávaná od Androidu 12 vyššie). Kontaktuj prosím výrobcu zariadenia ohľadom aktualizácie systému.</string>
     <string name="today_forecast_air_section_title">Teplota vzduchu</string>
-    <string name="settings_default_bottom_title">Štandardná spodná časť</string>
-    <string name="settings_default_bottom_description">Čo odporúčame na domovskej obrazovke, keď nie je dosť teplo na šortky.</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">Farebná paleta</string>

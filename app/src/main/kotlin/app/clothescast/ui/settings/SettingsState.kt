@@ -92,6 +92,7 @@ data class SettingsState(
     val effectiveEnabledHolidayCountries: Set<String> = emptySet(),
     val clothesRules: List<ClothesRule> = ClothesRule.DEFAULTS,
     val defaultBottom: OutfitSuggestion.Bottom = OutfitSuggestion.Bottom.LONG_PANTS,
+    val defaultTop: OutfitSuggestion.Top = OutfitSuggestion.Top.TSHIRT,
     val location: Location? = null,
     val useDeviceLocation: Boolean = false,
     val homeLocation: Location? = null,

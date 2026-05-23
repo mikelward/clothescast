@@ -620,8 +620,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_evening_rain_chance">Ngayong gabi, posibilidad ng ulan ng %1$s.</string>
 
     <string name="today_forecast_air_section_title">Temperatura ng hangin</string>
-    <string name="settings_default_bottom_title">Karaniwang ibabang damit</string>
-    <string name="settings_default_bottom_description">Kung ano ang aming iminumungkahi sa home screen kapag hindi sapat ang init para sa shorts.</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">Palette ng kulay</string>

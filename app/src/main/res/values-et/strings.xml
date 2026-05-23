@@ -545,8 +545,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>
 
     <string name="today_forecast_air_section_title">Õhutemperatuur</string>
-    <string name="settings_default_bottom_title">Standardne alumine rõivaese</string>
-    <string name="settings_default_bottom_description">Mida soovitame avalehel, kui pole piisavalt soe, et kanda šortseid.</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">Värvipalett</string>

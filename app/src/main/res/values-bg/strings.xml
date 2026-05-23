@@ -584,8 +584,6 @@ What is NOT overridden, by design:
     <string name="bug_report_consent_cancel">Откажи</string>
 
     <string name="today_forecast_air_section_title">Температура на въздуха</string>
-    <string name="settings_default_bottom_title">Стандартен долен</string>
-    <string name="settings_default_bottom_description">Какво предлагаме на началния екран, когато не е достатъчно топло за шорти.</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">Цветова палитра</string>

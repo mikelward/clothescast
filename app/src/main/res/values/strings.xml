@@ -818,8 +818,13 @@
     <string name="settings_clothes_title">Clothes rules</string>
     <string name="settings_clothes_description">If a forecast crosses one of these thresholds, the item appears in your daily ClothesCast.</string>
 
-    <string name="settings_default_bottom_title">Standard bottom</string>
-    <string name="settings_default_bottom_description">What we suggest on the home screen when it\'s not warm enough for shorts.</string>
+    <string name="settings_default_outfit_title">If no rules match</string>
+    <string name="settings_default_top_edit_title">Default top</string>
+    <string name="settings_default_bottom_edit_title">Default bottom</string>
+    <string name="settings_default_outfit_range_above">when temperature is above %1$s</string>
+    <string name="settings_default_outfit_range_below">when temperature is below %1$s</string>
+    <string name="settings_default_outfit_range_between">when temperature is between %1$s and %2$s</string>
+    <string name="settings_default_outfit_range_never">never</string>
 
     <!-- Garment dropdown labels — picker options when the user adds or edits a
          clothes rule. Stored on disk as the en-US key (e.g. "sweater"), so the

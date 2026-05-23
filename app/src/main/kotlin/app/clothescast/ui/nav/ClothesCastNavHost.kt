@@ -304,7 +304,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
         },
         refreshCachedOutfits = {
             val prefs = app.settingsRepository.preferences.first()
-            app.insightCache.recomputeOutfits(prefs.clothesRules, prefs.defaultBottom)
+            app.insightCache.recomputeOutfits(prefs.clothesRules, prefs.defaultBottom, prefs.defaultTop)
             runCatching { OutfitWidget().updateAll(context.applicationContext) }
         },
         resolveDeviceLocationWithCity = {

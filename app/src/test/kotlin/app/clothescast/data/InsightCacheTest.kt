@@ -436,7 +436,7 @@ class InsightCacheTest {
         )
         subject.store(InsightCache.Slot.THIS_PERIOD, stored)
 
-        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
+        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS, OutfitSuggestion.Top.TSHIRT)
 
         subject.thisPeriod.first()?.outfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
     }
@@ -479,7 +479,7 @@ class InsightCacheTest {
         subject.store(InsightCache.Slot.THIS_PERIOD, todayInsight)
         subject.store(InsightCache.Slot.NEXT_PERIOD, tonightInsight)
 
-        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
+        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS, OutfitSuggestion.Top.TSHIRT)
 
         val refreshedToday = subject.deliveredForToday(today, ForecastPeriod.TODAY)
         refreshedToday?.outfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
@@ -512,7 +512,7 @@ class InsightCacheTest {
             ),
         )
 
-        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
+        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS, OutfitSuggestion.Top.TSHIRT)
 
         val refreshed = subject.deliveredForToday(today, ForecastPeriod.TODAY)
         refreshed?.outfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
@@ -575,7 +575,7 @@ class InsightCacheTest {
             ),
         )
 
-        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
+        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS, OutfitSuggestion.Top.TSHIRT)
 
         val refreshed = subject.deliveredForToday(today, ForecastPeriod.TODAY)
         refreshed?.outfit?.bottom shouldBe OutfitSuggestion.Bottom.JEANS
@@ -598,7 +598,7 @@ class InsightCacheTest {
             ),
         )
 
-        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS)
+        subject.recomputeOutfits(ClothesRule.DEFAULTS, OutfitSuggestion.Bottom.JEANS, OutfitSuggestion.Top.TSHIRT)
 
         subject.thisPeriod.first()?.outfit?.bottom shouldBe storedBottom
     }

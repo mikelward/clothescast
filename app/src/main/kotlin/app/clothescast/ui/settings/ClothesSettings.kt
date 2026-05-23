@@ -49,9 +49,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.FallbackRange
+import app.clothescast.core.domain.model.FallbackTier
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.fallbackRange
 import app.clothescast.core.domain.model.fromUnit
 import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
@@ -73,6 +76,7 @@ import kotlin.math.roundToInt
 internal fun ClothesContent(
     rules: List<ClothesRule>,
     defaultBottom: OutfitSuggestion.Bottom,
+    defaultTop: OutfitSuggestion.Top,
     temperatureUnit: TemperatureUnit,
     outfitTopColors: Map<OutfitSuggestion.Top, Long>,
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long>,
@@ -81,6 +85,7 @@ internal fun ClothesContent(
     onReplace: (Int, ClothesRule) -> Unit,
     onDelete: (Int) -> Unit,
     onSetDefaultBottom: (OutfitSuggestion.Bottom) -> Unit,
+    onSetDefaultTop: (OutfitSuggestion.Top) -> Unit,
     onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
     onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
 ) {
@@ -98,7 +103,14 @@ internal fun ClothesContent(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             ClothesRulesCard(rules, temperatureUnit, onAdd, onReplace, onDelete)
-            DefaultBottomCard(defaultBottom, onSetDefaultBottom)
+            FallbackOutfitCard(
+                rules = rules,
+                defaultTop = defaultTop,
+                defaultBottom = defaultBottom,
+                temperatureUnit = temperatureUnit,
+                onSetDefaultTop = onSetDefaultTop,
+                onSetDefaultBottom = onSetDefaultBottom,
+            )
             GarmentColorsCard(
                 outfitTopColors = outfitTopColors,
                 outfitBottomColors = outfitBottomColors,
@@ -227,38 +239,181 @@ private fun bottomOutfitLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (b
 }
 
 /**
- * Picks which bottom garment the home-screen outfit picker falls back to when
- * no shorts / skirt / jeans rule fires — the user's "standard" trousers.
- * Re-uses the [R.string.today_outfit_bottom_long_pants] / `_jeans` labels that
- * the Today screen already displays so the picker reads the same string the
- * user will see under the icon.
+ * The "If no rules match" card — picks the fallback top *and* bottom the
+ * home-screen outfit lands on when no clothes rule fires for that tier. Each
+ * row mirrors [ClothesRuleRow]'s shape (garment name + temperature description
+ * + Edit) so the section reads as the rules card's natural complement: those
+ * rules name what fires, this one names what shows when none of them do.
+ *
+ * The secondary description is derived from the rules list via
+ * [fallbackRange] — "above 18°C" if the warmest top rule fires below 18,
+ * "below 24°C" if the coldest bottom rule fires above 24, etc. When rules
+ * fully cover the temperature space (the fallback would never apply), the
+ * row reads "never"; when no relevant rules exist at all, the secondary
+ * line is omitted.
  */
 @Composable
-private fun DefaultBottomCard(
-    selected: OutfitSuggestion.Bottom,
-    onSelect: (OutfitSuggestion.Bottom) -> Unit,
+private fun FallbackOutfitCard(
+    rules: List<ClothesRule>,
+    defaultTop: OutfitSuggestion.Top,
+    defaultBottom: OutfitSuggestion.Bottom,
+    temperatureUnit: TemperatureUnit,
+    onSetDefaultTop: (OutfitSuggestion.Top) -> Unit,
+    onSetDefaultBottom: (OutfitSuggestion.Bottom) -> Unit,
 ) {
-    SectionCard(title = stringResource(R.string.settings_default_bottom_title)) {
-        Text(
-            text = stringResource(R.string.settings_default_bottom_description),
-            style = MaterialTheme.typography.bodyMedium,
+    var editing by remember { mutableStateOf<FallbackSlot?>(null) }
+    SectionCard(title = stringResource(R.string.settings_default_outfit_title)) {
+        FallbackOutfitRow(
+            label = stringResource(topOutfitLabelRes(defaultTop)),
+            description = describeFallbackRange(
+                fallbackRange(rules, FallbackTier.TOP),
+                temperatureUnit,
+            ),
+            onEdit = { editing = FallbackSlot.TOP },
         )
-        RadioRow(
-            label = stringResource(R.string.today_outfit_bottom_long_pants),
-            selected = selected == OutfitSuggestion.Bottom.LONG_PANTS,
-            onSelect = { onSelect(OutfitSuggestion.Bottom.LONG_PANTS) },
-        )
-        RadioRow(
-            label = stringResource(R.string.today_outfit_bottom_jeans),
-            selected = selected == OutfitSuggestion.Bottom.JEANS,
-            onSelect = { onSelect(OutfitSuggestion.Bottom.JEANS) },
-        )
-        RadioRow(
-            label = stringResource(R.string.today_outfit_bottom_long_skirt),
-            selected = selected == OutfitSuggestion.Bottom.LONG_SKIRT,
-            onSelect = { onSelect(OutfitSuggestion.Bottom.LONG_SKIRT) },
+        HorizontalDivider()
+        FallbackOutfitRow(
+            label = stringResource(bottomOutfitLabelRes(defaultBottom)),
+            description = describeFallbackRange(
+                fallbackRange(rules, FallbackTier.BOTTOM),
+                temperatureUnit,
+            ),
+            onEdit = { editing = FallbackSlot.BOTTOM },
         )
     }
+    when (editing) {
+        FallbackSlot.TOP -> FallbackTopPickerDialog(
+            selected = defaultTop,
+            onPick = {
+                onSetDefaultTop(it)
+                editing = null
+            },
+            onDismiss = { editing = null },
+        )
+        FallbackSlot.BOTTOM -> FallbackBottomPickerDialog(
+            selected = defaultBottom,
+            onPick = {
+                onSetDefaultBottom(it)
+                editing = null
+            },
+            onDismiss = { editing = null },
+        )
+        null -> Unit
+    }
+}
+
+private enum class FallbackSlot { TOP, BOTTOM }
+
+@Composable
+private fun FallbackOutfitRow(
+    label: String,
+    description: String?,
+    onEdit: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = label, style = MaterialTheme.typography.titleSmall)
+            if (description != null) {
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        TextButton(onClick = onEdit) { Text(stringResource(R.string.settings_clothes_edit)) }
+    }
+}
+
+@Composable
+private fun describeFallbackRange(
+    range: FallbackRange,
+    temperatureUnit: TemperatureUnit,
+): String? {
+    if (range.empty) return stringResource(R.string.settings_default_outfit_range_never)
+    val lower = range.lowerC
+    val upper = range.upperC
+    return when {
+        lower != null && upper != null -> stringResource(
+            R.string.settings_default_outfit_range_between,
+            formatFallbackThreshold(lower, temperatureUnit),
+            formatFallbackThreshold(upper, temperatureUnit),
+        )
+        lower != null -> stringResource(
+            R.string.settings_default_outfit_range_above,
+            formatFallbackThreshold(lower, temperatureUnit),
+        )
+        upper != null -> stringResource(
+            R.string.settings_default_outfit_range_below,
+            formatFallbackThreshold(upper, temperatureUnit),
+        )
+        else -> null
+    }
+}
+
+// The fallback range is derived from rules, not typed by the user, so the
+// dual-unit parenthesised display [formatThreshold] uses (which preserves "the
+// number the user typed") doesn't apply — render in the display unit only.
+private fun formatFallbackThreshold(celsius: Double, displayUnit: TemperatureUnit): String =
+    "%.0f%s".format(celsius.toUnit(displayUnit), displayUnit.symbol())
+
+@Composable
+private fun FallbackTopPickerDialog(
+    selected: OutfitSuggestion.Top,
+    onPick: (OutfitSuggestion.Top) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) }
+        },
+        title = { Text(stringResource(R.string.settings_default_top_edit_title)) },
+        text = {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                OutfitSuggestion.Top.entries.forEach { entry ->
+                    RadioRow(
+                        label = stringResource(topOutfitLabelRes(entry)),
+                        selected = entry == selected,
+                        onSelect = { onPick(entry) },
+                    )
+                }
+            }
+        },
+    )
+}
+
+@Composable
+private fun FallbackBottomPickerDialog(
+    selected: OutfitSuggestion.Bottom,
+    onPick: (OutfitSuggestion.Bottom) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) }
+        },
+        title = { Text(stringResource(R.string.settings_default_bottom_edit_title)) },
+        text = {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                OutfitSuggestion.Bottom.entries.forEach { entry ->
+                    RadioRow(
+                        label = stringResource(bottomOutfitLabelRes(entry)),
+                        selected = entry == selected,
+                        onSelect = { onPick(entry) },
+                    )
+                }
+            }
+        },
+    )
 }
 
 @Composable

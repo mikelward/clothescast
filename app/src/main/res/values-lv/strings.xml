@@ -542,8 +542,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="bug_report_consent_cancel">Atcelt</string>
 
     <string name="today_forecast_air_section_title">Gaisa temperatūra</string>
-    <string name="settings_default_bottom_title">Standarta apakšdaļa</string>
-    <string name="settings_default_bottom_description">Ko iesakām sākuma ekrānā, kad nav pietiekami silts šortiem.</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">Krāsu palete</string>

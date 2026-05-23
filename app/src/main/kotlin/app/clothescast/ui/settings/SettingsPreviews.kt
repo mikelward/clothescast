@@ -205,6 +205,7 @@ internal fun SettingsClothesPreview() {
         ClothesContent(
             rules = ClothesRule.DEFAULTS,
             defaultBottom = OutfitSuggestion.Bottom.LONG_PANTS,
+            defaultTop = OutfitSuggestion.Top.TSHIRT,
             temperatureUnit = TemperatureUnit.CELSIUS,
             outfitTopColors = emptyMap(),
             outfitBottomColors = emptyMap(),
@@ -213,6 +214,7 @@ internal fun SettingsClothesPreview() {
             onReplace = { _, _ -> },
             onDelete = {},
             onSetDefaultBottom = {},
+            onSetDefaultTop = {},
             onSetOutfitTopColor = { _, _ -> },
             onSetOutfitBottomColor = { _, _ -> },
         )
@@ -235,6 +237,7 @@ internal fun SettingsClothesFahrenheitPreview() {
                 ClothesRule.TemperatureAbove(75.0, TemperatureUnit.FAHRENHEIT),
             ),
             defaultBottom = OutfitSuggestion.Bottom.LONG_PANTS,
+            defaultTop = OutfitSuggestion.Top.TSHIRT,
             temperatureUnit = TemperatureUnit.FAHRENHEIT,
             outfitTopColors = emptyMap(),
             outfitBottomColors = emptyMap(),
@@ -243,6 +246,7 @@ internal fun SettingsClothesFahrenheitPreview() {
             onReplace = { _, _ -> },
             onDelete = {},
             onSetDefaultBottom = {},
+            onSetDefaultTop = {},
             onSetOutfitTopColor = { _, _ -> },
             onSetOutfitBottomColor = { _, _ -> },
         )

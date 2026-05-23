@@ -128,6 +128,7 @@ class GenerateDailyInsight(
 
         val rules = prefs.clothesRules
         val defaultBottom = prefs.defaultBottom
+        val defaultTop = prefs.defaultTop
         val insight = Insight(
             summary = summary,
             recommendedItems = periodView.triggeredRules.map { it.item },
@@ -157,8 +158,10 @@ class GenerateDailyInsight(
                 periodView.perModelForRender?.let { ConfidenceInfo.computeFrom(it) }
             },
             perModelHourly = periodView.perModelForRender,
-            outfit = OutfitSuggestion.fromForecast(periodView.forecast, rules, defaultBottom),
-            nextOutfit = periodView.nextForecast?.let { OutfitSuggestion.fromForecast(it, rules, defaultBottom) },
+            outfit = OutfitSuggestion.fromForecast(periodView.forecast, rules, defaultBottom, defaultTop),
+            nextOutfit = periodView.nextForecast?.let {
+                OutfitSuggestion.fromForecast(it, rules, defaultBottom, defaultTop)
+            },
             outfitRationale = OutfitSuggestion.explainFromForecast(periodView.forecast, rules),
             nextOutfitRationale = periodView.nextForecast?.let {
                 OutfitSuggestion.explainFromForecast(it, rules)

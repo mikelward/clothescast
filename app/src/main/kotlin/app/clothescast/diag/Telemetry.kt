@@ -198,6 +198,7 @@ object Telemetry {
             putString("theme_mode", snapshot.themeMode)
             putString("color_palette", snapshot.colorPalette)
             putString("default_bottom", snapshot.defaultBottom)
+            putString("default_top", snapshot.defaultTop)
             putString("daily_time_bucket_hour", snapshot.dailyTimeBucketHour)
             putLong("daily_days_count", snapshot.dailyDaysCount.toLong())
             putLong("tonight_enabled", snapshot.tonightEnabled.toLongFlag())

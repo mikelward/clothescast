@@ -96,11 +96,12 @@ class InsightCache(
 
     /**
      * Re-derives the [Insight.outfit] / [Insight.outfitRationale] for every cached
-     * slot against the supplied [clothesRules] and [defaultBottom], and writes the
-     * updated insight back. Used by the settings UI after a clothes-rule edit so
-     * the home-screen icon flips immediately instead of waiting for the next
-     * worker run; without this, changing the picker has no visible effect on the
-     * current forecast until the next scheduled or manual refresh.
+     * slot against the supplied [clothesRules], [defaultBottom], and [defaultTop],
+     * and writes the updated insight back. Used by the settings UI after a
+     * clothes-rule edit so the home-screen icon flips immediately instead of
+     * waiting for the next worker run; without this, changing the picker has no
+     * visible effect on the current forecast until the next scheduled or manual
+     * refresh.
      *
      * Each slot's [Insight.nextOutfit] is recomputed from the *paired* slot's
      * hourly data — TODAY's `nextOutfit` is TONIGHT's pick, so we read TONIGHT's
@@ -117,6 +118,7 @@ class InsightCache(
     suspend fun recomputeOutfits(
         clothesRules: List<ClothesRule>,
         defaultBottom: OutfitSuggestion.Bottom,
+        defaultTop: OutfitSuggestion.Top,
     ) {
         dataStore.edit { prefs ->
             // Read both slots up front so THIS_PERIOD's `nextOutfit` can
@@ -138,11 +140,13 @@ class InsightCache(
             thisPeriodInsight?.recomputed(
                 clothesRules = clothesRules,
                 defaultBottom = defaultBottom,
+                defaultTop = defaultTop,
                 nextSlot = nextForBorrow,
             )?.let { prefs[THIS_PERIOD_INSIGHT_JSON] = json.encodeToString(it.toDto()) }
             nextPeriodInsight?.recomputed(
                 clothesRules = clothesRules,
                 defaultBottom = defaultBottom,
+                defaultTop = defaultTop,
                 nextSlot = null,
             )?.let { prefs[NEXT_PERIOD_INSIGHT_JSON] = json.encodeToString(it.toDto()) }
         }
@@ -164,15 +168,16 @@ class InsightCache(
     private fun Insight.recomputed(
         clothesRules: List<ClothesRule>,
         defaultBottom: OutfitSuggestion.Bottom,
+        defaultTop: OutfitSuggestion.Top,
         nextSlot: Insight?,
     ): Insight? {
         val selfForecast = toReconstructedForecast() ?: return null
         val nextForecast = nextSlot?.toReconstructedForecast()
         return copy(
-            outfit = OutfitSuggestion.fromForecast(selfForecast, clothesRules, defaultBottom),
+            outfit = OutfitSuggestion.fromForecast(selfForecast, clothesRules, defaultBottom, defaultTop),
             outfitRationale = OutfitSuggestion.explainFromForecast(selfForecast, clothesRules),
             nextOutfit = if (nextForecast != null) {
-                OutfitSuggestion.fromForecast(nextForecast, clothesRules, defaultBottom)
+                OutfitSuggestion.fromForecast(nextForecast, clothesRules, defaultBottom, defaultTop)
             } else nextOutfit,
             nextOutfitRationale = if (nextForecast != null) {
                 OutfitSuggestion.explainFromForecast(nextForecast, clothesRules)

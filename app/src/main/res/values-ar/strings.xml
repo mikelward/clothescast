@@ -97,8 +97,6 @@ they work correctly in both the single-band and range templates.
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
     <string name="today_forecast_air_section_title">درجة الحرارة الجوية</string>
-    <string name="settings_default_bottom_title">السروال الافتراضي</string>
-    <string name="settings_default_bottom_description">ما نقترحه على الشاشة الرئيسية عندما لا يكون الجو حاراً بما يكفي للشورت.</string>
 
     <!-- Error / compatibility -->
     <string name="error_device_incompatible">لا يمكن تشغيل ClothesCast على هذا الجهاز — يفتقر إصدار Android الخاص بك إلى ميزة يحتاجها تطبيق. يرجى التواصل مع الشركة المصنّعة للحصول على تحديث للنظام.</string>

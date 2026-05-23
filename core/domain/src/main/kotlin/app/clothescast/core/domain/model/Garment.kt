@@ -134,47 +134,48 @@ enum class Garment(val itemKey: String, val slot: Slot, val layer: Layer? = null
          * under a coat, the jacket also-ran when a coat was warmer.
          */
         fun layerReduce(rules: List<ClothesRule>): List<ClothesRule> {
-            // Map each top-slot rule to its (rule, layer, priority) so we
+            // Map each top-slot rule to its (index, layer, priority) so we
             // can pick a winner per layer in one pass without re-querying
-            // Garment.fromKey for every rule. Rules whose item isn't in the
-            // catalog, or that don't occupy a top slot, are "rest" and pass
-            // through unchanged.
-            data class Indexed(val rule: ClothesRule, val layer: Layer, val priority: Int)
+            // Garment.fromKey for every rule. Tracked by *index*, not by
+            // rule equality: `ClothesRule` is a data class, so two
+            // separately configured rules with identical item + condition
+            // compare equal — using value equality for the keep-set would
+            // let duplicates leak through and surface twice in the prose
+            // ("Wear a sweater, sweater, and jeans"). Indexing is the
+            // identity we need.
+            data class Indexed(val index: Int, val layer: Layer, val priority: Int)
 
             val classifiedTops = mutableListOf<Indexed>()
-            val rest = mutableListOf<ClothesRule>()
-            for (rule in rules) {
+            rules.forEachIndexed { index, rule ->
                 val g = fromKey(rule.item)
                 val layer = g?.layer
                 if (g?.slot == Slot.TOP && layer != null) {
                     val order = TOP_LAYER_PRIORITY[layer].orEmpty()
                     val priority = order.indexOf(g).let { if (it < 0) order.size else it }
-                    classifiedTops += Indexed(rule, layer, priority)
-                } else {
-                    rest += rule
+                    classifiedTops += Indexed(index, layer, priority)
                 }
             }
 
-            val winnerByLayer: Map<Layer, ClothesRule> = classifiedTops
+            val winnerIndexByLayer: Map<Layer, Int> = classifiedTops
                 .groupBy { it.layer }
-                .mapValues { (_, group) -> group.minBy { it.priority }.rule }
-            val effective: Map<Layer, ClothesRule> = if (
-                Layer.MID in winnerByLayer || Layer.SHELL in winnerByLayer
+                .mapValues { (_, group) -> group.minBy { it.priority }.index }
+            val effective: Map<Layer, Int> = if (
+                Layer.MID in winnerIndexByLayer || Layer.SHELL in winnerIndexByLayer
             ) {
-                winnerByLayer.filterKeys { it != Layer.BASE }
+                winnerIndexByLayer.filterKeys { it != Layer.BASE }
             } else {
-                winnerByLayer
+                winnerIndexByLayer
             }
-            val keepSet = effective.values.toSet()
+            val keepIndices = effective.values.toSet()
 
             // Preserve original input order across the union (top winners +
             // rest) so callers that care about the user's configured
             // ordering — the prose phraser, the tie-in delta — see the same
             // sequence they'd have seen before the reduction.
-            return rules.filter { rule ->
+            return rules.filterIndexed { index, rule ->
                 val g = fromKey(rule.item)
                 val isClassifiedTop = g?.slot == Slot.TOP && g.layer != null
-                if (isClassifiedTop) rule in keepSet else true
+                if (isClassifiedTop) index in keepIndices else true
             }
         }
     }

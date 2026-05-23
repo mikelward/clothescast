@@ -14,9 +14,14 @@ package app.clothescast.core.domain.model
  * threshold rule in my tier matched today" rather than a numeric threshold.
  *
  * [rules] is the subset of the user's threshold rules whose condition
- * matched, in input order. [fallbacks] is the per-tier default rule's item
- * key (e.g. `"t-shirt"`, `"pants"`) for each slot the threshold rules left
- * uncovered, top first then bottom.
+ * matched, in input order — every firing rule, including within-layer
+ * also-rans (e.g. when both `jacket` and `coat` fire on a very cold day).
+ * Consumers that want a coherent outfit run [rules] through [Garment.layerReduce]
+ * first; this class does that internally when building [items].
+ *
+ * [fallbacks] is the per-tier default rule's item key (e.g. `"t-shirt"`,
+ * `"pants"`) for each slot the threshold rules left uncovered, top first
+ * then bottom.
  *
  * The split is preserved (rather than a single flat items list) because the
  * evening-event tie-in's delta — "extra clothing the night needs that the
@@ -30,6 +35,12 @@ data class TriggeredOutfit(
     val rules: List<ClothesRule>,
     val fallbacks: List<String>,
 ) {
-    /** Every matched rule's item — threshold matches first, defaults second. */
-    val items: List<String> get() = rules.map { it.item } + fallbacks
+    /**
+     * Every item the user is wearing today — layer-reduced threshold matches
+     * first, defaults second. The layer reduction picks at most one top per
+     * [Garment.Layer] and drops [Garment.Layer.BASE] when MID or SHELL also
+     * fired, so the prose reads "Wear a sweater and jacket." instead of
+     * "Wear a sweater, jacket, and t-shirt." See [Garment.layerReduce].
+     */
+    val items: List<String> get() = Garment.layerReduce(rules).map { it.item } + fallbacks
 }

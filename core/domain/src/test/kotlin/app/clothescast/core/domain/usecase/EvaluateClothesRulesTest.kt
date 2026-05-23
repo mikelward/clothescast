@@ -203,6 +203,78 @@ class EvaluateClothesRulesTest {
     }
 
     @Test
+    fun `firing base-layer rule is dropped when a mid-layer rule also fires`() {
+        // The user has both a "wear a t-shirt below 30°C" rule (BASE) and the
+        // default sweater rule (MID, < 18°C). On a 14°C morning both fire, but
+        // the t-shirt is implicit under the sweater — it shouldn't read out as
+        // "Wear a jumper, t-shirt, and jeans." Items drops the BASE; rules
+        // keeps every firing rule (the rationale + tie-in delta logic still
+        // need access to all matches).
+        val rules = listOf(
+            ClothesRule("t-shirt", ClothesRule.TemperatureBelow(30.0)),
+            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
+            ClothesRule("jeans", ClothesRule.TemperatureBelow(20.0)),
+        )
+        val out = subject(forecast(min = 10.0, max = 14.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("t-shirt", "sweater", "jeans")
+        out.items.shouldContainExactly("sweater", "jeans")
+    }
+
+    @Test
+    fun `firing base-layer rule is dropped when a shell-layer rule also fires`() {
+        // Same suppression as the MID-layer case: any outer layer firing
+        // makes the BASE layer implicit. Here only the t-shirt and jacket
+        // rules fire; the sweater rule doesn't because the minimum is 14°C.
+        val rules = listOf(
+            ClothesRule("t-shirt", ClothesRule.TemperatureBelow(30.0)),
+            ClothesRule("jacket", ClothesRule.TemperatureBelow(15.0)),
+        )
+        val out = subject(forecast(min = 12.0, max = 14.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("t-shirt", "jacket")
+        out.items.shouldContainExactly("jacket", "pants")
+    }
+
+    @Test
+    fun `base-layer rule survives when nothing in mid or shell fires`() {
+        // A polo-loving user with rules across all layers, on a mild day where
+        // only the polo rule (BASE) crosses. The base layer stays — there's
+        // nothing covering it.
+        val rules = listOf(
+            ClothesRule("polo", ClothesRule.TemperatureBelow(30.0)),
+            ClothesRule("sweater", ClothesRule.TemperatureBelow(15.0)),
+            ClothesRule("jacket", ClothesRule.TemperatureBelow(10.0)),
+        )
+        val out = subject(forecast(min = 18.0, max = 22.0), rules)
+        out.items.shouldContainExactly("polo", "pants")
+    }
+
+    @Test
+    fun `within-shell-layer ties resolve to the heaviest tier`() {
+        // A very cold day where sweater + jacket + coat all fire. Sweater
+        // belongs to MID and survives on its own; jacket and coat both want
+        // the SHELL slot, and coat (heavier tier) wins. The result reads as
+        // a real outfit ("sweater under a coat") rather than naming every
+        // also-ran.
+        val out = subject(forecast(min = 2.0, max = 8.0), ClothesRule.DEFAULTS)
+        out.rules.map { it.item }.shouldContainExactly("sweater", "jacket", "coat")
+        out.items.shouldContainExactly("sweater", "coat", "pants")
+    }
+
+    @Test
+    fun `within-mid-layer ties resolve to the priority winner`() {
+        // Two MID rules firing at the same time (the user has both a sweater
+        // and a thin-jacket rule). Thin-jacket leads the MID priority order,
+        // so it's the one that shows up in the outfit.
+        val rules = listOf(
+            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
+            ClothesRule("thin-jacket", ClothesRule.TemperatureBelow(20.0)),
+        )
+        val out = subject(forecast(min = 14.0, max = 17.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("sweater", "thin-jacket")
+        out.items.shouldContainExactly("thin-jacket", "pants")
+    }
+
+    @Test
     fun `input order is preserved across matching threshold rules`() {
         // Same as before — the user picks presentation order via input order
         // of their threshold rules.

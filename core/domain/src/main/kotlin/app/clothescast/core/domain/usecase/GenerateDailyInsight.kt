@@ -128,7 +128,12 @@ class GenerateDailyInsight(
             deltaThresholdC = prefs.deltaThresholdC,
             clothesMentionMode = prefs.clothesMentionMode,
             yesterdayTriggeredItems = periodView.yesterdayTriggeredItems,
-            todayRuleItems = periodView.triggeredOutfit.rules.map { it.item },
+            // Layer-reduce here so the calendar tie-in ("Bring an X for your
+            // event.") doesn't name a BASE garment that's implicit under a
+            // firing MID/SHELL. Matches what TriggeredOutfit.items does on
+            // the prose side; kept explicit at the call boundary so the
+            // RenderInsightSummary signature stays agnostic to the catalog.
+            todayRuleItems = Garment.layerReduce(periodView.triggeredOutfit.rules).map { it.item },
         )
 
         val insight = Insight(
@@ -348,7 +353,10 @@ class GenerateDailyInsight(
             perModelHourly = nightView.perModelForRender,
             eveningEventTieIn = null,
             deltaThresholdC = prefs.deltaThresholdC,
-            todayRuleItems = nightView.triggeredOutfit.rules.map { it.item },
+            // Layer-reduce: same rationale as the primary-period call above,
+            // so the night sub-render's calendar tie-in agrees with the
+            // outer-tie-in delta this method then computes.
+            todayRuleItems = Garment.layerReduce(nightView.triggeredOutfit.rules).map { it.item },
         )
         // Delta is computed per-tier because tops layer and bottoms substitute,
         // and those two relationships imply different ways the morning's outfit
@@ -397,7 +405,13 @@ class GenerateDailyInsight(
             .mapValues { it.value.toSet() }
         val dayTopKey = dayKeysBySlot[Garment.Slot.TOP].orEmpty()
         val dayBottomKey = dayKeysBySlot[Garment.Slot.BOTTOM].orEmpty()
-        val topDelta = nightView.triggeredOutfit.rules
+        // Layer-reduce the night's firing rules before computing the delta:
+        // a BASE rule firing on the night side alongside a MID/SHELL is
+        // implicit in the outer layer and shouldn't surface as "Bring a
+        // t-shirt tonight" just because the user has a t-shirt rule with a
+        // generous threshold. Mirrors what TriggeredOutfit.items already does
+        // for the prose path.
+        val topDelta = Garment.layerReduce(nightView.triggeredOutfit.rules)
             .map { it.item }
             .filter { item ->
                 val g = Garment.fromKey(item)

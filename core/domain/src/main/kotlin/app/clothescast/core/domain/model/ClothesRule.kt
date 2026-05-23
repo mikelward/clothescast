@@ -16,6 +16,16 @@ package app.clothescast.core.domain.model
  * `item` to `Garment` directly (typed field, no fallback string), broaden the
  * catalog beyond tops + bottoms (headwear, scarf / gloves, footwear, rain /
  * sun gear), and add a "user-defined" path with an explicit translation hook.
+ *
+ * TODO(rules-in-layers): companion to [ClothesFormat.LAYER_COUNT] — let the
+ * user *author* rules in layer-count terms too ("below 12°C → 3 layers")
+ * instead of always picking a specific garment. Sugar over the existing
+ * garment-keyed path: each layer-count target maps to a representative
+ * [Garment] of that [Garment.layerCount] under the hood (e.g. 2 → SWEATER,
+ * 3 → JACKET, 4 → PUFFER), so the rule engine, outfit card, and item
+ * persistence stay unchanged. The editor would gain a "type" toggle
+ * (specific garment vs. layer count) and the rationale dialog needs a
+ * matching phrasing.
  */
 data class ClothesRule(
     val item: String,

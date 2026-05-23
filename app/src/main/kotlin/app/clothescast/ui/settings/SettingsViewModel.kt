@@ -7,6 +7,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.domain.model.CalendarEvent
+import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
@@ -216,6 +217,7 @@ class SettingsViewModel(
                         dailyMentionEveningEvents = prefs.dailyMentionEveningEvents,
                         clothesMentionMode = prefs.clothesMentionMode,
                         rangeFormat = prefs.rangeFormat,
+                        clothesFormat = prefs.clothesFormat,
                         deltaThresholdC = prefs.deltaThresholdC,
                         region = prefs.region,
                         temperatureUnit = prefs.temperatureUnit,
@@ -960,6 +962,10 @@ class SettingsViewModel(
 
     fun setRangeFormat(format: RangeFormat) {
         viewModelScope.launch { settingsRepository.setRangeFormat(format) }
+    }
+
+    fun setClothesFormat(format: ClothesFormat) {
+        viewModelScope.launch { settingsRepository.setClothesFormat(format) }
     }
 
     fun setDeltaThresholdC(thresholdC: Double?) {

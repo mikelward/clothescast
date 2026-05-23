@@ -41,6 +41,25 @@ class GarmentTest {
     }
 
     @Test
+    fun `layerCount maps tops by perceived warmth and bottoms to zero`() {
+        // Drives ClothesFormat.LAYER_COUNT — t/p/sh=1, thin-jkt/sw/hood=2,
+        // jkt/coat=3, puffer=4; bottoms don't contribute to the count.
+        Garment.TSHIRT.layerCount shouldBe 1
+        Garment.POLO.layerCount shouldBe 1
+        Garment.SHIRT.layerCount shouldBe 1
+        Garment.SWEATER.layerCount shouldBe 2
+        Garment.HOODIE.layerCount shouldBe 2
+        Garment.THIN_JACKET.layerCount shouldBe 2
+        Garment.JACKET.layerCount shouldBe 3
+        Garment.COAT.layerCount shouldBe 3
+        Garment.PUFFER.layerCount shouldBe 4
+        Garment.SHORTS.layerCount shouldBe 0
+        Garment.SKIRT.layerCount shouldBe 0
+        Garment.PANTS.layerCount shouldBe 0
+        Garment.JEANS.layerCount shouldBe 0
+    }
+
+    @Test
     fun `fromKey does not depend on process locale`() {
         val originalDefault = Locale.getDefault()
         Locale.setDefault(Locale.forLanguageTag("tr-TR"))

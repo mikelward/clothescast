@@ -613,6 +613,10 @@
     <string name="settings_format_change_off">Off</string>
     <!-- Significant-change threshold option: %1$d = whole degrees in the user's unit. -->
     <string name="settings_format_change_degrees">%1$d°</string>
+    <!-- Clothes-format picker: "Wear a sweater." vs "Wear 2 layers." -->
+    <string name="settings_format_clothes_label">Clothes wording</string>
+    <string name="settings_format_clothes_items">Items</string>
+    <string name="settings_format_clothes_layer_count">Layer count</string>
 
     <string name="settings_delivery_label">Delivery</string>
     <string name="settings_delivery_notification_only">Notification only</string>
@@ -1029,6 +1033,11 @@
     <string name="insight_clothes_join_two">%1$s and %2$s</string>
     <!-- Three-or-more English join: %1$s = first (with article), %2$s = comma-joined middle, %3$s = last item bare. -->
     <string name="insight_clothes_join_many">%1$s, %2$s, and %3$s</string>
+    <!-- ClothesFormat.LAYER_COUNT: "Wear 2 layers." — %1$d = the layer count. -->
+    <plurals name="insight_clothes_layer_count">
+        <item quantity="one">%1$d layer</item>
+        <item quantity="other">%1$d layers</item>
+    </plurals>
 
     <!--
     Precipitation peak: %1$s = humanised condition name, %2$s = a time phrase

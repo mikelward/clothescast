@@ -24,21 +24,36 @@ import java.util.Locale
  * (e.g. TSHIRT's "t-shirt" key is exposed as `garment_tshirt`, since hyphens
  * are illegal in Android resource names).
  */
-enum class Garment(val itemKey: String, val slot: Slot, val layer: Layer? = null) {
+enum class Garment(
+    val itemKey: String,
+    val slot: Slot,
+    val layer: Layer? = null,
+    /**
+     * Perceived-warmth rating for the "layer count" prose format
+     * ([app.clothescast.core.domain.model.ClothesFormat.LAYER_COUNT]). A
+     * t-shirt feels like one layer of warmth; a puffer feels like four.
+     * The number is *not* a literal count of garments — wearing both a
+     * sweater (2) and a jacket (3) doesn't land you at 5, the renderer
+     * takes the max because the heavier garment defines the warmth tier.
+     * Bottoms aren't layers in this model and report 0; the renderer
+     * names them separately ("Wear 2 layers and shorts.").
+     */
+    val layerCount: Int = 0,
+) {
     // Tops, coldest-leaning first. Sweater + jacket are shipped as defaults.
     // [layer] tags each top with where it sits in the layering order so the
     // rule engine can reduce overlapping firing rules to a stack that reads
     // like a real outfit ("sweater under a jacket"), not a flat list of
     // every match ("sweater, jacket, and t-shirt"). See [Layer].
-    SWEATER("sweater", Slot.TOP, Layer.MID),
-    HOODIE("hoodie", Slot.TOP, Layer.MID),
-    JACKET("jacket", Slot.TOP, Layer.SHELL),
-    COAT("coat", Slot.TOP, Layer.SHELL),
-    PUFFER("puffer", Slot.TOP, Layer.SHELL),
-    THIN_JACKET("thin-jacket", Slot.TOP, Layer.MID),
-    TSHIRT("t-shirt", Slot.TOP, Layer.BASE),
-    POLO("polo", Slot.TOP, Layer.BASE),
-    SHIRT("shirt", Slot.TOP, Layer.BASE),
+    SWEATER("sweater", Slot.TOP, Layer.MID, layerCount = 2),
+    HOODIE("hoodie", Slot.TOP, Layer.MID, layerCount = 2),
+    JACKET("jacket", Slot.TOP, Layer.SHELL, layerCount = 3),
+    COAT("coat", Slot.TOP, Layer.SHELL, layerCount = 3),
+    PUFFER("puffer", Slot.TOP, Layer.SHELL, layerCount = 4),
+    THIN_JACKET("thin-jacket", Slot.TOP, Layer.MID, layerCount = 2),
+    TSHIRT("t-shirt", Slot.TOP, Layer.BASE, layerCount = 1),
+    POLO("polo", Slot.TOP, Layer.BASE, layerCount = 1),
+    SHIRT("shirt", Slot.TOP, Layer.BASE, layerCount = 1),
 
     // Bottoms. Shorts is shipped as a default; en-GB renders "pants" as "Trousers".
     // Bottoms substitute rather than stack today (you don't layer pants

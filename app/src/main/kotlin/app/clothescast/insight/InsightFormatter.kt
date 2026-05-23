@@ -6,9 +6,11 @@ import android.content.res.Resources
 import app.clothescast.R
 import app.clothescast.core.domain.model.AlertClause
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
@@ -57,6 +59,13 @@ class InsightFormatter(
      * The [BandClause] always rides along in the summary for the smart-display card.
      */
     private val rangeFormat: RangeFormat = RangeFormat.DEGREES,
+    /**
+     * How the clothes clause is rendered. [ClothesFormat.ITEMS] (default) names
+     * each triggered garment as before; [ClothesFormat.LAYER_COUNT] collapses
+     * the firing tops to a perceived-warmth count via [Garment.layerCount] and
+     * names the bottom (if one fired) alongside — "Wear 2 layers and shorts."
+     */
+    private val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
 ) {
     private val phraser: ClothesPhraser = ClothesPhraser.forLocale(resources, locale)
 
@@ -297,9 +306,39 @@ class InsightFormatter(
     private fun deltaHasLeadFragment(): Boolean = locale.language == "en"
 
     private fun formatClothesWear(items: List<String>): String? {
-        val phrase = phraser.joinItems(items)
+        val phrase = when (clothesFormat) {
+            ClothesFormat.ITEMS -> phraser.joinItems(items)
+            ClothesFormat.LAYER_COUNT -> layerCountPhrase(items) ?: phraser.joinItems(items)
+        }
         if (phrase.isBlank()) return null
         return resources.getString(R.string.insight_clothes_wear, phrase)
+    }
+
+    /**
+     * Render the body of the wear sentence in layer-count mode. Tops collapse
+     * to the max [Garment.layerCount] across firing rules (the heaviest tier
+     * defines the warmth, layering a sweater under a jacket lands at 3 not 5);
+     * bottoms still get named — "2 layers and shorts" — via the locale's
+     * phraser so the user hears their bottom rule too. Returns `null` when no
+     * top is classifiable, letting the caller fall back to the items
+     * rendering (free-form user-typed garments don't map to a layer count).
+     */
+    private fun layerCountPhrase(items: List<String>): String? {
+        var topCount = 0
+        val bottomKeys = mutableListOf<String>()
+        for (item in items) {
+            val garment = Garment.fromKey(item) ?: return null
+            when (garment.slot) {
+                Garment.Slot.TOP -> if (garment.layerCount > topCount) topCount = garment.layerCount
+                Garment.Slot.BOTTOM -> bottomKeys += item
+            }
+        }
+        if (topCount == 0) return null
+        val layers = resources.getQuantityString(R.plurals.insight_clothes_layer_count, topCount, topCount)
+        if (bottomKeys.isEmpty()) return layers
+        val bottoms = phraser.joinItems(bottomKeys)
+        if (bottoms.isBlank()) return layers
+        return resources.getString(R.string.insight_clothes_join_two, layers, bottoms)
     }
 
     private fun formatPrecip(precip: PrecipClause): String {
@@ -456,8 +495,9 @@ class InsightFormatter(
             locale: Locale = context.currentResourcesLocale(),
             temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
             rangeFormat: RangeFormat = RangeFormat.DEGREES,
+            clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
         ): InsightFormatter =
-            InsightFormatter(context.localizedResources(locale), locale, temperatureUnit, rangeFormat)
+            InsightFormatter(context.localizedResources(locale), locale, temperatureUnit, rangeFormat, clothesFormat)
 
         /** Convenience for the common path: render in the user's [Region]-derived locale. */
         fun forRegion(
@@ -465,9 +505,10 @@ class InsightFormatter(
             region: Region,
             temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
             rangeFormat: RangeFormat = RangeFormat.DEGREES,
+            clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
         ): InsightFormatter {
             val locale = region.toJavaLocale() ?: context.currentResourcesLocale()
-            return forContext(context, locale, temperatureUnit, rangeFormat)
+            return forContext(context, locale, temperatureUnit, rangeFormat, clothesFormat)
         }
     }
 }

@@ -8,6 +8,7 @@ import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.CalendarTieInClause
 import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ClothesClause
+import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
@@ -189,6 +190,64 @@ class InsightFormatterTest {
         // garments.
         subject.format(summary(clothes = ClothesClause(listOf("sweater", "jacket", "umbrella")))) shouldBe
             "Today, it will be 21°. Wear a sweater and jacket."
+    }
+
+    // ClothesFormat.LAYER_COUNT collapses the firing tops to a perceived-warmth
+    // count (see Garment.layerCount) — the heaviest single top defines the
+    // count, not the sum. Bottoms are named alongside via the locale's phraser.
+    private val layerCountSubject = InsightFormatter.forContext(
+        context = context,
+        locale = Locale.ENGLISH,
+        clothesFormat = ClothesFormat.LAYER_COUNT,
+    )
+
+    @Test
+    fun `layer-count format renders a t-shirt as 1 layer (singular)`() {
+        layerCountSubject.format(summary(clothes = ClothesClause(listOf("t-shirt")))) shouldBe
+            "Today, it will be 21°. Wear 1 layer."
+    }
+
+    @Test
+    fun `layer-count format renders a sweater as 2 layers`() {
+        layerCountSubject.format(summary(clothes = ClothesClause(listOf("sweater")))) shouldBe
+            "Today, it will be 21°. Wear 2 layers."
+    }
+
+    @Test
+    fun `layer-count format renders a puffer as 4 layers`() {
+        layerCountSubject.format(summary(clothes = ClothesClause(listOf("puffer")))) shouldBe
+            "Today, it will be 21°. Wear 4 layers."
+    }
+
+    @Test
+    fun `layer-count format takes max across stacked tops, not the sum`() {
+        // sweater (2) under a jacket (3) is 3, not 5 — the heavier garment
+        // defines the warmth tier in this mental model.
+        layerCountSubject.format(summary(clothes = ClothesClause(listOf("sweater", "jacket")))) shouldBe
+            "Today, it will be 21°. Wear 3 layers."
+    }
+
+    @Test
+    fun `layer-count format names bottoms alongside the layer count`() {
+        layerCountSubject.format(summary(clothes = ClothesClause(listOf("sweater", "shorts")))) shouldBe
+            "Today, it will be 21°. Wear 2 layers and shorts."
+    }
+
+    @Test
+    fun `layer-count format ignores umbrellas the same way items mode does`() {
+        // Umbrellas are accessories — filtered out before formatClothesWear
+        // runs in both modes.
+        layerCountSubject.format(summary(clothes = ClothesClause(listOf("sweater", "umbrella")))) shouldBe
+            "Today, it will be 21°. Wear 2 layers."
+    }
+
+    @Test
+    fun `layer-count format falls back to items mode for unrecognised garments`() {
+        // A user-typed item that isn't in the Garment catalog has no
+        // layerCount; rather than mis-render, fall through to the items
+        // phrasing for the whole list so the user still hears something.
+        layerCountSubject.format(summary(clothes = ClothesClause(listOf("cape")))) shouldBe
+            "Today, it will be 21°. Wear a cape."
     }
 
     @Test

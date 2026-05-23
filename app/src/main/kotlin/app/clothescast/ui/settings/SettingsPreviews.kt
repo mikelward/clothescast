@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.ClothesClause
+import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
@@ -132,12 +133,14 @@ internal fun SettingsFormatPreview() {
     SettingsFrame {
         FormatContent(
             rangeFormat = RangeFormat.BANDS,
+            clothesFormat = ClothesFormat.ITEMS,
             deltaThresholdC = 3.0,
             clothesMentionMode = ClothesMentionMode.ALWAYS,
             region = Region.SYSTEM,
             temperatureUnit = TemperatureUnit.CELSIUS,
             padding = PaddingValues(0.dp),
             onSetRangeFormat = {},
+            onSetClothesFormat = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
         )
@@ -152,12 +155,14 @@ internal fun SettingsFormatClothesNeverPreview() {
     SettingsFrame {
         FormatContent(
             rangeFormat = RangeFormat.BANDS,
+            clothesFormat = ClothesFormat.ITEMS,
             deltaThresholdC = 3.0,
             clothesMentionMode = ClothesMentionMode.NEVER,
             region = Region.SYSTEM,
             temperatureUnit = TemperatureUnit.CELSIUS,
             padding = PaddingValues(0.dp),
             onSetRangeFormat = {},
+            onSetClothesFormat = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
         )
@@ -173,6 +178,7 @@ internal fun SettingsFormatCurrentForecastPreview() {
     SettingsFrame {
         FormatContent(
             rangeFormat = RangeFormat.DEGREES,
+            clothesFormat = ClothesFormat.ITEMS,
             deltaThresholdC = 3.0,
             clothesMentionMode = ClothesMentionMode.ALWAYS,
             region = Region.SYSTEM,
@@ -191,6 +197,7 @@ internal fun SettingsFormatCurrentForecastPreview() {
             ),
             padding = PaddingValues(0.dp),
             onSetRangeFormat = {},
+            onSetClothesFormat = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
         )

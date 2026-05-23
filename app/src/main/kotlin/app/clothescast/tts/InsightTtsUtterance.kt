@@ -1,6 +1,7 @@
 package app.clothescast.tts
 
 import android.content.Context
+import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.RangeFormat
@@ -32,12 +33,13 @@ internal fun insightTtsUtterance(
     voiceLocale: VoiceLocale,
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     rangeFormat: RangeFormat = RangeFormat.DEGREES,
+    clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     fallbackLocale: Locale = Locale.getDefault(),
     holidayTheme: HolidayTheme? = null,
 ): InsightTtsUtterance {
     val regionLocale = region.toJavaLocale() ?: fallbackLocale
     val locale = voiceLocale.resolve(regionLocale)
-    val forecast = InsightFormatter.forContext(context, locale, temperatureUnit, rangeFormat)
+    val forecast = InsightFormatter.forContext(context, locale, temperatureUnit, rangeFormat, clothesFormat)
         // Spoken playback stays silent when nothing fired — no "it will be the
         // same as yesterday." filler read aloud — unlike the display surfaces.
         .format(summary, placeholderWhenEmpty = false)

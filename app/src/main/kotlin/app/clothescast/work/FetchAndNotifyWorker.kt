@@ -1065,6 +1065,7 @@ class FetchAndNotifyWorker(
             prefs.region,
             prefs.temperatureUnit,
             prefs.rangeFormat,
+            prefs.clothesFormat,
         ).format(insight.summary)
 
     // TODO(brand-intro): consider prepending "Today's ClothesCast: " / "Tonight's ClothesCast: "
@@ -1085,6 +1086,7 @@ class FetchAndNotifyWorker(
             voiceLocale = prefs.voiceLocale,
             temperatureUnit = prefs.temperatureUnit,
             rangeFormat = prefs.rangeFormat,
+            clothesFormat = prefs.clothesFormat,
             holidayTheme = theme,
         )
 

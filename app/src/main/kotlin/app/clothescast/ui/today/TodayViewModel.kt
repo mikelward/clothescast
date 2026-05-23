@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.HolidayCatalog
@@ -60,6 +61,7 @@ data class TodayState(
     val workStatus: WorkStatus = WorkStatus.Idle,
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     val rangeFormat: RangeFormat = RangeFormat.DEGREES,
+    val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     val distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
     val region: Region = Region.SYSTEM,
     // Window boundaries used by manual Refresh to decide TODAY vs TONIGHT.
@@ -387,6 +389,7 @@ class TodayViewModel(
             workStatus = workStatus,
             temperatureUnit = prefs.temperatureUnit,
             rangeFormat = prefs.rangeFormat,
+            clothesFormat = prefs.clothesFormat,
             distanceUnit = prefs.distanceUnit,
             region = prefs.region,
             morningTime = prefs.schedule.time,

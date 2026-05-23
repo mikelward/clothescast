@@ -37,6 +37,8 @@ data class SettingsSnapshot(
     val clothesMentionMode: String,
     /** How the insight prose renders the temperature range: NONE / DEGREES / BANDS. */
     val rangeFormat: String,
+    /** How the clothes clause renders: ITEMS / LAYER_COUNT. */
+    val clothesFormat: String,
     /** Significant-change threshold in whole °C, or -1 when the clause is off. */
     val deltaThresholdC: Int,
     val useCalendarEvents: Boolean,

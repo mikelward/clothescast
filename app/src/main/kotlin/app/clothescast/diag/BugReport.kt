@@ -18,6 +18,7 @@ import android.view.Window
 import androidx.core.content.FileProvider
 import app.clothescast.BuildConfig
 import app.clothescast.ClothesCastApplication
+import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.RangeFormat
@@ -112,8 +113,9 @@ object BugReport {
             val region = prefs?.region ?: Region.SYSTEM
             val tempUnit = prefs?.temperatureUnit ?: TemperatureUnit.CELSIUS
             val rangeFormat = prefs?.rangeFormat ?: RangeFormat.DEGREES
-            appendInsight("This period", thisPeriod, context, region, tempUnit, rangeFormat)
-            appendInsight("Next period", nextPeriod, context, region, tempUnit, rangeFormat)
+            val clothesFormat = prefs?.clothesFormat ?: ClothesFormat.ITEMS
+            appendInsight("This period", thisPeriod, context, region, tempUnit, rangeFormat, clothesFormat)
+            appendInsight("Next period", nextPeriod, context, region, tempUnit, rangeFormat, clothesFormat)
             if (!crash.isNullOrBlank()) {
                 appendLine("--- Last crash (from previous run) ---")
                 appendLine(crash.trim())
@@ -235,6 +237,7 @@ object BugReport {
         region: Region,
         temperatureUnit: TemperatureUnit,
         rangeFormat: RangeFormat,
+        clothesFormat: ClothesFormat,
     ) {
         appendLine("$label:")
         if (insight == null) {
@@ -243,7 +246,7 @@ object BugReport {
             return
         }
         val prose = runCatching {
-            InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat)
+            InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat)
                 .format(insight.summary)
         }
             .getOrElse { "(prose render failed: ${it.javaClass.simpleName})" }

@@ -173,6 +173,21 @@ enum class ThemeMode { SYSTEM, LIGHT, DARK }
 enum class RangeFormat { NONE, DEGREES, BANDS }
 
 /**
+ * How the insight prose renders the clothes clause ("Wear …").
+ *
+ *  - [ITEMS] (default) names each triggered garment — the historical
+ *    behaviour: "Wear a sweater.", "Wear a sweater and shorts."
+ *  - [LAYER_COUNT] collapses the top garments to a perceived-warmth count
+ *    (see [Garment.layerCount]) and renders "Wear 2 layers." A bottom
+ *    garment, if one triggered, is named alongside the count ("Wear 2
+ *    layers and shorts.") so the user still hears it. The count is the
+ *    *max* layer count across firing tops, not a sum — wearing a sweater
+ *    (2) under a jacket (3) lands at 3 because the jacket defines the
+ *    warmth tier, not 5.
+ */
+enum class ClothesFormat { ITEMS, LAYER_COUNT }
+
+/**
  * Controls whether the morning insight's spoken clothes clause ("Wear a
  * jacket.") is emitted.
  *
@@ -602,6 +617,14 @@ data class UserPreferences(
      * hourly forecast, not the prose. See [InsightFormatter] for the rendering.
      */
     val rangeFormat: RangeFormat = RangeFormat.DEGREES,
+    /**
+     * How the insight prose renders the clothes clause: list of items
+     * ([ClothesFormat.ITEMS], default — "Wear a sweater.") or perceived
+     * layer count ([ClothesFormat.LAYER_COUNT] — "Wear 2 layers."). The
+     * outfit card and item icons are unaffected — only the prose changes.
+     * See [InsightFormatter] and [Garment.layerCount].
+     */
+    val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     /**
      * Feels-like delta (in °C) the day must differ from yesterday by before the
      * "…warmer/cooler than yesterday" clause is emitted. `null` turns the clause

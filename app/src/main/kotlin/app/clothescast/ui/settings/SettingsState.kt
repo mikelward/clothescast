@@ -1,5 +1,6 @@
 package app.clothescast.ui.settings
 
+import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
@@ -45,6 +46,7 @@ data class SettingsState(
     val dailyMentionEveningEvents: Boolean = true,
     val clothesMentionMode: ClothesMentionMode = ClothesMentionMode.ALWAYS,
     val rangeFormat: RangeFormat = RangeFormat.DEGREES,
+    val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     val deltaThresholdC: Double? = 3.0,
     /**
      * Structured summary of the user's current cached forecast (page 1 of the

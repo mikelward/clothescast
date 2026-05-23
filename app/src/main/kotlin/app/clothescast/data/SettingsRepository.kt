@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
@@ -179,6 +180,10 @@ class SettingsRepository(
 
     suspend fun setRangeFormat(format: RangeFormat) {
         dataStore.edit { it[INSIGHT_RANGE_FORMAT] = format.name }
+    }
+
+    suspend fun setClothesFormat(format: ClothesFormat) {
+        dataStore.edit { it[INSIGHT_CLOTHES_FORMAT] = format.name }
     }
 
     suspend fun setDeltaThresholdC(thresholdC: Double?) {
@@ -778,6 +783,9 @@ class SettingsRepository(
         val rangeFormat = this[INSIGHT_RANGE_FORMAT]
             ?.let { runCatching { RangeFormat.valueOf(it) }.getOrNull() }
             ?: if (this[OMIT_TEMPERATURE_RANGE] == true) RangeFormat.NONE else RangeFormat.DEGREES
+        val clothesFormat = this[INSIGHT_CLOTHES_FORMAT]
+            ?.let { runCatching { ClothesFormat.valueOf(it) }.getOrNull() }
+            ?: ClothesFormat.ITEMS
         // Delta-clause threshold in °C; the OFF sentinel maps to null (clause
         // disabled). Absent key keeps the historical 3°C default.
         val deltaThresholdC = when (val stored = this[INSIGHT_DELTA_THRESHOLD_C]) {
@@ -869,6 +877,7 @@ class SettingsRepository(
             dailyMentionEveningEvents = dailyMentionEveningEvents,
             clothesMentionMode = clothesMentionMode,
             rangeFormat = rangeFormat,
+            clothesFormat = clothesFormat,
             deltaThresholdC = deltaThresholdC,
             telemetryEnabled = telemetryEnabled,
             telemetryNoticeAcked = telemetryNoticeAcked,
@@ -958,6 +967,7 @@ class SettingsRepository(
         dailyMentionEveningEvents = dailyMentionEveningEvents,
         clothesMentionMode = clothesMentionMode.name,
         rangeFormat = rangeFormat.name,
+        clothesFormat = clothesFormat.name,
         deltaThresholdC = deltaThresholdC?.roundToInt() ?: -1,
         useCalendarEvents = useCalendarEvents,
         skipTtsAtHome = skipTtsAtHome,
@@ -1113,6 +1123,7 @@ class SettingsRepository(
         // Legacy boolean, read on migration only — superseded by INSIGHT_RANGE_FORMAT.
         private val OMIT_TEMPERATURE_RANGE = booleanPreferencesKey("omit_temperature_range")
         private val INSIGHT_RANGE_FORMAT = stringPreferencesKey("insight_range_format")
+        private val INSIGHT_CLOTHES_FORMAT = stringPreferencesKey("insight_clothes_format")
         private val INSIGHT_DELTA_THRESHOLD_C = doublePreferencesKey("insight_delta_threshold_c")
         // Sentinel stored for "Significant change: Off" — distinct from an absent
         // key (which keeps the historical 3°C default).

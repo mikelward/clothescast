@@ -895,11 +895,11 @@
     <string name="settings_calendar_master_description_on">ClothesCast can read your calendar. Pick what it\'s used for below. Only event titles, dates, and times are used; nothing leaves the device.</string>
     <string name="settings_calendar_features_title">What to use it for</string>
     <string name="settings_calendar_evening_tie_ins">Evening tie-ins</string>
-    <string name="settings_calendar_evening_tie_ins_description">Factor tonight\'s events into the morning forecast — e.g. \"Tonight, bring a jacket.\"</string>
+    <string name="settings_calendar_evening_tie_ins_description">If you\'re going out in the evening, the morning forecast tells you if you need to bring anything extra.</string>
     <string name="settings_calendar_birthdays">Birthdays</string>
-    <string name="settings_calendar_birthdays_description">Theme the outfit on birthdays detected in your calendars.</string>
+    <string name="settings_calendar_birthdays_description">Use special colours and messages for birthdays in your calendars.</string>
     <string name="settings_calendar_public_holidays">Public holidays</string>
-    <string name="settings_calendar_public_holidays_description">Theme the outfit on public holidays from your synced calendars.</string>
+    <string name="settings_calendar_public_holidays_description">Use special colours and messages for public holidays in your calendars.</string>
     <!-- Shown only when calendar permission is permanently denied ("don't ask
          again"), where the in-app toggle can no longer trigger the system
          prompt — the button opens the app's system-settings screen. -->

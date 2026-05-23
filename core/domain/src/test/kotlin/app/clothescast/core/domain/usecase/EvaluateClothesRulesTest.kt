@@ -261,6 +261,23 @@ class EvaluateClothesRulesTest {
     }
 
     @Test
+    fun `duplicate rules in the same layer collapse to a single winner`() {
+        // ClothesRule is a data class, so two separately configured rules
+        // with the same item + condition compare equal. Layer reduction
+        // needs to dedupe by *position* in the rule list, not by value —
+        // otherwise both sweater rules would survive the filter and the
+        // prose would read "Wear a sweater, sweater, and pants." The
+        // earlier-listed instance wins; the duplicate is silently dropped.
+        val rules = listOf(
+            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
+            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
+        )
+        val out = subject(forecast(min = 12.0, max = 16.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("sweater", "sweater")
+        out.items.shouldContainExactly("sweater", "pants")
+    }
+
+    @Test
     fun `within-mid-layer ties resolve to the priority winner`() {
         // Two MID rules firing at the same time (the user has both a sweater
         // and a thin-jacket rule). Thin-jacket leads the MID priority order,

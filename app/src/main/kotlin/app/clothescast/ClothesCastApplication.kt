@@ -17,6 +17,7 @@ import app.clothescast.core.domain.model.defaultsFor
 import app.clothescast.core.domain.repository.CachingWeatherRepository
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.repository.WeatherRepository
+import app.clothescast.core.domain.usecase.DeriveInsight
 import app.clothescast.core.domain.usecase.GenerateDailyInsight
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
@@ -63,7 +64,8 @@ import kotlinx.serialization.json.Json
 class ClothesCastApplication : Application() {
     val secureKeyStore: SecureKeyStore by lazy { SecureKeyStore.create(this) }
     val settingsRepository: SettingsRepository by lazy { SettingsRepository.create(this) }
-    val insightCache: InsightCache by lazy { InsightCache.create(this) }
+    val deriveInsight: DeriveInsight by lazy { DeriveInsight() }
+    val insightCache: InsightCache by lazy { InsightCache.create(this, deriveInsight) }
     val locationResolver: LocationResolver by lazy { LocationResolver(this) }
     val reverseGeocoder: ReverseGeocoder by lazy { ReverseGeocoder(this) }
     val insightNotifier: InsightNotifier by lazy { InsightNotifier(this) }
@@ -212,6 +214,7 @@ class ClothesCastApplication : Application() {
     val generateDailyInsight: GenerateDailyInsight by lazy {
         GenerateDailyInsight(
             weatherRepository = weatherRepository,
+            deriveInsight = deriveInsight,
             calendarEventReader = calendarEventReader,
         )
     }

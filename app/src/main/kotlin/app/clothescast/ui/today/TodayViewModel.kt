@@ -19,6 +19,7 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.repository.CalendarEventReader
+import app.clothescast.core.domain.usecase.DeriveInsight
 import app.clothescast.core.domain.usecase.HolidayResolver
 import app.clothescast.core.domain.usecase.ThemeForToday
 import app.clothescast.tts.toJavaLocale
@@ -240,6 +241,12 @@ class TodayViewModel(
     workManager: WorkManager,
     private val settingsRepository: SettingsRepository,
     /**
+     * Re-renders each cached [app.clothescast.core.domain.model.ForecastSnapshot]
+     * against the current preferences. Defaulted so pure-VM tests can omit it;
+     * the Activity passes the app-singleton instance for parity with the worker.
+     */
+    private val deriveInsight: DeriveInsight = DeriveInsight(),
+    /**
      * Pushes the home-screen widget after a clothes-rule nudge so the icon
      * out on the launcher refreshes in the same frame as the Today screen.
      * Defaulted to a no-op so pure-VM tests don't need an Android Context;
@@ -345,8 +352,14 @@ class TodayViewModel(
         workStatusFlow,
         preferencesDateEvents,
         showModelSpread,
-    ) { thisPeriodInsight, nextPeriodInsight, workStatus, prefsDateEvents, spread ->
+    ) { thisPeriodSnapshot, nextPeriodSnapshot, workStatus, prefsDateEvents, spread ->
         val (prefs, today, events) = prefsDateEvents
+        // Derive each cached snapshot against the *current* prefs so a settings
+        // change re-renders the prose / outfit / bullets in the same frame as
+        // the dropdown closes — no waiting for the next worker run, no
+        // preservation / re-gating logic on the cache side.
+        val thisPeriodInsight = thisPeriodSnapshot?.let { deriveInsight(it, prefs).insight }
+        val nextPeriodInsight = nextPeriodSnapshot?.let { deriveInsight(it, prefs).insight }
         // Resolve "is today a holiday the user wants themed?" — `today`
         // comes from the [dateTicker] flow above so the rollover at local
         // midnight re-fires combine even when no other input changes. The
@@ -460,12 +473,10 @@ class TodayViewModel(
     fun adjustClothesRuleThreshold(ruleItem: String, deltaC: Double) {
         viewModelScope.launch {
             settingsRepository.adjustClothesRuleThreshold(ruleItem, deltaC)
-            // Repick the cached outfit against the updated threshold so the
-            // home-screen icon catches up in the same frame as the rationale
-            // dialog's number — without this, a `+1°` tap that flips the icon
-            // tier wouldn't visibly do anything until the next refresh.
-            val prefs = settingsRepository.preferences.first()
-            insightCache.recomputeOutfits(prefs.clothesRules, prefs.defaultBottom, prefs.defaultTop)
+            // No cache work — the [state] combine re-derives the cached
+            // snapshot against the updated prefs as soon as the DataStore
+            // write lands. Push the home-screen widget so the launcher icon
+            // catches up alongside the Today screen.
             refreshOutfitWidget()
         }
     }
@@ -475,6 +486,7 @@ class TodayViewModel(
         private val workManager: WorkManager,
         private val settingsRepository: SettingsRepository,
         private val refreshOutfitWidget: suspend () -> Unit,
+        private val deriveInsight: DeriveInsight = DeriveInsight(),
         private val calendarEventReader: CalendarEventReader? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
@@ -487,6 +499,7 @@ class TodayViewModel(
                 workManager = workManager,
                 settingsRepository = settingsRepository,
                 refreshOutfitWidget = refreshOutfitWidget,
+                deriveInsight = deriveInsight,
                 calendarEventReader = calendarEventReader,
             ) as T
         }

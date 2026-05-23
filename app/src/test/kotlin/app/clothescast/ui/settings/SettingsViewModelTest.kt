@@ -380,7 +380,7 @@ class SettingsViewModelTest {
 
     @Test
     fun `clothes-rule edits and setDefaultBottom kick the cached-outfit refresh`() = runTest {
-        // The Activity wires this lambda to a recomputeOutfits + widget-update
+        // The Activity wires this lambda to OutfitWidget().updateAll()
         // pair so the home-screen icon flips immediately on every clothes-rule
         // change. Without the refresh, settings writes would only land on the
         // Today screen at the next worker run — the bug Codex flagged on PR
@@ -398,7 +398,7 @@ class SettingsViewModelTest {
                     },
                 ),
                 voiceEnumerator = EmptyVoiceEnumerator,
-                refreshCachedOutfits = { refreshCount++ },
+                refreshOutfitWidget = { refreshCount++ },
             ),
         )
 
@@ -416,6 +416,19 @@ class SettingsViewModelTest {
 
         refreshSubject.setDefaultBottom(OutfitSuggestion.Bottom.JEANS)
         refreshSubject.state.first { it.defaultBottom == OutfitSuggestion.Bottom.JEANS }
+        refreshCount shouldBe 4
+
+        // clothesMentionMode and deltaThresholdC are prose-only — the Today
+        // screen / Format settings preview / cast / MQTT re-derive from the
+        // cached snapshot reactively against the prefs flow, so no widget
+        // poke is needed (the widget renders just the outfit icon, which
+        // these two settings don't touch).
+        refreshSubject.setClothesMentionMode(ClothesMentionMode.NEVER)
+        refreshSubject.state.first { it.clothesMentionMode == ClothesMentionMode.NEVER }
+        refreshCount shouldBe 4
+
+        refreshSubject.setDeltaThresholdC(8.0)
+        refreshSubject.state.first { it.deltaThresholdC == 8.0 }
         refreshCount shouldBe 4
     }
 

@@ -77,12 +77,18 @@ object BugReport {
         val mqttPublishStatus = runCatching {
             app.settingsRepository.mqttPublishStatus.first()
         }.getOrNull()
-        val thisPeriod = runCatching {
+        val thisSnapshot = runCatching {
             app.insightCache.thisPeriod.first()
         }.getOrNull()
-        val nextPeriod = runCatching {
+        val nextSnapshot = runCatching {
             app.insightCache.nextPeriod.first()
         }.getOrNull()
+        val thisPeriod = if (thisSnapshot != null && prefs != null) {
+            runCatching { app.deriveInsight(thisSnapshot, prefs).insight }.getOrNull()
+        } else null
+        val nextPeriod = if (nextSnapshot != null && prefs != null) {
+            runCatching { app.deriveInsight(nextSnapshot, prefs).insight }.getOrNull()
+        } else null
         val crash = DiagLog.readPersistedCrash()
         val recent = DiagLog.snapshot()
         val now = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.US).format(Date())

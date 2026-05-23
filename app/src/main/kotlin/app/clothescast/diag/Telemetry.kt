@@ -208,6 +208,7 @@ object Telemetry {
             putLong("daily_mention_evening_events", snapshot.dailyMentionEveningEvents.toLongFlag())
             putString("clothes_mention_mode", snapshot.clothesMentionMode)
             putString("range_format", snapshot.rangeFormat)
+            putString("clothes_format", snapshot.clothesFormat)
             putLong("delta_threshold_c", snapshot.deltaThresholdC.toLong())
             putLong("use_calendar_events", snapshot.useCalendarEvents.toLongFlag())
             putLong("skip_tts_at_home", snapshot.skipTtsAtHome.toLongFlag())

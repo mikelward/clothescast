@@ -36,11 +36,32 @@ data class TriggeredOutfit(
     val fallbacks: List<String>,
 ) {
     /**
-     * Every item the user is wearing today — layer-reduced threshold matches
-     * first, defaults second. The layer reduction picks at most one top per
-     * [Garment.Layer] and drops [Garment.Layer.BASE] when MID or SHELL also
-     * fired, so the prose reads "Wear a sweater and jacket." instead of
-     * "Wear a sweater, jacket, and t-shirt." See [Garment.layerReduce].
+     * Every item the user is wearing today, ordered tops → bottoms → unknown
+     * (accessories, free-form). Tops always lead so the prose's article picker
+     * applies to a singular top ("a t-shirt") rather than a leading bare-plural
+     * bottom ("shorts"), and so a t-shirt sourced from the default fallback
+     * reads the same as one sourced from a user rule — the user's mental
+     * model is "what am I wearing", not "which clause produced it".
+     *
+     * Within each slot, layer-reduced threshold matches keep their input
+     * order, then defaults follow in the order [EvaluateClothesRules] queued
+     * them. The layer reduction picks at most one top per [Garment.Layer]
+     * and drops [Garment.Layer.BASE] when MID or SHELL also fired, so the
+     * prose reads "Wear a sweater and jacket." instead of "Wear a sweater,
+     * jacket, and a t-shirt." See [Garment.layerReduce].
      */
-    val items: List<String> get() = Garment.layerReduce(rules).map { it.item } + fallbacks
+    val items: List<String>
+        get() {
+            val raw = Garment.layerReduce(rules).map { it.item } + fallbacks
+            // Stable sort that floats bottoms to the end. Tops and unclassified
+            // items (accessories, free-form) keep their input order; only the
+            // top↔bottom flip — which happens when a bottom rule fires and the
+            // top comes from the default fallback (shorts rule + t-shirt
+            // default on a warm day) — is corrected. Accessories are filtered
+            // out before prose rendering anyway, so their slot is left at 0
+            // to preserve their position relative to tops.
+            return raw.sortedBy {
+                if (Garment.fromKey(it)?.slot == Garment.Slot.BOTTOM) 1 else 0
+            }
+        }
 }

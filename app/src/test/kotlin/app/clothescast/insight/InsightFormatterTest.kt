@@ -166,22 +166,44 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `clothes joins two items with 'and' and only the first item gets an article`() {
+    fun `clothes joins two items with 'and' and only the first article-taking item gets an article`() {
         subject.format(summary(clothes = ClothesClause(listOf("sweater", "jacket")))) shouldBe
             "Today, it will be 21°. Wear a sweater and jacket."
     }
 
     @Test
-    fun `clothes Oxford-joins three garments with article only on the first`() {
+    fun `clothes articles the first article-taking item when a plural comes first`() {
+        // Drives the warm-day shorts-rule + t-shirt-fallback case: the older
+        // "first item only" rule swallowed the article on "t-shirt" (it
+        // wasn't first) and read as "Wear shorts and t-shirt."; the article
+        // now lands on the first item that can take one.
+        subject.format(summary(clothes = ClothesClause(listOf("shorts", "t-shirt")))) shouldBe
+            "Today, it will be 21°. Wear shorts and a t-shirt."
+    }
+
+    @Test
+    fun `clothes Oxford-joins three garments articling the first and Oxford-last`() {
+        // Three-or-more lists also article the last item (if it takes one),
+        // so the Oxford-last reads as a noun ("…and a coat.") rather than a
+        // bare fragment ("…and coat.").
         subject.format(summary(clothes = ClothesClause(listOf("sweater", "jacket", "coat")))) shouldBe
-            "Today, it will be 21°. Wear a sweater, jacket, and coat."
+            "Today, it will be 21°. Wear a sweater, jacket, and a coat."
     }
 
     @Test
     fun `clothes Oxford-joins four garments`() {
         subject.format(
             summary(clothes = ClothesClause(listOf("sweater", "jacket", "shorts", "coat"))),
-        ) shouldBe "Today, it will be 21°. Wear a sweater, jacket, shorts, and coat."
+        ) shouldBe "Today, it will be 21°. Wear a sweater, jacket, shorts, and a coat."
+    }
+
+    @Test
+    fun `clothes Oxford-last plural emits no trailing article`() {
+        // Last item is plural so the Oxford-last position picks nothing —
+        // we don't reach into the middle for a singular to article.
+        subject.format(
+            summary(clothes = ClothesClause(listOf("sweater", "jacket", "scarf", "gloves"))),
+        ) shouldBe "Today, it will be 21°. Wear a sweater, jacket, scarf, and gloves."
     }
 
     @Test
@@ -231,6 +253,14 @@ class InsightFormatterTest {
     fun `layer-count format names bottoms alongside the layer count`() {
         layerCountSubject.format(summary(clothes = ClothesClause(listOf("sweater", "shorts")))) shouldBe
             "Today, it will be 21°. Wear 2 layers and shorts."
+    }
+
+    @Test
+    fun `layer-count format names a t-shirt as 1 layer alongside shorts`() {
+        // The warm-day fallback scenario in layer-count mode: t-shirt from
+        // the default top, shorts from the user's threshold rule.
+        layerCountSubject.format(summary(clothes = ClothesClause(listOf("t-shirt", "shorts")))) shouldBe
+            "Today, it will be 21°. Wear 1 layer and shorts."
     }
 
     @Test
@@ -582,7 +612,7 @@ class InsightFormatterTest {
                 eveningEventTieIn = EveningEventTieInClause(items = listOf("sweater", "jacket", "scarf")),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, bring a sweater, jacket, and scarf."
+        out shouldBe "Today, it will be 21°. Tonight, bring a sweater, jacket, and a scarf."
     }
 
     @Test
@@ -761,9 +791,10 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `en-GB — multi-item list translates each item, article only on the first`() {
+    fun `en-GB — multi-item list translates each item and articles each singular`() {
         // Umbrella is silenced; the surviving garments stay joined with en-GB
-        // vocabulary.
+        // vocabulary. "Trousers" reads as plural so it picks no article — the
+        // jumper still gets its "a" without dragging one onto the trousers.
         britishSubject.format(
             summary(clothes = ClothesClause(listOf("sweater", "pants", "umbrella"))),
         ) shouldBe "Today, it will be 21°. Wear a jumper and trousers."

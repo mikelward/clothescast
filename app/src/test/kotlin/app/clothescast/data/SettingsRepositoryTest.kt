@@ -448,20 +448,37 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `defaultBottom round-trips LONG_SKIRT and clamps SHORTS or unknown back to LONG_PANTS`() = runTest {
-        // LONG_PANTS / JEANS / LONG_SKIRT are valid fallbacks (the picker's
-        // three options). SHORTS has its own rule-driven warm-weather path and
-        // shouldn't ever be the "no rule fires" answer; a stored value outside
-        // the picker set degrades to LONG_PANTS rather than silently dropping
-        // an invalid choice into the icon.
+    fun `defaultBottom round-trips all Bottom variants and clamps unknown to LONG_PANTS`() = runTest {
+        // With the "If no rules match" framing, every Bottom variant is a
+        // legitimate fallback — including SHORTS, for users in hot climates
+        // who removed the shorts rule. Only truly unknown stored values
+        // (forward-compat from a future build, hand-edited DataStore) degrade
+        // to LONG_PANTS so the icon doesn't render a null.
         subject.setDefaultBottom(OutfitSuggestion.Bottom.LONG_SKIRT)
         subject.preferences.first().defaultBottom shouldBe OutfitSuggestion.Bottom.LONG_SKIRT
 
-        dataStore.edit { it[stringPreferencesKey("default_bottom")] = "SHORTS" }
-        subject.preferences.first().defaultBottom shouldBe OutfitSuggestion.Bottom.LONG_PANTS
+        subject.setDefaultBottom(OutfitSuggestion.Bottom.SHORTS)
+        subject.preferences.first().defaultBottom shouldBe OutfitSuggestion.Bottom.SHORTS
 
         dataStore.edit { it[stringPreferencesKey("default_bottom")] = "BOGUS" }
         subject.preferences.first().defaultBottom shouldBe OutfitSuggestion.Bottom.LONG_PANTS
+    }
+
+    @Test
+    fun `defaultTop defaults to TSHIRT and round-trips`() = runTest {
+        subject.preferences.first().defaultTop shouldBe OutfitSuggestion.Top.TSHIRT
+
+        subject.setDefaultTop(OutfitSuggestion.Top.POLO)
+        subject.preferences.first().defaultTop shouldBe OutfitSuggestion.Top.POLO
+
+        subject.setDefaultTop(OutfitSuggestion.Top.SWEATER)
+        subject.preferences.first().defaultTop shouldBe OutfitSuggestion.Top.SWEATER
+    }
+
+    @Test
+    fun `defaultTop clamps unknown stored values back to TSHIRT`() = runTest {
+        dataStore.edit { it[stringPreferencesKey("default_top")] = "BOGUS" }
+        subject.preferences.first().defaultTop shouldBe OutfitSuggestion.Top.TSHIRT
     }
 
     @Test

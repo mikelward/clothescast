@@ -586,8 +586,6 @@ default English (matching values-pl / values-uk).
     <string name="bug_report_consent_cancel">Otkaži</string>
 
     <string name="today_forecast_air_section_title">Temperatura vazduha</string>
-    <string name="settings_default_bottom_title">Standardni donji deo</string>
-    <string name="settings_default_bottom_description">Ono što predlažemo na početnom ekranu kada nije dovoljno toplo za kratke hlače.</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">Paleta boja</string>

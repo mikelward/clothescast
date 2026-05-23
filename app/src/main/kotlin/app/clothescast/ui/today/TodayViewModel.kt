@@ -462,7 +462,7 @@ class TodayViewModel(
             // dialog's number — without this, a `+1°` tap that flips the icon
             // tier wouldn't visibly do anything until the next refresh.
             val prefs = settingsRepository.preferences.first()
-            insightCache.recomputeOutfits(prefs.clothesRules, prefs.defaultBottom)
+            insightCache.recomputeOutfits(prefs.clothesRules, prefs.defaultBottom, prefs.defaultTop)
             refreshOutfitWidget()
         }
     }

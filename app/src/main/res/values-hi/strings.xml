@@ -600,8 +600,6 @@ Not overridden by design:
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast इस डिवाइस पर नहीं चल सकता — आपके Android बिल्ड में ऐप UI के लिए ज़रूरी सुविधा (Configuration.fontWeightAdjustment, Android 12 और उससे ऊपर अपेक्षित) मौजूद नहीं है। कृपया सिस्टम अपडेट के लिए अपने डिवाइस निर्माता से संपर्क करें।</string>
     <string name="today_forecast_air_section_title">हवा का तापमान</string>
-    <string name="settings_default_bottom_title">मानक नीचे का वस्त्र</string>
-    <string name="settings_default_bottom_description">जब शॉर्ट्स के लिए पर्याप्त गर्मी नहीं होती तो होम स्क्रीन पर हम क्या सुझाते हैं।</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">रंग पैलेट</string>

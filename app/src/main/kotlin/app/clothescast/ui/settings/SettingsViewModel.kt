@@ -231,6 +231,7 @@ class SettingsViewModel(
                         effectiveEnabledHolidayCountries = effectiveCountries,
                         clothesRules = prefs.clothesRules,
                         defaultBottom = prefs.defaultBottom,
+                        defaultTop = prefs.defaultTop,
                         location = prefs.location,
                         useDeviceLocation = prefs.useDeviceLocation,
                         homeLocation = prefs.homeLocation,
@@ -507,6 +508,13 @@ class SettingsViewModel(
     fun setDefaultBottom(bottom: OutfitSuggestion.Bottom) {
         viewModelScope.launch {
             settingsRepository.setDefaultBottom(bottom)
+            refreshCachedOutfits()
+        }
+    }
+
+    fun setDefaultTop(top: OutfitSuggestion.Top) {
+        viewModelScope.launch {
+            settingsRepository.setDefaultTop(top)
             refreshCachedOutfits()
         }
     }

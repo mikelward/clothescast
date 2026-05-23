@@ -582,8 +582,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="bug_report_consent_cancel">Prekliči</string>
 
     <string name="today_forecast_air_section_title">Temperatura zraka</string>
-    <string name="settings_default_bottom_title">Standardni spodnji del</string>
-    <string name="settings_default_bottom_description">Kar predlagamo na začetnem zaslonu, ko ni dovolj toplo za kratke hlače.</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">Barvna paleta</string>

@@ -570,8 +570,6 @@ to values/strings.xml (English).
     <string name="bug_report_consent_cancel">Batal</string>
 
     <string name="today_forecast_air_section_title">Suhu udara</string>
-    <string name="settings_default_bottom_title">Bawahan standar</string>
-    <string name="settings_default_bottom_description">Yang kami sarankan di layar beranda saat tidak cukup panas untuk memakai celana pendek.</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">Palet warna</string>

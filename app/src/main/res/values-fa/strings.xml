@@ -97,8 +97,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
     <string name="today_forecast_air_section_title">دمای هوا</string>
-    <string name="settings_default_bottom_title">پایین‌تنه پیش‌فرض</string>
-    <string name="settings_default_bottom_description">آنچه وقتی هوا برای شلوارک گرم نیست در صفحه اصلی پیشنهاد می‌دهیم.</string>
 
     <!-- Error / compatibility -->
     <string name="error_device_incompatible">ClothesCast نمی‌تواند روی این دستگاه اجرا شود — نسخه Android شما فاقد ویژگی مورد نیاز رابط کاربری برنامه است. لطفاً با سازنده دستگاه خود برای دریافت به‌روزرسانی سیستم تماس بگیرید.</string>

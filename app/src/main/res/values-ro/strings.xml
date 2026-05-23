@@ -573,8 +573,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="bug_report_consent_cancel">Anulează</string>
 
     <string name="today_forecast_air_section_title">Temperatura aerului</string>
-    <string name="settings_default_bottom_title">Jos standard</string>
-    <string name="settings_default_bottom_description">Ceea ce sugerăm pe ecranul de start când nu este suficient de cald pentru pantaloni scurți.</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">Paletă de culori</string>

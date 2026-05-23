@@ -537,8 +537,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
     <string name="today_forecast_air_section_title">Temperatura de l\'aire</string>
-    <string name="settings_default_bottom_title">Part de baix estàndard</string>
-    <string name="settings_default_bottom_description">El que suggerim a la pantalla d\'inici quan no fa prou calor per a pantalons curts.</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">Paleta de colors</string>

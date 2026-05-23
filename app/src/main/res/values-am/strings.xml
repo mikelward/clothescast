@@ -424,8 +424,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_evening_rain_chance">ዛሬ ምሽት ዝናብ ሊኖር ይችላል %1$s ሰዓት።</string>
 
     <!-- Miscellaneous -->
-    <string name="settings_default_bottom_title">መደበኛ ታች</string>
-    <string name="settings_default_bottom_description">ሹርቴ ለመልበስ ሞቃት ሳይሆን ለዋናው ማያ ምን እናሳያለን።</string>
 
     <!-- Strings added to match base. -->
     <string name="settings_region_language_title">ቋንቋ</string>

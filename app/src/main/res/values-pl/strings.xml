@@ -644,8 +644,6 @@ is unchanged; only the displayed label localizes.
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast nie może działać na tym urządzeniu — Twoja kompilacja Androida nie ma funkcji wymaganej przez interfejs aplikacji (Configuration.fontWeightAdjustment, oczekiwana od Androida 12 wzwyż). Skontaktuj się z producentem urządzenia w sprawie aktualizacji systemu.</string>
     <string name="today_forecast_air_section_title">Temperatura powietrza</string>
-    <string name="settings_default_bottom_title">Standardowy dół</string>
-    <string name="settings_default_bottom_description">To, co proponujemy na ekranie głównym, gdy jest za zimno na szorty.</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">Paleta</string>

@@ -640,8 +640,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="error_device_incompatible">ClothesCast এই ডিভাইসে চলতে পারছে না — আপনার Android বিল্ডে অ্যাপের UI-এর জন্য প্রয়োজনীয় একটি ফিচার অনুপস্থিত (Configuration.fontWeightAdjustment, Android 12 এবং উপরে প্রত্যাশিত)। সিস্টেম আপডেটের জন্য আপনার ডিভাইস প্রস্তুতকারকের সাথে যোগাযোগ করুন।</string>
 
     <string name="today_forecast_air_section_title">বায়ু তাপমাত্রা</string>
-    <string name="settings_default_bottom_title">সাধারণ নিচের পোশাক</string>
-    <string name="settings_default_bottom_description">শর্টসের জন্য যথেষ্ট গরম না হলে হোম স্ক্রিনে আমরা কী সাজেস্ট করি।</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">রঙের প্যালেট</string>

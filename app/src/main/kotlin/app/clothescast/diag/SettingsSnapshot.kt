@@ -25,6 +25,7 @@ data class SettingsSnapshot(
     val themeMode: String,
     val colorPalette: String,
     val defaultBottom: String,
+    val defaultTop: String,
     val dailyTimeBucketHour: String,
     val dailyDaysCount: Int,
     val tonightEnabled: Boolean,

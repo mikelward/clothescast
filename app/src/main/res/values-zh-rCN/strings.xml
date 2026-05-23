@@ -699,8 +699,6 @@ label localizes.
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast 无法在此设备上运行 — 你的 Android 版本缺少应用界面所需的功能（Configuration.fontWeightAdjustment，需 Android 12 及以上）。请联系设备制造商进行系统更新。</string>
     <string name="today_forecast_air_section_title">气温</string>
-    <string name="settings_default_bottom_title">默认下装</string>
-    <string name="settings_default_bottom_description">当天气不够暖和、不适合穿短裤时，主屏幕显示的建议。</string>
 
     <!-- Strings added to match base (new features). -->
     <string name="settings_display_colors_title">调色板</string>

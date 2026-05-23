@@ -241,6 +241,31 @@ class OutfitSuggestionTest {
     }
 
     @Test
+    fun `defaultTop flips the fallback from TSHIRT to POLO`() {
+        // A polo-shirt-everyday user picks Polo as their standard top. With no
+        // cold-weather rule firing, the fallback lands on Polo instead of the
+        // hardcoded T-shirt.
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 20.0, feelsLikeMax = 22.0),
+            rules,
+            defaultTop = OutfitSuggestion.Top.POLO,
+        )
+        outfit.top shouldBe OutfitSuggestion.Top.POLO
+    }
+
+    @Test
+    fun `defaultTop is ignored when a colder-tier rule fires`() {
+        // Even with Polo picked as default, a firing sweater rule still wins —
+        // the default is the *fallback*, not an override.
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 12.0, feelsLikeMax = 16.0),
+            rules,
+            defaultTop = OutfitSuggestion.Top.POLO,
+        )
+        outfit.top shouldBe OutfitSuggestion.Top.SWEATER
+    }
+
+    @Test
     fun `coat rule alone drives THICK_COAT when it fires`() {
         // Coat has its own icon tier (THICK_COAT) separate from jacket (THICK_JACKET).
         val coatOnly = listOf(ClothesRule("coat", ClothesRule.TemperatureBelow(6.0)))

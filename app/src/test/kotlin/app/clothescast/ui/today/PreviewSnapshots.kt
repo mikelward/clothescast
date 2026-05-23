@@ -370,6 +370,7 @@ class PreviewSnapshots {
 
     @Test fun today_empty_state() = capture { TodayEmptyStatePreview() }
     @Test fun today_insight_card() = capture { TodayInsightCardPreview() }
+    @Test fun today_insight_card_layered() = capture { TodayInsightCardLayeredPreview() }
     @Test fun today_insight_card_dark() = capture { TodayInsightCardDarkPreview() }
     @Test fun today_insight_card_with_location() = capture { TodayInsightCardWithLocationPreview() }
     @Test fun today_insight_card_location_unknown() = capture { TodayInsightCardLocationUnknownPreview() }

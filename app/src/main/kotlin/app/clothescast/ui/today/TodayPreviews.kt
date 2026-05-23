@@ -324,6 +324,32 @@ internal fun TodayInsightCardPreview() {
     Frame { InsightCard(SAMPLE_INSIGHT, Region.SYSTEM) }
 }
 
+// Locks the rendered prose for a layered cold-weather outfit. The
+// underlying ClothesClause is what `EvaluateClothesRules` produces after
+// `Garment.layerReduce` runs — a user with a t-shirt rule alongside the
+// default sweater + jeans rules sees "Wear a sweater and jeans." here,
+// not the pre-layering "Wear a sweater, t-shirt, and jeans." If a future
+// regression re-introduces the BASE garment to the outfit, this snapshot
+// is the visible diff.
+@Preview(name = "Today · insight loaded (layered cold day)", widthDp = 360)
+@Composable
+internal fun TodayInsightCardLayeredPreview() {
+    Frame {
+        InsightCard(
+            SAMPLE_INSIGHT.copy(
+                summary = SAMPLE_INSIGHT.summary.copy(
+                    band = BandClause(TemperatureBand.COLD, TemperatureBand.COOL, 6.0, 14.0),
+                    delta = DeltaClause(4, DeltaClause.Direction.COOLER),
+                    clothes = ClothesClause(listOf("sweater", "jeans")),
+                    precip = null,
+                ),
+                recommendedItems = listOf("sweater", "jeans"),
+            ),
+            Region.SYSTEM,
+        )
+    }
+}
+
 @Preview(name = "Today · insight (dark)", widthDp = 360)
 @Composable
 internal fun TodayInsightCardDarkPreview() {

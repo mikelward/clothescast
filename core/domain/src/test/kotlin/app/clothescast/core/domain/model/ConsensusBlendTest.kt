@@ -34,10 +34,11 @@ class ConsensusBlendTest {
         h: Int,
         apparent: Double,
         air: Double,
-        precip: Double = 0.0,
+        precip: Double? = 0.0,
         condition: WeatherCondition? = null,
+        date: LocalDate = today,
     ) = PerModelHour(
-        time = LocalDateTime.of(today, LocalTime.of(h, 0)),
+        time = LocalDateTime.of(date, LocalTime.of(h, 0)),
         apparentTemperatureC = apparent,
         temperatureC = air,
         precipitationProbabilityPct = precip,
@@ -138,6 +139,70 @@ class ConsensusBlendTest {
 
         blended[0].temperatureC shouldBe (13.0 plusOrMinus 0.0001)  // consensus
         blended[1] shouldBe best[1]                                   // fell back
+    }
+
+    @Test
+    fun `precipitation falls back to best-match when no candidate reported a value`() {
+        // UKMO / JMA / GEM / ARPEGE routinely omit precipitation probability;
+        // when *every* candidate at this hour has null precip, averaging
+        // would NaN. Keep best_match's value instead so the precip chart and
+        // rain-prose stay sensible.
+        val best = listOf(hour(12, temp = 10.0, feels = 9.0, precip = 35.0))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "ukmo_seamless" to listOf(perModel(12, apparent = 11.0, air = 12.0, precip = null)),
+                "jma_seamless" to listOf(perModel(12, apparent = 13.0, air = 14.0, precip = null)),
+            ),
+        )
+
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
+
+        blended[0].precipitationProbabilityPct shouldBe (35.0 plusOrMinus 0.0001)
+        // Temp / feels still get blended — only precip falls back.
+        blended[0].temperatureC shouldBe (13.0 plusOrMinus 0.0001)
+        blended[0].feelsLikeC shouldBe (12.0 plusOrMinus 0.0001)
+    }
+
+    @Test
+    fun `precipitation averages only the candidates that reported a value`() {
+        // GFS provides a precip reading, UKMO doesn't. Including a synthetic
+        // 0 for UKMO would silently halve the blended rain probability when
+        // GFS predicts rain — drop the null candidate from the precip mean
+        // and keep GFS's reading.
+        val best = listOf(hour(12, temp = 10.0, feels = 9.0, precip = 20.0))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(perModel(12, apparent = 11.0, air = 12.0, precip = 80.0)),
+                "ukmo_seamless" to listOf(perModel(12, apparent = 13.0, air = 14.0, precip = null)),
+            ),
+        )
+
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
+
+        // 80 (GFS only) — UKMO's null is skipped rather than averaged as 0.
+        blended[0].precipitationProbabilityPct shouldBe (80.0 plusOrMinus 0.0001)
+    }
+
+    @Test
+    fun `per-model entries on a different calendar day do not blend with best-match`() {
+        // best_match is today's hourly only (indexed by LocalTime). Per-model
+        // entries carry a full LocalDateTime, so the same hour-of-day on a
+        // neighbouring date must not collide with today's slot — otherwise
+        // tomorrow's 02:00 would alias against today's 02:00 in the tonight
+        // wrap. With only one model covering today's 12:00 (the other is
+        // tomorrow's), blending falls through and returns null.
+        val tomorrow = today.plusDays(1)
+        val best = listOf(hour(12, temp = 10.0, feels = 9.0, precip = 30.0))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(perModel(12, apparent = 11.0, air = 12.0, precip = 80.0)),
+                "icon_seamless" to listOf(
+                    perModel(12, apparent = 13.0, air = 14.0, precip = 90.0, date = tomorrow),
+                ),
+            ),
+        )
+
+        blendConsensusHourly(today, best, perModel).shouldBeNull()
     }
 
     @Test

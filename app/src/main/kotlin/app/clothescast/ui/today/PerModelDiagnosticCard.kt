@@ -19,6 +19,7 @@ import app.clothescast.R
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.ui.formatScrubHour
 import app.clothescast.ui.theme.AppTheme
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom

@@ -10,6 +10,12 @@ enum class TemperatureUnitSetting { AUTO, CELSIUS, FAHRENHEIT }
 /** User-facing unit preference, including [AUTO] to follow the device/region locale. */
 enum class DistanceUnitSetting { AUTO, KILOMETERS, MILES }
 
+/** Resolved clock-format the UI renders ("14:00" vs "2 PM"). */
+enum class TimeFormat { TWELVE_HOUR, TWENTY_FOUR_HOUR }
+
+/** User-facing clock-format preference, including [AUTO] to follow the device/region locale. */
+enum class TimeFormatSetting { AUTO, TWELVE_HOUR, TWENTY_FOUR_HOUR }
+
 /**
  * Wind-speed display unit. Currently derived from [DistanceUnit] at the call
  * site (see `DistanceUnit.windSpeedUnit()` in Units.kt) — a metric user sees
@@ -466,6 +472,8 @@ data class UserPreferences(
     val distanceUnit: DistanceUnit,
     val temperatureUnitSetting: TemperatureUnitSetting = TemperatureUnitSetting.AUTO,
     val distanceUnitSetting: DistanceUnitSetting = DistanceUnitSetting.AUTO,
+    val timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOUR,
+    val timeFormatSetting: TimeFormatSetting = TimeFormatSetting.AUTO,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val clothesRules: List<ClothesRule>,
     /**

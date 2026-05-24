@@ -25,6 +25,7 @@ import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnitSetting
+import app.clothescast.core.domain.model.TimeFormatSetting
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
@@ -230,6 +231,8 @@ class SettingsViewModel(
                         distanceUnit = prefs.distanceUnit,
                         temperatureUnitSetting = prefs.temperatureUnitSetting,
                         distanceUnitSetting = prefs.distanceUnitSetting,
+                        timeFormat = prefs.timeFormat,
+                        timeFormatSetting = prefs.timeFormatSetting,
                         themeMode = prefs.themeMode,
                         colorPalette = prefs.colorPalette,
                         outfitTopColors = prefs.outfitTopColors,
@@ -427,6 +430,10 @@ class SettingsViewModel(
 
     fun setDistanceUnitSetting(setting: DistanceUnitSetting) {
         viewModelScope.launch { settingsRepository.setDistanceUnitSetting(setting) }
+    }
+
+    fun setTimeFormatSetting(setting: TimeFormatSetting) {
+        viewModelScope.launch { settingsRepository.setTimeFormatSetting(setting) }
     }
 
     fun setThemeMode(mode: ThemeMode) {

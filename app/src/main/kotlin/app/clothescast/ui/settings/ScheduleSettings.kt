@@ -48,14 +48,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import app.clothescast.R
 import app.clothescast.core.domain.model.DeliveryMode
+import app.clothescast.core.domain.model.TimeFormat
 import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
 import app.clothescast.ui.EdgeFadeOverlay
+import app.clothescast.ui.LocalTimeFormat
+import app.clothescast.ui.formatHourMinute
 import java.time.DayOfWeek
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
-import java.util.Locale
 
 @Composable
 internal fun ScheduleContent(
@@ -189,10 +190,15 @@ private fun TimePickerDialog(
     onDismiss: () -> Unit,
     onConfirm: (LocalTime) -> Unit,
 ) {
+    // Match the user's clock preference so the picker UI (the AM/PM toggle
+    // or its absence) lines up with the value shown on the row that opened
+    // it. A 12h reader who sees "7am" on the schedule row shouldn't get a
+    // 24h dial when they tap to edit.
+    val is24Hour = LocalTimeFormat.current == TimeFormat.TWENTY_FOUR_HOUR
     val state = rememberTimePickerState(
         initialHour = initial.hour,
         initialMinute = initial.minute,
-        is24Hour = true,
+        is24Hour = is24Hour,
     )
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -374,7 +380,7 @@ private fun TimeRow(label: String, time: LocalTime, onClick: () -> Unit) {
             modifier = Modifier.padding(end = 12.dp),
         )
         OutlinedButton(onClick = onClick) {
-            Text(text = TIME_FORMAT.format(time))
+            Text(text = formatHourMinute(time))
         }
     }
 }
@@ -447,5 +453,3 @@ private fun deliveryModeLabel(mode: DeliveryMode): Int = when (mode) {
     DeliveryMode.TTS_ONLY -> R.string.settings_delivery_tts_only
     DeliveryMode.NOTIFICATION_AND_TTS -> R.string.settings_delivery_notification_and_tts
 }
-
-private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")

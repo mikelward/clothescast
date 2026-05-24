@@ -32,6 +32,8 @@ import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TemperatureUnitSetting
+import app.clothescast.core.domain.model.TimeFormat
+import app.clothescast.core.domain.model.TimeFormatSetting
 import app.clothescast.core.domain.model.symbol
 import app.clothescast.ui.EdgeFadeOverlay
 import java.text.Collator
@@ -41,12 +43,15 @@ internal fun RegionContent(
     region: Region,
     temperatureUnitSetting: TemperatureUnitSetting,
     distanceUnitSetting: DistanceUnitSetting,
+    timeFormatSetting: TimeFormatSetting,
     resolvedTemperatureUnit: TemperatureUnit,
     resolvedDistanceUnit: DistanceUnit,
+    resolvedTimeFormat: TimeFormat,
     padding: PaddingValues,
     onSetRegion: (Region) -> Unit,
     onSetTemperatureUnit: (TemperatureUnitSetting) -> Unit,
     onSetDistanceUnit: (DistanceUnitSetting) -> Unit,
+    onSetTimeFormat: (TimeFormatSetting) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
@@ -92,6 +97,21 @@ internal fun RegionContent(
                         label = label,
                         selected = setting == distanceUnitSetting,
                         onSelect = { onSetDistanceUnit(setting) },
+                    )
+                }
+            }
+            SectionCard(title = stringResource(R.string.settings_time_format_title)) {
+                TimeFormatSetting.entries.forEach { setting ->
+                    val label = if (setting == TimeFormatSetting.AUTO) {
+                        val resolvedLabel = stringResource(timeFormatLabel(resolvedTimeFormat))
+                        "${stringResource(R.string.settings_unit_auto)} ($resolvedLabel)"
+                    } else {
+                        stringResource(timeFormatSettingLabel(setting))
+                    }
+                    RadioRow(
+                        label = label,
+                        selected = setting == timeFormatSetting,
+                        onSelect = { onSetTimeFormat(setting) },
                     )
                 }
             }
@@ -242,4 +262,15 @@ private fun distanceUnitSettingLabel(setting: DistanceUnitSetting): Int = when (
     DistanceUnitSetting.AUTO -> R.string.settings_unit_auto
     DistanceUnitSetting.KILOMETERS -> R.string.settings_distance_unit_kilometers
     DistanceUnitSetting.MILES -> R.string.settings_distance_unit_miles
+}
+
+private fun timeFormatSettingLabel(setting: TimeFormatSetting): Int = when (setting) {
+    TimeFormatSetting.AUTO -> R.string.settings_unit_auto
+    TimeFormatSetting.TWELVE_HOUR -> R.string.settings_time_format_12h
+    TimeFormatSetting.TWENTY_FOUR_HOUR -> R.string.settings_time_format_24h
+}
+
+private fun timeFormatLabel(format: TimeFormat): Int = when (format) {
+    TimeFormat.TWELVE_HOUR -> R.string.settings_time_format_12h
+    TimeFormat.TWENTY_FOUR_HOUR -> R.string.settings_time_format_24h
 }

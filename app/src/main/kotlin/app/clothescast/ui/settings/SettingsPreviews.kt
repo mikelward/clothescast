@@ -44,6 +44,8 @@ import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.core.domain.model.ThemeMode
+import app.clothescast.core.domain.model.TimeFormat
+import app.clothescast.core.domain.model.TimeFormatSetting
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.model.UpcomingCalendarEvent
@@ -329,12 +331,15 @@ internal fun SettingsRegionPreview() {
             region = Region.SYSTEM,
             temperatureUnitSetting = TemperatureUnitSetting.AUTO,
             distanceUnitSetting = DistanceUnitSetting.AUTO,
+            timeFormatSetting = TimeFormatSetting.AUTO,
             resolvedTemperatureUnit = TemperatureUnit.CELSIUS,
             resolvedDistanceUnit = DistanceUnit.KILOMETERS,
+            resolvedTimeFormat = TimeFormat.TWENTY_FOUR_HOUR,
             padding = PaddingValues(0.dp),
             onSetRegion = {},
             onSetTemperatureUnit = {},
             onSetDistanceUnit = {},
+            onSetTimeFormat = {},
         )
     }
 }

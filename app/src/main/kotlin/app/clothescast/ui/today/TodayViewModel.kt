@@ -17,6 +17,7 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.TimeFormat
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.repository.CalendarEventReader
@@ -67,6 +68,7 @@ data class TodayState(
     val rainAccessory: RainAccessory = RainAccessory.NONE,
     val distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
     val region: Region = Region.SYSTEM,
+    val timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOUR,
     // Window boundaries used by manual Refresh to decide TODAY vs TONIGHT.
     // Default to the same 7am / 7pm boundaries Schedule uses out of the box;
     // the ViewModel overwrites these with the user's actual schedule times.
@@ -408,6 +410,7 @@ class TodayViewModel(
             rainAccessory = prefs.rainAccessory,
             distanceUnit = prefs.distanceUnit,
             region = prefs.region,
+            timeFormat = prefs.timeFormat,
             morningTime = prefs.schedule.time,
             tonightTime = prefs.tonightSchedule.time,
             useDeviceLocation = prefs.useDeviceLocation,

@@ -31,9 +31,9 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.cast.DiscoveredCastRoute
+import app.clothescast.ui.formatHourMinute
 import java.time.Instant
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 /**
  * Settings → Smart Home → Cast section. Mirrors [MqttBridgeCard]'s shape:
@@ -351,10 +351,9 @@ private fun CastPickerDialog(
     )
 }
 
-private val TIME_FORMATTER: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("HH:mm")
-
-private fun formatTimestamp(epochMs: Long): String =
+@Composable
+private fun formatTimestamp(epochMs: Long): String = formatHourMinute(
     Instant.ofEpochMilli(epochMs)
         .atZone(ZoneId.systemDefault())
-        .format(TIME_FORMATTER)
+        .toLocalTime(),
+)

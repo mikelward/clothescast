@@ -2,6 +2,9 @@ package app.clothescast.core.domain.model
 
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import java.time.LocalTime
+import java.util.Locale
 import org.junit.jupiter.api.Test
 
 class UnitsTest {
@@ -58,5 +61,83 @@ class UnitsTest {
     fun `wind speed unit derives from the chosen distance unit`() {
         DistanceUnit.KILOMETERS.windSpeedUnit() shouldBe WindSpeedUnit.KMH
         DistanceUnit.MILES.windSpeedUnit() shouldBe WindSpeedUnit.MPH
+    }
+
+    @Test
+    fun `24h top-of-hour reads zero-padded`() {
+        val locale = Locale.UK
+        TimeFormat.TWENTY_FOUR_HOUR.formatTopOfHour(LocalTime.of(0, 0), locale) shouldBe "00:00"
+        TimeFormat.TWENTY_FOUR_HOUR.formatTopOfHour(LocalTime.of(9, 0), locale) shouldBe "09:00"
+        TimeFormat.TWENTY_FOUR_HOUR.formatTopOfHour(LocalTime.of(20, 0), locale) shouldBe "20:00"
+    }
+
+    @Test
+    fun `12h English top-of-hour drops minutes and uses lowercase no-space`() {
+        // The convention en-GB / en-AU readers expect — "8pm" not "8 PM" — and the
+        // form InsightFormatter already uses in spoken prose.
+        val locale = Locale.UK
+        TimeFormat.TWELVE_HOUR.formatTopOfHour(LocalTime.of(0, 0), locale) shouldBe "12am"
+        TimeFormat.TWELVE_HOUR.formatTopOfHour(LocalTime.of(1, 0), locale) shouldBe "1am"
+        TimeFormat.TWELVE_HOUR.formatTopOfHour(LocalTime.of(12, 0), locale) shouldBe "12pm"
+        TimeFormat.TWELVE_HOUR.formatTopOfHour(LocalTime.of(20, 0), locale) shouldBe "8pm"
+        TimeFormat.TWELVE_HOUR.formatTopOfHour(LocalTime.of(23, 0), locale) shouldBe "11pm"
+    }
+
+    @Test
+    fun `12h English hour-minute keeps minutes when nonzero, drops them at the hour`() {
+        val locale = Locale.US
+        TimeFormat.TWELVE_HOUR.formatHourMinute(LocalTime.of(7, 0), locale) shouldBe "7am"
+        TimeFormat.TWELVE_HOUR.formatHourMinute(LocalTime.of(7, 30), locale) shouldBe "7:30am"
+        TimeFormat.TWELVE_HOUR.formatHourMinute(LocalTime.of(19, 5), locale) shouldBe "7:05pm"
+        TimeFormat.TWELVE_HOUR.formatHourMinute(LocalTime.of(0, 0), locale) shouldBe "12am"
+    }
+
+    @Test
+    fun `24h hour-minute reads zero-padded for any locale`() {
+        TimeFormat.TWENTY_FOUR_HOUR.formatHourMinute(LocalTime.of(7, 5), Locale.GERMANY) shouldBe "07:05"
+        TimeFormat.TWENTY_FOUR_HOUR.formatHourMinute(LocalTime.of(20, 0), Locale.US) shouldBe "20:00"
+    }
+
+    @Test
+    fun `pattern scanner ignores 12h field characters inside single-quoted literals`() {
+        // fr_CA: "HH 'h' mm" — the quoted 'h' is the French separator, not an
+        // hour field. Misclassifying it as 12h flips the Auto picker to AM/PM
+        // in a 24h locale.
+        "HH 'h' mm".containsTwelveHourPatternField() shouldBe false
+        // hsb_DE: "H:mm 'hodź'." — quoted literal carrying an 'h'.
+        "H:mm 'hodź'.".containsTwelveHourPatternField() shouldBe false
+        // Plain 24h pattern — no h/K at all.
+        "HH:mm".containsTwelveHourPatternField() shouldBe false
+        // Real 12h patterns — h (1–12) and K (0–11) both count.
+        "h:mm a".containsTwelveHourPatternField() shouldBe true
+        "KK:mm a".containsTwelveHourPatternField() shouldBe true
+        // 12h field outside a closed-then-reopened quote pair.
+        "'lit' h:mm a 'end'".containsTwelveHourPatternField() shouldBe true
+        // Escaped single quotes ('') stay inside the literal — the h after
+        // is still quoted.
+        "'it''s h' HH:mm".containsTwelveHourPatternField() shouldBe false
+    }
+
+    @Test
+    fun `12h non-English preserves locale AM-PM placement when locale is 12h`() {
+        // Korean places the marker before the hour ("오후 2:30" / "a h:mm"),
+        // not after — a hardcoded "h:mm a" would invert the convention. The
+        // exact marker glyph and separator vary by JDK CLDR version, so we
+        // just assert the first character is non-digit (i.e., the marker
+        // leads the string) — that's the inversion the fix prevents.
+        val out = TimeFormat.TWELVE_HOUR.formatHourMinute(LocalTime.of(14, 30), Locale.forLanguageTag("ko-KR"))
+        out.first().isDigit() shouldBe false
+    }
+
+    @Test
+    fun `12h non-English top-of-hour keeps minute field`() {
+        // The tighter "8pm" form is an English-reader convention only; non-
+        // English locales render the minute field even at the top of an hour
+        // so we don't have to strip ":mm" out of an arbitrary locale pattern.
+        // The exact AM/PM marker depends on JDK locale-data version, so we
+        // just assert the minute field is present.
+        val out = TimeFormat.TWELVE_HOUR.formatTopOfHour(LocalTime.of(14, 0), Locale.GERMANY)
+        out shouldContain "2"
+        out shouldContain ":00"
     }
 }

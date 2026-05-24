@@ -836,6 +836,10 @@
     <string name="settings_distance_unit_kilometers">Kilometers</string>
     <string name="settings_distance_unit_miles">Miles</string>
 
+    <string name="settings_time_format_title">Time format</string>
+    <string name="settings_time_format_12h">12-hour</string>
+    <string name="settings_time_format_24h">24-hour</string>
+
     <string name="settings_clothes_title">Clothes rules</string>
     <string name="settings_clothes_description">If a forecast crosses one of these thresholds, the item appears in your daily ClothesCast.</string>
 

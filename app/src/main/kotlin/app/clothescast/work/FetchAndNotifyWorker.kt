@@ -301,7 +301,7 @@ class FetchAndNotifyWorker(
             // off the same upstream data for free; the derive call here is the
             // one we deliver on this run.
             val snapshot = app.generateDailyInsight.snapshot(location, prefs, period)
-            val result = app.deriveInsight(snapshot, prefs)
+            val result = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, it) })
             // Severe alerts are out-of-band: post them as separate high-priority
             // notifications on every fresh fetch, regardless of whether the daily
             // summary itself is blank or suppressed.

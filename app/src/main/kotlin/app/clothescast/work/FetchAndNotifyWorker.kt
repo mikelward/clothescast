@@ -33,6 +33,7 @@ import app.clothescast.core.domain.usecase.computeDeliveryGates
 import app.clothescast.core.domain.usecase.isGeminiEngineSelected
 import app.clothescast.core.domain.usecase.isMqttPublishable
 import app.clothescast.core.domain.usecase.shouldSpeak
+import app.clothescast.core.domain.util.isWithin
 import app.clothescast.core.data.tts.PcmAudio
 import app.clothescast.core.data.tts.WavEncoder
 import app.clothescast.data.InsightCache
@@ -71,8 +72,6 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
-import kotlin.math.cos
-import kotlin.math.sqrt
 import kotlin.random.Random
 
 /**
@@ -640,19 +639,7 @@ class FetchAndNotifyWorker(
         val priorName = prior.displayName
             ?.takeUnless { it.isBlank() || it == DEVICE_LOCATION_PLACEHOLDER }
             ?: return null
-        return if (approxDistanceKm(prior, device) < REUSE_LABEL_RADIUS_KM) priorName else null
-    }
-
-    // Equirectangular approximation. Accurate to well under a kilometre
-    // at temperate latitudes for sub-100km separations — fine for "is
-    // the cached city name still meaningful?". TODO: switch to haversine
-    // if we ever need correctness near the poles or across the
-    // antimeridian; neither applies to current users.
-    private fun approxDistanceKm(a: Location, b: Location): Double {
-        val avgLatRad = (a.latitude + b.latitude) / 2 * Math.PI / 180
-        val dLat = (a.latitude - b.latitude) * Math.PI / 180
-        val dLon = (a.longitude - b.longitude) * Math.PI / 180 * cos(avgLatRad)
-        return EARTH_RADIUS_KM * sqrt(dLat * dLat + dLon * dLon)
+        return if (prior.isWithin(REUSE_LABEL_RADIUS_METERS, of = device)) priorName else null
     }
 
     // Mirrors the providers LocationResolver itself queries — NETWORK +
@@ -1285,9 +1272,7 @@ class FetchAndNotifyWorker(
         // when reverse-geo fails. ~25km is generous enough to cover a
         // commute or weekend outing without keeping yesterday's "Paris"
         // glued to today's "London" fix.
-        private const val REUSE_LABEL_RADIUS_KM = 25.0
-
-        private const val EARTH_RADIUS_KM = 6371.0
+        private const val REUSE_LABEL_RADIUS_METERS = 25_000.0
 
         /** Set true via [enqueueOneShot] when the user explicitly taps Refresh. */
         internal const val KEY_FORCE_REFRESH = "force_refresh"

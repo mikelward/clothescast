@@ -187,8 +187,5 @@ fun PrecipitationChart(
             zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
             modifier = Modifier.matchParentSize(),
         )
-        if (scrubController != null) {
-            ChartRestoreOverlay(scrubController)
-        }
     }
 }

@@ -133,34 +133,41 @@ internal fun PerModelDiagnosticCard(
 
     val mainByIndex = remember(mainLine) { mainLine.toMap() }
     val timeFmt = rememberScrubTimeFormatter()
+    val scrubController = LocalChartScrub.current
+    val readout = rememberChartReadout(hourly, startDate) { idx ->
+        val v = mainByIndex[idx] ?: return@rememberChartReadout null
+        "${timeFmt(times[idx])} · ${tooltipValueFormat(v)}"
+    }
 
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(text = title, style = MaterialTheme.typography.titleSmall)
-            Text(text = subtitle, style = MaterialTheme.typography.bodyMedium)
-            ChartReadout(hourly, startDate) { idx ->
-                val v = mainByIndex[idx] ?: return@ChartReadout null
-                "${timeFmt(times[idx])} · ${tooltipValueFormat(v)}"
+        Box {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(text = title, style = MaterialTheme.typography.titleSmall)
+                Text(
+                    text = appendReadout(subtitle, readout) ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                PerModelDiagnosticChart(
+                    hourly = hourly,
+                    startDate = startDate,
+                    mainLine = mainLine,
+                    seriesByModel = seriesByModel,
+                    overlayModels = if (showOverlay) availableModels else emptyList(),
+                    yAxis = yAxis,
+                    onFirstContact = onFirstContact ?: {},
+                )
+                ModelSpreadLegend(
+                    visibleModelIds = if (showOverlay) availableModels else emptyList(),
+                    mainLine = MainLineLegend(
+                        color = AppTheme.mainLineColor,
+                        label = stringResource(R.string.today_chart_main_line_label),
+                    ),
+                )
             }
-            PerModelDiagnosticChart(
-                hourly = hourly,
-                startDate = startDate,
-                mainLine = mainLine,
-                seriesByModel = seriesByModel,
-                overlayModels = if (showOverlay) availableModels else emptyList(),
-                yAxis = yAxis,
-                onFirstContact = onFirstContact ?: {},
-            )
-            ModelSpreadLegend(
-                visibleModelIds = if (showOverlay) availableModels else emptyList(),
-                mainLine = MainLineLegend(
-                    color = AppTheme.mainLineColor,
-                    label = stringResource(R.string.today_chart_main_line_label),
-                ),
-            )
+            if (scrubController != null) ChartRestoreOverlay(scrubController)
         }
     }
 }
@@ -312,8 +319,5 @@ private fun PerModelDiagnosticChart(
             zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
             modifier = Modifier.matchParentSize(),
         )
-        if (scrubController != null) {
-            ChartRestoreOverlay(scrubController)
-        }
     }
 }

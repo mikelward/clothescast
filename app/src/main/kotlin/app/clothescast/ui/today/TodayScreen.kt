@@ -1822,50 +1822,55 @@ internal fun ForecastCard(
         formatMinMax(hourly.map { it.feelsLikeC }, temperatureUnit)
     }
     val timeFmt = rememberScrubTimeFormatter()
+    val scrubController = LocalChartScrub.current
+    val subtitleText = feelsLikeMinMax?.let {
+        stringResource(R.string.today_forecast_min_max, it.first, it.second, symbol)
+    }
+    val readout = rememberChartReadout(hourly, startDate) { idx ->
+        val entry = hourly[idx]
+        val v = entry.feelsLikeC.toUnit(temperatureUnit).roundToInt()
+        "${timeFmt(entry.time)} · $v$symbol"
+    }
+    val combinedSubtitle = appendReadout(subtitleText, readout)
 
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.today_forecast_title),
-                style = MaterialTheme.typography.titleSmall,
-            )
-            feelsLikeMinMax?.let {
+        Box {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 Text(
-                    text = stringResource(R.string.today_forecast_min_max, it.first, it.second, symbol),
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = stringResource(R.string.today_forecast_title),
+                    style = MaterialTheme.typography.titleSmall,
                 )
-            }
-            ChartReadout(hourly, startDate) { idx ->
-                val entry = hourly[idx]
-                val v = entry.feelsLikeC.toUnit(temperatureUnit).roundToInt()
-                "${timeFmt(entry.time)} · $v$symbol"
-            }
-            ForecastChart(
-                hourly = hourly,
-                temperatureUnit = temperatureUnit,
-                showFeelsLike = true,
-                startDate = startDate,
-                onFirstContact = onFirstContact ?: {},
-                perModelHourly = perModelHourly,
-                showModelSpread = showModelSpread,
-            )
-            Text(
-                text = stringResource(R.string.today_forecast_legend_feels_like, symbol),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            if (perModelHourly != null) {
-                ModelSpreadLegend(
-                    visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
-                    mainLine = MainLineLegend(
-                        color = AppTheme.mainLineColor,
-                        label = stringResource(R.string.today_chart_main_line_label),
-                    ),
+                combinedSubtitle?.let {
+                    Text(text = it, style = MaterialTheme.typography.bodyMedium)
+                }
+                ForecastChart(
+                    hourly = hourly,
+                    temperatureUnit = temperatureUnit,
+                    showFeelsLike = true,
+                    startDate = startDate,
+                    onFirstContact = onFirstContact ?: {},
+                    perModelHourly = perModelHourly,
+                    showModelSpread = showModelSpread,
                 )
+                Text(
+                    text = stringResource(R.string.today_forecast_legend_feels_like, symbol),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                if (perModelHourly != null) {
+                    ModelSpreadLegend(
+                        visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
+                        mainLine = MainLineLegend(
+                            color = AppTheme.mainLineColor,
+                            label = stringResource(R.string.today_chart_main_line_label),
+                        ),
+                    )
+                }
             }
+            if (scrubController != null) ChartRestoreOverlay(scrubController)
         }
     }
 }
@@ -1884,50 +1889,55 @@ internal fun AirTemperatureCard(
         formatMinMax(hourly.map { it.temperatureC }, temperatureUnit)
     }
     val timeFmt = rememberScrubTimeFormatter()
+    val scrubController = LocalChartScrub.current
+    val subtitleText = airMinMax?.let {
+        stringResource(R.string.today_forecast_air_min_max, it.first, it.second, symbol)
+    }
+    val readout = rememberChartReadout(hourly, startDate) { idx ->
+        val entry = hourly[idx]
+        val v = entry.temperatureC.toUnit(temperatureUnit).roundToInt()
+        "${timeFmt(entry.time)} · $v$symbol"
+    }
+    val combinedSubtitle = appendReadout(subtitleText, readout)
 
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.today_forecast_air_section_title),
-                style = MaterialTheme.typography.titleSmall,
-            )
-            airMinMax?.let {
+        Box {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 Text(
-                    text = stringResource(R.string.today_forecast_air_min_max, it.first, it.second, symbol),
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = stringResource(R.string.today_forecast_air_section_title),
+                    style = MaterialTheme.typography.titleSmall,
                 )
-            }
-            ChartReadout(hourly, startDate) { idx ->
-                val entry = hourly[idx]
-                val v = entry.temperatureC.toUnit(temperatureUnit).roundToInt()
-                "${timeFmt(entry.time)} · $v$symbol"
-            }
-            ForecastChart(
-                hourly = hourly,
-                temperatureUnit = temperatureUnit,
-                showFeelsLike = false,
-                startDate = startDate,
-                onFirstContact = onFirstContact ?: {},
-                perModelHourly = perModelHourly,
-                showModelSpread = showModelSpread,
-            )
-            Text(
-                text = stringResource(R.string.today_forecast_legend_air, symbol),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            if (perModelHourly != null) {
-                ModelSpreadLegend(
-                    visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
-                    mainLine = MainLineLegend(
-                        color = AppTheme.mainLineColor,
-                        label = stringResource(R.string.today_chart_main_line_label),
-                    ),
+                combinedSubtitle?.let {
+                    Text(text = it, style = MaterialTheme.typography.bodyMedium)
+                }
+                ForecastChart(
+                    hourly = hourly,
+                    temperatureUnit = temperatureUnit,
+                    showFeelsLike = false,
+                    startDate = startDate,
+                    onFirstContact = onFirstContact ?: {},
+                    perModelHourly = perModelHourly,
+                    showModelSpread = showModelSpread,
                 )
+                Text(
+                    text = stringResource(R.string.today_forecast_legend_air, symbol),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                if (perModelHourly != null) {
+                    ModelSpreadLegend(
+                        visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
+                        mainLine = MainLineLegend(
+                            color = AppTheme.mainLineColor,
+                            label = stringResource(R.string.today_chart_main_line_label),
+                        ),
+                    )
+                }
             }
+            if (scrubController != null) ChartRestoreOverlay(scrubController)
         }
     }
 }
@@ -2304,47 +2314,53 @@ internal fun PrecipitationCard(
     val peak = remember(hourly) { hourly.maxByOrNull { it.precipitationProbabilityPct } }
     val isDry = peak == null || peak.precipitationProbabilityPct < DRY_THRESHOLD_PCT
     val timeFmt = rememberScrubTimeFormatter()
+    val scrubController = LocalChartScrub.current
+    val subtitleText = if (isDry || peak == null) {
+        stringResource(R.string.today_precipitation_dry)
+    } else {
+        stringResource(
+            R.string.today_precipitation_peak,
+            peak.precipitationProbabilityPct.roundToInt(),
+            "%02d:00".format(peak.time.hour),
+        )
+    }
+    val readout = rememberChartReadout(hourly, startDate) { idx ->
+        val entry = hourly[idx]
+        "${timeFmt(entry.time)} · ${entry.precipitationProbabilityPct.roundToInt()}%"
+    }
+    val combinedSubtitle = appendReadout(subtitleText, readout) ?: subtitleText
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                text = stringResource(R.string.today_precipitation_title),
-                style = MaterialTheme.typography.titleSmall,
-            )
-            Text(
-                text = if (isDry || peak == null) {
-                    stringResource(R.string.today_precipitation_dry)
-                } else {
-                    stringResource(
-                        R.string.today_precipitation_peak,
-                        peak.precipitationProbabilityPct.roundToInt(),
-                        "%02d:00".format(peak.time.hour),
-                    )
-                },
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            ChartReadout(hourly, startDate) { idx ->
-                val entry = hourly[idx]
-                "${timeFmt(entry.time)} · ${entry.precipitationProbabilityPct.roundToInt()}%"
-            }
-            PrecipitationChart(
-                hourly = hourly,
-                startDate = startDate,
-                onFirstContact = onFirstContact ?: {},
-                perModelHourly = perModelHourly,
-                showModelSpread = showModelSpread,
-            )
-            if (perModelHourly != null) {
-                ModelSpreadLegend(
-                    visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
-                    mainLine = MainLineLegend(
-                        color = AppTheme.mainLineColor,
-                        label = stringResource(R.string.today_chart_main_line_label),
-                    ),
+        Box {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.today_precipitation_title),
+                    style = MaterialTheme.typography.titleSmall,
                 )
+                Text(
+                    text = combinedSubtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                PrecipitationChart(
+                    hourly = hourly,
+                    startDate = startDate,
+                    onFirstContact = onFirstContact ?: {},
+                    perModelHourly = perModelHourly,
+                    showModelSpread = showModelSpread,
+                )
+                if (perModelHourly != null) {
+                    ModelSpreadLegend(
+                        visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
+                        mainLine = MainLineLegend(
+                            color = AppTheme.mainLineColor,
+                            label = stringResource(R.string.today_chart_main_line_label),
+                        ),
+                    )
+                }
             }
+            if (scrubController != null) ChartRestoreOverlay(scrubController)
         }
     }
 }

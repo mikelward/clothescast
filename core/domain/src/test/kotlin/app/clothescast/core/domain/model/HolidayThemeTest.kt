@@ -187,4 +187,14 @@ class HolidayThemeTest {
         // the banner never goes blank.
         normalizeCalendarHolidayTitle("(Western Australia)") shouldBe "(Western Australia)"
     }
+
+    @Test
+    fun `normalizeCalendarHolidayTitle trims punctuation that the parenthetical was hiding`() {
+        // Punctuation sits *behind* the region suffix, so the first trimEnd
+        // can't see it (the string ends in ")"). Only after the regex strips
+        // the parenthetical does the trailing "." / "!" become flush with the
+        // end — that's what the second trimEnd in the pipeline catches.
+        normalizeCalendarHolidayTitle("Memorial Day. (Observed)") shouldBe "Memorial Day"
+        normalizeCalendarHolidayTitle("Boxing Day! (most regions)") shouldBe "Boxing Day"
+    }
 }

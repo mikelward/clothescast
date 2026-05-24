@@ -43,12 +43,15 @@ data class TriggeredOutfit(
      * reads the same as one sourced from a user rule — the user's mental
      * model is "what am I wearing", not "which clause produced it".
      *
-     * Within each slot, layer-reduced threshold matches keep their input
-     * order, then defaults follow in the order [EvaluateClothesRules] queued
-     * them. The layer reduction picks at most one top per [Garment.Layer]
-     * and drops [Garment.Layer.BASE] when MID or SHELL also fired, so the
-     * prose reads "Wear a sweater and jacket." instead of "Wear a sweater,
-     * jacket, and a t-shirt." See [Garment.layerReduce].
+     * Within each slot, reduced threshold matches keep their input order,
+     * then defaults follow in the order [EvaluateClothesRules] queued
+     * them. [Garment.layerReduce] picks at most one top per
+     * [Garment.Layer] (dropping [Garment.Layer.BASE] when MID or SHELL
+     * also fired) and at most one bottom (bottoms substitute rather than
+     * stack), so the prose reads "Wear a sweater and jacket." rather
+     * than "Wear a sweater, jacket, and a t-shirt.", and a user with
+     * both `short-skirt > 22°C` and `skirt > 16°C` firing at 25°C reads
+     * "Wear a short skirt." rather than "Wear a short skirt and skirt."
      */
     val items: List<String>
         get() {

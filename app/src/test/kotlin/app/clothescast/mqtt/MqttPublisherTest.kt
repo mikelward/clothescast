@@ -792,6 +792,53 @@ class MqttPublisherTest {
     }
 
     @Test
+    fun `preferences flow throwing non-cancellation error skips publish and returns NotConfigured`() = runTest {
+        // The catch around preferences.first() must swallow a non-cancellation
+        // throwable and return NotConfigured so a transient DataStore read
+        // failure doesn't crash the worker — the publish is silently skipped
+        // until the next refresh.
+        var publishCalls = 0
+        val subject = MqttPublisher(
+            preferences = flow { throw IllegalStateException("DataStore IO failure") },
+            passwordProvider = { null },
+            publish = { _, _, _ -> publishCalls++ },
+        )
+
+        val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
+
+        outcome shouldBe MqttPublishOutcome.NotConfigured
+        publishCalls shouldBe 0
+    }
+
+    @Test
+    fun `password provider throwing non-cancellation error falls back to anonymous connect`() = runTest {
+        // The catch around passwordProvider() must swallow a non-cancellation
+        // throwable and fall through with a null password — a keystore read
+        // failure shouldn't block the publish entirely; some brokers accept
+        // an anonymous connect, and a clean publish failure later is more
+        // useful than a silently-dropped delivery.
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttUsername = "mqtt-user",
+                ),
+            ),
+            passwordProvider = { throw RuntimeException("keystore unavailable") },
+            publish = capturing(captured),
+        )
+
+        val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
+
+        outcome shouldBe MqttPublishOutcome.Success
+        captured.shouldNotBeEmpty()
+        captured.first().config.username shouldBe "mqtt-user"
+        captured.first().config.password shouldBe null
+    }
+
+    @Test
     fun `password provider throwing CancellationException propagates upward`() = runTest {
         val subject = MqttPublisher(
             preferences = flowOf(

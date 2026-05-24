@@ -48,6 +48,7 @@
     <string name="today_outfit_top_thick_coat">Thick coat</string>
     <string name="today_outfit_top_puffer_jacket">Puffer jacket</string>
     <string name="today_outfit_bottom_shorts">Shorts</string>
+    <string name="today_outfit_bottom_short_skirt">Short skirt</string>
     <string name="today_outfit_bottom_long_skirt">Long skirt</string>
     <string name="today_outfit_bottom_jeans">Jeans</string>
     <string name="today_outfit_bottom_long_pants">Long pants</string>
@@ -844,6 +845,7 @@
     <string name="garment_puffer">Puffer jacket</string>
     <string name="garment_thin_jacket">Thin jacket</string>
     <string name="garment_shorts">Shorts</string>
+    <string name="garment_short_skirt">Short skirt</string>
     <string name="garment_skirt">Skirt</string>
     <string name="garment_tshirt">T-shirt</string>
     <string name="garment_polo">Polo</string>

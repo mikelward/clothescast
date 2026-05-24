@@ -37,6 +37,7 @@ internal val outfitTopDefaults: Map<OutfitSuggestion.Top, GarmentDefaults> = map
 
 internal val outfitBottomDefaults: Map<OutfitSuggestion.Bottom, GarmentDefaults> = mapOf(
     OutfitSuggestion.Bottom.SHORTS to GarmentDefaults(0xFFC8B27A.toInt(), 0xFF8D743F.toInt()),
+    OutfitSuggestion.Bottom.SHORT_SKIRT to GarmentDefaults(0xFFF06292.toInt(), 0xFFC2185B.toInt()),
     OutfitSuggestion.Bottom.LONG_SKIRT to GarmentDefaults(0xFFF06292.toInt(), 0xFFC2185B.toInt()),
     OutfitSuggestion.Bottom.JEANS to GarmentDefaults(0xFF5C6BC0.toInt(), 0xFF303F9F.toInt()),
     OutfitSuggestion.Bottom.LONG_PANTS to GarmentDefaults(0xFF455A64.toInt(), 0xFF263238.toInt()),
@@ -56,6 +57,7 @@ internal fun topDrawable(top: OutfitSuggestion.Top): Int = when (top) {
 @DrawableRes
 internal fun bottomDrawable(bottom: OutfitSuggestion.Bottom): Int = when (bottom) {
     OutfitSuggestion.Bottom.SHORTS -> R.drawable.ic_outfit_shorts
+    OutfitSuggestion.Bottom.SHORT_SKIRT -> R.drawable.ic_outfit_short_skirt
     OutfitSuggestion.Bottom.LONG_SKIRT -> R.drawable.ic_outfit_skirt
     OutfitSuggestion.Bottom.JEANS -> R.drawable.ic_outfit_jeans
     OutfitSuggestion.Bottom.LONG_PANTS -> R.drawable.ic_outfit_long_pants

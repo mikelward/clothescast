@@ -228,6 +228,7 @@ private fun topOutfitLabelRes(top: OutfitSuggestion.Top): Int = when (top) {
 @StringRes
 private fun bottomOutfitLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom) {
     OutfitSuggestion.Bottom.SHORTS -> R.string.today_outfit_bottom_shorts
+    OutfitSuggestion.Bottom.SHORT_SKIRT -> R.string.today_outfit_bottom_short_skirt
     OutfitSuggestion.Bottom.LONG_SKIRT -> R.string.today_outfit_bottom_long_skirt
     OutfitSuggestion.Bottom.JEANS -> R.string.today_outfit_bottom_jeans
     OutfitSuggestion.Bottom.LONG_PANTS -> R.string.today_outfit_bottom_long_pants
@@ -568,6 +569,7 @@ private fun garmentLabelRes(garment: Garment): Int = when (garment) {
     Garment.POLO -> R.string.garment_polo
     Garment.SHIRT -> R.string.garment_shirt
     Garment.SHORTS -> R.string.garment_shorts
+    Garment.SHORT_SKIRT -> R.string.garment_short_skirt
     Garment.SKIRT -> R.string.garment_skirt
     Garment.PANTS -> R.string.garment_pants
     Garment.JEANS -> R.string.garment_jeans

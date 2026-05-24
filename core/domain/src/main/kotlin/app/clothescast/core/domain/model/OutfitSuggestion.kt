@@ -12,8 +12,9 @@ import java.time.LocalTime
  * promotes to [Top.THICK_JACKET]; a firing `coat` rule promotes to [Top.THICK_COAT]; a
  * firing `sweater`/`hoodie` rule promotes to [Top.SWEATER]; a firing `polo` rule lands
  * on [Top.POLO]; otherwise the user's chosen `defaultTop` ([Top.TSHIRT] by default).
- * Bottom tier: a firing `shorts` rule picks [Bottom.SHORTS]; `skirt` picks
- * [Bottom.LONG_SKIRT]; `jeans` picks [Bottom.JEANS]; otherwise the user's chosen
+ * Bottom tier: a firing `shorts` rule picks [Bottom.SHORTS]; `short-skirt` picks
+ * [Bottom.SHORT_SKIRT]; `skirt` picks [Bottom.LONG_SKIRT]; `jeans` picks
+ * [Bottom.JEANS]; otherwise the user's chosen
  * `defaultBottom` ([Bottom.LONG_PANTS] by default). The Settings "If no rules match"
  * card lets the user point each fallback at any catalog garment so the home-screen
  * icon matches what they actually wear when no rule fires.
@@ -41,18 +42,16 @@ data class OutfitSuggestion(
         }
     }
 
-    // TODO: add SHORT_SKIRT (mini) and DRESS tiers — both warrant their own
-    // icons and labels. Today's `LONG_SKIRT` reuses the full-length skirt
-    // drawable; a future short-skirt tier should land here as a sibling, and a
-    // dress is a single-piece outfit so it'll need either a new Top + Bottom
-    // pair (DRESS top / DRESS bottom) or a new combined tier — settle the
-    // shape when we get there.
+    // TODO: add a DRESS tier — a dress is a single-piece outfit so it'll need
+    // either a new Top + Bottom pair (DRESS top / DRESS bottom) or a new
+    // combined tier; settle the shape when we get there.
     enum class Bottom {
-        SHORTS, LONG_SKIRT, JEANS, LONG_PANTS;
+        SHORTS, SHORT_SKIRT, LONG_SKIRT, JEANS, LONG_PANTS;
 
         /** Catalog key (matches [Garment.itemKey]) for prose / persistence. */
         fun itemKey(): String = when (this) {
             SHORTS -> "shorts"
+            SHORT_SKIRT -> "short-skirt"
             LONG_SKIRT -> "skirt"
             JEANS -> "jeans"
             LONG_PANTS -> "pants"
@@ -67,8 +66,11 @@ data class OutfitSuggestion(
         // are checked before warmer ones so that when multiple rules fire
         // simultaneously (e.g. both coat ≤6°C and jacket ≤12°C fire at 4°C),
         // the heavier garment icon wins rather than the first match.
-        // Bottom tiers: shorts → SHORTS, skirt → LONG_SKIRT, jeans → JEANS, fallback →
-        // user's chosen defaultBottom (LONG_PANTS by default).
+        // Bottom tiers: shorts → SHORTS, short-skirt → SHORT_SKIRT, skirt →
+        // LONG_SKIRT, jeans → JEANS, fallback → user's chosen defaultBottom
+        // (LONG_PANTS by default). Within the skirt family, the shorter
+        // garment is checked first so that when both a `short-skirt` and a
+        // `skirt` rule fire on the same warm day, the mini icon wins.
         private val THICK_JACKET_KEYS = listOf("jacket")
         private val THICK_COAT_KEYS = listOf("coat")
         private val PUFFER_JACKET_KEYS = listOf("puffer")
@@ -76,9 +78,7 @@ data class OutfitSuggestion(
         private val SWEATER_KEYS = listOf("sweater", "hoodie")
         private val POLO_KEYS = listOf("polo")
         private val SHORTS_KEYS = listOf("shorts")
-        // The `skirt` clothes-rule key (catalogue Garment.SKIRT) maps to the
-        // Bottom.LONG_SKIRT icon — there's only one skirt icon today and it's
-        // full-length. A short-skirt tier will land here as a sibling later.
+        private val SHORT_SKIRT_KEYS = listOf("short-skirt")
         private val LONG_SKIRT_KEYS = listOf("skirt")
         private val JEANS_KEYS = listOf("jeans")
 
@@ -99,6 +99,7 @@ data class OutfitSuggestion(
             }
             val bottom = when {
                 clothesRules.firstFiring(forecast, SHORTS_KEYS) != null -> Bottom.SHORTS
+                clothesRules.firstFiring(forecast, SHORT_SKIRT_KEYS) != null -> Bottom.SHORT_SKIRT
                 clothesRules.firstFiring(forecast, LONG_SKIRT_KEYS) != null -> Bottom.LONG_SKIRT
                 clothesRules.firstFiring(forecast, JEANS_KEYS) != null -> Bottom.JEANS
                 else -> defaultBottom
@@ -159,9 +160,11 @@ data class OutfitSuggestion(
             // The deciding rule across all bottom tiers. If no warm rule fires
             // (LONG_PANTS), cite the shorts threshold that wasn't crossed.
             val rule = rules.firstFiring(forecast, SHORTS_KEYS)
+                ?: rules.firstFiring(forecast, SHORT_SKIRT_KEYS)
                 ?: rules.firstFiring(forecast, LONG_SKIRT_KEYS)
                 ?: rules.firstFiring(forecast, JEANS_KEYS)
                 ?: rules.firstByKey(SHORTS_KEYS)
+                ?: rules.firstByKey(SHORT_SKIRT_KEYS)
                 ?: rules.firstByKey(LONG_SKIRT_KEYS)
                 ?: rules.firstByKey(JEANS_KEYS)
                 ?: ClothesRule.DEFAULTS.first { it.item == "shorts" }

@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,8 +34,6 @@ import com.patrykandpatrick.vico.core.common.component.LineComponent
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import kotlin.math.roundToInt
 
 /**
@@ -316,7 +313,7 @@ internal fun BoxScope.ChartRestoreOverlay(controller: ChartScrubController) {
 internal fun rememberChartReadout(
     hourly: List<HourlyForecast>,
     startDate: LocalDate,
-    format: (hourIndex: Int) -> String?,
+    format: @Composable (hourIndex: Int) -> String?,
 ): String? {
     val controller = LocalChartScrub.current ?: return null
     val activeTime = controller.activeTime ?: return null
@@ -334,15 +331,24 @@ internal fun appendReadout(subtitle: String?, readout: String?): String? = when 
 }
 
 /**
- * Locale-aware short-form time formatter — same pattern as the existing
- * `MissingPeriodPlaceholder` in `TodayScreen.kt`. 12h on en-US, 24h on
- * en-GB, etc., so the scrub tooltip matches the user's clock format.
+ * Hour formatter matching the existing card subtitles like
+ * [today_wind_peak] and [today_uv_peak] ("Peak X at %02d:00"). The
+ * indicator always snaps to a whole hour (the readout's hour index is
+ * `chartX.roundToInt()`), so we never need fractional minutes here.
+ *
+ * Deliberately not locale-aware: the card subtitles are themselves
+ * 24h-zero-padded, so mixing in a 12h "3:00 PM" readout for en-US
+ * users reads as inconsistent on the same line.
+ *
+ * TODO(time-format-locale): teach both the peak-subtitle strings
+ * (`today_wind_peak`, `today_uv_peak`, `today_precipitation_peak`,
+ * the `"%02d:00".format(peak.time.hour)` call sites in
+ * [PrecipitationCard] / [WindCard] / [UvIndexCard] etc.) and this
+ * helper to render hours in the user's locale convention — 12h on
+ * en-US, 24h on en-GB — via a shared `DateTimeFormatter.ofLocalizedTime`.
+ * Also surface an auto / 12h / 24h override in Settings ▸ Region so
+ * users on a 12h locale who prefer 24h (and vice versa) can opt in.
+ * Migrate both at once so they stay consistent on the same line.
  */
-@Composable
-internal fun rememberScrubTimeFormatter(): (LocalTime) -> String {
-    val locale = LocalConfiguration.current.locales[0]
-    val formatter = remember(locale) {
-        DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(locale)
-    }
-    return remember(formatter) { { time -> time.format(formatter) } }
-}
+internal fun formatScrubHour(time: LocalTime): String =
+    "%02d:00".format(time.hour)

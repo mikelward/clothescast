@@ -131,6 +131,15 @@
          chart's indicator to the live clock. -->
     <string name="today_chart_reset_to_now">Show now</string>
 
+    <!-- Readout appended to each chart card's subtitle while the time
+         indicator points at a specific hour. Mirrors the existing
+         "Peak X at HH:00" pattern in subtitles like [today_wind_peak]
+         so the two read consistently — same word order, same use of
+         "at" as the time joiner.
+         %1$s = value with unit (e.g. "14 km/h", "16°C", "40%", "7"),
+         %2$s = time formatted to the locale's short style. -->
+    <string name="today_chart_readout">%1$s at %2$s</string>
+
     <!-- Per-hour divergence summary rendered inside the forecast confidence
          card as the chip's detail line, when the consulted models disagree
          enough on feels-like to surface a peak hour.

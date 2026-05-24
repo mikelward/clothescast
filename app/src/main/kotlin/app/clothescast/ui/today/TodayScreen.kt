@@ -1821,7 +1821,6 @@ internal fun ForecastCard(
     val feelsLikeMinMax = remember(hourly, temperatureUnit) {
         formatMinMax(hourly.map { it.feelsLikeC }, temperatureUnit)
     }
-    val timeFmt = rememberScrubTimeFormatter()
     val scrubController = LocalChartScrub.current
     val subtitleText = feelsLikeMinMax?.let {
         stringResource(R.string.today_forecast_min_max, it.first, it.second, symbol)
@@ -1829,7 +1828,7 @@ internal fun ForecastCard(
     val readout = rememberChartReadout(hourly, startDate) { idx ->
         val entry = hourly[idx]
         val v = entry.feelsLikeC.toUnit(temperatureUnit).roundToInt()
-        "${timeFmt(entry.time)} · $v$symbol"
+        stringResource(R.string.today_chart_readout, "$v$symbol", formatScrubHour(entry.time))
     }
     val combinedSubtitle = appendReadout(subtitleText, readout)
 
@@ -1888,7 +1887,6 @@ internal fun AirTemperatureCard(
     val airMinMax = remember(hourly, temperatureUnit) {
         formatMinMax(hourly.map { it.temperatureC }, temperatureUnit)
     }
-    val timeFmt = rememberScrubTimeFormatter()
     val scrubController = LocalChartScrub.current
     val subtitleText = airMinMax?.let {
         stringResource(R.string.today_forecast_air_min_max, it.first, it.second, symbol)
@@ -1896,7 +1894,7 @@ internal fun AirTemperatureCard(
     val readout = rememberChartReadout(hourly, startDate) { idx ->
         val entry = hourly[idx]
         val v = entry.temperatureC.toUnit(temperatureUnit).roundToInt()
-        "${timeFmt(entry.time)} · $v$symbol"
+        stringResource(R.string.today_chart_readout, "$v$symbol", formatScrubHour(entry.time))
     }
     val combinedSubtitle = appendReadout(subtitleText, readout)
 
@@ -2292,7 +2290,10 @@ internal fun UvIndexCard(
         // keeps a winter-morning all-zero series from collapsing onto the
         // axis. niceStep gives "0, 2, 4, 6" for typical 0..6 days.
         yAxis = YAxis.AutoZeroBased(minSpan = 6.0),
-        tooltipValueFormat = { "UV ${it.roundToInt()}" },
+        // No "UV" prefix — the card's own subtitle ("Peak X at HH:00")
+        // omits it for the same reason: the card title already names
+        // the metric, and the readout sits right next to that subtitle.
+        tooltipValueFormat = { "${it.roundToInt()}" },
         showOverlay = showModelSpread,
         onFirstContact = onFirstContact,
     )
@@ -2313,7 +2314,6 @@ internal fun PrecipitationCard(
     // chart itself is just the visualisation, not the only signal.
     val peak = remember(hourly) { hourly.maxByOrNull { it.precipitationProbabilityPct } }
     val isDry = peak == null || peak.precipitationProbabilityPct < DRY_THRESHOLD_PCT
-    val timeFmt = rememberScrubTimeFormatter()
     val scrubController = LocalChartScrub.current
     val subtitleText = if (isDry || peak == null) {
         stringResource(R.string.today_precipitation_dry)
@@ -2326,7 +2326,11 @@ internal fun PrecipitationCard(
     }
     val readout = rememberChartReadout(hourly, startDate) { idx ->
         val entry = hourly[idx]
-        "${timeFmt(entry.time)} · ${entry.precipitationProbabilityPct.roundToInt()}%"
+        stringResource(
+            R.string.today_chart_readout,
+            "${entry.precipitationProbabilityPct.roundToInt()}%",
+            formatScrubHour(entry.time),
+        )
     }
     val combinedSubtitle = appendReadout(subtitleText, readout) ?: subtitleText
     Card(modifier = Modifier.fillMaxWidth()) {

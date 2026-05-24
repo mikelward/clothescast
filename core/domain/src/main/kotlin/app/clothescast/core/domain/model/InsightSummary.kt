@@ -84,13 +84,38 @@ data class DeltaClause(val degrees: Int, val direction: Direction) {
 }
 
 /**
- * Clothes items that triggered this period, in user-rule order. Each [item] is
- * the verbatim rule key (e.g. "sweater", "umbrella", "shorts"); the formatter's
- * per-language phraser maps known English keys to localized vocab at format
- * time (e.g. "sweater" → "Pullover" in German), with anything not in the table
- * falling through unchanged.
+ * Clothes items that triggered this period, in user-rule order. Each [items]
+ * entry is the verbatim rule key (e.g. "sweater", "umbrella", "shorts"); the
+ * formatter's per-language phraser maps known English keys to localized vocab
+ * at format time (e.g. "sweater" → "Pullover" in German), with anything not
+ * in the table falling through unchanged.
+ *
+ * The slot-filtered views [tops], [bottoms], and [accessories] let consumers
+ * read pre-classified subsets without rerunning [Garment.fromKey] /
+ * [Garment.isAccessoryKey] themselves. Classification rules: a known
+ * [Garment.Slot.BOTTOM] item is a bottom; a known accessory key (today only
+ * "umbrella") is an accessory; everything else — known tops *and* free-form
+ * user-typed items the catalog doesn't recognise (e.g. a legacy "cardigan"
+ * rule) — counts as a top so it still gets spoken in the wear sentence. Each
+ * view preserves the original input order of [items] within its subset, so
+ * the article-picker on the formatter side sees the same plural-first /
+ * singular-first sequences it would have if it filtered [items] itself.
  */
-data class ClothesClause(val items: List<String>)
+data class ClothesClause(val items: List<String>) {
+    /** Tops and free-form unclassified items, in input order. */
+    val tops: List<String>
+        get() = items.filter {
+            !Garment.isAccessoryKey(it) && Garment.fromKey(it)?.slot != Garment.Slot.BOTTOM
+        }
+
+    /** Recognised [Garment.Slot.BOTTOM] items (shorts, pants, …), in input order. */
+    val bottoms: List<String>
+        get() = items.filter { Garment.fromKey(it)?.slot == Garment.Slot.BOTTOM }
+
+    /** Recognised accessory keys (today only `umbrella`), in input order. */
+    val accessories: List<String>
+        get() = items.filter { Garment.isAccessoryKey(it) }
+}
 
 /**
  * Peak precipitation hour: a [condition] (RAIN, SNOW, etc.) at a wall-clock [time].

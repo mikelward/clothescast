@@ -527,7 +527,6 @@ OEMs we may revisit with a separate placeholder FGS notification.
   `BOOT_COMPLETED` / `MY_PACKAGE_REPLACED` / `TIMEZONE_CHANGED` /
   `LOCALE_CHANGED`.
 - **`OutfitWidgetReceiver`** — exported app-widget provider.
-- **`FileProvider`** — internal-only, for the bug-report share path.
 - **Cast SDK threading.** `MediaRouter.addCallback` /
   `selectRoute`, `SessionManager.addSessionManagerListener`, and
   `RemoteMediaClient.load` are documented main-thread-only. The

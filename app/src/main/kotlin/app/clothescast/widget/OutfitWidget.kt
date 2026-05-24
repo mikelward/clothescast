@@ -106,6 +106,15 @@ class OutfitWidget : GlanceAppWidget() {
 // the minimum that doesn't cramp either side.
 private val SIDE_BY_SIDE_MIN_WIDTH = 240.dp
 
+// Upper bound on the per-icon bitmap dimension we rasterize for ImageProvider.
+// Two ARGB bitmaps at this size cost ~2 MB total (512 * 512 * 4 bytes * 2),
+// which sits comfortably under the RemoteViews-update bitmap budget (roughly
+// screen-size-in-bytes * 1.5) even on the smallest screens we support.
+// At 3x density this covers icons up to ~170dp, which is past anything a
+// launcher will sensibly stretch to; beyond that the Image scales the bitmap
+// up rather than allocating a bigger one.
+private const val MAX_ICON_BITMAP_PX = 512
+
 // Glance 1.1.x's actionStartActivity<MainActivity>() crashed in the wild with
 // "List adapter activity trampoline invoked without specifying target intent"
 // — the launcher dispatches the trampoline activity with empty extras, so the
@@ -164,7 +173,15 @@ private fun SingleColumnContent(
 ) {
     val context = LocalContext.current
     val iconSize = scaledIconSize(size)
-    val iconPx = with(Density(context)) { iconSize.toPx() }.toInt().coerceAtLeast(1)
+    // Layout size is unbounded (the Image's Glance modifier holds whatever
+    // iconSize the launcher's cell justifies) but the rasterized bitmap is
+    // capped at MAX_ICON_BITMAP_PX so two ARGB icons can't blow the
+    // AppWidget/RemoteViews bitmap budget on high-density tablets/foldables
+    // — past the cap, Image upscales the bounded bitmap to fill the box,
+    // which is fine for the vector-derived outfit glyphs.
+    val iconPx = with(Density(context)) { iconSize.toPx() }
+        .toInt()
+        .coerceIn(1, MAX_ICON_BITMAP_PX)
     Column(
         modifier = GlanceModifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -279,11 +296,14 @@ private fun EmptyContent(size: DpSize) {
 
 // Scaling factors are anchored so a 160dp-square cell reproduces the previous
 // hard-coded values (icon 48dp, label 14sp, subtitle 11sp); larger cells grow
-// up to the caps below. Sizing is driven by the shortest dimension because
-// the column is bounded vertically by two stacked icons + label + subtitle.
+// linearly with no upper cap so a launcher-stretched widget keeps filling its
+// allotted space rather than centring small content in a big box. Sizing is
+// driven by the shortest dimension because the column is bounded vertically
+// by two stacked icons + label + subtitle, and the floors keep text and icons
+// legible if the user shrinks the cell below the default 2x2.
 private fun scaledIconSize(size: DpSize): Dp {
     val short = minOf(size.width.value, size.height.value)
-    return (short * 0.30f).coerceIn(36f, 88f).dp
+    return (short * 0.30f).coerceAtLeast(36f).dp
 }
 
 @Composable
@@ -301,12 +321,12 @@ private fun scaledSubtitleStyle(size: DpSize): TextStyle = TextStyle(
 
 private fun scaledLabelSp(size: DpSize): TextUnit {
     val short = minOf(size.width.value, size.height.value)
-    return (short * 0.0875f).coerceIn(13f, 18f).sp
+    return (short * 0.0875f).coerceAtLeast(13f).sp
 }
 
 private fun scaledSubtitleSp(size: DpSize): TextUnit {
     val short = minOf(size.width.value, size.height.value)
-    return (short * 0.0688f).coerceIn(10f, 13f).sp
+    return (short * 0.0688f).coerceAtLeast(10f).sp
 }
 
 private fun periodLabelRes(period: ForecastPeriod): Int = when (period) {

@@ -255,34 +255,33 @@ object BugReport {
         appendLine("$label:")
         if (insight == null) {
             appendLine("  (no cached insight)")
-            appendLine()
-            return
-        }
-        val prose = runCatching {
-            InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, rainAccessory)
-                .format(insight.summary)
-        }
-            .getOrElse { "(prose render failed: ${it.javaClass.simpleName})" }
-        appendLine("  Prose: $prose")
-        appendLine("  Generated: ${insight.generatedAt} (${humanAge(insight.generatedAt)})")
-        appendLine("  For date: ${insight.forDate}")
-        insight.confidence?.let {
-            appendLine("  Confidence: ${it.level} (tempSpread=${it.tempSpreadC}°C, " +
-                "precipSpread=${it.precipSpreadPp}pp, ${it.modelsConsulted.size} models)")
-        }
-        insight.outfit?.let { appendLine("  Outfit: ${it.top} + ${it.bottom}") }
-        insight.nextOutfit?.let { appendLine("  Next outfit: ${it.top} + ${it.bottom}") }
-        appendLine("  Has events: ${insight.hasEvents}")
-        if (insight.recommendedItems.isNotEmpty()) {
-            appendLine("  Recommended items: ${insight.recommendedItems.joinToString(", ")}")
-        }
-        if (insight.hourly.isNotEmpty()) {
-            appendLine("  Hourly (${insight.hourly.size} entries) feels-like min/max: " +
-                "%.1f / %.1f °C".format(
-                    Locale.US,
-                    insight.hourly.minOf { it.feelsLikeC },
-                    insight.hourly.maxOf { it.feelsLikeC },
-                ))
+        } else {
+            val prose = runCatching {
+                InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, rainAccessory)
+                    .format(insight.summary)
+            }
+                .getOrElse { "(prose render failed: ${it.javaClass.simpleName})" }
+            appendLine("  Prose: $prose")
+            appendLine("  Generated: ${insight.generatedAt} (${humanAge(insight.generatedAt)})")
+            appendLine("  For date: ${insight.forDate}")
+            insight.confidence?.let {
+                appendLine("  Confidence: ${it.level} (tempSpread=${it.tempSpreadC}°C, " +
+                    "precipSpread=${it.precipSpreadPp}pp, ${it.modelsConsulted.size} models)")
+            }
+            insight.outfit?.let { appendLine("  Outfit: ${it.top} + ${it.bottom}") }
+            insight.nextOutfit?.let { appendLine("  Next outfit: ${it.top} + ${it.bottom}") }
+            appendLine("  Has events: ${insight.hasEvents}")
+            if (insight.recommendedItems.isNotEmpty()) {
+                appendLine("  Recommended items: ${insight.recommendedItems.joinToString(", ")}")
+            }
+            if (insight.hourly.isNotEmpty()) {
+                appendLine("  Hourly (${insight.hourly.size} entries) feels-like min/max: " +
+                    "%.1f / %.1f °C".format(
+                        Locale.US,
+                        insight.hourly.minOf { it.feelsLikeC },
+                        insight.hourly.maxOf { it.feelsLikeC },
+                    ))
+            }
         }
         snapshot?.let { appendSnapshotDebug(it, prefs) }
         appendLine()

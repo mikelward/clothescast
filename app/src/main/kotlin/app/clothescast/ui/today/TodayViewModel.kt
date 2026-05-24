@@ -340,6 +340,8 @@ class TodayViewModel(
                 val events: List<CalendarEvent> = if (needEvents) {
                     runCatching {
                         calendarEventReader!!.eventsForDay(date, prefs.schedule.zoneId)
+                    }.onFailure {
+                        if (it is kotlinx.coroutines.CancellationException) throw it
                     }.getOrDefault(emptyList())
                 } else {
                     emptyList()

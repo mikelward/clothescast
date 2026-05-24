@@ -55,6 +55,8 @@ class LocationResolver(
      */
     suspend fun resolve(): Location? = try {
         resolveInner(maxAgeMillis = this.maxAgeMillis, allowStaleFallback = true)
+    } catch (t: kotlinx.coroutines.CancellationException) {
+        throw t
     } catch (t: Throwable) {
         DiagLog.w(TAG, "Unexpected ${t.javaClass.simpleName} from resolve(); returning null.", t)
         null
@@ -77,6 +79,8 @@ class LocationResolver(
      */
     suspend fun resolveFresh(maxAgeMillis: Long): Location? = try {
         resolveInner(maxAgeMillis = maxAgeMillis, allowStaleFallback = false)
+    } catch (t: kotlinx.coroutines.CancellationException) {
+        throw t
     } catch (t: Throwable) {
         DiagLog.w(TAG, "Unexpected ${t.javaClass.simpleName} from resolveFresh(); returning null.", t)
         null
@@ -143,6 +147,8 @@ class LocationResolver(
     } catch (t: SecurityException) {
         DiagLog.w(TAG, "SecurityException reading last-known location (background grant?).", t)
         null
+    } catch (t: kotlinx.coroutines.CancellationException) {
+        throw t
     } catch (t: Throwable) {
         DiagLog.w(TAG, "Failed to read last-known location: ${t.javaClass.simpleName}", t)
         null
@@ -159,6 +165,8 @@ class LocationResolver(
             // coroutine via exception.
             val providerEnabled = try {
                 manager.isProviderEnabled(provider)
+            } catch (t: kotlinx.coroutines.CancellationException) {
+                throw t
             } catch (t: Throwable) {
                 DiagLog.w(TAG, "isProviderEnabled threw ${t.javaClass.simpleName}; treating as disabled.", t)
                 false
@@ -192,6 +200,8 @@ class LocationResolver(
             } catch (t: SecurityException) {
                 DiagLog.w(TAG, "SecurityException requesting location update (background grant?).", t)
                 cont.resume(null)
+            } catch (t: kotlinx.coroutines.CancellationException) {
+                throw t
             } catch (t: Throwable) {
                 DiagLog.w(TAG, "Failed to request location update: ${t.javaClass.simpleName}", t)
                 cont.resume(null)

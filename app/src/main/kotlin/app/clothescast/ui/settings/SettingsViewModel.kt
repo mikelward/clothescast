@@ -680,7 +680,9 @@ class SettingsViewModel(
     suspend fun calendarEventsForDay(date: LocalDate): List<CalendarEvent> {
         val reader = calendarEventReader ?: return emptyList()
         val zone = settingsRepository.preferences.first().schedule.zoneId
-        return runCatching { reader.eventsForDay(date, zone) }.getOrDefault(emptyList())
+        return runCatching { reader.eventsForDay(date, zone) }
+            .onFailure { if (it is kotlinx.coroutines.CancellationException) throw it }
+            .getOrDefault(emptyList())
     }
 
     fun setTelemetryEnabled(enabled: Boolean) {

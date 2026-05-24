@@ -94,6 +94,8 @@ class GenerateDailyInsight(
         if (!prefs.calendarEventMentionsActive || reader == null) return emptyList()
         return runCatching {
             reader.eventsForDay(date, prefs.schedule.zoneId)
+        }.onFailure {
+            if (it is kotlinx.coroutines.CancellationException) throw it
         }.getOrDefault(emptyList())
     }
 }

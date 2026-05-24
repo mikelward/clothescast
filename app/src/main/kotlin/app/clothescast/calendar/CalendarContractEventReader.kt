@@ -51,7 +51,10 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
                     .filterNot { it.event.allDay && it.date != date }
                     .map { it.event }
             }
-                .onFailure { DiagLog.w(TAG, "Calendar query failed; degrading to no events.", it) }
+                .onFailure {
+                    if (it is kotlinx.coroutines.CancellationException) throw it
+                    DiagLog.w(TAG, "Calendar query failed; degrading to no events.", it)
+                }
                 .getOrDefault(emptyList())
         }
     }
@@ -88,7 +91,7 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
                     .map { UpcomingCalendarEvent(it.date, it.event.title, it.event.kind) }
                     .sortedWith(compareBy({ it.date }, { it.title }))
             }
-                .onFailure { DiagLog.w(TAG, "Calendar query failed; degrading to no events.", it) }
+                .onFailure { if (it is kotlinx.coroutines.CancellationException) throw it; DiagLog.w(TAG, "Calendar query failed; degrading to no events.", it) }
                 .getOrDefault(emptyList())
         }
     }
@@ -298,7 +301,10 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
                     result[id] = owner
                 }
             }
-        }.onFailure { DiagLog.w(TAG, "Owner-account lookup failed; classification falls back to NORMAL.", it) }
+        }.onFailure {
+            if (it is kotlinx.coroutines.CancellationException) throw it
+            DiagLog.w(TAG, "Owner-account lookup failed; classification falls back to NORMAL.", it)
+        }
         return result
     }
 

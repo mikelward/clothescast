@@ -254,18 +254,20 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           if [ -d app/snapshots ]; then
             # Remove PNGs for deleted or renamed @Test methods (orphaned snapshots).
-            # The expected set is the @Test method names in PreviewSnapshots.kt, since
-            # captureRoboImage uses testName.methodName as the output filename.
+            # Auto-discover every Kotlin test source — snapshot tests write to
+            # "$outputDir/<methodName>.png", so a PNG whose basename matches no
+            # @Test method anywhere in app/src/test is genuinely orphaned. The
+            # previous version hard-coded a snapshot_sources list and silently
+            # deleted PNGs whose test file wasn't on it (db7aaf8 → 25cfc6d:
+            # SettingsClothesFullSnapshot.kt's snapshot survived the test pass
+            # only to be wiped here on the way to commit). Scanning every test
+            # file zero-configures any future snapshot file.
             # Slurped perl match handles both `@Test fun foo()` and
             # multi-line `@Test\n@Config(...)\nfun foo()` styles — a single-line
             # `(?<=@Test fun )` regex misses the latter and would prune the PNG
             # as orphaned even though the test still runs.
-            snapshot_sources=(
-              "app/src/test/kotlin/app/clothescast/ui/today/PreviewSnapshots.kt"
-              "app/src/test/kotlin/app/clothescast/ui/garment/OutfitCardSnapshotTest.kt"
-              "app/src/test/kotlin/app/clothescast/ui/today/SettingsClothesFullSnapshot.kt"
-            )
-            expected=$(perl -0777 -ne 'while (/\@Test\b(?:\s|\@\w+(?:\([^)]*\))?)*?\bfun\s+(\w+)/g) { print "$1\n" }' "${snapshot_sources[@]}")
+            expected=$(find app/src/test -name '*.kt' -print0 \
+              | xargs -0 perl -0777 -ne 'while (/\@Test\b(?:\s|\@\w+(?:\([^)]*\))?)*?\bfun\s+(\w+)/g) { print "$1\n" }')
             for png in app/snapshots/*.png; do
               [ -f "$png" ] || continue
               name=$(basename "$png" .png)

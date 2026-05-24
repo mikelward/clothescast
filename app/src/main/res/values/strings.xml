@@ -203,7 +203,7 @@
          surface — bakes in cloud attenuation, so it captures "cloudy but
          bright" days more honestly than cloud cover alone. -->
     <string name="today_solar_title">Solar radiation</string>
-    <string name="today_solar_subtitle">Surface irradiance (W/m²) by hour</string>
+    <string name="today_solar_subtitle">Surface irradiance (W/m²)</string>
 
     <!-- Sunshine-duration diagnostic card. The chart plots minutes of sun
          per hour (0..60) per model; the card's subtitle replaces the static
@@ -231,7 +231,7 @@
          sunglasses) even when the temperature itself doesn't trigger a
          clothes rule. -->
     <string name="today_uv_title">UV index</string>
-    <string name="today_uv_subtitle">UV index by hour</string>
+    <string name="today_uv_subtitle">UV index</string>
     <!-- Replaces [today_uv_subtitle] when the consensus series has a peak
          UV ≥ 1: peak rounded UV index and the hour it occurs at.
          %1$d = peak value, %2$s = hour formatted as HH:00. Below 1 we keep

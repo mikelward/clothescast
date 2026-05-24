@@ -131,6 +131,9 @@ internal fun PerModelDiagnosticCard(
             .map { (idx, vs) -> idx to vs.average() }
     }
 
+    val mainByIndex = remember(mainLine) { mainLine.toMap() }
+    val timeFmt = rememberScrubTimeFormatter()
+
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -138,6 +141,10 @@ internal fun PerModelDiagnosticCard(
         ) {
             Text(text = title, style = MaterialTheme.typography.titleSmall)
             Text(text = subtitle, style = MaterialTheme.typography.bodyMedium)
+            ChartReadout(hourly, startDate) { idx ->
+                val v = mainByIndex[idx] ?: return@ChartReadout null
+                "${timeFmt(times[idx])} · ${tooltipValueFormat(v)}"
+            }
             PerModelDiagnosticChart(
                 hourly = hourly,
                 startDate = startDate,
@@ -145,7 +152,6 @@ internal fun PerModelDiagnosticCard(
                 seriesByModel = seriesByModel,
                 overlayModels = if (showOverlay) availableModels else emptyList(),
                 yAxis = yAxis,
-                tooltipValueFormat = tooltipValueFormat,
                 onFirstContact = onFirstContact ?: {},
             )
             ModelSpreadLegend(
@@ -179,7 +185,6 @@ private fun PerModelDiagnosticChart(
     seriesByModel: Map<String, List<Pair<Int, Double>>>,
     overlayModels: List<String>,
     yAxis: YAxis,
-    tooltipValueFormat: (Double) -> String,
     onFirstContact: () -> Unit,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
@@ -276,11 +281,6 @@ private fun PerModelDiagnosticChart(
     val scrubBounds = rememberChartScrubBounds()
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
     val decorations = listOf(scrubIndicator)
-    val timeFmt = rememberScrubTimeFormatter()
-
-    // Index → consensus value lookup for the scrub tooltip. mainLine is
-    // sparse (sorted by index) so a linear search is fine — 24 entries.
-    val mainLineByIndex = remember(mainLine) { mainLine.toMap() }
 
     Box(
         modifier = Modifier
@@ -313,15 +313,7 @@ private fun PerModelDiagnosticChart(
             modifier = Modifier.matchParentSize(),
         )
         if (scrubController != null) {
-            ChartScrubOverlay(scrubController, scrubBounds, hourly, startDate) { idx ->
-                val time = times[idx]
-                val value = mainLineByIndex[idx]
-                val readout = value?.let { tooltipValueFormat(it) } ?: "—"
-                Text(
-                    text = "${timeFmt(time)} · $readout",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
+            ChartRestoreOverlay(scrubController)
         }
     }
 }

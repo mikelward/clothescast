@@ -1821,6 +1821,7 @@ internal fun ForecastCard(
     val feelsLikeMinMax = remember(hourly, temperatureUnit) {
         formatMinMax(hourly.map { it.feelsLikeC }, temperatureUnit)
     }
+    val timeFmt = rememberScrubTimeFormatter()
 
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
@@ -1836,6 +1837,11 @@ internal fun ForecastCard(
                     text = stringResource(R.string.today_forecast_min_max, it.first, it.second, symbol),
                     style = MaterialTheme.typography.bodyMedium,
                 )
+            }
+            ChartReadout(hourly, startDate) { idx ->
+                val entry = hourly[idx]
+                val v = entry.feelsLikeC.toUnit(temperatureUnit).roundToInt()
+                "${timeFmt(entry.time)} · $v$symbol"
             }
             ForecastChart(
                 hourly = hourly,
@@ -1877,6 +1883,7 @@ internal fun AirTemperatureCard(
     val airMinMax = remember(hourly, temperatureUnit) {
         formatMinMax(hourly.map { it.temperatureC }, temperatureUnit)
     }
+    val timeFmt = rememberScrubTimeFormatter()
 
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
@@ -1892,6 +1899,11 @@ internal fun AirTemperatureCard(
                     text = stringResource(R.string.today_forecast_air_min_max, it.first, it.second, symbol),
                     style = MaterialTheme.typography.bodyMedium,
                 )
+            }
+            ChartReadout(hourly, startDate) { idx ->
+                val entry = hourly[idx]
+                val v = entry.temperatureC.toUnit(temperatureUnit).roundToInt()
+                "${timeFmt(entry.time)} · $v$symbol"
             }
             ForecastChart(
                 hourly = hourly,
@@ -2291,6 +2303,7 @@ internal fun PrecipitationCard(
     // chart itself is just the visualisation, not the only signal.
     val peak = remember(hourly) { hourly.maxByOrNull { it.precipitationProbabilityPct } }
     val isDry = peak == null || peak.precipitationProbabilityPct < DRY_THRESHOLD_PCT
+    val timeFmt = rememberScrubTimeFormatter()
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -2312,6 +2325,10 @@ internal fun PrecipitationCard(
                 },
                 style = MaterialTheme.typography.bodyMedium,
             )
+            ChartReadout(hourly, startDate) { idx ->
+                val entry = hourly[idx]
+                "${timeFmt(entry.time)} · ${entry.precipitationProbabilityPct.roundToInt()}%"
+            }
             PrecipitationChart(
                 hourly = hourly,
                 startDate = startDate,

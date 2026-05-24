@@ -2,16 +2,13 @@ package app.clothescast.ui.today
 
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
@@ -25,13 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.HourlyForecast
@@ -276,76 +269,62 @@ private class ChartScrubIndicator(
 }
 
 /**
- * Floating tooltip + restore affordance rendered on top of each chart's
- * plot area. Call inside the same `Box` as the `CartesianChartHost` so
- * the canvas and Compose share a coordinate space — the bounds written
- * by the decoration are directly usable for [Modifier.offset].
+ * Restore-icon affordance rendered on top of each chart's plot area.
+ * The actual readout text (time + value at the indicator) lives in the
+ * card's existing text column via [ChartReadout] — keeping the chart
+ * canvas clean. Call inside the same `Box` as the `CartesianChartHost`.
  *
- * The tooltip names the indicator's time and (via [content]) the
- * chart's value at that time; visible whenever the controller has an
- * active time inside the chart's window. The vendored restore icon
- * (`ic_chart_restore`) appears top-right only when scrubbed — a tap
- * returns the indicator to "now".
+ * Only shows when the user has scrubbed away from "now"; a tap snaps
+ * the indicator back via [ChartScrubController.reset].
  */
 @Composable
-internal fun BoxScope.ChartScrubOverlay(
-    controller: ChartScrubController,
-    bounds: ChartScrubBounds,
+internal fun BoxScope.ChartRestoreOverlay(controller: ChartScrubController) {
+    if (!controller.isScrubbed) return
+    IconButton(
+        onClick = controller::reset,
+        modifier = Modifier
+            .align(Alignment.TopEnd)
+            .padding(end = 4.dp, top = 4.dp),
+        colors = IconButtonDefaults.iconButtonColors(
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        ),
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_chart_restore),
+            contentDescription = stringResource(R.string.today_chart_reset_to_now),
+        )
+    }
+}
+
+/**
+ * The card-side readout text — sits in the card's existing text
+ * column (between subtitle and chart) and names the time + value at
+ * the shared indicator. Returns nothing when no controller is wired,
+ * when the indicator's active time falls outside this chart's window
+ * (Tomorrow page before a tap), or when the caller's [readoutFor]
+ * lambda returns null (sparse data at this hour).
+ *
+ * Each card supplies its own [readoutFor] because the formatting and
+ * source field differ — temp cards read `hourly[idx]`, precip reads
+ * the probability, diagnostics read the consensus mainLine. Time
+ * formatting is shared via [rememberScrubTimeFormatter].
+ */
+@Composable
+internal fun ChartReadout(
     hourly: List<HourlyForecast>,
     startDate: LocalDate,
-    content: @Composable (hourIndex: Int) -> Unit,
+    readoutFor: (hourIndex: Int) -> String?,
 ) {
-    val activeTime = controller.activeTime
-    val chartX = activeTime?.let { currentTimeChartX(hourly, startDate, it) }
-    val density = LocalDensity.current
-    var size by remember { mutableStateOf(IntSize.Zero) }
-
-    if (chartX != null && hourly.isNotEmpty() && bounds.pxPerUnit != 0f) {
-        // Compute indicator pixel via the same signed linear map the
-        // decoration draws with — works for single-point charts (no
-        // fractional divide) and RTL (negative pxPerUnit).
-        val canvasX = bounds.chartZeroPx + bounds.pxPerUnit * chartX.toFloat()
-        val gapPx = with(density) { 8.dp.toPx() }
-        val tooltipWidth = size.width.toFloat()
-        val offsetX = when {
-            canvasX + gapPx + tooltipWidth <= bounds.dataMaxPx -> canvasX + gapPx
-            canvasX - gapPx - tooltipWidth >= bounds.dataMinPx -> canvasX - gapPx - tooltipWidth
-            else -> (bounds.dataMaxPx - tooltipWidth).coerceAtLeast(bounds.dataMinPx)
-        }
-        val offsetY = bounds.layerTopPx + gapPx
-        val hourIdx = chartX.roundToInt().coerceIn(0, hourly.lastIndex)
-        Surface(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-                .onSizeChanged { size = it },
-            shape = RoundedCornerShape(8.dp),
-            color = MaterialTheme.colorScheme.surfaceContainerHigh,
-            tonalElevation = 3.dp,
-            shadowElevation = 2.dp,
-        ) {
-            Box(modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
-                content(hourIdx)
-            }
-        }
-    }
-
-    if (controller.isScrubbed) {
-        IconButton(
-            onClick = controller::reset,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(end = 4.dp, top = 4.dp),
-            colors = IconButtonDefaults.iconButtonColors(
-                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            ),
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_chart_restore),
-                contentDescription = stringResource(R.string.today_chart_reset_to_now),
-            )
-        }
-    }
+    val controller = LocalChartScrub.current ?: return
+    val activeTime = controller.activeTime ?: return
+    if (hourly.isEmpty()) return
+    val chartX = currentTimeChartX(hourly, startDate, activeTime) ?: return
+    val idx = chartX.roundToInt().coerceIn(0, hourly.lastIndex)
+    val readout = readoutFor(idx) ?: return
+    Text(
+        text = readout,
+        style = MaterialTheme.typography.bodyMedium,
+    )
 }
 
 /**

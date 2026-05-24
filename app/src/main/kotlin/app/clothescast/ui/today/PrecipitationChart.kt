@@ -3,8 +3,6 @@ package app.clothescast.ui.today
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -158,7 +156,6 @@ fun PrecipitationChart(
     val scrubBounds = rememberChartScrubBounds()
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
     val decorations = listOf(scrubIndicator)
-    val timeFmt = rememberScrubTimeFormatter()
 
     Box(
         modifier = modifier
@@ -191,14 +188,7 @@ fun PrecipitationChart(
             modifier = Modifier.matchParentSize(),
         )
         if (scrubController != null) {
-            ChartScrubOverlay(scrubController, scrubBounds, hourly, startDate) { idx ->
-                val entry = hourly[idx]
-                val pct = entry.precipitationProbabilityPct.roundToInt()
-                Text(
-                    text = "${timeFmt(entry.time)} · $pct%",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
+            ChartRestoreOverlay(scrubController)
         }
     }
 }

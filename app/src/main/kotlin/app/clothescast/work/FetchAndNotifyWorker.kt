@@ -1270,7 +1270,7 @@ class FetchAndNotifyWorker(
          * the run reached `Result.success()` without delivering anything, so
          * the daily_refresh event should be suppressed for it.
          */
-        private const val KEY_SKIP_TELEMETRY = "skip_telemetry"
+        internal const val KEY_SKIP_TELEMETRY = "skip_telemetry"
 
         // Cap unhandled-error detail so the "Show details" pane stays readable.
         private const val MAX_DETAIL_LEN = 240
@@ -1290,7 +1290,7 @@ class FetchAndNotifyWorker(
         private const val EARTH_RADIUS_KM = 6371.0
 
         /** Set true via [enqueueOneShot] when the user explicitly taps Refresh. */
-        private const val KEY_FORCE_REFRESH = "force_refresh"
+        internal const val KEY_FORCE_REFRESH = "force_refresh"
 
         /**
          * Wall-clock millis at which the alarm fired. Set by [AlarmReceiver] for
@@ -1346,10 +1346,10 @@ class FetchAndNotifyWorker(
          * to drop a stale force flag if the worker only runs after midnight (e.g. a
          * tap at 23:59 that retried offline until 00:05).
          */
-        private const val KEY_REQUESTED_EPOCH_DAY = "requested_epoch_day"
+        internal const val KEY_REQUESTED_EPOCH_DAY = "requested_epoch_day"
 
         /** Which slice of the day this run is for; defaults to TODAY when absent. */
-        private const val KEY_PERIOD = "period"
+        internal const val KEY_PERIOD = "period"
 
         /**
          * Set true via [enqueueLocationCacheRefresh] when the user toggles
@@ -1358,7 +1358,7 @@ class FetchAndNotifyWorker(
          * doesn't get a duplicate notification at e.g. 10am after the
          * morning run already fired at 7am.
          */
-        private const val KEY_CACHE_LOCATION_ONLY = "cache_location_only"
+        internal const val KEY_CACHE_LOCATION_ONLY = "cache_location_only"
 
         /**
          * Set true via [enqueueSilentRefresh] for the opportunistic app-open
@@ -1368,7 +1368,7 @@ class FetchAndNotifyWorker(
          * fires because it's already on the user's launcher and would
          * otherwise sit on the stale outfit.
          */
-        private const val KEY_SILENT_REFRESH = "silent_refresh"
+        internal const val KEY_SILENT_REFRESH = "silent_refresh"
 
         /**
          * Min staleness before app-open triggers a silent refresh — anything

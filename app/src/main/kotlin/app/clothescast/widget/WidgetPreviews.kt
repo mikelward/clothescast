@@ -309,13 +309,34 @@ internal fun WidgetTonightTomorrowWidePreview() {
     }
 }
 
+// Tall portrait covers the launchers that scale width and height together.
+// Stretching the widget makes the cell larger overall but keeps it portrait,
+// at which point the OutfitWidget falls back to single column so one outfit
+// can fill the canvas instead of two narrow ones floating in whitespace.
+@Preview(name = "Widget · tonight · tall portrait", widthDp = 392, heightDp = 512)
+@Composable
+internal fun WidgetTonightTallPortraitPreview() {
+    WidgetFrame {
+        OutfitWidgetMockFilled(
+            period = ForecastPeriod.TONIGHT,
+            outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.JEANS),
+            width = 360.dp,
+            height = 480.dp,
+        )
+    }
+}
+
 // Scaling formulas — kept in lockstep with OutfitWidget.kt's scaledIconSize /
-// scaledLabelSp / scaledSubtitleSp. Anchored so a 160dp-square cell reproduces
-// the previous hard-coded values (icon 48dp, label 14sp, subtitle 11sp); larger
-// cells grow linearly with no upper cap.
+// scaledLabelSp / scaledSubtitleSp. See the comment block over scaledIconSize
+// for the two-budget reasoning; this mirror must stay byte-for-byte equivalent.
 private fun scaledIconSizeMock(size: DpSize): Dp {
     val short = minOf(size.width.value, size.height.value)
-    return (short * 0.30f).coerceAtLeast(36f).dp
+    val labelSp = (short * 0.0875f).coerceAtLeast(13f)
+    val subtitleSp = (short * 0.0688f).coerceAtLeast(10f)
+    val reservedVertical = (labelSp + subtitleSp) * 1.5f + 22f
+    val verticalBudget = (size.height.value - reservedVertical).coerceAtLeast(0f) / 2f
+    val horizontalBudget = size.width.value * 0.9f
+    return minOf(verticalBudget, horizontalBudget).coerceAtLeast(36f).dp
 }
 
 private fun scaledLabelSpMock(size: DpSize): TextUnit {

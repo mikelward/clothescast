@@ -20,6 +20,7 @@ import app.clothescast.BuildConfig
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.ForecastSnapshot
 import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.RangeFormat
@@ -122,8 +123,8 @@ object BugReport {
             val rangeFormat = prefs?.rangeFormat ?: RangeFormat.DEGREES
             val clothesFormat = prefs?.clothesFormat ?: ClothesFormat.ITEMS
             val rainAccessory = prefs?.rainAccessory ?: RainAccessory.NONE
-            appendInsight("This period", thisPeriod, context, region, tempUnit, rangeFormat, clothesFormat, rainAccessory)
-            appendInsight("Next period", nextPeriod, context, region, tempUnit, rangeFormat, clothesFormat, rainAccessory)
+            appendInsight("This period", thisPeriod, thisSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, rainAccessory)
+            appendInsight("Next period", nextPeriod, nextSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, rainAccessory)
             if (!crash.isNullOrBlank()) {
                 appendLine("--- Last crash (from previous run) ---")
                 appendLine(crash.trim())
@@ -242,6 +243,8 @@ object BugReport {
     private fun StringBuilder.appendInsight(
         label: String,
         insight: Insight?,
+        snapshot: ForecastSnapshot?,
+        prefs: UserPreferences?,
         context: Context,
         region: Region,
         temperatureUnit: TemperatureUnit,
@@ -281,7 +284,52 @@ object BugReport {
                     insight.hourly.maxOf { it.feelsLikeC },
                 ))
         }
+        snapshot?.let { appendSnapshotDebug(it, prefs) }
         appendLine()
+    }
+
+    private fun StringBuilder.appendSnapshotDebug(
+        snapshot: ForecastSnapshot,
+        prefs: UserPreferences?,
+    ) {
+        snapshot.location?.let { loc ->
+            val name = loc.displayName ?: "(unnamed)"
+            appendLine("  Snapshot location: %.4f, %.4f — %s".format(
+                Locale.US, loc.latitude, loc.longitude, name,
+            ))
+        }
+        val yesterday = snapshot.bundle.yesterday
+        appendLine("  Yesterday (${yesterday.date}) feels-like min/max: " +
+            "%.1f / %.1f °C (24h aggregate)".format(
+                Locale.US, yesterday.feelsLikeMinC, yesterday.feelsLikeMaxC,
+            ))
+        if (yesterday.hourly.isEmpty()) {
+            appendLine("  Yesterday hourly: 0 entries")
+        } else {
+            appendLine("  Yesterday hourly: ${yesterday.hourly.size} entries, " +
+                "${yesterday.hourly.first().time}..${yesterday.hourly.last().time}, " +
+                "feels-like min/max %.1f / %.1f °C".format(
+                    Locale.US,
+                    yesterday.hourly.minOf { it.feelsLikeC },
+                    yesterday.hourly.maxOf { it.feelsLikeC },
+                ))
+            val morningStart = prefs?.schedule?.time
+            val eveningEnd = prefs?.tonightSchedule?.time
+            if (morningStart != null && eveningEnd != null && morningStart.isBefore(eveningEnd)) {
+                val slice = yesterday.hourly.filter { it.time >= morningStart && it.time < eveningEnd }
+                if (slice.isEmpty()) {
+                    appendLine("    daytime [$morningStart..$eveningEnd) slice: 0 entries " +
+                        "(delta falls back to 24h aggregate)")
+                } else {
+                    appendLine("    daytime [$morningStart..$eveningEnd) slice: ${slice.size} entries, " +
+                        "feels-like min/max %.1f / %.1f °C".format(
+                            Locale.US,
+                            slice.minOf { it.feelsLikeC },
+                            slice.maxOf { it.feelsLikeC },
+                        ))
+                }
+            }
+        }
     }
 
     private suspend fun captureAndPersistScreenshot(activity: Activity): Uri? {

@@ -231,6 +231,60 @@ class OutfitSuggestionTest {
     }
 
     @Test
+    fun `short-skirt rule lands on SHORT_SKIRT`() {
+        // A user adds a "short-skirt > 22°C" rule. A warm day fires it, and
+        // the home-screen icon shows the mini-skirt silhouette rather than
+        // the full-length one.
+        val rule = ClothesRule("short-skirt", ClothesRule.TemperatureAbove(22.0))
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 18.0, feelsLikeMax = 25.0),
+            listOf(rule),
+        )
+        outfit.bottom shouldBe OutfitSuggestion.Bottom.SHORT_SKIRT
+    }
+
+    @Test
+    fun `short-skirt outranks long skirt when both rules fire`() {
+        // Mini wins over full-length: the shorter / more exposed garment is
+        // the right pick on a warmer day, and the priority order mirrors
+        // SHORTS-over-LONG_SKIRT on the bottom tier.
+        val rules = listOf(
+            ClothesRule("short-skirt", ClothesRule.TemperatureAbove(22.0)),
+            ClothesRule("skirt", ClothesRule.TemperatureAbove(16.0)),
+        )
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 18.0, feelsLikeMax = 25.0),
+            rules,
+        )
+        outfit.bottom shouldBe OutfitSuggestion.Bottom.SHORT_SKIRT
+    }
+
+    @Test
+    fun `long skirt still fires when only the skirt rule crosses its threshold`() {
+        // The short-skirt rule sits at a hotter threshold than skirt; on a
+        // mild day only the skirt rule fires and LONG_SKIRT is the right pick.
+        val rules = listOf(
+            ClothesRule("short-skirt", ClothesRule.TemperatureAbove(22.0)),
+            ClothesRule("skirt", ClothesRule.TemperatureAbove(16.0)),
+        )
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 15.0, feelsLikeMax = 20.0),
+            rules,
+        )
+        outfit.bottom shouldBe OutfitSuggestion.Bottom.LONG_SKIRT
+    }
+
+    @Test
+    fun `defaultBottom SHORT_SKIRT falls back to a short skirt`() {
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 12.0, feelsLikeMax = 22.0),
+            rules,
+            defaultBottom = OutfitSuggestion.Bottom.SHORT_SKIRT,
+        )
+        outfit.bottom shouldBe OutfitSuggestion.Bottom.SHORT_SKIRT
+    }
+
+    @Test
     fun `defaultBottom LONG_SKIRT falls back to a long skirt`() {
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 12.0, feelsLikeMax = 22.0),

@@ -625,6 +625,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_outfit_top_thin_jacket">Leichte Jacke</string>
     <string name="today_outfit_top_thick_coat">Dicker Mantel</string>
     <string name="today_outfit_top_puffer_jacket">Daunenjacke</string>
+    <string name="today_outfit_bottom_short_skirt">Minirock</string>
     <string name="today_outfit_bottom_long_skirt">Rock</string>
     <string name="today_outfit_bottom_jeans">Jeans</string>
 
@@ -632,6 +633,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="garment_polo">Polo</string>
     <string name="garment_thin_jacket">Leichte Jacke</string>
     <string name="garment_puffer">Daunenjacke</string>
+    <string name="garment_short_skirt">Minirock</string>
     <string name="garment_skirt">Rock</string>
 
     <!-- Precipitation card. -->

@@ -59,6 +59,7 @@ enum class Garment(
     // Bottoms substitute rather than stack today (you don't layer pants
     // over shorts), so [layer] is null.
     SHORTS("shorts", Slot.BOTTOM),
+    SHORT_SKIRT("short-skirt", Slot.BOTTOM),
     SKIRT("skirt", Slot.BOTTOM),
     PANTS("pants", Slot.BOTTOM),
     JEANS("jeans", Slot.BOTTOM);

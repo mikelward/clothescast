@@ -1506,6 +1506,7 @@ private fun topLabelRes(top: OutfitSuggestion.Top): Int = when (top) {
 
 private fun bottomLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom) {
     OutfitSuggestion.Bottom.SHORTS -> R.string.today_outfit_bottom_shorts
+    OutfitSuggestion.Bottom.SHORT_SKIRT -> R.string.today_outfit_bottom_short_skirt
     OutfitSuggestion.Bottom.LONG_SKIRT -> R.string.today_outfit_bottom_long_skirt
     OutfitSuggestion.Bottom.JEANS -> R.string.today_outfit_bottom_jeans
     OutfitSuggestion.Bottom.LONG_PANTS -> R.string.today_outfit_bottom_long_pants

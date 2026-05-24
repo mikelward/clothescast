@@ -89,6 +89,12 @@ internal fun ClothingShortsPreview() {
     ClothingDrawableFrame(R.drawable.ic_outfit_shorts, "shorts")
 }
 
+@Preview(name = "Clothing · short skirt", widthDp = 360)
+@Composable
+internal fun ClothingShortSkirtPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_short_skirt, "short skirt")
+}
+
 @Preview(name = "Clothing · long skirt", widthDp = 360)
 @Composable
 internal fun ClothingLongSkirtPreview() {

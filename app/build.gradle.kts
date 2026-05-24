@@ -391,6 +391,9 @@ dependencies {
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.datastore.preferences.core)
+    // TestListenableWorkerBuilder + WorkManagerTestInitHelper for unit-testing
+    // FetchAndNotifyWorker's doWork() path and its enqueue companion methods.
+    testImplementation(libs.androidx.work.testing)
     // SettingsViewModelTest stubs the geocoding client with a Ktor MockEngine so the
     // tests don't need network. Same library that :core:data already uses.
     testImplementation(libs.ktor.client.mock)

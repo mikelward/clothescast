@@ -11,6 +11,7 @@ import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.usecase.CalendarEventClassifier
+import app.clothescast.core.domain.util.coRunCatching
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant
@@ -42,7 +43,7 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
             return emptyList()
         }
         return withContext(Dispatchers.IO) {
-            runCatching {
+            coRunCatching {
                 // Drop all-day rows whose UTC date isn't today: in zones east of
                 // UTC, yesterday's all-day event overlaps the start of today's
                 // local-day window and would otherwise bleed in. Timed rows are
@@ -66,7 +67,7 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
             return emptyList()
         }
         return withContext(Dispatchers.IO) {
-            runCatching {
+            coRunCatching {
                 // Narrow the year-long window to all-day rows at the provider
                 // level: birthdays (Contacts / the Birthday event type) and the
                 // synced "Holidays in <country>" calendars are all-day, so this

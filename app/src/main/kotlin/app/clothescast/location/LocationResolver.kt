@@ -12,6 +12,7 @@ import app.clothescast.diag.DiagLog
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.util.coRunCatching
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.resume
@@ -53,12 +54,11 @@ class LocationResolver(
      * close enough to "current" for forecast purposes) but wrong for
      * callers that need to detect movement — use [resolveFresh] for those.
      */
-    suspend fun resolve(): Location? = try {
+    suspend fun resolve(): Location? = coRunCatching {
         resolveInner(maxAgeMillis = this.maxAgeMillis, allowStaleFallback = true)
-    } catch (t: Throwable) {
-        DiagLog.w(TAG, "Unexpected ${t.javaClass.simpleName} from resolve(); returning null.", t)
-        null
     }
+        .onFailure { DiagLog.w(TAG, "Unexpected ${it.javaClass.simpleName} from resolve(); returning null.", it) }
+        .getOrNull()
 
     /**
      * Strict variant of [resolve] for callers that must distinguish "user has
@@ -75,12 +75,11 @@ class LocationResolver(
      * Same provider strategy and [timeoutMillis] as [resolve]; only the
      * staleness semantics differ.
      */
-    suspend fun resolveFresh(maxAgeMillis: Long): Location? = try {
+    suspend fun resolveFresh(maxAgeMillis: Long): Location? = coRunCatching {
         resolveInner(maxAgeMillis = maxAgeMillis, allowStaleFallback = false)
-    } catch (t: Throwable) {
-        DiagLog.w(TAG, "Unexpected ${t.javaClass.simpleName} from resolveFresh(); returning null.", t)
-        null
     }
+        .onFailure { DiagLog.w(TAG, "Unexpected ${it.javaClass.simpleName} from resolveFresh(); returning null.", it) }
+        .getOrNull()
 
     private suspend fun resolveInner(maxAgeMillis: Long, allowStaleFallback: Boolean): Location? {
         if (!hasCoarsePermission()) {

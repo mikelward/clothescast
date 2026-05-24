@@ -2998,15 +2998,54 @@ private const val MEXICO_DEAD_WHITE = 0xFFF5F5F5L
 // Synthetic themes used by [FestiveThemes] when the user has opted into
 // calendar-sourced theming and a row arrives carrying [EventKind.PUBLIC_HOLIDAY]
 // or [EventKind.BIRTHDAY]. Generic festive gold/purple for a holiday name we
-// don't recognise (Diwali, Eid, Lunar New Year — catalog gaps), and a confetti
-// yellow/magenta for a detected birthday — gender-neutral, maximum party pop,
-// and visually distinct from every catalog holiday and the generic-holiday
-// fallback above so a "Bob's birthday" in the banner never gets mistaken
-// for a recognised holiday.
+// don't recognise (catalog gaps); religion-specific palettes when the owner
+// account identifies one of Google's religion-keyed holiday calendars
+// (Eid from "Muslim Holidays", Yom Kippur from "Jewish Holidays", Diwali
+// from "Hindu Holidays"); and a confetti yellow/magenta for a detected
+// birthday — gender-neutral, maximum party pop, and visually distinct from
+// every catalog holiday and the generic-holiday fallback above so a "Bob's
+// birthday" in the banner never gets mistaken for a recognised holiday.
 private const val FESTIVE_GOLD = 0xFFD4AF37L
 private const val FESTIVE_PURPLE = 0xFF6A1B9AL
+private const val ISLAMIC_GREEN = 0xFF1B8A4BL
+private const val ISLAMIC_GOLD = 0xFFD4AF37L
+private const val JUDAISM_BLUE = 0xFF0038B8L
+private const val JUDAISM_WHITE = 0xFFFAFAFAL
+private const val HINDU_SAFFRON = 0xFFFF9933L
+private const val HINDU_MAGENTA = 0xFFC2185BL
 private const val BIRTHDAY_YELLOW = 0xFFFFD54FL
 private const val BIRTHDAY_MAGENTA = 0xFFD81B60L
+
+/**
+ * Religion of a calendar-sourced public holiday, inferred from the source
+ * calendar's owner account. Detection is locale-stable: Google localises the
+ * locale prefix (`en.`, `de.`, `fr.`, …) and the event titles, but the
+ * religion key (`judaism`, `islamic`, `hinduism`) stays fixed, so a French
+ * phone seeing "Aïd el-Fitr" still themes green/gold. Region-keyed calendars
+ * (`en.usa`, `en.indian`, `en.australian`) and any non-Google source fall
+ * through to `null` and pick up the generic gold/purple fallback.
+ *
+ * The set is intentionally small. Adding more religions is cheap (one regex
+ * arm + one palette) but each one is a colour-design call, so leave it to a
+ * follow-up when there's a concrete user asking for it.
+ */
+private enum class HolidayReligion { ISLAMIC, JUDAISM, HINDUISM }
+
+private val RELIGION_OWNER_REGEX = Regex(
+    "\\.(judaism|islamic|hinduism)#holiday@group\\.v\\.calendar\\.google\\.com$",
+    RegexOption.IGNORE_CASE,
+)
+
+private fun religionFromOwnerAccount(ownerAccount: String?): HolidayReligion? {
+    if (ownerAccount == null) return null
+    val match = RELIGION_OWNER_REGEX.find(ownerAccount) ?: return null
+    return when (match.groupValues[1].lowercase()) {
+        "islamic" -> HolidayReligion.ISLAMIC
+        "judaism" -> HolidayReligion.JUDAISM
+        "hinduism" -> HolidayReligion.HINDUISM
+        else -> null
+    }
+}
 
 /**
  * Cleans up a calendar-sourced public-holiday title for display in the
@@ -3049,16 +3088,29 @@ fun normalizeCalendarHolidayTitle(raw: String): String =
  * as [CalendarEvent.title].
  */
 object FestiveThemes {
-    fun publicHoliday(title: String): HolidayTheme {
+    fun publicHoliday(title: String, ownerAccount: String? = null): HolidayTheme {
         val display = normalizeCalendarHolidayTitle(title)
+        val religion = religionFromOwnerAccount(ownerAccount)
+        val emoji = when (religion) {
+            HolidayReligion.ISLAMIC -> "🌙"
+            HolidayReligion.JUDAISM -> "✡️"
+            HolidayReligion.HINDUISM -> "🪔"
+            null -> "🎊"
+        }
+        val (top, bottom) = when (religion) {
+            HolidayReligion.ISLAMIC -> ISLAMIC_GREEN to ISLAMIC_GOLD
+            HolidayReligion.JUDAISM -> JUDAISM_BLUE to JUDAISM_WHITE
+            HolidayReligion.HINDUISM -> HINDU_SAFFRON to HINDU_MAGENTA
+            null -> FESTIVE_GOLD to FESTIVE_PURPLE
+        }
         return HolidayTheme(
             id = HolidayId.GENERIC_PUBLIC_HOLIDAY,
             displayNameKey = display,
             bannerTextKey = display,
-            emoji = "🎊",
-            topOverrides = topPaletteAll(FESTIVE_GOLD),
-            bottomOverrides = bottomPaletteAll(FESTIVE_PURPLE),
-            bannerArgb = FESTIVE_GOLD,
+            emoji = emoji,
+            topOverrides = topPaletteAll(top),
+            bottomOverrides = bottomPaletteAll(bottom),
+            bannerArgb = top,
             countries = emptySet(),
             isSynthetic = true,
             displayTitleOverride = display,

@@ -20,12 +20,13 @@ class ThemeForTodayTest {
     private val random = LocalDate.of(2026, Month.MAY, 18)
     private val christmas = LocalDate.of(2026, Month.DECEMBER, 25)
 
-    private fun publicHoliday(title: String) = CalendarEvent(
+    private fun publicHoliday(title: String, ownerAccount: String? = null) = CalendarEvent(
         title = title,
         start = LocalTime.MIDNIGHT,
         end = LocalTime.MIDNIGHT,
         allDay = true,
         kind = EventKind.PUBLIC_HOLIDAY,
+        ownerAccount = ownerAccount,
     )
 
     private fun birthday(title: String) = CalendarEvent(
@@ -324,6 +325,91 @@ class ThemeForTodayTest {
             themeFromCalendarHolidays = true,
             themeFromCalendarBirthdays = true,
         ).shouldBeNull()
+    }
+
+    @Test
+    fun `Muslim Holidays calendar gets the Islamic green-gold palette`() {
+        val theme = subject.resolve(
+            date = random,
+            overrides = noOverrides,
+            enabledCountries = allCountries,
+            events = listOf(publicHoliday("Eid al-Fitr", "en.islamic#holiday@group.v.calendar.google.com")),
+            themeFromCalendarHolidays = true,
+            themeFromCalendarBirthdays = false,
+        )
+        theme.shouldNotBeNull()
+        theme.id shouldBe HolidayId.GENERIC_PUBLIC_HOLIDAY
+        theme.emoji shouldBe "🌙"
+        theme.bannerArgb shouldBe 0xFF1B8A4BL
+        theme.displayTitleOverride shouldBe "Eid al-Fitr"
+    }
+
+    @Test
+    fun `Jewish Holidays calendar gets the Judaism blue-white palette`() {
+        val theme = subject.resolve(
+            date = random,
+            overrides = noOverrides,
+            enabledCountries = allCountries,
+            events = listOf(publicHoliday("Yom Kippur", "en.judaism#holiday@group.v.calendar.google.com")),
+            themeFromCalendarHolidays = true,
+            themeFromCalendarBirthdays = false,
+        )
+        theme.shouldNotBeNull()
+        theme.emoji shouldBe "✡️"
+        theme.bannerArgb shouldBe 0xFF0038B8L
+        theme.displayTitleOverride shouldBe "Yom Kippur"
+    }
+
+    @Test
+    fun `Hindu Holidays calendar gets the saffron-magenta palette`() {
+        val theme = subject.resolve(
+            date = random,
+            overrides = noOverrides,
+            enabledCountries = allCountries,
+            events = listOf(publicHoliday("Diwali", "en.hinduism#holiday@group.v.calendar.google.com")),
+            themeFromCalendarHolidays = true,
+            themeFromCalendarBirthdays = false,
+        )
+        theme.shouldNotBeNull()
+        theme.emoji shouldBe "🪔"
+        theme.bannerArgb shouldBe 0xFFFF9933L
+    }
+
+    @Test
+    fun `non-locale-en religion calendar still themes by religion`() {
+        // Detection is locale-stable: a French phone subscribed to Muslim
+        // Holidays surfaces "Aïd el-Fitr" via `fr.islamic#holiday@…`. Religion
+        // key is fixed regardless of locale prefix.
+        val theme = subject.resolve(
+            date = random,
+            overrides = noOverrides,
+            enabledCountries = allCountries,
+            events = listOf(publicHoliday("Aïd el-Fitr", "fr.islamic#holiday@group.v.calendar.google.com")),
+            themeFromCalendarHolidays = true,
+            themeFromCalendarBirthdays = false,
+        )
+        theme.shouldNotBeNull()
+        theme.emoji shouldBe "🌙"
+        theme.bannerArgb shouldBe 0xFF1B8A4BL
+    }
+
+    @Test
+    fun `region-keyed holiday calendar keeps the generic festive palette`() {
+        // `en.usa#holiday@…` is a country calendar, not a religion calendar —
+        // no religion-specific palette, falls through to the generic 🎊
+        // gold/purple so a Thanksgiving from the catalog-gap path still
+        // themes neutrally.
+        val theme = subject.resolve(
+            date = random,
+            overrides = noOverrides,
+            enabledCountries = allCountries,
+            events = listOf(publicHoliday("Some Holiday", "en.usa#holiday@group.v.calendar.google.com")),
+            themeFromCalendarHolidays = true,
+            themeFromCalendarBirthdays = false,
+        )
+        theme.shouldNotBeNull()
+        theme.emoji shouldBe "🎊"
+        theme.bannerArgb shouldBe 0xFFD4AF37L
     }
 
     @Test

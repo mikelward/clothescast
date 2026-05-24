@@ -57,7 +57,7 @@ class ThemeForToday(
             !holidayResolver.hasCatalogMatch(date, enabledCountries)
         ) {
             events.firstOrNull { it.kind == EventKind.PUBLIC_HOLIDAY }
-                ?.let { listOf(FestiveThemes.publicHoliday(it.title)) }
+                ?.let { listOf(FestiveThemes.publicHoliday(it.title, it.ownerAccount)) }
                 .orEmpty()
         } else {
             emptyList()

@@ -4,8 +4,8 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
+import app.clothescast.core.domain.util.coRunCatching
 import app.clothescast.diag.DiagLog
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -53,18 +53,11 @@ class ReverseGeocoder(
 
     /** Best-effort city name + country code, or [Result.EMPTY] if the
      *  geocoder is unavailable / times out / returns nothing useful. */
-    suspend fun resolve(latitude: Double, longitude: Double): Result = try {
+    suspend fun resolve(latitude: Double, longitude: Double): Result = coRunCatching {
         resolveInner(latitude, longitude)
-    } catch (t: CancellationException) {
-        // Coroutine cancellation must propagate — otherwise a Settings
-        // toggle that cancels the cache-refresh worker mid-retry would
-        // sail through and let the caller still write a stale
-        // setLocation. The broad catch below would otherwise swallow it.
-        throw t
-    } catch (t: Throwable) {
-        DiagLog.w(TAG, "Unexpected ${t.javaClass.simpleName} from resolve; returning empty.", t)
-        Result.EMPTY
     }
+        .onFailure { DiagLog.w(TAG, "Unexpected ${it.javaClass.simpleName} from resolve; returning empty.", it) }
+        .getOrDefault(Result.EMPTY)
 
     private suspend fun resolveInner(latitude: Double, longitude: Double): Result {
         if (!Geocoder.isPresent()) {

@@ -7,6 +7,7 @@ import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.repository.WeatherRepository
+import app.clothescast.core.domain.util.coRunCatching
 import java.time.Clock
 import java.time.LocalDate
 
@@ -87,13 +88,12 @@ class GenerateDailyInsight(
 
     private suspend fun readEventsForDay(date: LocalDate, prefs: UserPreferences): List<CalendarEvent> {
         // Failures (missing permission, provider crash) degrade to no events so
-        // a misbehaving reader can never fail the insight pipeline. Capture the
-        // property as a local so the smart-cast survives across the runCatching
-        // lambda boundary.
+        // a misbehaving reader can never fail the insight pipeline. Reader
+        // implementations are expected to log their own failures before
+        // throwing; we don't have a logger in pure-Kotlin :core:domain.
         val reader = calendarEventReader
         if (!prefs.calendarEventMentionsActive || reader == null) return emptyList()
-        return runCatching {
-            reader.eventsForDay(date, prefs.schedule.zoneId)
-        }.getOrDefault(emptyList())
+        return coRunCatching { reader.eventsForDay(date, prefs.schedule.zoneId) }
+            .getOrDefault(emptyList())
     }
 }

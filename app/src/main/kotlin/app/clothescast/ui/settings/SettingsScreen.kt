@@ -268,6 +268,8 @@ internal fun CalendarPage(
             onSetCountryCurrent = viewModel::setHolidayCountryCurrent,
             onSetCountryGlobal = viewModel::setHolidayCountryGlobal,
             onSetCountryFunny = viewModel::setHolidayCountryFunny,
+            onSetCountryChristian = viewModel::setHolidayCountryChristian,
+            onSetCountryOrthodox = viewModel::setHolidayCountryOrthodox,
             onSetCountryAll = viewModel::setHolidayCountryAll,
             onSetCountryOverride = viewModel::setHolidayCountryOverride,
             onSetHolidayOverride = viewModel::setHolidayOverride,

@@ -20,12 +20,16 @@ import java.util.Locale
  * Calendar events are only read when the user has opted into
  * calendar-sourced theming; the read is wrapped in [runCatching] so a
  * missing READ_CALENDAR permission silently falls through to "no events".
+ *
+ * [today] defaults to the user's wall-clock date but is injectable so
+ * tests can pin a specific calendar date (avoids flake when the test
+ * date happens to land on a real holiday like Pentecost or Easter).
  */
 suspend fun resolveHolidayTheme(
     prefs: UserPreferences,
     calendarEventReader: CalendarEventReader,
+    today: LocalDate = LocalDate.now(prefs.schedule.zoneId),
 ): HolidayTheme? {
-    val today = LocalDate.now(prefs.schedule.zoneId)
     val needEvents = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive
     val events = if (needEvents) {
         runCatching {

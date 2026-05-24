@@ -614,6 +614,14 @@ class SettingsRepository(
         dataStore.edit { it[HOLIDAY_COUNTRY_FUNNY] = enabled }
     }
 
+    suspend fun setHolidayCountryChristian(enabled: Boolean) {
+        dataStore.edit { it[HOLIDAY_COUNTRY_CHRISTIAN] = enabled }
+    }
+
+    suspend fun setHolidayCountryOrthodox(enabled: Boolean) {
+        dataStore.edit { it[HOLIDAY_COUNTRY_ORTHODOX] = enabled }
+    }
+
     suspend fun setHolidayCountryAll(enabled: Boolean) {
         dataStore.edit { it[HOLIDAY_COUNTRY_ALL] = enabled }
     }
@@ -820,6 +828,18 @@ class SettingsRepository(
             // fresh and pre-upgrade installs see Funny themes (Talk Like a
             // Pirate Day) by default.
             funny = this[HOLIDAY_COUNTRY_FUNNY] != false,
+            // Default-false on missing key. These are religious-tradition
+            // observances; users in Christian-tradition countries with
+            // public holidays still pick up the relevant entries via
+            // their `home` country (each Christian holiday carries both
+            // the CHRISTIAN sentinel and the per-country ISO codes where
+            // it's a public holiday). Opt in to extend to the strictly-
+            // liturgical days (Ash Wed, Palm Sun, Maundy Thu).
+            christian = this[HOLIDAY_COUNTRY_CHRISTIAN] == true,
+            // Default-false on missing key — Orthodox is a narrower
+            // tradition and Orthodox-observing users pick up Jan 7
+            // Christmas via their home country anyway.
+            orthodox = this[HOLIDAY_COUNTRY_ORTHODOX] == true,
             all = this[HOLIDAY_COUNTRY_ALL] == true,
             countryOverrides = parseHolidayCountryOverrides(this[HOLIDAY_COUNTRY_OVERRIDES]),
         )
@@ -1152,6 +1172,8 @@ class SettingsRepository(
         private val HOLIDAY_COUNTRY_CURRENT = booleanPreferencesKey("holiday_country_current")
         private val HOLIDAY_COUNTRY_GLOBAL = booleanPreferencesKey("holiday_country_global")
         private val HOLIDAY_COUNTRY_FUNNY = booleanPreferencesKey("holiday_country_funny")
+        private val HOLIDAY_COUNTRY_CHRISTIAN = booleanPreferencesKey("holiday_country_christian")
+        private val HOLIDAY_COUNTRY_ORTHODOX = booleanPreferencesKey("holiday_country_orthodox")
         private val HOLIDAY_COUNTRY_ALL = booleanPreferencesKey("holiday_country_all")
         private val HOLIDAY_COUNTRY_OVERRIDES = stringSetPreferencesKey("holiday_country_overrides")
         private val FORECAST_MODELS = stringSetPreferencesKey("forecast_models")

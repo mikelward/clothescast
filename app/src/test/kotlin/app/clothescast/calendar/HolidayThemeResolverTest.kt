@@ -39,6 +39,16 @@ class HolidayThemeResolverTest {
         calendarEnabled = true,
     )
 
+    /**
+     * Fixed non-holiday date used by every test — pinned so a real-clock
+     * holiday (Pentecost, Easter, etc.) doesn't drag a catalog theme into
+     * a test that's really about the calendar-reader gate. Aug 11 has no
+     * catalog entries; the resolver-side test
+     * [HolidayResolverTest.`non-holiday date returns null even with no overrides and all countries`]
+     * uses the same date for the same reason.
+     */
+    private val nonHolidayDate: LocalDate = LocalDate.of(2026, 8, 11)
+
     @Test
     fun `birthday event resolves to a synthetic birthday theme`() = runBlocking {
         val prefs = basePrefs.copy(themeFromCalendarBirthdays = true)
@@ -61,7 +71,7 @@ class HolidayThemeResolverTest {
             ): List<UpcomingCalendarEvent> = emptyList()
         }
 
-        val theme = resolveHolidayTheme(prefs, reader)
+        val theme = resolveHolidayTheme(prefs, reader, today = nonHolidayDate)
 
         theme.shouldNotBeNull()
         theme.id shouldBe HolidayId.BIRTHDAY
@@ -86,7 +96,7 @@ class HolidayThemeResolverTest {
             ): List<UpcomingCalendarEvent> = emptyList()
         }
 
-        resolveHolidayTheme(prefs, reader).shouldBeNull()
+        resolveHolidayTheme(prefs, reader, today = nonHolidayDate).shouldBeNull()
     }
 
     @Test
@@ -103,6 +113,6 @@ class HolidayThemeResolverTest {
             ): List<UpcomingCalendarEvent> = emptyList()
         }
 
-        resolveHolidayTheme(prefs, reader).shouldBeNull()
+        resolveHolidayTheme(prefs, reader, today = nonHolidayDate).shouldBeNull()
     }
 }

@@ -483,6 +483,14 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setHolidayCountryFunny(enabled) }
     }
 
+    fun setHolidayCountryChristian(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setHolidayCountryChristian(enabled) }
+    }
+
+    fun setHolidayCountryOrthodox(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setHolidayCountryOrthodox(enabled) }
+    }
+
     fun setHolidayCountryAll(enabled: Boolean) {
         viewModelScope.launch { settingsRepository.setHolidayCountryAll(enabled) }
     }

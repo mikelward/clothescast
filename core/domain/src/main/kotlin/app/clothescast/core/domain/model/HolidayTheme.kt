@@ -18,95 +18,189 @@ import java.time.Month
 enum class HolidayId {
     NEW_YEARS_DAY,
     EPIPHANY,
+    ORTHODOX_CHRISTMAS,
     JAPAN_COMING_OF_AGE_DAY,
     MLK_DAY,
+    UKRAINE_UNITY_DAY,
     BURNS_NIGHT,
     AUSTRALIA_DAY,
+    INDIA_REPUBLIC_DAY,
+    MEXICO_CONSTITUTION_DAY,
     WAITANGI_DAY,
     VALENTINES_DAY,
     US_PRESIDENTS_DAY,
+    RUSSIA_DEFENDER_OF_FATHERLAND_DAY,
     ST_DAVIDS_DAY,
     KOREAN_INDEPENDENCE_MOVEMENT_DAY,
+    MARDI_GRAS,
+    ASH_WEDNESDAY,
     ST_PATRICKS_DAY,
+    MEXICO_BENITO_JUAREZ_BIRTHDAY,
+    PAKISTAN_DAY,
+    BANGLADESH_INDEPENDENCE_DAY,
     UK_MOTHERING_SUNDAY,
+    PALM_SUNDAY,
+    MAUNDY_THURSDAY,
     GOOD_FRIDAY,
     EASTER_SUNDAY,
     EASTER_MONDAY,
+    THAILAND_CHAKRI_DAY,
+    THAILAND_SONGKRAN,
+    BRAZIL_TIRADENTES_DAY,
     ST_GEORGES_DAY,
+    TURKEY_CHILDRENS_DAY,
     ANZAC_DAY,
+    EGYPT_SINAI_LIBERATION_DAY,
+    SOUTH_AFRICA_FREEDOM_DAY,
+    VIETNAM_REUNIFICATION_DAY,
     LABOUR_DAY,
     JAPAN_GREENERY_DAY,
     CINCO_DE_MAYO,
     UK_EARLY_MAY_BANK_HOLIDAY,
+    UKRAINE_VICTORY_DAY,
+    RUSSIA_VICTORY_DAY,
     MOTHERS_DAY,
+    TURKEY_YOUTH_DAY,
+    ARGENTINA_MAY_REVOLUTION,
+    ASCENSION_DAY,
+    PENTECOST,
+    WHIT_MONDAY,
     CROATIA_STATEHOOD_DAY,
     US_MEMORIAL_DAY,
     UK_SPRING_BANK_HOLIDAY,
     TOWEL_DAY,
+    INDONESIA_PANCASILA_DAY,
     ITALY_REPUBLIC_DAY,
     KOREAN_MEMORIAL_DAY,
+    CORPUS_CHRISTI,
     UK_KINGS_BIRTHDAY,
+    PHILIPPINES_INDEPENDENCE_DAY,
+    NIGERIA_DEMOCRACY_DAY,
+    RUSSIA_DAY,
+    SOUTH_AFRICA_YOUTH_DAY,
     JUNETEENTH,
     FATHERS_DAY_JUN,
+    UKRAINE_CONSTITUTION_DAY,
     CANADA_DAY,
     US_INDEPENDENCE_DAY,
+    ARGENTINA_INDEPENDENCE_DAY,
     BASTILLE_DAY,
+    UKRAINE_STATEHOOD_DAY,
     JAPAN_MARINE_DAY,
+    EGYPT_REVOLUTION_DAY,
     CROATIA_VICTORY_DAY,
+    SINGAPORE_NATIONAL_DAY,
+    PAKISTAN_INDEPENDENCE_DAY,
+    INDIA_INDEPENDENCE_DAY,
     KOREAN_LIBERATION_DAY,
     ASSUMPTION,
+    INDONESIA_INDEPENDENCE_DAY,
+    UKRAINE_INDEPENDENCE_DAY,
     UK_SUMMER_BANK_HOLIDAY,
+    TURKEY_VICTORY_DAY,
+    MALAYSIA_INDEPENDENCE_DAY,
     FATHERS_DAY_SEP,
-    US_LABOR_DAY,
+    VIETNAM_NATIONAL_DAY,
     BRAZIL_INDEPENDENCE_DAY,
+    US_LABOR_DAY,
+    MALAYSIA_DAY,
+    MEXICO_INDEPENDENCE_DAY,
     TALK_LIKE_A_PIRATE_DAY,
+    SOUTH_AFRICA_HERITAGE_DAY,
+    UKRAINE_DEFENDER_DAY,
+    NIGERIA_INDEPENDENCE_DAY,
+    INDIA_GANDHI_JAYANTI,
     GERMAN_UNITY_DAY,
     CROATIA_INDEPENDENCE_DAY,
     KOREAN_HANGEUL_DAY,
     CANADIAN_THANKSGIVING,
+    BRAZIL_OUR_LADY_APARECIDA,
     SPAIN_HISPANIC_DAY,
     AUSTRIA_NATIONAL_DAY,
     NZ_LABOUR_DAY,
+    TURKEY_REPUBLIC_DAY,
     HALLOWEEN,
     ALL_SAINTS_DAY,
+    MEXICO_DAY_OF_THE_DEAD,
     JAPAN_CULTURE_DAY,
+    RUSSIA_UNITY_DAY,
     MELBOURNE_CUP_DAY,
     US_ELECTION_DAY,
     BONFIRE_NIGHT,
     UK_REMEMBRANCE_SUNDAY,
     REMEMBRANCE_DAY,
+    INDIA_CHILDRENS_DAY,
+    BRAZIL_REPUBLIC_PROCLAMATION,
+    MEXICO_REVOLUTION_DAY,
+    BRAZIL_BLACK_AWARENESS,
     US_THANKSGIVING,
+    PHILIPPINES_BONIFACIO_DAY,
     ST_ANDREWS_DAY,
     IMMACULATE_CONCEPTION,
+    BANGLADESH_VICTORY_DAY,
+    SOUTH_AFRICA_DAY_OF_RECONCILIATION,
     CHRISTMAS_DAY,
     BOXING_DAY,
-    // TODO(holidays-v4): Christian / Catholic religious bucket. The four
-    // Easter-cluster entries ([GOOD_FRIDAY], [EASTER_SUNDAY],
-    // [EASTER_MONDAY], plus Ascension / Pentecost / Whit Monday /
-    // Corpus Christi when added) currently ride the [GLOBAL_COUNTRY]
-    // bucket so they auto-fire for everyone who hasn't muted Global —
-    // a pragmatic v1 punt that sidesteps the "which countries are
-    // nominally Christian?" classification. Long term these belong in
-    // a [HolidayCatalog.CHRISTIAN] (or split into CATHOLIC / PROTESTANT)
-    // sentinel, with its own checkbox alongside Home / Current / Global
-    // in the picker.
+    PHILIPPINES_RIZAL_DAY,
+    // TODO(holidays-v5): Lookup predicate + lunisolar / Hijri / Hebrew /
+    // Julian-calendar holidays. Needs a new HolidayDate.Lookup(
+    //   Map<Year, MonthDay>) predicate that returns null when the year
+    // is outside the table (so the resolver silently falls through),
+    // plus per-year tables covering ~2024-2040 (refreshed annually).
+    // When that lands, add these holidays and the matching
+    // religious-bucket sentinels + HolidayCountrySelection toggles in
+    // the same PR (so a bucket and its first entry land together,
+    // rather than leaving an empty checkbox in Settings):
     //
-    // TODO(holidays-v4): lunisolar holidays (Lunar New Year, Diwali,
-    // Hanukkah, Eid, Holi). Need per-year lookup tables — none of them
-    // has a closed-form Gregorian computus the way Easter does.
+    //   ISLAMIC bucket (new): Eid al-Fitr, Eid al-Adha, Islamic New
+    //     Year (Muharram), Mawlid, Ramadan start. Countries: ID, PK,
+    //     BD, TR, EG, MY, NG, SA, AE, MA, DZ, IQ, IR ...
+    //   JEWISH bucket (new): Hanukkah, Passover, Rosh Hashanah, Yom
+    //     Kippur, Sukkot, Purim. Countries: IL plus diaspora-honest
+    //     GLOBAL-style.
+    //   HINDU bucket (new): Diwali, Holi, Raksha Bandhan, Ganesh
+    //     Chaturthi, Navratri. Countries: IN, NP, MU, FJ, SG (per
+    //     Singapore public holiday list).
+    //   Lunar (no religious bucket — cultural): Lunar New Year,
+    //     Mid-Autumn Festival, Dragon Boat Festival, Qingming.
+    //     Countries: CN, TW, HK, SG, MY, VN (Tet = Lunar NY).
+    //   Orthodox Easter (and its Good Friday / Pentecost / Whit
+    //     Monday cluster): Julian-calendar computus. Either move
+    //     alongside the existing EasterRelative entries once Lookup
+    //     lands, or add a sibling OrthodoxEasterRelative predicate so
+    //     the Western / Orthodox split stays explicit at the
+    //     predicate level.
+    //   Buddhist (TH, LK, MM): Vesak, Asalha Bucha, Khao Phansa.
     //
-    // TODO(holidays-v4): switch the [REMEMBRANCE_DAY] banner-name lookup
-    // from [Region]-derived country to location-derived country once the
-    // app's reverse-geocoding plumbing exposes a stable country code.
-    // Region is the right *user-controlled* signal short-term; location is
-    // the more accurate one once available.
+    // The Easter cluster ([GOOD_FRIDAY] / [EASTER_SUNDAY] /
+    // [EASTER_MONDAY]) deliberately stays on [HolidayCatalog.GLOBAL_COUNTRY]
+    // even though [HolidayCatalog.CHRISTIAN] now exists. Easter has
+    // become broadly culturally observed across religious / non-religious
+    // households alike (egg hunts, chocolate, the Easter long weekend
+    // as a public holiday in many catalog countries), and a CHRISTIAN-
+    // only tagging would default-mute Easter for users who don't
+    // identify as Christian but still observe the day culturally.
+    // Strictly-liturgical days (Ash Wed, Palm Sun, Maundy Thu) sit
+    // on [HolidayCatalog.CHRISTIAN] as opt-in instead.
     //
-    // TODO(holidays-v4): same-date collisions — first-match in catalog
-    // order currently wins, which means a UK user with St David's enabled
-    // will never see Korean Independence Movement Day (same Mar 1 date),
-    // and an Italian user can't see Liberation Day because Anzac (same
-    // Apr 25 date) gets in first. Resolver should pick by country once
-    // location-derived country lands, with first-match as the fallback.
+    // TODO(holidays-v5): switch the [REMEMBRANCE_DAY] banner-name
+    // lookup from [Region]-derived country to location-derived
+    // country once the app's reverse-geocoding plumbing exposes a
+    // stable country code. Region is the right *user-controlled*
+    // signal short-term; location is the more accurate one once
+    // available.
+    //
+    // TODO(holidays-v5): same-date collisions — first-match in
+    // catalog order currently wins, which means a UK user with St
+    // David's enabled will never see Korean Independence Movement Day
+    // (same Mar 1 date), and an Italian user can't see Liberation Day
+    // because Anzac (same Apr 25 date) gets in first. After the v4
+    // expansion the list of same-date collisions now includes Jan 26
+    // (AU Day / IN Republic Day), Aug 15 (KR Liberation / Assumption
+    // / IN Independence), Apr 25 (Anzac / EG Sinai Liberation), and
+    // Oct 1 (NG Independence / UA Defender). Resolver should pick by
+    // location-derived country once that lands, with first-match as
+    // the fallback.
 
     // Synthetic ids — kept at the end of the enum so older persisted
     // override sets (which serialise as enum names) continue to deserialise
@@ -435,6 +529,36 @@ object HolidayCatalog {
     const val FUNNY: String = "FUNNY"
 
     /**
+     * Sentinel "country" for the Christian-religious bucket — Easter-relative
+     * observances and other Christian feasts whose dates / observance cross
+     * national boundaries: Ash Wednesday, Mardi Gras / Shrove Tuesday, Palm
+     * Sunday, Maundy Thursday, Ascension Day, Pentecost, Whit Monday, Corpus
+     * Christi. Sits in [HolidayTheme.countries] alongside real ISO codes
+     * (each holiday is also tagged with the countries where it's a public
+     * holiday, so a French user picks up Ascension via FR even without
+     * enabling the Christian bucket). Surfaced in Settings as its own
+     * toggleable bucket, off by default — these are religious-tradition
+     * observances rather than universal civic days, so we don't push them
+     * onto every user. The Easter cluster (Good Friday / Easter Sunday /
+     * Easter Monday) stays on [GLOBAL_COUNTRY] because Easter has become
+     * broadly culturally observed (egg hunts, chocolate); the strictly-
+     * liturgical days (Ash Wed, Palm Sun, Maundy Thu) live here as opt-in.
+     */
+    const val CHRISTIAN: String = "CHRISTIAN"
+
+    /**
+     * Sentinel "country" for the Orthodox-Christian bucket. Currently holds
+     * Orthodox Christmas (Jan 7); Orthodox Easter and its cluster need the
+     * Julian-calendar computus (see the [HolidayId.ORTHODOX_CHRISTMAS]-area
+     * v5 TODO). Like [CHRISTIAN] each holiday is also tagged with its
+     * observing countries (RU, RS, GE, ET, MK, BG, BY) so a Russian user
+     * sees it via their `home` country without flipping the Orthodox
+     * toggle. Off by default — most users aren't Orthodox, and the
+     * per-country path covers the observing ones.
+     */
+    const val ORTHODOX: String = "ORTHODOX"
+
+    /**
      * [HolidayId]s constructed at runtime by [FestiveThemes] from calendar
      * events rather than living in this catalog. The Holiday-settings
      * picker filters these out (no fixed date / country, nothing to toggle
@@ -493,6 +617,28 @@ object HolidayCatalog {
             countries = setOf("AT", "ES", "HR", "IT"),
         ),
 
+        // Jan 7 — Orthodox Christmas (Julian-calendar Dec 25). Observed by
+        // the Russian, Serbian, Georgian, Macedonian, Belarusian and
+        // Ethiopian Orthodox Churches. Notably **not** tagged UA: the
+        // Orthodox Church of Ukraine officially moved Christmas to Dec 25
+        // in 2023 as part of the de-Russification calendar shift that also
+        // moved Defender Day from Oct 14 to Oct 1 and Victory Day from
+        // May 9 to May 8 — Ukrainian users still get Dec 25 via the
+        // existing GLOBAL Christmas entry, and adding UA here would
+        // misrepresent the official observance. Liturgical green top +
+        // iconostasis-gold bottom, kept clear of [CHRISTMAS_DAY]'s red
+        // + green so the two Christmases read as visually distinct.
+        HolidayDate.Fixed(Month.JANUARY, 7) to HolidayTheme(
+            id = HolidayId.ORTHODOX_CHRISTMAS,
+            displayNameKey = "holiday_name_orthodox_christmas",
+            bannerTextKey = "holiday_banner_orthodox_christmas",
+            emoji = "☦", // ☦ — Orthodox cross
+            topOverrides = topPaletteAll(ORTHODOX_GREEN),
+            bottomOverrides = bottomPaletteAll(ORTHODOX_GOLD),
+            bannerArgb = ORTHODOX_GREEN,
+            countries = setOf(ORTHODOX, "RU", "RS", "GE", "ET", "MK", "BY"),
+        ),
+
         // 2nd Monday of January — Japan's Coming of Age Day (成人の日).
         // Celebratory; sakura-pink top + black bottom evokes a kimono.
         HolidayDate.NthWeekday(Month.JANUARY, 2, DayOfWeek.MONDAY) to HolidayTheme(
@@ -521,6 +667,22 @@ object HolidayCatalog {
             countries = setOf("US"),
         ),
 
+        // Jan 22 — Ukrainian Unity Day (День Соборності), commemorating the
+        // 1919 unification of the Ukrainian People's Republic and the West
+        // Ukrainian People's Republic. Flag blue top + wheat-field yellow
+        // bottom. Same Ukrainian palette shared by every UA-tagged entry
+        // so the country reads as one continuous visual cluster.
+        HolidayDate.Fixed(Month.JANUARY, 22) to HolidayTheme(
+            id = HolidayId.UKRAINE_UNITY_DAY,
+            displayNameKey = "holiday_name_ukraine_unity_day",
+            bannerTextKey = "holiday_banner_ukraine_unity_day",
+            emoji = "🇺🇦", // 🇺🇦
+            topOverrides = topPaletteAll(UKRAINE_BLUE),
+            bottomOverrides = bottomPaletteAll(UKRAINE_YELLOW),
+            bannerArgb = UKRAINE_BLUE,
+            countries = setOf("UA"),
+        ),
+
         // Jan 25 — Burns Night (Scotland). Tartan-evoking dark green top +
         // tartan red bottom — Black Watch / hunting-Stewart vibe.
         HolidayDate.Fixed(Month.JANUARY, 25) to HolidayTheme(
@@ -545,6 +707,47 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(AUS_GOLD),
             bannerArgb = AUS_GREEN,
             countries = setOf("AU"),
+        ),
+
+        // Jan 26 — Indian Republic Day (गणतंत्र दिवस), marking the 1950
+        // adoption of the Constitution. Saffron top + green bottom with
+        // navy Ashoka Chakra trim on both, matching the flag's tricolour.
+        // Same calendar date as Australia Day above — catalog order means
+        // an AU user resolves Australia Day, an IN user resolves Republic
+        // Day, and a multi-country (AU+IN) user falls to Australia Day
+        // first. See the same-date-collision TODO at the top of
+        // [HolidayId] for the eventual country-resolved tiebreak.
+        HolidayDate.Fixed(Month.JANUARY, 26) to HolidayTheme(
+            id = HolidayId.INDIA_REPUBLIC_DAY,
+            displayNameKey = "holiday_name_india_republic_day",
+            bannerTextKey = "holiday_banner_india_republic_day",
+            emoji = "🇮🇳", // 🇮🇳
+            topOverrides = topPaletteAll(INDIA_SAFFRON),
+            bottomOverrides = bottomPaletteAll(INDIA_GREEN),
+            topStrokeOverrides = topStrokeAll(INDIA_NAVY),
+            bottomStrokeOverrides = bottomStrokeAll(INDIA_NAVY),
+            bannerArgb = INDIA_SAFFRON,
+            countries = setOf("IN"),
+        ),
+
+        // 1st Monday of February — Mexican Day of the Constitution
+        // (Día de la Constitución), commemorating the 1917 constitution.
+        // Mexican-flag green top + red bottom with white papel-picado
+        // accent stroke, distinguishing it from [CINCO_DE_MAYO] (same
+        // palette, but tagged MX/US) and the autumn Independence Day.
+        // Date can land Feb 1-7; on Feb 6 it collides with Waitangi but
+        // country tags don't overlap so each user resolves their own.
+        HolidayDate.NthWeekday(Month.FEBRUARY, 1, DayOfWeek.MONDAY) to HolidayTheme(
+            id = HolidayId.MEXICO_CONSTITUTION_DAY,
+            displayNameKey = "holiday_name_mexico_constitution_day",
+            bannerTextKey = "holiday_banner_mexico_constitution_day",
+            emoji = "🇲🇽", // 🇲🇽
+            topOverrides = topPaletteAll(MEXICO_GREEN),
+            bottomOverrides = bottomPaletteAll(MEXICO_RED),
+            topStrokeOverrides = topStrokeAll(MEXICO_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(MEXICO_WHITE),
+            bannerArgb = MEXICO_GREEN,
+            countries = setOf("MX"),
         ),
 
         // Feb 6 — Waitangi Day (NZ). All Blacks-evoking palette: black tops
@@ -593,6 +796,24 @@ object HolidayCatalog {
             countries = setOf("US"),
         ),
 
+        // Feb 23 — Defender of the Fatherland Day (День защитника
+        // Отечества), Russia's celebration of military service.
+        // Russian-flag tricolour: white top + red bottom with the navy
+        // flag stripe as the unifying accent stroke, matching the
+        // horizontal white / blue / red flag layout.
+        HolidayDate.Fixed(Month.FEBRUARY, 23) to HolidayTheme(
+            id = HolidayId.RUSSIA_DEFENDER_OF_FATHERLAND_DAY,
+            displayNameKey = "holiday_name_russia_defender_of_fatherland_day",
+            bannerTextKey = "holiday_banner_russia_defender_of_fatherland_day",
+            emoji = "🇷🇺", // 🇷🇺
+            topOverrides = topPaletteAll(RUSSIA_WHITE),
+            bottomOverrides = bottomPaletteAll(RUSSIA_RED),
+            topStrokeOverrides = topStrokeAll(RUSSIA_BLUE),
+            bottomStrokeOverrides = bottomStrokeAll(RUSSIA_BLUE),
+            bannerArgb = RUSSIA_RED,
+            countries = setOf("RU"),
+        ),
+
         // Mar 1 — St David's Day. Daffodil yellow tops + leek-green bottoms.
         HolidayDate.Fixed(Month.MARCH, 1) to HolidayTheme(
             id = HolidayId.ST_DAVIDS_DAY,
@@ -621,6 +842,43 @@ object HolidayCatalog {
             countries = setOf("KR"),
         ),
 
+        // Easter − 47 — Mardi Gras / Shrove Tuesday / Carnival Tuesday.
+        // The day before Ash Wednesday; widely observed as the climax of
+        // Carnival (Rio, New Orleans, Venice, Cologne). Tagged CHRISTIAN
+        // (so users in the Christian bucket get the theme regardless of
+        // country) plus BR for Carnival and US for New Orleans's Mardi
+        // Gras, where it's a legal holiday in Louisiana. New Orleans
+        // purple / gold tricolour with green stroke trim — the city's
+        // canonical Carnival colours, distinct from the more sombre
+        // [ASH_WEDNESDAY] palette one day later.
+        HolidayDate.EasterRelative(-47) to HolidayTheme(
+            id = HolidayId.MARDI_GRAS,
+            displayNameKey = "holiday_name_mardi_gras",
+            bannerTextKey = "holiday_banner_mardi_gras",
+            emoji = "🎭", // 🎭 — Carnival masks
+            topOverrides = topPaletteAll(MARDI_GRAS_PURPLE),
+            bottomOverrides = bottomPaletteAll(MARDI_GRAS_GOLD),
+            topStrokeOverrides = topStrokeAll(MARDI_GRAS_GREEN),
+            bottomStrokeOverrides = bottomStrokeAll(MARDI_GRAS_GREEN),
+            bannerArgb = MARDI_GRAS_PURPLE,
+            countries = setOf(CHRISTIAN, "BR", "US"),
+        ),
+
+        // Easter − 46 — Ash Wednesday, the first day of Lent. Penitential
+        // ash-grey monochrome across both tiers, mirroring the imposed
+        // cross. Tagged CHRISTIAN; no specific countries since it's not
+        // a public holiday anywhere but is broadly observed liturgically.
+        HolidayDate.EasterRelative(-46) to HolidayTheme(
+            id = HolidayId.ASH_WEDNESDAY,
+            displayNameKey = "holiday_name_ash_wednesday",
+            bannerTextKey = "holiday_banner_ash_wednesday",
+            emoji = "✝", // ✝
+            topOverrides = topPaletteAll(ASH_GREY),
+            bottomOverrides = bottomPaletteAll(ASH_GREY),
+            bannerArgb = ASH_GREY,
+            countries = setOf(CHRISTIAN),
+        ),
+
         // Mar 17 — St Patrick's Day. Green, green, more green. Monochrome,
         // so stroke overrides are intentionally empty — the existing auto-
         // derive logic paints a slightly darker green outline that reads
@@ -634,6 +892,52 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(IRELAND_GREEN),
             bannerArgb = IRELAND_DEEP,
             countries = setOf("IE", "GB"),
+        ),
+
+        // 3rd Monday of March — Benito Juárez's Birthday, Mexican civic
+        // holiday commemorating the reform-era president (his actual
+        // birthday is Mar 21). Mexican-flag green top + red bottom with
+        // white papel-picado stroke, same palette as the other Mexican
+        // entries so the country reads as one visual cluster.
+        HolidayDate.NthWeekday(Month.MARCH, 3, DayOfWeek.MONDAY) to HolidayTheme(
+            id = HolidayId.MEXICO_BENITO_JUAREZ_BIRTHDAY,
+            displayNameKey = "holiday_name_mexico_benito_juarez_birthday",
+            bannerTextKey = "holiday_banner_mexico_benito_juarez_birthday",
+            emoji = "🇲🇽", // 🇲🇽
+            topOverrides = topPaletteAll(MEXICO_GREEN),
+            bottomOverrides = bottomPaletteAll(MEXICO_RED),
+            topStrokeOverrides = topStrokeAll(MEXICO_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(MEXICO_WHITE),
+            bannerArgb = MEXICO_GREEN,
+            countries = setOf("MX"),
+        ),
+
+        // Mar 23 — Pakistan Day (یوم پاکستان), commemorating the 1940
+        // Lahore Resolution. Pakistan-flag green top + white bottom
+        // evokes the flag's green field and white crescent-and-star band.
+        HolidayDate.Fixed(Month.MARCH, 23) to HolidayTheme(
+            id = HolidayId.PAKISTAN_DAY,
+            displayNameKey = "holiday_name_pakistan_day",
+            bannerTextKey = "holiday_banner_pakistan_day",
+            emoji = "🇵🇰", // 🇵🇰
+            topOverrides = topPaletteAll(PAKISTAN_GREEN),
+            bottomOverrides = bottomPaletteAll(PAKISTAN_WHITE),
+            bannerArgb = PAKISTAN_GREEN,
+            countries = setOf("PK"),
+        ),
+
+        // Mar 26 — Bangladesh Independence Day (স্বাধীনতা দিবস),
+        // commemorating the 1971 declaration of independence. Bottle
+        // green top + red sun-disc bottom mirrors the flag.
+        HolidayDate.Fixed(Month.MARCH, 26) to HolidayTheme(
+            id = HolidayId.BANGLADESH_INDEPENDENCE_DAY,
+            displayNameKey = "holiday_name_bangladesh_independence_day",
+            bannerTextKey = "holiday_banner_bangladesh_independence_day",
+            emoji = "🇧🇩", // 🇧🇩
+            topOverrides = topPaletteAll(BANGLADESH_GREEN),
+            bottomOverrides = bottomPaletteAll(BANGLADESH_RED),
+            bannerArgb = BANGLADESH_GREEN,
+            countries = setOf("BD"),
         ),
 
         // 4th Sunday of Lent (Easter − 21) — UK / Irish Mothering Sunday.
@@ -652,6 +956,36 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(MOTHERING_CREAM),
             bannerArgb = MOTHERING_ROSE,
             countries = setOf("GB", "IE"),
+        ),
+
+        // Easter − 7 — Palm Sunday, marking Christ's entry into Jerusalem.
+        // Olive / palm green top + Passion-week deep purple bottom — the
+        // palm fronds and the impending Passion. Tagged CHRISTIAN; not a
+        // public holiday in any catalog country so no per-country tags.
+        HolidayDate.EasterRelative(-7) to HolidayTheme(
+            id = HolidayId.PALM_SUNDAY,
+            displayNameKey = "holiday_name_palm_sunday",
+            bannerTextKey = "holiday_banner_palm_sunday",
+            emoji = "🌿", // 🌿 — palm frond
+            topOverrides = topPaletteAll(PALM_GREEN),
+            bottomOverrides = bottomPaletteAll(PALM_PURPLE),
+            bannerArgb = PALM_GREEN,
+            countries = setOf(CHRISTIAN),
+        ),
+
+        // Easter − 3 — Maundy Thursday, commemorating the Last Supper.
+        // Liturgical red top (Western vestment colour for the Mass of the
+        // Lord's Supper) + white-linen bottom (the foot-washing cloth).
+        // Tagged CHRISTIAN.
+        HolidayDate.EasterRelative(-3) to HolidayTheme(
+            id = HolidayId.MAUNDY_THURSDAY,
+            displayNameKey = "holiday_name_maundy_thursday",
+            bannerTextKey = "holiday_banner_maundy_thursday",
+            emoji = "🍞", // 🍞 — bread of the Eucharist
+            topOverrides = topPaletteAll(MAUNDY_RED),
+            bottomOverrides = bottomPaletteAll(MAUNDY_WHITE),
+            bannerArgb = MAUNDY_RED,
+            countries = setOf(CHRISTIAN),
         ),
 
         // Easter − 2 — Western Good Friday. Solemn, monochrome aubergine
@@ -698,6 +1032,55 @@ object HolidayCatalog {
             countries = setOf(GLOBAL_COUNTRY),
         ),
 
+        // Apr 6 — Chakri Day (Thailand), commemorating the founding of the
+        // House of Chakri in 1782. Thai-flag red top + blue bottom with
+        // white accent stroke evokes the five-band Thong Trairong.
+        HolidayDate.Fixed(Month.APRIL, 6) to HolidayTheme(
+            id = HolidayId.THAILAND_CHAKRI_DAY,
+            displayNameKey = "holiday_name_thailand_chakri_day",
+            bannerTextKey = "holiday_banner_thailand_chakri_day",
+            emoji = "🇹🇭", // 🇹🇭
+            topOverrides = topPaletteAll(THAILAND_RED),
+            bottomOverrides = bottomPaletteAll(THAILAND_BLUE),
+            topStrokeOverrides = topStrokeAll(THAILAND_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(THAILAND_WHITE),
+            bannerArgb = THAILAND_RED,
+            countries = setOf("TH"),
+        ),
+
+        // Apr 13 — Songkran (สงกรานต์), the Thai New Year water festival.
+        // Official public holiday Apr 13-15; we anchor on the first day
+        // (the most widely-celebrated). Water-blue top + temple-gold
+        // bottom evokes the pouring-water tradition and Wat Pho's
+        // gilded chedis — visually distinct from Chakri Day's flag
+        // palette so the two Thai entries don't read as one.
+        HolidayDate.Fixed(Month.APRIL, 13) to HolidayTheme(
+            id = HolidayId.THAILAND_SONGKRAN,
+            displayNameKey = "holiday_name_thailand_songkran",
+            bannerTextKey = "holiday_banner_thailand_songkran",
+            emoji = "💦", // 💦 — splashing water, Songkran's iconic image
+            topOverrides = topPaletteAll(SONGKRAN_WATER_BLUE),
+            bottomOverrides = bottomPaletteAll(SONGKRAN_GOLD),
+            bannerArgb = SONGKRAN_WATER_BLUE,
+            countries = setOf("TH"),
+        ),
+
+        // Apr 21 — Tiradentes Day (Brazil), commemorating the 1792
+        // execution of independence-movement martyr Joaquim José da Silva
+        // Xavier. Brazilian-flag green top + yellow bottom, same as
+        // [BRAZIL_INDEPENDENCE_DAY] so the two Brazilian national days
+        // share a visual cluster.
+        HolidayDate.Fixed(Month.APRIL, 21) to HolidayTheme(
+            id = HolidayId.BRAZIL_TIRADENTES_DAY,
+            displayNameKey = "holiday_name_brazil_tiradentes_day",
+            bannerTextKey = "holiday_banner_brazil_tiradentes_day",
+            emoji = "🇧🇷", // 🇧🇷
+            topOverrides = topPaletteAll(BRAZIL_GREEN),
+            bottomOverrides = bottomPaletteAll(BRAZIL_YELLOW),
+            bannerArgb = BRAZIL_GREEN,
+            countries = setOf("BR"),
+        ),
+
         // Apr 23 — St George's Day. White tops + red bottoms — the flag's
         // two halves.
         HolidayDate.Fixed(Month.APRIL, 23) to HolidayTheme(
@@ -709,6 +1092,24 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(ENGLAND_RED),
             bannerArgb = ENGLAND_RED,
             countries = setOf("GB"),
+        ),
+
+        // Apr 23 — National Sovereignty and Children's Day (23 Nisan
+        // Ulusal Egemenlik ve Çocuk Bayramı), Turkey. Marks the 1920
+        // founding of the Grand National Assembly and was the world's
+        // first holiday formally dedicated to children. Turkish-flag
+        // crimson red top + white bottom mirrors the Ay Yıldız.
+        // Same calendar date as St George's Day above — country tags
+        // don't overlap so each user resolves their own.
+        HolidayDate.Fixed(Month.APRIL, 23) to HolidayTheme(
+            id = HolidayId.TURKEY_CHILDRENS_DAY,
+            displayNameKey = "holiday_name_turkey_childrens_day",
+            bannerTextKey = "holiday_banner_turkey_childrens_day",
+            emoji = "🇹🇷", // 🇹🇷
+            topOverrides = topPaletteAll(TURKEY_RED),
+            bottomOverrides = bottomPaletteAll(TURKEY_WHITE),
+            bannerArgb = TURKEY_RED,
+            countries = setOf("TR"),
         ),
 
         // Apr 25 — Anzac Day. Solemn day — uniform-evoking khaki across
@@ -725,6 +1126,57 @@ object HolidayCatalog {
             bannerArgb = ANZAC_KHAKI,
             countries = setOf("AU", "NZ"),
             solemn = true,
+        ),
+
+        // Apr 25 — Sinai Liberation Day (Egypt), commemorating the 1982
+        // return of the Sinai Peninsula. Egyptian-flag red top + black
+        // bottom with gold Eagle-of-Saladin stroke. Same calendar date
+        // as Anzac Day above; country tags don't overlap so each user
+        // resolves their own (first-match-in-catalog applies for any
+        // multi-country user — see the same-date-collision TODO).
+        HolidayDate.Fixed(Month.APRIL, 25) to HolidayTheme(
+            id = HolidayId.EGYPT_SINAI_LIBERATION_DAY,
+            displayNameKey = "holiday_name_egypt_sinai_liberation_day",
+            bannerTextKey = "holiday_banner_egypt_sinai_liberation_day",
+            emoji = "🇪🇬", // 🇪🇬
+            topOverrides = topPaletteAll(EGYPT_RED),
+            bottomOverrides = bottomPaletteAll(EGYPT_BLACK),
+            topStrokeOverrides = topStrokeAll(EGYPT_GOLD),
+            bottomStrokeOverrides = bottomStrokeAll(EGYPT_GOLD),
+            bannerArgb = EGYPT_RED,
+            countries = setOf("EG"),
+        ),
+
+        // Apr 27 — Freedom Day (South Africa), commemorating the 1994
+        // first post-apartheid democratic elections. We anchor on the
+        // springbok-green Y of the flag with gold trim; the full six-
+        // colour flag doesn't translate well to a two-tier garment
+        // palette so we let the green / gold pair stand for the day's
+        // celebratory tone, distinct from the more sombre [REMEMBRANCE_DAY]
+        // and [US_MEMORIAL_DAY] khakis.
+        HolidayDate.Fixed(Month.APRIL, 27) to HolidayTheme(
+            id = HolidayId.SOUTH_AFRICA_FREEDOM_DAY,
+            displayNameKey = "holiday_name_south_africa_freedom_day",
+            bannerTextKey = "holiday_banner_south_africa_freedom_day",
+            emoji = "🇿🇦", // 🇿🇦
+            topOverrides = topPaletteAll(SA_GREEN),
+            bottomOverrides = bottomPaletteAll(SA_GOLD),
+            bannerArgb = SA_GREEN,
+            countries = setOf("ZA"),
+        ),
+
+        // Apr 30 — Reunification Day (Vietnam), commemorating the 1975
+        // fall of Saigon and reunification of North and South. Vietnamese-
+        // flag red top + yellow-star bottom evokes the Cờ đỏ sao vàng.
+        HolidayDate.Fixed(Month.APRIL, 30) to HolidayTheme(
+            id = HolidayId.VIETNAM_REUNIFICATION_DAY,
+            displayNameKey = "holiday_name_vietnam_reunification_day",
+            bannerTextKey = "holiday_banner_vietnam_reunification_day",
+            emoji = "🇻🇳", // 🇻🇳
+            topOverrides = topPaletteAll(VIETNAM_RED),
+            bottomOverrides = bottomPaletteAll(VIETNAM_YELLOW),
+            bannerArgb = VIETNAM_RED,
+            countries = setOf("VN"),
         ),
 
         // May 1 — Labour Day / International Workers' Day. Public holiday
@@ -793,6 +1245,48 @@ object HolidayCatalog {
             countries = setOf("GB"),
         ),
 
+        // May 8 — Victory over Nazism in WWII Day (Ukraine), Україна,
+        // День перемоги над нацизмом у Другій світовій війні. Ukraine
+        // officially moved this observance from May 9 to May 8 in 2023 to
+        // align with the Western Allies and decisively distance from
+        // Russia's May 9 Victory Day. Solemn khaki monochrome — same
+        // shape as Anzac / Memorial Day rather than the celebratory
+        // Ukrainian blue/yellow used elsewhere — befits a remembrance
+        // day. Listed BEFORE Russia's May 9 entry so the two read in
+        // calendar order.
+        HolidayDate.Fixed(Month.MAY, 8) to HolidayTheme(
+            id = HolidayId.UKRAINE_VICTORY_DAY,
+            displayNameKey = "holiday_name_ukraine_victory_day",
+            bannerTextKey = "holiday_banner_ukraine_victory_day",
+            emoji = "🔺", // 🔺 — match Anzac / Remembrance for visual continuity
+            topOverrides = topPaletteAll(ANZAC_KHAKI),
+            bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
+            bannerArgb = ANZAC_KHAKI,
+            countries = setOf("UA"),
+            solemn = true,
+        ),
+
+        // May 9 — Victory Day (День Победы), Russia's commemoration of
+        // the WWII victory over Nazi Germany. Russian-flag red top + white
+        // bottom with the Ribbon of Saint George's iconic orange/black
+        // diagonal stroke; the ribbon's the day's universal symbol and
+        // makes it visually distinct from the simpler [RUSSIA_DEFENDER_OF_FATHERLAND_DAY]
+        // tricolour. Note Ukraine moved its equivalent commemoration to
+        // May 8 in 2023 (entry directly above) — country tags don't
+        // overlap so each user resolves their own date.
+        HolidayDate.Fixed(Month.MAY, 9) to HolidayTheme(
+            id = HolidayId.RUSSIA_VICTORY_DAY,
+            displayNameKey = "holiday_name_russia_victory_day",
+            bannerTextKey = "holiday_banner_russia_victory_day",
+            emoji = "🎖", // 🎖 — military medal
+            topOverrides = topPaletteAll(RUSSIA_RED),
+            bottomOverrides = bottomPaletteAll(RUSSIA_WHITE),
+            topStrokeOverrides = topStrokeAll(RUSSIA_RIBBON_ORANGE),
+            bottomStrokeOverrides = bottomStrokeAll(RUSSIA_RIBBON_BLACK),
+            bannerArgb = RUSSIA_RED,
+            countries = setOf("RU"),
+        ),
+
         // 2nd Sunday of May — Mother's Day. Same date in the US, AU, CA,
         // NZ and most non-UK countries. UK / IE use Mothering Sunday
         // (4th Sun of Lent, movable) — TODO at the top of [HolidayId].
@@ -806,6 +1300,92 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(MOTHER_GREEN),
             bannerArgb = MOTHER_PINK,
             countries = setOf("US", "AU", "CA", "NZ"),
+        ),
+
+        // May 19 — Commemoration of Atatürk, Youth and Sports Day (Turkey),
+        // 19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı. Marks
+        // Atatürk's 1919 landing at Samsun, the start of the Turkish War
+        // of Independence. Crimson-red top + white bottom mirrors the
+        // flag; shared palette across Turkey's catalog entries.
+        HolidayDate.Fixed(Month.MAY, 19) to HolidayTheme(
+            id = HolidayId.TURKEY_YOUTH_DAY,
+            displayNameKey = "holiday_name_turkey_youth_day",
+            bannerTextKey = "holiday_banner_turkey_youth_day",
+            emoji = "🇹🇷", // 🇹🇷
+            topOverrides = topPaletteAll(TURKEY_RED),
+            bottomOverrides = bottomPaletteAll(TURKEY_WHITE),
+            bannerArgb = TURKEY_RED,
+            countries = setOf("TR"),
+        ),
+
+        // May 25 — May Revolution / Día de la Revolución de Mayo
+        // (Argentina), commemorating the 1810 events that led to
+        // independence. Argentine-flag celeste blue top + white bottom
+        // with the golden Sol de Mayo as the unifying stroke — the same
+        // sun-and-stripe motif as the actual flag, simplified for the
+        // two-tier palette. Same calendar date as [TOWEL_DAY] below;
+        // country tags don't overlap (AR vs FUNNY) so each user
+        // resolves their own.
+        HolidayDate.Fixed(Month.MAY, 25) to HolidayTheme(
+            id = HolidayId.ARGENTINA_MAY_REVOLUTION,
+            displayNameKey = "holiday_name_argentina_may_revolution",
+            bannerTextKey = "holiday_banner_argentina_may_revolution",
+            emoji = "🇦🇷", // 🇦🇷
+            topOverrides = topPaletteAll(ARGENTINA_BLUE),
+            bottomOverrides = bottomPaletteAll(ARGENTINA_WHITE),
+            topStrokeOverrides = topStrokeAll(ARGENTINA_GOLD),
+            bottomStrokeOverrides = bottomStrokeAll(ARGENTINA_GOLD),
+            bannerArgb = ARGENTINA_BLUE,
+            countries = setOf("AR"),
+        ),
+
+        // Easter + 39 — Ascension Day. Western Christian feast marking
+        // Christ's ascension into heaven, the Thursday 40 days after
+        // Easter. Public holiday in Germany, France, Netherlands,
+        // Austria, Switzerland, Sweden, Norway and Denmark. Sky-blue top
+        // + white bottom evokes the heavenward motion. Tagged CHRISTIAN
+        // and per-country.
+        HolidayDate.EasterRelative(39) to HolidayTheme(
+            id = HolidayId.ASCENSION_DAY,
+            displayNameKey = "holiday_name_ascension_day",
+            bannerTextKey = "holiday_banner_ascension_day",
+            emoji = "☁", // ☁ — cloud, evoking the ascension
+            topOverrides = topPaletteAll(ASCENSION_SKY),
+            bottomOverrides = bottomPaletteAll(ASCENSION_WHITE),
+            bannerArgb = ASCENSION_SKY,
+            countries = setOf(CHRISTIAN, "DE", "FR", "AT"),
+        ),
+
+        // Easter + 49 — Pentecost / Whit Sunday, marking the descent of
+        // the Holy Spirit fifty days after Easter. White top + Holy-
+        // Spirit liturgical red bottom (the tongues of flame). Tagged
+        // CHRISTIAN; public holiday in several catalog countries via
+        // their per-country tags.
+        HolidayDate.EasterRelative(49) to HolidayTheme(
+            id = HolidayId.PENTECOST,
+            displayNameKey = "holiday_name_pentecost",
+            bannerTextKey = "holiday_banner_pentecost",
+            emoji = "🔥", // 🔥 — tongues of fire
+            topOverrides = topPaletteAll(ASCENSION_WHITE),
+            bottomOverrides = bottomPaletteAll(PENTECOST_RED),
+            bannerArgb = PENTECOST_RED,
+            countries = setOf(CHRISTIAN, "DE", "FR", "AT"),
+        ),
+
+        // Easter + 50 — Whit Monday, the day after Pentecost. Public
+        // holiday in Germany, France, Austria, the Netherlands and
+        // several other Western European countries. Same Pentecost
+        // palette (white + liturgical red) so the Pentecost weekend
+        // reads as one continuous theme.
+        HolidayDate.EasterRelative(50) to HolidayTheme(
+            id = HolidayId.WHIT_MONDAY,
+            displayNameKey = "holiday_name_whit_monday",
+            bannerTextKey = "holiday_banner_whit_monday",
+            emoji = "🔥", // 🔥
+            topOverrides = topPaletteAll(ASCENSION_WHITE),
+            bottomOverrides = bottomPaletteAll(PENTECOST_RED),
+            bannerArgb = PENTECOST_RED,
+            countries = setOf(CHRISTIAN, "DE", "FR", "AT"),
         ),
 
         // May 30 — Croatia Statehood Day. True flag tricolour
@@ -879,6 +1459,21 @@ object HolidayCatalog {
             countries = setOf(FUNNY),
         ),
 
+        // Jun 1 — Pancasila Day (Hari Lahir Pancasila), Indonesia,
+        // commemorating the 1945 articulation of the Pancasila founding
+        // philosophy. Indonesian-flag red top + white bottom mirrors the
+        // Sang Saka Merah Putih.
+        HolidayDate.Fixed(Month.JUNE, 1) to HolidayTheme(
+            id = HolidayId.INDONESIA_PANCASILA_DAY,
+            displayNameKey = "holiday_name_indonesia_pancasila_day",
+            bannerTextKey = "holiday_banner_indonesia_pancasila_day",
+            emoji = "🇮🇩", // 🇮🇩
+            topOverrides = topPaletteAll(INDONESIA_RED),
+            bottomOverrides = bottomPaletteAll(INDONESIA_WHITE),
+            bannerArgb = INDONESIA_RED,
+            countries = setOf("ID"),
+        ),
+
         // Jun 2 — Italian Republic Day. Green tops + red bottoms with the
         // flag's white field threaded through as accent trim on both.
         HolidayDate.Fixed(Month.JUNE, 2) to HolidayTheme(
@@ -908,6 +1503,23 @@ object HolidayCatalog {
             solemn = true,
         ),
 
+        // Easter + 60 — Corpus Christi. Western Catholic feast of the
+        // Body of Christ, the Thursday after Trinity Sunday (60 days
+        // after Easter). Public holiday in AT, ES, IT, BR, PT, PL and
+        // several Catholic German states. White-host top + gold-ciborium
+        // bottom evokes the Eucharistic monstrance. Tagged CHRISTIAN +
+        // observing countries; falls in early-to-late June across years.
+        HolidayDate.EasterRelative(60) to HolidayTheme(
+            id = HolidayId.CORPUS_CHRISTI,
+            displayNameKey = "holiday_name_corpus_christi",
+            bannerTextKey = "holiday_banner_corpus_christi",
+            emoji = "⛪", // ⛪
+            topOverrides = topPaletteAll(CORPUS_WHITE),
+            bottomOverrides = bottomPaletteAll(CORPUS_GOLD),
+            bannerArgb = CORPUS_GOLD,
+            countries = setOf(CHRISTIAN, "AT", "ES", "IT", "BR"),
+        ),
+
         // 2nd Saturday of June — UK King's Official Birthday (Trooping
         // the Colour). Not a UK bank holiday per se, but the date is
         // observed annually. Same Union Jack palette as the bank holidays.
@@ -922,6 +1534,78 @@ object HolidayCatalog {
             bottomStrokeOverrides = bottomStrokeAll(UK_WHITE),
             bannerArgb = UK_RED,
             countries = setOf("GB"),
+        ),
+
+        // Jun 12 — Independence Day (Araw ng Kalayaan), Philippines,
+        // commemorating the 1898 declaration. Philippine-flag blue top +
+        // red bottom with white triangle + gold sun stroke evokes the
+        // full flag layout. Same calendar date as Nigeria's Democracy
+        // Day and Russia Day below (three-way collision); country tags
+        // don't overlap so each user resolves their own — multi-country
+        // users fall to first-match-in-catalog.
+        HolidayDate.Fixed(Month.JUNE, 12) to HolidayTheme(
+            id = HolidayId.PHILIPPINES_INDEPENDENCE_DAY,
+            displayNameKey = "holiday_name_philippines_independence_day",
+            bannerTextKey = "holiday_banner_philippines_independence_day",
+            emoji = "🇵🇭", // 🇵🇭
+            topOverrides = topPaletteAll(PHILIPPINES_BLUE),
+            bottomOverrides = bottomPaletteAll(PHILIPPINES_RED),
+            topStrokeOverrides = topStrokeAll(PHILIPPINES_GOLD),
+            bottomStrokeOverrides = bottomStrokeAll(PHILIPPINES_WHITE),
+            bannerArgb = PHILIPPINES_BLUE,
+            countries = setOf("PH"),
+        ),
+
+        // Jun 12 — Democracy Day (Nigeria), commemorating the 1993
+        // election widely considered the fairest in Nigerian history.
+        // Officially moved to Jun 12 in 2018 from May 29. Nigerian-flag
+        // green top + green bottom with white centre-band stroke.
+        HolidayDate.Fixed(Month.JUNE, 12) to HolidayTheme(
+            id = HolidayId.NIGERIA_DEMOCRACY_DAY,
+            displayNameKey = "holiday_name_nigeria_democracy_day",
+            bannerTextKey = "holiday_banner_nigeria_democracy_day",
+            emoji = "🇳🇬", // 🇳🇬
+            topOverrides = topPaletteAll(NIGERIA_GREEN),
+            bottomOverrides = bottomPaletteAll(NIGERIA_GREEN),
+            topStrokeOverrides = topStrokeAll(NIGERIA_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(NIGERIA_WHITE),
+            bannerArgb = NIGERIA_GREEN,
+            countries = setOf("NG"),
+        ),
+
+        // Jun 12 — Russia Day (День России), commemorating the 1990
+        // declaration of state sovereignty by the Russian SFSR. The full
+        // white / blue / red Russian flag tricolour with the option-3
+        // stroke pattern (white top + red bottom + blue stroke on both)
+        // so the day reads as a national-celebratory tricolour rather
+        // than the simpler [RUSSIA_DEFENDER_OF_FATHERLAND_DAY] palette.
+        HolidayDate.Fixed(Month.JUNE, 12) to HolidayTheme(
+            id = HolidayId.RUSSIA_DAY,
+            displayNameKey = "holiday_name_russia_day",
+            bannerTextKey = "holiday_banner_russia_day",
+            emoji = "🇷🇺", // 🇷🇺
+            topOverrides = topPaletteAll(RUSSIA_WHITE),
+            bottomOverrides = bottomPaletteAll(RUSSIA_RED),
+            topStrokeOverrides = topStrokeAll(RUSSIA_BLUE),
+            bottomStrokeOverrides = bottomStrokeAll(RUSSIA_BLUE),
+            bannerArgb = RUSSIA_BLUE,
+            countries = setOf("RU"),
+        ),
+
+        // Jun 16 — Youth Day (South Africa), commemorating the 1976
+        // Soweto uprising. Solemn but not strictly remembrance — we use
+        // SA's blue / red / yellow flag colours via the deep blue +
+        // gold pairing, distinct from [SOUTH_AFRICA_FREEDOM_DAY]'s
+        // green / gold.
+        HolidayDate.Fixed(Month.JUNE, 16) to HolidayTheme(
+            id = HolidayId.SOUTH_AFRICA_YOUTH_DAY,
+            displayNameKey = "holiday_name_south_africa_youth_day",
+            bannerTextKey = "holiday_banner_south_africa_youth_day",
+            emoji = "🇿🇦", // 🇿🇦
+            topOverrides = topPaletteAll(SA_BLUE),
+            bottomOverrides = bottomPaletteAll(SA_GOLD),
+            bannerArgb = SA_BLUE,
+            countries = setOf("ZA"),
         ),
 
         // Jun 19 — Juneteenth (US). Pan-African flag colours: red top +
@@ -956,6 +1640,20 @@ object HolidayCatalog {
             countries = setOf("US", "CA", "IE", "GB"),
         ),
 
+        // Jun 28 — Constitution Day (Ukraine), commemorating the 1996
+        // adoption of the post-Soviet Ukrainian Constitution. Blue +
+        // yellow flag pairing, same palette as the other UA entries.
+        HolidayDate.Fixed(Month.JUNE, 28) to HolidayTheme(
+            id = HolidayId.UKRAINE_CONSTITUTION_DAY,
+            displayNameKey = "holiday_name_ukraine_constitution_day",
+            bannerTextKey = "holiday_banner_ukraine_constitution_day",
+            emoji = "🇺🇦", // 🇺🇦
+            topOverrides = topPaletteAll(UKRAINE_BLUE),
+            bottomOverrides = bottomPaletteAll(UKRAINE_YELLOW),
+            bannerArgb = UKRAINE_BLUE,
+            countries = setOf("UA"),
+        ),
+
         // Jul 1 — Canada Day. White tops + red bottoms — same flag-halves
         // pattern as St George's.
         HolidayDate.Fixed(Month.JULY, 1) to HolidayTheme(
@@ -985,6 +1683,24 @@ object HolidayCatalog {
             countries = setOf("US"),
         ),
 
+        // Jul 9 — Independence Day (Argentina, Día de la Independencia),
+        // commemorating the 1816 declaration. Celeste-blue top + white
+        // bottom with the golden Sol de Mayo as the unifying accent —
+        // same palette as [ARGENTINA_MAY_REVOLUTION] so the two
+        // Argentine national days read as one visual cluster.
+        HolidayDate.Fixed(Month.JULY, 9) to HolidayTheme(
+            id = HolidayId.ARGENTINA_INDEPENDENCE_DAY,
+            displayNameKey = "holiday_name_argentina_independence_day",
+            bannerTextKey = "holiday_banner_argentina_independence_day",
+            emoji = "🇦🇷", // 🇦🇷
+            topOverrides = topPaletteAll(ARGENTINA_BLUE),
+            bottomOverrides = bottomPaletteAll(ARGENTINA_WHITE),
+            topStrokeOverrides = topStrokeAll(ARGENTINA_GOLD),
+            bottomStrokeOverrides = bottomStrokeAll(ARGENTINA_GOLD),
+            bannerArgb = ARGENTINA_BLUE,
+            countries = setOf("AR"),
+        ),
+
         // Jul 14 — Bastille Day. French tricolour blue/white/red. Lead with
         // blue tops + red bottoms (mirror image of July 4) so the two
         // summer tricolour holidays read as visibly distinct.
@@ -1001,6 +1717,21 @@ object HolidayCatalog {
             countries = setOf("FR"),
         ),
 
+        // Jul 15 — Statehood Day of Ukraine (День Української
+        // Державності), a new holiday instituted by presidential decree
+        // in 2022. Commemorates the baptism of Kyivan Rus' under
+        // Volodymyr the Great. Same Ukrainian blue + yellow palette.
+        HolidayDate.Fixed(Month.JULY, 15) to HolidayTheme(
+            id = HolidayId.UKRAINE_STATEHOOD_DAY,
+            displayNameKey = "holiday_name_ukraine_statehood_day",
+            bannerTextKey = "holiday_banner_ukraine_statehood_day",
+            emoji = "🇺🇦", // 🇺🇦
+            topOverrides = topPaletteAll(UKRAINE_BLUE),
+            bottomOverrides = bottomPaletteAll(UKRAINE_YELLOW),
+            bannerArgb = UKRAINE_BLUE,
+            countries = setOf("UA"),
+        ),
+
         // 3rd Monday of July — Japan's Marine Day (海の日). Ocean blue tops
         // + sand-beige bottoms.
         HolidayDate.NthWeekday(Month.JULY, 3, DayOfWeek.MONDAY) to HolidayTheme(
@@ -1012,6 +1743,23 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(MARINE_SAND),
             bannerArgb = MARINE_BLUE,
             countries = setOf("JP"),
+        ),
+
+        // Jul 23 — Revolution Day (Egypt), commemorating the 1952 Free
+        // Officers' coup. Egyptian-flag red top + black bottom with
+        // gold Eagle-of-Saladin stroke — same palette as Sinai
+        // Liberation so the two Egyptian entries share a visual cluster.
+        HolidayDate.Fixed(Month.JULY, 23) to HolidayTheme(
+            id = HolidayId.EGYPT_REVOLUTION_DAY,
+            displayNameKey = "holiday_name_egypt_revolution_day",
+            bannerTextKey = "holiday_banner_egypt_revolution_day",
+            emoji = "🇪🇬", // 🇪🇬
+            topOverrides = topPaletteAll(EGYPT_RED),
+            bottomOverrides = bottomPaletteAll(EGYPT_BLACK),
+            topStrokeOverrides = topStrokeAll(EGYPT_GOLD),
+            bottomStrokeOverrides = bottomStrokeAll(EGYPT_GOLD),
+            bannerArgb = EGYPT_RED,
+            countries = setOf("EG"),
         ),
 
         // Aug 5 — Croatia's Victory and Homeland Thanksgiving Day
@@ -1029,6 +1777,57 @@ object HolidayCatalog {
             bottomStrokeOverrides = bottomStrokeAll(CROATIA_WHITE),
             bannerArgb = CROATIA_RED,
             countries = setOf("HR"),
+        ),
+
+        // Aug 9 — National Day of Singapore. Red top + white bottom
+        // mirrors the flag (Singapore's flag has a crescent + stars on
+        // the red band; we anchor on the two bands for the two-tier
+        // palette). Same red / white motif as Indonesia but flipped:
+        // Singapore puts red on top in both flag and theme.
+        HolidayDate.Fixed(Month.AUGUST, 9) to HolidayTheme(
+            id = HolidayId.SINGAPORE_NATIONAL_DAY,
+            displayNameKey = "holiday_name_singapore_national_day",
+            bannerTextKey = "holiday_banner_singapore_national_day",
+            emoji = "🇸🇬", // 🇸🇬
+            topOverrides = topPaletteAll(SINGAPORE_RED),
+            bottomOverrides = bottomPaletteAll(SINGAPORE_WHITE),
+            bannerArgb = SINGAPORE_RED,
+            countries = setOf("SG"),
+        ),
+
+        // Aug 14 — Independence Day (Pakistan, یوم آزادی), commemorating
+        // the 1947 partition. Same Pakistani green + white palette as
+        // Pakistan Day so the two share a visual cluster.
+        HolidayDate.Fixed(Month.AUGUST, 14) to HolidayTheme(
+            id = HolidayId.PAKISTAN_INDEPENDENCE_DAY,
+            displayNameKey = "holiday_name_pakistan_independence_day",
+            bannerTextKey = "holiday_banner_pakistan_independence_day",
+            emoji = "🇵🇰", // 🇵🇰
+            topOverrides = topPaletteAll(PAKISTAN_GREEN),
+            bottomOverrides = bottomPaletteAll(PAKISTAN_WHITE),
+            bannerArgb = PAKISTAN_GREEN,
+            countries = setOf("PK"),
+        ),
+
+        // Aug 15 — Independence Day (India, स्वतंत्रता दिवस), commemorating
+        // the 1947 end of British rule. Same Indian tricolour palette as
+        // Republic Day so the two national days share a visual cluster.
+        // Listed BEFORE Korean Liberation and Assumption so an IN user
+        // resolves Independence Day first (catalog-order precedence);
+        // KR users see Liberation, AT/ES/FR/HR/IT users see Assumption
+        // — no country overlap. Same-date-collision TODO applies for
+        // any multi-country user.
+        HolidayDate.Fixed(Month.AUGUST, 15) to HolidayTheme(
+            id = HolidayId.INDIA_INDEPENDENCE_DAY,
+            displayNameKey = "holiday_name_india_independence_day",
+            bannerTextKey = "holiday_banner_india_independence_day",
+            emoji = "🇮🇳", // 🇮🇳
+            topOverrides = topPaletteAll(INDIA_SAFFRON),
+            bottomOverrides = bottomPaletteAll(INDIA_GREEN),
+            topStrokeOverrides = topStrokeAll(INDIA_NAVY),
+            bottomStrokeOverrides = bottomStrokeAll(INDIA_NAVY),
+            bannerArgb = INDIA_GREEN,
+            countries = setOf("IN"),
         ),
 
         // Aug 15 — South Korean Liberation Day (광복절). Mirror image of
@@ -1065,6 +1864,36 @@ object HolidayCatalog {
             countries = setOf("AT", "ES", "FR", "HR", "IT"),
         ),
 
+        // Aug 17 — Proclamation of Independence Day (Indonesia, Hari
+        // Kemerdekaan), commemorating the 1945 declaration. Same red /
+        // white Sang Saka Merah Putih palette as Pancasila Day.
+        HolidayDate.Fixed(Month.AUGUST, 17) to HolidayTheme(
+            id = HolidayId.INDONESIA_INDEPENDENCE_DAY,
+            displayNameKey = "holiday_name_indonesia_independence_day",
+            bannerTextKey = "holiday_banner_indonesia_independence_day",
+            emoji = "🇮🇩", // 🇮🇩
+            topOverrides = topPaletteAll(INDONESIA_RED),
+            bottomOverrides = bottomPaletteAll(INDONESIA_WHITE),
+            bannerArgb = INDONESIA_RED,
+            countries = setOf("ID"),
+        ),
+
+        // Aug 24 — Independence Day of Ukraine (День Незалежності),
+        // commemorating the 1991 declaration of independence from the
+        // USSR. The headline Ukrainian national holiday — blue +
+        // yellow flag pairing matches every other UA entry so the
+        // country's catalog reads as one cohesive cluster.
+        HolidayDate.Fixed(Month.AUGUST, 24) to HolidayTheme(
+            id = HolidayId.UKRAINE_INDEPENDENCE_DAY,
+            displayNameKey = "holiday_name_ukraine_independence_day",
+            bannerTextKey = "holiday_banner_ukraine_independence_day",
+            emoji = "🇺🇦", // 🇺🇦
+            topOverrides = topPaletteAll(UKRAINE_BLUE),
+            bottomOverrides = bottomPaletteAll(UKRAINE_YELLOW),
+            bannerArgb = UKRAINE_BLUE,
+            countries = setOf("UA"),
+        ),
+
         // Last Monday of August — UK Summer Bank Holiday. Union Jack
         // tricolour, same as the other UK bank holidays.
         HolidayDate.LastWeekday(Month.AUGUST, DayOfWeek.MONDAY) to HolidayTheme(
@@ -1080,6 +1909,38 @@ object HolidayCatalog {
             countries = setOf("GB"),
         ),
 
+        // Aug 30 — Victory Day (Turkey, Zafer Bayramı), commemorating
+        // the 1922 victory at the Battle of Dumlupınar that ended the
+        // Turkish War of Independence. Crimson-red top + white bottom
+        // mirrors the flag.
+        HolidayDate.Fixed(Month.AUGUST, 30) to HolidayTheme(
+            id = HolidayId.TURKEY_VICTORY_DAY,
+            displayNameKey = "holiday_name_turkey_victory_day",
+            bannerTextKey = "holiday_banner_turkey_victory_day",
+            emoji = "🇹🇷", // 🇹🇷
+            topOverrides = topPaletteAll(TURKEY_RED),
+            bottomOverrides = bottomPaletteAll(TURKEY_WHITE),
+            bannerArgb = TURKEY_RED,
+            countries = setOf("TR"),
+        ),
+
+        // Aug 31 — Independence Day / Merdeka Day (Malaysia, Hari
+        // Merdeka), commemorating the 1957 independence from Britain.
+        // Malaysian flag's deep blue canton + yellow crescent and 14-
+        // point star palette. The full red-and-white-stripe Jalur
+        // Gemilang doesn't reduce cleanly to two tiers; the canton
+        // colours read as unambiguously Malaysian.
+        HolidayDate.Fixed(Month.AUGUST, 31) to HolidayTheme(
+            id = HolidayId.MALAYSIA_INDEPENDENCE_DAY,
+            displayNameKey = "holiday_name_malaysia_independence_day",
+            bannerTextKey = "holiday_banner_malaysia_independence_day",
+            emoji = "🇲🇾", // 🇲🇾
+            topOverrides = topPaletteAll(MALAYSIA_BLUE),
+            bottomOverrides = bottomPaletteAll(MALAYSIA_YELLOW),
+            bannerArgb = MALAYSIA_BLUE,
+            countries = setOf("MY"),
+        ),
+
         // 1st Sunday of September — Father's Day (AU / NZ). See the June
         // entry above for the international one; both ship on-by-default
         // and users disable the one that doesn't apply.
@@ -1092,6 +1953,20 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(FATHER_BROWN),
             bannerArgb = FATHER_NAVY,
             countries = setOf("AU", "NZ"),
+        ),
+
+        // Sep 2 — National Day of Vietnam (Quốc Khánh), commemorating
+        // the 1945 declaration of independence. Same red + yellow Cờ
+        // đỏ sao vàng palette as Reunification Day.
+        HolidayDate.Fixed(Month.SEPTEMBER, 2) to HolidayTheme(
+            id = HolidayId.VIETNAM_NATIONAL_DAY,
+            displayNameKey = "holiday_name_vietnam_national_day",
+            bannerTextKey = "holiday_banner_vietnam_national_day",
+            emoji = "🇻🇳", // 🇻🇳
+            topOverrides = topPaletteAll(VIETNAM_RED),
+            bottomOverrides = bottomPaletteAll(VIETNAM_YELLOW),
+            bannerArgb = VIETNAM_RED,
+            countries = setOf("VN"),
         ),
 
         // Sep 7 — Brazil Independence Day. Green tops + yellow bottoms.
@@ -1132,6 +2007,39 @@ object HolidayCatalog {
             countries = setOf("US", "CA"),
         ),
 
+        // Sep 16 — Malaysia Day (Hari Malaysia), commemorating the 1963
+        // formation of the federation. Same Malaysian blue + yellow
+        // palette as Merdeka Day. Same calendar date as Mexican
+        // Independence Day below; country tags don't overlap.
+        HolidayDate.Fixed(Month.SEPTEMBER, 16) to HolidayTheme(
+            id = HolidayId.MALAYSIA_DAY,
+            displayNameKey = "holiday_name_malaysia_day",
+            bannerTextKey = "holiday_banner_malaysia_day",
+            emoji = "🇲🇾", // 🇲🇾
+            topOverrides = topPaletteAll(MALAYSIA_BLUE),
+            bottomOverrides = bottomPaletteAll(MALAYSIA_YELLOW),
+            bannerArgb = MALAYSIA_BLUE,
+            countries = setOf("MY"),
+        ),
+
+        // Sep 16 — Mexican Independence Day (Día de la Independencia),
+        // commemorating Father Hidalgo's 1810 Grito de Dolores. Full
+        // Mexican-flag tricolour palette (green / white / red), same as
+        // Cinco de Mayo and Constitution Day so the Mexican entries
+        // read as a cohesive cluster.
+        HolidayDate.Fixed(Month.SEPTEMBER, 16) to HolidayTheme(
+            id = HolidayId.MEXICO_INDEPENDENCE_DAY,
+            displayNameKey = "holiday_name_mexico_independence_day",
+            bannerTextKey = "holiday_banner_mexico_independence_day",
+            emoji = "🇲🇽", // 🇲🇽
+            topOverrides = topPaletteAll(MEXICO_GREEN),
+            bottomOverrides = bottomPaletteAll(MEXICO_RED),
+            topStrokeOverrides = topStrokeAll(MEXICO_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(MEXICO_WHITE),
+            bannerArgb = MEXICO_GREEN,
+            countries = setOf("MX"),
+        ),
+
         // Sep 19 — Talk Like a Pirate Day. A playful, non-national
         // observance, so it rides the [FUNNY] bucket rather than any ISO
         // country. White tops + black bottoms (Jolly Roger).
@@ -1145,6 +2053,76 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(PIRATE_BLACK),
             bannerArgb = PIRATE_BLACK,
             countries = setOf(FUNNY),
+        ),
+
+        // Sep 24 — Heritage Day (South Africa). Springbok-green Y of the
+        // flag with gold trim, same as [SOUTH_AFRICA_FREEDOM_DAY] — the
+        // two celebratory South African entries share a visual cluster,
+        // distinct from [SOUTH_AFRICA_YOUTH_DAY]'s blue / gold solemnity.
+        HolidayDate.Fixed(Month.SEPTEMBER, 24) to HolidayTheme(
+            id = HolidayId.SOUTH_AFRICA_HERITAGE_DAY,
+            displayNameKey = "holiday_name_south_africa_heritage_day",
+            bannerTextKey = "holiday_banner_south_africa_heritage_day",
+            emoji = "🇿🇦", // 🇿🇦
+            topOverrides = topPaletteAll(SA_GREEN),
+            bottomOverrides = bottomPaletteAll(SA_GOLD),
+            bannerArgb = SA_GREEN,
+            countries = setOf("ZA"),
+        ),
+
+        // Oct 1 — Defender of Ukraine Day (День захисників і захисниць
+        // України). Officially moved from Oct 14 in 2023 alongside the
+        // de-Russification calendar shifts; commemorates the country's
+        // military defenders. Solemn khaki shape (same as the other
+        // remembrance days), not the celebratory blue + yellow used
+        // elsewhere in the UA cluster — befits a day honouring service
+        // and sacrifice. Listed before Nigeria's Independence Day below
+        // (same Oct 1 date); country tags don't overlap.
+        HolidayDate.Fixed(Month.OCTOBER, 1) to HolidayTheme(
+            id = HolidayId.UKRAINE_DEFENDER_DAY,
+            displayNameKey = "holiday_name_ukraine_defender_day",
+            bannerTextKey = "holiday_banner_ukraine_defender_day",
+            emoji = "🔺", // 🔺 — solemn, matches the other remembrance days
+            topOverrides = topPaletteAll(ANZAC_KHAKI),
+            bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
+            bannerArgb = ANZAC_KHAKI,
+            countries = setOf("UA"),
+            solemn = true,
+        ),
+
+        // Oct 1 — Independence Day (Nigeria), commemorating the 1960
+        // independence from Britain. Nigerian-flag green / white / green
+        // vertical tricolour translates here as green tops + green
+        // bottoms with white centre-band stroke. Same calendar date as
+        // [UKRAINE_DEFENDER_DAY] above; country tags don't overlap so
+        // each user resolves their own.
+        HolidayDate.Fixed(Month.OCTOBER, 1) to HolidayTheme(
+            id = HolidayId.NIGERIA_INDEPENDENCE_DAY,
+            displayNameKey = "holiday_name_nigeria_independence_day",
+            bannerTextKey = "holiday_banner_nigeria_independence_day",
+            emoji = "🇳🇬", // 🇳🇬
+            topOverrides = topPaletteAll(NIGERIA_GREEN),
+            bottomOverrides = bottomPaletteAll(NIGERIA_GREEN),
+            topStrokeOverrides = topStrokeAll(NIGERIA_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(NIGERIA_WHITE),
+            bannerArgb = NIGERIA_GREEN,
+            countries = setOf("NG"),
+        ),
+
+        // Oct 2 — Gandhi Jayanti (गांधी जयंती), commemorating Mohandas
+        // Gandhi's birthday and the UN International Day of Non-Violence.
+        // Khadi-white top + Indian-saffron bottom evokes Gandhi's homespun
+        // dhoti and the Indian flag's first band. Quieter than the
+        // Republic-Day tricolour; suits the day's reflective character.
+        HolidayDate.Fixed(Month.OCTOBER, 2) to HolidayTheme(
+            id = HolidayId.INDIA_GANDHI_JAYANTI,
+            displayNameKey = "holiday_name_india_gandhi_jayanti",
+            bannerTextKey = "holiday_banner_india_gandhi_jayanti",
+            emoji = "🕊", // 🕊 — dove of peace / non-violence
+            topOverrides = topPaletteAll(INDIA_WHITE),
+            bottomOverrides = bottomPaletteAll(INDIA_SAFFRON),
+            bannerArgb = INDIA_SAFFRON,
+            countries = setOf("IN"),
         ),
 
         // Oct 3 — German Unity Day. Black tops + red bottoms with gold as
@@ -1205,6 +2183,23 @@ object HolidayCatalog {
             countries = setOf("CA"),
         ),
 
+        // Oct 12 — Our Lady of Aparecida / Nossa Senhora Aparecida
+        // (Brazil), the Catholic feast of Brazil's patron saint. Marian
+        // white top + Marian-blue bottom matches the Assumption /
+        // Immaculate Conception cluster. Same calendar date as Spain's
+        // Hispanic Day below; country tags don't overlap so each user
+        // resolves their own.
+        HolidayDate.Fixed(Month.OCTOBER, 12) to HolidayTheme(
+            id = HolidayId.BRAZIL_OUR_LADY_APARECIDA,
+            displayNameKey = "holiday_name_brazil_our_lady_aparecida",
+            bannerTextKey = "holiday_banner_brazil_our_lady_aparecida",
+            emoji = "⛪", // ⛪
+            topOverrides = topPaletteAll(MARIAN_WHITE),
+            bottomOverrides = bottomPaletteAll(MARIAN_BLUE),
+            bannerArgb = MARIAN_BLUE,
+            countries = setOf("BR"),
+        ),
+
         // Oct 12 — Hispanic Day (Spain national day). Red tops + yellow
         // bottoms.
         HolidayDate.Fixed(Month.OCTOBER, 12) to HolidayTheme(
@@ -1251,6 +2246,22 @@ object HolidayCatalog {
             countries = setOf("NZ"),
         ),
 
+        // Oct 29 — Republic Day (Turkey, Cumhuriyet Bayramı),
+        // commemorating the 1923 proclamation of the Turkish Republic.
+        // Crimson-red top + white bottom mirrors the flag — same palette
+        // as the other Turkey entries so the country reads as a
+        // cohesive cluster.
+        HolidayDate.Fixed(Month.OCTOBER, 29) to HolidayTheme(
+            id = HolidayId.TURKEY_REPUBLIC_DAY,
+            displayNameKey = "holiday_name_turkey_republic_day",
+            bannerTextKey = "holiday_banner_turkey_republic_day",
+            emoji = "🇹🇷", // 🇹🇷
+            topOverrides = topPaletteAll(TURKEY_RED),
+            bottomOverrides = bottomPaletteAll(TURKEY_WHITE),
+            bannerArgb = TURKEY_RED,
+            countries = setOf("TR"),
+        ),
+
         // Oct 31 — Halloween. Pumpkin-orange tops + black bottoms. Purple
         // was originally a third hue but dropped to keep the palette focused
         // on the two colours that read unambiguously as Halloween.
@@ -1280,6 +2291,31 @@ object HolidayCatalog {
             countries = setOf("AT", "DE", "ES", "FR", "HR", "IT"),
         ),
 
+        // Nov 2 — Día de los Muertos / Day of the Dead (Mexico),
+        // commemorating departed loved ones with ofrendas (offerings),
+        // marigold cempasúchil flowers, and calavera-decorated sugar
+        // skulls. Marigold orange top + papel-picado purple bottom with
+        // white calavera stroke — the day's iconic palette, distinct
+        // from every other Mexican entry. NOT marked solemn: although
+        // it honours the dead, the tone is festive (mariachi-led
+        // graveyard vigils, sugar-skull face paint, parades) rather
+        // than the sombre tone of [REMEMBRANCE_DAY] / [ANZAC_DAY].
+        // Sits adjacent to [ALL_SAINTS_DAY] (Nov 1, the Catholic feast
+        // that anchors the two-day Mexican observance) but tagged MX
+        // only — All Saints already covers AT/DE/ES/FR/HR/IT.
+        HolidayDate.Fixed(Month.NOVEMBER, 2) to HolidayTheme(
+            id = HolidayId.MEXICO_DAY_OF_THE_DEAD,
+            displayNameKey = "holiday_name_mexico_day_of_the_dead",
+            bannerTextKey = "holiday_banner_mexico_day_of_the_dead",
+            emoji = "💀", // 💀 — calavera, the day's icon
+            topOverrides = topPaletteAll(MEXICO_MARIGOLD),
+            bottomOverrides = bottomPaletteAll(MEXICO_DEAD_PURPLE),
+            topStrokeOverrides = topStrokeAll(MEXICO_DEAD_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(MEXICO_DEAD_WHITE),
+            bannerArgb = MEXICO_MARIGOLD,
+            countries = setOf("MX"),
+        ),
+
         // Nov 3 — Japan's Culture Day (文化の日). Japan flag colours:
         // white top + red sun-disc bottom.
         HolidayDate.Fixed(Month.NOVEMBER, 3) to HolidayTheme(
@@ -1291,6 +2327,25 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(JAPAN_RED),
             bannerArgb = JAPAN_RED,
             countries = setOf("JP"),
+        ),
+
+        // Nov 4 — Unity Day (День народного единства), Russia,
+        // commemorating the 1612 expulsion of Polish-Lithuanian
+        // occupiers from Moscow. The principal post-Soviet national
+        // holiday, replacing the Soviet-era November 7. Full Russian-
+        // flag tricolour: white top + red bottom with blue stroke,
+        // same pattern as [RUSSIA_DAY].
+        HolidayDate.Fixed(Month.NOVEMBER, 4) to HolidayTheme(
+            id = HolidayId.RUSSIA_UNITY_DAY,
+            displayNameKey = "holiday_name_russia_unity_day",
+            bannerTextKey = "holiday_banner_russia_unity_day",
+            emoji = "🇷🇺", // 🇷🇺
+            topOverrides = topPaletteAll(RUSSIA_WHITE),
+            bottomOverrides = bottomPaletteAll(RUSSIA_RED),
+            topStrokeOverrides = topStrokeAll(RUSSIA_BLUE),
+            bottomStrokeOverrides = bottomStrokeAll(RUSSIA_BLUE),
+            bannerArgb = RUSSIA_BLUE,
+            countries = setOf("RU"),
         ),
 
         // 1st Tuesday of November — Melbourne Cup Day ("the race that stops
@@ -1382,6 +2437,78 @@ object HolidayCatalog {
             solemn = true,
         ),
 
+        // Nov 14 — Children's Day (बाल दिवस), India, commemorating
+        // Jawaharlal Nehru's birthday — Nehru reportedly enjoyed
+        // children's company and the day's been observed since his
+        // death. Same Indian saffron / green tricolour palette as the
+        // other Indian entries.
+        HolidayDate.Fixed(Month.NOVEMBER, 14) to HolidayTheme(
+            id = HolidayId.INDIA_CHILDRENS_DAY,
+            displayNameKey = "holiday_name_india_childrens_day",
+            bannerTextKey = "holiday_banner_india_childrens_day",
+            emoji = "🇮🇳", // 🇮🇳
+            topOverrides = topPaletteAll(INDIA_SAFFRON),
+            bottomOverrides = bottomPaletteAll(INDIA_GREEN),
+            topStrokeOverrides = topStrokeAll(INDIA_NAVY),
+            bottomStrokeOverrides = bottomStrokeAll(INDIA_NAVY),
+            bannerArgb = INDIA_NAVY,
+            countries = setOf("IN"),
+        ),
+
+        // Nov 15 — Proclamation of the Republic / Proclamação da
+        // República (Brazil), commemorating the 1889 transition from
+        // empire to republic. Same Brazilian green + yellow flag
+        // palette as the other BR entries.
+        HolidayDate.Fixed(Month.NOVEMBER, 15) to HolidayTheme(
+            id = HolidayId.BRAZIL_REPUBLIC_PROCLAMATION,
+            displayNameKey = "holiday_name_brazil_republic_proclamation",
+            bannerTextKey = "holiday_banner_brazil_republic_proclamation",
+            emoji = "🇧🇷", // 🇧🇷
+            topOverrides = topPaletteAll(BRAZIL_GREEN),
+            bottomOverrides = bottomPaletteAll(BRAZIL_YELLOW),
+            bannerArgb = BRAZIL_GREEN,
+            countries = setOf("BR"),
+        ),
+
+        // 3rd Monday of November — Day of the Revolution / Día de la
+        // Revolución (Mexico), commemorating the start of the 1910
+        // Mexican Revolution (whose actual anniversary is Nov 20).
+        // Full Mexican tricolour, same palette as the other MX entries.
+        // Listed BEFORE Brazil's Black Awareness Day (Nov 20) because
+        // the 3rd Monday usually falls Nov 15-21, often earlier than
+        // Nov 20.
+        HolidayDate.NthWeekday(Month.NOVEMBER, 3, DayOfWeek.MONDAY) to HolidayTheme(
+            id = HolidayId.MEXICO_REVOLUTION_DAY,
+            displayNameKey = "holiday_name_mexico_revolution_day",
+            bannerTextKey = "holiday_banner_mexico_revolution_day",
+            emoji = "🇲🇽", // 🇲🇽
+            topOverrides = topPaletteAll(MEXICO_GREEN),
+            bottomOverrides = bottomPaletteAll(MEXICO_RED),
+            topStrokeOverrides = topStrokeAll(MEXICO_WHITE),
+            bottomStrokeOverrides = bottomStrokeAll(MEXICO_WHITE),
+            bannerArgb = MEXICO_RED,
+            countries = setOf("MX"),
+        ),
+
+        // Nov 20 — Black Awareness Day / Dia da Consciência Negra
+        // (Brazil), commemorating the death of quilombo leader Zumbi
+        // dos Palmares. Federal holiday since 2024. Pan-African red
+        // top + green bottom with black trim — same Pan-African
+        // palette as Juneteenth, marking the Black-liberation lineage
+        // shared across the two days.
+        HolidayDate.Fixed(Month.NOVEMBER, 20) to HolidayTheme(
+            id = HolidayId.BRAZIL_BLACK_AWARENESS,
+            displayNameKey = "holiday_name_brazil_black_awareness",
+            bannerTextKey = "holiday_banner_brazil_black_awareness",
+            emoji = "✊🏿", // ✊🏿 — raised fist
+            topOverrides = topPaletteAll(PAN_AFRICAN_RED),
+            bottomOverrides = bottomPaletteAll(PAN_AFRICAN_GREEN),
+            topStrokeOverrides = topStrokeAll(PAN_AFRICAN_BLACK),
+            bottomStrokeOverrides = bottomStrokeAll(PAN_AFRICAN_BLACK),
+            bannerArgb = PAN_AFRICAN_BLACK,
+            countries = setOf("BR"),
+        ),
+
         // 4th Thursday of November — US Thanksgiving. Pumpkin-orange tops +
         // deep-autumn brown bottoms. Rust was a third hue in the v1
         // tricolour palette but dropped — pumpkin and brown alone read as
@@ -1395,6 +2522,25 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(THANKS_BROWN),
             bannerArgb = THANKS_BROWN,
             countries = setOf("US"),
+        ),
+
+        // Nov 30 — Bonifacio Day (Philippines), commemorating Andrés
+        // Bonifacio's birthday (founder of the Katipunan independence
+        // movement). Same Philippine palette as Independence Day —
+        // blue + red with gold + white accent strokes — so the two
+        // PH entries cluster visually. Same calendar date as St
+        // Andrew's Day below; country tags don't overlap.
+        HolidayDate.Fixed(Month.NOVEMBER, 30) to HolidayTheme(
+            id = HolidayId.PHILIPPINES_BONIFACIO_DAY,
+            displayNameKey = "holiday_name_philippines_bonifacio_day",
+            bannerTextKey = "holiday_banner_philippines_bonifacio_day",
+            emoji = "🇵🇭", // 🇵🇭
+            topOverrides = topPaletteAll(PHILIPPINES_BLUE),
+            bottomOverrides = bottomPaletteAll(PHILIPPINES_RED),
+            topStrokeOverrides = topStrokeAll(PHILIPPINES_GOLD),
+            bottomStrokeOverrides = bottomStrokeAll(PHILIPPINES_WHITE),
+            bannerArgb = PHILIPPINES_RED,
+            countries = setOf("PH"),
         ),
 
         // Nov 30 — St Andrew's Day. Saltire blue tops + white bottoms.
@@ -1421,6 +2567,42 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(MARIAN_BLUE),
             bannerArgb = MARIAN_BLUE,
             countries = setOf("AT", "ES", "IT"),
+        ),
+
+        // Dec 16 — Victory Day (Bangladesh, বিজয় দিবস), commemorating
+        // the 1971 victory in the Bangladesh Liberation War. Same
+        // Bangladeshi bottle-green + red sun-disc palette as
+        // Independence Day so the two BD national days share a visual
+        // cluster. Same calendar date as South Africa's Day of
+        // Reconciliation below; country tags don't overlap.
+        HolidayDate.Fixed(Month.DECEMBER, 16) to HolidayTheme(
+            id = HolidayId.BANGLADESH_VICTORY_DAY,
+            displayNameKey = "holiday_name_bangladesh_victory_day",
+            bannerTextKey = "holiday_banner_bangladesh_victory_day",
+            emoji = "🇧🇩", // 🇧🇩
+            topOverrides = topPaletteAll(BANGLADESH_GREEN),
+            bottomOverrides = bottomPaletteAll(BANGLADESH_RED),
+            bannerArgb = BANGLADESH_GREEN,
+            countries = setOf("BD"),
+        ),
+
+        // Dec 16 — Day of Reconciliation (South Africa), commemorating
+        // both the 1838 Battle of Blood River and the 1961 founding of
+        // uMkhonto we Sizwe — the date was deliberately repurposed
+        // post-apartheid for reconciliation between the two histories.
+        // Deep flag-blue top + flag-red bottom evokes both groups'
+        // remembrance traditions in one palette, distinct from the
+        // celebratory greens of [SOUTH_AFRICA_FREEDOM_DAY] /
+        // [SOUTH_AFRICA_HERITAGE_DAY].
+        HolidayDate.Fixed(Month.DECEMBER, 16) to HolidayTheme(
+            id = HolidayId.SOUTH_AFRICA_DAY_OF_RECONCILIATION,
+            displayNameKey = "holiday_name_south_africa_day_of_reconciliation",
+            bannerTextKey = "holiday_banner_south_africa_day_of_reconciliation",
+            emoji = "🇿🇦", // 🇿🇦
+            topOverrides = topPaletteAll(SA_BLUE),
+            bottomOverrides = bottomPaletteAll(SA_RED),
+            bannerArgb = SA_BLUE,
+            countries = setOf("ZA"),
         ),
 
         // Dec 25 — Christmas Day. Pillarbox-red tops + holly-green bottoms.
@@ -1450,6 +2632,22 @@ object HolidayCatalog {
             bottomOverrides = bottomPaletteAll(XMAS_RED),
             bannerArgb = XMAS_GREEN,
             countries = setOf("GB", "AU", "NZ", "CA", "IE"),
+        ),
+
+        // Dec 30 — Rizal Day (Philippines), commemorating José Rizal's
+        // 1896 execution. The third PH catalog entry — same Philippine
+        // palette as the other two (blue + red + gold + white).
+        HolidayDate.Fixed(Month.DECEMBER, 30) to HolidayTheme(
+            id = HolidayId.PHILIPPINES_RIZAL_DAY,
+            displayNameKey = "holiday_name_philippines_rizal_day",
+            bannerTextKey = "holiday_banner_philippines_rizal_day",
+            emoji = "🇵🇭", // 🇵🇭
+            topOverrides = topPaletteAll(PHILIPPINES_BLUE),
+            bottomOverrides = bottomPaletteAll(PHILIPPINES_RED),
+            topStrokeOverrides = topStrokeAll(PHILIPPINES_GOLD),
+            bottomStrokeOverrides = bottomStrokeAll(PHILIPPINES_WHITE),
+            bannerArgb = PHILIPPINES_BLUE,
+            countries = setOf("PH"),
         ),
     )
 
@@ -1658,6 +2856,144 @@ private const val GOOD_FRIDAY_AUBERGINE = 0xFF4A148CL
 // (💐) reads as a different occasion on a different date.
 private const val MOTHERING_ROSE = 0xFFF8BBD0L
 private const val MOTHERING_CREAM = 0xFFFFF8E1L
+
+// --- v4 holiday-catalogue expansion. Colours for the new fixed-date and
+// Easter-relative entries added in the "Indian / Muslim-market / Christian /
+// Orthodox / additional-big-Android-market countries" pass. Grouped per
+// holiday or palette so the swap-in colour shows next to the catalog entry
+// reference. Each section reuses an existing const wherever a holiday
+// shares a national palette (e.g. Tiradentes Day reuses the Brazil green +
+// yellow); only genuinely new hues live below.
+
+// Orthodox Christmas — Russian Orthodox liturgical green (Romanov / Empire)
+// + golden iconostasis trim, distinct from the Christian Easter-cluster
+// liturgical aubergine.
+private const val ORTHODOX_GREEN = 0xFF1B5E20L
+private const val ORTHODOX_GOLD = 0xFFFFD54FL
+
+// Christian Easter-cluster additions — pastels and liturgical purples that
+// extend the existing GOOD_FRIDAY_AUBERGINE / EASTER_LEMON family.
+// Ash Wednesday: penitential ash grey, mirroring the imposed cross.
+private const val ASH_GREY = 0xFF616161L
+// Mardi Gras: New Orleans purple / gold / green tricolour.
+private const val MARDI_GRAS_PURPLE = 0xFF6A1B9AL
+private const val MARDI_GRAS_GOLD = 0xFFFFC107L
+private const val MARDI_GRAS_GREEN = 0xFF388E3CL
+// Palm Sunday: olive / palm green over a Passion-week deep purple.
+private const val PALM_GREEN = 0xFF558B2FL
+private const val PALM_PURPLE = 0xFF4A148CL
+// Maundy Thursday: deep liturgical red (the colour of the Last Supper
+// vestments in Western tradition) over white linen / table cloth.
+private const val MAUNDY_RED = 0xFF8E0000L
+private const val MAUNDY_WHITE = 0xFFF5F5F5L
+// Ascension / Pentecost / Whit Monday — shared sky-blue + white cluster
+// (Ascension's heavenward motion) with Pentecost / Whit Monday adding the
+// liturgical-red of the descending Holy Spirit / tongues of flame.
+private const val ASCENSION_SKY = 0xFF42A5F5L
+private const val ASCENSION_WHITE = 0xFFF5F5F5L
+private const val PENTECOST_RED = 0xFFD32F2FL
+// Corpus Christi: white Eucharistic host on a deep liturgical gold ciborium.
+private const val CORPUS_WHITE = 0xFFF5F5F5L
+private const val CORPUS_GOLD = 0xFFC9A227L
+
+// India — saffron + green flag halves with navy Ashoka Chakra accent
+// (true tricolour, gets the option-3 stroke pattern).
+private const val INDIA_SAFFRON = 0xFFFF9933L
+private const val INDIA_WHITE = 0xFFF5F5F5L
+private const val INDIA_GREEN = 0xFF138808L
+private const val INDIA_NAVY = 0xFF000080L
+
+// Indonesia — Sang Saka Merah Putih, red over white. Same palette as
+// Singapore (shares the red-and-white motif with the crescent omitted).
+private const val INDONESIA_RED = 0xFFCE1126L
+private const val INDONESIA_WHITE = 0xFFF5F5F5L
+
+// Pakistan — flag green with white crescent-and-star band.
+private const val PAKISTAN_GREEN = 0xFF01411CL
+private const val PAKISTAN_WHITE = 0xFFF5F5F5L
+
+// Bangladesh — bottle green with a deep red sun disc, evoking the
+// blood-of-martyrs symbolism of the 1971 War of Independence.
+private const val BANGLADESH_GREEN = 0xFF006A4EL
+private const val BANGLADESH_RED = 0xFFF42A41L
+
+// Russia — flag white / blue / red horizontal tricolour. Victory Day adds
+// the Saint George ribbon's black-and-orange diagonal stripes via stroke.
+private const val RUSSIA_WHITE = 0xFFF5F5F5L
+private const val RUSSIA_BLUE = 0xFF0039A6L
+private const val RUSSIA_RED = 0xFFD52B1EL
+private const val RUSSIA_RIBBON_ORANGE = 0xFFE08B00L
+private const val RUSSIA_RIBBON_BLACK = 0xFF1A1A1AL
+
+// Ukraine — flag azure-over-yellow (sky over wheat). Defender of Ukraine
+// Day adds a sunflower / wheat-stalk accent.
+private const val UKRAINE_BLUE = 0xFF0057B7L
+private const val UKRAINE_YELLOW = 0xFFFFD500L
+
+// Philippines — flag deep blue / red with white triangle and gold sun.
+private const val PHILIPPINES_BLUE = 0xFF0038A8L
+private const val PHILIPPINES_RED = 0xFFCE1126L
+private const val PHILIPPINES_WHITE = 0xFFF5F5F5L
+private const val PHILIPPINES_GOLD = 0xFFFCD116L
+
+// Vietnam — Cờ đỏ sao vàng, red over a five-pointed yellow star.
+private const val VIETNAM_RED = 0xFFDA251DL
+private const val VIETNAM_YELLOW = 0xFFFFFF00L
+
+// Turkey — Ay Yıldız, crimson red with a white crescent and star.
+private const val TURKEY_RED = 0xFFE30A17L
+private const val TURKEY_WHITE = 0xFFF5F5F5L
+
+// Egypt — flag red / white / black horizontal tricolour with the
+// Eagle of Saladin in gold on the white band.
+private const val EGYPT_RED = 0xFFCE1126L
+private const val EGYPT_WHITE = 0xFFF5F5F5L
+private const val EGYPT_BLACK = 0xFF1A1A1AL
+private const val EGYPT_GOLD = 0xFFC09300L
+
+// Nigeria — flag green / white / green vertical tricolour.
+private const val NIGERIA_GREEN = 0xFF008751L
+private const val NIGERIA_WHITE = 0xFFF5F5F5L
+
+// Thailand — Thong Trairong tricolour (red / white / blue / white / red).
+// Songkran (Thai New Year, mid-April) adds water-pouring blue.
+private const val THAILAND_RED = 0xFFA51931L
+private const val THAILAND_WHITE = 0xFFF5F5F5L
+private const val THAILAND_BLUE = 0xFF2D2A4AL
+private const val SONGKRAN_WATER_BLUE = 0xFF29B6F6L
+private const val SONGKRAN_GOLD = 0xFFFFB300L
+
+// Malaysia — Jalur Gemilang red / white stripes with blue canton + gold
+// crescent and 14-point star.
+private const val MALAYSIA_BLUE = 0xFF010066L
+private const val MALAYSIA_RED = 0xFFCC0001L
+private const val MALAYSIA_YELLOW = 0xFFFFCC00L
+
+// Singapore — red over white with white crescent and stars (shares the
+// red / white motif with Indonesia, but flipped: red on top in both).
+private const val SINGAPORE_RED = 0xFFEF3340L
+private const val SINGAPORE_WHITE = 0xFFF5F5F5L
+
+// South Africa — six-colour flag; we anchor on the springbok-green Y-shape
+// + gold trim for Heritage / Freedom Days, with the deep blue serving as
+// the Reconciliation-Day base.
+private const val SA_GREEN = 0xFF007749L
+private const val SA_GOLD = 0xFFFFB81CL
+private const val SA_BLUE = 0xFF002395L
+private const val SA_RED = 0xFFDE3831L
+
+// Argentina — Celeste y Blanco horizontal stripes with golden Sol de Mayo.
+private const val ARGENTINA_BLUE = 0xFF74ACDFL
+private const val ARGENTINA_WHITE = 0xFFF5F5F5L
+private const val ARGENTINA_GOLD = 0xFFFFD700L
+
+// Mexico — additions beyond the Cinco de Mayo green / white / red already
+// defined above. Día de los Muertos: marigold (cempasúchil) orange + deep
+// purple papel picado with white calavera stroke; Independence Day uses
+// the full flag tricolour (green / white / red, same as Cinco).
+private const val MEXICO_MARIGOLD = 0xFFFF8F00L
+private const val MEXICO_DEAD_PURPLE = 0xFF5E35B1L
+private const val MEXICO_DEAD_WHITE = 0xFFF5F5F5L
 
 // Synthetic themes used by [FestiveThemes] when the user has opted into
 // calendar-sourced theming and a row arrives carrying [EventKind.PUBLIC_HOLIDAY]

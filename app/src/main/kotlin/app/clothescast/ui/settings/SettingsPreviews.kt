@@ -497,6 +497,8 @@ internal fun SettingsCalendarPreview() {
             onSetCountryCurrent = {},
             onSetCountryGlobal = {},
             onSetCountryFunny = {},
+            onSetCountryChristian = {},
+            onSetCountryOrthodox = {},
             onSetCountryAll = {},
             onSetCountryOverride = { _, _ -> },
             onSetHolidayOverride = { _, _ -> },

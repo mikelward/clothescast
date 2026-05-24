@@ -1289,22 +1289,54 @@
     <!-- Country display names for the Settings → Holidays picker.
          Universal holidays (Christmas, NYE, Valentine's, Halloween) have
          their own Global section above the ISO list. -->
+    <string name="settings_holiday_country_ar">Argentina</string>
     <string name="settings_holiday_country_at">Austria</string>
     <string name="settings_holiday_country_au">Australia</string>
+    <string name="settings_holiday_country_bd">Bangladesh</string>
     <string name="settings_holiday_country_br">Brazil</string>
+    <string name="settings_holiday_country_by">Belarus</string>
     <string name="settings_holiday_country_ca">Canada</string>
     <string name="settings_holiday_country_de">Germany</string>
+    <string name="settings_holiday_country_eg">Egypt</string>
     <string name="settings_holiday_country_es">Spain</string>
+    <string name="settings_holiday_country_et">Ethiopia</string>
     <string name="settings_holiday_country_fr">France</string>
     <string name="settings_holiday_country_gb">United Kingdom</string>
+    <string name="settings_holiday_country_ge">Georgia</string>
     <string name="settings_holiday_country_hr">Croatia</string>
+    <string name="settings_holiday_country_id">Indonesia</string>
     <string name="settings_holiday_country_ie">Ireland</string>
+    <string name="settings_holiday_country_in">India</string>
     <string name="settings_holiday_country_it">Italy</string>
     <string name="settings_holiday_country_jp">Japan</string>
     <string name="settings_holiday_country_kr">South Korea</string>
+    <string name="settings_holiday_country_mk">North Macedonia</string>
     <string name="settings_holiday_country_mx">Mexico</string>
+    <string name="settings_holiday_country_my">Malaysia</string>
+    <string name="settings_holiday_country_ng">Nigeria</string>
     <string name="settings_holiday_country_nz">New Zealand</string>
+    <string name="settings_holiday_country_ph">Philippines</string>
+    <string name="settings_holiday_country_pk">Pakistan</string>
+    <string name="settings_holiday_country_rs">Serbia</string>
+    <string name="settings_holiday_country_ru">Russia</string>
+    <string name="settings_holiday_country_sg">Singapore</string>
+    <string name="settings_holiday_country_th">Thailand</string>
+    <string name="settings_holiday_country_tr">Turkey</string>
+    <string name="settings_holiday_country_ua">Ukraine</string>
     <string name="settings_holiday_country_us">United States</string>
+    <string name="settings_holiday_country_vn">Vietnam</string>
+    <string name="settings_holiday_country_za">South Africa</string>
+
+    <!-- Religious-bucket labels: peer toggles to Global / Funny in the
+         country picker. CHRISTIAN ships on-by-default (covers Easter-
+         relative additions like Ascension, Pentecost, Whit Monday, Mardi
+         Gras and friends); ORTHODOX ships off-by-default (Orthodox
+         Christmas Jan 7 is its sole catalog entry today, mostly picked
+         up via per-country tags). -->
+    <string name="settings_holiday_country_christian_label">Christian</string>
+    <string name="settings_holiday_country_orthodox_label">Orthodox</string>
+    <string name="settings_holidays_source_christian">Christian</string>
+    <string name="settings_holidays_source_orthodox">Orthodox</string>
 
     <string name="holiday_name_new_years_day">New Year\'s Day</string>
     <string name="holiday_name_epiphany">Epiphany</string>
@@ -1472,4 +1504,179 @@
     <string name="holiday_banner_immaculate_conception">Happy Immaculate Conception</string>
     <string name="holiday_banner_christmas_day">Merry Christmas</string>
     <string name="holiday_banner_boxing_day">Happy Boxing Day</string>
+
+    <!-- v4 holiday-catalogue expansion: display names + banner copy for
+         the new fixed-date and Easter-relative entries (Indian / Muslim-
+         market national days, additional Christian / Orthodox feasts,
+         expanded Mexican / Brazilian calendars). English only in this
+         drop — existing localisation flow handles future translations. -->
+
+    <!-- Orthodox Christmas (Jan 7) — Russian, Serbian, Georgian, Ethiopian,
+         Macedonian and Belarusian Orthodox Churches. -->
+    <string name="holiday_name_orthodox_christmas">Orthodox Christmas</string>
+    <string name="holiday_banner_orthodox_christmas">Merry Orthodox Christmas</string>
+
+    <!-- Ukraine: six national-day catalog entries. May 8 / Aug 24 / Oct 1
+         reflect Ukraine's post-2023 calendar moves; the other three are
+         long-standing observances. -->
+    <string name="holiday_name_ukraine_unity_day">Unity Day (Ukraine)</string>
+    <string name="holiday_banner_ukraine_unity_day">Happy Unity Day</string>
+    <string name="holiday_name_ukraine_victory_day">Victory over Nazism in WWII Day (Ukraine)</string>
+    <string name="holiday_banner_ukraine_victory_day">Honoring the fallen</string>
+    <string name="holiday_name_ukraine_constitution_day">Constitution Day (Ukraine)</string>
+    <string name="holiday_banner_ukraine_constitution_day">Happy Constitution Day</string>
+    <string name="holiday_name_ukraine_statehood_day">Statehood Day (Ukraine)</string>
+    <string name="holiday_banner_ukraine_statehood_day">Happy Ukrainian Statehood Day</string>
+    <string name="holiday_name_ukraine_independence_day">Independence Day (Ukraine)</string>
+    <string name="holiday_banner_ukraine_independence_day">Happy Independence Day</string>
+    <string name="holiday_name_ukraine_defender_day">Defender of Ukraine Day</string>
+    <string name="holiday_banner_ukraine_defender_day">Honoring Ukraine\'s defenders</string>
+
+    <!-- India: four national-day catalog entries. -->
+    <string name="holiday_name_india_republic_day">Republic Day (India)</string>
+    <string name="holiday_banner_india_republic_day">Happy Republic Day</string>
+    <string name="holiday_name_india_independence_day">Independence Day (India)</string>
+    <string name="holiday_banner_india_independence_day">Happy Independence Day</string>
+    <string name="holiday_name_india_gandhi_jayanti">Gandhi Jayanti</string>
+    <string name="holiday_banner_india_gandhi_jayanti">Happy Gandhi Jayanti</string>
+    <string name="holiday_name_india_childrens_day">Children\'s Day (India)</string>
+    <string name="holiday_banner_india_childrens_day">Happy Children\'s Day</string>
+
+    <!-- Russia: four national-day catalog entries. -->
+    <string name="holiday_name_russia_defender_of_fatherland_day">Defender of the Fatherland Day</string>
+    <string name="holiday_banner_russia_defender_of_fatherland_day">Happy Defender of the Fatherland Day</string>
+    <string name="holiday_name_russia_victory_day">Victory Day (Russia)</string>
+    <string name="holiday_banner_russia_victory_day">Honoring the fallen</string>
+    <string name="holiday_name_russia_day">Russia Day</string>
+    <string name="holiday_banner_russia_day">Happy Russia Day</string>
+    <string name="holiday_name_russia_unity_day">Unity Day (Russia)</string>
+    <string name="holiday_banner_russia_unity_day">Happy Unity Day</string>
+
+    <!-- Indonesia. -->
+    <string name="holiday_name_indonesia_pancasila_day">Pancasila Day</string>
+    <string name="holiday_banner_indonesia_pancasila_day">Happy Pancasila Day</string>
+    <string name="holiday_name_indonesia_independence_day">Independence Day (Indonesia)</string>
+    <string name="holiday_banner_indonesia_independence_day">Selamat Hari Kemerdekaan</string>
+
+    <!-- Pakistan. -->
+    <string name="holiday_name_pakistan_day">Pakistan Day</string>
+    <string name="holiday_banner_pakistan_day">Happy Pakistan Day</string>
+    <string name="holiday_name_pakistan_independence_day">Independence Day (Pakistan)</string>
+    <string name="holiday_banner_pakistan_independence_day">Happy Independence Day</string>
+
+    <!-- Bangladesh. -->
+    <string name="holiday_name_bangladesh_independence_day">Independence Day (Bangladesh)</string>
+    <string name="holiday_banner_bangladesh_independence_day">Happy Independence Day</string>
+    <string name="holiday_name_bangladesh_victory_day">Victory Day (Bangladesh)</string>
+    <string name="holiday_banner_bangladesh_victory_day">Happy Victory Day</string>
+
+    <!-- Turkey: four national-day catalog entries. -->
+    <string name="holiday_name_turkey_childrens_day">National Sovereignty and Children\'s Day</string>
+    <string name="holiday_banner_turkey_childrens_day">Mutlu Çocuk Bayramı</string>
+    <string name="holiday_name_turkey_youth_day">Commemoration of Atatürk, Youth and Sports Day</string>
+    <string name="holiday_banner_turkey_youth_day">Happy Youth and Sports Day</string>
+    <string name="holiday_name_turkey_victory_day">Victory Day (Turkey)</string>
+    <string name="holiday_banner_turkey_victory_day">Mutlu Zafer Bayramı</string>
+    <string name="holiday_name_turkey_republic_day">Republic Day (Turkey)</string>
+    <string name="holiday_banner_turkey_republic_day">Mutlu Cumhuriyet Bayramı</string>
+
+    <!-- Egypt. -->
+    <string name="holiday_name_egypt_sinai_liberation_day">Sinai Liberation Day</string>
+    <string name="holiday_banner_egypt_sinai_liberation_day">Happy Sinai Liberation Day</string>
+    <string name="holiday_name_egypt_revolution_day">Revolution Day (Egypt)</string>
+    <string name="holiday_banner_egypt_revolution_day">Happy Revolution Day</string>
+
+    <!-- Philippines: three national-day catalog entries. -->
+    <string name="holiday_name_philippines_independence_day">Independence Day (Philippines)</string>
+    <string name="holiday_banner_philippines_independence_day">Maligayang Araw ng Kalayaan</string>
+    <string name="holiday_name_philippines_bonifacio_day">Bonifacio Day</string>
+    <string name="holiday_banner_philippines_bonifacio_day">Happy Bonifacio Day</string>
+    <string name="holiday_name_philippines_rizal_day">Rizal Day</string>
+    <string name="holiday_banner_philippines_rizal_day">Honoring José Rizal</string>
+
+    <!-- Vietnam. -->
+    <string name="holiday_name_vietnam_reunification_day">Reunification Day (Vietnam)</string>
+    <string name="holiday_banner_vietnam_reunification_day">Happy Reunification Day</string>
+    <string name="holiday_name_vietnam_national_day">National Day (Vietnam)</string>
+    <string name="holiday_banner_vietnam_national_day">Happy National Day</string>
+
+    <!-- Nigeria. -->
+    <string name="holiday_name_nigeria_democracy_day">Democracy Day (Nigeria)</string>
+    <string name="holiday_banner_nigeria_democracy_day">Happy Democracy Day</string>
+    <string name="holiday_name_nigeria_independence_day">Independence Day (Nigeria)</string>
+    <string name="holiday_banner_nigeria_independence_day">Happy Independence Day</string>
+
+    <!-- Thailand. -->
+    <string name="holiday_name_thailand_chakri_day">Chakri Day</string>
+    <string name="holiday_banner_thailand_chakri_day">Happy Chakri Day</string>
+    <string name="holiday_name_thailand_songkran">Songkran</string>
+    <string name="holiday_banner_thailand_songkran">Happy Songkran</string>
+
+    <!-- Malaysia. -->
+    <string name="holiday_name_malaysia_independence_day">Merdeka Day (Malaysia)</string>
+    <string name="holiday_banner_malaysia_independence_day">Selamat Hari Merdeka</string>
+    <string name="holiday_name_malaysia_day">Malaysia Day</string>
+    <string name="holiday_banner_malaysia_day">Selamat Hari Malaysia</string>
+
+    <!-- Singapore. -->
+    <string name="holiday_name_singapore_national_day">National Day (Singapore)</string>
+    <string name="holiday_banner_singapore_national_day">Happy National Day</string>
+
+    <!-- South Africa: four national-day catalog entries. -->
+    <string name="holiday_name_south_africa_freedom_day">Freedom Day (South Africa)</string>
+    <string name="holiday_banner_south_africa_freedom_day">Happy Freedom Day</string>
+    <string name="holiday_name_south_africa_youth_day">Youth Day (South Africa)</string>
+    <string name="holiday_banner_south_africa_youth_day">Honoring South Africa\'s youth</string>
+    <string name="holiday_name_south_africa_heritage_day">Heritage Day (South Africa)</string>
+    <string name="holiday_banner_south_africa_heritage_day">Happy Heritage Day</string>
+    <string name="holiday_name_south_africa_day_of_reconciliation">Day of Reconciliation</string>
+    <string name="holiday_banner_south_africa_day_of_reconciliation">Happy Day of Reconciliation</string>
+
+    <!-- Argentina. -->
+    <string name="holiday_name_argentina_may_revolution">May Revolution (Argentina)</string>
+    <string name="holiday_banner_argentina_may_revolution">¡Feliz Día de la Revolución de Mayo!</string>
+    <string name="holiday_name_argentina_independence_day">Independence Day (Argentina)</string>
+    <string name="holiday_banner_argentina_independence_day">¡Feliz Día de la Independencia!</string>
+
+    <!-- Mexico: four new entries beyond the existing Cinco de Mayo. -->
+    <string name="holiday_name_mexico_constitution_day">Day of the Constitution (Mexico)</string>
+    <string name="holiday_banner_mexico_constitution_day">Feliz Día de la Constitución</string>
+    <string name="holiday_name_mexico_benito_juarez_birthday">Benito Juárez\'s Birthday</string>
+    <string name="holiday_banner_mexico_benito_juarez_birthday">Honoring Benito Juárez</string>
+    <string name="holiday_name_mexico_independence_day">Independence Day (Mexico)</string>
+    <string name="holiday_banner_mexico_independence_day">¡Viva México!</string>
+    <string name="holiday_name_mexico_day_of_the_dead">Day of the Dead</string>
+    <string name="holiday_banner_mexico_day_of_the_dead">Feliz Día de los Muertos</string>
+    <string name="holiday_name_mexico_revolution_day">Day of the Revolution (Mexico)</string>
+    <string name="holiday_banner_mexico_revolution_day">Feliz Día de la Revolución</string>
+
+    <!-- Brazil: four new entries beyond the existing Independence Day. -->
+    <string name="holiday_name_brazil_tiradentes_day">Tiradentes Day</string>
+    <string name="holiday_banner_brazil_tiradentes_day">Feliz Dia de Tiradentes</string>
+    <string name="holiday_name_brazil_our_lady_aparecida">Our Lady of Aparecida</string>
+    <string name="holiday_banner_brazil_our_lady_aparecida">Feliz Dia de Nossa Senhora Aparecida</string>
+    <string name="holiday_name_brazil_republic_proclamation">Proclamation of the Republic (Brazil)</string>
+    <string name="holiday_banner_brazil_republic_proclamation">Feliz Proclamação da República</string>
+    <string name="holiday_name_brazil_black_awareness">Black Awareness Day (Brazil)</string>
+    <string name="holiday_banner_brazil_black_awareness">Dia da Consciência Negra</string>
+
+    <!-- Additional Christian Easter-relative feasts. All tagged CHRISTIAN
+         (so users in that bucket get the theme regardless of country)
+         plus the countries where they're public holidays. -->
+    <string name="holiday_name_mardi_gras">Mardi Gras / Shrove Tuesday</string>
+    <string name="holiday_banner_mardi_gras">Laissez les bons temps rouler</string>
+    <string name="holiday_name_ash_wednesday">Ash Wednesday</string>
+    <string name="holiday_banner_ash_wednesday">Remember that you are dust</string>
+    <string name="holiday_name_palm_sunday">Palm Sunday</string>
+    <string name="holiday_banner_palm_sunday">Hosanna in the highest</string>
+    <string name="holiday_name_maundy_thursday">Maundy Thursday</string>
+    <string name="holiday_banner_maundy_thursday">A new commandment</string>
+    <string name="holiday_name_ascension_day">Ascension Day</string>
+    <string name="holiday_banner_ascension_day">Happy Ascension Day</string>
+    <string name="holiday_name_pentecost">Pentecost</string>
+    <string name="holiday_banner_pentecost">Happy Pentecost</string>
+    <string name="holiday_name_whit_monday">Whit Monday</string>
+    <string name="holiday_banner_whit_monday">Happy Whit Monday</string>
+    <string name="holiday_name_corpus_christi">Corpus Christi</string>
+    <string name="holiday_banner_corpus_christi">Happy Corpus Christi</string>
 </resources>

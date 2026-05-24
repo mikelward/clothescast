@@ -76,11 +76,7 @@ private fun AboutCard() {
 
     val launchBugReport: () -> Unit = launchBugReport@{
         val act = activity ?: return@launchBugReport
-        coroutineScope.launch {
-            // No screenshot from About — the About page itself isn't useful
-            // to capture; Today's overflow menu owns the screenshot path.
-            BugReport.share(act, includeScreenshot = false)
-        }
+        coroutineScope.launch { BugReport.share(act) }
     }
 
     SectionCard(title = stringResource(R.string.settings_about_title)) {

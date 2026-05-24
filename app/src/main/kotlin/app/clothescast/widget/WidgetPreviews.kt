@@ -272,6 +272,19 @@ internal fun WidgetTodayLargePreview() {
     }
 }
 
+@Preview(name = "Widget · today · extra large (320dp)", widthDp = 352, heightDp = 352)
+@Composable
+internal fun WidgetTodayExtraLargePreview() {
+    WidgetFrame {
+        OutfitWidgetMockFilled(
+            period = ForecastPeriod.TODAY,
+            outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
+            width = 320.dp,
+            height = 320.dp,
+        )
+    }
+}
+
 @Preview(name = "Widget · today + tonight · side by side", widthDp = 332, heightDp = 182)
 @Composable
 internal fun WidgetTodayTonightWidePreview() {
@@ -298,20 +311,21 @@ internal fun WidgetTonightTomorrowWidePreview() {
 
 // Scaling formulas — kept in lockstep with OutfitWidget.kt's scaledIconSize /
 // scaledLabelSp / scaledSubtitleSp. Anchored so a 160dp-square cell reproduces
-// the previous hard-coded values (icon 48dp, label 14sp, subtitle 11sp).
+// the previous hard-coded values (icon 48dp, label 14sp, subtitle 11sp); larger
+// cells grow linearly with no upper cap.
 private fun scaledIconSizeMock(size: DpSize): Dp {
     val short = minOf(size.width.value, size.height.value)
-    return (short * 0.30f).coerceIn(36f, 88f).dp
+    return (short * 0.30f).coerceAtLeast(36f).dp
 }
 
 private fun scaledLabelSpMock(size: DpSize): TextUnit {
     val short = minOf(size.width.value, size.height.value)
-    return (short * 0.0875f).coerceIn(13f, 18f).sp
+    return (short * 0.0875f).coerceAtLeast(13f).sp
 }
 
 private fun scaledSubtitleSpMock(size: DpSize): TextUnit {
     val short = minOf(size.width.value, size.height.value)
-    return (short * 0.0688f).coerceIn(10f, 13f).sp
+    return (short * 0.0688f).coerceAtLeast(10f).sp
 }
 
 private fun periodLabelResMock(period: ForecastPeriod): Int = when (period) {

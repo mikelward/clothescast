@@ -50,6 +50,7 @@ import app.clothescast.ui.settings.SettingsVoiceDevicePreview
 import app.clothescast.ui.settings.SettingsVoiceGeminiPreview
 import app.clothescast.widget.WidgetEmptyPreview
 import app.clothescast.widget.WidgetTodayCompactPreview
+import app.clothescast.widget.WidgetTodayExtraLargePreview
 import app.clothescast.widget.WidgetTodayJacketPantsPreview
 import app.clothescast.widget.WidgetTodayLargePreview
 import app.clothescast.widget.WidgetTodayTonightWidePreview
@@ -538,6 +539,7 @@ class PreviewSnapshots {
     @Test fun widget_empty() = capture { WidgetEmptyPreview() }
     @Test fun widget_today_compact() = capture { WidgetTodayCompactPreview() }
     @Test fun widget_today_large() = capture { WidgetTodayLargePreview() }
+    @Test fun widget_today_extra_large() = capture { WidgetTodayExtraLargePreview() }
     @Test fun widget_today_tonight_wide() = capture { WidgetTodayTonightWidePreview() }
     @Test fun widget_tonight_tomorrow_wide() = capture { WidgetTonightTomorrowWidePreview() }
 

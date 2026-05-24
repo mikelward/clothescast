@@ -33,6 +33,9 @@ import java.time.ZoneOffset
  */
 class CalendarContractEventReader(private val context: Context) : CalendarEventReader {
 
+    @Volatile
+    private var eventTypeProjectionRejected: Boolean = false
+
     override suspend fun eventsForDay(date: LocalDate, zoneId: ZoneId): List<CalendarEvent> {
         if (!CalendarPermission.isGranted(context)) {
             DiagLog.i(TAG, "READ_CALENDAR not granted; skipping calendar read.")
@@ -150,11 +153,21 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
 
         val rows = mutableListOf<Row>()
         val calendarIds = mutableSetOf<Long>()
-        val rawCursor = try {
-            context.contentResolver.query(uri, withEventType, selection, null, sortOrder)
-        } catch (e: IllegalArgumentException) {
-            DiagLog.i(TAG, "Provider rejected `eventType` column; retrying without it.", e)
+        // Once a provider has rejected `eventType` we know the rest of this
+        // process's queries will too — skip the speculative first attempt
+        // (and the stack-trace log it produces) thereafter.
+        val rawCursor = if (eventTypeProjectionRejected) {
             context.contentResolver.query(uri, baseProjection, selection, null, sortOrder)
+        } else {
+            try {
+                context.contentResolver.query(uri, withEventType, selection, null, sortOrder)
+            } catch (e: IllegalArgumentException) {
+                if (!eventTypeProjectionRejected) {
+                    eventTypeProjectionRejected = true
+                    DiagLog.i(TAG, "Provider rejected `eventType` column; future queries will skip it.", e)
+                }
+                context.contentResolver.query(uri, baseProjection, selection, null, sortOrder)
+            }
         }
         rawCursor?.use { cursor ->
             val titleIdx = cursor.getColumnIndex(CalendarContract.Instances.TITLE)
@@ -208,7 +221,14 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
 
         val ownerByCalendarId = ownerAccountsFor(calendarIds)
 
-        return rows.mapNotNull { row ->
+        // Tally classifications across the query so we can log one summary line
+        // instead of one per row — a year-long upcomingCelebrations() over a
+        // dense Google account otherwise floods the 300-line diag buffer with
+        // dozens of repeated "Classified calendarId=X as Y" lines that all carry
+        // the same per-calendar verdict. Title and owner stay out of the log
+        // (both are PII); the summary names only the kind+reason counts.
+        val classificationTally = mutableMapOf<Pair<EventKind, String>, Int>()
+        val events = rows.mapNotNull { row ->
             val owner = ownerByCalendarId[row.calendarId]
             val result = CalendarEventClassifier.classify(row.title, owner, row.eventType)
             // FREE rows are typically calendar holds the user doesn't want surfaced
@@ -218,13 +238,8 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
             if (result.kind == EventKind.NORMAL && row.availability == CalendarContract.Instances.AVAILABILITY_FREE) {
                 return@mapNotNull null
             }
-            // Log the deduction path (kind + reason) without the title or owner —
-            // both are PII. calendarId is a row-local integer, safe.
-            DiagLog.i(
-                TAG,
-                "Classified calendarId=${row.calendarId} as ${result.kind} via ${result.reason}" +
-                    (row.eventType?.let { " (eventType=$it)" } ?: " (eventType column unavailable)"),
-            )
+            val key = result.kind to result.reason.toString()
+            classificationTally[key] = (classificationTally[key] ?: 0) + 1
             DatedEvent(
                 date = row.date,
                 event = CalendarEvent(
@@ -238,6 +253,14 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
                 ),
             )
         }
+
+        if (events.isNotEmpty()) {
+            val summary = classificationTally.entries
+                .sortedByDescending { it.value }
+                .joinToString(", ") { (key, count) -> "$count ${key.first} via ${key.second}" }
+            DiagLog.i(TAG, "Classified ${events.size} events: $summary")
+        }
+        return events
     }
 
     /**

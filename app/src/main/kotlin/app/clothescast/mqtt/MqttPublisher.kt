@@ -267,11 +267,19 @@ class MqttPublisher(
                 )
             }
         } else {
+            // The per-topic failures already logged their cause; here we only
+            // need to note that the /now mirror is being held back so a reader
+            // can correlate "no /now update" with "primary publishes failed."
+            val failed = listOfNotNull(
+                if (proseOutcome !is MqttPublishOutcome.Success) "prose" else null,
+                if (imageOutcome != null && imageOutcome !is MqttPublishOutcome.Success) "image" else null,
+                if (audioOutcome != null && audioOutcome !is MqttPublishOutcome.Success) "audio" else null,
+                if (videoOutcome != null && videoOutcome !is MqttPublishOutcome.Success) "video" else null,
+            ).joinToString("/")
             DiagLog.i(
                 TAG,
                 "Skipping /now mirror for ${period.name.lowercase()} bundle " +
-                    "(prose=$proseOutcome, image=$imageOutcome, audio=$audioOutcome); " +
-                    "previous retained /now bundle stays intact.",
+                    "($failed failed); previous retained /now bundle stays intact.",
             )
         }
         proseOutcome
@@ -400,8 +408,14 @@ class MqttPublisher(
             // shadowed by a misleading "MQTT publish failed" line.
             throw ce
         } catch (t: Throwable) {
+            // Carry the throwable's class+message text on the Failure outcome
+            // (it's surfaced on the Settings status row and in the bug report)
+            // but don't attach `t` to the log line: the HiveMQ/Netty trace it
+            // produces is ~4 lines per topic per attempt — 32 lines for one
+            // unreachable-broker bundle — and the message string already names
+            // the cause (`AnnotatedNoRouteToHostException: No route to host`).
             val msg = "${t.javaClass.simpleName}: ${t.message ?: "unknown error"}".take(250)
-            DiagLog.w(TAG, "MQTT publish failed to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic", t)
+            DiagLog.w(TAG, "MQTT publish failed to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic ($msg)")
             result = MqttPublishOutcome.Failure(msg)
         }
         result

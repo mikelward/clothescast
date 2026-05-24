@@ -481,6 +481,7 @@ class PreviewSnapshots {
     @Test fun holiday_melbourne_cup_day() = capture { HolidayMelbourneCupDayPreview() }
     @Test fun holiday_us_election_day() = capture { HolidayUsElectionDayPreview() }
     @Test fun holiday_bonfire_night() = capture { HolidayBonfireNightPreview() }
+    @Test fun holiday_uk_remembrance_sunday() = capture { HolidayUkRemembranceSundayPreview() }
     @Test fun holiday_remembrance_day() = capture { HolidayRemembranceDayPreview() }
     @Test fun holiday_remembrance_day_us() = capture { HolidayRemembranceDayUsPreview() }
     @Test fun holiday_remembrance_day_fr() = capture { HolidayRemembranceDayFrPreview() }

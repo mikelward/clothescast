@@ -969,6 +969,10 @@ internal fun HolidayUsElectionDayPreview() = HolidayShowcase(HolidayId.US_ELECTI
 @Composable
 internal fun HolidayBonfireNightPreview() = HolidayShowcase(HolidayId.BONFIRE_NIGHT)
 
+@Preview(name = "Holiday · Remembrance Sunday (UK)", widthDp = 360)
+@Composable
+internal fun HolidayUkRemembranceSundayPreview() = HolidayShowcase(HolidayId.UK_REMEMBRANCE_SUNDAY)
+
 @Preview(name = "Holiday · Remembrance Day", widthDp = 360)
 @Composable
 internal fun HolidayRemembranceDayPreview() = HolidayShowcase(HolidayId.REMEMBRANCE_DAY)

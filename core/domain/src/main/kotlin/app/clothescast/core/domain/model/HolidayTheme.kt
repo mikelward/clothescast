@@ -73,16 +73,13 @@ enum class HolidayId {
     MELBOURNE_CUP_DAY,
     US_ELECTION_DAY,
     BONFIRE_NIGHT,
+    UK_REMEMBRANCE_SUNDAY,
     REMEMBRANCE_DAY,
     US_THANKSGIVING,
     ST_ANDREWS_DAY,
     IMMACULATE_CONCEPTION,
     CHRISTMAS_DAY,
     BOXING_DAY,
-    // TODO(holidays-v4): UK Remembrance Sunday — 2nd Sun of Nov, sits
-    // alongside [REMEMBRANCE_DAY] on Nov 11 in the UK (one's the formal
-    // observance, the other the day itself).
-    //
     // TODO(holidays-v4): Christian / Catholic religious bucket. The four
     // Easter-cluster entries ([GOOD_FRIDAY], [EASTER_SUNDAY],
     // [EASTER_MONDAY], plus Ascension / Pentecost / Whit Monday /
@@ -1342,11 +1339,33 @@ object HolidayCatalog {
             countries = setOf("GB", "NZ"),
         ),
 
+        // 2nd Sunday of November — UK Remembrance Sunday. The formal UK
+        // observance (poppy-laying, Cenotaph service) sits on the Sunday
+        // closest to Nov 11; [REMEMBRANCE_DAY] on Nov 11 itself is the
+        // armistice anniversary. Same khaki palette and solemn flag as
+        // Remembrance Day — same observance, distinct calendar day for
+        // most years. Banner uses the Royal British Legion's "We will
+        // remember them" so a same-day collision (Nov 11 falling on a
+        // Sunday, ~once every 7 years — next 2029) joins as "Lest we
+        // forget and We will remember them" rather than echoing itself.
+        HolidayDate.NthWeekday(Month.NOVEMBER, 2, DayOfWeek.SUNDAY) to HolidayTheme(
+            id = HolidayId.UK_REMEMBRANCE_SUNDAY,
+            displayNameKey = "holiday_name_uk_remembrance_sunday",
+            bannerTextKey = "holiday_banner_uk_remembrance_sunday",
+            emoji = "🔺", // 🔺 — match Anzac / Remembrance Day for visual continuity
+            topOverrides = topPaletteAll(ANZAC_KHAKI),
+            bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
+            bannerArgb = ANZAC_KHAKI,
+            countries = setOf("GB"),
+            solemn = true,
+        ),
+
         // Nov 11 — Remembrance Day (US calls it Veterans Day, FR calls it
         // Armistice Day / Jour de l'Armistice). Solemn monochrome khaki,
         // same shape as Anzac. Banner text varies by country via the
-        // country-keyed override map. UK Remembrance Sunday (2nd Sun of Nov)
-        // is a TODO at the top of [HolidayId] — separate observance.
+        // country-keyed override map. The UK's formal observance falls on
+        // [UK_REMEMBRANCE_SUNDAY] (2nd Sun of Nov) — Nov 11 is the
+        // armistice anniversary itself.
         HolidayDate.Fixed(Month.NOVEMBER, 11) to HolidayTheme(
             id = HolidayId.REMEMBRANCE_DAY,
             displayNameKey = "holiday_name_remembrance_day",

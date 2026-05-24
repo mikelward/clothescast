@@ -132,11 +132,10 @@ internal fun PerModelDiagnosticCard(
     }
 
     val mainByIndex = remember(mainLine) { mainLine.toMap() }
-    val timeFmt = rememberScrubTimeFormatter()
     val scrubController = LocalChartScrub.current
     val readout = rememberChartReadout(hourly, startDate) { idx ->
         val v = mainByIndex[idx] ?: return@rememberChartReadout null
-        "${timeFmt(times[idx])} · ${tooltipValueFormat(v)}"
+        stringResource(R.string.today_chart_readout, tooltipValueFormat(v), formatScrubHour(times[idx]))
     }
 
     Card(modifier = Modifier.fillMaxWidth()) {

@@ -217,7 +217,9 @@ class InsightFormatterTest {
 
     // ClothesFormat.LAYER_COUNT collapses the firing tops to a perceived-warmth
     // count (see Garment.layerCount) — the heaviest single top defines the
-    // count, not the sum. Bottoms are named alongside via the locale's phraser.
+    // count, not the sum. Bottoms are suppressed in this mode (see
+    // InsightFormatter.format) so the wear clause is a single warmth signal;
+    // an only-bottom firing therefore emits no wear clause at all.
     private val layerCountSubject = InsightFormatter.forContext(
         context = context,
         locale = Locale.ENGLISH,
@@ -251,17 +253,29 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `layer-count format names bottoms alongside the layer count`() {
+    fun `layer-count format suppresses bottoms alongside the layer count`() {
+        // The trailing "and shorts" adds nothing on top of the warmth count, so
+        // layer-count mode drops bottoms entirely — leaving just the count.
         layerCountSubject.format(summary(clothes = ClothesClause(listOf("sweater", "shorts")))) shouldBe
-            "Today, it will be 21°. Wear 2 layers and shorts."
+            "Today, it will be 21°. Wear 2 layers."
     }
 
     @Test
-    fun `layer-count format names a t-shirt as 1 layer alongside shorts`() {
+    fun `layer-count format suppresses bottoms on warm-day t-shirt plus shorts`() {
         // The warm-day fallback scenario in layer-count mode: t-shirt from
-        // the default top, shorts from the user's threshold rule.
+        // the default top, shorts from the user's threshold rule — bottoms
+        // are filtered before the wear clause runs.
         layerCountSubject.format(summary(clothes = ClothesClause(listOf("t-shirt", "shorts")))) shouldBe
-            "Today, it will be 21°. Wear 1 layer and shorts."
+            "Today, it will be 21°. Wear 1 layer."
+    }
+
+    @Test
+    fun `layer-count format drops the wear clause when only a bottom fires`() {
+        // No top means no warmth count to render, and bottoms are suppressed
+        // in this mode — so the whole wear sentence disappears rather than
+        // falling through to the items rendering ("Wear shorts.").
+        layerCountSubject.format(summary(clothes = ClothesClause(listOf("shorts")))) shouldBe
+            "Today, it will be 21°."
     }
 
     @Test

@@ -1,7 +1,7 @@
 package app.clothescast.ui.today
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,10 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
+import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.ui.theme.AppTheme
@@ -35,7 +35,7 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.common.data.ExtraStore
-import java.time.LocalTime
+import java.time.LocalDate
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -69,10 +69,17 @@ import kotlin.math.roundToInt
 internal fun PerModelDiagnosticCard(
     title: String,
     subtitle: String,
-    times: List<LocalTime>,
+    hourly: List<HourlyForecast>,
+    startDate: LocalDate,
     perModelHourly: PerModelHourly,
     picker: (PerModelHour) -> Double?,
     yAxis: YAxis,
+    /**
+     * Formats a y-axis value for the scrub tooltip — e.g. "12 km/h",
+     * "65%", "UV 7". The chart's [startFormatter] formats axis labels;
+     * this is the same idea for the floating readout at the indicator.
+     */
+    tooltipValueFormat: (Double) -> String,
     /**
      * Extra cache key for callers whose [picker] closes over mutable state
      * (e.g. the wind card converts km/h → mph using the user's unit). Defaults
@@ -90,11 +97,13 @@ internal fun PerModelDiagnosticCard(
      */
     showOverlay: Boolean = false,
     /**
-     * Wires the card up as tap-to-toggle the overlay. Null means the card is
-     * not clickable — used for previews and any wrapper that wants to opt out.
+     * Fires on the first pointer-down of a scrub gesture on this card's
+     * chart. Wired in [TodayScreen] to reveal the per-model spread overlay
+     * — same affordance as the temp / precip cards.
      */
-    onToggleOverlay: (() -> Unit)? = null,
+    onFirstContact: (() -> Unit)? = null,
 ) {
+    val times = remember(hourly) { hourly.map { it.time } }
     // Build (originalIndex, value) pairs per model so a sparse series plots at
     // its real positions on the x-axis instead of getting compacted left and
     // misaligned with the rest of the screen's hourly axes.
@@ -122,10 +131,7 @@ internal fun PerModelDiagnosticCard(
             .map { (idx, vs) -> idx to vs.average() }
     }
 
-    val cardModifier = Modifier
-        .fillMaxWidth()
-        .let { if (onToggleOverlay != null) it.clickable(onClick = onToggleOverlay) else it }
-    Card(modifier = cardModifier) {
+    Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -133,11 +139,14 @@ internal fun PerModelDiagnosticCard(
             Text(text = title, style = MaterialTheme.typography.titleSmall)
             Text(text = subtitle, style = MaterialTheme.typography.bodyMedium)
             PerModelDiagnosticChart(
-                times = times,
+                hourly = hourly,
+                startDate = startDate,
                 mainLine = mainLine,
                 seriesByModel = seriesByModel,
                 overlayModels = if (showOverlay) availableModels else emptyList(),
                 yAxis = yAxis,
+                tooltipValueFormat = tooltipValueFormat,
+                onFirstContact = onFirstContact ?: {},
             )
             ModelSpreadLegend(
                 visibleModelIds = if (showOverlay) availableModels else emptyList(),
@@ -164,12 +173,16 @@ internal sealed class YAxis {
 
 @Composable
 private fun PerModelDiagnosticChart(
-    times: List<LocalTime>,
+    hourly: List<HourlyForecast>,
+    startDate: LocalDate,
     mainLine: List<Pair<Int, Double>>,
     seriesByModel: Map<String, List<Pair<Int, Double>>>,
     overlayModels: List<String>,
     yAxis: YAxis,
+    tooltipValueFormat: (Double) -> String,
+    onFirstContact: () -> Unit,
 ) {
+    val times = remember(hourly) { hourly.map { it.time } }
     val mainLineColor = AppTheme.mainLineColor
     val producer = remember { CartesianChartModelProducer() }
     LaunchedEffect(seriesByModel, overlayModels, mainLine) {
@@ -259,29 +272,56 @@ private fun PerModelDiagnosticChart(
     // convention.
     val lineProvider = rememberPinnedLineProvider(overlayModels, mainLineColor)
 
-    val decorations = rememberCurrentTimeDecorations()
+    val scrubController = LocalChartScrub.current
+    val scrubBounds = rememberChartScrubBounds()
+    val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
+    val decorations = listOf(scrubIndicator)
+    val timeFmt = rememberScrubTimeFormatter()
 
-    CartesianChartHost(
-        chart = rememberCartesianChart(
-            rememberLineCartesianLayer(
-                lineProvider = lineProvider,
-                rangeProvider = rangeProvider,
-            ),
-            startAxis = VerticalAxis.rememberStart(
-                itemPlacer = yItemPlacer,
-                valueFormatter = startFormatter,
-            ),
-            bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
-            decorations = decorations,
-        ),
-        modelProducer = producer,
-        // Disable scroll/zoom gestures so the chart doesn't swallow horizontal
-        // drags meant for the parent HorizontalPager — same fix as the temp /
-        // precip cards above.
-        scrollState = rememberVicoScrollState(scrollEnabled = false),
-        zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
+    // Index → consensus value lookup for the scrub tooltip. mainLine is
+    // sparse (sorted by index) so a linear search is fine — 24 entries.
+    val mainLineByIndex = remember(mainLine) { mainLine.toMap() }
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp),
-    )
+            .height(140.dp)
+            .let { mod ->
+                if (scrubController != null) {
+                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate, onFirstContact)
+                } else {
+                    mod
+                }
+            },
+    ) {
+        CartesianChartHost(
+            chart = rememberCartesianChart(
+                rememberLineCartesianLayer(
+                    lineProvider = lineProvider,
+                    rangeProvider = rangeProvider,
+                ),
+                startAxis = VerticalAxis.rememberStart(
+                    itemPlacer = yItemPlacer,
+                    valueFormatter = startFormatter,
+                ),
+                bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
+                decorations = decorations,
+            ),
+            modelProducer = producer,
+            scrollState = rememberVicoScrollState(scrollEnabled = false),
+            zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
+            modifier = Modifier.matchParentSize(),
+        )
+        if (scrubController != null) {
+            ChartScrubOverlay(scrubController, scrubBounds, hourly, startDate) { idx ->
+                val time = times[idx]
+                val value = mainLineByIndex[idx]
+                val readout = value?.let { tooltipValueFormat(it) } ?: "—"
+                Text(
+                    text = "${timeFmt(time)} · $readout",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
+    }
 }

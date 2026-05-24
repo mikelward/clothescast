@@ -1270,7 +1270,22 @@ internal fun ForecastChartDarkPreview() {
 @Composable
 internal fun ForecastChartWithCurrentTimePreview() {
     Frame {
-        CompositionLocalProvider(LocalChartCurrentTimeX provides 14.5) {
+        // Drive the shared scrub controller at 14:30 so the indicator
+        // lands mid-afternoon, between the curve's two warmest hours.
+        // Use setNow rather than scrubTo so the controller stays in its
+        // idle "tracking live time" mode — no restore icon — matching
+        // the original now-indicator snapshot semantics.
+        val controller = androidx.compose.runtime.remember {
+            ChartScrubController().apply {
+                setNow(
+                    java.time.LocalDateTime.of(
+                        java.time.LocalDate.now(),
+                        java.time.LocalTime.of(14, 30),
+                    ),
+                )
+            }
+        }
+        CompositionLocalProvider(LocalChartScrub provides controller) {
             ForecastChart(
                 hourly = SAMPLE_HOURLY,
                 temperatureUnit = TemperatureUnit.CELSIUS,

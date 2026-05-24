@@ -21,6 +21,8 @@ import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.core.domain.model.ThemeMode
+import app.clothescast.core.domain.model.TimeFormat
+import app.clothescast.core.domain.model.TimeFormatSetting
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.model.UpcomingCalendarEvent
@@ -28,6 +30,7 @@ import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.data.defaultDistanceUnitFor
 import app.clothescast.data.defaultTemperatureUnitFor
+import app.clothescast.data.defaultTimeFormatFor
 import app.clothescast.discovery.DiscoveredService
 import app.clothescast.tts.DeviceVoice
 import java.time.DayOfWeek
@@ -67,6 +70,8 @@ data class SettingsState(
     val distanceUnit: DistanceUnit = defaultDistanceUnitFor(Locale.getDefault()),
     val temperatureUnitSetting: TemperatureUnitSetting = TemperatureUnitSetting.AUTO,
     val distanceUnitSetting: DistanceUnitSetting = DistanceUnitSetting.AUTO,
+    val timeFormat: TimeFormat = defaultTimeFormatFor(Locale.getDefault()),
+    val timeFormatSetting: TimeFormatSetting = TimeFormatSetting.AUTO,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val colorPalette: ColorPalette = ColorPalette.RAINBOW,
     /** User-picked fill colour overrides for each top-icon tier. Empty = baked-in defaults. */

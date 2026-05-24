@@ -114,6 +114,9 @@ import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.ClothesCastApplication
 import app.clothescast.tts.toJavaLocale
 import app.clothescast.ui.EdgeFadeOverlay
+import app.clothescast.ui.LocalTimeFormat
+import app.clothescast.ui.formatHourMinute
+import app.clothescast.ui.formatScrubHour
 import app.clothescast.ui.garment.GarmentBottomIcon
 import app.clothescast.ui.garment.GarmentTopIcon
 import app.clothescast.diag.BugReport
@@ -527,6 +530,7 @@ private fun TodayPage(
     // page's outer Box bounds (the pager-page edges), so cards pass cleanly
     // under them as the user scrolls.
     EdgeFadeOverlay(scrollState = scrollState) {
+      CompositionLocalProvider(LocalTimeFormat provides state.timeFormat) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -744,6 +748,7 @@ private fun TodayPage(
                 }
             }
         }
+      }
     }
 }
 
@@ -762,10 +767,7 @@ internal fun MissingPeriodPlaceholder(
     onChevronTap: () -> Unit,
 ) {
     val readyAt = if (period == ForecastPeriod.TODAY) morningTime else tonightTime
-    val locale = LocalConfiguration.current.locales[0]
-    val timeFormatter = remember(locale) {
-        DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(locale)
-    }
+    val readyAtText = formatHourMinute(readyAt)
     val titleRes = if (period == ForecastPeriod.TODAY) {
         R.string.today_placeholder_today_title
     } else {
@@ -797,7 +799,7 @@ internal fun MissingPeriodPlaceholder(
             Text(
                 text = stringResource(
                     R.string.today_placeholder_body,
-                    timeFormatter.format(readyAt),
+                    readyAtText,
                 ),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -1454,7 +1456,7 @@ private fun formatFact(fact: Fact, unit: TemperatureUnit, liveThresholdC: Double
         observedStr = observedI.toString()
         thresholdStr = thresholdI.toString()
     }
-    val time = fact.observedAt?.let { TIME_FORMAT.format(it) }
+    val time = fact.observedAt?.let { formatHourMinute(it) }
     // Recompute the comparison against the live threshold so the prose ("under" /
     // "above") stays honest after the user nudges the knob; the cached
     // [Fact.comparison] reflects the value at insight-generation time.
@@ -1500,9 +1502,6 @@ private fun formatFact(fact: Fact, unit: TemperatureUnit, liveThresholdC: Double
 // precision.
 private fun comparisonFor(observedC: Double, thresholdC: Double): Fact.Comparison =
     if (observedC < thresholdC) Fact.Comparison.BELOW else Fact.Comparison.AT_OR_ABOVE
-
-private val TIME_FORMAT: DateTimeFormatter =
-    DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.getDefault())
 
 // Locale-aware one-decimal formatter used as a fallback in [formatFact] when
 // integer rounding of observed and threshold values would otherwise collide
@@ -1593,7 +1592,9 @@ internal fun InsightCard(
     }
     val locale = LocalConfiguration.current.locales[0]
     val dateFormatter = remember(locale) { DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale) }
-    val generatedAtFormatter = remember(locale) { DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(locale) }
+    val generatedAtText = formatHourMinute(
+        insight.generatedAt.atZone(ZoneId.systemDefault()).toLocalTime(),
+    )
     val location = insight.location
     // Fall back to a localised "Your location" when reverse geocoding returned
     // nothing useful — we still have coords, so the maps link is worth keeping.
@@ -1681,7 +1682,7 @@ internal fun InsightCard(
                 Text(
                     text = stringResource(
                         R.string.today_generated_at,
-                        generatedAtFormatter.format(insight.generatedAt.atZone(ZoneId.systemDefault())),
+                        generatedAtText,
                     ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -1976,7 +1977,7 @@ private fun ModelDivergenceHint(
     Text(
         text = stringResource(
             R.string.today_chart_divergence_summary,
-            "%02d:%02d".format(summary.peakHour.hour, summary.peakHour.minute),
+            formatHourMinute(summary.peakHour),
             spreadInUserUnit,
             temperatureUnit.symbol(),
             factorLabel,
@@ -2049,7 +2050,7 @@ internal fun WindCard(
             R.string.today_wind_peak,
             value.roundToInt(),
             windSpeedUnit.symbol(),
-            "%02d:00".format(time.hour),
+            formatScrubHour(time),
         )
     } ?: stringResource(R.string.today_wind_subtitle, windSpeedUnit.symbol())
     val unitSymbol = windSpeedUnit.symbol()
@@ -2276,7 +2277,7 @@ internal fun UvIndexCard(
         stringResource(
             R.string.today_uv_peak,
             value.roundToInt(),
-            "%02d:00".format(time.hour),
+            formatScrubHour(time),
         )
     } ?: stringResource(R.string.today_uv_subtitle)
     PerModelDiagnosticCard(
@@ -2321,7 +2322,7 @@ internal fun PrecipitationCard(
         stringResource(
             R.string.today_precipitation_peak,
             peak.precipitationProbabilityPct.roundToInt(),
-            "%02d:00".format(peak.time.hour),
+            formatScrubHour(peak.time),
         )
     }
     val readout = rememberChartReadout(hourly, startDate) { idx ->

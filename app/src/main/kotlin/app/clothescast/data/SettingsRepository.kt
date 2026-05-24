@@ -31,10 +31,13 @@ import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.core.domain.model.ThemeMode
+import app.clothescast.core.domain.model.TimeFormat
+import app.clothescast.core.domain.model.TimeFormatSetting
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.VoiceLocale
+import app.clothescast.core.domain.model.containsTwelveHourPatternField
 import app.clothescast.core.domain.model.thresholdC
 import app.clothescast.core.domain.model.withThresholdC
 import app.clothescast.diag.ClothesRulesSnapshot
@@ -224,6 +227,15 @@ class SettingsRepository(
             when (setting) {
                 DistanceUnitSetting.AUTO -> prefs.remove(DISTANCE_UNIT)
                 else -> prefs[DISTANCE_UNIT] = setting.name
+            }
+        }
+    }
+
+    suspend fun setTimeFormatSetting(setting: TimeFormatSetting) {
+        dataStore.edit { prefs ->
+            when (setting) {
+                TimeFormatSetting.AUTO -> prefs.remove(TIME_FORMAT_SETTING)
+                else -> prefs[TIME_FORMAT_SETTING] = setting.name
             }
         }
     }
@@ -735,6 +747,14 @@ class SettingsRepository(
             DistanceUnitSetting.KILOMETERS -> DistanceUnit.KILOMETERS
             DistanceUnitSetting.MILES -> DistanceUnit.MILES
         }
+        val timeFormatSetting = this[TIME_FORMAT_SETTING]
+            ?.let { runCatching { TimeFormatSetting.valueOf(it) }.getOrNull() }
+            ?: TimeFormatSetting.AUTO
+        val timeFormat = when (timeFormatSetting) {
+            TimeFormatSetting.AUTO -> defaultTimeFormatFor(regionLocale)
+            TimeFormatSetting.TWELVE_HOUR -> TimeFormat.TWELVE_HOUR
+            TimeFormatSetting.TWENTY_FOUR_HOUR -> TimeFormat.TWENTY_FOUR_HOUR
+        }
         val themeMode = this[THEME_MODE]?.let { runCatching { ThemeMode.valueOf(it) }.getOrNull() }
             ?: ThemeMode.SYSTEM
         val rules = parseRules(this[CLOTHES_RULES])
@@ -879,6 +899,8 @@ class SettingsRepository(
             distanceUnit = distanceUnit,
             temperatureUnitSetting = temperatureUnitSetting,
             distanceUnitSetting = distanceUnitSetting,
+            timeFormat = timeFormat,
+            timeFormatSetting = timeFormatSetting,
             themeMode = themeMode,
             clothesRules = rules,
             defaultBottom = defaultBottom,
@@ -1118,6 +1140,7 @@ class SettingsRepository(
         private val REGION = stringPreferencesKey("region")
         private val TEMPERATURE_UNIT = stringPreferencesKey("temperature_unit")
         private val DISTANCE_UNIT = stringPreferencesKey("distance_unit")
+        private val TIME_FORMAT_SETTING = stringPreferencesKey("time_format")
         private val THEME_MODE = stringPreferencesKey("theme_mode")
         private val CLOTHES_RULES = stringPreferencesKey("clothes_rules_json")
         private val DEFAULT_BOTTOM = stringPreferencesKey("default_bottom")
@@ -1231,3 +1254,17 @@ internal fun defaultTemperatureUnitFor(locale: Locale): TemperatureUnit =
 // temperatures in Celsius.
 internal fun defaultDistanceUnitFor(locale: Locale): DistanceUnit =
     if (locale.country in setOf("US", "GB")) DistanceUnit.MILES else DistanceUnit.KILOMETERS
+
+// Derive the locale's everyday clock convention by inspecting the SHORT
+// time-format pattern for an unquoted 12h hour field. The quote-aware
+// scanner is load-bearing: locales like fr_CA ("HH 'h' mm") and hsb_DE
+// ("H:mm 'hodź'.") carry a quoted 'h' literal in their 24h pattern, and a
+// naive `pattern.any { it == 'h' }` would misclassify them as 12h and
+// flip the Auto picker to AM/PM in locales that don't use it. Falls back
+// to 24h when the JDK returns an unexpected formatter type — the global
+// majority and the safer default for "I wasn't expecting that locale".
+internal fun defaultTimeFormatFor(locale: Locale): TimeFormat {
+    val df = java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT, locale)
+    val pattern = (df as? java.text.SimpleDateFormat)?.toPattern() ?: return TimeFormat.TWENTY_FOUR_HOUR
+    return if (pattern.containsTwelveHourPatternField()) TimeFormat.TWELVE_HOUR else TimeFormat.TWENTY_FOUR_HOUR
+}

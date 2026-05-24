@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.R
 import app.clothescast.tts.toJavaLocale
 import app.clothescast.ui.EdgeFadeOverlay
+import app.clothescast.ui.LocalTimeFormat
 
 /**
  * A row on the Settings root menu: a label, subtitle, and the navigation it
@@ -107,6 +109,7 @@ internal fun SchedulePage(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     SettingsScaffold(R.string.settings_root_schedule, onBack) { padding ->
+        CompositionLocalProvider(LocalTimeFormat provides state.timeFormat) {
         ScheduleContent(
             time = state.scheduleTime,
             days = state.scheduleDays,
@@ -134,6 +137,7 @@ internal fun SchedulePage(
             // the top-bar back arrow.
             onDone = if (onboardingLanding) onFinishOnboarding else null,
         )
+        }
     }
 }
 
@@ -168,12 +172,15 @@ internal fun RegionPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             region = state.region,
             temperatureUnitSetting = state.temperatureUnitSetting,
             distanceUnitSetting = state.distanceUnitSetting,
+            timeFormatSetting = state.timeFormatSetting,
             resolvedTemperatureUnit = state.temperatureUnit,
             resolvedDistanceUnit = state.distanceUnit,
+            resolvedTimeFormat = state.timeFormat,
             padding = padding,
             onSetRegion = viewModel::setRegion,
             onSetTemperatureUnit = viewModel::setTemperatureUnitSetting,
             onSetDistanceUnit = viewModel::setDistanceUnitSetting,
+            onSetTimeFormat = viewModel::setTimeFormatSetting,
         )
     }
 }
@@ -300,6 +307,7 @@ internal fun ForecastersPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
 internal fun SmartHomePage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     SettingsScaffold(R.string.settings_root_smart_home, onBack) { padding ->
+        CompositionLocalProvider(LocalTimeFormat provides state.timeFormat) {
         SmartHomeContent(
             bridgeEnabled = state.mqttBridgeEnabled,
             host = state.mqttHost,
@@ -342,6 +350,7 @@ internal fun SmartHomePage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             onSetCastTonight = viewModel::setCastTonight,
             onSetCastSkipPhoneSpeech = viewModel::setCastSkipPhoneSpeech,
         )
+        }
     }
 }
 

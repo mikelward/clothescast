@@ -95,9 +95,31 @@ class DeriveInsight(
         val defaultBottom = prefs.defaultBottom
         val defaultTop = prefs.defaultTop
 
+        // Prefer the day we actually delivered to the user yesterday over the
+        // upstream past-days hindcast (see [DailyHistoryEntry] for why). Only
+        // accepted when the recorded date is exactly the day before the
+        // snapshot's today — a stale record from two days ago is more
+        // misleading than no clause at all.
+        val deltaYesterdayForRender = snapshot.historicYesterday
+            ?.takeIf { it.date == bundle.today.date.minusDays(1) }
+            ?.let { entry ->
+                diagLog(
+                    "delta-source: using historic yesterday (date=${entry.date}, " +
+                        "feels-like min/max=${entry.feelsLikeMinC}/${entry.feelsLikeMaxC}) " +
+                        "in place of bundle.yesterday min/max=" +
+                        "${periodView.deltaYesterday.feelsLikeMinC}/" +
+                        "${periodView.deltaYesterday.feelsLikeMaxC}",
+                )
+                periodView.deltaYesterday.copy(
+                    feelsLikeMinC = entry.feelsLikeMinC,
+                    feelsLikeMaxC = entry.feelsLikeMaxC,
+                )
+            }
+            ?: periodView.deltaYesterday
+
         val summary = renderInsightSummary(
             today = periodView.forecast,
-            yesterday = periodView.deltaYesterday,
+            yesterday = deltaYesterdayForRender,
             todayItems = periodView.triggeredOutfit.items,
             alerts = activeAlerts,
             events = periodView.events,

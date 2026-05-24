@@ -33,4 +33,18 @@ data class ForecastSnapshot(
     val location: Location?,
     val period: ForecastPeriod,
     val generatedAt: Instant,
+    /**
+     * Yesterday's delivered daytime aggregate, read from the rolling
+     * `DailyHistoryStore` at snapshot-capture time and baked in so every
+     * downstream consumer (worker delivery, cache redelivery, Today screen
+     * reactive re-derive, format-preview, widget) sees the same record.
+     * When present and its date matches `bundle.today.date.minusDays(1)`,
+     * the delta clause prefers it over `bundle.yesterday` — see
+     * [DailyHistoryEntry] for the rationale (upstream past-days data is
+     * model output, not observations, and was wrong in a reproducible
+     * case). Null on day-one installs, when the previous day's delivery
+     * never happened (app disabled), or when the snapshot was captured by
+     * a path that doesn't have a store wired (tests, previews).
+     */
+    val historicYesterday: DailyHistoryEntry? = null,
 )

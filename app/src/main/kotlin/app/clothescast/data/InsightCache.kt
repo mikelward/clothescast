@@ -10,6 +10,7 @@ import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DailyForecast
+import app.clothescast.core.domain.model.DailyHistoryEntry
 import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -184,6 +185,7 @@ class InsightCache(
         val location: LocationDto? = null,
         val period: String = ForecastPeriod.TODAY.name,
         val generatedAtEpochMillis: Long,
+        val historicYesterday: DailyHistoryDto? = null,
     ) {
         fun toDomain(): ForecastSnapshot = ForecastSnapshot(
             bundle = bundle.toDomain(),
@@ -191,6 +193,20 @@ class InsightCache(
             location = location?.toDomain(),
             period = runCatching { ForecastPeriod.valueOf(period) }.getOrDefault(ForecastPeriod.TODAY),
             generatedAt = Instant.ofEpochMilli(generatedAtEpochMillis),
+            historicYesterday = historicYesterday?.toDomain(),
+        )
+    }
+
+    @Serializable
+    private data class DailyHistoryDto(
+        val dateEpochDays: Long,
+        val feelsLikeMinC: Double,
+        val feelsLikeMaxC: Double,
+    ) {
+        fun toDomain(): DailyHistoryEntry = DailyHistoryEntry(
+            date = LocalDate.ofEpochDay(dateEpochDays),
+            feelsLikeMinC = feelsLikeMinC,
+            feelsLikeMaxC = feelsLikeMaxC,
         )
     }
 
@@ -409,6 +425,13 @@ class InsightCache(
         },
         period = period.name,
         generatedAtEpochMillis = generatedAt.toEpochMilli(),
+        historicYesterday = historicYesterday?.let {
+            DailyHistoryDto(
+                dateEpochDays = it.date.toEpochDay(),
+                feelsLikeMinC = it.feelsLikeMinC,
+                feelsLikeMaxC = it.feelsLikeMaxC,
+            )
+        },
     )
 
     private fun ForecastBundle.toDto(): ForecastBundleDto = ForecastBundleDto(

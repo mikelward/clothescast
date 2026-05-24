@@ -16,8 +16,10 @@ import androidx.work.WorkerParameters
 import androidx.glance.appwidget.updateAll
 import androidx.work.workDataOf
 import app.clothescast.ClothesCastApplication
+import app.clothescast.core.domain.model.DailyHistoryEntry
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.ForecastSnapshot
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
@@ -257,7 +259,10 @@ class FetchAndNotifyWorker(
             val cachedInsight = cached.insight
             DiagLog.i(TAG, "Using cached $period insight for ${cachedInsight.forDate}.")
             return runCatching { deliver(cachedInsight, prefs, formatProse(cachedInsight, prefs)) }
-                .map { Result.success() }
+                .map {
+                    recordDailyHistory(cachedInsight)
+                    Result.success()
+                }
                 .getOrElse {
                     if (it is CancellationException) throw it
                     DiagLog.e(TAG, "Cached delivery failed; falling through to fresh generate.", it)
@@ -302,7 +307,7 @@ class FetchAndNotifyWorker(
             // lands in the cache so any later settings change re-renders
             // off the same upstream data for free; the derive call here is the
             // one we deliver on this run.
-            val snapshot = app.generateDailyInsight.snapshot(location, prefs, period)
+            val snapshot = capturedSnapshot(location, prefs, period, dayOffset = 0)
             val result = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, it) })
             // Severe alerts are out-of-band: post them as separate high-priority
             // notifications on every fresh fetch, regardless of whether the daily
@@ -351,6 +356,7 @@ class FetchAndNotifyWorker(
             val prose = formatProse(insight, prefs)
             deliver(insight, prefs, prose)
             DiagLog.i(TAG, "Insight delivered for ${insight.forDate}: $prose")
+            recordDailyHistory(insight)
             Result.success()
         } catch (e: ResponseException) {
             // OpenMeteo 4xx → fail; 5xx → retry with backoff. 429 is the one
@@ -430,13 +436,59 @@ class FetchAndNotifyWorker(
         }
         val dayOffset = if (primaryPeriod == ForecastPeriod.TONIGHT) 1 else 0
         runCatching {
-            val snapshot = app.generateDailyInsight.snapshot(location, prefs, nextWindowPeriod, dayOffset)
+            val snapshot = capturedSnapshot(location, prefs, nextWindowPeriod, dayOffset)
             app.insightCache.store(InsightCache.Slot.NEXT_PERIOD, snapshot)
             DiagLog.i(TAG, "Next-window $nextWindowPeriod snapshot cached for ${snapshot.bundle.today.date}.")
         }.onFailure {
             if (it is CancellationException) throw it
             DiagLog.w(TAG, "Next-window $nextWindowPeriod insight generation failed; not blocking $primaryPeriod delivery.", it)
         }
+    }
+
+    /**
+     * Wraps [GenerateDailyInsight.snapshot] with a lookup for yesterday's
+     * delivered daytime aggregate, baking the result into the snapshot's
+     * [ForecastSnapshot.historicYesterday]. Every downstream consumer
+     * (this worker's delivery, the cache redeliver path, the Today screen's
+     * reactive re-derive, the format-preview, the home-screen widget) then
+     * sees the same record without each having to read from
+     * [DailyHistoryStore] themselves. Lookup failures degrade to no historic
+     * value — the delta clause falls back to `bundle.yesterday`, which is
+     * the legacy behaviour.
+     */
+    private suspend fun capturedSnapshot(
+        location: Location,
+        prefs: UserPreferences,
+        period: ForecastPeriod,
+        dayOffset: Int,
+    ): ForecastSnapshot {
+        val raw = app.generateDailyInsight.snapshot(location, prefs, period, dayOffset)
+        val historic = runCatching {
+            app.dailyHistoryStore.entryFor(raw.bundle.today.date.minusDays(1))
+        }.getOrNull()
+        return raw.copy(historicYesterday = historic)
+    }
+
+    /**
+     * Persists today's delivered daytime aggregate to [DailyHistoryStore] so
+     * tomorrow's delta clause can compare against what we actually told the
+     * user about today (see [DailyHistoryEntry]). Only TODAY-period
+     * deliveries write: TONIGHT covers the evening slice, which isn't a
+     * meaningful "yesterday" comparison for tomorrow's daytime forecast.
+     */
+    private suspend fun recordDailyHistory(insight: Insight) {
+        if (insight.period != ForecastPeriod.TODAY) return
+        if (insight.hourly.isEmpty()) return
+        val entry = DailyHistoryEntry(
+            date = insight.forDate,
+            feelsLikeMinC = insight.hourly.minOf { it.feelsLikeC },
+            feelsLikeMaxC = insight.hourly.maxOf { it.feelsLikeC },
+        )
+        runCatching { app.dailyHistoryStore.put(entry) }
+            .onFailure {
+                if (it is CancellationException) throw it
+                DiagLog.w(TAG, "Daily history write failed; tomorrow's delta will fall back to upstream past-days data.", it)
+            }
     }
 
     private fun reason(code: String, detail: String? = null) =

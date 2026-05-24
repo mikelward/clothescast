@@ -61,6 +61,25 @@ enum class HolidayOverride { AUTO, ON, OFF }
  *    ([HolidayCatalog.FUNNY]: Talk Like a Pirate Day) resolves to
  *    effective-on under AUTO. A peer toggle like [global], on by
  *    default, so a user can mute the playful observances as a group.
+ *  - [christian] — when on, the Christian bucket
+ *    ([HolidayCatalog.CHRISTIAN]: Ash Wednesday, Mardi Gras / Shrove
+ *    Tuesday, Palm Sunday, Maundy Thursday, Ascension Day, Pentecost,
+ *    Whit Monday, Corpus Christi) resolves to effective-on under AUTO.
+ *    **Default-off** — these are religious-tradition observances
+ *    rather than universal civic days, so we don't push them onto
+ *    every user. Users in Christian-tradition countries with public
+ *    holidays still get the relevant entries via their `home`
+ *    country: each holiday is tagged BOTH with the CHRISTIAN
+ *    sentinel AND with the ISO codes where it's a public holiday
+ *    (e.g. Ascension fires for FR/DE/AT users via their home country
+ *    without flipping this toggle). Opt in to extend coverage to
+ *    the strictly-liturgical days (Ash Wed, Palm Sun, Maundy Thu)
+ *    that aren't public holidays anywhere.
+ *  - [orthodox] — when on, the Orthodox-Christian bucket
+ *    ([HolidayCatalog.ORTHODOX]: Orthodox Christmas Jan 7) resolves to
+ *    effective-on under AUTO. Default-off — most users aren't in the
+ *    Orthodox Christian tradition, and a Russian / Greek / Serbian
+ *    user picks it up automatically via their `home` country anyway.
  *  - [all] — short-circuits every country (including
  *    [HolidayCatalog.GLOBAL_COUNTRY]) to effective-on under AUTO.
  *    Per-country [HolidayOverride.OFF] still wins (a user can opt
@@ -72,15 +91,18 @@ enum class HolidayOverride { AUTO, ON, OFF }
  *    ISO 3166-1 alpha-2 uppercase, or [HolidayCatalog.GLOBAL_COUNTRY]
  *    for the universal-holiday bucket.
  *
- * Default ([home]=true, [current]=true, [global]=true) matches the
- * previous "Auto" behaviour: locale + weather location + universal
- * holidays.
+ * Default ([home]=true, [current]=true, [global]=true,
+ * [funny]=true) matches the previous "Auto" behaviour: locale +
+ * weather location + universal holidays + playful observances.
+ * [christian] and [orthodox] are opt-in religious buckets.
  */
 data class HolidayCountrySelection(
     val home: Boolean = true,
     val current: Boolean = true,
     val global: Boolean = true,
     val funny: Boolean = true,
+    val christian: Boolean = false,
+    val orthodox: Boolean = false,
     val all: Boolean = false,
     val countryOverrides: Map<String, HolidayOverride> = emptyMap(),
 ) {
@@ -99,6 +121,8 @@ data class HolidayCountrySelection(
         val normalised = code.trim().takeIf { it.isNotEmpty() }?.uppercase() ?: return false
         if (normalised == HolidayCatalog.GLOBAL_COUNTRY) return global
         if (normalised == HolidayCatalog.FUNNY) return funny
+        if (normalised == HolidayCatalog.CHRISTIAN) return christian
+        if (normalised == HolidayCatalog.ORTHODOX) return orthodox
         if (home && normalised == localeCountry?.trim()?.takeIf { it.isNotEmpty() }?.uppercase()) {
             return true
         }

@@ -273,4 +273,91 @@ class HolidayCountryResolutionTest {
             "AU", "GB", HolidayCatalog.FUNNY, HolidayCatalog.GLOBAL_COUNTRY,
         )
     }
+
+    // --- Christian and Orthodox religious buckets. Both are off by
+    // default — these are religious-tradition observances rather than
+    // universal civic days. Users in Christian-tradition countries with
+    // public holidays still pick up the relevant entries via their
+    // `home` country (each holiday carries both the bucket sentinel and
+    // the per-country ISO codes where it's a public holiday).
+
+    private val religiousCountries = setOf(
+        "AU", "GB", HolidayCatalog.GLOBAL_COUNTRY,
+        HolidayCatalog.CHRISTIAN, HolidayCatalog.ORTHODOX,
+    )
+
+    @Test
+    fun `christian and orthodox are both off by default`() {
+        HolidayCountrySelection().resolveEnabledCountries(
+            localeCountry = "AU",
+            weatherLocationCountry = "GB",
+            allCountries = religiousCountries,
+        ).shouldContainExactlyInAnyOrder(
+            "AU", "GB", HolidayCatalog.GLOBAL_COUNTRY,
+        )
+    }
+
+    @Test
+    fun `christian=true picks up the Christian bucket`() {
+        HolidayCountrySelection(christian = true).resolveEnabledCountries(
+            localeCountry = "AU",
+            weatherLocationCountry = "GB",
+            allCountries = religiousCountries,
+        ).shouldContainExactlyInAnyOrder(
+            "AU", "GB", HolidayCatalog.GLOBAL_COUNTRY, HolidayCatalog.CHRISTIAN,
+        )
+    }
+
+    @Test
+    fun `orthodox=true picks up the Orthodox bucket`() {
+        HolidayCountrySelection(orthodox = true).resolveEnabledCountries(
+            localeCountry = "AU",
+            weatherLocationCountry = "GB",
+            allCountries = religiousCountries,
+        ).shouldContainExactlyInAnyOrder(
+            "AU", "GB", HolidayCatalog.GLOBAL_COUNTRY, HolidayCatalog.ORTHODOX,
+        )
+    }
+
+    @Test
+    fun `per-country ON on CHRISTIAN wins over christian=false`() {
+        HolidayCountrySelection(
+            countryOverrides = mapOf(HolidayCatalog.CHRISTIAN to HolidayOverride.ON),
+        ).resolveEnabledCountries(
+            localeCountry = "AU",
+            weatherLocationCountry = "GB",
+            allCountries = religiousCountries,
+        ).shouldContainExactlyInAnyOrder(
+            "AU", "GB", HolidayCatalog.GLOBAL_COUNTRY, HolidayCatalog.CHRISTIAN,
+        )
+    }
+
+    @Test
+    fun `per-country ON on ORTHODOX wins over orthodox=false`() {
+        HolidayCountrySelection(
+            countryOverrides = mapOf(HolidayCatalog.ORTHODOX to HolidayOverride.ON),
+        ).resolveEnabledCountries(
+            localeCountry = "AU",
+            weatherLocationCountry = "GB",
+            allCountries = religiousCountries,
+        ).shouldContainExactlyInAnyOrder(
+            "AU", "GB", HolidayCatalog.GLOBAL_COUNTRY, HolidayCatalog.ORTHODOX,
+        )
+    }
+
+    @Test
+    fun `all=true short-circuits christian=false and orthodox=false to include both`() {
+        HolidayCountrySelection(
+            home = false,
+            current = false,
+            all = true,
+        ).resolveEnabledCountries(
+            localeCountry = null,
+            weatherLocationCountry = null,
+            allCountries = religiousCountries,
+        ).shouldContainExactlyInAnyOrder(
+            "AU", "GB", HolidayCatalog.GLOBAL_COUNTRY,
+            HolidayCatalog.CHRISTIAN, HolidayCatalog.ORTHODOX,
+        )
+    }
 }

@@ -85,7 +85,11 @@ class HolidayResolverTest {
 
     @Test
     fun `Korean Liberation Day matches Aug 15`() {
-        subject.resolve(LocalDate.of(2026, 8, 15), noOverrides, allCountries)?.id shouldBe HolidayId.KOREAN_LIBERATION_DAY
+        // Aug 15 is a three-way collision: KR Liberation, Catholic Assumption,
+        // and IN Independence all share the date. Gate to KR so a multi-
+        // country user resolving via catalog-order doesn't drag in the
+        // Indian entry that now sits earlier in the catalog.
+        subject.resolve(LocalDate.of(2026, 8, 15), noOverrides, setOf("KR"))?.id shouldBe HolidayId.KOREAN_LIBERATION_DAY
     }
 
     @Test
@@ -227,8 +231,10 @@ class HolidayResolverTest {
 
     @Test
     fun `St Andrews Day matches Nov 30`() {
-        subject.resolve(LocalDate.of(2026, 11, 30), noOverrides, allCountries)?.id shouldBe HolidayId.ST_ANDREWS_DAY
-        subject.resolve(LocalDate.of(2026, 12, 1), noOverrides, allCountries).shouldBeNull()
+        // Nov 30 collides with PH Bonifacio Day; gate to GB so the catalog-
+        // order tiebreak doesn't drag in the Philippine entry.
+        subject.resolve(LocalDate.of(2026, 11, 30), noOverrides, setOf("GB"))?.id shouldBe HolidayId.ST_ANDREWS_DAY
+        subject.resolve(LocalDate.of(2026, 12, 1), noOverrides, setOf("GB")).shouldBeNull()
     }
 
     // --- Nth-weekday holidays.
@@ -301,7 +307,10 @@ class HolidayResolverTest {
         ).forEach { d ->
             withClue(d.toString()) {
                 d.dayOfWeek shouldBe DayOfWeek.MONDAY
-                subject.resolve(d, noOverrides, allCountries)?.id shouldBe HolidayId.US_MEMORIAL_DAY
+                // Last Mon May can collide with Argentina's May Revolution
+                // (May 25, 2026) and UK Spring Bank Holiday — gate to US so
+                // catalog-order picks Memorial Day cleanly for each test year.
+                subject.resolve(d, noOverrides, setOf("US"))?.id shouldBe HolidayId.US_MEMORIAL_DAY
             }
         }
         // Non-last Mondays in May should NOT match Memorial Day.
@@ -362,10 +371,12 @@ class HolidayResolverTest {
         ).forEach { d ->
             withClue(d.toString()) {
                 d.dayOfWeek shouldBe DayOfWeek.SUNDAY
-                subject.resolve(d, noOverrides, allCountries)?.id shouldBe HolidayId.MOTHERS_DAY
+                // 2nd Sun May (2027 = May 9) collides with Russia Victory Day
+                // (May 9 fixed); gate to US so catalog-order picks Mother's Day.
+                subject.resolve(d, noOverrides, setOf("US"))?.id shouldBe HolidayId.MOTHERS_DAY
             }
         }
-        subject.resolve(LocalDate.of(2026, 5, 3), noOverrides, allCountries).shouldBeNull()
+        subject.resolve(LocalDate.of(2026, 5, 3), noOverrides, setOf("US")).shouldBeNull()
     }
 
     @Test
@@ -608,6 +619,130 @@ class HolidayResolverTest {
             HolidayId.BONFIRE_NIGHT
         subject.resolve(LocalDate.of(2026, 11, 5), noOverrides, setOf("NZ"))?.id shouldBe
             HolidayId.BONFIRE_NIGHT
+    }
+
+    // --- v4 expansion: new countries + religious-bucket additions. One
+    // representative case per country and one per Easter-relative
+    // addition; the catalog-integrity invariants below verify every new
+    // id has both an enum entry and a catalog row.
+
+    @Test
+    fun `Indian national days fire for IN`() {
+        // Republic Day (collides with AU Day); Independence Day (collides
+        // with KR Liberation and Assumption); Gandhi Jayanti.
+        subject.resolve(LocalDate.of(2026, 1, 26), noOverrides, setOf("IN"))?.id shouldBe
+            HolidayId.INDIA_REPUBLIC_DAY
+        subject.resolve(LocalDate.of(2026, 8, 15), noOverrides, setOf("IN"))?.id shouldBe
+            HolidayId.INDIA_INDEPENDENCE_DAY
+        subject.resolve(LocalDate.of(2026, 10, 2), noOverrides, setOf("IN"))?.id shouldBe
+            HolidayId.INDIA_GANDHI_JAYANTI
+        // AU user still resolves Australia Day on Jan 26 — country gate
+        // sends each user to their own theme.
+        subject.resolve(LocalDate.of(2026, 1, 26), noOverrides, setOf("AU"))?.id shouldBe
+            HolidayId.AUSTRALIA_DAY
+    }
+
+    @Test
+    fun `Ukrainian holidays fire for UA on their post-2023 calendar dates`() {
+        // May 8 (Victory over Nazism — distinct from Russia's May 9),
+        // Aug 24 (Independence Day), Oct 1 (Defender Day, moved from Oct 14).
+        subject.resolve(LocalDate.of(2026, 5, 8), noOverrides, setOf("UA"))?.id shouldBe
+            HolidayId.UKRAINE_VICTORY_DAY
+        subject.resolve(LocalDate.of(2026, 8, 24), noOverrides, setOf("UA"))?.id shouldBe
+            HolidayId.UKRAINE_INDEPENDENCE_DAY
+        subject.resolve(LocalDate.of(2026, 10, 1), noOverrides, setOf("UA"))?.id shouldBe
+            HolidayId.UKRAINE_DEFENDER_DAY
+        // Russia's Victory Day (May 9) is intentionally distinct from
+        // Ukraine's May 8 — RU user gets May 9, UA user gets May 8.
+        subject.resolve(LocalDate.of(2026, 5, 9), noOverrides, setOf("RU"))?.id shouldBe
+            HolidayId.RUSSIA_VICTORY_DAY
+        subject.resolve(LocalDate.of(2026, 5, 9), noOverrides, setOf("UA")).shouldBeNull()
+    }
+
+    @Test
+    fun `Orthodox Christmas fires Jan 7 for ORTHODOX bucket and observing countries but NOT for UA`() {
+        // Russia, Serbia, Georgia, Ethiopia, Macedonia, Belarus all observe
+        // Jan 7. Ukraine moved Orthodox Christmas to Dec 25 in 2023 and is
+        // deliberately not tagged here.
+        listOf("RU", "RS", "GE", "ET", "MK", "BY").forEach { country ->
+            withClue(country) {
+                subject.resolve(LocalDate.of(2026, 1, 7), noOverrides, setOf(country))?.id shouldBe
+                    HolidayId.ORTHODOX_CHRISTMAS
+            }
+        }
+        // ORTHODOX sentinel resolves for users who've enabled the bucket
+        // without picking a country.
+        subject.resolve(LocalDate.of(2026, 1, 7), noOverrides, setOf(HolidayCatalog.ORTHODOX))?.id shouldBe
+            HolidayId.ORTHODOX_CHRISTMAS
+        // Ukrainian user does NOT see Orthodox Christmas — they get
+        // Dec 25 via the global Christmas entry instead.
+        subject.resolve(LocalDate.of(2026, 1, 7), noOverrides, setOf("UA")).shouldBeNull()
+    }
+
+    @Test
+    fun `Day of the Dead fires Nov 2 for MX`() {
+        subject.resolve(LocalDate.of(2026, 11, 2), noOverrides, setOf("MX"))?.id shouldBe
+            HolidayId.MEXICO_DAY_OF_THE_DEAD
+        // Not All Saints (Nov 1) — that's still its own entry for
+        // AT/DE/ES/FR/HR/IT.
+        subject.resolve(LocalDate.of(2026, 11, 1), noOverrides, setOf("MX")).shouldBeNull()
+    }
+
+    @Test
+    fun `Songkran fires Apr 13 for TH`() {
+        subject.resolve(LocalDate.of(2026, 4, 13), noOverrides, setOf("TH"))?.id shouldBe
+            HolidayId.THAILAND_SONGKRAN
+    }
+
+    @Test
+    fun `Christian-bucket holidays fire via Easter-relative predicates`() {
+        // 2026: Easter is Apr 5. Ash Wed = Feb 18, Mardi Gras = Feb 17,
+        // Palm Sun = Mar 29, Maundy Thu = Apr 2, Ascension = May 14,
+        // Pentecost = May 24, Whit Mon = May 25, Corpus Christi = Jun 4.
+        val christianOnly = setOf(HolidayCatalog.CHRISTIAN)
+        subject.resolve(LocalDate.of(2026, 2, 17), noOverrides, christianOnly)?.id shouldBe
+            HolidayId.MARDI_GRAS
+        subject.resolve(LocalDate.of(2026, 2, 18), noOverrides, christianOnly)?.id shouldBe
+            HolidayId.ASH_WEDNESDAY
+        subject.resolve(LocalDate.of(2026, 3, 29), noOverrides, christianOnly)?.id shouldBe
+            HolidayId.PALM_SUNDAY
+        subject.resolve(LocalDate.of(2026, 4, 2), noOverrides, christianOnly)?.id shouldBe
+            HolidayId.MAUNDY_THURSDAY
+        subject.resolve(LocalDate.of(2026, 5, 14), noOverrides, christianOnly)?.id shouldBe
+            HolidayId.ASCENSION_DAY
+        subject.resolve(LocalDate.of(2026, 5, 24), noOverrides, christianOnly)?.id shouldBe
+            HolidayId.PENTECOST
+        subject.resolve(LocalDate.of(2026, 5, 25), noOverrides, christianOnly)?.id shouldBe
+            HolidayId.WHIT_MONDAY
+        subject.resolve(LocalDate.of(2026, 6, 4), noOverrides, christianOnly)?.id shouldBe
+            HolidayId.CORPUS_CHRISTI
+    }
+
+    @Test
+    fun `Ascension Day also fires per-country for FR DE AT without CHRISTIAN bucket`() {
+        // Easter-relative Christian holidays are tagged BOTH with the
+        // CHRISTIAN sentinel AND with the countries where they're public
+        // holidays — so a French user resolves Ascension on May 14 2026
+        // even if they've turned off the Christian bucket.
+        listOf("FR", "DE", "AT").forEach { country ->
+            withClue(country) {
+                subject.resolve(LocalDate.of(2026, 5, 14), noOverrides, setOf(country))?.id shouldBe
+                    HolidayId.ASCENSION_DAY
+            }
+        }
+    }
+
+    @Test
+    fun `same-date Jun 12 collision splits cleanly by country`() {
+        // Three holidays share Jun 12: Philippine Independence Day,
+        // Nigerian Democracy Day, and Russia Day. Each user resolves
+        // their own. Multi-country falls to first-match.
+        subject.resolve(LocalDate.of(2026, 6, 12), noOverrides, setOf("PH"))?.id shouldBe
+            HolidayId.PHILIPPINES_INDEPENDENCE_DAY
+        subject.resolve(LocalDate.of(2026, 6, 12), noOverrides, setOf("NG"))?.id shouldBe
+            HolidayId.NIGERIA_DEMOCRACY_DAY
+        subject.resolve(LocalDate.of(2026, 6, 12), noOverrides, setOf("RU"))?.id shouldBe
+            HolidayId.RUSSIA_DAY
     }
 
     // --- Auto-resolution helper used by Settings UI for dropdown labels.

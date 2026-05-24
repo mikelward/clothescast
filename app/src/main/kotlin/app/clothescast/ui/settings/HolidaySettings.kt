@@ -113,6 +113,8 @@ internal fun CalendarContent(
     onSetCountryCurrent: (Boolean) -> Unit,
     onSetCountryGlobal: (Boolean) -> Unit,
     onSetCountryFunny: (Boolean) -> Unit,
+    onSetCountryChristian: (Boolean) -> Unit,
+    onSetCountryOrthodox: (Boolean) -> Unit,
     onSetCountryAll: (Boolean) -> Unit,
     onSetCountryOverride: (String, HolidayOverride) -> Unit,
     onSetHolidayOverride: (HolidayId, HolidayOverride) -> Unit,
@@ -241,9 +243,27 @@ internal fun CalendarContent(
             .map { it.second }
             .filter { HolidayCatalog.FUNNY in it.countries }
     }
+    // Christian and Orthodox religious buckets — peers of Global / Funny.
+    // Each holiday is also tagged with its observing countries so it still
+    // resolves via the per-country path when the religious bucket is off.
+    val christianThemes = remember(sortedCatalog) {
+        sortedCatalog
+            .map { it.second }
+            .filter { HolidayCatalog.CHRISTIAN in it.countries }
+    }
+    val orthodoxThemes = remember(sortedCatalog) {
+        sortedCatalog
+            .map { it.second }
+            .filter { HolidayCatalog.ORTHODOX in it.countries }
+    }
     val isoCountries = remember(uiLocale) {
         HolidayCatalog.allCountries
-            .filter { it != HolidayCatalog.GLOBAL_COUNTRY && it != HolidayCatalog.FUNNY }
+            .filter {
+                it != HolidayCatalog.GLOBAL_COUNTRY &&
+                    it != HolidayCatalog.FUNNY &&
+                    it != HolidayCatalog.CHRISTIAN &&
+                    it != HolidayCatalog.ORTHODOX
+            }
             .sortedForDisplay(context, uiLocale)
     }
     val themesByCountry = remember(sortedCatalog) {
@@ -377,6 +397,16 @@ internal fun CalendarContent(
                     checked = holidayCountrySelection.funny,
                     onCheckedChange = onSetCountryFunny,
                 )
+                SourceRow(
+                    label = stringResource(R.string.settings_holidays_source_christian),
+                    checked = holidayCountrySelection.christian,
+                    onCheckedChange = onSetCountryChristian,
+                )
+                SourceRow(
+                    label = stringResource(R.string.settings_holidays_source_orthodox),
+                    checked = holidayCountrySelection.orthodox,
+                    onCheckedChange = onSetCountryOrthodox,
+                )
                 // Legacy "All countries" toggle, conditionally rendered so
                 // users who'd enabled the previous UI's All checkbox can
                 // turn it off from here. With `all=true` the resolver
@@ -481,6 +511,74 @@ internal fun CalendarContent(
                     },
                 ) {
                     funnyThemes.forEach { theme ->
+                        HolidayOverrideRow(
+                            theme = theme,
+                            override = holidayOverrides[theme.id] ?: HolidayOverride.AUTO,
+                            autoOn = theme.countries.any { it in effectiveEnabledHolidayCountries },
+                            onChange = { newState -> onSetHolidayOverride(theme.id, newState) },
+                        )
+                    }
+                }
+
+                val christianActiveCount = christianThemes.count { theme ->
+                    theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries)
+                }
+                val christianOverride = holidayCountrySelection.countryOverrides[HolidayCatalog.CHRISTIAN]
+                    ?: HolidayOverride.AUTO
+                val christianAutoOn = holidayCountrySelection.countryAutoEffective(
+                    HolidayCatalog.CHRISTIAN,
+                    localeCountry,
+                    weatherLocationCountry,
+                )
+                CollapsibleSection(
+                    title = stringResource(R.string.settings_holiday_country_christian_label),
+                    summary = "$christianActiveCount/${christianThemes.size}",
+                    rememberKey = "holidays-country-${HolidayCatalog.CHRISTIAN}",
+                    trailing = {
+                        OverrideDropdown(
+                            current = christianOverride,
+                            autoOn = christianAutoOn,
+                            onChange = { newState ->
+                                onSetCountryOverride(HolidayCatalog.CHRISTIAN, newState)
+                            },
+                        )
+                    },
+                ) {
+                    christianThemes.forEach { theme ->
+                        HolidayOverrideRow(
+                            theme = theme,
+                            override = holidayOverrides[theme.id] ?: HolidayOverride.AUTO,
+                            autoOn = theme.countries.any { it in effectiveEnabledHolidayCountries },
+                            onChange = { newState -> onSetHolidayOverride(theme.id, newState) },
+                        )
+                    }
+                }
+
+                val orthodoxActiveCount = orthodoxThemes.count { theme ->
+                    theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries)
+                }
+                val orthodoxOverride = holidayCountrySelection.countryOverrides[HolidayCatalog.ORTHODOX]
+                    ?: HolidayOverride.AUTO
+                val orthodoxAutoOn = holidayCountrySelection.countryAutoEffective(
+                    HolidayCatalog.ORTHODOX,
+                    localeCountry,
+                    weatherLocationCountry,
+                )
+                CollapsibleSection(
+                    title = stringResource(R.string.settings_holiday_country_orthodox_label),
+                    summary = "$orthodoxActiveCount/${orthodoxThemes.size}",
+                    rememberKey = "holidays-country-${HolidayCatalog.ORTHODOX}",
+                    trailing = {
+                        OverrideDropdown(
+                            current = orthodoxOverride,
+                            autoOn = orthodoxAutoOn,
+                            onChange = { newState ->
+                                onSetCountryOverride(HolidayCatalog.ORTHODOX, newState)
+                            },
+                        )
+                    },
+                ) {
+                    orthodoxThemes.forEach { theme ->
                         HolidayOverrideRow(
                             theme = theme,
                             override = holidayOverrides[theme.id] ?: HolidayOverride.AUTO,

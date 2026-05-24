@@ -6,16 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Rect
-import android.net.Uri
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.view.PixelCopy
-import android.view.View
-import android.view.Window
-import androidx.core.content.FileProvider
 import app.clothescast.BuildConfig
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.ClothesFormat
@@ -31,9 +22,6 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.suspendCancellableCoroutine
-import java.io.File
-import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
@@ -41,7 +29,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
-import kotlin.coroutines.resume
 
 /**
  * Builds a "paste-into-Claude" bug-report payload (version, device, settings,
@@ -51,21 +38,23 @@ import kotlin.coroutines.resume
  * clipboard as a paste fallback.
  */
 object BugReport {
-    private const val FILE_PROVIDER_AUTHORITY_SUFFIX = ".fileprovider"
     private val STATUS_TIMESTAMP_FORMAT: DateTimeFormatter =
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss zzz")
 
     /**
-     * Captures the screen, builds the text payload, copies the text to the
-     * clipboard, and fires the share-sheet chooser. When [includeScreenshot] is
-     * false (or the capture fails), shares text only.
+     * Builds the text payload, copies it to the clipboard, and fires the
+     * share-sheet chooser as a pure-text intent. No screenshot is attached:
+     * an image-typed intent makes the chooser surface image-share targets that
+     * treat `EXTRA_TEXT` as a *caption* with a hard character cap, which
+     * silently truncated long bug reports mid-line. The text payload already
+     * carries everything the recipient needs (settings, cached insights,
+     * recent log).
      */
-    suspend fun share(activity: Activity, includeScreenshot: Boolean) {
+    suspend fun share(activity: Activity) {
         val app = activity.application as ClothesCastApplication
         val text = buildPayload(activity, app)
-        val screenshotUri: Uri? = if (includeScreenshot) captureAndPersistScreenshot(activity) else null
         copyToClipboard(activity, text)
-        startShare(activity, text, screenshotUri)
+        startShare(activity, text)
     }
 
     private suspend fun buildPayload(context: Context, app: ClothesCastApplication): String {
@@ -331,78 +320,13 @@ object BugReport {
         }
     }
 
-    private suspend fun captureAndPersistScreenshot(activity: Activity): Uri? {
-        val bitmap = runCatching { captureWindow(activity) }.getOrNull() ?: return null
-        return runCatching {
-            val dir = File(activity.cacheDir, "bug-reports").apply { mkdirs() }
-            // Wipe older screenshots — keep only the freshest one to avoid cache bloat.
-            dir.listFiles()?.forEach { it.delete() }
-            val file = File(dir, "screenshot-${System.currentTimeMillis()}.png")
-            FileOutputStream(file).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-            }
-            FileProvider.getUriForFile(
-                activity,
-                activity.packageName + FILE_PROVIDER_AUTHORITY_SUFFIX,
-                file,
-            )
-        }.getOrNull()
-    }
-
-    private suspend fun captureWindow(activity: Activity): Bitmap? {
-        val window = activity.window ?: return null
-        val view: View = window.decorView
-        if (view.width <= 0 || view.height <= 0) return null
-        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-        return suspendCancellableCoroutine { cont ->
-            val location = IntArray(2)
-            view.getLocationInWindow(location)
-            val rect = Rect(
-                location[0],
-                location[1],
-                location[0] + view.width,
-                location[1] + view.height,
-            )
-            try {
-                requestPixelCopy(window, rect, bitmap) { ok ->
-                    cont.resume(if (ok) bitmap else null)
-                }
-            } catch (t: Throwable) {
-                DiagLog.w("BugReport", "PixelCopy.request threw", t)
-                cont.resume(null)
-            }
-        }
-    }
-
-    private fun requestPixelCopy(
-        window: Window,
-        rect: Rect,
-        bitmap: Bitmap,
-        onResult: (Boolean) -> Unit,
-    ) {
-        val handler = Handler(Looper.getMainLooper())
-        PixelCopy.request(window, rect, bitmap, { result ->
-            onResult(result == PixelCopy.SUCCESS)
-        }, handler)
-    }
-
-    private fun startShare(activity: Activity, text: String, screenshotUri: Uri?) {
+    private fun startShare(activity: Activity, text: String) {
         val send = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
             putExtra(Intent.EXTRA_SUBJECT, "ClothesCast bug report — ${BuildConfig.VERSION_NAME}")
             putExtra(Intent.EXTRA_TEXT, text)
-            if (screenshotUri != null) {
-                type = "image/png"
-                putExtra(Intent.EXTRA_STREAM, screenshotUri)
-                clipData = ClipData.newRawUri("ClothesCast screenshot", screenshotUri)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            } else {
-                type = "text/plain"
-            }
         }
         val chooser = Intent.createChooser(send, "Share bug report")
-        if (screenshotUri != null) {
-            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
         runCatching { activity.startActivity(chooser) }
             .onFailure { DiagLog.w("BugReport", "share intent failed", it) }
     }

@@ -165,7 +165,7 @@ fun TodayScreen(
 
     val launchBugReport: () -> Unit = launchBugReport@{
         val act = activity ?: return@launchBugReport
-        coroutineScope.launch { BugReport.share(act, includeScreenshot = true) }
+        coroutineScope.launch { BugReport.share(act) }
     }
 
     // Hoisted out of TodayContent so the TopAppBar title can swap with the

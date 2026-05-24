@@ -1435,6 +1435,34 @@ internal fun WindCardWithModelSpreadPreview() {
     }
 }
 
+// Locks the scrubbed-card appearance into a snapshot: indicator at 14:30
+// drawn by [ChartScrubIndicator], readout row ("14:30 · X km/h") rendered
+// by [ChartReadout] using the wrapper's [tooltipValueFormat], and the
+// top-right restore icon ([ChartRestoreOverlay]). Pinned on WindCard
+// specifically because it exercises the diagnostic path — readout uses
+// the consensus mainLine + tooltipValueFormat — that the simpler
+// ForecastCard preview below doesn't cover.
+@Preview(name = "Wind card · scrubbed", widthDp = 360)
+@Composable
+internal fun WindCardScrubbedPreview() {
+    Frame {
+        val today = java.time.LocalDate.now()
+        val controller = androidx.compose.runtime.remember {
+            ChartScrubController().apply {
+                scrubTo(java.time.LocalDateTime.of(today, java.time.LocalTime.of(14, 30)))
+            }
+        }
+        CompositionLocalProvider(LocalChartScrub provides controller) {
+            WindCard(
+                hourly = SAMPLE_HOURLY_RAINY,
+                perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+                startDate = today,
+                showModelSpread = true,
+            )
+        }
+    }
+}
+
 // Imperial variant — exercises the km/h → mph conversion in both the picker
 // (Y-axis values) and the subtitle string. Pairs with the default km/h preview
 // above to lock in the unit-switching path now that DistanceUnit drives wind
@@ -1636,6 +1664,32 @@ internal fun ForecastCardWithModelSpreadPreview() {
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = true,
         )
+    }
+}
+
+// Companion to [WindCardScrubbedPreview] — covers the inline-readout
+// path in [ForecastCard] (string-templated against the temperature
+// unit) rather than the [ChartReadout] helper. Same 14:30 anchor so
+// both snapshots line up visually for review.
+@Preview(name = "Forecast card · scrubbed", widthDp = 360)
+@Composable
+internal fun ForecastCardScrubbedPreview() {
+    Frame {
+        val today = java.time.LocalDate.now()
+        val controller = androidx.compose.runtime.remember {
+            ChartScrubController().apply {
+                scrubTo(java.time.LocalDateTime.of(today, java.time.LocalTime.of(14, 30)))
+            }
+        }
+        CompositionLocalProvider(LocalChartScrub provides controller) {
+            ForecastCard(
+                hourly = SAMPLE_HOURLY,
+                temperatureUnit = TemperatureUnit.CELSIUS,
+                startDate = today,
+                perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+                showModelSpread = true,
+            )
+        }
     }
 }
 

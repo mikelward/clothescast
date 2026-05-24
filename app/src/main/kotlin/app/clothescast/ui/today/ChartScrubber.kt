@@ -269,13 +269,15 @@ private class ChartScrubIndicator(
 }
 
 /**
- * Restore-icon affordance rendered on top of each chart's plot area.
- * The actual readout text (time + value at the indicator) lives in the
- * card's existing text column via [ChartReadout] — keeping the chart
- * canvas clean. Call inside the same `Box` as the `CartesianChartHost`.
+ * Restore-icon affordance — top-right corner of each chart card,
+ * outside the chart canvas so it doesn't overlap data lines or axis
+ * labels. Call inside a `Box` that wraps the card's `Column` content
+ * (the Box gives the IconButton a parent to align against). Only
+ * renders when the user has scrubbed away from "now"; a tap snaps the
+ * indicator back via [ChartScrubController.reset].
  *
- * Only shows when the user has scrubbed away from "now"; a tap snaps
- * the indicator back via [ChartScrubController.reset].
+ * The readout text (time + value at the indicator) is rendered
+ * separately by [ChartReadout] in the card's text column.
  */
 @Composable
 internal fun BoxScope.ChartRestoreOverlay(controller: ChartScrubController) {
@@ -297,34 +299,38 @@ internal fun BoxScope.ChartRestoreOverlay(controller: ChartScrubController) {
 }
 
 /**
- * The card-side readout text — sits in the card's existing text
- * column (between subtitle and chart) and names the time + value at
- * the shared indicator. Returns nothing when no controller is wired,
- * when the indicator's active time falls outside this chart's window
- * (Tomorrow page before a tap), or when the caller's [readoutFor]
- * lambda returns null (sparse data at this hour).
+ * Returns the card-side readout string (time + value at the shared
+ * indicator) for the caller to splice into its existing subtitle —
+ * the readout lives on the same line as the subtitle, separated by a
+ * mid-dot. Returns null when no controller is wired, when the
+ * indicator's active time falls outside this chart's window (Tomorrow
+ * page before a tap), or when the caller's [format] lambda returns
+ * null (sparse data at this hour).
  *
- * Each card supplies its own [readoutFor] because the formatting and
+ * Each card supplies its own [format] because the formatting and
  * source field differ — temp cards read `hourly[idx]`, precip reads
  * the probability, diagnostics read the consensus mainLine. Time
  * formatting is shared via [rememberScrubTimeFormatter].
  */
 @Composable
-internal fun ChartReadout(
+internal fun rememberChartReadout(
     hourly: List<HourlyForecast>,
     startDate: LocalDate,
-    readoutFor: (hourIndex: Int) -> String?,
-) {
-    val controller = LocalChartScrub.current ?: return
-    val activeTime = controller.activeTime ?: return
-    if (hourly.isEmpty()) return
-    val chartX = currentTimeChartX(hourly, startDate, activeTime) ?: return
+    format: (hourIndex: Int) -> String?,
+): String? {
+    val controller = LocalChartScrub.current ?: return null
+    val activeTime = controller.activeTime ?: return null
+    if (hourly.isEmpty()) return null
+    val chartX = currentTimeChartX(hourly, startDate, activeTime) ?: return null
     val idx = chartX.roundToInt().coerceIn(0, hourly.lastIndex)
-    val readout = readoutFor(idx) ?: return
-    Text(
-        text = readout,
-        style = MaterialTheme.typography.bodyMedium,
-    )
+    return format(idx)
+}
+
+/** Concatenate a subtitle with an optional readout, separated by " · ". */
+internal fun appendReadout(subtitle: String?, readout: String?): String? = when {
+    subtitle.isNullOrEmpty() -> readout
+    readout.isNullOrEmpty() -> subtitle
+    else -> "$subtitle · $readout"
 }
 
 /**

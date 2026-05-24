@@ -396,6 +396,7 @@ class PreviewSnapshots {
     @Test fun forecast_chart_with_current_time() = capture { ForecastChartWithCurrentTimePreview() }
     @Test fun forecast_chart_with_model_spread() = capture { ForecastChartWithModelSpreadPreview() }
     @Test fun forecast_card_with_model_spread() = capture { ForecastCardWithModelSpreadPreview() }
+    @Test fun forecast_card_scrubbed() = capture { ForecastCardScrubbedPreview() }
     @Test fun air_temperature_card_with_model_spread() = capture { AirTemperatureCardWithModelSpreadPreview() }
     @Test fun precipitation_card_with_model_spread() = capture { PrecipitationCardWithModelSpreadPreview() }
     @Test fun forecast_card_with_model_spread_accessible() = capture { ForecastCardWithModelSpreadAccessiblePreview() }
@@ -403,6 +404,7 @@ class PreviewSnapshots {
     @Test fun forecast_card_with_model_spread_highlighter() = capture { ForecastCardWithModelSpreadHighlighterPreview() }
     @Test fun precipitation_card_with_model_spread_highlighter() = capture { PrecipitationCardWithModelSpreadHighlighterPreview() }
     @Test fun wind_card_with_model_spread() = capture { WindCardWithModelSpreadPreview() }
+    @Test fun wind_card_scrubbed() = capture { WindCardScrubbedPreview() }
     @Test fun wind_card_with_model_spread_mph() = capture { WindCardWithModelSpreadMphPreview() }
     @Test fun cloud_card_with_model_spread() = capture { CloudCardWithModelSpreadPreview() }
     @Test fun humidity_card_with_model_spread() = capture { HumidityCardWithModelSpreadPreview() }

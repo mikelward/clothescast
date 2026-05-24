@@ -148,7 +148,7 @@ private fun OutfitWidgetContent(
             .background(GlanceTheme.colors.widgetBackground)
             .cornerRadius(16.dp)
             .clickable(actionStartActivity(launchAppIntent(context)))
-            .padding(4.dp),
+            .padding(2.dp),
         contentAlignment = Alignment.Center,
     ) {
         if (insight == null || outfit == null) {
@@ -196,7 +196,7 @@ private fun SingleColumnContent(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text = label, style = scaledLabelStyle(size))
-        Spacer(modifier = GlanceModifier.height(4.dp))
+        Spacer(modifier = GlanceModifier.height(2.dp))
         // Top-over-bottom vertical stack matches the Today screen's
         // OutfitPreviewCard so the home-screen glance reads the same way as
         // the in-app card the user already knows.
@@ -320,10 +320,13 @@ private fun scaledIconSize(size: DpSize): Dp {
     val short = minOf(size.width.value, size.height.value)
     val labelSp = (short * 0.0875f).coerceAtLeast(13f)
     val subtitleSp = (short * 0.0688f).coerceAtLeast(10f)
-    // 1.5× line height covers the text rows, plus the inter-row spacers
-    // (4dp + 2dp) and the outer Box padding (4dp × 2). Rounded up a touch
-    // so a small misestimate doesn't push the icons past the column edge.
-    val reservedVertical = (labelSp + subtitleSp) * 1.5f + 22f
+    // 1.5× covers Compose Text's actual rendered line height (the legacy
+    // includeFontPadding adds ~0.16× to natural line height on top of the
+    // ~1.2× font metric), plus the inter-row spacers (2dp + 2dp) and the
+    // outer Box padding (2dp × 2) with a few dp of safety. Was `+ 22` when
+    // spacers / padding totalled 14dp; the tighter spacing here saves 6dp
+    // so the constant drops to 16 while keeping the same safety margin.
+    val reservedVertical = (labelSp + subtitleSp) * 1.5f + 16f
     val verticalBudget = (size.height.value - reservedVertical).coerceAtLeast(0f) / 2f
     // 5% horizontal margin on each side keeps the icon off the column edge
     // without pushing a measurable gap back into the layout.

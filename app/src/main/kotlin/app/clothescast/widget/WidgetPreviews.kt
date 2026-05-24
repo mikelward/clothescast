@@ -74,7 +74,7 @@ private fun WidgetSurface(width: Dp, height: Dp, content: @Composable () -> Unit
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(4.dp),
+                .padding(2.dp),
             contentAlignment = Alignment.Center,
         ) { content() }
     }
@@ -148,7 +148,7 @@ private fun SingleColumnMock(label: String, outfit: OutfitSuggestion, size: DpSi
             fontSize = scaledLabelSpMock(size),
             fontWeight = FontWeight.Medium,
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(2.dp))
         val iconSize = scaledIconSizeMock(size)
         Image(
             painter = painterResource(id = topIconResMock(outfit.top)),
@@ -333,7 +333,7 @@ private fun scaledIconSizeMock(size: DpSize): Dp {
     val short = minOf(size.width.value, size.height.value)
     val labelSp = (short * 0.0875f).coerceAtLeast(13f)
     val subtitleSp = (short * 0.0688f).coerceAtLeast(10f)
-    val reservedVertical = (labelSp + subtitleSp) * 1.5f + 22f
+    val reservedVertical = (labelSp + subtitleSp) * 1.5f + 16f
     val verticalBudget = (size.height.value - reservedVertical).coerceAtLeast(0f) / 2f
     val horizontalBudget = size.width.value * 0.9f
     return minOf(verticalBudget, horizontalBudget).coerceAtLeast(36f).dp

@@ -3,8 +3,6 @@ package app.clothescast.ui.today
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -17,7 +15,6 @@ import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PerModelHourly.Companion.BEST_MATCH_MODEL_ID
 import app.clothescast.core.domain.model.TemperatureUnit
-import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.ui.theme.AppTheme
 import java.time.LocalDate
@@ -248,8 +245,6 @@ fun ForecastChart(
     val scrubBounds = rememberChartScrubBounds()
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
     val decorations = listOf(scrubIndicator)
-    val timeFmt = rememberScrubTimeFormatter()
-    val unitSymbol = temperatureUnit.symbol()
 
     Box(
         modifier = modifier
@@ -290,14 +285,7 @@ fun ForecastChart(
             modifier = Modifier.matchParentSize(),
         )
         if (scrubController != null) {
-            ChartScrubOverlay(scrubController, scrubBounds, hourly, startDate) { idx ->
-                val entry = hourly[idx]
-                val value = pickHourly(entry).toUnit(temperatureUnit).roundToInt()
-                Text(
-                    text = "${timeFmt(entry.time)} · $value$unitSymbol",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
+            ChartRestoreOverlay(scrubController)
         }
     }
 }

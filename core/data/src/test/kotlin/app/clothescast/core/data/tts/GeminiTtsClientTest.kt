@@ -614,6 +614,62 @@ class GeminiTtsClientTest {
     }
 
     @Test
+    fun `styleDirectiveFor maps every TtsStyle to its directive constant`() {
+        // Direct unit test of the pure `when` mapping. The integration-style
+        // test above (`request body uses each character-register directive
+        // for the matching TtsStyle`) exercises this through the full HTTP
+        // path; this one pins each arm without spinning up an HttpClient so
+        // a broken mapping fails fast and points at the right function.
+        //
+        // The map's keys double as an exhaustiveness check: when a new
+        // TtsStyle is added, the `when` compile error in styleDirectiveFor
+        // fires first, but if someone defaults the new arm to a
+        // placeholder the `expected.keys shouldBe TtsStyle.entries.toSet()`
+        // assertion below surfaces the gap.
+        val expected: Map<TtsStyle, String> = mapOf(
+            TtsStyle.WEATHER_FORECASTER to GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER,
+            TtsStyle.SCIENCE_TEACHER to GEMINI_TTS_STYLE_DIRECTIVE_SCIENCE_TEACHER,
+            TtsStyle.HISTORIAN to GEMINI_TTS_STYLE_DIRECTIVE_HISTORIAN,
+            TtsStyle.SPORTSCASTER to GEMINI_TTS_STYLE_DIRECTIVE_SPORTSCASTER,
+            TtsStyle.STADIUM_ANNOUNCER to GEMINI_TTS_STYLE_DIRECTIVE_STADIUM_ANNOUNCER,
+            TtsStyle.STORYTELLER to GEMINI_TTS_STYLE_DIRECTIVE_STORYTELLER,
+            TtsStyle.FITNESS_INSTRUCTOR to GEMINI_TTS_STYLE_DIRECTIVE_FITNESS_INSTRUCTOR,
+            TtsStyle.MORNING_PRESENTER to GEMINI_TTS_STYLE_DIRECTIVE_MORNING_PRESENTER,
+            TtsStyle.PIRATE to GEMINI_TTS_STYLE_DIRECTIVE_PIRATE,
+            TtsStyle.COWBOY to GEMINI_TTS_STYLE_DIRECTIVE_COWBOY,
+            TtsStyle.SCIFI_NARRATOR to GEMINI_TTS_STYLE_DIRECTIVE_SCIFI_NARRATOR,
+            TtsStyle.FATHER_CHRISTMAS to GEMINI_TTS_STYLE_DIRECTIVE_FATHER_CHRISTMAS,
+            TtsStyle.SPOOKY_NARRATOR to GEMINI_TTS_STYLE_DIRECTIVE_SPOOKY_NARRATOR,
+            TtsStyle.NEW_YEARS_HOST to GEMINI_TTS_STYLE_DIRECTIVE_NEW_YEARS_HOST,
+            TtsStyle.LEPRECHAUN to GEMINI_TTS_STYLE_DIRECTIVE_LEPRECHAUN,
+            TtsStyle.KING to GEMINI_TTS_STYLE_DIRECTIVE_KING,
+            TtsStyle.QUEEN to GEMINI_TTS_STYLE_DIRECTIVE_QUEEN,
+            TtsStyle.PRESIDENT to GEMINI_TTS_STYLE_DIRECTIVE_PRESIDENT,
+        )
+
+        expected.keys shouldBe TtsStyle.entries.toSet()
+
+        for ((style, directive) in expected) {
+            withClue("style=$style") {
+                styleDirectiveFor(style) shouldBe directive
+            }
+        }
+    }
+
+    @Test
+    fun `styleDirectiveFor returns the B2 weather-forecaster variant for WEATHER_FORECASTER`() {
+        // Pin the WEATHER_FORECASTER arm on the B2 (no-register) directive
+        // specifically — directiveFor() upgrades en-AU to the _REGISTER
+        // variant, but styleDirectiveFor() itself is locale-agnostic and
+        // must return the bare B2 wording so that routing decision stays
+        // in directiveFor where the per-locale comment lives.
+        val directive = styleDirectiveFor(TtsStyle.WEATHER_FORECASTER)
+
+        directive shouldBe GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER
+        directive.shouldNotContain("standard variety, not a regional dialect")
+    }
+
+    @Test
     fun `throws GeminiTtsEmptyResponseException when response has no inline audio`() = runTest {
         val client = GeminiTtsClient(
             httpClient = mockClient("""{"candidates":[]}"""),

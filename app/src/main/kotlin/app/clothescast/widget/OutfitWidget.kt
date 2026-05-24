@@ -103,7 +103,11 @@ class OutfitWidget : GlanceAppWidget() {
 
 // Threshold at which we split into two columns: each column needs roughly the
 // width of a default-sized single-column widget (~120dp), so a 240dp+ widget is
-// the minimum that doesn't cramp either side.
+// the minimum that doesn't cramp either side. We additionally gate on
+// landscape-or-square orientation — a portrait cell wide enough to clear this
+// bar still ends up with 1:2 tall+narrow columns once halved, which renders
+// the icons floating in horizontal whitespace; in that shape the single-column
+// layout fills the cell better and reads as "one outfit" to match the visual.
 private val SIDE_BY_SIDE_MIN_WIDTH = 240.dp
 
 // Upper bound on the per-icon bitmap dimension we rasterize for ImageProvider.
@@ -149,7 +153,11 @@ private fun OutfitWidgetContent(
     ) {
         if (insight == null || outfit == null) {
             EmptyContent(size)
-        } else if (size.width >= SIDE_BY_SIDE_MIN_WIDTH && insight.nextOutfit != null) {
+        } else if (
+            size.width >= SIDE_BY_SIDE_MIN_WIDTH &&
+            size.width >= size.height &&
+            insight.nextOutfit != null
+        ) {
             SideBySideContent(insight, size, topColors, bottomColors)
         } else {
             SingleColumnContent(
@@ -294,16 +302,33 @@ private fun EmptyContent(size: DpSize) {
     }
 }
 
-// Scaling factors are anchored so a 160dp-square cell reproduces the previous
-// hard-coded values (icon 48dp, label 14sp, subtitle 11sp); larger cells grow
-// linearly with no upper cap so a launcher-stretched widget keeps filling its
-// allotted space rather than centring small content in a big box. Sizing is
-// driven by the shortest dimension because the column is bounded vertically
-// by two stacked icons + label + subtitle, and the floors keep text and icons
-// legible if the user shrinks the cell below the default 2x2.
+// Icons are square and stacked in pairs inside the column, so the natural
+// upper bounds are (column width) on the horizontal axis and (column height
+// minus label + subtitle + spacers, divided in two) on the vertical. Side-
+// by-side mode hands each column width/2 × full height, which is roughly
+// 1:2 tall+narrow even when the widget as a whole is square — so a single
+// shortest-dimension factor would lock the icons to the narrow side and
+// leave the vertical room as visual padding. The two-budget min keeps the
+// horizontal cap honest at modest cell sizes (160dp square: ~50dp icon,
+// matching the previous look) and lets icons grow into the column when the
+// launcher stretches the cell.
+//
+// Text scaling stays anchored to the shortest dimension because labels want
+// to remain proportionate to the smaller of the two axes — readable in a
+// compact cell, not stadium-sized in a tall-and-narrow column.
 private fun scaledIconSize(size: DpSize): Dp {
     val short = minOf(size.width.value, size.height.value)
-    return (short * 0.30f).coerceAtLeast(36f).dp
+    val labelSp = (short * 0.0875f).coerceAtLeast(13f)
+    val subtitleSp = (short * 0.0688f).coerceAtLeast(10f)
+    // 1.5× line height covers the text rows, plus the inter-row spacers
+    // (4dp + 2dp) and the outer Box padding (4dp × 2). Rounded up a touch
+    // so a small misestimate doesn't push the icons past the column edge.
+    val reservedVertical = (labelSp + subtitleSp) * 1.5f + 22f
+    val verticalBudget = (size.height.value - reservedVertical).coerceAtLeast(0f) / 2f
+    // 5% horizontal margin on each side keeps the icon off the column edge
+    // without pushing a measurable gap back into the layout.
+    val horizontalBudget = size.width.value * 0.9f
+    return minOf(verticalBudget, horizontalBudget).coerceAtLeast(36f).dp
 }
 
 @Composable

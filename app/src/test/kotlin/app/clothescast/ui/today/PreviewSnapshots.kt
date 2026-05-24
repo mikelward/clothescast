@@ -57,6 +57,7 @@ import app.clothescast.widget.WidgetTodayTonightWidePreview
 import app.clothescast.widget.WidgetTodayTShirtShortsPreview
 import app.clothescast.widget.WidgetTonightDarkPreview
 import app.clothescast.widget.WidgetTonightSweaterPantsPreview
+import app.clothescast.widget.WidgetTonightTallPortraitPreview
 import app.clothescast.widget.WidgetTonightTomorrowWidePreview
 import com.github.takahirom.roborazzi.captureRoboImage
 import java.io.File
@@ -542,6 +543,12 @@ class PreviewSnapshots {
     @Test fun widget_today_extra_large() = capture { WidgetTodayExtraLargePreview() }
     @Test fun widget_today_tonight_wide() = capture { WidgetTodayTonightWidePreview() }
     @Test fun widget_tonight_tomorrow_wide() = capture { WidgetTonightTomorrowWidePreview() }
+
+    // 480dp-tall preview overflows the class-level 640dp viewport; widen it
+    // so the bottom of the column doesn't get clipped.
+    @Test
+    @Config(qualifiers = "w480dp-h720dp-xhdpi")
+    fun widget_tonight_tall_portrait() = capture { WidgetTonightTallPortraitPreview() }
 
     // Stretch tall enough to capture every menu row in one frame — the
     // default class-level 640dp viewport clips at "Speech", which leaves

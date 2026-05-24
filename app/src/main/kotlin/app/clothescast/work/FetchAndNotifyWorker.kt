@@ -66,7 +66,10 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import java.io.IOException
+import java.time.Duration
+import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import kotlin.math.cos
 import kotlin.math.sqrt
@@ -92,19 +95,22 @@ class FetchAndNotifyWorker(
 
     override suspend fun doWork(): Result {
         val isCacheOnly = inputData.getBoolean(KEY_CACHE_LOCATION_ONLY, false)
+        val isSilent = inputData.getBoolean(KEY_SILENT_REFRESH, false)
         val period = inputData.getString(KEY_PERIOD)
             ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() }
             ?: ForecastPeriod.TODAY
         val startMs = System.currentTimeMillis()
-        // The cache-only path doesn't deliver an insight, so don't count it
-        // as a refresh outcome — that would skew the success-rate dashboard
-        // with no-op runs every time the user toggles device location.
+        // The cache-only and silent-refresh paths don't deliver a
+        // notification, so don't count them as refresh outcomes — they'd
+        // skew the success-rate dashboard with runs the user never
+        // perceived as a "daily refresh".
+        val skipTelemetry = isCacheOnly || isSilent
         return try {
             val result = stamped(doWorkInternal())
-            if (!isCacheOnly) recordDailyRefreshOutcome(period, result, startMs)
+            if (!skipTelemetry) recordDailyRefreshOutcome(period, result, startMs)
             result
         } catch (ce: CancellationException) {
-            if (!isCacheOnly) {
+            if (!skipTelemetry) {
                 Telemetry.logDailyRefresh(
                     slot = slotName(period),
                     outcome = OUTCOME_CANCELLED,
@@ -160,9 +166,20 @@ class FetchAndNotifyWorker(
             return Result.success()
         }
 
-        val period = inputData.getString(KEY_PERIOD)
-            ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() }
-            ?: ForecastPeriod.TODAY
+        val isSilentRefresh = inputData.getBoolean(KEY_SILENT_REFRESH, false)
+        // Silent app-open refreshes derive the period from the user's
+        // schedule against wall-clock time — same logic the Today screen's
+        // manual Refresh button uses — so a cached snapshot left in the
+        // wrong window after a missed alarm (e.g. yesterday-evening
+        // TONIGHT carried into morning) gets corrected to the current
+        // window on the next open, not perpetuated.
+        val period = if (isSilentRefresh) {
+            currentPeriodForSchedule(prefs)
+        } else {
+            inputData.getString(KEY_PERIOD)
+                ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() }
+                ?: ForecastPeriod.TODAY
+        }
 
         // Honour force-refresh only when it's still the day the user tapped on. If
         // the request was enqueued near midnight and only ran after the date rolled
@@ -173,8 +190,11 @@ class FetchAndNotifyWorker(
         val today = LocalDate.now()
         val requestedEpochDay = inputData.getLong(KEY_REQUESTED_EPOCH_DAY, Long.MIN_VALUE)
         val isUserForcedRefresh = inputData.getBoolean(KEY_FORCE_REFRESH, false)
-        val forceRefresh = isUserForcedRefresh && requestedEpochDay == today.toEpochDay()
-        if (isUserForcedRefresh && !forceRefresh) {
+        // Silent app-open refreshes fire precisely *because* the cached
+        // snapshot is stale, so they always bypass the same-day cache.
+        val forceRefresh = (isUserForcedRefresh && requestedEpochDay == today.toEpochDay()) ||
+            isSilentRefresh
+        if (isUserForcedRefresh && requestedEpochDay != today.toEpochDay()) {
             DiagLog.i(TAG, "Ignoring force refresh from a previous day (requested=$requestedEpochDay, today=${today.toEpochDay()}).")
         }
 
@@ -241,12 +261,9 @@ class FetchAndNotifyWorker(
         // The Today screen's Refresh button sets [KEY_FORCE_REFRESH] = true so an
         // explicit user tap always regenerates — without that flag, tapping Refresh
         // on the same calendar day just redelivers the same cached payload, which
-        // is surprising for the user.
-        //
-        // TODO: opportunistic auto-refresh — when the user opens the app and the
-        // cached insight is more than ~1h old, regenerate (bypassing the same-day
-        // cache). Avoids a full Refresh tap when the clothes / forecast has moved
-        // since the morning generation.
+        // is surprising for the user. Silent app-open refreshes likewise set
+        // [forceRefresh] above so they bypass this cache and pull fresh data
+        // when the stored snapshot is over [SILENT_REFRESH_MIN_AGE] old.
         val cached = if (forceRefresh) {
             DiagLog.i(TAG, "Force refresh requested; bypassing today's cache.")
             null
@@ -309,12 +326,21 @@ class FetchAndNotifyWorker(
             // one we deliver on this run.
             val snapshot = capturedSnapshot(location, prefs, period, dayOffset = 0)
             val result = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, it) })
+            val isSilentRun = inputData.getBoolean(KEY_SILENT_REFRESH, false)
             // Severe alerts are out-of-band: post them as separate high-priority
             // notifications on every fresh fetch, regardless of whether the daily
-            // summary itself is blank or suppressed.
-            result.alerts.filter { it.isHighPriority() }.forEach { alert ->
-                runCatching { app.weatherAlertNotifier.notify(alert) }
-                    .onFailure { DiagLog.w(TAG, "Severe alert notification failed for ${alert.event}.", it) }
+            // summary itself is blank or suppressed. Silent app-open refreshes
+            // skip this — re-issuing the morning alarm's already-posted alert
+            // with the same stable notification ID re-fires its HUN (heads-up
+            // sound / banner) on every app open with a stale cache, which is
+            // exactly the surprise the silent contract is meant to avoid. New
+            // alerts that landed since the last scheduled run will be picked
+            // up by the next morning / tonight alarm.
+            if (!isSilentRun) {
+                result.alerts.filter { it.isHighPriority() }.forEach { alert ->
+                    runCatching { app.weatherAlertNotifier.notify(alert) }
+                        .onFailure { DiagLog.w(TAG, "Severe alert notification failed for ${alert.event}.", it) }
+                }
             }
             val insight = result.insight
             runCatching { app.insightCache.store(InsightCache.Slot.THIS_PERIOD, snapshot) }
@@ -354,8 +380,17 @@ class FetchAndNotifyWorker(
             // all share the same string and we don't reconfigure the
             // Configuration-overridden Resources three times per fire.
             val prose = formatProse(insight, prefs)
-            deliver(insight, prefs, prose)
-            DiagLog.i(TAG, "Insight delivered for ${insight.forDate}: $prose")
+            // Silent app-open refreshes update the cache (so the Today screen
+            // re-renders off fresh data) but skip the notification / TTS /
+            // MQTT / cast fan-out — the user is already in the app looking at
+            // it, a new banner / chime / cast load on top of that is exactly
+            // the surprise this flag exists to avoid.
+            if (isSilentRun) {
+                DiagLog.i(TAG, "Silent refresh updated cache for ${insight.forDate}: $prose")
+            } else {
+                deliver(insight, prefs, prose)
+                DiagLog.i(TAG, "Insight delivered for ${insight.forDate}: $prose")
+            }
             recordDailyHistory(insight)
             Result.success()
         } catch (e: ResponseException) {
@@ -1200,6 +1235,11 @@ class FetchAndNotifyWorker(
         // it (and vice versa). Cache-only runs are idempotent and skip the
         // insight pipeline entirely.
         const val UNIQUE_WORK_NAME_LOCATION_CACHE = "location_cache_refresh"
+        // Distinct queue from the alarm-driven daily / tonight runs so a
+        // silent app-open refresh in flight doesn't get cancelled by an
+        // alarm fire (and vice versa). KEEP-deduped so config-change
+        // re-triggers on app open coalesce into the one in-flight worker.
+        const val UNIQUE_WORK_NAME_SILENT = "silent_insight_refresh"
 
         // Output Data keys for surfacing failure reasons in the UI.
         const val KEY_REASON = "reason"
@@ -1320,6 +1360,24 @@ class FetchAndNotifyWorker(
          */
         private const val KEY_CACHE_LOCATION_ONLY = "cache_location_only"
 
+        /**
+         * Set true via [enqueueSilentRefresh] for the opportunistic app-open
+         * refresh: fetch + update the cache so the Today screen re-renders
+         * off fresh data, but skip everything user-facing — no notification,
+         * no TTS, no MQTT publish, no cast load. The widget update still
+         * fires because it's already on the user's launcher and would
+         * otherwise sit on the stale outfit.
+         */
+        private const val KEY_SILENT_REFRESH = "silent_refresh"
+
+        /**
+         * Min staleness before app-open triggers a silent refresh — anything
+         * within the hour is "still good enough", matches CachingWeatherRepository's
+         * own 1h TTL so we don't burn an Open-Meteo call just to read the
+         * same bundle out of the in-memory cache.
+         */
+        val SILENT_REFRESH_MIN_AGE: Duration = Duration.ofHours(1)
+
         fun enqueueOneShot(
             context: Context,
             force: Boolean = false,
@@ -1393,6 +1451,80 @@ class FetchAndNotifyWorker(
                     ExistingWorkPolicy.REPLACE,
                     request,
                 )
+        }
+
+        /**
+         * Opportunistic refresh fired on app open when the cached insight is
+         * older than [SILENT_REFRESH_MIN_AGE]. Runs the full fetch + cache
+         * pipeline but skips notification, TTS, MQTT, and cast — the Today
+         * screen re-renders silently when the new snapshot lands in
+         * [InsightCache.thisPeriod]. KEEP so config-change retriggers on the
+         * same app-open coalesce into the one in-flight run.
+         *
+         * The period is resolved inside the worker via [currentPeriodForSchedule]
+         * so we refresh whichever window the user is *currently* in — not
+         * whichever window a previously cached snapshot happens to label
+         * itself as. This corrects the slot when an alarm was missed and the
+         * cache crossed a period boundary while stale.
+         */
+        fun enqueueSilentRefresh(context: Context) {
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
+            val request = OneTimeWorkRequestBuilder<FetchAndNotifyWorker>()
+                .setConstraints(constraints)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
+                .setInputData(
+                    workDataOf(
+                        KEY_SILENT_REFRESH to true,
+                        KEY_REQUESTED_EPOCH_DAY to LocalDate.now().toEpochDay(),
+                    )
+                )
+                .build()
+
+            WorkManager.getInstance(context)
+                .enqueueUniqueWork(
+                    UNIQUE_WORK_NAME_SILENT,
+                    ExistingWorkPolicy.KEEP,
+                    request,
+                )
+        }
+
+        /**
+         * App-open freshness predicate: true when [snapshot] is non-null and
+         * its [ForecastSnapshot.generatedAt] is at least [SILENT_REFRESH_MIN_AGE]
+         * before [now]. Null snapshot returns false — the app hasn't
+         * successfully fetched yet, so there's nothing user-visible to
+         * silently replace (the alarm or onboarding flow drives the first
+         * fetch).
+         */
+        fun shouldSilentlyRefresh(snapshot: ForecastSnapshot?, now: Instant): Boolean {
+            if (snapshot == null) return false
+            return Duration.between(snapshot.generatedAt, now) >= SILENT_REFRESH_MIN_AGE
+        }
+
+        /**
+         * The 12-hour window we should refresh for *right now*, based on the
+         * user's schedule and wall-clock time. Mirrors the period selection
+         * the Today screen's manual Refresh button uses so a silent refresh
+         * lands in the same slot the user would otherwise have to tap to
+         * regenerate. Returns TODAY whenever tonight delivery is disabled —
+         * the tonight slot is off, so there's nothing useful to refresh there.
+         */
+        fun currentPeriodForSchedule(
+            prefs: UserPreferences,
+            now: LocalTime = LocalTime.now(),
+        ): ForecastPeriod {
+            if (!prefs.tonightEnabled) return ForecastPeriod.TODAY
+            val morning = prefs.schedule.time
+            val tonight = prefs.tonightSchedule.time
+            val inTonightWindow = if (tonight > morning) {
+                now >= tonight || now < morning
+            } else {
+                now >= tonight && now < morning
+            }
+            return if (inTonightWindow) ForecastPeriod.TONIGHT else ForecastPeriod.TODAY
         }
     }
 }

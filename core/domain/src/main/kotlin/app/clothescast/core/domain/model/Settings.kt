@@ -178,12 +178,13 @@ enum class RangeFormat { NONE, DEGREES, BANDS }
  *  - [ITEMS] (default) names each triggered garment — the historical
  *    behaviour: "Wear a sweater.", "Wear a sweater and shorts."
  *  - [LAYER_COUNT] collapses the top garments to a perceived-warmth count
- *    (see [Garment.layerCount]) and renders "Wear 2 layers." A bottom
- *    garment, if one triggered, is named alongside the count ("Wear 2
- *    layers and shorts.") so the user still hears it. The count is the
- *    *max* layer count across firing tops, not a sum — wearing a sweater
- *    (2) under a jacket (3) lands at 3 because the jacket defines the
- *    warmth tier, not 5.
+ *    (see [Garment.layerCount]) and renders "Wear 2 layers." Bottoms are
+ *    suppressed in this mode — the whole point is a single warmth signal,
+ *    so a trailing "and shorts" adds noise. The wear clause is dropped
+ *    entirely when only a bottom rule fires (no top to count). The count
+ *    is the *max* layer count across firing tops, not a sum — wearing a
+ *    sweater (2) under a jacket (3) lands at 3 because the jacket defines
+ *    the warmth tier, not 5.
  */
 enum class ClothesFormat { ITEMS, LAYER_COUNT }
 

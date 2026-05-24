@@ -64,7 +64,9 @@ class InsightFormatter(
      * How the clothes clause is rendered. [ClothesFormat.ITEMS] (default) names
      * each triggered garment as before; [ClothesFormat.LAYER_COUNT] collapses
      * the firing tops to a perceived-warmth count via [Garment.layerCount] and
-     * names the bottom (if one fired) alongside — "Wear 2 layers and shorts."
+     * drops bottoms from the wear clause entirely — "Wear 2 layers." — so the
+     * mode reads as a single warmth signal. Bottoms are filtered out in
+     * [format] before the wear clause is rendered; see [isBottom].
      */
     private val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     /**
@@ -111,7 +113,12 @@ class InsightFormatter(
         // and the rain mention already implies the umbrella for the typical
         // precip-keyed rule. The accessory TODO below is the proper home for
         // a re-introduction.
-        val wearItems = summary.clothes?.items.orEmpty().filterNot(::isAccessory)
+        val wearItems = summary.clothes?.items.orEmpty()
+            .filterNot(::isAccessory)
+            // Layer-count mode is a single warmth signal: bottoms add noise,
+            // so suppress them before the wear clause renders. An only-bottom
+            // firing therefore emits no wear clause at all in this mode.
+            .filterNot { clothesFormat == ClothesFormat.LAYER_COUNT && isBottom(it) }
         // Items already in the wear sentence shouldn't be repeated by a
         // tie-in — a calendar tie-in that picks "sweater" when the wear
         // sentence already said "Wear a sweater" adds nothing. Dedup on the
@@ -241,6 +248,9 @@ class InsightFormatter(
     private fun isAccessory(item: String): Boolean =
         item.trim().equals("umbrella", ignoreCase = true)
 
+    private fun isBottom(item: String): Boolean =
+        Garment.fromKey(item)?.slot == Garment.Slot.BOTTOM
+
     private fun normalizeItemKey(item: String): String = item.trim().lowercase(Locale.ROOT)
 
     private fun formatAlert(alert: AlertClause): String =
@@ -329,28 +339,22 @@ class InsightFormatter(
     /**
      * Render the body of the wear sentence in layer-count mode. Tops collapse
      * to the max [Garment.layerCount] across firing rules (the heaviest tier
-     * defines the warmth, layering a sweater under a jacket lands at 3 not 5);
-     * bottoms still get named — "2 layers and shorts" — via the locale's
-     * phraser so the user hears their bottom rule too. Returns `null` when no
-     * top is classifiable, letting the caller fall back to the items
+     * defines the warmth, layering a sweater under a jacket lands at 3 not 5).
+     * Bottoms are already filtered out before this runs — see [format] — so
+     * the phrase is purely about top warmth ("Wear 2 layers."). Returns `null`
+     * when no top is classifiable, letting the caller fall back to the items
      * rendering (free-form user-typed garments don't map to a layer count).
      */
     private fun layerCountPhrase(items: List<String>): String? {
         var topCount = 0
-        val bottomKeys = mutableListOf<String>()
         for (item in items) {
             val garment = Garment.fromKey(item) ?: return null
-            when (garment.slot) {
-                Garment.Slot.TOP -> if (garment.layerCount > topCount) topCount = garment.layerCount
-                Garment.Slot.BOTTOM -> bottomKeys += item
+            if (garment.slot == Garment.Slot.TOP && garment.layerCount > topCount) {
+                topCount = garment.layerCount
             }
         }
         if (topCount == 0) return null
-        val layers = resources.getQuantityString(R.plurals.insight_clothes_layer_count, topCount, topCount)
-        if (bottomKeys.isEmpty()) return layers
-        val bottoms = phraser.joinItems(bottomKeys)
-        if (bottoms.isBlank()) return layers
-        return resources.getString(R.string.insight_clothes_join_two, layers, bottoms)
+        return resources.getQuantityString(R.plurals.insight_clothes_layer_count, topCount, topCount)
     }
 
     private fun formatPrecip(precip: PrecipClause): String {

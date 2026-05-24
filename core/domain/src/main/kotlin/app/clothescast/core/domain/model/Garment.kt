@@ -109,6 +109,18 @@ enum class Garment(
         }
 
         /**
+         * Whether a rule-item key names a *carried* accessory (rather than a
+         * worn garment). Accessories don't live in the [Garment] catalog —
+         * they don't claim a slot, don't layer, and the wear-clause prose
+         * filters them out ("Wear an umbrella" reads wrong; the rain mention
+         * already implies it). Today it's only `umbrella`; the
+         * `accessories-catalog` TODO in the formatter is the long-term home
+         * for a proper kind classification (rain jacket, hood, sunscreen, …).
+         */
+        fun isAccessoryKey(key: String): Boolean =
+            key.trim().equals("umbrella", ignoreCase = true)
+
+        /**
          * Within-layer priority for top garments — heaviest-tier first. When
          * multiple firing rules belong to the same [Layer], the one earliest
          * in this list wins and the rest are suppressed: if both a `jacket`

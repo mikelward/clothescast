@@ -6,6 +6,7 @@ import android.content.res.Resources
 import app.clothescast.R
 import app.clothescast.core.domain.model.AlertClause
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.EveningEventTieInClause
@@ -65,8 +66,10 @@ class InsightFormatter(
      * each triggered garment as before; [ClothesFormat.LAYER_COUNT] collapses
      * the firing tops to a perceived-warmth count via [Garment.layerCount] and
      * drops bottoms from the wear clause entirely — "Wear 2 layers." — so the
-     * mode reads as a single warmth signal. Bottoms are filtered out in
-     * [format] before the wear clause is rendered; see [isBottom].
+     * mode reads as a single warmth signal. The bottom suppression happens
+     * in [format] by reading only [ClothesClause.tops] in this mode; the
+     * domain exposes pre-classified tops / bottoms / accessories views so
+     * the formatter doesn't have to re-run [Garment.fromKey] on every item.
      */
     private val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     /**
@@ -113,12 +116,18 @@ class InsightFormatter(
         // and the rain mention already implies the umbrella for the typical
         // precip-keyed rule. The accessory TODO below is the proper home for
         // a re-introduction.
-        val wearItems = summary.clothes?.items.orEmpty()
-            .filterNot(::isAccessory)
-            // Layer-count mode is a single warmth signal: bottoms add noise,
-            // so suppress them before the wear clause renders. An only-bottom
-            // firing therefore emits no wear clause at all in this mode.
-            .filterNot { clothesFormat == ClothesFormat.LAYER_COUNT && isBottom(it) }
+        //
+        // Layer-count mode is a single warmth signal — bottoms add noise, so
+        // we just read [ClothesClause.tops] directly and the bottoms never
+        // enter the wear list. An only-bottom firing therefore emits no wear
+        // clause at all in this mode. In items mode we render all non-accessory
+        // items in their original input order so the article-picker
+        // ([ClothesPhraser]) sees the same plural-first / singular-first
+        // sequence it would have if it filtered the raw [items] itself.
+        val wearItems = when (clothesFormat) {
+            ClothesFormat.LAYER_COUNT -> summary.clothes?.tops.orEmpty()
+            ClothesFormat.ITEMS -> summary.clothes?.items.orEmpty().filterNot(::isAccessory)
+        }
         // Items already in the wear sentence shouldn't be repeated by a
         // tie-in — a calendar tie-in that picks "sweater" when the wear
         // sentence already said "Wear a sweater" adds nothing. Dedup on the
@@ -245,11 +254,7 @@ class InsightFormatter(
     //  temperature-driven clothing only and accept that user-typed
     //  umbrella rules are silent — the precip clause still warns about
     //  rain, which is the main thing.
-    private fun isAccessory(item: String): Boolean =
-        item.trim().equals("umbrella", ignoreCase = true)
-
-    private fun isBottom(item: String): Boolean =
-        Garment.fromKey(item)?.slot == Garment.Slot.BOTTOM
+    private fun isAccessory(item: String): Boolean = Garment.isAccessoryKey(item)
 
     private fun normalizeItemKey(item: String): String = item.trim().lowercase(Locale.ROOT)
 
@@ -340,10 +345,11 @@ class InsightFormatter(
      * Render the body of the wear sentence in layer-count mode. Tops collapse
      * to the max [Garment.layerCount] across firing rules (the heaviest tier
      * defines the warmth, layering a sweater under a jacket lands at 3 not 5).
-     * Bottoms are already filtered out before this runs — see [format] — so
-     * the phrase is purely about top warmth ("Wear 2 layers."). Returns `null`
-     * when no top is classifiable, letting the caller fall back to the items
-     * rendering (free-form user-typed garments don't map to a layer count).
+     * Bottoms can't reach here — [format] drops [ClothesClause.bottoms] from
+     * the wear list in this mode — so the phrase is purely about top warmth
+     * ("Wear 2 layers."). Returns `null` when no top is classifiable, letting
+     * the caller fall back to the items rendering (free-form user-typed
+     * garments don't map to a layer count).
      */
     private fun layerCountPhrase(items: List<String>): String? {
         var topCount = 0

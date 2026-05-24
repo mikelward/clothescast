@@ -268,6 +268,7 @@ fun TodayScreen(
             onNavigateToClothes = onNavigateToClothes,
             onNavigateToFormat = onNavigateToFormat,
             onToggleModelSpread = viewModel::toggleModelSpread,
+            onRevealModelSpread = viewModel::revealModelSpread,
             onLongPressDate = onNavigateToDeveloper,
         )
     }
@@ -304,6 +305,7 @@ private fun TodayContent(
     onNavigateToClothes: () -> Unit,
     onNavigateToFormat: () -> Unit,
     onToggleModelSpread: () -> Unit,
+    onRevealModelSpread: () -> Unit,
     onLongPressDate: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -480,6 +482,7 @@ private fun TodayContent(
                     onNavigateToClothes = onNavigateToClothes,
                     onNavigateToFormat = onNavigateToFormat,
                     onToggleModelSpread = onToggleModelSpread,
+                    onRevealModelSpread = onRevealModelSpread,
                     onLongPressDate = onLongPressDate,
                 )
             }
@@ -512,6 +515,7 @@ private fun TodayPage(
     onNavigateToClothes: () -> Unit,
     onNavigateToFormat: () -> Unit,
     onToggleModelSpread: () -> Unit,
+    onRevealModelSpread: () -> Unit,
     onLongPressDate: () -> Unit,
 ) {
     val scrollScope = rememberCoroutineScope()
@@ -562,18 +566,25 @@ private fun TodayPage(
                 )
                 return@Column
             }
-            // Tap-to-toggle is wired uniformly on every surface that shows a
-            // chart: the confidence chip (where the hint copy explains the
-            // affordance), the three temp / feels-like / precip cards, and the
-            // six diagnostic cards below (wind / cloud / humidity / solar /
-            // sunshine / UV). Every chart draws a consensus main line by
-            // default and overlays the per-model spread when the toggle is on,
-            // so tapping any of them produces a visible change. [tapToggle] is
-            // null when there's no per-model data in the cache (e.g. older
-            // payloads) — in that case the cards stay non-clickable and the
-            // diagnostic block at the bottom hides itself.
+            // Two separate per-model-spread affordances:
+            //
+            //  - The confidence chip [ConfidenceChip] keeps its labelled
+            //    "tap to show / hide" toggle (wired through [onChipTap] →
+            //    [onToggleModelSpread]). That's the explicit on/off control.
+            //
+            //  - The plot grid of every chart drives the shared
+            //    [ChartScrubController] — first contact also fires
+            //    [onRevealModelSpread], a one-way set so dragging the
+            //    indicator can't accidentally hide the spread mid-drag.
+            //    The user takes the spread back off via the chip.
+            //
+            // [chartReveal] / [chipToggle] are null when there's no per-model
+            // data in the cache (e.g. older payloads) — in that case the
+            // chip stays as a static confidence summary and the chart
+            // gestures just scrub without touching spread state.
             val perModelAvailable = insight.perModelHourly != null
-            val tapToggle = onToggleModelSpread.takeIf { perModelAvailable }
+            val chipToggle = onToggleModelSpread.takeIf { perModelAvailable }
+            val chartReveal: (() -> Unit)? = onRevealModelSpread.takeIf { perModelAvailable }
             InsightCard(
                 insight = insight,
                 region = state.region,
@@ -592,7 +603,7 @@ private fun TodayPage(
                 // top of the viewport — the per-model overlay renders on the
                 // charts below the chip, so scrolling them into view is part of
                 // the same gesture's payoff.
-                val onChipTap: (() -> Unit)? = tapToggle?.let { toggle ->
+                val onChipTap: (() -> Unit)? = chipToggle?.let { toggle ->
                     {
                         toggle()
                         scrollScope.launch { scrollState.animateScrollTo(chipScrollOffset) }
@@ -617,62 +628,66 @@ private fun TodayPage(
                 // shifts the scale. The diagnostic cards below follow the same
                 // pattern (see [PerModelDiagnosticCard]).
                 val perModelData = insight.perModelHourly
-                // Compute the "now" x-position and route it to every chart on
-                // the screen via a composition local — see
-                // [LocalChartCurrentTimeX] for the reasoning. Tick once a
-                // minute via a side effect so the line keeps tracking the
-                // clock when the user leaves the screen open: keying the
-                // calculation on `insight.hourly` + `insight.forDate` alone
-                // would freeze it at whatever `now()` was when the insight
-                // first landed. Per-minute is plenty — 24h chart at ~300dp
-                // wide ≈ 0.2dp per minute, so any faster tick is invisible.
-                // The effect is scoped to the composable, so it cancels when
-                // the user navigates away.
-                //
-                // Read `now` in the *forecast* zone (Open-Meteo's `timezone=auto`,
-                // surfaced on [Insight.forecastZone]) rather than the device's,
-                // because [HourlyForecast.time] is wall-clock local to that
-                // zone. For the common auto-location case the two are equal;
-                // for a manual location in a different zone, using the device
-                // zone would shift the indicator by the offset (or hide it
-                // out of window). Fall back to the device default on legacy
-                // cached insights that predate `forecastZone`.
+                // Shared scrub controller — one per page. Every chart on this
+                // page reads it through [LocalChartScrub] and draws its
+                // indicator + readout tooltip at the controller's active
+                // time. Dragging on any chart updates the time on all of
+                // them in lock-step. The controller dies with this
+                // composable (no rememberSaveable) so navigating away from
+                // the Today screen returns it to "now"-tracking on next
+                // entry.
+                val scrubController = rememberChartScrubController()
+                // Tick the controller's "now" reference once a minute so
+                // the live indicator slides smoothly across the chart. Read
+                // `now` in the *forecast* zone (Open-Meteo's `timezone=auto`,
+                // surfaced on [Insight.forecastZone]) rather than the
+                // device's, because [HourlyForecast.time] is wall-clock
+                // local to that zone. For the common auto-location case the
+                // two are equal; for a manual location in a different zone,
+                // using the device zone would shift the indicator by the
+                // offset (or hide it out of window). Fall back to the
+                // device default on legacy cached insights that predate
+                // `forecastZone`. While the user is scrubbed, the controller
+                // keeps the live `now` reference internally so the restore
+                // icon snaps back to a fresh value rather than the stale one
+                // at the time of scrub.
                 val zone = insight.forecastZone ?: ZoneId.systemDefault()
-                var now by remember(zone) { mutableStateOf(LocalDateTime.now(zone)) }
-                LaunchedEffect(zone) {
+                LaunchedEffect(scrubController, zone, insight.hourly, insight.forDate) {
                     while (true) {
+                        val now = LocalDateTime.now(zone)
+                        val inWindow = currentTimeChartX(
+                            hourly = insight.hourly,
+                            startDate = insight.forDate,
+                            now = now,
+                        ) != null
+                        scrubController.setNow(if (inWindow) now else null)
                         delay(60_000L)
-                        now = LocalDateTime.now(zone)
                     }
                 }
-                val currentTimeX = remember(insight.hourly, insight.forDate, now) {
-                    currentTimeChartX(
-                        hourly = insight.hourly,
-                        startDate = insight.forDate,
-                        now = now,
-                    )
-                }
-                CompositionLocalProvider(LocalChartCurrentTimeX provides currentTimeX) {
+                CompositionLocalProvider(LocalChartScrub provides scrubController) {
                     ForecastCard(
                         hourly = insight.hourly,
                         temperatureUnit = state.temperatureUnit,
                         distanceUnit = state.distanceUnit,
+                        startDate = insight.forDate,
                         perModelHourly = perModelData,
                         showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
+                        onFirstContact = chartReveal,
                     )
                     AirTemperatureCard(
                         hourly = insight.hourly,
                         temperatureUnit = state.temperatureUnit,
+                        startDate = insight.forDate,
                         perModelHourly = perModelData,
                         showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
+                        onFirstContact = chartReveal,
                     )
                     PrecipitationCard(
                         hourly = insight.hourly,
+                        startDate = insight.forDate,
                         perModelHourly = perModelData,
                         showModelSpread = state.showModelSpread,
-                        onToggleModelSpread = tapToggle,
+                        onFirstContact = chartReveal,
                     )
                     // Diagnostic cards below the headline temp + rain pair. Each
                     // draws a consensus main line by default and overlays the
@@ -685,26 +700,30 @@ private fun TodayPage(
                             hourly = insight.hourly,
                             perModelHourly = perModelData,
                             windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                            startDate = insight.forDate,
                             showModelSpread = state.showModelSpread,
-                            onToggleModelSpread = tapToggle,
+                            onFirstContact = chartReveal,
                         )
                         CloudCard(
                             hourly = insight.hourly,
                             perModelHourly = perModelData,
+                            startDate = insight.forDate,
                             showModelSpread = state.showModelSpread,
-                            onToggleModelSpread = tapToggle,
+                            onFirstContact = chartReveal,
                         )
                         HumidityCard(
                             hourly = insight.hourly,
                             perModelHourly = perModelData,
+                            startDate = insight.forDate,
                             showModelSpread = state.showModelSpread,
-                            onToggleModelSpread = tapToggle,
+                            onFirstContact = chartReveal,
                         )
                         SolarRadiationCard(
                             hourly = insight.hourly,
                             perModelHourly = perModelData,
+                            startDate = insight.forDate,
                             showModelSpread = state.showModelSpread,
-                            onToggleModelSpread = tapToggle,
+                            onFirstContact = chartReveal,
                         )
                         SunshineCard(
                             hourly = insight.hourly,
@@ -712,13 +731,14 @@ private fun TodayPage(
                             forDate = insight.forDate,
                             period = insight.period,
                             showModelSpread = state.showModelSpread,
-                            onToggleModelSpread = tapToggle,
+                            onFirstContact = chartReveal,
                         )
                         UvIndexCard(
                             hourly = insight.hourly,
                             perModelHourly = perModelData,
+                            startDate = insight.forDate,
                             showModelSpread = state.showModelSpread,
-                            onToggleModelSpread = tapToggle,
+                            onFirstContact = chartReveal,
                         )
                     }
                 }
@@ -1792,20 +1812,17 @@ internal fun ForecastCard(
     hourly: List<HourlyForecast>,
     temperatureUnit: TemperatureUnit,
     distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
+    startDate: java.time.LocalDate = java.time.LocalDate.now(),
     perModelHourly: PerModelHourly? = null,
     showModelSpread: Boolean = false,
-    onToggleModelSpread: (() -> Unit)? = null,
+    onFirstContact: (() -> Unit)? = null,
 ) {
     val symbol = temperatureUnit.symbol()
     val feelsLikeMinMax = remember(hourly, temperatureUnit) {
         formatMinMax(hourly.map { it.feelsLikeC }, temperatureUnit)
     }
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .let { if (onToggleModelSpread != null) it.clickable(onClick = onToggleModelSpread) else it },
-    ) {
+    Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -1824,6 +1841,8 @@ internal fun ForecastCard(
                 hourly = hourly,
                 temperatureUnit = temperatureUnit,
                 showFeelsLike = true,
+                startDate = startDate,
+                onFirstContact = onFirstContact ?: {},
                 perModelHourly = perModelHourly,
                 showModelSpread = showModelSpread,
             )
@@ -1849,20 +1868,17 @@ internal fun ForecastCard(
 internal fun AirTemperatureCard(
     hourly: List<HourlyForecast>,
     temperatureUnit: TemperatureUnit,
+    startDate: java.time.LocalDate = java.time.LocalDate.now(),
     perModelHourly: PerModelHourly? = null,
     showModelSpread: Boolean = false,
-    onToggleModelSpread: (() -> Unit)? = null,
+    onFirstContact: (() -> Unit)? = null,
 ) {
     val symbol = temperatureUnit.symbol()
     val airMinMax = remember(hourly, temperatureUnit) {
         formatMinMax(hourly.map { it.temperatureC }, temperatureUnit)
     }
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .let { if (onToggleModelSpread != null) it.clickable(onClick = onToggleModelSpread) else it },
-    ) {
+    Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -1881,6 +1897,8 @@ internal fun AirTemperatureCard(
                 hourly = hourly,
                 temperatureUnit = temperatureUnit,
                 showFeelsLike = false,
+                startDate = startDate,
+                onFirstContact = onFirstContact ?: {},
                 perModelHourly = perModelHourly,
                 showModelSpread = showModelSpread,
             )
@@ -1987,8 +2005,9 @@ internal fun WindCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly,
     windSpeedUnit: WindSpeedUnit = WindSpeedUnit.KMH,
+    startDate: java.time.LocalDate = java.time.LocalDate.now(),
     showModelSpread: Boolean = false,
-    onToggleModelSpread: (() -> Unit)? = null,
+    onFirstContact: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     // 10 km/h floor on the y-range so a near-still day doesn't get zoomed
@@ -2013,19 +2032,22 @@ internal fun WindCard(
             "%02d:00".format(time.hour),
         )
     } ?: stringResource(R.string.today_wind_subtitle, windSpeedUnit.symbol())
+    val unitSymbol = windSpeedUnit.symbol()
     PerModelDiagnosticCard(
         title = stringResource(R.string.today_wind_title),
         subtitle = subtitle,
-        times = times,
+        hourly = hourly,
+        startDate = startDate,
         perModelHourly = perModelHourly,
         picker = { it.windSpeedKmh?.toWindSpeedUnit(windSpeedUnit) },
         yAxis = YAxis.AutoZeroBased(minSpan = minSpan),
+        tooltipValueFormat = { "${it.roundToInt()} $unitSymbol" },
         // Picker closes over windSpeedUnit; key the series cache on it so the
         // chart values follow when the user flips distance unit while the
         // overlay payload is unchanged.
         pickerKey = windSpeedUnit,
         showOverlay = showModelSpread,
-        onToggleOverlay = onToggleModelSpread,
+        onFirstContact = onFirstContact,
     )
 }
 
@@ -2040,10 +2062,10 @@ internal fun WindCard(
 internal fun CloudCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly,
+    startDate: java.time.LocalDate = java.time.LocalDate.now(),
     showModelSpread: Boolean = false,
-    onToggleModelSpread: (() -> Unit)? = null,
+    onFirstContact: (() -> Unit)? = null,
 ) {
-    val times = remember(hourly) { hourly.map { it.time } }
     val range = remember(perModelHourly) {
         perModelConsensusRange(perModelHourly) { it.cloudCoverPct }
     }
@@ -2053,12 +2075,14 @@ internal fun CloudCard(
     PerModelDiagnosticCard(
         title = stringResource(R.string.today_cloud_title),
         subtitle = subtitle,
-        times = times,
+        hourly = hourly,
+        startDate = startDate,
         perModelHourly = perModelHourly,
         picker = { it.cloudCoverPct },
         yAxis = YAxis.Percent,
+        tooltipValueFormat = { "${it.roundToInt()}%" },
         showOverlay = showModelSpread,
-        onToggleOverlay = onToggleModelSpread,
+        onFirstContact = onFirstContact,
     )
 }
 
@@ -2073,10 +2097,10 @@ internal fun CloudCard(
 internal fun HumidityCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly,
+    startDate: java.time.LocalDate = java.time.LocalDate.now(),
     showModelSpread: Boolean = false,
-    onToggleModelSpread: (() -> Unit)? = null,
+    onFirstContact: (() -> Unit)? = null,
 ) {
-    val times = remember(hourly) { hourly.map { it.time } }
     val range = remember(perModelHourly) {
         perModelConsensusRange(perModelHourly) { it.relativeHumidityPct }
     }
@@ -2086,12 +2110,14 @@ internal fun HumidityCard(
     PerModelDiagnosticCard(
         title = stringResource(R.string.today_humidity_title),
         subtitle = subtitle,
-        times = times,
+        hourly = hourly,
+        startDate = startDate,
         perModelHourly = perModelHourly,
         picker = { it.relativeHumidityPct },
         yAxis = YAxis.Percent,
+        tooltipValueFormat = { "${it.roundToInt()}%" },
         showOverlay = showModelSpread,
-        onToggleOverlay = onToggleModelSpread,
+        onFirstContact = onFirstContact,
     )
 }
 
@@ -2106,22 +2132,24 @@ internal fun HumidityCard(
 internal fun SolarRadiationCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly,
+    startDate: java.time.LocalDate = java.time.LocalDate.now(),
     showModelSpread: Boolean = false,
-    onToggleModelSpread: (() -> Unit)? = null,
+    onFirstContact: (() -> Unit)? = null,
 ) {
-    val times = remember(hourly) { hourly.map { it.time } }
     PerModelDiagnosticCard(
         title = stringResource(R.string.today_solar_title),
         subtitle = stringResource(R.string.today_solar_subtitle),
-        times = times,
+        hourly = hourly,
+        startDate = startDate,
         perModelHourly = perModelHourly,
         picker = { it.shortwaveRadiationWm2 },
         // A typical clear summer noon peaks ~900 W/m²; the floor keeps a deep
         // overcast day's near-zero series from collapsing into a flat line on
         // top of the x-axis.
         yAxis = YAxis.AutoZeroBased(minSpan = 100.0),
+        tooltipValueFormat = { "${it.roundToInt()} W/m²" },
         showOverlay = showModelSpread,
-        onToggleOverlay = onToggleModelSpread,
+        onFirstContact = onFirstContact,
     )
 }
 
@@ -2142,9 +2170,8 @@ internal fun SunshineCard(
     forDate: java.time.LocalDate,
     period: ForecastPeriod = ForecastPeriod.TODAY,
     showModelSpread: Boolean = false,
-    onToggleModelSpread: (() -> Unit)? = null,
+    onFirstContact: (() -> Unit)? = null,
 ) {
-    val times = remember(hourly) { hourly.map { it.time } }
     // TONIGHT's slice spans [tonightStart, next morning) and so straddles
     // midnight; the per-date filter would drop pre-alarm tomorrow-morning sun
     // and the "Xh of sun tonight" total would be short. Use the window-total
@@ -2164,13 +2191,15 @@ internal fun SunshineCard(
     PerModelDiagnosticCard(
         title = stringResource(R.string.today_sunshine_title),
         subtitle = totalBlurb,
-        times = times,
+        hourly = hourly,
+        startDate = forDate,
         // Seconds → minutes so the y-axis reads 0..60 instead of 0..3600.
         picker = { it.sunshineDurationSec?.div(60.0) },
         perModelHourly = perModelHourly,
         yAxis = YAxis.AutoZeroBased(minSpan = 60.0),
+        tooltipValueFormat = { "${it.roundToInt()} min" },
         showOverlay = showModelSpread,
-        onToggleOverlay = onToggleModelSpread,
+        onFirstContact = onFirstContact,
     )
 }
 
@@ -2207,8 +2236,9 @@ private fun formatSunshineTotal(hours: Double, period: ForecastPeriod): String {
 internal fun UvIndexCard(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly,
+    startDate: java.time.LocalDate = java.time.LocalDate.now(),
     showModelSpread: Boolean = false,
-    onToggleModelSpread: (() -> Unit)? = null,
+    onFirstContact: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     // Peak UV across the cross-model consensus series — same blend the chart
@@ -2232,24 +2262,27 @@ internal fun UvIndexCard(
     PerModelDiagnosticCard(
         title = stringResource(R.string.today_uv_title),
         subtitle = subtitle,
-        times = times,
+        hourly = hourly,
+        startDate = startDate,
         perModelHourly = perModelHourly,
         picker = { it.uvIndex },
         // UV peaks around 11–12 in the tropics on summer solstice; the floor
         // keeps a winter-morning all-zero series from collapsing onto the
         // axis. niceStep gives "0, 2, 4, 6" for typical 0..6 days.
         yAxis = YAxis.AutoZeroBased(minSpan = 6.0),
+        tooltipValueFormat = { "UV ${it.roundToInt()}" },
         showOverlay = showModelSpread,
-        onToggleOverlay = onToggleModelSpread,
+        onFirstContact = onFirstContact,
     )
 }
 
 @Composable
 internal fun PrecipitationCard(
     hourly: List<HourlyForecast>,
+    startDate: java.time.LocalDate = java.time.LocalDate.now(),
     perModelHourly: PerModelHourly? = null,
     showModelSpread: Boolean = false,
-    onToggleModelSpread: (() -> Unit)? = null,
+    onFirstContact: (() -> Unit)? = null,
 ) {
     // Always render the chart, even on dry days — keeps the card height stable
     // across days so the cards below don't shift, and the flat baseline is its
@@ -2258,11 +2291,7 @@ internal fun PrecipitationCard(
     // chart itself is just the visualisation, not the only signal.
     val peak = remember(hourly) { hourly.maxByOrNull { it.precipitationProbabilityPct } }
     val isDry = peak == null || peak.precipitationProbabilityPct < DRY_THRESHOLD_PCT
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .let { if (onToggleModelSpread != null) it.clickable(onClick = onToggleModelSpread) else it },
-    ) {
+    Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -2285,6 +2314,8 @@ internal fun PrecipitationCard(
             )
             PrecipitationChart(
                 hourly = hourly,
+                startDate = startDate,
+                onFirstContact = onFirstContact ?: {},
                 perModelHourly = perModelHourly,
                 showModelSpread = showModelSpread,
             )

@@ -125,6 +125,12 @@
          is what drives the clothes recommendation. -->
     <string name="today_chart_main_line_label">Combined</string>
 
+    <!-- Content description for the small restore-clock icon that appears
+         in the top-right of each chart card after the user has scrubbed
+         the time indicator away from "now". Tapping it returns every
+         chart's indicator to the live clock. -->
+    <string name="today_chart_reset_to_now">Show now</string>
+
     <!-- Per-hour divergence summary rendered inside the forecast confidence
          card as the chip's detail line, when the consulted models disagree
          enough on feels-like to surface a peak hour.

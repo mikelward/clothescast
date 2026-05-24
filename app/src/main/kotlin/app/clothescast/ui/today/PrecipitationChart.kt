@@ -1,7 +1,10 @@
 package app.clothescast.ui.today
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -10,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.ui.theme.AppTheme
+import java.time.LocalDate
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
@@ -41,6 +45,12 @@ import kotlin.math.roundToInt
 @Composable
 fun PrecipitationChart(
     hourly: List<HourlyForecast>,
+    // Date of `hourly[0]` — needed by the shared scrub indicator. See
+    // [ForecastChart] for the same parameter.
+    startDate: LocalDate = LocalDate.now(),
+    // Fires on first pointer-down of a scrub gesture — wired in
+    // [TodayScreen] to reveal the per-model spread overlay.
+    onFirstContact: () -> Unit = {},
     modifier: Modifier = Modifier,
     // Optional per-model data; see [ForecastChart] for the same pattern.
     perModelHourly: PerModelHourly? = null,
@@ -144,30 +154,51 @@ fun PrecipitationChart(
 
     val lineProvider = rememberPinnedLineProvider(visibleModels, mainLineColor)
 
-    val decorations = rememberCurrentTimeDecorations()
+    val scrubController = LocalChartScrub.current
+    val scrubBounds = rememberChartScrubBounds()
+    val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
+    val decorations = listOf(scrubIndicator)
+    val timeFmt = rememberScrubTimeFormatter()
 
-    CartesianChartHost(
-        chart = rememberCartesianChart(
-            rememberLineCartesianLayer(
-                lineProvider = lineProvider,
-                rangeProvider = rangeProvider,
-            ),
-            startAxis = VerticalAxis.rememberStart(valueFormatter = startFormatter),
-            bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
-            decorations = decorations,
-        ),
-        modelProducer = producer,
-        // Match ForecastChart: force-fit the full 24-hour series instead of
-        // leaving the user to scroll horizontally on a glanceable summary card.
-        // Disabling scroll/zoom gestures keeps the chart from swallowing
-        // horizontal drags meant for the parent HorizontalPager.
-        scrollState = rememberVicoScrollState(scrollEnabled = false),
-        zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
+    Box(
         modifier = modifier
             .fillMaxWidth()
             // Shorter than ForecastCard's 180.dp temperature chart — probability
             // is bounded 0–100 and doesn't need as much vertical room for the
             // line to be readable.
-            .height(140.dp),
-    )
+            .height(140.dp)
+            .let { mod ->
+                if (scrubController != null) {
+                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate, onFirstContact)
+                } else {
+                    mod
+                }
+            },
+    ) {
+        CartesianChartHost(
+            chart = rememberCartesianChart(
+                rememberLineCartesianLayer(
+                    lineProvider = lineProvider,
+                    rangeProvider = rangeProvider,
+                ),
+                startAxis = VerticalAxis.rememberStart(valueFormatter = startFormatter),
+                bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
+                decorations = decorations,
+            ),
+            modelProducer = producer,
+            scrollState = rememberVicoScrollState(scrollEnabled = false),
+            zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
+            modifier = Modifier.matchParentSize(),
+        )
+        if (scrubController != null) {
+            ChartScrubOverlay(scrubController, scrubBounds, hourly, startDate) { idx ->
+                val entry = hourly[idx]
+                val pct = entry.precipitationProbabilityPct.roundToInt()
+                Text(
+                    text = "${timeFmt(entry.time)} · $pct%",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
+    }
 }

@@ -456,11 +456,24 @@ class TodayViewModel(
     /**
      * Flip the session-scoped model-spread overlay on the temp / feels-like /
      * precip cards. The Today screen wires this to a tap on the confidence
-     * chip, the low-confidence callout, and each of those three cards — a
-     * wide gesture surface so the affordance is easy to stumble on.
+     * chip and the low-confidence callout — a labelled affordance with
+     * explicit "show / hide" copy. Charts themselves use [revealModelSpread]
+     * (a one-way set) so dragging the time indicator doesn't accidentally
+     * hide the spread the user wanted shown.
      */
     fun toggleModelSpread() {
         showModelSpread.value = !showModelSpread.value
+    }
+
+    /**
+     * One-way reveal — sets the model-spread overlay to visible without ever
+     * hiding it. Wired to the chart-tap / scrub gesture so first contact on
+     * any chart reveals the spread (and subsequent scrubs don't toggle it
+     * off mid-drag). The user's escape route is the confidence chip's
+     * explicit [toggleModelSpread].
+     */
+    fun revealModelSpread() {
+        showModelSpread.value = true
     }
 
     /**

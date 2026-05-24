@@ -1,8 +1,10 @@
 package app.clothescast.ui.today
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -15,8 +17,10 @@ import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PerModelHourly.Companion.BEST_MATCH_MODEL_ID
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.ui.theme.AppTheme
+import java.time.LocalDate
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
@@ -115,6 +119,15 @@ fun ForecastChart(
     hourly: List<HourlyForecast>,
     temperatureUnit: TemperatureUnit,
     showFeelsLike: Boolean,
+    // Date of `hourly[0]` — needed by the shared scrub indicator to map
+    // between wall-clock time and chart-x across the tonight midnight
+    // wrap. Falls back to today's date for previews / non-screen callers
+    // that don't drive the indicator from a real insight.
+    startDate: LocalDate = LocalDate.now(),
+    // Fires once on the first pointer-down of a scrub gesture — wired in
+    // [TodayScreen] to reveal the per-model spread overlay so tapping
+    // any chart both sets the indicator time and lights up the lines.
+    onFirstContact: () -> Unit = {},
     modifier: Modifier = Modifier,
     // Optional per-model data. When non-null, used to size the y-axis to the
     // full envelope regardless of [showModelSpread] so the toggle only adds /
@@ -231,36 +244,62 @@ fun ForecastChart(
     val modelColors = AppTheme.palette.modelColors
     val lineProvider = rememberPinnedLineProvider(visibleModels, mainLineColor, modelColors)
 
-    val decorations = rememberCurrentTimeDecorations()
+    val scrubController = LocalChartScrub.current
+    val scrubBounds = rememberChartScrubBounds()
+    val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
+    val decorations = listOf(scrubIndicator)
+    val timeFmt = rememberScrubTimeFormatter()
+    val unitSymbol = temperatureUnit.symbol()
 
-    CartesianChartHost(
-        chart = rememberCartesianChart(
-            rememberLineCartesianLayer(
-                lineProvider = lineProvider,
-                rangeProvider = rangeProvider,
-            ),
-            startAxis = VerticalAxis.rememberStart(
-                itemPlacer = yItemPlacer,
-                valueFormatter = startFormatter,
-            ),
-            bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
-            decorations = decorations,
-        ),
-        modelProducer = producer,
-        // Vico's default initial zoom is `max(fixed, content)`, which on a 24-point
-        // hourly series renders only the first ~10 hours and hides the rest behind
-        // a scroll. Force-fit instead so the full day is visible at a glance — this
-        // is a glanceable summary card, not an interactive explorer.
-        //
-        // Disable scroll and zoom gestures: the chart fits, so there's nothing
-        // to scroll or zoom — and Vico's default gesture handlers would otherwise
-        // swallow horizontal drags, blocking the parent HorizontalPager's swipe.
-        scrollState = rememberVicoScrollState(scrollEnabled = false),
-        zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(180.dp),
-    )
+            .height(180.dp)
+            .let { mod ->
+                if (scrubController != null) {
+                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate, onFirstContact)
+                } else {
+                    mod
+                }
+            },
+    ) {
+        CartesianChartHost(
+            chart = rememberCartesianChart(
+                rememberLineCartesianLayer(
+                    lineProvider = lineProvider,
+                    rangeProvider = rangeProvider,
+                ),
+                startAxis = VerticalAxis.rememberStart(
+                    itemPlacer = yItemPlacer,
+                    valueFormatter = startFormatter,
+                ),
+                bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
+                decorations = decorations,
+            ),
+            modelProducer = producer,
+            // Vico's default initial zoom is `max(fixed, content)`, which on a 24-point
+            // hourly series renders only the first ~10 hours and hides the rest behind
+            // a scroll. Force-fit instead so the full day is visible at a glance — this
+            // is a glanceable summary card, not an interactive explorer.
+            //
+            // Disable scroll and zoom gestures: the chart fits, so there's nothing
+            // to scroll or zoom — and Vico's default gesture handlers would otherwise
+            // swallow horizontal drags. The scrub gesture lives on the parent Box.
+            scrollState = rememberVicoScrollState(scrollEnabled = false),
+            zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
+            modifier = Modifier.matchParentSize(),
+        )
+        if (scrubController != null) {
+            ChartScrubOverlay(scrubController, scrubBounds, hourly, startDate) { idx ->
+                val entry = hourly[idx]
+                val value = pickHourly(entry).toUnit(temperatureUnit).roundToInt()
+                Text(
+                    text = "${timeFmt(entry.time)} · $value$unitSymbol",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
+    }
 }
 
 // Builds a [LineCartesianLayer.LineProvider] whose Line list lines up with the

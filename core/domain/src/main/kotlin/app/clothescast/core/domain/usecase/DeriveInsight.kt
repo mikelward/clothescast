@@ -56,6 +56,11 @@ class DeriveInsight(
         snapshot: ForecastSnapshot,
         prefs: UserPreferences,
         now: Instant = snapshot.generatedAt,
+        // Diagnostic hook forwarded to [RenderInsightSummary] for the
+        // delta-clause one-liner. Only the worker delivery path passes a
+        // DiagLog adapter; cache re-derives (Today screen, widget, format
+        // preview) leave it null so prefs-flip log churn stays nil.
+        diagLog: (String) -> Unit = {},
     ): DailyInsightResult {
         val bundle = snapshot.bundle
         val activeAlerts = bundle.alerts.filter { it.expires.isAfter(now) }
@@ -104,6 +109,7 @@ class DeriveInsight(
             clothesMentionMode = prefs.clothesMentionMode,
             yesterdayTriggeredItems = periodView.yesterdayTriggeredItems,
             todayRuleItems = Garment.layerReduce(periodView.triggeredOutfit.rules).map { it.item },
+            diagLog = diagLog,
         )
 
         val insight = Insight(

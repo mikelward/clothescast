@@ -109,13 +109,21 @@ class RenderInsightSummary {
         // emit "Bring a t-shirt." purely because TriggeredOutfit has
         // baseline items.
         todayRuleItems: List<String> = todayItems,
+        // Diagnostic hook called once per render with a one-line summary
+        // of the delta clause decision (today / yesterday inputs, picked
+        // side, outcome). Pure-Kotlin module → no DiagLog dependency;
+        // :app's worker wiring passes a DiagLog adapter so a single
+        // bug-report-less log line is enough to diagnose a "5° warmer
+        // than yesterday" surprise, while tests / previews / cache
+        // re-derives keep the no-op default and pay nothing.
+        diagLog: (String) -> Unit = {},
     ): InsightSummary {
         val peak = peakPrecip(today, perModelHourly)
         return InsightSummary(
             period = period,
             alert = alertClause(alerts),
             band = bandClause(today),
-            delta = if (period == ForecastPeriod.TODAY) deltaClause(todayForDelta, yesterday, deltaThresholdC) else null,
+            delta = if (period == ForecastPeriod.TODAY) deltaClause(todayForDelta, yesterday, deltaThresholdC, diagLog) else null,
             clothes = clothesClause(todayItems, period, clothesMentionMode, yesterdayTriggeredItems),
             precip = peak?.let { PrecipClause(it.condition, it.time, it.likelihood) },
             // Calendar tie-in only fires on TONIGHT — pairing the precip peak
@@ -150,17 +158,38 @@ class RenderInsightSummary {
         feelsLikeMaxC = today.feelsLikeMaxC,
     )
 
-    private fun deltaClause(today: DailyForecast, yesterday: DailyForecast, thresholdC: Double?): DeltaClause? {
-        if (thresholdC == null) return null
+    private fun deltaClause(
+        today: DailyForecast,
+        yesterday: DailyForecast,
+        thresholdC: Double?,
+        diagLog: (String) -> Unit,
+    ): DeltaClause? {
+        if (thresholdC == null) {
+            diagLog("delta: threshold disabled, no clause")
+            return null
+        }
         val highDelta = today.feelsLikeMaxC - yesterday.feelsLikeMaxC
         val lowDelta = today.feelsLikeMinC - yesterday.feelsLikeMinC
-        val biggest = if (abs(highDelta) >= abs(lowDelta)) highDelta else lowDelta
+        val pickedHigh = abs(highDelta) >= abs(lowDelta)
+        val biggest = if (pickedHigh) highDelta else lowDelta
+        val inputs = "today min/max=%.1f/%.1f yesterday min/max=%.1f/%.1f highDelta=%+.1f lowDelta=%+.1f picked=%s biggest=%+.1f threshold=%.1f".format(
+            Locale.US,
+            today.feelsLikeMinC, today.feelsLikeMaxC,
+            yesterday.feelsLikeMinC, yesterday.feelsLikeMaxC,
+            highDelta, lowDelta,
+            if (pickedHigh) "high" else "low",
+            biggest, thresholdC,
+        )
         // Apply the threshold against the *unrounded* delta. Otherwise 2.6°C rounds
         // to 3 and would emit a clause even though the actual delta is under the
         // configured rule.
-        if (abs(biggest) < thresholdC) return null
+        if (abs(biggest) < thresholdC) {
+            diagLog("delta: $inputs → under threshold, no clause")
+            return null
+        }
         val rounded = biggest.roundToInt()
         val direction = if (rounded > 0) DeltaClause.Direction.WARMER else DeltaClause.Direction.COOLER
+        diagLog("delta: $inputs → ${abs(rounded)}° $direction")
         return DeltaClause(degrees = abs(rounded), direction = direction)
     }
 

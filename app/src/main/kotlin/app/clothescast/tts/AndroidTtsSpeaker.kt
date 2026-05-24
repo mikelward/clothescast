@@ -80,11 +80,12 @@ class AndroidTtsSpeaker(
                     if (id == utteranceId && cont.isActive) cont.resume(Unit)
                 }
 
-                @Deprecated("Required override; modern TTS engines call onError(id, errorCode) instead.")
+                @Deprecated(
+                    "Required override; modern TTS engines call onError(id, errorCode) instead.",
+                    ReplaceWith("onError(id, TextToSpeech.ERROR)"),
+                )
                 override fun onError(id: String?) {
-                    if (id == utteranceId && cont.isActive) {
-                        cont.resumeWithException(IllegalStateException("TTS synthesis failed"))
-                    }
+                    onError(id, TextToSpeech.ERROR)
                 }
 
                 override fun onError(id: String?, errorCode: Int) {

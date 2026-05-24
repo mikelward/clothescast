@@ -321,7 +321,7 @@ class InsightCache(
             val out = LinkedHashMap<String, List<PerModelHour>>(byModel.size)
             for ((model, hours) in byModel) {
                 val converted = ArrayList<PerModelHour>(hours.size)
-                for (dto in hours) converted += dto.toDomain() ?: return null
+                for (dto in hours) converted.add(dto.toDomain() ?: return null)
                 out[model] = converted
             }
             return PerModelHourly(byModel = out)

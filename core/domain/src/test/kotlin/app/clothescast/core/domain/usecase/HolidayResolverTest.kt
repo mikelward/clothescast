@@ -207,6 +207,25 @@ class HolidayResolverTest {
     }
 
     @Test
+    fun `UK Remembrance Sunday matches the 2nd Sunday of November for GB`() {
+        listOf(
+            LocalDate.of(2025, 11, 9),
+            LocalDate.of(2026, 11, 8),
+            LocalDate.of(2027, 11, 14),
+            LocalDate.of(2028, 11, 12),
+            LocalDate.of(2030, 11, 10),
+        ).forEach { d ->
+            withClue(d.toString()) {
+                d.dayOfWeek shouldBe DayOfWeek.SUNDAY
+                subject.resolve(d, noOverrides, setOf("GB"))?.id shouldBe HolidayId.UK_REMEMBRANCE_SUNDAY
+            }
+        }
+        // Non-GB users on the same date see nothing (the date isn't tagged
+        // for any other country, and Nov 8 / 14 aren't Nov 11).
+        subject.resolve(LocalDate.of(2026, 11, 8), noOverrides, setOf("US")).shouldBeNull()
+    }
+
+    @Test
     fun `St Andrews Day matches Nov 30`() {
         subject.resolve(LocalDate.of(2026, 11, 30), noOverrides, allCountries)?.id shouldBe HolidayId.ST_ANDREWS_DAY
         subject.resolve(LocalDate.of(2026, 12, 1), noOverrides, allCountries).shouldBeNull()

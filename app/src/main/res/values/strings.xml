@@ -1363,6 +1363,9 @@
     <string name="holiday_name_melbourne_cup_day">Melbourne Cup Day</string>
     <string name="holiday_name_us_election_day">Election Day</string>
     <string name="holiday_name_bonfire_night">Bonfire Night / Guy Fawkes Night</string>
+    <!-- UK-only formal observance held on the 2nd Sunday of November (poppy
+         services, Cenotaph). Distinct from Nov 11 Remembrance Day below. -->
+    <string name="holiday_name_uk_remembrance_sunday">Remembrance Sunday</string>
     <!-- The settings label uses the universal name; the banner copy on the
          day itself varies by country (Veterans Day in the US, Armistice
          Day in France, Remembrance Day everywhere else). See
@@ -1453,6 +1456,10 @@
     <string name="holiday_banner_melbourne_cup_day">The race that stops a nation</string>
     <string name="holiday_banner_us_election_day">Get out and vote</string>
     <string name="holiday_banner_bonfire_night">Remember, remember</string>
+    <!-- Royal British Legion's standing phrase. Deliberately distinct from
+         the Nov 11 "Lest we forget" so a Nov-11-on-Sunday collision joins
+         coherently rather than repeating itself. -->
+    <string name="holiday_banner_uk_remembrance_sunday">We will remember them</string>
     <!-- Default banner for Nov 11 — used everywhere except countries with
          an explicit override (see HolidayTheme.bannerTextKeyByCountry). -->
     <string name="holiday_banner_remembrance_day">Lest we forget</string>

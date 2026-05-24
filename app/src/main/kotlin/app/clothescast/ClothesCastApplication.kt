@@ -19,6 +19,7 @@ import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.repository.WeatherRepository
 import app.clothescast.core.domain.usecase.DeriveInsight
 import app.clothescast.core.domain.usecase.GenerateDailyInsight
+import app.clothescast.data.DailyHistoryStore
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
@@ -66,6 +67,7 @@ class ClothesCastApplication : Application() {
     val settingsRepository: SettingsRepository by lazy { SettingsRepository.create(this) }
     val deriveInsight: DeriveInsight by lazy { DeriveInsight() }
     val insightCache: InsightCache by lazy { InsightCache.create(this, deriveInsight) }
+    val dailyHistoryStore: DailyHistoryStore by lazy { DailyHistoryStore.create(this) }
     val locationResolver: LocationResolver by lazy { LocationResolver(this) }
     val reverseGeocoder: ReverseGeocoder by lazy { ReverseGeocoder(this) }
     val insightNotifier: InsightNotifier by lazy { InsightNotifier(this) }

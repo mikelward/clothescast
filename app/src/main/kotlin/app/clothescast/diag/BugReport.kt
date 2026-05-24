@@ -286,6 +286,17 @@ object BugReport {
                 Locale.US, loc.latitude, loc.longitude, name,
             ))
         }
+        val historic = snapshot.historicYesterday
+        if (historic != null) {
+            val expected = snapshot.bundle.today.date.minusDays(1)
+            val freshness = if (historic.date == expected) "matches" else "stale (expected $expected)"
+            appendLine("  Historic yesterday (${historic.date}, $freshness) feels-like min/max: " +
+                "%.1f / %.1f °C".format(
+                    Locale.US, historic.feelsLikeMinC, historic.feelsLikeMaxC,
+                ))
+        } else {
+            appendLine("  Historic yesterday: (none recorded — delta falls back to upstream)")
+        }
         val yesterday = snapshot.bundle.yesterday
         appendLine("  Yesterday (${yesterday.date}) feels-like min/max: " +
             "%.1f / %.1f °C (24h aggregate)".format(

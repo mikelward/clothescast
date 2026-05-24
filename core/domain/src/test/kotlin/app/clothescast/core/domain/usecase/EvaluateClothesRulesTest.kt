@@ -295,6 +295,48 @@ class EvaluateClothesRulesTest {
     }
 
     @Test
+    fun `overlapping bottom rules collapse to the priority winner`() {
+        // Bottoms substitute rather than stack — wearing pants over shorts
+        // isn't an outfit. Pre-fix, both firing rules surfaced as "Wear a
+        // t-shirt, shorts, and jeans." which contradicted the home-screen
+        // icon (already picked shorts via OutfitSuggestion.fromForecast).
+        // Now: the warmer / more exposed garment wins, matching the icon.
+        val rules = listOf(
+            ClothesRule("shorts", ClothesRule.TemperatureAbove(24.0)),
+            ClothesRule("jeans", ClothesRule.TemperatureAbove(18.0)),
+        )
+        val out = subject(forecast(min = 20.0, max = 26.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("shorts", "jeans")
+        out.items.shouldContainExactly("t-shirt", "shorts")
+    }
+
+    @Test
+    fun `short-skirt outranks long skirt when both fire`() {
+        // Mirrors the OutfitSuggestion.Bottom picker priority — when a
+        // user has a `short-skirt > 22°C` and a `skirt > 16°C` rule and
+        // both fire on a warm day, the mini wins on both the home-screen
+        // icon and in the prose.
+        val rules = listOf(
+            ClothesRule("short-skirt", ClothesRule.TemperatureAbove(22.0)),
+            ClothesRule("skirt", ClothesRule.TemperatureAbove(16.0)),
+        )
+        val out = subject(forecast(min = 18.0, max = 25.0), rules)
+        out.rules.map { it.item }.shouldContainExactly("short-skirt", "skirt")
+        out.items.shouldContainExactly("t-shirt", "short-skirt")
+    }
+
+    @Test
+    fun `single firing bottom rule passes through unchanged`() {
+        // Only one bottom fires — nothing to reduce, the rule lands in
+        // items alongside the top default. Regression net for the
+        // bottom-reduction code path: a single bottom shouldn't accidentally
+        // get dropped.
+        val rules = listOf(ClothesRule("jeans", ClothesRule.TemperatureAbove(18.0)))
+        val out = subject(forecast(min = 18.0, max = 22.0), rules)
+        out.items.shouldContainExactly("t-shirt", "jeans")
+    }
+
+    @Test
     fun `input order is preserved across matching threshold rules`() {
         // Same as before — the user picks presentation order via input order
         // of their threshold rules.

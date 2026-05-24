@@ -131,12 +131,28 @@ enum class Garment(
         )
 
         /**
-         * Filters a list of firing [ClothesRule]s down to a layered top
-         * stack plus the rest (bottoms, accessories, unclassified items).
-         * The "rest" passes through untouched and in input order; the top
-         * stack picks at most one rule per [Layer] using the priority
-         * encoded in [TOP_LAYER_PRIORITY], then drops [Layer.BASE]
-         * entirely if anything in [Layer.MID] or [Layer.SHELL] also fired.
+         * Priority for bottom garments — most-exposed first. Bottoms
+         * substitute rather than stack (you don't wear pants over shorts),
+         * so when multiple firing rules belong to the bottom slot the one
+         * earliest in this list wins and the rest are suppressed. Mirrors
+         * the bottom dispatch in [OutfitSuggestion.fromForecast] so the
+         * prose and the home-screen icon agree on which bottom "wins" when
+         * a user has overlapping rules (e.g. `short-skirt > 22°C` and
+         * `skirt > 16°C` both firing on a 25°C day → mini wins, the long
+         * skirt is silent).
+         */
+        private val BOTTOM_PRIORITY: List<Garment> = listOf(SHORTS, SHORT_SKIRT, SKIRT, JEANS, PANTS)
+
+        /**
+         * Filters a list of firing [ClothesRule]s down to a coherent
+         * outfit: a layered top stack plus a single bottom plus the rest
+         * (accessories, unclassified items). The "rest" passes through
+         * untouched and in input order; the top stack picks at most one
+         * rule per [Layer] using [TOP_LAYER_PRIORITY] (and drops
+         * [Layer.BASE] entirely if anything in [Layer.MID] or
+         * [Layer.SHELL] also fired); the bottom slot picks a single rule
+         * using [BOTTOM_PRIORITY] because bottoms substitute rather than
+         * stack.
          *
          * Operates on `ClothesRule`s (not item strings) so callers that
          * still need the originating rule — for the rationale dialog, the
@@ -147,28 +163,38 @@ enum class Garment(
          * exactly what should appear in the prose "Wear …" sentence (sans
          * fallbacks). Anything dropped here is something the user *might*
          * have on but the insight doesn't need to name — the t-shirt
-         * under a coat, the jacket also-ran when a coat was warmer.
+         * under a coat, the jacket also-ran when a coat was warmer, the
+         * full-length skirt when a mini also crossed its threshold.
          */
         fun layerReduce(rules: List<ClothesRule>): List<ClothesRule> {
-            // Map each top-slot rule to its (index, layer, priority) so we
-            // can pick a winner per layer in one pass without re-querying
-            // Garment.fromKey for every rule. Tracked by *index*, not by
-            // rule equality: `ClothesRule` is a data class, so two
-            // separately configured rules with identical item + condition
-            // compare equal — using value equality for the keep-set would
-            // let duplicates leak through and surface twice in the prose
-            // ("Wear a sweater, sweater, and jeans"). Indexing is the
-            // identity we need.
-            data class Indexed(val index: Int, val layer: Layer, val priority: Int)
+            // Map each classified rule (top with a layer, or bottom) to
+            // its (index, priority) so we can pick a winner per category
+            // in one pass without re-querying Garment.fromKey for every
+            // rule. Tracked by *index*, not by rule equality: `ClothesRule`
+            // is a data class, so two separately configured rules with
+            // identical item + condition compare equal — using value
+            // equality for the keep-set would let duplicates leak through
+            // and surface twice in the prose ("Wear a sweater, sweater,
+            // and jeans"). Indexing is the identity we need.
+            data class IndexedTop(val index: Int, val layer: Layer, val priority: Int)
+            data class IndexedBottom(val index: Int, val priority: Int)
 
-            val classifiedTops = mutableListOf<Indexed>()
+            val classifiedTops = mutableListOf<IndexedTop>()
+            val classifiedBottoms = mutableListOf<IndexedBottom>()
             rules.forEachIndexed { index, rule ->
-                val g = fromKey(rule.item)
-                val layer = g?.layer
-                if (g?.slot == Slot.TOP && layer != null) {
-                    val order = TOP_LAYER_PRIORITY[layer].orEmpty()
-                    val priority = order.indexOf(g).let { if (it < 0) order.size else it }
-                    classifiedTops += Indexed(index, layer, priority)
+                val g = fromKey(rule.item) ?: return@forEachIndexed
+                when (g.slot) {
+                    Slot.TOP -> {
+                        val layer = g.layer ?: return@forEachIndexed
+                        val order = TOP_LAYER_PRIORITY[layer].orEmpty()
+                        val priority = order.indexOf(g).let { if (it < 0) order.size else it }
+                        classifiedTops += IndexedTop(index, layer, priority)
+                    }
+                    Slot.BOTTOM -> {
+                        val priority = BOTTOM_PRIORITY.indexOf(g)
+                            .let { if (it < 0) BOTTOM_PRIORITY.size else it }
+                        classifiedBottoms += IndexedBottom(index, priority)
+                    }
                 }
             }
 
@@ -182,16 +208,20 @@ enum class Garment(
             } else {
                 winnerIndexByLayer
             }
-            val keepIndices = effective.values.toSet()
+            val keepTopIndices = effective.values.toSet()
+            val keepBottomIndex: Int? = classifiedBottoms.minByOrNull { it.priority }?.index
 
             // Preserve original input order across the union (top winners +
-            // rest) so callers that care about the user's configured
-            // ordering — the prose phraser, the tie-in delta — see the same
-            // sequence they'd have seen before the reduction.
+            // bottom winner + rest) so callers that care about the user's
+            // configured ordering — the prose phraser, the tie-in delta —
+            // see the same sequence they'd have seen before the reduction.
             return rules.filterIndexed { index, rule ->
                 val g = fromKey(rule.item)
-                val isClassifiedTop = g?.slot == Slot.TOP && g.layer != null
-                if (isClassifiedTop) index in keepIndices else true
+                when {
+                    g?.slot == Slot.TOP && g.layer != null -> index in keepTopIndices
+                    g?.slot == Slot.BOTTOM -> index == keepBottomIndex
+                    else -> true
+                }
             }
         }
     }

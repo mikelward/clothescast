@@ -465,7 +465,21 @@ class FetchAndNotifyWorker(
         val raw = app.generateDailyInsight.snapshot(location, prefs, period, dayOffset)
         val historic = runCatching {
             app.dailyHistoryStore.entryFor(raw.bundle.today.date.minusDays(1))
-        }.getOrNull()
+        }.getOrElse {
+            // Preserve structured cancellation. Without this, a WorkManager
+            // cancel during the read would be swallowed and the run would
+            // fall through to a normal success path — fetching, derivation,
+            // delivery and cache writes would still execute under a worker
+            // the framework already gave up on. Matches the rethrow pattern
+            // every other catch in this file uses.
+            if (it is CancellationException) throw it
+            DiagLog.w(
+                TAG,
+                "Daily history read failed; delta will fall back to upstream past-days data.",
+                it,
+            )
+            null
+        }
         return raw.copy(historicYesterday = historic)
     }
 

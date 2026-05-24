@@ -249,7 +249,9 @@ class FetchAndNotifyWorker(
             DiagLog.i(TAG, "Force refresh requested; bypassing today's cache.")
             null
         } else {
-            runCatching { app.insightCache.deliveredForToday(today, period, prefs) }.getOrNull()
+            runCatching {
+                app.insightCache.deliveredForToday(today, period, prefs, diagLog = { DiagLog.i(TAG, it) })
+            }.getOrNull()
         }
         if (cached != null) {
             val cachedInsight = cached.insight

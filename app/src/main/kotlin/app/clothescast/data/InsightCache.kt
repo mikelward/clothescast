@@ -146,10 +146,17 @@ class InsightCache(
         period: ForecastPeriod,
         prefs: UserPreferences,
         now: Instant? = null,
+        // Forwarded to [DeriveInsight] so cache-hit deliveries (debug-tap
+        // redelivery later in the day, alarm re-fires) emit the same
+        // `delta:` diagnostic line a fresh fetch would. The 300-line
+        // DiagLog ring buffer can evict the morning's original entry by
+        // the time a same-day redelivery happens, so logging it again on
+        // each delivery is the only way to keep the trail.
+        diagLog: (String) -> Unit = {},
     ): DailyInsightResult? {
         val snapshot = thisPeriod.first() ?: return null
         if (snapshot.bundle.today.date != today || snapshot.period != period) return null
-        return deriveInsight(snapshot, prefs, now ?: snapshot.generatedAt)
+        return deriveInsight(snapshot, prefs, now ?: snapshot.generatedAt, diagLog = diagLog)
     }
 
     suspend fun clear() {

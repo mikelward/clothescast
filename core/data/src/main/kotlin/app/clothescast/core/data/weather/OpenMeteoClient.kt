@@ -176,6 +176,10 @@ class OpenMeteoClient(
             apparentTemperatureC = it.feelsLikeC,
             temperatureC = it.temperatureC,
             precipitationProbabilityPct = it.precipitationProbabilityPct,
+            // Both probability and amount come from the primary `/v1/forecast`
+            // call for best_match, so the amount chart's best_match overlay
+            // has real data on it — unlike the diagnostic fields above.
+            precipitationMm = it.precipitationMm,
             condition = it.condition,
         )
     }
@@ -205,7 +209,8 @@ class OpenMeteoClient(
                 )
                 parameter(
                     "hourly",
-                    "temperature_2m,apparent_temperature,precipitation_probability,weather_code",
+                    "temperature_2m,apparent_temperature,precipitation_probability," +
+                        "precipitation,weather_code",
                 )
             }.body()
         }

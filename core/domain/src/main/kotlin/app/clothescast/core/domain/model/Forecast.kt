@@ -29,6 +29,14 @@ data class HourlyForecast(
     val feelsLikeC: Double,
     val precipitationProbabilityPct: Double,
     val condition: WeatherCondition,
+    /**
+     * Expected precipitation amount for the hour, mm liquid-equivalent (snow
+     * is reported as its melted depth). Defaults to 0 for back-compat with
+     * older cached payloads and pre-existing test fixtures that don't carry
+     * the field. Open-Meteo's `precipitation` covers rain, showers, and snow
+     * in a single series.
+     */
+    val precipitationMm: Double = 0.0,
 )
 
 /** Coarse condition buckets sufficient for prompt construction and rule evaluation. */

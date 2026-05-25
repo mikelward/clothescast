@@ -67,6 +67,14 @@ data class PerModelHour(
      *  model doesn't silently downgrade the morning rain forecast or
      *  draw a misleading flat-0% line on the precip chart. */
     val precipitationProbabilityPct: Double?,
+    /** Expected precipitation amount for the hour, mm liquid-equivalent.
+     *  Nullable for the same reason as [precipitationProbabilityPct]:
+     *  Open-Meteo's per-model `precipitation_<model>` is absent for several
+     *  consulted models, and a missing series shouldn't be silently
+     *  conflated with "this model predicts a dry hour". The hourly-rainfall
+     *  chart skips null values so a model without coverage doesn't pin its
+     *  line to zero. */
+    val precipitationMm: Double? = null,
     /** 10 m wind speed for the hour, km/h. Drives wind-chill in the
      *  feels-like formula — when models agree on air temp but disagree on
      *  feels-like, this is usually the culprit. Nullable: older cache

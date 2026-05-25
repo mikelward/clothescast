@@ -96,6 +96,7 @@ internal object OpenMeteoMapper {
                 feelsLikeC = feelsLike.getOrNull(i) ?: raw,
                 precipitationProbabilityPct = (precipitationProbability.getOrNull(i) ?: 0).toDouble(),
                 condition = WmoCodeMapper.map(weatherCode.getOrNull(i)),
+                precipitationMm = precipitation.getOrNull(i) ?: 0.0,
             )
         }
         return out

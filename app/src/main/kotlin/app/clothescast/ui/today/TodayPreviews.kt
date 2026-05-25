@@ -1323,8 +1323,21 @@ private val SAMPLE_HOURLY_RAINY: List<HourlyForecast> = run {
         75.0, 80.0, 80.0, 75.0, 60.0, 45.0,   // 12–17
         30.0, 20.0, 15.0, 10.0, 5.0, 0.0,     // 18–23
     )
+    // Hourly rainfall (mm) loosely tracking the probability curve so the
+    // amount card has something to plot — peaking around the same
+    // mid-afternoon hour the probability does, well into "moderate rain"
+    // territory at the peak.
+    val precipMmByHour = listOf(
+        0.0, 0.0, 0.0, 0.0, 0.05, 0.1,        // 00–05
+        0.2, 0.4, 0.8, 1.5, 2.5, 3.5,         // 06–11
+        4.5, 5.0, 4.8, 4.0, 3.0, 2.0,         // 12–17
+        1.0, 0.5, 0.3, 0.1, 0.05, 0.0,        // 18–23
+    )
     SAMPLE_HOURLY.mapIndexed { i, h ->
-        h.copy(precipitationProbabilityPct = precipPctByHour[i])
+        h.copy(
+            precipitationProbabilityPct = precipPctByHour[i],
+            precipitationMm = precipMmByHour[i],
+        )
     }
 }
 
@@ -1338,6 +1351,36 @@ internal fun PrecipitationCardPreview() {
 @Composable
 internal fun PrecipitationCardDarkPreview() {
     Frame(darkTheme = true) { PrecipitationCard(hourly = SAMPLE_HOURLY_RAINY) }
+}
+
+@Preview(name = "Precipitation amount card · rainy", widthDp = 360)
+@Composable
+internal fun PrecipitationAmountCardPreview() {
+    Frame { PrecipitationAmountCard(hourly = SAMPLE_HOURLY_RAINY) }
+}
+
+@Preview(name = "Precipitation amount card · rainy (dark)", widthDp = 360)
+@Composable
+internal fun PrecipitationAmountCardDarkPreview() {
+    Frame(darkTheme = true) { PrecipitationAmountCard(hourly = SAMPLE_HOURLY_RAINY) }
+}
+
+@Preview(name = "Precipitation amount card · dry", widthDp = 360)
+@Composable
+internal fun PrecipitationAmountCardDryPreview() {
+    Frame { PrecipitationAmountCard(hourly = SAMPLE_HOURLY) }
+}
+
+@Preview(name = "Precipitation amount card · with model spread", widthDp = 360)
+@Composable
+internal fun PrecipitationAmountCardWithModelSpreadPreview() {
+    Frame {
+        PrecipitationAmountCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = true,
+        )
+    }
 }
 
 // Sample anchor for per-model entries. Charts read `time.toLocalTime()` for
@@ -1357,6 +1400,7 @@ private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
         solarPeakWm2: Double,
         sunshineMinutesAtMidday: Double,
         uvPeak: Double,
+        precipMmScale: Double = 1.0,
     ) = SAMPLE_HOURLY_RAINY.mapIndexed { i, h ->
         // Simple sinusoidal-ish wind curve so the per-model lines visibly
         // diverge across the day — the diagnostic chart's whole point is
@@ -1375,6 +1419,7 @@ private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
             temperatureC = h.temperatureC + deltaC,
             precipitationProbabilityPct = (h.precipitationProbabilityPct + precipDelta)
                 .coerceIn(0.0, 100.0),
+            precipitationMm = (h.precipitationMm * precipMmScale).coerceAtLeast(0.0),
             windSpeedKmh = windBase + hourPhase * 0.6,
             relativeHumidityPct = 70.0 - hourPhase * 0.5,
             cloudCoverPct = (cloudBase + hourPhase * 2.0).coerceIn(0.0, 100.0),
@@ -1390,14 +1435,17 @@ private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
             "ecmwf_ifs04" to shift(
                 deltaC = -1.5, precipDelta = -10.0, windBase = 8.0, cloudBase = 55.0,
                 solarPeakWm2 = 600.0, sunshineMinutesAtMidday = 35.0, uvPeak = 5.0,
+                precipMmScale = 0.9,
             ),
             "gfs_seamless" to shift(
                 deltaC = 0.5, precipDelta = 5.0, windBase = 12.0, cloudBase = 70.0,
                 solarPeakWm2 = 500.0, sunshineMinutesAtMidday = 25.0, uvPeak = 4.0,
+                precipMmScale = 1.2,
             ),
             "icon_seamless" to shift(
                 deltaC = 2.0, precipDelta = -5.0, windBase = 6.0, cloudBase = 40.0,
                 solarPeakWm2 = 800.0, sunshineMinutesAtMidday = 50.0, uvPeak = 6.5,
+                precipMmScale = 0.6,
             ),
             // best_match shares ECMWF's offsets so the preview reflects the
             // realistic case — Open-Meteo's "Auto" pick typically *is* one of

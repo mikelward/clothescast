@@ -387,6 +387,16 @@ class FetchAndNotifyWorker(
             if (isSilentRun) {
                 DiagLog.i(TAG, "Silent refresh updated cache for ${insight.forDate}: $prose")
             } else {
+                // Signal "fetch + cache are done" so the Today screen's
+                // working-banner can hide while deliver() handles the
+                // alignment wait, notification, and TTS playback. Without
+                // this, the banner stays visible until the worker returns
+                // — which is after TTS finishes, because deliver() joins
+                // on phoneSpeakerJob. TodayViewModel.selectStatus treats
+                // an active WorkInfo carrying this progress flag as no
+                // longer in the "fetching" phase; a deliver-side failure
+                // still surfaces via the terminal FAILED entry.
+                setProgress(workDataOf(KEY_FETCH_COMPLETE to true))
                 deliver(insight, prefs, prose)
                 DiagLog.i(TAG, "Insight delivered for ${insight.forDate}: $prose")
             }
@@ -1241,6 +1251,17 @@ class FetchAndNotifyWorker(
          * exposes neither a completion time nor a chronological ordering.
          */
         const val KEY_COMPLETED_AT = "completed_at_ms"
+
+        /**
+         * Progress-data flag set once the fetch + insight cache + paired-window
+         * pre-render are complete and the worker is about to enter [deliver]
+         * (alignment wait → notification → TTS playback). Read by
+         * [TodayViewModel.selectStatus]: an active WorkInfo carrying this flag
+         * is treated as past the "fetching" phase, so the Today screen's
+         * spinner banner hides as soon as the fresh data lands rather than
+         * waiting on TTS to finish speaking.
+         */
+        const val KEY_FETCH_COMPLETE = "fetch_complete"
 
         const val REASON_UNEXPECTED_HTTP = "unexpected_http"
         const val REASON_UNHANDLED = "unhandled"

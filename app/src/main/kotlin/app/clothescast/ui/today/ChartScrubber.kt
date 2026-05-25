@@ -3,7 +3,11 @@ package app.clothescast.ui.today
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -495,11 +499,38 @@ internal fun rememberChartReadout(
     return format(idx)
 }
 
-/** Concatenate a subtitle with an optional readout, separated by " · ". */
-internal fun appendReadout(subtitle: String?, readout: String?): String? = when {
-    subtitle.isNullOrEmpty() -> readout
-    readout.isNullOrEmpty() -> subtitle
-    else -> "$subtitle · $readout"
+/**
+ * Subtitle row used above every chart card: the static summary on the
+ * left, the scrub readout right-aligned on the right. The subtitle takes
+ * weight so it stays in its lane as the readout grows; the readout sits
+ * flush right so the user's eye doesn't have to track a moving comma to
+ * find the live value. Renders nothing when both strings are blank so
+ * dry-day cards without scrub state don't add empty vertical space.
+ */
+@Composable
+internal fun ChartSubtitleRow(
+    subtitle: String?,
+    readout: String?,
+    modifier: Modifier = Modifier,
+) {
+    if (subtitle.isNullOrEmpty() && readout.isNullOrEmpty()) return
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = subtitle.orEmpty(),
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f),
+        )
+        if (!readout.isNullOrEmpty()) {
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = readout,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
 }
 
 // `formatScrubHour` and `LocalTimeFormat` live in `ui/TimeFormatLocal.kt`

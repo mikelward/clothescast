@@ -140,10 +140,7 @@ internal fun PerModelDiagnosticCard(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(text = title, style = MaterialTheme.typography.titleSmall)
-                Text(
-                    text = appendReadout(subtitle, readout) ?: "",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                ChartSubtitleRow(subtitle = subtitle, readout = readout)
                 PerModelDiagnosticChart(
                     hourly = hourly,
                     startDate = startDate,

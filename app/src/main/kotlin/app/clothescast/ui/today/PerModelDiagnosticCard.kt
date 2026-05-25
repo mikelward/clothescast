@@ -285,6 +285,7 @@ private fun PerModelDiagnosticChart(
     val lineProvider = rememberPinnedLineProvider(overlayModels, mainLineColor)
 
     val scrubController = LocalChartScrub.current
+    val pageSwipe = LocalChartPageSwipe.current
     val scrubBounds = rememberChartScrubBounds()
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
     val decorations = listOf(scrubIndicator)
@@ -295,7 +296,7 @@ private fun PerModelDiagnosticChart(
             .height(140.dp)
             .let { mod ->
                 if (scrubController != null) {
-                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate, onFirstContact)
+                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate, onFirstContact, pageSwipe)
                 } else {
                     mod
                 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,7 @@ import com.patrykandpatrick.vico.core.common.component.LineComponent
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /**
@@ -80,6 +82,20 @@ internal class ChartScrubController {
 }
 
 internal val LocalChartScrub = compositionLocalOf<ChartScrubController?> { null }
+
+/**
+ * Optional handoff hook: when the user starts a horizontal scrub gesture
+ * inside a chart and drags far enough past the left / right plot-grid edge,
+ * [Modifier.chartScrub] calls this with `toNextPage = true` for "drag
+ * continues toward the next page" (finger exited the leading edge in LTR /
+ * trailing edge in RTL) or `false` for the opposite direction. The caller
+ * — wired in `TodayScreen` around the page pager — animates the pager
+ * accordingly, so swiping from inside a chart all the way across feels
+ * continuous with a normal page swipe instead of bumping against an
+ * invisible wall once the pointer leaves the chart. Null disables the
+ * handoff (e.g. previews, single-page layouts).
+ */
+internal val LocalChartPageSwipe = compositionLocalOf<((toNextPage: Boolean) -> Unit)?> { null }
 
 @Composable
 internal fun rememberChartScrubController(): ChartScrubController =
@@ -171,17 +187,32 @@ internal fun chartXToTime(
 }
 
 /**
- * Pointer handler. A down event that falls inside the chart's plot
- * grid (between the y- and x-axis labels) claims the gesture: publish
- * the pointer's wall-clock time to [controller], fire [onFirstContact]
- * (used to reveal model spread), and keep updating on every move.
- * Release leaves the indicator sticky — no snap-back.
+ * Pointer handler. A down event that lands inside the chart's plot grid
+ * (between the y- and x-axis labels) starts a candidate gesture. From
+ * there we wait to see what the user is actually doing:
+ *
+ *  - **Tap** (release before any meaningful movement): publish a scrub
+ *    at the down position. Preserves the tap-to-jump behaviour.
+ *  - **Clearly vertical drag** (vertical movement exceeds touch slop
+ *    and dominates the horizontal component): return without consuming
+ *    so the parent `verticalScroll` picks the gesture up — the user
+ *    can scroll the page even when their finger started inside a chart.
+ *  - **Clearly horizontal drag** (horizontal movement exceeds touch
+ *    slop): claim the gesture for scrubbing, publish at the down
+ *    position, then track each move.
+ *
+ * Once we've claimed a horizontal drag, if the pointer keeps moving and
+ * exits the chart's left or right plot-grid edge by more than
+ * [edgeHandoffDp], we hand the gesture off to [onSwipeAcross] (typically
+ * the page pager) and stop scrubbing — so a wide cross-chart swipe
+ * flows continuously into a page turn instead of bumping against an
+ * invisible wall. The handoff is one-shot: once we've called
+ * [onSwipeAcross], the gesture is done and the page animation takes
+ * over even if the finger keeps moving.
  *
  * Down events *outside* the plot grid — on Vico's axis labels, on the
  * card padding above/below the chart, on the legend strip — are left
- * unconsumed so they bubble to the parent `verticalScroll` and the
- * page keeps scrolling normally. The plot grid is the only area where
- * vertical drag is repurposed.
+ * unconsumed exactly as before.
  */
 internal fun Modifier.chartScrub(
     controller: ChartScrubController,
@@ -189,10 +220,13 @@ internal fun Modifier.chartScrub(
     hourly: List<HourlyForecast>,
     startDate: LocalDate,
     onFirstContact: () -> Unit,
-): Modifier = pointerInput(controller, bounds, hourly, startDate) {
+    onSwipeAcross: ((toNextPage: Boolean) -> Unit)? = null,
+): Modifier = pointerInput(controller, bounds, hourly, startDate, onSwipeAcross) {
+    val touchSlop = viewConfiguration.touchSlop
+    val edgeHandoffPx = edgeHandoffDp.toPx()
     awaitEachGesture {
         val down = awaitFirstDown(requireUnconsumed = true)
-        val pos = down.position
+        val downPos = down.position
         // Hit-test against the plot *layer* (left/right edges of
         // Vico's chart area, including its start/end padding) rather
         // than the tighter data extent — that's the visible empty
@@ -200,26 +234,89 @@ internal fun Modifier.chartScrub(
         // where a tap should map to a fractional time just outside
         // the period's hour boundaries instead of getting filtered
         // out. [publishScrub] handles the chart-x → time math from
-        // here; [chartXToTime] clamps to a hour of leading / trailing
+        // here; [chartXToTime] clamps to an hour of leading / trailing
         // slack so taps far outside the chart don't produce
         // pathological times.
         val inGrid = bounds.layerRightPx > bounds.layerLeftPx &&
             bounds.layerBottomPx > bounds.layerTopPx &&
-            pos.x in bounds.layerLeftPx..bounds.layerRightPx &&
-            pos.y in bounds.layerTopPx..bounds.layerBottomPx
+            downPos.x in bounds.layerLeftPx..bounds.layerRightPx &&
+            downPos.y in bounds.layerTopPx..bounds.layerBottomPx
         if (!inGrid) return@awaitEachGesture
-        down.consume()
-        publishScrub(controller, bounds, hourly, startDate, pos.x)
-        onFirstContact()
+        // Don't consume the down yet — we need movement (or lack of it)
+        // to decide whether this is a tap, a vertical scroll, or a
+        // horizontal scrub. Consuming early traps every drag inside
+        // the chart and blocks page scroll entirely.
+        var totalDx = 0f
+        var totalDy = 0f
+        var claimed = false
         while (true) {
             val event = awaitPointerEvent()
             val change = event.changes.firstOrNull { it.id == down.id } ?: break
-            change.consume()
-            if (!change.pressed) break
-            publishScrub(controller, bounds, hourly, startDate, change.position.x)
+            if (!claimed) {
+                val delta = change.positionChange()
+                totalDx += delta.x
+                totalDy += delta.y
+                val absDx = abs(totalDx)
+                val absDy = abs(totalDy)
+                if (absDy > touchSlop && absDy > absDx) {
+                    // Clear vertical drag — let the parent verticalScroll
+                    // handle it by leaving events unconsumed and bailing
+                    // out of the gesture entirely.
+                    return@awaitEachGesture
+                }
+                if (absDx > touchSlop) {
+                    // Clear horizontal drag — claim the gesture.
+                    claimed = true
+                    down.consume()
+                    change.consume()
+                    publishScrub(controller, bounds, hourly, startDate, downPos.x)
+                    onFirstContact()
+                    publishScrub(controller, bounds, hourly, startDate, change.position.x)
+                }
+                // Otherwise ambiguous: stay uncommitted and watch the
+                // next event. If the finger lifts here, the `pressed`
+                // check below catches it and we fall through to tap.
+            } else {
+                change.consume()
+                publishScrub(controller, bounds, hourly, startDate, change.position.x)
+                if (onSwipeAcross != null) {
+                    val px = change.position.x
+                    val exitedRight = px > bounds.layerRightPx + edgeHandoffPx
+                    val exitedLeft = px < bounds.layerLeftPx - edgeHandoffPx
+                    if (exitedLeft || exitedRight) {
+                        // Pointer dragged well past the plot edge — hand
+                        // off to the pager. In LTR the chart draws
+                        // left-to-right (positive pxPerUnit) and exiting
+                        // the left edge means the finger is moving toward
+                        // the *next* page (rightward content scrolls in);
+                        // in RTL the chart and the pager both flip, so
+                        // exiting the right edge means next-page. Using
+                        // `bounds.pxPerUnit`'s sign avoids importing
+                        // LayoutDirection — it's already direction-aware.
+                        val ltr = bounds.pxPerUnit >= 0f
+                        val toNextPage = (exitedLeft && ltr) || (exitedRight && !ltr)
+                        onSwipeAcross(toNextPage)
+                        return@awaitEachGesture
+                    }
+                }
+            }
+            if (!change.pressed) {
+                if (!claimed) {
+                    // Released before reaching touch slop — treat as a
+                    // tap and publish a scrub at the original down
+                    // position. Preserves tap-to-scrub even though we
+                    // deferred consumption to disambiguate from scroll.
+                    publishScrub(controller, bounds, hourly, startDate, downPos.x)
+                    onFirstContact()
+                }
+                break
+            }
         }
     }
 }
+
+/** Pointer distance past the chart's left / right edge that triggers a page-swipe handoff. */
+private val edgeHandoffDp = 32.dp
 
 private fun publishScrub(
     controller: ChartScrubController,

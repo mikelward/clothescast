@@ -409,50 +409,66 @@ private fun TodayContent(
             // the rain chart on Today, swiping to Tomorrow keeps them
             // on the rain chart rather than snapping back to the top.
             val scrollState = rememberScrollState()
+            // Hands a wide horizontal scrub off to the pager: if the user
+            // starts dragging inside a chart and the pointer keeps going
+            // past the plot-grid edge, [Modifier.chartScrub] calls this
+            // and we animate the pager to the neighbouring page. Clamped
+            // to the page range so a swipe past the first / last page is
+            // a no-op rather than an error.
+            val pageSwipe: (Boolean) -> Unit = remember(pagerState, pagerScope) {
+                { toNextPage ->
+                    val target = pagerState.currentPage + if (toNextPage) 1 else -1
+                    if (target in 0 until pagerState.pageCount) {
+                        pagerScope.launch { pagerState.animateScrollToPage(target) }
+                    }
+                }
+            }
             // Placeholder period for page 2 when its slot is empty —
             // whatever the next 12-hour window after `thisPeriodInsight` is.
             // The worker writes [InsightCache.Slot.NEXT_PERIOD] paired with
             // each delivery, so this fallback only fires before the first
             // post-upgrade worker run.
             val nextPeriodFallback = state.thisPeriodInsight.period.opposite()
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-            ) { page ->
-                val pageInsight = if (page == 0) state.thisPeriodInsight else state.nextPeriodInsight
-                val pagePeriod = if (page == 0) state.thisPeriodInsight.period else nextPeriodFallback
-                TodayPage(
-                    insight = pageInsight,
-                    fallbackPeriod = pagePeriod,
-                    state = state,
-                    scrollState = scrollState,
-                    // Same outfit row on both pages — page 2 shows this
-                    // period's pair too, not the page-2 period's pair. We
-                    // don't surface a 3rd period (tomorrow) on page 2; the
-                    // outfit row stays the at-a-glance today+tonight summary.
-                    outfitInsight = state.thisPeriodInsight,
-                    showChevronRight = (page == 0),
-                    showChevronLeft = (page == 1),
-                    workStatusToShow = workStatusToShow,
-                    locationActionRequired = locationActionRequired,
-                    onChevronTap = {
-                        pagerScope.launch {
-                            pagerState.animateScrollToPage(if (page == 0) 1 else 0)
-                        }
-                    },
-                    onAdjustThreshold = onAdjustThreshold,
-                    onNavigateToClothes = onNavigateToClothes,
-                    onNavigateToFormat = onNavigateToFormat,
-                    onToggleModelSpread = onToggleModelSpread,
-                    onRevealModelSpread = onRevealModelSpread,
-                    onLongPressDate = onLongPressDate,
-                    onSetUpLocation = onSetUpLocation,
-                    onOpenPrivacy = onOpenPrivacy,
-                    onOpenCalendarSettings = onOpenCalendarSettings,
-                    onDismissCelebrationCard = onDismissCelebrationCard,
-                )
+            CompositionLocalProvider(LocalChartPageSwipe provides pageSwipe) {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                ) { page ->
+                    val pageInsight = if (page == 0) state.thisPeriodInsight else state.nextPeriodInsight
+                    val pagePeriod = if (page == 0) state.thisPeriodInsight.period else nextPeriodFallback
+                    TodayPage(
+                        insight = pageInsight,
+                        fallbackPeriod = pagePeriod,
+                        state = state,
+                        scrollState = scrollState,
+                        // Same outfit row on both pages — page 2 shows this
+                        // period's pair too, not the page-2 period's pair. We
+                        // don't surface a 3rd period (tomorrow) on page 2; the
+                        // outfit row stays the at-a-glance today+tonight summary.
+                        outfitInsight = state.thisPeriodInsight,
+                        showChevronRight = (page == 0),
+                        showChevronLeft = (page == 1),
+                        workStatusToShow = workStatusToShow,
+                        locationActionRequired = locationActionRequired,
+                        onChevronTap = {
+                            pagerScope.launch {
+                                pagerState.animateScrollToPage(if (page == 0) 1 else 0)
+                            }
+                        },
+                        onAdjustThreshold = onAdjustThreshold,
+                        onNavigateToClothes = onNavigateToClothes,
+                        onNavigateToFormat = onNavigateToFormat,
+                        onToggleModelSpread = onToggleModelSpread,
+                        onRevealModelSpread = onRevealModelSpread,
+                        onLongPressDate = onLongPressDate,
+                        onSetUpLocation = onSetUpLocation,
+                        onOpenPrivacy = onOpenPrivacy,
+                        onOpenCalendarSettings = onOpenCalendarSettings,
+                        onDismissCelebrationCard = onDismissCelebrationCard,
+                    )
+                }
             }
         }
     }

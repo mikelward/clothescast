@@ -86,15 +86,21 @@ internal fun rememberChartScrubController(): ChartScrubController =
     remember { ChartScrubController() }
 
 /**
- * Per-chart record of where in canvas pixels the data area sits.
+ * Per-chart record of where in canvas pixels the chart area sits.
  * Written from [ChartScrubIndicator]'s draw pass on every frame (canvas
  * pixels coincide with the parent Box's Compose pixels here, so the
  * gesture handler and tooltip overlay use them directly). Read by
  * [Modifier.chartScrub] to convert pointer-x → chart-x → time and by
  * [BoxScope.ChartScrubOverlay] to position itself at the indicator.
  *
- * [dataMinPx]/[dataMaxPx] are the *normalised* extents of the plot
- * grid (min ≤ max) so the in-grid hit test works in both LTR and RTL.
+ * [layerLeftPx]/[layerRightPx] are the canvas-x extents of the
+ * chart's plot layer, *including* Vico's start/end padding (the few
+ * pixels of empty space between the leftmost/rightmost data point and
+ * the plot edge). The gesture handler uses these — rather than the
+ * tighter data extents — so a tap inside that padding registers as a
+ * scrub a bit before the first hour / a bit after the last hour
+ * instead of getting filtered out.
+ *
  * [chartZeroPx] is the canvas-x of `chartX = ranges.minX`, and
  * [pxPerUnit] converts chart-x units to canvas pixels — negative in
  * RTL, where the chart draws right-to-left. The pair lets the gesture
@@ -103,8 +109,8 @@ internal fun rememberChartScrubController(): ChartScrubController =
  */
 @Stable
 internal class ChartScrubBounds {
-    var dataMinPx by mutableFloatStateOf(0f)
-    var dataMaxPx by mutableFloatStateOf(0f)
+    var layerLeftPx by mutableFloatStateOf(0f)
+    var layerRightPx by mutableFloatStateOf(0f)
     var layerTopPx by mutableFloatStateOf(0f)
     var layerBottomPx by mutableFloatStateOf(0f)
     var chartZeroPx by mutableFloatStateOf(0f)
@@ -115,12 +121,24 @@ internal class ChartScrubBounds {
 internal fun rememberChartScrubBounds(): ChartScrubBounds = remember { ChartScrubBounds() }
 
 /**
- * Inverse of [currentTimeChartX]: given a fractional chart-x value in
- * 0..hourly.lastIndex, reconstruct the wall-clock [LocalDateTime] —
- * needed when translating a pointer position back into a time we can
- * publish to the shared [ChartScrubController]. Handles tonight's
- * midnight wrap the same way [currentTimeChartX] does outbound, by
- * advancing the date on each backwards hour-of-day step in the list.
+ * Inverse of [currentTimeChartX]: given a fractional chart-x value,
+ * reconstruct the wall-clock [LocalDateTime] — needed when translating
+ * a pointer position back into a time we can publish to the shared
+ * [ChartScrubController]. Handles tonight's midnight wrap the same
+ * way [currentTimeChartX] does outbound, by advancing the date on
+ * each backwards hour-of-day step in the list.
+ *
+ * Range: chartX is clamped to `[-0.5, lastIndex + 0.5]` — half a
+ * cell of slack on each side of the data, matching Vico's start/end
+ * padding (visible empty space between the plot edges and the
+ * first/last data points, which the user has measured at ~half an
+ * hour). A tap in that leading padding maps to a time a few minutes
+ * before the first data point's hour; a tap in the trailing padding
+ * maps to a time inside the half-hour past the last data point. At
+ * 06:30 on a TONIGHT chart whose last data point is 06:00, a tap
+ * near the right edge yields ~06:30 instead of snapping back to
+ * 06:00; at 06:30 before a TODAY chart's 07:00 start, a tap near
+ * the left edge yields ~06:30 instead of snapping forward to 07:00.
  */
 internal fun chartXToTime(
     hourly: List<HourlyForecast>,
@@ -128,7 +146,17 @@ internal fun chartXToTime(
     chartX: Double,
 ): LocalDateTime? {
     if (hourly.isEmpty()) return null
-    val clamped = chartX.coerceIn(0.0, hourly.lastIndex.toDouble())
+    val maxChartX = hourly.lastIndex.toDouble() + 0.5
+    val clamped = chartX.coerceIn(-0.5, maxChartX)
+    // Time before the first data point: walk backwards from the first
+    // sample's full wall-clock by the fractional hour. No date-wrap
+    // logic needed here — the leading padding can't span more than an
+    // hour, so the result is always on the same date as `hourly[0]`
+    // (or the previous day if the period starts at 00:00).
+    if (clamped < 0.0) {
+        val base = LocalDateTime.of(startDate, hourly.first().time)
+        return base.plusSeconds((clamped * 3600.0).toLong())
+    }
     val idx = clamped.toInt().coerceIn(0, hourly.lastIndex)
     val fraction = clamped - idx
     var date = startDate
@@ -165,9 +193,19 @@ internal fun Modifier.chartScrub(
     awaitEachGesture {
         val down = awaitFirstDown(requireUnconsumed = true)
         val pos = down.position
-        val inGrid = bounds.dataMaxPx > bounds.dataMinPx &&
+        // Hit-test against the plot *layer* (left/right edges of
+        // Vico's chart area, including its start/end padding) rather
+        // than the tighter data extent — that's the visible empty
+        // space before the first data point and after the last,
+        // where a tap should map to a fractional time just outside
+        // the period's hour boundaries instead of getting filtered
+        // out. [publishScrub] handles the chart-x → time math from
+        // here; [chartXToTime] clamps to a hour of leading / trailing
+        // slack so taps far outside the chart don't produce
+        // pathological times.
+        val inGrid = bounds.layerRightPx > bounds.layerLeftPx &&
             bounds.layerBottomPx > bounds.layerTopPx &&
-            pos.x in bounds.dataMinPx..bounds.dataMaxPx &&
+            pos.x in bounds.layerLeftPx..bounds.layerRightPx &&
             pos.y in bounds.layerTopPx..bounds.layerBottomPx
         if (!inGrid) return@awaitEachGesture
         down.consume()
@@ -193,10 +231,13 @@ private fun publishScrub(
     if (hourly.isEmpty() || bounds.pxPerUnit == 0f) return
     // Inverse of canvasX = chartZeroPx + chartX * pxPerUnit. Works in
     // both LTR (positive pxPerUnit) and RTL (negative) — no fraction
-    // arithmetic, so a single-point chart (lastIndex = 0) doesn't divide
-    // by zero either.
+    // arithmetic, so a single-point chart (lastIndex = 0) doesn't
+    // divide by zero either. No clamp here — [chartXToTime] applies
+    // its own ±1 hour slack to keep taps far outside the chart from
+    // producing pathological times, and the gesture handler's
+    // layer-bounds hit-test already filtered out taps outside the
+    // plot area.
     val chartX = ((pointerX - bounds.chartZeroPx) / bounds.pxPerUnit).toDouble()
-        .coerceIn(0.0, hourly.lastIndex.toDouble())
     val time = chartXToTime(hourly, startDate, chartX) ?: return
     controller.scrubTo(time)
 }
@@ -245,12 +286,8 @@ private class ChartScrubIndicator(
             // which is direction-agnostic.
             val pxPerUnit = (multiplier * layerDimensions.xSpacing / ranges.xStep).toFloat()
             val chartZero = drawingStart - pxPerUnit * ranges.minX.toFloat()
-            val dataAtMin = drawingStart
-            val dataAtMax = drawingStart +
-                (multiplier * layerDimensions.xSpacing *
-                    ((ranges.maxX - ranges.minX) / ranges.xStep)).toFloat()
-            bounds.dataMinPx = minOf(dataAtMin, dataAtMax)
-            bounds.dataMaxPx = maxOf(dataAtMin, dataAtMax)
+            bounds.layerLeftPx = layerBounds.left
+            bounds.layerRightPx = layerBounds.right
             bounds.chartZeroPx = chartZero
             bounds.pxPerUnit = pxPerUnit
             bounds.layerTopPx = layerBounds.top
@@ -258,8 +295,13 @@ private class ChartScrubIndicator(
 
             val time = controller?.activeTime ?: return
             val chartX = currentTimeChartX(hourly, startDate, time) ?: return
-            if (chartX < ranges.minX || chartX > ranges.maxX) return
+            // Gate on the actual canvas pixel — chartX can fall outside
+            // the data-range bounds (`ranges.minX..maxX`) when the user
+            // scrubs into Vico's start / end padding, but it should
+            // still draw as long as the resulting line lands on the
+            // visible plot area.
             val canvasX = chartZero + pxPerUnit * chartX.toFloat()
+            if (canvasX < layerBounds.left || canvasX > layerBounds.right) return
             line.drawVertical(context, canvasX, layerBounds.top, layerBounds.bottom)
         }
     }

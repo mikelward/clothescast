@@ -50,14 +50,33 @@ class CurrentTimeIndicatorTest {
     }
 
     @Test
-    fun `today window — before window returns null`() {
+    fun `today window — more than one hour before window returns null`() {
+        // The valid range extends an hour either side of the data
+        // window so the indicator can land in Vico's leading / trailing
+        // padding (see the comment in `currentTimeChartX`). Only times
+        // past that slack — here 04:59 against a 06..21 window —
+        // hide the indicator entirely.
         val hourly = (6..21).map { h(LocalTime.of(it, 0)) }
         val x = currentTimeChartX(
             hourly = hourly,
             startDate = LocalDate.of(2026, 5, 23),
-            now = LocalDateTime.of(2026, 5, 23, 5, 59),
+            now = LocalDateTime.of(2026, 5, 23, 4, 59),
         )
         x.shouldBeNull()
+    }
+
+    @Test
+    fun `today window — within the leading hour returns a small negative`() {
+        // 05:30 against a 06..21 window — 30 min before the first
+        // data point. The indicator should land midway through the
+        // leading padding (chartX = -0.5).
+        val hourly = (6..21).map { h(LocalTime.of(it, 0)) }
+        val x = currentTimeChartX(
+            hourly = hourly,
+            startDate = LocalDate.of(2026, 5, 23),
+            now = LocalDateTime.of(2026, 5, 23, 5, 30),
+        )
+        x!! shouldBe (-0.5 plusOrMinus 1e-6)
     }
 
     @Test

@@ -392,6 +392,7 @@ class PreviewSnapshots {
     @Test fun edge_fade_both_dark() = capture { EdgeFadeBothDarkPreview() }
 
     @Test fun forecast_chart() = capture { ForecastChartPreview() }
+    @Test fun forecast_chart_morning_slice() = capture { ForecastChartMorningSlicePreview() }
     @Test fun forecast_chart_dark() = capture { ForecastChartDarkPreview() }
     @Test fun forecast_chart_with_current_time() = capture { ForecastChartWithCurrentTimePreview() }
     @Test fun forecast_chart_with_model_spread() = capture { ForecastChartWithModelSpreadPreview() }

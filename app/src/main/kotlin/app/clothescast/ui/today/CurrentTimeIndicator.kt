@@ -42,14 +42,29 @@ internal fun currentTimeChartX(
         timestamps += LocalDateTime.of(date, h.time)
         prevHour = hour
     }
+    // Trailing slack already works via `end = last + 1h`: each sample
+    // is treated as a 1-hour bin, so a "now" of 18:30 against a 07..18
+    // window maps to chartX 11.5 (inside the last bin). The leading
+    // edge gets an explicit half-cell of slack here — Vico's start
+    // padding measures at ~half a cell on this card, so a 06:30
+    // "now" against a 07..18 window can render in the visual padding
+    // (chartX = -0.5).
+    val start = timestamps.first().minusMinutes(30)
     val end = timestamps.last().plusHours(1)
-    if (now.isBefore(timestamps.first()) || !now.isBefore(end)) return null
+    if (now.isBefore(start) || !now.isBefore(end)) return null
+    if (now.isBefore(timestamps.first())) {
+        // Pre-window: chartX is negative, scaled the same way as the
+        // inter-sample fractions below (always over a 1-hour span,
+        // since each sample represents one hour).
+        val off = Duration.between(timestamps.first(), now).toMillis().toDouble()
+        return off / Duration.ofHours(1).toMillis().toDouble()
+    }
     for (i in timestamps.indices) {
-        val start = timestamps[i]
+        val sampleStart = timestamps[i]
         val next = if (i + 1 < timestamps.size) timestamps[i + 1] else end
-        if (!now.isBefore(start) && now.isBefore(next)) {
-            val span = Duration.between(start, next).toMillis().toDouble()
-            val off = Duration.between(start, now).toMillis().toDouble()
+        if (!now.isBefore(sampleStart) && now.isBefore(next)) {
+            val span = Duration.between(sampleStart, next).toMillis().toDouble()
+            val off = Duration.between(sampleStart, now).toMillis().toDouble()
             return i + off / span
         }
     }

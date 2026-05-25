@@ -1249,6 +1249,23 @@ internal fun ForecastChartPreview() {
     }
 }
 
+// Realistic morning-insight slice (07:00..18:59 — half-open at the
+// trailing edge, same shape `slicedForToday` produces in the
+// pipeline). Use this preview to see what the Today screen's chart
+// actually looks like with a period slice rather than the synthetic
+// 24-hour curve above.
+@Preview(name = "Forecast chart · 07–18 morning slice", widthDp = 360)
+@Composable
+internal fun ForecastChartMorningSlicePreview() {
+    Frame {
+        ForecastChart(
+            hourly = SAMPLE_HOURLY.subList(7, 19),
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            showFeelsLike = true,
+        )
+    }
+}
+
 @Preview(name = "Forecast chart · 24h curve (dark)", widthDp = 360)
 @Composable
 internal fun ForecastChartDarkPreview() {

@@ -516,7 +516,12 @@ private fun BannerStack(
         )
     }
     WorkStatusBanner(status = workStatusToShow, modifier = bannerModifier)
-    HolidayBanner(theme = state.activeHoliday, region = state.region, modifier = bannerModifier)
+    HolidayBanner(
+        theme = state.activeHoliday,
+        region = state.region,
+        onClick = onOpenCalendarSettings,
+        modifier = bannerModifier,
+    )
 }
 
 /**
@@ -963,6 +968,7 @@ internal fun bannerStatus(
 internal fun HolidayBanner(
     theme: HolidayTheme?,
     region: Region = Region.SYSTEM,
+    onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     if (theme == null) return
@@ -1005,13 +1011,12 @@ internal fun HolidayBanner(
         val luminance = 0.299f * r + 0.587f * g + 0.114f * b
         if (luminance > 0.55f) Color.Black else Color.White
     }
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = bannerColor,
-            contentColor = textColor,
-        ),
-    ) {
+    val cardColors = CardDefaults.cardColors(
+        containerColor = bannerColor,
+        contentColor = textColor,
+    )
+    val cardModifier = modifier.fillMaxWidth()
+    val content: @Composable () -> Unit = {
         Text(
             text = "${theme.emoji}  $bannerText",
             style = MaterialTheme.typography.titleSmall,
@@ -1021,6 +1026,13 @@ internal fun HolidayBanner(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             textAlign = TextAlign.Center,
         )
+    }
+    // Material3's `Card(onClick = …)` overload carries the right semantics
+    // for accessibility tooling — matches OutfitPreviewCard's pattern.
+    if (onClick != null) {
+        Card(onClick = onClick, modifier = cardModifier, colors = cardColors) { content() }
+    } else {
+        Card(modifier = cardModifier, colors = cardColors) { content() }
     }
 }
 

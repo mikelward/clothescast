@@ -209,7 +209,12 @@ internal fun consensusRainfallMainLine(
  * round to the nearest integer because "12 mm" is what the user actually
  * thinks in. Nearest-integer rounding (not truncation) keeps the
  * displayed amount faithful — a 1.9 mm hour reads as "2 mm", not "1 mm".
+ * Exact zero drops the decimal too — the y-axis floor label reads "0 mm",
+ * not "0.0 mm", since there's no precision to convey at zero.
  */
 internal fun formatPrecipitationMmAxis(value: Double): String =
-    if (value < 1.0) "%.1f mm".format(value)
-    else "%d mm".format(value.roundToInt())
+    when {
+        value == 0.0 -> "0 mm"
+        value < 1.0 -> "%.1f mm".format(value)
+        else -> "%d mm".format(value.roundToInt())
+    }

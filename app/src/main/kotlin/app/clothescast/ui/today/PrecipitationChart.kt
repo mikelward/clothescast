@@ -153,6 +153,7 @@ fun PrecipitationChart(
     val lineProvider = rememberPinnedLineProvider(visibleModels, mainLineColor)
 
     val scrubController = LocalChartScrub.current
+    val pageSwipe = LocalChartPageSwipe.current
     val scrubBounds = rememberChartScrubBounds()
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
     val decorations = listOf(scrubIndicator)
@@ -166,7 +167,7 @@ fun PrecipitationChart(
             .height(140.dp)
             .let { mod ->
                 if (scrubController != null) {
-                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate, onFirstContact)
+                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate, onFirstContact, pageSwipe)
                 } else {
                     mod
                 }

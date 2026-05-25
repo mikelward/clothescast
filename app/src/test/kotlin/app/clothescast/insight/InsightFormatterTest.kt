@@ -345,6 +345,18 @@ class InsightFormatterTest {
     }
 
     @Test
+    fun `bottoms format ALWAYS does not insert article into singular layer count`() {
+        // Regression: "1 layer" + "shorts" used to flow through the
+        // English phraser's article logic as if "1 layer" were a noun, so
+        // takesArticle returned true (no trailing 's') and the output
+        // became "Wear a 1 layer and shorts." Join via the localized
+        // template directly so the count phrase keeps its plural form
+        // untouched.
+        alwaysBottomsLayerCountSubject.format(summary(clothes = ClothesClause(listOf("t-shirt", "shorts")))) shouldBe
+            "Today, it will be 21°. Wear 1 layer and shorts."
+    }
+
+    @Test
     fun `bottoms format ALWAYS still emits bare count when no bottom fires`() {
         // No bottom in the rule list means the appended bottoms list is empty
         // and the clause reads as the bare layer count, same as IF_GARMENTS.

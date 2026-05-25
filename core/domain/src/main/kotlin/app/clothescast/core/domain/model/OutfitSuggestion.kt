@@ -64,7 +64,7 @@ data class OutfitSuggestion(
         // jacket → THICK_JACKET, thin-jacket/sweater/hoodie → mid-layer, polo → POLO,
         // fallback → user's chosen defaultTop (TSHIRT by default). Colder tiers
         // are checked before warmer ones so that when multiple rules fire
-        // simultaneously (e.g. both coat ≤6°C and jacket ≤12°C fire at 4°C),
+        // simultaneously (e.g. both coat ≤4°C and jacket ≤10°C fire at 3°C),
         // the heavier garment icon wins rather than the first match.
         // Bottom tiers: shorts → SHORTS, short-skirt → SHORT_SKIRT, skirt →
         // LONG_SKIRT, jeans → JEANS, fallback → user's chosen defaultBottom

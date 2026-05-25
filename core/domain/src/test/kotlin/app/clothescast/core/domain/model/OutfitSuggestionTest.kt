@@ -49,7 +49,7 @@ class OutfitSuggestionTest {
                 metric = Fact.Metric.FEELS_LIKE_MIN,
                 observedC = 13.0,
                 observedAt = LocalTime.of(7, 0),
-                thresholdC = 18.0,
+                thresholdC = 16.0,
                 ruleItem = "sweater",
                 comparison = Fact.Comparison.BELOW,
             ),
@@ -58,7 +58,7 @@ class OutfitSuggestionTest {
 
     @Test
     fun `thick jacket rationale cites the jacket rule`() {
-        // 8°C is below the jacket threshold (12°C) but above the coat threshold (6°C),
+        // 8°C is below the jacket threshold (10°C) but above the coat threshold (5°C),
         // so only the jacket rule fires and the rationale should cite "jacket".
         val hourly = listOf(hour(LocalTime.of(6, 0), 8.0), hour(LocalTime.of(15, 0), 9.0))
         val rationale = OutfitSuggestion.explainFromForecast(
@@ -66,7 +66,7 @@ class OutfitSuggestionTest {
             rules,
         )
         val fact = rationale.top.facts.single()
-        fact.thresholdC shouldBe 12.0
+        fact.thresholdC shouldBe 10.0
         fact.ruleItem shouldBe "jacket"
         fact.observedC shouldBe 8.0
         fact.observedAt shouldBe LocalTime.of(6, 0)
@@ -82,7 +82,7 @@ class OutfitSuggestionTest {
         )
         val fact = rationale.top.facts.single()
         fact.observedC shouldBe 19.0
-        fact.thresholdC shouldBe 18.0
+        fact.thresholdC shouldBe 16.0
         fact.ruleItem shouldBe "sweater"
         fact.comparison shouldBe Fact.Comparison.AT_OR_ABOVE
     }
@@ -97,7 +97,7 @@ class OutfitSuggestionTest {
         val fact = rationale.bottom.facts.single()
         fact.metric shouldBe Fact.Metric.FEELS_LIKE_MAX
         fact.ruleItem shouldBe "shorts"
-        fact.thresholdC shouldBe 24.0
+        fact.thresholdC shouldBe 23.0
         fact.observedC shouldBe 26.0
         fact.observedAt shouldBe LocalTime.of(14, 0)
         fact.comparison shouldBe Fact.Comparison.AT_OR_ABOVE
@@ -112,7 +112,7 @@ class OutfitSuggestionTest {
         val fact = rationale.bottom.facts.single()
         fact.metric shouldBe Fact.Metric.FEELS_LIKE_MAX
         fact.ruleItem shouldBe "shorts"
-        fact.thresholdC shouldBe 24.0
+        fact.thresholdC shouldBe 23.0
         fact.observedC shouldBe 22.0
         fact.comparison shouldBe Fact.Comparison.BELOW
     }
@@ -130,24 +130,24 @@ class OutfitSuggestionTest {
     fun `rationale matches the suggestion across boundary cases`() {
         // Pinned cases that exercise each branch — keeps fromForecast and
         // explainFromForecast from drifting against the default clothes rules
-        // (sweater 18, jacket 12, coat 6, shorts 24). Includes exact-equality
+        // (sweater 16, jacket 10, coat 5, shorts 23). Includes exact-equality
         // cases at each rule threshold so a rule-operator flip (`<` ↔ `<=`,
         // `>` ↔ `>=`) shows up here rather than being silently swallowed.
         val cases = listOf(
-            // Strictly below jacket (12): THICK_JACKET fires.
+            // Strictly below jacket (10): THICK_JACKET fires.
             Triple(7.5, 9.0, OutfitSuggestion(OutfitSuggestion.Top.THICK_JACKET, OutfitSuggestion.Bottom.LONG_PANTS)),
-            // Exactly at jacket cutoff (12): TemperatureBelow needs strictly
-            // less, so 12.0 lands on SWEATER (only sweater rule fires).
-            Triple(12.0, 16.0, OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS)),
+            // Exactly at jacket cutoff (10): TemperatureBelow needs strictly
+            // less, so 10.0 lands on SWEATER (only sweater rule fires).
+            Triple(10.0, 16.0, OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS)),
             Triple(13.0, 17.0, OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS)),
-            // Exactly at sweater cutoff (18): SWEATER ends strictly before 18,
-            // so 18.0 is TSHIRT.
-            Triple(18.0, 21.0, OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.LONG_PANTS)),
-            // Above shorts cutoff (24): SHORTS fires.
+            // Exactly at sweater cutoff (16): SWEATER ends strictly before 16,
+            // so 16.0 is TSHIRT.
+            Triple(16.0, 21.0, OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.LONG_PANTS)),
+            // Above shorts cutoff (23): SHORTS fires.
             Triple(19.0, 26.0, OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS)),
-            // Exactly at shorts cutoff (24): TemperatureAbove is strictly
-            // greater-than, so 24.0 doesn't fire — stays LONG_PANTS.
-            Triple(15.0, 24.0, OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS)),
+            // Exactly at shorts cutoff (23): TemperatureAbove is strictly
+            // greater-than, so 23.0 doesn't fire — stays LONG_PANTS.
+            Triple(15.0, 23.0, OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS)),
         )
         cases.forEach { (min, max, expected) ->
             OutfitSuggestion.fromForecast(forecast(min, max), rules) shouldBe expected
@@ -156,7 +156,7 @@ class OutfitSuggestionTest {
 
     @Test
     fun `customised shorts rule flips the bottom recommendation`() {
-        // With the default 24°C shorts rule, max 22°C lands on LONG_PANTS.
+        // With the default 23°C shorts rule, max 22°C lands on LONG_PANTS.
         // Lower the rule to 20°C and the same forecast picks SHORTS — the
         // home-screen icon and the bullet text now share the same threshold.
         val warmer = listOf(ClothesRule("shorts", ClothesRule.TemperatureAbove(20.0)))
@@ -201,7 +201,7 @@ class OutfitSuggestionTest {
             noShorts,
         ).bottom.facts.single()
         fact.ruleItem shouldBe "shorts"
-        fact.thresholdC shouldBe 24.0
+        fact.thresholdC shouldBe 23.0
     }
 
     @Test

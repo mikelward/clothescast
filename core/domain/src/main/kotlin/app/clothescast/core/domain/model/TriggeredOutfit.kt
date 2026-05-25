@@ -7,7 +7,7 @@ package app.clothescast.core.domain.model
  * outfit byte-for-byte.
  *
  * The user has two kinds of [ClothesRule]: *threshold* rules they configure
- * in Settings (sweater <18°C, shorts >24°C, …), and a *default* rule per
+ * in Settings (sweater <16°C, shorts >23°C, …), and a *default* rule per
  * outfit tier — the "If no rules match" picker's [UserPreferences.defaultTop]
  * / [UserPreferences.defaultBottom] — that matches when no threshold rule in
  * the tier did. Both kinds are rules; the default's condition is just "no

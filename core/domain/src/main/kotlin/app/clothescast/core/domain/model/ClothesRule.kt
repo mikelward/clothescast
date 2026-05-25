@@ -81,10 +81,10 @@ data class ClothesRule(
         //  UMBRELLA (rain jacket, hood, rain boots, …) once the resource
         //  strings and per-locale phrasers cover them.
         val DEFAULTS: List<ClothesRule> = listOf(
-            ClothesRule("sweater", TemperatureBelow(18.0)),
-            ClothesRule("jacket", TemperatureBelow(12.0)),
-            ClothesRule("coat", TemperatureBelow(6.0)),
-            ClothesRule("shorts", TemperatureAbove(24.0)),
+            ClothesRule("sweater", TemperatureBelow(16.0)),
+            ClothesRule("jacket", TemperatureBelow(10.0)),
+            ClothesRule("coat", TemperatureBelow(4.0)),
+            ClothesRule("shorts", TemperatureAbove(23.0)),
         )
 
         /** Sanity bounds in °C for the rationale dialog's `+1°` / `−1°` taps. Wide enough

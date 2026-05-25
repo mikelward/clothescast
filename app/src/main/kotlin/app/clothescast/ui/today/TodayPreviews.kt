@@ -237,7 +237,7 @@ internal fun OutfitRationaleDialogPreview() {
                             metric = Fact.Metric.FEELS_LIKE_MIN,
                             observedC = 13.0,
                             observedAt = LocalTime.of(7, 0),
-                            thresholdC = 18.0,
+                            thresholdC = 16.0,
                             ruleItem = "sweater",
                             comparison = Fact.Comparison.BELOW,
                         ),
@@ -249,7 +249,7 @@ internal fun OutfitRationaleDialogPreview() {
                             metric = Fact.Metric.FEELS_LIKE_MAX,
                             observedC = 17.0,
                             observedAt = LocalTime.of(14, 0),
-                            thresholdC = 24.0,
+                            thresholdC = 23.0,
                             ruleItem = "shorts",
                             comparison = Fact.Comparison.BELOW,
                         ),
@@ -269,10 +269,10 @@ internal fun OutfitRationaleDialogPreview() {
 @Composable
 internal fun OutfitRationaleDialogTunedPreview() {
     Frame {
-        // Mid-tweak state: the user lowered their `sweater` rule from 18°C to 15°C,
+        // Mid-tweak state: the user lowered their `sweater` rule from 16°C to 13°C,
         // so observed 13°C is still BELOW the customised threshold and the prose
-        // stays "under". Cached fact still carries 18°C; the dialog reads the live
-        // 15°C from clothesRules.
+        // stays "under". Cached fact still carries 16°C; the dialog reads the live
+        // 13°C from clothesRules.
         OutfitRationaleDialog(
             outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
             rationale = OutfitRationale(
@@ -282,7 +282,7 @@ internal fun OutfitRationaleDialogTunedPreview() {
                             metric = Fact.Metric.FEELS_LIKE_MIN,
                             observedC = 13.0,
                             observedAt = LocalTime.of(7, 0),
-                            thresholdC = 18.0,
+                            thresholdC = 16.0,
                             ruleItem = "sweater",
                             comparison = Fact.Comparison.BELOW,
                         ),
@@ -294,7 +294,7 @@ internal fun OutfitRationaleDialogTunedPreview() {
                             metric = Fact.Metric.FEELS_LIKE_MAX,
                             observedC = 17.0,
                             observedAt = LocalTime.of(14, 0),
-                            thresholdC = 24.0,
+                            thresholdC = 23.0,
                             ruleItem = "shorts",
                             comparison = Fact.Comparison.BELOW,
                         ),
@@ -303,7 +303,7 @@ internal fun OutfitRationaleDialogTunedPreview() {
             ),
             temperatureUnit = TemperatureUnit.CELSIUS,
             clothesRules = ClothesRule.DEFAULTS.map {
-                if (it.item == "sweater") it.copy(condition = ClothesRule.TemperatureBelow(15.0)) else it
+                if (it.item == "sweater") it.copy(condition = ClothesRule.TemperatureBelow(13.0)) else it
             },
             onAdjustThreshold = { _, _ -> },
             onNavigateToClothes = {},

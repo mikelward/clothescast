@@ -23,9 +23,9 @@ class ClothesRulesSnapshotTest {
 
     @Test
     fun `single category nudged reports signed integer delta`() {
-        // Default jacket is TemperatureBelow(12.0); nudge to 10°C → delta of -2.
+        // Default jacket is TemperatureBelow(10.0); nudge to 8°C → delta of -2.
         val rules = ClothesRule.DEFAULTS.map { rule ->
-            if (rule.item == "jacket") rule.copy(condition = ClothesRule.TemperatureBelow(10.0))
+            if (rule.item == "jacket") rule.copy(condition = ClothesRule.TemperatureBelow(8.0))
             else rule
         }
 
@@ -41,9 +41,9 @@ class ClothesRulesSnapshotTest {
 
     @Test
     fun `positive delta is sign-prefixed`() {
-        // Default shorts is TemperatureAbove(24.0); nudge to 27°C → delta of +3.
+        // Default shorts is TemperatureAbove(23.0); nudge to 26°C → delta of +3.
         val rules = ClothesRule.DEFAULTS.map { rule ->
-            if (rule.item == "shorts") rule.copy(condition = ClothesRule.TemperatureAbove(27.0))
+            if (rule.item == "shorts") rule.copy(condition = ClothesRule.TemperatureAbove(26.0))
             else rule
         }
 
@@ -55,7 +55,8 @@ class ClothesRulesSnapshotTest {
 
     @Test
     fun `deltas beyond the clamp saturate to bucket boundary`() {
-        // 12°C - 30°C = -18 → clamps to "-5-"; 6°C + 50°C = +44 → clamps to "+5+".
+        // jacket default 10, set to 30 → delta +20 → clamps to "+5+";
+        // coat default 4, set to 50 → delta +46 → clamps to "+5+".
         val rules = ClothesRule.DEFAULTS.map { rule ->
             when (rule.item) {
                 "jacket" -> rule.copy(condition = ClothesRule.TemperatureBelow(30.0))
@@ -66,9 +67,9 @@ class ClothesRulesSnapshotTest {
 
         val snap = ClothesRulesSnapshot.from(rules)
 
-        // jacket: default 12, user 30, delta = +18 → "+5+"
+        // jacket: default 10, user 30, delta = +20 → "+5+"
         snap.jacketDeltaC shouldBe "+5+"
-        // coat: default 6, user 50, delta = +44 → "+5+"
+        // coat: default 4, user 50, delta = +46 → "+5+"
         snap.coatDeltaC shouldBe "+5+"
     }
 
@@ -104,11 +105,11 @@ class ClothesRulesSnapshotTest {
 
     @Test
     fun `unit-typed Fahrenheit threshold is converted to Celsius before bucketing`() {
-        // 53°F ≈ 11.7°C; rounded delta from default 12°C is 0. Confirms that
+        // 50°F = 10°C exactly; delta from default 10°C is 0. Confirms that
         // thresholdC() does the unit conversion under the bucket math.
         val rules = ClothesRule.DEFAULTS.map { rule ->
             if (rule.item == "jacket") rule.copy(
-                condition = ClothesRule.TemperatureBelow(53.0, TemperatureUnit.FAHRENHEIT),
+                condition = ClothesRule.TemperatureBelow(50.0, TemperatureUnit.FAHRENHEIT),
             ) else rule
         }
 
@@ -124,7 +125,7 @@ class ClothesRulesSnapshotTest {
         val rules = ClothesRule.DEFAULTS.map { rule ->
             when (rule.item) {
                 "shorts" -> rule.copy(condition = ClothesRule.TemperatureAbove(26.0))
-                "jacket" -> rule.copy(condition = ClothesRule.TemperatureBelow(10.0))
+                "jacket" -> rule.copy(condition = ClothesRule.TemperatureBelow(8.0))
                 else -> rule
             }
         }

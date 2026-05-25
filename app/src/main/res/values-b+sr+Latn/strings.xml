@@ -820,7 +820,7 @@ default English (matching values-pl / values-uk).
     <string name="today_rationale_open_clothes_settings">Podešavanja odeće</string>
     <string name="today_celebration_card_title">Praznične teme</string>
     <string name="today_celebration_card_body">Omogućite posebne boje i poruke za praznike i rođendane.</string>
-    <string name="today_celebration_card_cta">Podešavanja proslava</string>
+    <string name="today_celebration_card_cta">Podešavanja kalendara</string>
     <string name="today_celebration_card_dismiss">Odbaci</string>
     <string name="settings_holidays_source_global">Globalno</string>
     <string name="settings_holidays_source_location">Lokacija (%1$s)</string>

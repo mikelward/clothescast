@@ -795,7 +795,7 @@ What is NOT overridden, by design:
     <string name="today_rationale_open_clothes_settings">Nastavenia oblečenia</string>
     <string name="today_celebration_card_title">Sviatočné motívy</string>
     <string name="today_celebration_card_body">Povoľte špeciálne farby a správy pre sviatky a narodeniny.</string>
-    <string name="today_celebration_card_cta">Nastavenia osláv</string>
+    <string name="today_celebration_card_cta">Nastavenia kalendára</string>
     <string name="today_celebration_card_dismiss">Zavrieť</string>
 
     <!-- Holidays settings. -->

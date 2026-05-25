@@ -782,7 +782,7 @@ only the displayed label localizes.
     <string name="outfit_card_header_tonight">Нічний ClothesCast</string>
     <string name="today_celebration_card_title">Святкові теми</string>
     <string name="today_celebration_card_body">Увімкніть спеціальні кольори та повідомлення для свят і днів народження.</string>
-    <string name="today_celebration_card_cta">Налаштування свят</string>
+    <string name="today_celebration_card_cta">Налаштування календаря</string>
     <string name="today_celebration_card_dismiss">Закрити</string>
     <string name="settings_root_smart_home">Розумний дім</string>
     <string name="settings_root_smart_home_subtitle">Розумні дисплеї та домашня автоматизація</string>

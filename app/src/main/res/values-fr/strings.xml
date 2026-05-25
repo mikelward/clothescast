@@ -899,7 +899,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Today screen — celebration promo card. -->
     <string name="today_celebration_card_title">Thèmes festifs</string>
     <string name="today_celebration_card_body">Active des couleurs et messages spéciaux pour les jours fériés et les anniversaires.</string>
-    <string name="today_celebration_card_cta">Paramètres festifs</string>
+    <string name="today_celebration_card_cta">Paramètres du calendrier</string>
     <string name="today_celebration_card_dismiss">Ignorer</string>
 
     <!-- Holidays settings — source filter chips. -->

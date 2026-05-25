@@ -726,7 +726,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="outfit_card_header_tonight">Šovakar ClothesCast</string>
     <string name="today_celebration_card_title">Svētku tēmas</string>
     <string name="today_celebration_card_body">Iespējo īpašas krāsas un ziņojumus svētkiem un dzimšanas dienām.</string>
-    <string name="today_celebration_card_cta">Svinību iestatījumi</string>
+    <string name="today_celebration_card_cta">Kalendāra iestatījumi</string>
     <string name="today_celebration_card_dismiss">Aizvērt</string>
     <string name="settings_root_smart_home">Viedmāja</string>
     <string name="settings_root_smart_home_subtitle">Viedie displeji un mājas automatizācija</string>

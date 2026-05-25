@@ -912,7 +912,7 @@ standard in Israeli digital communication.
 
     <!-- Today — celebration card -->
     <string name="today_celebration_card_body">הפעל/י צבעים והודעות מיוחדים לחגים וימי הולדת.</string>
-    <string name="today_celebration_card_cta">הגדרות חגיגות</string>
+    <string name="today_celebration_card_cta">הגדרות יומן</string>
     <string name="today_celebration_card_dismiss">סגור/י</string>
     <string name="today_celebration_card_title">עיצובי חגיגות</string>
 

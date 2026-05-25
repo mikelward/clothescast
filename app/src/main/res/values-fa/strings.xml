@@ -904,7 +904,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
 
     <!-- Today — celebration card -->
     <string name="today_celebration_card_body">رنگ‌ها و پیام‌های ویژه برای تعطیلات و تولدها را فعال کنید.</string>
-    <string name="today_celebration_card_cta">تنظیمات جشن‌ها</string>
+    <string name="today_celebration_card_cta">تنظیمات تقویم</string>
     <string name="today_celebration_card_dismiss">رد کردن</string>
     <string name="today_celebration_card_title">قالب‌های جشن</string>
 

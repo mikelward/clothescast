@@ -912,7 +912,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="outfit_card_header_tonight">ClothesCast desta noite</string>
     <string name="today_celebration_card_title">Temas festivos</string>
     <string name="today_celebration_card_body">Ativa cores e mensagens especiais para feriados e aniversários.</string>
-    <string name="today_celebration_card_cta">Definições de celebrações</string>
+    <string name="today_celebration_card_cta">Definições de calendário</string>
     <string name="today_celebration_card_dismiss">Dispensar</string>
     <string name="settings_root_smart_home">Casa inteligente</string>
     <string name="settings_root_smart_home_subtitle">Ecrãs inteligentes e automatização doméstica</string>

@@ -944,7 +944,7 @@ Not overridden by design:
     <!-- Today — Celebration card. -->
     <string name="today_celebration_card_title">उत्सव थीम</string>
     <string name="today_celebration_card_body">छुट्टियों और जन्मदिनों के लिए विशेष रंग और संदेश चालू करें।</string>
-    <string name="today_celebration_card_cta">उत्सव सेटिंग</string>
+    <string name="today_celebration_card_cta">कैलेंडर सेटिंग</string>
     <string name="today_celebration_card_dismiss">खारिज करें</string>
 
     <!-- Today — Rationale: open clothes settings. -->

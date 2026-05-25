@@ -836,7 +836,7 @@ the displayed label localizes.
     <string name="today_rationale_open_clothes_settings">Kledinginstellingen</string>
     <string name="today_celebration_card_title">Festieve thema\'s</string>
     <string name="today_celebration_card_body">Schakel speciale kleuren en berichten in voor feestdagen en verjaardagen.</string>
-    <string name="today_celebration_card_cta">Feestdaginstellingen</string>
+    <string name="today_celebration_card_cta">Kalenderinstellingen</string>
     <string name="today_celebration_card_dismiss">Sluiten</string>
     <string name="settings_holidays_source_global">Wereldwijd</string>
     <string name="settings_holidays_source_location">Locatie (%1$s)</string>

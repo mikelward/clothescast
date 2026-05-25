@@ -729,7 +729,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="outfit_card_header_tonight">Tänane õhtune ClothesCast</string>
     <string name="today_celebration_card_title">Tähistamisteemad</string>
     <string name="today_celebration_card_body">Luba erilised värvid ja sõnumid pühade ja sünnipäevade jaoks.</string>
-    <string name="today_celebration_card_cta">Tähistamise seaded</string>
+    <string name="today_celebration_card_cta">Kalendri seaded</string>
     <string name="today_celebration_card_dismiss">Sulge</string>
     <string name="settings_root_smart_home">Nutikodu</string>
     <string name="settings_root_smart_home_subtitle">Nutiekraanid ja koduautomaatika</string>

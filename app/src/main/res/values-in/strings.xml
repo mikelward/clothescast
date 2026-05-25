@@ -913,7 +913,7 @@ to values/strings.xml (English).
 
     <!-- Celebration card -->
     <string name="today_celebration_card_body">Aktifkan warna dan pesan khusus untuk hari libur dan ulang tahun.</string>
-    <string name="today_celebration_card_cta">Pengaturan perayaan</string>
+    <string name="today_celebration_card_cta">Pengaturan kalender</string>
     <string name="today_celebration_card_dismiss">Tutup</string>
     <string name="today_celebration_card_title">Tema perayaan</string>
 

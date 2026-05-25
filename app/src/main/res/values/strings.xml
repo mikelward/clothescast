@@ -348,7 +348,7 @@
          either Holiday-settings toggle is on, OR after the user X-dismisses. -->
     <string name="today_celebration_card_title">Celebration themes</string>
     <string name="today_celebration_card_body">Enable special colors and messages for holidays and birthdays.</string>
-    <string name="today_celebration_card_cta">Celebration settings</string>
+    <string name="today_celebration_card_cta">Calendar settings</string>
     <string name="today_celebration_card_dismiss">Dismiss</string>
 
     <string name="today_view_other_period">View other forecast</string>

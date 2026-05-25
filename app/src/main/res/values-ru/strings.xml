@@ -839,7 +839,7 @@ only the displayed label localizes.
     <string name="outfit_card_header_tonight">Вечерний ClothesCast</string>
     <string name="today_celebration_card_title">Праздничные темы</string>
     <string name="today_celebration_card_body">Включите специальные цвета и сообщения для праздников и дней рождения.</string>
-    <string name="today_celebration_card_cta">Настройки праздников</string>
+    <string name="today_celebration_card_cta">Настройки календаря</string>
     <string name="today_celebration_card_dismiss">Закрыть</string>
     <string name="settings_root_smart_home">Умный дом</string>
     <string name="settings_root_smart_home_subtitle">Умные дисплеи и домашняя автоматизация</string>

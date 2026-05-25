@@ -1067,7 +1067,7 @@ displayed label localizes.
     <!-- Today screen — Celebration card. -->
     <string name="today_celebration_card_title">기념일 테마</string>
     <string name="today_celebration_card_body">공휴일과 생일에 특별한 색상과 메시지를 활성화하세요.</string>
-    <string name="today_celebration_card_cta">기념일 설정</string>
+    <string name="today_celebration_card_cta">캘린더 설정</string>
     <string name="today_celebration_card_dismiss">닫기</string>
 
     <!-- Today screen — Rationale: open clothes settings link. -->

@@ -974,7 +974,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
 
     <!-- Today — Celebration card -->
     <string name="today_celebration_card_body">Bật màu sắc và thông điệp đặc biệt cho ngày lễ và sinh nhật.</string>
-    <string name="today_celebration_card_cta">Cài đặt lễ kỷ niệm</string>
+    <string name="today_celebration_card_cta">Cài đặt lịch</string>
     <string name="today_celebration_card_dismiss">Đóng</string>
     <string name="today_celebration_card_title">Chủ đề lễ kỷ niệm</string>
 

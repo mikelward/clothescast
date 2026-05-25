@@ -886,7 +886,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Celebration promo card. -->
     <string name="today_celebration_card_title">Temi festivi</string>
     <string name="today_celebration_card_body">Attiva colori e messaggi speciali per le festività e i compleanni.</string>
-    <string name="today_celebration_card_cta">Impostazioni celebrazioni</string>
+    <string name="today_celebration_card_cta">Impostazioni calendario</string>
     <string name="today_celebration_card_dismiss">Ignora</string>
 
     <!-- Holidays settings — source filter chips. -->

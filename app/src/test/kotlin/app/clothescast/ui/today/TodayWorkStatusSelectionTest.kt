@@ -150,6 +150,30 @@ class TodayWorkStatusSelectionTest {
     }
 
     @Test
+    fun `deliver-phase retry with fetch_complete still surfaces as Retrying`() {
+        // Regression guard: if deliver() throws a retryable exception
+        // after the worker called setProgress(KEY_FETCH_COMPLETE=true)
+        // (network blip during notification post / MQTT / cast / TTS),
+        // WorkManager re-enqueues the same WorkSpec with
+        // runAttemptCount > 1. If the progress flag is still in place
+        // and we excluded the entry from the active set on that basis
+        // alone, the "last attempt failed — retrying" banner would
+        // silently disappear while another attempt was actually pending.
+        // The runAttemptCount > 1 carve-out keeps the entry active.
+        val infos = listOf(
+            WorkInfoLite(
+                state = WorkInfo.State.ENQUEUED,
+                runAttemptCount = 2,
+                outputData = Data.EMPTY,
+                progress = Data.Builder()
+                    .putBoolean(FetchAndNotifyWorker.KEY_FETCH_COMPLETE, true)
+                    .build(),
+            ),
+        )
+        selectStatus(infos) shouldBe WorkStatus.Retrying
+    }
+
+    @Test
     fun `fetch_complete active entry lets a prior failure surface`() {
         // The worker is mid-delivery (fetch done, TTS playing) but the
         // last terminal run failed: the user should still see the

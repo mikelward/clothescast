@@ -11,6 +11,9 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * Process-wide diagnostic log that mirrors every call to [android.util.Log]
@@ -25,7 +28,7 @@ import java.util.concurrent.TimeUnit
  * fsync. Non-error calls queue and return immediately.
  *
  * The legacy uncaught-crash channel ([readPersistedCrash] /
- * [hasUnacknowledgedCrash]) is preserved unchanged; uncaught exceptions
+ * [unacknowledgedCrash]) is preserved unchanged; uncaught exceptions
  * still spill the recent log plus the stack to `last-crash.txt` on the
  * dying thread for the post-crash banner.
  */
@@ -63,6 +66,24 @@ object DiagLog {
 
     @Volatile
     private var ackFileProvider: (() -> File)? = null
+
+    private val unacknowledgedCrashState = MutableStateFlow(false)
+
+    /**
+     * Observable mirror of "is there an uncaught-crash file on disk from a
+     * previous run that the user hasn't yet acted on?" — backs the Today
+     * screen's crash banner. Single source of truth shared across every
+     * `LastCrashBanner` instance, so an acknowledgement on one (e.g. on the
+     * pager's page 0) flips the flow and the page 1 instance hides itself
+     * immediately rather than carrying stale local state.
+     *
+     * Seeded by [install] from disk at process start; updated by
+     * [writeCrashLog] when a fresh crash is captured, by
+     * [acknowledgePersistedCrash] when the user dismisses or shares, and
+     * by [refreshUnacknowledgedCrash] on lifecycle ON_RESUME (covers a
+     * crash written by a sibling process while the app was backgrounded).
+     */
+    val unacknowledgedCrash: StateFlow<Boolean> = unacknowledgedCrashState.asStateFlow()
 
     fun v(tag: String, msg: String, t: Throwable? = null) = log('V', tag, msg, t).also {
         if (t == null) Log.v(tag, msg) else Log.v(tag, msg, t)
@@ -123,6 +144,7 @@ object DiagLog {
             runCatching { writeCrashLog(thread, throwable) }
             previous?.uncaughtException(thread, throwable)
         }
+        refreshUnacknowledgedCrash()
         i("DiagLog", "---- process start ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) ----")
     }
 
@@ -133,25 +155,29 @@ object DiagLog {
         ?.getOrNull()
 
     /**
-     * True iff a crash from the previous process is on disk and the user hasn't
-     * acknowledged it yet. The Today screen polls this on launch / resume to
-     * surface a "share crash report" banner; tapping either button on the
-     * banner calls [acknowledgePersistedCrash].
+     * Re-reads the crash + ack files from disk and republishes
+     * [unacknowledgedCrash]. Called once from [install] to seed the flow,
+     * and from the crash banner's lifecycle observer on ON_RESUME so a
+     * crash captured while the app was backgrounded (e.g. by a sibling
+     * process sharing the same `cacheDir`) surfaces without needing a
+     * process restart.
      *
-     * Identity is the crash file's last-modified time, so a fresh crash bumps
-     * mtime and the banner re-appears even if the previous one was acked.
+     * Identity is the crash file's last-modified time, so a fresh crash
+     * bumps mtime and the flow flips back to true even if the previous
+     * one was acked.
      */
-    fun hasUnacknowledgedCrash(): Boolean {
-        val crash = crashFileProvider?.invoke() ?: return false
-        val ack = ackFileProvider?.invoke() ?: return false
-        return isCrashUnacknowledged(crash, ack)
+    fun refreshUnacknowledgedCrash() {
+        val crash = crashFileProvider?.invoke() ?: return
+        val ack = ackFileProvider?.invoke() ?: return
+        unacknowledgedCrashState.value = isCrashUnacknowledged(crash, ack)
     }
 
-    /** Records the currently persisted crash as seen — see [hasUnacknowledgedCrash]. */
+    /** Records the currently persisted crash as seen — see [unacknowledgedCrash]. */
     fun acknowledgePersistedCrash() {
         val crash = crashFileProvider?.invoke() ?: return
         val ack = ackFileProvider?.invoke() ?: return
         writeCrashAcknowledgement(crash, ack)
+        unacknowledgedCrashState.value = false
     }
 
     internal fun isCrashUnacknowledged(crashFile: File, ackFile: File): Boolean {
@@ -187,6 +213,7 @@ object DiagLog {
             appendLine("--- recent log ---")
             append(recent)
         })
+        unacknowledgedCrashState.value = true
     }
 
     private fun stackTraceString(t: Throwable): String =

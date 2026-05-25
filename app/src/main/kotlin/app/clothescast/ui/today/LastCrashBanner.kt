@@ -43,12 +43,17 @@ import kotlinx.coroutines.launch
  *
  * Both buttons mark the crash as acknowledged so the banner doesn't keep
  * reappearing. A *new* crash bumps the on-disk file's mtime, which
- * [DiagLog.hasUnacknowledgedCrash] uses as identity, so the banner
- * surfaces again next launch.
+ * [DiagLog.unacknowledgedCrash] uses as identity, so the banner surfaces
+ * again next launch.
  *
- * Re-checks the file on lifecycle ON_RESUME so a backgrounded app coming
- * forward after a crash in another process surfaces the banner without
- * requiring a process restart.
+ * State comes from [DiagLog.unacknowledgedCrash] (a process-wide
+ * [kotlinx.coroutines.flow.StateFlow]) so multiple banner instances —
+ * e.g. the two pager pages on the Today screen — share a single source of
+ * truth: dismissing on one page hides the other immediately too.
+ *
+ * Calls [DiagLog.refreshUnacknowledgedCrash] on lifecycle ON_RESUME so a
+ * backgrounded app coming forward after a crash in another process
+ * surfaces the banner without requiring a process restart.
  */
 @Composable
 internal fun LastCrashBanner(modifier: Modifier = Modifier) {
@@ -58,14 +63,14 @@ internal fun LastCrashBanner(modifier: Modifier = Modifier) {
     val app = context.applicationContext as ClothesCastApplication
     val bugReportConsentAcked by app.settingsRepository.bugReportConsentAcknowledged
         .collectAsStateWithLifecycle(initialValue = false)
-    var hasCrash by remember { mutableStateOf(DiagLog.hasUnacknowledgedCrash()) }
+    val hasCrash by DiagLog.unacknowledgedCrash.collectAsStateWithLifecycle()
     var consentVisible by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                hasCrash = DiagLog.hasUnacknowledgedCrash()
+                DiagLog.refreshUnacknowledgedCrash()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -79,7 +84,6 @@ internal fun LastCrashBanner(modifier: Modifier = Modifier) {
         coroutineScope.launch {
             BugReport.share(act)
             DiagLog.acknowledgePersistedCrash()
-            hasCrash = false
         }
     }
 
@@ -90,7 +94,6 @@ internal fun LastCrashBanner(modifier: Modifier = Modifier) {
         },
         onDismiss = {
             DiagLog.acknowledgePersistedCrash()
-            hasCrash = false
         },
     )
 

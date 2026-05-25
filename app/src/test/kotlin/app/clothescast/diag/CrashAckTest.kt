@@ -8,7 +8,7 @@ import java.nio.file.Path
 
 /**
  * Validates the file-based ack tracking that backs the post-crash banner on
- * the Today screen — see [DiagLog.hasUnacknowledgedCrash] and
+ * the Today screen — see [DiagLog.unacknowledgedCrash] and
  * [DiagLog.acknowledgePersistedCrash]. Identity of "the current crash" is
  * the crash file's last-modified time, so a fresh crash bumps mtime and the
  * banner re-surfaces even when an older crash was already acked.

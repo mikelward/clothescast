@@ -172,17 +172,6 @@ enum class HolidayId {
     //     predicate level.
     //   Buddhist (TH, LK, MM): Vesak, Asalha Bucha, Khao Phansa.
     //
-    // The Easter cluster ([GOOD_FRIDAY] / [EASTER_SUNDAY] /
-    // [EASTER_MONDAY]) deliberately stays on [HolidayCatalog.GLOBAL_COUNTRY]
-    // even though [HolidayCatalog.CHRISTIAN] now exists. Easter has
-    // become broadly culturally observed across religious / non-religious
-    // households alike (egg hunts, chocolate, the Easter long weekend
-    // as a public holiday in many catalog countries), and a CHRISTIAN-
-    // only tagging would default-mute Easter for users who don't
-    // identify as Christian but still observe the day culturally.
-    // Strictly-liturgical days (Ash Wed, Palm Sun, Maundy Thu) sit
-    // on [HolidayCatalog.CHRISTIAN] as opt-in instead.
-    //
     // TODO(holidays-v5): switch the [REMEMBRANCE_DAY] banner-name
     // lookup from [Region]-derived country to location-derived
     // country once the app's reverse-geocoding plumbing exposes a
@@ -532,17 +521,15 @@ object HolidayCatalog {
      * Sentinel "country" for the Christian-religious bucket — Easter-relative
      * observances and other Christian feasts whose dates / observance cross
      * national boundaries: Ash Wednesday, Mardi Gras / Shrove Tuesday, Palm
-     * Sunday, Maundy Thursday, Ascension Day, Pentecost, Whit Monday, Corpus
-     * Christi. Sits in [HolidayTheme.countries] alongside real ISO codes
-     * (each holiday is also tagged with the countries where it's a public
-     * holiday, so a French user picks up Ascension via FR even without
-     * enabling the Christian bucket). Surfaced in Settings as its own
-     * toggleable bucket, off by default — these are religious-tradition
-     * observances rather than universal civic days, so we don't push them
-     * onto every user. The Easter cluster (Good Friday / Easter Sunday /
-     * Easter Monday) stays on [GLOBAL_COUNTRY] because Easter has become
-     * broadly culturally observed (egg hunts, chocolate); the strictly-
-     * liturgical days (Ash Wed, Palm Sun, Maundy Thu) live here as opt-in.
+     * Sunday, Maundy Thursday, Good Friday, Easter Sunday, Easter Monday,
+     * Ascension Day, Pentecost, Whit Monday, Corpus Christi. Sits in
+     * [HolidayTheme.countries] alongside real ISO codes (each holiday is
+     * also tagged with the countries where it's a public holiday, so a
+     * French user picks up Ascension via FR and a UK user picks up Good
+     * Friday via GB even without enabling the Christian bucket). Surfaced
+     * in Settings as its own toggleable bucket, off by default — these are
+     * religious-tradition observances rather than universal civic days, so
+     * we don't push them onto every user.
      */
     const val CHRISTIAN: String = "CHRISTIAN"
 
@@ -991,8 +978,10 @@ object HolidayCatalog {
         // Easter − 2 — Western Good Friday. Solemn, monochrome aubergine
         // (Passion-week liturgical purple). Same single-colour shape as
         // Anzac / MLK / US Memorial — a celebratory two-colour palette
-        // would read wrong here. Tagged [GLOBAL_COUNTRY] as a v1 punt;
-        // see the Christian-bucket TODO at the top of [HolidayId].
+        // would read wrong here. Tagged CHRISTIAN plus the catalog
+        // countries where it's a public holiday so users in those
+        // countries pick it up via their home / current country without
+        // having to enable the Christian bucket.
         HolidayDate.EasterRelative(-2) to HolidayTheme(
             id = HolidayId.GOOD_FRIDAY,
             displayNameKey = "holiday_name_good_friday",
@@ -1001,12 +990,21 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(GOOD_FRIDAY_AUBERGINE),
             bottomOverrides = bottomPaletteAll(GOOD_FRIDAY_AUBERGINE),
             bannerArgb = GOOD_FRIDAY_AUBERGINE,
-            countries = setOf(GLOBAL_COUNTRY),
+            countries = setOf(
+                CHRISTIAN,
+                "AR", "AU", "BR", "CA", "DE", "ES", "GB", "ID", "IE", "IN",
+                "MX", "NG", "NZ", "PH", "SG", "ZA",
+            ),
         ),
 
         // Easter Sunday. Pastel-lemon top + pastel-mint bottom — egg-
-        // decorating spring-renewal palette, no flag association.
-        // Tagged [GLOBAL_COUNTRY] for the same v1 reason as Good Friday.
+        // decorating spring-renewal palette, no flag association. Tagged
+        // CHRISTIAN plus the catalog countries where the Easter weekend is
+        // observed as a public holiday (the union of the Good Friday and
+        // Easter Monday sets — most countries don't formally gazette
+        // Easter Sunday because it's always a Sunday, but it's the centre
+        // of the weekend wherever either of the other two are public
+        // holidays).
         HolidayDate.EasterRelative(0) to HolidayTheme(
             id = HolidayId.EASTER_SUNDAY,
             displayNameKey = "holiday_name_easter_sunday",
@@ -1015,12 +1013,17 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(EASTER_LEMON),
             bottomOverrides = bottomPaletteAll(EASTER_MINT),
             bannerArgb = EASTER_LEMON,
-            countries = setOf(GLOBAL_COUNTRY),
+            countries = setOf(
+                CHRISTIAN,
+                "AR", "AT", "AU", "BR", "CA", "DE", "ES", "FR", "GB", "HR",
+                "ID", "IE", "IN", "IT", "MX", "NG", "NZ", "PH", "SG", "ZA",
+            ),
         ),
 
         // Easter Monday. Same pastel palette as Easter Sunday so the
         // Sun→Mon weekend reads as a continuous theme rather than two
-        // different days. Tagged [GLOBAL_COUNTRY] like the others above.
+        // different days. Tagged CHRISTIAN plus the catalog countries
+        // where it's a public holiday.
         HolidayDate.EasterRelative(1) to HolidayTheme(
             id = HolidayId.EASTER_MONDAY,
             displayNameKey = "holiday_name_easter_monday",
@@ -1029,7 +1032,11 @@ object HolidayCatalog {
             topOverrides = topPaletteAll(EASTER_LEMON),
             bottomOverrides = bottomPaletteAll(EASTER_MINT),
             bannerArgb = EASTER_LEMON,
-            countries = setOf(GLOBAL_COUNTRY),
+            countries = setOf(
+                CHRISTIAN,
+                "AT", "AU", "CA", "DE", "FR", "GB", "HR", "IE", "IT", "NG",
+                "NZ", "ZA",
+            ),
         ),
 
         // Apr 6 — Chakri Day (Thailand), commemorating the founding of the

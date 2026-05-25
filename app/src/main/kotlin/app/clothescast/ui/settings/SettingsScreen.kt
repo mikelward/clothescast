@@ -44,6 +44,31 @@ data class SettingsMenuItem(
 )
 
 /**
+ * Canonical list of Settings root rows, in display order. Centralising the
+ * order + label strings here keeps the nav host (which wires each row to its
+ * navigation destination) and the snapshot preview (which renders with no-op
+ * clicks) in lockstep — adding a new settings page is one new entry, and the
+ * compiler enforces exhaustive handling in the nav host's mapping `when`.
+ */
+internal enum class SettingsDest(
+    @StringRes val titleRes: Int,
+    @StringRes val subtitleRes: Int,
+) {
+    SCHEDULE(R.string.settings_root_schedule, R.string.settings_root_schedule_subtitle),
+    CLOTHES(R.string.settings_root_clothes, R.string.settings_root_clothes_subtitle),
+    FORMAT(R.string.settings_root_format, R.string.settings_root_format_subtitle),
+    LOCATION(R.string.settings_root_location, R.string.settings_root_location_subtitle),
+    REGION(R.string.settings_root_region, R.string.settings_root_region_subtitle),
+    VOICE(R.string.settings_root_voice, R.string.settings_root_voice_subtitle),
+    DISPLAY(R.string.settings_root_display, R.string.settings_root_display_subtitle),
+    CALENDAR(R.string.settings_root_calendar, R.string.settings_root_calendar_subtitle),
+    FORECASTERS(R.string.settings_root_forecasters, R.string.settings_root_forecasters_subtitle),
+    SMART_HOME(R.string.settings_root_smart_home, R.string.settings_root_smart_home_subtitle),
+    PRIVACY(R.string.settings_root_privacy, R.string.settings_root_privacy_subtitle),
+    DEVELOPER(R.string.settings_root_developer, R.string.settings_root_developer_subtitle),
+}
+
+/**
  * Shared chrome for a Settings sub-page: a top bar showing [titleRes] with a back
  * arrow wired to [onBack] (which pops the nav back stack), plus edge-to-edge
  * content insets. Every destination in the Settings nested graph renders through

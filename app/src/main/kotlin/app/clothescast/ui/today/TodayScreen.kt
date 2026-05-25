@@ -2198,9 +2198,29 @@ internal fun SolarRadiationCard(
     showModelSpread: Boolean = false,
     onFirstContact: (() -> Unit)? = null,
 ) {
+    val times = remember(hourly) { hourly.map { it.time } }
+    // Peak irradiance across the cross-model consensus series — same blend
+    // the chart draws. Suppressed when the rounded peak is below 10 W/m²
+    // (night view, deep-polar winter) so the subtitle doesn't read
+    // "Peak 3 W/m² at 12:00".
+    val peak = remember(perModelHourly, times) {
+        perModelConsensusSeries(perModelHourly) { it.shortwaveRadiationWm2 }
+            .maxByOrNull { it.second }
+            ?.takeIf { it.second.roundToInt() >= 10 }
+            ?.let { (idx, value) ->
+                times.getOrNull(idx)?.let { time -> time to value }
+            }
+    }
+    val subtitle = peak?.let { (time, value) ->
+        stringResource(
+            R.string.today_solar_peak,
+            value.roundToInt(),
+            formatScrubHour(time),
+        )
+    } ?: stringResource(R.string.today_solar_subtitle)
     PerModelDiagnosticCard(
         title = stringResource(R.string.today_solar_title),
-        subtitle = stringResource(R.string.today_solar_subtitle),
+        subtitle = subtitle,
         hourly = hourly,
         startDate = startDate,
         perModelHourly = perModelHourly,

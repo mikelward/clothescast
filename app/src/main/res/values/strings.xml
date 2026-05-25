@@ -213,6 +213,14 @@
          bright" days more honestly than cloud cover alone. -->
     <string name="today_solar_title">Solar radiation</string>
     <string name="today_solar_subtitle">Surface irradiance (W/m²)</string>
+    <!-- Replaces [today_solar_subtitle] when the consensus series has a
+         meaningful peak: peak rounded irradiance and the hour it occurs at.
+         %1$d = peak value in W/m², %2$s = hour formatted as HH:00. Below
+         10 W/m² we keep the static subtitle — a "Peak 3 W/m² at 12:00"
+         reading on the night view or a deep-polar-winter day is
+         information-free. Units stay in the format string because the
+         card title ("Solar radiation") doesn't name them. -->
+    <string name="today_solar_peak">Peak %1$d W/m² at %2$s</string>
 
     <!-- Sunshine-duration diagnostic card. The chart plots minutes of sun
          per hour (0..60) per model; the card's subtitle replaces the static

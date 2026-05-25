@@ -522,6 +522,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_region_language_sw_ke">Suaheli (Kenia)</string>
 
     <string name="settings_root_schedule_subtitle">Benachrichtigungen und Zeiten</string>
+    <string name="settings_root_format_subtitle">Wortwahl und Ausführlichkeit</string>
     <string name="settings_root_clothes_subtitle">Temperaturen und Outfits</string>
     <string name="settings_root_region_subtitle">Sprachen und Einheiten</string>
     <string name="settings_root_voice_subtitle">Anbieter und Akzente</string>

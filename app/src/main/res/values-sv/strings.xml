@@ -35,6 +35,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_root_privacy">Integritet</string>
 
     <string name="settings_root_schedule_subtitle">Aviseringar och tider</string>
+    <string name="settings_root_format_subtitle">Formulering och detaljnivå</string>
     <string name="settings_root_clothes_subtitle">Temperaturer och outfits</string>
     <string name="settings_root_region_subtitle">Språk och enheter</string>
     <string name="settings_root_voice_subtitle">Leverantör och brytningar</string>

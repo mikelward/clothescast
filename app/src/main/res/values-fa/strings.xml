@@ -261,6 +261,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_root_privacy">حریم خصوصی</string>
     <string name="settings_root_about">درباره</string>
     <string name="settings_root_schedule_subtitle">اعلان‌ها و زمان‌ها</string>
+    <string name="settings_root_format_subtitle">عبارت‌بندی و جزئیات</string>
     <string name="settings_root_clothes_subtitle">دماها و لباس‌ها</string>
     <string name="settings_root_region_subtitle">زبان‌ها و واحدها</string>
     <string name="settings_root_voice_subtitle">ارائه‌دهندگان و لهجه‌ها</string>

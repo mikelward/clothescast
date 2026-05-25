@@ -466,6 +466,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_region_language_sw_ke">Svahili (Kenija)</string>
 
     <string name="settings_root_schedule_subtitle">Obavijesti i vremena</string>
+    <string name="settings_root_format_subtitle">Formulacija i razina detalja</string>
     <string name="settings_root_clothes_subtitle">Temperature i odjevne kombinacije</string>
     <string name="settings_root_region_subtitle">Jezici i jedinice</string>
     <string name="settings_root_voice_subtitle">Pružatelji i naglasci</string>

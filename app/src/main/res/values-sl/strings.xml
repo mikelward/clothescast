@@ -276,6 +276,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_root_about">O aplikaciji</string>
 
     <string name="settings_root_schedule_subtitle">Obvestila in časi</string>
+    <string name="settings_root_format_subtitle">Ubeseditev in podrobnost</string>
     <string name="settings_root_clothes_subtitle">Temperature in oblačilne kombinacije</string>
     <string name="settings_root_region_subtitle">Jeziki in enote</string>
     <string name="settings_root_voice_subtitle">Ponudniki in naglasi</string>

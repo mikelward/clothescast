@@ -492,6 +492,7 @@ label localizes.
     <string name="settings_region_language_sw_ke">斯瓦希里语（肯尼亚）</string>
 
     <string name="settings_root_schedule_subtitle">通知与时间</string>
+    <string name="settings_root_format_subtitle">措辞与详细程度</string>
     <string name="settings_root_clothes_subtitle">温度与穿搭</string>
     <string name="settings_root_region_subtitle">语言与单位</string>
     <string name="settings_root_voice_subtitle">声音和口音</string>

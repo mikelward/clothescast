@@ -242,6 +242,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_privacy">Faragha</string>
     <string name="settings_root_about">Kuhusu</string>
     <string name="settings_root_schedule_subtitle">Arifa na Nyakati</string>
+    <string name="settings_root_format_subtitle">Maneno na maelezo</string>
     <string name="settings_root_clothes_subtitle">Halijoto na Mavazi</string>
     <string name="settings_root_region_subtitle">Lugha na Vitengo</string>
     <string name="settings_root_voice_subtitle">Watoa huduma na Lafudhi</string>

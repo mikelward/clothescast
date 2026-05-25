@@ -246,6 +246,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_root_privacy">Privātums</string>
     <string name="settings_root_about">Par</string>
     <string name="settings_root_schedule_subtitle">Paziņojumi un laiki</string>
+    <string name="settings_root_format_subtitle">Formulējums un detalizācija</string>
     <string name="settings_root_clothes_subtitle">Temperatūras un apģērbs</string>
     <string name="settings_root_region_subtitle">Valodas un vienības</string>
     <string name="settings_root_voice_subtitle">Pakalpojumi un akcenti</string>

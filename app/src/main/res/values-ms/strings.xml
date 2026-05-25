@@ -209,7 +209,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_update_downloaded_action">Mulakan semula</string>
 
     <!-- Telemetry notice banner -->
-    <string name="today_telemetry_notice_title">Laporan ranap + penggunaan diaktifkan</string>
+    <string name="today_telemetry_notice_title">Laporan ranap dan penggunaan diaktifkan</string>
     <string name="today_telemetry_notice_body">ClothesCast menghantar laporan ranap tanpa nama dan analitik penggunaan untuk membantu pembaikan pepijat. Tiada data kalendar, lokasi, atau teks pandangan disertakan. Matikan pada bila-bila masa dalam Tetapan.</string>
     <string name="today_telemetry_notice_open_settings">Tetapan Privasi</string>
     <string name="today_telemetry_notice_dismiss">Tutup</string>
@@ -262,6 +262,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_root_privacy">Privasi</string>
     <string name="settings_root_about">Tentang</string>
     <string name="settings_root_schedule_subtitle">Pemberitahuan dan Masa</string>
+    <string name="settings_root_format_subtitle">Susunan Kata dan Perincian</string>
     <string name="settings_root_clothes_subtitle">Suhu dan Pakaian</string>
     <string name="settings_root_region_subtitle">Bahasa dan Unit</string>
     <string name="settings_root_voice_subtitle">Suara dan Loghat</string>
@@ -276,11 +277,11 @@ vs "kemungkinan", "padam" vs "hapus").
     <!-- Location settings subtitles -->
     <string name="settings_root_location_subtitle">Lokasi Automatik dan Manual</string>
     <string name="settings_root_calendar_subtitle">Acara hari ini</string>
-    <string name="settings_root_privacy_subtitle">Laporan ranap + penggunaan</string>
+    <string name="settings_root_privacy_subtitle">Laporan ranap dan penggunaan</string>
 
     <!-- Privacy settings -->
-    <string name="settings_privacy_telemetry_title">Laporan ranap + penggunaan</string>
-    <string name="settings_privacy_telemetry_label">Hantar data ranap + penggunaan</string>
+    <string name="settings_privacy_telemetry_title">Laporan ranap dan penggunaan</string>
+    <string name="settings_privacy_telemetry_label">Hantar data ranap dan penggunaan</string>
     <string name="settings_privacy_telemetry_description">Menghantar laporan ranap tanpa nama dan statistik penggunaan agregat untuk membantu pembangun memperbaiki pepijat dan memutuskan ciri yang perlu dikekalkan.</string>
     <string name="settings_privacy_telemetry_limits">Tidak pernah dihantar: acara kalendar, koordinat atau nama tempat lokasi, teks pandangan atau pemberitahuan, kunci API, GPS tepat, ID pengiklanan.</string>
     <string name="settings_privacy_open_policy">Baca dasar privasi penuh</string>

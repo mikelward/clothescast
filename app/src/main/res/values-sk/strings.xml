@@ -153,6 +153,7 @@ What is NOT overridden, by design:
     <string name="settings_root_privacy">Súkromie</string>
     <string name="settings_root_about">O aplikácii</string>
     <string name="settings_root_schedule_subtitle">Upozornenia a časy</string>
+    <string name="settings_root_format_subtitle">Formulácia a podrobnosť</string>
     <string name="settings_root_clothes_subtitle">Teploty a outfity</string>
     <string name="settings_root_region_subtitle">Jazyky a jednotky</string>
     <string name="settings_root_voice_subtitle">Poskytovatelia a prízvuky</string>

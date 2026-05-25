@@ -50,6 +50,7 @@ only the displayed label localizes.
     <string name="settings_root_privacy">Конфиденциальность</string>
 
     <string name="settings_root_schedule_subtitle">Уведомления и время</string>
+    <string name="settings_root_format_subtitle">Формулировка и подробность</string>
     <string name="settings_root_clothes_subtitle">Температуры и наряды</string>
     <string name="settings_root_region_subtitle">Языки и единицы</string>
     <string name="settings_root_voice_subtitle">Провайдеры и акценты</string>

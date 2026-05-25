@@ -35,6 +35,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_root_privacy">Personvern</string>
 
     <string name="settings_root_schedule_subtitle">Varsler og tider</string>
+    <string name="settings_root_format_subtitle">Formulering og detaljnivå</string>
     <string name="settings_root_clothes_subtitle">Temperaturer og antrekk</string>
     <string name="settings_root_region_subtitle">Språk og enheter</string>
     <string name="settings_root_voice_subtitle">Leverandør og aksenter</string>

@@ -48,6 +48,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_about">Σχετικά</string>
 
     <string name="settings_root_schedule_subtitle">Ειδοποιήσεις και ώρες</string>
+    <string name="settings_root_format_subtitle">Διατύπωση και λεπτομέρεια</string>
     <string name="settings_root_clothes_subtitle">Θερμοκρασίες και σύνολα</string>
     <string name="settings_root_region_subtitle">Γλώσσες και μονάδες</string>
     <string name="settings_root_voice_subtitle">Πάροχοι και προφορές</string>
@@ -614,18 +615,18 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Low-confidence callout. -->
 
     <!-- Telemetry notice banner. -->
-    <string name="today_telemetry_notice_title">Αναφορές σφαλμάτων + χρήσης είναι ενεργές</string>
+    <string name="today_telemetry_notice_title">Αναφορές σφαλμάτων και χρήσης είναι ενεργές</string>
     <string name="today_telemetry_notice_body">Ο ClothesCast στέλνει ανώνυμες αναφορές σφαλμάτων και αναλυτικά χρήσης για βελτίωση. Δεν περιλαμβάνονται ημερολογιακά δεδομένα, τοποθεσία ή κείμενο πρόβλεψης. Μπορείς να το απενεργοποιήσεις οποτεδήποτε στις Ρυθμίσεις.</string>
     <string name="today_telemetry_notice_open_settings">Ρυθμίσεις απορρήτου</string>
     <string name="today_telemetry_notice_dismiss">Κλείσιμο</string>
 
     <!-- Privacy settings root. -->
     <string name="settings_root_privacy">Απόρρητο</string>
-    <string name="settings_root_privacy_subtitle">Αναφορές σφαλμάτων + χρήσης</string>
+    <string name="settings_root_privacy_subtitle">Αναφορές σφαλμάτων και χρήσης</string>
 
     <!-- Privacy settings sub-page. -->
-    <string name="settings_privacy_telemetry_title">Αναφορές σφαλμάτων + χρήσης</string>
-    <string name="settings_privacy_telemetry_label">Αποστολή δεδομένων σφαλμάτων + χρήσης</string>
+    <string name="settings_privacy_telemetry_title">Αναφορές σφαλμάτων και χρήσης</string>
+    <string name="settings_privacy_telemetry_label">Αποστολή δεδομένων σφαλμάτων και χρήσης</string>
     <string name="settings_privacy_telemetry_description">Αποστέλλει ανώνυμες αναφορές σφαλμάτων και συγκεντρωτικά στατιστικά χρήσης για βελτίωση και απόφαση για χαρακτηριστικά.</string>
     <string name="settings_privacy_telemetry_limits">Ποτέ δεν αποστέλλονται: συμβάντα ημερολογίου, συντεταγμένες ή ονόματα τοποθεσιών, κείμενο πρόβλεψης ή ειδοποιήσεων, API keys, ακριβές GPS, διαφημιστικά αναγνωριστικά.</string>
     <string name="settings_privacy_open_policy">Διαβάστε την πλήρη πολιτική απορρήτου</string>

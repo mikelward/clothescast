@@ -117,7 +117,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_update_downloaded_body">Actualització descarregada. Reinicia per completar la instal·lació.</string>
     <string name="today_update_downloaded_action">Reinicia</string>
 
-    <string name="today_telemetry_notice_title">Informes d\'errors + ús activats</string>
+    <string name="today_telemetry_notice_title">Informes d\'errors i ús activats</string>
     <string name="today_telemetry_notice_body">ClothesCast envia informes d\'errors anònims i analítiques d\'ús per ajudar a solucionar errors. No s\'inclouen dades del calendari, ubicació ni text de les previsions. Desactiva-ho quan vulguis a Configuració.</string>
     <string name="today_telemetry_notice_open_settings">Configuració de privadesa</string>
     <string name="today_telemetry_notice_dismiss">Descarta</string>
@@ -169,13 +169,14 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_root_about">Informació</string>
 
     <string name="settings_root_schedule_subtitle">Notificacions i horaris</string>
+    <string name="settings_root_format_subtitle">Redacció i detall</string>
     <string name="settings_root_clothes_subtitle">Temperatures i roba</string>
     <string name="settings_root_region_subtitle">Idiomes i unitats</string>
     <string name="settings_root_voice_subtitle">Proveïdors i accents</string>
     <string name="settings_root_display_subtitle">Temes i colors</string>
     <string name="settings_root_location_subtitle">Detecció automàtica o tria una ciutat</string>
     <string name="settings_root_calendar_subtitle">Esdeveniments d\'avui</string>
-    <string name="settings_root_privacy_subtitle">Informes d\'errors + ús</string>
+    <string name="settings_root_privacy_subtitle">Informes d\'errors i ús</string>
 
     <string name="settings_display_theme_title">Tema</string>
     <string name="settings_display_theme_system">Segueix el sistema</string>
@@ -183,8 +184,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_display_theme_dark">Fosc</string>
 
 
-    <string name="settings_privacy_telemetry_title">Informes d\'errors + ús</string>
-    <string name="settings_privacy_telemetry_label">Envia dades d\'errors + ús</string>
+    <string name="settings_privacy_telemetry_title">Informes d\'errors i ús</string>
+    <string name="settings_privacy_telemetry_label">Envia dades d\'errors i ús</string>
     <string name="settings_privacy_telemetry_description">Envia informes d\'errors anònims i estadístiques d\'ús agregades per ajudar el desenvolupador a solucionar errors i decidir quines funcions mantenir.</string>
     <string name="settings_privacy_telemetry_limits">Mai s\'envia: esdeveniments del calendari, coordenades de ubicació o noms de llocs, text de previsions o notificacions, claus API, GPS precís, identificadors publicitaris.</string>
     <string name="settings_privacy_open_policy">Llegeix la política de privadesa completa</string>

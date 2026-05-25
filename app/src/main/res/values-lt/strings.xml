@@ -268,6 +268,7 @@ What is NOT overridden, by design:
     <string name="settings_root_about">Apie</string>
 
     <string name="settings_root_schedule_subtitle">Pranešimai ir laikas</string>
+    <string name="settings_root_format_subtitle">Formuluotė ir išsamumas</string>
     <string name="settings_root_clothes_subtitle">Temperatūros ir aprangos rinkiniai</string>
     <string name="settings_root_region_subtitle">Kalbos ir vienetai</string>
     <string name="settings_root_voice_subtitle">Teikėjai ir akcentai</string>

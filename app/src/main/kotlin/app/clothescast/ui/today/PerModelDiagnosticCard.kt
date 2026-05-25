@@ -97,12 +97,6 @@ internal fun PerModelDiagnosticCard(
      * doesn't shift the axis labels.
      */
     showOverlay: Boolean = false,
-    /**
-     * Fires on the first pointer-down of a scrub gesture on this card's
-     * chart. Wired in [TodayScreen] to reveal the per-model spread overlay
-     * — same affordance as the temp / precip cards.
-     */
-    onFirstContact: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     // Build (originalIndex, value) pairs per model so a sparse series plots at
@@ -157,7 +151,6 @@ internal fun PerModelDiagnosticCard(
                     seriesByModel = seriesByModel,
                     overlayModels = if (showOverlay) availableModels else emptyList(),
                     yAxis = yAxis,
-                    onFirstContact = onFirstContact ?: {},
                 )
                 ModelSpreadLegend(
                     visibleModelIds = if (showOverlay) availableModels else emptyList(),
@@ -192,7 +185,6 @@ private fun PerModelDiagnosticChart(
     seriesByModel: Map<String, List<Pair<Int, Double>>>,
     overlayModels: List<String>,
     yAxis: YAxis,
-    onFirstContact: () -> Unit,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     val mainLineColor = AppTheme.mainLineColor
@@ -285,7 +277,6 @@ private fun PerModelDiagnosticChart(
     val lineProvider = rememberPinnedLineProvider(overlayModels, mainLineColor)
 
     val scrubController = LocalChartScrub.current
-    val pageSwipe = LocalChartPageSwipe.current
     val scrubBounds = rememberChartScrubBounds()
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
     val decorations = listOf(scrubIndicator)
@@ -296,7 +287,7 @@ private fun PerModelDiagnosticChart(
             .height(140.dp)
             .let { mod ->
                 if (scrubController != null) {
-                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate, onFirstContact, pageSwipe)
+                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate)
                 } else {
                     mod
                 }

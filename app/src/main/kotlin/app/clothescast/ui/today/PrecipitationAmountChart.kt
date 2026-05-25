@@ -49,7 +49,6 @@ import kotlin.math.roundToInt
 fun PrecipitationAmountChart(
     hourly: List<HourlyForecast>,
     startDate: LocalDate = LocalDate.now(),
-    onFirstContact: () -> Unit = {},
     modifier: Modifier = Modifier,
     perModelHourly: PerModelHourly? = null,
     showModelSpread: Boolean = false,
@@ -137,7 +136,7 @@ fun PrecipitationAmountChart(
             .height(140.dp)
             .let { mod ->
                 if (scrubController != null) {
-                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate, onFirstContact)
+                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate)
                 } else {
                     mod
                 }

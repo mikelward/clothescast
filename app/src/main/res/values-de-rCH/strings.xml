@@ -519,8 +519,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_holidays_source_location">Standort (%1$s)</string>
     <string name="settings_holidays_source_region">Region (%1$s)</string>
     <string name="settings_holidays_source_all">Alle Länder</string>
-    <string name="settings_holidays_source_calendar_birthdays">Kalender-Geburtstage</string>
-    <string name="settings_holidays_source_calendar_holidays">Kalender-Feiertage</string>
     <string name="settings_holidays_link_settings">Einstellungen</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Kalendereinstellungen</string>
     <string name="settings_holidays_link_location_settings_a11y">Standorteinstellungen</string>

@@ -1274,17 +1274,15 @@
          tapping the checkbox when permission is missing prompts for
          READ_CALENDAR. -->
     <string name="settings_holidays_sources_title">Built-in calendars</string>
-    <!-- Expand row at the bottom of the Built-in holidays card. Reveals
-         the per-country catalogue (Global / Funny / per-country / All)
-         for users who want to flip a specific override; collapsed by
-         default so the page top stays scannable. -->
-    <string name="settings_holidays_browse_by_country">Browse by country</string>
+    <!-- Expand row below the currently-enabled country sections. Reveals
+         the catalogue collapsibles for countries that aren't currently
+         enabled, plus the flat "All" search; collapsed by default so the
+         page stays scannable. -->
+    <string name="settings_holidays_more_countries">More countries</string>
     <string name="settings_holidays_source_region">Region (%1$s)</string>
     <string name="settings_holidays_source_location">Location (%1$s)</string>
     <string name="settings_holidays_source_global">Global</string>
     <string name="settings_holidays_source_funny">Funny</string>
-    <string name="settings_holidays_source_calendar_holidays">Calendar holidays</string>
-    <string name="settings_holidays_source_calendar_birthdays">Calendar birthdays</string>
 
     <!-- Legacy "All countries" toggle. The previous UI exposed an "All"
          checkbox that short-circuited every country on; this is dropped

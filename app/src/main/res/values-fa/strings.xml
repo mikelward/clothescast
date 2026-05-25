@@ -807,8 +807,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_holidays_link_settings">تنظیمات</string>
     <string name="settings_holidays_permission_revoked">مجوز تقویم لازم است. برای اعطای مجدد ضربه بزنید.</string>
     <string name="settings_holidays_source_all">همه کشورها</string>
-    <string name="settings_holidays_source_calendar_birthdays">تولدهای تقویم</string>
-    <string name="settings_holidays_source_calendar_holidays">تعطیلات تقویم</string>
     <string name="settings_holidays_source_global">جهانی</string>
     <string name="settings_holidays_source_location">موقعیت (%1$s)</string>
     <string name="settings_holidays_source_region">منطقه (%1$s)</string>

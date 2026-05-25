@@ -830,8 +830,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_holidays_source_location">Helyszín (%1$s)</string>
     <string name="settings_holidays_source_region">Régió (%1$s)</string>
     <string name="settings_holidays_source_all">Minden ország</string>
-    <string name="settings_holidays_source_calendar_birthdays">Naptárbeli születésnapok</string>
-    <string name="settings_holidays_source_calendar_holidays">Naptárbeli ünnepek</string>
     <string name="settings_holidays_link_settings">Beállítások</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Naptárbeállítások</string>
     <string name="settings_holidays_link_location_settings_a11y">Helyszínbeállítások</string>

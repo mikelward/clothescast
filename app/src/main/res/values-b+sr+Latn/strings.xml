@@ -826,8 +826,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_holidays_source_location">Lokacija (%1$s)</string>
     <string name="settings_holidays_source_region">Region (%1$s)</string>
     <string name="settings_holidays_source_all">Sve zemlje</string>
-    <string name="settings_holidays_source_calendar_birthdays">Rođendani iz kalendara</string>
-    <string name="settings_holidays_source_calendar_holidays">Praznici iz kalendara</string>
     <string name="settings_holidays_link_settings">Podešavanja</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Podešavanja kalendara</string>
     <string name="settings_holidays_link_location_settings_a11y">Podešavanja lokacije</string>

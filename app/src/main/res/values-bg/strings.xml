@@ -824,8 +824,6 @@ What is NOT overridden, by design:
     <string name="settings_holidays_source_location">Местоположение (%1$s)</string>
     <string name="settings_holidays_source_region">Регион (%1$s)</string>
     <string name="settings_holidays_source_all">Всички страни</string>
-    <string name="settings_holidays_source_calendar_birthdays">Рождени дни от календара</string>
-    <string name="settings_holidays_source_calendar_holidays">Празници от календара</string>
     <string name="settings_holidays_link_settings">Настройки</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Настройки на календара</string>
     <string name="settings_holidays_link_location_settings_a11y">Настройки на местоположението</string>

@@ -815,8 +815,6 @@ standard in Israeli digital communication.
     <string name="settings_holidays_link_settings">הגדרות</string>
     <string name="settings_holidays_permission_revoked">נדרשת הרשאת יומן. הקש/י להענקה מחדש.</string>
     <string name="settings_holidays_source_all">כל המדינות</string>
-    <string name="settings_holidays_source_calendar_birthdays">ימי הולדת מיומן</string>
-    <string name="settings_holidays_source_calendar_holidays">חגים מיומן</string>
     <string name="settings_holidays_source_global">גלובלי</string>
     <string name="settings_holidays_source_location">מיקום (%1$s)</string>
     <string name="settings_holidays_source_region">אזור (%1$s)</string>

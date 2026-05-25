@@ -70,14 +70,14 @@ import java.util.Locale
 /**
  * The Calendar settings page. Top to bottom: a "Use my calendar" permission
  * master toggle, a "What to use it for" card with the three calendar-sourced
- * feature toggles (Evening tie-ins, Birthdays, Public holidays), the
- * country-source toggles (Region / Location / Global / Funny / All), the two
- * upcoming-celebration listings (Calendar Holidays / Birthdays), and finally
- * the curated holiday catalogue: a Global collapsible listing the four
- * universal holidays (Christmas, NYE, Halloween, Valentine's), a Funny
- * collapsible listing the playful observances (Talk Like a Pirate Day), one
- * collapsible per ISO country, and an "All" collapsible showing every holiday
- * flat for power-user search.
+ * feature toggles (Evening tie-ins, Birthdays, Public holidays), the two
+ * upcoming-celebration listings (Birthdays / Public holidays), the
+ * country-source toggles (Region / Location / Global / Funny / All), the
+ * currently-enabled country collapsibles surfaced at the top level, and
+ * finally a "More countries" expand row revealing the rest of the curated
+ * catalogue: any non-enabled Global / Funny / Christian / Orthodox /
+ * per-country collapsibles, plus an "All" collapsible showing every
+ * holiday flat for power-user search.
  *
  * The calendar permission toggle gates only the calendar-sourced features and
  * the upcoming-event listings; the curated catalogue (country sources +
@@ -277,11 +277,12 @@ internal fun CalendarContent(
         sortedCatalog.map { it.second }
     }
 
-    // Tucks the per-country / Global / Funny / All collapsibles behind a
-    // single expand row at the bottom of the Built-in holidays card.
-    // Collapsed by default so the page top stays scannable; expansion state
-    // is saved across config changes for the power-user case.
-    var browseCountriesExpanded by rememberSaveable { mutableStateOf(false) }
+    // Currently-enabled country collapsibles render at the top level (always
+    // visible). Non-enabled countries — plus the flat "All" search — are
+    // tucked behind a single "More countries" expand row below them.
+    // Collapsed by default so the page stays scannable; expansion state is
+    // saved across config changes for the power-user case.
+    var moreCountriesExpanded by rememberSaveable { mutableStateOf(false) }
 
     EdgeFadeOverlay(
         scrollState = scrollState,
@@ -357,6 +358,43 @@ internal fun CalendarContent(
                 )
             }
 
+            // TODO(celebrations-v2): give each row in the Birthdays / Public
+            // holidays listings below a per-event override dropdown (same
+            // pattern as the country sections) so the user can mute a specific
+            // event ("Boxing Day" they don't celebrate; a noisy birthday import)
+            // without disabling the whole source. Needs a CalendarEvent → stable
+            // key scheme that survives event-recurrence renames, persisted
+            // alongside holidayOverrides.
+
+            // Birthdays / Public holidays listings — the next year of detected
+            // events from the user's synced calendars, collapsed by default and
+            // gated on READ_CALENDAR. When permission is missing each section
+            // offers an in-place grant prompt instead of a list. Ordered to
+            // match the Birthdays-then-Public-holidays toggle order in the
+            // Personal calendars card above.
+            CalendarCelebrationsSection(
+                title = stringResource(R.string.settings_calendar_birthdays),
+                rememberKey = "holidays-calendar-birthdays-section",
+                calendarEnabled = calendarEnabled,
+                permissionGranted = permissionGranted,
+                events = calendarBirthdays,
+                emptyMessage = stringResource(R.string.settings_holidays_calendar_no_birthdays),
+                uiLocale = uiLocale,
+                onRequestPermission = requestPermissionForListing,
+                onEnableCalendar = scrollToTop,
+            )
+            CalendarCelebrationsSection(
+                title = stringResource(R.string.settings_calendar_public_holidays),
+                rememberKey = "holidays-calendar-holidays-section",
+                calendarEnabled = calendarEnabled,
+                permissionGranted = permissionGranted,
+                events = calendarHolidays,
+                emptyMessage = stringResource(R.string.settings_holidays_calendar_no_holidays),
+                uiLocale = uiLocale,
+                onRequestPermission = requestPermissionForListing,
+                onEnableCalendar = scrollToTop,
+            )
+
             // Curated celebration sources — country buckets that drive the
             // built-in holiday catalogue below. Independent of calendar
             // permission. Region / Location carry a deep-link to the
@@ -420,23 +458,69 @@ internal fun CalendarContent(
                         onCheckedChange = onSetCountryAll,
                     )
                 }
-                // Expand row that reveals the per-country / Global / Funny /
-                // All catalogue below the card. Off-page by default so the
-                // top of Calendar stays scannable.
+            }
+
+            // Catalogue collapsibles — drill-down for the country-source
+            // toggles above. The four special buckets (Global / Funny /
+            // Christian / Orthodox) come first, then ISO countries with the
+            // user's Region and Location countries pinned to the top. Each
+            // section's expansion state is independently saved via
+            // [CollapsibleSection]'s rememberKey.
+            //
+            // Sections corresponding to currently-enabled countries render
+            // unconditionally at the top level so the user always sees what's
+            // active. The rest tuck behind the "More countries" expand row
+            // below, alongside the flat "All" search collapsible.
+            val pinnedCountries = listOfNotNull(localeCountry?.uppercase(), weatherLocationCountry?.uppercase())
+                .filter { it in isoCountries }
+                .distinct()
+            val orderedCountries = pinnedCountries + isoCountries.filterNot { it in pinnedCountries }
+            val sectionEntries: List<Triple<String, String, List<HolidayTheme>>> = buildList {
+                add(Triple(HolidayCatalog.GLOBAL_COUNTRY, stringResource(R.string.settings_holiday_country_global_label), globalThemes))
+                add(Triple(HolidayCatalog.FUNNY, stringResource(R.string.settings_holiday_country_funny_label), funnyThemes))
+                add(Triple(HolidayCatalog.CHRISTIAN, stringResource(R.string.settings_holiday_country_christian_label), christianThemes))
+                add(Triple(HolidayCatalog.ORTHODOX, stringResource(R.string.settings_holiday_country_orthodox_label), orthodoxThemes))
+                orderedCountries.forEach { code ->
+                    add(Triple(code, resolveCountryDisplayName(context, uiLocale, code), themesByCountry[code].orEmpty()))
+                }
+            }
+
+            sectionEntries
+                .filter { (code, _, _) -> code in effectiveEnabledHolidayCountries }
+                .forEach { (code, title, themes) ->
+                    CountrySectionCard(
+                        code = code,
+                        title = title,
+                        themes = themes,
+                        holidayOverrides = holidayOverrides,
+                        effectiveEnabledHolidayCountries = effectiveEnabledHolidayCountries,
+                        countryOverride = holidayCountrySelection.countryOverrides[code] ?: HolidayOverride.AUTO,
+                        autoOn = holidayCountrySelection.countryAutoEffective(code, localeCountry, weatherLocationCountry),
+                        onSetCountryOverride = onSetCountryOverride,
+                        onSetHolidayOverride = onSetHolidayOverride,
+                    )
+                }
+
+            // "More countries" expand card, sitting below the enabled-country
+            // collapsibles. Its own Card so it reads as a distinct affordance
+            // alongside the country collapsibles above and below it.
+            Card(modifier = Modifier.fillMaxWidth()) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = stringResource(R.string.settings_holidays_browse_by_country),
-                        style = MaterialTheme.typography.bodyLarge,
+                        text = stringResource(R.string.settings_holidays_more_countries),
+                        style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.weight(1f),
                     )
-                    IconButton(onClick = { browseCountriesExpanded = !browseCountriesExpanded }) {
+                    IconButton(onClick = { moreCountriesExpanded = !moreCountriesExpanded }) {
                         Icon(
-                            imageVector = if (browseCountriesExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                            imageVector = if (moreCountriesExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                             contentDescription = stringResource(
-                                if (browseCountriesExpanded) R.string.settings_holidays_collapse
+                                if (moreCountriesExpanded) R.string.settings_holidays_collapse
                                 else R.string.settings_holidays_expand
                             ),
                         )
@@ -444,189 +528,22 @@ internal fun CalendarContent(
                 }
             }
 
-            // Per-country / Global / Funny / All catalogue — drill-down for
-            // the four source-row toggles above. Off-page by default and
-            // revealed via the "Browse by country" expand row on the
-            // Built-in holidays card. Each section's expansion state is
-            // independently saved via [CollapsibleSection]'s rememberKey, so
-            // toggling Browse-by-country off and on returns the user to the
-            // same sub-section they were drilling into.
-            if (browseCountriesExpanded) {
-                val globalActiveCount = globalThemes.count { theme ->
-                    theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries)
-                }
-                val globalOverride = holidayCountrySelection.countryOverrides[HolidayCatalog.GLOBAL_COUNTRY]
-                    ?: HolidayOverride.AUTO
-                val globalAutoOn = holidayCountrySelection.countryAutoEffective(
-                    HolidayCatalog.GLOBAL_COUNTRY,
-                    localeCountry,
-                    weatherLocationCountry,
-                )
-                CollapsibleSection(
-                    title = stringResource(R.string.settings_holiday_country_global_label),
-                    summary = "$globalActiveCount/${globalThemes.size}",
-                    rememberKey = "holidays-country-${HolidayCatalog.GLOBAL_COUNTRY}",
-                    trailing = {
-                        OverrideDropdown(
-                            current = globalOverride,
-                            autoOn = globalAutoOn,
-                            onChange = { newState ->
-                                onSetCountryOverride(HolidayCatalog.GLOBAL_COUNTRY, newState)
-                            },
-                        )
-                    },
-                ) {
-                    globalThemes.forEach { theme ->
-                        HolidayOverrideRow(
-                            theme = theme,
-                            override = holidayOverrides[theme.id] ?: HolidayOverride.AUTO,
-                            autoOn = theme.countries.any { it in effectiveEnabledHolidayCountries },
-                            onChange = { newState -> onSetHolidayOverride(theme.id, newState) },
+            if (moreCountriesExpanded) {
+                sectionEntries
+                    .filterNot { (code, _, _) -> code in effectiveEnabledHolidayCountries }
+                    .forEach { (code, title, themes) ->
+                        CountrySectionCard(
+                            code = code,
+                            title = title,
+                            themes = themes,
+                            holidayOverrides = holidayOverrides,
+                            effectiveEnabledHolidayCountries = effectiveEnabledHolidayCountries,
+                            countryOverride = holidayCountrySelection.countryOverrides[code] ?: HolidayOverride.AUTO,
+                            autoOn = holidayCountrySelection.countryAutoEffective(code, localeCountry, weatherLocationCountry),
+                            onSetCountryOverride = onSetCountryOverride,
+                            onSetHolidayOverride = onSetHolidayOverride,
                         )
                     }
-                }
-
-                val funnyActiveCount = funnyThemes.count { theme ->
-                    theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries)
-                }
-                val funnyOverride = holidayCountrySelection.countryOverrides[HolidayCatalog.FUNNY]
-                    ?: HolidayOverride.AUTO
-                val funnyAutoOn = holidayCountrySelection.countryAutoEffective(
-                    HolidayCatalog.FUNNY,
-                    localeCountry,
-                    weatherLocationCountry,
-                )
-                CollapsibleSection(
-                    title = stringResource(R.string.settings_holiday_country_funny_label),
-                    summary = "$funnyActiveCount/${funnyThemes.size}",
-                    rememberKey = "holidays-country-${HolidayCatalog.FUNNY}",
-                    trailing = {
-                        OverrideDropdown(
-                            current = funnyOverride,
-                            autoOn = funnyAutoOn,
-                            onChange = { newState ->
-                                onSetCountryOverride(HolidayCatalog.FUNNY, newState)
-                            },
-                        )
-                    },
-                ) {
-                    funnyThemes.forEach { theme ->
-                        HolidayOverrideRow(
-                            theme = theme,
-                            override = holidayOverrides[theme.id] ?: HolidayOverride.AUTO,
-                            autoOn = theme.countries.any { it in effectiveEnabledHolidayCountries },
-                            onChange = { newState -> onSetHolidayOverride(theme.id, newState) },
-                        )
-                    }
-                }
-
-                val christianActiveCount = christianThemes.count { theme ->
-                    theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries)
-                }
-                val christianOverride = holidayCountrySelection.countryOverrides[HolidayCatalog.CHRISTIAN]
-                    ?: HolidayOverride.AUTO
-                val christianAutoOn = holidayCountrySelection.countryAutoEffective(
-                    HolidayCatalog.CHRISTIAN,
-                    localeCountry,
-                    weatherLocationCountry,
-                )
-                CollapsibleSection(
-                    title = stringResource(R.string.settings_holiday_country_christian_label),
-                    summary = "$christianActiveCount/${christianThemes.size}",
-                    rememberKey = "holidays-country-${HolidayCatalog.CHRISTIAN}",
-                    trailing = {
-                        OverrideDropdown(
-                            current = christianOverride,
-                            autoOn = christianAutoOn,
-                            onChange = { newState ->
-                                onSetCountryOverride(HolidayCatalog.CHRISTIAN, newState)
-                            },
-                        )
-                    },
-                ) {
-                    christianThemes.forEach { theme ->
-                        HolidayOverrideRow(
-                            theme = theme,
-                            override = holidayOverrides[theme.id] ?: HolidayOverride.AUTO,
-                            autoOn = theme.countries.any { it in effectiveEnabledHolidayCountries },
-                            onChange = { newState -> onSetHolidayOverride(theme.id, newState) },
-                        )
-                    }
-                }
-
-                val orthodoxActiveCount = orthodoxThemes.count { theme ->
-                    theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries)
-                }
-                val orthodoxOverride = holidayCountrySelection.countryOverrides[HolidayCatalog.ORTHODOX]
-                    ?: HolidayOverride.AUTO
-                val orthodoxAutoOn = holidayCountrySelection.countryAutoEffective(
-                    HolidayCatalog.ORTHODOX,
-                    localeCountry,
-                    weatherLocationCountry,
-                )
-                CollapsibleSection(
-                    title = stringResource(R.string.settings_holiday_country_orthodox_label),
-                    summary = "$orthodoxActiveCount/${orthodoxThemes.size}",
-                    rememberKey = "holidays-country-${HolidayCatalog.ORTHODOX}",
-                    trailing = {
-                        OverrideDropdown(
-                            current = orthodoxOverride,
-                            autoOn = orthodoxAutoOn,
-                            onChange = { newState ->
-                                onSetCountryOverride(HolidayCatalog.ORTHODOX, newState)
-                            },
-                        )
-                    },
-                ) {
-                    orthodoxThemes.forEach { theme ->
-                        HolidayOverrideRow(
-                            theme = theme,
-                            override = holidayOverrides[theme.id] ?: HolidayOverride.AUTO,
-                            autoOn = theme.countries.any { it in effectiveEnabledHolidayCountries },
-                            onChange = { newState -> onSetHolidayOverride(theme.id, newState) },
-                        )
-                    }
-                }
-
-                // Pull the Region and Location countries (if any) to the top
-                // of the per-country list — the user's "own" countries first,
-                // then the rest of the catalog alphabetically.
-                val pinnedCountries = listOfNotNull(localeCountry?.uppercase(), weatherLocationCountry?.uppercase())
-                    .filter { it in isoCountries }
-                    .distinct()
-                val orderedCountries = pinnedCountries + isoCountries.filterNot { it in pinnedCountries }
-
-                orderedCountries.forEach { code ->
-                    val themes = themesByCountry[code].orEmpty()
-                    val activeCount = themes.count { theme -> theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries) }
-                    val countryOverride = holidayCountrySelection.countryOverrides[code] ?: HolidayOverride.AUTO
-                    val countryAutoOn = holidayCountrySelection.countryAutoEffective(
-                        code,
-                        localeCountry,
-                        weatherLocationCountry,
-                    )
-                    CollapsibleSection(
-                        title = resolveCountryDisplayName(context, uiLocale, code),
-                        summary = "$activeCount/${themes.size}",
-                        rememberKey = "holidays-country-$code",
-                        trailing = {
-                            OverrideDropdown(
-                                current = countryOverride,
-                                autoOn = countryAutoOn,
-                                onChange = { newState -> onSetCountryOverride(code, newState) },
-                            )
-                        },
-                    ) {
-                        themes.forEach { theme ->
-                            HolidayOverrideRow(
-                                theme = theme,
-                                override = holidayOverrides[theme.id] ?: HolidayOverride.AUTO,
-                                autoOn = theme.countries.any { it in effectiveEnabledHolidayCountries },
-                                onChange = { newState -> onSetHolidayOverride(theme.id, newState) },
-                            )
-                        }
-                    }
-                }
 
                 val allActiveCount = allThemes.count { theme -> theme.isActive(holidayOverrides, effectiveEnabledHolidayCountries) }
                 CollapsibleSection(
@@ -644,41 +561,6 @@ internal fun CalendarContent(
                     }
                 }
             }
-
-            // TODO(celebrations-v2): give each row in the Calendar Holidays /
-            // Birthdays listings below a per-event override dropdown (same
-            // pattern as the country sections) so the user can mute a specific
-            // event ("Boxing Day" they don't celebrate; a noisy birthday import)
-            // without disabling the whole source. Needs a CalendarEvent → stable
-            // key scheme that survives event-recurrence renames, persisted
-            // alongside holidayOverrides.
-
-            // Calendar Holidays / Birthdays listings — the next year of detected
-            // events from the user's synced calendars, collapsed by default and
-            // gated on READ_CALENDAR. When permission is missing each section
-            // offers an in-place grant prompt instead of a list.
-            CalendarCelebrationsSection(
-                title = stringResource(R.string.settings_holidays_source_calendar_holidays),
-                rememberKey = "holidays-calendar-holidays-section",
-                calendarEnabled = calendarEnabled,
-                permissionGranted = permissionGranted,
-                events = calendarHolidays,
-                emptyMessage = stringResource(R.string.settings_holidays_calendar_no_holidays),
-                uiLocale = uiLocale,
-                onRequestPermission = requestPermissionForListing,
-                onEnableCalendar = scrollToTop,
-            )
-            CalendarCelebrationsSection(
-                title = stringResource(R.string.settings_holidays_source_calendar_birthdays),
-                rememberKey = "holidays-calendar-birthdays-section",
-                calendarEnabled = calendarEnabled,
-                permissionGranted = permissionGranted,
-                events = calendarBirthdays,
-                emptyMessage = stringResource(R.string.settings_holidays_calendar_no_birthdays),
-                uiLocale = uiLocale,
-                onRequestPermission = requestPermissionForListing,
-                onEnableCalendar = scrollToTop,
-            )
         }
     }
 }
@@ -690,6 +572,51 @@ private fun HolidayTheme.isActive(
     HolidayOverride.ON -> true
     HolidayOverride.OFF -> false
     HolidayOverride.AUTO -> countries.any { it in effectiveCountries }
+}
+
+/**
+ * One catalogue collapsible — a [CollapsibleSection] populated with the
+ * country's (or special bucket's) holiday themes, an active-count summary,
+ * and a tri-state override dropdown in the trailing slot. Used for both
+ * the four special buckets (Global / Funny / Christian / Orthodox) and the
+ * per-ISO-country sections; the [code] doubles as the [rememberKey] scope
+ * so each section keeps its own expansion state across config changes and
+ * across moves between the "enabled" and "More countries" passes.
+ */
+@Composable
+private fun CountrySectionCard(
+    code: String,
+    title: String,
+    themes: List<HolidayTheme>,
+    holidayOverrides: Map<HolidayId, HolidayOverride>,
+    effectiveEnabledHolidayCountries: Set<String>,
+    countryOverride: HolidayOverride,
+    autoOn: Boolean,
+    onSetCountryOverride: (String, HolidayOverride) -> Unit,
+    onSetHolidayOverride: (HolidayId, HolidayOverride) -> Unit,
+) {
+    val activeCount = themes.count { it.isActive(holidayOverrides, effectiveEnabledHolidayCountries) }
+    CollapsibleSection(
+        title = title,
+        summary = "$activeCount/${themes.size}",
+        rememberKey = "holidays-country-$code",
+        trailing = {
+            OverrideDropdown(
+                current = countryOverride,
+                autoOn = autoOn,
+                onChange = { newState -> onSetCountryOverride(code, newState) },
+            )
+        },
+    ) {
+        themes.forEach { theme ->
+            HolidayOverrideRow(
+                theme = theme,
+                override = holidayOverrides[theme.id] ?: HolidayOverride.AUTO,
+                autoOn = theme.countries.any { it in effectiveEnabledHolidayCountries },
+                onChange = { newState -> onSetHolidayOverride(theme.id, newState) },
+            )
+        }
+    }
 }
 
 /**

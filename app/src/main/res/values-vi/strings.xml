@@ -880,8 +880,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_holidays_link_settings">Cài đặt</string>
     <string name="settings_holidays_permission_revoked">Cần quyền lịch. Nhấn để cấp lại.</string>
     <string name="settings_holidays_source_all">Tất cả quốc gia</string>
-    <string name="settings_holidays_source_calendar_birthdays">Sinh nhật trong lịch</string>
-    <string name="settings_holidays_source_calendar_holidays">Ngày lễ trong lịch</string>
     <string name="settings_holidays_source_global">Toàn cầu</string>
     <string name="settings_holidays_source_location">Vị trí (%1$s)</string>
     <string name="settings_holidays_source_region">Khu vực (%1$s)</string>

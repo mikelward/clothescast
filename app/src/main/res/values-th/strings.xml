@@ -819,8 +819,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_link_settings">การตั้งค่า</string>
     <string name="settings_holidays_permission_revoked">ต้องการสิทธิ์ปฏิทิน แตะเพื่ออนุญาตอีกครั้ง</string>
     <string name="settings_holidays_source_all">ทุกประเทศ</string>
-    <string name="settings_holidays_source_calendar_birthdays">วันเกิดในปฏิทิน</string>
-    <string name="settings_holidays_source_calendar_holidays">วันหยุดในปฏิทิน</string>
     <string name="settings_holidays_source_global">ทั่วโลก</string>
     <string name="settings_holidays_source_location">ตำแหน่ง (%1$s)</string>
     <string name="settings_holidays_source_region">ภูมิภาค (%1$s)</string>

@@ -808,8 +808,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_holidays_source_location">Sted (%1$s)</string>
     <string name="settings_holidays_source_region">Region (%1$s)</string>
     <string name="settings_holidays_source_all">Alle lande</string>
-    <string name="settings_holidays_source_calendar_birthdays">Kalenderfødseldage</string>
-    <string name="settings_holidays_source_calendar_holidays">Kalenderhelligdage</string>
     <string name="settings_holidays_link_settings">Indstillinger</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Kalenderindstillinger</string>
     <string name="settings_holidays_link_location_settings_a11y">Stedsindstillinger</string>

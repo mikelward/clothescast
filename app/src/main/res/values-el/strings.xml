@@ -959,8 +959,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_holidays_source_location">Τοποθεσία (%1$s)</string>
     <string name="settings_holidays_source_region">Περιοχή (%1$s)</string>
     <string name="settings_holidays_source_all">Όλες οι χώρες</string>
-    <string name="settings_holidays_source_calendar_birthdays">Γενέθλια ημερολογίου</string>
-    <string name="settings_holidays_source_calendar_holidays">Αργίες ημερολογίου</string>
     <string name="settings_holidays_link_settings">Ρυθμίσεις</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Ρυθμίσεις ημερολογίου</string>
     <string name="settings_holidays_link_location_settings_a11y">Ρυθμίσεις τοποθεσίας</string>

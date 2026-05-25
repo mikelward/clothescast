@@ -842,8 +842,6 @@ the displayed label localizes.
     <string name="settings_holidays_source_location">Locatie (%1$s)</string>
     <string name="settings_holidays_source_region">Regio (%1$s)</string>
     <string name="settings_holidays_source_all">Alle landen</string>
-    <string name="settings_holidays_source_calendar_birthdays">Kalenderverjaardagen</string>
-    <string name="settings_holidays_source_calendar_holidays">Kalenderfeestdagen</string>
     <string name="settings_holidays_link_settings">Instellingen</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Kalenderinstellingen</string>
     <string name="settings_holidays_link_location_settings_a11y">Locatie-instellingen</string>

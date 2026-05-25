@@ -821,8 +821,6 @@ displayed label localizes.
     <string name="settings_holidays_link_settings">Ayarlar</string>
     <string name="settings_holidays_permission_revoked">Takvim izni gerekli. Yeniden vermek için dokun.</string>
     <string name="settings_holidays_source_all">Tüm ülkeler</string>
-    <string name="settings_holidays_source_calendar_birthdays">Takvim Doğum Günleri</string>
-    <string name="settings_holidays_source_calendar_holidays">Takvim Tatilleri</string>
     <string name="settings_holidays_source_global">Küresel</string>
     <string name="settings_holidays_source_location">Konum (%1$s)</string>
     <string name="settings_holidays_source_region">Bölge (%1$s)</string>

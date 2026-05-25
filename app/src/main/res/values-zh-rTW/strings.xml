@@ -982,8 +982,6 @@ label localises.
 
     <!-- Holidays source picker. -->
     <string name="settings_holidays_source_all">所有國家</string>
-    <string name="settings_holidays_source_calendar_birthdays">行事曆生日</string>
-    <string name="settings_holidays_source_calendar_holidays">行事曆節假日</string>
     <string name="settings_holidays_source_global">全球</string>
     <string name="settings_holidays_source_location">位置（%1$s）</string>
     <string name="settings_holidays_source_region">地區（%1$s）</string>

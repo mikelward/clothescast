@@ -819,8 +819,6 @@ to values/strings.xml (English).
     <string name="settings_holidays_link_settings">Pengaturan</string>
     <string name="settings_holidays_permission_revoked">Izin kalender diperlukan. Ketuk untuk memberikan kembali.</string>
     <string name="settings_holidays_source_all">Semua negara</string>
-    <string name="settings_holidays_source_calendar_birthdays">Ulang Tahun Kalender</string>
-    <string name="settings_holidays_source_calendar_holidays">Hari Libur Kalender</string>
     <string name="settings_holidays_source_global">Global</string>
     <string name="settings_holidays_source_location">Lokasi (%1$s)</string>
     <string name="settings_holidays_source_region">Wilayah (%1$s)</string>

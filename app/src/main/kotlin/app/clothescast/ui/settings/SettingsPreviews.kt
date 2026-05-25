@@ -541,7 +541,22 @@ internal fun SettingsCalendarCelebrationsPreview() {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             CalendarCelebrationsSection(
-                title = stringResource(R.string.settings_holidays_source_calendar_holidays),
+                title = stringResource(R.string.settings_calendar_birthdays),
+                rememberKey = "preview-calendar-birthdays",
+                calendarEnabled = true,
+                permissionGranted = true,
+                events = listOf(
+                    UpcomingCalendarEvent(today.plusDays(9), "Alex’s birthday", EventKind.BIRTHDAY),
+                    UpcomingCalendarEvent(today.plusMonths(2), "Sam’s birthday", EventKind.BIRTHDAY),
+                ),
+                emptyMessage = stringResource(R.string.settings_holidays_calendar_no_birthdays),
+                uiLocale = Locale.US,
+                onRequestPermission = {},
+                onEnableCalendar = {},
+                initiallyExpanded = true,
+            )
+            CalendarCelebrationsSection(
+                title = stringResource(R.string.settings_calendar_public_holidays),
                 rememberKey = "preview-calendar-holidays",
                 calendarEnabled = true,
                 permissionGranted = true,
@@ -551,21 +566,6 @@ internal fun SettingsCalendarCelebrationsPreview() {
                     UpcomingCalendarEvent(today.plusMonths(7), "Christmas Day", EventKind.PUBLIC_HOLIDAY),
                 ),
                 emptyMessage = stringResource(R.string.settings_holidays_calendar_no_holidays),
-                uiLocale = Locale.US,
-                onRequestPermission = {},
-                onEnableCalendar = {},
-                initiallyExpanded = true,
-            )
-            CalendarCelebrationsSection(
-                title = stringResource(R.string.settings_holidays_source_calendar_birthdays),
-                rememberKey = "preview-calendar-birthdays",
-                calendarEnabled = true,
-                permissionGranted = true,
-                events = listOf(
-                    UpcomingCalendarEvent(today.plusDays(9), "Alex’s birthday", EventKind.BIRTHDAY),
-                    UpcomingCalendarEvent(today.plusMonths(2), "Sam’s birthday", EventKind.BIRTHDAY),
-                ),
-                emptyMessage = stringResource(R.string.settings_holidays_calendar_no_birthdays),
                 uiLocale = Locale.US,
                 onRequestPermission = {},
                 onEnableCalendar = {},

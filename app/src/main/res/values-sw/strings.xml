@@ -790,8 +790,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_link_settings">Mipangilio</string>
     <string name="settings_holidays_permission_revoked">Ruhusa ya kalenda inahitajika. Gonga ili kuruhusu tena.</string>
     <string name="settings_holidays_source_all">Nchi zote</string>
-    <string name="settings_holidays_source_calendar_birthdays">Siku za Kuzaliwa za Kalenda</string>
-    <string name="settings_holidays_source_calendar_holidays">Likizo za Kalenda</string>
     <string name="settings_holidays_source_global">Kimataifa</string>
     <string name="settings_holidays_source_location">Mahali (%1$s)</string>
     <string name="settings_holidays_source_region">Eneo (%1$s)</string>

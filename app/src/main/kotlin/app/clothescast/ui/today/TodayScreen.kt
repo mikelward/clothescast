@@ -361,71 +361,29 @@ private fun TodayContent(
             .fillMaxSize()
             .padding(padding),
     ) {
-        // Pinned banners — outside the pager so critical banners (update
-        // available, crash report, telemetry notice, location required,
-        // work status) aren't duplicated per page. The outfit row used to
-        // live here too, but it pinned a lot of vertical space at the top
-        // regardless of which page was in view; it now scrolls with each
-        // page (rendered inside TodayPage below) so more chart cards fit
-        // in a single screen of scroll.
-        //
-        // Each banner carries its own top + horizontal padding so that
-        // hidden banners (every banner here early-returns when its
-        // condition isn't met) contribute zero vertical space — that's
-        // what keeps the outfit row from sitting under a permanent 40dp
-        // blank strip in the steady state. Adjacent visible banners are
-        // 16dp apart (the top padding of the lower one).
-        //
-        // UpdateAvailableBanner is first on purpose: a stale build is
-        // the upstream cause of many bug reports, so giving the user
-        // the chance to update before they notice anything else is the
-        // highest-leverage placement.
-        val bannerModifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
-        UpdateAvailableBanner(modifier = bannerModifier)
-        LocalBuildBanner(modifier = bannerModifier)
-        LastCrashBanner(modifier = bannerModifier)
-        // One-shot privacy disclosure for the default-on Firebase
-        // telemetry, so the default isn't silent. Auto-hides once the
-        // user dismisses it (or taps through to Privacy from it).
-        // Stays out of the way of the crash banner: that's a current
-        // problem to action; this is just disclosure.
-        TelemetryNoticeBanner(onOpenPrivacy = onOpenPrivacy, modifier = bannerModifier)
-        // Promo card for the calendar-sourced holiday + birthday theming.
-        // Driven by [TodayState.celebrationCardVisible] (gated upstream on
-        // toggles + dismissal) so it disappears the moment either toggle
-        // goes on or the X is tapped.
-        CelebrationThemesCard(
-            visible = state.celebrationCardVisible,
-            onOpenCalendarSettings = onOpenCalendarSettings,
-            onDismiss = onDismissCelebrationCard,
-            modifier = bannerModifier,
-        )
-        if (locationActionRequired) {
-            LocationActionRequiredBanner(
-                onSetUpLocation = onSetUpLocation,
-                modifier = bannerModifier,
-            )
-        }
-        WorkStatusBanner(status = workStatusToShow, modifier = bannerModifier)
-        // Holiday banner sits last in the banner stack so it ends up closest
-        // to the outfit row whose palette it explains. Hidden on days with
-        // no enabled holiday match — `HolidayBanner` early-returns on null
-        // so the stack contributes zero vertical space in the steady state.
-        HolidayBanner(theme = state.activeHoliday, region = state.region, modifier = bannerModifier)
         if (state.thisPeriodInsight == null) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     // Match the nav-bar inset added inside each TodayPage's
-                    // scroll viewport — this branch isn't scrollable, so the
-                    // Fetch-now button has to be padded out of the nav-bar
-                    // zone directly. Without this the button would sit under
-                    // the (translucent) nav bar on devices where banners
-                    // push it down to the bottom of the screen.
+                    // scroll viewport so the Fetch-now button isn't hidden
+                    // by the (translucent) nav bar when the banner stack
+                    // pushes it down.
                     .windowInsetsPadding(WindowInsets.navigationBars)
+                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
                     .padding(top = 16.dp, bottom = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
+                BannerStack(
+                    state = state,
+                    workStatusToShow = workStatusToShow,
+                    locationActionRequired = locationActionRequired,
+                    onOpenPrivacy = onOpenPrivacy,
+                    onOpenCalendarSettings = onOpenCalendarSettings,
+                    onDismissCelebrationCard = onDismissCelebrationCard,
+                    onSetUpLocation = onSetUpLocation,
+                )
                 EmptyState(onRefresh = onRefresh, isWorking = isWorking)
             }
         } else {
@@ -476,6 +434,8 @@ private fun TodayContent(
                     outfitInsight = state.thisPeriodInsight,
                     showChevronRight = (page == 0),
                     showChevronLeft = (page == 1),
+                    workStatusToShow = workStatusToShow,
+                    locationActionRequired = locationActionRequired,
                     onChevronTap = {
                         pagerScope.launch {
                             pagerState.animateScrollToPage(if (page == 0) 1 else 0)
@@ -487,10 +447,71 @@ private fun TodayContent(
                     onToggleModelSpread = onToggleModelSpread,
                     onRevealModelSpread = onRevealModelSpread,
                     onLongPressDate = onLongPressDate,
+                    onSetUpLocation = onSetUpLocation,
+                    onOpenPrivacy = onOpenPrivacy,
+                    onOpenCalendarSettings = onOpenCalendarSettings,
+                    onDismissCelebrationCard = onDismissCelebrationCard,
                 )
             }
         }
     }
+}
+
+/**
+ * Stack of top-of-screen banners: update available, local-build / crash /
+ * telemetry disclosures, celebration-themes promo, location-required prompt,
+ * work-status spinner, and the day's holiday banner. None are pinned — the
+ * caller embeds this in its scroll viewport so banners scroll with the
+ * content underneath rather than hogging vertical space at the top of the
+ * screen in the steady state. Each banner early-returns when its condition
+ * isn't met, so the enclosing Column's spacedBy arrangement collapses to
+ * zero between hidden entries.
+ *
+ * HolidayBanner is last on purpose: it ends up adjacent to the outfit row
+ * whose palette it explains.
+ */
+@Composable
+private fun BannerStack(
+    state: TodayState,
+    workStatusToShow: WorkStatus,
+    locationActionRequired: Boolean,
+    onOpenPrivacy: () -> Unit,
+    onOpenCalendarSettings: () -> Unit,
+    onDismissCelebrationCard: () -> Unit,
+    onSetUpLocation: () -> Unit,
+) {
+    val bannerModifier = Modifier.fillMaxWidth()
+    // UpdateAvailableBanner is first on purpose: a stale build is the
+    // upstream cause of many bug reports, so giving the user the chance
+    // to update before they notice anything else is the highest-leverage
+    // placement.
+    UpdateAvailableBanner(modifier = bannerModifier)
+    LocalBuildBanner(modifier = bannerModifier)
+    LastCrashBanner(modifier = bannerModifier)
+    // One-shot privacy disclosure for the default-on Firebase telemetry,
+    // so the default isn't silent. Auto-hides once the user dismisses it
+    // (or taps through to Privacy from it). Stays out of the way of the
+    // crash banner: that's a current problem to action; this is just
+    // disclosure.
+    TelemetryNoticeBanner(onOpenPrivacy = onOpenPrivacy, modifier = bannerModifier)
+    // Promo card for the calendar-sourced holiday + birthday theming.
+    // Driven by [TodayState.celebrationCardVisible] (gated upstream on
+    // toggles + dismissal) so it disappears the moment either toggle goes
+    // on or the X is tapped.
+    CelebrationThemesCard(
+        visible = state.celebrationCardVisible,
+        onOpenCalendarSettings = onOpenCalendarSettings,
+        onDismiss = onDismissCelebrationCard,
+        modifier = bannerModifier,
+    )
+    if (locationActionRequired) {
+        LocationActionRequiredBanner(
+            onSetUpLocation = onSetUpLocation,
+            modifier = bannerModifier,
+        )
+    }
+    WorkStatusBanner(status = workStatusToShow, modifier = bannerModifier)
+    HolidayBanner(theme = state.activeHoliday, region = state.region, modifier = bannerModifier)
 }
 
 /**
@@ -513,6 +534,8 @@ private fun TodayPage(
     outfitInsight: Insight,
     showChevronRight: Boolean,
     showChevronLeft: Boolean,
+    workStatusToShow: WorkStatus,
+    locationActionRequired: Boolean,
     onChevronTap: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
@@ -520,6 +543,10 @@ private fun TodayPage(
     onToggleModelSpread: () -> Unit,
     onRevealModelSpread: () -> Unit,
     onLongPressDate: () -> Unit,
+    onSetUpLocation: () -> Unit,
+    onOpenPrivacy: () -> Unit,
+    onOpenCalendarSettings: () -> Unit,
+    onDismissCelebrationCard: () -> Unit,
 ) {
     val scrollScope = rememberCoroutineScope()
     // Captured via onGloballyPositioned on the ConfidenceChip below so the
@@ -544,6 +571,20 @@ private fun TodayPage(
                 .padding(top = 16.dp, bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            // Banner stack sits at the top of the scroll viewport (rather
+            // than pinned above the pager) so nothing hogs vertical space
+            // on the steady-state screen. HolidayBanner is last in the
+            // stack so it ends up adjacent to the outfit row whose palette
+            // it explains.
+            BannerStack(
+                state = state,
+                workStatusToShow = workStatusToShow,
+                locationActionRequired = locationActionRequired,
+                onOpenPrivacy = onOpenPrivacy,
+                onOpenCalendarSettings = onOpenCalendarSettings,
+                onDismissCelebrationCard = onDismissCelebrationCard,
+                onSetUpLocation = onSetUpLocation,
+            )
             // Outfit row sits above the null-insight short-circuit so it
             // also renders on page 2 when [insight] (the next-period
             // insight) is null and we fall back to MissingPeriodPlaceholder.

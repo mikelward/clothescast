@@ -41,8 +41,8 @@ import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 /**
- * Shared "diagnostic card" used by every per-model metric (wind / cloud /
- * humidity / solar / sunshine / UV). The chart always draws a single
+ * Shared "diagnostic card" used by every per-model metric (wind / humidity /
+ * cloud / solar / UV / sunshine). The chart always draws a single
  * consensus main line — the per-hour mean across consulted models — and
  * optionally overlays the individual model lines when [showOverlay] is on.
  * This matches the temp / feels-like / precip cards' "main line first,
@@ -63,8 +63,8 @@ import kotlin.math.roundToInt
  * missing sample doesn't punch a hole in the main line either. The card
  * auto-hides when *every* consulted model is missing the metric outright.
  *
- * Used by the [WindCard], [CloudCard], [HumidityCard], [SolarRadiationCard],
- * [SunshineCard] and [UvIndexCard] wrappers in [TodayScreen].
+ * Used by the [WindCard], [HumidityCard], [CloudCard], [SolarRadiationCard],
+ * [UvIndexCard] and [SunshineCard] wrappers in [TodayScreen].
  */
 @Composable
 internal fun PerModelDiagnosticCard(

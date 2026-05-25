@@ -741,6 +741,10 @@ private fun TodayPage(
                     // consulted model is missing its metric outright (older cached
                     // payloads don't carry wind / humidity / cloud).
                     insight.perModelHourly?.let { perModelData ->
+                        // Order: "feels-like" metrics first (wind, humidity),
+                        // then the sun-related cluster as a cause→effect chain
+                        // — clouds gate irradiance, UV is a subset of that
+                        // irradiance, sunshine is the time-integrated payoff.
                         WindCard(
                             hourly = insight.hourly,
                             perModelHourly = perModelData,
@@ -749,14 +753,14 @@ private fun TodayPage(
                             showModelSpread = state.showModelSpread,
                             onFirstContact = chartReveal,
                         )
-                        CloudCard(
+                        HumidityCard(
                             hourly = insight.hourly,
                             perModelHourly = perModelData,
                             startDate = insight.forDate,
                             showModelSpread = state.showModelSpread,
                             onFirstContact = chartReveal,
                         )
-                        HumidityCard(
+                        CloudCard(
                             hourly = insight.hourly,
                             perModelHourly = perModelData,
                             startDate = insight.forDate,
@@ -770,18 +774,18 @@ private fun TodayPage(
                             showModelSpread = state.showModelSpread,
                             onFirstContact = chartReveal,
                         )
+                        UvIndexCard(
+                            hourly = insight.hourly,
+                            perModelHourly = perModelData,
+                            startDate = insight.forDate,
+                            showModelSpread = state.showModelSpread,
+                            onFirstContact = chartReveal,
+                        )
                         SunshineCard(
                             hourly = insight.hourly,
                             perModelHourly = perModelData,
                             forDate = insight.forDate,
                             period = insight.period,
-                            showModelSpread = state.showModelSpread,
-                            onFirstContact = chartReveal,
-                        )
-                        UvIndexCard(
-                            hourly = insight.hourly,
-                            perModelHourly = perModelData,
-                            startDate = insight.forDate,
                             showModelSpread = state.showModelSpread,
                             onFirstContact = chartReveal,
                         )

@@ -112,6 +112,73 @@ class TodayWorkStatusSelectionTest {
     }
 
     @Test
+    fun `active entry past fetch_complete reads as Idle`() {
+        // Once the worker has signalled fetch + cache are done (progress
+        // KEY_FETCH_COMPLETE = true), the banner should hide even though
+        // the WorkInfo is still RUNNING — the remaining time is alignment
+        // wait + notification post + TTS playback, and we don't want
+        // "Fetching" to linger while TTS speaks.
+        val infos = listOf(
+            WorkInfoLite(
+                state = WorkInfo.State.RUNNING,
+                runAttemptCount = 1,
+                outputData = Data.EMPTY,
+                progress = Data.Builder()
+                    .putBoolean(FetchAndNotifyWorker.KEY_FETCH_COMPLETE, true)
+                    .build(),
+            ),
+        )
+        selectStatus(infos) shouldBe WorkStatus.Idle
+    }
+
+    @Test
+    fun `active entry before fetch_complete still reads as Running`() {
+        // Sanity-check the inverse: a RUNNING entry with no progress flag
+        // (or the flag absent) keeps the spinner up.
+        selectStatus(
+            listOf(
+                WorkInfoLite(
+                    state = WorkInfo.State.RUNNING,
+                    runAttemptCount = 1,
+                    outputData = Data.EMPTY,
+                    progress = Data.Builder()
+                        .putBoolean(FetchAndNotifyWorker.KEY_FETCH_COMPLETE, false)
+                        .build(),
+                ),
+            ),
+        ) shouldBe WorkStatus.Running
+    }
+
+    @Test
+    fun `fetch_complete active entry lets a prior failure surface`() {
+        // The worker is mid-delivery (fetch done, TTS playing) but the
+        // last terminal run failed: the user should still see the
+        // failure rather than have it masked by the in-flight worker.
+        // This mirrors the existing "active wins over terminal" rule
+        // but with fetch-complete carving the in-flight entry out of
+        // the active set so the terminal entry surfaces.
+        val infos = listOf(
+            terminalFailure(
+                reason = FetchAndNotifyWorker.REASON_UNHANDLED,
+                detail = "kaboom",
+                completedAt = 1_000L,
+            ),
+            WorkInfoLite(
+                state = WorkInfo.State.RUNNING,
+                runAttemptCount = 1,
+                outputData = Data.EMPTY,
+                progress = Data.Builder()
+                    .putBoolean(FetchAndNotifyWorker.KEY_FETCH_COMPLETE, true)
+                    .build(),
+            ),
+        )
+        selectStatus(infos) shouldBe WorkStatus.Failed(
+            reason = FetchAndNotifyWorker.REASON_UNHANDLED,
+            detail = "kaboom",
+        )
+    }
+
+    @Test
     fun `cancelled entries are ignored`() {
         // REPLACE policy cancels the in-flight worker before enqueueing a new
         // one. The transient CANCELLED entry shouldn't clobber the active one

@@ -171,10 +171,19 @@ internal data class WorkInfoLite(
     val state: WorkInfo.State,
     val runAttemptCount: Int,
     val outputData: Data,
+    /**
+     * Live [WorkInfo.progress] payload from the running worker. The only
+     * key [selectStatus] inspects is [FetchAndNotifyWorker.KEY_FETCH_COMPLETE]
+     * — set once the fetch + cache write are done and the worker has moved
+     * on to alignment wait / notification post / TTS playback, at which
+     * point the banner should stop saying "fetching" even though the
+     * WorkInfo is still RUNNING.
+     */
+    val progress: Data = Data.EMPTY,
 )
 
 internal fun List<WorkInfo>.toLite(): List<WorkInfoLite> =
-    map { WorkInfoLite(it.state, it.runAttemptCount, it.outputData) }
+    map { WorkInfoLite(it.state, it.runAttemptCount, it.outputData, it.progress) }
 
 /**
  * Maps a WorkManager unique-work history to the state the Today banner cares
@@ -202,10 +211,18 @@ internal fun List<WorkInfo>.toLite(): List<WorkInfoLite> =
  */
 internal fun selectStatus(infos: List<WorkInfoLite>): WorkStatus {
     if (infos.isEmpty()) return WorkStatus.Idle
+    // Only entries still in the "fetching" phase count as active for the
+    // banner. The worker calls setProgress(KEY_FETCH_COMPLETE) once the
+    // fetch + cache are done and it's about to enter deliver() (alignment
+    // wait → notification → TTS); past that point the fresh data is on
+    // screen and the spinner shouldn't keep claiming "Fetching" while
+    // TTS speaks. A terminal SUCCEEDED/FAILED entry from the same run
+    // still surfaces normally below.
     val active = infos.firstOrNull {
-        it.state == WorkInfo.State.ENQUEUED ||
+        (it.state == WorkInfo.State.ENQUEUED ||
             it.state == WorkInfo.State.RUNNING ||
-            it.state == WorkInfo.State.BLOCKED
+            it.state == WorkInfo.State.BLOCKED) &&
+            !it.progress.getBoolean(FetchAndNotifyWorker.KEY_FETCH_COMPLETE, false)
     }
     if (active != null) {
         return if (active.runAttemptCount > 1) WorkStatus.Retrying else WorkStatus.Running

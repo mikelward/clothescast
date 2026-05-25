@@ -967,4 +967,6 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Rationale open clothes settings -->
     <string name="today_rationale_open_clothes_settings">Mga setting ng damit</string>
+    <string name="settings_calendar_birthdays">Mga Kaarawan sa Kalendaryo</string>
+    <string name="settings_calendar_public_holidays">Mga Holiday sa Kalendaryo</string>
 </resources>

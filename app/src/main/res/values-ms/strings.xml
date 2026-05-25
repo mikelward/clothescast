@@ -923,4 +923,6 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <!-- Rationale open clothes settings -->
     <string name="today_rationale_open_clothes_settings">Tetapan pakaian</string>
+    <string name="settings_calendar_birthdays">Hari Jadi Kalendar</string>
+    <string name="settings_calendar_public_holidays">Hari Kelepasan Kalendar</string>
 </resources>

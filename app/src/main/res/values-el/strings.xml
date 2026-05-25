@@ -1038,4 +1038,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="cast_error_no_route_picked">Επίλεξε πρώτα έξυπνη οθόνη.</string>
     <string name="cast_error_no_insight_yet">Δεν υπάρχει ακόμα διαθέσιμη πρόγνωση. Περίμενε την επόμενη προγραμματισμένη εκτέλεση ή πάτησε Ανανέωση στην οθόνη Σήμερα.</string>
     <string name="cast_error_unknown">Η μετάδοση απέτυχε.</string>
+    <string name="settings_calendar_birthdays">Γενέθλια ημερολογίου</string>
+    <string name="settings_calendar_public_holidays">Αργίες ημερολογίου</string>
 </resources>

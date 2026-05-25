@@ -917,4 +917,6 @@ to values/strings.xml (English).
 
     <!-- Rationale open clothes settings -->
     <string name="today_rationale_open_clothes_settings">Pengaturan pakaian</string>
+    <string name="settings_calendar_birthdays">Ulang Tahun Kalender</string>
+    <string name="settings_calendar_public_holidays">Hari Libur Kalender</string>
 </resources>

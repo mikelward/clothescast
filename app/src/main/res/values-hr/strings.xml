@@ -985,4 +985,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="cast_error_no_route_picked">Prvo odaberite pametni zaslon.</string>
     <string name="cast_error_no_insight_yet">Prognoza još nije dostupna. Pričekajte sljedeće planirano pokretanje ili dodirnite Osvježi na zaslonu Danas.</string>
     <string name="cast_error_unknown">Prenošenje nije uspjelo.</string>
+    <string name="settings_calendar_birthdays">Rođendani iz kalendara</string>
+    <string name="settings_calendar_public_holidays">Blagdani iz kalendara</string>
 </resources>

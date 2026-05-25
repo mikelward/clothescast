@@ -1066,4 +1066,6 @@ the displayed label localizes.
 
     <!-- Today screen — rationale: open clothes settings link. -->
     <string name="today_rationale_open_clothes_settings">服装設定を開く</string>
+    <string name="settings_calendar_birthdays">カレンダーの誕生日</string>
+    <string name="settings_calendar_public_holidays">カレンダーの祝日</string>
 </resources>

@@ -905,4 +905,6 @@ default English (matching values-pl / values-uk).
     <string name="cast_error_no_route_picked">Prvo odaberi pametni ekran.</string>
     <string name="cast_error_no_insight_yet">Prognoza još nije dostupna. Sačekaj sledeće planirano pokretanje ili dodirni Osveži na ekranu Danas.</string>
     <string name="cast_error_unknown">Prenos nije uspeo.</string>
+    <string name="settings_calendar_birthdays">Rođendani iz kalendara</string>
+    <string name="settings_calendar_public_holidays">Praznici iz kalendara</string>
 </resources>

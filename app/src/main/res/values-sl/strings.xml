@@ -901,4 +901,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="cast_error_no_route_picked">Najprej izberi pametni zaslon.</string>
     <string name="cast_error_no_insight_yet">Napoved še ni na voljo. Počakaj na naslednje načrtovano izvajanje ali se dotakni Osveži na zaslonu Danes.</string>
     <string name="cast_error_unknown">Predvajanje ni uspelo.</string>
+    <string name="settings_calendar_birthdays">Rojstni dnevi iz koledarja</string>
+    <string name="settings_calendar_public_holidays">Prazniki iz koledarja</string>
 </resources>

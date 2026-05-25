@@ -963,4 +963,6 @@ is unchanged; only the displayed label localizes.
     <string name="holiday_banner_fr_armistice_day">Wspominamy poległych</string>
     <string name="holiday_banner_us_thanksgiving">Wesołego Dnia Dziękczynienia</string>
     <string name="holiday_banner_st_andrews_day">Wesołego Dnia Świętego Andrzeja</string>
+    <string name="settings_calendar_birthdays">Urodziny z kalendarza</string>
+    <string name="settings_calendar_public_holidays">Święta z kalendarza</string>
 </resources>

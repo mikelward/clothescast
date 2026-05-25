@@ -964,4 +964,6 @@ the displayed label localizes.
     <string name="holiday_banner_us_thanksgiving">Fijn Thanksgiving</string>
     <string name="holiday_banner_us_veterans_day">Ter ere van onze veteranen</string>
     <string name="holiday_banner_waitangi_day">Fijne Waitangidag</string>
+    <string name="settings_calendar_birthdays">Kalenderverjaardagen</string>
+    <string name="settings_calendar_public_holidays">Kalenderfeestdagen</string>
 </resources>

@@ -987,4 +987,6 @@ West Bengal vocabulary differences in a future PR.
 
     <!-- Today — Rationale: open clothes settings. -->
     <string name="today_rationale_open_clothes_settings">পোশাক সেটিংস</string>
+    <string name="settings_calendar_birthdays">ক্যালেন্ডার জন্মদিন</string>
+    <string name="settings_calendar_public_holidays">ক্যালেন্ডার ছুটি</string>
 </resources>

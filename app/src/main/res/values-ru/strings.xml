@@ -970,4 +970,6 @@ only the displayed label localizes.
     <string name="holiday_banner_fr_armistice_day">Помним</string>
     <string name="holiday_banner_us_thanksgiving">С Днём благодарения</string>
     <string name="holiday_banner_st_andrews_day">С Днём святого Андрея</string>
+    <string name="settings_calendar_birthdays">Дни рождения в календаре</string>
+    <string name="settings_calendar_public_holidays">Праздники в календаре</string>
 </resources>

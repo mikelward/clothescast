@@ -908,4 +908,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
 
     <!-- Today — rationale -->
     <string name="today_rationale_open_clothes_settings">تنظیمات لباس</string>
+    <string name="settings_calendar_birthdays">تولدهای تقویم</string>
+    <string name="settings_calendar_public_holidays">تعطیلات تقویم</string>
 </resources>

@@ -945,4 +945,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="holiday_banner_us_thanksgiving">Glædelig Thanksgiving</string>
     <string name="holiday_banner_us_veterans_day">Vi ærer vores veteraner</string>
     <string name="holiday_banner_waitangi_day">Glædelig Waitangi Day</string>
+    <string name="settings_calendar_birthdays">Kalenderfødseldage</string>
+    <string name="settings_calendar_public_holidays">Kalenderhelligdage</string>
 </resources>

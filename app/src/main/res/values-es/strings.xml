@@ -1043,4 +1043,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="cast_error_no_route_picked">Elige primero una pantalla inteligente.</string>
     <string name="cast_error_no_insight_yet">Aún no hay previsión disponible. Espera la siguiente ejecución programada o toca Actualizar en la pantalla de Hoy.</string>
     <string name="cast_error_unknown">Emisión fallida.</string>
+    <string name="settings_calendar_birthdays">Cumpleaños del calendario</string>
+    <string name="settings_calendar_public_holidays">Festivos del calendario</string>
 </resources>

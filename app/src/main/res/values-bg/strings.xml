@@ -903,4 +903,6 @@ What is NOT overridden, by design:
     <string name="cast_error_no_route_picked">Първо избери умен дисплей.</string>
     <string name="cast_error_no_insight_yet">Все още няма налична прогноза. Изчакай следващото планирано изпълнение или докосни Обнови на екрана Днес.</string>
     <string name="cast_error_unknown">Предаването се провали.</string>
+    <string name="settings_calendar_birthdays">Рождени дни от календара</string>
+    <string name="settings_calendar_public_holidays">Празници от календара</string>
 </resources>

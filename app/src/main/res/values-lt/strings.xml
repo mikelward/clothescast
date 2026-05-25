@@ -904,4 +904,6 @@ What is NOT overridden, by design:
     <string name="holiday_banner_fr_armistice_day">Tegul neužmirštama</string>
     <string name="holiday_banner_us_thanksgiving">Su padėkos diena</string>
     <string name="holiday_banner_st_andrews_day">Su šv. Andriejaus diena</string>
+    <string name="settings_calendar_birthdays">Kalendoriaus gimtadieniai</string>
+    <string name="settings_calendar_public_holidays">Kalendoriaus šventės</string>
 </resources>

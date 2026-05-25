@@ -917,4 +917,6 @@ they work correctly in both the single-band and range templates.
 
     <!-- Today — rationale -->
     <string name="today_rationale_open_clothes_settings">إعدادات الملابس</string>
+    <string name="settings_calendar_birthdays">أعياد ميلاد التقويم</string>
+    <string name="settings_calendar_public_holidays">أعياد التقويم</string>
 </resources>

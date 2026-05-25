@@ -944,4 +944,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="holiday_banner_us_thanksgiving">Glad Thanksgiving</string>
     <string name="holiday_banner_us_veterans_day">Hedrar våra veteraner</string>
     <string name="holiday_banner_waitangi_day">Glad Waitangidagen</string>
+    <string name="settings_calendar_birthdays">Kalenderfödelsedagar</string>
+    <string name="settings_calendar_public_holidays">Kalenderhelgdagar</string>
 </resources>

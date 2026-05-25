@@ -947,4 +947,6 @@ Not overridden by design:
 
     <!-- Today — Rationale: open clothes settings. -->
     <string name="today_rationale_open_clothes_settings">कपड़ों की सेटिंग</string>
+    <string name="settings_calendar_birthdays">कैलेंडर जन्मदिन</string>
+    <string name="settings_calendar_public_holidays">कैलेंडर छुट्टियाँ</string>
 </resources>

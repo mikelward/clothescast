@@ -924,4 +924,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="holiday_banner_fr_armistice_day">Uctíváme padlé</string>
     <string name="holiday_banner_us_thanksgiving">Šťastný Den díkůvzdání</string>
     <string name="holiday_banner_st_andrews_day">Šťastný Den svatého Ondřeje</string>
+    <string name="settings_calendar_birthdays">Narozeniny z kalendáře</string>
+    <string name="settings_calendar_public_holidays">Svátky z kalendáře</string>
 </resources>

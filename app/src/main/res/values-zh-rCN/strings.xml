@@ -1064,4 +1064,6 @@ label localizes.
 
     <!-- Today screen — rationale open clothes settings. -->
     <string name="today_rationale_open_clothes_settings">服装设置</string>
+    <string name="settings_calendar_birthdays">日历生日</string>
+    <string name="settings_calendar_public_holidays">日历节假日</string>
 </resources>

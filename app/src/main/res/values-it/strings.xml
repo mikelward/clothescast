@@ -1028,4 +1028,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="cast_error_no_route_picked">Scegli prima un display intelligente.</string>
     <string name="cast_error_no_insight_yet">Nessuna previsione ancora disponibile. Attendi la prossima esecuzione programmata o tocca Aggiorna nella schermata Oggi.</string>
     <string name="cast_error_unknown">Trasmissione fallita.</string>
+    <string name="settings_calendar_birthdays">Compleanni del calendario</string>
+    <string name="settings_calendar_public_holidays">Festività del calendario</string>
 </resources>

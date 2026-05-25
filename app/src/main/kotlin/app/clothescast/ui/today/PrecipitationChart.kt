@@ -46,9 +46,6 @@ fun PrecipitationChart(
     // Date of `hourly[0]` — needed by the shared scrub indicator. See
     // [ForecastChart] for the same parameter.
     startDate: LocalDate = LocalDate.now(),
-    // Fires on first pointer-down of a scrub gesture — wired in
-    // [TodayScreen] to reveal the per-model spread overlay.
-    onFirstContact: () -> Unit = {},
     modifier: Modifier = Modifier,
     // Optional per-model data; see [ForecastChart] for the same pattern.
     perModelHourly: PerModelHourly? = null,
@@ -153,7 +150,6 @@ fun PrecipitationChart(
     val lineProvider = rememberPinnedLineProvider(visibleModels, mainLineColor)
 
     val scrubController = LocalChartScrub.current
-    val pageSwipe = LocalChartPageSwipe.current
     val scrubBounds = rememberChartScrubBounds()
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
     val decorations = listOf(scrubIndicator)
@@ -167,7 +163,7 @@ fun PrecipitationChart(
             .height(140.dp)
             .let { mod ->
                 if (scrubController != null) {
-                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate, onFirstContact, pageSwipe)
+                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate)
                 } else {
                     mod
                 }

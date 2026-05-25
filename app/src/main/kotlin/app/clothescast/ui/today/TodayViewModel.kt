@@ -483,6 +483,18 @@ class TodayViewModel(
     }
 
     /**
+     * One-way hide — paired with [revealModelSpread]. Wired to the chart's
+     * restore action: when the user exits scrub mode and we revealed the
+     * per-model spread as part of entering it, undo that reveal so the
+     * spread doesn't linger past the scrub session. If the user had the
+     * spread on already (via the confidence chip) the restore path leaves
+     * it alone — the controller tracks that on its side.
+     */
+    fun hideModelSpread() {
+        showModelSpread.value = false
+    }
+
+    /**
      * Nudges the temperature threshold of the [ClothesRule] keyed [ruleItem] by
      * [deltaC] degrees Celsius. Wired to the rationale dialog's `−1°` / `+1°`
      * controls. The read-modify-write is delegated to

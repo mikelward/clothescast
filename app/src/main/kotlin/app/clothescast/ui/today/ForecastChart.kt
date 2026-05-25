@@ -121,10 +121,6 @@ fun ForecastChart(
     // wrap. Falls back to today's date for previews / non-screen callers
     // that don't drive the indicator from a real insight.
     startDate: LocalDate = LocalDate.now(),
-    // Fires once on the first pointer-down of a scrub gesture — wired in
-    // [TodayScreen] to reveal the per-model spread overlay so tapping
-    // any chart both sets the indicator time and lights up the lines.
-    onFirstContact: () -> Unit = {},
     modifier: Modifier = Modifier,
     // Optional per-model data. When non-null, used to size the y-axis to the
     // full envelope regardless of [showModelSpread] so the toggle only adds /
@@ -242,7 +238,6 @@ fun ForecastChart(
     val lineProvider = rememberPinnedLineProvider(visibleModels, mainLineColor, modelColors)
 
     val scrubController = LocalChartScrub.current
-    val pageSwipe = LocalChartPageSwipe.current
     val scrubBounds = rememberChartScrubBounds()
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
     val decorations = listOf(scrubIndicator)
@@ -253,7 +248,7 @@ fun ForecastChart(
             .height(180.dp)
             .let { mod ->
                 if (scrubController != null) {
-                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate, onFirstContact, pageSwipe)
+                    mod.chartScrub(scrubController, scrubBounds, hourly, startDate)
                 } else {
                     mod
                 }

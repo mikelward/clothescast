@@ -52,6 +52,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -273,6 +274,7 @@ fun TodayScreen(
             onNavigateToFormat = onNavigateToFormat,
             onToggleModelSpread = viewModel::toggleModelSpread,
             onRevealModelSpread = viewModel::revealModelSpread,
+            onHideModelSpread = viewModel::hideModelSpread,
             onLongPressDate = onNavigateToDeveloper,
         )
     }
@@ -310,6 +312,7 @@ private fun TodayContent(
     onNavigateToFormat: () -> Unit,
     onToggleModelSpread: () -> Unit,
     onRevealModelSpread: () -> Unit,
+    onHideModelSpread: () -> Unit,
     onLongPressDate: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -409,66 +412,51 @@ private fun TodayContent(
             // the rain chart on Today, swiping to Tomorrow keeps them
             // on the rain chart rather than snapping back to the top.
             val scrollState = rememberScrollState()
-            // Hands a wide horizontal scrub off to the pager: if the user
-            // starts dragging inside a chart and the pointer keeps going
-            // past the plot-grid edge, [Modifier.chartScrub] calls this
-            // and we animate the pager to the neighbouring page. Clamped
-            // to the page range so a swipe past the first / last page is
-            // a no-op rather than an error.
-            val pageSwipe: (Boolean) -> Unit = remember(pagerState, pagerScope) {
-                { toNextPage ->
-                    val target = pagerState.currentPage + if (toNextPage) 1 else -1
-                    if (target in 0 until pagerState.pageCount) {
-                        pagerScope.launch { pagerState.animateScrollToPage(target) }
-                    }
-                }
-            }
             // Placeholder period for page 2 when its slot is empty —
             // whatever the next 12-hour window after `thisPeriodInsight` is.
             // The worker writes [InsightCache.Slot.NEXT_PERIOD] paired with
             // each delivery, so this fallback only fires before the first
             // post-upgrade worker run.
             val nextPeriodFallback = state.thisPeriodInsight.period.opposite()
-            CompositionLocalProvider(LocalChartPageSwipe provides pageSwipe) {
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                ) { page ->
-                    val pageInsight = if (page == 0) state.thisPeriodInsight else state.nextPeriodInsight
-                    val pagePeriod = if (page == 0) state.thisPeriodInsight.period else nextPeriodFallback
-                    TodayPage(
-                        insight = pageInsight,
-                        fallbackPeriod = pagePeriod,
-                        state = state,
-                        scrollState = scrollState,
-                        // Same outfit row on both pages — page 2 shows this
-                        // period's pair too, not the page-2 period's pair. We
-                        // don't surface a 3rd period (tomorrow) on page 2; the
-                        // outfit row stays the at-a-glance today+tonight summary.
-                        outfitInsight = state.thisPeriodInsight,
-                        showChevronRight = (page == 0),
-                        showChevronLeft = (page == 1),
-                        workStatusToShow = workStatusToShow,
-                        locationActionRequired = locationActionRequired,
-                        onChevronTap = {
-                            pagerScope.launch {
-                                pagerState.animateScrollToPage(if (page == 0) 1 else 0)
-                            }
-                        },
-                        onAdjustThreshold = onAdjustThreshold,
-                        onNavigateToClothes = onNavigateToClothes,
-                        onNavigateToFormat = onNavigateToFormat,
-                        onToggleModelSpread = onToggleModelSpread,
-                        onRevealModelSpread = onRevealModelSpread,
-                        onLongPressDate = onLongPressDate,
-                        onSetUpLocation = onSetUpLocation,
-                        onOpenPrivacy = onOpenPrivacy,
-                        onOpenCalendarSettings = onOpenCalendarSettings,
-                        onDismissCelebrationCard = onDismissCelebrationCard,
-                    )
-                }
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+            ) { page ->
+                val pageInsight = if (page == 0) state.thisPeriodInsight else state.nextPeriodInsight
+                val pagePeriod = if (page == 0) state.thisPeriodInsight.period else nextPeriodFallback
+                TodayPage(
+                    insight = pageInsight,
+                    fallbackPeriod = pagePeriod,
+                    state = state,
+                    scrollState = scrollState,
+                    // Same outfit row on both pages — page 2 shows this
+                    // period's pair too, not the page-2 period's pair. We
+                    // don't surface a 3rd period (tomorrow) on page 2; the
+                    // outfit row stays the at-a-glance today+tonight summary.
+                    outfitInsight = state.thisPeriodInsight,
+                    showChevronRight = (page == 0),
+                    showChevronLeft = (page == 1),
+                    workStatusToShow = workStatusToShow,
+                    locationActionRequired = locationActionRequired,
+                    onChevronTap = {
+                        pagerScope.launch {
+                            pagerState.animateScrollToPage(if (page == 0) 1 else 0)
+                        }
+                    },
+                    onAdjustThreshold = onAdjustThreshold,
+                    onNavigateToClothes = onNavigateToClothes,
+                    onNavigateToFormat = onNavigateToFormat,
+                    onToggleModelSpread = onToggleModelSpread,
+                    onRevealModelSpread = onRevealModelSpread,
+                    onHideModelSpread = onHideModelSpread,
+                    onLongPressDate = onLongPressDate,
+                    onSetUpLocation = onSetUpLocation,
+                    onOpenPrivacy = onOpenPrivacy,
+                    onOpenCalendarSettings = onOpenCalendarSettings,
+                    onDismissCelebrationCard = onDismissCelebrationCard,
+                )
             }
         }
     }
@@ -559,6 +547,7 @@ private fun TodayPage(
     onNavigateToFormat: () -> Unit,
     onToggleModelSpread: () -> Unit,
     onRevealModelSpread: () -> Unit,
+    onHideModelSpread: () -> Unit,
     onLongPressDate: () -> Unit,
     onSetUpLocation: () -> Unit,
     onOpenPrivacy: () -> Unit,
@@ -634,19 +623,21 @@ private fun TodayPage(
             //    "tap to show / hide" toggle (wired through [onChipTap] →
             //    [onToggleModelSpread]). That's the explicit on/off control.
             //
-            //  - The plot grid of every chart drives the shared
-            //    [ChartScrubController] — first contact also fires
-            //    [onRevealModelSpread], a one-way set so dragging the
-            //    indicator can't accidentally hide the spread mid-drag.
-            //    The user takes the spread back off via the chip.
+            //  - Tapping the plot grid of any chart enters scrub mode on
+            //    the shared [ChartScrubController], which (via the
+            //    [SpreadCoordinator] wired below) reveals the per-model
+            //    spread if it isn't already on. The matching restore
+            //    icon exits scrub mode and undoes only that auto-reveal
+            //    — spread state the user enabled via the chip is left
+            //    alone.
             //
-            // [chartReveal] / [chipToggle] are null when there's no per-model
-            // data in the cache (e.g. older payloads) — in that case the
-            // chip stays as a static confidence summary and the chart
-            // gestures just scrub without touching spread state.
+            // [chipToggle] is null when there's no per-model data in
+            // the cache (e.g. older payloads) — in that case the chip
+            // stays as a static confidence summary and the controller's
+            // [spreadCoordinator] stays null so chart gestures just
+            // scrub without touching spread state.
             val perModelAvailable = insight.perModelHourly != null
             val chipToggle = onToggleModelSpread.takeIf { perModelAvailable }
-            val chartReveal: (() -> Unit)? = onRevealModelSpread.takeIf { perModelAvailable }
             InsightCard(
                 insight = insight,
                 region = state.region,
@@ -727,6 +718,24 @@ private fun TodayPage(
                         delay(60_000L)
                     }
                 }
+                // Bridge the controller to the per-model-spread state so a
+                // tap-to-scrub gesture reveals the spread (and tapping
+                // restore undoes that reveal). Reassigned on every
+                // recomposition so the closures see the live
+                // [state.showModelSpread] value — the controller itself is
+                // remembered across compositions, only its callbacks change.
+                // Stays null when there's no per-model data (older cached
+                // payloads) so the controller skips the reveal entirely.
+                val showSpread = state.showModelSpread
+                SideEffect {
+                    scrubController.spreadCoordinator = if (!perModelAvailable) null else {
+                        object : SpreadCoordinator {
+                            override fun isSpreadVisible(): Boolean = showSpread
+                            override fun revealSpread() = onRevealModelSpread()
+                            override fun hideSpread() = onHideModelSpread()
+                        }
+                    }
+                }
                 CompositionLocalProvider(LocalChartScrub provides scrubController) {
                     ForecastCard(
                         hourly = insight.hourly,
@@ -735,7 +744,6 @@ private fun TodayPage(
                         startDate = insight.forDate,
                         perModelHourly = perModelData,
                         showModelSpread = state.showModelSpread,
-                        onFirstContact = chartReveal,
                     )
                     AirTemperatureCard(
                         hourly = insight.hourly,
@@ -743,14 +751,12 @@ private fun TodayPage(
                         startDate = insight.forDate,
                         perModelHourly = perModelData,
                         showModelSpread = state.showModelSpread,
-                        onFirstContact = chartReveal,
                     )
                     PrecipitationCard(
                         hourly = insight.hourly,
                         startDate = insight.forDate,
                         perModelHourly = perModelData,
                         showModelSpread = state.showModelSpread,
-                        onFirstContact = chartReveal,
                     )
                     PrecipitationAmountCard(
                         hourly = insight.hourly,
@@ -758,7 +764,6 @@ private fun TodayPage(
                         period = insight.period,
                         perModelHourly = perModelData,
                         showModelSpread = state.showModelSpread,
-                        onFirstContact = chartReveal,
                     )
                     // Diagnostic cards below the headline temp + rain pair. Each
                     // draws a consensus main line by default and overlays the
@@ -777,35 +782,30 @@ private fun TodayPage(
                             windSpeedUnit = state.distanceUnit.windSpeedUnit(),
                             startDate = insight.forDate,
                             showModelSpread = state.showModelSpread,
-                            onFirstContact = chartReveal,
                         )
                         HumidityCard(
                             hourly = insight.hourly,
                             perModelHourly = perModelData,
                             startDate = insight.forDate,
                             showModelSpread = state.showModelSpread,
-                            onFirstContact = chartReveal,
                         )
                         CloudCard(
                             hourly = insight.hourly,
                             perModelHourly = perModelData,
                             startDate = insight.forDate,
                             showModelSpread = state.showModelSpread,
-                            onFirstContact = chartReveal,
                         )
                         SolarRadiationCard(
                             hourly = insight.hourly,
                             perModelHourly = perModelData,
                             startDate = insight.forDate,
                             showModelSpread = state.showModelSpread,
-                            onFirstContact = chartReveal,
                         )
                         UvIndexCard(
                             hourly = insight.hourly,
                             perModelHourly = perModelData,
                             startDate = insight.forDate,
                             showModelSpread = state.showModelSpread,
-                            onFirstContact = chartReveal,
                         )
                         SunshineCard(
                             hourly = insight.hourly,
@@ -813,7 +813,6 @@ private fun TodayPage(
                             forDate = insight.forDate,
                             period = insight.period,
                             showModelSpread = state.showModelSpread,
-                            onFirstContact = chartReveal,
                         )
                     }
                 }
@@ -1892,7 +1891,6 @@ internal fun ForecastCard(
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     perModelHourly: PerModelHourly? = null,
     showModelSpread: Boolean = false,
-    onFirstContact: (() -> Unit)? = null,
 ) {
     val symbol = temperatureUnit.symbol()
     val feelsLikeMinMax = remember(hourly, temperatureUnit) {
@@ -1927,7 +1925,6 @@ internal fun ForecastCard(
                     temperatureUnit = temperatureUnit,
                     showFeelsLike = true,
                     startDate = startDate,
-                    onFirstContact = onFirstContact ?: {},
                     perModelHourly = perModelHourly,
                     showModelSpread = showModelSpread,
                 )
@@ -1958,7 +1955,6 @@ internal fun AirTemperatureCard(
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     perModelHourly: PerModelHourly? = null,
     showModelSpread: Boolean = false,
-    onFirstContact: (() -> Unit)? = null,
 ) {
     val symbol = temperatureUnit.symbol()
     val airMinMax = remember(hourly, temperatureUnit) {
@@ -1993,7 +1989,6 @@ internal fun AirTemperatureCard(
                     temperatureUnit = temperatureUnit,
                     showFeelsLike = false,
                     startDate = startDate,
-                    onFirstContact = onFirstContact ?: {},
                     perModelHourly = perModelHourly,
                     showModelSpread = showModelSpread,
                 )
@@ -2104,7 +2099,6 @@ internal fun WindCard(
     windSpeedUnit: WindSpeedUnit = WindSpeedUnit.KMH,
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     showModelSpread: Boolean = false,
-    onFirstContact: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     // 10 km/h floor on the y-range so a near-still day doesn't get zoomed
@@ -2144,7 +2138,6 @@ internal fun WindCard(
         // overlay payload is unchanged.
         pickerKey = windSpeedUnit,
         showOverlay = showModelSpread,
-        onFirstContact = onFirstContact,
     )
 }
 
@@ -2161,7 +2154,6 @@ internal fun CloudCard(
     perModelHourly: PerModelHourly,
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     showModelSpread: Boolean = false,
-    onFirstContact: (() -> Unit)? = null,
 ) {
     val range = remember(perModelHourly) {
         perModelConsensusRange(perModelHourly) { it.cloudCoverPct }
@@ -2179,7 +2171,6 @@ internal fun CloudCard(
         yAxis = YAxis.Percent,
         tooltipValueFormat = { "${it.roundToInt()}%" },
         showOverlay = showModelSpread,
-        onFirstContact = onFirstContact,
     )
 }
 
@@ -2196,7 +2187,6 @@ internal fun HumidityCard(
     perModelHourly: PerModelHourly,
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     showModelSpread: Boolean = false,
-    onFirstContact: (() -> Unit)? = null,
 ) {
     val range = remember(perModelHourly) {
         perModelConsensusRange(perModelHourly) { it.relativeHumidityPct }
@@ -2214,7 +2204,6 @@ internal fun HumidityCard(
         yAxis = YAxis.Percent,
         tooltipValueFormat = { "${it.roundToInt()}%" },
         showOverlay = showModelSpread,
-        onFirstContact = onFirstContact,
     )
 }
 
@@ -2231,7 +2220,6 @@ internal fun SolarRadiationCard(
     perModelHourly: PerModelHourly,
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     showModelSpread: Boolean = false,
-    onFirstContact: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     // Peak irradiance across the cross-model consensus series — same blend
@@ -2266,7 +2254,6 @@ internal fun SolarRadiationCard(
         yAxis = YAxis.AutoZeroBased(minSpan = 100.0),
         tooltipValueFormat = { "${it.roundToInt()} W/m²" },
         showOverlay = showModelSpread,
-        onFirstContact = onFirstContact,
     )
 }
 
@@ -2287,7 +2274,6 @@ internal fun SunshineCard(
     forDate: java.time.LocalDate,
     period: ForecastPeriod = ForecastPeriod.TODAY,
     showModelSpread: Boolean = false,
-    onFirstContact: (() -> Unit)? = null,
 ) {
     // TONIGHT's slice spans [tonightStart, next morning) and so straddles
     // midnight; the per-date filter would drop pre-alarm tomorrow-morning sun
@@ -2316,7 +2302,6 @@ internal fun SunshineCard(
         yAxis = YAxis.AutoZeroBased(minSpan = 60.0),
         tooltipValueFormat = { "${it.roundToInt()} min" },
         showOverlay = showModelSpread,
-        onFirstContact = onFirstContact,
     )
 }
 
@@ -2355,7 +2340,6 @@ internal fun UvIndexCard(
     perModelHourly: PerModelHourly,
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     showModelSpread: Boolean = false,
-    onFirstContact: (() -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     // Peak UV across the cross-model consensus series — same blend the chart
@@ -2392,7 +2376,6 @@ internal fun UvIndexCard(
         // the metric, and the readout sits right next to that subtitle.
         tooltipValueFormat = { "${it.roundToInt()}" },
         showOverlay = showModelSpread,
-        onFirstContact = onFirstContact,
     )
 }
 
@@ -2402,7 +2385,6 @@ internal fun PrecipitationCard(
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     perModelHourly: PerModelHourly? = null,
     showModelSpread: Boolean = false,
-    onFirstContact: (() -> Unit)? = null,
 ) {
     // Always render the chart, even on dry days — keeps the card height stable
     // across days so the cards below don't shift, and the flat baseline is its
@@ -2447,7 +2429,6 @@ internal fun PrecipitationCard(
                 PrecipitationChart(
                     hourly = hourly,
                     startDate = startDate,
-                    onFirstContact = onFirstContact ?: {},
                     perModelHourly = perModelHourly,
                     showModelSpread = showModelSpread,
                 )
@@ -2494,7 +2475,6 @@ internal fun PrecipitationAmountCard(
     period: ForecastPeriod = ForecastPeriod.TODAY,
     perModelHourly: PerModelHourly? = null,
     showModelSpread: Boolean = false,
-    onFirstContact: (() -> Unit)? = null,
 ) {
     // Same series the chart plots for its "Combined" main line — sourced
     // from the consensus mean per hour when per-model data is available,
@@ -2550,7 +2530,6 @@ internal fun PrecipitationAmountCard(
                 PrecipitationAmountChart(
                     hourly = hourly,
                     startDate = forDate,
-                    onFirstContact = onFirstContact ?: {},
                     perModelHourly = perModelHourly,
                     showModelSpread = showModelSpread,
                 )

@@ -218,11 +218,23 @@ internal fun selectStatus(infos: List<WorkInfoLite>): WorkStatus {
     // screen and the spinner shouldn't keep claiming "Fetching" while
     // TTS speaks. A terminal SUCCEEDED/FAILED entry from the same run
     // still surfaces normally below.
+    //
+    // Retry attempts (runAttemptCount > 1) stay in the active set
+    // regardless of the progress flag: if deliver() failed with a
+    // retryable exception after fetch-complete (network blip during
+    // notification/MQTT/cast, transient TTS error), WorkManager
+    // re-enqueues the same WorkSpec for backoff. The next attempt will
+    // refetch — so the user should see "Retrying" rather than have the
+    // banner go silent and pretend nothing's pending. WorkManager's
+    // behaviour around whether progress data is cleared between
+    // attempts isn't something we want to rely on; treating any
+    // post-first-attempt entry as active is the robust answer.
     val active = infos.firstOrNull {
         (it.state == WorkInfo.State.ENQUEUED ||
             it.state == WorkInfo.State.RUNNING ||
             it.state == WorkInfo.State.BLOCKED) &&
-            !it.progress.getBoolean(FetchAndNotifyWorker.KEY_FETCH_COMPLETE, false)
+            (it.runAttemptCount > 1 ||
+                !it.progress.getBoolean(FetchAndNotifyWorker.KEY_FETCH_COMPLETE, false))
     }
     if (active != null) {
         return if (active.runAttemptCount > 1) WorkStatus.Retrying else WorkStatus.Running

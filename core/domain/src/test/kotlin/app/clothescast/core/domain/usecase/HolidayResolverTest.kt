@@ -697,7 +697,8 @@ class HolidayResolverTest {
     @Test
     fun `Christian-bucket holidays fire via Easter-relative predicates`() {
         // 2026: Easter is Apr 5. Ash Wed = Feb 18, Mardi Gras = Feb 17,
-        // Palm Sun = Mar 29, Maundy Thu = Apr 2, Ascension = May 14,
+        // Palm Sun = Mar 29, Maundy Thu = Apr 2, Good Fri = Apr 3,
+        // Easter Sun = Apr 5, Easter Mon = Apr 6, Ascension = May 14,
         // Pentecost = May 24, Whit Mon = May 25, Corpus Christi = Jun 4.
         val christianOnly = setOf(HolidayCatalog.CHRISTIAN)
         subject.resolve(LocalDate.of(2026, 2, 17), noOverrides, christianOnly)?.id shouldBe
@@ -708,6 +709,12 @@ class HolidayResolverTest {
             HolidayId.PALM_SUNDAY
         subject.resolve(LocalDate.of(2026, 4, 2), noOverrides, christianOnly)?.id shouldBe
             HolidayId.MAUNDY_THURSDAY
+        subject.resolve(LocalDate.of(2026, 4, 3), noOverrides, christianOnly)?.id shouldBe
+            HolidayId.GOOD_FRIDAY
+        subject.resolve(LocalDate.of(2026, 4, 5), noOverrides, christianOnly)?.id shouldBe
+            HolidayId.EASTER_SUNDAY
+        subject.resolve(LocalDate.of(2026, 4, 6), noOverrides, christianOnly)?.id shouldBe
+            HolidayId.EASTER_MONDAY
         subject.resolve(LocalDate.of(2026, 5, 14), noOverrides, christianOnly)?.id shouldBe
             HolidayId.ASCENSION_DAY
         subject.resolve(LocalDate.of(2026, 5, 24), noOverrides, christianOnly)?.id shouldBe
@@ -730,6 +737,52 @@ class HolidayResolverTest {
                     HolidayId.ASCENSION_DAY
             }
         }
+    }
+
+    @Test
+    fun `Good Friday also fires per-country without the CHRISTIAN bucket`() {
+        // Apr 3 2026 = Good Friday. Each catalog country where it's a
+        // public holiday resolves the theme via its own country tag, so
+        // a UK / Australian / Indian user picks it up without flipping
+        // the Christian bucket on.
+        val countries = listOf(
+            "AR", "AU", "BR", "CA", "DE", "ES", "GB", "ID", "IE", "IN",
+            "MX", "NG", "NZ", "PH", "SG", "ZA",
+        )
+        countries.forEach { country ->
+            withClue(country) {
+                subject.resolve(LocalDate.of(2026, 4, 3), noOverrides, setOf(country))?.id shouldBe
+                    HolidayId.GOOD_FRIDAY
+            }
+        }
+    }
+
+    @Test
+    fun `Easter Monday also fires per-country without the CHRISTIAN bucket`() {
+        // Apr 6 2026 = Easter Monday. Same pattern as Good Friday — the
+        // catalog countries where it's a public holiday pick it up via
+        // their country tag.
+        val countries = listOf(
+            "AT", "AU", "CA", "DE", "FR", "GB", "HR", "IE", "IT", "NG",
+            "NZ", "ZA",
+        )
+        countries.forEach { country ->
+            withClue(country) {
+                subject.resolve(LocalDate.of(2026, 4, 6), noOverrides, setOf(country))?.id shouldBe
+                    HolidayId.EASTER_MONDAY
+            }
+        }
+    }
+
+    @Test
+    fun `Easter cluster no longer fires for the GLOBAL bucket alone`() {
+        // The Easter cluster moved from GLOBAL to CHRISTIAN + per-country
+        // tags. A user with only Global on (no country, no Christian)
+        // doesn't see Good Friday / Easter Sunday / Easter Monday any more.
+        val globalOnly = setOf(HolidayCatalog.GLOBAL_COUNTRY)
+        subject.resolve(LocalDate.of(2026, 4, 3), noOverrides, globalOnly).shouldBeNull()
+        subject.resolve(LocalDate.of(2026, 4, 5), noOverrides, globalOnly).shouldBeNull()
+        subject.resolve(LocalDate.of(2026, 4, 6), noOverrides, globalOnly).shouldBeNull()
     }
 
     @Test

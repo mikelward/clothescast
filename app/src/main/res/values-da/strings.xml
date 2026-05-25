@@ -800,7 +800,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_rationale_open_clothes_settings">Tøjindstillinger</string>
     <string name="today_celebration_card_title">Festtemaer</string>
     <string name="today_celebration_card_body">Aktiver specialfarver og beskeder til helligdage og fødselsdage.</string>
-    <string name="today_celebration_card_cta">Indstillinger for fejringer</string>
+    <string name="today_celebration_card_cta">Kalenderindstillinger</string>
     <string name="today_celebration_card_dismiss">Luk</string>
 
     <!-- Holidays settings -->

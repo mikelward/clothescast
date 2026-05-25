@@ -807,7 +807,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_rationale_open_clothes_settings">Setări îmbrăcăminte</string>
     <string name="today_celebration_card_title">Teme de sărbătoare</string>
     <string name="today_celebration_card_body">Activează culori și mesaje speciale pentru sărbători și zile de naștere.</string>
-    <string name="today_celebration_card_cta">Setări sărbători</string>
+    <string name="today_celebration_card_cta">Setări calendar</string>
     <string name="today_celebration_card_dismiss">Închide</string>
     <string name="settings_holidays_source_global">Global</string>
     <string name="settings_holidays_source_location">Locație (%1$s)</string>

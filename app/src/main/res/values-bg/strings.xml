@@ -818,7 +818,7 @@ What is NOT overridden, by design:
     <string name="today_rationale_open_clothes_settings">Настройки за облекло</string>
     <string name="today_celebration_card_title">Празнични теми</string>
     <string name="today_celebration_card_body">Включи специални цветове и съобщения за празници и рождени дни.</string>
-    <string name="today_celebration_card_cta">Настройки за празнуване</string>
+    <string name="today_celebration_card_cta">Настройки на календара</string>
     <string name="today_celebration_card_dismiss">Затвори</string>
     <string name="settings_holidays_source_global">Глобално</string>
     <string name="settings_holidays_source_location">Местоположение (%1$s)</string>

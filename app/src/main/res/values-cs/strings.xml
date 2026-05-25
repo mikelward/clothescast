@@ -781,7 +781,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_rationale_open_clothes_settings">Nastavení oblečení</string>
     <string name="today_celebration_card_title">Svátečné motivy</string>
     <string name="today_celebration_card_body">Povolte speciální barvy a zprávy pro svátky a narozeniny.</string>
-    <string name="today_celebration_card_cta">Nastavení oslav</string>
+    <string name="today_celebration_card_cta">Nastavení kalendáře</string>
     <string name="today_celebration_card_dismiss">Zavřít</string>
 
     <!-- Holidays settings. -->

@@ -1061,7 +1061,7 @@ label localizes.
     <!-- Today screen — celebration card. -->
     <string name="today_celebration_card_title">节日主题</string>
     <string name="today_celebration_card_body">为节假日和生日启用特殊颜色和祝福语。</string>
-    <string name="today_celebration_card_cta">节日设置</string>
+    <string name="today_celebration_card_cta">日历设置</string>
     <string name="today_celebration_card_dismiss">关闭</string>
 
     <!-- Today screen — rationale open clothes settings. -->

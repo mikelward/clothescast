@@ -773,7 +773,7 @@ What is NOT overridden, by design:
     <string name="outfit_card_header_tonight">Vakaro ClothesCast</string>
     <string name="today_celebration_card_title">Šventinės temos</string>
     <string name="today_celebration_card_body">Įjunk specialias spalvas ir žinutes švenčių ir gimtadienių proga.</string>
-    <string name="today_celebration_card_cta">Švenčių nustatymai</string>
+    <string name="today_celebration_card_cta">Kalendoriaus nustatymai</string>
     <string name="today_celebration_card_dismiss">Atleisti</string>
     <string name="settings_root_smart_home">Išmanusis namai</string>
     <string name="settings_root_smart_home_subtitle">Išmanieji ekranai ir namų automatika</string>

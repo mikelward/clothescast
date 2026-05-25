@@ -1063,7 +1063,7 @@ the displayed label localizes.
     <!-- Today screen — celebration card. -->
     <string name="today_celebration_card_title">お祝いのテーマ</string>
     <string name="today_celebration_card_body">祝日や誕生日に特別なカラーとメッセージを表示します。</string>
-    <string name="today_celebration_card_cta">お祝い設定</string>
+    <string name="today_celebration_card_cta">カレンダー設定</string>
     <string name="today_celebration_card_dismiss">閉じる</string>
 
     <!-- Today screen — rationale: open clothes settings link. -->

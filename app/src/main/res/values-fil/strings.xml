@@ -963,7 +963,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Celebration card -->
     <string name="today_celebration_card_body">I-enable ang mga espesyal na kulay at mensahe para sa mga pista opisyal at kaarawan.</string>
-    <string name="today_celebration_card_cta">Mga setting ng selebrasyon</string>
+    <string name="today_celebration_card_cta">Mga setting ng kalendaryo</string>
     <string name="today_celebration_card_dismiss">Isara</string>
     <string name="today_celebration_card_title">Mga tema ng selebrasyon</string>
 

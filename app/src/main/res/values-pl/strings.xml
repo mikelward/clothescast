@@ -834,7 +834,7 @@ is unchanged; only the displayed label localizes.
     <string name="today_rationale_open_clothes_settings">Ustawienia odzieży</string>
     <string name="today_celebration_card_title">Motywy świąteczne</string>
     <string name="today_celebration_card_body">Włącz specjalne kolory i wiadomości na święta i urodziny.</string>
-    <string name="today_celebration_card_cta">Ustawienia świętowania</string>
+    <string name="today_celebration_card_cta">Ustawienia kalendarza</string>
     <string name="today_celebration_card_dismiss">Odrzuć</string>
     <string name="settings_holidays_source_global">Globalny</string>
     <string name="settings_holidays_source_location">Lokalizacja (%1$s)</string>

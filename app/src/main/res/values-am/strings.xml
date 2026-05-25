@@ -882,7 +882,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Today celebration card -->
     <string name="today_celebration_card_body">ለበዓሎች እና ልደቶች ልዩ ቀለሞች እና መልዕክቶችን ያንቃሉ።</string>
-    <string name="today_celebration_card_cta">የክብረ በዓሎች ቅንብሮች</string>
+    <string name="today_celebration_card_cta">የቀን መቁጠሪያ ቅንብሮች</string>
     <string name="today_celebration_card_dismiss">ዝጋ</string>
     <string name="today_celebration_card_title">የክብረ በዓሎች ጭብጦች</string>
 

@@ -816,7 +816,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_rationale_open_clothes_settings">Nastavitve oblačil</string>
     <string name="today_celebration_card_title">Praznične teme</string>
     <string name="today_celebration_card_body">Omogoči posebne barve in sporočila za praznike in rojstne dneve.</string>
-    <string name="today_celebration_card_cta">Nastavitve praznovanj</string>
+    <string name="today_celebration_card_cta">Nastavitve koledarja</string>
     <string name="today_celebration_card_dismiss">Zapri</string>
     <string name="settings_holidays_source_global">Globalno</string>
     <string name="settings_holidays_source_location">Lokacija (%1$s)</string>

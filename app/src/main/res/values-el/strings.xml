@@ -953,7 +953,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_rationale_open_clothes_settings">Ρυθμίσεις ρούχων</string>
     <string name="today_celebration_card_title">Εορταστικά θέματα</string>
     <string name="today_celebration_card_body">Ενεργοποίησε ειδικά χρώματα και μηνύματα για αργίες και γενέθλια.</string>
-    <string name="today_celebration_card_cta">Ρυθμίσεις εορτασμών</string>
+    <string name="today_celebration_card_cta">Ρυθμίσεις ημερολογίου</string>
     <string name="today_celebration_card_dismiss">Παράβλεψη</string>
     <string name="settings_holidays_source_global">Παγκόσμιο</string>
     <string name="settings_holidays_source_location">Τοποθεσία (%1$s)</string>

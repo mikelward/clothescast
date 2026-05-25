@@ -883,7 +883,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Today celebration card -->
     <string name="today_celebration_card_body">Wezesha rangi maalum na ujumbe kwa likizo na siku za kuzaliwa.</string>
-    <string name="today_celebration_card_cta">Mipangilio ya sherehe</string>
+    <string name="today_celebration_card_cta">Mipangilio ya kalenda</string>
     <string name="today_celebration_card_dismiss">Ondoa</string>
     <string name="today_celebration_card_title">Mandhari ya sherehe</string>
 

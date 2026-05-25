@@ -724,7 +724,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="outfit_card_header_tonight">ClothesCast d\'aquesta nit</string>
     <string name="today_celebration_card_title">Temes festius</string>
     <string name="today_celebration_card_body">Activa colors i missatges especials per a festes i aniversaris.</string>
-    <string name="today_celebration_card_cta">Configuració de celebracions</string>
+    <string name="today_celebration_card_cta">Configuració del calendari</string>
     <string name="today_celebration_card_dismiss">Ignora</string>
     <string name="settings_root_smart_home">Llar intel·ligent</string>
     <string name="settings_root_smart_home_subtitle">Pantalles intel·ligents i automatització de la llar</string>

@@ -780,7 +780,7 @@ displayed label localizes.
     <string name="today_rationale_open_clothes_settings">Vaateasetukset</string>
     <string name="today_celebration_card_title">Juhlateemat</string>
     <string name="today_celebration_card_body">Ota käyttöön erikoisvärit ja -viestit juhlapyhinä ja syntymäpäivinä.</string>
-    <string name="today_celebration_card_cta">Juhla-asetukset</string>
+    <string name="today_celebration_card_cta">Kalenterin asetukset</string>
     <string name="today_celebration_card_dismiss">Sulje</string>
 
     <!-- Holidays settings -->

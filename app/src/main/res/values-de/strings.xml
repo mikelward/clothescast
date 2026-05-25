@@ -929,7 +929,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Today screen — celebration promo card. -->
     <string name="today_celebration_card_title">Festtagsthemen</string>
     <string name="today_celebration_card_body">Aktiviere besondere Farben und Nachrichten für Feiertage und Geburtstage.</string>
-    <string name="today_celebration_card_cta">Feiertagseinstellungen</string>
+    <string name="today_celebration_card_cta">Kalendereinstellungen</string>
     <string name="today_celebration_card_dismiss">Schließen</string>
 
     <!-- Holidays settings — source filter chips. -->

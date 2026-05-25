@@ -919,7 +919,7 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <!-- Celebration card -->
     <string name="today_celebration_card_body">Aktifkan warna dan mesej khas untuk hari kelepasan dan hari jadi.</string>
-    <string name="today_celebration_card_cta">Tetapan perayaan</string>
+    <string name="today_celebration_card_cta">Tetapan kalendar</string>
     <string name="today_celebration_card_dismiss">Tutup</string>
     <string name="today_celebration_card_title">Tema perayaan</string>
 

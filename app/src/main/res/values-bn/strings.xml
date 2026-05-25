@@ -984,7 +984,7 @@ West Bengal vocabulary differences in a future PR.
     <!-- Today — Celebration card. -->
     <string name="today_celebration_card_title">উৎসব থিম</string>
     <string name="today_celebration_card_body">ছুটি ও জন্মদিনের জন্য বিশেষ রং ও বার্তা চালু করুন।</string>
-    <string name="today_celebration_card_cta">উৎসব সেটিংস</string>
+    <string name="today_celebration_card_cta">ক্যালেন্ডার সেটিংস</string>
     <string name="today_celebration_card_dismiss">বন্ধ করুন</string>
 
     <!-- Today — Rationale: open clothes settings. -->

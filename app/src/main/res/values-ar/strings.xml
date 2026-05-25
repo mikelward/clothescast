@@ -913,7 +913,7 @@ they work correctly in both the single-band and range templates.
 
     <!-- Today — celebration card -->
     <string name="today_celebration_card_body">فعّل ألوانًا ورسائل خاصة للأعياد وأعياد الميلاد.</string>
-    <string name="today_celebration_card_cta">إعدادات الاحتفالات</string>
+    <string name="today_celebration_card_cta">إعدادات التقويم</string>
     <string name="today_celebration_card_dismiss">إغلاق</string>
     <string name="today_celebration_card_title">سمات الاحتفالات</string>
 

@@ -824,7 +824,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_rationale_open_clothes_settings">Ruházati beállítások</string>
     <string name="today_celebration_card_title">Ünnepi témák</string>
     <string name="today_celebration_card_body">Különleges színek és üzenetek engedélyezése ünnepekre és születésnapokra.</string>
-    <string name="today_celebration_card_cta">Ünneplési beállítások</string>
+    <string name="today_celebration_card_cta">Naptárbeállítások</string>
     <string name="today_celebration_card_dismiss">Bezárás</string>
     <string name="settings_holidays_source_global">Globális</string>
     <string name="settings_holidays_source_location">Helyszín (%1$s)</string>

@@ -913,7 +913,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Today — Celebration card -->
     <string name="today_celebration_card_body">เปิดใช้สีพิเศษและข้อความสำหรับวันหยุดและวันเกิด</string>
-    <string name="today_celebration_card_cta">การตั้งค่าการเฉลิมฉลอง</string>
+    <string name="today_celebration_card_cta">การตั้งค่าปฏิทิน</string>
     <string name="today_celebration_card_dismiss">ปิด</string>
     <string name="today_celebration_card_title">ธีมเฉลิมฉลอง</string>
 

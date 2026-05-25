@@ -914,7 +914,7 @@ displayed label localizes.
 
     <!-- Today celebration card -->
     <string name="today_celebration_card_body">Tatiller ve doğum günleri için özel renkleri ve mesajları etkinleştir.</string>
-    <string name="today_celebration_card_cta">Kutlama ayarları</string>
+    <string name="today_celebration_card_cta">Takvim ayarları</string>
     <string name="today_celebration_card_dismiss">Kapat</string>
     <string name="today_celebration_card_title">Kutlama temaları</string>
 

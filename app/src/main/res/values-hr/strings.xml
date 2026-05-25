@@ -900,7 +900,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_rationale_open_clothes_settings">Postavke odjeće</string>
     <string name="today_celebration_card_title">Blagdanske teme</string>
     <string name="today_celebration_card_body">Uključite posebne boje i poruke za blagdane i rođendane.</string>
-    <string name="today_celebration_card_cta">Postavke slavlja</string>
+    <string name="today_celebration_card_cta">Postavke kalendara</string>
     <string name="today_celebration_card_dismiss">Odbaci</string>
     <string name="settings_holidays_source_global">Globalno</string>
     <string name="settings_holidays_source_location">Lokacija (%1$s)</string>

@@ -411,7 +411,7 @@
     <string name="settings_root_developer">Developer</string>
 
     <string name="settings_root_schedule_subtitle">Notifications and Times</string>
-    <string name="settings_root_format_subtitle">What to say</string>
+    <string name="settings_root_format_subtitle">Wording and Verbosity</string>
     <string name="settings_root_clothes_subtitle">Temperatures and Outfits</string>
     <string name="settings_root_region_subtitle">Languages and Units</string>
     <string name="settings_root_voice_subtitle">Voices and Accents</string>

@@ -93,7 +93,7 @@ internal class MultiModelConfidenceFetcher(
                 // sunshine / UV diagnostic cards.
                 parameter(
                     "hourly",
-                    "apparent_temperature,temperature_2m,precipitation_probability," +
+                    "apparent_temperature,temperature_2m,precipitation_probability,precipitation," +
                         "wind_speed_10m,relative_humidity_2m,cloud_cover_low," +
                         "shortwave_radiation,sunshine_duration,uv_index,weather_code",
                 )
@@ -139,6 +139,7 @@ internal class MultiModelConfidenceFetcher(
                 val apparentTemps = obj["apparent_temperature_$model"] as? JsonArray
                 val airTemps = obj["temperature_2m_$model"] as? JsonArray
                 val precips = obj["precipitation_probability_$model"] as? JsonArray
+                val precipMm = obj["precipitation_$model"] as? JsonArray
                 val winds = obj["wind_speed_10m_$model"] as? JsonArray
                 val humidities = obj["relative_humidity_2m_$model"] as? JsonArray
                 // We request cloud_cover_low but keep the domain field named
@@ -174,6 +175,9 @@ internal class MultiModelConfidenceFetcher(
                 }
                 if (precips == null) {
                     logger.log("model $model hourly: precipitation_probability missing, precip-specific aggregates will skip this model")
+                }
+                if (precipMm == null) {
+                    logger.log("model $model hourly: precipitation missing, hourly-rainfall chart will skip this model")
                 }
                 // Diagnostic fields — each chart hides this model's line on
                 // its own card when the field is wholesale absent, so the
@@ -229,6 +233,7 @@ internal class MultiModelConfidenceFetcher(
                                 apparentTemperatureC = apparent,
                                 temperatureC = air,
                                 precipitationProbabilityPct = precip,
+                                precipitationMm = numberAt(precipMm, i)?.toDouble(),
                                 windSpeedKmh = numberAt(winds, i)?.toDouble(),
                                 relativeHumidityPct = numberAt(humidities, i)?.toDouble(),
                                 cloudCoverPct = numberAt(clouds, i)?.toDouble(),

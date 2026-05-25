@@ -98,6 +98,8 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.ModelDivergenceSummary
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.core.domain.model.consensusRainfallMm
+import app.clothescast.core.domain.model.consensusRainfallMmFor
 import app.clothescast.core.domain.model.consensusSunshineHours
 import app.clothescast.core.domain.model.consensusSunshineHoursFor
 import app.clothescast.core.domain.model.BottomsFormat
@@ -748,6 +750,14 @@ private fun TodayPage(
                     PrecipitationCard(
                         hourly = insight.hourly,
                         startDate = insight.forDate,
+                        perModelHourly = perModelData,
+                        showModelSpread = state.showModelSpread,
+                        onFirstContact = chartReveal,
+                    )
+                    PrecipitationAmountCard(
+                        hourly = insight.hourly,
+                        forDate = insight.forDate,
+                        period = insight.period,
                         perModelHourly = perModelData,
                         showModelSpread = state.showModelSpread,
                         onFirstContact = chartReveal,
@@ -2459,6 +2469,130 @@ internal fun PrecipitationCard(
 }
 
 /**
+ * Sibling of [PrecipitationCard] that surfaces *how much* rain (mm) per
+ * hour rather than chance-of-rain (%). The probability card answers "will
+ * it rain?" — this one answers "is it drizzle or a downpour?", which
+ * matters most on days where the probability is high but the question of
+ * "umbrella or full waterproof" depends on the amount.
+ *
+ * Same scaffolding as [PrecipitationCard]: always renders (even on dry
+ * days — the flat baseline is its own information and keeps the card
+ * column from re-shifting) and exposes the same tap-to-reveal per-model
+ * overlay via the shared [showModelSpread] flag. The subtitle surfaces
+ * the cumulative daily total ("4.2 mm of rain today") rather than the
+ * peak hour — same design as [SunshineCard]'s "Xh of sun today" blurb so
+ * the two summary lines read consistently. Below the dry threshold the
+ * subtitle switches to "No rainfall expected today" (or tonight).
+ *
+ * Total is averaged across the consulted per-model series via
+ * [consensusRainfallMmFor] / [consensusRainfallMm] when per-model data is
+ * available, falling back to the main-line sum from [hourly] otherwise
+ * (single-model "consensus" isn't a consensus). Tonight's slice straddles
+ * midnight, so the window-total variant is used there instead of the
+ * date-filtered one — same wrap as [SunshineCard].
+ */
+@Composable
+internal fun PrecipitationAmountCard(
+    hourly: List<HourlyForecast>,
+    forDate: java.time.LocalDate = java.time.LocalDate.now(),
+    period: ForecastPeriod = ForecastPeriod.TODAY,
+    perModelHourly: PerModelHourly? = null,
+    showModelSpread: Boolean = false,
+    onFirstContact: (() -> Unit)? = null,
+) {
+    val totalMm = remember(hourly, perModelHourly, forDate, period) {
+        val consensus = perModelHourly?.let {
+            when (period) {
+                ForecastPeriod.TODAY -> it.consensusRainfallMmFor(forDate)
+                ForecastPeriod.TONIGHT -> it.consensusRainfallMm()
+            }
+        }
+        consensus ?: hourly.sumOf { it.precipitationMm }
+    }
+    // Same series the chart plots for its "Combined" main line — sourced
+    // from the consensus mean per hour when per-model data is available,
+    // best-match otherwise. Indexed by hour so the scrub readout above the
+    // chart can read off the same value the line shows at that hour
+    // instead of always reading best-match (which would surface a
+    // contradicting number when the consensus diverges).
+    val mainLine = remember(hourly, perModelHourly) {
+        consensusRainfallMainLine(hourly, perModelHourly)
+    }
+    val isDry = totalMm < DRY_TOTAL_THRESHOLD_MM
+    val scrubController = LocalChartScrub.current
+    val subtitleText = if (isDry) {
+        stringResource(
+            when (period) {
+                ForecastPeriod.TODAY -> R.string.today_precipitation_amount_dry_today
+                ForecastPeriod.TONIGHT -> R.string.today_precipitation_amount_dry_tonight
+            },
+        )
+    } else {
+        stringResource(
+            when (period) {
+                ForecastPeriod.TODAY -> R.string.today_precipitation_amount_total_today
+                ForecastPeriod.TONIGHT -> R.string.today_precipitation_amount_total_tonight
+            },
+            formatPrecipitationMmAxis(totalMm),
+        )
+    }
+    val readout = rememberChartReadout(hourly, forDate) { idx ->
+        val value = mainLine.getOrNull(idx) ?: return@rememberChartReadout null
+        stringResource(
+            R.string.today_chart_readout,
+            formatPrecipitationMmAxis(value),
+            formatScrubHour(hourly[idx].time),
+        )
+    }
+    val combinedSubtitle = appendReadout(subtitleText, readout) ?: subtitleText
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Box {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.today_precipitation_amount_title),
+                    style = MaterialTheme.typography.titleSmall,
+                )
+                Text(
+                    text = combinedSubtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                PrecipitationAmountChart(
+                    hourly = hourly,
+                    startDate = forDate,
+                    onFirstContact = onFirstContact ?: {},
+                    perModelHourly = perModelHourly,
+                    showModelSpread = showModelSpread,
+                )
+                if (perModelHourly != null) {
+                    // Mirror the chart's per-model visibility filter — list
+                    // only the models that actually have a precipitation_mm
+                    // line plotted, not every model in byModel. Without
+                    // this filter, models whose Open-Meteo response omitted
+                    // `precipitation_<model>` (UKMO, JMA, …) show up as
+                    // legend chips with no corresponding line on the chart.
+                    val visibleIds = if (showModelSpread) {
+                        MODEL_DRAW_ORDER.filter { modelId ->
+                            perModelHourly.byModel[modelId]?.any { it.precipitationMm != null } == true
+                        }
+                    } else emptyList()
+                    ModelSpreadLegend(
+                        visibleModelIds = visibleIds,
+                        mainLine = MainLineLegend(
+                            color = AppTheme.mainLineColor,
+                            label = stringResource(R.string.today_chart_main_line_label),
+                        ),
+                    )
+                }
+            }
+            if (scrubController != null) ChartRestoreOverlay(scrubController)
+        }
+    }
+}
+
+/**
  * Compact "Models: ● Combined ● ECMWF ● GFS ● ICON · ● Best match" footer
  * rendered under the charts. The optional [mainLine] entry (theme primary)
  * comes first so its position in the legend is the same in the single and
@@ -2555,6 +2689,15 @@ private fun friendlyModelName(modelId: String): String = when (modelId) {
 // the misleading "Peak 2% at 03:00" callout while still surfacing genuine
 // drizzle-grade chances at 5%+.
 private const val DRY_THRESHOLD_PCT = 5.0
+
+// Dry threshold for the hourly-rainfall card, applied to the day's
+// cumulative total (mm). 0.1 mm is the typical "trace" tick across weather
+// services — a day that totals less than that is dry by any practical
+// measure. Set independently of [DRY_THRESHOLD_PCT] because the probability
+// and amount summaries answer different questions: 70% chance of 0.05 mm
+// across the day still rounds to "no rainfall expected today" here, even
+// though the probability card surfaces the peak.
+private const val DRY_TOTAL_THRESHOLD_MM = 0.1
 
 private fun formatMinMax(values: List<Double>, unit: TemperatureUnit): Pair<Int, Int>? {
     if (values.isEmpty()) return null

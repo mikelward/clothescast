@@ -102,6 +102,22 @@
     <string name="today_precipitation_peak">Peak %1$d%% at %2$s</string>
     <string name="today_precipitation_dry">No rain expected today</string>
 
+    <!-- Hourly precipitation amount card, rendered immediately below the
+         chance-of-rain card. The chart plots mm per hour over the current
+         period's window; the summary line surfaces the cumulative daily
+         total ("4.2 mm of rain today" / "12 mm of rain tonight") — same
+         design as the sunshine card's "Xh of sun today" blurb so the two
+         summary lines read consistently. When the total is below the dry
+         threshold the subtitle switches to "No rainfall expected today"
+         (or tonight) so the chart's flat baseline isn't misread as "we
+         forgot to fetch it". %1$s = formatted amount (1 decimal under a
+         millimetre, whole mm above — see formatPrecipitationMmAxis). -->
+    <string name="today_precipitation_amount_title">Hourly rainfall</string>
+    <string name="today_precipitation_amount_total_today">%1$s of rain today</string>
+    <string name="today_precipitation_amount_total_tonight">%1$s of rain tonight</string>
+    <string name="today_precipitation_amount_dry_today">No rainfall expected today</string>
+    <string name="today_precipitation_amount_dry_tonight">No rainfall expected tonight</string>
+
     <!-- Low–high feels-like temperature row shown on the Nest-Hub outfit card.
          %1$d = rounded low, %2$d = rounded high, %3$s = unit symbol (e.g. °C). -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>

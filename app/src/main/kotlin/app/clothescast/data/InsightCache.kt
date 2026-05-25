@@ -266,6 +266,7 @@ class InsightCache(
         val feelsLikeC: Double,
         val precipitationProbabilityPct: Double,
         val condition: String,
+        val precipitationMm: Double = 0.0,
     ) {
         fun toDomain(): HourlyForecast = HourlyForecast(
             time = LocalTime.ofSecondOfDay(secondOfDay.toLong()),
@@ -274,6 +275,7 @@ class InsightCache(
             precipitationProbabilityPct = precipitationProbabilityPct,
             condition = runCatching { WeatherCondition.valueOf(condition) }
                 .getOrDefault(WeatherCondition.UNKNOWN),
+            precipitationMm = precipitationMm,
         )
     }
 
@@ -340,6 +342,7 @@ class InsightCache(
         val apparentTemperatureC: Double,
         val temperatureC: Double? = null,
         val precipitationProbabilityPct: Double? = null,
+        val precipitationMm: Double? = null,
         val windSpeedKmh: Double? = null,
         val relativeHumidityPct: Double? = null,
         val cloudCoverPct: Double? = null,
@@ -358,6 +361,7 @@ class InsightCache(
                 apparentTemperatureC = apparentTemperatureC,
                 temperatureC = airTemp,
                 precipitationProbabilityPct = precipitationProbabilityPct,
+                precipitationMm = precipitationMm,
                 windSpeedKmh = windSpeedKmh,
                 relativeHumidityPct = relativeHumidityPct,
                 cloudCoverPct = cloudCoverPct,
@@ -463,6 +467,7 @@ class InsightCache(
         feelsLikeC = feelsLikeC,
         precipitationProbabilityPct = precipitationProbabilityPct,
         condition = condition.name,
+        precipitationMm = precipitationMm,
     )
 
     private fun WeatherAlert.toDto(): AlertDto = AlertDto(
@@ -491,6 +496,7 @@ class InsightCache(
         apparentTemperatureC = apparentTemperatureC,
         temperatureC = temperatureC,
         precipitationProbabilityPct = precipitationProbabilityPct,
+        precipitationMm = precipitationMm,
         windSpeedKmh = windSpeedKmh,
         relativeHumidityPct = relativeHumidityPct,
         cloudCoverPct = cloudCoverPct,

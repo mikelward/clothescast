@@ -75,7 +75,7 @@ class MultiModelConfidenceFetcherTest {
         req.url.parameters["models"] shouldBe "ecmwf_ifs04,gfs_seamless,icon_seamless"
         req.url.parameters["daily"] shouldBe "apparent_temperature_max,precipitation_probability_max"
         req.url.parameters["hourly"] shouldBe
-            "apparent_temperature,temperature_2m,precipitation_probability," +
+            "apparent_temperature,temperature_2m,precipitation_probability,precipitation," +
             "wind_speed_10m,relative_humidity_2m,cloud_cover_low," +
             "shortwave_radiation,sunshine_duration,uv_index,weather_code"
         // forecast_days=2 keeps the wrap-past-midnight evening tie-in able to

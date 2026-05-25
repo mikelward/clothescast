@@ -36,4 +36,5 @@ internal data class HourlyData(
     @SerialName("apparent_temperature") val feelsLike: List<Double?>,
     @SerialName("precipitation_probability") val precipitationProbability: List<Int?>,
     @SerialName("weather_code") val weatherCode: List<Int?>,
+    @SerialName("precipitation") val precipitation: List<Double?> = emptyList(),
 )

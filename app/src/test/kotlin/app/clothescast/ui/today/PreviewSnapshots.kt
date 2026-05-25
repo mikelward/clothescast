@@ -429,6 +429,11 @@ class PreviewSnapshots {
     @Test fun precipitation_card_dark() = capture { PrecipitationCardDarkPreview() }
     @Test fun precipitation_card_dry() = capture { PrecipitationCardDryPreview() }
 
+    @Test fun precipitation_amount_card() = capture { PrecipitationAmountCardPreview() }
+    @Test fun precipitation_amount_card_dark() = capture { PrecipitationAmountCardDarkPreview() }
+    @Test fun precipitation_amount_card_dry() = capture { PrecipitationAmountCardDryPreview() }
+    @Test fun precipitation_amount_card_with_model_spread() = capture { PrecipitationAmountCardWithModelSpreadPreview() }
+
     @Test fun today_insight_card_large_font() = capture { TodayInsightCardLargeFontPreview() }
     @Test fun outfit_tshirt_shorts_rtl() = capture { OutfitTShirtShortsRtlPreview() }
 

@@ -214,7 +214,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_update_downloaded_action">Khởi động lại</string>
 
     <!-- Telemetry notice -->
-    <string name="today_telemetry_notice_title">Báo cáo sự cố + sử dụng đang bật</string>
+    <string name="today_telemetry_notice_title">Báo cáo sự cố và sử dụng đang bật</string>
     <string name="today_telemetry_notice_body">ClothesCast gửi báo cáo sự cố ẩn danh và số liệu sử dụng để giúp khắc phục lỗi. Không có dữ liệu lịch, vị trí hay nội dung thông tin nào được gửi. Tắt bất kỳ lúc nào trong Cài đặt.</string>
     <string name="today_telemetry_notice_open_settings">Cài đặt Quyền riêng tư</string>
     <string name="today_telemetry_notice_dismiss">Đóng</string>
@@ -275,13 +275,14 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_root_about">Giới thiệu</string>
 
     <string name="settings_root_schedule_subtitle">Thông báo và giờ</string>
+    <string name="settings_root_format_subtitle">Cách diễn đạt và mức chi tiết</string>
     <string name="settings_root_clothes_subtitle">Nhiệt độ và trang phục</string>
     <string name="settings_root_region_subtitle">Ngôn ngữ và đơn vị</string>
     <string name="settings_root_voice_subtitle">Giọng nói và Chất giọng</string>
     <string name="settings_root_display_subtitle">Giao diện và màu sắc</string>
     <string name="settings_root_location_subtitle">Vị trí tự động và thủ công</string>
     <string name="settings_root_calendar_subtitle">Sự kiện hôm nay</string>
-    <string name="settings_root_privacy_subtitle">Báo cáo sự cố + sử dụng</string>
+    <string name="settings_root_privacy_subtitle">Báo cáo sự cố và sử dụng</string>
 
     <!-- =====================================================================
          Settings — Display
@@ -294,8 +295,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <!-- =====================================================================
          Settings — Privacy
          ===================================================================== -->
-    <string name="settings_privacy_telemetry_title">Báo cáo sự cố + sử dụng</string>
-    <string name="settings_privacy_telemetry_label">Gửi dữ liệu sự cố + sử dụng</string>
+    <string name="settings_privacy_telemetry_title">Báo cáo sự cố và sử dụng</string>
+    <string name="settings_privacy_telemetry_label">Gửi dữ liệu sự cố và sử dụng</string>
     <string name="settings_privacy_telemetry_description">Gửi báo cáo sự cố ẩn danh và số liệu sử dụng tổng hợp để giúp nhà phát triển khắc phục lỗi và quyết định giữ tính năng nào.</string>
     <string name="settings_privacy_telemetry_limits">Không bao giờ gửi: sự kiện lịch, tọa độ vị trí hoặc tên địa điểm, nội dung thông tin hoặc thông báo, khóa API, GPS chính xác, ID quảng cáo.</string>
     <string name="settings_privacy_open_policy">Đọc chính sách quyền riêng tư đầy đủ</string>

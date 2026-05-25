@@ -502,6 +502,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_region_language_sw_ke">Suaíli (Quênia)</string>
 
     <string name="settings_root_schedule_subtitle">Notificações e horários</string>
+    <string name="settings_root_format_subtitle">Redação e detalhamento</string>
     <string name="settings_root_clothes_subtitle">Temperaturas e roupas</string>
     <string name="settings_root_region_subtitle">Idiomas e unidades</string>
     <string name="settings_root_voice_subtitle">Provedores e sotaques</string>

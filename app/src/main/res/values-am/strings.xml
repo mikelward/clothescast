@@ -140,7 +140,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_update_available_dismiss">አሁን አይሆንም</string>
     <string name="today_update_downloaded_body">ዝማኔ ተሰቅሏል። ጫንን ለማጠናቀቅ እንደገና ጀምር።</string>
     <string name="today_update_downloaded_action">እንደገና ጀምር</string>
-    <string name="today_telemetry_notice_title">ስህተት + አጠቃቀም ሪፖርቶች ተከፍቷል</string>
+    <string name="today_telemetry_notice_title">ስህተት እና አጠቃቀም ሪፖርቶች ተከፍቷል</string>
     <string name="today_telemetry_notice_body">ClothesCast ስህተቶችን ለማስተካከል익익 익ስምን-አልባ ስህተት ሪፖርቶችና የአጠቃቀም ትንታኔዎችን ይልካል። የቀን መቁጠሪያ ውሂብ፣ ቦታ ወይም የናሙና ጽሑፍ አይካተትም። በቅንብሮች ውስጥ በማናቸውም ጊዜ ያጥፉ።</string>
     <string name="today_telemetry_notice_open_settings">የግለነት ቅንብሮች</string>
     <string name="today_telemetry_notice_dismiss">ዝጋ</string>
@@ -202,13 +202,14 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_privacy">ግለነት</string>
     <string name="settings_root_about">ስለ</string>
     <string name="settings_root_schedule_subtitle">ማሳወቂያዎች እና ጊዜ</string>
+    <string name="settings_root_format_subtitle">ቃላት እና ዝርዝር</string>
     <string name="settings_root_clothes_subtitle">ሙቀት እና ልብሶች</string>
     <string name="settings_root_region_subtitle">ቋንቋዎች እና ክፍሎች</string>
     <string name="settings_root_voice_subtitle">አቅራቢዎች እና ዘዬዎች</string>
     <string name="settings_root_display_subtitle">ጭብጦችና ቀለሞች</string>
     <string name="settings_root_location_subtitle">ራስ-ፈልጎ ወይም ከተማ ምረጥ</string>
     <string name="settings_root_calendar_subtitle">የዛሬ ዝግጅቶች</string>
-    <string name="settings_root_privacy_subtitle">ስህተት + አጠቃቀም ሪፖርቶች</string>
+    <string name="settings_root_privacy_subtitle">ስህተት እና አጠቃቀም ሪፖርቶች</string>
 
     <!-- Settings — display -->
     <string name="settings_display_theme_title">ጭብጥ</string>
@@ -217,8 +218,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_theme_dark">ጨለማ</string>
 
     <!-- Settings — privacy -->
-    <string name="settings_privacy_telemetry_title">ስህተት + አጠቃቀም ሪፖርቶች</string>
-    <string name="settings_privacy_telemetry_label">ስህተት + አጠቃቀም ውሂብ ላክ</string>
+    <string name="settings_privacy_telemetry_title">ስህተት እና አጠቃቀም ሪፖርቶች</string>
+    <string name="settings_privacy_telemetry_label">ስህተት እና አጠቃቀም ውሂብ ላክ</string>
     <string name="settings_privacy_telemetry_description">ለገንቢው ስህተቶቹን ለማስተካከልና የትኞቹን ባህሪያት ማቆየት እንዳለበት ለመወሰን ስምን-አልባ ስህተት ሪፖርቶችና ጠቅላላ የአጠቃቀም ስታቲስቲክስ ይልካል።</string>
     <string name="settings_privacy_telemetry_limits">ፈጽሞ አይላክም: የቀን መቁጠሪያ ዝግጅቶች፣ የቦታ መጋጠሚያዎች ወይም የቦታ ስሞች፣ የናሙና ጽሑፍ ወይም የማሳወቂያ ጽሑፍ፣ API keys፣ ትክክለኛ GPS፣ የማስታወቂያ መለያዎች።</string>
     <string name="settings_privacy_open_policy">ሙሉ የግለነት ፖሊሲ አንብብ</string>

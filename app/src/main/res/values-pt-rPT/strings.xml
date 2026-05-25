@@ -565,6 +565,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_root_clothes_subtitle">Temperaturas e roupas</string>
     <string name="settings_root_region_subtitle">Idiomas e unidades</string>
     <string name="settings_root_schedule_subtitle">Notificações e horários</string>
+    <string name="settings_root_format_subtitle">Redação e detalhe</string>
     <string name="settings_root_voice_subtitle">Fornecedores e sotaques</string>
 
     <!-- Display / theme settings. -->

@@ -338,7 +338,7 @@
          off; tapping the X just dismisses the banner. Either path marks the
          notice as acknowledged so it doesn't reappear. PRIVACY.md spells out
          the hard limits on what may / may not be sent. -->
-    <string name="today_telemetry_notice_title">Crash + usage reports are on</string>
+    <string name="today_telemetry_notice_title">Crash and usage reports are on</string>
     <string name="today_telemetry_notice_body">ClothesCast sends anonymous crash reports and usage analytics to help fix bugs. No calendar data, location, or insight text is included. Turn it off any time in Settings.</string>
     <string name="today_telemetry_notice_open_settings">Privacy settings</string>
     <string name="today_telemetry_notice_dismiss">Dismiss</string>
@@ -493,7 +493,7 @@
          questions ("does it send my calendar?") inline so the user doesn't
          have to leave the app to find out. -->
     <string name="settings_privacy_telemetry_title">Crash and usage reports</string>
-    <string name="settings_privacy_telemetry_label">Send crash + usage data</string>
+    <string name="settings_privacy_telemetry_label">Send crash and usage data</string>
     <string name="settings_privacy_telemetry_description">Sends anonymous crash reports and aggregate usage stats to help the developer fix bugs and decide which features to keep.</string>
     <string name="settings_privacy_telemetry_limits">Never sent: calendar events, location coordinates or place names, insight text or notification text, API keys, precise GPS, advertising IDs.</string>
     <string name="settings_privacy_open_policy">Read full privacy policy</string>

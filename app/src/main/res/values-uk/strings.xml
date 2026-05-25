@@ -43,6 +43,7 @@ only the displayed label localizes.
     <string name="settings_root_privacy">Конфіденційність</string>
 
     <string name="settings_root_schedule_subtitle">Сповіщення та час</string>
+    <string name="settings_root_format_subtitle">Формулювання та детальність</string>
     <string name="settings_root_clothes_subtitle">Температури та вбрання</string>
     <string name="settings_root_region_subtitle">Мови та одиниці виміру</string>
     <string name="settings_root_voice_subtitle">Провайдери та акценти</string>

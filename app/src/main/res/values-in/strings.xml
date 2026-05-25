@@ -210,7 +210,7 @@ to values/strings.xml (English).
     <string name="today_update_downloaded_action">Mulai ulang</string>
 
     <!-- Telemetry notice banner -->
-    <string name="today_telemetry_notice_title">Laporan crash + penggunaan aktif</string>
+    <string name="today_telemetry_notice_title">Laporan crash dan penggunaan aktif</string>
     <string name="today_telemetry_notice_body">ClothesCast mengirimkan laporan crash anonim dan analitik penggunaan untuk membantu memperbaiki bug. Tidak ada data kalender, lokasi, atau teks wawasan yang disertakan. Matikan kapan saja di Pengaturan.</string>
     <string name="today_telemetry_notice_open_settings">Pengaturan Privasi</string>
     <string name="today_telemetry_notice_dismiss">Tutup</string>
@@ -263,13 +263,14 @@ to values/strings.xml (English).
     <string name="settings_root_privacy">Privasi</string>
     <string name="settings_root_about">Tentang</string>
     <string name="settings_root_schedule_subtitle">Notifikasi dan Waktu</string>
+    <string name="settings_root_format_subtitle">Susunan Kata dan Detail</string>
     <string name="settings_root_clothes_subtitle">Suhu dan Pakaian</string>
     <string name="settings_root_region_subtitle">Bahasa dan Satuan</string>
     <string name="settings_root_voice_subtitle">Suara dan Aksen</string>
     <string name="settings_root_display_subtitle">Tema dan warna</string>
     <string name="settings_root_location_subtitle">Lokasi Otomatis dan Manual</string>
     <string name="settings_root_calendar_subtitle">Acara hari ini</string>
-    <string name="settings_root_privacy_subtitle">Laporan crash + penggunaan</string>
+    <string name="settings_root_privacy_subtitle">Laporan crash dan penggunaan</string>
 
     <!-- Display settings -->
     <string name="settings_display_theme_title">Tema</string>
@@ -278,8 +279,8 @@ to values/strings.xml (English).
     <string name="settings_display_theme_dark">Gelap</string>
 
     <!-- Privacy settings -->
-    <string name="settings_privacy_telemetry_title">Laporan crash + penggunaan</string>
-    <string name="settings_privacy_telemetry_label">Kirim data crash + penggunaan</string>
+    <string name="settings_privacy_telemetry_title">Laporan crash dan penggunaan</string>
+    <string name="settings_privacy_telemetry_label">Kirim data crash dan penggunaan</string>
     <string name="settings_privacy_telemetry_description">Mengirimkan laporan crash anonim dan statistik penggunaan agregat untuk membantu pengembang memperbaiki bug dan memutuskan fitur mana yang perlu dipertahankan.</string>
     <string name="settings_privacy_telemetry_limits">Tidak pernah dikirim: acara kalender, koordinat lokasi atau nama tempat, teks wawasan atau teks notifikasi, kunci API, GPS presisi, ID iklan.</string>
     <string name="settings_privacy_open_policy">Baca kebijakan privasi lengkap</string>

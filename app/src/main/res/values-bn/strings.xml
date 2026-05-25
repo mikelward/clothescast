@@ -283,6 +283,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_root_privacy">গোপনীয়তা</string>
     <string name="settings_root_about">সম্পর্কে</string>
     <string name="settings_root_schedule_subtitle">বিজ্ঞপ্তি ও সময়</string>
+    <string name="settings_root_format_subtitle">শব্দ চয়ন ও বিস্তারিত</string>
     <string name="settings_root_clothes_subtitle">তাপমাত্রা ও পোশাক</string>
     <string name="settings_root_region_subtitle">ভাষা ও একক</string>
     <string name="settings_root_voice_subtitle">ভয়েস ও উচ্চারণভঙ্গি</string>

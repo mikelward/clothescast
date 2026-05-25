@@ -170,6 +170,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_root_about">Teave</string>
 
     <string name="settings_root_schedule_subtitle">Teavitused ja ajad</string>
+    <string name="settings_root_format_subtitle">Sõnastus ja üksikasjalikkus</string>
     <string name="settings_root_clothes_subtitle">Temperatuurid ja riietus</string>
     <string name="settings_root_region_subtitle">Keeled ja ühikud</string>
     <string name="settings_root_voice_subtitle">Teenusepakkujad ja aktsendid</string>

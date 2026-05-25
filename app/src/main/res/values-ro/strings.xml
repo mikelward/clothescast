@@ -266,6 +266,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_root_privacy">Confidențialitate</string>
     <string name="settings_root_about">Despre</string>
     <string name="settings_root_schedule_subtitle">Notificări și ore</string>
+    <string name="settings_root_format_subtitle">Formulare și nivel de detaliu</string>
     <string name="settings_root_clothes_subtitle">Temperaturi și ținute</string>
     <string name="settings_root_region_subtitle">Limbi și unități</string>
     <string name="settings_root_voice_subtitle">Furnizori și accente</string>

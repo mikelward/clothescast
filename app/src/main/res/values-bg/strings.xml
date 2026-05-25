@@ -281,6 +281,7 @@ What is NOT overridden, by design:
     <string name="settings_root_about">За приложението</string>
 
     <string name="settings_root_schedule_subtitle">Известия и часове</string>
+    <string name="settings_root_format_subtitle">Формулировка и подробност</string>
     <string name="settings_root_clothes_subtitle">Температури и тоалети</string>
     <string name="settings_root_region_subtitle">Езици и единици</string>
     <string name="settings_root_voice_subtitle">Доставчици и акценти</string>

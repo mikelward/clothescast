@@ -207,7 +207,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_update_downloaded_action">I-restart</string>
 
     <!-- Telemetry notice banner -->
-    <string name="today_telemetry_notice_title">Naka-on ang mga ulat ng crash + paggamit</string>
+    <string name="today_telemetry_notice_title">Naka-on ang mga ulat ng crash at paggamit</string>
     <string name="today_telemetry_notice_body">Nagpapadala ang ClothesCast ng mga anonymous na ulat ng crash at analytics ng paggamit para matulungan ang pag-aayos ng mga bug. Walang kalendaryo, lokasyon, o teksto ng insight na kasama. I-off ito anumang oras sa Mga Setting.</string>
     <string name="today_telemetry_notice_open_settings">Mga setting ng Privacy</string>
     <string name="today_telemetry_notice_dismiss">Isara</string>
@@ -268,13 +268,14 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_about">Tungkol</string>
 
     <string name="settings_root_schedule_subtitle">Mga Notipikasyon at Oras</string>
+    <string name="settings_root_format_subtitle">Pananalita at Detalye</string>
     <string name="settings_root_clothes_subtitle">Mga Temperatura at Outfit</string>
     <string name="settings_root_region_subtitle">Mga Wika at Yunit</string>
     <string name="settings_root_voice_subtitle">Mga Boses at Punto</string>
     <string name="settings_root_display_subtitle">Mga tema at kulay</string>
     <string name="settings_root_location_subtitle">Awtomatiko at Manual na Lokasyon</string>
     <string name="settings_root_calendar_subtitle">Mga evento ngayon</string>
-    <string name="settings_root_privacy_subtitle">Mga ulat ng crash + paggamit</string>
+    <string name="settings_root_privacy_subtitle">Mga ulat ng crash at paggamit</string>
 
     <!-- ============================================================
          Settings — Display
@@ -288,8 +289,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- ============================================================
          Settings — Privacy
          ============================================================ -->
-    <string name="settings_privacy_telemetry_title">Mga ulat ng crash + paggamit</string>
-    <string name="settings_privacy_telemetry_label">Magpadala ng crash + datos ng paggamit</string>
+    <string name="settings_privacy_telemetry_title">Mga ulat ng crash at paggamit</string>
+    <string name="settings_privacy_telemetry_label">Magpadala ng crash at datos ng paggamit</string>
     <string name="settings_privacy_telemetry_description">Nagpapadala ng mga anonymous na ulat ng crash at pinagsama-samang stats ng paggamit para matulungan ang developer na ayusin ang mga bug at magdesisyon kung aling mga feature ang panatilihin.</string>
     <string name="settings_privacy_telemetry_limits">Hindi kailanman ipinapadala: mga evento ng kalendaryo, mga coordinate ng lokasyon o mga pangalan ng lugar, teksto ng insight o notipikasyon, mga API key, tumpak na GPS, mga advertising ID.</string>
     <string name="settings_privacy_open_policy">Basahin ang buong patakaran sa privacy</string>

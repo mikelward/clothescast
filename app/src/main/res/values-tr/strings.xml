@@ -420,6 +420,7 @@ displayed label localizes.
     <string name="settings_location_rationale_dismiss">Şimdi değil</string>
 
     <string name="settings_root_schedule_subtitle">Bildirimler ve saatler</string>
+    <string name="settings_root_format_subtitle">İfade ve ayrıntı düzeyi</string>
     <string name="settings_root_clothes_subtitle">Sıcaklıklar ve kıyafetler</string>
     <string name="settings_root_region_subtitle">Diller ve birimler</string>
     <string name="settings_root_voice_subtitle">Sağlayıcılar ve aksanlar</string>

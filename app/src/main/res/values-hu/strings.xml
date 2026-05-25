@@ -152,6 +152,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_root_calendar">Naptár</string>
     <string name="settings_root_privacy">Adatvédelem</string>
     <string name="settings_root_schedule_subtitle">Értesítések és időpontok</string>
+    <string name="settings_root_format_subtitle">Szóhasználat és részletesség</string>
     <string name="settings_root_clothes_subtitle">Hőmérsékletek és outfitek</string>
     <string name="settings_root_region_subtitle">Nyelvek és mértékegységek</string>
     <string name="settings_root_voice_subtitle">Szolgáltató és akcentusok</string>

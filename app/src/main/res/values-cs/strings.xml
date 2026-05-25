@@ -150,6 +150,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_root_calendar">Kalendář</string>
     <string name="settings_root_privacy">Soukromí</string>
     <string name="settings_root_schedule_subtitle">Oznámení a časy</string>
+    <string name="settings_root_format_subtitle">Formulace a podrobnost</string>
     <string name="settings_root_clothes_subtitle">Teploty a outfity</string>
     <string name="settings_root_region_subtitle">Jazyky a jednotky</string>
     <string name="settings_root_voice_subtitle">Poskytovatel a přízvuky</string>

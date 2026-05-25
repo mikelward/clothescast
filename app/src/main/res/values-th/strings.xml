@@ -266,6 +266,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_privacy">ความเป็นส่วนตัว</string>
     <string name="settings_root_about">เกี่ยวกับ</string>
     <string name="settings_root_schedule_subtitle">การแจ้งเตือนและเวลา</string>
+    <string name="settings_root_format_subtitle">การใช้คำและรายละเอียด</string>
     <string name="settings_root_clothes_subtitle">อุณหภูมิและชุดแต่งกาย</string>
     <string name="settings_root_region_subtitle">ภาษาและหน่วย</string>
     <string name="settings_root_voice_subtitle">เสียงและสำเนียง</string>

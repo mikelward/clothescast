@@ -513,6 +513,7 @@ displayed label localizes.
     <string name="settings_region_language_sw_ke">스와힐리어 (케냐)</string>
 
     <string name="settings_root_schedule_subtitle">알림 및 시간</string>
+    <string name="settings_root_format_subtitle">표현 및 상세도</string>
     <string name="settings_root_clothes_subtitle">온도 및 의상</string>
     <string name="settings_root_region_subtitle">언어 및 단위</string>
     <string name="settings_root_voice_subtitle">음성 및 억양</string>

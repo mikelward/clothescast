@@ -526,6 +526,7 @@ label localises.
     <string name="settings_root_location_subtitle">自動與手動位置</string>
     <string name="settings_root_calendar_subtitle">今天的行程</string>
     <string name="settings_root_schedule_subtitle">通知與時間</string>
+    <string name="settings_root_format_subtitle">措辭與詳細程度</string>
     <string name="settings_root_clothes_subtitle">氣溫與穿搭</string>
     <string name="settings_root_region_subtitle">語言與單位</string>
     <string name="settings_root_voice_subtitle">聲音和口音</string>

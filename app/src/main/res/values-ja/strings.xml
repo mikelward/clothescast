@@ -500,6 +500,7 @@ the displayed label localizes.
     <string name="settings_region_language_sw_ke">スワヒリ語（ケニア）</string>
 
     <string name="settings_root_schedule_subtitle">通知と時刻</string>
+    <string name="settings_root_format_subtitle">言い回しと詳細さ</string>
     <string name="settings_root_clothes_subtitle">気温と服装</string>
     <string name="settings_root_region_subtitle">言語と単位</string>
     <string name="settings_root_voice_subtitle">音声とアクセント</string>

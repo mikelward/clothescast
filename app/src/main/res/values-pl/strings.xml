@@ -462,6 +462,7 @@ is unchanged; only the displayed label localizes.
     <string name="settings_location_rationale_dismiss">Nie teraz</string>
 
     <string name="settings_root_schedule_subtitle">Powiadomienia i godziny</string>
+    <string name="settings_root_format_subtitle">Sformułowanie i szczegółowość</string>
     <string name="settings_root_clothes_subtitle">Temperatury i outfity</string>
     <string name="settings_root_region_subtitle">Języki i jednostki</string>
     <string name="settings_root_voice_subtitle">Dostawcy i akcenty</string>

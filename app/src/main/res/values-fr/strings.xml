@@ -498,6 +498,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_region_language_sw_ke">Swahili (Kenya)</string>
 
     <string name="settings_root_schedule_subtitle">Notifications et horaires</string>
+    <string name="settings_root_format_subtitle">Formulation et verbosité</string>
     <string name="settings_root_clothes_subtitle">Températures et tenues</string>
     <string name="settings_root_region_subtitle">Langues et unités</string>
     <string name="settings_root_voice_subtitle">Fournisseurs et accents</string>

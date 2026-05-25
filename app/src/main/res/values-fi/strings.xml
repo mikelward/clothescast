@@ -421,6 +421,7 @@ displayed label localizes.
     <string name="settings_location_rationale_dismiss">Ei nyt</string>
 
     <string name="settings_root_schedule_subtitle">Ilmoitukset ja ajat</string>
+    <string name="settings_root_format_subtitle">Sanamuoto ja yksityiskohtien taso</string>
     <string name="settings_root_clothes_subtitle">Lämpötilat ja asut</string>
     <string name="settings_root_region_subtitle">Kielet ja yksiköt</string>
     <string name="settings_root_voice_subtitle">Palveluntarjoajat ja aksentit</string>

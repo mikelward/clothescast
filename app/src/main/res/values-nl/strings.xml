@@ -464,6 +464,7 @@ the displayed label localizes.
     <string name="settings_location_rationale_dismiss">Niet nu</string>
 
     <string name="settings_root_schedule_subtitle">Meldingen en tijdstippen</string>
+    <string name="settings_root_format_subtitle">Formulering en uitvoerigheid</string>
     <string name="settings_root_clothes_subtitle">Temperaturen en outfits</string>
     <string name="settings_root_region_subtitle">Talen en eenheden</string>
     <string name="settings_root_voice_subtitle">Providers en accenten</string>

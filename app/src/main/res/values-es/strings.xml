@@ -501,6 +501,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_region_language_sw_ke">Suajili (Kenia)</string>
 
     <string name="settings_root_schedule_subtitle">Notificaciones y horarios</string>
+    <string name="settings_root_format_subtitle">Redacción y nivel de detalle</string>
     <string name="settings_root_clothes_subtitle">Temperaturas y conjuntos</string>
     <string name="settings_root_region_subtitle">Idiomas y unidades</string>
     <string name="settings_root_voice_subtitle">Proveedores y acentos</string>

@@ -267,6 +267,7 @@ standard in Israeli digital communication.
     <string name="settings_root_privacy">פרטיות</string>
     <string name="settings_root_about">אודות</string>
     <string name="settings_root_schedule_subtitle">התראות וזמנים</string>
+    <string name="settings_root_format_subtitle">ניסוח ופירוט</string>
     <string name="settings_root_clothes_subtitle">טמפרטורות ולבוש</string>
     <string name="settings_root_region_subtitle">שפות ויחידות</string>
     <string name="settings_root_voice_subtitle">ספקים ומבטאים</string>

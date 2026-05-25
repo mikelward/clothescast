@@ -50,6 +50,7 @@ import app.clothescast.ui.settings.LocationPage
 import app.clothescast.ui.settings.PrivacyPage
 import app.clothescast.ui.settings.RegionPage
 import app.clothescast.ui.settings.SchedulePage
+import app.clothescast.ui.settings.SettingsDest
 import app.clothescast.ui.settings.SettingsMenuItem
 import app.clothescast.ui.settings.SettingsRootPage
 import app.clothescast.ui.settings.SettingsViewModel
@@ -237,24 +238,33 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
     }
 }
 
-// The ordered Settings root menu. Title + subtitle live here next to the
-// destination each row opens; Root and About aren't listed (Root is the menu
-// itself, About is reached only from Today's overflow). Order matches the list
-// the user sees: most-tweaked rules first, set-once config next, data sources last.
-private fun settingsMenu(nav: NavController): List<SettingsMenuItem> = listOf(
-    SettingsMenuItem(R.string.settings_root_schedule, R.string.settings_root_schedule_subtitle) { nav.navigate(ScheduleDest()) },
-    SettingsMenuItem(R.string.settings_root_clothes, R.string.settings_root_clothes_subtitle) { nav.navigate(ClothesDest) },
-    SettingsMenuItem(R.string.settings_root_format, R.string.settings_root_format_subtitle) { nav.navigate(FormatDest) },
-    SettingsMenuItem(R.string.settings_root_location, R.string.settings_root_location_subtitle) { nav.navigate(LocationDest) },
-    SettingsMenuItem(R.string.settings_root_region, R.string.settings_root_region_subtitle) { nav.navigate(RegionDest) },
-    SettingsMenuItem(R.string.settings_root_voice, R.string.settings_root_voice_subtitle) { nav.navigate(VoiceDest) },
-    SettingsMenuItem(R.string.settings_root_display, R.string.settings_root_display_subtitle) { nav.navigate(DisplayDest) },
-    SettingsMenuItem(R.string.settings_root_calendar, R.string.settings_root_calendar_subtitle) { nav.navigate(CalendarDest) },
-    SettingsMenuItem(R.string.settings_root_forecasters, R.string.settings_root_forecasters_subtitle) { nav.navigate(ForecastersDest) },
-    SettingsMenuItem(R.string.settings_root_smart_home, R.string.settings_root_smart_home_subtitle) { nav.navigate(SmartHomeDest) },
-    SettingsMenuItem(R.string.settings_root_privacy, R.string.settings_root_privacy_subtitle) { nav.navigate(PrivacyDest) },
-    SettingsMenuItem(R.string.settings_root_developer, R.string.settings_root_developer_subtitle) { nav.navigate(DeveloperDest) },
-)
+// The Settings root menu's order, labels, and subtitles live in SettingsDest;
+// this function only attaches each row to its navigation target. Order matches
+// the list the user sees: most-tweaked rules first, set-once config next, data
+// sources last. Root and About aren't in SettingsDest (Root is the menu itself,
+// About is reached only from Today's overflow).
+private fun settingsMenu(nav: NavController): List<SettingsMenuItem> =
+    SettingsDest.entries.map { dest ->
+        SettingsMenuItem(dest.titleRes, dest.subtitleRes) { nav.openSettingsDest(dest) }
+    }
+
+// Exhaustive `when` over SettingsDest — adding a new enum value here is a
+// compile error until you wire its navigation target, which is the whole point
+// of routing every row through the enum.
+private fun NavController.openSettingsDest(dest: SettingsDest) = when (dest) {
+    SettingsDest.SCHEDULE -> navigate(ScheduleDest())
+    SettingsDest.CLOTHES -> navigate(ClothesDest)
+    SettingsDest.FORMAT -> navigate(FormatDest)
+    SettingsDest.LOCATION -> navigate(LocationDest)
+    SettingsDest.REGION -> navigate(RegionDest)
+    SettingsDest.VOICE -> navigate(VoiceDest)
+    SettingsDest.DISPLAY -> navigate(DisplayDest)
+    SettingsDest.CALENDAR -> navigate(CalendarDest)
+    SettingsDest.FORECASTERS -> navigate(ForecastersDest)
+    SettingsDest.SMART_HOME -> navigate(SmartHomeDest)
+    SettingsDest.PRIVACY -> navigate(PrivacyDest)
+    SettingsDest.DEVELOPER -> navigate(DeveloperDest)
+}
 
 // One SettingsViewModel shared across every settings destination, scoped to the
 // SettingsGraph back-stack entry. Replaces the single VM the old monolithic

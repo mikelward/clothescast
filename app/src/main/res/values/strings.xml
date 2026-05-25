@@ -453,7 +453,7 @@
     <string name="settings_root_calendar_subtitle">Events, Holidays, and Birthdays</string>
     <string name="settings_root_forecasters_subtitle">Weather Sources and Models</string>
     <string name="settings_root_smart_home_subtitle">Smart Displays and Home Automation</string>
-    <string name="settings_root_privacy_subtitle">Crash + usage reports</string>
+    <string name="settings_root_privacy_subtitle">Crash and Usage Reports</string>
 
     <!-- Forecasters sub-page: lets the user pick which numerical weather
          prediction models feed the confidence chip and the per-model chart.
@@ -492,7 +492,7 @@
          boundary contract. The "limits" line below repeats the most-asked
          questions ("does it send my calendar?") inline so the user doesn't
          have to leave the app to find out. -->
-    <string name="settings_privacy_telemetry_title">Crash + usage reports</string>
+    <string name="settings_privacy_telemetry_title">Crash and usage reports</string>
     <string name="settings_privacy_telemetry_label">Send crash + usage data</string>
     <string name="settings_privacy_telemetry_description">Sends anonymous crash reports and aggregate usage stats to help the developer fix bugs and decide which features to keep.</string>
     <string name="settings_privacy_telemetry_limits">Never sent: calendar events, location coordinates or place names, insight text or notification text, API keys, precise GPS, advertising IDs.</string>

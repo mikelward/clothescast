@@ -886,4 +886,6 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Today rationale extras -->
     <string name="today_rationale_open_clothes_settings">የልብስ ቅንብሮች</string>
+    <string name="settings_calendar_birthdays">የቀን መቁጠሪያ ልደቶች</string>
+    <string name="settings_calendar_public_holidays">የቀን መቁጠሪያ በዓሎች</string>
 </resources>

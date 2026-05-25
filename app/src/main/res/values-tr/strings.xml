@@ -918,4 +918,6 @@ displayed label localizes.
 
     <!-- Today rationale extras -->
     <string name="today_rationale_open_clothes_settings">Kıyafet ayarları</string>
+    <string name="settings_calendar_birthdays">Takvim Doğum Günleri</string>
+    <string name="settings_calendar_public_holidays">Takvim Tatilleri</string>
 </resources>

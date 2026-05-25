@@ -925,4 +925,6 @@ displayed label localizes.
     <string name="holiday_banner_us_thanksgiving">Hyvää Thanksgiving-päivää</string>
     <string name="holiday_banner_us_veterans_day">Kunnioitamme veteraanejamme</string>
     <string name="holiday_banner_waitangi_day">Hyvää Waitangi-päivää</string>
+    <string name="settings_calendar_birthdays">Kalenterin syntymäpäivät</string>
+    <string name="settings_calendar_public_holidays">Kalenterin juhlapyhät</string>
 </resources>

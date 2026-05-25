@@ -860,4 +860,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="holiday_banner_fr_armistice_day">Mäletame</string>
     <string name="holiday_banner_us_thanksgiving">Head tänupüha</string>
     <string name="holiday_banner_st_andrews_day">Head Püha Andrease päeva</string>
+    <string name="settings_calendar_birthdays">Kalendri sünnipäevad</string>
+    <string name="settings_calendar_public_holidays">Kalendripühad</string>
 </resources>

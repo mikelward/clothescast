@@ -855,4 +855,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="holiday_banner_fr_armistice_day">Per no oblidar</string>
     <string name="holiday_banner_us_thanksgiving">Feliç Dia d\'Acció de Gràcies</string>
     <string name="holiday_banner_st_andrews_day">Feliç Dia de Sant Andreu</string>
+    <string name="settings_calendar_birthdays">Aniversaris del calendari</string>
+    <string name="settings_calendar_public_holidays">Festius del calendari</string>
 </resources>

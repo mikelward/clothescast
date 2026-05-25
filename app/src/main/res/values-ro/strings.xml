@@ -892,4 +892,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="cast_error_no_route_picked">Selectează mai întâi un afișaj inteligent.</string>
     <string name="cast_error_no_insight_yet">Nu este disponibilă nicio prognoză încă. Așteaptă următoarea rulare programată sau atinge Reîmprospătează pe ecranul Astăzi.</string>
     <string name="cast_error_unknown">Transmisia a eșuat.</string>
+    <string name="settings_calendar_birthdays">Zile de naștere din calendar</string>
+    <string name="settings_calendar_public_holidays">Sărbători din calendar</string>
 </resources>

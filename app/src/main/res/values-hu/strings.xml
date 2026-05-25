@@ -909,4 +909,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="cast_error_no_route_picked">Először válasszon okos kijelzőt.</string>
     <string name="cast_error_no_insight_yet">Még nem áll rendelkezésre előrejelzés. Várjon a következő ütemezett futásra, vagy koppintson a Frissítés gombra a Mai képernyőn.</string>
     <string name="cast_error_unknown">A közvetítés sikertelen volt.</string>
+    <string name="settings_calendar_birthdays">Naptárbeli születésnapok</string>
+    <string name="settings_calendar_public_holidays">Naptárbeli ünnepek</string>
 </resources>

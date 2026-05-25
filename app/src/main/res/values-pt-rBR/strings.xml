@@ -1000,4 +1000,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_fr_armistice_day">Que nunca esqueçamos</string>
     <string name="holiday_banner_us_thanksgiving">Feliz Dia de Ação de Graças</string>
     <string name="holiday_banner_st_andrews_day">Feliz Dia de Santo André</string>
+    <string name="settings_calendar_birthdays">Aniversários do Calendário</string>
+    <string name="settings_calendar_public_holidays">Feriados do Calendário</string>
 </resources>

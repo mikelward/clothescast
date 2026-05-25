@@ -978,4 +978,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
 
     <!-- Today — Rationale dialog -->
     <string name="today_rationale_open_clothes_settings">Cài đặt quần áo</string>
+    <string name="settings_calendar_birthdays">Sinh nhật trong lịch</string>
+    <string name="settings_calendar_public_holidays">Ngày lễ trong lịch</string>
 </resources>

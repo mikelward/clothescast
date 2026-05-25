@@ -653,4 +653,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="cast_error_no_route_picked">Zuerst ein Smart Display auswählen.</string>
     <string name="cast_error_no_insight_yet">Noch keine Vorhersage verfügbar. Warte auf die nächste geplante Ausführung oder tippe auf der Startseite auf Aktualisieren.</string>
     <string name="cast_error_unknown">Übertragung fehlgeschlagen.</string>
+    <string name="settings_calendar_birthdays">Kalender-Geburtstage</string>
+    <string name="settings_calendar_public_holidays">Kalender-Feiertage</string>
 </resources>

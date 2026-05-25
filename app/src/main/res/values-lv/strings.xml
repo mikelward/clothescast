@@ -857,4 +857,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="holiday_banner_fr_armistice_day">Lai neaizmirstu</string>
     <string name="holiday_banner_us_thanksgiving">Priecīgu Pateicības dienu</string>
     <string name="holiday_banner_st_andrews_day">Priecīgu Svētā Andreja dienu</string>
+    <string name="settings_calendar_birthdays">Kalendāra dzimšanas dienas</string>
+    <string name="settings_calendar_public_holidays">Kalendāra svētki</string>
 </resources>

@@ -916,4 +916,6 @@ standard in Israeli digital communication.
 
     <!-- Today — rationale -->
     <string name="today_rationale_open_clothes_settings">הגדרות לבוש</string>
+    <string name="settings_calendar_birthdays">ימי הולדת מיומן</string>
+    <string name="settings_calendar_public_holidays">חגים מיומן</string>
 </resources>

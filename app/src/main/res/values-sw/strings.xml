@@ -887,4 +887,6 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Today rationale extras -->
     <string name="today_rationale_open_clothes_settings">Mipangilio ya mavazi</string>
+    <string name="settings_calendar_birthdays">Siku za Kuzaliwa za Kalenda</string>
+    <string name="settings_calendar_public_holidays">Likizo za Kalenda</string>
 </resources>

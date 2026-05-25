@@ -1070,4 +1070,6 @@ displayed label localizes.
 
     <!-- Today screen — Rationale: open clothes settings link. -->
     <string name="today_rationale_open_clothes_settings">옷 설정</string>
+    <string name="settings_calendar_birthdays">캘린더 생일</string>
+    <string name="settings_calendar_public_holidays">캘린더 공휴일</string>
 </resources>

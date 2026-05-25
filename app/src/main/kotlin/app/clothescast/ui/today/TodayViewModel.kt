@@ -93,8 +93,8 @@ data class TodayState(
      * chip, the low-confidence callout, or any of the three temperature /
      * precip cards. Resets to off when the Activity's ViewModelStore is
      * cleared (config change preserves it; process death does not). The
-     * diagnostic cards below (wind / cloud / humidity / solar / sunshine /
-     * UV) ignore this flag — they're per-model-only and render whenever
+     * diagnostic cards below (wind / humidity / cloud / solar / UV /
+     * sunshine) ignore this flag — they're per-model-only and render whenever
      * [Insight.perModelHourly] is present.
      */
     val showModelSpread: Boolean = false,

@@ -178,13 +178,10 @@ internal const val PRECIPITATION_AMOUNT_MIN_SPAN_MM: Double = 5.0
  * aligns with the readout's hour-by-hour indexing.
  *
  * When [perModelHourly] is null or no consulted model carries any
- * precipitation at all, collapses to the best-match line outright. That
- * mirrors the card subtitle's fallback (which uses the best-match sum
- * when [consensusRainfallMmFor] returns null), so the "Combined" line on
- * the chart and the "X mm of rain today" total above it stay in sync
- * instead of one tracking best-match and the other tracking consensus —
- * which would surface in model-disagreement cases as the line drifting
- * away from the spread mean above the subtitle's stated total.
+ * precipitation at all, collapses to the best-match line outright. The
+ * card subtitle derives its total by summing this series, so the
+ * "Combined" chart line and the "X mm of rain today" figure above it
+ * are always consistent — they come from the same data.
  *
  * Output length matches `hourly.size`; per-model entries are assumed to
  * align by list position (same date-sliced fetch), the convention used by

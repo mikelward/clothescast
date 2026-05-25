@@ -98,8 +98,6 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.ModelDivergenceSummary
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
-import app.clothescast.core.domain.model.consensusRainfallMm
-import app.clothescast.core.domain.model.consensusRainfallMmFor
 import app.clothescast.core.domain.model.consensusSunshineHours
 import app.clothescast.core.domain.model.consensusSunshineHoursFor
 import app.clothescast.core.domain.model.BottomsFormat
@@ -2484,12 +2482,10 @@ internal fun PrecipitationCard(
  * the two summary lines read consistently. Below the dry threshold the
  * subtitle switches to "No rainfall expected today" (or tonight).
  *
- * Total is averaged across the consulted per-model series via
- * [consensusRainfallMmFor] / [consensusRainfallMm] when per-model data is
- * available, falling back to the main-line sum from [hourly] otherwise
- * (single-model "consensus" isn't a consensus). Tonight's slice straddles
- * midnight, so the window-total variant is used there instead of the
- * date-filtered one — same wrap as [SunshineCard].
+ * Total is the sum of the [consensusRainfallMainLine] series so the
+ * subtitle figure matches exactly what the "Combined" chart line implies
+ * over the same window — with no risk of the two diverging when a model
+ * has partial hourly coverage.
  */
 @Composable
 internal fun PrecipitationAmountCard(
@@ -2500,15 +2496,6 @@ internal fun PrecipitationAmountCard(
     showModelSpread: Boolean = false,
     onFirstContact: (() -> Unit)? = null,
 ) {
-    val totalMm = remember(hourly, perModelHourly, forDate, period) {
-        val consensus = perModelHourly?.let {
-            when (period) {
-                ForecastPeriod.TODAY -> it.consensusRainfallMmFor(forDate)
-                ForecastPeriod.TONIGHT -> it.consensusRainfallMm()
-            }
-        }
-        consensus ?: hourly.sumOf { it.precipitationMm }
-    }
     // Same series the chart plots for its "Combined" main line — sourced
     // from the consensus mean per hour when per-model data is available,
     // best-match otherwise. Indexed by hour so the scrub readout above the
@@ -2518,6 +2505,7 @@ internal fun PrecipitationAmountCard(
     val mainLine = remember(hourly, perModelHourly) {
         consensusRainfallMainLine(hourly, perModelHourly)
     }
+    val totalMm = remember(mainLine) { mainLine.sum() }
     val isDry = totalMm < DRY_TOTAL_THRESHOLD_MM
     val scrubController = LocalChartScrub.current
     val subtitleText = if (isDry) {

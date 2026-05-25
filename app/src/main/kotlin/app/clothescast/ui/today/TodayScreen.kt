@@ -1917,7 +1917,6 @@ internal fun ForecastCard(
         val v = entry.feelsLikeC.toUnit(temperatureUnit).roundToInt()
         stringResource(R.string.today_chart_readout, "$v$symbol", formatScrubHour(entry.time))
     }
-    val combinedSubtitle = appendReadout(subtitleText, readout)
 
     Card(modifier = Modifier.fillMaxWidth()) {
         Box {
@@ -1929,9 +1928,7 @@ internal fun ForecastCard(
                     text = stringResource(R.string.today_forecast_title),
                     style = MaterialTheme.typography.titleSmall,
                 )
-                combinedSubtitle?.let {
-                    Text(text = it, style = MaterialTheme.typography.bodyMedium)
-                }
+                ChartSubtitleRow(subtitle = subtitleText, readout = readout)
                 ForecastChart(
                     hourly = hourly,
                     temperatureUnit = temperatureUnit,
@@ -1981,7 +1978,6 @@ internal fun AirTemperatureCard(
         val v = entry.temperatureC.toUnit(temperatureUnit).roundToInt()
         stringResource(R.string.today_chart_readout, "$v$symbol", formatScrubHour(entry.time))
     }
-    val combinedSubtitle = appendReadout(subtitleText, readout)
 
     Card(modifier = Modifier.fillMaxWidth()) {
         Box {
@@ -1993,9 +1989,7 @@ internal fun AirTemperatureCard(
                     text = stringResource(R.string.today_forecast_air_section_title),
                     style = MaterialTheme.typography.titleSmall,
                 )
-                combinedSubtitle?.let {
-                    Text(text = it, style = MaterialTheme.typography.bodyMedium)
-                }
+                ChartSubtitleRow(subtitle = subtitleText, readout = readout)
                 ForecastChart(
                     hourly = hourly,
                     temperatureUnit = temperatureUnit,
@@ -2423,7 +2417,6 @@ internal fun PrecipitationCard(
             formatScrubHour(entry.time),
         )
     }
-    val combinedSubtitle = appendReadout(subtitleText, readout) ?: subtitleText
     Card(modifier = Modifier.fillMaxWidth()) {
         Box {
             Column(
@@ -2434,10 +2427,7 @@ internal fun PrecipitationCard(
                     text = stringResource(R.string.today_precipitation_title),
                     style = MaterialTheme.typography.titleSmall,
                 )
-                Text(
-                    text = combinedSubtitle,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                ChartSubtitleRow(subtitle = subtitleText, readout = readout)
                 PrecipitationChart(
                     hourly = hourly,
                     startDate = startDate,
@@ -2524,7 +2514,6 @@ internal fun PrecipitationAmountCard(
             formatScrubHour(hourly[idx].time),
         )
     }
-    val combinedSubtitle = appendReadout(subtitleText, readout) ?: subtitleText
     Card(modifier = Modifier.fillMaxWidth()) {
         Box {
             Column(
@@ -2535,10 +2524,7 @@ internal fun PrecipitationAmountCard(
                     text = stringResource(R.string.today_precipitation_amount_title),
                     style = MaterialTheme.typography.titleSmall,
                 )
-                Text(
-                    text = combinedSubtitle,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                ChartSubtitleRow(subtitle = subtitleText, readout = readout)
                 PrecipitationAmountChart(
                     hourly = hourly,
                     startDate = forDate,

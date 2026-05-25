@@ -18,6 +18,7 @@ import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.repository.ForecastBundle
+import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -362,6 +363,23 @@ internal fun tonightWindow(
     LocalDateTime.of(date, entry.time)
 }
 
+// Buffer trimmed off each end of the daytime window when computing feels-like /
+// temperature min/max for clothes rules and the displayed band. The notification
+// time (default 07:00) is when the user gets the morning insight, not when they
+// step outside — the pre-dawn hour at the leading edge drags the day's coldest
+// reading toward heavier clothes than they'll need by the time they leave home,
+// and the post-dusk hour at the trailing edge has the symmetric effect on warm-
+// weather days. Hourly list, peak-precip detection, and condition resolution
+// still use the full sliced window: an in-window 7:30 shower is exactly what the
+// rain mention exists to surface, even if the user isn't outside until 8.
+//
+// TODO(window): expose this in settings. Options worth weighing: a separate
+// "leave home" / "back home" pair distinct from the notification times, or a
+// single "exposure buffer" duration applied to both edges. Until then every
+// user gets the 1-hour default — coarse but better than the dawn-dip dragging
+// every cold-morning recommendation toward a jacket.
+private val CLOTHES_EXPOSURE_BUFFER: Duration = Duration.ofHours(1)
+
 internal fun DailyForecast.slicedForToday(
     morningStart: LocalTime,
     eveningEnd: LocalTime,
@@ -369,12 +387,27 @@ internal fun DailyForecast.slicedForToday(
     if (!morningStart.isBefore(eveningEnd)) return this
     val sliced = hourly.filter { it.time >= morningStart && it.time < eveningEnd }
     if (sliced.isEmpty()) return copy(hourly = sliced)
+    val exposureStart = morningStart.plus(CLOTHES_EXPOSURE_BUFFER)
+    val exposureEnd = eveningEnd.minus(CLOTHES_EXPOSURE_BUFFER)
+    // Wrap-around guard: LocalTime.plus / minus rolls past midnight, so a
+    // notification time near the day boundary would silently invert the window.
+    // Fall back to the full slice when the trim would either invert the order
+    // or shrink to nothing.
+    val canTrim = !exposureStart.isBefore(morningStart) &&
+        !exposureEnd.isAfter(eveningEnd) &&
+        exposureStart.isBefore(exposureEnd)
+    val minMaxSource = if (canTrim) {
+        sliced.filter { it.time >= exposureStart && it.time < exposureEnd }
+            .ifEmpty { sliced }
+    } else {
+        sliced
+    }
     return copy(
         hourly = sliced,
-        temperatureMinC = sliced.minOf { it.temperatureC },
-        temperatureMaxC = sliced.maxOf { it.temperatureC },
-        feelsLikeMinC = sliced.minOf { it.feelsLikeC },
-        feelsLikeMaxC = sliced.maxOf { it.feelsLikeC },
+        temperatureMinC = minMaxSource.minOf { it.temperatureC },
+        temperatureMaxC = minMaxSource.maxOf { it.temperatureC },
+        feelsLikeMinC = minMaxSource.minOf { it.feelsLikeC },
+        feelsLikeMaxC = minMaxSource.maxOf { it.feelsLikeC },
         precipitationProbabilityMaxPct = sliced.maxOf { it.precipitationProbabilityPct },
         condition = sliced.maxByOrNull { it.precipitationProbabilityPct }
             ?.condition

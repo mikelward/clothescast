@@ -506,6 +506,54 @@ class GenerateDailyInsightTest {
     }
 
     @Test
+    fun `today period trims a one-hour exposure buffer off each edge of the band min and max`() = runTest {
+        // Notification window is [07:00, 19:00) by default, but the user isn't outside
+        // at 7am — they're getting dressed. A sharp pre-dawn dip at 07:00 (feels-like
+        // 4°C) and a still-warm reading at 18:00 (24°C) would otherwise widen the
+        // band to COLD..WARM, dragging the recommendation toward a jacket the user
+        // doesn't need by 8am. The exposure buffer trims those edge hours, so the
+        // band reflects what the user actually feels between 08:00 and 18:00.
+        val todayHourly = listOf(
+            HourlyForecast(LocalTime.of(7, 0), 6.0, 4.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(9, 0), 14.0, 12.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 22.0, 20.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(18, 0), 26.0, 24.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val todayWithHourly = today.copy(hourly = todayHourly)
+        val weather = FakeWeatherRepository(ForecastBundle(todayWithHourly, yesterday))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val result = subject(london, prefs)
+
+        result.insight.summary.band.feelsLikeMinC shouldBe 12.0
+        result.insight.summary.band.feelsLikeMaxC shouldBe 20.0
+        result.insight.summary.band.low shouldBe TemperatureBand.COOL
+        result.insight.summary.band.high shouldBe TemperatureBand.MILD
+    }
+
+    @Test
+    fun `today period still surfaces rain in the buffered edge hours`() = runTest {
+        // The exposure buffer narrows the band's min/max, but peak precipitation
+        // still walks the full [morningStart, eveningEnd) slice. A 7:30am-ish
+        // shower (7am hour, 80% rain) is exactly the warning the morning insight
+        // exists to deliver, even though the user isn't outside until 8.
+        val todayHourly = listOf(
+            HourlyForecast(LocalTime.of(7, 0), 12.0, 11.0, 80.0, WeatherCondition.RAIN),
+            HourlyForecast(LocalTime.of(9, 0), 14.0, 12.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 22.0, 20.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val todayWithHourly = today.copy(hourly = todayHourly)
+        val weather = FakeWeatherRepository(ForecastBundle(todayWithHourly, yesterday))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val result = subject(london, prefs)
+
+        result.insight.summary.precip.shouldNotBeNull()
+        result.insight.summary.precip!!.time shouldBe LocalTime.of(7, 0)
+        result.insight.summary.precip!!.condition shouldBe WeatherCondition.RAIN
+    }
+
+    @Test
     fun `today period falls back to day-level fields when no hourly is available`() = runTest {
         // The default fixture has no hourly array; the slice is empty and the band
         // sentence should still come through from the daily aggregates rather than

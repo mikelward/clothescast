@@ -63,11 +63,16 @@ class InsightCacheTest {
     private val now = Instant.parse("2026-04-25T07:00:00Z")
 
     private val mildHourly = listOf(
+        // 08:00 sits inside the exposure window, so the cold edge still drives
+        // the band's min — the 07:00 hour is dropped from min/max by the
+        // exposure-buffer trim (see `slicedForToday`).
         HourlyForecast(LocalTime.of(7, 0), 14.0, 13.0, 5.0, WeatherCondition.CLEAR),
+        HourlyForecast(LocalTime.of(8, 0), 14.0, 13.0, 5.0, WeatherCondition.CLEAR),
         HourlyForecast(LocalTime.of(14, 0), 19.0, 18.0, 5.0, WeatherCondition.CLEAR),
     )
     private val mildYesterdayHourly = listOf(
         HourlyForecast(LocalTime.of(7, 0), 13.0, 12.0, 5.0, WeatherCondition.CLEAR),
+        HourlyForecast(LocalTime.of(8, 0), 13.0, 12.0, 5.0, WeatherCondition.CLEAR),
         HourlyForecast(LocalTime.of(14, 0), 18.0, 17.0, 5.0, WeatherCondition.CLEAR),
     )
 

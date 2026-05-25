@@ -5,6 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.clothescast.core.domain.model.AlertClause
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.CalendarTieInClause
 import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ClothesClause
@@ -293,6 +294,62 @@ class InsightFormatterTest {
         // phrasing for the whole list so the user still hears something.
         layerCountSubject.format(summary(clothes = ClothesClause(listOf("cape")))) shouldBe
             "Today, it will be 21°. Wear a cape."
+    }
+
+    // BottomsFormat covers three states orthogonal to ClothesFormat: ALWAYS,
+    // IF_GARMENTS (default — bottoms appear in items mode and are dropped in
+    // layer-count mode), and NEVER. The two subjects below mirror the default
+    // and layer-count subjects with explicit BottomsFormat overrides.
+    private val neverBottomsSubject = InsightFormatter.forContext(
+        context = context,
+        locale = Locale.ENGLISH,
+        bottomsFormat = BottomsFormat.NEVER,
+    )
+    private val alwaysBottomsLayerCountSubject = InsightFormatter.forContext(
+        context = context,
+        locale = Locale.ENGLISH,
+        clothesFormat = ClothesFormat.LAYER_COUNT,
+        bottomsFormat = BottomsFormat.ALWAYS,
+    )
+
+    @Test
+    fun `bottoms format NEVER strips bottoms from items-mode wear clause`() {
+        // The classic warm-day stack (default top + shorts rule) becomes a
+        // top-only wear clause when the user opts out of bottoms.
+        neverBottomsSubject.format(summary(clothes = ClothesClause(listOf("sweater", "shorts")))) shouldBe
+            "Today, it will be 21°. Wear a sweater."
+    }
+
+    @Test
+    fun `bottoms format NEVER drops the wear clause when only a bottom fires`() {
+        // No top survives the filter, so the whole wear sentence disappears
+        // — the user explicitly asked never to be told what bottoms to wear.
+        neverBottomsSubject.format(summary(clothes = ClothesClause(listOf("shorts")))) shouldBe
+            "Today, it will be 21°."
+    }
+
+    @Test
+    fun `bottoms format NEVER keeps unrecognised items as tops`() {
+        // ClothesClause.tops treats unknown items as tops, so a user-typed
+        // "cape" is preserved by the NEVER filter.
+        neverBottomsSubject.format(summary(clothes = ClothesClause(listOf("cape", "shorts")))) shouldBe
+            "Today, it will be 21°. Wear a cape."
+    }
+
+    @Test
+    fun `bottoms format ALWAYS appends bottoms to the layer-count clause`() {
+        // ALWAYS overrides layer-count's historical bottoms-suppression so
+        // the user hears their shorts named alongside the warmth signal.
+        alwaysBottomsLayerCountSubject.format(summary(clothes = ClothesClause(listOf("sweater", "shorts")))) shouldBe
+            "Today, it will be 21°. Wear 2 layers and shorts."
+    }
+
+    @Test
+    fun `bottoms format ALWAYS still emits bare count when no bottom fires`() {
+        // No bottom in the rule list means the appended bottoms list is empty
+        // and the clause reads as the bare layer count, same as IF_GARMENTS.
+        alwaysBottomsLayerCountSubject.format(summary(clothes = ClothesClause(listOf("sweater")))) shouldBe
+            "Today, it will be 21°. Wear 2 layers."
     }
 
     @Test

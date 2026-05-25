@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.RainAccessory
@@ -65,6 +66,7 @@ data class TodayState(
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     val rangeFormat: RangeFormat = RangeFormat.DEGREES,
     val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
+    val bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
     val rainAccessory: RainAccessory = RainAccessory.NONE,
     val distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
     val region: Region = Region.SYSTEM,
@@ -407,6 +409,7 @@ class TodayViewModel(
             temperatureUnit = prefs.temperatureUnit,
             rangeFormat = prefs.rangeFormat,
             clothesFormat = prefs.clothesFormat,
+            bottomsFormat = prefs.bottomsFormat,
             rainAccessory = prefs.rainAccessory,
             distanceUnit = prefs.distanceUnit,
             region = prefs.region,

@@ -1,5 +1,6 @@
 package app.clothescast.ui.settings
 
+import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
@@ -51,6 +52,7 @@ data class SettingsState(
     val clothesMentionMode: ClothesMentionMode = ClothesMentionMode.ALWAYS,
     val rangeFormat: RangeFormat = RangeFormat.DEGREES,
     val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
+    val bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
     val rainAccessory: RainAccessory = RainAccessory.NONE,
     val deltaThresholdC: Double? = 3.0,
     /**

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
@@ -71,6 +72,7 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
         FormatContent(
             rangeFormat = state.rangeFormat,
             clothesFormat = state.clothesFormat,
+            bottomsFormat = state.bottomsFormat,
             rainAccessory = state.rainAccessory,
             deltaThresholdC = state.deltaThresholdC,
             clothesMentionMode = state.clothesMentionMode,
@@ -80,6 +82,7 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             padding = padding,
             onSetRangeFormat = viewModel::setRangeFormat,
             onSetClothesFormat = viewModel::setClothesFormat,
+            onSetBottomsFormat = viewModel::setBottomsFormat,
             onSetRainAccessory = viewModel::setRainAccessory,
             onSetDeltaThresholdC = viewModel::setDeltaThresholdC,
             onSetClothesMentionMode = viewModel::setClothesMentionMode,
@@ -91,6 +94,7 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
 internal fun FormatContent(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
+    bottomsFormat: BottomsFormat,
     rainAccessory: RainAccessory,
     deltaThresholdC: Double?,
     clothesMentionMode: ClothesMentionMode,
@@ -100,6 +104,7 @@ internal fun FormatContent(
     padding: PaddingValues,
     onSetRangeFormat: (RangeFormat) -> Unit,
     onSetClothesFormat: (ClothesFormat) -> Unit,
+    onSetBottomsFormat: (BottomsFormat) -> Unit,
     onSetRainAccessory: (RainAccessory) -> Unit,
     onSetDeltaThresholdC: (Double?) -> Unit,
     onSetClothesMentionMode: (ClothesMentionMode) -> Unit,
@@ -120,6 +125,7 @@ internal fun FormatContent(
             PreviewCard(
                 rangeFormat,
                 clothesFormat,
+                bottomsFormat,
                 rainAccessory,
                 deltaThresholdC,
                 clothesMentionMode,
@@ -132,6 +138,7 @@ internal fun FormatContent(
                 temperatureUnit,
                 rangeFormat,
                 clothesFormat,
+                bottomsFormat,
                 rainAccessory,
             )
             SectionCard(title = stringResource(R.string.settings_format_what_to_say)) {
@@ -164,6 +171,13 @@ internal fun FormatContent(
                     onSelect = onSetClothesFormat,
                 )
                 FormatDropdownRow(
+                    label = stringResource(R.string.settings_format_bottoms_label),
+                    options = BottomsFormat.entries,
+                    selected = bottomsFormat,
+                    optionLabel = { stringResource(bottomsFormatLabel(it)) },
+                    onSelect = onSetBottomsFormat,
+                )
+                FormatDropdownRow(
                     label = stringResource(R.string.settings_format_rain_accessory_label),
                     options = RainAccessory.entries,
                     selected = rainAccessory,
@@ -186,6 +200,12 @@ private fun clothesFormatLabel(format: ClothesFormat): Int = when (format) {
     ClothesFormat.LAYER_COUNT -> R.string.settings_format_clothes_layer_count
 }
 
+private fun bottomsFormatLabel(format: BottomsFormat): Int = when (format) {
+    BottomsFormat.ALWAYS -> R.string.settings_format_bottoms_always
+    BottomsFormat.IF_GARMENTS -> R.string.settings_format_bottoms_if_garments
+    BottomsFormat.NEVER -> R.string.settings_format_bottoms_never
+}
+
 private fun rainAccessoryLabel(accessory: RainAccessory): Int = when (accessory) {
     RainAccessory.NONE -> R.string.settings_format_rain_accessory_none
     RainAccessory.UMBRELLA -> R.string.settings_format_rain_accessory_umbrella
@@ -195,6 +215,7 @@ private fun rainAccessoryLabel(accessory: RainAccessory): Int = when (accessory)
 private fun PreviewCard(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
+    bottomsFormat: BottomsFormat,
     rainAccessory: RainAccessory,
     deltaThresholdC: Double?,
     clothesMentionMode: ClothesMentionMode,
@@ -202,8 +223,8 @@ private fun PreviewCard(
     temperatureUnit: TemperatureUnit,
 ) {
     val context = LocalContext.current
-    val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat, rainAccessory) {
-        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, rainAccessory)
+    val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory) {
+        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory)
     }
     // Drop the delta clause when the selected threshold is above the sample's
     // delta, so the preview reflects the significant-change setting too.
@@ -225,10 +246,14 @@ private fun PreviewCard(
         // ALWAYS keeps it, and IF_CHANGED keeps it here because the sample
         // depicts a changed day (it already shows a "warmer than yesterday"
         // delta), so today's clothes would differ from yesterday's.
+        //
+        // Include a bottom in the sample so the BottomsFormat picker has
+        // something visible to flip: ALWAYS / IF_GARMENTS render "a sweater
+        // and pants", NEVER strips the pants out.
         clothes = if (clothesMentionMode == ClothesMentionMode.NEVER) {
             null
         } else {
-            ClothesClause(items = listOf("sweater"))
+            ClothesClause(items = listOf("sweater", "pants"))
         },
         precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(17, 0), PrecipLikelihood.LIKELY),
     )
@@ -259,11 +284,12 @@ private fun CurrentForecastPreviewCard(
     temperatureUnit: TemperatureUnit,
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
+    bottomsFormat: BottomsFormat,
     rainAccessory: RainAccessory,
 ) {
     val context = LocalContext.current
-    val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat, rainAccessory) {
-        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, rainAccessory)
+    val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory) {
+        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory)
     }
     SectionCard(title = stringResource(R.string.settings_format_preview_current_title)) {
         Text(

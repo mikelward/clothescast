@@ -332,6 +332,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
                 prefs.temperatureUnit,
                 prefs.rangeFormat,
                 prefs.clothesFormat,
+                prefs.bottomsFormat,
                 prefs.rainAccessory,
             )
             val prose = formatter.format(insight.summary)

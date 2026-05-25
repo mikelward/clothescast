@@ -6,6 +6,7 @@ import android.content.res.Resources
 import app.clothescast.R
 import app.clothescast.core.domain.model.AlertClause
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaClause
@@ -73,6 +74,15 @@ class InsightFormatter(
      */
     private val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     /**
+     * Whether bottoms (shorts / pants / skirts / jeans) appear in the wear
+     * clause. See [BottomsFormat]. Default [BottomsFormat.IF_GARMENTS]
+     * preserves the historical behaviour — bottoms surface in items mode and
+     * are suppressed in layer-count mode. [BottomsFormat.ALWAYS] extends the
+     * layer-count clause to append bottoms ("Wear 2 layers and shorts.");
+     * [BottomsFormat.NEVER] drops them from items mode too.
+     */
+    private val bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
+    /**
      * Optional wet-weather accessory named alongside the rain mention. With
      * [RainAccessory.NONE] (default) the precip clause stays a bare "Rain at
      * 3pm." and the evening tie-in keeps its existing prose; with
@@ -117,16 +127,31 @@ class InsightFormatter(
         // precip-keyed rule. The accessory TODO below is the proper home for
         // a re-introduction.
         //
-        // Layer-count mode is a single warmth signal — bottoms add noise, so
-        // we just read [ClothesClause.tops] directly and the bottoms never
-        // enter the wear list. An only-bottom firing therefore emits no wear
-        // clause at all in this mode. In items mode we render all non-accessory
-        // items in their original input order so the article-picker
-        // ([ClothesPhraser]) sees the same plural-first / singular-first
-        // sequence it would have if it filtered the raw [items] itself.
+        // Layer-count mode is a single warmth signal — under
+        // [BottomsFormat.IF_GARMENTS] (default) and [BottomsFormat.NEVER] we
+        // read [ClothesClause.tops] so bottoms never enter the wear list, and
+        // an only-bottom firing emits no wear clause. Under
+        // [BottomsFormat.ALWAYS] bottoms ride along — [layerCountPhrase]
+        // appends them after the count ("Wear 2 layers and shorts.").
+        //
+        // In items mode we render all non-accessory items in their original
+        // input order so the article-picker ([ClothesPhraser]) sees the same
+        // plural-first / singular-first sequence it would have if it filtered
+        // the raw [items] itself. [BottomsFormat.NEVER] strips bottoms before
+        // the join; [BottomsFormat.ALWAYS] and [BottomsFormat.IF_GARMENTS]
+        // both keep them (items mode IS the garments mode).
         val wearItems = when (clothesFormat) {
-            ClothesFormat.LAYER_COUNT -> summary.clothes?.tops.orEmpty()
-            ClothesFormat.ITEMS -> summary.clothes?.items.orEmpty().filterNot(::isAccessory)
+            ClothesFormat.LAYER_COUNT -> when (bottomsFormat) {
+                BottomsFormat.ALWAYS -> summary.clothes?.items.orEmpty().filterNot(::isAccessory)
+                BottomsFormat.IF_GARMENTS, BottomsFormat.NEVER -> summary.clothes?.tops.orEmpty()
+            }
+            ClothesFormat.ITEMS -> {
+                val all = summary.clothes?.items.orEmpty().filterNot(::isAccessory)
+                when (bottomsFormat) {
+                    BottomsFormat.ALWAYS, BottomsFormat.IF_GARMENTS -> all
+                    BottomsFormat.NEVER -> all.filter { Garment.fromKey(it)?.slot != Garment.Slot.BOTTOM }
+                }
+            }
         }
         // Items already in the wear sentence shouldn't be repeated by a
         // tie-in — a calendar tie-in that picks "sweater" when the wear
@@ -345,22 +370,29 @@ class InsightFormatter(
      * Render the body of the wear sentence in layer-count mode. Tops collapse
      * to the max [Garment.layerCount] across firing rules (the heaviest tier
      * defines the warmth, layering a sweater under a jacket lands at 3 not 5).
-     * Bottoms can't reach here — [format] drops [ClothesClause.bottoms] from
-     * the wear list in this mode — so the phrase is purely about top warmth
-     * ("Wear 2 layers."). Returns `null` when no top is classifiable, letting
-     * the caller fall back to the items rendering (free-form user-typed
-     * garments don't map to a layer count).
+     * Under [BottomsFormat.IF_GARMENTS] / [BottomsFormat.NEVER] bottoms can't
+     * reach here ([format] drops them) so the phrase is purely about top
+     * warmth ("Wear 2 layers."). Under [BottomsFormat.ALWAYS] bottoms ride
+     * along in [items] and are appended after the count via the phraser
+     * ("Wear 2 layers and shorts."). Returns `null` when no top is
+     * classifiable, letting the caller fall back to the items rendering
+     * (free-form user-typed garments don't map to a layer count).
      */
     private fun layerCountPhrase(items: List<String>): String? {
         var topCount = 0
+        val bottoms = mutableListOf<String>()
         for (item in items) {
             val garment = Garment.fromKey(item) ?: return null
             if (garment.slot == Garment.Slot.TOP && garment.layerCount > topCount) {
                 topCount = garment.layerCount
+            } else if (garment.slot == Garment.Slot.BOTTOM) {
+                bottoms.add(item)
             }
         }
         if (topCount == 0) return null
-        return resources.getQuantityString(R.plurals.insight_clothes_layer_count, topCount, topCount)
+        val countPhrase = resources.getQuantityString(R.plurals.insight_clothes_layer_count, topCount, topCount)
+        if (bottoms.isEmpty()) return countPhrase
+        return phraser.joinItems(listOf(countPhrase) + bottoms)
     }
 
     private fun formatPrecip(precip: PrecipClause): String {
@@ -580,6 +612,7 @@ class InsightFormatter(
             temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
             rangeFormat: RangeFormat = RangeFormat.DEGREES,
             clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
+            bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
             rainAccessory: RainAccessory = RainAccessory.NONE,
         ): InsightFormatter =
             InsightFormatter(
@@ -588,6 +621,7 @@ class InsightFormatter(
                 temperatureUnit,
                 rangeFormat,
                 clothesFormat,
+                bottomsFormat,
                 rainAccessory,
             )
 
@@ -598,10 +632,11 @@ class InsightFormatter(
             temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
             rangeFormat: RangeFormat = RangeFormat.DEGREES,
             clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
+            bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
             rainAccessory: RainAccessory = RainAccessory.NONE,
         ): InsightFormatter {
             val locale = region.toJavaLocale() ?: context.currentResourcesLocale()
-            return forContext(context, locale, temperatureUnit, rangeFormat, clothesFormat, rainAccessory)
+            return forContext(context, locale, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory)
         }
     }
 }

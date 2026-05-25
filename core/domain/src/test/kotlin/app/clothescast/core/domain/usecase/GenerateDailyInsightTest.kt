@@ -167,7 +167,7 @@ class GenerateDailyInsightTest {
 
     @Test
     fun `IF_CHANGED emits the clothes clause when clothing differs from yesterday`() = runTest {
-        // yesterday (10→17) triggers sweater + jacket; today (6→25) adds shorts.
+        // yesterday (10→17) triggers only sweater; today (6→25) adds jacket and shorts.
         val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
         val subject = GenerateDailyInsight(weather, clock = clock)
 
@@ -200,8 +200,8 @@ class GenerateDailyInsightTest {
 
     @Test
     fun `recommended items resolve to the per-tier default rule when no threshold rule matches`() = runTest {
-        // Feels-like 19-22°C sits in the comfort gap of DEFAULTS (sweater <18°C,
-        // jacket <12°C, coat <6°C, shorts >24°C) — no threshold rule in
+        // Feels-like 19-22°C sits in the comfort gap of DEFAULTS (sweater <16°C,
+        // jacket <10°C, coat <4°C, shorts >23°C) — no threshold rule in
         // either tier matches. The engine resolves both slots via the user's
         // per-tier default rules (defaultTop + defaultBottom).
         val mildToday = today.copy(
@@ -221,8 +221,8 @@ class GenerateDailyInsightTest {
 
     @Test
     fun `ALWAYS names the outfit baseline on a mild day when only the default rule matches`() = runTest {
-        // Feels-like 19-22°C sits in the comfort gap between sweater (<18°C)
-        // and shorts (>24°C), so no threshold rule matches. The per-tier
+        // Feels-like 19-22°C sits in the comfort gap between sweater (<16°C)
+        // and shorts (>23°C), so no threshold rule matches. The per-tier
         // defaults (defaultTop + defaultBottom) are themselves rules — their
         // condition is "no threshold rule in my tier matched today" — and
         // the engine surfaces them in `recommendedItems` so "Always" lives
@@ -250,7 +250,7 @@ class GenerateDailyInsightTest {
 
     @Test
     fun `warm day with shorts rule and t-shirt fallback lists the t-shirt first`() = runTest {
-        // Feels-like 22-28°C trips the shorts >24°C threshold but no top
+        // Feels-like 22-28°C trips the shorts >23°C threshold but no top
         // threshold rule fires, so the t-shirt comes from the default
         // fallback. Items put tops before bottoms regardless of which
         // clause produced them, so the prose's article picker lands on the
@@ -329,7 +329,7 @@ class GenerateDailyInsightTest {
 
     @Test
     fun `within-shell-layer also-rans are dropped on a very cold day`() = runTest {
-        // Default rules: sweater (<18), jacket (<12), coat (<6), shorts (>24).
+        // Default rules: sweater (<16), jacket (<10), coat (<4), shorts (>23).
         // At feels-like 2-8°C all three cold rules fire — sweater on MID,
         // jacket + coat both on SHELL. The user only wears one outer layer,
         // so the engine picks coat (heaviest tier) and silently drops jacket

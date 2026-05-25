@@ -6,19 +6,19 @@ import org.junit.jupiter.api.Test
 class FallbackRangeTest {
     @Test
     fun `default rules give a lower bound for the top fallback at the sweater threshold`() {
-        // Default rules: sweater below 18, jacket below 12, coat below 6.
-        // The warmest "below" threshold (sweater @ 18) gates the top fallback —
-        // it can only fire at 18°C and above.
+        // Default rules: sweater below 16, jacket below 10, coat below 4.
+        // The warmest "below" threshold (sweater @ 16) gates the top fallback —
+        // it can only fire at 16°C and above.
         fallbackRange(ClothesRule.DEFAULTS, FallbackTier.TOP) shouldBe
-            FallbackRange(lowerC = 18.0, upperC = null)
+            FallbackRange(lowerC = 16.0, upperC = null)
     }
 
     @Test
     fun `default rules give an upper bound for the bottom fallback at the shorts threshold`() {
-        // Default rules: shorts above 24. The bottom fallback only fires when
-        // shorts doesn't — i.e. at 24°C and below.
+        // Default rules: shorts above 23. The bottom fallback only fires when
+        // shorts doesn't — i.e. at 23°C and below.
         fallbackRange(ClothesRule.DEFAULTS, FallbackTier.BOTTOM) shouldBe
-            FallbackRange(lowerC = null, upperC = 24.0)
+            FallbackRange(lowerC = null, upperC = 23.0)
     }
 
     @Test

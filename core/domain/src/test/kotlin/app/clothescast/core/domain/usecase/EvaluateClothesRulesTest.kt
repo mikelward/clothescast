@@ -40,7 +40,7 @@ class EvaluateClothesRulesTest {
     @Test
     fun `temperate day with no matching threshold rule resolves to both defaults`() {
         // The comfort gap: feels-like 18-22°C, nothing in DEFAULTS matches
-        // (sweater <18°C, jacket <12°C, coat <6°C, shorts >24°C). Each
+        // (sweater <16°C, jacket <10°C, coat <4°C, shorts >23°C). Each
         // tier's default rule resolves its slot.
         val out = subject(forecast(min = 18.0, max = 22.0), ClothesRule.DEFAULTS)
         out.rules.shouldBeEmpty()
@@ -85,7 +85,7 @@ class EvaluateClothesRulesTest {
     fun `wet cold day matches cold-weather rules, bottom slot resolves to the default`() {
         // Defaults no longer include umbrella — the precip clause announces rain,
         // and the wet-weather accessory will become a personalised setting.
-        val out = subject(forecast(min = 10.0, max = 16.0, precip = 70.0), ClothesRule.DEFAULTS)
+        val out = subject(forecast(min = 9.0, max = 15.0, precip = 70.0), ClothesRule.DEFAULTS)
         out.rules.map { it.item }.shouldContainExactly("sweater", "jacket")
         out.items.shouldContainExactly("sweater", "jacket", "pants")
     }

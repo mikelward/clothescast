@@ -107,7 +107,7 @@ class ClothesRuleTest {
     @Test
     fun `cold morning warm afternoon triggers both sweater and shorts`() {
         // Realistic spring day: chilly start, warm peak. Min stays above the
-        // coat threshold (6°C), so coat shouldn't fire.
+        // coat threshold (4°C), so coat shouldn't fire.
         val day = forecast(min = 8.0, max = 25.0)
         val triggered = ClothesRule.DEFAULTS.filter { it.appliesTo(day) }.map { it.item }
         triggered shouldBe listOf("sweater", "jacket", "shorts")

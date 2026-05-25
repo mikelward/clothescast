@@ -282,8 +282,8 @@ internal fun SettingsClothesPreview() {
     }
 }
 
-// Fahrenheit view of a mixed-unit list: the °C-typed defaults (sweater 18°C,
-// jacket 12°C, shorts 24°C) render as "18°C (64°F)" etc. — current unit first,
+// Fahrenheit view of a mixed-unit list: the °C-typed defaults (sweater 16°C,
+// jacket 10°C, shorts 23°C) render as "16°C (61°F)" etc. — current unit first,
 // original parenthesised. The fourth rule was set in °F, so it shows just
 // "75°F" without parens because rule unit == display unit. This is the
 // Fahrenheit user's regression net: the Settings → Clothes editor used to lie

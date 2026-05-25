@@ -328,8 +328,8 @@ What's sent:
   rules added beyond the catalog defaults; a sorted comma-joined list
   of which catalog categories were customised; an `all_defaults` flag;
   and per-category integer Celsius deltas from the default threshold,
-  clamped to ±5°C (so e.g. moving the jacket threshold from 12°C down
-  to 10°C reports `-2`). No raw thresholds, no user-added rule items,
+  clamped to ±5°C (so e.g. moving the jacket threshold from 10°C down
+  to 8°C reports `-2`). No raw thresholds, no user-added rule items,
   no precipitation thresholds.
 
 What's **not** sent — these are hard limits, not "best-effort":

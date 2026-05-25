@@ -711,7 +711,7 @@ class SettingsRepositoryTest {
 
         val rules = subject.preferences.first().clothesRules
         val recreated = rules.first { it.item == "shorts" }
-        recreated.thresholdC() shouldBe 23.0
+        recreated.thresholdC() shouldBe 22.0
         // Catalog default's unit (°C) is preserved on the recreated rule.
         (recreated.condition as ClothesRule.TemperatureAbove).unit shouldBe TemperatureUnit.CELSIUS
     }
@@ -950,10 +950,10 @@ class SettingsRepositoryTest {
 
     @Test
     fun `clothesRulesSnapshot reflects user edits to thresholds`() = runTest {
-        // Nudge jacket from default 12°C down to 10°C — delta should report
+        // Nudge jacket from default 10°C down to 8°C — delta should report
         // as "-2" and the customised count should land at exactly 1.
         val edited = ClothesRule.DEFAULTS.map { rule ->
-            if (rule.item == "jacket") rule.copy(condition = ClothesRule.TemperatureBelow(10.0))
+            if (rule.item == "jacket") rule.copy(condition = ClothesRule.TemperatureBelow(8.0))
             else rule
         }
         subject.setClothesRules(edited)

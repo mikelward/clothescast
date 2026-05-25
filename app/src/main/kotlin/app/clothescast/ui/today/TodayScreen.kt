@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -64,9 +63,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -75,6 +77,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -848,29 +851,15 @@ internal fun MissingPeriodPlaceholder(
     } else {
         R.string.today_placeholder_tonight_title
     }
-    Card(modifier = Modifier.fillMaxWidth()) {
+    val body: @Composable (Modifier, PaddingValues) -> Unit = { bodyModifier, contentPadding ->
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = bodyModifier.padding(contentPadding),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = stringResource(titleRes),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                if (showChevronLeft) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    IconButton(
-                        onClick = onChevronTap,
-                        modifier = Modifier.size(28.dp),
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                            contentDescription = stringResource(R.string.today_back_to_primary),
-                        )
-                    }
-                }
-            }
+            Text(
+                text = stringResource(titleRes),
+                style = MaterialTheme.typography.titleMedium,
+            )
             Text(
                 text = stringResource(
                     R.string.today_placeholder_body,
@@ -879,6 +868,26 @@ internal fun MissingPeriodPlaceholder(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        }
+    }
+    Card(modifier = Modifier.fillMaxWidth()) {
+        if (showChevronLeft) {
+            Row(
+                modifier = Modifier.height(IntrinsicSize.Min),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                ChevronPanel(
+                    icon = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                    description = stringResource(R.string.today_back_to_primary),
+                    onClick = onChevronTap,
+                )
+                body(
+                    Modifier.weight(1f),
+                    PaddingValues(start = 16.dp, top = 20.dp, end = 20.dp, bottom = 20.dp),
+                )
+            }
+        } else {
+            body(Modifier, PaddingValues(20.dp))
         }
     }
 }
@@ -1688,9 +1697,15 @@ internal fun InsightCard(
     val locationLabel = shortLocationLabel(location?.displayName)
         ?: location?.let { stringResource(R.string.today_location_unknown) }
     val showChevron = (showChevronRight || showChevronLeft) && onChevronTap != null
-    Card(modifier = Modifier.fillMaxWidth()) {
+    // Body composable shared between the chevron-wrapped and plain layouts.
+    // Pulled out so the plain (no-chevron) path emits the exact same
+    // Card → Column tree it did before — every default-arg call site and
+    // every non-chevron preview stays byte-identical. PaddingValues is
+    // parameterised so the chevron-facing side can drop from 20dp → 16dp,
+    // tightening the gap between body text and chevron icon.
+    val body: @Composable (Modifier, PaddingValues) -> Unit = { bodyModifier, contentPadding ->
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = bodyModifier.padding(contentPadding),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1725,27 +1740,6 @@ internal fun InsightCard(
                             )
                         },
                     )
-                }
-                // Spacer + chevron are *only* added when the caller asked for
-                // one, so default-arg call sites produce a byte-identical Row
-                // measure pass and the existing InsightCard snapshots don't
-                // churn. AutoMirrored variants flip in RTL automatically (the
-                // RTL preview covers InsightCard via the outfit row, but the
-                // chevron itself only ships on the pager which routes
-                // direction the same way).
-                if (showChevron) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    IconButton(
-                        onClick = { onChevronTap?.invoke() },
-                        modifier = Modifier.size(28.dp),
-                    ) {
-                        val (icon, cdRes) = if (showChevronRight) {
-                            Icons.AutoMirrored.Filled.KeyboardArrowRight to R.string.today_view_other_period
-                        } else {
-                            Icons.AutoMirrored.Filled.KeyboardArrowLeft to R.string.today_back_to_primary
-                        }
-                        Icon(imageVector = icon, contentDescription = stringResource(cdRes))
-                    }
                 }
             }
             // Page 2 caches tomorrow's daytime insight after the evening
@@ -1784,6 +1778,71 @@ internal fun InsightCard(
                 }
             }
         }
+    }
+    Card(modifier = Modifier.fillMaxWidth()) {
+        if (showChevron) {
+            // Full-height chevron panel(s) flank the body column. Back chevron
+            // sits on the leading edge (left in LTR, right in RTL — Compose
+            // flips Row child order automatically); forward chevron on the
+            // trailing edge. AutoMirrored glyphs handle their own RTL flip.
+            // Body padding on the chevron-facing side drops to 16dp (vs the
+            // default 20dp), tightening the gap between body text and icon.
+            Row(
+                modifier = Modifier.height(IntrinsicSize.Min),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (showChevronLeft) {
+                    ChevronPanel(
+                        icon = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        description = stringResource(R.string.today_back_to_primary),
+                        onClick = { onChevronTap?.invoke() },
+                    )
+                }
+                body(
+                    Modifier.weight(1f),
+                    PaddingValues(
+                        start = if (showChevronLeft) 16.dp else 20.dp,
+                        top = 20.dp,
+                        end = if (showChevronRight) 16.dp else 20.dp,
+                        bottom = 20.dp,
+                    ),
+                )
+                if (showChevronRight) {
+                    ChevronPanel(
+                        icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        description = stringResource(R.string.today_view_other_period),
+                        onClick = { onChevronTap?.invoke() },
+                    )
+                }
+            }
+        } else {
+            body(Modifier, PaddingValues(20.dp))
+        }
+    }
+}
+
+@Composable
+private fun ChevronPanel(
+    icon: ImageVector,
+    description: String,
+    onClick: () -> Unit,
+) {
+    // No background tint — the panel reads as a chevron icon at the card's
+    // edge, with the full-height clickable Box giving a generous tap target
+    // vertically. Box owns the spoken label via an explicit `semantics`
+    // contentDescription (`onClickLabel` labels the *action*, not the
+    // control — without an explicit description TalkBack reports an
+    // unlabeled button). Icon is decorative (`contentDescription = null`)
+    // so TalkBack doesn't double-announce.
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .clickable(role = Role.Button, onClick = onClick)
+            .semantics { contentDescription = description }
+            .padding(horizontal = 4.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(imageVector = icon, contentDescription = null)
     }
 }
 

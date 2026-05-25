@@ -409,6 +409,7 @@ internal fun TodayInsightCardWithChevronRightPreview() {
             Region.SYSTEM,
             showChevronRight = true,
             onChevronTap = {},
+            onNavigateToFormat = {},
         )
     }
 }
@@ -422,6 +423,7 @@ internal fun TodayInsightCardWithChevronLeftPreview() {
             Region.SYSTEM,
             showChevronLeft = true,
             onChevronTap = {},
+            onNavigateToFormat = {},
         )
     }
 }
@@ -435,6 +437,7 @@ internal fun TodayInsightCardWithChevronDarkPreview() {
             Region.SYSTEM,
             showChevronRight = true,
             onChevronTap = {},
+            onNavigateToFormat = {},
         )
     }
 }

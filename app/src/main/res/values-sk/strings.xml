@@ -803,8 +803,6 @@ What is NOT overridden, by design:
     <string name="settings_holidays_source_location">Poloha (%1$s)</string>
     <string name="settings_holidays_source_region">Región (%1$s)</string>
     <string name="settings_holidays_source_all">Všetky krajiny</string>
-    <string name="settings_holidays_source_calendar_birthdays">Narodeniny z kalendára</string>
-    <string name="settings_holidays_source_calendar_holidays">Sviatky z kalendára</string>
     <string name="settings_holidays_link_settings">Nastavenia</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Nastavenia kalendára</string>
     <string name="settings_holidays_link_location_settings_a11y">Nastavenia polohy</string>

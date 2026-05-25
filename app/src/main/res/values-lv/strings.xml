@@ -807,8 +807,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_holidays_source_region">Reģions (%1$s)</string>
     <string name="settings_holidays_source_location">Atrašanās vieta (%1$s)</string>
     <string name="settings_holidays_source_global">Globāls</string>
-    <string name="settings_holidays_source_calendar_holidays">Kalendāra svētki</string>
-    <string name="settings_holidays_source_calendar_birthdays">Kalendāra dzimšanas dienas</string>
     <string name="settings_holidays_source_all">Visas valstis</string>
     <string name="settings_holidays_link_settings">Iestatījumi</string>
     <string name="settings_holidays_link_region_settings_a11y">Reģiona iestatījumi</string>

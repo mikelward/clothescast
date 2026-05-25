@@ -789,8 +789,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_holidays_source_location">Poloha (%1$s)</string>
     <string name="settings_holidays_source_region">Region (%1$s)</string>
     <string name="settings_holidays_source_all">Všechny země</string>
-    <string name="settings_holidays_source_calendar_birthdays">Narozeniny z kalendáře</string>
-    <string name="settings_holidays_source_calendar_holidays">Svátky z kalendáře</string>
     <string name="settings_holidays_link_settings">Nastavení</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Nastavení kalendáře</string>
     <string name="settings_holidays_link_location_settings_a11y">Nastavení polohy</string>

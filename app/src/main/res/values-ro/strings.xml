@@ -813,8 +813,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_holidays_source_location">Locație (%1$s)</string>
     <string name="settings_holidays_source_region">Regiune (%1$s)</string>
     <string name="settings_holidays_source_all">Toate țările</string>
-    <string name="settings_holidays_source_calendar_birthdays">Zile de naștere din calendar</string>
-    <string name="settings_holidays_source_calendar_holidays">Sărbători din calendar</string>
     <string name="settings_holidays_link_settings">Setări</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Setări calendar</string>
     <string name="settings_holidays_link_location_settings_a11y">Setări locație</string>

@@ -967,8 +967,6 @@ displayed label localizes.
     <string name="settings_holidays_link_settings">설정</string>
     <string name="settings_holidays_permission_revoked">캘린더 권한이 필요합니다. 탭하여 다시 허용하세요.</string>
     <string name="settings_holidays_source_all">전체 국가</string>
-    <string name="settings_holidays_source_calendar_birthdays">캘린더 생일</string>
-    <string name="settings_holidays_source_calendar_holidays">캘린더 공휴일</string>
     <string name="settings_holidays_source_global">글로벌</string>
     <string name="settings_holidays_source_location">위치 (%1$s)</string>
     <string name="settings_holidays_source_region">지역 (%1$s)</string>

@@ -816,8 +816,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_holidays_link_settings">الإعدادات</string>
     <string name="settings_holidays_permission_revoked">إذن التقويم مطلوب. اضغط لإعادة المنح.</string>
     <string name="settings_holidays_source_all">جميع الدول</string>
-    <string name="settings_holidays_source_calendar_birthdays">أعياد ميلاد التقويم</string>
-    <string name="settings_holidays_source_calendar_holidays">أعياد التقويم</string>
     <string name="settings_holidays_source_global">عالمي</string>
     <string name="settings_holidays_source_location">الموقع (%1$s)</string>
     <string name="settings_holidays_source_region">المنطقة (%1$s)</string>

@@ -869,8 +869,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_link_settings">Mga Setting</string>
     <string name="settings_holidays_permission_revoked">Kailangan ng pahintulot sa kalendaryo. I-tap para muling ibigay.</string>
     <string name="settings_holidays_source_all">Lahat ng bansa</string>
-    <string name="settings_holidays_source_calendar_birthdays">Mga Kaarawan sa Kalendaryo</string>
-    <string name="settings_holidays_source_calendar_holidays">Mga Holiday sa Kalendaryo</string>
     <string name="settings_holidays_source_global">Global</string>
     <string name="settings_holidays_source_location">Lokasyon (%1$s)</string>
     <string name="settings_holidays_source_region">Rehiyon (%1$s)</string>

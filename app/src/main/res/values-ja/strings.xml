@@ -963,8 +963,6 @@ the displayed label localizes.
     <string name="settings_holidays_link_settings">設定</string>
     <string name="settings_holidays_permission_revoked">カレンダーの許可が必要です。タップして再許可してください。</string>
     <string name="settings_holidays_source_all">すべての国</string>
-    <string name="settings_holidays_source_calendar_birthdays">カレンダーの誕生日</string>
-    <string name="settings_holidays_source_calendar_holidays">カレンダーの祝日</string>
     <string name="settings_holidays_source_global">グローバル</string>
     <string name="settings_holidays_source_location">現在地（%1$s）</string>
     <string name="settings_holidays_source_region">地域（%1$s）</string>

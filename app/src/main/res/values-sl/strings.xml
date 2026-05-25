@@ -822,8 +822,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_holidays_source_location">Lokacija (%1$s)</string>
     <string name="settings_holidays_source_region">Regija (%1$s)</string>
     <string name="settings_holidays_source_all">Vse države</string>
-    <string name="settings_holidays_source_calendar_birthdays">Rojstni dnevi iz koledarja</string>
-    <string name="settings_holidays_source_calendar_holidays">Prazniki iz koledarja</string>
     <string name="settings_holidays_link_settings">Nastavitve</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Nastavitve koledarja</string>
     <string name="settings_holidays_link_location_settings_a11y">Nastavitve lokacije</string>

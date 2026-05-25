@@ -789,8 +789,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_link_settings">ቅንብሮች</string>
     <string name="settings_holidays_permission_revoked">የቀን መቁጠሪያ ፍቃድ ያስፈልጋል። ለመፍቀድ ይጫኑ።</string>
     <string name="settings_holidays_source_all">ሁሉም ሃገሮች</string>
-    <string name="settings_holidays_source_calendar_birthdays">የቀን መቁጠሪያ ልደቶች</string>
-    <string name="settings_holidays_source_calendar_holidays">የቀን መቁጠሪያ በዓሎች</string>
     <string name="settings_holidays_source_global">ዓለም አቀፍ</string>
     <string name="settings_holidays_source_location">ቦታ (%1$s)</string>
     <string name="settings_holidays_source_region">ክልል (%1$s)</string>

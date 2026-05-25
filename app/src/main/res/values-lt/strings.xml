@@ -854,8 +854,6 @@ What is NOT overridden, by design:
     <string name="settings_holidays_source_region">Regionas (%1$s)</string>
     <string name="settings_holidays_source_location">Vieta (%1$s)</string>
     <string name="settings_holidays_source_global">Pasaulinis</string>
-    <string name="settings_holidays_source_calendar_holidays">Kalendoriaus šventės</string>
-    <string name="settings_holidays_source_calendar_birthdays">Kalendoriaus gimtadieniai</string>
     <string name="settings_holidays_source_all">Visos šalys</string>
     <string name="settings_holidays_link_settings">Nustatymai</string>
     <string name="settings_holidays_link_region_settings_a11y">Regiono nustatymai</string>

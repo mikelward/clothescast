@@ -825,8 +825,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_holidays_link_settings">Tetapan</string>
     <string name="settings_holidays_permission_revoked">Kebenaran kalendar diperlukan. Ketik untuk berikan semula.</string>
     <string name="settings_holidays_source_all">Semua negara</string>
-    <string name="settings_holidays_source_calendar_birthdays">Hari Jadi Kalendar</string>
-    <string name="settings_holidays_source_calendar_holidays">Hari Kelepasan Kalendar</string>
     <string name="settings_holidays_source_global">Global</string>
     <string name="settings_holidays_source_location">Lokasi (%1$s)</string>
     <string name="settings_holidays_source_region">Rantau (%1$s)</string>

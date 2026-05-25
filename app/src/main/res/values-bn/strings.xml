@@ -889,8 +889,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_holidays_link_settings">সেটিংস</string>
     <string name="settings_holidays_permission_revoked">ক্যালেন্ডারের অনুমতি প্রয়োজন। পুনরায় দিতে ট্যাপ করুন।</string>
     <string name="settings_holidays_source_all">সব দেশ</string>
-    <string name="settings_holidays_source_calendar_birthdays">ক্যালেন্ডার জন্মদিন</string>
-    <string name="settings_holidays_source_calendar_holidays">ক্যালেন্ডার ছুটি</string>
     <string name="settings_holidays_source_global">বৈশ্বিক</string>
     <string name="settings_holidays_source_location">অবস্থান (%1$s)</string>
     <string name="settings_holidays_source_region">অঞ্চল (%1$s)</string>

@@ -788,8 +788,6 @@ displayed label localizes.
     <string name="settings_holidays_source_location">Sijainti (%1$s)</string>
     <string name="settings_holidays_source_region">Alue (%1$s)</string>
     <string name="settings_holidays_source_all">Kaikki maat</string>
-    <string name="settings_holidays_source_calendar_birthdays">Kalenterin syntymäpäivät</string>
-    <string name="settings_holidays_source_calendar_holidays">Kalenterin juhlapyhät</string>
     <string name="settings_holidays_link_settings">Asetukset</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Kalenterin asetukset</string>
     <string name="settings_holidays_link_location_settings_a11y">Sijaintiasetukset</string>

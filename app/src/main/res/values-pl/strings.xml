@@ -840,8 +840,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_holidays_source_location">Lokalizacja (%1$s)</string>
     <string name="settings_holidays_source_region">Region (%1$s)</string>
     <string name="settings_holidays_source_all">Wszystkie kraje</string>
-    <string name="settings_holidays_source_calendar_birthdays">Urodziny z kalendarza</string>
-    <string name="settings_holidays_source_calendar_holidays">Święta z kalendarza</string>
     <string name="settings_holidays_link_settings">Ustawienia</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Ustawienia kalendarza</string>
     <string name="settings_holidays_link_location_settings_a11y">Ustawienia lokalizacji</string>

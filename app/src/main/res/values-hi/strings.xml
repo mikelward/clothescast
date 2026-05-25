@@ -849,8 +849,6 @@ Not overridden by design:
     <string name="settings_holidays_link_settings">सेटिंग</string>
     <string name="settings_holidays_permission_revoked">कैलेंडर अनुमति ज़रूरी है। दोबारा देने के लिए टैप करें।</string>
     <string name="settings_holidays_source_all">सभी देश</string>
-    <string name="settings_holidays_source_calendar_birthdays">कैलेंडर जन्मदिन</string>
-    <string name="settings_holidays_source_calendar_holidays">कैलेंडर छुट्टियाँ</string>
     <string name="settings_holidays_source_global">वैश्विक</string>
     <string name="settings_holidays_source_location">स्थान (%1$s)</string>
     <string name="settings_holidays_source_region">क्षेत्र (%1$s)</string>

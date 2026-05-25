@@ -219,6 +219,26 @@ enum class RangeFormat { NONE, DEGREES, BANDS }
 enum class ClothesFormat { ITEMS, LAYER_COUNT }
 
 /**
+ * Controls whether bottoms (shorts / pants / skirts / jeans) appear in the
+ * spoken clothes clause.
+ *
+ *  - [ALWAYS] — bottoms appear regardless of [ClothesFormat]. In layer-count
+ *    mode the wear clause becomes "Wear 2 layers and shorts." rather than
+ *    suppressing the bottoms.
+ *  - [IF_GARMENTS] (default) — bottoms appear only when [ClothesFormat] is
+ *    [ClothesFormat.ITEMS]. In layer-count mode bottoms are dropped, matching
+ *    the historical behaviour: a single warmth signal isn't usefully followed
+ *    by "and shorts."
+ *  - [NEVER] — bottoms never appear in the wear clause, even in items mode.
+ *    A shorts-only firing emits no wear clause at all.
+ *
+ * Affects the spoken / prose wear clause only — the outfit card icon and the
+ * "Why this outfit?" rationale still show the bottom the user is wearing
+ * regardless.
+ */
+enum class BottomsFormat { ALWAYS, IF_GARMENTS, NEVER }
+
+/**
  * Controls whether the morning insight's spoken clothes clause ("Wear a
  * jacket.") is emitted.
  *
@@ -677,6 +697,13 @@ data class UserPreferences(
      * See [InsightFormatter] and [Garment.layerCount].
      */
     val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
+    /**
+     * Controls whether bottoms appear in the prose wear clause. See
+     * [BottomsFormat]. Defaults to [BottomsFormat.IF_GARMENTS] — preserves the
+     * historical behaviour: bottoms are shown in items mode and dropped in
+     * layer-count mode.
+     */
+    val bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
     /**
      * Optional wet-weather accessory named alongside the rain mention in both
      * the morning precip clause and the evening event tie-in. Defaults to

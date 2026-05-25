@@ -633,6 +633,11 @@
     <string name="settings_format_clothes_label">Clothes wording</string>
     <string name="settings_format_clothes_items">Garments</string>
     <string name="settings_format_clothes_layer_count">Layer count</string>
+    <!-- Bottoms-format picker: whether the wear clause mentions shorts / pants. -->
+    <string name="settings_format_bottoms_label">Bottoms</string>
+    <string name="settings_format_bottoms_always">Always</string>
+    <string name="settings_format_bottoms_if_garments">If garments</string>
+    <string name="settings_format_bottoms_never">Never</string>
     <!-- Rain-accessory picker: "Off" vs "Umbrella" — opts in to "bring an umbrella" alongside the rain mention. -->
     <string name="settings_format_rain_accessory_label">Rain accessory</string>
     <string name="settings_format_rain_accessory_none">Off</string>

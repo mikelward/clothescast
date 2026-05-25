@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
@@ -137,6 +138,7 @@ internal fun SettingsFormatPreview() {
         FormatContent(
             rangeFormat = RangeFormat.BANDS,
             clothesFormat = ClothesFormat.ITEMS,
+            bottomsFormat = BottomsFormat.IF_GARMENTS,
             rainAccessory = RainAccessory.NONE,
             deltaThresholdC = 3.0,
             clothesMentionMode = ClothesMentionMode.ALWAYS,
@@ -145,6 +147,7 @@ internal fun SettingsFormatPreview() {
             padding = PaddingValues(0.dp),
             onSetRangeFormat = {},
             onSetClothesFormat = {},
+            onSetBottomsFormat = {},
             onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
@@ -161,6 +164,7 @@ internal fun SettingsFormatClothesNeverPreview() {
         FormatContent(
             rangeFormat = RangeFormat.BANDS,
             clothesFormat = ClothesFormat.ITEMS,
+            bottomsFormat = BottomsFormat.IF_GARMENTS,
             rainAccessory = RainAccessory.NONE,
             deltaThresholdC = 3.0,
             clothesMentionMode = ClothesMentionMode.NEVER,
@@ -169,6 +173,7 @@ internal fun SettingsFormatClothesNeverPreview() {
             padding = PaddingValues(0.dp),
             onSetRangeFormat = {},
             onSetClothesFormat = {},
+            onSetBottomsFormat = {},
             onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
@@ -186,6 +191,7 @@ internal fun SettingsFormatCurrentForecastPreview() {
         FormatContent(
             rangeFormat = RangeFormat.DEGREES,
             clothesFormat = ClothesFormat.ITEMS,
+            bottomsFormat = BottomsFormat.IF_GARMENTS,
             rainAccessory = RainAccessory.NONE,
             deltaThresholdC = 3.0,
             clothesMentionMode = ClothesMentionMode.ALWAYS,
@@ -206,6 +212,7 @@ internal fun SettingsFormatCurrentForecastPreview() {
             padding = PaddingValues(0.dp),
             onSetRangeFormat = {},
             onSetClothesFormat = {},
+            onSetBottomsFormat = {},
             onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
@@ -224,6 +231,7 @@ internal fun SettingsFormatRainAccessoryPreview() {
         FormatContent(
             rangeFormat = RangeFormat.DEGREES,
             clothesFormat = ClothesFormat.ITEMS,
+            bottomsFormat = BottomsFormat.IF_GARMENTS,
             rainAccessory = RainAccessory.UMBRELLA,
             deltaThresholdC = 3.0,
             clothesMentionMode = ClothesMentionMode.ALWAYS,
@@ -243,6 +251,7 @@ internal fun SettingsFormatRainAccessoryPreview() {
             padding = PaddingValues(0.dp),
             onSetRangeFormat = {},
             onSetClothesFormat = {},
+            onSetBottomsFormat = {},
             onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
@@ -375,6 +384,7 @@ internal fun SettingsVoiceDevicePreview() {
             temperatureUnit = TemperatureUnit.CELSIUS,
             rangeFormat = RangeFormat.DEGREES,
             clothesFormat = ClothesFormat.ITEMS,
+            bottomsFormat = BottomsFormat.IF_GARMENTS,
             rainAccessory = RainAccessory.NONE,
             padding = PaddingValues(0.dp),
             onSetTtsEngine = {},
@@ -405,6 +415,7 @@ internal fun SettingsVoiceGeminiPreview() {
             temperatureUnit = TemperatureUnit.CELSIUS,
             rangeFormat = RangeFormat.DEGREES,
             clothesFormat = ClothesFormat.ITEMS,
+            bottomsFormat = BottomsFormat.IF_GARMENTS,
             rainAccessory = RainAccessory.NONE,
             padding = PaddingValues(0.dp),
             onSetTtsEngine = {},

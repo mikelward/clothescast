@@ -1158,6 +1158,7 @@ class FetchAndNotifyWorker(
             prefs.temperatureUnit,
             prefs.rangeFormat,
             prefs.clothesFormat,
+            prefs.bottomsFormat,
             prefs.rainAccessory,
         ).format(insight.summary)
 
@@ -1180,6 +1181,7 @@ class FetchAndNotifyWorker(
             temperatureUnit = prefs.temperatureUnit,
             rangeFormat = prefs.rangeFormat,
             clothesFormat = prefs.clothesFormat,
+            bottomsFormat = prefs.bottomsFormat,
             rainAccessory = prefs.rainAccessory,
             holidayTheme = theme,
         )

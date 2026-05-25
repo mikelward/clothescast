@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
@@ -178,6 +179,20 @@ class SettingsRepositoryTest {
 
         subject.setRainAccessory(RainAccessory.NONE)
         subject.preferences.first().rainAccessory shouldBe RainAccessory.NONE
+    }
+
+    @Test
+    fun `bottomsFormat defaults to IF_GARMENTS and round-trips all values`() = runTest {
+        subject.preferences.first().bottomsFormat shouldBe BottomsFormat.IF_GARMENTS
+
+        subject.setBottomsFormat(BottomsFormat.ALWAYS)
+        subject.preferences.first().bottomsFormat shouldBe BottomsFormat.ALWAYS
+
+        subject.setBottomsFormat(BottomsFormat.NEVER)
+        subject.preferences.first().bottomsFormat shouldBe BottomsFormat.NEVER
+
+        subject.setBottomsFormat(BottomsFormat.IF_GARMENTS)
+        subject.preferences.first().bottomsFormat shouldBe BottomsFormat.IF_GARMENTS
     }
 
     @Test

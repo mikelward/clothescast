@@ -39,6 +39,8 @@ data class SettingsSnapshot(
     val rangeFormat: String,
     /** How the clothes clause renders: ITEMS / LAYER_COUNT. */
     val clothesFormat: String,
+    /** Whether bottoms appear in the wear clause: ALWAYS / IF_GARMENTS / NEVER. */
+    val bottomsFormat: String,
     /** Wet-weather accessory mentioned alongside rain: NONE / UMBRELLA. */
     val rainAccessory: String,
     /** Significant-change threshold in whole °C, or -1 when the clause is off. */

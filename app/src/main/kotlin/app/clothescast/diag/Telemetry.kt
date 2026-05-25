@@ -209,6 +209,7 @@ object Telemetry {
             putString("clothes_mention_mode", snapshot.clothesMentionMode)
             putString("range_format", snapshot.rangeFormat)
             putString("clothes_format", snapshot.clothesFormat)
+            putString("bottoms_format", snapshot.bottomsFormat)
             putString("rain_accessory", snapshot.rainAccessory)
             putLong("delta_threshold_c", snapshot.deltaThresholdC.toLong())
             putLong("use_calendar_events", snapshot.useCalendarEvents.toLongFlag())

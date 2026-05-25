@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaClause
@@ -81,6 +82,7 @@ internal fun VoiceContent(
     temperatureUnit: TemperatureUnit,
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
+    bottomsFormat: BottomsFormat,
     rainAccessory: RainAccessory,
     padding: PaddingValues,
     onSetTtsEngine: (TtsEngine) -> Unit,
@@ -124,6 +126,7 @@ internal fun VoiceContent(
                     temperatureUnit = temperatureUnit,
                     rangeFormat = rangeFormat,
                     clothesFormat = clothesFormat,
+                    bottomsFormat = bottomsFormat,
                     rainAccessory = rainAccessory,
                 )
             } finally {
@@ -648,6 +651,7 @@ internal suspend fun runTtsPreview(
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     rangeFormat: RangeFormat = RangeFormat.DEGREES,
     clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
+    bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
     rainAccessory: RainAccessory = RainAccessory.NONE,
 ) {
     val app = context.applicationContext as app.clothescast.ClothesCastApplication
@@ -663,6 +667,7 @@ internal suspend fun runTtsPreview(
             temperatureUnit = temperatureUnit,
             rangeFormat = rangeFormat,
             clothesFormat = clothesFormat,
+            bottomsFormat = bottomsFormat,
             rainAccessory = rainAccessory,
         )
         withSpeechAudioFocus(context) {

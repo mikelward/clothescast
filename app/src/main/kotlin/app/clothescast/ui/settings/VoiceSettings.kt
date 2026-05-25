@@ -39,10 +39,14 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.ClothesClause
+import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
+import app.clothescast.core.domain.model.RainAccessory
+import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.TemperatureBand
+import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
@@ -74,6 +78,10 @@ internal fun VoiceContent(
     geminiKeyConfigured: Boolean,
     voiceLocale: VoiceLocale,
     region: Region,
+    temperatureUnit: TemperatureUnit,
+    rangeFormat: RangeFormat,
+    clothesFormat: ClothesFormat,
+    rainAccessory: RainAccessory,
     padding: PaddingValues,
     onSetTtsEngine: (TtsEngine) -> Unit,
     onSetGeminiVoice: (String) -> Unit,
@@ -113,6 +121,10 @@ internal fun VoiceContent(
                     deviceVoice = dVoice,
                     voiceLocale = locale,
                     region = region,
+                    temperatureUnit = temperatureUnit,
+                    rangeFormat = rangeFormat,
+                    clothesFormat = clothesFormat,
+                    rainAccessory = rainAccessory,
                 )
             } finally {
                 isPreviewing = false
@@ -633,6 +645,10 @@ internal suspend fun runTtsPreview(
     deviceVoice: String?,
     voiceLocale: VoiceLocale,
     region: Region,
+    temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
+    rangeFormat: RangeFormat = RangeFormat.DEGREES,
+    clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
+    rainAccessory: RainAccessory = RainAccessory.NONE,
 ) {
     val app = context.applicationContext as app.clothescast.ClothesCastApplication
     // Network synthesis and AudioTrack write are both blocking-ish work — Ktor
@@ -644,6 +660,10 @@ internal suspend fun runTtsPreview(
             summary = SAMPLE_SUMMARY,
             region = region,
             voiceLocale = voiceLocale,
+            temperatureUnit = temperatureUnit,
+            rangeFormat = rangeFormat,
+            clothesFormat = clothesFormat,
+            rainAccessory = rainAccessory,
         )
         withSpeechAudioFocus(context) {
             try {
@@ -690,11 +710,14 @@ private fun ttsEngineLabel(engine: TtsEngine): Int = when (engine) {
     TtsEngine.GEMINI -> R.string.settings_tts_engine_gemini
 }
 
-// Canned forecast for the voice preview: a cold day 7° down on yesterday with
-// sweater + jacket as the clothes pick. Renders (en-US) as "Today, it will be
-// 8°. 7° cooler than yesterday. Wear a sweater and jacket." — exercises band,
-// delta, and a multi-item clothes clause without dragging in a precip / tie-in
-// time that would force a different number of TTS tokens per locale.
+// Canned forecast for the voice preview: a cold day 7°C down on yesterday with
+// sweater + jacket as the clothes pick. Exercises band, delta, and a multi-item
+// clothes clause without dragging in a precip / tie-in time. With Celsius +
+// degrees-range + items-clothes this renders (en-US) as "Today, it will be 8°.
+// 7° cooler than yesterday. Wear a sweater and jacket." — the exact prose
+// shifts with voice locale and the user's format settings (temperature unit,
+// range format, clothes format, rain accessory), which is intentional: the
+// preview should sound like what the user actually hears at briefing time.
 private val SAMPLE_SUMMARY = InsightSummary(
     period = ForecastPeriod.TODAY,
     band = BandClause(TemperatureBand.COLD, TemperatureBand.COLD),

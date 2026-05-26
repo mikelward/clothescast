@@ -206,6 +206,8 @@ data class SettingsState(
     val mqttLastPublishAt: Long = 0L,
     /** True while a "Publish now" action is in flight. */
     val mqttPublishing: Boolean = false,
+    /** When true, a successful MQTT publish with audio suppresses the phone speaker. */
+    val mqttSkipPhoneSpeech: Boolean = true,
     /**
      * True while a local-network mDNS scan for Home Assistant / MQTT brokers
      * is in flight (the user tapped "Scan local network" on the Smart Home

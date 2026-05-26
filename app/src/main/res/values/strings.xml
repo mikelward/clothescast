@@ -591,6 +591,8 @@
     <string name="settings_smart_home_mqtt_last_published">Last published %1$s</string>
     <string name="settings_smart_home_mqtt_never_published">Not yet published</string>
     <string name="settings_smart_home_mqtt_last_error_title">Last publish failed</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Skip phone speech if published successfully</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">If your bridge reads the forecast aloud (Home Assistant, a smart speaker), the phone stays silent. The phone notification still posts.</string>
     <string name="settings_smart_home_mqtt_setup_guide">Setup guide</string>
     <string name="settings_smart_home_mqtt_open_privacy">Read privacy details</string>
     <string name="settings_smart_home_discover_scan">Find broker</string>

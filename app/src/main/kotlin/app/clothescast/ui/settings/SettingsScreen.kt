@@ -350,6 +350,7 @@ internal fun SmartHomePage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             lastErrorAt = state.mqttLastErrorAt,
             lastPublishAt = state.mqttLastPublishAt,
             publishing = state.mqttPublishing,
+            mqttSkipPhoneSpeech = state.mqttSkipPhoneSpeech,
             discoveryRunning = state.discoveryRunning,
             discoveredServices = state.discoveredServices,
             castAvailable = state.castAvailable,
@@ -379,6 +380,7 @@ internal fun SmartHomePage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             onSetCastMorning = viewModel::setCastMorning,
             onSetCastTonight = viewModel::setCastTonight,
             onSetCastSkipPhoneSpeech = viewModel::setCastSkipPhoneSpeech,
+            onSetMqttSkipPhoneSpeech = viewModel::setMqttSkipPhoneSpeech,
         )
         }
     }

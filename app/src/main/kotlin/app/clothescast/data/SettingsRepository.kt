@@ -484,6 +484,10 @@ class SettingsRepository(
         dataStore.edit { it[CAST_SKIP_PHONE_SPEECH] = enabled }
     }
 
+    suspend fun setMqttSkipPhoneSpeech(enabled: Boolean) {
+        dataStore.edit { it[MQTT_SKIP_PHONE_SPEECH] = enabled }
+    }
+
     /**
      * Runtime status of the last MQTT publish attempt, separate from user
      * preferences. [errorMessage] is null on success (or no record yet); non-null
@@ -892,6 +896,7 @@ class SettingsRepository(
         val mqttUsername = this[MQTT_USER]?.takeIf { it.isNotBlank() }
         val mqttTopic = this[MQTT_TOPIC]?.takeIf { it.isNotBlank() }
             ?: UserPreferences.DEFAULT_MQTT_TOPIC
+        val mqttSkipPhoneSpeech = this[MQTT_SKIP_PHONE_SPEECH] ?: true
         val castRouteId = this[CAST_ROUTE_ID]?.takeIf { it.isNotBlank() }
         val castRouteName = this[CAST_ROUTE_NAME]?.takeIf { it.isNotBlank() }
         val castMorning = this[CAST_MORNING] ?: true
@@ -953,6 +958,7 @@ class SettingsRepository(
             mqttUseTls = mqttUseTls,
             mqttUsername = mqttUsername,
             mqttTopic = mqttTopic,
+            mqttSkipPhoneSpeech = mqttSkipPhoneSpeech,
             castRouteId = castRouteId,
             castRouteName = castRouteName,
             castMorning = castMorning,
@@ -1220,6 +1226,10 @@ class SettingsRepository(
         private val MQTT_LAST_ERROR_MSG = stringPreferencesKey("mqtt_last_error_msg")
         private val MQTT_LAST_ERROR_AT_MS = longPreferencesKey("mqtt_last_error_at_ms")
         private val MQTT_LAST_SUCCESS_AT_MS = longPreferencesKey("mqtt_last_success_at_ms")
+        // "Smart-home bridge speaks, mute the phone" — the MQTT mirror of
+        // [CAST_SKIP_PHONE_SPEECH]. Default true on first read (mirrors the
+        // data-class default).
+        private val MQTT_SKIP_PHONE_SPEECH = booleanPreferencesKey("mqtt_skip_phone_speech")
 
         // Cast destination — the smart display the user picked in Settings.
         // routeId is the Cast SDK's stable identifier; routeName is the

@@ -266,6 +266,7 @@ class SettingsViewModel(
                         mqttUseTls = prefs.mqttUseTls,
                         mqttUsername = prefs.mqttUsername.orEmpty(),
                         mqttTopic = prefs.mqttTopic,
+                        mqttSkipPhoneSpeech = prefs.mqttSkipPhoneSpeech,
                         castAvailable = castAvailable,
                         castRouteName = prefs.castRouteName,
                         castMorning = prefs.castMorning,
@@ -895,6 +896,10 @@ class SettingsViewModel(
 
     fun setCastSkipPhoneSpeech(enabled: Boolean) {
         viewModelScope.launch { settingsRepository.setCastSkipPhoneSpeech(enabled) }
+    }
+
+    fun setMqttSkipPhoneSpeech(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setMqttSkipPhoneSpeech(enabled) }
     }
 
     /**

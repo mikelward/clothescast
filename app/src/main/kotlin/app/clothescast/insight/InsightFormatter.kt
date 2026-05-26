@@ -22,6 +22,7 @@ import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WeatherCondition
+import app.clothescast.core.domain.model.WeekAheadClause
 import app.clothescast.core.domain.model.WeekAheadInsight
 import app.clothescast.core.domain.model.toUnit
 import java.time.LocalDate
@@ -564,34 +565,70 @@ class InsightFormatter(
 
     /**
      * Render a [WeekAheadInsight] as the single-line headline shown above
-     * the 7-day chart deck. The structured cases ([WeekAheadInsight.Rain],
-     * Cooler / Warmer, StaysHot / StaysCold) map to the
-     * `today_week_ahead_*` string resources so vocab can localize per
-     * region. The day reference resolves to "tomorrow" when the case
-     * carries `isTomorrow = true`; otherwise it renders the long day-of-week
-     * name in the user's locale ("on Thursday", "am Donnerstag" via the
-     * resource template).
+     * the 7-day chart deck. Each clause that fires ([WeekAheadInsight.rain],
+     * [WeekAheadInsight.temperatureShift], [WeekAheadInsight.persistence])
+     * contributes one phrase; the phrases join chronologically by their
+     * date (persistence sorts first since it covers the whole window) so a
+     * noisy week reads "5° cooler tomorrow, chance of rain Monday." or
+     * "Hot all week, chance of rain Friday." instead of collapsing to one.
      *
-     * Persistence headlines ("Hot all week.") carry no day reference and
-     * use a bare resource lookup.
+     * The day reference inside each phrase resolves to "tomorrow" when the
+     * clause carries `isTomorrow = true`; otherwise it renders the long
+     * day-of-week name in the user's locale ("on Thursday", "am Donnerstag"
+     * via the resource template). Persistence phrases carry no date.
      */
-    fun formatWeekAhead(insight: WeekAheadInsight): String = when (insight) {
-        is WeekAheadInsight.Rain -> {
-            val template = weekAheadPrecipRes(insight.condition, insight.likelihood)
-            resources.getString(template, dayReference(insight.date, insight.isTomorrow))
+    fun formatWeekAhead(insight: WeekAheadInsight): String {
+        // (sortKey, phrase). Persistence has no date and sorts first; the
+        // remaining clauses sort by date. Phrases are stripped of their
+        // trailing "." so we can join with the locale separator and append a
+        // single final period — this relies on every today_week_ahead_*
+        // template ending in a literal ".". If a locale needs different
+        // terminal punctuation, split into terminal / non-terminal templates.
+        val clauses = mutableListOf<Pair<LocalDate?, String>>()
+        insight.persistence?.let { clauses += null to renderClause(it) }
+        insight.temperatureShift?.let { clauses += clauseDate(it) to renderClause(it) }
+        insight.rain?.let { clauses += clauseDate(it) to renderClause(it) }
+        val sorted = clauses
+            .sortedWith(compareBy(nullsFirst()) { it.first })
+            .map { it.second.trimEnd('.') }
+        // Lowercase the first letter of each non-leading clause so the joined
+        // sentence reads naturally ("…, chance of rain on Monday." rather
+        // than "…, Chance of rain on Monday."). Templates are authored with a
+        // sentence-leading capital so the solo case still reads correctly.
+        // Locale-naïve for non-English translations that capitalize nouns
+        // mid-sentence (e.g. German "Regen") — translators can split into
+        // leading / mid-sentence templates if needed.
+        val joined = sorted.mapIndexed { index, phrase ->
+            if (index == 0) phrase else phrase.replaceFirstChar { it.lowercase(locale) }
         }
-        is WeekAheadInsight.Warmer -> resources.getString(
+        val separator = resources.getString(R.string.today_week_ahead_separator)
+        return joined.joinToString(separator = separator, postfix = ".")
+    }
+
+    private fun renderClause(clause: WeekAheadClause): String = when (clause) {
+        is WeekAheadClause.Rain -> {
+            val template = weekAheadPrecipRes(clause.condition, clause.likelihood)
+            resources.getString(template, dayReference(clause.date, clause.isTomorrow))
+        }
+        is WeekAheadClause.Warmer -> resources.getString(
             R.string.today_week_ahead_warmer,
-            convertDeltaDegrees(insight.degrees),
-            dayReference(insight.date, insight.isTomorrow),
+            convertDeltaDegrees(clause.degrees),
+            dayReference(clause.date, clause.isTomorrow),
         )
-        is WeekAheadInsight.Cooler -> resources.getString(
+        is WeekAheadClause.Cooler -> resources.getString(
             R.string.today_week_ahead_cooler,
-            convertDeltaDegrees(insight.degrees),
-            dayReference(insight.date, insight.isTomorrow),
+            convertDeltaDegrees(clause.degrees),
+            dayReference(clause.date, clause.isTomorrow),
         )
-        WeekAheadInsight.StaysHot -> resources.getString(R.string.today_week_ahead_stays_hot)
-        WeekAheadInsight.StaysCold -> resources.getString(R.string.today_week_ahead_stays_cold)
+        WeekAheadClause.StaysHot -> resources.getString(R.string.today_week_ahead_stays_hot)
+        WeekAheadClause.StaysCold -> resources.getString(R.string.today_week_ahead_stays_cold)
+    }
+
+    private fun clauseDate(clause: WeekAheadClause): LocalDate? = when (clause) {
+        is WeekAheadClause.Rain -> clause.date
+        is WeekAheadClause.Cooler -> clause.date
+        is WeekAheadClause.Warmer -> clause.date
+        WeekAheadClause.StaysHot, WeekAheadClause.StaysCold -> null
     }
 
     // Same Celsius→Fahrenheit conversion the today-page delta clause uses

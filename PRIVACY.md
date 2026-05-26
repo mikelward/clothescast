@@ -14,9 +14,14 @@ have over it.
   decide which features to keep — see "Analytics and crash reporting"
   below for what those payloads include and (more importantly) the hard
   limits on what they don't.
-- Your **approximate location** is sent to [Open-Meteo](https://open-meteo.com)
-  to fetch the weather forecast and a place name. That is the only
-  user-content data the app sends off your device by default.
+- Your **approximate location** is sent to
+  [Open-Meteo](https://open-meteo.com) to fetch the weather forecast,
+  and (on Play Services devices) to Google's geocoding service via
+  Android's `Geocoder` API to look up the city name shown next to
+  the date. If you search for a location in Settings, the text you
+  type is also sent to Open-Meteo so it can suggest matching places.
+  That is the only user-content data the app sends off your device
+  by default.
 - If you opt in to **online text-to-speech**, the short spoken sentence
   (e.g. _"50% chance of rain at 3pm — take an umbrella"_) is sent to the
   TTS provider you chose (Google Gemini) so it can return the audio.
@@ -52,13 +57,29 @@ The source code is at <https://github.com/mikelward/clothescast>.
   GPS — the app declares only `ACCESS_COARSE_LOCATION`).
 - **Why:** To fetch the weather forecast for where you are and to look up
   a human-readable place name to show in the UI.
-- **Where it goes:** [Open-Meteo](https://open-meteo.com) (weather +
-  geocoding APIs). Open-Meteo receives only a coordinate — no account,
-  no device identifier.
+- **Where it goes:**
+  - [Open-Meteo](https://open-meteo.com) — receives the coarse
+    coordinate to return the weather forecast, and (separately) the
+    raw text you type into the Settings location search ("Edinburgh",
+    "新宿") so Open-Meteo can match it to candidate place names. The
+    search text leaves the device only when you actually type into the
+    picker.
+  - **Google's geocoding service**, via Android's
+    [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder)
+    API on Play Services devices — receives the coarse coordinate so
+    we can look up the city name (e.g. "London") and the country code
+    (used to pre-select holidays in your country). On AOSP / non-Play
+    devices `Geocoder` reports no backend and we skip the lookup;
+    the Today header falls back to a date-only label.
+
+  Neither service receives an account, device identifier, or any
+  other payload beyond the items listed above.
 - **Stored on device:** Your chosen location is saved in app settings so
   the daily refresh can run without re-prompting you.
 - **Retention by us:** Until you uninstall the app or change locations.
 - **Retention by Open-Meteo:** See <https://open-meteo.com/en/terms>.
+- **Retention by Google:** See
+  <https://policies.google.com/privacy>.
 
 ### Calendar events _(optional, off by default)_
 
@@ -220,7 +241,8 @@ policies apply to anything they receive:
 
 | Service | What we send | When |
 |---|---|---|
-| [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate | Always (forecast + geocoding) |
+| [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate (forecast); your typed search text when you use the Settings location picker | Always for forecast; only when you search for a place name |
+| Google's geocoding service (via Android's [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder) on Play Services devices), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate | Always on Play Services devices (city / country lookup for the Today header); skipped on AOSP devices |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence | Only if you select Gemini TTS |
 | Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence, as a retained MQTT message | Only if you opt in to the Smart Home bridge and configure a broker |
 | Analytics / crash-reporting service (e.g. Firebase Crashlytics + Google Analytics for Firebase) | Aggregate usage events and crash diagnostics — see "Analytics and crash reporting" below for what's in and out | Possibly always, in all builds |

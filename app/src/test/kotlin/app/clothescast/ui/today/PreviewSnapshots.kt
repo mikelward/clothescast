@@ -395,8 +395,6 @@ class PreviewSnapshots {
     @Test fun forecast_chart() = capture { ForecastChartPreview() }
     @Test fun forecast_chart_morning_slice() = capture { ForecastChartMorningSlicePreview() }
     @Test fun forecast_chart_dark() = capture { ForecastChartDarkPreview() }
-    @Test fun seven_day_chart() = capture { SevenDayChartPreview() }
-    @Test fun seven_day_chart_dark() = capture { SevenDayChartDarkPreview() }
     @Test fun seven_day_page() = capture { SevenDayPagePreview() }
     @Test fun forecast_chart_with_current_time() = capture { ForecastChartWithCurrentTimePreview() }
     @Test fun forecast_chart_with_model_spread() = capture { ForecastChartWithModelSpreadPreview() }

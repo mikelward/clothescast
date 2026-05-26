@@ -2,7 +2,6 @@ package app.clothescast.ui.today
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -182,25 +181,6 @@ internal fun SevenDayPage(
         }
 
         if (days.size < 2 || flatHourly.isEmpty() || startDate == null) return@Column
-
-        // Glanceable headline: the 7-day feels-like high/low envelope on
-        // a single line chart, day-of-week ticks across the bottom. Lives
-        // outside the LocalChartBottomFormatter override because it has
-        // its own day-of-week formatter built in.
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Box {
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Text(
-                        text = stringResource(R.string.today_week_card_title),
-                        style = MaterialTheme.typography.titleSmall,
-                    )
-                    SevenDayChart(days = days, temperatureUnit = temperatureUnit)
-                }
-            }
-        }
 
         // The full chart stack mirrors what TodayPage renders for a
         // per-period view. Each card reads [LocalChartBottomFormatter] for

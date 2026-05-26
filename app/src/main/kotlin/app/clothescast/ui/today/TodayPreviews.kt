@@ -1964,22 +1964,6 @@ private val SAMPLE_WEEK: List<DailyForecast> = run {
     }
 }
 
-@Preview(name = "Seven-day chart · weekly envelope", widthDp = 360)
-@Composable
-internal fun SevenDayChartPreview() {
-    Frame {
-        SevenDayChart(days = SAMPLE_WEEK, temperatureUnit = TemperatureUnit.CELSIUS)
-    }
-}
-
-@Preview(name = "Seven-day chart · weekly envelope (dark)", widthDp = 360)
-@Composable
-internal fun SevenDayChartDarkPreview() {
-    Frame(darkTheme = true) {
-        SevenDayChart(days = SAMPLE_WEEK, temperatureUnit = TemperatureUnit.CELSIUS)
-    }
-}
-
 @Preview(name = "Seven-day page · weekly card", widthDp = 360)
 @Composable
 internal fun SevenDayPagePreview() {

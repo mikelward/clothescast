@@ -456,6 +456,7 @@ private fun TodayContent(
                         onChevronTap = {
                             pagerScope.launch { pagerState.animateScrollToPage(1) }
                         },
+                        onToggleModelSpread = onToggleModelSpread,
                         forecastZone = state.thisPeriodInsight.forecastZone,
                         region = state.region,
                         deltaThresholdC = state.deltaThresholdC,

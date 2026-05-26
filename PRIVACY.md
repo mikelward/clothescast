@@ -18,8 +18,10 @@ have over it.
   [Open-Meteo](https://open-meteo.com) to fetch the weather forecast,
   and (on Play Services devices) to Google's geocoding service via
   Android's `Geocoder` API to look up the city name shown next to
-  the date. If you search for a location in Settings, the text you
-  type is also sent to Open-Meteo so it can suggest matching places.
+  the date. If you search for a place name (during first-run
+  onboarding, or later from the Settings location picker), the
+  text you type is also sent to Open-Meteo so it can suggest
+  matching places.
   That is the only user-content data the app sends off your device
   by default.
 - If you opt in to **online text-to-speech**, the short spoken sentence
@@ -60,10 +62,12 @@ The source code is at <https://github.com/mikelward/clothescast>.
 - **Where it goes:**
   - [Open-Meteo](https://open-meteo.com) — receives the coarse
     coordinate to return the weather forecast, and (separately) the
-    raw text you type into the Settings location search ("Edinburgh",
-    "新宿") so Open-Meteo can match it to candidate place names. The
-    search text leaves the device only when you actually type into the
-    picker.
+    raw text you type into a location search ("Edinburgh", "新宿")
+    so Open-Meteo can match it to candidate place names. The search
+    text leaves the device only when you actually type into the
+    picker — that happens on the first-run onboarding step where
+    you confirm where you live, and any later edit from the
+    Settings location picker.
   - **Google's geocoding service**, via Android's
     [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder)
     API on Play Services devices — receives the coarse coordinate so
@@ -241,7 +245,7 @@ policies apply to anything they receive:
 
 | Service | What we send | When |
 |---|---|---|
-| [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate (forecast); your typed search text when you use the Settings location picker | Always for forecast; only when you search for a place name |
+| [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate (forecast); your typed search text when you use a location picker (first-run onboarding and Settings) | Always for forecast; only when you search for a place name |
 | Google's geocoding service (via Android's [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder) on Play Services devices), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate | Always on Play Services devices (city / country lookup for the Today header); skipped on AOSP devices |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence | Only if you select Gemini TTS |
 | Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence, as a retained MQTT message | Only if you opt in to the Smart Home bridge and configure a broker |

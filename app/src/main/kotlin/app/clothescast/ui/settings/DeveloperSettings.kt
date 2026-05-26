@@ -56,17 +56,24 @@ import app.clothescast.location.pickCityName
 import app.clothescast.tts.resolveHolidayVoice
 import app.clothescast.ui.today.HolidayBanner
 import app.clothescast.ui.today.OutfitPreviewRow
+import app.clothescast.BuildConfig
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import org.json.JSONObject
 import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
+import java.net.URLEncoder
 import java.time.Instant
 import java.time.LocalDate
 import java.util.Locale
 import kotlin.coroutines.resume
-import kotlin.math.truncate
+import kotlin.math.round
 
 private const val MILLIS_PER_DAY = 86_400_000L
 
@@ -366,16 +373,29 @@ private fun GeocoderProbeResult(outcome: GeocoderProbeOutcome) {
                     "%.6f, %.6f".format(Locale.US, outcome.rawLatitude, outcome.rawLongitude),
                 )
             }
-            if (outcome.truncatedLatitude != null && outcome.truncatedLongitude != null) {
+            if (outcome.sentLatitude != null && outcome.sentLongitude != null) {
                 ProbeField(
-                    "Sent (2 dp)",
-                    "%.2f, %.2f".format(Locale.US, outcome.truncatedLatitude, outcome.truncatedLongitude),
+                    "Sent (2 dp, rounded)",
+                    "%.2f, %.2f".format(Locale.US, outcome.sentLatitude, outcome.sentLongitude),
                 )
             }
-            if (outcome.pickedCity != null) {
-                ProbeField("Picked city", outcome.pickedCity)
+
+            Text(
+                text = "Android Geocoder",
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.padding(top = 8.dp),
+            )
+            if (outcome.geocoder.errorMessage != null) {
+                Text(
+                    text = outcome.geocoder.errorMessage,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
             }
-            outcome.addresses.forEachIndexed { index, fields ->
+            if (outcome.geocoder.pickedCity != null) {
+                ProbeField("Picked city", outcome.geocoder.pickedCity)
+            }
+            outcome.geocoder.addresses.forEachIndexed { index, fields ->
                 Text(
                     text = "Address ${index + 1}",
                     style = MaterialTheme.typography.titleSmall,
@@ -395,6 +415,33 @@ private fun GeocoderProbeResult(outcome: GeocoderProbeOutcome) {
                 fields.addressLines.forEachIndexed { lineIndex, line ->
                     ProbeField("addressLine[$lineIndex]", line)
                 }
+            }
+
+            Text(
+                text = "Nominatim (OSM, zoom=10)",
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.padding(top = 12.dp),
+            )
+            if (outcome.nominatim.errorMessage != null) {
+                Text(
+                    text = outcome.nominatim.errorMessage,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+            val nom = outcome.nominatim.result
+            if (nom != null) {
+                ProbeField("city", nom.city)
+                ProbeField("town", nom.town)
+                ProbeField("village", nom.village)
+                ProbeField("municipality", nom.municipality)
+                ProbeField("suburb", nom.suburb)
+                ProbeField("city_district", nom.cityDistrict)
+                ProbeField("county", nom.county)
+                ProbeField("state", nom.state)
+                ProbeField("country_code", nom.countryCode)
+                ProbeField("country", nom.country)
+                ProbeField("display_name", nom.displayName)
             }
         }
     }
@@ -418,11 +465,36 @@ private sealed interface GeocoderProbeState {
 private data class GeocoderProbeOutcome(
     val rawLatitude: Double?,
     val rawLongitude: Double?,
-    val truncatedLatitude: Double?,
-    val truncatedLongitude: Double?,
+    val sentLatitude: Double?,
+    val sentLongitude: Double?,
+    val geocoder: GeocoderOutcome,
+    val nominatim: NominatimOutcome,
+    val errorMessage: String?,
+)
+
+private data class GeocoderOutcome(
     val addresses: List<AddressFields>,
     val pickedCity: String?,
     val errorMessage: String?,
+)
+
+private data class NominatimOutcome(
+    val result: NominatimResult?,
+    val errorMessage: String?,
+)
+
+private data class NominatimResult(
+    val displayName: String?,
+    val city: String?,
+    val town: String?,
+    val village: String?,
+    val municipality: String?,
+    val suburb: String?,
+    val cityDistrict: String?,
+    val county: String?,
+    val state: String?,
+    val countryCode: String?,
+    val country: String?,
 )
 
 private data class AddressFields(
@@ -449,32 +521,53 @@ private suspend fun runGeocoderProbe(
             GeocoderProbeOutcome(
                 rawLatitude = null,
                 rawLongitude = null,
-                truncatedLatitude = null,
-                truncatedLongitude = null,
-                addresses = emptyList(),
-                pickedCity = null,
+                sentLatitude = null,
+                sentLongitude = null,
+                geocoder = GeocoderOutcome(
+                    addresses = emptyList(),
+                    pickedCity = null,
+                    errorMessage = null,
+                ),
+                nominatim = NominatimOutcome(result = null, errorMessage = null),
                 errorMessage = "LocationResolver returned no fix — check coarse + background location grants.",
             ),
         )
-    val truncLat = truncate(fix.latitude * 100.0) / 100.0
-    val truncLng = truncate(fix.longitude * 100.0) / 100.0
+    val sentLat = round(fix.latitude * 100.0) / 100.0
+    val sentLng = round(fix.longitude * 100.0) / 100.0
 
+    val (geocoderOutcome, nominatimOutcome) = coroutineScope {
+        val geocoderJob = async { runAndroidGeocoder(context, sentLat, sentLng) }
+        val nominatimJob = async { runNominatim(sentLat, sentLng) }
+        geocoderJob.await() to nominatimJob.await()
+    }
+    return GeocoderProbeState.Result(
+        GeocoderProbeOutcome(
+            rawLatitude = fix.latitude,
+            rawLongitude = fix.longitude,
+            sentLatitude = sentLat,
+            sentLongitude = sentLng,
+            geocoder = geocoderOutcome,
+            nominatim = nominatimOutcome,
+            errorMessage = null,
+        ),
+    )
+}
+
+private suspend fun runAndroidGeocoder(
+    context: android.content.Context,
+    lat: Double,
+    lon: Double,
+): GeocoderOutcome {
     if (!Geocoder.isPresent()) {
-        return GeocoderProbeState.Result(
-            GeocoderProbeOutcome(
-                rawLatitude = fix.latitude,
-                rawLongitude = fix.longitude,
-                truncatedLatitude = truncLat,
-                truncatedLongitude = truncLng,
-                addresses = emptyList(),
-                pickedCity = null,
-                errorMessage = "Geocoder.isPresent() is false on this device — no reverse-geocode backend.",
-            ),
+        return GeocoderOutcome(
+            addresses = emptyList(),
+            pickedCity = null,
+            errorMessage = "Geocoder.isPresent() is false on this device — no reverse-geocode backend.",
         )
     }
     val geocoder = Geocoder(context, Locale.getDefault())
     val (raw, errorMessage) = try {
-        withTimeoutOrNull(10_000L) { fetchAddresses(geocoder, truncLat, truncLng) }
+        withTimeoutOrNull(10_000L) { fetchAddresses(geocoder, lat, lon) }
             ?.let { it to null }
             ?: (emptyList<Address>() to "Geocoder timed out after 10 s.")
     } catch (t: Throwable) {
@@ -493,16 +586,84 @@ private suspend fun runGeocoderProbe(
             addressLines = it.addressLines,
         )
     }
-    return GeocoderProbeState.Result(
-        GeocoderProbeOutcome(
-            rawLatitude = fix.latitude,
-            rawLongitude = fix.longitude,
-            truncatedLatitude = truncLat,
-            truncatedLongitude = truncLng,
-            addresses = fields,
-            pickedCity = picked,
-            errorMessage = errorMessage,
-        ),
+    return GeocoderOutcome(addresses = fields, pickedCity = picked, errorMessage = errorMessage)
+}
+
+/**
+ * Reverse-geocodes via OpenStreetMap's free Nominatim service. `zoom=10`
+ * collapses to the city level so a suburb-grained address (Sydney's Balmain,
+ * NYC's Brooklyn) resolves to the recognisable metro name in `address.city`
+ * rather than the suburb in `locality` that Android's Geocoder hands back.
+ *
+ * Usage policy compliance:
+ *   - Identify the app + a contact URL in `User-Agent`.
+ *   - Cap at 1 req/sec (a button-triggered debug call is well inside this).
+ *   - Don't bulk reverse-geocode; this is a single-coord probe.
+ */
+private suspend fun runNominatim(lat: Double, lon: Double): NominatimOutcome = withContext(Dispatchers.IO) {
+    val latParam = URLEncoder.encode("%.4f".format(Locale.US, lat), "UTF-8")
+    val lonParam = URLEncoder.encode("%.4f".format(Locale.US, lon), "UTF-8")
+    val url = URL(
+        "https://nominatim.openstreetmap.org/reverse" +
+            "?lat=$latParam&lon=$lonParam&zoom=10&format=jsonv2&addressdetails=1",
+    )
+    val conn = try {
+        (url.openConnection() as HttpURLConnection).apply {
+            connectTimeout = 5_000
+            readTimeout = 5_000
+            setRequestProperty(
+                "User-Agent",
+                "ClothesCast/${BuildConfig.VERSION_NAME} (https://github.com/mikelward/clothescast)",
+            )
+            setRequestProperty("Accept", "application/json")
+        }
+    } catch (t: Throwable) {
+        return@withContext NominatimOutcome(
+            result = null,
+            errorMessage = "Nominatim connect failed: ${t.javaClass.simpleName} ${t.message}",
+        )
+    }
+    try {
+        val code = conn.responseCode
+        if (code !in 200..299) {
+            return@withContext NominatimOutcome(
+                result = null,
+                errorMessage = "Nominatim HTTP $code",
+            )
+        }
+        val body = conn.inputStream.bufferedReader().use { it.readText() }
+        NominatimOutcome(result = parseNominatim(body), errorMessage = null)
+    } catch (t: IOException) {
+        NominatimOutcome(
+            result = null,
+            errorMessage = "Nominatim IO error: ${t.javaClass.simpleName} ${t.message}",
+        )
+    } catch (t: Throwable) {
+        NominatimOutcome(
+            result = null,
+            errorMessage = "Nominatim threw ${t.javaClass.simpleName}: ${t.message}",
+        )
+    } finally {
+        try { conn.disconnect() } catch (_: Throwable) { /* ignore */ }
+    }
+}
+
+private fun parseNominatim(body: String): NominatimResult {
+    val json = JSONObject(body)
+    val address = json.optJSONObject("address")
+    fun field(name: String) = address?.optString(name).orEmpty().ifBlank { null }
+    return NominatimResult(
+        displayName = json.optString("display_name").ifBlank { null },
+        city = field("city"),
+        town = field("town"),
+        village = field("village"),
+        municipality = field("municipality"),
+        suburb = field("suburb"),
+        cityDistrict = field("city_district"),
+        county = field("county"),
+        state = field("state"),
+        countryCode = field("country_code")?.uppercase(Locale.US),
+        country = field("country"),
     )
 }
 

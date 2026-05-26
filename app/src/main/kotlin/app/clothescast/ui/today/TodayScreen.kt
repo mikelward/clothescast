@@ -457,6 +457,8 @@ private fun TodayContent(
                             pagerScope.launch { pagerState.animateScrollToPage(1) }
                         },
                         forecastZone = state.thisPeriodInsight.forecastZone,
+                        region = state.region,
+                        deltaThresholdC = state.deltaThresholdC,
                     )
                     return@HorizontalPager
                 }

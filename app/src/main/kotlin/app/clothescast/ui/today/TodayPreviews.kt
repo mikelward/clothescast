@@ -1964,6 +1964,10 @@ private val SAMPLE_WEEK: List<DailyForecast> = run {
     }
 }
 
+// [SAMPLE_WEEK] has a midweek rain peak (40% Wed 15:00 with RAIN condition)
+// — enough for [DeriveWeekAheadInsight] to fire its rain rule, so the
+// snapshot also exercises the week-ahead headline card above the chart
+// deck. Monday start keeps the day-of-week in the headline deterministic.
 @Preview(name = "Seven-day page · weekly card", widthDp = 360)
 @Composable
 internal fun SevenDayPagePreview() {

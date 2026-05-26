@@ -22,8 +22,11 @@ import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WeatherCondition
+import app.clothescast.core.domain.model.WeekAheadInsight
 import app.clothescast.core.domain.model.toUnit
+import java.time.LocalDate
 import java.time.LocalTime
+import java.time.format.TextStyle
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -557,6 +560,68 @@ class InsightFormatter(
         WeatherCondition.SNOW -> R.string.insight_condition_snow
         WeatherCondition.THUNDERSTORM -> R.string.insight_condition_thunderstorm
         WeatherCondition.UNKNOWN -> R.string.insight_condition_unknown
+    }
+
+    /**
+     * Render a [WeekAheadInsight] as the single-line headline shown above
+     * the 7-day chart deck. The structured cases ([WeekAheadInsight.Rain],
+     * Cooler / Warmer, StaysHot / StaysCold) map to the
+     * `today_week_ahead_*` string resources so vocab can localize per
+     * region. The day reference resolves to "tomorrow" when the case
+     * carries `isTomorrow = true`; otherwise it renders the long day-of-week
+     * name in the user's locale ("on Thursday", "am Donnerstag" via the
+     * resource template).
+     *
+     * Persistence headlines ("Hot all week.") carry no day reference and
+     * use a bare resource lookup.
+     */
+    fun formatWeekAhead(insight: WeekAheadInsight): String = when (insight) {
+        is WeekAheadInsight.Rain -> {
+            val template = weekAheadPrecipRes(insight.condition, insight.likelihood)
+            resources.getString(template, dayReference(insight.date, insight.isTomorrow))
+        }
+        is WeekAheadInsight.Warmer -> resources.getString(
+            R.string.today_week_ahead_warmer,
+            convertDeltaDegrees(insight.degrees),
+            dayReference(insight.date, insight.isTomorrow),
+        )
+        is WeekAheadInsight.Cooler -> resources.getString(
+            R.string.today_week_ahead_cooler,
+            convertDeltaDegrees(insight.degrees),
+            dayReference(insight.date, insight.isTomorrow),
+        )
+        WeekAheadInsight.StaysHot -> resources.getString(R.string.today_week_ahead_stays_hot)
+        WeekAheadInsight.StaysCold -> resources.getString(R.string.today_week_ahead_stays_cold)
+    }
+
+    // Same Celsius→Fahrenheit conversion the today-page delta clause uses
+    // (see [formatDelta]). Temperature *differences* convert with the ratio
+    // only — no +32 offset — so a 5°C swing surfaces as 9°F to a Fahrenheit
+    // user. Without this the week-ahead headline would say "5° cooler" while
+    // the chart axis right below it reads in F.
+    private fun convertDeltaDegrees(celsiusDegrees: Int): Int = when (temperatureUnit) {
+        TemperatureUnit.CELSIUS -> celsiusDegrees
+        TemperatureUnit.FAHRENHEIT -> (celsiusDegrees * 9.0 / 5.0).roundToInt()
+    }
+
+    private fun weekAheadPrecipRes(condition: WeatherCondition, likelihood: PrecipLikelihood): Int = when (condition) {
+        WeatherCondition.SNOW -> when (likelihood) {
+            PrecipLikelihood.LIKELY -> R.string.today_week_ahead_snow_likely
+            PrecipLikelihood.POSSIBLE -> R.string.today_week_ahead_snow_possible
+        }
+        // RAIN / DRIZZLE / THUNDERSTORM / anything else precipitating reads
+        // naturally as "rain" at the weekly headline coarseness. The today /
+        // tonight insight covers the fine-grained condition word.
+        else -> when (likelihood) {
+            PrecipLikelihood.LIKELY -> R.string.today_week_ahead_rain_likely
+            PrecipLikelihood.POSSIBLE -> R.string.today_week_ahead_rain_possible
+        }
+    }
+
+    private fun dayReference(date: LocalDate, isTomorrow: Boolean): String {
+        if (isTomorrow) return resources.getString(R.string.today_week_ahead_day_tomorrow)
+        val dayName = date.dayOfWeek.getDisplayName(TextStyle.FULL, locale)
+        return resources.getString(R.string.today_week_ahead_day_on_named, dayName)
     }
 
     /**

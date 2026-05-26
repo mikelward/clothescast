@@ -27,11 +27,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.HourlyForecast
+import app.clothescast.ui.formatScrubHour
+import java.time.format.TextStyle
 import com.patrykandpatrick.vico.core.cartesian.CartesianDrawingContext
 import com.patrykandpatrick.vico.core.cartesian.decoration.Decoration
 import com.patrykandpatrick.vico.core.common.Fill
@@ -510,21 +513,59 @@ internal fun BoxScope.ChartRestoreOverlay(controller: ChartScrubController) {
  *
  * Each card supplies its own [format] because the formatting and
  * source field differ — temp cards read `hourly[idx]`, precip reads
- * the probability, diagnostics read the consensus mainLine. Time
- * formatting is shared via [rememberScrubTimeFormatter].
+ * the probability, diagnostics read the consensus mainLine. The
+ * [activeMoment] argument carries the date too, so cards on the 7-day
+ * page can disambiguate "Wed 2pm" from "Thu 2pm" via [formatScrubMoment].
  */
 @Composable
 internal fun rememberChartReadout(
     hourly: List<HourlyForecast>,
     startDate: LocalDate,
-    format: @Composable (hourIndex: Int) -> String?,
+    format: @Composable (hourIndex: Int, activeMoment: LocalDateTime) -> String?,
 ): String? {
     val controller = LocalChartScrub.current ?: return null
     val activeTime = controller.activeTime ?: return null
     if (hourly.isEmpty()) return null
     val chartX = currentTimeChartX(hourly, startDate, activeTime) ?: return null
     val idx = chartX.roundToInt().coerceIn(0, hourly.lastIndex)
-    return format(idx)
+    // Reconstruct the bucket's wall-clock moment from [idx] so the readout's
+    // displayed date and hour-of-day match the value being read off, not the
+    // raw scrub position (which can sit halfway into the bucket near 14:30
+    // and would surface as "14:30" instead of the bucket's "14:00").
+    val bucketMoment = chartXToTime(hourly, startDate, idx.toDouble()) ?: activeTime
+    return format(idx, bucketMoment)
+}
+
+/**
+ * Selects how [formatScrubMoment] renders the indicator's wall-clock time
+ * inside a readout: `HourOnly` ("2pm" / "14:00") on the per-period
+ * Today/Tomorrow pages where everything is on the same date, `DayPlusHour`
+ * ("Wed 2pm") on the 7-day page where the same hour-of-day repeats across
+ * seven days and a bare hour reading wouldn't say *which* day. The 7-day
+ * page provides `DayPlusHour` via [CompositionLocalProvider] so the
+ * per-period cards stay byte-identical on their normal pages.
+ */
+internal enum class ScrubMomentFormat { HourOnly, DayPlusHour }
+
+internal val LocalScrubMomentFormat = compositionLocalOf { ScrubMomentFormat.HourOnly }
+
+/**
+ * Formats the indicator's wall-clock moment for the readout line. Picks
+ * the right variant by [LocalScrubMomentFormat]; on the 7-day page that
+ * prepends a short day-of-week label so a Wednesday 2pm reading doesn't
+ * look identical to a Thursday 2pm one.
+ */
+@Composable
+internal fun formatScrubMoment(moment: LocalDateTime): String {
+    val hour = formatScrubHour(moment.toLocalTime())
+    return when (LocalScrubMomentFormat.current) {
+        ScrubMomentFormat.HourOnly -> hour
+        ScrubMomentFormat.DayPlusHour -> {
+            val locale = LocalConfiguration.current.locales[0]
+            val day = moment.dayOfWeek.getDisplayName(TextStyle.SHORT, locale)
+            "$day $hour"
+        }
+    }
 }
 
 /**

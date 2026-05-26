@@ -1979,3 +1979,33 @@ internal fun SevenDayPagePreview() {
         )
     }
 }
+
+// Exercises the [ScrubMomentFormat.DayPlusHour] readout path the 7-day
+// page wires up, without standing up the whole SevenDayPage (which owns
+// its own scrub controller internally). Pre-scrubs to Wed 14:00 against
+// the SAMPLE_WEEK feels-like series so the readout in the subtitle row
+// reads `"<value> at Wed 2pm"` — the day-of-week prefix is the bit
+// that's new here and the reason the 7-day page's per-period cards now
+// need a different formatter than the per-period pages.
+@Preview(name = "Forecast card · 7-day day-prefix readout", widthDp = 360)
+@Composable
+internal fun ForecastCardWeekScrubbedPreview() {
+    Frame {
+        val flatHourly = SAMPLE_WEEK.flatMap { it.hourly }
+        val startDate = SAMPLE_WEEK.first().date
+        val wedAtTwo = java.time.LocalDateTime.of(startDate.plusDays(2), java.time.LocalTime.of(14, 0))
+        val controller = androidx.compose.runtime.remember {
+            ChartScrubController().apply { scrubTo(wedAtTwo) }
+        }
+        CompositionLocalProvider(
+            LocalChartScrub provides controller,
+            LocalScrubMomentFormat provides ScrubMomentFormat.DayPlusHour,
+        ) {
+            ForecastCard(
+                hourly = flatHourly,
+                temperatureUnit = TemperatureUnit.CELSIUS,
+                startDate = startDate,
+            )
+        }
+    }
+}

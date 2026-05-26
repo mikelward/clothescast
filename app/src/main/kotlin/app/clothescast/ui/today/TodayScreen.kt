@@ -447,6 +447,7 @@ private fun TodayContent(
                         onChevronTap = {
                             pagerScope.launch { pagerState.animateScrollToPage(1) }
                         },
+                        forecastZone = state.thisPeriodInsight.forecastZone,
                     )
                     return@HorizontalPager
                 }
@@ -2020,10 +2021,10 @@ internal fun ForecastCard(
     val subtitleText = feelsLikeMinMax?.let {
         stringResource(R.string.today_forecast_min_max, it.first, it.second, symbol)
     }
-    val readout = rememberChartReadout(hourly, startDate) { idx ->
+    val readout = rememberChartReadout(hourly, startDate) { idx, moment ->
         val entry = hourly[idx]
         val v = entry.feelsLikeC.toUnit(temperatureUnit).roundToInt()
-        stringResource(R.string.today_chart_readout, "$v$symbol", formatScrubHour(entry.time))
+        stringResource(R.string.today_chart_readout, "$v$symbol", formatScrubMoment(moment))
     }
 
     Card(modifier = Modifier.fillMaxWidth()) {
@@ -2081,10 +2082,10 @@ internal fun AirTemperatureCard(
     val subtitleText = airMinMax?.let {
         stringResource(R.string.today_forecast_air_min_max, it.first, it.second, symbol)
     }
-    val readout = rememberChartReadout(hourly, startDate) { idx ->
+    val readout = rememberChartReadout(hourly, startDate) { idx, moment ->
         val entry = hourly[idx]
         val v = entry.temperatureC.toUnit(temperatureUnit).roundToInt()
-        stringResource(R.string.today_chart_readout, "$v$symbol", formatScrubHour(entry.time))
+        stringResource(R.string.today_chart_readout, "$v$symbol", formatScrubMoment(moment))
     }
 
     Card(modifier = Modifier.fillMaxWidth()) {
@@ -2517,12 +2518,12 @@ internal fun PrecipitationCard(
             formatScrubHour(peak.time),
         )
     }
-    val readout = rememberChartReadout(hourly, startDate) { idx ->
+    val readout = rememberChartReadout(hourly, startDate) { idx, moment ->
         val entry = hourly[idx]
         stringResource(
             R.string.today_chart_readout,
             "${entry.precipitationProbabilityPct.roundToInt()}%",
-            formatScrubHour(entry.time),
+            formatScrubMoment(moment),
         )
     }
     Card(modifier = Modifier.fillMaxWidth()) {
@@ -2614,12 +2615,12 @@ internal fun PrecipitationAmountCard(
             formatPrecipitationMmAxis(totalMm),
         )
     }
-    val readout = rememberChartReadout(hourly, forDate) { idx ->
+    val readout = rememberChartReadout(hourly, forDate) { idx, moment ->
         val value = mainLine.getOrNull(idx) ?: return@rememberChartReadout null
         stringResource(
             R.string.today_chart_readout,
             formatPrecipitationMmAxis(value),
-            formatScrubHour(hourly[idx].time),
+            formatScrubMoment(moment),
         )
     }
     Card(modifier = Modifier.fillMaxWidth()) {

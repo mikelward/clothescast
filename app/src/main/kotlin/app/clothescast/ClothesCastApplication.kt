@@ -30,7 +30,7 @@ import app.clothescast.diag.Telemetry
 import app.clothescast.diag.TelemetryApiCallLogger
 import app.clothescast.locale.AppLocale
 import app.clothescast.location.LocationResolver
-import app.clothescast.location.ReverseGeocoder
+import app.clothescast.location.NominatimReverseGeocoder
 import app.clothescast.mqtt.MqttPublisher
 import app.clothescast.notification.InsightNotifier
 import app.clothescast.notification.NotificationChannelRegistrar
@@ -69,7 +69,7 @@ class ClothesCastApplication : Application() {
     val insightCache: InsightCache by lazy { InsightCache.create(this, deriveInsight) }
     val dailyHistoryStore: DailyHistoryStore by lazy { DailyHistoryStore.create(this) }
     val locationResolver: LocationResolver by lazy { LocationResolver(this) }
-    val reverseGeocoder: ReverseGeocoder by lazy { ReverseGeocoder(this) }
+    val reverseGeocoder: NominatimReverseGeocoder by lazy { NominatimReverseGeocoder(httpClient) }
     val insightNotifier: InsightNotifier by lazy { InsightNotifier(this) }
     val tonightInsightNotifier: TonightInsightNotifier by lazy { TonightInsightNotifier(this) }
     val weatherAlertNotifier: WeatherAlertNotifier by lazy { WeatherAlertNotifier(this) }

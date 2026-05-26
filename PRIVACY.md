@@ -51,14 +51,29 @@ The source code is at <https://github.com/mikelward/clothescast>.
 - **What:** Coarse latitude / longitude (city-block level, never precise
   GPS — the app declares only `ACCESS_COARSE_LOCATION`).
 - **Why:** To fetch the weather forecast for where you are and to look up
-  a human-readable place name to show in the UI.
-- **Where it goes:** [Open-Meteo](https://open-meteo.com) (weather +
-  geocoding APIs). Open-Meteo receives only a coordinate — no account,
-  no device identifier.
+  your city name so the Today screen can label the forecast with it
+  ("Sydney", "London") instead of a bare date.
+- **Where it goes:**
+  - [Open-Meteo](https://open-meteo.com) — receives the coarse
+    coordinate to return the weather forecast, and (separately) a
+    free-text place name when you search for a location in
+    Settings.
+  - [OpenStreetMap Nominatim](https://nominatim.openstreetmap.org) —
+    receives the coarse coordinate so we can look up the city name
+    (e.g. "Sydney" for a Balmain coordinate, "London" for a Muswell
+    Hill coordinate) and the country code (used to pre-select
+    holidays in your country). We don't ask Nominatim for street
+    addresses or any other detail.
+
+  Each service receives only the coordinate — no account, no device
+  identifier. The coordinate is rounded to ~1 km before it leaves
+  the device.
 - **Stored on device:** Your chosen location is saved in app settings so
   the daily refresh can run without re-prompting you.
 - **Retention by us:** Until you uninstall the app or change locations.
 - **Retention by Open-Meteo:** See <https://open-meteo.com/en/terms>.
+- **Retention by Nominatim:** See the OSM Foundation's
+  [Nominatim usage policy](https://operations.osmfoundation.org/policies/nominatim/).
 
 ### Calendar events _(optional, off by default)_
 
@@ -220,7 +235,8 @@ policies apply to anything they receive:
 
 | Service | What we send | When |
 |---|---|---|
-| [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate | Always (forecast + geocoding) |
+| [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate | Always (forecast + forward-geocoding) |
+| [OpenStreetMap Nominatim](https://operations.osmfoundation.org/policies/nominatim/) | Coarse coordinate | Always (reverse-geocode to a friendly place name) |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence | Only if you select Gemini TTS |
 | Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence, as a retained MQTT message | Only if you opt in to the Smart Home bridge and configure a broker |
 | Analytics / crash-reporting service (e.g. Firebase Crashlytics + Google Analytics for Firebase) | Aggregate usage events and crash diagnostics — see "Analytics and crash reporting" below for what's in and out | Possibly always, in all builds |

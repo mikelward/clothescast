@@ -1797,14 +1797,17 @@ internal fun InsightCard(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            // Three-zone header: 28.dp slots are reserved on both edges so
-            // the date row sits in the same horizontal position whether or
-            // not a chevron is currently rendered, and so the back/forward
-            // affordances land on opposite edges as the user swipes between
-            // pages. AutoMirrored chevron variants flip in RTL automatically.
+            // Header: a 28.dp slot is reserved on the right edge so the
+            // forward chevron always lands flush against that edge as the
+            // user swipes between pages. The left slot only renders when
+            // there's actually a back chevron — when there isn't (e.g.
+            // page 0, the leftmost page), the title sits flush-left
+            // against the card padding instead of being centered around an
+            // invisible slot. AutoMirrored chevron variants flip in RTL
+            // automatically.
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(28.dp)) {
-                    if (renderLeftChevron) {
+                if (renderLeftChevron) {
+                    Box(modifier = Modifier.size(28.dp)) {
                         IconButton(
                             onClick = { onChevronTap?.invoke() },
                             modifier = Modifier.size(28.dp),
@@ -1818,7 +1821,7 @@ internal fun InsightCard(
                 }
                 Row(
                     modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.Center,
+                    horizontalArrangement = if (renderLeftChevron) Arrangement.Center else Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(

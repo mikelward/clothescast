@@ -82,6 +82,24 @@ import kotlinx.coroutines.delay
  * itself (see [onToggleModelSpread]), since this page has no confidence
  * chip to drive the toggle the way the per-period pages do.
  *
+ * TODO: standardise chart-tap behaviour across the per-period pages and
+ * this one. Today the two diverge: per-period pages wire a
+ * [SpreadCoordinator] into the [ChartScrubController] so a tap on the
+ * chart plot enters scrub mode *and* auto-reveals the per-model spread
+ * (with the matching restore tap auto-hiding it again), while the
+ * confidence chip above the charts is the explicit on/off control. This
+ * page has no chip, so a tap on the chart plot only scrubs and a tap on
+ * the surrounding card flips the spread independently — two gestures on
+ * the same widget that do different things. Pick one shape and apply it
+ * everywhere: either wire the [SpreadCoordinator] here too (drop the
+ * card-level [clickable], keep the tap-hint card as the equivalent of
+ * the chip) so chart taps reveal the spread on every page, or back the
+ * per-period pages out of the auto-reveal coupling so chart taps only
+ * ever scrub and an explicit chip / hint card carries the toggle. The
+ * coupled-reveal version is the richer interaction; the decoupled
+ * version is easier to reason about. Whichever wins, remove the
+ * divergence — and update the matching doc on [ChartScrubController].
+ *
  * Empty / short [days] (e.g. legacy cached snapshots from before the
  * 7-day fetch) collapse to a short stand-in message so the page still
  * has a back button instead of going blank.

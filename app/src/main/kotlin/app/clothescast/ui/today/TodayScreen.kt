@@ -853,23 +853,35 @@ internal fun MissingPeriodPlaceholder(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            // Matches InsightCard's three-zone header: back-chevron in the
+            // left slot, centred title, empty right slot reserved so swiping
+            // between an InsightCard and this placeholder doesn't shift the
+            // header horizontally.
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = stringResource(titleRes),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                if (showChevronLeft) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    IconButton(
-                        onClick = onChevronTap,
-                        modifier = Modifier.size(28.dp),
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                            contentDescription = stringResource(R.string.today_back_to_primary),
-                        )
+                Box(modifier = Modifier.size(28.dp)) {
+                    if (showChevronLeft) {
+                        IconButton(
+                            onClick = onChevronTap,
+                            modifier = Modifier.size(28.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                contentDescription = stringResource(R.string.today_back_to_primary),
+                            )
+                        }
                     }
                 }
+                Row(
+                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(titleRes),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }
+                Box(modifier = Modifier.size(28.dp))
             }
             Text(
                 text = stringResource(
@@ -1687,64 +1699,81 @@ internal fun InsightCard(
     // nothing useful — we still have coords, so the maps link is worth keeping.
     val locationLabel = shortLocationLabel(location?.displayName)
         ?: location?.let { stringResource(R.string.today_location_unknown) }
-    val showChevron = (showChevronRight || showChevronLeft) && onChevronTap != null
+    val renderLeftChevron = showChevronLeft && onChevronTap != null
+    val renderRightChevron = showChevronRight && onChevronTap != null
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            // Three-zone header: 28.dp slots are reserved on both edges so
+            // the date row sits in the same horizontal position whether or
+            // not a chevron is currently rendered, and so the back/forward
+            // affordances land on opposite edges as the user swipes between
+            // pages. AutoMirrored chevron variants flip in RTL automatically.
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = dateFormatter.format(insight.forDate),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = if (onLongPressDate != null) {
-                        Modifier.pointerInput(onLongPressDate) {
-                            detectTapGestures(onLongPress = { onLongPressDate() })
+                Box(modifier = Modifier.size(28.dp)) {
+                    if (renderLeftChevron) {
+                        IconButton(
+                            onClick = { onChevronTap?.invoke() },
+                            modifier = Modifier.size(28.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                contentDescription = stringResource(R.string.today_back_to_primary),
+                            )
                         }
-                    } else {
-                        Modifier
-                    },
-                )
-                if (location != null && locationLabel != null) {
+                    }
+                }
+                Row(
+                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
-                        text = " · ",
+                        text = dateFormatter.format(insight.forDate),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(
-                        text = locationLabel,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.clickable {
-                            openInMaps(
-                                context = context,
-                                latitude = location.latitude,
-                                longitude = location.longitude,
-                                label = locationLabel,
-                            )
+                        modifier = if (onLongPressDate != null) {
+                            Modifier.pointerInput(onLongPressDate) {
+                                detectTapGestures(onLongPress = { onLongPressDate() })
+                            }
+                        } else {
+                            Modifier
                         },
                     )
+                    if (location != null && locationLabel != null) {
+                        Text(
+                            text = " · ",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = locationLabel,
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.clickable {
+                                openInMaps(
+                                    context = context,
+                                    latitude = location.latitude,
+                                    longitude = location.longitude,
+                                    label = locationLabel,
+                                )
+                            },
+                        )
+                    }
                 }
-                // Spacer + chevron are *only* added when the caller asked for
-                // one, so default-arg call sites produce a byte-identical Row
-                // measure pass and the existing InsightCard snapshots don't
-                // churn. AutoMirrored variants flip in RTL automatically (the
-                // RTL preview covers InsightCard via the outfit row, but the
-                // chevron itself only ships on the pager which routes
-                // direction the same way).
-                if (showChevron) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    IconButton(
-                        onClick = { onChevronTap?.invoke() },
-                        modifier = Modifier.size(28.dp),
-                    ) {
-                        val (icon, cdRes) = if (showChevronRight) {
-                            Icons.AutoMirrored.Filled.KeyboardArrowRight to R.string.today_view_other_period
-                        } else {
-                            Icons.AutoMirrored.Filled.KeyboardArrowLeft to R.string.today_back_to_primary
+                Box(modifier = Modifier.size(28.dp)) {
+                    if (renderRightChevron) {
+                        IconButton(
+                            onClick = { onChevronTap?.invoke() },
+                            modifier = Modifier.size(28.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = stringResource(R.string.today_view_other_period),
+                            )
                         }
-                        Icon(imageVector = icon, contentDescription = stringResource(cdRes))
                     }
                 }
             }

@@ -19,7 +19,6 @@ import app.clothescast.R
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
-import app.clothescast.ui.formatScrubHour
 import app.clothescast.ui.theme.AppTheme
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
@@ -128,9 +127,9 @@ internal fun PerModelDiagnosticCard(
 
     val mainByIndex = remember(mainLine) { mainLine.toMap() }
     val scrubController = LocalChartScrub.current
-    val readout = rememberChartReadout(hourly, startDate) { idx ->
+    val readout = rememberChartReadout(hourly, startDate) { idx, moment ->
         val v = mainByIndex[idx] ?: return@rememberChartReadout null
-        stringResource(R.string.today_chart_readout, tooltipValueFormat(v), formatScrubHour(times[idx]))
+        stringResource(R.string.today_chart_readout, tooltipValueFormat(v), formatScrubMoment(moment))
     }
 
     Card(modifier = Modifier.fillMaxWidth()) {

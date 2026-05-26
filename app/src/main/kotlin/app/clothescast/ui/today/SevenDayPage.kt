@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,8 +38,11 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.windSpeedUnit
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.TextStyle
 import java.util.Locale
+import kotlinx.coroutines.delay
 
 /**
  * Page 3 of the Today pager — a 7-day chart deck.
@@ -60,9 +64,13 @@ import java.util.Locale
  * when the side-band fetch failed. The page still renders the four
  * primary-data charts on the cheap path.
  *
- * No scrub controller is provided here, so chart readouts and the scrub
- * indicator stay off on this page — scrub is hourly-on-a-day semantics
- * that don't translate cleanly to a week.
+ * A [ChartScrubController] is wired here so taps on any chart publish a
+ * shared indicator across the stack — same gesture / readout behaviour as
+ * the per-period pages, with the readout's time portion prefixed with a
+ * short day-of-week label (`Wed 2pm`) via [LocalScrubMomentFormat] so a
+ * reading isn't ambiguous between the seven identical hour-of-day points
+ * in the window. No spread coordinator is wired (the confidence chip
+ * still controls per-model overlays explicitly on this page).
  *
  * Empty / short [days] (e.g. legacy cached snapshots from before the
  * 7-day fetch) collapse to a short stand-in message so the page still
@@ -77,13 +85,14 @@ internal fun SevenDayPage(
     showModelSpread: Boolean,
     scrollState: ScrollState,
     onChevronTap: () -> Unit,
+    forecastZone: ZoneId? = null,
 ) {
     // Flatten every day's hourly stream into a single list. The chart
     // composables read [hourly[idx].time.hour] only for the bottom-axis
-    // default formatter (which we override below) and for the scrub
-    // readout (which is disabled on this page), so a 168-entry list of
-    // LocalTime-keyed entries is sufficient — no LocalDateTime reshape
-    // needed.
+    // default formatter (which we override below); the scrub readout
+    // gets its date from the controller's active [LocalDateTime] rather
+    // than reconstructing it from this list, so 168 LocalTime-keyed
+    // entries are sufficient — no LocalDateTime reshape needed here.
     val flatHourly: List<HourlyForecast> = remember(days) { days.flatMap { it.hourly } }
     val startDate = days.firstOrNull()?.date
 
@@ -182,16 +191,41 @@ internal fun SevenDayPage(
 
         if (days.size < 2 || flatHourly.isEmpty() || startDate == null) return@Column
 
+        // Shared scrub controller — same role as on the per-period pages.
+        // A tap on any chart in the stack publishes an indicator at the
+        // tapped time, every card draws the matching vertical line and
+        // surfaces a readout. The live "now" reference is ticked once a
+        // minute from the *forecast* zone (matching TodayPage), so the
+        // idle indicator slides smoothly across today's hours. On a
+        // legacy caller that doesn't yet pass [forecastZone], fall back
+        // to the device zone — same downside as the per-period pages
+        // (an indicator-offset for manual locations in a different zone
+        // until the caller is updated). No SpreadCoordinator wired:
+        // the confidence chip still drives per-model overlays on this
+        // page; scrub just shows the readout.
+        val scrubController = rememberChartScrubController()
+        val zone = forecastZone ?: ZoneId.systemDefault()
+        LaunchedEffect(scrubController, zone, flatHourly, startDate) {
+            while (true) {
+                val now = LocalDateTime.now(zone)
+                val inWindow = currentTimeChartX(flatHourly, startDate, now) != null
+                scrubController.setNow(if (inWindow) now else null)
+                delay(60_000L)
+            }
+        }
+
         // The full chart stack mirrors what TodayPage renders for a
         // per-period view. Each card reads [LocalChartBottomFormatter] for
         // its x-axis labels; here we provide a day-of-week formatter so
         // 168 hours don't render as the same 00..23 axis repeated seven
-        // times. Scrub controller is intentionally not provided so the
-        // scrub indicator + readout stay off — scrub is hourly-on-a-day
-        // semantics that don't translate cleanly to a week.
+        // times. [LocalScrubMomentFormat] flips the readout from "2pm" to
+        // "Wed 2pm" so a reading isn't ambiguous across the seven
+        // identical hour-of-day positions in the window.
         CompositionLocalProvider(
             LocalChartBottomFormatter provides dayOfWeekFormatter,
             LocalChartBottomItemPlacer provides dayItemPlacer,
+            LocalChartScrub provides scrubController,
+            LocalScrubMomentFormat provides ScrubMomentFormat.DayPlusHour,
         ) {
             ForecastCard(
                 hourly = flatHourly,

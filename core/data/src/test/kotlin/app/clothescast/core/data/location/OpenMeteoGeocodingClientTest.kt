@@ -66,8 +66,10 @@ class OpenMeteoGeocodingClientTest {
 
         results shouldHaveSize 2
         results[0].displayName shouldBe "London, England, United Kingdom"
-        results[0].latitude shouldBe 51.50853
-        results[0].longitude shouldBe -0.12574
+        // Fixture lat/lon (51.50853, -0.12574) get rounded to a 2dp / ~1km
+        // grid at the geocoder boundary — see Location.coarsened().
+        results[0].latitude shouldBe 51.51
+        results[0].longitude shouldBe -0.13
 
         results[1].displayName shouldBe "London, Ontario, Canada"
     }

@@ -56,6 +56,6 @@ class OpenMeteoGeocodingClient(
             longitude = longitude,
             displayName = displayName,
             countryCode = countryCode?.takeIf { it.isNotBlank() }?.uppercase(),
-        )
+        ).coarsened()
     }
 }

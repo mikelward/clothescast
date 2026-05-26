@@ -215,7 +215,8 @@ class SettingsRepositoryTest {
             countryCode = "AU",
         )
         subject.setLocation(weather)
-        subject.preferences.first().location shouldBe weather
+        // Read coarsens to a ~1km grid — see Location.coarsened().
+        subject.preferences.first().location shouldBe weather.coarsened()
     }
 
     @Test

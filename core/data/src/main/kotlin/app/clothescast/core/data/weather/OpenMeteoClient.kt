@@ -29,19 +29,20 @@ import java.time.LocalDate
 internal const val OPEN_METEO_HOST = "api.open-meteo.com"
 
 /**
- * Open-Meteo `forecast` endpoint with past_days=1&forecast_days=2, returning yesterday's
- * actuals plus today's and tomorrow's forecast in one call. Free, key-less. Free-tier
- * soft cap is 10k requests/day; this app makes one call per device per day.
+ * Open-Meteo `forecast` endpoint with past_days=1&forecast_days=7, returning yesterday's
+ * actuals plus a 7-day forecast in one call. Free, key-less. Free-tier soft cap is
+ * 10k requests/day; this app makes one call per device per day.
  *
- * `forecast_days=2` (not 1) is to expose tomorrow's pre-dawn hourly entries via
- * [ForecastBundle.tomorrowHourly] so the tonight insight can wrap from 19:00 today
- * through 07:00 next morning, and its overnight low / pre-dawn rain reflect what the
- * user will actually walk into. Today's hourly is always complete regardless of
- * `forecast_days` — Open-Meteo anchors its hourly window to local 00:00 — so the
- * count doesn't matter for the today chart.
+ * `forecast_days=7` covers the Today screen's 7-day pager page. Tomorrow's
+ * pre-dawn hourly entries — read by the tonight insight via
+ * [ForecastBundle.tomorrowHourly] so its overnight low / pre-dawn rain reflect
+ * what the user will actually walk into — come along for free in the same call.
+ * Today's hourly is always complete regardless of `forecast_days` — Open-Meteo
+ * anchors its hourly window to local 00:00 — so the count doesn't matter for
+ * the today chart.
  *
- * The mapper splits today's vs tomorrow's hourly entries by date and keeps the daily
- * fields (yesterday + today only) untouched.
+ * The mapper splits the hourly stream by date so each [DailyForecast.hourly]
+ * carries only that day's entries; daily aggregates flow through unchanged.
  *
  * Severe-weather alerts come from a second `/v1/warnings` call. The warnings endpoint
  * is best-effort: if it fails (4xx, 5xx, network), we return the forecast with an empty
@@ -200,7 +201,12 @@ class OpenMeteoClient(
                 parameter("latitude", location.latitude)
                 parameter("longitude", location.longitude)
                 parameter("past_days", 1)
-                parameter("forecast_days", 2)
+                // forecast_days=7 covers the Today screen's 7-day forecast
+                // pager page. Tomorrow's pre-dawn hourly entries (which the
+                // tonight insight reads via [ForecastBundle.tomorrowHourly] to
+                // wrap past midnight) come along for free in the same call,
+                // so we don't issue a second fetch.
+                parameter("forecast_days", 7)
                 parameter("timezone", "auto")
                 parameter(
                     "daily",

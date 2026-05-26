@@ -235,6 +235,33 @@ class InsightCacheTest {
     }
 
     @Test
+    fun `upcomingDays round-trips through the cache`() = runTest {
+        // 7-day forecast page reads bundle.upcomingDays via Insight; verify
+        // the persistence layer carries the list intact across a restart.
+        val tomorrow = DailyForecast(
+            date = today.plusDays(1),
+            temperatureMinC = 15.0,
+            temperatureMaxC = 21.0,
+            feelsLikeMinC = 14.0,
+            feelsLikeMaxC = 20.0,
+            precipitationProbabilityMaxPct = 10.0,
+            precipitationMmTotal = 0.0,
+            condition = WeatherCondition.CLEAR,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(12, 0), 19.0, 18.0, 5.0, WeatherCondition.CLEAR),
+            ),
+        )
+        val dayAfter = tomorrow.copy(date = today.plusDays(2), temperatureMaxC = 22.0)
+        subject.store(
+            InsightCache.Slot.THIS_PERIOD,
+            sample.copy(bundle = bundle.copy(upcomingDays = listOf(tomorrow, dayAfter))),
+        )
+
+        val read = subject.thisPeriod.first()
+        read?.bundle?.upcomingDays shouldBe listOf(tomorrow, dayAfter)
+    }
+
+    @Test
     fun `alerts round-trip through the cache`() = runTest {
         val alert = WeatherAlert(
             event = "Tornado Warning",

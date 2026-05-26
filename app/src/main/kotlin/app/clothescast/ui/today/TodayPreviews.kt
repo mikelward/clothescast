@@ -27,6 +27,7 @@ import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.ConfidenceInfo
+import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.Fact
 import app.clothescast.core.domain.model.ForecastConfidence
@@ -1893,6 +1894,85 @@ internal fun TodayInsightCardLongPreview() {
                 ),
             ),
             Region.SYSTEM,
+        )
+    }
+}
+
+// Realistic 7-day feels-like envelope for the "This week" pager page. Picks
+// a gentle warm-up followed by a midweek cool front so the high and low
+// lines diverge / converge across the week — exercises the chart's y-axis
+// auto-sizing and proves both lines render distinctly. Dates pin a fixed
+// Monday start so the day-of-week x-axis labels in the snapshot stay
+// deterministic regardless of when the test runs.
+private val SAMPLE_WEEK: List<DailyForecast> = run {
+    val highs = listOf(18.0, 20.0, 22.0, 19.0, 15.0, 14.0, 17.0)
+    val lows = listOf(9.0, 11.0, 13.0, 12.0, 7.0, 6.0, 9.0)
+    val start = LocalDate.of(2026, 4, 27) // Monday
+    highs.indices.map { i ->
+        // Build a 24-hour diurnal curve per day: cosine-shaped from the
+        // low at 04:00 to the high at 14:00. Gives the 7-day chart stack
+        // realistic-looking hourly data so the previews exercise the full
+        // axis range instead of degenerate flat lines, while keeping the
+        // construction obviously deterministic for snapshot stability.
+        val hi = highs[i]
+        val lo = lows[i]
+        val hourly = (0 until 24).map { h ->
+            val phase = ((h - 4 + 24) % 24) / 24.0 // 0 at 04:00, 0.5 at 16:00
+            val curve = 0.5 * (1 - kotlin.math.cos(phase * 2 * Math.PI))
+            val t = lo + (hi - lo) * curve
+            HourlyForecast(
+                time = LocalTime.of(h, 0),
+                temperatureC = t + 1.0,
+                feelsLikeC = t,
+                // Light afternoon shower mid-week so the precipitation
+                // charts have something to draw — peak around Wed 15:00.
+                precipitationProbabilityPct = if (i == 2 && h in 14..17) 40.0 - (h - 15).let { if (it < 0) -it else it } * 8 else 5.0,
+                condition = if (i == 2 && h in 14..17) WeatherCondition.RAIN else WeatherCondition.CLEAR,
+                precipitationMm = if (i == 2 && h in 14..17) 0.4 else 0.0,
+            )
+        }
+        DailyForecast(
+            date = start.plusDays(i.toLong()),
+            temperatureMinC = lo + 1.0,
+            temperatureMaxC = hi + 1.0,
+            feelsLikeMinC = lo,
+            feelsLikeMaxC = hi,
+            precipitationProbabilityMaxPct = if (i == 2) 40.0 else 5.0,
+            precipitationMmTotal = if (i == 2) 1.2 else 0.0,
+            condition = if (i == 2) WeatherCondition.RAIN else WeatherCondition.CLEAR,
+            hourly = hourly,
+        )
+    }
+}
+
+@Preview(name = "Seven-day chart · weekly envelope", widthDp = 360)
+@Composable
+internal fun SevenDayChartPreview() {
+    Frame {
+        SevenDayChart(days = SAMPLE_WEEK, temperatureUnit = TemperatureUnit.CELSIUS)
+    }
+}
+
+@Preview(name = "Seven-day chart · weekly envelope (dark)", widthDp = 360)
+@Composable
+internal fun SevenDayChartDarkPreview() {
+    Frame(darkTheme = true) {
+        SevenDayChart(days = SAMPLE_WEEK, temperatureUnit = TemperatureUnit.CELSIUS)
+    }
+}
+
+@Preview(name = "Seven-day page · weekly card", widthDp = 360)
+@Composable
+internal fun SevenDayPagePreview() {
+    Frame {
+        SevenDayPage(
+            days = SAMPLE_WEEK,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            distanceUnit = app.clothescast.core.domain.model.DistanceUnit.KILOMETERS,
+            weekPerModelHourly = null,
+            showModelSpread = false,
+            scrollState = androidx.compose.foundation.rememberScrollState(),
+            onChevronTap = {},
         )
     }
 }

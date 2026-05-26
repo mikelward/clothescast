@@ -313,6 +313,56 @@ class OpenMeteoMapperTest {
     }
 
     @Test
+    fun `upcomingDays carries every day after today with hourly attached`() {
+        // Eight-entry response (yesterday + today + six future days) is what
+        // the production client now asks for via forecast_days=7. The mapper
+        // must populate `upcomingDays` with tomorrow + the rest, in date
+        // order, with each day's hourly slice attached.
+        val days = (0L..7L).map { LocalDate.of(2026, 4, 24).plusDays(it) }
+        val response = OpenMeteoResponse(
+            timezone = "UTC",
+            daily = DailyData(
+                time = days.map { it.toString() },
+                temperatureMin = days.indices.map { 10.0 + it },
+                temperatureMax = days.indices.map { 20.0 + it },
+                feelsLikeMin = days.indices.map { 9.0 + it },
+                feelsLikeMax = days.indices.map { 19.0 + it },
+                precipitationProbabilityMax = days.indices.map { it * 5 },
+                precipitationSum = days.indices.map { it * 0.5 },
+                weatherCode = days.indices.map { 2 },
+            ),
+            hourly = HourlyData(
+                // One marker hour per day at 12:00 so the mapper has something
+                // to bucket — proves each day's hourly is sliced from the
+                // shared stream and attached to the right day.
+                time = days.map { String.format(Locale.ROOT, "%sT12:00", it) },
+                temperature = days.indices.map { 15.0 + it },
+                feelsLike = days.indices.map { 14.0 + it },
+                precipitationProbability = days.indices.map { 0 },
+                weatherCode = days.indices.map { 2 },
+            ),
+        )
+
+        val bundle = OpenMeteoMapper.toBundle(response)
+
+        bundle.upcomingDays shouldHaveSize 6
+        bundle.upcomingDays.first().date shouldBe LocalDate.of(2026, 4, 26)
+        bundle.upcomingDays.last().date shouldBe LocalDate.of(2026, 5, 1)
+        bundle.upcomingDays.first().hourly shouldHaveSize 1
+        bundle.upcomingDays.first().hourly.first().time shouldBe LocalTime.of(12, 0)
+        // Tomorrow is still exposed via [ForecastBundle.tomorrow] for the
+        // existing tonight-insight paths, and matches `upcomingDays[0]`.
+        bundle.tomorrow!!.date shouldBe bundle.upcomingDays.first().date
+    }
+
+    @Test
+    fun `upcomingDays is empty when the response only carries two daily entries`() {
+        val bundle = OpenMeteoMapper.toBundle(loadFixture())
+
+        bundle.upcomingDays shouldBe emptyList()
+    }
+
+    @Test
     fun `mismatched-length hourly parallel arrays are tolerated without throwing`() {
         // Open-Meteo always sends matching arrays, but a buggy proxy or a future
         // field-by-field rollout could produce shorter temperature/feelsLike/etc.

@@ -175,10 +175,11 @@ fun TodayScreen(
 
     // Hoisted out of TodayContent so the TopAppBar title can swap with the
     // visible page — page 0 is the user's current 12-hour window ("Today" or
-    // "Tonight"), page 1 is the next window ("Tonight" or "Tomorrow"). Page
-    // count is constant; when thisPeriodInsight is null the pager doesn't
-    // render but the state is harmlessly retained at page 0.
-    val pagerState = rememberPagerState(initialPage = 0) { 2 }
+    // "Tonight"), page 1 is the next window ("Tonight" or "Tomorrow"),
+    // page 2 is the 7-day outlook. Page count is constant; when
+    // thisPeriodInsight is null the pager doesn't render but the state is
+    // harmlessly retained at page 0.
+    val pagerState = rememberPagerState(initialPage = 0) { 3 }
     val titleRes = topBarTitleRes(
         period = state.thisPeriodInsight?.period,
         page = pagerState.currentPage,
@@ -412,7 +413,7 @@ private fun TodayContent(
             // the rain chart on Today, swiping to Tomorrow keeps them
             // on the rain chart rather than snapping back to the top.
             val scrollState = rememberScrollState()
-            // Placeholder period for page 2 when its slot is empty —
+            // Placeholder period for page 1 when its slot is empty —
             // whatever the next 12-hour window after `thisPeriodInsight` is.
             // The worker writes [InsightCache.Slot.NEXT_PERIOD] paired with
             // each delivery, so this fallback only fires before the first
@@ -424,6 +425,31 @@ private fun TodayContent(
                     .weight(1f)
                     .fillMaxWidth(),
             ) { page ->
+                if (page == 2) {
+                    // Plot today + upcomingDays so the chart starts on the
+                    // user's current day. On legacy cached insights that
+                    // predate either field, the page collapses to a stand-in
+                    // message via [SevenDayPage]. The diagnostic cards
+                    // (wind / humidity / cloud / solar / UV / sunshine) and
+                    // model-spread overlays ride on [weekPerModelHourly] —
+                    // null on payloads from before the multi-model fetcher's
+                    // forecast_days=7 bump, in which case those cards
+                    // auto-hide and only the primary-data charts render.
+                    val weekDays = listOfNotNull(state.thisPeriodInsight.currentDay) +
+                        state.thisPeriodInsight.upcomingDays
+                    SevenDayPage(
+                        days = weekDays,
+                        temperatureUnit = state.temperatureUnit,
+                        distanceUnit = state.distanceUnit,
+                        weekPerModelHourly = state.thisPeriodInsight.weekPerModelHourly,
+                        showModelSpread = state.showModelSpread,
+                        scrollState = scrollState,
+                        onChevronTap = {
+                            pagerScope.launch { pagerState.animateScrollToPage(1) }
+                        },
+                    )
+                    return@HorizontalPager
+                }
                 val pageInsight = if (page == 0) state.thisPeriodInsight else state.nextPeriodInsight
                 val pagePeriod = if (page == 0) state.thisPeriodInsight.period else nextPeriodFallback
                 TodayPage(
@@ -436,6 +462,12 @@ private fun TodayContent(
                     // don't surface a 3rd period (tomorrow) on page 2; the
                     // outfit row stays the at-a-glance today+tonight summary.
                     outfitInsight = state.thisPeriodInsight,
+                    // Chevrons are unchanged from the 2-page world: a forward
+                    // chevron on page 0 (to next-period) and a back chevron
+                    // on page 1 (to this-period). The new 7-day page is
+                    // reachable by swiping right from page 1 — the same
+                    // discovery pattern iOS Weather uses for its 10-day
+                    // strip — and its own back chevron returns there.
                     showChevronRight = (page == 0),
                     showChevronLeft = (page == 1),
                     workStatusToShow = workStatusToShow,
@@ -1253,12 +1285,17 @@ private fun outfitLabels(period: ForecastPeriod): Pair<Int, Int> = when (period)
 
 // Title shown in the TopAppBar — tracks the visible pager page so swiping
 // right from a morning view flips "Today" to "Tonight" (and the evening
-// equivalent flips "Tonight" to "Tomorrow"). Falls back to "Today" when no
-// insight is cached yet (pager isn't rendered in that state).
-internal fun topBarTitleRes(period: ForecastPeriod?, page: Int): Int = when (period) {
-    null -> R.string.today_title
-    ForecastPeriod.TODAY -> if (page == 0) R.string.today_title else R.string.today_outfit_label_tonight
-    ForecastPeriod.TONIGHT -> if (page == 0) R.string.today_outfit_label_tonight else R.string.today_outfit_label_tomorrow
+// equivalent flips "Tonight" to "Tomorrow"). Page 2 is the 7-day outlook;
+// the title is the same regardless of which period the user opened from.
+// Falls back to "Today" when no insight is cached yet (pager isn't
+// rendered in that state).
+internal fun topBarTitleRes(period: ForecastPeriod?, page: Int): Int {
+    if (page == 2) return R.string.today_title_week
+    return when (period) {
+        null -> R.string.today_title
+        ForecastPeriod.TODAY -> if (page == 0) R.string.today_title else R.string.today_outfit_label_tonight
+        ForecastPeriod.TONIGHT -> if (page == 0) R.string.today_outfit_label_tonight else R.string.today_outfit_label_tomorrow
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -212,12 +212,13 @@ private fun PerModelDiagnosticChart(
         }
     }
 
-    val bottomFormatter = remember(times) {
+    val defaultBottomFormatter = remember(times) {
         CartesianValueFormatter { _, value, _ ->
             val idx = value.toInt().coerceIn(0, times.lastIndex)
             "%02d".format(times[idx].hour)
         }
     }
+    val bottomFormatter = LocalChartBottomFormatter.current ?: defaultBottomFormatter
 
     // Pin the x-range to the full times window so a sparse series that's
     // missing the leading or trailing hours doesn't get stretched across the
@@ -300,7 +301,9 @@ private fun PerModelDiagnosticChart(
                     itemPlacer = yItemPlacer,
                     valueFormatter = startFormatter,
                 ),
-                bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
+                bottomAxis = LocalChartBottomItemPlacer.current?.let { placer ->
+                    HorizontalAxis.rememberBottom(itemPlacer = placer, valueFormatter = bottomFormatter)
+                } ?: HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
                 decorations = decorations,
             ),
             modelProducer = producer,

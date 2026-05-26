@@ -158,6 +158,9 @@ class DeriveInsight(
             period = period,
             hasEvents = periodView.events.any { !it.allDay && !it.location.isNullOrBlank() },
             forecastZone = bundle.forecastZone,
+            currentDay = bundle.today,
+            upcomingDays = bundle.upcomingDays,
+            weekPerModelHourly = bundle.perModelHourly,
         )
         return DailyInsightResult(insight = insight, alerts = activeAlerts)
     }

@@ -357,6 +357,10 @@
     <string name="today_placeholder_tonight_title">Tonight\'s forecast</string>
     <string name="today_placeholder_body">Will be ready around %1$s.</string>
 
+    <string name="today_title_week">This week</string>
+    <string name="today_week_card_title">7-day forecast</string>
+    <string name="today_week_empty">Will be ready after the next forecast.</string>
+
     <string name="onboarding_title">Welcome to ClothesCast</string>
     <string name="onboarding_subtitle">Three quick choices and you\'re set. Tweak later in Settings.</string>
     <string name="onboarding_subtitle_tv">Two quick choices and you\'re set. Tweak later in Settings.</string>

@@ -84,12 +84,13 @@ fun PrecipitationAmountChart(
         }
     }
 
-    val bottomFormatter = remember(hourly) {
+    val defaultBottomFormatter = remember(hourly) {
         CartesianValueFormatter { _, value, _ ->
             val idx = value.toInt().coerceIn(0, hourly.lastIndex)
             "%02d".format(hourly[idx].time.hour)
         }
     }
+    val bottomFormatter = LocalChartBottomFormatter.current ?: defaultBottomFormatter
 
     // Y: 0..max(peak across main + per-model, floor). The floor stops a dry
     // day (all-zero series) from collapsing the chart onto the bottom axis;
@@ -149,7 +150,9 @@ fun PrecipitationAmountChart(
                     rangeProvider = rangeProvider,
                 ),
                 startAxis = VerticalAxis.rememberStart(valueFormatter = startFormatter),
-                bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
+                bottomAxis = LocalChartBottomItemPlacer.current?.let { placer ->
+                    HorizontalAxis.rememberBottom(itemPlacer = placer, valueFormatter = bottomFormatter)
+                } ?: HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
                 decorations = decorations,
             ),
             modelProducer = producer,

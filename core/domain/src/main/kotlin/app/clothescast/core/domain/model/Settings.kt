@@ -839,6 +839,18 @@ data class UserPreferences(
     val mqttUsername: String? = null,
     val mqttTopic: String = DEFAULT_MQTT_TOPIC,
     /**
+     * When on (default), suppresses the phone speaker when an MQTT publish
+     * actually shipped audio for this period. The mirror of
+     * [castSkipPhoneSpeech] for the MQTT bridge: the assumption is that
+     * the user has wired Home Assistant (or whatever consumes the bridge
+     * topics) to read the forecast aloud, so doubling up on the phone is
+     * redundant. Publishes that didn't include audio (Gemini synth failed,
+     * device TTS only) don't trigger the suppression — the phone speaker
+     * is what speaks in that path. The phone *notification* still posts
+     * per [deliveryMode]; only TTS playback is affected.
+     */
+    val mqttSkipPhoneSpeech: Boolean = true,
+    /**
      * The Cast receiver the user picked in Settings → Smart Home → Cast.
      * Null when no device has been chosen — the cast pipeline no-ops until
      * the user picks one from the discovered routes. Stable across reboots;

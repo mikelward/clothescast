@@ -626,6 +626,7 @@ internal fun SettingsSmartHomePreview() {
             lastErrorAt = 0L,
             lastPublishAt = 0L,
             publishing = false,
+            mqttSkipPhoneSpeech = true,
             discoveryRunning = true,
             discoveredServices = listOf(
                 DiscoveredService(
@@ -668,6 +669,7 @@ internal fun SettingsSmartHomePreview() {
             onSetCastMorning = {},
             onSetCastTonight = {},
             onSetCastSkipPhoneSpeech = {},
+            onSetMqttSkipPhoneSpeech = {},
         )
     }
 }

@@ -807,7 +807,13 @@ class FetchAndNotifyWorker(
             }
 
             val phoneSpeakerJob = launch {
-                playPhoneSpeaker(insight, prefs, gates, pcm, wav = wav, castDeferred = castDeferred, theme = theme)
+                playPhoneSpeaker(
+                    insight, prefs, gates, pcm,
+                    wav = wav,
+                    castDeferred = castDeferred,
+                    mqttDeferred = mqttDeferred,
+                    theme = theme,
+                )
             }
 
             notifyJob.join()
@@ -1034,6 +1040,7 @@ class FetchAndNotifyWorker(
         pcm: PcmAudio?,
         wav: ByteArray?,
         castDeferred: Deferred<CastInsightController.CastWorkerOutcome>?,
+        mqttDeferred: Deferred<MqttPublishOutcome?>,
         theme: HolidayTheme?,
     ) {
         if (gates.emptyEveningSkip) {
@@ -1053,6 +1060,21 @@ class FetchAndNotifyWorker(
             val castOutcome = castDeferred.await()
             if (castOutcome is CastInsightController.CastWorkerOutcome.Success) {
                 DiagLog.i(TAG, "Phone speech suppressed — smart display is playing the forecast.")
+                return
+            }
+        }
+
+        // MQTT suppression: mirror of the cast block above. The MQTT
+        // bridge publishes the rendered audio to the broker; we trust
+        // the user's HA-side automation to play it. Only suppresses
+        // when the publish included audio (synth succeeded) — without
+        // a buffer the broker has nothing to speak, so the phone needs
+        // to.
+        val mqttHasAudio = gates.mqttPublishable && wav != null
+        if (mqttHasAudio && prefs.mqttSkipPhoneSpeech) {
+            val mqttOutcome = mqttDeferred.await()
+            if (mqttOutcome is MqttPublishOutcome.Success) {
+                DiagLog.i(TAG, "Phone speech suppressed — MQTT bridge published the forecast.")
                 return
             }
         }

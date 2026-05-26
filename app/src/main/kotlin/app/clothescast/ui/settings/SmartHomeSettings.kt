@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -30,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -66,6 +68,7 @@ internal fun SmartHomeContent(
     lastErrorAt: Long,
     lastPublishAt: Long,
     publishing: Boolean,
+    mqttSkipPhoneSpeech: Boolean,
     discoveryRunning: Boolean,
     discoveredServices: List<DiscoveredService>,
     castAvailable: Boolean,
@@ -95,6 +98,7 @@ internal fun SmartHomeContent(
     onSetCastMorning: (Boolean) -> Unit,
     onSetCastTonight: (Boolean) -> Unit,
     onSetCastSkipPhoneSpeech: (Boolean) -> Unit,
+    onSetMqttSkipPhoneSpeech: (Boolean) -> Unit,
 ) {
     // Cancel any in-flight scan when this screen leaves the composition —
     // the user backing out of Smart Home shouldn't leave the NsdManager
@@ -152,12 +156,14 @@ internal fun SmartHomeContent(
                 lastErrorAt = lastErrorAt,
                 lastPublishAt = lastPublishAt,
                 publishing = publishing,
+                skipPhoneSpeech = mqttSkipPhoneSpeech,
                 discoveryRunning = discoveryRunning,
                 discoveredServices = discoveredServices,
                 onSetEnabled = onSetBridgeEnabled,
                 onSaveConfig = onSaveConfig,
                 onClearPassword = onClearPassword,
                 onPublishNow = onPublishNow,
+                onSetSkipPhoneSpeech = onSetMqttSkipPhoneSpeech,
                 onStartDiscovery = onStartDiscovery,
                 onStopDiscovery = onStopDiscovery,
                 onUseDiscoveredService = onUseDiscoveredService,
@@ -179,12 +185,14 @@ private fun MqttBridgeCard(
     lastErrorAt: Long,
     lastPublishAt: Long,
     publishing: Boolean,
+    skipPhoneSpeech: Boolean,
     discoveryRunning: Boolean,
     discoveredServices: List<DiscoveredService>,
     onSetEnabled: (Boolean) -> Unit,
     onSaveConfig: (host: String, port: Int, useTls: Boolean, username: String, topic: String, password: String?) -> Unit,
     onClearPassword: () -> Unit,
     onPublishNow: () -> Unit,
+    onSetSkipPhoneSpeech: (Boolean) -> Unit,
     onStartDiscovery: () -> Unit,
     onStopDiscovery: () -> Unit,
     onUseDiscoveredService: (DiscoveredService) -> Unit,
@@ -390,6 +398,13 @@ private fun MqttBridgeCard(
             }
 
             MqttLastPublishStatus(publishing = publishing, lastPublishAt = lastPublishAt)
+
+            MqttToggleRow(
+                title = stringResource(R.string.settings_smart_home_mqtt_skip_phone_speech_title),
+                description = stringResource(R.string.settings_smart_home_mqtt_skip_phone_speech_description),
+                checked = skipPhoneSpeech,
+                onCheckedChange = onSetSkipPhoneSpeech,
+            )
         }
 
         TextButton(
@@ -438,6 +453,40 @@ private fun MqttLastErrorBanner(message: String, recordedAtMs: Long) {
 
 private val ERROR_TIMESTAMP_FORMAT: DateTimeFormatter =
     DateTimeFormatter.ofPattern("d MMM yyyy, HH:mm")
+
+@Composable
+private fun MqttToggleRow(
+    title: String,
+    description: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .toggleable(
+                value = checked,
+                role = Role.Switch,
+                onValueChange = onCheckedChange,
+            )
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Switch(checked = checked, onCheckedChange = null)
+    }
+}
 
 @Composable
 private fun MqttLastPublishStatus(publishing: Boolean, lastPublishAt: Long) {

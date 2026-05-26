@@ -72,7 +72,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -134,8 +133,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.Locale
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
@@ -1780,10 +1777,20 @@ internal fun InsightCard(
     val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory) {
         InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory)
     }
-    val locale = LocalConfiguration.current.locales[0]
-    val dateFormatter = remember(locale) { DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(locale) }
     val generatedAtText = formatHourMinute(
         insight.generatedAt.atZone(ZoneId.systemDefault()).toLocalTime(),
+    )
+    // Page 2 caches tomorrow's daytime insight after the evening worker run;
+    // surface it as "Tomorrow" rather than "Today" so the heading matches the
+    // prose lead-in below.
+    val isFutureDay = insight.forDate.isAfter(LocalDate.now())
+    val periodLabel = stringResource(
+        when (insight.period) {
+            ForecastPeriod.TODAY ->
+                if (isFutureDay) R.string.today_outfit_label_tomorrow
+                else R.string.today_outfit_label_today
+            ForecastPeriod.TONIGHT -> R.string.today_outfit_label_tonight
+        },
     )
     val location = insight.location
     // Fall back to a localised "Your location" when reverse geocoding returned
@@ -1799,8 +1806,8 @@ internal fun InsightCard(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // Three-zone header: 28.dp slots are reserved on both edges so
-            // the date row sits in the same horizontal position whether or
-            // not a chevron is currently rendered, and so the back/forward
+            // the period label sits in the same horizontal position whether
+            // or not a chevron is currently rendered, and so the back/forward
             // affordances land on opposite edges as the user swipes between
             // pages. AutoMirrored chevron variants flip in RTL automatically.
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1823,7 +1830,7 @@ internal fun InsightCard(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = dateFormatter.format(insight.forDate),
+                        text = periodLabel,
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = if (onLongPressDate != null) {
@@ -1869,10 +1876,6 @@ internal fun InsightCard(
                     }
                 }
             }
-            // Page 2 caches tomorrow's daytime insight after the evening
-            // worker run; without this flag the prose would lead with "Today"
-            // even though the date row above says e.g. "Saturday, May 16".
-            val isFutureDay = insight.forDate.isAfter(LocalDate.now())
             Text(
                 text = formatter.format(insight.summary, isFutureDay = isFutureDay),
                 style = MaterialTheme.typography.headlineSmall,

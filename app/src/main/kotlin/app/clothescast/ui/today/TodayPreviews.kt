@@ -1917,7 +1917,7 @@ internal fun TodayInsightCardLongPreview() {
     }
 }
 
-// Realistic 7-day feels-like envelope for the "This week" pager page. Picks
+// Realistic 7-day feels-like envelope for the "Next 7 days" pager page. Picks
 // a gentle warm-up followed by a midweek cool front so the high and low
 // lines diverge / converge across the week — exercises the chart's y-axis
 // auto-sizing and proves both lines render distinctly. Dates pin a fixed

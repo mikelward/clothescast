@@ -357,7 +357,7 @@
     <string name="today_placeholder_tonight_title">Tonight\'s forecast</string>
     <string name="today_placeholder_body">Will be ready around %1$s.</string>
 
-    <string name="today_title_week">This week</string>
+    <string name="today_title_week">Next 7 days</string>
     <string name="today_week_empty">Will be ready after the next forecast.</string>
 
     <!-- Week-ahead headline shown above the 7-day chart deck. Produced by

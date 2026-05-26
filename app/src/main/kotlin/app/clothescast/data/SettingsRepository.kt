@@ -1037,12 +1037,16 @@ class SettingsRepository(
         val lat = prefs[LOCATION_LAT] ?: return null
         val lon = prefs[LOCATION_LON] ?: return null
         return runCatching {
+            // coarsened() also catches legacy fine-precision values that
+            // were written before the boundary started rounding — every
+            // read becomes neighbourhood-level no matter when the write
+            // happened.
             Location(
                 latitude = lat,
                 longitude = lon,
                 displayName = prefs[LOCATION_NAME],
                 countryCode = prefs[LOCATION_COUNTRY]?.takeIf { it.isNotBlank() },
-            )
+            ).coarsened()
         }.getOrNull()
     }
 

@@ -158,7 +158,7 @@ object BugReport {
         appendLine("Use device location: ${prefs.useDeviceLocation}")
         val locDesc = prefs.location?.let { loc ->
             val name = loc.displayName ?: "(unnamed)"
-            "%.4f, %.4f — %s".format(Locale.US, loc.latitude, loc.longitude, name)
+            "%.2f, %.2f — %s".format(Locale.US, loc.latitude, loc.longitude, name)
         } ?: "(unset)"
         appendLine("Location: $locDesc")
         appendLine("Calendar access: ${prefs.calendarEnabled}")
@@ -281,7 +281,7 @@ object BugReport {
     ) {
         snapshot.location?.let { loc ->
             val name = loc.displayName ?: "(unnamed)"
-            appendLine("  Snapshot location: %.4f, %.4f — %s".format(
+            appendLine("  Snapshot location: %.2f, %.2f — %s".format(
                 Locale.US, loc.latitude, loc.longitude, name,
             ))
         }

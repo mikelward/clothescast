@@ -213,7 +213,7 @@ class LocationResolver(
         latitude = latitude,
         longitude = longitude,
         displayName = "Device location",
-    )
+    ).coarsened()
 
     companion object {
         private const val TAG = "LocationResolver"

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -184,6 +185,14 @@ fun TodayScreen(
         period = state.thisPeriodInsight?.period,
         page = pagerState.currentPage,
     )
+    // System back on page 1 or 2 steps back one page instead of exiting the
+    // app — matches the on-screen left chevron. Page 0 falls through to the
+    // platform default (finish the activity).
+    BackHandler(enabled = pagerState.currentPage > 0) {
+        coroutineScope.launch {
+            pagerState.animateScrollToPage(pagerState.currentPage - 1)
+        }
+    }
 
     Scaffold(
         // Drop the default `safeDrawing` content insets so the pager extends

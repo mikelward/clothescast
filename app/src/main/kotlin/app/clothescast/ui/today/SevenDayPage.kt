@@ -366,6 +366,29 @@ internal fun SevenDayPage(
             LocalChartScrub provides scrubController,
             LocalScrubMomentFormat provides ScrubMomentFormat.DayPlusHour,
         ) {
+            // Tap-hint card matching the affordance the per-period pages
+            // surface inside the confidence chip ("Tap to see / hide each
+            // model's forecast"). The page has no chip to carry that line
+            // itself, and the chart cards don't carry it either (the
+            // hint would compete with each chart's own subtitle / legend
+            // row), so a dedicated hint card sits at the top of the
+            // chart deck. Reuses the same toggleModifier so tapping the
+            // hint also flips the spread — and skipped entirely when
+            // per-model data isn't available (nothing for the user to
+            // toggle).
+            if (weekPerModelDiagnostics != null) {
+                Card(modifier = Modifier.fillMaxWidth().then(toggleModifier)) {
+                    Text(
+                        text = stringResource(
+                            if (showModelSpread) R.string.today_confidence_tap_to_hide
+                            else R.string.today_confidence_tap_to_show,
+                        ),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
+                    )
+                }
+            }
             Box(toggleModifier) {
                 ForecastCard(
                     hourly = flatHourly,

@@ -571,22 +571,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_korean_hangeul_day">Frohen Hangeul-Tag</string>
 
     <!-- Home location — used by "Only speak when away from home". -->
-    <string name="settings_home_location_title">Heimatstandort</string>
-    <string name="settings_home_location_description">Wird von „Nur sprechen, wenn nicht zu Hause" verwendet, um zu entscheiden, ob das Telefon die Vorhersage vorliest. Verbleibt auf diesem Gerät.</string>
-    <string name="settings_home_location_unset">Kein Heimatstandort festgelegt</string>
-    <string name="settings_home_location_use_current">Aktuellen Standort verwenden</string>
-    <string name="settings_home_location_search">Adresse suchen</string>
-    <string name="settings_home_location_search_caveat">Die Suche wählt einen Stadtmittelpunkt, der einige Kilometer von deinem tatsächlichen Zuhause entfernt sein kann. Für den 1-km-Heimradius verwende besser „Aktuellen Standort verwenden", während du zu Hause bist.</string>
-    <string name="settings_home_location_change">Heimatstandort ändern</string>
-    <string name="settings_home_location_clear">Heimatstandort entfernen</string>
 
     <!-- "Only speak when away from home" toggle. -->
-    <string name="settings_skip_tts_at_home_title">Nur sprechen, wenn nicht zu Hause</string>
-    <string name="settings_skip_tts_at_home_label">Nur sprechen, wenn nicht zu Hause</string>
-    <string name="settings_skip_tts_at_home_description">Wenn du zu Hause bist, bleibt das Telefon stumm — praktisch, wenn ein Heimlautsprecher die Vorhersage bereits vorliest. Benachrichtigungen werden weiterhin gesendet.</string>
-    <string name="settings_skip_tts_at_home_needs_home">Lege oben einen Heimatstandort fest, um dies zu aktivieren. Ohne ihn spricht das Telefon immer.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Benötigt dauerhaften Standortzugriff, um zu erkennen, ob du zu Hause bist. Ohne ihn spricht das Telefon immer.</string>
-    <string name="settings_skip_tts_at_home_open_settings">In den Systemeinstellungen erlauben</string>
 
     <!-- Smart Home — Cast section. -->
     <string name="settings_smart_home_cast_title">Übertragen</string>

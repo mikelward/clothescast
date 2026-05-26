@@ -793,14 +793,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_source_location">ቦታ (%1$s)</string>
     <string name="settings_holidays_source_region">ክልል (%1$s)</string>
     <string name="settings_holidays_title">በዓሎች</string>
-    <string name="settings_home_location_change">የቤት ቦታ ቀይር</string>
-    <string name="settings_home_location_clear">የቤት ቦታ ሰርዝ</string>
-    <string name="settings_home_location_description">ስልኩ ትንበያ በደምፅ ያነብ ወይ ብሎ ለ\'ከቤት ውጭ ብቻ ተናገር\' ጥቅም ላይ ይውላል። በዚህ መሳሪያ ብቻ ይቀራል።</string>
-    <string name="settings_home_location_search">አድራሻ ፈልግ</string>
-    <string name="settings_home_location_search_caveat">ፍለጋ የከተማ ማዕከልን ይመርጣል፣ ይህም ከቤትዎ ጥቂት ኪሎሜትሮች ሊርቅ ይችላል። 1 ኪሜ ክልሉ እንዲሰራ ቤት ሳሉ \'ያሁኑን ቦታ ተጠቀም\' ይምረጡ።</string>
-    <string name="settings_home_location_title">የቤት ቦታ</string>
-    <string name="settings_home_location_unset">ቤት አልተቀመጠም</string>
-    <string name="settings_home_location_use_current">ያሁኑን ቦታ ተጠቀም</string>
     <string name="settings_root_holidays">ክብረ በዓሎች</string>
     <string name="settings_root_holidays_subtitle">በዓሎች እና ልደቶች</string>
     <string name="settings_root_smart_home">ስማርት ቤት</string>
@@ -810,12 +802,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_description">የዕለቱን የአየር ሁኔታ የሚሸፍን የጠዋቱ ClothesCast።</string>
 
     <!-- Skip TTS at home -->
-    <string name="settings_skip_tts_at_home_description">ቤት ሲሆኑ ስልኩ ዝምታ ይይዛል — ቤት ውስጥ ያለ ድምፅ ቀድሞ ትንበያ የሚያነብ ከሆነ ይረዳል። ማሳወቂያዎች አሁንም ይለጠፋሉ።</string>
-    <string name="settings_skip_tts_at_home_label">ከቤት ውጭ ብቻ ተናገር</string>
-    <string name="settings_skip_tts_at_home_needs_home">ይህን ለማንቃት ከላይ የቤት ቦታ ያስቀምጡ። ያለሱ ስልኩ ሁሌ ይናገራል።</string>
-    <string name="settings_skip_tts_at_home_needs_permission">ቤት መሆንዎን ለማወቅ ዳራ ቦታ ፍቃድ ያስፈልጋል። ያለሱ ስልኩ ሁሌ ይናገራል።</string>
-    <string name="settings_skip_tts_at_home_open_settings">በስርዓት ቅንብሮች ፍቀዱ</string>
-    <string name="settings_skip_tts_at_home_title">ከቤት ውጭ ብቻ ተናገር</string>
 
     <!-- Smart home cast -->
     <string name="settings_smart_home_cast_casting">እያስተላለፈ ነው…</string>

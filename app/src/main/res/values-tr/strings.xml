@@ -825,14 +825,6 @@ displayed label localizes.
     <string name="settings_holidays_source_location">Konum (%1$s)</string>
     <string name="settings_holidays_source_region">Bölge (%1$s)</string>
     <string name="settings_holidays_title">Tatiller</string>
-    <string name="settings_home_location_change">Ev konumunu değiştir</string>
-    <string name="settings_home_location_clear">Ev konumunu temizle</string>
-    <string name="settings_home_location_description">Telefonun tahmini sesli okuyup okumayacağına karar vermek için \'Yalnızca evden uzaktayken konuş\' tarafından kullanılır. Bu cihazda kalır.</string>
-    <string name="settings_home_location_search">Adres ara</string>
-    <string name="settings_home_location_search_caveat">Arama, gerçek evinden birkaç kilometre uzakta olabilecek bir şehir merkezini seçer. 1 km ev yarıçapının çalışması için evdeyken \'Mevcut konumumu kullan\'ı tercih et.</string>
-    <string name="settings_home_location_title">Ev konumu</string>
-    <string name="settings_home_location_unset">Ev ayarlanmadı</string>
-    <string name="settings_home_location_use_current">Mevcut konumumu kullan</string>
     <string name="settings_root_holidays">Kutlamalar</string>
     <string name="settings_root_holidays_subtitle">Tatiller ve Doğum Günleri</string>
     <string name="settings_root_smart_home">Akıllı Ev</string>
@@ -842,12 +834,6 @@ displayed label localizes.
     <string name="settings_schedule_description">O günün hava durumunu kapsayan sabah ClothesCast\'ı.</string>
 
     <!-- Skip TTS at home -->
-    <string name="settings_skip_tts_at_home_description">Evdeyken telefon sessiz kalır — evdeki bir hoparlör tahmini zaten okuyorsa kullanışlıdır. Bildirimler yine de gönderilir.</string>
-    <string name="settings_skip_tts_at_home_label">Yalnızca evden uzaktayken konuş</string>
-    <string name="settings_skip_tts_at_home_needs_home">Bunu etkinleştirmek için yukarıda bir ev konumu belirle. Olmadan telefon her zaman konuşur.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Evde olup olmadığını anlamak için arka plan konum erişimi gerekli. Olmadan telefon her zaman konuşur.</string>
-    <string name="settings_skip_tts_at_home_open_settings">Sistem ayarlarında izin ver</string>
-    <string name="settings_skip_tts_at_home_title">Yalnızca evden uzaktayken konuş</string>
 
     <!-- Smart home cast -->
     <string name="settings_smart_home_cast_casting">Yayınlanıyor…</string>

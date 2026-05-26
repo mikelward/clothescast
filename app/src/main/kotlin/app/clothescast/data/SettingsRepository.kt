@@ -151,6 +151,28 @@ class SettingsRepository(
         dataStore.edit { it[BUG_REPORT_CONSENT_ACKED] = acked }
     }
 
+    /**
+     * One-shot cleanup of preference keys that backed the GPS-based at-home
+     * TTS gate before it was retired. The gate is gone (the MQTT- and
+     * Cast-success based "Skip phone speech…" toggles cover the same use
+     * case without a stored home pin), but a user who'd configured a home
+     * still has their coordinates sitting on disk from the previous build.
+     * Run at app start so that data is gone the first time the upgraded
+     * build reaches the launcher.
+     *
+     * Idempotent: removes by key name, no-ops when the keys are absent
+     * (fresh installs, repeat runs).
+     */
+    suspend fun clearLegacyHomePreferences() {
+        dataStore.edit { prefs ->
+            prefs.remove(doublePreferencesKey("home_latitude"))
+            prefs.remove(doublePreferencesKey("home_longitude"))
+            prefs.remove(stringPreferencesKey("home_display_name"))
+            prefs.remove(stringPreferencesKey("home_country_code"))
+            prefs.remove(booleanPreferencesKey("skip_tts_at_home"))
+        }
+    }
+
     suspend fun setSchedule(time: LocalTime, days: Set<DayOfWeek>) {
         require(days.isNotEmpty()) { "Schedule must include at least one day" }
         dataStore.edit { prefs ->
@@ -284,31 +306,6 @@ class SettingsRepository(
 
     suspend fun setUseDeviceLocation(enabled: Boolean) {
         dataStore.edit { it[USE_DEVICE_LOCATION] = enabled }
-    }
-
-    suspend fun setHomeLocation(location: Location?) {
-        dataStore.edit { prefs ->
-            if (location == null) {
-                prefs.remove(HOME_LAT)
-                prefs.remove(HOME_LON)
-                prefs.remove(HOME_NAME)
-                prefs.remove(HOME_COUNTRY)
-            } else {
-                prefs[HOME_LAT] = location.latitude
-                prefs[HOME_LON] = location.longitude
-                location.displayName
-                    ?.let { prefs[HOME_NAME] = it }
-                    ?: prefs.remove(HOME_NAME)
-                location.countryCode
-                    ?.takeIf { it.isNotBlank() }
-                    ?.let { prefs[HOME_COUNTRY] = it.uppercase() }
-                    ?: prefs.remove(HOME_COUNTRY)
-            }
-        }
-    }
-
-    suspend fun setSkipTtsAtHome(enabled: Boolean) {
-        dataStore.edit { it[SKIP_TTS_AT_HOME] = enabled }
     }
 
     suspend fun setTtsEngine(engine: TtsEngine) {
@@ -781,8 +778,6 @@ class SettingsRepository(
             ?: OutfitSuggestion.Top.TSHIRT
         val location = parseLocation(this)
         val useDeviceLocation = this[USE_DEVICE_LOCATION] == true
-        val homeLocation = parseHomeLocation(this)
-        val skipTtsAtHome = this[SKIP_TTS_AT_HOME] == true
         val ttsEngine = this[TTS_ENGINE]?.let { runCatching { TtsEngine.valueOf(it) }.getOrNull() }
             ?: TtsEngine.DEVICE
         val geminiVoice = this[GEMINI_VOICE]?.takeIf { it.isNotBlank() }
@@ -920,8 +915,6 @@ class SettingsRepository(
             defaultTop = defaultTop,
             location = location,
             useDeviceLocation = useDeviceLocation,
-            homeLocation = homeLocation,
-            skipTtsAtHome = skipTtsAtHome,
             ttsEngine = ttsEngine,
             geminiVoice = geminiVoice,
             ttsStyle = ttsStyle,
@@ -1038,8 +1031,6 @@ class SettingsRepository(
         rainAccessory = rainAccessory.name,
         deltaThresholdC = deltaThresholdC?.roundToInt() ?: -1,
         useCalendarEvents = useCalendarEvents,
-        skipTtsAtHome = skipTtsAtHome,
-        homeLocationConfigured = homeLocation != null,
     )
 
     private fun parseLocation(prefs: Preferences): Location? {
@@ -1051,19 +1042,6 @@ class SettingsRepository(
                 longitude = lon,
                 displayName = prefs[LOCATION_NAME],
                 countryCode = prefs[LOCATION_COUNTRY]?.takeIf { it.isNotBlank() },
-            )
-        }.getOrNull()
-    }
-
-    private fun parseHomeLocation(prefs: Preferences): Location? {
-        val lat = prefs[HOME_LAT] ?: return null
-        val lon = prefs[HOME_LON] ?: return null
-        return runCatching {
-            Location(
-                latitude = lat,
-                longitude = lon,
-                displayName = prefs[HOME_NAME],
-                countryCode = prefs[HOME_COUNTRY]?.takeIf { it.isNotBlank() },
             )
         }.getOrNull()
     }
@@ -1166,11 +1144,6 @@ class SettingsRepository(
         private val LOCATION_NAME = stringPreferencesKey("location_display_name")
         private val LOCATION_COUNTRY = stringPreferencesKey("location_country_code")
         private val USE_DEVICE_LOCATION = booleanPreferencesKey("use_device_location")
-        private val HOME_LAT = doublePreferencesKey("home_latitude")
-        private val HOME_LON = doublePreferencesKey("home_longitude")
-        private val HOME_NAME = stringPreferencesKey("home_display_name")
-        private val HOME_COUNTRY = stringPreferencesKey("home_country_code")
-        private val SKIP_TTS_AT_HOME = booleanPreferencesKey("skip_tts_at_home")
         private val TTS_ENGINE = stringPreferencesKey("tts_engine")
         private val GEMINI_VOICE = stringPreferencesKey("gemini_voice")
         private val TTS_STYLE = stringPreferencesKey("tts_style")

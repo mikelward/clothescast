@@ -46,8 +46,4 @@ data class SettingsSnapshot(
     /** Significant-change threshold in whole °C, or -1 when the clause is off. */
     val deltaThresholdC: Int,
     val useCalendarEvents: Boolean,
-    /** True when the user has enabled the at-home TTS suppression gate. */
-    val skipTtsAtHome: Boolean,
-    /** True when a home pin has been configured (coordinates stay local). */
-    val homeLocationConfigured: Boolean,
 )

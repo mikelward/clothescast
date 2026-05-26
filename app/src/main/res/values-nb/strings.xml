@@ -819,22 +819,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
 
     <!-- Home location settings -->
-    <string name="settings_home_location_title">Hjemsted</string>
-    <string name="settings_home_location_description">Brukes av \'Snakk kun når du er borte hjemmefra\' for å avgjøre om telefonen leser opp værvarselet. Lagres på denne enheten.</string>
-    <string name="settings_home_location_unset">Intet hjem angitt</string>
-    <string name="settings_home_location_use_current">Bruk min nåværende posisjon</string>
-    <string name="settings_home_location_search">Søk etter en adresse</string>
-    <string name="settings_home_location_search_caveat">Søket velger et bysenter som kan ligge noen kilometer fra ditt faktiske hjem. Bruk \'Bruk min nåværende posisjon\' når du er hjemme for 1 km-radien.</string>
-    <string name="settings_home_location_change">Endre hjemsted</string>
-    <string name="settings_home_location_clear">Fjern hjemsted</string>
 
     <!-- Skip TTS at home -->
-    <string name="settings_skip_tts_at_home_title">Snakk kun når du er borte hjemmefra</string>
-    <string name="settings_skip_tts_at_home_label">Snakk kun når du er borte hjemmefra</string>
-    <string name="settings_skip_tts_at_home_description">Når du er hjemme forblir telefonen stille — praktisk hvis en hjemtaler allerede leser opp varselet. Varsler sendes fortsatt.</string>
-    <string name="settings_skip_tts_at_home_needs_home">Angi et hjemsted ovenfor for å aktivere dette. Uten det snakker telefonen alltid.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Trenger bakgrunnsposisjonstilgang for å vite når du er hjemme. Uten det snakker telefonen alltid.</string>
-    <string name="settings_skip_tts_at_home_open_settings">Gi tillatelse i systeminnstillinger</string>
 
     <!-- Smart Home — Cast -->
     <string name="settings_smart_home_cast_title">Cast</string>

@@ -821,14 +821,6 @@ standard in Israeli digital communication.
     <string name="settings_holidays_title">חגים</string>
 
     <!-- Settings — home location -->
-    <string name="settings_home_location_change">שינוי מיקום הבית</string>
-    <string name="settings_home_location_clear">ניקוי מיקום הבית</string>
-    <string name="settings_home_location_description">משמש עבור \'דבר/י רק כשרחוק/ה מהבית\' כדי להחליט אם הטלפון קורא את התחזית בקול רם. נשאר במכשיר זה.</string>
-    <string name="settings_home_location_search">חפש/י כתובת</string>
-    <string name="settings_home_location_search_caveat">החיפוש בוחר מרכז עיר, שיכול להיות כמה קילומטרים ממרכז ביתך האמיתי. כדי שרדיוס 1 ק״מ מהבית יופעל, עדיף \'השתמש/י במיקום הנוכחי שלי\' בזמן שאתה/את בבית.</string>
-    <string name="settings_home_location_title">מיקום הבית</string>
-    <string name="settings_home_location_unset">לא נקבע בית</string>
-    <string name="settings_home_location_use_current">השתמש/י במיקום הנוכחי שלי</string>
 
     <!-- Settings — root holidays and smart home -->
     <string name="settings_root_holidays">חגיגות</string>
@@ -840,12 +832,6 @@ standard in Israeli digital communication.
     <string name="settings_schedule_description">ClothesCast בבוקר המכסה את מזג האוויר של אותו יום.</string>
 
     <!-- Settings — skip TTS at home -->
-    <string name="settings_skip_tts_at_home_description">כשאתה/את בבית, הטלפון נשאר שקט — שימושי אם רמקול ביתי כבר קורא את התחזית. ההתראות עדיין מתפרסמות.</string>
-    <string name="settings_skip_tts_at_home_label">דבר/י רק כשרחוק/ה מהבית</string>
-    <string name="settings_skip_tts_at_home_needs_home">הגדר/י מיקום בית למעלה כדי להפעיל זאת. בלעדיו הטלפון תמיד ידבר.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">דורש גישת מיקום ברקע כדי לדעת מתי אתה/את בבית. בלעדיה הטלפון תמיד ידבר.</string>
-    <string name="settings_skip_tts_at_home_open_settings">הענק/י בהגדרות המערכת</string>
-    <string name="settings_skip_tts_at_home_title">דבר/י רק כשרחוק/ה מהבית</string>
 
     <!-- Settings — smart home cast -->
     <string name="settings_smart_home_cast_casting">משדר/ת…</string>

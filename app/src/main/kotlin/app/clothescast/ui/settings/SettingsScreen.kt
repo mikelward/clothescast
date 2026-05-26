@@ -145,8 +145,6 @@ internal fun SchedulePage(
             dailyMentionEveningEvents = state.dailyMentionEveningEvents,
             deliveryMode = state.deliveryMode,
             tonightDeliveryMode = state.tonightDeliveryMode,
-            skipTtsAtHome = state.skipTtsAtHome,
-            homeLocationConfigured = state.homeLocation != null,
             padding = padding,
             onSetSchedule = viewModel::setSchedule,
             onSetTonightSchedule = viewModel::setTonightSchedule,
@@ -155,7 +153,6 @@ internal fun SchedulePage(
             onSetDailyMentionEveningEvents = viewModel::setDailyMentionEveningEvents,
             onSetDeliveryMode = viewModel::setDeliveryMode,
             onSetTonightDeliveryMode = viewModel::setTonightDeliveryMode,
-            onSetSkipTtsAtHome = viewModel::setSkipTtsAtHome,
             // Show a Done button only when this page is the deep-link landing from
             // onboarding's "Continue" — gives the user an obvious way to finish
             // setup and reach Today. In the regular settings flow they exit via
@@ -262,16 +259,11 @@ internal fun LocationPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
         LocationContent(
             location = state.location,
             useDeviceLocation = state.useDeviceLocation,
-            homeLocation = state.homeLocation,
-            homeLocationResolving = state.homeLocationResolving,
             locationDetecting = state.locationDetecting,
             padding = padding,
             onSetUseDeviceLocation = viewModel::setUseDeviceLocation,
             onSelectLocation = viewModel::selectLocation,
             onClearLocation = viewModel::clearLocation,
-            onSelectHomeLocation = viewModel::selectHomeLocation,
-            onClearHomeLocation = viewModel::clearHomeLocation,
-            onUseCurrentLocationForHome = viewModel::useCurrentLocationForHome,
             onSearchLocations = viewModel::searchLocations,
         )
     }

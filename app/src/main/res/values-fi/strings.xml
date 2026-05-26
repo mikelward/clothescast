@@ -800,22 +800,8 @@ displayed label localizes.
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
 
     <!-- Home location settings -->
-    <string name="settings_home_location_title">Kotiosoite</string>
-    <string name="settings_home_location_description">Käyttää \'Puhu vain kun olet poissa kotoa\' -toiminto selvittääkseen, lukeeko puhelin ennusteen ääneen. Pysyy tällä laitteella.</string>
-    <string name="settings_home_location_unset">Kotia ei ole asetettu</string>
-    <string name="settings_home_location_use_current">Käytä nykyistä sijaintiani</string>
-    <string name="settings_home_location_search">Etsi osoitetta</string>
-    <string name="settings_home_location_search_caveat">Haku valitsee kaupungin keskustan, joka voi olla muutaman kilometrin päässä todellisesta kodistasi. Käytä \'Käytä nykyistä sijaintiani\' kotona ollessasi 1 km:n säteelle.</string>
-    <string name="settings_home_location_change">Vaihda kotiosoite</string>
-    <string name="settings_home_location_clear">Poista kotiosoite</string>
 
     <!-- Skip TTS at home -->
-    <string name="settings_skip_tts_at_home_title">Puhu vain kun olet poissa kotoa</string>
-    <string name="settings_skip_tts_at_home_label">Puhu vain kun olet poissa kotoa</string>
-    <string name="settings_skip_tts_at_home_description">Kun olet kotona, puhelin pysyy hiljaa — kätevää jos kotikaiutin jo lukee ennusteen ääneen. Ilmoitukset lähetetään silti.</string>
-    <string name="settings_skip_tts_at_home_needs_home">Aseta kotiosoite yllä ottaaksesi tämän käyttöön. Ilman sitä puhelin puhuu aina.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Tarvitsee taustasijaintipääsyn tietääkseen, milloin olet kotona. Ilman sitä puhelin puhuu aina.</string>
-    <string name="settings_skip_tts_at_home_open_settings">Myönnä järjestelmäasetuksissa</string>
 
     <!-- Smart Home — Cast -->
     <string name="settings_smart_home_cast_title">Cast</string>

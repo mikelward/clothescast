@@ -32,7 +32,6 @@ import app.clothescast.cast.Mp4Encoder
 import app.clothescast.core.domain.usecase.computeDeliveryGates
 import app.clothescast.core.domain.usecase.isGeminiEngineSelected
 import app.clothescast.core.domain.usecase.isMqttPublishable
-import app.clothescast.core.domain.usecase.shouldSpeak
 import app.clothescast.core.domain.util.isWithin
 import app.clothescast.core.data.tts.PcmAudio
 import app.clothescast.core.data.tts.WavEncoder
@@ -1048,7 +1047,6 @@ class FetchAndNotifyWorker(
             return
         }
         if (!gates.phoneTtsConfigured) return
-        if (!shouldSpeakNow(prefs)) return
 
         // Cast suppression: only when this cast is genuinely playing
         // audio (willCast AND a synth buffer exists). An image-only
@@ -1217,35 +1215,6 @@ class FetchAndNotifyWorker(
             rainAccessory = prefs.rainAccessory,
             holidayTheme = theme,
         )
-
-    /**
-     * Wraps [shouldSpeak] with the per-run device-location read. Resolves the
-     * coarse fix via [LocationResolver.resolveFresh] (network provider; no
-     * GPS; ~hundreds of metres accuracy) only when the gate is on and a home
-     * pin is configured — otherwise we'd be paying a permission-checked
-     * resolver call on every run for nothing.
-     *
-     * Uses [resolveFresh] rather than [LocationResolver.resolve] so a stale
-     * at-home fix from before the user left can't suppress TTS once they've
-     * gone away — exactly the failure mode this feature exists to avoid.
-     *
-     * The caller is responsible for already gating on
-     * [DeliveryGates.phoneTtsConfigured] / [DeliveryGates.emptyEveningSkip]
-     * before reaching here; this function only handles the runtime
-     * at-home check.
-     */
-    private suspend fun shouldSpeakNow(prefs: UserPreferences): Boolean {
-        if (!prefs.skipTtsAtHome || prefs.homeLocation == null) return true
-        val current = app.locationResolver.resolveFresh(LocationResolver.FRESH_FIX_MAX_AGE_MS)
-        val speak = shouldSpeak(
-            ttsRequested = true,
-            skipTtsAtHome = true,
-            homeLocation = prefs.homeLocation,
-            currentLocation = current,
-        )
-        if (!speak) DiagLog.i(TAG, "At home and skip-TTS-at-home is on; skipping TTS.")
-        return speak
-    }
 
     companion object {
         private const val TAG = "FetchAndNotifyWorker"

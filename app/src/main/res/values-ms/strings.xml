@@ -830,14 +830,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_holidays_source_region">Rantau (%1$s)</string>
 
     <!-- Home location settings -->
-    <string name="settings_home_location_change">Ubah lokasi rumah</string>
-    <string name="settings_home_location_clear">Kosongkan lokasi rumah</string>
-    <string name="settings_home_location_description">Digunakan oleh \'Hanya bercakap semasa jauh dari rumah\' untuk memutuskan sama ada telefon membacakan ramalan secara lisan. Disimpan pada peranti ini.</string>
-    <string name="settings_home_location_search">Cari alamat</string>
-    <string name="settings_home_location_search_caveat">Carian memilih pusat bandar, yang mungkin beberapa kilometer dari rumah anda. Agar jejari 1 km di rumah aktif, lebih baik gunakan \'Gunakan lokasi semasa saya\' semasa anda berada di rumah.</string>
-    <string name="settings_home_location_title">Lokasi rumah</string>
-    <string name="settings_home_location_unset">Tiada rumah ditetapkan</string>
-    <string name="settings_home_location_use_current">Gunakan lokasi semasa saya</string>
 
     <!-- Smart Home settings root -->
     <string name="settings_root_smart_home">Rumah Pintar</string>
@@ -847,12 +839,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_schedule_description">ClothesCast pagi yang merangkumi cuaca hari itu.</string>
 
     <!-- Skip TTS at home -->
-    <string name="settings_skip_tts_at_home_description">Semasa anda di rumah, telefon kekal senyap — berguna jika pembesar suara rumah sudah membacakan ramalan untuk anda. Pemberitahuan masih dihantar.</string>
-    <string name="settings_skip_tts_at_home_label">Hanya bercakap semasa jauh dari rumah</string>
-    <string name="settings_skip_tts_at_home_needs_home">Tetapkan lokasi rumah di atas untuk mengaktifkan ini. Tanpa lokasi, telefon akan sentiasa bercakap.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Memerlukan akses lokasi latar belakang untuk mengetahui bila anda di rumah. Tanpanya, telefon akan sentiasa bercakap.</string>
-    <string name="settings_skip_tts_at_home_open_settings">Berikan dalam tetapan sistem</string>
-    <string name="settings_skip_tts_at_home_title">Hanya bercakap semasa jauh dari rumah</string>
 
     <!-- Cast settings -->
     <string name="settings_smart_home_cast_casting">Sedang di-cast…</string>

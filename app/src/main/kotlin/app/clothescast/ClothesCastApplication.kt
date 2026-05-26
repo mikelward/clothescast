@@ -251,6 +251,15 @@ class ClothesCastApplication : Application() {
         // builds, see [castContext] above).
         castInsightController?.bind()
         applicationScope.launch {
+            // One-shot wipe of the home-pin coordinates that the now-removed
+            // GPS-based at-home gate used to persist. Runs every launch but
+            // is idempotent — removes by key name and no-ops when absent —
+            // so the cost on fresh installs / repeat runs is one DataStore
+            // edit's worth of disk I/O.
+            runCatching { settingsRepository.clearLegacyHomePreferences() }
+                .onFailure { DiagLog.w(TAG, "Legacy home-pref cleanup failed", it) }
+        }
+        applicationScope.launch {
             try {
                 val prefs = settingsRepository.preferences.first()
                 // Reconcile Locale.setDefault (process-scoped, lost on cold

@@ -794,14 +794,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_source_location">Mahali (%1$s)</string>
     <string name="settings_holidays_source_region">Eneo (%1$s)</string>
     <string name="settings_holidays_title">Likizo</string>
-    <string name="settings_home_location_change">Badilisha mahali pa nyumbani</string>
-    <string name="settings_home_location_clear">Futa mahali pa nyumbani</string>
-    <string name="settings_home_location_description">Hutumiwa na \'Sema tu unapokuwa mbali na nyumba\' kuamua ikiwa simu inasoma utabiri kwa sauti. Inabaki kwenye kifaa hiki.</string>
-    <string name="settings_home_location_search">Tafuta anwani</string>
-    <string name="settings_home_location_search_caveat">Utafutaji huchagua katikati ya mji, ambayo inaweza kukaa kilomita chache kutoka nyumba yako halisi. Kwa radius ya kilomita 1 nyumbani kufanya kazi, chagua \'Tumia mahali pangu pa sasa\' ukiwa nyumbani.</string>
-    <string name="settings_home_location_title">Mahali pa nyumbani</string>
-    <string name="settings_home_location_unset">Hakuna nyumba iliyowekwa</string>
-    <string name="settings_home_location_use_current">Tumia mahali pangu pa sasa</string>
     <string name="settings_root_holidays">Sherehe</string>
     <string name="settings_root_holidays_subtitle">Likizo na Siku za Kuzaliwa</string>
     <string name="settings_root_smart_home">Nyumba ya Kisasa</string>
@@ -811,12 +803,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_description">ClothesCast asubuhi inayoshughulikia hali ya hewa ya siku hiyo.</string>
 
     <!-- Skip TTS at home -->
-    <string name="settings_skip_tts_at_home_description">Ukiwa nyumbani, simu inakaa kimya — inafaa ikiwa spika ya nyumbani tayari inasoma utabiri kwa ajili yako. Arifa bado zinatumwa.</string>
-    <string name="settings_skip_tts_at_home_label">Sema tu unapokuwa mbali na nyumba</string>
-    <string name="settings_skip_tts_at_home_needs_home">Weka mahali pa nyumbani hapo juu kuwezesha hili. Bila hiyo simu itasema daima.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Inahitaji ufikiaji wa mahali chinichini kujua uko nyumbani. Bila hiyo simu itasema daima.</string>
-    <string name="settings_skip_tts_at_home_open_settings">Ruhusu katika mipangilio ya mfumo</string>
-    <string name="settings_skip_tts_at_home_title">Sema tu unapokuwa mbali na nyumba</string>
 
     <!-- Smart home cast -->
     <string name="settings_smart_home_cast_casting">Inatuma…</string>

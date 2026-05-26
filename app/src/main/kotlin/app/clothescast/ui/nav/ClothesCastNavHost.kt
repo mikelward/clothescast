@@ -317,17 +317,6 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
             // repaint the launcher.
             runCatching { OutfitWidget().updateAll(context.applicationContext) }
         },
-        resolveDeviceLocationWithCity = {
-            app.locationResolver.resolveFresh(
-                LocationResolver.FRESH_FIX_MAX_AGE_MS,
-            )?.let { fix ->
-                val geo = app.reverseGeocoder.resolve(fix.latitude, fix.longitude)
-                fix.copy(
-                    displayName = geo.city ?: fix.displayName,
-                    countryCode = geo.countryCode ?: fix.countryCode,
-                )
-            }
-        },
         workManager = WorkManager.getInstance(app),
         insightCache = app.insightCache,
         mqttPublisher = app.mqttPublisher,

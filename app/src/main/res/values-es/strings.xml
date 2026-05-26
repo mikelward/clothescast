@@ -961,22 +961,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_remembrance_day">Los recordamos</string>
 
     <!-- Home location. -->
-    <string name="settings_home_location_title">Ubicación de casa</string>
-    <string name="settings_home_location_description">Usada por „Solo hablar cuando estás fuera de casa" para decidir si el teléfono lee la previsión en voz alta. Permanece en este dispositivo.</string>
-    <string name="settings_home_location_unset">No hay casa configurada</string>
-    <string name="settings_home_location_use_current">Usar mi ubicación actual</string>
-    <string name="settings_home_location_search">Buscar una dirección</string>
-    <string name="settings_home_location_search_caveat">La búsqueda elige el centroide de una ciudad, que puede estar a varios kilómetros de tu casa real. Para activar el radio de 1 km, usa mejor „Usar mi ubicación actual" cuando estés en casa.</string>
-    <string name="settings_home_location_change">Cambiar ubicación de casa</string>
-    <string name="settings_home_location_clear">Borrar ubicación de casa</string>
 
     <!-- "Only speak when away from home" toggle. -->
-    <string name="settings_skip_tts_at_home_title">Solo hablar cuando estás fuera de casa</string>
-    <string name="settings_skip_tts_at_home_label">Solo hablar cuando estás fuera de casa</string>
-    <string name="settings_skip_tts_at_home_description">Cuando estás en casa, el teléfono permanece en silencio — útil si un altavoz doméstico ya lee la previsión. Las notificaciones siguen enviándose.</string>
-    <string name="settings_skip_tts_at_home_needs_home">Configura primero una ubicación de casa. Sin ella, el teléfono siempre hablará.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Necesita acceso a la ubicación en segundo plano para saber cuándo estás en casa. Sin él, el teléfono siempre hablará.</string>
-    <string name="settings_skip_tts_at_home_open_settings">Conceder en ajustes del sistema</string>
 
     <!-- Smart Home — Cast. -->
     <string name="settings_smart_home_cast_title">Emitir</string>

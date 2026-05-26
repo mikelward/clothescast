@@ -894,14 +894,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_holidays_source_region">অঞ্চল (%1$s)</string>
 
     <!-- Settings — Home location. -->
-    <string name="settings_home_location_title">বাড়ির অবস্থান</string>
-    <string name="settings_home_location_change">বাড়ির অবস্থান পরিবর্তন করুন</string>
-    <string name="settings_home_location_clear">বাড়ির অবস্থান মুছুন</string>
-    <string name="settings_home_location_description">\'শুধুমাত্র বাড়ি থেকে দূরে থাকলে কথা বলুন\' চালু করলে ফোন জোরে পূর্বাভাস পড়বে কিনা তা নির্ধারণে ব্যবহৃত হয়। এই ডিভাইসেই থাকে।</string>
-    <string name="settings_home_location_search">একটি ঠিকানা খুঁজুন</string>
-    <string name="settings_home_location_search_caveat">অনুসন্ধান একটি শহরের কেন্দ্রবিন্দু বেছে নেয়, যা আপনার আসল বাড়ি থেকে কয়েক কিলোমিটার দূরে হতে পারে। ১ কিমি বাড়ি-সীমা সঠিকভাবে কাজ করতে বাড়িতে থাকার সময় \'আমার বর্তমান অবস্থান ব্যবহার করুন\' পছন্দ করুন।</string>
-    <string name="settings_home_location_unset">কোনো বাড়ি নির্ধারিত নেই</string>
-    <string name="settings_home_location_use_current">আমার বর্তমান অবস্থান ব্যবহার করুন</string>
 
     <!-- Settings root — Smart Home. -->
     <string name="settings_root_smart_home">স্মার্ট হোম</string>
@@ -911,12 +903,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_schedule_description">সকালের একটি ClothesCast যা সেদিনের আবহাওয়া জানায়।</string>
 
     <!-- Settings — Skip TTS at home. -->
-    <string name="settings_skip_tts_at_home_title">শুধুমাত্র বাড়ি থেকে দূরে থাকলে কথা বলুন</string>
-    <string name="settings_skip_tts_at_home_label">শুধুমাত্র বাড়ি থেকে দূরে থাকলে কথা বলুন</string>
-    <string name="settings_skip_tts_at_home_description">বাড়িতে থাকলে ফোন চুপ থাকে — কার্যকর যদি বাড়ির স্পিকার ইতিমধ্যে পূর্বাভাস পড়ে। বিজ্ঞপ্তি তবুও আসবে।</string>
-    <string name="settings_skip_tts_at_home_needs_home">এটি সক্রিয় করতে উপরে বাড়ির অবস্থান নির্ধারণ করুন। এটি ছাড়া ফোন সবসময় কথা বলবে।</string>
-    <string name="settings_skip_tts_at_home_needs_permission">আপনি বাড়িতে আছেন কিনা তা জানতে ব্যাকগ্রাউন্ড অবস্থানের অনুমতি প্রয়োজন। এটি ছাড়া ফোন সবসময় কথা বলবে।</string>
-    <string name="settings_skip_tts_at_home_open_settings">সিস্টেম সেটিংসে অনুমতি দিন</string>
 
     <!-- Settings — Smart Home / Cast. -->
     <string name="settings_smart_home_cast_title">Cast</string>

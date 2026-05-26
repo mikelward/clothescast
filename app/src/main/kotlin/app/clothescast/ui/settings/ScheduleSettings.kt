@@ -32,7 +32,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,17 +39,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import app.clothescast.R
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.TimeFormat
-import app.clothescast.location.hasBackgroundLocationPermission
-import app.clothescast.location.hasCoarseLocationPermission
 import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.LocalTimeFormat
 import app.clothescast.ui.formatHourMinute
@@ -69,8 +63,6 @@ internal fun ScheduleContent(
     dailyMentionEveningEvents: Boolean,
     deliveryMode: DeliveryMode,
     tonightDeliveryMode: DeliveryMode,
-    skipTtsAtHome: Boolean,
-    homeLocationConfigured: Boolean,
     padding: PaddingValues,
     onSetSchedule: (LocalTime, Set<DayOfWeek>) -> Unit,
     onSetTonightSchedule: (LocalTime, Set<DayOfWeek>) -> Unit,
@@ -79,7 +71,6 @@ internal fun ScheduleContent(
     onSetDailyMentionEveningEvents: (Boolean) -> Unit,
     onSetDeliveryMode: (DeliveryMode) -> Unit,
     onSetTonightDeliveryMode: (DeliveryMode) -> Unit,
-    onSetSkipTtsAtHome: (Boolean) -> Unit,
     onDone: (() -> Unit)? = null,
 ) {
     val scrollState = rememberScrollState()
@@ -114,11 +105,6 @@ internal fun ScheduleContent(
                 onSetNotifyOnlyOnEvents = onSetTonightNotifyOnlyOnEvents,
                 onChange = onSetTonightSchedule,
                 onSetDeliveryMode = onSetTonightDeliveryMode,
-            )
-            SkipTtsAtHomeCard(
-                skipTtsAtHome = skipTtsAtHome,
-                homeLocationConfigured = homeLocationConfigured,
-                onSetSkipTtsAtHome = onSetSkipTtsAtHome,
             )
             if (onDone != null) {
                 Button(
@@ -271,72 +257,6 @@ private fun NightCard(
                 onChange(newTime, days)
             },
         )
-    }
-}
-
-@Composable
-private fun SkipTtsAtHomeCard(
-    skipTtsAtHome: Boolean,
-    homeLocationConfigured: Boolean,
-    onSetSkipTtsAtHome: (Boolean) -> Unit,
-) {
-    val context = LocalContext.current
-    // Re-check on resume so granting permission in system Settings clears the
-    // warning without needing an in-app action — same pattern as LocationSettings.
-    var coarseGranted by remember { mutableStateOf(hasCoarseLocationPermission(context)) }
-    var backgroundGranted by remember { mutableStateOf(hasBackgroundLocationPermission(context)) }
-    val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                coarseGranted = hasCoarseLocationPermission(context)
-                backgroundGranted = hasBackgroundLocationPermission(context)
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-    }
-    // Worker runs in the background, so both grants are needed for
-    // resolveFresh to actually return a fix — without them the gate fails
-    // open and the user sees no behaviour change despite the toggle being on.
-    val permissionGranted = coarseGranted && backgroundGranted
-
-    SectionCard(title = stringResource(R.string.settings_skip_tts_at_home_title)) {
-        Text(
-            text = stringResource(R.string.settings_skip_tts_at_home_description),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        ToggleRow(
-            label = stringResource(R.string.settings_skip_tts_at_home_label),
-            checked = skipTtsAtHome,
-            onCheckedChange = onSetSkipTtsAtHome,
-        )
-        if (skipTtsAtHome) {
-            when {
-                !homeLocationConfigured -> Text(
-                    text = stringResource(R.string.settings_skip_tts_at_home_needs_home),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                )
-                !permissionGranted -> {
-                    Text(
-                        text = stringResource(R.string.settings_skip_tts_at_home_needs_permission),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                    // Deep-link to the system app-details page rather than
-                    // duplicating the rationale → foreground → background
-                    // launcher chain LocationSettings uses; the user can
-                    // grant Location → "Allow all the time" from there. The
-                    // ON_RESUME observer above will clear the warning when
-                    // they come back.
-                    TextButton(onClick = { openAppDetails(context) }) {
-                        Text(stringResource(R.string.settings_skip_tts_at_home_open_settings))
-                    }
-                }
-            }
-        }
     }
 }
 

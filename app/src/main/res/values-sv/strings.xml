@@ -819,22 +819,8 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
 
     <!-- Home location settings -->
-    <string name="settings_home_location_title">Hemadress</string>
-    <string name="settings_home_location_description">Används av \'Tala bara när du är hemifrån\' för att avgöra om telefonen läser upp prognosen. Stannar på den här enheten.</string>
-    <string name="settings_home_location_unset">Inget hem angivet</string>
-    <string name="settings_home_location_use_current">Använd min nuvarande plats</string>
-    <string name="settings_home_location_search">Sök efter en adress</string>
-    <string name="settings_home_location_search_caveat">Sökningen väljer ett stadscentrum som kan ligga några kilometer från ditt faktiska hem. Använd \'Använd min nuvarande plats\' när du är hemma för 1 km-radien.</string>
-    <string name="settings_home_location_change">Ändra hemadress</string>
-    <string name="settings_home_location_clear">Ta bort hemadress</string>
 
     <!-- Skip TTS at home -->
-    <string name="settings_skip_tts_at_home_title">Tala bara när du är hemifrån</string>
-    <string name="settings_skip_tts_at_home_label">Tala bara när du är hemifrån</string>
-    <string name="settings_skip_tts_at_home_description">När du är hemma förblir telefonen tyst — praktiskt om en hemtalare redan läser upp prognosen. Aviseringar skickas fortfarande.</string>
-    <string name="settings_skip_tts_at_home_needs_home">Ange en hemadress ovan för att aktivera detta. Utan den talar telefonen alltid.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Behöver bakgrundsplatsåtkomst för att veta när du är hemma. Utan det talar telefonen alltid.</string>
-    <string name="settings_skip_tts_at_home_open_settings">Bevilja i systeminställningar</string>
 
     <!-- Smart Home — Cast -->
     <string name="settings_smart_home_cast_title">Kasta</string>

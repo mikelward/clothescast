@@ -384,12 +384,16 @@ class InsightCache(
         val displayName: String? = null,
         val countryCode: String? = null,
     ) {
+        // Coarsen on read so cache files written before the privacy-grid
+        // change surface at neighbourhood precision too — mirrors
+        // SettingsRepository.parseLocation. Without this the tappable city
+        // label on the insight card opens Maps at the user's exact home.
         fun toDomain(): Location = Location(
             latitude = latitude,
             longitude = longitude,
             displayName = displayName,
             countryCode = countryCode,
-        )
+        ).coarsened()
     }
 
     /**

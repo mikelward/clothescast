@@ -440,6 +440,25 @@ internal fun TodayInsightCardWithChevronDarkPreview() {
     }
 }
 
+// Page 1 (next-period) of the Today pager sits between page 0 and the
+// 7-day overview, so it shows both chevrons at once: left back to page
+// 0, right forward to the 7-day page. Snapshot locks in the dual-icon
+// layout — the centred date row stays centred between the 28.dp slots.
+@Preview(name = "Today · insight with chevron both", widthDp = 360)
+@Composable
+internal fun TodayInsightCardWithChevronBothPreview() {
+    Frame {
+        InsightCard(
+            SAMPLE_INSIGHT.copy(period = ForecastPeriod.TONIGHT),
+            Region.SYSTEM,
+            showChevronLeft = true,
+            showChevronRight = true,
+            onChevronTap = {},
+            onChevronRightTap = {},
+        )
+    }
+}
+
 // Page-2 placeholder shown when the paired period hasn't been generated
 // yet. Two variants cover the wording for either direction (TONIGHT is
 // the typical case — open the app in the morning, swipe right before

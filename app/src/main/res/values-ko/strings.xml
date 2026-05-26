@@ -972,14 +972,6 @@ displayed label localizes.
     <string name="settings_holidays_source_region">지역 (%1$s)</string>
 
     <!-- Home location settings. -->
-    <string name="settings_home_location_title">집 위치</string>
-    <string name="settings_home_location_change">집 위치 변경</string>
-    <string name="settings_home_location_clear">집 위치 삭제</string>
-    <string name="settings_home_location_description">「집에 있을 때 음성 읽기 생략」 기능이 전화기 소리를 낼지 결정하는 데 사용돼요. 이 기기에만 저장됩니다.</string>
-    <string name="settings_home_location_search">주소 검색</string>
-    <string name="settings_home_location_search_caveat">검색은 도시 중심점을 선택하므로 실제 집에서 몇 킬로미터 떨어질 수 있어요. 반경 1km 재택 감지가 정확히 작동하려면 집에 있을 때 「현재 위치 사용」을 선택하는 것이 좋아요.</string>
-    <string name="settings_home_location_unset">집 위치가 설정되지 않았어요</string>
-    <string name="settings_home_location_use_current">현재 위치 사용</string>
 
     <!-- Settings root — Smart Home row. -->
     <string name="settings_root_smart_home">스마트 홈</string>
@@ -989,12 +981,6 @@ displayed label localizes.
     <string name="settings_schedule_description">당일 날씨를 안내하는 아침 ClothesCast입니다.</string>
 
     <!-- Skip TTS at home settings. -->
-    <string name="settings_skip_tts_at_home_title">집 밖에서만 음성 읽기</string>
-    <string name="settings_skip_tts_at_home_label">집 밖에서만 음성 읽기</string>
-    <string name="settings_skip_tts_at_home_description">집에 있을 때는 전화기가 조용히 있어요 — 홈 스피커가 이미 예보를 읽어주는 경우 유용해요. 알림은 계속 표시됩니다.</string>
-    <string name="settings_skip_tts_at_home_needs_home">이 기능을 사용하려면 위에서 집 위치를 설정하세요. 설정하지 않으면 전화기가 항상 소리를 내요.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">집에 있는지 확인하려면 백그라운드 위치 권한이 필요합니다. 없으면 전화기가 항상 소리를 내요.</string>
-    <string name="settings_skip_tts_at_home_open_settings">시스템 설정에서 허용</string>
 
     <!-- Smart Home — Cast section. -->
     <string name="settings_smart_home_cast_title">캐스트</string>

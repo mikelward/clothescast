@@ -822,14 +822,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_holidays_title">الأعياد</string>
 
     <!-- Settings — home location -->
-    <string name="settings_home_location_change">تغيير موقع المنزل</string>
-    <string name="settings_home_location_clear">مسح موقع المنزل</string>
-    <string name="settings_home_location_description">يُستخدم بواسطة \'قراءة الصوت عند الغياب عن المنزل فقط\' لتحديد ما إذا كان الهاتف يقرأ التوقعات بصوت عالٍ. يبقى على هذا الجهاز.</string>
-    <string name="settings_home_location_search">البحث عن عنوان</string>
-    <string name="settings_home_location_search_caveat">يختار البحث مركز مدينة، والذي قد يبعد بضعة كيلومترات عن منزلك الفعلي. لتفعيل نطاق 1 كم من المنزل، يُفضَّل \'استخدام موقعي الحالي\' وأنت في المنزل.</string>
-    <string name="settings_home_location_title">موقع المنزل</string>
-    <string name="settings_home_location_unset">لم يُحدَّد منزل</string>
-    <string name="settings_home_location_use_current">استخدام موقعي الحالي</string>
 
     <!-- Settings — root holidays and smart home -->
     <string name="settings_root_holidays">الاحتفالات</string>
@@ -841,12 +833,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_schedule_description">ClothesCast صباحي يغطي طقس ذلك اليوم.</string>
 
     <!-- Settings — skip TTS at home -->
-    <string name="settings_skip_tts_at_home_description">عندما تكون في المنزل، يبقى الهاتف صامتًا — مفيد إذا كان مكبر صوت منزلي يقرأ التوقعات بالفعل. تُرسَل الإشعارات كما هي.</string>
-    <string name="settings_skip_tts_at_home_label">قراءة الصوت عند الغياب عن المنزل فقط</string>
-    <string name="settings_skip_tts_at_home_needs_home">حدد موقع المنزل أعلاه لتفعيل هذا. بدونه سيتحدث الهاتف دائمًا.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">يحتاج إذن الموقع في الخلفية لتحديد متى تكون في المنزل. بدونه سيتحدث الهاتف دائمًا.</string>
-    <string name="settings_skip_tts_at_home_open_settings">منح من إعدادات النظام</string>
-    <string name="settings_skip_tts_at_home_title">قراءة الصوت عند الغياب عن المنزل فقط</string>
 
     <!-- Settings — smart home cast -->
     <string name="settings_smart_home_cast_casting">جارٍ البث…</string>

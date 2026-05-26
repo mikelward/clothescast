@@ -207,30 +207,7 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `skipTtsAtHome defaults to false and round-trips`() = runTest {
-        subject.preferences.first().skipTtsAtHome shouldBe false
-
-        subject.setSkipTtsAtHome(true)
-        subject.preferences.first().skipTtsAtHome shouldBe true
-
-        subject.setSkipTtsAtHome(false)
-        subject.preferences.first().skipTtsAtHome shouldBe false
-    }
-
-    @Test
-    fun `homeLocation defaults to null and round-trips`() = runTest {
-        subject.preferences.first().homeLocation shouldBe null
-
-        val home = Location(latitude = 51.5074, longitude = -0.1278, displayName = "London")
-        subject.setHomeLocation(home)
-        subject.preferences.first().homeLocation shouldBe home
-
-        subject.setHomeLocation(null)
-        subject.preferences.first().homeLocation shouldBe null
-    }
-
-    @Test
-    fun `Location countryCode round-trips on weather and home pins`() = runTest {
+    fun `Location countryCode round-trips on weather pin`() = runTest {
         val weather = Location(
             latitude = -33.8688,
             longitude = 151.2093,
@@ -239,15 +216,6 @@ class SettingsRepositoryTest {
         )
         subject.setLocation(weather)
         subject.preferences.first().location shouldBe weather
-
-        val home = Location(
-            latitude = 51.5074,
-            longitude = -0.1278,
-            displayName = "London",
-            countryCode = "GB",
-        )
-        subject.setHomeLocation(home)
-        subject.preferences.first().homeLocation shouldBe home
     }
 
     @Test
@@ -925,8 +893,6 @@ class SettingsRepositoryTest {
         defaults.tonightNotifyOnlyOnEvents shouldBe false
         defaults.dailyMentionEveningEvents shouldBe true
         defaults.useCalendarEvents shouldBe false
-        defaults.skipTtsAtHome shouldBe false
-        defaults.homeLocationConfigured shouldBe false
 
         subject.setSchedule(
             time = LocalTime.of(6, 30),

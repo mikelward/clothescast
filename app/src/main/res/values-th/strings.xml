@@ -824,14 +824,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_source_region">ภูมิภาค (%1$s)</string>
 
     <!-- Settings — Home location -->
-    <string name="settings_home_location_change">เปลี่ยนตำแหน่งบ้าน</string>
-    <string name="settings_home_location_clear">ล้างตำแหน่งบ้าน</string>
-    <string name="settings_home_location_description">ใช้โดย \'อ่านออกเสียงเฉพาะเมื่ออยู่นอกบ้าน\' เพื่อตัดสินว่าโทรศัพท์จะอ่านพยากรณ์อากาศออกเสียงหรือไม่ บันทึกไว้บนอุปกรณ์นี้เท่านั้น</string>
-    <string name="settings_home_location_search">ค้นหาที่อยู่</string>
-    <string name="settings_home_location_search_caveat">การค้นหาจะเลือกจุดศูนย์กลางของเมือง ซึ่งอาจอยู่ห่างบ้านจริงไม่กี่กิโลเมตร เพื่อให้รัศมี 1 กม. ทำงานได้แม่นยำ ควรใช้ \'ใช้ตำแหน่งปัจจุบัน\' ขณะอยู่ที่บ้าน</string>
-    <string name="settings_home_location_title">ตำแหน่งบ้าน</string>
-    <string name="settings_home_location_unset">ยังไม่ได้ตั้งค่าบ้าน</string>
-    <string name="settings_home_location_use_current">ใช้ตำแหน่งปัจจุบันของฉัน</string>
 
     <!-- Settings root — Smart Home -->
     <string name="settings_root_smart_home">Smart Home</string>
@@ -841,12 +833,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_description">ClothesCast ช่วงเช้าที่ครอบคลุมสภาพอากาศของวันนั้น</string>
 
     <!-- Settings — Skip TTS at home -->
-    <string name="settings_skip_tts_at_home_description">เมื่อคุณอยู่ที่บ้าน โทรศัพท์จะเงียบ — สะดวกหากลำโพงในบ้านอ่านพยากรณ์อากาศให้แล้ว การแจ้งเตือนยังคงส่งตามปกติ</string>
-    <string name="settings_skip_tts_at_home_label">อ่านออกเสียงเฉพาะเมื่ออยู่นอกบ้าน</string>
-    <string name="settings_skip_tts_at_home_needs_home">ตั้งค่าตำแหน่งบ้านด้านบนเพื่อเปิดใช้งาน หากไม่มี โทรศัพท์จะอ่านออกเสียงเสมอ</string>
-    <string name="settings_skip_tts_at_home_needs_permission">ต้องการการเข้าถึงตำแหน่งพื้นหลังเพื่อรู้ว่าคุณอยู่ที่บ้าน หากไม่มี โทรศัพท์จะอ่านออกเสียงเสมอ</string>
-    <string name="settings_skip_tts_at_home_open_settings">อนุญาตในการตั้งค่าระบบ</string>
-    <string name="settings_skip_tts_at_home_title">อ่านออกเสียงเฉพาะเมื่ออยู่นอกบ้าน</string>
 
     <!-- Settings — Smart Home / Cast -->
     <string name="settings_smart_home_cast_casting">กำลัง Cast…</string>

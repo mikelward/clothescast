@@ -874,14 +874,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_source_region">Rehiyon (%1$s)</string>
 
     <!-- Home location settings -->
-    <string name="settings_home_location_change">Baguhin ang lokasyon ng tahanan</string>
-    <string name="settings_home_location_clear">I-clear ang lokasyon ng tahanan</string>
-    <string name="settings_home_location_description">Ginagamit ng \'Magsalita lamang kapag malayo sa tahanan\' para magdesisyon kung binabasa ng telepono ang hula nang malakas. Nananatili sa device na ito.</string>
-    <string name="settings_home_location_search">Maghanap ng address</string>
-    <string name="settings_home_location_search_caveat">Pumipili ang paghahanap ng sentro ng lungsod, na maaaring ilang kilometro mula sa iyong tunay na tahanan. Para maputok ang 1 km na radius sa tahanan, mas mainam gamitin ang \'Gamitin ang aking kasalukuyang lokasyon\' habang nandoon ka sa tahanan.</string>
-    <string name="settings_home_location_title">Lokasyon ng tahanan</string>
-    <string name="settings_home_location_unset">Walang nakatakdang tahanan</string>
-    <string name="settings_home_location_use_current">Gamitin ang aking kasalukuyang lokasyon</string>
 
     <!-- Smart Home settings root -->
     <string name="settings_root_smart_home">Smart Home</string>
@@ -891,12 +883,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_description">Isang umaga na ClothesCast na sumasaklaw sa panahon ng araw na iyon.</string>
 
     <!-- Skip TTS at home -->
-    <string name="settings_skip_tts_at_home_description">Kapag nandoon ka sa tahanan, nananatiling tahimik ang telepono — maginhawa kung ang speaker sa tahanan ay nagbabasa na ng hula para sa iyo. Nipo-post pa rin ang mga notipikasyon.</string>
-    <string name="settings_skip_tts_at_home_label">Magsalita lamang kapag malayo sa tahanan</string>
-    <string name="settings_skip_tts_at_home_needs_home">Magtakda ng lokasyon ng tahanan sa itaas para i-enable ito. Kung wala, lagi itong magsasalita ang telepono.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Nangangailangan ng background na access sa lokasyon para malaman kung nasa tahanan ka. Kung wala ito, lagi itong magsasalita ang telepono.</string>
-    <string name="settings_skip_tts_at_home_open_settings">Ibigay sa mga setting ng system</string>
-    <string name="settings_skip_tts_at_home_title">Magsalita lamang kapag malayo sa tahanan</string>
 
     <!-- Cast settings -->
     <string name="settings_smart_home_cast_casting">Nagca-cast…</string>

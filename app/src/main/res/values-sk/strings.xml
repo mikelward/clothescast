@@ -813,22 +813,8 @@ What is NOT overridden, by design:
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
 
     <!-- Home location settings. -->
-    <string name="settings_home_location_title">Domáca poloha</string>
-    <string name="settings_home_location_description">Používa ju \'Hovoriť len keď nie ste doma\' na rozhodnutie, či telefón číta predpoveď nahlas. Zostáva na tomto zariadení.</string>
-    <string name="settings_home_location_unset">Domov nie je nastavený</string>
-    <string name="settings_home_location_use_current">Použiť moju aktuálnu polohu</string>
-    <string name="settings_home_location_search">Hľadať adresu</string>
-    <string name="settings_home_location_search_caveat">Vyhľadávanie vyberie stred mesta, ktorý môže byť niekoľko kilometrov od vášho skutočného domova. Na aktiváciu okruhu 1 km radšej použite \'Použiť moju aktuálnu polohu\' keď ste doma.</string>
-    <string name="settings_home_location_change">Zmeniť domácu polohu</string>
-    <string name="settings_home_location_clear">Vymazať domácu polohu</string>
 
     <!-- Skip TTS at home settings. -->
-    <string name="settings_skip_tts_at_home_title">Hovoriť len keď nie ste doma</string>
-    <string name="settings_skip_tts_at_home_label">Hovoriť len keď nie ste doma</string>
-    <string name="settings_skip_tts_at_home_description">Keď ste doma, telefón zostane tichý — praktické ak domáci reproduktor predpoveď číta sám. Oznámenia sú stále odosielané.</string>
-    <string name="settings_skip_tts_at_home_needs_home">Najprv nastavte domácu polohu. Bez nej bude telefón vždy hovoriť.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Vyžaduje prístup k polohe na pozadí na zistenie, či ste doma. Bez toho bude telefón vždy hovoriť.</string>
-    <string name="settings_skip_tts_at_home_open_settings">Udeliť v nastaveniach systému</string>
 
     <!-- Smart Home — Cast settings. -->
     <string name="settings_smart_home_cast_title">Preniesť</string>

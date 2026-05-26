@@ -885,14 +885,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_holidays_source_region">Khu vực (%1$s)</string>
 
     <!-- Settings — Home location -->
-    <string name="settings_home_location_change">Đổi vị trí nhà</string>
-    <string name="settings_home_location_clear">Xóa vị trí nhà</string>
-    <string name="settings_home_location_description">Dùng bởi \'Chỉ đọc khi ra ngoài nhà\' để quyết định có đọc dự báo to không. Lưu trên thiết bị này.</string>
-    <string name="settings_home_location_search">Tìm kiếm địa chỉ</string>
-    <string name="settings_home_location_search_caveat">Tìm kiếm chọn trung tâm thành phố, có thể cách nhà thực tế vài kilômét. Để bán kính 1 km xác định đúng vị trí nhà, nên dùng \'Dùng vị trí hiện tại\' khi đang ở nhà.</string>
-    <string name="settings_home_location_title">Vị trí nhà</string>
-    <string name="settings_home_location_unset">Chưa đặt vị trí nhà</string>
-    <string name="settings_home_location_use_current">Dùng vị trí hiện tại của tôi</string>
 
     <!-- Settings root — Smart Home -->
     <string name="settings_root_smart_home">Smart Home</string>
@@ -902,12 +894,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_schedule_description">ClothesCast buổi sáng bao gồm thời tiết trong ngày.</string>
 
     <!-- Settings — Skip TTS at home -->
-    <string name="settings_skip_tts_at_home_description">Khi bạn ở nhà, điện thoại sẽ im lặng — tiện nếu loa trong nhà đã đọc dự báo. Thông báo vẫn được gửi.</string>
-    <string name="settings_skip_tts_at_home_label">Chỉ đọc khi ra ngoài nhà</string>
-    <string name="settings_skip_tts_at_home_needs_home">Đặt vị trí nhà ở trên để bật tính năng này. Nếu không có, điện thoại sẽ luôn đọc.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Cần quyền vị trí nền để biết bạn đang ở nhà. Nếu không có, điện thoại sẽ luôn đọc.</string>
-    <string name="settings_skip_tts_at_home_open_settings">Cấp trong cài đặt hệ thống</string>
-    <string name="settings_skip_tts_at_home_title">Chỉ đọc khi ra ngoài nhà</string>
 
     <!-- Settings — Smart Home / Cast -->
     <string name="settings_smart_home_cast_casting">Đang Cast…</string>

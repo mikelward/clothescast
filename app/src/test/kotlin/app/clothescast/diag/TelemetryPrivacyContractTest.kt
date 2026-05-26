@@ -43,7 +43,6 @@ class TelemetryPrivacyContractTest {
         "clothes_mention_mode",
         "range_format", "clothes_format", "bottoms_format", "rain_accessory", "delta_threshold_c",
         "use_calendar_events",
-        "skip_tts_at_home", "home_location_configured",
         "customised_count", "extra_rules_count", "categories_customised",
         "all_defaults",
         "sweater_delta_c", "jacket_delta_c", "coat_delta_c", "shorts_delta_c",

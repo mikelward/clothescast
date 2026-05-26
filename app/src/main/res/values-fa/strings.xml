@@ -813,14 +813,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_holidays_title">تعطیلات</string>
 
     <!-- Settings — home location -->
-    <string name="settings_home_location_change">تغییر موقعیت خانه</string>
-    <string name="settings_home_location_clear">پاک کردن موقعیت خانه</string>
-    <string name="settings_home_location_description">توسط \'فقط وقتی دور از خانه هستم صحبت کن\' برای تصمیم‌گیری درباره خواندن پیش‌بینی با صدای بلند استفاده می‌شود. روی این دستگاه باقی می‌ماند.</string>
-    <string name="settings_home_location_search">جستجوی یک آدرس</string>
-    <string name="settings_home_location_search_caveat">جستجو مرکز شهر را انتخاب می‌کند که ممکن است چند کیلومتر از خانه واقعی شما فاصله داشته باشد. برای فعال شدن شعاع 1 کیلومتری از خانه، ترجیحاً در خانه روی \'استفاده از موقعیت فعلی من\' ضربه بزنید.</string>
-    <string name="settings_home_location_title">موقعیت خانه</string>
-    <string name="settings_home_location_unset">هیچ خانه‌ای تنظیم نشده</string>
-    <string name="settings_home_location_use_current">استفاده از موقعیت فعلی من</string>
 
     <!-- Settings — root holidays and smart home -->
     <string name="settings_root_holidays">جشن‌ها</string>
@@ -832,12 +824,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_schedule_description">یک ClothesCast صبحگاهی که آب‌وهوای همان روز را پوشش می‌دهد.</string>
 
     <!-- Settings — skip TTS at home -->
-    <string name="settings_skip_tts_at_home_description">وقتی در خانه هستید، گوشی ساکت می‌ماند — مفید اگر بلندگوی خانگی از قبل پیش‌بینی را می‌خواند. اعلان‌ها همچنان ارسال می‌شوند.</string>
-    <string name="settings_skip_tts_at_home_label">فقط وقتی دور از خانه هستم صحبت کن</string>
-    <string name="settings_skip_tts_at_home_needs_home">برای فعال کردن این گزینه یک موقعیت خانه در بالا تنظیم کنید. بدون آن گوشی همیشه صحبت می‌کند.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">برای تشخیص زمانی که در خانه هستید به دسترسی موقعیت پس‌زمینه نیاز دارد. بدون آن گوشی همیشه صحبت می‌کند.</string>
-    <string name="settings_skip_tts_at_home_open_settings">اعطا در تنظیمات سیستم</string>
-    <string name="settings_skip_tts_at_home_title">فقط وقتی دور از خانه هستم صحبت کن</string>
 
     <!-- Settings — smart home cast -->
     <string name="settings_smart_home_cast_casting">در حال پخش…</string>

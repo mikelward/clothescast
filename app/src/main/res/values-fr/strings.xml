@@ -960,22 +960,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_remembrance_day">Souvenons-nous</string>
 
     <!-- Home location. -->
-    <string name="settings_home_location_title">Position domicile</string>
-    <string name="settings_home_location_description">Utilisée par „Parler uniquement loin du domicile" pour décider si le téléphone lit les prévisions à voix haute. Reste sur cet appareil.</string>
-    <string name="settings_home_location_unset">Aucun domicile défini</string>
-    <string name="settings_home_location_use_current">Utiliser ma position actuelle</string>
-    <string name="settings_home_location_search">Rechercher une adresse</string>
-    <string name="settings_home_location_search_caveat">La recherche sélectionne un centroïde de ville, qui peut se trouver à quelques kilomètres de ton domicile. Pour activer le rayon de 1 km autour de chez toi, préfère „Utiliser ma position actuelle" quand tu es à la maison.</string>
-    <string name="settings_home_location_change">Modifier la position domicile</string>
-    <string name="settings_home_location_clear">Effacer la position domicile</string>
 
     <!-- "Only speak when away from home" toggle. -->
-    <string name="settings_skip_tts_at_home_title">Parler uniquement loin du domicile</string>
-    <string name="settings_skip_tts_at_home_label">Parler uniquement loin du domicile</string>
-    <string name="settings_skip_tts_at_home_description">Quand tu es chez toi, le téléphone reste silencieux — utile si un haut-parleur domestique lit déjà les prévisions pour toi. Les notifications sont toujours envoyées.</string>
-    <string name="settings_skip_tts_at_home_needs_home">Définis d\'abord une position domicile ci-dessus. Sans elle, le téléphone parlera toujours.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Nécessite l\'accès à la position en arrière-plan pour détecter quand tu es chez toi. Sans cela, le téléphone parlera toujours.</string>
-    <string name="settings_skip_tts_at_home_open_settings">Accorder dans les paramètres système</string>
 
     <!-- Smart Home — Cast section. -->
     <string name="settings_smart_home_cast_title">Diffuser</string>

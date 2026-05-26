@@ -968,14 +968,6 @@ the displayed label localizes.
     <string name="settings_holidays_source_region">地域（%1$s）</string>
 
     <!-- Home location settings. -->
-    <string name="settings_home_location_title">自宅の場所</string>
-    <string name="settings_home_location_change">自宅の場所を変更</string>
-    <string name="settings_home_location_clear">自宅の場所をクリア</string>
-    <string name="settings_home_location_description">「外出時のみ読み上げる」が自宅にいるかどうかを判断するために使用します。この端末にのみ保存されます。</string>
-    <string name="settings_home_location_search">住所を検索</string>
-    <string name="settings_home_location_search_caveat">検索は都市の中心点を選ぶため、実際の自宅から数キロ離れることがあります。1 km の「自宅にいる」判定を正しく動作させるには、自宅にいる状態で「現在地を使用」を選ぶことをお勧めします。</string>
-    <string name="settings_home_location_unset">自宅が未設定です</string>
-    <string name="settings_home_location_use_current">現在地を使用</string>
 
     <!-- Settings root — Smart Home row. -->
     <string name="settings_root_smart_home">スマートホーム</string>
@@ -985,12 +977,6 @@ the displayed label localizes.
     <string name="settings_schedule_description">その日の天気をお知らせする、毎朝の ClothesCast です。</string>
 
     <!-- Skip TTS at home settings. -->
-    <string name="settings_skip_tts_at_home_title">外出時のみ読み上げる</string>
-    <string name="settings_skip_tts_at_home_label">外出時のみ読み上げる</string>
-    <string name="settings_skip_tts_at_home_description">自宅にいるときは端末が静かなままになります — ホームスピーカーがすでに予報を読み上げている場合に便利です。通知は引き続き表示されます。</string>
-    <string name="settings_skip_tts_at_home_needs_home">これを有効にするには、上で自宅の場所を設定してください。設定しない場合は常に読み上げます。</string>
-    <string name="settings_skip_tts_at_home_needs_permission">自宅にいるかどうかを判断するためにバックグラウンド位置情報のアクセスが必要です。許可しない場合は常に読み上げます。</string>
-    <string name="settings_skip_tts_at_home_open_settings">システム設定で許可</string>
 
     <!-- Smart Home — Cast settings. -->
     <string name="settings_smart_home_cast_title">キャスト</string>

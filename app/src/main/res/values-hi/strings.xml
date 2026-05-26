@@ -854,14 +854,6 @@ Not overridden by design:
     <string name="settings_holidays_source_region">क्षेत्र (%1$s)</string>
 
     <!-- Settings — Home location. -->
-    <string name="settings_home_location_title">घर का स्थान</string>
-    <string name="settings_home_location_change">घर का स्थान बदलें</string>
-    <string name="settings_home_location_clear">घर का स्थान हटाएँ</string>
-    <string name="settings_home_location_description">\'केवल घर से दूर होने पर बोलें\' यह तय करने के लिए उपयोग करता है कि फ़ोन पूर्वानुमान ज़ोर से पढ़े या नहीं। इस डिवाइस पर रहता है।</string>
-    <string name="settings_home_location_search">पता खोजें</string>
-    <string name="settings_home_location_search_caveat">खोज एक शहर का केंद्र-बिंदु चुनती है, जो आपके वास्तविक घर से कुछ किलोमीटर दूर हो सकता है। घर पर रहते हुए \'मेरा वर्तमान स्थान उपयोग करें\' पसंद करें ताकि 1 km की घर-सीमा सही काम करे।</string>
-    <string name="settings_home_location_unset">कोई घर सेट नहीं</string>
-    <string name="settings_home_location_use_current">मेरा वर्तमान स्थान उपयोग करें</string>
 
     <!-- Settings root — Smart Home. -->
     <string name="settings_root_smart_home">स्मार्ट होम</string>
@@ -871,12 +863,6 @@ Not overridden by design:
     <string name="settings_schedule_description">सुबह का ClothesCast जो उस दिन के मौसम को कवर करता है।</string>
 
     <!-- Settings — Skip TTS at home. -->
-    <string name="settings_skip_tts_at_home_title">केवल घर से दूर होने पर बोलें</string>
-    <string name="settings_skip_tts_at_home_label">केवल घर से दूर होने पर बोलें</string>
-    <string name="settings_skip_tts_at_home_description">जब आप घर पर हों, फ़ोन चुप रहता है — उपयोगी अगर कोई होम स्पीकर पहले से पूर्वानुमान पढ़ता हो। सूचनाएँ फिर भी आती हैं।</string>
-    <string name="settings_skip_tts_at_home_needs_home">इसे सक्षम करने के लिए ऊपर घर का स्थान सेट करें। इसके बिना फ़ोन हमेशा बोलेगा।</string>
-    <string name="settings_skip_tts_at_home_needs_permission">यह जानने के लिए बैकग्राउंड स्थान एक्सेस ज़रूरी है कि आप घर पर हैं। इसके बिना फ़ोन हमेशा बोलेगा।</string>
-    <string name="settings_skip_tts_at_home_open_settings">सिस्टम सेटिंग में दें</string>
 
     <!-- Settings — Smart Home / Cast. -->
     <string name="settings_smart_home_cast_title">Cast</string>

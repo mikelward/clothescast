@@ -824,14 +824,6 @@ to values/strings.xml (English).
     <string name="settings_holidays_source_region">Wilayah (%1$s)</string>
 
     <!-- Home location settings -->
-    <string name="settings_home_location_change">Ubah lokasi rumah</string>
-    <string name="settings_home_location_clear">Hapus lokasi rumah</string>
-    <string name="settings_home_location_description">Digunakan oleh \'Hanya bicara saat jauh dari rumah\' untuk memutuskan apakah ponsel membacakan prakiraan dengan suara. Disimpan di perangkat ini.</string>
-    <string name="settings_home_location_search">Cari alamat</string>
-    <string name="settings_home_location_search_caveat">Pencarian memilih titik pusat kota, yang mungkin beberapa kilometer dari rumah Anda. Agar radius 1 km di rumah aktif, lebih baik gunakan \'Gunakan lokasi saya saat ini\' saat Anda berada di rumah.</string>
-    <string name="settings_home_location_title">Lokasi rumah</string>
-    <string name="settings_home_location_unset">Belum ada rumah yang diatur</string>
-    <string name="settings_home_location_use_current">Gunakan lokasi saya saat ini</string>
 
     <!-- Smart Home settings root -->
     <string name="settings_root_smart_home">Rumah Pintar</string>
@@ -841,12 +833,6 @@ to values/strings.xml (English).
     <string name="settings_schedule_description">ClothesCast pagi yang mencakup cuaca hari itu.</string>
 
     <!-- Skip TTS at home -->
-    <string name="settings_skip_tts_at_home_description">Saat Anda di rumah, ponsel tetap diam — berguna jika speaker rumah sudah membacakan prakiraan untuk Anda. Notifikasi tetap muncul.</string>
-    <string name="settings_skip_tts_at_home_label">Hanya bicara saat jauh dari rumah</string>
-    <string name="settings_skip_tts_at_home_needs_home">Atur lokasi rumah di atas untuk mengaktifkan ini. Tanpa lokasi, ponsel akan selalu berbicara.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Memerlukan akses lokasi latar belakang untuk mengetahui kapan Anda di rumah. Tanpanya, ponsel akan selalu berbicara.</string>
-    <string name="settings_skip_tts_at_home_open_settings">Berikan di pengaturan sistem</string>
-    <string name="settings_skip_tts_at_home_title">Hanya bicara saat jauh dari rumah</string>
 
     <!-- Cast settings -->
     <string name="settings_smart_home_cast_casting">Sedang di-cast…</string>

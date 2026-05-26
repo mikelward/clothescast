@@ -946,22 +946,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_remembrance_day">Non dimentichiamo</string>
 
     <!-- Home location. -->
-    <string name="settings_home_location_title">Posizione di casa</string>
-    <string name="settings_home_location_description">Usata da „Parla solo quando sei lontano da casa" per decidere se il telefono legge le previsioni ad alta voce. Rimane su questo dispositivo.</string>
-    <string name="settings_home_location_unset">Nessuna casa impostata</string>
-    <string name="settings_home_location_use_current">Usa la mia posizione attuale</string>
-    <string name="settings_home_location_search">Cerca un indirizzo</string>
-    <string name="settings_home_location_search_caveat">La ricerca sceglie il centroide di una città, che può trovarsi a qualche chilometro dalla tua vera casa. Per attivare il raggio di 1 km, usa meglio „Usa la mia posizione attuale" quando sei a casa.</string>
-    <string name="settings_home_location_change">Modifica posizione di casa</string>
-    <string name="settings_home_location_clear">Cancella posizione di casa</string>
 
     <!-- "Only speak when away from home" toggle. -->
-    <string name="settings_skip_tts_at_home_title">Parla solo quando sei lontano da casa</string>
-    <string name="settings_skip_tts_at_home_label">Parla solo quando sei lontano da casa</string>
-    <string name="settings_skip_tts_at_home_description">Quando sei a casa, il telefono rimane in silenzio — utile se un altoparlante domestico legge già le previsioni per te. Le notifiche vengono comunque inviate.</string>
-    <string name="settings_skip_tts_at_home_needs_home">Imposta prima una posizione di casa. Senza di essa, il telefono parlerà sempre.</string>
-    <string name="settings_skip_tts_at_home_needs_permission">Richiede l\'accesso alla posizione in background per rilevare quando sei a casa. Senza di esso, il telefono parlerà sempre.</string>
-    <string name="settings_skip_tts_at_home_open_settings">Concedi nelle impostazioni di sistema</string>
 
     <!-- Smart Home — Cast. -->
     <string name="settings_smart_home_cast_title">Trasmetti</string>

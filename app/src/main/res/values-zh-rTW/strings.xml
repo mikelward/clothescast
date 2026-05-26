@@ -987,14 +987,6 @@ label localises.
     <string name="settings_holidays_source_region">地區（%1$s）</string>
 
     <!-- Home location settings. -->
-    <string name="settings_home_location_title">家庭位置</string>
-    <string name="settings_home_location_change">更換家庭位置</string>
-    <string name="settings_home_location_clear">清除家庭位置</string>
-    <string name="settings_home_location_description">用於「僅在離家時播報」功能，判斷手機是否應在家時朗讀天氣預報。資料保存在本裝置上。</string>
-    <string name="settings_home_location_search">搜尋地址</string>
-    <string name="settings_home_location_search_caveat">搜尋結果使用城市中心點，可能與你實際家的位置相差幾公里。要讓 1 公里在家判定準確生效，建議在家時選擇「使用我目前的位置」。</string>
-    <string name="settings_home_location_unset">尚未設定家庭位置</string>
-    <string name="settings_home_location_use_current">使用我目前的位置</string>
 
     <!-- Settings root — Smart Home row. -->
     <string name="settings_root_smart_home">智慧家居</string>
@@ -1004,12 +996,6 @@ label localises.
     <string name="settings_schedule_description">每天早晨發送一份涵蓋當日天氣的 ClothesCast。</string>
 
     <!-- Skip TTS at home. -->
-    <string name="settings_skip_tts_at_home_title">僅在離家時播報</string>
-    <string name="settings_skip_tts_at_home_label">僅在離家時播報</string>
-    <string name="settings_skip_tts_at_home_description">在家時手機保持靜音 — 如果家中的喇叭已播報天氣預報，這個功能就很方便。通知仍會照常傳送。</string>
-    <string name="settings_skip_tts_at_home_needs_home">請先在上方設定家庭位置以啟用此功能。沒有家庭位置時手機將始終播報。</string>
-    <string name="settings_skip_tts_at_home_needs_permission">需要背景位置權限才能判斷你是否在家。沒有此權限時手機將始終播報。</string>
-    <string name="settings_skip_tts_at_home_open_settings">在系統設定中授權</string>
 
     <!-- Smart Home — Cast section. -->
     <string name="settings_smart_home_cast_title">投播</string>

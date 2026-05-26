@@ -213,8 +213,6 @@ object Telemetry {
             putString("rain_accessory", snapshot.rainAccessory)
             putLong("delta_threshold_c", snapshot.deltaThresholdC.toLong())
             putLong("use_calendar_events", snapshot.useCalendarEvents.toLongFlag())
-            putLong("skip_tts_at_home", snapshot.skipTtsAtHome.toLongFlag())
-            putLong("home_location_configured", snapshot.homeLocationConfigured.toLongFlag())
         }
         analytics.logEvent(EVENT_SETTINGS_SNAPSHOT, params)
     }

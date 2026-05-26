@@ -1984,6 +1984,75 @@ internal fun SevenDayPagePreview() {
     }
 }
 
+// Synthesises a 7-day per-model bundle by mirroring [SAMPLE_WEEK]'s
+// hourly stream into three models with small fixed offsets. Covers all
+// 7 dates so [SevenDayPage]'s coverage gate ([weekPerModelDiagnostics])
+// passes, the diagnostic cards render, and the tap-hint card appears.
+private val SAMPLE_WEEK_PER_MODEL_HOURLY: PerModelHourly = run {
+    fun shift(deltaC: Double, precipDelta: Double, windBase: Double) =
+        SAMPLE_WEEK.flatMap { day ->
+            day.hourly.map { h ->
+                PerModelHour(
+                    time = java.time.LocalDateTime.of(day.date, h.time),
+                    apparentTemperatureC = h.feelsLikeC + deltaC,
+                    temperatureC = h.temperatureC + deltaC,
+                    precipitationProbabilityPct = (h.precipitationProbabilityPct + precipDelta)
+                        .coerceIn(0.0, 100.0),
+                    precipitationMm = h.precipitationMm,
+                    windSpeedKmh = windBase + (h.time.hour - 12).let { if (it < 0) -it else it } * 0.4,
+                    relativeHumidityPct = 70.0,
+                    cloudCoverPct = 55.0,
+                    shortwaveRadiationWm2 = null,
+                    sunshineDurationSec = null,
+                    uvIndex = null,
+                )
+            }
+        }
+    PerModelHourly(
+        byModel = mapOf(
+            "ecmwf_ifs04" to shift(deltaC = -1.5, precipDelta = -10.0, windBase = 8.0),
+            "gfs_seamless" to shift(deltaC = 0.5, precipDelta = 5.0, windBase = 12.0),
+            "icon_seamless" to shift(deltaC = 2.0, precipDelta = -5.0, windBase = 6.0),
+        ),
+    )
+}
+
+// Exercises the tap-hint card and the per-model envelope on the 7-day
+// primary charts. With [showModelSpread] off, the hint reads "Tap to
+// see each model's forecast" and the primary charts draw consensus
+// only; the hint flips and the envelope appears when toggled on.
+@Preview(name = "Seven-day page · with per-model spread off", widthDp = 360)
+@Composable
+internal fun SevenDayPageWithPerModelSpreadOffPreview() {
+    Frame {
+        SevenDayPage(
+            days = SAMPLE_WEEK,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            distanceUnit = app.clothescast.core.domain.model.DistanceUnit.KILOMETERS,
+            weekPerModelHourly = SAMPLE_WEEK_PER_MODEL_HOURLY,
+            showModelSpread = false,
+            scrollState = androidx.compose.foundation.rememberScrollState(),
+            onChevronTap = {},
+        )
+    }
+}
+
+@Preview(name = "Seven-day page · with per-model spread on", widthDp = 360)
+@Composable
+internal fun SevenDayPageWithPerModelSpreadOnPreview() {
+    Frame {
+        SevenDayPage(
+            days = SAMPLE_WEEK,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            distanceUnit = app.clothescast.core.domain.model.DistanceUnit.KILOMETERS,
+            weekPerModelHourly = SAMPLE_WEEK_PER_MODEL_HOURLY,
+            showModelSpread = true,
+            scrollState = androidx.compose.foundation.rememberScrollState(),
+            onChevronTap = {},
+        )
+    }
+}
+
 // Exercises the [ScrubMomentFormat.DayPlusHour] readout path the 7-day
 // page wires up, without standing up the whole SevenDayPage (which owns
 // its own scrub controller internally). Pre-scrubs to Wed 14:00 against

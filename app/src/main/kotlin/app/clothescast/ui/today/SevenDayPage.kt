@@ -27,12 +27,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import android.text.format.DateUtils
 import app.clothescast.R
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DistanceUnit
@@ -209,36 +207,6 @@ internal fun SevenDayPage(
     }
     val weekAheadText = weekAheadInsight?.let { weekAheadFormatter.formatWeekAhead(it) }
 
-    // Start–end label in the centered slot of the header card (matches where
-    // the per-period date renders in [InsightCard]). [DateUtils.formatDateRange]
-    // gives a locale-correct rendering — "May 26 – Jun 1" in en, "26. Mai – 1.
-    // Juni" in de — and elides the year when both ends sit in the current
-    // calendar year, surfacing it for the few-times-a-year window that
-    // straddles New Year. Null on legacy short-days payloads so the centered
-    // slot stays empty rather than reading e.g. "May 26 – May 26".
-    val locale = LocalConfiguration.current.locales[0]
-    val dateRangeLabel: String? = remember(days, locale, context) {
-        val start = days.firstOrNull()?.date ?: return@remember null
-        val end = days.lastOrNull()?.date ?: return@remember null
-        if (start == end) return@remember null
-        // Render in the forecast's wall-clock zone when known (forecast dates
-        // are wall-clock local to the upstream timezone) so a user looking at
-        // a manual location in a different zone sees the dates that match the
-        // chart's x-axis. Falls back to systemDefault on legacy cached
-        // payloads that predate forecastZone.
-        val zone = forecastZone ?: ZoneId.systemDefault()
-        val startMs = start.atStartOfDay(zone).toInstant().toEpochMilli()
-        val endMs = end.atStartOfDay(zone).toInstant().toEpochMilli()
-        DateUtils.formatDateRange(
-            context,
-            java.util.Formatter(StringBuilder(32), locale),
-            startMs,
-            endMs,
-            DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_MONTH,
-            zone.id,
-        ).toString()
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -250,14 +218,12 @@ internal fun SevenDayPage(
     ) {
         // Page header — same visual treatment as [InsightCard] on pages 0 / 1:
         // a 20.dp-padded Card with the chevron in a 28.dp slot on the left,
-        // the start–end date range in the centered position the per-period
-        // date label occupies on those pages (e.g. "May 26 – Jun 1"), and the
-        // prose headline below in headlineSmall (matching the per-period
-        // insight prose typography). The TopAppBar above carries the
-        // "Next 7 days" page title via [topBarTitleRes].
-        // Reserving 28.dp on the right keeps the title in the same horizontal
-        // position as the date on pages 0 / 1, so swiping between pages
-        // doesn't jitter the centered label sideways.
+        // a "Next 7 days" label in the centered position the per-period
+        // label occupies on those pages, and the prose headline below in
+        // headlineSmall (matching the per-period insight prose typography).
+        // Reserving 28.dp on the right keeps the label in the same horizontal
+        // position as the per-period label on pages 0 / 1, so swiping between
+        // pages doesn't jitter the centered label sideways.
         //
         // The prose slot shows the week-ahead headline when one fires (rain,
         // a notable temperature shift, or a persistent hot / cold run); a
@@ -299,13 +265,11 @@ internal fun SevenDayPage(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        if (dateRangeLabel != null) {
-                            Text(
-                                text = dateRangeLabel,
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
+                        Text(
+                            text = stringResource(R.string.today_title_week),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                     Box(modifier = Modifier.size(28.dp))
                 }

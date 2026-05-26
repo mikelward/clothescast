@@ -64,6 +64,14 @@ data class TodayState(
     val nextPeriodInsight: Insight? = null,
     val workStatus: WorkStatus = WorkStatus.Idle,
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
+    /**
+     * Feels-like delta (°C) the today / tonight delta clause and the 7-day
+     * page's week-ahead temperature-shift rule must clear before emitting.
+     * Mirrors `UserPreferences.deltaThresholdC` so the same Settings toggle
+     * gates both surfaces; `null` disables the rule entirely (the user's
+     * "Temperature change: Off" setting).
+     */
+    val deltaThresholdC: Double? = 3.0,
     val rangeFormat: RangeFormat = RangeFormat.DEGREES,
     val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     val bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
@@ -436,6 +444,7 @@ class TodayViewModel(
             nextPeriodInsight = nextPeriodInsight,
             workStatus = workStatus,
             temperatureUnit = prefs.temperatureUnit,
+            deltaThresholdC = prefs.deltaThresholdC,
             rangeFormat = prefs.rangeFormat,
             clothesFormat = prefs.clothesFormat,
             bottomsFormat = prefs.bottomsFormat,

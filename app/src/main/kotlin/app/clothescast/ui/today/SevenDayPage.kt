@@ -2,9 +2,9 @@ package app.clothescast.ui.today
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
@@ -34,8 +35,11 @@ import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.windSpeedUnit
+import app.clothescast.core.domain.usecase.DeriveWeekAheadInsight
+import app.clothescast.insight.InsightFormatter
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import java.time.LocalDateTime
@@ -86,6 +90,24 @@ internal fun SevenDayPage(
     scrollState: ScrollState,
     onChevronTap: () -> Unit,
     forecastZone: ZoneId? = null,
+    region: Region = Region.SYSTEM,
+    /**
+     * Mirrors `TodayState.deltaThresholdC` — the feels-like swing (°C) the
+     * week-ahead temperature-shift rule must clear before emitting "X°
+     * cooler/warmer …". `null` disables the rule (the user's "Temperature
+     * change: Off" setting), keeping the headline in sync with the today /
+     * tonight delta clause that already honours the same preference.
+     *
+     * TODO: revisit whether the weekly headline should follow the today /
+     * tonight `Temperature change` setting at all. Sharing the pref keeps
+     * the two surfaces consistent for the "I don't want temperature noise"
+     * user, but the 7-day page may be exactly where that user does want a
+     * cooler-than-today signal (it's the only place such a signal can come
+     * from on a future day). If we end up wanting an independent gate, the
+     * cleanest move is a separate `weeklyDeltaThresholdC` pref + state
+     * field, plumbed through here in place of this one.
+     */
+    deltaThresholdC: Double? = 3.0,
 ) {
     // Flatten every day's hourly stream into a single list. The chart
     // composables read [hourly[idx].time.hour] only for the bottom-axis
@@ -146,6 +168,22 @@ internal fun SevenDayPage(
         }
     }
 
+    // The week-ahead headline (rain / temperature shift / persistence) is
+    // derived from the same day list the charts read. The renderer returns
+    // null on a calm flat week, in which case we skip the card entirely —
+    // no headline beats a vacuous one. Today is days[0] (the page composes
+    // [currentDay] + [upcomingDays] in that order); upstream callers that
+    // pass <2 days have already been short-circuited above.
+    val weekAheadInsight = remember(days, deltaThresholdC) {
+        val todayDay = days.firstOrNull() ?: return@remember null
+        DeriveWeekAheadInsight()(todayDay, days.drop(1), deltaThresholdC = deltaThresholdC)
+    }
+    val context = LocalContext.current
+    val weekAheadFormatter = remember(context, region, temperatureUnit) {
+        InsightFormatter.forRegion(context, region, temperatureUnit)
+    }
+    val weekAheadText = weekAheadInsight?.let { weekAheadFormatter.formatWeekAhead(it) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -155,37 +193,72 @@ internal fun SevenDayPage(
             .padding(top = 16.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        // Header card with the back chevron + page title. Kept separate
-        // from the chart stack so the chevron sits at the top of the
-        // viewport regardless of how many charts render below.
+        // Page header — same visual treatment as [InsightCard] on pages 0 / 1:
+        // a 20.dp-padded Card with the chevron in a 28.dp slot on the left,
+        // "This week" in the centered position the date / location label
+        // occupies on those pages, and the prose headline below in
+        // headlineSmall (matching the per-period insight prose typography).
+        // Reserving 28.dp on the right keeps the title in the same horizontal
+        // position as the date on pages 0 / 1, so swiping between pages
+        // doesn't jitter the centered label sideways.
+        //
+        // The prose slot shows the week-ahead headline when one fires (rain,
+        // a notable temperature shift, or a persistent hot / cold run); a
+        // generic "Steady week ahead." line on a calm flat week so the card
+        // always carries content; and the legacy "Will be ready after the
+        // next forecast." line on pre-7-day-fetch cached payloads where
+        // [days] is empty or has fewer than 2 entries.
+        //
+        // TODO: extract an `InsightCardShell` composable shared with
+        // [InsightCard] so the chevron-row geometry / padding / spacing live
+        // in one place. Today this block is a hand-rolled copy of
+        // InsightCard's Card+Row+Column scaffolding (TodayScreen.kt:1784–1859);
+        // if someone retunes the chevron slot size, the inter-row spacing, or
+        // the centered-label typography there, this card silently drifts.
+        // The refactor needs the shell flexible enough for both shapes
+        // (optional center content: date+location chip vs. plain label;
+        // optional generated-at footer; optional right chevron) and touches
+        // the today/tonight code path + every snapshot through `InsightCard`,
+        // which is why it's deferred to a follow-up rather than landed here.
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier.padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(
-                        onClick = onChevronTap,
-                        modifier = Modifier.size(28.dp),
+                    Box(modifier = Modifier.size(28.dp)) {
+                        IconButton(
+                            onClick = onChevronTap,
+                            modifier = Modifier.size(28.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                contentDescription = stringResource(R.string.today_back_to_primary),
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                            contentDescription = stringResource(R.string.today_back_to_primary),
+                        Text(
+                            text = stringResource(R.string.today_title_week),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-                    Spacer(modifier = Modifier.size(8.dp))
-                    Text(
-                        text = stringResource(R.string.today_week_card_title),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
+                    Box(modifier = Modifier.size(28.dp))
                 }
-                if (days.size < 2) {
-                    Text(
-                        text = stringResource(R.string.today_week_empty),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                val proseText = when {
+                    days.size < 2 -> stringResource(R.string.today_week_empty)
+                    weekAheadText != null -> weekAheadText
+                    else -> stringResource(R.string.today_week_ahead_steady)
                 }
+                Text(
+                    text = proseText,
+                    style = MaterialTheme.typography.headlineSmall,
+                )
             }
         }
 

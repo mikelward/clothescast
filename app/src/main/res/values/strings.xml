@@ -358,8 +358,31 @@
     <string name="today_placeholder_body">Will be ready around %1$s.</string>
 
     <string name="today_title_week">This week</string>
-    <string name="today_week_card_title">7-day forecast</string>
     <string name="today_week_empty">Will be ready after the next forecast.</string>
+
+    <!-- Week-ahead headline shown above the 7-day chart deck. Produced by
+         InsightFormatter.formatWeekAhead from a WeekAheadInsight. "%1$s" is
+         the day reference rendered by today_week_ahead_day_tomorrow or
+         today_week_ahead_day_on_named. -->
+    <string name="today_week_ahead_rain_likely">Rain %1$s.</string>
+    <string name="today_week_ahead_rain_possible">Chance of rain %1$s.</string>
+    <string name="today_week_ahead_snow_likely">Snow %1$s.</string>
+    <string name="today_week_ahead_snow_possible">Chance of snow %1$s.</string>
+    <!-- "%1$d" is whole degrees of feels-like swing, always positive. -->
+    <string name="today_week_ahead_warmer">%1$d° warmer %2$s.</string>
+    <string name="today_week_ahead_cooler">%1$d° cooler %2$s.</string>
+    <string name="today_week_ahead_stays_hot">Hot all week.</string>
+    <string name="today_week_ahead_stays_cold">Cold all week.</string>
+    <!-- Fallback when no week-ahead rule fires — calm temperatures, no rain
+         worth mentioning, no extreme-band persistence. Keeps the headline
+         slot occupied so the card always carries content. -->
+    <string name="today_week_ahead_steady">Steady week ahead.</string>
+
+    <!-- Day reference substituted into the headlines above. "%1$s" is the
+         long day-of-week name in the user's locale (Thursday, Donnerstag,
+         …); the tomorrow form drops the day name entirely. -->
+    <string name="today_week_ahead_day_tomorrow">tomorrow</string>
+    <string name="today_week_ahead_day_on_named">on %1$s</string>
 
     <string name="onboarding_title">Welcome to ClothesCast</string>
     <string name="onboarding_subtitle">Three quick choices and you\'re set. Tweak later in Settings.</string>

@@ -384,6 +384,13 @@
     <string name="today_week_ahead_day_tomorrow">tomorrow</string>
     <string name="today_week_ahead_day_on_named">on %1$s</string>
 
+    <!-- Joins multiple week-ahead clauses into one sentence, e.g.
+         "5° cooler tomorrow, chance of rain on Monday." Each clause is
+         rendered using the templates above with its trailing period
+         stripped before joining. Wrapped in double-quotes so Android
+         keeps the trailing space — bare ", " would be trimmed. -->
+    <string name="today_week_ahead_separator">", "</string>
+
     <string name="onboarding_title">Welcome to ClothesCast</string>
     <string name="onboarding_subtitle">Three quick choices and you\'re set. Tweak later in Settings.</string>
     <string name="onboarding_subtitle_tv">Two quick choices and you\'re set. Tweak later in Settings.</string>

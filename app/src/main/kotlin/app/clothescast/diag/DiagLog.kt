@@ -9,6 +9,7 @@ import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,8 +52,14 @@ object DiagLog {
     private val executor = Executors.newSingleThreadExecutor { r ->
         Thread(r, "DiagLog-writer").apply { isDaemon = true }
     }
+    // UTC so log lines from different testers (and the same tester across
+    // timezone changes mid-session) line up on a single timeline. The literal
+    // `Z` suffix keeps that visible in every line — the format omits the year
+    // and offset characters to stay compact within the 200KB rotation budget.
     private val timestampFormat = ThreadLocal.withInitial {
-        SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.US)
+        SimpleDateFormat("MM-dd HH:mm:ss.SSS'Z'", Locale.US).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }
     }
 
     @Volatile

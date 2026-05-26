@@ -462,20 +462,29 @@ private fun TodayContent(
                     // don't surface a 3rd period (tomorrow) on page 2; the
                     // outfit row stays the at-a-glance today+tonight summary.
                     outfitInsight = state.thisPeriodInsight,
-                    // Chevrons are unchanged from the 2-page world: a forward
-                    // chevron on page 0 (to next-period) and a back chevron
-                    // on page 1 (to this-period). The new 7-day page is
-                    // reachable by swiping right from page 1 — the same
-                    // discovery pattern iOS Weather uses for its 10-day
-                    // strip — and its own back chevron returns there.
-                    showChevronRight = (page == 0),
+                    // Chevron layout across the three pages:
+                    //   page 0 (this period) — right chevron → page 1
+                    //   page 1 (next period) — left chevron → page 0,
+                    //                          right chevron → page 2
+                    //   page 2 (7-day overview) — its own back chevron → page 1
+                    // The 7-day page has a left chevron that doesn't surface
+                    // here (SevenDayPage owns its own header), so we only
+                    // wire chevrons for pages 0 and 1 in this block.
+                    showChevronRight = (page == 0 || page == 1),
                     showChevronLeft = (page == 1),
                     workStatusToShow = workStatusToShow,
                     locationActionRequired = locationActionRequired,
                     onChevronTap = {
+                        // Left chevron on page 1 → back to page 0.
+                        // Right chevron on page 0 → forward to page 1.
                         pagerScope.launch {
                             pagerState.animateScrollToPage(if (page == 0) 1 else 0)
                         }
+                    },
+                    onChevronRightTap = if (page == 1) {
+                        { pagerScope.launch { pagerState.animateScrollToPage(2) } }
+                    } else {
+                        null
                     },
                     onAdjustThreshold = onAdjustThreshold,
                     onNavigateToClothes = onNavigateToClothes,
@@ -579,6 +588,7 @@ private fun TodayPage(
     workStatusToShow: WorkStatus,
     locationActionRequired: Boolean,
     onChevronTap: () -> Unit,
+    onChevronRightTap: (() -> Unit)? = null,
     onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
     onNavigateToFormat: () -> Unit,
@@ -651,6 +661,8 @@ private fun TodayPage(
                     tonightTime = state.tonightTime,
                     showChevronLeft = showChevronLeft,
                     onChevronTap = onChevronTap,
+                    showChevronRight = showChevronRight,
+                    onChevronRightTap = onChevronRightTap,
                 )
                 return@Column
             }
@@ -686,6 +698,7 @@ private fun TodayPage(
                 showChevronRight = showChevronRight,
                 showChevronLeft = showChevronLeft,
                 onChevronTap = onChevronTap,
+                onChevronRightTap = onChevronRightTap,
                 onLongPressDate = onLongPressDate,
                 onNavigateToFormat = onNavigateToFormat,
             )
@@ -872,6 +885,8 @@ internal fun MissingPeriodPlaceholder(
     tonightTime: LocalTime,
     showChevronLeft: Boolean,
     onChevronTap: () -> Unit,
+    showChevronRight: Boolean = false,
+    onChevronRightTap: (() -> Unit)? = null,
 ) {
     val readyAt = if (period == ForecastPeriod.TODAY) morningTime else tonightTime
     val readyAtText = formatHourMinute(readyAt)
@@ -886,9 +901,10 @@ internal fun MissingPeriodPlaceholder(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             // Matches InsightCard's three-zone header: back-chevron in the
-            // left slot, centred title, empty right slot reserved so swiping
-            // between an InsightCard and this placeholder doesn't shift the
-            // header horizontally.
+            // left slot, centred title, optional forward-chevron in the
+            // right slot. Both 28.dp slots stay reserved whether or not a
+            // chevron renders, so swiping between an InsightCard and this
+            // placeholder doesn't shift the header horizontally.
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(modifier = Modifier.size(28.dp)) {
                     if (showChevronLeft) {
@@ -913,7 +929,19 @@ internal fun MissingPeriodPlaceholder(
                         style = MaterialTheme.typography.titleMedium,
                     )
                 }
-                Box(modifier = Modifier.size(28.dp))
+                Box(modifier = Modifier.size(28.dp)) {
+                    if (showChevronRight && onChevronRightTap != null) {
+                        IconButton(
+                            onClick = onChevronRightTap,
+                            modifier = Modifier.size(28.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = stringResource(R.string.today_view_other_period),
+                            )
+                        }
+                    }
+                }
             }
             Text(
                 text = stringResource(
@@ -1691,20 +1719,33 @@ internal fun InsightCard(
      */
     rainAccessory: RainAccessory = RainAccessory.NONE,
     /**
-     * Page-1 affordance: when true, a tappable chevron-right is rendered at
-     * the trailing edge of the date row, hinting that the user can swipe (or
-     * tap) to see the paired period's charts.
+     * Right-edge chevron affordance. On page 0 it points to the next-period
+     * page; on page 1 (paired with [showChevronLeft]) it points to the
+     * 7-day overview page. The destination is fully determined by the
+     * caller — see [onChevronRightTap].
      */
     showChevronRight: Boolean = false,
     /**
-     * Page-2 affordance: a tappable chevron-left at the trailing edge of the
-     * date row, jumping back to the primary period. Mutually exclusive with
-     * [showChevronRight] in practice; both default to false so existing
-     * non-pager call sites — and every default-arg preview — keep their
-     * snapshots byte-identical.
+     * Left-edge chevron affordance: jumps back to the previous page. Can
+     * appear alongside [showChevronRight] (on page 1 it does, since that
+     * page sits between page 0 and the 7-day overview). Both default to
+     * false so existing non-pager call sites — and every default-arg
+     * preview — keep their snapshots byte-identical.
      */
     showChevronLeft: Boolean = false,
+    /**
+     * Fallback tap callback for either chevron. The left chevron always
+     * uses this; the right chevron uses it only when [onChevronRightTap]
+     * is null. Existing call sites that show only one chevron at a time
+     * keep wiring this single callback.
+     */
     onChevronTap: (() -> Unit)? = null,
+    /**
+     * Right-chevron override. When non-null, the right chevron taps invoke
+     * this instead of [onChevronTap], so a page showing both chevrons can
+     * route left and right to different destinations.
+     */
+    onChevronRightTap: (() -> Unit)? = null,
     /**
      * Hidden developer shortcut: long-pressing the date label invokes this
      * (the Today screen wires it to open Developer settings). Null disables
@@ -1737,7 +1778,8 @@ internal fun InsightCard(
     val locationLabel = shortLocationLabel(location?.displayName)
         ?: location?.let { stringResource(R.string.today_location_unknown) }
     val renderLeftChevron = showChevronLeft && onChevronTap != null
-    val renderRightChevron = showChevronRight && onChevronTap != null
+    val rightChevronAction = onChevronRightTap ?: onChevronTap
+    val renderRightChevron = showChevronRight && rightChevronAction != null
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1803,7 +1845,7 @@ internal fun InsightCard(
                 Box(modifier = Modifier.size(28.dp)) {
                     if (renderRightChevron) {
                         IconButton(
-                            onClick = { onChevronTap?.invoke() },
+                            onClick = { rightChevronAction?.invoke() },
                             modifier = Modifier.size(28.dp),
                         ) {
                             Icon(

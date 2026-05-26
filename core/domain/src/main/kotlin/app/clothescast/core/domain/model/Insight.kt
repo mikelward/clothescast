@@ -102,4 +102,33 @@ data class Insight(
      * location in a different zone.
      */
     val forecastZone: ZoneId? = null,
+    /**
+     * Today's full daily aggregates (min / max / feels-like / condition) —
+     * the same `bundle.today` the worker captured. Exposed here so the
+     * Today screen's 7-day chart can plot today alongside [upcomingDays]
+     * without needing the raw snapshot. Null on legacy cached insights
+     * that predate this field.
+     */
+    val currentDay: DailyForecast? = null,
+    /**
+     * Days after [forDate], in date order — tomorrow plus the rest of the
+     * 7-day window when the upstream fetch covered it. Drives the Today
+     * screen's 7-day pager page (charts only — no prose, no clothes rules
+     * applied to these entries). Empty on legacy fixtures / cached payloads
+     * that predate the 7-day fetch; the page hides itself when the combined
+     * series (today + upcomingDays) is shorter than 2 entries.
+     */
+    val upcomingDays: List<DailyForecast> = emptyList(),
+    /**
+     * The raw multi-model hourly bundle, *unsliced* — covers whatever window
+     * the multi-model fetcher actually pulled (currently 7 days, matching
+     * the primary call). Distinct from [perModelHourly] which is sliced to
+     * the per-period window for the Today / Tonight cards; this is the full
+     * series the 7-day pager page needs to render its per-model diagnostic
+     * cards (wind / humidity / cloud / solar / UV / sunshine) and the
+     * model-spread overlays on the temp + precip cards across the week.
+     * Null on legacy fixtures, on insights whose side-band multi-model
+     * fetch failed, and on cached payloads predating this field.
+     */
+    val weekPerModelHourly: PerModelHourly? = null,
 )

@@ -75,13 +75,17 @@ internal class MultiModelConfidenceFetcher(
                 }
                 parameter("latitude", location.latitude)
                 parameter("longitude", location.longitude)
-                // forecast_days=2 so the per-model series covers today AND tomorrow's
-                // pre-dawn hours. The tonight insight's evening tie-in needs the wrap
-                // past midnight to spot rain that one model sees overnight but the
-                // base-only fallback misses. Confidence aggregates read `daily[0]`
-                // (today's value), so widening the window doesn't disturb the
-                // tier calculation downstream.
-                parameter("forecast_days", 2)
+                // forecast_days=7 keeps the per-model series aligned with the
+                // primary call's 7-day window so the Today screen's 7-day pager
+                // page can render its per-model diagnostic cards (wind,
+                // humidity, cloud, solar, UV, sunshine) and model-spread
+                // overlays across the full week instead of going dark past
+                // tomorrow morning. The tonight insight's evening tie-in still
+                // reads tomorrow's pre-dawn hours out of the same series.
+                // Confidence aggregates read `daily[0]` (today's value), so
+                // widening the window doesn't disturb the tier calculation
+                // downstream.
+                parameter("forecast_days", 7)
                 parameter("timezone", "auto")
                 parameter("daily", "apparent_temperature_max,precipitation_probability_max")
                 // cloud_cover_low (the deck below ~2 km) rather than total

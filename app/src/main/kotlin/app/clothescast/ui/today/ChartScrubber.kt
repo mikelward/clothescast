@@ -145,6 +145,34 @@ internal class ChartScrubController {
 
 internal val LocalChartScrub = compositionLocalOf<ChartScrubController?> { null }
 
+/**
+ * Optional override for the x-axis label formatter shared by every chart on
+ * the Today screen. Null (the default) keeps the existing hour-of-day
+ * formatter, which is what the per-period pages want. The 7-day page wraps
+ * its chart stack in a `CompositionLocalProvider(LocalChartBottomFormatter
+ * provides …)` with a day-of-week formatter so 168 hourly samples don't
+ * read as the same 00–23 axis repeated seven times.
+ *
+ * Each chart composable consults this local at render time; passing it via
+ * the CompositionLocal instead of an extra parameter on every chart +
+ * card keeps the per-period call sites byte-identical and avoids
+ * cascading signature churn through ~12 composables.
+ */
+internal val LocalChartBottomFormatter =
+    compositionLocalOf<com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter?> { null }
+
+/**
+ * Paired with [LocalChartBottomFormatter]. Vico won't accept an empty string
+ * from a value formatter, so on the 7-day page where we only want to label
+ * one tick per day (the day-of-week at noon) we hand it an
+ * [HorizontalAxis.ItemPlacer] that places ticks at multiples of 24 instead
+ * of letting Vico's default placer try to render a label at every hour.
+ * Null on the per-period pages so the existing default placer keeps its
+ * behaviour byte-identical.
+ */
+internal val LocalChartBottomItemPlacer =
+    compositionLocalOf<com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis.ItemPlacer?> { null }
+
 @Composable
 internal fun rememberChartScrubController(): ChartScrubController =
     remember { ChartScrubController() }

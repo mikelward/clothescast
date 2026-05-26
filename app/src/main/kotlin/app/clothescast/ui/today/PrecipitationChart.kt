@@ -113,12 +113,13 @@ fun PrecipitationChart(
         }
     }
 
-    val bottomFormatter = remember(hourly) {
+    val defaultBottomFormatter = remember(hourly) {
         CartesianValueFormatter { _, value, _ ->
             val idx = value.toInt().coerceIn(0, hourly.lastIndex)
             "%02d".format(hourly[idx].time.hour)
         }
     }
+    val bottomFormatter = LocalChartBottomFormatter.current ?: defaultBottomFormatter
 
     // Y: fixed 0..100 — probability is a percentage, so a calm day with a
     // few-percent peak should still show a flat baseline near the bottom of
@@ -176,7 +177,9 @@ fun PrecipitationChart(
                     rangeProvider = rangeProvider,
                 ),
                 startAxis = VerticalAxis.rememberStart(valueFormatter = startFormatter),
-                bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
+                bottomAxis = LocalChartBottomItemPlacer.current?.let { placer ->
+                    HorizontalAxis.rememberBottom(itemPlacer = placer, valueFormatter = bottomFormatter)
+                } ?: HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
                 decorations = decorations,
             ),
             modelProducer = producer,

@@ -9,23 +9,25 @@ import java.time.LocalTime
 import java.time.ZoneId
 
 /**
- * Maps an [OpenMeteoResponse] (queried with past_days=1&forecast_days=2) into a
+ * Maps an [OpenMeteoResponse] (queried with past_days=1&forecast_days=7) into a
  * [ForecastBundle]. Index 0 in the daily arrays is yesterday, index 1 is today,
- * index 2 (when present) is tomorrow. Tomorrow's daily aggregates flow through on
+ * index 2 (when present) is tomorrow, and indices 3..N are the rest of the
+ * 7-day window. Tomorrow's daily aggregates flow through on
  * [ForecastBundle.tomorrow] (so the side-by-side outfit row can render the
  * tomorrow-morning suggestion); tomorrow's hourly entries flow through on
  * [ForecastBundle.tomorrowHourly] so the tonight insight can wrap from 19:00 today
- * into tomorrow's pre-dawn morning.
+ * into tomorrow's pre-dawn morning. Days 2..N feed [ForecastBundle.upcomingDays]
+ * (tomorrow + the rest, in date order) for the Today screen's 7-day pager page.
  *
- * The hourly stream covers all three days. We split it by date: today's hours
- * attach to the today forecast, tomorrow's hours attach to the tomorrow forecast
- * (and are also exposed via `tomorrowHourly` for the tonight slice). Yesterday's
- * hourlies attach to the yesterday forecast so the delta clause can slice both
- * sides to the same daytime window for a symmetric comparison.
+ * The hourly stream covers every day in the response. We split it by date: each
+ * day's hours attach to the matching [DailyForecast.hourly]. Yesterday's hourlies
+ * attach to the yesterday forecast so the delta clause can slice both sides to
+ * the same daytime window for a symmetric comparison.
  *
- * Tolerates 2-entry responses (forecast_days=1) for backwards compatibility with
- * older fixtures and any caller that downgrades the request — tomorrow comes
- * through null + empty hourly in that case.
+ * Tolerates 2-entry responses (forecast_days=1) and 3-entry responses
+ * (forecast_days=2) for backwards compatibility with older fixtures and any
+ * caller that downgrades the request — tomorrow / upcomingDays come through
+ * null / empty in that case.
  */
 internal object OpenMeteoMapper {
     fun toBundle(response: OpenMeteoResponse): ForecastBundle {
@@ -49,11 +51,31 @@ internal object OpenMeteoMapper {
             emptyList<HourlyForecast>() to null
         }
 
+        // Tomorrow + everything past tomorrow, in date order. With
+        // `forecast_days=7` this is 6 entries (tomorrow + the next five);
+        // shorter responses degrade gracefully to a shorter list (or empty
+        // on a 2-entry legacy fixture). Tomorrow is duplicated between
+        // `tomorrow` above and `upcomingDays[0]` so existing tonight-insight
+        // paths can keep reading `tomorrow` without change.
+        val upcomingDays = if (response.daily.time.size >= 3) {
+            (2 until response.daily.time.size).map { index ->
+                val date = LocalDate.parse(response.daily.time[index])
+                response.daily.toForecast(
+                    index = index,
+                    date = date,
+                    hourly = response.hourly.forDate(date),
+                )
+            }
+        } else {
+            emptyList()
+        }
+
         return ForecastBundle(
             today = today,
             yesterday = yesterday,
             tomorrowHourly = tomorrowHourly,
             tomorrow = tomorrow,
+            upcomingDays = upcomingDays,
             // Open-Meteo's `timezone=auto` echoes the resolved IANA zone in the
             // response (`America/Los_Angeles`, `Europe/London`, …). Parse
             // defensively — an unparseable / `"GMT+1"`-style value collapses to

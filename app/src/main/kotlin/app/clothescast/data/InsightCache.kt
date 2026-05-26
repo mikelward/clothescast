@@ -219,6 +219,7 @@ class InsightCache(
         val perModelHourly: PerModelHourlyDto? = null,
         val tomorrowHourly: List<HourlyDto> = emptyList(),
         val tomorrow: DailyForecastDto? = null,
+        val upcomingDays: List<DailyForecastDto> = emptyList(),
         val forecastZoneId: String? = null,
     ) {
         fun toDomain(): ForecastBundle = ForecastBundle(
@@ -229,6 +230,7 @@ class InsightCache(
             perModelHourly = perModelHourly?.toDomain(),
             tomorrowHourly = tomorrowHourly.map { it.toDomain() },
             tomorrow = tomorrow?.toDomain(),
+            upcomingDays = upcomingDays.map { it.toDomain() },
             forecastZone = forecastZoneId?.let { runCatching { ZoneId.of(it) }.getOrNull() },
         )
     }
@@ -446,6 +448,7 @@ class InsightCache(
         perModelHourly = perModelHourly?.toDto(),
         tomorrowHourly = tomorrowHourly.map { it.toDto() },
         tomorrow = tomorrow?.toDto(),
+        upcomingDays = upcomingDays.map { it.toDto() },
         forecastZoneId = forecastZone?.id,
     )
 

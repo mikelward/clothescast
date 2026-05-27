@@ -1,13 +1,11 @@
 package app.clothescast.core.domain.usecase
 
 import app.clothescast.core.domain.model.DailyForecast
-import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.WeekAheadClause
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeInstanceOf
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -45,7 +43,7 @@ class DeriveWeekAheadInsightTest {
     }
 
     @Test
-    fun `picks the nearest rainy day and labels Tuesday as on Tuesday`() {
+    fun `picks the nearest rainy day at or above 50 percent`() {
         val upcoming = listOf(
             day(today.date.plusDays(1)),
             day(today.date.plusDays(2), precipPct = 75.0, condition = WeatherCondition.RAIN),
@@ -55,9 +53,9 @@ class DeriveWeekAheadInsightTest {
         val rain = out.rain.shouldNotBeNull()
         rain.date shouldBe today.date.plusDays(2)
         rain.isTomorrow shouldBe false
-        rain.likelihood shouldBe PrecipLikelihood.LIKELY
         rain.condition shouldBe WeatherCondition.RAIN
-        out.temperatureShift.shouldBeNull()
+        out.firstWarmer.shouldBeNull()
+        out.firstCooler.shouldBeNull()
         out.persistence.shouldBeNull()
     }
 
@@ -72,17 +70,6 @@ class DeriveWeekAheadInsightTest {
     }
 
     @Test
-    fun `hedges as POSSIBLE when probability is between 30 and 50`() {
-        val upcoming = listOf(
-            day(today.date.plusDays(1), precipPct = 35.0, condition = WeatherCondition.DRIZZLE),
-        )
-        val out = subject(today, upcoming).shouldNotBeNull()
-        val rain = out.rain.shouldNotBeNull()
-        rain.likelihood shouldBe PrecipLikelihood.POSSIBLE
-        rain.condition shouldBe WeatherCondition.DRIZZLE
-    }
-
-    @Test
     fun `falls back to RAIN when the day condition is non-precipitating`() {
         // 60% probability but the day's headline condition is CLOUDY (base
         // under-called the type). Headline still announces rain.
@@ -94,39 +81,62 @@ class DeriveWeekAheadInsightTest {
     }
 
     @Test
-    fun `rain rule does not fire below the 30 percent floor`() {
-        val upcoming = (1L..6L).map { day(today.date.plusDays(it), precipPct = 25.0) }
+    fun `rain rule does not fire below the 50 percent floor`() {
+        // 35% would have hedged as POSSIBLE under the old rule, but the
+        // weekly headline now only mentions rain when a majority of
+        // consulted models call it (50% on the day-level rollup).
+        val upcoming = listOf(
+            day(today.date.plusDays(1), precipPct = 35.0, condition = WeatherCondition.DRIZZLE),
+            day(today.date.plusDays(2), precipPct = 49.0, condition = WeatherCondition.RAIN),
+        )
         subject(today, upcoming).shouldBeNull()
     }
 
     @Test
-    fun `emits Cooler when the biggest swing is downward`() {
-        // Today high 18. Day +3 drops to 11 (-7) — biggest swing in the window.
+    fun `emits firstCooler at the first day that drops by the threshold`() {
+        // Today high 18. Day +2 already drops to 14 (-4) — that should win
+        // over a bigger swing later (day +3 at 11 / -7).
         val upcoming = listOf(
             day(today.date.plusDays(1), feelsHigh = 17.0),
-            day(today.date.plusDays(2), feelsHigh = 16.0),
+            day(today.date.plusDays(2), feelsHigh = 14.0),
             day(today.date.plusDays(3), feelsHigh = 11.0),
-            day(today.date.plusDays(4), feelsHigh = 14.0),
         )
         val out = subject(today, upcoming).shouldNotBeNull()
-        val cooler = out.temperatureShift.shouldBeInstanceOf<WeekAheadClause.Cooler>()
-        cooler.date shouldBe today.date.plusDays(3)
-        cooler.degrees shouldBe 7
+        val cooler = out.firstCooler.shouldNotBeNull()
+        cooler.date shouldBe today.date.plusDays(2)
         cooler.isTomorrow shouldBe false
+        out.firstWarmer.shouldBeNull()
         out.rain.shouldBeNull()
         out.persistence.shouldBeNull()
     }
 
     @Test
-    fun `emits Warmer with isTomorrow when the swing lands tomorrow`() {
+    fun `emits firstWarmer with isTomorrow when the swing lands tomorrow`() {
         val upcoming = listOf(
             day(today.date.plusDays(1), feelsHigh = 23.0),
             day(today.date.plusDays(2), feelsHigh = 19.0),
         )
         val out = subject(today, upcoming).shouldNotBeNull()
-        val warmer = out.temperatureShift.shouldBeInstanceOf<WeekAheadClause.Warmer>()
+        val warmer = out.firstWarmer.shouldNotBeNull()
         warmer.isTomorrow shouldBe true
-        warmer.degrees shouldBe 5
+        out.firstCooler.shouldBeNull()
+    }
+
+    @Test
+    fun `emits both firstWarmer and firstCooler when the week swings both ways`() {
+        // Today 18°. Day +1 hits 22° (warmer, +4). Day +3 drops to 14° (cooler, -4).
+        val upcoming = listOf(
+            day(today.date.plusDays(1), feelsHigh = 22.0),
+            day(today.date.plusDays(2), feelsHigh = 20.0),
+            day(today.date.plusDays(3), feelsHigh = 14.0),
+        )
+        val out = subject(today, upcoming).shouldNotBeNull()
+        val warmer = out.firstWarmer.shouldNotBeNull()
+        warmer.date shouldBe today.date.plusDays(1)
+        warmer.isTomorrow shouldBe true
+        val cooler = out.firstCooler.shouldNotBeNull()
+        cooler.date shouldBe today.date.plusDays(3)
+        cooler.isTomorrow shouldBe false
     }
 
     @Test
@@ -137,16 +147,10 @@ class DeriveWeekAheadInsightTest {
     }
 
     @Test
-    fun `temperature shift uses the unrounded threshold so 2_6 rounds-to-3 still suppresses`() {
-        val upcoming = listOf(day(today.date.plusDays(1), feelsHigh = today.feelsLikeMaxC + 2.6))
-        subject(today, upcoming).shouldBeNull()
-    }
-
-    @Test
-    fun `null deltaThresholdC disables the temperature shift rule entirely`() {
-        // Same +12°C swing the combo test exercises — but with the rule
-        // disabled (the user's "Temperature change: Off" setting), the
-        // shift slot stays empty and a dry week emits nothing.
+    fun `null deltaThresholdC disables the temperature shift rules entirely`() {
+        // +12°C swing tomorrow would normally fire firstWarmer; with the
+        // rule disabled (the user's "Temperature change: Off" setting),
+        // neither shift slot fills and a dry week emits nothing.
         val upcoming = listOf(
             day(today.date.plusDays(1), feelsHigh = 30.0),
             day(today.date.plusDays(2), feelsHigh = 31.0),
@@ -162,37 +166,37 @@ class DeriveWeekAheadInsightTest {
         )
         val out = subject(today, rainyUpcoming, deltaThresholdC = null).shouldNotBeNull()
         out.rain.shouldNotBeNull()
-        out.temperatureShift.shouldBeNull()
+        out.firstWarmer.shouldBeNull()
+        out.firstCooler.shouldBeNull()
     }
 
     @Test
-    fun `emits both temperature shift and rain when both fire`() {
+    fun `emits temperature shift and rain together when both fire`() {
         // +12°C swing tomorrow, 60% rain in two days — both clauses should appear.
         val upcoming = listOf(
             day(today.date.plusDays(1), feelsHigh = 30.0),
             day(today.date.plusDays(2), precipPct = 60.0, condition = WeatherCondition.RAIN),
         )
         val out = subject(today, upcoming).shouldNotBeNull()
-        val warmer = out.temperatureShift.shouldBeInstanceOf<WeekAheadClause.Warmer>()
+        val warmer = out.firstWarmer.shouldNotBeNull()
         warmer.date shouldBe today.date.plusDays(1)
-        warmer.degrees shouldBe 12
         val rain = out.rain.shouldNotBeNull()
         rain.date shouldBe today.date.plusDays(2)
-        rain.likelihood shouldBe PrecipLikelihood.LIKELY
+        out.firstCooler.shouldBeNull()
         out.persistence.shouldBeNull()
     }
 
     @Test
     fun `combines temperature shift and rain on the same day into two clauses`() {
-        // The rainy day is the same day as the biggest temperature swing.
+        // The rainy day is the same day as the first cooler day.
         // The renderer emits both clauses; the formatter prints two day
-        // references — the duplication is by design (see the plan).
+        // references — the duplication is by design.
         val upcoming = listOf(
             day(today.date.plusDays(1), feelsHigh = 18.0),
             day(today.date.plusDays(2), feelsHigh = 11.0, precipPct = 70.0, condition = WeatherCondition.RAIN),
         )
         val out = subject(today, upcoming).shouldNotBeNull()
-        val cooler = out.temperatureShift.shouldBeInstanceOf<WeekAheadClause.Cooler>()
+        val cooler = out.firstCooler.shouldNotBeNull()
         cooler.date shouldBe today.date.plusDays(2)
         val rain = out.rain.shouldNotBeNull()
         rain.date shouldBe today.date.plusDays(2)
@@ -204,15 +208,16 @@ class DeriveWeekAheadInsightTest {
         val upcoming = (1L..6L).map { day(today.date.plusDays(it), feelsHigh = 30.0 + it * 0.2) }
         val out = subject(hotToday, upcoming).shouldNotBeNull()
         out.persistence shouldBe WeekAheadClause.StaysHot
-        out.temperatureShift.shouldBeNull()
+        out.firstWarmer.shouldBeNull()
+        out.firstCooler.shouldBeNull()
         out.rain.shouldBeNull()
     }
 
     @Test
     fun `emits StaysCold when today and every upcoming day are COLD or FREEZING`() {
-        // Highs cluster within 3° so the shift rule doesn't fire alongside
+        // Highs cluster within 3° so neither shift rule fires alongside
         // persistence — the user's mental model of "stays cold" is that
-        // *neither* day stands out.
+        // *no* day stands out.
         val coldToday = day(today.date, feelsHigh = 6.0)
         val upcoming = listOf(
             day(today.date.plusDays(1), feelsHigh = 5.0),
@@ -241,32 +246,33 @@ class DeriveWeekAheadInsightTest {
         out.persistence shouldBe WeekAheadClause.StaysHot
         val rain = out.rain.shouldNotBeNull()
         rain.date shouldBe today.date.plusDays(4)
-        out.temperatureShift.shouldBeNull()
+        out.firstWarmer.shouldBeNull()
+        out.firstCooler.shouldBeNull()
     }
 
     @Test
     fun `persistence does not fire when one day breaks the band`() {
         // Today and 5 days HOT, one day cool — no persistence call, but the
-        // shift slot fires for the cool day.
+        // cooler slot fires for the cool day.
         val hotToday = day(today.date, feelsHigh = 30.0)
         val upcoming = (1L..5L).map { day(today.date.plusDays(it), feelsHigh = 31.0) } +
             day(today.date.plusDays(6), feelsHigh = 20.0)
         val out = subject(hotToday, upcoming).shouldNotBeNull()
-        out.temperatureShift.shouldBeInstanceOf<WeekAheadClause.Cooler>()
+        out.firstCooler.shouldNotBeNull()
         out.persistence.shouldBeNull()
     }
 
     @Test
     fun `shift slot fills and persistence stays empty when both could fire`() {
         // Today HOT, one upcoming day HOT but a much cooler intermediate day.
-        // Persistence breaks because of the cool day; the shift slot fires.
+        // Persistence breaks because of the cool day; the cooler slot fires.
         val hotToday = day(today.date, feelsHigh = 30.0)
         val upcoming = listOf(
             day(today.date.plusDays(1), feelsHigh = 20.0),
             day(today.date.plusDays(2), feelsHigh = 31.0),
         )
         val out = subject(hotToday, upcoming).shouldNotBeNull()
-        out.temperatureShift.shouldBeInstanceOf<WeekAheadClause.Cooler>()
+        out.firstCooler.shouldNotBeNull()
         out.persistence.shouldBeNull()
     }
 }

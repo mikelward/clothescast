@@ -1,41 +1,39 @@
 package app.clothescast.core.domain.usecase
 
 import app.clothescast.core.domain.model.DailyForecast
-import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.WeekAheadClause
 import app.clothescast.core.domain.model.WeekAheadInsight
-import kotlin.math.abs
-import kotlin.math.roundToInt
 
 /**
  * Pure-function builder for [WeekAheadInsight] from today's forecast and the
  * upcoming-days slice the 7-day page already plots. Returns null when nothing
  * worth surfacing fires — a calm week ahead doesn't need a headline.
  *
- * Each clause slot fires independently so a noisy week shows both stories at
- * once ("5° cooler tomorrow, chance of rain Monday.") rather than collapsing
- * to one. The slots:
- *  1. **Rain** — nearest upcoming day whose day-level precip probability
- *     clears [POSSIBLE_THRESHOLD]. [PrecipLikelihood.LIKELY] when it also
- *     clears [LIKELY_THRESHOLD]; otherwise POSSIBLE ("Chance of rain on …").
- *     Condition is the day's reported condition when it's a precipitating
- *     type, falling back to [WeatherCondition.RAIN] so the prose stays
- *     honest when the base under-called the type.
- *  2. **Cooler / Warmer** — upcoming day with the biggest feels-like-high
- *     delta from today. Only emitted when the unrounded delta clears
- *     [deltaThresholdC] (defaults to 3°C, matching the today-page
- *     [RenderInsightSummary] delta clause). Ties take the nearest day.
- *     `null` disables the slot entirely — matches the same `null` semantic
- *     [RenderInsightSummary] uses for the user's "Temperature change: Off"
- *     setting.
+ * Each clause slot fires independently and the formatter sorts the surviving
+ * clauses chronologically so a noisy week shows several stories at once
+ * ("Warmer tomorrow, cooler Sunday.") rather than collapsing to one. The
+ * slots:
+ *  1. **Rain** — first upcoming day whose day-level precip probability
+ *     clears [LIKELY_THRESHOLD] (50%, i.e. a majority of consulted models
+ *     are calling rain). Condition is the day's reported condition when
+ *     it's a precipitating type, falling back to [WeatherCondition.RAIN]
+ *     so the prose stays honest when the base under-called the type. We
+ *     deliberately don't hedge on a sub-50% "chance of rain" tier here —
+ *     the today / tonight insights are where that fine-grained call lives.
+ *  2. **First warmer / first cooler** — first upcoming day whose
+ *     feels-like high diverges from today's by [deltaThresholdC] (defaults
+ *     to 3°C, matching the today-page [RenderInsightSummary] delta clause).
+ *     Both slots can fire on the same week. `null` disables the slots
+ *     entirely — matches the same `null` semantic [RenderInsightSummary]
+ *     uses for the user's "Temperature change: Off" setting.
  *  3. **Stays hot / cold** — today and every upcoming day land in the
  *     extreme band ([TemperatureBand.HOT] for hot; COLD or FREEZING for
- *     cold). Suppressed when the temperature-shift slot fires; mathematically
- *     they can't both be true (a flat band leaves no room for a 3°C+ swing),
- *     but the explicit gate keeps a future threshold change from leaking
- *     "Hot all week, 4° cooler Sunday" through.
+ *     cold). Suppressed when either temperature-shift slot fires;
+ *     mathematically they can't both be true (a flat band leaves no room
+ *     for a 3°C+ swing), but the explicit gate keeps a future threshold
+ *     change from leaking "Hot all week, warmer Sunday" through.
  *
  * The renderer doesn't peek at per-model data on purpose. The 7-day page
  * already shows model spread on its primary charts; a single-headline
@@ -54,16 +52,22 @@ class DeriveWeekAheadInsight {
         if (upcomingDays.isEmpty()) return null
 
         val rain = rainHeadline(today, upcomingDays)
-        val shift = temperatureShiftHeadline(today, upcomingDays, deltaThresholdC)
+        val warmer = firstWarmerHeadline(today, upcomingDays, deltaThresholdC)
+        val cooler = firstCoolerHeadline(today, upcomingDays, deltaThresholdC)
         // Persistence and a real temperature shift can't both fire — the
         // persistence rule requires every day to land in the same extreme
         // band, which mathematically rules out a 3°C+ feels-like-high swing
         // from today. Belt-and-braces: prefer the more specific shift when
-        // both somehow appear (e.g. if the delta threshold is lowered).
-        val persistence = if (shift == null) persistenceHeadline(today, upcomingDays) else null
+        // either one somehow appears (e.g. if the delta threshold is lowered).
+        val persistence = if (warmer == null && cooler == null) {
+            persistenceHeadline(today, upcomingDays)
+        } else {
+            null
+        }
 
         val bundle = WeekAheadInsight(
-            temperatureShift = shift,
+            firstWarmer = warmer,
+            firstCooler = cooler,
             rain = rain,
             persistence = persistence,
         )
@@ -71,41 +75,42 @@ class DeriveWeekAheadInsight {
     }
 
     private fun rainHeadline(today: DailyForecast, upcomingDays: List<DailyForecast>): WeekAheadClause.Rain? {
-        val wet = upcomingDays.firstOrNull { it.precipitationProbabilityMaxPct >= POSSIBLE_THRESHOLD }
+        val wet = upcomingDays.firstOrNull { it.precipitationProbabilityMaxPct >= LIKELY_THRESHOLD }
             ?: return null
-        val likelihood = if (wet.precipitationProbabilityMaxPct >= LIKELY_THRESHOLD) {
-            PrecipLikelihood.LIKELY
-        } else {
-            PrecipLikelihood.POSSIBLE
-        }
         val condition = if (wet.condition.isPrecipitation()) wet.condition else WeatherCondition.RAIN
         return WeekAheadClause.Rain(
             date = wet.date,
             isTomorrow = wet.date == today.date.plusDays(1),
             condition = condition,
-            likelihood = likelihood,
         )
     }
 
-    private fun temperatureShiftHeadline(
+    private fun firstWarmerHeadline(
         today: DailyForecast,
         upcomingDays: List<DailyForecast>,
         deltaThresholdC: Double?,
-    ): WeekAheadClause? {
+    ): WeekAheadClause.Warmer? {
         if (deltaThresholdC == null) return null
-        // maxByOrNull picks the first entry on ties, which is the nearest day —
-        // exactly what we want when two days share the same swing.
-        val pick = upcomingDays.maxByOrNull { abs(it.feelsLikeMaxC - today.feelsLikeMaxC) }
+        val pick = upcomingDays.firstOrNull { it.feelsLikeMaxC - today.feelsLikeMaxC >= deltaThresholdC }
             ?: return null
-        val delta = pick.feelsLikeMaxC - today.feelsLikeMaxC
-        if (abs(delta) < deltaThresholdC) return null
-        val degrees = abs(delta).roundToInt()
-        val isTomorrow = pick.date == today.date.plusDays(1)
-        return if (delta > 0) {
-            WeekAheadClause.Warmer(date = pick.date, isTomorrow = isTomorrow, degrees = degrees)
-        } else {
-            WeekAheadClause.Cooler(date = pick.date, isTomorrow = isTomorrow, degrees = degrees)
-        }
+        return WeekAheadClause.Warmer(
+            date = pick.date,
+            isTomorrow = pick.date == today.date.plusDays(1),
+        )
+    }
+
+    private fun firstCoolerHeadline(
+        today: DailyForecast,
+        upcomingDays: List<DailyForecast>,
+        deltaThresholdC: Double?,
+    ): WeekAheadClause.Cooler? {
+        if (deltaThresholdC == null) return null
+        val pick = upcomingDays.firstOrNull { today.feelsLikeMaxC - it.feelsLikeMaxC >= deltaThresholdC }
+            ?: return null
+        return WeekAheadClause.Cooler(
+            date = pick.date,
+            isTomorrow = pick.date == today.date.plusDays(1),
+        )
     }
 
     private fun persistenceHeadline(today: DailyForecast, upcomingDays: List<DailyForecast>): WeekAheadClause? {
@@ -133,9 +138,9 @@ class DeriveWeekAheadInsight {
     }
 
     companion object {
-        // Matches RenderInsightSummary's thresholds so the today / tonight
-        // and weekly insights agree on "is this rainy enough to mention."
-        internal const val POSSIBLE_THRESHOLD: Double = 30.0
+        // Mirrors the "majority of consulted models" tier RenderInsightSummary
+        // uses for its rain clauses, so the weekly headline only mentions rain
+        // the today / tonight insight would also call.
         internal const val LIKELY_THRESHOLD: Double = 50.0
     }
 }

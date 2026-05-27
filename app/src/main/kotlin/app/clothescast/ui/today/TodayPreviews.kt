@@ -1985,10 +1985,12 @@ private val SAMPLE_WEEK_OUTFIT_INSIGHT = SAMPLE_INSIGHT.copy(
     nextOutfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
 )
 
-// [SAMPLE_WEEK] has a midweek rain peak (40% Wed 15:00 with RAIN condition)
-// — enough for [DeriveWeekAheadInsight] to fire its rain rule, so the
-// snapshot also exercises the week-ahead headline card above the chart
-// deck. Monday start keeps the day-of-week in the headline deterministic.
+// [SAMPLE_WEEK]'s feels-like highs swing from 18° today up to 22° Wednesday
+// and back down to 15° Friday — enough for [DeriveWeekAheadInsight] to
+// fire both the first-warmer and first-cooler slots, so the snapshot
+// exercises the week-ahead headline card above the chart deck. (The 40%
+// midweek rain peak sits below the 50% threshold so the rain slot stays
+// empty.) Monday start keeps the day-of-week in the headline deterministic.
 @Preview(name = "Seven-day page · weekly card", widthDp = 360)
 @Composable
 internal fun SevenDayPagePreview() {

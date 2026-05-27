@@ -1313,74 +1313,87 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `week-ahead rain-only headline renders solo as before`() {
+    fun `week-ahead rain-only headline renders solo`() {
         val out = subject.formatWeekAhead(
             WeekAheadInsight(
                 rain = WeekAheadClause.Rain(
                     date = LocalDate.of(2026, 6, 1), // Monday
                     isTomorrow = false,
                     condition = WeatherCondition.RAIN,
-                    likelihood = PrecipLikelihood.POSSIBLE,
                 ),
             ),
         )
-        out shouldBe "Chance of rain on Monday."
+        out shouldBe "Rain Monday."
     }
 
     @Test
-    fun `week-ahead temperature-only headline renders solo as before`() {
+    fun `week-ahead temperature-only headline renders solo`() {
         val out = subject.formatWeekAhead(
             WeekAheadInsight(
-                temperatureShift = WeekAheadClause.Cooler(
+                firstCooler = WeekAheadClause.Cooler(
                     date = LocalDate.of(2026, 5, 27),
                     isTomorrow = true,
-                    degrees = 5,
                 ),
             ),
         )
-        out shouldBe "5° cooler tomorrow."
+        out shouldBe "Cooler tomorrow."
     }
 
     @Test
     fun `week-ahead joins temperature and rain chronologically when temp lands first`() {
-        // Temp shift tomorrow, rain Monday — temp clause sorts first.
+        // Cooler tomorrow, rain Monday — cooler clause sorts first.
         val out = subject.formatWeekAhead(
             WeekAheadInsight(
-                temperatureShift = WeekAheadClause.Cooler(
+                firstCooler = WeekAheadClause.Cooler(
                     date = LocalDate.of(2026, 5, 27),
                     isTomorrow = true,
-                    degrees = 5,
                 ),
                 rain = WeekAheadClause.Rain(
                     date = LocalDate.of(2026, 6, 1),
                     isTomorrow = false,
                     condition = WeatherCondition.RAIN,
-                    likelihood = PrecipLikelihood.POSSIBLE,
                 ),
             ),
         )
-        out shouldBe "5° cooler tomorrow, chance of rain on Monday."
+        out shouldBe "Cooler tomorrow, rain Monday."
     }
 
     @Test
     fun `week-ahead joins temperature and rain chronologically when rain lands first`() {
-        // Rain Wednesday, temp shift Saturday — rain clause sorts first.
+        // Rain Wednesday, warmer Saturday — rain clause sorts first.
         val out = subject.formatWeekAhead(
             WeekAheadInsight(
-                temperatureShift = WeekAheadClause.Warmer(
+                firstWarmer = WeekAheadClause.Warmer(
                     date = LocalDate.of(2026, 5, 30), // Saturday
                     isTomorrow = false,
-                    degrees = 7,
                 ),
                 rain = WeekAheadClause.Rain(
                     date = LocalDate.of(2026, 5, 27), // Wednesday
                     isTomorrow = false,
                     condition = WeatherCondition.RAIN,
-                    likelihood = PrecipLikelihood.POSSIBLE,
                 ),
             ),
         )
-        out shouldBe "Chance of rain on Wednesday, 7° warmer on Saturday."
+        out shouldBe "Rain Wednesday, warmer Saturday."
+    }
+
+    @Test
+    fun `week-ahead joins first-warmer and first-cooler chronologically`() {
+        // Warmer tomorrow, cooler Sunday — the headline that motivated the
+        // first-warmer / first-cooler split.
+        val out = subject.formatWeekAhead(
+            WeekAheadInsight(
+                firstWarmer = WeekAheadClause.Warmer(
+                    date = LocalDate.of(2026, 5, 28), // Thursday — tomorrow
+                    isTomorrow = true,
+                ),
+                firstCooler = WeekAheadClause.Cooler(
+                    date = LocalDate.of(2026, 5, 31), // Sunday
+                    isTomorrow = false,
+                ),
+            ),
+        )
+        out shouldBe "Warmer tomorrow, cooler Sunday."
     }
 
     @Test
@@ -1388,20 +1401,18 @@ class InsightFormatterTest {
         val sameDay = LocalDate.of(2026, 6, 1) // Monday
         val out = subject.formatWeekAhead(
             WeekAheadInsight(
-                temperatureShift = WeekAheadClause.Cooler(
+                firstCooler = WeekAheadClause.Cooler(
                     date = sameDay,
                     isTomorrow = false,
-                    degrees = 7,
                 ),
                 rain = WeekAheadClause.Rain(
                     date = sameDay,
                     isTomorrow = false,
                     condition = WeatherCondition.RAIN,
-                    likelihood = PrecipLikelihood.POSSIBLE,
                 ),
             ),
         )
-        out shouldBe "7° cooler on Monday, chance of rain on Monday."
+        out shouldBe "Cooler Monday, rain Monday."
     }
 
     @Test
@@ -1413,10 +1424,9 @@ class InsightFormatterTest {
                     date = LocalDate.of(2026, 5, 29), // Friday
                     isTomorrow = false,
                     condition = WeatherCondition.THUNDERSTORM,
-                    likelihood = PrecipLikelihood.POSSIBLE,
                 ),
             ),
         )
-        out shouldBe "Hot all week, chance of rain on Friday."
+        out shouldBe "Hot all week, rain Friday."
     }
 }

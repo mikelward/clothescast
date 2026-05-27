@@ -622,11 +622,12 @@ class FetchAndNotifyWorker(
                 val resolved = device.copy(
                     displayName = resolvedName ?: device.displayName,
                     countryCode = geo.countryCode ?: device.countryCode,
-                    // Address detail powers the Location settings page's
-                    // detailed line. Reuse the cached value when this run's
-                    // geocode came up empty so a single transient failure
-                    // doesn't blank the line after a fresh fix landed.
-                    addressDetail = geo.addressDetail ?: prefs.location?.addressDetail,
+                    // Same proximity gate as the displayName fallback: reuse
+                    // the cached address detail only when the prior fix is
+                    // within ~25km, so a transient geocoder failure after a
+                    // move doesn't leave the old neighbourhood / postcode
+                    // showing under the new coordinates.
+                    addressDetail = geo.addressDetail ?: reuseNearbyAddressDetail(prefs.location, device),
                 )
                 // Persist the resolved fix as the fallback so the next run can
                 // use the most recent good read when the device read fails
@@ -658,6 +659,17 @@ class FetchAndNotifyWorker(
             ?.takeUnless { it.isBlank() || it == DEVICE_LOCATION_PLACEHOLDER }
             ?: return null
         return if (prior.isWithin(REUSE_LABEL_RADIUS_METERS, of = device)) priorName else null
+    }
+
+    // Mirror of [reuseNearbyDisplayName] for the address-detail line: only
+    // reuse when the prior fix is within ~25km of the new one, otherwise
+    // clear it. Without this gate a transient geocode failure after a move
+    // would carry the previous neighbourhood / postcode forward under the
+    // new coordinates until a later run produced a fresh detail.
+    private fun reuseNearbyAddressDetail(prior: Location?, device: Location): String? {
+        if (prior == null) return null
+        val priorDetail = prior.addressDetail?.takeUnless { it.isBlank() } ?: return null
+        return if (prior.isWithin(REUSE_LABEL_RADIUS_METERS, of = device)) priorDetail else null
     }
 
     // Mirrors the providers LocationResolver itself queries — NETWORK +

@@ -342,11 +342,12 @@
     <string name="today_telemetry_notice_open_settings">Privacy settings</string>
     <string name="today_telemetry_notice_dismiss">Dismiss</string>
 
-    <!-- One-time promo card on the Today screen shown after onboarding,
-         pointing the user at Clothes settings so they know the per-
-         temperature clothing rules are theirs to tune. Sits between the
-         telemetry-notice banner and the celebration-themes promo; auto-
-         hides once dismissed or followed through. -->
+    <!-- Promo card on the Today screen pointing the user at Clothes
+         settings so they know the per-temperature clothing rules are
+         theirs to tune. Sits between the telemetry-notice banner and the
+         celebration-themes promo; auto-hides once the user has either
+         dismissed it OR diverged any rule from ClothesRule.DEFAULTS
+         (they've found what the card was pointing at). -->
     <string name="today_clothes_promo_title">Make the rules your own</string>
     <string name="today_clothes_promo_body">ClothesCast picks outfits from a set of rules. Tweak the temperatures, add layers, or change what gets suggested in Clothes settings.</string>
     <string name="today_clothes_promo_cta">Clothes settings</string>

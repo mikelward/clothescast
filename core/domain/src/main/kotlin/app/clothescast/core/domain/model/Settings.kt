@@ -619,10 +619,12 @@ data class UserPreferences(
     val celebrationCardDismissed: Boolean = false,
     /**
      * Set to true once the user dismisses (or follows through on) the
-     * Today-screen "Customize your clothes" promo card — a one-time nudge
-     * shown after onboarding pointing the user at Clothes settings so they
-     * know the per-temperature rules are theirs to tune. Same dismiss-once
-     * contract as [telemetryNoticeAcked] / [celebrationCardDismissed].
+     * Today-screen "Customize your clothes" promo card, which points the
+     * user at Clothes settings so they know the per-temperature rules
+     * are theirs to tune. The card also auto-hides the moment
+     * [clothesRules] diverges from [ClothesRule.DEFAULTS] — the user
+     * has clearly found the thing the card was pointing at, so the
+     * promo's done its job regardless of this flag.
      */
     val clothesPromoCardDismissed: Boolean = false,
     /**

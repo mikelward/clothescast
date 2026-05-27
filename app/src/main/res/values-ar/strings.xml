@@ -837,7 +837,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_smart_home_cast_change">تغيير</string>
     <string name="settings_smart_home_cast_choose">اختيار شاشة ذكية</string>
     <string name="settings_smart_home_cast_clear">مسح</string>
-    <string name="settings_smart_home_cast_description">إرسال ClothesCasts المجدولة إلى شاشة ذكية على شبكتك المنزلية.</string>
     <string name="settings_smart_home_cast_device_label">الشاشة الذكية</string>
     <string name="settings_smart_home_cast_device_none">لم تُختر شاشة</string>
     <string name="settings_smart_home_cast_last_error_title">فشل آخر بث</string>
@@ -850,9 +849,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_smart_home_cast_picker_empty">لم تُعثر على شاشات ذكية بعد. تأكد من تشغيل شاشتك واتصالها بنفس شبكة Wi-Fi.</string>
     <string name="settings_smart_home_cast_picker_scanning">جارٍ فحص شبكتك بحثًا عن شاشات ذكية…</string>
     <string name="settings_smart_home_cast_picker_title">اختر شاشة ذكية</string>
-    <string name="settings_smart_home_cast_privacy_note">يُقدَّم الصوت والصورة من هاتفك عبر شبكتك المحلية. لا يغادران منزلك.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">إذا قرأت الشاشة الذكية التوقعات بصوت عالٍ، يبقى الهاتف صامتًا. تُرسَل إشعارات الهاتف كما هي.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">تخطي كلام الهاتف إذا نجح البث</string>
     <string name="settings_smart_home_cast_title">البث</string>
     <string name="settings_smart_home_cast_tonight_description">إرسال ClothesCast الليلي إلى الشاشة الذكية عند تشغيل المنبّه المسائي.</string>
     <string name="settings_smart_home_cast_tonight_title">ClothesCast الليلي</string>
@@ -868,7 +864,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_smart_home_discover_use">استخدام</string>
 
     <!-- Settings — smart home MQTT -->
-    <string name="settings_smart_home_mqtt_description">بعد كل تحديث مجدول، ينشر ClothesCast توقعات اليوم والليلة المعروضة إلى وسيط MQTT الخاص بك كرسائل محتجزة، حتى يتمكن Home Assistant (أو أي مستهلك MQTT) من قراءة القيمة الأخيرة وتحدثها عند تشغيل استشعار.</string>
     <string name="settings_smart_home_mqtt_host">مضيف الوسيط</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_label">نشر التوقعات إلى MQTT</string>
@@ -881,7 +876,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_smart_home_mqtt_password_replace">استبدال كلمة المرور</string>
     <string name="settings_smart_home_mqtt_password_status_set">تم تكوين كلمة المرور.</string>
     <string name="settings_smart_home_mqtt_port">المنفذ</string>
-    <string name="settings_smart_home_mqtt_privacy_note">عند التفعيل، تغادر جملة التوقعات المعروضة جهازك عبر شبكتك إلى الوسيط الذي تحدده. راجع سياسة الخصوصية.</string>
     <string name="settings_smart_home_mqtt_publish_now">نشر الآن</string>
     <string name="settings_smart_home_mqtt_publishing">جارٍ النشر…</string>
     <string name="settings_smart_home_mqtt_save">حفظ</string>
@@ -889,7 +883,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_smart_home_mqtt_title">جسر Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_tls">استخدام TLS</string>
     <string name="settings_smart_home_mqtt_topic">بادئة الموضوع</string>
-    <string name="settings_smart_home_mqtt_topic_hint">اليوم ينشر إلى {prefix}/today/text؛ الليلة إلى {prefix}/tonight/text. تحط الصورة والصوت على {prefix}/&lt;period&gt;/image و /audio. يُعكس كل نشر أيضًا إلى {prefix}/now/&lt;text|image|audio&gt; حتى يتمكن المستهلك من الاشتراك في موضوع \'الأحدث\' الواحد دون الاختيار بين اليوم والليلة.</string>
     <string name="settings_smart_home_mqtt_username">اسم المستخدم (اختياري)</string>
     <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
 

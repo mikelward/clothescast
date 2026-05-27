@@ -806,7 +806,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_cast_change">ቀይር</string>
     <string name="settings_smart_home_cast_choose">ስማርት ማሳያ ምረጥ</string>
     <string name="settings_smart_home_cast_clear">ሰርዝ</string>
-    <string name="settings_smart_home_cast_description">ዕቅደ-ጊዜ ClothesCastsን ወደ ቤት ኔትወርኩ ስማርት ማሳያ ላክ።</string>
     <string name="settings_smart_home_cast_device_label">ስማርት ማሳያ</string>
     <string name="settings_smart_home_cast_device_none">ምንም ማሳያ አልተመረጠም</string>
     <string name="settings_smart_home_cast_last_error_title">የመጨረሻ Cast ሳይሳካ ቀረ</string>
@@ -819,9 +818,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_cast_picker_empty">እስካሁን ምንም ስማርት ማሳያ አልተገኘም። ማሳያዎ ነቅቶ ወደ ተመሳሳዩ Wi-Fi መገናኘቱን ያረጋግጡ።</string>
     <string name="settings_smart_home_cast_picker_scanning">ኔትወርኩን ለስማርት ማሳያዎች እየቃኘ ነው…</string>
     <string name="settings_smart_home_cast_picker_title">ስማርት ማሳያ ምረጥ</string>
-    <string name="settings_smart_home_cast_privacy_note">ድምፅ እና ምስል ከስልክዎ ወደ ቤት ኔትወርክ ይቀርባሉ። ቤትዎን አይወጡም።</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">ስማርት ማሳያ ትንበያ ካነበበ ስልኩ ዝምታ ይይዛል። የስልኩ ማሳወቂያ አሁንም ይለጠፋል።</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Cast ከተሳካ የስልክ ድምፅ ዝለሉ</string>
     <string name="settings_smart_home_cast_title">Cast</string>
     <string name="settings_smart_home_cast_tonight_description">ምሽታዊ ClothesCastን ወደ ስማርት ማሳያ ምሽቱ ሰዓት ሲጠናቀቅ ላክ።</string>
     <string name="settings_smart_home_cast_tonight_title">ምሽታዊ ClothesCast</string>
@@ -837,7 +833,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_discover_use">ተጠቀም</string>
 
     <!-- Smart home MQTT -->
-    <string name="settings_smart_home_mqtt_description">ከእያንዳንዱ ዕቅደ-ጊዜ ዳግም ሙከራ በኋላ ClothesCast የዛሬውንና የዛሬ ምሽቱን ትንበያ ወደ MQTT ብሮከርዎ እንደ ቀሩ መልዕክቶች ያሳትማል፣ ስለዚህ Home Assistant (ወይም ማንኛውም MQTT ሸማች) ቀዳሚ ዋጋ ሊያነብ እና በሴንሰር ምልክት ሊናገር ይችላል።</string>
     <string name="settings_smart_home_mqtt_host">ብሮከር አስተናጋጅ</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_label">ትንበያ ወደ MQTT አሳትም</string>
@@ -850,7 +845,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_mqtt_password_replace">የይለፍ ቃል ተካ</string>
     <string name="settings_smart_home_mqtt_password_status_set">የይለፍ ቃል ተዋቅሯል።</string>
     <string name="settings_smart_home_mqtt_port">ወደብ</string>
-    <string name="settings_smart_home_mqtt_privacy_note">ሲነቃ የተሰራው ትንበያ ዓረፍተ-ነገር ወደ ባዘጋጁት ብሮከር ከመሳሪያዎ ኔትወርክ ላይ ይወጣል። የግለነት ፖሊሲ ይመልከቱ።</string>
     <string name="settings_smart_home_mqtt_publish_now">አሁን አሳትም</string>
     <string name="settings_smart_home_mqtt_publishing">እያሳተመ ነው…</string>
     <string name="settings_smart_home_mqtt_save">አስቀምጥ</string>
@@ -858,7 +852,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_mqtt_title">Home Assistant ድልድይ (MQTT)</string>
     <string name="settings_smart_home_mqtt_tls">TLS ተጠቀም</string>
     <string name="settings_smart_home_mqtt_topic">ርዕሰ-ጉዳይ ቅጥያ</string>
-    <string name="settings_smart_home_mqtt_topic_hint">ዛሬ ወደ {prefix}/today/text ያሳትማል፤ ምሽቱ ወደ {prefix}/tonight/text። ምስልና ድምፅ ወደ {prefix}/&lt;period&gt;/image እና /audio ይሄዳሉ። እያንዳንዱ ህትመት ደግሞ ወደ {prefix}/now/&lt;text|image|audio&gt; ይስተናፎርድ ስለዚህ ሸማቹ ዛሬን ወይም ምሽቱን ሳይመርጥ ወደ አንድ "ቅዳሴ" ርዕሰ-ጉዳይ ሊያዳምጥ ይችላል።</string>
     <string name="settings_smart_home_mqtt_username">የተጠቃሚ ስም (ፈቃደኛ)</string>
     <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
 

@@ -997,7 +997,6 @@ label localises.
 
     <!-- Smart Home — Cast section. -->
     <string name="settings_smart_home_cast_title">投播</string>
-    <string name="settings_smart_home_cast_description">將每次排程推送的 ClothesCast 傳送到家庭網路中的智慧顯示器。</string>
     <string name="settings_smart_home_cast_device_label">智慧顯示器</string>
     <string name="settings_smart_home_cast_device_none">尚未選擇顯示器</string>
     <string name="settings_smart_home_cast_choose">選擇智慧顯示器</string>
@@ -1016,9 +1015,6 @@ label localises.
     <string name="settings_smart_home_cast_picker_scanning">正在掃描網路上的智慧顯示器…</string>
     <string name="settings_smart_home_cast_picker_empty">尚未發現智慧顯示器。請確認顯示器已開啟並連接到相同的 Wi-Fi。</string>
     <string name="settings_smart_home_cast_picker_cancel">取消</string>
-    <string name="settings_smart_home_cast_privacy_note">音訊和影像透過本地網路從手機傳輸，不會離開家庭網路。</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">投播成功後略過手機播報</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">如果智慧顯示器已朗讀天氣預報，手機將保持靜音。手機通知仍會照常傳送。</string>
 
     <!-- Smart Home — Discover section. -->
     <string name="settings_smart_home_discover_scan">尋找 Broker</string>
@@ -1032,7 +1028,6 @@ label localises.
 
     <!-- Smart Home — MQTT section. -->
     <string name="settings_smart_home_mqtt_title">Home Assistant 橋接（MQTT）</string>
-    <string name="settings_smart_home_mqtt_description">每次排程重新整理後，ClothesCast 會將今天和今晚的預報文字以保留訊息的形式發布到你的 MQTT Broker，讓 Home Assistant（或任何 MQTT 客戶端）在感應器觸發時讀取最新值並播報。</string>
     <string name="settings_smart_home_mqtt_label">將預報發布到 MQTT</string>
     <string name="settings_smart_home_mqtt_host">Broker 主機</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
@@ -1045,14 +1040,12 @@ label localises.
     <string name="settings_smart_home_mqtt_password_replace">更換密碼</string>
     <string name="settings_smart_home_mqtt_password_status_set">密碼已設定。</string>
     <string name="settings_smart_home_mqtt_topic">主題前綴</string>
-    <string name="settings_smart_home_mqtt_topic_hint">今日預報發布到 {prefix}/today/text；今晚預報發布到 {prefix}/tonight/text。影像與音訊分別發布到 {prefix}/&lt;period&gt;/image 和 /audio。每次發布同時鏡像到 {prefix}/now/&lt;text|image|audio&gt;，讓訂閱者無需區分今天或今晚即可訂閱同一個「最新」主題。</string>
     <string name="settings_smart_home_mqtt_save">儲存</string>
     <string name="settings_smart_home_mqtt_publish_now">立即發布</string>
     <string name="settings_smart_home_mqtt_publishing">發布中…</string>
     <string name="settings_smart_home_mqtt_never_published">尚未發布</string>
     <string name="settings_smart_home_mqtt_last_published">上次發布：%1$s</string>
     <string name="settings_smart_home_mqtt_last_error_title">上次發布失敗</string>
-    <string name="settings_smart_home_mqtt_privacy_note">開啟後，產生的預報文字將透過你的網路傳輸到你設定的 Broker。請參閱隱私權政策。</string>
     <string name="settings_smart_home_mqtt_open_privacy">查看隱私詳情</string>
     <string name="settings_smart_home_mqtt_setup_guide">設定指南</string>
 

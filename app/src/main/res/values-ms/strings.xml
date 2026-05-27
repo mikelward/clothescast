@@ -843,7 +843,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_smart_home_cast_change">Ubah</string>
     <string name="settings_smart_home_cast_choose">Pilih paparan pintar</string>
     <string name="settings_smart_home_cast_clear">Kosongkan</string>
-    <string name="settings_smart_home_cast_description">Hantar ClothesCast berjadual ke paparan pintar pada rangkaian rumah anda.</string>
     <string name="settings_smart_home_cast_device_label">Paparan pintar</string>
     <string name="settings_smart_home_cast_device_none">Tiada paparan dipilih</string>
     <string name="settings_smart_home_cast_last_error_title">Cast terakhir gagal</string>
@@ -856,9 +855,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_smart_home_cast_picker_empty">Tiada paparan pintar dijumpai lagi. Pastikan paparan anda dihidupkan dan berada pada Wi-Fi yang sama.</string>
     <string name="settings_smart_home_cast_picker_scanning">Mengimbas rangkaian anda untuk paparan pintar…</string>
     <string name="settings_smart_home_cast_picker_title">Pilih paparan pintar</string>
-    <string name="settings_smart_home_cast_privacy_note">Audio dan imej dihidangkan daripada telefon anda melalui rangkaian tempatan. Ia tidak meninggalkan rumah anda.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Jika paparan pintar membacakan ramalan secara lisan, telefon kekal senyap. Pemberitahuan telefon masih dihantar.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Langkau sebutan telefon jika cast berjaya</string>
     <string name="settings_smart_home_cast_title">Cast</string>
     <string name="settings_smart_home_cast_tonight_description">Hantar ClothesCast malam ke paparan pintar apabila penggera malam berbunyi.</string>
     <string name="settings_smart_home_cast_tonight_title">ClothesCast Malam</string>
@@ -874,7 +870,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_smart_home_discover_use">Guna</string>
 
     <!-- MQTT settings -->
-    <string name="settings_smart_home_mqtt_description">Selepas setiap muat semula berjadual, ClothesCast menerbitkan ramalan hari ini dan malam ini yang telah dirender ke broker MQTT anda sebagai mesej yang disimpan, supaya Home Assistant (atau pengguna MQTT lain) dapat membaca nilai terkini dan menyampaikannya semasa pencetus sensor.</string>
     <string name="settings_smart_home_mqtt_host">Hos broker</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_label">Terbitkan ramalan ke MQTT</string>
@@ -887,7 +882,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_smart_home_mqtt_password_replace">Gantikan kata laluan</string>
     <string name="settings_smart_home_mqtt_password_status_set">Kata laluan telah dikonfigurasi.</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Jika dihidupkan, ayat ramalan yang dirender meninggalkan peranti anda melalui rangkaian ke broker yang anda konfigurasi. Lihat dasar privasi.</string>
     <string name="settings_smart_home_mqtt_publish_now">Terbitkan sekarang</string>
     <string name="settings_smart_home_mqtt_publishing">Menerbitkan…</string>
     <string name="settings_smart_home_mqtt_save">Simpan</string>
@@ -895,7 +889,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_smart_home_mqtt_title">Jambatan Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_tls">Gunakan TLS</string>
     <string name="settings_smart_home_mqtt_topic">Awalan topik</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Hari ini diterbitkan ke {prefix}/today/text; malam ini ke {prefix}/tonight/text. Imej dan audio ada di {prefix}/&lt;period&gt;/image dan /audio. Setiap penerbitan juga dicerminkan ke {prefix}/now/&lt;text|image|audio&gt; supaya pengguna boleh melanggan satu topik "terkini" tanpa memilih hari ini atau malam ini.</string>
     <string name="settings_smart_home_mqtt_username">Nama pengguna (pilihan)</string>
     <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
 

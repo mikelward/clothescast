@@ -816,8 +816,6 @@ What is NOT overridden, by design:
 
     <!-- Smart Home — Cast settings. -->
     <string name="settings_smart_home_cast_title">Preniesť</string>
-    <string name="settings_smart_home_cast_description">Posielať naplánované ClothesCasty na inteligentný displej v domácej sieti.</string>
-    <string name="settings_smart_home_cast_privacy_note">Zvuk a obrázok sú poskytované z vášho telefónu cez lokálnu sieť. Neopúšťajú váš domov.</string>
     <string name="settings_smart_home_cast_device_label">Inteligentný displej</string>
     <string name="settings_smart_home_cast_device_none">Nie je vybraný displej</string>
     <string name="settings_smart_home_cast_choose">Vybrať inteligentný displej</string>
@@ -836,8 +834,6 @@ What is NOT overridden, by design:
     <string name="settings_smart_home_cast_morning_description">Odoslať denný ClothesCast na inteligentný displej pri spustení ranného budíka.</string>
     <string name="settings_smart_home_cast_tonight_title">Nočný ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Odoslať nočný ClothesCast na inteligentný displej pri spustení večerného budíka.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Preskočiť reč telefónu pri úspešnom prenose</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Ak inteligentný displej číta predpoveď nahlas, telefón zostane tichý. Oznámenie telefónu je stále odoslané.</string>
 
     <!-- Smart Home — discover broker. -->
     <string name="settings_smart_home_discover_scan">Nájsť broker</string>
@@ -852,8 +848,6 @@ What is NOT overridden, by design:
     <!-- Smart Home — MQTT settings. -->
     <string name="settings_smart_home_mqtt_title">Most Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publikovať predpoveď do MQTT</string>
-    <string name="settings_smart_home_mqtt_description">Po každej naplánovanej obnove ClothesCast publikuje dnešnú a večernú predpoveď do vášho MQTT brokera ako uchované správy, aby Home Assistant (alebo akýkoľvek MQTT konzument) mohol čítať najnovšiu hodnotu a prečítať ju nahlas pri spustení senzora.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Keď je zapnuté, vygenerovaná predpoveď opustí vaše zariadenie cez sieť ku konfigurovanému brokerovi. Pozri zásady ochrany osobných údajov.</string>
     <string name="settings_smart_home_mqtt_host">Hostiteľ brokera</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
@@ -865,7 +859,6 @@ What is NOT overridden, by design:
     <string name="settings_smart_home_mqtt_password_replace">Nahradiť heslo</string>
     <string name="settings_smart_home_mqtt_password_clear">Vymazať uložené heslo</string>
     <string name="settings_smart_home_mqtt_topic">Predpona témy</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Dnes publikuje do {prefix}/today/text; večer do {prefix}/tonight/text. Obrázok a zvuk do {prefix}/&lt;period&gt;/image a /audio. Každá publikácia je tiež zrkadlená do {prefix}/now/&lt;text|image|audio&gt; aby konzument mohol odoberať jedno \'najnovšie\' téma bez výberu medzi dnes a večer.</string>
     <string name="settings_smart_home_mqtt_save">Uložiť</string>
     <string name="settings_smart_home_mqtt_publish_now">Publikovať teraz</string>
     <string name="settings_smart_home_mqtt_publishing">Publikujem…</string>

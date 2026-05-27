@@ -836,7 +836,6 @@ standard in Israeli digital communication.
     <string name="settings_smart_home_cast_change">שינוי</string>
     <string name="settings_smart_home_cast_choose">בחר/י מסך חכם</string>
     <string name="settings_smart_home_cast_clear">ניקוי</string>
-    <string name="settings_smart_home_cast_description">שלח/י ClothesCasts מתוזמנים למסך חכם ברשת הביתית שלך.</string>
     <string name="settings_smart_home_cast_device_label">מסך חכם</string>
     <string name="settings_smart_home_cast_device_none">לא נבחר מסך</string>
     <string name="settings_smart_home_cast_last_error_title">השידור האחרון נכשל</string>
@@ -849,9 +848,6 @@ standard in Israeli digital communication.
     <string name="settings_smart_home_cast_picker_empty">לא נמצאו מסכים חכמים עדיין. ודא/י שהמסך שלך דלוק ומחובר לאותו Wi-Fi.</string>
     <string name="settings_smart_home_cast_picker_scanning">סורק/ת את הרשת שלך לאיתור מסכים חכמים…</string>
     <string name="settings_smart_home_cast_picker_title">בחר/י מסך חכם</string>
-    <string name="settings_smart_home_cast_privacy_note">שמע ותמונה מוגשים מהטלפון שלך דרך הרשת המקומית. הם לא עוזבים את הבית.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">אם המסך החכם קורא את התחזית בקול רם, הטלפון נשאר שקט. התראת הטלפון עדיין מתפרסמת.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">דלג/י על דיבור הטלפון אם השידור הצליח</string>
     <string name="settings_smart_home_cast_title">שידור</string>
     <string name="settings_smart_home_cast_tonight_description">שלח/י את ClothesCast הלילי למסך החכם כשהאזעקה הלילית מופעלת.</string>
     <string name="settings_smart_home_cast_tonight_title">ClothesCast לילי</string>
@@ -867,7 +863,6 @@ standard in Israeli digital communication.
     <string name="settings_smart_home_discover_use">השתמש/י</string>
 
     <!-- Settings — smart home MQTT -->
-    <string name="settings_smart_home_mqtt_description">אחרי כל רענון מתוזמן, ClothesCast מפרסם את תחזית היום והלילה לברוקר MQTT שלך כהודעות שמורות, כך ש-Home Assistant (או כל צרכן MQTT) יכול לקרוא את הערך האחרון ולהשמיע אותו בעת הפעלת חיישן.</string>
     <string name="settings_smart_home_mqtt_host">מארח ברוקר</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_label">פרסם תחזית ל-MQTT</string>
@@ -880,7 +875,6 @@ standard in Israeli digital communication.
     <string name="settings_smart_home_mqtt_password_replace">החלף/י סיסמה</string>
     <string name="settings_smart_home_mqtt_password_status_set">הסיסמה מוגדרת.</string>
     <string name="settings_smart_home_mqtt_port">פורט</string>
-    <string name="settings_smart_home_mqtt_privacy_note">כשפועל, משפט התחזית המעובד עוזב את המכשיר שלך דרך הרשת לברוקר שתגדיר/י. ראה/י את מדיניות הפרטיות.</string>
     <string name="settings_smart_home_mqtt_publish_now">פרסם/י עכשיו</string>
     <string name="settings_smart_home_mqtt_publishing">מפרסם/ת…</string>
     <string name="settings_smart_home_mqtt_save">שמור/י</string>
@@ -888,7 +882,6 @@ standard in Israeli digital communication.
     <string name="settings_smart_home_mqtt_title">גשר Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_tls">השתמש/י ב-TLS</string>
     <string name="settings_smart_home_mqtt_topic">קידומת נושא</string>
-    <string name="settings_smart_home_mqtt_topic_hint">היום מפרסם ל-{prefix}/today/text; הלילה ל-{prefix}/tonight/text. תמונה ושמע נוחתים על {prefix}/&lt;period&gt;/image ו-/audio. כל פרסום משתקף גם ל-{prefix}/now/&lt;text|image|audio&gt; כדי שצרכן יוכל להירשם לנושא אחד ״עדכני״ בלי לבחור בין היום ללילה.</string>
     <string name="settings_smart_home_mqtt_username">שם משתמש/ת (אופציונלי)</string>
     <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
 

@@ -823,8 +823,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
 
     <!-- Smart Home — Cast -->
     <string name="settings_smart_home_cast_title">Cast</string>
-    <string name="settings_smart_home_cast_description">Send planlagte ClothesCasts til en smart skærm på dit hjemmenetværk.</string>
-    <string name="settings_smart_home_cast_privacy_note">Lyd og billede leveres fra din telefon via dit lokale netværk. De forlader ikke dit hjem.</string>
     <string name="settings_smart_home_cast_device_label">Smart skærm</string>
     <string name="settings_smart_home_cast_device_none">Ingen skærm valgt</string>
     <string name="settings_smart_home_cast_choose">Vælg smart skærm</string>
@@ -843,8 +841,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_smart_home_cast_morning_description">Send den daglige ClothesCast til den smarte skærm, når morgenalarmen udløses.</string>
     <string name="settings_smart_home_cast_tonight_title">Nattlig ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Send den nattlige ClothesCast til den smarte skærm, når aftenalarmen udløses.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Spring telefonlyd over, hvis casting lykkedes</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Hvis den smarte skærm læser vejrudsigten op, forbliver telefonen tavs. Telefonnotifikation sendes stadig.</string>
 
     <!-- Smart Home — Discover -->
     <string name="settings_smart_home_discover_scan">Find broker</string>
@@ -859,8 +855,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <!-- Smart Home — MQTT -->
     <string name="settings_smart_home_mqtt_title">Home Assistant-bro (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Udgiv vejrudsigt til MQTT</string>
-    <string name="settings_smart_home_mqtt_description">Efter hver planlagte opdatering udgiver ClothesCast dagens og aftens vejrudsigt som bevarede beskeder til din MQTT-broker, så Home Assistant (eller en MQTT-forbruger) kan læse den seneste værdi og oplæse den ved en sensorudløsning.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Når aktiveret forlader den renderede vejrudsigt din enhed via dit netværk til den konfigurerede broker. Se privatlivspolitikken.</string>
     <string name="settings_smart_home_mqtt_host">Brokervært</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
@@ -872,7 +866,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_smart_home_mqtt_password_replace">Erstat adgangskode</string>
     <string name="settings_smart_home_mqtt_password_clear">Ryd gemt adgangskode</string>
     <string name="settings_smart_home_mqtt_topic">Emneprefix</string>
-    <string name="settings_smart_home_mqtt_topic_hint">I dag udgives til {prefix}/today/text; i aften til {prefix}/tonight/text. Billede og lyd til {prefix}/&lt;period&gt;/image og /audio. Hver udgivelse spejles til {prefix}/now/&lt;text|image|audio&gt; så en forbruger kan abonnere på ét \'seneste\' emne uden at vælge mellem i dag og i aften.</string>
     <string name="settings_smart_home_mqtt_save">Gem</string>
     <string name="settings_smart_home_mqtt_publish_now">Udgiv nu</string>
     <string name="settings_smart_home_mqtt_publishing">Udgiver…</string>

@@ -904,7 +904,6 @@ West Bengal vocabulary differences in a future PR.
 
     <!-- Settings — Smart Home / Cast. -->
     <string name="settings_smart_home_cast_title">Cast</string>
-    <string name="settings_smart_home_cast_description">আপনার হোম নেটওয়ার্কের একটি স্মার্ট ডিসপ্লেতে নির্ধারিত ClothesCast পাঠান।</string>
     <string name="settings_smart_home_cast_device_label">স্মার্ট ডিসপ্লে</string>
     <string name="settings_smart_home_cast_device_none">কোনো ডিসপ্লে বেছে নেওয়া হয়নি</string>
     <string name="settings_smart_home_cast_choose">স্মার্ট ডিসপ্লে বেছে নিন</string>
@@ -923,9 +922,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_smart_home_cast_picker_scanning">স্মার্ট ডিসপ্লের জন্য নেটওয়ার্ক স্ক্যান করা হচ্ছে…</string>
     <string name="settings_smart_home_cast_picker_empty">এখনো কোনো স্মার্ট ডিসপ্লে পাওয়া যায়নি। আপনার ডিসপ্লে চালু আছে ও একই Wi-Fi-এ আছে কিনা নিশ্চিত করুন।</string>
     <string name="settings_smart_home_cast_picker_cancel">বাতিল করুন</string>
-    <string name="settings_smart_home_cast_privacy_note">অডিও ও ছবি আপনার ফোন থেকে আপনার স্থানীয় নেটওয়ার্কে পরিবেশিত হয়। এগুলো আপনার বাড়ি ছেড়ে যায় না।</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">সফলভাবে Cast হলে ফোনের কথা বলা বন্ধ করুন</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">স্মার্ট ডিসপ্লে পূর্বাভাস পড়লে ফোন চুপ থাকে। ফোনের বিজ্ঞপ্তি তবুও আসবে।</string>
 
     <!-- Settings — Smart Home / MQTT discover. -->
     <string name="settings_smart_home_discover_scan">ব্রোকার খুঁজুন</string>
@@ -940,7 +936,6 @@ West Bengal vocabulary differences in a future PR.
     <!-- Settings — Smart Home / MQTT. -->
     <string name="settings_smart_home_mqtt_title">Home Assistant ব্রিজ (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">MQTT-তে পূর্বাভাস প্রকাশ করুন</string>
-    <string name="settings_smart_home_mqtt_description">প্রতিটি নির্ধারিত রিফ্রেশের পরে, ClothesCast আজকের ও আজ রাতের রেন্ডার করা পূর্বাভাস আপনার MQTT ব্রোকারে retained messages হিসেবে প্রকাশ করে, যাতে Home Assistant (বা যেকোনো MQTT ভোক্তা) সর্বশেষ মান পড়তে ও সেন্সর ট্রিগারে বলতে পারে।</string>
     <string name="settings_smart_home_mqtt_host">ব্রোকার হোস্ট</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">পোর্ট</string>
@@ -952,14 +947,12 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_smart_home_mqtt_password_clear">সংরক্ষিত পাসওয়ার্ড মুছুন</string>
     <string name="settings_smart_home_mqtt_password_status_set">পাসওয়ার্ড কনফিগার করা আছে।</string>
     <string name="settings_smart_home_mqtt_topic">টপিক প্রিফিক্স</string>
-    <string name="settings_smart_home_mqtt_topic_hint">আজকেরটি {prefix}/today/text-এ প্রকাশিত হয়; আজ রাতেরটি {prefix}/tonight/text-এ। ছবি ও অডিও {prefix}/&lt;period&gt;/image ও /audio-তে যায়। প্রতিটি প্রকাশ {prefix}/now/&lt;text|image|audio&gt;-তেও মিরর হয়, যাতে একটি ভোক্তা আজ বনাম আজ রাত না বেছে একটি "সর্বশেষ" টপিক সাবস্ক্রাইব করতে পারে।</string>
     <string name="settings_smart_home_mqtt_save">সংরক্ষণ করুন</string>
     <string name="settings_smart_home_mqtt_publish_now">এখনই প্রকাশ করুন</string>
     <string name="settings_smart_home_mqtt_publishing">প্রকাশ হচ্ছে…</string>
     <string name="settings_smart_home_mqtt_never_published">এখনো প্রকাশিত হয়নি</string>
     <string name="settings_smart_home_mqtt_last_published">শেষ প্রকাশিত %1$s</string>
     <string name="settings_smart_home_mqtt_last_error_title">শেষ প্রকাশনা ব্যর্থ হয়েছে</string>
-    <string name="settings_smart_home_mqtt_privacy_note">চালু থাকলে, রেন্ডার করা পূর্বাভাসের বাক্য আপনার ডিভাইস থেকে আপনার নেটওয়ার্কে আপনার কনফিগার করা ব্রোকারে যায়। গোপনীয়তা নীতি দেখুন।</string>
     <string name="settings_smart_home_mqtt_open_privacy">গোপনীয়তার বিবরণ পড়ুন</string>
     <string name="settings_smart_home_mqtt_setup_guide">সেটআপ গাইড</string>
 

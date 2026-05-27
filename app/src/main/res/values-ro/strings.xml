@@ -819,8 +819,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_holidays_calendar_section_placeholder_off">Activează comutatorul de mai sus pentru a personaliza ținuta de astăzi în funcție de evenimentele din calendarele sincronizate.</string>
     <string name="settings_holidays_calendar_section_placeholder_on">Evenimentele detectate din calendarele tale sincronizate vor apărea aici într-o actualizare viitoare.</string>
     <string name="settings_smart_home_cast_title">Transmite</string>
-    <string name="settings_smart_home_cast_description">Trimite ClothesCast-uri programate către un afișaj inteligent din rețeaua de acasă.</string>
-    <string name="settings_smart_home_cast_privacy_note">Sunetul și imaginea sunt servite de pe telefonul tău prin rețeaua locală. Nu ies din casa ta.</string>
     <string name="settings_smart_home_cast_device_label">Afișaj inteligent</string>
     <string name="settings_smart_home_cast_device_none">Nu este selectat niciun afișaj</string>
     <string name="settings_smart_home_cast_choose">Alege afișaj inteligent</string>
@@ -839,8 +837,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_smart_home_cast_morning_description">Trimite ClothesCast-ul zilnic la afișajul inteligent când se declanșează alarma de dimineață.</string>
     <string name="settings_smart_home_cast_tonight_title">ClothesCast de noapte</string>
     <string name="settings_smart_home_cast_tonight_description">Trimite ClothesCast-ul de noapte la afișajul inteligent când se declanșează alarma de seară.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Omite vorbirea telefonului dacă transmisia a reușit</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Dacă afișajul inteligent citește prognoza cu voce tare, telefonul rămâne tăcut. Notificarea telefonului se trimite în continuare.</string>
     <string name="settings_smart_home_discover_scan">Găsește broker</string>
     <string name="settings_smart_home_discover_scanning">Se caută…</string>
     <string name="settings_smart_home_discover_stop">Oprește căutarea</string>
@@ -851,8 +847,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_smart_home_discover_label_mqtt">MQTT broker</string>
     <string name="settings_smart_home_mqtt_title">Punte Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publică prognoza pe MQTT</string>
-    <string name="settings_smart_home_mqtt_description">După fiecare reîmprospătare programată, ClothesCast publică prognoza de astăzi și de diseară pe brokerul tău MQTT ca mesaje reținute, astfel încât Home Assistant (sau orice consumator MQTT) să poată citi ultima valoare și să o rostească la un declanșator de senzor.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Când este activat, prognoza generată părăsește dispozitivul tău prin rețea către brokerul configurat. Vezi politica de confidențialitate.</string>
     <string name="settings_smart_home_mqtt_host">Gazdă broker</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
@@ -864,7 +858,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_smart_home_mqtt_password_replace">Înlocuiește parola</string>
     <string name="settings_smart_home_mqtt_password_clear">Șterge parola salvată</string>
     <string name="settings_smart_home_mqtt_topic">Prefix subiect</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Astăzi publică pe {prefix}/today/text; diseară pe {prefix}/tonight/text. Imagine și audio pe {prefix}/&lt;period&gt;/image și /audio. Fiecare publicare este oglindită și pe {prefix}/now/&lt;text|image|audio&gt; pentru ca un consumator să se poată abona la un singur subiect \'cel mai recent\' fără a alege între astăzi și diseară.</string>
     <string name="settings_smart_home_mqtt_save">Salvează</string>
     <string name="settings_smart_home_mqtt_publish_now">Publică acum</string>
     <string name="settings_smart_home_mqtt_publishing">Se publică…</string>

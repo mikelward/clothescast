@@ -873,8 +873,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_smart_home">Casa inteligente</string>
     <string name="settings_root_smart_home_subtitle">Telas inteligentes e automação doméstica</string>
     <string name="settings_smart_home_cast_title">Cast</string>
-    <string name="settings_smart_home_cast_description">Envia os ClothesCasts agendados para uma tela inteligente na sua rede doméstica.</string>
-    <string name="settings_smart_home_cast_privacy_note">O áudio e a imagem são servidos a partir do seu celular pela sua rede local. Não saem de casa.</string>
     <string name="settings_smart_home_cast_device_label">Tela inteligente</string>
     <string name="settings_smart_home_cast_device_none">Nenhuma tela selecionada</string>
     <string name="settings_smart_home_cast_choose">Escolher tela inteligente</string>
@@ -893,15 +891,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_smart_home_cast_morning_description">Envia o ClothesCast diário para a tela inteligente quando o alarme matinal dispara.</string>
     <string name="settings_smart_home_cast_tonight_title">ClothesCast noturno</string>
     <string name="settings_smart_home_cast_tonight_description">Envia o ClothesCast noturno para a tela inteligente quando o alarme da noite dispara.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Silenciar celular se a transmissão for bem-sucedida</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Se a tela inteligente leu a previsão em voz alta, o celular fica em silêncio. A notificação do celular continua a aparecer.</string>
     <string name="cast_error_no_route_picked">Escolha primeiro uma tela inteligente.</string>
     <string name="cast_error_no_insight_yet">Ainda não há previsão disponível. Aguarde a próxima atualização agendada ou toque em Atualizar na tela Hoje.</string>
     <string name="cast_error_unknown">A transmissão falhou.</string>
     <string name="settings_smart_home_mqtt_title">Bridge Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publicar previsão via MQTT</string>
-    <string name="settings_smart_home_mqtt_description">Após cada atualização agendada, o ClothesCast publica a previsão renderizada de hoje e desta noite no seu broker MQTT como mensagens retidas, para que o Home Assistant (ou qualquer consumidor MQTT) possa ler o valor mais recente e reproduzi-lo num acionador de sensor.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Quando ativado, a frase de previsão renderizada sai do seu dispositivo pela sua rede para o broker que você configurar. Consulte a política de privacidade.</string>
     <string name="settings_smart_home_mqtt_host">Host do broker</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Porta</string>
@@ -913,7 +907,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_smart_home_mqtt_password_replace">Substituir senha</string>
     <string name="settings_smart_home_mqtt_password_clear">Limpar senha salva</string>
     <string name="settings_smart_home_mqtt_topic">Prefixo do tópico</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Hoje publica em {prefix}/today/text; esta noite em {prefix}/tonight/text. Imagem e áudio ficam em {prefix}/&amp;lt;period&amp;gt;/image e /audio. Cada publicação também é espelhada em {prefix}/now/&amp;lt;text|image|audio&amp;gt; para que um consumidor possa subscrever um tópico "mais recente" sem escolher entre hoje e esta noite.</string>
     <string name="settings_smart_home_mqtt_save">Salvar</string>
     <string name="settings_smart_home_mqtt_publish_now">Publicar agora</string>
     <string name="settings_smart_home_mqtt_publishing">Publicando…</string>

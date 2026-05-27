@@ -79,6 +79,7 @@ internal fun SmartHomeContent(
     castLastError: String?,
     castLastErrorAt: Long,
     castLastSuccessAt: Long,
+    castEnabled: Boolean,
     castMorning: Boolean,
     castTonight: Boolean,
     castSkipPhoneSpeech: Boolean,
@@ -95,6 +96,7 @@ internal fun SmartHomeContent(
     onPickCastRoute: (DiscoveredCastRoute) -> Unit,
     onClearCastRoute: () -> Unit,
     onCastNow: () -> Unit,
+    onSetCastEnabled: (Boolean) -> Unit,
     onSetCastMorning: (Boolean) -> Unit,
     onSetCastTonight: (Boolean) -> Unit,
     onSetCastSkipPhoneSpeech: (Boolean) -> Unit,
@@ -131,6 +133,7 @@ internal fun SmartHomeContent(
                     lastError = castLastError,
                     lastErrorAt = castLastErrorAt,
                     lastSuccessAt = castLastSuccessAt,
+                    castEnabled = castEnabled,
                     castMorning = castMorning,
                     castTonight = castTonight,
                     castSkipPhoneSpeech = castSkipPhoneSpeech,
@@ -139,6 +142,7 @@ internal fun SmartHomeContent(
                     onPickRoute = onPickCastRoute,
                     onClearRoute = onClearCastRoute,
                     onCastNow = onCastNow,
+                    onSetCastEnabled = onSetCastEnabled,
                     onSetCastMorning = onSetCastMorning,
                     onSetCastTonight = onSetCastTonight,
                     onSetCastSkipPhoneSpeech = onSetCastSkipPhoneSpeech,
@@ -229,16 +233,6 @@ private fun MqttBridgeCard(
             )
             Switch(checked = enabled, onCheckedChange = onSetEnabled)
         }
-        Text(
-            text = stringResource(R.string.settings_smart_home_mqtt_description),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Text(
-            text = stringResource(R.string.settings_smart_home_mqtt_privacy_note),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
 
         if (enabled) {
             DiscoveryPicker(
@@ -344,7 +338,12 @@ private fun MqttBridgeCard(
                 onValueChange = { topicField = it.trim() },
                 label = { Text(stringResource(R.string.settings_smart_home_mqtt_topic)) },
                 supportingText = {
-                    Text(stringResource(R.string.settings_smart_home_mqtt_topic_hint))
+                    Text(
+                        stringResource(
+                            R.string.settings_smart_home_mqtt_topic_hint,
+                            topicField.ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC },
+                        ),
+                    )
                 },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),

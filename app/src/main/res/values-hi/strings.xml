@@ -864,7 +864,6 @@ Not overridden by design:
 
     <!-- Settings — Smart Home / Cast. -->
     <string name="settings_smart_home_cast_title">Cast</string>
-    <string name="settings_smart_home_cast_description">अपने होम नेटवर्क पर किसी स्मार्ट डिस्प्ले पर निर्धारित ClothesCast भेजें।</string>
     <string name="settings_smart_home_cast_device_label">स्मार्ट डिस्प्ले</string>
     <string name="settings_smart_home_cast_device_none">कोई डिस्प्ले नहीं चुना</string>
     <string name="settings_smart_home_cast_choose">स्मार्ट डिस्प्ले चुनें</string>
@@ -883,9 +882,6 @@ Not overridden by design:
     <string name="settings_smart_home_cast_picker_scanning">स्मार्ट डिस्प्ले के लिए नेटवर्क स्कैन हो रहा है…</string>
     <string name="settings_smart_home_cast_picker_empty">अभी कोई स्मार्ट डिस्प्ले नहीं मिला। सुनिश्चित करें कि आपका डिस्प्ले चालू हो और उसी Wi-Fi पर हो।</string>
     <string name="settings_smart_home_cast_picker_cancel">रद्द करें</string>
-    <string name="settings_smart_home_cast_privacy_note">ऑडियो और इमेज आपके फ़ोन से आपके लोकल नेटवर्क पर परोसे जाते हैं। ये आपके घर से बाहर नहीं जाते।</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">सफल Cast पर फ़ोन की आवाज़ बंद करें</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">अगर स्मार्ट डिस्प्ले पूर्वानुमान पढ़ता है तो फ़ोन चुप रहता है। फ़ोन की सूचना फिर भी आती है।</string>
 
     <!-- Settings — Smart Home / MQTT discover. -->
     <string name="settings_smart_home_discover_scan">ब्रोकर खोजें</string>
@@ -900,7 +896,6 @@ Not overridden by design:
     <!-- Settings — Smart Home / MQTT. -->
     <string name="settings_smart_home_mqtt_title">Home Assistant ब्रिज (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">MQTT पर पूर्वानुमान प्रकाशित करें</string>
-    <string name="settings_smart_home_mqtt_description">हर निर्धारित रीफ़्रेश के बाद, ClothesCast आज और आज रात का पूर्वानुमान आपके MQTT ब्रोकर पर retained messages के रूप में प्रकाशित करता है, ताकि Home Assistant (या कोई भी MQTT उपभोक्ता) नवीनतम मूल्य पढ़ सके और सेंसर ट्रिगर पर उसे बोल सके।</string>
     <string name="settings_smart_home_mqtt_host">ब्रोकर होस्ट</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">पोर्ट</string>
@@ -912,14 +907,12 @@ Not overridden by design:
     <string name="settings_smart_home_mqtt_password_clear">सेव किया पासवर्ड हटाएँ</string>
     <string name="settings_smart_home_mqtt_password_status_set">पासवर्ड सेट है।</string>
     <string name="settings_smart_home_mqtt_topic">टॉपिक प्रीफ़िक्स</string>
-    <string name="settings_smart_home_mqtt_topic_hint">आज {prefix}/today/text पर प्रकाशित होता है; आज रात {prefix}/tonight/text पर। इमेज और ऑडियो {prefix}/&lt;period&gt;/image और /audio पर जाते हैं। हर प्रकाशन {prefix}/now/&lt;text|image|audio&gt; पर भी मिरर होता है ताकि उपभोक्ता आज बनाम आज रात चुने बिना एक \"नवीनतम\" टॉपिक सब्सक्राइब कर सके।</string>
     <string name="settings_smart_home_mqtt_save">सेव करें</string>
     <string name="settings_smart_home_mqtt_publish_now">अभी प्रकाशित करें</string>
     <string name="settings_smart_home_mqtt_publishing">प्रकाशित हो रहा है…</string>
     <string name="settings_smart_home_mqtt_never_published">अभी तक प्रकाशित नहीं हुआ</string>
     <string name="settings_smart_home_mqtt_last_published">अंतिम प्रकाशित %1$s</string>
     <string name="settings_smart_home_mqtt_last_error_title">अंतिम प्रकाशन विफल हुआ</string>
-    <string name="settings_smart_home_mqtt_privacy_note">चालू होने पर, पूर्वानुमान वाक्य आपके डिवाइस से आपके नेटवर्क पर उस ब्रोकर तक जाता है जिसे आप कॉन्फ़िगर करते हैं। गोपनीयता नीति देखें।</string>
     <string name="settings_smart_home_mqtt_open_privacy">गोपनीयता विवरण पढ़ें</string>
     <string name="settings_smart_home_mqtt_setup_guide">सेटअप गाइड</string>
 

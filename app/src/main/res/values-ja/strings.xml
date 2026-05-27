@@ -978,7 +978,6 @@ the displayed label localizes.
 
     <!-- Smart Home — Cast settings. -->
     <string name="settings_smart_home_cast_title">キャスト</string>
-    <string name="settings_smart_home_cast_description">ホームネットワーク上のスマートディスプレイに、スケジュールされた ClothesCast を送信します。</string>
     <string name="settings_smart_home_cast_device_label">スマートディスプレイ</string>
     <string name="settings_smart_home_cast_device_none">ディスプレイが選択されていません</string>
     <string name="settings_smart_home_cast_choose">スマートディスプレイを選択</string>
@@ -997,9 +996,6 @@ the displayed label localizes.
     <string name="settings_smart_home_cast_picker_scanning">ネットワーク上のスマートディスプレイを探しています…</string>
     <string name="settings_smart_home_cast_picker_empty">スマートディスプレイが見つかりません。ディスプレイの電源が入っており、同じ Wi-Fi に接続されているか確認してください。</string>
     <string name="settings_smart_home_cast_picker_cancel">キャンセル</string>
-    <string name="settings_smart_home_cast_privacy_note">音声と画像はご自宅のネットワークを通じてスマートフォンから直接配信されます。自宅の外には出ません。</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">キャスト成功時はスマートフォンの読み上げをスキップ</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">スマートディスプレイが予報を読み上げる場合、スマートフォンは静かなままになります。スマートフォンの通知は引き続き表示されます。</string>
 
     <!-- Smart Home — broker discovery. -->
     <string name="settings_smart_home_discover_scan">ブローカーを探す</string>
@@ -1014,7 +1010,6 @@ the displayed label localizes.
     <!-- Smart Home — MQTT settings. -->
     <string name="settings_smart_home_mqtt_title">Home Assistant ブリッジ（MQTT）</string>
     <string name="settings_smart_home_mqtt_label">予報を MQTT に公開</string>
-    <string name="settings_smart_home_mqtt_description">スケジュールされた更新のたびに、ClothesCast は今日と今夜のレンダリング済み予報をリテインドメッセージとして MQTT ブローカーに公開します。これにより、Home Assistant（またはその他の MQTT コンシューマー）がセンサートリガーで最新の値を読み取り、読み上げることができます。</string>
     <string name="settings_smart_home_mqtt_host">ブローカーホスト</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">ポート</string>
@@ -1026,14 +1021,12 @@ the displayed label localizes.
     <string name="settings_smart_home_mqtt_password_clear">保存されたパスワードをクリア</string>
     <string name="settings_smart_home_mqtt_password_status_set">パスワードが設定されています。</string>
     <string name="settings_smart_home_mqtt_topic">トピックプレフィックス</string>
-    <string name="settings_smart_home_mqtt_topic_hint">今日は {prefix}/today/text に、今夜は {prefix}/tonight/text に公開されます。画像と音声は {prefix}/&lt;period&gt;/image と /audio に保存されます。各公開は {prefix}/now/&lt;text|image|audio&gt; にもミラーリングされるため、today と tonight を区別せずに「最新」トピックを購読できます。</string>
     <string name="settings_smart_home_mqtt_save">保存</string>
     <string name="settings_smart_home_mqtt_publish_now">今すぐ公開</string>
     <string name="settings_smart_home_mqtt_publishing">公開中…</string>
     <string name="settings_smart_home_mqtt_never_published">まだ公開されていません</string>
     <string name="settings_smart_home_mqtt_last_published">最終公開 %1$s</string>
     <string name="settings_smart_home_mqtt_last_error_title">前回の公開に失敗しました</string>
-    <string name="settings_smart_home_mqtt_privacy_note">オンにすると、レンダリングされた予報テキストが、設定したブローカーへネットワーク経由で端末から送信されます。プライバシーポリシーをご確認ください。</string>
     <string name="settings_smart_home_mqtt_open_privacy">プライバシーの詳細を読む</string>
     <string name="settings_smart_home_mqtt_setup_guide">セットアップガイド</string>
 

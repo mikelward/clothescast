@@ -837,7 +837,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_cast_change">เปลี่ยน</string>
     <string name="settings_smart_home_cast_choose">เลือกสมาร์ทดิสเพลย์</string>
     <string name="settings_smart_home_cast_clear">ล้าง</string>
-    <string name="settings_smart_home_cast_description">ส่ง ClothesCast ตามกำหนดการไปยังสมาร์ทดิสเพลย์บนเครือข่ายในบ้าน</string>
     <string name="settings_smart_home_cast_device_label">สมาร์ทดิสเพลย์</string>
     <string name="settings_smart_home_cast_device_none">ยังไม่ได้เลือกดิสเพลย์</string>
     <string name="settings_smart_home_cast_last_error_title">การ Cast ครั้งล่าสุดล้มเหลว</string>
@@ -850,9 +849,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_cast_picker_empty">ยังไม่พบสมาร์ทดิสเพลย์ ตรวจสอบให้แน่ใจว่าดิสเพลย์เปิดอยู่และเชื่อมต่อ Wi-Fi เดียวกัน</string>
     <string name="settings_smart_home_cast_picker_scanning">กำลังสแกนเครือข่ายเพื่อหาสมาร์ทดิสเพลย์…</string>
     <string name="settings_smart_home_cast_picker_title">เลือกสมาร์ทดิสเพลย์</string>
-    <string name="settings_smart_home_cast_privacy_note">เสียงและภาพถูกส่งจากโทรศัพท์ผ่านเครือข่ายในบ้าน ไม่ออกนอกบ้าน</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">หากสมาร์ทดิสเพลย์อ่านพยากรณ์อากาศออกเสียง โทรศัพท์จะเงียบ การแจ้งเตือนบนโทรศัพท์ยังคงส่งตามปกติ</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">ข้ามเสียงโทรศัพท์หาก Cast สำเร็จ</string>
     <string name="settings_smart_home_cast_title">Cast</string>
     <string name="settings_smart_home_cast_tonight_description">ส่ง ClothesCast รายคืนไปยังสมาร์ทดิสเพลย์เมื่อแจ้งเตือนช่วงคืนทำงาน</string>
     <string name="settings_smart_home_cast_tonight_title">ClothesCast รายคืน</string>
@@ -868,7 +864,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_discover_use">ใช้</string>
 
     <!-- Settings — Smart Home / MQTT -->
-    <string name="settings_smart_home_mqtt_description">หลังจากรีเฟรชตามกำหนดการแต่ละครั้ง ClothesCast จะเผยแพร่พยากรณ์อากาศวันนี้และคืนนี้ที่แสดงผลแล้วไปยัง MQTT broker เป็น retained messages เพื่อให้ Home Assistant (หรือ MQTT consumer ใดก็ได้) อ่านค่าล่าสุดและอ่านออกเสียงเมื่อ sensor ทำงาน</string>
     <string name="settings_smart_home_mqtt_host">โฮสต์โบรกเกอร์</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_label">เผยแพร่พยากรณ์ไปยัง MQTT</string>
@@ -881,7 +876,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_mqtt_password_replace">เปลี่ยนรหัสผ่าน</string>
     <string name="settings_smart_home_mqtt_password_status_set">กำหนดรหัสผ่านแล้ว</string>
     <string name="settings_smart_home_mqtt_port">พอร์ต</string>
-    <string name="settings_smart_home_mqtt_privacy_note">เมื่อเปิดใช้งาน ประโยคพยากรณ์อากาศที่แสดงผลแล้วจะออกจากอุปกรณ์ผ่านเครือข่ายไปยังโบรกเกอร์ที่คุณกำหนด ดูนโยบายความเป็นส่วนตัว</string>
     <string name="settings_smart_home_mqtt_publish_now">เผยแพร่เดี๋ยวนี้</string>
     <string name="settings_smart_home_mqtt_publishing">กำลังเผยแพร่…</string>
     <string name="settings_smart_home_mqtt_save">บันทึก</string>
@@ -889,7 +883,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_mqtt_title">Home Assistant bridge (MQTT)</string>
     <string name="settings_smart_home_mqtt_tls">ใช้ TLS</string>
     <string name="settings_smart_home_mqtt_topic">คำนำหน้า topic</string>
-    <string name="settings_smart_home_mqtt_topic_hint">วันนี้เผยแพร่ที่ {prefix}/today/text; คืนนี้ที่ {prefix}/tonight/text รูปภาพและเสียงอยู่ที่ {prefix}/&lt;period&gt;/image และ /audio แต่ละรายการจะมิเรอร์ไปที่ {prefix}/now/&lt;text|image|audio&gt; ด้วย เพื่อให้ผู้รับสมัครสมาชิก topic "ล่าสุด" เดียวโดยไม่ต้องเลือกวันนี้หรือคืนนี้</string>
     <string name="settings_smart_home_mqtt_username">ชื่อผู้ใช้ (ไม่บังคับ)</string>
     <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
 

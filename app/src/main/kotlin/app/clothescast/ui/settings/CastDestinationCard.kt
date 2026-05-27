@@ -59,6 +59,7 @@ internal fun CastDestinationCard(
     lastError: String?,
     lastErrorAt: Long,
     lastSuccessAt: Long,
+    castEnabled: Boolean,
     castMorning: Boolean,
     castTonight: Boolean,
     castSkipPhoneSpeech: Boolean,
@@ -67,6 +68,7 @@ internal fun CastDestinationCard(
     onPickRoute: (DiscoveredCastRoute) -> Unit,
     onClearRoute: () -> Unit,
     onCastNow: () -> Unit,
+    onSetCastEnabled: (Boolean) -> Unit,
     onSetCastMorning: (Boolean) -> Unit,
     onSetCastTonight: (Boolean) -> Unit,
     onSetCastSkipPhoneSpeech: (Boolean) -> Unit,
@@ -84,16 +86,17 @@ internal fun CastDestinationCard(
                 text = stringResource(R.string.settings_smart_home_cast_title),
                 style = MaterialTheme.typography.titleMedium,
             )
-            Text(
-                text = stringResource(R.string.settings_smart_home_cast_description),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                text = stringResource(R.string.settings_smart_home_cast_privacy_note),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.settings_smart_home_cast_label),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f),
+                )
+                Switch(checked = castEnabled, onCheckedChange = onSetCastEnabled)
+            }
 
             CastDeviceRow(
                 routeName = routeName,
@@ -134,28 +137,29 @@ internal fun CastDestinationCard(
             )
 
             // Per-period toggles + the audio-handoff toggle gate
-            // scheduled-run cast deliveries; the picker above is the
-            // overall on/off. Disabled when no route is picked so the
-            // user notices that the picker is the precondition.
+            // scheduled-run cast deliveries; the master switch above and
+            // the picker are the overall on/off. Disabled when either is
+            // missing so the user notices the preconditions.
+            val perPeriodEnabled = routeName != null && castEnabled
             CastToggleRow(
                 title = stringResource(R.string.settings_smart_home_cast_morning_title),
                 description = stringResource(R.string.settings_smart_home_cast_morning_description),
                 checked = castMorning,
-                enabled = routeName != null,
+                enabled = perPeriodEnabled,
                 onCheckedChange = onSetCastMorning,
             )
             CastToggleRow(
                 title = stringResource(R.string.settings_smart_home_cast_tonight_title),
                 description = stringResource(R.string.settings_smart_home_cast_tonight_description),
                 checked = castTonight,
-                enabled = routeName != null,
+                enabled = perPeriodEnabled,
                 onCheckedChange = onSetCastTonight,
             )
             CastToggleRow(
                 title = stringResource(R.string.settings_smart_home_cast_skip_phone_speech_title),
                 description = stringResource(R.string.settings_smart_home_cast_skip_phone_speech_description),
                 checked = castSkipPhoneSpeech,
-                enabled = routeName != null,
+                enabled = perPeriodEnabled,
                 onCheckedChange = onSetCastSkipPhoneSpeech,
             )
         }

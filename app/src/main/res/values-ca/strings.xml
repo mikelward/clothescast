@@ -727,8 +727,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_root_smart_home">Llar intel·ligent</string>
     <string name="settings_root_smart_home_subtitle">Pantalles intel·ligents i automatització de la llar</string>
     <string name="settings_smart_home_cast_title">Emissió</string>
-    <string name="settings_smart_home_cast_description">Envia els ClothesCast programats a una pantalla intel·ligent de la teva xarxa domèstica.</string>
-    <string name="settings_smart_home_cast_privacy_note">L\'àudio i la imatge s\'envien des del teu telèfon per la xarxa local. No surten de casa teva.</string>
     <string name="settings_smart_home_cast_device_label">Pantalla intel·ligent</string>
     <string name="settings_smart_home_cast_device_none">Cap pantalla seleccionada</string>
     <string name="settings_smart_home_cast_choose">Triar pantalla intel·ligent</string>
@@ -747,15 +745,11 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_smart_home_cast_morning_description">Envia el ClothesCast diari a la pantalla intel·ligent quan soni el despertador del matí.</string>
     <string name="settings_smart_home_cast_tonight_title">ClothesCast nocturn</string>
     <string name="settings_smart_home_cast_tonight_description">Envia el ClothesCast nocturn a la pantalla intel·ligent quan soni el despertador de la nit.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Silenciar el telèfon si l\'emissió té èxit</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Si la pantalla intel·ligent llegeix la previsió en veu alta, el telèfon roman en silenci. La notificació del telèfon s\'envia igualment.</string>
     <string name="cast_error_no_route_picked">Primer tria una pantalla intel·ligent.</string>
     <string name="cast_error_no_insight_yet">Encara no hi ha cap previsió disponible. Espera la propera execució programada o toca Actualitza a la pantalla d\'avui.</string>
     <string name="cast_error_unknown">L\'emissió ha fallat.</string>
     <string name="settings_smart_home_mqtt_title">Pont de Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publicar la previsió a MQTT</string>
-    <string name="settings_smart_home_mqtt_description">Després de cada actualització programada, ClothesCast publica la previsió d\'avui i de la nit al teu servidor MQTT com a missatges retinguts, perquè Home Assistant (o qualsevol client MQTT) pugui llegir el darrer valor i llegir-lo en veu alta en un disparador de sensor.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Quan és activat, el text de la previsió surt del dispositiu per la teva xarxa cap al servidor configurat. Consulta la política de privadesa.</string>
     <string name="settings_smart_home_mqtt_host">Servidor intermediari</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
@@ -767,7 +761,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_smart_home_mqtt_password_replace">Substituir la contrasenya</string>
     <string name="settings_smart_home_mqtt_password_clear">Esborrar la contrasenya desada</string>
     <string name="settings_smart_home_mqtt_topic">Prefix del tema</string>
-    <string name="settings_smart_home_mqtt_topic_hint">La previsió d\'avui es publica a {prefix}/today/text; la de la nit a {prefix}/tonight/text. La imatge i l\'àudio es publiquen a {prefix}/&lt;period&gt;/image i /audio. Cada publicació també es reflecteix a {prefix}/now/&lt;text|image|audio&gt; perquè un client es pugui subscriure a un sol tema «darrer» sense triar entre avui i aquesta nit.</string>
     <string name="settings_smart_home_mqtt_save">Desar</string>
     <string name="settings_smart_home_mqtt_publish_now">Publicar ara</string>
     <string name="settings_smart_home_mqtt_publishing">Publicant…</string>

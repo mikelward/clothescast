@@ -732,8 +732,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_root_smart_home">Nutikodu</string>
     <string name="settings_root_smart_home_subtitle">Nutiekraanid ja koduautomaatika</string>
     <string name="settings_smart_home_cast_title">Ülekanne</string>
-    <string name="settings_smart_home_cast_description">Saada ajastatud ClothesCast\'id oma koduvõrgu nutikas ekraanile.</string>
-    <string name="settings_smart_home_cast_privacy_note">Heli ja pilt edastatakse teie telefonist kohaliku võrgu kaudu. Need ei lahku teie kodust.</string>
     <string name="settings_smart_home_cast_device_label">Nutikas ekraan</string>
     <string name="settings_smart_home_cast_device_none">Ekraani pole valitud</string>
     <string name="settings_smart_home_cast_choose">Vali nutikas ekraan</string>
@@ -752,15 +750,11 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_smart_home_cast_morning_description">Saada igapäevane ClothesCast nutiekraanile hommikuse äratuse käivitumisel.</string>
     <string name="settings_smart_home_cast_tonight_title">Õhtune ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Saada õhtune ClothesCast nutiekraanile õhtuse äratuse käivitumisel.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Vaigista telefon eduka ülekande korral</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Kui nutikas ekraan loeb prognoosi ette, jääb telefon vaikseks. Telefoni teavitus saadetakse ikkagi.</string>
     <string name="cast_error_no_route_picked">Vali esmalt nutikas ekraan.</string>
     <string name="cast_error_no_insight_yet">Prognoosi pole veel saadaval. Oota järgmist ajastatud käivitust või puuduta Tänase ekraani Värskenda nuppu.</string>
     <string name="cast_error_unknown">Ülekanne ebaõnnestus.</string>
     <string name="settings_smart_home_mqtt_title">Home Assistanti sild (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Avalda prognoos MQTT-le</string>
-    <string name="settings_smart_home_mqtt_description">Pärast iga ajastatud värskendust avaldab ClothesCast tänase ja õhtuse prognoosi teie MQTT-brokkerile püsivate sõnumitena, et Home Assistant (või mis tahes MQTT-klient) saaks lugeda viimast väärtust ja öelda selle sensori käivitamisel.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Sisselülitamisel lahkub prognoos teie seadmest üle teie võrgu konfigureeritud brokkerile. Vaata privaatsuspoliitikat.</string>
     <string name="settings_smart_home_mqtt_host">Brokkeri host</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
@@ -772,7 +766,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_smart_home_mqtt_password_replace">Asenda parool</string>
     <string name="settings_smart_home_mqtt_password_clear">Kustuta salvestatud parool</string>
     <string name="settings_smart_home_mqtt_topic">Teema prefiks</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Tänane prognoos avaldatakse aadressile {prefix}/today/text; õhtune — {prefix}/tonight/text. Pilt ja heli — {prefix}/&lt;period&gt;/image ja /audio. Iga avaldamine peegeldatakse ka {prefix}/now/&lt;text|image|audio&gt; alla, et klient saaks tellida ühe „viimase" teema, valimata täna ja täna õhtu vahel.</string>
     <string name="settings_smart_home_mqtt_save">Salvesta</string>
     <string name="settings_smart_home_mqtt_publish_now">Avalda kohe</string>
     <string name="settings_smart_home_mqtt_publishing">Avaldamine…</string>

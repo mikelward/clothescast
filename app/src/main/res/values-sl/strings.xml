@@ -828,8 +828,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_holidays_calendar_section_placeholder_off">Vklopi stikalo zgoraj za prilagoditev današnje kombinacije na podlagi dogodkov iz sinhroniziranih koledarjev.</string>
     <string name="settings_holidays_calendar_section_placeholder_on">Zaznani dogodki iz tvojih sinhroniziranih koledarjev se bodo pojavili tukaj v prihodnji posodobitvi.</string>
     <string name="settings_smart_home_cast_title">Predvajaj</string>
-    <string name="settings_smart_home_cast_description">Pošiljaj načrtovane ClothesCaste na pametni zaslon v domačem omrežju.</string>
-    <string name="settings_smart_home_cast_privacy_note">Zvok in slika se strežeta s tvojega telefona prek lokalnega omrežja. Ne zapustita tvojega doma.</string>
     <string name="settings_smart_home_cast_device_label">Pametni zaslon</string>
     <string name="settings_smart_home_cast_device_none">Ni izbranega zaslona</string>
     <string name="settings_smart_home_cast_choose">Izberi pametni zaslon</string>
@@ -848,8 +846,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_smart_home_cast_morning_description">Pošlji dnevni ClothesCast na pametni zaslon, ko se sproži jutranji alarm.</string>
     <string name="settings_smart_home_cast_tonight_title">Nočni ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Pošlji nočni ClothesCast na pametni zaslon, ko se sproži večerni alarm.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Preskoči govor telefona, če je predvajanje uspelo</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Če pametni zaslon bere napoved naglas, telefon ostane tih. Obvestilo telefona se še vedno pošlje.</string>
     <string name="settings_smart_home_discover_scan">Najdi broker</string>
     <string name="settings_smart_home_discover_scanning">Iščem…</string>
     <string name="settings_smart_home_discover_stop">Ustavi iskanje</string>
@@ -860,8 +856,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_smart_home_discover_label_mqtt">MQTT broker</string>
     <string name="settings_smart_home_mqtt_title">Most Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Objavi napoved na MQTT</string>
-    <string name="settings_smart_home_mqtt_description">Po vsaki načrtovani osvežitvi ClothesCast objavi današnjo in večerno napoved na tvoj MQTT broker kot zadržana sporočila, da jo Home Assistant (ali kateri koli MQTT odjemalec) prebere zadnjo vrednost in jo naglas prebere ob sprožitvi senzorja.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Ko je vklopljeno, ustvarjena napoved zapusti tvojo napravo prek omrežja do konfiguriranega brokerja. Oglej si pravilnik o zasebnosti.</string>
     <string name="settings_smart_home_mqtt_host">Gostitelj brokerja</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Vrata</string>
@@ -873,7 +867,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_smart_home_mqtt_password_replace">Zamenjaj geslo</string>
     <string name="settings_smart_home_mqtt_password_clear">Odstrani shranjeno geslo</string>
     <string name="settings_smart_home_mqtt_topic">Predpona teme</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Danes objavlja na {prefix}/today/text; zvečer na {prefix}/tonight/text. Slika in zvok na {prefix}/&lt;period&gt;/image in /audio. Vsaka objava se zrcali na {prefix}/now/&lt;text|image|audio&gt;, da se odjemalec naroči na eno \'najnovejšo\' temo brez izbire med danes in zvečer.</string>
     <string name="settings_smart_home_mqtt_save">Shrani</string>
     <string name="settings_smart_home_mqtt_publish_now">Objavi zdaj</string>
     <string name="settings_smart_home_mqtt_publishing">Objavljanje…</string>

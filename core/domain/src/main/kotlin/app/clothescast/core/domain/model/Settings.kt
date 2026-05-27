@@ -881,6 +881,13 @@ data class UserPreferences(
      */
     val castRouteName: String? = null,
     /**
+     * Master switch for scheduled casting. When off, scheduled runs skip
+     * the cast destination regardless of [castMorning] / [castTonight].
+     * The "Cast now" manual test action is unaffected — it's a one-off
+     * driven by the user pressing a button.
+     */
+    val castEnabled: Boolean = true,
+    /**
      * Per-period cast toggles. When off, the worker doesn't cast at that
      * period even if a route is picked — useful for users who want the
      * morning forecast on the smart display but not a tonight follow-up

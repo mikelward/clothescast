@@ -842,8 +842,6 @@ only the displayed label localizes.
     <string name="settings_root_smart_home">Умный дом</string>
     <string name="settings_root_smart_home_subtitle">Умные дисплеи и домашняя автоматизация</string>
     <string name="settings_smart_home_cast_title">Трансляция</string>
-    <string name="settings_smart_home_cast_description">Отправляйте запланированные ClothesCast на умный дисплей в домашней сети.</string>
-    <string name="settings_smart_home_cast_privacy_note">Аудио и изображение передаются с вашего телефона через локальную сеть. Они не покидают ваш дом.</string>
     <string name="settings_smart_home_cast_device_label">Умный дисплей</string>
     <string name="settings_smart_home_cast_device_none">Дисплей не выбран</string>
     <string name="settings_smart_home_cast_choose">Выбрать умный дисплей</string>
@@ -862,15 +860,11 @@ only the displayed label localizes.
     <string name="settings_smart_home_cast_morning_description">Отправлять ежедневный ClothesCast на умный дисплей при срабатывании утреннего будильника.</string>
     <string name="settings_smart_home_cast_tonight_title">Вечерний ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Отправлять вечерний ClothesCast на умный дисплей при срабатывании вечернего будильника.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Отключить звук телефона при успешной трансляции</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Если умный дисплей зачитает прогноз вслух, телефон остаётся беззвучным. Уведомление на телефоне всё равно появится.</string>
     <string name="cast_error_no_route_picked">Сначала выберите умный дисплей.</string>
     <string name="cast_error_no_insight_yet">Прогноз ещё недоступен. Подождите следующего запланированного обновления или нажмите «Обновить» на экране «Сегодня».</string>
     <string name="cast_error_unknown">Трансляция не удалась.</string>
     <string name="settings_smart_home_mqtt_title">Мост Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Публиковать прогноз в MQTT</string>
-    <string name="settings_smart_home_mqtt_description">После каждого запланированного обновления ClothesCast публикует сегодняшний и вечерний прогноз в ваш MQTT-брокер как сохранённые сообщения, чтобы Home Assistant (или любой MQTT-клиент) мог читать последнее значение и озвучивать его по триггеру датчика.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Если включено, текст прогноза покидает устройство через вашу сеть к настроенному брокеру. См. политику конфиденциальности.</string>
     <string name="settings_smart_home_mqtt_host">Хост брокера</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Порт</string>
@@ -882,7 +876,6 @@ only the displayed label localizes.
     <string name="settings_smart_home_mqtt_password_replace">Заменить пароль</string>
     <string name="settings_smart_home_mqtt_password_clear">Очистить сохранённый пароль</string>
     <string name="settings_smart_home_mqtt_topic">Префикс темы</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Сегодняшний прогноз публикуется в {prefix}/today/text; вечерний — в {prefix}/tonight/text. Изображение и аудио — в {prefix}/&lt;period&gt;/image и /audio. Каждая публикация также дублируется в {prefix}/now/&lt;text|image|audio&gt;, чтобы потребитель мог подписаться на одну «последнюю» тему без выбора между сегодня и сегодня вечером.</string>
     <string name="settings_smart_home_mqtt_save">Сохранить</string>
     <string name="settings_smart_home_mqtt_publish_now">Опубликовать сейчас</string>
     <string name="settings_smart_home_mqtt_publishing">Публикация…</string>

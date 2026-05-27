@@ -807,7 +807,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_cast_change">Badilisha</string>
     <string name="settings_smart_home_cast_choose">Chagua onyesho mahiri</string>
     <string name="settings_smart_home_cast_clear">Futa</string>
-    <string name="settings_smart_home_cast_description">Tuma ClothesCasts zilizopangwa kwa onyesho mahiri kwenye mtandao wako wa nyumbani.</string>
     <string name="settings_smart_home_cast_device_label">Onyesho mahiri</string>
     <string name="settings_smart_home_cast_device_none">Hakuna onyesho lililochaguliwa</string>
     <string name="settings_smart_home_cast_last_error_title">Utumaji wa mwisho ulishindwa</string>
@@ -820,9 +819,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_cast_picker_empty">Hakuna maonyesho mahiri yaliyopatikana bado. Hakikisha onyesho lako limewashwa na liko kwenye Wi-Fi sawa.</string>
     <string name="settings_smart_home_cast_picker_scanning">Inatafuta maonyesho mahiri kwenye mtandao wako…</string>
     <string name="settings_smart_home_cast_picker_title">Chagua onyesho mahiri</string>
-    <string name="settings_smart_home_cast_privacy_note">Sauti na picha zinahudumishwa kutoka simu yako kwenye mtandao wako wa ndani. Hazitoki nyumbani kwako.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Ikiwa onyesho mahiri linasoma utabiri kwa sauti, simu inakaa kimya. Arifa ya simu bado inatumwa.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Ruka usemi wa simu ikiwa cast imefaulu</string>
     <string name="settings_smart_home_cast_title">Cast</string>
     <string name="settings_smart_home_cast_tonight_description">Tuma ClothesCast ya usiku kwenye onyesho mahiri kengele ya usiku inapolia.</string>
     <string name="settings_smart_home_cast_tonight_title">ClothesCast ya usiku</string>
@@ -838,7 +834,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_discover_use">Tumia</string>
 
     <!-- Smart home MQTT -->
-    <string name="settings_smart_home_mqtt_description">Baada ya kila sasisho lililowekwa ratiba, ClothesCast huchapisha utabiri wa leo na usiku huu kwenye broker yako ya MQTT kama ujumbe uliobakishwa, ili Home Assistant (au mtumiaji yeyote wa MQTT) aweze kusoma thamani ya hivi karibuni na kuisema kwenye kichocheo cha sensori.</string>
     <string name="settings_smart_home_mqtt_host">Mwenyeji wa broker</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_label">Chapisha utabiri kwenye MQTT</string>
@@ -851,7 +846,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_mqtt_password_replace">Badilisha nenosiri</string>
     <string name="settings_smart_home_mqtt_password_status_set">Nenosiri limewekwa.</string>
     <string name="settings_smart_home_mqtt_port">Bandari</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Ukiwa umewashwa, sentensi ya utabiri iliyoundwa huacha kifaa chako kupitia mtandao wako kwenda broker unayosanidi. Angalia sera ya faragha.</string>
     <string name="settings_smart_home_mqtt_publish_now">Chapisha sasa</string>
     <string name="settings_smart_home_mqtt_publishing">Inachapisha…</string>
     <string name="settings_smart_home_mqtt_save">Hifadhi</string>
@@ -859,7 +853,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_mqtt_title">Daraja la Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_tls">Tumia TLS</string>
     <string name="settings_smart_home_mqtt_topic">Kiambishi awali cha mada</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Leo huchapisha kwenye {prefix}/today/text; usiku kwenye {prefix}/tonight/text. Picha na sauti zinaenda kwenye {prefix}/&lt;period&gt;/image na /audio. Kila uchapishaji pia unaakisiwa kwenye {prefix}/now/&lt;text|image|audio&gt; ili mtumiaji aweze kujiandikisha kwa mada moja ya "hivi karibuni" bila kuchagua leo au usiku.</string>
     <string name="settings_smart_home_mqtt_username">Jina la mtumiaji (si lazima)</string>
     <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
 

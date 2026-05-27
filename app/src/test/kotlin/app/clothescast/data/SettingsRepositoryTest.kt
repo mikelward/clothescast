@@ -751,6 +751,17 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `firstAutoFetchAttempted defaults to false and round-trips`() = runTest {
+        // Latch for the post-onboarding auto-fetch in TodayScreen: false on a
+        // fresh install (the auto-fetch trigger is armed), set to true the
+        // first time the trigger fires so a failing first attempt can't loop.
+        subject.preferences.first().firstAutoFetchAttempted shouldBe false
+
+        subject.setFirstAutoFetchAttempted(true)
+        subject.preferences.first().firstAutoFetchAttempted shouldBe true
+    }
+
+    @Test
     fun `dismissedLocalBuildSha defaults to empty and round-trips`() = runTest {
         subject.dismissedLocalBuildSha.first() shouldBe ""
 

@@ -752,6 +752,22 @@ data class UserPreferences(
      */
     val telemetryNoticeAcked: Boolean = false,
     /**
+     * True once the Today screen has auto-triggered the first ever clothescast
+     * fetch on behalf of a freshly-onboarded user. The auto-fetch fires the
+     * moment the user has a usable location and is staring at an empty Today
+     * screen waiting for something to happen — picking a location is the only
+     * required setup step, so kicking off the fetch saves them a manual
+     * "Fetch now" tap that conveys nothing. Not gated on the telemetry-notice
+     * banner: the banner is informational and shouldn't block the user's
+     * first forecast.
+     *
+     * This flag latches the trigger to a single attempt per install so a
+     * failed first fetch doesn't loop, and so a user who later clears the
+     * insight cache (or whose alarm-driven fetch happens to land while
+     * they're mid-onboarding) doesn't re-arm the auto-fetch.
+     */
+    val firstAutoFetchAttempted: Boolean = false,
+    /**
      * Which app-specific colour palette to use for the per-model chart
      * overlays and the confidence-chip / low-confidence-callout backgrounds.
      * Defaults to [ColorPalette.RAINBOW] — the existing pink / orange /

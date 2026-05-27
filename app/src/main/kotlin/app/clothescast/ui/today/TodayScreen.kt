@@ -277,6 +277,7 @@ fun TodayScreen(
             onDismissCelebrationCard = viewModel::dismissCelebrationCard,
             onDismissClothesPromoCard = viewModel::dismissClothesPromoCard,
             onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
+            onAutoFetchAttempted = viewModel::markFirstAutoFetchAttempted,
             onAdjustThreshold = viewModel::adjustClothesRuleThreshold,
             onNavigateToClothes = onNavigateToClothes,
             onNavigateToFormat = onNavigateToFormat,
@@ -316,6 +317,7 @@ private fun TodayContent(
     onDismissCelebrationCard: () -> Unit,
     onDismissClothesPromoCard: () -> Unit,
     onCalendarPermissionChanged: () -> Unit,
+    onAutoFetchAttempted: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
     onNavigateToFormat: () -> Unit,
@@ -364,6 +366,39 @@ private fun TodayContent(
     // know what to tap.
     val locationActionRequired = !state.hasFallbackLocation &&
         !(state.useDeviceLocation && coarseGranted && backgroundGranted)
+    // Post-onboarding auto-fetch. The cold-start path is: fresh install →
+    // user lands on Today's empty state → fixes location (the only required
+    // setup step) → at that point the user is staring at an empty screen
+    // waiting for something to happen, so kicking off the first fetch
+    // ourselves saves them a manual "Fetch now" tap that conveys nothing.
+    //
+    // Gates, in priority order: still in the empty state (no cached insight
+    // yet — an alarm-driven fetch that happened to land mid-onboarding
+    // pre-empts us); user has a usable location; no worker already in flight
+    // (would just REPLACE it); and we haven't already attempted this once
+    // before per the persisted latch (a failed first attempt mustn't loop on
+    // every recomposition).
+    //
+    // Silent path: routes through [FetchAndNotifyWorker.enqueueSilentRefresh]
+    // so the fetch populates [InsightCache] (the Today screen re-renders the
+    // moment the snapshot lands) but suppresses notification, TTS, MQTT, and
+    // cast delivery. The user didn't *ask* for the fetch — they just finished
+    // picking a location — so the app shouldn't suddenly post a notification
+    // or speak through the speakers; the Today screen filling in is the
+    // entire signal.
+    val autoFetchReady = !state.firstAutoFetchAttempted &&
+        !locationActionRequired &&
+        state.thisPeriodInsight == null &&
+        !isWorking
+    LaunchedEffect(autoFetchReady) {
+        if (autoFetchReady) {
+            // Mark first so a recomposition driven by the WorkInfo flow
+            // transitioning to RUNNING can't slip in before the prefs write
+            // lands and re-evaluate the gate.
+            onAutoFetchAttempted()
+            FetchAndNotifyWorker.enqueueSilentRefresh(context.applicationContext)
+        }
+    }
     val workStatusToShow = bannerStatus(
         workStatus = state.workStatus,
         hasInsight = state.thisPeriodInsight != null,

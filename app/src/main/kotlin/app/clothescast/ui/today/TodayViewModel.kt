@@ -90,6 +90,12 @@ data class TodayState(
     // just exposes the prefs side of the equation.
     val useDeviceLocation: Boolean = false,
     val hasFallbackLocation: Boolean = false,
+    /**
+     * Mirrors [UserPreferences.firstAutoFetchAttempted]. The Today screen reads
+     * this to ensure the post-onboarding auto-fetch fires at most once per
+     * install, regardless of whether the first attempt succeeded or failed.
+     */
+    val firstAutoFetchAttempted: Boolean = false,
     /** Live clothes rules the rationale dialog reads to render the current threshold
      * value and the `−1°` / `+1°` controls. The cached [Insight.outfitRationale]
      * still carries the rule values that *were* in effect at insight-generation
@@ -465,6 +471,7 @@ class TodayViewModel(
             tonightTime = prefs.tonightSchedule.time,
             useDeviceLocation = prefs.useDeviceLocation,
             hasFallbackLocation = prefs.location != null,
+            firstAutoFetchAttempted = prefs.firstAutoFetchAttempted,
             clothesRules = prefs.clothesRules,
             showModelSpread = spread,
             outfitTopColors = topColors,
@@ -502,6 +509,19 @@ class TodayViewModel(
     fun dismissClothesPromoCard() {
         viewModelScope.launch {
             settingsRepository.setClothesPromoCardDismissed(true)
+        }
+    }
+
+    /**
+     * Marks the one-time post-onboarding auto-fetch as attempted. The Today
+     * screen calls this immediately on enqueueing the auto-fetch (not after
+     * it completes) so a transient failure of the first attempt doesn't
+     * re-arm the trigger on the next recomposition — see
+     * [TodayState.firstAutoFetchAttempted].
+     */
+    fun markFirstAutoFetchAttempted() {
+        viewModelScope.launch {
+            settingsRepository.setFirstAutoFetchAttempted(true)
         }
     }
 

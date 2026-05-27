@@ -678,6 +678,15 @@ class SettingsRepository(
     }
 
     /**
+     * Latches the "Today has auto-triggered the first ever fetch" flag so it
+     * only fires once per install — see
+     * [UserPreferences.firstAutoFetchAttempted].
+     */
+    suspend fun setFirstAutoFetchAttempted(attempted: Boolean) {
+        dataStore.edit { it[FIRST_AUTO_FETCH_ATTEMPTED] = attempted }
+    }
+
+    /**
      * Atomically nudges the temperature threshold of the [ClothesRule] keyed
      * `ruleItem` by [deltaC] degrees Celsius. Used by the rationale dialog's
      * `+1°` / `−1°` buttons.
@@ -858,6 +867,7 @@ class SettingsRepository(
         // default; the one-time Today banner is what surfaces the choice to the user.
         val telemetryEnabled = this[TELEMETRY_ENABLED] != false
         val telemetryNoticeAcked = this[TELEMETRY_NOTICE_ACKED] == true
+        val firstAutoFetchAttempted = this[FIRST_AUTO_FETCH_ATTEMPTED] == true
         val colorPalette = this[COLOR_PALETTE]?.let { runCatching { ColorPalette.valueOf(it) }.getOrNull() }
             ?: ColorPalette.RAINBOW
         val outfitTopColors = parseOutfitTopColors(this[OUTFIT_TOP_COLORS])
@@ -959,6 +969,7 @@ class SettingsRepository(
             deltaThresholdC = deltaThresholdC,
             telemetryEnabled = telemetryEnabled,
             telemetryNoticeAcked = telemetryNoticeAcked,
+            firstAutoFetchAttempted = firstAutoFetchAttempted,
             colorPalette = colorPalette,
             outfitTopColors = outfitTopColors,
             outfitBottomColors = outfitBottomColors,
@@ -1205,6 +1216,7 @@ class SettingsRepository(
         private val DISMISSED_LOCAL_BUILD_SHA = stringPreferencesKey("dismissed_local_build_sha")
         private val TELEMETRY_ENABLED = booleanPreferencesKey("telemetry_enabled")
         private val TELEMETRY_NOTICE_ACKED = booleanPreferencesKey("telemetry_notice_acked")
+        private val FIRST_AUTO_FETCH_ATTEMPTED = booleanPreferencesKey("first_auto_fetch_attempted")
         private val BUG_REPORT_CONSENT_ACKED = booleanPreferencesKey("bug_report_consent_acked")
         private val COLOR_PALETTE = stringPreferencesKey("color_palette")
         private val OUTFIT_TOP_COLORS = stringPreferencesKey("outfit_top_colors_json")

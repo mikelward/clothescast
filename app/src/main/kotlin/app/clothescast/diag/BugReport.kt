@@ -23,12 +23,10 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
 import kotlinx.coroutines.flow.first
-import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import java.util.Locale
 
 /**
@@ -39,8 +37,8 @@ import java.util.Locale
  * clipboard as a paste fallback.
  */
 object BugReport {
-    private val STATUS_TIMESTAMP_FORMAT: DateTimeFormatter =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss zzz")
+    private val TIMESTAMP_FORMAT: DateTimeFormatter =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z").withZone(ZoneId.systemDefault())
 
     /**
      * Builds the text payload, copies it to the clipboard, and fires the
@@ -83,7 +81,7 @@ object BugReport {
         } else null
         val crash = DiagLog.readPersistedCrash()
         val recent = DiagLog.snapshot()
-        val now = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.US).format(Date())
+        val now = TIMESTAMP_FORMAT.format(Instant.now())
 
         return buildString {
             appendLine("ClothesCast bug report")
@@ -197,9 +195,7 @@ object BugReport {
     }
 
     private fun formatTimestamp(epochMs: Long): String =
-        Instant.ofEpochMilli(epochMs)
-            .atZone(ZoneId.systemDefault())
-            .format(STATUS_TIMESTAMP_FORMAT)
+        TIMESTAMP_FORMAT.format(Instant.ofEpochMilli(epochMs))
 
     /**
      * Humanises age relative to now so a glance at the bug report tells you

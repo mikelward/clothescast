@@ -204,6 +204,7 @@ class SettingsViewModel(
                     it.copy(
                         scheduleTime = prefs.schedule.time,
                         scheduleDays = prefs.schedule.days,
+                        dailyEnabled = prefs.dailyEnabled,
                         tonightTime = prefs.tonightSchedule.time,
                         tonightDays = prefs.tonightSchedule.days,
                         tonightEnabled = prefs.tonightEnabled,
@@ -963,6 +964,18 @@ class SettingsViewModel(
         // settings preview / cast / MQTT, all of which re-derive from the
         // cached snapshot reactively. The widget doesn't show delta.
         viewModelScope.launch { settingsRepository.setDeltaThresholdC(thresholdC) }
+    }
+
+    fun setDailyEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setDailyEnabled(enabled)
+            val prefs = settingsRepository.preferences.first()
+            if (prefs.dailyEnabled) {
+                rearmAlarm(prefs.schedule, ForecastPeriod.TODAY)
+            } else {
+                cancelAlarm(ForecastPeriod.TODAY)
+            }
+        }
     }
 
     fun setTonightEnabled(enabled: Boolean) {

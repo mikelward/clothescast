@@ -206,6 +206,10 @@ class FetchAndNotifyWorker(
         // crossed midnight loses its bypass: by then the user's "evening tap"
         // intent is stale, and delivering a tonight insight after midnight with
         // tonight disabled is exactly the surprise the gate exists to prevent.
+        if (period == ForecastPeriod.TODAY && !prefs.dailyEnabled && !forceRefresh) {
+            DiagLog.i(TAG, "Daily insight is disabled; skipping.")
+            return Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
+        }
         if (period == ForecastPeriod.TONIGHT && !prefs.tonightEnabled && !forceRefresh) {
             DiagLog.i(TAG, "Tonight insight is disabled; skipping.")
             return Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))

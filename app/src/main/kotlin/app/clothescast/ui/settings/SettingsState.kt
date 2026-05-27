@@ -42,6 +42,7 @@ import java.util.Locale
 data class SettingsState(
     val scheduleTime: LocalTime = LocalTime.of(7, 0),
     val scheduleDays: Set<DayOfWeek> = Schedule.EVERY_DAY,
+    val dailyEnabled: Boolean = true,
     val tonightTime: LocalTime = LocalTime.of(19, 0),
     val tonightDays: Set<DayOfWeek> = Schedule.EVERY_DAY,
     val tonightEnabled: Boolean = true,

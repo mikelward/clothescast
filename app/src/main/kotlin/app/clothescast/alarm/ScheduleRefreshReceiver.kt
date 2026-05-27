@@ -35,7 +35,11 @@ class ScheduleRefreshReceiver : BroadcastReceiver() {
                 val app = context.applicationContext as ClothesCastApplication
                 val prefs = app.settingsRepository.preferences.first()
                 val scheduler = DailyAlarmScheduler(context.applicationContext)
-                scheduler.schedule(prefs.schedule, ForecastPeriod.TODAY)
+                if (prefs.dailyEnabled) {
+                    scheduler.schedule(prefs.schedule, ForecastPeriod.TODAY)
+                } else {
+                    scheduler.cancel(ForecastPeriod.TODAY)
+                }
                 if (prefs.tonightEnabled) {
                     scheduler.schedule(prefs.tonightSchedule, ForecastPeriod.TONIGHT)
                 } else {

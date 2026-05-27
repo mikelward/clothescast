@@ -267,7 +267,11 @@ class ClothesCastApplication : Application() {
                 // persisted Region. The pre-API-33 SharedPreferences cache is
                 // already consulted by attachBaseContext above.
                 AppLocale.apply(this@ClothesCastApplication, prefs.region)
-                dailyAlarmScheduler.schedule(prefs.schedule, ForecastPeriod.TODAY)
+                if (prefs.dailyEnabled) {
+                    dailyAlarmScheduler.schedule(prefs.schedule, ForecastPeriod.TODAY)
+                } else {
+                    dailyAlarmScheduler.cancel(ForecastPeriod.TODAY)
+                }
                 if (prefs.tonightEnabled) {
                     dailyAlarmScheduler.schedule(prefs.tonightSchedule, ForecastPeriod.TONIGHT)
                 } else {

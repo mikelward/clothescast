@@ -37,7 +37,7 @@ class TelemetryPrivacyContractTest {
         "distance_unit_setting", "distance_unit_effective",
         "delivery_mode_daily", "delivery_mode_tonight",
         "theme_mode", "color_palette", "default_bottom", "default_top",
-        "daily_time_bucket_hour", "daily_days_count",
+        "daily_enabled", "daily_time_bucket_hour", "daily_days_count",
         "tonight_enabled", "tonight_time_bucket_hour", "tonight_days_count",
         "tonight_notify_only_on_events", "daily_mention_evening_events",
         "clothes_mention_mode",

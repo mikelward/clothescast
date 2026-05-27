@@ -886,6 +886,7 @@ class SettingsRepositoryTest {
         defaults.deliveryModeDaily shouldBe DeliveryMode.NOTIFICATION_AND_TTS.name
         defaults.deliveryModeTonight shouldBe DeliveryMode.NOTIFICATION_AND_TTS.name
         defaults.themeMode shouldBe ThemeMode.SYSTEM.name
+        defaults.dailyEnabled shouldBe true
         defaults.dailyTimeBucketHour shouldBe "07"
         defaults.dailyDaysCount shouldBe 7
         defaults.tonightTimeBucketHour shouldBe "19"

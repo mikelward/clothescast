@@ -25,7 +25,22 @@ enum class TimeFormatSetting { AUTO, TWELVE_HOUR, TWENTY_FOUR_HOUR }
  */
 enum class WindSpeedUnit { KMH, MPH }
 
-enum class DeliveryMode { NOTIFICATION_ONLY, TTS_ONLY, NOTIFICATION_AND_TTS }
+/**
+ * Which delivery channels the ClothesCast surfaces on:
+ *
+ *  - [NOTIFICATION_ONLY] — notification post, no TTS playback.
+ *  - [TTS_ONLY] — TTS playback, no notification post.
+ *  - [NOTIFICATION_AND_TTS] — both.
+ *  - [SILENT] — neither. The worker still runs (fetch, cache, insight
+ *    generation, widget refresh), but nothing is surfaced to the user. Useful
+ *    when the user wants the home-screen widget / Today screen to stay fresh
+ *    on schedule without a notification or audio interruption.
+ *
+ * In the Settings UI this is represented as two independent toggles
+ * (Notification, Spoken aloud) that compose into the four values; the enum
+ * is the on-disk shape.
+ */
+enum class DeliveryMode { NOTIFICATION_ONLY, TTS_ONLY, NOTIFICATION_AND_TTS, SILENT }
 
 /**
  * Per-holiday firing state, with [AUTO] the default and [ON] / [OFF] as
@@ -613,6 +628,15 @@ data class UserPreferences(
      * semantic — readers should not branch on its value.
      */
     val calendarPermissionRecheckTick: Long = 0L,
+    /**
+     * Master switch for the morning / "daily" insight. On by default — the
+     * morning ClothesCast is the headline feature. When off the worker
+     * skips the entire morning pipeline (no fetch, no notification, no TTS,
+     * no widget refresh from that path); flip it back on to resume. Same
+     * shape as [tonightEnabled] so the two halves of the schedule page
+     * behave symmetrically.
+     */
+    val dailyEnabled: Boolean = true,
     /**
      * When the evening / "tonight" insight should fire. Distinct from [schedule]
      * (the morning slot) so the user can keep the morning at 07:00 and still

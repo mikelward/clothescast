@@ -56,6 +56,7 @@ import java.time.format.TextStyle
 internal fun ScheduleContent(
     time: LocalTime,
     days: Set<DayOfWeek>,
+    dailyEnabled: Boolean,
     tonightTime: LocalTime,
     tonightDays: Set<DayOfWeek>,
     tonightEnabled: Boolean,
@@ -65,6 +66,7 @@ internal fun ScheduleContent(
     tonightDeliveryMode: DeliveryMode,
     padding: PaddingValues,
     onSetSchedule: (LocalTime, Set<DayOfWeek>) -> Unit,
+    onSetDailyEnabled: (Boolean) -> Unit,
     onSetTonightSchedule: (LocalTime, Set<DayOfWeek>) -> Unit,
     onSetTonightEnabled: (Boolean) -> Unit,
     onSetTonightNotifyOnlyOnEvents: (Boolean) -> Unit,
@@ -89,8 +91,10 @@ internal fun ScheduleContent(
             DayCard(
                 time = time,
                 days = days,
+                enabled = dailyEnabled,
                 deliveryMode = deliveryMode,
                 mentionEveningEvents = dailyMentionEveningEvents,
+                onSetEnabled = onSetDailyEnabled,
                 onChange = onSetSchedule,
                 onSetDeliveryMode = onSetDeliveryMode,
                 onSetMentionEveningEvents = onSetDailyMentionEveningEvents,
@@ -125,8 +129,10 @@ internal fun ScheduleContent(
 private fun DayCard(
     time: LocalTime,
     days: Set<DayOfWeek>,
+    enabled: Boolean,
     deliveryMode: DeliveryMode,
     mentionEveningEvents: Boolean,
+    onSetEnabled: (Boolean) -> Unit,
     onChange: (LocalTime, Set<DayOfWeek>) -> Unit,
     onSetDeliveryMode: (DeliveryMode) -> Unit,
     onSetMentionEveningEvents: (Boolean) -> Unit,
@@ -134,27 +140,28 @@ private fun DayCard(
     var pickerOpen by remember { mutableStateOf(false) }
 
     SectionCard(title = stringResource(R.string.settings_schedule_title)) {
-        Text(
-            text = stringResource(R.string.settings_schedule_description),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        TimeRow(
-            label = stringResource(R.string.settings_schedule_time_label),
-            time = time,
-            onClick = { pickerOpen = true },
-        )
-        DaysSelector(
-            label = stringResource(R.string.settings_schedule_days_label),
-            days = days,
-            onChange = { next -> onChange(time, next) },
-        )
-        DeliveryModeSection(deliveryMode, onSetDeliveryMode)
         ToggleRow(
-            label = stringResource(R.string.settings_daily_mention_evening_events),
-            checked = mentionEveningEvents,
-            onCheckedChange = onSetMentionEveningEvents,
+            label = stringResource(R.string.settings_schedule_enabled),
+            checked = enabled,
+            onCheckedChange = onSetEnabled,
         )
+        if (enabled) {
+            TimeRow(
+                label = stringResource(R.string.settings_schedule_time_label),
+                time = time,
+                onClick = { pickerOpen = true },
+            )
+            DaysSelector(
+                days = days,
+                onChange = { next -> onChange(time, next) },
+            )
+            DeliveryModeSection(deliveryMode, onSetDeliveryMode)
+            ToggleRow(
+                label = stringResource(R.string.settings_daily_mention_evening_events),
+                checked = mentionEveningEvents,
+                onCheckedChange = onSetMentionEveningEvents,
+            )
+        }
     }
 
     if (pickerOpen) {
@@ -218,11 +225,6 @@ private fun NightCard(
     var pickerOpen by remember { mutableStateOf(false) }
 
     SectionCard(title = stringResource(R.string.settings_tonight_title)) {
-        Text(
-            text = stringResource(R.string.settings_tonight_description),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
         ToggleRow(
             label = stringResource(R.string.settings_tonight_enabled),
             checked = enabled,
@@ -235,7 +237,6 @@ private fun NightCard(
                 onClick = { pickerOpen = true },
             )
             DaysSelector(
-                label = stringResource(R.string.settings_tonight_days_label),
                 days = days,
                 onChange = { next -> onChange(time, next) },
             )
@@ -308,14 +309,9 @@ private fun TimeRow(label: String, time: LocalTime, onClick: () -> Unit) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun DaysSelector(
-    label: String,
     days: Set<DayOfWeek>,
     onChange: (Set<DayOfWeek>) -> Unit,
 ) {
-    Text(
-        text = label,
-        style = MaterialTheme.typography.bodyMedium,
-    )
     val uiLocale = LocalContext.current.resourcesLocale()
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
@@ -355,21 +351,29 @@ private fun DeliveryModeSection(
     selected: DeliveryMode,
     onSelect: (DeliveryMode) -> Unit,
 ) {
-    Text(
-        text = stringResource(R.string.settings_delivery_label),
-        style = MaterialTheme.typography.bodyMedium,
+    val (notifyOn, ttsOn) = selected.toChannels()
+    ToggleRow(
+        label = stringResource(R.string.settings_delivery_notification),
+        checked = notifyOn,
+        onCheckedChange = { onSelect(deliveryModeOf(notify = it, tts = ttsOn)) },
     )
-    DeliveryMode.entries.forEach { mode ->
-        RadioRow(
-            label = stringResource(deliveryModeLabel(mode)),
-            selected = mode == selected,
-            onSelect = { onSelect(mode) },
-        )
-    }
+    ToggleRow(
+        label = stringResource(R.string.settings_delivery_tts),
+        checked = ttsOn,
+        onCheckedChange = { onSelect(deliveryModeOf(notify = notifyOn, tts = it)) },
+    )
 }
 
-private fun deliveryModeLabel(mode: DeliveryMode): Int = when (mode) {
-    DeliveryMode.NOTIFICATION_ONLY -> R.string.settings_delivery_notification_only
-    DeliveryMode.TTS_ONLY -> R.string.settings_delivery_tts_only
-    DeliveryMode.NOTIFICATION_AND_TTS -> R.string.settings_delivery_notification_and_tts
+private fun DeliveryMode.toChannels(): Pair<Boolean, Boolean> = when (this) {
+    DeliveryMode.SILENT -> false to false
+    DeliveryMode.NOTIFICATION_ONLY -> true to false
+    DeliveryMode.TTS_ONLY -> false to true
+    DeliveryMode.NOTIFICATION_AND_TTS -> true to true
+}
+
+private fun deliveryModeOf(notify: Boolean, tts: Boolean): DeliveryMode = when {
+    notify && tts -> DeliveryMode.NOTIFICATION_AND_TTS
+    notify -> DeliveryMode.NOTIFICATION_ONLY
+    tts -> DeliveryMode.TTS_ONLY
+    else -> DeliveryMode.SILENT
 }

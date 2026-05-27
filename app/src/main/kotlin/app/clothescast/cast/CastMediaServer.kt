@@ -10,6 +10,8 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.withTimeoutOrNull
 import java.net.ServerSocket
 import java.security.SecureRandom
 
@@ -72,6 +74,19 @@ class CastMediaServer {
     @Volatile
     private var pathToken: String = ""
 
+    // Completes when the route handler finishes serving the bytes for the
+    // active token — i.e. a Cast receiver successfully GET'd the URL. The
+    // controller awaits this to confirm the bytes actually reached the
+    // display: `RemoteMediaClient.load` returning success only proves the
+    // receiver accepted the load command, not that it could reach the
+    // phone-hosted URL (a LAN firewall between display and phone breaks
+    // the latter while letting the former still succeed). Rotated on each
+    // [publish] alongside the token; the handler captures the deferred at
+    // the moment it matches a token so a later publish-while-serving still
+    // completes the awaiter that originally issued that URL.
+    @Volatile
+    private var fetched: CompletableDeferred<Unit>? = null
+
     /**
      * Replaces the in-memory MP4 buffer, rotates the path token, ensures
      * the server is running, and returns the URL the receiver should
@@ -84,8 +99,27 @@ class CastMediaServer {
     fun publish(host: String, video: ByteArray): MediaUrl {
         this.video = video
         this.pathToken = generateToken()
+        this.fetched = CompletableDeferred()
         if (server == null) start()
         return MediaUrl(video = "http://$host:$port/$pathToken$VIDEO_SUFFIX")
+    }
+
+    /**
+     * Suspends until the active [publish]'s URL has been fetched by a
+     * Cast receiver (i.e. the route handler completed a 200 response for
+     * the matching token) or [timeoutMs] elapses. Returns true on a
+     * confirmed fetch, false on timeout or when no publish has been
+     * issued yet.
+     *
+     * A second call after a fetch returns true immediately (the deferred
+     * is already completed). A call after a [stop] returns false.
+     */
+    suspend fun awaitFetch(timeoutMs: Long): Boolean {
+        val d = fetched ?: return false
+        return withTimeoutOrNull(timeoutMs) {
+            d.await()
+            true
+        } ?: false
     }
 
     /** Stops the server, if running, and clears the buffered media + the path token. */
@@ -95,6 +129,9 @@ class CastMediaServer {
         video = null
         pathToken = ""
         port = 0
+        // Drop the reference so any in-flight [awaitFetch] times out
+        // rather than waiting forever after the session ends.
+        fetched = null
     }
 
     /** Currently-bound port, or 0 if the server isn't running. Test hook. */
@@ -107,8 +144,15 @@ class CastMediaServer {
                 get("/{token}/insight.mp4") {
                     val buf = video
                     val incoming = call.parameters["token"]
+                    // Capture the active fetch deferred at match time
+                    // rather than reading it again post-respondBytes — a
+                    // concurrent publish would otherwise redirect the
+                    // signal onto the new awaiter instead of the one
+                    // whose URL was just served.
+                    val capturedFetched = fetched
                     if (buf != null && tokenMatches(incoming)) {
                         call.respondBytes(buf, VIDEO_CONTENT_TYPE)
+                        capturedFetched?.complete(Unit)
                     } else {
                         call.respond(HttpStatusCode.NotFound)
                     }

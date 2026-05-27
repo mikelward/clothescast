@@ -923,7 +923,14 @@ class FetchAndNotifyWorker(
             // false error in Settings on every such skipped run.
             val castOutcome = castDeferred?.await()
             if (castOutcome != null) {
-                runCatching { app.settingsRepository.setCastLastError(castOutcomeToError(castOutcome)) }
+                runCatching {
+                    val (error, publishedAt, fetchedAt) = castOutcomeToResult(castOutcome)
+                    app.settingsRepository.setCastResult(
+                        errorMessage = error,
+                        publishedAtMs = publishedAt,
+                        fetchedAtMs = fetchedAt,
+                    )
+                }
             }
 
             // Status persistence is best-effort: a DataStore I/O
@@ -1064,23 +1071,33 @@ class FetchAndNotifyWorker(
     }
 
     /**
-     * Maps a cast outcome onto the user-facing string that lands in
-     * the Settings → Smart Home → Cast status row.
+     * Maps a cast outcome onto the (error, publishedAt, fetchedAt) triple
+     * the Settings → Smart Home → Cast status row reads. Carries enough
+     * state for the row to differentiate "we never sent the load" from
+     * "we sent it but the display didn't fetch the bytes":
      *
-     * Null result means "record a success": [SettingsRepository.setCastLastError]
-     * stamps the last-success timestamp and clears any prior error
-     * message. Non-null is a short, ready-to-display reason string.
+     *  - Success → no error, both timestamps advance.
+     *  - PublishedButNotFetched → error explains why nothing played; the
+     *    publishedAt timestamp still advances (we DID send the load) but
+     *    fetchedAt does not (the bytes never transferred).
+     *  - SkippedNoRoute / Failed → error only, neither timestamp moves.
      *
-     * Only called after a cast was actually attempted — callers gate
-     * on a non-null outcome.
+     * Only called after a cast was actually attempted — callers gate on
+     * a non-null outcome.
      */
-    private fun castOutcomeToError(outcome: CastInsightController.CastWorkerOutcome): String? =
-        when (outcome) {
-            is CastInsightController.CastWorkerOutcome.Success -> null
-            is CastInsightController.CastWorkerOutcome.SkippedNoRoute ->
-                "Smart display not reachable"
-            is CastInsightController.CastWorkerOutcome.Failed -> outcome.reason
-        }
+    private fun castOutcomeToResult(
+        outcome: CastInsightController.CastWorkerOutcome,
+        nowMs: Long = System.currentTimeMillis(),
+    ): Triple<String?, Long?, Long?> = when (outcome) {
+        is CastInsightController.CastWorkerOutcome.Success ->
+            Triple(null, nowMs, nowMs)
+        is CastInsightController.CastWorkerOutcome.PublishedButNotFetched ->
+            Triple(outcome.reason, nowMs, null)
+        is CastInsightController.CastWorkerOutcome.SkippedNoRoute ->
+            Triple("Smart display not reachable", null, null)
+        is CastInsightController.CastWorkerOutcome.Failed ->
+            Triple(outcome.reason, null, null)
+    }
 
     private fun postPeriodNotification(
         insight: Insight,

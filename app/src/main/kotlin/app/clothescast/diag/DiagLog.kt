@@ -48,6 +48,26 @@ object DiagLog {
      */
     private const val COMPACT_STACK_FRAMES = 1
 
+    /**
+     * Snapshot-side defence against an individual log entry dominating the
+     * 300-line buffer. Limits the consecutive continuation lines (anything
+     * not starting with a timestamp digit — stack frames, `Caused by:`,
+     * `Suppressed:`) that any one entry contributes, then summarises the
+     * dropped tail as `\t... [N lines elided]`.
+     *
+     * The current writer already routes throwables through
+     * [compactStackTraceString], so freshly-written entries cost at most a
+     * handful of continuation lines. The cap exists because `cacheDir`
+     * survives app upgrades, so `diag.log.1` can retain fat
+     * `Throwable.printStackTrace`-style entries written by an older build
+     * (pre-`compactStackTraceString`) until natural rotation flushes them,
+     * and a single 60-line entry from that era used to eat 20% of the
+     * snapshot budget. Sized to comfortably fit a 3-4-deep
+     * compact cause chain with a couple of `Suppressed:` lines per level
+     * (~8 continuation lines), with headroom.
+     */
+    private const val MAX_CONTINUATION_LINES_PER_ENTRY = 10
+
     private val executor = Executors.newSingleThreadExecutor { r ->
         Thread(r, "DiagLog-writer").apply { isDaemon = true }
     }
@@ -116,7 +136,12 @@ object DiagLog {
         runCatching {
             executor.submit { }.get(SYNC_TIMEOUT_MS, TimeUnit.MILLISECONDS)
         }
-        return readTail(file, rotated, MAX_SNAPSHOT_LINES)
+        // Read with headroom so the cap pass below can drop fat entries
+        // and the final `takeLast` still has [MAX_SNAPSHOT_LINES] worth of
+        // distinct entries to surface.
+        val raw = readTail(file, rotated, MAX_SNAPSHOT_LINES * 10)
+        return capEntryContinuations(raw, MAX_CONTINUATION_LINES_PER_ENTRY)
+            .takeLast(MAX_SNAPSHOT_LINES)
     }
 
     /**
@@ -314,5 +339,42 @@ object DiagLog {
             runCatching { file.readLines() }.getOrDefault(emptyList())
         } else emptyList()
         return (prev + curr).takeLast(maxLines)
+    }
+
+    /**
+     * Groups [lines] into entries (leading line + subsequent non-leading
+     * "continuation" lines) and truncates each entry's continuation tail
+     * past [maxContinuation], replacing the dropped lines with a single
+     * `\t... [N lines elided]` marker. A leading line is one starting with
+     * a digit (the log timestamp); anything else — `\tat …` stack frames,
+     * `Caused by: …`, `\tSuppressed: …`, or an orphan continuation at
+     * the start of the snapshot whose header was rotated out — is a
+     * continuation. The cap resets at every leading line. Visible for
+     * tests.
+     */
+    internal fun capEntryContinuations(lines: List<String>, maxContinuation: Int): List<String> {
+        val result = mutableListOf<String>()
+        var continuationCount = 0
+        var elidedCount = 0
+        for (line in lines) {
+            val isLeading = line.isNotEmpty() && line[0].isDigit()
+            if (isLeading) {
+                if (elidedCount > 0) {
+                    result += "\t... [$elidedCount lines elided]"
+                    elidedCount = 0
+                }
+                continuationCount = 0
+                result += line
+            } else if (continuationCount < maxContinuation) {
+                result += line
+                continuationCount++
+            } else {
+                elidedCount++
+            }
+        }
+        if (elidedCount > 0) {
+            result += "\t... [$elidedCount lines elided]"
+        }
+        return result
     }
 }

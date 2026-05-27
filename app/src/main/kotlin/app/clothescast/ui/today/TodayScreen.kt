@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -150,6 +151,7 @@ fun TodayScreen(
     onNavigateToCalendar: () -> Unit = onNavigateToSettings,
     onNavigateToDeveloper: () -> Unit = onNavigateToSettings,
     onNavigateToFormat: () -> Unit = onNavigateToSettings,
+    onNavigateToForecasters: () -> Unit = onNavigateToSettings,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -279,6 +281,7 @@ fun TodayScreen(
             onAdjustThreshold = viewModel::adjustClothesRuleThreshold,
             onNavigateToClothes = onNavigateToClothes,
             onNavigateToFormat = onNavigateToFormat,
+            onNavigateToForecasters = onNavigateToForecasters,
             onToggleModelSpread = viewModel::toggleModelSpread,
             onRevealModelSpread = viewModel::revealModelSpread,
             onHideModelSpread = viewModel::hideModelSpread,
@@ -317,6 +320,7 @@ private fun TodayContent(
     onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
     onNavigateToFormat: () -> Unit,
+    onNavigateToForecasters: () -> Unit,
     onToggleModelSpread: () -> Unit,
     onRevealModelSpread: () -> Unit,
     onHideModelSpread: () -> Unit,
@@ -500,6 +504,7 @@ private fun TodayContent(
                     onAdjustThreshold = onAdjustThreshold,
                     onNavigateToClothes = onNavigateToClothes,
                     onNavigateToFormat = onNavigateToFormat,
+                    onNavigateToForecasters = onNavigateToForecasters,
                     onToggleModelSpread = onToggleModelSpread,
                     onRevealModelSpread = onRevealModelSpread,
                     onHideModelSpread = onHideModelSpread,
@@ -603,6 +608,7 @@ private fun TodayPage(
     onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
     onNavigateToFormat: () -> Unit,
+    onNavigateToForecasters: () -> Unit,
     onToggleModelSpread: () -> Unit,
     onRevealModelSpread: () -> Unit,
     onHideModelSpread: () -> Unit,
@@ -734,6 +740,7 @@ private fun TodayPage(
                     windSpeedUnit = state.distanceUnit.windSpeedUnit(),
                     showModelSpread = state.showModelSpread,
                     onToggleModelSpread = onChipTap,
+                    onNavigateToForecasters = onNavigateToForecasters,
                 )
             }
             if (insight.hourly.isNotEmpty()) {
@@ -1920,6 +1927,7 @@ internal fun ConfidenceChip(
     windSpeedUnit: WindSpeedUnit,
     showModelSpread: Boolean = false,
     onToggleModelSpread: (() -> Unit)? = null,
+    onNavigateToForecasters: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val confidenceColors = AppTheme.palette.confidence.getValue(info.level)
@@ -1993,14 +2001,28 @@ internal fun ConfidenceChip(
                     )
                 }
             }
-            if (onToggleModelSpread != null) {
-                Text(
-                    text = stringResource(
-                        if (showModelSpread) R.string.today_confidence_tap_to_hide
-                        else R.string.today_confidence_tap_to_show,
-                    ),
-                    style = MaterialTheme.typography.labelMedium,
-                )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (onToggleModelSpread != null) {
+                    Text(
+                        text = stringResource(
+                            if (showModelSpread) R.string.today_confidence_tap_to_hide
+                            else R.string.today_confidence_tap_to_show,
+                        ),
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.weight(1f),
+                    )
+                } else {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+                TextButton(
+                    onClick = onNavigateToForecasters,
+                    colors = ButtonDefaults.textButtonColors(contentColor = fgColor),
+                ) {
+                    Text(stringResource(R.string.settings_root_forecasters))
+                }
             }
         }
     }

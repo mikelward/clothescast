@@ -144,6 +144,7 @@ fun ClothesCastNavHost(
                 onNavigateToCalendar = { nav.navigate(CalendarDest) },
                 onNavigateToDeveloper = { nav.navigate(DeveloperDest) },
                 onNavigateToFormat = { nav.navigate(FormatDest) },
+                onNavigateToForecasters = { nav.navigate(ForecastersDest) },
             )
         }
 

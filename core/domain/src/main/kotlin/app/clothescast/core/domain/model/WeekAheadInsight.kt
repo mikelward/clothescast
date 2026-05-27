@@ -3,7 +3,7 @@ package app.clothescast.core.domain.model
 import java.time.LocalDate
 
 /**
- * Structured payload for the 7-day page headline — up to three independent
+ * Structured payload for the 7-day page headline — up to four independent
  * clauses worth telling the user about the week ahead. Mirrors the
  * structured-clause pattern used by [InsightSummary]: this type carries the
  * *what* (which clauses fire and their fields), and the Android-side
@@ -11,17 +11,18 @@ import java.time.LocalDate
  * string resources so vocab can localize per region.
  *
  * The renderer ([app.clothescast.core.domain.usecase.DeriveWeekAheadInsight])
- * fills each slot independently so a noisy week shows both stories at once
- * — "5° cooler tomorrow, chance of rain Monday." — instead of forcing one
- * to win. The slots:
- *  - [temperatureShift] — [WeekAheadClause.Cooler] / [WeekAheadClause.Warmer]
- *    for the biggest feels-like-high delta from today, when it clears the
- *    same 3°C threshold as the today-page delta clause.
- *  - [rain] — the nearest upcoming day with precip probability ≥ 30%.
+ * fills each slot independently and the formatter sorts them chronologically
+ * so a noisy week reads as one sentence — "Warmer tomorrow, cooler Sunday."
+ * — instead of forcing one story to win. The slots:
+ *  - [firstWarmer] — first upcoming day whose feels-like high clears
+ *    today's by the configured delta threshold.
+ *  - [firstCooler] — first upcoming day whose feels-like high drops below
+ *    today's by the same threshold.
+ *  - [rain] — first upcoming day whose day-level precip probability clears
+ *    50% (a majority of consulted models call rain).
  *  - [persistence] — [WeekAheadClause.StaysHot] / [WeekAheadClause.StaysCold]
- *    when today and every upcoming day sit in an extreme band. Cannot
- *    coexist with [temperatureShift] (a flat band leaves no room for a
- *    3°C+ swing), but does coexist with [rain].
+ *    when today and every upcoming day sit in an extreme band. Suppressed
+ *    when either temperature-shift slot fires.
  *
  * The renderer returns `null` when no clauses fire — a calm week ahead
  * doesn't need a headline at all, so the UI suppresses the card.
@@ -32,12 +33,13 @@ import java.time.LocalDate
  * fancier vocabulary ("this weekend", "next Friday") is used.
  */
 data class WeekAheadInsight(
-    val temperatureShift: WeekAheadClause? = null,
+    val firstWarmer: WeekAheadClause.Warmer? = null,
+    val firstCooler: WeekAheadClause.Cooler? = null,
     val rain: WeekAheadClause.Rain? = null,
     val persistence: WeekAheadClause? = null,
 ) {
     val isEmpty: Boolean
-        get() = temperatureShift == null && rain == null && persistence == null
+        get() = firstWarmer == null && firstCooler == null && rain == null && persistence == null
 }
 
 /**
@@ -51,19 +53,16 @@ sealed interface WeekAheadClause {
         val date: LocalDate,
         val isTomorrow: Boolean,
         val condition: WeatherCondition,
-        val likelihood: PrecipLikelihood,
     ) : WeekAheadClause
 
     data class Cooler(
         val date: LocalDate,
         val isTomorrow: Boolean,
-        val degrees: Int,
     ) : WeekAheadClause
 
     data class Warmer(
         val date: LocalDate,
         val isTomorrow: Boolean,
-        val degrees: Int,
     ) : WeekAheadClause
 
     /** Today plus every upcoming day classify as [TemperatureBand.HOT]. */

@@ -22,4 +22,9 @@ full re-translation.
          (en-AU / en-CA / en-ZA) inherit this en-rGB form via CLDR
          locale-similarity — they all descend from en-001 the same way. -->
     <string name="settings_distance_unit_kilometers">Kilometres</string>
+
+    <!-- "Colours" with the British -our ending. en-AU / en-CA / en-ZA
+         inherit this via the same CLDR cascade as Kilometres above. -->
+    <string name="settings_root_display_subtitle">Themes and Colours</string>
+    <string name="today_celebration_card_body">Enable special colours and messages for holidays and birthdays.</string>
 </resources>

@@ -26,6 +26,7 @@ data class SettingsSnapshot(
     val colorPalette: String,
     val defaultBottom: String,
     val defaultTop: String,
+    val dailyEnabled: Boolean,
     val dailyTimeBucketHour: String,
     val dailyDaysCount: Int,
     val tonightEnabled: Boolean,

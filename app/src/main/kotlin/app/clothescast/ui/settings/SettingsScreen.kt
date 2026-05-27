@@ -138,6 +138,7 @@ internal fun SchedulePage(
         ScheduleContent(
             time = state.scheduleTime,
             days = state.scheduleDays,
+            dailyEnabled = state.dailyEnabled,
             tonightTime = state.tonightTime,
             tonightDays = state.tonightDays,
             tonightEnabled = state.tonightEnabled,
@@ -147,6 +148,7 @@ internal fun SchedulePage(
             tonightDeliveryMode = state.tonightDeliveryMode,
             padding = padding,
             onSetSchedule = viewModel::setSchedule,
+            onSetDailyEnabled = viewModel::setDailyEnabled,
             onSetTonightSchedule = viewModel::setTonightSchedule,
             onSetTonightEnabled = viewModel::setTonightEnabled,
             onSetTonightNotifyOnlyOnEvents = viewModel::setTonightNotifyOnlyOnEvents,

@@ -189,6 +189,10 @@ class SettingsRepository(
         }
     }
 
+    suspend fun setDailyEnabled(enabled: Boolean) {
+        dataStore.edit { it[DAILY_ENABLED] = enabled }
+    }
+
     suspend fun setTonightEnabled(enabled: Boolean) {
         dataStore.edit { it[TONIGHT_ENABLED] = enabled }
     }
@@ -805,9 +809,13 @@ class SettingsRepository(
             ?.toSet()
             ?.takeIf { it.isNotEmpty() }
             ?: Schedule.EVERY_DAY
-        // Default-on: existing installs that haven't seen the tonight pref yet get
-        // the silent overnight notification (it's quiet by default when there are
-        // no calendar events, so it's not noisy out of the box).
+        // Default-on for both halves: existing installs that haven't seen the
+        // toggles yet keep the morning + evening pipelines firing. The morning
+        // ClothesCast is the headline feature so dailyEnabled stays on out of
+        // the box; the tonight notifier is quiet by default when there are no
+        // calendar events (see [tonightNotifyOnlyOnEvents]) so default-on
+        // doesn't make it noisy.
+        val dailyEnabled = this[DAILY_ENABLED] != false
         val tonightEnabled = this[TONIGHT_ENABLED] != false
         val tonightNotifyOnlyOnEvents = this[TONIGHT_NOTIFY_ONLY_ON_EVENTS] == true
         val dailyMentionEveningEvents = this[DAILY_MENTION_EVENING_EVENTS] != false
@@ -926,6 +934,7 @@ class SettingsRepository(
             themeFromCalendarBirthdays = themeFromCalendarBirthdays,
             celebrationCardDismissed = celebrationCardDismissed,
             calendarPermissionRecheckTick = calendarPermissionRecheckTick,
+            dailyEnabled = dailyEnabled,
             tonightSchedule = Schedule(time = tonightTime, days = tonightDays, zoneId = zone),
             tonightEnabled = tonightEnabled,
             tonightDeliveryMode = tonightDeliveryMode,
@@ -1017,6 +1026,7 @@ class SettingsRepository(
         colorPalette = colorPalette.name,
         defaultBottom = defaultBottom.name,
         defaultTop = defaultTop.name,
+        dailyEnabled = dailyEnabled,
         dailyTimeBucketHour = schedule.time.hour.toString().padStart(2, '0'),
         dailyDaysCount = schedule.days.size,
         tonightEnabled = tonightEnabled,
@@ -1159,6 +1169,7 @@ class SettingsRepository(
         private val THEME_FROM_CALENDAR_BIRTHDAYS = booleanPreferencesKey("theme_from_calendar_birthdays")
         private val CELEBRATION_CARD_DISMISSED = booleanPreferencesKey("celebration_card_dismissed")
         private val CALENDAR_PERMISSION_RECHECK_TICK = longPreferencesKey("calendar_permission_recheck_tick")
+        private val DAILY_ENABLED = booleanPreferencesKey("daily_enabled")
         private val TONIGHT_TIME = stringPreferencesKey("tonight_time_hhmm")
         private val TONIGHT_DAYS = stringSetPreferencesKey("tonight_days")
         private val TONIGHT_ENABLED = booleanPreferencesKey("tonight_enabled")

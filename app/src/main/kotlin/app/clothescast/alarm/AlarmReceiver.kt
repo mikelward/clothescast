@@ -55,6 +55,13 @@ class AlarmReceiver : BroadcastReceiver() {
             val scheduler = DailyAlarmScheduler(appCtx)
             try {
                 val prefs = app.settingsRepository.preferences.first()
+                if (period == ForecastPeriod.TODAY && !prefs.dailyEnabled) {
+                    // Mirror of the tonight branch below: the user disabled the
+                    // daily ClothesCast after this alarm was already armed.
+                    DiagLog.i(TAG, "Daily alarm fired but daily is disabled; cancelling and not re-arming.")
+                    scheduler.cancel(ForecastPeriod.TODAY)
+                    return@launch
+                }
                 if (period == ForecastPeriod.TONIGHT && !prefs.tonightEnabled) {
                     // The user disabled tonight after this alarm was already armed.
                     // Cancel any future tonight alarm (belt-and-braces: SettingsViewModel

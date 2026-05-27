@@ -100,6 +100,7 @@ internal fun SettingsSchedulePreview() {
         ScheduleContent(
             time = LocalTime.of(7, 0),
             days = Schedule.EVERY_DAY,
+            dailyEnabled = true,
             tonightTime = LocalTime.of(19, 0),
             tonightDays = Schedule.EVERY_DAY,
             tonightEnabled = true,
@@ -109,6 +110,7 @@ internal fun SettingsSchedulePreview() {
             tonightDeliveryMode = DeliveryMode.NOTIFICATION_ONLY,
             padding = PaddingValues(0.dp),
             onSetSchedule = { _, _ -> },
+            onSetDailyEnabled = {},
             onSetTonightSchedule = { _, _ -> },
             onSetTonightEnabled = {},
             onSetTonightNotifyOnlyOnEvents = {},

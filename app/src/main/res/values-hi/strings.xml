@@ -360,7 +360,6 @@ Not overridden by design:
     <string name="today_rationale_dismiss">समझ गया</string>
     <string name="today_rationale_threshold_decrease">सीमा 1 डिग्री घटाएँ</string>
     <string name="today_rationale_threshold_increase">सीमा 1 डिग्री बढ़ाएँ</string>
-    <string name="today_rationale_threshold_changed_hint">नई पोशाक देखने के लिए रीफ़्रेश करें।</string>
     <string name="today_rationale_unavailable">कोई कारण उपलब्ध नहीं — अगले रीफ़्रेश के बाद ऐप खोलें।</string>
     <string name="today_rationale_min_below_with_time">महसूस न्यूनतम %1$s%2$s, %3$s को, %4$s%2$s से कम</string>
     <string name="today_rationale_min_below">महसूस न्यूनतम %1$s%2$s, %3$s%2$s से कम</string>

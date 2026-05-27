@@ -534,7 +534,6 @@ displayed label localizes.
     <string name="today_rationale_dismiss">알겠습니다</string>
     <string name="today_rationale_threshold_decrease">임계값 1도 낮추기</string>
     <string name="today_rationale_threshold_increase">임계값 1도 높이기</string>
-    <string name="today_rationale_threshold_changed_hint">새 의상을 보려면 새로고침하세요.</string>
     <string name="today_rationale_unavailable">사용 가능한 근거가 없습니다 — 다음 새로고침 후 앱을 열어보세요.</string>
     <string name="today_rationale_min_below_with_time">체감 최저 %1$s%2$s(%3$s), %4$s%2$s 미만</string>
     <string name="today_rationale_min_below">체감 최저 %1$s%2$s, %3$s%2$s 미만</string>

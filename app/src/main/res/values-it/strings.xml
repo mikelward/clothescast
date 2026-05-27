@@ -514,7 +514,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_rationale_dismiss">Ho capito</string>
     <string name="today_rationale_threshold_decrease">Abbassa soglia di 1 grado</string>
     <string name="today_rationale_threshold_increase">Alza soglia di 1 grado</string>
-    <string name="today_rationale_threshold_changed_hint">Aggiorna per vedere il nuovo outfit.</string>
     <string name="today_rationale_unavailable">Nessuna spiegazione disponibile — apri l\'app dopo il prossimo aggiornamento.</string>
     <string name="today_rationale_min_below_with_time">Percepito minimo %1$s%2$s alle %3$s, sotto %4$s%2$s</string>
     <string name="today_rationale_min_below">Percepito minimo %1$s%2$s, sotto %3$s%2$s</string>

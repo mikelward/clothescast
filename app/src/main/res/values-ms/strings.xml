@@ -126,7 +126,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_rationale_dismiss">Faham</string>
     <string name="today_rationale_threshold_decrease">Kurangkan ambang 1 darjah</string>
     <string name="today_rationale_threshold_increase">Naikkan ambang 1 darjah</string>
-    <string name="today_rationale_threshold_changed_hint">Muat semula untuk melihat pakaian baharu.</string>
     <string name="today_rationale_unavailable">Tiada sebab tersedia — buka aplikasi selepas muat semula berikutnya.</string>
     <string name="today_rationale_min_below_with_time">Terasa rendah %1$s%2$s pada %3$s, di bawah %4$s%2$s</string>
     <string name="today_rationale_min_below">Terasa rendah %1$s%2$s, di bawah %3$s%2$s</string>

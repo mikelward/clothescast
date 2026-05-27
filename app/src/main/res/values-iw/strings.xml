@@ -133,7 +133,6 @@ standard in Israeli digital communication.
     <string name="today_rationale_dismiss">הבנתי</string>
     <string name="today_rationale_threshold_decrease">הורד/י סף ב-1 מעלה</string>
     <string name="today_rationale_threshold_increase">העלה/י סף ב-1 מעלה</string>
-    <string name="today_rationale_threshold_changed_hint">רענן/י כדי לראות את הלבוש החדש.</string>
     <string name="today_rationale_unavailable">אין הסבר זמין — פתח/י את האפליקציה לאחר הרענון הבא.</string>
     <string name="today_rationale_min_below_with_time">מינימום טמפ׳ מורגשת %1$s%2$s בשעה %3$s, מתחת ל-%4$s%2$s</string>
     <string name="today_rationale_min_below">מינימום טמפ׳ מורגשת %1$s%2$s, מתחת ל-%3$s%2$s</string>

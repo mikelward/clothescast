@@ -131,7 +131,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_rationale_dismiss">Đã hiểu</string>
     <string name="today_rationale_threshold_decrease">Giảm ngưỡng 1 độ</string>
     <string name="today_rationale_threshold_increase">Tăng ngưỡng 1 độ</string>
-    <string name="today_rationale_threshold_changed_hint">Làm mới để xem trang phục mới.</string>
     <string name="today_rationale_unavailable">Không có lý do — hãy mở ứng dụng sau lần làm mới tiếp theo.</string>
     <string name="today_rationale_min_below_with_time">Cảm giác thấp nhất %1$s%2$s lúc %3$s, dưới %4$s%2$s</string>
     <string name="today_rationale_min_below">Cảm giác thấp nhất %1$s%2$s, dưới %3$s%2$s</string>

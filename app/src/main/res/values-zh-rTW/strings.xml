@@ -475,7 +475,6 @@ label localises.
     <string name="today_rationale_dismiss">了解</string>
     <string name="today_rationale_threshold_decrease">閾值降低 1 度</string>
     <string name="today_rationale_threshold_increase">閾值提高 1 度</string>
-    <string name="today_rationale_threshold_changed_hint">重新整理以查看新穿搭。</string>
     <string name="today_rationale_unavailable">暫無說明 — 下次重新整理後開啟應用程式查看。</string>
     <string name="today_rationale_min_below_with_time">體感最低氣溫 %1$s%2$s（%3$s），低於 %4$s%2$s</string>
     <string name="today_rationale_min_below">體感最低氣溫 %1$s%2$s，低於 %3$s%2$s</string>

@@ -454,7 +454,6 @@ default English (matching values-pl / values-uk).
     <string name="today_rationale_dismiss">Razumeo</string>
     <string name="today_rationale_threshold_decrease">Smanji prag za 1 stepen</string>
     <string name="today_rationale_threshold_increase">Povećaj prag za 1 stepen</string>
-    <string name="today_rationale_threshold_changed_hint">Osveži da vidiš novu kombinaciju.</string>
     <string name="today_rationale_unavailable">Nema dostupnog objašnjenja — otvori aplikaciju posle sledećeg osvežavanja.</string>
     <string name="today_rationale_min_below_with_time">Osećajna minimalna %1$s%2$s u %3$s, ispod %4$s%2$s</string>
     <string name="today_rationale_min_below">Osećajna minimalna %1$s%2$s, ispod %3$s%2$s</string>

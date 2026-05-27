@@ -410,7 +410,6 @@ only the displayed label localizes.
     <string name="today_rationale_dismiss">Зрозуміло</string>
     <string name="today_rationale_threshold_decrease">Знизити поріг на 1 градус</string>
     <string name="today_rationale_threshold_increase">Підвищити поріг на 1 градус</string>
-    <string name="today_rationale_threshold_changed_hint">Оновіть, щоб побачити нове вбрання.</string>
     <string name="today_rationale_unavailable">Пояснення недоступне — відкрийте застосунок після наступного оновлення.</string>
     <string name="today_rationale_min_below_with_time">Відчувається мінімум %1$s%2$s о %3$s, нижче %4$s%2$s</string>
     <string name="today_rationale_min_below">Відчувається мінімум %1$s%2$s, нижче %3$s%2$s</string>

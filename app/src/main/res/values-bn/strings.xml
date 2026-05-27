@@ -135,7 +135,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_rationale_dismiss">বুঝেছি</string>
     <string name="today_rationale_threshold_decrease">সীমা ১ ডিগ্রি কমান</string>
     <string name="today_rationale_threshold_increase">সীমা ১ ডিগ্রি বাড়ান</string>
-    <string name="today_rationale_threshold_changed_hint">নতুন পোশাক দেখতে রিফ্রেশ করুন।</string>
     <string name="today_rationale_unavailable">কোনো ব্যাখ্যা নেই — পরবর্তী রিফ্রেশের পর অ্যাপ খুলুন।</string>
     <string name="today_rationale_min_below_with_time">%3$s-এ অনুভূত সর্বনিম্ন %1$s%2$s, %4$s%2$s-এর নিচে</string>
     <string name="today_rationale_min_below">অনুভূত সর্বনিম্ন %1$s%2$s, %3$s%2$s-এর নিচে</string>

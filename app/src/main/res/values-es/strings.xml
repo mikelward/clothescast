@@ -531,7 +531,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_rationale_dismiss">Entendido</string>
     <string name="today_rationale_threshold_decrease">Bajar umbral 1 grado</string>
     <string name="today_rationale_threshold_increase">Subir umbral 1 grado</string>
-    <string name="today_rationale_threshold_changed_hint">Actualiza para ver el nuevo conjunto.</string>
     <string name="today_rationale_unavailable">No hay justificación disponible — abre la app después de la próxima actualización.</string>
     <string name="today_rationale_min_below_with_time">Sensación mínima de %1$s%2$s a las %3$s, por debajo de %4$s%2$s</string>
     <string name="today_rationale_min_below">Sensación mínima de %1$s%2$s, por debajo de %3$s%2$s</string>

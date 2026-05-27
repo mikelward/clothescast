@@ -419,7 +419,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="today_rationale_dismiss">Forstått</string>
     <string name="today_rationale_threshold_decrease">Senk terskelen med 1 grad</string>
     <string name="today_rationale_threshold_increase">Øk terskelen med 1 grad</string>
-    <string name="today_rationale_threshold_changed_hint">Oppdater for å se det nye antrekket.</string>
     <string name="today_rationale_unavailable">Ingen begrunnelse tilgjengelig — åpne appen etter neste oppdatering.</string>
     <string name="today_rationale_min_below_with_time">Følt minimumstemperatur %1$s%2$s klokken %3$s, under %4$s%2$s</string>
     <string name="today_rationale_min_below">Følt minimumstemperatur %1$s%2$s, under %3$s%2$s</string>

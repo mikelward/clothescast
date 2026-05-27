@@ -1467,7 +1467,6 @@ internal fun OutfitRationaleDialog(
     onNavigateToClothes: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var thresholdsTouched by remember { mutableStateOf(false) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.today_rationale_title)) },
@@ -1484,28 +1483,15 @@ internal fun OutfitRationaleDialog(
                         reason = rationale.top,
                         temperatureUnit = temperatureUnit,
                         clothesRules = clothesRules,
-                        onAdjustThreshold = { ruleItem, delta ->
-                            thresholdsTouched = true
-                            onAdjustThreshold(ruleItem, delta)
-                        },
+                        onAdjustThreshold = onAdjustThreshold,
                     )
                     GarmentReasonBlock(
                         title = stringResource(bottomLabelRes(outfit.bottom)),
                         reason = rationale.bottom,
                         temperatureUnit = temperatureUnit,
                         clothesRules = clothesRules,
-                        onAdjustThreshold = { ruleItem, delta ->
-                            thresholdsTouched = true
-                            onAdjustThreshold(ruleItem, delta)
-                        },
+                        onAdjustThreshold = onAdjustThreshold,
                     )
-                    if (thresholdsTouched) {
-                        Text(
-                            text = stringResource(R.string.today_rationale_threshold_changed_hint),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
                 }
             }
         },

@@ -128,7 +128,6 @@ What is NOT overridden, by design:
     <string name="today_rationale_dismiss">Supratau</string>
     <string name="today_rationale_threshold_decrease">Sumažinti ribą 1 laipsniu</string>
     <string name="today_rationale_threshold_increase">Padidinti ribą 1 laipsniu</string>
-    <string name="today_rationale_threshold_changed_hint">Atnaujink, kad pamatytum naują aprangos rinkinį.</string>
     <string name="today_rationale_unavailable">Pagrindimas nepasiekiamas — atidaryti programą po kito atnaujinimo.</string>
     <string name="today_rationale_min_below_with_time">Pojūčio min. %1$s%2$s %3$s val., žemiau %4$s%2$s</string>
     <string name="today_rationale_min_below">Pojūčio min. %1$s%2$s, žemiau %3$s%2$s</string>

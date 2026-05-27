@@ -445,7 +445,6 @@ displayed label localizes.
     <string name="today_rationale_dismiss">Selvä</string>
     <string name="today_rationale_threshold_decrease">Laske raja-arvoa 1 asteella</string>
     <string name="today_rationale_threshold_increase">Nosta raja-arvoa 1 asteella</string>
-    <string name="today_rationale_threshold_changed_hint">Päivitä nähdäksesi uuden asun.</string>
     <string name="today_rationale_unavailable">Perustelua ei saatavilla — avaa sovellus seuraavan päivityksen jälkeen.</string>
     <string name="today_rationale_min_below_with_time">Tuntuva miimilämpötila %1$s%2$s kello %3$s, alle %4$s%2$s</string>
     <string name="today_rationale_min_below">Tuntuva minimilämpötila %1$s%2$s, alle %3$s%2$s</string>

@@ -532,7 +532,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_rationale_dismiss">Entendi</string>
     <string name="today_rationale_threshold_decrease">Diminuir limite em 1 grau</string>
     <string name="today_rationale_threshold_increase">Aumentar limite em 1 grau</string>
-    <string name="today_rationale_threshold_changed_hint">Atualize para ver a nova roupa.</string>
     <string name="today_rationale_unavailable">Nenhuma justificativa disponível — abra o app após a próxima atualização.</string>
     <string name="today_rationale_min_below_with_time">Sensação mínima de %1$s%2$s às %3$s, abaixo de %4$s%2$s</string>
     <string name="today_rationale_min_below">Sensação mínima de %1$s%2$s, abaixo de %3$s%2$s</string>

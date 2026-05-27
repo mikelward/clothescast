@@ -131,7 +131,6 @@ to values/strings.xml (English).
     <string name="today_rationale_dismiss">Mengerti</string>
     <string name="today_rationale_threshold_decrease">Turunkan ambang batas 1 derajat</string>
     <string name="today_rationale_threshold_increase">Naikkan ambang batas 1 derajat</string>
-    <string name="today_rationale_threshold_changed_hint">Perbarui untuk melihat pakaian baru.</string>
     <string name="today_rationale_unavailable">Tidak ada penjelasan tersedia — buka aplikasi setelah pembaruan berikutnya.</string>
     <string name="today_rationale_min_below_with_time">Suhu terasa minimum %1$s%2$s pukul %3$s, di bawah %4$s%2$s</string>
     <string name="today_rationale_min_below">Suhu terasa minimum %1$s%2$s, di bawah %3$s%2$s</string>

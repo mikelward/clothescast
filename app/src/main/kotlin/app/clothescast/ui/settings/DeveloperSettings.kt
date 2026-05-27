@@ -292,6 +292,22 @@ internal fun DeveloperContent(
 }
 
 /**
+ * One line of the structured-fields block in the reverse-geocode
+ * tester: a name + a value (rendered as `(null)` / `(blank)` so an
+ * empty value isn't a silent gap), styled the same way regardless of
+ * which field it is.
+ */
+@Composable
+private fun StructuredFieldRow(name: String, value: String?) {
+    val display = when {
+        value == null -> "(null)"
+        value.isBlank() -> "(blank)"
+        else -> value
+    }
+    Text("$name: $display", style = MaterialTheme.typography.bodySmall)
+}
+
+/**
  * Parses a `"lat, lon"` string — comma-separated, whitespace around the
  * comma optional — into a coordinate pair, or null if either half is
  * unparseable or out of range. Accepts the format Google Maps' "What's
@@ -392,6 +408,13 @@ private fun ReverseGeocodeTesterCard(
                         Text("[$i] $line", style = MaterialTheme.typography.bodySmall)
                     }
                 }
+                Text("structured fields:", style = MaterialTheme.typography.labelMedium)
+                StructuredFieldRow("subLocality", r.parts.subLocality)
+                StructuredFieldRow("locality", r.parts.locality)
+                StructuredFieldRow("adminArea", r.parts.adminArea)
+                StructuredFieldRow("postalCode", r.parts.postalCode)
+                StructuredFieldRow("countryName", r.parts.countryName)
+                StructuredFieldRow("countryCode", r.parts.countryCode)
                 Text("derived addressDetail:", style = MaterialTheme.typography.labelMedium)
                 Text(
                     r.derived.addressDetail ?: "(null)",

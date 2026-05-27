@@ -65,19 +65,27 @@ class ReverseGeocoder(
     }
 
     /**
-     * Diagnostic-only return value pairing the raw `addressLines` from the
-     * platform Geocoder with the [Result] derived from them. Surfaced to
-     * the Developer settings page's reverse-geocode tester so a developer
-     * can see exactly what the Geocoder returned for a given coord and
-     * how [buildAddressDetail] folded the structured fields into the
-     * displayed addressDetail.
+     * Diagnostic-only return value pairing what the platform Geocoder
+     * returned for a coord — both the raw formatted [addressLines] and
+     * the structured [parts] (the same `AddressParts` that
+     * [buildAddressDetail] consumes) — with the [Result] we'd derive
+     * from them in production. Surfaced to the Developer settings
+     * page's reverse-geocode tester so a developer can see exactly
+     * which field a misbehaving addressDetail traces back to (a null
+     * subLocality? a duplicated locality? a missing postalCode?)
+     * without instrumenting log lines.
      */
     data class DiagnosticResult(
         val addressLines: List<String>,
+        val parts: AddressParts,
         val derived: Result,
     ) {
         companion object {
-            val EMPTY = DiagnosticResult(addressLines = emptyList(), derived = Result.EMPTY)
+            val EMPTY = DiagnosticResult(
+                addressLines = emptyList(),
+                parts = AddressParts(),
+                derived = Result.EMPTY,
+            )
         }
     }
 
@@ -110,7 +118,11 @@ class ReverseGeocoder(
         val addresses = withTimeoutOrNull(timeoutMillis) { fetch(geocoder, latitude, longitude) }
             ?: return@coRunCatching DiagnosticResult.EMPTY
         val address = addresses.firstOrNull() ?: return@coRunCatching DiagnosticResult.EMPTY
-        DiagnosticResult(addressLines = address.extractLines(), derived = address.toResult())
+        DiagnosticResult(
+            addressLines = address.extractLines(),
+            parts = address.toParts(),
+            derived = address.toResult(),
+        )
     }
         .onFailure { DiagLog.w(TAG, "Unexpected ${it.javaClass.simpleName} from resolveDiagnostic; returning empty.", it) }
         .getOrDefault(DiagnosticResult.EMPTY)
@@ -199,6 +211,15 @@ class ReverseGeocoder(
         else (0..maxIdx).mapNotNull { getAddressLine(it) }
     }
 
+    private fun Address.toParts(): AddressParts = AddressParts(
+        subLocality = subLocality,
+        locality = locality,
+        adminArea = adminArea,
+        postalCode = postalCode,
+        countryName = countryName,
+        countryCode = countryCode,
+    )
+
     private fun Address.toResult(): Result {
         val lines = extractLines()
         val city = pickCityName(
@@ -228,15 +249,7 @@ class ReverseGeocoder(
             city = city,
             countryCode = normalisedCountry,
             addressDetail = buildAddressDetail(
-                AddressParts(
-                    subLocality = subLocality,
-                    locality = locality,
-                    recoveredCity = city,
-                    adminArea = adminArea,
-                    postalCode = postalCode,
-                    countryName = countryName,
-                    countryCode = countryCode,
-                ),
+                toParts().copy(recoveredCity = city),
             ),
         )
     }
@@ -250,9 +263,11 @@ class ReverseGeocoder(
  * Subset of the platform [android.location.Address] fields we use to
  * build the Location settings page's neighbourhood-level line. Lifted
  * out as a data class so [buildAddressDetail] is testable on the JVM
- * without instantiating an Android `Address`.
+ * without instantiating an Android `Address`, and so the Developer
+ * settings page's reverse-geocode tester can surface each field for
+ * debugging — both reachable via [ReverseGeocoder.DiagnosticResult].
  */
-internal data class AddressParts(
+data class AddressParts(
     val subLocality: String? = null,
     val locality: String? = null,
     /**

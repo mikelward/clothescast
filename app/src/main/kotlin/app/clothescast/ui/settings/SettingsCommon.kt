@@ -157,6 +157,12 @@ internal fun LinkifiedText(
 // the About page and the Forecasters picker.
 internal const val OPEN_METEO_URL = "https://open-meteo.com/"
 
+// Canonical PRIVACY.md on the public repo. Both Privacy settings and the
+// Location settings page link to it — keep them in lockstep by sharing
+// the constant rather than duplicating per page.
+internal const val PRIVACY_POLICY_URL =
+    "https://github.com/mikelward/clothescast/blob/main/PRIVACY.md"
+
 internal fun openUrl(context: android.content.Context, url: String) {
     val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url))
         .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)

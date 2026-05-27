@@ -279,7 +279,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <!-- Location settings -->
     <string name="settings_location_title">Atrašanās vieta</string>
     <string name="settings_location_use_device">Izmantot ierīces atrašanās vietu</string>
-    <string name="settings_location_use_device_description">Pēdējā aptuveni noteiktā atrašanās vieta</string>
     <string name="settings_location_detecting">Nosaka…</string>
     <string name="settings_location_grant_background">Piešķirt</string>
     <string name="settings_location_background_banner_title">Nepieciešama pastāvīga atrašanās vietas atļauja</string>

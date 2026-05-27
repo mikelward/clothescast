@@ -483,7 +483,6 @@ displayed label localizes.
 
     <string name="settings_api_key_gemini_header">Kaliteli sesler için Gemini\'yi kullanın.</string>
 
-    <string name="settings_location_use_device_description">Son yaklaşık konum</string>
     <string name="settings_location_detecting">Belirleniyor…</string>
     <string name="settings_location_background_banner_title">Kalıcı konum izni gerekli</string>
     <string name="settings_location_background_banner_body">Bu olmadan sabah tahmini konumunuzu okuyamaz.</string>

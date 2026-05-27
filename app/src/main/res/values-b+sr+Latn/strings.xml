@@ -164,7 +164,6 @@ default English (matching values-pl / values-uk).
     <!-- Location screen. -->
     <string name="settings_location_title">Lokacija</string>
     <string name="settings_location_use_device">Koristi lokaciju uređaja</string>
-    <string name="settings_location_use_device_description">Poslednja aproksimativna lokacija</string>
     <string name="settings_location_detecting">Otkrivanje…</string>
     <string name="settings_location_grant_background">Dozvoli</string>
     <string name="settings_location_background_banner_title">Potrebna trajna lokacija</string>

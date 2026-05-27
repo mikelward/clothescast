@@ -285,7 +285,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <!-- Location screen. -->
     <string name="settings_location_title">Helyszín</string>
     <string name="settings_location_use_device">Eszköz helyszínének használata</string>
-    <string name="settings_location_use_device_description">Utolsó hozzávetőleges helyszín</string>
     <string name="settings_location_grant_background">Háttér-helyszín engedélyezése (Rendszerbeállítások)</string>
     <string name="settings_location_unset">Nincs helyszín beállítva</string>
     <string name="settings_location_clear">Helyszín eltávolítása</string>

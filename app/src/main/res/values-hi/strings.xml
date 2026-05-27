@@ -253,7 +253,6 @@ Not overridden by design:
     <!-- Location screen. -->
     <string name="settings_location_title">स्थान</string>
     <string name="settings_location_use_device">डिवाइस का स्थान उपयोग करें</string>
-    <string name="settings_location_use_device_description">पिछला अनुमानित स्थान</string>
     <string name="settings_location_detecting">पहचान रहे हैं…</string>
     <string name="settings_location_grant_background">अनुमति दें</string>
     <string name="settings_location_background_banner_title">हमेशा-चालू स्थान ज़रूरी</string>

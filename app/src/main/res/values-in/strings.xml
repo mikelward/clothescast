@@ -296,7 +296,6 @@ to values/strings.xml (English).
     <!-- Location settings -->
     <string name="settings_location_title">Lokasi</string>
     <string name="settings_location_use_device">Gunakan lokasi perangkat</string>
-    <string name="settings_location_use_device_description">Lokasi perkiraan terakhir</string>
     <string name="settings_location_detecting">Mendeteksi…</string>
     <string name="settings_location_grant_background">Izinkan</string>
     <string name="settings_location_background_banner_title">Diperlukan lokasi setiap saat</string>

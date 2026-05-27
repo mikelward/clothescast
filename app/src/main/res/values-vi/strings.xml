@@ -316,7 +316,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
          ===================================================================== -->
     <string name="settings_location_title">Vị trí</string>
     <string name="settings_location_use_device">Dùng vị trí thiết bị</string>
-    <string name="settings_location_use_device_description">Vị trí xấp xỉ gần nhất</string>
     <string name="settings_location_detecting">Đang phát hiện…</string>
     <string name="settings_location_grant_background">Cấp phép</string>
     <string name="settings_location_background_banner_title">Cần vị trí luôn bật</string>

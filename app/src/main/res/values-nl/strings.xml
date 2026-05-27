@@ -534,7 +534,6 @@ the displayed label localizes.
     <string name="settings_api_key_gemini_header">Gebruik Gemini voor stemmen van hoge kwaliteit.</string>
 
     <!-- Location screen — additional strings. -->
-    <string name="settings_location_use_device_description">Laatste globale locatie</string>
     <string name="settings_location_detecting">Wordt bepaald…</string>
     <string name="settings_location_background_banner_title">Permanente locatie vereist</string>
     <string name="settings_location_background_banner_body">Zonder dit kan de ochtendvoorspelling je locatie niet lezen.</string>

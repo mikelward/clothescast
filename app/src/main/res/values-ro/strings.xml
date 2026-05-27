@@ -299,7 +299,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <!-- Location settings. -->
     <string name="settings_location_title">Locație</string>
     <string name="settings_location_use_device">Folosește locația dispozitivului</string>
-    <string name="settings_location_use_device_description">Ultima locație aproximativă</string>
     <string name="settings_location_detecting">Se detectează…</string>
     <string name="settings_location_grant_background">Acordă</string>
     <string name="settings_location_background_banner_title">Locație permanentă necesară</string>

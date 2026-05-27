@@ -581,7 +581,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_api_key_gemini_header">Use o Gemini para vozes de alta qualidade.</string>
 
     <!-- Location screen — additional strings. -->
-    <string name="settings_location_use_device_description">Última localização aproximada</string>
     <string name="settings_location_detecting">Detectando…</string>
     <string name="settings_location_background_banner_title">Localização permanente necessária</string>
     <string name="settings_location_background_banner_body">Sem ela, a previsão matinal não consegue ler sua localização.</string>

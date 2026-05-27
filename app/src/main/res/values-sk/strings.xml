@@ -290,7 +290,6 @@ What is NOT overridden, by design:
     -->
     <string name="settings_location_title">Poloha</string>
     <string name="settings_location_use_device">Používať polohu zariadenia</string>
-    <string name="settings_location_use_device_description">Posledná približná poloha</string>
     <string name="settings_location_grant_background">Povoliť polohu na pozadí (systémové nastavenia)</string>
     <string name="settings_location_unset">Žiadna poloha nie je nastavená</string>
     <string name="settings_location_clear">Odstrániť polohu</string>

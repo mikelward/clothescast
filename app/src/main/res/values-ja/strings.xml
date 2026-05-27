@@ -594,7 +594,6 @@ the displayed label localizes.
          "detecting…" state, the always-on banner shown when the
          background-location permission is missing, and the manual-
          override link with its disclosure. -->
-    <string name="settings_location_use_device_description">最後のおおよその位置</string>
     <string name="settings_location_detecting">検出中…</string>
     <string name="settings_location_background_banner_title">常時位置情報が必要です</string>
     <string name="settings_location_background_banner_body">これがないと、朝の予報があなたの位置を読み取れません。</string>

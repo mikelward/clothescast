@@ -267,6 +267,7 @@ internal fun LocationPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             onSelectLocation = viewModel::selectLocation,
             onClearLocation = viewModel::clearLocation,
             onSearchLocations = viewModel::searchLocations,
+            onRefresh = viewModel::refreshDeviceLocation,
         )
     }
 }

@@ -572,6 +572,15 @@ class SettingsViewModel(
         }
     }
 
+    // Manual "Refresh" button on the Location settings page. Routes through
+    // the same one-shot worker `setUseDeviceLocation(true)` enqueues so the
+    // detecting indicator (driven by the worker's WorkInfo flow) lights up
+    // for the same window. Cheap — the worker short-circuits when the cached
+    // fix is still fresh, so an idle re-tap is a no-op.
+    fun refreshDeviceLocation() {
+        refreshLocationCache()
+    }
+
     fun setTtsEngine(engine: TtsEngine) {
         viewModelScope.launch { settingsRepository.setTtsEngine(engine) }
     }

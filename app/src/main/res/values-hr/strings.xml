@@ -545,7 +545,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_api_key_gemini_header">Koristi Gemini za visokokvalitetne glasove.</string>
 
     <!-- Location screen — additional strings. -->
-    <string name="settings_location_use_device_description">Zadnja približna lokacija</string>
     <string name="settings_location_detecting">Otkrivanje…</string>
     <string name="settings_location_background_banner_title">Potrebna trajna lokacija</string>
     <string name="settings_location_background_banner_body">Bez nje, jutarnja prognoza ne može čitati tvoju lokaciju.</string>

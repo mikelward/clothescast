@@ -530,7 +530,6 @@ West Bengal vocabulary differences in a future PR.
 
     <string name="settings_location_title">অবস্থান</string>
     <string name="settings_location_use_device">ডিভাইসের অবস্থান ব্যবহার করুন</string>
-    <string name="settings_location_use_device_description">শেষ আনুমানিক অবস্থান</string>
     <string name="settings_location_detecting">শনাক্ত করা হচ্ছে…</string>
     <string name="settings_location_grant_background">অনুমতি দিন</string>
     <string name="settings_location_background_banner_title">সর্বদা অবস্থান অনুমতি প্রয়োজন</string>

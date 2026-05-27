@@ -577,7 +577,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_api_key_gemini_header">Usa o Gemini para vozes de alta qualidade.</string>
 
     <!-- Location screen — additional strings. -->
-    <string name="settings_location_use_device_description">Última localização aproximada</string>
     <string name="settings_location_detecting">A detetar…</string>
     <string name="settings_location_background_banner_title">Localização permanente necessária</string>
     <string name="settings_location_background_banner_body">Sem ela, a previsão matinal não consegue ler a tua localização.</string>

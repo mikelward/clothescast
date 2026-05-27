@@ -299,7 +299,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Location settings -->
     <string name="settings_location_title">ตำแหน่ง</string>
     <string name="settings_location_use_device">ใช้ตำแหน่งอุปกรณ์</string>
-    <string name="settings_location_use_device_description">ตำแหน่งโดยประมาณล่าสุด</string>
     <string name="settings_location_detecting">กำลังตรวจจับ…</string>
     <string name="settings_location_grant_background">อนุญาต</string>
     <string name="settings_location_background_banner_title">ต้องการการเข้าถึงตำแหน่งตลอดเวลา</string>

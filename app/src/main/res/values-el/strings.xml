@@ -667,7 +667,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_theme_dark">Σκοτεινό</string>
 
     <!-- Missing location settings. -->
-    <string name="settings_location_use_device_description">Τελευταία κατά προσέγγιση τοποθεσία</string>
     <string name="settings_location_detecting">Εντοπισμός…</string>
     <string name="settings_location_background_banner_title">Απαιτείται τοποθεσία πάντα ενεργής</string>
     <string name="settings_location_background_banner_body">Χωρίς αυτό, η πρωινή πρόβλεψη δεν μπορεί να διαβάσει την τοποθεσία σου.</string>

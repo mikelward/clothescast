@@ -303,7 +303,6 @@ What is NOT overridden, by design:
     <!-- Location screen. -->
     <string name="settings_location_title">Vieta</string>
     <string name="settings_location_use_device">Naudoti įrenginio vietą</string>
-    <string name="settings_location_use_device_description">Paskutinė apytikslė vieta</string>
     <string name="settings_location_detecting">Aptinkama…</string>
     <string name="settings_location_grant_background">Suteikti</string>
     <string name="settings_location_background_banner_title">Reikalingas nuolatinis vietos leidimas</string>

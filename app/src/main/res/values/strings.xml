@@ -20,7 +20,7 @@
     <string name="today_play_toast_daily">Playing your daily ClothesCast.</string>
     <string name="today_play_toast_nightly">Playing your nightly ClothesCast.</string>
     <string name="today_empty_title">No ClothesCast yet</string>
-    <string name="today_empty_subtitle">Your morning ClothesCast will appear here once it has been generated. Set your location in Settings, then tap Fetch now.</string>
+    <string name="today_empty_subtitle">Your morning ClothesCast will appear here once it has been generated.</string>
     <string name="today_fetch_now">Fetch now</string>
     <string name="today_generated_at">Generated at %1$s</string>
     <!-- Link in the insight card's bottom-right corner that opens Format settings. -->

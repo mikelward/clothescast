@@ -107,7 +107,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_refresh_toast_daily">Osvežujem tvoj dnevni ClothesCast — kmalu se bo prikazal.</string>
     <string name="today_refresh_toast_nightly">Osvežujem tvoj nočni ClothesCast — kmalu se bo prikazal.</string>
     <string name="today_empty_title">Še ni ClothesCasta</string>
-    <string name="today_empty_subtitle">Tvoj jutranji ClothesCast se bo prikazal tukaj, ko bo ustvarjen. Nastavi svojo lokacijo v Nastavitvah, nato pritisni Pridobi zdaj.</string>
+    <string name="today_empty_subtitle">Tvoj jutranji ClothesCast se bo prikazal tukaj, ko bo ustvarjen.</string>
     <string name="today_fetch_now">Pridobi zdaj</string>
     <string name="today_generated_at">Ustvarjeno ob %1$s</string>
     <string name="today_location_unknown">Tvoja lokacija</string>

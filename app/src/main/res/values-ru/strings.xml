@@ -433,7 +433,7 @@ only the displayed label localizes.
     <string name="today_refresh_toast_daily">Обновляю твой ежедневный ClothesCast — скоро появится.</string>
     <string name="today_refresh_toast_nightly">Обновляю твой вечерний ClothesCast — скоро появится.</string>
     <string name="today_empty_title">ClothesCast пока нет</string>
-    <string name="today_empty_subtitle">Твой утренний ClothesCast появится здесь, как только сгенерируется. Установи местоположение в настройках, затем нажми «Получить сейчас».</string>
+    <string name="today_empty_subtitle">Твой утренний ClothesCast появится здесь, как только сгенерируется.</string>
     <string name="today_fetch_now">Получить сейчас</string>
     <string name="today_generated_at">Создано в %1$s</string>
 

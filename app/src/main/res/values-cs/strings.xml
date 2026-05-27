@@ -364,7 +364,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_refresh_toast_daily">Tvůj denní ClothesCast se aktualizuje — za chvíli se zobrazí.</string>
     <string name="today_refresh_toast_nightly">Tvůj noční ClothesCast se aktualizuje — za chvíli se zobrazí.</string>
     <string name="today_empty_title">Zatím žádný ClothesCast</string>
-    <string name="today_empty_subtitle">Tvůj ranní ClothesCast se zde zobrazí, jakmile bude vytvořen. Nastav svou polohu v nastavení a klepni na Načíst nyní.</string>
+    <string name="today_empty_subtitle">Tvůj ranní ClothesCast se zde zobrazí, jakmile bude vytvořen.</string>
     <string name="today_fetch_now">Načíst nyní</string>
     <string name="today_generated_at">Vytvořeno v %1$s</string>
 

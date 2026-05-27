@@ -337,7 +337,7 @@ Not overridden by design:
     <string name="today_refresh_toast_daily">आपका दैनिक ClothesCast रीफ़्रेश हो रहा है — कुछ ही देर में दिखेगा।</string>
     <string name="today_refresh_toast_nightly">आपका रात्रि ClothesCast रीफ़्रेश हो रहा है — कुछ ही देर में दिखेगा।</string>
     <string name="today_empty_title">अभी कोई ClothesCast नहीं</string>
-    <string name="today_empty_subtitle">आपका सुबह का ClothesCast तैयार होने पर यहाँ दिखेगा। सेटिंग में अपना स्थान सेट करें, फिर "अभी लाएँ" टैप करें।</string>
+    <string name="today_empty_subtitle">आपका सुबह का ClothesCast तैयार होने पर यहाँ दिखेगा।</string>
     <string name="today_fetch_now">अभी लाएँ</string>
     <string name="today_generated_at">%1$s को बनाया गया</string>
     <string name="today_location_unknown">आपका स्थान</string>

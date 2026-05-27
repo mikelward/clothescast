@@ -365,7 +365,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_refresh_toast_daily">Dit daglige ClothesCast opdateres — det kommer straks.</string>
     <string name="today_refresh_toast_nightly">Dit aftenvise ClothesCast opdateres — det kommer straks.</string>
     <string name="today_empty_title">Intet ClothesCast endnu</string>
-    <string name="today_empty_subtitle">Dit morgenvise ClothesCast dukker op her, når det er genereret. Angiv din placering i indstillingerne, og tryk derefter på Hent nu.</string>
+    <string name="today_empty_subtitle">Dit morgenvise ClothesCast dukker op her, når det er genereret.</string>
     <string name="today_fetch_now">Hent nu</string>
     <string name="today_generated_at">Genereret klokken %1$s</string>
 

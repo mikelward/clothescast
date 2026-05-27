@@ -377,7 +377,7 @@ What is NOT overridden, by design:
     <string name="today_refresh_toast_daily">Tvoj denný ClothesCast sa aktualizuje — za chvíľu sa zobrazí.</string>
     <string name="today_refresh_toast_nightly">Tvoj nočný ClothesCast sa aktualizuje — za chvíľu sa zobrazí.</string>
     <string name="today_empty_title">Zatiaľ žiadny ClothesCast</string>
-    <string name="today_empty_subtitle">Tvoj ranný ClothesCast sa tu zobrazí, keď bude vytvorený. Nastav svoju polohu v nastaveniach a klepni na Načítať teraz.</string>
+    <string name="today_empty_subtitle">Tvoj ranný ClothesCast sa tu zobrazí, keď bude vytvorený.</string>
     <string name="today_fetch_now">Načítať teraz</string>
     <string name="today_generated_at">Vytvorené o %1$s</string>
     <string name="today_location_unknown">Tvoja poloha</string>

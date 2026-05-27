@@ -17,7 +17,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_refresh_toast_daily">Värskendatakse sinu igapäevast ClothesCast\'i — ilmub varsti.</string>
     <string name="today_refresh_toast_nightly">Värskendatakse sinu õhtust ClothesCast\'i — ilmub varsti.</string>
     <string name="today_empty_title">ClothesCast puudub veel</string>
-    <string name="today_empty_subtitle">Sinu hommikune ClothesCast ilmub siia, kui see on genereeritud. Määra asukoht seadetes ja puuduta Laadi kohe.</string>
+    <string name="today_empty_subtitle">Sinu hommikune ClothesCast ilmub siia, kui see on genereeritud.</string>
     <string name="today_fetch_now">Laadi kohe</string>
     <string name="today_generated_at">Genereeritud kell %1$s</string>
     <string name="today_location_unknown">Sinu asukoht</string>

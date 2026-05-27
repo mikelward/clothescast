@@ -371,7 +371,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_refresh_toast_daily">A atualizar o teu ClothesCast diário — vai aparecer em breve.</string>
     <string name="today_refresh_toast_nightly">A atualizar o teu ClothesCast noturno — vai aparecer em breve.</string>
     <string name="today_empty_title">Ainda sem ClothesCast</string>
-    <string name="today_empty_subtitle">O teu ClothesCast matinal aparece aqui assim que for gerado. Define a tua localização nas definições e toca em Obter agora.</string>
+    <string name="today_empty_subtitle">O teu ClothesCast matinal aparece aqui assim que for gerado.</string>
     <string name="today_fetch_now">Obter agora</string>
     <string name="today_generated_at">Gerado às %1$s</string>
 

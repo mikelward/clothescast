@@ -365,7 +365,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="today_refresh_toast_daily">Ditt dagliga ClothesCast uppdateras — det kommer strax.</string>
     <string name="today_refresh_toast_nightly">Ditt kvällsvisa ClothesCast uppdateras — det kommer strax.</string>
     <string name="today_empty_title">Inget ClothesCast ännu</string>
-    <string name="today_empty_subtitle">Ditt morgonliga ClothesCast dyker upp här när det har genererats. Ange din plats i inställningarna och tryck sedan på Hämta nu.</string>
+    <string name="today_empty_subtitle">Ditt morgonliga ClothesCast dyker upp här när det har genererats.</string>
     <string name="today_fetch_now">Hämta nu</string>
     <string name="today_generated_at">Genererat klockan %1$s</string>
 

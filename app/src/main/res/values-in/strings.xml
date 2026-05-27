@@ -108,7 +108,7 @@ to values/strings.xml (English).
     <string name="today_refresh_toast_daily">Memperbarui ClothesCast harian Anda — sebentar lagi akan muncul.</string>
     <string name="today_refresh_toast_nightly">Memperbarui ClothesCast malam Anda — sebentar lagi akan muncul.</string>
     <string name="today_empty_title">Belum ada ClothesCast</string>
-    <string name="today_empty_subtitle">ClothesCast pagi Anda akan muncul di sini setelah dibuat. Atur lokasi di Pengaturan, lalu ketuk Ambil sekarang.</string>
+    <string name="today_empty_subtitle">ClothesCast pagi Anda akan muncul di sini setelah dibuat.</string>
     <string name="today_fetch_now">Ambil sekarang</string>
     <string name="today_generated_at">Dibuat pukul %1$s</string>
     <string name="today_location_unknown">Lokasi Anda</string>

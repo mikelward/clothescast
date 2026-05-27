@@ -110,7 +110,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_refresh_toast_daily">در حال به‌روزرسانی ClothesCast روزانه شما — به زودی نمایش داده می‌شود.</string>
     <string name="today_refresh_toast_nightly">در حال به‌روزرسانی ClothesCast شبانه شما — به زودی نمایش داده می‌شود.</string>
     <string name="today_empty_title">هنوز ClothesCast وجود ندارد</string>
-    <string name="today_empty_subtitle">ClothesCast صبحگاهی شما پس از تولید اینجا نمایش داده می‌شود. موقعیت خود را در تنظیمات تنظیم کنید، سپس روی دریافت اکنون ضربه بزنید.</string>
+    <string name="today_empty_subtitle">ClothesCast صبحگاهی شما پس از تولید اینجا نمایش داده می‌شود.</string>
     <string name="today_fetch_now">دریافت اکنون</string>
     <string name="today_generated_at">تولید شده در %1$s</string>
     <string name="today_location_unknown">موقعیت شما</string>

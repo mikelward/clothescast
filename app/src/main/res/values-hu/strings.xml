@@ -366,7 +366,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_refresh_toast_daily">A napi ClothesCastod frissül — hamarosan megjelenik.</string>
     <string name="today_refresh_toast_nightly">Az esti ClothesCastod frissül — hamarosan megjelenik.</string>
     <string name="today_empty_title">Még nincs ClothesCast</string>
-    <string name="today_empty_subtitle">A reggeli ClothesCastod itt jelenik meg, amint elkészül. Állítsd be a helyszínedet a beállításokban, majd koppints a Betöltés most gombra.</string>
+    <string name="today_empty_subtitle">A reggeli ClothesCastod itt jelenik meg, amint elkészül.</string>
     <string name="today_fetch_now">Betöltés most</string>
     <string name="today_generated_at">Létrehozva: %1$s</string>
 

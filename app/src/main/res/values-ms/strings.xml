@@ -103,7 +103,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_refresh_toast_daily">Memuat semula ClothesCast harian anda — ia akan muncul sebentar lagi.</string>
     <string name="today_refresh_toast_nightly">Memuat semula ClothesCast malam anda — ia akan muncul sebentar lagi.</string>
     <string name="today_empty_title">Tiada ClothesCast lagi</string>
-    <string name="today_empty_subtitle">ClothesCast pagi anda akan muncul di sini setelah dijana. Tetapkan lokasi dalam Tetapan, kemudian ketik Ambil sekarang.</string>
+    <string name="today_empty_subtitle">ClothesCast pagi anda akan muncul di sini setelah dijana.</string>
     <string name="today_fetch_now">Ambil sekarang</string>
     <string name="today_generated_at">Dijana pada %1$s</string>
     <string name="today_location_unknown">Lokasi anda</string>

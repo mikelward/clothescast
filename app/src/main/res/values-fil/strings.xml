@@ -103,7 +103,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_refresh_toast_daily">Ina-refresh ang iyong pang-araw na ClothesCast — lilitaw ito nang ilang sandali.</string>
     <string name="today_refresh_toast_nightly">Ina-refresh ang iyong pang-gabing ClothesCast — lilitaw ito nang ilang sandali.</string>
     <string name="today_empty_title">Wala pang ClothesCast</string>
-    <string name="today_empty_subtitle">Lilitaw dito ang iyong umaga na ClothesCast kapag nagawa na ito. Itakda ang iyong lokasyon sa Mga Setting, pagkatapos ay i-tap ang Kunin ngayon.</string>
+    <string name="today_empty_subtitle">Lilitaw dito ang iyong umaga na ClothesCast kapag nagawa na ito.</string>
     <string name="today_fetch_now">Kunin ngayon</string>
     <string name="today_generated_at">Nagawa noong %1$s</string>
     <string name="today_location_unknown">Ang iyong lokasyon</string>

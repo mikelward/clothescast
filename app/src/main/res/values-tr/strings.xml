@@ -278,7 +278,7 @@ displayed label localizes.
     <string name="today_refresh_toast_daily">Günlük ClothesCast\'ın güncelleniyor — birazdan görünecek.</string>
     <string name="today_refresh_toast_nightly">Gecelik ClothesCast\'ın güncelleniyor — birazdan görünecek.</string>
     <string name="today_empty_title">Henüz ClothesCast yok</string>
-    <string name="today_empty_subtitle">Sabah ClothesCast\'ın oluşturulduğunda burada görünecek. Ayarlarda konumunu belirle ve ardından Şimdi al\'a dokun.</string>
+    <string name="today_empty_subtitle">Sabah ClothesCast\'ın oluşturulduğunda burada görünecek.</string>
     <string name="today_fetch_now">Şimdi al</string>
     <string name="today_generated_at">Saat %1$s\'de oluşturuldu</string>
 

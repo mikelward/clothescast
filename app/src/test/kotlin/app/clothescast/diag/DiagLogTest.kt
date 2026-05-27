@@ -186,6 +186,66 @@ class DiagLogTest {
         stackTrace = Array(depth) { i -> StackTraceElement("Foo$i", "bar", "Foo$i.kt", i + 1) }
     }
 
+    @Test
+    fun `capEntryContinuations passes through entries within the cap`() {
+        val input = listOf(
+            "2026-05-27 12:00:00.000 -0400 I Foo: msg",
+            "\tat com.example.A.run(A.kt:1)",
+            "Caused by: java.io.IOException: boom",
+            "\tat com.example.B.run(B.kt:2)",
+        )
+        DiagLog.capEntryContinuations(input, maxContinuation = 6) shouldBe input
+    }
+
+    @Test
+    fun `capEntryContinuations elides continuation lines beyond the cap`() {
+        val input = listOf(
+            "2026-05-27 12:00:00.000 -0400 W ConfidenceFetcher: fetch failed",
+            "\tat 1", "\tat 2", "\tat 3", "\tat 4",
+            "\tat 5", "\tat 6", "\tat 7", "\tat 8",
+        )
+        DiagLog.capEntryContinuations(input, maxContinuation = 4) shouldBe listOf(
+            "2026-05-27 12:00:00.000 -0400 W ConfidenceFetcher: fetch failed",
+            "\tat 1", "\tat 2", "\tat 3", "\tat 4",
+            "\t... [4 lines elided]",
+        )
+    }
+
+    @Test
+    fun `capEntryContinuations resets the counter at the next leading line`() {
+        // Each timestamp-prefixed entry gets its own continuation budget so
+        // an over-long earlier entry can't starve a later one's frames.
+        val input = listOf(
+            "2026-05-27 12:00:00.000 -0400 W Foo: first",
+            "\tat 1", "\tat 2", "\tat 3", "\tat 4", "\tat 5",
+            "2026-05-27 12:00:01.000 -0400 W Bar: second",
+            "\tat 1", "\tat 2",
+        )
+        DiagLog.capEntryContinuations(input, maxContinuation = 2) shouldBe listOf(
+            "2026-05-27 12:00:00.000 -0400 W Foo: first",
+            "\tat 1", "\tat 2",
+            "\t... [3 lines elided]",
+            "2026-05-27 12:00:01.000 -0400 W Bar: second",
+            "\tat 1", "\tat 2",
+        )
+    }
+
+    @Test
+    fun `capEntryContinuations caps orphan continuations at the start`() {
+        // The snapshot can begin mid-entry when the rotated file's tail is
+        // chopped — those leading continuation lines lack a header and must
+        // not be allowed to dominate the buffer either.
+        val input = listOf(
+            "\tat 1", "\tat 2", "\tat 3", "\tat 4", "\tat 5",
+            "2026-05-27 12:00:00.000 -0400 I Foo: ok",
+        )
+        DiagLog.capEntryContinuations(input, maxContinuation = 2) shouldBe listOf(
+            "\tat 1", "\tat 2",
+            "\t... [3 lines elided]",
+            "2026-05-27 12:00:00.000 -0400 I Foo: ok",
+        )
+    }
+
     private fun files(dir: Path): Pair<File, File> =
         dir.resolve("diag.log").toFile() to dir.resolve("diag.log.1").toFile()
 }

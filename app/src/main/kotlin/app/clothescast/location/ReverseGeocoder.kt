@@ -42,13 +42,17 @@ class ReverseGeocoder(
     /**
      * Best-effort city/locality name + country code + address detail. Any
      * field can be null independently (e.g. the geocoder returned a usable
-     * city but the address lacked a country code, or the first address line
-     * was missing/empty so no detail could be derived); callers handle each
-     * as missing data without crashing.
+     * city but the underlying address lacked a country code, or no
+     * structured fields were populated so no detail could be built);
+     * callers handle each as missing data without crashing.
      *
-     * [addressDetail] is the first address line with its leading component
-     * dropped (e.g. "Cambridge, MA 02139, USA" from "1 Vassar St, Cambridge,
-     * MA 02139, USA") — for display on the Location settings page.
+     * [addressDetail] is built from the platform Geocoder's structured
+     * fields (subLocality / locality / adminArea / postalCode /
+     * countryName) by [buildAddressDetail] — for display on the
+     * Location settings page. We deliberately never parse the formatted
+     * `addressLine` string here: that string sometimes carries a POI
+     * prefix or duplicated street that any naïve trim would either
+     * leak or over-strip.
      */
     data class Result(
         val city: String?,
@@ -64,9 +68,9 @@ class ReverseGeocoder(
      * Diagnostic-only return value pairing the raw `addressLines` from the
      * platform Geocoder with the [Result] derived from them. Surfaced to
      * the Developer settings page's reverse-geocode tester so a developer
-     * can see which Geocoder input shape produced an unexpected
-     * addressDetail (e.g. a street that survived [deriveAddressDetail]'s
-     * trim) without having to file a bug report and read DiagLog.
+     * can see exactly what the Geocoder returned for a given coord and
+     * how [buildAddressDetail] folded the structured fields into the
+     * displayed addressDetail.
      */
     data class DiagnosticResult(
         val addressLines: List<String>,
@@ -94,8 +98,8 @@ class ReverseGeocoder(
      * with outputs.
      *
      * Never call from production code paths — the raw lines include
-     * house numbers and other detail we deliberately strip via
-     * [deriveAddressDetail] before display or persistence.
+     * house numbers and other detail we deliberately omit when
+     * [buildAddressDetail] composes the displayed addressDetail.
      */
     suspend fun resolveDiagnostic(latitude: Double, longitude: Double): DiagnosticResult = coRunCatching {
         if (!Geocoder.isPresent()) {
@@ -208,10 +212,32 @@ class ReverseGeocoder(
             addressLines = lines,
         )
         val normalisedCountry = countryCode?.takeIf { it.isNotBlank() }?.uppercase()
+        // Hand the raw structured fields plus pickCityName's resolved
+        // city straight to buildAddressDetail and let it dedup. The
+        // `recoveredCity` slot is what keeps the displayed detail
+        // consistent with the city header when the Geocoder leaves
+        // `locality` blank (inner-London residentials → "London")
+        // or fills it with a hamlet distinct from the post town
+        // (outer-London / UK villages: `locality="Oakley Green"`,
+        // city = "Windsor"). The same slot stays harmless when the
+        // Geocoder's `locality` already matches the recovered city —
+        // dedup collapses it. When both subLocality and locality carry
+        // real values and the city differs from both, all three
+        // survive (`Suburb, Oakley Green, Windsor, …`).
         return Result(
             city = city,
             countryCode = normalisedCountry,
-            addressDetail = deriveAddressDetail(lines),
+            addressDetail = buildAddressDetail(
+                AddressParts(
+                    subLocality = subLocality,
+                    locality = locality,
+                    recoveredCity = city,
+                    adminArea = adminArea,
+                    postalCode = postalCode,
+                    countryName = countryName,
+                    countryCode = countryCode,
+                ),
+            ),
         )
     }
 
@@ -221,20 +247,87 @@ class ReverseGeocoder(
 }
 
 /**
- * Builds the Location settings page's neighbourhood-level address line
- * from a Geocoder Address's [android.location.Address.getAddressLine]
- * outputs. Joins multi-line responses with ", " (some backends split the
- * address across separate lines — street / city-state / country), then
- * drops the leading comma-delimited component (typically the house
- * number and street, e.g. "1 Vassar St") so what remains is suburb +
- * city + postal code + country — ("Cambridge, MA 02139, USA" from
- * "1 Vassar St, Cambridge, MA 02139, USA"). Returns null when there
- * are no lines, no comma to split on, or stripping yields a blank.
+ * Subset of the platform [android.location.Address] fields we use to
+ * build the Location settings page's neighbourhood-level line. Lifted
+ * out as a data class so [buildAddressDetail] is testable on the JVM
+ * without instantiating an Android `Address`.
  */
-internal fun deriveAddressDetail(addressLines: List<String>): String? {
-    if (addressLines.isEmpty()) return null
-    val joined = addressLines.joinToString(", ")
-    val commaIdx = joined.indexOf(',')
-    if (commaIdx < 0) return null
-    return joined.substring(commaIdx + 1).trim().takeIf { it.isNotBlank() }
+internal data class AddressParts(
+    val subLocality: String? = null,
+    val locality: String? = null,
+    /**
+     * The city name `pickCityName` resolved from the same `Address`,
+     * for cases where it can recover something more user-facing than
+     * the structured `locality` — e.g. an inner-London Geocoder result
+     * with blank `locality` but a post town ("London") sitting in the
+     * formatted line, or a hamlet-locality result ("Oakley Green") for
+     * which `pickCityName` pulls the post town ("Windsor") from the
+     * postcode token. [buildAddressDetail] slots it in after `locality`
+     * with the same dedup rules as every other field, so when the
+     * Geocoder + city picker agree it costs nothing.
+     */
+    val recoveredCity: String? = null,
+    val adminArea: String? = null,
+    val postalCode: String? = null,
+    val countryName: String? = null,
+    val countryCode: String? = null,
+)
+
+/**
+ * Builds the Location settings page's neighbourhood-level address line
+ * directly from the platform Geocoder's *structured* fields, rather
+ * than parsing the formatted [android.location.Address.getAddressLine]
+ * string. The formatted line is where Google's backend gets creative —
+ * prepending a POI name when the coordinate lands in water (e.g.
+ * "Governors Island Ferry, 10 South St Slip 7, New York, NY 10004,
+ * USA"), splitting the street across multiple `addressLines` on some
+ * backends, ordering the house number differently in pt-BR / es-* /
+ * many EU formats. Any string-level rule that strips the street ends
+ * up either leaving a POI behind, stripping a meaningful neighbourhood
+ * (Bela Vista from "Street, Bela Vista, São Paulo - SP, 01311-000,
+ * Brazil"), or breaking some country we haven't tested. The structured
+ * fields are the same data the formatter consumes, just without that
+ * lossy formatting step.
+ *
+ * Output format: `subLocality, locality, recoveredCity, adminArea
+ * postalCode, country` — each part skipped if blank or if it would
+ * duplicate an earlier non-null part. The adminArea / postalCode pair
+ * is joined on a single space (so a missing one doesn't leave dangling
+ * whitespace). Country prefers [AddressParts.countryName] and falls
+ * back to the ISO code when only that is set; dropped if it would
+ * duplicate any earlier place name (city-states / SARs like Singapore
+ * and Hong Kong populate every place field with the same string, and
+ * the country-level fallback from `pickCityName` can land in the
+ * recoveredCity slot for SARs).
+ *
+ * Examples (from the platform Geocoder on real coords):
+ *  - NYC water-adjacent: subLocality=null, locality="New York",
+ *    adminArea="NY", postalCode="10004", countryName="United States"
+ *    → "New York, NY 10004, United States"
+ *  - Brazil neighbourhood: subLocality="Bela Vista",
+ *    locality="São Paulo", adminArea="SP", postalCode="01311-000",
+ *    countryName="Brasil"
+ *    → "Bela Vista, São Paulo, SP 01311-000, Brasil"
+ *  - London neighbourhood: subLocality="Muswell Hill",
+ *    locality="London", adminArea="England", postalCode="N10 3BN",
+ *    countryName="United Kingdom"
+ *    → "Muswell Hill, London, England N10 3BN, United Kingdom"
+ *
+ * Returns null when every meaningful field is blank.
+ */
+internal fun buildAddressDetail(parts: AddressParts): String? {
+    val sub = parts.subLocality?.trim()?.takeIf { it.isNotEmpty() }
+    val city = parts.locality?.trim()?.takeIf { it.isNotEmpty() && it != sub }
+    val recovered = parts.recoveredCity?.trim()
+        ?.takeIf { it.isNotEmpty() && it != sub && it != city }
+    val region = listOfNotNull(
+        parts.adminArea?.trim()?.takeIf { it.isNotEmpty() },
+        parts.postalCode?.trim()?.takeIf { it.isNotEmpty() },
+    ).joinToString(" ").takeIf { it.isNotEmpty() }
+    val country = (parts.countryName?.trim()?.takeIf { it.isNotEmpty() }
+        ?: parts.countryCode?.trim()?.takeIf { it.isNotEmpty() })
+        ?.takeIf { it != sub && it != city && it != recovered }
+    return listOfNotNull(sub, city, recovered, region, country)
+        .joinToString(", ")
+        .takeIf { it.isNotBlank() }
 }

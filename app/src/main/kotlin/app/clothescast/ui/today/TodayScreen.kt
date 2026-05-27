@@ -457,6 +457,7 @@ private fun TodayContent(
                         forecastZone = state.thisPeriodInsight.forecastZone,
                         region = state.region,
                         deltaThresholdC = state.deltaThresholdC,
+                        location = state.thisPeriodInsight.location,
                     )
                     return@HorizontalPager
                 }
@@ -2880,7 +2881,7 @@ internal fun shortLocationLabel(displayName: String?): String? {
 // drops on the actual GPS coords (not the geocoder's centroid for the labelled
 // place). Silently no-ops when no maps app is installed — there's no good
 // recovery and the rest of the screen still works.
-private fun openInMaps(context: Context, latitude: Double, longitude: Double, label: String?) {
+internal fun openInMaps(context: Context, latitude: Double, longitude: Double, label: String?) {
     val labelPart = label?.takeIf { it.isNotBlank() }
         ?.let { "(${Uri.encode(it)})" }
         .orEmpty()

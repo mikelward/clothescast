@@ -444,7 +444,6 @@ displayed label localizes.
     <string name="today_rationale_dismiss">Anladım</string>
     <string name="today_rationale_threshold_decrease">Eşiği 1 derece düşür</string>
     <string name="today_rationale_threshold_increase">Eşiği 1 derece artır</string>
-    <string name="today_rationale_threshold_changed_hint">Yeni kıyafeti görmek için yenile.</string>
     <string name="today_rationale_unavailable">Gerekçe mevcut değil — bir sonraki güncellemeden sonra uygulamayı açın.</string>
     <string name="today_rationale_min_below_with_time">Hissedilen minimum sıcaklık saat %3$s\'de %1$s%2$s, %4$s%2$s altında</string>
     <string name="today_rationale_min_below">Hissedilen minimum sıcaklık %1$s%2$s, %3$s%2$s altında</string>

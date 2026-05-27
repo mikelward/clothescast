@@ -530,7 +530,6 @@ the displayed label localizes.
     <string name="today_rationale_dismiss">了解</string>
     <string name="today_rationale_threshold_decrease">しきい値を1度下げる</string>
     <string name="today_rationale_threshold_increase">しきい値を1度上げる</string>
-    <string name="today_rationale_threshold_changed_hint">更新して新しい服装を確認してください。</string>
     <string name="today_rationale_unavailable">根拠がありません — 次の更新後にアプリを開いてください。</string>
     <string name="today_rationale_min_below_with_time">体感最低気温 %1$s%2$s（%3$s）、%4$s%2$s未満</string>
     <string name="today_rationale_min_below">体感最低気温 %1$s%2$s、%3$s%2$s未満</string>

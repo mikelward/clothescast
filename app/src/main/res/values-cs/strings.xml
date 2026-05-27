@@ -418,7 +418,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_rationale_dismiss">Rozumím</string>
     <string name="today_rationale_threshold_decrease">Snížit práh o 1 stupeň</string>
     <string name="today_rationale_threshold_increase">Zvýšit práh o 1 stupeň</string>
-    <string name="today_rationale_threshold_changed_hint">Obnovit pro zobrazení nového outfitu.</string>
     <string name="today_rationale_unavailable">Zdůvodnění není k dispozici — otevři aplikaci po příštím obnovení.</string>
     <string name="today_rationale_min_below_with_time">Pocitové minimum %1$s%2$s v %3$s h, pod %4$s%2$s</string>
     <string name="today_rationale_min_below">Pocitové minimum %1$s%2$s, pod %3$s%2$s</string>

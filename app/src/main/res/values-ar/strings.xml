@@ -133,7 +133,6 @@ they work correctly in both the single-band and range templates.
     <string name="today_rationale_dismiss">فهمت</string>
     <string name="today_rationale_threshold_decrease">خفض العتبة بدرجة واحدة</string>
     <string name="today_rationale_threshold_increase">رفع العتبة بدرجة واحدة</string>
-    <string name="today_rationale_threshold_changed_hint">حدّث لترى الزي الجديد.</string>
     <string name="today_rationale_unavailable">لا يتوفر تبرير — افتح التطبيق بعد التحديث التالي.</string>
     <string name="today_rationale_min_below_with_time">أدنى درجة حرارة محسوسة %1$s%2$s الساعة %3$s، أقل من %4$s%2$s</string>
     <string name="today_rationale_min_below">أدنى درجة حرارة محسوسة %1$s%2$s، أقل من %3$s%2$s</string>

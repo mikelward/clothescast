@@ -133,7 +133,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_rationale_dismiss">متوجه شدم</string>
     <string name="today_rationale_threshold_decrease">کاهش آستانه ۱ درجه</string>
     <string name="today_rationale_threshold_increase">افزایش آستانه ۱ درجه</string>
-    <string name="today_rationale_threshold_changed_hint">بازخوانی کنید تا لباس جدید را ببینید.</string>
     <string name="today_rationale_unavailable">توضیحی در دسترس نیست — پس از به‌روزرسانی بعدی برنامه را باز کنید.</string>
     <string name="today_rationale_min_below_with_time">حداقل دمای احساس‌شده %1$s%2$s در ساعت %3$s، کمتر از %4$s%2$s</string>
     <string name="today_rationale_min_below">حداقل دمای احساس‌شده %1$s%2$s، کمتر از %3$s%2$s</string>

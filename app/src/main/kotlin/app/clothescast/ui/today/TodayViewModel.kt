@@ -448,6 +448,8 @@ class TodayViewModel(
         val bottomColors = prefs.outfitBottomColors + (theme?.bottomOverrides ?: emptyMap())
         val topStrokes = theme?.topStrokeOverrides ?: emptyMap()
         val bottomStrokes = theme?.bottomStrokeOverrides ?: emptyMap()
+        val clothesPromoVisible = !prefs.clothesPromoCardDismissed &&
+            prefs.clothesRules == ClothesRule.DEFAULTS
         TodayState(
             thisPeriodInsight = thisPeriodInsight,
             nextPeriodInsight = nextPeriodInsight,
@@ -472,11 +474,15 @@ class TodayViewModel(
             outfitTopStrokes = topStrokes,
             outfitBottomStrokes = bottomStrokes,
             activeHoliday = theme,
-            celebrationCardVisible = !prefs.celebrationCardDismissed &&
+            // Promo cards stack one at a time: the higher-priority clothes
+            // card wins while it's eligible, and only when it's gone does
+            // the celebration card get a turn. Keeps the Today screen from
+            // stacking two nudges on top of each other.
+            clothesPromoCardVisible = clothesPromoVisible,
+            celebrationCardVisible = !clothesPromoVisible &&
+                !prefs.celebrationCardDismissed &&
                 !prefs.calendarHolidayThemingActive &&
                 !prefs.calendarBirthdayThemingActive,
-            clothesPromoCardVisible = !prefs.clothesPromoCardDismissed &&
-                prefs.clothesRules == ClothesRule.DEFAULTS,
             usesCalendarThemes = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayState())

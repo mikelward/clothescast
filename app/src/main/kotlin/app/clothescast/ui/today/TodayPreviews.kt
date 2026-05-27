@@ -1975,6 +1975,16 @@ private val SAMPLE_WEEK: List<DailyForecast> = run {
     }
 }
 
+// Outfit pair pinned at the top of every 7-day-page snapshot — same row
+// pages 0 / 1 surface, so the snapshots cover the pagination-consistency
+// invariant ("outfit row sits at the same vertical offset on all three
+// pages") as well as the chart deck below it.
+private val SAMPLE_WEEK_OUTFIT_INSIGHT = SAMPLE_INSIGHT.copy(
+    period = ForecastPeriod.TODAY,
+    outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
+    nextOutfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+)
+
 // [SAMPLE_WEEK] has a midweek rain peak (40% Wed 15:00 with RAIN condition)
 // — enough for [DeriveWeekAheadInsight] to fire its rain rule, so the
 // snapshot also exercises the week-ahead headline card above the chart
@@ -1991,6 +2001,7 @@ internal fun SevenDayPagePreview() {
             showModelSpread = false,
             scrollState = androidx.compose.foundation.rememberScrollState(),
             onChevronTap = {},
+            outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,
         )
     }
 }
@@ -2015,6 +2026,7 @@ internal fun SevenDayPageWithLocationPreview() {
                 longitude = -71.0589,
                 displayName = "Boston, Massachusetts, United States",
             ),
+            outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,
         )
     }
 }
@@ -2068,6 +2080,7 @@ internal fun SevenDayPageWithPerModelSpreadOffPreview() {
             showModelSpread = false,
             scrollState = androidx.compose.foundation.rememberScrollState(),
             onChevronTap = {},
+            outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,
         )
     }
 }
@@ -2084,6 +2097,7 @@ internal fun SevenDayPageWithPerModelSpreadOnPreview() {
             showModelSpread = true,
             scrollState = androidx.compose.foundation.rememberScrollState(),
             onChevronTap = {},
+            outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,
         )
     }
 }

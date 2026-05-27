@@ -32,11 +32,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
+import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
+import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -145,6 +148,22 @@ internal fun SevenDayPage(
      * Null keeps the label non-tappable (used by previews / tests).
      */
     onNavigateToLocation: (() -> Unit)? = null,
+    /**
+     * The current-period insight whose outfit pair is rendered at the top of
+     * the page. Same row the per-period pages show; surfacing it here too
+     * keeps the outfit pair pinned to the same vertical offset on all three
+     * pager pages, so swiping between Today / Tonight / 7-day doesn't jump
+     * the rest of the content up or down. Null on legacy previews / tests
+     * that don't wire an outfit pair, in which case the row collapses.
+     */
+    outfitInsight: Insight? = null,
+    clothesRules: List<ClothesRule> = emptyList(),
+    outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    onAdjustThreshold: (String, Double) -> Unit = { _, _ -> },
+    onNavigateToClothes: () -> Unit = {},
 ) {
     // Flatten every day's hourly stream into a single list. The chart
     // composables read [hourly[idx].time.hour] only for the bottom-axis
@@ -230,6 +249,27 @@ internal fun SevenDayPage(
             .padding(top = 16.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        // Outfit row at the top of the page — same composable the per-period
+        // pages render. Surfacing it here too keeps the outfit pair pinned to
+        // the same vertical offset on all three pager pages, so swiping
+        // between Today / Tonight / 7-day doesn't jump the rest of the
+        // content up or down. The pair shown is this-period's outfit +
+        // nextOutfit (not a 7-day timeline), matching what pages 0 / 1
+        // display — the at-a-glance "what to wear" summary travels with
+        // the user regardless of which chart deck they're reading.
+        if (outfitInsight != null) {
+            OutfitPreviewRow(
+                insight = outfitInsight,
+                temperatureUnit = temperatureUnit,
+                clothesRules = clothesRules,
+                outfitTopColors = outfitTopColors,
+                outfitBottomColors = outfitBottomColors,
+                outfitTopStrokes = outfitTopStrokes,
+                outfitBottomStrokes = outfitBottomStrokes,
+                onAdjustThreshold = onAdjustThreshold,
+                onNavigateToClothes = onNavigateToClothes,
+            )
+        }
         // Page header — same visual treatment as [InsightCard] on pages 0 / 1:
         // a 20.dp-padded Card with the chevron in a 28.dp slot on the left,
         // a "Next 7 days" label in the centered position the per-period

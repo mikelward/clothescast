@@ -118,7 +118,7 @@ What is NOT overridden, by design:
     <string name="today_refresh_toast_daily">Обновявам твоя дневен ClothesCast — ще се появи скоро.</string>
     <string name="today_refresh_toast_nightly">Обновявам твоя нощен ClothesCast — ще се появи скоро.</string>
     <string name="today_empty_title">Все още няма ClothesCast</string>
-    <string name="today_empty_subtitle">Сутрешният ти ClothesCast ще се появи тук, след като бъде генериран. Задай местоположението си в Настройки, след което докосни Вземи сега.</string>
+    <string name="today_empty_subtitle">Сутрешният ти ClothesCast ще се появи тук, след като бъде генериран.</string>
     <string name="today_fetch_now">Вземи сега</string>
     <string name="today_generated_at">Генерирано в %1$s</string>
     <string name="today_location_unknown">Твоето местоположение</string>

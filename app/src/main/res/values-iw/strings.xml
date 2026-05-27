@@ -110,7 +110,7 @@ standard in Israeli digital communication.
     <string name="today_refresh_toast_daily">מרענן את ClothesCast היומי שלך — יופיע בקרוב.</string>
     <string name="today_refresh_toast_nightly">מרענן את ClothesCast הלילי שלך — יופיע בקרוב.</string>
     <string name="today_empty_title">אין ClothesCast עדיין</string>
-    <string name="today_empty_subtitle">ClothesCast הבוקר שלך יופיע כאן לאחר שייווצר. הגדר/י את מיקומך בהגדרות, ואז הקש/י על טען עכשיו.</string>
+    <string name="today_empty_subtitle">ClothesCast הבוקר שלך יופיע כאן לאחר שייווצר.</string>
     <string name="today_fetch_now">טען עכשיו</string>
     <string name="today_generated_at">נוצר ב-%1$s</string>
     <string name="today_location_unknown">המיקום שלך</string>

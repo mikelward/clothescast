@@ -165,6 +165,15 @@ fun ClothesCastNavHost(
                 onPairFromPhone = { nav.navigate(PairingRoute) },
                 onContinue = { nav.navigate(ScheduleDest(fromOnboarding = true)) },
                 onSkip = {
+                    // First-run auto-fetch so the user lands on a populated
+                    // Today screen instead of the empty state and immediately
+                    // sees what the app produces. Silent so the screen they're
+                    // already looking at fills in without a duplicate
+                    // notification chime or TTS playback on top. If location
+                    // isn't resolvable the worker fails silently and the
+                    // location prompt at the top of the banner stack takes
+                    // over — the user has the next step in either case.
+                    FetchAndNotifyWorker.enqueueSilentRefresh(app)
                     nav.navigate(TodayRoute) {
                         popUpTo(nav.graph.id) { inclusive = true }
                     }
@@ -192,7 +201,16 @@ fun ClothesCastNavHost(
 
 private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastApplication) {
     // Finishing onboarding lands the user on Today as a fresh root.
+    // The silent fetch enqueued here populates the cache so the first
+    // landing on Today shows the user a real insight rather than the
+    // empty-state placeholder — they immediately see what the app
+    // produces. Silent (no notification / TTS) because they're already
+    // looking at the screen the fetch updates; the next scheduled run
+    // is the one that audibly notifies. Worker fails silently with no
+    // location resolved, in which case the location prompt at the top
+    // of the Today banner stack carries the next step.
     val finishOnboarding: () -> Unit = {
+        FetchAndNotifyWorker.enqueueSilentRefresh(app)
         nav.navigate(TodayRoute) {
             popUpTo(nav.graph.id) { inclusive = true }
         }

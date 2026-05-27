@@ -350,7 +350,7 @@ the displayed label localizes.
     <string name="today_refresh_toast_daily">毎日の ClothesCast を更新中です — もうすぐ表示されます。</string>
     <string name="today_refresh_toast_nightly">夜間の ClothesCast を更新中です — もうすぐ表示されます。</string>
     <string name="today_empty_title">まだ ClothesCast がありません</string>
-    <string name="today_empty_subtitle">朝の ClothesCast が生成されるとここに表示されます。設定で位置を指定してから「今すぐ取得」をタップしてください。</string>
+    <string name="today_empty_subtitle">朝の ClothesCast が生成されるとここに表示されます。</string>
     <string name="today_fetch_now">今すぐ取得</string>
     <string name="today_generated_at">生成時刻：%1$s</string>
 

@@ -357,7 +357,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_refresh_toast_daily">Dein täglicher ClothesCast wird aktualisiert — er erscheint gleich.</string>
     <string name="today_refresh_toast_nightly">Dein nächtlicher ClothesCast wird aktualisiert — er erscheint gleich.</string>
     <string name="today_empty_title">Noch kein ClothesCast</string>
-    <string name="today_empty_subtitle">Dein morgendlicher ClothesCast erscheint hier, sobald er erstellt wurde. Leg deinen Standort in den Einstellungen fest und tipp dann auf Jetzt abrufen.</string>
+    <string name="today_empty_subtitle">Dein morgendlicher ClothesCast erscheint hier, sobald er erstellt wurde.</string>
     <string name="today_fetch_now">Jetzt abrufen</string>
     <string name="today_generated_at">Erstellt um %1$s</string>
 

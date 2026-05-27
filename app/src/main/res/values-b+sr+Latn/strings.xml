@@ -437,7 +437,7 @@ default English (matching values-pl / values-uk).
     <string name="today_refresh_toast_daily">Osvežavam tvoj dnevni ClothesCast — pojaviće se uskoro.</string>
     <string name="today_refresh_toast_nightly">Osvežavam tvoj noćni ClothesCast — pojaviće se uskoro.</string>
     <string name="today_empty_title">Još nema ClothesCasta</string>
-    <string name="today_empty_subtitle">Tvoj jutarnji ClothesCast pojaviće se ovde čim bude generisan. Podesi svoju lokaciju u podešavanjima, a zatim dodirni Preuzmi odmah.</string>
+    <string name="today_empty_subtitle">Tvoj jutarnji ClothesCast pojaviće se ovde čim bude generisan.</string>
     <string name="today_fetch_now">Preuzmi odmah</string>
     <string name="today_generated_at">Generisano u %1$s</string>
     <string name="today_location_unknown">Tvoja lokacija</string>

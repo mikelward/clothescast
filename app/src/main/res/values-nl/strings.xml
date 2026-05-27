@@ -316,7 +316,7 @@ the displayed label localizes.
     <string name="today_refresh_toast_daily">Je dagelijkse ClothesCast wordt vernieuwd — hij verschijnt zo meteen.</string>
     <string name="today_refresh_toast_nightly">Je avondlijkse ClothesCast wordt vernieuwd — hij verschijnt zo meteen.</string>
     <string name="today_empty_title">Nog geen ClothesCast</string>
-    <string name="today_empty_subtitle">Je ochtendlijkse ClothesCast verschijnt hier zodra hij is aangemaakt. Stel je locatie in via de instellingen en tik dan op Nu ophalen.</string>
+    <string name="today_empty_subtitle">Je ochtendlijkse ClothesCast verschijnt hier zodra hij is aangemaakt.</string>
     <string name="today_fetch_now">Nu ophalen</string>
     <string name="today_generated_at">Aangemaakt om %1$s</string>
 

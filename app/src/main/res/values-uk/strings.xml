@@ -381,7 +381,7 @@ only the displayed label localizes.
     <string name="today_refresh_toast_daily">Оновлення вашого щоденного ClothesCast — з\'явиться невдовзі.</string>
     <string name="today_refresh_toast_nightly">Оновлення вашого вечірнього ClothesCast — з\'явиться невдовзі.</string>
     <string name="today_empty_title">ClothesCast ще немає</string>
-    <string name="today_empty_subtitle">Ваш ранковий ClothesCast з\'явиться тут, щойно буде згенеровано. Задайте місцезнаходження в налаштуваннях, потім натисніть «Отримати зараз».</string>
+    <string name="today_empty_subtitle">Ваш ранковий ClothesCast з\'явиться тут, щойно буде згенеровано.</string>
     <string name="today_fetch_now">Отримати зараз</string>
     <string name="today_generated_at">Згенеровано о %1$s</string>
     <string name="today_location_unknown">Ваше місцезнаходження</string>

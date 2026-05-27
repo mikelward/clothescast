@@ -560,10 +560,16 @@ private fun BannerStack(
     onSetUpLocation: () -> Unit,
 ) {
     val bannerModifier = Modifier.fillMaxWidth()
-    // UpdateAvailableBanner is first on purpose: a stale build is the
-    // upstream cause of many bug reports, so giving the user the chance
-    // to update before they notice anything else is the highest-leverage
-    // placement.
+    // LocationActionRequiredBanner is first on purpose: without a resolvable
+    // location nothing else on the screen is actionable — no insight will
+    // generate, no notification will fire — so the prompt to fix it
+    // outranks every other banner, including the update / crash disclosures.
+    if (locationActionRequired) {
+        LocationActionRequiredBanner(
+            onSetUpLocation = onSetUpLocation,
+            modifier = bannerModifier,
+        )
+    }
     UpdateAvailableBanner(modifier = bannerModifier)
     LocalBuildBanner(modifier = bannerModifier)
     LastCrashBanner(modifier = bannerModifier)
@@ -597,12 +603,6 @@ private fun BannerStack(
         onDismiss = onDismissCelebrationCard,
         modifier = bannerModifier,
     )
-    if (locationActionRequired) {
-        LocationActionRequiredBanner(
-            onSetUpLocation = onSetUpLocation,
-            modifier = bannerModifier,
-        )
-    }
     WorkStatusBanner(status = workStatusToShow, modifier = bannerModifier)
     HolidayBanner(
         theme = state.activeHoliday,

@@ -17,7 +17,7 @@
     <string name="today_refresh_toast_daily">Refreshing your daily ClothesCast — it\'ll appear shortly.</string>
     <string name="today_refresh_toast_nightly">Refreshing your nightly ClothesCast — it\'ll appear shortly.</string>
     <string name="today_empty_title">No ClothesCast yet</string>
-    <string name="today_empty_subtitle">Your morning ClothesCast will appear here once it has been generated. Set your location in Settings, then tap Fetch now.</string>
+    <string name="today_empty_subtitle">Your morning ClothesCast will appear here once it has been generated.</string>
     <string name="today_fetch_now">Fetch now</string>
     <string name="today_generated_at">Generated at %1$s</string>
     <!-- Link in the insight card's bottom-right corner that opens Format settings. -->

@@ -397,7 +397,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_refresh_toast_daily">Ανανέωση του καθημερινού σου ClothesCast — θα εμφανιστεί σύντομα.</string>
     <string name="today_refresh_toast_nightly">Ανανέωση του νυχτερινού σου ClothesCast — θα εμφανιστεί σύντομα.</string>
     <string name="today_empty_title">Δεν υπάρχει ακόμη ClothesCast</string>
-    <string name="today_empty_subtitle">Ο πρωινός σου ClothesCast θα εμφανιστεί εδώ μόλις δημιουργηθεί. Όρισε την τοποθεσία σου στις Ρυθμίσεις και μετά πάτησε Ανάκτηση τώρα.</string>
+    <string name="today_empty_subtitle">Ο πρωινός σου ClothesCast θα εμφανιστεί εδώ μόλις δημιουργηθεί.</string>
     <string name="today_fetch_now">Ανάκτηση τώρα</string>
     <string name="today_generated_at">Δημιουργήθηκε στις %1$s</string>
 

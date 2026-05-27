@@ -101,7 +101,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_refresh_toast_daily">Inasasisha ClothesCast yako ya kila siku — itaonekana hivi karibuni.</string>
     <string name="today_refresh_toast_nightly">Inasasisha ClothesCast yako ya usiku — itaonekana hivi karibuni.</string>
     <string name="today_empty_title">Hakuna ClothesCast bado</string>
-    <string name="today_empty_subtitle">ClothesCast yako ya asubuhi itaonekana hapa baada ya kuundwa. Weka mahali pako katika Mipangilio, kisha gonga Pakua sasa.</string>
+    <string name="today_empty_subtitle">ClothesCast yako ya asubuhi itaonekana hapa baada ya kuundwa.</string>
     <string name="today_fetch_now">Pakua sasa</string>
     <string name="today_generated_at">Imetayarishwa saa %1$s</string>
     <string name="today_location_unknown">Mahali pako</string>

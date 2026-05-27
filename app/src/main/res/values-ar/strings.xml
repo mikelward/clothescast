@@ -110,7 +110,7 @@ they work correctly in both the single-band and range templates.
     <string name="today_refresh_toast_daily">جارٍ تحديث ClothesCast اليومي — سيظهر قريبًا.</string>
     <string name="today_refresh_toast_nightly">جارٍ تحديث ClothesCast الليلي — سيظهر قريبًا.</string>
     <string name="today_empty_title">لا يوجد ClothesCast بعد</string>
-    <string name="today_empty_subtitle">سيظهر ClothesCast الصباحي هنا بعد إنشائه. حدد موقعك في الإعدادات، ثم اضغط على جلب الآن.</string>
+    <string name="today_empty_subtitle">سيظهر ClothesCast الصباحي هنا بعد إنشائه.</string>
     <string name="today_fetch_now">جلب الآن</string>
     <string name="today_generated_at">تم الإنشاء في %1$s</string>
     <string name="today_location_unknown">موقعك</string>

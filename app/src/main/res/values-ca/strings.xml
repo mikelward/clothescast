@@ -17,7 +17,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_refresh_toast_daily">Actualitzant el teu ClothesCast diari — apareixerà en breu.</string>
     <string name="today_refresh_toast_nightly">Actualitzant el teu ClothesCast nocturn — apareixerà en breu.</string>
     <string name="today_empty_title">Encara no hi ha ClothesCast</string>
-    <string name="today_empty_subtitle">El teu ClothesCast matinal apareixerà aquí un cop generat. Estableix la teva ubicació a la Configuració i toca Obtén ara.</string>
+    <string name="today_empty_subtitle">El teu ClothesCast matinal apareixerà aquí un cop generat.</string>
     <string name="today_fetch_now">Obtén ara</string>
     <string name="today_generated_at">Generat a les %1$s</string>
     <string name="today_location_unknown">La teva ubicació</string>

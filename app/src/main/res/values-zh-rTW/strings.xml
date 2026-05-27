@@ -333,7 +333,7 @@ label localises.
     <string name="today_refresh_toast_daily">正在重新整理你的每日 ClothesCast — 稍後即可看到。</string>
     <string name="today_refresh_toast_nightly">正在重新整理你的夜間 ClothesCast — 稍後即可看到。</string>
     <string name="today_empty_title">還沒有 ClothesCast</string>
-    <string name="today_empty_subtitle">你的早晨 ClothesCast 產生後會顯示在這裡。請先在設定裡指定你的位置，然後點一下立即取得。</string>
+    <string name="today_empty_subtitle">你的早晨 ClothesCast 產生後會顯示在這裡。</string>
     <string name="today_fetch_now">立即取得</string>
     <string name="today_generated_at">產生時間：%1$s</string>
 

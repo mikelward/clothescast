@@ -492,6 +492,8 @@ private fun TodayContent(
                             pagerScope.launch { pagerState.animateScrollToPage(1) }
                         },
                         onToggleModelSpread = onToggleModelSpread,
+                        onRevealModelSpread = onRevealModelSpread,
+                        onHideModelSpread = onHideModelSpread,
                         forecastZone = state.thisPeriodInsight.forecastZone,
                         region = state.region,
                         deltaThresholdC = state.deltaThresholdC,

@@ -173,7 +173,7 @@ fun ClothesCastNavHost(
                     // isn't resolvable the worker fails silently and the
                     // location prompt at the top of the banner stack takes
                     // over — the user has the next step in either case.
-                    FetchAndNotifyWorker.enqueueSilentRefresh(app)
+                    FetchAndNotifyWorker.enqueueOnboardingRefresh(app)
                     nav.navigate(TodayRoute) {
                         popUpTo(nav.graph.id) { inclusive = true }
                     }
@@ -210,7 +210,7 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
     // location resolved, in which case the location prompt at the top
     // of the Today banner stack carries the next step.
     val finishOnboarding: () -> Unit = {
-        FetchAndNotifyWorker.enqueueSilentRefresh(app)
+        FetchAndNotifyWorker.enqueueOnboardingRefresh(app)
         nav.navigate(TodayRoute) {
             popUpTo(nav.graph.id) { inclusive = true }
         }

@@ -1527,6 +1527,43 @@ class FetchAndNotifyWorker(
         }
 
         /**
+         * First-run fetch fired when the user finishes (or skips) onboarding.
+         * Mechanically identical to [enqueueSilentRefresh] — `KEY_SILENT_REFRESH=true`
+         * so no notification / TTS / MQTT / cast fan-out while the user is
+         * looking at the screen the fetch updates — but enqueued under
+         * [UNIQUE_WORK_NAME] instead of [UNIQUE_WORK_NAME_SILENT] so the
+         * Today screen's `workStatusFlow` observes it: the empty state then
+         * lands with a spinner banner and the Fetch-now button disabled,
+         * stopping a tap-happy user from kicking a second concurrent fetch
+         * for the same onboarding completion. KEEP so a re-trigger (config
+         * change, returning from a permission dialog before Today drew) is a
+         * no-op rather than a replace.
+         */
+        fun enqueueOnboardingRefresh(context: Context) {
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
+            val request = OneTimeWorkRequestBuilder<FetchAndNotifyWorker>()
+                .setConstraints(constraints)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
+                .setInputData(
+                    workDataOf(
+                        KEY_SILENT_REFRESH to true,
+                        KEY_REQUESTED_EPOCH_DAY to LocalDate.now().toEpochDay(),
+                    )
+                )
+                .build()
+
+            WorkManager.getInstance(context)
+                .enqueueUniqueWork(
+                    UNIQUE_WORK_NAME,
+                    ExistingWorkPolicy.KEEP,
+                    request,
+                )
+        }
+
+        /**
          * App-open freshness predicate: true when [snapshot] is non-null and
          * its [ForecastSnapshot.generatedAt] is at least [SILENT_REFRESH_MIN_AGE]
          * before [now]. Null snapshot returns false — the app hasn't

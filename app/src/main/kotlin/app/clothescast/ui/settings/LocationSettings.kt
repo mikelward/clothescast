@@ -19,6 +19,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -45,6 +46,7 @@ import app.clothescast.core.domain.model.Location
 import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
 import app.clothescast.ui.EdgeFadeOverlay
+import app.clothescast.ui.today.openInMaps
 import kotlinx.coroutines.launch
 
 @Composable
@@ -187,6 +189,53 @@ private fun LocationCard(
             text = currentLocationSummary(current, useDeviceLocation, locationDetecting),
             style = MaterialTheme.typography.bodyLarge,
         )
+
+        // Reverse-geocoded address with the leading "house number / street"
+        // component dropped, so we surface neighbourhood-level detail
+        // (suburb + city + postal code + country) without naming a specific
+        // street. Only populated by the device-location path; manual /
+        // forward-geocoded picks leave this null and the line is omitted.
+        current?.addressDetail?.let { detail ->
+            Text(
+                text = detail,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        // Map button — opens the user's chosen maps app at the 2dp-coarsened
+        // coords the rest of the app already operates on (Location.coarsened()
+        // rounds every entry-point write to ~1 km). The user-facing label
+        // shows those same coords so it's obvious what the button will
+        // pinpoint. Hidden when no location has resolved yet — there'd be
+        // nothing to pin.
+        if (current != null) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(
+                        R.string.settings_location_coords,
+                        current.latitude,
+                        current.longitude,
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                FilledTonalButton(
+                    onClick = {
+                        openInMaps(
+                            context = context,
+                            latitude = current.latitude,
+                            longitude = current.longitude,
+                            label = current.displayName,
+                        )
+                    },
+                ) { Text(stringResource(R.string.settings_location_open_in_maps)) }
+            }
+        }
 
         // Manual override is the escape hatch for "the system returned the wrong
         // location" — demoted to a TextButton so it doesn't compete with the

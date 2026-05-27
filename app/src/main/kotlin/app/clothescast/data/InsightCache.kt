@@ -383,12 +383,14 @@ class InsightCache(
         val longitude: Double,
         val displayName: String? = null,
         val countryCode: String? = null,
+        val addressDetail: String? = null,
     ) {
         fun toDomain(): Location = Location(
             latitude = latitude,
             longitude = longitude,
             displayName = displayName,
             countryCode = countryCode,
+            addressDetail = addressDetail,
         )
     }
 
@@ -427,7 +429,7 @@ class InsightCache(
         bundle = bundle.toDto(),
         events = events.map { it.toDto() },
         location = location?.let {
-            LocationDto(it.latitude, it.longitude, it.displayName, it.countryCode)
+            LocationDto(it.latitude, it.longitude, it.displayName, it.countryCode, it.addressDetail)
         },
         period = period.name,
         generatedAtEpochMillis = generatedAt.toEpochMilli(),

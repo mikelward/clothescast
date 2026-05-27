@@ -458,6 +458,7 @@ private fun TodayContent(
                         region = state.region,
                         deltaThresholdC = state.deltaThresholdC,
                         location = state.thisPeriodInsight.location,
+                        onNavigateToLocation = onSetUpLocation,
                     )
                     return@HorizontalPager
                 }
@@ -712,6 +713,7 @@ private fun TodayPage(
                 onChevronRightTap = onChevronRightTap,
                 onLongPressDate = onLongPressDate,
                 onNavigateToFormat = onNavigateToFormat,
+                onNavigateToLocation = onSetUpLocation,
             )
             insight.confidence?.let {
                 // Wrap the per-model toggle so a tap also scrolls the chip to the
@@ -1744,6 +1746,13 @@ internal fun InsightCard(
      * call site unchanged.
      */
     onNavigateToFormat: (() -> Unit)? = null,
+    /**
+     * Opens the Location settings page. Wired to the location label in the
+     * card's header — tapping the resolved city navigates the user there so
+     * they can verify the address detail and open the coords in maps. Null
+     * keeps the label non-tappable (used by previews / tests).
+     */
+    onNavigateToLocation: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory) {
@@ -1823,13 +1832,14 @@ internal fun InsightCard(
                             text = locationLabel,
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.clickable {
-                                openInMaps(
-                                    context = context,
-                                    latitude = location.latitude,
-                                    longitude = location.longitude,
-                                    label = locationLabel,
-                                )
+                            // Tapping the city name opens the Location settings
+                            // page — the address detail + Map button live there.
+                            // Falls back to inert text when no nav callback is
+                            // wired (previews / tests).
+                            modifier = if (onNavigateToLocation != null) {
+                                Modifier.clickable { onNavigateToLocation() }
+                            } else {
+                                Modifier
                             },
                         )
                     }

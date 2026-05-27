@@ -433,6 +433,10 @@ internal fun SettingsLocationPreview() {
                 latitude = 51.5074,
                 longitude = -0.1278,
                 displayName = "London",
+                // Mirrors what ReverseGeocoder.dropFirstAddressComponent
+                // would produce for a central London reverse geocode —
+                // exercises the address-detail line on the page.
+                addressDetail = "Westminster, London SW1A 2AA, UK",
             ),
             useDeviceLocation = true,
             padding = PaddingValues(0.dp),

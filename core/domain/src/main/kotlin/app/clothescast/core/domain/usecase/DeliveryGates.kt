@@ -108,7 +108,7 @@ fun computeDeliveryGates(
         ForecastPeriod.TODAY -> prefs.castMorning
         ForecastPeriod.TONIGHT -> prefs.castTonight
     }
-    val willCast = prefs.castRouteId != null && castPeriodEnabled
+    val willCast = prefs.castEnabled && prefs.castRouteId != null && castPeriodEnabled
     val castWillHaveAudio = willCast && geminiAvailable
 
     // Empty-evening only applies to TONIGHT. TODAY is never skipped

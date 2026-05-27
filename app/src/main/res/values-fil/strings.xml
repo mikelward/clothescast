@@ -887,7 +887,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_cast_change">Baguhin</string>
     <string name="settings_smart_home_cast_choose">Pumili ng smart display</string>
     <string name="settings_smart_home_cast_clear">I-clear</string>
-    <string name="settings_smart_home_cast_description">Magpadala ng mga nakatakdang ClothesCast sa isang smart display sa iyong home network.</string>
     <string name="settings_smart_home_cast_device_label">Smart display</string>
     <string name="settings_smart_home_cast_device_none">Walang napiling display</string>
     <string name="settings_smart_home_cast_last_error_title">Nabigo ang huling cast</string>
@@ -900,9 +899,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_cast_picker_empty">Wala pang nahanap na smart display. Tiyaking naka-on ang iyong display at nasa parehong Wi-Fi.</string>
     <string name="settings_smart_home_cast_picker_scanning">Ina-scan ang iyong network para sa mga smart display…</string>
     <string name="settings_smart_home_cast_picker_title">Pumili ng smart display</string>
-    <string name="settings_smart_home_cast_privacy_note">Ang audio at larawan ay pinapaabot mula sa iyong telepono sa pamamagitan ng iyong lokal na network. Hindi ito lumalabas sa iyong tahanan.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Kung ang smart display ang nagbabasa ng hula nang malakas, nananatiling tahimik ang telepono. Nipo-post pa rin ang notipikasyon ng telepono.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Laktawan ang pagsasalita ng telepono kung matagumpay ang cast</string>
     <string name="settings_smart_home_cast_title">Cast</string>
     <string name="settings_smart_home_cast_tonight_description">Ipadala ang pang-gabing ClothesCast sa smart display kapag nagpatugtog ang gabi na alarm.</string>
     <string name="settings_smart_home_cast_tonight_title">Pang-gabing ClothesCast</string>
@@ -918,7 +914,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_discover_use">Gamitin</string>
 
     <!-- MQTT settings -->
-    <string name="settings_smart_home_mqtt_description">Pagkatapos ng bawat nakatakdang refresh, nino-publish ng ClothesCast ang hula ngayon at ngayong gabi na na-render sa iyong MQTT broker bilang mga retained na mensahe, para mabasa ng Home Assistant (o anumang MQTT consumer) ang pinakabagong halaga at maipagsalita ito sa sensor trigger.</string>
     <string name="settings_smart_home_mqtt_host">Host ng broker</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_label">I-publish ang hula sa MQTT</string>
@@ -931,7 +926,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_mqtt_password_replace">Palitan ang password</string>
     <string name="settings_smart_home_mqtt_password_status_set">May naka-configure na password.</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Kapag naka-on, ang na-render na pangungusap ng hula ay lumalabas sa iyong device sa pamamagitan ng iyong network papunta sa broker na iyong ini-configure. Tingnan ang patakaran sa privacy.</string>
     <string name="settings_smart_home_mqtt_publish_now">I-publish ngayon</string>
     <string name="settings_smart_home_mqtt_publishing">Nagpu-publish…</string>
     <string name="settings_smart_home_mqtt_save">I-save</string>
@@ -939,7 +933,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_smart_home_mqtt_title">Home Assistant bridge (MQTT)</string>
     <string name="settings_smart_home_mqtt_tls">Gumamit ng TLS</string>
     <string name="settings_smart_home_mqtt_topic">Prefix ng topic</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Nini-publish ngayon sa {prefix}/today/text; ngayong gabi sa {prefix}/tonight/text. Ang larawan at audio ay nasa {prefix}/&lt;period&gt;/image at /audio. Ang bawat publish ay nimo-mirror din sa {prefix}/now/&lt;text|image|audio&gt; para makapag-subscribe ang consumer sa isang "pinakabago" na topic nang hindi kailangang pumili ng ngayon o ngayong gabi.</string>
     <string name="settings_smart_home_mqtt_username">Username (opsyonal)</string>
     <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
 

@@ -965,8 +965,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_holidays_calendar_section_placeholder_off">Ενεργοποίησε τον διακόπτη παραπάνω για προσαρμογή της σημερινής στολής βάσει εκδηλώσεων από τα συγχρονισμένα ημερολόγιά σου.</string>
     <string name="settings_holidays_calendar_section_placeholder_on">Εντοπισμένες εκδηλώσεις από τα συγχρονισμένα ημερολόγιά σου θα εμφανιστούν εδώ σε μελλοντική ενημέρωση.</string>
     <string name="settings_smart_home_cast_title">Μεταδίδω</string>
-    <string name="settings_smart_home_cast_description">Στέλνε προγραμματισμένα ClothesCast σε έξυπνη οθόνη στο οικιακό δίκτυο.</string>
-    <string name="settings_smart_home_cast_privacy_note">Ο ήχος και η εικόνα εξυπηρετούνται από το τηλέφωνό σου μέσω του τοπικού δικτύου. Δεν αφήνουν το σπίτι σου.</string>
     <string name="settings_smart_home_cast_device_label">Έξυπνη οθόνη</string>
     <string name="settings_smart_home_cast_device_none">Δεν επιλέχθηκε οθόνη</string>
     <string name="settings_smart_home_cast_choose">Επιλογή έξυπνης οθόνης</string>
@@ -985,8 +983,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_smart_home_cast_morning_description">Στέλνε το ημερήσιο ClothesCast στην έξυπνη οθόνη όταν ενεργοποιείται το πρωινό ξυπνητήρι.</string>
     <string name="settings_smart_home_cast_tonight_title">Νυχτερινό ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Στέλνε το νυχτερινό ClothesCast στην έξυπνη οθόνη όταν ενεργοποιείται το βραδινό ξυπνητήρι.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Παράλειψη ομιλίας τηλεφώνου αν η μετάδοση πέτυχε</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Αν η έξυπνη οθόνη διαβάζει την πρόγνωση, το τηλέφωνο παραμένει σιωπηλό. Η ειδοποίηση τηλεφώνου συνεχίζει να αποστέλλεται.</string>
     <string name="settings_smart_home_discover_scan">Εύρεση broker</string>
     <string name="settings_smart_home_discover_scanning">Αναζήτηση…</string>
     <string name="settings_smart_home_discover_stop">Διακοπή αναζήτησης</string>
@@ -997,8 +993,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_smart_home_discover_label_mqtt">MQTT broker</string>
     <string name="settings_smart_home_mqtt_title">Γέφυρα Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Δημοσίευση πρόγνωσης στο MQTT</string>
-    <string name="settings_smart_home_mqtt_description">Μετά από κάθε προγραμματισμένη ανανέωση, το ClothesCast δημοσιεύει την πρόγνωση σήμερα και απόψε στον MQTT broker σου ως αποθηκευμένα μηνύματα, ώστε το Home Assistant (ή οποιοσδήποτε καταναλωτής MQTT) να μπορεί να διαβάσει την τελευταία τιμή και να την εκφωνήσει σε ενεργοποιητή αισθητήρα.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Όταν είναι ενεργό, η αποδιδόμενη πρόγνωση φεύγει από τη συσκευή σου μέσω δικτύου στον ρυθμισμένο broker. Δες την πολιτική απορρήτου.</string>
     <string name="settings_smart_home_mqtt_host">Host broker</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Θύρα</string>
@@ -1010,7 +1004,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_smart_home_mqtt_password_replace">Αντικατάσταση κωδικού</string>
     <string name="settings_smart_home_mqtt_password_clear">Εκκαθάριση αποθηκευμένου κωδικού</string>
     <string name="settings_smart_home_mqtt_topic">Πρόθεμα θέματος</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Σήμερα δημοσιεύει σε {prefix}/today/text; απόψε σε {prefix}/tonight/text. Εικόνα και ήχος σε {prefix}/&lt;period&gt;/image και /audio. Κάθε δημοσίευση αντικατοπτρίζεται και σε {prefix}/now/&lt;text|image|audio&gt; ώστε ο καταναλωτής να μπορεί να εγγραφεί σε ένα θέμα \'τελευταίο\' χωρίς να επιλέγει μεταξύ σήμερα και απόψε.</string>
     <string name="settings_smart_home_mqtt_save">Αποθήκευση</string>
     <string name="settings_smart_home_mqtt_publish_now">Δημοσίευση τώρα</string>
     <string name="settings_smart_home_mqtt_publishing">Δημοσίευση…</string>

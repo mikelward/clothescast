@@ -822,8 +822,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
 
     <!-- Smart Home — Cast -->
     <string name="settings_smart_home_cast_title">Cast</string>
-    <string name="settings_smart_home_cast_description">Send planlagte ClothesCasts til en smart skjerm på hjemmenettverket ditt.</string>
-    <string name="settings_smart_home_cast_privacy_note">Lyd og bilde leveres fra telefonen din via det lokale nettverket. De forlater ikke hjemmet ditt.</string>
     <string name="settings_smart_home_cast_device_label">Smart skjerm</string>
     <string name="settings_smart_home_cast_device_none">Ingen skjerm valgt</string>
     <string name="settings_smart_home_cast_choose">Velg smart skjerm</string>
@@ -842,8 +840,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_smart_home_cast_morning_description">Send den daglige ClothesCast til den smarte skjermen når morgenalarmen utløses.</string>
     <string name="settings_smart_home_cast_tonight_title">Nattlig ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Send den nattlige ClothesCast til den smarte skjermen når kveldsalarmen utløses.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Hopp over telefonlyd hvis casting lyktes</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Hvis den smarte skjermen leser opp varselet, forblir telefonen stille. Telefonvarslet sendes fortsatt.</string>
 
     <!-- Smart Home — Discover -->
     <string name="settings_smart_home_discover_scan">Finn broker</string>
@@ -858,8 +854,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <!-- Smart Home — MQTT -->
     <string name="settings_smart_home_mqtt_title">Home Assistant-bro (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publiser varsel til MQTT</string>
-    <string name="settings_smart_home_mqtt_description">Etter hver planlagte oppdatering publiserer ClothesCast dagens og kveldets varsel som beholdte meldinger til MQTT-brokeren din, slik at Home Assistant (eller en MQTT-konsument) kan lese siste verdi og lese den opp ved en sensorutløser.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Når aktivert forlater det gjengitte varselet enheten din via nettverket ditt til den konfigurerte brokeren. Se personvernreglene.</string>
     <string name="settings_smart_home_mqtt_host">Brokervert</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
@@ -871,7 +865,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_smart_home_mqtt_password_replace">Erstatt passord</string>
     <string name="settings_smart_home_mqtt_password_clear">Fjern lagret passord</string>
     <string name="settings_smart_home_mqtt_topic">Emneprefix</string>
-    <string name="settings_smart_home_mqtt_topic_hint">I dag publiseres til {prefix}/today/text; i kveld til {prefix}/tonight/text. Bilde og lyd til {prefix}/&lt;period&gt;/image og /audio. Hver publisering speiles til {prefix}/now/&lt;text|image|audio&gt; slik at en konsument kan abonnere på ett \'siste\' emne uten å velge mellom i dag og i kveld.</string>
     <string name="settings_smart_home_mqtt_save">Lagre</string>
     <string name="settings_smart_home_mqtt_publish_now">Publiser nå</string>
     <string name="settings_smart_home_mqtt_publishing">Publiserer…</string>

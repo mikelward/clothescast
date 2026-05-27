@@ -729,8 +729,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_root_smart_home">Viedmāja</string>
     <string name="settings_root_smart_home_subtitle">Viedie displeji un mājas automatizācija</string>
     <string name="settings_smart_home_cast_title">Raidīšana</string>
-    <string name="settings_smart_home_cast_description">Sūti ieplānotos ClothesCast savā mājas tīkla viedajam displejam.</string>
-    <string name="settings_smart_home_cast_privacy_note">Audio un attēls tiek sūtīts no tava tālruņa caur lokālo tīklu. Tie neatstāj tavu māju.</string>
     <string name="settings_smart_home_cast_device_label">Viedais displejs</string>
     <string name="settings_smart_home_cast_device_none">Nav izvēlēts displejs</string>
     <string name="settings_smart_home_cast_choose">Izvēlēties viedu displeju</string>
@@ -749,15 +747,11 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_smart_home_cast_morning_description">Sūtīt ikdienas ClothesCast viedajam displejam, kad sākas rīta modinātājs.</string>
     <string name="settings_smart_home_cast_tonight_title">Vakara ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Sūtīt vakara ClothesCast viedajam displejam, kad sākas vakara modinātājs.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Izslēgt tālruņa skaņu, ja raidīšana veiksmīga</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Ja viedais displejs nolasa prognoze skaļi, tālrunis paliek klusums. Tālruņa paziņojums joprojām tiek nosūtīts.</string>
     <string name="cast_error_no_route_picked">Vispirms izvēlies viedu displeju.</string>
     <string name="cast_error_no_insight_yet">Prognoze vēl nav pieejama. Uzgaidi līdz nākamajam ieplānotajam palaišanas reizei vai nospied Atjaunināt Šodienas ekrānā.</string>
     <string name="cast_error_unknown">Raidīšana neizdevās.</string>
     <string name="settings_smart_home_mqtt_title">Home Assistant tilts (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publicēt prognoze MQTT</string>
-    <string name="settings_smart_home_mqtt_description">Pēc katras ieplānotās atjaunināšanas ClothesCast publicē šodienas un vakara prognoze jūsu MQTT brokera serverī kā saglabātus ziņojumus, lai Home Assistant (vai jebkurš MQTT klients) varētu nolasīt pēdējo vērtību un to pateikt sensora aktivizēšanās laikā.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Ieslēdzot, prognoze atstāj ierīci caur tavu tīklu uz konfigurēto brokera serveri. Skatīt konfidencialitātes politiku.</string>
     <string name="settings_smart_home_mqtt_host">Brokera serveris</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Ports</string>
@@ -769,7 +763,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_smart_home_mqtt_password_replace">Aizstāt paroli</string>
     <string name="settings_smart_home_mqtt_password_clear">Notīrīt saglabāto paroli</string>
     <string name="settings_smart_home_mqtt_topic">Tēmas prefikss</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Šodienas prognoze tiek publicēta uz {prefix}/today/text; vakara — uz {prefix}/tonight/text. Attēls un audio — uz {prefix}/&lt;period&gt;/image un /audio. Katra publikācija tiek arī atspoguļota uz {prefix}/now/&lt;text|image|audio&gt;, lai klients varētu abonēt vienu „jaunāko" tēmu, neizvēloties starp šodien un šovakar.</string>
     <string name="settings_smart_home_mqtt_save">Saglabāt</string>
     <string name="settings_smart_home_mqtt_publish_now">Publicēt tagad</string>
     <string name="settings_smart_home_mqtt_publishing">Publicēšana…</string>

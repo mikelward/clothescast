@@ -849,8 +849,6 @@ the displayed label localizes.
     <string name="settings_holidays_calendar_section_placeholder_on">Gedetecteerde evenementen uit je gesynchroniseerde kalenders verschijnen hier in een toekomstige update.</string>
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
     <string name="settings_smart_home_cast_title">Uitzenden</string>
-    <string name="settings_smart_home_cast_description">Stuur geplande ClothesCasts naar een slim scherm op je thuisnetwerk.</string>
-    <string name="settings_smart_home_cast_privacy_note">Audio en afbeelding worden via je lokale netwerk van je telefoon verzonden. Ze verlaten je huis niet.</string>
     <string name="settings_smart_home_cast_device_label">Slim scherm</string>
     <string name="settings_smart_home_cast_device_none">Geen scherm geselecteerd</string>
     <string name="settings_smart_home_cast_choose">Slim scherm kiezen</string>
@@ -869,8 +867,6 @@ the displayed label localizes.
     <string name="settings_smart_home_cast_morning_description">Stuur de dagelijkse ClothesCast naar het slimme scherm wanneer het ochtendwekker afgaat.</string>
     <string name="settings_smart_home_cast_tonight_title">Nachtelijke ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Stuur de nachtelijke ClothesCast naar het slimme scherm wanneer het avondwekker afgaat.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Telefoongeluid overslaan als uitzending gelukt is</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Als het slimme scherm de voorspelling voorleest, blijft de telefoon stil. De melding wordt nog steeds verstuurd.</string>
     <string name="settings_smart_home_discover_scan">Broker zoeken</string>
     <string name="settings_smart_home_discover_scanning">Zoeken…</string>
     <string name="settings_smart_home_discover_stop">Zoeken stoppen</string>
@@ -881,8 +877,6 @@ the displayed label localizes.
     <string name="settings_smart_home_discover_label_mqtt">MQTT-broker</string>
     <string name="settings_smart_home_mqtt_title">Home Assistant-brug (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Voorspelling naar MQTT publiceren</string>
-    <string name="settings_smart_home_mqtt_description">Na elke geplande vernieuwing publiceert ClothesCast de voorspelling van vandaag en vanavond als behouden berichten naar je MQTT-broker, zodat Home Assistant (of elke MQTT-consument) de laatste waarde kan lezen en deze kan voorlezen bij een sensortrigger.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Als dit aan staat, verlaat de gegenereerde voorspelling je apparaat via je netwerk naar de geconfigureerde broker. Zie het privacybeleid.</string>
     <string name="settings_smart_home_mqtt_host">Brokerhost</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Poort</string>
@@ -894,7 +888,6 @@ the displayed label localizes.
     <string name="settings_smart_home_mqtt_password_replace">Wachtwoord vervangen</string>
     <string name="settings_smart_home_mqtt_password_clear">Opgeslagen wachtwoord wissen</string>
     <string name="settings_smart_home_mqtt_topic">Onderwerpprefix</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Vandaag publiceert naar {prefix}/today/text; vanavond naar {prefix}/tonight/text. Afbeelding en audio naar {prefix}/&lt;period&gt;/image en /audio. Elke publicatie wordt gespiegeld naar {prefix}/now/&lt;text|image|audio&gt; zodat een consument zich kan abonneren op één \'laatste\' onderwerp zonder te kiezen tussen vandaag en vanavond.</string>
     <string name="settings_smart_home_mqtt_save">Opslaan</string>
     <string name="settings_smart_home_mqtt_publish_now">Nu publiceren</string>
     <string name="settings_smart_home_mqtt_publishing">Publiceren…</string>

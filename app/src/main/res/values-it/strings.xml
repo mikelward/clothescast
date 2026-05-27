@@ -949,8 +949,6 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Smart Home — Cast. -->
     <string name="settings_smart_home_cast_title">Trasmetti</string>
-    <string name="settings_smart_home_cast_description">Invia i ClothesCast programmati a un display intelligente sulla tua rete domestica.</string>
-    <string name="settings_smart_home_cast_privacy_note">Audio e immagine vengono serviti dal tuo telefono tramite la rete locale. Non lasciano la tua casa.</string>
     <string name="settings_smart_home_cast_device_label">Display intelligente</string>
     <string name="settings_smart_home_cast_device_none">Nessun display selezionato</string>
     <string name="settings_smart_home_cast_choose">Scegli display intelligente</string>
@@ -969,8 +967,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_smart_home_cast_morning_description">Invia il ClothesCast quotidiano al display intelligente quando scatta la sveglia mattutina.</string>
     <string name="settings_smart_home_cast_tonight_title">ClothesCast notturno</string>
     <string name="settings_smart_home_cast_tonight_description">Invia il ClothesCast notturno al display intelligente quando scatta la sveglia serale.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Salta la voce del telefono se la trasmissione è riuscita</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Se il display intelligente legge le previsioni ad alta voce, il telefono rimane in silenzio. La notifica del telefono viene comunque inviata.</string>
 
     <!-- Smart Home — MQTT discovery. -->
     <string name="settings_smart_home_discover_scan">Trova broker</string>
@@ -985,8 +981,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Smart Home — MQTT bridge. -->
     <string name="settings_smart_home_mqtt_title">Ponte Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Pubblica previsioni su MQTT</string>
-    <string name="settings_smart_home_mqtt_description">Dopo ogni aggiornamento programmato, ClothesCast pubblica le previsioni di oggi e stasera sul tuo broker MQTT come messaggi trattenuti, in modo che Home Assistant (o qualsiasi consumatore MQTT) possa leggere il valore più recente e leggerlo ad alta voce su un trigger del sensore.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Quando attivo, la previsione generata lascia il tuo dispositivo attraverso la rete verso il broker configurato. Consulta l\'informativa sulla privacy.</string>
     <string name="settings_smart_home_mqtt_host">Host del broker</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Porta</string>
@@ -998,7 +992,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_smart_home_mqtt_password_replace">Sostituisci password</string>
     <string name="settings_smart_home_mqtt_password_clear">Cancella password salvata</string>
     <string name="settings_smart_home_mqtt_topic">Prefisso topic</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Oggi pubblica su {prefix}/today/text; stasera su {prefix}/tonight/text. Immagine e audio su {prefix}/&lt;period&gt;/image e /audio. Ogni pubblicazione è anche rispecchiata su {prefix}/now/&lt;text|image|audio&gt; così un consumatore può iscriversi a un topic \"ultimo\" senza scegliere tra oggi e stasera.</string>
     <string name="settings_smart_home_mqtt_save">Salva</string>
     <string name="settings_smart_home_mqtt_publish_now">Pubblica ora</string>
     <string name="settings_smart_home_mqtt_publishing">Pubblicazione…</string>

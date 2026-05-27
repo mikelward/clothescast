@@ -898,7 +898,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_smart_home_cast_change">Đổi</string>
     <string name="settings_smart_home_cast_choose">Chọn màn hình thông minh</string>
     <string name="settings_smart_home_cast_clear">Xóa</string>
-    <string name="settings_smart_home_cast_description">Gửi ClothesCast theo lịch đến màn hình thông minh trên mạng nhà bạn.</string>
     <string name="settings_smart_home_cast_device_label">Màn hình thông minh</string>
     <string name="settings_smart_home_cast_device_none">Chưa chọn màn hình</string>
     <string name="settings_smart_home_cast_last_error_title">Lần cast cuối thất bại</string>
@@ -911,9 +910,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_smart_home_cast_picker_empty">Chưa tìm thấy màn hình thông minh nào. Đảm bảo màn hình đang bật và kết nối cùng Wi-Fi.</string>
     <string name="settings_smart_home_cast_picker_scanning">Đang quét mạng để tìm màn hình thông minh…</string>
     <string name="settings_smart_home_cast_picker_title">Chọn màn hình thông minh</string>
-    <string name="settings_smart_home_cast_privacy_note">Âm thanh và hình ảnh được phát từ điện thoại qua mạng nội bộ. Không ra ngoài nhà.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Nếu màn hình thông minh đọc dự báo, điện thoại sẽ im lặng. Thông báo trên điện thoại vẫn được gửi.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Bỏ qua tiếng điện thoại nếu cast thành công</string>
     <string name="settings_smart_home_cast_title">Cast</string>
     <string name="settings_smart_home_cast_tonight_description">Gửi ClothesCast buổi tối đến màn hình thông minh khi chuông báo tối kích hoạt.</string>
     <string name="settings_smart_home_cast_tonight_title">ClothesCast buổi tối</string>
@@ -929,7 +925,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_smart_home_discover_use">Dùng</string>
 
     <!-- Settings — Smart Home / MQTT -->
-    <string name="settings_smart_home_mqtt_description">Sau mỗi lần làm mới theo lịch, ClothesCast đăng dự báo hôm nay và tối nay đã kết xuất lên MQTT broker dưới dạng retained messages, để Home Assistant (hoặc bất kỳ MQTT consumer nào) có thể đọc giá trị mới nhất và đọc to khi cảm biến kích hoạt.</string>
     <string name="settings_smart_home_mqtt_host">Địa chỉ broker</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_label">Đăng dự báo lên MQTT</string>
@@ -942,7 +937,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_smart_home_mqtt_password_replace">Thay mật khẩu</string>
     <string name="settings_smart_home_mqtt_password_status_set">Đã cấu hình mật khẩu.</string>
     <string name="settings_smart_home_mqtt_port">Cổng</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Khi bật, câu dự báo đã kết xuất sẽ rời khỏi thiết bị qua mạng đến broker bạn cấu hình. Xem chính sách quyền riêng tư.</string>
     <string name="settings_smart_home_mqtt_publish_now">Đăng ngay</string>
     <string name="settings_smart_home_mqtt_publishing">Đang đăng…</string>
     <string name="settings_smart_home_mqtt_save">Lưu</string>
@@ -950,7 +944,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_smart_home_mqtt_title">Home Assistant bridge (MQTT)</string>
     <string name="settings_smart_home_mqtt_tls">Dùng TLS</string>
     <string name="settings_smart_home_mqtt_topic">Tiền tố topic</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Hôm nay đăng lên {prefix}/today/text; tối nay lên {prefix}/tonight/text. Hình ảnh và âm thanh ở {prefix}/&lt;period&gt;/image và /audio. Mỗi lần đăng cũng được sao chép sang {prefix}/now/&lt;text|image|audio&gt; để subscriber theo dõi một topic "mới nhất" mà không cần chọn hôm nay hay tối nay.</string>
     <string name="settings_smart_home_mqtt_username">Tên người dùng (tùy chọn)</string>
     <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
 

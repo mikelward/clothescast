@@ -776,8 +776,6 @@ What is NOT overridden, by design:
     <string name="settings_root_smart_home">Išmanusis namai</string>
     <string name="settings_root_smart_home_subtitle">Išmanieji ekranai ir namų automatika</string>
     <string name="settings_smart_home_cast_title">Transliacija</string>
-    <string name="settings_smart_home_cast_description">Siųsk suplanuotus ClothesCast į išmanųjį ekraną savo namų tinkle.</string>
-    <string name="settings_smart_home_cast_privacy_note">Garsas ir vaizdas perduodami iš tavo telefono per vietinį tinklą. Jie nepalieka tavo namų.</string>
     <string name="settings_smart_home_cast_device_label">Išmanusis ekranas</string>
     <string name="settings_smart_home_cast_device_none">Ekranas nepasirinktas</string>
     <string name="settings_smart_home_cast_choose">Pasirinkti išmanųjį ekraną</string>
@@ -796,15 +794,11 @@ What is NOT overridden, by design:
     <string name="settings_smart_home_cast_morning_description">Siųsti kasdienį ClothesCast į išmanųjį ekraną suveikus ryto žadintuvui.</string>
     <string name="settings_smart_home_cast_tonight_title">Vakarinis ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Siųsti vakarinį ClothesCast į išmanųjį ekraną suveikus vakarinio žadintuvo.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Nutildyti telefoną sėkmingos transliacijos atveju</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Jei išmanusis ekranas perskaito prognozę garsiai, telefonas tyli. Telefono pranešimas vis tiek pasiunčiamas.</string>
     <string name="cast_error_no_route_picked">Pirmiausia pasirink išmanųjį ekraną.</string>
     <string name="cast_error_no_insight_yet">Prognozė dar nepasiekiama. Palaukite kito suplanuoto paleidimo arba bakstelėkite Atnaujinti Šiandien ekrane.</string>
     <string name="cast_error_unknown">Transliacija nepavyko.</string>
     <string name="settings_smart_home_mqtt_title">Home Assistant tiltas (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Skelbti prognozę MQTT</string>
-    <string name="settings_smart_home_mqtt_description">Po kiekvieno suplanuoto atnaujinimo ClothesCast skelbia šiandienos ir vakaro prognozę į jūsų MQTT tarpinį serverį kaip išsaugotas žinutes, kad Home Assistant (arba bet kuris MQTT klientas) galėtų nuskaityti naujausią reikšmę ir ją pasakyti jutiklio suveikimo metu.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Įjungus, prognozės tekstas palieka įrenginį per jūsų tinklą į sukonfigūruotą tarpinį serverį. Žr. privatumo politiką.</string>
     <string name="settings_smart_home_mqtt_host">Tarpinio serverio adresas</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Prievadas</string>
@@ -816,7 +810,6 @@ What is NOT overridden, by design:
     <string name="settings_smart_home_mqtt_password_replace">Pakeisti slaptažodį</string>
     <string name="settings_smart_home_mqtt_password_clear">Išvalyti išsaugotą slaptažodį</string>
     <string name="settings_smart_home_mqtt_topic">Temos prefiksas</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Šiandienos prognozė skelbiama į {prefix}/today/text; vakaro — į {prefix}/tonight/text. Vaizdas ir garsas — į {prefix}/&lt;period&gt;/image ir /audio. Kiekvienas paskelbimas taip pat atspindimas į {prefix}/now/&lt;text|image|audio&gt;, kad klientas galėtų prenumeruoti vieną „naujausią" temą nepasirinkdamas tarp šiandien ir šiandien vakaro.</string>
     <string name="settings_smart_home_mqtt_save">Išsaugoti</string>
     <string name="settings_smart_home_mqtt_publish_now">Skelbti dabar</string>
     <string name="settings_smart_home_mqtt_publishing">Skelbiama…</string>

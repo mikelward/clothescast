@@ -257,6 +257,7 @@ class SettingsViewModel(
                         mqttSkipPhoneSpeech = prefs.mqttSkipPhoneSpeech,
                         castAvailable = castAvailable,
                         castRouteName = prefs.castRouteName,
+                        castEnabled = prefs.castEnabled,
                         castMorning = prefs.castMorning,
                         castTonight = prefs.castTonight,
                         castSkipPhoneSpeech = prefs.castSkipPhoneSpeech,
@@ -841,6 +842,10 @@ class SettingsViewModel(
     /** Clears the saved Cast route (Settings row reverts to "No display picked"). */
     fun clearCastRoute() {
         viewModelScope.launch { settingsRepository.setCastRoute(routeId = null, routeName = null) }
+    }
+
+    fun setCastEnabled(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setCastEnabled(enabled) }
     }
 
     fun setCastMorning(enabled: Boolean) {

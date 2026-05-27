@@ -482,6 +482,10 @@ class SettingsRepository(
         }
     }
 
+    suspend fun setCastEnabled(enabled: Boolean) {
+        dataStore.edit { it[CAST_ENABLED] = enabled }
+    }
+
     suspend fun setCastMorning(enabled: Boolean) {
         dataStore.edit { it[CAST_MORNING] = enabled }
     }
@@ -912,6 +916,7 @@ class SettingsRepository(
         val mqttSkipPhoneSpeech = this[MQTT_SKIP_PHONE_SPEECH] ?: true
         val castRouteId = this[CAST_ROUTE_ID]?.takeIf { it.isNotBlank() }
         val castRouteName = this[CAST_ROUTE_NAME]?.takeIf { it.isNotBlank() }
+        val castEnabled = this[CAST_ENABLED] ?: true
         val castMorning = this[CAST_MORNING] ?: true
         val castTonight = this[CAST_TONIGHT] ?: true
         val castSkipPhoneSpeech = this[CAST_SKIP_PHONE_SPEECH] ?: true
@@ -974,6 +979,7 @@ class SettingsRepository(
             mqttSkipPhoneSpeech = mqttSkipPhoneSpeech,
             castRouteId = castRouteId,
             castRouteName = castRouteName,
+            castEnabled = castEnabled,
             castMorning = castMorning,
             castTonight = castTonight,
             castSkipPhoneSpeech = castSkipPhoneSpeech,
@@ -1243,11 +1249,12 @@ class SettingsRepository(
         private val CAST_LAST_ERROR_MSG = stringPreferencesKey("cast_last_error_msg")
         private val CAST_LAST_ERROR_AT_MS = longPreferencesKey("cast_last_error_at_ms")
         private val CAST_LAST_SUCCESS_AT_MS = longPreferencesKey("cast_last_success_at_ms")
-        // Per-period cast toggles + the "smart display speaks, mute the
-        // phone" suppression. Stored separately from CAST_ROUTE_ID so the
-        // user's picked display survives an off / on flip of either
-        // period; default true on first read (mirrors the data-class
-        // defaults).
+        // Master switch for scheduled casting + per-period cast toggles +
+        // the "smart display speaks, mute the phone" suppression. Stored
+        // separately from CAST_ROUTE_ID so the user's picked display
+        // survives an off / on flip; default true on first read
+        // (mirrors the data-class defaults).
+        private val CAST_ENABLED = booleanPreferencesKey("cast_enabled")
         private val CAST_MORNING = booleanPreferencesKey("cast_morning")
         private val CAST_TONIGHT = booleanPreferencesKey("cast_tonight")
         private val CAST_SKIP_PHONE_SPEECH = booleanPreferencesKey("cast_skip_phone_speech")

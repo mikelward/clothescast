@@ -802,8 +802,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
 
     <!-- Smart Home — Cast settings. -->
     <string name="settings_smart_home_cast_title">Přenést</string>
-    <string name="settings_smart_home_cast_description">Posílat naplánované ClothesCasty na chytrý displej v domácí síti.</string>
-    <string name="settings_smart_home_cast_privacy_note">Zvuk a obraz jsou poskytovány z vašeho telefonu přes místní síť. Neopouštějí váš domov.</string>
     <string name="settings_smart_home_cast_device_label">Chytrý displej</string>
     <string name="settings_smart_home_cast_device_none">Není vybrán displej</string>
     <string name="settings_smart_home_cast_choose">Vybrat chytrý displej</string>
@@ -822,8 +820,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_smart_home_cast_morning_description">Odeslat denní ClothesCast na chytrý displej při spuštění ranního budíku.</string>
     <string name="settings_smart_home_cast_tonight_title">Noční ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Odeslat noční ClothesCast na chytrý displej při spuštění večerního budíku.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Přeskočit řeč telefonu při úspěšném přenosu</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Pokud chytrý displej čte předpověď nahlas, telefon zůstane tichý. Oznámení telefonu je stále odesláno.</string>
 
     <!-- Smart Home — discover broker. -->
     <string name="settings_smart_home_discover_scan">Najít broker</string>
@@ -838,8 +834,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <!-- Smart Home — MQTT settings. -->
     <string name="settings_smart_home_mqtt_title">Most Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publikovat předpověď do MQTT</string>
-    <string name="settings_smart_home_mqtt_description">Po každé naplánované obnově ClothesCast publikuje dnešní a večerní předpověď do vašeho MQTT brokeru jako uchované zprávy, aby Home Assistant (nebo jakýkoli MQTT konzument) mohl číst nejnovější hodnotu a přečíst ji nahlas při spuštění senzoru.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Když je zapnuto, vygenerovaná předpověď opustí vaše zařízení přes síť k nakonfigurovanému brokeru. Viz zásady ochrany osobních údajů.</string>
     <string name="settings_smart_home_mqtt_host">Host brokeru</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
@@ -851,7 +845,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_smart_home_mqtt_password_replace">Nahradit heslo</string>
     <string name="settings_smart_home_mqtt_password_clear">Vymazat uložené heslo</string>
     <string name="settings_smart_home_mqtt_topic">Předpona tématu</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Dnes publikuje do {prefix}/today/text; večer do {prefix}/tonight/text. Obrázek a zvuk do {prefix}/&lt;period&gt;/image a /audio. Každá publikace je také zrcadlena do {prefix}/now/&lt;text|image|audio&gt; aby konzument mohl odebírat jedno \'nejnovější\' téma bez výběru mezi dnes a večer.</string>
     <string name="settings_smart_home_mqtt_save">Uložit</string>
     <string name="settings_smart_home_mqtt_publish_now">Publikovat nyní</string>
     <string name="settings_smart_home_mqtt_publishing">Publikuji…</string>

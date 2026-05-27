@@ -237,6 +237,8 @@ data class SettingsState(
      * whole Cast section in that case.
      */
     val castAvailable: Boolean = false,
+    /** Master switch: when off, scheduled runs skip the cast destination. */
+    val castEnabled: Boolean = true,
     /** Per-period cast toggles; default true. */
     val castMorning: Boolean = true,
     val castTonight: Boolean = true,

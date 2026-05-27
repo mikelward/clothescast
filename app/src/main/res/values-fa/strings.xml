@@ -828,7 +828,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_smart_home_cast_change">تغییر</string>
     <string name="settings_smart_home_cast_choose">انتخاب نمایشگر هوشمند</string>
     <string name="settings_smart_home_cast_clear">پاک کردن</string>
-    <string name="settings_smart_home_cast_description">ClothesCast های زمان‌بندی‌شده را به نمایشگر هوشمند در شبکه خانگی‌تان ارسال کنید.</string>
     <string name="settings_smart_home_cast_device_label">نمایشگر هوشمند</string>
     <string name="settings_smart_home_cast_device_none">هیچ نمایشگری انتخاب نشده</string>
     <string name="settings_smart_home_cast_last_error_title">آخرین پخش ناموفق بود</string>
@@ -841,9 +840,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_smart_home_cast_picker_empty">هنوز هیچ نمایشگر هوشمندی پیدا نشد. مطمئن شوید نمایشگرتان روشن و به همان Wi-Fi متصل است.</string>
     <string name="settings_smart_home_cast_picker_scanning">در حال اسکن شبکه برای نمایشگرهای هوشمند…</string>
     <string name="settings_smart_home_cast_picker_title">یک نمایشگر هوشمند انتخاب کنید</string>
-    <string name="settings_smart_home_cast_privacy_note">صدا و تصویر از طریق شبکه محلی از گوشی شما سرویس‌دهی می‌شوند. خانه شما را ترک نمی‌کنند.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">اگر نمایشگر هوشمند پیش‌بینی را با صدای بلند بخواند، گوشی ساکت می‌ماند. اعلان گوشی همچنان ارسال می‌شود.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">در صورت موفقیت پخش، صحبت گوشی را رد کن</string>
     <string name="settings_smart_home_cast_title">پخش</string>
     <string name="settings_smart_home_cast_tonight_description">هنگامی که زنگ شبانه به صدا درمی‌آید، ClothesCast شبانه را به نمایشگر هوشمند ارسال کنید.</string>
     <string name="settings_smart_home_cast_tonight_title">ClothesCast شبانه</string>
@@ -859,7 +855,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_smart_home_discover_use">استفاده</string>
 
     <!-- Settings — smart home MQTT -->
-    <string name="settings_smart_home_mqtt_description">بعد از هر بازخوانی زمان‌بندی‌شده، ClothesCast پیش‌بینی‌های امروز و امشب را به بروکر MQTT شما به عنوان پیام‌های ذخیره‌شده منتشر می‌کند، تا Home Assistant (یا هر مصرف‌کننده MQTT) بتواند آخرین مقدار را بخواند و آن را روی یک محرک حسگر پخش کند.</string>
     <string name="settings_smart_home_mqtt_host">میزبان بروکر</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_label">انتشار پیش‌بینی به MQTT</string>
@@ -872,7 +867,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_smart_home_mqtt_password_replace">جایگزینی رمز عبور</string>
     <string name="settings_smart_home_mqtt_password_status_set">رمز عبور پیکربندی شده.</string>
     <string name="settings_smart_home_mqtt_port">پورت</string>
-    <string name="settings_smart_home_mqtt_privacy_note">وقتی روشن است، جمله پیش‌بینی پردازش‌شده از دستگاه شما از طریق شبکه به بروکری که تنظیم می‌کنید می‌رود. سیاست حریم خصوصی را ببینید.</string>
     <string name="settings_smart_home_mqtt_publish_now">اکنون منتشر کنید</string>
     <string name="settings_smart_home_mqtt_publishing">در حال انتشار…</string>
     <string name="settings_smart_home_mqtt_save">ذخیره</string>
@@ -880,7 +874,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_smart_home_mqtt_title">پل Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_tls">استفاده از TLS</string>
     <string name="settings_smart_home_mqtt_topic">پیشوند موضوع</string>
-    <string name="settings_smart_home_mqtt_topic_hint">امروز به {prefix}/today/text منتشر می‌شود؛ امشب به {prefix}/tonight/text. تصویر و صدا روی {prefix}/&lt;period&gt;/image و /audio قرار می‌گیرند. هر انتشار همچنین به {prefix}/now/&lt;text|image|audio&gt; منعکس می‌شود تا مصرف‌کننده بتواند بدون انتخاب بین امروز و امشب به یک موضوع «آخرین» مشترک شود.</string>
     <string name="settings_smart_home_mqtt_username">نام کاربری (اختیاری)</string>
     <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
 

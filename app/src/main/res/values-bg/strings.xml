@@ -830,8 +830,6 @@ What is NOT overridden, by design:
     <string name="settings_holidays_calendar_section_placeholder_off">Включи превключвателя по-горе, за да персонализираш днешното облекло въз основа на събития от синхронизираните ти календари.</string>
     <string name="settings_holidays_calendar_section_placeholder_on">Открити събития от синхронизираните ти календари ще се появят тук в бъдеща актуализация.</string>
     <string name="settings_smart_home_cast_title">Предаване</string>
-    <string name="settings_smart_home_cast_description">Изпращай планирани ClothesCast-ове към умен дисплей в домашната мрежа.</string>
-    <string name="settings_smart_home_cast_privacy_note">Аудиото и изображението се обслужват от телефона ти чрез локалната мрежа. Не напускат дома ти.</string>
     <string name="settings_smart_home_cast_device_label">Умен дисплей</string>
     <string name="settings_smart_home_cast_device_none">Не е избран дисплей</string>
     <string name="settings_smart_home_cast_choose">Избери умен дисплей</string>
@@ -850,8 +848,6 @@ What is NOT overridden, by design:
     <string name="settings_smart_home_cast_morning_description">Изпрати дневния ClothesCast към умния дисплей, когато се задейства сутрешният будилник.</string>
     <string name="settings_smart_home_cast_tonight_title">Нощен ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Изпрати нощния ClothesCast към умния дисплей, когато се задейства вечерният будилник.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Пропусни говора на телефона при успешно предаване</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Ако умният дисплей чете прогнозата на глас, телефонът остава тих. Известието на телефона все още се изпраща.</string>
     <string name="settings_smart_home_discover_scan">Намери брокер</string>
     <string name="settings_smart_home_discover_scanning">Търся…</string>
     <string name="settings_smart_home_discover_stop">Спри търсенето</string>
@@ -862,8 +858,6 @@ What is NOT overridden, by design:
     <string name="settings_smart_home_discover_label_mqtt">MQTT брокер</string>
     <string name="settings_smart_home_mqtt_title">Мост Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Публикувай прогнозата в MQTT</string>
-    <string name="settings_smart_home_mqtt_description">След всяко планирано обновяване ClothesCast публикува днешната и вечерната прогноза в твоя MQTT брокер като запазени съобщения, за да може Home Assistant (или всеки MQTT потребител) да прочете последната стойност и да я произнесе при задействане на сензор.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Когато е включено, генерираната прогноза напуска устройството ти по мрежата към конфигурирания брокер. Вижте политиката за поверителност.</string>
     <string name="settings_smart_home_mqtt_host">Хост на брокера</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Порт</string>
@@ -875,7 +869,6 @@ What is NOT overridden, by design:
     <string name="settings_smart_home_mqtt_password_replace">Смени паролата</string>
     <string name="settings_smart_home_mqtt_password_clear">Изчисти запазената парола</string>
     <string name="settings_smart_home_mqtt_topic">Префикс на темата</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Днес публикува на {prefix}/today/text; вечерта на {prefix}/tonight/text. Изображение и аудио на {prefix}/&lt;period&gt;/image и /audio. Всяка публикация се огледва и на {prefix}/now/&lt;text|image|audio&gt;, за да може потребителят да се абонира за една \'последна\' тема, без да избира между днес и вечерта.</string>
     <string name="settings_smart_home_mqtt_save">Запази</string>
     <string name="settings_smart_home_mqtt_publish_now">Публикувай сега</string>
     <string name="settings_smart_home_mqtt_publishing">Публикуване…</string>

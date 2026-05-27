@@ -838,7 +838,6 @@ displayed label localizes.
     <string name="settings_smart_home_cast_change">Değiştir</string>
     <string name="settings_smart_home_cast_choose">Akıllı ekran seç</string>
     <string name="settings_smart_home_cast_clear">Temizle</string>
-    <string name="settings_smart_home_cast_description">Zamanlanmış ClothesCast\'ları ev ağındaki akıllı ekrana gönder.</string>
     <string name="settings_smart_home_cast_device_label">Akıllı ekran</string>
     <string name="settings_smart_home_cast_device_none">Ekran seçilmedi</string>
     <string name="settings_smart_home_cast_last_error_title">Son yayın başarısız oldu</string>
@@ -851,9 +850,6 @@ displayed label localizes.
     <string name="settings_smart_home_cast_picker_empty">Henüz akıllı ekran bulunamadı. Ekranınızın açık ve aynı Wi-Fi\'ye bağlı olduğundan emin olun.</string>
     <string name="settings_smart_home_cast_picker_scanning">Ağınızda akıllı ekran aranıyor…</string>
     <string name="settings_smart_home_cast_picker_title">Akıllı ekran seç</string>
-    <string name="settings_smart_home_cast_privacy_note">Ses ve görüntü telefonunuzdan yerel ağınız üzerinden sunulur. Evinizi terk etmez.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Akıllı ekran tahmini sesli okursa telefon sessiz kalır. Telefon bildirimi yine de gönderilir.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Başarılı yayında telefon sesini atla</string>
     <string name="settings_smart_home_cast_title">Cast</string>
     <string name="settings_smart_home_cast_tonight_description">Gece alarmı çaldığında gecelik ClothesCast\'ı akıllı ekrana gönder.</string>
     <string name="settings_smart_home_cast_tonight_title">Gecelik ClothesCast</string>
@@ -869,7 +865,6 @@ displayed label localizes.
     <string name="settings_smart_home_discover_use">Kullan</string>
 
     <!-- Smart home MQTT -->
-    <string name="settings_smart_home_mqtt_description">Her zamanlanmış yenilemeden sonra ClothesCast, bugünün ve bu gecenin hazırlanmış tahminini MQTT broker\'ına kalıcı mesajlar olarak yayınlar; böylece Home Assistant (veya herhangi bir MQTT tüketicisi) en son değeri okuyabilir ve sensör tetikleyicisinde seslendirebilir.</string>
     <string name="settings_smart_home_mqtt_host">Broker sunucusu</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_label">Tahmini MQTT\'ye yayınla</string>
@@ -882,7 +877,6 @@ displayed label localizes.
     <string name="settings_smart_home_mqtt_password_replace">Şifreyi değiştir</string>
     <string name="settings_smart_home_mqtt_password_status_set">Şifre yapılandırıldı.</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Açıkken hazırlanan tahmin cümlesi cihazınızdan ağınız üzerinden yapılandırdığınız broker\'a iletilir. Gizlilik politikasına bakın.</string>
     <string name="settings_smart_home_mqtt_publish_now">Şimdi yayınla</string>
     <string name="settings_smart_home_mqtt_publishing">Yayınlanıyor…</string>
     <string name="settings_smart_home_mqtt_save">Kaydet</string>
@@ -890,7 +884,6 @@ displayed label localizes.
     <string name="settings_smart_home_mqtt_title">Home Assistant köprüsü (MQTT)</string>
     <string name="settings_smart_home_mqtt_tls">TLS kullan</string>
     <string name="settings_smart_home_mqtt_topic">Konu öneki</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Bugün {prefix}/today/text adresine yayınlar; bu gece {prefix}/tonight/text adresine. Görüntü ve ses {prefix}/&lt;period&gt;/image ve /audio konumlarına gider. Her yayın aynı zamanda {prefix}/now/&lt;text|image|audio&gt; adresine yansıtılır; böylece tüketici bugün ve bu gece arasında seçim yapmadan tek bir "son" konusuna abone olabilir.</string>
     <string name="settings_smart_home_mqtt_username">Kullanıcı adı (isteğe bağlı)</string>
     <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
 

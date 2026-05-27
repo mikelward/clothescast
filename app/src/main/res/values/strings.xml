@@ -558,8 +558,7 @@
          either test a cast manually now (this PR) or have the worker
          send each scheduled forecast there automatically (next PR). -->
     <string name="settings_smart_home_cast_title">Cast</string>
-    <string name="settings_smart_home_cast_description">Send scheduled ClothesCasts to a smart display on your home network.</string>
-    <string name="settings_smart_home_cast_privacy_note">Audio and image are served from your phone over your local network. They don\'t leave your home.</string>
+    <string name="settings_smart_home_cast_label">Send forecast to smart display</string>
     <string name="settings_smart_home_cast_device_label">Smart display</string>
     <string name="settings_smart_home_cast_device_none">No display picked</string>
     <string name="settings_smart_home_cast_choose">Choose smart display</string>
@@ -578,16 +577,14 @@
     <string name="settings_smart_home_cast_morning_description">Send the daily ClothesCast to the smart display when the morning alarm fires.</string>
     <string name="settings_smart_home_cast_tonight_title">Nightly ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Send the nightly ClothesCast to the smart display when the tonight alarm fires.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Skip phone speech if cast successfully</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">If the smart display reads the forecast aloud, the phone stays silent. The phone notification still posts.</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Skip phone speech</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Avoid duplicate announcements at home.</string>
     <string name="cast_error_no_route_picked">Pick a smart display first.</string>
     <string name="cast_error_no_insight_yet">No forecast available yet. Wait for the next scheduled run, or tap Refresh on the Today screen.</string>
     <string name="cast_error_unknown">Cast failed.</string>
 
     <string name="settings_smart_home_mqtt_title">Home Assistant bridge (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publish forecast to MQTT</string>
-    <string name="settings_smart_home_mqtt_description">After each scheduled refresh, ClothesCast publishes today\'s and tonight\'s rendered forecast to your MQTT broker as retained messages, so Home Assistant (or any MQTT consumer) can read the latest value and speak it on a sensor trigger.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">When on, the rendered forecast sentence leaves your device over your network to the broker you configure. See the privacy policy.</string>
     <string name="settings_smart_home_mqtt_host">Broker host</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
@@ -599,15 +596,15 @@
     <string name="settings_smart_home_mqtt_password_replace">Replace password</string>
     <string name="settings_smart_home_mqtt_password_clear">Clear saved password</string>
     <string name="settings_smart_home_mqtt_topic">Topic prefix</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Today publishes to {prefix}/today/text; tonight to {prefix}/tonight/text. Image and audio land on {prefix}/&lt;period&gt;/image and /audio. Each publish is also mirrored to {prefix}/now/&lt;text|image|audio&gt; so a consumer can subscribe to one \"latest\" topic without choosing today vs tonight.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, etc</string>
     <string name="settings_smart_home_mqtt_save">Save</string>
     <string name="settings_smart_home_mqtt_publish_now">Publish now</string>
     <string name="settings_smart_home_mqtt_publishing">Publishing…</string>
     <string name="settings_smart_home_mqtt_last_published">Last published %1$s</string>
     <string name="settings_smart_home_mqtt_never_published">Not yet published</string>
     <string name="settings_smart_home_mqtt_last_error_title">Last publish failed</string>
-    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Skip phone speech if published successfully</string>
-    <string name="settings_smart_home_mqtt_skip_phone_speech_description">If your bridge reads the forecast aloud (Home Assistant, a smart speaker), the phone stays silent. The phone notification still posts.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Skip phone speech</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Avoid duplicate announcements at home.</string>
     <string name="settings_smart_home_mqtt_setup_guide">Setup guide</string>
     <string name="settings_smart_home_mqtt_open_privacy">Read privacy details</string>
     <string name="settings_smart_home_discover_scan">Find broker</string>

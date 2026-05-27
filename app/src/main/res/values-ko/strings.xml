@@ -982,7 +982,6 @@ displayed label localizes.
 
     <!-- Smart Home — Cast section. -->
     <string name="settings_smart_home_cast_title">캐스트</string>
-    <string name="settings_smart_home_cast_description">홈 네트워크의 스마트 디스플레이로 예약된 ClothesCast를 전송해요.</string>
     <string name="settings_smart_home_cast_device_label">스마트 디스플레이</string>
     <string name="settings_smart_home_cast_device_none">디스플레이가 선택되지 않았어요</string>
     <string name="settings_smart_home_cast_choose">스마트 디스플레이 선택</string>
@@ -997,9 +996,6 @@ displayed label localizes.
     <string name="settings_smart_home_cast_morning_description">아침 알람이 울릴 때 스마트 디스플레이로 매일 ClothesCast를 전송해요.</string>
     <string name="settings_smart_home_cast_tonight_title">야간 ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">야간 알람이 울릴 때 스마트 디스플레이로 야간 ClothesCast를 전송해요.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">캐스트 성공 시 전화기 음성 생략</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">스마트 디스플레이가 예보를 소리로 읽어주면 전화기는 조용히 있어요. 전화기 알림은 계속 표시됩니다.</string>
-    <string name="settings_smart_home_cast_privacy_note">오디오와 이미지는 로컬 네트워크를 통해 전화기에서 직접 서비스됩니다. 집 밖으로 나가지 않아요.</string>
     <string name="settings_smart_home_cast_picker_title">스마트 디스플레이 선택</string>
     <string name="settings_smart_home_cast_picker_scanning">네트워크에서 스마트 디스플레이를 검색 중…</string>
     <string name="settings_smart_home_cast_picker_empty">아직 스마트 디스플레이를 찾지 못했어요. 디스플레이가 켜져 있고 같은 Wi-Fi에 연결되어 있는지 확인하세요.</string>
@@ -1018,7 +1014,6 @@ displayed label localizes.
     <!-- Smart Home — MQTT section. -->
     <string name="settings_smart_home_mqtt_title">Home Assistant 연동 (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">MQTT에 예보 게시</string>
-    <string name="settings_smart_home_mqtt_description">예약된 새로고침마다 ClothesCast가 오늘과 오늘 밤의 렌더링된 예보를 보존 메시지로 MQTT 브로커에 게시해요. Home Assistant(또는 모든 MQTT 소비자)가 최신 값을 읽고 센서 트리거 시 음성으로 알려줄 수 있어요.</string>
     <string name="settings_smart_home_mqtt_host">브로커 호스트</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">포트</string>
@@ -1030,14 +1025,12 @@ displayed label localizes.
     <string name="settings_smart_home_mqtt_password_clear">저장된 비밀번호 삭제</string>
     <string name="settings_smart_home_mqtt_password_status_set">비밀번호가 설정되어 있어요.</string>
     <string name="settings_smart_home_mqtt_topic">토픽 접두사</string>
-    <string name="settings_smart_home_mqtt_topic_hint">오늘 예보는 {prefix}/today/text에, 오늘 밤 예보는 {prefix}/tonight/text에 게시돼요. 이미지와 오디오는 {prefix}/&lt;period&gt;/image 및 /audio에 저장됩니다. 각 게시는 {prefix}/now/&lt;text|image|audio&gt;에도 미러링되어 오늘/오늘 밤을 선택하지 않고도 최신 항목을 구독할 수 있어요.</string>
     <string name="settings_smart_home_mqtt_save">저장</string>
     <string name="settings_smart_home_mqtt_publish_now">지금 게시</string>
     <string name="settings_smart_home_mqtt_publishing">게시 중…</string>
     <string name="settings_smart_home_mqtt_never_published">아직 게시되지 않았어요</string>
     <string name="settings_smart_home_mqtt_last_published">마지막 게시: %1$s</string>
     <string name="settings_smart_home_mqtt_last_error_title">마지막 게시가 실패했어요</string>
-    <string name="settings_smart_home_mqtt_privacy_note">켜져 있으면 렌더링된 예보 문장이 설정한 브로커로 네트워크를 통해 기기를 떠납니다. 개인정보 처리방침을 확인하세요.</string>
     <string name="settings_smart_home_mqtt_open_privacy">개인정보 세부 내용 보기</string>
     <string name="settings_smart_home_mqtt_setup_guide">설정 가이드</string>
 

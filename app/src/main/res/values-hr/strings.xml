@@ -912,8 +912,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_holidays_calendar_section_placeholder_off">Uključite prekidač gore za prilagodbu današnjeg outfita na temelju događaja iz sinkroniziranih kalendara.</string>
     <string name="settings_holidays_calendar_section_placeholder_on">Otkriveni događaji iz vaših sinkroniziranih kalendara pojavit će se ovdje u budućem ažuriranju.</string>
     <string name="settings_smart_home_cast_title">Prenesi</string>
-    <string name="settings_smart_home_cast_description">Šalji planirane ClothesCaste na pametni zaslon u kućnoj mreži.</string>
-    <string name="settings_smart_home_cast_privacy_note">Audio i slika se poslužuju s vašeg telefona putem lokalne mreže. Ne napuštaju vaš dom.</string>
     <string name="settings_smart_home_cast_device_label">Pametni zaslon</string>
     <string name="settings_smart_home_cast_device_none">Nije odabran zaslon</string>
     <string name="settings_smart_home_cast_choose">Odaberi pametni zaslon</string>
@@ -932,8 +930,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_smart_home_cast_morning_description">Pošalji dnevni ClothesCast na pametni zaslon kad se okine jutarnji alarm.</string>
     <string name="settings_smart_home_cast_tonight_title">Noćni ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Pošalji noćni ClothesCast na pametni zaslon kad se okine večernji alarm.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Preskoči govor telefona ako je prenošenje uspjelo</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Ako pametni zaslon čita prognozu naglas, telefon ostaje tih. Obavijest telefona se još uvijek šalje.</string>
     <string name="settings_smart_home_discover_scan">Pronađi broker</string>
     <string name="settings_smart_home_discover_scanning">Tražim…</string>
     <string name="settings_smart_home_discover_stop">Zaustavi traženje</string>
@@ -944,8 +940,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_smart_home_discover_label_mqtt">MQTT broker</string>
     <string name="settings_smart_home_mqtt_title">Home Assistant most (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Objavi prognozu na MQTT</string>
-    <string name="settings_smart_home_mqtt_description">Nakon svake planirane obnove, ClothesCast objavljuje današnju i večernju prognozu na vaš MQTT broker kao zadržane poruke, kako bi Home Assistant (ili bilo koji MQTT potrošač) mogao čitati najnoviju vrijednost i pročitati je naglas pri okidaču senzora.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Kad je uključeno, generirana prognoza napušta vaš uređaj putem mreže do konfiguriranog brokera. Pogledajte pravila privatnosti.</string>
     <string name="settings_smart_home_mqtt_host">Host brokera</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
@@ -957,7 +951,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_smart_home_mqtt_password_replace">Zamijeni lozinku</string>
     <string name="settings_smart_home_mqtt_password_clear">Ukloni spremljenu lozinku</string>
     <string name="settings_smart_home_mqtt_topic">Prefiks teme</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Danas objavljuje na {prefix}/today/text; večeras na {prefix}/tonight/text. Slika i audio na {prefix}/&lt;period&gt;/image i /audio. Svaka objava se zrcali na {prefix}/now/&lt;text|image|audio&gt; kako bi potrošač mogao pretplatiti se na jednu \'najnoviju\' temu bez odabira između danas i večeras.</string>
     <string name="settings_smart_home_mqtt_save">Spremi</string>
     <string name="settings_smart_home_mqtt_publish_now">Objavi sada</string>
     <string name="settings_smart_home_mqtt_publishing">Objavljivanje…</string>

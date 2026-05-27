@@ -803,8 +803,6 @@ displayed label localizes.
 
     <!-- Smart Home — Cast -->
     <string name="settings_smart_home_cast_title">Cast</string>
-    <string name="settings_smart_home_cast_description">Lähetä ajoitetut ClothesCast-ennusteet älykkäälle näytölle kotiverkossasi.</string>
-    <string name="settings_smart_home_cast_privacy_note">Ääni ja kuva lähetetään puhelimestasi paikallisverkon kautta. Ne eivät poistu kotoasi.</string>
     <string name="settings_smart_home_cast_device_label">Älykäs näyttö</string>
     <string name="settings_smart_home_cast_device_none">Ei näyttöä valittuna</string>
     <string name="settings_smart_home_cast_choose">Valitse älykäs näyttö</string>
@@ -823,8 +821,6 @@ displayed label localizes.
     <string name="settings_smart_home_cast_morning_description">Lähetä päivittäinen ClothesCast älykkäälle näytölle, kun aamuherätys laukeaa.</string>
     <string name="settings_smart_home_cast_tonight_title">Iltainen ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Lähetä iltainen ClothesCast älykkäälle näytölle, kun iltaherätys laukeaa.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Ohita puhelimen puhe, jos lähetys onnistui</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Jos älykäs näyttö lukee ennusteen ääneen, puhelin pysyy hiljaa. Puhelimen ilmoitus lähetetään silti.</string>
 
     <!-- Smart Home — Discover -->
     <string name="settings_smart_home_discover_scan">Etsi broker</string>
@@ -839,8 +835,6 @@ displayed label localizes.
     <!-- Smart Home — MQTT -->
     <string name="settings_smart_home_mqtt_title">Home Assistant -silta (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Julkaise ennuste MQTT:lle</string>
-    <string name="settings_smart_home_mqtt_description">Jokaisen ajoitetun päivityksen jälkeen ClothesCast julkaisee tämän päivän ja illan ennusteet säilytettyinä viesteinä MQTT-brokerillesi, jotta Home Assistant (tai mikä tahansa MQTT-kuluttaja) voi lukea viimeisimmän arvon ja lukea sen ääneen anturilaukaisimella.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Kun käytössä, renderöity ennuste poistuu laitteeltasi verkon kautta määritettyyn brokeriin. Katso tietosuojakäytäntö.</string>
     <string name="settings_smart_home_mqtt_host">Brokerin osoite</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Portti</string>
@@ -852,7 +846,6 @@ displayed label localizes.
     <string name="settings_smart_home_mqtt_password_replace">Vaihda salasana</string>
     <string name="settings_smart_home_mqtt_password_clear">Tyhjennä tallennettu salasana</string>
     <string name="settings_smart_home_mqtt_topic">Aiheen etuliite</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Tänään julkaistaan {prefix}/today/text; illalla {prefix}/tonight/text. Kuva ja ääni {prefix}/&lt;period&gt;/image ja /audio. Jokainen julkaisu peilataan {prefix}/now/&lt;text|image|audio&gt;, jotta kuluttaja voi tilata yhden \'uusimman\' aiheen valitsematta tänään ja illalla välillä.</string>
     <string name="settings_smart_home_mqtt_save">Tallenna</string>
     <string name="settings_smart_home_mqtt_publish_now">Julkaise nyt</string>
     <string name="settings_smart_home_mqtt_publishing">Julkaistaan…</string>

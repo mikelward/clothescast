@@ -836,8 +836,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_holidays_calendar_section_placeholder_off">Kapcsolja be a fenti kapcsolót, hogy a mai outfit a szinkronizált naptárakból észlelt eseményekre szabódjon.</string>
     <string name="settings_holidays_calendar_section_placeholder_on">A szinkronizált naptárakból észlelt események egy jövőbeli frissítésben megjelennek itt.</string>
     <string name="settings_smart_home_cast_title">Közvetítés</string>
-    <string name="settings_smart_home_cast_description">Ütemezett ClothesCastok küldése okos kijelzőre az otthoni hálózaton.</string>
-    <string name="settings_smart_home_cast_privacy_note">A hang és a kép a telefonról kerül kiszolgálásra a helyi hálózaton. Nem hagyják el az otthonát.</string>
     <string name="settings_smart_home_cast_device_label">Okos kijelző</string>
     <string name="settings_smart_home_cast_device_none">Nincs kijelző kiválasztva</string>
     <string name="settings_smart_home_cast_choose">Okos kijelző kiválasztása</string>
@@ -856,8 +854,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_smart_home_cast_morning_description">Napi ClothesCast küldése az okos kijelzőre, amikor a reggeli ébresztő megszólal.</string>
     <string name="settings_smart_home_cast_tonight_title">Éjszakai ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Éjszakai ClothesCast küldése az okos kijelzőre, amikor az esti ébresztő megszólal.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Telefon hangos olvasásának kihagyása sikeres közvetítés esetén</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Ha az okos kijelző hangosan olvassa az előrejelzést, a telefon csendben marad. A telefon értesítése továbbra is megjelenik.</string>
     <string name="settings_smart_home_discover_scan">Broker keresése</string>
     <string name="settings_smart_home_discover_scanning">Keresés…</string>
     <string name="settings_smart_home_discover_stop">Keresés leállítása</string>
@@ -868,8 +864,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_smart_home_discover_label_mqtt">MQTT broker</string>
     <string name="settings_smart_home_mqtt_title">Home Assistant híd (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Előrejelzés közzététele MQTT-re</string>
-    <string name="settings_smart_home_mqtt_description">Minden ütemezett frissítés után a ClothesCast közzéteszi a mai és esti előrejelzést az MQTT brokerére megőrzött üzenetként, hogy a Home Assistant (vagy bármely MQTT-fogyasztó) olvashassa a legújabb értéket, és felolvashassa egy érzékelő aktiválásakor.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Ha be van kapcsolva, a megjelenített előrejelzés elhagyja az eszközt a konfigurált brokerre. Tekintse meg az adatvédelmi irányelveket.</string>
     <string name="settings_smart_home_mqtt_host">Broker host</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
@@ -881,7 +875,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_smart_home_mqtt_password_replace">Jelszó cseréje</string>
     <string name="settings_smart_home_mqtt_password_clear">Mentett jelszó törlése</string>
     <string name="settings_smart_home_mqtt_topic">Témaprefixum</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Ma a {prefix}/today/text; este a {prefix}/tonight/text. Kép és hang: {prefix}/&lt;period&gt;/image és /audio. Minden közzététel tükröződik a {prefix}/now/&lt;text|image|audio&gt; is, hogy a fogyasztó feliratkozhasson egy \'legújabb\' témára ma és este közötti választás nélkül.</string>
     <string name="settings_smart_home_mqtt_save">Mentés</string>
     <string name="settings_smart_home_mqtt_publish_now">Közzététel most</string>
     <string name="settings_smart_home_mqtt_publishing">Közzététel…</string>

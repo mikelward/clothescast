@@ -240,6 +240,25 @@ class DeliveryGatesTest {
     }
 
     @Test
+    fun `route picked + master switch off — willCast off regardless of period toggle`() {
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                castRouteId = "route-1",
+                castEnabled = false,
+                castMorning = true,
+                castTonight = true,
+                ttsEngine = TtsEngine.GEMINI,
+            ),
+            period = ForecastPeriod.TODAY,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = false,
+        )
+        gates.willCast shouldBe false
+        gates.castWillHaveAudio shouldBe false
+    }
+
+    @Test
     fun `route picked + morning toggle off — willCast off on TODAY`() {
         // Tonight-only user — morning runs skip cast even with route picked.
         val gates = computeDeliveryGates(

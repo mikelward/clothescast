@@ -847,8 +847,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_holidays_calendar_section_placeholder_on">Wykryte wydarzenia z zsynchronizowanych kalendarzy pojawią się tutaj w przyszłej aktualizacji.</string>
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
     <string name="settings_smart_home_cast_title">Przesyłaj</string>
-    <string name="settings_smart_home_cast_description">Wysyłaj zaplanowane ClothesCasts do inteligentnego wyświetlacza w sieci domowej.</string>
-    <string name="settings_smart_home_cast_privacy_note">Audio i obraz są obsługiwane z telefonu przez sieć lokalną. Nie opuszczają twojego domu.</string>
     <string name="settings_smart_home_cast_device_label">Inteligentny wyświetlacz</string>
     <string name="settings_smart_home_cast_device_none">Nie wybrano wyświetlacza</string>
     <string name="settings_smart_home_cast_choose">Wybierz inteligentny wyświetlacz</string>
@@ -867,8 +865,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_smart_home_cast_morning_description">Wyślij dzienny ClothesCast na inteligentny wyświetlacz gdy uruchomi się poranny alarm.</string>
     <string name="settings_smart_home_cast_tonight_title">Wieczorny ClothesCast</string>
     <string name="settings_smart_home_cast_tonight_description">Wyślij wieczorny ClothesCast na inteligentny wyświetlacz gdy uruchomi się wieczorny alarm.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Pomiń mowę telefonu jeśli przesłanie się powiodło</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Jeśli inteligentny wyświetlacz czyta prognozę na głos, telefon milczy. Powiadomienie telefonu jest nadal wysyłane.</string>
     <string name="settings_smart_home_discover_scan">Znajdź broker</string>
     <string name="settings_smart_home_discover_scanning">Szukam…</string>
     <string name="settings_smart_home_discover_stop">Zatrzymaj wyszukiwanie</string>
@@ -879,8 +875,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_smart_home_discover_label_mqtt">Broker MQTT</string>
     <string name="settings_smart_home_mqtt_title">Most Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publikuj prognozę do MQTT</string>
-    <string name="settings_smart_home_mqtt_description">Po każdym zaplanowanym odświeżeniu ClothesCast publikuje dzisiejszą i wieczorną prognozę do brokera MQTT jako zatrzymane wiadomości, aby Home Assistant (lub dowolny konsument MQTT) mógł odczytać najnowszą wartość i przeczytać ją na głos po wyzwoleniu czujnika.</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Gdy włączone, wyrenderowana prognoza opuszcza urządzenie przez sieć do skonfigurowanego brokera. Patrz polityka prywatności.</string>
     <string name="settings_smart_home_mqtt_host">Host brokera</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
@@ -892,7 +886,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_smart_home_mqtt_password_replace">Zastąp hasło</string>
     <string name="settings_smart_home_mqtt_password_clear">Wyczyść zapisane hasło</string>
     <string name="settings_smart_home_mqtt_topic">Prefiks tematu</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Dzisiaj publikuje do {prefix}/today/text; wieczorem do {prefix}/tonight/text. Obraz i audio do {prefix}/&lt;period&gt;/image i /audio. Każda publikacja jest też odbijana do {prefix}/now/&lt;text|image|audio&gt; aby konsument mógł subskrybować jeden temat \'najnowszy\' bez wybierania między dziś a wieczorem.</string>
     <string name="settings_smart_home_mqtt_save">Zapisz</string>
     <string name="settings_smart_home_mqtt_publish_now">Opublikuj teraz</string>
     <string name="settings_smart_home_mqtt_publishing">Publikowanie…</string>

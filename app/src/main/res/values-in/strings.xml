@@ -837,7 +837,6 @@ to values/strings.xml (English).
     <string name="settings_smart_home_cast_change">Ubah</string>
     <string name="settings_smart_home_cast_choose">Pilih layar pintar</string>
     <string name="settings_smart_home_cast_clear">Hapus</string>
-    <string name="settings_smart_home_cast_description">Kirim ClothesCast terjadwal ke layar pintar di jaringan rumah Anda.</string>
     <string name="settings_smart_home_cast_device_label">Layar pintar</string>
     <string name="settings_smart_home_cast_device_none">Belum ada layar yang dipilih</string>
     <string name="settings_smart_home_cast_last_error_title">Cast terakhir gagal</string>
@@ -850,9 +849,6 @@ to values/strings.xml (English).
     <string name="settings_smart_home_cast_picker_empty">Belum ada layar pintar yang ditemukan. Pastikan layar Anda menyala dan terhubung ke Wi-Fi yang sama.</string>
     <string name="settings_smart_home_cast_picker_scanning">Memindai jaringan untuk layar pintar…</string>
     <string name="settings_smart_home_cast_picker_title">Pilih layar pintar</string>
-    <string name="settings_smart_home_cast_privacy_note">Audio dan gambar disajikan dari ponsel Anda melalui jaringan lokal. Keduanya tidak meninggalkan rumah Anda.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_description">Jika layar pintar membacakan prakiraan dengan suara, ponsel tetap diam. Notifikasi ponsel tetap muncul.</string>
-    <string name="settings_smart_home_cast_skip_phone_speech_title">Lewati suara ponsel jika cast berhasil</string>
     <string name="settings_smart_home_cast_title">Cast</string>
     <string name="settings_smart_home_cast_tonight_description">Kirim ClothesCast malam ke layar pintar saat alarm malam berbunyi.</string>
     <string name="settings_smart_home_cast_tonight_title">ClothesCast Malam</string>
@@ -868,7 +864,6 @@ to values/strings.xml (English).
     <string name="settings_smart_home_discover_use">Gunakan</string>
 
     <!-- MQTT settings -->
-    <string name="settings_smart_home_mqtt_description">Setelah setiap pembaruan terjadwal, ClothesCast menerbitkan prakiraan hari ini dan malam ini yang telah dirender ke broker MQTT Anda sebagai pesan yang disimpan, sehingga Home Assistant (atau konsumen MQTT lainnya) dapat membaca nilai terbaru dan membicarakannya saat pemicu sensor.</string>
     <string name="settings_smart_home_mqtt_host">Host broker</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_label">Terbitkan prakiraan ke MQTT</string>
@@ -881,7 +876,6 @@ to values/strings.xml (English).
     <string name="settings_smart_home_mqtt_password_replace">Ganti kata sandi</string>
     <string name="settings_smart_home_mqtt_password_status_set">Kata sandi telah dikonfigurasi.</string>
     <string name="settings_smart_home_mqtt_port">Port</string>
-    <string name="settings_smart_home_mqtt_privacy_note">Jika aktif, kalimat prakiraan yang dirender meninggalkan perangkat Anda melalui jaringan ke broker yang Anda konfigurasi. Lihat kebijakan privasi.</string>
     <string name="settings_smart_home_mqtt_publish_now">Terbitkan sekarang</string>
     <string name="settings_smart_home_mqtt_publishing">Menerbitkan…</string>
     <string name="settings_smart_home_mqtt_save">Simpan</string>
@@ -889,7 +883,6 @@ to values/strings.xml (English).
     <string name="settings_smart_home_mqtt_title">Jembatan Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_tls">Gunakan TLS</string>
     <string name="settings_smart_home_mqtt_topic">Awalan topik</string>
-    <string name="settings_smart_home_mqtt_topic_hint">Hari ini diterbitkan ke {prefix}/today/text; malam ini ke {prefix}/tonight/text. Gambar dan audio ada di {prefix}/&lt;period&gt;/image dan /audio. Setiap penerbitan juga dicerminkan ke {prefix}/now/&lt;text|image|audio&gt; sehingga konsumen dapat berlangganan satu topik "terbaru" tanpa memilih hari ini atau malam ini.</string>
     <string name="settings_smart_home_mqtt_username">Nama pengguna (opsional)</string>
     <string name="settings_smart_home_mqtt_username_placeholder">mqtt-user</string>
 

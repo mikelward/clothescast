@@ -31,6 +31,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
@@ -204,15 +205,24 @@ fun TodayScreen(
             TopAppBar(
                 title = { Text(stringResource(titleRes)) },
                 actions = {
-                    // While the worker is enqueued or running we disable Refresh and swap
-                    // the icon for a spinner. The work makes a billed Gemini insight call
-                    // and (depending on the engine) a billed TTS call; re-tapping Refresh
-                    // while one is in flight uses ExistingWorkPolicy.REPLACE, which kills
-                    // the in-flight worker and starts another — re-issuing both requests.
-                    // Disabling the button removes the foot-gun.
+                    // While anything's active on the alarm or replay queues we
+                    // disable Refresh and (during the fetch phase) swap the icon
+                    // for a spinner. The work makes a billed Gemini insight call
+                    // and (depending on the engine) a billed TTS call; re-tapping
+                    // Refresh while one is in flight uses ExistingWorkPolicy.REPLACE,
+                    // which kills the in-flight worker and starts another —
+                    // re-issuing both requests. And since replays now live on
+                    // their own unique-work queue, WorkManager no longer
+                    // serializes a Refresh tap against a pending / mid-delivery
+                    // Replay — without [anyWorkActive] gating both buttons,
+                    // tapping Refresh during a Replay's TTS would deliver the
+                    // refresh and the replay concurrently. The spinner icon
+                    // still keys off [isWorking] so it shows during fetch but
+                    // not during the post-fetch TTS / MQTT / Cast window
+                    // (no fetching happening, no spinner).
                     IconButton(
                         onClick = { triggerRefresh(context, state.morningTime, state.tonightTime) },
-                        enabled = !isWorking,
+                        enabled = !state.anyWorkActive,
                     ) {
                         if (isWorking) {
                             CircularProgressIndicator(
@@ -225,6 +235,30 @@ fun TodayScreen(
                                 contentDescription = stringResource(R.string.today_refresh),
                             )
                         }
+                    }
+                    // Play replays the cached this-period insight through the
+                    // full deliver() pipeline — notification, phone-speaker
+                    // TTS, MQTT publish, cast — without a fetch. Disabled
+                    // when there's nothing to play (no cached insight) or
+                    // anything is active on the alarm / replay queues
+                    // (state.anyWorkActive). The latter is broader than
+                    // [isWorking]: it stays true through the post-fetch
+                    // TTS / MQTT / Cast window that the spinner-banner
+                    // logic intentionally treats as Idle, so a tap during
+                    // a Refresh's announcement (or a Replay's own) can't
+                    // start a second concurrent delivery now that Play
+                    // runs on its own unique-work queue.
+                    val playPeriod = state.thisPeriodInsight?.period
+                    IconButton(
+                        onClick = {
+                            playPeriod?.let { triggerPlay(context, it) }
+                        },
+                        enabled = !state.anyWorkActive && playPeriod != null,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = stringResource(R.string.today_play),
+                        )
                     }
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(
@@ -2867,6 +2901,20 @@ private fun triggerRefresh(
     val toastRes = when (period) {
         ForecastPeriod.TODAY -> R.string.today_refresh_toast_daily
         ForecastPeriod.TONIGHT -> R.string.today_refresh_toast_nightly
+    }
+    Toast.makeText(context, context.getString(toastRes), Toast.LENGTH_SHORT).show()
+}
+
+private fun triggerPlay(context: android.content.Context, period: ForecastPeriod) {
+    // Replay against the cached snapshot's period (not wall-clock) so a
+    // morning insight still in the cache at noon replays as TODAY, and a
+    // tonight insight viewed before its tonight-window starts replays as
+    // TONIGHT. The unique work name is keyed on this so a Refresh and a
+    // Play can't run concurrently for the same slot.
+    FetchAndNotifyWorker.enqueueReplay(context.applicationContext, period)
+    val toastRes = when (period) {
+        ForecastPeriod.TODAY -> R.string.today_play_toast_daily
+        ForecastPeriod.TONIGHT -> R.string.today_play_toast_nightly
     }
     Toast.makeText(context, context.getString(toastRes), Toast.LENGTH_SHORT).show()
 }

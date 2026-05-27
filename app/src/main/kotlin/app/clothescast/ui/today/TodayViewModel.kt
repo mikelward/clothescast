@@ -63,6 +63,17 @@ data class TodayState(
      */
     val nextPeriodInsight: Insight? = null,
     val workStatus: WorkStatus = WorkStatus.Idle,
+    /**
+     * True iff any worker on the daily / tonight / replay queues is in an
+     * active state (ENQUEUED / RUNNING / BLOCKED) — independent of the
+     * [FetchAndNotifyWorker.KEY_FETCH_COMPLETE] progress flag that
+     * [workStatus] suppresses. The Today screen reads this on the Play
+     * button so a tap can't double-deliver against an in-flight Refresh
+     * (now in a separate queue from replay), can't kick off a second
+     * concurrent Replay, and can't race a scheduled alarm fire that's
+     * actively writing to [InsightCache.thisPeriod].
+     */
+    val anyWorkActive: Boolean = false,
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     /**
      * Feels-like delta (°C) the today / tonight delta clause and the 7-day
@@ -288,6 +299,33 @@ internal fun mergeWorkStatus(a: WorkStatus, b: WorkStatus): WorkStatus = when {
     else -> WorkStatus.Idle
 }
 
+/**
+ * Per-tick snapshot of the worker queues the Today state pulls — the
+ * banner-driving [WorkStatus] plus the broader "is anything happening on
+ * the alarm or replay queues right now?" flag. Bundled together so the
+ * outer state combine stays at the 5-input cap.
+ */
+internal data class WorkSignals(
+    val status: WorkStatus,
+    val anyWorkActive: Boolean,
+)
+
+/**
+ * True iff any of [infos] is in an active WorkManager state
+ * (ENQUEUED / RUNNING / BLOCKED). Doesn't consult progress data — the
+ * point is to catch every phase, including the post-KEY_FETCH_COMPLETE
+ * delivery window where [selectStatus] returns Idle so the spinner
+ * banner can hide. The Today screen's Play button uses this to avoid
+ * starting a Replay while a Refresh is still mid-delivery (the two now
+ * run on separate unique-work queues, so WorkManager won't serialize
+ * them for us), and vice versa.
+ */
+internal fun anyActive(infos: List<WorkInfoLite>): Boolean = infos.any { info ->
+    info.state == WorkInfo.State.ENQUEUED ||
+        info.state == WorkInfo.State.RUNNING ||
+        info.state == WorkInfo.State.BLOCKED
+}
+
 class TodayViewModel(
     private val insightCache: InsightCache,
     workManager: WorkManager,
@@ -341,17 +379,28 @@ class TodayViewModel(
      */
     private val showModelSpread = MutableStateFlow(false)
 
-    // Combine status across both unique-work names so the spinner / failure
-    // banner reflects an in-flight tonight refresh too — the Refresh button
-    // routes to TONIGHT when it's tapped between 19:00 and 07:00. Collapsed
-    // upstream into a single flow so [state]'s `combine` stays under the
-    // 5-flow overload cap now that the pager reads both period slots
-    // separately.
+    // Combine status across both alarm queues so the spinner / failure
+    // banner reflects an in-flight tonight refresh too — the Refresh
+    // button routes to TONIGHT when it's tapped between 19:00 and 07:00.
+    // The replay queue rides alongside but doesn't feed [workStatus]: a
+    // replay isn't a fetch, so it has no business surfacing the
+    // "fetching" spinner. It only contributes to [anyWorkActive] —
+    // the broader gate the Play button reads to avoid double delivery
+    // against a still-running Refresh or alarm. Collapsed upstream
+    // into a single flow so [state]'s `combine` stays under the 5-flow
+    // overload cap now that the pager reads both period slots separately.
     private val workStatusFlow = combine(
         workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME),
         workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT),
-    ) { todayInfos, tonightInfos ->
-        mergeWorkStatus(selectStatus(todayInfos.toLite()), selectStatus(tonightInfos.toLite()))
+        workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_REPLAY),
+    ) { todayInfos, tonightInfos, replayInfos ->
+        val todayLite = todayInfos.toLite()
+        val tonightLite = tonightInfos.toLite()
+        val replayLite = replayInfos.toLite()
+        WorkSignals(
+            status = mergeWorkStatus(selectStatus(todayLite), selectStatus(tonightLite)),
+            anyWorkActive = anyActive(todayLite) || anyActive(tonightLite) || anyActive(replayLite),
+        )
     }
 
     /**
@@ -404,7 +453,7 @@ class TodayViewModel(
         workStatusFlow,
         preferencesDateEvents,
         showModelSpread,
-    ) { thisPeriodSnapshot, nextPeriodSnapshot, workStatus, prefsDateEvents, spread ->
+    ) { thisPeriodSnapshot, nextPeriodSnapshot, workSignals, prefsDateEvents, spread ->
         val (prefs, today, events) = prefsDateEvents
         // Derive each cached snapshot against the *current* prefs so a settings
         // change re-renders the prose / outfit / bullets in the same frame as
@@ -451,7 +500,8 @@ class TodayViewModel(
         TodayState(
             thisPeriodInsight = thisPeriodInsight,
             nextPeriodInsight = nextPeriodInsight,
-            workStatus = workStatus,
+            workStatus = workSignals.status,
+            anyWorkActive = workSignals.anyWorkActive,
             temperatureUnit = prefs.temperatureUnit,
             deltaThresholdC = prefs.deltaThresholdC,
             rangeFormat = prefs.rangeFormat,

@@ -1353,13 +1353,12 @@ internal fun OutfitPreviewCard(
     onAdjustThreshold: (String, Double) -> Unit = { _, _ -> },
     onNavigateToClothes: () -> Unit = {},
 ) {
-    var showRationale by remember { mutableStateOf(false) }
     // Material3's `Card(onClick = …)` overload is preferred over a bare
     // `modifier.clickable` — it carries the right semantics for accessibility
     // tooling and matches how SettingsNavRow / other tap-targets in the app are
     // wired.
     Card(
-        onClick = { showRationale = true },
+        onClick = onNavigateToClothes,
         modifier = modifier,
     ) {
         Column(
@@ -1420,25 +1419,11 @@ internal fun OutfitPreviewCard(
                 minLines = 2,
             )
             Text(
-                text = stringResource(R.string.today_rationale_show),
+                text = stringResource(R.string.settings_root_clothes),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary,
             )
         }
-    }
-    if (showRationale) {
-        OutfitRationaleDialog(
-            outfit = outfit,
-            rationale = rationale,
-            temperatureUnit = temperatureUnit,
-            clothesRules = clothesRules,
-            onAdjustThreshold = onAdjustThreshold,
-            onNavigateToClothes = {
-                showRationale = false
-                onNavigateToClothes()
-            },
-            onDismiss = { showRationale = false },
-        )
     }
 }
 

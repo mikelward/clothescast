@@ -52,7 +52,7 @@ object DiagLog {
         Thread(r, "DiagLog-writer").apply { isDaemon = true }
     }
     private val timestampFormat = ThreadLocal.withInitial {
-        SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.US)
+        SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z", Locale.US)
     }
 
     @Volatile

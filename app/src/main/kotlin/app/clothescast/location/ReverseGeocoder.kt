@@ -60,6 +60,23 @@ class ReverseGeocoder(
         }
     }
 
+    /**
+     * Diagnostic-only return value pairing the raw `addressLines` from the
+     * platform Geocoder with the [Result] derived from them. Surfaced to
+     * the Developer settings page's reverse-geocode tester so a developer
+     * can see which Geocoder input shape produced an unexpected
+     * addressDetail (e.g. a street that survived [deriveAddressDetail]'s
+     * trim) without having to file a bug report and read DiagLog.
+     */
+    data class DiagnosticResult(
+        val addressLines: List<String>,
+        val derived: Result,
+    ) {
+        companion object {
+            val EMPTY = DiagnosticResult(addressLines = emptyList(), derived = Result.EMPTY)
+        }
+    }
+
     /** Best-effort city name + country code, or [Result.EMPTY] if the
      *  geocoder is unavailable / times out / returns nothing useful. */
     suspend fun resolve(latitude: Double, longitude: Double): Result = coRunCatching {
@@ -67,6 +84,32 @@ class ReverseGeocoder(
     }
         .onFailure { DiagLog.w(TAG, "Unexpected ${it.javaClass.simpleName} from resolve; returning empty.", it) }
         .getOrDefault(Result.EMPTY)
+
+    /**
+     * Diagnostic variant of [resolve] for the Developer settings page's
+     * reverse-geocode tester. Single attempt (no retry — this is an
+     * interactive tool, the user can hit "Resolve" again themselves),
+     * and the returned [DiagnosticResult] carries the raw `addressLines`
+     * alongside the derived [Result] so the caller can correlate inputs
+     * with outputs.
+     *
+     * Never call from production code paths — the raw lines include
+     * house numbers and other detail we deliberately strip via
+     * [deriveAddressDetail] before display or persistence.
+     */
+    suspend fun resolveDiagnostic(latitude: Double, longitude: Double): DiagnosticResult = coRunCatching {
+        if (!Geocoder.isPresent()) {
+            DiagLog.i(TAG, "Geocoder backend not available; diagnostic resolve returning empty.")
+            return@coRunCatching DiagnosticResult.EMPTY
+        }
+        val geocoder = Geocoder(context, Locale.getDefault())
+        val addresses = withTimeoutOrNull(timeoutMillis) { fetch(geocoder, latitude, longitude) }
+            ?: return@coRunCatching DiagnosticResult.EMPTY
+        val address = addresses.firstOrNull() ?: return@coRunCatching DiagnosticResult.EMPTY
+        DiagnosticResult(addressLines = address.extractLines(), derived = address.toResult())
+    }
+        .onFailure { DiagLog.w(TAG, "Unexpected ${it.javaClass.simpleName} from resolveDiagnostic; returning empty.", it) }
+        .getOrDefault(DiagnosticResult.EMPTY)
 
     private suspend fun resolveInner(latitude: Double, longitude: Double): Result {
         if (!Geocoder.isPresent()) {
@@ -146,10 +189,14 @@ class ReverseGeocoder(
             }
         }
 
-    private fun Address.toResult(): Result {
+    private fun Address.extractLines(): List<String> {
         val maxIdx = maxAddressLineIndex
-        val lines = if (maxIdx < 0) emptyList<String>()
+        return if (maxIdx < 0) emptyList()
         else (0..maxIdx).mapNotNull { getAddressLine(it) }
+    }
+
+    private fun Address.toResult(): Result {
+        val lines = extractLines()
         val city = pickCityName(
             locality = locality,
             subLocality = subLocality,

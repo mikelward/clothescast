@@ -43,8 +43,10 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.core.domain.usecase.DeriveWeekAheadInsight
 import app.clothescast.insight.InsightFormatter
+import app.clothescast.ui.formatHourMinute
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.TextStyle
@@ -133,12 +135,23 @@ internal fun SevenDayPage(
      */
     deltaThresholdC: Double? = 3.0,
     /**
-     * The forecast location, shown next to the "Next 7 days" header label
-     * (and tappable to open the maps deep-link), matching the per-period
-     * [InsightCard]'s header. Null on legacy cached payloads / previews
-     * without a location, in which case the header renders the label alone.
+     * The forecast location, shown in the centered footer line below the
+     * weekly headline (and tappable to open the maps deep-link), matching
+     * the per-period [InsightCard]'s footer. Null on legacy cached payloads
+     * / previews without a location, in which case the footer falls back to
+     * the plain "Generated at …" copy when [generatedAt] is supplied, or is
+     * omitted entirely when neither is supplied.
      */
     location: Location? = null,
+    /**
+     * The forecast generation timestamp, shown in the centered footer line
+     * below the weekly headline. Null on legacy / preview callers that
+     * don't carry one, in which case the footer is omitted unless
+     * [location] supplies its own "at" anchor — which it doesn't on this
+     * page, so a null [generatedAt] hides the footer regardless of
+     * [location].
+     */
+    generatedAt: Instant? = null,
 ) {
     // Flatten every day's hourly stream into a single list. The chart
     // composables read [hourly[idx].time.hour] only for the bottom-axis
@@ -268,8 +281,6 @@ internal fun SevenDayPage(
                             )
                         }
                     }
-                    val locationLabel = shortLocationLabel(location?.displayName)
-                        ?: location?.let { stringResource(R.string.today_location_unknown) }
                     Row(
                         modifier = Modifier.weight(1f),
                         horizontalArrangement = Arrangement.Center,
@@ -280,26 +291,6 @@ internal fun SevenDayPage(
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
-                        if (location != null && locationLabel != null) {
-                            Text(
-                                text = " · ",
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                            Text(
-                                text = locationLabel,
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.clickable {
-                                    openInMaps(
-                                        context = context,
-                                        latitude = location.latitude,
-                                        longitude = location.longitude,
-                                        label = locationLabel,
-                                    )
-                                },
-                            )
-                        }
                     }
                     Box(modifier = Modifier.size(28.dp))
                 }
@@ -312,6 +303,18 @@ internal fun SevenDayPage(
                     text = proseText,
                     style = MaterialTheme.typography.headlineSmall,
                 )
+                if (generatedAt != null) {
+                    val generatedAtText = formatHourMinute(
+                        generatedAt.atZone(ZoneId.systemDefault()).toLocalTime(),
+                    )
+                    val locationLabel = shortLocationLabel(location?.displayName)
+                        ?: location?.let { stringResource(R.string.today_location_unknown) }
+                    InsightFooterLine(
+                        generatedAtText = generatedAtText,
+                        location = location,
+                        locationLabel = locationLabel,
+                    )
+                }
             }
         }
 

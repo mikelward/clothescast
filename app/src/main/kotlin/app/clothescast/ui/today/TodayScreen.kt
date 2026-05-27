@@ -94,6 +94,7 @@ import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.bannerTextKeyFor
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
+import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitRationale
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.ModelDivergenceSummary
@@ -458,6 +459,7 @@ private fun TodayContent(
                         region = state.region,
                         deltaThresholdC = state.deltaThresholdC,
                         location = state.thisPeriodInsight.location,
+                        generatedAt = state.thisPeriodInsight.generatedAt,
                     )
                     return@HorizontalPager
                 }
@@ -1752,11 +1754,10 @@ internal fun InsightCard(
      */
     onLongPressDate: (() -> Unit)? = null,
     /**
-     * Opens the Format settings page. Wired to two affordances: tapping the
-     * prose body (only the prose — not the date / location header or the
-     * generated-at footer) and a small "Format" link in the card's bottom-right
-     * corner. Null disables both; default null keeps every preview / non-live
-     * call site unchanged.
+     * Opens the Format settings page. Wired to one affordance: tapping the
+     * prose body (only the prose — not the period label header or the
+     * footer line). Null disables it; default null keeps every preview /
+     * non-live call site unchanged.
      */
     onNavigateToFormat: (() -> Unit)? = null,
 ) {
@@ -1828,26 +1829,6 @@ internal fun InsightCard(
                             Modifier
                         },
                     )
-                    if (location != null && locationLabel != null) {
-                        Text(
-                            text = " · ",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = locationLabel,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.clickable {
-                                openInMaps(
-                                    context = context,
-                                    latitude = location.latitude,
-                                    longitude = location.longitude,
-                                    label = locationLabel,
-                                )
-                            },
-                        )
-                    }
                 }
                 Box(modifier = Modifier.size(28.dp)) {
                     if (renderRightChevron) {
@@ -1872,28 +1853,63 @@ internal fun InsightCard(
                     Modifier
                 },
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(
-                    text = stringResource(
-                        R.string.today_generated_at,
-                        generatedAtText,
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                if (onNavigateToFormat != null) {
-                    Text(
-                        text = stringResource(R.string.today_insight_format_link),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.clickable { onNavigateToFormat() },
+            InsightFooterLine(
+                generatedAtText = generatedAtText,
+                location = location,
+                locationLabel = locationLabel,
+            )
+        }
+    }
+}
+
+/**
+ * Centered footer line shared by [InsightCard] and the 7-day pager page. When
+ * a [location] is present, renders "(location) at (generated time)" with the
+ * location styled as a maps link (primary colour, tapping anywhere on the
+ * text opens the user's maps app at the forecast coordinates). When the
+ * location is null, falls back to the legacy "Generated at (time)" copy so
+ * insights from older cached payloads without a stored location still carry
+ * a footer.
+ */
+@Composable
+internal fun InsightFooterLine(
+    generatedAtText: String,
+    location: Location?,
+    locationLabel: String?,
+) {
+    val onSurfaceVariant = MaterialTheme.colorScheme.onSurfaceVariant
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        if (location != null && locationLabel != null) {
+            val context = LocalContext.current
+            // Whole footer is rendered in the same muted variant colour as
+            // the legacy "Generated at …" line — the location no longer
+            // stands out visually. Tapping anywhere on the text still opens
+            // the user's maps app at the forecast coordinates.
+            Text(
+                text = stringResource(
+                    R.string.today_insight_footer_location_at_time,
+                    locationLabel,
+                    generatedAtText,
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.clickable {
+                    openInMaps(
+                        context = context,
+                        latitude = location.latitude,
+                        longitude = location.longitude,
+                        label = locationLabel,
                     )
-                }
-            }
+                },
+            )
+        } else {
+            Text(
+                text = stringResource(R.string.today_generated_at, generatedAtText),
+                style = MaterialTheme.typography.bodySmall,
+                color = onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
         }
     }
 }

@@ -1985,8 +1985,8 @@ internal fun SevenDayPagePreview() {
 }
 
 // Mirrors the per-period [TodayInsightCardWithLocationPreview] — exercises
-// the header's location chip next to the "Next 7 days" label so the maps
-// deep-link tap-target gets snapshot coverage.
+// the centered "(location) at (generated time)" footer below the weekly
+// headline so the maps deep-link tap-target gets snapshot coverage.
 @Preview(name = "Seven-day page · with location", widthDp = 360)
 @Composable
 internal fun SevenDayPageWithLocationPreview() {
@@ -2004,6 +2004,7 @@ internal fun SevenDayPageWithLocationPreview() {
                 longitude = -71.0589,
                 displayName = "Boston, Massachusetts, United States",
             ),
+            generatedAt = SAMPLE_INSIGHT.generatedAt,
         )
     }
 }

@@ -20,8 +20,13 @@
     <string name="today_empty_subtitle">Your morning ClothesCast will appear here once it has been generated. Set your location in Settings, then tap Fetch now.</string>
     <string name="today_fetch_now">Fetch now</string>
     <string name="today_generated_at">Generated at %1$s</string>
-    <!-- Link in the insight card's bottom-right corner that opens Format settings. -->
-    <string name="today_insight_format_link">Format</string>
+    <!-- Footer line on the insight card and the 7-day card: "(location) at
+         (generated time)". %1$s is the short city label (rendered in the
+         primary accent colour and tappable to open the maps app at the
+         forecast coordinates); %2$s is the time the forecast was generated.
+         Used in place of today_generated_at when the insight carries a
+         location. -->
+    <string name="today_insight_footer_location_at_time">%1$s at %2$s</string>
     <!-- Fallback label for the maps link beside the date when we have GPS
          coordinates but no friendly city name (reverse geocoding returned
          nothing useful, or the device is on AOSP without a backend). The

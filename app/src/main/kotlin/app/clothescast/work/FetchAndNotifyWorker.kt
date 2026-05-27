@@ -160,7 +160,7 @@ class FetchAndNotifyWorker(
         // later in the day, after the morning run already fired.
         if (inputData.getBoolean(KEY_CACHE_LOCATION_ONLY, false)) {
             DiagLog.i(TAG, "Cache-only location refresh; skipping insight pipeline.")
-            resolveLocation(prefs)
+            resolveLocation(prefs, forceFresh = true)
             return Result.success()
         }
 
@@ -588,12 +588,27 @@ class FetchAndNotifyWorker(
         return if (joined.length <= MAX_DETAIL_LEN) joined else joined.take(MAX_DETAIL_LEN - 1) + "…"
     }
 
-    private suspend fun resolveLocation(prefs: UserPreferences): Location? {
+    private suspend fun resolveLocation(prefs: UserPreferences, forceFresh: Boolean = false): Location? {
         if (prefs.useDeviceLocation) {
             // resolve() catches and DiagLog-warns about the actual failures
             // (SecurityException from a missing background grant, disabled
             // providers, timeouts) — don't double-wrap and lose the cause.
-            val device = app.locationResolver.resolve()
+            //
+            // forceFresh=true is the user-tapped "Refresh location" path:
+            // resolve()'s default 1-hour cache window would silently return
+            // the morning alarm's fix even if the user has since moved a
+            // few km, defeating the whole point of the button. resolveFresh
+            // with FRESH_FIX_MAX_AGE_MS forces a live request when the
+            // cached fix is older than 5 minutes — short enough to surface
+            // a recent move, long enough that a co-located app's fresh
+            // read still counts. If no fresh fix is reachable, fall
+            // through to prefs.location (a no-op write here) rather than
+            // clobbering the cache with stale coordinates.
+            val device = if (forceFresh) {
+                app.locationResolver.resolveFresh(LocationResolver.FRESH_FIX_MAX_AGE_MS)
+            } else {
+                app.locationResolver.resolve()
+            }
             if (device != null) {
                 DiagLog.i(TAG, "Using device-resolved location at ${device.latitude}, ${device.longitude}.")
                 // Best-effort reverse geocode so the home screen can show a

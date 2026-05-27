@@ -618,6 +618,14 @@ data class UserPreferences(
      */
     val celebrationCardDismissed: Boolean = false,
     /**
+     * Set to true once the user dismisses (or follows through on) the
+     * Today-screen "Customize your clothes" promo card — a one-time nudge
+     * shown after onboarding pointing the user at Clothes settings so they
+     * know the per-temperature rules are theirs to tune. Same dismiss-once
+     * contract as [telemetryNoticeAcked] / [celebrationCardDismissed].
+     */
+    val clothesPromoCardDismissed: Boolean = false,
+    /**
      * Bumped to `System.currentTimeMillis()` whenever the user re-grants
      * `READ_CALENDAR` via the in-app permission flow. Exists purely to
      * force the [SettingsRepository.preferences] flow to re-emit so any

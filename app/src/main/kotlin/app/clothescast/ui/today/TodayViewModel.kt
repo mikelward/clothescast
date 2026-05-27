@@ -145,6 +145,13 @@ data class TodayState(
      */
     val celebrationCardVisible: Boolean = false,
     /**
+     * Whether the Today-screen "Customize your clothes" promo card
+     * should render. True iff the user hasn't dismissed it (or followed
+     * through to Clothes settings from it). One-time only, same shape
+     * as [telemetryNoticeAcked].
+     */
+    val clothesPromoCardVisible: Boolean = false,
+    /**
      * True iff either calendar-sourced theming toggle is on. The Today
      * screen reads this to decide whether an ON_RESUME nudge of the
      * permission-recheck tick is worth its DataStore-write cost: if no
@@ -466,6 +473,7 @@ class TodayViewModel(
             celebrationCardVisible = !prefs.celebrationCardDismissed &&
                 !prefs.calendarHolidayThemingActive &&
                 !prefs.calendarBirthdayThemingActive,
+            clothesPromoCardVisible = !prefs.clothesPromoCardDismissed,
             usesCalendarThemes = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayState())
@@ -479,6 +487,18 @@ class TodayViewModel(
     fun dismissCelebrationCard() {
         viewModelScope.launch {
             settingsRepository.setCelebrationCardDismissed(true)
+        }
+    }
+
+    /**
+     * Persists the user's dismissal of the Today-screen "Customize your
+     * clothes" promo card. Called on both the X-tap and the
+     * "Clothes settings" CTA so once the user has been pointed at the
+     * page, the card stays hidden.
+     */
+    fun dismissClothesPromoCard() {
+        viewModelScope.launch {
+            settingsRepository.setClothesPromoCardDismissed(true)
         }
     }
 

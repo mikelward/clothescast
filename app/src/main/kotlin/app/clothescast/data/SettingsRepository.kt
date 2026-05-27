@@ -395,6 +395,10 @@ class SettingsRepository(
         dataStore.edit { it[CELEBRATION_CARD_DISMISSED] = dismissed }
     }
 
+    suspend fun setClothesPromoCardDismissed(dismissed: Boolean) {
+        dataStore.edit { it[CLOTHES_PROMO_CARD_DISMISSED] = dismissed }
+    }
+
     /**
      * Bumps [UserPreferences.calendarPermissionRecheckTick] to the current
      * wall-clock millis so the preferences flow re-emits. Use after the
@@ -802,6 +806,7 @@ class SettingsRepository(
         val calendarEnabled = this[CALENDAR_ENABLED]
             ?: (useCalendarEvents || themeFromCalendarHolidays || themeFromCalendarBirthdays)
         val celebrationCardDismissed = this[CELEBRATION_CARD_DISMISSED] == true
+        val clothesPromoCardDismissed = this[CLOTHES_PROMO_CARD_DISMISSED] == true
         val calendarPermissionRecheckTick = this[CALENDAR_PERMISSION_RECHECK_TICK] ?: 0L
         val tonightTime = this[TONIGHT_TIME]?.let { LocalTime.parse(it, TIME_FORMAT) }
             ?: DEFAULT_TONIGHT_TIME
@@ -933,6 +938,7 @@ class SettingsRepository(
             themeFromCalendarHolidays = themeFromCalendarHolidays,
             themeFromCalendarBirthdays = themeFromCalendarBirthdays,
             celebrationCardDismissed = celebrationCardDismissed,
+            clothesPromoCardDismissed = clothesPromoCardDismissed,
             calendarPermissionRecheckTick = calendarPermissionRecheckTick,
             dailyEnabled = dailyEnabled,
             tonightSchedule = Schedule(time = tonightTime, days = tonightDays, zoneId = zone),
@@ -1168,6 +1174,7 @@ class SettingsRepository(
         private val THEME_FROM_CALENDAR_HOLIDAYS = booleanPreferencesKey("theme_from_calendar_holidays")
         private val THEME_FROM_CALENDAR_BIRTHDAYS = booleanPreferencesKey("theme_from_calendar_birthdays")
         private val CELEBRATION_CARD_DISMISSED = booleanPreferencesKey("celebration_card_dismissed")
+        private val CLOTHES_PROMO_CARD_DISMISSED = booleanPreferencesKey("clothes_promo_card_dismissed")
         private val CALENDAR_PERMISSION_RECHECK_TICK = longPreferencesKey("calendar_permission_recheck_tick")
         private val DAILY_ENABLED = booleanPreferencesKey("daily_enabled")
         private val TONIGHT_TIME = stringPreferencesKey("tonight_time_hhmm")

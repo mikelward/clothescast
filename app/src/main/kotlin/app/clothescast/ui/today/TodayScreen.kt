@@ -275,6 +275,7 @@ fun TodayScreen(
             onOpenPrivacy = onNavigateToPrivacy,
             onOpenCalendarSettings = onNavigateToCalendar,
             onDismissCelebrationCard = viewModel::dismissCelebrationCard,
+            onDismissClothesPromoCard = viewModel::dismissClothesPromoCard,
             onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
             onAdjustThreshold = viewModel::adjustClothesRuleThreshold,
             onNavigateToClothes = onNavigateToClothes,
@@ -313,6 +314,7 @@ private fun TodayContent(
     onOpenPrivacy: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
+    onDismissClothesPromoCard: () -> Unit,
     onCalendarPermissionChanged: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
@@ -391,6 +393,8 @@ private fun TodayContent(
                     workStatusToShow = workStatusToShow,
                     locationActionRequired = locationActionRequired,
                     onOpenPrivacy = onOpenPrivacy,
+                    onOpenClothes = onNavigateToClothes,
+                    onDismissClothesPromoCard = onDismissClothesPromoCard,
                     onOpenCalendarSettings = onOpenCalendarSettings,
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
@@ -508,6 +512,7 @@ private fun TodayContent(
                     onOpenPrivacy = onOpenPrivacy,
                     onOpenCalendarSettings = onOpenCalendarSettings,
                     onDismissCelebrationCard = onDismissCelebrationCard,
+                    onDismissClothesPromoCard = onDismissClothesPromoCard,
                 )
             }
         }
@@ -533,6 +538,8 @@ private fun BannerStack(
     workStatusToShow: WorkStatus,
     locationActionRequired: Boolean,
     onOpenPrivacy: () -> Unit,
+    onOpenClothes: () -> Unit,
+    onDismissClothesPromoCard: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
     onSetUpLocation: () -> Unit,
@@ -551,6 +558,19 @@ private fun BannerStack(
     // crash banner: that's a current problem to action; this is just
     // disclosure.
     TelemetryNoticeBanner(onOpenPrivacy = onOpenPrivacy, modifier = bannerModifier)
+    // One-time "Customize your clothes" nudge shown after onboarding so the
+    // user knows the per-temperature rules are theirs to tune. Sits before
+    // the celebration-themes promo because clothes rules are the core
+    // setting; celebration themes are a finishing touch.
+    ClothesPromoCard(
+        visible = state.clothesPromoCardVisible,
+        onOpenClothes = {
+            onDismissClothesPromoCard()
+            onOpenClothes()
+        },
+        onDismiss = onDismissClothesPromoCard,
+        modifier = bannerModifier,
+    )
     // Promo card for the calendar-sourced holiday + birthday theming.
     // Driven by [TodayState.celebrationCardVisible] (gated upstream on
     // toggles + dismissal) so it disappears the moment either toggle goes
@@ -611,6 +631,7 @@ private fun TodayPage(
     onOpenPrivacy: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
+    onDismissClothesPromoCard: () -> Unit,
 ) {
     val scrollScope = rememberCoroutineScope()
     // Captured via onGloballyPositioned on the ConfidenceChip below so the
@@ -645,6 +666,8 @@ private fun TodayPage(
                 workStatusToShow = workStatusToShow,
                 locationActionRequired = locationActionRequired,
                 onOpenPrivacy = onOpenPrivacy,
+                onOpenClothes = onNavigateToClothes,
+                onDismissClothesPromoCard = onDismissClothesPromoCard,
                 onOpenCalendarSettings = onOpenCalendarSettings,
                 onDismissCelebrationCard = onDismissCelebrationCard,
                 onSetUpLocation = onSetUpLocation,

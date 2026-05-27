@@ -943,4 +943,84 @@ the displayed label localizes.
     <string name="holiday_banner_waitangi_day">Fijne Waitangidag</string>
     <string name="settings_calendar_birthdays">Kalenderverjaardagen</string>
     <string name="settings_calendar_public_holidays">Kalenderfeestdagen</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+
+    <!-- Settings root labels — Developer, Format -->
+    <string name="settings_root_developer">Ontwikkelaar</string>
+    <string name="settings_root_developer_subtitle">Testen en foutopsporing</string>
+    <string name="settings_root_format">Format</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Een dag bekijken</string>
+    <string name="settings_developer_preview_day_subtitle">Outfit, banner en stem voor een willekeurige datum, op basis van een vast mild-weervoorbeeld.</string>
+    <string name="settings_developer_pick_date">Kies een datum</string>
+    <string name="settings_developer_today">Vandaag</string>
+    <string name="settings_developer_no_theme">Geen feestdagthema voor deze dag.</string>
+    <string name="settings_developer_resolved_label">Opgelost: %1$s</string>
+    <string name="settings_developer_speak">Voorlezen</string>
+
+    <!-- Smart Home — additional keys -->
+    <string name="settings_smart_home_cast_label">Voorspelling naar smart display sturen</string>
+    <string name="settings_smart_home_cast_last_published">Laatst gepubliceerd %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Laatst opgehaald %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Display heeft nog geen ClothesCast opgehaald</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Telefoonspraak overslaan</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Vermijd dubbele aankondigingen thuis.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Telefoonspraak overslaan</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Vermijd dubbele aankondigingen thuis.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio enz.</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">Dagelijkse ClothesCast</string>
+    <string name="settings_delivery_notification">Meld</string>
+    <string name="settings_delivery_tts">Voorlezen</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Kleding</string>
+    <string name="settings_clothes_mention_always">Altijd</string>
+    <string name="settings_clothes_mention_if_changed">Bij wijziging</string>
+    <string name="settings_clothes_mention_never">Nooit</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Voorbeeld</string>
+    <string name="settings_format_preview_current_title">Huidige voorspelling</string>
+    <string name="settings_format_preview_current_empty">Nog geen voorspelling — kom terug na je volgende ClothesCast.</string>
+    <string name="settings_format_what_to_say">Wat te zeggen</string>
+    <string name="settings_format_range_label">Temperatuurbereik</string>
+    <string name="settings_format_range_none">Geen</string>
+    <string name="settings_format_range_degrees">Graden</string>
+    <string name="settings_format_range_bands">Niveaus</string>
+    <string name="settings_format_change_label">Temperatuurverandering</string>
+    <string name="settings_format_change_off">Uit</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Kledingformulering</string>
+    <string name="settings_format_clothes_items">Kledingstukken</string>
+    <string name="settings_format_clothes_layer_count">Aantal lagen</string>
+    <string name="settings_format_bottoms_label">Onderkleding</string>
+    <string name="settings_format_bottoms_always">Altijd</string>
+    <string name="settings_format_bottoms_if_garments">Bij kledingstukken</string>
+    <string name="settings_format_bottoms_never">Nooit</string>
+    <string name="settings_format_rain_accessory_label">Regenaccessoire</string>
+    <string name="settings_format_rain_accessory_none">Uit</string>
+    <string name="settings_format_rain_accessory_umbrella">Paraplu</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Als geen enkele regel past</string>
+    <string name="settings_default_top_edit_title">Standaard bovenkleding</string>
+    <string name="settings_default_bottom_edit_title">Standaard onderkleding</string>
+    <string name="settings_default_outfit_range_above">wanneer de temperatuur boven %1$s is</string>
+    <string name="settings_default_outfit_range_below">wanneer de temperatuur onder %1$s is</string>
+    <string name="settings_default_outfit_range_between">wanneer de temperatuur tussen %1$s en %2$s ligt</string>
+    <string name="settings_default_outfit_range_never">nooit</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Mijn agenda gebruiken</string>
+    <string name="settings_calendar_master_description">Laat ClothesCast je agenda\'s lezen om voorspellingen en outfits te personaliseren. Niets verlaat het apparaat.</string>
+    <string name="settings_calendar_features_title">Persoonlijke agenda\'s</string>
+    <string name="settings_calendar_evening_tie_ins">Avondkoppelingen</string>
+    <string name="settings_calendar_evening_tie_ins_description">Als je \'s avonds uitgaat, vertelt de ochtendvoorspelling je of je iets extra\'s moet meenemen.</string>
+    <string name="settings_calendar_birthdays_description">Gebruik speciale kleuren en berichten voor verjaardagen in je agenda\'s.</string>
+    <string name="settings_calendar_public_holidays_description">Gebruik speciale kleuren en berichten voor feestdagen in je agenda\'s.</string>
+    <string name="settings_calendar_open_system_settings">Systeeminstellingen openen</string>
 </resources>

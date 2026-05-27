@@ -866,4 +866,84 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_rationale_open_clothes_settings">Mipangilio ya mavazi</string>
     <string name="settings_calendar_birthdays">Siku za Kuzaliwa za Kalenda</string>
     <string name="settings_calendar_public_holidays">Likizo za Kalenda</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+
+    <!-- Settings root labels — Developer, Format -->
+    <string name="settings_root_developer">Msanidi programu</string>
+    <string name="settings_root_developer_subtitle">Majaribio na utatuzi</string>
+    <string name="settings_root_format">Umbizo</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Hakiki siku</string>
+    <string name="settings_developer_preview_day_subtitle">Mavazi, bango, na sauti kwa tarehe yoyote, ukitumia sampuli ya hali ya hewa ya wastani iliyowekwa.</string>
+    <string name="settings_developer_pick_date">Chagua tarehe</string>
+    <string name="settings_developer_today">Leo</string>
+    <string name="settings_developer_no_theme">Hakuna mada ya likizo kwa siku hii.</string>
+    <string name="settings_developer_resolved_label">Imetatuliwa: %1$s</string>
+    <string name="settings_developer_speak">Soma</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">Tuma utabiri kwa onyesho mahiri</string>
+    <string name="settings_smart_home_cast_last_published">Imechapishwa mwisho %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Imepakuliwa mwisho %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Onyesho halijapakua ClothesCast bado</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Ruka usemaji wa simu</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Epuka matangazo ya marudufu nyumbani.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Ruka usemaji wa simu</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Epuka matangazo ya marudufu nyumbani.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, n.k.</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">ClothesCast ya kila siku</string>
+    <string name="settings_delivery_notification">Arifu</string>
+    <string name="settings_delivery_tts">Soma</string>
+
+    <!-- Clothes-mention picker -->
+    <string name="settings_clothes_mention_label">Mavazi</string>
+    <string name="settings_clothes_mention_always">Daima</string>
+    <string name="settings_clothes_mention_if_changed">Mabadiliko</string>
+    <string name="settings_clothes_mention_never">Kamwe</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Mfano</string>
+    <string name="settings_format_preview_current_title">Utabiri wa sasa</string>
+    <string name="settings_format_preview_current_empty">Hakuna utabiri bado — angalia tena baada ya ClothesCast yako ijayo.</string>
+    <string name="settings_format_what_to_say">Cha kusema</string>
+    <string name="settings_format_range_label">Wigo wa halijoto</string>
+    <string name="settings_format_range_none">Hakuna</string>
+    <string name="settings_format_range_degrees">Digrii</string>
+    <string name="settings_format_range_bands">Vikundi</string>
+    <string name="settings_format_change_label">Mabadiliko ya halijoto</string>
+    <string name="settings_format_change_off">Imezimwa</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Maneno ya mavazi</string>
+    <string name="settings_format_clothes_items">Mavazi</string>
+    <string name="settings_format_clothes_layer_count">Idadi ya tabaka</string>
+    <string name="settings_format_bottoms_label">Mavazi ya chini</string>
+    <string name="settings_format_bottoms_always">Daima</string>
+    <string name="settings_format_bottoms_if_garments">Ikiwa kuna mavazi</string>
+    <string name="settings_format_bottoms_never">Kamwe</string>
+    <string name="settings_format_rain_accessory_label">Kifaa cha mvua</string>
+    <string name="settings_format_rain_accessory_none">Imezimwa</string>
+    <string name="settings_format_rain_accessory_umbrella">Mwavuli</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">Ikiwa hakuna sheria inayofaa</string>
+    <string name="settings_default_top_edit_title">Vazi la juu la chaguo-msingi</string>
+    <string name="settings_default_bottom_edit_title">Vazi la chini la chaguo-msingi</string>
+    <string name="settings_default_outfit_range_above">wakati halijoto iko juu ya %1$s</string>
+    <string name="settings_default_outfit_range_below">wakati halijoto iko chini ya %1$s</string>
+    <string name="settings_default_outfit_range_between">wakati halijoto iko kati ya %1$s na %2$s</string>
+    <string name="settings_default_outfit_range_never">kamwe</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Tumia kalenda yangu</string>
+    <string name="settings_calendar_master_description">Ruhusu ClothesCast kusoma kalenda zako ili kubinafsisha utabiri na mavazi. Hakuna kinachoacha kifaa.</string>
+    <string name="settings_calendar_features_title">Kalenda za kibinafsi</string>
+    <string name="settings_calendar_evening_tie_ins">Mafungamano ya jioni</string>
+    <string name="settings_calendar_evening_tie_ins_description">Ikiwa unaenda nje jioni, utabiri wa asubuhi unakuambia ikiwa unahitaji kuchukua kitu chochote zaidi.</string>
+    <string name="settings_calendar_birthdays_description">Tumia rangi na ujumbe maalum kwa siku za kuzaliwa katika kalenda zako.</string>
+    <string name="settings_calendar_public_holidays_description">Tumia rangi na ujumbe maalum kwa likizo za umma katika kalenda zako.</string>
+    <string name="settings_calendar_open_system_settings">Fungua mipangilio ya mfumo</string>
 </resources>

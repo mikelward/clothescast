@@ -896,4 +896,83 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_rationale_open_clothes_settings">การตั้งค่าเสื้อผ้า</string>
     <string name="settings_calendar_birthdays">วันเกิดในปฏิทิน</string>
     <string name="settings_calendar_public_holidays">วันหยุดในปฏิทิน</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels -->
+    <string name="settings_root_developer">นักพัฒนา</string>
+    <string name="settings_root_developer_subtitle">การทดสอบและดีบัก</string>
+    <string name="settings_root_format">รูปแบบ</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">ดูตัวอย่างวัน</string>
+    <string name="settings_developer_preview_day_subtitle">ชุดแต่งกาย แบนเนอร์ และเสียงสำหรับวันที่ใดก็ได้ โดยใช้ตัวอย่างสภาพอากาศที่อ่อนโยนคงที่</string>
+    <string name="settings_developer_pick_date">เลือกวันที่</string>
+    <string name="settings_developer_today">วันนี้</string>
+    <string name="settings_developer_no_theme">ไม่มีธีมวันหยุดสำหรับวันนี้</string>
+    <string name="settings_developer_resolved_label">แก้ไขเป็น: %1$s</string>
+    <string name="settings_developer_speak">พูด</string>
+
+    <!-- Smart Home additional keys -->
+    <string name="settings_smart_home_cast_label">ส่งพยากรณ์ไปยังสมาร์ทดิสเพลย์</string>
+    <string name="settings_smart_home_cast_last_published">เผยแพร่ล่าสุด %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">ดึงล่าสุด %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">สมาร์ทดิสเพลย์ยังไม่ได้ดึง ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">ข้ามการอ่านบนโทรศัพท์</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">หลีกเลี่ยงการแจ้งเตือนซ้ำซ้อนที่บ้าน</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">ข้ามการอ่านบนโทรศัพท์</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">หลีกเลี่ยงการแจ้งเตือนซ้ำซ้อนที่บ้าน</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio ฯลฯ</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">ClothesCast รายวัน</string>
+    <string name="settings_delivery_notification">แจ้งเตือน</string>
+    <string name="settings_delivery_tts">พูด</string>
+
+    <!-- Clothes-mention picker -->
+    <string name="settings_clothes_mention_label">เสื้อผ้า</string>
+    <string name="settings_clothes_mention_always">เสมอ</string>
+    <string name="settings_clothes_mention_if_changed">เปลี่ยนแปลง</string>
+    <string name="settings_clothes_mention_never">ไม่เลย</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">ตัวอย่าง</string>
+    <string name="settings_format_preview_current_title">พยากรณ์ปัจจุบัน</string>
+    <string name="settings_format_preview_current_empty">ยังไม่มีพยากรณ์ — กลับมาดูหลังจาก ClothesCast ครั้งถัดไป</string>
+    <string name="settings_format_what_to_say">สิ่งที่จะพูด</string>
+    <string name="settings_format_range_label">ช่วงอุณหภูมิ</string>
+    <string name="settings_format_range_none">ไม่มี</string>
+    <string name="settings_format_range_degrees">องศา</string>
+    <string name="settings_format_range_bands">ระดับ</string>
+    <string name="settings_format_change_label">การเปลี่ยนแปลงอุณหภูมิ</string>
+    <string name="settings_format_change_off">ปิด</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">การใช้คำเกี่ยวกับเสื้อผ้า</string>
+    <string name="settings_format_clothes_items">เสื้อผ้า</string>
+    <string name="settings_format_clothes_layer_count">จำนวนชั้น</string>
+    <string name="settings_format_bottoms_label">กางเกง</string>
+    <string name="settings_format_bottoms_always">เสมอ</string>
+    <string name="settings_format_bottoms_if_garments">หากมีเสื้อผ้า</string>
+    <string name="settings_format_bottoms_never">ไม่เลย</string>
+    <string name="settings_format_rain_accessory_label">อุปกรณ์กันฝน</string>
+    <string name="settings_format_rain_accessory_none">ปิด</string>
+    <string name="settings_format_rain_accessory_umbrella">ร่ม</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">หากไม่มีกฎใดตรงกัน</string>
+    <string name="settings_default_top_edit_title">เสื้อท่อนบนเริ่มต้น</string>
+    <string name="settings_default_bottom_edit_title">เสื้อท่อนล่างเริ่มต้น</string>
+    <string name="settings_default_outfit_range_above">เมื่ออุณหภูมิสูงกว่า %1$s</string>
+    <string name="settings_default_outfit_range_below">เมื่ออุณหภูมิต่ำกว่า %1$s</string>
+    <string name="settings_default_outfit_range_between">เมื่ออุณหภูมิอยู่ระหว่าง %1$s และ %2$s</string>
+    <string name="settings_default_outfit_range_never">ไม่เลย</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">ใช้ปฏิทินของฉัน</string>
+    <string name="settings_calendar_master_description">ให้ ClothesCast อ่านปฏิทินของคุณเพื่อปรับแต่งพยากรณ์และชุดแต่งกาย ไม่มีข้อมูลออกนอกอุปกรณ์</string>
+    <string name="settings_calendar_features_title">ปฏิทินส่วนตัว</string>
+    <string name="settings_calendar_evening_tie_ins">การเชื่อมโยงตอนเย็น</string>
+    <string name="settings_calendar_evening_tie_ins_description">หากคุณออกไปข้างนอกในตอนเย็น พยากรณ์ตอนเช้าจะบอกว่าคุณต้องนำสิ่งของพิเศษอะไรไปบ้าง</string>
+    <string name="settings_calendar_birthdays_description">ใช้สีและข้อความพิเศษสำหรับวันเกิดในปฏิทินของคุณ</string>
+    <string name="settings_calendar_public_holidays_description">ใช้สีและข้อความพิเศษสำหรับวันหยุดราชการในปฏิทินของคุณ</string>
+    <string name="settings_calendar_open_system_settings">เปิดการตั้งค่าระบบ</string>
 </resources>

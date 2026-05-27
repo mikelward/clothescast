@@ -949,4 +949,83 @@ only the displayed label localizes.
     <string name="holiday_banner_st_andrews_day">С Днём святого Андрея</string>
     <string name="settings_calendar_birthdays">Дни рождения в календаре</string>
     <string name="settings_calendar_public_holidays">Праздники в календаре</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels -->
+    <string name="settings_root_developer">Разработчик</string>
+    <string name="settings_root_developer_subtitle">Тестирование и отладка</string>
+    <string name="settings_root_format">Формат</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Предпросмотр дня</string>
+    <string name="settings_developer_preview_day_subtitle">Образ, баннер и голос для любой даты на основе фиксированного примера мягкой погоды.</string>
+    <string name="settings_developer_pick_date">Выбери дату</string>
+    <string name="settings_developer_today">Сегодня</string>
+    <string name="settings_developer_no_theme">Нет праздничной темы для этого дня.</string>
+    <string name="settings_developer_resolved_label">Разрешено: %1$s</string>
+    <string name="settings_developer_speak">Озвучить</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">Отправить прогноз на умный дисплей</string>
+    <string name="settings_smart_home_cast_last_published">Последняя публикация %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Последняя загрузка %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Дисплей ещё не загружал ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Не озвучивать на телефоне</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Избегай двойных объявлений дома.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Не озвучивать на телефоне</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Избегай двойных объявлений дома.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, и т. д.</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_enabled">Ежедневный ClothesCast</string>
+    <string name="settings_delivery_notification">Уведомить</string>
+    <string name="settings_delivery_tts">Озвучить</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Одежда</string>
+    <string name="settings_clothes_mention_always">Всегда</string>
+    <string name="settings_clothes_mention_if_changed">При изменении</string>
+    <string name="settings_clothes_mention_never">Никогда</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Пример</string>
+    <string name="settings_format_preview_current_title">Текущий прогноз</string>
+    <string name="settings_format_preview_current_empty">Прогноза пока нет — загляни после следующего ClothesCast.</string>
+    <string name="settings_format_what_to_say">Что говорить</string>
+    <string name="settings_format_range_label">Диапазон температур</string>
+    <string name="settings_format_range_none">Нет</string>
+    <string name="settings_format_range_degrees">Градусы</string>
+    <string name="settings_format_range_bands">Диапазоны</string>
+    <string name="settings_format_change_label">Изменение температуры</string>
+    <string name="settings_format_change_off">Выкл.</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Описание одежды</string>
+    <string name="settings_format_clothes_items">Предметы</string>
+    <string name="settings_format_clothes_layer_count">Количество слоёв</string>
+    <string name="settings_format_bottoms_label">Низ</string>
+    <string name="settings_format_bottoms_always">Всегда</string>
+    <string name="settings_format_bottoms_if_garments">Если есть верх</string>
+    <string name="settings_format_bottoms_never">Никогда</string>
+    <string name="settings_format_rain_accessory_label">Аксессуар от дождя</string>
+    <string name="settings_format_rain_accessory_none">Выкл.</string>
+    <string name="settings_format_rain_accessory_umbrella">Зонт</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Если ни одно правило не подходит</string>
+    <string name="settings_default_top_edit_title">Верх по умолчанию</string>
+    <string name="settings_default_bottom_edit_title">Низ по умолчанию</string>
+    <string name="settings_default_outfit_range_above">когда температура выше %1$s</string>
+    <string name="settings_default_outfit_range_below">когда температура ниже %1$s</string>
+    <string name="settings_default_outfit_range_between">когда температура от %1$s до %2$s</string>
+    <string name="settings_default_outfit_range_never">никогда</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Использовать мой календарь</string>
+    <string name="settings_calendar_master_description">Разреши ClothesCast читать твои календари, чтобы подбирать прогнозы и наряды под тебя. Ничего не покидает устройство.</string>
+    <string name="settings_calendar_features_title">Личные календари</string>
+    <string name="settings_calendar_evening_tie_ins">Привязка к вечерним событиям</string>
+    <string name="settings_calendar_evening_tie_ins_description">Если ты собираешься куда-то вечером, утренний прогноз подскажет, нужно ли взять что-то с собой.</string>
+    <string name="settings_calendar_birthdays_description">Особые цвета и сообщения для дней рождения из твоих календарей.</string>
+    <string name="settings_calendar_public_holidays_description">Особые цвета и сообщения для государственных праздников из твоих календарей.</string>
+    <string name="settings_calendar_open_system_settings">Открыть системные настройки</string>
 </resources>

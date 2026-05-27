@@ -834,4 +834,84 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="holiday_banner_st_andrews_day">Feliç Dia de Sant Andreu</string>
     <string name="settings_calendar_birthdays">Aniversaris del calendari</string>
     <string name="settings_calendar_public_holidays">Festius del calendari</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+
+    <!-- Settings root labels — Developer, Format -->
+    <string name="settings_root_developer">Desenvolupador</string>
+    <string name="settings_root_developer_subtitle">Proves i depuració</string>
+    <string name="settings_root_format">Format</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Previsualitza un dia</string>
+    <string name="settings_developer_preview_day_subtitle">Vestimenta, bàner i veu per a qualsevol data, amb una mostra meteorològica suau fixa.</string>
+    <string name="settings_developer_pick_date">Tria una data</string>
+    <string name="settings_developer_today">Avui</string>
+    <string name="settings_developer_no_theme">Cap tema festiu per a aquest dia.</string>
+    <string name="settings_developer_resolved_label">Resolt: %1$s</string>
+    <string name="settings_developer_speak">Llegeix en veu alta</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">Envia la previsió a la pantalla intel·ligent</string>
+    <string name="settings_smart_home_cast_last_published">Última publicació %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Última obtenció %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">La pantalla encara no ha obtingut cap ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Omet la lectura al telèfon</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Evita anuncis duplicats a casa.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Omet la lectura al telèfon</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Evita anuncis duplicats a casa.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, etc.</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_enabled">ClothesCast diari</string>
+    <string name="settings_delivery_notification">Notifica</string>
+    <string name="settings_delivery_tts">Llegeix en veu alta</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Roba</string>
+    <string name="settings_clothes_mention_always">Sempre</string>
+    <string name="settings_clothes_mention_if_changed">Canvi</string>
+    <string name="settings_clothes_mention_never">Mai</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Exemple</string>
+    <string name="settings_format_preview_current_title">Previsió actual</string>
+    <string name="settings_format_preview_current_empty">Encara no hi ha previsió — torna després del teu pròxim ClothesCast.</string>
+    <string name="settings_format_what_to_say">Què dir</string>
+    <string name="settings_format_range_label">Interval de temperatura</string>
+    <string name="settings_format_range_none">Cap</string>
+    <string name="settings_format_range_degrees">Graus</string>
+    <string name="settings_format_range_bands">Categories</string>
+    <string name="settings_format_change_label">Variació de temperatura</string>
+    <string name="settings_format_change_off">Desactivat</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Redacció de la roba</string>
+    <string name="settings_format_clothes_items">Peces</string>
+    <string name="settings_format_clothes_layer_count">Nombre de capes</string>
+    <string name="settings_format_bottoms_label">Pantalons</string>
+    <string name="settings_format_bottoms_always">Sempre</string>
+    <string name="settings_format_bottoms_if_garments">Si hi ha peces</string>
+    <string name="settings_format_bottoms_never">Mai</string>
+    <string name="settings_format_rain_accessory_label">Accessori per a la pluja</string>
+    <string name="settings_format_rain_accessory_none">Desactivat</string>
+    <string name="settings_format_rain_accessory_umbrella">Paraigua</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Si no coincideix cap regla</string>
+    <string name="settings_default_top_edit_title">Peça superior per defecte</string>
+    <string name="settings_default_bottom_edit_title">Pantalons per defecte</string>
+    <string name="settings_default_outfit_range_above">quan la temperatura és superior a %1$s</string>
+    <string name="settings_default_outfit_range_below">quan la temperatura és inferior a %1$s</string>
+    <string name="settings_default_outfit_range_between">quan la temperatura és entre %1$s i %2$s</string>
+    <string name="settings_default_outfit_range_never">mai</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Utilitza el meu calendari</string>
+    <string name="settings_calendar_master_description">Permet que ClothesCast llegeixi els teus calendaris per personalitzar previsions i vestits. Res no surt del dispositiu.</string>
+    <string name="settings_calendar_features_title">Calendaris personals</string>
+    <string name="settings_calendar_evening_tie_ins">Referències al vespre</string>
+    <string name="settings_calendar_evening_tie_ins_description">Si surts al vespre, la previsió del matí t\'indica si has de portar alguna cosa extra.</string>
+    <string name="settings_calendar_birthdays_description">Utilitza colors i missatges especials per als aniversaris dels teus calendaris.</string>
+    <string name="settings_calendar_public_holidays_description">Utilitza colors i missatges especials per als festius dels teus calendaris.</string>
+    <string name="settings_calendar_open_system_settings">Obre la configuració del sistema</string>
 </resources>

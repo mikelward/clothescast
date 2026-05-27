@@ -887,4 +887,83 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_rationale_open_clothes_settings">تنظیمات لباس</string>
     <string name="settings_calendar_birthdays">تولدهای تقویم</string>
     <string name="settings_calendar_public_holidays">تعطیلات تقویم</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels — Smart Home, Developer, Format -->
+    <string name="settings_root_developer">توسعه‌دهنده</string>
+    <string name="settings_root_developer_subtitle">آزمایش و اشکال‌زدایی</string>
+    <string name="settings_root_format">قالب‌بندی</string>
+
+    <!-- Developer settings page (Settings → Developer → Preview a day) -->
+    <string name="settings_developer_preview_day_title">پیش‌نمایش یک روز</string>
+    <string name="settings_developer_preview_day_subtitle">لباس، بنر و صدا برای هر تاریخی، با استفاده از نمونه‌ای ثابت از هوای معتدل.</string>
+    <string name="settings_developer_pick_date">یک تاریخ انتخاب کنید</string>
+    <string name="settings_developer_today">امروز</string>
+    <string name="settings_developer_no_theme">هیچ تم تعطیلاتی برای این روز وجود ندارد.</string>
+    <string name="settings_developer_resolved_label">یافت شد: %1$s</string>
+    <string name="settings_developer_speak">پخش</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">ارسال پیش‌بینی به نمایشگر هوشمند</string>
+    <string name="settings_smart_home_cast_last_published">آخرین انتشار %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">آخرین دریافت %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">نمایشگر هنوز ClothesCast دریافت نکرده است</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">صرف‌نظر از گفتار گوشی</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">از اعلان‌های تکراری در خانه جلوگیری کنید.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">صرف‌نظر از گفتار گوشی</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">از اعلان‌های تکراری در خانه جلوگیری کنید.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text، %1$s/now/audio و غیره</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_enabled">ClothesCast روزانه</string>
+    <string name="settings_delivery_notification">اعلان</string>
+    <string name="settings_delivery_tts">خواندن</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">لباس</string>
+    <string name="settings_clothes_mention_always">همیشه</string>
+    <string name="settings_clothes_mention_if_changed">هنگام تغییر</string>
+    <string name="settings_clothes_mention_never">هرگز</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">مثال</string>
+    <string name="settings_format_preview_current_title">پیش‌بینی فعلی</string>
+    <string name="settings_format_preview_current_empty">هنوز پیش‌بینی وجود ندارد — پس از ClothesCast بعدی بررسی کنید.</string>
+    <string name="settings_format_what_to_say">چه گفته شود</string>
+    <string name="settings_format_range_label">محدوده دما</string>
+    <string name="settings_format_range_none">هیچ‌کدام</string>
+    <string name="settings_format_range_degrees">درجه</string>
+    <string name="settings_format_range_bands">طیف‌ها</string>
+    <string name="settings_format_change_label">تغییر دما</string>
+    <string name="settings_format_change_off">خاموش</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">عبارت لباس</string>
+    <string name="settings_format_clothes_items">قطعه‌ها</string>
+    <string name="settings_format_clothes_layer_count">تعداد لایه‌ها</string>
+    <string name="settings_format_bottoms_label">لباس‌های پایین‌تنه</string>
+    <string name="settings_format_bottoms_always">همیشه</string>
+    <string name="settings_format_bottoms_if_garments">اگر قطعه‌ای وجود داشت</string>
+    <string name="settings_format_bottoms_never">هرگز</string>
+    <string name="settings_format_rain_accessory_label">لوازم باران</string>
+    <string name="settings_format_rain_accessory_none">خاموش</string>
+    <string name="settings_format_rain_accessory_umbrella">چتر</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">اگر هیچ قانونی مطابقت نداشت</string>
+    <string name="settings_default_top_edit_title">بالاتنه پیش‌فرض</string>
+    <string name="settings_default_bottom_edit_title">پایین‌تنه پیش‌فرض</string>
+    <string name="settings_default_outfit_range_above">وقتی دما بالاتر از %1$s است</string>
+    <string name="settings_default_outfit_range_below">وقتی دما پایین‌تر از %1$s است</string>
+    <string name="settings_default_outfit_range_between">وقتی دما بین %1$s و %2$s است</string>
+    <string name="settings_default_outfit_range_never">هرگز</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">از تقویم من استفاده کن</string>
+    <string name="settings_calendar_master_description">به ClothesCast اجازه دهید تقویم‌های شما را بخواند تا پیش‌بینی‌ها و لباس‌ها را شخصی‌سازی کند. هیچ چیز از دستگاه خارج نمی‌شود.</string>
+    <string name="settings_calendar_features_title">تقویم‌های شخصی</string>
+    <string name="settings_calendar_evening_tie_ins">پیوندهای عصرگاهی</string>
+    <string name="settings_calendar_evening_tie_ins_description">اگر در عصر بیرون می‌روید، پیش‌بینی صبحگاهی به شما می‌گوید که آیا چیز اضافه‌ای باید همراه ببرید.</string>
+    <string name="settings_calendar_birthdays_description">از رنگ‌ها و پیام‌های ویژه برای تولدها در تقویم‌های خود استفاده کنید.</string>
+    <string name="settings_calendar_public_holidays_description">از رنگ‌ها و پیام‌های ویژه برای تعطیلات رسمی در تقویم‌های خود استفاده کنید.</string>
+    <string name="settings_calendar_open_system_settings">باز کردن تنظیمات سیستم</string>
 </resources>

@@ -896,4 +896,83 @@ they work correctly in both the single-band and range templates.
     <string name="today_rationale_open_clothes_settings">إعدادات الملابس</string>
     <string name="settings_calendar_birthdays">أعياد ميلاد التقويم</string>
     <string name="settings_calendar_public_holidays">أعياد التقويم</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels — Smart Home, Developer, Format -->
+    <string name="settings_root_developer">المطور</string>
+    <string name="settings_root_developer_subtitle">الاختبار وتصحيح الأخطاء</string>
+    <string name="settings_root_format">الصياغة</string>
+
+    <!-- Developer settings page (Settings → Developer → Preview a day) -->
+    <string name="settings_developer_preview_day_title">معاينة يوم</string>
+    <string name="settings_developer_preview_day_subtitle">الزي واللافتة والصوت لأي تاريخ، باستخدام عيّنة طقس معتدل ثابتة.</string>
+    <string name="settings_developer_pick_date">اختر تاريخًا</string>
+    <string name="settings_developer_today">اليوم</string>
+    <string name="settings_developer_no_theme">لا توجد سمة عطلة لهذا اليوم.</string>
+    <string name="settings_developer_resolved_label">تم الحل: %1$s</string>
+    <string name="settings_developer_speak">تشغيل</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">إرسال التوقعات إلى الشاشة الذكية</string>
+    <string name="settings_smart_home_cast_last_published">آخر نشر %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">آخر جلب %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">لم تجلب الشاشة ClothesCast بعد</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">تخطي صوت الهاتف</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">تجنب التكرار في الإعلانات داخل المنزل.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">تخطي صوت الهاتف</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">تجنب التكرار في الإعلانات داخل المنزل.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text، %1$s/now/audio، إلخ</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_enabled">ClothesCast اليومي</string>
+    <string name="settings_delivery_notification">إشعار</string>
+    <string name="settings_delivery_tts">قراءة</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">الملابس</string>
+    <string name="settings_clothes_mention_always">دائمًا</string>
+    <string name="settings_clothes_mention_if_changed">عند التغيير</string>
+    <string name="settings_clothes_mention_never">أبدًا</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">مثال</string>
+    <string name="settings_format_preview_current_title">التوقعات الحالية</string>
+    <string name="settings_format_preview_current_empty">لا توجد توقعات بعد — تحقق بعد ClothesCast التالي.</string>
+    <string name="settings_format_what_to_say">ماذا يُقال</string>
+    <string name="settings_format_range_label">مدى درجة الحرارة</string>
+    <string name="settings_format_range_none">بدون</string>
+    <string name="settings_format_range_degrees">درجات</string>
+    <string name="settings_format_range_bands">نطاقات</string>
+    <string name="settings_format_change_label">تغير درجة الحرارة</string>
+    <string name="settings_format_change_off">إيقاف</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">صياغة الملابس</string>
+    <string name="settings_format_clothes_items">قطع الملابس</string>
+    <string name="settings_format_clothes_layer_count">عدد الطبقات</string>
+    <string name="settings_format_bottoms_label">الملابس السفلية</string>
+    <string name="settings_format_bottoms_always">دائمًا</string>
+    <string name="settings_format_bottoms_if_garments">عند وجود ملابس</string>
+    <string name="settings_format_bottoms_never">أبدًا</string>
+    <string name="settings_format_rain_accessory_label">إكسسوار المطر</string>
+    <string name="settings_format_rain_accessory_none">إيقاف</string>
+    <string name="settings_format_rain_accessory_umbrella">مظلة</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">إذا لم تنطبق أي قاعدة</string>
+    <string name="settings_default_top_edit_title">القطعة العلوية الافتراضية</string>
+    <string name="settings_default_bottom_edit_title">القطعة السفلية الافتراضية</string>
+    <string name="settings_default_outfit_range_above">عندما تكون درجة الحرارة أعلى من %1$s</string>
+    <string name="settings_default_outfit_range_below">عندما تكون درجة الحرارة أقل من %1$s</string>
+    <string name="settings_default_outfit_range_between">عندما تكون درجة الحرارة بين %1$s و%2$s</string>
+    <string name="settings_default_outfit_range_never">أبدًا</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">استخدام تقويمي</string>
+    <string name="settings_calendar_master_description">اسمح لـ ClothesCast بقراءة تقاويمك لتخصيص التوقعات والأزياء. لا يغادر شيء الجهاز.</string>
+    <string name="settings_calendar_features_title">التقاويم الشخصية</string>
+    <string name="settings_calendar_evening_tie_ins">روابط المساء</string>
+    <string name="settings_calendar_evening_tie_ins_description">إذا كنت ستخرج في المساء، تخبرك توقعات الصباح بما إذا كنت بحاجة إلى إحضار أي شيء إضافي.</string>
+    <string name="settings_calendar_birthdays_description">استخدم ألوانًا ورسائل خاصة لأعياد الميلاد في تقاويمك.</string>
+    <string name="settings_calendar_public_holidays_description">استخدم ألوانًا ورسائل خاصة للعطلات الرسمية في تقاويمك.</string>
+    <string name="settings_calendar_open_system_settings">فتح إعدادات النظام</string>
 </resources>

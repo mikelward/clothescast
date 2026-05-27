@@ -888,4 +888,83 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="cast_error_unknown">A közvetítés sikertelen volt.</string>
     <string name="settings_calendar_birthdays">Naptárbeli születésnapok</string>
     <string name="settings_calendar_public_holidays">Naptárbeli ünnepek</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels — Smart Home, Developer, Format -->
+    <string name="settings_root_developer">Fejlesztő</string>
+    <string name="settings_root_developer_subtitle">Tesztelés és hibakeresés</string>
+    <string name="settings_root_format">Formátum</string>
+
+    <!-- Developer settings page (Settings → Developer → Preview a day) -->
+    <string name="settings_developer_preview_day_title">Nap előnézete</string>
+    <string name="settings_developer_preview_day_subtitle">Öltözék, banner és hang bármely dátumra, rögzített enyhe időjárás-minta alapján.</string>
+    <string name="settings_developer_pick_date">Válassz dátumot</string>
+    <string name="settings_developer_today">Ma</string>
+    <string name="settings_developer_no_theme">Erre a napra nincs ünnep-téma.</string>
+    <string name="settings_developer_resolved_label">Feloldva: %1$s</string>
+    <string name="settings_developer_speak">Mondja ki</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">Előrejelzés küldése az okos kijelzőre</string>
+    <string name="settings_smart_home_cast_last_published">Utoljára közzétéve: %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Utoljára letöltve: %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">A kijelző még nem töltött le ClothesCastot</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Telefonos beszéd kihagyása</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Kerüld az ismétlődő bemondásokat otthon.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Telefonos beszéd kihagyása</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Kerüld az ismétlődő bemondásokat otthon.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio stb.</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_enabled">Napi ClothesCast</string>
+    <string name="settings_delivery_notification">Értesítés</string>
+    <string name="settings_delivery_tts">Felolvasás</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Ruházat</string>
+    <string name="settings_clothes_mention_always">Mindig</string>
+    <string name="settings_clothes_mention_if_changed">Változáskor</string>
+    <string name="settings_clothes_mention_never">Soha</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Példa</string>
+    <string name="settings_format_preview_current_title">Jelenlegi előrejelzés</string>
+    <string name="settings_format_preview_current_empty">Még nincs előrejelzés — nézz vissza a következő ClothesCastod után.</string>
+    <string name="settings_format_what_to_say">Mit mondjon</string>
+    <string name="settings_format_range_label">Hőmérséklet-tartomány</string>
+    <string name="settings_format_range_none">Nincs</string>
+    <string name="settings_format_range_degrees">Fokok</string>
+    <string name="settings_format_range_bands">Sávok</string>
+    <string name="settings_format_change_label">Hőmérséklet-változás</string>
+    <string name="settings_format_change_off">Ki</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Ruházat megfogalmazása</string>
+    <string name="settings_format_clothes_items">Ruhadarabok</string>
+    <string name="settings_format_clothes_layer_count">Rétegek száma</string>
+    <string name="settings_format_bottoms_label">Alsó ruházat</string>
+    <string name="settings_format_bottoms_always">Mindig</string>
+    <string name="settings_format_bottoms_if_garments">Ha van ruhadarab</string>
+    <string name="settings_format_bottoms_never">Soha</string>
+    <string name="settings_format_rain_accessory_label">Esőkellék</string>
+    <string name="settings_format_rain_accessory_none">Ki</string>
+    <string name="settings_format_rain_accessory_umbrella">Esernyő</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">Ha egyik szabály sem illik</string>
+    <string name="settings_default_top_edit_title">Alapértelmezett felső</string>
+    <string name="settings_default_bottom_edit_title">Alapértelmezett alsó</string>
+    <string name="settings_default_outfit_range_above">ha a hőmérséklet %1$s fölött van</string>
+    <string name="settings_default_outfit_range_below">ha a hőmérséklet %1$s alatt van</string>
+    <string name="settings_default_outfit_range_between">ha a hőmérséklet %1$s és %2$s között van</string>
+    <string name="settings_default_outfit_range_never">soha</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Használja a naptáramat</string>
+    <string name="settings_calendar_master_description">Engedd, hogy a ClothesCast olvassa a naptáraidat az előrejelzések és öltözékek személyre szabásához. Semmi sem hagyja el az eszközt.</string>
+    <string name="settings_calendar_features_title">Személyes naptárak</string>
+    <string name="settings_calendar_evening_tie_ins">Esti utalások</string>
+    <string name="settings_calendar_evening_tie_ins_description">Ha este elmész valahova, a reggeli előrejelzés megmondja, kell-e bármi extrát magaddal vinned.</string>
+    <string name="settings_calendar_birthdays_description">Különleges színek és üzenetek használata a naptáraidban szereplő születésnapokra.</string>
+    <string name="settings_calendar_public_holidays_description">Különleges színek és üzenetek használata a naptáraidban szereplő ünnepnapokra.</string>
+    <string name="settings_calendar_open_system_settings">Rendszerbeállítások megnyitása</string>
 </resources>

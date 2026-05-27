@@ -966,4 +966,84 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_rationale_open_clothes_settings">পোশাক সেটিংস</string>
     <string name="settings_calendar_birthdays">ক্যালেন্ডার জন্মদিন</string>
     <string name="settings_calendar_public_holidays">ক্যালেন্ডার ছুটি</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+
+    <!-- Settings root labels — Developer, Format -->
+    <string name="settings_root_developer">ডেভেলপার</string>
+    <string name="settings_root_developer_subtitle">পরীক্ষা ও ডিবাগিং</string>
+    <string name="settings_root_format">ফর্ম্যাট</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">একটি দিনের প্রাকদর্শন</string>
+    <string name="settings_developer_preview_day_subtitle">যেকোনো তারিখের জন্য পোশাক, ব্যানার ও ভয়েস, একটি স্থির মৃদু-আবহাওয়ার নমুনা ব্যবহার করে।</string>
+    <string name="settings_developer_pick_date">একটি তারিখ বাছুন</string>
+    <string name="settings_developer_today">আজ</string>
+    <string name="settings_developer_no_theme">এই দিনের জন্য কোনো ছুটির থিম নেই।</string>
+    <string name="settings_developer_resolved_label">সমাধান: %1$s</string>
+    <string name="settings_developer_speak">পড়ুন</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">স্মার্ট ডিসপ্লেতে পূর্বাভাস পাঠান</string>
+    <string name="settings_smart_home_cast_last_published">সর্বশেষ প্রকাশিত %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">সর্বশেষ আনা হয়েছে %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">ডিসপ্লে এখনো কোনো ClothesCast আনেনি</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">ফোনের ভয়েস বাদ দিন</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">বাড়িতে দ্বৈত ঘোষণা এড়ান।</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">ফোনের ভয়েস বাদ দিন</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">বাড়িতে দ্বৈত ঘোষণা এড়ান।</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, ইত্যাদি</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">দৈনিক ClothesCast</string>
+    <string name="settings_delivery_notification">জানান</string>
+    <string name="settings_delivery_tts">পড়ুন</string>
+
+    <!-- Clothes-mention picker -->
+    <string name="settings_clothes_mention_label">পোশাক</string>
+    <string name="settings_clothes_mention_always">সবসময়</string>
+    <string name="settings_clothes_mention_if_changed">পরিবর্তন হলে</string>
+    <string name="settings_clothes_mention_never">কখনো না</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">উদাহরণ</string>
+    <string name="settings_format_preview_current_title">বর্তমান পূর্বাভাস</string>
+    <string name="settings_format_preview_current_empty">এখনো কোনো পূর্বাভাস নেই — পরবর্তী ClothesCast-এর পরে আবার দেখুন।</string>
+    <string name="settings_format_what_to_say">কী বলা হবে</string>
+    <string name="settings_format_range_label">তাপমাত্রার পরিসীমা</string>
+    <string name="settings_format_range_none">কিছু না</string>
+    <string name="settings_format_range_degrees">ডিগ্রি</string>
+    <string name="settings_format_range_bands">শ্রেণি</string>
+    <string name="settings_format_change_label">তাপমাত্রার পরিবর্তন</string>
+    <string name="settings_format_change_off">বন্ধ</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">পোশাকের শব্দচয়ন</string>
+    <string name="settings_format_clothes_items">পোশাক</string>
+    <string name="settings_format_clothes_layer_count">স্তরের সংখ্যা</string>
+    <string name="settings_format_bottoms_label">নিম্নাঙ্গের পোশাক</string>
+    <string name="settings_format_bottoms_always">সবসময়</string>
+    <string name="settings_format_bottoms_if_garments">যদি পোশাক থাকে</string>
+    <string name="settings_format_bottoms_never">কখনো না</string>
+    <string name="settings_format_rain_accessory_label">বৃষ্টির সরঞ্জাম</string>
+    <string name="settings_format_rain_accessory_none">বন্ধ</string>
+    <string name="settings_format_rain_accessory_umbrella">ছাতা</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">কোনো নিয়ম না মিললে</string>
+    <string name="settings_default_top_edit_title">ডিফল্ট উপরের পোশাক</string>
+    <string name="settings_default_bottom_edit_title">ডিফল্ট নিম্নাঙ্গের পোশাক</string>
+    <string name="settings_default_outfit_range_above">যখন তাপমাত্রা %1$s-এর উপরে</string>
+    <string name="settings_default_outfit_range_below">যখন তাপমাত্রা %1$s-এর নিচে</string>
+    <string name="settings_default_outfit_range_between">যখন তাপমাত্রা %1$s এবং %2$s-এর মধ্যে</string>
+    <string name="settings_default_outfit_range_never">কখনো না</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">আমার ক্যালেন্ডার ব্যবহার করুন</string>
+    <string name="settings_calendar_master_description">পূর্বাভাস ও পোশাক ব্যক্তিগত করতে ClothesCast-কে আপনার ক্যালেন্ডার পড়ার সুযোগ দিন। কিছুই ডিভাইস ছাড়ে না।</string>
+    <string name="settings_calendar_features_title">ব্যক্তিগত ক্যালেন্ডার</string>
+    <string name="settings_calendar_evening_tie_ins">সন্ধ্যার যোগসূত্র</string>
+    <string name="settings_calendar_evening_tie_ins_description">যদি আপনি সন্ধ্যায় বাইরে যান, সকালের পূর্বাভাস আপনাকে জানায় যে কিছু অতিরিক্ত আনার প্রয়োজন আছে কিনা।</string>
+    <string name="settings_calendar_birthdays_description">আপনার ক্যালেন্ডারের জন্মদিনের জন্য বিশেষ রঙ ও বার্তা ব্যবহার করুন।</string>
+    <string name="settings_calendar_public_holidays_description">আপনার ক্যালেন্ডারের সরকারি ছুটির জন্য বিশেষ রঙ ও বার্তা ব্যবহার করুন।</string>
+    <string name="settings_calendar_open_system_settings">সিস্টেম সেটিংস খুলুন</string>
 </resources>

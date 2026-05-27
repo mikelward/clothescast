@@ -1059,4 +1059,84 @@ label localises.
     <string name="today_rationale_open_clothes_settings">服裝設定</string>
     <string name="settings_calendar_birthdays">行事曆生日</string>
     <string name="settings_calendar_public_holidays">行事曆節假日</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+
+    <!-- Settings root labels — Developer, Format. -->
+    <string name="settings_root_developer">開發者</string>
+    <string name="settings_root_developer_subtitle">測試與除錯</string>
+    <string name="settings_root_format">格式</string>
+
+    <!-- Developer settings page — preview-a-day -->
+    <string name="settings_developer_preview_day_title">預覽某一天</string>
+    <string name="settings_developer_preview_day_subtitle">使用固定的溫和天氣樣本，預覽任意日期的穿搭、橫幅與語音。</string>
+    <string name="settings_developer_pick_date">選擇日期</string>
+    <string name="settings_developer_today">今天</string>
+    <string name="settings_developer_no_theme">這一天沒有節日主題。</string>
+    <string name="settings_developer_resolved_label">解析為：%1$s</string>
+    <string name="settings_developer_speak">朗讀</string>
+
+    <!-- Smart Home — additional cast / mqtt keys. -->
+    <string name="settings_smart_home_cast_label">將預報傳送到智慧顯示器</string>
+    <string name="settings_smart_home_cast_last_published">上次傳送 %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">上次取得 %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">顯示器尚未取得過 ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">略過手機語音</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">避免在家時重複播報。</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">略過手機語音</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">避免在家時重複播報。</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text、%1$s/now/audio 等</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">每日 ClothesCast</string>
+    <string name="settings_delivery_notification">通知</string>
+    <string name="settings_delivery_tts">朗讀</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">服裝</string>
+    <string name="settings_clothes_mention_always">總是</string>
+    <string name="settings_clothes_mention_if_changed">變化時</string>
+    <string name="settings_clothes_mention_never">從不</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">範例</string>
+    <string name="settings_format_preview_current_title">目前預報</string>
+    <string name="settings_format_preview_current_empty">還沒有預報 — 下次 ClothesCast 後再來看看。</string>
+    <string name="settings_format_what_to_say">說什麼</string>
+    <string name="settings_format_range_label">溫度範圍</string>
+    <string name="settings_format_range_none">無</string>
+    <string name="settings_format_range_degrees">度數</string>
+    <string name="settings_format_range_bands">區間</string>
+    <string name="settings_format_change_label">溫度變化</string>
+    <string name="settings_format_change_off">關閉</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">服裝措辭</string>
+    <string name="settings_format_clothes_items">衣物</string>
+    <string name="settings_format_clothes_layer_count">層數</string>
+    <string name="settings_format_bottoms_label">下著</string>
+    <string name="settings_format_bottoms_always">總是</string>
+    <string name="settings_format_bottoms_if_garments">有衣物時</string>
+    <string name="settings_format_bottoms_never">從不</string>
+    <string name="settings_format_rain_accessory_label">雨具</string>
+    <string name="settings_format_rain_accessory_none">關閉</string>
+    <string name="settings_format_rain_accessory_umbrella">雨傘</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">沒有規則符合時</string>
+    <string name="settings_default_top_edit_title">預設上著</string>
+    <string name="settings_default_bottom_edit_title">預設下著</string>
+    <string name="settings_default_outfit_range_above">當溫度高於 %1$s 時</string>
+    <string name="settings_default_outfit_range_below">當溫度低於 %1$s 時</string>
+    <string name="settings_default_outfit_range_between">當溫度在 %1$s 至 %2$s 之間時</string>
+    <string name="settings_default_outfit_range_never">從不</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">使用我的行事曆</string>
+    <string name="settings_calendar_master_description">讓 ClothesCast 讀取你的行事曆，以個人化預報和穿搭。不會有任何資料離開裝置。</string>
+    <string name="settings_calendar_features_title">個人行事曆</string>
+    <string name="settings_calendar_evening_tie_ins">晚間銜接</string>
+    <string name="settings_calendar_evening_tie_ins_description">如果你晚上要外出，早晨預報會告訴你是否需要額外帶點什麼。</string>
+    <string name="settings_calendar_birthdays_description">為行事曆中的生日使用特別的顏色與訊息。</string>
+    <string name="settings_calendar_public_holidays_description">為行事曆中的國定假日使用特別的顏色與訊息。</string>
+    <string name="settings_calendar_open_system_settings">開啟系統設定</string>
 </resources>

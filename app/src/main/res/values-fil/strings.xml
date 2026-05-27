@@ -946,4 +946,83 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_rationale_open_clothes_settings">Mga setting ng damit</string>
     <string name="settings_calendar_birthdays">Mga Kaarawan sa Kalendaryo</string>
     <string name="settings_calendar_public_holidays">Mga Holiday sa Kalendaryo</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels -->
+    <string name="settings_root_developer">Developer</string>
+    <string name="settings_root_developer_subtitle">Pagsubok at Debugging</string>
+    <string name="settings_root_format">Format</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">I-preview ang isang araw</string>
+    <string name="settings_developer_preview_day_subtitle">Outfit, banner, at boses para sa kahit anong petsa, gamit ang isang nakatakdang sample ng katamtamang panahon.</string>
+    <string name="settings_developer_pick_date">Pumili ng petsa</string>
+    <string name="settings_developer_today">Ngayon</string>
+    <string name="settings_developer_no_theme">Walang holiday theme para sa araw na ito.</string>
+    <string name="settings_developer_resolved_label">Naresolba: %1$s</string>
+    <string name="settings_developer_speak">Bigkasin</string>
+
+    <!-- Smart Home additional keys -->
+    <string name="settings_smart_home_cast_label">Ipadala ang forecast sa smart display</string>
+    <string name="settings_smart_home_cast_last_published">Huling na-publish %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Huling kinuha %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Hindi pa kumukuha ng ClothesCast ang display</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Laktawan ang pagbigkas sa telepono</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Iwasan ang dobleng anunsyo sa bahay.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Laktawan ang pagbigkas sa telepono</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Iwasan ang dobleng anunsyo sa bahay.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, atbp.</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">Pang-araw na ClothesCast</string>
+    <string name="settings_delivery_notification">Mag-abiso</string>
+    <string name="settings_delivery_tts">Bigkasin</string>
+
+    <!-- Clothes-mention picker -->
+    <string name="settings_clothes_mention_label">Damit</string>
+    <string name="settings_clothes_mention_always">Palagi</string>
+    <string name="settings_clothes_mention_if_changed">Pagbabago</string>
+    <string name="settings_clothes_mention_never">Hindi kailanman</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Halimbawa</string>
+    <string name="settings_format_preview_current_title">Kasalukuyang forecast</string>
+    <string name="settings_format_preview_current_empty">Wala pang forecast — bumalik pagkatapos ng susunod mong ClothesCast.</string>
+    <string name="settings_format_what_to_say">Ano ang sasabihin</string>
+    <string name="settings_format_range_label">Saklaw ng temperatura</string>
+    <string name="settings_format_range_none">Wala</string>
+    <string name="settings_format_range_degrees">Mga degree</string>
+    <string name="settings_format_range_bands">Mga banda</string>
+    <string name="settings_format_change_label">Pagbabago ng temperatura</string>
+    <string name="settings_format_change_off">Naka-off</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Pananalita sa damit</string>
+    <string name="settings_format_clothes_items">Mga damit</string>
+    <string name="settings_format_clothes_layer_count">Bilang ng layer</string>
+    <string name="settings_format_bottoms_label">Pantalon</string>
+    <string name="settings_format_bottoms_always">Palagi</string>
+    <string name="settings_format_bottoms_if_garments">Kung may damit</string>
+    <string name="settings_format_bottoms_never">Hindi kailanman</string>
+    <string name="settings_format_rain_accessory_label">Aksesorya sa ulan</string>
+    <string name="settings_format_rain_accessory_none">Naka-off</string>
+    <string name="settings_format_rain_accessory_umbrella">Payong</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">Kung walang panuntunang tumutugma</string>
+    <string name="settings_default_top_edit_title">Default na pang-itaas</string>
+    <string name="settings_default_bottom_edit_title">Default na pantalon</string>
+    <string name="settings_default_outfit_range_above">kapag ang temperatura ay higit sa %1$s</string>
+    <string name="settings_default_outfit_range_below">kapag ang temperatura ay mas mababa sa %1$s</string>
+    <string name="settings_default_outfit_range_between">kapag ang temperatura ay nasa pagitan ng %1$s at %2$s</string>
+    <string name="settings_default_outfit_range_never">hindi kailanman</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Gamitin ang aking kalendaryo</string>
+    <string name="settings_calendar_master_description">Payagan ang ClothesCast na basahin ang iyong mga kalendaryo upang ipersonalisa ang mga forecast at outfit. Walang lumalabas sa device.</string>
+    <string name="settings_calendar_features_title">Mga personal na kalendaryo</string>
+    <string name="settings_calendar_evening_tie_ins">Pagdurugtong sa gabi</string>
+    <string name="settings_calendar_evening_tie_ins_description">Kung lumalabas ka sa gabi, sasabihin ng forecast sa umaga kung kailangan mong magdala ng anumang dagdag.</string>
+    <string name="settings_calendar_birthdays_description">Gumamit ng mga espesyal na kulay at mensahe para sa mga kaarawan sa iyong mga kalendaryo.</string>
+    <string name="settings_calendar_public_holidays_description">Gumamit ng mga espesyal na kulay at mensahe para sa mga public holiday sa iyong mga kalendaryo.</string>
+    <string name="settings_calendar_open_system_settings">Buksan ang mga setting ng system</string>
 </resources>

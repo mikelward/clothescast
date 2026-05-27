@@ -883,4 +883,83 @@ What is NOT overridden, by design:
     <string name="holiday_banner_st_andrews_day">Su šv. Andriejaus diena</string>
     <string name="settings_calendar_birthdays">Kalendoriaus gimtadieniai</string>
     <string name="settings_calendar_public_holidays">Kalendoriaus šventės</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels -->
+    <string name="settings_root_developer">Kūrėjas</string>
+    <string name="settings_root_developer_subtitle">Testavimas ir derinimas</string>
+    <string name="settings_root_format">Formatas</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Peržiūrėti dieną</string>
+    <string name="settings_developer_preview_day_subtitle">Apranga, baneris ir balsas bet kuriai datai pagal fiksuotą švelnaus oro pavyzdį.</string>
+    <string name="settings_developer_pick_date">Pasirink datą</string>
+    <string name="settings_developer_today">Šiandien</string>
+    <string name="settings_developer_no_theme">Šiai dienai šventinės temos nėra.</string>
+    <string name="settings_developer_resolved_label">Išspręsta: %1$s</string>
+    <string name="settings_developer_speak">Įgarsinti</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">Siųsti prognozę į išmanųjį ekraną</string>
+    <string name="settings_smart_home_cast_last_published">Paskutinė publikacija %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Paskutinis atsisiuntimas %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Ekranas dar nėra atsisiuntęs ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Praleisti telefono balsą</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Venk dvigubų pranešimų namuose.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Praleisti telefono balsą</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Venk dvigubų pranešimų namuose.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, ir kt.</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_enabled">Dienos ClothesCast</string>
+    <string name="settings_delivery_notification">Pranešti</string>
+    <string name="settings_delivery_tts">Įgarsinti</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Apranga</string>
+    <string name="settings_clothes_mention_always">Visada</string>
+    <string name="settings_clothes_mention_if_changed">Kai keičiasi</string>
+    <string name="settings_clothes_mention_never">Niekada</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Pavyzdys</string>
+    <string name="settings_format_preview_current_title">Dabartinė prognozė</string>
+    <string name="settings_format_preview_current_empty">Prognozės dar nėra — užsuk po kito ClothesCast.</string>
+    <string name="settings_format_what_to_say">Ką sakyti</string>
+    <string name="settings_format_range_label">Temperatūros intervalas</string>
+    <string name="settings_format_range_none">Nėra</string>
+    <string name="settings_format_range_degrees">Laipsniai</string>
+    <string name="settings_format_range_bands">Intervalai</string>
+    <string name="settings_format_change_label">Temperatūros pokytis</string>
+    <string name="settings_format_change_off">Išjungta</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Aprangos formuluotė</string>
+    <string name="settings_format_clothes_items">Drabužiai</string>
+    <string name="settings_format_clothes_layer_count">Sluoksnių skaičius</string>
+    <string name="settings_format_bottoms_label">Apatinė dalis</string>
+    <string name="settings_format_bottoms_always">Visada</string>
+    <string name="settings_format_bottoms_if_garments">Jei yra viršus</string>
+    <string name="settings_format_bottoms_never">Niekada</string>
+    <string name="settings_format_rain_accessory_label">Lietaus aksesuaras</string>
+    <string name="settings_format_rain_accessory_none">Išjungta</string>
+    <string name="settings_format_rain_accessory_umbrella">Skėtis</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Jei nė viena taisyklė neatitinka</string>
+    <string name="settings_default_top_edit_title">Numatytasis viršus</string>
+    <string name="settings_default_bottom_edit_title">Numatytoji apatinė dalis</string>
+    <string name="settings_default_outfit_range_above">kai temperatūra aukštesnė nei %1$s</string>
+    <string name="settings_default_outfit_range_below">kai temperatūra žemesnė nei %1$s</string>
+    <string name="settings_default_outfit_range_between">kai temperatūra nuo %1$s iki %2$s</string>
+    <string name="settings_default_outfit_range_never">niekada</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Naudoti mano kalendorių</string>
+    <string name="settings_calendar_master_description">Leisk ClothesCast skaityti tavo kalendorius, kad pritaikytų prognozes ir aprangą. Niekas nepalieka įrenginio.</string>
+    <string name="settings_calendar_features_title">Asmeniniai kalendoriai</string>
+    <string name="settings_calendar_evening_tie_ins">Vakaro įvykių sąsajos</string>
+    <string name="settings_calendar_evening_tie_ins_description">Jei vakare kažkur eini, ryto prognozė pasakys, ar reikia pasiimti kažką papildomai.</string>
+    <string name="settings_calendar_birthdays_description">Naudoti specialias spalvas ir žinutes tavo kalendorių gimtadieniams.</string>
+    <string name="settings_calendar_public_holidays_description">Naudoti specialias spalvas ir žinutes tavo kalendorių valstybinėms šventėms.</string>
+    <string name="settings_calendar_open_system_settings">Atidaryti sistemos nustatymus</string>
 </resources>

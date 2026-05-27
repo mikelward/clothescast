@@ -192,16 +192,41 @@ private fun LocationCard(
                 },
             )
         }
-        Text(
-            text = currentLocationSummary(current, useDeviceLocation, locationDetecting),
-            style = MaterialTheme.typography.bodyLarge,
-        )
+        // The display-name summary. Manual / forward-geocoded picks have no
+        // addressDetail line below to carry the tap-to-maps action, so in
+        // that case make the summary itself the maps deep link — same
+        // affordance as the GPS path, just hung off the one place-name we
+        // have. Detecting / unset states fall through to the plain label
+        // since they have no coords to open.
+        if (current != null && current.addressDetail == null) {
+            Text(
+                text = currentLocationSummary(current, useDeviceLocation, locationDetecting),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        openInMaps(
+                            context = context,
+                            latitude = current.latitude,
+                            longitude = current.longitude,
+                            label = current.displayName,
+                        )
+                    },
+            )
+        } else {
+            Text(
+                text = currentLocationSummary(current, useDeviceLocation, locationDetecting),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
 
         // Reverse-geocoded address with the leading "house number / street"
         // component dropped, so we surface neighbourhood-level detail
         // (suburb + city + postal code + country) without naming a specific
         // street. Only populated by the device-location path; manual /
-        // forward-geocoded picks leave this null and the line is omitted.
+        // forward-geocoded picks leave this null and the line is omitted
+        // (the summary above carries the tap-to-maps action in that case).
         // Rendered in the primary colour and tappable, opening the user's
         // chosen maps app at the 2dp-coarsened coords the rest of the app
         // already operates on (Location.coarsened() rounds every entry-point

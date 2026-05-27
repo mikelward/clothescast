@@ -40,6 +40,7 @@ import app.clothescast.ui.settings.SettingsFormatRainAccessoryPreview
 import app.clothescast.ui.settings.SettingsDeveloperPreview
 import app.clothescast.ui.settings.SettingsGarmentColorPickerPreview
 import app.clothescast.ui.settings.SettingsCalendarCelebrationsPreview
+import app.clothescast.ui.settings.SettingsLocationManualPreview
 import app.clothescast.ui.settings.SettingsLocationPreview
 import app.clothescast.ui.settings.SettingsPrivacyPreview
 import app.clothescast.ui.settings.SettingsRegionPreview
@@ -584,6 +585,7 @@ class PreviewSnapshots {
     @Test fun settings_voice_device() = capture { SettingsVoiceDevicePreview() }
     @Test fun settings_voice_gemini() = capture { SettingsVoiceGeminiPreview() }
     @Test fun settings_location() = capture { SettingsLocationPreview() }
+    @Test fun settings_location_manual() = capture { SettingsLocationManualPreview() }
 
     // Forecasters has seven enabled rows + the disabled BOM placeholder +
     // the Open-Meteo attribution button, which together overflow the

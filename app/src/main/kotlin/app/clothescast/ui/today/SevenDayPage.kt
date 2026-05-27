@@ -5,20 +5,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -224,14 +226,13 @@ internal fun SevenDayPage(
             .padding(top = 16.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        // Page header — same visual treatment as [InsightCard] on pages 0 / 1:
-        // a 20.dp-padded Card with the chevron in a 28.dp slot on the left,
-        // a "Next 7 days" label in the centered position the per-period
-        // label occupies on those pages, and the prose headline below in
-        // headlineSmall (matching the per-period insight prose typography).
-        // Reserving 28.dp on the right keeps the label in the same horizontal
-        // position as the per-period label on pages 0 / 1, so swiping between
-        // pages doesn't jitter the centered label sideways.
+        // Page header — same shape as [InsightCard] on pages 0 / 1: full-
+        // card-height chevron strip on the left, prose in the centre, and
+        // (when known) the location at the bottom of the centre column.
+        // No "Next 7 days" heading and no "generated at" footer here —
+        // the chart deck below makes the page identity obvious, and the
+        // 7-day card doesn't carry a single forecast timestamp the way a
+        // per-period insight does.
         //
         // The prose slot shows the week-ahead headline when one fires (rain,
         // a notable temperature shift, or a persistent hot / cold run); a
@@ -239,79 +240,53 @@ internal fun SevenDayPage(
         // always carries content; and the legacy "Will be ready after the
         // next forecast." line on pre-7-day-fetch cached payloads where
         // [days] is empty or has fewer than 2 entries.
-        //
-        // TODO: extract an `InsightCardShell` composable shared with
-        // [InsightCard] so the chevron-row geometry / padding / spacing live
-        // in one place. Today this block is a hand-rolled copy of
-        // InsightCard's Card+Row+Column scaffolding (TodayScreen.kt:1784–1859);
-        // if someone retunes the chevron slot size, the inter-row spacing, or
-        // the centered-label typography there, this card silently drifts.
-        // The refactor needs the shell flexible enough for both shapes
-        // (optional center content: date+location chip vs. plain label;
-        // optional generated-at footer; optional right chevron) and touches
-        // the today/tonight code path + every snapshot through `InsightCard`,
-        // which is why it's deferred to a follow-up rather than landed here.
         Card(modifier = Modifier.fillMaxWidth()) {
-            Column(
-                modifier = Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(modifier = Modifier.size(28.dp)) {
-                        IconButton(
-                            onClick = onChevronTap,
-                            modifier = Modifier.size(28.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                                contentDescription = stringResource(R.string.today_back_to_primary),
-                            )
-                        }
+            Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(24.dp)
+                        .clickable(onClick = onChevronTap),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = stringResource(R.string.today_back_to_primary),
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    val proseText = when {
+                        days.size < 2 -> stringResource(R.string.today_week_empty)
+                        weekAheadText != null -> weekAheadText
+                        else -> stringResource(R.string.today_week_ahead_steady)
                     }
+                    Text(
+                        text = proseText,
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
                     val locationLabel = shortLocationLabel(location?.displayName)
                         ?: location?.let { stringResource(R.string.today_location_unknown) }
-                    Row(
-                        modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
+                    if (location != null && locationLabel != null) {
                         Text(
-                            text = stringResource(R.string.today_title_week),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            text = locationLabel,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.clickable {
+                                openInMaps(
+                                    context = context,
+                                    latitude = location.latitude,
+                                    longitude = location.longitude,
+                                    label = locationLabel,
+                                )
+                            },
                         )
-                        if (location != null && locationLabel != null) {
-                            Text(
-                                text = " · ",
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                            Text(
-                                text = locationLabel,
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.clickable {
-                                    openInMaps(
-                                        context = context,
-                                        latitude = location.latitude,
-                                        longitude = location.longitude,
-                                        label = locationLabel,
-                                    )
-                                },
-                            )
-                        }
                     }
-                    Box(modifier = Modifier.size(28.dp))
                 }
-                val proseText = when {
-                    days.size < 2 -> stringResource(R.string.today_week_empty)
-                    weekAheadText != null -> weekAheadText
-                    else -> stringResource(R.string.today_week_ahead_steady)
-                }
-                Text(
-                    text = proseText,
-                    style = MaterialTheme.typography.headlineSmall,
-                )
             }
         }
 

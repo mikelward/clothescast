@@ -67,7 +67,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -1758,19 +1760,16 @@ internal fun InsightCard(
      */
     onChevronRightTap: (() -> Unit)? = null,
     /**
-     * Hidden developer shortcut: long-pressing the date label invokes this
-     * (the Today screen wires it to open Developer settings). Null disables
-     * it — a plain tap on the date never does anything, so it can't be
-     * triggered accidentally. Default null keeps every preview / non-live
-     * call site unchanged.
+     * Hidden developer shortcut: long-pressing the prose invokes this (the
+     * Today screen wires it to open Developer settings). Null disables it —
+     * a single tap continues to route through [onNavigateToFormat] if set.
+     * Default null keeps every preview / non-live call site unchanged.
      */
     onLongPressDate: (() -> Unit)? = null,
     /**
-     * Opens the Format settings page. Wired to two affordances: tapping the
-     * prose body (only the prose — not the date / location header or the
-     * generated-at footer) and a small "Format" link in the card's bottom-right
-     * corner. Null disables both; default null keeps every preview / non-live
-     * call site unchanged.
+     * Opens the Format settings page. Tapping the prose body (not the
+     * generated-at footer) invokes it. Null disables the affordance;
+     * default null keeps every preview / non-live call site unchanged.
      */
     onNavigateToFormat: (() -> Unit)? = null,
 ) {
@@ -1781,18 +1780,7 @@ internal fun InsightCard(
     val generatedAtText = formatHourMinute(
         insight.generatedAt.atZone(ZoneId.systemDefault()).toLocalTime(),
     )
-    // Page 2 caches tomorrow's daytime insight after the evening worker run;
-    // surface it as "Tomorrow" rather than "Today" so the heading matches the
-    // prose lead-in below.
     val isFutureDay = insight.forDate.isAfter(LocalDate.now())
-    val periodLabel = stringResource(
-        when (insight.period) {
-            ForecastPeriod.TODAY ->
-                if (isFutureDay) R.string.today_outfit_label_tomorrow
-                else R.string.today_outfit_label_today
-            ForecastPeriod.TONIGHT -> R.string.today_outfit_label_tonight
-        },
-    )
     val location = insight.location
     // Fall back to a localised "Your location" when reverse geocoding returned
     // nothing useful — we still have coords, so the maps link is worth keeping.
@@ -1802,109 +1790,85 @@ internal fun InsightCard(
     val rightChevronAction = onChevronRightTap ?: onChevronTap
     val renderRightChevron = showChevronRight && rightChevronAction != null
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            // Three-zone header: 28.dp slots are reserved on both edges so
-            // the period label sits in the same horizontal position whether
-            // or not a chevron is currently rendered, and so the back/forward
-            // affordances land on opposite edges as the user swipes between
-            // pages. AutoMirrored chevron variants flip in RTL automatically.
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(28.dp)) {
-                    if (renderLeftChevron) {
-                        IconButton(
-                            onClick = { onChevronTap?.invoke() },
-                            modifier = Modifier.size(28.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                                contentDescription = stringResource(R.string.today_back_to_primary),
-                            )
-                        }
-                    }
-                }
-                Row(
-                    modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
+        // Full-card-height chevron strips on either edge — narrow (24.dp)
+        // and bare (no background tint), so they read as part of the card
+        // rather than separate buttons. The centre column holds the prose
+        // and the generated-at footer. IntrinsicSize.Min makes the row
+        // shrink to the centre column's height so the chevron strips
+        // match it exactly. AutoMirrored chevron variants flip in RTL.
+        Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+            if (renderLeftChevron) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(24.dp)
+                        .clickable(onClick = { onChevronTap?.invoke() }),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    Text(
-                        text = periodLabel,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = if (onLongPressDate != null) {
-                            Modifier.pointerInput(onLongPressDate) {
-                                detectTapGestures(onLongPress = { onLongPressDate() })
-                            }
-                        } else {
-                            Modifier
-                        },
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = stringResource(R.string.today_back_to_primary),
                     )
-                    if (location != null && locationLabel != null) {
-                        Text(
-                            text = " · ",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = locationLabel,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.clickable {
-                                openInMaps(
-                                    context = context,
-                                    latitude = location.latitude,
-                                    longitude = location.longitude,
-                                    label = locationLabel,
-                                )
-                            },
-                        )
-                    }
-                }
-                Box(modifier = Modifier.size(28.dp)) {
-                    if (renderRightChevron) {
-                        IconButton(
-                            onClick = { rightChevronAction?.invoke() },
-                            modifier = Modifier.size(28.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                contentDescription = stringResource(R.string.today_view_other_period),
-                            )
-                        }
-                    }
                 }
             }
-            Text(
-                text = formatter.format(insight.summary, isFutureDay = isFutureDay),
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = if (onNavigateToFormat != null) {
-                    Modifier.clickable { onNavigateToFormat() }
-                } else {
-                    Modifier
-                },
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                val proseModifier = when {
+                    onLongPressDate != null -> Modifier.pointerInput(onLongPressDate, onNavigateToFormat) {
+                        detectTapGestures(
+                            onLongPress = { onLongPressDate() },
+                            onTap = onNavigateToFormat?.let { nav -> { nav() } },
+                        )
+                    }
+                    onNavigateToFormat != null -> Modifier.clickable { onNavigateToFormat() }
+                    else -> Modifier
+                }
                 Text(
-                    text = stringResource(
-                        R.string.today_generated_at,
-                        generatedAtText,
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    text = formatter.format(insight.summary, isFutureDay = isFutureDay),
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = proseModifier,
                 )
-                if (onNavigateToFormat != null) {
+                if (location != null && locationLabel != null) {
                     Text(
-                        text = stringResource(R.string.today_insight_format_link),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.clickable { onNavigateToFormat() },
+                        text = stringResource(
+                            R.string.today_generated_at_for,
+                            generatedAtText,
+                            locationLabel,
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.clickable {
+                            openInMaps(
+                                context = context,
+                                latitude = location.latitude,
+                                longitude = location.longitude,
+                                label = locationLabel,
+                            )
+                        },
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.today_generated_at, generatedAtText),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            if (renderRightChevron) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(24.dp)
+                        .clickable(onClick = { rightChevronAction?.invoke() }),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = stringResource(R.string.today_view_other_period),
                     )
                 }
             }

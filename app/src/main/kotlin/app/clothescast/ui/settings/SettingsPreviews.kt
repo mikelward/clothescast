@@ -448,6 +448,30 @@ internal fun SettingsLocationPreview() {
     }
 }
 
+// Manual / forward-geocoded pick: device-location off, no addressDetail.
+// Captures the summary-as-tap-target affordance for the manual flow,
+// which the GPS-path preview above can't exercise because addressDetail
+// shadows it there.
+@Preview(name = "Settings · Location · manual", widthDp = 360)
+@Composable
+internal fun SettingsLocationManualPreview() {
+    SettingsFrame {
+        LocationContent(
+            location = Location(
+                latitude = -37.81,
+                longitude = 144.96,
+                displayName = "Carlton",
+            ),
+            useDeviceLocation = false,
+            padding = PaddingValues(0.dp),
+            onSetUseDeviceLocation = {},
+            onSelectLocation = {},
+            onClearLocation = {},
+            onSearchLocations = { emptyList() },
+        )
+    }
+}
+
 // London anchors the location-aware Auto default so the preview shows a
 // stable, recognisable region (UKMO in the resolved trio) rather than
 // shifting with hardware locale. Custom mode also exercises the disabled-

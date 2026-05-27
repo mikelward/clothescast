@@ -673,7 +673,7 @@
     <string name="settings_tonight_title">Nightly ClothesCast</string>
     <string name="settings_tonight_enabled">Nightly ClothesCast</string>
     <string name="settings_tonight_time_label">Time</string>
-    <string name="settings_tonight_notify_only_on_events">Only notify when there are evening events</string>
+    <string name="settings_tonight_notify_only_on_events">Only when there are evening events</string>
 
     <!-- Format settings: choose how each clause of the ClothesCast prose reads. -->
     <string name="settings_format_preview_example_title">Example</string>

@@ -279,6 +279,19 @@ new rule the first time something bites you, not the third.
 
 ## Privacy
 
+- **Never put user PII in any artifact that leaves this machine.** That
+  includes commit subjects and bodies, PR titles / descriptions / comments,
+  review replies, issue text, branch names, code comments, test fixtures,
+  snapshot data, and anything else that ends up on GitHub, the Play
+  Console, or in logs. PII covers — but isn't limited to — the user's
+  real name, email address, home / work / current location, GPS
+  coordinates, addresses, phone numbers, calendar event titles or
+  attendees, contact names, device identifiers, BYOK API keys, and the
+  contents of `google-services.json`. Use generic placeholders
+  (`alice@example.com`, "City A", `lat = 0.0`, "Morning standup") in
+  examples, fixtures, and reproductions. If a user-supplied bug report
+  contains PII, paraphrase it in the commit / PR — don't quote verbatim.
+  When in doubt, ask before pushing.
 - **Surface any change to what we send off device.** When a change touches
   data that crosses the device boundary — anything in the rendered insight
   prose (it's fed to Gemini TTS over BYOK keys),

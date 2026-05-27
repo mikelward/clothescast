@@ -20,10 +20,11 @@
     <string name="today_empty_subtitle">Your morning ClothesCast will appear here once it has been generated. Set your location in Settings, then tap Fetch now.</string>
     <string name="today_fetch_now">Fetch now</string>
     <string name="today_generated_at">Generated at %1$s</string>
-    <!-- Footer line on the insight card when a location is known: time the
-         insight was generated, then the location it was generated for. %1$s
-         is the time (e.g. "9:30am"); %2$s is the location label. -->
-    <string name="today_generated_at_for">Generated at %1$s for %2$s</string>
+    <!-- Footer line on the insight card when a location is known: the
+         location the insight was generated for, then the time it was
+         generated. %1$s is the location label (e.g. "Boston"); %2$s is
+         the time (e.g. "9:30am"). -->
+    <string name="today_generated_at_for">%1$s at %2$s</string>
     <!-- Fallback label for the maps link beside the date when we have GPS
          coordinates but no friendly city name (reverse geocoding returned
          nothing useful, or the device is on AOSP without a backend). The

@@ -1836,8 +1836,8 @@ internal fun InsightCard(
                     Text(
                         text = stringResource(
                             R.string.today_generated_at_for,
-                            generatedAtText,
                             locationLabel,
+                            generatedAtText,
                         ),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,

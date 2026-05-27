@@ -463,6 +463,17 @@ private fun TodayContent(
                         deltaThresholdC = state.deltaThresholdC,
                         location = state.thisPeriodInsight.location,
                         onNavigateToLocation = onSetUpLocation,
+                        // Same outfit pair pages 0 / 1 show. Pinning it at
+                        // the top of every page keeps the rest of the
+                        // content from jumping when the user swipes.
+                        outfitInsight = state.thisPeriodInsight,
+                        clothesRules = state.clothesRules,
+                        outfitTopColors = state.outfitTopColors,
+                        outfitBottomColors = state.outfitBottomColors,
+                        outfitTopStrokes = state.outfitTopStrokes,
+                        outfitBottomStrokes = state.outfitBottomStrokes,
+                        onAdjustThreshold = onAdjustThreshold,
+                        onNavigateToClothes = onNavigateToClothes,
                     )
                     return@HorizontalPager
                 }
@@ -473,10 +484,13 @@ private fun TodayContent(
                     fallbackPeriod = pagePeriod,
                     state = state,
                     scrollState = scrollState,
-                    // Same outfit row on both pages — page 2 shows this
-                    // period's pair too, not the page-2 period's pair. We
-                    // don't surface a 3rd period (tomorrow) on page 2; the
-                    // outfit row stays the at-a-glance today+tonight summary.
+                    // Same outfit row on all three pages — pages 0 / 1 and
+                    // the 7-day page all show this period's pair, not the
+                    // current page's period's pair. Pinning the row at the
+                    // top of every page keeps the rest of the content from
+                    // jumping when the user swipes; it also stays the
+                    // at-a-glance today+tonight summary rather than
+                    // morphing into a 7-day outfit timeline on page 2.
                     outfitInsight = state.thisPeriodInsight,
                     // Chevron layout across the three pages:
                     //   page 0 (this period) — right chevron → page 1

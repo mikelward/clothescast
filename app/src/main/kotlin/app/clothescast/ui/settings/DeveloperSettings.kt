@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -16,6 +17,7 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -30,9 +32,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.clothescast.ClothesCastApplication
 import app.clothescast.R
+import app.clothescast.location.ReverseGeocoder
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesClause
@@ -98,6 +103,10 @@ internal fun DeveloperPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             loadEventsForDay = viewModel::calendarEventsForDay,
             padding = padding,
             speaking = isSpeaking,
+            onResolveCoords = { lat, lon ->
+                (context.applicationContext as ClothesCastApplication)
+                    .reverseGeocoder.resolveDiagnostic(lat, lon)
+            },
             onSpeak = onSpeak@{ holidayId ->
                 if (isSpeaking) return@onSpeak
                 isSpeaking = true
@@ -145,6 +154,8 @@ internal fun DeveloperContent(
     loadEventsForDay: suspend (LocalDate) -> List<CalendarEvent> = { emptyList() },
     speaking: Boolean = false,
     initialDate: LocalDate = LocalDate.now(),
+    onResolveCoords: suspend (Double, Double) -> ReverseGeocoder.DiagnosticResult =
+        { _, _ -> ReverseGeocoder.DiagnosticResult.EMPTY },
 ) {
     var epochDay by rememberSaveable { mutableStateOf(initialDate.toEpochDay()) }
     val selectedDate = LocalDate.ofEpochDay(epochDay)
@@ -253,6 +264,8 @@ internal fun DeveloperContent(
         ) {
             Text(stringResource(R.string.settings_developer_speak))
         }
+
+        ReverseGeocodeTesterCard(onResolve = onResolveCoords)
     }
 
     if (showPicker) {
@@ -274,6 +287,122 @@ internal fun DeveloperContent(
             },
         ) {
             DatePicker(state = pickerState)
+        }
+    }
+}
+
+/**
+ * Parses a `"lat, lon"` string — comma-separated, whitespace around the
+ * comma optional — into a coordinate pair, or null if either half is
+ * unparseable or out of range. Accepts the format Google Maps' "What's
+ * here?" copy button uses (`40.70, -74.01`) so a developer can paste
+ * straight from the browser.
+ */
+internal fun parseCoordPair(input: String): Pair<Double, Double>? {
+    val parts = input.split(',')
+    if (parts.size != 2) return null
+    val lat = parts[0].trim().toDoubleOrNull() ?: return null
+    val lon = parts[1].trim().toDoubleOrNull() ?: return null
+    if (lat !in -90.0..90.0 || lon !in -180.0..180.0) return null
+    return lat to lon
+}
+
+/**
+ * Developer-only reverse-geocode tester: punch in any (lat, lon), hit
+ * Resolve, and see exactly what the platform Geocoder returns — raw
+ * addressLines, plus the [ReverseGeocoder.Result] that
+ * `deriveAddressDetail` produces from them. Useful for reproducing the
+ * occasional "street wasn't stripped" report against a specific
+ * coordinate without having to physically stand on it. Hardcoded
+ * English labels — this surface ships in debug only and never reaches a
+ * translator.
+ */
+@Composable
+private fun ReverseGeocodeTesterCard(
+    onResolve: suspend (Double, Double) -> ReverseGeocoder.DiagnosticResult,
+) {
+    val scope = rememberCoroutineScope()
+    var coordsText by rememberSaveable { mutableStateOf("") }
+    var loading by remember { mutableStateOf(false) }
+    var inputError by remember { mutableStateOf<String?>(null) }
+    var result by remember { mutableStateOf<ReverseGeocoder.DiagnosticResult?>(null) }
+
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text("Reverse-geocode coords", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "Hits the platform Geocoder with any (lat, lon) and shows the raw " +
+                    "addressLines plus the derived addressDetail. Use it to reproduce a " +
+                    "specific coordinate's reverse-geocode output without leaving your desk.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            OutlinedTextField(
+                value = coordsText,
+                onValueChange = { coordsText = it },
+                label = { Text("Lat, lon") },
+                placeholder = { Text("40.70, -74.01") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Button(
+                onClick = onClick@{
+                    val pair = parseCoordPair(coordsText)
+                    if (pair == null) {
+                        inputError = "Enter \"lat, lon\" — e.g. 40.70, -74.01."
+                        result = null
+                        return@onClick
+                    }
+                    inputError = null
+                    loading = true
+                    result = null
+                    scope.launch {
+                        try {
+                            result = onResolve(pair.first, pair.second)
+                        } finally {
+                            loading = false
+                        }
+                    }
+                },
+                enabled = !loading,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(if (loading) "Resolving…" else "Resolve")
+            }
+            inputError?.let { msg ->
+                Text(msg, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+            }
+            result?.let { r ->
+                Text(
+                    "addressLines (${r.addressLines.size}):",
+                    style = MaterialTheme.typography.labelMedium,
+                )
+                if (r.addressLines.isEmpty()) {
+                    Text(
+                        "(none — Geocoder returned no address)",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    r.addressLines.forEachIndexed { i, line ->
+                        Text("[$i] $line", style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+                Text("derived addressDetail:", style = MaterialTheme.typography.labelMedium)
+                Text(
+                    r.derived.addressDetail ?: "(null)",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                Text(
+                    "city: ${r.derived.city ?: "(null)"} · country: ${r.derived.countryCode ?: "(null)"}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }

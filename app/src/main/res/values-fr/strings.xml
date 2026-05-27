@@ -1021,4 +1021,84 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="cast_error_unknown">Diffusion échouée.</string>
     <string name="settings_calendar_birthdays">Anniversaires du calendrier</string>
     <string name="settings_calendar_public_holidays">Jours fériés du calendrier</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+
+    <!-- Settings root labels — Developer, Format -->
+    <string name="settings_root_developer">Développeur</string>
+    <string name="settings_root_developer_subtitle">Tests et débogage</string>
+    <string name="settings_root_format">Format</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Prévisualiser un jour</string>
+    <string name="settings_developer_preview_day_subtitle">Tenue, bannière et voix pour n\'importe quelle date, à partir d\'un échantillon météo doux fixe.</string>
+    <string name="settings_developer_pick_date">Choisir une date</string>
+    <string name="settings_developer_today">Aujourd\'hui</string>
+    <string name="settings_developer_no_theme">Aucun thème festif pour ce jour.</string>
+    <string name="settings_developer_resolved_label">Résolu : %1$s</string>
+    <string name="settings_developer_speak">Lire à voix haute</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">Envoyer les prévisions à l\'écran connecté</string>
+    <string name="settings_smart_home_cast_last_published">Dernière publication %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Dernière récupération %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">L\'écran n\'a pas encore récupéré de ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Ne pas lire sur le téléphone</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Évite les annonces en double à la maison.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Ne pas lire sur le téléphone</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Évite les annonces en double à la maison.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, etc</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_enabled">ClothesCast quotidien</string>
+    <string name="settings_delivery_notification">Notifier</string>
+    <string name="settings_delivery_tts">Lire à voix haute</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Vêtements</string>
+    <string name="settings_clothes_mention_always">Toujours</string>
+    <string name="settings_clothes_mention_if_changed">Changement</string>
+    <string name="settings_clothes_mention_never">Jamais</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Exemple</string>
+    <string name="settings_format_preview_current_title">Prévision actuelle</string>
+    <string name="settings_format_preview_current_empty">Pas encore de prévision — reviens après ton prochain ClothesCast.</string>
+    <string name="settings_format_what_to_say">Que dire</string>
+    <string name="settings_format_range_label">Plage de température</string>
+    <string name="settings_format_range_none">Aucune</string>
+    <string name="settings_format_range_degrees">Degrés</string>
+    <string name="settings_format_range_bands">Catégories</string>
+    <string name="settings_format_change_label">Variation de température</string>
+    <string name="settings_format_change_off">Désactivé</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Formulation des vêtements</string>
+    <string name="settings_format_clothes_items">Vêtements</string>
+    <string name="settings_format_clothes_layer_count">Nombre de couches</string>
+    <string name="settings_format_bottoms_label">Bas</string>
+    <string name="settings_format_bottoms_always">Toujours</string>
+    <string name="settings_format_bottoms_if_garments">Si vêtements</string>
+    <string name="settings_format_bottoms_never">Jamais</string>
+    <string name="settings_format_rain_accessory_label">Accessoire pluie</string>
+    <string name="settings_format_rain_accessory_none">Désactivé</string>
+    <string name="settings_format_rain_accessory_umbrella">Parapluie</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Si aucune règle ne correspond</string>
+    <string name="settings_default_top_edit_title">Haut par défaut</string>
+    <string name="settings_default_bottom_edit_title">Bas par défaut</string>
+    <string name="settings_default_outfit_range_above">quand la température est au-dessus de %1$s</string>
+    <string name="settings_default_outfit_range_below">quand la température est en dessous de %1$s</string>
+    <string name="settings_default_outfit_range_between">quand la température est entre %1$s et %2$s</string>
+    <string name="settings_default_outfit_range_never">jamais</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Utiliser mon calendrier</string>
+    <string name="settings_calendar_master_description">Laisse ClothesCast lire tes calendriers pour personnaliser les prévisions et les tenues. Rien ne quitte l\'appareil.</string>
+    <string name="settings_calendar_features_title">Calendriers personnels</string>
+    <string name="settings_calendar_evening_tie_ins">Mentions du soir</string>
+    <string name="settings_calendar_evening_tie_ins_description">Si tu sors le soir, la prévision du matin t\'indique si tu dois prendre quelque chose en plus.</string>
+    <string name="settings_calendar_birthdays_description">Utilise des couleurs et messages spéciaux pour les anniversaires de tes calendriers.</string>
+    <string name="settings_calendar_public_holidays_description">Utilise des couleurs et messages spéciaux pour les jours fériés de tes calendriers.</string>
+    <string name="settings_calendar_open_system_settings">Ouvrir les paramètres système</string>
 </resources>

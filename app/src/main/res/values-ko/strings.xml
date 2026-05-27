@@ -1049,4 +1049,84 @@ displayed label localizes.
     <string name="today_rationale_open_clothes_settings">옷 설정</string>
     <string name="settings_calendar_birthdays">캘린더 생일</string>
     <string name="settings_calendar_public_holidays">캘린더 공휴일</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+
+    <!-- Settings root labels — Developer, Format. -->
+    <string name="settings_root_developer">개발자</string>
+    <string name="settings_root_developer_subtitle">테스트 및 디버깅</string>
+    <string name="settings_root_format">형식</string>
+
+    <!-- Developer settings page — preview-a-day -->
+    <string name="settings_developer_preview_day_title">날짜 미리보기</string>
+    <string name="settings_developer_preview_day_subtitle">고정된 온화한 날씨 샘플을 사용해 임의의 날짜에 대한 옷, 배너, 음성을 미리 봅니다.</string>
+    <string name="settings_developer_pick_date">날짜 선택</string>
+    <string name="settings_developer_today">오늘</string>
+    <string name="settings_developer_no_theme">이날은 공휴일 테마가 없습니다.</string>
+    <string name="settings_developer_resolved_label">해석됨: %1$s</string>
+    <string name="settings_developer_speak">읽기</string>
+
+    <!-- Smart Home — additional cast / mqtt keys. -->
+    <string name="settings_smart_home_cast_label">예보를 스마트 디스플레이로 전송</string>
+    <string name="settings_smart_home_cast_last_published">마지막 전송 %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">마지막 가져오기 %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">디스플레이가 아직 ClothesCast를 가져오지 않았어요</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">전화기 음성 건너뛰기</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">집에서 중복 안내를 피해요.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">전화기 음성 건너뛰기</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">집에서 중복 안내를 피해요.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio 등</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">매일 ClothesCast</string>
+    <string name="settings_delivery_notification">알림</string>
+    <string name="settings_delivery_tts">읽기</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">옷</string>
+    <string name="settings_clothes_mention_always">항상</string>
+    <string name="settings_clothes_mention_if_changed">변경 시</string>
+    <string name="settings_clothes_mention_never">사용 안 함</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">예시</string>
+    <string name="settings_format_preview_current_title">현재 예보</string>
+    <string name="settings_format_preview_current_empty">아직 예보가 없어요 — 다음 ClothesCast 후에 다시 확인하세요.</string>
+    <string name="settings_format_what_to_say">전달 내용</string>
+    <string name="settings_format_range_label">온도 범위</string>
+    <string name="settings_format_range_none">없음</string>
+    <string name="settings_format_range_degrees">도</string>
+    <string name="settings_format_range_bands">구간</string>
+    <string name="settings_format_change_label">온도 변화</string>
+    <string name="settings_format_change_off">끔</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">옷 표현</string>
+    <string name="settings_format_clothes_items">의류</string>
+    <string name="settings_format_clothes_layer_count">레이어 수</string>
+    <string name="settings_format_bottoms_label">하의</string>
+    <string name="settings_format_bottoms_always">항상</string>
+    <string name="settings_format_bottoms_if_garments">의류가 있을 때</string>
+    <string name="settings_format_bottoms_never">사용 안 함</string>
+    <string name="settings_format_rain_accessory_label">우천용품</string>
+    <string name="settings_format_rain_accessory_none">끔</string>
+    <string name="settings_format_rain_accessory_umbrella">우산</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">일치하는 규칙이 없을 때</string>
+    <string name="settings_default_top_edit_title">기본 상의</string>
+    <string name="settings_default_bottom_edit_title">기본 하의</string>
+    <string name="settings_default_outfit_range_above">온도가 %1$s 초과일 때</string>
+    <string name="settings_default_outfit_range_below">온도가 %1$s 미만일 때</string>
+    <string name="settings_default_outfit_range_between">온도가 %1$s에서 %2$s 사이일 때</string>
+    <string name="settings_default_outfit_range_never">사용 안 함</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">내 캘린더 사용</string>
+    <string name="settings_calendar_master_description">ClothesCast가 캘린더를 읽어 예보와 옷차림을 개인화해요. 어떤 정보도 기기 밖으로 나가지 않습니다.</string>
+    <string name="settings_calendar_features_title">개인 캘린더</string>
+    <string name="settings_calendar_evening_tie_ins">저녁 연계</string>
+    <string name="settings_calendar_evening_tie_ins_description">저녁에 외출할 경우, 아침 예보에서 추가로 챙길 것이 있는지 알려드려요.</string>
+    <string name="settings_calendar_birthdays_description">캘린더의 생일에 특별한 색상과 메시지를 사용해요.</string>
+    <string name="settings_calendar_public_holidays_description">캘린더의 공휴일에 특별한 색상과 메시지를 사용해요.</string>
+    <string name="settings_calendar_open_system_settings">시스템 설정 열기</string>
 </resources>

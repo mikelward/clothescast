@@ -897,4 +897,83 @@ displayed label localizes.
     <string name="today_rationale_open_clothes_settings">Kıyafet ayarları</string>
     <string name="settings_calendar_birthdays">Takvim Doğum Günleri</string>
     <string name="settings_calendar_public_holidays">Takvim Tatilleri</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels — Smart Home, Developer, Format -->
+    <string name="settings_root_developer">Geliştirici</string>
+    <string name="settings_root_developer_subtitle">Test ve Hata Ayıklama</string>
+    <string name="settings_root_format">Biçim</string>
+
+    <!-- Developer settings page (Settings → Developer → Preview a day) -->
+    <string name="settings_developer_preview_day_title">Bir günü önizle</string>
+    <string name="settings_developer_preview_day_subtitle">Sabit ılıman hava örneği kullanarak herhangi bir tarih için kıyafet, banner ve ses.</string>
+    <string name="settings_developer_pick_date">Bir tarih seç</string>
+    <string name="settings_developer_today">Bugün</string>
+    <string name="settings_developer_no_theme">Bu gün için tatil teması yok.</string>
+    <string name="settings_developer_resolved_label">Çözüldü: %1$s</string>
+    <string name="settings_developer_speak">Seslendir</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">Tahmini akıllı ekrana gönder</string>
+    <string name="settings_smart_home_cast_last_published">Son yayımlanma %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Son alınma %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Ekran henüz ClothesCast almadı</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Telefon seslendirmesini atla</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Evde tekrarlanan duyuruları önle.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Telefon seslendirmesini atla</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Evde tekrarlanan duyuruları önle.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio vb.</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_enabled">Günlük ClothesCast</string>
+    <string name="settings_delivery_notification">Bildir</string>
+    <string name="settings_delivery_tts">Seslendir</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Kıyafetler</string>
+    <string name="settings_clothes_mention_always">Her zaman</string>
+    <string name="settings_clothes_mention_if_changed">Değişince</string>
+    <string name="settings_clothes_mention_never">Asla</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Örnek</string>
+    <string name="settings_format_preview_current_title">Güncel tahmin</string>
+    <string name="settings_format_preview_current_empty">Henüz tahmin yok — bir sonraki ClothesCast\'ından sonra tekrar bak.</string>
+    <string name="settings_format_what_to_say">Ne söylensin</string>
+    <string name="settings_format_range_label">Sıcaklık aralığı</string>
+    <string name="settings_format_range_none">Yok</string>
+    <string name="settings_format_range_degrees">Derece</string>
+    <string name="settings_format_range_bands">Bantlar</string>
+    <string name="settings_format_change_label">Sıcaklık değişimi</string>
+    <string name="settings_format_change_off">Kapalı</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Kıyafet ifadesi</string>
+    <string name="settings_format_clothes_items">Giysiler</string>
+    <string name="settings_format_clothes_layer_count">Katman sayısı</string>
+    <string name="settings_format_bottoms_label">Alt giyim</string>
+    <string name="settings_format_bottoms_always">Her zaman</string>
+    <string name="settings_format_bottoms_if_garments">Giysi varsa</string>
+    <string name="settings_format_bottoms_never">Asla</string>
+    <string name="settings_format_rain_accessory_label">Yağmur aksesuarı</string>
+    <string name="settings_format_rain_accessory_none">Kapalı</string>
+    <string name="settings_format_rain_accessory_umbrella">Şemsiye</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">Hiçbir kural eşleşmezse</string>
+    <string name="settings_default_top_edit_title">Varsayılan üst</string>
+    <string name="settings_default_bottom_edit_title">Varsayılan alt</string>
+    <string name="settings_default_outfit_range_above">sıcaklık %1$s üzerindeyken</string>
+    <string name="settings_default_outfit_range_below">sıcaklık %1$s altındayken</string>
+    <string name="settings_default_outfit_range_between">sıcaklık %1$s ile %2$s arasındayken</string>
+    <string name="settings_default_outfit_range_never">asla</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Takvimimi kullan</string>
+    <string name="settings_calendar_master_description">ClothesCast\'ın tahminleri ve kıyafetleri kişiselleştirmek için takvimlerini okumasına izin ver. Hiçbir şey cihazdan çıkmaz.</string>
+    <string name="settings_calendar_features_title">Kişisel takvimler</string>
+    <string name="settings_calendar_evening_tie_ins">Akşam bağlantıları</string>
+    <string name="settings_calendar_evening_tie_ins_description">Akşam dışarı çıkacaksan sabah tahmini sana yanına fazladan bir şey alman gerekip gerekmediğini söyler.</string>
+    <string name="settings_calendar_birthdays_description">Takvimlerindeki doğum günleri için özel renkler ve mesajlar kullan.</string>
+    <string name="settings_calendar_public_holidays_description">Takvimlerindeki resmi tatiller için özel renkler ve mesajlar kullan.</string>
+    <string name="settings_calendar_open_system_settings">Sistem ayarlarını aç</string>
 </resources>

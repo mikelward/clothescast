@@ -957,4 +957,83 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_rationale_open_clothes_settings">Cài đặt quần áo</string>
     <string name="settings_calendar_birthdays">Sinh nhật trong lịch</string>
     <string name="settings_calendar_public_holidays">Ngày lễ trong lịch</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels -->
+    <string name="settings_root_developer">Nhà phát triển</string>
+    <string name="settings_root_developer_subtitle">Kiểm thử và gỡ lỗi</string>
+    <string name="settings_root_format">Định dạng</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Xem trước một ngày</string>
+    <string name="settings_developer_preview_day_subtitle">Trang phục, biểu ngữ và giọng nói cho bất kỳ ngày nào, sử dụng mẫu thời tiết dễ chịu cố định.</string>
+    <string name="settings_developer_pick_date">Chọn ngày</string>
+    <string name="settings_developer_today">Hôm nay</string>
+    <string name="settings_developer_no_theme">Không có chủ đề ngày lễ cho ngày này.</string>
+    <string name="settings_developer_resolved_label">Đã giải quyết: %1$s</string>
+    <string name="settings_developer_speak">Đọc</string>
+
+    <!-- Smart Home additional keys -->
+    <string name="settings_smart_home_cast_label">Gửi dự báo đến màn hình thông minh</string>
+    <string name="settings_smart_home_cast_last_published">Xuất bản lần cuối %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Tải lần cuối %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Màn hình chưa tải ClothesCast nào</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Bỏ qua đọc trên điện thoại</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Tránh thông báo trùng lặp ở nhà.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Bỏ qua đọc trên điện thoại</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Tránh thông báo trùng lặp ở nhà.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, v.v.</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">ClothesCast hàng ngày</string>
+    <string name="settings_delivery_notification">Thông báo</string>
+    <string name="settings_delivery_tts">Đọc</string>
+
+    <!-- Clothes-mention picker -->
+    <string name="settings_clothes_mention_label">Quần áo</string>
+    <string name="settings_clothes_mention_always">Luôn luôn</string>
+    <string name="settings_clothes_mention_if_changed">Thay đổi</string>
+    <string name="settings_clothes_mention_never">Không bao giờ</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Ví dụ</string>
+    <string name="settings_format_preview_current_title">Dự báo hiện tại</string>
+    <string name="settings_format_preview_current_empty">Chưa có dự báo — hãy quay lại sau ClothesCast tiếp theo.</string>
+    <string name="settings_format_what_to_say">Nội dung cần nói</string>
+    <string name="settings_format_range_label">Khoảng nhiệt độ</string>
+    <string name="settings_format_range_none">Không có</string>
+    <string name="settings_format_range_degrees">Độ</string>
+    <string name="settings_format_range_bands">Mức</string>
+    <string name="settings_format_change_label">Thay đổi nhiệt độ</string>
+    <string name="settings_format_change_off">Tắt</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Cách diễn đạt quần áo</string>
+    <string name="settings_format_clothes_items">Trang phục</string>
+    <string name="settings_format_clothes_layer_count">Số lớp</string>
+    <string name="settings_format_bottoms_label">Quần</string>
+    <string name="settings_format_bottoms_always">Luôn luôn</string>
+    <string name="settings_format_bottoms_if_garments">Nếu có trang phục</string>
+    <string name="settings_format_bottoms_never">Không bao giờ</string>
+    <string name="settings_format_rain_accessory_label">Phụ kiện đi mưa</string>
+    <string name="settings_format_rain_accessory_none">Tắt</string>
+    <string name="settings_format_rain_accessory_umbrella">Ô</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">Nếu không có quy tắc nào khớp</string>
+    <string name="settings_default_top_edit_title">Áo mặc mặc định</string>
+    <string name="settings_default_bottom_edit_title">Quần mặc mặc định</string>
+    <string name="settings_default_outfit_range_above">khi nhiệt độ trên %1$s</string>
+    <string name="settings_default_outfit_range_below">khi nhiệt độ dưới %1$s</string>
+    <string name="settings_default_outfit_range_between">khi nhiệt độ từ %1$s đến %2$s</string>
+    <string name="settings_default_outfit_range_never">không bao giờ</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Dùng lịch của tôi</string>
+    <string name="settings_calendar_master_description">Cho phép ClothesCast đọc lịch của bạn để cá nhân hóa dự báo và trang phục. Không có gì rời khỏi thiết bị.</string>
+    <string name="settings_calendar_features_title">Lịch cá nhân</string>
+    <string name="settings_calendar_evening_tie_ins">Kết nối sự kiện buổi tối</string>
+    <string name="settings_calendar_evening_tie_ins_description">Nếu bạn ra ngoài vào buổi tối, dự báo buổi sáng sẽ cho bạn biết có cần mang thêm gì không.</string>
+    <string name="settings_calendar_birthdays_description">Dùng màu sắc và thông điệp đặc biệt cho sinh nhật trong lịch của bạn.</string>
+    <string name="settings_calendar_public_holidays_description">Dùng màu sắc và thông điệp đặc biệt cho ngày lễ công cộng trong lịch của bạn.</string>
+    <string name="settings_calendar_open_system_settings">Mở cài đặt hệ thống</string>
 </resources>

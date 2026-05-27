@@ -839,4 +839,83 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="holiday_banner_st_andrews_day">Head Püha Andrease päeva</string>
     <string name="settings_calendar_birthdays">Kalendri sünnipäevad</string>
     <string name="settings_calendar_public_holidays">Kalendripühad</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels -->
+    <string name="settings_root_developer">Arendaja</string>
+    <string name="settings_root_developer_subtitle">Testimine ja silumine</string>
+    <string name="settings_root_format">Vorming</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Päeva eelvaade</string>
+    <string name="settings_developer_preview_day_subtitle">Riietus, bänner ja hääl mis tahes kuupäevale, kasutades fikseeritud mahedat ilmanäidet.</string>
+    <string name="settings_developer_pick_date">Vali kuupäev</string>
+    <string name="settings_developer_today">Täna</string>
+    <string name="settings_developer_no_theme">Selle päeva jaoks pühadeteemat pole.</string>
+    <string name="settings_developer_resolved_label">Lahendatud: %1$s</string>
+    <string name="settings_developer_speak">Loe ette</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">Saada prognoos nutiekraanile</string>
+    <string name="settings_smart_home_cast_last_published">Viimane avaldamine %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Viimane allalaadimine %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Ekraan pole veel ClothesCast\'i alla laadinud</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Jäta telefoni hääl vahele</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Väldi kodus topelt teateid.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Jäta telefoni hääl vahele</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Väldi kodus topelt teateid.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, jne</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_enabled">Igapäevane ClothesCast</string>
+    <string name="settings_delivery_notification">Teavita</string>
+    <string name="settings_delivery_tts">Loe ette</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Riided</string>
+    <string name="settings_clothes_mention_always">Alati</string>
+    <string name="settings_clothes_mention_if_changed">Muutuse korral</string>
+    <string name="settings_clothes_mention_never">Mitte kunagi</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Näide</string>
+    <string name="settings_format_preview_current_title">Praegune prognoos</string>
+    <string name="settings_format_preview_current_empty">Prognoosi veel pole — tule tagasi pärast järgmist ClothesCast\'i.</string>
+    <string name="settings_format_what_to_say">Mida öelda</string>
+    <string name="settings_format_range_label">Temperatuurivahemik</string>
+    <string name="settings_format_range_none">Puudub</string>
+    <string name="settings_format_range_degrees">Kraadid</string>
+    <string name="settings_format_range_bands">Vahemikud</string>
+    <string name="settings_format_change_label">Temperatuuri muutus</string>
+    <string name="settings_format_change_off">Väljas</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Riietuse sõnastus</string>
+    <string name="settings_format_clothes_items">Rõivad</string>
+    <string name="settings_format_clothes_layer_count">Kihtide arv</string>
+    <string name="settings_format_bottoms_label">Alaosa</string>
+    <string name="settings_format_bottoms_always">Alati</string>
+    <string name="settings_format_bottoms_if_garments">Kui on ülaosa</string>
+    <string name="settings_format_bottoms_never">Mitte kunagi</string>
+    <string name="settings_format_rain_accessory_label">Vihmatarvik</string>
+    <string name="settings_format_rain_accessory_none">Väljas</string>
+    <string name="settings_format_rain_accessory_umbrella">Vihmavari</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Kui ükski reegel ei sobi</string>
+    <string name="settings_default_top_edit_title">Vaikimisi ülaosa</string>
+    <string name="settings_default_bottom_edit_title">Vaikimisi alaosa</string>
+    <string name="settings_default_outfit_range_above">kui temperatuur on üle %1$s</string>
+    <string name="settings_default_outfit_range_below">kui temperatuur on alla %1$s</string>
+    <string name="settings_default_outfit_range_between">kui temperatuur on %1$s ja %2$s vahel</string>
+    <string name="settings_default_outfit_range_never">mitte kunagi</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Kasuta minu kalendrit</string>
+    <string name="settings_calendar_master_description">Luba ClothesCast\'il lugeda sinu kalendreid, et kohandada prognoose ja riietust. Midagi ei lahku seadmest.</string>
+    <string name="settings_calendar_features_title">Isiklikud kalendrid</string>
+    <string name="settings_calendar_evening_tie_ins">Õhtused sidemed</string>
+    <string name="settings_calendar_evening_tie_ins_description">Kui sa lähed õhtul välja, ütleb hommikuprognoos sulle, kas pead midagi lisaks kaasa võtma.</string>
+    <string name="settings_calendar_birthdays_description">Eripärased värvid ja sõnumid sinu kalendrite sünnipäevadele.</string>
+    <string name="settings_calendar_public_holidays_description">Eripärased värvid ja sõnumid sinu kalendrite riigipühadele.</string>
+    <string name="settings_calendar_open_system_settings">Ava süsteemiseaded</string>
 </resources>

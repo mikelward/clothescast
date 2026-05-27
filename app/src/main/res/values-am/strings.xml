@@ -865,4 +865,84 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_rationale_open_clothes_settings">የልብስ ቅንብሮች</string>
     <string name="settings_calendar_birthdays">የቀን መቁጠሪያ ልደቶች</string>
     <string name="settings_calendar_public_holidays">የቀን መቁጠሪያ በዓሎች</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+
+    <!-- Settings root labels — Developer, Format -->
+    <string name="settings_root_developer">ገንቢ</string>
+    <string name="settings_root_developer_subtitle">መሞከርና ማስተካከል</string>
+    <string name="settings_root_format">ቅርጸት</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">አንድ ቀን ቅድመ-እይታ</string>
+    <string name="settings_developer_preview_day_subtitle">ለማንኛውም ቀን ልብስ፣ ባነር እና ድምፅ፣ የተወሰነ ምቹ-የአየር ሁኔታ ናሙና በመጠቀም።</string>
+    <string name="settings_developer_pick_date">ቀን ምረጥ</string>
+    <string name="settings_developer_today">ዛሬ</string>
+    <string name="settings_developer_no_theme">ለዚህ ቀን የበዓል ጭብጥ የለም።</string>
+    <string name="settings_developer_resolved_label">ተፈቷል: %1$s</string>
+    <string name="settings_developer_speak">ተናገር</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">ትንበያ ወደ ስማርት ማሳያ ላክ</string>
+    <string name="settings_smart_home_cast_last_published">በመጨረሻ የታተመው %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">በመጨረሻ የተወሰደው %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">ማሳያው እስካሁን ClothesCast አልወሰደም</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">የስልክ ንግግር ዝለል</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">በቤት ውስጥ ድርብ ማስታወቂያዎችን ያስወግዱ።</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">የስልክ ንግግር ዝለል</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">በቤት ውስጥ ድርብ ማስታወቂያዎችን ያስወግዱ።</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, ወዘተ</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">ዕለታዊ ClothesCast</string>
+    <string name="settings_delivery_notification">አሳውቅ</string>
+    <string name="settings_delivery_tts">ተናገር</string>
+
+    <!-- Clothes-mention picker -->
+    <string name="settings_clothes_mention_label">ልብስ</string>
+    <string name="settings_clothes_mention_always">ሁልጊዜ</string>
+    <string name="settings_clothes_mention_if_changed">ሲቀየር</string>
+    <string name="settings_clothes_mention_never">በፍፁም</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">ምሳሌ</string>
+    <string name="settings_format_preview_current_title">አሁን ያለ ትንበያ</string>
+    <string name="settings_format_preview_current_empty">እስካሁን ምንም ትንበያ የለም — ከሚቀጥለው ClothesCast በኋላ ይመለሱ።</string>
+    <string name="settings_format_what_to_say">ምን እንደሚባል</string>
+    <string name="settings_format_range_label">የሙቀት ክልል</string>
+    <string name="settings_format_range_none">ምንም</string>
+    <string name="settings_format_range_degrees">ዲግሪዎች</string>
+    <string name="settings_format_range_bands">ደረጃዎች</string>
+    <string name="settings_format_change_label">የሙቀት ለውጥ</string>
+    <string name="settings_format_change_off">ጠፍቷል</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">የልብስ ቃላት</string>
+    <string name="settings_format_clothes_items">ልብሶች</string>
+    <string name="settings_format_clothes_layer_count">የመጠቅለያ ብዛት</string>
+    <string name="settings_format_bottoms_label">ታችኞቹ ልብሶች</string>
+    <string name="settings_format_bottoms_always">ሁልጊዜ</string>
+    <string name="settings_format_bottoms_if_garments">ልብስ ካለ</string>
+    <string name="settings_format_bottoms_never">በፍፁም</string>
+    <string name="settings_format_rain_accessory_label">የዝናብ መለዋወጫ</string>
+    <string name="settings_format_rain_accessory_none">ጠፍቷል</string>
+    <string name="settings_format_rain_accessory_umbrella">ጃንጥላ</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">ምንም ህግ ካልተዛመደ</string>
+    <string name="settings_default_top_edit_title">ነባሪ የላይኛው ልብስ</string>
+    <string name="settings_default_bottom_edit_title">ነባሪ የታችኛው ልብስ</string>
+    <string name="settings_default_outfit_range_above">ሙቀቱ ከ%1$s በላይ ሲሆን</string>
+    <string name="settings_default_outfit_range_below">ሙቀቱ ከ%1$s በታች ሲሆን</string>
+    <string name="settings_default_outfit_range_between">ሙቀቱ ከ%1$s እና %2$s መካከል ሲሆን</string>
+    <string name="settings_default_outfit_range_never">በፍፁም</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">የእኔን የቀን መቁጠሪያ ተጠቀም</string>
+    <string name="settings_calendar_master_description">ትንበያዎችንና ልብሶችን ለማበጀት ClothesCast የቀን መቁጠሪያዎችዎን እንዲያነብ ይፍቀዱ። ምንም ከመሳሪያው አይወጣም።</string>
+    <string name="settings_calendar_features_title">የግል የቀን መቁጠሪያዎች</string>
+    <string name="settings_calendar_evening_tie_ins">የምሽት ግንኙነቶች</string>
+    <string name="settings_calendar_evening_tie_ins_description">ምሽት ላይ ቢወጡ የጠዋቱ ትንበያ ተጨማሪ ነገር ይዘው መሄድ አለመሄድዎን ይነግርዎታል።</string>
+    <string name="settings_calendar_birthdays_description">በቀን መቁጠሪያዎ ውስጥ ላሉ ልደቶች ልዩ ቀለሞችንና መልዕክቶችን ይጠቀሙ።</string>
+    <string name="settings_calendar_public_holidays_description">በቀን መቁጠሪያዎ ውስጥ ላሉ የህዝብ በዓሎች ልዩ ቀለሞችንና መልዕክቶችን ይጠቀሙ።</string>
+    <string name="settings_calendar_open_system_settings">የስርዓት ቅንብሮችን ክፈት</string>
 </resources>

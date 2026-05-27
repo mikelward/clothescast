@@ -871,4 +871,84 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="cast_error_unknown">Transmisia a eșuat.</string>
     <string name="settings_calendar_birthdays">Zile de naștere din calendar</string>
     <string name="settings_calendar_public_holidays">Sărbători din calendar</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+
+    <!-- Settings root labels — Developer, Format. -->
+    <string name="settings_root_developer">Dezvoltator</string>
+    <string name="settings_root_developer_subtitle">Testare și depanare</string>
+    <string name="settings_root_format">Format</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Previzualizează o zi</string>
+    <string name="settings_developer_preview_day_subtitle">Ținută, banner și voce pentru orice dată, folosind un eșantion fix de vreme blândă.</string>
+    <string name="settings_developer_pick_date">Alege o dată</string>
+    <string name="settings_developer_today">Astăzi</string>
+    <string name="settings_developer_no_theme">Nicio temă de sărbătoare pentru această zi.</string>
+    <string name="settings_developer_resolved_label">Rezolvat: %1$s</string>
+    <string name="settings_developer_speak">Citește</string>
+
+    <!-- Smart Home — newer keys. -->
+    <string name="settings_smart_home_cast_label">Trimite prognoza la afișajul inteligent</string>
+    <string name="settings_smart_home_cast_last_published">Ultima publicare %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Ultima preluare %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Afișajul nu a preluat încă niciun ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Omite citirea pe telefon</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Evită anunțurile duplicate acasă.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Omite citirea pe telefon</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Evită anunțurile duplicate acasă.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, etc</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">ClothesCast zilnic</string>
+    <string name="settings_delivery_notification">Notifică</string>
+    <string name="settings_delivery_tts">Citește</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Îmbrăcăminte</string>
+    <string name="settings_clothes_mention_always">Mereu</string>
+    <string name="settings_clothes_mention_if_changed">La schimbare</string>
+    <string name="settings_clothes_mention_never">Niciodată</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Exemplu</string>
+    <string name="settings_format_preview_current_title">Prognoza curentă</string>
+    <string name="settings_format_preview_current_empty">Nicio prognoză încă — revino după următorul ClothesCast.</string>
+    <string name="settings_format_what_to_say">Ce să spună</string>
+    <string name="settings_format_range_label">Interval de temperatură</string>
+    <string name="settings_format_range_none">Niciunul</string>
+    <string name="settings_format_range_degrees">Grade</string>
+    <string name="settings_format_range_bands">Benzi</string>
+    <string name="settings_format_change_label">Variație de temperatură</string>
+    <string name="settings_format_change_off">Oprit</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Formulare pentru îmbrăcăminte</string>
+    <string name="settings_format_clothes_items">Articole</string>
+    <string name="settings_format_clothes_layer_count">Numărul de straturi</string>
+    <string name="settings_format_bottoms_label">Pantaloni</string>
+    <string name="settings_format_bottoms_always">Mereu</string>
+    <string name="settings_format_bottoms_if_garments">Dacă există articole</string>
+    <string name="settings_format_bottoms_never">Niciodată</string>
+    <string name="settings_format_rain_accessory_label">Accesoriu pentru ploaie</string>
+    <string name="settings_format_rain_accessory_none">Oprit</string>
+    <string name="settings_format_rain_accessory_umbrella">Umbrelă</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Dacă nicio regulă nu se potrivește</string>
+    <string name="settings_default_top_edit_title">Articol implicit pentru sus</string>
+    <string name="settings_default_bottom_edit_title">Articol implicit pentru jos</string>
+    <string name="settings_default_outfit_range_above">când temperatura este peste %1$s</string>
+    <string name="settings_default_outfit_range_below">când temperatura este sub %1$s</string>
+    <string name="settings_default_outfit_range_between">când temperatura este între %1$s și %2$s</string>
+    <string name="settings_default_outfit_range_never">niciodată</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Folosește calendarul meu</string>
+    <string name="settings_calendar_master_description">Permite ClothesCast să citească calendarele tale pentru a personaliza prognozele și ținutele. Nimic nu părăsește dispozitivul.</string>
+    <string name="settings_calendar_features_title">Calendare personale</string>
+    <string name="settings_calendar_evening_tie_ins">Legături cu evenimentele de seară</string>
+    <string name="settings_calendar_evening_tie_ins_description">Dacă ieși seara, prognoza de dimineață îți spune dacă trebuie să iei ceva în plus.</string>
+    <string name="settings_calendar_birthdays_description">Folosește culori și mesaje speciale pentru zilele de naștere din calendarele tale.</string>
+    <string name="settings_calendar_public_holidays_description">Folosește culori și mesaje speciale pentru sărbătorile din calendarele tale.</string>
+    <string name="settings_calendar_open_system_settings">Deschide setările sistemului</string>
 </resources>

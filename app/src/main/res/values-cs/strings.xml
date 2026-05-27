@@ -903,4 +903,83 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="holiday_banner_st_andrews_day">Šťastný Den svatého Ondřeje</string>
     <string name="settings_calendar_birthdays">Narozeniny z kalendáře</string>
     <string name="settings_calendar_public_holidays">Svátky z kalendáře</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels — Developer, Format. -->
+    <string name="settings_root_developer">Vývojář</string>
+    <string name="settings_root_developer_subtitle">Testování a ladění</string>
+    <string name="settings_root_format">Formát</string>
+
+    <!-- Developer settings page (Settings → Developer → Preview a day) -->
+    <string name="settings_developer_preview_day_title">Náhled dne</string>
+    <string name="settings_developer_preview_day_subtitle">Outfit, banner a hlas pro libovolný den s pevně daným vzorkem mírného počasí.</string>
+    <string name="settings_developer_pick_date">Vyber datum</string>
+    <string name="settings_developer_today">Dnes</string>
+    <string name="settings_developer_no_theme">Pro tento den není žádné sváteční téma.</string>
+    <string name="settings_developer_resolved_label">Vyhodnoceno: %1$s</string>
+    <string name="settings_developer_speak">Přečíst</string>
+
+    <!-- Smart Home — newer keys. -->
+    <string name="settings_smart_home_cast_label">Odeslat předpověď na chytrý displej</string>
+    <string name="settings_smart_home_cast_last_published">Naposledy publikováno %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Naposledy načteno %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Displej zatím nenačetl žádný ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Přeskočit mluvený výstup v telefonu</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Vyhneš se duplicitním oznámením doma.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Přeskočit mluvený výstup v telefonu</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Vyhneš se duplicitním oznámením doma.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, atd.</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">Denní ClothesCast</string>
+    <string name="settings_delivery_notification">Oznámit</string>
+    <string name="settings_delivery_tts">Přečíst</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Oblečení</string>
+    <string name="settings_clothes_mention_always">Vždy</string>
+    <string name="settings_clothes_mention_if_changed">Změna</string>
+    <string name="settings_clothes_mention_never">Nikdy</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Příklad</string>
+    <string name="settings_format_preview_current_title">Aktuální předpověď</string>
+    <string name="settings_format_preview_current_empty">Zatím žádná předpověď — zkontroluj to po svém příštím ClothesCastu.</string>
+    <string name="settings_format_what_to_say">Co říkat</string>
+    <string name="settings_format_range_label">Rozsah teplot</string>
+    <string name="settings_format_range_none">Žádný</string>
+    <string name="settings_format_range_degrees">Stupně</string>
+    <string name="settings_format_range_bands">Pásma</string>
+    <string name="settings_format_change_label">Změna teploty</string>
+    <string name="settings_format_change_off">Vypnuto</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Formulace oblečení</string>
+    <string name="settings_format_clothes_items">Kusy oblečení</string>
+    <string name="settings_format_clothes_layer_count">Počet vrstev</string>
+    <string name="settings_format_bottoms_label">Spodní díly</string>
+    <string name="settings_format_bottoms_always">Vždy</string>
+    <string name="settings_format_bottoms_if_garments">Pokud jsou kusy</string>
+    <string name="settings_format_bottoms_never">Nikdy</string>
+    <string name="settings_format_rain_accessory_label">Doplněk pro déšť</string>
+    <string name="settings_format_rain_accessory_none">Vypnuto</string>
+    <string name="settings_format_rain_accessory_umbrella">Deštník</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Pokud žádná pravidla neodpovídají</string>
+    <string name="settings_default_top_edit_title">Výchozí horní díl</string>
+    <string name="settings_default_bottom_edit_title">Výchozí spodní díl</string>
+    <string name="settings_default_outfit_range_above">když je teplota nad %1$s</string>
+    <string name="settings_default_outfit_range_below">když je teplota pod %1$s</string>
+    <string name="settings_default_outfit_range_between">když je teplota mezi %1$s a %2$s</string>
+    <string name="settings_default_outfit_range_never">nikdy</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Použít můj kalendář</string>
+    <string name="settings_calendar_master_description">Povol ClothesCastu číst tvé kalendáře, aby mohl přizpůsobit předpovědi a outfity. Nic neopustí zařízení.</string>
+    <string name="settings_calendar_features_title">Osobní kalendáře</string>
+    <string name="settings_calendar_evening_tie_ins">Večerní propojení</string>
+    <string name="settings_calendar_evening_tie_ins_description">Pokud jdeš večer ven, ranní předpověď ti řekne, jestli si máš vzít něco navíc.</string>
+    <string name="settings_calendar_birthdays_description">Použij speciální barvy a zprávy pro narozeniny ve tvých kalendářích.</string>
+    <string name="settings_calendar_public_holidays_description">Použij speciální barvy a zprávy pro státní svátky ve tvých kalendářích.</string>
+    <string name="settings_calendar_open_system_settings">Otevřít systémová nastavení</string>
 </resources>

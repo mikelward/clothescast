@@ -882,4 +882,83 @@ What is NOT overridden, by design:
     <string name="cast_error_unknown">Предаването се провали.</string>
     <string name="settings_calendar_birthdays">Рождени дни от календара</string>
     <string name="settings_calendar_public_holidays">Празници от календара</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels — Developer, Format. -->
+    <string name="settings_root_developer">Разработчик</string>
+    <string name="settings_root_developer_subtitle">Тестване и отстраняване на грешки</string>
+    <string name="settings_root_format">Формат</string>
+
+    <!-- Developer settings page (Settings → Developer → Preview a day) -->
+    <string name="settings_developer_preview_day_title">Преглед на ден</string>
+    <string name="settings_developer_preview_day_subtitle">Облекло, банер и глас за произволна дата с фиксирана извадка за меко време.</string>
+    <string name="settings_developer_pick_date">Избери дата</string>
+    <string name="settings_developer_today">Днес</string>
+    <string name="settings_developer_no_theme">Няма празнична тема за този ден.</string>
+    <string name="settings_developer_resolved_label">Разрешено: %1$s</string>
+    <string name="settings_developer_speak">Прочети</string>
+
+    <!-- Smart Home — newer keys. -->
+    <string name="settings_smart_home_cast_label">Изпрати прогноза към умен дисплей</string>
+    <string name="settings_smart_home_cast_last_published">Последно публикувано %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Последно изтеглено %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Дисплеят още не е изтеглял ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Пропусни говор на телефона</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Избягвай дублирани известия вкъщи.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Пропусни говор на телефона</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Избягвай дублирани известия вкъщи.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, и т.н.</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">Ежедневен ClothesCast</string>
+    <string name="settings_delivery_notification">Известяване</string>
+    <string name="settings_delivery_tts">Прочети</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Облекло</string>
+    <string name="settings_clothes_mention_always">Винаги</string>
+    <string name="settings_clothes_mention_if_changed">Промяна</string>
+    <string name="settings_clothes_mention_never">Никога</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Пример</string>
+    <string name="settings_format_preview_current_title">Текуща прогноза</string>
+    <string name="settings_format_preview_current_empty">Все още няма прогноза — провери след следващия си ClothesCast.</string>
+    <string name="settings_format_what_to_say">Какво да каже</string>
+    <string name="settings_format_range_label">Температурен диапазон</string>
+    <string name="settings_format_range_none">Без</string>
+    <string name="settings_format_range_degrees">Градуси</string>
+    <string name="settings_format_range_bands">Ленти</string>
+    <string name="settings_format_change_label">Промяна на температурата</string>
+    <string name="settings_format_change_off">Изключено</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Формулировка на облеклото</string>
+    <string name="settings_format_clothes_items">Дрехи</string>
+    <string name="settings_format_clothes_layer_count">Брой слоеве</string>
+    <string name="settings_format_bottoms_label">Долни части</string>
+    <string name="settings_format_bottoms_always">Винаги</string>
+    <string name="settings_format_bottoms_if_garments">Ако има дрехи</string>
+    <string name="settings_format_bottoms_never">Никога</string>
+    <string name="settings_format_rain_accessory_label">Аксесоар за дъжд</string>
+    <string name="settings_format_rain_accessory_none">Изключено</string>
+    <string name="settings_format_rain_accessory_umbrella">Чадър</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Ако никое правило не съвпада</string>
+    <string name="settings_default_top_edit_title">Горна част по подразбиране</string>
+    <string name="settings_default_bottom_edit_title">Долна част по подразбиране</string>
+    <string name="settings_default_outfit_range_above">когато температурата е над %1$s</string>
+    <string name="settings_default_outfit_range_below">когато температурата е под %1$s</string>
+    <string name="settings_default_outfit_range_between">когато температурата е между %1$s и %2$s</string>
+    <string name="settings_default_outfit_range_never">никога</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Използвай моя календар</string>
+    <string name="settings_calendar_master_description">Позволи на ClothesCast да чете календарите ти, за да персонализира прогнози и облекла. Нищо не напуска устройството.</string>
+    <string name="settings_calendar_features_title">Лични календари</string>
+    <string name="settings_calendar_evening_tie_ins">Вечерни връзки</string>
+    <string name="settings_calendar_evening_tie_ins_description">Ако излизаш вечерта, сутрешната прогноза ти казва дали трябва да вземеш нещо допълнително.</string>
+    <string name="settings_calendar_birthdays_description">Използвай специални цветове и съобщения за рождени дни в твоите календари.</string>
+    <string name="settings_calendar_public_holidays_description">Използвай специални цветове и съобщения за официални празници в твоите календари.</string>
+    <string name="settings_calendar_open_system_settings">Отвори системните настройки</string>
 </resources>

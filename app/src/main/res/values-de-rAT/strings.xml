@@ -629,4 +629,85 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="cast_error_unknown">Übertragung fehlgeschlagen.</string>
     <string name="settings_calendar_birthdays">Kalender-Geburtstage</string>
     <string name="settings_calendar_public_holidays">Kalender-Feiertage</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+
+    <!-- Settings root labels — Developer, Format -->
+    <string name="settings_root_developer">Entwickler</string>
+    <string name="settings_root_developer_subtitle">Tests und Fehlersuche</string>
+    <string name="settings_root_format">Format</string>
+    <string name="settings_root_format_subtitle">Wortwahl und Ausführlichkeit</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Tag vorab anzeigen</string>
+    <string name="settings_developer_preview_day_subtitle">Outfit, Banner und Stimme für ein beliebiges Datum mit einem festen Beispiel bei mildem Wetter.</string>
+    <string name="settings_developer_pick_date">Datum wählen</string>
+    <string name="settings_developer_today">Heute</string>
+    <string name="settings_developer_no_theme">Kein Feiertagsthema für diesen Tag.</string>
+    <string name="settings_developer_resolved_label">Aufgelöst: %1$s</string>
+    <string name="settings_developer_speak">Sprechen</string>
+
+    <!-- Smart Home — additional keys -->
+    <string name="settings_smart_home_cast_label">Vorhersage an Smart Display senden</string>
+    <string name="settings_smart_home_cast_last_published">Zuletzt veröffentlicht %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Zuletzt abgerufen %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Das Display hat noch keinen ClothesCast abgerufen</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Sprachausgabe am Handy überspringen</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Doppelte Ansagen zu Hause vermeiden.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Sprachausgabe am Handy überspringen</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Doppelte Ansagen zu Hause vermeiden.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio usw.</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">Täglicher ClothesCast</string>
+    <string name="settings_delivery_notification">Benachrichtigen</string>
+    <string name="settings_delivery_tts">Sprechen</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Kleidung</string>
+    <string name="settings_clothes_mention_always">Immer</string>
+    <string name="settings_clothes_mention_if_changed">Bei Änderung</string>
+    <string name="settings_clothes_mention_never">Nie</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Beispiel</string>
+    <string name="settings_format_preview_current_title">Aktuelle Vorhersage</string>
+    <string name="settings_format_preview_current_empty">Noch keine Vorhersage — schau nach deinem nächsten ClothesCast wieder vorbei.</string>
+    <string name="settings_format_what_to_say">Was gesagt wird</string>
+    <string name="settings_format_range_label">Temperaturbereich</string>
+    <string name="settings_format_range_none">Keiner</string>
+    <string name="settings_format_range_degrees">Grad</string>
+    <string name="settings_format_range_bands">Stufen</string>
+    <string name="settings_format_change_label">Temperaturänderung</string>
+    <string name="settings_format_change_off">Aus</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Kleidungs-Formulierung</string>
+    <string name="settings_format_clothes_items">Kleidungsstücke</string>
+    <string name="settings_format_clothes_layer_count">Anzahl der Schichten</string>
+    <string name="settings_format_bottoms_label">Hosen</string>
+    <string name="settings_format_bottoms_always">Immer</string>
+    <string name="settings_format_bottoms_if_garments">Wenn Kleidungsstücke</string>
+    <string name="settings_format_bottoms_never">Nie</string>
+    <string name="settings_format_rain_accessory_label">Regenutensil</string>
+    <string name="settings_format_rain_accessory_none">Aus</string>
+    <string name="settings_format_rain_accessory_umbrella">Regenschirm</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Wenn keine Regel passt</string>
+    <string name="settings_default_top_edit_title">Standard-Oberteil</string>
+    <string name="settings_default_bottom_edit_title">Standard-Hose</string>
+    <string name="settings_default_outfit_range_above">wenn die Temperatur über %1$s liegt</string>
+    <string name="settings_default_outfit_range_below">wenn die Temperatur unter %1$s liegt</string>
+    <string name="settings_default_outfit_range_between">wenn die Temperatur zwischen %1$s und %2$s liegt</string>
+    <string name="settings_default_outfit_range_never">nie</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Meinen Kalender verwenden</string>
+    <string name="settings_calendar_master_description">Erlaubt ClothesCast, deine Kalender zu lesen, um Vorhersagen und Outfits zu personalisieren. Nichts verlässt das Gerät.</string>
+    <string name="settings_calendar_features_title">Persönliche Kalender</string>
+    <string name="settings_calendar_evening_tie_ins">Abendliche Verknüpfungen</string>
+    <string name="settings_calendar_evening_tie_ins_description">Wenn du abends ausgehst, sagt dir die Morgenvorhersage, ob du etwas mitnehmen solltest.</string>
+    <string name="settings_calendar_birthdays_description">Verwende besondere Farben und Nachrichten für Geburtstage in deinen Kalendern.</string>
+    <string name="settings_calendar_public_holidays_description">Verwende besondere Farben und Nachrichten für Feiertage in deinen Kalendern.</string>
+    <string name="settings_calendar_open_system_settings">Systemeinstellungen öffnen</string>
 </resources>

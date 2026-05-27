@@ -926,4 +926,84 @@ Not overridden by design:
     <string name="today_rationale_open_clothes_settings">कपड़ों की सेटिंग</string>
     <string name="settings_calendar_birthdays">कैलेंडर जन्मदिन</string>
     <string name="settings_calendar_public_holidays">कैलेंडर छुट्टियाँ</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+
+    <!-- Settings root labels — Developer, Format -->
+    <string name="settings_root_developer">डेवलपर</string>
+    <string name="settings_root_developer_subtitle">परीक्षण और डीबगिंग</string>
+    <string name="settings_root_format">प्रारूप</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">किसी दिन का पूर्वावलोकन</string>
+    <string name="settings_developer_preview_day_subtitle">किसी भी तारीख के लिए पोशाक, बैनर और आवाज़, एक तय हल्के मौसम के नमूने के साथ।</string>
+    <string name="settings_developer_pick_date">तारीख चुनें</string>
+    <string name="settings_developer_today">आज</string>
+    <string name="settings_developer_no_theme">इस दिन के लिए कोई त्योहार थीम नहीं।</string>
+    <string name="settings_developer_resolved_label">हल हुआ: %1$s</string>
+    <string name="settings_developer_speak">बोलें</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">स्मार्ट डिस्प्ले पर पूर्वानुमान भेजें</string>
+    <string name="settings_smart_home_cast_last_published">अंतिम बार %1$s को प्रकाशित</string>
+    <string name="settings_smart_home_cast_last_fetched">अंतिम बार %1$s को लाया गया</string>
+    <string name="settings_smart_home_cast_last_fetched_never">डिस्प्ले ने अभी तक कोई ClothesCast नहीं लाया है</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">फ़ोन की आवाज़ छोड़ें</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">घर पर दोहरी घोषणाओं से बचें।</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">फ़ोन की आवाज़ छोड़ें</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">घर पर दोहरी घोषणाओं से बचें।</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, आदि</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">दैनिक ClothesCast</string>
+    <string name="settings_delivery_notification">सूचित करें</string>
+    <string name="settings_delivery_tts">बोलें</string>
+
+    <!-- Clothes-mention picker -->
+    <string name="settings_clothes_mention_label">कपड़े</string>
+    <string name="settings_clothes_mention_always">हमेशा</string>
+    <string name="settings_clothes_mention_if_changed">बदलाव पर</string>
+    <string name="settings_clothes_mention_never">कभी नहीं</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">उदाहरण</string>
+    <string name="settings_format_preview_current_title">मौजूदा पूर्वानुमान</string>
+    <string name="settings_format_preview_current_empty">अभी कोई पूर्वानुमान नहीं — अगले ClothesCast के बाद देखें।</string>
+    <string name="settings_format_what_to_say">क्या कहना है</string>
+    <string name="settings_format_range_label">तापमान सीमा</string>
+    <string name="settings_format_range_none">कोई नहीं</string>
+    <string name="settings_format_range_degrees">डिग्री</string>
+    <string name="settings_format_range_bands">श्रेणियाँ</string>
+    <string name="settings_format_change_label">तापमान परिवर्तन</string>
+    <string name="settings_format_change_off">बंद</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">कपड़ों के शब्द</string>
+    <string name="settings_format_clothes_items">कपड़े</string>
+    <string name="settings_format_clothes_layer_count">परतों की संख्या</string>
+    <string name="settings_format_bottoms_label">निचले कपड़े</string>
+    <string name="settings_format_bottoms_always">हमेशा</string>
+    <string name="settings_format_bottoms_if_garments">अगर कपड़े हों</string>
+    <string name="settings_format_bottoms_never">कभी नहीं</string>
+    <string name="settings_format_rain_accessory_label">बारिश का सामान</string>
+    <string name="settings_format_rain_accessory_none">बंद</string>
+    <string name="settings_format_rain_accessory_umbrella">छाता</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">यदि कोई नियम लागू नहीं हो</string>
+    <string name="settings_default_top_edit_title">डिफ़ॉल्ट ऊपरी कपड़ा</string>
+    <string name="settings_default_bottom_edit_title">डिफ़ॉल्ट निचला कपड़ा</string>
+    <string name="settings_default_outfit_range_above">जब तापमान %1$s से ऊपर हो</string>
+    <string name="settings_default_outfit_range_below">जब तापमान %1$s से नीचे हो</string>
+    <string name="settings_default_outfit_range_between">जब तापमान %1$s और %2$s के बीच हो</string>
+    <string name="settings_default_outfit_range_never">कभी नहीं</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">मेरे कैलेंडर का उपयोग करें</string>
+    <string name="settings_calendar_master_description">ClothesCast को आपके कैलेंडर पढ़ने दें ताकि पूर्वानुमान और पोशाक व्यक्तिगत बनाई जा सके। कुछ भी डिवाइस से बाहर नहीं जाता।</string>
+    <string name="settings_calendar_features_title">व्यक्तिगत कैलेंडर</string>
+    <string name="settings_calendar_evening_tie_ins">शाम की घटनाओं का जिक्र</string>
+    <string name="settings_calendar_evening_tie_ins_description">यदि आप शाम को बाहर जा रहे हैं, तो सुबह का पूर्वानुमान बताता है कि कुछ अतिरिक्त साथ लेना है या नहीं।</string>
+    <string name="settings_calendar_birthdays_description">अपने कैलेंडर में जन्मदिनों के लिए विशेष रंग और संदेश उपयोग करें।</string>
+    <string name="settings_calendar_public_holidays_description">अपने कैलेंडर में सार्वजनिक छुट्टियों के लिए विशेष रंग और संदेश उपयोग करें।</string>
+    <string name="settings_calendar_open_system_settings">सिस्टम सेटिंग खोलें</string>
 </resources>

@@ -964,4 +964,83 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="cast_error_unknown">Prenošenje nije uspjelo.</string>
     <string name="settings_calendar_birthdays">Rođendani iz kalendara</string>
     <string name="settings_calendar_public_holidays">Blagdani iz kalendara</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels — Developer, Format. -->
+    <string name="settings_root_developer">Razvojni programer</string>
+    <string name="settings_root_developer_subtitle">Testiranje i otklanjanje pogrešaka</string>
+    <string name="settings_root_format">Format</string>
+
+    <!-- Developer settings page (Settings → Developer → Preview a day) -->
+    <string name="settings_developer_preview_day_title">Pregled dana</string>
+    <string name="settings_developer_preview_day_subtitle">Outfit, baner i glas za bilo koji datum, koristeći fiksni uzorak blagog vremena.</string>
+    <string name="settings_developer_pick_date">Odaberi datum</string>
+    <string name="settings_developer_today">Danas</string>
+    <string name="settings_developer_no_theme">Nema blagdanske teme za ovaj dan.</string>
+    <string name="settings_developer_resolved_label">Razriješeno: %1$s</string>
+    <string name="settings_developer_speak">Pročitaj</string>
+
+    <!-- Smart Home — newer keys. -->
+    <string name="settings_smart_home_cast_label">Pošalji prognozu na pametni zaslon</string>
+    <string name="settings_smart_home_cast_last_published">Posljednja objava %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Posljednje preuzimanje %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Zaslon još nije preuzeo nijedan ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Preskoči govor na telefonu</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Izbjegni dvostruke obavijesti kod kuće.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Preskoči govor na telefonu</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Izbjegni dvostruke obavijesti kod kuće.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, itd.</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">Dnevni ClothesCast</string>
+    <string name="settings_delivery_notification">Obavijesti</string>
+    <string name="settings_delivery_tts">Pročitaj</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Odjeća</string>
+    <string name="settings_clothes_mention_always">Uvijek</string>
+    <string name="settings_clothes_mention_if_changed">Promjena</string>
+    <string name="settings_clothes_mention_never">Nikad</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Primjer</string>
+    <string name="settings_format_preview_current_title">Trenutna prognoza</string>
+    <string name="settings_format_preview_current_empty">Još nema prognoze — provjeri nakon sljedećeg ClothesCasta.</string>
+    <string name="settings_format_what_to_say">Što reći</string>
+    <string name="settings_format_range_label">Raspon temperatura</string>
+    <string name="settings_format_range_none">Bez</string>
+    <string name="settings_format_range_degrees">Stupnjevi</string>
+    <string name="settings_format_range_bands">Pojasi</string>
+    <string name="settings_format_change_label">Promjena temperature</string>
+    <string name="settings_format_change_off">Isključeno</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Formulacija odjeće</string>
+    <string name="settings_format_clothes_items">Komadi odjeće</string>
+    <string name="settings_format_clothes_layer_count">Broj slojeva</string>
+    <string name="settings_format_bottoms_label">Donji dijelovi</string>
+    <string name="settings_format_bottoms_always">Uvijek</string>
+    <string name="settings_format_bottoms_if_garments">Ako ima komada</string>
+    <string name="settings_format_bottoms_never">Nikad</string>
+    <string name="settings_format_rain_accessory_label">Dodatak za kišu</string>
+    <string name="settings_format_rain_accessory_none">Isključeno</string>
+    <string name="settings_format_rain_accessory_umbrella">Kišobran</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Ako se nijedno pravilo ne podudara</string>
+    <string name="settings_default_top_edit_title">Zadani gornji dio</string>
+    <string name="settings_default_bottom_edit_title">Zadani donji dio</string>
+    <string name="settings_default_outfit_range_above">kad je temperatura iznad %1$s</string>
+    <string name="settings_default_outfit_range_below">kad je temperatura ispod %1$s</string>
+    <string name="settings_default_outfit_range_between">kad je temperatura između %1$s i %2$s</string>
+    <string name="settings_default_outfit_range_never">nikad</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Koristi moj kalendar</string>
+    <string name="settings_calendar_master_description">Dopusti ClothesCastu čitanje tvojih kalendara za prilagodbu prognoza i outfita. Ništa ne napušta uređaj.</string>
+    <string name="settings_calendar_features_title">Osobni kalendari</string>
+    <string name="settings_calendar_evening_tie_ins">Večernje poveznice</string>
+    <string name="settings_calendar_evening_tie_ins_description">Ako navečer izlaziš, jutarnja prognoza ti kaže trebaš li ponijeti nešto dodatno.</string>
+    <string name="settings_calendar_birthdays_description">Koristi posebne boje i poruke za rođendane u tvojim kalendarima.</string>
+    <string name="settings_calendar_public_holidays_description">Koristi posebne boje i poruke za državne blagdane u tvojim kalendarima.</string>
+    <string name="settings_calendar_open_system_settings">Otvori sistemske postavke</string>
 </resources>

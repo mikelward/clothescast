@@ -923,4 +923,84 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="holiday_banner_waitangi_day">God Waitangi Day</string>
     <string name="settings_calendar_birthdays">Kalenderbursdag</string>
     <string name="settings_calendar_public_holidays">Kalenderhelligdager</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+
+    <!-- Settings root labels — Developer, Format -->
+    <string name="settings_root_developer">Utvikler</string>
+    <string name="settings_root_developer_subtitle">Testing og feilsøking</string>
+    <string name="settings_root_format">Format</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Forhåndsvis en dag</string>
+    <string name="settings_developer_preview_day_subtitle">Antrekk, banner og stemme for en valgfri dato, basert på et fast prøvevær med mildt vær.</string>
+    <string name="settings_developer_pick_date">Velg en dato</string>
+    <string name="settings_developer_today">I dag</string>
+    <string name="settings_developer_no_theme">Ingen helligdagstema for denne dagen.</string>
+    <string name="settings_developer_resolved_label">Løst: %1$s</string>
+    <string name="settings_developer_speak">Les opp</string>
+
+    <!-- Smart Home — additional keys -->
+    <string name="settings_smart_home_cast_label">Send prognose til smartskjerm</string>
+    <string name="settings_smart_home_cast_last_published">Sist publisert %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Sist hentet %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Skjermen har ikke hentet en ClothesCast ennå</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Hopp over tale på telefonen</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Unngå doble kunngjøringer hjemme.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Hopp over tale på telefonen</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Unngå doble kunngjøringer hjemme.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio osv.</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">Daglig ClothesCast</string>
+    <string name="settings_delivery_notification">Varsle</string>
+    <string name="settings_delivery_tts">Les opp</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Klær</string>
+    <string name="settings_clothes_mention_always">Alltid</string>
+    <string name="settings_clothes_mention_if_changed">Ved endring</string>
+    <string name="settings_clothes_mention_never">Aldri</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Eksempel</string>
+    <string name="settings_format_preview_current_title">Gjeldende prognose</string>
+    <string name="settings_format_preview_current_empty">Ingen prognose ennå — kom tilbake etter ditt neste ClothesCast.</string>
+    <string name="settings_format_what_to_say">Hva som skal sies</string>
+    <string name="settings_format_range_label">Temperaturområde</string>
+    <string name="settings_format_range_none">Ingen</string>
+    <string name="settings_format_range_degrees">Grader</string>
+    <string name="settings_format_range_bands">Nivåer</string>
+    <string name="settings_format_change_label">Temperaturendring</string>
+    <string name="settings_format_change_off">Av</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Klesformulering</string>
+    <string name="settings_format_clothes_items">Plagg</string>
+    <string name="settings_format_clothes_layer_count">Antall lag</string>
+    <string name="settings_format_bottoms_label">Underdeler</string>
+    <string name="settings_format_bottoms_always">Alltid</string>
+    <string name="settings_format_bottoms_if_garments">Ved plagg</string>
+    <string name="settings_format_bottoms_never">Aldri</string>
+    <string name="settings_format_rain_accessory_label">Regntilbehør</string>
+    <string name="settings_format_rain_accessory_none">Av</string>
+    <string name="settings_format_rain_accessory_umbrella">Paraply</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Hvis ingen regler passer</string>
+    <string name="settings_default_top_edit_title">Standard overdel</string>
+    <string name="settings_default_bottom_edit_title">Standard underdel</string>
+    <string name="settings_default_outfit_range_above">når temperaturen er over %1$s</string>
+    <string name="settings_default_outfit_range_below">når temperaturen er under %1$s</string>
+    <string name="settings_default_outfit_range_between">når temperaturen er mellom %1$s og %2$s</string>
+    <string name="settings_default_outfit_range_never">aldri</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Bruk kalenderen min</string>
+    <string name="settings_calendar_master_description">La ClothesCast lese kalenderne dine for å tilpasse prognoser og antrekk. Ingenting forlater enheten.</string>
+    <string name="settings_calendar_features_title">Personlige kalendere</string>
+    <string name="settings_calendar_evening_tie_ins">Kveldskoblinger</string>
+    <string name="settings_calendar_evening_tie_ins_description">Hvis du går ut på kvelden, forteller morgenprognosen deg om du må ta med noe ekstra.</string>
+    <string name="settings_calendar_birthdays_description">Bruk spesielle farger og meldinger for bursdager i kalenderne dine.</string>
+    <string name="settings_calendar_public_holidays_description">Bruk spesielle farger og meldinger for helligdager i kalenderne dine.</string>
+    <string name="settings_calendar_open_system_settings">Åpne systeminnstillinger</string>
 </resources>

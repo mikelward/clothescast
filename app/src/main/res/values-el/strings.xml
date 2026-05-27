@@ -1017,4 +1017,83 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="cast_error_unknown">Η μετάδοση απέτυχε.</string>
     <string name="settings_calendar_birthdays">Γενέθλια ημερολογίου</string>
     <string name="settings_calendar_public_holidays">Αργίες ημερολογίου</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels — Developer, Format. -->
+    <string name="settings_root_developer">Προγραμματιστής</string>
+    <string name="settings_root_developer_subtitle">Δοκιμή και αποσφαλμάτωση</string>
+    <string name="settings_root_format">Μορφή</string>
+
+    <!-- Developer settings page (Settings → Developer → Preview a day) -->
+    <string name="settings_developer_preview_day_title">Προεπισκόπηση ημέρας</string>
+    <string name="settings_developer_preview_day_subtitle">Στολή, banner και φωνή για οποιαδήποτε ημερομηνία, χρησιμοποιώντας σταθερό δείγμα ήπιου καιρού.</string>
+    <string name="settings_developer_pick_date">Επίλεξε ημερομηνία</string>
+    <string name="settings_developer_today">Σήμερα</string>
+    <string name="settings_developer_no_theme">Δεν υπάρχει εορταστικό θέμα για αυτήν την ημέρα.</string>
+    <string name="settings_developer_resolved_label">Αναλύθηκε: %1$s</string>
+    <string name="settings_developer_speak">Εκφώνηση</string>
+
+    <!-- Smart Home — newer keys. -->
+    <string name="settings_smart_home_cast_label">Στείλε την πρόγνωση σε έξυπνη οθόνη</string>
+    <string name="settings_smart_home_cast_last_published">Τελευταία δημοσίευση %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Τελευταία ανάκτηση %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Η οθόνη δεν έχει ανακτήσει ακόμα ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Παράλειψη εκφώνησης στο τηλέφωνο</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Απόφυγε διπλές ανακοινώσεις στο σπίτι.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Παράλειψη εκφώνησης στο τηλέφωνο</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Απόφυγε διπλές ανακοινώσεις στο σπίτι.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, κ.λπ.</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">Καθημερινό ClothesCast</string>
+    <string name="settings_delivery_notification">Ειδοποίηση</string>
+    <string name="settings_delivery_tts">Εκφώνηση</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Ρούχα</string>
+    <string name="settings_clothes_mention_always">Πάντα</string>
+    <string name="settings_clothes_mention_if_changed">Αλλαγή</string>
+    <string name="settings_clothes_mention_never">Ποτέ</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Παράδειγμα</string>
+    <string name="settings_format_preview_current_title">Τρέχουσα πρόγνωση</string>
+    <string name="settings_format_preview_current_empty">Δεν υπάρχει ακόμα πρόγνωση — έλεγξε ξανά μετά το επόμενο ClothesCast σου.</string>
+    <string name="settings_format_what_to_say">Τι να πει</string>
+    <string name="settings_format_range_label">Εύρος θερμοκρασίας</string>
+    <string name="settings_format_range_none">Κανένα</string>
+    <string name="settings_format_range_degrees">Βαθμοί</string>
+    <string name="settings_format_range_bands">Ζώνες</string>
+    <string name="settings_format_change_label">Μεταβολή θερμοκρασίας</string>
+    <string name="settings_format_change_off">Ανενεργό</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Διατύπωση ρούχων</string>
+    <string name="settings_format_clothes_items">Είδη ρούχων</string>
+    <string name="settings_format_clothes_layer_count">Αριθμός στρώσεων</string>
+    <string name="settings_format_bottoms_label">Κάτω μέρος</string>
+    <string name="settings_format_bottoms_always">Πάντα</string>
+    <string name="settings_format_bottoms_if_garments">Αν υπάρχουν είδη</string>
+    <string name="settings_format_bottoms_never">Ποτέ</string>
+    <string name="settings_format_rain_accessory_label">Αξεσουάρ για βροχή</string>
+    <string name="settings_format_rain_accessory_none">Ανενεργό</string>
+    <string name="settings_format_rain_accessory_umbrella">Ομπρέλα</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Αν δεν ταιριάζει κανένας κανόνας</string>
+    <string name="settings_default_top_edit_title">Προεπιλεγμένο πάνω μέρος</string>
+    <string name="settings_default_bottom_edit_title">Προεπιλεγμένο κάτω μέρος</string>
+    <string name="settings_default_outfit_range_above">όταν η θερμοκρασία είναι πάνω από %1$s</string>
+    <string name="settings_default_outfit_range_below">όταν η θερμοκρασία είναι κάτω από %1$s</string>
+    <string name="settings_default_outfit_range_between">όταν η θερμοκρασία είναι μεταξύ %1$s και %2$s</string>
+    <string name="settings_default_outfit_range_never">ποτέ</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Χρήση του ημερολογίου μου</string>
+    <string name="settings_calendar_master_description">Άφησε το ClothesCast να διαβάζει τα ημερολόγιά σου για να προσαρμόζει προγνώσεις και στολές. Τίποτα δεν φεύγει από τη συσκευή.</string>
+    <string name="settings_calendar_features_title">Προσωπικά ημερολόγια</string>
+    <string name="settings_calendar_evening_tie_ins">Βραδινές συνδέσεις</string>
+    <string name="settings_calendar_evening_tie_ins_description">Αν βγαίνεις το βράδυ, η πρωινή πρόγνωση σου λέει αν πρέπει να πάρεις κάτι επιπλέον.</string>
+    <string name="settings_calendar_birthdays_description">Χρήση ειδικών χρωμάτων και μηνυμάτων για γενέθλια στα ημερολόγιά σου.</string>
+    <string name="settings_calendar_public_holidays_description">Χρήση ειδικών χρωμάτων και μηνυμάτων για επίσημες αργίες στα ημερολόγιά σου.</string>
+    <string name="settings_calendar_open_system_settings">Άνοιξε τις ρυθμίσεις συστήματος</string>
 </resources>

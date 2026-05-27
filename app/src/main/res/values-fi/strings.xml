@@ -904,4 +904,83 @@ displayed label localizes.
     <string name="holiday_banner_waitangi_day">Hyvää Waitangi-päivää</string>
     <string name="settings_calendar_birthdays">Kalenterin syntymäpäivät</string>
     <string name="settings_calendar_public_holidays">Kalenterin juhlapyhät</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels -->
+    <string name="settings_root_developer">Kehittäjä</string>
+    <string name="settings_root_developer_subtitle">Testaus ja virheenkorjaus</string>
+    <string name="settings_root_format">Muoto</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Esikatsele päivää</string>
+    <string name="settings_developer_preview_day_subtitle">Vaatteet, banneri ja ääni mille tahansa päivämäärän kohdalla kiinteällä leudon sään esimerkillä.</string>
+    <string name="settings_developer_pick_date">Valitse päivämäärä</string>
+    <string name="settings_developer_today">Tänään</string>
+    <string name="settings_developer_no_theme">Tälle päivälle ei ole juhlateemaa.</string>
+    <string name="settings_developer_resolved_label">Tulos: %1$s</string>
+    <string name="settings_developer_speak">Lue ääneen</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">Lähetä ennuste älykkääseen näyttöön</string>
+    <string name="settings_smart_home_cast_last_published">Viimeisin julkaisu %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Viimeisin haku %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Näyttö ei ole vielä hakenut ClothesCastia</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Ohita puhelimen puhe</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Vältä päällekkäisiä ilmoituksia kotona.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Ohita puhelimen puhe</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Vältä päällekkäisiä ilmoituksia kotona.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, jne.</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_enabled">Päivittäinen ClothesCast</string>
+    <string name="settings_delivery_notification">Ilmoita</string>
+    <string name="settings_delivery_tts">Lue ääneen</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Vaatteet</string>
+    <string name="settings_clothes_mention_always">Aina</string>
+    <string name="settings_clothes_mention_if_changed">Kun muuttuu</string>
+    <string name="settings_clothes_mention_never">Ei koskaan</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Esimerkki</string>
+    <string name="settings_format_preview_current_title">Nykyinen ennuste</string>
+    <string name="settings_format_preview_current_empty">Ei vielä ennustetta — tarkista uudelleen seuraavan ClothesCastin jälkeen.</string>
+    <string name="settings_format_what_to_say">Mitä sanoa</string>
+    <string name="settings_format_range_label">Lämpötila-alue</string>
+    <string name="settings_format_range_none">Ei mitään</string>
+    <string name="settings_format_range_degrees">Asteet</string>
+    <string name="settings_format_range_bands">Vyöhykkeet</string>
+    <string name="settings_format_change_label">Lämpötilan muutos</string>
+    <string name="settings_format_change_off">Pois</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Vaatteiden sanamuoto</string>
+    <string name="settings_format_clothes_items">Vaatekappaleet</string>
+    <string name="settings_format_clothes_layer_count">Kerrosten määrä</string>
+    <string name="settings_format_bottoms_label">Alaosa</string>
+    <string name="settings_format_bottoms_always">Aina</string>
+    <string name="settings_format_bottoms_if_garments">Jos yläosa</string>
+    <string name="settings_format_bottoms_never">Ei koskaan</string>
+    <string name="settings_format_rain_accessory_label">Sadeasuste</string>
+    <string name="settings_format_rain_accessory_none">Pois</string>
+    <string name="settings_format_rain_accessory_umbrella">Sateenvarjo</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Kun mikään sääntö ei sovi</string>
+    <string name="settings_default_top_edit_title">Oletusyläosa</string>
+    <string name="settings_default_bottom_edit_title">Oletusalaosa</string>
+    <string name="settings_default_outfit_range_above">kun lämpötila on yli %1$s</string>
+    <string name="settings_default_outfit_range_below">kun lämpötila on alle %1$s</string>
+    <string name="settings_default_outfit_range_between">kun lämpötila on välillä %1$s – %2$s</string>
+    <string name="settings_default_outfit_range_never">ei koskaan</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Käytä kalenteriani</string>
+    <string name="settings_calendar_master_description">Anna ClothesCastin lukea kalenterisi ennusteiden ja vaatteiden räätälöintiä varten. Mikään ei poistu laitteelta.</string>
+    <string name="settings_calendar_features_title">Henkilökohtaiset kalenterit</string>
+    <string name="settings_calendar_evening_tie_ins">Iltatapahtumien sidonnat</string>
+    <string name="settings_calendar_evening_tie_ins_description">Jos lähdet illalla ulos, aamuennuste kertoo, tarvitsetko ottaa jotain ylimääräistä mukaan.</string>
+    <string name="settings_calendar_birthdays_description">Erityisiä värejä ja viestejä kalentereidesi syntymäpäiville.</string>
+    <string name="settings_calendar_public_holidays_description">Erityisiä värejä ja viestejä kalentereidesi virallisille juhlapyhille.</string>
+    <string name="settings_calendar_open_system_settings">Avaa järjestelmäasetukset</string>
 </resources>

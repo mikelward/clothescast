@@ -896,4 +896,83 @@ to values/strings.xml (English).
     <string name="today_rationale_open_clothes_settings">Pengaturan pakaian</string>
     <string name="settings_calendar_birthdays">Ulang Tahun Kalender</string>
     <string name="settings_calendar_public_holidays">Hari Libur Kalender</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels -->
+    <string name="settings_root_developer">Pengembang</string>
+    <string name="settings_root_developer_subtitle">Pengujian dan Debugging</string>
+    <string name="settings_root_format">Format</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Pratinjau hari</string>
+    <string name="settings_developer_preview_day_subtitle">Pakaian, banner, dan suara untuk tanggal apa pun, menggunakan contoh cuaca sejuk tetap.</string>
+    <string name="settings_developer_pick_date">Pilih tanggal</string>
+    <string name="settings_developer_today">Hari ini</string>
+    <string name="settings_developer_no_theme">Tidak ada tema hari libur untuk hari ini.</string>
+    <string name="settings_developer_resolved_label">Diselesaikan: %1$s</string>
+    <string name="settings_developer_speak">Bacakan</string>
+
+    <!-- Smart Home additional keys -->
+    <string name="settings_smart_home_cast_label">Kirim prakiraan ke layar pintar</string>
+    <string name="settings_smart_home_cast_last_published">Terakhir diterbitkan %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Terakhir diambil %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Layar belum mengambil ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Lewati pengucapan di ponsel</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Hindari pengumuman ganda di rumah.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Lewati pengucapan di ponsel</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Hindari pengumuman ganda di rumah.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, dll</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">ClothesCast Harian</string>
+    <string name="settings_delivery_notification">Beri tahu</string>
+    <string name="settings_delivery_tts">Bacakan</string>
+
+    <!-- Clothes-mention picker -->
+    <string name="settings_clothes_mention_label">Pakaian</string>
+    <string name="settings_clothes_mention_always">Selalu</string>
+    <string name="settings_clothes_mention_if_changed">Berubah</string>
+    <string name="settings_clothes_mention_never">Tidak pernah</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Contoh</string>
+    <string name="settings_format_preview_current_title">Prakiraan saat ini</string>
+    <string name="settings_format_preview_current_empty">Belum ada prakiraan — periksa lagi setelah ClothesCast berikutnya.</string>
+    <string name="settings_format_what_to_say">Apa yang dikatakan</string>
+    <string name="settings_format_range_label">Rentang suhu</string>
+    <string name="settings_format_range_none">Tidak ada</string>
+    <string name="settings_format_range_degrees">Derajat</string>
+    <string name="settings_format_range_bands">Tingkatan</string>
+    <string name="settings_format_change_label">Perubahan suhu</string>
+    <string name="settings_format_change_off">Mati</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Susunan kata pakaian</string>
+    <string name="settings_format_clothes_items">Pakaian</string>
+    <string name="settings_format_clothes_layer_count">Jumlah lapisan</string>
+    <string name="settings_format_bottoms_label">Bawahan</string>
+    <string name="settings_format_bottoms_always">Selalu</string>
+    <string name="settings_format_bottoms_if_garments">Jika ada pakaian</string>
+    <string name="settings_format_bottoms_never">Tidak pernah</string>
+    <string name="settings_format_rain_accessory_label">Aksesori hujan</string>
+    <string name="settings_format_rain_accessory_none">Mati</string>
+    <string name="settings_format_rain_accessory_umbrella">Payung</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">Jika tidak ada aturan yang cocok</string>
+    <string name="settings_default_top_edit_title">Atasan default</string>
+    <string name="settings_default_bottom_edit_title">Bawahan default</string>
+    <string name="settings_default_outfit_range_above">ketika suhu di atas %1$s</string>
+    <string name="settings_default_outfit_range_below">ketika suhu di bawah %1$s</string>
+    <string name="settings_default_outfit_range_between">ketika suhu antara %1$s dan %2$s</string>
+    <string name="settings_default_outfit_range_never">tidak pernah</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Gunakan kalender saya</string>
+    <string name="settings_calendar_master_description">Izinkan ClothesCast membaca kalender Anda untuk mempersonalisasi prakiraan dan pakaian. Tidak ada yang meninggalkan perangkat.</string>
+    <string name="settings_calendar_features_title">Kalender pribadi</string>
+    <string name="settings_calendar_evening_tie_ins">Keterhubungan acara malam</string>
+    <string name="settings_calendar_evening_tie_ins_description">Jika Anda keluar di malam hari, prakiraan pagi akan memberi tahu apakah Anda perlu membawa sesuatu yang lain.</string>
+    <string name="settings_calendar_birthdays_description">Gunakan warna dan pesan khusus untuk ulang tahun di kalender Anda.</string>
+    <string name="settings_calendar_public_holidays_description">Gunakan warna dan pesan khusus untuk hari libur nasional di kalender Anda.</string>
+    <string name="settings_calendar_open_system_settings">Buka pengaturan sistem</string>
 </resources>

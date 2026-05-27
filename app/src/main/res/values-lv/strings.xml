@@ -836,4 +836,83 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="holiday_banner_st_andrews_day">Priecīgu Svētā Andreja dienu</string>
     <string name="settings_calendar_birthdays">Kalendāra dzimšanas dienas</string>
     <string name="settings_calendar_public_holidays">Kalendāra svētki</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels -->
+    <string name="settings_root_developer">Izstrādātājs</string>
+    <string name="settings_root_developer_subtitle">Testēšana un atkļūdošana</string>
+    <string name="settings_root_format">Formāts</string>
+
+    <!-- Developer settings page -->
+    <string name="settings_developer_preview_day_title">Priekšskatīt dienu</string>
+    <string name="settings_developer_preview_day_subtitle">Apģērbs, baneris un balss jebkurai datumam, izmantojot fiksētu mēreni silta laika paraugu.</string>
+    <string name="settings_developer_pick_date">Izvēlies datumu</string>
+    <string name="settings_developer_today">Šodien</string>
+    <string name="settings_developer_no_theme">Šai dienai nav svētku tēmas.</string>
+    <string name="settings_developer_resolved_label">Atrisināts: %1$s</string>
+    <string name="settings_developer_speak">Nolasīt</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">Sūtīt prognozi uz viedo displeju</string>
+    <string name="settings_smart_home_cast_last_published">Pēdējā publikācija %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Pēdējā ielāde %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Displejs vēl nav ielādējis ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Izlaist telefona balsi</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Izvairies no dubultiem paziņojumiem mājās.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Izlaist telefona balsi</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Izvairies no dubultiem paziņojumiem mājās.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, utt.</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_enabled">Ikdienas ClothesCast</string>
+    <string name="settings_delivery_notification">Paziņot</string>
+    <string name="settings_delivery_tts">Nolasīt</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Apģērbs</string>
+    <string name="settings_clothes_mention_always">Vienmēr</string>
+    <string name="settings_clothes_mention_if_changed">Ja mainās</string>
+    <string name="settings_clothes_mention_never">Nekad</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Piemērs</string>
+    <string name="settings_format_preview_current_title">Pašreizējā prognoze</string>
+    <string name="settings_format_preview_current_empty">Prognozes vēl nav — apskaties pēc nākamā ClothesCast.</string>
+    <string name="settings_format_what_to_say">Ko teikt</string>
+    <string name="settings_format_range_label">Temperatūras diapazons</string>
+    <string name="settings_format_range_none">Nav</string>
+    <string name="settings_format_range_degrees">Grādi</string>
+    <string name="settings_format_range_bands">Diapazoni</string>
+    <string name="settings_format_change_label">Temperatūras izmaiņas</string>
+    <string name="settings_format_change_off">Izsl.</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">Apģērba formulējums</string>
+    <string name="settings_format_clothes_items">Apģērba gabali</string>
+    <string name="settings_format_clothes_layer_count">Slāņu skaits</string>
+    <string name="settings_format_bottoms_label">Apakša</string>
+    <string name="settings_format_bottoms_always">Vienmēr</string>
+    <string name="settings_format_bottoms_if_garments">Ja ir augša</string>
+    <string name="settings_format_bottoms_never">Nekad</string>
+    <string name="settings_format_rain_accessory_label">Lietus piederums</string>
+    <string name="settings_format_rain_accessory_none">Izsl.</string>
+    <string name="settings_format_rain_accessory_umbrella">Lietussargs</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Ja neviens noteikums neatbilst</string>
+    <string name="settings_default_top_edit_title">Noklusējuma augša</string>
+    <string name="settings_default_bottom_edit_title">Noklusējuma apakša</string>
+    <string name="settings_default_outfit_range_above">kad temperatūra ir virs %1$s</string>
+    <string name="settings_default_outfit_range_below">kad temperatūra ir zem %1$s</string>
+    <string name="settings_default_outfit_range_between">kad temperatūra ir no %1$s līdz %2$s</string>
+    <string name="settings_default_outfit_range_never">nekad</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Izmantot manu kalendāru</string>
+    <string name="settings_calendar_master_description">Ļauj ClothesCast lasīt tavus kalendārus, lai pielāgotu prognozes un apģērbu. Nekas nepamet ierīci.</string>
+    <string name="settings_calendar_features_title">Personīgie kalendāri</string>
+    <string name="settings_calendar_evening_tie_ins">Vakara notikumu sasaiste</string>
+    <string name="settings_calendar_evening_tie_ins_description">Ja vakarā kaut kur dodies, rīta prognoze pateiks, vai jāņem kas papildus.</string>
+    <string name="settings_calendar_birthdays_description">Īpašas krāsas un ziņojumi tavu kalendāru dzimšanas dienām.</string>
+    <string name="settings_calendar_public_holidays_description">Īpašas krāsas un ziņojumi tavu kalendāru valsts svētkiem.</string>
+    <string name="settings_calendar_open_system_settings">Atvērt sistēmas iestatījumus</string>
 </resources>

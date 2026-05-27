@@ -1045,4 +1045,84 @@ the displayed label localizes.
     <string name="today_rationale_open_clothes_settings">服装設定を開く</string>
     <string name="settings_calendar_birthdays">カレンダーの誕生日</string>
     <string name="settings_calendar_public_holidays">カレンダーの祝日</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+
+    <!-- Settings root labels — Developer, Format. -->
+    <string name="settings_root_developer">開発者</string>
+    <string name="settings_root_developer_subtitle">テストとデバッグ</string>
+    <string name="settings_root_format">フォーマット</string>
+
+    <!-- Developer settings page — preview-a-day -->
+    <string name="settings_developer_preview_day_title">日付をプレビュー</string>
+    <string name="settings_developer_preview_day_subtitle">固定の穏やかな天気サンプルを使って、任意の日付の服装、バナー、音声をプレビューします。</string>
+    <string name="settings_developer_pick_date">日付を選択</string>
+    <string name="settings_developer_today">今日</string>
+    <string name="settings_developer_no_theme">この日には祝日のテーマがありません。</string>
+    <string name="settings_developer_resolved_label">該当：%1$s</string>
+    <string name="settings_developer_speak">読み上げ</string>
+
+    <!-- Smart Home — additional cast / mqtt keys. -->
+    <string name="settings_smart_home_cast_label">予報をスマートディスプレイに送信</string>
+    <string name="settings_smart_home_cast_last_published">前回の送信 %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">前回の取得 %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">ディスプレイはまだ ClothesCast を取得していません</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">スマホの読み上げをスキップ</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">自宅での重複アナウンスを避けます。</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">スマホの読み上げをスキップ</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">自宅での重複アナウンスを避けます。</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text、%1$s/now/audio など</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">毎日の ClothesCast</string>
+    <string name="settings_delivery_notification">通知</string>
+    <string name="settings_delivery_tts">読み上げ</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">服装</string>
+    <string name="settings_clothes_mention_always">常に</string>
+    <string name="settings_clothes_mention_if_changed">変更時</string>
+    <string name="settings_clothes_mention_never">なし</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">例</string>
+    <string name="settings_format_preview_current_title">現在の予報</string>
+    <string name="settings_format_preview_current_empty">まだ予報がありません — 次回の ClothesCast 後にもう一度ご確認ください。</string>
+    <string name="settings_format_what_to_say">伝える内容</string>
+    <string name="settings_format_range_label">温度範囲</string>
+    <string name="settings_format_range_none">なし</string>
+    <string name="settings_format_range_degrees">度</string>
+    <string name="settings_format_range_bands">区分</string>
+    <string name="settings_format_change_label">気温変化</string>
+    <string name="settings_format_change_off">オフ</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">服装の言い回し</string>
+    <string name="settings_format_clothes_items">衣類</string>
+    <string name="settings_format_clothes_layer_count">レイヤー数</string>
+    <string name="settings_format_bottoms_label">ボトムス</string>
+    <string name="settings_format_bottoms_always">常に</string>
+    <string name="settings_format_bottoms_if_garments">衣類があるとき</string>
+    <string name="settings_format_bottoms_never">なし</string>
+    <string name="settings_format_rain_accessory_label">雨具</string>
+    <string name="settings_format_rain_accessory_none">オフ</string>
+    <string name="settings_format_rain_accessory_umbrella">傘</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">一致するルールがないとき</string>
+    <string name="settings_default_top_edit_title">既定のトップス</string>
+    <string name="settings_default_bottom_edit_title">既定のボトムス</string>
+    <string name="settings_default_outfit_range_above">気温が %1$s を超えるとき</string>
+    <string name="settings_default_outfit_range_below">気温が %1$s 未満のとき</string>
+    <string name="settings_default_outfit_range_between">気温が %1$s から %2$s の間のとき</string>
+    <string name="settings_default_outfit_range_never">なし</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">カレンダーを使用</string>
+    <string name="settings_calendar_master_description">ClothesCast がカレンダーを読み取り、予報と服装をパーソナライズします。端末から外に出るものは何もありません。</string>
+    <string name="settings_calendar_features_title">個人のカレンダー</string>
+    <string name="settings_calendar_evening_tie_ins">夜の予定との連動</string>
+    <string name="settings_calendar_evening_tie_ins_description">夜に外出する場合、朝の予報で追加で持っていくべきものがあるかをお知らせします。</string>
+    <string name="settings_calendar_birthdays_description">カレンダーの誕生日に特別な色とメッセージを使用します。</string>
+    <string name="settings_calendar_public_holidays_description">カレンダーの祝日に特別な色とメッセージを使用します。</string>
+    <string name="settings_calendar_open_system_settings">システム設定を開く</string>
 </resources>

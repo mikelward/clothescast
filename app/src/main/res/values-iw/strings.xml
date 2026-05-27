@@ -895,4 +895,83 @@ standard in Israeli digital communication.
     <string name="today_rationale_open_clothes_settings">הגדרות לבוש</string>
     <string name="settings_calendar_birthdays">ימי הולדת מיומן</string>
     <string name="settings_calendar_public_holidays">חגים מיומן</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels — Smart Home, Developer, Format -->
+    <string name="settings_root_developer">מפתח</string>
+    <string name="settings_root_developer_subtitle">בדיקות וניפוי שגיאות</string>
+    <string name="settings_root_format">ניסוח</string>
+
+    <!-- Developer settings page (Settings → Developer → Preview a day) -->
+    <string name="settings_developer_preview_day_title">תצוגה מקדימה של יום</string>
+    <string name="settings_developer_preview_day_subtitle">לבוש, באנר וקול לכל תאריך, באמצעות דוגמת מזג אוויר מתון קבועה.</string>
+    <string name="settings_developer_pick_date">בחר/י תאריך</string>
+    <string name="settings_developer_today">היום</string>
+    <string name="settings_developer_no_theme">אין נושא חג ליום זה.</string>
+    <string name="settings_developer_resolved_label">נפתר: %1$s</string>
+    <string name="settings_developer_speak">השמע/י</string>
+
+    <!-- Smart Home — newer keys -->
+    <string name="settings_smart_home_cast_label">שלח/י תחזית למסך חכם</string>
+    <string name="settings_smart_home_cast_last_published">פורסם לאחרונה %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">נשלף לאחרונה %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">המסך עדיין לא שלף ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">דלג/י על דיבור הטלפון</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">הימנע/י מהכרזות כפולות בבית.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">דלג/י על דיבור הטלפון</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">הימנע/י מהכרזות כפולות בבית.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/now/text, %1$s/now/audio, וכו׳</string>
+
+    <!-- Schedule settings -->
+    <string name="settings_schedule_enabled">ClothesCast יומי</string>
+    <string name="settings_delivery_notification">התראה</string>
+    <string name="settings_delivery_tts">קריאה</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">לבוש</string>
+    <string name="settings_clothes_mention_always">תמיד</string>
+    <string name="settings_clothes_mention_if_changed">שינוי</string>
+    <string name="settings_clothes_mention_never">אף פעם</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">דוגמה</string>
+    <string name="settings_format_preview_current_title">תחזית נוכחית</string>
+    <string name="settings_format_preview_current_empty">אין תחזית עדיין — בדוק/י שוב אחרי ה-ClothesCast הבא שלך.</string>
+    <string name="settings_format_what_to_say">מה לומר</string>
+    <string name="settings_format_range_label">טווח טמפרטורה</string>
+    <string name="settings_format_range_none">ללא</string>
+    <string name="settings_format_range_degrees">מעלות</string>
+    <string name="settings_format_range_bands">רצועות</string>
+    <string name="settings_format_change_label">שינוי טמפרטורה</string>
+    <string name="settings_format_change_off">כבוי</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_clothes_label">ניסוח לבוש</string>
+    <string name="settings_format_clothes_items">פריטי לבוש</string>
+    <string name="settings_format_clothes_layer_count">מספר שכבות</string>
+    <string name="settings_format_bottoms_label">לבוש תחתון</string>
+    <string name="settings_format_bottoms_always">תמיד</string>
+    <string name="settings_format_bottoms_if_garments">אם יש פריטים</string>
+    <string name="settings_format_bottoms_never">אף פעם</string>
+    <string name="settings_format_rain_accessory_label">אביזר גשם</string>
+    <string name="settings_format_rain_accessory_none">כבוי</string>
+    <string name="settings_format_rain_accessory_umbrella">מטרייה</string>
+
+    <!-- Fallback clothes rules — "If no rules match" -->
+    <string name="settings_default_outfit_title">אם אף חוק לא מתאים</string>
+    <string name="settings_default_top_edit_title">פריט עליון ברירת מחדל</string>
+    <string name="settings_default_bottom_edit_title">פריט תחתון ברירת מחדל</string>
+    <string name="settings_default_outfit_range_above">כשהטמפרטורה מעל %1$s</string>
+    <string name="settings_default_outfit_range_below">כשהטמפרטורה מתחת ל-%1$s</string>
+    <string name="settings_default_outfit_range_between">כשהטמפרטורה בין %1$s ל-%2$s</string>
+    <string name="settings_default_outfit_range_never">אף פעם</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">השתמש/י ביומן שלי</string>
+    <string name="settings_calendar_master_description">אפשר/י ל-ClothesCast לקרוא את היומנים שלך כדי להתאים אישית תחזיות ולבוש. שום דבר לא יוצא מהמכשיר.</string>
+    <string name="settings_calendar_features_title">יומנים אישיים</string>
+    <string name="settings_calendar_evening_tie_ins">קישורי ערב</string>
+    <string name="settings_calendar_evening_tie_ins_description">אם את/ה יוצא/ת בערב, תחזית הבוקר אומרת לך אם צריך לקחת משהו נוסף.</string>
+    <string name="settings_calendar_birthdays_description">השתמש/י בצבעים ובהודעות מיוחדים לימי הולדת ביומנים שלך.</string>
+    <string name="settings_calendar_public_holidays_description">השתמש/י בצבעים ובהודעות מיוחדים לחגים ביומנים שלך.</string>
+    <string name="settings_calendar_open_system_settings">פתח/י הגדרות מערכת</string>
 </resources>

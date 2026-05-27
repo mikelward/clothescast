@@ -1984,6 +1984,30 @@ internal fun SevenDayPagePreview() {
     }
 }
 
+// Mirrors the per-period [TodayInsightCardWithLocationPreview] — exercises
+// the header's location chip next to the "Next 7 days" label so the maps
+// deep-link tap-target gets snapshot coverage.
+@Preview(name = "Seven-day page · with location", widthDp = 360)
+@Composable
+internal fun SevenDayPageWithLocationPreview() {
+    Frame {
+        SevenDayPage(
+            days = SAMPLE_WEEK,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            distanceUnit = app.clothescast.core.domain.model.DistanceUnit.KILOMETERS,
+            weekPerModelHourly = null,
+            showModelSpread = false,
+            scrollState = androidx.compose.foundation.rememberScrollState(),
+            onChevronTap = {},
+            location = Location(
+                latitude = 42.3601,
+                longitude = -71.0589,
+                displayName = "Boston, Massachusetts, United States",
+            ),
+        )
+    }
+}
+
 // Synthesises a 7-day per-model bundle by mirroring [SAMPLE_WEEK]'s
 // hourly stream into three models with small fixed offsets. Covers all
 // 7 dates so [SevenDayPage]'s coverage gate ([weekPerModelDiagnostics])

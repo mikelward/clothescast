@@ -36,6 +36,7 @@ import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
+import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -131,6 +132,13 @@ internal fun SevenDayPage(
      * field, plumbed through here in place of this one.
      */
     deltaThresholdC: Double? = 3.0,
+    /**
+     * The forecast location, shown next to the "Next 7 days" header label
+     * (and tappable to open the maps deep-link), matching the per-period
+     * [InsightCard]'s header. Null on legacy cached payloads / previews
+     * without a location, in which case the header renders the label alone.
+     */
+    location: Location? = null,
 ) {
     // Flatten every day's hourly stream into a single list. The chart
     // composables read [hourly[idx].time.hour] only for the bottom-axis
@@ -260,6 +268,8 @@ internal fun SevenDayPage(
                             )
                         }
                     }
+                    val locationLabel = shortLocationLabel(location?.displayName)
+                        ?: location?.let { stringResource(R.string.today_location_unknown) }
                     Row(
                         modifier = Modifier.weight(1f),
                         horizontalArrangement = Arrangement.Center,
@@ -270,6 +280,26 @@ internal fun SevenDayPage(
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                        if (location != null && locationLabel != null) {
+                            Text(
+                                text = " · ",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            Text(
+                                text = locationLabel,
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.clickable {
+                                    openInMaps(
+                                        context = context,
+                                        latitude = location.latitude,
+                                        longitude = location.longitude,
+                                        label = locationLabel,
+                                    )
+                                },
+                            )
+                        }
                     }
                     Box(modifier = Modifier.size(28.dp))
                 }

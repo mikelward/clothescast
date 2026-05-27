@@ -58,7 +58,8 @@ internal fun CastDestinationCard(
     castInProgress: Boolean,
     lastError: String?,
     lastErrorAt: Long,
-    lastSuccessAt: Long,
+    lastPublishedAt: Long,
+    lastFetchedAt: Long,
     castEnabled: Boolean,
     castMorning: Boolean,
     castTonight: Boolean,
@@ -133,7 +134,8 @@ internal fun CastDestinationCard(
             CastStatusRow(
                 lastError = lastError,
                 lastErrorAt = lastErrorAt,
-                lastSuccessAt = lastSuccessAt,
+                lastPublishedAt = lastPublishedAt,
+                lastFetchedAt = lastFetchedAt,
             )
 
             // Per-period toggles + the audio-handoff toggle gate
@@ -256,11 +258,12 @@ private fun CastDeviceRow(
 @Composable
 private fun CastStatusRow(
     lastError: String?,
-    lastErrorAt: Long,
-    lastSuccessAt: Long,
+    @Suppress("UNUSED_PARAMETER") lastErrorAt: Long,
+    lastPublishedAt: Long,
+    lastFetchedAt: Long,
 ) {
-    when {
-        lastError != null -> {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        if (lastError != null) {
             Surface(
                 color = MaterialTheme.colorScheme.errorContainer,
                 shape = MaterialTheme.shapes.medium,
@@ -280,22 +283,45 @@ private fun CastStatusRow(
                 }
             }
         }
-        lastSuccessAt > 0 -> {
-            Text(
-                text = stringResource(
-                    R.string.settings_smart_home_cast_last_success,
-                    formatTimestamp(lastSuccessAt),
-                ),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        else -> {
-            Text(
-                text = stringResource(R.string.settings_smart_home_cast_never),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+        when {
+            lastPublishedAt == 0L && lastFetchedAt == 0L && lastError == null -> {
+                Text(
+                    text = stringResource(R.string.settings_smart_home_cast_never),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            else -> {
+                // Two independent highwater lines: "Last published"
+                // advances on every successful load command, "Last
+                // fetched" only when the display actually GET'd the
+                // hosted URL. Showing both lets the user tell "we
+                // published at 15:39 but the display never fetched it"
+                // (the firewall case) apart from "we fetched at 15:40"
+                // (everything worked).
+                if (lastPublishedAt > 0L) {
+                    Text(
+                        text = stringResource(
+                            R.string.settings_smart_home_cast_last_published,
+                            formatTimestamp(lastPublishedAt),
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Text(
+                    text = if (lastFetchedAt > 0L) {
+                        stringResource(
+                            R.string.settings_smart_home_cast_last_fetched,
+                            formatTimestamp(lastFetchedAt),
+                        )
+                    } else {
+                        stringResource(R.string.settings_smart_home_cast_last_fetched_never)
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }

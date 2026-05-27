@@ -452,11 +452,21 @@ class SettingsRepository(
      * preferences. Mirrors [MqttPublishStatus]; the status row in
      * Settings → Smart Home → Cast reads this to surface "Cast failed:
      * device not found" without polluting [UserPreferences].
+     *
+     * Two independent highwater timestamps are tracked so the status row
+     * can distinguish "we never managed to publish the load command"
+     * from "we published it but the display couldn't reach the phone to
+     * fetch the bytes": [lastPublishedAtMs] is the most recent
+     * successful `RemoteMediaClient.load` accept, [lastFetchedAtMs] is
+     * the most recent confirmed URL fetch on the phone's media server.
+     * A "published-but-not-fetched" attempt advances the former but not
+     * the latter and leaves an explanatory [errorMessage].
      */
     data class CastStatus(
         val errorMessage: String?,
         val recordedAtMs: Long,
-        val lastSuccessAtMs: Long = 0L,
+        val lastPublishedAtMs: Long = 0L,
+        val lastFetchedAtMs: Long = 0L,
     )
 
     /** Null until the first cast attempt is recorded; thereafter always non-null. */
@@ -465,19 +475,45 @@ class SettingsRepository(
         CastStatus(
             errorMessage = prefs[CAST_LAST_ERROR_MSG],
             recordedAtMs = ms,
-            lastSuccessAtMs = prefs[CAST_LAST_SUCCESS_AT_MS] ?: 0L,
+            lastPublishedAtMs = prefs[CAST_LAST_PUBLISHED_AT_MS] ?: 0L,
+            lastFetchedAtMs = prefs[CAST_LAST_FETCHED_AT_MS] ?: 0L,
         )
     }
 
-    /** Pass null [errorMessage] to record a success. */
-    suspend fun setCastLastError(errorMessage: String?, atMs: Long = System.currentTimeMillis()) {
+    /**
+     * Persists the outcome of a cast attempt. The caller passes whichever
+     * subset of timestamps the attempt actually progressed:
+     *
+     *  - [publishedAtMs] non-null when the receiver accepted the load
+     *    command — advances the "last published" highwater regardless
+     *    of whether the bytes ultimately transferred.
+     *  - [fetchedAtMs] non-null when the phone's media server saw the
+     *    receiver GET the hosted URL — advances the "last fetched"
+     *    highwater. A fully-successful attempt passes both.
+     *  - [errorMessage] non-null leaves a visible error on the row;
+     *    null clears any prior error. A "published-but-not-fetched"
+     *    attempt passes a non-null [publishedAtMs] alongside a
+     *    non-null [errorMessage] (the latter explaining why the
+     *    display didn't fetch).
+     */
+    suspend fun setCastResult(
+        errorMessage: String?,
+        publishedAtMs: Long? = null,
+        fetchedAtMs: Long? = null,
+        atMs: Long = System.currentTimeMillis(),
+    ) {
         dataStore.edit { prefs ->
             prefs[CAST_LAST_ERROR_AT_MS] = atMs
             if (errorMessage != null) {
                 prefs[CAST_LAST_ERROR_MSG] = errorMessage
             } else {
                 prefs.remove(CAST_LAST_ERROR_MSG)
-                prefs[CAST_LAST_SUCCESS_AT_MS] = atMs
+            }
+            if (publishedAtMs != null) {
+                prefs[CAST_LAST_PUBLISHED_AT_MS] = publishedAtMs
+            }
+            if (fetchedAtMs != null) {
+                prefs[CAST_LAST_FETCHED_AT_MS] = fetchedAtMs
             }
         }
     }
@@ -1248,7 +1284,13 @@ class SettingsRepository(
         private val CAST_ROUTE_NAME = stringPreferencesKey("cast_route_name")
         private val CAST_LAST_ERROR_MSG = stringPreferencesKey("cast_last_error_msg")
         private val CAST_LAST_ERROR_AT_MS = longPreferencesKey("cast_last_error_at_ms")
-        private val CAST_LAST_SUCCESS_AT_MS = longPreferencesKey("cast_last_success_at_ms")
+        // Most recent time the receiver accepted the load command. Tracked
+        // independently of CAST_LAST_FETCHED_AT_MS (= URL pulled by the
+        // display) so the status row can show "published at X but the
+        // display didn't fetch it" when a LAN firewall blocks the
+        // receiver→phone direction.
+        private val CAST_LAST_PUBLISHED_AT_MS = longPreferencesKey("cast_last_published_at_ms")
+        private val CAST_LAST_FETCHED_AT_MS = longPreferencesKey("cast_last_fetched_at_ms")
         // Master switch for scheduled casting + per-period cast toggles +
         // the "smart display speaks, mute the phone" suppression. Stored
         // separately from CAST_ROUTE_ID so the user's picked display

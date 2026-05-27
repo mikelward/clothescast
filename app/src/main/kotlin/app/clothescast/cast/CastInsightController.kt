@@ -154,13 +154,18 @@ class CastInsightController(
      * resulting session to start, and casts the given insight. Used by
      * the Settings → "Cast now" test button.
      *
-     * - Returns when [client.load] has been called (audio + image are
-     *   loading on the smart display). The synth + WAV-wrap + publish
-     *   chain runs inside the call before [client.load].
+     * - Returns once the receiver has accepted the load AND the phone's
+     *   media server has confirmed the receiver actually fetched the
+     *   URL — the two together are the real "the display played it"
+     *   signal. The synth + WAV-wrap + publish chain runs inside the
+     *   call before the load.
      * - Throws on timeout, on route-not-found (device off / out of range
-     *   / different LAN), or on a session-start failure. The caller
+     *   / different LAN), on a session-start failure, on the receiver
+     *   rejecting or never responding to the load, or on the receiver
+     *   accepting the load but never fetching the URL (the firewall
+     *   case the GET-confirmation check exists to catch). The caller
      *   converts the throwable to a user-facing status string and
-     *   persists it via [SettingsRepository.setCastLastError].
+     *   persists it via [SettingsRepository.setCastResult].
      */
     suspend fun castToSavedRoute(
         routeId: String,
@@ -173,6 +178,8 @@ class CastInsightController(
         subtitle: String?,
         discoveryTimeoutMs: Long = 5_000,
         sessionTimeoutMs: Long = 10_000,
+        loadTimeoutMs: Long = 15_000,
+        fetchTimeoutMs: Long = 15_000,
     ) {
         val route = findRoute(routeId, discoveryTimeoutMs)
             ?: throw CastFailure.DeviceNotFound
@@ -191,11 +198,35 @@ class CastInsightController(
         val wav = WavEncoder.encode(padPcmToMinimumDuration(pcm))
         val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(outfitPng, wav) }
         val urls = server.publish(host = host, video = mp4)
-        client.load(
-            MediaLoadRequestData.Builder()
-                .setMediaInfo(buildMediaInfo(urls, title, subtitle))
-                .build(),
+        DiagLog.i(
+            TAG,
+            "Cast test: hosting ${mp4.size}B mp4 on http://$host:${server.port()}/<token>/insight.mp4 " +
+                "for route $routeId; sending load command.",
         )
+        val request = MediaLoadRequestData.Builder()
+            .setMediaInfo(buildMediaInfo(urls, title, subtitle))
+            .build()
+        val result = awaitLoad(client, request, loadTimeoutMs)
+            ?: run {
+                DiagLog.w(TAG, "Cast test: receiver did not respond to load within ${loadTimeoutMs}ms.")
+                throw CastFailure.LoadResponseTimeout
+            }
+        if (!result.status.isSuccess) {
+            val message = result.status.statusMessage?.takeIf { it.isNotBlank() }
+                ?: "Smart display rejected the media (code ${result.status.statusCode})."
+            DiagLog.w(TAG, "Cast test: load rejected by receiver: $message")
+            throw CastFailure.LoadRejected(message)
+        }
+        DiagLog.i(TAG, "Cast test: load accepted; awaiting URL fetch (timeout=${fetchTimeoutMs}ms).")
+        if (!server.awaitFetch(fetchTimeoutMs)) {
+            DiagLog.w(
+                TAG,
+                "Cast test: receiver accepted load but never fetched the hosted URL within " +
+                    "${fetchTimeoutMs}ms — likely a LAN firewall between the display and the phone.",
+            )
+            throw CastFailure.FetchNotConfirmed
+        }
+        DiagLog.i(TAG, "Cast test: receiver fetched the hosted URL; cast confirmed fetched.")
     }
 
     /**
@@ -206,8 +237,26 @@ class CastInsightController(
      * spec is explicit that no destination's failure cancels another.
      */
     sealed interface CastWorkerOutcome {
-        /** `RemoteMediaClient.load` accepted the media. */
+        /**
+         * Receiver accepted the load AND the phone's media server saw
+         * the receiver fetch the hosted URL. Both signals are required:
+         * load-accept alone leaves false positives whenever a LAN
+         * firewall keeps the display from reaching the phone (the load
+         * command goes via Google's cloud relay and still succeeds, but
+         * the bytes never transfer).
+         */
         data object Success : CastWorkerOutcome
+
+        /**
+         * Receiver ACK'd the load command but never fetched the hosted
+         * URL within the fetch window — the load surface succeeded,
+         * the bytes never crossed. Distinct from [Failed] because the
+         * caller needs to know the load did succeed (so the "last
+         * published" timestamp still advances) even though "last
+         * fetched" doesn't.
+         * Typically a LAN firewall between the display and the phone.
+         */
+        data class PublishedButNotFetched(val reason: String) : CastWorkerOutcome
 
         /**
          * Route id no longer resolves on the LAN — display fully off,
@@ -266,6 +315,7 @@ class CastInsightController(
         discoveryTimeoutMs: Long = 5_000,
         sessionTimeoutMs: Long = 10_000,
         loadTimeoutMs: Long = 15_000,
+        fetchTimeoutMs: Long = 15_000,
     ): CastWorkerOutcome {
         return try {
             // MediaRouter / SessionManager / RemoteMediaClient calls
@@ -283,14 +333,29 @@ class CastInsightController(
                 session.remoteMediaClient
             }
             val client = when (routeAndClient) {
-                null -> return CastWorkerOutcome.SkippedNoRoute
+                null -> {
+                    DiagLog.w(TAG, "Cast route $routeId not discovered within ${discoveryTimeoutMs}ms; skipping cast.")
+                    return CastWorkerOutcome.SkippedNoRoute
+                }
                 else -> routeAndClient
             }
             val host = resolveLanIp(context)
-                ?: return CastWorkerOutcome.Failed(CastFailure.NoLanAddress.message ?: "No LAN IP")
+                ?: run {
+                    DiagLog.w(TAG, "No LAN IPv4 on the phone; cannot host cast media.")
+                    return CastWorkerOutcome.Failed(CastFailure.NoLanAddress.message ?: "No LAN IP")
+                }
             val paddedWav = padWavToMinimumDuration(wav)
             val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(png, paddedWav) }
             val urls = server.publish(host = host, video = mp4)
+            // Concrete URL is sensitive (path token), so log only the
+            // origin + bytes so a bug report can correlate the worker's
+            // publish with later route-handler entries without leaking
+            // the secret that gates the buffer.
+            DiagLog.i(
+                TAG,
+                "Cast hosting ${mp4.size}B mp4 on http://$host:${server.port()}/<token>/insight.mp4 " +
+                    "for route $routeId; sending load command.",
+            )
             val request = MediaLoadRequestData.Builder()
                 .setMediaInfo(buildMediaInfo(urls, title, subtitle))
                 .build()
@@ -302,15 +367,39 @@ class CastInsightController(
             // suppress phone TTS off a premature "success", leaving
             // the user with no spoken forecast.
             val result = awaitLoad(client, request, loadTimeoutMs)
-                ?: return CastWorkerOutcome.Failed("Smart display did not respond to the load request")
-            if (result.status.isSuccess) {
-                CastWorkerOutcome.Success
-            } else {
+                ?: run {
+                    DiagLog.w(TAG, "Cast receiver did not respond to load within ${loadTimeoutMs}ms.")
+                    return CastWorkerOutcome.Failed("Smart display did not respond to the load request")
+                }
+            if (!result.status.isSuccess) {
                 val message = result.status.statusMessage?.takeIf { it.isNotBlank() }
                     ?: "Smart display rejected the media (code ${result.status.statusCode})"
                 DiagLog.w(TAG, "Cast load rejected by receiver: $message")
-                CastWorkerOutcome.Failed(message)
+                return CastWorkerOutcome.Failed(message)
             }
+            DiagLog.i(TAG, "Cast load accepted by receiver; awaiting URL fetch (timeout=${fetchTimeoutMs}ms).")
+            // Cast load commands route through Google's cloud relay, so a
+            // receiver on the LAN can ACK the load even when it can't
+            // reach the phone's media server (e.g. a firewall rule
+            // blocking the receiver → phone direction). The only direct
+            // signal that the bytes actually transferred is a successful
+            // GET on the hosted URL — wait for it before claiming
+            // Success. Distinguish PublishedButNotFetched from Failed so
+            // the "last published" timestamp still advances and the
+            // user can tell "we never managed to publish" apart from
+            // "we published but the display couldn't reach us."
+            if (!server.awaitFetch(fetchTimeoutMs)) {
+                DiagLog.w(
+                    TAG,
+                    "Cast receiver accepted load but never fetched the hosted URL within " +
+                        "${fetchTimeoutMs}ms — likely a LAN firewall between the display and the phone.",
+                )
+                return CastWorkerOutcome.PublishedButNotFetched(
+                    "Smart display didn't fetch the video — check that it can reach the phone on the LAN.",
+                )
+            }
+            DiagLog.i(TAG, "Cast receiver fetched the hosted URL; cast confirmed fetched.")
+            CastWorkerOutcome.Success
         } catch (ce: kotlinx.coroutines.CancellationException) {
             // CancellationException must propagate so WorkManager
             // stops unwind cleanly — same convention as
@@ -442,7 +531,10 @@ class CastInsightController(
     /**
      * Typed failures the test-cast path can produce. The caller maps
      * each to a user-facing string and persists via
-     * [app.clothescast.data.SettingsRepository.setCastLastError].
+     * [app.clothescast.data.SettingsRepository.setCastResult].
+     * [FetchNotConfirmed] is special: load succeeded, so the caller
+     * still advances the "last published" timestamp even while recording
+     * an error.
      */
     sealed class CastFailure(message: String) : Exception(message) {
         data object DeviceNotFound : CastFailure("Smart display not found on the network.")
@@ -451,6 +543,16 @@ class CastInsightController(
             CastFailure("Smart display rejected the session (code $errorCode).")
         data object NoRemoteMediaClient : CastFailure("Smart display did not accept playback.")
         data object NoLanAddress : CastFailure("Phone has no Wi-Fi address — connect to the same network as the smart display.")
+        data object LoadResponseTimeout : CastFailure("Smart display did not respond to the load request.")
+        data class LoadRejected(val reason: String) : CastFailure(reason)
+        // The bytes never transferred even though the receiver ACK'd the
+        // load — typically a LAN firewall blocking the display → phone
+        // direction. Distinguished from the load-level failures because
+        // the symptom on the display is "loading spinner forever" rather
+        // than an error code from the receiver.
+        data object FetchNotConfirmed : CastFailure(
+            "Smart display didn't fetch the video — check that it can reach the phone on the LAN.",
+        )
     }
 
     companion object {

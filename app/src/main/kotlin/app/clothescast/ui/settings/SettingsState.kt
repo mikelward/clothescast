@@ -228,8 +228,20 @@ data class SettingsState(
     val castLastError: String? = null,
     /** Epoch-ms wall-clock of the last recorded cast outcome (0 = no record). */
     val castLastErrorAt: Long = 0L,
-    /** Epoch-ms wall-clock of the most recent successful cast (0 = no success yet). */
-    val castLastSuccessAt: Long = 0L,
+    /**
+     * Epoch-ms wall-clock of the most recent successful `RemoteMediaClient.load`
+     * accept (0 = none). Advances even when the receiver later fails to
+     * fetch the hosted URL, so the row can show "Last published at X"
+     * alongside a "didn't fetch" error.
+     */
+    val castLastPublishedAt: Long = 0L,
+    /**
+     * Epoch-ms wall-clock of the most recent confirmed URL fetch on the
+     * phone's media server (0 = none). The stricter "the display
+     * actually pulled the bytes" timestamp the status row reads as
+     * "Last fetched".
+     */
+    val castLastFetchedAt: Long = 0L,
     /**
      * True when [ClothesCastApplication.castContext] resolved — i.e. Google
      * Play Services Cast framework is available on this device. Cast-less

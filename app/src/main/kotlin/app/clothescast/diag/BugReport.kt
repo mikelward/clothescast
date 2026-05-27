@@ -67,6 +67,9 @@ object BugReport {
         val mqttPublishStatus = runCatching {
             app.settingsRepository.mqttPublishStatus.first()
         }.getOrNull()
+        val castStatus = runCatching {
+            app.settingsRepository.castStatus.first()
+        }.getOrNull()
         val thisSnapshot = runCatching {
             app.insightCache.thisPeriod.first()
         }.getOrNull()
@@ -101,7 +104,7 @@ object BugReport {
             if (prefs == null) {
                 appendLine("(failed to read preferences)")
             } else {
-                appendPreferences(prefs, mqttPasswordConfigured, mqttPublishStatus)
+                appendPreferences(prefs, mqttPasswordConfigured, mqttPublishStatus, castStatus)
             }
             appendLine("API keys: Gemini=${if (geminiKeyConfigured) "set" else "unset"}")
             appendLine()
@@ -132,6 +135,7 @@ object BugReport {
         prefs: UserPreferences,
         mqttPasswordConfigured: Boolean,
         mqttPublishStatus: SettingsRepository.MqttPublishStatus?,
+        castStatus: SettingsRepository.CastStatus?,
     ) {
         appendLine("Region: ${prefs.region.name} (${prefs.region.bcp47 ?: "system"})")
         appendLine("Temperature unit: ${prefs.temperatureUnit.name}")
@@ -165,6 +169,7 @@ object BugReport {
         appendLine("Clothes rules (${prefs.clothesRules.size}):")
         prefs.clothesRules.forEach { appendLine("  - ${describeRule(it)}") }
         appendMqttSettings(prefs, mqttPasswordConfigured, mqttPublishStatus)
+        appendCastSettings(prefs, castStatus)
     }
 
     private fun StringBuilder.appendMqttSettings(
@@ -191,6 +196,37 @@ object BugReport {
             mqttPublishStatus.lastSuccessAtMs > 0L
         ) {
             appendLine("MQTT last success: ${formatTimestamp(mqttPublishStatus.lastSuccessAtMs)}")
+        }
+    }
+
+    private fun StringBuilder.appendCastSettings(
+        prefs: UserPreferences,
+        castStatus: SettingsRepository.CastStatus?,
+    ) {
+        appendLine("Cast enabled: ${prefs.castEnabled}")
+        appendLine("Cast morning: ${prefs.castMorning}")
+        appendLine("Cast tonight: ${prefs.castTonight}")
+        appendLine("Cast skip phone speech: ${prefs.castSkipPhoneSpeech}")
+        val display = prefs.castRouteName?.takeIf { it.isNotBlank() }
+            ?: prefs.castRouteId?.let { "(unnamed, id=$it)" }
+            ?: "(unset)"
+        appendLine("Cast display: $display")
+        val statusLine = when {
+            castStatus == null -> "(no cast attempted)"
+            castStatus.errorMessage == null -> "fetched at ${formatTimestamp(castStatus.recordedAtMs)}"
+            else -> "failed at ${formatTimestamp(castStatus.recordedAtMs)} — ${castStatus.errorMessage}"
+        }
+        appendLine("Cast last attempt: $statusLine")
+        // Both highwater timestamps are reported independently so a
+        // triage reader can immediately see "published at X but the
+        // display never fetched (fetched stays at 0 or stale)" — the
+        // firewall-between-display-and-phone failure mode the in-app
+        // status row now surfaces.
+        if (castStatus != null && castStatus.lastPublishedAtMs > 0L) {
+            appendLine("Cast last published: ${formatTimestamp(castStatus.lastPublishedAtMs)}")
+        }
+        if (castStatus != null && castStatus.lastFetchedAtMs > 0L) {
+            appendLine("Cast last fetched: ${formatTimestamp(castStatus.lastFetchedAtMs)}")
         }
     }
 

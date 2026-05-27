@@ -571,6 +571,9 @@
     <string name="settings_smart_home_cast_picker_empty">No smart displays found yet. Make sure your display is on and on the same Wi-Fi.</string>
     <string name="settings_smart_home_cast_picker_cancel">Cancel</string>
     <string name="settings_smart_home_cast_last_success">Last cast %1$s</string>
+    <string name="settings_smart_home_cast_last_published">Last published %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Last fetched %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Display hasn\'t fetched a ClothesCast yet</string>
     <string name="settings_smart_home_cast_never">Not cast yet</string>
     <string name="settings_smart_home_cast_last_error_title">Last cast failed</string>
     <string name="settings_smart_home_cast_morning_title">Daily ClothesCast</string>

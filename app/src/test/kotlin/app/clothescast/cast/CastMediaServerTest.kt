@@ -3,6 +3,9 @@ package app.clothescast.cast
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldMatch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.net.HttpURLConnection
@@ -67,6 +70,58 @@ class CastMediaServerTest {
         val origin = URL(urls.video).let { "http://${it.host}:${it.port}" }
 
         fetch("$origin/nope").status shouldBe 404
+    }
+
+    @Test
+    fun `awaitFetch returns true once a receiver GETs the active URL`() = runBlocking {
+        val urls = server.publish(host = "127.0.0.1", video = byteArrayOf(1, 2, 3))
+
+        // Await before the GET — the deferred must not be pre-completed.
+        val awaiter = async { server.awaitFetch(timeoutMs = 5_000) }
+
+        fetch(urls.video).status shouldBe 200
+
+        awaiter.await() shouldBe true
+    }
+
+    @Test
+    fun `awaitFetch returns false when no receiver fetches before the timeout`() = runTest {
+        server.publish(host = "127.0.0.1", video = byteArrayOf(0))
+
+        // Short timeout — nothing GETs the URL, so we expect a timeout
+        // result rather than a hang. runTest's virtual time skips the
+        // wall-clock delay so the test stays fast.
+        server.awaitFetch(timeoutMs = 50) shouldBe false
+    }
+
+    @Test
+    fun `awaitFetch returns false when no publish has been issued`() = runTest {
+        server.awaitFetch(timeoutMs = 50) shouldBe false
+    }
+
+    @Test
+    fun `awaitFetch is not satisfied by a wrong-token request`() = runBlocking {
+        val urls = server.publish(host = "127.0.0.1", video = byteArrayOf(7))
+        val origin = URL(urls.video).let { "http://${it.host}:${it.port}" }
+
+        fetch("$origin/deadbeefdeadbeefdeadbeefdeadbeef/insight.mp4").status shouldBe 404
+
+        // A 404 doesn't count — only a successful serve of the active
+        // token completes the deferred.
+        server.awaitFetch(timeoutMs = 200) shouldBe false
+    }
+
+    @Test
+    fun `awaitFetch returns true after a republish once the new URL is GET'd`() = runBlocking {
+        server.publish(host = "127.0.0.1", video = "first".toByteArray())
+        // No GET on the first URL — its deferred never completes.
+
+        val second = server.publish(host = "127.0.0.1", video = "second".toByteArray())
+        val awaiter = async { server.awaitFetch(timeoutMs = 5_000) }
+
+        fetch(second.video).body shouldBe "second".toByteArray()
+
+        awaiter.await() shouldBe true
     }
 
     @Test

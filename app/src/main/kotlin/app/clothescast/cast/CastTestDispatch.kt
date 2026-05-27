@@ -17,17 +17,43 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 /**
+ * Outcome of a "Cast now" test: carries the same (error, publishedAt,
+ * fetchedAt) shape the worker uses, so the Settings VM can call
+ * [SettingsRepository.setCastResult] with the matching highwater
+ * updates and the status row can differentiate "load failed" from
+ * "load succeeded but the display never fetched the video."
+ */
+data class CastTestOutcome(
+    val errorMessage: String?,
+    val publishedAtMs: Long?,
+    val fetchedAtMs: Long?,
+) {
+    companion object {
+        fun success(atMs: Long = System.currentTimeMillis()): CastTestOutcome =
+            CastTestOutcome(errorMessage = null, publishedAtMs = atMs, fetchedAtMs = atMs)
+
+        fun publishedButNotFetched(
+            reason: String,
+            atMs: Long = System.currentTimeMillis(),
+        ): CastTestOutcome =
+            CastTestOutcome(errorMessage = reason, publishedAtMs = atMs, fetchedAtMs = null)
+
+        fun failed(reason: String): CastTestOutcome =
+            CastTestOutcome(errorMessage = reason, publishedAtMs = null, fetchedAtMs = null)
+    }
+}
+
+/**
  * Builds the inputs for a "Cast now" test — current insight + outfit
  * PNG + prose — and asks [CastInsightController.castToSavedRoute] to
  * dispatch them to the saved smart display. Mirrors the worker's MQTT
  * image-publish path so the test cast looks identical to what the
  * scheduled cast will (in PR B) produce.
  *
- * Returns `null` on success, or a user-facing error string on failure
- * (no route picked yet, no insight yet, Cast device not found, etc.).
- * The caller persists the string via
- * [SettingsRepository.setCastLastError] and shows it on the Settings
- * status row.
+ * Returns a [CastTestOutcome] carrying the error message (if any) plus
+ * which highwater timestamps to advance. The caller persists via
+ * [SettingsRepository.setCastResult] so the status row can show both
+ * "Sent at X" and "Played at Y" lines independently.
  */
 internal suspend fun castCurrentInsight(
     context: Context,
@@ -37,15 +63,15 @@ internal suspend fun castCurrentInsight(
     calendarEventReader: CalendarEventReader,
     controller: CastInsightController,
     locale: java.util.Locale,
-): String? {
+): CastTestOutcome {
     val prefs = settingsRepository.preferences.first()
     val routeId = prefs.castRouteId
-        ?: return context.getString(R.string.cast_error_no_route_picked)
+        ?: return CastTestOutcome.failed(context.getString(R.string.cast_error_no_route_picked))
     val snapshot = insightCache.thisPeriod.first()
-        ?: return context.getString(R.string.cast_error_no_insight_yet)
+        ?: return CastTestOutcome.failed(context.getString(R.string.cast_error_no_insight_yet))
     val insight = deriveInsight(snapshot, prefs).insight
     val outfit = insight.outfit
-        ?: return context.getString(R.string.cast_error_no_insight_yet)
+        ?: return CastTestOutcome.failed(context.getString(R.string.cast_error_no_insight_yet))
 
     val formatter = InsightFormatter.forRegion(
         context,
@@ -103,10 +129,17 @@ internal suspend fun castCurrentInsight(
             title = context.getString(R.string.app_name),
             subtitle = insight.location?.displayName,
         )
-        null
+        CastTestOutcome.success()
+    } catch (e: CastInsightController.CastFailure.FetchNotConfirmed) {
+        // Load was accepted by the receiver — the failure is strictly on
+        // the bytes-fetch leg. Advance "last published" but not "last
+        // fetched" so the status row reads "published at X but the
+        // display didn't fetch it" rather than the misleading flat-
+        // failure of every other CastFailure.
+        CastTestOutcome.publishedButNotFetched(reason = e.message ?: "")
     } catch (e: CastInsightController.CastFailure) {
-        e.message
+        CastTestOutcome.failed(e.message ?: context.getString(R.string.cast_error_unknown))
     } catch (t: Throwable) {
-        t.message ?: context.getString(R.string.cast_error_unknown)
+        CastTestOutcome.failed(t.message ?: context.getString(R.string.cast_error_unknown))
     }
 }

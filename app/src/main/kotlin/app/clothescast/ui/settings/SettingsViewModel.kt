@@ -36,6 +36,7 @@ import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
 import app.clothescast.cast.CastRouteDiscovery
+import app.clothescast.cast.CastTestOutcome
 import app.clothescast.cast.DiscoveredCastRoute
 import app.clothescast.discovery.DiscoveredService
 import app.clothescast.discovery.HomeAssistantDiscovery
@@ -133,13 +134,15 @@ class SettingsViewModel(
     private val castRouteDiscovery: CastRouteDiscovery? = null,
     /**
      * "Cast now" action — synthesises + renders + casts the current
-     * insight to the saved smart display, returning null on success or
-     * a user-facing error string. The Activity wires this with the
-     * real [castCurrentInsight] closure over Context + InsightCache +
+     * insight to the saved smart display, returning a [CastTestOutcome]
+     * that carries the error message (if any) plus which highwater
+     * timestamps the attempt should advance ("last sent", "last
+     * played"). The Activity wires this with the real
+     * [castCurrentInsight] closure over Context + InsightCache +
      * [CastInsightController]. Null in pure-VM tests; the button is
      * inert in that case.
      */
-    private val castNowAction: (suspend () -> String?)? = null,
+    private val castNowAction: (suspend () -> CastTestOutcome)? = null,
     /**
      * True when [com.google.android.gms.cast.framework.CastContext] is
      * available on this device. Cast-less emulators / GMS-free builds
@@ -307,7 +310,8 @@ class SettingsViewModel(
                     it.copy(
                         castLastError = status?.errorMessage,
                         castLastErrorAt = status?.recordedAtMs ?: 0L,
-                        castLastSuccessAt = status?.lastSuccessAtMs ?: 0L,
+                        castLastPublishedAt = status?.lastPublishedAtMs ?: 0L,
+                        castLastFetchedAt = status?.lastFetchedAtMs ?: 0L,
                     )
                 }
             }
@@ -876,8 +880,12 @@ class SettingsViewModel(
         viewModelScope.launch {
             _state.update { it.copy(castInProgress = true) }
             try {
-                val error = action()
-                settingsRepository.setCastLastError(error)
+                val outcome = action()
+                settingsRepository.setCastResult(
+                    errorMessage = outcome.errorMessage,
+                    publishedAtMs = outcome.publishedAtMs,
+                    fetchedAtMs = outcome.fetchedAtMs,
+                )
             } finally {
                 _state.update { it.copy(castInProgress = false) }
             }
@@ -1024,7 +1032,7 @@ class SettingsViewModel(
         private val fullPublish: (suspend () -> MqttPublishOutcome)? = null,
         private val discovery: HomeAssistantDiscovery? = null,
         private val castRouteDiscovery: CastRouteDiscovery? = null,
-        private val castNowAction: (suspend () -> String?)? = null,
+        private val castNowAction: (suspend () -> CastTestOutcome)? = null,
         private val castAvailable: Boolean = false,
         private val calendarEventReader: CalendarEventReader? = null,
         private val insightCache: InsightCache? = null,

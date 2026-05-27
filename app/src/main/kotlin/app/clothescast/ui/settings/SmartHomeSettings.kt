@@ -52,8 +52,8 @@ import java.time.format.DateTimeFormatter
 
 private const val SETUP_GUIDE_URL =
     "https://github.com/mikelward/clothescast/blob/main/docs/smart-home.md"
-private const val PRIVACY_POLICY_URL =
-    "https://github.com/mikelward/clothescast/blob/main/PRIVACY.md"
+// PRIVACY_POLICY_URL lives in SettingsCommon.kt — shared with Privacy +
+// Location settings.
 
 @Composable
 internal fun SmartHomeContent(

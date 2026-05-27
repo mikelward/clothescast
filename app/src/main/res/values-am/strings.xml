@@ -235,7 +235,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Settings — location -->
     <string name="settings_location_title">ቦታ</string>
     <string name="settings_location_use_device">የመሳሪያ ቦታ ተጠቀም</string>
-    <string name="settings_location_use_device_description">የመጨረሻ ቦታ ግምት</string>
     <string name="settings_location_detecting">እያሰሳ ነው…</string>
     <string name="settings_location_grant_background">ፍቀድ</string>
     <string name="settings_location_background_banner_title">ሁልጊዜ ያለ ቦታ ያስፈልጋል</string>

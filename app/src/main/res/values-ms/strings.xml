@@ -297,7 +297,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <!-- Location settings -->
     <string name="settings_location_title">Lokasi</string>
     <string name="settings_location_use_device">Gunakan lokasi peranti</string>
-    <string name="settings_location_use_device_description">Lokasi anggaran terakhir</string>
     <string name="settings_location_detecting">Mengesan…</string>
     <string name="settings_location_grant_background">Benarkan</string>
     <string name="settings_location_background_banner_title">Lokasi sentiasa aktif diperlukan</string>

@@ -532,7 +532,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_api_key_gemini_header">Używaj Gemini do głosów wysokiej jakości.</string>
 
     <!-- Location screen — additional strings. -->
-    <string name="settings_location_use_device_description">Ostatnia przybliżona lokalizacja</string>
     <string name="settings_location_detecting">Ustalanie…</string>
     <string name="settings_location_background_banner_title">Wymagana stała lokalizacja</string>
     <string name="settings_location_background_banner_body">Bez niej poranna prognoza nie może odczytać Twojej lokalizacji.</string>

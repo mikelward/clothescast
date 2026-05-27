@@ -283,7 +283,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <!-- Location screen. -->
     <string name="settings_location_title">Poloha</string>
     <string name="settings_location_use_device">Použít polohu zařízení</string>
-    <string name="settings_location_use_device_description">Poslední přibližná poloha</string>
     <string name="settings_location_grant_background">Povolit polohu na pozadí (Systémové nastavení)</string>
     <string name="settings_location_unset">Žádná poloha nastavena</string>
     <string name="settings_location_clear">Odebrat polohu</string>

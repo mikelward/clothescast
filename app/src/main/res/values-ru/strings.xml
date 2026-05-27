@@ -327,7 +327,6 @@ only the displayed label localizes.
     -->
     <string name="settings_location_title">Местоположение</string>
     <string name="settings_location_use_device">Использовать местоположение устройства</string>
-    <string name="settings_location_use_device_description">Последнее примерное местоположение</string>
     <string name="settings_location_detecting">Определение…</string>
     <string name="settings_location_grant_background">Разрешить фоновое местоположение (системные настройки)</string>
     <string name="settings_location_background_banner_title">Требуется постоянный доступ</string>

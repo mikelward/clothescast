@@ -294,7 +294,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <!-- Settings — location -->
     <string name="settings_location_title">موقعیت</string>
     <string name="settings_location_use_device">استفاده از موقعیت دستگاه</string>
-    <string name="settings_location_use_device_description">آخرین موقعیت تقریبی</string>
     <string name="settings_location_detecting">در حال تشخیص…</string>
     <string name="settings_location_grant_background">اعطا</string>
     <string name="settings_location_background_banner_title">مجوز موقعیت دائمی لازم است</string>

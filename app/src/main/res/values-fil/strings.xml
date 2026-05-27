@@ -310,7 +310,6 @@ The rest of the UI falls through to values/strings.xml (English).
          ============================================================ -->
     <string name="settings_location_title">Lokasyon</string>
     <string name="settings_location_use_device">Gamitin ang lokasyon ng device</string>
-    <string name="settings_location_use_device_description">Huling tinatayang lokasyon</string>
     <string name="settings_location_detecting">Nide-detect…</string>
     <string name="settings_location_grant_background">Ibigay</string>
     <string name="settings_location_background_banner_title">Kailangan ng palaging naka-on na lokasyon</string>

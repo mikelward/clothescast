@@ -283,7 +283,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <!-- Location screen. -->
     <string name="settings_location_title">Plats</string>
     <string name="settings_location_use_device">Använd enhetens plats</string>
-    <string name="settings_location_use_device_description">Senaste ungefärliga plats</string>
     <string name="settings_location_grant_background">Tillåt bakgrundsplats (Systeminställningar)</string>
     <string name="settings_location_unset">Ingen plats inställd</string>
     <string name="settings_location_clear">Ta bort plats</string>

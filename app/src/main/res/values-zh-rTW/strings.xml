@@ -544,7 +544,6 @@ label localises.
          background-location permission is missing, the manual-override
          link with its disclosure, and the rationale + denied dialogs
          for the foreground / background location permissions. -->
-    <string name="settings_location_use_device_description">最近的概略位置</string>
     <string name="settings_location_detecting">偵測中…</string>
     <string name="settings_location_background_banner_title">需要始終開啟位置權限</string>
     <string name="settings_location_background_banner_body">沒有該權限，早晨預報無法讀取你的位置。</string>

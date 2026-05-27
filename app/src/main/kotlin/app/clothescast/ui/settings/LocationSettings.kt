@@ -3,6 +3,7 @@ package app.clothescast.ui.settings
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,7 +20,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -59,7 +59,9 @@ internal fun LocationContent(
     onSelectLocation: (Location) -> Unit,
     onClearLocation: () -> Unit,
     onSearchLocations: suspend (String) -> List<Location>,
+    onRefresh: () -> Unit = {},
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
         scrollState = scrollState,
@@ -81,7 +83,17 @@ internal fun LocationContent(
                 onSelect = onSelectLocation,
                 onClear = onClearLocation,
                 onSearch = onSearchLocations,
+                onRefresh = onRefresh,
             )
+            // Secondary link to the full privacy policy. Mirrors the same
+            // affordance on Privacy settings — the user landing here from
+            // the insight-card tap may want a one-tap path to the long form
+            // without backing out and drilling into Privacy. Bottom of the
+            // page so it doesn't compete with the primary controls above.
+            TextButton(
+                onClick = { openUrl(context, PRIVACY_POLICY_URL) },
+                modifier = Modifier.fillMaxWidth(),
+            ) { Text(stringResource(R.string.settings_privacy_open_policy)) }
         }
     }
 }
@@ -95,6 +107,7 @@ private fun LocationCard(
     onSelect: (Location) -> Unit,
     onClear: () -> Unit,
     onSearch: suspend (String) -> List<Location>,
+    onRefresh: () -> Unit,
 ) {
     val context = LocalContext.current
     var dialogOpen by remember { mutableStateOf(false) }
@@ -180,12 +193,6 @@ private fun LocationCard(
             )
         }
         Text(
-            text = stringResource(R.string.settings_location_use_device_description),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-
-        Text(
             text = currentLocationSummary(current, useDeviceLocation, locationDetecting),
             style = MaterialTheme.typography.bodyLarge,
         )
@@ -195,37 +202,20 @@ private fun LocationCard(
         // (suburb + city + postal code + country) without naming a specific
         // street. Only populated by the device-location path; manual /
         // forward-geocoded picks leave this null and the line is omitted.
+        // Rendered in the primary colour and tappable, opening the user's
+        // chosen maps app at the 2dp-coarsened coords the rest of the app
+        // already operates on (Location.coarsened() rounds every entry-point
+        // write to ~1 km) — same affordance as the city link on Today's
+        // insight cards, but here the destination is the map rather than
+        // this very page.
         current?.addressDetail?.let { detail ->
             Text(
                 text = detail,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-
-        // Map button — opens the user's chosen maps app at the 2dp-coarsened
-        // coords the rest of the app already operates on (Location.coarsened()
-        // rounds every entry-point write to ~1 km). The user-facing label
-        // shows those same coords so it's obvious what the button will
-        // pinpoint. Hidden when no location has resolved yet — there'd be
-        // nothing to pin.
-        if (current != null) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(
-                        R.string.settings_location_coords,
-                        current.latitude,
-                        current.longitude,
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.weight(1f),
-                )
-                FilledTonalButton(
-                    onClick = {
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
                         openInMaps(
                             context = context,
                             latitude = current.latitude,
@@ -233,8 +223,35 @@ private fun LocationCard(
                             label = current.displayName,
                         )
                     },
-                ) { Text(stringResource(R.string.settings_location_open_in_maps)) }
-            }
+            )
+        }
+
+        // Privacy footnote: the coords leaving the device for the weather
+        // request, the bug-report payload, and the maps deep link have all
+        // been rounded to a ~1km grid. Shown whenever a location is on
+        // screen — manual picks coarsen too (Location.coarsened() on every
+        // entry point), so the note isn't device-location-specific.
+        if (current != null) {
+            Text(
+                text = stringResource(R.string.settings_location_privacy_note),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        // Refresh button — re-queues the same one-shot worker
+        // [setUseDeviceLocation(true)] enqueues so the detecting indicator
+        // lights up for the duration. Only useful when device location is
+        // the active source: a manual override wouldn't change on a
+        // refresh, so we hide the button entirely in that mode. Disabled
+        // while a refresh is already in flight to prevent re-enqueuing
+        // mid-flight (which would just bill the geocoder a second time).
+        if (useDeviceLocation) {
+            TextButton(
+                onClick = onRefresh,
+                enabled = !locationDetecting,
+                modifier = Modifier.fillMaxWidth(),
+            ) { Text(stringResource(R.string.settings_location_refresh)) }
         }
 
         // Manual override is the escape hatch for "the system returned the wrong

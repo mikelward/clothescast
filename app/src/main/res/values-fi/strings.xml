@@ -484,7 +484,6 @@ displayed label localizes.
 
     <string name="settings_api_key_gemini_header">Käytä Geminiä laadukkaisiin ääniin.</string>
 
-    <string name="settings_location_use_device_description">Viimeisin suunnilleen sijainti</string>
     <string name="settings_location_detecting">Määritetään…</string>
     <string name="settings_location_background_banner_title">Jatkuva sijaintilupa vaaditaan</string>
     <string name="settings_location_background_banner_body">Ilman sitä aamuinen ennuste ei voi lukea sijaintiasi.</string>

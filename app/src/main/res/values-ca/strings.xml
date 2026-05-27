@@ -199,7 +199,6 @@ the in-app clock is digit-driven and reads consistently across locales.
 
     <string name="settings_location_title">Ubicació</string>
     <string name="settings_location_use_device">Utilitza la ubicació del dispositiu</string>
-    <string name="settings_location_use_device_description">Última ubicació aproximada</string>
     <string name="settings_location_detecting">Detectant…</string>
     <string name="settings_location_grant_background">Concedeix</string>
     <string name="settings_location_background_banner_title">Cal ubicació permanent</string>

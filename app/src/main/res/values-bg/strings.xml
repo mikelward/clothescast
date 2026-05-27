@@ -314,7 +314,6 @@ What is NOT overridden, by design:
     <!-- Location screen. -->
     <string name="settings_location_title">Местоположение</string>
     <string name="settings_location_use_device">Използвай местоположението на устройството</string>
-    <string name="settings_location_use_device_description">Последно приблизително местоположение</string>
     <string name="settings_location_detecting">Открива се…</string>
     <string name="settings_location_grant_background">Разреши</string>
     <string name="settings_location_background_banner_title">Необходим е постоянен достъп до местоположение</string>

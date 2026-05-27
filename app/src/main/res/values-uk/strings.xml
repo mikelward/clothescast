@@ -290,7 +290,6 @@ only the displayed label localizes.
     <!-- Location screen. -->
     <string name="settings_location_title">Місцезнаходження</string>
     <string name="settings_location_use_device">Використовувати місцезнаходження пристрою</string>
-    <string name="settings_location_use_device_description">Останнє приблизне місцезнаходження</string>
     <string name="settings_location_detecting">Визначення…</string>
     <string name="settings_location_grant_background">Надати</string>
     <string name="settings_location_background_banner_title">Потрібен постійний доступ</string>

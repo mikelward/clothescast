@@ -201,7 +201,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
 
     <string name="settings_location_title">Asukoht</string>
     <string name="settings_location_use_device">Kasuta seadme asukohta</string>
-    <string name="settings_location_use_device_description">Viimane ligikaudne asukoht</string>
     <string name="settings_location_detecting">Tuvastamine…</string>
     <string name="settings_location_grant_background">Anna luba</string>
     <string name="settings_location_background_banner_title">Alati-sees asukoht on vajalik</string>

@@ -626,8 +626,9 @@
 
     <string name="settings_location_title">Location</string>
     <string name="settings_location_use_device">Use device location</string>
-    <string name="settings_location_use_device_description">Last approximate location</string>
     <string name="settings_location_detecting">Detecting…</string>
+    <string name="settings_location_refresh">Refresh</string>
+    <string name="settings_location_privacy_note">Locations are rounded to the nearest 1 km for your privacy.</string>
     <string name="settings_location_grant_background">Grant</string>
     <string name="settings_location_background_banner_title">Always-on location needed</string>
     <string name="settings_location_background_banner_body">Without it, the morning forecast can\'t read your location.</string>
@@ -652,8 +653,6 @@
     <string name="settings_location_background_denied_body">Without \'Allow all the time\' the morning forecast can\'t auto-update.</string>
     <string name="settings_location_background_denied_open">Open Settings</string>
     <string name="settings_location_background_denied_keep">Not now</string>
-    <string name="settings_location_open_in_maps">Map</string>
-    <string name="settings_location_coords">%1$.2f, %2$.2f</string>
 
 
 

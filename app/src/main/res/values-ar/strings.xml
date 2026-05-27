@@ -304,7 +304,6 @@ they work correctly in both the single-band and range templates.
     <!-- Settings — location screen -->
     <string name="settings_location_title">الموقع</string>
     <string name="settings_location_use_device">استخدام موقع الجهاز</string>
-    <string name="settings_location_use_device_description">آخر موقع تقريبي</string>
     <string name="settings_location_detecting">جارٍ الكشف…</string>
     <string name="settings_location_grant_background">منح</string>
     <string name="settings_location_background_banner_title">مطلوب إذن الموقع الدائم</string>

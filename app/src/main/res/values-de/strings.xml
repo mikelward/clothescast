@@ -602,7 +602,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_api_key_gemini_header">Verwende Gemini für hochwertige Stimmen.</string>
 
     <!-- Location screen — additional strings. -->
-    <string name="settings_location_use_device_description">Letzter ungefährer Standort</string>
     <string name="settings_location_detecting">Wird ermittelt…</string>
     <string name="settings_location_background_banner_title">Dauerhafter Standort erforderlich</string>
     <string name="settings_location_background_banner_body">Ohne ihn kann die Morgenvorhersage deinen Standort nicht lesen.</string>

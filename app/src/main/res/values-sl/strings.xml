@@ -311,7 +311,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <!-- Location screen. -->
     <string name="settings_location_title">Lokacija</string>
     <string name="settings_location_use_device">Uporabi lokacijo naprave</string>
-    <string name="settings_location_use_device_description">Zadnja okvirna lokacija</string>
     <string name="settings_location_detecting">Zaznavanje…</string>
     <string name="settings_location_grant_background">Dovoli</string>
     <string name="settings_location_background_banner_title">Potreben je trajni dostop do lokacije</string>

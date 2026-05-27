@@ -300,7 +300,6 @@ standard in Israeli digital communication.
     <!-- Settings — location -->
     <string name="settings_location_title">מיקום</string>
     <string name="settings_location_use_device">השתמש/י במיקום המכשיר</string>
-    <string name="settings_location_use_device_description">מיקום משוער אחרון</string>
     <string name="settings_location_detecting">מזהה…</string>
     <string name="settings_location_grant_background">הענק/י</string>
     <string name="settings_location_background_banner_title">נדרש מיקום תמידי</string>

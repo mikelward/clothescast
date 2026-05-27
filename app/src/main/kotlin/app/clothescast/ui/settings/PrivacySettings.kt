@@ -25,9 +25,6 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.ui.EdgeFadeOverlay
 
-private const val PRIVACY_POLICY_URL =
-    "https://github.com/mikelward/clothescast/blob/main/PRIVACY.md"
-
 @Composable
 internal fun PrivacyContent(
     telemetryEnabled: Boolean,

@@ -283,7 +283,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <!-- Location screen. -->
     <string name="settings_location_title">Sted</string>
     <string name="settings_location_use_device">Bruk enhetens sted</string>
-    <string name="settings_location_use_device_description">Siste omtrentlige sted</string>
     <string name="settings_location_grant_background">Tillat bakgrunnsplassering (Systeminnstillinger)</string>
     <string name="settings_location_unset">Ingen plassering angitt</string>
     <string name="settings_location_clear">Fjern plassering</string>

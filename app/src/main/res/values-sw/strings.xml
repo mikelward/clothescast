@@ -257,7 +257,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_location_subtitle">Gundua kiotomatiki au chagua mji</string>
     <string name="settings_location_title">Mahali</string>
     <string name="settings_location_use_device">Tumia mahali pa kifaa</string>
-    <string name="settings_location_use_device_description">Mahali pa mwisho pa takriban</string>
     <string name="settings_location_detecting">Inagundua…</string>
     <string name="settings_location_grant_background">Toa ruhusa</string>
     <string name="settings_location_background_banner_title">Ruhusa ya mahali daima inahitajika</string>

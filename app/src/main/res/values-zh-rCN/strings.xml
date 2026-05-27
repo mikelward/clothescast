@@ -586,7 +586,6 @@ label localizes.
          "detecting…" state, the always-on banner shown when the
          background-location permission is missing, and the manual-
          override link with its disclosure. -->
-    <string name="settings_location_use_device_description">最近的大致位置</string>
     <string name="settings_location_detecting">检测中…</string>
     <string name="settings_location_background_banner_title">需要始终开启位置权限</string>
     <string name="settings_location_background_banner_body">没有该权限，早晨预报无法读取你的位置。</string>

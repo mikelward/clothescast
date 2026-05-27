@@ -40,14 +40,23 @@ class ReverseGeocoder(
     private val retryBackoffMillis: Long = 1_000L,
 ) {
     /**
-     * Best-effort city/locality name + country code. Either field can be null
-     * independently (e.g. the geocoder returned a usable city but the address
-     * lacked a country code, or vice versa); callers handle each as missing
-     * data without crashing.
+     * Best-effort city/locality name + country code + address detail. Any
+     * field can be null independently (e.g. the geocoder returned a usable
+     * city but the address lacked a country code, or the first address line
+     * was missing/empty so no detail could be derived); callers handle each
+     * as missing data without crashing.
+     *
+     * [addressDetail] is the first address line with its leading component
+     * dropped (e.g. "Cambridge, MA 02139, USA" from "1 Vassar St, Cambridge,
+     * MA 02139, USA") — for display on the Location settings page.
      */
-    data class Result(val city: String?, val countryCode: String?) {
+    data class Result(
+        val city: String?,
+        val countryCode: String?,
+        val addressDetail: String? = null,
+    ) {
         companion object {
-            val EMPTY = Result(city = null, countryCode = null)
+            val EMPTY = Result(city = null, countryCode = null, addressDetail = null)
         }
     }
 
@@ -152,10 +161,33 @@ class ReverseGeocoder(
             addressLines = lines,
         )
         val normalisedCountry = countryCode?.takeIf { it.isNotBlank() }?.uppercase()
-        return Result(city = city, countryCode = normalisedCountry)
+        return Result(
+            city = city,
+            countryCode = normalisedCountry,
+            addressDetail = deriveAddressDetail(lines),
+        )
     }
 
     companion object {
         private const val TAG = "ReverseGeocoder"
     }
+}
+
+/**
+ * Builds the Location settings page's neighbourhood-level address line
+ * from a Geocoder Address's [android.location.Address.getAddressLine]
+ * outputs. Joins multi-line responses with ", " (some backends split the
+ * address across separate lines — street / city-state / country), then
+ * drops the leading comma-delimited component (typically the house
+ * number and street, e.g. "1 Vassar St") so what remains is suburb +
+ * city + postal code + country — ("Cambridge, MA 02139, USA" from
+ * "1 Vassar St, Cambridge, MA 02139, USA"). Returns null when there
+ * are no lines, no comma to split on, or stripping yields a blank.
+ */
+internal fun deriveAddressDetail(addressLines: List<String>): String? {
+    if (addressLines.isEmpty()) return null
+    val joined = addressLines.joinToString(", ")
+    val commaIdx = joined.indexOf(',')
+    if (commaIdx < 0) return null
+    return joined.substring(commaIdx + 1).trim().takeIf { it.isNotBlank() }
 }

@@ -15,6 +15,22 @@ data class Location(
      * country filter falls back to locale country in that case.
      */
     val countryCode: String? = null,
+    /**
+     * The reverse-geocoded street address with the leading "house number /
+     * street" component dropped, for display on the Location settings page
+     * (e.g. "Cambridge, MA 02139, USA" from "1 Vassar St, Cambridge, MA
+     * 02139, USA"). Null when no address line was available or it had no
+     * second component. Populated only by the device-location path via
+     * `ReverseGeocoder`; manual / forward-geocoded picks leave it null.
+     *
+     * Privacy: the reverse-geocode is run against the already-coarsened
+     * 2dp (~1km grid) coords, so the returned street is a representative
+     * point in that grid cell rather than the user's actual address.
+     * Dropping the leading component is a further belt-and-braces step
+     * so we never surface a precise-looking street/number on the
+     * Location page.
+     */
+    val addressDetail: String? = null,
 ) {
     init {
         require(latitude in -90.0..90.0) { "latitude out of range: $latitude" }

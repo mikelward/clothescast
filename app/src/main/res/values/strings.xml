@@ -641,6 +641,8 @@
     <string name="settings_location_background_denied_body">Without \'Allow all the time\' the morning forecast can\'t auto-update.</string>
     <string name="settings_location_background_denied_open">Open Settings</string>
     <string name="settings_location_background_denied_keep">Not now</string>
+    <string name="settings_location_open_in_maps">Map</string>
+    <string name="settings_location_coords">%1$.2f, %2$.2f</string>
 
 
 

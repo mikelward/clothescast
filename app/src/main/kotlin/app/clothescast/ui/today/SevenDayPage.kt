@@ -134,11 +134,17 @@ internal fun SevenDayPage(
     deltaThresholdC: Double? = 3.0,
     /**
      * The forecast location, shown next to the "Next 7 days" header label
-     * (and tappable to open the maps deep-link), matching the per-period
+     * (and tappable to open Location settings), matching the per-period
      * [InsightCard]'s header. Null on legacy cached payloads / previews
      * without a location, in which case the header renders the label alone.
      */
     location: Location? = null,
+    /**
+     * Opens the Location settings page. Wired to the location label in the
+     * card's header — same role as [InsightCard]'s `onNavigateToLocation`.
+     * Null keeps the label non-tappable (used by previews / tests).
+     */
+    onNavigateToLocation: (() -> Unit)? = null,
 ) {
     // Flatten every day's hourly stream into a single list. The chart
     // composables read [hourly[idx].time.hour] only for the bottom-axis
@@ -290,13 +296,15 @@ internal fun SevenDayPage(
                                 text = locationLabel,
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.clickable {
-                                    openInMaps(
-                                        context = context,
-                                        latitude = location.latitude,
-                                        longitude = location.longitude,
-                                        label = locationLabel,
-                                    )
+                                // Tapping the city name opens the Location
+                                // settings page — same affordance as the
+                                // per-period [InsightCard] header. Falls back
+                                // to inert text when no nav callback is wired
+                                // (previews / tests).
+                                modifier = if (onNavigateToLocation != null) {
+                                    Modifier.clickable { onNavigateToLocation() }
+                                } else {
+                                    Modifier
                                 },
                             )
                         }

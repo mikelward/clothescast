@@ -622,6 +622,11 @@ class FetchAndNotifyWorker(
                 val resolved = device.copy(
                     displayName = resolvedName ?: device.displayName,
                     countryCode = geo.countryCode ?: device.countryCode,
+                    // Address detail powers the Location settings page's
+                    // detailed line. Reuse the cached value when this run's
+                    // geocode came up empty so a single transient failure
+                    // doesn't blank the line after a fresh fix landed.
+                    addressDetail = geo.addressDetail ?: prefs.location?.addressDetail,
                 )
                 // Persist the resolved fix as the fallback so the next run can
                 // use the most recent good read when the device read fails

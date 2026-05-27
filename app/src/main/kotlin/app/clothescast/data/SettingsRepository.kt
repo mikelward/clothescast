@@ -296,6 +296,10 @@ class SettingsRepository(
                 ?.takeIf { it.isNotBlank() }
                 ?.let { prefs[LOCATION_COUNTRY] = it.uppercase() }
                 ?: prefs.remove(LOCATION_COUNTRY)
+            location.addressDetail
+                ?.takeIf { it.isNotBlank() }
+                ?.let { prefs[LOCATION_ADDRESS_DETAIL] = it }
+                ?: prefs.remove(LOCATION_ADDRESS_DETAIL)
         }
     }
 
@@ -305,6 +309,7 @@ class SettingsRepository(
             prefs.remove(LOCATION_LON)
             prefs.remove(LOCATION_NAME)
             prefs.remove(LOCATION_COUNTRY)
+            prefs.remove(LOCATION_ADDRESS_DETAIL)
         }
     }
 
@@ -1056,6 +1061,7 @@ class SettingsRepository(
                 longitude = lon,
                 displayName = prefs[LOCATION_NAME],
                 countryCode = prefs[LOCATION_COUNTRY]?.takeIf { it.isNotBlank() },
+                addressDetail = prefs[LOCATION_ADDRESS_DETAIL]?.takeIf { it.isNotBlank() },
             ).coarsened()
         }.getOrNull()
     }
@@ -1157,6 +1163,7 @@ class SettingsRepository(
         private val LOCATION_LON = doublePreferencesKey("location_longitude")
         private val LOCATION_NAME = stringPreferencesKey("location_display_name")
         private val LOCATION_COUNTRY = stringPreferencesKey("location_country_code")
+        private val LOCATION_ADDRESS_DETAIL = stringPreferencesKey("location_address_detail")
         private val USE_DEVICE_LOCATION = booleanPreferencesKey("use_device_location")
         private val TTS_ENGINE = stringPreferencesKey("tts_engine")
         private val GEMINI_VOICE = stringPreferencesKey("gemini_voice")

@@ -22,19 +22,20 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.R
 
 /**
- * One-time Today-screen promo card surfaced after onboarding to nudge the
- * user at Clothes settings — the per-temperature clothing rules are the
- * core thing that makes outfits "theirs", but the path to them isn't
- * obvious from the Today screen. Sits between the telemetry-notice
- * banner and the celebration-themes promo so a fresh-installed user
- * sees: privacy disclosure → "customise your clothes" → celebration
- * themes.
+ * Today-screen promo card nudging the user at Clothes settings — the
+ * per-temperature clothing rules are the core thing that makes outfits
+ * "theirs", but the path to them isn't obvious from the Today screen.
+ * Sits between the telemetry-notice banner and the celebration-themes
+ * promo.
  *
  * Visibility is decided upstream in [TodayViewModel] via
  * [TodayState.clothesPromoCardVisible] — true iff the user hasn't
- * dismissed it. Dismissal (X tap *or* "Clothes settings" tap) persists
- * via [SettingsRepository.setClothesPromoCardDismissed] so the card
- * never re-surfaces.
+ * dismissed it AND their clothes rules still match
+ * [ClothesRule.DEFAULTS]. Any edit / add / delete / threshold-nudge
+ * auto-hides the card (the user found the thing the card was pointing
+ * at, so the promo's done). Dismissal (X tap *or* "Clothes settings"
+ * tap) persists via [SettingsRepository.setClothesPromoCardDismissed]
+ * so the card never re-surfaces.
  */
 @Composable
 internal fun ClothesPromoCard(

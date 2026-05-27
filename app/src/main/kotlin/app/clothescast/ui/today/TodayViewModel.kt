@@ -146,9 +146,11 @@ data class TodayState(
     val celebrationCardVisible: Boolean = false,
     /**
      * Whether the Today-screen "Customize your clothes" promo card
-     * should render. True iff the user hasn't dismissed it (or followed
-     * through to Clothes settings from it). One-time only, same shape
-     * as [telemetryNoticeAcked].
+     * should render. True iff the user hasn't dismissed it AND their
+     * clothes rules still match [ClothesRule.DEFAULTS] — the moment
+     * they edit, add, delete, or nudge a rule's threshold, the card
+     * auto-hides regardless of dismissal state (they've found the
+     * thing the card was pointing at).
      */
     val clothesPromoCardVisible: Boolean = false,
     /**
@@ -473,7 +475,8 @@ class TodayViewModel(
             celebrationCardVisible = !prefs.celebrationCardDismissed &&
                 !prefs.calendarHolidayThemingActive &&
                 !prefs.calendarBirthdayThemingActive,
-            clothesPromoCardVisible = !prefs.clothesPromoCardDismissed,
+            clothesPromoCardVisible = !prefs.clothesPromoCardDismissed &&
+                prefs.clothesRules == ClothesRule.DEFAULTS,
             usesCalendarThemes = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayState())

@@ -559,10 +559,11 @@ private fun BannerStack(
     // crash banner: that's a current problem to action; this is just
     // disclosure.
     TelemetryNoticeBanner(onOpenPrivacy = onOpenPrivacy, modifier = bannerModifier)
-    // One-time "Customize your clothes" nudge shown after onboarding so the
-    // user knows the per-temperature rules are theirs to tune. Sits before
-    // the celebration-themes promo because clothes rules are the core
-    // setting; celebration themes are a finishing touch.
+    // "Customize your clothes" nudge so the user knows the per-temperature
+    // rules are theirs to tune. Gated upstream on [clothesRules] still
+    // matching [ClothesRule.DEFAULTS] (plus the user not having dismissed)
+    // so a user who has already customised never sees it. Sits before the
+    // celebration-themes promo because clothes rules are the core setting.
     ClothesPromoCard(
         visible = state.clothesPromoCardVisible,
         onOpenClothes = {

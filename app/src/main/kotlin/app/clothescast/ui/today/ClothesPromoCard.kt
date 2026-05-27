@@ -88,6 +88,7 @@ internal fun ClothesPromoCardContent(
             Text(
                 text = stringResource(R.string.today_clothes_promo_body),
                 style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(end = 12.dp),
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),

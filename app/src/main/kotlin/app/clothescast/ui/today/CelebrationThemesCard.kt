@@ -83,6 +83,7 @@ internal fun CelebrationThemesCardContent(
             Text(
                 text = stringResource(R.string.today_celebration_card_body),
                 style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(end = 12.dp),
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),

@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,28 +80,13 @@ import kotlinx.coroutines.delay
  * the per-period pages, with the readout's time portion prefixed with a
  * short day-of-week label (`Wed 2pm`) via [LocalScrubMomentFormat] so a
  * reading isn't ambiguous between the seven identical hour-of-day points
- * in the window. No spread coordinator is wired into the controller —
- * the per-model overlay toggles instead via a tap on the chart card
- * itself (see [onToggleModelSpread]), since this page has no confidence
- * chip to drive the toggle the way the per-period pages do.
- *
- * TODO: standardise chart-tap behaviour across the per-period pages and
- * this one. Today the two diverge: per-period pages wire a
- * [SpreadCoordinator] into the [ChartScrubController] so a tap on the
- * chart plot enters scrub mode *and* auto-reveals the per-model spread
- * (with the matching restore tap auto-hiding it again), while the
- * confidence chip above the charts is the explicit on/off control. This
- * page has no chip, so a tap on the chart plot only scrubs and a tap on
- * the surrounding card flips the spread independently — two gestures on
- * the same widget that do different things. Pick one shape and apply it
- * everywhere: either wire the [SpreadCoordinator] here too (drop the
- * card-level [clickable], keep the tap-hint card as the equivalent of
- * the chip) so chart taps reveal the spread on every page, or back the
- * per-period pages out of the auto-reveal coupling so chart taps only
- * ever scrub and an explicit chip / hint card carries the toggle. The
- * coupled-reveal version is the richer interaction; the decoupled
- * version is easier to reason about. Whichever wins, remove the
- * divergence — and update the matching doc on [ChartScrubController].
+ * in the window. A [SpreadCoordinator] is wired into the controller too,
+ * matching the per-period pages: a tap on the chart plot enters scrub
+ * mode *and* auto-reveals the per-model spread (with the matching restore
+ * tap auto-hiding it again). The tap-hint card above the chart stack
+ * plays the role the confidence chip plays on the per-period pages — an
+ * explicit on/off toggle, labelled "Tap to see / hide each model's
+ * forecast" (see [onToggleModelSpread]).
  *
  * Empty / short [days] (e.g. legacy cached snapshots from before the
  * 7-day fetch) collapse to a short stand-in message so the page still
@@ -116,6 +102,8 @@ internal fun SevenDayPage(
     scrollState: ScrollState,
     onChevronTap: () -> Unit,
     onToggleModelSpread: () -> Unit = {},
+    onRevealModelSpread: () -> Unit = {},
+    onHideModelSpread: () -> Unit = {},
     forecastZone: ZoneId? = null,
     region: Region = Region.SYSTEM,
     /**
@@ -374,10 +362,7 @@ internal fun SevenDayPage(
         // legacy caller that doesn't yet pass [forecastZone], fall back
         // to the device zone — same downside as the per-period pages
         // (an indicator-offset for manual locations in a different zone
-        // until the caller is updated). No SpreadCoordinator wired:
-        // the per-model overlay toggles via a tap on the chart card
-        // ([toggleModifier] below), which is wired independently of
-        // scrub so the reveal isn't tied to entering scrub mode.
+        // until the caller is updated).
         val scrubController = rememberChartScrubController()
         val zone = forecastZone ?: ZoneId.systemDefault()
         LaunchedEffect(scrubController, zone, flatHourly, startDate) {
@@ -388,18 +373,31 @@ internal fun SevenDayPage(
                 delay(60_000L)
             }
         }
+        // Bridge the controller to the per-model-spread state so a tap on
+        // any chart auto-reveals the spread (and tapping restore undoes
+        // that reveal) — same wiring the per-period pages use. Reassigned
+        // on every recomposition so the closures see the live
+        // [showModelSpread] value. Stays null when per-model data isn't
+        // available, in which case the controller skips the reveal and
+        // the charts just scrub.
+        val perModelAvailable = weekPerModelDiagnostics != null
+        val showSpread = showModelSpread
+        SideEffect {
+            scrubController.spreadCoordinator = if (!perModelAvailable) null else {
+                object : SpreadCoordinator {
+                    override fun isSpreadVisible(): Boolean = showSpread
+                    override fun revealSpread() = onRevealModelSpread()
+                    override fun hideSpread() = onHideModelSpread()
+                }
+            }
+        }
 
-        // Tap-to-toggle wrapper for each chart card. The per-period pages
-        // toggle the model-spread overlay via the confidence chip; this
-        // page has no chip, so a tap anywhere on a card flips it instead.
-        // Gate on [weekPerModelDiagnostics] — when per-model data is
-        // missing (legacy cache, side-band fetch failed, or coverage gate
-        // rejected it), toggling the flag has no visible effect, so don't
-        // pretend the card is interactive. Taps inside the chart's plot
-        // grid still publish a scrub indicator via [Modifier.chartScrub]
-        // (which doesn't consume tap events below touch slop) — the
-        // toggle and the scrub fire on the same tap by design.
-        val toggleModifier: Modifier = if (weekPerModelDiagnostics != null) {
+        // Explicit toggle for the tap-hint card — the chip-equivalent
+        // affordance for users who want to switch the spread on / off
+        // without scrubbing. Gated on [weekPerModelDiagnostics]: when
+        // per-model data isn't available the hint card is skipped
+        // entirely, so the modifier is unused in that branch.
+        val hintToggleModifier: Modifier = if (perModelAvailable) {
             val onClickLabel = stringResource(
                 if (showModelSpread) R.string.today_confidence_tap_to_hide
                 else R.string.today_confidence_tap_to_show,
@@ -432,12 +430,10 @@ internal fun SevenDayPage(
             // itself, and the chart cards don't carry it either (the
             // hint would compete with each chart's own subtitle / legend
             // row), so a dedicated hint card sits at the top of the
-            // chart deck. Reuses the same toggleModifier so tapping the
-            // hint also flips the spread — and skipped entirely when
-            // per-model data isn't available (nothing for the user to
-            // toggle).
+            // chart deck. Skipped entirely when per-model data isn't
+            // available (nothing for the user to toggle).
             if (weekPerModelDiagnostics != null) {
-                Card(modifier = Modifier.fillMaxWidth().then(toggleModifier)) {
+                Card(modifier = Modifier.fillMaxWidth().then(hintToggleModifier)) {
                     Text(
                         text = stringResource(
                             if (showModelSpread) R.string.today_confidence_tap_to_hide
@@ -449,101 +445,81 @@ internal fun SevenDayPage(
                     )
                 }
             }
-            Box(toggleModifier) {
-                ForecastCard(
-                    hourly = flatHourly,
-                    temperatureUnit = temperatureUnit,
-                    distanceUnit = distanceUnit,
-                    startDate = startDate,
-                    perModelHourly = weekPerModelDiagnostics,
-                    showModelSpread = showModelSpread,
-                )
-            }
-            Box(toggleModifier) {
-                AirTemperatureCard(
-                    hourly = flatHourly,
-                    temperatureUnit = temperatureUnit,
-                    startDate = startDate,
-                    perModelHourly = weekPerModelDiagnostics,
-                    showModelSpread = showModelSpread,
-                )
-            }
-            Box(toggleModifier) {
-                PrecipitationCard(
-                    hourly = flatHourly,
-                    startDate = startDate,
-                    perModelHourly = weekPerModelDiagnostics,
-                    showModelSpread = showModelSpread,
-                )
-            }
-            Box(toggleModifier) {
-                PrecipitationAmountCard(
-                    hourly = flatHourly,
-                    forDate = startDate,
-                    // Period is used by this card only to pick the subtitle
-                    // template ("X mm today" vs "tonight"). For a week-wide
-                    // view neither template is quite right; pass TODAY so the
-                    // copy at least reads naturally for the steady-state.
-                    // Polish: a dedicated weekly subtitle is a follow-up.
-                    period = ForecastPeriod.TODAY,
-                    perModelHourly = weekPerModelDiagnostics,
-                    showModelSpread = showModelSpread,
-                )
-            }
+            ForecastCard(
+                hourly = flatHourly,
+                temperatureUnit = temperatureUnit,
+                distanceUnit = distanceUnit,
+                startDate = startDate,
+                perModelHourly = weekPerModelDiagnostics,
+                showModelSpread = showModelSpread,
+            )
+            AirTemperatureCard(
+                hourly = flatHourly,
+                temperatureUnit = temperatureUnit,
+                startDate = startDate,
+                perModelHourly = weekPerModelDiagnostics,
+                showModelSpread = showModelSpread,
+            )
+            PrecipitationCard(
+                hourly = flatHourly,
+                startDate = startDate,
+                perModelHourly = weekPerModelDiagnostics,
+                showModelSpread = showModelSpread,
+            )
+            PrecipitationAmountCard(
+                hourly = flatHourly,
+                forDate = startDate,
+                // Period is used by this card only to pick the subtitle
+                // template ("X mm today" vs "tonight"). For a week-wide
+                // view neither template is quite right; pass TODAY so the
+                // copy at least reads naturally for the steady-state.
+                // Polish: a dedicated weekly subtitle is a follow-up.
+                period = ForecastPeriod.TODAY,
+                perModelHourly = weekPerModelDiagnostics,
+                showModelSpread = showModelSpread,
+            )
             weekPerModelDiagnostics?.let { perModelData ->
-                Box(toggleModifier) {
-                    WindCard(
-                        hourly = flatHourly,
-                        perModelHourly = perModelData,
-                        windSpeedUnit = distanceUnit.windSpeedUnit(),
-                        startDate = startDate,
-                        showModelSpread = showModelSpread,
-                    )
-                }
-                Box(toggleModifier) {
-                    HumidityCard(
-                        hourly = flatHourly,
-                        perModelHourly = perModelData,
-                        startDate = startDate,
-                        showModelSpread = showModelSpread,
-                    )
-                }
-                Box(toggleModifier) {
-                    CloudCard(
-                        hourly = flatHourly,
-                        perModelHourly = perModelData,
-                        startDate = startDate,
-                        showModelSpread = showModelSpread,
-                    )
-                }
-                Box(toggleModifier) {
-                    SolarRadiationCard(
-                        hourly = flatHourly,
-                        perModelHourly = perModelData,
-                        startDate = startDate,
-                        showModelSpread = showModelSpread,
-                    )
-                }
-                Box(toggleModifier) {
-                    UvIndexCard(
-                        hourly = flatHourly,
-                        perModelHourly = perModelData,
-                        startDate = startDate,
-                        showModelSpread = showModelSpread,
-                    )
-                }
-                Box(toggleModifier) {
-                    SunshineCard(
-                        hourly = flatHourly,
-                        perModelHourly = perModelData,
-                        forDate = startDate,
-                        // Same caveat as PrecipitationAmountCard above — the
-                        // subtitle reads "X h of sun today" rather than "X h
-                        // this week"; the chart itself is the value here.
-                        period = ForecastPeriod.TODAY,
-                        showModelSpread = showModelSpread,
-                    )
-                }
+                WindCard(
+                    hourly = flatHourly,
+                    perModelHourly = perModelData,
+                    windSpeedUnit = distanceUnit.windSpeedUnit(),
+                    startDate = startDate,
+                    showModelSpread = showModelSpread,
+                )
+                HumidityCard(
+                    hourly = flatHourly,
+                    perModelHourly = perModelData,
+                    startDate = startDate,
+                    showModelSpread = showModelSpread,
+                )
+                CloudCard(
+                    hourly = flatHourly,
+                    perModelHourly = perModelData,
+                    startDate = startDate,
+                    showModelSpread = showModelSpread,
+                )
+                SolarRadiationCard(
+                    hourly = flatHourly,
+                    perModelHourly = perModelData,
+                    startDate = startDate,
+                    showModelSpread = showModelSpread,
+                )
+                UvIndexCard(
+                    hourly = flatHourly,
+                    perModelHourly = perModelData,
+                    startDate = startDate,
+                    showModelSpread = showModelSpread,
+                )
+                SunshineCard(
+                    hourly = flatHourly,
+                    perModelHourly = perModelData,
+                    forDate = startDate,
+                    // Same caveat as PrecipitationAmountCard above — the
+                    // subtitle reads "X h of sun today" rather than "X h
+                    // this week"; the chart itself is the value here.
+                    period = ForecastPeriod.TODAY,
+                    showModelSpread = showModelSpread,
+                )
             }
         }
     }

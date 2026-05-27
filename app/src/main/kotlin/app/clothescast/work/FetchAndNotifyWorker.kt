@@ -94,15 +94,16 @@ class FetchAndNotifyWorker(
     override suspend fun doWork(): Result {
         val isCacheOnly = inputData.getBoolean(KEY_CACHE_LOCATION_ONLY, false)
         val isSilent = inputData.getBoolean(KEY_SILENT_REFRESH, false)
+        val isReplay = inputData.getBoolean(KEY_REPLAY_ONLY, false)
         val period = inputData.getString(KEY_PERIOD)
             ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() }
             ?: ForecastPeriod.TODAY
         val startMs = System.currentTimeMillis()
-        // The cache-only and silent-refresh paths don't deliver a
-        // notification, so don't count them as refresh outcomes — they'd
-        // skew the success-rate dashboard with runs the user never
+        // The cache-only, silent-refresh, and replay paths don't fetch /
+        // re-derive a fresh insight, so don't count them as refresh outcomes
+        // — they'd skew the success-rate dashboard with runs the user never
         // perceived as a "daily refresh".
-        val skipTelemetry = isCacheOnly || isSilent
+        val skipTelemetry = isCacheOnly || isSilent || isReplay
         return try {
             val result = stamped(doWorkInternal())
             if (!skipTelemetry) recordDailyRefreshOutcome(period, result, startMs)
@@ -151,6 +152,19 @@ class FetchAndNotifyWorker(
         } catch (t: Throwable) {
             DiagLog.e(TAG, "Failed to read user preferences; retrying", t)
             return Result.retry()
+        }
+
+        // Replay path triggered by the Today screen's Play button. Re-runs
+        // the full deliver() fan-out (notification + TTS + MQTT + cast) on
+        // the cached this-period snapshot, derived against the current prefs
+        // so any Format / clothes-rules changes since the last fetch are
+        // reflected. No fetch — Play is about hearing the announcement
+        // again, not about pulling fresh data.
+        if (inputData.getBoolean(KEY_REPLAY_ONLY, false)) {
+            val requestedPeriod = inputData.getString(KEY_PERIOD)
+                ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() }
+                ?: ForecastPeriod.TODAY
+            return replayCachedInsight(prefs, requestedPeriod)
         }
 
         // Cache-only path triggered by the Settings location toggle. Just
@@ -290,6 +304,53 @@ class FetchAndNotifyWorker(
         }
 
         return fresh(location, prefs, period)
+    }
+
+    private suspend fun replayCachedInsight(
+        prefs: UserPreferences,
+        requestedPeriod: ForecastPeriod,
+    ): Result {
+        val snapshot = app.insightCache.thisPeriod.first()
+        if (snapshot == null) {
+            DiagLog.i(TAG, "Replay requested but cache is empty; nothing to deliver.")
+            return Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
+        }
+        // Honour the period the user tapped Play for. If the cache rolled
+        // between the tap and this run (a queued replay survived a network
+        // blip until the morning alarm overwrote THIS_PERIOD with a fresh
+        // TODAY snapshot, or any other in-between rewrite), the snapshot
+        // now in cache isn't the announcement the user asked to hear —
+        // skip rather than deliver the wrong one. The next tap on whichever
+        // period is current will play that one normally.
+        if (snapshot.period != requestedPeriod) {
+            DiagLog.i(
+                TAG,
+                "Replay requested for $requestedPeriod but cache holds ${snapshot.period}; skipping.",
+            )
+            return Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
+        }
+        // Replay never fetches; signal "fetch is done" up-front so any
+        // future code path that combines this queue into a banner observer
+        // sees the worker as past the fetching phase. Play stays disabled
+        // throughout delivery via TodayState.anyWorkActive, which keys
+        // off WorkInfo.state directly and doesn't need a progress flag.
+        setProgress(workDataOf(KEY_FETCH_COMPLETE to true))
+        val insight = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
+        val prose = formatProse(insight, prefs)
+        return try {
+            deliver(insight, prefs, prose)
+            DiagLog.i(TAG, "Replayed insight for ${insight.forDate}: $prose")
+            Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (t: Throwable) {
+            // Log and report success: replay is best-effort, and a delivery
+            // failure here shouldn't surface as a refresh failure banner —
+            // the cached insight is still on screen, and the next genuine
+            // refresh will retry the delivery pipeline.
+            DiagLog.e(TAG, "Replay delivery failed.", t)
+            Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
+        }
     }
 
     private suspend fun fresh(
@@ -1266,6 +1327,14 @@ class FetchAndNotifyWorker(
         // alarm fire (and vice versa). KEEP-deduped so config-change
         // re-triggers on app open coalesce into the one in-flight worker.
         const val UNIQUE_WORK_NAME_SILENT = "silent_insight_refresh"
+        // Distinct queue from the daily / tonight runs so an offline Play
+        // tap sitting in the queue can't block the morning alarm: alarm
+        // enqueues use ExistingWorkPolicy.KEEP and would otherwise be
+        // dropped in favour of the pending replay, leaving the user
+        // listening to yesterday's cached insight at 7am instead of the
+        // fresh forecast. Race vs. concurrent replays is handled in the
+        // UI gate — see TodayState.anyWorkActive.
+        const val UNIQUE_WORK_NAME_REPLAY = "insight_replay"
 
         // Output Data keys for surfacing failure reasons in the UI.
         const val KEY_REASON = "reason"
@@ -1413,6 +1482,17 @@ class FetchAndNotifyWorker(
          */
         val SILENT_REFRESH_MIN_AGE: Duration = Duration.ofHours(1)
 
+        /**
+         * Set true via [enqueueReplay] when the user taps the Today screen's
+         * Play button. The worker re-runs the full deliver() fan-out
+         * (notification + TTS + MQTT + cast) on the cached this-period
+         * snapshot — no fetch, no Open-Meteo call, no Gemini insight call.
+         * The cached snapshot is derived against the *current* prefs so any
+         * Format / clothes-rules changes since the snapshot was captured are
+         * spoken too.
+         */
+        internal const val KEY_REPLAY_ONLY = "replay_only"
+
         fun enqueueOneShot(
             context: Context,
             force: Boolean = false,
@@ -1454,6 +1534,38 @@ class FetchAndNotifyWorker(
             }
             WorkManager.getInstance(context)
                 .enqueueUniqueWork(workName, policy, request)
+        }
+
+        /**
+         * Replay the cached this-period insight via the full delivery
+         * fan-out — Today's Play button. Runs on its own
+         * [UNIQUE_WORK_NAME_REPLAY] queue so an offline Play tap sitting
+         * here can't block a later scheduled alarm fire (which uses KEEP
+         * on [UNIQUE_WORK_NAME] / [UNIQUE_WORK_NAME_TONIGHT] and would
+         * otherwise get dropped in favour of the pending replay).
+         * REPLACE because the user's most-recent Play tap is the one
+         * that matters; concurrent Refresh+Play double-delivery is
+         * prevented by the UI gate (see [TodayState.anyWorkActive]),
+         * not by sharing a queue.
+         */
+        fun enqueueReplay(context: Context, period: ForecastPeriod) {
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
+            val request = OneTimeWorkRequestBuilder<FetchAndNotifyWorker>()
+                .setConstraints(constraints)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
+                .setInputData(
+                    workDataOf(
+                        KEY_REPLAY_ONLY to true,
+                        KEY_PERIOD to period.name,
+                    )
+                )
+                .build()
+
+            WorkManager.getInstance(context)
+                .enqueueUniqueWork(UNIQUE_WORK_NAME_REPLAY, ExistingWorkPolicy.REPLACE, request)
         }
 
         /**

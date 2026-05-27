@@ -294,6 +294,72 @@ class TodayWorkStatusSelectionTest {
     }
 
     @Test
+    fun `anyActive is false on an empty list`() {
+        anyActive(emptyList()) shouldBe false
+    }
+
+    @Test
+    fun `anyActive catches an enqueued worker`() {
+        anyActive(
+            listOf(
+                WorkInfoLite(
+                    state = WorkInfo.State.ENQUEUED,
+                    runAttemptCount = 0,
+                    outputData = Data.EMPTY,
+                ),
+            ),
+        ) shouldBe true
+    }
+
+    @Test
+    fun `anyActive ignores terminal entries`() {
+        // SUCCEEDED / FAILED / CANCELLED WorkInfos can linger in the
+        // WorkManager DB for a while; they aren't "active" for the
+        // Play-disable gate and shouldn't keep the button locked out
+        // forever.
+        anyActive(
+            listOf(
+                WorkInfoLite(
+                    state = WorkInfo.State.SUCCEEDED,
+                    runAttemptCount = 1,
+                    outputData = Data.EMPTY,
+                ),
+                WorkInfoLite(
+                    state = WorkInfo.State.FAILED,
+                    runAttemptCount = 1,
+                    outputData = Data.EMPTY,
+                ),
+                WorkInfoLite(
+                    state = WorkInfo.State.CANCELLED,
+                    runAttemptCount = 0,
+                    outputData = Data.EMPTY,
+                ),
+            ),
+        ) shouldBe false
+    }
+
+    @Test
+    fun `anyActive catches a running worker that has already signalled fetch_complete`() {
+        // The critical post-fetch window: the worker has hidden the
+        // spinner banner via KEY_FETCH_COMPLETE and is now mid TTS /
+        // MQTT / Cast. selectStatus reads as Idle on this entry, but
+        // anyActive has to keep the Play button disabled — otherwise a
+        // tap here would start a second delivery alongside the first.
+        anyActive(
+            listOf(
+                WorkInfoLite(
+                    state = WorkInfo.State.RUNNING,
+                    runAttemptCount = 1,
+                    outputData = Data.EMPTY,
+                    progress = Data.Builder()
+                        .putBoolean(FetchAndNotifyWorker.KEY_FETCH_COMPLETE, true)
+                        .build(),
+                ),
+            ),
+        ) shouldBe true
+    }
+
+    @Test
     fun `other failures still surface when the action banner is showing`() {
         // The suppression is keyed specifically to REASON_NO_LOCATION —
         // unrelated failures still need to reach the user even when the

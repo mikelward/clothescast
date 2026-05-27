@@ -12,7 +12,13 @@ import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.testing.WorkManagerTestInitHelper
 import androidx.work.workDataOf
 import app.clothescast.ClothesCastApplication
+import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.ForecastSnapshot
+import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.WeatherCondition
+import app.clothescast.core.domain.repository.ForecastBundle
+import app.clothescast.data.InsightCache
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.longs.shouldBeGreaterThan
@@ -23,7 +29,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 
 /**
  * Drives the [FetchAndNotifyWorker]'s `doWork()` decision tree along the
@@ -57,6 +65,11 @@ class FetchAndNotifyWorkerTest {
             app.settingsRepository.setUseDeviceLocation(false)
             app.settingsRepository.clearLocation()
             app.settingsRepository.setTonightEnabled(false)
+            // The insight cache is process-shared across tests via the real
+            // application DataStore; a snapshot leaked from a previous case
+            // would let the replay branch deliver against it. Reset it so
+            // each test starts from a clean cache.
+            app.insightCache.clear()
         }
         // SynchronousExecutor keeps WorkManager off the real background
         // thread pool — combined with the NetworkType.CONNECTED constraint
@@ -258,6 +271,106 @@ class FetchAndNotifyWorkerTest {
             listOf(WorkInfo.State.ENQUEUED)
     }
 
+    @Test
+    fun `enqueueReplay uses its own unique work queue so it can't block scheduled refreshes`() {
+        // Play sits on UNIQUE_WORK_NAME_REPLAY rather than the alarm
+        // queues; otherwise an offline Play tap parked behind the
+        // network constraint would let WorkManager's KEEP policy on
+        // the next alarm fire drop the scheduled morning refresh in
+        // favour of the pending replay — the user would wake up to a
+        // stale cached announcement instead of a fresh forecast.
+        FetchAndNotifyWorker.enqueueReplay(context, period = ForecastPeriod.TODAY)
+
+        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_REPLAY).map { it.state } shouldContainExactlyInAnyOrder
+            listOf(WorkInfo.State.ENQUEUED)
+        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME) shouldHaveSize 0
+        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT) shouldHaveSize 0
+    }
+
+    @Test
+    fun `enqueueReplay for TONIGHT also lands on the replay queue, not the tonight queue`() {
+        FetchAndNotifyWorker.enqueueReplay(context, period = ForecastPeriod.TONIGHT)
+
+        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_REPLAY).map { it.state } shouldContainExactlyInAnyOrder
+            listOf(WorkInfo.State.ENQUEUED)
+        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME) shouldHaveSize 0
+        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT) shouldHaveSize 0
+    }
+
+    @Test
+    fun `replay whose requested period no longer matches the cached snapshot is dropped`() {
+        // User taps Play at 11pm (TONIGHT) while offline; the replay
+        // request sits in the queue under UNIQUE_WORK_NAME_TONIGHT. Before
+        // it runs, the morning alarm fires and overwrites THIS_PERIOD
+        // with a fresh TODAY snapshot. When the queued replay finally
+        // executes, the snapshot in cache no longer matches the period
+        // the user actually tapped Play for — drop it rather than
+        // delivering the wrong announcement.
+        runBlocking {
+            app.insightCache.store(
+                InsightCache.Slot.THIS_PERIOD,
+                sampleSnapshot(period = ForecastPeriod.TODAY),
+            )
+            val worker = TestListenableWorkerBuilder<FetchAndNotifyWorker>(context)
+                .setInputData(
+                    workDataOf(
+                        FetchAndNotifyWorker.KEY_REPLAY_ONLY to true,
+                        FetchAndNotifyWorker.KEY_PERIOD to ForecastPeriod.TONIGHT.name,
+                    )
+                )
+                .build()
+
+            val result = worker.doWork()
+
+            result.shouldBeInstanceOf<Result.Success>()
+            result.outputData.getBoolean(FetchAndNotifyWorker.KEY_SKIP_TELEMETRY, false) shouldBe true
+        }
+    }
+
+    @Test
+    fun `replay with empty cache succeeds and skips telemetry without falling through to fetch`() {
+        // The Today screen disables Play when the cache is empty, but a
+        // racing cache-clear (or a stale enqueued tap surviving a process
+        // death) could still land here. The branch must no-op rather than
+        // escalating to the no-location failure the fetch path would hit.
+        runBlocking {
+            val worker = TestListenableWorkerBuilder<FetchAndNotifyWorker>(context)
+                .setInputData(workDataOf(FetchAndNotifyWorker.KEY_REPLAY_ONLY to true))
+                .build()
+
+            val result = worker.doWork()
+
+            result.shouldBeInstanceOf<Result.Success>()
+            result.outputData.getBoolean(FetchAndNotifyWorker.KEY_SKIP_TELEMETRY, false) shouldBe true
+        }
+    }
+
     private fun workInfosFor(name: String): List<WorkInfo> =
         WorkManager.getInstance(context).getWorkInfosForUniqueWork(name).get()
+
+    private fun sampleSnapshot(period: ForecastPeriod): ForecastSnapshot {
+        val today = LocalDate.of(2026, 5, 27)
+        val daily = DailyForecast(
+            date = today,
+            temperatureMinC = 10.0,
+            temperatureMaxC = 18.0,
+            feelsLikeMinC = 9.0,
+            feelsLikeMaxC = 17.0,
+            precipitationProbabilityMaxPct = 0.0,
+            precipitationMmTotal = 0.0,
+            condition = WeatherCondition.CLEAR,
+            hourly = emptyList(),
+        )
+        return ForecastSnapshot(
+            bundle = ForecastBundle(
+                today = daily,
+                yesterday = daily.copy(date = today.minusDays(1)),
+                forecastZone = ZoneId.of("UTC"),
+            ),
+            events = emptyList(),
+            location = Location(latitude = 51.5, longitude = -0.1, displayName = "London"),
+            period = period,
+            generatedAt = Instant.parse("2026-05-27T07:00:00Z"),
+        )
+    }
 }

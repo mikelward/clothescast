@@ -610,12 +610,21 @@ class FetchAndNotifyWorker(
                 app.locationResolver.resolve()
             }
             if (device != null) {
-                DiagLog.i(TAG, "Using device-resolved location at ${device.latitude}, ${device.longitude}.")
-                // Best-effort reverse geocode so the home screen can show a
-                // friendly city name next to the date instead of the
-                // resolver's "Device location" placeholder. Null on AOSP /
-                // network failure / nothing useful in the address — the UI
-                // falls back to a date-only header in that case.
+                DiagLog.i(TAG, "Using device-resolved location (network-provider fix).")
+                // Best-effort reverse geocode at the un-rounded network-provider
+                // precision (~50–300 m). Rounding first to the 2dp grid before
+                // looking up the suburb would routinely shift the point across
+                // a real suburb boundary and surface the neighbour's name on
+                // the Today card. Higher-precision input here doesn't broaden
+                // what *persists* off-device: the persisted / forecasted coord
+                // is the suburb centroid that the forward-geocode round-trip
+                // returns below (or the 2dp coarsening of this fix when the
+                // round-trip can't snap to a known suburb). See PRIVACY.md
+                // "Approximate location" for the precision contract.
+                //
+                // Null on AOSP / network failure / nothing useful in the
+                // address — the UI falls back to a date-only header in that
+                // case.
                 val geo = app.reverseGeocoder.resolve(device.latitude, device.longitude)
                 // When reverse-geo fails for a fix close to the previously
                 // cached one, reuse the cached friendly name rather than
@@ -634,7 +643,19 @@ class FetchAndNotifyWorker(
                 // falls back to the locale country until the next
                 // successful geocode.
                 val resolvedName = geo.city ?: reuseNearbyDisplayName(prefs.location, device)
-                val resolved = device.copy(
+                // Snap to Open-Meteo's canonical suburb centroid where we can
+                // — that's the persisted / forecasted lat/lon, and the Today
+                // card / Location-settings pin both read from it. On any
+                // failure (no in-radius candidate, network blip, AOSP-only
+                // device with no reverse-geocode upstream) we fall back to
+                // the device fix coarsened to the 2dp privacy grid, so the
+                // off-device payload precision contract holds either way.
+                val base = app.suburbCentroidResolver.resolve(
+                    deviceFix = device,
+                    addressDetail = geo.addressDetail,
+                    city = geo.city,
+                ) ?: device.coarsened()
+                val resolved = base.copy(
                     displayName = resolvedName ?: device.displayName,
                     countryCode = geo.countryCode ?: device.countryCode,
                     // Same proximity gate as the displayName fallback: reuse

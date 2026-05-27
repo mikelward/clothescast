@@ -71,10 +71,16 @@ The source code is at <https://github.com/mikelward/clothescast>.
   - **Google's geocoding service**, via Android's
     [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder)
     API on Play Services devices — receives the coarse coordinate so
-    we can look up the city name (e.g. "London") and the country code
-    (used to pre-select holidays in your country). On AOSP / non-Play
-    devices `Geocoder` reports no backend and we skip the lookup;
-    the Today header falls back to a date-only label.
+    we can look up the suburb name (e.g. "Brunswick") and the country
+    code (used to pre-select holidays in your country). The Geocoder
+    receives the raw network-provider fix at city-block precision so
+    the looked-up suburb is correct when you're near a boundary; the
+    coordinate we then persist and send to Open-Meteo is the suburb
+    centroid that Open-Meteo returns when we round-trip the name, or
+    a 1 km grid rounding of the device fix when the round-trip can't
+    snap to a known suburb. On AOSP / non-Play devices `Geocoder`
+    reports no backend and we skip the lookup; the Today header
+    falls back to a date-only label.
 
   Neither service receives an account, device identifier, or any
   other payload beyond the items listed above.

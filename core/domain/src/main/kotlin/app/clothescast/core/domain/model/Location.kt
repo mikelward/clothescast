@@ -23,12 +23,13 @@ data class Location(
      * second component. Populated only by the device-location path via
      * `ReverseGeocoder`; manual / forward-geocoded picks leave it null.
      *
-     * Privacy: the reverse-geocode is run against the already-coarsened
-     * 2dp (~1km grid) coords, so the returned street is a representative
-     * point in that grid cell rather than the user's actual address.
-     * Dropping the leading component is a further belt-and-braces step
-     * so we never surface a precise-looking street/number on the
-     * Location page.
+     * Privacy: dropping the leading address component is a belt-and-braces
+     * step so we never surface a precise-looking street / house number on
+     * the Location page, even if the platform Geocoder returned one for
+     * the network-provider fix we sent it. The persisted lat/lon next to
+     * this string is the Open-Meteo suburb centroid (or a 2dp coarsening
+     * of the network-provider fix on round-trip miss) — not the precise
+     * device fix that was used to look the address up.
      */
     val addressDetail: String? = null,
 ) {
@@ -40,13 +41,24 @@ data class Location(
     /**
      * Returns this location rounded to a ~1 km grid (2 decimal places of
      * latitude / longitude — at the equator, 0.01° ≈ 1.1 km). Applied at
-     * every entry point that brings a [Location] into the app
-     * ([app.clothescast.location.LocationResolver] device fix,
-     * [app.clothescast.core.data.location.OpenMeteoGeocodingClient]
-     * forward geocode, [app.clothescast.data.SettingsRepository] persisted
-     * read) so downstream consumers — including the Open-Meteo weather
-     * request, the bug report payload, and anything else that may leave
-     * the device — only ever see neighbourhood-level precision.
+     * the entry points that bring a [Location] into the app at finer
+     * precision: [app.clothescast.core.data.location.OpenMeteoGeocodingClient]
+     * coarsens forward-geocode results, [app.clothescast.data.SettingsRepository]
+     * re-applies on persisted reads as a belt-and-braces for legacy values,
+     * and the worker calls this explicitly when the suburb-centroid
+     * round-trip can't snap to a known suburb. Downstream consumers —
+     * Open-Meteo weather request, bug-report payload, anything that may
+     * leave the device — only ever see neighbourhood-level precision.
+     *
+     * Note: the device fix that
+     * [app.clothescast.location.LocationResolver] returns is *not*
+     * coarsened by this — the worker pipeline reverse-geocodes the raw
+     * network-provider fix (~50–300 m, the precision
+     * `ACCESS_COARSE_LOCATION` already gives) so the suburb name comes
+     * back correct even when the user is near a boundary. The persisted
+     * coord is the suburb centroid that the round-trip returns (already
+     * 2dp from `OpenMeteoGeocodingClient`) or this function applied to
+     * the raw fix on miss.
      *
      * The point is privacy: a 4-decimal coordinate (~11 m) pinpoints a
      * specific house; 2 decimals doesn't. The forecast doesn't care

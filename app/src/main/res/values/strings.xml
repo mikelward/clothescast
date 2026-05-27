@@ -628,7 +628,6 @@
     <string name="settings_location_use_device">Use device location</string>
     <string name="settings_location_detecting">Detecting…</string>
     <string name="settings_location_refresh">Refresh</string>
-    <string name="settings_location_privacy_note">Locations are rounded to the nearest 1 km for your privacy.</string>
     <string name="settings_location_grant_background">Grant</string>
     <string name="settings_location_background_banner_title">Always-on location needed</string>
     <string name="settings_location_background_banner_body">Without it, the morning forecast can\'t read your location.</string>

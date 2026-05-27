@@ -31,6 +31,7 @@ import app.clothescast.diag.TelemetryApiCallLogger
 import app.clothescast.locale.AppLocale
 import app.clothescast.location.LocationResolver
 import app.clothescast.location.ReverseGeocoder
+import app.clothescast.location.SuburbCentroidResolver
 import app.clothescast.mqtt.MqttPublisher
 import app.clothescast.notification.InsightNotifier
 import app.clothescast.notification.NotificationChannelRegistrar
@@ -70,6 +71,9 @@ class ClothesCastApplication : Application() {
     val dailyHistoryStore: DailyHistoryStore by lazy { DailyHistoryStore.create(this) }
     val locationResolver: LocationResolver by lazy { LocationResolver(this) }
     val reverseGeocoder: ReverseGeocoder by lazy { ReverseGeocoder(this) }
+    val suburbCentroidResolver: SuburbCentroidResolver by lazy {
+        SuburbCentroidResolver(geocodingClient)
+    }
     val insightNotifier: InsightNotifier by lazy { InsightNotifier(this) }
     val tonightInsightNotifier: TonightInsightNotifier by lazy { TonightInsightNotifier(this) }
     val weatherAlertNotifier: WeatherAlertNotifier by lazy { WeatherAlertNotifier(this) }

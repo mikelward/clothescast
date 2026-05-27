@@ -429,9 +429,13 @@ internal fun SettingsVoiceGeminiPreview() {
 internal fun SettingsLocationPreview() {
     SettingsFrame {
         LocationContent(
+            // Coords match what's actually persisted in production — Open-Meteo's
+            // suburb-centroid round-trip returns 2dp / ~1 km precision (and the
+            // fallback path explicitly coarsens to the same grid), so the screen
+            // never renders more precision than this.
             location = Location(
-                latitude = 51.5074,
-                longitude = -0.1278,
+                latitude = 51.51,
+                longitude = -0.13,
                 displayName = "London",
                 // Mirrors what ReverseGeocoder.dropFirstAddressComponent
                 // would produce for a central London reverse geocode —

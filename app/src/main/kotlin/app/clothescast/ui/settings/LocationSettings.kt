@@ -228,11 +228,11 @@ private fun LocationCard(
         // forward-geocoded picks leave this null and the line is omitted
         // (the summary above carries the tap-to-maps action in that case).
         // Rendered in the primary colour and tappable, opening the user's
-        // chosen maps app at the 2dp-coarsened coords the rest of the app
-        // already operates on (Location.coarsened() rounds every entry-point
-        // write to ~1 km) — same affordance as the city link on Today's
-        // insight cards, but here the destination is the map rather than
-        // this very page.
+        // chosen maps app at the coords the rest of the app operates on —
+        // the Open-Meteo suburb centroid the round-trip resolved, or a 2dp
+        // coarsening of the device fix on round-trip miss. Same affordance
+        // as the city link on Today's insight cards, but here the
+        // destination is the map rather than this very page.
         current?.addressDetail?.let { detail ->
             Text(
                 text = detail,
@@ -248,19 +248,6 @@ private fun LocationCard(
                             label = current.displayName,
                         )
                     },
-            )
-        }
-
-        // Privacy footnote: the coords leaving the device for the weather
-        // request, the bug-report payload, and the maps deep link have all
-        // been rounded to a ~1km grid. Shown whenever a location is on
-        // screen — manual picks coarsen too (Location.coarsened() on every
-        // entry point), so the note isn't device-location-specific.
-        if (current != null) {
-            Text(
-                text = stringResource(R.string.settings_location_privacy_note),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
 

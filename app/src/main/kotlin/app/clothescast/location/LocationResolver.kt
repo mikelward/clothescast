@@ -21,6 +21,14 @@ import kotlin.coroutines.resume
  * Resolves the device's current coarse location using [LocationManager.NETWORK_PROVIDER]
  * — cell-tower + WiFi-based positioning, no GPS hardware fix needed, low battery cost.
  *
+ * The returned [Location] is at the raw network-provider precision (the app
+ * declares only `ACCESS_COARSE_LOCATION`, so that's already city-block level
+ * — ~50–300 m typically). Coarsening to the 2dp grid for off-device sends
+ * is the caller's responsibility — the worker pipeline reverse-geocodes
+ * the un-rounded fix first so the suburb name comes back correct even when
+ * the user is near a boundary, then either snaps to the suburb centroid
+ * via Open-Meteo or falls back to coarsening the raw fix.
+ *
  * Strategy:
  * 1. If we don't have ACCESS_COARSE_LOCATION granted (foreground or background as
  *    appropriate), return null without trying.
@@ -213,7 +221,7 @@ class LocationResolver(
         latitude = latitude,
         longitude = longitude,
         displayName = "Device location",
-    ).coarsened()
+    )
 
     companion object {
         private const val TAG = "LocationResolver"

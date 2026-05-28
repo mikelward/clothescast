@@ -1,9 +1,14 @@
 package app.clothescast.widget
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidedValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -88,6 +93,44 @@ internal fun WidgetForecastChart(
                 showLegend = false,
             )
         }
+    }
+}
+
+/**
+ * Runtime-only wrapper that paints the theme background behind
+ * [WidgetForecastChart] before it's rasterised to the widget bitmap.
+ *
+ * The off-screen [renderComposableToBitmap] hosts the chart in a `Presentation`
+ * window whose default background is light, so in dark mode that white bled
+ * through the card's rounded corners (and any letterbox around the card) in the
+ * captured bitmap — the gap the home-screen widget showed. Filling the render
+ * surface with `colorScheme.background` — the same surface the previews sit on
+ * via `WidgetFrame` — makes the corners match the app instead of flashing white.
+ *
+ * This lives apart from [WidgetForecastChart] (rather than wrapping it inline)
+ * so the snapshot previews, which already supply their own themed background and
+ * render at wrap-content height, stay untouched: `fillMaxSize` here fills the
+ * fixed render size at runtime but would balloon the bounded-height preview
+ * canvas with empty space.
+ */
+@Composable
+internal fun WidgetForecastChartCanvas(
+    hourly: List<HourlyForecast>,
+    days: List<DailyForecast>?,
+    temperatureUnit: TemperatureUnit,
+    timeFormat: TimeFormat,
+    startDate: LocalDate,
+    now: LocalDateTime?,
+) {
+    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        WidgetForecastChart(
+            hourly = hourly,
+            days = days,
+            temperatureUnit = temperatureUnit,
+            timeFormat = timeFormat,
+            startDate = startDate,
+            now = now,
+        )
     }
 }
 

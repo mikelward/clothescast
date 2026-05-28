@@ -361,6 +361,17 @@
     <string name="today_clothes_promo_cta">Clothes settings</string>
     <string name="today_clothes_promo_dismiss">Dismiss</string>
 
+    <!-- Promo card on the Today screen nudging users to set up a delivery
+         schedule. Scheduled casts don't fire until a slot is enabled, so a
+         fresh install gets nothing on a timer. Routes to Schedule settings,
+         which requests notification permission when a slot is turned on.
+         Auto-hides once either schedule switch is on, OR after the user
+         X-dismisses. -->
+    <string name="today_schedule_promo_title">Automatic ClothesCasts</string>
+    <string name="today_schedule_promo_body">Choose when you get notifications and announcements.</string>
+    <string name="today_schedule_promo_cta">Schedule settings</string>
+    <string name="today_schedule_promo_dismiss">Dismiss</string>
+
     <!-- Promo card on the Today screen nudging users toward the new
          calendar-sourced holiday + birthday theming. Auto-hides once
          either Holiday-settings toggle is on, OR after the user X-dismisses. -->

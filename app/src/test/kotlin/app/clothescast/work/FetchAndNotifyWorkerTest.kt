@@ -47,8 +47,9 @@ import java.time.ZoneId
  * InsightFormatterTest, InsightNotifierTest, MqttPublisherTest, …) carries
  * those concerns; this class pins the worker's *own* decisions.
  *
- * Setup clears the user's location and disables tonight delivery so each
- * `doWork()` call lands deterministically on a no-network branch. The
+ * Setup clears the user's location, enables daily, and disables tonight
+ * delivery so each `doWork()` call lands deterministically on a no-network
+ * branch. The
  * WorkManager test driver is wired with a [SynchronousExecutor] so the
  * `NetworkType.CONNECTED` constraint keeps the enqueue assertions in
  * `ENQUEUED` state (the worker never actually runs against the network).
@@ -64,6 +65,10 @@ class FetchAndNotifyWorkerTest {
         runBlocking {
             app.settingsRepository.setUseDeviceLocation(false)
             app.settingsRepository.clearLocation()
+            // Daily is off by default now; enable it so the TODAY-period runs
+            // clear the disabled-period gate and land on the no-network
+            // branches these tests pin. Tonight stays off for the gate test.
+            app.settingsRepository.setDailyEnabled(true)
             app.settingsRepository.setTonightEnabled(false)
             // The insight cache is process-shared across tests via the real
             // application DataStore; a snapshot leaked from a previous case

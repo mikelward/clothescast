@@ -534,6 +534,7 @@ class PreviewSnapshots {
     @Test fun local_build_banner_dirty() = capture { LocalBuildBannerDirtyPreview() }
     @Test fun telemetry_notice_banner() = capture { TelemetryNoticeBannerPreview() }
     @Test fun clothes_promo_card() = capture { ClothesPromoCardPreview() }
+    @Test fun schedule_promo_card() = capture { SchedulePromoCardPreview() }
     @Test fun celebration_themes_card() = capture { CelebrationThemesCardPreview() }
 
     @Test fun launcher_icon() = capture { LauncherIconPreview() }

@@ -406,6 +406,10 @@ class SettingsRepository(
         dataStore.edit { it[CLOTHES_PROMO_CARD_DISMISSED] = dismissed }
     }
 
+    suspend fun setScheduleCardDismissed(dismissed: Boolean) {
+        dataStore.edit { it[SCHEDULE_CARD_DISMISSED] = dismissed }
+    }
+
     /**
      * Bumps [UserPreferences.calendarPermissionRecheckTick] to the current
      * wall-clock millis so the preferences flow re-emits. Use after the
@@ -854,6 +858,7 @@ class SettingsRepository(
             ?: (useCalendarEvents || themeFromCalendarHolidays || themeFromCalendarBirthdays)
         val celebrationCardDismissed = this[CELEBRATION_CARD_DISMISSED] == true
         val clothesPromoCardDismissed = this[CLOTHES_PROMO_CARD_DISMISSED] == true
+        val scheduleCardDismissed = this[SCHEDULE_CARD_DISMISSED] == true
         val calendarPermissionRecheckTick = this[CALENDAR_PERMISSION_RECHECK_TICK] ?: 0L
         val tonightTime = this[TONIGHT_TIME]?.let { LocalTime.parse(it, TIME_FORMAT) }
             ?: DEFAULT_TONIGHT_TIME
@@ -861,14 +866,13 @@ class SettingsRepository(
             ?.toSet()
             ?.takeIf { it.isNotEmpty() }
             ?: Schedule.EVERY_DAY
-        // Default-on for both halves: existing installs that haven't seen the
-        // toggles yet keep the morning + evening pipelines firing. The morning
-        // ClothesCast is the headline feature so dailyEnabled stays on out of
-        // the box; the tonight notifier is quiet by default when there are no
-        // calendar events (see [tonightNotifyOnlyOnEvents]) so default-on
-        // doesn't make it noisy.
-        val dailyEnabled = this[DAILY_ENABLED] != false
-        val tonightEnabled = this[TONIGHT_ENABLED] != false
+        // Default-off for both halves: a fresh install has no scheduled casts
+        // until the user opts in from the schedule page (where the
+        // notification-permission prompt lives), surfaced by the Today-screen
+        // "Set up a schedule" promo. Absent key ⇒ off; only an explicit stored
+        // `true` enables a slot.
+        val dailyEnabled = this[DAILY_ENABLED] == true
+        val tonightEnabled = this[TONIGHT_ENABLED] == true
         val tonightNotifyOnlyOnEvents = this[TONIGHT_NOTIFY_ONLY_ON_EVENTS] == true
         val dailyMentionEveningEvents = this[DAILY_MENTION_EVENING_EVENTS] != false
         val clothesMentionMode = this[CLOTHES_MENTION_MODE]
@@ -991,6 +995,7 @@ class SettingsRepository(
             themeFromCalendarBirthdays = themeFromCalendarBirthdays,
             celebrationCardDismissed = celebrationCardDismissed,
             clothesPromoCardDismissed = clothesPromoCardDismissed,
+            scheduleCardDismissed = scheduleCardDismissed,
             calendarPermissionRecheckTick = calendarPermissionRecheckTick,
             dailyEnabled = dailyEnabled,
             tonightSchedule = Schedule(time = tonightTime, days = tonightDays, zoneId = zone),
@@ -1230,6 +1235,7 @@ class SettingsRepository(
         private val THEME_FROM_CALENDAR_BIRTHDAYS = booleanPreferencesKey("theme_from_calendar_birthdays")
         private val CELEBRATION_CARD_DISMISSED = booleanPreferencesKey("celebration_card_dismissed")
         private val CLOTHES_PROMO_CARD_DISMISSED = booleanPreferencesKey("clothes_promo_card_dismissed")
+        private val SCHEDULE_CARD_DISMISSED = booleanPreferencesKey("schedule_card_dismissed")
         private val CALENDAR_PERMISSION_RECHECK_TICK = longPreferencesKey("calendar_permission_recheck_tick")
         private val DAILY_ENABLED = booleanPreferencesKey("daily_enabled")
         private val TONIGHT_TIME = stringPreferencesKey("tonight_time_hhmm")
@@ -1318,8 +1324,49 @@ class SettingsRepository(
 
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(
     name = "settings",
-    produceMigrations = { listOf(castEnabledOptInMigration()) },
+    // Schedule migration runs first so it sees the true on-disk state — the
+    // cast migration always writes its own sentinel, which would otherwise make
+    // a fresh store look "existing" to the schedule migration's empty-store check.
+    produceMigrations = { listOf(scheduleEnabledOptInMigration(), castEnabledOptInMigration()) },
 )
+
+// One-time migration for the morning + evening schedule flipping from default-on
+// to default-off (opt-in — see [UserPreferences.dailyEnabled]). Every install on
+// the old behaviour was getting casts whether or not it ever touched the toggles
+// (an absent key read as enabled), so silently reading absent keys as off here
+// would stop existing users' casts on the next launch. Preserve them: when the
+// store already holds *any* preference (i.e. it predates this change) and a
+// schedule key was never explicitly written, write an explicit `true`. A fresh
+// install has an empty store at migration time, so it falls through to the new
+// false default and the Today "set up a schedule" promo. Runs exactly once via a
+// sentinel. Internal for direct unit testing.
+internal fun scheduleEnabledOptInMigration(): DataMigration<Preferences> {
+    val migrated = booleanPreferencesKey("schedule_default_off_migrated_v1")
+    val dailyEnabled = booleanPreferencesKey("daily_enabled")
+    val tonightEnabled = booleanPreferencesKey("tonight_enabled")
+    return object : DataMigration<Preferences> {
+        override suspend fun shouldMigrate(currentData: Preferences): Boolean =
+            currentData[migrated] != true
+
+        override suspend fun migrate(currentData: Preferences): Preferences {
+            // The returned Preferences replaces the store, so carry every
+            // existing entry forward, then add ours.
+            val result = mutablePreferencesOf()
+            currentData.asMap().forEach { (key, value) ->
+                @Suppress("UNCHECKED_CAST")
+                result[key as Preferences.Key<Any>] = value
+            }
+            if (currentData.asMap().isNotEmpty()) {
+                if (currentData[dailyEnabled] == null) result[dailyEnabled] = true
+                if (currentData[tonightEnabled] == null) result[tonightEnabled] = true
+            }
+            result[migrated] = true
+            return result
+        }
+
+        override suspend fun cleanUp() = Unit
+    }
+}
 
 // One-time migration for cast flipping from default-on to default-off (opt-in —
 // see [UserPreferences.castEnabled]). Installs that already picked a cast route

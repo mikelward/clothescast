@@ -147,6 +147,7 @@ fun ClothesCastNavHost(
                 onNavigateToPrivacy = { nav.navigate(PrivacyDest) },
                 onNavigateToClothes = { nav.navigate(ClothesDest) },
                 onNavigateToCalendar = { nav.navigate(CalendarDest) },
+                onNavigateToSchedule = { nav.navigate(ScheduleDest()) },
                 onNavigateToDeveloper = { nav.navigate(DeveloperDest) },
                 onNavigateToFormat = { nav.navigate(FormatDest) },
             )

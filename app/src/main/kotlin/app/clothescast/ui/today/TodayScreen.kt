@@ -12,6 +12,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -483,11 +484,11 @@ private fun TodayContent(
                         state.thisPeriodInsight.upcomingDays
                     SevenDayPage(
                         days = weekDays,
-                        temperatureUnit = state.temperatureUnit,
-                        distanceUnit = state.distanceUnit,
+                        state = state,
                         weekPerModelHourly = state.thisPeriodInsight.weekPerModelHourly,
-                        showModelSpread = state.showModelSpread,
                         scrollState = scrollState,
+                        workStatusToShow = workStatusToShow,
+                        locationActionRequired = locationActionRequired,
                         onChevronTap = {
                             pagerScope.launch { pagerState.animateScrollToPage(1) }
                         },
@@ -495,21 +496,18 @@ private fun TodayContent(
                         onRevealModelSpread = onRevealModelSpread,
                         onHideModelSpread = onHideModelSpread,
                         forecastZone = state.thisPeriodInsight.forecastZone,
-                        region = state.region,
-                        deltaThresholdC = state.deltaThresholdC,
                         location = state.thisPeriodInsight.location,
                         onNavigateToLocation = onSetUpLocation,
                         // Same outfit pair pages 0 / 1 show. Pinning it at
                         // the top of every page keeps the rest of the
                         // content from jumping when the user swipes.
                         outfitInsight = state.thisPeriodInsight,
-                        clothesRules = state.clothesRules,
-                        outfitTopColors = state.outfitTopColors,
-                        outfitBottomColors = state.outfitBottomColors,
-                        outfitTopStrokes = state.outfitTopStrokes,
-                        outfitBottomStrokes = state.outfitBottomStrokes,
                         onAdjustThreshold = onAdjustThreshold,
                         onNavigateToClothes = onNavigateToClothes,
+                        onOpenPrivacy = onOpenPrivacy,
+                        onOpenCalendarSettings = onOpenCalendarSettings,
+                        onDismissCelebrationCard = onDismissCelebrationCard,
+                        onDismissClothesPromoCard = onDismissClothesPromoCard,
                     )
                     return@HorizontalPager
                 }
@@ -649,6 +647,92 @@ private fun BannerStack(
 }
 
 /**
+ * Shared chrome for every page in the Today pager. Wraps the page's [content]
+ * in the common layout: the top/bottom edge fades, the time-format provider,
+ * the scrolling Column with its nav-bar inset + padding, the top-of-scroll
+ * [BannerStack] (location / update / local-build / crash / telemetry / promo /
+ * work-status / holiday), and the pinned [OutfitPreviewRow]. Pages 0 / 1 add
+ * the insight card + per-period chart deck; page 2 adds the weekly header +
+ * 7-day chart deck. Keeping the chrome here means the banner stack and outfit
+ * row are byte-identical across all three pages — swiping between Today /
+ * Tonight / 7-day keeps the same cards in the same place.
+ */
+@Composable
+internal fun HomePageScaffold(
+    state: TodayState,
+    scrollState: ScrollState,
+    workStatusToShow: WorkStatus,
+    locationActionRequired: Boolean,
+    outfitInsight: Insight?,
+    onSetUpLocation: () -> Unit,
+    onOpenPrivacy: () -> Unit,
+    onOpenCalendarSettings: () -> Unit,
+    onDismissCelebrationCard: () -> Unit,
+    onDismissClothesPromoCard: () -> Unit,
+    onNavigateToClothes: () -> Unit,
+    onAdjustThreshold: (String, Double) -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    // Edge fades hint at off-screen content above / below — drawn at the
+    // page's outer Box bounds (the pager-page edges), so cards pass cleanly
+    // under them as the user scrolls.
+    EdgeFadeOverlay(scrollState = scrollState) {
+        CompositionLocalProvider(LocalTimeFormat provides state.timeFormat) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    // Nav-bar inset goes here — *inside* the scroll viewport, as
+                    // content padding — so the last card can scroll fully above
+                    // the (translucent) nav bar while the viewport itself still
+                    // extends to the screen edge.
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 16.dp, bottom = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                // Banner stack sits at the top of the scroll viewport (rather
+                // than pinned above the pager) so nothing hogs vertical space
+                // on the steady-state screen. HolidayBanner is last in the
+                // stack so it ends up adjacent to the outfit row whose palette
+                // it explains.
+                BannerStack(
+                    state = state,
+                    workStatusToShow = workStatusToShow,
+                    locationActionRequired = locationActionRequired,
+                    onOpenPrivacy = onOpenPrivacy,
+                    onOpenClothes = onNavigateToClothes,
+                    onDismissClothesPromoCard = onDismissClothesPromoCard,
+                    onOpenCalendarSettings = onOpenCalendarSettings,
+                    onDismissCelebrationCard = onDismissCelebrationCard,
+                    onSetUpLocation = onSetUpLocation,
+                )
+                // Outfit row sits above the page body so it also renders when
+                // the page's own insight is missing (page 2's placeholder, or a
+                // not-yet-cached next period). [outfitInsight] is always this
+                // period's insight, pinning the same today + tonight pair to the
+                // same vertical offset on every page so swiping doesn't jump the
+                // content. Null only on previews / tests that don't wire a pair.
+                if (outfitInsight != null) {
+                    OutfitPreviewRow(
+                        insight = outfitInsight,
+                        temperatureUnit = state.temperatureUnit,
+                        clothesRules = state.clothesRules,
+                        outfitTopColors = state.outfitTopColors,
+                        outfitBottomColors = state.outfitBottomColors,
+                        outfitTopStrokes = state.outfitTopStrokes,
+                        outfitBottomStrokes = state.outfitBottomStrokes,
+                        onAdjustThreshold = onAdjustThreshold,
+                        onNavigateToClothes = onNavigateToClothes,
+                    )
+                }
+                content()
+            }
+        }
+    }
+}
+
+/**
  * One page inside the Today pager. When [insight] is non-null it renders the
  * existing InsightCard + ConfidenceChip + chart-card stack for that period;
  * when null (the paired slot hasn't been cached yet) it surfaces a
@@ -690,272 +774,234 @@ private fun TodayPage(
     // tap handler can scroll the chip to the top of the viewport without
     // hard-coding offsets above it (outfit row + insight card heights vary).
     var chipScrollOffset by remember { mutableIntStateOf(0) }
-    // Edge fades hint at off-screen content above / below — drawn at the
-    // page's outer Box bounds (the pager-page edges), so cards pass cleanly
-    // under them as the user scrolls.
-    EdgeFadeOverlay(scrollState = scrollState) {
-      CompositionLocalProvider(LocalTimeFormat provides state.timeFormat) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                // Nav-bar inset goes here — *inside* the scroll viewport, as
-                // content padding — so the last diagnostic card can scroll
-                // fully above the (translucent) nav bar while the viewport
-                // itself still extends to the screen edge.
-                .windowInsetsPadding(WindowInsets.navigationBars)
-                .padding(horizontal = 16.dp)
-                .padding(top = 16.dp, bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            // Banner stack sits at the top of the scroll viewport (rather
-            // than pinned above the pager) so nothing hogs vertical space
-            // on the steady-state screen. HolidayBanner is last in the
-            // stack so it ends up adjacent to the outfit row whose palette
-            // it explains.
-            BannerStack(
-                state = state,
-                workStatusToShow = workStatusToShow,
-                locationActionRequired = locationActionRequired,
-                onOpenPrivacy = onOpenPrivacy,
-                onOpenClothes = onNavigateToClothes,
-                onDismissClothesPromoCard = onDismissClothesPromoCard,
-                onOpenCalendarSettings = onOpenCalendarSettings,
-                onDismissCelebrationCard = onDismissCelebrationCard,
-                onSetUpLocation = onSetUpLocation,
-            )
-            // Outfit row sits above the null-insight short-circuit so it
-            // also renders on page 2 when [insight] (the next-period
-            // insight) is null and we fall back to MissingPeriodPlaceholder.
-            // [outfitInsight] is always this period's insight, so this is
-            // independent of whether the page's own insight is cached yet.
-            OutfitPreviewRow(
-                insight = outfitInsight,
-                temperatureUnit = state.temperatureUnit,
-                clothesRules = state.clothesRules,
-                outfitTopColors = state.outfitTopColors,
-                outfitBottomColors = state.outfitBottomColors,
-                outfitTopStrokes = state.outfitTopStrokes,
-                outfitBottomStrokes = state.outfitBottomStrokes,
-                onAdjustThreshold = onAdjustThreshold,
-                onNavigateToClothes = onNavigateToClothes,
-            )
-            if (insight == null) {
-                MissingPeriodPlaceholder(
-                    period = fallbackPeriod,
-                    morningTime = state.morningTime,
-                    tonightTime = state.tonightTime,
-                    showChevronLeft = showChevronLeft,
-                    onChevronTap = onChevronTap,
-                    showChevronRight = showChevronRight,
-                    onChevronRightTap = onChevronRightTap,
-                )
-                return@Column
-            }
-            // Two separate per-model-spread affordances:
-            //
-            //  - The confidence chip [ConfidenceChip] keeps its labelled
-            //    "tap to show / hide" toggle (wired through [onChipTap] →
-            //    [onToggleModelSpread]). That's the explicit on/off control.
-            //
-            //  - Tapping the plot grid of any chart enters scrub mode on
-            //    the shared [ChartScrubController], which (via the
-            //    [SpreadCoordinator] wired below) reveals the per-model
-            //    spread if it isn't already on. The matching restore
-            //    icon exits scrub mode and undoes only that auto-reveal
-            //    — spread state the user enabled via the chip is left
-            //    alone.
-            //
-            // [chipToggle] is null when there's no per-model data in
-            // the cache (e.g. older payloads) — in that case the chip
-            // stays as a static confidence summary and the controller's
-            // [spreadCoordinator] stays null so chart gestures just
-            // scrub without touching spread state.
-            val perModelAvailable = insight.perModelHourly != null
-            val chipToggle = onToggleModelSpread.takeIf { perModelAvailable }
-            InsightCard(
-                insight = insight,
-                region = state.region,
-                temperatureUnit = state.temperatureUnit,
-                rangeFormat = state.rangeFormat,
-                clothesFormat = state.clothesFormat,
-                bottomsFormat = state.bottomsFormat,
-                rainAccessory = state.rainAccessory,
-                showChevronRight = showChevronRight,
+    HomePageScaffold(
+        state = state,
+        scrollState = scrollState,
+        workStatusToShow = workStatusToShow,
+        locationActionRequired = locationActionRequired,
+        outfitInsight = outfitInsight,
+        onSetUpLocation = onSetUpLocation,
+        onOpenPrivacy = onOpenPrivacy,
+        onOpenCalendarSettings = onOpenCalendarSettings,
+        onDismissCelebrationCard = onDismissCelebrationCard,
+        onDismissClothesPromoCard = onDismissClothesPromoCard,
+        onNavigateToClothes = onNavigateToClothes,
+        onAdjustThreshold = onAdjustThreshold,
+    ) {
+        if (insight == null) {
+            MissingPeriodPlaceholder(
+                period = fallbackPeriod,
+                morningTime = state.morningTime,
+                tonightTime = state.tonightTime,
                 showChevronLeft = showChevronLeft,
                 onChevronTap = onChevronTap,
+                showChevronRight = showChevronRight,
                 onChevronRightTap = onChevronRightTap,
-                onLongPressDate = onLongPressDate,
-                onNavigateToFormat = onNavigateToFormat,
-                onNavigateToLocation = onSetUpLocation,
             )
-            insight.confidence?.let {
-                // Wrap the per-model toggle so a tap also scrolls the chip to the
-                // top of the viewport — the per-model overlay renders on the
-                // charts below the chip, so scrolling them into view is part of
-                // the same gesture's payoff.
-                val onChipTap: (() -> Unit)? = chipToggle?.let { toggle ->
-                    {
-                        toggle()
-                        scrollScope.launch { scrollState.animateScrollTo(chipScrollOffset) }
-                    }
+            return@HomePageScaffold
+        }
+        // Two separate per-model-spread affordances:
+        //
+        //  - The confidence chip [ConfidenceChip] keeps its labelled
+        //    "tap to show / hide" toggle (wired through [onChipTap] →
+        //    [onToggleModelSpread]). That's the explicit on/off control.
+        //
+        //  - Tapping the plot grid of any chart enters scrub mode on
+        //    the shared [ChartScrubController], which (via the
+        //    [SpreadCoordinator] wired below) reveals the per-model
+        //    spread if it isn't already on. The matching restore
+        //    icon exits scrub mode and undoes only that auto-reveal
+        //    — spread state the user enabled via the chip is left
+        //    alone.
+        //
+        // [chipToggle] is null when there's no per-model data in
+        // the cache (e.g. older payloads) — in that case the chip
+        // stays as a static confidence summary and the controller's
+        // [spreadCoordinator] stays null so chart gestures just
+        // scrub without touching spread state.
+        val perModelAvailable = insight.perModelHourly != null
+        val chipToggle = onToggleModelSpread.takeIf { perModelAvailable }
+        InsightCard(
+            insight = insight,
+            region = state.region,
+            temperatureUnit = state.temperatureUnit,
+            rangeFormat = state.rangeFormat,
+            clothesFormat = state.clothesFormat,
+            bottomsFormat = state.bottomsFormat,
+            rainAccessory = state.rainAccessory,
+            showChevronRight = showChevronRight,
+            showChevronLeft = showChevronLeft,
+            onChevronTap = onChevronTap,
+            onChevronRightTap = onChevronRightTap,
+            onLongPressDate = onLongPressDate,
+            onNavigateToFormat = onNavigateToFormat,
+            onNavigateToLocation = onSetUpLocation,
+        )
+        insight.confidence?.let {
+            // Wrap the per-model toggle so a tap also scrolls the chip to the
+            // top of the viewport — the per-model overlay renders on the
+            // charts below the chip, so scrolling them into view is part of
+            // the same gesture's payoff.
+            val onChipTap: (() -> Unit)? = chipToggle?.let { toggle ->
+                {
+                    toggle()
+                    scrollScope.launch { scrollState.animateScrollTo(chipScrollOffset) }
                 }
-                ConfidenceChip(
-                    modifier = Modifier.onGloballyPositioned { coords ->
-                        chipScrollOffset = coords.positionInParent().y.roundToInt()
-                    },
-                    info = it,
-                    perModelHourly = insight.perModelHourly,
-                    temperatureUnit = state.temperatureUnit,
-                    windSpeedUnit = state.distanceUnit.windSpeedUnit(),
-                    showModelSpread = state.showModelSpread,
-                    onToggleModelSpread = onChipTap,
-                )
             }
-            if (insight.hourly.isNotEmpty()) {
-                // Pass per-model data unconditionally so each chart's y-axis is
-                // sized to the same envelope whether the overlay is showing or
-                // not — tapping the toggle adds / removes lines but never
-                // shifts the scale. The diagnostic cards below follow the same
-                // pattern (see [PerModelDiagnosticCard]).
-                val perModelData = insight.perModelHourly
-                // Shared scrub controller — one per page. Every chart on this
-                // page reads it through [LocalChartScrub] and draws its
-                // indicator + readout tooltip at the controller's active
-                // time. Dragging on any chart updates the time on all of
-                // them in lock-step. The controller dies with this
-                // composable (no rememberSaveable) so navigating away from
-                // the Today screen returns it to "now"-tracking on next
-                // entry.
-                val scrubController = rememberChartScrubController()
-                // Tick the controller's "now" reference once a minute so
-                // the live indicator slides smoothly across the chart. Read
-                // `now` in the *forecast* zone (Open-Meteo's `timezone=auto`,
-                // surfaced on [Insight.forecastZone]) rather than the
-                // device's, because [HourlyForecast.time] is wall-clock
-                // local to that zone. For the common auto-location case the
-                // two are equal; for a manual location in a different zone,
-                // using the device zone would shift the indicator by the
-                // offset (or hide it out of window). Fall back to the
-                // device default on legacy cached insights that predate
-                // `forecastZone`. While the user is scrubbed, the controller
-                // keeps the live `now` reference internally so the restore
-                // icon snaps back to a fresh value rather than the stale one
-                // at the time of scrub.
-                val zone = insight.forecastZone ?: ZoneId.systemDefault()
-                LaunchedEffect(scrubController, zone, insight.hourly, insight.forDate) {
-                    while (true) {
-                        val now = LocalDateTime.now(zone)
-                        val inWindow = currentTimeChartX(
-                            hourly = insight.hourly,
-                            startDate = insight.forDate,
-                            now = now,
-                        ) != null
-                        scrubController.setNow(if (inWindow) now else null)
-                        delay(60_000L)
+            ConfidenceChip(
+                modifier = Modifier.onGloballyPositioned { coords ->
+                    chipScrollOffset = coords.positionInParent().y.roundToInt()
+                },
+                info = it,
+                perModelHourly = insight.perModelHourly,
+                temperatureUnit = state.temperatureUnit,
+                windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                showModelSpread = state.showModelSpread,
+                onToggleModelSpread = onChipTap,
+            )
+        }
+        if (insight.hourly.isNotEmpty()) {
+            // Pass per-model data unconditionally so each chart's y-axis is
+            // sized to the same envelope whether the overlay is showing or
+            // not — tapping the toggle adds / removes lines but never
+            // shifts the scale. The diagnostic cards below follow the same
+            // pattern (see [PerModelDiagnosticCard]).
+            val perModelData = insight.perModelHourly
+            // Shared scrub controller — one per page. Every chart on this
+            // page reads it through [LocalChartScrub] and draws its
+            // indicator + readout tooltip at the controller's active
+            // time. Dragging on any chart updates the time on all of
+            // them in lock-step. The controller dies with this
+            // composable (no rememberSaveable) so navigating away from
+            // the Today screen returns it to "now"-tracking on next
+            // entry.
+            val scrubController = rememberChartScrubController()
+            // Tick the controller's "now" reference once a minute so
+            // the live indicator slides smoothly across the chart. Read
+            // `now` in the *forecast* zone (Open-Meteo's `timezone=auto`,
+            // surfaced on [Insight.forecastZone]) rather than the
+            // device's, because [HourlyForecast.time] is wall-clock
+            // local to that zone. For the common auto-location case the
+            // two are equal; for a manual location in a different zone,
+            // using the device zone would shift the indicator by the
+            // offset (or hide it out of window). Fall back to the
+            // device default on legacy cached insights that predate
+            // `forecastZone`. While the user is scrubbed, the controller
+            // keeps the live `now` reference internally so the restore
+            // icon snaps back to a fresh value rather than the stale one
+            // at the time of scrub.
+            val zone = insight.forecastZone ?: ZoneId.systemDefault()
+            LaunchedEffect(scrubController, zone, insight.hourly, insight.forDate) {
+                while (true) {
+                    val now = LocalDateTime.now(zone)
+                    val inWindow = currentTimeChartX(
+                        hourly = insight.hourly,
+                        startDate = insight.forDate,
+                        now = now,
+                    ) != null
+                    scrubController.setNow(if (inWindow) now else null)
+                    delay(60_000L)
+                }
+            }
+            // Bridge the controller to the per-model-spread state so a
+            // tap-to-scrub gesture reveals the spread (and tapping
+            // restore undoes that reveal). Reassigned on every
+            // recomposition so the closures see the live
+            // [state.showModelSpread] value — the controller itself is
+            // remembered across compositions, only its callbacks change.
+            // Stays null when there's no per-model data (older cached
+            // payloads) so the controller skips the reveal entirely.
+            val showSpread = state.showModelSpread
+            SideEffect {
+                scrubController.spreadCoordinator = if (!perModelAvailable) null else {
+                    object : SpreadCoordinator {
+                        override fun isSpreadVisible(): Boolean = showSpread
+                        override fun revealSpread() = onRevealModelSpread()
+                        override fun hideSpread() = onHideModelSpread()
                     }
                 }
-                // Bridge the controller to the per-model-spread state so a
-                // tap-to-scrub gesture reveals the spread (and tapping
-                // restore undoes that reveal). Reassigned on every
-                // recomposition so the closures see the live
-                // [state.showModelSpread] value — the controller itself is
-                // remembered across compositions, only its callbacks change.
-                // Stays null when there's no per-model data (older cached
-                // payloads) so the controller skips the reveal entirely.
-                val showSpread = state.showModelSpread
-                SideEffect {
-                    scrubController.spreadCoordinator = if (!perModelAvailable) null else {
-                        object : SpreadCoordinator {
-                            override fun isSpreadVisible(): Boolean = showSpread
-                            override fun revealSpread() = onRevealModelSpread()
-                            override fun hideSpread() = onHideModelSpread()
-                        }
-                    }
-                }
-                CompositionLocalProvider(LocalChartScrub provides scrubController) {
-                    ForecastCard(
+            }
+            CompositionLocalProvider(LocalChartScrub provides scrubController) {
+                ForecastCard(
+                    hourly = insight.hourly,
+                    temperatureUnit = state.temperatureUnit,
+                    distanceUnit = state.distanceUnit,
+                    startDate = insight.forDate,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
+                )
+                AirTemperatureCard(
+                    hourly = insight.hourly,
+                    temperatureUnit = state.temperatureUnit,
+                    startDate = insight.forDate,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
+                )
+                PrecipitationCard(
+                    hourly = insight.hourly,
+                    startDate = insight.forDate,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
+                )
+                PrecipitationAmountCard(
+                    hourly = insight.hourly,
+                    forDate = insight.forDate,
+                    period = insight.period,
+                    perModelHourly = perModelData,
+                    showModelSpread = state.showModelSpread,
+                )
+                // Diagnostic cards below the headline temp + rain pair. Each
+                // draws a consensus main line by default and overlays the
+                // per-model spread when [showModelSpread] is on — same pattern
+                // as the temp / precip cards. Each card auto-hides when every
+                // consulted model is missing its metric outright (older cached
+                // payloads don't carry wind / humidity / cloud).
+                insight.perModelHourly?.let { perModelData ->
+                    // Order: "feels-like" metrics first (wind, humidity),
+                    // then the sun-related cluster as a cause→effect chain
+                    // — clouds gate irradiance, UV is a subset of that
+                    // irradiance, sunshine is the time-integrated payoff.
+                    WindCard(
                         hourly = insight.hourly,
-                        temperatureUnit = state.temperatureUnit,
-                        distanceUnit = state.distanceUnit,
-                        startDate = insight.forDate,
                         perModelHourly = perModelData,
+                        windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                        startDate = insight.forDate,
                         showModelSpread = state.showModelSpread,
                     )
-                    AirTemperatureCard(
+                    HumidityCard(
                         hourly = insight.hourly,
-                        temperatureUnit = state.temperatureUnit,
-                        startDate = insight.forDate,
                         perModelHourly = perModelData,
+                        startDate = insight.forDate,
                         showModelSpread = state.showModelSpread,
                     )
-                    PrecipitationCard(
+                    CloudCard(
                         hourly = insight.hourly,
-                        startDate = insight.forDate,
                         perModelHourly = perModelData,
+                        startDate = insight.forDate,
                         showModelSpread = state.showModelSpread,
                     )
-                    PrecipitationAmountCard(
+                    SolarRadiationCard(
                         hourly = insight.hourly,
+                        perModelHourly = perModelData,
+                        startDate = insight.forDate,
+                        showModelSpread = state.showModelSpread,
+                    )
+                    UvIndexCard(
+                        hourly = insight.hourly,
+                        perModelHourly = perModelData,
+                        startDate = insight.forDate,
+                        showModelSpread = state.showModelSpread,
+                    )
+                    SunshineCard(
+                        hourly = insight.hourly,
+                        perModelHourly = perModelData,
                         forDate = insight.forDate,
                         period = insight.period,
-                        perModelHourly = perModelData,
                         showModelSpread = state.showModelSpread,
                     )
-                    // Diagnostic cards below the headline temp + rain pair. Each
-                    // draws a consensus main line by default and overlays the
-                    // per-model spread when [showModelSpread] is on — same pattern
-                    // as the temp / precip cards. Each card auto-hides when every
-                    // consulted model is missing its metric outright (older cached
-                    // payloads don't carry wind / humidity / cloud).
-                    insight.perModelHourly?.let { perModelData ->
-                        // Order: "feels-like" metrics first (wind, humidity),
-                        // then the sun-related cluster as a cause→effect chain
-                        // — clouds gate irradiance, UV is a subset of that
-                        // irradiance, sunshine is the time-integrated payoff.
-                        WindCard(
-                            hourly = insight.hourly,
-                            perModelHourly = perModelData,
-                            windSpeedUnit = state.distanceUnit.windSpeedUnit(),
-                            startDate = insight.forDate,
-                            showModelSpread = state.showModelSpread,
-                        )
-                        HumidityCard(
-                            hourly = insight.hourly,
-                            perModelHourly = perModelData,
-                            startDate = insight.forDate,
-                            showModelSpread = state.showModelSpread,
-                        )
-                        CloudCard(
-                            hourly = insight.hourly,
-                            perModelHourly = perModelData,
-                            startDate = insight.forDate,
-                            showModelSpread = state.showModelSpread,
-                        )
-                        SolarRadiationCard(
-                            hourly = insight.hourly,
-                            perModelHourly = perModelData,
-                            startDate = insight.forDate,
-                            showModelSpread = state.showModelSpread,
-                        )
-                        UvIndexCard(
-                            hourly = insight.hourly,
-                            perModelHourly = perModelData,
-                            startDate = insight.forDate,
-                            showModelSpread = state.showModelSpread,
-                        )
-                        SunshineCard(
-                            hourly = insight.hourly,
-                            perModelHourly = perModelData,
-                            forDate = insight.forDate,
-                            period = insight.period,
-                            showModelSpread = state.showModelSpread,
-                        )
-                    }
                 }
             }
         }
-      }
     }
 }
 

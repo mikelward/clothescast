@@ -1,5 +1,7 @@
 package app.clothescast.ui.settings
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -35,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +48,8 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.TimeFormat
+import app.clothescast.core.domain.model.TtsEngine
+import app.clothescast.notification.NotificationPermission
 import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.LocalTimeFormat
 import app.clothescast.ui.formatHourMinute
@@ -64,6 +69,8 @@ internal fun ScheduleContent(
     dailyMentionEveningEvents: Boolean,
     deliveryMode: DeliveryMode,
     tonightDeliveryMode: DeliveryMode,
+    ttsEngine: TtsEngine,
+    geminiKeyConfigured: Boolean,
     padding: PaddingValues,
     onSetSchedule: (LocalTime, Set<DayOfWeek>) -> Unit,
     onSetDailyEnabled: (Boolean) -> Unit,
@@ -73,8 +80,29 @@ internal fun ScheduleContent(
     onSetDailyMentionEveningEvents: (Boolean) -> Unit,
     onSetDeliveryMode: (DeliveryMode) -> Unit,
     onSetTonightDeliveryMode: (DeliveryMode) -> Unit,
+    onSetTtsEngine: (TtsEngine) -> Unit,
+    onSetGeminiKey: (String) -> Unit,
+    onClearGeminiKey: () -> Unit,
     onDone: (() -> Unit)? = null,
 ) {
+    val context = LocalContext.current
+    var speechSheetOpen by rememberSaveable { mutableStateOf(false) }
+
+    // Turning a delivery channel on requests exactly what that channel needs,
+    // just-in-time. Notify → the system POST_NOTIFICATIONS prompt (no-op on
+    // pre-Android-13 or when already granted; a denial is recoverable via the
+    // NotificationPermissionBanner shown beside the toggle). Speak → the
+    // cut-down Speech setup sheet to pick Gemini-with-key or device TTS.
+    val notificationLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { /* Banner re-checks on resume; nothing to do with the result here. */ }
+    val requestNotificationPermission: () -> Unit = {
+        if (NotificationPermission.isRequired() && !NotificationPermission.isGranted(context)) {
+            notificationLauncher.launch(NotificationPermission.MANIFEST_PERMISSION)
+        }
+    }
+    val requestSpeechSetup: () -> Unit = { speechSheetOpen = true }
+
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
         scrollState = scrollState,
@@ -98,6 +126,8 @@ internal fun ScheduleContent(
                 onChange = onSetSchedule,
                 onSetDeliveryMode = onSetDeliveryMode,
                 onSetMentionEveningEvents = onSetDailyMentionEveningEvents,
+                onRequestNotificationPermission = requestNotificationPermission,
+                onRequestSpeechSetup = requestSpeechSetup,
             )
             NightCard(
                 time = tonightTime,
@@ -109,6 +139,8 @@ internal fun ScheduleContent(
                 onSetNotifyOnlyOnEvents = onSetTonightNotifyOnlyOnEvents,
                 onChange = onSetTonightSchedule,
                 onSetDeliveryMode = onSetTonightDeliveryMode,
+                onRequestNotificationPermission = requestNotificationPermission,
+                onRequestSpeechSetup = requestSpeechSetup,
             )
             if (onDone != null) {
                 Button(
@@ -121,6 +153,18 @@ internal fun ScheduleContent(
                 }
             }
         }
+    }
+
+    if (speechSheetOpen) {
+        SpeechSetupSheet(
+            selectedEngine = ttsEngine,
+            geminiKeyConfigured = geminiKeyConfigured,
+            onSetTtsEngine = onSetTtsEngine,
+            onSetGeminiKey = onSetGeminiKey,
+            onClearGeminiKey = onClearGeminiKey,
+            onConfirm = { speechSheetOpen = false },
+            onDismiss = { speechSheetOpen = false },
+        )
     }
 }
 
@@ -136,6 +180,8 @@ private fun DayCard(
     onChange: (LocalTime, Set<DayOfWeek>) -> Unit,
     onSetDeliveryMode: (DeliveryMode) -> Unit,
     onSetMentionEveningEvents: (Boolean) -> Unit,
+    onRequestNotificationPermission: () -> Unit,
+    onRequestSpeechSetup: () -> Unit,
 ) {
     var pickerOpen by remember { mutableStateOf(false) }
 
@@ -155,7 +201,12 @@ private fun DayCard(
                 days = days,
                 onChange = { next -> onChange(time, next) },
             )
-            DeliveryModeSection(deliveryMode, onSetDeliveryMode)
+            DeliveryModeSection(
+                selected = deliveryMode,
+                onSelect = onSetDeliveryMode,
+                onRequestNotificationPermission = onRequestNotificationPermission,
+                onRequestSpeechSetup = onRequestSpeechSetup,
+            )
             ToggleRow(
                 label = stringResource(R.string.settings_daily_mention_evening_events),
                 checked = mentionEveningEvents,
@@ -221,6 +272,8 @@ private fun NightCard(
     onSetNotifyOnlyOnEvents: (Boolean) -> Unit,
     onChange: (LocalTime, Set<DayOfWeek>) -> Unit,
     onSetDeliveryMode: (DeliveryMode) -> Unit,
+    onRequestNotificationPermission: () -> Unit,
+    onRequestSpeechSetup: () -> Unit,
 ) {
     var pickerOpen by remember { mutableStateOf(false) }
 
@@ -240,7 +293,12 @@ private fun NightCard(
                 days = days,
                 onChange = { next -> onChange(time, next) },
             )
-            DeliveryModeSection(deliveryMode, onSetDeliveryMode)
+            DeliveryModeSection(
+                selected = deliveryMode,
+                onSelect = onSetDeliveryMode,
+                onRequestNotificationPermission = onRequestNotificationPermission,
+                onRequestSpeechSetup = onRequestSpeechSetup,
+            )
             ToggleRow(
                 label = stringResource(R.string.settings_tonight_notify_only_on_events),
                 checked = notifyOnlyOnEvents,
@@ -350,17 +408,31 @@ private fun DaysSelector(
 private fun DeliveryModeSection(
     selected: DeliveryMode,
     onSelect: (DeliveryMode) -> Unit,
+    onRequestNotificationPermission: () -> Unit,
+    onRequestSpeechSetup: () -> Unit,
 ) {
     val (notifyOn, ttsOn) = selected.toChannels()
     ToggleRow(
         label = stringResource(R.string.settings_delivery_notification),
         checked = notifyOn,
-        onCheckedChange = { onSelect(deliveryModeOf(notify = it, tts = ttsOn)) },
+        onCheckedChange = { enabled ->
+            onSelect(deliveryModeOf(notify = enabled, tts = ttsOn))
+            if (enabled) onRequestNotificationPermission()
+        },
     )
+    // Surface the recoverable grant path whenever the notify channel is on but
+    // permission is still missing; the banner renders nothing once granted (or
+    // on pre-Android-13), so it's safe to keep mounted while notify is on.
+    if (notifyOn) {
+        NotificationPermissionBanner()
+    }
     ToggleRow(
         label = stringResource(R.string.settings_delivery_tts),
         checked = ttsOn,
-        onCheckedChange = { onSelect(deliveryModeOf(notify = notifyOn, tts = it)) },
+        onCheckedChange = { enabled ->
+            onSelect(deliveryModeOf(notify = notifyOn, tts = enabled))
+            if (enabled) onRequestSpeechSetup()
+        },
     )
 }
 

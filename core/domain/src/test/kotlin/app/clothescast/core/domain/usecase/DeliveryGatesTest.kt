@@ -26,6 +26,10 @@ class DeliveryGatesTest {
         temperatureUnit = TemperatureUnit.CELSIUS,
         distanceUnit = DistanceUnit.KILOMETERS,
         clothesRules = ClothesRule.DEFAULTS,
+        // Cast now defaults off (opt-in); these gate tests exercise an
+        // enabled-cast baseline and set castRouteId per case. The master-off
+        // case overrides this back to false explicitly.
+        castEnabled = true,
     )
 
     @Test

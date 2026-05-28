@@ -108,6 +108,8 @@ internal fun SettingsSchedulePreview() {
             dailyMentionEveningEvents = false,
             deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
             tonightDeliveryMode = DeliveryMode.NOTIFICATION_ONLY,
+            ttsEngine = TtsEngine.DEVICE,
+            geminiKeyConfigured = false,
             padding = PaddingValues(0.dp),
             onSetSchedule = { _, _ -> },
             onSetDailyEnabled = {},
@@ -117,6 +119,55 @@ internal fun SettingsSchedulePreview() {
             onSetDailyMentionEveningEvents = {},
             onSetDeliveryMode = {},
             onSetTonightDeliveryMode = {},
+            onSetTtsEngine = {},
+            onSetGeminiKey = {},
+            onClearGeminiKey = {},
+        )
+    }
+}
+
+@Preview(name = "Settings · Speech setup (Gemini)", widthDp = 360)
+@Composable
+internal fun SettingsSpeechSetupGeminiPreview() {
+    SettingsFrame {
+        SpeechSetupContent(
+            selectedEngine = TtsEngine.GEMINI,
+            geminiKeyConfigured = false,
+            onSetTtsEngine = {},
+            onSetGeminiKey = {},
+            onClearGeminiKey = {},
+            onConfirm = {},
+        )
+    }
+}
+
+@Preview(name = "Settings · Speech setup (device)", widthDp = 360)
+@Composable
+internal fun SettingsSpeechSetupDevicePreview() {
+    SettingsFrame {
+        SpeechSetupContent(
+            selectedEngine = TtsEngine.DEVICE,
+            geminiKeyConfigured = false,
+            onSetTtsEngine = {},
+            onSetGeminiKey = {},
+            onClearGeminiKey = {},
+            onConfirm = {},
+        )
+    }
+}
+
+@Preview(name = "Settings · Speech setup (smart home + device)", widthDp = 360)
+@Composable
+internal fun SettingsSpeechSetupSmartHomePreview() {
+    SettingsFrame {
+        SpeechSetupContent(
+            selectedEngine = TtsEngine.DEVICE,
+            geminiKeyConfigured = false,
+            onSetTtsEngine = {},
+            onSetGeminiKey = {},
+            onClearGeminiKey = {},
+            onConfirm = {},
+            showSmartHomeSpeechNote = true,
         )
     }
 }
@@ -678,6 +729,8 @@ internal fun SettingsSmartHomePreview() {
             castMorning = true,
             castTonight = true,
             castSkipPhoneSpeech = true,
+            ttsEngine = TtsEngine.DEVICE,
+            geminiKeyConfigured = false,
             padding = PaddingValues(0.dp),
             onSetBridgeEnabled = {},
             onSaveConfig = { _, _, _, _, _, _ -> },
@@ -696,6 +749,9 @@ internal fun SettingsSmartHomePreview() {
             onSetCastTonight = {},
             onSetCastSkipPhoneSpeech = {},
             onSetMqttSkipPhoneSpeech = {},
+            onSetTtsEngine = {},
+            onSetGeminiKey = {},
+            onClearGeminiKey = {},
         )
     }
 }

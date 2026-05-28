@@ -881,12 +881,16 @@ data class UserPreferences(
      */
     val castRouteName: String? = null,
     /**
-     * Master switch for scheduled casting. When off, scheduled runs skip
-     * the cast destination regardless of [castMorning] / [castTonight].
-     * The "Cast now" manual test action is unaffected — it's a one-off
-     * driven by the user pressing a button.
+     * Master switch for scheduled casting. Off by default — casting is an
+     * opt-in smart-home destination, and turning it on is the single action
+     * that requests the notification permission and runs the speech setup
+     * (cast audio needs Gemini). When off, scheduled runs skip the cast
+     * destination regardless of [castMorning] / [castTonight], and the
+     * per-period toggles / route picker can't activate delivery on their own.
+     * The "Cast now" manual test action is unaffected — it's a one-off driven
+     * by the user pressing a button.
      */
-    val castEnabled: Boolean = true,
+    val castEnabled: Boolean = false,
     /**
      * Per-period cast toggles. When off, the worker doesn't cast at that
      * period even if a route is picked — useful for users who want the

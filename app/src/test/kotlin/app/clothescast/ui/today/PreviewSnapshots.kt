@@ -47,6 +47,9 @@ import app.clothescast.ui.settings.SettingsRegionPreview
 import app.clothescast.ui.settings.SettingsRootPreview
 import app.clothescast.ui.settings.SettingsSchedulePreview
 import app.clothescast.ui.settings.SettingsSmartHomePreview
+import app.clothescast.ui.settings.SettingsSpeechSetupDevicePreview
+import app.clothescast.ui.settings.SettingsSpeechSetupGeminiPreview
+import app.clothescast.ui.settings.SettingsSpeechSetupSmartHomePreview
 import app.clothescast.ui.settings.SettingsVoiceDevicePreview
 import app.clothescast.ui.settings.SettingsVoiceGeminiPreview
 import app.clothescast.widget.WidgetEmptyPreview
@@ -574,6 +577,9 @@ class PreviewSnapshots {
     @Config(qualifiers = "w360dp-h1600dp-xhdpi")
     fun settings_root() = capture { SettingsRootPreview() }
     @Test fun settings_schedule() = capture { SettingsSchedulePreview() }
+    @Test fun settings_speech_setup_gemini() = capture { SettingsSpeechSetupGeminiPreview() }
+    @Test fun settings_speech_setup_device() = capture { SettingsSpeechSetupDevicePreview() }
+    @Test fun settings_speech_setup_smart_home() = capture { SettingsSpeechSetupSmartHomePreview() }
     @Test fun settings_format() = capture { SettingsFormatPreview() }
     @Test fun settings_format_clothes_never() = capture { SettingsFormatClothesNeverPreview() }
     @Test fun settings_format_current_forecast() = capture { SettingsFormatCurrentForecastPreview() }

@@ -3,7 +3,10 @@ package app.clothescast.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import app.clothescast.core.domain.model.BottomsFormat
@@ -886,12 +889,16 @@ class SettingsRepositoryTest {
         defaults.deliveryModeDaily shouldBe DeliveryMode.NOTIFICATION_AND_TTS.name
         defaults.deliveryModeTonight shouldBe DeliveryMode.NOTIFICATION_AND_TTS.name
         defaults.themeMode shouldBe ThemeMode.SYSTEM.name
-        defaults.dailyEnabled shouldBe true
+        // Both schedule slots are off out of the box — the user opts into
+        // scheduled casts (and the notification permission) from the schedule
+        // page. The 07:00 / 19:00 every-day times are the values that take
+        // effect once a slot is turned on.
+        defaults.dailyEnabled shouldBe false
         defaults.dailyTimeBucketHour shouldBe "07"
         defaults.dailyDaysCount shouldBe 7
         defaults.tonightTimeBucketHour shouldBe "19"
         defaults.tonightDaysCount shouldBe 7
-        defaults.tonightEnabled shouldBe true
+        defaults.tonightEnabled shouldBe false
         defaults.tonightNotifyOnlyOnEvents shouldBe false
         defaults.dailyMentionEveningEvents shouldBe true
         defaults.useCalendarEvents shouldBe false
@@ -1028,5 +1035,52 @@ class SettingsRepositoryTest {
 
         rotating.preferences.first().schedule.zoneId shouldBe ZoneId.of("UTC")
         rotating.preferences.first().schedule.zoneId shouldBe ZoneId.of("America/New_York")
+    }
+
+    private val dailyEnabledKey = booleanPreferencesKey("daily_enabled")
+    private val tonightEnabledKey = booleanPreferencesKey("tonight_enabled")
+    private val scheduleMigratedKey = booleanPreferencesKey("schedule_default_off_migrated_v1")
+
+    @Test
+    fun `schedule migration leaves a fresh empty store off`() = runTest {
+        val result = scheduleEnabledOptInMigration().migrate(emptyPreferences())
+
+        // No schedule keys written ⇒ they read as off (the new default); only the
+        // sentinel lands so the migration won't run again.
+        result[dailyEnabledKey] shouldBe null
+        result[tonightEnabledKey] shouldBe null
+        result[scheduleMigratedKey] shouldBe true
+    }
+
+    @Test
+    fun `schedule migration grandfathers an existing store to on`() = runTest {
+        // A store that already holds any preference predates the default-off flip,
+        // so the user was getting casts under the old default-on — preserve that.
+        val existing = mutablePreferencesOf(stringPreferencesKey("region") to "en-GB")
+
+        val result = scheduleEnabledOptInMigration().migrate(existing)
+
+        result[dailyEnabledKey] shouldBe true
+        result[tonightEnabledKey] shouldBe true
+        result[scheduleMigratedKey] shouldBe true
+    }
+
+    @Test
+    fun `schedule migration preserves an explicit disable and grandfathers the rest`() = runTest {
+        val existing = mutablePreferencesOf(dailyEnabledKey to false)
+
+        val result = scheduleEnabledOptInMigration().migrate(existing)
+
+        // Explicit off stays off; the never-touched tonight slot is grandfathered on.
+        result[dailyEnabledKey] shouldBe false
+        result[tonightEnabledKey] shouldBe true
+    }
+
+    @Test
+    fun `schedule migration runs once, gated by its sentinel`() = runTest {
+        val migration = scheduleEnabledOptInMigration()
+
+        migration.shouldMigrate(emptyPreferences()) shouldBe true
+        migration.shouldMigrate(mutablePreferencesOf(scheduleMigratedKey to true)) shouldBe false
     }
 }

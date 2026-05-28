@@ -150,6 +150,7 @@ fun TodayScreen(
     onNavigateToPrivacy: () -> Unit = onNavigateToSettings,
     onNavigateToClothes: () -> Unit = onNavigateToSettings,
     onNavigateToCalendar: () -> Unit = onNavigateToSettings,
+    onNavigateToSchedule: () -> Unit = onNavigateToSettings,
     onNavigateToDeveloper: () -> Unit = onNavigateToSettings,
     onNavigateToFormat: () -> Unit = onNavigateToSettings,
     // Pager page to open on, from the Today deep link's `?page=` query. The
@@ -315,8 +316,10 @@ fun TodayScreen(
             onSetUpLocation = onNavigateToLocation,
             onOpenPrivacy = onNavigateToPrivacy,
             onOpenCalendarSettings = onNavigateToCalendar,
+            onOpenSchedule = onNavigateToSchedule,
             onDismissCelebrationCard = viewModel::dismissCelebrationCard,
             onDismissClothesPromoCard = viewModel::dismissClothesPromoCard,
+            onDismissSchedulePromoCard = viewModel::dismissSchedulePromoCard,
             onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
             onAdjustThreshold = viewModel::adjustClothesRuleThreshold,
             onNavigateToClothes = onNavigateToClothes,
@@ -354,8 +357,10 @@ private fun TodayContent(
     onSetUpLocation: () -> Unit,
     onOpenPrivacy: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
+    onOpenSchedule: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
     onDismissClothesPromoCard: () -> Unit,
+    onDismissSchedulePromoCard: () -> Unit,
     onCalendarPermissionChanged: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
@@ -436,6 +441,8 @@ private fun TodayContent(
                     onOpenPrivacy = onOpenPrivacy,
                     onOpenClothes = onNavigateToClothes,
                     onDismissClothesPromoCard = onDismissClothesPromoCard,
+                    onOpenSchedule = onOpenSchedule,
+                    onDismissSchedulePromoCard = onDismissSchedulePromoCard,
                     onOpenCalendarSettings = onOpenCalendarSettings,
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
@@ -512,8 +519,10 @@ private fun TodayContent(
                         onNavigateToClothes = onNavigateToClothes,
                         onOpenPrivacy = onOpenPrivacy,
                         onOpenCalendarSettings = onOpenCalendarSettings,
+                        onOpenSchedule = onOpenSchedule,
                         onDismissCelebrationCard = onDismissCelebrationCard,
                         onDismissClothesPromoCard = onDismissClothesPromoCard,
+                        onDismissSchedulePromoCard = onDismissSchedulePromoCard,
                     )
                     return@HorizontalPager
                 }
@@ -566,8 +575,10 @@ private fun TodayContent(
                     onSetUpLocation = onSetUpLocation,
                     onOpenPrivacy = onOpenPrivacy,
                     onOpenCalendarSettings = onOpenCalendarSettings,
+                    onOpenSchedule = onOpenSchedule,
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onDismissClothesPromoCard = onDismissClothesPromoCard,
+                    onDismissSchedulePromoCard = onDismissSchedulePromoCard,
                 )
             }
         }
@@ -595,6 +606,8 @@ private fun BannerStack(
     onOpenPrivacy: () -> Unit,
     onOpenClothes: () -> Unit,
     onDismissClothesPromoCard: () -> Unit,
+    onOpenSchedule: () -> Unit,
+    onDismissSchedulePromoCard: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
     onSetUpLocation: () -> Unit,
@@ -609,6 +622,7 @@ private fun BannerStack(
         locationActionRequired = locationActionRequired,
         telemetryNoticeVisible = state.telemetryNoticeVisible,
         clothesPromoEligible = state.clothesPromoCardVisible,
+        schedulePromoEligible = state.schedulePromoCardVisible,
         celebrationEligible = state.celebrationCardVisible,
         hasForecast = state.thisPeriodInsight != null,
     )
@@ -648,6 +662,20 @@ private fun BannerStack(
             onOpenClothes()
         },
         onDismiss = onDismissClothesPromoCard,
+        modifier = bannerModifier,
+    )
+    // "Set up a schedule" nudge — scheduled casts don't fire until the user
+    // enables a slot, so a fresh install gets nothing on a timer. Gated
+    // upstream on neither master switch being on (plus the user not having
+    // dismissed), and held back by [promoBannersToShow] until a forecast
+    // exists and there's room under the cap. Sits between the clothes promo
+    // and the celebration promo. The CTA only routes to Schedule settings
+    // (where the notification-permission prompt lives); enabling a slot there
+    // auto-hides the card, so unlike the clothes card the CTA doesn't dismiss.
+    SchedulePromoCard(
+        visible = PromoBanner.SCHEDULE in shownPromos,
+        onOpenSchedule = onOpenSchedule,
+        onDismiss = onDismissSchedulePromoCard,
         modifier = bannerModifier,
     )
     // Promo card for the calendar-sourced holiday + birthday theming. Gated
@@ -691,8 +719,10 @@ internal fun HomePageScaffold(
     onSetUpLocation: () -> Unit,
     onOpenPrivacy: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
+    onOpenSchedule: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
     onDismissClothesPromoCard: () -> Unit,
+    onDismissSchedulePromoCard: () -> Unit,
     onNavigateToClothes: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
     content: @Composable ColumnScope.() -> Unit,
@@ -727,6 +757,8 @@ internal fun HomePageScaffold(
                     onOpenPrivacy = onOpenPrivacy,
                     onOpenClothes = onNavigateToClothes,
                     onDismissClothesPromoCard = onDismissClothesPromoCard,
+                    onOpenSchedule = onOpenSchedule,
+                    onDismissSchedulePromoCard = onDismissSchedulePromoCard,
                     onOpenCalendarSettings = onOpenCalendarSettings,
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
@@ -790,8 +822,10 @@ private fun TodayPage(
     onSetUpLocation: () -> Unit,
     onOpenPrivacy: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
+    onOpenSchedule: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
     onDismissClothesPromoCard: () -> Unit,
+    onDismissSchedulePromoCard: () -> Unit,
 ) {
     val scrollScope = rememberCoroutineScope()
     // Captured via onGloballyPositioned on the ConfidenceChip below so the
@@ -807,8 +841,10 @@ private fun TodayPage(
         onSetUpLocation = onSetUpLocation,
         onOpenPrivacy = onOpenPrivacy,
         onOpenCalendarSettings = onOpenCalendarSettings,
+        onOpenSchedule = onOpenSchedule,
         onDismissCelebrationCard = onDismissCelebrationCard,
         onDismissClothesPromoCard = onDismissClothesPromoCard,
+        onDismissSchedulePromoCard = onDismissSchedulePromoCard,
         onNavigateToClothes = onNavigateToClothes,
         onAdjustThreshold = onAdjustThreshold,
     ) {

@@ -42,10 +42,13 @@ import java.util.Locale
 data class SettingsState(
     val scheduleTime: LocalTime = LocalTime.of(7, 0),
     val scheduleDays: Set<DayOfWeek> = Schedule.EVERY_DAY,
-    val dailyEnabled: Boolean = true,
+    // Off by default to mirror the repository (see UserPreferences.dailyEnabled):
+    // the first render before DataStore emits must not show the switches on, or
+    // the user could leave Schedule believing casts are enabled when they aren't.
+    val dailyEnabled: Boolean = false,
     val tonightTime: LocalTime = LocalTime.of(19, 0),
     val tonightDays: Set<DayOfWeek> = Schedule.EVERY_DAY,
-    val tonightEnabled: Boolean = true,
+    val tonightEnabled: Boolean = false,
     val tonightNotifyOnlyOnEvents: Boolean = false,
     val deliveryMode: DeliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
     val tonightDeliveryMode: DeliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,

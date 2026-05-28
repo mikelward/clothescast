@@ -1214,6 +1214,17 @@ internal fun ClothesPromoCardPreview() {
     }
 }
 
+@Preview(name = "Banner · schedule promo", widthDp = 360)
+@Composable
+internal fun SchedulePromoCardPreview() {
+    Frame {
+        SchedulePromoCardContent(
+            onOpenSettings = {},
+            onDismiss = {},
+        )
+    }
+}
+
 @Preview(name = "Banner · local build (clean)", widthDp = 360)
 @Composable
 internal fun LocalBuildBannerPreview() {

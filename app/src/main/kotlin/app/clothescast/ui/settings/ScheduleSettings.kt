@@ -122,7 +122,15 @@ internal fun ScheduleContent(
                 enabled = dailyEnabled,
                 deliveryMode = deliveryMode,
                 mentionEveningEvents = dailyMentionEveningEvents,
-                onSetEnabled = onSetDailyEnabled,
+                // Enabling a master switch is the user opting into scheduled
+                // delivery, so prompt for notification permission right then —
+                // not only when the notification channel is toggled. The channel
+                // is on by default, so without this the prompt would never fire
+                // on the enable path and the worker would later no-op silently.
+                onSetEnabled = { enabled ->
+                    onSetDailyEnabled(enabled)
+                    if (enabled) requestNotificationPermission()
+                },
                 onChange = onSetSchedule,
                 onSetDeliveryMode = onSetDeliveryMode,
                 onSetMentionEveningEvents = onSetDailyMentionEveningEvents,
@@ -135,7 +143,12 @@ internal fun ScheduleContent(
                 enabled = tonightEnabled,
                 notifyOnlyOnEvents = tonightNotifyOnlyOnEvents,
                 deliveryMode = tonightDeliveryMode,
-                onSetEnabled = onSetTonightEnabled,
+                // Same as the morning card: prompt for notification permission
+                // the moment the user enables the evening schedule.
+                onSetEnabled = { enabled ->
+                    onSetTonightEnabled(enabled)
+                    if (enabled) requestNotificationPermission()
+                },
                 onSetNotifyOnlyOnEvents = onSetTonightNotifyOnlyOnEvents,
                 onChange = onSetTonightSchedule,
                 onSetDeliveryMode = onSetTonightDeliveryMode,

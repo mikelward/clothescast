@@ -628,6 +628,15 @@ data class UserPreferences(
      */
     val clothesPromoCardDismissed: Boolean = false,
     /**
+     * Set to true once the user dismisses the Today-screen "Set up a
+     * schedule" promo card via its X button. The card also auto-hides the
+     * moment either master schedule switch ([dailyEnabled] / [tonightEnabled])
+     * is on — the user has set up the thing the card was pointing at, so the
+     * promo's done its job regardless of this flag. Same pattern as
+     * [celebrationCardDismissed].
+     */
+    val scheduleCardDismissed: Boolean = false,
+    /**
      * Bumped to `System.currentTimeMillis()` whenever the user re-grants
      * `READ_CALENDAR` via the in-app permission flow. Exists purely to
      * force the [SettingsRepository.preferences] flow to re-emit so any
@@ -639,14 +648,15 @@ data class UserPreferences(
      */
     val calendarPermissionRecheckTick: Long = 0L,
     /**
-     * Master switch for the morning / "daily" insight. On by default — the
-     * morning ClothesCast is the headline feature. When off the worker
-     * skips the entire morning pipeline (no fetch, no notification, no TTS,
-     * no widget refresh from that path); flip it back on to resume. Same
-     * shape as [tonightEnabled] so the two halves of the schedule page
-     * behave symmetrically.
+     * Master switch for the morning / "daily" insight. Off by default — the
+     * user opts into scheduled casts (and the notification permission they
+     * need) from the schedule page, surfaced by the Today-screen "Set up a
+     * schedule" promo. When off the worker skips the entire morning pipeline
+     * (no fetch, no notification, no TTS, no widget refresh from that path);
+     * flip it on to resume. Same shape as [tonightEnabled] so the two halves
+     * of the schedule page behave symmetrically.
      */
-    val dailyEnabled: Boolean = true,
+    val dailyEnabled: Boolean = false,
     /**
      * When the evening / "tonight" insight should fire. Distinct from [schedule]
      * (the morning slot) so the user can keep the morning at 07:00 and still
@@ -654,12 +664,11 @@ data class UserPreferences(
      */
     val tonightSchedule: Schedule = Schedule.defaultTonight(schedule.zoneId),
     /**
-     * Master switch for the evening / "tonight" insight. On by default — the
-     * tonight notifier is silent when there are no calendar events for the
-     * evening, so it's not noisy out of the box. The user can disable it from
-     * the schedule settings page.
+     * Master switch for the evening / "tonight" insight. Off by default — like
+     * [dailyEnabled], the user opts into scheduled casts from the schedule
+     * page. The user enables (and disables) it there.
      */
-    val tonightEnabled: Boolean = true,
+    val tonightEnabled: Boolean = false,
     /**
      * Delivery mode for the evening / "tonight" insight. Distinct from
      * [deliveryMode] (the morning slot) so the user can keep the morning as a

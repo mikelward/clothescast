@@ -165,6 +165,15 @@ data class TodayState(
      */
     val clothesPromoCardVisible: Boolean = false,
     /**
+     * Whether the Today-screen "Set up a schedule" promo card should
+     * render. True iff the user hasn't dismissed it AND neither master
+     * schedule switch ([UserPreferences.dailyEnabled] /
+     * [UserPreferences.tonightEnabled]) is on yet — the moment either goes
+     * on, the card hides regardless of dismissal state (the user set up the
+     * thing the card was pointing at).
+     */
+    val schedulePromoCardVisible: Boolean = false,
+    /**
      * Whether the one-time telemetry/privacy disclosure is still pending
      * (the user hasn't acked it). Lifted out of the banner so [BannerStack]
      * can fold it into the capped promo pool alongside the location, clothes,
@@ -534,6 +543,8 @@ class TodayViewModel(
                 !prefs.calendarBirthdayThemingActive,
             clothesPromoCardVisible = !prefs.clothesPromoCardDismissed &&
                 prefs.clothesRules == ClothesRule.DEFAULTS,
+            schedulePromoCardVisible = !prefs.scheduleCardDismissed &&
+                !prefs.dailyEnabled && !prefs.tonightEnabled,
             telemetryNoticeVisible = !prefs.telemetryNoticeAcked,
             usesCalendarThemes = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive,
         )
@@ -560,6 +571,18 @@ class TodayViewModel(
     fun dismissClothesPromoCard() {
         viewModelScope.launch {
             settingsRepository.setClothesPromoCardDismissed(true)
+        }
+    }
+
+    /**
+     * Persists the user's dismissal of the Today-screen "Set up a schedule"
+     * promo card. Called on the X-tap only — the CTA just routes to Schedule
+     * settings, and enabling a slot there auto-hides the card via
+     * [TodayState.schedulePromoCardVisible]. Mirrors [dismissCelebrationCard].
+     */
+    fun dismissSchedulePromoCard() {
+        viewModelScope.launch {
+            settingsRepository.setScheduleCardDismissed(true)
         }
     }
 

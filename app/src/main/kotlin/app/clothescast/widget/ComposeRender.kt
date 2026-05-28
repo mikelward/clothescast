@@ -25,6 +25,7 @@ import app.clothescast.diag.DiagLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.cancellation.CancellationException
 
 private const val TAG = "WidgetRender"
 
@@ -130,6 +131,11 @@ internal suspend fun renderComposableToBitmap(
         }
         result
     } catch (t: Throwable) {
+        // Don't convert a coroutine cancellation (e.g. WorkManager/Glance
+        // stopping the update while delay() is suspended) into a logged null —
+        // that breaks structured concurrency. Rethrow it before the blanket
+        // catch, per AGENTS.md's error-handling rule.
+        if (t is CancellationException) throw t
         DiagLog.e(TAG, "Off-screen widget chart render failed", t)
         null
     } finally {

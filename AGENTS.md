@@ -367,11 +367,6 @@ new rule the first time something bites you, not the third.
   ./gradlew :core:domain:test :core:data:test :app:testDebugUnitTest
   ./gradlew :app:assembleDebug
   ```
-- **Pre-existing flaky test:** `SettingsViewModelTest > initial state reflects
-  repository defaults` may fail with `expected:<CELSIUS> but was:<FAHRENHEIT>`
-  depending on the JVM's default locale. This is a pre-existing issue, not
-  caused by your changes. CI passes this test because the GitHub runner locale
-  defaults differently.
 - **Android Lint is available** for the `:app` module via AGP; run
   `./gradlew :app:lintDebug` when app-side validation needs lint coverage.
   There is no separate `ktlint` plugin wired, so Kotlin style checks are not

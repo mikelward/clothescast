@@ -2088,17 +2088,18 @@ internal fun OutfitPreviewCard(
                     )
                 }
             }
-            // Reserve two lines for the garment-name text so cards match
-            // even when one combination wraps and the other doesn't (e.g.
-            // "Thick jacket · Long pants" wraps at the row's per-card width
-            // but "Sweater · Long pants" doesn't).
+            // Stack the top and bottom garment names on their own lines so
+            // the text block is always exactly two lines — every card ends up
+            // the same height across the row, without the blank reserved line
+            // a single-line "Top · Bottom" label left under shorter names.
+            // Garment names are short enough to each fit one line at the
+            // per-card width, so the two-line height stays predictable.
             Text(
                 text = stringResource(topLabelRes(outfit.top)) +
-                    " · " +
+                    "\n" +
                     stringResource(bottomLabelRes(outfit.bottom)),
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
-                minLines = 2,
             )
         }
     }

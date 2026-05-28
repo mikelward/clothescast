@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -66,6 +67,10 @@ import kotlinx.coroutines.launch
  */
 @Composable
 internal fun UpdateAvailableBanner(modifier: Modifier = Modifier) {
+    // No runtime update state exists in @Preview / snapshot composition, and
+    // the lifecycle-scoped flow collection below can't run there — no-op so a
+    // full-screen preview (the scaffold's banner stack) renders cleanly.
+    if (LocalInspectionMode.current) return
     val context = LocalContext.current
     val app = context.applicationContext as ClothesCastApplication
     val checker = app.appUpdateChecker

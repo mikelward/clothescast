@@ -6,14 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Card
@@ -33,17 +28,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
-import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DailyForecast
-import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
-import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PerModelHourly
-import app.clothescast.core.domain.model.Region
-import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.core.domain.usecase.DeriveWeekAheadInsight
 import app.clothescast.insight.InsightFormatter
@@ -95,34 +85,16 @@ import kotlinx.coroutines.delay
 @Composable
 internal fun SevenDayPage(
     days: List<DailyForecast>,
-    temperatureUnit: TemperatureUnit,
-    distanceUnit: DistanceUnit,
+    state: TodayState,
     weekPerModelHourly: PerModelHourly?,
-    showModelSpread: Boolean,
     scrollState: ScrollState,
     onChevronTap: () -> Unit,
+    workStatusToShow: WorkStatus = WorkStatus.Idle,
+    locationActionRequired: Boolean = false,
     onToggleModelSpread: () -> Unit = {},
     onRevealModelSpread: () -> Unit = {},
     onHideModelSpread: () -> Unit = {},
     forecastZone: ZoneId? = null,
-    region: Region = Region.SYSTEM,
-    /**
-     * Mirrors `TodayState.deltaThresholdC` — the feels-like swing (°C) the
-     * week-ahead temperature-shift rule must clear before emitting "X°
-     * cooler/warmer …". `null` disables the rule (the user's "Temperature
-     * change: Off" setting), keeping the headline in sync with the today /
-     * tonight delta clause that already honours the same preference.
-     *
-     * TODO: revisit whether the weekly headline should follow the today /
-     * tonight `Temperature change` setting at all. Sharing the pref keeps
-     * the two surfaces consistent for the "I don't want temperature noise"
-     * user, but the 7-day page may be exactly where that user does want a
-     * cooler-than-today signal (it's the only place such a signal can come
-     * from on a future day). If we end up wanting an independent gate, the
-     * cleanest move is a separate `weeklyDeltaThresholdC` pref + state
-     * field, plumbed through here in place of this one.
-     */
-    deltaThresholdC: Double? = 3.0,
     /**
      * The forecast location, shown next to the "Next 7 days" header label
      * (and tappable to open Location settings), matching the per-period
@@ -145,14 +117,21 @@ internal fun SevenDayPage(
      * that don't wire an outfit pair, in which case the row collapses.
      */
     outfitInsight: Insight? = null,
-    clothesRules: List<ClothesRule> = emptyList(),
-    outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
-    outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
-    outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
-    outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onAdjustThreshold: (String, Double) -> Unit = { _, _ -> },
     onNavigateToClothes: () -> Unit = {},
+    onOpenPrivacy: () -> Unit = {},
+    onOpenCalendarSettings: () -> Unit = {},
+    onDismissCelebrationCard: () -> Unit = {},
+    onDismissClothesPromoCard: () -> Unit = {},
 ) {
+    // Shared display settings come from [TodayState]; the chart deck and the
+    // week-ahead headline below read these locals so sourcing them from state
+    // doesn't churn the rest of the body.
+    val temperatureUnit = state.temperatureUnit
+    val distanceUnit = state.distanceUnit
+    val showModelSpread = state.showModelSpread
+    val region = state.region
+    val deltaThresholdC = state.deltaThresholdC
     // Flatten every day's hourly stream into a single list. The chart
     // composables read [hourly[idx].time.hour] only for the bottom-axis
     // default formatter (which we override below); the scrub readout
@@ -228,36 +207,23 @@ internal fun SevenDayPage(
     }
     val weekAheadText = weekAheadInsight?.let { weekAheadFormatter.formatWeekAhead(it) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-            .windowInsetsPadding(WindowInsets.navigationBars)
-            .padding(horizontal = 16.dp)
-            .padding(top = 16.dp, bottom = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+    HomePageScaffold(
+        state = state,
+        scrollState = scrollState,
+        workStatusToShow = workStatusToShow,
+        locationActionRequired = locationActionRequired,
+        // Same today + tonight outfit pair the per-period pages pin at the top
+        // — the scaffold renders it (and the banner stack) so all three pager
+        // pages carry the same cards in the same place.
+        outfitInsight = outfitInsight,
+        onSetUpLocation = onNavigateToLocation ?: {},
+        onOpenPrivacy = onOpenPrivacy,
+        onOpenCalendarSettings = onOpenCalendarSettings,
+        onDismissCelebrationCard = onDismissCelebrationCard,
+        onDismissClothesPromoCard = onDismissClothesPromoCard,
+        onNavigateToClothes = onNavigateToClothes,
+        onAdjustThreshold = onAdjustThreshold,
     ) {
-        // Outfit row at the top of the page — same composable the per-period
-        // pages render. Surfacing it here too keeps the outfit pair pinned to
-        // the same vertical offset on all three pager pages, so swiping
-        // between Today / Tonight / 7-day doesn't jump the rest of the
-        // content up or down. The pair shown is this-period's outfit +
-        // nextOutfit (not a 7-day timeline), matching what pages 0 / 1
-        // display — the at-a-glance "what to wear" summary travels with
-        // the user regardless of which chart deck they're reading.
-        if (outfitInsight != null) {
-            OutfitPreviewRow(
-                insight = outfitInsight,
-                temperatureUnit = temperatureUnit,
-                clothesRules = clothesRules,
-                outfitTopColors = outfitTopColors,
-                outfitBottomColors = outfitBottomColors,
-                outfitTopStrokes = outfitTopStrokes,
-                outfitBottomStrokes = outfitBottomStrokes,
-                onAdjustThreshold = onAdjustThreshold,
-                onNavigateToClothes = onNavigateToClothes,
-            )
-        }
         // Page header — same visual treatment as [InsightCard] on pages 0 / 1:
         // a 20.dp-padded Card with the chevron in a 28.dp slot on the left,
         // a "Next 7 days" label in the centered position the per-period
@@ -351,7 +317,7 @@ internal fun SevenDayPage(
             }
         }
 
-        if (days.size < 2 || flatHourly.isEmpty() || startDate == null) return@Column
+        if (days.size < 2 || flatHourly.isEmpty() || startDate == null) return@HomePageScaffold
 
         // Shared scrub controller — same role as on the per-period pages.
         // A tap on any chart in the stack publishes an indicator at the

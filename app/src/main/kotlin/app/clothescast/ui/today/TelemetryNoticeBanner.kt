@@ -20,6 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,6 +46,10 @@ internal fun TelemetryNoticeBanner(
     onOpenPrivacy: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // The telemetry-notice pref is read via a lifecycle-scoped flow that can't
+    // run in @Preview / snapshot composition — no-op so a full-screen preview
+    // (the scaffold's banner stack) renders cleanly.
+    if (LocalInspectionMode.current) return
     val context = LocalContext.current
     val settings = (context.applicationContext as ClothesCastApplication).settingsRepository
     val coroutineScope = rememberCoroutineScope()

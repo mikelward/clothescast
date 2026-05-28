@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
@@ -1985,6 +1986,18 @@ private val SAMPLE_WEEK_OUTFIT_INSIGHT = SAMPLE_INSIGHT.copy(
     nextOutfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
 )
 
+// The 7-day previews render the full [HomePageScaffold], whose banner stack
+// reads runtime-only app state (update checker, crash log, telemetry pref).
+// Flag inspection mode so those banners no-op (see the LocalInspectionMode
+// guards in the *Banner wrappers) and the chart deck snapshots cleanly without
+// a live Application — matching how Android Studio renders the same screen.
+@Composable
+private fun SevenDayFrame(content: @Composable () -> Unit) {
+    Frame {
+        CompositionLocalProvider(LocalInspectionMode provides true) { content() }
+    }
+}
+
 // [SAMPLE_WEEK]'s feels-like highs swing from 18° today up to 22° Wednesday
 // and back down to 15° Friday — enough for [DeriveWeekAheadInsight] to
 // fire both the first-warmer and first-cooler slots, so the snapshot
@@ -1994,13 +2007,11 @@ private val SAMPLE_WEEK_OUTFIT_INSIGHT = SAMPLE_INSIGHT.copy(
 @Preview(name = "Seven-day page · weekly card", widthDp = 360)
 @Composable
 internal fun SevenDayPagePreview() {
-    Frame {
+    SevenDayFrame {
         SevenDayPage(
             days = SAMPLE_WEEK,
-            temperatureUnit = TemperatureUnit.CELSIUS,
-            distanceUnit = app.clothescast.core.domain.model.DistanceUnit.KILOMETERS,
+            state = TodayState(),
             weekPerModelHourly = null,
-            showModelSpread = false,
             scrollState = androidx.compose.foundation.rememberScrollState(),
             onChevronTap = {},
             outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,
@@ -2014,13 +2025,11 @@ internal fun SevenDayPagePreview() {
 @Preview(name = "Seven-day page · with location", widthDp = 360)
 @Composable
 internal fun SevenDayPageWithLocationPreview() {
-    Frame {
+    SevenDayFrame {
         SevenDayPage(
             days = SAMPLE_WEEK,
-            temperatureUnit = TemperatureUnit.CELSIUS,
-            distanceUnit = app.clothescast.core.domain.model.DistanceUnit.KILOMETERS,
+            state = TodayState(),
             weekPerModelHourly = null,
-            showModelSpread = false,
             scrollState = androidx.compose.foundation.rememberScrollState(),
             onChevronTap = {},
             location = Location(
@@ -2073,13 +2082,11 @@ private val SAMPLE_WEEK_PER_MODEL_HOURLY: PerModelHourly = run {
 @Preview(name = "Seven-day page · with per-model spread off", widthDp = 360)
 @Composable
 internal fun SevenDayPageWithPerModelSpreadOffPreview() {
-    Frame {
+    SevenDayFrame {
         SevenDayPage(
             days = SAMPLE_WEEK,
-            temperatureUnit = TemperatureUnit.CELSIUS,
-            distanceUnit = app.clothescast.core.domain.model.DistanceUnit.KILOMETERS,
+            state = TodayState(),
             weekPerModelHourly = SAMPLE_WEEK_PER_MODEL_HOURLY,
-            showModelSpread = false,
             scrollState = androidx.compose.foundation.rememberScrollState(),
             onChevronTap = {},
             outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,
@@ -2090,13 +2097,11 @@ internal fun SevenDayPageWithPerModelSpreadOffPreview() {
 @Preview(name = "Seven-day page · with per-model spread on", widthDp = 360)
 @Composable
 internal fun SevenDayPageWithPerModelSpreadOnPreview() {
-    Frame {
+    SevenDayFrame {
         SevenDayPage(
             days = SAMPLE_WEEK,
-            temperatureUnit = TemperatureUnit.CELSIUS,
-            distanceUnit = app.clothescast.core.domain.model.DistanceUnit.KILOMETERS,
+            state = TodayState(showModelSpread = true),
             weekPerModelHourly = SAMPLE_WEEK_PER_MODEL_HOURLY,
-            showModelSpread = true,
             scrollState = androidx.compose.foundation.rememberScrollState(),
             onChevronTap = {},
             outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,

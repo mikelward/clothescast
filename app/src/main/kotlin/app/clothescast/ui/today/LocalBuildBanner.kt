@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -48,6 +49,10 @@ import kotlinx.coroutines.launch
  */
 @Composable
 internal fun LocalBuildBanner(modifier: Modifier = Modifier) {
+    // The dismissed-SHA pref is read via a lifecycle-scoped flow that can't run
+    // in @Preview / snapshot composition — no-op so a full-screen preview (the
+    // scaffold's banner stack) renders cleanly.
+    if (LocalInspectionMode.current) return
     if (!BuildConfig.IS_LOCAL_BUILD) return
 
     val context = LocalContext.current

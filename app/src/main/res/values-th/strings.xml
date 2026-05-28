@@ -1186,10 +1186,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_style_spooky_narrator">ผู้บรรยายน่าขนลุก</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">แสดงตอนนี้</string>
-    <string name="today_clothes_promo_body">ClothesCast เลือกชุดตามชุดของกฎ ปรับอุณหภูมิ เพิ่มชั้นเสื้อ หรือเปลี่ยนสิ่งที่แนะนำในการตั้งค่าเสื้อผ้า</string>
+    <string name="today_clothes_promo_body">ClothesCast เลือกชุดตามชุดของกฎ ปรับอุณหภูมิและปรับแต่งตู้เสื้อผ้าของคุณในการตั้งค่าเสื้อผ้า</string>
     <string name="today_clothes_promo_cta">การตั้งค่าเสื้อผ้า</string>
     <string name="today_clothes_promo_dismiss">ปิด</string>
-    <string name="today_clothes_promo_title">ปรับกฎให้เป็นของคุณ</string>
+    <string name="today_clothes_promo_title">ปรับเสื้อผ้าให้เป็นของคุณ</string>
     <string name="today_insight_format_link">รูปแบบ</string>
     <string name="today_play">เล่น</string>
     <string name="today_play_toast_daily">กำลังเล่น ClothesCast ประจำวันของคุณ</string>

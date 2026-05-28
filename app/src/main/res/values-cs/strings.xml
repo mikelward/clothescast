@@ -1196,10 +1196,10 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_tts_style_spooky_narrator">Strašidelný vypravěč</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Zobrazit nyní</string>
-    <string name="today_clothes_promo_body">ClothesCast vybírá outfity podle sady pravidel. Uprav teploty, přidej vrstvy nebo změň, co se navrhuje, v nastavení Oblečení.</string>
+    <string name="today_clothes_promo_body">ClothesCast vybírá outfity podle sady pravidel. Uprav teploty a přizpůsob si šatník v nastavení Oblečení.</string>
     <string name="today_clothes_promo_cta">Nastavení oblečení</string>
     <string name="today_clothes_promo_dismiss">Zavřít</string>
-    <string name="today_clothes_promo_title">Přizpůsob si pravidla</string>
+    <string name="today_clothes_promo_title">Přizpůsob si oblečení</string>
     <string name="today_insight_format_link">Formát</string>
     <string name="today_play">Přehrát</string>
     <string name="today_play_toast_daily">Přehrávám tvůj denní ClothesCast.</string>

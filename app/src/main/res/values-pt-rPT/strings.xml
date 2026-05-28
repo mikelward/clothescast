@@ -1314,10 +1314,10 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_tts_style_spooky_narrator">Narrador arrepiante</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Mostrar agora</string>
-    <string name="today_clothes_promo_body">ClothesCast escolhe os conjuntos a partir de um conjunto de regras. Ajusta as temperaturas, adiciona camadas ou muda o que é sugerido em definições de Roupa.</string>
+    <string name="today_clothes_promo_body">ClothesCast escolhe os conjuntos a partir de um conjunto de regras. Ajusta as temperaturas e personaliza o teu guarda-roupa em definições de Roupa.</string>
     <string name="today_clothes_promo_cta">Definições de Roupa</string>
     <string name="today_clothes_promo_dismiss">Dispensar</string>
-    <string name="today_clothes_promo_title">Faz as regras tuas</string>
+    <string name="today_clothes_promo_title">Faz a roupa tua</string>
     <string name="today_insight_format_link">Formato</string>
     <string name="today_play">Reproduzir</string>
     <string name="today_play_toast_daily">A reproduzir o teu ClothesCast diário.</string>

@@ -1179,10 +1179,10 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_tts_style_spooky_narrator">Hátborzongató narrátor</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Most</string>
-    <string name="today_clothes_promo_body">A ClothesCast szabályok alapján választ ruhákat. Állítsd be a hőmérsékleteket, adj hozzá rétegeket vagy módosítsd a javaslatokat a Ruhák beállításokban.</string>
+    <string name="today_clothes_promo_body">A ClothesCast szabályok alapján választ ruhákat. Állítsd be a hőmérsékleteket, és szabd testre a ruhatárad a Ruhák beállításokban.</string>
     <string name="today_clothes_promo_cta">Ruhák beállításai</string>
     <string name="today_clothes_promo_dismiss">Elvetés</string>
-    <string name="today_clothes_promo_title">Tedd magadévá a szabályokat</string>
+    <string name="today_clothes_promo_title">Tedd magadévá a ruhákat</string>
     <string name="today_insight_format_link">Formátum</string>
     <string name="today_play">Lejátszás</string>
     <string name="today_play_toast_daily">Lejátszom a napi ClothesCastod.</string>

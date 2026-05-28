@@ -1258,10 +1258,10 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_tts_style_spooky_narrator">ভৌতিক কথক</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">এখন দেখাও</string>
-    <string name="today_clothes_promo_body">ClothesCast নিয়মের একটি সেট থেকে পোশাক বেছে নেয়। তাপমাত্রা পরিবর্তন করো, স্তর যোগ করো বা পোশাক সেটিংসে পরামর্শ পরিবর্তন করো।</string>
+    <string name="today_clothes_promo_body">ClothesCast নিয়মের একটি সেট থেকে পোশাক বেছে নেয়। তাপমাত্রা পরিবর্তন করো এবং পোশাক সেটিংসে তোমার পোশাক কাস্টমাইজ করো।</string>
     <string name="today_clothes_promo_cta">পোশাক সেটিংস</string>
     <string name="today_clothes_promo_dismiss">বন্ধ</string>
-    <string name="today_clothes_promo_title">নিয়মগুলোকে নিজের করো</string>
+    <string name="today_clothes_promo_title">পোশাককে নিজের করো</string>
     <string name="today_insight_format_link">ফর্ম্যাট</string>
     <string name="today_play">চালাও</string>
     <string name="today_play_toast_daily">তোমার দৈনিক ClothesCast চালাচ্ছি।</string>

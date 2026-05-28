@@ -1235,10 +1235,10 @@ the displayed label localizes.
     <string name="settings_tts_style_spooky_narrator">Griezelige verteller</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Toon nu</string>
-    <string name="today_clothes_promo_body">ClothesCast kiest outfits op basis van een set regels. Pas de temperaturen aan, voeg lagen toe of verander wat wordt voorgesteld in Kledinginstellingen.</string>
+    <string name="today_clothes_promo_body">ClothesCast kiest outfits op basis van een set regels. Pas de temperaturen aan en personaliseer je garderobe in Kledinginstellingen.</string>
     <string name="today_clothes_promo_cta">Kledinginstellingen</string>
     <string name="today_clothes_promo_dismiss">Sluiten</string>
-    <string name="today_clothes_promo_title">Maak de regels van jou</string>
+    <string name="today_clothes_promo_title">Maak de kleding van jou</string>
     <string name="today_insight_format_link">Formaat</string>
     <string name="today_play">Afspelen</string>
     <string name="today_play_toast_daily">Je dagelijkse ClothesCast wordt afgespeeld.</string>

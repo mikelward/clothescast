@@ -1242,10 +1242,10 @@ only the displayed label localizes.
     <string name="settings_tts_style_spooky_narrator">Жуткий рассказчик</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Сейчас</string>
-    <string name="today_clothes_promo_body">ClothesCast подбирает наряды по набору правил. Настрой температуры, добавь слои или измени предложения в настройках одежды.</string>
+    <string name="today_clothes_promo_body">ClothesCast подбирает наряды по набору правил. Настрой температуры и персонализируй свой гардероб в настройках одежды.</string>
     <string name="today_clothes_promo_cta">Настройки одежды</string>
     <string name="today_clothes_promo_dismiss">Скрыть</string>
-    <string name="today_clothes_promo_title">Настрой правила под себя</string>
+    <string name="today_clothes_promo_title">Настрой одежду под себя</string>
     <string name="today_insight_format_link">Формат</string>
     <string name="today_play">Воспроизвести</string>
     <string name="today_play_toast_daily">Воспроизвожу твой ClothesCast.</string>

@@ -1350,10 +1350,10 @@ label localises.
     <string name="settings_tts_style_spooky_narrator">詭異旁白</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">顯示目前</string>
-    <string name="today_clothes_promo_body">ClothesCast 根據一組規則挑選搭配。在服裝設定中調整溫度、新增層數或變更建議。</string>
+    <string name="today_clothes_promo_body">ClothesCast 根據一組規則挑選搭配。在服裝設定中調整溫度並自訂你的衣櫥。</string>
     <string name="today_clothes_promo_cta">服裝設定</string>
     <string name="today_clothes_promo_dismiss">關閉</string>
-    <string name="today_clothes_promo_title">把規則變成你的</string>
+    <string name="today_clothes_promo_title">把服裝變成你的</string>
     <string name="today_insight_format_link">格式</string>
     <string name="today_play">播放</string>
     <string name="today_play_toast_daily">正在播放每日 ClothesCast。</string>

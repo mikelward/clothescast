@@ -1338,10 +1338,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_spooky_narrator">Gruseliger Erzähler</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Jetzt anzeigen</string>
-    <string name="today_clothes_promo_body">ClothesCast wählt Outfits anhand von Regeln aus. Passe die Temperaturen an, füge Lagen hinzu oder ändere die Vorschläge in den Kleidungseinstellungen.</string>
+    <string name="today_clothes_promo_body">ClothesCast wählt Outfits anhand von Regeln aus. Passe die Temperaturen und deine Garderobe in den Kleidungseinstellungen an.</string>
     <string name="today_clothes_promo_cta">Kleidungseinstellungen</string>
     <string name="today_clothes_promo_dismiss">Schließen</string>
-    <string name="today_clothes_promo_title">Mach die Regeln zu deinen</string>
+    <string name="today_clothes_promo_title">Mach die Kleidung zu deiner</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Abspielen</string>
     <string name="today_play_toast_daily">Dein täglicher ClothesCast wird abgespielt.</string>

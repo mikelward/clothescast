@@ -1256,10 +1256,10 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_tts_style_spooky_narrator">Sablasni pripovjedač</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Prikaži sada</string>
-    <string name="today_clothes_promo_body">ClothesCast bira outfite po skupu pravila. Podesi temperature, dodaj slojeve ili promijeni što se predlaže u postavkama Odjeće.</string>
+    <string name="today_clothes_promo_body">ClothesCast bira outfite po skupu pravila. Podesi temperature i prilagodi svoju garderobu u postavkama Odjeće.</string>
     <string name="today_clothes_promo_cta">Postavke odjeće</string>
     <string name="today_clothes_promo_dismiss">Odbaci</string>
-    <string name="today_clothes_promo_title">Prilagodi pravila sebi</string>
+    <string name="today_clothes_promo_title">Prilagodi odjeću sebi</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Pusti</string>
     <string name="today_play_toast_daily">Puštam tvoj jutarnji ClothesCast.</string>

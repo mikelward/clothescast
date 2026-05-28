@@ -1176,10 +1176,10 @@ What is NOT overridden, by design:
     <string name="settings_tts_style_spooky_narrator">Šiurpus pasakotojas</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Rodyti dabar</string>
-    <string name="today_clothes_promo_body">ClothesCast renka aprangą pagal taisykles. Pakeisk temperatūras, pridėk sluoksnių arba pakeisk siūlymus Drabužių nustatymuose.</string>
+    <string name="today_clothes_promo_body">ClothesCast renka aprangą pagal taisykles. Pakeisk temperatūras ir pritaikyk savo garderobą Drabužių nustatymuose.</string>
     <string name="today_clothes_promo_cta">Drabužių nustatymai</string>
     <string name="today_clothes_promo_dismiss">Atmesti</string>
-    <string name="today_clothes_promo_title">Pritaikyk taisykles sau</string>
+    <string name="today_clothes_promo_title">Pritaikyk drabužius sau</string>
     <string name="today_insight_format_link">Formatas</string>
     <string name="today_play">Leisti</string>
     <string name="today_play_toast_daily">Leidžiu tavo dieninį ClothesCast.</string>

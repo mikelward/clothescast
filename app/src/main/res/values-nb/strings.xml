@@ -1215,10 +1215,10 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_tts_style_spooky_narrator">Skummel forteller</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Vis nå</string>
-    <string name="today_clothes_promo_body">ClothesCast velger antrekk ut fra et sett regler. Juster temperaturene, legg til lag eller endre hva som foreslås i Klesinnstillinger.</string>
+    <string name="today_clothes_promo_body">ClothesCast velger antrekk ut fra et sett regler. Juster temperaturene og tilpass garderoben din i Klesinnstillinger.</string>
     <string name="today_clothes_promo_cta">Klesinnstillinger</string>
     <string name="today_clothes_promo_dismiss">Avvis</string>
-    <string name="today_clothes_promo_title">Gjør reglene til dine egne</string>
+    <string name="today_clothes_promo_title">Gjør klærne til dine egne</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Spill av</string>
     <string name="today_play_toast_daily">Spiller av din daglige ClothesCast.</string>

@@ -1336,10 +1336,10 @@ the displayed label localizes.
     <string name="settings_tts_style_spooky_narrator">不気味なナレーター</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">現在を表示</string>
-    <string name="today_clothes_promo_body">ClothesCastはルールに基づいて服装を選びます。設定の「服装」で温度を調整したり、レイヤーを追加したり、提案内容を変更できます。</string>
+    <string name="today_clothes_promo_body">ClothesCastはルールに基づいて服装を選びます。設定の「服装」で温度を調整したり、ワードローブをカスタマイズしたりできます。</string>
     <string name="today_clothes_promo_cta">服装の設定</string>
     <string name="today_clothes_promo_dismiss">閉じる</string>
-    <string name="today_clothes_promo_title">ルールを自分好みに</string>
+    <string name="today_clothes_promo_title">服装を自分好みに</string>
     <string name="today_insight_format_link">形式</string>
     <string name="today_play">再生</string>
     <string name="today_play_toast_daily">デイリーClothesCastを再生中。</string>

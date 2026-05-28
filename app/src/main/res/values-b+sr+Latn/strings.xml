@@ -1176,10 +1176,10 @@ default English (matching values-pl / values-uk).
     <string name="settings_tts_style_spooky_narrator">Jezivi pripovedač</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Prikaži sada</string>
-    <string name="today_clothes_promo_body">ClothesCast bira odeću po pravilima. Promeni temperature, dodaj slojeve ili izmeni predloge u podešavanjima Odeća.</string>
+    <string name="today_clothes_promo_body">ClothesCast bira odeću po pravilima. Promeni temperature i prilagodi svoju garderobu u podešavanjima Odeća.</string>
     <string name="today_clothes_promo_cta">Podešavanja odeće</string>
     <string name="today_clothes_promo_dismiss">Odbaci</string>
-    <string name="today_clothes_promo_title">Prilagodi pravila sebi</string>
+    <string name="today_clothes_promo_title">Prilagodi odeću sebi</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Pusti</string>
     <string name="today_play_toast_daily">Puštam tvoj jutarnji ClothesCast.</string>

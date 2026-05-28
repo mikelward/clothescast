@@ -1173,10 +1173,10 @@ What is NOT overridden, by design:
     <string name="settings_tts_style_spooky_narrator">Зловещ разказвач</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Покажи сега</string>
-    <string name="today_clothes_promo_body">ClothesCast избира облекло по правила. Промени температурите, добави слоеве или промени предложенията в настройките за Дрехи.</string>
+    <string name="today_clothes_promo_body">ClothesCast избира облекло по правила. Промени температурите и персонализирай гардероба си в настройките за Дрехи.</string>
     <string name="today_clothes_promo_cta">Настройки за дрехи</string>
     <string name="today_clothes_promo_dismiss">Затвори</string>
-    <string name="today_clothes_promo_title">Направи правилата свои</string>
+    <string name="today_clothes_promo_title">Направи дрехите свои</string>
     <string name="today_insight_format_link">Формат</string>
     <string name="today_play">Възпроизведи</string>
     <string name="today_play_toast_daily">Възпроизвеждам твоя сутрешен ClothesCast.</string>

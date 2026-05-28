@@ -1186,10 +1186,10 @@ to values/strings.xml (English).
     <string name="settings_tts_style_spooky_narrator">Pencerita menyeramkan</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Tampilkan sekarang</string>
-    <string name="today_clothes_promo_body">ClothesCast memilih pakaian berdasarkan serangkaian aturan. Ubah suhu, tambahkan lapisan, atau ubah saran di pengaturan Pakaian.</string>
+    <string name="today_clothes_promo_body">ClothesCast memilih pakaian berdasarkan serangkaian aturan. Ubah suhu dan sesuaikan lemari pakaianmu di pengaturan Pakaian.</string>
     <string name="today_clothes_promo_cta">Pengaturan pakaian</string>
     <string name="today_clothes_promo_dismiss">Tutup</string>
-    <string name="today_clothes_promo_title">Buat aturan sendiri</string>
+    <string name="today_clothes_promo_title">Buat pakaian sendiri</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Putar</string>
     <string name="today_play_toast_daily">Memutar ClothesCast harianmu.</string>

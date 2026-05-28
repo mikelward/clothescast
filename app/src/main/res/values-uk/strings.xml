@@ -1185,10 +1185,10 @@ only the displayed label localizes.
     <string name="settings_tts_style_spooky_narrator">Моторошний розповідач</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Показати зараз</string>
-    <string name="today_clothes_promo_body">ClothesCast обирає одяг за правилами. Зміни температури, додай шари або зміни пропозиції в налаштуваннях Одяг.</string>
+    <string name="today_clothes_promo_body">ClothesCast обирає одяг за правилами. Зміни температури та персоналізуй свій гардероб у налаштуваннях Одяг.</string>
     <string name="today_clothes_promo_cta">Налаштування одягу</string>
     <string name="today_clothes_promo_dismiss">Закрити</string>
-    <string name="today_clothes_promo_title">Зроби правила своїми</string>
+    <string name="today_clothes_promo_title">Зроби одяг своїм</string>
     <string name="today_insight_format_link">Формат</string>
     <string name="today_play">Відтворити</string>
     <string name="today_play_toast_daily">Відтворюю твій ранковий ClothesCast.</string>

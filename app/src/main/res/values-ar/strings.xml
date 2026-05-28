@@ -1191,10 +1191,10 @@ they work correctly in both the single-band and range templates.
     <string name="settings_tts_style_spooky_narrator">راوي مخيف</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">عرض الآن</string>
-    <string name="today_clothes_promo_body">يختار ClothesCast الملابس بناءً على مجموعة قواعد. عدّل درجات الحرارة، أضف طبقات أو غيّر ما يُقترح في إعدادات الملابس.</string>
+    <string name="today_clothes_promo_body">يختار ClothesCast الملابس بناءً على مجموعة قواعد. عدّل درجات الحرارة وخصّص خزانة ملابسك في إعدادات الملابس.</string>
     <string name="today_clothes_promo_cta">إعدادات الملابس</string>
     <string name="today_clothes_promo_dismiss">إغلاق</string>
-    <string name="today_clothes_promo_title">اجعل القواعد ملكك</string>
+    <string name="today_clothes_promo_title">اجعل الملابس ملكك</string>
     <string name="today_insight_format_link">التنسيق</string>
     <string name="today_play">تشغيل</string>
     <string name="today_play_toast_daily">جاري تشغيل ClothesCast اليومي.</string>

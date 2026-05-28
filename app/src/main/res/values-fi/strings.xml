@@ -1195,10 +1195,10 @@ displayed label localizes.
     <string name="settings_tts_style_spooky_narrator">Aavemainen kertoja</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Näytä nyt</string>
-    <string name="today_clothes_promo_body">ClothesCast valitsee asut sääntöjen perusteella. Säädä lämpötiloja, lisää kerroksia tai muuta ehdotuksia Vaatteet-asetuksissa.</string>
+    <string name="today_clothes_promo_body">ClothesCast valitsee asut sääntöjen perusteella. Säädä lämpötiloja ja mukauta vaatekaappiasi Vaatteet-asetuksissa.</string>
     <string name="today_clothes_promo_cta">Vaatteet-asetukset</string>
     <string name="today_clothes_promo_dismiss">Sulje</string>
-    <string name="today_clothes_promo_title">Tee säännöistä omasi</string>
+    <string name="today_clothes_promo_title">Tee vaatteista omasi</string>
     <string name="today_insight_format_link">Muoto</string>
     <string name="today_play">Toista</string>
     <string name="today_play_toast_daily">Toistetaan päivän ClothesCastia.</string>

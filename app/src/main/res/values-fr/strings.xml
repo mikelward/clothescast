@@ -1313,10 +1313,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_spooky_narrator">Narrateur effrayant</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Voir maintenant</string>
-    <string name="today_clothes_promo_body">ClothesCast choisit les tenues à partir d\'un ensemble de règles. Ajuste les températures, ajoute des couches ou change ce qui est suggéré dans les paramètres Vêtements.</string>
+    <string name="today_clothes_promo_body">ClothesCast choisit les tenues à partir d\'un ensemble de règles. Ajuste les températures et personnalise ta garde-robe dans les paramètres Vêtements.</string>
     <string name="today_clothes_promo_cta">Paramètres Vêtements</string>
     <string name="today_clothes_promo_dismiss">Ignorer</string>
-    <string name="today_clothes_promo_title">Adapte les règles à ton goût</string>
+    <string name="today_clothes_promo_title">Adapte les vêtements à ton goût</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Lecture</string>
     <string name="today_play_toast_daily">Lecture de ton ClothesCast du matin.</string>

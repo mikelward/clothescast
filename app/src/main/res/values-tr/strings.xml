@@ -1188,10 +1188,10 @@ displayed label localizes.
     <string name="settings_tts_style_spooky_narrator">Korkutucu anlatıcı</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Şu anı göster</string>
-    <string name="today_clothes_promo_body">ClothesCast kıyafetleri bir dizi kurala göre seçer. Sıcaklıkları ayarla, kat ekle veya Kıyafet ayarlarından önerileri değiştir.</string>
+    <string name="today_clothes_promo_body">ClothesCast kıyafetleri bir dizi kurala göre seçer. Sıcaklıkları ayarla ve Kıyafet ayarlarından gardırobunu özelleştir.</string>
     <string name="today_clothes_promo_cta">Kıyafet ayarları</string>
     <string name="today_clothes_promo_dismiss">Kapat</string>
-    <string name="today_clothes_promo_title">Kuralları kendine göre ayarla</string>
+    <string name="today_clothes_promo_title">Kıyafetleri kendine göre ayarla</string>
     <string name="today_insight_format_link">Biçim</string>
     <string name="today_play">Oynat</string>
     <string name="today_play_toast_daily">Günlük ClothesCast\'in oynatılıyor.</string>

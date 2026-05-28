@@ -1130,10 +1130,10 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_tts_style_spooky_narrator">Õudne jutustaja</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Näita praegu</string>
-    <string name="today_clothes_promo_body">ClothesCast valib riided reeglite järgi. Muuda temperatuure, lisa kihte või muuda soovitusi Riiete seadetes.</string>
+    <string name="today_clothes_promo_body">ClothesCast valib riided reeglite järgi. Muuda temperatuure ja kohanda oma garderoobi Riiete seadetes.</string>
     <string name="today_clothes_promo_cta">Riiete seaded</string>
     <string name="today_clothes_promo_dismiss">Sulge</string>
-    <string name="today_clothes_promo_title">Tee reeglid enda omaks</string>
+    <string name="today_clothes_promo_title">Tee riided enda omaks</string>
     <string name="today_insight_format_link">Vorming</string>
     <string name="today_play">Esita</string>
     <string name="today_play_toast_daily">Esitan sinu päevast ClothesCasti.</string>

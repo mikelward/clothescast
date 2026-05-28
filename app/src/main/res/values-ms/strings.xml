@@ -1192,10 +1192,10 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_tts_style_spooky_narrator">Pencerita menyeramkan</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Tunjukkan sekarang</string>
-    <string name="today_clothes_promo_body">ClothesCast memilih pakaian berdasarkan satu set peraturan. Ubah suhu, tambah lapisan atau ubah cadangan dalam tetapan Pakaian.</string>
+    <string name="today_clothes_promo_body">ClothesCast memilih pakaian berdasarkan satu set peraturan. Ubah suhu dan sesuaikan almari pakaian anda dalam tetapan Pakaian.</string>
     <string name="today_clothes_promo_cta">Tetapan pakaian</string>
     <string name="today_clothes_promo_dismiss">Tutup</string>
-    <string name="today_clothes_promo_title">Jadikan peraturan milik anda</string>
+    <string name="today_clothes_promo_title">Jadikan pakaian milik anda</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Putar</string>
     <string name="today_play_toast_daily">Memainkan ClothesCast harian anda.</string>

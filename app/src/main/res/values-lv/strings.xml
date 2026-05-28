@@ -1128,10 +1128,10 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_tts_style_spooky_narrator">Spokainais stāstītājs</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Rādīt tagad</string>
-    <string name="today_clothes_promo_body">ClothesCast izvēlas apģērbu pēc noteikumiem. Pielāgo temperatūras, pievieno kārtas vai mainī ieteikumus Apģērba iestatījumos.</string>
+    <string name="today_clothes_promo_body">ClothesCast izvēlas apģērbu pēc noteikumiem. Pielāgo temperatūras un personalizē savu garderobi Apģērba iestatījumos.</string>
     <string name="today_clothes_promo_cta">Apģērba iestatījumi</string>
     <string name="today_clothes_promo_dismiss">Aizvērt</string>
-    <string name="today_clothes_promo_title">Padari noteikumus par savējiem</string>
+    <string name="today_clothes_promo_title">Padari apģērbu par savējo</string>
     <string name="today_insight_format_link">Formāts</string>
     <string name="today_play">Atskaņot</string>
     <string name="today_play_toast_daily">Atskaņoju tavu ikdienas ClothesCast.</string>

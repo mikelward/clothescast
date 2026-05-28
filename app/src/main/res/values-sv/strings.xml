@@ -362,8 +362,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="today_more_options">Fler alternativ</string>
     <string name="today_report_a_bug">Rapportera ett fel</string>
     <string name="today_refresh">Uppdatera</string>
-    <string name="today_refresh_toast_daily">Ditt dagliga ClothesCast uppdateras — det kommer strax.</string>
-    <string name="today_refresh_toast_nightly">Ditt kvällsvisa ClothesCast uppdateras — det kommer strax.</string>
     <string name="today_empty_title">Inget ClothesCast ännu</string>
     <string name="today_empty_subtitle">Ditt morgonliga ClothesCast dyker upp här när det har genererats.</string>
     <string name="today_fetch_now">Hämta nu</string>

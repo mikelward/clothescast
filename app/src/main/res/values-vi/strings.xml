@@ -105,8 +105,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_more_options">Thêm tùy chọn</string>
     <string name="today_report_a_bug">Báo lỗi</string>
     <string name="today_refresh">Làm mới</string>
-    <string name="today_refresh_toast_daily">Đang làm mới ClothesCast hàng ngày — sẽ hiển thị ngay.</string>
-    <string name="today_refresh_toast_nightly">Đang làm mới ClothesCast buổi tối — sẽ hiển thị ngay.</string>
     <string name="today_empty_title">Chưa có ClothesCast</string>
     <string name="today_empty_subtitle">ClothesCast buổi sáng sẽ xuất hiện ở đây sau khi được tạo.</string>
     <string name="today_fetch_now">Tải ngay</string>

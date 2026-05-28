@@ -374,8 +374,6 @@ What is NOT overridden, by design:
     <string name="today_more_options">Ďalšie možnosti</string>
     <string name="today_report_a_bug">Nahlásiť chybu</string>
     <string name="today_refresh">Obnoviť</string>
-    <string name="today_refresh_toast_daily">Tvoj denný ClothesCast sa aktualizuje — za chvíľu sa zobrazí.</string>
-    <string name="today_refresh_toast_nightly">Tvoj nočný ClothesCast sa aktualizuje — za chvíľu sa zobrazí.</string>
     <string name="today_empty_title">Zatiaľ žiadny ClothesCast</string>
     <string name="today_empty_subtitle">Tvoj ranný ClothesCast sa tu zobrazí, keď bude vytvorený.</string>
     <string name="today_fetch_now">Načítať teraz</string>

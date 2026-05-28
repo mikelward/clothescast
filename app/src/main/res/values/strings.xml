@@ -14,8 +14,6 @@
     <string name="today_more_options">More options</string>
     <string name="today_report_a_bug">Report a bug</string>
     <string name="today_refresh">Refresh</string>
-    <string name="today_refresh_toast_daily">Refreshing your daily ClothesCast — it\'ll appear shortly.</string>
-    <string name="today_refresh_toast_nightly">Refreshing your nightly ClothesCast — it\'ll appear shortly.</string>
     <string name="today_play">Play</string>
     <string name="today_play_toast_daily">Playing your daily ClothesCast.</string>
     <string name="today_play_toast_nightly">Playing your nightly ClothesCast.</string>

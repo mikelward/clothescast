@@ -109,8 +109,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_more_options">আরও বিকল্প</string>
     <string name="today_report_a_bug">বাগ রিপোর্ট করুন</string>
     <string name="today_refresh">রিফ্রেশ</string>
-    <string name="today_refresh_toast_daily">আপনার দৈনিক ClothesCast রিফ্রেশ হচ্ছে — শীঘ্রই দেখা যাবে।</string>
-    <string name="today_refresh_toast_nightly">আপনার রাতের ClothesCast রিফ্রেশ হচ্ছে — শীঘ্রই দেখা যাবে।</string>
     <string name="today_empty_title">এখনো কোনো ClothesCast নেই</string>
     <string name="today_empty_subtitle">আপনার সকালের ClothesCast তৈরি হলে এখানে দেখা যাবে।</string>
     <string name="today_fetch_now">এখনই আনুন</string>

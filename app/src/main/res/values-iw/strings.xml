@@ -107,8 +107,6 @@ standard in Israeli digital communication.
     <string name="today_more_options">אפשרויות נוספות</string>
     <string name="today_report_a_bug">דווח/י על תקלה</string>
     <string name="today_refresh">רענן/י</string>
-    <string name="today_refresh_toast_daily">מרענן את ClothesCast היומי שלך — יופיע בקרוב.</string>
-    <string name="today_refresh_toast_nightly">מרענן את ClothesCast הלילי שלך — יופיע בקרוב.</string>
     <string name="today_empty_title">אין ClothesCast עדיין</string>
     <string name="today_empty_subtitle">ClothesCast הבוקר שלך יופיע כאן לאחר שייווצר.</string>
     <string name="today_fetch_now">טען עכשיו</string>

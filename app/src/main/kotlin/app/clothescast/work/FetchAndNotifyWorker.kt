@@ -1482,12 +1482,19 @@ class FetchAndNotifyWorker(
         internal const val KEY_CACHE_LOCATION_ONLY = "cache_location_only"
 
         /**
-         * Set true via [enqueueSilentRefresh] for the opportunistic app-open
-         * refresh: fetch + update the cache so the Today screen re-renders
-         * off fresh data, but skip everything user-facing — no notification,
-         * no TTS, no MQTT publish, no cast load. The widget update still
-         * fires because it's already on the user's launcher and would
-         * otherwise sit on the stale outfit.
+         * Set true for refreshes that fetch + update the cache so the Today
+         * screen re-renders off fresh data, but skip everything user-facing —
+         * no notification, no TTS, no MQTT publish, no cast load. The widget
+         * update still fires because it's already on the user's launcher and
+         * would otherwise sit on the stale outfit.
+         *
+         * Sources: the opportunistic app-open refresh ([enqueueSilentRefresh]),
+         * the first-run onboarding fetch ([enqueueOnboardingRefresh]), and the
+         * Today screen's manual Refresh button ([enqueueOneShot] with
+         * `silent = true`) — the user is already looking at the screen the
+         * fetch updates, so a banner / chime / cast on top of that is exactly
+         * the surprise this flag avoids. The top progress banner is the only
+         * feedback.
          */
         internal const val KEY_SILENT_REFRESH = "silent_refresh"
 
@@ -1513,6 +1520,7 @@ class FetchAndNotifyWorker(
         fun enqueueOneShot(
             context: Context,
             force: Boolean = false,
+            silent: Boolean = false,
             period: ForecastPeriod = ForecastPeriod.TODAY,
             alarmScheduledAtMs: Long = 0L,
             alarmFiredAtMs: Long = 0L,
@@ -1533,6 +1541,7 @@ class FetchAndNotifyWorker(
                 .setInputData(
                     workDataOf(
                         KEY_FORCE_REFRESH to force,
+                        KEY_SILENT_REFRESH to silent,
                         KEY_REQUESTED_EPOCH_DAY to LocalDate.now().toEpochDay(),
                         KEY_PERIOD to period.name,
                         KEY_ALARM_SCHEDULED_AT_MS to alarmScheduledAtMs,

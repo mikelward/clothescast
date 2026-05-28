@@ -313,8 +313,6 @@ is unchanged; only the displayed label localizes.
     <string name="today_more_options">Więcej opcji</string>
     <string name="today_report_a_bug">Zgłoś błąd</string>
     <string name="today_refresh">Odśwież</string>
-    <string name="today_refresh_toast_daily">Twój codzienny ClothesCast jest odświeżany — pojawi się za chwilę.</string>
-    <string name="today_refresh_toast_nightly">Twój wieczorny ClothesCast jest odświeżany — pojawi się za chwilę.</string>
     <string name="today_empty_title">Brak ClothesCastu</string>
     <string name="today_empty_subtitle">Twój poranny ClothesCast pojawi się tutaj po utworzeniu.</string>
     <string name="today_fetch_now">Pobierz teraz</string>

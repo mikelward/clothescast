@@ -102,8 +102,6 @@ What is NOT overridden, by design:
     <string name="today_more_options">Daugiau parinkčių</string>
     <string name="today_report_a_bug">Pranešti apie klaidą</string>
     <string name="today_refresh">Atnaujinti</string>
-    <string name="today_refresh_toast_daily">Atnaujinamas dienos ClothesCast — netrukus pasirodys.</string>
-    <string name="today_refresh_toast_nightly">Atnaujinamas nakties ClothesCast — netrukus pasirodys.</string>
     <string name="today_empty_title">ClothesCast dar nėra</string>
     <string name="today_empty_subtitle">Ryto ClothesCast pasirodys čia, kai bus sugeneruotas.</string>
     <string name="today_fetch_now">Gauti dabar</string>

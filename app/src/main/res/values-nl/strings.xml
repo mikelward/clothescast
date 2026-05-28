@@ -313,8 +313,6 @@ the displayed label localizes.
     <string name="today_more_options">Meer opties</string>
     <string name="today_report_a_bug">Bug melden</string>
     <string name="today_refresh">Vernieuwen</string>
-    <string name="today_refresh_toast_daily">Je dagelijkse ClothesCast wordt vernieuwd — hij verschijnt zo meteen.</string>
-    <string name="today_refresh_toast_nightly">Je avondlijkse ClothesCast wordt vernieuwd — hij verschijnt zo meteen.</string>
     <string name="today_empty_title">Nog geen ClothesCast</string>
     <string name="today_empty_subtitle">Je ochtendlijkse ClothesCast verschijnt hier zodra hij is aangemaakt.</string>
     <string name="today_fetch_now">Nu ophalen</string>

@@ -100,8 +100,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_more_options">Higit pang mga opsyon</string>
     <string name="today_report_a_bug">Mag-ulat ng bug</string>
     <string name="today_refresh">I-refresh</string>
-    <string name="today_refresh_toast_daily">Ina-refresh ang iyong pang-araw na ClothesCast — lilitaw ito nang ilang sandali.</string>
-    <string name="today_refresh_toast_nightly">Ina-refresh ang iyong pang-gabing ClothesCast — lilitaw ito nang ilang sandali.</string>
     <string name="today_empty_title">Wala pang ClothesCast</string>
     <string name="today_empty_subtitle">Lilitaw dito ang iyong umaga na ClothesCast kapag nagawa na ito.</string>
     <string name="today_fetch_now">Kunin ngayon</string>

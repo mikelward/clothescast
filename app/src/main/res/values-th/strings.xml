@@ -114,8 +114,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_more_options">ตัวเลือกเพิ่มเติม</string>
     <string name="today_report_a_bug">รายงานข้อผิดพลาด</string>
     <string name="today_refresh">รีเฟรช</string>
-    <string name="today_refresh_toast_daily">กำลังรีเฟรช ClothesCast รายวัน — จะปรากฏในไม่ช้า</string>
-    <string name="today_refresh_toast_nightly">กำลังรีเฟรช ClothesCast รายคืน — จะปรากฏในไม่ช้า</string>
     <string name="today_empty_title">ยังไม่มี ClothesCast</string>
     <string name="today_empty_subtitle">ClothesCast ช่วงเช้าจะปรากฏที่นี่เมื่อสร้างเสร็จแล้ว</string>
     <string name="today_fetch_now">ดึงข้อมูลเดี๋ยวนี้</string>

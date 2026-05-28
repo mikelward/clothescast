@@ -318,8 +318,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_more_options">Više opcija</string>
     <string name="today_report_a_bug">Prijavi grešku</string>
     <string name="today_refresh">Osvježi</string>
-    <string name="today_refresh_toast_daily">Osvježavam tvoj dnevni ClothesCast — pojavit će se uskoro.</string>
-    <string name="today_refresh_toast_nightly">Osvježavam tvoj noćni ClothesCast — pojavit će se uskoro.</string>
     <string name="today_empty_title">Još nema ClothesCasta</string>
     <string name="today_empty_subtitle">Tvoj jutarnji ClothesCast pojavit će se ovdje čim bude generiran.</string>
     <string name="today_fetch_now">Dohvati sada</string>

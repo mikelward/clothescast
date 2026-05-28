@@ -115,8 +115,6 @@ What is NOT overridden, by design:
     <string name="today_more_options">Още опции</string>
     <string name="today_report_a_bug">Докладвай грешка</string>
     <string name="today_refresh">Обнови</string>
-    <string name="today_refresh_toast_daily">Обновявам твоя дневен ClothesCast — ще се появи скоро.</string>
-    <string name="today_refresh_toast_nightly">Обновявам твоя нощен ClothesCast — ще се появи скоро.</string>
     <string name="today_empty_title">Все още няма ClothesCast</string>
     <string name="today_empty_subtitle">Сутрешният ти ClothesCast ще се появи тук, след като бъде генериран.</string>
     <string name="today_fetch_now">Вземи сега</string>

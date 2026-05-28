@@ -97,6 +97,47 @@ class InsightFormatterTest {
     }
 
     @Test
+    fun `includeLead false drops the lead-in and opens on the single temp`() {
+        // The Today card carries its own "Today" header, so the card prose
+        // omits the redundant "Today, it will be …" lead.
+        subject.format(summary(), includeLead = false) shouldBe "21°."
+    }
+
+    @Test
+    fun `includeLead false drops the lead-in on a range`() {
+        subject.format(
+            summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.MILD, 14.0, 20.0)),
+            includeLead = false,
+        ) shouldBe "14° to 20°."
+    }
+
+    @Test
+    fun `includeLead false keeps following clauses after the bare temp`() {
+        subject.format(
+            summary(
+                clothes = ClothesClause(listOf("sweater")),
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
+            ),
+            includeLead = false,
+        ) shouldBe "21°. Wear a sweater. Rain at 3pm."
+    }
+
+    @Test
+    fun `includeLead false drops the tonight lead-in too`() {
+        subject.format(summary(period = ForecastPeriod.TONIGHT), includeLead = false) shouldBe "21°."
+    }
+
+    @Test
+    fun `includeLead false keeps the lead-in for non-English locales`() {
+        // Stripping the lead is English-only surgery (it removes the "it will
+        // be" connective and re-capitalises). Other locales fuse the lead into
+        // the sentence and have no no-lead template, so they keep the lead-in.
+        val germanSubject = InsightFormatter.forContext(context, Locale.GERMAN)
+        germanSubject.format(summary(), includeLead = false) shouldBe
+            germanSubject.format(summary(), includeLead = true)
+    }
+
+    @Test
     fun `delta clause emits warmer with rounded degrees`() {
         val out = subject.format(summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)))
         out shouldBe "Today, it will be 21°. 5° warmer than yesterday."
@@ -462,6 +503,47 @@ class InsightFormatterTest {
         bandsSubject.format(
             summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.COOL, 14.0, 16.0)),
         ) shouldBe "Today, it will be cool."
+    }
+
+    @Test
+    fun `bands format with includeLead false capitalises the leading band word`() {
+        bandsSubject.format(
+            summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.MILD, 14.0, 20.0)),
+            includeLead = false,
+        ) shouldBe "Cool to mild."
+    }
+
+    @Test
+    fun `bands format with includeLead false on a single band word`() {
+        bandsSubject.format(
+            summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.COOL, 14.0, 16.0)),
+            includeLead = false,
+        ) shouldBe "Cool."
+    }
+
+    @Test
+    fun `omit range with includeLead false capitalises the first clause and skips the lead`() {
+        omitSubject.format(
+            summary(
+                clothes = ClothesClause(listOf("sweater")),
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
+            ),
+            includeLead = false,
+        ) shouldBe "Wear a sweater. Rain at 3pm."
+    }
+
+    @Test
+    fun `omit range with includeLead false gives the leading delta a capitalised it-will-be`() {
+        omitSubject.format(
+            summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)),
+            includeLead = false,
+        ) shouldBe "It will be 5° warmer than yesterday."
+    }
+
+    @Test
+    fun `omit range with includeLead false on the unchanged line drops the lead`() {
+        omitSubject.format(summary(), includeLead = false) shouldBe
+            "It will be the same as yesterday."
     }
 
     @Test

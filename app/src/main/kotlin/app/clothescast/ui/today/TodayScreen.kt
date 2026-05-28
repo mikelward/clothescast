@@ -2029,7 +2029,12 @@ internal fun InsightCard(
                 }
             }
             Text(
-                text = formatter.format(insight.summary, isFutureDay = isFutureDay),
+                // The card already shows a "Today" / "Tonight" / "Tomorrow"
+                // header above this prose, so drop the redundant "Today, it
+                // will be …" lead-in and open straight on the measurement. TTS,
+                // MQTT, the notification, and the cast card keep the lead (they
+                // have no separate period header).
+                text = formatter.format(insight.summary, isFutureDay = isFutureDay, includeLead = false),
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = if (onNavigateToFormat != null) {
                     Modifier.clickable { onNavigateToFormat() }

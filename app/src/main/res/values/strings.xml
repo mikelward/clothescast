@@ -1084,6 +1084,18 @@
     <!-- Band-word range sentence: %1$s = lead-in, %2$s = low band, %3$s = high
          band. Renders "Today, it will be cool to mild.". -->
     <string name="insight_band_words_range">%1$s, it will be %2$s to %3$s.</string>
+    <!-- No-lead band sentences. Used on the Today insight card, which already
+         shows a "Today" / "Tonight" / "Tomorrow" header above the prose, so the
+         "Today, it will be …" lead-in would just repeat it. Dropping the lead
+         leaves the bare measurement: "14° to 20°." / "Cool to mild.". The
+         degree templates are locale-neutral (digits + °); the band-word
+         templates carry a capitalised band word so the sentence still opens
+         like a sentence. English-only for now (see InsightFormatter.supportsNoLead);
+         other locales keep the full lead-in. -->
+    <string name="insight_band_single_no_lead">%1$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° to %2$d°.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s to %2$s.</string>
     <!-- When the user opts to omit the temperature range, the band sentence
          collapses to a bare lead that flows into the next clause: %1$s = lead-in
          ("Today"), %2$s = the following clause with its first letter lowercased
@@ -1098,6 +1110,12 @@
     <string name="insight_unchanged_today">Today, it will be the same as yesterday.</string>
     <string name="insight_unchanged_tonight">Tonight, it will be the same as last night.</string>
     <string name="insight_unchanged_tomorrow">Tomorrow, it will be the same as today.</string>
+    <!-- No-lead variants of the "unchanged" placeholder for the Today card,
+         whose header already carries the period. English-only (see
+         InsightFormatter.supportsNoLead); other locales keep the full lead-in. -->
+    <string name="insight_unchanged_today_no_lead">It will be the same as yesterday.</string>
+    <string name="insight_unchanged_tonight_no_lead">It will be the same as last night.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">It will be the same as today.</string>
 
     <!-- Band labels — used inside the band-sentence templates above. -->
     <string name="insight_band_freezing">freezing</string>

@@ -252,7 +252,7 @@ internal fun SevenDayPage(
         // the centered-label typography there, this card silently drifts.
         // The refactor needs the shell flexible enough for both shapes
         // (optional center content: date+location chip vs. plain label;
-        // optional generated-at footer; optional right chevron) and touches
+        // optional right chevron) and touches
         // the today/tonight code path + every snapshot through `InsightCard`,
         // which is why it's deferred to a follow-up rather than landed here.
         Card(modifier = Modifier.fillMaxWidth()) {

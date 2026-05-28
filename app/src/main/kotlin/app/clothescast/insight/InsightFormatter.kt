@@ -115,12 +115,28 @@ class InsightFormatter(
      * "Today, it will be the same as yesterday." line so the card never renders
      * blank; the spoken TTS path passes `false` to stay silent rather than read
      * out a content-free filler line.
+     *
+     * [includeLead] controls the "Today, it will be …" / "Tonight, it will be …"
+     * lead-in that fronts the temperature sentence. The Today insight card
+     * already renders a "Today" / "Tonight" / "Tomorrow" header above the prose,
+     * so it passes `false` to drop the redundant lead and open straight on the
+     * measurement ("14° to 20°. Wear a sweater."). The spoken (TTS), published
+     * (MQTT), notification, and cast surfaces keep the default `true` because
+     * they have no separate period header to lean on. Honoured for English only
+     * (see [supportsNoLead]); other locales keep the lead regardless.
      */
     fun format(
         summary: InsightSummary,
         isFutureDay: Boolean = false,
         placeholderWhenEmpty: Boolean = true,
+        includeLead: Boolean = true,
     ): String {
+        // Dropping the lead means stripping the "it will be" connective and
+        // re-capitalising the first clause; both are English-specific. Other
+        // locales phrase the lead inseparably (e.g. German "Heute wird es …")
+        // and have no no-lead templates, so they keep the full lead-in — same
+        // English-only gating precedent as deltaHasLeadFragment().
+        val omitLead = !includeLead && supportsNoLead()
         // Accessories (umbrella, etc.) are filtered out of the rendered prose
         // entirely — we only surface temperature-driven clothing for now. The
         // user's umbrella rule still triggers and the precip clause still
@@ -173,8 +189,8 @@ class InsightFormatter(
         val primaryClauses = buildList {
             when (rangeFormat) {
                 RangeFormat.NONE -> Unit
-                RangeFormat.DEGREES -> add(formatBand(summary.period, summary.band, isFutureDay))
-                RangeFormat.BANDS -> add(formatBandWords(summary.period, summary.band, isFutureDay))
+                RangeFormat.DEGREES -> add(formatBand(summary.period, summary.band, isFutureDay, omitLead))
+                RangeFormat.BANDS -> add(formatBandWords(summary.period, summary.band, isFutureDay, omitLead))
             }
             // When the range is omitted there's no band sentence ahead of the
             // delta, so it leads the temperature content and must introduce
@@ -203,7 +219,7 @@ class InsightFormatter(
             // NOT have a second lead prepended — otherwise the prose doubles it
             // ("Heute, heute wird es 5° wärmer.").
             val firstClauseSelfLeads = summary.delta != null && !deltaHasLeadFragment()
-            renderLeadOnly(summary.period, isFutureDay, primaryClauses, tieInClauses, firstClauseSelfLeads)
+            renderLeadOnly(summary.period, isFutureDay, primaryClauses, tieInClauses, firstClauseSelfLeads, omitLead)
         } else {
             (primaryClauses + tieInClauses).joinToString(" ")
         }
@@ -213,13 +229,18 @@ class InsightFormatter(
         // yesterday." line so the card isn't blank; TTS opts out via
         // placeholderWhenEmpty=false to stay silent.
         if (!placeholderWhenEmpty) return ""
-        return resources.getString(unchangedRes(summary.period, isFutureDay))
+        return resources.getString(unchangedRes(summary.period, isFutureDay, omitLead))
     }
 
-    private fun unchangedRes(period: ForecastPeriod, isFutureDay: Boolean): Int = when (period) {
-        ForecastPeriod.TODAY ->
-            if (isFutureDay) R.string.insight_unchanged_tomorrow else R.string.insight_unchanged_today
-        ForecastPeriod.TONIGHT -> R.string.insight_unchanged_tonight
+    private fun unchangedRes(period: ForecastPeriod, isFutureDay: Boolean, omitLead: Boolean): Int = when (period) {
+        ForecastPeriod.TODAY -> when {
+            isFutureDay && omitLead -> R.string.insight_unchanged_tomorrow_no_lead
+            isFutureDay -> R.string.insight_unchanged_tomorrow
+            omitLead -> R.string.insight_unchanged_today_no_lead
+            else -> R.string.insight_unchanged_today
+        }
+        ForecastPeriod.TONIGHT ->
+            if (omitLead) R.string.insight_unchanged_tonight_no_lead else R.string.insight_unchanged_tonight
     }
 
     /**
@@ -240,11 +261,21 @@ class InsightFormatter(
         primaryClauses: List<String>,
         tieInClauses: List<String>,
         firstClauseSelfLeads: Boolean,
+        omitLead: Boolean,
     ): String {
-        val lead = resources.getString(leadRes(period, isFutureDay))
         if (primaryClauses.isEmpty()) {
             return tieInClauses.joinToString(" ")
         }
+        // No lead-in wanted (Today card): drop the period word and just
+        // capitalise the first clause so it opens like a sentence — the
+        // self-leading delta fragment "it will be 5° warmer …" becomes "It will
+        // be 5° warmer …", and an already-capital clause ("Wear a sweater.")
+        // is unchanged. Tie-ins keep their own "Tonight, …" lead untouched.
+        if (omitLead) {
+            val first = capitalize(primaryClauses.first())
+            return (listOf(first) + primaryClauses.drop(1) + tieInClauses).joinToString(" ")
+        }
+        val lead = resources.getString(leadRes(period, isFutureDay))
         // A self-leading first clause (a localized full-sentence delta) already
         // opens with its own "today" word, so emit it verbatim instead of
         // folding the period lead in front of it.
@@ -265,6 +296,23 @@ class InsightFormatter(
         if (text.isEmpty()) return text
         return text.substring(0, 1).lowercase(locale) + text.substring(1)
     }
+
+    /** Uppercase only the first character (locale-aware), leaving the rest untouched. */
+    private fun capitalize(text: String): String {
+        if (text.isEmpty()) return text
+        return text.substring(0, 1).uppercase(locale) + text.substring(1)
+    }
+
+    /**
+     * Whether this locale supports dropping the "Today, it will be …" lead-in
+     * (used by the Today card, whose header already names the period). Stripping
+     * the lead means removing the "it will be" connective and re-capitalising
+     * the next word — both English-specific surgery. Locales that fuse the lead
+     * into the sentence ("Heute wird es …") have no no-lead templates and keep
+     * the full lead-in. English only for now; widen as the `_no_lead` keys get
+     * translated. Mirrors the [deltaHasLeadFragment] gate.
+     */
+    private fun supportsNoLead(): Boolean = locale.language == "en"
 
     // TODO(insight-tweak): when the morning precip clause already names a
     //  daytime peak ("Rain at 3pm.") and the evening tie-in also names an
@@ -290,10 +338,17 @@ class InsightFormatter(
     private fun formatAlert(alert: AlertClause): String =
         resources.getString(R.string.insight_alert, alert.event)
 
-    private fun formatBand(period: ForecastPeriod, band: BandClause, isFutureDay: Boolean): String {
-        val lead = resources.getString(leadRes(period, isFutureDay))
+    private fun formatBand(period: ForecastPeriod, band: BandClause, isFutureDay: Boolean, omitLead: Boolean): String {
         val low = band.feelsLikeMinC.toUnit(temperatureUnit).roundToInt()
         val high = band.feelsLikeMaxC.toUnit(temperatureUnit).roundToInt()
+        if (omitLead) {
+            return if (low == high) {
+                resources.getString(R.string.insight_band_single_no_lead, low)
+            } else {
+                resources.getString(R.string.insight_band_range_no_lead, low, high)
+            }
+        }
+        val lead = resources.getString(leadRes(period, isFutureDay))
         return if (low == high) {
             resources.getString(R.string.insight_band_single, lead, low)
         } else {
@@ -301,10 +356,19 @@ class InsightFormatter(
         }
     }
 
-    private fun formatBandWords(period: ForecastPeriod, band: BandClause, isFutureDay: Boolean): String {
-        val lead = resources.getString(leadRes(period, isFutureDay))
+    private fun formatBandWords(period: ForecastPeriod, band: BandClause, isFutureDay: Boolean, omitLead: Boolean): String {
         val low = resources.getString(bandRes(band.low))
         val high = resources.getString(bandRes(band.high))
+        if (omitLead) {
+            // Band words are lowercase ("cool"); capitalise the leading word so
+            // the no-lead sentence still opens like a sentence ("Cool to mild.").
+            return if (band.low == band.high) {
+                resources.getString(R.string.insight_band_words_single_no_lead, capitalize(low))
+            } else {
+                resources.getString(R.string.insight_band_words_range_no_lead, capitalize(low), high)
+            }
+        }
+        val lead = resources.getString(leadRes(period, isFutureDay))
         return if (band.low == band.high) {
             resources.getString(R.string.insight_band_words_single, lead, low)
         } else {

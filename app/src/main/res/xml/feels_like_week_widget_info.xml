@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    AppWidget metadata for the 7-day feels-like chart widget. Same shape as the
+    per-period chart widget (the 168-hour line wants width too); the receiver it
+    binds to is the only difference. updatePeriodMillis is 0 — Glance refreshes
+    are pushed by the fetch worker via updateAll().
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="250dp"
+    android:minHeight="180dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="3"
+    android:updatePeriodMillis="0"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:previewImage="@drawable/ic_widget_chart"
+    android:description="@string/feels_like_week_widget_description" />

@@ -13,7 +13,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import androidx.glance.appwidget.updateAll
 import androidx.work.workDataOf
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.DailyHistoryEntry
@@ -56,7 +55,7 @@ import app.clothescast.tts.withSpeechAudioFocus
 import app.clothescast.R
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.renderOutfitCard
-import app.clothescast.widget.OutfitWidget
+import app.clothescast.widget.updateAllClothesCastWidgets
 import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.network.sockets.SocketTimeoutException
@@ -389,14 +388,13 @@ class FetchAndNotifyWorker(
             val insight = result.insight
             runCatching { app.insightCache.store(InsightCache.Slot.THIS_PERIOD, snapshot) }
                 .onSuccess {
-                    // Push the fresh outfit out to any home-screen widgets.
-                    // Gated on cache success because provideGlance() reads
-                    // from the cache — kicking updateAll() after a failed
-                    // write would just re-render the stale outfit. Failure
-                    // here is non-blocking; the widget will catch up on the
-                    // next successful fetch.
-                    runCatching { OutfitWidget().updateAll(applicationContext) }
-                        .onFailure { DiagLog.w(TAG, "Outfit widget update failed.", it) }
+                    // Push the fresh forecast out to any home-screen widgets
+                    // (outfit + feels-like charts). Gated on cache success
+                    // because provideGlance() reads from the cache — kicking
+                    // updateAll() after a failed write would just re-render the
+                    // stale data. Failure is non-blocking; the widgets catch up
+                    // on the next successful fetch.
+                    updateAllClothesCastWidgets(applicationContext)
                 }
                 .onFailure { DiagLog.w(TAG, "Insight cache write failed; not blocking delivery.", it) }
             // Also generate and cache the *next* 12-hour window's insight off

@@ -151,6 +151,12 @@ fun TodayScreen(
     onNavigateToCalendar: () -> Unit = onNavigateToSettings,
     onNavigateToDeveloper: () -> Unit = onNavigateToSettings,
     onNavigateToFormat: () -> Unit = onNavigateToSettings,
+    // Pager page to open on, from the Today deep link's `?page=` query. The
+    // feels-like home-screen widgets deep-link to page 0 (current period) and
+    // page 2 (7-day). rememberPagerState only reads this on first composition,
+    // so a config change keeps the user's swiped-to page rather than yanking
+    // back here.
+    startPage: Int = 0,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -178,7 +184,7 @@ fun TodayScreen(
     // page 2 is the 7-day outlook. Page count is constant; when
     // thisPeriodInsight is null the pager doesn't render but the state is
     // harmlessly retained at page 0.
-    val pagerState = rememberPagerState(initialPage = 0) { 3 }
+    val pagerState = rememberPagerState(initialPage = startPage.coerceIn(0, 2)) { 3 }
     val titleRes = topBarTitleRes(
         period = state.thisPeriodInsight?.period,
         page = pagerState.currentPage,
@@ -2083,6 +2089,12 @@ internal fun ForecastCard(
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     perModelHourly: PerModelHourly? = null,
     showModelSpread: Boolean = false,
+    // The home-screen feels-like widget reuses this card but drops the chrome —
+    // the section header and the legend (per-hour caption + model-spread chips)
+    // — for a glanceable summary. Both default to true so the in-app cards are
+    // unchanged.
+    showHeader: Boolean = true,
+    showLegend: Boolean = true,
 ) {
     val symbol = temperatureUnit.symbol()
     val feelsLikeMinMax = remember(hourly, temperatureUnit) {
@@ -2104,10 +2116,12 @@ internal fun ForecastCard(
                 modifier = Modifier.padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Text(
-                    text = stringResource(R.string.today_forecast_title),
-                    style = MaterialTheme.typography.titleSmall,
-                )
+                if (showHeader) {
+                    Text(
+                        text = stringResource(R.string.today_forecast_title),
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                }
                 ChartSubtitleRow(subtitle = subtitleText, readout = readout)
                 ForecastChart(
                     hourly = hourly,
@@ -2117,19 +2131,21 @@ internal fun ForecastCard(
                     perModelHourly = perModelHourly,
                     showModelSpread = showModelSpread,
                 )
-                Text(
-                    text = stringResource(R.string.today_forecast_legend_feels_like, symbol),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                if (perModelHourly != null) {
-                    ModelSpreadLegend(
-                        visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
-                        mainLine = MainLineLegend(
-                            color = AppTheme.mainLineColor,
-                            label = stringResource(R.string.today_chart_main_line_label),
-                        ),
+                if (showLegend) {
+                    Text(
+                        text = stringResource(R.string.today_forecast_legend_feels_like, symbol),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
+                    if (perModelHourly != null) {
+                        ModelSpreadLegend(
+                            visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
+                            mainLine = MainLineLegend(
+                                color = AppTheme.mainLineColor,
+                                label = stringResource(R.string.today_chart_main_line_label),
+                            ),
+                        )
+                    }
                 }
             }
             if (scrubController != null) ChartRestoreOverlay(scrubController)
@@ -2844,7 +2860,7 @@ private const val DRY_THRESHOLD_PCT = 5.0
 // though the probability card surfaces the peak.
 private const val DRY_TOTAL_THRESHOLD_MM = 0.1
 
-private fun formatMinMax(values: List<Double>, unit: TemperatureUnit): Pair<Int, Int>? {
+internal fun formatMinMax(values: List<Double>, unit: TemperatureUnit): Pair<Int, Int>? {
     if (values.isEmpty()) return null
     val converted = values.map { it.toUnit(unit) }
     return converted.min().roundToInt() to converted.max().roundToInt()

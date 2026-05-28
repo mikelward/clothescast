@@ -84,6 +84,13 @@
     <string name="widget_empty_title">No outfit yet</string>
     <string name="widget_empty_subtitle">Tap to open ClothesCast</string>
 
+    <!-- Feels-like chart widgets. -->
+    <string name="feels_like_widget_label">Feels-like chart</string>
+    <string name="feels_like_widget_description">The feels-like temperature for the current period.</string>
+    <string name="feels_like_week_widget_label">Feels-like (7 days)</string>
+    <string name="feels_like_week_widget_description">The feels-like temperature over the next 7 days.</string>
+    <string name="feels_like_widget_empty_title">No forecast yet</string>
+
     <string name="today_forecast_title">Feels like temperature</string>
     <string name="today_forecast_min_max">Feels like %1$d – %2$d%3$s</string>
     <string name="today_forecast_legend_feels_like">Feels-like (%1$s) by hour</string>

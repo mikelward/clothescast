@@ -52,6 +52,10 @@ import app.clothescast.ui.settings.SettingsSpeechSetupGeminiPreview
 import app.clothescast.ui.settings.SettingsSpeechSetupSmartHomePreview
 import app.clothescast.ui.settings.SettingsVoiceDevicePreview
 import app.clothescast.ui.settings.SettingsVoiceGeminiPreview
+import app.clothescast.widget.FeelsLikeWidgetNoCurrentTimePreview
+import app.clothescast.widget.FeelsLikeWidgetTodayDarkPreview
+import app.clothescast.widget.FeelsLikeWidgetTodayPreview
+import app.clothescast.widget.FeelsLikeWidgetWeekPreview
 import app.clothescast.widget.WidgetEmptyPreview
 import app.clothescast.widget.WidgetTodayCompactPreview
 import app.clothescast.widget.WidgetTodayExtraLargePreview
@@ -562,6 +566,11 @@ class PreviewSnapshots {
     @Test fun widget_today_extra_large() = capture { WidgetTodayExtraLargePreview() }
     @Test fun widget_today_tonight_wide() = capture { WidgetTodayTonightWidePreview() }
     @Test fun widget_tonight_tomorrow_wide() = capture { WidgetTonightTomorrowWidePreview() }
+
+    @Test fun feels_like_widget_today() = capture { FeelsLikeWidgetTodayPreview() }
+    @Test fun feels_like_widget_today_dark() = capture { FeelsLikeWidgetTodayDarkPreview() }
+    @Test fun feels_like_widget_week() = capture { FeelsLikeWidgetWeekPreview() }
+    @Test fun feels_like_widget_no_current_time() = capture { FeelsLikeWidgetNoCurrentTimePreview() }
 
     // 480dp-tall preview overflows the class-level 640dp viewport; widen it
     // so the bottom of the column doesn't get clipped.

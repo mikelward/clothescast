@@ -347,8 +347,6 @@ the displayed label localizes.
     <string name="today_more_options">その他のオプション</string>
     <string name="today_report_a_bug">バグを報告</string>
     <string name="today_refresh">更新</string>
-    <string name="today_refresh_toast_daily">毎日の ClothesCast を更新中です — もうすぐ表示されます。</string>
-    <string name="today_refresh_toast_nightly">夜間の ClothesCast を更新中です — もうすぐ表示されます。</string>
     <string name="today_empty_title">まだ ClothesCast がありません</string>
     <string name="today_empty_subtitle">朝の ClothesCast が生成されるとここに表示されます。</string>
     <string name="today_fetch_now">今すぐ取得</string>

@@ -362,8 +362,6 @@ displayed label localizes.
     <string name="today_more_options">더 보기</string>
     <string name="today_report_a_bug">버그 신고</string>
     <string name="today_refresh">새로고침</string>
-    <string name="today_refresh_toast_daily">매일 ClothesCast를 새로고침하고 있어요 — 곧 표시됩니다.</string>
-    <string name="today_refresh_toast_nightly">야간 ClothesCast를 새로고침하고 있어요 — 곧 표시됩니다.</string>
     <string name="today_empty_title">아직 ClothesCast가 없어요</string>
     <string name="today_empty_subtitle">아침 ClothesCast가 생성되면 여기에 표시됩니다.</string>
     <string name="today_fetch_now">지금 가져오기</string>

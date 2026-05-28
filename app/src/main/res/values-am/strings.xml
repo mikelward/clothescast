@@ -64,8 +64,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_more_options">ተጨማሪ አማራጮች</string>
     <string name="today_report_a_bug">ስህተት ሪፖርት አድርግ</string>
     <string name="today_refresh">አድስ</string>
-    <string name="today_refresh_toast_daily">ዕለታዊ ClothesCast እያዳሰ ነው — ብዙም ሳይቆይ ይታያል።</string>
-    <string name="today_refresh_toast_nightly">ምሽታዊ ClothesCast እያዳሰ ነው — ብዙም ሳይቆይ ይታያል።</string>
     <string name="today_empty_title">እስካሁን ClothesCast የለም</string>
     <string name="today_empty_subtitle">የጠዋቱ ClothesCast ከተሰራ በኋላ እዚህ ይታያል።</string>
     <string name="today_fetch_now">አሁን አምጣ</string>

@@ -98,8 +98,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_more_options">Chaguo zaidi</string>
     <string name="today_report_a_bug">Ripoti hitilafu</string>
     <string name="today_refresh">Onyesha upya</string>
-    <string name="today_refresh_toast_daily">Inasasisha ClothesCast yako ya kila siku — itaonekana hivi karibuni.</string>
-    <string name="today_refresh_toast_nightly">Inasasisha ClothesCast yako ya usiku — itaonekana hivi karibuni.</string>
     <string name="today_empty_title">Hakuna ClothesCast bado</string>
     <string name="today_empty_subtitle">ClothesCast yako ya asubuhi itaonekana hapa baada ya kuundwa.</string>
     <string name="today_fetch_now">Pakua sasa</string>

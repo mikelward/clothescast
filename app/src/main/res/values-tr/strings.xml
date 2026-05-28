@@ -275,8 +275,6 @@ displayed label localizes.
     <string name="today_more_options">Daha fazla seçenek</string>
     <string name="today_report_a_bug">Hata bildir</string>
     <string name="today_refresh">Yenile</string>
-    <string name="today_refresh_toast_daily">Günlük ClothesCast\'ın güncelleniyor — birazdan görünecek.</string>
-    <string name="today_refresh_toast_nightly">Gecelik ClothesCast\'ın güncelleniyor — birazdan görünecek.</string>
     <string name="today_empty_title">Henüz ClothesCast yok</string>
     <string name="today_empty_subtitle">Sabah ClothesCast\'ın oluşturulduğunda burada görünecek.</string>
     <string name="today_fetch_now">Şimdi al</string>

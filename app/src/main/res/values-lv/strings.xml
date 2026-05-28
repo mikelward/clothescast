@@ -114,8 +114,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_more_options">Vairāk opciju</string>
     <string name="today_report_a_bug">Ziņot par kļūdu</string>
     <string name="today_refresh">Atjaunināt</string>
-    <string name="today_refresh_toast_daily">Atjaunina ikdienas ClothesCast — tas parādīsies drīzumā.</string>
-    <string name="today_refresh_toast_nightly">Atjaunina nakts ClothesCast — tas parādīsies drīzumā.</string>
     <string name="today_empty_title">ClothesCast vēl nav</string>
     <string name="today_empty_subtitle">Tavs rīta ClothesCast parādīsies šeit, tiklīdz tas tiks ģenerēts.</string>
     <string name="today_fetch_now">Ielādēt tagad</string>

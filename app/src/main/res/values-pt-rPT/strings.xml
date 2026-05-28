@@ -368,8 +368,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_more_options">Mais opções</string>
     <string name="today_report_a_bug">Reportar um erro</string>
     <string name="today_refresh">Atualizar</string>
-    <string name="today_refresh_toast_daily">A atualizar o teu ClothesCast diário — vai aparecer em breve.</string>
-    <string name="today_refresh_toast_nightly">A atualizar o teu ClothesCast noturno — vai aparecer em breve.</string>
     <string name="today_empty_title">Ainda sem ClothesCast</string>
     <string name="today_empty_subtitle">O teu ClothesCast matinal aparece aqui assim que for gerado.</string>
     <string name="today_fetch_now">Obter agora</string>

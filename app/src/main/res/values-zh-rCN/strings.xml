@@ -340,8 +340,6 @@ label localizes.
     <string name="today_more_options">更多选项</string>
     <string name="today_report_a_bug">报告问题</string>
     <string name="today_refresh">刷新</string>
-    <string name="today_refresh_toast_daily">正在刷新你的每日 ClothesCast — 稍后即可看到。</string>
-    <string name="today_refresh_toast_nightly">正在刷新你的夜间 ClothesCast — 稍后即可看到。</string>
     <string name="today_empty_title">还没有 ClothesCast</string>
     <string name="today_empty_subtitle">你的早晨 ClothesCast 生成后会显示在这里。</string>
     <string name="today_fetch_now">立即获取</string>

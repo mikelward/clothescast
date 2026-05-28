@@ -107,8 +107,6 @@ they work correctly in both the single-band and range templates.
     <string name="today_more_options">المزيد من الخيارات</string>
     <string name="today_report_a_bug">الإبلاغ عن خطأ</string>
     <string name="today_refresh">تحديث</string>
-    <string name="today_refresh_toast_daily">جارٍ تحديث ClothesCast اليومي — سيظهر قريبًا.</string>
-    <string name="today_refresh_toast_nightly">جارٍ تحديث ClothesCast الليلي — سيظهر قريبًا.</string>
     <string name="today_empty_title">لا يوجد ClothesCast بعد</string>
     <string name="today_empty_subtitle">سيظهر ClothesCast الصباحي هنا بعد إنشائه.</string>
     <string name="today_fetch_now">جلب الآن</string>

@@ -363,8 +363,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_more_options">További lehetőségek</string>
     <string name="today_report_a_bug">Hiba bejelentése</string>
     <string name="today_refresh">Frissítés</string>
-    <string name="today_refresh_toast_daily">A napi ClothesCastod frissül — hamarosan megjelenik.</string>
-    <string name="today_refresh_toast_nightly">Az esti ClothesCastod frissül — hamarosan megjelenik.</string>
     <string name="today_empty_title">Még nincs ClothesCast</string>
     <string name="today_empty_subtitle">A reggeli ClothesCastod itt jelenik meg, amint elkészül.</string>
     <string name="today_fetch_now">Betöltés most</string>

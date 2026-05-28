@@ -102,8 +102,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_more_options">Mai multe opțiuni</string>
     <string name="today_report_a_bug">Raportează un bug</string>
     <string name="today_refresh">Reîmprospătează</string>
-    <string name="today_refresh_toast_daily">Se reîmprospătează ClothesCast-ul zilnic — va apărea în scurt timp.</string>
-    <string name="today_refresh_toast_nightly">Se reîmprospătează ClothesCast-ul de seară — va apărea în scurt timp.</string>
     <string name="today_empty_title">Niciun ClothesCast încă</string>
     <string name="today_empty_subtitle">ClothesCast-ul tău de dimineață va apărea aici odată generat.</string>
     <string name="today_fetch_now">Aduce acum</string>

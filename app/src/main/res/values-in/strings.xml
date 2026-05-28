@@ -105,8 +105,6 @@ to values/strings.xml (English).
     <string name="today_more_options">Opsi lainnya</string>
     <string name="today_report_a_bug">Laporkan bug</string>
     <string name="today_refresh">Perbarui</string>
-    <string name="today_refresh_toast_daily">Memperbarui ClothesCast harian Anda — sebentar lagi akan muncul.</string>
-    <string name="today_refresh_toast_nightly">Memperbarui ClothesCast malam Anda — sebentar lagi akan muncul.</string>
     <string name="today_empty_title">Belum ada ClothesCast</string>
     <string name="today_empty_subtitle">ClothesCast pagi Anda akan muncul di sini setelah dibuat.</string>
     <string name="today_fetch_now">Ambil sekarang</string>

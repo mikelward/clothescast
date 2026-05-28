@@ -2883,9 +2883,14 @@ private fun triggerRefresh(
     tonightTime: java.time.LocalTime,
 ) {
     // force=true so an explicit user tap bypasses the same-day cache and
-    // actually regenerates. Without this, Refresh on the same calendar day
-    // just redelivers the morning's payload — surprising when the user has
+    // re-fetches fresh data. Without this, Refresh on the same calendar day
+    // just re-renders the morning's payload — surprising when the user has
     // changed clothes rules, location, or the underlying forecast has moved.
+    //
+    // silent=true so Refresh updates the on-screen Today card but skips the
+    // delivery fan-out (notification, TTS, MQTT, cast) — the user is already
+    // in the app looking at it. The top progress banner is the only feedback,
+    // so there's no toast either.
     //
     // Period follows wall-clock time so an evening tap inside the user's
     // tonight window regenerates the tonight insight — that's the one whose
@@ -2899,12 +2904,7 @@ private fun triggerRefresh(
     } else {
         ForecastPeriod.TODAY
     }
-    FetchAndNotifyWorker.enqueueOneShot(context.applicationContext, force = true, period = period)
-    val toastRes = when (period) {
-        ForecastPeriod.TODAY -> R.string.today_refresh_toast_daily
-        ForecastPeriod.TONIGHT -> R.string.today_refresh_toast_nightly
-    }
-    Toast.makeText(context, context.getString(toastRes), Toast.LENGTH_SHORT).show()
+    FetchAndNotifyWorker.enqueueOneShot(context.applicationContext, force = true, silent = true, period = period)
 }
 
 private fun triggerPlay(context: android.content.Context, period: ForecastPeriod) {

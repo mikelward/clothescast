@@ -275,8 +275,6 @@ displayed label localizes.
     <string name="today_more_options">Lisää vaihtoehtoja</string>
     <string name="today_report_a_bug">Ilmoita virheestä</string>
     <string name="today_refresh">Päivitä</string>
-    <string name="today_refresh_toast_daily">Päivittäinen ClothesCastisi päivitetään — se ilmestyy pian.</string>
-    <string name="today_refresh_toast_nightly">Iltainen ClothesCastisi päivitetään — se ilmestyy pian.</string>
     <string name="today_empty_title">Ei ClothesCastia vielä</string>
     <string name="today_empty_subtitle">Aamuinen ClothesCastisi ilmestyy tähän, kun se on luotu.</string>
     <string name="today_fetch_now">Hae nyt</string>

@@ -430,8 +430,6 @@ only the displayed label localizes.
     <string name="today_more_options">Ещё</string>
     <string name="today_report_a_bug">Сообщить об ошибке</string>
     <string name="today_refresh">Обновить</string>
-    <string name="today_refresh_toast_daily">Обновляю твой ежедневный ClothesCast — скоро появится.</string>
-    <string name="today_refresh_toast_nightly">Обновляю твой вечерний ClothesCast — скоро появится.</string>
     <string name="today_empty_title">ClothesCast пока нет</string>
     <string name="today_empty_subtitle">Твой утренний ClothesCast появится здесь, как только сгенерируется.</string>
     <string name="today_fetch_now">Получить сейчас</string>

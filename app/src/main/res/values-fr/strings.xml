@@ -346,8 +346,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_more_options">Plus d\'options</string>
     <string name="today_report_a_bug">Signaler un bug</string>
     <string name="today_refresh">Actualiser</string>
-    <string name="today_refresh_toast_daily">Actualisation de ton ClothesCast quotidien — il apparaîtra bientôt.</string>
-    <string name="today_refresh_toast_nightly">Actualisation de ton ClothesCast nocturne — il apparaîtra bientôt.</string>
     <string name="today_empty_title">Pas encore de ClothesCast</string>
     <string name="today_empty_subtitle">Ton ClothesCast matinal apparaîtra ici dès qu\'il sera généré.</string>
     <string name="today_fetch_now">Récupérer maintenant</string>

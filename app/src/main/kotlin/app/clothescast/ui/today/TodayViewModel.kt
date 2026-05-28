@@ -165,6 +165,13 @@ data class TodayState(
      */
     val clothesPromoCardVisible: Boolean = false,
     /**
+     * Whether the one-time telemetry/privacy disclosure is still pending
+     * (the user hasn't acked it). Lifted out of the banner so [BannerStack]
+     * can fold it into the capped promo pool alongside the location, clothes,
+     * and celebration prompts.
+     */
+    val telemetryNoticeVisible: Boolean = false,
+    /**
      * True iff either calendar-sourced theming toggle is on. The Today
      * screen reads this to decide whether an ON_RESUME nudge of the
      * permission-recheck tick is worth its DataStore-write cost: if no
@@ -527,6 +534,7 @@ class TodayViewModel(
                 !prefs.calendarBirthdayThemingActive,
             clothesPromoCardVisible = !prefs.clothesPromoCardDismissed &&
                 prefs.clothesRules == ClothesRule.DEFAULTS,
+            telemetryNoticeVisible = !prefs.telemetryNoticeAcked,
             usesCalendarThemes = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayState())

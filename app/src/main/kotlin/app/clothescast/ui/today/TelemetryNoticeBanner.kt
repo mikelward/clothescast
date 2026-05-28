@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.ClothesCastApplication
 import app.clothescast.R
 import kotlinx.coroutines.launch
@@ -43,20 +41,19 @@ import kotlinx.coroutines.launch
  */
 @Composable
 internal fun TelemetryNoticeBanner(
+    visible: Boolean,
     onOpenPrivacy: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // The telemetry-notice pref is read via a lifecycle-scoped flow that can't
-    // run in @Preview / snapshot composition — no-op so a full-screen preview
-    // (the scaffold's banner stack) renders cleanly.
+    if (!visible) return
+    // Acking the notice reaches the app's settingsRepository via LocalContext,
+    // which isn't a ClothesCastApplication under @Preview / snapshot
+    // composition — no-op there so a full-screen banner-stack preview renders
+    // cleanly without a live Application.
     if (LocalInspectionMode.current) return
     val context = LocalContext.current
     val settings = (context.applicationContext as ClothesCastApplication).settingsRepository
     val coroutineScope = rememberCoroutineScope()
-
-    val prefs by settings.preferences.collectAsStateWithLifecycle(initialValue = null)
-    val current = prefs ?: return
-    if (current.telemetryNoticeAcked) return
 
     fun ack() {
         coroutineScope.launch { settings.setTelemetryNoticeAcked(true) }

@@ -1600,11 +1600,6 @@ internal fun OutfitPreviewCard(
                 textAlign = TextAlign.Center,
                 minLines = 2,
             )
-            Text(
-                text = stringResource(R.string.settings_root_clothes),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary,
-            )
         }
     }
 }
@@ -1919,11 +1914,9 @@ internal fun InsightCard(
      */
     onLongPressDate: (() -> Unit)? = null,
     /**
-     * Opens the Format settings page. Wired to two affordances: tapping the
-     * prose body (only the prose — not the date / location header or the
-     * generated-at footer) and a small "Format" link in the card's bottom-right
-     * corner. Null disables both; default null keeps every preview / non-live
-     * call site unchanged.
+     * Opens the Format settings page. Wired to tapping the prose body (only
+     * the prose — not the date / location header). Null disables it; default
+     * null keeps every preview / non-live call site unchanged.
      */
     onNavigateToFormat: (() -> Unit)? = null,
     /**
@@ -1938,9 +1931,6 @@ internal fun InsightCard(
     val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory) {
         InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory)
     }
-    val generatedAtText = formatHourMinute(
-        insight.generatedAt.atZone(ZoneId.systemDefault()).toLocalTime(),
-    )
     // Page 2 caches tomorrow's daytime insight after the evening worker run;
     // surface it as "Tomorrow" rather than "Today" so the heading matches the
     // prose lead-in below.
@@ -2047,28 +2037,6 @@ internal fun InsightCard(
                     Modifier
                 },
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(
-                    text = stringResource(
-                        R.string.today_generated_at,
-                        generatedAtText,
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                if (onNavigateToFormat != null) {
-                    Text(
-                        text = stringResource(R.string.today_insight_format_link),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.clickable { onNavigateToFormat() },
-                    )
-                }
-            }
         }
     }
 }

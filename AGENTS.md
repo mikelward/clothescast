@@ -140,8 +140,8 @@ new rule the first time something bites you, not the third.
 
 - Use the `mcp__github__*` MCP tools for *all* GitHub operations. The `gh`
   CLI is **not** available in this sandbox.
-- Open PRs as **draft** by default. Un-draft only after CI is green and you
-  (or the user) have eyeballed the change.
+- Open PRs as **ready for review** (non-draft) immediately — don't wait for
+  CI to go green or for an eyeball pass before marking them ready.
 - **Keep PR title and body in sync with the branch on every push.** A PR's
   title and description are read as the canonical summary of what's
   landing; if the branch has grown, narrowed, or pivoted since the PR

@@ -204,29 +204,45 @@ private suspend fun buildChartBitmap(context: Context, weekly: Boolean): Bitmap?
     val darkTheme = resolveDarkTheme(context, prefs.themeMode)
     val palette = prefs.colorPalette
 
-    return runCatching {
-        withTimeoutOrNull(RENDER_TIMEOUT_MS) {
-            renderComposableToBitmap(context, RENDER_WIDTH_PX, RENDER_HEIGHT_PX) {
-                ClothesCastTheme(darkTheme = darkTheme, colorPalette = palette) {
-                    WidgetForecastChart(
-                        hourly = hourly,
-                        days = days,
-                        temperatureUnit = prefs.temperatureUnit,
-                        timeFormat = prefs.timeFormat,
-                        startDate = startDate,
-                        now = now,
-                    )
-                }
+    val bitmap = withTimeoutOrNull(RENDER_TIMEOUT_MS) {
+        renderComposableToBitmap(context, RENDER_WIDTH_PX, RENDER_HEIGHT_PX) {
+            ClothesCastTheme(darkTheme = darkTheme, colorPalette = palette) {
+                WidgetForecastChart(
+                    hourly = hourly,
+                    days = days,
+                    temperatureUnit = prefs.temperatureUnit,
+                    timeFormat = prefs.timeFormat,
+                    startDate = startDate,
+                    now = now,
+                )
             }
         }
-    }.getOrNull()
+    }
+    if (bitmap == null) {
+        DiagLog.w(
+            TAG,
+            "Chart bitmap null for ${if (weekly) "7-day" else "period"} widget " +
+                "(${hourly.size} hourly pts) — render failed/blank/timeout; showing empty state",
+        )
+    }
+    return bitmap
 }
 
 private suspend fun loadInsight(context: Context): Pair<Insight, UserPreferences>? {
     val app = context.applicationContext as ClothesCastApplication
-    val prefs = runCatching { app.settingsRepository.preferences.first() }.getOrNull() ?: return null
-    val snapshot = runCatching { app.insightCache.thisPeriod.first() }.getOrNull() ?: return null
-    val insight = runCatching { app.deriveInsight(snapshot, prefs).insight }.getOrNull() ?: return null
+    val prefs = runCatching { app.settingsRepository.preferences.first() }
+        .onFailure { DiagLog.w(TAG, "Widget: reading preferences failed", it) }
+        .getOrNull() ?: return null
+    val snapshot = runCatching { app.insightCache.thisPeriod.first() }
+        .onFailure { DiagLog.w(TAG, "Widget: reading cached snapshot failed", it) }
+        .getOrNull()
+    if (snapshot == null) {
+        DiagLog.i(TAG, "Widget: no cached forecast yet — showing empty state")
+        return null
+    }
+    val insight = runCatching { app.deriveInsight(snapshot, prefs).insight }
+        .onFailure { DiagLog.w(TAG, "Widget: deriveInsight failed", it) }
+        .getOrNull() ?: return null
     return insight to prefs
 }
 

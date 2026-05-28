@@ -130,4 +130,85 @@ class SilentRefreshFreshnessTest {
         FetchAndNotifyWorker.currentPeriodForSchedule(prefs, LocalTime.of(21, 0)) shouldBe ForecastPeriod.TODAY
         FetchAndNotifyWorker.currentPeriodForSchedule(prefs, LocalTime.of(2, 0)) shouldBe ForecastPeriod.TODAY
     }
+
+    @Test
+    fun `live manual refresh honours the requested period even when tonight is disabled`() {
+        // A same-day evening Refresh tap is silent + forced and carries TONIGHT.
+        // It must refresh TONIGHT even with tonight delivery off — otherwise
+        // resolveRefreshPeriod falls through to currentPeriodForSchedule, which
+        // forces TODAY there and leaves the Tonight card stale.
+        val prefs = basePrefs.copy(tonightEnabled = false)
+        FetchAndNotifyWorker.resolveRefreshPeriod(
+            isSilent = true,
+            isSameDayForced = true,
+            requestedPeriod = ForecastPeriod.TONIGHT,
+            prefs = prefs,
+            now = LocalTime.of(21, 0),
+        ) shouldBe ForecastPeriod.TONIGHT
+    }
+
+    @Test
+    fun `live manual refresh honours a requested TODAY`() {
+        FetchAndNotifyWorker.resolveRefreshPeriod(
+            isSilent = true,
+            isSameDayForced = true,
+            requestedPeriod = ForecastPeriod.TODAY,
+            prefs = basePrefs,
+            now = LocalTime.of(21, 0),
+        ) shouldBe ForecastPeriod.TODAY
+    }
+
+    @Test
+    fun `stale manual refresh that crossed midnight falls back to the schedule`() {
+        // A forced tap enqueued before midnight but run after the date rolled
+        // over is no longer live (isSameDayForced = false). With tonight
+        // disabled it must steer to TODAY via the schedule rather than caching
+        // the stale, disabled TONIGHT slot it originally requested.
+        val prefs = basePrefs.copy(tonightEnabled = false)
+        FetchAndNotifyWorker.resolveRefreshPeriod(
+            isSilent = true,
+            isSameDayForced = false,
+            requestedPeriod = ForecastPeriod.TONIGHT,
+            prefs = prefs,
+            now = LocalTime.of(21, 0),
+        ) shouldBe ForecastPeriod.TODAY
+    }
+
+    @Test
+    fun `opportunistic silent refresh ignores the requested period and follows the schedule`() {
+        // App-open / onboarding refreshes aren't same-day-forced; they
+        // auto-correct to the current schedule window and ignore any requested
+        // period.
+        FetchAndNotifyWorker.resolveRefreshPeriod(
+            isSilent = true,
+            isSameDayForced = false,
+            requestedPeriod = ForecastPeriod.TODAY,
+            prefs = basePrefs,
+            now = LocalTime.of(21, 0),
+        ) shouldBe ForecastPeriod.TONIGHT
+    }
+
+    @Test
+    fun `scheduled alarm honours the requested period`() {
+        // Alarms are neither silent nor force-flagged; the requested period
+        // (set by AlarmReceiver) is taken verbatim.
+        FetchAndNotifyWorker.resolveRefreshPeriod(
+            isSilent = false,
+            isSameDayForced = false,
+            requestedPeriod = ForecastPeriod.TONIGHT,
+            prefs = basePrefs,
+            now = LocalTime.of(9, 0),
+        ) shouldBe ForecastPeriod.TONIGHT
+    }
+
+    @Test
+    fun `a run with no requested period defaults to TODAY`() {
+        FetchAndNotifyWorker.resolveRefreshPeriod(
+            isSilent = false,
+            isSameDayForced = false,
+            requestedPeriod = null,
+            prefs = basePrefs,
+            now = LocalTime.of(21, 0),
+        ) shouldBe ForecastPeriod.TODAY
+    }
 }

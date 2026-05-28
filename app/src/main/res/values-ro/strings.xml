@@ -1166,10 +1166,10 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_tts_style_spooky_narrator">Narator înfricoșător</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Acum</string>
-    <string name="today_clothes_promo_body">ClothesCast alege ținute pe baza unui set de reguli. Modifică temperaturile, adaugă straturi sau schimbă ce se sugerează în setările Haine.</string>
+    <string name="today_clothes_promo_body">ClothesCast alege ținute pe baza unui set de reguli. Modifică temperaturile și personalizează-ți garderoba în setările Haine.</string>
     <string name="today_clothes_promo_cta">Setări haine</string>
     <string name="today_clothes_promo_dismiss">Închide</string>
-    <string name="today_clothes_promo_title">Fă regulile ale tale</string>
+    <string name="today_clothes_promo_title">Fă hainele ale tale</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Redă</string>
     <string name="today_play_toast_daily">Redau ClothesCast-ul tău zilnic.</string>

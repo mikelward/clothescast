@@ -1175,10 +1175,10 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_tts_style_spooky_narrator">Strašljiv pripovedovalec</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Pokaži zdaj</string>
-    <string name="today_clothes_promo_body">ClothesCast izbira obleke po pravilih. Prilagodi temperature, dodaj plasti ali spremeni predloge v nastavitvah Oblačila.</string>
+    <string name="today_clothes_promo_body">ClothesCast izbira obleke po pravilih. Prilagodi temperature in svojo garderobo v nastavitvah Oblačila.</string>
     <string name="today_clothes_promo_cta">Nastavitve oblačil</string>
     <string name="today_clothes_promo_dismiss">Zapri</string>
-    <string name="today_clothes_promo_title">Prilagodi pravila sebi</string>
+    <string name="today_clothes_promo_title">Prilagodi oblačila sebi</string>
     <string name="today_insight_format_link">Oblika</string>
     <string name="today_play">Predvajaj</string>
     <string name="today_play_toast_daily">Predvajam tvoj jutranji ClothesCast.</string>

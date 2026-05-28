@@ -1237,10 +1237,10 @@ is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_spooky_narrator">Straszny narrator</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Pokaż teraz</string>
-    <string name="today_clothes_promo_body">ClothesCast wybiera stroje na podstawie zestawu reguł. Dostosuj temperatury, dodaj warstwy lub zmień sugestie w ustawieniach Ubrania.</string>
+    <string name="today_clothes_promo_body">ClothesCast wybiera stroje na podstawie zestawu reguł. Dostosuj temperatury i spersonalizuj swoją garderobę w ustawieniach Ubrania.</string>
     <string name="today_clothes_promo_cta">Ustawienia ubrań</string>
     <string name="today_clothes_promo_dismiss">Odrzuć</string>
-    <string name="today_clothes_promo_title">Dostosuj reguły do siebie</string>
+    <string name="today_clothes_promo_title">Dostosuj ubrania do siebie</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Odtwórz</string>
     <string name="today_play_toast_daily">Odtwarzanie twojego porannego ClothesCasta.</string>

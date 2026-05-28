@@ -1160,10 +1160,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_style_spooky_narrator">Mtangazaji wa kutisha</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Onyesha sasa</string>
-    <string name="today_clothes_promo_body">ClothesCast huchagua nguo kutoka kwa seti ya kanuni. Rekebisha viwango vya joto, ongeza tabaka, au badilisha kinachopendekezwa katika mipangilio ya Nguo.</string>
+    <string name="today_clothes_promo_body">ClothesCast huchagua nguo kutoka kwa seti ya kanuni. Rekebisha viwango vya joto na ubinafsishe nguo zako katika mipangilio ya Nguo.</string>
     <string name="today_clothes_promo_cta">Mipangilio ya nguo</string>
     <string name="today_clothes_promo_dismiss">Funga</string>
-    <string name="today_clothes_promo_title">Fanya kanuni ziwe zako</string>
+    <string name="today_clothes_promo_title">Fanya nguo ziwe zako</string>
     <string name="today_insight_format_link">Umbo</string>
     <string name="today_play">Cheza</string>
     <string name="today_play_toast_daily">Ninacheza ClothesCast yako ya kila siku.</string>

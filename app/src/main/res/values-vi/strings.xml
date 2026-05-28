@@ -1249,10 +1249,10 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_tts_style_spooky_narrator">Người dẫn truyện rùng rợn</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Hiện bây giờ</string>
-    <string name="today_clothes_promo_body">ClothesCast chọn trang phục dựa trên một bộ quy tắc. Điều chỉnh nhiệt độ, thêm lớp hoặc thay đổi gợi ý trong cài đặt Quần áo.</string>
+    <string name="today_clothes_promo_body">ClothesCast chọn trang phục dựa trên một bộ quy tắc. Điều chỉnh nhiệt độ và tùy chỉnh tủ quần áo của bạn trong cài đặt Quần áo.</string>
     <string name="today_clothes_promo_cta">Cài đặt quần áo</string>
     <string name="today_clothes_promo_dismiss">Bỏ qua</string>
-    <string name="today_clothes_promo_title">Tạo quy tắc của riêng bạn</string>
+    <string name="today_clothes_promo_title">Biến quần áo thành của riêng bạn</string>
     <string name="today_insight_format_link">Định dạng</string>
     <string name="today_play">Phát</string>
     <string name="today_play_toast_daily">Đang phát ClothesCast hằng ngày của bạn.</string>

@@ -1217,10 +1217,10 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_tts_style_spooky_narrator">Kuslig berättare</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Visa nu</string>
-    <string name="today_clothes_promo_body">ClothesCast väljer outfits utifrån en uppsättning regler. Justera temperaturerna, lägg till lager eller ändra vad som föreslås i Klädinställningar.</string>
+    <string name="today_clothes_promo_body">ClothesCast väljer outfits utifrån en uppsättning regler. Justera temperaturerna och anpassa din garderob i Klädinställningar.</string>
     <string name="today_clothes_promo_cta">Klädinställningar</string>
     <string name="today_clothes_promo_dismiss">Stäng</string>
-    <string name="today_clothes_promo_title">Gör reglerna till dina egna</string>
+    <string name="today_clothes_promo_title">Gör kläderna till dina egna</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Spela upp</string>
     <string name="today_play_toast_daily">Spelar upp din dagliga ClothesCast.</string>

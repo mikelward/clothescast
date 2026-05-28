@@ -1180,10 +1180,10 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_tts_style_spooky_narrator">راوی ترسناک</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">اکنون را نشان بده</string>
-    <string name="today_clothes_promo_body">ClothesCast لباس‌ها را بر اساس قوانینی انتخاب می‌کند. در تنظیمات لباس، دماها را تنظیم کن، لایه اضافه کن یا پیشنهادها را تغییر بده.</string>
+    <string name="today_clothes_promo_body">ClothesCast لباس‌ها را بر اساس قوانینی انتخاب می‌کند. در تنظیمات لباس، دماها را تنظیم کن و کمد لباست را شخصی‌سازی کن.</string>
     <string name="today_clothes_promo_cta">تنظیمات لباس</string>
     <string name="today_clothes_promo_dismiss">رد کردن</string>
-    <string name="today_clothes_promo_title">قوانین را مال خودت کن</string>
+    <string name="today_clothes_promo_title">لباس را مال خودت کن</string>
     <string name="today_insight_format_link">قالب</string>
     <string name="today_play">پخش</string>
     <string name="today_play_toast_daily">در حال پخش ClothesCast روزانه‌ات.</string>

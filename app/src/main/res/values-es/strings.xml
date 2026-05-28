@@ -1316,10 +1316,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_spooky_narrator">Narrador escalofriante</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Ver ahora</string>
-    <string name="today_clothes_promo_body">ClothesCast elige los conjuntos a partir de un conjunto de reglas. Ajusta las temperaturas, añade capas o cambia lo que se sugiere en los ajustes de Ropa.</string>
+    <string name="today_clothes_promo_body">ClothesCast elige los conjuntos a partir de un conjunto de reglas. Ajusta las temperaturas y personaliza tu armario en los ajustes de Ropa.</string>
     <string name="today_clothes_promo_cta">Ajustes de Ropa</string>
     <string name="today_clothes_promo_dismiss">Descartar</string>
-    <string name="today_clothes_promo_title">Haz tuyas las reglas</string>
+    <string name="today_clothes_promo_title">Haz tuya la ropa</string>
     <string name="today_insight_format_link">Formato</string>
     <string name="today_play">Reproducir</string>
     <string name="today_play_toast_daily">Reproduciendo tu ClothesCast diario.</string>

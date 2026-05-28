@@ -1212,10 +1212,10 @@ What is NOT overridden, by design:
     <string name="settings_tts_style_spooky_narrator">Strašidelný rozprávač</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Zobraziť teraz</string>
-    <string name="today_clothes_promo_body">ClothesCast vyberá oblečenie podľa sady pravidiel. Uprav teploty, pridaj vrstvy alebo zmeň, čo sa navrhuje, v nastaveniach Oblečenia.</string>
+    <string name="today_clothes_promo_body">ClothesCast vyberá oblečenie podľa sady pravidiel. Uprav teploty a prispôsob si šatník v nastaveniach Oblečenia.</string>
     <string name="today_clothes_promo_cta">Nastavenia oblečenia</string>
     <string name="today_clothes_promo_dismiss">Zavrieť</string>
-    <string name="today_clothes_promo_title">Prispôsob si pravidlá</string>
+    <string name="today_clothes_promo_title">Prispôsob si oblečenie</string>
     <string name="today_insight_format_link">Formát</string>
     <string name="today_play">Prehrať</string>
     <string name="today_play_toast_daily">Prehrávam tvoj denný ClothesCast.</string>

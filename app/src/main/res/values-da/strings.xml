@@ -1218,10 +1218,10 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_tts_style_spooky_narrator">Uhyggelig fortæller</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Vis nu</string>
-    <string name="today_clothes_promo_body">ClothesCast vælger outfits ud fra et sæt regler. Juster temperaturerne, tilføj lag eller skift forslag i tøjindstillingerne.</string>
+    <string name="today_clothes_promo_body">ClothesCast vælger outfits ud fra et sæt regler. Juster temperaturerne og tilpas din garderobe i tøjindstillingerne.</string>
     <string name="today_clothes_promo_cta">Tøjindstillinger</string>
     <string name="today_clothes_promo_dismiss">Afvis</string>
-    <string name="today_clothes_promo_title">Gør reglerne til dine egne</string>
+    <string name="today_clothes_promo_title">Gør tøjet til dit eget</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Afspil</string>
     <string name="today_play_toast_daily">Afspiller din daglige ClothesCast.</string>

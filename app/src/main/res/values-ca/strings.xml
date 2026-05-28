@@ -1128,10 +1128,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_tts_style_spooky_narrator">Narrador esgarrifós</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Mostra ara</string>
-    <string name="today_clothes_promo_body">ClothesCast tria conjunts a partir d\'unes regles. Ajusta les temperatures, afegeix capes o canvia el que se suggereix a la configuració de Roba.</string>
+    <string name="today_clothes_promo_body">ClothesCast tria conjunts a partir d\'unes regles. Ajusta les temperatures i personalitza el teu vestuari a la configuració de Roba.</string>
     <string name="today_clothes_promo_cta">Configuració de Roba</string>
     <string name="today_clothes_promo_dismiss">Descarta</string>
-    <string name="today_clothes_promo_title">Fes teves les regles</string>
+    <string name="today_clothes_promo_title">Fes teva la roba</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Reprodueix</string>
     <string name="today_play_toast_daily">Reproduint el teu ClothesCast diari.</string>

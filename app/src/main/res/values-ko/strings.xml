@@ -1342,10 +1342,10 @@ displayed label localizes.
     <string name="settings_tts_style_spooky_narrator">으스스한 내레이터</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">지금 표시</string>
-    <string name="today_clothes_promo_body">ClothesCast는 규칙에 따라 옷을 추천합니다. 옷 설정에서 온도를 조정하거나, 레이어를 추가하거나, 추천 항목을 변경해 보세요.</string>
+    <string name="today_clothes_promo_body">ClothesCast는 규칙에 따라 옷을 추천합니다. 옷 설정에서 온도를 조정하고 옷장을 맞춤 설정해 보세요.</string>
     <string name="today_clothes_promo_cta">옷 설정</string>
     <string name="today_clothes_promo_dismiss">닫기</string>
-    <string name="today_clothes_promo_title">규칙을 내 것으로</string>
+    <string name="today_clothes_promo_title">옷을 내 것으로</string>
     <string name="today_insight_format_link">형식</string>
     <string name="today_play">재생</string>
     <string name="today_play_toast_daily">데일리 ClothesCast를 재생 중.</string>

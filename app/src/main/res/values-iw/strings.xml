@@ -1190,10 +1190,10 @@ standard in Israeli digital communication.
     <string name="settings_tts_style_spooky_narrator">מספר מפחיד</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">הצג עכשיו</string>
-    <string name="today_clothes_promo_body">ClothesCast בוחר תלבושות לפי כללים. שנה את הטמפרטורות, הוסף שכבות או שנה את ההצעות בהגדרות בגדים.</string>
+    <string name="today_clothes_promo_body">ClothesCast בוחר תלבושות לפי כללים. שנה את הטמפרטורות והתאם אישית את המלתחה שלך בהגדרות בגדים.</string>
     <string name="today_clothes_promo_cta">הגדרות בגדים</string>
     <string name="today_clothes_promo_dismiss">סגור</string>
-    <string name="today_clothes_promo_title">התאם את הכללים אישית</string>
+    <string name="today_clothes_promo_title">התאם את הבגדים אישית</string>
     <string name="today_insight_format_link">פורמט</string>
     <string name="today_play">הפעל</string>
     <string name="today_play_toast_daily">מפעיל את ClothesCast היומי שלך.</string>

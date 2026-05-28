@@ -1310,10 +1310,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_spooky_narrator">Τρομακτικός αφηγητής</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Τώρα</string>
-    <string name="today_clothes_promo_body">Το ClothesCast επιλέγει ρούχα με βάση κανόνες. Άλλαξε τις θερμοκρασίες, πρόσθεσε στρώσεις ή τροποποίησε τι προτείνεται στις ρυθμίσεις Ρούχων.</string>
+    <string name="today_clothes_promo_body">Το ClothesCast επιλέγει ρούχα με βάση κανόνες. Άλλαξε τις θερμοκρασίες και προσάρμοσε την γκαρνταρόμπα σου στις ρυθμίσεις Ρούχων.</string>
     <string name="today_clothes_promo_cta">Ρυθμίσεις Ρούχων</string>
     <string name="today_clothes_promo_dismiss">Απόρριψη</string>
-    <string name="today_clothes_promo_title">Κάνε τους κανόνες δικούς σου</string>
+    <string name="today_clothes_promo_title">Κάνε τα ρούχα δικά σου</string>
     <string name="today_insight_format_link">Μορφή</string>
     <string name="today_play">Αναπαραγωγή</string>
     <string name="today_play_toast_daily">Αναπαραγωγή του ημερήσιου ClothesCast σου.</string>

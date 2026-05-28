@@ -1159,10 +1159,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_style_spooky_narrator">አስፈሪ ተራኪ</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">አሁንን አሳይ</string>
-    <string name="today_clothes_promo_body">ClothesCast ከደንቦች ስብስብ ልብሶችን ይመርጣል። የሙቀት መጠኖችን አስተካክል፣ ሽፋኖችን ጨምር ወይም በልብስ ቅንብር ውስጥ የቀረቡትን ለውጥ።</string>
+    <string name="today_clothes_promo_body">ClothesCast ከደንቦች ስብስብ ልብሶችን ይመርጣል። የሙቀት መጠኖችን አስተካክል እና በልብስ ቅንብር ውስጥ ልብስህን አበጅ።</string>
     <string name="today_clothes_promo_cta">የልብስ ቅንብር</string>
     <string name="today_clothes_promo_dismiss">ዝጋ</string>
-    <string name="today_clothes_promo_title">ደንቦቹን የራስህ አድርግ</string>
+    <string name="today_clothes_promo_title">ልብሶቹን የራስህ አድርግ</string>
     <string name="today_insight_format_link">ቅርጸት</string>
     <string name="today_play">አጫውት</string>
     <string name="today_play_toast_daily">ዕለታዊ ClothesCastህን እያጫወትኩ ነው።</string>

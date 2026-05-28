@@ -1220,10 +1220,10 @@ Not overridden by design:
     <string name="settings_tts_style_spooky_narrator">डरावना वक्ता</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">अभी दिखाएँ</string>
-    <string name="today_clothes_promo_body">ClothesCast नियमों के एक सेट से कपड़े चुनता है। तापमान बदलें, परतें जोड़ें या कपड़े सेटिंग्स में सुझाव बदलें।</string>
+    <string name="today_clothes_promo_body">ClothesCast नियमों के एक सेट से कपड़े चुनता है। तापमान बदलें और कपड़े सेटिंग्स में अपना वॉर्डरोब कस्टमाइज़ करें।</string>
     <string name="today_clothes_promo_cta">कपड़े सेटिंग्स</string>
     <string name="today_clothes_promo_dismiss">बंद करें</string>
-    <string name="today_clothes_promo_title">नियमों को अपना बनाएँ</string>
+    <string name="today_clothes_promo_title">कपड़ों को अपना बनाएँ</string>
     <string name="today_insight_format_link">प्रारूप</string>
     <string name="today_play">चलाएँ</string>
     <string name="today_play_toast_daily">आपका दैनिक ClothesCast चला रहे हैं।</string>

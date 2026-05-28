@@ -1301,10 +1301,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_spooky_narrator">Narratore inquietante</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Mostra ora</string>
-    <string name="today_clothes_promo_body">ClothesCast sceglie gli outfit da una serie di regole. Modifica le temperature, aggiungi strati o cambia ciò che viene suggerito nelle impostazioni Abbigliamento.</string>
+    <string name="today_clothes_promo_body">ClothesCast sceglie gli outfit da una serie di regole. Modifica le temperature e personalizza il tuo guardaroba nelle impostazioni Abbigliamento.</string>
     <string name="today_clothes_promo_cta">Impostazioni Abbigliamento</string>
     <string name="today_clothes_promo_dismiss">Ignora</string>
-    <string name="today_clothes_promo_title">Personalizza le regole</string>
+    <string name="today_clothes_promo_title">Personalizza l\'abbigliamento</string>
     <string name="today_insight_format_link">Formato</string>
     <string name="today_play">Riproduci</string>
     <string name="today_play_toast_daily">Riproduzione del tuo ClothesCast quotidiano.</string>

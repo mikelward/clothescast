@@ -1239,10 +1239,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_style_spooky_narrator">Nakatatakot na tagapagsalaysay</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Ipakita ngayon</string>
-    <string name="today_clothes_promo_body">Pumipili ang ClothesCast ng mga damit mula sa isang set ng mga panuntunan. Baguhin ang mga temperatura, magdagdag ng layer, o palitan ang mga mungkahi sa mga setting ng Damit.</string>
+    <string name="today_clothes_promo_body">Pumipili ang ClothesCast ng mga damit mula sa isang set ng mga panuntunan. Baguhin ang mga temperatura at i-customize ang iyong wardrobe sa mga setting ng Damit.</string>
     <string name="today_clothes_promo_cta">Mga setting ng damit</string>
     <string name="today_clothes_promo_dismiss">Isara</string>
-    <string name="today_clothes_promo_title">Gawing sariling iyo ang mga panuntunan</string>
+    <string name="today_clothes_promo_title">Gawing sariling iyo ang mga damit</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">I-play</string>
     <string name="today_play_toast_daily">Pino-play ang iyong araw-araw na ClothesCast.</string>

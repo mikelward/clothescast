@@ -594,11 +594,23 @@ private fun BannerStack(
     onSetUpLocation: () -> Unit,
 ) {
     val bannerModifier = Modifier.fillMaxWidth()
+    // Cap the setup/promo stack so a fresh user isn't buried under "set this
+    // up" cards. Only the top [maxVisible] eligible promos render (priority
+    // location > privacy > clothes > celebration); the rest wait their turn.
+    // The operational banners below (update / build / crash / work / holiday)
+    // are unaffected and keep their existing positions.
+    val shownPromos = promoBannersToShow(
+        locationActionRequired = locationActionRequired,
+        telemetryNoticeVisible = state.telemetryNoticeVisible,
+        clothesPromoEligible = state.clothesPromoCardVisible,
+        celebrationEligible = state.celebrationCardVisible,
+        hasForecast = state.thisPeriodInsight != null,
+    )
     // LocationActionRequiredBanner is first on purpose: without a resolvable
     // location nothing else on the screen is actionable — no insight will
     // generate, no notification will fire — so the prompt to fix it
     // outranks every other banner, including the update / crash disclosures.
-    if (locationActionRequired) {
+    if (PromoBanner.LOCATION in shownPromos) {
         LocationActionRequiredBanner(
             onSetUpLocation = onSetUpLocation,
             modifier = bannerModifier,
@@ -612,14 +624,19 @@ private fun BannerStack(
     // (or taps through to Privacy from it). Stays out of the way of the
     // crash banner: that's a current problem to action; this is just
     // disclosure.
-    TelemetryNoticeBanner(onOpenPrivacy = onOpenPrivacy, modifier = bannerModifier)
+    TelemetryNoticeBanner(
+        visible = PromoBanner.TELEMETRY in shownPromos,
+        onOpenPrivacy = onOpenPrivacy,
+        modifier = bannerModifier,
+    )
     // "Customize your clothes" nudge so the user knows the per-temperature
     // rules are theirs to tune. Gated upstream on [clothesRules] still
-    // matching [ClothesRule.DEFAULTS] (plus the user not having dismissed)
-    // so a user who has already customised never sees it. Sits before the
-    // celebration-themes promo because clothes rules are the core setting.
+    // matching [ClothesRule.DEFAULTS] (plus the user not having dismissed),
+    // and held back by [promoBannersToShow] until the user has seen a forecast
+    // and there's room under the cap. Sits before the celebration-themes promo
+    // because clothes rules are the more core customization.
     ClothesPromoCard(
-        visible = state.clothesPromoCardVisible,
+        visible = PromoBanner.CLOTHES in shownPromos,
         onOpenClothes = {
             onDismissClothesPromoCard()
             onOpenClothes()
@@ -627,12 +644,13 @@ private fun BannerStack(
         onDismiss = onDismissClothesPromoCard,
         modifier = bannerModifier,
     )
-    // Promo card for the calendar-sourced holiday + birthday theming.
-    // Driven by [TodayState.celebrationCardVisible] (gated upstream on
-    // toggles + dismissal) so it disappears the moment either toggle goes
-    // on or the X is tapped.
+    // Promo card for the calendar-sourced holiday + birthday theming. Gated
+    // upstream on toggles + dismissal ([TodayState.celebrationCardVisible]),
+    // held back by [promoBannersToShow] until the user has seen a forecast
+    // and there's room under the cap — so it disappears the moment either
+    // toggle goes on or the X is tapped, and never crowds a brand-new user.
     CelebrationThemesCard(
-        visible = state.celebrationCardVisible,
+        visible = PromoBanner.CELEBRATION in shownPromos,
         onOpenCalendarSettings = onOpenCalendarSettings,
         onDismiss = onDismissCelebrationCard,
         modifier = bannerModifier,

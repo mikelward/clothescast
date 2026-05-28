@@ -179,36 +179,39 @@ class FetchAndNotifyWorker(
         }
 
         val isSilentRefresh = inputData.getBoolean(KEY_SILENT_REFRESH, false)
-        // Silent app-open refreshes derive the period from the user's
-        // schedule against wall-clock time — same logic the Today screen's
-        // manual Refresh button uses — so a cached snapshot left in the
-        // wrong window after a missed alarm (e.g. yesterday-evening
-        // TONIGHT carried into morning) gets corrected to the current
-        // window on the next open, not perpetuated.
-        val period = if (isSilentRefresh) {
-            currentPeriodForSchedule(prefs)
-        } else {
-            inputData.getString(KEY_PERIOD)
-                ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() }
-                ?: ForecastPeriod.TODAY
-        }
-
-        // Honour force-refresh only when it's still the day the user tapped on. If
-        // the request was enqueued near midnight and only ran after the date rolled
-        // over (offline retries, deferred backoff), the *new* day's cache should
-        // win — otherwise we'd silently bypass it and burn an extra Gemini call on
-        // a stale tap. The tonight gate below also keys off this same-day check so
-        // a stale tap from yesterday can't bypass a tonight-disabled toggle either.
+        val isUserForcedRefresh = inputData.getBoolean(KEY_FORCE_REFRESH, false)
+        // A force-refresh only counts while it's still the day the user tapped.
+        // If the request was enqueued near midnight and only ran after the date
+        // rolled over (offline retries, deferred backoff), the *new* day's cache
+        // should win — otherwise we'd silently bypass it and burn an extra Gemini
+        // call on a stale tap. Both the period choice and the tonight gate below
+        // key off this same-day check, so a tap from yesterday neither honours
+        // its stale requested window nor bypasses a tonight-disabled toggle.
         val today = LocalDate.now()
         val requestedEpochDay = inputData.getLong(KEY_REQUESTED_EPOCH_DAY, Long.MIN_VALUE)
-        val isUserForcedRefresh = inputData.getBoolean(KEY_FORCE_REFRESH, false)
-        // Silent app-open refreshes fire precisely *because* the cached
-        // snapshot is stale, so they always bypass the same-day cache.
-        val forceRefresh = (isUserForcedRefresh && requestedEpochDay == today.toEpochDay()) ||
-            isSilentRefresh
-        if (isUserForcedRefresh && requestedEpochDay != today.toEpochDay()) {
+        val isSameDayForced = isUserForcedRefresh && requestedEpochDay == today.toEpochDay()
+        if (isUserForcedRefresh && !isSameDayForced) {
             DiagLog.i(TAG, "Ignoring force refresh from a previous day (requested=$requestedEpochDay, today=${today.toEpochDay()}).")
         }
+
+        // Opportunistic silent refreshes (app-open / onboarding) and stale manual
+        // taps carry no live window intent, so they derive the period from the
+        // user's schedule against wall-clock time — correcting a snapshot left in
+        // the wrong slot and steering clear of a disabled tonight slot. A live
+        // (same-day) manual Refresh tap is silent + forced and carries the window
+        // the user is actually in; honour it so an evening tap with tonight
+        // delivery disabled still refreshes TONIGHT.
+        val period = resolveRefreshPeriod(
+            isSilent = isSilentRefresh,
+            isSameDayForced = isSameDayForced,
+            requestedPeriod = inputData.getString(KEY_PERIOD)
+                ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() },
+            prefs = prefs,
+        )
+
+        // Silent app-open refreshes fire precisely *because* the cached
+        // snapshot is stale, so they always bypass the same-day cache.
+        val forceRefresh = isSameDayForced || isSilentRefresh
 
         // The tonight alarm rearms blindly via AlarmReceiver; the user's enable
         // toggle is honoured here so a stale alarm doesn't ship a tonight insight
@@ -1736,5 +1739,32 @@ class FetchAndNotifyWorker(
             }
             return if (inTonightWindow) ForecastPeriod.TONIGHT else ForecastPeriod.TODAY
         }
+
+        /**
+         * The window a run should refresh. Opportunistic silent refreshes
+         * (app-open [enqueueSilentRefresh], onboarding [enqueueOnboardingRefresh])
+         * and stale manual taps auto-correct to the current schedule window via
+         * [currentPeriodForSchedule] — fixing a snapshot left in the wrong slot
+         * after a missed alarm and steering clear of a disabled tonight slot.
+         * Only a *live* manual Refresh tap — silent and forced on the day it was
+         * tapped ([isSameDayForced]) — or a scheduled alarm (not silent) honours
+         * the explicit [requestedPeriod], so an evening tap still targets TONIGHT
+         * even when tonight delivery is disabled ([currentPeriodForSchedule] would
+         * force TODAY there, leaving the Tonight card stale). A force tap that
+         * crossed midnight is no longer live, so it falls back with the
+         * opportunistic refreshes rather than caching the stale TONIGHT slot.
+         */
+        internal fun resolveRefreshPeriod(
+            isSilent: Boolean,
+            isSameDayForced: Boolean,
+            requestedPeriod: ForecastPeriod?,
+            prefs: UserPreferences,
+            now: LocalTime = LocalTime.now(),
+        ): ForecastPeriod =
+            if (isSilent && !isSameDayForced) {
+                currentPeriodForSchedule(prefs, now)
+            } else {
+                requestedPeriod ?: ForecastPeriod.TODAY
+            }
     }
 }

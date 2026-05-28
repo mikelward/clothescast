@@ -2882,29 +2882,23 @@ private fun triggerRefresh(
     morningTime: java.time.LocalTime,
     tonightTime: java.time.LocalTime,
 ) {
-    // force=true so an explicit user tap bypasses the same-day cache and
-    // re-fetches fresh data. Without this, Refresh on the same calendar day
-    // just re-renders the morning's payload — surprising when the user has
-    // changed clothes rules, location, or the underlying forecast has moved.
-    //
     // silent=true so Refresh updates the on-screen Today card but skips the
     // delivery fan-out (notification, TTS, MQTT, cast) — the user is already
     // in the app looking at it. The top progress banner is the only feedback,
-    // so there's no toast either.
+    // so there's no toast either. Silent refreshes bypass the same-day cache
+    // and the daily/tonight enable gates, so an explicit tap always re-fetches.
     //
-    // Period follows wall-clock time so an evening tap inside the user's
-    // tonight window regenerates the tonight insight — that's the one whose
-    // primary outfit is "Tonight" and whose nextOutfit drives the "Tomorrow"
-    // card. A morning tap regenerates today, whose nextOutfit drives the
-    // "Tonight" card. Window boundaries come from the user's actual schedule
-    // times (prefs.schedule.time / prefs.tonightSchedule.time) so a customised
-    // schedule doesn't desync from the manual refresh.
+    // The period here only selects which work queue the Today screen observes
+    // for the spinner (TODAY vs TONIGHT); the worker re-derives the actual
+    // window from wall-clock at run time. Boundaries come from the user's
+    // schedule (prefs.schedule.time / prefs.tonightSchedule.time) so a
+    // customised schedule doesn't desync from the manual refresh.
     val period = if (java.time.LocalTime.now().isInTonightWindow(morningTime, tonightTime)) {
         ForecastPeriod.TONIGHT
     } else {
         ForecastPeriod.TODAY
     }
-    FetchAndNotifyWorker.enqueueOneShot(context.applicationContext, force = true, silent = true, period = period)
+    FetchAndNotifyWorker.enqueueOneShot(context.applicationContext, silent = true, period = period)
 }
 
 private fun triggerPlay(context: android.content.Context, period: ForecastPeriod) {

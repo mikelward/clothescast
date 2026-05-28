@@ -99,22 +99,16 @@ class FetchAndNotifyWorkerTest {
     }
 
     @Test
-    fun `same-day force refresh bypasses the tonight-disabled gate`() {
-        // Force refresh enqueued *today* — the gate is meant to honour the
-        // user's recent tap. Without a saved location the run then falls
-        // through to the no-location failure, which is exactly what proves
-        // the gate was bypassed (otherwise we'd see the skip_telemetry
-        // success path).
+    fun `silent refresh bypasses the disabled-period gate`() {
+        // A silent refresh (app-open / onboarding / manual Refresh) updates the
+        // cache regardless of the enable toggles — the gate only guards
+        // scheduled delivery. Tonight is disabled in setup; without a saved
+        // location the run falls through to the no-location failure, which
+        // proves it bypassed the gate (otherwise we'd see the skip_telemetry
+        // success path the scheduled tonight run takes above).
         runBlocking {
-            val today = LocalDate.now().toEpochDay()
             val worker = TestListenableWorkerBuilder<FetchAndNotifyWorker>(context)
-                .setInputData(
-                    workDataOf(
-                        FetchAndNotifyWorker.KEY_PERIOD to ForecastPeriod.TONIGHT.name,
-                        FetchAndNotifyWorker.KEY_FORCE_REFRESH to true,
-                        FetchAndNotifyWorker.KEY_REQUESTED_EPOCH_DAY to today,
-                    )
-                )
+                .setInputData(workDataOf(FetchAndNotifyWorker.KEY_SILENT_REFRESH to true))
                 .build()
 
             val result = worker.doWork()
@@ -122,27 +116,6 @@ class FetchAndNotifyWorkerTest {
             result.shouldBeInstanceOf<Result.Failure>()
             result.outputData.getString(FetchAndNotifyWorker.KEY_REASON) shouldBe
                 FetchAndNotifyWorker.REASON_NO_LOCATION
-        }
-    }
-
-    @Test
-    fun `stale force refresh from a previous day is dropped and the tonight gate still fires`() {
-        runBlocking {
-            val yesterday = LocalDate.now().minusDays(1).toEpochDay()
-            val worker = TestListenableWorkerBuilder<FetchAndNotifyWorker>(context)
-                .setInputData(
-                    workDataOf(
-                        FetchAndNotifyWorker.KEY_PERIOD to ForecastPeriod.TONIGHT.name,
-                        FetchAndNotifyWorker.KEY_FORCE_REFRESH to true,
-                        FetchAndNotifyWorker.KEY_REQUESTED_EPOCH_DAY to yesterday,
-                    )
-                )
-                .build()
-
-            val result = worker.doWork()
-
-            result.shouldBeInstanceOf<Result.Success>()
-            result.outputData.getBoolean(FetchAndNotifyWorker.KEY_SKIP_TELEMETRY, false) shouldBe true
         }
     }
 

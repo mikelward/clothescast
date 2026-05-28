@@ -87,11 +87,12 @@ class SettingsViewModelTest {
     // metric locale for the test class so the defaults are deterministic.
     private lateinit var originalLocale: Locale
     // viewModelScope owns an infinite preferences.collect loop and the device-voice
-    // load job. Without bounding it to the test, those coroutines can outlive
-    // runTest's body and resume with an exception (after the test's DataStore is
-    // cancelled in tearDown), occasionally surfacing as UncaughtExceptionsBeforeTest
-    // on the next test. ViewModelStore.clear() cancels every registered viewmodel's
-    // scope in one call, matching the existing DataStore-scope cleanup pattern above.
+    // load job. Without bounding them to the test, those coroutines can outlive
+    // runTest's body and resume with an exception (after the test's scopes are
+    // cancelled in tearDown), surfacing as UncaughtExceptionsBeforeTest on the next
+    // test. ViewModelStore.clear() cancels every registered viewmodel's scope in one
+    // call; tearDown then drains the scheduler so that cancellation completes before
+    // resetMain(), which closes the race deterministically.
     private val viewModelStore = ViewModelStore()
     private var nextViewModelKey = 0
     private fun <T : ViewModel> track(vm: T): T = vm.also {
@@ -150,8 +151,17 @@ class SettingsViewModelTest {
 
     @AfterEach
     fun tearDown() {
+        // Cancel the viewmodel + DataStore scopes, then drain the shared test
+        // scheduler so their cancellation runs to completion WHILE Main is still
+        // set. The viewmodel's infinite preferences.collect, its device-voice
+        // load job, and DataStore's actor all live on `dispatcher`; if any is
+        // mid-flight when the test body ends, cancelling without draining lets it
+        // resume after resetMain(), fail to dispatch through the now-missing Main
+        // dispatcher, and surface as UncaughtExceptionsBeforeTest against the
+        // next test. Draining before resetMain() makes teardown deterministic.
         viewModelStore.clear()
         dataStoreScope.cancel()
+        dispatcher.scheduler.advanceUntilIdle()
         Dispatchers.resetMain()
         Locale.setDefault(originalLocale)
     }

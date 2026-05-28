@@ -703,6 +703,11 @@
     <string name="settings_delivery_notification">Notify</string>
     <string name="settings_delivery_tts">Speak</string>
 
+    <string name="speech_setup_title">Set up spoken ClothesCasts</string>
+    <string name="speech_setup_description">Choose how your ClothesCast is spoken aloud. Use the free device voice, or add a Gemini API key for high-quality voices.</string>
+    <string name="speech_setup_smart_home_note">Smart home speech requires a Gemini API key. Casting still shows your outfit without it.</string>
+    <string name="speech_setup_done">Done</string>
+
     <string name="settings_tts_engine_title">Voice engine</string>
     <string name="settings_tts_engine_description">Gemini sounds much more natural than the device voice but needs a network call at speak-time and uses your API key for synthesis (one short call per spoken ClothesCast). Falls back to the device voice if Gemini fails.</string>
     <string name="settings_tts_engine_device">Device (offline, free)</string>
@@ -755,7 +760,7 @@
     <string name="settings_tts_device_voice_currently_loading">Loading…</string>
     <string name="settings_tts_device_voice_network">Network</string>
     <string name="settings_tts_device_voice_offline">Offline</string>
-    <string name="settings_tts_install_google_hint">Install Google\'s text-to-speech engine for higher-quality voices.</string>
+    <string name="settings_tts_install_google_hint">Install Google\'s text-to-speech engine for high-quality voices.</string>
     <string name="settings_tts_install_google_button">Install Google TTS</string>
     <string name="settings_tts_voice_locale_label">Accent</string>
     <!-- Caption under Voice > Accent: only the spoken accent, not the on-screen

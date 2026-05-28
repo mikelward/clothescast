@@ -146,6 +146,8 @@ internal fun SchedulePage(
             dailyMentionEveningEvents = state.dailyMentionEveningEvents,
             deliveryMode = state.deliveryMode,
             tonightDeliveryMode = state.tonightDeliveryMode,
+            ttsEngine = state.ttsEngine,
+            geminiKeyConfigured = state.apiKeyConfigured,
             padding = padding,
             onSetSchedule = viewModel::setSchedule,
             onSetDailyEnabled = viewModel::setDailyEnabled,
@@ -155,6 +157,9 @@ internal fun SchedulePage(
             onSetDailyMentionEveningEvents = viewModel::setDailyMentionEveningEvents,
             onSetDeliveryMode = viewModel::setDeliveryMode,
             onSetTonightDeliveryMode = viewModel::setTonightDeliveryMode,
+            onSetTtsEngine = viewModel::setTtsEngine,
+            onSetGeminiKey = viewModel::setApiKey,
+            onClearGeminiKey = viewModel::clearApiKey,
             // Show a Done button only when this page is the deep-link landing from
             // onboarding's "Continue" — gives the user an obvious way to finish
             // setup and reach Today. In the regular settings flow they exit via
@@ -361,6 +366,8 @@ internal fun SmartHomePage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             castMorning = state.castMorning,
             castTonight = state.castTonight,
             castSkipPhoneSpeech = state.castSkipPhoneSpeech,
+            ttsEngine = state.ttsEngine,
+            geminiKeyConfigured = state.apiKeyConfigured,
             padding = padding,
             onSetBridgeEnabled = viewModel::setMqttBridgeEnabled,
             onSaveConfig = viewModel::setMqttConfig,
@@ -379,6 +386,9 @@ internal fun SmartHomePage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             onSetCastTonight = viewModel::setCastTonight,
             onSetCastSkipPhoneSpeech = viewModel::setCastSkipPhoneSpeech,
             onSetMqttSkipPhoneSpeech = viewModel::setMqttSkipPhoneSpeech,
+            onSetTtsEngine = viewModel::setTtsEngine,
+            onSetGeminiKey = viewModel::setApiKey,
+            onClearGeminiKey = viewModel::clearApiKey,
         )
         }
     }

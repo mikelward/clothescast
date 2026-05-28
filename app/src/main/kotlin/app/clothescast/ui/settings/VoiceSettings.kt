@@ -544,7 +544,7 @@ private const val DEVICE_VOICE_AUTO_ID = "__auto__"
  * call (~1ms) so there's no need to push it off the main thread.
  */
 @Composable
-private fun rememberIsGoogleTtsInstalled(): Boolean {
+internal fun rememberIsGoogleTtsInstalled(): Boolean {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     var installed by remember { mutableStateOf(checkGoogleTtsInstalled(context)) }
@@ -571,7 +571,7 @@ private fun checkGoogleTtsInstalled(context: android.content.Context): Boolean =
  * engine is detected.
  */
 @Composable
-private fun InstallGoogleTtsHint() {
+internal fun InstallGoogleTtsHint() {
     val context = LocalContext.current
     Text(
         text = stringResource(R.string.settings_tts_install_google_hint),
@@ -710,7 +710,7 @@ internal suspend fun runTtsPreview(
     }
 }
 
-private fun ttsEngineLabel(engine: TtsEngine): Int = when (engine) {
+internal fun ttsEngineLabel(engine: TtsEngine): Int = when (engine) {
     TtsEngine.DEVICE -> R.string.settings_tts_engine_device
     TtsEngine.GEMINI -> R.string.settings_tts_engine_gemini
 }

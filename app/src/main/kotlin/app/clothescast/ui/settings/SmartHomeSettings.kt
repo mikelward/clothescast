@@ -1,5 +1,7 @@
 package app.clothescast.ui.settings
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,9 +44,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.DisposableEffect
 import app.clothescast.R
 import app.clothescast.cast.DiscoveredCastRoute
+import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.discovery.DiscoveredService
 import app.clothescast.discovery.ServiceType
+import app.clothescast.notification.NotificationPermission
 import app.clothescast.ui.EdgeFadeOverlay
 import java.time.Instant
 import java.time.ZoneId
@@ -84,6 +88,8 @@ internal fun SmartHomeContent(
     castMorning: Boolean,
     castTonight: Boolean,
     castSkipPhoneSpeech: Boolean,
+    ttsEngine: TtsEngine,
+    geminiKeyConfigured: Boolean,
     padding: PaddingValues,
     onSetBridgeEnabled: (Boolean) -> Unit,
     onSaveConfig: (host: String, port: Int, useTls: Boolean, username: String, topic: String, password: String?) -> Unit,
@@ -102,6 +108,9 @@ internal fun SmartHomeContent(
     onSetCastTonight: (Boolean) -> Unit,
     onSetCastSkipPhoneSpeech: (Boolean) -> Unit,
     onSetMqttSkipPhoneSpeech: (Boolean) -> Unit,
+    onSetTtsEngine: (TtsEngine) -> Unit,
+    onSetGeminiKey: (String) -> Unit,
+    onClearGeminiKey: () -> Unit,
 ) {
     // Cancel any in-flight scan when this screen leaves the composition —
     // the user backing out of Smart Home shouldn't leave the NsdManager
@@ -112,6 +121,36 @@ internal fun SmartHomeContent(
             onCloseCastPicker()
         }
     }
+
+    // Cast and the MQTT bridge speak / publish the ClothesCast to another
+    // device, so enabling either needs the same just-in-time setup as the
+    // schedule page's delivery channels: the Speech setup sheet (Gemini key or
+    // device TTS) plus the notification permission. Reuse the same flows by
+    // wrapping the enable callbacks below; the prompts no-op when already
+    // satisfied.
+    val context = LocalContext.current
+    var speechSheetOpen by rememberSaveable { mutableStateOf(false) }
+    val notificationLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { /* No follow-up needed; the worker reads permission state at delivery time. */ }
+    val requestNotificationPermission: () -> Unit = {
+        if (NotificationPermission.isRequired() && !NotificationPermission.isGranted(context)) {
+            notificationLauncher.launch(NotificationPermission.MANIFEST_PERMISSION)
+        }
+    }
+    val onEnableDelivery: () -> Unit = {
+        requestNotificationPermission()
+        speechSheetOpen = true
+    }
+    val onSetCastEnabledGated: (Boolean) -> Unit = { enabled ->
+        onSetCastEnabled(enabled)
+        if (enabled) onEnableDelivery()
+    }
+    val onSetBridgeEnabledGated: (Boolean) -> Unit = { enabled ->
+        onSetBridgeEnabled(enabled)
+        if (enabled) onEnableDelivery()
+    }
+
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
         scrollState = scrollState,
@@ -144,7 +183,7 @@ internal fun SmartHomeContent(
                     onPickRoute = onPickCastRoute,
                     onClearRoute = onClearCastRoute,
                     onCastNow = onCastNow,
-                    onSetCastEnabled = onSetCastEnabled,
+                    onSetCastEnabled = onSetCastEnabledGated,
                     onSetCastMorning = onSetCastMorning,
                     onSetCastTonight = onSetCastTonight,
                     onSetCastSkipPhoneSpeech = onSetCastSkipPhoneSpeech,
@@ -165,7 +204,7 @@ internal fun SmartHomeContent(
                 skipPhoneSpeech = mqttSkipPhoneSpeech,
                 discoveryRunning = discoveryRunning,
                 discoveredServices = discoveredServices,
-                onSetEnabled = onSetBridgeEnabled,
+                onSetEnabled = onSetBridgeEnabledGated,
                 onSaveConfig = onSaveConfig,
                 onClearPassword = onClearPassword,
                 onPublishNow = onPublishNow,
@@ -175,6 +214,19 @@ internal fun SmartHomeContent(
                 onUseDiscoveredService = onUseDiscoveredService,
             )
         }
+    }
+
+    if (speechSheetOpen) {
+        SpeechSetupSheet(
+            selectedEngine = ttsEngine,
+            geminiKeyConfigured = geminiKeyConfigured,
+            onSetTtsEngine = onSetTtsEngine,
+            onSetGeminiKey = onSetGeminiKey,
+            onClearGeminiKey = onClearGeminiKey,
+            onConfirm = { speechSheetOpen = false },
+            onDismiss = { speechSheetOpen = false },
+            showSmartHomeSpeechNote = true,
+        )
     }
 }
 

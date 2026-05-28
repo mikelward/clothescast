@@ -1,6 +1,7 @@
 package app.clothescast.data
 
 import android.content.Context
+import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -9,6 +10,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.clothescast.core.domain.model.BottomsFormat
@@ -952,7 +954,11 @@ class SettingsRepository(
         val mqttSkipPhoneSpeech = this[MQTT_SKIP_PHONE_SPEECH] ?: true
         val castRouteId = this[CAST_ROUTE_ID]?.takeIf { it.isNotBlank() }
         val castRouteName = this[CAST_ROUTE_NAME]?.takeIf { it.isNotBlank() }
-        val castEnabled = this[CAST_ENABLED] ?: true
+        // Off by default: casting is opt-in, and turning the master switch on
+        // is the single gated action that requests notification permission +
+        // runs the speech setup. Defaulting on would let route-pick / per-period
+        // toggles activate scheduled cast without ever surfacing that setup.
+        val castEnabled = this[CAST_ENABLED] ?: false
         val castMorning = this[CAST_MORNING] ?: true
         val castTonight = this[CAST_TONIGHT] ?: true
         val castSkipPhoneSpeech = this[CAST_SKIP_PHONE_SPEECH] ?: true
@@ -1310,7 +1316,44 @@ class SettingsRepository(
     }
 }
 
-private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(
+    name = "settings",
+    produceMigrations = { listOf(castEnabledOptInMigration()) },
+)
+
+// One-time migration for cast flipping from default-on to default-off (opt-in —
+// see [UserPreferences.castEnabled]). Installs that already picked a cast route
+// under the old default-on behaviour kept scheduled cast firing, so preserve
+// that by writing an explicit CAST_ENABLED=true when a route is already saved
+// and the flag was never set. Fresh installs (no saved route) fall through to
+// the new false default, so turning cast on is what runs the permission +
+// speech setup. Runs exactly once via a sentinel.
+private fun castEnabledOptInMigration(): DataMigration<Preferences> {
+    val migrated = booleanPreferencesKey("cast_default_off_migrated_v1")
+    val castEnabled = booleanPreferencesKey("cast_enabled")
+    val castRouteId = stringPreferencesKey("cast_route_id")
+    return object : DataMigration<Preferences> {
+        override suspend fun shouldMigrate(currentData: Preferences): Boolean =
+            currentData[migrated] != true
+
+        override suspend fun migrate(currentData: Preferences): Preferences {
+            // The returned Preferences replaces the store, so carry every
+            // existing entry forward, then add ours.
+            val result = mutablePreferencesOf()
+            currentData.asMap().forEach { (key, value) ->
+                @Suppress("UNCHECKED_CAST")
+                result[key as Preferences.Key<Any>] = value
+            }
+            if (currentData[castEnabled] == null && currentData[castRouteId] != null) {
+                result[castEnabled] = true
+            }
+            result[migrated] = true
+            return result
+        }
+
+        override suspend fun cleanUp() = Unit
+    }
+}
 
 // Only the US uses Fahrenheit in everyday weather contexts. A handful of
 // dependencies (BS, BZ, KY, PW) also do, but they're rounding error and the

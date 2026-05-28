@@ -3,6 +3,7 @@ package app.clothescast.cast
 import android.content.Context
 import androidx.mediarouter.media.MediaRouteSelector
 import androidx.mediarouter.media.MediaRouter
+import app.clothescast.core.data.insight.MissingApiKeyException
 import app.clothescast.core.data.tts.GeminiTtsClient
 import app.clothescast.core.data.tts.PcmAudio
 import app.clothescast.core.domain.model.TtsStyle
@@ -189,13 +190,23 @@ class CastInsightController(
         val host = resolveLanIp(context)
             ?: throw CastFailure.NoLanAddress
 
-        val pcm = ttsClient.synthesize(
-            text = prose,
-            voiceName = voiceName,
-            locale = locale,
-            style = style,
-        )
-        val wav = WavEncoder.encode(padPcmToMinimumDuration(pcm))
+        // Speech on a cast device needs Gemini (the device voice can't be muxed
+        // into the cast media). Without a key, still cast the outfit image with
+        // a silent track instead of failing — mirrors the worker's image-only
+        // fallback. Other synth failures (network, etc.) still surface as a cast
+        // error so the user knows audio genuinely broke.
+        val wav = try {
+            val pcm = ttsClient.synthesize(
+                text = prose,
+                voiceName = voiceName,
+                locale = locale,
+                style = style,
+            )
+            WavEncoder.encode(padPcmToMinimumDuration(pcm))
+        } catch (_: MissingApiKeyException) {
+            DiagLog.i(TAG, "Cast test: no Gemini key; casting image-only (silent).")
+            silentWavStub
+        }
         val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(outfitPng, wav) }
         val urls = server.publish(host = host, video = mp4)
         DiagLog.i(

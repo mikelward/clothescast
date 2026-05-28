@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    AppWidget metadata for the per-period feels-like chart widget. A chart needs
+    width to read, so this defaults wider than the outfit widget (roughly 4x2
+    cells on a 110dp grid) while staying resizable. updatePeriodMillis is 0
+    because Glance refreshes are pushed by the fetch worker via updateAll() — no
+    polling.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="250dp"
+    android:minHeight="180dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="3"
+    android:updatePeriodMillis="0"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:previewImage="@drawable/ic_widget_chart"
+    android:description="@string/feels_like_widget_description" />

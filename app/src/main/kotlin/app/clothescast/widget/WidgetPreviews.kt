@@ -28,9 +28,17 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.clothescast.R
+import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.TimeFormat
+import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.ui.theme.ClothesCastTheme
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 //
 // Compose stand-ins for the Glance OutfitWidget, used purely for snapshotting.
@@ -395,4 +403,115 @@ private fun bottomLabelResMock(bottom: OutfitSuggestion.Bottom): Int = when (bot
     OutfitSuggestion.Bottom.LONG_SKIRT -> R.string.today_outfit_bottom_long_skirt
     OutfitSuggestion.Bottom.JEANS -> R.string.today_outfit_bottom_jeans
     OutfitSuggestion.Bottom.LONG_PANTS -> R.string.today_outfit_bottom_long_pants
+}
+
+//
+// Feels-like chart widget previews. Unlike the OutfitWidget mocks above, these
+// render the *real* [WidgetForecastChart] (which reuses the in-app ForecastCard /
+// ForecastChart) — there's nothing to mirror, so there's nothing to drift. The
+// snapshots are the brand-accurate reference and double as proof the chart
+// composes with data under the PreviewSnapshots harness.
+//
+
+// One synthetic day of hourly feels-like (°C): cool overnight, warm mid-afternoon.
+private val SAMPLE_FEELS_DAY: List<HourlyForecast> = run {
+    val feels = listOf(
+        8.0, 8.0, 7.0, 7.0, 8.0, 10.0, // 00–05
+        11.0, 12.0, 14.0, 16.0, 18.0, 20.0, // 06–11
+        21.0, 22.0, 22.0, 21.0, 19.0, 17.0, // 12–17
+        15.0, 13.0, 12.0, 10.0, 9.0, 8.0, // 18–23
+    )
+    feels.mapIndexed { hour, f ->
+        HourlyForecast(
+            time = LocalTime.of(hour, 0),
+            temperatureC = f + 1.0,
+            feelsLikeC = f,
+            precipitationProbabilityPct = 0.0,
+            condition = WeatherCondition.PARTLY_CLOUDY,
+        )
+    }
+}
+
+// Seven days, each a copy of the day curve nudged a little so the week line isn't
+// seven identical humps. Daily aggregates are derived from the hourly run.
+private val SAMPLE_FEELS_WEEK: List<DailyForecast> = (0..6).map { d ->
+    val shift = listOf(0.0, 1.5, 3.0, 1.0, -1.0, -2.0, 0.5)[d]
+    val hourly = SAMPLE_FEELS_DAY.map {
+        it.copy(feelsLikeC = it.feelsLikeC + shift, temperatureC = it.temperatureC + shift)
+    }
+    val feels = hourly.map { it.feelsLikeC }
+    val air = hourly.map { it.temperatureC }
+    DailyForecast(
+        date = LocalDate.now().plusDays(d.toLong()),
+        temperatureMinC = air.min(),
+        temperatureMaxC = air.max(),
+        feelsLikeMinC = feels.min(),
+        feelsLikeMaxC = feels.max(),
+        precipitationProbabilityMaxPct = 0.0,
+        precipitationMmTotal = 0.0,
+        condition = WeatherCondition.PARTLY_CLOUDY,
+        hourly = hourly,
+    )
+}
+
+private val SAMPLE_NOW: LocalDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 30))
+
+@Preview(name = "Feels-like widget · today", widthDp = 360)
+@Composable
+internal fun FeelsLikeWidgetTodayPreview() {
+    WidgetFrame {
+        WidgetForecastChart(
+            hourly = SAMPLE_FEELS_DAY.subList(7, 19), // 07–18 daytime slice
+            days = null,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            timeFormat = TimeFormat.TWELVE_HOUR,
+            startDate = LocalDate.now(),
+            now = SAMPLE_NOW,
+        )
+    }
+}
+
+@Preview(name = "Feels-like widget · today (dark)", widthDp = 360)
+@Composable
+internal fun FeelsLikeWidgetTodayDarkPreview() {
+    WidgetFrame(darkTheme = true) {
+        WidgetForecastChart(
+            hourly = SAMPLE_FEELS_DAY.subList(7, 19),
+            days = null,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            timeFormat = TimeFormat.TWELVE_HOUR,
+            startDate = LocalDate.now(),
+            now = SAMPLE_NOW,
+        )
+    }
+}
+
+@Preview(name = "Feels-like widget · 7 days", widthDp = 360)
+@Composable
+internal fun FeelsLikeWidgetWeekPreview() {
+    WidgetFrame {
+        WidgetForecastChart(
+            hourly = SAMPLE_FEELS_WEEK.flatMap { it.hourly },
+            days = SAMPLE_FEELS_WEEK,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            timeFormat = TimeFormat.TWELVE_HOUR,
+            startDate = SAMPLE_FEELS_WEEK.first().date,
+            now = SAMPLE_NOW,
+        )
+    }
+}
+
+@Preview(name = "Feels-like widget · no current time", widthDp = 360)
+@Composable
+internal fun FeelsLikeWidgetNoCurrentTimePreview() {
+    WidgetFrame {
+        WidgetForecastChart(
+            hourly = SAMPLE_FEELS_DAY.subList(7, 19),
+            days = null,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            timeFormat = TimeFormat.TWELVE_HOUR,
+            startDate = LocalDate.now(),
+            now = null,
+        )
+    }
 }

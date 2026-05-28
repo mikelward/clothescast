@@ -21,7 +21,6 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
-import androidx.glance.appwidget.updateAll
 import androidx.work.WorkManager
 import app.clothescast.ClothesCastApplication
 import app.clothescast.MainActivity
@@ -58,7 +57,7 @@ import app.clothescast.ui.settings.SmartHomePage
 import app.clothescast.ui.settings.VoicePage
 import app.clothescast.ui.today.TodayScreen
 import app.clothescast.ui.today.TodayViewModel
-import app.clothescast.widget.OutfitWidget
+import app.clothescast.widget.updateAllClothesCastWidgets
 import app.clothescast.work.FetchAndNotifyWorker
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.Serializable
@@ -72,7 +71,12 @@ private const val NAV_ANIM_MS = 200
 // Settings — each settings sub-page is its own destination so the framework's
 // back stack handles up-navigation. No hand-maintained "current route" state,
 // no goBackOrUp(), no per-screen BackHandler.
-@Serializable internal object TodayRoute
+// [page] selects which pager page the Today screen opens on: 0 = current period,
+// 1 = next period, 2 = 7-day deck. Defaulted (so it rides as an optional `?page=`
+// query on the deep link), which keeps the bare `clothescast://today` notification
+// link matching with page 0. The feels-like home-screen widgets deep-link to
+// page 0 / 2.
+@Serializable internal data class TodayRoute(val page: Int = 0)
 @Serializable internal object OnboardingRoute
 @Serializable internal object PairingRoute
 
@@ -113,7 +117,7 @@ fun ClothesCastNavHost(
 
     NavHost(
         navController = nav,
-        startDestination = if (startOnboarding) OnboardingRoute else TodayRoute,
+        startDestination = if (startOnboarding) OnboardingRoute else TodayRoute(),
         // Push/pop slide so sub-pages animate in from the leading edge (and back
         // out the same way on up-navigation). The library default is a 700ms
         // crossfade, which both reads as "appearing from nowhere" and overlaps the
@@ -129,11 +133,12 @@ fun ClothesCastNavHost(
     ) {
         composable<TodayRoute>(
             deepLinks = listOf(navDeepLink<TodayRoute>(basePath = MainActivity.DEEP_LINK_TODAY)),
-        ) {
+        ) { entry ->
             val context = LocalContext.current
             val today: TodayViewModel = viewModel(factory = todayViewModelFactory(app, context))
             TodayScreen(
                 viewModel = today,
+                startPage = entry.toRoute<TodayRoute>().page,
                 onNavigateToSettings = { nav.navigate(SettingsGraph) },
                 // Deep links push the target page straight onto Today, so a
                 // single back returns to Today (no detour through the root list).
@@ -174,7 +179,7 @@ fun ClothesCastNavHost(
                     // location prompt at the top of the banner stack takes
                     // over — the user has the next step in either case.
                     FetchAndNotifyWorker.enqueueOnboardingRefresh(app)
-                    nav.navigate(TodayRoute) {
+                    nav.navigate(TodayRoute()) {
                         popUpTo(nav.graph.id) { inclusive = true }
                     }
                 },
@@ -211,7 +216,7 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
     // of the Today banner stack carries the next step.
     val finishOnboarding: () -> Unit = {
         FetchAndNotifyWorker.enqueueOnboardingRefresh(app)
-        nav.navigate(TodayRoute) {
+        nav.navigate(TodayRoute()) {
             popUpTo(nav.graph.id) { inclusive = true }
         }
     }
@@ -303,7 +308,7 @@ private fun todayViewModelFactory(app: ClothesCastApplication, context: Context)
         workManager = WorkManager.getInstance(app),
         settingsRepository = app.settingsRepository,
         refreshOutfitWidget = {
-            runCatching { OutfitWidget().updateAll(context.applicationContext) }
+            updateAllClothesCastWidgets(context.applicationContext)
         },
         deriveInsight = app.deriveInsight,
         calendarEventReader = app.calendarEventReader,
@@ -329,11 +334,11 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
         refreshOutfitWidget = {
             // No cache work needed — the cache holds the raw ForecastSnapshot,
             // and every consumer (Today screen, Format settings preview, cast,
-            // MQTT) re-derives off the current prefs reactively. The widget
-            // doesn't subscribe to the prefs flow itself, so a settings write
-            // that changes what icon should render needs an explicit nudge to
-            // repaint the launcher.
-            runCatching { OutfitWidget().updateAll(context.applicationContext) }
+            // MQTT) re-derives off the current prefs reactively. The widgets
+            // don't subscribe to the prefs flow themselves, so a settings write
+            // that changes what they render (outfit icon, or the chart's
+            // temperature unit) needs an explicit nudge to repaint the launcher.
+            updateAllClothesCastWidgets(context.applicationContext)
         },
         workManager = WorkManager.getInstance(app),
         insightCache = app.insightCache,

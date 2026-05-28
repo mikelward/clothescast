@@ -13,13 +13,14 @@ class OutfitSuggestionTest {
         feelsLikeMin: Double,
         feelsLikeMax: Double,
         hourly: List<HourlyForecast> = emptyList(),
+        precipMaxPct: Double = 0.0,
     ): DailyForecast = DailyForecast(
         date = date,
         temperatureMinC = feelsLikeMin,
         temperatureMaxC = feelsLikeMax,
         feelsLikeMinC = feelsLikeMin,
         feelsLikeMaxC = feelsLikeMax,
-        precipitationProbabilityMaxPct = 0.0,
+        precipitationProbabilityMaxPct = precipMaxPct,
         precipitationMmTotal = 0.0,
         condition = WeatherCondition.CLEAR,
         hourly = hourly,
@@ -317,6 +318,117 @@ class OutfitSuggestionTest {
             defaultTop = OutfitSuggestion.Top.POLO,
         )
         outfit.top shouldBe OutfitSuggestion.Top.SWEATER
+    }
+
+    @Test
+    fun `firing t-shirt rule lands on TSHIRT even when defaultTop is POLO`() {
+        // Reproduces the field bug: a "t-shirt above 24°C" rule fires on a warm
+        // day, so the prose and recommended items name a t-shirt — but the icon
+        // picker had no t-shirt tier and fell through to the configured
+        // defaultTop (POLO), leaving the outfit card's icon contradicting its
+        // text ("Wear a t-shirt" next to a polo silhouette).
+        val rules = listOf(
+            ClothesRule("t-shirt", ClothesRule.TemperatureAbove(24.0)),
+            ClothesRule("shorts", ClothesRule.TemperatureAbove(24.0)),
+        )
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 17.9, feelsLikeMax = 27.9),
+            rules,
+            defaultTop = OutfitSuggestion.Top.POLO,
+        )
+        outfit.top shouldBe OutfitSuggestion.Top.TSHIRT
+        outfit.bottom shouldBe OutfitSuggestion.Bottom.SHORTS
+    }
+
+    @Test
+    fun `polo rule outranks t-shirt rule when both fire`() {
+        // Within the base layer the catalog ranks POLO ahead of TSHIRT, so when
+        // a user has both rules firing the polo wins — matching the prose's
+        // layer-reduction, which keeps the polo and drops the t-shirt.
+        val rules = listOf(
+            ClothesRule("t-shirt", ClothesRule.TemperatureAbove(24.0)),
+            ClothesRule("polo", ClothesRule.TemperatureAbove(24.0)),
+        )
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 17.9, feelsLikeMax = 27.9),
+            rules,
+        )
+        outfit.top shouldBe OutfitSuggestion.Top.POLO
+    }
+
+    @Test
+    fun `t-shirt rule drives the top rationale against the day's high`() {
+        // A warm "t-shirt above 24°C" rule lives in the top slot but keys off
+        // the day's high. The rationale must compare against the feels-like max
+        // at the warmest hour — not the min — or the sheet would show the
+        // threshold as uncrossed (18°C < 24°C) on a day the rule actually fired
+        // (max 28°C), and wire its ±1° controls to that misleading fact.
+        val hourly = listOf(hour(LocalTime.of(7, 0), 18.0), hour(LocalTime.of(15, 0), 28.0))
+        val rules = listOf(ClothesRule("t-shirt", ClothesRule.TemperatureAbove(24.0)))
+        val fact = OutfitSuggestion.explainFromForecast(
+            forecast(feelsLikeMin = 18.0, feelsLikeMax = 28.0, hourly = hourly),
+            rules,
+        ).top.facts.single()
+        fact.ruleItem shouldBe "t-shirt"
+        fact.metric shouldBe Fact.Metric.FEELS_LIKE_MAX
+        fact.observedC shouldBe 28.0
+        fact.observedAt shouldBe LocalTime.of(15, 0)
+        fact.thresholdC shouldBe 24.0
+        fact.comparison shouldBe Fact.Comparison.AT_OR_ABOVE
+    }
+
+    @Test
+    fun `legacy and variant t-shirt spellings still drive the TSHIRT icon`() {
+        // Garment.fromKey canonicalises "tshirt" and case / whitespace variants
+        // to TSHIRT, and the prose path relies on that. The icon picker must
+        // canonicalise the same way — otherwise a stored legacy rule fires for
+        // the bullets but the icon falls through to defaultTop (POLO), the very
+        // mismatch this change fixes.
+        listOf("tshirt", " T-Shirt ").forEach { spelling ->
+            val rules = listOf(ClothesRule(spelling, ClothesRule.TemperatureAbove(24.0)))
+            val outfit = OutfitSuggestion.fromForecast(
+                forecast(feelsLikeMin = 17.9, feelsLikeMax = 27.9),
+                rules,
+                defaultTop = OutfitSuggestion.Top.POLO,
+            )
+            outfit.top shouldBe OutfitSuggestion.Top.TSHIRT
+        }
+    }
+
+    @Test
+    fun `legacy jumper spelling drives the SWEATER icon`() {
+        // "jumper" canonicalises to SWEATER via Garment.fromKey; the icon tier
+        // matches on the canonical key, so the en-GB legacy spelling lands on
+        // the sweater silhouette rather than the default top.
+        val rules = listOf(ClothesRule("jumper", ClothesRule.TemperatureBelow(16.0)))
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 12.0, feelsLikeMax = 15.0),
+            rules,
+            defaultTop = OutfitSuggestion.Top.POLO,
+        )
+        outfit.top shouldBe OutfitSuggestion.Top.SWEATER
+    }
+
+    @Test
+    fun `precipitation-keyed t-shirt rule drives the icon without crashing the rationale`() {
+        // Settings lets a user key any garment — a top included — off
+        // precipitation. On a rainy day such a rule fires and drives the icon
+        // (TSHIRT here, beating the POLO default), but it carries no temperature
+        // threshold: the rationale must skip it and fall back to a temperature
+        // rule rather than throw in toFact.
+        val rules = listOf(ClothesRule("t-shirt", ClothesRule.PrecipitationProbabilityAbove(50.0)))
+        val rainy = forecast(feelsLikeMin = 12.0, feelsLikeMax = 20.0, precipMaxPct = 60.0)
+
+        OutfitSuggestion.fromForecast(
+            rainy,
+            rules,
+            defaultTop = OutfitSuggestion.Top.POLO,
+        ).top shouldBe OutfitSuggestion.Top.TSHIRT
+
+        val fact = OutfitSuggestion.explainFromForecast(rainy, rules).top.facts.single()
+        fact.ruleItem shouldBe "sweater"
+        fact.metric shouldBe Fact.Metric.FEELS_LIKE_MIN
+        fact.thresholdC shouldBe 16.0
     }
 
     @Test

@@ -11,7 +11,11 @@ import java.time.LocalTime
  * populate [Insight.recommendedItems]. Top tier (coldest first): a firing `jacket` rule
  * promotes to [Top.THICK_JACKET]; a firing `coat` rule promotes to [Top.THICK_COAT]; a
  * firing `sweater`/`hoodie` rule promotes to [Top.SWEATER]; a firing `polo` rule lands
- * on [Top.POLO]; otherwise the user's chosen `defaultTop` ([Top.TSHIRT] by default).
+ * on [Top.POLO]; a firing `t-shirt` rule lands on [Top.TSHIRT]; otherwise the user's
+ * chosen `defaultTop` ([Top.TSHIRT] by default). The explicit `t-shirt` tier keeps the
+ * icon in step with the prose — [EvaluateClothesRules] already treats a firing `t-shirt`
+ * rule as a matched top, so without it the bullet text would name a t-shirt while the
+ * icon fell through to whatever `defaultTop` the user picked (e.g. POLO).
  * Bottom tier: a firing `shorts` rule picks [Bottom.SHORTS]; `short-skirt` picks
  * [Bottom.SHORT_SKIRT]; `skirt` picks [Bottom.LONG_SKIRT]; `jeans` picks
  * [Bottom.JEANS]; otherwise the user's chosen
@@ -62,8 +66,10 @@ data class OutfitSuggestion(
         // Catalog item keys (see [Garment.itemKey]) that drive each icon tier.
         // Top tiers (coldest first): coat → THICK_COAT, puffer → PUFFER_JACKET,
         // jacket → THICK_JACKET, thin-jacket/sweater/hoodie → mid-layer, polo → POLO,
-        // fallback → user's chosen defaultTop (TSHIRT by default). Colder tiers
-        // are checked before warmer ones so that when multiple rules fire
+        // t-shirt → TSHIRT, fallback → user's chosen defaultTop (TSHIRT by default).
+        // (`shirt` has no icon tier yet, so a firing shirt rule still falls to
+        // the default — add a Top.SHIRT + drawable when the catalog grows one.)
+        // Colder tiers are checked before warmer ones so that when multiple rules fire
         // simultaneously (e.g. both coat ≤4°C and jacket ≤10°C fire at 3°C),
         // the heavier garment icon wins rather than the first match.
         // Bottom tiers: shorts → SHORTS, short-skirt → SHORT_SKIRT, skirt →
@@ -77,6 +83,7 @@ data class OutfitSuggestion(
         private val THIN_JACKET_KEYS = listOf("thin-jacket")
         private val SWEATER_KEYS = listOf("sweater", "hoodie")
         private val POLO_KEYS = listOf("polo")
+        private val TSHIRT_KEYS = listOf("t-shirt")
         private val SHORTS_KEYS = listOf("shorts")
         private val SHORT_SKIRT_KEYS = listOf("short-skirt")
         private val LONG_SKIRT_KEYS = listOf("skirt")
@@ -95,6 +102,7 @@ data class OutfitSuggestion(
                 clothesRules.firstFiring(forecast, THIN_JACKET_KEYS) != null -> Top.THIN_JACKET
                 clothesRules.firstFiring(forecast, SWEATER_KEYS) != null -> Top.SWEATER
                 clothesRules.firstFiring(forecast, POLO_KEYS) != null -> Top.POLO
+                clothesRules.firstFiring(forecast, TSHIRT_KEYS) != null -> Top.TSHIRT
                 else -> defaultTop
             }
             val bottom = when {
@@ -124,8 +132,8 @@ data class OutfitSuggestion(
             val coldestHour = forecast.hourly.minByOrNull { it.feelsLikeC }?.time
             val warmestHour = forecast.hourly.maxByOrNull { it.feelsLikeC }?.time
             return OutfitRationale(
-                top = GarmentReason(facts = listOf(topFact(forecast, clothesRules, coldestHour))),
-                bottom = GarmentReason(facts = listOf(bottomFact(forecast, clothesRules, warmestHour))),
+                top = GarmentReason(facts = listOf(topFact(forecast, clothesRules, coldestHour, warmestHour))),
+                bottom = GarmentReason(facts = listOf(bottomFact(forecast, clothesRules, coldestHour, warmestHour))),
             )
         }
 
@@ -133,53 +141,90 @@ data class OutfitSuggestion(
             forecast: DailyForecast,
             rules: List<ClothesRule>,
             coldestHour: LocalTime?,
+            warmestHour: LocalTime?,
         ): Fact {
+            // Only temperature rules can produce a fact — it needs a threshold
+            // and an observed temperature to compare against. A user may key any
+            // garment (a top included) off precipitation instead; such a rule
+            // can fire and drive the icon, but it has no temperature threshold,
+            // so exclude it from the rationale's deciding-rule search and fall
+            // through to the nearest temperature rule (or the catalog default)
+            // rather than crash in toFact.
+            val tempRules = rules.temperatureRules()
             // The deciding rule, in priority order across all top tiers. If no
             // cold rule fires (TSHIRT/POLO), cite the sweater threshold that
             // wasn't crossed so the rationale dialog still has something to show.
-            val rule = rules.firstFiring(forecast, THICK_COAT_KEYS)
-                ?: rules.firstFiring(forecast, PUFFER_JACKET_KEYS)
-                ?: rules.firstFiring(forecast, THICK_JACKET_KEYS)
-                ?: rules.firstFiring(forecast, THIN_JACKET_KEYS)
-                ?: rules.firstFiring(forecast, SWEATER_KEYS)
-                ?: rules.firstFiring(forecast, POLO_KEYS)
-                ?: rules.firstByKey(SWEATER_KEYS)
-                ?: rules.firstByKey(THIN_JACKET_KEYS)
-                ?: rules.firstByKey(THICK_JACKET_KEYS)
-                ?: rules.firstByKey(THICK_COAT_KEYS)
-                ?: rules.firstByKey(PUFFER_JACKET_KEYS)
+            val rule = tempRules.firstFiring(forecast, THICK_COAT_KEYS)
+                ?: tempRules.firstFiring(forecast, PUFFER_JACKET_KEYS)
+                ?: tempRules.firstFiring(forecast, THICK_JACKET_KEYS)
+                ?: tempRules.firstFiring(forecast, THIN_JACKET_KEYS)
+                ?: tempRules.firstFiring(forecast, SWEATER_KEYS)
+                ?: tempRules.firstFiring(forecast, POLO_KEYS)
+                ?: tempRules.firstFiring(forecast, TSHIRT_KEYS)
+                ?: tempRules.firstByKey(SWEATER_KEYS)
+                ?: tempRules.firstByKey(THIN_JACKET_KEYS)
+                ?: tempRules.firstByKey(THICK_JACKET_KEYS)
+                ?: tempRules.firstByKey(THICK_COAT_KEYS)
+                ?: tempRules.firstByKey(PUFFER_JACKET_KEYS)
                 ?: ClothesRule.DEFAULTS.first { it.item == "sweater" }
-            return rule.toMinFact(forecast, coldestHour)
+            return rule.toConditionFact(forecast, coldestHour, warmestHour)
         }
 
         private fun bottomFact(
             forecast: DailyForecast,
             rules: List<ClothesRule>,
+            coldestHour: LocalTime?,
             warmestHour: LocalTime?,
         ): Fact {
+            // Temperature rules only — a precipitation-keyed bottom rule can
+            // fire and drive the icon but has no threshold to explain, so skip
+            // it here (see [topFact]) rather than crash in toFact.
+            val tempRules = rules.temperatureRules()
             // The deciding rule across all bottom tiers. If no warm rule fires
             // (LONG_PANTS), cite the shorts threshold that wasn't crossed.
-            val rule = rules.firstFiring(forecast, SHORTS_KEYS)
-                ?: rules.firstFiring(forecast, SHORT_SKIRT_KEYS)
-                ?: rules.firstFiring(forecast, LONG_SKIRT_KEYS)
-                ?: rules.firstFiring(forecast, JEANS_KEYS)
-                ?: rules.firstByKey(SHORTS_KEYS)
-                ?: rules.firstByKey(SHORT_SKIRT_KEYS)
-                ?: rules.firstByKey(LONG_SKIRT_KEYS)
-                ?: rules.firstByKey(JEANS_KEYS)
+            val rule = tempRules.firstFiring(forecast, SHORTS_KEYS)
+                ?: tempRules.firstFiring(forecast, SHORT_SKIRT_KEYS)
+                ?: tempRules.firstFiring(forecast, LONG_SKIRT_KEYS)
+                ?: tempRules.firstFiring(forecast, JEANS_KEYS)
+                ?: tempRules.firstByKey(SHORTS_KEYS)
+                ?: tempRules.firstByKey(SHORT_SKIRT_KEYS)
+                ?: tempRules.firstByKey(LONG_SKIRT_KEYS)
+                ?: tempRules.firstByKey(JEANS_KEYS)
                 ?: ClothesRule.DEFAULTS.first { it.item == "shorts" }
-            return rule.toMaxFact(forecast, warmestHour)
+            return rule.toConditionFact(forecast, coldestHour, warmestHour)
         }
 
         private fun List<ClothesRule>.firstFiring(
             forecast: DailyForecast,
             keys: List<String>,
         ): ClothesRule? = keys.firstNotNullOfOrNull { key ->
-            firstOrNull { it.item == key && it.appliesTo(forecast) }
+            firstOrNull { it.matchesKey(key) && it.appliesTo(forecast) }
         }
 
         private fun List<ClothesRule>.firstByKey(keys: List<String>): ClothesRule? =
-            keys.firstNotNullOfOrNull { key -> firstOrNull { it.item == key } }
+            keys.firstNotNullOfOrNull { key -> firstOrNull { it.matchesKey(key) } }
+
+        /**
+         * Whether a rule names the catalog garment [key], canonicalised the
+         * same way the prose path canonicalises it. [Garment.fromKey] folds
+         * the supported legacy spellings and case / whitespace variants
+         * ("tshirt" / " T-Shirt " → t-shirt, "jumper" → sweater) onto their
+         * catalog [Garment.itemKey], so a stored legacy rule drives the icon
+         * tier it already drives in the bullets — matching on the raw
+         * `item` string would leave the icon on the default while the prose
+         * named the garment. Falls back to a trimmed, case-insensitive
+         * compare for items outside the catalog so nothing regresses.
+         */
+        private fun ClothesRule.matchesKey(key: String): Boolean {
+            Garment.fromKey(item)?.let { return it.itemKey == key }
+            return item.trim().equals(key, ignoreCase = true)
+        }
+
+        /** The rules with a Celsius threshold — i.e. those the rationale can
+         *  turn into a [Fact]. Drops precipitation-keyed rules, whose
+         *  [thresholdC] is null. */
+        private fun List<ClothesRule>.temperatureRules(): List<ClothesRule> =
+            filter { it.thresholdC() != null }
 
         private fun ClothesRule.toFact(
             metric: Fact.Metric,
@@ -207,6 +252,30 @@ data class OutfitSuggestion(
 
         private fun ClothesRule.toMaxFact(forecast: DailyForecast, observedAt: LocalTime?): Fact =
             toFact(Fact.Metric.FEELS_LIKE_MAX, forecast.feelsLikeMaxC, observedAt)
+
+        /**
+         * Builds the rationale [Fact] from the rule's *condition*, not its
+         * slot. A [ClothesRule.TemperatureAbove] rule fires on the day's high,
+         * so it compares against the feels-like max at the warmest hour; a
+         * [ClothesRule.TemperatureBelow] rule fires on the day's low, so it
+         * compares against the feels-like min at the coldest hour. This matters
+         * for warm base-layer tops (a `t-shirt`/`polo` rule configured as
+         * `> N°C` lives in the top slot but keys off the high): a slot-fixed
+         * metric would explain a firing warm top against the day's minimum and
+         * report its threshold as uncrossed even though it drove the icon — and
+         * the dialog's ±1° controls would attach to that misleading fact.
+         */
+        private fun ClothesRule.toConditionFact(
+            forecast: DailyForecast,
+            coldestHour: LocalTime?,
+            warmestHour: LocalTime?,
+        ): Fact = when (condition) {
+            is ClothesRule.TemperatureAbove -> toMaxFact(forecast, warmestHour)
+            // TemperatureBelow keys off the low; the precipitation case is
+            // unreachable here (toFact rejects non-temperature rules) but falls
+            // through to the low as a harmless default.
+            else -> toMinFact(forecast, coldestHour)
+        }
     }
 }
 

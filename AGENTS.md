@@ -255,6 +255,16 @@ new rule the first time something bites you, not the third.
   which is JUnit 4. The bridge is `junit-vintage-engine` as `testRuntimeOnly`.
   If you see "no tests found" after adding a `@Test`-annotated JUnit 4
   class, check that `vintage-engine` is on the test classpath.
+- **An unattached `ComposeView` composes but never paints.** To rasterise a
+  composable to a `Bitmap` off-screen from a non-Activity context (e.g. a
+  Glance widget — Glance emits RemoteViews and can't host Compose/Vico), a
+  detached `ComposeView` with `setContent` + `measure`/`layout`/`draw` yields
+  a *blank* bitmap. It needs a real window: host the `ComposeView` in a
+  `Presentation` on a `VirtualDisplay` backed by an `ImageReader`, set the
+  ViewTree lifecycle / savedstate / viewmodel owners, `show()`, and sample the
+  reader until the frame settles — Vico (and any async content) draws a few
+  frames *after* first composition, so capturing too early misses the chart.
+  See `widget/ComposeRender.kt`; don't "simplify" it back to a detached view.
 
 ## Error handling
 

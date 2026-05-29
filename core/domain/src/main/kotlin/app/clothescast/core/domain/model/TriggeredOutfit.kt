@@ -55,7 +55,7 @@ data class TriggeredOutfit(
      */
     val items: List<String>
         get() {
-            val raw = Garment.layerReduce(rules).map { it.item } + fallbacks
+            val raw = Garment.layerReduce(rules).map { it.item.itemKey } + fallbacks
             // Stable sort that floats bottoms to the end. Tops and unclassified
             // items (accessories, free-form) keep their input order; only the
             // top↔bottom flip — which happens when a bottom rule fires and the

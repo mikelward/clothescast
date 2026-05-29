@@ -44,7 +44,6 @@ import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.core.domain.model.containsTwelveHourPatternField
 import app.clothescast.core.domain.model.thresholdC
-import app.clothescast.core.domain.model.withThresholdC
 import app.clothescast.diag.ClothesRulesSnapshot
 import app.clothescast.diag.SettingsAnalyticsSnapshot
 import app.clothescast.diag.SettingsSnapshot
@@ -749,58 +748,6 @@ class SettingsRepository(
         dataStore.edit { it[TELEMETRY_NOTICE_ACKED] = acked }
     }
 
-    /**
-     * Atomically nudges the temperature threshold of the [ClothesRule] keyed
-     * `ruleItem` by [deltaC] degrees Celsius. Used by the rationale dialog's
-     * `+1°` / `−1°` buttons.
-     *
-     * Read-modify-write happens inside a single [dataStore.edit] so a tap-spam
-     * can't drop intermediate writes — DataStore serialises edits, and each tap
-     * reads the latest persisted rule list rather than the same pre-update
-     * snapshot. The resulting Celsius value is clamped to
-     * [ClothesRule.THRESHOLD_MIN_C] / [ClothesRule.THRESHOLD_MAX_C], then written
-     * back in the rule's existing unit so a Fahrenheit-typed rule stays in °F.
-     *
-     * Falls back to [ClothesRule.DEFAULTS] when the user has no matching rule
-     * on file (e.g. they previously deleted it) and appends a new rule with the
-     * adjusted threshold; that way the dialog's controls stay live even on a
-     * deleted rule and the next refresh re-evaluates against the recreated cut.
-     * No-ops if [ruleItem] isn't a temperature rule (e.g. precipitation).
-     */
-    suspend fun adjustClothesRuleThreshold(ruleItem: String, deltaC: Double) {
-        dataStore.edit { prefs ->
-            val current = parseRules(prefs[CLOTHES_RULES])
-            val updated = current.adjustOrAddTemperatureRule(ruleItem, deltaC) ?: return@edit
-            prefs[CLOTHES_RULES] = json.encodeToString(updated.map { it.toDto() })
-        }
-    }
-
-    private fun List<ClothesRule>.adjustOrAddTemperatureRule(
-        ruleItem: String,
-        deltaC: Double,
-    ): List<ClothesRule>? {
-        val idx = indexOfFirst { it.item == ruleItem && it.thresholdC() != null }
-        if (idx >= 0) {
-            val rule = this[idx]
-            val newC = ((rule.thresholdC() ?: return null) + deltaC).clampThreshold()
-            val updated = rule.withThresholdC(newC) ?: return null
-            return toMutableList().also { it[idx] = updated }
-        }
-        // No matching rule on disk — recreate it from the catalog default if there
-        // is one. The dialog only ever shows facts for rules that fromForecast can
-        // pick (sweater / jacket / coat / shorts), all of which have a default,
-        // so this branch covers the "user deleted it, then nudged from the dialog"
-        // case rather than a request to invent a rule from nothing.
-        val template = ClothesRule.DEFAULTS.firstOrNull { it.item == ruleItem } ?: return null
-        val templateC = template.thresholdC() ?: return null
-        val newC = (templateC + deltaC).clampThreshold()
-        val recreated = template.withThresholdC(newC) ?: return null
-        return this + recreated
-    }
-
-    private fun Double.clampThreshold(): Double =
-        coerceIn(ClothesRule.THRESHOLD_MIN_C, ClothesRule.THRESHOLD_MAX_C)
-
     private fun Preferences.toUserPreferences(): UserPreferences {
         val time = this[SCHEDULE_TIME]?.let { LocalTime.parse(it, TIME_FORMAT) }
             ?: DEFAULT_TIME
@@ -1240,7 +1187,9 @@ class SettingsRepository(
     private fun parseRules(raw: String?): List<ClothesRule> {
         if (raw.isNullOrBlank()) return ClothesRule.DEFAULTS
         return runCatching {
-            json.decodeFromString<List<ClothesRuleDto>>(raw).map { it.toDomain() }
+            // Drop any stored rule whose item isn't a catalog garment (legacy
+            // free-form items from before the catalog) — see [ClothesRuleDto.toDomain].
+            json.decodeFromString<List<ClothesRuleDto>>(raw).mapNotNull { it.toDomain() }
         }.getOrDefault(ClothesRule.DEFAULTS)
             // An empty stored list is also treated as "no rules configured" rather
             // than honoured as an intentional zero — with editing locked

@@ -208,7 +208,7 @@ enum class Garment(
             val classifiedTops = mutableListOf<IndexedTop>()
             val classifiedBottoms = mutableListOf<IndexedBottom>()
             rules.forEachIndexed { index, rule ->
-                val g = fromKey(rule.item) ?: return@forEachIndexed
+                val g = rule.item
                 when (g.slot) {
                     Slot.TOP -> {
                         val layer = g.layer ?: return@forEachIndexed
@@ -242,10 +242,10 @@ enum class Garment(
             // configured ordering — the prose phraser, the tie-in delta —
             // see the same sequence they'd have seen before the reduction.
             return rules.filterIndexed { index, rule ->
-                val g = fromKey(rule.item)
+                val g = rule.item
                 when {
-                    g?.slot == Slot.TOP && g.layer != null -> index in keepTopIndices
-                    g?.slot == Slot.BOTTOM -> index == keepBottomIndex
+                    g.slot == Slot.TOP && g.layer != null -> index in keepTopIndices
+                    g.slot == Slot.BOTTOM -> index == keepBottomIndex
                     else -> true
                 }
             }

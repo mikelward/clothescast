@@ -375,7 +375,7 @@ internal fun SettingsClothesFahrenheitPreview() {
     SettingsFrame {
         ClothesContent(
             rules = ClothesRule.DEFAULTS + ClothesRule(
-                Garment.TSHIRT.itemKey,
+                Garment.TSHIRT,
                 ClothesRule.TemperatureAbove(75.0, TemperatureUnit.FAHRENHEIT),
             ),
             defaultBottom = OutfitSuggestion.Bottom.LONG_PANTS,

@@ -490,11 +490,7 @@ private fun ClothesRuleRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            // Show the localised garment name for catalog items; fall back to
-            // the raw stored key for any older / custom items so the user can
-            // still see and delete them.
-            val garment = Garment.fromKey(rule.item)
-            val label = if (garment != null) stringResource(garmentLabelRes(garment)) else rule.item
+            val label = stringResource(garmentLabelRes(rule.item))
             Text(text = label, style = MaterialTheme.typography.titleSmall)
             Text(
                 text = describeCondition(rule.condition, temperatureUnit),
@@ -587,7 +583,7 @@ private fun ClothesRuleDialog(
     // (older free-form rules) preselect SWEATER too — the user can pick any
     // catalog garment and confirm to migrate the rule onto a known key.
     var garment by remember {
-        mutableStateOf(initial?.item?.let(Garment::fromKey) ?: Garment.SWEATER)
+        mutableStateOf(initial?.item ?: Garment.SWEATER)
     }
     val initialType = when (initial?.condition) {
         is ClothesRule.TemperatureBelow -> ConditionType.TEMP_BELOW
@@ -649,7 +645,7 @@ private fun ClothesRuleDialog(
                             if (unchanged && initialCond is ClothesRule.PrecipitationProbabilityAbove) initialCond
                             else ClothesRule.PrecipitationProbabilityAbove(v)
                     }
-                    onConfirm(ClothesRule(garment.itemKey, condition))
+                    onConfirm(ClothesRule(garment, condition))
                 },
             ) { Text(stringResource(android.R.string.ok)) }
         },

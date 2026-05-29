@@ -30,32 +30,32 @@ class ClothesRuleTest {
 
     @Test
     fun `temperature below applies when feels-like min is colder`() {
-        val rule = ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0))
+        val rule = ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0))
         rule.appliesTo(forecast(min = 14.0, max = 22.0)) shouldBe true
     }
 
     @Test
     fun `temperature below uses feels-like, not raw temperature`() {
         // Raw min is 20°C (above threshold) but wind chill makes it feel like 14°C.
-        val rule = ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0))
+        val rule = ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0))
         rule.appliesTo(forecast(min = 20.0, max = 24.0, feelsLikeMin = 14.0, feelsLikeMax = 22.0)) shouldBe true
     }
 
     @Test
     fun `temperature below does not apply when feels-like min meets threshold`() {
-        val rule = ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0))
+        val rule = ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0))
         rule.appliesTo(forecast(min = 18.0, max = 22.0)) shouldBe false
     }
 
     @Test
     fun `temperature above applies when feels-like max is warmer`() {
-        val rule = ClothesRule("shorts", ClothesRule.TemperatureAbove(24.0))
+        val rule = ClothesRule(Garment.SHORTS, ClothesRule.TemperatureAbove(24.0))
         rule.appliesTo(forecast(min = 12.0, max = 26.5)) shouldBe true
     }
 
     @Test
     fun `temperature above does not apply when feels-like max meets threshold`() {
-        val rule = ClothesRule("shorts", ClothesRule.TemperatureAbove(24.0))
+        val rule = ClothesRule(Garment.SHORTS, ClothesRule.TemperatureAbove(24.0))
         rule.appliesTo(forecast(min = 12.0, max = 24.0)) shouldBe false
     }
 
@@ -63,7 +63,7 @@ class ClothesRuleTest {
     fun `fahrenheit-typed below threshold compares against the converted value`() {
         // 65°F ≈ 18.33°C. A feels-like min of 17°C should trigger; 19°C should not.
         val rule = ClothesRule(
-            "sweater",
+            Garment.SWEATER,
             ClothesRule.TemperatureBelow(65.0, TemperatureUnit.FAHRENHEIT),
         )
         rule.appliesTo(forecast(min = 17.0, max = 22.0)) shouldBe true
@@ -74,7 +74,7 @@ class ClothesRuleTest {
     fun `fahrenheit-typed above threshold compares against the converted value`() {
         // 80°F ≈ 26.67°C.
         val rule = ClothesRule(
-            "shorts",
+            Garment.SHORTS,
             ClothesRule.TemperatureAbove(80.0, TemperatureUnit.FAHRENHEIT),
         )
         rule.appliesTo(forecast(min = 12.0, max = 27.0)) shouldBe true
@@ -91,7 +91,7 @@ class ClothesRuleTest {
 
     @Test
     fun `precipitation rule uses peak probability`() {
-        val rule = ClothesRule("umbrella", ClothesRule.PrecipitationProbabilityAbove(50.0))
+        val rule = ClothesRule(Garment.JACKET, ClothesRule.PrecipitationProbabilityAbove(50.0))
         rule.appliesTo(forecast(min = 10.0, max = 18.0, precip = 65.0)) shouldBe true
         rule.appliesTo(forecast(min = 10.0, max = 18.0, precip = 30.0)) shouldBe false
     }
@@ -100,7 +100,7 @@ class ClothesRuleTest {
     fun `defaults cover the temperature-driven MVP cases`() {
         // Umbrella was deliberately dropped: the precip clause already names rain,
         // and the wet-weather accessory is going to become a personalised setting.
-        val items = ClothesRule.DEFAULTS.map { it.item }
+        val items = ClothesRule.DEFAULTS.map { it.item.itemKey }
         items shouldBe listOf("sweater", "jacket", "coat", "shorts")
     }
 
@@ -109,7 +109,7 @@ class ClothesRuleTest {
         // Realistic spring day: chilly start, warm peak. Min stays above the
         // coat threshold (4°C), so coat shouldn't fire.
         val day = forecast(min = 8.0, max = 25.0)
-        val triggered = ClothesRule.DEFAULTS.filter { it.appliesTo(day) }.map { it.item }
+        val triggered = ClothesRule.DEFAULTS.filter { it.appliesTo(day) }.map { it.item.itemKey }
         triggered shouldBe listOf("sweater", "jacket", "shorts")
     }
 
@@ -117,7 +117,7 @@ class ClothesRuleTest {
     fun `freezing morning triggers coat alongside sweater and jacket`() {
         // Sub-zero feels-like crosses every cold-weather threshold including coat.
         val day = forecast(min = -2.0, max = 4.0)
-        val triggered = ClothesRule.DEFAULTS.filter { it.appliesTo(day) }.map { it.item }
+        val triggered = ClothesRule.DEFAULTS.filter { it.appliesTo(day) }.map { it.item.itemKey }
         triggered shouldBe listOf("sweater", "jacket", "coat")
     }
 }

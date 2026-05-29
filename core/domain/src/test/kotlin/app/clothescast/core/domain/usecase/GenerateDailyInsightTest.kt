@@ -14,6 +14,7 @@ import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.EventKind
+import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Location
@@ -317,9 +318,9 @@ class GenerateDailyInsightTest {
             precipitationProbabilityMaxPct = 10.0,
         )
         val rules = listOf(
-            ClothesRule("t-shirt", ClothesRule.TemperatureBelow(30.0)),
-            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
-            ClothesRule("jeans", ClothesRule.TemperatureBelow(20.0)),
+            ClothesRule(Garment.TSHIRT, ClothesRule.TemperatureBelow(30.0)),
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0)),
+            ClothesRule(Garment.JEANS, ClothesRule.TemperatureBelow(20.0)),
         )
         val weather = FakeWeatherRepository(ForecastBundle(coldToday, yesterday))
         val subject = GenerateDailyInsight(weather, clock = clock)
@@ -845,7 +846,7 @@ class GenerateDailyInsightTest {
         // Only-the-jacket rule isolates the assertion: with no other rule
         // triggering, todayItems is empty and evening items = [jacket] —
         // not a subset of today's, so the tie-in is not suppressed.
-        val jacketOnly = listOf(ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)))
+        val jacketOnly = listOf(ClothesRule(Garment.JACKET, ClothesRule.TemperatureBelow(12.0)))
         val result = subject(
             location = london,
             prefs = prefs.copy(
@@ -914,7 +915,7 @@ class GenerateDailyInsightTest {
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
-        val jacketOnly = listOf(ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)))
+        val jacketOnly = listOf(ClothesRule(Garment.JACKET, ClothesRule.TemperatureBelow(12.0)))
         val result = subject(
             location = london,
             prefs = prefs.copy(
@@ -957,7 +958,7 @@ class GenerateDailyInsightTest {
         val calendar = FakeCalendarEventReader(events = listOf(unlocated))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
-        val jacketOnly = listOf(ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)))
+        val jacketOnly = listOf(ClothesRule(Garment.JACKET, ClothesRule.TemperatureBelow(12.0)))
         val result = subject(
             location = london,
             prefs = prefs.copy(
@@ -1000,7 +1001,7 @@ class GenerateDailyInsightTest {
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
-        val jacketOnly = listOf(ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)))
+        val jacketOnly = listOf(ClothesRule(Garment.JACKET, ClothesRule.TemperatureBelow(12.0)))
         val result = subject(
             location = london,
             prefs = prefs.copy(
@@ -1048,8 +1049,8 @@ class GenerateDailyInsightTest {
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
         val rules = listOf(
-            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
-            ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)),
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0)),
+            ClothesRule(Garment.JACKET, ClothesRule.TemperatureBelow(12.0)),
         )
         val result = subject(
             location = london,
@@ -1103,9 +1104,9 @@ class GenerateDailyInsightTest {
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
         val rules = listOf(
-            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
-            ClothesRule("jeans", ClothesRule.TemperatureBelow(20.0)),
-            ClothesRule("shorts", ClothesRule.TemperatureAbove(24.0)),
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0)),
+            ClothesRule(Garment.JEANS, ClothesRule.TemperatureBelow(20.0)),
+            ClothesRule(Garment.SHORTS, ClothesRule.TemperatureAbove(24.0)),
         )
         val result = subject(
             location = london,
@@ -1153,7 +1154,7 @@ class GenerateDailyInsightTest {
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
-        val jacketOnly = listOf(ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)))
+        val jacketOnly = listOf(ClothesRule(Garment.JACKET, ClothesRule.TemperatureBelow(12.0)))
         val result = subject(
             location = london,
             prefs = prefs.copy(
@@ -1197,7 +1198,7 @@ class GenerateDailyInsightTest {
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
-        val jacketOnly = listOf(ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)))
+        val jacketOnly = listOf(ClothesRule(Garment.JACKET, ClothesRule.TemperatureBelow(12.0)))
         val result = subject(
             location = london,
             prefs = prefs.copy(
@@ -1244,7 +1245,7 @@ class GenerateDailyInsightTest {
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
-        val sweaterRule = listOf(ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)))
+        val sweaterRule = listOf(ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0)))
         val result = subject(
             location = london,
             prefs = prefs.copy(
@@ -1292,7 +1293,7 @@ class GenerateDailyInsightTest {
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
-        val tshirtRule = listOf(ClothesRule("t-shirt", ClothesRule.TemperatureAbove(20.0)))
+        val tshirtRule = listOf(ClothesRule(Garment.TSHIRT, ClothesRule.TemperatureAbove(20.0)))
         val result = subject(
             location = london,
             prefs = prefs.copy(
@@ -1341,7 +1342,7 @@ class GenerateDailyInsightTest {
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
-        val jacketRule = listOf(ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)))
+        val jacketRule = listOf(ClothesRule(Garment.JACKET, ClothesRule.TemperatureBelow(12.0)))
         val result = subject(
             location = london,
             prefs = prefs.copy(
@@ -1390,7 +1391,7 @@ class GenerateDailyInsightTest {
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
-        val sweaterRule = listOf(ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)))
+        val sweaterRule = listOf(ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0)))
         val result = subject(
             location = london,
             prefs = prefs.copy(
@@ -1435,7 +1436,7 @@ class GenerateDailyInsightTest {
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
-        val shortsRule = listOf(ClothesRule("shorts", ClothesRule.TemperatureAbove(24.0)))
+        val shortsRule = listOf(ClothesRule(Garment.SHORTS, ClothesRule.TemperatureAbove(24.0)))
         val result = subject(
             location = london,
             prefs = prefs.copy(
@@ -1483,8 +1484,8 @@ class GenerateDailyInsightTest {
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
         val rules = listOf(
-            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
-            ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)),
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0)),
+            ClothesRule(Garment.JACKET, ClothesRule.TemperatureBelow(12.0)),
         )
         val result = subject(
             location = london,
@@ -1502,7 +1503,7 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `evening tie-in canonicalizes legacy aliases so trousers and pants don't cross-fire`() = runTest {
+    fun `evening tie-in stays silent when a bottom rule matches the default garment`() = runTest {
         // Codex-flagged: a legacy rule item like "trousers" (a recognized
         // Garment alias for PANTS) shouldn't surface as different from the
         // night's default "pants" — the user is already wearing the same
@@ -1532,9 +1533,8 @@ class GenerateDailyInsightTest {
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
-        // A legacy free-form rule typed as "trousers" — recognized by
-        // Garment.fromKey as PANTS but stored verbatim on disk.
-        val rules = listOf(ClothesRule("trousers", ClothesRule.TemperatureBelow(20.0)))
+        // A PANTS rule whose garment is the same as the bottom default.
+        val rules = listOf(ClothesRule(Garment.PANTS, ClothesRule.TemperatureBelow(20.0)))
         val result = subject(
             location = london,
             prefs = prefs.copy(
@@ -1545,8 +1545,8 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        // The day fires "trousers" (PANTS), night defaults to "pants"
-        // (PANTS). Same garment — no tie-in should emit "Bring pants."
+        // The day fires the PANTS rule, night defaults to PANTS too. Same
+        // garment — no tie-in should emit "Bring pants."
         result.insight.summary.eveningEventTieIn.shouldBeNull()
     }
 
@@ -1948,8 +1948,8 @@ class GenerateDailyInsightTest {
         // No precip-keyed rule on the books — only temperature rules, none
         // of which trigger on a mild evening.
         val tempOnly = listOf(
-            ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)),
-            ClothesRule("coat", ClothesRule.TemperatureBelow(6.0)),
+            ClothesRule(Garment.JACKET, ClothesRule.TemperatureBelow(12.0)),
+            ClothesRule(Garment.COAT, ClothesRule.TemperatureBelow(6.0)),
         )
         val result = subject(
             location = london,

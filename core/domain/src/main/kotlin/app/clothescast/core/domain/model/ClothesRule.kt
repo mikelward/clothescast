@@ -9,13 +9,15 @@ package app.clothescast.core.domain.model
  * outside, factoring in wind chill and humidity. Precipitation rules check the day's
  * peak probability.
  *
- * TODO(rules-redesign): `item` is still a free-form string on disk so existing
- * stored rules round-trip, but the editor now picks from the fixed [Garment]
- * catalog instead of free text — translation works because every catalog key
- * has a `garment_<key>` resource and a German phraser entry. Future: migrate
- * `item` to `Garment` directly (typed field, no fallback string), broaden the
- * catalog beyond tops + bottoms (headwear, scarf / gloves, footwear, rain /
- * sun gear), and add a "user-defined" path with an explicit translation hook.
+ * [item] is a typed [Garment]; the on-disk DTO stores its key as a string and
+ * drops any stored rule whose key isn't in the catalog (legacy free-form items
+ * from before the catalog existed). The editor picks from the fixed catalog, so
+ * new rules are always catalog garments.
+ *
+ * TODO(rules-redesign): broaden the [Garment] catalog beyond tops + bottoms
+ * (headwear, scarf / gloves, footwear, rain / sun gear — gated on the outfit
+ * display model), and add a "user-defined" path with an explicit translation
+ * hook for items outside the catalog.
  *
  * TODO(rules-in-layers): companion to [ClothesFormat.LAYER_COUNT] — let the
  * user *author* rules in layer-count terms too ("below 12°C → 3 layers")
@@ -28,7 +30,7 @@ package app.clothescast.core.domain.model
  * matching phrasing.
  */
 data class ClothesRule(
-    val item: String,
+    val item: Garment,
     val condition: Condition,
 ) {
     fun appliesTo(forecast: DailyForecast): Boolean = condition.matches(forecast)
@@ -81,10 +83,10 @@ data class ClothesRule(
         //  UMBRELLA (rain jacket, hood, rain boots, …) once the resource
         //  strings and per-locale phrasers cover them.
         val DEFAULTS: List<ClothesRule> = listOf(
-            ClothesRule("sweater", TemperatureBelow(16.0)),
-            ClothesRule("jacket", TemperatureBelow(10.0)),
-            ClothesRule("coat", TemperatureBelow(4.0)),
-            ClothesRule("shorts", TemperatureAbove(23.0)),
+            ClothesRule(Garment.SWEATER, TemperatureBelow(16.0)),
+            ClothesRule(Garment.JACKET, TemperatureBelow(10.0)),
+            ClothesRule(Garment.COAT, TemperatureBelow(4.0)),
+            ClothesRule(Garment.SHORTS, TemperatureAbove(23.0)),
         )
 
         /** Sanity bounds in °C for the rationale dialog's `+1°` / `−1°` taps. Wide enough
@@ -107,13 +109,3 @@ fun ClothesRule.thresholdC(): Double? = when (val c = condition) {
     is ClothesRule.PrecipitationProbabilityAbove -> null
 }
 
-/**
- * Returns a copy of this rule with its temperature threshold set to [newC] (Celsius),
- * preserved in the rule's existing unit so a Fahrenheit user's `75°F` rule stays
- * Fahrenheit on disk. Returns `null` for non-temperature rules.
- */
-fun ClothesRule.withThresholdC(newC: Double): ClothesRule? = when (val c = condition) {
-    is ClothesRule.TemperatureBelow -> copy(condition = c.copy(value = newC.toUnit(c.unit)))
-    is ClothesRule.TemperatureAbove -> copy(condition = c.copy(value = newC.toUnit(c.unit)))
-    is ClothesRule.PrecipitationProbabilityAbove -> null
-}

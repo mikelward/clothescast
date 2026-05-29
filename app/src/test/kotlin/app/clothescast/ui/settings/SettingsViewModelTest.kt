@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
+import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.PreambleVisibility
@@ -431,16 +432,16 @@ class SettingsViewModelTest {
             ),
         )
 
-        refreshSubject.addClothesRule(ClothesRule("hat", ClothesRule.TemperatureBelow(0.0)))
-        refreshSubject.state.first { it.clothesRules.any { rule -> rule.item == "hat" } }
+        refreshSubject.addClothesRule(ClothesRule(Garment.HOODIE, ClothesRule.TemperatureBelow(0.0)))
+        refreshSubject.state.first { it.clothesRules.any { rule -> rule.item == Garment.HOODIE } }
         refreshCount shouldBe 1
 
-        refreshSubject.replaceClothesRule(0, ClothesRule("scarf", ClothesRule.TemperatureBelow(0.0)))
-        refreshSubject.state.first { it.clothesRules.first().item == "scarf" }
+        refreshSubject.replaceClothesRule(0, ClothesRule(Garment.PUFFER, ClothesRule.TemperatureBelow(0.0)))
+        refreshSubject.state.first { it.clothesRules.first().item == Garment.PUFFER }
         refreshCount shouldBe 2
 
         refreshSubject.deleteClothesRule(0)
-        refreshSubject.state.first { it.clothesRules.none { rule -> rule.item == "scarf" } }
+        refreshSubject.state.first { it.clothesRules.none { rule -> rule.item == Garment.PUFFER } }
         refreshCount shouldBe 3
 
         refreshSubject.setDefaultBottom(OutfitSuggestion.Bottom.JEANS)

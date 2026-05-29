@@ -238,17 +238,6 @@ class DeriveInsight(
         )
     }
 
-    // TODO(evening-tiein-split): this one function fuses two emission paths
-    //   behind a single `if (deltaItems.isEmpty() && precip == null) return null`
-    //   gate — the evening clothes-delta (topDelta/bottomDelta below) and the
-    //   bare rain warning (`precip`). The top delta reads from
-    //   triggeredOutfit.rules (layer-reduced) while the bottom reads from
-    //   triggeredOutfit.items; that asymmetry looks like a bug but is
-    //   load-bearing (see TriggeredOutfit's doc on why the per-tier default
-    //   must not count as an evening "extra"). Split into eveningClothesDelta()
-    //   + eveningRainWarning() so the either/or emission and the top/bottom
-    //   source asymmetry are explicit. Behaviour-preserving; covered by
-    //   GenerateDailyInsightTest — diff the prose before/after.
     private fun buildEveningEventTieIn(
         bundle: ForecastBundle,
         prefs: UserPreferences,
@@ -284,34 +273,62 @@ class DeriveInsight(
             deltaFormat = prefs.deltaFormat,
             todayRuleItems = Garment.layerReduce(nightView.triggeredOutfit.rules).map { it.item },
         )
-        val precip = nightSummary.precip
-        val dayKeysBySlot = todayItems
-            .mapNotNull { Garment.fromKey(it) }
-            .groupBy({ it.slot }, { it.itemKey })
-            .mapValues { it.value.toSet() }
-        val dayTopKey = dayKeysBySlot[Garment.Slot.TOP].orEmpty()
-        val dayBottomKey = dayKeysBySlot[Garment.Slot.BOTTOM].orEmpty()
-        val topDelta = Garment.layerReduce(nightView.triggeredOutfit.rules)
-            .map { it.item }
-            .filter { item ->
-                val g = Garment.fromKey(item)
-                g?.slot == Garment.Slot.TOP && g.itemKey !in dayTopKey
-            }
-        val bottomDelta = nightView.triggeredOutfit.items
-            .filter { item ->
-                val g = Garment.fromKey(item)
-                g?.slot == Garment.Slot.BOTTOM && g.itemKey !in dayBottomKey
-            }
-        val deltaItems = topDelta + bottomDelta
 
-        if (deltaItems.isEmpty() && precip == null) return null
+        // Two emission paths, either of which fires the clause: extra clothing
+        // the evening needs beyond the morning outfit (clothesDelta), or rain to
+        // flag for the event (precip). Both are computed independently below.
+        val clothesDelta = eveningClothesDelta(
+            eveningItems = nightView.triggeredOutfit.items,
+            dayItems = todayItems,
+        )
+        val precip = nightSummary.precip
+        if (clothesDelta.isEmpty() && precip == null) return null
 
         return EveningEventTieInClause(
-            items = deltaItems,
+            items = clothesDelta,
             rainTime = precip?.time,
             likelihood = precip?.likelihood ?: PrecipLikelihood.LIKELY,
             precipCondition = precip?.condition,
         )
+    }
+
+    /**
+     * The garments the evening outfit adds beyond what the morning already
+     * announced. Both sides are the full, layer-reduced [TriggeredOutfit.items]
+     * — threshold matches *and* the per-slot default (a default is just the rule
+     * that fires when nothing else covers the slot, so it belongs in the outfit
+     * on both sides of the comparison).
+     *
+     * Tops are layer-aware: an evening top is "extra" only when its [Garment.Layer]
+     * is heavier than the day's heaviest top — wearing a jacket by day already
+     * implies the lighter layers under it, so a lighter evening top isn't worth
+     * mentioning. Bottoms substitute rather than stack, so an evening bottom is
+     * extra when it's a different garment than the day's. Items we can't place in
+     * a slot (legacy free-form rules, accessories like an umbrella) are left to
+     * the prose / rain paths rather than the clothes delta.
+     */
+    private fun eveningClothesDelta(
+        eveningItems: List<String>,
+        dayItems: List<String>,
+    ): List<String> {
+        val dayGarments = dayItems.mapNotNull { Garment.fromKey(it) }
+        val dayTopLayer: Garment.Layer? = dayGarments
+            .filter { it.slot == Garment.Slot.TOP }
+            .mapNotNull { it.layer }
+            .maxByOrNull { it.ordinal }
+        val dayBottomKeys = dayGarments
+            .filter { it.slot == Garment.Slot.BOTTOM }
+            .mapTo(mutableSetOf()) { it.itemKey }
+        return eveningItems.filter { item ->
+            val g = Garment.fromKey(item) ?: return@filter false
+            when (g.slot) {
+                Garment.Slot.TOP -> {
+                    val layer = g.layer ?: return@filter false
+                    dayTopLayer == null || layer.ordinal > dayTopLayer.ordinal
+                }
+                Garment.Slot.BOTTOM -> g.itemKey !in dayBottomKeys
+            }
+        }
     }
 
     private fun filterEventsForPeriod(

@@ -1260,6 +1260,57 @@ class GenerateDailyInsightTest {
     }
 
     @Test
+    fun `evening tie-in surfaces a heavier default top the day didn't need`() = runTest {
+        // defaultTop = SWEATER for someone who runs cold. A warm afternoon fires
+        // their t-shirt rule, so the day's top is the lighter t-shirt; the mild
+        // evening fires no top rule, so the night falls back to the default
+        // sweater. The sweater is a heavier layer than the day's t-shirt, so the
+        // evening genuinely needs it — "Bring a sweater tonight." (Previously the
+        // tie-in only looked at fired night *rules* and silently dropped the
+        // fallback top, so this user got no evening cue at all.)
+        val zone = ZoneId.of("Europe/London")
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 24.0, 24.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 26.0, 25.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val evening = listOf(
+            HourlyForecast(LocalTime.of(19, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(21, 0), 15.0, 14.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val baseHourly = today.copy(
+            hourly = daytime + evening,
+            precipitationProbabilityMaxPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val diner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(23, 0),
+            location = "Restaurant",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(diner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val tshirtRule = listOf(ClothesRule("t-shirt", ClothesRule.TemperatureAbove(20.0)))
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = tshirtRule,
+                defaultTop = OutfitSuggestion.Top.SWEATER,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        val tie = result.insight.summary.eveningEventTieIn
+        tie.shouldNotBeNull()
+        tie!!.items shouldBe listOf("sweater")
+        tie.rainTime.shouldBeNull()
+    }
+
+    @Test
     fun `evening tie-in is silent when the night top resolves to a default the day was wearing as a rule`() = runTest {
         // Cold day with a sweater rule, mild night where no threshold rule
         // matches → the night's top tier resolves to the default top

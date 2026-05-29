@@ -105,6 +105,7 @@ import app.clothescast.core.domain.model.consensusSunshineHours
 import app.clothescast.core.domain.model.consensusSunshineHoursFor
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
+import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
@@ -889,6 +890,8 @@ private fun TodayPage(
             clothesFormat = state.clothesFormat,
             bottomsFormat = state.bottomsFormat,
             rainAccessory = state.rainAccessory,
+            periodPreamble = state.periodPreamble,
+            wearPreamble = state.wearPreamble,
             showChevronRight = showChevronRight,
             showChevronLeft = showChevronLeft,
             onChevronTap = onChevronTap,
@@ -1878,6 +1881,13 @@ internal fun InsightCard(
      */
     rainAccessory: RainAccessory = RainAccessory.NONE,
     /**
+     * Where the period / wear preambles survive. Both default to
+     * [PreambleVisibility.ALWAYS] (full prose) until the drop is translated
+     * beyond English; the real card passes the user's choice in explicitly.
+     */
+    periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
+    wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
+    /**
      * Right-edge chevron affordance. On page 0 it points to the next-period
      * page; on page 1 (paired with [showChevronLeft]) it points to the
      * 7-day overview page. The destination is fully determined by the
@@ -1928,8 +1938,14 @@ internal fun InsightCard(
     onNavigateToLocation: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
-    val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory) {
-        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory)
+    val formatter = remember(
+        context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+        periodPreamble, wearPreamble,
+    ) {
+        InsightFormatter.forRegion(
+            context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+            periodPreamble, wearPreamble,
+        )
     }
     // Page 2 caches tomorrow's daytime insight after the evening worker run;
     // surface it as "Tomorrow" rather than "Today" so the heading matches the
@@ -2029,12 +2045,13 @@ internal fun InsightCard(
                 }
             }
             Text(
-                // The card already shows a "Today" / "Tonight" / "Tomorrow"
-                // header above this prose, so drop the redundant "Today, it
-                // will be …" lead-in and open straight on the measurement. TTS,
-                // MQTT, the notification, and the cast card keep the lead (they
-                // have no separate period header).
-                text = formatter.format(insight.summary, isFutureDay = isFutureDay, includeLead = false),
+                // VISUAL surface: under the default Speech-only period preamble
+                // the card opens straight on the measurement ("14° to 20°. …"),
+                // dropping the redundant "Today, it will be …" lead the card's
+                // own period header already supplies. The user's Lead-in setting
+                // can override (Always shows the lead here too; Never drops it
+                // from the spoken briefing as well).
+                text = formatter.format(insight.summary, isFutureDay = isFutureDay),
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = if (onNavigateToFormat != null) {
                     Modifier.clickable { onNavigateToFormat() }

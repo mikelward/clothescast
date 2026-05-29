@@ -290,6 +290,31 @@ enum class ClothesMentionMode { ALWAYS, IF_CHANGED, NEVER }
 enum class RainAccessory { NONE, UMBRELLA }
 
 /**
+ * Where a leading sentence fragment is allowed to survive. Used by two
+ * independent insight controls:
+ *  - the **period preamble** ("Today, it will be" / "Tonight, it will be") that
+ *    fronts the temperature sentence, and
+ *  - the **wear preamble** ("Wear " plus the leading article) that fronts the
+ *    clothes clause — dropping it turns "Wear a sweater." into "Sweater."
+ *
+ *  - [ALWAYS] keeps the fragment on every surface — visual (Today card,
+ *    notification, cast card, MQTT, bug report) and spoken (TTS).
+ *  - [SPEECH_ONLY] keeps it only on the spoken (TTS) path and drops it from
+ *    every visual/text surface. For the period preamble this generalises the
+ *    long-standing Today-card behaviour (the card has its own period header) to
+ *    all visual surfaces. The Format-settings preview shows the dropped
+ *    fragment in parentheses — "(Today, it will be) 14° to 20°." — to signal
+ *    "spoken, but hidden on screen."
+ *  - [NEVER] drops it everywhere, spoken included.
+ *
+ * Honoured for English only (see `InsightFormatter.supportsNoLead`): other
+ * locales fuse the lead into the sentence ("Heute wird es …") and have no
+ * no-lead / bare templates, so they always render the full forms regardless of
+ * this setting.
+ */
+enum class PreambleVisibility { ALWAYS, SPEECH_ONLY, NEVER }
+
+/**
  * Where the spoken-aloud audio comes from.
  *
  * - [DEVICE] uses Android's on-device TextToSpeech engine. Free, fully offline once
@@ -734,6 +759,23 @@ data class UserPreferences(
      * [InsightFormatter].
      */
     val rainAccessory: RainAccessory = RainAccessory.NONE,
+    /**
+     * Where the period preamble ("Today, it will be" / "Tonight, it will be")
+     * fronting the temperature sentence is allowed to survive. See
+     * [PreambleVisibility]. Defaults to [PreambleVisibility.ALWAYS] for now — the
+     * drop is English-only, so until the other locales are translated the
+     * shipped default keeps the full lead-in everywhere and users opt in to
+     * trimming it. See [InsightFormatter].
+     */
+    val periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
+    /**
+     * Where the wear preamble ("Wear " plus the leading article) fronting the
+     * clothes clause is allowed to survive — dropping it turns "Wear a sweater."
+     * into "Sweater." See [PreambleVisibility]. Defaults to
+     * [PreambleVisibility.ALWAYS] so existing installs see byte-identical prose.
+     * English-only; see [InsightFormatter].
+     */
+    val wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     /**
      * Feels-like delta (in °C) the day must differ from yesterday by before the
      * "…warmer/cooler than yesterday" clause is emitted. `null` turns the clause

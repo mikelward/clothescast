@@ -19,8 +19,15 @@ internal interface ClothesPhraser {
     /** Article-prefixed form of a single item, used by the calendar tie-in clause. */
     fun withArticle(item: String): String
 
-    /** Join multiple items into the body of a "Wear …" sentence. */
-    fun joinItems(items: List<String>): String
+    /**
+     * Join multiple items into the body of a "Wear …" sentence. When
+     * [leadingArticle] is false the first item's article is suppressed (used by
+     * the wear-preamble drop, which removes "Wear" *and* the leading article so
+     * "a sweater and jacket" becomes "sweater and jacket"); a trailing
+     * Oxford-comma article is unaffected. Honoured by the English phraser only —
+     * locales without leading articles ignore it.
+     */
+    fun joinItems(items: List<String>, leadingArticle: Boolean = true): String
 
     companion object {
         fun forLocale(resources: Resources, locale: Locale): ClothesPhraser =
@@ -63,7 +70,7 @@ internal interface ClothesPhraser {
 internal class EnglishClothesPhraser(private val resources: Resources) : ClothesPhraser {
     override fun withArticle(item: String): String = prefixArticle(translate(item))
 
-    override fun joinItems(items: List<String>): String {
+    override fun joinItems(items: List<String>, leadingArticle: Boolean): String {
         val translated = items.asSequence()
             .map(::translate)
             .filter { it.isNotBlank() }
@@ -73,7 +80,9 @@ internal class EnglishClothesPhraser(private val resources: Resources) : Clothes
         val lastIdx = translated.lastIndex
         val rendered = translated.mapIndexed { i, item ->
             val articleHere = when {
-                i == firstArticleIdx -> true
+                // Suppressed when the caller drops the leading article (wear
+                // preamble); the Oxford-comma trailing article still applies.
+                i == firstArticleIdx -> leadingArticle
                 translated.size >= 3 && i == lastIdx && takesArticle(item) -> true
                 else -> false
             }
@@ -130,7 +139,8 @@ internal class EnglishClothesPhraser(private val resources: Resources) : Clothes
 internal class GermanClothesPhraser(private val resources: Resources) : ClothesPhraser {
     override fun withArticle(item: String): String = translate(item)
 
-    override fun joinItems(items: List<String>): String {
+    // German emits items bare regardless, so [leadingArticle] is a no-op here.
+    override fun joinItems(items: List<String>, leadingArticle: Boolean): String {
         val translated = items.asSequence()
             .map(::translate)
             .filter { it.isNotBlank() }
@@ -219,7 +229,8 @@ internal class ResourceClothesPhraser(private val resources: Resources) : Clothe
     override fun withArticle(item: String): String =
         resources.getString(R.string.insight_clothes_article_a, translate(item))
 
-    override fun joinItems(items: List<String>): String {
+    // Generic locales have no leading-article rule, so [leadingArticle] is a no-op.
+    override fun joinItems(items: List<String>, leadingArticle: Boolean): String {
         val translated = items.asSequence()
             .map(::translate)
             .filter { it.isNotBlank() }
@@ -249,7 +260,7 @@ internal class ResourceClothesPhraser(private val resources: Resources) : Clothe
 internal class BareClothesPhraser : ClothesPhraser {
     override fun withArticle(item: String): String = item
 
-    override fun joinItems(items: List<String>): String = items.joinToString(", ")
+    override fun joinItems(items: List<String>, leadingArticle: Boolean): String = items.joinToString(", ")
 }
 
 private val GARMENT_RES_IDS: Map<Garment, Int> = mapOf(

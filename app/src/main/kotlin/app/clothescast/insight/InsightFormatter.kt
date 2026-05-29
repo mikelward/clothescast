@@ -14,6 +14,7 @@ import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.InsightSummary
+import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.RainAccessory
@@ -30,6 +31,20 @@ import java.time.LocalTime
 import java.time.format.TextStyle
 import java.util.Locale
 import kotlin.math.roundToInt
+
+/**
+ * The surface a rendered insight is bound for. Drives how the period / wear
+ * preambles are treated under [PreambleVisibility.SPEECH_ONLY]:
+ *  - [SPEECH] — the spoken (TTS) briefing; keeps the preambles.
+ *  - [VISUAL] — every visual/text surface (Today card, notification, cast card,
+ *    MQTT, bug report); drops the preambles.
+ *  - [SETTINGS_PREVIEW] — the Format-settings preview; shows the dropped
+ *    preambles in parentheses ("(Today, it will be) 14° to 20°.") so the user
+ *    sees they're spoken but hidden on screen.
+ *
+ * [ALWAYS] and [NEVER] ignore the surface (present everywhere / nowhere).
+ */
+enum class InsightSurface { SPEECH, VISUAL, SETTINGS_PREVIEW }
 
 /**
  * Renders a structured [InsightSummary] into the spoken / displayed prose.
@@ -97,6 +112,26 @@ class InsightFormatter(
      * the accessory and the rain mention always travel together.
      */
     private val rainAccessory: RainAccessory = RainAccessory.NONE,
+    /**
+     * Where the period preamble ("Today, it will be …") is allowed to survive.
+     * See [PreambleVisibility]. Combined with the per-call [InsightSurface] to
+     * decide whether the lead is included, omitted, or shown parenthesised.
+     * English-only (see [supportsNoLead]); other locales always include it.
+     *
+     * Defaults to [PreambleVisibility.ALWAYS] — the *renderer's* default is to
+     * show the full prose. The app's product default (drop the lead on visual
+     * surfaces) lives on `UserPreferences.periodPreamble` and is threaded in
+     * explicitly by every production call site; the constructor default only
+     * governs previews / tests that construct a formatter directly.
+     */
+    private val periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
+    /**
+     * Where the wear preamble ("Wear " + leading article) is allowed to
+     * survive. See [PreambleVisibility]. Dropping it turns "Wear a sweater."
+     * into "Sweater."; the preview shows "(Wear a) sweater.". English-only.
+     * Defaults to [PreambleVisibility.ALWAYS] (full prose), as above.
+     */
+    private val wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
 ) {
     private val phraser: ClothesPhraser = ClothesPhraser.forLocale(resources, locale)
 
@@ -116,27 +151,52 @@ class InsightFormatter(
      * blank; the spoken TTS path passes `false` to stay silent rather than read
      * out a content-free filler line.
      *
-     * [includeLead] controls the "Today, it will be …" / "Tonight, it will be …"
-     * lead-in that fronts the temperature sentence. The Today insight card
-     * already renders a "Today" / "Tonight" / "Tomorrow" header above the prose,
-     * so it passes `false` to drop the redundant lead and open straight on the
-     * measurement ("14° to 20°. Wear a sweater."). The spoken (TTS), published
-     * (MQTT), notification, and cast surfaces keep the default `true` because
-     * they have no separate period header to lean on. Honoured for English only
-     * (see [supportsNoLead]); other locales keep the lead regardless.
+     * The period preamble ("Today, it will be …" / "Tonight, it will be …") that
+     * fronts the temperature sentence, and the wear preamble ("Wear " + leading
+     * article) that fronts the clothes clause, are each gated by the user's
+     * [periodPreamble] / [wearPreamble] choice combined with the bound
+     * [surface]. Under [PreambleVisibility.SPEECH_ONLY] the spoken ([
+     * InsightSurface.SPEECH]) path keeps a preamble, every visual surface drops
+     * it, and the Format-settings preview shows it parenthesised ("(Today, it
+     * will be) 14° to 20°."). All dropping / parenthesising is English-only (see
+     * [supportsNoLead]); other locales render the full forms regardless.
      */
     fun format(
         summary: InsightSummary,
         isFutureDay: Boolean = false,
         placeholderWhenEmpty: Boolean = true,
-        includeLead: Boolean = true,
+        surface: InsightSurface = InsightSurface.VISUAL,
     ): String {
-        // Dropping the lead means stripping the "it will be" connective and
-        // re-capitalising the first clause; both are English-specific. Other
-        // locales phrase the lead inseparably (e.g. German "Heute wird es …")
-        // and have no no-lead templates, so they keep the full lead-in — same
-        // English-only gating precedent as deltaHasLeadFragment().
-        val omitLead = !includeLead && supportsNoLead()
+        val wearMode = wearMode(surface)
+        return when (leadMode(surface)) {
+            LeadMode.INCLUDE ->
+                renderInsight(summary, isFutureDay, placeholderWhenEmpty, omitLead = false, wearMode)
+            LeadMode.OMIT ->
+                renderInsight(summary, isFutureDay, placeholderWhenEmpty, omitLead = true, wearMode)
+            // Preview hint: render the body with and without the period lead and
+            // wrap the recovered difference in parens — "(Today, it will be) …".
+            LeadMode.PAREN -> parenthesizeLead(
+                renderInsight(summary, isFutureDay, placeholderWhenEmpty, omitLead = false, wearMode),
+                renderInsight(summary, isFutureDay, placeholderWhenEmpty, omitLead = true, wearMode),
+            )
+        }
+    }
+
+    /**
+     * Render the insight body for a single lead treatment ([omitLead]) and wear
+     * treatment ([wearMode]). [format] calls this once for [LeadMode.INCLUDE] /
+     * [LeadMode.OMIT] and twice for [LeadMode.PAREN] (the with- and without-lead
+     * forms it then splices). The "it will be" connective + first-clause
+     * re-capitalisation that dropping the lead entails are English-specific;
+     * [format] only ever passes `omitLead = true` when [supportsNoLead] holds.
+     */
+    private fun renderInsight(
+        summary: InsightSummary,
+        isFutureDay: Boolean,
+        placeholderWhenEmpty: Boolean,
+        omitLead: Boolean,
+        wearMode: WearMode,
+    ): String {
         // Accessories (umbrella, etc.) are filtered out of the rendered prose
         // entirely — we only surface temperature-driven clothing for now. The
         // user's umbrella rule still triggers and the precip clause still
@@ -198,7 +258,7 @@ class InsightFormatter(
             // as a bare fragment that the period lead folds into subject-less
             // ("Today, 5° warmer than yesterday.").
             summary.delta?.let { add(formatDelta(it, leadsTemperature = rangeFormat == RangeFormat.NONE)) }
-            if (wearItems.isNotEmpty()) formatClothesWear(wearItems)?.let(::add)
+            if (wearItems.isNotEmpty()) formatClothesWear(wearItems, wearMode)?.let(::add)
             summary.precip?.let { add(formatPrecip(it)) }
         }
         val tieInClauses = buildList {
@@ -314,6 +374,67 @@ class InsightFormatter(
      */
     private fun supportsNoLead(): Boolean = locale.language == "en"
 
+    /** How the period lead is rendered for a clause (see [leadMode]). */
+    private enum class LeadMode { INCLUDE, OMIT, PAREN }
+
+    /** How the wear preamble is rendered (see [wearMode]). */
+    private enum class WearMode { FULL, BARE, PAREN }
+
+    /**
+     * Resolve the period-preamble treatment for [surface] under the user's
+     * [periodPreamble]. Non-English locales always [LeadMode.INCLUDE] (the
+     * no-lead surgery is English-only, like [supportsNoLead]).
+     */
+    private fun leadMode(surface: InsightSurface): LeadMode {
+        if (!supportsNoLead()) return LeadMode.INCLUDE
+        return when (periodPreamble) {
+            PreambleVisibility.ALWAYS -> LeadMode.INCLUDE
+            PreambleVisibility.NEVER -> LeadMode.OMIT
+            PreambleVisibility.SPEECH_ONLY -> when (surface) {
+                InsightSurface.SPEECH -> LeadMode.INCLUDE
+                InsightSurface.VISUAL -> LeadMode.OMIT
+                InsightSurface.SETTINGS_PREVIEW -> LeadMode.PAREN
+            }
+        }
+    }
+
+    /**
+     * Resolve the wear-preamble treatment for [surface] under the user's
+     * [wearPreamble]. Non-English locales always [WearMode.FULL] (dropping
+     * "Wear" + the leading article is English-only surgery).
+     */
+    private fun wearMode(surface: InsightSurface): WearMode {
+        if (!supportsNoLead()) return WearMode.FULL
+        return when (wearPreamble) {
+            PreambleVisibility.ALWAYS -> WearMode.FULL
+            PreambleVisibility.NEVER -> WearMode.BARE
+            PreambleVisibility.SPEECH_ONLY -> when (surface) {
+                InsightSurface.SPEECH -> WearMode.FULL
+                InsightSurface.VISUAL -> WearMode.BARE
+                InsightSurface.SETTINGS_PREVIEW -> WearMode.PAREN
+            }
+        }
+    }
+
+    /**
+     * Wrap the period preamble in parentheses for the Format-settings preview.
+     * Given the lead-included ([withLead]) and lead-omitted ([noLead]) renders,
+     * the dropped preamble is the prefix [withLead] carries over [noLead]:
+     * recover it and show it parenthesised — "(Today, it will be) 14° to 20°.".
+     * The no-lead form is lowercased first so it reads as a continuation after
+     * the closing paren ("…) cool to mild." not "…) Cool to mild."). Falls back
+     * to [withLead] unchanged if the suffix doesn't line up (e.g. an alert
+     * prefix shifts the strings) — a harmless "lead shown without parens".
+     */
+    private fun parenthesizeLead(withLead: String, noLead: String): String {
+        if (noLead.isBlank()) return withLead
+        val tail = decapitalize(noLead)
+        if (!withLead.endsWith(tail)) return withLead
+        val preamble = withLead.removeSuffix(tail).trimEnd()
+        if (preamble.isEmpty()) return withLead
+        return "($preamble) $tail"
+    }
+
     // TODO(insight-tweak): when the morning precip clause already names a
     //  daytime peak ("Rain at 3pm.") and the evening tie-in also names an
     //  evening rain ("…, rain at 9pm, bring a jacket."), the listener hears
@@ -425,13 +546,46 @@ class InsightFormatter(
      */
     private fun deltaHasLeadFragment(): Boolean = locale.language == "en"
 
-    private fun formatClothesWear(items: List<String>): String? {
-        val phrase = when (clothesFormat) {
-            ClothesFormat.ITEMS -> phraser.joinItems(items)
-            ClothesFormat.LAYER_COUNT -> layerCountPhrase(items) ?: phraser.joinItems(items)
+    private fun formatClothesWear(items: List<String>, wearMode: WearMode): String? {
+        return when (wearMode) {
+            WearMode.FULL -> {
+                val phrase = wearPhrase(items, leadingArticle = true) ?: return null
+                resources.getString(R.string.insight_clothes_wear, phrase)
+            }
+            // Drop "Wear" + the leading article: "Wear a sweater." → "Sweater."
+            // The body opens the sentence, so capitalise its first letter.
+            WearMode.BARE -> {
+                val phrase = wearPhrase(items, leadingArticle = false) ?: return null
+                resources.getString(R.string.insight_clothes_bare, capitalize(phrase))
+            }
+            // Preview hint: show what's dropped on screen in parens —
+            // "(Wear a) sweater." / "(Wear) shorts.". The leading article is
+            // exactly the prefix the article-on render adds over the article-off
+            // one, recovered by splicing (same idea as [parenthesizeLead]).
+            WearMode.PAREN -> {
+                val withArticle = wearPhrase(items, leadingArticle = true) ?: return null
+                val without = wearPhrase(items, leadingArticle = false) ?: return null
+                val full = resources.getString(R.string.insight_clothes_wear, withArticle)
+                val tail = resources.getString(R.string.insight_clothes_bare, without)
+                if (!full.endsWith(tail)) return full
+                "(${full.removeSuffix(tail).trimEnd()}) $tail"
+            }
         }
-        if (phrase.isBlank()) return null
-        return resources.getString(R.string.insight_clothes_wear, phrase)
+    }
+
+    /**
+     * The body of the wear sentence (no "Wear " wrapper, no trailing period):
+     * the joined garment list in items mode ("a sweater and jacket" /
+     * "sweater and jacket" depending on [leadingArticle]) or the perceived-warmth
+     * phrase in layer-count mode ("2 layers", which carries no article).
+     * Returns null when nothing renders (e.g. a bottoms-only layer-count firing).
+     */
+    private fun wearPhrase(items: List<String>, leadingArticle: Boolean): String? {
+        val phrase = when (clothesFormat) {
+            ClothesFormat.ITEMS -> phraser.joinItems(items, leadingArticle)
+            ClothesFormat.LAYER_COUNT -> layerCountPhrase(items) ?: phraser.joinItems(items, leadingArticle)
+        }
+        return phrase.ifBlank { null }
     }
 
     /**
@@ -772,6 +926,8 @@ class InsightFormatter(
             clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
             bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
             rainAccessory: RainAccessory = RainAccessory.NONE,
+            periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
+            wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
         ): InsightFormatter =
             InsightFormatter(
                 context.localizedResources(locale),
@@ -781,6 +937,8 @@ class InsightFormatter(
                 clothesFormat,
                 bottomsFormat,
                 rainAccessory,
+                periodPreamble,
+                wearPreamble,
             )
 
         /** Convenience for the common path: render in the user's [Region]-derived locale. */
@@ -792,9 +950,21 @@ class InsightFormatter(
             clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
             bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
             rainAccessory: RainAccessory = RainAccessory.NONE,
+            periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
+            wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
         ): InsightFormatter {
             val locale = region.toJavaLocale() ?: context.currentResourcesLocale()
-            return forContext(context, locale, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory)
+            return forContext(
+                context,
+                locale,
+                temperatureUnit,
+                rangeFormat,
+                clothesFormat,
+                bottomsFormat,
+                rainAccessory,
+                periodPreamble,
+                wearPreamble,
+            )
         }
     }
 }

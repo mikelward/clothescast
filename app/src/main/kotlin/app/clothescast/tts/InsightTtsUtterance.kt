@@ -5,12 +5,14 @@ import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.InsightSummary
+import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.insight.InsightFormatter
+import app.clothescast.insight.InsightSurface
 import java.util.Locale
 
 internal data class InsightTtsUtterance(
@@ -38,15 +40,21 @@ internal fun insightTtsUtterance(
     clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
     rainAccessory: RainAccessory = RainAccessory.NONE,
+    periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
+    wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     fallbackLocale: Locale = Locale.getDefault(),
     holidayTheme: HolidayTheme? = null,
 ): InsightTtsUtterance {
     val regionLocale = region.toJavaLocale() ?: fallbackLocale
     val locale = voiceLocale.resolve(regionLocale)
-    val forecast = InsightFormatter.forContext(context, locale, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory)
+    val forecast = InsightFormatter.forContext(
+        context, locale, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+        periodPreamble, wearPreamble,
+    )
         // Spoken playback stays silent when nothing fired — no "it will be the
         // same as yesterday." filler read aloud — unlike the display surfaces.
-        .format(summary, placeholderWhenEmpty = false)
+        // SPEECH surface so Speech-only preambles are spoken (kept) here.
+        .format(summary, placeholderWhenEmpty = false, surface = InsightSurface.SPEECH)
     // Override country tracks the app region (mirrors HolidayBanner) while the
     // greeting's language follows the voice locale.
     val greeting = holidayTtsGreeting(context, holidayTheme, locale, regionLocale.country)

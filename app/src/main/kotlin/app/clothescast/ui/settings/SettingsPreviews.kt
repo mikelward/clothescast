@@ -37,6 +37,7 @@ import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
+import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
@@ -192,6 +193,10 @@ internal fun SettingsFormatPreview() {
             onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
+            periodPreamble = PreambleVisibility.SPEECH_ONLY,
+            wearPreamble = PreambleVisibility.ALWAYS,
+            onSetPeriodPreamble = {},
+            onSetWearPreamble = {},
         )
     }
 }
@@ -218,6 +223,10 @@ internal fun SettingsFormatClothesNeverPreview() {
             onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
+            periodPreamble = PreambleVisibility.SPEECH_ONLY,
+            wearPreamble = PreambleVisibility.ALWAYS,
+            onSetPeriodPreamble = {},
+            onSetWearPreamble = {},
         )
     }
 }
@@ -257,6 +266,10 @@ internal fun SettingsFormatCurrentForecastPreview() {
             onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
+            periodPreamble = PreambleVisibility.SPEECH_ONLY,
+            wearPreamble = PreambleVisibility.ALWAYS,
+            onSetPeriodPreamble = {},
+            onSetWearPreamble = {},
         )
     }
 }
@@ -296,6 +309,10 @@ internal fun SettingsFormatRainAccessoryPreview() {
             onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetClothesMentionMode = {},
+            periodPreamble = PreambleVisibility.SPEECH_ONLY,
+            wearPreamble = PreambleVisibility.ALWAYS,
+            onSetPeriodPreamble = {},
+            onSetWearPreamble = {},
         )
     }
 }

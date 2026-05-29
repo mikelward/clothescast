@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelStore
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesMentionMode
+import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
@@ -241,6 +242,24 @@ class SettingsViewModelTest {
         subject.setClothesMentionMode(ClothesMentionMode.NEVER)
         subject.state.first { it.clothesMentionMode == ClothesMentionMode.NEVER }
         settingsRepository.preferences.first().clothesMentionMode shouldBe ClothesMentionMode.NEVER
+    }
+
+    @Test
+    fun `setPeriodPreamble persists and surfaces in state`() = runTest {
+        subject.state.first { it.periodPreamble == PreambleVisibility.ALWAYS }
+
+        subject.setPeriodPreamble(PreambleVisibility.NEVER)
+        subject.state.first { it.periodPreamble == PreambleVisibility.NEVER }
+        settingsRepository.preferences.first().periodPreamble shouldBe PreambleVisibility.NEVER
+    }
+
+    @Test
+    fun `setWearPreamble persists and surfaces in state`() = runTest {
+        subject.state.first { it.wearPreamble == PreambleVisibility.ALWAYS }
+
+        subject.setWearPreamble(PreambleVisibility.SPEECH_ONLY)
+        subject.state.first { it.wearPreamble == PreambleVisibility.SPEECH_ONLY }
+        settingsRepository.preferences.first().wearPreamble shouldBe PreambleVisibility.SPEECH_ONLY
     }
 
     @Test

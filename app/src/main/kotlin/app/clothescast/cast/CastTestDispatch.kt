@@ -81,6 +81,8 @@ internal suspend fun castCurrentInsight(
         prefs.clothesFormat,
         prefs.bottomsFormat,
         prefs.rainAccessory,
+        prefs.periodPreamble,
+        prefs.wearPreamble,
     )
     val isFutureDay = insight.forDate.isAfter(LocalDate.now())
     val prose = formatter.format(insight.summary, isFutureDay = isFutureDay)

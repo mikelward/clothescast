@@ -1283,6 +1283,8 @@ class FetchAndNotifyWorker(
             prefs.clothesFormat,
             prefs.bottomsFormat,
             prefs.rainAccessory,
+            prefs.periodPreamble,
+            prefs.wearPreamble,
         ).format(insight.summary)
 
     // TODO(brand-intro): consider prepending "Today's ClothesCast: " / "Tonight's ClothesCast: "
@@ -1306,6 +1308,8 @@ class FetchAndNotifyWorker(
             clothesFormat = prefs.clothesFormat,
             bottomsFormat = prefs.bottomsFormat,
             rainAccessory = prefs.rainAccessory,
+            periodPreamble = prefs.periodPreamble,
+            wearPreamble = prefs.wearPreamble,
             holidayTheme = theme,
         )
 

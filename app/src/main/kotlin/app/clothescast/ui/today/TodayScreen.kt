@@ -276,9 +276,16 @@ fun TodayScreen(
                             triggerPlay(context, playPeriod)
                             // Using Play is the user acting on the "Preview your
                             // ClothesCast" promo, so retire it — they've found
-                            // the button it points at. Guarded so a tap when the
-                            // card isn't showing doesn't write to DataStore.
-                            if (state.playPromoCardVisible) viewModel.dismissPlayPromoCard()
+                            // the button it points at. Require a delivered
+                            // forecast (thisPeriodInsight != null), matching the
+                            // hasForecast gate promoBannersToShow uses to render
+                            // the card: otherwise a fresh install (daily on by
+                            // default) tapping Play before any forecast exists
+                            // would persist the dismissal and the promo would
+                            // never get its chance to show.
+                            if (state.playPromoCardVisible && state.thisPeriodInsight != null) {
+                                viewModel.dismissPlayPromoCard()
+                            }
                         },
                         enabled = !state.anyWorkActive,
                     ) {

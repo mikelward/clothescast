@@ -628,9 +628,10 @@ class TodayViewModel(
     }
 
     /**
-     * Persists the user's dismissal of the Today-screen "Preview your daily
-     * ClothesCast now" promo card. Called on the X-tap; the card hides on the
-     * next state emission. Mirrors [dismissSchedulePromoCard].
+     * Retires the Today-screen "Preview your daily ClothesCast now" promo card.
+     * Called on the X-tap *and* when the user taps the top-bar Play button the
+     * card points at — once they've used Play the card has done its job. The
+     * card hides on the next state emission. Mirrors [dismissSchedulePromoCard].
      */
     fun dismissPlayPromoCard() {
         viewModelScope.launch {

@@ -29,8 +29,10 @@ import app.clothescast.R
  * Visibility is decided upstream in [TodayViewModel] via
  * [TodayState.playPromoCardVisible] — true iff the user hasn't dismissed it AND
  * at least one cast slot is enabled (so "your ClothesCast" is meaningful; the
- * morning slot is on by default, so this normally holds). Dismissal persists
- * via [SettingsRepository.setPlayCardDismissed].
+ * morning slot is on by default, so this normally holds). It's retired (via
+ * [SettingsRepository.setPlayCardDismissed]) both by the dismiss X and by the
+ * user tapping the top-bar Play button it points at — once they've used Play,
+ * the card has served its purpose.
  */
 @Composable
 internal fun PlayPromoCard(

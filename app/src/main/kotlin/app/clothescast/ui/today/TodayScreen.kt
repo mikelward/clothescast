@@ -274,6 +274,11 @@ fun TodayScreen(
                                     ForecastPeriod.TODAY
                                 }
                             triggerPlay(context, playPeriod)
+                            // Using Play is the user acting on the "Preview your
+                            // ClothesCast" promo, so retire it — they've found
+                            // the button it points at. Guarded so a tap when the
+                            // card isn't showing doesn't write to DataStore.
+                            if (state.playPromoCardVisible) viewModel.dismissPlayPromoCard()
                         },
                         enabled = !state.anyWorkActive,
                     ) {

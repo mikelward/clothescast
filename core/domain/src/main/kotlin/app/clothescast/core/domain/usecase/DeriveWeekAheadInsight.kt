@@ -1,8 +1,10 @@
 package app.clothescast.core.domain.usecase
 
 import app.clothescast.core.domain.model.DailyForecast
+import app.clothescast.core.domain.model.PrecipProbability.LIKELY_THRESHOLD
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherCondition
+import app.clothescast.core.domain.model.isPrecipitation
 import app.clothescast.core.domain.model.WeekAheadClause
 import app.clothescast.core.domain.model.WeekAheadInsight
 
@@ -125,22 +127,4 @@ class DeriveWeekAheadInsight {
         return null
     }
 
-    private fun WeatherCondition.isPrecipitation(): Boolean = when (this) {
-        WeatherCondition.DRIZZLE,
-        WeatherCondition.RAIN,
-        WeatherCondition.SNOW,
-        WeatherCondition.THUNDERSTORM -> true
-        WeatherCondition.CLEAR,
-        WeatherCondition.PARTLY_CLOUDY,
-        WeatherCondition.CLOUDY,
-        WeatherCondition.FOG,
-        WeatherCondition.UNKNOWN -> false
-    }
-
-    companion object {
-        // Mirrors the "majority of consulted models" tier RenderInsightSummary
-        // uses for its rain clauses, so the weekly headline only mentions rain
-        // the today / tonight insight would also call.
-        internal const val LIKELY_THRESHOLD: Double = 50.0
-    }
 }

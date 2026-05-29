@@ -1311,6 +1311,55 @@ class GenerateDailyInsightTest {
     }
 
     @Test
+    fun `evening tie-in surfaces a warmer same-layer default top`() = runTest {
+        // defaultTop = PUFFER. A cold morning fires the jacket rule (day top =
+        // jacket); the milder evening fires no top rule, so the night falls back
+        // to the default puffer. Jacket and puffer are both SHELL, but the puffer
+        // is warmer (layerCount 4 vs 3) — a genuine upgrade the day didn't wear,
+        // so it must surface. A layer-band-only check would wrongly stay silent.
+        val zone = ZoneId.of("Europe/London")
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 9.0, 8.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 11.0, 10.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val evening = listOf(
+            HourlyForecast(LocalTime.of(19, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(21, 0), 15.0, 14.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val baseHourly = today.copy(
+            hourly = daytime + evening,
+            precipitationProbabilityMaxPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val diner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(23, 0),
+            location = "Restaurant",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(diner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val jacketRule = listOf(ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)))
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = jacketRule,
+                defaultTop = OutfitSuggestion.Top.PUFFER_JACKET,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        val tie = result.insight.summary.eveningEventTieIn
+        tie.shouldNotBeNull()
+        tie!!.items shouldBe listOf("puffer")
+        tie.rainTime.shouldBeNull()
+    }
+
+    @Test
     fun `evening tie-in is silent when the night top resolves to a default the day was wearing as a rule`() = runTest {
         // Cold day with a sweater rule, mild night where no threshold rule
         // matches → the night's top tier resolves to the default top

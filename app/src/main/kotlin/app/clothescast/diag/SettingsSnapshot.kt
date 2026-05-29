@@ -1,14 +1,19 @@
 package app.clothescast.diag
 
 /**
- * Aggregate-analytics view of the non-voice user settings, intended as the
- * params of a Firebase Analytics `settings_snapshot` event.
+ * Aggregate-analytics view of the non-voice user settings. Fanned out by
+ * [app.clothescast.diag.Telemetry] into one Firebase Analytics event per
+ * Settings page — `settings_schedule`, `settings_clothes`, `settings_format`,
+ * `settings_region`, `settings_display`, `settings_calendar` — so each event
+ * name mirrors the screen the user edited. The split keeps each event under
+ * Firebase's 25-param-per-event cap, which a single combined event had
+ * reached; this type stays one cohesive snapshot regardless.
  *
  * The voice / region / TTS-engine settings live separately in
  * [SettingsAnalyticsSnapshot] as user properties so reports can break every
  * event down by them. The settings captured here are emitted as event params
  * instead because Firebase Analytics caps custom user properties at 25 per
- * app — comprehensive configuration breakdowns belong on a periodic event.
+ * app — comprehensive configuration breakdowns belong on periodic events.
  *
  * Schedule times are bucketed to the hour ("00".."23") rather than exact
  * local times; the day-of-week shape is captured only as a count. No user

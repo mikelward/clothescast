@@ -407,6 +407,12 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-05-29** — The optional usage-analytics settings snapshot now
+  records one analytics event per Settings page (Schedule, Clothes,
+  Format, Region, Display, Calendar) instead of a single combined event.
+  Content-neutral: the same coarsened settings values are reported, just
+  grouped by page; nothing new leaves the device and the same privacy
+  toggle still gates it.
 - **2026-05-23** — Internal change to how the daily insight is cached on
   device: the cache now stores the upstream forecast snapshot plus
   minimal event timing (start, end, all-day, a "has a location" flag),

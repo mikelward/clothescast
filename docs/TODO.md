@@ -180,8 +180,11 @@ PRIVACY.md and is mirrored inline in the Settings → Privacy card.
 
 Live events: `api_call` (endpoint, outcome, status, latency;
 offline-filtered), `notification_delivery` (slot, alarm delay, total
-delay), `daily_refresh` (slot, outcome, latency), `settings_snapshot`
-(non-voice configuration), and `clothes_rules_snapshot` (customisation
+delay), `daily_refresh` (slot, outcome, latency), the non-voice
+configuration split into one event per Settings page (`settings_schedule`
+/ `settings_clothes` / `settings_format` / `settings_region` /
+`settings_display` / `settings_calendar` — one combined event would
+exceed Firebase's 25-param cap), and `clothes_rules_snapshot` (customisation
 summary + per-category integer Celsius delta from default, clamped to
 ±5°C). Live user properties: language / region / TTS-engine / TTS-style
 / voice settings as default / override / effective triples — kept to a

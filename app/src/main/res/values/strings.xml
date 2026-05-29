@@ -385,7 +385,7 @@
          which requests notification permission when a slot is turned on.
          Auto-hides once either schedule switch is on, OR after the user
          X-dismisses. -->
-    <string name="today_schedule_promo_title">Automatic ClothesCasts</string>
+    <string name="today_schedule_promo_title">Set up automatic ClothesCasts</string>
     <string name="today_schedule_promo_body">Choose when you get notifications and announcements.</string>
     <string name="today_schedule_promo_cta">Schedule settings</string>
     <string name="today_schedule_promo_dismiss">Dismiss</string>

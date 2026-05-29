@@ -48,14 +48,21 @@ to values/strings.xml (English).
     <string name="insight_lead_today">Hari ini</string>
     <string name="insight_lead_tomorrow">Besok</string>
     <string name="insight_unchanged_today">Hari ini cuacanya sama seperti kemarin.</string>
+    <string name="insight_unchanged_today_no_lead">Seperti kemarin.</string>
     <string name="insight_unchanged_tonight">Malam ini cuacanya sama seperti tadi malam.</string>
+    <string name="insight_unchanged_tonight_no_lead">Seperti tadi malam.</string>
     <string name="insight_unchanged_tomorrow">Besok cuacanya sama seperti hari ini.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Seperti hari ini.</string>
     <string name="insight_lead_tonight">Malam ini</string>
     <!-- Indonesian SVO: "Hari ini cuacanya sejuk." -->
     <string name="insight_band_single">%1$s cuacanya %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s cuacanya antara %2$d° hingga %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° hingga %2$d°.</string>
     <string name="insight_band_words_single">%1$s cuacanya %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s cuacanya antara %2$s hingga %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s hingga %2$s.</string>
     <string name="insight_band_freezing">sangat dingin</string>
     <string name="insight_band_cold">dingin</string>
     <string name="insight_band_cool">sejuk</string>
@@ -66,6 +73,7 @@ to values/strings.xml (English).
     <string name="insight_delta_cooler">Hari ini %1$d° lebih dingin.</string>
     <string name="insight_alert">Peringatan: %1$s.</string>
     <string name="insight_clothes_wear">Kenakan %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Indonesian has no grammatical articles. -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -953,6 +961,7 @@ to values/strings.xml (English).
     <string name="settings_format_change_label">Perubahan suhu</string>
     <string name="settings_format_change_off">Mati</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Tingkatan</string>
     <string name="settings_format_clothes_label">Susunan kata pakaian</string>
     <string name="settings_format_clothes_items">Pakaian</string>
     <string name="settings_format_clothes_layer_count">Jumlah lapisan</string>

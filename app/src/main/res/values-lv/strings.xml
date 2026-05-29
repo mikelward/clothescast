@@ -58,15 +58,22 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="insight_lead_today">Šodien</string>
     <string name="insight_lead_tomorrow">Rīt</string>
     <string name="insight_unchanged_today">Šodien būs tāpat kā vakar.</string>
+    <string name="insight_unchanged_today_no_lead">Kā vakar.</string>
     <string name="insight_unchanged_tonight">Šovakar būs tāpat kā vakar vakarā.</string>
+    <string name="insight_unchanged_tonight_no_lead">Kā vakar vakarā.</string>
     <string name="insight_unchanged_tomorrow">Rīt būs tāpat kā šodien.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Kā šodien.</string>
     <string name="insight_lead_tonight">Šovakar</string>
     <!-- Latvian masculine-nominative agreement (implicit subject "laiks"):
          "Šodien būs auksts." -->
     <string name="insight_band_single">%1$s būs %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s būs %2$d° līdz %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° līdz %2$d°.</string>
     <string name="insight_band_words_single">%1$s būs %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s būs %2$s līdz %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s līdz %2$s.</string>
     <string name="insight_band_freezing">ledains</string>
     <string name="insight_band_cold">auksts</string>
     <string name="insight_band_cool">vēss</string>
@@ -77,6 +84,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="insight_delta_cooler">Šodien būs par %1$d° aukstāks.</string>
     <string name="insight_alert">Brīdinājums: %1$s.</string>
     <string name="insight_clothes_wear">Apģērb %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s un %2$s</string>
@@ -893,6 +901,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_format_change_label">Temperatūras izmaiņas</string>
     <string name="settings_format_change_off">Izsl.</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Diapazons</string>
     <string name="settings_format_clothes_label">Apģērba formulējums</string>
     <string name="settings_format_clothes_items">Apģērba gabali</string>
     <string name="settings_format_clothes_layer_count">Slāņu skaits</string>

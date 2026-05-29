@@ -554,13 +554,20 @@ only the displayed label localizes.
     <string name="insight_lead_today">Сьогодні</string>
     <string name="insight_lead_tomorrow">Завтра</string>
     <string name="insight_unchanged_today">Сьогодні буде так само, як учора.</string>
+    <string name="insight_unchanged_today_no_lead">Як учора.</string>
     <string name="insight_unchanged_tonight">Сьогодні ввечері буде так само, як учора ввечері.</string>
+    <string name="insight_unchanged_tonight_no_lead">Як учора ввечері.</string>
     <string name="insight_unchanged_tomorrow">Завтра буде так само, як сьогодні.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Як сьогодні.</string>
     <string name="insight_lead_tonight">Сьогодні ввечері</string>
     <string name="insight_band_single">%1$s буде %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s буде від %2$d° до %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° до %2$d°.</string>
     <string name="insight_band_words_single">%1$s буде %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s буде від %2$s до %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s до %2$s.</string>
     <string name="insight_band_freezing">морозно</string>
     <string name="insight_band_cold">холодно</string>
     <string name="insight_band_cool">прохолодно</string>
@@ -571,6 +578,7 @@ only the displayed label localizes.
     <string name="insight_delta_cooler">Сьогодні на %1$d° холодніше.</string>
     <string name="insight_alert">Попередження: %1$s.</string>
     <string name="insight_clothes_wear">Одягніть %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s та %2$s</string>
@@ -949,6 +957,7 @@ only the displayed label localizes.
     <string name="settings_format_change_label">Зміна температури</string>
     <string name="settings_format_change_off">Вимк.</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Діапазон</string>
     <string name="settings_format_clothes_label">Опис одягу</string>
     <string name="settings_format_clothes_items">Предмети</string>
     <string name="settings_format_clothes_layer_count">Кількість шарів</string>

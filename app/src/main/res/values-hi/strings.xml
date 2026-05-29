@@ -458,14 +458,21 @@ Not overridden by design:
     <string name="insight_lead_today">आज</string>
     <string name="insight_lead_tomorrow">कल</string>
     <string name="insight_unchanged_today">आज मौसम कल जैसा रहेगा।</string>
+    <string name="insight_unchanged_today_no_lead">कल जैसा।</string>
     <string name="insight_unchanged_tonight">आज रात मौसम बीती रात जैसा रहेगा।</string>
+    <string name="insight_unchanged_tonight_no_lead">बीती रात जैसा।</string>
     <string name="insight_unchanged_tomorrow">कल मौसम आज जैसा रहेगा।</string>
+    <string name="insight_unchanged_tomorrow_no_lead">आज जैसा।</string>
     <string name="insight_lead_tonight">आज रात</string>
     <!-- "आज मौसम सुहाना रहेगा।" -->
     <string name="insight_band_single">%1$s मौसम %2$d° रहेगा।</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s मौसम %2$d° से %3$d° रहेगा।</string>
+    <string name="insight_band_range_no_lead">%1$d° से %2$d° रहेगा।</string>
     <string name="insight_band_words_single">%1$s मौसम %2$s रहेगा।</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s मौसम %2$s से %3$s रहेगा।</string>
+    <string name="insight_band_words_range_no_lead">%1$s से %2$s रहेगा।</string>
     <string name="insight_band_freezing">बेहद ठंडा</string>
     <string name="insight_band_cold">ठंडा</string>
     <string name="insight_band_cool">ठंडक भरा</string>
@@ -476,6 +483,7 @@ Not overridden by design:
     <string name="insight_delta_cooler">आज %1$d° ज़्यादा ठंडा।</string>
     <string name="insight_alert">चेतावनी: %1$s।</string>
     <string name="insight_clothes_wear">%1$s पहनें।</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Hindi has no grammatical articles. -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -984,6 +992,7 @@ Not overridden by design:
     <string name="settings_format_change_label">तापमान परिवर्तन</string>
     <string name="settings_format_change_off">बंद</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">श्रेणी</string>
     <string name="settings_format_clothes_label">कपड़ों के शब्द</string>
     <string name="settings_format_clothes_items">कपड़े</string>
     <string name="settings_format_clothes_layer_count">परतों की संख्या</string>

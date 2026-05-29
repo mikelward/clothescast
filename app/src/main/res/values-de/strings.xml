@@ -421,16 +421,23 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_lead_today">Heute</string>
     <string name="insight_lead_tomorrow">Morgen</string>
     <string name="insight_unchanged_today">Heute wird es genauso wie gestern.</string>
+    <string name="insight_unchanged_today_no_lead">Wie gestern.</string>
     <string name="insight_unchanged_tonight">Heute Abend wird es genauso wie gestern Abend.</string>
+    <string name="insight_unchanged_tonight_no_lead">Wie gestern Abend.</string>
     <string name="insight_unchanged_tomorrow">Morgen wird es genauso wie heute.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Wie heute.</string>
     <string name="insight_lead_tonight">Heute Abend</string>
 
     <!-- "Heute wird es mild." / "Heute wird es kühl bis mild." Subject-second
          word order means the lead-in flows into "wird es ...". -->
     <string name="insight_band_single">%1$s wird es %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s wird es %2$d° bis %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° bis %2$d°.</string>
     <string name="insight_band_words_single">%1$s wird es %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s wird es %2$s bis %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s bis %2$s.</string>
 
     <string name="insight_band_freezing">eiskalt</string>
     <string name="insight_band_cold">kalt</string>
@@ -453,6 +460,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     wrong article. A future PR could add a gender hint to ClothesRule.
     -->
     <string name="insight_clothes_wear">Trag %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Articles unused by GermanClothesPhraser (defined for parity / future use). -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -1108,6 +1116,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_format_change_label">Temperaturänderung</string>
     <string name="settings_format_change_off">Aus</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Stufe</string>
     <string name="settings_format_clothes_label">Kleidungs-Formulierung</string>
     <string name="settings_format_clothes_items">Kleidungsstücke</string>
     <string name="settings_format_clothes_layer_count">Anzahl der Schichten</string>

@@ -542,13 +542,20 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="insight_lead_today">Dnes</string>
     <string name="insight_lead_tomorrow">Zítra</string>
     <string name="insight_unchanged_today">Dnes bude stejně jako včera.</string>
+    <string name="insight_unchanged_today_no_lead">Jako včera.</string>
     <string name="insight_unchanged_tonight">Dnes večer bude stejně jako včera večer.</string>
+    <string name="insight_unchanged_tonight_no_lead">Jako včera večer.</string>
     <string name="insight_unchanged_tomorrow">Zítra bude stejně jako dnes.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Jako dnes.</string>
     <string name="insight_lead_tonight">Dnes večer</string>
     <string name="insight_band_single">%1$s bude %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s bude od %2$d° do %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° do %2$d°.</string>
     <string name="insight_band_words_single">%1$s bude %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s bude od %2$s do %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s do %2$s.</string>
     <string name="insight_band_freezing">mrazivo</string>
     <string name="insight_band_cold">chladno</string>
     <string name="insight_band_cool">svěže</string>
@@ -559,6 +566,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="insight_delta_cooler">Dnes bude o %1$d° chladněji.</string>
     <string name="insight_alert">Výstraha: %1$s.</string>
     <string name="insight_clothes_wear">Obleč si %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s a %2$s</string>
@@ -960,6 +968,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_format_change_label">Změna teploty</string>
     <string name="settings_format_change_off">Vypnuto</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Pásmo</string>
     <string name="settings_format_clothes_label">Formulace oblečení</string>
     <string name="settings_format_clothes_items">Kusy oblečení</string>
     <string name="settings_format_clothes_layer_count">Počet vrstev</string>

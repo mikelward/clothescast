@@ -435,14 +435,21 @@ displayed label localizes.
     <string name="insight_lead_today">오늘</string>
     <string name="insight_lead_tomorrow">내일</string>
     <string name="insight_unchanged_today">오늘은 어제와 같은 날씨입니다.</string>
+    <string name="insight_unchanged_today_no_lead">어제와 같음.</string>
     <string name="insight_unchanged_tonight">오늘 밤은 어젯밤과 같은 날씨입니다.</string>
+    <string name="insight_unchanged_tonight_no_lead">어젯밤과 같음.</string>
     <string name="insight_unchanged_tomorrow">내일은 오늘과 같은 날씨입니다.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">오늘과 같음.</string>
     <string name="insight_lead_tonight">오늘 밤</string>
     <!-- "오늘 포근한 날씨입니다." -->
     <string name="insight_band_single">%1$s %2$d° 날씨입니다.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s %2$d°에서 %3$d° 사이의 날씨입니다.</string>
+    <string name="insight_band_range_no_lead">%1$d°에서 %2$d° 사이의 날씨입니다.</string>
     <string name="insight_band_words_single">%1$s %2$s 날씨입니다.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s %2$s에서 %3$s 사이의 날씨입니다.</string>
+    <string name="insight_band_words_range_no_lead">%1$s에서 %2$s 사이의 날씨입니다.</string>
     <string name="insight_band_freezing">매우 추운</string>
     <string name="insight_band_cold">추운</string>
     <string name="insight_band_cool">서늘한</string>
@@ -453,6 +460,7 @@ displayed label localizes.
     <string name="insight_delta_cooler">오늘은 %1$d° 더 춥습니다.</string>
     <string name="insight_alert">경보: %1$s.</string>
     <string name="insight_clothes_wear">%1$s 챙기세요.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Korean has no grammatical articles. -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -1107,6 +1115,7 @@ displayed label localizes.
     <string name="settings_format_change_label">온도 변화</string>
     <string name="settings_format_change_off">끔</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">구간</string>
     <string name="settings_format_clothes_label">옷 표현</string>
     <string name="settings_format_clothes_items">의류</string>
     <string name="settings_format_clothes_layer_count">레이어 수</string>

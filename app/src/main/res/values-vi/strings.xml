@@ -51,14 +51,21 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="insight_lead_today">Hôm nay</string>
     <string name="insight_lead_tomorrow">Ngày mai</string>
     <string name="insight_unchanged_today">Hôm nay trời giống như hôm qua.</string>
+    <string name="insight_unchanged_today_no_lead">Như hôm qua.</string>
     <string name="insight_unchanged_tonight">Tối nay trời giống như tối qua.</string>
+    <string name="insight_unchanged_tonight_no_lead">Như tối qua.</string>
     <string name="insight_unchanged_tomorrow">Ngày mai trời giống như hôm nay.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Như hôm nay.</string>
     <string name="insight_lead_tonight">Tối nay</string>
     <!-- Vietnamese: "Hôm nay trời mát." (time + topic + predicate) -->
     <string name="insight_band_single">%1$s trời %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s trời từ %2$d° đến %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° đến %2$d°.</string>
     <string name="insight_band_words_single">%1$s trời %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s trời từ %2$s đến %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s đến %2$s.</string>
     <string name="insight_band_freezing">đóng băng</string>
     <string name="insight_band_cold">lạnh</string>
     <string name="insight_band_cool">mát</string>
@@ -69,6 +76,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="insight_delta_cooler">Hôm nay lạnh hơn %1$d°.</string>
     <string name="insight_alert">Cảnh báo: %1$s.</string>
     <string name="insight_clothes_wear">Mặc %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Vietnamese has no grammatical articles. -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -1014,6 +1022,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_format_change_label">Thay đổi nhiệt độ</string>
     <string name="settings_format_change_off">Tắt</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Mức</string>
     <string name="settings_format_clothes_label">Cách diễn đạt quần áo</string>
     <string name="settings_format_clothes_items">Trang phục</string>
     <string name="settings_format_clothes_layer_count">Số lớp</string>

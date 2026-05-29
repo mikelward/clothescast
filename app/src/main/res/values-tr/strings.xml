@@ -339,15 +339,22 @@ displayed label localizes.
     <string name="insight_lead_today">Bugün</string>
     <string name="insight_lead_tomorrow">Yarın</string>
     <string name="insight_unchanged_today">Bugün dünkü gibi olacak.</string>
+    <string name="insight_unchanged_today_no_lead">Dünkü gibi.</string>
     <string name="insight_unchanged_tonight">Bu gece dün geceki gibi olacak.</string>
+    <string name="insight_unchanged_tonight_no_lead">Dün geceki gibi.</string>
     <string name="insight_unchanged_tomorrow">Yarın bugünkü gibi olacak.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Bugünkü gibi.</string>
     <string name="insight_lead_tonight">Bu gece</string>
 
     <!-- Turkish SOV word order: subject-object-verb; predicate at the end. -->
     <string name="insight_band_single">%1$s %2$d° olacak.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s %2$d° ile %3$d° arasında olacak.</string>
+    <string name="insight_band_range_no_lead">%1$d° ile %2$d° arasında olacak.</string>
     <string name="insight_band_words_single">%1$s %2$s olacak.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s %2$s ile %3$s arasında olacak.</string>
+    <string name="insight_band_words_range_no_lead">%1$s ile %2$s arasında olacak.</string>
 
     <string name="insight_band_freezing">dondurucu soğuk</string>
     <string name="insight_band_cold">soğuk</string>
@@ -362,6 +369,7 @@ displayed label localizes.
     <string name="insight_alert">Uyarı: %1$s.</string>
 
     <string name="insight_clothes_wear">%1$s giy.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s ve %2$s</string>
@@ -954,6 +962,7 @@ displayed label localizes.
     <string name="settings_format_change_label">Sıcaklık değişimi</string>
     <string name="settings_format_change_off">Kapalı</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Bant</string>
     <string name="settings_format_clothes_label">Kıyafet ifadesi</string>
     <string name="settings_format_clothes_items">Giysiler</string>
     <string name="settings_format_clothes_layer_count">Katman sayısı</string>

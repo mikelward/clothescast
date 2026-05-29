@@ -51,14 +51,21 @@ standard in Israeli digital communication.
     <string name="insight_lead_today">היום</string>
     <string name="insight_lead_tomorrow">מחר</string>
     <string name="insight_unchanged_today">היום יהיה כמו אתמול.</string>
+    <string name="insight_unchanged_today_no_lead">כמו אתמול.</string>
     <string name="insight_unchanged_tonight">הלילה יהיה כמו אתמול בלילה.</string>
+    <string name="insight_unchanged_tonight_no_lead">כמו אתמול בלילה.</string>
     <string name="insight_unchanged_tomorrow">מחר יהיה כמו היום.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">כמו היום.</string>
     <string name="insight_lead_tonight">הלילה</string>
     <!-- "היום יהיה נעים." -->
     <string name="insight_band_single">%1$s יהיה %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s יהיה %2$d° עד %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° עד %2$d°.</string>
     <string name="insight_band_words_single">%1$s יהיה %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s יהיה %2$s עד %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s עד %2$s.</string>
     <string name="insight_band_freezing">קפוא</string>
     <string name="insight_band_cold">קר</string>
     <string name="insight_band_cool">קריר</string>
@@ -70,6 +77,7 @@ standard in Israeli digital communication.
     <string name="insight_alert">אזהרה: %1$s.</string>
     <!-- Slash notation for gender-neutral imperative (standard in Israeli digital text). -->
     <string name="insight_clothes_wear">לבש/י %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Hebrew articles function differently from English "a/an" — no direct equivalent. -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -952,6 +960,7 @@ standard in Israeli digital communication.
     <string name="settings_format_change_label">שינוי טמפרטורה</string>
     <string name="settings_format_change_off">כבוי</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">רצועה</string>
     <string name="settings_format_clothes_label">ניסוח לבוש</string>
     <string name="settings_format_clothes_items">פריטי לבוש</string>
     <string name="settings_format_clothes_layer_count">מספר שכבות</string>

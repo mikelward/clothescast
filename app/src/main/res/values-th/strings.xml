@@ -46,14 +46,21 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_lead_today">วันนี้</string>
     <string name="insight_lead_tomorrow">พรุ่งนี้</string>
     <string name="insight_unchanged_today">วันนี้อากาศเหมือนเมื่อวาน</string>
+    <string name="insight_unchanged_today_no_lead">เหมือนเมื่อวาน</string>
     <string name="insight_unchanged_tonight">คืนนี้อากาศเหมือนเมื่อคืน</string>
+    <string name="insight_unchanged_tonight_no_lead">เหมือนเมื่อคืน</string>
     <string name="insight_unchanged_tomorrow">พรุ่งนี้อากาศเหมือนวันนี้</string>
+    <string name="insight_unchanged_tomorrow_no_lead">เหมือนวันนี้</string>
     <string name="insight_lead_tonight">คืนนี้</string>
     <!-- Thai: "วันนี้อากาศเย็น" (time + topic + predicate, no copula). -->
     <string name="insight_band_single">%1$sอากาศ%2$d°</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$sอากาศ%2$d°ถึง%3$d°</string>
+    <string name="insight_band_range_no_lead">%1$d°ถึง%2$d°</string>
     <string name="insight_band_words_single">%1$sอากาศ%2$s</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$sอากาศ%2$sถึง%3$s</string>
+    <string name="insight_band_words_range_no_lead">%1$sถึง%2$s</string>
     <string name="insight_band_freezing">หนาวจัด</string>
     <string name="insight_band_cold">หนาว</string>
     <string name="insight_band_cool">เย็น</string>
@@ -64,6 +71,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_delta_cooler">วันนี้หนาวกว่าเมื่อวาน %1$d°</string>
     <string name="insight_alert">เตือน: %1$s</string>
     <string name="insight_clothes_wear">สวม%1$s</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Thai has no grammatical articles. -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -953,6 +961,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_format_change_label">การเปลี่ยนแปลงอุณหภูมิ</string>
     <string name="settings_format_change_off">ปิด</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">ระดับ</string>
     <string name="settings_format_clothes_label">การใช้คำเกี่ยวกับเสื้อผ้า</string>
     <string name="settings_format_clothes_items">เสื้อผ้า</string>
     <string name="settings_format_clothes_layer_count">จำนวนชั้น</string>

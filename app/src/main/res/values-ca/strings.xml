@@ -492,14 +492,21 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="insight_lead_today">Avui</string>
     <string name="insight_lead_tomorrow">Demà</string>
     <string name="insight_unchanged_today">Avui farà el mateix temps que ahir.</string>
+    <string name="insight_unchanged_today_no_lead">Com ahir.</string>
     <string name="insight_unchanged_tonight">Aquesta nit farà el mateix temps que anit.</string>
+    <string name="insight_unchanged_tonight_no_lead">Com anit.</string>
     <string name="insight_unchanged_tomorrow">Demà farà el mateix temps que avui.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Com avui.</string>
     <string name="insight_lead_tonight">Aquesta nit</string>
     <!-- Catalan weather-as-verb: "Avui farà fred." (today will-make cold). -->
     <string name="insight_band_single">%1$s farà %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s farà de %2$d° a %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° a %2$d°.</string>
     <string name="insight_band_words_single">%1$s farà %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s farà de %2$s a %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s a %2$s.</string>
     <string name="insight_band_freezing">fred polar</string>
     <string name="insight_band_cold">fred</string>
     <string name="insight_band_cool">fresc</string>
@@ -511,6 +518,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="insight_alert">Alerta: %1$s.</string>
     <!-- Reflexive imperative "tu": "Posa't el jersei." -->
     <string name="insight_clothes_wear">Posa\'t %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s i %2$s</string>
@@ -892,6 +900,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_format_change_label">Variació de temperatura</string>
     <string name="settings_format_change_off">Desactivat</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Categoria</string>
     <string name="settings_format_clothes_label">Redacció de la roba</string>
     <string name="settings_format_clothes_items">Peces</string>
     <string name="settings_format_clothes_layer_count">Nombre de capes</string>

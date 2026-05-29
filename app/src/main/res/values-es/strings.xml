@@ -420,13 +420,20 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_lead_today">Hoy</string>
     <string name="insight_lead_tomorrow">Mañana</string>
     <string name="insight_unchanged_today">Hoy hará el mismo tiempo que ayer.</string>
+    <string name="insight_unchanged_today_no_lead">Como ayer.</string>
     <string name="insight_unchanged_tonight">Esta noche hará el mismo tiempo que anoche.</string>
+    <string name="insight_unchanged_tonight_no_lead">Como anoche.</string>
     <string name="insight_unchanged_tomorrow">Mañana hará el mismo tiempo que hoy.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Como hoy.</string>
     <string name="insight_lead_tonight">Esta noche</string>
     <string name="insight_band_single">%1$s hará %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s hará entre %2$d° y %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° a %2$d°.</string>
     <string name="insight_band_words_single">%1$s hará %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s hará entre %2$s y %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s a %2$s.</string>
     <string name="insight_band_freezing">helada</string>
     <string name="insight_band_cold">frío</string>
     <string name="insight_band_cool">fresco</string>
@@ -437,6 +444,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_delta_cooler">Hará %1$d° menos hoy.</string>
     <string name="insight_alert">Alerta: %1$s.</string>
     <string name="insight_clothes_wear">Lleva %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Articles omitted — Spanish gender agreement requires per-garment metadata. -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -1080,6 +1088,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_format_change_label">Variación de temperatura</string>
     <string name="settings_format_change_off">Desactivado</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Categoría</string>
     <string name="settings_format_clothes_label">Redacción de la ropa</string>
     <string name="settings_format_clothes_items">Prendas</string>
     <string name="settings_format_clothes_layer_count">Número de capas</string>

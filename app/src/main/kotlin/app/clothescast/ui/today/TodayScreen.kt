@@ -3054,7 +3054,13 @@ private fun triggerPlay(context: android.content.Context, period: ForecastPeriod
     // rather than silently no-opping (see FetchAndNotifyWorker.playInsight).
     // The unique work name is keyed on the play queue so a Refresh and a
     // Play can't run concurrently for the same slot.
-    FetchAndNotifyWorker.enqueuePlay(context.applicationContext, period)
+    //
+    // forceNotifyAndSpeak: tapping Play is an explicit "do it now," so it
+    // posts the notification and speaks regardless of the delivery mode — a
+    // SILENT / notification-only user still sees and hears their forecast.
+    // (The Schedule "Play now" preview leaves this off to simulate the
+    // configured mode.)
+    FetchAndNotifyWorker.enqueuePlay(context.applicationContext, period, forceNotifyAndSpeak = true)
     val toastRes = when (period) {
         ForecastPeriod.TODAY -> R.string.today_play_toast_daily
         ForecastPeriod.TONIGHT -> R.string.today_play_toast_nightly

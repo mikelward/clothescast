@@ -183,6 +183,69 @@ class DeliveryGatesTest {
     }
 
     @Test
+    fun `force phone speech overrides SILENT delivery — phone speaks and synth fires`() {
+        // The Today screen's Play button is an explicit "speak now"
+        // request. It must override the scheduled delivery mode: a user
+        // on SILENT (no automatic chime) who taps Play still wants to
+        // hear the forecast, and on Gemini that means synth has to run
+        // so the phone speaker has a buffer to play.
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                ttsEngine = TtsEngine.GEMINI,
+                deliveryMode = DeliveryMode.SILENT,
+            ),
+            period = ForecastPeriod.TODAY,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = false,
+            forcePhoneSpeech = true,
+        )
+        gates.phoneTtsConfigured shouldBe true
+        gates.needsSynth shouldBe true
+    }
+
+    @Test
+    fun `force phone speech clears emptyEveningSkip — Play delivers on an eventless tonight`() {
+        // A Play tap is an explicit "deliver this period now," so the
+        // tonight "only notify on events" suppression doesn't apply: the
+        // user gets the notification, speech, and synth even with no
+        // evening events.
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                ttsEngine = TtsEngine.GEMINI,
+                tonightDeliveryMode = DeliveryMode.SILENT,
+                tonightNotifyOnlyOnEvents = true,
+            ),
+            period = ForecastPeriod.TONIGHT,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = false,
+            forcePhoneSpeech = true,
+        )
+        gates.emptyEveningSkip shouldBe false
+        gates.phoneTtsConfigured shouldBe true
+        gates.needsSynth shouldBe true
+    }
+
+    @Test
+    fun `force phone speech is off by default — SILENT stays silent on scheduled runs`() {
+        // Without the explicit Play request, SILENT must keep the phone
+        // quiet on a scheduled run — forcePhoneSpeech defaults to false.
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                ttsEngine = TtsEngine.GEMINI,
+                deliveryMode = DeliveryMode.SILENT,
+            ),
+            period = ForecastPeriod.TODAY,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = false,
+        )
+        gates.phoneTtsConfigured shouldBe false
+        gates.needsSynth shouldBe false
+    }
+
+    @Test
     fun `isMqttPublishable — toggle on but blank host is not publishable`() {
         isMqttPublishable(
             basePrefs.copy(mqttBridgeEnabled = true, mqttHost = null),

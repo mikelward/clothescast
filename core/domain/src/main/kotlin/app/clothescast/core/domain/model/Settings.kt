@@ -689,6 +689,17 @@ data class UserPreferences(
      */
     val playCardDismissed: Boolean = false,
     /**
+     * Set to true once the user acts on the Today-screen "Try high quality
+     * voices" promo card — either dismissing it via the X button or following
+     * its CTA into Voice settings. The card nudges users without a Gemini API
+     * key toward setting one up so casts can use the higher-quality Gemini
+     * voices; it's *additionally* gated on no key being configured (so it
+     * never shows once the user has Gemini set up), but this flag makes the
+     * dismissal stick even before then. Same "dismiss or follow through"
+     * pattern as [clothesPromoCardDismissed].
+     */
+    val geminiPromoCardDismissed: Boolean = false,
+    /**
      * Bumped to `System.currentTimeMillis()` whenever the user re-grants
      * `READ_CALENDAR` via the in-app permission flow. Exists purely to
      * force the [SettingsRepository.preferences] flow to re-emit so any

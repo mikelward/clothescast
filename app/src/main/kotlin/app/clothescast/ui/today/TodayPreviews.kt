@@ -1233,6 +1233,17 @@ internal fun PlayPromoCardPreview() {
     }
 }
 
+@Preview(name = "Banner · gemini voices promo", widthDp = 360)
+@Composable
+internal fun GeminiTtsPromoCardPreview() {
+    Frame {
+        GeminiTtsPromoCardContent(
+            onSetUpVoices = {},
+            onDismiss = {},
+        )
+    }
+}
+
 @Preview(name = "Banner · local build (clean)", widthDp = 360)
 @Composable
 internal fun LocalBuildBannerPreview() {

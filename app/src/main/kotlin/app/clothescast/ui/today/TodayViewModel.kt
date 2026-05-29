@@ -40,6 +40,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Clock
@@ -183,6 +184,14 @@ data class TodayState(
      * points at the top-bar play button so the user can hear a cast on demand.
      */
     val playPromoCardVisible: Boolean = false,
+    /**
+     * Whether the "Try high quality voices" promo card is eligible — true iff
+     * the user hasn't dismissed it AND no Gemini API key is configured yet. It
+     * points at Voice settings so the user can add a (BYOK) Gemini key and
+     * upgrade their cast from the device's built-in TTS to the natural Gemini
+     * voices. Hides the moment a key lands, regardless of the dismissal flag.
+     */
+    val geminiTtsPromoCardVisible: Boolean = false,
     /**
      * Whether the one-time telemetry/privacy disclosure is still pending
      * (the user hasn't acked it). Lifted out of the banner so [BannerStack]
@@ -396,6 +405,15 @@ class TodayViewModel(
      * null, [ThemeForToday] simply sees an empty event list.
      */
     private val calendarEventReader: CalendarEventReader? = null,
+    /**
+     * Reactive "is a Gemini API key configured" signal, mirrored from
+     * [app.clothescast.data.SecureKeyStore.geminiKeyConfiguredFlow]. Feeds
+     * [TodayState.geminiTtsPromoCardVisible] so the "Try high quality voices"
+     * promo only nudges users who haven't set up Gemini yet, and disappears the
+     * moment a key lands. Defaulted to `flowOf(false)` so pure-VM tests can omit
+     * it (no key ⇒ the promo is eligible, matching a fresh install).
+     */
+    private val geminiKeyConfigured: Flow<Boolean> = flowOf(false),
 ) : ViewModel() {
     /**
      * Session-scoped "show model spread" flag. Held in the ViewModel rather
@@ -473,13 +491,22 @@ class TodayViewModel(
             }
         }
 
+    // Fuse the session-scoped spread toggle with the external "Gemini key
+    // configured" signal into one input so the outer [state] combine stays at
+    // five flows (the typed-overload cap). Both are simple booleans that only
+    // feed the final state; pairing them keeps us off the loosely-typed vararg
+    // `combine` overload.
+    private val spreadAndGeminiKey: Flow<Pair<Boolean, Boolean>> =
+        combine(showModelSpread, geminiKeyConfigured, ::Pair)
+
     val state: StateFlow<TodayState> = combine(
         insightCache.thisPeriod,
         insightCache.nextPeriod,
         workStatusFlow,
         preferencesDateEvents,
-        showModelSpread,
-    ) { thisPeriodSnapshot, nextPeriodSnapshot, workSignals, prefsDateEvents, spread ->
+        spreadAndGeminiKey,
+    ) { thisPeriodSnapshot, nextPeriodSnapshot, workSignals, prefsDateEvents, spreadAndKey ->
+        val (spread, geminiKeyConfigured) = spreadAndKey
         val (prefs, today, events) = prefsDateEvents
         // Derive each cached snapshot against the *current* prefs so a settings
         // change re-renders the prose / outfit / bullets in the same frame as
@@ -558,6 +585,7 @@ class TodayViewModel(
             schedulePromoCardVisible = !prefs.scheduleCardDismissed,
             playPromoCardVisible = !prefs.playCardDismissed &&
                 (prefs.dailyEnabled || prefs.tonightEnabled),
+            geminiTtsPromoCardVisible = !prefs.geminiPromoCardDismissed && !geminiKeyConfigured,
             telemetryNoticeVisible = !prefs.telemetryNoticeAcked,
             usesCalendarThemes = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive,
         )
@@ -607,6 +635,19 @@ class TodayViewModel(
     fun dismissPlayPromoCard() {
         viewModelScope.launch {
             settingsRepository.setPlayCardDismissed(true)
+        }
+    }
+
+    /**
+     * Persists the user's dismissal of the Today-screen "Try high quality
+     * voices" promo card. Called on both the X-tap and the "Set up voices" CTA
+     * so once the user has been pointed at Voice settings the card stays hidden
+     * even if they back out without adding a key. Mirrors
+     * [dismissClothesPromoCard].
+     */
+    fun dismissGeminiTtsPromoCard() {
+        viewModelScope.launch {
+            settingsRepository.setGeminiPromoCardDismissed(true)
         }
     }
 
@@ -688,6 +729,7 @@ class TodayViewModel(
         private val refreshOutfitWidget: suspend () -> Unit,
         private val deriveInsight: DeriveInsight = DeriveInsight(),
         private val calendarEventReader: CalendarEventReader? = null,
+        private val geminiKeyConfigured: Flow<Boolean> = flowOf(false),
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -701,6 +743,7 @@ class TodayViewModel(
                 refreshOutfitWidget = refreshOutfitWidget,
                 deriveInsight = deriveInsight,
                 calendarEventReader = calendarEventReader,
+                geminiKeyConfigured = geminiKeyConfigured,
             ) as T
         }
     }

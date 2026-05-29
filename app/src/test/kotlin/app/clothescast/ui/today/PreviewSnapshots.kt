@@ -537,6 +537,7 @@ class PreviewSnapshots {
     @Test fun clothes_promo_card() = capture { ClothesPromoCardPreview() }
     @Test fun schedule_promo_card() = capture { SchedulePromoCardPreview() }
     @Test fun play_promo_card() = capture { PlayPromoCardPreview() }
+    @Test fun gemini_tts_promo_card() = capture { GeminiTtsPromoCardPreview() }
     @Test fun celebration_themes_card() = capture { CelebrationThemesCardPreview() }
 
     @Test fun launcher_icon() = capture { LauncherIconPreview() }

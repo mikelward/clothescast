@@ -152,6 +152,7 @@ fun TodayScreen(
     onNavigateToSchedule: () -> Unit = onNavigateToSettings,
     onNavigateToDeveloper: () -> Unit = onNavigateToSettings,
     onNavigateToFormat: () -> Unit = onNavigateToSettings,
+    onNavigateToVoice: () -> Unit = onNavigateToSettings,
     // Pager page to open on, from the Today deep link's `?page=` query. The
     // feels-like home-screen widgets deep-link to page 0 (current period) and
     // page 2 (7-day). rememberPagerState only reads this on first composition,
@@ -339,6 +340,8 @@ fun TodayScreen(
             onDismissClothesPromoCard = viewModel::dismissClothesPromoCard,
             onDismissSchedulePromoCard = viewModel::dismissSchedulePromoCard,
             onDismissPlayPromoCard = viewModel::dismissPlayPromoCard,
+            onOpenVoice = onNavigateToVoice,
+            onDismissGeminiTtsPromoCard = viewModel::dismissGeminiTtsPromoCard,
             onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
             onNavigateToClothes = onNavigateToClothes,
             onNavigateToFormat = onNavigateToFormat,
@@ -380,6 +383,8 @@ private fun TodayContent(
     onDismissClothesPromoCard: () -> Unit,
     onDismissSchedulePromoCard: () -> Unit,
     onDismissPlayPromoCard: () -> Unit,
+    onOpenVoice: () -> Unit,
+    onDismissGeminiTtsPromoCard: () -> Unit,
     onCalendarPermissionChanged: () -> Unit,
     onNavigateToClothes: () -> Unit,
     onNavigateToFormat: () -> Unit,
@@ -462,6 +467,8 @@ private fun TodayContent(
                     onOpenSchedule = onOpenSchedule,
                     onDismissSchedulePromoCard = onDismissSchedulePromoCard,
                     onDismissPlayPromoCard = onDismissPlayPromoCard,
+                    onOpenVoice = onOpenVoice,
+                    onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
                     onOpenCalendarSettings = onOpenCalendarSettings,
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
@@ -542,6 +549,8 @@ private fun TodayContent(
                         onDismissClothesPromoCard = onDismissClothesPromoCard,
                         onDismissSchedulePromoCard = onDismissSchedulePromoCard,
                         onDismissPlayPromoCard = onDismissPlayPromoCard,
+                        onOpenVoice = onOpenVoice,
+                        onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
                     )
                     return@HorizontalPager
                 }
@@ -598,6 +607,8 @@ private fun TodayContent(
                     onDismissClothesPromoCard = onDismissClothesPromoCard,
                     onDismissSchedulePromoCard = onDismissSchedulePromoCard,
                     onDismissPlayPromoCard = onDismissPlayPromoCard,
+                    onOpenVoice = onOpenVoice,
+                    onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
                 )
             }
         }
@@ -628,6 +639,8 @@ private fun BannerStack(
     onOpenSchedule: () -> Unit,
     onDismissSchedulePromoCard: () -> Unit,
     onDismissPlayPromoCard: () -> Unit,
+    onOpenVoice: () -> Unit,
+    onDismissGeminiTtsPromoCard: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
     onSetUpLocation: () -> Unit,
@@ -645,6 +658,7 @@ private fun BannerStack(
         clothesPromoEligible = state.clothesPromoCardVisible,
         schedulePromoEligible = state.schedulePromoCardVisible,
         playPromoEligible = state.playPromoCardVisible,
+        geminiPromoEligible = state.geminiTtsPromoCardVisible,
         celebrationEligible = state.celebrationCardVisible,
         hasForecast = state.thisPeriodInsight != null,
     )
@@ -710,6 +724,23 @@ private fun BannerStack(
         onDismiss = onDismissPlayPromoCard,
         modifier = bannerModifier,
     )
+    // "Try high quality voices" nudge — point users who haven't set up Gemini
+    // at Voice settings so they can swap the device's built-in TTS for the
+    // natural Gemini voices. Gated upstream on no Gemini key being configured
+    // (plus not dismissed), and held back by [promoBannersToShow] until a
+    // forecast exists and there's room under the cap. Sits right after the play
+    // promo. Like the clothes card, the CTA dismisses too — once the user's
+    // been pointed at Voice settings the card retires whether or not they add a
+    // key (and it auto-hides the moment a key lands regardless).
+    GeminiTtsPromoCard(
+        visible = PromoBanner.GEMINI in shownPromos,
+        onSetUpVoices = {
+            onDismissGeminiTtsPromoCard()
+            onOpenVoice()
+        },
+        onDismiss = onDismissGeminiTtsPromoCard,
+        modifier = bannerModifier,
+    )
     // Promo card for the calendar-sourced holiday + birthday theming. Gated
     // upstream on toggles + dismissal ([TodayState.celebrationCardVisible]),
     // held back by [promoBannersToShow] until the user has seen a forecast
@@ -756,6 +787,8 @@ internal fun HomePageScaffold(
     onDismissClothesPromoCard: () -> Unit,
     onDismissSchedulePromoCard: () -> Unit,
     onDismissPlayPromoCard: () -> Unit,
+    onOpenVoice: () -> Unit,
+    onDismissGeminiTtsPromoCard: () -> Unit,
     onNavigateToClothes: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -792,6 +825,8 @@ internal fun HomePageScaffold(
                     onOpenSchedule = onOpenSchedule,
                     onDismissSchedulePromoCard = onDismissSchedulePromoCard,
                     onDismissPlayPromoCard = onDismissPlayPromoCard,
+                    onOpenVoice = onOpenVoice,
+                    onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
                     onOpenCalendarSettings = onOpenCalendarSettings,
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
@@ -858,6 +893,8 @@ private fun TodayPage(
     onDismissClothesPromoCard: () -> Unit,
     onDismissSchedulePromoCard: () -> Unit,
     onDismissPlayPromoCard: () -> Unit,
+    onOpenVoice: () -> Unit,
+    onDismissGeminiTtsPromoCard: () -> Unit,
 ) {
     val scrollScope = rememberCoroutineScope()
     // Captured via onGloballyPositioned on the ConfidenceChip below so the
@@ -878,6 +915,8 @@ private fun TodayPage(
         onDismissClothesPromoCard = onDismissClothesPromoCard,
         onDismissSchedulePromoCard = onDismissSchedulePromoCard,
         onDismissPlayPromoCard = onDismissPlayPromoCard,
+        onOpenVoice = onOpenVoice,
+        onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
         onNavigateToClothes = onNavigateToClothes,
     ) {
         if (insight == null) {

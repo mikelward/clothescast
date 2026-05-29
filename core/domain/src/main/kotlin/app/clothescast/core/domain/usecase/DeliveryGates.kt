@@ -54,6 +54,11 @@ data class DeliveryGates(
      * evening window. Suppresses notification, phone speaker, **and
      * cast**. Does not suppress MQTT publishes — HA still wants
      * fresh retained topics on every run.
+     *
+     * Cleared by [forcePhoneSpeech]: an explicit Play tap is a "deliver
+     * this period now" request, so the empty-evening suppression doesn't
+     * apply — the user gets the notification, speech, and cast they asked
+     * for even on an eventless evening.
      */
     val emptyEveningSkip: Boolean,
     /**
@@ -89,6 +94,16 @@ data class DeliveryGates(
  *   through (no buffer to publish).
  * @param mqttPublishable bridge enabled AND host non-empty (see
  *   [isMqttPublishable]).
+ * @param forcePhoneSpeech the user explicitly asked the phone to speak
+ *   *now* (the Today screen's Play button), independent of the scheduled
+ *   delivery mode. Overrides `phoneTtsConfigured` so a SILENT /
+ *   notification-only user still hears a tapped forecast, and — because
+ *   Gemini is the only PCM producer — pulls the phone-speaker term into
+ *   `needsSynth` so the buffer exists when the speaker reaches for it.
+ *   Also clears `emptyEveningSkip`: an explicit "deliver now" tap is
+ *   never suppressed by the tonight "only notify on events" rule.
+ *   Defaults to false: scheduled runs and the Schedule "Play now"
+ *   preview keep honouring the delivery mode exactly as before.
  */
 fun computeDeliveryGates(
     prefs: UserPreferences,
@@ -96,12 +111,14 @@ fun computeDeliveryGates(
     insightHasEvents: Boolean,
     geminiAvailable: Boolean,
     mqttPublishable: Boolean,
+    forcePhoneSpeech: Boolean = false,
 ): DeliveryGates {
     val mode = when (period) {
         ForecastPeriod.TODAY -> prefs.deliveryMode
         ForecastPeriod.TONIGHT -> prefs.tonightDeliveryMode
     }
-    val phoneTtsConfigured = mode == DeliveryMode.TTS_ONLY ||
+    val phoneTtsConfigured = forcePhoneSpeech ||
+        mode == DeliveryMode.TTS_ONLY ||
         mode == DeliveryMode.NOTIFICATION_AND_TTS
 
     val castPeriodEnabled = when (period) {
@@ -112,8 +129,10 @@ fun computeDeliveryGates(
     val castWillHaveAudio = willCast && geminiAvailable
 
     // Empty-evening only applies to TONIGHT. TODAY is never skipped
-    // here regardless of `tonightNotifyOnlyOnEvents`.
-    val emptyEveningSkip = period == ForecastPeriod.TONIGHT &&
+    // here regardless of `tonightNotifyOnlyOnEvents`. A forced Play
+    // ("deliver now") never skips — the user explicitly asked for it.
+    val emptyEveningSkip = !forcePhoneSpeech &&
+        period == ForecastPeriod.TONIGHT &&
         prefs.tonightNotifyOnlyOnEvents &&
         !insightHasEvents
 

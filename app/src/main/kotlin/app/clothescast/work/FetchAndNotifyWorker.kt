@@ -300,6 +300,10 @@ class FetchAndNotifyWorker(
         prefs: UserPreferences,
         requestedPeriod: ForecastPeriod,
     ): Result {
+        // The Today screen's Play button forces notify + speak; the
+        // Schedule "Play now" preview leaves this false to simulate the
+        // configured delivery mode (see enqueuePlay).
+        val forceNotifyAndSpeak = inputData.getBoolean(KEY_PLAY_FORCE, false)
         val now = LocalDateTime.now()
         val currentPeriod = currentPeriodForSchedule(prefs, now.toLocalTime())
         // The calendar date the [requestedPeriod] cast the user wants is dated
@@ -334,7 +338,7 @@ class FetchAndNotifyWorker(
             setProgress(workDataOf(KEY_FETCH_COMPLETE to true))
             val insight = app.deriveInsight(cached, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
             val prose = formatProse(insight, prefs)
-            return deliverBestEffort(insight, prefs, prose, "Replayed")
+            return deliverBestEffort(insight, prefs, prose, "Replayed", forceNotifyAndSpeak)
         }
 
         // Cache miss — fetch fresh for the requested period.
@@ -374,7 +378,7 @@ class FetchAndNotifyWorker(
             val snapshot = capturedSnapshot(location, prefs, requestedPeriod, fetchDayOffset)
             val insight = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
             val prose = formatProse(insight, prefs)
-            deliverBestEffort(insight, prefs, prose, "Previewed")
+            deliverBestEffort(insight, prefs, prose, "Previewed", forceNotifyAndSpeak)
         } catch (ce: CancellationException) {
             throw ce
         } catch (t: Throwable) {
@@ -389,14 +393,19 @@ class FetchAndNotifyWorker(
      * refresh failure banner — whatever's on screen is still valid, and the
      * next genuine refresh will retry the pipeline. [verb] tags the success log
      * ("Replayed" / "Previewed").
+     *
+     * [forceNotifyAndSpeak] carries the Today Play button's "do it now"
+     * intent through to [deliver]; the Schedule "Play now" preview passes
+     * false so it simulates the configured delivery mode.
      */
     private suspend fun deliverBestEffort(
         insight: Insight,
         prefs: UserPreferences,
         prose: String,
         verb: String,
+        forceNotifyAndSpeak: Boolean,
     ): Result = try {
-        deliver(insight, prefs, prose)
+        deliver(insight, prefs, prose, forceNotifyAndSpeak = forceNotifyAndSpeak)
         DiagLog.i(TAG, "$verb insight for ${insight.forDate}: $prose")
         Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
     } catch (ce: CancellationException) {
@@ -513,7 +522,12 @@ class FetchAndNotifyWorker(
                 // longer in the "fetching" phase; a deliver-side failure
                 // still surfaces via the terminal FAILED entry.
                 setProgress(workDataOf(KEY_FETCH_COMPLETE to true))
-                deliver(insight, prefs, prose)
+                // A current-window Today Play tap with an empty/stale cache
+                // lands here (playInsight → fresh). Carry its "notify + speak
+                // now" intent through so delivery fires regardless of the
+                // mode; scheduled runs and the Schedule preview leave
+                // KEY_PLAY_FORCE unset and keep honouring the mode.
+                deliver(insight, prefs, prose, forceNotifyAndSpeak = inputData.getBoolean(KEY_PLAY_FORCE, false))
                 DiagLog.i(TAG, "Insight delivered for ${insight.forDate}: $prose")
             }
             recordDailyHistory(insight)
@@ -815,7 +829,21 @@ class FetchAndNotifyWorker(
         }
     }
 
-    private suspend fun deliver(insight: Insight, prefs: UserPreferences, prose: String) {
+    /**
+     * @param forceNotifyAndSpeak the user tapped the Today screen's Play
+     *   button, an explicit "do it now" that posts the notification *and*
+     *   speaks regardless of the period's delivery mode — a SILENT /
+     *   notification-only user still sees and hears a tapped forecast.
+     *   Defaults to false so scheduled runs and the Schedule "Play now"
+     *   preview (which deliberately simulates the configured mode) honour
+     *   the delivery mode exactly as before.
+     */
+    private suspend fun deliver(
+        insight: Insight,
+        prefs: UserPreferences,
+        prose: String,
+        forceNotifyAndSpeak: Boolean = false,
+    ) {
         // Apply today's holiday theme on top of the user's persisted outfit
         // colour customisations so the notification's large icon and the
         // Home-Assistant outfit card match what the Today screen renders —
@@ -849,6 +877,7 @@ class FetchAndNotifyWorker(
             insightHasEvents = insight.hasEvents,
             geminiAvailable = geminiAvailable,
             mqttPublishable = isMqttPublishable(prefs),
+            forcePhoneSpeech = forceNotifyAndSpeak,
         )
 
         // Two-phase fan-out per SPEC.md §Sequencing:
@@ -916,7 +945,7 @@ class FetchAndNotifyWorker(
 
             awaitDeliveryAlignment()
 
-            val notifyJob = launch { postPeriodNotification(insight, prefs, prose, topColors, topStrokes, gates) }
+            val notifyJob = launch { postPeriodNotification(insight, prefs, prose, topColors, topStrokes, gates, forceNotify = forceNotifyAndSpeak) }
 
             // Cast load — runs in parallel with notification + MQTT.
             // The phone speaker awaits this when castWillHaveAudio so
@@ -1158,6 +1187,7 @@ class FetchAndNotifyWorker(
         topColors: Map<OutfitSuggestion.Top, Long>,
         topStrokes: Map<OutfitSuggestion.Top, Long>,
         gates: app.clothescast.core.domain.usecase.DeliveryGates,
+        forceNotify: Boolean = false,
     ) {
         if (gates.emptyEveningSkip) {
             DiagLog.i(TAG, "Tonight insight has no events and notify-only-on-events is on; skipping notification.")
@@ -1167,7 +1197,10 @@ class FetchAndNotifyWorker(
             ForecastPeriod.TODAY -> prefs.deliveryMode
             ForecastPeriod.TONIGHT -> prefs.tonightDeliveryMode
         }
-        val canNotify = mode == DeliveryMode.NOTIFICATION_ONLY ||
+        // forceNotify: the Today screen's Play button posts the notification
+        // even on SILENT / TTS-only — an explicit tap means "show it now."
+        val canNotify = forceNotify ||
+            mode == DeliveryMode.NOTIFICATION_ONLY ||
             mode == DeliveryMode.NOTIFICATION_AND_TTS
         if (!canNotify) return
         when (insight.period) {
@@ -1563,6 +1596,16 @@ class FetchAndNotifyWorker(
          */
         internal const val KEY_PLAY = "play"
 
+        /**
+         * Set true via [enqueuePlay] when the on-demand play should post the
+         * notification *and* speak regardless of the period's delivery mode
+         * — the Today screen's Play button, an explicit "do it now." Left
+         * false for the Schedule settings "Play now" preview, which
+         * deliberately simulates the configured delivery mode (SILENT plays
+         * nothing, TTS-only speaks without a banner, etc.).
+         */
+        internal const val KEY_PLAY_FORCE = "play_force"
+
         fun enqueueOneShot(
             context: Context,
             silent: Boolean = false,
@@ -1617,8 +1660,18 @@ class FetchAndNotifyWorker(
          * user's most-recent tap is the one that matters; concurrent
          * Refresh+Play double-delivery is prevented by the UI gate (see
          * [TodayState.anyWorkActive]), not by sharing a queue.
+         *
+         * @param forceNotifyAndSpeak true for the Today Play button — post
+         *   the notification and speak regardless of the delivery mode, so a
+         *   SILENT user still sees and hears the tapped forecast. False (the
+         *   default) for the Schedule "Play now" preview, which simulates the
+         *   configured mode.
          */
-        fun enqueuePlay(context: Context, period: ForecastPeriod) {
+        fun enqueuePlay(
+            context: Context,
+            period: ForecastPeriod,
+            forceNotifyAndSpeak: Boolean = false,
+        ) {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
@@ -1630,6 +1683,7 @@ class FetchAndNotifyWorker(
                     workDataOf(
                         KEY_PLAY to true,
                         KEY_PERIOD to period.name,
+                        KEY_PLAY_FORCE to forceNotifyAndSpeak,
                     )
                 )
                 .build()

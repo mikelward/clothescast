@@ -531,8 +531,6 @@ label localizes.
     <string name="today_rationale_title">为什么是这套穿搭？</string>
     <string name="today_rationale_show">为什么？</string>
     <string name="today_rationale_dismiss">明白了</string>
-    <string name="today_rationale_threshold_decrease">将阈值降低 1 度</string>
-    <string name="today_rationale_threshold_increase">将阈值提高 1 度</string>
     <string name="today_rationale_unavailable">暂无说明 — 下次刷新后打开应用查看。</string>
     <string name="today_rationale_min_below_with_time">体感最低气温 %1$s%2$s（%3$s），低于 %4$s%2$s</string>
     <string name="today_rationale_min_below">体感最低气温 %1$s%2$s，低于 %3$s%2$s</string>

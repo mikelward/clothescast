@@ -64,8 +64,6 @@
     <string name="today_rationale_show">Why?</string>
     <string name="today_rationale_dismiss">Got it</string>
     <string name="today_rationale_open_clothes_settings">Clothes settings</string>
-    <string name="today_rationale_threshold_decrease">Lower threshold by 1 degree</string>
-    <string name="today_rationale_threshold_increase">Raise threshold by 1 degree</string>
     <string name="today_rationale_unavailable">No rationale available — open the app after the next refresh.</string>
     <!-- "Feels-like low 13°C at 6am, under 18°C" -->
     <string name="today_rationale_min_below_with_time">Feels-like low %1$s%2$s at %3$s, under %4$s%2$s</string>

@@ -561,8 +561,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_rationale_title">Warum dieses Outfit?</string>
     <string name="today_rationale_show">Warum?</string>
     <string name="today_rationale_dismiss">Verstanden</string>
-    <string name="today_rationale_threshold_decrease">Schwellenwert um 1 Grad senken</string>
-    <string name="today_rationale_threshold_increase">Schwellenwert um 1 Grad erhöhen</string>
     <string name="today_rationale_unavailable">Keine Begründung verfügbar — öffne die App nach der nächsten Aktualisierung.</string>
     <string name="today_rationale_min_below_with_time">Gefühlte Tiefsttemperatur %1$s%2$s um %3$s Uhr, unter %4$s%2$s</string>
     <string name="today_rationale_min_below">Gefühlte Tiefsttemperatur %1$s%2$s, unter %3$s%2$s</string>

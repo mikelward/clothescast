@@ -136,8 +136,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_rationale_title">ทำไมถึงแนะนำชุดนี้?</string>
     <string name="today_rationale_show">ทำไม?</string>
     <string name="today_rationale_dismiss">เข้าใจแล้ว</string>
-    <string name="today_rationale_threshold_decrease">ลดค่าเกณฑ์ลง 1 องศา</string>
-    <string name="today_rationale_threshold_increase">เพิ่มค่าเกณฑ์ขึ้น 1 องศา</string>
     <string name="today_rationale_unavailable">ไม่มีข้อมูลเหตุผล — เปิดแอปหลังจากรีเฟรชครั้งถัดไป</string>
     <string name="today_rationale_min_below_with_time">อุณหภูมิที่รู้สึกต่ำสุด %1$s%2$s เวลา %3$s ต่ำกว่า %4$s%2$s</string>
     <string name="today_rationale_min_below">อุณหภูมิที่รู้สึกต่ำสุด %1$s%2$s ต่ำกว่า %3$s%2$s</string>

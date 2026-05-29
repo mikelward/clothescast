@@ -126,8 +126,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_rationale_title">Kwa nini mavazi haya?</string>
     <string name="today_rationale_show">Kwa nini?</string>
     <string name="today_rationale_dismiss">Sawa</string>
-    <string name="today_rationale_threshold_decrease">Punguza kiwango kwa digrii 1</string>
-    <string name="today_rationale_threshold_increase">Ongeza kiwango kwa digrii 1</string>
     <string name="today_rationale_unavailable">Hakuna maelezo — fungua programu baada ya kusasisha ijayo.</string>
     <string name="today_rationale_min_below_with_time">Kiwango cha chini kinachohisi %1$s%2$s saa %3$s, chini ya %4$s%2$s</string>
     <string name="today_rationale_min_below">Kiwango cha chini kinachohisi %1$s%2$s, chini ya %3$s%2$s</string>

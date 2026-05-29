@@ -497,8 +497,6 @@ the displayed label localizes.
     <string name="today_rationale_title">Waarom dit outfit?</string>
     <string name="today_rationale_show">Waarom?</string>
     <string name="today_rationale_dismiss">Begrepen</string>
-    <string name="today_rationale_threshold_decrease">Drempel met 1 graad verlagen</string>
-    <string name="today_rationale_threshold_increase">Drempel met 1 graad verhogen</string>
     <string name="today_rationale_unavailable">Geen onderbouwing beschikbaar — open de app na de volgende vernieuwing.</string>
     <string name="today_rationale_min_below_with_time">Minimale gevoelstemperatuur %1$s%2$s om %3$s uur, onder %4$s%2$s</string>
     <string name="today_rationale_min_below">Minimale gevoelstemperatuur %1$s%2$s, onder %3$s%2$s</string>

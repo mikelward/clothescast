@@ -134,8 +134,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_rationale_title">Kāpēc šis apģērbs?</string>
     <string name="today_rationale_show">Kāpēc?</string>
     <string name="today_rationale_dismiss">Sapratu</string>
-    <string name="today_rationale_threshold_decrease">Pazemināt slieksni par 1 grādu</string>
-    <string name="today_rationale_threshold_increase">Paaugstināt slieksni par 1 grādu</string>
     <string name="today_rationale_unavailable">Pamatojums nav pieejams — atver lietotni pēc nākamās atjaunināšanas.</string>
     <string name="today_rationale_min_below_with_time">Sajustā minimālā temperatūra %1$s%2$s plkst. %3$s, zem %4$s%2$s</string>
     <string name="today_rationale_min_below">Sajustā minimālā temperatūra %1$s%2$s, zem %3$s%2$s</string>

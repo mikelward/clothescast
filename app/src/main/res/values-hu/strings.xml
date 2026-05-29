@@ -415,8 +415,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_rationale_title">Miért ez az outfit?</string>
     <string name="today_rationale_show">Miért?</string>
     <string name="today_rationale_dismiss">Értem</string>
-    <string name="today_rationale_threshold_decrease">Küszöb csökkentése 1 fokkal</string>
-    <string name="today_rationale_threshold_increase">Küszöb növelése 1 fokkal</string>
     <string name="today_rationale_unavailable">Az indoklás nem elérhető — nyisd meg az alkalmazást a következő frissítés után.</string>
     <string name="today_rationale_min_below_with_time">Érzet-minimum %1$s%2$s %3$s órakor, %4$s%2$s alatt</string>
     <string name="today_rationale_min_below">Érzet-minimum %1$s%2$s, %3$s%2$s alatt</string>

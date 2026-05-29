@@ -132,8 +132,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_rationale_title">De ce această ținută?</string>
     <string name="today_rationale_show">De ce?</string>
     <string name="today_rationale_dismiss">Am înțeles</string>
-    <string name="today_rationale_threshold_decrease">Scade pragul cu 1 grad</string>
-    <string name="today_rationale_threshold_increase">Crește pragul cu 1 grad</string>
     <string name="today_rationale_unavailable">Nicio explicație disponibilă — deschide aplicația după următoarea reîmprospătare.</string>
     <string name="today_rationale_min_below_with_time">Temperatura resimțită minimă %1$s%2$s la %3$s, sub %4$s%2$s</string>
     <string name="today_rationale_min_below">Temperatura resimțită minimă %1$s%2$s, sub %3$s%2$s</string>

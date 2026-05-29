@@ -43,7 +43,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -78,7 +77,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -342,7 +340,6 @@ fun TodayScreen(
             onDismissSchedulePromoCard = viewModel::dismissSchedulePromoCard,
             onDismissPlayPromoCard = viewModel::dismissPlayPromoCard,
             onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
-            onAdjustThreshold = viewModel::adjustClothesRuleThreshold,
             onNavigateToClothes = onNavigateToClothes,
             onNavigateToFormat = onNavigateToFormat,
             onToggleModelSpread = viewModel::toggleModelSpread,
@@ -384,7 +381,6 @@ private fun TodayContent(
     onDismissSchedulePromoCard: () -> Unit,
     onDismissPlayPromoCard: () -> Unit,
     onCalendarPermissionChanged: () -> Unit,
-    onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
     onNavigateToFormat: () -> Unit,
     onToggleModelSpread: () -> Unit,
@@ -538,7 +534,6 @@ private fun TodayContent(
                         // the top of every page keeps the rest of the
                         // content from jumping when the user swipes.
                         outfitInsight = state.thisPeriodInsight,
-                        onAdjustThreshold = onAdjustThreshold,
                         onNavigateToClothes = onNavigateToClothes,
                         onOpenPrivacy = onOpenPrivacy,
                         onOpenCalendarSettings = onOpenCalendarSettings,
@@ -589,7 +584,6 @@ private fun TodayContent(
                     } else {
                         null
                     },
-                    onAdjustThreshold = onAdjustThreshold,
                     onNavigateToClothes = onNavigateToClothes,
                     onNavigateToFormat = onNavigateToFormat,
                     onToggleModelSpread = onToggleModelSpread,
@@ -763,7 +757,6 @@ internal fun HomePageScaffold(
     onDismissSchedulePromoCard: () -> Unit,
     onDismissPlayPromoCard: () -> Unit,
     onNavigateToClothes: () -> Unit,
-    onAdjustThreshold: (String, Double) -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     // Edge fades hint at off-screen content above / below — drawn at the
@@ -818,7 +811,6 @@ internal fun HomePageScaffold(
                         outfitBottomColors = state.outfitBottomColors,
                         outfitTopStrokes = state.outfitTopStrokes,
                         outfitBottomStrokes = state.outfitBottomStrokes,
-                        onAdjustThreshold = onAdjustThreshold,
                         onNavigateToClothes = onNavigateToClothes,
                     )
                 }
@@ -852,7 +844,6 @@ private fun TodayPage(
     locationActionRequired: Boolean,
     onChevronTap: () -> Unit,
     onChevronRightTap: (() -> Unit)? = null,
-    onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
     onNavigateToFormat: () -> Unit,
     onToggleModelSpread: () -> Unit,
@@ -888,7 +879,6 @@ private fun TodayPage(
         onDismissSchedulePromoCard = onDismissSchedulePromoCard,
         onDismissPlayPromoCard = onDismissPlayPromoCard,
         onNavigateToClothes = onNavigateToClothes,
-        onAdjustThreshold = onAdjustThreshold,
     ) {
         if (insight == null) {
             MissingPeriodPlaceholder(
@@ -1501,7 +1491,6 @@ internal fun OutfitPreviewRow(
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
-    onAdjustThreshold: (String, Double) -> Unit = { _, _ -> },
     onNavigateToClothes: () -> Unit = {},
 ) {
     val primary = insight.outfit ?: return
@@ -1520,7 +1509,6 @@ internal fun OutfitPreviewRow(
             outfitBottomColors = outfitBottomColors,
             outfitTopStrokes = outfitTopStrokes,
             outfitBottomStrokes = outfitBottomStrokes,
-            onAdjustThreshold = onAdjustThreshold,
             onNavigateToClothes = onNavigateToClothes,
             modifier = Modifier.weight(1f),
         )
@@ -1535,7 +1523,6 @@ internal fun OutfitPreviewRow(
                 outfitBottomColors = outfitBottomColors,
                 outfitTopStrokes = outfitTopStrokes,
                 outfitBottomStrokes = outfitBottomStrokes,
-                onAdjustThreshold = onAdjustThreshold,
                 onNavigateToClothes = onNavigateToClothes,
                 modifier = Modifier.weight(1f),
             )
@@ -1576,15 +1563,17 @@ internal fun OutfitPreviewCard(
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
-    onAdjustThreshold: (String, Double) -> Unit = { _, _ -> },
     onNavigateToClothes: () -> Unit = {},
 ) {
+    // Tapping the card opens the "Why this outfit?" sheet so a glance can become
+    // an explanation; the sheet itself offers the jump to Settings → Clothes.
     // Material3's `Card(onClick = …)` overload is preferred over a bare
     // `modifier.clickable` — it carries the right semantics for accessibility
     // tooling and matches how SettingsNavRow / other tap-targets in the app are
     // wired.
+    var showRationale by remember { mutableStateOf(false) }
     Card(
-        onClick = onNavigateToClothes,
+        onClick = { showRationale = true },
         modifier = modifier,
     ) {
         Column(
@@ -1646,22 +1635,34 @@ internal fun OutfitPreviewCard(
             )
         }
     }
+    if (showRationale) {
+        OutfitRationaleDialog(
+            outfit = outfit,
+            rationale = rationale,
+            temperatureUnit = temperatureUnit,
+            clothesRules = clothesRules,
+            onNavigateToClothes = {
+                showRationale = false
+                onNavigateToClothes()
+            },
+            onDismiss = { showRationale = false },
+        )
+    }
 }
 
 /**
  * "Why this outfit?" detail sheet — explains the deciding facts (feels-like min / max
  * + the hour they occurred + the threshold they crossed) so the user can sanity-check
- * the call against their own day, and nudge the deciding cutoff with `−1°` / `+1°`.
+ * the call against their own day.
  *
- * The displayed threshold value tracks the *live* [clothesRules] (so a tap updates
- * the number immediately), while the observed value + hour come from the cached
- * [rationale] (frozen at insight-generation time). The comparison ("under" vs "above")
- * is recomputed against the live threshold so the prose stays honest after a tap.
- * Outfit cards on the home screen still show the cached pick — a refresh re-runs the
- * pipeline against the new clothes rules.
+ * The displayed threshold value tracks the *live* [clothesRules], while the observed
+ * value + hour come from the cached [rationale] (frozen at insight-generation time).
+ * The comparison ("under" vs "above") is recomputed against the live threshold so the
+ * prose stays honest. Outfit cards on the home screen show the cached pick — a refresh
+ * re-runs the pipeline against the current clothes rules.
  *
- * For full rule management (add / delete / change unit) the user goes to Settings →
- * Clothes; this sheet is just a quick-nudge affordance over the deciding cutoff.
+ * For rule management (add / delete / change threshold or unit) the user goes to
+ * Settings → Clothes via the dialog's button.
  */
 @Composable
 internal fun OutfitRationaleDialog(
@@ -1669,7 +1670,6 @@ internal fun OutfitRationaleDialog(
     rationale: OutfitRationale?,
     temperatureUnit: TemperatureUnit,
     clothesRules: List<ClothesRule>,
-    onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -1689,14 +1689,12 @@ internal fun OutfitRationaleDialog(
                         reason = rationale.top,
                         temperatureUnit = temperatureUnit,
                         clothesRules = clothesRules,
-                        onAdjustThreshold = onAdjustThreshold,
                     )
                     GarmentReasonBlock(
                         title = stringResource(bottomLabelRes(outfit.bottom)),
                         reason = rationale.bottom,
                         temperatureUnit = temperatureUnit,
                         clothesRules = clothesRules,
-                        onAdjustThreshold = onAdjustThreshold,
                     )
                 }
             }
@@ -1720,23 +1718,21 @@ private fun GarmentReasonBlock(
     reason: GarmentReason,
     temperatureUnit: TemperatureUnit,
     clothesRules: List<ClothesRule>,
-    onAdjustThreshold: (String, Double) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(text = title, style = MaterialTheme.typography.titleSmall)
         reason.facts.forEach { fact ->
-            // Prefer the live rule's threshold (so a tap updates the displayed
-            // number immediately) and fall back to the fact's cached threshold
-            // when the user has deleted the rule since the insight was cached
-            // — that way the dialog still has *something* to render while the
-            // user's next nudge re-creates the rule from the catalog default.
+            // Prefer the live rule's threshold and fall back to the fact's
+            // cached threshold when the user has deleted the rule since the
+            // insight was cached — that way the dialog still has *something* to
+            // render while the next refresh re-creates the rule from the
+            // catalog default.
             val liveC = clothesRules.firstOrNull { it.item == fact.ruleItem }?.thresholdC()
                 ?: fact.thresholdC
             FactRow(
                 fact = fact,
                 temperatureUnit = temperatureUnit,
                 liveThresholdC = liveC,
-                onAdjust = { delta -> onAdjustThreshold(fact.ruleItem, delta) },
             )
         }
     }
@@ -1747,51 +1743,13 @@ private fun FactRow(
     fact: Fact,
     temperatureUnit: TemperatureUnit,
     liveThresholdC: Double,
-    onAdjust: (Double) -> Unit,
 ) {
-    // One tap = one degree *in the user's display unit*, persisted as the
-    // matching °C delta. Without this, a Fahrenheit user tapping `+` would see
-    // the displayed threshold jump by ~2°F per tap (1°C ≈ 1.8°F), which is
-    // surprising. Bound checks compare against the canonical Celsius range so
-    // the buttons disable at the documented MIN_C / MAX_C edges regardless of
-    // unit.
-    val stepC = when (temperatureUnit) {
-        TemperatureUnit.CELSIUS -> 1.0
-        TemperatureUnit.FAHRENHEIT -> 5.0 / 9.0
-    }
-    val decreaseDesc = stringResource(R.string.today_rationale_threshold_decrease)
-    val increaseDesc = stringResource(R.string.today_rationale_threshold_increase)
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = formatFact(fact, temperatureUnit, liveThresholdC),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.weight(1f),
         )
-        FilledTonalIconButton(
-            onClick = { onAdjust(-stepC) },
-            enabled = liveThresholdC > ClothesRule.THRESHOLD_MIN_C,
-            modifier = Modifier
-                .size(32.dp)
-                .semantics { contentDescription = decreaseDesc },
-        ) {
-            Text(
-                text = "−",
-                style = MaterialTheme.typography.titleMedium,
-            )
-        }
-        FilledTonalIconButton(
-            onClick = { onAdjust(stepC) },
-            enabled = liveThresholdC < ClothesRule.THRESHOLD_MAX_C,
-            modifier = Modifier
-                .padding(start = 4.dp)
-                .size(32.dp)
-                .semantics { contentDescription = increaseDesc },
-        ) {
-            Text(
-                text = "+",
-                style = MaterialTheme.typography.titleMedium,
-            )
-        }
     }
 }
 

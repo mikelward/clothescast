@@ -76,8 +76,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_rationale_title">ይህ ልብስ ለምን?</string>
     <string name="today_rationale_show">ለምን?</string>
     <string name="today_rationale_dismiss">ገባኝ</string>
-    <string name="today_rationale_threshold_decrease">ደረጃን በ1 ዲግሪ ቀንስ</string>
-    <string name="today_rationale_threshold_increase">ደረጃን በ1 ዲግሪ ጨምር</string>
     <string name="today_rationale_unavailable">ምንም ምክንያት የለም — ከሚቀጥለው ዳግም ሙከራ በኋላ መተግበሪያውን ይክፈቱ።</string>
     <string name="today_rationale_min_below_with_time">ዝቅተኛ የሚሰማ ሙቀት %1$s%2$s በ%3$s ሰዓት፣ ከ%4$s%2$s በታች</string>
     <string name="today_rationale_min_below">ዝቅተኛ የሚሰማ ሙቀት %1$s%2$s፣ ከ%3$s%2$s በታች</string>

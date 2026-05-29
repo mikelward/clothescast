@@ -117,7 +117,6 @@ internal fun SevenDayPage(
      * that don't wire an outfit pair, in which case the row collapses.
      */
     outfitInsight: Insight? = null,
-    onAdjustThreshold: (String, Double) -> Unit = { _, _ -> },
     onNavigateToClothes: () -> Unit = {},
     onOpenPrivacy: () -> Unit = {},
     onOpenCalendarSettings: () -> Unit = {},
@@ -228,7 +227,6 @@ internal fun SevenDayPage(
         onDismissSchedulePromoCard = onDismissSchedulePromoCard,
         onDismissPlayPromoCard = onDismissPlayPromoCard,
         onNavigateToClothes = onNavigateToClothes,
-        onAdjustThreshold = onAdjustThreshold,
     ) {
         // Page header — same visual treatment as [InsightCard] on pages 0 / 1:
         // a 20.dp-padded Card with the chevron in a 28.dp slot on the left,

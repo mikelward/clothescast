@@ -503,8 +503,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_rationale_title">Porque este outfit?</string>
     <string name="today_rationale_show">Porquê?</string>
     <string name="today_rationale_dismiss">Entendido</string>
-    <string name="today_rationale_threshold_decrease">Diminuir limite em 1 grau</string>
-    <string name="today_rationale_threshold_increase">Aumentar limite em 1 grau</string>
     <string name="today_rationale_unavailable">Nenhuma justificação disponível — abre a aplicação após a próxima atualização.</string>
     <string name="today_rationale_min_below_with_time">Sensação mínima de %1$s%2$s às %3$s, abaixo de %4$s%2$s</string>
     <string name="today_rationale_min_below">Sensação mínima de %1$s%2$s, abaixo de %3$s%2$s</string>

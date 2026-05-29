@@ -573,8 +573,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_rationale_title">Γιατί αυτή η ένδυση;</string>
     <string name="today_rationale_show">Γιατί;</string>
     <string name="today_rationale_dismiss">Κατάλαβα</string>
-    <string name="today_rationale_threshold_decrease">Μείωση ορίου κατά 1 βαθμό</string>
-    <string name="today_rationale_threshold_increase">Αύξηση ορίου κατά 1 βαθμό</string>
     <string name="today_rationale_unavailable">Δεν υπάρχει διαθέσιμη αιτιολογία — άνοιξε την εφαρμογή μετά την επόμενη ανανέωση.</string>
     <string name="today_rationale_min_below_with_time">Αίσθηση ελάχιστης %1$s%2$s στις %3$s, κάτω από %4$s%2$s</string>
     <string name="today_rationale_min_below">Αίσθηση ελάχιστης %1$s%2$s, κάτω από %3$s%2$s</string>

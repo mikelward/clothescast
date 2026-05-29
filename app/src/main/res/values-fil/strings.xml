@@ -129,8 +129,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_rationale_title">Bakit ang outfit na ito?</string>
     <string name="today_rationale_show">Bakit?</string>
     <string name="today_rationale_dismiss">Nakuha ko</string>
-    <string name="today_rationale_threshold_decrease">Ibaba ang threshold ng 1 degree</string>
-    <string name="today_rationale_threshold_increase">Itaas ang threshold ng 1 degree</string>
     <string name="today_rationale_unavailable">Walang available na dahilan — buksan ang app pagkatapos ng susunod na refresh.</string>
     <string name="today_rationale_min_below_with_time">Pinakamababang nararamdamang temperatura na %1$s%2$s ng %3$s, mas mababa sa %4$s%2$s</string>
     <string name="today_rationale_min_below">Pinakamababang nararamdamang temperatura na %1$s%2$s, mas mababa sa %3$s%2$s</string>

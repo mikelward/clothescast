@@ -39,8 +39,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_rationale_title">Per què aquest conjunt?</string>
     <string name="today_rationale_show">Per què?</string>
     <string name="today_rationale_dismiss">Entès</string>
-    <string name="today_rationale_threshold_decrease">Redueix el llindar 1 grau</string>
-    <string name="today_rationale_threshold_increase">Augmenta el llindar 1 grau</string>
     <string name="today_rationale_unavailable">Cap justificació disponible — obre l\'aplicació després de la pròxima actualització.</string>
     <string name="today_rationale_min_below_with_time">Sensació mínima de %1$s%2$s a les %3$s, per sota de %4$s%2$s</string>
     <string name="today_rationale_min_below">Sensació mínima de %1$s%2$s, per sota de %3$s%2$s</string>

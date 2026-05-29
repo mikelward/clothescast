@@ -534,8 +534,6 @@ only the displayed label localizes.
     <string name="today_rationale_title">Почему этот наряд?</string>
     <string name="today_rationale_show">Почему?</string>
     <string name="today_rationale_dismiss">Понятно</string>
-    <string name="today_rationale_threshold_decrease">Снизить порог на 1 градус</string>
-    <string name="today_rationale_threshold_increase">Повысить порог на 1 градус</string>
     <string name="today_rationale_unavailable">Объяснение недоступно — открой приложение после следующего обновления.</string>
     <string name="today_rationale_min_below_with_time">Ощущается минимум %1$s%2$s в %3$s, ниже %4$s%2$s</string>
     <string name="today_rationale_min_below">Ощущается минимум %1$s%2$s, ниже %3$s%2$s</string>

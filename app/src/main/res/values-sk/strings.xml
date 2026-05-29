@@ -425,8 +425,6 @@ What is NOT overridden, by design:
     <string name="today_rationale_title">Prečo tento outfit?</string>
     <string name="today_rationale_show">Prečo?</string>
     <string name="today_rationale_dismiss">Rozumiem</string>
-    <string name="today_rationale_threshold_decrease">Znížiť prah o 1 stupeň</string>
-    <string name="today_rationale_threshold_increase">Zvýšiť prah o 1 stupeň</string>
     <string name="today_rationale_unavailable">Zdôvodnenie nie je k dispozícii — otvor aplikáciu po ďalšom obnovení.</string>
     <string name="today_rationale_min_below_with_time">Pocitové minimum %1$s%2$s o %3$s, pod %4$s%2$s</string>
     <string name="today_rationale_min_below">Pocitové minimum %1$s%2$s, pod %3$s%2$s</string>

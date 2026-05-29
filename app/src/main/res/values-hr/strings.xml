@@ -505,8 +505,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_rationale_title">Zašto ova odjevna kombinacija?</string>
     <string name="today_rationale_show">Zašto?</string>
     <string name="today_rationale_dismiss">Razumijem</string>
-    <string name="today_rationale_threshold_decrease">Smanji prag za 1 stupanj</string>
-    <string name="today_rationale_threshold_increase">Povećaj prag za 1 stupanj</string>
     <string name="today_rationale_unavailable">Nema dostupnog objašnjenja — otvori aplikaciju nakon sljedećeg osvježavanja.</string>
     <string name="today_rationale_min_below_with_time">Osjetna minimalna %1$s%2$s u %3$s, ispod %4$s%2$s</string>
     <string name="today_rationale_min_below">Osjetna minimalna %1$s%2$s, ispod %3$s%2$s</string>

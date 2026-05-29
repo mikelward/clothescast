@@ -39,8 +39,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_rationale_title">Miks see riietus?</string>
     <string name="today_rationale_show">Miks?</string>
     <string name="today_rationale_dismiss">Selge</string>
-    <string name="today_rationale_threshold_decrease">Alanda läve 1 kraadi võrra</string>
-    <string name="today_rationale_threshold_increase">Tõsta läve 1 kraadi võrra</string>
     <string name="today_rationale_unavailable">Põhjendus puudub — ava rakendus pärast järgmist värskendust.</string>
     <string name="today_rationale_min_below_with_time">Tunnetatav miinimum %1$s%2$s kell %3$s, alla %4$s%2$s</string>
     <string name="today_rationale_min_below">Tunnetatav miinimum %1$s%2$s, alla %3$s%2$s</string>

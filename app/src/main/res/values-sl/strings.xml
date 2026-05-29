@@ -140,8 +140,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_rationale_title">Zakaj ta obleka?</string>
     <string name="today_rationale_show">Zakaj?</string>
     <string name="today_rationale_dismiss">Razumem</string>
-    <string name="today_rationale_threshold_decrease">Znižaj prag za 1 stopinjo</string>
-    <string name="today_rationale_threshold_increase">Zvišaj prag za 1 stopinjo</string>
     <string name="today_rationale_unavailable">Pojasnilo ni na voljo — odpri aplikacijo po naslednjem osveževanju.</string>
     <string name="today_rationale_min_below_with_time">Občutena minimalna %1$s%2$s ob %3$s, pod %4$s%2$s</string>
     <string name="today_rationale_min_below">Občutena minimalna %1$s%2$s, pod %3$s%2$s</string>

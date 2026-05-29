@@ -495,8 +495,6 @@ is unchanged; only the displayed label localizes.
     <string name="today_rationale_title">Dlaczego ten outfit?</string>
     <string name="today_rationale_show">Dlaczego?</string>
     <string name="today_rationale_dismiss">Rozumiem</string>
-    <string name="today_rationale_threshold_decrease">Obniż próg o 1 stopień</string>
-    <string name="today_rationale_threshold_increase">Podnieś próg o 1 stopień</string>
     <string name="today_rationale_unavailable">Brak uzasadnienia — otwórz aplikację po następnym odświeżeniu.</string>
     <string name="today_rationale_min_below_with_time">Minimalna temperatura odczuwalna %1$s%2$s o %3$s, poniżej %4$s%2$s</string>
     <string name="today_rationale_min_below">Minimalna temperatura odczuwalna %1$s%2$s, poniżej %3$s%2$s</string>

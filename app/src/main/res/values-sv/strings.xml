@@ -414,8 +414,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="today_rationale_title">Varför detta outfit?</string>
     <string name="today_rationale_show">Varför?</string>
     <string name="today_rationale_dismiss">Förstått</string>
-    <string name="today_rationale_threshold_decrease">Sänk tröskeln med 1 grad</string>
-    <string name="today_rationale_threshold_increase">Höj tröskeln med 1 grad</string>
     <string name="today_rationale_unavailable">Ingen motivering tillgänglig — öppna appen efter nästa uppdatering.</string>
     <string name="today_rationale_min_below_with_time">Upplevd lägstatemperatur %1$s%2$s klockan %3$s, under %4$s%2$s</string>
     <string name="today_rationale_min_below">Upplevd lägstatemperatur %1$s%2$s, under %3$s%2$s</string>

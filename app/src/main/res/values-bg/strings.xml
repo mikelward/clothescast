@@ -145,8 +145,6 @@ What is NOT overridden, by design:
     <string name="today_rationale_title">Защо този тоалет?</string>
     <string name="today_rationale_show">Защо?</string>
     <string name="today_rationale_dismiss">Разбрах</string>
-    <string name="today_rationale_threshold_decrease">Намали прага с 1 градус</string>
-    <string name="today_rationale_threshold_increase">Увеличи прага с 1 градус</string>
     <string name="today_rationale_unavailable">Няма налично обяснение — отвори приложението след следващото обновяване.</string>
     <string name="today_rationale_min_below_with_time">Усещана минимална температура %1$s%2$s в %3$s, под %4$s%2$s</string>
     <string name="today_rationale_min_below">Усещана минимална температура %1$s%2$s, под %3$s%2$s</string>

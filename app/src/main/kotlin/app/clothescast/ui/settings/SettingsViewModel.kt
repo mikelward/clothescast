@@ -9,6 +9,7 @@ import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
+import app.clothescast.core.domain.model.DeltaFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
@@ -224,6 +225,7 @@ class SettingsViewModel(
                         periodPreamble = prefs.periodPreamble,
                         wearPreamble = prefs.wearPreamble,
                         deltaThresholdC = prefs.deltaThresholdC,
+                        deltaFormat = prefs.deltaFormat,
                         region = prefs.region,
                         temperatureUnit = prefs.temperatureUnit,
                         distanceUnit = prefs.distanceUnit,
@@ -997,6 +999,12 @@ class SettingsViewModel(
         // settings preview / cast / MQTT, all of which re-derive from the
         // cached snapshot reactively. The widget doesn't show delta.
         viewModelScope.launch { settingsRepository.setDeltaThresholdC(thresholdC) }
+    }
+
+    fun setDeltaFormat(format: DeltaFormat) {
+        // Prose-only — selects numeric vs absolute-band phrasing for the
+        // change clause; re-derived reactively like the threshold above.
+        viewModelScope.launch { settingsRepository.setDeltaFormat(format) }
     }
 
     fun setDailyEnabled(enabled: Boolean) {

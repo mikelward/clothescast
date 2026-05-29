@@ -5,6 +5,7 @@ import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeltaClause
+import app.clothescast.core.domain.model.DeltaFormat
 import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
@@ -123,6 +124,58 @@ class RenderInsightSummaryTest {
         // shouldn't repeat it even when the threshold is crossed.
         val today = mildToday.copy(feelsLikeMaxC = 22.0, feelsLikeMinC = yesterday.feelsLikeMinC)
         subject(today, yesterday, emptyList(), period = ForecastPeriod.TONIGHT).delta.shouldBeNull()
+    }
+
+    @Test
+    fun `band-format delta names today's high band when it changes`() {
+        // yesterday high 17 → COOL; today high 26 → WARM. Announces today's band.
+        val today = mildToday.copy(feelsLikeMaxC = 26.0)
+        val out = subject(today, yesterday, emptyList(), deltaFormat = DeltaFormat.BANDS).delta
+        out.shouldNotBeNull()
+        out!!.style shouldBe DeltaClause.Style.BANDS
+        out.band shouldBe TemperatureBand.WARM
+    }
+
+    @Test
+    fun `band-format delta names the cooler band when the high band drops`() {
+        // yesterday high 26 → WARM; today high 17 → COOL.
+        val warmYesterday = yesterday.copy(feelsLikeMaxC = 26.0)
+        val today = mildToday.copy(feelsLikeMaxC = 17.0)
+        val out = subject(today, warmYesterday, emptyList(), deltaFormat = DeltaFormat.BANDS).delta
+        out.shouldNotBeNull()
+        out!!.style shouldBe DeltaClause.Style.BANDS
+        out.band shouldBe TemperatureBand.COOL
+    }
+
+    @Test
+    fun `band-format delta is omitted when the high band is unchanged`() {
+        // Both highs land in MILD (18–23.9): yesterday 17 is COOL, so bump it to 20.
+        val mildYesterday = yesterday.copy(feelsLikeMaxC = 20.0)
+        val today = mildToday.copy(feelsLikeMaxC = 23.0)
+        subject(today, mildYesterday, emptyList(), deltaFormat = DeltaFormat.BANDS).delta.shouldBeNull()
+    }
+
+    @Test
+    fun `band-format delta fires on a band crossing even below the degree threshold`() {
+        // 17.9 → COOL, 18.1 → MILD: a 0.2° change the degree clause would never
+        // surface, but it crosses a band boundary so band mode emits it.
+        val coolYesterday = yesterday.copy(feelsLikeMaxC = 17.9)
+        val today = mildToday.copy(feelsLikeMaxC = 18.1)
+        val out = subject(today, coolYesterday, emptyList(), deltaFormat = DeltaFormat.BANDS).delta
+        out.shouldNotBeNull()
+        out!!.band shouldBe TemperatureBand.MILD
+    }
+
+    @Test
+    fun `band-format delta is still omitted for the tonight period`() {
+        val today = mildToday.copy(feelsLikeMaxC = 26.0)
+        subject(
+            today,
+            yesterday,
+            emptyList(),
+            period = ForecastPeriod.TONIGHT,
+            deltaFormat = DeltaFormat.BANDS,
+        ).delta.shouldBeNull()
     }
 
     @Test

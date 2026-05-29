@@ -46,5 +46,7 @@ data class SettingsSnapshot(
     val rainAccessory: String,
     /** Significant-change threshold in whole °C, or -1 when the clause is off. */
     val deltaThresholdC: Int,
+    /** How the change clause is phrased: DEGREES / BANDS. */
+    val deltaFormat: String,
     val useCalendarEvents: Boolean,
 )

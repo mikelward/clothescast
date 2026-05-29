@@ -2,6 +2,7 @@ package app.clothescast.ui.settings
 
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
+import app.clothescast.core.domain.model.DeltaFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
@@ -68,6 +69,7 @@ data class SettingsState(
     val periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     val wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     val deltaThresholdC: Double? = 3.0,
+    val deltaFormat: DeltaFormat = DeltaFormat.DEGREES,
     /**
      * Structured summary of the user's current cached forecast (page 1 of the
      * Today pager), or `null` when nothing's cached yet. The Format settings

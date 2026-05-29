@@ -128,6 +128,7 @@ class DeriveInsight(
             perModelHourly = periodView.perModelForRender,
             eveningEventTieIn = eveningEventTieIn,
             deltaThresholdC = prefs.deltaThresholdC,
+            deltaFormat = prefs.deltaFormat,
             clothesMentionMode = prefs.clothesMentionMode,
             yesterdayTriggeredItems = periodView.yesterdayTriggeredItems,
             todayRuleItems = Garment.layerReduce(periodView.triggeredOutfit.rules).map { it.item },
@@ -265,6 +266,7 @@ class DeriveInsight(
             perModelHourly = nightView.perModelForRender,
             eveningEventTieIn = null,
             deltaThresholdC = prefs.deltaThresholdC,
+            deltaFormat = prefs.deltaFormat,
             todayRuleItems = Garment.layerReduce(nightView.triggeredOutfit.rules).map { it.item },
         )
         val precip = nightSummary.precip

@@ -266,6 +266,76 @@ class InsightFormatterTest {
     }
 
     @Test
+    fun `band-style delta replaces the temperature sentence with today's band`() {
+        // The degree range (21°) is gone — the band callout IS the temperature
+        // sentence, with no extra "it will be" clause appended.
+        val out = subject.format(
+            summary(
+                delta = DeltaClause(
+                    degrees = 4,
+                    direction = DeltaClause.Direction.WARMER,
+                    band = TemperatureBand.HOT,
+                    style = DeltaClause.Style.BANDS,
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be hot."
+    }
+
+    @Test
+    fun `band-style delta names a cooler band the same way`() {
+        val out = subject.format(
+            summary(
+                delta = DeltaClause(
+                    degrees = 5,
+                    direction = DeltaClause.Direction.COOLER,
+                    band = TemperatureBand.COOL,
+                    style = DeltaClause.Style.BANDS,
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be cool."
+    }
+
+    @Test
+    fun `band-style delta names the band word regardless of fahrenheit — a band is a band`() {
+        // No degrees in the output, so the unit setting doesn't matter: the
+        // callout reads the same in °F as in °C.
+        val fahrenheitSubject = InsightFormatter.forContext(
+            context = context,
+            locale = Locale.ENGLISH,
+            temperatureUnit = app.clothescast.core.domain.model.TemperatureUnit.FAHRENHEIT,
+        )
+        fahrenheitSubject.format(
+            summary(
+                band = BandClause(TemperatureBand.COLD, TemperatureBand.COOL, 8.0, 14.0),
+                delta = DeltaClause(
+                    degrees = 5,
+                    direction = DeltaClause.Direction.WARMER,
+                    band = TemperatureBand.MILD,
+                    style = DeltaClause.Style.BANDS,
+                ),
+            ),
+        ) shouldBe "Today, it will be mild."
+    }
+
+    @Test
+    fun `band-style delta drops the lead on the card surface`() {
+        // Period preamble off (the Today card): just the capitalised band word,
+        // no "it will be".
+        cardSubject.format(
+            summary(
+                delta = DeltaClause(
+                    degrees = 4,
+                    direction = DeltaClause.Direction.WARMER,
+                    band = TemperatureBand.HOT,
+                    style = DeltaClause.Style.BANDS,
+                ),
+            ),
+        ) shouldBe "Hot."
+    }
+
+    @Test
     fun `formatter renders fahrenheit when the user's unit is FAHRENHEIT`() {
         val fahrenheitSubject = InsightFormatter.forContext(
             context = context,

@@ -39,6 +39,7 @@ import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.DeltaClause
+import app.clothescast.core.domain.model.DeltaFormat
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PreambleVisibility
@@ -56,10 +57,65 @@ import app.clothescast.ui.EdgeFadeOverlay
 import java.time.LocalTime
 import kotlin.math.roundToInt
 
-// Preset °C thresholds offered for the significant-change clause; null = Off.
-// Stored as °C and labelled in the user's unit so the gate stays consistent
-// with the rendered "5° warmer than yesterday." delta (see InsightFormatter).
-private val DELTA_THRESHOLD_PRESETS: List<Double?> = listOf(null, 3.0, 5.0, 8.0)
+// The temperature-change clause picker. A single dropdown selects one of: Off
+// (no clause), a significant-change degree threshold (3° / 5° / 8°, rendered as
+// "5° warmer than yesterday."), or Band (an absolute band callout that replaces
+// the temperature sentence with "Today, it will be hot.", emitted only when
+// today's high band differs from yesterday's). Band replaces the degree forms
+// rather than coexisting with them — it's a different phrasing of the same
+// clause.
+//
+// Internally the choice maps onto two preferences: [DeltaFormat] (degrees vs
+// bands) and the °C threshold. Picking a degree option sets DEGREES + that
+// threshold; Off clears the threshold (and keeps DEGREES so the selection reads
+// back as Off, not Band); Band sets BANDS and pins the threshold to the 3°C
+// default so the week-ahead headline — which keys off the same threshold — stays
+// alive. Thresholds are stored as °C and labelled in the user's unit so the gate
+// matches the rendered delta (see InsightFormatter).
+private sealed interface ChangeOption {
+    data object Off : ChangeOption
+    data class Degrees(val thresholdC: Double) : ChangeOption
+    data object Band : ChangeOption
+}
+
+private val CHANGE_OPTIONS: List<ChangeOption> = listOf(
+    ChangeOption.Off,
+    ChangeOption.Degrees(3.0),
+    ChangeOption.Degrees(5.0),
+    ChangeOption.Degrees(8.0),
+    ChangeOption.Band,
+)
+
+// Threshold pinned when the user picks Band, so the week-ahead headline (which
+// also reads deltaThresholdC) keeps firing — the band clause itself ignores it.
+private const val BAND_MODE_DEFAULT_THRESHOLD_C = 3.0
+
+private fun changeOptionFor(deltaThresholdC: Double?, deltaFormat: DeltaFormat): ChangeOption = when {
+    deltaFormat == DeltaFormat.BANDS -> ChangeOption.Band
+    deltaThresholdC == null -> ChangeOption.Off
+    else -> ChangeOption.Degrees(deltaThresholdC)
+}
+
+private fun applyChangeOption(
+    option: ChangeOption,
+    onSetDeltaThresholdC: (Double?) -> Unit,
+    onSetDeltaFormat: (DeltaFormat) -> Unit,
+) {
+    when (option) {
+        ChangeOption.Off -> {
+            onSetDeltaFormat(DeltaFormat.DEGREES)
+            onSetDeltaThresholdC(null)
+        }
+        is ChangeOption.Degrees -> {
+            onSetDeltaFormat(DeltaFormat.DEGREES)
+            onSetDeltaThresholdC(option.thresholdC)
+        }
+        ChangeOption.Band -> {
+            onSetDeltaFormat(DeltaFormat.BANDS)
+            onSetDeltaThresholdC(BAND_MODE_DEFAULT_THRESHOLD_C)
+        }
+    }
+}
 
 // Feels-like delta the preview sample differs from "yesterday" by. The preview
 // shows the delta clause only while the selected threshold is at or below this,
@@ -79,6 +135,7 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             bottomsFormat = state.bottomsFormat,
             rainAccessory = state.rainAccessory,
             deltaThresholdC = state.deltaThresholdC,
+            deltaFormat = state.deltaFormat,
             clothesMentionMode = state.clothesMentionMode,
             region = state.region,
             temperatureUnit = state.temperatureUnit,
@@ -91,6 +148,7 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             onSetBottomsFormat = viewModel::setBottomsFormat,
             onSetRainAccessory = viewModel::setRainAccessory,
             onSetDeltaThresholdC = viewModel::setDeltaThresholdC,
+            onSetDeltaFormat = viewModel::setDeltaFormat,
             onSetClothesMentionMode = viewModel::setClothesMentionMode,
         )
     }
@@ -105,6 +163,7 @@ internal fun FormatContent(
     bottomsFormat: BottomsFormat,
     rainAccessory: RainAccessory,
     deltaThresholdC: Double?,
+    deltaFormat: DeltaFormat,
     clothesMentionMode: ClothesMentionMode,
     region: Region,
     temperatureUnit: TemperatureUnit,
@@ -117,6 +176,7 @@ internal fun FormatContent(
     onSetBottomsFormat: (BottomsFormat) -> Unit,
     onSetRainAccessory: (RainAccessory) -> Unit,
     onSetDeltaThresholdC: (Double?) -> Unit,
+    onSetDeltaFormat: (DeltaFormat) -> Unit,
     onSetClothesMentionMode: (ClothesMentionMode) -> Unit,
 ) {
     val scrollState = rememberScrollState()
@@ -140,6 +200,7 @@ internal fun FormatContent(
                 bottomsFormat,
                 rainAccessory,
                 deltaThresholdC,
+                deltaFormat,
                 clothesMentionMode,
                 region,
                 temperatureUnit,
@@ -175,10 +236,10 @@ internal fun FormatContent(
                 )
                 FormatDropdownRow(
                     label = stringResource(R.string.settings_format_change_label),
-                    options = DELTA_THRESHOLD_PRESETS,
-                    selected = deltaThresholdC,
-                    optionLabel = { thresholdLabel(it, temperatureUnit) },
-                    onSelect = onSetDeltaThresholdC,
+                    options = CHANGE_OPTIONS,
+                    selected = changeOptionFor(deltaThresholdC, deltaFormat),
+                    optionLabel = { changeOptionLabel(it, temperatureUnit) },
+                    onSelect = { applyChangeOption(it, onSetDeltaThresholdC, onSetDeltaFormat) },
                 )
                 FormatDropdownRow(
                     label = stringResource(R.string.settings_format_wear_preamble_label),
@@ -257,6 +318,7 @@ private fun PreviewCard(
     bottomsFormat: BottomsFormat,
     rainAccessory: RainAccessory,
     deltaThresholdC: Double?,
+    deltaFormat: DeltaFormat,
     clothesMentionMode: ClothesMentionMode,
     region: Region,
     temperatureUnit: TemperatureUnit,
@@ -272,7 +334,10 @@ private fun PreviewCard(
         )
     }
     // Drop the delta clause when the selected threshold is above the sample's
-    // delta, so the preview reflects the significant-change setting too.
+    // delta, so the preview reflects the significant-change setting too. In
+    // band mode the callout always shows so the user sees the band wording
+    // replace the temperature sentence ("Today, it will be mild."); it names
+    // the sample's own high band so the replacement stays truthful.
     val showDelta = deltaThresholdC != null && PREVIEW_DELTA_C >= deltaThresholdC
     val sample = InsightSummary(
         period = ForecastPeriod.TODAY,
@@ -282,10 +347,18 @@ private fun PreviewCard(
             feelsLikeMinC = 12.0,
             feelsLikeMaxC = 20.0,
         ),
-        delta = if (showDelta) {
-            DeltaClause(degrees = PREVIEW_DELTA_C.roundToInt(), direction = DeltaClause.Direction.WARMER)
-        } else {
-            null
+        delta = when (deltaFormat) {
+            DeltaFormat.BANDS -> DeltaClause(
+                degrees = PREVIEW_DELTA_C.roundToInt(),
+                direction = DeltaClause.Direction.WARMER,
+                band = TemperatureBand.MILD,
+                style = DeltaClause.Style.BANDS,
+            )
+            DeltaFormat.DEGREES -> if (showDelta) {
+                DeltaClause(degrees = PREVIEW_DELTA_C.roundToInt(), direction = DeltaClause.Direction.WARMER)
+            } else {
+                null
+            }
         },
         // Mirror RenderInsightSummary's mode gating: NEVER drops the clause,
         // ALWAYS keeps it, and IF_CHANGED keeps it here because the sample
@@ -393,6 +466,13 @@ private fun rangeFormatLabel(format: RangeFormat): Int = when (format) {
     RangeFormat.NONE -> R.string.settings_format_range_none
     RangeFormat.DEGREES -> R.string.settings_format_range_degrees
     RangeFormat.BANDS -> R.string.settings_format_range_bands
+}
+
+@Composable
+private fun changeOptionLabel(option: ChangeOption, unit: TemperatureUnit): String = when (option) {
+    ChangeOption.Off -> stringResource(R.string.settings_format_change_off)
+    is ChangeOption.Degrees -> thresholdLabel(option.thresholdC, unit)
+    ChangeOption.Band -> stringResource(R.string.settings_format_change_band)
 }
 
 @Composable

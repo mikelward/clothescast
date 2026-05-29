@@ -549,8 +549,10 @@ jobs:
         # Per-commit filter: a commit's subject is skipped if it would read
         # as noise to a non-engineer — anything prefixed `ci:` (the
         # snapshot-regen bot commits "ci: regenerate UI snapshots", workflow
-        # tweaks, etc.) or `test:` (test-only changes that ship nothing in
-        # the APK), and changes whose paths are all under `docs/`, all
+        # tweaks, etc.), `test:` (test-only changes that ship nothing in
+        # the APK), or `internal:` (internal-only changes that ship nothing
+        # user-visible — refactors, renames, dependency bumps), and changes
+        # whose paths are all under `docs/`, all
         # top-level dotfiles or hidden directories (`.github/`, `.claude/`,
         # `.gitignore`, `.editorconfig`, …), or top-level `*.md`. PRIVACY.md
         # is treated as non-docs so that privacy-policy updates still surface
@@ -654,7 +656,7 @@ jobs:
             local sha="$1" subject non_doc_count
             subject=$(git log -1 --pretty=%s "$sha")
             case "$subject" in
-              ci:*|test:*) return 0 ;;
+              ci:*|test:*|internal:*) return 0 ;;
             esac
             non_doc_count=$(git show --no-renames --name-only --pretty=format: "$sha" \
               | sed '/^$/d' \

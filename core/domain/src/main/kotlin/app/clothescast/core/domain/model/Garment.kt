@@ -64,6 +64,20 @@ enum class Garment(
     PANTS("pants", Slot.BOTTOM),
     JEANS("jeans", Slot.BOTTOM);
 
+    /**
+     * Canonical relative warmth for outfit comparisons — "is the evening's top
+     * warmer than the day's?" and the like. Higher is warmer; bottoms report 0.
+     *
+     * Currently the same rating as [layerCount] (which, despite its name, is
+     * already a perceived-warmth value rather than a literal garment count), but
+     * named for the comparison so call sites read by intent. The catalog
+     * redesign will give garments a deliberate warmth and align the layerReduce
+     * / icon priority order ([TOP_LAYER_PRIORITY], today coldest-first
+     * coat → puffer → jacket) to it, so the warmth signals can't disagree on
+     * e.g. coat vs puffer the way they do now.
+     */
+    val warmth: Int get() = layerCount
+
     /** Which outfit slot this garment occupies. Drives "does any matched rule
      *  cover this slot?" decisions in [EvaluateClothesRules] and "what
      *  temperature window does the fallback apply in?" in [FallbackRange],

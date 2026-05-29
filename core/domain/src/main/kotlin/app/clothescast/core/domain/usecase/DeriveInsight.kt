@@ -299,33 +299,35 @@ class DeriveInsight(
      * that fires when nothing else covers the slot, so it belongs in the outfit
      * on both sides of the comparison).
      *
-     * Tops are layer-aware: an evening top is "extra" only when its [Garment.Layer]
-     * is heavier than the day's heaviest top — wearing a jacket by day already
-     * implies the lighter layers under it, so a lighter evening top isn't worth
-     * mentioning. Bottoms substitute rather than stack, so an evening bottom is
-     * extra when it's a different garment than the day's. Items we can't place in
-     * a slot (legacy free-form rules, accessories like an umbrella) are left to
-     * the prose / rain paths rather than the clothes delta.
+     * Tops are warmth-aware: an evening top is "extra" only when it's warmer than
+     * the day's warmest top — wearing a jacket by day already implies the lighter
+     * layers under it, so a lighter evening top isn't worth mentioning. Warmth is
+     * [Garment.warmth], not the [Garment.Layer] band, so same-band upgrades still
+     * surface: a day `jacket` doesn't suppress a warmer evening `puffer`. Bottoms
+     * substitute rather than stack, so an evening bottom is extra when it's a
+     * different garment than the day's. Items we can't place in a slot (legacy
+     * free-form rules, accessories like an umbrella) are left to the prose / rain
+     * paths rather than the clothes delta.
      */
     private fun eveningClothesDelta(
         eveningItems: List<String>,
         dayItems: List<String>,
     ): List<String> {
         val dayGarments = dayItems.mapNotNull { Garment.fromKey(it) }
-        val dayTopLayer: Garment.Layer? = dayGarments
+        // Warmest top worn by day, by [Garment.warmth] (not the layer band), so a
+        // same-band-but-warmer evening top (jacket → puffer) still counts — the
+        // goal is to name the warmest top the evening actually needs. The
+        // coat-vs-puffer warmth inconsistency is tracked on [Garment.warmth].
+        val dayTopWarmth = dayGarments
             .filter { it.slot == Garment.Slot.TOP }
-            .mapNotNull { it.layer }
-            .maxByOrNull { it.ordinal }
+            .maxOfOrNull { it.warmth } ?: 0
         val dayBottomKeys = dayGarments
             .filter { it.slot == Garment.Slot.BOTTOM }
             .mapTo(mutableSetOf()) { it.itemKey }
         return eveningItems.filter { item ->
             val g = Garment.fromKey(item) ?: return@filter false
             when (g.slot) {
-                Garment.Slot.TOP -> {
-                    val layer = g.layer ?: return@filter false
-                    dayTopLayer == null || layer.ordinal > dayTopLayer.ordinal
-                }
+                Garment.Slot.TOP -> g.warmth > dayTopWarmth
                 Garment.Slot.BOTTOM -> g.itemKey !in dayBottomKeys
             }
         }

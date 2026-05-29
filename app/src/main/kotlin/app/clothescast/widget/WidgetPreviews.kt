@@ -501,6 +501,33 @@ internal fun FeelsLikeWidgetWeekPreview() {
     }
 }
 
+// The runtime widget rasterises into a bitmap sized to the cell and asks the
+// chart to fill it (fillHeight = true), so on a wide placement the chart spreads
+// out rather than sitting at a fixed height. This preview pins a wide ~3:1 cell
+// at a realistic widget height to lock in that look; the others above keep the
+// default fixed-height card. Captured at a wider viewport (see PreviewSnapshots).
+@Preview(name = "Feels-like widget · wide (3:1)", widthDp = 572, heightDp = 212)
+@Composable
+internal fun FeelsLikeWidgetWidePreview() {
+    WidgetFrame {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.size(width = 540.dp, height = 180.dp),
+        ) {
+            WidgetForecastChart(
+                hourly = SAMPLE_FEELS_DAY.subList(7, 19),
+                days = null,
+                temperatureUnit = TemperatureUnit.CELSIUS,
+                timeFormat = TimeFormat.TWELVE_HOUR,
+                startDate = LocalDate.now(),
+                now = SAMPLE_NOW,
+                fillHeight = true,
+            )
+        }
+    }
+}
+
 @Preview(name = "Feels-like widget · no current time", widthDp = 360)
 @Composable
 internal fun FeelsLikeWidgetNoCurrentTimePreview() {

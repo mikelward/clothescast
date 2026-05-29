@@ -31,6 +31,7 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZoneId
 
 /**
@@ -324,27 +325,28 @@ class FetchAndNotifyWorkerTest {
     }
 
     @Test
-    fun `daily preview advances to tomorrow once the nightly window has started`() {
-        // The daytime cast has already passed by the time we're in the nightly
-        // window, so "Play now" on Daily means *tomorrow's* daytime — every
-        // other combination stays on today (tonight is still upcoming/ongoing,
-        // and a current-window play is always today).
-        FetchAndNotifyWorker.nextOccurrenceDayOffset(
-            requestedPeriod = ForecastPeriod.TODAY,
-            currentPeriod = ForecastPeriod.TONIGHT,
-        ) shouldBe 1
-        FetchAndNotifyWorker.nextOccurrenceDayOffset(
-            requestedPeriod = ForecastPeriod.TODAY,
-            currentPeriod = ForecastPeriod.TODAY,
-        ) shouldBe 0
-        FetchAndNotifyWorker.nextOccurrenceDayOffset(
-            requestedPeriod = ForecastPeriod.TONIGHT,
-            currentPeriod = ForecastPeriod.TODAY,
-        ) shouldBe 0
-        FetchAndNotifyWorker.nextOccurrenceDayOffset(
-            requestedPeriod = ForecastPeriod.TONIGHT,
-            currentPeriod = ForecastPeriod.TONIGHT,
-        ) shouldBe 0
+    fun `play target date follows the schedule window across midnight`() {
+        val morning = LocalTime.of(7, 0)
+        val tonight = LocalTime.of(19, 0)
+        val date = LocalDate.of(2026, 5, 27)
+        fun target(period: ForecastPeriod, time: LocalTime) =
+            FetchAndNotifyWorker.playTargetDate(period, date.atTime(time), morning, tonight)
+
+        // Daytime (10:00) — both casts are today's.
+        target(ForecastPeriod.TODAY, LocalTime.of(10, 0)) shouldBe date
+        target(ForecastPeriod.TONIGHT, LocalTime.of(10, 0)) shouldBe date
+
+        // Evening (20:00) — today's daytime has gone out, so Daily means
+        // tomorrow; the nightly cast is the current (today's) one.
+        target(ForecastPeriod.TODAY, LocalTime.of(20, 0)) shouldBe date.plusDays(1)
+        target(ForecastPeriod.TONIGHT, LocalTime.of(20, 0)) shouldBe date
+
+        // Overnight (02:00, past midnight, before the morning cutoff) — the
+        // current ongoing night began the previous evening, so it's dated
+        // yesterday; the next daytime cast is *this* morning, i.e. today (not
+        // tomorrow). This is the midnight-crossing case the offset must handle.
+        target(ForecastPeriod.TODAY, LocalTime.of(2, 0)) shouldBe date
+        target(ForecastPeriod.TONIGHT, LocalTime.of(2, 0)) shouldBe date.minusDays(1)
     }
 
     private fun workInfosFor(name: String): List<WorkInfo> =

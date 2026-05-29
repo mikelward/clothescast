@@ -148,6 +148,7 @@ fun ClothesCastNavHost(
                 onNavigateToSchedule = { nav.navigate(ScheduleDest) },
                 onNavigateToDeveloper = { nav.navigate(DeveloperDest) },
                 onNavigateToFormat = { nav.navigate(FormatDest) },
+                onNavigateToVoice = { nav.navigate(VoiceDest) },
             )
         }
 
@@ -298,6 +299,7 @@ private fun todayViewModelFactory(app: ClothesCastApplication, context: Context)
         },
         deriveInsight = app.deriveInsight,
         calendarEventReader = app.calendarEventReader,
+        geminiKeyConfigured = app.secureKeyStore.geminiKeyConfiguredFlow,
     )
 
 private fun settingsViewModelFactory(app: ClothesCastApplication, context: Context) =

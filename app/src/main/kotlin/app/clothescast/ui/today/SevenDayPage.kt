@@ -125,6 +125,8 @@ internal fun SevenDayPage(
     onDismissClothesPromoCard: () -> Unit = {},
     onDismissSchedulePromoCard: () -> Unit = {},
     onDismissPlayPromoCard: () -> Unit = {},
+    onOpenVoice: () -> Unit = {},
+    onDismissGeminiTtsPromoCard: () -> Unit = {},
 ) {
     // Shared display settings come from [TodayState]; the chart deck and the
     // week-ahead headline below read these locals so sourcing them from state
@@ -226,6 +228,8 @@ internal fun SevenDayPage(
         onDismissClothesPromoCard = onDismissClothesPromoCard,
         onDismissSchedulePromoCard = onDismissSchedulePromoCard,
         onDismissPlayPromoCard = onDismissPlayPromoCard,
+        onOpenVoice = onOpenVoice,
+        onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
         onNavigateToClothes = onNavigateToClothes,
     ) {
         // Page header — same visual treatment as [InsightCard] on pages 0 / 1:

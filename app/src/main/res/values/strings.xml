@@ -378,6 +378,17 @@
     <string name="today_play_promo_body">Tap the play button to hear your ClothesCast.</string>
     <string name="today_play_promo_dismiss">Dismiss</string>
 
+    <!-- Promo card on the Today screen nudging users without a Gemini API key
+         toward the higher-quality Gemini voices. By default casts speak through
+         the device's built-in TTS; adding a key in Voice settings unlocks the
+         natural Gemini voices. Routes to Voice settings. Only shows while no
+         Gemini key is configured; auto-hides once one is added, OR after the
+         user dismisses it / follows the CTA. -->
+    <string name="today_gemini_promo_title">Try high-quality voices</string>
+    <string name="today_gemini_promo_body">Turn on Gemini to hear your ClothesCast in natural, lifelike voices.</string>
+    <string name="today_gemini_promo_cta">Speech settings</string>
+    <string name="today_gemini_promo_dismiss">Dismiss</string>
+
     <!-- Promo card on the Today screen nudging users toward the new
          calendar-sourced holiday + birthday theming. Auto-hides once
          either Holiday-settings toggle is on, OR after the user X-dismisses. -->

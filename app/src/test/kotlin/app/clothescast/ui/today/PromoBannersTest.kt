@@ -14,6 +14,7 @@ class PromoBannersTest {
             clothesPromoEligible = true,
             schedulePromoEligible = true,
             playPromoEligible = false,
+            geminiPromoEligible = false,
             celebrationEligible = true,
             hasForecast = false,
         ) shouldBe emptySet()
@@ -29,6 +30,7 @@ class PromoBannersTest {
             clothesPromoEligible = true,
             schedulePromoEligible = true,
             playPromoEligible = false,
+            geminiPromoEligible = false,
             celebrationEligible = true,
             hasForecast = true,
         ) shouldContainExactlyInAnyOrder listOf(PromoBanner.CLOTHES, PromoBanner.SCHEDULE)
@@ -44,6 +46,7 @@ class PromoBannersTest {
             clothesPromoEligible = true,
             schedulePromoEligible = true,
             playPromoEligible = false,
+            geminiPromoEligible = false,
             celebrationEligible = true,
             hasForecast = false,
         ) shouldContainExactlyInAnyOrder listOf(PromoBanner.LOCATION, PromoBanner.TELEMETRY)
@@ -57,6 +60,7 @@ class PromoBannersTest {
             clothesPromoEligible = true,
             schedulePromoEligible = true,
             playPromoEligible = false,
+            geminiPromoEligible = false,
             celebrationEligible = true,
             hasForecast = true,
         ) shouldContainExactlyInAnyOrder listOf(PromoBanner.LOCATION, PromoBanner.TELEMETRY)
@@ -73,6 +77,7 @@ class PromoBannersTest {
             clothesPromoEligible = true,
             schedulePromoEligible = false,
             playPromoEligible = false,
+            geminiPromoEligible = false,
             celebrationEligible = true,
             hasForecast = true,
         ) shouldContainExactlyInAnyOrder listOf(PromoBanner.CLOTHES, PromoBanner.CELEBRATION)
@@ -86,6 +91,7 @@ class PromoBannersTest {
             clothesPromoEligible = true,
             schedulePromoEligible = false,
             playPromoEligible = false,
+            geminiPromoEligible = false,
             celebrationEligible = true,
             hasForecast = true,
         ) shouldContainExactlyInAnyOrder listOf(PromoBanner.LOCATION, PromoBanner.CLOTHES)
@@ -99,6 +105,7 @@ class PromoBannersTest {
             clothesPromoEligible = false,
             schedulePromoEligible = true,
             playPromoEligible = false,
+            geminiPromoEligible = false,
             celebrationEligible = false,
             hasForecast = false,
         ) shouldBe emptySet()
@@ -112,6 +119,7 @@ class PromoBannersTest {
             clothesPromoEligible = false,
             schedulePromoEligible = true,
             playPromoEligible = false,
+            geminiPromoEligible = false,
             celebrationEligible = false,
             hasForecast = true,
         ) shouldContainExactlyInAnyOrder listOf(PromoBanner.SCHEDULE)
@@ -125,6 +133,7 @@ class PromoBannersTest {
             clothesPromoEligible = false,
             schedulePromoEligible = true,
             playPromoEligible = false,
+            geminiPromoEligible = false,
             celebrationEligible = true,
             hasForecast = true,
             maxVisible = 1,
@@ -139,6 +148,7 @@ class PromoBannersTest {
             clothesPromoEligible = true,
             schedulePromoEligible = true,
             playPromoEligible = false,
+            geminiPromoEligible = false,
             celebrationEligible = false,
             hasForecast = true,
             maxVisible = 1,
@@ -153,6 +163,7 @@ class PromoBannersTest {
             clothesPromoEligible = false,
             schedulePromoEligible = false,
             playPromoEligible = true,
+            geminiPromoEligible = false,
             celebrationEligible = false,
             hasForecast = false,
         ) shouldBe emptySet()
@@ -166,6 +177,7 @@ class PromoBannersTest {
             clothesPromoEligible = false,
             schedulePromoEligible = false,
             playPromoEligible = true,
+            geminiPromoEligible = false,
             celebrationEligible = false,
             hasForecast = true,
         ) shouldContainExactlyInAnyOrder listOf(PromoBanner.PLAY)
@@ -179,7 +191,66 @@ class PromoBannersTest {
             clothesPromoEligible = false,
             schedulePromoEligible = false,
             playPromoEligible = true,
+            geminiPromoEligible = false,
             celebrationEligible = true,
+            hasForecast = true,
+            maxVisible = 1,
+        ) shouldContainExactlyInAnyOrder listOf(PromoBanner.PLAY)
+    }
+
+    @Test
+    fun `gemini promo is held back until a forecast exists`() {
+        promoBannersToShow(
+            locationActionRequired = false,
+            telemetryNoticeVisible = false,
+            clothesPromoEligible = false,
+            schedulePromoEligible = false,
+            playPromoEligible = false,
+            geminiPromoEligible = true,
+            celebrationEligible = false,
+            hasForecast = false,
+        ) shouldBe emptySet()
+    }
+
+    @Test
+    fun `gemini promo shows once a forecast exists`() {
+        promoBannersToShow(
+            locationActionRequired = false,
+            telemetryNoticeVisible = false,
+            clothesPromoEligible = false,
+            schedulePromoEligible = false,
+            playPromoEligible = false,
+            geminiPromoEligible = true,
+            celebrationEligible = false,
+            hasForecast = true,
+        ) shouldContainExactlyInAnyOrder listOf(PromoBanner.GEMINI)
+    }
+
+    @Test
+    fun `gemini promo outranks celebration under the cap`() {
+        promoBannersToShow(
+            locationActionRequired = false,
+            telemetryNoticeVisible = false,
+            clothesPromoEligible = false,
+            schedulePromoEligible = false,
+            playPromoEligible = false,
+            geminiPromoEligible = true,
+            celebrationEligible = true,
+            hasForecast = true,
+            maxVisible = 1,
+        ) shouldContainExactlyInAnyOrder listOf(PromoBanner.GEMINI)
+    }
+
+    @Test
+    fun `play promo outranks gemini under the cap`() {
+        promoBannersToShow(
+            locationActionRequired = false,
+            telemetryNoticeVisible = false,
+            clothesPromoEligible = false,
+            schedulePromoEligible = false,
+            playPromoEligible = true,
+            geminiPromoEligible = true,
+            celebrationEligible = false,
             hasForecast = true,
             maxVisible = 1,
         ) shouldContainExactlyInAnyOrder listOf(PromoBanner.PLAY)
@@ -193,6 +264,7 @@ class PromoBannersTest {
             clothesPromoEligible = false,
             schedulePromoEligible = false,
             playPromoEligible = false,
+            geminiPromoEligible = false,
             celebrationEligible = false,
             hasForecast = true,
         ) shouldBe emptySet()

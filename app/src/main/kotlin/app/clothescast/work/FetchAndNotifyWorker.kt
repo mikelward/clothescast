@@ -68,6 +68,7 @@ import java.io.IOException
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -299,18 +300,22 @@ class FetchAndNotifyWorker(
         prefs: UserPreferences,
         requestedPeriod: ForecastPeriod,
     ): Result {
-        val currentPeriod = currentPeriodForSchedule(prefs)
-        // Which day's [requestedPeriod] window the user means. Everything is
-        // today except previewing the daytime ("Daily") cast once we're already
-        // in the nightly window — today's daytime cast has passed, so "Play now"
-        // on Daily then means *tomorrow's* daytime. Mirrors the next-window
-        // pairing in [generatePairedInsight].
-        val dayOffset = nextOccurrenceDayOffset(requestedPeriod, currentPeriod)
-        val targetDate = LocalDate.now().plusDays(dayOffset.toLong())
+        val now = LocalDateTime.now()
+        val currentPeriod = currentPeriodForSchedule(prefs, now.toLocalTime())
+        // The calendar date the [requestedPeriod] cast the user wants is dated
+        // for. Accounts for the nightly window wrapping past midnight (see
+        // [playTargetDate]): in the post-midnight tail of the night the current
+        // nightly snapshot is still dated *yesterday*, and the next daytime cast
+        // is *this* morning (today), not tomorrow.
+        val targetDate = playTargetDate(
+            requestedPeriod,
+            now,
+            prefs.schedule.time,
+            prefs.tonightSchedule.time,
+        )
         // Look for a snapshot the user actually asked to hear: matching period
         // AND the right day. Both cache slots are eligible — THIS_PERIOD holds
-        // the current window, NEXT_PERIOD the pre-captured next one (after the
-        // nightly alarm fires, NEXT_PERIOD holds tomorrow's daytime), so a
+        // the current window, NEXT_PERIOD the pre-captured next one, so a
         // "Play now" for the not-yet-current window can hit the pre-capture
         // without a fetch. A snapshot for the wrong day — e.g. this morning's
         // already-delivered daytime cast when the user wants tomorrow's daily —
@@ -355,9 +360,18 @@ class FetchAndNotifyWorker(
             DiagLog.i(TAG, "Play cache miss for current window $requestedPeriod; fetching fresh.")
             return fresh(location, prefs, requestedPeriod)
         }
-        DiagLog.i(TAG, "Play cache miss for non-current window $requestedPeriod (+${dayOffset}d); ephemeral fetch.")
+        // capturedSnapshot only supports dayOffset 0 (either period) or 1
+        // (TODAY = tomorrow's daytime). The non-current ephemeral path only ever
+        // needs tomorrow's daytime (+1, when Daily is tapped in the evening);
+        // every other non-current case is today (0). The overnight "current
+        // night dated yesterday" can't be fetched — Open-Meteo anchors to the
+        // real calendar day — but that case is the *current* window, so it goes
+        // through the cache hit or the fresh() branch above, never here.
+        val fetchDayOffset =
+            if (requestedPeriod == ForecastPeriod.TODAY && targetDate.isAfter(now.toLocalDate())) 1 else 0
+        DiagLog.i(TAG, "Play cache miss for non-current window $requestedPeriod (+${fetchDayOffset}d); ephemeral fetch.")
         return try {
-            val snapshot = capturedSnapshot(location, prefs, requestedPeriod, dayOffset)
+            val snapshot = capturedSnapshot(location, prefs, requestedPeriod, fetchDayOffset)
             val insight = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
             val prose = formatProse(insight, prefs)
             deliverBestEffort(insight, prefs, prose, "Previewed")
@@ -1765,21 +1779,42 @@ class FetchAndNotifyWorker(
         }
 
         /**
-         * Day offset (0 = today, 1 = tomorrow) of the next occurrence of
-         * [requestedPeriod] given the [currentPeriod] schedule window — used by
-         * on-demand play to target the right day. Only the daytime ("TODAY")
-         * cast previewed once we're already in the nightly window advances to
-         * tomorrow: today's daytime cast has passed, so "Play now" on Daily
-         * means tomorrow's. The nightly cast (still upcoming or ongoing) and any
-         * current-window play stay on today. Mirrors the pairing in
-         * [generatePairedInsight], whose post-nightly NEXT_PERIOD pre-capture is
-         * exactly tomorrow's daytime.
+         * The calendar date the [requestedPeriod] cast that on-demand play
+         * should target is dated for, given wall-clock [now] and the schedule
+         * [morningTime] / [tonightTime]. This is the date the desired snapshot's
+         * [ForecastBundle.today] carries, so it's used directly to match the
+         * cache (and to derive the fetch day-offset).
+         *
+         * The nightly window wraps past midnight (tonightTime today →
+         * morningTime tomorrow), so the date depends on where in the day we are:
+         *
+         *  - **Daytime cast (TODAY):** today's, unless we're already past the
+         *    evening cutoff — then today's daytime cast has gone out and the next
+         *    one is tomorrow's. Crucially, in the post-midnight tail of the night
+         *    (before the morning cutoff) the next daytime cast is *this* morning,
+         *    i.e. today — not tomorrow.
+         *  - **Nightly cast (TONIGHT):** today's, except in that same
+         *    post-midnight tail, where the *current* (ongoing) night began the
+         *    previous evening and so is dated *yesterday*.
+         *
+         * Assumes the usual schedule shape (tonightTime later than morningTime);
+         * the degenerate crossed config falls back to "today", same window the
+         * cache/fetch would otherwise pick.
          */
-        internal fun nextOccurrenceDayOffset(
+        internal fun playTargetDate(
             requestedPeriod: ForecastPeriod,
-            currentPeriod: ForecastPeriod,
-        ): Int = if (
-            requestedPeriod == ForecastPeriod.TODAY && currentPeriod == ForecastPeriod.TONIGHT
-        ) 1 else 0
+            now: LocalDateTime,
+            morningTime: LocalTime,
+            tonightTime: LocalTime,
+        ): LocalDate {
+            val date = now.toLocalDate()
+            val time = now.toLocalTime()
+            return when (requestedPeriod) {
+                ForecastPeriod.TODAY ->
+                    if (tonightTime > morningTime && time >= tonightTime) date.plusDays(1) else date
+                ForecastPeriod.TONIGHT ->
+                    if (tonightTime > morningTime && time < morningTime) date.minusDays(1) else date
+            }
+        }
     }
 }

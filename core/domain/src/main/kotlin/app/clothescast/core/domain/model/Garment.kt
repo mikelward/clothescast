@@ -82,8 +82,30 @@ enum class Garment(
      *  cover this slot?" decisions in [EvaluateClothesRules] and "what
      *  temperature window does the fallback apply in?" in [FallbackRange],
      *  without those callers re-encoding the tier classification as string
-     *  key sets. */
-    enum class Slot { TOP, BOTTOM }
+     *  key sets. Each slot also declares how [layerReduce] collapses
+     *  overlapping firing rules within it — see [Reduction]. */
+    enum class Slot(val reduction: Reduction) {
+        TOP(Reduction.LAYERED),
+        BOTTOM(Reduction.SUBSTITUTE),
+    }
+
+    /**
+     * How [layerReduce] collapses multiple firing rules that share a [Slot].
+     * Declaring the strategy on the slot — rather than branching on slot
+     * identity inside the reducer — means a new slot only has to pick a
+     * strategy (and, for the priority-ordered ones, supply its ranking); the
+     * reducer itself stays slot-agnostic.
+     */
+    enum class Reduction {
+        /** Garments stack: keep at most one winner per [Layer], dropping the
+         *  [Layer.BASE] winner when a [Layer.MID] / [Layer.SHELL] one also fires
+         *  (the base is implicit under an outer layer). Tops today. */
+        LAYERED,
+
+        /** Garments substitute: keep a single highest-priority winner — you wear
+         *  one pair of bottoms, not two. Bottoms today. */
+        SUBSTITUTE,
+    }
 
     /**
      * Where this garment sits in the layering order. The rule engine uses
@@ -170,6 +192,23 @@ enum class Garment(
         private val BOTTOM_PRIORITY: List<Garment> = listOf(SHORTS, SHORT_SKIRT, SKIRT, JEANS, PANTS)
 
         /**
+         * Within-[Layer] priority per [Reduction.LAYERED] slot. A new layered
+         * slot adds its own entry here; the reducer reads it by slot rather
+         * than naming [TOP_LAYER_PRIORITY] directly.
+         */
+        private val LAYERED_PRIORITY: Map<Slot, Map<Layer, List<Garment>>> =
+            mapOf(Slot.TOP to TOP_LAYER_PRIORITY)
+
+        /** Winner priority per [Reduction.SUBSTITUTE] slot. */
+        private val SUBSTITUTE_PRIORITY: Map<Slot, List<Garment>> =
+            mapOf(Slot.BOTTOM to BOTTOM_PRIORITY)
+
+        /** Rank of this garment within a priority list — earlier wins; anything
+         *  off the list sorts last so it only wins if nothing ranked fired. */
+        private fun Garment.rankIn(priority: List<Garment>): Int =
+            priority.indexOf(this).let { if (it < 0) priority.size else it }
+
+        /**
          * Filters a list of firing [ClothesRule]s down to a coherent
          * outfit: a layered top stack plus a single bottom plus the rest
          * (accessories, unclassified items). The "rest" passes through
@@ -193,62 +232,56 @@ enum class Garment(
          * full-length skirt when a mini also crossed its threshold.
          */
         fun layerReduce(rules: List<ClothesRule>): List<ClothesRule> {
-            // Map each classified rule (top with a layer, or bottom) to
-            // its (index, priority) so we can pick a winner per category
-            // in one pass without re-querying Garment.fromKey for every
-            // rule. Tracked by *index*, not by rule equality: `ClothesRule`
-            // is a data class, so two separately configured rules with
-            // identical item + condition compare equal — using value
-            // equality for the keep-set would let duplicates leak through
-            // and surface twice in the prose ("Wear a sweater, sweater,
-            // and jeans"). Indexing is the identity we need.
-            data class IndexedTop(val index: Int, val layer: Layer, val priority: Int)
-            data class IndexedBottom(val index: Int, val priority: Int)
-
-            val classifiedTops = mutableListOf<IndexedTop>()
-            val classifiedBottoms = mutableListOf<IndexedBottom>()
-            rules.forEachIndexed { index, rule ->
-                val g = rule.item
-                when (g.slot) {
-                    Slot.TOP -> {
-                        val layer = g.layer ?: return@forEachIndexed
-                        val order = TOP_LAYER_PRIORITY[layer].orEmpty()
-                        val priority = order.indexOf(g).let { if (it < 0) order.size else it }
-                        classifiedTops += IndexedTop(index, layer, priority)
-                    }
-                    Slot.BOTTOM -> {
-                        val priority = BOTTOM_PRIORITY.indexOf(g)
-                            .let { if (it < 0) BOTTOM_PRIORITY.size else it }
-                        classifiedBottoms += IndexedBottom(index, priority)
+            // Collect the indices to keep, per slot, then filter preserving
+            // input order. Tracked by *index*, not by rule equality:
+            // `ClothesRule` is a data class, so two separately configured rules
+            // with identical item + condition compare equal — a value-keyed
+            // keep-set would let a duplicate leak through and surface twice in
+            // the prose ("Wear a sweater, sweater, and jeans").
+            val keep = mutableSetOf<Int>()
+            rules.withIndex()
+                .groupBy { it.value.item.slot }
+                .forEach { (slot, indexed) ->
+                    when (slot.reduction) {
+                        Reduction.LAYERED -> keep += layeredWinners(slot, indexed)
+                        Reduction.SUBSTITUTE -> {
+                            val priority = SUBSTITUTE_PRIORITY[slot].orEmpty()
+                            indexed.minByOrNull { it.value.item.rankIn(priority) }
+                                ?.let { keep += it.index }
+                        }
                     }
                 }
-            }
+            return rules.filterIndexed { index, _ -> index in keep }
+        }
 
-            val winnerIndexByLayer: Map<Layer, Int> = classifiedTops
-                .groupBy { it.layer }
-                .mapValues { (_, group) -> group.minBy { it.priority }.index }
-            val effective: Map<Layer, Int> = if (
-                Layer.MID in winnerIndexByLayer || Layer.SHELL in winnerIndexByLayer
-            ) {
-                winnerIndexByLayer.filterKeys { it != Layer.BASE }
-            } else {
-                winnerIndexByLayer
-            }
-            val keepTopIndices = effective.values.toSet()
-            val keepBottomIndex: Int? = classifiedBottoms.minByOrNull { it.priority }?.index
-
-            // Preserve original input order across the union (top winners +
-            // bottom winner + rest) so callers that care about the user's
-            // configured ordering — the prose phraser, the tie-in delta —
-            // see the same sequence they'd have seen before the reduction.
-            return rules.filterIndexed { index, rule ->
-                val g = rule.item
-                when {
-                    g.slot == Slot.TOP && g.layer != null -> index in keepTopIndices
-                    g.slot == Slot.BOTTOM -> index == keepBottomIndex
-                    else -> true
+        /**
+         * The kept indices for one [Reduction.LAYERED] slot: at most one winner
+         * per [Layer] (earliest in the slot's priority wins), dropping the base
+         * layer when a mid / shell winner also fired. Garments with no
+         * [Garment.layer] aren't part of the stack, so they pass through.
+         */
+        private fun layeredWinners(
+            slot: Slot,
+            indexed: List<IndexedValue<ClothesRule>>,
+        ): Set<Int> {
+            val priorityByLayer = LAYERED_PRIORITY[slot].orEmpty()
+            val keep = indexed
+                .filter { it.value.item.layer == null }
+                .mapTo(mutableSetOf()) { it.index }
+            val winnerByLayer: Map<Layer, Int> = indexed
+                .mapNotNull { iv -> iv.value.item.layer?.let { it to iv } }
+                .groupBy({ it.first }, { it.second })
+                .mapValues { (layer, group) ->
+                    group.minBy { it.value.item.rankIn(priorityByLayer[layer].orEmpty()) }.index
                 }
-            }
+            val effective =
+                if (winnerByLayer.keys.any { it != Layer.BASE }) {
+                    winnerByLayer.filterKeys { it != Layer.BASE }
+                } else {
+                    winnerByLayer
+                }
+            keep += effective.values
+            return keep
         }
     }
 }

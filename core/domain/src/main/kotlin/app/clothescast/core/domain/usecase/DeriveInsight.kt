@@ -234,6 +234,17 @@ class DeriveInsight(
         )
     }
 
+    // TODO(evening-tiein-split): this one function fuses two emission paths
+    //   behind a single `if (deltaItems.isEmpty() && precip == null) return null`
+    //   gate — the evening clothes-delta (topDelta/bottomDelta below) and the
+    //   bare rain warning (`precip`). The top delta reads from
+    //   triggeredOutfit.rules (layer-reduced) while the bottom reads from
+    //   triggeredOutfit.items; that asymmetry looks like a bug but is
+    //   load-bearing (see TriggeredOutfit's doc on why the per-tier default
+    //   must not count as an evening "extra"). Split into eveningClothesDelta()
+    //   + eveningRainWarning() so the either/or emission and the top/bottom
+    //   source asymmetry are explicit. Behaviour-preserving; covered by
+    //   GenerateDailyInsightTest — diff the prose before/after.
     private fun buildEveningEventTieIn(
         bundle: ForecastBundle,
         prefs: UserPreferences,

@@ -86,6 +86,10 @@ class InsightCache(
     private val deriveInsight: DeriveInsight = DeriveInsight(),
     private val json: Json = Json { ignoreUnknownKeys = true },
 ) {
+    // TODO(datastore-json-plumbing): see DailyHistoryStore — shared
+    //   JSON-preference I/O plumbing opportunity across this, SettingsRepository,
+    //   and DailyHistoryStore (extract readJson/writeJson; keep the DTOs).
+
     /**
      * Which 12-hour window a snapshot occupies relative to the rendering
      * surface: the window the user is currently inside ([THIS_PERIOD], page 1

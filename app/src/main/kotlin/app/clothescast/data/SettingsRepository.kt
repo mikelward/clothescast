@@ -79,6 +79,10 @@ class SettingsRepository(
     private val systemLocaleProvider: () -> Locale = { Locale.getDefault() },
     private val json: Json = Json { ignoreUnknownKeys = true },
 ) {
+    // TODO(datastore-json-plumbing): see DailyHistoryStore — shared
+    //   JSON-preference I/O plumbing opportunity across this, InsightCache, and
+    //   DailyHistoryStore (extract readJson/writeJson; keep the DTOs).
+
     val preferences: Flow<UserPreferences> = dataStore.data.map { prefs -> prefs.toUserPreferences() }
 
     /**

@@ -121,7 +121,13 @@ data class PerModelHour(
 )
 
 // TODO(model-spread-stat): cross-model spread is currently reported as
-//   `max - min` (see [ConfidenceInfo.tempSpreadC]). One outlying model
-//   swings that disproportionately; explore RMSE / std-dev across the
-//   consulted models as an alternative confidence input, plotted
-//   alongside the existing spread so we can A/B them before switching.
+//   `max - min`, computed independently in two places —
+//   [ConfidenceInfo.computeFrom] (tier title, excludes best_match) and
+//   [ModelDivergenceSummary.computeFrom] (peak-hour factor attribution,
+//   includes best_match). One outlying model swings max-min
+//   disproportionately; explore RMSE / std-dev across the consulted models
+//   as an alternative confidence input, plotted alongside the existing
+//   spread so we can A/B them before switching. When that lands, factor the
+//   feels-like spread into one shared helper both call sites use (the
+//   *policy* — which models, which threshold, what to emit — stays separate;
+//   only the spread primitive is shared).

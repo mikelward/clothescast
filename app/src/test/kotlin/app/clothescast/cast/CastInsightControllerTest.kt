@@ -1,6 +1,7 @@
 package app.clothescast.cast
 
 import app.clothescast.core.data.tts.PcmAudio
+import app.clothescast.core.data.tts.WavEncoder
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 

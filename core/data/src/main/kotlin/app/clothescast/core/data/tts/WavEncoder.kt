@@ -7,9 +7,16 @@ import java.nio.ByteOrder
  * Wraps signed 16-bit mono PCM (as produced by [GeminiTtsClient.synthesize]) in a
  * canonical 44-byte RIFF/WAVE header so the payload can be played by any standard
  * audio player. HiveMQ has no notion of "this is PCM at 24 kHz" — handing
- * downstream consumers (Home Assistant's `media_player`, ffmpeg, browsers) a raw
- * PCM blob makes them guess at sample rate / channel layout and usually fail.
- * A WAV wrapper makes the payload self-describing.
+ * downstream consumers (Home Assistant's `media_player`, a Cast receiver's
+ * Default Media Receiver, ffmpeg, browsers) a raw PCM blob makes them guess at
+ * sample rate / channel layout and usually fail. A WAV wrapper makes the
+ * payload self-describing.
+ *
+ * Gemini TTS returns signed 16-bit mono little-endian PCM at a per-response
+ * sample rate (24000 Hz at time of writing); those parameters are taken from
+ * [PcmAudio]. If Gemini ever returns stereo or a different bit depth,
+ * [PcmAudio] would grow channel / bit-depth fields and this encoder would
+ * follow.
  */
 object WavEncoder {
 

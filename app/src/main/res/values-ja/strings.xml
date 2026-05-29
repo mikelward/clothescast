@@ -387,6 +387,11 @@ the displayed label localizes.
     <string name="widget_description">現在の時間帯のコーデを一目で。</string>
     <string name="widget_empty_title">まだコーデがありません</string>
     <string name="widget_empty_subtitle">タップして ClothesCast を開く</string>
+    <string name="feels_like_widget_label">体感温度グラフ</string>
+    <string name="feels_like_widget_description">現在の時間帯の体感温度です。</string>
+    <string name="feels_like_week_widget_label">体感温度（7日間）</string>
+    <string name="feels_like_week_widget_description">今後7日間の体感温度です。</string>
+    <string name="feels_like_widget_empty_title">まだ予報がありません</string>
 
     <!--
     Onboarding flow — first-run welcome, two permission steps, Gemini
@@ -1075,6 +1080,10 @@ the displayed label localizes.
     <string name="settings_schedule_enabled">毎日の ClothesCast</string>
     <string name="settings_delivery_notification">通知</string>
     <string name="settings_delivery_tts">読み上げ</string>
+    <string name="speech_setup_title">音声で読み上げる ClothesCast の設定</string>
+    <string name="speech_setup_description">ClothesCast を音声で読み上げる方法を選べます。無料の端末の音声を使うか、Gemini API キーを追加して高品質な音声を利用できます。</string>
+    <string name="speech_setup_smart_home_note">スマートホームでの読み上げには Gemini API キーが必要です。キーがなくてもキャスト時にコーデは表示されます。</string>
+    <string name="speech_setup_done">完了</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">服装</string>
@@ -1104,6 +1113,11 @@ the displayed label localizes.
     <string name="settings_format_rain_accessory_label">雨具</string>
     <string name="settings_format_rain_accessory_none">オフ</string>
     <string name="settings_format_rain_accessory_umbrella">傘</string>
+    <string name="settings_format_period_preamble_label">導入</string>
+    <string name="settings_format_wear_preamble_label">「着る」の導入</string>
+    <string name="settings_format_preamble_always">常に</string>
+    <string name="settings_format_preamble_speech_only">読み上げのみ</string>
+    <string name="settings_format_preamble_never">なし</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">一致するルールがないとき</string>
@@ -1339,6 +1353,10 @@ the displayed label localizes.
     <string name="today_clothes_promo_body">ClothesCastはルールに基づいて服装を選びます。設定の「服装」で温度を調整したり、ワードローブをカスタマイズしたりできます。</string>
     <string name="today_clothes_promo_cta">服装の設定</string>
     <string name="today_clothes_promo_dismiss">閉じる</string>
+    <string name="today_schedule_promo_title">自動の ClothesCast</string>
+    <string name="today_schedule_promo_body">通知やアナウンスを受け取るタイミングを選べます。</string>
+    <string name="today_schedule_promo_cta">スケジュール設定</string>
+    <string name="today_schedule_promo_dismiss">閉じる</string>
     <string name="today_clothes_promo_title">服装を自分好みに</string>
     <string name="today_insight_format_link">形式</string>
     <string name="today_play">再生</string>

@@ -222,6 +222,11 @@ West Bengal vocabulary differences in a future PR.
     <string name="widget_description">বর্তমান সময়কালের পোশাক এক নজরে।</string>
     <string name="widget_empty_title">এখনো কোনো পোশাক নেই</string>
     <string name="widget_empty_subtitle">ClothesCast খুলতে ট্যাপ করুন</string>
+    <string name="feels_like_widget_label">অনুভূত তাপমাত্রার চার্ট</string>
+    <string name="feels_like_widget_description">বর্তমান সময়কালের অনুভূত তাপমাত্রা।</string>
+    <string name="feels_like_week_widget_label">অনুভূত তাপমাত্রা (৭ দিন)</string>
+    <string name="feels_like_week_widget_description">আগামী ৭ দিনের অনুভূত তাপমাত্রা।</string>
+    <string name="feels_like_widget_empty_title">এখনো কোনো পূর্বাভাস নেই</string>
 
     <!-- ============================================================
          Onboarding
@@ -996,6 +1001,10 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_schedule_enabled">দৈনিক ClothesCast</string>
     <string name="settings_delivery_notification">জানান</string>
     <string name="settings_delivery_tts">পড়ুন</string>
+    <string name="speech_setup_title">কথ্য ClothesCast সেট আপ করুন</string>
+    <string name="speech_setup_description">আপনার ClothesCast কীভাবে পড়ে শোনানো হবে তা বেছে নিন। বিনামূল্যের ডিভাইস ভয়েস ব্যবহার করুন, অথবা উচ্চমানের ভয়েসের জন্য একটি Gemini API কী যোগ করুন।</string>
+    <string name="speech_setup_smart_home_note">স্মার্ট হোমে কথা বলার জন্য একটি Gemini API কী প্রয়োজন। এটি ছাড়াও কাস্টিং আপনার পোশাক দেখায়।</string>
+    <string name="speech_setup_done">সম্পন্ন</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">পোশাক</string>
@@ -1025,6 +1034,11 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_format_rain_accessory_label">বৃষ্টির সরঞ্জাম</string>
     <string name="settings_format_rain_accessory_none">বন্ধ</string>
     <string name="settings_format_rain_accessory_umbrella">ছাতা</string>
+    <string name="settings_format_period_preamble_label">ভূমিকা</string>
+    <string name="settings_format_wear_preamble_label">“পরো” ভূমিকা</string>
+    <string name="settings_format_preamble_always">সবসময়</string>
+    <string name="settings_format_preamble_speech_only">শুধু কথায়</string>
+    <string name="settings_format_preamble_never">কখনো না</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">কোনো নিয়ম না মিললে</string>
@@ -1261,6 +1275,10 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_clothes_promo_body">ClothesCast নিয়মের একটি সেট থেকে পোশাক বেছে নেয়। তাপমাত্রা পরিবর্তন করো এবং পোশাক সেটিংসে তোমার পোশাক কাস্টমাইজ করো।</string>
     <string name="today_clothes_promo_cta">পোশাক সেটিংস</string>
     <string name="today_clothes_promo_dismiss">বন্ধ</string>
+    <string name="today_schedule_promo_title">স্বয়ংক্রিয় ClothesCast</string>
+    <string name="today_schedule_promo_body">তুমি কখন বিজ্ঞপ্তি ও ঘোষণা পাবে তা বেছে নাও।</string>
+    <string name="today_schedule_promo_cta">সময়সূচি সেটিংস</string>
+    <string name="today_schedule_promo_dismiss">বন্ধ</string>
     <string name="today_clothes_promo_title">পোশাককে নিজের করো</string>
     <string name="today_insight_format_link">ফর্ম্যাট</string>
     <string name="today_play">চালাও</string>

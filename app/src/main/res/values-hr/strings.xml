@@ -358,6 +358,11 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="widget_description">Outfit za trenutni period na prvi pogled.</string>
     <string name="widget_empty_title">Još nema outfita</string>
     <string name="widget_empty_subtitle">Dodirni za otvaranje ClothesCasta</string>
+    <string name="feels_like_widget_label">Grafikon osjećajne temperature</string>
+    <string name="feels_like_widget_description">Osjećajna temperatura za trenutni period.</string>
+    <string name="feels_like_week_widget_label">Osjećajna (7 dana)</string>
+    <string name="feels_like_week_widget_description">Osjećajna temperatura za sljedećih 7 dana.</string>
+    <string name="feels_like_widget_empty_title">Još nema prognoze</string>
 
     <!--
     Onboarding flow — first-run welcome, two permission steps, Gemini
@@ -993,6 +998,10 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_schedule_enabled">Dnevni ClothesCast</string>
     <string name="settings_delivery_notification">Obavijesti</string>
     <string name="settings_delivery_tts">Pročitaj</string>
+    <string name="speech_setup_title">Postavi izgovorene ClothesCastove</string>
+    <string name="speech_setup_description">Odaberi kako se tvoj ClothesCast čita naglas. Koristi besplatni glas uređaja ili dodaj Gemini API ključ za glasove visoke kvalitete.</string>
+    <string name="speech_setup_smart_home_note">Izgovor u pametnom domu zahtijeva Gemini API ključ. Emitiranje i bez njega prikazuje tvoj outfit.</string>
+    <string name="speech_setup_done">Gotovo</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Odjeća</string>
@@ -1022,6 +1031,11 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_format_rain_accessory_label">Dodatak za kišu</string>
     <string name="settings_format_rain_accessory_none">Isključeno</string>
     <string name="settings_format_rain_accessory_umbrella">Kišobran</string>
+    <string name="settings_format_period_preamble_label">Uvod</string>
+    <string name="settings_format_wear_preamble_label">Uvod „Obuci“</string>
+    <string name="settings_format_preamble_always">Uvijek</string>
+    <string name="settings_format_preamble_speech_only">Samo izgovor</string>
+    <string name="settings_format_preamble_never">Nikad</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Ako se nijedno pravilo ne podudara</string>
@@ -1259,6 +1273,10 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_clothes_promo_body">ClothesCast bira outfite po skupu pravila. Podesi temperature i prilagodi svoju garderobu u postavkama Odjeće.</string>
     <string name="today_clothes_promo_cta">Postavke odjeće</string>
     <string name="today_clothes_promo_dismiss">Odbaci</string>
+    <string name="today_schedule_promo_title">Automatski ClothesCastovi</string>
+    <string name="today_schedule_promo_body">Odaberi kada primaš obavijesti i najave.</string>
+    <string name="today_schedule_promo_cta">Postavke rasporeda</string>
+    <string name="today_schedule_promo_dismiss">Odbaci</string>
     <string name="today_clothes_promo_title">Prilagodi odjeću sebi</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Pusti</string>

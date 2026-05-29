@@ -143,6 +143,11 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="widget_description">Pašreizējā perioda apģērbs vienā skatienā.</string>
     <string name="widget_empty_title">Apģērba ieteikuma vēl nav</string>
     <string name="widget_empty_subtitle">Pieskarieties, lai atvērtu ClothesCast</string>
+    <string name="feels_like_widget_label">Sajustās temperatūras grafiks</string>
+    <string name="feels_like_widget_description">Sajustā temperatūra pašreizējam periodam.</string>
+    <string name="feels_like_week_widget_label">Sajustā temperatūra (7 dienas)</string>
+    <string name="feels_like_week_widget_description">Sajustā temperatūra nākamajās 7 dienās.</string>
+    <string name="feels_like_widget_empty_title">Prognozes vēl nav</string>
 
     <!-- Today forecast / charts -->
     <string name="today_forecast_title">Stundas prognoze</string>
@@ -865,6 +870,10 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_schedule_enabled">Ikdienas ClothesCast</string>
     <string name="settings_delivery_notification">Paziņot</string>
     <string name="settings_delivery_tts">Nolasīt</string>
+    <string name="speech_setup_title">Iestatiet runāto ClothesCast</string>
+    <string name="speech_setup_description">Izvēlieties, kā jūsu ClothesCast tiek nolasīts skaļi. Izmantojiet bezmaksas ierīces balsi vai pievienojiet Gemini API atslēgu augstas kvalitātes balsīm.</string>
+    <string name="speech_setup_smart_home_note">Runai viedajās mājās nepieciešama Gemini API atslēga. Apraide joprojām rāda jūsu apģērbu arī bez tās.</string>
+    <string name="speech_setup_done">Gatavs</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Apģērbs</string>
@@ -894,6 +903,11 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_format_rain_accessory_label">Lietus piederums</string>
     <string name="settings_format_rain_accessory_none">Izsl.</string>
     <string name="settings_format_rain_accessory_umbrella">Lietussargs</string>
+    <string name="settings_format_period_preamble_label">Ievads</string>
+    <string name="settings_format_wear_preamble_label">„Apģērb“ ievads</string>
+    <string name="settings_format_preamble_always">Vienmēr</string>
+    <string name="settings_format_preamble_speech_only">Tikai runā</string>
+    <string name="settings_format_preamble_never">Nekad</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Ja neviens noteikums neatbilst</string>
@@ -1131,6 +1145,10 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_clothes_promo_body">ClothesCast izvēlas apģērbu pēc noteikumiem. Pielāgo temperatūras un personalizē savu garderobi Apģērba iestatījumos.</string>
     <string name="today_clothes_promo_cta">Apģērba iestatījumi</string>
     <string name="today_clothes_promo_dismiss">Aizvērt</string>
+    <string name="today_schedule_promo_title">Automātiskie ClothesCast</string>
+    <string name="today_schedule_promo_body">Izvēlieties, kad saņemt paziņojumus un izziņojumus.</string>
+    <string name="today_schedule_promo_cta">Grafika iestatījumi</string>
+    <string name="today_schedule_promo_dismiss">Aizvērt</string>
     <string name="today_clothes_promo_title">Padari apģērbu par savējo</string>
     <string name="today_insight_format_link">Formāts</string>
     <string name="today_play">Atskaņot</string>

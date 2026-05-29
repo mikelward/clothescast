@@ -141,6 +141,11 @@ What is NOT overridden, by design:
     <string name="widget_description">Dabartinio laikotarpio aprangos rinkinys iš pirmo žvilgsnio.</string>
     <string name="widget_empty_title">Aprangos rinkinio dar nėra</string>
     <string name="widget_empty_subtitle">Palieski, kad atidarytum ClothesCast</string>
+    <string name="feels_like_widget_label">Juntamos temperatūros grafikas</string>
+    <string name="feels_like_widget_description">Juntama temperatūra dabartiniam laikotarpiui.</string>
+    <string name="feels_like_week_widget_label">Juntama temperatūra (7 dienos)</string>
+    <string name="feels_like_week_widget_description">Juntama temperatūra artimiausias 7 dienas.</string>
+    <string name="feels_like_widget_empty_title">Prognozės dar nėra</string>
 
     <!-- Hourly forecast card. -->
     <string name="today_forecast_title">Valandos prognozė</string>
@@ -912,6 +917,10 @@ What is NOT overridden, by design:
     <string name="settings_schedule_enabled">Dienos ClothesCast</string>
     <string name="settings_delivery_notification">Pranešti</string>
     <string name="settings_delivery_tts">Įgarsinti</string>
+    <string name="speech_setup_title">Nustatyk įgarsintus ClothesCast</string>
+    <string name="speech_setup_description">Pasirink, kaip tavo ClothesCast bus skaitomas balsu. Naudok nemokamą įrenginio balsą arba pridėk Gemini API raktą aukštos kokybės balsams.</string>
+    <string name="speech_setup_smart_home_note">Įgarsinimui išmaniuosiuose namuose reikia Gemini API rakto. Transliavimas vis tiek rodo tavo aprangą ir be jo.</string>
+    <string name="speech_setup_done">Atlikta</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Apranga</string>
@@ -941,6 +950,11 @@ What is NOT overridden, by design:
     <string name="settings_format_rain_accessory_label">Lietaus aksesuaras</string>
     <string name="settings_format_rain_accessory_none">Išjungta</string>
     <string name="settings_format_rain_accessory_umbrella">Skėtis</string>
+    <string name="settings_format_period_preamble_label">Įžanga</string>
+    <string name="settings_format_wear_preamble_label">„Apsivilk“ įžanga</string>
+    <string name="settings_format_preamble_always">Visada</string>
+    <string name="settings_format_preamble_speech_only">Tik kalboje</string>
+    <string name="settings_format_preamble_never">Niekada</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Jei nė viena taisyklė neatitinka</string>
@@ -1179,6 +1193,10 @@ What is NOT overridden, by design:
     <string name="today_clothes_promo_body">ClothesCast renka aprangą pagal taisykles. Pakeisk temperatūras ir pritaikyk savo garderobą Drabužių nustatymuose.</string>
     <string name="today_clothes_promo_cta">Drabužių nustatymai</string>
     <string name="today_clothes_promo_dismiss">Atmesti</string>
+    <string name="today_schedule_promo_title">Automatiniai ClothesCast</string>
+    <string name="today_schedule_promo_body">Pasirink, kada gauti pranešimus ir skelbimus.</string>
+    <string name="today_schedule_promo_cta">Tvarkaraščio nustatymai</string>
+    <string name="today_schedule_promo_dismiss">Atmesti</string>
     <string name="today_clothes_promo_title">Pritaikyk drabužius sau</string>
     <string name="today_insight_format_link">Formatas</string>
     <string name="today_play">Leisti</string>

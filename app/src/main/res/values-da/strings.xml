@@ -477,6 +477,11 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="widget_description">Et hurtigt blik på outfittet for den aktuelle del af dagen.</string>
     <string name="widget_empty_title">Intet outfit endnu</string>
     <string name="widget_empty_subtitle">Tryk for at åbne ClothesCast</string>
+    <string name="feels_like_widget_label">Diagram over følt temperatur</string>
+    <string name="feels_like_widget_description">Den følte temperatur for den aktuelle periode.</string>
+    <string name="feels_like_week_widget_label">Følt temperatur (7 dage)</string>
+    <string name="feels_like_week_widget_description">Den følte temperatur over de næste 7 dage.</string>
+    <string name="feels_like_widget_empty_title">Ingen prognose endnu</string>
 
     <!-- Onboarding. -->
     <string name="onboarding_title">Velkommen til ClothesCast</string>
@@ -954,6 +959,10 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_schedule_enabled">Dagligt ClothesCast</string>
     <string name="settings_delivery_notification">Underret</string>
     <string name="settings_delivery_tts">Læs op</string>
+    <string name="speech_setup_title">Konfigurer talte ClothesCasts</string>
+    <string name="speech_setup_description">Vælg, hvordan dit ClothesCast læses op. Brug den gratis enhedsstemme, eller tilføj en Gemini-API-nøgle for stemmer i høj kvalitet.</string>
+    <string name="speech_setup_smart_home_note">Tale i smart home kræver en Gemini-API-nøgle. Casting viser stadig dit outfit uden den.</string>
+    <string name="speech_setup_done">Færdig</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Tøj</string>
@@ -983,6 +992,11 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_format_rain_accessory_label">Regntilbehør</string>
     <string name="settings_format_rain_accessory_none">Fra</string>
     <string name="settings_format_rain_accessory_umbrella">Paraply</string>
+    <string name="settings_format_period_preamble_label">Indledning</string>
+    <string name="settings_format_wear_preamble_label">\"Tag på\"-indledning</string>
+    <string name="settings_format_preamble_always">Altid</string>
+    <string name="settings_format_preamble_speech_only">Kun tale</string>
+    <string name="settings_format_preamble_never">Aldrig</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Hvis ingen regler passer</string>
@@ -1219,6 +1233,10 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_clothes_promo_body">ClothesCast vælger outfits ud fra et sæt regler. Juster temperaturerne og tilpas din garderobe i tøjindstillingerne.</string>
     <string name="today_clothes_promo_cta">Tøjindstillinger</string>
     <string name="today_clothes_promo_dismiss">Afvis</string>
+    <string name="today_schedule_promo_title">Automatiske ClothesCasts</string>
+    <string name="today_schedule_promo_body">Vælg, hvornår du får notifikationer og oplæsninger.</string>
+    <string name="today_schedule_promo_cta">Tidsplanindstillinger</string>
+    <string name="today_schedule_promo_dismiss">Afvis</string>
     <string name="today_clothes_promo_title">Gør tøjet til dit eget</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Afspil</string>

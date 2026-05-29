@@ -389,6 +389,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="widget_description">Das Outfit für den aktuellen Tagesabschnitt auf einen Blick.</string>
     <string name="widget_empty_title">Noch kein Outfit</string>
     <string name="widget_empty_subtitle">Tippe, um ClothesCast zu öffnen</string>
+    <string name="feels_like_widget_label">Gefühlte-Temperatur-Diagramm</string>
+    <string name="feels_like_widget_description">Die gefühlte Temperatur für den aktuellen Zeitraum.</string>
+    <string name="feels_like_week_widget_label">Gefühlte Temperatur (7 Tage)</string>
+    <string name="feels_like_week_widget_description">Die gefühlte Temperatur für die nächsten 7 Tage.</string>
+    <string name="feels_like_widget_empty_title">Noch keine Vorhersage</string>
 
     <!--
     Onboarding flow — first-run welcome, two permission steps (notifications
@@ -1080,6 +1085,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_schedule_enabled">Täglicher ClothesCast</string>
     <string name="settings_delivery_notification">Benachrichtigen</string>
     <string name="settings_delivery_tts">Sprechen</string>
+    <string name="speech_setup_title">Gesprochene ClothesCasts einrichten</string>
+    <string name="speech_setup_description">Wähle, wie dein ClothesCast vorgelesen wird. Nutze die kostenlose Gerätestimme oder füge einen Gemini-API-Schlüssel für hochwertige Stimmen hinzu.</string>
+    <string name="speech_setup_smart_home_note">Sprache im Smart Home benötigt einen Gemini-API-Schlüssel. Das Übertragen zeigt dein Outfit auch ohne ihn.</string>
+    <string name="speech_setup_done">Fertig</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Kleidung</string>
@@ -1109,6 +1118,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_format_rain_accessory_label">Regenutensil</string>
     <string name="settings_format_rain_accessory_none">Aus</string>
     <string name="settings_format_rain_accessory_umbrella">Regenschirm</string>
+    <string name="settings_format_period_preamble_label">Einleitung</string>
+    <string name="settings_format_wear_preamble_label">„Tragen“-Einleitung</string>
+    <string name="settings_format_preamble_always">Immer</string>
+    <string name="settings_format_preamble_speech_only">Nur gesprochen</string>
+    <string name="settings_format_preamble_never">Nie</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Wenn keine Regel passt</string>
@@ -1341,6 +1355,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_clothes_promo_body">ClothesCast wählt Outfits anhand von Regeln aus. Passe die Temperaturen und deine Garderobe in den Kleidungseinstellungen an.</string>
     <string name="today_clothes_promo_cta">Kleidungseinstellungen</string>
     <string name="today_clothes_promo_dismiss">Schließen</string>
+    <string name="today_schedule_promo_title">Automatische ClothesCasts</string>
+    <string name="today_schedule_promo_body">Wähle, wann du Benachrichtigungen und Ansagen erhältst.</string>
+    <string name="today_schedule_promo_cta">Zeitplan-Einstellungen</string>
+    <string name="today_schedule_promo_dismiss">Schließen</string>
     <string name="today_clothes_promo_title">Mach die Kleidung zu deiner</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Abspielen</string>

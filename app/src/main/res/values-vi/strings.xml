@@ -144,6 +144,11 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="widget_description">Trang phục giai đoạn hiện tại nhìn nhanh.</string>
     <string name="widget_empty_title">Chưa có trang phục</string>
     <string name="widget_empty_subtitle">Nhấn để mở ClothesCast</string>
+    <string name="feels_like_widget_label">Biểu đồ cảm giác</string>
+    <string name="feels_like_widget_description">Nhiệt độ cảm nhận cho giai đoạn hiện tại.</string>
+    <string name="feels_like_week_widget_label">Cảm giác (7 ngày)</string>
+    <string name="feels_like_week_widget_description">Nhiệt độ cảm nhận trong 7 ngày tới.</string>
+    <string name="feels_like_widget_empty_title">Chưa có dự báo</string>
 
     <!-- Forecast chart -->
     <string name="today_forecast_title">Dự báo theo giờ</string>
@@ -986,6 +991,10 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_schedule_enabled">ClothesCast hàng ngày</string>
     <string name="settings_delivery_notification">Thông báo</string>
     <string name="settings_delivery_tts">Đọc</string>
+    <string name="speech_setup_title">Thiết lập ClothesCast nói</string>
+    <string name="speech_setup_description">Chọn cách đọc to ClothesCast của bạn. Dùng giọng nói miễn phí của thiết bị, hoặc thêm khóa API Gemini để có giọng nói chất lượng cao.</string>
+    <string name="speech_setup_smart_home_note">Giọng nói trên nhà thông minh cần khóa API Gemini. Việc truyền hình vẫn hiển thị trang phục của bạn mà không cần khóa.</string>
+    <string name="speech_setup_done">Xong</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">Quần áo</string>
@@ -1015,6 +1024,11 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_format_rain_accessory_label">Phụ kiện đi mưa</string>
     <string name="settings_format_rain_accessory_none">Tắt</string>
     <string name="settings_format_rain_accessory_umbrella">Ô</string>
+    <string name="settings_format_period_preamble_label">Câu mở đầu</string>
+    <string name="settings_format_wear_preamble_label">Câu mở đầu \"Mặc\"</string>
+    <string name="settings_format_preamble_always">Luôn luôn</string>
+    <string name="settings_format_preamble_speech_only">Chỉ khi đọc</string>
+    <string name="settings_format_preamble_never">Không bao giờ</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">Nếu không có quy tắc nào khớp</string>
@@ -1250,6 +1264,10 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_clothes_promo_body">ClothesCast chọn trang phục dựa trên một bộ quy tắc. Điều chỉnh nhiệt độ và tùy chỉnh tủ quần áo của bạn trong cài đặt Quần áo.</string>
     <string name="today_clothes_promo_cta">Cài đặt quần áo</string>
     <string name="today_clothes_promo_dismiss">Bỏ qua</string>
+    <string name="today_schedule_promo_title">ClothesCast tự động</string>
+    <string name="today_schedule_promo_body">Chọn thời điểm bạn nhận thông báo và thông tin.</string>
+    <string name="today_schedule_promo_cta">Cài đặt lịch</string>
+    <string name="today_schedule_promo_dismiss">Bỏ qua</string>
     <string name="today_clothes_promo_title">Biến quần áo thành của riêng bạn</string>
     <string name="today_insight_format_link">Định dạng</string>
     <string name="today_play">Phát</string>

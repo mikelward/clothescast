@@ -135,6 +135,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="widget_description">Mavazi ya kipindi cha sasa kwa muhtasari.</string>
     <string name="widget_empty_title">Hakuna mavazi bado</string>
     <string name="widget_empty_subtitle">Gonga ili kufungua ClothesCast</string>
+    <string name="feels_like_widget_label">Chati ya joto linalohisi</string>
+    <string name="feels_like_widget_description">Joto linalohisi kwa kipindi cha sasa.</string>
+    <string name="feels_like_week_widget_label">Joto linalohisi (siku 7)</string>
+    <string name="feels_like_week_widget_description">Joto linalohisi kwa siku 7 zijazo.</string>
+    <string name="feels_like_widget_empty_title">Hakuna utabiri bado</string>
 
     <!-- Today forecast / charts -->
     <string name="today_forecast_title">Joto linalohisi</string>
@@ -896,6 +901,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_enabled">ClothesCast ya kila siku</string>
     <string name="settings_delivery_notification">Arifu</string>
     <string name="settings_delivery_tts">Soma</string>
+    <string name="speech_setup_title">Sanidi ClothesCast zinazosomwa kwa sauti</string>
+    <string name="speech_setup_description">Chagua jinsi ClothesCast yako inavyosomwa kwa sauti. Tumia sauti ya bure ya kifaa, au ongeza ufunguo wa API wa Gemini kwa sauti za ubora wa juu.</string>
+    <string name="speech_setup_smart_home_note">Usemaji wa nyumba mahiri unahitaji ufunguo wa API wa Gemini. Kutuma kwenye skrini bado huonyesha mavazi yako bila huo.</string>
+    <string name="speech_setup_done">Imekamilika</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">Mavazi</string>
@@ -925,6 +934,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_format_rain_accessory_label">Kifaa cha mvua</string>
     <string name="settings_format_rain_accessory_none">Imezimwa</string>
     <string name="settings_format_rain_accessory_umbrella">Mwavuli</string>
+    <string name="settings_format_period_preamble_label">Utangulizi</string>
+    <string name="settings_format_wear_preamble_label">Utangulizi wa \"Vaa\"</string>
+    <string name="settings_format_preamble_always">Daima</string>
+    <string name="settings_format_preamble_speech_only">Kwa sauti pekee</string>
+    <string name="settings_format_preamble_never">Kamwe</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">Ikiwa hakuna sheria inayofaa</string>
@@ -1161,6 +1175,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_clothes_promo_body">ClothesCast huchagua nguo kutoka kwa seti ya kanuni. Rekebisha viwango vya joto na ubinafsishe nguo zako katika mipangilio ya Nguo.</string>
     <string name="today_clothes_promo_cta">Mipangilio ya nguo</string>
     <string name="today_clothes_promo_dismiss">Funga</string>
+    <string name="today_schedule_promo_title">ClothesCast za kiotomatiki</string>
+    <string name="today_schedule_promo_body">Chagua wakati unapopokea arifa na matangazo.</string>
+    <string name="today_schedule_promo_cta">Mipangilio ya ratiba</string>
+    <string name="today_schedule_promo_dismiss">Funga</string>
     <string name="today_clothes_promo_title">Fanya nguo ziwe zako</string>
     <string name="today_insight_format_link">Umbo</string>
     <string name="today_play">Cheza</string>

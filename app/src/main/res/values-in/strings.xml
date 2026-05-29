@@ -144,6 +144,11 @@ to values/strings.xml (English).
     <string name="widget_description">Pakaian periode saat ini sekilas.</string>
     <string name="widget_empty_title">Belum ada pakaian</string>
     <string name="widget_empty_subtitle">Ketuk untuk membuka ClothesCast</string>
+    <string name="feels_like_widget_label">Grafik suhu terasa</string>
+    <string name="feels_like_widget_description">Suhu terasa untuk periode saat ini.</string>
+    <string name="feels_like_week_widget_label">Suhu terasa (7 hari)</string>
+    <string name="feels_like_week_widget_description">Suhu terasa selama 7 hari ke depan.</string>
+    <string name="feels_like_widget_empty_title">Belum ada prakiraan</string>
 
     <!-- Forecast cards -->
     <string name="today_forecast_title">Prakiraan per jam</string>
@@ -925,6 +930,10 @@ to values/strings.xml (English).
     <string name="settings_schedule_enabled">ClothesCast Harian</string>
     <string name="settings_delivery_notification">Beri tahu</string>
     <string name="settings_delivery_tts">Bacakan</string>
+    <string name="speech_setup_title">Siapkan ClothesCast bersuara</string>
+    <string name="speech_setup_description">Pilih cara ClothesCast Anda dibacakan dengan keras. Gunakan suara perangkat gratis, atau tambahkan Gemini API key untuk suara berkualitas tinggi.</string>
+    <string name="speech_setup_smart_home_note">Suara rumah pintar memerlukan Gemini API key. Cast tetap menampilkan pakaian Anda tanpanya.</string>
+    <string name="speech_setup_done">Selesai</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">Pakaian</string>
@@ -954,6 +963,11 @@ to values/strings.xml (English).
     <string name="settings_format_rain_accessory_label">Aksesori hujan</string>
     <string name="settings_format_rain_accessory_none">Mati</string>
     <string name="settings_format_rain_accessory_umbrella">Payung</string>
+    <string name="settings_format_period_preamble_label">Pembuka</string>
+    <string name="settings_format_wear_preamble_label">Pembuka "Kenakan"</string>
+    <string name="settings_format_preamble_always">Selalu</string>
+    <string name="settings_format_preamble_speech_only">Suara saja</string>
+    <string name="settings_format_preamble_never">Tidak pernah</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">Jika tidak ada aturan yang cocok</string>
@@ -1189,6 +1203,10 @@ to values/strings.xml (English).
     <string name="today_clothes_promo_body">ClothesCast memilih pakaian berdasarkan serangkaian aturan. Ubah suhu dan sesuaikan lemari pakaianmu di pengaturan Pakaian.</string>
     <string name="today_clothes_promo_cta">Pengaturan pakaian</string>
     <string name="today_clothes_promo_dismiss">Tutup</string>
+    <string name="today_schedule_promo_title">ClothesCast otomatis</string>
+    <string name="today_schedule_promo_body">Pilih kapan Anda menerima notifikasi dan pengumuman.</string>
+    <string name="today_schedule_promo_cta">Pengaturan jadwal</string>
+    <string name="today_schedule_promo_dismiss">Tutup</string>
     <string name="today_clothes_promo_title">Buat pakaian sendiri</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Putar</string>

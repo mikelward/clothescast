@@ -150,6 +150,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="widget_description">የአሁኑ ወቅት ልብስ በፍጥነት ለማየት።</string>
     <string name="widget_empty_title">እስካሁን ልብስ የለም</string>
     <string name="widget_empty_subtitle">ClothesCastን ለመክፈት ይጫኑ</string>
+    <string name="feels_like_widget_label">የሚሰማ ሙቀት ቻርት</string>
+    <string name="feels_like_widget_description">የአሁኑ ወቅት የሚሰማ ሙቀት።</string>
+    <string name="feels_like_week_widget_label">የሚሰማ ሙቀት (7 ቀናት)</string>
+    <string name="feels_like_week_widget_description">በሚቀጥሉት 7 ቀናት ውስጥ የሚሰማ ሙቀት።</string>
+    <string name="feels_like_widget_empty_title">እስካሁን ትንበያ የለም</string>
 
     <!-- Onboarding -->
     <string name="onboarding_title">እንኳን ወደ ClothesCast መጡ</string>
@@ -895,6 +900,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_enabled">ዕለታዊ ClothesCast</string>
     <string name="settings_delivery_notification">አሳውቅ</string>
     <string name="settings_delivery_tts">ተናገር</string>
+    <string name="speech_setup_title">በድምፅ የሚነበቡ ClothesCast ያዋቅሩ</string>
+    <string name="speech_setup_description">ClothesCast በድምፅ እንዴት እንደሚነበብ ይምረጡ። ነፃውን የመሳሪያ ድምፅ ይጠቀሙ፣ ወይም ለከፍተኛ ጥራት ድምፆች የGemini API ቁልፍ ያክሉ።</string>
+    <string name="speech_setup_smart_home_note">የስማርት ቤት ንግግር የGemini API ቁልፍ ይፈልጋል። ያለ እሱም ካስቲንግ አሁንም ልብስዎን ያሳያል።</string>
+    <string name="speech_setup_done">ተጠናቀቀ</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">ልብስ</string>
@@ -924,6 +933,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_format_rain_accessory_label">የዝናብ መለዋወጫ</string>
     <string name="settings_format_rain_accessory_none">ጠፍቷል</string>
     <string name="settings_format_rain_accessory_umbrella">ጃንጥላ</string>
+    <string name="settings_format_period_preamble_label">መግቢያ</string>
+    <string name="settings_format_wear_preamble_label">“ልበስ” መግቢያ</string>
+    <string name="settings_format_preamble_always">ሁልጊዜ</string>
+    <string name="settings_format_preamble_speech_only">በንግግር ብቻ</string>
+    <string name="settings_format_preamble_never">በፍፁም</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">ምንም ህግ ካልተዛመደ</string>
@@ -1160,6 +1174,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_clothes_promo_body">ClothesCast ከደንቦች ስብስብ ልብሶችን ይመርጣል። የሙቀት መጠኖችን አስተካክል እና በልብስ ቅንብር ውስጥ ልብስህን አበጅ።</string>
     <string name="today_clothes_promo_cta">የልብስ ቅንብር</string>
     <string name="today_clothes_promo_dismiss">ዝጋ</string>
+    <string name="today_schedule_promo_title">ራስ-ሰር ClothesCast</string>
+    <string name="today_schedule_promo_body">ማሳወቂያዎችንና ማስታወቂያዎችን መቼ እንደምታገኝ ምረጥ።</string>
+    <string name="today_schedule_promo_cta">የመርሐ ግብር ቅንብር</string>
+    <string name="today_schedule_promo_dismiss">ዝጋ</string>
     <string name="today_clothes_promo_title">ልብሶቹን የራስህ አድርግ</string>
     <string name="today_insight_format_link">ቅርጸት</string>
     <string name="today_play">አጫውት</string>

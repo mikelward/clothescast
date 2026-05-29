@@ -413,6 +413,11 @@ Not overridden by design:
     <string name="widget_description">मौजूदा समय की पोशाक एक नज़र में।</string>
     <string name="widget_empty_title">अभी कोई पोशाक नहीं</string>
     <string name="widget_empty_subtitle">ClothesCast खोलने के लिए टैप करें</string>
+    <string name="feels_like_widget_label">महसूस तापमान चार्ट</string>
+    <string name="feels_like_widget_description">मौजूदा समय का महसूस तापमान।</string>
+    <string name="feels_like_week_widget_label">महसूस तापमान (7 दिन)</string>
+    <string name="feels_like_week_widget_description">अगले 7 दिनों का महसूस तापमान।</string>
+    <string name="feels_like_widget_empty_title">अभी कोई पूर्वानुमान नहीं</string>
 
     <!-- Onboarding. -->
     <string name="onboarding_title">ClothesCast में आपका स्वागत है</string>
@@ -956,6 +961,10 @@ Not overridden by design:
     <string name="settings_schedule_enabled">दैनिक ClothesCast</string>
     <string name="settings_delivery_notification">सूचित करें</string>
     <string name="settings_delivery_tts">बोलें</string>
+    <string name="speech_setup_title">बोले जाने वाले ClothesCast सेट करें</string>
+    <string name="speech_setup_description">चुनें कि आपका ClothesCast कैसे बोलकर पढ़ा जाए। मुफ़्त डिवाइस आवाज़ उपयोग करें, या उच्च-गुणवत्ता वाली आवाज़ों के लिए Gemini API कुंजी जोड़ें।</string>
+    <string name="speech_setup_smart_home_note">स्मार्ट होम पर बोलने के लिए Gemini API कुंजी ज़रूरी है। इसके बिना भी कास्टिंग आपकी पोशाक दिखाती है।</string>
+    <string name="speech_setup_done">हो गया</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">कपड़े</string>
@@ -985,6 +994,11 @@ Not overridden by design:
     <string name="settings_format_rain_accessory_label">बारिश का सामान</string>
     <string name="settings_format_rain_accessory_none">बंद</string>
     <string name="settings_format_rain_accessory_umbrella">छाता</string>
+    <string name="settings_format_period_preamble_label">प्रस्तावना</string>
+    <string name="settings_format_wear_preamble_label">"पहनें" प्रस्तावना</string>
+    <string name="settings_format_preamble_always">हमेशा</string>
+    <string name="settings_format_preamble_speech_only">केवल बोली में</string>
+    <string name="settings_format_preamble_never">कभी नहीं</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">यदि कोई नियम लागू नहीं हो</string>
@@ -1221,6 +1235,10 @@ Not overridden by design:
     <string name="today_clothes_promo_body">ClothesCast नियमों के एक सेट से कपड़े चुनता है। तापमान बदलें और कपड़े सेटिंग्स में अपना वॉर्डरोब कस्टमाइज़ करें।</string>
     <string name="today_clothes_promo_cta">कपड़े सेटिंग्स</string>
     <string name="today_clothes_promo_dismiss">बंद करें</string>
+    <string name="today_schedule_promo_title">स्वचालित ClothesCast</string>
+    <string name="today_schedule_promo_body">चुनें कि आपको सूचनाएँ और घोषणाएँ कब मिलें।</string>
+    <string name="today_schedule_promo_cta">समय-सारणी सेटिंग</string>
+    <string name="today_schedule_promo_dismiss">बंद करें</string>
     <string name="today_clothes_promo_title">कपड़ों को अपना बनाएँ</string>
     <string name="today_insight_format_link">प्रारूप</string>
     <string name="today_play">चलाएँ</string>

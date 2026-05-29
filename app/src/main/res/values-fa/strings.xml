@@ -146,6 +146,11 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="widget_description">لباس دوره جاری در یک نگاه.</string>
     <string name="widget_empty_title">هنوز لباسی نیست</string>
     <string name="widget_empty_subtitle">برای باز کردن ClothesCast ضربه بزنید</string>
+    <string name="feels_like_widget_label">نمودار دمای احساس‌شده</string>
+    <string name="feels_like_widget_description">دمای احساس‌شده برای بازه فعلی.</string>
+    <string name="feels_like_week_widget_label">دمای احساس‌شده (7 روز)</string>
+    <string name="feels_like_week_widget_description">دمای احساس‌شده طی 7 روز آینده.</string>
+    <string name="feels_like_widget_empty_title">هنوز پیش‌بینی‌ای نیست</string>
 
     <!-- Today — forecast charts -->
     <string name="today_forecast_title">دمای احساس‌شده</string>
@@ -916,6 +921,10 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_schedule_enabled">ClothesCast روزانه</string>
     <string name="settings_delivery_notification">اعلان</string>
     <string name="settings_delivery_tts">خواندن</string>
+    <string name="speech_setup_title">راه‌اندازی ClothesCastهای گفتاری</string>
+    <string name="speech_setup_description">انتخاب کنید ClothesCast شما چگونه با صدای بلند خوانده شود. از صدای رایگان دستگاه استفاده کنید، یا برای صداهای باکیفیت یک کلید Gemini API اضافه کنید.</string>
+    <string name="speech_setup_smart_home_note">گفتار خانه هوشمند به یک کلید Gemini API نیاز دارد. ارسال تصویری حتی بدون آن هم لباس شما را نمایش می‌دهد.</string>
+    <string name="speech_setup_done">انجام شد</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">لباس</string>
@@ -945,6 +954,11 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_format_rain_accessory_label">لوازم باران</string>
     <string name="settings_format_rain_accessory_none">خاموش</string>
     <string name="settings_format_rain_accessory_umbrella">چتر</string>
+    <string name="settings_format_period_preamble_label">مقدمه</string>
+    <string name="settings_format_wear_preamble_label">مقدمه «بپوشید»</string>
+    <string name="settings_format_preamble_always">همیشه</string>
+    <string name="settings_format_preamble_speech_only">فقط در گفتار</string>
+    <string name="settings_format_preamble_never">هرگز</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">اگر هیچ قانونی مطابقت نداشت</string>
@@ -1181,6 +1195,10 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_clothes_promo_body">ClothesCast لباس‌ها را بر اساس قوانینی انتخاب می‌کند. در تنظیمات لباس، دماها را تنظیم کن و کمد لباست را شخصی‌سازی کن.</string>
     <string name="today_clothes_promo_cta">تنظیمات لباس</string>
     <string name="today_clothes_promo_dismiss">رد کردن</string>
+    <string name="today_schedule_promo_title">ClothesCastهای خودکار</string>
+    <string name="today_schedule_promo_body">انتخاب کنید چه زمانی اعلان‌ها و اعلام‌ها را دریافت کنید.</string>
+    <string name="today_schedule_promo_cta">تنظیمات برنامه</string>
+    <string name="today_schedule_promo_dismiss">رد کردن</string>
     <string name="today_clothes_promo_title">لباس را مال خودت کن</string>
     <string name="today_insight_format_link">قالب</string>
     <string name="today_play">پخش</string>

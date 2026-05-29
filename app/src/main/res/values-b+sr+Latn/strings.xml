@@ -466,6 +466,11 @@ default English (matching values-pl / values-uk).
     <string name="widget_description">Kombinacija za trenutni period na prvi pogled.</string>
     <string name="widget_empty_title">Još nema kombinacije</string>
     <string name="widget_empty_subtitle">Dodirni za otvaranje ClothesCasta</string>
+    <string name="feels_like_widget_label">Grafikon osećajne temperature</string>
+    <string name="feels_like_widget_description">Osećajna temperatura za trenutni period.</string>
+    <string name="feels_like_week_widget_label">Osećajna (7 dana)</string>
+    <string name="feels_like_week_widget_description">Osećajna temperatura za narednih 7 dana.</string>
+    <string name="feels_like_widget_empty_title">Još nema prognoze</string>
 
     <!-- Hourly forecast card. -->
     <string name="today_forecast_title">Prognoza po satu</string>
@@ -913,6 +918,10 @@ default English (matching values-pl / values-uk).
     <string name="settings_schedule_enabled">Dnevni ClothesCast</string>
     <string name="settings_delivery_notification">Obavesti</string>
     <string name="settings_delivery_tts">Pročitaj</string>
+    <string name="speech_setup_title">Podesi izgovorene ClothesCastove</string>
+    <string name="speech_setup_description">Izaberi kako se tvoj ClothesCast čita naglas. Koristi besplatni glas uređaja ili dodaj Gemini API ključ za glasove visokog kvaliteta.</string>
+    <string name="speech_setup_smart_home_note">Govor u pametnom domu zahteva Gemini API ključ. Emitovanje i bez njega prikazuje tvoju kombinaciju.</string>
+    <string name="speech_setup_done">Gotovo</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Odeća</string>
@@ -942,6 +951,11 @@ default English (matching values-pl / values-uk).
     <string name="settings_format_rain_accessory_label">Dodatak za kišu</string>
     <string name="settings_format_rain_accessory_none">Isključeno</string>
     <string name="settings_format_rain_accessory_umbrella">Kišobran</string>
+    <string name="settings_format_period_preamble_label">Uvod</string>
+    <string name="settings_format_wear_preamble_label">Uvod „Obuci"</string>
+    <string name="settings_format_preamble_always">Uvek</string>
+    <string name="settings_format_preamble_speech_only">Samo govor</string>
+    <string name="settings_format_preamble_never">Nikad</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Ako se nijedno pravilo ne podudara</string>
@@ -1179,6 +1193,10 @@ default English (matching values-pl / values-uk).
     <string name="today_clothes_promo_body">ClothesCast bira odeću po pravilima. Promeni temperature i prilagodi svoju garderobu u podešavanjima Odeća.</string>
     <string name="today_clothes_promo_cta">Podešavanja odeće</string>
     <string name="today_clothes_promo_dismiss">Odbaci</string>
+    <string name="today_schedule_promo_title">Automatski ClothesCastovi</string>
+    <string name="today_schedule_promo_body">Izaberi kada primaš obaveštenja i najave.</string>
+    <string name="today_schedule_promo_cta">Podešavanja rasporeda</string>
+    <string name="today_schedule_promo_dismiss">Odbaci</string>
     <string name="today_clothes_promo_title">Prilagodi odeću sebi</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Pusti</string>

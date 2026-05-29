@@ -139,6 +139,11 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="widget_description">Pakaian untuk tempoh semasa secara ringkas.</string>
     <string name="widget_empty_title">Tiada pakaian lagi</string>
     <string name="widget_empty_subtitle">Ketik untuk membuka ClothesCast</string>
+    <string name="feels_like_widget_label">Carta suhu terasa</string>
+    <string name="feels_like_widget_description">Suhu terasa untuk tempoh semasa.</string>
+    <string name="feels_like_week_widget_label">Suhu terasa (7 hari)</string>
+    <string name="feels_like_week_widget_description">Suhu terasa untuk 7 hari akan datang.</string>
+    <string name="feels_like_widget_empty_title">Tiada ramalan lagi</string>
 
     <!-- Forecast card -->
     <string name="today_forecast_title">Ramalan setiap jam</string>
@@ -931,6 +936,10 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_schedule_enabled">ClothesCast Harian</string>
     <string name="settings_delivery_notification">Beritahu</string>
     <string name="settings_delivery_tts">Sebut</string>
+    <string name="speech_setup_title">Sediakan ClothesCast bersuara</string>
+    <string name="speech_setup_description">Pilih cara ClothesCast anda disebut dengan kuat. Gunakan suara peranti percuma, atau tambah Gemini API key untuk suara berkualiti tinggi.</string>
+    <string name="speech_setup_smart_home_note">Sebutan rumah pintar memerlukan Gemini API key. Cast tetap menunjukkan pakaian anda tanpanya.</string>
+    <string name="speech_setup_done">Selesai</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">Pakaian</string>
@@ -960,6 +969,11 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_format_rain_accessory_label">Aksesori hujan</string>
     <string name="settings_format_rain_accessory_none">Mati</string>
     <string name="settings_format_rain_accessory_umbrella">Payung</string>
+    <string name="settings_format_period_preamble_label">Pembuka</string>
+    <string name="settings_format_wear_preamble_label">Pembuka "Pakai"</string>
+    <string name="settings_format_preamble_always">Sentiasa</string>
+    <string name="settings_format_preamble_speech_only">Sebutan sahaja</string>
+    <string name="settings_format_preamble_never">Tidak pernah</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">Jika tiada peraturan sepadan</string>
@@ -1195,6 +1209,10 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_clothes_promo_body">ClothesCast memilih pakaian berdasarkan satu set peraturan. Ubah suhu dan sesuaikan almari pakaian anda dalam tetapan Pakaian.</string>
     <string name="today_clothes_promo_cta">Tetapan pakaian</string>
     <string name="today_clothes_promo_dismiss">Tutup</string>
+    <string name="today_schedule_promo_title">ClothesCast automatik</string>
+    <string name="today_schedule_promo_body">Pilih masa anda menerima pemberitahuan dan pengumuman.</string>
+    <string name="today_schedule_promo_cta">Tetapan jadual</string>
+    <string name="today_schedule_promo_dismiss">Tutup</string>
     <string name="today_clothes_promo_title">Jadikan pakaian milik anda</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Putar</string>

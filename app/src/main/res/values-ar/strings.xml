@@ -146,6 +146,11 @@ they work correctly in both the single-band and range templates.
     <string name="widget_description">زي الفترة الحالية في لمحة.</string>
     <string name="widget_empty_title">لا يوجد زي بعد</string>
     <string name="widget_empty_subtitle">اضغط لفتح ClothesCast</string>
+    <string name="feels_like_widget_label">مخطط درجة الحرارة المحسوسة</string>
+    <string name="feels_like_widget_description">درجة الحرارة المحسوسة للفترة الحالية.</string>
+    <string name="feels_like_week_widget_label">درجة الحرارة المحسوسة (7 أيام)</string>
+    <string name="feels_like_week_widget_description">درجة الحرارة المحسوسة خلال الأيام السبعة القادمة.</string>
+    <string name="feels_like_widget_empty_title">لا توجد توقعات بعد</string>
 
     <!-- Today — forecast / temperature chart -->
     <string name="today_forecast_title">درجة الحرارة المحسوسة</string>
@@ -925,6 +930,10 @@ they work correctly in both the single-band and range templates.
     <string name="settings_schedule_enabled">ClothesCast اليومي</string>
     <string name="settings_delivery_notification">إشعار</string>
     <string name="settings_delivery_tts">قراءة</string>
+    <string name="speech_setup_title">إعداد عمليات ClothesCast المنطوقة</string>
+    <string name="speech_setup_description">اختر طريقة قراءة ClothesCast بصوت عالٍ. استخدم صوت الجهاز المجاني، أو أضِف مفتاح Gemini API للحصول على أصوات عالية الجودة.</string>
+    <string name="speech_setup_smart_home_note">يتطلب كلام المنزل الذكي مفتاح Gemini API. يعرض البث ملابسك بدونه أيضًا.</string>
+    <string name="speech_setup_done">تم</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">الملابس</string>
@@ -954,6 +963,11 @@ they work correctly in both the single-band and range templates.
     <string name="settings_format_rain_accessory_label">إكسسوار المطر</string>
     <string name="settings_format_rain_accessory_none">إيقاف</string>
     <string name="settings_format_rain_accessory_umbrella">مظلة</string>
+    <string name="settings_format_period_preamble_label">المقدمة</string>
+    <string name="settings_format_wear_preamble_label">مقدمة "ارتدِ"</string>
+    <string name="settings_format_preamble_always">دائمًا</string>
+    <string name="settings_format_preamble_speech_only">في الكلام فقط</string>
+    <string name="settings_format_preamble_never">أبدًا</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">إذا لم تنطبق أي قاعدة</string>
@@ -1194,6 +1208,10 @@ they work correctly in both the single-band and range templates.
     <string name="today_clothes_promo_body">يختار ClothesCast الملابس بناءً على مجموعة قواعد. عدّل درجات الحرارة وخصّص خزانة ملابسك في إعدادات الملابس.</string>
     <string name="today_clothes_promo_cta">إعدادات الملابس</string>
     <string name="today_clothes_promo_dismiss">إغلاق</string>
+    <string name="today_schedule_promo_title">عمليات ClothesCast التلقائية</string>
+    <string name="today_schedule_promo_body">اختر متى تتلقى الإشعارات والإعلانات.</string>
+    <string name="today_schedule_promo_cta">إعدادات الجدول</string>
+    <string name="today_schedule_promo_dismiss">إغلاق</string>
     <string name="today_clothes_promo_title">اجعل الملابس ملكك</string>
     <string name="today_insight_format_link">التنسيق</string>
     <string name="today_play">تشغيل</string>

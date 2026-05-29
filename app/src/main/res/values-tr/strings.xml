@@ -312,6 +312,11 @@ displayed label localizes.
     <string name="widget_description">Mevcut günün dilimindeki kıyafete bir bakış.</string>
     <string name="widget_empty_title">Henüz kıyafet yok</string>
     <string name="widget_empty_subtitle">ClothesCast\'ı açmak için dokun</string>
+    <string name="feels_like_widget_label">Hissedilen sıcaklık grafiği</string>
+    <string name="feels_like_widget_description">Mevcut dönem için hissedilen sıcaklık.</string>
+    <string name="feels_like_week_widget_label">Hissedilen sıcaklık (7 gün)</string>
+    <string name="feels_like_week_widget_description">Önümüzdeki 7 gün boyunca hissedilen sıcaklık.</string>
+    <string name="feels_like_widget_empty_title">Henüz tahmin yok</string>
 
     <string name="onboarding_title">ClothesCast\'a Hoş Geldiniz</string>
     <string name="onboarding_subtitle">İki hızlı seçim ve hazırsın. Diğer her şeyin daha sonra ayarlardan değiştirebileceğin makul bir varsayılanı var.</string>
@@ -926,6 +931,10 @@ displayed label localizes.
     <string name="settings_schedule_enabled">Günlük ClothesCast</string>
     <string name="settings_delivery_notification">Bildir</string>
     <string name="settings_delivery_tts">Seslendir</string>
+    <string name="speech_setup_title">Sesli ClothesCast\'ları ayarla</string>
+    <string name="speech_setup_description">ClothesCast\'ının nasıl seslendirileceğini seç. Ücretsiz cihaz sesini kullan veya yüksek kaliteli sesler için bir Gemini API anahtarı ekle.</string>
+    <string name="speech_setup_smart_home_note">Akıllı ev seslendirmesi bir Gemini API anahtarı gerektirir. Yayınlama, anahtar olmadan da kıyafetini gösterir.</string>
+    <string name="speech_setup_done">Tamam</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Kıyafetler</string>
@@ -955,6 +964,11 @@ displayed label localizes.
     <string name="settings_format_rain_accessory_label">Yağmur aksesuarı</string>
     <string name="settings_format_rain_accessory_none">Kapalı</string>
     <string name="settings_format_rain_accessory_umbrella">Şemsiye</string>
+    <string name="settings_format_period_preamble_label">Giriş</string>
+    <string name="settings_format_wear_preamble_label">"Giy" girişi</string>
+    <string name="settings_format_preamble_always">Her zaman</string>
+    <string name="settings_format_preamble_speech_only">Yalnızca sesli</string>
+    <string name="settings_format_preamble_never">Asla</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">Hiçbir kural eşleşmezse</string>
@@ -1191,6 +1205,10 @@ displayed label localizes.
     <string name="today_clothes_promo_body">ClothesCast kıyafetleri bir dizi kurala göre seçer. Sıcaklıkları ayarla ve Kıyafet ayarlarından gardırobunu özelleştir.</string>
     <string name="today_clothes_promo_cta">Kıyafet ayarları</string>
     <string name="today_clothes_promo_dismiss">Kapat</string>
+    <string name="today_schedule_promo_title">Otomatik ClothesCast\'lar</string>
+    <string name="today_schedule_promo_body">Bildirimleri ve duyuruları ne zaman alacağını seç.</string>
+    <string name="today_schedule_promo_cta">Program ayarları</string>
+    <string name="today_schedule_promo_dismiss">Kapat</string>
     <string name="today_clothes_promo_title">Kıyafetleri kendine göre ayarla</string>
     <string name="today_insight_format_link">Biçim</string>
     <string name="today_play">Oynat</string>

@@ -82,9 +82,7 @@ private const val NAV_ANIM_MS = 200
 
 @Serializable internal object SettingsGraph
 @Serializable internal object SettingsRootDest
-// fromOnboarding rides as a typed nav argument (was a stringly-typed
-// `settingsInitialRoute` round-trip through MainActivity before).
-@Serializable internal data class ScheduleDest(val fromOnboarding: Boolean = false)
+@Serializable internal object ScheduleDest
 @Serializable internal object FormatDest
 @Serializable internal object ClothesDest
 @Serializable internal object RegionDest
@@ -147,7 +145,7 @@ fun ClothesCastNavHost(
                 onNavigateToPrivacy = { nav.navigate(PrivacyDest) },
                 onNavigateToClothes = { nav.navigate(ClothesDest) },
                 onNavigateToCalendar = { nav.navigate(CalendarDest) },
-                onNavigateToSchedule = { nav.navigate(ScheduleDest()) },
+                onNavigateToSchedule = { nav.navigate(ScheduleDest) },
                 onNavigateToDeveloper = { nav.navigate(DeveloperDest) },
                 onNavigateToFormat = { nav.navigate(FormatDest) },
             )
@@ -166,24 +164,28 @@ fun ClothesCastNavHost(
                     workManager = WorkManager.getInstance(app),
                 ),
             )
+            // Both footer buttons finish onboarding and land on Today — the
+            // schedule slot is on by default now, so there's no schedule step
+            // to "Continue" into; the Today "Automatic ClothesCasts" promo
+            // covers schedule discovery instead. First-run auto-fetch so the
+            // user lands on a populated Today screen instead of the empty state
+            // and immediately sees what the app produces. Silent so the screen
+            // they're already looking at fills in without a duplicate
+            // notification chime or TTS playback on top. If location isn't
+            // resolvable the worker fails silently and the location prompt at
+            // the top of the banner stack takes over — the user has the next
+            // step in either case.
+            val finishOnboarding: () -> Unit = {
+                FetchAndNotifyWorker.enqueueOnboardingRefresh(app)
+                nav.navigate(TodayRoute()) {
+                    popUpTo(nav.graph.id) { inclusive = true }
+                }
+            }
             OnboardingScreen(
                 viewModel = onboarding,
                 onPairFromPhone = { nav.navigate(PairingRoute) },
-                onContinue = { nav.navigate(ScheduleDest(fromOnboarding = true)) },
-                onSkip = {
-                    // First-run auto-fetch so the user lands on a populated
-                    // Today screen instead of the empty state and immediately
-                    // sees what the app produces. Silent so the screen they're
-                    // already looking at fills in without a duplicate
-                    // notification chime or TTS playback on top. If location
-                    // isn't resolvable the worker fails silently and the
-                    // location prompt at the top of the banner stack takes
-                    // over — the user has the next step in either case.
-                    FetchAndNotifyWorker.enqueueOnboardingRefresh(app)
-                    nav.navigate(TodayRoute()) {
-                        popUpTo(nav.graph.id) { inclusive = true }
-                    }
-                },
+                onContinue = finishOnboarding,
+                onSkip = finishOnboarding,
             )
         }
 
@@ -206,21 +208,6 @@ fun ClothesCastNavHost(
 }
 
 private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastApplication) {
-    // Finishing onboarding lands the user on Today as a fresh root.
-    // The silent fetch enqueued here populates the cache so the first
-    // landing on Today shows the user a real insight rather than the
-    // empty-state placeholder — they immediately see what the app
-    // produces. Silent (no notification / TTS) because they're already
-    // looking at the screen the fetch updates; the next scheduled run
-    // is the one that audibly notifies. Worker fails silently with no
-    // location resolved, in which case the location prompt at the top
-    // of the Today banner stack carries the next step.
-    val finishOnboarding: () -> Unit = {
-        FetchAndNotifyWorker.enqueueOnboardingRefresh(app)
-        nav.navigate(TodayRoute()) {
-            popUpTo(nav.graph.id) { inclusive = true }
-        }
-    }
     val onBack: () -> Unit = { nav.popBackStack() }
 
     navigation<SettingsGraph>(startDestination = SettingsRootDest) {
@@ -236,8 +223,6 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
             SchedulePage(
                 viewModel = e.settingsViewModel(nav, app),
                 onBack = onBack,
-                onboardingLanding = e.toRoute<ScheduleDest>().fromOnboarding,
-                onFinishOnboarding = finishOnboarding,
             )
         }
         composable<FormatDest> { e -> FormatPage(e.settingsViewModel(nav, app), onBack) }
@@ -276,7 +261,7 @@ private fun settingsMenu(nav: NavController): List<SettingsMenuItem> =
 // compile error until you wire its navigation target, which is the whole point
 // of routing every row through the enum.
 private fun NavController.openSettingsDest(dest: SettingsDest) = when (dest) {
-    SettingsDest.SCHEDULE -> navigate(ScheduleDest())
+    SettingsDest.SCHEDULE -> navigate(ScheduleDest)
     SettingsDest.CLOTHES -> navigate(ClothesDest)
     SettingsDest.FORMAT -> navigate(FormatDest)
     SettingsDest.LOCATION -> navigate(LocationDest)

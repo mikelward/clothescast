@@ -875,15 +875,16 @@ class SettingsRepository(
             ?.toSet()
             ?.takeIf { it.isNotEmpty() }
             ?: Schedule.EVERY_DAY
-        // Default-off for both halves: a fresh install has no scheduled casts
-        // until the user opts in from the schedule page (where the
-        // notification-permission prompt lives), surfaced by the Today-screen
-        // "Set up a schedule" promo. Absent key ⇒ off; only an explicit stored
-        // `true` enables a slot.
-        val dailyEnabled = this[DAILY_ENABLED] == true
+        // Morning slot is on out of the box (absent key ⇒ on) — a fresh install
+        // gets the daily cast without opting in, with the notification
+        // permission requested during onboarding. The evening slot stays
+        // opt-in (absent key ⇒ off); only an explicit stored `true` enables it.
+        // An explicit `false` on the morning slot is respected — that's the
+        // user having turned it off from the schedule page.
+        val dailyEnabled = this[DAILY_ENABLED] != false
         val tonightEnabled = this[TONIGHT_ENABLED] == true
         val tonightNotifyOnlyOnEvents = this[TONIGHT_NOTIFY_ONLY_ON_EVENTS] == true
-        val dailyMentionEveningEvents = this[DAILY_MENTION_EVENING_EVENTS] != false
+        val dailyMentionEveningEvents = this[DAILY_MENTION_EVENING_EVENTS] == true
         val clothesMentionMode = this[CLOTHES_MENTION_MODE]
             ?.let { runCatching { ClothesMentionMode.valueOf(it) }.getOrNull() }
             ?: ClothesMentionMode.ALWAYS
@@ -1349,19 +1350,19 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
     produceMigrations = { listOf(scheduleEnabledOptInMigration(), castEnabledOptInMigration()) },
 )
 
-// One-time migration for the morning + evening schedule flipping from default-on
-// to default-off (opt-in — see [UserPreferences.dailyEnabled]). Every install on
-// the old behaviour was getting casts whether or not it ever touched the toggles
-// (an absent key read as enabled), so silently reading absent keys as off here
-// would stop existing users' casts on the next launch. Preserve them: when the
-// store already holds *any* preference (i.e. it predates this change) and a
-// schedule key was never explicitly written, write an explicit `true`. A fresh
-// install has an empty store at migration time, so it falls through to the new
-// false default and the Today "set up a schedule" promo. Runs exactly once via a
-// sentinel. Internal for direct unit testing.
+// One-time migration grandfathering the evening / "tonight" cast for installs
+// that predate it becoming an opt-in slot. The morning slot is default-on
+// (absent key ⇒ on — see [UserPreferences.dailyEnabled]), so it needs no
+// preservation here: existing and fresh installs alike read it as on. The
+// evening slot is default-off, but an install already on the old default-on
+// behaviour was getting evening casts, and silently reading its absent key as
+// off would stop them on the next launch. Preserve them: when the store already
+// holds *any* preference (i.e. it predates this change) and the evening key was
+// never explicitly written, write an explicit `true`. A fresh install has an
+// empty store at migration time, so it falls through to the default-off evening
+// slot. Runs exactly once via a sentinel. Internal for direct unit testing.
 internal fun scheduleEnabledOptInMigration(): DataMigration<Preferences> {
     val migrated = booleanPreferencesKey("schedule_default_off_migrated_v1")
-    val dailyEnabled = booleanPreferencesKey("daily_enabled")
     val tonightEnabled = booleanPreferencesKey("tonight_enabled")
     return object : DataMigration<Preferences> {
         override suspend fun shouldMigrate(currentData: Preferences): Boolean =
@@ -1375,9 +1376,8 @@ internal fun scheduleEnabledOptInMigration(): DataMigration<Preferences> {
                 @Suppress("UNCHECKED_CAST")
                 result[key as Preferences.Key<Any>] = value
             }
-            if (currentData.asMap().isNotEmpty()) {
-                if (currentData[dailyEnabled] == null) result[dailyEnabled] = true
-                if (currentData[tonightEnabled] == null) result[tonightEnabled] = true
+            if (currentData.asMap().isNotEmpty() && currentData[tonightEnabled] == null) {
+                result[tonightEnabled] = true
             }
             result[migrated] = true
             return result

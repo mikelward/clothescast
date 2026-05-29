@@ -102,6 +102,10 @@ class SettingsRepositoryTest {
         prefs.temperatureUnit shouldBe TemperatureUnit.CELSIUS
         prefs.distanceUnit shouldBe DistanceUnit.MILES   // setUp pins Locale.UK → miles
         prefs.clothesRules shouldBe ClothesRule.DEFAULTS
+        // Morning slot is on out of the box; the evening slot stays opt-in.
+        prefs.dailyEnabled shouldBe true
+        prefs.tonightEnabled shouldBe false
+        prefs.dailyMentionEveningEvents shouldBe false
     }
 
     @Test
@@ -150,14 +154,14 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `dailyMentionEveningEvents defaults to true and round-trips`() = runTest {
-        subject.preferences.first().dailyMentionEveningEvents shouldBe true
-
-        subject.setDailyMentionEveningEvents(false)
+    fun `dailyMentionEveningEvents defaults to false and round-trips`() = runTest {
         subject.preferences.first().dailyMentionEveningEvents shouldBe false
 
         subject.setDailyMentionEveningEvents(true)
         subject.preferences.first().dailyMentionEveningEvents shouldBe true
+
+        subject.setDailyMentionEveningEvents(false)
+        subject.preferences.first().dailyMentionEveningEvents shouldBe false
     }
 
     @Test
@@ -912,18 +916,18 @@ class SettingsRepositoryTest {
         defaults.deliveryModeDaily shouldBe DeliveryMode.NOTIFICATION_AND_TTS.name
         defaults.deliveryModeTonight shouldBe DeliveryMode.NOTIFICATION_AND_TTS.name
         defaults.themeMode shouldBe ThemeMode.SYSTEM.name
-        // Both schedule slots are off out of the box — the user opts into
-        // scheduled casts (and the notification permission) from the schedule
-        // page. The 07:00 / 19:00 every-day times are the values that take
-        // effect once a slot is turned on.
-        defaults.dailyEnabled shouldBe false
+        // Morning slot is on out of the box; the evening slot stays opt-in (the
+        // user enables it, and the notification permission, from the schedule
+        // page). The 07:00 / 19:00 every-day times are the morning's effective
+        // values and the evening's once it's turned on.
+        defaults.dailyEnabled shouldBe true
         defaults.dailyTimeBucketHour shouldBe "07"
         defaults.dailyDaysCount shouldBe 7
         defaults.tonightTimeBucketHour shouldBe "19"
         defaults.tonightDaysCount shouldBe 7
         defaults.tonightEnabled shouldBe false
         defaults.tonightNotifyOnlyOnEvents shouldBe false
-        defaults.dailyMentionEveningEvents shouldBe true
+        defaults.dailyMentionEveningEvents shouldBe false
         defaults.useCalendarEvents shouldBe false
 
         subject.setSchedule(
@@ -1065,31 +1069,34 @@ class SettingsRepositoryTest {
     private val scheduleMigratedKey = booleanPreferencesKey("schedule_default_off_migrated_v1")
 
     @Test
-    fun `schedule migration leaves a fresh empty store off`() = runTest {
+    fun `schedule migration writes nothing for a fresh empty store`() = runTest {
         val result = scheduleEnabledOptInMigration().migrate(emptyPreferences())
 
-        // No schedule keys written ⇒ they read as off (the new default); only the
-        // sentinel lands so the migration won't run again.
+        // Nothing to grandfather: the morning slot is default-on and the evening
+        // slot default-off, so a fresh install needs neither key written. Only
+        // the sentinel lands so the migration won't run again.
         result[dailyEnabledKey] shouldBe null
         result[tonightEnabledKey] shouldBe null
         result[scheduleMigratedKey] shouldBe true
     }
 
     @Test
-    fun `schedule migration grandfathers an existing store to on`() = runTest {
-        // A store that already holds any preference predates the default-off flip,
-        // so the user was getting casts under the old default-on — preserve that.
+    fun `schedule migration grandfathers the evening slot on an existing store`() = runTest {
+        // A store that already holds any preference predates the evening slot
+        // becoming opt-in, so the user was getting evening casts under the old
+        // default-on — preserve that. The morning slot is left alone (it reads
+        // on by default).
         val existing = mutablePreferencesOf(stringPreferencesKey("region") to "en-GB")
 
         val result = scheduleEnabledOptInMigration().migrate(existing)
 
-        result[dailyEnabledKey] shouldBe true
+        result[dailyEnabledKey] shouldBe null
         result[tonightEnabledKey] shouldBe true
         result[scheduleMigratedKey] shouldBe true
     }
 
     @Test
-    fun `schedule migration preserves an explicit disable and grandfathers the rest`() = runTest {
+    fun `schedule migration preserves an explicit morning disable and grandfathers the evening`() = runTest {
         val existing = mutablePreferencesOf(dailyEnabledKey to false)
 
         val result = scheduleEnabledOptInMigration().migrate(existing)

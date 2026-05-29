@@ -129,8 +129,6 @@ internal fun SettingsRootPage(
 internal fun SchedulePage(
     viewModel: SettingsViewModel,
     onBack: () -> Unit,
-    onboardingLanding: Boolean,
-    onFinishOnboarding: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     SettingsScaffold(R.string.settings_root_schedule, onBack) { padding ->
@@ -160,11 +158,6 @@ internal fun SchedulePage(
             onSetTtsEngine = viewModel::setTtsEngine,
             onSetGeminiKey = viewModel::setApiKey,
             onClearGeminiKey = viewModel::clearApiKey,
-            // Show a Done button only when this page is the deep-link landing from
-            // onboarding's "Continue" — gives the user an obvious way to finish
-            // setup and reach Today. In the regular settings flow they exit via
-            // the top-bar back arrow.
-            onDone = if (onboardingLanding) onFinishOnboarding else null,
         )
         }
     }

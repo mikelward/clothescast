@@ -177,6 +177,13 @@ data class TodayState(
      */
     val schedulePromoCardVisible: Boolean = false,
     /**
+     * Whether the "Preview your daily ClothesCast now" promo card is eligible —
+     * true iff the user hasn't dismissed it AND at least one cast slot is
+     * enabled (the morning slot is on by default, so this normally holds). It
+     * points at the top-bar play button so the user can hear a cast on demand.
+     */
+    val playPromoCardVisible: Boolean = false,
+    /**
      * Whether the one-time telemetry/privacy disclosure is still pending
      * (the user hasn't acked it). Lifted out of the banner so [BannerStack]
      * can fold it into the capped promo pool alongside the location, clothes,
@@ -411,7 +418,7 @@ class TodayViewModel(
     private val workStatusFlow = combine(
         workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME),
         workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT),
-        workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_REPLAY),
+        workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_PLAY),
     ) { todayInfos, tonightInfos, replayInfos ->
         val todayLite = todayInfos.toLite()
         val tonightLite = tonightInfos.toLite()
@@ -549,6 +556,8 @@ class TodayViewModel(
             clothesPromoCardVisible = !prefs.clothesPromoCardDismissed &&
                 prefs.clothesRules == ClothesRule.DEFAULTS,
             schedulePromoCardVisible = !prefs.scheduleCardDismissed,
+            playPromoCardVisible = !prefs.playCardDismissed &&
+                (prefs.dailyEnabled || prefs.tonightEnabled),
             telemetryNoticeVisible = !prefs.telemetryNoticeAcked,
             usesCalendarThemes = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive,
         )
@@ -587,6 +596,17 @@ class TodayViewModel(
     fun dismissSchedulePromoCard() {
         viewModelScope.launch {
             settingsRepository.setScheduleCardDismissed(true)
+        }
+    }
+
+    /**
+     * Persists the user's dismissal of the Today-screen "Preview your daily
+     * ClothesCast now" promo card. Called on the X-tap; the card hides on the
+     * next state emission. Mirrors [dismissSchedulePromoCard].
+     */
+    fun dismissPlayPromoCard() {
+        viewModelScope.launch {
+            settingsRepository.setPlayCardDismissed(true)
         }
     }
 

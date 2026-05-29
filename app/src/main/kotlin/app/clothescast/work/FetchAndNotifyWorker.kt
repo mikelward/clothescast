@@ -93,16 +93,17 @@ class FetchAndNotifyWorker(
     override suspend fun doWork(): Result {
         val isCacheOnly = inputData.getBoolean(KEY_CACHE_LOCATION_ONLY, false)
         val isSilent = inputData.getBoolean(KEY_SILENT_REFRESH, false)
-        val isReplay = inputData.getBoolean(KEY_REPLAY_ONLY, false)
+        val isPlay = inputData.getBoolean(KEY_PLAY, false)
         val period = inputData.getString(KEY_PERIOD)
             ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() }
             ?: ForecastPeriod.TODAY
         val startMs = System.currentTimeMillis()
-        // The cache-only, silent-refresh, and replay paths don't fetch /
-        // re-derive a fresh insight, so don't count them as refresh outcomes
-        // — they'd skew the success-rate dashboard with runs the user never
-        // perceived as a "daily refresh".
-        val skipTelemetry = isCacheOnly || isSilent || isReplay
+        // The cache-only, silent-refresh, and on-demand play paths aren't
+        // scheduled "daily refresh" outcomes — they'd skew the success-rate
+        // dashboard with runs the user never perceived as one. (Play may now
+        // fetch fresh on a cache miss, but it's still a manual tap, not the
+        // alarm, so it stays off the daily_refresh stream.)
+        val skipTelemetry = isCacheOnly || isSilent || isPlay
         return try {
             val result = stamped(doWorkInternal())
             if (!skipTelemetry) recordDailyRefreshOutcome(period, result, startMs)
@@ -153,17 +154,17 @@ class FetchAndNotifyWorker(
             return Result.retry()
         }
 
-        // Replay path triggered by the Today screen's Play button. Re-runs
-        // the full deliver() fan-out (notification + TTS + MQTT + cast) on
-        // the cached this-period snapshot, derived against the current prefs
-        // so any Format / clothes-rules changes since the last fetch are
-        // reflected. No fetch — Play is about hearing the announcement
-        // again, not about pulling fresh data.
-        if (inputData.getBoolean(KEY_REPLAY_ONLY, false)) {
+        // On-demand play path: the Today screen's Play button and the
+        // Schedule settings "Play now" buttons. Runs the full deliver()
+        // fan-out (notification + TTS + MQTT + cast) for the requested
+        // period — replaying a fresh cached snapshot when one exists, or
+        // fetching fresh when this period has nothing cached, so a tap
+        // never silently no-ops.
+        if (inputData.getBoolean(KEY_PLAY, false)) {
             val requestedPeriod = inputData.getString(KEY_PERIOD)
                 ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() }
                 ?: ForecastPeriod.TODAY
-            return replayCachedInsight(prefs, requestedPeriod)
+            return playInsight(prefs, requestedPeriod)
         }
 
         // Cache-only path triggered by the Settings location toggle. Just
@@ -286,51 +287,109 @@ class FetchAndNotifyWorker(
         return fresh(location, prefs, period)
     }
 
-    private suspend fun replayCachedInsight(
+    /**
+     * On-demand play for [requestedPeriod]. Replays a fresh same-day cached
+     * snapshot when one exists; otherwise fetches fresh so a Play tap on an
+     * empty (or stale) cache still delivers something rather than silently
+     * no-opping. Shared by the Today screen's Play button (always the current
+     * window) and the Schedule settings "Play now" buttons (which can target
+     * the not-yet-current window).
+     */
+    private suspend fun playInsight(
         prefs: UserPreferences,
         requestedPeriod: ForecastPeriod,
     ): Result {
-        val snapshot = app.insightCache.thisPeriod.first()
-        if (snapshot == null) {
-            DiagLog.i(TAG, "Replay requested but cache is empty; nothing to deliver.")
+        val currentPeriod = currentPeriodForSchedule(prefs)
+        // Which day's [requestedPeriod] window the user means. Everything is
+        // today except previewing the daytime ("Daily") cast once we're already
+        // in the nightly window — today's daytime cast has passed, so "Play now"
+        // on Daily then means *tomorrow's* daytime. Mirrors the next-window
+        // pairing in [generatePairedInsight].
+        val dayOffset = nextOccurrenceDayOffset(requestedPeriod, currentPeriod)
+        val targetDate = LocalDate.now().plusDays(dayOffset.toLong())
+        // Look for a snapshot the user actually asked to hear: matching period
+        // AND the right day. Both cache slots are eligible — THIS_PERIOD holds
+        // the current window, NEXT_PERIOD the pre-captured next one (after the
+        // nightly alarm fires, NEXT_PERIOD holds tomorrow's daytime), so a
+        // "Play now" for the not-yet-current window can hit the pre-capture
+        // without a fetch. A snapshot for the wrong day — e.g. this morning's
+        // already-delivered daytime cast when the user wants tomorrow's daily —
+        // is skipped and falls through to a fresh fetch.
+        val cached = listOfNotNull(
+            app.insightCache.thisPeriod.first(),
+            app.insightCache.nextPeriod.first(),
+        ).firstOrNull { it.period == requestedPeriod && it.bundle.today.date == targetDate }
+
+        if (cached != null) {
+            // Cache hit replays without fetching; signal "fetch is done"
+            // up-front so any banner observer on this queue sees the worker as
+            // past the fetching phase. (Play stays disabled throughout
+            // delivery via TodayState.anyWorkActive, which keys off
+            // WorkInfo.state directly.)
+            setProgress(workDataOf(KEY_FETCH_COMPLETE to true))
+            val insight = app.deriveInsight(cached, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
+            val prose = formatProse(insight, prefs)
+            return deliverBestEffort(insight, prefs, prose, "Replayed")
+        }
+
+        // Cache miss — fetch fresh for the requested period.
+        val location = resolveLocation(prefs)
+        if (location == null) {
+            // Best-effort, like the old replay-on-empty-cache: nothing to play,
+            // and the Today screen's location-required banner already prompts
+            // the fix. No failure banner.
+            DiagLog.i(TAG, "Play requested for $requestedPeriod but no location available; skipping.")
             return Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
         }
-        // Honour the period the user tapped Play for. If the cache rolled
-        // between the tap and this run (a queued replay survived a network
-        // blip until the morning alarm overwrote THIS_PERIOD with a fresh
-        // TODAY snapshot, or any other in-between rewrite), the snapshot
-        // now in cache isn't the announcement the user asked to hear —
-        // skip rather than deliver the wrong one. The next tap on whichever
-        // period is current will play that one normally.
-        if (snapshot.period != requestedPeriod) {
-            DiagLog.i(
-                TAG,
-                "Replay requested for $requestedPeriod but cache holds ${snapshot.period}; skipping.",
-            )
-            return Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
-        }
-        // Replay never fetches; signal "fetch is done" up-front so any
-        // future code path that combines this queue into a banner observer
-        // sees the worker as past the fetching phase. Play stays disabled
-        // throughout delivery via TodayState.anyWorkActive, which keys
-        // off WorkInfo.state directly and doesn't need a progress flag.
         setProgress(workDataOf(KEY_FETCH_COMPLETE to true))
-        val insight = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
-        val prose = formatProse(insight, prefs)
+        // When the requested period IS the current window, route through the
+        // full fresh() path so the fetched snapshot lands in the cache (+
+        // next-window pre-capture, + history): an empty-cache Play populates
+        // the Today screen as a side effect. (Current-window play always has
+        // dayOffset 0, which fresh() uses internally.) When it's the *other*
+        // window (e.g. "Play now" on Nightly tapped in the morning, or on Daily
+        // tapped at night), fetch ephemerally for the right day and DON'T
+        // store — fresh() always writes THIS_PERIOD, which would clobber the
+        // current window's snapshot the Today screen is showing.
+        if (requestedPeriod == currentPeriod) {
+            DiagLog.i(TAG, "Play cache miss for current window $requestedPeriod; fetching fresh.")
+            return fresh(location, prefs, requestedPeriod)
+        }
+        DiagLog.i(TAG, "Play cache miss for non-current window $requestedPeriod (+${dayOffset}d); ephemeral fetch.")
         return try {
-            deliver(insight, prefs, prose)
-            DiagLog.i(TAG, "Replayed insight for ${insight.forDate}: $prose")
-            Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
+            val snapshot = capturedSnapshot(location, prefs, requestedPeriod, dayOffset)
+            val insight = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
+            val prose = formatProse(insight, prefs)
+            deliverBestEffort(insight, prefs, prose, "Previewed")
         } catch (ce: CancellationException) {
             throw ce
         } catch (t: Throwable) {
-            // Log and report success: replay is best-effort, and a delivery
-            // failure here shouldn't surface as a refresh failure banner —
-            // the cached insight is still on screen, and the next genuine
-            // refresh will retry the delivery pipeline.
-            DiagLog.e(TAG, "Replay delivery failed.", t)
+            DiagLog.e(TAG, "Play fetch failed for $requestedPeriod.", t)
             Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
         }
+    }
+
+    /**
+     * Runs [deliver] for an on-demand play, swallowing delivery failures as a
+     * logged success: a Play/Preview that fails to speak shouldn't surface as a
+     * refresh failure banner — whatever's on screen is still valid, and the
+     * next genuine refresh will retry the pipeline. [verb] tags the success log
+     * ("Replayed" / "Previewed").
+     */
+    private suspend fun deliverBestEffort(
+        insight: Insight,
+        prefs: UserPreferences,
+        prose: String,
+        verb: String,
+    ): Result = try {
+        deliver(insight, prefs, prose)
+        DiagLog.i(TAG, "$verb insight for ${insight.forDate}: $prose")
+        Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
+    } catch (ce: CancellationException) {
+        throw ce
+    } catch (t: Throwable) {
+        DiagLog.e(TAG, "$verb delivery failed.", t)
+        Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
     }
 
     private suspend fun fresh(
@@ -1330,11 +1389,11 @@ class FetchAndNotifyWorker(
         // Distinct queue from the daily / tonight runs so an offline Play
         // tap sitting in the queue can't block the morning alarm: alarm
         // enqueues use ExistingWorkPolicy.KEEP and would otherwise be
-        // dropped in favour of the pending replay, leaving the user
+        // dropped in favour of the pending play, leaving the user
         // listening to yesterday's cached insight at 7am instead of the
-        // fresh forecast. Race vs. concurrent replays is handled in the
+        // fresh forecast. Race vs. concurrent plays is handled in the
         // UI gate — see TodayState.anyWorkActive.
-        const val UNIQUE_WORK_NAME_REPLAY = "insight_replay"
+        const val UNIQUE_WORK_NAME_PLAY = "insight_play"
 
         // Output Data keys for surfacing failure reasons in the UI.
         const val KEY_REASON = "reason"
@@ -1480,15 +1539,15 @@ class FetchAndNotifyWorker(
         val SILENT_REFRESH_MIN_AGE: Duration = Duration.ofHours(1)
 
         /**
-         * Set true via [enqueueReplay] when the user taps the Today screen's
-         * Play button. The worker re-runs the full deliver() fan-out
-         * (notification + TTS + MQTT + cast) on the cached this-period
-         * snapshot — no fetch, no Open-Meteo call, no Gemini insight call.
-         * The cached snapshot is derived against the *current* prefs so any
-         * Format / clothes-rules changes since the snapshot was captured are
-         * spoken too.
+         * Set true via [enqueuePlay] for on-demand play — the Today screen's
+         * Play button and the Schedule settings "Play now" buttons. The worker
+         * runs the full deliver() fan-out (notification + TTS + MQTT + cast)
+         * for the requested period: replaying a fresh same-day cached snapshot
+         * when one exists (no fetch), or fetching fresh when the cache is empty
+         * or stale. Cached deliveries derive against the *current* prefs so any
+         * Format / clothes-rules changes since capture are spoken too.
          */
-        internal const val KEY_REPLAY_ONLY = "replay_only"
+        internal const val KEY_PLAY = "play"
 
         fun enqueueOneShot(
             context: Context,
@@ -1533,18 +1592,19 @@ class FetchAndNotifyWorker(
         }
 
         /**
-         * Replay the cached this-period insight via the full delivery
-         * fan-out — Today's Play button. Runs on its own
-         * [UNIQUE_WORK_NAME_REPLAY] queue so an offline Play tap sitting
-         * here can't block a later scheduled alarm fire (which uses KEEP
-         * on [UNIQUE_WORK_NAME] / [UNIQUE_WORK_NAME_TONIGHT] and would
-         * otherwise get dropped in favour of the pending replay).
-         * REPLACE because the user's most-recent Play tap is the one
-         * that matters; concurrent Refresh+Play double-delivery is
-         * prevented by the UI gate (see [TodayState.anyWorkActive]),
-         * not by sharing a queue.
+         * Play the [period] insight via the full delivery fan-out — the Today
+         * screen's Play button and the Schedule settings "Play now" buttons.
+         * Replays a fresh same-day cached snapshot when one exists, else
+         * fetches fresh (see [playInsight]). Runs on its own
+         * [UNIQUE_WORK_NAME_PLAY] queue so an offline tap sitting here can't
+         * block a later scheduled alarm fire (which uses KEEP on
+         * [UNIQUE_WORK_NAME] / [UNIQUE_WORK_NAME_TONIGHT] and would otherwise
+         * get dropped in favour of the pending play). REPLACE because the
+         * user's most-recent tap is the one that matters; concurrent
+         * Refresh+Play double-delivery is prevented by the UI gate (see
+         * [TodayState.anyWorkActive]), not by sharing a queue.
          */
-        fun enqueueReplay(context: Context, period: ForecastPeriod) {
+        fun enqueuePlay(context: Context, period: ForecastPeriod) {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
@@ -1554,14 +1614,14 @@ class FetchAndNotifyWorker(
                 .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
                 .setInputData(
                     workDataOf(
-                        KEY_REPLAY_ONLY to true,
+                        KEY_PLAY to true,
                         KEY_PERIOD to period.name,
                     )
                 )
                 .build()
 
             WorkManager.getInstance(context)
-                .enqueueUniqueWork(UNIQUE_WORK_NAME_REPLAY, ExistingWorkPolicy.REPLACE, request)
+                .enqueueUniqueWork(UNIQUE_WORK_NAME_PLAY, ExistingWorkPolicy.REPLACE, request)
         }
 
         /**
@@ -1703,5 +1763,23 @@ class FetchAndNotifyWorker(
             }
             return if (inTonightWindow) ForecastPeriod.TONIGHT else ForecastPeriod.TODAY
         }
+
+        /**
+         * Day offset (0 = today, 1 = tomorrow) of the next occurrence of
+         * [requestedPeriod] given the [currentPeriod] schedule window — used by
+         * on-demand play to target the right day. Only the daytime ("TODAY")
+         * cast previewed once we're already in the nightly window advances to
+         * tomorrow: today's daytime cast has passed, so "Play now" on Daily
+         * means tomorrow's. The nightly cast (still upcoming or ongoing) and any
+         * current-window play stay on today. Mirrors the pairing in
+         * [generatePairedInsight], whose post-nightly NEXT_PERIOD pre-capture is
+         * exactly tomorrow's daytime.
+         */
+        internal fun nextOccurrenceDayOffset(
+            requestedPeriod: ForecastPeriod,
+            currentPeriod: ForecastPeriod,
+        ): Int = if (
+            requestedPeriod == ForecastPeriod.TODAY && currentPeriod == ForecastPeriod.TONIGHT
+        ) 1 else 0
     }
 }

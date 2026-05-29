@@ -245,24 +245,38 @@ fun TodayScreen(
                             )
                         }
                     }
-                    // Play replays the cached this-period insight through the
+                    // Play delivers the current window's insight through the
                     // full deliver() pipeline — notification, phone-speaker
-                    // TTS, MQTT publish, cast — without a fetch. Disabled
-                    // when there's nothing to play (no cached insight) or
-                    // anything is active on the alarm / replay queues
-                    // (state.anyWorkActive). The latter is broader than
-                    // [isWorking]: it stays true through the post-fetch
-                    // TTS / MQTT / Cast window that the spinner-banner
-                    // logic intentionally treats as Idle, so a tap during
-                    // a Refresh's announcement (or a Replay's own) can't
-                    // start a second concurrent delivery now that Play
-                    // runs on its own unique-work queue.
-                    val playPeriod = state.thisPeriodInsight?.period
+                    // TTS, MQTT publish, cast. It replays a fresh cached
+                    // snapshot when one exists, else fetches fresh, so it's
+                    // enabled whenever idle even with an empty cache (matching
+                    // Refresh). Gated only on [state.anyWorkActive]: broader
+                    // than [isWorking], it stays true through the post-fetch
+                    // TTS / MQTT / Cast window that the spinner-banner logic
+                    // treats as Idle, so a tap during a Refresh's announcement
+                    // (or a Play's own) can't start a second concurrent
+                    // delivery now that Play runs on its own unique-work queue.
                     IconButton(
                         onClick = {
-                            playPeriod?.let { triggerPlay(context, it) }
+                            // "Play" means the *current* cast, so derive the
+                            // window from the wall clock at tap time — not from
+                            // the cached page-0 insight's period. If the screen
+                            // sits open across the daily/nightly boundary that
+                            // cached period goes stale (still TODAY) while the
+                            // user now wants the nightly cast; the worker also
+                            // keys its next-occurrence logic off the current
+                            // window, so handing it the stale TODAY would make it
+                            // play tomorrow's daytime instead of tonight. Uses
+                            // the same window check Refresh does.
+                            val playPeriod =
+                                if (LocalTime.now().isInTonightWindow(state.morningTime, state.tonightTime)) {
+                                    ForecastPeriod.TONIGHT
+                                } else {
+                                    ForecastPeriod.TODAY
+                                }
+                            triggerPlay(context, playPeriod)
                         },
-                        enabled = !state.anyWorkActive && playPeriod != null,
+                        enabled = !state.anyWorkActive,
                     ) {
                         Icon(
                             imageVector = Icons.Default.PlayArrow,
@@ -326,6 +340,7 @@ fun TodayScreen(
             onDismissCelebrationCard = viewModel::dismissCelebrationCard,
             onDismissClothesPromoCard = viewModel::dismissClothesPromoCard,
             onDismissSchedulePromoCard = viewModel::dismissSchedulePromoCard,
+            onDismissPlayPromoCard = viewModel::dismissPlayPromoCard,
             onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
             onAdjustThreshold = viewModel::adjustClothesRuleThreshold,
             onNavigateToClothes = onNavigateToClothes,
@@ -367,6 +382,7 @@ private fun TodayContent(
     onDismissCelebrationCard: () -> Unit,
     onDismissClothesPromoCard: () -> Unit,
     onDismissSchedulePromoCard: () -> Unit,
+    onDismissPlayPromoCard: () -> Unit,
     onCalendarPermissionChanged: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
     onNavigateToClothes: () -> Unit,
@@ -449,6 +465,7 @@ private fun TodayContent(
                     onDismissClothesPromoCard = onDismissClothesPromoCard,
                     onOpenSchedule = onOpenSchedule,
                     onDismissSchedulePromoCard = onDismissSchedulePromoCard,
+                    onDismissPlayPromoCard = onDismissPlayPromoCard,
                     onOpenCalendarSettings = onOpenCalendarSettings,
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
@@ -529,6 +546,7 @@ private fun TodayContent(
                         onDismissCelebrationCard = onDismissCelebrationCard,
                         onDismissClothesPromoCard = onDismissClothesPromoCard,
                         onDismissSchedulePromoCard = onDismissSchedulePromoCard,
+                        onDismissPlayPromoCard = onDismissPlayPromoCard,
                     )
                     return@HorizontalPager
                 }
@@ -585,6 +603,7 @@ private fun TodayContent(
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onDismissClothesPromoCard = onDismissClothesPromoCard,
                     onDismissSchedulePromoCard = onDismissSchedulePromoCard,
+                    onDismissPlayPromoCard = onDismissPlayPromoCard,
                 )
             }
         }
@@ -614,6 +633,7 @@ private fun BannerStack(
     onDismissClothesPromoCard: () -> Unit,
     onOpenSchedule: () -> Unit,
     onDismissSchedulePromoCard: () -> Unit,
+    onDismissPlayPromoCard: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
     onSetUpLocation: () -> Unit,
@@ -621,7 +641,8 @@ private fun BannerStack(
     val bannerModifier = Modifier.fillMaxWidth()
     // Cap the setup/promo stack so a fresh user isn't buried under "set this
     // up" cards. Only the top [maxVisible] eligible promos render (priority
-    // location > privacy > clothes > celebration); the rest wait their turn.
+    // location > privacy > clothes > schedule > play > celebration); the rest
+    // wait their turn.
     // The operational banners below (update / build / crash / work / holiday)
     // are unaffected and keep their existing positions.
     val shownPromos = promoBannersToShow(
@@ -629,6 +650,7 @@ private fun BannerStack(
         telemetryNoticeVisible = state.telemetryNoticeVisible,
         clothesPromoEligible = state.clothesPromoCardVisible,
         schedulePromoEligible = state.schedulePromoCardVisible,
+        playPromoEligible = state.playPromoCardVisible,
         celebrationEligible = state.celebrationCardVisible,
         hasForecast = state.thisPeriodInsight != null,
     )
@@ -684,6 +706,16 @@ private fun BannerStack(
         onDismiss = onDismissSchedulePromoCard,
         modifier = bannerModifier,
     )
+    // "Preview your ClothesCast" nudge — point the user at the top-bar play
+    // button so they can hear the cast on demand instead of waiting for the
+    // alarm. Gated upstream on a cast slot being enabled (true by default for
+    // the morning cast) plus not dismissed. Carries no CTA — the play button it
+    // describes is already in the top app bar.
+    PlayPromoCard(
+        visible = PromoBanner.PLAY in shownPromos,
+        onDismiss = onDismissPlayPromoCard,
+        modifier = bannerModifier,
+    )
     // Promo card for the calendar-sourced holiday + birthday theming. Gated
     // upstream on toggles + dismissal ([TodayState.celebrationCardVisible]),
     // held back by [promoBannersToShow] until the user has seen a forecast
@@ -729,6 +761,7 @@ internal fun HomePageScaffold(
     onDismissCelebrationCard: () -> Unit,
     onDismissClothesPromoCard: () -> Unit,
     onDismissSchedulePromoCard: () -> Unit,
+    onDismissPlayPromoCard: () -> Unit,
     onNavigateToClothes: () -> Unit,
     onAdjustThreshold: (String, Double) -> Unit,
     content: @Composable ColumnScope.() -> Unit,
@@ -765,6 +798,7 @@ internal fun HomePageScaffold(
                     onDismissClothesPromoCard = onDismissClothesPromoCard,
                     onOpenSchedule = onOpenSchedule,
                     onDismissSchedulePromoCard = onDismissSchedulePromoCard,
+                    onDismissPlayPromoCard = onDismissPlayPromoCard,
                     onOpenCalendarSettings = onOpenCalendarSettings,
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
@@ -832,6 +866,7 @@ private fun TodayPage(
     onDismissCelebrationCard: () -> Unit,
     onDismissClothesPromoCard: () -> Unit,
     onDismissSchedulePromoCard: () -> Unit,
+    onDismissPlayPromoCard: () -> Unit,
 ) {
     val scrollScope = rememberCoroutineScope()
     // Captured via onGloballyPositioned on the ConfidenceChip below so the
@@ -851,6 +886,7 @@ private fun TodayPage(
         onDismissCelebrationCard = onDismissCelebrationCard,
         onDismissClothesPromoCard = onDismissClothesPromoCard,
         onDismissSchedulePromoCard = onDismissSchedulePromoCard,
+        onDismissPlayPromoCard = onDismissPlayPromoCard,
         onNavigateToClothes = onNavigateToClothes,
         onAdjustThreshold = onAdjustThreshold,
     ) {
@@ -3013,12 +3049,12 @@ private fun triggerRefresh(
 }
 
 private fun triggerPlay(context: android.content.Context, period: ForecastPeriod) {
-    // Replay against the cached snapshot's period (not wall-clock) so a
-    // morning insight still in the cache at noon replays as TODAY, and a
-    // tonight insight viewed before its tonight-window starts replays as
-    // TONIGHT. The unique work name is keyed on this so a Refresh and a
+    // Play the requested period: replays a fresh cached snapshot when one
+    // exists, else fetches fresh so an empty / stale cache still delivers
+    // rather than silently no-opping (see FetchAndNotifyWorker.playInsight).
+    // The unique work name is keyed on the play queue so a Refresh and a
     // Play can't run concurrently for the same slot.
-    FetchAndNotifyWorker.enqueueReplay(context.applicationContext, period)
+    FetchAndNotifyWorker.enqueuePlay(context.applicationContext, period)
     val toastRes = when (period) {
         ForecastPeriod.TODAY -> R.string.today_play_toast_daily
         ForecastPeriod.TONIGHT -> R.string.today_play_toast_nightly

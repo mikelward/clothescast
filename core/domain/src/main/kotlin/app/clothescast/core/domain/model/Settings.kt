@@ -681,6 +681,14 @@ data class UserPreferences(
      */
     val scheduleCardDismissed: Boolean = false,
     /**
+     * Set to true once the user dismisses the Today-screen "Preview your daily
+     * ClothesCast now" promo card via its X button. Unlike
+     * [scheduleCardDismissed], this card *appears* once a schedule slot is
+     * enabled (it points at the play button for the cast they just scheduled),
+     * so only the explicit dismissal hides it.
+     */
+    val playCardDismissed: Boolean = false,
+    /**
      * Bumped to `System.currentTimeMillis()` whenever the user re-grants
      * `READ_CALENDAR` via the in-app permission flow. Exists purely to
      * force the [SettingsRepository.preferences] flow to re-emit so any

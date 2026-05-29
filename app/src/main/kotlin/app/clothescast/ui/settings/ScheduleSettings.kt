@@ -1,5 +1,6 @@
 package app.clothescast.ui.settings
 
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -20,8 +21,10 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -50,9 +53,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import app.clothescast.R
 import app.clothescast.core.domain.model.DeliveryMode
+import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.TimeFormat
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.notification.NotificationPermission
+import app.clothescast.work.FetchAndNotifyWorker
 import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.LocalTimeFormat
 import app.clothescast.ui.formatHourMinute
@@ -86,6 +91,10 @@ internal fun ScheduleContent(
     onSetTtsEngine: (TtsEngine) -> Unit,
     onSetGeminiKey: (String) -> Unit,
     onClearGeminiKey: () -> Unit,
+    // Gates the per-section "Play now" buttons: false while any daily / tonight
+    // / play worker is active, so a preview can't start a second concurrent
+    // delivery. Defaulted true for previews/tests that don't observe work state.
+    previewEnabled: Boolean = true,
 ) {
     val context = LocalContext.current
     var speechSheetOpen by rememberSaveable { mutableStateOf(false) }
@@ -160,6 +169,8 @@ internal fun ScheduleContent(
                 onSetMentionEveningEvents = onSetDailyMentionEveningEvents,
                 onRequestNotificationPermission = requestNotificationPermission,
                 onRequestSpeechSetup = requestSpeechSetup,
+                onPreview = { triggerPreview(context, ForecastPeriod.TODAY) },
+                previewEnabled = previewEnabled,
             )
             NightCard(
                 time = tonightTime,
@@ -179,6 +190,8 @@ internal fun ScheduleContent(
                 onSetDeliveryMode = onSetTonightDeliveryMode,
                 onRequestNotificationPermission = requestNotificationPermission,
                 onRequestSpeechSetup = requestSpeechSetup,
+                onPreview = { triggerPreview(context, ForecastPeriod.TONIGHT) },
+                previewEnabled = previewEnabled,
             )
         }
     }
@@ -211,6 +224,8 @@ private fun DayCard(
     onSetMentionEveningEvents: (Boolean) -> Unit,
     onRequestNotificationPermission: () -> Unit,
     onRequestSpeechSetup: () -> Unit,
+    onPreview: () -> Unit,
+    previewEnabled: Boolean,
 ) {
     var pickerOpen by remember { mutableStateOf(false) }
 
@@ -242,6 +257,7 @@ private fun DayCard(
                 checked = mentionEveningEvents,
                 onCheckedChange = onSetMentionEveningEvents,
             )
+            PreviewButton(onClick = onPreview, enabled = previewEnabled)
         }
     }
 
@@ -305,6 +321,8 @@ private fun NightCard(
     onSetDeliveryMode: (DeliveryMode) -> Unit,
     onRequestNotificationPermission: () -> Unit,
     onRequestSpeechSetup: () -> Unit,
+    onPreview: () -> Unit,
+    previewEnabled: Boolean,
 ) {
     var pickerOpen by remember { mutableStateOf(false) }
 
@@ -336,6 +354,7 @@ private fun NightCard(
                 checked = notifyOnlyOnEvents,
                 onCheckedChange = onSetNotifyOnlyOnEvents,
             )
+            PreviewButton(onClick = onPreview, enabled = previewEnabled)
         }
     }
 
@@ -491,4 +510,45 @@ private fun deliveryModeOf(notify: Boolean, tts: Boolean): DeliveryMode = when {
     notify -> DeliveryMode.NOTIFICATION_ONLY
     tts -> DeliveryMode.TTS_ONLY
     else -> DeliveryMode.SILENT
+}
+
+/**
+ * "Play now" action at the bottom of each schedule section — lets the user
+ * preview the cast that section will deliver without waiting for the alarm.
+ * Right-aligned so it reads as a secondary action under the section's toggles.
+ */
+@Composable
+private fun PreviewButton(onClick: () -> Unit, enabled: Boolean) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
+    ) {
+        FilledTonalButton(onClick = onClick, enabled = enabled) {
+            Icon(
+                imageVector = Icons.Filled.PlayArrow,
+                contentDescription = null,
+                modifier = Modifier.size(FilterChipDefaults.IconSize),
+            )
+            Text(
+                text = stringResource(R.string.settings_schedule_preview),
+                modifier = Modifier.padding(start = 8.dp),
+            )
+        }
+    }
+}
+
+/**
+ * Plays the [period] cast on demand via the shared play path — replaying a
+ * fresh cached snapshot when one exists, else fetching fresh (see
+ * [FetchAndNotifyWorker.playInsight]). Honours the section's DeliveryMode, so
+ * the preview matches what the scheduled cast will do. Mirrors the Today
+ * screen's Play button (triggerPlay).
+ */
+private fun triggerPreview(context: android.content.Context, period: ForecastPeriod) {
+    FetchAndNotifyWorker.enqueuePlay(context.applicationContext, period)
+    val toastRes = when (period) {
+        ForecastPeriod.TODAY -> R.string.today_play_toast_daily
+        ForecastPeriod.TONIGHT -> R.string.today_play_toast_nightly
+    }
+    Toast.makeText(context, context.getString(toastRes), Toast.LENGTH_SHORT).show()
 }

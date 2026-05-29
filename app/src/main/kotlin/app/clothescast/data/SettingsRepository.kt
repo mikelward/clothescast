@@ -424,6 +424,10 @@ class SettingsRepository(
         dataStore.edit { it[SCHEDULE_CARD_DISMISSED] = dismissed }
     }
 
+    suspend fun setPlayCardDismissed(dismissed: Boolean) {
+        dataStore.edit { it[PLAY_CARD_DISMISSED] = dismissed }
+    }
+
     /**
      * Bumps [UserPreferences.calendarPermissionRecheckTick] to the current
      * wall-clock millis so the preferences flow re-emits. Use after the
@@ -873,6 +877,7 @@ class SettingsRepository(
         val celebrationCardDismissed = this[CELEBRATION_CARD_DISMISSED] == true
         val clothesPromoCardDismissed = this[CLOTHES_PROMO_CARD_DISMISSED] == true
         val scheduleCardDismissed = this[SCHEDULE_CARD_DISMISSED] == true
+        val playCardDismissed = this[PLAY_CARD_DISMISSED] == true
         val calendarPermissionRecheckTick = this[CALENDAR_PERMISSION_RECHECK_TICK] ?: 0L
         val tonightTime = this[TONIGHT_TIME]?.let { LocalTime.parse(it, TIME_FORMAT) }
             ?: DEFAULT_TONIGHT_TIME
@@ -1020,6 +1025,7 @@ class SettingsRepository(
             celebrationCardDismissed = celebrationCardDismissed,
             clothesPromoCardDismissed = clothesPromoCardDismissed,
             scheduleCardDismissed = scheduleCardDismissed,
+            playCardDismissed = playCardDismissed,
             calendarPermissionRecheckTick = calendarPermissionRecheckTick,
             dailyEnabled = dailyEnabled,
             tonightSchedule = Schedule(time = tonightTime, days = tonightDays, zoneId = zone),
@@ -1264,6 +1270,7 @@ class SettingsRepository(
         private val CELEBRATION_CARD_DISMISSED = booleanPreferencesKey("celebration_card_dismissed")
         private val CLOTHES_PROMO_CARD_DISMISSED = booleanPreferencesKey("clothes_promo_card_dismissed")
         private val SCHEDULE_CARD_DISMISSED = booleanPreferencesKey("schedule_card_dismissed")
+        private val PLAY_CARD_DISMISSED = booleanPreferencesKey("play_card_dismissed")
         private val CALENDAR_PERMISSION_RECHECK_TICK = longPreferencesKey("calendar_permission_recheck_tick")
         private val DAILY_ENABLED = booleanPreferencesKey("daily_enabled")
         private val TONIGHT_TIME = stringPreferencesKey("tonight_time_hhmm")

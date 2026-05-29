@@ -17,9 +17,12 @@ import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
+import app.clothescast.core.domain.model.PrecipProbability.LIKELY_THRESHOLD
+import app.clothescast.core.domain.model.PrecipProbability.POSSIBLE_THRESHOLD
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
+import app.clothescast.core.domain.model.isPrecipitation
 import java.time.LocalTime
 import java.util.Locale
 import kotlin.math.abs
@@ -411,18 +414,6 @@ class RenderInsightSummary {
         return WeatherCondition.RAIN
     }
 
-    private fun WeatherCondition.isPrecipitation(): Boolean = when (this) {
-        WeatherCondition.DRIZZLE,
-        WeatherCondition.RAIN,
-        WeatherCondition.SNOW,
-        WeatherCondition.THUNDERSTORM -> true
-        WeatherCondition.CLEAR,
-        WeatherCondition.PARTLY_CLOUDY,
-        WeatherCondition.CLOUDY,
-        WeatherCondition.FOG,
-        WeatherCondition.UNKNOWN -> false
-    }
-
     private fun calendarTieInClause(
         items: List<String>,
         peak: PeakPrecip?,
@@ -446,13 +437,4 @@ class RenderInsightSummary {
         val condition: WeatherCondition,
         val likelihood: PrecipLikelihood,
     )
-
-    companion object {
-        // Per-model agreement thresholds. The user's mental model is "1 model
-        // says rain → hedge it as a chance; majority of models say a lot of
-        // rain → just say rain". 30% is the historical base-only trigger
-        // threshold; 50% is the per-model bar for a *confident* announcement.
-        internal const val POSSIBLE_THRESHOLD: Double = 30.0
-        internal const val LIKELY_THRESHOLD: Double = 50.0
-    }
 }

@@ -207,7 +207,7 @@ private suspend fun buildChartBitmap(context: Context, weekly: Boolean): Bitmap?
     val bitmap = withTimeoutOrNull(RENDER_TIMEOUT_MS) {
         renderComposableToBitmap(context, RENDER_WIDTH_PX, RENDER_HEIGHT_PX) {
             ClothesCastTheme(darkTheme = darkTheme, colorPalette = palette) {
-                WidgetForecastChartCanvas(
+                WidgetForecastChart(
                     hourly = hourly,
                     days = days,
                     temperatureUnit = prefs.temperatureUnit,

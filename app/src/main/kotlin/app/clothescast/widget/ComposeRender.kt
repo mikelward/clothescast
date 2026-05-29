@@ -3,7 +3,9 @@ package app.clothescast.widget
 import android.app.Presentation
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.PixelFormat
+import android.graphics.drawable.ColorDrawable
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
 import android.media.Image
@@ -84,7 +86,18 @@ internal suspend fun renderComposableToBitmap(
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION,
         )
         presentation = Presentation(context.applicationContext, virtualDisplay.display).apply {
-            window?.setLayout(widthPx, heightPx)
+            // Render onto a transparent window so only the content's own opaque
+            // pixels (the chart card) land in the bitmap; everything around it —
+            // and the card's rounded-corner cutouts — stays transparent, letting
+            // the Glance widgetBackground show through when the bitmap is drawn
+            // (matching how the Outfit widget composites its transparent icons).
+            // The Presentation's default window background is opaque and light,
+            // which previously baked white corners into the dark-mode widget.
+            // The RGBA_8888 ImageReader preserves the alpha channel.
+            window?.apply {
+                setLayout(widthPx, heightPx)
+                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            }
         }
         val composeView = ComposeView(presentation.context).apply {
             setViewTreeLifecycleOwner(owner)

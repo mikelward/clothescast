@@ -98,34 +98,48 @@ internal fun SettingsRootPreview() {
 @Preview(name = "Settings · Schedule", widthDp = 360)
 @Composable
 internal fun SettingsSchedulePreview() {
-    SettingsFrame {
-        ScheduleContent(
-            time = LocalTime.of(7, 0),
-            days = Schedule.EVERY_DAY,
-            dailyEnabled = true,
-            tonightTime = LocalTime.of(19, 0),
-            tonightDays = Schedule.EVERY_DAY,
-            tonightEnabled = true,
-            tonightNotifyOnlyOnEvents = false,
-            dailyMentionEveningEvents = false,
-            deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
-            tonightDeliveryMode = DeliveryMode.NOTIFICATION_ONLY,
-            ttsEngine = TtsEngine.DEVICE,
-            geminiKeyConfigured = false,
-            padding = PaddingValues(0.dp),
-            onSetSchedule = { _, _ -> },
-            onSetDailyEnabled = {},
-            onSetTonightSchedule = { _, _ -> },
-            onSetTonightEnabled = {},
-            onSetTonightNotifyOnlyOnEvents = {},
-            onSetDailyMentionEveningEvents = {},
-            onSetDeliveryMode = {},
-            onSetTonightDeliveryMode = {},
-            onSetTtsEngine = {},
-            onSetGeminiKey = {},
-            onClearGeminiKey = {},
-        )
-    }
+    SettingsFrame { ScheduleContentSample() }
+}
+
+// Same screen as SettingsSchedulePreview, but its snapshot is captured with
+// POST_NOTIFICATIONS denied (see PreviewSnapshots) so it covers the
+// permission-blocked state: the notification channel toggles read off
+// regardless of the stored delivery mode and each card surfaces the
+// recoverable-grant banner.
+@Preview(name = "Settings · Schedule (notifications blocked)", widthDp = 360)
+@Composable
+internal fun SettingsScheduleNotificationsBlockedPreview() {
+    SettingsFrame { ScheduleContentSample() }
+}
+
+@Composable
+private fun ScheduleContentSample() {
+    ScheduleContent(
+        time = LocalTime.of(7, 0),
+        days = Schedule.EVERY_DAY,
+        dailyEnabled = true,
+        tonightTime = LocalTime.of(19, 0),
+        tonightDays = Schedule.EVERY_DAY,
+        tonightEnabled = true,
+        tonightNotifyOnlyOnEvents = false,
+        dailyMentionEveningEvents = false,
+        deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
+        tonightDeliveryMode = DeliveryMode.NOTIFICATION_ONLY,
+        ttsEngine = TtsEngine.DEVICE,
+        geminiKeyConfigured = false,
+        padding = PaddingValues(0.dp),
+        onSetSchedule = { _, _ -> },
+        onSetDailyEnabled = {},
+        onSetTonightSchedule = { _, _ -> },
+        onSetTonightEnabled = {},
+        onSetTonightNotifyOnlyOnEvents = {},
+        onSetDailyMentionEveningEvents = {},
+        onSetDeliveryMode = {},
+        onSetTonightDeliveryMode = {},
+        onSetTtsEngine = {},
+        onSetGeminiKey = {},
+        onClearGeminiKey = {},
+    )
 }
 
 @Preview(name = "Settings · Speech setup (Gemini)", widthDp = 360)

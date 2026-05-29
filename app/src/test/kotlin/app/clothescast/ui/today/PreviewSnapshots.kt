@@ -45,6 +45,7 @@ import app.clothescast.ui.settings.SettingsLocationPreview
 import app.clothescast.ui.settings.SettingsPrivacyPreview
 import app.clothescast.ui.settings.SettingsRegionPreview
 import app.clothescast.ui.settings.SettingsRootPreview
+import app.clothescast.ui.settings.SettingsScheduleNotificationsBlockedPreview
 import app.clothescast.ui.settings.SettingsSchedulePreview
 import app.clothescast.ui.settings.SettingsSmartHomePreview
 import app.clothescast.ui.settings.SettingsSpeechSetupDevicePreview
@@ -586,7 +587,25 @@ class PreviewSnapshots {
     @Test
     @Config(qualifiers = "w360dp-h1600dp-xhdpi")
     fun settings_root() = capture { SettingsRootPreview() }
-    @Test fun settings_schedule() = capture { SettingsSchedulePreview() }
+    // ScheduleContent reads POST_NOTIFICATIONS via LocalContext to decide
+    // whether the notification channel toggles read as on; grant it so the
+    // preview captures the enabled-and-permitted happy path rather than the
+    // permission-blocked state (toggles off + banner), which is already
+    // covered by settings_root.
+    @Test fun settings_schedule() {
+        shadowOf(RuntimeEnvironment.getApplication())
+            .grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
+        capture { SettingsSchedulePreview() }
+    }
+
+    // The permission-blocked counterpart: with POST_NOTIFICATIONS denied (the
+    // @Before default) the notification toggles read off regardless of the
+    // stored delivery mode and each card surfaces the recoverable-grant banner.
+    // Taller viewport so both banners fit in one frame.
+    @Test
+    @Config(qualifiers = "w360dp-h900dp-xhdpi")
+    fun settings_schedule_notifications_blocked() =
+        capture { SettingsScheduleNotificationsBlockedPreview() }
     @Test fun settings_speech_setup_gemini() = capture { SettingsSpeechSetupGeminiPreview() }
     @Test fun settings_speech_setup_device() = capture { SettingsSpeechSetupDevicePreview() }
     @Test fun settings_speech_setup_smart_home() = capture { SettingsSpeechSetupSmartHomePreview() }

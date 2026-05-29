@@ -178,35 +178,48 @@ object Telemetry {
     }
 
     /**
-     * Emits a `settings_snapshot` event whose params mirror the non-voice user
-     * settings. Fires once per process start (the DataStore-backed flow
-     * replays its current value to each new subscriber) and again every time
-     * the resolved snapshot's `equals` changes within the process — i.e.
-     * whenever the user toggles a setting. The per-launch baseline is
-     * intentional: it lets reports see "what's the default-vs-customised
-     * mix across the population?" without requiring the user to interact.
+     * Emits the user's non-voice settings as one event per Settings page —
+     * `settings_schedule`, `settings_clothes`, `settings_format`,
+     * `settings_region`, `settings_display`, and `settings_calendar` — so each
+     * event name mirrors the screen the user actually edited, and a new
+     * setting lands in the event for its own page.
+     *
+     * Why per-page events instead of one combined event: a Firebase Analytics
+     * event caps at 25 params, and the combined snapshot had reached exactly
+     * that, leaving no room for the next setting (Firebase silently drops
+     * params over the cap). Splitting by page gives each screen its own
+     * 25-param budget to grow into and keeps every dimension natively
+     * sliceable in reports. The split is content-neutral — the same
+     * already-coarsened values cross the device boundary, just grouped under
+     * different event names; no new field is sent (see PRIVACY.md).
+     *
+     * Fires once per process start (the DataStore-backed flow replays its
+     * current value to each new subscriber) and again every time the resolved
+     * snapshot's `equals` changes within the process — i.e. whenever the user
+     * toggles a setting. The per-launch baseline is intentional: it lets
+     * reports see "what's the default-vs-customised mix across the
+     * population?" without requiring the user to interact.
      */
     private fun logSettingsSnapshot(snapshot: SettingsSnapshot) {
         val analytics = analyticsRef ?: return
-        val params = Bundle().apply {
-            putString("temperature_unit_setting", snapshot.temperatureUnitSetting)
-            putString("temperature_unit_effective", snapshot.temperatureUnitEffective)
-            putString("distance_unit_setting", snapshot.distanceUnitSetting)
-            putString("distance_unit_effective", snapshot.distanceUnitEffective)
-            putString("delivery_mode_daily", snapshot.deliveryModeDaily)
-            putString("delivery_mode_tonight", snapshot.deliveryModeTonight)
-            putString("theme_mode", snapshot.themeMode)
-            putString("color_palette", snapshot.colorPalette)
-            putString("default_bottom", snapshot.defaultBottom)
-            putString("default_top", snapshot.defaultTop)
+        // Event order mirrors the Settings root menu order (see SettingsDest).
+        analytics.logEvent(EVENT_SETTINGS_SCHEDULE, Bundle().apply {
             putLong("daily_enabled", snapshot.dailyEnabled.toLongFlag())
             putString("daily_time_bucket_hour", snapshot.dailyTimeBucketHour)
             putLong("daily_days_count", snapshot.dailyDaysCount.toLong())
+            putString("delivery_mode_daily", snapshot.deliveryModeDaily)
             putLong("tonight_enabled", snapshot.tonightEnabled.toLongFlag())
             putString("tonight_time_bucket_hour", snapshot.tonightTimeBucketHour)
             putLong("tonight_days_count", snapshot.tonightDaysCount.toLong())
+            putString("delivery_mode_tonight", snapshot.deliveryModeTonight)
             putLong("tonight_notify_only_on_events", snapshot.tonightNotifyOnlyOnEvents.toLongFlag())
             putLong("daily_mention_evening_events", snapshot.dailyMentionEveningEvents.toLongFlag())
+        })
+        analytics.logEvent(EVENT_SETTINGS_CLOTHES, Bundle().apply {
+            putString("default_bottom", snapshot.defaultBottom)
+            putString("default_top", snapshot.defaultTop)
+        })
+        analytics.logEvent(EVENT_SETTINGS_FORMAT, Bundle().apply {
             putString("clothes_mention_mode", snapshot.clothesMentionMode)
             putString("range_format", snapshot.rangeFormat)
             putString("clothes_format", snapshot.clothesFormat)
@@ -214,9 +227,20 @@ object Telemetry {
             putString("rain_accessory", snapshot.rainAccessory)
             putLong("delta_threshold_c", snapshot.deltaThresholdC.toLong())
             putString("delta_format", snapshot.deltaFormat)
+        })
+        analytics.logEvent(EVENT_SETTINGS_REGION, Bundle().apply {
+            putString("temperature_unit_setting", snapshot.temperatureUnitSetting)
+            putString("temperature_unit_effective", snapshot.temperatureUnitEffective)
+            putString("distance_unit_setting", snapshot.distanceUnitSetting)
+            putString("distance_unit_effective", snapshot.distanceUnitEffective)
+        })
+        analytics.logEvent(EVENT_SETTINGS_DISPLAY, Bundle().apply {
+            putString("theme_mode", snapshot.themeMode)
+            putString("color_palette", snapshot.colorPalette)
+        })
+        analytics.logEvent(EVENT_SETTINGS_CALENDAR, Bundle().apply {
             putLong("use_calendar_events", snapshot.useCalendarEvents.toLongFlag())
-        }
-        analytics.logEvent(EVENT_SETTINGS_SNAPSHOT, params)
+        })
     }
 
     /**
@@ -252,7 +276,15 @@ object Telemetry {
     private const val EVENT_API_CALL = "api_call"
     private const val EVENT_NOTIFICATION_DELIVERY = "notification_delivery"
     private const val EVENT_DAILY_REFRESH = "daily_refresh"
-    private const val EVENT_SETTINGS_SNAPSHOT = "settings_snapshot"
+    // The non-voice settings snapshot is split into one event per Settings
+    // page (names mirror the screen titles) so each stays well under
+    // Firebase's 25-param-per-event cap; see logSettingsSnapshot.
+    private const val EVENT_SETTINGS_SCHEDULE = "settings_schedule"
+    private const val EVENT_SETTINGS_CLOTHES = "settings_clothes"
+    private const val EVENT_SETTINGS_FORMAT = "settings_format"
+    private const val EVENT_SETTINGS_REGION = "settings_region"
+    private const val EVENT_SETTINGS_DISPLAY = "settings_display"
+    private const val EVENT_SETTINGS_CALENDAR = "settings_calendar"
     private const val EVENT_CLOTHES_RULES_SNAPSHOT = "clothes_rules_snapshot"
     private const val PARAM_ENDPOINT = "endpoint"
     private const val PARAM_OUTCOME = "outcome"

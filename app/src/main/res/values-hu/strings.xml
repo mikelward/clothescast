@@ -478,6 +478,11 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="widget_description">Az aktuális napszak outfitje egy pillantásra.</string>
     <string name="widget_empty_title">Még nincs outfit</string>
     <string name="widget_empty_subtitle">Koppints a ClothesCast megnyitásához</string>
+    <string name="feels_like_widget_label">Hőérzet diagram</string>
+    <string name="feels_like_widget_description">A hőérzet az aktuális időszakra.</string>
+    <string name="feels_like_week_widget_label">Hőérzet (7 nap)</string>
+    <string name="feels_like_week_widget_description">A hőérzet a következő 7 napra.</string>
+    <string name="feels_like_widget_empty_title">Még nincs előrejelzés</string>
 
     <!-- Onboarding. -->
     <string name="onboarding_title">Üdvözöl a ClothesCast</string>
@@ -917,6 +922,10 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_schedule_enabled">Napi ClothesCast</string>
     <string name="settings_delivery_notification">Értesítés</string>
     <string name="settings_delivery_tts">Felolvasás</string>
+    <string name="speech_setup_title">Beszélt ClothesCastok beállítása</string>
+    <string name="speech_setup_description">Válaszd ki, hogyan olvassa fel a ClothesCast. Használd az ingyenes eszközhangot, vagy adj hozzá egy Gemini API-kulcsot a kiváló minőségű hangokhoz.</string>
+    <string name="speech_setup_smart_home_note">Az okosotthoni beszédhez Gemini API-kulcs szükséges. A küldés enélkül is megjeleníti az öltözékedet.</string>
+    <string name="speech_setup_done">Kész</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Ruházat</string>
@@ -946,6 +955,11 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_format_rain_accessory_label">Esőkellék</string>
     <string name="settings_format_rain_accessory_none">Ki</string>
     <string name="settings_format_rain_accessory_umbrella">Esernyő</string>
+    <string name="settings_format_period_preamble_label">Bevezető</string>
+    <string name="settings_format_wear_preamble_label">„Vegyél fel” bevezető</string>
+    <string name="settings_format_preamble_always">Mindig</string>
+    <string name="settings_format_preamble_speech_only">Csak beszéd</string>
+    <string name="settings_format_preamble_never">Soha</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">Ha egyik szabály sem illik</string>
@@ -1182,6 +1196,10 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_clothes_promo_body">A ClothesCast szabályok alapján választ ruhákat. Állítsd be a hőmérsékleteket, és szabd testre a ruhatárad a Ruhák beállításokban.</string>
     <string name="today_clothes_promo_cta">Ruhák beállításai</string>
     <string name="today_clothes_promo_dismiss">Elvetés</string>
+    <string name="today_schedule_promo_title">Automatikus ClothesCastok</string>
+    <string name="today_schedule_promo_body">Válaszd ki, mikor kapsz értesítéseket és bejelentéseket.</string>
+    <string name="today_schedule_promo_cta">Ütemezés beállításai</string>
+    <string name="today_schedule_promo_dismiss">Elvetés</string>
     <string name="today_clothes_promo_title">Tedd magadévá a ruhákat</string>
     <string name="today_insight_format_link">Formátum</string>
     <string name="today_play">Lejátszás</string>

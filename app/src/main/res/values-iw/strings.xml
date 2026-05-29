@@ -146,6 +146,11 @@ standard in Israeli digital communication.
     <string name="widget_description">הלבוש של התקופה הנוכחית במבט מהיר.</string>
     <string name="widget_empty_title">אין לבוש עדיין</string>
     <string name="widget_empty_subtitle">הקש/י לפתיחת ClothesCast</string>
+    <string name="feels_like_widget_label">תרשים טמפרטורה מורגשת</string>
+    <string name="feels_like_widget_description">הטמפרטורה המורגשת לתקופה הנוכחית.</string>
+    <string name="feels_like_week_widget_label">טמפרטורה מורגשת (7 ימים)</string>
+    <string name="feels_like_week_widget_description">הטמפרטורה המורגשת ב-7 הימים הקרובים.</string>
+    <string name="feels_like_widget_empty_title">אין עדיין תחזית</string>
 
     <!-- Today — forecast chart -->
     <string name="today_forecast_title">טמפרטורה מורגשת</string>
@@ -924,6 +929,10 @@ standard in Israeli digital communication.
     <string name="settings_schedule_enabled">ClothesCast יומי</string>
     <string name="settings_delivery_notification">התראה</string>
     <string name="settings_delivery_tts">קריאה</string>
+    <string name="speech_setup_title">הגדרת ClothesCast מדוברים</string>
+    <string name="speech_setup_description">בחר/י כיצד ClothesCast שלך ייקרא בקול. השתמש/י בקול המכשיר החינמי, או הוסף/י מפתח Gemini API לקולות באיכות גבוהה.</string>
+    <string name="speech_setup_smart_home_note">דיבור בבית חכם דורש מפתח Gemini API. השידור מציג את הלבוש שלך גם בלעדיו.</string>
+    <string name="speech_setup_done">סיום</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">לבוש</string>
@@ -953,6 +962,11 @@ standard in Israeli digital communication.
     <string name="settings_format_rain_accessory_label">אביזר גשם</string>
     <string name="settings_format_rain_accessory_none">כבוי</string>
     <string name="settings_format_rain_accessory_umbrella">מטרייה</string>
+    <string name="settings_format_period_preamble_label">פתיח</string>
+    <string name="settings_format_wear_preamble_label">פתיח "לבש/י"</string>
+    <string name="settings_format_preamble_always">תמיד</string>
+    <string name="settings_format_preamble_speech_only">דיבור בלבד</string>
+    <string name="settings_format_preamble_never">אף פעם</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">אם אף חוק לא מתאים</string>
@@ -1191,6 +1205,10 @@ standard in Israeli digital communication.
     <string name="today_clothes_promo_body">ClothesCast בוחר תלבושות לפי כללים. שנה את הטמפרטורות והתאם אישית את המלתחה שלך בהגדרות בגדים.</string>
     <string name="today_clothes_promo_cta">הגדרות בגדים</string>
     <string name="today_clothes_promo_dismiss">סגור</string>
+    <string name="today_schedule_promo_title">ClothesCast אוטומטיים</string>
+    <string name="today_schedule_promo_body">בחר/י מתי לקבל התראות והכרזות.</string>
+    <string name="today_schedule_promo_cta">הגדרות לוח זמנים</string>
+    <string name="today_schedule_promo_dismiss">סגור</string>
     <string name="today_clothes_promo_title">התאם את הבגדים אישית</string>
     <string name="today_insight_format_link">פורמט</string>
     <string name="today_play">הפעל</string>

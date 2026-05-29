@@ -352,6 +352,11 @@ the displayed label localizes.
     <string name="widget_description">De outfit voor het huidige dagdeel in één oogopslag.</string>
     <string name="widget_empty_title">Nog geen outfit</string>
     <string name="widget_empty_subtitle">Tik om ClothesCast te openen</string>
+    <string name="feels_like_widget_label">Gevoelstemperatuurgrafiek</string>
+    <string name="feels_like_widget_description">De gevoelstemperatuur voor de huidige periode.</string>
+    <string name="feels_like_week_widget_label">Gevoelstemperatuur (7 dagen)</string>
+    <string name="feels_like_week_widget_description">De gevoelstemperatuur voor de komende 7 dagen.</string>
+    <string name="feels_like_widget_empty_title">Nog geen voorspelling</string>
 
     <!--
     Onboarding flow.
@@ -973,6 +978,10 @@ the displayed label localizes.
     <string name="settings_schedule_enabled">Dagelijkse ClothesCast</string>
     <string name="settings_delivery_notification">Meld</string>
     <string name="settings_delivery_tts">Voorlezen</string>
+    <string name="speech_setup_title">Gesproken ClothesCasts instellen</string>
+    <string name="speech_setup_description">Kies hoe je ClothesCast wordt voorgelezen. Gebruik de gratis apparaatstem of voeg een Gemini-API-sleutel toe voor stemmen van hoge kwaliteit.</string>
+    <string name="speech_setup_smart_home_note">Spraak in het smart home vereist een Gemini-API-sleutel. Uitzenden toont je outfit ook zonder sleutel.</string>
+    <string name="speech_setup_done">Klaar</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Kleding</string>
@@ -1002,6 +1011,11 @@ the displayed label localizes.
     <string name="settings_format_rain_accessory_label">Regenaccessoire</string>
     <string name="settings_format_rain_accessory_none">Uit</string>
     <string name="settings_format_rain_accessory_umbrella">Paraplu</string>
+    <string name="settings_format_period_preamble_label">Inleiding</string>
+    <string name="settings_format_wear_preamble_label">\"Draag\"-inleiding</string>
+    <string name="settings_format_preamble_always">Altijd</string>
+    <string name="settings_format_preamble_speech_only">Alleen gesproken</string>
+    <string name="settings_format_preamble_never">Nooit</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Als geen enkele regel past</string>
@@ -1238,6 +1252,10 @@ the displayed label localizes.
     <string name="today_clothes_promo_body">ClothesCast kiest outfits op basis van een set regels. Pas de temperaturen aan en personaliseer je garderobe in Kledinginstellingen.</string>
     <string name="today_clothes_promo_cta">Kledinginstellingen</string>
     <string name="today_clothes_promo_dismiss">Sluiten</string>
+    <string name="today_schedule_promo_title">Automatische ClothesCasts</string>
+    <string name="today_schedule_promo_body">Kies wanneer je meldingen en aankondigingen krijgt.</string>
+    <string name="today_schedule_promo_cta">Schema-instellingen</string>
+    <string name="today_schedule_promo_dismiss">Sluiten</string>
     <string name="today_clothes_promo_title">Maak de kleding van jou</string>
     <string name="today_insight_format_link">Formaat</string>
     <string name="today_play">Afspelen</string>

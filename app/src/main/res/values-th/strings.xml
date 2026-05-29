@@ -145,6 +145,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="widget_description">ชุดแต่งกายของช่วงเวลาปัจจุบันโดยสังเขป</string>
     <string name="widget_empty_title">ยังไม่มีชุดแต่งกาย</string>
     <string name="widget_empty_subtitle">แตะเพื่อเปิด ClothesCast</string>
+    <string name="feels_like_widget_label">กราฟอุณหภูมิที่รู้สึก</string>
+    <string name="feels_like_widget_description">อุณหภูมิที่รู้สึกสำหรับช่วงเวลาปัจจุบัน</string>
+    <string name="feels_like_week_widget_label">อุณหภูมิที่รู้สึก (7 วัน)</string>
+    <string name="feels_like_week_widget_description">อุณหภูมิที่รู้สึกในช่วง 7 วันข้างหน้า</string>
+    <string name="feels_like_widget_empty_title">ยังไม่มีพยากรณ์</string>
 
     <!-- Forecast / charts -->
     <string name="today_forecast_title">พยากรณ์รายชั่วโมง</string>
@@ -925,6 +930,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_enabled">ClothesCast รายวัน</string>
     <string name="settings_delivery_notification">แจ้งเตือน</string>
     <string name="settings_delivery_tts">พูด</string>
+    <string name="speech_setup_title">ตั้งค่า ClothesCast แบบพูด</string>
+    <string name="speech_setup_description">เลือกวิธีอ่านออกเสียง ClothesCast ของคุณ ใช้เสียงอุปกรณ์ฟรี หรือเพิ่ม Gemini API key เพื่อรับเสียงคุณภาพสูง</string>
+    <string name="speech_setup_smart_home_note">เสียงพูดบนสมาร์ทโฮมต้องใช้ Gemini API key การ Cast ยังคงแสดงชุดแต่งกายของคุณได้แม้ไม่มีคีย์</string>
+    <string name="speech_setup_done">เสร็จสิ้น</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">เสื้อผ้า</string>
@@ -954,6 +963,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_format_rain_accessory_label">อุปกรณ์กันฝน</string>
     <string name="settings_format_rain_accessory_none">ปิด</string>
     <string name="settings_format_rain_accessory_umbrella">ร่ม</string>
+    <string name="settings_format_period_preamble_label">คำนำ</string>
+    <string name="settings_format_wear_preamble_label">คำนำ "สวม"</string>
+    <string name="settings_format_preamble_always">เสมอ</string>
+    <string name="settings_format_preamble_speech_only">เฉพาะเสียงพูด</string>
+    <string name="settings_format_preamble_never">ไม่เลย</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">หากไม่มีกฎใดตรงกัน</string>
@@ -1189,6 +1203,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_clothes_promo_body">ClothesCast เลือกชุดตามชุดของกฎ ปรับอุณหภูมิและปรับแต่งตู้เสื้อผ้าของคุณในการตั้งค่าเสื้อผ้า</string>
     <string name="today_clothes_promo_cta">การตั้งค่าเสื้อผ้า</string>
     <string name="today_clothes_promo_dismiss">ปิด</string>
+    <string name="today_schedule_promo_title">ClothesCast อัตโนมัติ</string>
+    <string name="today_schedule_promo_body">เลือกเวลาที่คุณจะได้รับการแจ้งเตือนและการประกาศ</string>
+    <string name="today_schedule_promo_cta">การตั้งค่ากำหนดการ</string>
+    <string name="today_schedule_promo_dismiss">ปิด</string>
     <string name="today_clothes_promo_title">ปรับเสื้อผ้าให้เป็นของคุณ</string>
     <string name="today_insight_format_link">รูปแบบ</string>
     <string name="today_play">เล่น</string>

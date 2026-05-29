@@ -410,6 +410,11 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="widget_description">O visual do momento, num relance.</string>
     <string name="widget_empty_title">Ainda sem visual</string>
     <string name="widget_empty_subtitle">Toca para abrir o ClothesCast</string>
+    <string name="feels_like_widget_label">Gráfico de sensação térmica</string>
+    <string name="feels_like_widget_description">A sensação térmica do período atual.</string>
+    <string name="feels_like_week_widget_label">Sensação térmica (7 dias)</string>
+    <string name="feels_like_week_widget_description">A sensação térmica ao longo dos próximos 7 dias.</string>
+    <string name="feels_like_widget_empty_title">Ainda sem previsão</string>
 
     <!--
     Onboarding flow — first-run welcome, two permission steps, Gemini
@@ -1052,6 +1057,10 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_schedule_enabled">ClothesCast diário</string>
     <string name="settings_delivery_notification">Notificar</string>
     <string name="settings_delivery_tts">Ler em voz alta</string>
+    <string name="speech_setup_title">Configurar ClothesCasts em voz alta</string>
+    <string name="speech_setup_description">Escolhe como o teu ClothesCast é lido em voz alta. Usa a voz gratuita do dispositivo ou adiciona uma chave API Gemini para vozes de alta qualidade.</string>
+    <string name="speech_setup_smart_home_note">A fala na casa inteligente requer uma chave API Gemini. A transmissão continua a mostrar o teu visual sem ela.</string>
+    <string name="speech_setup_done">Concluído</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Vestuário</string>
@@ -1081,6 +1090,11 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_format_rain_accessory_label">Acessório de chuva</string>
     <string name="settings_format_rain_accessory_none">Desligado</string>
     <string name="settings_format_rain_accessory_umbrella">Chapéu de chuva</string>
+    <string name="settings_format_period_preamble_label">Introdução</string>
+    <string name="settings_format_wear_preamble_label">Introdução «Veste»</string>
+    <string name="settings_format_preamble_always">Sempre</string>
+    <string name="settings_format_preamble_speech_only">Apenas em voz alta</string>
+    <string name="settings_format_preamble_never">Nunca</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Se nenhuma regra corresponder</string>
@@ -1317,6 +1331,10 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_clothes_promo_body">ClothesCast escolhe os conjuntos a partir de um conjunto de regras. Ajusta as temperaturas e personaliza o teu guarda-roupa em definições de Roupa.</string>
     <string name="today_clothes_promo_cta">Definições de Roupa</string>
     <string name="today_clothes_promo_dismiss">Dispensar</string>
+    <string name="today_schedule_promo_title">ClothesCasts automáticos</string>
+    <string name="today_schedule_promo_body">Escolhe quando recebes notificações e anúncios.</string>
+    <string name="today_schedule_promo_cta">Definições de agendamento</string>
+    <string name="today_schedule_promo_dismiss">Dispensar</string>
     <string name="today_clothes_promo_title">Faz a roupa tua</string>
     <string name="today_insight_format_link">Formato</string>
     <string name="today_play">Reproduzir</string>

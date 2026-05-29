@@ -476,6 +476,11 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="widget_description">Outfit pro aktuální část dne na první pohled.</string>
     <string name="widget_empty_title">Zatím žádný outfit</string>
     <string name="widget_empty_subtitle">Klepni pro otevření ClothesCastu</string>
+    <string name="feels_like_widget_label">Graf pocitové teploty</string>
+    <string name="feels_like_widget_description">Pocitová teplota pro aktuální období.</string>
+    <string name="feels_like_week_widget_label">Pocitová (7 dní)</string>
+    <string name="feels_like_week_widget_description">Pocitová teplota na příštích 7 dní.</string>
+    <string name="feels_like_widget_empty_title">Zatím žádná předpověď</string>
 
     <!-- Onboarding. -->
     <string name="onboarding_title">Vítej v ClothesCastu</string>
@@ -932,6 +937,10 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_schedule_enabled">Denní ClothesCast</string>
     <string name="settings_delivery_notification">Oznámit</string>
     <string name="settings_delivery_tts">Přečíst</string>
+    <string name="speech_setup_title">Nastav mluvené ClothesCasty</string>
+    <string name="speech_setup_description">Vyber, jak se tvůj ClothesCast čte nahlas. Použij bezplatný hlas zařízení, nebo přidej Gemini API klíč pro hlasy ve vysoké kvalitě.</string>
+    <string name="speech_setup_smart_home_note">Mluvený výstup v chytré domácnosti vyžaduje Gemini API klíč. Casting tvůj outfit ukáže i bez něj.</string>
+    <string name="speech_setup_done">Hotovo</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Oblečení</string>
@@ -961,6 +970,11 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_format_rain_accessory_label">Doplněk pro déšť</string>
     <string name="settings_format_rain_accessory_none">Vypnuto</string>
     <string name="settings_format_rain_accessory_umbrella">Deštník</string>
+    <string name="settings_format_period_preamble_label">Úvod</string>
+    <string name="settings_format_wear_preamble_label">Úvod „Obleč si"</string>
+    <string name="settings_format_preamble_always">Vždy</string>
+    <string name="settings_format_preamble_speech_only">Jen mluvené</string>
+    <string name="settings_format_preamble_never">Nikdy</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Pokud žádná pravidla neodpovídají</string>
@@ -1199,6 +1213,10 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_clothes_promo_body">ClothesCast vybírá outfity podle sady pravidel. Uprav teploty a přizpůsob si šatník v nastavení Oblečení.</string>
     <string name="today_clothes_promo_cta">Nastavení oblečení</string>
     <string name="today_clothes_promo_dismiss">Zavřít</string>
+    <string name="today_schedule_promo_title">Automatické ClothesCasty</string>
+    <string name="today_schedule_promo_body">Vyber, kdy dostáváš oznámení a hlášení.</string>
+    <string name="today_schedule_promo_cta">Nastavení plánu</string>
+    <string name="today_schedule_promo_dismiss">Zavřít</string>
     <string name="today_clothes_promo_title">Přizpůsob si oblečení</string>
     <string name="today_insight_format_link">Formát</string>
     <string name="today_play">Přehrát</string>

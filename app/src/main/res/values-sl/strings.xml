@@ -149,6 +149,11 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="widget_description">Obleka za trenutno obdobje na prvi pogled.</string>
     <string name="widget_empty_title">Še ni obleke</string>
     <string name="widget_empty_subtitle">Pritisni za odpiranje ClothesCasta</string>
+    <string name="feels_like_widget_label">Graf občutene temperature</string>
+    <string name="feels_like_widget_description">Občutena temperatura za trenutno obdobje.</string>
+    <string name="feels_like_week_widget_label">Občutena (7 dni)</string>
+    <string name="feels_like_week_widget_description">Občutena temperatura za naslednjih 7 dni.</string>
+    <string name="feels_like_widget_empty_title">Še ni napovedi</string>
 
     <!-- Hourly forecast card. -->
     <string name="today_forecast_title">Urna napoved</string>
@@ -909,6 +914,10 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_schedule_enabled">Dnevni ClothesCast</string>
     <string name="settings_delivery_notification">Obvesti</string>
     <string name="settings_delivery_tts">Preberi</string>
+    <string name="speech_setup_title">Nastavi izgovorjene ClothesCaste</string>
+    <string name="speech_setup_description">Izberi, kako se tvoj ClothesCast prebere na glas. Uporabi brezplačni glas naprave ali dodaj Gemini API ključ za glasove visoke kakovosti.</string>
+    <string name="speech_setup_smart_home_note">Govor v pametnem domu zahteva Gemini API ključ. Predvajanje na zaslon tudi brez njega prikaže tvojo obleko.</string>
+    <string name="speech_setup_done">Končano</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Oblačila</string>
@@ -938,6 +947,11 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_format_rain_accessory_label">Dodatek za dež</string>
     <string name="settings_format_rain_accessory_none">Izklopljeno</string>
     <string name="settings_format_rain_accessory_umbrella">Dežnik</string>
+    <string name="settings_format_period_preamble_label">Uvod</string>
+    <string name="settings_format_wear_preamble_label">Uvod »Obleci«</string>
+    <string name="settings_format_preamble_always">Vedno</string>
+    <string name="settings_format_preamble_speech_only">Samo govor</string>
+    <string name="settings_format_preamble_never">Nikoli</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Če se nobeno pravilo ne ujema</string>
@@ -1176,6 +1190,10 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_clothes_promo_body">ClothesCast izbira obleke po pravilih. Prilagodi temperature in svojo garderobo v nastavitvah Oblačila.</string>
     <string name="today_clothes_promo_cta">Nastavitve oblačil</string>
     <string name="today_clothes_promo_dismiss">Zapri</string>
+    <string name="today_schedule_promo_title">Samodejni ClothesCasti</string>
+    <string name="today_schedule_promo_body">Izberi, kdaj prejemaš obvestila in objave.</string>
+    <string name="today_schedule_promo_cta">Nastavitve urnika</string>
+    <string name="today_schedule_promo_dismiss">Zapri</string>
     <string name="today_clothes_promo_title">Prilagodi oblačila sebi</string>
     <string name="today_insight_format_link">Oblika</string>
     <string name="today_play">Predvajaj</string>

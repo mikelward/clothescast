@@ -55,6 +55,11 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="widget_description">El conjunt del moment, d\'un cop d\'ull.</string>
     <string name="widget_empty_title">Encara no hi ha conjunt</string>
     <string name="widget_empty_subtitle">Toca per obrir ClothesCast</string>
+    <string name="feels_like_widget_label">Gràfic de sensació</string>
+    <string name="feels_like_widget_description">La temperatura percebuda per al període actual.</string>
+    <string name="feels_like_week_widget_label">Sensació (7 dies)</string>
+    <string name="feels_like_week_widget_description">La temperatura percebuda durant els pròxims 7 dies.</string>
+    <string name="feels_like_widget_empty_title">Encara no hi ha previsió</string>
 
     <string name="today_forecast_title">Previsió per hores</string>
     <string name="today_forecast_min_max">Sensació %1$d – %2$d%3$s</string>
@@ -864,6 +869,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_schedule_enabled">ClothesCast diari</string>
     <string name="settings_delivery_notification">Notifica</string>
     <string name="settings_delivery_tts">Llegeix en veu alta</string>
+    <string name="speech_setup_title">Configura els ClothesCast parlats</string>
+    <string name="speech_setup_description">Tria com es llegeix en veu alta el teu ClothesCast. Fes servir la veu gratuïta del dispositiu, o afegeix una clau API de Gemini per a veus d\'alta qualitat.</string>
+    <string name="speech_setup_smart_home_note">La veu a la llar intel·ligent requereix una clau API de Gemini. L\'emissió mostra igualment el teu conjunt sense ella.</string>
+    <string name="speech_setup_done">Fet</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Roba</string>
@@ -893,6 +902,11 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_format_rain_accessory_label">Accessori per a la pluja</string>
     <string name="settings_format_rain_accessory_none">Desactivat</string>
     <string name="settings_format_rain_accessory_umbrella">Paraigua</string>
+    <string name="settings_format_period_preamble_label">Introducció</string>
+    <string name="settings_format_wear_preamble_label">Introducció «Posa\'t»</string>
+    <string name="settings_format_preamble_always">Sempre</string>
+    <string name="settings_format_preamble_speech_only">Només veu</string>
+    <string name="settings_format_preamble_never">Mai</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Si no coincideix cap regla</string>
@@ -1129,6 +1143,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_clothes_promo_body">ClothesCast tria conjunts a partir d\'unes regles. Ajusta les temperatures i personalitza el teu vestuari a la configuració de Roba.</string>
     <string name="today_clothes_promo_cta">Configuració de Roba</string>
     <string name="today_clothes_promo_dismiss">Descarta</string>
+    <string name="today_schedule_promo_title">ClothesCast automàtics</string>
+    <string name="today_schedule_promo_body">Tria quan reps notificacions i anuncis.</string>
+    <string name="today_schedule_promo_cta">Configuració de la programació</string>
+    <string name="today_schedule_promo_dismiss">Descarta</string>
     <string name="today_clothes_promo_title">Fes teva la roba</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Reprodueix</string>

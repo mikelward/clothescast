@@ -422,6 +422,11 @@ only the displayed label localizes.
     <string name="widget_description">Вбрання для поточного періоду з першого погляду.</string>
     <string name="widget_empty_title">Вбрання ще немає</string>
     <string name="widget_empty_subtitle">Натисніть, щоб відкрити ClothesCast</string>
+    <string name="feels_like_widget_label">Графік відчуваної температури</string>
+    <string name="feels_like_widget_description">Відчувана температура для поточного періоду.</string>
+    <string name="feels_like_week_widget_label">Відчувана температура (7 днів)</string>
+    <string name="feels_like_week_widget_description">Відчувана температура на наступні 7 днів.</string>
+    <string name="feels_like_widget_empty_title">Прогнозу ще немає</string>
 
     <!-- Hourly forecast card. -->
     <string name="today_forecast_title">Погодинний прогноз</string>
@@ -921,6 +926,10 @@ only the displayed label localizes.
     <string name="settings_schedule_enabled">Щоденний ClothesCast</string>
     <string name="settings_delivery_notification">Сповістити</string>
     <string name="settings_delivery_tts">Озвучити</string>
+    <string name="speech_setup_title">Налаштуйте озвучення ClothesCast</string>
+    <string name="speech_setup_description">Оберіть, як ваш ClothesCast читатиметься вголос. Використовуйте безкоштовний голос пристрою або додайте ключ API Gemini для голосів високої якості.</string>
+    <string name="speech_setup_smart_home_note">Озвучення в розумному домі потребує ключа API Gemini. Трансляція все одно показує ваше вбрання й без нього.</string>
+    <string name="speech_setup_done">Готово</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Одяг</string>
@@ -950,6 +959,11 @@ only the displayed label localizes.
     <string name="settings_format_rain_accessory_label">Аксесуар від дощу</string>
     <string name="settings_format_rain_accessory_none">Вимк.</string>
     <string name="settings_format_rain_accessory_umbrella">Парасоля</string>
+    <string name="settings_format_period_preamble_label">Вступ</string>
+    <string name="settings_format_wear_preamble_label">Вступ «Одягніть»</string>
+    <string name="settings_format_preamble_always">Завжди</string>
+    <string name="settings_format_preamble_speech_only">Лише в озвученні</string>
+    <string name="settings_format_preamble_never">Ніколи</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Якщо жодне правило не підходить</string>
@@ -1188,6 +1202,10 @@ only the displayed label localizes.
     <string name="today_clothes_promo_body">ClothesCast обирає одяг за правилами. Зміни температури та персоналізуй свій гардероб у налаштуваннях Одяг.</string>
     <string name="today_clothes_promo_cta">Налаштування одягу</string>
     <string name="today_clothes_promo_dismiss">Закрити</string>
+    <string name="today_schedule_promo_title">Автоматичні ClothesCast</string>
+    <string name="today_schedule_promo_body">Оберіть, коли отримувати сповіщення та оголошення.</string>
+    <string name="today_schedule_promo_cta">Налаштування розкладу</string>
+    <string name="today_schedule_promo_dismiss">Закрити</string>
     <string name="today_clothes_promo_title">Зроби одяг своїм</string>
     <string name="today_insight_format_link">Формат</string>
     <string name="today_play">Відтворити</string>

@@ -154,6 +154,11 @@ What is NOT overridden, by design:
     <string name="widget_description">Тоалетът за текущия период с един поглед.</string>
     <string name="widget_empty_title">Все още няма тоалет</string>
     <string name="widget_empty_subtitle">Докосни, за да отвориш ClothesCast</string>
+    <string name="feels_like_widget_label">Графика на усещаната температура</string>
+    <string name="feels_like_widget_description">Усещаната температура за текущия период.</string>
+    <string name="feels_like_week_widget_label">Усещана температура (7 дни)</string>
+    <string name="feels_like_week_widget_description">Усещаната температура през следващите 7 дни.</string>
+    <string name="feels_like_widget_empty_title">Все още няма прогноза</string>
 
     <!-- Hourly forecast card. -->
     <string name="today_forecast_title">Почасова прогноза</string>
@@ -911,6 +916,10 @@ What is NOT overridden, by design:
     <string name="settings_schedule_enabled">Ежедневен ClothesCast</string>
     <string name="settings_delivery_notification">Известяване</string>
     <string name="settings_delivery_tts">Прочети</string>
+    <string name="speech_setup_title">Настрой изговарянето на ClothesCast</string>
+    <string name="speech_setup_description">Избери как твоят ClothesCast да се изговаря на глас. Използвай безплатния глас на устройството или добави ключ за API на Gemini за гласове с високо качество.</string>
+    <string name="speech_setup_smart_home_note">Изговарянето в умния дом изисква ключ за API на Gemini. Предаването пак показва тоалета ти и без него.</string>
+    <string name="speech_setup_done">Готово</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Облекло</string>
@@ -940,6 +949,11 @@ What is NOT overridden, by design:
     <string name="settings_format_rain_accessory_label">Аксесоар за дъжд</string>
     <string name="settings_format_rain_accessory_none">Изключено</string>
     <string name="settings_format_rain_accessory_umbrella">Чадър</string>
+    <string name="settings_format_period_preamble_label">Въведение</string>
+    <string name="settings_format_wear_preamble_label">Въведение „Облечи“</string>
+    <string name="settings_format_preamble_always">Винаги</string>
+    <string name="settings_format_preamble_speech_only">Само в речта</string>
+    <string name="settings_format_preamble_never">Никога</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Ако никое правило не съвпада</string>
@@ -1176,6 +1190,10 @@ What is NOT overridden, by design:
     <string name="today_clothes_promo_body">ClothesCast избира облекло по правила. Промени температурите и персонализирай гардероба си в настройките за Дрехи.</string>
     <string name="today_clothes_promo_cta">Настройки за дрехи</string>
     <string name="today_clothes_promo_dismiss">Затвори</string>
+    <string name="today_schedule_promo_title">Автоматични ClothesCast</string>
+    <string name="today_schedule_promo_body">Избери кога да получаваш известия и съобщения.</string>
+    <string name="today_schedule_promo_cta">Настройки на разписанието</string>
+    <string name="today_schedule_promo_dismiss">Затвори</string>
     <string name="today_clothes_promo_title">Направи дрехите свои</string>
     <string name="today_insight_format_link">Формат</string>
     <string name="today_play">Възпроизведи</string>

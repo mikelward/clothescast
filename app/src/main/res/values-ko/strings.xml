@@ -402,6 +402,11 @@ displayed label localizes.
     <string name="widget_description">현재 시간대의 코디를 한눈에.</string>
     <string name="widget_empty_title">아직 코디가 없어요</string>
     <string name="widget_empty_subtitle">탭하여 ClothesCast 열기</string>
+    <string name="feels_like_widget_label">체감 온도 차트</string>
+    <string name="feels_like_widget_description">현재 시간대의 체감 온도입니다.</string>
+    <string name="feels_like_week_widget_label">체감 온도 (7일)</string>
+    <string name="feels_like_week_widget_description">앞으로 7일간의 체감 온도입니다.</string>
+    <string name="feels_like_widget_empty_title">아직 예보가 없어요</string>
 
     <!--
     Onboarding flow — first-run welcome, two permission steps, Gemini
@@ -1079,6 +1084,10 @@ displayed label localizes.
     <string name="settings_schedule_enabled">매일 ClothesCast</string>
     <string name="settings_delivery_notification">알림</string>
     <string name="settings_delivery_tts">읽기</string>
+    <string name="speech_setup_title">음성 ClothesCast 설정</string>
+    <string name="speech_setup_description">ClothesCast를 음성으로 읽어주는 방식을 선택하세요. 무료 기기 음성을 사용하거나, Gemini API 키를 추가해 고품질 음성을 사용할 수 있어요.</string>
+    <string name="speech_setup_smart_home_note">스마트홈 음성에는 Gemini API 키가 필요해요. 키가 없어도 캐스팅할 때 코디는 표시됩니다.</string>
+    <string name="speech_setup_done">완료</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">옷</string>
@@ -1108,6 +1117,11 @@ displayed label localizes.
     <string name="settings_format_rain_accessory_label">우천용품</string>
     <string name="settings_format_rain_accessory_none">끔</string>
     <string name="settings_format_rain_accessory_umbrella">우산</string>
+    <string name="settings_format_period_preamble_label">도입부</string>
+    <string name="settings_format_wear_preamble_label">「입기」 도입부</string>
+    <string name="settings_format_preamble_always">항상</string>
+    <string name="settings_format_preamble_speech_only">음성만</string>
+    <string name="settings_format_preamble_never">사용 안 함</string>
 
     <!-- Fallback clothes rules — "If no rules match" -->
     <string name="settings_default_outfit_title">일치하는 규칙이 없을 때</string>
@@ -1343,6 +1357,10 @@ displayed label localizes.
     <string name="today_clothes_promo_body">ClothesCast는 규칙에 따라 옷을 추천합니다. 옷 설정에서 온도를 조정하고 옷장을 맞춤 설정해 보세요.</string>
     <string name="today_clothes_promo_cta">옷 설정</string>
     <string name="today_clothes_promo_dismiss">닫기</string>
+    <string name="today_schedule_promo_title">자동 ClothesCast</string>
+    <string name="today_schedule_promo_body">알림과 안내를 받을 시간을 선택하세요.</string>
+    <string name="today_schedule_promo_cta">일정 설정</string>
+    <string name="today_schedule_promo_dismiss">닫기</string>
     <string name="today_clothes_promo_title">옷을 내 것으로</string>
     <string name="today_insight_format_link">형식</string>
     <string name="today_play">재생</string>

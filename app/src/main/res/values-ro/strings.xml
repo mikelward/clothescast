@@ -141,6 +141,11 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="widget_description">Ținuta pentru perioada curentă, la o privire.</string>
     <string name="widget_empty_title">Nicio ținută încă</string>
     <string name="widget_empty_subtitle">Atinge pentru a deschide ClothesCast</string>
+    <string name="feels_like_widget_label">Grafic temperatură resimțită</string>
+    <string name="feels_like_widget_description">Temperatura resimțită pentru perioada curentă.</string>
+    <string name="feels_like_week_widget_label">Temperatură resimțită (7 zile)</string>
+    <string name="feels_like_week_widget_description">Temperatura resimțită pentru următoarele 7 zile.</string>
+    <string name="feels_like_widget_empty_title">Nicio prognoză încă</string>
 
     <!-- Forecast card. -->
     <string name="today_forecast_title">Prognoză orară</string>
@@ -901,6 +906,10 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_schedule_enabled">ClothesCast zilnic</string>
     <string name="settings_delivery_notification">Notifică</string>
     <string name="settings_delivery_tts">Citește</string>
+    <string name="speech_setup_title">Configurează ClothesCast-uri citite cu voce tare</string>
+    <string name="speech_setup_description">Alege cum este citit cu voce tare ClothesCast-ul tău. Folosește vocea gratuită a dispozitivului sau adaugă o cheie API Gemini pentru voci de înaltă calitate.</string>
+    <string name="speech_setup_smart_home_note">Citirea în casa inteligentă necesită o cheie API Gemini. Transmiterea îți arată ținuta și fără ea.</string>
+    <string name="speech_setup_done">Gata</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Îmbrăcăminte</string>
@@ -930,6 +939,11 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_format_rain_accessory_label">Accesoriu pentru ploaie</string>
     <string name="settings_format_rain_accessory_none">Oprit</string>
     <string name="settings_format_rain_accessory_umbrella">Umbrelă</string>
+    <string name="settings_format_period_preamble_label">Introducere</string>
+    <string name="settings_format_wear_preamble_label">Introducere „Poartă"</string>
+    <string name="settings_format_preamble_always">Mereu</string>
+    <string name="settings_format_preamble_speech_only">Doar vocal</string>
+    <string name="settings_format_preamble_never">Niciodată</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Dacă nicio regulă nu se potrivește</string>
@@ -1167,6 +1181,10 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_clothes_promo_body">ClothesCast alege ținute pe baza unui set de reguli. Modifică temperaturile și personalizează-ți garderoba în setările Haine.</string>
     <string name="today_clothes_promo_cta">Setări haine</string>
     <string name="today_clothes_promo_dismiss">Închide</string>
+    <string name="today_schedule_promo_title">ClothesCast-uri automate</string>
+    <string name="today_schedule_promo_body">Alege când primești notificări și anunțuri.</string>
+    <string name="today_schedule_promo_cta">Setări program</string>
+    <string name="today_schedule_promo_dismiss">Închide</string>
     <string name="today_clothes_promo_title">Fă hainele ale tale</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Redă</string>

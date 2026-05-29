@@ -2235,6 +2235,11 @@ internal fun ForecastCard(
     // unchanged.
     showHeader: Boolean = true,
     showLegend: Boolean = true,
+    // When true the card and its chart fill the height they're given instead of
+    // wrapping a fixed 180.dp chart. Used by the home-screen widget, whose
+    // bitmap is sized to the cell; the in-app cards leave it false (fixed
+    // height inside a scrolling column).
+    fillHeight: Boolean = false,
 ) {
     val symbol = temperatureUnit.symbol()
     val feelsLikeMinMax = remember(hourly, temperatureUnit) {
@@ -2250,10 +2255,14 @@ internal fun ForecastCard(
         stringResource(R.string.today_chart_readout, "$v$symbol", formatScrubMoment(moment))
     }
 
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Box {
+    Card(modifier = if (fillHeight) Modifier.fillMaxSize() else Modifier.fillMaxWidth()) {
+        Box(modifier = if (fillHeight) Modifier.fillMaxSize() else Modifier) {
             Column(
-                modifier = Modifier.padding(20.dp),
+                modifier = if (fillHeight) {
+                    Modifier.fillMaxSize().padding(20.dp)
+                } else {
+                    Modifier.padding(20.dp)
+                },
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 if (showHeader) {
@@ -2268,8 +2277,10 @@ internal fun ForecastCard(
                     temperatureUnit = temperatureUnit,
                     showFeelsLike = true,
                     startDate = startDate,
+                    modifier = if (fillHeight) Modifier.weight(1f) else Modifier,
                     perModelHourly = perModelHourly,
                     showModelSpread = showModelSpread,
+                    fillHeight = fillHeight,
                 )
                 if (showLegend) {
                     Text(

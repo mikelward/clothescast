@@ -1,5 +1,6 @@
 package app.clothescast.widget
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -15,6 +16,7 @@ import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
@@ -47,6 +49,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
+import kotlin.math.roundToInt
 
 /**
  * Home-screen widgets exposing the Today screen's feels-like chart. Two flavours
@@ -74,7 +77,7 @@ class FeelsLikeWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Single
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val bitmap = buildChartBitmap(context, weekly = false)
+        val bitmap = buildChartBitmap(context, id, weekly = false)
         provideContent {
             GlanceTheme {
                 FeelsLikeChartContent(bitmap = bitmap, page = THIS_PERIOD_PAGE)
@@ -88,7 +91,7 @@ class SevenDayFeelsLikeWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Single
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val bitmap = buildChartBitmap(context, weekly = true)
+        val bitmap = buildChartBitmap(context, id, weekly = true)
         provideContent {
             GlanceTheme {
                 FeelsLikeChartContent(bitmap = bitmap, page = WEEK_PAGE)
@@ -101,12 +104,27 @@ class SevenDayFeelsLikeWidget : GlanceAppWidget() {
 private const val THIS_PERIOD_PAGE = 0
 private const val WEEK_PAGE = 2
 
-// Fixed render size for the off-screen chart bitmap, at the card's natural
-// aspect (~width:height of the in-app ForecastCard). The Glance Image scales it
-// to the actual cell with ContentScale.Fit, so the chart stays undistorted on
-// any cell size; SizeMode.Single means we render once rather than per breakpoint.
+// Fallback render size for the off-screen chart bitmap (3:1, mid-range). Used
+// only when the launcher hasn't reported the widget's cell size yet (e.g. the
+// picker preview); once it has, [chartRenderSizePx] renders at the cell's own
+// aspect (clamped to [MIN_ASPECT_RATIO]..[MAX_ASPECT_RATIO]) so the chart fills
+// the space the user gave it instead of letterboxing inside a fixed-aspect box.
 private const val RENDER_WIDTH_PX = 720
-private const val RENDER_HEIGHT_PX = 560
+private const val RENDER_HEIGHT_PX = 240
+
+// Bounds on the derived bitmap dimensions: small enough that a sliver-sized cell
+// still renders something legible, capped so a stretched-out widget can't ask
+// for a multi-megapixel bitmap on each refresh.
+private const val MIN_RENDER_PX = 240
+private const val MAX_RENDER_PX = 1600
+
+// A line chart reads best wide, so keep its width:height between these bounds
+// regardless of the cell shape. On a tall/near-square cell we pin to the min so
+// the chart stays wide; on an ultra-wide cell we pin to the max so it doesn't
+// get uncomfortably long-and-thin. The Glance Image then pads the short side
+// under ContentScale.Fit. Between the bounds we render at the cell's own aspect.
+private const val MIN_ASPECT_RATIO = 2f
+private const val MAX_ASPECT_RATIO = 4f
 
 // Upper bound on how long the off-screen compose+settle may take before we give
 // up and show the empty state. Generous — a widget refresh is infrequent — but
@@ -178,7 +196,7 @@ private fun chartTapIntent(context: Context, page: Int): Intent =
 // WidgetForecastChart off-screen. Returns null (→ empty state) when there's no
 // cached forecast yet or the render fails / times out, so a flaky render
 // degrades to "tap to open" rather than crashing the launcher.
-private suspend fun buildChartBitmap(context: Context, weekly: Boolean): Bitmap? {
+private suspend fun buildChartBitmap(context: Context, id: GlanceId, weekly: Boolean): Bitmap? {
     val (insight, prefs) = loadInsight(context) ?: return null
 
     val hourly: List<HourlyForecast>
@@ -204,8 +222,9 @@ private suspend fun buildChartBitmap(context: Context, weekly: Boolean): Bitmap?
     val darkTheme = resolveDarkTheme(context, prefs.themeMode)
     val palette = prefs.colorPalette
 
+    val (widthPx, heightPx) = chartRenderSizePx(context, id)
     val bitmap = withTimeoutOrNull(RENDER_TIMEOUT_MS) {
-        renderComposableToBitmap(context, RENDER_WIDTH_PX, RENDER_HEIGHT_PX) {
+        renderComposableToBitmap(context, widthPx, heightPx) {
             ClothesCastTheme(darkTheme = darkTheme, colorPalette = palette) {
                 WidgetForecastChart(
                     hourly = hourly,
@@ -214,6 +233,9 @@ private suspend fun buildChartBitmap(context: Context, weekly: Boolean): Bitmap?
                     timeFormat = prefs.timeFormat,
                     startDate = startDate,
                     now = now,
+                    // Fill the bitmap we sized to the cell, so the chart scales
+                    // with the available space rather than wrapping a fixed height.
+                    fillHeight = true,
                 )
             }
         }
@@ -226,6 +248,64 @@ private suspend fun buildChartBitmap(context: Context, weekly: Boolean): Bitmap?
         )
     }
     return bitmap
+}
+
+// Derives the off-screen bitmap size from the widget's actual cell, so the chart
+// scales with the space the user gave it. The launcher reports the cell extent
+// (in dp) via the AppWidget options bundle: for the visible orientation that's
+// MAX width × MIN height — the other pair describes the *rotated* extent. We
+// render at the cell's own aspect (clamped to
+// [MIN_ASPECT_RATIO]..[MAX_ASPECT_RATIO]) so ContentScale.Fit fills the cell on
+// a wide placement instead of leaving side gaps, while keeping the chart
+// comfortably wider than it is tall and never uncomfortably long-and-thin.
+// Resizing the widget triggers an options-changed update, which re-runs
+// provideGlance and re-renders at the new size. Falls back to a mid-range 3:1
+// aspect when no size is reported yet (e.g. the picker preview).
+private fun chartRenderSizePx(context: Context, id: GlanceId): Pair<Int, Int> {
+    val fallback = RENDER_WIDTH_PX to RENDER_HEIGHT_PX
+    val options = runCatching {
+        val appWidgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
+        AppWidgetManager.getInstance(context).getAppWidgetOptions(appWidgetId)
+    }.onFailure { DiagLog.w(TAG, "Widget: reading cell size failed; using default aspect", it) }
+        .getOrNull() ?: return fallback
+
+    val portrait = context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    val widthDp = options.getInt(
+        if (portrait) AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH
+        else AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
+    )
+    val heightDp = options.getInt(
+        if (portrait) AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT
+        else AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
+    )
+    if (widthDp <= 0 || heightDp <= 0) return fallback
+
+    val density = context.resources.displayMetrics.density
+    var widthPx = (widthDp * density).roundToInt()
+    var heightPx = (heightDp * density).roundToInt()
+
+    // Clamp the aspect into [MIN_ASPECT_RATIO, MAX_ASPECT_RATIO]: render at the
+    // cell's own aspect when it's already in range, otherwise pin to the nearer
+    // bound by shrinking the longer side (the Glance Image pads the short side
+    // under ContentScale.Fit), so the chart stays comfortably wide either way.
+    val aspect = widthPx.toFloat() / heightPx
+    when {
+        aspect > MAX_ASPECT_RATIO -> widthPx = (heightPx * MAX_ASPECT_RATIO).roundToInt()
+        aspect < MIN_ASPECT_RATIO -> heightPx = (widthPx / MIN_ASPECT_RATIO).roundToInt()
+    }
+
+    // Keep the bitmap within sane pixel bounds, preserving the clamped aspect:
+    // scale down if the longer side is over the cap, up if the shorter is under.
+    val longer = maxOf(widthPx, heightPx)
+    val shorter = minOf(widthPx, heightPx)
+    val scale = when {
+        longer > MAX_RENDER_PX -> MAX_RENDER_PX.toFloat() / longer
+        shorter < MIN_RENDER_PX -> MIN_RENDER_PX.toFloat() / shorter
+        else -> 1f
+    }
+    widthPx = (widthPx * scale).roundToInt()
+    heightPx = (heightPx * scale).roundToInt()
+    return widthPx to heightPx
 }
 
 private suspend fun loadInsight(context: Context): Pair<Insight, UserPreferences>? {

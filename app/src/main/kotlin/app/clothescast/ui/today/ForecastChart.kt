@@ -1,6 +1,7 @@
 package app.clothescast.ui.today
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -134,6 +135,12 @@ fun ForecastChart(
     // When false, only the main consensus line is rendered. Y-axis range is
     // unchanged in either case (see [perModelHourly]).
     showModelSpread: Boolean = false,
+    // In-app the chart is a fixed 180.dp tall inside a scrolling column. The
+    // home-screen widget instead rasterises into a bitmap sized to the cell, so
+    // it asks the chart to fill the height it's given (via a weighted [modifier])
+    // — letting the chart scale with the available space rather than pinning a
+    // height that would letterbox or clip inside the cell.
+    fillHeight: Boolean = false,
 ) {
     if (hourly.isEmpty()) return
 
@@ -246,7 +253,7 @@ fun ForecastChart(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(180.dp)
+            .let { if (fillHeight) it.fillMaxHeight() else it.height(180.dp) }
             .let { mod ->
                 if (scrubController != null) {
                     mod.chartScrub(scrubController, scrubBounds, hourly, startDate)

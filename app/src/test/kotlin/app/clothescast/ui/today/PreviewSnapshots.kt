@@ -57,6 +57,7 @@ import app.clothescast.widget.FeelsLikeWidgetNoCurrentTimePreview
 import app.clothescast.widget.FeelsLikeWidgetTodayDarkPreview
 import app.clothescast.widget.FeelsLikeWidgetTodayPreview
 import app.clothescast.widget.FeelsLikeWidgetWeekPreview
+import app.clothescast.widget.FeelsLikeWidgetWidePreview
 import app.clothescast.widget.WidgetEmptyPreview
 import app.clothescast.widget.WidgetTodayCompactPreview
 import app.clothescast.widget.WidgetTodayExtraLargePreview
@@ -574,6 +575,12 @@ class PreviewSnapshots {
     @Test fun feels_like_widget_today() = capture { FeelsLikeWidgetTodayPreview() }
     @Test fun feels_like_widget_today_dark() = capture { FeelsLikeWidgetTodayDarkPreview() }
     @Test fun feels_like_widget_week() = capture { FeelsLikeWidgetWeekPreview() }
+
+    // Wider viewport so the 540x180dp (3:1) wide widget fits without clipping —
+    // the class-level w360dp would crop it.
+    @Test
+    @Config(qualifiers = "w600dp-h360dp-xhdpi")
+    fun feels_like_widget_wide() = capture { FeelsLikeWidgetWidePreview() }
     @Test fun feels_like_widget_no_current_time() = capture { FeelsLikeWidgetNoCurrentTimePreview() }
 
     // 480dp-tall preview overflows the class-level 640dp viewport; widen it

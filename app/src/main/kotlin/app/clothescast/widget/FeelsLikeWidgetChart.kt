@@ -60,6 +60,10 @@ internal fun WidgetForecastChart(
     timeFormat: TimeFormat,
     startDate: LocalDate,
     now: LocalDateTime?,
+    // When true the chart fills the height it's given (the widget bitmap is sized
+    // to the cell). Defaults false so the snapshot previews keep wrapping the
+    // fixed-height card.
+    fillHeight: Boolean = false,
 ) {
     val controller = remember(now) {
         ChartScrubController().apply { now?.let { setNow(it) } }
@@ -86,6 +90,7 @@ internal fun WidgetForecastChart(
                 startDate = startDate,
                 showHeader = false,
                 showLegend = false,
+                fillHeight = fillHeight,
             )
         }
     }

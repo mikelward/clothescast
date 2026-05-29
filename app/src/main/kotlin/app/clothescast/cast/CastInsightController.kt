@@ -6,6 +6,7 @@ import androidx.mediarouter.media.MediaRouter
 import app.clothescast.core.data.insight.MissingApiKeyException
 import app.clothescast.core.data.tts.GeminiTtsClient
 import app.clothescast.core.data.tts.PcmAudio
+import app.clothescast.core.data.tts.WavEncoder
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.diag.DiagLog
 import com.google.android.gms.cast.CastMediaControlIntent

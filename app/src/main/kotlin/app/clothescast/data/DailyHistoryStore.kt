@@ -39,6 +39,16 @@ class DailyHistoryStore(
     private val dataStore: DataStore<Preferences>,
     private val json: Json = Json { ignoreUnknownKeys = true },
 ) {
+    // TODO(datastore-json-plumbing): this read-flow / edit / runCatching-decode
+    //   / Dto<->domain pattern is duplicated across DailyHistoryStore,
+    //   InsightCache, and SettingsRepository. Extract a JsonPreferenceStore base
+    //   for the I/O plumbing (readJson/writeJson) — but KEEP the per-store DTOs:
+    //   they're a deliberate schema boundary (versioned `_v1` keys,
+    //   ignoreUnknownKeys) decoupling on-disk format from the domain model, so
+    //   collapsing them into @Serializable domain types would couple wire format
+    //   to domain shape. This is the cleanest store to migrate first as the
+    //   proof; then InsightCache, then SettingsRepository — one per PR.
+
     /**
      * Returns the entry recorded for [date], or null when nothing was stored
      * for that day (day-one install, app disabled / device off that day, or

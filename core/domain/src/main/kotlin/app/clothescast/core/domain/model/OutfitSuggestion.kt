@@ -89,6 +89,15 @@ data class OutfitSuggestion(
         private val LONG_SKIRT_KEYS = listOf("skirt")
         private val JEANS_KEYS = listOf("jeans")
 
+        // TODO(outfit-from-triggered): fromForecast re-walks the raw clothesRules
+        //   against the forecast (firstFiring per icon tier), duplicating the rule
+        //   evaluation EvaluateClothesRules already did to build TriggeredOutfit and
+        //   encoding the coat>puffer>jacket>… priority a second time alongside
+        //   Garment.layerReduce. Derive OutfitSuggestion from the already-computed
+        //   TriggeredOutfit instead, so there's a single rule evaluation and one
+        //   priority order. Watch the icon-only tiers (the explicit t-shirt tier;
+        //   shorter-skirt-wins) and the defaultTop/defaultBottom vs fallbacks
+        //   mapping; home-screen icons are Roborazzi-snapshotted, so diff them.
         fun fromForecast(
             forecast: DailyForecast,
             clothesRules: List<ClothesRule>,

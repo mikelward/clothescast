@@ -21,7 +21,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -83,7 +82,6 @@ internal fun ScheduleContent(
     onSetTtsEngine: (TtsEngine) -> Unit,
     onSetGeminiKey: (String) -> Unit,
     onClearGeminiKey: () -> Unit,
-    onDone: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     var speechSheetOpen by rememberSaveable { mutableStateOf(false) }
@@ -155,16 +153,6 @@ internal fun ScheduleContent(
                 onRequestNotificationPermission = requestNotificationPermission,
                 onRequestSpeechSetup = requestSpeechSetup,
             )
-            if (onDone != null) {
-                Button(
-                    onClick = onDone,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                ) {
-                    Text(stringResource(R.string.onboarding_step_done))
-                }
-            }
         }
     }
 

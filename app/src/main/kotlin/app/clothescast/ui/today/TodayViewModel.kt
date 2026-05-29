@@ -548,8 +548,7 @@ class TodayViewModel(
                 !prefs.calendarBirthdayThemingActive,
             clothesPromoCardVisible = !prefs.clothesPromoCardDismissed &&
                 prefs.clothesRules == ClothesRule.DEFAULTS,
-            schedulePromoCardVisible = !prefs.scheduleCardDismissed &&
-                !prefs.dailyEnabled && !prefs.tonightEnabled,
+            schedulePromoCardVisible = !prefs.scheduleCardDismissed,
             telemetryNoticeVisible = !prefs.telemetryNoticeAcked,
             usesCalendarThemes = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive,
         )
@@ -580,10 +579,10 @@ class TodayViewModel(
     }
 
     /**
-     * Persists the user's dismissal of the Today-screen "Set up a schedule"
-     * promo card. Called on the X-tap only — the CTA just routes to Schedule
-     * settings, and enabling a slot there auto-hides the card via
-     * [TodayState.schedulePromoCardVisible]. Mirrors [dismissCelebrationCard].
+     * Records that the user acted on the Today-screen "Automatic ClothesCasts"
+     * promo card — called on both the X-tap and the "Schedule settings" CTA so
+     * once the user has dismissed it or been pointed at the page, the card stays
+     * hidden. Mirrors [dismissClothesPromoCard].
      */
     fun dismissSchedulePromoCard() {
         viewModelScope.launch {

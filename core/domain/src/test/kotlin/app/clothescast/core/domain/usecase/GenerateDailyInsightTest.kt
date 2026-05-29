@@ -82,6 +82,9 @@ class GenerateDailyInsightTest {
         // Master calendar switch on; individual cases flip useCalendarEvents to
         // exercise the per-feature gate (events read only when both are on).
         calendarEnabled = true,
+        // Opt into the morning→evening tie-in explicitly — it's off by default
+        // now, and these cases exist to exercise it.
+        dailyMentionEveningEvents = true,
     )
 
     private class FakeWeatherRepository(private val bundle: ForecastBundle) : WeatherRepository {

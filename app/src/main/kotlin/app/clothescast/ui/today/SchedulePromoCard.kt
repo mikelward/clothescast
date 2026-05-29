@@ -22,19 +22,17 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.R
 
 /**
- * Today-screen promo card nudging the user toward setting up a delivery
- * schedule — the morning / evening casts don't fire until the user enables a
- * slot, so a brand-new install gets nothing scheduled. The card routes to
- * Schedule settings, which requests the notification permission just-in-time
- * when the user flips a slot on. Sits between the clothes promo and the
- * celebration-themes promo.
+ * Today-screen promo card pointing the user at the delivery schedule. The
+ * morning cast is on out of the box, so this nudges discovery of the schedule
+ * page — adjust the morning time, add an evening cast, or turn delivery off.
+ * The card routes to Schedule settings, which requests the notification
+ * permission just-in-time when the user flips a slot on. Sits between the
+ * clothes promo and the celebration-themes promo.
  *
  * Visibility is decided upstream in [TodayViewModel] via
- * [TodayState.schedulePromoCardVisible] — true iff the user hasn't dismissed
- * it AND neither master schedule switch is on yet. The moment either
- * `dailyEnabled` / `tonightEnabled` goes on, the card hides regardless of
- * dismissal state. Dismissal persists via
- * [SettingsRepository.setScheduleCardDismissed].
+ * [TodayState.schedulePromoCardVisible] — shown until the user acts on it,
+ * either dismissing it (the X) or following its CTA into Schedule settings.
+ * Both paths persist via [SettingsRepository.setScheduleCardDismissed].
  */
 @Composable
 internal fun SchedulePromoCard(

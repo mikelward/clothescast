@@ -317,7 +317,12 @@ fun TodayScreen(
             onSetUpLocation = onNavigateToLocation,
             onOpenPrivacy = onNavigateToPrivacy,
             onOpenCalendarSettings = onNavigateToCalendar,
-            onOpenSchedule = onNavigateToSchedule,
+            onOpenSchedule = {
+                // Following the CTA retires the promo too — see
+                // [TodayViewModel.dismissSchedulePromoCard].
+                viewModel.dismissSchedulePromoCard()
+                onNavigateToSchedule()
+            },
             onDismissCelebrationCard = viewModel::dismissCelebrationCard,
             onDismissClothesPromoCard = viewModel::dismissClothesPromoCard,
             onDismissSchedulePromoCard = viewModel::dismissSchedulePromoCard,

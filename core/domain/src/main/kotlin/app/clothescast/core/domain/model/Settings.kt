@@ -653,12 +653,13 @@ data class UserPreferences(
      */
     val clothesPromoCardDismissed: Boolean = false,
     /**
-     * Set to true once the user dismisses the Today-screen "Set up a
-     * schedule" promo card via its X button. The card also auto-hides the
-     * moment either master schedule switch ([dailyEnabled] / [tonightEnabled])
-     * is on — the user has set up the thing the card was pointing at, so the
-     * promo's done its job regardless of this flag. Same pattern as
-     * [celebrationCardDismissed].
+     * Set to true once the user acts on the Today-screen "Automatic
+     * ClothesCasts" promo card — either dismissing it via the X button or
+     * following its CTA into the schedule page. Either action retires the card
+     * for good; it no longer keys off the schedule switches (the morning slot
+     * is on out of the box now, so gating on [dailyEnabled] would hide the card
+     * before the user ever saw it). Same "dismiss or follow through" pattern as
+     * [clothesPromoCardDismissed].
      */
     val scheduleCardDismissed: Boolean = false,
     /**
@@ -673,15 +674,15 @@ data class UserPreferences(
      */
     val calendarPermissionRecheckTick: Long = 0L,
     /**
-     * Master switch for the morning / "daily" insight. Off by default — the
-     * user opts into scheduled casts (and the notification permission they
-     * need) from the schedule page, surfaced by the Today-screen "Set up a
-     * schedule" promo. When off the worker skips the entire morning pipeline
-     * (no fetch, no notification, no TTS, no widget refresh from that path);
-     * flip it on to resume. Same shape as [tonightEnabled] so the two halves
-     * of the schedule page behave symmetrically.
+     * Master switch for the morning / "daily" insight. On by default — a fresh
+     * install gets the morning cast (notification + TTS) without opting in,
+     * with the notification permission requested during onboarding. The
+     * Today-screen "Automatic ClothesCasts" promo points the user at the
+     * schedule page to tweak the time or turn it off. When off the worker skips
+     * the entire morning pipeline (no fetch, no notification, no TTS, no widget
+     * refresh from that path). Unlike [tonightEnabled], which stays opt-in.
      */
-    val dailyEnabled: Boolean = false,
+    val dailyEnabled: Boolean = true,
     /**
      * When the evening / "tonight" insight should fire. Distinct from [schedule]
      * (the morning slot) so the user can keep the morning at 07:00 and still
@@ -689,9 +690,9 @@ data class UserPreferences(
      */
     val tonightSchedule: Schedule = Schedule.defaultTonight(schedule.zoneId),
     /**
-     * Master switch for the evening / "tonight" insight. Off by default — like
-     * [dailyEnabled], the user opts into scheduled casts from the schedule
-     * page. The user enables (and disables) it there.
+     * Master switch for the evening / "tonight" insight. Off by default —
+     * unlike [dailyEnabled], the evening cast stays opt-in; the user enables
+     * (and disables) it from the schedule page.
      */
     val tonightEnabled: Boolean = false,
     /**
@@ -718,9 +719,11 @@ data class UserPreferences(
      * a jacket." The event itself is never named in the prose (it stays on
      * device). The tip is gated on [useCalendarEvents] (no events without
      * that), and only fires when at least one clothes rule triggers against
-     * the evening hourly slice. On by default.
+     * the evening hourly slice. Off by default — even with calendar events
+     * enabled, the morning insight stays focused on the day ahead until the
+     * user opts the evening tie-in in.
      */
-    val dailyMentionEveningEvents: Boolean = true,
+    val dailyMentionEveningEvents: Boolean = false,
     /**
      * Whether — and when — the morning insight names the clothing its rules
      * trigger. See [ClothesMentionMode]. Morning ([ForecastPeriod.TODAY]) and

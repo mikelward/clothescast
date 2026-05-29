@@ -20,16 +20,9 @@ import java.time.LocalDate
  * surfaces the absence as "no sunshine blurb today" rather than a misleading
  * single-source number.
  */
-fun PerModelHourly.consensusSunshineHoursFor(date: LocalDate): Double? {
-    val perModelTotalsSec = byModel.values.mapNotNull { entries ->
-        val daySeconds = entries
-            .filter { it.time.toLocalDate() == date }
-            .mapNotNull { it.sunshineDurationSec }
-        if (daySeconds.isEmpty()) null else daySeconds.sum()
-    }
-    if (perModelTotalsSec.size < 2) return null
-    return perModelTotalsSec.average() / 3600.0
-}
+fun PerModelHourly.consensusSunshineHoursFor(date: LocalDate): Double? =
+    consensusPerModelAverage(dateFilter = date) { it.sunshineDurationSec }
+        ?.div(3600.0)
 
 /**
  * Variant that totals every entry in the [PerModelHourly] regardless of date.
@@ -46,11 +39,6 @@ fun PerModelHourly.consensusSunshineHoursFor(date: LocalDate): Double? {
  * of those per-model totals is returned in fractional hours, and < 2 models
  * with any sunshine return null.
  */
-fun PerModelHourly.consensusSunshineHours(): Double? {
-    val perModelTotalsSec = byModel.values.mapNotNull { entries ->
-        val seconds = entries.mapNotNull { it.sunshineDurationSec }
-        if (seconds.isEmpty()) null else seconds.sum()
-    }
-    if (perModelTotalsSec.size < 2) return null
-    return perModelTotalsSec.average() / 3600.0
-}
+fun PerModelHourly.consensusSunshineHours(): Double? =
+    consensusPerModelAverage(dateFilter = null) { it.sunshineDurationSec }
+        ?.div(3600.0)

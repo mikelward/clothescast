@@ -404,14 +404,21 @@ label localises.
     <string name="insight_lead_today">今天</string>
     <string name="insight_lead_tomorrow">明天</string>
     <string name="insight_unchanged_today">今天天氣和昨天一樣。</string>
+    <string name="insight_unchanged_today_no_lead">和昨天一樣。</string>
     <string name="insight_unchanged_tonight">今晚天氣和昨晚一樣。</string>
+    <string name="insight_unchanged_tonight_no_lead">和昨晚一樣。</string>
     <string name="insight_unchanged_tomorrow">明天天氣和今天一樣。</string>
+    <string name="insight_unchanged_tomorrow_no_lead">和今天一樣。</string>
     <string name="insight_lead_tonight">今晚</string>
     <!-- "今天天氣溫和。" / "今晚天氣寒冷至涼爽。" -->
     <string name="insight_band_single">%1$s天氣%2$d°。</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s天氣%2$d°至%3$d°。</string>
+    <string name="insight_band_range_no_lead">%1$d°至%2$d°。</string>
     <string name="insight_band_words_single">%1$s天氣%2$s。</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s天氣%2$s至%3$s。</string>
+    <string name="insight_band_words_range_no_lead">%1$s至%2$s。</string>
     <string name="insight_band_freezing">極寒</string>
     <string name="insight_band_cold">寒冷</string>
     <string name="insight_band_cool">涼爽</string>
@@ -422,6 +429,7 @@ label localises.
     <string name="insight_delta_cooler">今天氣溫下降%1$d°。</string>
     <string name="insight_alert">警示：%1$s。</string>
     <string name="insight_clothes_wear">穿上%1$s。</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Chinese has no grammatical articles. -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -1117,6 +1125,7 @@ label localises.
     <string name="settings_format_change_label">溫度變化</string>
     <string name="settings_format_change_off">關閉</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">區間</string>
     <string name="settings_format_clothes_label">服裝措辭</string>
     <string name="settings_format_clothes_items">衣物</string>
     <string name="settings_format_clothes_layer_count">層數</string>

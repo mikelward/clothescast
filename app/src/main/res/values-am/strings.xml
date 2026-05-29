@@ -375,14 +375,21 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_lead_today">ዛሬ</string>
     <string name="insight_lead_tomorrow">ነገ</string>
     <string name="insight_unchanged_today">ዛሬ እንደ ትናንቱ ይሆናል።</string>
+    <string name="insight_unchanged_today_no_lead">እንደ ትናንቱ።</string>
     <string name="insight_unchanged_tonight">ዛሬ ምሽት እንደ ትናንት ምሽቱ ይሆናል።</string>
+    <string name="insight_unchanged_tonight_no_lead">እንደ ትናንት ምሽቱ።</string>
     <string name="insight_unchanged_tomorrow">ነገ እንደ ዛሬው ይሆናል።</string>
+    <string name="insight_unchanged_tomorrow_no_lead">እንደ ዛሬው።</string>
     <string name="insight_lead_tonight">ዛሬ ምሽት</string>
     <!-- Amharic: "ዛሬ ምቹ ይሆናል።" -->
     <string name="insight_band_single">%1$s %2$d° ይሆናል።</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s ከ%2$d° እስከ %3$d° ይሆናል።</string>
+    <string name="insight_band_range_no_lead">%1$d° እስከ %2$d° ይሆናል።</string>
     <string name="insight_band_words_single">%1$s %2$s ይሆናል።</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s ከ%2$s እስከ %3$s ይሆናል።</string>
+    <string name="insight_band_words_range_no_lead">%1$s እስከ %2$s ይሆናል።</string>
     <string name="insight_band_freezing">በጣም ቀዝቃዛ</string>
     <string name="insight_band_cold">ቀዝቃዛ</string>
     <string name="insight_band_cool">ትንሽ ቀዝቃዛ</string>
@@ -393,6 +400,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_delta_cooler">ከትናንት %1$d° ቀዝቃዛ ይሆናል።</string>
     <string name="insight_alert">ማስጠንቀቂያ: %1$s።</string>
     <string name="insight_clothes_wear">%1$s ይልበሱ።</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Amharic has no grammatical articles; pass through bare. -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -923,6 +931,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_format_change_label">የሙቀት ለውጥ</string>
     <string name="settings_format_change_off">ጠፍቷል</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">ደረጃ</string>
     <string name="settings_format_clothes_label">የልብስ ቃላት</string>
     <string name="settings_format_clothes_items">ልብሶች</string>
     <string name="settings_format_clothes_layer_count">የመጠቅለያ ብዛት</string>

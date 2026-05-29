@@ -53,14 +53,21 @@ What is NOT overridden, by design:
     <string name="insight_lead_today">Šiandien</string>
     <string name="insight_lead_tomorrow">Rytoj</string>
     <string name="insight_unchanged_today">Šiandien bus taip pat kaip vakar.</string>
+    <string name="insight_unchanged_today_no_lead">Kaip vakar.</string>
     <string name="insight_unchanged_tonight">Šįvakar bus taip pat kaip vakar vakare.</string>
+    <string name="insight_unchanged_tonight_no_lead">Kaip vakar vakare.</string>
     <string name="insight_unchanged_tomorrow">Rytoj bus taip pat kaip šiandien.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Kaip šiandien.</string>
     <string name="insight_lead_tonight">Šįvakar</string>
     <!-- Lithuanian neuter short-form weather: "Šiandien bus šalta." -->
     <string name="insight_band_single">%1$s bus %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s bus %2$d° arba %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° arba %2$d°.</string>
     <string name="insight_band_words_single">%1$s bus %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s bus %2$s arba %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s arba %2$s.</string>
     <string name="insight_band_freezing">labai šalta</string>
     <string name="insight_band_cold">šalta</string>
     <string name="insight_band_cool">vėsu</string>
@@ -71,6 +78,7 @@ What is NOT overridden, by design:
     <string name="insight_delta_cooler">Šiandien bus %1$d° šalčiau.</string>
     <string name="insight_alert">Įspėjimas: %1$s.</string>
     <string name="insight_clothes_wear">Apsivilk %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s ir %2$s</string>
@@ -940,6 +948,7 @@ What is NOT overridden, by design:
     <string name="settings_format_change_label">Temperatūros pokytis</string>
     <string name="settings_format_change_off">Išjungta</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Intervalas</string>
     <string name="settings_format_clothes_label">Aprangos formuluotė</string>
     <string name="settings_format_clothes_items">Drabužiai</string>
     <string name="settings_format_clothes_layer_count">Sluoksnių skaičius</string>

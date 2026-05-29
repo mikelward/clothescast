@@ -392,13 +392,20 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="insight_lead_today">Danas</string>
     <string name="insight_lead_tomorrow">Sutra</string>
     <string name="insight_unchanged_today">Danas će biti isto kao jučer.</string>
+    <string name="insight_unchanged_today_no_lead">Kao jučer.</string>
     <string name="insight_unchanged_tonight">Večeras će biti isto kao sinoć.</string>
+    <string name="insight_unchanged_tonight_no_lead">Kao sinoć.</string>
     <string name="insight_unchanged_tomorrow">Sutra će biti isto kao danas.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Kao danas.</string>
     <string name="insight_lead_tonight">Večeras</string>
     <string name="insight_band_single">%1$s će biti %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s će biti od %2$d° do %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° do %2$d°.</string>
     <string name="insight_band_words_single">%1$s će biti %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s će biti od %2$s do %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s do %2$s.</string>
     <string name="insight_band_freezing">ledeno</string>
     <string name="insight_band_cold">hladno</string>
     <string name="insight_band_cool">svježe</string>
@@ -409,6 +416,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="insight_delta_cooler">Danas će biti %1$d° hladnije.</string>
     <string name="insight_alert">Upozorenje: %1$s.</string>
     <string name="insight_clothes_wear">Obuci %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s i %2$s</string>
@@ -1021,6 +1029,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_format_change_label">Promjena temperature</string>
     <string name="settings_format_change_off">Isključeno</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Pojas</string>
     <string name="settings_format_clothes_label">Formulacija odjeće</string>
     <string name="settings_format_clothes_items">Komadi odjeće</string>
     <string name="settings_format_clothes_layer_count">Broj slojeva</string>

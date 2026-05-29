@@ -46,14 +46,21 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_lead_today">Leo</string>
     <string name="insight_lead_tomorrow">Kesho</string>
     <string name="insight_unchanged_today">Leo hali ya hewa itakuwa sawa na jana.</string>
+    <string name="insight_unchanged_today_no_lead">Kama jana.</string>
     <string name="insight_unchanged_tonight">Usiku huu hali ya hewa itakuwa sawa na jana usiku.</string>
+    <string name="insight_unchanged_tonight_no_lead">Kama jana usiku.</string>
     <string name="insight_unchanged_tomorrow">Kesho hali ya hewa itakuwa sawa na leo.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Kama leo.</string>
     <string name="insight_lead_tonight">Usiku huu</string>
     <!-- Swahili: "Leo itakuwa baridi." -->
     <string name="insight_band_single">%1$s itakuwa %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s itakuwa %2$d° hadi %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° hadi %2$d°.</string>
     <string name="insight_band_words_single">%1$s itakuwa %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s itakuwa %2$s hadi %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s hadi %2$s.</string>
     <string name="insight_band_freezing">baridi kali sana</string>
     <string name="insight_band_cold">baridi</string>
     <string name="insight_band_cool">baridi kidogo</string>
@@ -64,6 +71,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_delta_cooler">Itakuwa %1$d° baridi zaidi kuliko jana.</string>
     <string name="insight_alert">Tahadhari: %1$s.</string>
     <string name="insight_clothes_wear">Vaa %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Swahili has no articles; pass through bare. -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -924,6 +932,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_format_change_label">Mabadiliko ya halijoto</string>
     <string name="settings_format_change_off">Imezimwa</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Kikundi</string>
     <string name="settings_format_clothes_label">Maneno ya mavazi</string>
     <string name="settings_format_clothes_items">Mavazi</string>
     <string name="settings_format_clothes_layer_count">Idadi ya tabaka</string>

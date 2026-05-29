@@ -339,15 +339,22 @@ displayed label localizes.
     <string name="insight_lead_today">Tänään</string>
     <string name="insight_lead_tomorrow">Huomenna</string>
     <string name="insight_unchanged_today">Tänään on sama sää kuin eilen.</string>
+    <string name="insight_unchanged_today_no_lead">Kuten eilen.</string>
     <string name="insight_unchanged_tonight">Tänä iltana on sama sää kuin eilen illalla.</string>
+    <string name="insight_unchanged_tonight_no_lead">Kuten eilen illalla.</string>
     <string name="insight_unchanged_tomorrow">Huomenna on sama sää kuin tänään.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Kuten tänään.</string>
     <string name="insight_lead_tonight">Tänä iltana</string>
 
     <!-- Finnish predicative-partitive: "Tänään on kylmää." -->
     <string name="insight_band_single">%1$s on %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s on %2$d° tai %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° tai %2$d°.</string>
     <string name="insight_band_words_single">%1$s on %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s on %2$s tai %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s tai %2$s.</string>
 
     <string name="insight_band_freezing">pakkasta</string>
     <string name="insight_band_cold">kylmää</string>
@@ -363,6 +370,7 @@ displayed label localizes.
 
     <!-- "Pue" = imperative "put on"; clothing nouns appear in partitive case. -->
     <string name="insight_clothes_wear">Pue %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s ja %2$s</string>
@@ -961,6 +969,7 @@ displayed label localizes.
     <string name="settings_format_change_label">Lämpötilan muutos</string>
     <string name="settings_format_change_off">Pois</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Vyöhyke</string>
     <string name="settings_format_clothes_label">Vaatteiden sanamuoto</string>
     <string name="settings_format_clothes_items">Vaatekappaleet</string>
     <string name="settings_format_clothes_layer_count">Kerrosten määrä</string>

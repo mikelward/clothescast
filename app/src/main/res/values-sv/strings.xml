@@ -545,14 +545,21 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="insight_lead_today">Idag</string>
     <string name="insight_lead_tomorrow">Imorgon</string>
     <string name="insight_unchanged_today">Idag blir det likadant som igår.</string>
+    <string name="insight_unchanged_today_no_lead">Som igår.</string>
     <string name="insight_unchanged_tonight">I kväll blir det likadant som igår kväll.</string>
+    <string name="insight_unchanged_tonight_no_lead">Som igår kväll.</string>
     <string name="insight_unchanged_tomorrow">Imorgon blir det likadant som idag.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Som idag.</string>
     <string name="insight_lead_tonight">I kväll</string>
     <!-- Swedish V2 word order: "Idag blir det milt." -->
     <string name="insight_band_single">%1$s blir det %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s blir det %2$d° till %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° till %2$d°.</string>
     <string name="insight_band_words_single">%1$s blir det %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s blir det %2$s till %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s till %2$s.</string>
 
     <string name="insight_band_freezing">iskallt</string>
     <string name="insight_band_cold">kallt</string>
@@ -567,6 +574,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="insight_alert">Varning: %1$s.</string>
 
     <string name="insight_clothes_wear">Ta på %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s och %2$s</string>
@@ -981,6 +989,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_format_change_label">Temperaturförändring</string>
     <string name="settings_format_change_off">Av</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Nivå</string>
     <string name="settings_format_clothes_label">Klädformulering</string>
     <string name="settings_format_clothes_items">Plagg</string>
     <string name="settings_format_clothes_layer_count">Antal lager</string>

@@ -544,14 +544,21 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="insight_lead_today">Ma</string>
     <string name="insight_lead_tomorrow">Holnap</string>
     <string name="insight_unchanged_today">Ma ugyanolyan lesz, mint tegnap.</string>
+    <string name="insight_unchanged_today_no_lead">Mint tegnap.</string>
     <string name="insight_unchanged_tonight">Ma este ugyanolyan lesz, mint tegnap este.</string>
+    <string name="insight_unchanged_tonight_no_lead">Mint tegnap este.</string>
     <string name="insight_unchanged_tomorrow">Holnap ugyanolyan lesz, mint ma.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Mint ma.</string>
     <string name="insight_lead_tonight">Ma este</string>
     <!-- "%1$s %2$s lesz." → "Ma hideg lesz." Lead first, then band, copula at end. -->
     <string name="insight_band_single">%1$s %2$d° lesz.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s %2$d° és %3$d° között lesz.</string>
+    <string name="insight_band_range_no_lead">%1$d° és %2$d° között lesz.</string>
     <string name="insight_band_words_single">%1$s %2$s lesz.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s %2$s és %3$s között lesz.</string>
+    <string name="insight_band_words_range_no_lead">%1$s és %2$s között lesz.</string>
     <string name="insight_band_freezing">fagyos</string>
     <string name="insight_band_cold">hideg</string>
     <string name="insight_band_cool">hűvös</string>
@@ -562,6 +569,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="insight_delta_cooler">Ma %1$d°-kal hidegebb lesz.</string>
     <string name="insight_alert">Figyelmeztetés: %1$s.</string>
     <string name="insight_clothes_wear">Vegyél fel %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s és %2$s</string>
@@ -945,6 +953,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_format_change_label">Hőmérséklet-változás</string>
     <string name="settings_format_change_off">Ki</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Sáv</string>
     <string name="settings_format_clothes_label">Ruházat megfogalmazása</string>
     <string name="settings_format_clothes_items">Ruhadarabok</string>
     <string name="settings_format_clothes_layer_count">Rétegek száma</string>

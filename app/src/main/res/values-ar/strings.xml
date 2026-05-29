@@ -52,14 +52,21 @@ they work correctly in both the single-band and range templates.
     <string name="insight_lead_today">اليوم</string>
     <string name="insight_lead_tomorrow">غدًا</string>
     <string name="insight_unchanged_today">اليوم سيكون الجو مثل الأمس.</string>
+    <string name="insight_unchanged_today_no_lead">مثل الأمس.</string>
     <string name="insight_unchanged_tonight">الليلة سيكون الجو مثل الليلة الماضية.</string>
+    <string name="insight_unchanged_tonight_no_lead">مثل الليلة الماضية.</string>
     <string name="insight_unchanged_tomorrow">غدًا سيكون الجو مثل اليوم.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">مثل اليوم.</string>
     <string name="insight_lead_tonight">الليلة</string>
     <!-- "اليوم سيكون الجو معتدل." -->
     <string name="insight_band_single">%1$s سيكون الجو %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s سيكون الجو بين %2$d° و%3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° إلى %2$d°.</string>
     <string name="insight_band_words_single">%1$s سيكون الجو %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s سيكون الجو بين %2$s و%3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s إلى %2$s.</string>
     <string name="insight_band_freezing">شديد البرودة</string>
     <string name="insight_band_cold">بارد</string>
     <string name="insight_band_cool">لطيف</string>
@@ -70,6 +77,7 @@ they work correctly in both the single-band and range templates.
     <string name="insight_delta_cooler">سيكون اليوم أبرد بـ %1$d°.</string>
     <string name="insight_alert">تنبيه: %1$s.</string>
     <string name="insight_clothes_wear">ارتدِ %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Arabic has no indefinite article equivalent to English "a/an". -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -953,6 +961,7 @@ they work correctly in both the single-band and range templates.
     <string name="settings_format_change_label">تغير درجة الحرارة</string>
     <string name="settings_format_change_off">إيقاف</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">نطاق</string>
     <string name="settings_format_clothes_label">صياغة الملابس</string>
     <string name="settings_format_clothes_items">قطع الملابس</string>
     <string name="settings_format_clothes_layer_count">عدد الطبقات</string>

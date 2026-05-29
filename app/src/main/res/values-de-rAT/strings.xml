@@ -679,6 +679,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_format_change_label">Temperaturänderung</string>
     <string name="settings_format_change_off">Aus</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Stufe</string>
     <string name="settings_format_clothes_label">Kleidungs-Formulierung</string>
     <string name="settings_format_clothes_items">Kleidungsstücke</string>
     <string name="settings_format_clothes_layer_count">Anzahl der Schichten</string>

@@ -48,14 +48,21 @@ West Bengal vocabulary differences in a future PR.
     <string name="insight_lead_today">আজ</string>
     <string name="insight_lead_tomorrow">আগামীকাল</string>
     <string name="insight_unchanged_today">আজ আবহাওয়া গতকালের মতোই থাকবে।</string>
+    <string name="insight_unchanged_today_no_lead">গতকালের মতোই।</string>
     <string name="insight_unchanged_tonight">আজ রাতে আবহাওয়া গত রাতের মতোই থাকবে।</string>
+    <string name="insight_unchanged_tonight_no_lead">গত রাতের মতোই।</string>
     <string name="insight_unchanged_tomorrow">আগামীকাল আবহাওয়া আজকের মতোই থাকবে।</string>
+    <string name="insight_unchanged_tomorrow_no_lead">আজকের মতোই।</string>
     <string name="insight_lead_tonight">আজ রাতে</string>
     <!-- "আজ আবহাওয়া মনোরম থাকবে।" -->
     <string name="insight_band_single">%1$s আবহাওয়া %2$d° থাকবে।</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s আবহাওয়া %2$d° থেকে %3$d° থাকবে।</string>
+    <string name="insight_band_range_no_lead">%1$d° থেকে %2$d° থাকবে।</string>
     <string name="insight_band_words_single">%1$s আবহাওয়া %2$s থাকবে।</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s আবহাওয়া %2$s থেকে %3$s থাকবে।</string>
+    <string name="insight_band_words_range_no_lead">%1$s থেকে %2$s থাকবে।</string>
     <string name="insight_band_freezing">হিমশীতল</string>
     <string name="insight_band_cold">ঠান্ডা</string>
     <string name="insight_band_cool">শীতল</string>
@@ -66,6 +73,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="insight_delta_cooler">আজ %1$d° বেশি ঠান্ডা।</string>
     <string name="insight_alert">সতর্কতা: %1$s।</string>
     <string name="insight_clothes_wear">%1$s পরুন।</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Bengali has no grammatical articles. -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -1024,6 +1032,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_format_change_label">তাপমাত্রার পরিবর্তন</string>
     <string name="settings_format_change_off">বন্ধ</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">শ্রেণি</string>
     <string name="settings_format_clothes_label">পোশাকের শব্দচয়ন</string>
     <string name="settings_format_clothes_items">পোশাক</string>
     <string name="settings_format_clothes_layer_count">স্তরের সংখ্যা</string>

@@ -116,7 +116,7 @@ class InsightFormatter(
      * Where the period preamble ("Today, it will be …") is allowed to survive.
      * See [PreambleVisibility]. Combined with the per-call [InsightSurface] to
      * decide whether the lead is included, omitted, or shown parenthesised.
-     * English-only (see [supportsNoLead]); other locales always include it.
+     * Applies in every locale — all ship `insight_*_no_lead` templates.
      *
      * Defaults to [PreambleVisibility.ALWAYS] — the *renderer's* default is to
      * show the full prose. The app's product default (drop the lead on visual
@@ -128,7 +128,8 @@ class InsightFormatter(
     /**
      * Where the wear preamble ("Wear " + leading article) is allowed to
      * survive. See [PreambleVisibility]. Dropping it turns "Wear a sweater."
-     * into "Sweater."; the preview shows "(Wear a) sweater.". English-only.
+     * into "Sweater."; the preview shows "(Wear a) sweater.". Applies in
+     * every locale.
      * Defaults to [PreambleVisibility.ALWAYS] (full prose), as above.
      */
     private val wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
@@ -158,8 +159,8 @@ class InsightFormatter(
      * [surface]. Under [PreambleVisibility.SPEECH_ONLY] the spoken ([
      * InsightSurface.SPEECH]) path keeps a preamble, every visual surface drops
      * it, and the Format-settings preview shows it parenthesised ("(Today, it
-     * will be) 14° to 20°."). All dropping / parenthesising is English-only (see
-     * [supportsNoLead]); other locales render the full forms regardless.
+     * will be) 14° to 20°."). Dropping / parenthesising applies in every locale
+     * — each ships its own `insight_*_no_lead` templates.
      */
     fun format(
         summary: InsightSummary,
@@ -186,9 +187,8 @@ class InsightFormatter(
      * Render the insight body for a single lead treatment ([omitLead]) and wear
      * treatment ([wearMode]). [format] calls this once for [LeadMode.INCLUDE] /
      * [LeadMode.OMIT] and twice for [LeadMode.PAREN] (the with- and without-lead
-     * forms it then splices). The "it will be" connective + first-clause
-     * re-capitalisation that dropping the lead entails are English-specific;
-     * [format] only ever passes `omitLead = true` when [supportsNoLead] holds.
+     * forms it then splices). Dropping the lead swaps in each locale's
+     * `insight_*_no_lead` templates and re-capitalises the first clause.
      */
     private fun renderInsight(
         summary: InsightSummary,
@@ -290,15 +290,10 @@ class InsightFormatter(
         val hasTemperatureSentence = bandCallout != null || rangeFormat != RangeFormat.NONE
         val body = if (!hasTemperatureSentence) {
             // In NONE mode the band is dropped, so when a numeric delta is
-            // present it's the first primary clause. English renders it as the
-            // self-introducing "it will be …" fragment that the period lead
-            // folds into ("Today, it will be 5° warmer …"); every other locale
-            // keeps its full, self-leading delta sentence ("Heute wird es 5°
-            // wärmer."), which already carries its own "today" word and must
-            // NOT have a second lead prepended — otherwise the prose doubles it
-            // ("Heute, heute wird es 5° wärmer.").
-            val firstClauseSelfLeads = numericDelta != null && !deltaHasLeadFragment()
-            renderLeadOnly(summary.period, isFutureDay, primaryClauses, tieInClauses, firstClauseSelfLeads, omitLead)
+            // present it's the first primary clause. It renders as the
+            // self-introducing "it will be …" fragment (insight_delta_*_lead)
+            // that the period lead folds into ("Today, it will be 5° warmer …").
+            renderLeadOnly(summary.period, isFutureDay, primaryClauses, tieInClauses, omitLead)
         } else {
             (primaryClauses + tieInClauses).joinToString(" ")
         }
@@ -339,7 +334,6 @@ class InsightFormatter(
         isFutureDay: Boolean,
         primaryClauses: List<String>,
         tieInClauses: List<String>,
-        firstClauseSelfLeads: Boolean,
         omitLead: Boolean,
     ): String {
         if (primaryClauses.isEmpty()) {
@@ -355,18 +349,11 @@ class InsightFormatter(
             return (listOf(first) + primaryClauses.drop(1) + tieInClauses).joinToString(" ")
         }
         val lead = resources.getString(leadRes(period, isFutureDay))
-        // A self-leading first clause (a localized full-sentence delta) already
-        // opens with its own "today" word, so emit it verbatim instead of
-        // folding the period lead in front of it.
-        val first = if (firstClauseSelfLeads) {
-            primaryClauses.first()
-        } else {
-            resources.getString(
-                R.string.insight_lead_continues,
-                lead,
-                decapitalize(primaryClauses.first()),
-            )
-        }
+        val first = resources.getString(
+            R.string.insight_lead_continues,
+            lead,
+            decapitalize(primaryClauses.first()),
+        )
         return (listOf(first) + primaryClauses.drop(1) + tieInClauses).joinToString(" ")
     }
 
@@ -382,17 +369,6 @@ class InsightFormatter(
         return text.substring(0, 1).uppercase(locale) + text.substring(1)
     }
 
-    /**
-     * Whether this locale supports dropping the "Today, it will be …" lead-in
-     * (used by the Today card, whose header already names the period). Stripping
-     * the lead means removing the "it will be" connective and re-capitalising
-     * the next word — both English-specific surgery. Locales that fuse the lead
-     * into the sentence ("Heute wird es …") have no no-lead templates and keep
-     * the full lead-in. English only for now; widen as the `_no_lead` keys get
-     * translated. Mirrors the [deltaHasLeadFragment] gate.
-     */
-    private fun supportsNoLead(): Boolean = locale.language == "en"
-
     /** How the period lead is rendered for a clause (see [leadMode]). */
     private enum class LeadMode { INCLUDE, OMIT, PAREN }
 
@@ -401,11 +377,11 @@ class InsightFormatter(
 
     /**
      * Resolve the period-preamble treatment for [surface] under the user's
-     * [periodPreamble]. Non-English locales always [LeadMode.INCLUDE] (the
-     * no-lead surgery is English-only, like [supportsNoLead]).
+     * [periodPreamble]. Every locale ships no-lead templates (the
+     * `insight_*_no_lead` strings), so dropping / parenthesising applies
+     * across languages.
      */
     private fun leadMode(surface: InsightSurface): LeadMode {
-        if (!supportsNoLead()) return LeadMode.INCLUDE
         return when (periodPreamble) {
             PreambleVisibility.ALWAYS -> LeadMode.INCLUDE
             PreambleVisibility.NEVER -> LeadMode.OMIT
@@ -419,11 +395,11 @@ class InsightFormatter(
 
     /**
      * Resolve the wear-preamble treatment for [surface] under the user's
-     * [wearPreamble]. Non-English locales always [WearMode.FULL] (dropping
-     * "Wear" + the leading article is English-only surgery).
+     * [wearPreamble]. Dropping "Wear" + the leading article reduces the clause
+     * to the (capitalised) garment body via `insight_clothes_bare`, which every
+     * locale now ships, so it applies across languages.
      */
     private fun wearMode(surface: InsightSurface): WearMode {
-        if (!supportsNoLead()) return WearMode.FULL
         return when (wearPreamble) {
             PreambleVisibility.ALWAYS -> WearMode.FULL
             PreambleVisibility.NEVER -> WearMode.BARE
@@ -526,16 +502,12 @@ class InsightFormatter(
     }
 
     private fun formatDelta(delta: DeltaClause, leadsTemperature: Boolean = false): String {
-        // The English delta is a bare fragment ("5° warmer than yesterday.")
-        // built to trail a band sentence; when it instead leads the temperature
-        // content it needs the "it will be …" subject. That self-introducing
-        // form has a localized template (insight_delta_*_lead) only for English
-        // so far. Other locales phrase their own delta as a full sentence
-        // already (German "Heute wird es 5° wärmer."), so they keep their
-        // existing string rather than have English spliced into localized
-        // prose — same en-only gating as spokenTime(). Widen the gate per
-        // locale as the _lead keys get translated.
-        val lead = leadsTemperature && deltaHasLeadFragment()
+        // The delta is normally a bare fragment ("5° warmer than yesterday.")
+        // built to trail a band sentence. When it instead leads the temperature
+        // content (range omitted) it needs the self-introducing "it will be …"
+        // form, which every locale ships as insight_delta_*_lead; the period
+        // lead is then folded in front of it by [renderLeadOnly].
+        val lead = leadsTemperature
         val template = when (delta.direction) {
             DeltaClause.Direction.WARMER ->
                 if (lead) R.string.insight_delta_warmer_lead else R.string.insight_delta_warmer
@@ -581,17 +553,6 @@ class InsightFormatter(
         val lead = resources.getString(leadRes(period, isFutureDay))
         return resources.getString(R.string.insight_band_words_single, lead, word)
     }
-
-    /**
-     * Whether this locale ships the self-introducing `insight_delta_*_lead`
-     * fragment ("it will be 5° warmer …"). Only English does so far; every
-     * other locale phrases its delta as a full self-leading sentence
-     * ("Heute wird es 5° wärmer."). [format] uses the inverse to decide
-     * whether [renderLeadOnly] should fold the period lead in front of the
-     * delta — keep the two in sync, and widen this gate as the `_lead` keys
-     * get translated.
-     */
-    private fun deltaHasLeadFragment(): Boolean = locale.language == "en"
 
     private fun formatClothesWear(items: List<String>, wearMode: WearMode): String? {
         return when (wearMode) {

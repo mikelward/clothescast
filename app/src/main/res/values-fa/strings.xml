@@ -50,14 +50,21 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="insight_lead_today">امروز</string>
     <string name="insight_lead_tomorrow">فردا</string>
     <string name="insight_unchanged_today">امروز هوا مثل دیروز خواهد بود.</string>
+    <string name="insight_unchanged_today_no_lead">مثل دیروز.</string>
     <string name="insight_unchanged_tonight">امشب هوا مثل دیشب خواهد بود.</string>
+    <string name="insight_unchanged_tonight_no_lead">مثل دیشب.</string>
     <string name="insight_unchanged_tomorrow">فردا هوا مثل امروز خواهد بود.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">مثل امروز.</string>
     <string name="insight_lead_tonight">امشب</string>
     <!-- "امروز هوا معتدل خواهد بود." — SOV with lead first. -->
     <string name="insight_band_single">%1$s هوا %2$d° خواهد بود.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s هوا بین %2$d° و %3$d° خواهد بود.</string>
+    <string name="insight_band_range_no_lead">%1$d° تا %2$d° خواهد بود.</string>
     <string name="insight_band_words_single">%1$s هوا %2$s خواهد بود.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s هوا بین %2$s و %3$s خواهد بود.</string>
+    <string name="insight_band_words_range_no_lead">%1$s تا %2$s خواهد بود.</string>
     <string name="insight_band_freezing">یخ‌زده</string>
     <string name="insight_band_cold">سرد</string>
     <string name="insight_band_cool">خنک</string>
@@ -69,6 +76,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="insight_alert">هشدار: %1$s.</string>
     <!-- SOV: "%1$s را بپوشید" = "[item] را (object marker) wear". -->
     <string name="insight_clothes_wear">%1$s را بپوشید.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Persian has no indefinite article equivalent to English "a/an". -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -944,6 +952,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_format_change_label">تغییر دما</string>
     <string name="settings_format_change_off">خاموش</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">طیف</string>
     <string name="settings_format_clothes_label">عبارت لباس</string>
     <string name="settings_format_clothes_items">قطعه‌ها</string>
     <string name="settings_format_clothes_layer_count">تعداد لایه‌ها</string>

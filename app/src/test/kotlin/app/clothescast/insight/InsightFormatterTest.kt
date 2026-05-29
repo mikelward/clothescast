@@ -139,14 +139,15 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `visual surface keeps the lead-in for non-English locales`() {
-        // Stripping the lead is English-only surgery (it removes the "it will
-        // be" connective and re-capitalises). Other locales fuse the lead into
-        // the sentence and have no no-lead template, so they keep the lead-in.
+    fun `visual surface drops the lead-in for non-English locales too`() {
+        // Every locale now ships insight_*_no_lead templates, so the no-lead
+        // surgery applies across languages: the German visual surface drops
+        // "Heute wird es …" down to the bare measurement, while the speech
+        // surface keeps the full lead-in.
         val germanSubject =
             InsightFormatter.forContext(context, Locale.GERMAN, periodPreamble = PreambleVisibility.SPEECH_ONLY)
-        germanSubject.format(summary(), surface = InsightSurface.VISUAL) shouldBe
-            germanSubject.format(summary(), surface = InsightSurface.SPEECH)
+        germanSubject.format(summary(), surface = InsightSurface.VISUAL) shouldBe "21°."
+        germanSubject.format(summary(), surface = InsightSurface.SPEECH) shouldBe "Heute wird es 21°."
     }
 
     // --- Period preamble (PreambleVisibility) ---
@@ -238,7 +239,10 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `wear preamble drop is English-only`() {
+    fun `wear preamble drop applies to non-English locales too`() {
+        // insight_clothes_bare ("%1$s.") ships in every locale, so dropping
+        // "Wear" works in German: "Trag Pullover." collapses to "Pullover."
+        // (the band lead stays — only the wear preamble is set to Never here).
         val germanWearNever = InsightFormatter.forContext(
             context,
             Locale.GERMAN,
@@ -247,10 +251,7 @@ class InsightFormatterTest {
         germanWearNever.format(
             summary(clothes = ClothesClause(listOf("sweater"))),
             surface = InsightSurface.VISUAL,
-        ) shouldBe germanWearNever.format(
-            summary(clothes = ClothesClause(listOf("sweater"))),
-            surface = InsightSurface.SPEECH,
-        )
+        ) shouldBe "Heute wird es 21°. Pullover."
     }
 
     @Test
@@ -777,9 +778,9 @@ class InsightFormatterTest {
 
     @Test
     fun `omit range keeps the leading delta localized for non-English`() {
-        // The "it will be …" lead template is English-only; a non-English
-        // locale must keep its own localized delta string rather than splice
-        // the English clause into otherwise-localized prose.
+        // The leading delta uses the locale's own self-introducing fragment
+        // (German insight_delta_warmer_lead), never the English "it will be …"
+        // clause spliced into otherwise-localized prose.
         val germanOmit = InsightFormatter.forContext(
             context,
             Locale.GERMAN,
@@ -790,18 +791,19 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `omit range does not double the lead on a self-leading localized delta`() {
-        // The German delta string is a full sentence that already opens with
-        // "Heute" ("Heute wird es 5° wärmer."). Folding the period lead in
-        // front of it would double the word ("Heute, heute wird es …"); the
-        // self-leading clause must be emitted verbatim instead.
+    fun `omit range folds the period lead in front of the leading delta`() {
+        // Range omitted: the delta leads, using the self-introducing German
+        // fragment ("es wird … wärmer als gestern.") with the period lead
+        // folded in front via insight_lead_continues — "Heute, es wird …",
+        // mirroring the English "Today, it will be …". The lead appears exactly
+        // once (no "Heute, heute …" doubling).
         val germanOmit = InsightFormatter.forContext(
             context,
             Locale.GERMAN,
             rangeFormat = RangeFormat.NONE,
         )
         germanOmit.format(summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER))) shouldBe
-            "Heute wird es 5° wärmer."
+            "Heute, es wird 5° wärmer als gestern."
     }
 
     @Test
@@ -1497,6 +1499,70 @@ class InsightFormatterTest {
             ),
         )
         out shouldBe "Heute wird es 21°. Denk an Regenschirm für heute Abend, Regen um 21 Uhr."
+    }
+
+    @Test
+    fun `de — no-lead single band drops 'Heute wird es'`() {
+        val germanNoLead =
+            InsightFormatter.forContext(context, Locale.GERMAN, periodPreamble = PreambleVisibility.NEVER)
+        germanNoLead.format(summary()) shouldBe "21°."
+    }
+
+    @Test
+    fun `de — no-lead band range keeps the German 'bis' connector`() {
+        val germanNoLead =
+            InsightFormatter.forContext(context, Locale.GERMAN, periodPreamble = PreambleVisibility.NEVER)
+        germanNoLead.format(
+            summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.MILD)),
+        ) shouldBe "15° bis 21°."
+    }
+
+    @Test
+    fun `de — no-lead unchanged placeholder is the brief German fragment`() {
+        // RangeFormat.NONE with nothing else firing falls back to the
+        // "unchanged" placeholder; the no-lead form drops the whole "Heute wird
+        // es genauso …" scaffold down to the bare comparison, so it stays terse
+        // and matches the card header.
+        val germanNoLead = InsightFormatter.forContext(
+            context,
+            Locale.GERMAN,
+            rangeFormat = RangeFormat.NONE,
+            periodPreamble = PreambleVisibility.NEVER,
+        )
+        germanNoLead.format(summary()) shouldBe "Wie gestern."
+    }
+
+    @Test
+    fun `de — settings preview parenthesises the German lead for the unchanged line`() {
+        // Because the no-lead form is a clean suffix of the full sentence, the
+        // Speech-only preview recovers the dropped lead and parenthesises it
+        // ("(Heute wird es) genauso wie gestern.") rather than falling back to
+        // the un-parenthesised full sentence.
+        val germanPreview = InsightFormatter.forContext(
+            context,
+            Locale.GERMAN,
+            rangeFormat = RangeFormat.NONE,
+            periodPreamble = PreambleVisibility.SPEECH_ONLY,
+        )
+        germanPreview.format(summary(), surface = InsightSurface.SETTINGS_PREVIEW) shouldBe
+            "(Heute wird es genauso) wie gestern."
+    }
+
+    @Test
+    fun `de — no-lead leading delta uses the self-introducing German fragment`() {
+        // Range omitted + a numeric delta: the delta leads the temperature
+        // content, so it uses insight_delta_warmer_lead ("es wird … wärmer als
+        // gestern.") capitalised, rather than the trailing "Heute wird es …"
+        // fragment.
+        val germanNoLead = InsightFormatter.forContext(
+            context,
+            Locale.GERMAN,
+            rangeFormat = RangeFormat.NONE,
+            periodPreamble = PreambleVisibility.NEVER,
+        )
+        germanNoLead.format(
+            summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)),
+        ) shouldBe "Es wird 5° wärmer als gestern."
     }
 
     // ---------------------------------------------------------------------

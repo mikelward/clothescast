@@ -481,13 +481,20 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_lead_today">Σήμερα</string>
     <string name="insight_lead_tomorrow">Αύριο</string>
     <string name="insight_unchanged_today">Σήμερα θα είναι όπως χθες.</string>
+    <string name="insight_unchanged_today_no_lead">Όπως χθες.</string>
     <string name="insight_unchanged_tonight">Απόψε θα είναι όπως χθες το βράδυ.</string>
+    <string name="insight_unchanged_tonight_no_lead">Όπως χθες το βράδυ.</string>
     <string name="insight_unchanged_tomorrow">Αύριο θα είναι όπως σήμερα.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Όπως σήμερα.</string>
     <string name="insight_lead_tonight">Απόψε</string>
     <string name="insight_band_single">%1$s θα κάνει %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s θα έχει %2$d° έως %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° έως %2$d°.</string>
     <string name="insight_band_words_single">%1$s θα κάνει %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s θα έχει %2$s έως %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s έως %2$s.</string>
     <string name="insight_band_freezing">παγωνιά</string>
     <string name="insight_band_cold">κρύο</string>
     <string name="insight_band_cool">δροσιά</string>
@@ -498,6 +505,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_delta_cooler">Σήμερα θα είναι %1$d° πιο κρύο από χθες.</string>
     <string name="insight_alert">Ειδοποίηση: %1$s.</string>
     <string name="insight_clothes_wear">Φόρεσε %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Articles omitted — Greek garments carry grammatical gender
          (το πουλόβερ neuter, η μπλούζα feminine, το παντελόνι neuter,
          τα τζιν neuter plural) which would require per-rule metadata
@@ -1074,6 +1082,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_format_change_label">Μεταβολή θερμοκρασίας</string>
     <string name="settings_format_change_off">Ανενεργό</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Ζώνη</string>
     <string name="settings_format_clothes_label">Διατύπωση ρούχων</string>
     <string name="settings_format_clothes_items">Είδη ρούχων</string>
     <string name="settings_format_clothes_layer_count">Αριθμός στρώσεων</string>

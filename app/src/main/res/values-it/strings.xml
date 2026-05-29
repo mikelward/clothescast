@@ -409,13 +409,20 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_lead_today">Oggi</string>
     <string name="insight_lead_tomorrow">Domani</string>
     <string name="insight_unchanged_today">Oggi sarà come ieri.</string>
+    <string name="insight_unchanged_today_no_lead">Come ieri.</string>
     <string name="insight_unchanged_tonight">Stasera sarà come ieri sera.</string>
+    <string name="insight_unchanged_tonight_no_lead">Come ieri sera.</string>
     <string name="insight_unchanged_tomorrow">Domani sarà come oggi.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Come oggi.</string>
     <string name="insight_lead_tonight">Stasera</string>
     <string name="insight_band_single">%1$s sarà %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s sarà tra %2$d° e %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° a %2$d°.</string>
     <string name="insight_band_words_single">%1$s sarà %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s sarà tra %2$s e %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s a %2$s.</string>
     <string name="insight_band_freezing">gelido</string>
     <string name="insight_band_cold">freddo</string>
     <string name="insight_band_cool">fresco</string>
@@ -426,6 +433,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_delta_cooler">Oggi farà %1$d° in meno.</string>
     <string name="insight_alert">Allerta: %1$s.</string>
     <string name="insight_clothes_wear">Indossa %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Articles omitted — Italian gender agreement requires per-garment metadata. -->
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
@@ -1065,6 +1073,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_format_change_label">Variazione di temperatura</string>
     <string name="settings_format_change_off">Disattivato</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Categoria</string>
     <string name="settings_format_clothes_label">Formulazione abbigliamento</string>
     <string name="settings_format_clothes_items">Capi</string>
     <string name="settings_format_clothes_layer_count">Numero di strati</string>

@@ -556,13 +556,20 @@ What is NOT overridden, by design:
     <string name="insight_lead_today">Dnes</string>
     <string name="insight_lead_tomorrow">Zajtra</string>
     <string name="insight_unchanged_today">Dnes bude rovnako ako včera.</string>
+    <string name="insight_unchanged_today_no_lead">Ako včera.</string>
     <string name="insight_unchanged_tonight">Dnes večer bude rovnako ako včera večer.</string>
+    <string name="insight_unchanged_tonight_no_lead">Ako včera večer.</string>
     <string name="insight_unchanged_tomorrow">Zajtra bude rovnako ako dnes.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Ako dnes.</string>
     <string name="insight_lead_tonight">Dnes večer</string>
     <string name="insight_band_single">%1$s bude %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s bude od %2$d° do %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° do %2$d°.</string>
     <string name="insight_band_words_single">%1$s bude %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s bude od %2$s do %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s do %2$s.</string>
     <string name="insight_band_freezing">mrazivo</string>
     <string name="insight_band_cold">chladno</string>
     <string name="insight_band_cool">sviežo</string>
@@ -573,6 +580,7 @@ What is NOT overridden, by design:
     <string name="insight_delta_cooler">Dnes bude o %1$d° chladnejšie.</string>
     <string name="insight_alert">Výstraha: %1$s.</string>
     <string name="insight_clothes_wear">Obleč si %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s a %2$s</string>
@@ -974,6 +982,7 @@ What is NOT overridden, by design:
     <string name="settings_format_change_label">Zmena teploty</string>
     <string name="settings_format_change_off">Vypnuté</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Pásmo</string>
     <string name="settings_format_clothes_label">Formulácia oblečenia</string>
     <string name="settings_format_clothes_items">Kusy oblečenia</string>
     <string name="settings_format_clothes_layer_count">Počet vrstiev</string>

@@ -47,13 +47,20 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="insight_lead_today">Astăzi</string>
     <string name="insight_lead_tomorrow">Mâine</string>
     <string name="insight_unchanged_today">Astăzi va fi la fel ca ieri.</string>
+    <string name="insight_unchanged_today_no_lead">Ca ieri.</string>
     <string name="insight_unchanged_tonight">Diseară va fi la fel ca aseară.</string>
+    <string name="insight_unchanged_tonight_no_lead">Ca aseară.</string>
     <string name="insight_unchanged_tomorrow">Mâine va fi la fel ca astăzi.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Ca astăzi.</string>
     <string name="insight_lead_tonight">Diseară</string>
     <string name="insight_band_single">%1$s va fi %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s va fi între %2$d° și %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° și %2$d°.</string>
     <string name="insight_band_words_single">%1$s va fi %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
     <string name="insight_band_words_range">%1$s va fi între %2$s și %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s și %2$s.</string>
     <string name="insight_band_freezing">geros</string>
     <string name="insight_band_cold">frig</string>
     <string name="insight_band_cool">răcoare</string>
@@ -64,6 +71,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="insight_delta_cooler">Astăzi va fi cu %1$d° mai rece.</string>
     <string name="insight_alert">Avertisment: %1$s.</string>
     <string name="insight_clothes_wear">Poartă %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s și %2$s</string>
@@ -929,6 +937,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_format_change_label">Variație de temperatură</string>
     <string name="settings_format_change_off">Oprit</string>
     <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Bandă</string>
     <string name="settings_format_clothes_label">Formulare pentru îmbrăcăminte</string>
     <string name="settings_format_clothes_items">Articole</string>
     <string name="settings_format_clothes_layer_count">Numărul de straturi</string>

@@ -19,6 +19,7 @@ import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
@@ -182,6 +183,28 @@ class SettingsRepositoryTest {
 
         subject.setRainAccessory(RainAccessory.NONE)
         subject.preferences.first().rainAccessory shouldBe RainAccessory.NONE
+    }
+
+    @Test
+    fun `periodPreamble defaults to ALWAYS and round-trips all values`() = runTest {
+        subject.preferences.first().periodPreamble shouldBe PreambleVisibility.ALWAYS
+
+        subject.setPeriodPreamble(PreambleVisibility.SPEECH_ONLY)
+        subject.preferences.first().periodPreamble shouldBe PreambleVisibility.SPEECH_ONLY
+
+        subject.setPeriodPreamble(PreambleVisibility.NEVER)
+        subject.preferences.first().periodPreamble shouldBe PreambleVisibility.NEVER
+    }
+
+    @Test
+    fun `wearPreamble defaults to ALWAYS and round-trips all values`() = runTest {
+        subject.preferences.first().wearPreamble shouldBe PreambleVisibility.ALWAYS
+
+        subject.setWearPreamble(PreambleVisibility.SPEECH_ONLY)
+        subject.preferences.first().wearPreamble shouldBe PreambleVisibility.SPEECH_ONLY
+
+        subject.setWearPreamble(PreambleVisibility.NEVER)
+        subject.preferences.first().wearPreamble shouldBe PreambleVisibility.NEVER
     }
 
     @Test

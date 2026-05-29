@@ -41,6 +41,7 @@ import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
+import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.RainAccessory
@@ -50,6 +51,7 @@ import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.insight.InsightFormatter
+import app.clothescast.insight.InsightSurface
 import app.clothescast.ui.EdgeFadeOverlay
 import java.time.LocalTime
 import kotlin.math.roundToInt
@@ -70,6 +72,8 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     SettingsScaffold(R.string.settings_root_format, onBack) { padding ->
         FormatContent(
+            periodPreamble = state.periodPreamble,
+            wearPreamble = state.wearPreamble,
             rangeFormat = state.rangeFormat,
             clothesFormat = state.clothesFormat,
             bottomsFormat = state.bottomsFormat,
@@ -80,6 +84,8 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             temperatureUnit = state.temperatureUnit,
             currentInsightSummary = state.currentInsightSummary,
             padding = padding,
+            onSetPeriodPreamble = viewModel::setPeriodPreamble,
+            onSetWearPreamble = viewModel::setWearPreamble,
             onSetRangeFormat = viewModel::setRangeFormat,
             onSetClothesFormat = viewModel::setClothesFormat,
             onSetBottomsFormat = viewModel::setBottomsFormat,
@@ -92,6 +98,8 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
 
 @Composable
 internal fun FormatContent(
+    periodPreamble: PreambleVisibility,
+    wearPreamble: PreambleVisibility,
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
     bottomsFormat: BottomsFormat,
@@ -102,6 +110,8 @@ internal fun FormatContent(
     temperatureUnit: TemperatureUnit,
     currentInsightSummary: InsightSummary? = null,
     padding: PaddingValues,
+    onSetPeriodPreamble: (PreambleVisibility) -> Unit,
+    onSetWearPreamble: (PreambleVisibility) -> Unit,
     onSetRangeFormat: (RangeFormat) -> Unit,
     onSetClothesFormat: (ClothesFormat) -> Unit,
     onSetBottomsFormat: (BottomsFormat) -> Unit,
@@ -123,6 +133,8 @@ internal fun FormatContent(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             PreviewCard(
+                periodPreamble,
+                wearPreamble,
                 rangeFormat,
                 clothesFormat,
                 bottomsFormat,
@@ -136,12 +148,24 @@ internal fun FormatContent(
                 currentInsightSummary,
                 region,
                 temperatureUnit,
+                periodPreamble,
+                wearPreamble,
                 rangeFormat,
                 clothesFormat,
                 bottomsFormat,
                 rainAccessory,
             )
             SectionCard(title = stringResource(R.string.settings_format_what_to_say)) {
+                // Ordered to match the insight itself: lead-in, then the
+                // temperature clause (range + change), then the wear lead-in and
+                // the clothes clause (mention / wording / bottoms), then rain.
+                FormatDropdownRow(
+                    label = stringResource(R.string.settings_format_period_preamble_label),
+                    options = PreambleVisibility.entries,
+                    selected = periodPreamble,
+                    optionLabel = { stringResource(preambleVisibilityLabel(it)) },
+                    onSelect = onSetPeriodPreamble,
+                )
                 FormatDropdownRow(
                     label = stringResource(R.string.settings_format_range_label),
                     options = RangeFormat.entries,
@@ -155,6 +179,13 @@ internal fun FormatContent(
                     selected = deltaThresholdC,
                     optionLabel = { thresholdLabel(it, temperatureUnit) },
                     onSelect = onSetDeltaThresholdC,
+                )
+                FormatDropdownRow(
+                    label = stringResource(R.string.settings_format_wear_preamble_label),
+                    options = PreambleVisibility.entries,
+                    selected = wearPreamble,
+                    optionLabel = { stringResource(preambleVisibilityLabel(it)) },
+                    onSelect = onSetWearPreamble,
                 )
                 FormatDropdownRow(
                     label = stringResource(R.string.settings_clothes_mention_label),
@@ -211,8 +242,16 @@ private fun rainAccessoryLabel(accessory: RainAccessory): Int = when (accessory)
     RainAccessory.UMBRELLA -> R.string.settings_format_rain_accessory_umbrella
 }
 
+private fun preambleVisibilityLabel(visibility: PreambleVisibility): Int = when (visibility) {
+    PreambleVisibility.ALWAYS -> R.string.settings_format_preamble_always
+    PreambleVisibility.SPEECH_ONLY -> R.string.settings_format_preamble_speech_only
+    PreambleVisibility.NEVER -> R.string.settings_format_preamble_never
+}
+
 @Composable
 private fun PreviewCard(
+    periodPreamble: PreambleVisibility,
+    wearPreamble: PreambleVisibility,
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
     bottomsFormat: BottomsFormat,
@@ -223,8 +262,14 @@ private fun PreviewCard(
     temperatureUnit: TemperatureUnit,
 ) {
     val context = LocalContext.current
-    val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory) {
-        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory)
+    val formatter = remember(
+        context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+        periodPreamble, wearPreamble,
+    ) {
+        InsightFormatter.forRegion(
+            context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+            periodPreamble, wearPreamble,
+        )
     }
     // Drop the delta clause when the selected threshold is above the sample's
     // delta, so the preview reflects the significant-change setting too.
@@ -260,8 +305,10 @@ private fun PreviewCard(
     SectionCard(title = stringResource(R.string.settings_format_preview_example_title)) {
         // Match the Today screen's insight card (headlineSmall) so the preview
         // reads like the real thing — larger than body text, normal weight.
+        // SETTINGS_PREVIEW so a Speech-only preamble shows parenthesised rather
+        // than silently vanishing.
         Text(
-            text = formatter.format(sample),
+            text = formatter.format(sample, surface = InsightSurface.SETTINGS_PREVIEW),
             style = MaterialTheme.typography.headlineSmall,
         )
     }
@@ -282,18 +329,26 @@ private fun CurrentForecastPreviewCard(
     summary: InsightSummary?,
     region: Region,
     temperatureUnit: TemperatureUnit,
+    periodPreamble: PreambleVisibility,
+    wearPreamble: PreambleVisibility,
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
     bottomsFormat: BottomsFormat,
     rainAccessory: RainAccessory,
 ) {
     val context = LocalContext.current
-    val formatter = remember(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory) {
-        InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory)
+    val formatter = remember(
+        context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+        periodPreamble, wearPreamble,
+    ) {
+        InsightFormatter.forRegion(
+            context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+            periodPreamble, wearPreamble,
+        )
     }
     SectionCard(title = stringResource(R.string.settings_format_preview_current_title)) {
         Text(
-            text = summary?.let { formatter.format(it) }
+            text = summary?.let { formatter.format(it, surface = InsightSurface.SETTINGS_PREVIEW) }
                 ?: stringResource(R.string.settings_format_preview_current_empty),
             style = MaterialTheme.typography.headlineSmall,
         )

@@ -13,6 +13,7 @@ import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ForecastSnapshot
+import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.RangeFormat
@@ -115,8 +116,10 @@ object BugReport {
             val clothesFormat = prefs?.clothesFormat ?: ClothesFormat.ITEMS
             val bottomsFormat = prefs?.bottomsFormat ?: BottomsFormat.IF_GARMENTS
             val rainAccessory = prefs?.rainAccessory ?: RainAccessory.NONE
-            appendInsight("This period", thisPeriod, thisSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory)
-            appendInsight("Next period", nextPeriod, nextSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory)
+            val periodPreamble = prefs?.periodPreamble ?: PreambleVisibility.ALWAYS
+            val wearPreamble = prefs?.wearPreamble ?: PreambleVisibility.ALWAYS
+            appendInsight("This period", thisPeriod, thisSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory, periodPreamble, wearPreamble)
+            appendInsight("Next period", nextPeriod, nextSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory, periodPreamble, wearPreamble)
             if (!crash.isNullOrBlank()) {
                 appendLine("--- Last crash (from previous run) ---")
                 appendLine(crash.trim())
@@ -272,13 +275,15 @@ object BugReport {
         clothesFormat: ClothesFormat,
         bottomsFormat: BottomsFormat,
         rainAccessory: RainAccessory,
+        periodPreamble: PreambleVisibility,
+        wearPreamble: PreambleVisibility,
     ) {
         appendLine("$label:")
         if (insight == null) {
             appendLine("  (no cached insight)")
         } else {
             val prose = runCatching {
-                InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory)
+                InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory, periodPreamble, wearPreamble)
                     .format(insight.summary)
             }
                 .getOrElse { "(prose render failed: ${it.javaClass.simpleName})" }

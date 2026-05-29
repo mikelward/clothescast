@@ -13,6 +13,7 @@ import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
+import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.RainAccessory
@@ -41,6 +42,11 @@ import java.util.Locale
 class InsightFormatterTest {
     private val context = ApplicationProvider.getApplicationContext<android.content.Context>()
     private val subject = InsightFormatter.forContext(context, Locale.ENGLISH)
+
+    // Card / visual surface: the Speech-only period preamble drops the lead on
+    // the default VISUAL surface — the old `includeLead = false` behaviour.
+    private val cardSubject =
+        InsightFormatter.forContext(context, Locale.ENGLISH, periodPreamble = PreambleVisibility.SPEECH_ONLY)
 
     private fun summary(
         period: ForecastPeriod = ForecastPeriod.TODAY,
@@ -97,44 +103,154 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `includeLead false drops the lead-in and opens on the single temp`() {
+    fun `visual surface drops the lead-in and opens on the single temp`() {
         // The Today card carries its own "Today" header, so the card prose
         // omits the redundant "Today, it will be …" lead.
-        subject.format(summary(), includeLead = false) shouldBe "21°."
+        cardSubject.format(summary()) shouldBe "21°."
     }
 
     @Test
-    fun `includeLead false drops the lead-in on a range`() {
-        subject.format(
+    fun `visual surface drops the lead-in on a range`() {
+        cardSubject.format(
             summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.MILD, 14.0, 20.0)),
-            includeLead = false,
         ) shouldBe "14° to 20°."
     }
 
     @Test
-    fun `includeLead false keeps following clauses after the bare temp`() {
-        subject.format(
+    fun `visual surface keeps following clauses after the bare temp`() {
+        cardSubject.format(
             summary(
                 clothes = ClothesClause(listOf("sweater")),
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
             ),
-            includeLead = false,
         ) shouldBe "21°. Wear a sweater. Rain at 3pm."
     }
 
     @Test
-    fun `includeLead false drops the tonight lead-in too`() {
-        subject.format(summary(period = ForecastPeriod.TONIGHT), includeLead = false) shouldBe "21°."
+    fun `visual surface drops the tonight lead-in too`() {
+        cardSubject.format(summary(period = ForecastPeriod.TONIGHT)) shouldBe "21°."
     }
 
     @Test
-    fun `includeLead false keeps the lead-in for non-English locales`() {
+    fun `speech surface keeps the lead even under Speech-only`() {
+        // The spoken briefing has no period header to lean on, so Speech-only
+        // keeps the "Today, it will be …" lead on the SPEECH surface.
+        cardSubject.format(summary(), surface = InsightSurface.SPEECH) shouldBe "Today, it will be 21°."
+    }
+
+    @Test
+    fun `visual surface keeps the lead-in for non-English locales`() {
         // Stripping the lead is English-only surgery (it removes the "it will
         // be" connective and re-capitalises). Other locales fuse the lead into
         // the sentence and have no no-lead template, so they keep the lead-in.
-        val germanSubject = InsightFormatter.forContext(context, Locale.GERMAN)
-        germanSubject.format(summary(), includeLead = false) shouldBe
-            germanSubject.format(summary(), includeLead = true)
+        val germanSubject =
+            InsightFormatter.forContext(context, Locale.GERMAN, periodPreamble = PreambleVisibility.SPEECH_ONLY)
+        germanSubject.format(summary(), surface = InsightSurface.VISUAL) shouldBe
+            germanSubject.format(summary(), surface = InsightSurface.SPEECH)
+    }
+
+    // --- Period preamble (PreambleVisibility) ---
+
+    @Test
+    fun `period preamble Always keeps the lead on the visual surface`() {
+        val always =
+            InsightFormatter.forContext(context, Locale.ENGLISH, periodPreamble = PreambleVisibility.ALWAYS)
+        always.format(summary(), surface = InsightSurface.VISUAL) shouldBe "Today, it will be 21°."
+    }
+
+    @Test
+    fun `period preamble Never drops the lead even on the speech surface`() {
+        val never =
+            InsightFormatter.forContext(context, Locale.ENGLISH, periodPreamble = PreambleVisibility.NEVER)
+        never.format(summary(), surface = InsightSurface.SPEECH) shouldBe "21°."
+    }
+
+    @Test
+    fun `period preamble Speech-only parenthesises the lead on the settings preview`() {
+        cardSubject.format(
+            summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.MILD, 14.0, 20.0)),
+            surface = InsightSurface.SETTINGS_PREVIEW,
+        ) shouldBe "(Today, it will be) 14° to 20°."
+    }
+
+    @Test
+    fun `period preamble preview parens carry over following clauses`() {
+        cardSubject.format(
+            summary(clothes = ClothesClause(listOf("sweater"))),
+            surface = InsightSurface.SETTINGS_PREVIEW,
+        ) shouldBe "(Today, it will be) 21°. Wear a sweater."
+    }
+
+    // --- Wear preamble (PreambleVisibility) ---
+
+    @Test
+    fun `wear preamble Never drops Wear and the leading article`() {
+        val wearNever =
+            InsightFormatter.forContext(context, Locale.ENGLISH, wearPreamble = PreambleVisibility.NEVER)
+        wearNever.format(summary(clothes = ClothesClause(listOf("sweater")))) shouldBe
+            "Today, it will be 21°. Sweater."
+    }
+
+    @Test
+    fun `wear preamble Never keeps only the leading article off a multi-item list`() {
+        val wearNever =
+            InsightFormatter.forContext(context, Locale.ENGLISH, wearPreamble = PreambleVisibility.NEVER)
+        wearNever.format(summary(clothes = ClothesClause(listOf("sweater", "jacket", "coat")))) shouldBe
+            "Today, it will be 21°. Sweater, jacket, and a coat."
+    }
+
+    @Test
+    fun `wear preamble Never on a plural-first item has no article to drop`() {
+        val wearNever =
+            InsightFormatter.forContext(context, Locale.ENGLISH, wearPreamble = PreambleVisibility.NEVER)
+        wearNever.format(summary(clothes = ClothesClause(listOf("shorts")))) shouldBe
+            "Today, it will be 21°. Shorts."
+    }
+
+    @Test
+    fun `wear preamble Speech-only drops Wear on the visual surface`() {
+        val wearSpeechOnly =
+            InsightFormatter.forContext(context, Locale.ENGLISH, wearPreamble = PreambleVisibility.SPEECH_ONLY)
+        wearSpeechOnly.format(
+            summary(clothes = ClothesClause(listOf("sweater"))),
+            surface = InsightSurface.VISUAL,
+        ) shouldBe "Today, it will be 21°. Sweater."
+    }
+
+    @Test
+    fun `wear preamble Speech-only keeps Wear on the speech surface`() {
+        val wearSpeechOnly =
+            InsightFormatter.forContext(context, Locale.ENGLISH, wearPreamble = PreambleVisibility.SPEECH_ONLY)
+        wearSpeechOnly.format(
+            summary(clothes = ClothesClause(listOf("sweater"))),
+            surface = InsightSurface.SPEECH,
+        ) shouldBe "Today, it will be 21°. Wear a sweater."
+    }
+
+    @Test
+    fun `wear preamble Speech-only parenthesises Wear plus article on the preview`() {
+        val wearSpeechOnly =
+            InsightFormatter.forContext(context, Locale.ENGLISH, wearPreamble = PreambleVisibility.SPEECH_ONLY)
+        wearSpeechOnly.format(
+            summary(clothes = ClothesClause(listOf("sweater"))),
+            surface = InsightSurface.SETTINGS_PREVIEW,
+        ) shouldBe "Today, it will be 21°. (Wear a) sweater."
+    }
+
+    @Test
+    fun `wear preamble drop is English-only`() {
+        val germanWearNever = InsightFormatter.forContext(
+            context,
+            Locale.GERMAN,
+            wearPreamble = PreambleVisibility.NEVER,
+        )
+        germanWearNever.format(
+            summary(clothes = ClothesClause(listOf("sweater"))),
+            surface = InsightSurface.VISUAL,
+        ) shouldBe germanWearNever.format(
+            summary(clothes = ClothesClause(listOf("sweater"))),
+            surface = InsightSurface.SPEECH,
+        )
     }
 
     @Test
@@ -485,10 +601,25 @@ class InsightFormatterTest {
         rangeFormat = RangeFormat.NONE,
     )
 
+    // Speech-only period preamble: the default VISUAL surface drops the lead.
+    private val omitCardSubject = InsightFormatter.forContext(
+        context,
+        Locale.ENGLISH,
+        rangeFormat = RangeFormat.NONE,
+        periodPreamble = PreambleVisibility.SPEECH_ONLY,
+    )
+
     private val bandsSubject = InsightFormatter.forContext(
         context,
         Locale.ENGLISH,
         rangeFormat = RangeFormat.BANDS,
+    )
+
+    private val bandsCardSubject = InsightFormatter.forContext(
+        context,
+        Locale.ENGLISH,
+        rangeFormat = RangeFormat.BANDS,
+        periodPreamble = PreambleVisibility.SPEECH_ONLY,
     )
 
     @Test
@@ -506,43 +637,39 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `bands format with includeLead false capitalises the leading band word`() {
-        bandsSubject.format(
+    fun `bands format on the visual surface capitalises the leading band word`() {
+        bandsCardSubject.format(
             summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.MILD, 14.0, 20.0)),
-            includeLead = false,
         ) shouldBe "Cool to mild."
     }
 
     @Test
-    fun `bands format with includeLead false on a single band word`() {
-        bandsSubject.format(
+    fun `bands format on the visual surface on a single band word`() {
+        bandsCardSubject.format(
             summary(band = BandClause(TemperatureBand.COOL, TemperatureBand.COOL, 14.0, 16.0)),
-            includeLead = false,
         ) shouldBe "Cool."
     }
 
     @Test
-    fun `omit range with includeLead false capitalises the first clause and skips the lead`() {
-        omitSubject.format(
+    fun `omit range on the visual surface capitalises the first clause and skips the lead`() {
+        omitCardSubject.format(
             summary(
                 clothes = ClothesClause(listOf("sweater")),
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
             ),
-            includeLead = false,
         ) shouldBe "Wear a sweater. Rain at 3pm."
     }
 
     @Test
-    fun `omit range with includeLead false gives the leading delta a capitalised it-will-be`() {
-        omitSubject.format(
+    fun `omit range on the visual surface gives the leading delta a capitalised it-will-be`() {
+        omitCardSubject.format(
             summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)),
-            includeLead = false,
         ) shouldBe "It will be 5° warmer than yesterday."
     }
 
     @Test
-    fun `omit range with includeLead false on the unchanged line drops the lead`() {
-        omitSubject.format(summary(), includeLead = false) shouldBe
+    fun `omit range on the visual surface on the unchanged line drops the lead`() {
+        omitCardSubject.format(summary()) shouldBe
             "It will be the same as yesterday."
     }
 

@@ -15,6 +15,7 @@ import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
@@ -58,6 +59,8 @@ data class SettingsState(
     val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     val bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
     val rainAccessory: RainAccessory = RainAccessory.NONE,
+    val periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
+    val wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     val deltaThresholdC: Double? = 3.0,
     /**
      * Structured summary of the user's current cached forecast (page 1 of the

@@ -717,6 +717,15 @@
     <string name="settings_format_rain_accessory_label">Rain accessory</string>
     <string name="settings_format_rain_accessory_none">Off</string>
     <string name="settings_format_rain_accessory_umbrella">Umbrella</string>
+    <!-- Preamble pickers (PreambleVisibility), shared option labels. The period
+         lead-in is the "Today, it will be …" intro; the wear lead-in is the
+         "Wear a …" intro before the clothes. "Speech only" keeps it spoken but
+         drops it from the screen; the preview shows it in parentheses then. -->
+    <string name="settings_format_period_preamble_label">Lead-in</string>
+    <string name="settings_format_wear_preamble_label">“Wear” lead-in</string>
+    <string name="settings_format_preamble_always">Always</string>
+    <string name="settings_format_preamble_speech_only">Speech only</string>
+    <string name="settings_format_preamble_never">Never</string>
 
     <string name="settings_delivery_notification">Notify</string>
     <string name="settings_delivery_tts">Speak</string>
@@ -1152,6 +1161,11 @@
     -->
     <!-- Wraps the joined items list: %1$s is the comma/and-joined body. -->
     <string name="insight_clothes_wear">Wear %1$s.</string>
+    <!-- Wear preamble dropped (PreambleVisibility): no "Wear" and no leading
+         article, just the (capitalised) garment body — "Sweater." / "Shorts.".
+         %1$s is the joined body. English-only path; other locales keep the full
+         "Wear …" wrapper. -->
+    <string name="insight_clothes_bare">%1$s.</string>
     <!-- Article forms used by EnglishClothesPhraser for the *first* item only. -->
     <string name="insight_clothes_article_a">a %1$s</string>
     <string name="insight_clothes_article_an">an %1$s</string>

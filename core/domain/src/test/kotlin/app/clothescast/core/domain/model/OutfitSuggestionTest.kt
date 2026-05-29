@@ -1,5 +1,6 @@
 package app.clothescast.core.domain.model
 
+import app.clothescast.core.domain.usecase.EvaluateClothesRules
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -153,6 +154,34 @@ class OutfitSuggestionTest {
         cases.forEach { (min, max, expected) ->
             OutfitSuggestion.fromForecast(forecast(min, max), rules) shouldBe expected
         }
+    }
+
+    @Test
+    fun `fromTriggeredOutfit agrees with fromForecast for the same rules and forecast`() {
+        // The displayed icon derives from the TriggeredOutfit the prose uses
+        // (see DeriveInsight), so the two entry points must agree — otherwise
+        // the icon and the bullet text drift apart, the bug this split prevents.
+        val evaluate = EvaluateClothesRules()
+        listOf(7.5 to 9.0, 10.0 to 16.0, 16.0 to 21.0, 19.0 to 26.0, 15.0 to 23.0).forEach { (min, max) ->
+            val fc = forecast(min, max)
+            OutfitSuggestion.fromTriggeredOutfit(evaluate(fc, rules)) shouldBe
+                OutfitSuggestion.fromForecast(fc, rules)
+        }
+    }
+
+    @Test
+    fun `fromTriggeredOutfit reads firing rules and falls through to defaults`() {
+        // A firing coat rule drives the top tier; with no bottom rule firing the
+        // bottom falls to the supplied default — the per-tier default is not an
+        // icon tier of its own, matching fromForecast.
+        val triggered = TriggeredOutfit(
+            rules = listOf(ClothesRule("coat", ClothesRule.TemperatureBelow(5.0))),
+            fallbacks = listOf("pants"),
+        )
+        OutfitSuggestion.fromTriggeredOutfit(
+            triggered,
+            defaultBottom = OutfitSuggestion.Bottom.JEANS,
+        ) shouldBe OutfitSuggestion(OutfitSuggestion.Top.THICK_COAT, OutfitSuggestion.Bottom.JEANS)
     }
 
     @Test

@@ -9,6 +9,7 @@ import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeltaClause
+import app.clothescast.core.domain.model.DeltaFormat
 import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Garment
@@ -90,6 +91,12 @@ class RenderInsightSummary {
         // emitted. null disables the clause entirely. Defaults to the historical
         // 3°C threshold so existing callers/tests are unchanged.
         deltaThresholdC: Double? = 3.0,
+        // How the change clause is phrased: a numeric degree delta
+        // ([DeltaFormat.DEGREES], default) or a feels-like-high band transition
+        // ([DeltaFormat.BANDS]). Band mode fires on a band boundary crossing
+        // rather than [deltaThresholdC]; see [deltaClause]. Defaults to DEGREES
+        // so existing callers/tests are unchanged.
+        deltaFormat: DeltaFormat = DeltaFormat.DEGREES,
         // Controls emission of the clothes clause on [ForecastPeriod.TODAY]. See
         // [ClothesMentionMode]. Ignored on TONIGHT (always behaves as ALWAYS),
         // since [yesterdayTriggeredItems] has no overnight counterpart. Defaults
@@ -123,7 +130,7 @@ class RenderInsightSummary {
             period = period,
             alert = alertClause(alerts),
             band = bandClause(today),
-            delta = if (period == ForecastPeriod.TODAY) deltaClause(todayForDelta, yesterday, deltaThresholdC, diagLog) else null,
+            delta = if (period == ForecastPeriod.TODAY) deltaClause(todayForDelta, yesterday, deltaThresholdC, deltaFormat, diagLog) else null,
             clothes = clothesClause(todayItems, period, clothesMentionMode, yesterdayTriggeredItems),
             precip = peak?.let { PrecipClause(it.condition, it.time, it.likelihood) },
             // Calendar tie-in only fires on TONIGHT — pairing the precip peak
@@ -159,6 +166,63 @@ class RenderInsightSummary {
     )
 
     private fun deltaClause(
+        today: DailyForecast,
+        yesterday: DailyForecast,
+        thresholdC: Double?,
+        format: DeltaFormat,
+        diagLog: (String) -> Unit,
+    ): DeltaClause? = when (format) {
+        DeltaFormat.DEGREES -> degreesDeltaClause(today, yesterday, thresholdC, diagLog)
+        DeltaFormat.BANDS -> bandDeltaClause(today, yesterday, diagLog)
+    }
+
+    /**
+     * Absolute-band change clause: names today's feels-like *high* band when it
+     * differs from yesterday's, so the prose reads "Today, it will be hot." —
+     * the new band the day has moved into, with no relative comparison. Fires on any
+     * band boundary crossing (the degree threshold doesn't apply — crossing
+     * into a new band is itself the signal) and is omitted when the high stays
+     * in the same band ("only if yesterday was not hot"). [DeltaClause.degrees]
+     * / [DeltaClause.direction] carry the numeric delta for completeness; the
+     * band-style prose ignores them.
+     *
+     * TODO(band-change-side): we compare the daily *high* band only — the
+     *  headline "it'll be hot today" temperature. Revisit whether a band move
+     *  on the low (a much colder morning under an unchanged afternoon high)
+     *  should also surface; deferred per the initial design.
+     */
+    private fun bandDeltaClause(
+        today: DailyForecast,
+        yesterday: DailyForecast,
+        diagLog: (String) -> Unit,
+    ): DeltaClause? {
+        val fromBand = TemperatureBand.forCelsius(yesterday.feelsLikeMaxC)
+        val toBand = TemperatureBand.forCelsius(today.feelsLikeMaxC)
+        val inputs = "today high=%.1f (%s) yesterday high=%.1f (%s)".format(
+            Locale.US,
+            today.feelsLikeMaxC, toBand,
+            yesterday.feelsLikeMaxC, fromBand,
+        )
+        if (fromBand == toBand) {
+            diagLog("delta(band): $inputs → same band, no clause")
+            return null
+        }
+        val rawDelta = today.feelsLikeMaxC - yesterday.feelsLikeMaxC
+        val direction = if (toBand.ordinal > fromBand.ordinal) {
+            DeltaClause.Direction.WARMER
+        } else {
+            DeltaClause.Direction.COOLER
+        }
+        diagLog("delta(band): $inputs → announce $toBand ($direction)")
+        return DeltaClause(
+            degrees = abs(rawDelta.roundToInt()),
+            direction = direction,
+            band = toBand,
+            style = DeltaClause.Style.BANDS,
+        )
+    }
+
+    private fun degreesDeltaClause(
         today: DailyForecast,
         yesterday: DailyForecast,
         thresholdC: Double?,

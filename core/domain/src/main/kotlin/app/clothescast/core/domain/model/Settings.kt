@@ -218,6 +218,24 @@ enum class ThemeMode { SYSTEM, LIGHT, DARK }
 enum class RangeFormat { NONE, DEGREES, BANDS }
 
 /**
+ * How the insight prose renders the "…warmer/cooler than yesterday" change
+ * clause.
+ *
+ *  - [DEGREES] (default) renders the numeric feels-like delta in the user's
+ *    unit ("5° warmer than yesterday."), gated by the
+ *    [UserPreferences.deltaThresholdC] significant-change threshold.
+ *  - [BANDS] names today's feels-like-high [TemperatureBand] absolutely,
+ *    replacing the temperature sentence with "Today, it will be hot." whenever
+ *    it lands in a different band than yesterday's — no relative comparison,
+ *    just the new band the day has moved into. The degree threshold doesn't
+ *    gate it, since a band boundary crossing is the signal; when today's high
+ *    stays in the same band the callout is omitted and the normal range
+ *    sentence stands. See
+ *    [app.clothescast.core.domain.usecase.RenderInsightSummary].
+ */
+enum class DeltaFormat { DEGREES, BANDS }
+
+/**
  * How the insight prose renders the clothes clause ("Wear …").
  *
  *  - [ITEMS] (default) names each triggered garment — the historical
@@ -783,6 +801,14 @@ data class UserPreferences(
      * [app.clothescast.core.domain.usecase.RenderInsightSummary].
      */
     val deltaThresholdC: Double? = 3.0,
+    /**
+     * How the change clause is phrased: a numeric degree delta ([DeltaFormat.DEGREES],
+     * default) or a [TemperatureBand] transition ([DeltaFormat.BANDS]). In band
+     * mode the clause fires on a band boundary crossing of the feels-like high
+     * rather than the [deltaThresholdC] degree threshold. See
+     * [app.clothescast.core.domain.usecase.RenderInsightSummary].
+     */
+    val deltaFormat: DeltaFormat = DeltaFormat.DEGREES,
     /**
      * Master switch for sending Firebase Analytics + Crashlytics payloads off
      * device. Default on so crash reports for the long tail of installs reach

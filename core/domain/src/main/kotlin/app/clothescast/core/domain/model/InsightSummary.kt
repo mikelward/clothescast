@@ -75,12 +75,37 @@ data class BandClause(
 )
 
 /**
- * Yesterday-to-today feels-like delta, rounded to whole degrees. [degrees] is
- * always positive; [direction] carries the sign. Only emitted when the unrounded
- * larger-of-(min,max) delta is ≥ 3°C.
+ * Yesterday-to-today feels-like change.
+ *
+ * Two presentations, selected by [style] (which the renderer bakes in from the
+ * user's [DeltaFormat] so the formatter doesn't need the setting threaded
+ * through it):
+ *  - [Style.DEGREES] (default) — a numeric delta rounded to whole degrees.
+ *    [degrees] is always positive; [direction] carries the sign. Only emitted
+ *    when the unrounded larger-of-(min,max) delta clears the configured
+ *    threshold (historically 3°C). [band] is null.
+ *  - [Style.BANDS] — names today's feels-like-high [TemperatureBand]
+ *    *absolutely*, *replacing* the temperature sentence with "Today, it will
+ *    be hot." (in place of the degree / range sentence — not an extra trailing
+ *    clause). [band] is today's high band, emitted only when it differs from
+ *    yesterday's (the renderer omits the clause otherwise) — so the user hears
+ *    the new band the day has moved into, with no relative comparison.
+ *    [degrees] / [direction] still carry the numeric delta for completeness,
+ *    but the prose ignores them in this style.
+ *
+ * [style] defaults to [Style.DEGREES] and [band] to null so cached payloads
+ * written before band mode existed re-render as the numeric delta they were
+ * built as.
  */
-data class DeltaClause(val degrees: Int, val direction: Direction) {
+data class DeltaClause(
+    val degrees: Int,
+    val direction: Direction,
+    val band: TemperatureBand? = null,
+    val style: Style = Style.DEGREES,
+) {
     enum class Direction { WARMER, COOLER }
+
+    enum class Style { DEGREES, BANDS }
 }
 
 /**

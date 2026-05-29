@@ -704,6 +704,9 @@
     <string name="settings_format_change_off">Off</string>
     <!-- Significant-change threshold option: %1$d = whole degrees in the user's unit. -->
     <string name="settings_format_change_degrees">%1$d°</string>
+    <!-- Change-format option that phrases the shift as a temperature-band move
+         ("Warmer than yesterday, warm to hot.") instead of a degree count. -->
+    <string name="settings_format_change_band">Band</string>
     <!-- Clothes-format picker: "Wear a sweater." vs "Wear 2 layers." -->
     <string name="settings_format_clothes_label">Clothes wording</string>
     <string name="settings_format_clothes_items">Garments</string>

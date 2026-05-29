@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import app.clothescast.core.domain.model.BottomsFormat
+import app.clothescast.core.domain.model.DeltaFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
@@ -219,6 +220,17 @@ class SettingsRepositoryTest {
 
         subject.setBottomsFormat(BottomsFormat.IF_GARMENTS)
         subject.preferences.first().bottomsFormat shouldBe BottomsFormat.IF_GARMENTS
+    }
+
+    @Test
+    fun `deltaFormat defaults to DEGREES and round-trips all values`() = runTest {
+        subject.preferences.first().deltaFormat shouldBe DeltaFormat.DEGREES
+
+        subject.setDeltaFormat(DeltaFormat.BANDS)
+        subject.preferences.first().deltaFormat shouldBe DeltaFormat.BANDS
+
+        subject.setDeltaFormat(DeltaFormat.DEGREES)
+        subject.preferences.first().deltaFormat shouldBe DeltaFormat.DEGREES
     }
 
     @Test

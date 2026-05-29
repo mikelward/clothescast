@@ -42,6 +42,7 @@ class TelemetryPrivacyContractTest {
         "tonight_notify_only_on_events", "daily_mention_evening_events",
         "clothes_mention_mode",
         "range_format", "clothes_format", "bottoms_format", "rain_accessory", "delta_threshold_c",
+        "delta_format",
         "use_calendar_events",
         "customised_count", "extra_rules_count", "categories_customised",
         "all_defaults",

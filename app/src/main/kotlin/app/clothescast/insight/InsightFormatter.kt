@@ -246,18 +246,31 @@ class InsightFormatter(
         // never a tie-in, which would double the lead ("Today, tonight, …").
         // See [renderLeadOnly].
         val alert = summary.alert?.let(::formatAlert)
+        // A BANDS-style delta is the user's Band change-format: today's high band
+        // changed vs yesterday. It *replaces* the temperature sentence with an
+        // absolute band callout ("Today, it will be hot.") in place of the
+        // degree / range sentence — it doesn't trail as its own clause and adds
+        // no second "it will be". When today's band is unchanged the renderer
+        // emits no delta, so the configured RangeFormat sentence stands instead.
+        // A DEGREES-style delta keeps its historical trailing-fragment wording.
+        val bandCallout = summary.delta?.takeIf { it.style == DeltaClause.Style.BANDS }?.band
+        val numericDelta = summary.delta?.takeIf { it.style == DeltaClause.Style.DEGREES }
         val primaryClauses = buildList {
-            when (rangeFormat) {
-                RangeFormat.NONE -> Unit
-                RangeFormat.DEGREES -> add(formatBand(summary.period, summary.band, isFutureDay, omitLead))
-                RangeFormat.BANDS -> add(formatBandWords(summary.period, summary.band, isFutureDay, omitLead))
+            when {
+                bandCallout != null ->
+                    add(formatBandAbsolute(summary.period, bandCallout, isFutureDay, omitLead))
+                else -> when (rangeFormat) {
+                    RangeFormat.NONE -> Unit
+                    RangeFormat.DEGREES -> add(formatBand(summary.period, summary.band, isFutureDay, omitLead))
+                    RangeFormat.BANDS -> add(formatBandWords(summary.period, summary.band, isFutureDay, omitLead))
+                }
             }
             // When the range is omitted there's no band sentence ahead of the
             // delta, so it leads the temperature content and must introduce
             // itself ("it will be 5° warmer than yesterday.") rather than ride
             // as a bare fragment that the period lead folds into subject-less
             // ("Today, 5° warmer than yesterday.").
-            summary.delta?.let { add(formatDelta(it, leadsTemperature = rangeFormat == RangeFormat.NONE)) }
+            numericDelta?.let { add(formatDelta(it, leadsTemperature = rangeFormat == RangeFormat.NONE)) }
             if (wearItems.isNotEmpty()) formatClothesWear(wearItems, wearMode)?.let(::add)
             summary.precip?.let { add(formatPrecip(it)) }
         }
@@ -269,16 +282,22 @@ class InsightFormatter(
             }
             summary.eveningEventTieIn?.let(::formatEveningEventTieIn)?.let(::add)
         }
-        val body = if (rangeFormat == RangeFormat.NONE) {
-            // In NONE mode the band is dropped, so when a delta is present it's
-            // the first primary clause. English renders it as the
+        // Whether a leading temperature sentence exists to carry the period
+        // lead. The band callout is one (it renders "Today, it will be hot."),
+        // so a NONE range with a band callout still uses the normal join — only
+        // a NONE range with no band callout falls back to renderLeadOnly, which
+        // folds the period lead into whatever clause comes first.
+        val hasTemperatureSentence = bandCallout != null || rangeFormat != RangeFormat.NONE
+        val body = if (!hasTemperatureSentence) {
+            // In NONE mode the band is dropped, so when a numeric delta is
+            // present it's the first primary clause. English renders it as the
             // self-introducing "it will be …" fragment that the period lead
             // folds into ("Today, it will be 5° warmer …"); every other locale
             // keeps its full, self-leading delta sentence ("Heute wird es 5°
             // wärmer."), which already carries its own "today" word and must
             // NOT have a second lead prepended — otherwise the prose doubles it
             // ("Heute, heute wird es 5° wärmer.").
-            val firstClauseSelfLeads = summary.delta != null && !deltaHasLeadFragment()
+            val firstClauseSelfLeads = numericDelta != null && !deltaHasLeadFragment()
             renderLeadOnly(summary.period, isFutureDay, primaryClauses, tieInClauses, firstClauseSelfLeads, omitLead)
         } else {
             (primaryClauses + tieInClauses).joinToString(" ")
@@ -533,6 +552,34 @@ class InsightFormatter(
             TemperatureUnit.FAHRENHEIT -> (delta.degrees * 9.0 / 5.0).roundToInt()
         }
         return resources.getString(template, degrees)
+    }
+
+    /**
+     * Render the Band change-format callout as the temperature sentence: names
+     * today's [band] absolutely ("Today, it will be hot.") in place of the
+     * degree / range sentence. Reuses the single-band templates the band-words
+     * range sentence uses, so the lead handling (the folded "Today, it will
+     * be …" vs the no-lead "Hot.") matches the rest of the temperature prose
+     * and is localized for free.
+     *
+     * Only reached when today's high band changed vs yesterday (the renderer
+     * omits the [DeltaClause] otherwise); when unchanged the configured
+     * RangeFormat sentence stands instead.
+     */
+    private fun formatBandAbsolute(
+        period: ForecastPeriod,
+        band: TemperatureBand,
+        isFutureDay: Boolean,
+        omitLead: Boolean,
+    ): String {
+        val word = resources.getString(bandRes(band))
+        if (omitLead) {
+            // Band words are lowercase ("hot"); capitalise so the no-lead
+            // sentence opens like a sentence ("Hot.").
+            return resources.getString(R.string.insight_band_words_single_no_lead, capitalize(word))
+        }
+        val lead = resources.getString(leadRes(period, isFutureDay))
+        return resources.getString(R.string.insight_band_words_single, lead, word)
     }
 
     /**

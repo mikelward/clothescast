@@ -154,6 +154,7 @@ object BugReport {
         appendLine("Bottoms format: ${prefs.bottomsFormat}")
         appendLine("Rain accessory: ${prefs.rainAccessory}")
         appendLine("Delta threshold: ${prefs.deltaThresholdC?.let { "${it}C" } ?: "off"}")
+        appendLine("Delta format: ${prefs.deltaFormat}")
         appendLine("Delivery (morning): ${prefs.deliveryMode}")
         appendLine("Delivery (tonight): ${prefs.tonightDeliveryMode}")
         appendLine("TTS engine: ${prefs.ttsEngine}")

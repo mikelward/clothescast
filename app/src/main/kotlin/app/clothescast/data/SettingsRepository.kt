@@ -15,6 +15,7 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
+import app.clothescast.core.domain.model.DeltaFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
@@ -241,6 +242,10 @@ class SettingsRepository(
             if (thresholdC == null) prefs[INSIGHT_DELTA_THRESHOLD_C] = DELTA_THRESHOLD_OFF
             else prefs[INSIGHT_DELTA_THRESHOLD_C] = thresholdC
         }
+    }
+
+    suspend fun setDeltaFormat(format: DeltaFormat) {
+        dataStore.edit { it[INSIGHT_DELTA_FORMAT] = format.name }
     }
 
     suspend fun setDeliveryMode(mode: DeliveryMode) {
@@ -915,6 +920,9 @@ class SettingsRepository(
             DELTA_THRESHOLD_OFF -> null
             else -> stored
         }
+        val deltaFormat = this[INSIGHT_DELTA_FORMAT]
+            ?.let { runCatching { DeltaFormat.valueOf(it) }.getOrNull() }
+            ?: DeltaFormat.DEGREES
         // Default on for installs that predate the toggle, matching the new-install
         // default; the one-time Today banner is what surfaces the choice to the user.
         val telemetryEnabled = this[TELEMETRY_ENABLED] != false
@@ -1026,6 +1034,7 @@ class SettingsRepository(
             periodPreamble = periodPreamble,
             wearPreamble = wearPreamble,
             deltaThresholdC = deltaThresholdC,
+            deltaFormat = deltaFormat,
             telemetryEnabled = telemetryEnabled,
             telemetryNoticeAcked = telemetryNoticeAcked,
             colorPalette = colorPalette,
@@ -1121,6 +1130,7 @@ class SettingsRepository(
         bottomsFormat = bottomsFormat.name,
         rainAccessory = rainAccessory.name,
         deltaThresholdC = deltaThresholdC?.roundToInt() ?: -1,
+        deltaFormat = deltaFormat.name,
         useCalendarEvents = useCalendarEvents,
     )
 
@@ -1274,6 +1284,7 @@ class SettingsRepository(
         // Sentinel stored for "Significant change: Off" — distinct from an absent
         // key (which keeps the historical 3°C default).
         private const val DELTA_THRESHOLD_OFF = -1.0
+        private val INSIGHT_DELTA_FORMAT = stringPreferencesKey("insight_delta_format")
         private val DISMISSED_UPDATE_VERSION = intPreferencesKey("dismissed_update_version")
         private val DISMISSED_LOCAL_BUILD_SHA = stringPreferencesKey("dismissed_local_build_sha")
         private val TELEMETRY_ENABLED = booleanPreferencesKey("telemetry_enabled")

@@ -168,9 +168,8 @@ data class OutfitSuggestion(
          * outfit?" sheet on the home screen uses this to surface the deciding numbers
          * (and the time of the deciding hour) so the user can sanity-check the call.
          *
-         * Each fact's [Fact.ruleItem] points at the `ClothesRule.item` key that
-         * supplied the threshold — the rationale dialog uses that to wire its
-         * `−1° / +1°` controls back to the right rule.
+         * Each fact's [Fact.ruleItem] is the [Garment] of the [ClothesRule] that
+         * supplied the threshold, so the rationale can match it back to the rule.
          */
         fun explainFromForecast(
             forecast: DailyForecast,
@@ -271,7 +270,7 @@ data class OutfitSuggestion(
                 observedC = observedC,
                 observedAt = observedAt,
                 thresholdC = thresholdC,
-                ruleItem = item.itemKey,
+                ruleItem = item,
                 comparison = if (observedC < thresholdC) {
                     Fact.Comparison.BELOW
                 } else {
@@ -331,7 +330,7 @@ data class GarmentReason(
  * day-level aggregate without hourly entries (legacy fixtures, sparse caches) — the
  * UI omits the time clause in that case.
  *
- * [ruleItem] names *which* [ClothesRule] this fact came from (by its `item` key), so
+ * [ruleItem] names *which* [ClothesRule] this fact came from (by its [Garment] item), so
  * the rationale dialog can wire its `−1°` / `+1°` buttons back to the same rule and
  * persist user adjustments to the right entry on disk.
  */
@@ -340,7 +339,7 @@ data class Fact(
     val observedC: Double,
     val observedAt: LocalTime?,
     val thresholdC: Double,
-    val ruleItem: String,
+    val ruleItem: Garment,
     val comparison: Comparison,
 ) {
     enum class Metric { FEELS_LIKE_MIN, FEELS_LIKE_MAX }

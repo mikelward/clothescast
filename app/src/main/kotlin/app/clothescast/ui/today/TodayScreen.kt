@@ -1778,7 +1778,7 @@ private fun GarmentReasonBlock(
             // insight was cached — that way the dialog still has *something* to
             // render while the next refresh re-creates the rule from the
             // catalog default.
-            val liveC = clothesRules.firstOrNull { it.item.itemKey == fact.ruleItem }?.thresholdC()
+            val liveC = clothesRules.firstOrNull { it.item == fact.ruleItem }?.thresholdC()
                 ?: fact.thresholdC
             FactRow(
                 fact = fact,

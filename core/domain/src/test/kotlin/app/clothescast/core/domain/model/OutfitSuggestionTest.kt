@@ -52,7 +52,7 @@ class OutfitSuggestionTest {
                 observedC = 13.0,
                 observedAt = LocalTime.of(7, 0),
                 thresholdC = 16.0,
-                ruleItem = "sweater",
+                ruleItem = Garment.SWEATER,
                 comparison = Fact.Comparison.BELOW,
             ),
         )
@@ -69,7 +69,7 @@ class OutfitSuggestionTest {
         )
         val fact = rationale.top.facts.single()
         fact.thresholdC shouldBe 10.0
-        fact.ruleItem shouldBe "jacket"
+        fact.ruleItem shouldBe Garment.JACKET
         fact.observedC shouldBe 8.0
         fact.observedAt shouldBe LocalTime.of(6, 0)
         fact.comparison shouldBe Fact.Comparison.BELOW
@@ -85,7 +85,7 @@ class OutfitSuggestionTest {
         val fact = rationale.top.facts.single()
         fact.observedC shouldBe 19.0
         fact.thresholdC shouldBe 16.0
-        fact.ruleItem shouldBe "sweater"
+        fact.ruleItem shouldBe Garment.SWEATER
         fact.comparison shouldBe Fact.Comparison.AT_OR_ABOVE
     }
 
@@ -98,7 +98,7 @@ class OutfitSuggestionTest {
         )
         val fact = rationale.bottom.facts.single()
         fact.metric shouldBe Fact.Metric.FEELS_LIKE_MAX
-        fact.ruleItem shouldBe "shorts"
+        fact.ruleItem shouldBe Garment.SHORTS
         fact.thresholdC shouldBe 23.0
         fact.observedC shouldBe 26.0
         fact.observedAt shouldBe LocalTime.of(14, 0)
@@ -113,7 +113,7 @@ class OutfitSuggestionTest {
         )
         val fact = rationale.bottom.facts.single()
         fact.metric shouldBe Fact.Metric.FEELS_LIKE_MAX
-        fact.ruleItem shouldBe "shorts"
+        fact.ruleItem shouldBe Garment.SHORTS
         fact.thresholdC shouldBe 23.0
         fact.observedC shouldBe 22.0
         fact.comparison shouldBe Fact.Comparison.BELOW
@@ -230,7 +230,7 @@ class OutfitSuggestionTest {
             forecast(feelsLikeMin = 22.0, feelsLikeMax = 30.0),
             noShorts,
         ).bottom.facts.single()
-        fact.ruleItem shouldBe "shorts"
+        fact.ruleItem shouldBe Garment.SHORTS
         fact.thresholdC shouldBe 23.0
     }
 
@@ -398,7 +398,7 @@ class OutfitSuggestionTest {
             forecast(feelsLikeMin = 18.0, feelsLikeMax = 28.0, hourly = hourly),
             rules,
         ).top.facts.single()
-        fact.ruleItem shouldBe "t-shirt"
+        fact.ruleItem shouldBe Garment.TSHIRT
         fact.metric shouldBe Fact.Metric.FEELS_LIKE_MAX
         fact.observedC shouldBe 28.0
         fact.observedAt shouldBe LocalTime.of(15, 0)
@@ -423,7 +423,7 @@ class OutfitSuggestionTest {
         ).top shouldBe OutfitSuggestion.Top.TSHIRT
 
         val fact = OutfitSuggestion.explainFromForecast(rainy, rules).top.facts.single()
-        fact.ruleItem shouldBe "sweater"
+        fact.ruleItem shouldBe Garment.SWEATER
         fact.metric shouldBe Fact.Metric.FEELS_LIKE_MIN
         fact.thresholdC shouldBe 16.0
     }
@@ -440,6 +440,6 @@ class OutfitSuggestionTest {
         OutfitSuggestion.explainFromForecast(
             forecast(feelsLikeMin = 3.0, feelsLikeMax = 8.0),
             coatOnly,
-        ).top.facts.single().ruleItem shouldBe "coat"
+        ).top.facts.single().ruleItem shouldBe Garment.COAT
     }
 }

@@ -13,12 +13,10 @@ import app.clothescast.core.domain.model.TriggeredOutfit
  * home-screen icon, the bulleted recommendations, and the prose clothes
  * clause all read from the same place and agree on what the user is wearing.
  *
- * Slot membership goes through [Garment.fromKey], which absorbs case /
- * whitespace / alias differences ("Jacket" / " jacket " → JACKET,
- * "trousers" → PANTS), so a matched rule whose item is the same garment
- * as the user's default — or any other top-slot garment, including
- * `t-shirt` — suppresses the default for that slot rather than landing
- * alongside it as a duplicate.
+ * Each [ClothesRule.item] is a typed [Garment] with a known slot, so a matched
+ * rule whose item is the same garment as the user's default — or any other
+ * garment in that slot, including `t-shirt` — suppresses the default for that
+ * slot rather than landing alongside it as a duplicate.
  *
  * Input order of [rules] is preserved in [TriggeredOutfit.rules]; the
  * per-tier default rule contributes its item to [TriggeredOutfit.fallbacks]
@@ -36,29 +34,13 @@ class EvaluateClothesRules {
         defaultBottom: OutfitSuggestion.Bottom = OutfitSuggestion.Bottom.LONG_PANTS,
     ): TriggeredOutfit {
         val matched = rules.filter { it.appliesTo(forecast) }
-        val matchedSlots = matched.mapNotNullTo(mutableSetOf()) { Garment.fromKey(it.item)?.slot }
-        // A matched threshold rule whose item isn't in the [Garment] catalog
-        // (e.g. a legacy free-form "cardigan" rule from before the catalog
-        // landed) still represents a garment the user is wearing — we just
-        // can't tell which slot it occupies. Suppress both fallbacks rather
-        // than appending them on top, otherwise the prose contradicts itself
-        // ("Today, wear a cardigan, a t-shirt, and pants."). Precipitation
-        // rules are exempt: they describe carried accessories (umbrella, etc.)
-        // that don't claim an outfit slot, so they shouldn't suppress either
-        // default.
-        val hasUnclassifiedGarmentRule = matched.any { rule ->
-            Garment.fromKey(rule.item) == null && when (rule.condition) {
-                is ClothesRule.TemperatureBelow, is ClothesRule.TemperatureAbove -> true
-                is ClothesRule.PrecipitationProbabilityAbove -> false
-            }
-        }
+        // Every [ClothesRule.item] is a catalog [Garment], so each matched rule
+        // claims a known slot. A slot covered by a matched rule (whether keyed
+        // on temperature or precipitation) doesn't also get its per-tier default.
+        val matchedSlots = matched.mapTo(mutableSetOf()) { it.item.slot }
         val fallbacks = buildList {
-            if (!hasUnclassifiedGarmentRule && Garment.Slot.TOP !in matchedSlots) {
-                add(defaultTop.itemKey())
-            }
-            if (!hasUnclassifiedGarmentRule && Garment.Slot.BOTTOM !in matchedSlots) {
-                add(defaultBottom.itemKey())
-            }
+            if (Garment.Slot.TOP !in matchedSlots) add(defaultTop.itemKey())
+            if (Garment.Slot.BOTTOM !in matchedSlots) add(defaultBottom.itemKey())
         }
         return TriggeredOutfit(rules = matched, fallbacks = fallbacks)
     }

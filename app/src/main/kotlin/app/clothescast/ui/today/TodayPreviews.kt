@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesRule
@@ -304,7 +305,7 @@ internal fun OutfitRationaleDialogTunedPreview() {
             ),
             temperatureUnit = TemperatureUnit.CELSIUS,
             clothesRules = ClothesRule.DEFAULTS.map {
-                if (it.item == "sweater") it.copy(condition = ClothesRule.TemperatureBelow(13.0)) else it
+                if (it.item == Garment.SWEATER) it.copy(condition = ClothesRule.TemperatureBelow(13.0)) else it
             },
             onNavigateToClothes = {},
             onDismiss = {},

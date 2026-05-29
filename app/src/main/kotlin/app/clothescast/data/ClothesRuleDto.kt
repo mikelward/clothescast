@@ -1,6 +1,7 @@
 package app.clothescast.data
 
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.TemperatureUnit
 import kotlinx.serialization.Serializable
 
@@ -8,6 +9,13 @@ import kotlinx.serialization.Serializable
  * On-disk representation of a [ClothesRule]. The domain type uses a sealed interface
  * for [ClothesRule.Condition], which is awkward to serialize directly — this DTO
  * flattens it to (type, value, unit) and round-trips through [toDomain] / [toDto].
+ *
+ * [item] is stored as a string key so JSON stays stable, but the domain type is a
+ * typed [Garment]: [toDomain] resolves the key via [Garment.fromKey] (which folds
+ * legacy spellings / case / whitespace onto the canonical catalog key) and returns
+ * `null` for any key not in the catalog — a legacy free-form item from before the
+ * catalog existed. Callers drop those nulls, so unrecognised stored rules are
+ * silently discarded rather than kept as untyped strings.
  *
  * `type` strings are intentionally non-camelCase so they're stable identifiers in JSON
  * even if class names are renamed. [unit] is nullable so JSON written by app versions
@@ -21,15 +29,19 @@ internal data class ClothesRuleDto(
     val value: Double,
     val unit: String? = null,
 ) {
-    fun toDomain(): ClothesRule = ClothesRule(
-        item = item,
-        condition = when (type) {
-            TYPE_TEMP_BELOW -> ClothesRule.TemperatureBelow(value, parseUnit(unit))
-            TYPE_TEMP_ABOVE -> ClothesRule.TemperatureAbove(value, parseUnit(unit))
-            TYPE_PRECIP_ABOVE -> ClothesRule.PrecipitationProbabilityAbove(value)
-            else -> error("Unknown clothes rule type: $type")
-        },
-    )
+    /** Returns the domain rule, or `null` if [item] isn't a catalog [Garment]. */
+    fun toDomain(): ClothesRule? {
+        val garment = Garment.fromKey(item) ?: return null
+        return ClothesRule(
+            item = garment,
+            condition = when (type) {
+                TYPE_TEMP_BELOW -> ClothesRule.TemperatureBelow(value, parseUnit(unit))
+                TYPE_TEMP_ABOVE -> ClothesRule.TemperatureAbove(value, parseUnit(unit))
+                TYPE_PRECIP_ABOVE -> ClothesRule.PrecipitationProbabilityAbove(value)
+                else -> error("Unknown clothes rule type: $type")
+            },
+        )
+    }
 
     companion object {
         const val TYPE_TEMP_BELOW = "temp_below"
@@ -45,9 +57,9 @@ internal data class ClothesRuleDto(
 
 internal fun ClothesRule.toDto(): ClothesRuleDto = when (val c = condition) {
     is ClothesRule.TemperatureBelow ->
-        ClothesRuleDto(item, ClothesRuleDto.TYPE_TEMP_BELOW, c.value, c.unit.name)
+        ClothesRuleDto(item.itemKey, ClothesRuleDto.TYPE_TEMP_BELOW, c.value, c.unit.name)
     is ClothesRule.TemperatureAbove ->
-        ClothesRuleDto(item, ClothesRuleDto.TYPE_TEMP_ABOVE, c.value, c.unit.name)
+        ClothesRuleDto(item.itemKey, ClothesRuleDto.TYPE_TEMP_ABOVE, c.value, c.unit.name)
     is ClothesRule.PrecipitationProbabilityAbove ->
-        ClothesRuleDto(item, ClothesRuleDto.TYPE_PRECIP_ABOVE, c.percent)
+        ClothesRuleDto(item.itemKey, ClothesRuleDto.TYPE_PRECIP_ABOVE, c.percent)
 }

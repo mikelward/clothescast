@@ -1,5 +1,6 @@
 package app.clothescast.diag
 
+import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.TemperatureUnit
 import io.kotest.matchers.shouldBe
@@ -25,7 +26,7 @@ class ClothesRulesSnapshotTest {
     fun `single category nudged reports signed integer delta`() {
         // Default jacket is TemperatureBelow(10.0); nudge to 8°C → delta of -2.
         val rules = ClothesRule.DEFAULTS.map { rule ->
-            if (rule.item == "jacket") rule.copy(condition = ClothesRule.TemperatureBelow(8.0))
+            if (rule.item.itemKey == "jacket") rule.copy(condition = ClothesRule.TemperatureBelow(8.0))
             else rule
         }
 
@@ -43,7 +44,7 @@ class ClothesRulesSnapshotTest {
     fun `positive delta is sign-prefixed`() {
         // Default shorts is TemperatureAbove(23.0); nudge to 26°C → delta of +3.
         val rules = ClothesRule.DEFAULTS.map { rule ->
-            if (rule.item == "shorts") rule.copy(condition = ClothesRule.TemperatureAbove(26.0))
+            if (rule.item.itemKey == "shorts") rule.copy(condition = ClothesRule.TemperatureAbove(26.0))
             else rule
         }
 
@@ -58,7 +59,7 @@ class ClothesRulesSnapshotTest {
         // jacket default 10, set to 30 → delta +20 → clamps to "+5+";
         // coat default 4, set to 50 → delta +46 → clamps to "+5+".
         val rules = ClothesRule.DEFAULTS.map { rule ->
-            when (rule.item) {
+            when (rule.item.itemKey) {
                 "jacket" -> rule.copy(condition = ClothesRule.TemperatureBelow(30.0))
                 "coat" -> rule.copy(condition = ClothesRule.TemperatureBelow(50.0))
                 else -> rule
@@ -75,7 +76,7 @@ class ClothesRulesSnapshotTest {
 
     @Test
     fun `deleted category is reported as MISSING`() {
-        val rules = ClothesRule.DEFAULTS.filter { it.item != "coat" }
+        val rules = ClothesRule.DEFAULTS.filter { it.item.itemKey != "coat" }
 
         val snap = ClothesRulesSnapshot.from(rules)
 
@@ -91,7 +92,7 @@ class ClothesRulesSnapshotTest {
     fun `extra non-default rule increments extra count without affecting default deltas`() {
         // Hat isn't in DEFAULTS; should bump extraRulesCount but not customisedCount.
         val rules = ClothesRule.DEFAULTS + ClothesRule(
-            item = "hat",
+            item = Garment.PUFFER,
             condition = ClothesRule.TemperatureBelow(5.0),
         )
 
@@ -108,7 +109,7 @@ class ClothesRulesSnapshotTest {
         // 50°F = 10°C exactly; delta from default 10°C is 0. Confirms that
         // thresholdC() does the unit conversion under the bucket math.
         val rules = ClothesRule.DEFAULTS.map { rule ->
-            if (rule.item == "jacket") rule.copy(
+            if (rule.item.itemKey == "jacket") rule.copy(
                 condition = ClothesRule.TemperatureBelow(50.0, TemperatureUnit.FAHRENHEIT),
             ) else rule
         }
@@ -123,7 +124,7 @@ class ClothesRulesSnapshotTest {
     fun `categories_customised is sorted alphabetically`() {
         // Customise shorts and jacket; expect "jacket,shorts" not "shorts,jacket".
         val rules = ClothesRule.DEFAULTS.map { rule ->
-            when (rule.item) {
+            when (rule.item.itemKey) {
                 "shorts" -> rule.copy(condition = ClothesRule.TemperatureAbove(26.0))
                 "jacket" -> rule.copy(condition = ClothesRule.TemperatureBelow(8.0))
                 else -> rule

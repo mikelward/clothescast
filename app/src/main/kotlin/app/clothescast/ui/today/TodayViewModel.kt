@@ -702,27 +702,6 @@ class TodayViewModel(
         showModelSpread.value = false
     }
 
-    /**
-     * Nudges the temperature threshold of the [ClothesRule] keyed [ruleItem] by
-     * [deltaC] degrees Celsius. Wired to the rationale dialog's `−1°` / `+1°`
-     * controls. The read-modify-write is delegated to
-     * [SettingsRepository.adjustClothesRuleThreshold] which performs it inside a
-     * single `DataStore.edit { … }` transaction — rapid taps each read the latest
-     * persisted value, so taps don't collapse into one even when several coroutines
-     * are in flight. Final value is clamped to the documented sanity range and
-     * persisted in the rule's existing unit.
-     */
-    fun adjustClothesRuleThreshold(ruleItem: String, deltaC: Double) {
-        viewModelScope.launch {
-            settingsRepository.adjustClothesRuleThreshold(ruleItem, deltaC)
-            // No cache work — the [state] combine re-derives the cached
-            // snapshot against the updated prefs as soon as the DataStore
-            // write lands. Push the home-screen widget so the launcher icon
-            // catches up alongside the Today screen.
-            refreshOutfitWidget()
-        }
-    }
-
     class Factory(
         private val insightCache: InsightCache,
         private val workManager: WorkManager,

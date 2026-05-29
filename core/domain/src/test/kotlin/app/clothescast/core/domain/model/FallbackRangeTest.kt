@@ -32,11 +32,11 @@ class FallbackRangeTest {
         // A bottom-tier `shorts` rule doesn't gate the top fallback, and a
         // top-tier `sweater` rule doesn't gate the bottom fallback.
         fallbackRange(
-            listOf(ClothesRule("shorts", ClothesRule.TemperatureAbove(24.0))),
+            listOf(ClothesRule(Garment.SHORTS, ClothesRule.TemperatureAbove(24.0))),
             FallbackTier.TOP,
         ) shouldBe FallbackRange(null, null)
         fallbackRange(
-            listOf(ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0))),
+            listOf(ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0))),
             FallbackTier.BOTTOM,
         ) shouldBe FallbackRange(null, null)
     }
@@ -44,7 +44,7 @@ class FallbackRangeTest {
     @Test
     fun `precipitation rules are ignored`() {
         fallbackRange(
-            listOf(ClothesRule("sweater", ClothesRule.PrecipitationProbabilityAbove(30.0))),
+            listOf(ClothesRule(Garment.SWEATER, ClothesRule.PrecipitationProbabilityAbove(30.0))),
             FallbackTier.TOP,
         ) shouldBe FallbackRange(null, null)
     }
@@ -56,8 +56,8 @@ class FallbackRangeTest {
         // match" row reads "never" so the Settings UI surfaces the conflict.
         val range = fallbackRange(
             listOf(
-                ClothesRule("sweater", ClothesRule.TemperatureBelow(25.0)),
-                ClothesRule("polo", ClothesRule.TemperatureAbove(10.0)),
+                ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(25.0)),
+                ClothesRule(Garment.POLO, ClothesRule.TemperatureAbove(10.0)),
             ),
             FallbackTier.TOP,
         )
@@ -67,7 +67,7 @@ class FallbackRangeTest {
     @Test
     fun `Fahrenheit-stored thresholds normalize to Celsius`() {
         val range = fallbackRange(
-            listOf(ClothesRule("sweater", ClothesRule.TemperatureBelow(65.0, TemperatureUnit.FAHRENHEIT))),
+            listOf(ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(65.0, TemperatureUnit.FAHRENHEIT))),
             FallbackTier.TOP,
         )
         range.lowerC shouldBe (65.0 - 32.0) * 5.0 / 9.0
@@ -80,8 +80,8 @@ class FallbackRangeTest {
         // fires once the warmer rule stops firing.
         fallbackRange(
             listOf(
-                ClothesRule("jacket", ClothesRule.TemperatureBelow(12.0)),
-                ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0)),
+                ClothesRule(Garment.JACKET, ClothesRule.TemperatureBelow(12.0)),
+                ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0)),
             ),
             FallbackTier.TOP,
         ).lowerC shouldBe 18.0

@@ -44,8 +44,8 @@ data class ClothesRulesSnapshot(
          * [extraRulesCount] but don't appear individually.
          */
         fun from(rules: List<ClothesRule>): ClothesRulesSnapshot {
-            val defaults = ClothesRule.DEFAULTS.associateBy { it.item }
-            val byItem = rules.associateBy { it.item }
+            val defaults = ClothesRule.DEFAULTS.associateBy { it.item.itemKey }
+            val byItem = rules.associateBy { it.item.itemKey }
             val perCategory: Map<String, String> = defaults.mapValues { (item, defaultRule) ->
                 val userRule = byItem[item]
                 if (userRule == null) MISSING else deltaBucket(userRule, defaultRule)
@@ -54,7 +54,7 @@ data class ClothesRulesSnapshot(
                 .filter { it.value != "0" }
                 .map { it.key }
                 .sorted()
-            val extras = rules.count { it.item !in defaults }
+            val extras = rules.count { it.item.itemKey !in defaults }
             return ClothesRulesSnapshot(
                 customisedCount = customisedKeys.size,
                 extraRulesCount = extras,

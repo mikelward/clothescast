@@ -12,9 +12,8 @@ class GarmentTest {
         // if a default's item key isn't a Garment, the editor would have no way
         // to round-trip it through the dropdown.
         ClothesRule.DEFAULTS.forEach { rule ->
-            val garment = Garment.fromKey(rule.item)
-            (garment != null) shouldBe true
-            garment!!.itemKey shouldBe rule.item
+            // The stored key round-trips back to the same catalog garment.
+            Garment.fromKey(rule.item.itemKey) shouldBe rule.item
         }
     }
 

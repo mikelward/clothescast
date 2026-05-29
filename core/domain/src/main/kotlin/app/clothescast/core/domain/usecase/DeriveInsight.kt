@@ -131,7 +131,7 @@ class DeriveInsight(
             deltaFormat = prefs.deltaFormat,
             clothesMentionMode = prefs.clothesMentionMode,
             yesterdayTriggeredItems = periodView.yesterdayTriggeredItems,
-            todayRuleItems = Garment.layerReduce(periodView.triggeredOutfit.rules).map { it.item },
+            todayRuleItems = Garment.layerReduce(periodView.triggeredOutfit.rules).map { it.item.itemKey },
             diagLog = diagLog,
         )
 
@@ -271,7 +271,7 @@ class DeriveInsight(
             eveningEventTieIn = null,
             deltaThresholdC = prefs.deltaThresholdC,
             deltaFormat = prefs.deltaFormat,
-            todayRuleItems = Garment.layerReduce(nightView.triggeredOutfit.rules).map { it.item },
+            todayRuleItems = Garment.layerReduce(nightView.triggeredOutfit.rules).map { it.item.itemKey },
         )
 
         // Two emission paths, either of which fires the clause: extra clothing

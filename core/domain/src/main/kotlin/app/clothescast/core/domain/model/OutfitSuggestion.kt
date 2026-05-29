@@ -77,17 +77,17 @@ data class OutfitSuggestion(
         // (LONG_PANTS by default). Within the skirt family, the shorter
         // garment is checked first so that when both a `short-skirt` and a
         // `skirt` rule fire on the same warm day, the mini icon wins.
-        private val THICK_JACKET_KEYS = listOf("jacket")
-        private val THICK_COAT_KEYS = listOf("coat")
-        private val PUFFER_JACKET_KEYS = listOf("puffer")
-        private val THIN_JACKET_KEYS = listOf("thin-jacket")
-        private val SWEATER_KEYS = listOf("sweater", "hoodie")
-        private val POLO_KEYS = listOf("polo")
-        private val TSHIRT_KEYS = listOf("t-shirt")
-        private val SHORTS_KEYS = listOf("shorts")
-        private val SHORT_SKIRT_KEYS = listOf("short-skirt")
-        private val LONG_SKIRT_KEYS = listOf("skirt")
-        private val JEANS_KEYS = listOf("jeans")
+        private val THICK_JACKET_KEYS = listOf(Garment.JACKET)
+        private val THICK_COAT_KEYS = listOf(Garment.COAT)
+        private val PUFFER_JACKET_KEYS = listOf(Garment.PUFFER)
+        private val THIN_JACKET_KEYS = listOf(Garment.THIN_JACKET)
+        private val SWEATER_KEYS = listOf(Garment.SWEATER, Garment.HOODIE)
+        private val POLO_KEYS = listOf(Garment.POLO)
+        private val TSHIRT_KEYS = listOf(Garment.TSHIRT)
+        private val SHORTS_KEYS = listOf(Garment.SHORTS)
+        private val SHORT_SKIRT_KEYS = listOf(Garment.SHORT_SKIRT)
+        private val LONG_SKIRT_KEYS = listOf(Garment.SKIRT)
+        private val JEANS_KEYS = listOf(Garment.JEANS)
 
         /**
          * Two-piece icon outfit for [forecast] given the user's [clothesRules].
@@ -158,10 +158,9 @@ data class OutfitSuggestion(
             return OutfitSuggestion(top, bottom)
         }
 
-        /** True when any rule in the list names a catalog garment in [keys],
-         *  using the same canonicalisation as the prose path ([matchesKey]). */
-        private fun List<ClothesRule>.hasKeyIn(keys: List<String>): Boolean =
-            keys.any { key -> any { it.matchesKey(key) } }
+        /** True when any rule in the list is keyed on a garment in [keys]. */
+        private fun List<ClothesRule>.hasKeyIn(keys: List<Garment>): Boolean =
+            keys.any { garment -> any { it.item == garment } }
 
         /**
          * Returns the human-readable reasons that [fromForecast] picked this outfit —
@@ -214,7 +213,7 @@ data class OutfitSuggestion(
                 ?: tempRules.firstByKey(THICK_JACKET_KEYS)
                 ?: tempRules.firstByKey(THICK_COAT_KEYS)
                 ?: tempRules.firstByKey(PUFFER_JACKET_KEYS)
-                ?: ClothesRule.DEFAULTS.first { it.item == "sweater" }
+                ?: ClothesRule.DEFAULTS.first { it.item == Garment.SWEATER }
             return rule.toConditionFact(forecast, coldestHour, warmestHour)
         }
 
@@ -238,35 +237,21 @@ data class OutfitSuggestion(
                 ?: tempRules.firstByKey(SHORT_SKIRT_KEYS)
                 ?: tempRules.firstByKey(LONG_SKIRT_KEYS)
                 ?: tempRules.firstByKey(JEANS_KEYS)
-                ?: ClothesRule.DEFAULTS.first { it.item == "shorts" }
+                ?: ClothesRule.DEFAULTS.first { it.item == Garment.SHORTS }
             return rule.toConditionFact(forecast, coldestHour, warmestHour)
         }
 
+        // Walks [keys] in priority order (warmest tier first) and returns the
+        // first rule keyed on one of them that fires for the forecast.
         private fun List<ClothesRule>.firstFiring(
             forecast: DailyForecast,
-            keys: List<String>,
-        ): ClothesRule? = keys.firstNotNullOfOrNull { key ->
-            firstOrNull { it.matchesKey(key) && it.appliesTo(forecast) }
+            keys: List<Garment>,
+        ): ClothesRule? = keys.firstNotNullOfOrNull { garment ->
+            firstOrNull { it.item == garment && it.appliesTo(forecast) }
         }
 
-        private fun List<ClothesRule>.firstByKey(keys: List<String>): ClothesRule? =
-            keys.firstNotNullOfOrNull { key -> firstOrNull { it.matchesKey(key) } }
-
-        /**
-         * Whether a rule names the catalog garment [key], canonicalised the
-         * same way the prose path canonicalises it. [Garment.fromKey] folds
-         * the supported legacy spellings and case / whitespace variants
-         * ("tshirt" / " T-Shirt " → t-shirt, "jumper" → sweater) onto their
-         * catalog [Garment.itemKey], so a stored legacy rule drives the icon
-         * tier it already drives in the bullets — matching on the raw
-         * `item` string would leave the icon on the default while the prose
-         * named the garment. Falls back to a trimmed, case-insensitive
-         * compare for items outside the catalog so nothing regresses.
-         */
-        private fun ClothesRule.matchesKey(key: String): Boolean {
-            Garment.fromKey(item)?.let { return it.itemKey == key }
-            return item.trim().equals(key, ignoreCase = true)
-        }
+        private fun List<ClothesRule>.firstByKey(keys: List<Garment>): ClothesRule? =
+            keys.firstNotNullOfOrNull { garment -> firstOrNull { it.item == garment } }
 
         /** The rules with a Celsius threshold — i.e. those the rationale can
          *  turn into a [Fact]. Drops precipitation-keyed rules, whose
@@ -286,7 +271,7 @@ data class OutfitSuggestion(
                 observedC = observedC,
                 observedAt = observedAt,
                 thresholdC = thresholdC,
-                ruleItem = item,
+                ruleItem = item.itemKey,
                 comparison = if (observedC < thresholdC) {
                     Fact.Comparison.BELOW
                 } else {

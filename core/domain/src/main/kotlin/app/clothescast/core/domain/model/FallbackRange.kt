@@ -44,7 +44,7 @@ fun fallbackRange(rules: List<ClothesRule>, tier: FallbackTier): FallbackRange {
     var lower: Double? = null
     var upper: Double? = null
     for (rule in rules) {
-        if (Garment.fromKey(rule.item)?.slot != expectedSlot) continue
+        if (rule.item.slot != expectedSlot) continue
         val threshold = rule.thresholdC() ?: continue
         when (rule.condition) {
             is ClothesRule.TemperatureBelow -> {

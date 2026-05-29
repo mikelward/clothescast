@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.DeltaFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
@@ -410,9 +411,9 @@ class SettingsRepositoryTest {
     @Test
     fun `setClothesRules round-trips all three condition types`() = runTest {
         val rules = listOf(
-            ClothesRule("hat", ClothesRule.TemperatureBelow(5.0)),
-            ClothesRule("shorts", ClothesRule.TemperatureAbove(28.5)),
-            ClothesRule("brolly", ClothesRule.PrecipitationProbabilityAbove(40.0)),
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(5.0)),
+            ClothesRule(Garment.SHORTS, ClothesRule.TemperatureAbove(28.5)),
+            ClothesRule(Garment.JACKET, ClothesRule.PrecipitationProbabilityAbove(40.0)),
         )
 
         subject.setClothesRules(rules)
@@ -421,12 +422,29 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `legacy free-form rules are dropped on load`() = runTest {
+        // Stored JSON from before the Garment catalog may carry free-form items
+        // ("cardigan") that aren't in the catalog. item is typed now, so the
+        // repository drops them on read rather than surfacing untyped rules.
+        dataStore.edit {
+            it[stringPreferencesKey("clothes_rules_json")] = """
+                [{"item":"cardigan","type":"temp_below","value":15.0},
+                 {"item":"sweater","type":"temp_below","value":18.0}]
+            """.trimIndent()
+        }
+
+        subject.preferences.first().clothesRules shouldContainExactly listOf(
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0)),
+        )
+    }
+
+    @Test
     fun `setClothesRules round-trips a fahrenheit-typed threshold`() = runTest {
         // The rule remembers what the user typed (65°F), not a converted Celsius
         // approximation — switching unit at display time is reversible.
         val rules = listOf(
-            ClothesRule("sweater", ClothesRule.TemperatureBelow(65.0, TemperatureUnit.FAHRENHEIT)),
-            ClothesRule("shorts", ClothesRule.TemperatureAbove(80.0, TemperatureUnit.FAHRENHEIT)),
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(65.0, TemperatureUnit.FAHRENHEIT)),
+            ClothesRule(Garment.SHORTS, ClothesRule.TemperatureAbove(80.0, TemperatureUnit.FAHRENHEIT)),
         )
 
         subject.setClothesRules(rules)
@@ -448,8 +466,8 @@ class SettingsRepositoryTest {
 
         val rules = subject.preferences.first().clothesRules
         rules shouldContainExactly listOf(
-            ClothesRule("sweater", ClothesRule.TemperatureBelow(18.0, TemperatureUnit.CELSIUS)),
-            ClothesRule("shorts", ClothesRule.TemperatureAbove(24.0, TemperatureUnit.CELSIUS)),
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0, TemperatureUnit.CELSIUS)),
+            ClothesRule(Garment.SHORTS, ClothesRule.TemperatureAbove(24.0, TemperatureUnit.CELSIUS)),
         )
     }
 
@@ -668,74 +686,6 @@ class SettingsRepositoryTest {
 
         subject.setUseCalendarEvents(false)
         subject.preferences.first().useCalendarEvents shouldBe false
-    }
-
-    @Test
-    fun `adjustClothesRuleThreshold serialises rapid taps so none are dropped`() = runTest {
-        // Five concurrent `−1°` taps must each see the prior write — final
-        // value is the starting threshold minus 5°C, not a single 1°C step
-        // from the same pre-update snapshot. DataStore.edit serialises edits,
-        // so this exercises the atomic read-modify-write path that protects
-        // tap-spam from collapsing into one.
-        val starting = ClothesRule.DEFAULTS.first { it.item == "sweater" }.thresholdC()!!
-        coroutineScope {
-            repeat(5) {
-                launch { subject.adjustClothesRuleThreshold("sweater", -1.0) }
-            }
-        }
-        subject.preferences.first()
-            .clothesRules.first { it.item == "sweater" }
-            .thresholdC() shouldBe (starting - 5.0)
-    }
-
-    @Test
-    fun `adjustClothesRuleThreshold clamps to the documented sanity range`() = runTest {
-        // Even a relentless tap-spam can't escape the documented bounds.
-        repeat(100) { subject.adjustClothesRuleThreshold("sweater", -1.0) }
-        subject.preferences.first()
-            .clothesRules.first { it.item == "sweater" }
-            .thresholdC() shouldBe ClothesRule.THRESHOLD_MIN_C
-    }
-
-    @Test
-    fun `adjustClothesRuleThreshold preserves Fahrenheit-typed rules`() = runTest {
-        // A 75°F shorts rule (≈ 23.89°C) bumped by +1°C lands at 25.69°F — the
-        // unit on disk doesn't switch under the user's feet.
-        subject.setClothesRules(
-            listOf(ClothesRule("shorts", ClothesRule.TemperatureAbove(75.0, TemperatureUnit.FAHRENHEIT))),
-        )
-        subject.adjustClothesRuleThreshold("shorts", 1.0)
-
-        val updated = subject.preferences.first().clothesRules.first { it.item == "shorts" }
-        val cond = updated.condition as ClothesRule.TemperatureAbove
-        cond.unit shouldBe TemperatureUnit.FAHRENHEIT
-        // 75°F = 23.888…°C; +1°C = 24.888…°C; back to °F = 76.8°F.
-        cond.value shouldBe 76.8.plusOrMinus(1e-9)
-    }
-
-    @Test
-    fun `adjustClothesRuleThreshold recreates a deleted rule from the catalog default`() = runTest {
-        // User previously deleted the shorts rule; the rationale dialog's
-        // `+1°` should bring it back rather than silently no-op.
-        subject.setClothesRules(ClothesRule.DEFAULTS.filterNot { it.item == "shorts" })
-        subject.adjustClothesRuleThreshold("shorts", -1.0)
-
-        val rules = subject.preferences.first().clothesRules
-        val recreated = rules.first { it.item == "shorts" }
-        recreated.thresholdC() shouldBe 22.0
-        // Catalog default's unit (°C) is preserved on the recreated rule.
-        (recreated.condition as ClothesRule.TemperatureAbove).unit shouldBe TemperatureUnit.CELSIUS
-    }
-
-    @Test
-    fun `adjustClothesRuleThreshold leaves precipitation rules alone`() = runTest {
-        // No temperature condition to nudge → the call is a no-op rather than
-        // mutating a precipitation rule's percent into degrees.
-        val precipRule = ClothesRule("umbrella", ClothesRule.PrecipitationProbabilityAbove(60.0))
-        subject.setClothesRules(listOf(precipRule))
-        subject.adjustClothesRuleThreshold("umbrella", 5.0)
-
-        subject.preferences.first().clothesRules shouldContainExactly listOf(precipRule)
     }
 
     @Test
@@ -967,7 +917,7 @@ class SettingsRepositoryTest {
         // Nudge jacket from default 10°C down to 8°C — delta should report
         // as "-2" and the customised count should land at exactly 1.
         val edited = ClothesRule.DEFAULTS.map { rule ->
-            if (rule.item == "jacket") rule.copy(condition = ClothesRule.TemperatureBelow(8.0))
+            if (rule.item.itemKey == "jacket") rule.copy(condition = ClothesRule.TemperatureBelow(8.0))
             else rule
         }
         subject.setClothesRules(edited)
@@ -999,7 +949,7 @@ class SettingsRepositoryTest {
     @Test
     fun `clothesRulesSnapshot deleted category surfaces as MISSING`() = runTest {
         // User wiped coat from their list — every other default unchanged.
-        subject.setClothesRules(ClothesRule.DEFAULTS.filter { it.item != "coat" })
+        subject.setClothesRules(ClothesRule.DEFAULTS.filter { it.item.itemKey != "coat" })
 
         val snap = subject.clothesRulesSnapshot.first()
 

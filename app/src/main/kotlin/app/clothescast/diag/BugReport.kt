@@ -261,7 +261,7 @@ object BugReport {
             is ClothesRule.TemperatureAbove -> "feelsLikeMax > ${c.value}${c.unit.symbol()}"
             is ClothesRule.PrecipitationProbabilityAbove -> "precipMaxPct > ${c.percent}"
         }
-        return "${rule.item} when $cond"
+        return "${rule.item.itemKey} when $cond"
     }
 
     private fun StringBuilder.appendInsight(

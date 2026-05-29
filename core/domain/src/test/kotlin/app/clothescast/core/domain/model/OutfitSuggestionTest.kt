@@ -175,7 +175,7 @@ class OutfitSuggestionTest {
         // bottom falls to the supplied default — the per-tier default is not an
         // icon tier of its own, matching fromForecast.
         val triggered = TriggeredOutfit(
-            rules = listOf(ClothesRule("coat", ClothesRule.TemperatureBelow(5.0))),
+            rules = listOf(ClothesRule(Garment.COAT, ClothesRule.TemperatureBelow(5.0))),
             fallbacks = listOf("pants"),
         )
         OutfitSuggestion.fromTriggeredOutfit(
@@ -189,7 +189,7 @@ class OutfitSuggestionTest {
         // With the default 23°C shorts rule, max 22°C lands on LONG_PANTS.
         // Lower the rule to 20°C and the same forecast picks SHORTS — the
         // home-screen icon and the bullet text now share the same threshold.
-        val warmer = listOf(ClothesRule("shorts", ClothesRule.TemperatureAbove(20.0)))
+        val warmer = listOf(ClothesRule(Garment.SHORTS, ClothesRule.TemperatureAbove(20.0)))
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 18.0, feelsLikeMax = 22.0),
             warmer,
@@ -200,7 +200,7 @@ class OutfitSuggestionTest {
     @Test
     fun `Fahrenheit-typed rule converts to Celsius for the comparison`() {
         // The rule says "shorts above 75°F" (≈ 23.89°C). A 24°C max fires it.
-        val rule = ClothesRule("shorts", ClothesRule.TemperatureAbove(75.0, TemperatureUnit.FAHRENHEIT))
+        val rule = ClothesRule(Garment.SHORTS, ClothesRule.TemperatureAbove(75.0, TemperatureUnit.FAHRENHEIT))
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 18.0, feelsLikeMax = 24.0),
             listOf(rule),
@@ -219,7 +219,7 @@ class OutfitSuggestionTest {
         // No shorts rule → the home screen never picks shorts, no matter how
         // hot. The rationale still has something to cite (catalog default) so
         // the dialog renders coherently.
-        val noShorts = ClothesRule.DEFAULTS.filterNot { it.item == "shorts" }
+        val noShorts = ClothesRule.DEFAULTS.filterNot { it.item == Garment.SHORTS }
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 22.0, feelsLikeMax = 30.0),
             noShorts,
@@ -265,7 +265,7 @@ class OutfitSuggestionTest {
         // A user adds a "short-skirt > 22°C" rule. A warm day fires it, and
         // the home-screen icon shows the mini-skirt silhouette rather than
         // the full-length one.
-        val rule = ClothesRule("short-skirt", ClothesRule.TemperatureAbove(22.0))
+        val rule = ClothesRule(Garment.SHORT_SKIRT, ClothesRule.TemperatureAbove(22.0))
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 18.0, feelsLikeMax = 25.0),
             listOf(rule),
@@ -279,8 +279,8 @@ class OutfitSuggestionTest {
         // the right pick on a warmer day, and the priority order mirrors
         // SHORTS-over-LONG_SKIRT on the bottom tier.
         val rules = listOf(
-            ClothesRule("short-skirt", ClothesRule.TemperatureAbove(22.0)),
-            ClothesRule("skirt", ClothesRule.TemperatureAbove(16.0)),
+            ClothesRule(Garment.SHORT_SKIRT, ClothesRule.TemperatureAbove(22.0)),
+            ClothesRule(Garment.SKIRT, ClothesRule.TemperatureAbove(16.0)),
         )
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 18.0, feelsLikeMax = 25.0),
@@ -294,8 +294,8 @@ class OutfitSuggestionTest {
         // The short-skirt rule sits at a hotter threshold than skirt; on a
         // mild day only the skirt rule fires and LONG_SKIRT is the right pick.
         val rules = listOf(
-            ClothesRule("short-skirt", ClothesRule.TemperatureAbove(22.0)),
-            ClothesRule("skirt", ClothesRule.TemperatureAbove(16.0)),
+            ClothesRule(Garment.SHORT_SKIRT, ClothesRule.TemperatureAbove(22.0)),
+            ClothesRule(Garment.SKIRT, ClothesRule.TemperatureAbove(16.0)),
         )
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 15.0, feelsLikeMax = 20.0),
@@ -357,8 +357,8 @@ class OutfitSuggestionTest {
         // defaultTop (POLO), leaving the outfit card's icon contradicting its
         // text ("Wear a t-shirt" next to a polo silhouette).
         val rules = listOf(
-            ClothesRule("t-shirt", ClothesRule.TemperatureAbove(24.0)),
-            ClothesRule("shorts", ClothesRule.TemperatureAbove(24.0)),
+            ClothesRule(Garment.TSHIRT, ClothesRule.TemperatureAbove(24.0)),
+            ClothesRule(Garment.SHORTS, ClothesRule.TemperatureAbove(24.0)),
         )
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 17.9, feelsLikeMax = 27.9),
@@ -375,8 +375,8 @@ class OutfitSuggestionTest {
         // a user has both rules firing the polo wins — matching the prose's
         // layer-reduction, which keeps the polo and drops the t-shirt.
         val rules = listOf(
-            ClothesRule("t-shirt", ClothesRule.TemperatureAbove(24.0)),
-            ClothesRule("polo", ClothesRule.TemperatureAbove(24.0)),
+            ClothesRule(Garment.TSHIRT, ClothesRule.TemperatureAbove(24.0)),
+            ClothesRule(Garment.POLO, ClothesRule.TemperatureAbove(24.0)),
         )
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 17.9, feelsLikeMax = 27.9),
@@ -393,7 +393,7 @@ class OutfitSuggestionTest {
         // threshold as uncrossed (18°C < 24°C) on a day the rule actually fired
         // (max 28°C), and wire its ±1° controls to that misleading fact.
         val hourly = listOf(hour(LocalTime.of(7, 0), 18.0), hour(LocalTime.of(15, 0), 28.0))
-        val rules = listOf(ClothesRule("t-shirt", ClothesRule.TemperatureAbove(24.0)))
+        val rules = listOf(ClothesRule(Garment.TSHIRT, ClothesRule.TemperatureAbove(24.0)))
         val fact = OutfitSuggestion.explainFromForecast(
             forecast(feelsLikeMin = 18.0, feelsLikeMax = 28.0, hourly = hourly),
             rules,
@@ -407,45 +407,13 @@ class OutfitSuggestionTest {
     }
 
     @Test
-    fun `legacy and variant t-shirt spellings still drive the TSHIRT icon`() {
-        // Garment.fromKey canonicalises "tshirt" and case / whitespace variants
-        // to TSHIRT, and the prose path relies on that. The icon picker must
-        // canonicalise the same way — otherwise a stored legacy rule fires for
-        // the bullets but the icon falls through to defaultTop (POLO), the very
-        // mismatch this change fixes.
-        listOf("tshirt", " T-Shirt ").forEach { spelling ->
-            val rules = listOf(ClothesRule(spelling, ClothesRule.TemperatureAbove(24.0)))
-            val outfit = OutfitSuggestion.fromForecast(
-                forecast(feelsLikeMin = 17.9, feelsLikeMax = 27.9),
-                rules,
-                defaultTop = OutfitSuggestion.Top.POLO,
-            )
-            outfit.top shouldBe OutfitSuggestion.Top.TSHIRT
-        }
-    }
-
-    @Test
-    fun `legacy jumper spelling drives the SWEATER icon`() {
-        // "jumper" canonicalises to SWEATER via Garment.fromKey; the icon tier
-        // matches on the canonical key, so the en-GB legacy spelling lands on
-        // the sweater silhouette rather than the default top.
-        val rules = listOf(ClothesRule("jumper", ClothesRule.TemperatureBelow(16.0)))
-        val outfit = OutfitSuggestion.fromForecast(
-            forecast(feelsLikeMin = 12.0, feelsLikeMax = 15.0),
-            rules,
-            defaultTop = OutfitSuggestion.Top.POLO,
-        )
-        outfit.top shouldBe OutfitSuggestion.Top.SWEATER
-    }
-
-    @Test
     fun `precipitation-keyed t-shirt rule drives the icon without crashing the rationale`() {
         // Settings lets a user key any garment — a top included — off
         // precipitation. On a rainy day such a rule fires and drives the icon
         // (TSHIRT here, beating the POLO default), but it carries no temperature
         // threshold: the rationale must skip it and fall back to a temperature
         // rule rather than throw in toFact.
-        val rules = listOf(ClothesRule("t-shirt", ClothesRule.PrecipitationProbabilityAbove(50.0)))
+        val rules = listOf(ClothesRule(Garment.TSHIRT, ClothesRule.PrecipitationProbabilityAbove(50.0)))
         val rainy = forecast(feelsLikeMin = 12.0, feelsLikeMax = 20.0, precipMaxPct = 60.0)
 
         OutfitSuggestion.fromForecast(
@@ -463,7 +431,7 @@ class OutfitSuggestionTest {
     @Test
     fun `coat rule alone drives THICK_COAT when it fires`() {
         // Coat has its own icon tier (THICK_COAT) separate from jacket (THICK_JACKET).
-        val coatOnly = listOf(ClothesRule("coat", ClothesRule.TemperatureBelow(6.0)))
+        val coatOnly = listOf(ClothesRule(Garment.COAT, ClothesRule.TemperatureBelow(6.0)))
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 3.0, feelsLikeMax = 8.0),
             coatOnly,

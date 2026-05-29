@@ -43,17 +43,23 @@ import java.util.Locale
 data class SettingsState(
     val scheduleTime: LocalTime = LocalTime.of(7, 0),
     val scheduleDays: Set<DayOfWeek> = Schedule.EVERY_DAY,
-    // Off by default to mirror the repository (see UserPreferences.dailyEnabled):
-    // the first render before DataStore emits must not show the switches on, or
-    // the user could leave Schedule believing casts are enabled when they aren't.
-    val dailyEnabled: Boolean = false,
+    // On by default to mirror the repository (see UserPreferences.dailyEnabled,
+    // where an absent key resolves to enabled): the morning cast ships on out of
+    // the box, so the first render before DataStore emits must not show the
+    // switch off, or the user could leave Schedule believing the morning cast is
+    // off while the app has already scheduled it.
+    val dailyEnabled: Boolean = true,
     val tonightTime: LocalTime = LocalTime.of(19, 0),
     val tonightDays: Set<DayOfWeek> = Schedule.EVERY_DAY,
     val tonightEnabled: Boolean = false,
     val tonightNotifyOnlyOnEvents: Boolean = false,
     val deliveryMode: DeliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
     val tonightDeliveryMode: DeliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
-    val dailyMentionEveningEvents: Boolean = true,
+    // Off by default to mirror the repository (see
+    // UserPreferences.dailyMentionEveningEvents, where an absent key resolves to
+    // disabled): the evening tie-in stays opt-in, so the first render before
+    // DataStore emits must not show the switch on.
+    val dailyMentionEveningEvents: Boolean = false,
     val clothesMentionMode: ClothesMentionMode = ClothesMentionMode.ALWAYS,
     val rangeFormat: RangeFormat = RangeFormat.DEGREES,
     val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,

@@ -171,6 +171,15 @@ data class SettingsState(
      */
     val locationDetecting: Boolean = false,
     /**
+     * True while any forecast/play worker is ENQUEUED, RUNNING, or BLOCKED on
+     * the daily, tonight, or play queues. Gates the Schedule "Play now" buttons
+     * the same way [app.clothescast.ui.today.TodayState.anyWorkActive] gates the
+     * Today top-bar Play button — so a preview can't start a second concurrent
+     * delivery (overlapping TTS, duplicate notification/MQTT/cast, competing
+     * cache writes) on top of a scheduled run, manual refresh, or another play.
+     */
+    val anyWorkActive: Boolean = false,
+    /**
      * The user's explicit [ForecastModel] selection, or `null` for "Auto"
      * (location-derived defaults). Auto is the default for fresh installs;
      * the first explicit pick in the Forecasters picker switches it to a

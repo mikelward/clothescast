@@ -6,17 +6,18 @@ package app.clothescast.ui.today
  * operational banners (update / crash / work-status / holiday), which aren't
  * capped.
  */
-internal enum class PromoBanner { LOCATION, TELEMETRY, CLOTHES, SCHEDULE, CELEBRATION }
+internal enum class PromoBanner { LOCATION, TELEMETRY, CLOTHES, SCHEDULE, PLAY, CELEBRATION }
 
 /**
  * Decides which promo cards the Today screen shows, capping the stack so a
  * fresh user isn't buried under "set this up" noise. Eligible cards are taken
- * in priority order (location > privacy > clothes > schedule > celebration) up
+ * in priority order (location > privacy > clothes > schedule > play > celebration) up
  * to [maxVisible]; the rest wait until a higher one is resolved or dismissed.
  *
- * The three customization nudges — clothes ([clothesPromoEligible]),
- * schedule ([schedulePromoEligible]), and holiday/birthday theming
- * ([celebrationEligible]) — are additionally held back until [hasForecast]:
+ * The four customization nudges — clothes ([clothesPromoEligible]),
+ * schedule ([schedulePromoEligible]), play ([playPromoEligible]), and
+ * holiday/birthday theming ([celebrationEligible]) — are additionally held
+ * back until [hasForecast]:
  * the user has received at least one forecast (foreground or background), i.e.
  * is no longer brand-new. So an empty-cache first-run only ever sees location +
  * privacy; the customization promos join the (still capped) pool once any
@@ -29,6 +30,7 @@ internal fun promoBannersToShow(
     telemetryNoticeVisible: Boolean,
     clothesPromoEligible: Boolean,
     schedulePromoEligible: Boolean,
+    playPromoEligible: Boolean,
     celebrationEligible: Boolean,
     hasForecast: Boolean,
     maxVisible: Int = 2,
@@ -38,6 +40,7 @@ internal fun promoBannersToShow(
         if (telemetryNoticeVisible) add(PromoBanner.TELEMETRY)
         if (clothesPromoEligible && hasForecast) add(PromoBanner.CLOTHES)
         if (schedulePromoEligible && hasForecast) add(PromoBanner.SCHEDULE)
+        if (playPromoEligible && hasForecast) add(PromoBanner.PLAY)
         if (celebrationEligible && hasForecast) add(PromoBanner.CELEBRATION)
     }
     return eligible.take(maxVisible).toSet()

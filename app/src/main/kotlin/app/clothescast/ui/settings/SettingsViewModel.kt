@@ -56,6 +56,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -64,6 +65,13 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Locale
+
+/** True if any work in the list is ENQUEUED, RUNNING, or BLOCKED. */
+private fun List<WorkInfo>.hasActiveWork(): Boolean = any { info ->
+    info.state == WorkInfo.State.ENQUEUED ||
+        info.state == WorkInfo.State.RUNNING ||
+        info.state == WorkInfo.State.BLOCKED
+}
 
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
@@ -325,13 +333,26 @@ class SettingsViewModel(
             viewModelScope.launch {
                 wm.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_LOCATION_CACHE)
                     .collect { infos ->
-                        val detecting = infos.any { info ->
-                            info.state == WorkInfo.State.ENQUEUED ||
-                                info.state == WorkInfo.State.RUNNING ||
-                                info.state == WorkInfo.State.BLOCKED
-                        }
-                        _state.update { it.copy(locationDetecting = detecting) }
+                        _state.update { it.copy(locationDetecting = infos.hasActiveWork()) }
                     }
+            }
+            // Gate the Schedule "Play now" buttons while anything is active on
+            // the daily / tonight / play queues — mirrors TodayState.anyWorkActive
+            // for the top-bar Play button. The play worker runs on its own queue,
+            // so WorkManager won't serialize it against a scheduled run or manual
+            // refresh; without this gate a preview tap could deliver concurrently
+            // (overlapping TTS, duplicate notification/MQTT/cast) and race the
+            // slot's cache write.
+            viewModelScope.launch {
+                combine(
+                    wm.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME),
+                    wm.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT),
+                    wm.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_PLAY),
+                ) { today, tonight, play ->
+                    today.hasActiveWork() || tonight.hasActiveWork() || play.hasActiveWork()
+                }.collect { active ->
+                    _state.update { it.copy(anyWorkActive = active) }
+                }
             }
         }
     }

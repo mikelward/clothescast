@@ -125,6 +125,7 @@ internal fun SevenDayPage(
     onDismissCelebrationCard: () -> Unit = {},
     onDismissClothesPromoCard: () -> Unit = {},
     onDismissSchedulePromoCard: () -> Unit = {},
+    onDismissPlayPromoCard: () -> Unit = {},
 ) {
     // Shared display settings come from [TodayState]; the chart deck and the
     // week-ahead headline below read these locals so sourcing them from state
@@ -225,6 +226,7 @@ internal fun SevenDayPage(
         onDismissCelebrationCard = onDismissCelebrationCard,
         onDismissClothesPromoCard = onDismissClothesPromoCard,
         onDismissSchedulePromoCard = onDismissSchedulePromoCard,
+        onDismissPlayPromoCard = onDismissPlayPromoCard,
         onNavigateToClothes = onNavigateToClothes,
         onAdjustThreshold = onAdjustThreshold,
     ) {

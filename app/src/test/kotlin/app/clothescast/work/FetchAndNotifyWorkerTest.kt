@@ -250,40 +250,39 @@ class FetchAndNotifyWorkerTest {
     }
 
     @Test
-    fun `enqueueReplay uses its own unique work queue so it can't block scheduled refreshes`() {
-        // Play sits on UNIQUE_WORK_NAME_REPLAY rather than the alarm
+    fun `enqueuePlay uses its own unique work queue so it can't block scheduled refreshes`() {
+        // Play sits on UNIQUE_WORK_NAME_PLAY rather than the alarm
         // queues; otherwise an offline Play tap parked behind the
         // network constraint would let WorkManager's KEEP policy on
         // the next alarm fire drop the scheduled morning refresh in
-        // favour of the pending replay — the user would wake up to a
+        // favour of the pending play — the user would wake up to a
         // stale cached announcement instead of a fresh forecast.
-        FetchAndNotifyWorker.enqueueReplay(context, period = ForecastPeriod.TODAY)
+        FetchAndNotifyWorker.enqueuePlay(context, period = ForecastPeriod.TODAY)
 
-        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_REPLAY).map { it.state } shouldContainExactlyInAnyOrder
+        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_PLAY).map { it.state } shouldContainExactlyInAnyOrder
             listOf(WorkInfo.State.ENQUEUED)
         workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME) shouldHaveSize 0
         workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT) shouldHaveSize 0
     }
 
     @Test
-    fun `enqueueReplay for TONIGHT also lands on the replay queue, not the tonight queue`() {
-        FetchAndNotifyWorker.enqueueReplay(context, period = ForecastPeriod.TONIGHT)
+    fun `enqueuePlay for TONIGHT also lands on the play queue, not the tonight queue`() {
+        FetchAndNotifyWorker.enqueuePlay(context, period = ForecastPeriod.TONIGHT)
 
-        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_REPLAY).map { it.state } shouldContainExactlyInAnyOrder
+        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_PLAY).map { it.state } shouldContainExactlyInAnyOrder
             listOf(WorkInfo.State.ENQUEUED)
         workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME) shouldHaveSize 0
         workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT) shouldHaveSize 0
     }
 
     @Test
-    fun `replay whose requested period no longer matches the cached snapshot is dropped`() {
-        // User taps Play at 11pm (TONIGHT) while offline; the replay
-        // request sits in the queue under UNIQUE_WORK_NAME_TONIGHT. Before
-        // it runs, the morning alarm fires and overwrites THIS_PERIOD
-        // with a fresh TODAY snapshot. When the queued replay finally
-        // executes, the snapshot in cache no longer matches the period
-        // the user actually tapped Play for — drop it rather than
-        // delivering the wrong announcement.
+    fun `play with no fresh cached match falls through to a fresh fetch`() {
+        // The only cached snapshot is a stale (non-today) TODAY one; the
+        // user taps "Play now" for TONIGHT. Neither the period nor the date
+        // matches, so the play path doesn't replay it — it falls through to
+        // a fresh fetch. With no location configured that fetch can't run, so
+        // it no-ops with skip_telemetry rather than delivering the wrong
+        // (stale / mismatched) cast or surfacing a no-location failure.
         runBlocking {
             app.insightCache.store(
                 InsightCache.Slot.THIS_PERIOD,
@@ -292,7 +291,7 @@ class FetchAndNotifyWorkerTest {
             val worker = TestListenableWorkerBuilder<FetchAndNotifyWorker>(context)
                 .setInputData(
                     workDataOf(
-                        FetchAndNotifyWorker.KEY_REPLAY_ONLY to true,
+                        FetchAndNotifyWorker.KEY_PLAY to true,
                         FetchAndNotifyWorker.KEY_PERIOD to ForecastPeriod.TONIGHT.name,
                     )
                 )
@@ -306,14 +305,15 @@ class FetchAndNotifyWorkerTest {
     }
 
     @Test
-    fun `replay with empty cache succeeds and skips telemetry without falling through to fetch`() {
-        // The Today screen disables Play when the cache is empty, but a
-        // racing cache-clear (or a stale enqueued tap surviving a process
-        // death) could still land here. The branch must no-op rather than
-        // escalating to the no-location failure the fetch path would hit.
+    fun `play with empty cache falls through to a fresh fetch and no-ops without a no-location failure`() {
+        // Empty cache → nothing to replay → the play path fetches fresh. With
+        // no location configured the fetch can't run, but unlike the scheduled
+        // forecast path it must NOT surface the REASON_NO_LOCATION failure —
+        // a manual Play tap with no location just quietly no-ops (the Today
+        // screen's location banner already prompts the fix).
         runBlocking {
             val worker = TestListenableWorkerBuilder<FetchAndNotifyWorker>(context)
-                .setInputData(workDataOf(FetchAndNotifyWorker.KEY_REPLAY_ONLY to true))
+                .setInputData(workDataOf(FetchAndNotifyWorker.KEY_PLAY to true))
                 .build()
 
             val result = worker.doWork()
@@ -321,6 +321,30 @@ class FetchAndNotifyWorkerTest {
             result.shouldBeInstanceOf<Result.Success>()
             result.outputData.getBoolean(FetchAndNotifyWorker.KEY_SKIP_TELEMETRY, false) shouldBe true
         }
+    }
+
+    @Test
+    fun `daily preview advances to tomorrow once the nightly window has started`() {
+        // The daytime cast has already passed by the time we're in the nightly
+        // window, so "Play now" on Daily means *tomorrow's* daytime — every
+        // other combination stays on today (tonight is still upcoming/ongoing,
+        // and a current-window play is always today).
+        FetchAndNotifyWorker.nextOccurrenceDayOffset(
+            requestedPeriod = ForecastPeriod.TODAY,
+            currentPeriod = ForecastPeriod.TONIGHT,
+        ) shouldBe 1
+        FetchAndNotifyWorker.nextOccurrenceDayOffset(
+            requestedPeriod = ForecastPeriod.TODAY,
+            currentPeriod = ForecastPeriod.TODAY,
+        ) shouldBe 0
+        FetchAndNotifyWorker.nextOccurrenceDayOffset(
+            requestedPeriod = ForecastPeriod.TONIGHT,
+            currentPeriod = ForecastPeriod.TODAY,
+        ) shouldBe 0
+        FetchAndNotifyWorker.nextOccurrenceDayOffset(
+            requestedPeriod = ForecastPeriod.TONIGHT,
+            currentPeriod = ForecastPeriod.TONIGHT,
+        ) shouldBe 0
     }
 
     private fun workInfosFor(name: String): List<WorkInfo> =

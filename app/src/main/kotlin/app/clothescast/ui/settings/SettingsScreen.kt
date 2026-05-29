@@ -158,6 +158,7 @@ internal fun SchedulePage(
             onSetTtsEngine = viewModel::setTtsEngine,
             onSetGeminiKey = viewModel::setApiKey,
             onClearGeminiKey = viewModel::clearApiKey,
+            previewEnabled = !state.anyWorkActive,
         )
         }
     }

@@ -33,6 +33,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,9 +42,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import app.clothescast.R
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.TimeFormat
@@ -86,6 +90,27 @@ internal fun ScheduleContent(
     val context = LocalContext.current
     var speechSheetOpen by rememberSaveable { mutableStateOf(false) }
 
+    // Whether POST_NOTIFICATIONS is granted gates how the notification channel
+    // toggles read: without the permission the OS drops every post, so the
+    // channel can't really be on — the toggle reads off regardless of the
+    // stored preference and only settles on once the grant lands. Re-check on
+    // resume so a grant/revoke made in system Settings is reflected without an
+    // in-app action (same approach as NotificationPermissionBanner). Reports
+    // true on pre-Android-13, where the permission is implicit.
+    var notificationGranted by remember {
+        mutableStateOf(NotificationPermission.isGranted(context))
+    }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                notificationGranted = NotificationPermission.isGranted(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
     // Turning a delivery channel on requests exactly what that channel needs,
     // just-in-time. Notify → the system POST_NOTIFICATIONS prompt (no-op on
     // pre-Android-13 or when already granted; a denial is recoverable via the
@@ -93,9 +118,9 @@ internal fun ScheduleContent(
     // cut-down Speech setup sheet to pick Gemini-with-key or device TTS.
     val notificationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
-    ) { /* Banner re-checks on resume; nothing to do with the result here. */ }
+    ) { granted -> notificationGranted = granted }
     val requestNotificationPermission: () -> Unit = {
-        if (NotificationPermission.isRequired() && !NotificationPermission.isGranted(context)) {
+        if (NotificationPermission.isRequired() && !notificationGranted) {
             notificationLauncher.launch(NotificationPermission.MANIFEST_PERMISSION)
         }
     }
@@ -119,6 +144,7 @@ internal fun ScheduleContent(
                 days = days,
                 enabled = dailyEnabled,
                 deliveryMode = deliveryMode,
+                notificationGranted = notificationGranted,
                 mentionEveningEvents = dailyMentionEveningEvents,
                 // Enabling a master switch is the user opting into scheduled
                 // delivery, so prompt for notification permission right then —
@@ -141,6 +167,7 @@ internal fun ScheduleContent(
                 enabled = tonightEnabled,
                 notifyOnlyOnEvents = tonightNotifyOnlyOnEvents,
                 deliveryMode = tonightDeliveryMode,
+                notificationGranted = notificationGranted,
                 // Same as the morning card: prompt for notification permission
                 // the moment the user enables the evening schedule.
                 onSetEnabled = { enabled ->
@@ -176,6 +203,7 @@ private fun DayCard(
     days: Set<DayOfWeek>,
     enabled: Boolean,
     deliveryMode: DeliveryMode,
+    notificationGranted: Boolean,
     mentionEveningEvents: Boolean,
     onSetEnabled: (Boolean) -> Unit,
     onChange: (LocalTime, Set<DayOfWeek>) -> Unit,
@@ -204,6 +232,7 @@ private fun DayCard(
             )
             DeliveryModeSection(
                 selected = deliveryMode,
+                notificationGranted = notificationGranted,
                 onSelect = onSetDeliveryMode,
                 onRequestNotificationPermission = onRequestNotificationPermission,
                 onRequestSpeechSetup = onRequestSpeechSetup,
@@ -269,6 +298,7 @@ private fun NightCard(
     enabled: Boolean,
     notifyOnlyOnEvents: Boolean,
     deliveryMode: DeliveryMode,
+    notificationGranted: Boolean,
     onSetEnabled: (Boolean) -> Unit,
     onSetNotifyOnlyOnEvents: (Boolean) -> Unit,
     onChange: (LocalTime, Set<DayOfWeek>) -> Unit,
@@ -296,6 +326,7 @@ private fun NightCard(
             )
             DeliveryModeSection(
                 selected = deliveryMode,
+                notificationGranted = notificationGranted,
                 onSelect = onSetDeliveryMode,
                 onRequestNotificationPermission = onRequestNotificationPermission,
                 onRequestSpeechSetup = onRequestSpeechSetup,
@@ -408,11 +439,17 @@ private fun DaysSelector(
 @Composable
 private fun DeliveryModeSection(
     selected: DeliveryMode,
+    notificationGranted: Boolean,
     onSelect: (DeliveryMode) -> Unit,
     onRequestNotificationPermission: () -> Unit,
     onRequestSpeechSetup: () -> Unit,
 ) {
-    val (notifyOn, ttsOn) = selected.toChannels()
+    val (notifyStored, ttsOn) = selected.toChannels()
+    // Without notification permission the OS drops every post, so the channel
+    // can't really be on — read it as off no matter the stored preference.
+    // Toggling it on requests the permission; the row only settles on once the
+    // grant lands (and immediately on pre-Android-13, where it's implicit).
+    val notifyOn = notifyStored && notificationGranted
     ToggleRow(
         label = stringResource(R.string.settings_delivery_notification),
         checked = notifyOn,
@@ -421,17 +458,22 @@ private fun DeliveryModeSection(
             if (enabled) onRequestNotificationPermission()
         },
     )
-    // Surface the recoverable grant path whenever the notify channel is on but
-    // permission is still missing; the banner renders nothing once granted (or
-    // on pre-Android-13), so it's safe to keep mounted while notify is on.
-    if (notifyOn) {
+    // Surface the recoverable grant path whenever the user wants notifications
+    // (stored preference on) but the permission is still missing; the banner
+    // renders nothing once granted (or on pre-Android-13), so it's safe to keep
+    // mounted while the channel is enabled.
+    if (notifyStored && !notificationGranted) {
         NotificationPermissionBanner()
     }
     ToggleRow(
         label = stringResource(R.string.settings_delivery_tts),
         checked = ttsOn,
         onCheckedChange = { enabled ->
-            onSelect(deliveryModeOf(notify = notifyOn, tts = enabled))
+            // Persist the *stored* notify bit, not the permission-gated display
+            // value: while permission is denied notifyOn reads false, and using
+            // it here would silently drop a saved notification preference (and
+            // with it the recovery banner) just because the user touched speech.
+            onSelect(deliveryModeOf(notify = notifyStored, tts = enabled))
             if (enabled) onRequestSpeechSetup()
         },
     )

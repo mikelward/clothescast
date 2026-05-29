@@ -148,7 +148,11 @@ class DeriveInsight(
                 periodView.perModelForRender?.let { ConfidenceInfo.computeFrom(it) }
             },
             perModelHourly = periodView.perModelForRender,
-            outfit = OutfitSuggestion.fromForecast(periodView.forecast, rules, defaultBottom, defaultTop),
+            // Derive the displayed icon from the *same* TriggeredOutfit that
+            // drives the prose / recommendations, so the two can't drift apart.
+            // nextForecast has no pre-evaluated outfit, so it still goes through
+            // the forecast-driven path (same tier logic underneath).
+            outfit = OutfitSuggestion.fromTriggeredOutfit(periodView.triggeredOutfit, defaultBottom, defaultTop),
             nextOutfit = periodView.nextForecast?.let {
                 OutfitSuggestion.fromForecast(it, rules, defaultBottom, defaultTop)
             },

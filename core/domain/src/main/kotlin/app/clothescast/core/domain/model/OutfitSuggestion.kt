@@ -89,40 +89,79 @@ data class OutfitSuggestion(
         private val LONG_SKIRT_KEYS = listOf("skirt")
         private val JEANS_KEYS = listOf("jeans")
 
-        // TODO(outfit-from-triggered): fromForecast re-walks the raw clothesRules
-        //   against the forecast (firstFiring per icon tier), duplicating the rule
-        //   evaluation EvaluateClothesRules already did to build TriggeredOutfit and
-        //   encoding the coat>puffer>jacket>… priority a second time alongside
-        //   Garment.layerReduce. Derive OutfitSuggestion from the already-computed
-        //   TriggeredOutfit instead, so there's a single rule evaluation and one
-        //   priority order. Watch the icon-only tiers (the explicit t-shirt tier;
-        //   shorter-skirt-wins) and the defaultTop/defaultBottom vs fallbacks
-        //   mapping; home-screen icons are Roborazzi-snapshotted, so diff them.
+        /**
+         * Two-piece icon outfit for [forecast] given the user's [clothesRules].
+         * Evaluates the rules against the forecast once and maps the firing
+         * rules to icon tiers via [pickOutfit].
+         *
+         * Prefer [fromTriggeredOutfit] at call sites that already hold the day's
+         * [TriggeredOutfit] (the prose / recommendations path): reading the icon
+         * from the same matched-rule set the prose uses keeps the two from
+         * drifting apart. This forecast-driven entry point stays for callers
+         * (and tests) that only have a forecast and rules in hand.
+         */
         fun fromForecast(
             forecast: DailyForecast,
             clothesRules: List<ClothesRule>,
             defaultBottom: Bottom = Bottom.LONG_PANTS,
             defaultTop: Top = Top.TSHIRT,
+        ): OutfitSuggestion =
+            pickOutfit(clothesRules.filter { it.appliesTo(forecast) }, defaultTop, defaultBottom)
+
+        /**
+         * Two-piece icon outfit derived from an already-evaluated
+         * [TriggeredOutfit] — the same object that drives the bulleted
+         * recommendations and the prose clothes clause. Only the firing
+         * threshold rules ([TriggeredOutfit.rules]) drive the tier; uncovered
+         * slots fall through to [defaultTop] / [defaultBottom], exactly as
+         * [fromForecast] does (the per-tier default is not itself an icon tier).
+         *
+         * This is the preferred entry point: a new garment tier or a
+         * rule-matching tweak then lands in one place ([pickOutfit]) instead of
+         * having to be mirrored across a second forecast walk — the divergence
+         * that previously let the icon fall to the default while the prose named
+         * the garment.
+         */
+        fun fromTriggeredOutfit(
+            triggered: TriggeredOutfit,
+            defaultBottom: Bottom = Bottom.LONG_PANTS,
+            defaultTop: Top = Top.TSHIRT,
+        ): OutfitSuggestion = pickOutfit(triggered.rules, defaultTop, defaultBottom)
+
+        // Maps the firing rules (those already known to apply to the forecast)
+        // to icon tiers. The single source of the coldest-first / shorter-first
+        // tier priority both entry points share: colder (or briefer) tiers are
+        // checked first so the heavier garment / mini skirt wins when several
+        // rules fire at once.
+        private fun pickOutfit(
+            firingRules: List<ClothesRule>,
+            defaultTop: Top,
+            defaultBottom: Bottom,
         ): OutfitSuggestion {
             val top = when {
-                clothesRules.firstFiring(forecast, THICK_COAT_KEYS) != null -> Top.THICK_COAT
-                clothesRules.firstFiring(forecast, PUFFER_JACKET_KEYS) != null -> Top.PUFFER_JACKET
-                clothesRules.firstFiring(forecast, THICK_JACKET_KEYS) != null -> Top.THICK_JACKET
-                clothesRules.firstFiring(forecast, THIN_JACKET_KEYS) != null -> Top.THIN_JACKET
-                clothesRules.firstFiring(forecast, SWEATER_KEYS) != null -> Top.SWEATER
-                clothesRules.firstFiring(forecast, POLO_KEYS) != null -> Top.POLO
-                clothesRules.firstFiring(forecast, TSHIRT_KEYS) != null -> Top.TSHIRT
+                firingRules.hasKeyIn(THICK_COAT_KEYS) -> Top.THICK_COAT
+                firingRules.hasKeyIn(PUFFER_JACKET_KEYS) -> Top.PUFFER_JACKET
+                firingRules.hasKeyIn(THICK_JACKET_KEYS) -> Top.THICK_JACKET
+                firingRules.hasKeyIn(THIN_JACKET_KEYS) -> Top.THIN_JACKET
+                firingRules.hasKeyIn(SWEATER_KEYS) -> Top.SWEATER
+                firingRules.hasKeyIn(POLO_KEYS) -> Top.POLO
+                firingRules.hasKeyIn(TSHIRT_KEYS) -> Top.TSHIRT
                 else -> defaultTop
             }
             val bottom = when {
-                clothesRules.firstFiring(forecast, SHORTS_KEYS) != null -> Bottom.SHORTS
-                clothesRules.firstFiring(forecast, SHORT_SKIRT_KEYS) != null -> Bottom.SHORT_SKIRT
-                clothesRules.firstFiring(forecast, LONG_SKIRT_KEYS) != null -> Bottom.LONG_SKIRT
-                clothesRules.firstFiring(forecast, JEANS_KEYS) != null -> Bottom.JEANS
+                firingRules.hasKeyIn(SHORTS_KEYS) -> Bottom.SHORTS
+                firingRules.hasKeyIn(SHORT_SKIRT_KEYS) -> Bottom.SHORT_SKIRT
+                firingRules.hasKeyIn(LONG_SKIRT_KEYS) -> Bottom.LONG_SKIRT
+                firingRules.hasKeyIn(JEANS_KEYS) -> Bottom.JEANS
                 else -> defaultBottom
             }
             return OutfitSuggestion(top, bottom)
         }
+
+        /** True when any rule in the list names a catalog garment in [keys],
+         *  using the same canonicalisation as the prose path ([matchesKey]). */
+        private fun List<ClothesRule>.hasKeyIn(keys: List<String>): Boolean =
+            keys.any { key -> any { it.matchesKey(key) } }
 
         /**
          * Returns the human-readable reasons that [fromForecast] picked this outfit —

@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="96dp" android:height="96dp" android:viewportWidth="96" android:viewportHeight="96">
+
+    <!-- Left Glove -->
+    <path android:fillColor="#37474F" android:strokeColor="#263238" android:strokeWidth="2.25" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M1,73 L13,80 L12,88 Q8,92 4,87 Z" />
+    <path android:fillColor="#37474F" android:strokeColor="#263238" android:strokeWidth="2.25" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M13,80 L18,83 Q20,84 17,86 L11,83" />
+
+    <!-- Right Glove -->
+    <path android:fillColor="#37474F" android:strokeColor="#263238" android:strokeWidth="2.25" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M95,73 L83,80 L84,88 Q88,92 92,87 Z" />
+    <path android:fillColor="#37474F" android:strokeColor="#263238" android:strokeWidth="2.25" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M83,80 L78,83 Q76,84 79,86 L85,83" />
+
+</vector>

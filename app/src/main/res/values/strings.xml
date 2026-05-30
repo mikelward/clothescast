@@ -1024,8 +1024,8 @@
     <string name="settings_clothes_cond_type_temp_above">When it feels warmer than</string>
     <string name="settings_clothes_cond_type_precip_above">When chance of rain is above</string>
 
-    <string name="settings_clothes_cond_temp_below">when min temperature is below %1$s</string>
-    <string name="settings_clothes_cond_temp_above">when max temperature is above %1$s</string>
+    <string name="settings_clothes_cond_temp_below">when temperature is below %1$s</string>
+    <string name="settings_clothes_cond_temp_above">when temperature is above %1$s</string>
     <string name="settings_clothes_cond_precip_above">when chance of rain is above %.0f%%</string>
 
     <string name="notification_channel_daily_insight_name">Daily ClothesCast</string>

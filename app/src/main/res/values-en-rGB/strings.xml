@@ -27,4 +27,9 @@ full re-translation.
          inherit this via the same CLDR cascade as Kilometres above. -->
     <string name="settings_root_display_subtitle">Themes and Colours</string>
     <string name="today_celebration_card_body">Enable special colours and messages for holidays and birthdays.</string>
+    <string name="settings_clothes_color_label">Colour</string>
+    <string name="settings_display_garment_colors_title">Garment colours</string>
+    <string name="settings_garment_color_picker_title">Pick a colour</string>
+    <string name="settings_garment_color_swatch_description">Colour swatch %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Reset %1$s to the default colour</string>
 </resources>

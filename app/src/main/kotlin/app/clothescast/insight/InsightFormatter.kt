@@ -889,6 +889,17 @@ class InsightFormatter(
         resources.getString(R.string.today_precipitation_peak, percent, spokenTime(time))
 
     /**
+     * As [formatPeakRain] but without the "Peak" lead-in — for the compact
+     * conditions widget where the surrounding context already reads as "the
+     * chance of rain", so "60% at 3pm" carries the meaning in fewer pixels.
+     * Reuses the generic [R.string.today_chart_readout] "value at time" pattern
+     * (and the same "${pct}%" value formatting the precipitation chart readout
+     * uses) rather than a bespoke string.
+     */
+    fun formatPeakRainShort(percent: Int, time: LocalTime): String =
+        resources.getString(R.string.today_chart_readout, "$percent%", spokenTime(time))
+
+    /**
      * 24h LocalTime → spoken form for TTS and display.
      *
      * English (`en-*`): 12h named forms ("midnight", "2am", "noon", "3:30pm").

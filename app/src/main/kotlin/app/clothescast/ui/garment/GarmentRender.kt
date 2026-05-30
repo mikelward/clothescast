@@ -457,10 +457,19 @@ private const val INFO_ICON_STROKE_WIDTH = 1.5f
  * Draws a coloured thermometer at ([x], [y]) sized [size]×[size]. The
  * whole silhouette — bulb included — fills upward in proportion to
  * [fillFraction] (clamped to 0..1), so the visible red area tracks
- * temperature linearly. A thin dark outline traces the silhouette so the
- * icon stays legible against the white card even when the column is empty.
+ * temperature linearly. A thin outline traces the silhouette so the icon
+ * stays legible even when the column is empty; [interiorArgb] / [outlineArgb]
+ * default to the white-card palette but can be themed for a dark widget.
  */
-private fun drawThermometerIcon(canvas: Canvas, x: Int, y: Int, size: Int, fillFraction: Float) {
+private fun drawThermometerIcon(
+    canvas: Canvas,
+    x: Int,
+    y: Int,
+    size: Int,
+    fillFraction: Float,
+    interiorArgb: Int = android.graphics.Color.WHITE,
+    outlineArgb: Int = INFO_ICON_OUTLINE_ARGB,
+) {
     val fill = fillFraction.coerceIn(0f, 1f)
     val liquidTopY = THERMOMETER_FILL_TOP +
         (1f - fill) * (THERMOMETER_FILL_BOTTOM - THERMOMETER_FILL_TOP)
@@ -472,6 +481,8 @@ private fun drawThermometerIcon(canvas: Canvas, x: Int, y: Int, size: Int, fillF
         pathData = THERMOMETER_PATH,
         fillArgb = THERMOMETER_FILL_ARGB,
         liquidTopY = liquidTopY,
+        interiorArgb = interiorArgb,
+        outlineArgb = outlineArgb,
     )
 }
 
@@ -489,7 +500,15 @@ private fun drawThermometerIcon(canvas: Canvas, x: Int, y: Int, size: Int, fillF
  * fill now leaves a visible empty cap, distinct from a 100 % full
  * droplet.
  */
-private fun drawRainDropletIcon(canvas: Canvas, x: Int, y: Int, size: Int, fillFraction: Float) {
+private fun drawRainDropletIcon(
+    canvas: Canvas,
+    x: Int,
+    y: Int,
+    size: Int,
+    fillFraction: Float,
+    interiorArgb: Int = android.graphics.Color.WHITE,
+    outlineArgb: Int = INFO_ICON_OUTLINE_ARGB,
+) {
     val fill = fillFraction.coerceIn(0f, 1f)
     val emptyFraction = (1f - fill).toDouble().pow(DROPLET_AREA_EXPONENT).toFloat()
     val liquidTopY = DROPLET_TOP + emptyFraction * (DROPLET_BOTTOM - DROPLET_TOP)
@@ -501,6 +520,8 @@ private fun drawRainDropletIcon(canvas: Canvas, x: Int, y: Int, size: Int, fillF
         pathData = DROPLET_PATH,
         fillArgb = DROPLET_FILL_ARGB,
         liquidTopY = liquidTopY,
+        interiorArgb = interiorArgb,
+        outlineArgb = outlineArgb,
     )
 }
 
@@ -519,12 +540,15 @@ private fun drawFillableInfoIcon(
     pathData: String,
     fillArgb: Int,
     liquidTopY: Float,
+    liquidBottomY: Float = 24f,
+    interiorArgb: Int = android.graphics.Color.WHITE,
+    outlineArgb: Int = INFO_ICON_OUTLINE_ARGB,
 ) {
     val path = AndroidPathParser.createPathFromPathData(pathData)
     val scale = size.toFloat() / 24f
-    val whitePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    val interiorPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
-        color = android.graphics.Color.WHITE
+        color = interiorArgb
     }
     val colourPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
@@ -532,15 +556,15 @@ private fun drawFillableInfoIcon(
     }
     val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
-        color = INFO_ICON_OUTLINE_ARGB
+        color = outlineArgb
         strokeWidth = INFO_ICON_STROKE_WIDTH
     }
     canvas.save()
     canvas.translate(x.toFloat(), y.toFloat())
     canvas.scale(scale, scale)
-    canvas.drawPath(path, whitePaint)
+    canvas.drawPath(path, interiorPaint)
     canvas.save()
-    canvas.clipRect(0f, liquidTopY, 24f, 24f)
+    canvas.clipRect(0f, liquidTopY, 24f, liquidBottomY)
     canvas.drawPath(path, colourPaint)
     canvas.restore()
     canvas.drawPath(path, strokePaint)
@@ -565,6 +589,9 @@ internal data class OutfitCardInfoLines(
     // Peak precipitation probability / 100 — drives the droplet's blue fill.
     // Null whenever [rainLine] is null (row hidden below the 30 % threshold).
     val rainFillFraction: Float?,
+    // Compact peak-rain label without the "Peak" lead-in, for the conditions
+    // widget. Null whenever [rainLine] is. Default null for card callers.
+    val rainLineShort: String? = null,
 )
 
 internal fun outfitCardInfoLines(
@@ -589,16 +616,174 @@ internal fun outfitCardInfoLines(
     val peak = hourly.maxByOrNull { it.precipitationProbabilityPct }
     val peakPct = peak?.precipitationProbabilityPct?.roundToInt()
     val rainLine: String?
+    val rainLineShort: String?
     val rainFillFraction: Float?
     if (peak != null && peakPct != null && peakPct >= RAIN_PEAK_THRESHOLD_PCT) {
         rainLine = formatter.formatPeakRain(peakPct, peak.time)
+        rainLineShort = formatter.formatPeakRainShort(peakPct, peak.time)
         rainFillFraction = (peakPct / 100f).coerceIn(0f, 1f)
     } else {
         rainLine = null
+        rainLineShort = null
         rainFillFraction = null
     }
-    return OutfitCardInfoLines(tempLine, rainLine, tempFillFraction, rainFillFraction)
+    return OutfitCardInfoLines(
+        tempLine = tempLine,
+        rainLine = rainLine,
+        rainLineShort = rainLineShort,
+        tempFillFraction = tempFillFraction,
+        rainFillFraction = rainFillFraction,
+    )
 }
+
+/**
+ * Rasterizes a horizontal "conditions strip" — a min→high feels-like
+ * thermometer next to the peak-rain droplet — into a [Bitmap] for the
+ * home-screen conditions widget (via [androidx.glance.ImageProvider]). Reuses
+ * the same glyph primitives and [OutfitCardInfoLines] math the outfit card
+ * draws, so the widget and the card stay in lockstep.
+ *
+ * Layout: `[thermometer] 9–28°C   [droplet] 60% at 3pm`, centred horizontally.
+ * The thermometer fills to [tempFraction] (the day's high); the low/high range
+ * is carried by [rangeLabel]. Pass [rainLabel] = null (and [rainFraction] =
+ * null) to drop the droplet cell — matches the card's "rain only when peak ≥
+ * 30 %" rule. [darkTheme] swaps the glyph interior / outline / text colours so
+ * the strip reads on a dark widget background; the red / blue fills stay
+ * constant since they pop on either background. Memoised on the full input
+ * tuple (labels + fractions + size + theme) so frequent widget refreshes don't
+ * re-rasterize.
+ */
+internal fun renderConditionsStripBitmap(
+    context: Context,
+    rangeLabel: String,
+    rainLabel: String?,
+    tempFraction: Float,
+    rainFraction: Float?,
+    widthPx: Int,
+    heightPx: Int,
+    darkTheme: Boolean,
+): Bitmap {
+    require(widthPx > 0 && heightPx > 0) {
+        "conditions strip size must be positive, got ${widthPx}×$heightPx"
+    }
+    val key = ConditionsStripCacheKey(
+        rangeLabel, rainLabel, tempFraction,
+        rainFraction, widthPx, heightPx, darkTheme,
+    )
+    conditionsStripCache[key]?.let { return it }
+
+    // Defensively cap the raster height; the Image upscales the bounded bitmap
+    // to fill the cell, keeping a stretched widget from allocating an outsized
+    // ARGB buffer. Width scales with it to preserve the strip's aspect.
+    val scale = if (heightPx > MAX_STRIP_HEIGHT_PX) MAX_STRIP_HEIGHT_PX.toFloat() / heightPx else 1f
+    val w = (widthPx * scale).roundToInt().coerceAtLeast(1)
+    val h = (heightPx * scale).roundToInt().coerceAtLeast(1)
+
+    val interiorArgb = if (darkTheme) STRIP_DARK_INTERIOR_ARGB else android.graphics.Color.WHITE
+    val outlineArgb = if (darkTheme) STRIP_DARK_OUTLINE_ARGB else INFO_ICON_OUTLINE_ARGB
+    val textArgb = if (darkTheme) STRIP_DARK_TEXT_ARGB else STRIP_LIGHT_TEXT_ARGB
+
+    val bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap) // transparent — the widget Box paints its own background
+
+    val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = textArgb
+        textSize = h * STRIP_TEXT_HEIGHT_FRACTION
+        typeface = Typeface.DEFAULT_BOLD
+    }
+    var iconPx = (h * STRIP_ICON_HEIGHT_FRACTION).roundToInt().coerceAtLeast(1)
+    var iconGap = iconPx * STRIP_ICON_TEXT_GAP_FRACTION
+    var sectionGap = iconPx * STRIP_SECTION_GAP_FRACTION
+
+    val labels = buildList {
+        add(rangeLabel)
+        if (rainLabel != null) add(rainLabel)
+    }
+    fun contentWidth(): Float =
+        labels.sumOf { (iconPx + iconGap + textPaint.measureText(it)).toDouble() }.toFloat() +
+            sectionGap * (labels.size - 1)
+
+    // Shrink icon + text together so a long "Peak 60% at 3pm" on a short-wide
+    // cell scales down to fit rather than clipping off the right edge.
+    val usableWidth = w * STRIP_USABLE_WIDTH_FRACTION
+    val fitScale = (usableWidth / contentWidth()).coerceIn(STRIP_MIN_FIT_SCALE, 1f)
+    if (fitScale < 1f) {
+        iconPx = (iconPx * fitScale).roundToInt().coerceAtLeast(1)
+        iconGap *= fitScale
+        sectionGap *= fitScale
+        textPaint.textSize *= fitScale
+    }
+
+    val cellWidths = labels.map { iconPx + iconGap + textPaint.measureText(it) }
+    val totalWidth = cellWidths.sum() + sectionGap * (labels.size - 1)
+    var x = ((w - totalWidth) / 2f).coerceAtLeast(0f)
+    val iconTop = (h - iconPx) / 2
+    val textCenterY = iconTop + iconPx / 2f
+    val baseline = textCenterY - (textPaint.fontMetrics.ascent + textPaint.fontMetrics.descent) / 2f
+
+    labels.forEachIndexed { i, label ->
+        val ix = x.roundToInt()
+        if (i == 0) {
+            drawThermometerIcon(
+                canvas, ix, iconTop, iconPx,
+                fillFraction = tempFraction,
+                interiorArgb = interiorArgb,
+                outlineArgb = outlineArgb,
+            )
+        } else {
+            drawRainDropletIcon(
+                canvas, ix, iconTop, iconPx, rainFraction ?: 0f,
+                interiorArgb = interiorArgb,
+                outlineArgb = outlineArgb,
+            )
+        }
+        canvas.drawText(label, ix + iconPx + iconGap, baseline, textPaint)
+        x += cellWidths[i] + sectionGap
+    }
+
+    conditionsStripCache[key] = bitmap
+    return bitmap
+}
+
+private data class ConditionsStripCacheKey(
+    val rangeLabel: String,
+    val rainLabel: String?,
+    val tempFraction: Float,
+    val rainFraction: Float?,
+    val widthPx: Int,
+    val heightPx: Int,
+    val darkTheme: Boolean,
+)
+
+// Small bound: a placed conditions widget hits a handful of distinct
+// (size, theme, label) tuples across a refresh cycle. Mirrors [bitmapCache].
+private val conditionsStripCache = object : LinkedHashMap<ConditionsStripCacheKey, Bitmap>(16, 0.75f, true) {
+    override fun removeEldestEntry(eldest: Map.Entry<ConditionsStripCacheKey, Bitmap>): Boolean = size > MAX
+    private val MAX = 16
+}
+
+// Geometry of the conditions strip, expressed as fractions of the render
+// height so the layout scales cleanly with the widget cell.
+private const val STRIP_ICON_HEIGHT_FRACTION = 0.62f
+private const val STRIP_TEXT_HEIGHT_FRACTION = 0.34f
+private const val STRIP_ICON_TEXT_GAP_FRACTION = 0.18f
+private const val STRIP_SECTION_GAP_FRACTION = 0.7f
+// Fraction of the bitmap width the content may occupy before it's scaled to
+// fit, leaving a small horizontal margin so icons/text don't touch the edge.
+private const val STRIP_USABLE_WIDTH_FRACTION = 0.94f
+// Don't shrink below this — past it a tiny illegible strip is worse than light
+// clipping, and the user can resize the widget wider.
+private const val STRIP_MIN_FIT_SCALE = 0.5f
+private const val MAX_STRIP_HEIGHT_PX = 240
+
+// Dark-theme glyph palette for the strip: a near-background interior so the
+// thermometer/droplet's empty region disappears into the widget, a light
+// outline to trace the silhouette, and near-white text. Light theme keeps the
+// outfit card's white interior + #333 outline.
+private const val STRIP_DARK_INTERIOR_ARGB = 0xFF2B2B2B.toInt()
+private const val STRIP_DARK_OUTLINE_ARGB = 0xFFCCCCCC.toInt()
+private const val STRIP_DARK_TEXT_ARGB = 0xFFECECEC.toInt()
+private const val STRIP_LIGHT_TEXT_ARGB = 0xFF1A1A1A.toInt()
 
 private const val RAIN_PEAK_THRESHOLD_PCT = 30
 

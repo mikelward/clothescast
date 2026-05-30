@@ -393,7 +393,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
          Settings — Voice engine / TTS
          ===================================================================== -->
     <string name="settings_tts_engine_title">Công cụ giọng nói</string>
-    <string name="settings_tts_engine_description">Gemini tự nhiên hơn nhiều so với giọng thiết bị nhưng cần kết nối mạng khi đọc và dùng khóa API của bạn để tổng hợp (một lần gọi ngắn cho mỗi ClothesCast được đọc to). Tự động chuyển sang giọng thiết bị nếu Gemini lỗi.</string>
+    <string name="settings_tts_engine_description">Gemini nghe tự nhiên hơn nhiều nhưng cần khóa API.</string>
     <string name="settings_tts_engine_device">Thiết bị (ngoại tuyến, miễn phí)</string>
     <string name="settings_tts_engine_gemini">Gemini (chất lượng cao, trực tuyến)</string>
     <string name="settings_tts_voice_label">Giọng</string>

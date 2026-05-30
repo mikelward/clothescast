@@ -622,7 +622,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_location_background_denied_keep">Continuar a usar a localização guardada</string>
 
     <!-- TTS engine selection — description beneath the Gemini/Device toggle. -->
-    <string name="settings_tts_engine_description">O Gemini soa muito mais natural do que a voz do dispositivo, mas requer uma chamada de rede no momento da síntese e usa a tua chave de API para a síntese (uma chamada curta por ClothesCast reproduzido). Usa a voz do dispositivo se o Gemini falhar.</string>
+    <string name="settings_tts_engine_description">O Gemini soa muito mais natural, mas precisa de uma chave de API.</string>
 
     <!-- TTS device voice picker. -->
     <string name="settings_tts_device_voice_label">Voz do dispositivo</string>

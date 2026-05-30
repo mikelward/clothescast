@@ -220,7 +220,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_tts_engine_title">Řečový engine</string>
     <string name="settings_tts_engine_device">Zařízení (offline, zdarma)</string>
     <string name="settings_tts_engine_gemini">Gemini (vysoká kvalita, online)</string>
-    <string name="settings_tts_engine_description">Gemini zní výrazně přirozeněji než hlas zařízení, ale při mluvení vyžaduje síťové volání a používá tvůj API klíč pro syntézu (krátké volání za každý mluvený ClothesCast). Při selhání Gemini se vrátí k hlasu zařízení.</string>
+    <string name="settings_tts_engine_description">Gemini zní mnohem přirozeněji, ale vyžaduje API klíč.</string>
 
     <string name="settings_tts_voice_label">Hlas</string>
     <string name="settings_tts_voice_dismiss">Hotovo</string>

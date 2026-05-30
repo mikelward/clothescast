@@ -222,7 +222,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_tts_engine_title">Beszédmotor</string>
     <string name="settings_tts_engine_device">Eszköz (offline, ingyenes)</string>
     <string name="settings_tts_engine_gemini">Gemini (magas minőség, online)</string>
-    <string name="settings_tts_engine_description">A Gemini lényegesen természetesebben hangzik, mint az eszközhang, de beszédkor hálózati hívást igényel, és a szintézishez az API-kulcsodat használja (rövid hívás minden elmondott ClothesCastnál). Gemini hiba esetén visszaáll az eszközhanggra.</string>
+    <string name="settings_tts_engine_description">A Gemini sokkal természetesebben hangzik, de API-kulcsra van szükség.</string>
 
     <string name="settings_tts_voice_label">Hang</string>
     <string name="settings_tts_voice_dismiss">Kész</string>

@@ -366,7 +366,7 @@ to values/strings.xml (English).
 
     <!-- TTS / voice settings -->
     <string name="settings_tts_engine_title">Mesin suara</string>
-    <string name="settings_tts_engine_description">Gemini terdengar jauh lebih alami daripada suara perangkat tetapi membutuhkan panggilan jaringan saat berbicara dan menggunakan kunci API Anda untuk sintesis (satu panggilan singkat per ClothesCast yang dibacakan). Beralih ke suara perangkat jika Gemini gagal.</string>
+    <string name="settings_tts_engine_description">Gemini terdengar jauh lebih alami tetapi membutuhkan kunci API.</string>
     <string name="settings_tts_engine_device">Perangkat (offline, gratis)</string>
     <string name="settings_tts_engine_gemini">Gemini (kualitas tinggi, online)</string>
     <string name="settings_tts_voice_label">Suara</string>

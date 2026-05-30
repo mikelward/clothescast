@@ -513,7 +513,7 @@ displayed label localizes.
     <string name="settings_location_manual_override">Yanlış konum mu? Manuel olarak ayarla</string>
     <string name="settings_location_manual_override_disclosure">Bir şehir seçmek otomatik algılamayı devre dışı bırakır.</string>
 
-    <string name="settings_tts_engine_description">Gemini, cihaz sesinden çok daha doğal geliyor ancak konuşurken ağ çağrısı gerektirir ve sentez için API anahtarınızı kullanır (konuşulan her ClothesCast başına bir kısa çağrı). Gemini başarısız olursa cihaz sesine geri döner.</string>
+    <string name="settings_tts_engine_description">Gemini çok daha doğal geliyor ancak bir API anahtarı gerektirir.</string>
 
     <string name="today_update_available_title">Güncelleme mevcut</string>
     <string name="today_update_available_body">Play Store\'da ClothesCast\'ın daha yeni bir sürümü var.</string>

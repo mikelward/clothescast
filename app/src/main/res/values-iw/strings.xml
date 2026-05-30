@@ -368,7 +368,7 @@ standard in Israeli digital communication.
     <string name="settings_delivery_tts_only">קריאה בקול בלבד</string>
     <string name="settings_delivery_notification_and_tts">התראה וקריאה בקול</string>
     <string name="settings_tts_engine_title">מנוע קול</string>
-    <string name="settings_tts_engine_description">Gemini נשמע טבעי בהרבה מקול המכשיר אך זקוק לחיבור רשת בזמן הדיבור. חוזר לקול המכשיר אם Gemini נכשל.</string>
+    <string name="settings_tts_engine_description">Gemini נשמע טבעי בהרבה אך זקוק למפתח API.</string>
     <string name="settings_tts_engine_device">מכשיר (ללא אינטרנט, חינם)</string>
     <string name="settings_tts_engine_gemini">Gemini (איכות גבוהה, מקוון)</string>
     <string name="settings_tts_voice_label">קול</string>

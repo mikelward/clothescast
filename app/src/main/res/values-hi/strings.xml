@@ -98,7 +98,7 @@ Not overridden by design:
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">आवाज़ इंजन</string>
-    <string name="settings_tts_engine_description">Gemini डिवाइस की आवाज़ से बहुत ज़्यादा स्वाभाविक लगती है लेकिन बोलते समय नेटवर्क कॉल की ज़रूरत होती है और संश्लेषण के लिए आपकी API कुंजी उपयोग होती है (हर ClothesCast पठन पर एक छोटी कॉल)। Gemini विफल होने पर डिवाइस की आवाज़ पर वापस आता है।</string>
+    <string name="settings_tts_engine_description">Gemini बहुत ज़्यादा स्वाभाविक लगती है लेकिन इसके लिए API कुंजी ज़रूरी है।</string>
     <string name="settings_tts_engine_device">डिवाइस (ऑफ़लाइन, मुफ़्त)</string>
     <string name="settings_tts_engine_gemini">Gemini (उच्च गुणवत्ता, ऑनलाइन)</string>
     <string name="settings_tts_voice_label">आवाज़</string>

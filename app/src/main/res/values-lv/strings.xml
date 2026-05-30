@@ -349,7 +349,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
 
     <!-- TTS settings -->
     <string name="settings_tts_engine_title">Balss dzinējs</string>
-    <string name="settings_tts_engine_description">Gemini izklausās daudz dabiskāk nekā ierīces balss, taču tam nepieciešams tīkla zvans runāšanas laikā un tiek izmantota tava API atslēga sintēzei (viens īss zvans katram skaļi nolasītajam ClothesCast). Ja Gemini neizdodas, izmanto ierīces balsi.</string>
+    <string name="settings_tts_engine_description">Gemini izklausās daudz dabiskāk, taču nepieciešama API atslēga.</string>
     <string name="settings_tts_engine_device">Ierīce (bezsaiste, bezmaksas)</string>
     <string name="settings_tts_engine_gemini">Gemini (augsta kvalitāte, tiešsaistē)</string>
     <string name="settings_tts_voice_label">Balss</string>

@@ -371,7 +371,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- TTS / Voice settings -->
     <string name="settings_tts_engine_title">เครื่องมือเสียง</string>
-    <string name="settings_tts_engine_description">Gemini ฟังดูเป็นธรรมชาติกว่าเสียงอุปกรณ์มาก แต่ต้องเชื่อมต่อเครือข่ายเมื่อพูดและใช้ API key ของคุณสำหรับการสังเคราะห์เสียง (การเรียกสั้นๆ หนึ่งครั้งต่อ ClothesCast ที่อ่านออกเสียง) จะสำรองเป็นเสียงอุปกรณ์หาก Gemini ล้มเหลว</string>
+    <string name="settings_tts_engine_description">Gemini ฟังดูเป็นธรรมชาติกว่ามาก แต่ต้องใช้ API key</string>
     <string name="settings_tts_engine_device">อุปกรณ์ (ออฟไลน์ ฟรี)</string>
     <string name="settings_tts_engine_gemini">Gemini (คุณภาพสูง ออนไลน์)</string>
     <string name="settings_tts_voice_label">เสียง</string>

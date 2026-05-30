@@ -576,7 +576,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_location_manual_override_disclosure">Ako odabereš grad, automatsko otkrivanje bit će onemogućeno.</string>
 
     <!-- TTS engine selection — description beneath the Gemini/Device toggle. -->
-    <string name="settings_tts_engine_description">Gemini zvuči puno prirodnije od glasa uređaja, ali zahtijeva mrežni poziv u trenutku govora i koristi tvoj API ključ za sintezu (jedan kratki poziv po izgovorenom ClothesCastu). Vraća se na glas uređaja ako Gemini zakaže.</string>
+    <string name="settings_tts_engine_description">Gemini zvuči puno prirodnije, ali zahtijeva API ključ.</string>
 
     <!-- In-app update banner: shown when a newer build is on the Play Store. -->
     <string name="today_update_available_title">Dostupno ažuriranje</string>

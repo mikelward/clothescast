@@ -386,7 +386,7 @@ What is NOT overridden, by design:
 
     <!-- Voice / TTS screen. -->
     <string name="settings_tts_engine_title">Гласов двигател</string>
-    <string name="settings_tts_engine_description">Gemini звучи много по-естествено от гласа на устройството, но изисква мрежово повикване при говорене и използва твоя API ключ за синтез (едно кратко повикване за всеки произнесен ClothesCast). Преминава към гласа на устройството, ако Gemini не успее.</string>
+    <string name="settings_tts_engine_description">Gemini звучи много по-естествено, но изисква API ключ.</string>
     <string name="settings_tts_engine_device">Устройство (офлайн, безплатно)</string>
     <string name="settings_tts_engine_gemini">Gemini (високо качество, онлайн)</string>
     <string name="settings_tts_voice_label">Глас</string>

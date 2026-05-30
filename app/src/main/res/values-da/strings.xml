@@ -105,7 +105,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_tts_engine_title">Talemaskine</string>
     <string name="settings_tts_engine_device">Enhed (offline, gratis)</string>
     <string name="settings_tts_engine_gemini">Gemini (høj kvalitet, online)</string>
-    <string name="settings_tts_engine_description">Gemini lyder betydeligt mere naturlig end enhedsstemmen, men kræver et netværkskald ved oplæsning og bruger din API-nøgle til syntesen (et kort kald pr. oplæst ClothesCast). Falder tilbage til enhedsstemmen, hvis Gemini fejler.</string>
+    <string name="settings_tts_engine_description">Gemini lyder meget mere naturligt, men kræver en API-nøgle.</string>
 
     <string name="settings_tts_voice_label">Stemme</string>
     <string name="settings_tts_voice_dismiss">Færdig</string>

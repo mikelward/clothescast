@@ -514,7 +514,7 @@ displayed label localizes.
     <string name="settings_location_manual_override">Väärä sijainti? Aseta manuaalisesti</string>
     <string name="settings_location_manual_override_disclosure">Kaupungin valitseminen poistaa automaattisen tunnistuksen käytöstä.</string>
 
-    <string name="settings_tts_engine_description">Gemini kuulostaa huomattavasti luonnollisemmalta kuin laitteen ääni, mutta vaatii verkkoyhteyden puhuessa ja käyttää API-avaintasi synteesiin (yksi lyhyt kutsu per puhuttu ClothesCast). Palaa laitteen ääneen, jos Gemini epäonnistuu.</string>
+    <string name="settings_tts_engine_description">Gemini kuulostaa paljon luonnollisemmalta, mutta vaatii API-avaimen.</string>
 
     <string name="today_update_available_title">Päivitys saatavilla</string>
     <string name="today_update_available_body">Uudempi versio ClothesCastista on saatavilla Play Storessa.</string>

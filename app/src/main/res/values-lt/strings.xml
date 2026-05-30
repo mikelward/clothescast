@@ -375,7 +375,7 @@ What is NOT overridden, by design:
 
     <!-- Voice engine. -->
     <string name="settings_tts_engine_title">Balso variklis</string>
-    <string name="settings_tts_engine_description">Gemini skamba daug natūraliau nei įrenginio balsas, tačiau kalbėjimo metu reikia tinklo skambučio ir naudoja API raktą sintezei (vienas trumpas skambutis kiekvienam ištartam ClothesCast). Jei Gemini nepavyksta, grįžtama prie įrenginio balso.</string>
+    <string name="settings_tts_engine_description">Gemini skamba daug natūraliau, tačiau reikia API rakto.</string>
     <string name="settings_tts_engine_device">Įrenginys (neprisijungus, nemokamas)</string>
     <string name="settings_tts_engine_gemini">Gemini (aukšta kokybė, prisijungus)</string>
     <string name="settings_tts_voice_label">Balsas</string>

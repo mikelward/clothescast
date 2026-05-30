@@ -382,7 +382,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
 
     <!-- Voice engine. -->
     <string name="settings_tts_engine_title">Glasovni mehanizem</string>
-    <string name="settings_tts_engine_description">Gemini zveni bistveno bolj naravno od glasu naprave, a potrebuje omrežni klic ob govoru in za sintezo porabi tvoj API-ključ (en kratek klic na glasno prebrani ClothesCast). Ob napaki Gemini se preklopi na glas naprave.</string>
+    <string name="settings_tts_engine_description">Gemini zveni bistveno bolj naravno, a potrebuje API-ključ.</string>
     <string name="settings_tts_engine_device">Naprava (brez omrežja, brezplačno)</string>
     <string name="settings_tts_engine_gemini">Gemini (visoka kakovost, z omrežjem)</string>
     <string name="settings_tts_voice_label">Glas</string>

@@ -105,7 +105,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_tts_engine_title">Röstmotor</string>
     <string name="settings_tts_engine_device">Enhet (offline, gratis)</string>
     <string name="settings_tts_engine_gemini">Gemini (hög kvalitet, online)</string>
-    <string name="settings_tts_engine_description">Gemini låter betydligt mer naturlig än enhetens röst, men kräver ett nätverksanrop vid uppläsning och använder din API-nyckel för syntesen (ett kort anrop per uppläst ClothesCast). Faller tillbaka på enhetens röst om Gemini misslyckas.</string>
+    <string name="settings_tts_engine_description">Gemini låter mycket mer naturlig, men kräver en API-nyckel.</string>
 
     <string name="settings_tts_voice_label">Röst</string>
     <string name="settings_tts_voice_dismiss">Klar</string>

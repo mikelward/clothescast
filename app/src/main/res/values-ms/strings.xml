@@ -367,7 +367,7 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <!-- TTS / Voice settings -->
     <string name="settings_tts_engine_title">Enjin suara</string>
-    <string name="settings_tts_engine_description">Gemini kedengaran lebih semula jadi daripada suara peranti tetapi memerlukan panggilan rangkaian semasa sebutan dan menggunakan kunci API anda untuk sintesis (satu panggilan pendek bagi setiap ClothesCast yang diucapkan). Kembali ke suara peranti jika Gemini gagal.</string>
+    <string name="settings_tts_engine_description">Gemini kedengaran jauh lebih semula jadi tetapi memerlukan kunci API.</string>
     <string name="settings_tts_engine_device">Peranti (luar talian, percuma)</string>
     <string name="settings_tts_engine_gemini">Gemini (berkualiti tinggi, dalam talian)</string>
     <string name="settings_tts_voice_label">Suara</string>

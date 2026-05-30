@@ -1620,53 +1620,19 @@ internal fun EmptyState(
     locationActionRequired: Boolean = false,
     onSetUpLocation: () -> Unit = {},
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 48.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            // Without a resolvable location nothing will ever generate, so the
-            // placeholder tells the user the actual blocker — "set up location"
-            // — instead of the generic "your ClothesCast will appear here", which
-            // reads as if one were merely pending. (The top-of-screen location
-            // banner is suppressed in this no-forecast case so the fix isn't
-            // prompted twice — see promoBannersToShow.)
-            if (locationActionRequired) {
-                Text(
-                    text = stringResource(R.string.today_empty_location_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                )
-                Text(
-                    text = stringResource(R.string.today_empty_location_subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                )
-                Button(onClick = onSetUpLocation) {
-                    Text(stringResource(R.string.today_location_required_action))
-                }
-            } else {
-                Text(
-                    text = stringResource(R.string.today_empty_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                )
-                Text(
-                    text = stringResource(R.string.today_empty_subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                )
-                Button(onClick = onRefresh, enabled = !isWorking) {
-                    Text(stringResource(R.string.today_fetch_now))
-                }
-            }
-        }
-    }
+    // The pre-first-cast state is a frosted preview of the real layout (outfit +
+    // insight + charts) with a "?" and a call to action over the top, so a
+    // brand-new user sees the shape of what they'll get rather than an empty
+    // screen. When no location is set up the CTA names that blocker (nothing can
+    // generate without it); otherwise it's a plain "Fetch now". (The
+    // top-of-screen location banner is suppressed in the no-forecast case so the
+    // fix isn't prompted twice — see promoBannersToShow.)
+    TodayEmptySkeleton(
+        onRefresh = onRefresh,
+        isWorking = isWorking,
+        locationActionRequired = locationActionRequired,
+        onSetUpLocation = onSetUpLocation,
+    )
 }
 
 /**

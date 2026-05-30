@@ -22,7 +22,6 @@ import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PreambleVisibility
-import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -41,6 +40,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -183,14 +183,30 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `rainAccessory defaults to NONE and round-trips all values`() = runTest {
-        subject.preferences.first().rainAccessory shouldBe RainAccessory.NONE
+    fun `umbrella migration materialises a rule for an opted-in user and drops the raw key`() = runTest {
+        // A user who had opted into the retired rain_accessory = UMBRELLA toggle
+        // before it became a clothes rule. The migration materialises an umbrella
+        // ClothesRule keyed on a precipitation-probability condition (appended to
+        // the stored defaults) and drops the raw rain_accessory key.
+        val rainAccessoryKey = stringPreferencesKey("rain_accessory")
+        val before = mutablePreferencesOf(rainAccessoryKey to "UMBRELLA")
 
-        subject.setRainAccessory(RainAccessory.UMBRELLA)
-        subject.preferences.first().rainAccessory shouldBe RainAccessory.UMBRELLA
+        val result = umbrellaRuleMigration().migrate(before)
 
-        subject.setRainAccessory(RainAccessory.NONE)
-        subject.preferences.first().rainAccessory shouldBe RainAccessory.NONE
+        val rules = decodeStoredRules(result[clothesRulesKey])
+        val umbrellaRule = rules.find { it.item == Garment.UMBRELLA }
+        umbrellaRule shouldNotBe null
+        (umbrellaRule!!.condition is ClothesRule.PrecipitationProbabilityAbove) shouldBe true
+        result[rainAccessoryKey] shouldBe null
+    }
+
+    @Test
+    fun `umbrella migration adds no umbrella rule when rain_accessory was never set`() = runTest {
+        // A user who never opted in: no umbrella rule is materialised, and the
+        // stored clothes-rules list is left untouched (null → read DEFAULTS).
+        val result = umbrellaRuleMigration().migrate(emptyPreferences())
+
+        result[clothesRulesKey] shouldBe null
     }
 
     @Test

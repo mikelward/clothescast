@@ -968,9 +968,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_format_bottoms_always">เสมอ</string>
     <string name="settings_format_bottoms_if_garments">หากมีเสื้อผ้า</string>
     <string name="settings_format_bottoms_never">ไม่เลย</string>
-    <string name="settings_format_rain_accessory_label">อุปกรณ์กันฝน</string>
-    <string name="settings_format_rain_accessory_none">ปิด</string>
-    <string name="settings_format_rain_accessory_umbrella">ร่ม</string>
     <string name="settings_format_period_preamble_label">คำนำ</string>
     <string name="settings_format_wear_preamble_label">คำนำ "สวม"</string>
     <string name="settings_format_preamble_always">เสมอ</string>

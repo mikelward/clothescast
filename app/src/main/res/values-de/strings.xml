@@ -1123,9 +1123,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_format_bottoms_always">Immer</string>
     <string name="settings_format_bottoms_if_garments">Wenn Kleidungsstücke</string>
     <string name="settings_format_bottoms_never">Nie</string>
-    <string name="settings_format_rain_accessory_label">Regenutensil</string>
-    <string name="settings_format_rain_accessory_none">Aus</string>
-    <string name="settings_format_rain_accessory_umbrella">Regenschirm</string>
     <string name="settings_format_period_preamble_label">Einleitung</string>
     <string name="settings_format_wear_preamble_label">„Tragen“-Einleitung</string>
     <string name="settings_format_preamble_always">Immer</string>

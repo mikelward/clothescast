@@ -692,9 +692,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_format_bottoms_always">Immer</string>
     <string name="settings_format_bottoms_if_garments">Wenn Kleidungsstücke</string>
     <string name="settings_format_bottoms_never">Nie</string>
-    <string name="settings_format_rain_accessory_label">Regenutensil</string>
-    <string name="settings_format_rain_accessory_none">Aus</string>
-    <string name="settings_format_rain_accessory_umbrella">Regenschirm</string>
 
     <!-- Fallback clothes rules — "If no rules match" section -->
     <string name="settings_default_outfit_title">Wenn keine Regel passt</string>

@@ -1089,9 +1089,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_format_bottoms_always">Πάντα</string>
     <string name="settings_format_bottoms_if_garments">Αν υπάρχουν είδη</string>
     <string name="settings_format_bottoms_never">Ποτέ</string>
-    <string name="settings_format_rain_accessory_label">Αξεσουάρ για βροχή</string>
-    <string name="settings_format_rain_accessory_none">Ανενεργό</string>
-    <string name="settings_format_rain_accessory_umbrella">Ομπρέλα</string>
     <string name="settings_format_period_preamble_label">Εισαγωγή</string>
     <string name="settings_format_wear_preamble_label">Εισαγωγή «Φόρεσε»</string>
     <string name="settings_format_preamble_always">Πάντα</string>

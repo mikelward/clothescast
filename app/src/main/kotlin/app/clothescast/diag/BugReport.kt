@@ -14,7 +14,6 @@ import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ForecastSnapshot
 import app.clothescast.core.domain.model.PreambleVisibility
-import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
@@ -115,11 +114,10 @@ object BugReport {
             val rangeFormat = prefs?.rangeFormat ?: RangeFormat.DEGREES
             val clothesFormat = prefs?.clothesFormat ?: ClothesFormat.ITEMS
             val bottomsFormat = prefs?.bottomsFormat ?: BottomsFormat.IF_GARMENTS
-            val rainAccessory = prefs?.rainAccessory ?: RainAccessory.NONE
             val periodPreamble = prefs?.periodPreamble ?: PreambleVisibility.ALWAYS
             val wearPreamble = prefs?.wearPreamble ?: PreambleVisibility.ALWAYS
-            appendInsight("This period", thisPeriod, thisSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory, periodPreamble, wearPreamble)
-            appendInsight("Next period", nextPeriod, nextSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory, periodPreamble, wearPreamble)
+            appendInsight("This period", thisPeriod, thisSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, periodPreamble, wearPreamble)
+            appendInsight("Next period", nextPeriod, nextSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, periodPreamble, wearPreamble)
             if (!crash.isNullOrBlank()) {
                 appendLine("--- Last crash (from previous run) ---")
                 appendLine(crash.trim())
@@ -152,7 +150,6 @@ object BugReport {
         appendLine("Clothes mention mode: ${prefs.clothesMentionMode}")
         appendLine("Range format: ${prefs.rangeFormat}")
         appendLine("Bottoms format: ${prefs.bottomsFormat}")
-        appendLine("Rain accessory: ${prefs.rainAccessory}")
         appendLine("Delta threshold: ${prefs.deltaThresholdC?.let { "${it}C" } ?: "off"}")
         appendLine("Delta format: ${prefs.deltaFormat}")
         appendLine("Delivery (morning): ${prefs.deliveryMode}")
@@ -275,7 +272,6 @@ object BugReport {
         rangeFormat: RangeFormat,
         clothesFormat: ClothesFormat,
         bottomsFormat: BottomsFormat,
-        rainAccessory: RainAccessory,
         periodPreamble: PreambleVisibility,
         wearPreamble: PreambleVisibility,
     ) {
@@ -284,7 +280,7 @@ object BugReport {
             appendLine("  (no cached insight)")
         } else {
             val prose = runCatching {
-                InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory, periodPreamble, wearPreamble)
+                InsightFormatter.forRegion(context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, periodPreamble, wearPreamble)
                     .format(insight.summary)
             }
                 .getOrElse { "(prose render failed: ${it.javaClass.simpleName})" }

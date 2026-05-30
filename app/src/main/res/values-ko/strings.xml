@@ -1122,9 +1122,6 @@ displayed label localizes.
     <string name="settings_format_bottoms_always">항상</string>
     <string name="settings_format_bottoms_if_garments">의류가 있을 때</string>
     <string name="settings_format_bottoms_never">사용 안 함</string>
-    <string name="settings_format_rain_accessory_label">우천용품</string>
-    <string name="settings_format_rain_accessory_none">끔</string>
-    <string name="settings_format_rain_accessory_umbrella">우산</string>
     <string name="settings_format_period_preamble_label">도입부</string>
     <string name="settings_format_wear_preamble_label">「입기」 도입부</string>
     <string name="settings_format_preamble_always">항상</string>

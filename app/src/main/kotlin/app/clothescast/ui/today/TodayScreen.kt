@@ -105,7 +105,6 @@ import app.clothescast.core.domain.model.consensusSunshineHoursFor
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.PreambleVisibility
-import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -1038,7 +1037,6 @@ private fun TodayPage(
             rangeFormat = state.rangeFormat,
             clothesFormat = state.clothesFormat,
             bottomsFormat = state.bottomsFormat,
-            rainAccessory = state.rainAccessory,
             periodPreamble = state.periodPreamble,
             wearPreamble = state.wearPreamble,
             showChevronRight = showChevronRight,
@@ -2077,12 +2075,6 @@ internal fun InsightCard(
      */
     bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
     /**
-     * Optional wet-weather accessory named alongside the rain mention.
-     * Defaults to [RainAccessory.NONE] so existing previews stay
-     * byte-identical.
-     */
-    rainAccessory: RainAccessory = RainAccessory.NONE,
-    /**
      * Where the period / wear preambles survive. Both default to
      * [PreambleVisibility.ALWAYS] (full prose) until the drop is translated
      * beyond English; the real card passes the user's choice in explicitly.
@@ -2141,11 +2133,11 @@ internal fun InsightCard(
 ) {
     val context = LocalContext.current
     val formatter = remember(
-        context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+        context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat,
         periodPreamble, wearPreamble,
     ) {
         InsightFormatter.forRegion(
-            context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+            context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat,
             periodPreamble, wearPreamble,
         )
     }

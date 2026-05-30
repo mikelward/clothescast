@@ -17,7 +17,6 @@ import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
-import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
@@ -1085,16 +1084,15 @@ class InsightFormatterTest {
     }
 
     // ---------------------------------------------------------------------
-    // RainAccessory.UMBRELLA — opts in to "bring an umbrella" alongside the
-    // existing rain mention. The accessory rides on the precip clause and
-    // the evening event tie-in (whenever a rain time is present); it's
-    // never injected when rain isn't being mentioned.
+    // Umbrella — a fired carried-accessory rule adds "bring an umbrella"
+    // alongside the existing rain mention. The accessory rides on the precip
+    // clause and the evening event tie-in (whenever a rain time is present);
+    // it's never injected when rain isn't being mentioned.
     // ---------------------------------------------------------------------
 
     private val umbrellaSubject = InsightFormatter.forContext(
         context,
         Locale.ENGLISH,
-        rainAccessory = RainAccessory.UMBRELLA,
     )
 
     @Test
@@ -1198,7 +1196,7 @@ class InsightFormatterTest {
 
     @Test
     fun `umbrella accessory promotes the bare-rain evening tie-in to the item-led template`() {
-        // With RainAccessory.NONE this path renders "Tonight, rain at 9pm.".
+        // Without an opted-in umbrella rule this path renders "Tonight, rain at 9pm.".
         // The umbrella choice promotes it to the item-led template with the
         // accessory as the lone item.
         umbrellaSubject.format(
@@ -1303,7 +1301,6 @@ class InsightFormatterTest {
         val germanUmbrellaSubject = InsightFormatter.forContext(
             context,
             Locale.GERMAN,
-            rainAccessory = RainAccessory.UMBRELLA,
         )
         germanUmbrellaSubject.format(
             summary(

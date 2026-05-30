@@ -1132,9 +1132,6 @@ label localises.
     <string name="settings_format_bottoms_always">總是</string>
     <string name="settings_format_bottoms_if_garments">有衣物時</string>
     <string name="settings_format_bottoms_never">從不</string>
-    <string name="settings_format_rain_accessory_label">雨具</string>
-    <string name="settings_format_rain_accessory_none">關閉</string>
-    <string name="settings_format_rain_accessory_umbrella">雨傘</string>
     <string name="settings_format_period_preamble_label">開場語</string>
     <string name="settings_format_wear_preamble_label">「穿」的開場語</string>
     <string name="settings_format_preamble_always">總是</string>

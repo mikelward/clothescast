@@ -996,9 +996,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_format_bottoms_always">Alltid</string>
     <string name="settings_format_bottoms_if_garments">Vid plagg</string>
     <string name="settings_format_bottoms_never">Aldrig</string>
-    <string name="settings_format_rain_accessory_label">Regnaccessoar</string>
-    <string name="settings_format_rain_accessory_none">Av</string>
-    <string name="settings_format_rain_accessory_umbrella">Paraply</string>
     <string name="settings_format_period_preamble_label">Inledning</string>
     <string name="settings_format_wear_preamble_label">\"Ta på\"-inledning</string>
     <string name="settings_format_preamble_always">Alltid</string>

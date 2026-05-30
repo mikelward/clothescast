@@ -944,9 +944,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_format_bottoms_always">Mereu</string>
     <string name="settings_format_bottoms_if_garments">Dacă există articole</string>
     <string name="settings_format_bottoms_never">Niciodată</string>
-    <string name="settings_format_rain_accessory_label">Accesoriu pentru ploaie</string>
-    <string name="settings_format_rain_accessory_none">Oprit</string>
-    <string name="settings_format_rain_accessory_umbrella">Umbrelă</string>
     <string name="settings_format_period_preamble_label">Introducere</string>
     <string name="settings_format_wear_preamble_label">Introducere „Poartă"</string>
     <string name="settings_format_preamble_always">Mereu</string>

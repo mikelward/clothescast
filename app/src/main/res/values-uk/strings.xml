@@ -964,9 +964,6 @@ only the displayed label localizes.
     <string name="settings_format_bottoms_always">Завжди</string>
     <string name="settings_format_bottoms_if_garments">Якщо є верх</string>
     <string name="settings_format_bottoms_never">Ніколи</string>
-    <string name="settings_format_rain_accessory_label">Аксесуар від дощу</string>
-    <string name="settings_format_rain_accessory_none">Вимк.</string>
-    <string name="settings_format_rain_accessory_umbrella">Парасоля</string>
     <string name="settings_format_period_preamble_label">Вступ</string>
     <string name="settings_format_wear_preamble_label">Вступ «Одягніть»</string>
     <string name="settings_format_preamble_always">Завжди</string>

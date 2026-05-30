@@ -975,9 +975,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_format_bottoms_always">Vždy</string>
     <string name="settings_format_bottoms_if_garments">Pokud jsou kusy</string>
     <string name="settings_format_bottoms_never">Nikdy</string>
-    <string name="settings_format_rain_accessory_label">Doplněk pro déšť</string>
-    <string name="settings_format_rain_accessory_none">Vypnuto</string>
-    <string name="settings_format_rain_accessory_umbrella">Deštník</string>
     <string name="settings_format_period_preamble_label">Úvod</string>
     <string name="settings_format_wear_preamble_label">Úvod „Obleč si"</string>
     <string name="settings_format_preamble_always">Vždy</string>

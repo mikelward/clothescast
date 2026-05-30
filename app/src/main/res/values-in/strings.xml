@@ -968,9 +968,6 @@ to values/strings.xml (English).
     <string name="settings_format_bottoms_always">Selalu</string>
     <string name="settings_format_bottoms_if_garments">Jika ada pakaian</string>
     <string name="settings_format_bottoms_never">Tidak pernah</string>
-    <string name="settings_format_rain_accessory_label">Aksesori hujan</string>
-    <string name="settings_format_rain_accessory_none">Mati</string>
-    <string name="settings_format_rain_accessory_umbrella">Payung</string>
     <string name="settings_format_period_preamble_label">Pembuka</string>
     <string name="settings_format_wear_preamble_label">Pembuka "Kenakan"</string>
     <string name="settings_format_preamble_always">Selalu</string>

@@ -289,25 +289,6 @@ enum class BottomsFormat { ALWAYS, IF_GARMENTS, NEVER }
 enum class ClothesMentionMode { ALWAYS, IF_CHANGED, NEVER }
 
 /**
- * Optional wet-weather accessory the user wants named alongside the rain mention.
- *
- *  - [NONE] (default) keeps the historical behaviour — the precip clause names
- *    rain but never an accessory, and `ClothesRule.DEFAULTS` ships no umbrella
- *    rule.
- *  - [UMBRELLA] folds "bring an umbrella" into both the morning precip clause
- *    and the evening event tie-in whenever rain is detected at or above the
- *    POSSIBLE threshold (≥ 30%).
- *
- * The enum shape leaves room to grow (rain jacket, hood, rain boots, …) without
- * a DataStore migration. Until then the dropdown ships only NONE / UMBRELLA.
- *
- * TODO(rain-accessory-tiers): support different accessories for different
- *  probability tiers (e.g. umbrella ≥ 30%, rain jacket ≥ 70%) by storing a
- *  list of (threshold, accessory) pairs rather than a single enum.
- */
-enum class RainAccessory { NONE, UMBRELLA }
-
-/**
  * Where a leading sentence fragment is allowed to survive. Used by two
  * independent insight controls:
  *  - the **period preamble** ("Today, it will be" / "Tonight, it will be") that
@@ -791,14 +772,6 @@ data class UserPreferences(
      * layer-count mode.
      */
     val bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
-    /**
-     * Optional wet-weather accessory named alongside the rain mention in both
-     * the morning precip clause and the evening event tie-in. Defaults to
-     * [RainAccessory.NONE] so existing installs see byte-identical prose; the
-     * setting opts in to "bring an umbrella." See [RainAccessory] and
-     * [InsightFormatter].
-     */
-    val rainAccessory: RainAccessory = RainAccessory.NONE,
     /**
      * Where the period preamble ("Today, it will be" / "Tonight, it will be")
      * fronting the temperature sentence is allowed to survive. See

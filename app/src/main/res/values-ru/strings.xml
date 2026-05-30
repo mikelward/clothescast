@@ -1021,9 +1021,6 @@ only the displayed label localizes.
     <string name="settings_format_bottoms_always">Всегда</string>
     <string name="settings_format_bottoms_if_garments">Если есть верх</string>
     <string name="settings_format_bottoms_never">Никогда</string>
-    <string name="settings_format_rain_accessory_label">Аксессуар от дождя</string>
-    <string name="settings_format_rain_accessory_none">Выкл.</string>
-    <string name="settings_format_rain_accessory_umbrella">Зонт</string>
     <string name="settings_format_period_preamble_label">Вступление</string>
     <string name="settings_format_wear_preamble_label">Вступление «Надень»</string>
     <string name="settings_format_preamble_always">Всегда</string>

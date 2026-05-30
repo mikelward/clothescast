@@ -45,7 +45,6 @@ import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
-import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
@@ -133,7 +132,6 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             rangeFormat = state.rangeFormat,
             clothesFormat = state.clothesFormat,
             bottomsFormat = state.bottomsFormat,
-            rainAccessory = state.rainAccessory,
             deltaThresholdC = state.deltaThresholdC,
             deltaFormat = state.deltaFormat,
             clothesMentionMode = state.clothesMentionMode,
@@ -146,7 +144,6 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             onSetRangeFormat = viewModel::setRangeFormat,
             onSetClothesFormat = viewModel::setClothesFormat,
             onSetBottomsFormat = viewModel::setBottomsFormat,
-            onSetRainAccessory = viewModel::setRainAccessory,
             onSetDeltaThresholdC = viewModel::setDeltaThresholdC,
             onSetDeltaFormat = viewModel::setDeltaFormat,
             onSetClothesMentionMode = viewModel::setClothesMentionMode,
@@ -161,7 +158,6 @@ internal fun FormatContent(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
     bottomsFormat: BottomsFormat,
-    rainAccessory: RainAccessory,
     deltaThresholdC: Double?,
     deltaFormat: DeltaFormat,
     clothesMentionMode: ClothesMentionMode,
@@ -174,7 +170,6 @@ internal fun FormatContent(
     onSetRangeFormat: (RangeFormat) -> Unit,
     onSetClothesFormat: (ClothesFormat) -> Unit,
     onSetBottomsFormat: (BottomsFormat) -> Unit,
-    onSetRainAccessory: (RainAccessory) -> Unit,
     onSetDeltaThresholdC: (Double?) -> Unit,
     onSetDeltaFormat: (DeltaFormat) -> Unit,
     onSetClothesMentionMode: (ClothesMentionMode) -> Unit,
@@ -198,7 +193,6 @@ internal fun FormatContent(
                 rangeFormat,
                 clothesFormat,
                 bottomsFormat,
-                rainAccessory,
                 deltaThresholdC,
                 deltaFormat,
                 clothesMentionMode,
@@ -214,7 +208,6 @@ internal fun FormatContent(
                 rangeFormat,
                 clothesFormat,
                 bottomsFormat,
-                rainAccessory,
             )
             SectionCard(title = stringResource(R.string.settings_format_what_to_say)) {
                 // Ordered to match the insight itself: lead-in, then the
@@ -308,7 +301,6 @@ private fun PreviewCard(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
     bottomsFormat: BottomsFormat,
-    rainAccessory: RainAccessory,
     deltaThresholdC: Double?,
     deltaFormat: DeltaFormat,
     clothesMentionMode: ClothesMentionMode,
@@ -317,11 +309,11 @@ private fun PreviewCard(
 ) {
     val context = LocalContext.current
     val formatter = remember(
-        context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+        context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat,
         periodPreamble, wearPreamble,
     ) {
         InsightFormatter.forRegion(
-            context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+            context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat,
             periodPreamble, wearPreamble,
         )
     }
@@ -399,15 +391,14 @@ private fun CurrentForecastPreviewCard(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
     bottomsFormat: BottomsFormat,
-    rainAccessory: RainAccessory,
 ) {
     val context = LocalContext.current
     val formatter = remember(
-        context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+        context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat,
         periodPreamble, wearPreamble,
     ) {
         InsightFormatter.forRegion(
-            context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+            context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat,
             periodPreamble, wearPreamble,
         )
     }

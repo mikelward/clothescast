@@ -112,3 +112,31 @@ internal fun ClothingJeansPreview() {
 internal fun ClothingLongPantsPreview() {
     ClothingDrawableFrame(R.drawable.ic_outfit_long_pants, "long pants")
 }
+
+@Preview(name = "Clothing · gloves", widthDp = 360)
+@Composable
+internal fun ClothingGlovesPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_gloves, "gloves")
+}
+
+@Preview(name = "Clothing · thick jacket + gloves", widthDp = 360)
+@Composable
+internal fun ClothingThickJacketWithGlovesPreview() {
+    Surface(color = Color(0xFFF5F5F5)) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxWidth().padding(24.dp),
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_outfit_thick_jacket),
+                contentDescription = "thick jacket",
+                modifier = Modifier.size(160.dp),
+            )
+            Image(
+                painter = painterResource(id = R.drawable.ic_outfit_gloves),
+                contentDescription = "gloves",
+                modifier = Modifier.size(160.dp),
+            )
+        }
+    }
+}

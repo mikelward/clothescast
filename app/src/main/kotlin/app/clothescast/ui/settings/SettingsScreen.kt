@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.R
+import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.tts.toJavaLocale
 import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.LocalTimeFormat
@@ -121,9 +122,30 @@ internal fun SettingsRootPage(
             items = items,
             padding = padding,
             onOpenLocation = onOpenLocation,
+            notificationBannerVisible = notificationBannerNeeded(
+                dailyEnabled = state.dailyEnabled,
+                deliveryMode = state.deliveryMode,
+                tonightEnabled = state.tonightEnabled,
+                tonightDeliveryMode = state.tonightDeliveryMode,
+            ),
         )
     }
 }
+
+/**
+ * Whether the settings-root notification-permission banner is relevant: true
+ * when at least one enabled delivery slot posts a notification. When every
+ * enabled slot is silent / TTS-only (or both slots are off) the permission
+ * isn't needed, so the banner stays hidden.
+ */
+internal fun notificationBannerNeeded(
+    dailyEnabled: Boolean,
+    deliveryMode: DeliveryMode,
+    tonightEnabled: Boolean,
+    tonightDeliveryMode: DeliveryMode,
+): Boolean =
+    (dailyEnabled && deliveryMode.usesNotification()) ||
+        (tonightEnabled && tonightDeliveryMode.usesNotification())
 
 @Composable
 internal fun SchedulePage(
@@ -415,6 +437,7 @@ internal fun SettingsRoot(
     items: List<SettingsMenuItem>,
     padding: PaddingValues,
     onOpenLocation: () -> Unit,
+    notificationBannerVisible: Boolean = false,
 ) {
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
@@ -429,7 +452,13 @@ internal fun SettingsRoot(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            NotificationPermissionBanner()
+            // Only nudge for notification permission when a delivery slot that
+            // actually posts a notification is enabled — otherwise the card's
+            // "post tomorrow morning" promise would be untrue (the schedule is
+            // off, e.g. the user declined at onboarding, and the Today schedule
+            // promo card is the right nudge instead). The banner self-hides once
+            // granted / on pre-Android-13.
+            if (notificationBannerVisible) NotificationPermissionBanner()
             // Surface a missing always-on grant from the settings root too so the
             // user sees the broken state without having to drill into Location.
             // Tapping the card deep-links into Location where the launcher and

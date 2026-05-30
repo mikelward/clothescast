@@ -505,6 +505,10 @@ private fun DeliveryMode.toChannels(): Pair<Boolean, Boolean> = when (this) {
     DeliveryMode.NOTIFICATION_AND_TTS -> true to true
 }
 
+/** True when this delivery mode posts a notification (so it needs the permission). */
+internal fun DeliveryMode.usesNotification(): Boolean =
+    this == DeliveryMode.NOTIFICATION_ONLY || this == DeliveryMode.NOTIFICATION_AND_TTS
+
 private fun deliveryModeOf(notify: Boolean, tts: Boolean): DeliveryMode = when {
     notify && tts -> DeliveryMode.NOTIFICATION_AND_TTS
     notify -> DeliveryMode.NOTIFICATION_ONLY

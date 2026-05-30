@@ -33,6 +33,7 @@ import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.locale.AppLocale
 import app.clothescast.location.LocationResolver
+import app.clothescast.notification.NotificationPermission
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.renderOutfitCard
 import app.clothescast.ui.onboarding.OnboardingScreen
@@ -164,20 +165,24 @@ fun ClothesCastNavHost(
                         FetchAndNotifyWorker.enqueueLocationCacheRefresh(context)
                     },
                     workManager = WorkManager.getInstance(app),
+                    rearmAlarm = app.dailyAlarmScheduler::schedule,
+                    cancelAlarm = app.dailyAlarmScheduler::cancel,
                 ),
             )
-            // Both footer buttons finish onboarding and land on Today — the
-            // schedule slot is on by default now, so there's no schedule step
-            // to "Continue" into; the Today "Automatic ClothesCasts" promo
-            // covers schedule discovery instead. First-run auto-fetch so the
-            // user lands on a populated Today screen instead of the empty state
-            // and immediately sees what the app produces. Silent so the screen
-            // they're already looking at fills in without a duplicate
-            // notification chime or TTS playback on top. If location isn't
-            // resolvable the worker fails silently and the location prompt at
-            // the top of the banner stack takes over — the user has the next
-            // step in either case.
+            // Both footer buttons finish onboarding and land on Today. The
+            // morning slot's default tracks the notification-permission outcome:
+            // granted (or not required) keeps it on, declined turns it off so we
+            // don't schedule a cast the OS would only drop — the Today schedule
+            // promo card then covers turning it back on (and re-requesting the
+            // permission just-in-time). First-run auto-fetch so the user lands on
+            // a populated Today screen instead of the empty state and immediately
+            // sees what the app produces. Silent so the screen they're already
+            // looking at fills in without a duplicate notification chime or TTS
+            // playback on top. If location isn't resolvable the worker fails
+            // silently and the location prompt at the top of the banner stack
+            // takes over — the user has the next step in either case.
             val finishOnboarding: () -> Unit = {
+                onboarding.applyMorningSlotDefault(NotificationPermission.isGranted(context))
                 FetchAndNotifyWorker.enqueueOnboardingRefresh(app)
                 nav.navigate(TodayRoute()) {
                     popUpTo(nav.graph.id) { inclusive = true }

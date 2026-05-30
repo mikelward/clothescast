@@ -91,6 +91,10 @@ internal fun SettingsRootPreview() {
             },
             padding = PaddingValues(0.dp),
             onOpenLocation = {},
+            // Render the permission banner in this snapshot — captured with
+            // POST_NOTIFICATIONS denied — to cover the "slot on, permission
+            // missing" recovery state.
+            notificationBannerVisible = true,
         )
     }
 }

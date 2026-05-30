@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
+import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -55,6 +58,14 @@ class OnboardingViewModel(
      * stays permanently false.
      */
     private val workManager: WorkManager? = null,
+    /**
+     * Arms / cancels the morning alarm so [applyMorningSlotDefault] reconciles
+     * the slot armed at app start without the ViewModel depending on Android's
+     * AlarmManager directly. No-op defaults keep pure-JVM tests Android-free,
+     * mirroring `SettingsViewModel`'s `rearmAlarm` / `cancelAlarm` hooks.
+     */
+    private val rearmAlarm: (Schedule, ForecastPeriod) -> Unit = { _, _ -> },
+    private val cancelAlarm: (ForecastPeriod) -> Unit = {},
 ) : ViewModel() {
 
     private val locationDetecting = MutableStateFlow(false)
@@ -120,6 +131,28 @@ class OnboardingViewModel(
         viewModelScope.launch { settingsRepository.setLocation(location) }
     }
 
+    /**
+     * Pins the morning slot to the notification-permission outcome as the user
+     * leaves onboarding. Granted — or not required, e.g. pre-Android-13 / TV,
+     * where [NotificationPermission.isGranted] reports true — keeps the
+     * on-by-default daily cast; declined turns it off so we don't schedule a
+     * morning cast the OS would only drop. The Today schedule promo card then
+     * nudges the user to turn it back on, which re-requests the permission
+     * just-in-time. Reconciles the alarm armed at app start the same way
+     * [SettingsViewModel.setDailyEnabled] does.
+     */
+    fun applyMorningSlotDefault(notificationGranted: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setDailyEnabled(notificationGranted)
+            val prefs = settingsRepository.preferences.first()
+            if (prefs.dailyEnabled) {
+                rearmAlarm(prefs.schedule, ForecastPeriod.TODAY)
+            } else {
+                cancelAlarm(ForecastPeriod.TODAY)
+            }
+        }
+    }
+
     suspend fun searchLocations(query: String): List<Location> = geocodingClient.search(query)
 
     class Factory(
@@ -128,6 +161,8 @@ class OnboardingViewModel(
         private val geocodingClient: OpenMeteoGeocodingClient,
         private val refreshLocationCache: () -> Unit,
         private val workManager: WorkManager?,
+        private val rearmAlarm: (Schedule, ForecastPeriod) -> Unit,
+        private val cancelAlarm: (ForecastPeriod) -> Unit,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -140,6 +175,8 @@ class OnboardingViewModel(
                 geocodingClient = geocodingClient,
                 refreshLocationCache = refreshLocationCache,
                 workManager = workManager,
+                rearmAlarm = rearmAlarm,
+                cancelAlarm = cancelAlarm,
             ) as T
         }
     }

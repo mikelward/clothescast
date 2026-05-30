@@ -442,4 +442,54 @@ class OutfitSuggestionTest {
             coatOnly,
         ).top.facts.single().ruleItem shouldBe Garment.COAT
     }
+
+    @Test
+    fun `a firing gloves rule sets the hands slot`() {
+        // The gloves default fires below 4°C: a freezing day lights the optional
+        // hands tier alongside the top/bottom pick.
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = -2.0, feelsLikeMax = 2.0),
+            rules,
+        )
+        outfit.hands shouldBe OutfitSuggestion.Hands.GLOVES
+    }
+
+    @Test
+    fun `hands stays null when no gloves rule fires`() {
+        // Hands is opt-in with no fallback: a cool-but-not-freezing day leaves it
+        // null rather than promoting to a default the way top/bottom do, so no
+        // glove icon shows when the user hasn't earned one.
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 8.0, feelsLikeMax = 14.0),
+            rules,
+        )
+        outfit.hands shouldBe null
+    }
+
+    @Test
+    fun `fromTriggeredOutfit carries the hands slot from a firing gloves rule`() {
+        // The icon derives from the same TriggeredOutfit the prose uses, so a
+        // firing gloves rule has to reach the hands slot through this path too.
+        val triggered = TriggeredOutfit(
+            rules = listOf(
+                ClothesRule(Garment.COAT, ClothesRule.TemperatureBelow(5.0)),
+                ClothesRule(Garment.GLOVES, ClothesRule.TemperatureBelow(4.0)),
+            ),
+            fallbacks = emptyList(),
+        )
+        OutfitSuggestion.fromTriggeredOutfit(triggered) shouldBe OutfitSuggestion(
+            OutfitSuggestion.Top.THICK_COAT,
+            OutfitSuggestion.Bottom.LONG_PANTS,
+            OutfitSuggestion.Hands.GLOVES,
+        )
+    }
+
+    @Test
+    fun `hands itemKey round-trips through the garment catalog`() {
+        // The slot's catalog key must resolve back to the HANDS-slot garment so
+        // prose / persistence / a future glove icon all key off the same string.
+        OutfitSuggestion.Hands.entries.forEach { hands ->
+            Garment.fromKey(hands.itemKey())?.slot shouldBe Garment.Slot.HANDS
+        }
+    }
 }

@@ -882,24 +882,13 @@ class InsightFormatter(
     fun formatTime(time: LocalTime): String = spokenTime(time)
 
     /**
-     * "Peak 60% at 3pm" — the localized peak-rain row shown on the Nest-Hub
-     * outfit card and the Today screen's precipitation card. Uses the same
-     * resources / locale as the prose so the card matches what the prose
-     * would say for the same hour.
+     * Just the peak chance-of-rain percentage ("60%") for the compact conditions
+     * strip (widget + Cast / Home Assistant card), where the droplet glyph already
+     * says "rain" and the time would only crowd the row. The same "${pct}%" value
+     * formatting the precipitation chart readout uses.
      */
-    fun formatPeakRain(percent: Int, time: LocalTime): String =
-        resources.getString(R.string.today_precipitation_peak, percent, spokenTime(time))
-
-    /**
-     * As [formatPeakRain] but without the "Peak" lead-in — for the compact
-     * conditions widget where the surrounding context already reads as "the
-     * chance of rain", so "60% at 3pm" carries the meaning in fewer pixels.
-     * Reuses the generic [R.string.today_chart_readout] "value at time" pattern
-     * (and the same "${pct}%" value formatting the precipitation chart readout
-     * uses) rather than a bespoke string.
-     */
-    fun formatPeakRainShort(percent: Int, time: LocalTime): String =
-        resources.getString(R.string.today_chart_readout, "$percent%", spokenTime(time))
+    fun formatPeakRainShort(percent: Int): String =
+        resources.getString(R.string.conditions_rain_pct, percent)
 
     /**
      * 24h LocalTime → spoken form for TTS and display.

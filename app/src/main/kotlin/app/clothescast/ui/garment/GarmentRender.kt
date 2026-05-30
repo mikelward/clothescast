@@ -296,24 +296,22 @@ private data class BitmapCacheKey(
  * │  [        ]  A warm one today. Wear a    │    column, not the icons
  * │  [bot icon]  t-shirt and shorts. High…   │
  * │  [        ]                               │
- * │              🌡 18–28°C                   │  ← feels-like low/high
- * │              💧 Peak 60% at 3pm           │  ← only when peak ≥ 30%
+ * │              🌡 18–28°C   🌬 35 km/h      │  ← feels-like low/high · wind
+ * │              💧 60% at 3pm  ☀ UV 8        │  ← rain ≥ 30% · UV ≥ 6
  * └──────────────────────────────────────────┘
  * ```
  * [header] is the localised, mixed-case "Today's ClothesCast" string from
- * resources — the renderer uppercases it. [tempLine] and [rainLine] are
- * pre-formatted by the caller (units and "3pm"-style time come from
- * `InsightFormatter`). Pass `rainLine = null` to hide the rain row.
+ * resources — the renderer uppercases it. [info] carries the pre-formatted
+ * temperature / rain / wind / UV lines and fill levels (from
+ * [outfitCardInfoLines]); the rain row is hidden when `rainLine` is null and
+ * the wind / UV second column appears only when those are notable.
  */
 internal fun renderOutfitCard(
     context: Context,
     outfit: OutfitSuggestion,
     header: String,
     prose: String,
-    tempLine: String,
-    rainLine: String?,
-    tempFillFraction: Float,
-    rainFillFraction: Float?,
+    info: OutfitCardInfoLines,
     topColors: Map<OutfitSuggestion.Top, Long>,
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
     topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
@@ -376,44 +374,34 @@ internal fun renderOutfitCard(
         canvas.restore()
     }
 
-    // Info rows anchored to the bottom of the right column so they sit in
-    // the same place whether the prose is short or long.
+    // A single conditions row anchored to the bottom of the right column —
+    // same horizontal strip the home-screen widget shows, drawn here onto the
+    // card so every surface reads identically. Temp + rain are the common case;
+    // wind / UV extend the row only when notable. Left-aligned with the prose;
+    // shrinks to fit the column width when all four cells are present.
     val infoPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-        typeface = Typeface.DEFAULT
+        typeface = Typeface.DEFAULT_BOLD
         textSize = INFO_PX
-        color = 0xFF444444.toInt()
+        color = 0xFF1A1A1A.toInt()
     }
-    val rainRowTop = CARD_H - INFO_BOTTOM_PAD - INFO_ICON_PX
-    val tempRowTop = rainRowTop - INFO_ICON_PX - INFO_ROW_GAP_PX
-    drawInfoRow(canvas, tempLine, proseX, tempRowTop, infoPaint) { c, ix, iy ->
-        drawThermometerIcon(c, ix, iy, INFO_ICON_PX, tempFillFraction)
-    }
-    if (rainLine != null && rainFillFraction != null) {
-        drawInfoRow(canvas, rainLine, proseX, rainRowTop, infoPaint) { c, ix, iy ->
-            drawRainDropletIcon(c, ix, iy, INFO_ICON_PX, rainFillFraction)
-        }
-    }
+    val rowCenterY = (CARD_H - INFO_BOTTOM_PAD - INFO_ICON_PX / 2).toFloat()
+    drawConditionsRow(
+        canvas = canvas,
+        cells = conditionsCells(info),
+        areaX = proseX.toFloat(),
+        areaWidth = (CARD_W - proseX - CARD_PAD).toFloat(),
+        centerY = rowCenterY,
+        baseIconPx = INFO_ICON_PX,
+        textPaint = infoPaint,
+        interiorArgb = android.graphics.Color.WHITE,
+        outlineArgb = INFO_ICON_OUTLINE_ARGB,
+        center = false,
+    )
 
     val out = ByteArrayOutputStream()
     bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
     bmp.recycle()
     return out.toByteArray()
-}
-
-private fun drawInfoRow(
-    canvas: Canvas,
-    text: String,
-    x: Int,
-    y: Int,
-    paint: TextPaint,
-    drawIcon: (Canvas, Int, Int) -> Unit,
-) {
-    drawIcon(canvas, x, y)
-    // Centre the text vertically against the icon.
-    val textX = x + INFO_ICON_PX + INFO_ICON_GAP_PX
-    val textCenterY = y + INFO_ICON_PX / 2f
-    val textBaseline = textCenterY - (paint.fontMetrics.ascent + paint.fontMetrics.descent) / 2f
-    canvas.drawText(text, textX.toFloat(), textBaseline, paint)
 }
 
 // Material thermostat / thermometer silhouette in a 24×24 viewport. Same
@@ -634,21 +622,19 @@ private fun drawSolidGlyph(
  */
 internal data class OutfitCardInfoLines(
     val tempLine: String,
-    val rainLine: String?,
     // Day's high feels-like mapped over 0..40 °C, clamped — drives the
     // thermometer's red liquid height. Calculation runs in °C regardless of
     // the user's display unit (which only affects [tempLine]).
     val tempFillFraction: Float,
     // Peak precipitation probability / 100 — drives the droplet's blue fill.
-    // Null whenever [rainLine] is null (row hidden below the 30 % threshold).
+    // Null whenever [rainLineShort] is null (cell hidden below the 30 % threshold).
     val rainFillFraction: Float?,
-    // Compact peak-rain label without the "Peak" lead-in, for the conditions
-    // widget. Null whenever [rainLine] is. Default null for card callers.
+    // Peak chance-of-rain label ("60%"), shown on the conditions strip. Null
+    // below the 30 % threshold. Default null for callers that don't compute it.
     val rainLineShort: String? = null,
-    // Conditions-widget wind / UV cells. Each label is null unless the period's
-    // peak is "notable" (>= WIND_NOTABLE_KMH / UV_NOTABLE); the raw maximum is
-    // carried alongside so the renderer can pick the Beaufort / WHO scale tint.
-    // Defaults keep the outfit card (which ignores these) unaffected.
+    // Wind / UV cells. Each label is null unless the period's peak is "notable"
+    // (>= WIND_NOTABLE_KMH / UV_NOTABLE); the raw maximum rides alongside so the
+    // renderer can pick the Beaufort / WHO scale tint.
     val windLabel: String? = null,
     val windMaxKmh: Double? = null,
     val uvLabel: String? = null,
@@ -677,15 +663,12 @@ internal fun outfitCardInfoLines(
     val tempFillFraction = highC?.let { thermometerFillFractionFor(it) } ?: 0f
     val peak = hourly.maxByOrNull { it.precipitationProbabilityPct }
     val peakPct = peak?.precipitationProbabilityPct?.roundToInt()
-    val rainLine: String?
     val rainLineShort: String?
     val rainFillFraction: Float?
     if (peak != null && peakPct != null && peakPct >= RAIN_PEAK_THRESHOLD_PCT) {
-        rainLine = formatter.formatPeakRain(peakPct, peak.time)
-        rainLineShort = formatter.formatPeakRainShort(peakPct, peak.time)
+        rainLineShort = formatter.formatPeakRainShort(peakPct)
         rainFillFraction = (peakPct / 100f).coerceIn(0f, 1f)
     } else {
-        rainLine = null
         rainLineShort = null
         rainFillFraction = null
     }
@@ -704,7 +687,6 @@ internal fun outfitCardInfoLines(
     val uvLabel = uvMax?.let { context.getString(R.string.conditions_uv, it.roundToInt()) }
     return OutfitCardInfoLines(
         tempLine = tempLine,
-        rainLine = rainLine,
         rainLineShort = rainLineShort,
         tempFillFraction = tempFillFraction,
         rainFillFraction = rainFillFraction,
@@ -777,7 +759,67 @@ internal fun renderConditionsStripBitmap(
         textSize = h * STRIP_TEXT_HEIGHT_FRACTION
         typeface = Typeface.DEFAULT_BOLD
     }
-    var iconPx = (h * STRIP_ICON_HEIGHT_FRACTION).roundToInt().coerceAtLeast(1)
+    drawConditionsRow(
+        canvas = canvas,
+        cells = cells,
+        areaX = w * (1f - STRIP_USABLE_WIDTH_FRACTION) / 2f,
+        areaWidth = w * STRIP_USABLE_WIDTH_FRACTION,
+        centerY = h / 2f,
+        baseIconPx = (h * STRIP_ICON_HEIGHT_FRACTION).roundToInt().coerceAtLeast(1),
+        textPaint = textPaint,
+        interiorArgb = interiorArgb,
+        outlineArgb = outlineArgb,
+        center = true,
+    )
+    conditionsStripCache[key] = bitmap
+    return bitmap
+}
+
+/**
+ * Builds the conditions cells from computed [info]: thermometer always, then
+ * the rain / wind / UV cells when their label is present (gated upstream in
+ * [outfitCardInfoLines]). Wind / UV carry their Beaufort / WHO scale tint.
+ * Shared by the widget strip and the outfit card so every surface reads the
+ * same set in the same order.
+ */
+internal fun conditionsCells(info: OutfitCardInfoLines): List<ConditionsCell> = buildList {
+    add(ConditionsCell(ConditionsGlyph.THERMOMETER, info.tempLine, fillFraction = info.tempFillFraction))
+    info.rainLineShort?.let {
+        add(ConditionsCell(ConditionsGlyph.DROPLET, it, fillFraction = info.rainFillFraction ?: 0f))
+    }
+    info.windLabel?.let {
+        add(ConditionsCell(ConditionsGlyph.WIND, it, tintArgb = windScaleColorArgb(info.windMaxKmh ?: 0.0)))
+    }
+    info.uvLabel?.let {
+        add(ConditionsCell(ConditionsGlyph.UV, it, tintArgb = uvScaleColorArgb(info.uvMax ?: 0.0)))
+    }
+}
+
+/**
+ * Lays [cells] in one horizontal row, glyph + label per cell, vertically
+ * centred on [centerY]. The row fits within [areaWidth] starting at [areaX]:
+ * icon, text and gaps shrink together (down to [STRIP_MIN_FIT_SCALE]) if the
+ * content would overflow, and the row is centred within the area when [center]
+ * is set (the widget) or left-aligned when not (the outfit card). [baseIconPx]
+ * is the unscaled glyph size; [textPaint] supplies the unscaled text size /
+ * colour and is scaled in place. Solid wind / UV glyphs use [ConditionsCell.tintArgb];
+ * thermometer / droplet fill against [interiorArgb] with an [outlineArgb] edge.
+ * The single source of truth for the strip's look across every surface.
+ */
+private fun drawConditionsRow(
+    canvas: Canvas,
+    cells: List<ConditionsCell>,
+    areaX: Float,
+    areaWidth: Float,
+    centerY: Float,
+    baseIconPx: Int,
+    textPaint: TextPaint,
+    interiorArgb: Int,
+    outlineArgb: Int,
+    center: Boolean,
+) {
+    if (cells.isEmpty()) return
+    var iconPx = baseIconPx
     var iconGap = iconPx * STRIP_ICON_TEXT_GAP_FRACTION
     var sectionGap = iconPx * STRIP_SECTION_GAP_FRACTION
 
@@ -785,10 +827,7 @@ internal fun renderConditionsStripBitmap(
         cells.sumOf { (iconPx + iconGap + textPaint.measureText(it.label)).toDouble() }.toFloat() +
             sectionGap * (cells.size - 1)
 
-    // Shrink icon + text together so a full row (thermometer + rain + wind + UV)
-    // on a short-wide cell scales down to fit rather than clipping off the edge.
-    val usableWidth = w * STRIP_USABLE_WIDTH_FRACTION
-    val fitScale = (usableWidth / contentWidth()).coerceIn(STRIP_MIN_FIT_SCALE, 1f)
+    val fitScale = (areaWidth / contentWidth()).coerceIn(STRIP_MIN_FIT_SCALE, 1f)
     if (fitScale < 1f) {
         iconPx = (iconPx * fitScale).roundToInt().coerceAtLeast(1)
         iconGap *= fitScale
@@ -798,10 +837,10 @@ internal fun renderConditionsStripBitmap(
 
     val cellWidths = cells.map { iconPx + iconGap + textPaint.measureText(it.label) }
     val totalWidth = cellWidths.sum() + sectionGap * (cells.size - 1)
-    var x = ((w - totalWidth) / 2f).coerceAtLeast(0f)
-    val iconTop = (h - iconPx) / 2
-    val textCenterY = iconTop + iconPx / 2f
-    val baseline = textCenterY - (textPaint.fontMetrics.ascent + textPaint.fontMetrics.descent) / 2f
+    var x = if (center) areaX + (areaWidth - totalWidth) / 2f else areaX
+    x = x.coerceAtLeast(areaX)
+    val iconTop = (centerY - iconPx / 2f).roundToInt()
+    val baseline = centerY - (textPaint.fontMetrics.ascent + textPaint.fontMetrics.descent) / 2f
 
     cells.forEachIndexed { i, cell ->
         val ix = x.roundToInt()
@@ -818,9 +857,6 @@ internal fun renderConditionsStripBitmap(
         canvas.drawText(cell.label, ix + iconPx + iconGap, baseline, textPaint)
         x += cellWidths[i] + sectionGap
     }
-
-    conditionsStripCache[key] = bitmap
-    return bitmap
 }
 
 private data class ConditionsStripCacheKey(
@@ -954,10 +990,8 @@ private const val PROSE_PX = 22f
 private const val PROSE_MAX_LINES = 7  // leaves room for the two info rows
 private const val INFO_PX = 26f        // larger than prose so it reads at-a-glance
 private const val INFO_ICON_PX = 36
-private const val INFO_ICON_GAP_PX = 12
-private const val INFO_ROW_GAP_PX = 10
-// Bottom-of-card padding for the info rows — larger than CARD_PAD so the
-// rain / temp lines clear the Nest Hub's bezel + bottom status overlay.
+// Bottom-of-card padding for the info row — larger than CARD_PAD so the
+// conditions row clears the Nest Hub's bezel + bottom status overlay.
 private const val INFO_BOTTOM_PAD = 60
 
 /**

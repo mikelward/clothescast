@@ -2,10 +2,9 @@
 
 A daily weather-insight app for Android. Each morning, at a time you set,
 ClothesCast posts a one-sentence comparative summary —
-_"4°C warmer than yesterday, leave the jumper at home"_ or _"50% chance
-of rain at 3pm — take an umbrella"_ — derived on-device from yesterday's
-actual weather, today's forecast, and the clothes thresholds you've
-configured.
+_"4°C warmer than yesterday, leave the sweater at home"_ or _"Rain likely
+around 3pm."_ — derived on-device from yesterday's actual weather, today's
+forecast, and the clothes thresholds you've configured.
 
 It can also speak the insight aloud — through the platform TTS engine, or
 through an online voice (Gemini) if you'd rather a more natural read.
@@ -14,12 +13,12 @@ See [PRIVACY.md](PRIVACY.md) for what data leaves the device and when.
 
 ## Status
 
-Working v1: full daily-insight pipeline (Open-Meteo → on-device rendering
-→ notification +/- TTS), Compose Settings UI for everything (location,
-schedule, delivery mode, units, clothes rules, voice engine, API keys,
-calendar tie-in), runtime permission UX, boot/timezone/locale alarm
-re-arm, and a debug "Fire insight now" button for testing without waiting
-until the scheduled time.
+Working v1: full ClothesCast pipeline (Open-Meteo → on-device rendering →
+notification, phone TTS, Cast, MQTT, widgets, and cached Today refreshes),
+Compose Settings UI for location, schedule, delivery toggles, units, clothes
+rules, voice, API keys, calendar tie-in, smart-home outputs, privacy, and
+telemetry, runtime permission UX, boot/timezone/locale alarm re-arm, and debug
+/ manual actions for testing without waiting until the scheduled time.
 
 Distribution: every push to `main` ships a signed AAB to the Play Store
 internal track for testers, and a debug APK is also available from the CI
@@ -42,9 +41,9 @@ artifact (see below) for sideload installs.
   (default, fully on-device), or an online voice via the Gemini API.
   Online engines are BYOK; keys are encrypted on-device via Tink +
   Android Keystore + DataStore Preferences.
-- **Optional calendar tie-in**: with `READ_CALENDAR` granted, the daily
-  sentence can name the event the clothes advice is for —
-  _"Bring an umbrella for your 3pm meeting."_
+- **Optional calendar tie-in**: with `READ_CALENDAR` granted, calendar
+  events can gate event-relevant weather advice without turning event titles
+  into notification, voice, MQTT, or Cast content.
 - **Optional device location**: with `ACCESS_COARSE_LOCATION` granted, the
   worker uses the phone's coarse location at notify-time instead of the
   city you picked.
@@ -58,7 +57,7 @@ artifact (see below) for sideload installs.
 |---|---|
 | `:core:domain` | Pure-Kotlin models, use cases (insight rendering, clothes rules), repository interfaces |
 | `:core:data` | Open-Meteo forecast + geocoding clients, Gemini TTS client, parser tests |
-| `:app` | Compose UI, manifest, receivers, worker, alarm scheduler, DI, platform TTS, calendar reader, encrypted key store |
+| `:app` | Compose UI, manifest, receivers, worker, alarm scheduler, DI, platform TTS, calendar reader, encrypted key store, widgets, Cast, MQTT, telemetry |
 
 ## Installing on a phone
 
@@ -90,15 +89,15 @@ Three options, in roughly increasing order of friction:
    falls back to London.
 3. **Schedule**: pick a time and the days of the week you want the
    notification.
-4. **Clothes rules** (optional): the defaults (`jumper`, `jacket`,
-   `shorts`, `umbrella`) are a sensible starting set. Add your own — e.g.
-   `gloves` when temperature drops below 5°C.
+4. **Clothes rules** (optional): the defaults (`sweater`, `jacket`,
+   `coat`, `gloves`, `shorts`) are a sensible starting set. Add your own or
+   tune the thresholds to match how you dress.
 5. **Voice** (optional): the platform TTS engine works out of the box. To
    use a more natural online voice, pick Gemini in Settings → Voice and
    paste your API key in Settings → API Keys.
 6. **Calendar tie-in** (optional): toggle _Use calendar events_ in
-   Settings → Data Sources and grant `READ_CALENDAR` to let the daily
-   sentence reference an overlapping event by name.
+   Settings → Data Sources and grant `READ_CALENDAR` to let calendar presence
+   gate event-relevant advice without putting event titles in rendered output.
 7. **Verify**: tap the **Fire insight now** button (About → Debug card,
    only in debug builds) to exercise the full pipeline without waiting
    until the scheduled time.
@@ -127,12 +126,14 @@ suppresses it is a vendor-side override.
 
 ## Roadmap
 
-- **v0.x** _(now)_: daily insight notification + TTS (device / Gemini),
-  full Settings UI, optional calendar tie-in and device location,
-  sideload via CI artifacts, Firebase App Distribution for testers,
-  Play Store internal track for testers.
-- **v1.0**: Play Store listing + public release (production track);
-  24-hour cost cap on online TTS calls.
-- **v2.0**: hourly / 3-hourly forecast UI, Google Home integration.
+- **Recommendation tuning**: refine clothing advice with more real-world
+  forecast cases, including how humidity and wind should influence the
+  current feels-like-driven thresholds.
+- **More garments**: add wet-weather items and a broader everyday catalogue,
+  with matching drawables, editable defaults, and clear copy boundaries
+  between rain warnings and clothing advice.
+- **Gemini trial path**: explore a way for users to try Gemini voice without
+  bringing their own API key, such as a limited free trial, paid trial, or
+  other owner-funded quota with explicit cost caps and abuse controls.
 - **iOS**: deferred until a Mac is available _and_ a small APNs backend
   is in place — iOS cannot self-wake at a precise local time.

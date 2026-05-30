@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="96dp" android:height="96dp" android:viewportWidth="96" android:viewportHeight="96">
+
+    <!-- Crook handle: a wooden cane hook the figure grips, drawn first so the
+         furled canopy's gathered top tucks over its base. -->
+    <path android:strokeColor="#4E342E" android:strokeWidth="5" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M48,45 L48,20 Q48,12 41,12 Q34,12 34,19" />
+
+    <!-- Furled canopy: gathered fabric at the top, bulging then tapering to a
+         soft point above the ferrule. -->
+    <path android:fillColor="#2D6CDF" android:strokeColor="#163F7E" android:strokeWidth="2.25" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M43,45 Q40,43 43,42 Q48,40 53,42 Q56,43 53,45 L57,62 Q58,71 50,80 L48,87 L46,80 Q38,71 39,62 Z" />
+
+    <!-- Ferrule tip: the metal spike poking out below the furled point. -->
+    <path android:fillColor="#546E7A" android:strokeColor="#37474F" android:strokeWidth="2" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M45,85 L48,93 L51,85 Z" />
+
+    <!-- Two furl lines hinting at the rolled-up panels. -->
+    <path android:strokeColor="#163F7E" android:strokeWidth="2" android:strokeLineCap="round" android:pathData="M46,45 Q44,64 48,85" />
+    <path android:strokeColor="#163F7E" android:strokeWidth="2" android:strokeLineCap="round" android:pathData="M50,45 Q52,64 48,85" />
+
+    <!-- Closure strap wrapping the bundle — a strong "it's closed" cue. -->
+    <path android:fillColor="#14366B" android:strokeColor="#0E2A55" android:strokeWidth="1.5" android:strokeLineJoin="round" android:pathData="M40,53 L56,53 Q58,55 56,57 L40,57 Q38,55 40,53 Z" />
+
+</vector>

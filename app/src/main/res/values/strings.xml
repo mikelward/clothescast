@@ -307,6 +307,12 @@
     <string name="today_failed_no_location">We couldn\'t get your location. Grant always-on location permission, or set a city in Settings.</string>
     <string name="today_failed_show_details">Show details</string>
     <string name="today_failed_hide_details">Hide details</string>
+    <!-- Top-of-page banners shown when a forecast was fetched but couldn't be
+         delivered to a smart-home destination. -->
+    <string name="today_mqtt_failed_title">Couldn\'t send to your smart home</string>
+    <string name="today_cast_failed_title">Couldn\'t cast to your display</string>
+    <string name="today_publish_failed_body">We\'ll try again on the next update.</string>
+    <string name="today_publish_failed_dismiss">Dismiss</string>
 
     <string name="today_location_required_title">Set up your location</string>
     <string name="today_location_required_body">ClothesCast needs to know where you are to fetch the forecast. Grant always-on location permission, or pick a city.</string>

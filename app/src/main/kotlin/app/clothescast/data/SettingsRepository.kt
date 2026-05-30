@@ -499,6 +499,8 @@ class SettingsRepository(
         val recordedAtMs: Long,
         val lastPublishedAtMs: Long = 0L,
         val lastFetchedAtMs: Long = 0L,
+        /** Mirrors [MqttPublishStatus.dismissedAtMs] for the cast destination. */
+        val dismissedAtMs: Long = 0L,
     )
 
     /** Null until the first cast attempt is recorded; thereafter always non-null. */
@@ -509,6 +511,7 @@ class SettingsRepository(
             recordedAtMs = ms,
             lastPublishedAtMs = prefs[CAST_LAST_PUBLISHED_AT_MS] ?: 0L,
             lastFetchedAtMs = prefs[CAST_LAST_FETCHED_AT_MS] ?: 0L,
+            dismissedAtMs = prefs[CAST_ERROR_DISMISSED_AT_MS] ?: 0L,
         )
     }
 
@@ -583,6 +586,15 @@ class SettingsRepository(
         val errorMessage: String?,
         val recordedAtMs: Long,
         val lastSuccessAtMs: Long = 0L,
+        /**
+         * Epoch-ms of the most recent error the user dismissed from the Today
+         * banner (0 = none dismissed). The banner hides while
+         * [recordedAtMs] <= [dismissedAtMs]; a strictly-newer failure
+         * ([recordedAtMs] > [dismissedAtMs]) shows again. Lets a user clear a
+         * stale failure that no scheduled run will ever retry, without
+         * suppressing a genuinely new one.
+         */
+        val dismissedAtMs: Long = 0L,
     )
 
     /**
@@ -597,6 +609,7 @@ class SettingsRepository(
             errorMessage = msg,
             recordedAtMs = ms,
             lastSuccessAtMs = prefs[MQTT_LAST_SUCCESS_AT_MS] ?: 0L,
+            dismissedAtMs = prefs[MQTT_ERROR_DISMISSED_AT_MS] ?: 0L,
         )
     }
 
@@ -615,6 +628,21 @@ class SettingsRepository(
                 prefs[MQTT_LAST_SUCCESS_AT_MS] = atMs
             }
         }
+    }
+
+    /**
+     * Records that the user dismissed the current MQTT publish error from the
+     * Today banner. Pass the [recordedAtMs] of the error they saw so any
+     * strictly-newer failure still surfaces. A success ([setMqttLastError] with
+     * a null message) doesn't touch this — the banner hides on null anyway.
+     */
+    suspend fun setMqttErrorDismissedAt(atMs: Long) {
+        dataStore.edit { it[MQTT_ERROR_DISMISSED_AT_MS] = atMs }
+    }
+
+    /** Mirrors [setMqttErrorDismissedAt] for the cast destination. */
+    suspend fun setCastErrorDismissedAt(atMs: Long) {
+        dataStore.edit { it[CAST_ERROR_DISMISSED_AT_MS] = atMs }
     }
 
     /**
@@ -1281,6 +1309,7 @@ class SettingsRepository(
         private val MQTT_LAST_ERROR_MSG = stringPreferencesKey("mqtt_last_error_msg")
         private val MQTT_LAST_ERROR_AT_MS = longPreferencesKey("mqtt_last_error_at_ms")
         private val MQTT_LAST_SUCCESS_AT_MS = longPreferencesKey("mqtt_last_success_at_ms")
+        private val MQTT_ERROR_DISMISSED_AT_MS = longPreferencesKey("mqtt_error_dismissed_at_ms")
         // "Smart-home bridge speaks, mute the phone" — the MQTT mirror of
         // [CAST_SKIP_PHONE_SPEECH]. Default true on first read (mirrors the
         // data-class default).
@@ -1302,6 +1331,7 @@ class SettingsRepository(
         // receiver→phone direction.
         private val CAST_LAST_PUBLISHED_AT_MS = longPreferencesKey("cast_last_published_at_ms")
         private val CAST_LAST_FETCHED_AT_MS = longPreferencesKey("cast_last_fetched_at_ms")
+        private val CAST_ERROR_DISMISSED_AT_MS = longPreferencesKey("cast_error_dismissed_at_ms")
         // Master switch for scheduled casting + per-period cast toggles +
         // the "smart display speaks, mute the phone" suppression. Stored
         // separately from CAST_ROUTE_ID so the user's picked display

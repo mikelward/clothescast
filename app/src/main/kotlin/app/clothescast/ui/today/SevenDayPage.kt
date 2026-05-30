@@ -127,6 +127,8 @@ internal fun SevenDayPage(
     onDismissPlayPromoCard: () -> Unit = {},
     onOpenVoice: () -> Unit = {},
     onDismissGeminiTtsPromoCard: () -> Unit = {},
+    onDismissMqttError: () -> Unit = {},
+    onDismissCastError: () -> Unit = {},
 ) {
     // Shared display settings come from [TodayState]; the chart deck and the
     // week-ahead headline below read these locals so sourcing them from state
@@ -231,6 +233,8 @@ internal fun SevenDayPage(
         onOpenVoice = onOpenVoice,
         onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
         onNavigateToClothes = onNavigateToClothes,
+        onDismissMqttError = onDismissMqttError,
+        onDismissCastError = onDismissCastError,
     ) {
         // Page header — same visual treatment as [InsightCard] on pages 0 / 1:
         // a 20.dp-padded Card with the chevron in a 28.dp slot on the left,

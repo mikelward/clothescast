@@ -1519,9 +1519,18 @@ internal fun glovesDefaultMigration(): DataMigration<Preferences> {
  * (their existing domain rules, or DEFAULTS, plus umbrella); otherwise
  * `parseRules`' `ifEmpty { DEFAULTS }` fallback would silently drop the
  * umbrella they'd opted into.
+ *
+ * Gated by the `umbrella_rule_migrated_v2` sentinel. Bumped from v1 to re-run
+ * once for users who migrated under v1 while the Format toggle still existed
+ * and still drove prose (the build between the migration landing and #840
+ * removing the toggle): that UI could write `rain_accessory = UMBRELLA` after
+ * v1 had already fired, stranding the opt-in once the key stopped being read.
+ * The re-run is idempotent for everyone else — v1 already removed the key for
+ * normal opt-ins, so it finds `rain_accessory` absent and no-ops, and it never
+ * resurrects an umbrella rule a user later deleted on purpose.
  */
 internal fun umbrellaRuleMigration(): DataMigration<Preferences> {
-    val migrated = booleanPreferencesKey("umbrella_rule_migrated_v1")
+    val migrated = booleanPreferencesKey("umbrella_rule_migrated_v2")
     val rainAccessory = stringPreferencesKey("rain_accessory")
     val clothesRules = stringPreferencesKey("clothes_rules_json")
     val json = Json { ignoreUnknownKeys = true }

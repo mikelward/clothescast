@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <!-- Leather outsole slab, drawn first so the upper rests on it. Toe right. -->
+    <path
+        android:fillColor="#4E342E"
+        android:strokeColor="#3E2723"
+        android:strokeWidth="2.25"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:pathData="M16,70 L84,70 Q90,70 89,75 Q88,79 82,79 L20,79 Q14,79 14,74 Q14,70 16,70 Z" />
+
+    <!-- Ankle-height leather upper: short shaft, then the instep sloping to the
+         toe. -->
+    <path
+        android:fillColor="#A1887F"
+        android:strokeColor="#5D4037"
+        android:strokeWidth="2.25"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:pathData="M20,70 L20,30 Q20,24 26,24 L36,24 Q40,24 40,30 L42,52 Q60,55 82,66 L82,70 Z" />
+
+    <!-- Pull tab looping up off the back collar. -->
+    <path
+        android:strokeColor="#5D4037"
+        android:strokeWidth="3"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:pathData="M28,24 Q26,16 33,16 Q40,16 38,24" />
+
+    <!-- Top-line stitch and two laces across the instep. -->
+    <path
+        android:strokeColor="#5D4037"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:pathData="M22,32 L40,33" />
+    <path
+        android:strokeColor="#5D4037"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M33,38 L43,40" />
+    <path
+        android:strokeColor="#5D4037"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M33,44 L44,46" />
+
+</vector>

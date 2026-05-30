@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <!-- One-piece rubber wellington: tall shaft, then the foot extending to a
+         rounded toe on the right. No separate sole — molded rubber is unbroken. -->
+    <path
+        android:fillColor="#1E88E5"
+        android:strokeColor="#1565C0"
+        android:strokeWidth="2.25"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:pathData="M18,24 Q18,16 26,16 L42,16 Q48,16 48,23 L48,57 Q68,58 84,64 Q90,65 90,70 Q90,74 84,74 L24,74 Q18,74 18,67 Z" />
+
+    <!-- Adjustment band wrapping the top of the shaft. -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="M18,30 L48,30 L48,37 L18,37 Z" />
+
+    <!-- Buckle on the band — the classic welly cue. -->
+    <path
+        android:fillColor="#FFCA28"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1"
+        android:strokeLineJoin="round"
+        android:pathData="M40,29 L47,29 L47,38 L40,38 Z" />
+
+    <!-- Glossy highlight down the shaft — wet-look rubber. -->
+    <path
+        android:fillColor="#64B5F6"
+        android:pathData="M24,42 Q24,40 27,40 Q30,40 30,42 L30,64 Q30,66 27,66 Q24,66 24,64 Z" />
+
+</vector>

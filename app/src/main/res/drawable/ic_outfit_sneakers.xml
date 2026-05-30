@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <!-- Rubber midsole/outsole slab, drawn first so the canvas upper sits on its
+         top edge. Toe points right, heel at the left. -->
+    <path
+        android:fillColor="#E0E0E0"
+        android:strokeColor="#9E9E9E"
+        android:strokeWidth="2.25"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:pathData="M12,70 L86,70 Q92,70 91,76 Q90,80 84,80 L16,80 Q10,80 10,74 Q10,70 12,70 Z" />
+
+    <!-- Low-top canvas upper: vertical heel, a dipped collar opening, then the
+         vamp sloping down to a rounded toe. -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#9E9E9E"
+        android:strokeWidth="2.25"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:pathData="M16,70 L16,52 Q16,46 22,46 L31,46 Q35,54 42,54 L54,54 Q72,55 85,68 L85,70 Z" />
+
+    <!-- Midsole pinstripe — the seam where upper meets foam, a sneaker tell. -->
+    <path
+        android:strokeColor="#BDBDBD"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:pathData="M16,66 Q50,62 85,67" />
+
+    <!-- Two laces across the throat. -->
+    <path
+        android:strokeColor="#BDBDBD"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M39,50 L47,53" />
+    <path
+        android:strokeColor="#BDBDBD"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M42,48 L50,51" />
+
+</vector>

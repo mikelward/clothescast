@@ -119,6 +119,42 @@ internal fun ClothingGlovesPreview() {
     ClothingDrawableFrame(R.drawable.ic_outfit_gloves, "gloves")
 }
 
+@Preview(name = "Clothing · sneakers", widthDp = 360)
+@Composable
+internal fun ClothingSneakersPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_sneakers, "sneakers")
+}
+
+@Preview(name = "Clothing · boots", widthDp = 360)
+@Composable
+internal fun ClothingBootsPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_boots, "boots")
+}
+
+@Preview(name = "Clothing · winter boots", widthDp = 360)
+@Composable
+internal fun ClothingWinterBootsPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_winter_boots, "winter boots")
+}
+
+@Preview(name = "Clothing · waterproof boots", widthDp = 360)
+@Composable
+internal fun ClothingWaterproofBootsPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_waterproof_boots, "waterproof boots")
+}
+
+@Preview(name = "Clothing · sandals", widthDp = 360)
+@Composable
+internal fun ClothingSandalsPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_sandals, "sandals")
+}
+
+@Preview(name = "Clothing · flip-flops", widthDp = 360)
+@Composable
+internal fun ClothingFlipFlopsPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_flipflops, "flip-flops")
+}
+
 @Preview(name = "Clothing · thick jacket + gloves", widthDp = 360)
 @Composable
 internal fun ClothingThickJacketWithGlovesPreview() {

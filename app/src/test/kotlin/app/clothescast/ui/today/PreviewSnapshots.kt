@@ -13,6 +13,8 @@ import app.clothescast.notification.NotificationIconTShirtPreview
 import app.clothescast.notification.NotificationIconThickJacketPreview
 import app.clothescast.ui.LauncherIconDevPreview
 import app.clothescast.ui.LauncherIconPreview
+import app.clothescast.ui.garment.ClothingBootsPreview
+import app.clothescast.ui.garment.ClothingFlipFlopsPreview
 import app.clothescast.ui.garment.ClothingJeansPreview
 import app.clothescast.ui.garment.ClothingLongPantsPreview
 import app.clothescast.ui.garment.ClothingLongSkirtPreview
@@ -20,13 +22,17 @@ import app.clothescast.ui.garment.ClothingGlovesPreview
 import app.clothescast.ui.garment.ClothingThickJacketWithGlovesPreview
 import app.clothescast.ui.garment.ClothingPoloPreview
 import app.clothescast.ui.garment.ClothingPufferJacketPreview
+import app.clothescast.ui.garment.ClothingSandalsPreview
 import app.clothescast.ui.garment.ClothingShortSkirtPreview
 import app.clothescast.ui.garment.ClothingShortsPreview
+import app.clothescast.ui.garment.ClothingSneakersPreview
 import app.clothescast.ui.garment.ClothingSweaterPreview
 import app.clothescast.ui.garment.ClothingTShirtPreview
 import app.clothescast.ui.garment.ClothingThickCoatPreview
 import app.clothescast.ui.garment.ClothingThickJacketPreview
 import app.clothescast.ui.garment.ClothingThinJacketPreview
+import app.clothescast.ui.garment.ClothingWaterproofBootsPreview
+import app.clothescast.ui.garment.ClothingWinterBootsPreview
 import app.clothescast.ui.onboarding.OnboardingCompletePreview
 import app.clothescast.ui.onboarding.OnboardingFreshPreview
 import app.clothescast.ui.onboarding.OnboardingPartialPreview
@@ -567,6 +573,12 @@ class PreviewSnapshots {
     @Test fun clothing_long_pants() = capture { ClothingLongPantsPreview() }
     @Test fun clothing_gloves() = capture { ClothingGlovesPreview() }
     @Test fun clothing_thick_jacket_with_gloves() = capture { ClothingThickJacketWithGlovesPreview() }
+    @Test fun clothing_sneakers() = capture { ClothingSneakersPreview() }
+    @Test fun clothing_boots() = capture { ClothingBootsPreview() }
+    @Test fun clothing_winter_boots() = capture { ClothingWinterBootsPreview() }
+    @Test fun clothing_waterproof_boots() = capture { ClothingWaterproofBootsPreview() }
+    @Test fun clothing_sandals() = capture { ClothingSandalsPreview() }
+    @Test fun clothing_flip_flops() = capture { ClothingFlipFlopsPreview() }
 
     @Test fun widget_today_tshirt_shorts() = capture { WidgetTodayTShirtShortsPreview() }
     @Test fun widget_tonight_sweater_pants() = capture { WidgetTonightSweaterPantsPreview() }

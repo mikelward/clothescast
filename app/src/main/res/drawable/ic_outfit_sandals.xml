@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <!-- Open footbed slab, drawn first. Same tan leather as the shorts so the
+         catalog palette stays consistent. Toe right. -->
+    <path
+        android:fillColor="#C8B27A"
+        android:strokeColor="#8D743F"
+        android:strokeWidth="2.25"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:pathData="M12,66 L84,66 Q90,66 90,71 Q90,76 84,76 L16,76 Q10,76 10,71 Q10,66 12,66 Z" />
+
+    <!-- Front instep strap arching over the foot. -->
+    <path
+        android:fillColor="#8D743F"
+        android:strokeColor="#6E5A2F"
+        android:strokeWidth="1.5"
+        android:strokeLineJoin="round"
+        android:pathData="M24,66 Q26,48 36,48 Q46,48 48,66 L42,66 Q41,54 36,54 Q31,54 30,66 Z" />
+
+    <!-- Rear ankle strap. -->
+    <path
+        android:fillColor="#8D743F"
+        android:strokeColor="#6E5A2F"
+        android:strokeWidth="1.5"
+        android:strokeLineJoin="round"
+        android:pathData="M52,66 Q54,46 64,46 Q74,46 76,66 L70,66 Q69,53 64,53 Q59,53 58,66 Z" />
+
+</vector>

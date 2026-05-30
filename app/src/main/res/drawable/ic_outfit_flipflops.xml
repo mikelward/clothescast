@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+    <!-- Thin rubber sole — flatter than the sandal's footbed, the flip-flop tell.
+         Toe right. -->
+    <path
+        android:fillColor="#26A69A"
+        android:strokeColor="#00796B"
+        android:strokeWidth="2.25"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:pathData="M14,68 L82,68 Q88,68 88,71 Q88,75 82,75 L16,75 Q10,75 10,71 Q10,68 14,68 Z" />
+
+    <!-- Y-thong rising from the sole to the toe post — a single chevron strap,
+         the thing that separates a flip-flop from a strappy sandal. -->
+    <path
+        android:fillColor="#00796B"
+        android:strokeColor="#00695C"
+        android:strokeWidth="1.5"
+        android:strokeLineJoin="round"
+        android:pathData="M48,68 L60,50 L72,68 L66,68 L60,58 L54,68 Z" />
+
+</vector>

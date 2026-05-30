@@ -6,23 +6,24 @@ import org.junit.jupiter.api.Test
 class HomeSectionTest {
     @Test
     fun `normalize keeps a complete order unchanged`() {
-        HomeSection.normalize(listOf(HomeSection.INSIGHT, HomeSection.OUTFIT)) shouldBe
-            listOf(HomeSection.INSIGHT, HomeSection.OUTFIT)
+        HomeSection.normalize(
+            listOf(HomeSection.INSIGHT, HomeSection.OUTFIT, HomeSection.CONDITIONS),
+        ) shouldBe listOf(HomeSection.INSIGHT, HomeSection.OUTFIT, HomeSection.CONDITIONS)
     }
 
     @Test
     fun `normalize appends missing sections in default order`() {
-        // A stored order that only named OUTFIT (e.g. predates INSIGHT being
-        // reorderable) gets INSIGHT appended at the end.
+        // A stored order that only named OUTFIT (e.g. predates CONDITIONS and
+        // INSIGHT being reorderable) gets the rest appended in DEFAULTS order.
         HomeSection.normalize(listOf(HomeSection.OUTFIT)) shouldBe
-            listOf(HomeSection.OUTFIT, HomeSection.INSIGHT)
+            listOf(HomeSection.OUTFIT, HomeSection.CONDITIONS, HomeSection.INSIGHT)
     }
 
     @Test
     fun `normalize de-duplicates while preserving first occurrence`() {
         HomeSection.normalize(
             listOf(HomeSection.INSIGHT, HomeSection.INSIGHT, HomeSection.OUTFIT),
-        ) shouldBe listOf(HomeSection.INSIGHT, HomeSection.OUTFIT)
+        ) shouldBe listOf(HomeSection.INSIGHT, HomeSection.OUTFIT, HomeSection.CONDITIONS)
     }
 
     @Test

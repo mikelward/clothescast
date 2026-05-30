@@ -1091,12 +1091,15 @@ enum class ForecastModel(val openMeteoId: String) {
 enum class ColorPalette { RAINBOW, ACCESSIBLE, HIGHLIGHTER }
 
 /**
- * A reorderable section on the home-screen pager pages. For now only the
- * outfit preview and the forecast insight are user-orderable; the enum is the
- * single source of truth for "which sections exist", so adding a value here
- * (and rendering it in `HomePageScaffold`) is all a future section needs.
+ * A reorderable section on the home-screen pager pages. The conditions strip,
+ * the outfit preview, and the forecast insight are all user-orderable; the enum
+ * is the single source of truth for "which sections exist", so adding a value
+ * here (and rendering it in `HomePageScaffold`) is all a future section needs.
  */
 enum class HomeSection {
+    /** The at-a-glance conditions strip (feels-like, rain, and notable wind / UV). */
+    CONDITIONS,
+
     /** The today + tonight outfit-preview row. */
     OUTFIT,
 
@@ -1105,8 +1108,8 @@ enum class HomeSection {
     ;
 
     companion object {
-        /** Canonical out-of-the-box order: outfit above the insight. */
-        val DEFAULTS: List<HomeSection> = listOf(OUTFIT, INSIGHT)
+        /** Canonical out-of-the-box order: conditions, then outfit, then insight. */
+        val DEFAULTS: List<HomeSection> = listOf(CONDITIONS, OUTFIT, INSIGHT)
 
         /**
          * Normalize a stored / partial order into a complete, valid one:

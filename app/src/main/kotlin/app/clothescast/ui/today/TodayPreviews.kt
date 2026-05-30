@@ -2070,6 +2070,23 @@ private val SAMPLE_WEEK_OUTFIT_INSIGHT = SAMPLE_INSIGHT.copy(
     period = ForecastPeriod.TODAY,
     outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
     nextOutfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+    // Hourly series feeds the conditions strip pinned to the top of every home
+    // page. Tuned so all four indicators clear their "notable" thresholds —
+    // feels-like 9–18°, a 60% afternoon rain peak, 32 km/h wind, UV 7 — so the
+    // 7-day-page snapshots cover the strip's full band in light and dark.
+    hourly = (8..18).map { h ->
+        val feels = 9.0 + (18.0 - 9.0) * ((h - 8) / 10.0)
+        HourlyForecast(
+            time = LocalTime.of(h, 0),
+            temperatureC = feels + 1.0,
+            feelsLikeC = feels,
+            precipitationProbabilityPct = if (h == 15) 60.0 else 10.0,
+            condition = if (h == 15) WeatherCondition.RAIN else WeatherCondition.CLEAR,
+            precipitationMm = if (h == 15) 0.8 else 0.0,
+            windSpeedKmh = if (h == 15) 32.0 else 18.0,
+            uvIndex = if (h in 11..14) 7.0 else 3.0,
+        )
+    },
 )
 
 // The 7-day previews render the full [HomePageScaffold], whose banner stack

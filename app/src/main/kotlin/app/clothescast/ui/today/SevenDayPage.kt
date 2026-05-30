@@ -236,6 +236,11 @@ internal fun SevenDayPage(
         onDismissMqttError = onDismissMqttError,
         onDismissCastError = onDismissCastError,
         homeSectionOrder = state.homeSectionOrder,
+        // The conditions strip on this page summarizes the whole 7-day window:
+        // [flatHourly] is every day's hourly stream, so the strip reads the
+        // week's feels-like range and its peak rain / wind / UV rather than
+        // repeating today's figures.
+        conditionsHourly = flatHourly,
         // The week-headline card is this page's "insight" section, so it
         // reorders against the outfit row exactly like the per-period insight
         // card does on pages 0 / 1 — keeping the outfit row at a consistent

@@ -210,6 +210,36 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `umbrella migration re-runs for users migrated under the v1 sentinel`() = runTest {
+        // The v1->v2 bump: a user who migrated while the Format toggle still
+        // existed (v1 set) must be re-evaluated, so a rain_accessory written
+        // after v1 fired isn't stranded once the key stops being read.
+        val v1 = booleanPreferencesKey("umbrella_rule_migrated_v1")
+        umbrellaRuleMigration().shouldMigrate(mutablePreferencesOf(v1 to true)) shouldBe true
+    }
+
+    @Test
+    fun `umbrella migration runs once, gated by its v2 sentinel`() = runTest {
+        val v2 = booleanPreferencesKey("umbrella_rule_migrated_v2")
+        umbrellaRuleMigration().shouldMigrate(mutablePreferencesOf(v2 to true)) shouldBe false
+    }
+
+    @Test
+    fun `umbrella migration rescues a rain_accessory opt-in stranded after the v1 run`() = runTest {
+        // Intermediate build: v1 already fired, then the still-present Format
+        // toggle wrote rain_accessory = UMBRELLA. The v2 re-run converts it.
+        val v1 = booleanPreferencesKey("umbrella_rule_migrated_v1")
+        val rainAccessoryKey = stringPreferencesKey("rain_accessory")
+        val before = mutablePreferencesOf(v1 to true, rainAccessoryKey to "UMBRELLA")
+
+        val result = umbrellaRuleMigration().migrate(before)
+
+        val umbrellaRule = decodeStoredRules(result[clothesRulesKey]).find { it.item == Garment.UMBRELLA }
+        umbrellaRule shouldNotBe null
+        result[rainAccessoryKey] shouldBe null
+    }
+
+    @Test
     fun `periodPreamble defaults to ALWAYS and round-trips all values`() = runTest {
         subject.preferences.first().periodPreamble shouldBe PreambleVisibility.ALWAYS
 

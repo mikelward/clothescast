@@ -604,7 +604,7 @@ label localizes.
 
     <!-- Voice screen — engine-picker description (Device vs Gemini
          trade-offs). -->
-    <string name="settings_tts_engine_description">Gemini 比设备语音听起来自然得多，但在朗读时需要网络通信，并使用你的 API 密钥进行合成（每次朗读一份 ClothesCast 约一次短请求）。Gemini 失败时会回退到设备语音。</string>
+    <string name="settings_tts_engine_description">Gemini 听起来自然得多，但需要 API 密钥。</string>
 
     <!-- Outfit card labels — additional garments not previously translated. -->
     <string name="today_outfit_top_polo">POLO 衫</string>

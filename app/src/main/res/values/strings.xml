@@ -776,7 +776,7 @@
     <string name="speech_setup_done">Done</string>
 
     <string name="settings_tts_engine_title">Voice engine</string>
-    <string name="settings_tts_engine_description">Gemini sounds much more natural than the device voice but needs a network call at speak-time and uses your API key for synthesis (one short call per spoken ClothesCast). Falls back to the device voice if Gemini fails.</string>
+    <string name="settings_tts_engine_description">Gemini sounds much more natural but needs an API key.</string>
     <string name="settings_tts_engine_device">Device (offline, free)</string>
     <string name="settings_tts_engine_gemini">Gemini (high quality, online)</string>
     <string name="settings_tts_voice_label">Voice</string>

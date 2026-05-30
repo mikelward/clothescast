@@ -578,7 +578,7 @@ label localises.
     <!-- Voice screen — engine-picker description, the device-voice
          sub-picker with auto / network / offline labels, and the
          Google-TTS install hint shown when the system has no engine. -->
-    <string name="settings_tts_engine_description">Gemini 比裝置語音聽起來自然得多，但在朗讀時需要網路通訊，並使用你的 API 金鑰進行合成（每次朗讀一份 ClothesCast 約一次短請求）。Gemini 失敗時會回退到裝置語音。</string>
+    <string name="settings_tts_engine_description">Gemini 聽起來自然得多，但需要 API 金鑰。</string>
 
     <string name="settings_tts_device_voice_label">裝置語音</string>
     <string name="settings_tts_device_voice_auto">自動（最適合口音）</string>

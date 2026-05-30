@@ -219,7 +219,7 @@ default English (matching values-pl / values-uk).
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">Glasovni mehanizam</string>
-    <string name="settings_tts_engine_description">Gemini zvuči mnogo prirodnije od glasa uređaja, ali zahteva mrežni poziv u trenutku govora i koristi tvoj API ključ za sintezu (jedan kratak poziv po izgovorenom ClothesCastu). Prelazi na glas uređaja ako Gemini zakaže.</string>
+    <string name="settings_tts_engine_description">Gemini zvuči mnogo prirodnije, ali zahteva API ključ.</string>
     <string name="settings_tts_engine_device">Uređaj (offline, besplatno)</string>
     <string name="settings_tts_engine_gemini">Gemini (visoki kvalitet, online)</string>
     <string name="settings_tts_voice_label">Glas</string>

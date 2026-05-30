@@ -110,7 +110,7 @@ only the displayed label localizes.
     <string name="settings_tts_engine_title">Голосовий рушій</string>
     <string name="settings_tts_engine_device">Пристрій (офлайн, безкоштовно)</string>
     <string name="settings_tts_engine_gemini">Gemini (висока якість, онлайн)</string>
-    <string name="settings_tts_engine_description">Gemini звучить значно природніше за голос пристрою, але потребує мережевого виклику під час озвучення та використовує ключ API для синтезу (один короткий виклик на кожен озвучений ClothesCast). Якщо Gemini недоступний, використовується голос пристрою.</string>
+    <string name="settings_tts_engine_description">Gemini звучить значно природніше, але потребує ключ API.</string>
 
     <string name="settings_tts_voice_label">Голос</string>
     <string name="settings_tts_voice_dismiss">Готово</string>

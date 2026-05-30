@@ -687,7 +687,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_api_key_gemini_header">Χρησιμοποίησε το Gemini για φωνές υψηλής ποιότητας.</string>
 
     <!-- Missing TTS engine description. -->
-    <string name="settings_tts_engine_description">Το Gemini ακούγεται πολύ πιο φυσικό από τη φωνή της συσκευής, αλλά χρειάζεται κλήση δικτύου τη στιγμή εκφώνησης και χρησιμοποιεί το API key σου για σύνθεση (μία σύντομη κλήση ανά εκφωνούμενο ClothesCast). Αν το Gemini αποτύχει, επιστρέφει στη φωνή της συσκευής.</string>
+    <string name="settings_tts_engine_description">Το Gemini ακούγεται πολύ πιο φυσικό, αλλά χρειάζεται κλειδί API.</string>
 
     <!-- Missing Today screen strings. -->
     <string name="today_location_unknown">Η τοποθεσία σου</string>

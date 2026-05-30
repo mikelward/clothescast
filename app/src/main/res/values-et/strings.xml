@@ -246,7 +246,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_delivery_notification_and_tts">Teavitus ja kõvalugemine</string>
 
     <string name="settings_tts_engine_title">Häälemootor</string>
-    <string name="settings_tts_engine_description">Gemini kõlab palju loomulikumalt kui seadme hääl, kuid vajab rääkimise ajal võrguühendust ja kasutab sünteesimiseks sinu API-võtit (üks lühike kõne iga kõvalugemisel). Langeb seadme häälele tagasi, kui Gemini ebaõnnestub.</string>
+    <string name="settings_tts_engine_description">Gemini kõlab palju loomulikumalt, kuid vajab API-võtit.</string>
     <string name="settings_tts_engine_device">Seade (võrguühenduseta, tasuta)</string>
     <string name="settings_tts_engine_gemini">Gemini (kõrge kvaliteet, võrguühendusega)</string>
     <string name="settings_tts_voice_label">Hääl</string>

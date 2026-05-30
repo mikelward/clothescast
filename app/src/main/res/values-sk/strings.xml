@@ -224,7 +224,7 @@ What is NOT overridden, by design:
     <string name="settings_tts_engine_title">Hlasový engine</string>
     <string name="settings_tts_engine_device">Zariadenie (offline, zadarmo)</string>
     <string name="settings_tts_engine_gemini">Gemini (vysoká kvalita, online)</string>
-    <string name="settings_tts_engine_description">Gemini znie oveľa prirodzenejšie ako hlas zariadenia, no pri hovorení vyžaduje sieťové volanie a používa tvoj API kľúč na syntézu (jedno krátke volanie za každý hlasový ClothesCast). Pri zlyhaní Gemini sa vráti na hlas zariadenia.</string>
+    <string name="settings_tts_engine_description">Gemini znie oveľa prirodzenejšie, no vyžaduje API kľúč.</string>
 
     <string name="settings_tts_voice_label">Hlas</string>
     <string name="settings_tts_voice_dismiss">Hotovo</string>

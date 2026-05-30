@@ -126,7 +126,7 @@ only the displayed label localizes.
     <string name="settings_tts_engine_title">Голосовой движок</string>
     <string name="settings_tts_engine_device">Устройство (офлайн, бесплатно)</string>
     <string name="settings_tts_engine_gemini">Gemini (высокое качество, онлайн)</string>
-    <string name="settings_tts_engine_description">Gemini звучит значительно естественнее голоса устройства, но требует сетевого вызова во время озвучивания и использует ключ API для синтеза (один короткий вызов на каждый озвученный ClothesCast). Если Gemini недоступен, используется голос устройства.</string>
+    <string name="settings_tts_engine_description">Gemini звучит гораздо естественнее, но требует ключ API.</string>
 
     <string name="settings_tts_voice_label">Голос</string>
     <string name="settings_tts_voice_dismiss">Готово</string>

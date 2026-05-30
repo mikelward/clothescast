@@ -549,7 +549,7 @@ is unchanged; only the displayed label localizes.
     <string name="settings_location_manual_override_disclosure">Wybór miasta wyłącza automatyczne wykrywanie.</string>
 
     <!-- TTS engine selection — description. -->
-    <string name="settings_tts_engine_description">Gemini brzmi znacznie bardziej naturalnie niż głos urządzenia, ale wymaga połączenia sieciowego podczas mówienia i używa Twojego klucza API do syntezy (jedno krótkie wywołanie na każdy mówiony ClothesCast). Wraca do głosu urządzenia, gdy Gemini zawiedzie.</string>
+    <string name="settings_tts_engine_description">Gemini brzmi znacznie bardziej naturalnie, ale wymaga klucza API.</string>
 
     <!-- In-app update banner. -->
     <string name="today_update_available_title">Dostępna aktualizacja</string>

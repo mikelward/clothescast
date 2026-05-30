@@ -244,7 +244,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_delivery_notification_and_tts">Notificació i lectura en veu alta</string>
 
     <string name="settings_tts_engine_title">Motor de veu</string>
-    <string name="settings_tts_engine_description">Gemini sona molt més natural que la veu del dispositiu però necessita una crida de xarxa en el moment de la síntesi i utilitza la teva clau API per a la síntesi (una crida curta per cada ClothesCast parlat). Torna a la veu del dispositiu si Gemini falla.</string>
+    <string name="settings_tts_engine_description">Gemini sona molt més natural, però necessita una clau API.</string>
     <string name="settings_tts_engine_device">Dispositiu (sense connexió, gratuït)</string>
     <string name="settings_tts_engine_gemini">Gemini (alta qualitat, en línia)</string>
     <string name="settings_tts_voice_label">Veu</string>

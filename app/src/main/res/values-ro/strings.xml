@@ -357,7 +357,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
 
     <!-- Voice / TTS settings. -->
     <string name="settings_tts_engine_title">Motor vocal</string>
-    <string name="settings_tts_engine_description">Gemini sună mult mai natural decât vocea dispozitivului, dar necesită un apel de rețea la momentul vorbirii și utilizează cheia ta API pentru sinteză (un apel scurt per fiecare ClothesCast citit cu voce tare). Revine la vocea dispozitivului dacă Gemini eșuează.</string>
+    <string name="settings_tts_engine_description">Gemini sună mult mai natural, dar necesită o cheie API.</string>
     <string name="settings_tts_engine_device">Dispozitiv (offline, gratuit)</string>
     <string name="settings_tts_engine_gemini">Gemini (calitate ridicată, online)</string>
     <string name="settings_tts_voice_label">Voce</string>

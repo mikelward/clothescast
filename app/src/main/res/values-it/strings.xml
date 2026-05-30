@@ -580,7 +580,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_location_manual_override_disclosure">Se scegli una città, il rilevamento automatico verrà disattivato.</string>
 
     <!-- TTS engine selection — description beneath the Gemini/Device toggle. -->
-    <string name="settings_tts_engine_description">Gemini suona molto più naturale rispetto alla voce del dispositivo, ma richiede una chiamata di rete al momento della sintesi e utilizza la tua chiave API per la sintesi (una breve chiamata per ogni ClothesCast riprodotto). Torna alla voce del dispositivo se Gemini fallisce.</string>
+    <string name="settings_tts_engine_description">Gemini suona molto più naturale, ma richiede una chiave API.</string>
 
     <!-- In-app update banner: shown when a newer build is on the Play Store. -->
     <string name="today_update_available_title">Aggiornamento disponibile</string>

@@ -616,7 +616,7 @@ displayed label localizes.
 
     <!-- Voice screen — engine-picker description (Device vs Gemini
          trade-offs). -->
-    <string name="settings_tts_engine_description">Gemini는 기기 음성보다 훨씬 자연스럽게 들리지만, 말할 때 네트워크 호출이 필요하고 합성에 회원님의 API 키를 사용합니다 (ClothesCast 한 번 읽을 때마다 짧은 호출 한 번). Gemini가 실패하면 기기 음성으로 대체됩니다.</string>
+    <string name="settings_tts_engine_description">Gemini는 훨씬 자연스럽게 들리지만 API 키가 필요합니다.</string>
 
     <!-- Outfit card labels — additional garments not previously translated. -->
     <string name="today_outfit_top_polo">폴로</string>

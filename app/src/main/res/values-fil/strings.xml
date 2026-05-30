@@ -373,7 +373,7 @@ The rest of the UI falls through to values/strings.xml (English).
          Settings — Voice / TTS
          ============================================================ -->
     <string name="settings_tts_engine_title">Voice engine</string>
-    <string name="settings_tts_engine_description">Mas natural ang tunog ng Gemini kaysa sa boses ng device ngunit nangangailangan ng network call sa oras ng pagsasalita at gumagamit ng iyong API key para sa synthesis (isang maikling call bawat binibigkas na ClothesCast). Bumabalik sa boses ng device kung mabigo ang Gemini.</string>
+    <string name="settings_tts_engine_description">Mas natural ang tunog ng Gemini ngunit nangangailangan ng API key.</string>
     <string name="settings_tts_engine_device">Device (offline, libre)</string>
     <string name="settings_tts_engine_gemini">Gemini (mataas na kalidad, online)</string>
     <string name="settings_tts_voice_label">Boses</string>

@@ -551,7 +551,7 @@ the displayed label localizes.
     <string name="settings_location_manual_override_disclosure">Als je een stad kiest, wordt automatische detectie uitgeschakeld.</string>
 
     <!-- TTS engine selection — description. -->
-    <string name="settings_tts_engine_description">Gemini klinkt aanzienlijk natuurlijker dan de apparaatstem, maar vereist een netwerkoproep bij het spreken en gebruikt je API-sleutel voor de synthese (één korte oproep per gesproken ClothesCast). Valt terug op de apparaatstem als Gemini mislukt.</string>
+    <string name="settings_tts_engine_description">Gemini klinkt veel natuurlijker, maar heeft een API-sleutel nodig.</string>
 
     <!-- In-app update banner. -->
     <string name="today_update_available_title">Update beschikbaar</string>

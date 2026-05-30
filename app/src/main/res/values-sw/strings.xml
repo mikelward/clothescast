@@ -311,7 +311,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Settings: TTS / voice -->
     <string name="settings_tts_engine_title">Injini ya sauti</string>
-    <string name="settings_tts_engine_description">Gemini inasikika asili zaidi kuliko sauti ya kifaa lakini inahitaji simu ya mtandao wakati wa kusema. Inarudi kwa sauti ya kifaa ikiwa Gemini itashindwa.</string>
+    <string name="settings_tts_engine_description">Gemini inasikika asili zaidi lakini inahitaji ufunguo wa API.</string>
     <string name="settings_tts_engine_device">Kifaa (bila mtandao, bure)</string>
     <string name="settings_tts_engine_gemini">Gemini (ubora wa juu, mtandaoni)</string>
     <string name="settings_tts_voice_label">Sauti</string>

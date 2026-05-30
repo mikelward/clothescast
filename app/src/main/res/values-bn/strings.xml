@@ -339,7 +339,7 @@ West Bengal vocabulary differences in a future PR.
          ============================================================ -->
 
     <string name="settings_tts_engine_title">ভয়েস ইঞ্জিন</string>
-    <string name="settings_tts_engine_description">Gemini ডিভাইস ভয়েসের চেয়ে অনেক বেশি স্বাভাবিক শোনায় কিন্তু কথ্য সময়ে নেটওয়ার্ক কল এবং সংশ্লেষণের জন্য আপনার API কী ব্যবহার করে (প্রতিটি কথ্য ClothesCast-এর জন্য একটি সংক্ষিপ্ত কল)। Gemini ব্যর্থ হলে ডিভাইস ভয়েসে ফিরে যায়।</string>
+    <string name="settings_tts_engine_description">Gemini অনেক বেশি স্বাভাবিক শোনায় কিন্তু একটি API কী প্রয়োজন।</string>
     <string name="settings_tts_engine_device">ডিভাইস (অফলাইন, বিনামূল্যে)</string>
     <string name="settings_tts_engine_gemini">Gemini (উচ্চমান, অনলাইন)</string>
     <string name="settings_tts_voice_label">ভয়েস</string>

@@ -358,7 +358,7 @@ they work correctly in both the single-band and range templates.
     <string name="settings_delivery_tts_only">قراءة صوتية فقط</string>
     <string name="settings_delivery_notification_and_tts">إشعار وقراءة صوتية</string>
     <string name="settings_tts_engine_title">محرك الصوت</string>
-    <string name="settings_tts_engine_description">Gemini يبدو أكثر طبيعية من صوت الجهاز لكنه يحتاج اتصالًا بالشبكة أثناء الكلام. يعود إلى صوت الجهاز إذا فشل Gemini.</string>
+    <string name="settings_tts_engine_description">Gemini يبدو أكثر طبيعية بكثير لكنه يحتاج إلى مفتاح API.</string>
     <string name="settings_tts_engine_device">الجهاز (بدون إنترنت، مجاني)</string>
     <string name="settings_tts_engine_gemini">Gemini (جودة عالية، عبر الإنترنت)</string>
     <string name="settings_tts_voice_label">الصوت</string>

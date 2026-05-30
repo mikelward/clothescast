@@ -94,6 +94,31 @@ internal fun GarmentBottomIcon(
     )
 }
 
+/**
+ * Renders an extremity-gear icon (today only gloves) for the optional
+ * [OutfitSuggestion.hands] slot. Drawn at the same width as — and overlaid on
+ * top of — the top garment icon, so the gloves land at the sides of the body;
+ * see [renderTopWithHandsBitmap] for the bitmap-surface equivalent.
+ */
+@Composable
+internal fun GarmentHandsIcon(
+    hands: OutfitSuggestion.Hands,
+    customFill: Color?,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+    customStroke: Color? = null,
+) {
+    val defaults = outfitHandsDefaults.getValue(hands)
+    GarmentIconImpl(
+        drawableRes = handsDrawable(hands),
+        defaults = defaults,
+        customFill = customFill,
+        customStroke = customStroke,
+        contentDescription = contentDescription,
+        modifier = modifier,
+    )
+}
+
 @Composable
 private fun GarmentIconImpl(
     @DrawableRes drawableRes: Int,
@@ -287,6 +312,53 @@ private data class BitmapCacheKey(
 )
 
 /**
+ * The top garment bitmap with the optional [hands] accessory composited over
+ * it at the same `sizePx`-square footprint — the overlay look gloves use on the
+ * bitmap render surfaces (notification / widget via [androidx.glance.ImageProvider],
+ * Nest-Hub card). The gloves vector sits at the lower sides of its 96×96
+ * viewport, so a same-size overlay lands the gloves at the body's hands without
+ * any per-surface alignment maths.
+ *
+ * When [hands] is null this returns the (cached) plain top bitmap untouched, so
+ * the no-gloves path stays byte-identical to the previous single-icon render —
+ * existing snapshots don't move. Only the gloves case allocates a composite.
+ */
+internal fun renderTopWithHandsBitmap(
+    context: Context,
+    top: OutfitSuggestion.Top,
+    hands: OutfitSuggestion.Hands?,
+    sizePx: Int,
+    topFillArgb: Long? = null,
+    topStrokeArgb: Long? = null,
+    handsFillArgb: Long? = null,
+    handsStrokeArgb: Long? = null,
+): Bitmap {
+    val topBmp = renderOutfitBitmap(
+        context = context,
+        drawableRes = topDrawable(top),
+        defaults = outfitTopDefaults.getValue(top),
+        customFillArgb = topFillArgb,
+        sizePx = sizePx,
+        customStrokeArgb = topStrokeArgb,
+    )
+    if (hands == null) return topBmp
+    val handsBmp = renderOutfitBitmap(
+        context = context,
+        drawableRes = handsDrawable(hands),
+        defaults = outfitHandsDefaults.getValue(hands),
+        customFillArgb = handsFillArgb,
+        sizePx = sizePx,
+        customStrokeArgb = handsStrokeArgb,
+    )
+    val composite = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+    Canvas(composite).apply {
+        drawBitmap(topBmp, 0f, 0f, null)
+        drawBitmap(handsBmp, 0f, 0f, null)
+    }
+    return composite
+}
+
+/**
  * Renders a Nest-Hub-ready outfit card as a PNG.
  *
  * Layout (800 × 480 px, white background, landscape):
@@ -316,6 +388,8 @@ internal fun renderOutfitCard(
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
     topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     bottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    handsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
+    handsStrokes: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
 ): ByteArray {
     val bmp = Bitmap.createBitmap(CARD_W, CARD_H, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bmp)
@@ -324,14 +398,17 @@ internal fun renderOutfitCard(
     val proseX = CARD_PAD + ICON_PX + ICON_H_GAP
 
     // Icons go in the left column from the top, independent of the header
-    // which lives above the prose on the right.
-    val topBmp = renderOutfitBitmap(
+    // which lives above the prose on the right. The top icon carries the
+    // optional gloves overlay so the hands sit at the body's sides.
+    val topBmp = renderTopWithHandsBitmap(
         context = context,
-        drawableRes = topDrawable(outfit.top),
-        defaults = outfitTopDefaults.getValue(outfit.top),
-        customFillArgb = topColors[outfit.top],
+        top = outfit.top,
+        hands = outfit.hands,
         sizePx = ICON_PX,
-        customStrokeArgb = topStrokes[outfit.top],
+        topFillArgb = topColors[outfit.top],
+        topStrokeArgb = topStrokes[outfit.top],
+        handsFillArgb = outfit.hands?.let { handsColors[it] },
+        handsStrokeArgb = outfit.hands?.let { handsStrokes[it] },
     )
     val botBmp = renderOutfitBitmap(
         context = context,

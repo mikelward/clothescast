@@ -43,6 +43,12 @@ internal val outfitBottomDefaults: Map<OutfitSuggestion.Bottom, GarmentDefaults>
     OutfitSuggestion.Bottom.LONG_PANTS to GarmentDefaults(0xFF455A64.toInt(), 0xFF263238.toInt()),
 )
 
+// Gloves are the only HANDS-slot tier today; the fill / stroke match the
+// baked colours in ic_outfit_gloves.xml (#37474F over #263238).
+internal val outfitHandsDefaults: Map<OutfitSuggestion.Hands, GarmentDefaults> = mapOf(
+    OutfitSuggestion.Hands.GLOVES to GarmentDefaults(0xFF37474F.toInt(), 0xFF263238.toInt()),
+)
+
 @DrawableRes
 internal fun topDrawable(top: OutfitSuggestion.Top): Int = when (top) {
     OutfitSuggestion.Top.TSHIRT -> R.drawable.ic_outfit_tshirt
@@ -61,6 +67,14 @@ internal fun bottomDrawable(bottom: OutfitSuggestion.Bottom): Int = when (bottom
     OutfitSuggestion.Bottom.LONG_SKIRT -> R.drawable.ic_outfit_skirt
     OutfitSuggestion.Bottom.JEANS -> R.drawable.ic_outfit_jeans
     OutfitSuggestion.Bottom.LONG_PANTS -> R.drawable.ic_outfit_long_pants
+}
+
+// The gloves vector is authored at a 96×96 viewport with the gloves at the
+// lower sides, so it overlays a top icon at matching width without its own
+// alignment maths.
+@DrawableRes
+internal fun handsDrawable(hands: OutfitSuggestion.Hands): Int = when (hands) {
+    OutfitSuggestion.Hands.GLOVES -> R.drawable.ic_outfit_gloves
 }
 
 /**

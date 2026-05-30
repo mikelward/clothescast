@@ -122,6 +122,7 @@ import app.clothescast.ui.LocalTimeFormat
 import app.clothescast.ui.formatHourMinute
 import app.clothescast.ui.formatScrubHour
 import app.clothescast.ui.garment.GarmentBottomIcon
+import app.clothescast.ui.garment.GarmentHandsIcon
 import app.clothescast.ui.garment.GarmentTopIcon
 import app.clothescast.diag.BugReport
 import app.clothescast.diag.BugReportConsentDialog
@@ -1783,6 +1784,17 @@ internal fun OutfitPreviewCard(
                         contentDescription = stringResource(topLabelRes(outfit.top)),
                         modifier = Modifier.width(80.dp),
                     )
+                    // Gloves overlay the top at the same width, bottom-aligned
+                    // so they land at the body's sides. Only when a hands rule
+                    // fired — extremity gear is opt-in, so most outfits skip it.
+                    outfit.hands?.let { hands ->
+                        GarmentHandsIcon(
+                            hands = hands,
+                            customFill = null,
+                            contentDescription = stringResource(R.string.garment_gloves),
+                            modifier = Modifier.width(80.dp),
+                        )
+                    }
                 }
                 GarmentBottomIcon(
                     bottom = outfit.bottom,

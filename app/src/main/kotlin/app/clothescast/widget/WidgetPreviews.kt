@@ -158,11 +158,22 @@ private fun SingleColumnMock(label: String, outfit: OutfitSuggestion, size: DpSi
         )
         Spacer(modifier = Modifier.height(2.dp))
         val iconSize = scaledIconSizeMock(size)
-        Image(
-            painter = painterResource(id = topIconResMock(outfit.top)),
-            contentDescription = stringResource(topLabelResMock(outfit.top)),
-            modifier = Modifier.size(iconSize),
-        )
+        Box(modifier = Modifier.size(iconSize), contentAlignment = Alignment.Center) {
+            Image(
+                painter = painterResource(id = topIconResMock(outfit.top)),
+                contentDescription = stringResource(topLabelResMock(outfit.top)),
+                modifier = Modifier.size(iconSize),
+            )
+            // Optional gloves overlay, mirroring the real widget's composited
+            // top bitmap (see renderTopWithHandsBitmap).
+            if (outfit.hands != null) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_outfit_gloves),
+                    contentDescription = stringResource(R.string.garment_gloves),
+                    modifier = Modifier.size(iconSize),
+                )
+            }
+        }
         Image(
             painter = painterResource(id = bottomIconResMock(outfit.bottom)),
             contentDescription = stringResource(bottomLabelResMock(outfit.bottom)),
@@ -233,6 +244,21 @@ internal fun WidgetTodayJacketPantsPreview() {
         OutfitWidgetMockFilled(
             period = ForecastPeriod.TODAY,
             outfit = OutfitSuggestion(OutfitSuggestion.Top.THICK_JACKET, OutfitSuggestion.Bottom.LONG_PANTS),
+        )
+    }
+}
+
+@Preview(name = "Widget · today · coat + pants + gloves", widthDp = 192, heightDp = 192)
+@Composable
+internal fun WidgetTodayCoatPantsGlovesPreview() {
+    WidgetFrame {
+        OutfitWidgetMockFilled(
+            period = ForecastPeriod.TODAY,
+            outfit = OutfitSuggestion(
+                OutfitSuggestion.Top.THICK_COAT,
+                OutfitSuggestion.Bottom.LONG_PANTS,
+                OutfitSuggestion.Hands.GLOVES,
+            ),
         )
     }
 }

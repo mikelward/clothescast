@@ -61,6 +61,7 @@ import app.clothescast.widget.FeelsLikeWidgetTodayPreview
 import app.clothescast.widget.FeelsLikeWidgetWeekPreview
 import app.clothescast.widget.FeelsLikeWidgetWidePreview
 import app.clothescast.widget.WidgetEmptyPreview
+import app.clothescast.widget.WidgetTodayCoatPantsGlovesPreview
 import app.clothescast.widget.WidgetTodayCompactPreview
 import app.clothescast.widget.WidgetTodayExtraLargePreview
 import app.clothescast.widget.WidgetTodayJacketPantsPreview
@@ -379,6 +380,7 @@ class PreviewSnapshots {
     @Test fun outfit_jacket_shorts() = capture { OutfitJacketShortsPreview() }
     @Test fun outfit_jacket_pants() = capture { OutfitJacketPantsPreview() }
     @Test fun outfit_sweater_pants_dark() = capture { OutfitSweaterPantsDarkPreview() }
+    @Test fun outfit_coat_pants_gloves() = capture { OutfitCoatPantsGlovesPreview() }
     @Test fun outfit_row_today_tonight() = capture { OutfitRowTodayTonightPreview() }
     @Test fun outfit_row_tonight_tomorrow() = capture { OutfitRowTonightTomorrowPreview() }
     @Test fun outfit_rationale_dialog() = captureDialog { OutfitRationaleDialogPreview() }
@@ -568,6 +570,7 @@ class PreviewSnapshots {
     @Test fun widget_today_tshirt_shorts() = capture { WidgetTodayTShirtShortsPreview() }
     @Test fun widget_tonight_sweater_pants() = capture { WidgetTonightSweaterPantsPreview() }
     @Test fun widget_today_jacket_pants() = capture { WidgetTodayJacketPantsPreview() }
+    @Test fun widget_today_coat_pants_gloves() = capture { WidgetTodayCoatPantsGlovesPreview() }
     @Test fun widget_tonight_dark() = capture { WidgetTonightDarkPreview() }
     @Test fun widget_empty() = capture { WidgetEmptyPreview() }
     @Test fun widget_today_compact() = capture { WidgetTodayCompactPreview() }

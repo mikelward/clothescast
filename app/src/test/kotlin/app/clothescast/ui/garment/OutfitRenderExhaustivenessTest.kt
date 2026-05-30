@@ -51,4 +51,13 @@ class OutfitRenderExhaustivenessTest {
         OutfitSuggestion.Bottom.entries.filterNot { it in outfitBottomDefaults }.shouldBeEmpty()
         outfitBottomDefaults.keys.shouldContainExactlyInAnyOrder(*OutfitSuggestion.Bottom.entries.toTypedArray())
     }
+
+    @Test
+    fun `every Hands tier has a render-path defaults entry`() {
+        // The optional gloves overlay (renderTopWithHandsBitmap / GarmentHandsIcon)
+        // reads outfitHandsDefaults.getValue(hands), so a new Hands tier without
+        // its entry blows up only when a hands rule actually fires at render time.
+        OutfitSuggestion.Hands.entries.filterNot { it in outfitHandsDefaults }.shouldBeEmpty()
+        outfitHandsDefaults.keys.shouldContainExactlyInAnyOrder(*OutfitSuggestion.Hands.entries.toTypedArray())
+    }
 }

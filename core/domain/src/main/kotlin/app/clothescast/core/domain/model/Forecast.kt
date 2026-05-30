@@ -37,6 +37,19 @@ data class HourlyForecast(
      * in a single series.
      */
     val precipitationMm: Double = 0.0,
+    /**
+     * 10 m wind speed for the hour, km/h (Open-Meteo's native unit). Nullable /
+     * defaulted for back-compat with older cached payloads and fixtures that
+     * predate the field; the at-a-glance conditions widget takes the period
+     * maximum and only surfaces it above a "notable" threshold.
+     */
+    val windSpeedKmh: Double? = null,
+    /**
+     * UV index for the hour (0–~12+). Nullable / defaulted as [windSpeedKmh].
+     * The conditions widget shows the period's peak when it's high enough to be
+     * worth acting on.
+     */
+    val uvIndex: Double? = null,
 )
 
 /** Coarse condition buckets sufficient for prompt construction and rule evaluation. */

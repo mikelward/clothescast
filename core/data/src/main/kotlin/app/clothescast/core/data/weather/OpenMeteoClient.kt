@@ -216,7 +216,7 @@ class OpenMeteoClient(
                 parameter(
                     "hourly",
                     "temperature_2m,apparent_temperature,precipitation_probability," +
-                        "precipitation,weather_code",
+                        "precipitation,weather_code,wind_speed_10m,uv_index",
                 )
             }.body()
         }

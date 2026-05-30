@@ -91,7 +91,11 @@
 
     <!-- At-a-glance conditions widget (thermometer + rain). -->
     <string name="conditions_widget_label">Conditions</string>
-    <string name="conditions_widget_description">Today\'s temperature range and chance of rain at a glance.</string>
+    <string name="conditions_widget_description">Temperature, rain, wind and UV at a glance.</string>
+    <!-- Conditions widget wind cell, e.g. "35 km/h" (value + unit symbol). -->
+    <string name="conditions_wind">%1$d %2$s</string>
+    <!-- Conditions widget UV cell, e.g. "UV 8". -->
+    <string name="conditions_uv">UV %1$d</string>
 
     <string name="today_forecast_title">Feels like temperature</string>
     <string name="today_forecast_min_max">Feels like %1$d – %2$d%3$s</string>

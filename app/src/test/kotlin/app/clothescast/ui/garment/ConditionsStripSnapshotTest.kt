@@ -79,7 +79,7 @@ class ConditionsStripSnapshotTest {
 
     @Test
     fun conditions_strip_warm_with_rain_light() {
-        write(listOf(thermo("9–28°C", 28.0), rain("60% at 3pm", 0.60f)), widthPx = 480, darkTheme = false)
+        write(listOf(thermo("9–28°C", 28.0), rain("60%", 0.60f)), widthPx = 480, darkTheme = false)
     }
 
     @Test
@@ -89,7 +89,7 @@ class ConditionsStripSnapshotTest {
 
     @Test
     fun conditions_strip_warm_with_rain_dark() {
-        write(listOf(thermo("9–28°C", 28.0), rain("60% at 3pm", 0.60f)), widthPx = 480, darkTheme = true)
+        write(listOf(thermo("9–28°C", 28.0), rain("60%", 0.60f)), widthPx = 480, darkTheme = true)
     }
 
     @Test
@@ -97,7 +97,7 @@ class ConditionsStripSnapshotTest {
         write(
             listOf(
                 thermo("18–34°C", 34.0),
-                rain("40% at 5pm", 0.40f),
+                rain("40%", 0.40f),
                 wind("45 km/h", 45.0), // orange (strong breeze)
                 uv("UV 9", 9.0), // red (very high)
             ),
@@ -111,7 +111,7 @@ class ConditionsStripSnapshotTest {
         write(
             listOf(
                 thermo("18–34°C", 34.0),
-                rain("40% at 5pm", 0.40f),
+                rain("40%", 0.40f),
                 wind("45 km/h", 45.0),
                 uv("UV 9", 9.0),
             ),

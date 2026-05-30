@@ -50,6 +50,7 @@ class TonightInsightNotifier(private val context: Context) {
                 InsightNotifier.largeIconForTop(
                     context = context,
                     top = top,
+                    hands = insight.outfit?.hands,
                     customFillArgb = top?.let { topColors[it] },
                     customStrokeArgb = top?.let { topStrokes[it] },
                 ),

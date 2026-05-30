@@ -492,7 +492,12 @@ private fun TodayContent(
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
                 )
-                EmptyState(onRefresh = onRefresh, isWorking = isWorking)
+                EmptyState(
+                    onRefresh = onRefresh,
+                    isWorking = isWorking,
+                    locationActionRequired = locationActionRequired,
+                    onSetUpLocation = onSetUpLocation,
+                )
             }
         } else {
             // Two-page pager — page 0 is the this-period insight (the 12-hour
@@ -1608,7 +1613,12 @@ private fun describeFailure(failed: WorkStatus.Failed): String =
     }
 
 @Composable
-internal fun EmptyState(onRefresh: () -> Unit, isWorking: Boolean = false) {
+internal fun EmptyState(
+    onRefresh: () -> Unit,
+    isWorking: Boolean = false,
+    locationActionRequired: Boolean = false,
+    onSetUpLocation: () -> Unit = {},
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -1619,18 +1629,40 @@ internal fun EmptyState(onRefresh: () -> Unit, isWorking: Boolean = false) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text(
-                text = stringResource(R.string.today_empty_title),
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-            )
-            Text(
-                text = stringResource(R.string.today_empty_subtitle),
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-            )
-            Button(onClick = onRefresh, enabled = !isWorking) {
-                Text(stringResource(R.string.today_fetch_now))
+            // Without a resolvable location nothing will ever generate, so the
+            // placeholder tells the user the actual blocker — "set up location"
+            // — instead of the generic "your ClothesCast will appear here", which
+            // reads as if one were merely pending. (The top-of-screen location
+            // banner is suppressed in this no-forecast case so the fix isn't
+            // prompted twice — see promoBannersToShow.)
+            if (locationActionRequired) {
+                Text(
+                    text = stringResource(R.string.today_empty_location_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = stringResource(R.string.today_empty_location_subtitle),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                )
+                Button(onClick = onSetUpLocation) {
+                    Text(stringResource(R.string.today_location_required_action))
+                }
+            } else {
+                Text(
+                    text = stringResource(R.string.today_empty_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = stringResource(R.string.today_empty_subtitle),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                )
+                Button(onClick = onRefresh, enabled = !isWorking) {
+                    Text(stringResource(R.string.today_fetch_now))
+                }
             }
         }
     }

@@ -17,14 +17,16 @@ internal enum class PromoBanner { LOCATION, TELEMETRY, CLOTHES, SCHEDULE, PLAY, 
  * The five customization nudges — clothes ([clothesPromoEligible]),
  * schedule ([schedulePromoEligible]), play ([playPromoEligible]),
  * Gemini voices ([geminiPromoEligible]), and
- * holiday/birthday theming ([celebrationEligible]) — are additionally held
- * back until [hasForecast]:
+ * holiday/birthday theming ([celebrationEligible]) — plus the location prompt
+ * ([locationActionRequired]) are held back until [hasForecast]:
  * the user has received at least one forecast (foreground or background), i.e.
- * is no longer brand-new. So an empty-cache first-run only ever sees location +
- * privacy; the customization promos join the (still capped) pool once any
- * forecast lands. Location and privacy aren't gated this way — a brand-new user
- * with no location needs the location prompt, and the telemetry disclosure
- * shouldn't be silently withheld.
+ * is no longer brand-new. The location banner is forecast-gated because the
+ * empty-cache screen already carries its own "set up your location" placeholder
+ * ([EmptyState]); doubling it up with a banner would prompt the same fix twice.
+ * Once a (possibly stale) forecast is on screen the empty state is gone, so the
+ * banner takes over as the place that explains why the visible forecast can't
+ * refresh. The telemetry disclosure isn't gated this way — it shouldn't be
+ * silently withheld from a first-run user.
  */
 internal fun promoBannersToShow(
     locationActionRequired: Boolean,
@@ -38,7 +40,7 @@ internal fun promoBannersToShow(
     maxVisible: Int = 2,
 ): Set<PromoBanner> {
     val eligible = buildList {
-        if (locationActionRequired) add(PromoBanner.LOCATION)
+        if (locationActionRequired && hasForecast) add(PromoBanner.LOCATION)
         if (telemetryNoticeVisible) add(PromoBanner.TELEMETRY)
         if (clothesPromoEligible && hasForecast) add(PromoBanner.CLOTHES)
         if (schedulePromoEligible && hasForecast) add(PromoBanner.SCHEDULE)

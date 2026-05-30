@@ -339,8 +339,10 @@ internal fun SevenDayPage(
             }
         }
         },
-    ) {
-        if (days.size < 2 || flatHourly.isEmpty() || startDate == null) return@HomePageScaffold
+        // The chart deck — its own reorderable section, same as on the
+        // per-period pages. Renders nothing until the 7-day forecast is cached.
+        chartsSlot = chartsSlot@{
+            if (days.size < 2 || flatHourly.isEmpty() || startDate == null) return@chartsSlot
 
         // Shared scrub controller — same role as on the per-period pages.
         // A tap on any chart in the stack publishes an indicator at the
@@ -511,5 +513,6 @@ internal fun SevenDayPage(
                 )
             }
         }
-    }
+        },
+    ) { }
 }

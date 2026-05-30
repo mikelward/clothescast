@@ -177,4 +177,8 @@ private fun homeSectionLabel(section: HomeSection): Int = when (section) {
     HomeSection.CONDITIONS -> R.string.settings_display_home_section_conditions
     HomeSection.OUTFIT -> R.string.settings_display_home_section_outfit
     HomeSection.INSIGHT -> R.string.settings_display_home_section_insight
+    HomeSection.CONFIDENCE -> R.string.settings_display_home_section_confidence
+    // TODO(home-sections): when individual charts become reorderable, this
+    //  single "Charts" row expands into the chart deck's own sub-list.
+    HomeSection.CHARTS -> R.string.settings_display_home_section_charts
 }

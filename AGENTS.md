@@ -329,6 +329,27 @@ new rule the first time something bites you, not the third.
   applicationId `app.clothescast`, download `google-services.json`,
   drop it at `app/google-services.json`, and rebuild. Don't commit it.
 
+## Language
+
+- **Use US English everywhere.** Base English strings
+  (`app/src/main/res/values/strings.xml`), commit subjects and bodies, PR
+  titles / descriptions, code comments, and docs all default to American
+  spelling and idiom: `color` not `colour`, `center` not `centre`,
+  `canceled` not `cancelled`, `gray` not `grey`, `analyze` not `analyse`.
+  The base `values/` locale *is* `en-US` — it's the final fallback for
+  every locale, so authoring it in American spelling keeps the default
+  consistent. Commit subjects matter doubly: CI funnels them straight into
+  `whatsnew-en-US`, the US English Play "What's new", so a stray
+  Britishism ships to users. **Exception — localized English files keep
+  their own conventions.** `values-en-rGB` deliberately overrides base
+  with British spelling, and `values-en-rAU` / `values-en-rZA` inherit
+  `en-rGB` via Android's API 24+ locale fallback (not base `en-US`) — so
+  don't "correct" British spelling in any `values-en-*` file, and don't
+  assume an untranslated en-AU/en-ZA string resolves to US English. Other
+  non-English `values-*` files likewise keep their own conventions; this
+  rule is about the default English we author in base `values/` and in
+  our commits, PRs, comments, and docs.
+
 ## Domain conventions
 
 - Clothes rules and outfit suggestions both look at *feels-like*

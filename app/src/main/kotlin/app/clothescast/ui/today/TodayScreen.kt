@@ -879,22 +879,23 @@ internal fun HomePageScaffold(
     onNavigateToClothes: () -> Unit,
     homeSectionOrder: List<HomeSection> = HomeSection.DEFAULTS,
     insightSlot: (@Composable ColumnScope.() -> Unit)? = null,
+    conditionsHourly: List<HourlyForecast>? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    // This-period conditions for the strip at the top of every page. Pinned to
-    // [outfitInsight] (always this period) like the outfit row below it, so the
-    // strip stays byte-identical across Today / Tonight / 7-day and matches the
-    // home-screen conditions widget (which also shows THIS_PERIOD). Reuses the
-    // exact helper the widget and outfit card feed off so all three read the
-    // same indicators in the same order.
+    // Conditions for the strip. Driven by [conditionsHourly] — the hourly
+    // series of *this page's* period (today / tonight on pages 0 / 1, the whole
+    // 7-day window on page 2) — so each page's strip reads its own feels-like
+    // range, rain, wind and UV rather than repeating this period's everywhere.
+    // Reuses the exact helper the conditions widget and outfit card feed off so
+    // every surface reads the same indicators in the same order.
     val context = LocalContext.current
     val conditionsInfo: OutfitCardInfoLines? = remember(
-        outfitInsight,
+        conditionsHourly,
         state.region,
         state.temperatureUnit,
         state.distanceUnit,
     ) {
-        outfitInsight?.hourly?.takeIf { it.isNotEmpty() }?.let { hourly ->
+        conditionsHourly?.takeIf { it.isNotEmpty() }?.let { hourly ->
             runCatching {
                 val formatter = InsightFormatter.forRegion(context, state.region)
                 outfitCardInfoLines(
@@ -1131,6 +1132,10 @@ private fun TodayPage(
         onDismissMqttError = onDismissMqttError,
         onDismissCastError = onDismissCastError,
         homeSectionOrder = state.homeSectionOrder,
+        // The conditions strip reads this page's own period — [insight] is the
+        // page's insight (this period on page 0, the next period on page 1), so
+        // each page's strip shows its own feels-like range / rain / wind / UV.
+        conditionsHourly = insight?.hourly,
         // The insight (insight card + its confidence chip) is the second
         // reorderable section. It renders only when this period actually has an
         // insight; the null case falls through to the placeholder in [content].

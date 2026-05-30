@@ -433,6 +433,15 @@ class SettingsRepository(
     }
 
     /**
+     * Records that the user tapped "Skip" on onboarding so it doesn't reappear
+     * on the next cold launch even while its conditions remain unmet. See
+     * [UserPreferences.onboardingSkipped].
+     */
+    suspend fun setOnboardingSkipped(skipped: Boolean) {
+        dataStore.edit { it[ONBOARDING_SKIPPED] = skipped }
+    }
+
+    /**
      * Bumps [UserPreferences.calendarPermissionRecheckTick] to the current
      * wall-clock millis so the preferences flow re-emits. Use after the
      * user re-grants `READ_CALENDAR` from the in-app permission chip so
@@ -868,6 +877,7 @@ class SettingsRepository(
         val scheduleCardDismissed = this[SCHEDULE_CARD_DISMISSED] == true
         val playCardDismissed = this[PLAY_CARD_DISMISSED] == true
         val geminiPromoCardDismissed = this[GEMINI_PROMO_CARD_DISMISSED] == true
+        val onboardingSkipped = this[ONBOARDING_SKIPPED] == true
         val calendarPermissionRecheckTick = this[CALENDAR_PERMISSION_RECHECK_TICK] ?: 0L
         val tonightTime = this[TONIGHT_TIME]?.let { LocalTime.parse(it, TIME_FORMAT) }
             ?: DEFAULT_TONIGHT_TIME
@@ -1015,6 +1025,7 @@ class SettingsRepository(
             scheduleCardDismissed = scheduleCardDismissed,
             playCardDismissed = playCardDismissed,
             geminiPromoCardDismissed = geminiPromoCardDismissed,
+            onboardingSkipped = onboardingSkipped,
             calendarPermissionRecheckTick = calendarPermissionRecheckTick,
             dailyEnabled = dailyEnabled,
             tonightSchedule = Schedule(time = tonightTime, days = tonightDays, zoneId = zone),
@@ -1265,6 +1276,7 @@ class SettingsRepository(
         private val SCHEDULE_CARD_DISMISSED = booleanPreferencesKey("schedule_card_dismissed")
         private val PLAY_CARD_DISMISSED = booleanPreferencesKey("play_card_dismissed")
         private val GEMINI_PROMO_CARD_DISMISSED = booleanPreferencesKey("gemini_promo_card_dismissed")
+        private val ONBOARDING_SKIPPED = booleanPreferencesKey("onboarding_skipped")
         private val CALENDAR_PERMISSION_RECHECK_TICK = longPreferencesKey("calendar_permission_recheck_tick")
         private val DAILY_ENABLED = booleanPreferencesKey("daily_enabled")
         private val TONIGHT_TIME = stringPreferencesKey("tonight_time_hhmm")

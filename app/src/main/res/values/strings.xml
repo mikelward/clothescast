@@ -478,7 +478,7 @@
     <string name="onboarding_gemini_title">Gemini API key</string>
     <string name="onboarding_gemini_description">Use Gemini to get high quality voices.</string>
     <string name="onboarding_step_done">Done</string>
-    <string name="onboarding_skip">Skip for now</string>
+    <string name="onboarding_skip">Skip</string>
     <string name="onboarding_continue">Continue</string>
     <string name="onboarding_pair_from_phone">Pair from phone instead</string>
 

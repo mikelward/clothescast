@@ -164,6 +164,7 @@ fun ClothesCastNavHost(
                         FetchAndNotifyWorker.enqueueLocationCacheRefresh(context)
                     },
                     workManager = WorkManager.getInstance(app),
+                    externalScope = app.applicationScope,
                 ),
             )
             // Both footer buttons finish onboarding and land on Today — the
@@ -187,7 +188,13 @@ fun ClothesCastNavHost(
                 viewModel = onboarding,
                 onPairFromPhone = { nav.navigate(PairingRoute) },
                 onContinue = finishOnboarding,
-                onSkip = finishOnboarding,
+                onSkip = {
+                    // Persist the skip (on the app scope, so the write survives
+                    // the pop below clearing the ViewModel), then finish like
+                    // Continue does.
+                    onboarding.markSkipped()
+                    finishOnboarding()
+                },
             )
         }
 

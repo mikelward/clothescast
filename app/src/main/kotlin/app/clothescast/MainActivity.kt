@@ -227,6 +227,10 @@ private fun shouldStartOnboarding(context: Context, app: ClothesCastApplication)
     val notificationOk = tv || NotificationPermission.isGranted(context)
     val keyOk = runBlocking { app.secureKeyStore.geminiKeyConfiguredFlow.first() }
     val prefs = runBlocking { app.settingsRepository.preferences.first() }
+    // Once the user has tapped "Skip", honor that for good — don't drag them
+    // back through onboarding on the next cold launch just because a condition
+    // is still unmet. Banners on Today cover whatever they skipped.
+    if (prefs.onboardingSkipped) return false
     val locationOk = if (tv) {
         // On TV only a manually picked city counts — device location is unavailable.
         prefs.location != null

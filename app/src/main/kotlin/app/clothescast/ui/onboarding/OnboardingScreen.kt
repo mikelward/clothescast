@@ -59,8 +59,10 @@ import app.clothescast.ui.settings.openAppDetails
  * drops them on Settings → Schedule so they can accept or change the default
  * 7am every-day schedule before reaching Today.
  *
- * "Skip for now" is session-only — the onboarding will reappear on cold launch
- * if the conditions still hold.
+ * "Skip" is sticky — tapping it records a flag so onboarding stays gone on
+ * future cold launches even if its conditions still hold; the Today screen's
+ * banners cover anything the user skipped. "Continue" leaves the flag unset, so
+ * a half-finished setup still re-prompts (its conditions drive that as before).
  */
 @Composable
 fun OnboardingScreen(

@@ -11,6 +11,7 @@ import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
 import app.clothescast.work.FetchAndNotifyWorker
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -55,6 +56,14 @@ class OnboardingViewModel(
      * stays permanently false.
      */
     private val workManager: WorkManager? = null,
+    /**
+     * Process-lifetime scope for the skip write. [markSkipped] must use this
+     * rather than [viewModelScope]: tapping Skip pops the onboarding
+     * destination, which clears this ViewModel and cancels [viewModelScope]
+     * before a DataStore write could commit. Defaults to [viewModelScope] for
+     * pure-VM tests that don't exercise the teardown race.
+     */
+    private val externalScope: CoroutineScope? = null,
 ) : ViewModel() {
 
     private val locationDetecting = MutableStateFlow(false)
@@ -120,6 +129,19 @@ class OnboardingViewModel(
         viewModelScope.launch { settingsRepository.setLocation(location) }
     }
 
+    /**
+     * Persists that the user chose to skip onboarding so it doesn't reappear on
+     * the next cold launch. Runs on [externalScope] (the app scope) rather than
+     * [viewModelScope] because the caller pops the onboarding destination right
+     * after, clearing this ViewModel — a [viewModelScope] write would be
+     * canceled before it committed.
+     */
+    fun markSkipped() {
+        (externalScope ?: viewModelScope).launch {
+            settingsRepository.setOnboardingSkipped(true)
+        }
+    }
+
     suspend fun searchLocations(query: String): List<Location> = geocodingClient.search(query)
 
     class Factory(
@@ -128,6 +150,7 @@ class OnboardingViewModel(
         private val geocodingClient: OpenMeteoGeocodingClient,
         private val refreshLocationCache: () -> Unit,
         private val workManager: WorkManager?,
+        private val externalScope: CoroutineScope,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -140,6 +163,7 @@ class OnboardingViewModel(
                 geocodingClient = geocodingClient,
                 refreshLocationCache = refreshLocationCache,
                 workManager = workManager,
+                externalScope = externalScope,
             ) as T
         }
     }

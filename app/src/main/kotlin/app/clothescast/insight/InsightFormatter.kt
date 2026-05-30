@@ -197,15 +197,11 @@ class InsightFormatter(
         omitLead: Boolean,
         wearMode: WearMode,
     ): String {
-        // Accessories (umbrella, etc.) are filtered out of the rendered prose
-        // entirely — we only surface temperature-driven clothing for now. The
-        // user's umbrella rule still triggers and the precip clause still
-        // says "Rain at 3pm.", but the umbrella itself doesn't show up in any
-        // sentence: "Wear an umbrella" reads wrong (it's carried), "Bring an
-        // umbrella" needs a time anchor that breaks for daytime-firing rules,
-        // and the rain mention already implies the umbrella for the typical
-        // precip-keyed rule. The accessory TODO below is the proper home for
-        // a re-introduction.
+        // Carried accessories (umbrella) are filtered out of the *wear* clause
+        // — "Wear an umbrella" reads wrong — but they're not dropped: the
+        // precip clause and the evening tie-in fold them in from the fired rule
+        // ("Rain at 3pm, bring an umbrella."), so rain and the umbrella travel
+        // together. See formatPrecip / formatEveningEventTieIn.
         //
         // Layer-count mode is a single warmth signal — under
         // [BottomsFormat.IF_GARMENTS] (default) and [BottomsFormat.NEVER] we
@@ -272,7 +268,14 @@ class InsightFormatter(
             // ("Today, 5° warmer than yesterday.").
             numericDelta?.let { add(formatDelta(it, leadsTemperature = rangeFormat == RangeFormat.NONE)) }
             if (wearItems.isNotEmpty()) formatClothesWear(wearItems, wearMode)?.let(::add)
-            summary.precip?.let { add(formatPrecip(it)) }
+            // The carried accessory (umbrella) now comes from the user's fired
+            // rule — it lands in the recommended items as a Slot.CARRIED garment
+            // — rather than the retired RainAccessory toggle. It's folded into
+            // the precip clause (not the wear clause) so rain and the umbrella
+            // still travel together.
+            summary.precip?.let {
+                add(formatPrecip(it, summary.clothes?.items.orEmpty().firstOrNull(::isAccessory)))
+            }
         }
         val tieInClauses = buildList {
             summary.calendarTieIn?.let { tieIn ->
@@ -635,7 +638,7 @@ class InsightFormatter(
         return resources.getString(R.string.insight_clothes_join_two, countPhrase, tailPhrase)
     }
 
-    private fun formatPrecip(precip: PrecipClause): String {
+    private fun formatPrecip(precip: PrecipClause, accessoryKey: String?): String {
         val rawType = resources.getString(conditionRes(precip.condition))
         // "Rain at 02:00" sounds robotic and a precise hour adds little value
         // when the user is asleep — collapse early-morning peaks to "overnight".
@@ -649,7 +652,7 @@ class InsightFormatter(
         // doesn't slip through. THUNDERSTORM is intentionally excluded too —
         // an umbrella under lightning is bad practice, and the user will
         // hear "Thunderstorm at 3pm." either way.
-        val accessoryPhrase = rainAccessoryItemKey()
+        val accessoryPhrase = accessoryKey
             ?.takeIf { precip.condition.warrantsRainAccessory() }
             ?.let(phraser::withArticle)
         return when (precip.likelihood) {
@@ -675,18 +678,6 @@ class InsightFormatter(
                 resources.getString(R.string.insight_precip_chance, rawType.lowercase(locale), timePhrase)
             }
         }
-    }
-
-    /**
-     * The item key the user's [RainAccessory] choice maps to ("umbrella" for
-     * [RainAccessory.UMBRELLA]), or null when the user picked
-     * [RainAccessory.NONE]. The key flows through the same [ClothesPhraser]
-     * the wear-list uses, so the English path renders "an umbrella" and the
-     * German EN→DE map renders "Regenschirm" without a phraser change.
-     */
-    private fun rainAccessoryItemKey(): String? = when (rainAccessory) {
-        RainAccessory.NONE -> null
-        RainAccessory.UMBRELLA -> "umbrella"
     }
 
     /**
@@ -745,7 +736,9 @@ class InsightFormatter(
         // "Tonight, rain at 9pm, bring an umbrella." doesn't slip out when
         // the underlying peak is actually snow.
         val filteredItems = tieIn.items.filterNot(::isAccessory)
-        val accessoryKey = rainAccessoryItemKey()
+        // The carried accessory rides in on the tie-in's own items (the fired
+        // umbrella rule), not the retired RainAccessory toggle.
+        val accessoryKey = tieIn.items.firstOrNull(::isAccessory)
             ?.takeIf { rainTime != null && tieIn.precipCondition?.warrantsRainAccessory() == true }
         val items = if (accessoryKey != null) filteredItems + accessoryKey else filteredItems
         val renderedItems = if (items.isEmpty()) "" else phraser.joinItems(items)

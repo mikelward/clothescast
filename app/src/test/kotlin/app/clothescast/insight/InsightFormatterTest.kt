@@ -876,12 +876,12 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `umbrella-with-rain on TONIGHT renders just the precip clause`() {
-        // Pre-PR this rendered "Wear an umbrella. Rain at 9pm. Bring an
-        // umbrella tonight." — three sentences of the same message. With
-        // accessories silenced, the umbrella is gone from the wear sentence
-        // AND from the calendar tie-in (which now matches an accessory item
-        // and skips it), leaving the bare precip line.
+    fun `umbrella-with-rain on TONIGHT folds the carried umbrella into the precip clause`() {
+        // The umbrella rides in via the recommended items (a fired umbrella
+        // rule). It's filtered out of the wear sentence (carried, not worn) and
+        // the calendar tie-in skips it as a dupe, but the precip clause folds it
+        // in so rain and umbrella travel together: "Rain at 9pm, bring an
+        // umbrella." — one mention, not three sentences.
         val out = subject.format(
             summary(
                 period = ForecastPeriod.TONIGHT,
@@ -890,7 +890,7 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause("umbrella"),
             ),
         )
-        out shouldBe "Tonight, it will be 21°. Rain at 9pm."
+        out shouldBe "Tonight, it will be 21°. Rain at 9pm, bring an umbrella."
     }
 
     @Test
@@ -1092,7 +1092,10 @@ class InsightFormatterTest {
     @Test
     fun `umbrella accessory appends 'bring an umbrella' to the LIKELY precip clause`() {
         umbrellaSubject.format(
-            summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0))),
+            summary(
+                clothes = ClothesClause(listOf("umbrella")),
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
+            ),
         ) shouldBe "Today, it will be 21°. Rain at 3pm, bring an umbrella."
     }
 
@@ -1100,6 +1103,7 @@ class InsightFormatterTest {
     fun `umbrella accessory appends 'bring an umbrella' to the POSSIBLE precip clause`() {
         umbrellaSubject.format(
             summary(
+                clothes = ClothesClause(listOf("umbrella")),
                 precip = PrecipClause(
                     WeatherCondition.RAIN,
                     LocalTime.of(15, 0),
@@ -1112,7 +1116,10 @@ class InsightFormatterTest {
     @Test
     fun `umbrella accessory appends to the overnight-collapsed precip clause`() {
         umbrellaSubject.format(
-            summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(2, 0))),
+            summary(
+                clothes = ClothesClause(listOf("umbrella")),
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(2, 0)),
+            ),
         ) shouldBe "Today, it will be 21°. Rain overnight, bring an umbrella."
     }
 
@@ -1120,7 +1127,10 @@ class InsightFormatterTest {
     fun `umbrella accessory rides a drizzle precip clause`() {
         // DRIZZLE is rain-like enough that an umbrella still reads correctly.
         umbrellaSubject.format(
-            summary(precip = PrecipClause(WeatherCondition.DRIZZLE, LocalTime.NOON)),
+            summary(
+                clothes = ClothesClause(listOf("umbrella")),
+                precip = PrecipClause(WeatherCondition.DRIZZLE, LocalTime.NOON),
+            ),
         ) shouldBe "Today, it will be 21°. Drizzle at noon, bring an umbrella."
     }
 
@@ -1170,7 +1180,7 @@ class InsightFormatterTest {
         umbrellaSubject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
-                    items = listOf("jacket"),
+                    items = listOf("jacket", "umbrella"),
                     rainTime = LocalTime.of(21, 0),
                     precipCondition = WeatherCondition.RAIN,
                 ),
@@ -1186,7 +1196,7 @@ class InsightFormatterTest {
         umbrellaSubject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
-                    items = emptyList(),
+                    items = listOf("umbrella"),
                     rainTime = LocalTime.of(21, 0),
                     precipCondition = WeatherCondition.RAIN,
                 ),
@@ -1199,7 +1209,7 @@ class InsightFormatterTest {
         umbrellaSubject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
-                    items = emptyList(),
+                    items = listOf("umbrella"),
                     rainTime = LocalTime.of(21, 0),
                     likelihood = PrecipLikelihood.POSSIBLE,
                     precipCondition = WeatherCondition.RAIN,
@@ -1288,14 +1298,18 @@ class InsightFormatterTest {
             rainAccessory = RainAccessory.UMBRELLA,
         )
         germanUmbrellaSubject.format(
-            summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0))),
+            summary(
+                clothes = ClothesClause(listOf("umbrella")),
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
+            ),
         ) shouldBe "Heute wird es 21°. Regen um 15 Uhr, denk an Regenschirm."
     }
 
     @Test
     fun `full insight composes alert + band + delta + clothes + precip in order`() {
-        // Umbrella is silenced (accessories don't surface in rendered prose);
-        // "Wear a sweater. Rain at 3pm." carries the message.
+        // The umbrella is filtered out of the wear sentence (carried, not worn)
+        // but folds into the precip clause, so "Wear a sweater." names the worn
+        // garment and "Rain at 3pm, bring an umbrella." carries the carry.
         val out = subject.format(
             summary(
                 alert = AlertClause("Flood Warning"),
@@ -1306,7 +1320,7 @@ class InsightFormatterTest {
             ),
         )
         out shouldBe "Alert: Flood Warning. Today, it will be 15° to 21°. 6° warmer than yesterday. " +
-            "Wear a sweater. Rain at 3pm."
+            "Wear a sweater. Rain at 3pm, bring an umbrella."
     }
 
     @Test

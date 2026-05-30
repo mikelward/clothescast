@@ -174,6 +174,21 @@ class PromoBannersTest {
     }
 
     @Test
+    fun `play promo outranks schedule under the cap`() {
+        promoBannersToShow(
+            locationActionRequired = false,
+            telemetryNoticeVisible = false,
+            clothesPromoEligible = false,
+            schedulePromoEligible = true,
+            playPromoEligible = true,
+            geminiPromoEligible = false,
+            celebrationEligible = false,
+            hasForecast = true,
+            maxVisible = 1,
+        ) shouldContainExactlyInAnyOrder listOf(PromoBanner.PLAY)
+    }
+
+    @Test
     fun `play promo is held back until a forecast exists`() {
         promoBannersToShow(
             locationActionRequired = false,

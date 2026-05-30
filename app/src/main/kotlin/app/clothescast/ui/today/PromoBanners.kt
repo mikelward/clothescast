@@ -6,12 +6,12 @@ package app.clothescast.ui.today
  * operational banners (update / crash / work-status / holiday), which aren't
  * capped.
  */
-internal enum class PromoBanner { LOCATION, TELEMETRY, CLOTHES, SCHEDULE, PLAY, GEMINI, CELEBRATION }
+internal enum class PromoBanner { LOCATION, TELEMETRY, CLOTHES, PLAY, SCHEDULE, GEMINI, CELEBRATION }
 
 /**
  * Decides which promo cards the Today screen shows, capping the stack so a
  * fresh user isn't buried under "set this up" noise. Eligible cards are taken
- * in priority order (location > privacy > clothes > schedule > play > gemini > celebration) up
+ * in priority order (location > privacy > clothes > play > schedule > gemini > celebration) up
  * to [maxVisible]; the rest wait until a higher one is resolved or dismissed.
  *
  * The five customization nudges — clothes ([clothesPromoEligible]),
@@ -43,8 +43,8 @@ internal fun promoBannersToShow(
         if (locationActionRequired && hasForecast) add(PromoBanner.LOCATION)
         if (telemetryNoticeVisible) add(PromoBanner.TELEMETRY)
         if (clothesPromoEligible && hasForecast) add(PromoBanner.CLOTHES)
-        if (schedulePromoEligible && hasForecast) add(PromoBanner.SCHEDULE)
         if (playPromoEligible && hasForecast) add(PromoBanner.PLAY)
+        if (schedulePromoEligible && hasForecast) add(PromoBanner.SCHEDULE)
         if (geminiPromoEligible && hasForecast) add(PromoBanner.GEMINI)
         if (celebrationEligible && hasForecast) add(PromoBanner.CELEBRATION)
     }

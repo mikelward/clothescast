@@ -116,12 +116,13 @@ new rule the first time something bites you, not the third.
   Move scope, module names, and engineering detail (file paths, refactor
   reasoning, "fixes #123") into the commit body — reviewers see the body
   on the PR, but the Play release notes don't.
-- **`ci:` / `test:` prefixes and docs-only commits are filtered out** of
-  the changelog (see the "Prepare release notes" step in `ci.yml`) so the
-  snapshot-regen bot's commits, test-only changes, and `docs/` / dotfile
-  / `*.md` changes don't surface as bullets. Anything else *will* appear
-  — if a commit shouldn't ship in the changelog, either squash it into a
-  sibling or give it the appropriate prefix.
+- **`ci:` / `test:` / `internal:` prefixes and docs-only commits are
+  filtered out** of the changelog (see the "Prepare release notes" step in
+  `ci.yml`) so the snapshot-regen bot's commits, test-only changes,
+  internal-only changes, and `docs/` / dotfile / `*.md` changes don't
+  surface as bullets. Anything else *will* appear — if a commit shouldn't
+  ship in the changelog, either squash it into a sibling or give it the
+  appropriate prefix.
 - **Test-only commits use a `test:` subject prefix.** A commit that
   touches only test sources / fixtures / snapshots (anything under
   `src/test/`, `src/androidTest/`, `app/snapshots/`, or equivalent —
@@ -131,6 +132,17 @@ new rule the first time something bites you, not the third.
   CI will skip it the same way it skips `ci:`. Mixed commits (test +
   production code) stay un-prefixed and ship as normal bullets —
   squash the test work into the feature commit instead of splitting.
+
+- **Internal-only commits use an `internal:` subject prefix.** A commit
+  that ships nothing user-visible in the APK and isn't test-only — agent
+  guides, repo tooling, project meta — takes `internal:` (e.g. `internal:
+  document the internal: changelog prefix`) and CI skips it the same way
+  it skips `ci:` / `test:`. Note the path-based filter already drops
+  top-level `*.md`, `docs/`, and dotfile-only commits regardless of
+  prefix (PRIVACY.md is the exception — it's treated as non-docs so
+  privacy-policy updates still surface), so a pure-`AGENTS.md` change
+  doesn't strictly need the prefix; reach for `internal:` when an
+  internal-only change touches paths that *would* otherwise ship a bullet.
 - **Play caps `whatsnew-en-US` at 500 bytes.** When the bullet list
   exceeds that, CI truncates and appends `…`. Avoid lining up a long
   stack of small commits if any one of them tells the user-facing story

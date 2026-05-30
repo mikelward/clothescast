@@ -12,8 +12,9 @@ import java.util.Locale
  * The catalog is intentionally finite: free-form garment names defeat
  * translation (the German phraser can't translate arbitrary user input), so
  * the editor UI only lets the user pick from this list. Today the list covers
- * tops and bottoms — headwear, accessories, and rain / sun gear can land in a
- * follow-up PR (and will likely come paired with their own outfit-card icons).
+ * tops, bottoms, the gloves hands slot, and one carried accessory (umbrella);
+ * headwear and further rain / sun gear can land in follow-ups (and will likely
+ * come paired with their own outfit-card icons).
  *
  * Stays in `:core:domain` so the rule-evaluation tests and the future
  * `ClothesRule.item` migration to a typed field can reach it without pulling
@@ -70,7 +71,14 @@ enum class Garment(
     // Extremity gear — worn alongside the top/bottom stack, not part of it.
     // Gloves are the "extra cold" signal: they fire below the coat threshold
     // rather than inflating the layer count.
-    GLOVES("gloves", Slot.HANDS);
+    GLOVES("gloves", Slot.HANDS),
+
+    // Carried rain/sun gear — held, not worn. An umbrella is keyed off
+    // precipitation probability rather than temperature; it claims its own
+    // [Slot.CARRIED] so it never competes with the worn top/bottom/hands
+    // stack, and the prose names it with "bring/carry" rather than "wear"
+    // (see [isAccessoryKey]).
+    UMBRELLA("umbrella", Slot.CARRIED);
 
     /**
      * Canonical relative warmth for outfit comparisons — "is the evening's top
@@ -96,6 +104,8 @@ enum class Garment(
         TOP(Reduction.LAYERED),
         BOTTOM(Reduction.SUBSTITUTE),
         HANDS(Reduction.SUBSTITUTE),
+        // Carried, not worn — a single umbrella; you don't carry two.
+        CARRIED(Reduction.SUBSTITUTE),
     }
 
     /**
@@ -155,15 +165,14 @@ enum class Garment(
 
         /**
          * Whether a rule-item key names a *carried* accessory (rather than a
-         * worn garment). Accessories don't live in the [Garment] catalog —
-         * they don't claim a slot, don't layer, and the wear-clause prose
-         * filters them out ("Wear an umbrella" reads wrong; the rain mention
-         * already implies it). Today it's only `umbrella`; the
-         * `accessories-catalog` TODO in the formatter is the long-term home
-         * for a proper kind classification (rain jacket, hood, sunscreen, …).
+         * worn garment). Carried gear sits in [Slot.CARRIED]: it doesn't layer
+         * and the wear-clause prose filters it out of "Wear …" ("Wear an
+         * umbrella" reads wrong — it's named with "bring/carry" instead). Today
+         * it's only `umbrella`; a future rain jacket / hood / sunscreen would
+         * join [Slot.CARRIED] and be picked up here automatically.
          */
         fun isAccessoryKey(key: String): Boolean =
-            key.trim().equals("umbrella", ignoreCase = true)
+            fromKey(key)?.slot == Slot.CARRIED
 
         /**
          * Within-layer priority for top garments — heaviest-tier first. When
@@ -213,6 +222,7 @@ enum class Garment(
             mapOf(
                 Slot.BOTTOM to BOTTOM_PRIORITY,
                 Slot.HANDS to listOf(GLOVES),
+                Slot.CARRIED to listOf(UMBRELLA),
             )
 
         /** Rank of this garment within a priority list — earlier wins; anything

@@ -594,6 +594,7 @@ private fun garmentLabelRes(garment: Garment): Int = when (garment) {
     Garment.PANTS -> R.string.garment_pants
     Garment.JEANS -> R.string.garment_jeans
     Garment.GLOVES -> R.string.garment_gloves
+    Garment.UMBRELLA -> R.string.garment_umbrella
 }
 
 @Composable
@@ -757,7 +758,11 @@ private fun GarmentDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
-            Garment.entries.forEach { entry ->
+            // UMBRELLA is in the catalog but not yet offered here: the umbrella
+            // rule replaces the RainAccessory toggle in a follow-up, which is
+            // when it joins the picker. Until then it stays hidden so the two
+            // umbrella paths don't compete.
+            Garment.entries.filter { it != Garment.UMBRELLA }.forEach { entry ->
                 DropdownMenuItem(
                     text = { Text(stringResource(garmentLabelRes(entry))) },
                     onClick = {

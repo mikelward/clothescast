@@ -49,6 +49,7 @@ import app.clothescast.work.FetchAndNotifyWorker
 import app.clothescast.tts.TtsVoiceEnumerator
 import app.clothescast.tts.resolve
 import app.clothescast.tts.toJavaLocale
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -80,6 +81,17 @@ class SettingsViewModel(
     private val cancelAlarm: (ForecastPeriod) -> Unit,
     private val geocodingClient: OpenMeteoGeocodingClient,
     private val voiceEnumerator: TtsVoiceEnumerator,
+    /**
+     * Dispatcher the device-voice enumeration hops to for its JNI engine
+     * binds (see [refreshDeviceVoices]). Defaults to [Dispatchers.IO] in
+     * production; tests inject their own test dispatcher so the enumeration
+     * stays on the test scheduler and can be drained deterministically in
+     * teardown — otherwise the real-IO hop outlives the test, resumes after
+     * `Dispatchers.resetMain()`, and crashes trying to dispatch back onto the
+     * now-missing Main dispatcher (surfacing as a flaky
+     * `UncaughtExceptionsBeforeTest` against the next test).
+     */
+    private val voiceEnumerationDispatcher: CoroutineDispatcher = Dispatchers.IO,
     /**
      * Pokes the home-screen widget after a settings change so the launcher
      * icon catches up in the same frame as the Today screen. The cache no
@@ -371,7 +383,7 @@ class SettingsViewModel(
             // All three enumerator calls bind the engine, which is JNI work
             // — keep them off the main dispatcher.
             val resolvedLocale = locale.resolve(_state.value.region.toJavaLocale() ?: Locale.getDefault())
-            val voices = withContext(Dispatchers.IO) {
+            val voices = withContext(voiceEnumerationDispatcher) {
                 runCatching { voiceEnumerator.listVoices(resolvedLocale) }.getOrDefault(emptyList())
             }
             val pinnedId = pinnedIdOverride
@@ -383,11 +395,11 @@ class SettingsViewModel(
                 // misses, which is rare — most pins match the current
                 // locale.
                 voices.firstOrNull { it.id == pinnedId }
-                    ?: withContext(Dispatchers.IO) {
+                    ?: withContext(voiceEnumerationDispatcher) {
                         runCatching { voiceEnumerator.findVoice(pinnedId) }.getOrNull()
                     }
             } else {
-                withContext(Dispatchers.IO) {
+                withContext(voiceEnumerationDispatcher) {
                     runCatching { voiceEnumerator.resolveAutoPick(resolvedLocale) }.getOrNull()
                 }
             }

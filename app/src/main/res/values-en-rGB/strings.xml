@@ -32,4 +32,10 @@ full re-translation.
     <string name="settings_garment_color_picker_title">Pick a colour</string>
     <string name="settings_garment_color_swatch_description">Colour swatch %1$s</string>
     <string name="settings_garment_color_default_swatch_description">Reset %1$s to the default colour</string>
+    <string name="settings_display_palette_highlighter_description">Magenta, yellow, and cyan chart lines — like highlighter pens on the page. Visibly different from Rainbow at a glance; the light theme uses deeper variants for readability. Safe under red-green colour blindness.</string>
+    <string name="settings_calendar_birthdays_description">Use special colours and messages for birthdays in your calendars.</string>
+    <string name="settings_calendar_public_holidays_description">Use special colours and messages for public holidays in your calendars.</string>
+
+    <!-- "Personalise" with the British -ise ending. -->
+    <string name="settings_calendar_master_description">Let ClothesCast read your calendars to personalise forecasts and outfits. Nothing leaves the device.</string>
 </resources>

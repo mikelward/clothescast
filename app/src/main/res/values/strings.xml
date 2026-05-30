@@ -394,7 +394,7 @@
          button so they can preview their scheduled ClothesCast on demand.
          Shows once a schedule slot is enabled; auto-hides after the user
          X-dismisses. -->
-    <string name="today_play_promo_title">Preview your daily ClothesCast now</string>
+    <string name="today_play_promo_title">Preview your daily ClothesCast</string>
     <string name="today_play_promo_body">Tap the play button to hear your ClothesCast.</string>
     <string name="today_play_promo_dismiss">Dismiss</string>
 

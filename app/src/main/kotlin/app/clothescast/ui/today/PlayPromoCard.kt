@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -21,33 +24,38 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.R
 
 /**
- * Today-screen promo card pointing the user at the top-bar play button so they
- * can preview their scheduled ClothesCast on demand rather than waiting for the
- * morning / evening alarm. It carries no CTA of its own — the play button it
- * describes is already in the top app bar — just title, body, and a dismiss X.
+ * Today-screen promo card inviting the user to preview their scheduled
+ * ClothesCast on demand rather than waiting for the morning / evening alarm. It
+ * carries its own Play button (the same action as the top app bar's), so the
+ * user can hear the cast without hunting for the toolbar control, plus a
+ * dismiss X.
  *
  * Visibility is decided upstream in [TodayViewModel] via
  * [TodayState.playPromoCardVisible] — true iff the user hasn't dismissed it AND
  * at least one cast slot is enabled (so "your ClothesCast" is meaningful; the
  * morning slot is on by default, so this normally holds). It's retired (via
- * [SettingsRepository.setPlayCardDismissed]) both by the dismiss X and by the
- * user tapping the top-bar Play button it points at — once they've used Play,
- * the card has served its purpose.
+ * [SettingsRepository.setPlayCardDismissed]) by the dismiss X, by tapping its
+ * Play button, and by tapping the top-bar Play button it mirrors — once the
+ * user has played a cast, the card has served its purpose.
  */
 @Composable
 internal fun PlayPromoCard(
     visible: Boolean,
+    onPlay: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     if (!visible) return
-    PlayPromoCardContent(onDismiss = onDismiss, modifier = modifier)
+    PlayPromoCardContent(onPlay = onPlay, onDismiss = onDismiss, enabled = enabled, modifier = modifier)
 }
 
 @Composable
 internal fun PlayPromoCardContent(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    onPlay: () -> Unit = {},
+    enabled: Boolean = true,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -58,7 +66,7 @@ internal fun PlayPromoCardContent(
     ) {
         Column(
             modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 4.dp, bottom = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -81,6 +89,17 @@ internal fun PlayPromoCardContent(
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(end = 12.dp),
             )
+            Button(onClick = onPlay, enabled = enabled) {
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                )
+                Text(
+                    text = stringResource(R.string.today_play),
+                    modifier = Modifier.padding(start = 8.dp),
+                )
+            }
         }
     }
 }

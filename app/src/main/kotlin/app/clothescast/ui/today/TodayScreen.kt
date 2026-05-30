@@ -745,13 +745,31 @@ private fun BannerStack(
         onDismiss = onDismissSchedulePromoCard,
         modifier = bannerModifier,
     )
-    // "Preview your ClothesCast" nudge — point the user at the top-bar play
-    // button so they can hear the cast on demand instead of waiting for the
-    // alarm. Gated upstream on a cast slot being enabled (true by default for
-    // the morning cast) plus not dismissed. Carries no CTA — the play button it
-    // describes is already in the top app bar.
+    // "Preview your ClothesCast" nudge — let the user hear the cast on demand
+    // instead of waiting for the alarm. Gated upstream on a cast slot being
+    // enabled (true by default for the morning cast) plus not dismissed. Its
+    // Play button mirrors the top-bar one: same window derivation, same
+    // play-retires-the-promo behavior.
+    val playPromoContext = LocalContext.current
     PlayPromoCard(
         visible = PromoBanner.PLAY in shownPromos,
+        enabled = !state.anyWorkActive,
+        onPlay = {
+            // "Play" means the *current* cast, so derive the window from the wall
+            // clock at tap time — same check Refresh and the top-bar Play use.
+            val playPeriod =
+                if (LocalTime.now().isInTonightWindow(state.morningTime, state.tonightTime)) {
+                    ForecastPeriod.TONIGHT
+                } else {
+                    ForecastPeriod.TODAY
+                }
+            triggerPlay(playPromoContext, playPeriod)
+            // Playing retires the promo — they've used the feature it pitches.
+            // Require a delivered forecast (matching the hasForecast gate that
+            // renders the card) so a fresh install can't persist the dismissal
+            // before any forecast exists.
+            if (state.thisPeriodInsight != null) onDismissPlayPromoCard()
+        },
         onDismiss = onDismissPlayPromoCard,
         modifier = bannerModifier,
     )

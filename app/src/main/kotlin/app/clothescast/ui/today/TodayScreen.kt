@@ -6,11 +6,13 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -67,6 +69,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.foundation.layout.Row
@@ -75,6 +80,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -125,8 +131,13 @@ import app.clothescast.ui.garment.GarmentBottomIcon
 import app.clothescast.ui.garment.GarmentCarriedIcon
 import app.clothescast.ui.garment.GarmentHandsIcon
 import app.clothescast.ui.garment.GarmentTopIcon
+import app.clothescast.ui.garment.OutfitCardInfoLines
+import app.clothescast.ui.garment.conditionsCells
+import app.clothescast.ui.garment.outfitCardInfoLines
+import app.clothescast.ui.garment.renderConditionsStripBitmap
 import app.clothescast.diag.BugReport
 import app.clothescast.diag.BugReportConsentDialog
+import app.clothescast.diag.DiagLog
 import app.clothescast.diag.findActivity
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.location.hasBackgroundLocationPermission
@@ -839,11 +850,12 @@ private fun BannerStack(
  * in the common layout: the top/bottom edge fades, the time-format provider,
  * the scrolling Column with its nav-bar inset + padding, the top-of-scroll
  * [BannerStack] (location / update / local-build / crash / telemetry / promo /
- * work-status / holiday), and the pinned [OutfitPreviewRow]. Pages 0 / 1 add
- * the insight card + per-period chart deck; page 2 adds the weekly header +
- * 7-day chart deck. Keeping the chrome here means the banner stack and outfit
- * row are byte-identical across all three pages — swiping between Today /
- * Tonight / 7-day keeps the same cards in the same place.
+ * work-status / holiday), and the user-reorderable sections (the conditions
+ * strip, the [OutfitPreviewRow], and the insight slot) in [homeSectionOrder].
+ * Pages 0 / 1 add the insight card + per-period chart deck; page 2 adds the
+ * weekly header + 7-day chart deck. Keeping the chrome here means the banner
+ * stack and reorderable sections are byte-identical across all three pages —
+ * swiping between Today / Tonight / 7-day keeps the same cards in the same place.
  */
 @Composable
 internal fun HomePageScaffold(
@@ -869,6 +881,44 @@ internal fun HomePageScaffold(
     insightSlot: (@Composable ColumnScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    // This-period conditions for the strip at the top of every page. Pinned to
+    // [outfitInsight] (always this period) like the outfit row below it, so the
+    // strip stays byte-identical across Today / Tonight / 7-day and matches the
+    // home-screen conditions widget (which also shows THIS_PERIOD). Reuses the
+    // exact helper the widget and outfit card feed off so all three read the
+    // same indicators in the same order.
+    val context = LocalContext.current
+    val conditionsInfo: OutfitCardInfoLines? = remember(
+        outfitInsight,
+        state.region,
+        state.temperatureUnit,
+        state.distanceUnit,
+    ) {
+        outfitInsight?.hourly?.takeIf { it.isNotEmpty() }?.let { hourly ->
+            runCatching {
+                val formatter = InsightFormatter.forRegion(context, state.region)
+                outfitCardInfoLines(
+                    context = context,
+                    formatter = formatter,
+                    hourly = hourly,
+                    temperatureUnit = state.temperatureUnit,
+                    windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                )
+            }.onFailure { t ->
+                // Explicit fallback: a formatter/resource failure hides the
+                // strip (returns null below) rather than crashing the page —
+                // but log it so a region/locale regression is traceable
+                // instead of vanishing silently. Synchronous, non-suspend
+                // call, so there's no CancellationException to preserve.
+                DiagLog.w(
+                    "TodayScreen",
+                    "Conditions strip failed to build for region=${state.region}, " +
+                        "${hourly.size} hourly entries",
+                    t,
+                )
+            }.getOrNull()
+        }
+    }
     // Edge fades hint at off-screen content above / below — drawn at the
     // page's outer Box bounds (the pager-page edges), so cards pass cleanly
     // under them as the user scrolls.
@@ -910,13 +960,13 @@ internal fun HomePageScaffold(
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
                 )
-                // The outfit row and the insight ([insightSlot]) are the two
-                // user-reorderable sections; [homeSectionOrder] decides which
-                // comes first. Both render above the page's own [content]
-                // (charts / placeholder), which always trails the pair. The
-                // same order is used on all three pager pages — the 7-day page
-                // passes its week-headline card as [insightSlot] — so the
-                // outfit row keeps the same vertical offset across a swipe
+                // The conditions strip, the outfit row, and the insight
+                // ([insightSlot]) are the three user-reorderable sections;
+                // [homeSectionOrder] decides their order. All render above the
+                // page's own [content] (charts / placeholder), which always
+                // trails them. The same order is used on all three pager pages —
+                // the 7-day page passes its week-headline card as [insightSlot] —
+                // so each section keeps the same vertical offset across a swipe
                 // regardless of which order the user picked.
                 //
                 // The outfit row still renders even when the page's own insight
@@ -925,6 +975,15 @@ internal fun HomePageScaffold(
                 // null only on previews / tests that don't wire a pair.
                 homeSectionOrder.forEach { section ->
                     when (section) {
+                        // Conditions strip (feels-like, rain, wind, UV) inset to
+                        // the same width as the cards and clipped to the card
+                        // shape, so it reads as one of the cards in the stack.
+                        // Only shown once this period's hourly forecast is
+                        // cached; before then the strip would be blank.
+                        HomeSection.CONDITIONS ->
+                            conditionsInfo?.takeIf { it.tempLine.isNotBlank() }?.let { info ->
+                                ConditionsStrip(info = info)
+                            }
                         HomeSection.OUTFIT -> if (outfitInsight != null) {
                             OutfitPreviewRow(
                                 insight = outfitInsight,
@@ -947,6 +1006,62 @@ internal fun HomePageScaffold(
         }
     }
 }
+
+/** Height of the home-page conditions band. */
+private val CONDITIONS_STRIP_HEIGHT = 36.dp
+
+/**
+ * Conditions band: the same feels-like / rain / wind / UV indicators the
+ * conditions widget and outfit card show, rasterized once via
+ * [renderConditionsStripBitmap] so all three surfaces read identically rather
+ * than re-implementing the glyphs in Compose. Sized to match the other cards
+ * (the caller leaves it inside the page Column's horizontal padding) and clipped
+ * to the same Material card shape, so it reads as one of the cards in the stack.
+ * The band paints [surfaceVariant] behind a transparent bitmap so it matches the
+ * cards' container; the renderer's light/dark glyph + text colors are chosen off
+ * that surface's own luminance, so the interiors and labels stay legible whether
+ * MainActivity resolved a light or dark scheme (system mode or in-app override).
+ */
+@Composable
+private fun ConditionsStrip(
+    info: OutfitCardInfoLines,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val density = LocalDensity.current
+    val surface = MaterialTheme.colorScheme.surfaceVariant
+    val darkTheme = surface.luminance() < 0.5f
+    val cells = remember(info) { conditionsCells(info) }
+    val description = remember(info) { conditionsStripDescription(info) }
+    BoxWithConstraints(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(CONDITIONS_STRIP_HEIGHT)
+            .clip(CardDefaults.shape)
+            .background(surface),
+        contentAlignment = Alignment.Center,
+    ) {
+        val widthPx = with(density) { maxWidth.toPx() }.toInt().coerceAtLeast(1)
+        val heightPx = with(density) { maxHeight.toPx() }.toInt().coerceAtLeast(1)
+        val bitmap = remember(cells, widthPx, heightPx, darkTheme) {
+            renderConditionsStripBitmap(context, cells, widthPx, heightPx, darkTheme)
+        }
+        Image(
+            bitmap = bitmap.asImageBitmap(),
+            contentDescription = description,
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
+}
+
+/** Comma-joined accessibility label for the conditions strip's present cells. */
+private fun conditionsStripDescription(info: OutfitCardInfoLines): String =
+    listOfNotNull(
+        info.tempLine.takeIf { it.isNotBlank() },
+        info.rainLineShort,
+        info.windLabel,
+        info.uvLabel,
+    ).joinToString(", ")
 
 /**
  * One page inside the Today pager. When [insight] is non-null it renders the

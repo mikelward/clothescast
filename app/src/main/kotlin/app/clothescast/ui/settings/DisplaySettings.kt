@@ -174,6 +174,7 @@ private fun colorPaletteDescription(palette: ColorPalette): Int = when (palette)
 }
 
 private fun homeSectionLabel(section: HomeSection): Int = when (section) {
+    HomeSection.CONDITIONS -> R.string.settings_display_home_section_conditions
     HomeSection.OUTFIT -> R.string.settings_display_home_section_outfit
     HomeSection.INSIGHT -> R.string.settings_display_home_section_insight
 }

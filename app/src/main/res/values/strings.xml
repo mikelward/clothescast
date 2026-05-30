@@ -545,6 +545,7 @@
     <string name="settings_display_palette_highlighter_description">Magenta, yellow, and cyan chart lines — like highlighter pens on the page. Visibly different from Rainbow at a glance; the light theme uses deeper variants for readability. Safe under red-green color blindness.</string>
     <string name="settings_display_home_layout_title">Home screen layout</string>
     <string name="settings_display_home_layout_description">Drag the handles to reorder how these sections appear on the home screen.</string>
+    <string name="settings_display_home_section_conditions">Conditions</string>
     <string name="settings_display_home_section_outfit">Outfit</string>
     <string name="settings_display_home_section_insight">Forecast</string>
     <!-- Accessibility label for the drag handle; %1$s is the section name. -->

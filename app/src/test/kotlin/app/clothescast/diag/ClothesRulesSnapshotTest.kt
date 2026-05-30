@@ -151,4 +151,30 @@ class ClothesRulesSnapshotTest {
 
         snap.categoriesCustomised shouldBe "jacket,shorts"
     }
+
+    @Test
+    fun `every default category is wired to its own delta field`() {
+        // [ClothesRulesSnapshot.from] builds perCategory from all of
+        // [ClothesRule.DEFAULTS], so a new default feeds customisedCount /
+        // categoriesCustomised automatically — but each `*DeltaC` field is
+        // hand-listed, so a new default with no matching field is silently
+        // unmeasurable in Firebase (exactly the gloves gap in #812). Guard the
+        // two against drift: there must be one delta field per default, and for
+        // an unmodified default list every one must read "0" (proving the field
+        // is wired to its category, not stuck on the MISSING fallback through a
+        // typo'd key). Fields are read via Java reflection — no kotlin-reflect
+        // dependency needed — so this stays a plain JVM test.
+        val snap = ClothesRulesSnapshot.from(ClothesRule.DEFAULTS)
+        val deltaFields = ClothesRulesSnapshot::class.java.declaredFields
+            .filter { it.name.endsWith("DeltaC") }
+            .onEach { it.isAccessible = true }
+
+        // One delta field per shipped default — adding a default without its
+        // field (or vice versa) trips this.
+        deltaFields.size shouldBe ClothesRule.DEFAULTS.size
+        // Each wired field resolves its category for a pure-default list.
+        deltaFields.forEach { field ->
+            field.get(snap) shouldBe "0"
+        }
+    }
 }

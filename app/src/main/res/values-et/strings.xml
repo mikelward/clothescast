@@ -16,6 +16,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_refresh">Värskenda</string>
     <string name="today_empty_title">ClothesCast puudub veel</string>
     <string name="today_empty_subtitle">Sinu hommikune ClothesCast ilmub siia, kui see on genereeritud.</string>
+    <string name="today_empty_location_title">Asukoht on vajalik</string>
+    <string name="today_empty_location_subtitle">Seadistage oma asukoht, et saada oma ClothesCast.</string>
     <string name="today_fetch_now">Laadi kohe</string>
     <string name="today_generated_at">Genereeritud kell %1$s</string>
     <string name="today_location_unknown">Sinu asukoht</string>
@@ -58,6 +60,11 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="feels_like_week_widget_label">Tunnetatav temperatuur (7 päeva)</string>
     <string name="feels_like_week_widget_description">Tunnetatav temperatuur järgmise 7 päeva jooksul.</string>
     <string name="feels_like_widget_empty_title">Prognoosi veel pole</string>
+    <string name="conditions_widget_label">Tingimused</string>
+    <string name="conditions_widget_description">Temperatuur, vihm, tuul ja UV ühe pilguga.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <string name="today_forecast_title">Tunnipõhine ilmaprognoos</string>
     <string name="today_forecast_min_max">Tundub %1$d – %2$d%3$s</string>
@@ -100,6 +107,10 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_failed_no_location">Asukoha tuvastamine ebaõnnestus. Anna alati-sees asukohaluba või määra linn seadetes.</string>
     <string name="today_failed_show_details">Näita üksikasju</string>
     <string name="today_failed_hide_details">Peida üksikasjad</string>
+    <string name="today_mqtt_failed_title">Saatmine teie nutikodusse ebaõnnestus</string>
+    <string name="today_cast_failed_title">Ülekanne ekraanile ebaõnnestus</string>
+    <string name="today_publish_failed_body">Proovime järgmisel värskendusel uuesti.</string>
+    <string name="today_publish_failed_dismiss">Sulge</string>
 
     <string name="today_location_required_title">Seadista oma asukoht</string>
     <string name="today_location_required_body">ClothesCast peab teadma, kus sa oled, et laadida ilmaprognoos. Anna alati-sees asukohaluba või vali linn.</string>
@@ -232,6 +243,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_schedule_time_label">Kellaaeg</string>
     <string name="settings_schedule_days_label">Nädalapäevad</string>
     <string name="settings_daily_mention_evening_events">Maini õhtuseid sündmusi</string>
+    <string name="settings_schedule_preview">Esita kohe</string>
 
     <string name="settings_tonight_title">Õhtune ClothesCast</string>
     <string name="settings_tonight_description">Teine ClothesCast õhtul, mis käsitleb tänase õhtu ilma. Vaiksetel õhtutel jääb vaikseks või ei ilmu üldse, kui „Teavita ainult õhtuste sündmuste korral" on sees; sündmustega õhtutel esitab heli ja (kui kõvalugemise edastus on lubatud) loeb ise ette.</string>
@@ -432,6 +444,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="garment_pants">Püksid</string>
     <string name="garment_jeans">Teksad</string>
     <string name="garment_gloves">Kindad</string>
+    <string name="garment_umbrella">Vihmavari</string>
 
     <string name="settings_clothes_empty">Reegleid pole. Lisa uus puudutades Lisa.</string>
     <string name="settings_clothes_add">Lisa</string>
@@ -440,6 +453,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_clothes_dialog_add_title">Lisa riietusereegel</string>
     <string name="settings_clothes_dialog_edit_title">Muuda riietusereeglit</string>
     <string name="settings_clothes_item_label">Riietusese</string>
+    <string name="settings_clothes_color_label">Värv</string>
     <string name="settings_clothes_condition_label">Tingimus</string>
     <string name="settings_clothes_value_label_temp">Lävi (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Lävi (%%)</string>
@@ -1156,6 +1170,13 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_schedule_promo_body">Vali, millal saad teavitusi ja teadaandeid.</string>
     <string name="today_schedule_promo_cta">Ajakava seaded</string>
     <string name="today_schedule_promo_dismiss">Sulge</string>
+    <string name="today_play_promo_title">Kuulake oma igapäevast ClothesCasti</string>
+    <string name="today_play_promo_body">Puudutage esitusnuppu, et kuulata oma ClothesCasti.</string>
+    <string name="today_play_promo_dismiss">Sulge</string>
+    <string name="today_gemini_promo_title">Proovige kvaliteetseid hääli</string>
+    <string name="today_gemini_promo_body">Lülitage Gemini sisse, et kuulata oma ClothesCasti loomulike, elutruude häältega.</string>
+    <string name="today_gemini_promo_cta">Hääle seaded</string>
+    <string name="today_gemini_promo_dismiss">Sulge</string>
     <string name="today_clothes_promo_title">Tee riided enda omaks</string>
     <string name="today_insight_format_link">Vorming</string>
     <string name="today_play">Esita</string>

@@ -48,6 +48,7 @@ the displayed label localizes.
     <string name="garment_pants">Broek</string>
     <string name="garment_jeans">Spijkerbroek</string>
     <string name="garment_gloves">Handschoenen</string>
+    <string name="garment_umbrella">Paraplu</string>
 
     <!-- Clothes settings. -->
     <string name="settings_clothes_title">Kledingregels</string>
@@ -60,6 +61,7 @@ the displayed label localizes.
     <string name="settings_clothes_dialog_add_title">Kledingsregel toevoegen</string>
     <string name="settings_clothes_dialog_edit_title">Kledingsregel bewerken</string>
     <string name="settings_clothes_item_label">Kledingstuk</string>
+    <string name="settings_clothes_color_label">Kleur</string>
     <string name="settings_clothes_condition_label">Voorwaarde</string>
     <string name="settings_clothes_value_label_temp">Drempel (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Drempel (%%)</string>
@@ -77,6 +79,7 @@ the displayed label localizes.
     <string name="settings_schedule_time_label">Tijdstip</string>
     <string name="settings_schedule_days_label">Weekdagen</string>
     <string name="settings_daily_mention_evening_events">Avondafspraken vermelden</string>
+    <string name="settings_schedule_preview">Nu afspelen</string>
 
     <string name="settings_tonight_title">Avondlijkse ClothesCast</string>
     <string name="settings_tonight_description">Een tweede ClothesCast \'s avonds voor het weer van vanavond. Op rustige avonden blijft hij stil of verschijnt hij helemaal niet als \'Alleen meldingen bij avondafspraken\' is ingeschakeld; op avonden met afspraken speelt hij een geluid af en (als je gesproken uitvoer hebt ingeschakeld) leest hij zichzelf voor.</string>
@@ -316,6 +319,8 @@ the displayed label localizes.
     <string name="today_refresh">Vernieuwen</string>
     <string name="today_empty_title">Nog geen ClothesCast</string>
     <string name="today_empty_subtitle">Je ochtendlijkse ClothesCast verschijnt hier zodra hij is aangemaakt.</string>
+    <string name="today_empty_location_title">Locatie vereist</string>
+    <string name="today_empty_location_subtitle">Stel je locatie in om je ClothesCast te krijgen.</string>
     <string name="today_fetch_now">Nu ophalen</string>
     <string name="today_generated_at">Aangemaakt om %1$s</string>
 
@@ -347,6 +352,10 @@ the displayed label localizes.
     <string name="today_failed_unhandled">Er is een onverwachte fout opgetreden.</string>
     <string name="today_failed_show_details">Details weergeven</string>
     <string name="today_failed_hide_details">Details verbergen</string>
+    <string name="today_mqtt_failed_title">Verzenden naar je slimme huis is mislukt</string>
+    <string name="today_cast_failed_title">Casten naar je scherm is mislukt</string>
+    <string name="today_publish_failed_body">We proberen het opnieuw bij de volgende update.</string>
+    <string name="today_publish_failed_dismiss">Sluiten</string>
 
     <!-- Home-screen App Widget. -->
     <string name="widget_label">Outfit</string>
@@ -358,6 +367,11 @@ the displayed label localizes.
     <string name="feels_like_week_widget_label">Gevoelstemperatuur (7 dagen)</string>
     <string name="feels_like_week_widget_description">De gevoelstemperatuur voor de komende 7 dagen.</string>
     <string name="feels_like_widget_empty_title">Nog geen voorspelling</string>
+    <string name="conditions_widget_label">Omstandigheden</string>
+    <string name="conditions_widget_description">Temperatuur, regen, wind en UV in één oogopslag.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!--
     Onboarding flow.
@@ -1261,6 +1275,13 @@ the displayed label localizes.
     <string name="today_schedule_promo_body">Kies wanneer je meldingen en aankondigingen krijgt.</string>
     <string name="today_schedule_promo_cta">Schema-instellingen</string>
     <string name="today_schedule_promo_dismiss">Sluiten</string>
+    <string name="today_play_promo_title">Luister naar je dagelijkse ClothesCast</string>
+    <string name="today_play_promo_body">Tik op de afspeelknop om je ClothesCast te horen.</string>
+    <string name="today_play_promo_dismiss">Sluiten</string>
+    <string name="today_gemini_promo_title">Probeer hoogwaardige stemmen</string>
+    <string name="today_gemini_promo_body">Schakel Gemini in om je ClothesCast te horen met natuurlijke, levensechte stemmen.</string>
+    <string name="today_gemini_promo_cta">Spraakinstellingen</string>
+    <string name="today_gemini_promo_dismiss">Sluiten</string>
     <string name="today_clothes_promo_title">Maak de kleding van jou</string>
     <string name="today_insight_format_link">Formaat</string>
     <string name="today_play">Afspelen</string>

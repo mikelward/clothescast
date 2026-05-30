@@ -60,6 +60,7 @@ the displayed label localizes.
     <string name="garment_pants">ズボン</string>
     <string name="garment_jeans">ジーンズ</string>
     <string name="garment_gloves">手袋</string>
+    <string name="garment_umbrella">傘</string>
 
     <!-- Clothes settings — top of the screen. -->
     <string name="settings_clothes_title">服のルール</string>
@@ -72,6 +73,7 @@ the displayed label localizes.
     <string name="settings_clothes_dialog_add_title">服のルールを追加</string>
     <string name="settings_clothes_dialog_edit_title">服のルールを編集</string>
     <string name="settings_clothes_item_label">衣類</string>
+    <string name="settings_clothes_color_label">色</string>
     <string name="settings_clothes_condition_label">条件</string>
     <string name="settings_clothes_value_label_temp">しきい値 (%1$s)</string>
     <string name="settings_clothes_value_label_precip">しきい値 (%%)</string>
@@ -93,6 +95,7 @@ the displayed label localizes.
     <string name="settings_schedule_time_label">時刻</string>
     <string name="settings_schedule_days_label">曜日</string>
     <string name="settings_daily_mention_evening_events">夜の予定に言及する</string>
+    <string name="settings_schedule_preview">今すぐ再生</string>
 
     <string name="settings_tonight_title">夜間の ClothesCast</string>
     <string name="settings_tonight_description">今夜の天気を伝える、夜のもう1つの ClothesCast です。予定のない夜は無音のまま、または「夜に予定があるときのみ通知」がオンの場合は表示されません。予定のある夜は音を鳴らし、（音声読み上げを有効にしている場合は）自動で読み上げます。</string>
@@ -350,6 +353,8 @@ the displayed label localizes.
     <string name="today_refresh">更新</string>
     <string name="today_empty_title">まだ ClothesCast がありません</string>
     <string name="today_empty_subtitle">朝の ClothesCast が生成されるとここに表示されます。</string>
+    <string name="today_empty_location_title">位置情報が必要です</string>
+    <string name="today_empty_location_subtitle">ClothesCastを取得するには位置情報を設定してください。</string>
     <string name="today_fetch_now">今すぐ取得</string>
     <string name="today_generated_at">生成時刻：%1$s</string>
 
@@ -380,6 +385,10 @@ the displayed label localizes.
     <string name="today_failed_unhandled">予期しないエラーが発生しました。</string>
     <string name="today_failed_show_details">詳細を表示</string>
     <string name="today_failed_hide_details">詳細を隠す</string>
+    <string name="today_mqtt_failed_title">スマートホームに送信できませんでした</string>
+    <string name="today_cast_failed_title">ディスプレイにキャストできませんでした</string>
+    <string name="today_publish_failed_body">次回の更新時に再試行します。</string>
+    <string name="today_publish_failed_dismiss">閉じる</string>
 
     <!-- Home-screen App Widget. "コーデ" (short for コーディネート) is the
          standard Japanese fashion-vocab word for an outfit / day's
@@ -393,6 +402,11 @@ the displayed label localizes.
     <string name="feels_like_week_widget_label">体感温度（7日間）</string>
     <string name="feels_like_week_widget_description">今後7日間の体感温度です。</string>
     <string name="feels_like_widget_empty_title">まだ予報がありません</string>
+    <string name="conditions_widget_label">コンディション</string>
+    <string name="conditions_widget_description">気温、雨、風、UVをひと目で。</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!--
     Onboarding flow — first-run welcome, two permission steps, Gemini
@@ -1362,6 +1376,13 @@ the displayed label localizes.
     <string name="today_schedule_promo_body">通知やアナウンスを受け取るタイミングを選べます。</string>
     <string name="today_schedule_promo_cta">スケジュール設定</string>
     <string name="today_schedule_promo_dismiss">閉じる</string>
+    <string name="today_play_promo_title">毎日のClothesCastを聞く</string>
+    <string name="today_play_promo_body">再生ボタンをタップしてClothesCastを聞きましょう。</string>
+    <string name="today_play_promo_dismiss">閉じる</string>
+    <string name="today_gemini_promo_title">高品質な音声を試す</string>
+    <string name="today_gemini_promo_body">Geminiをオンにして、自然でリアルな音声でClothesCastを聞きましょう。</string>
+    <string name="today_gemini_promo_cta">音声設定</string>
+    <string name="today_gemini_promo_dismiss">閉じる</string>
     <string name="today_clothes_promo_title">服装を自分好みに</string>
     <string name="today_insight_format_link">形式</string>
     <string name="today_play">再生</string>

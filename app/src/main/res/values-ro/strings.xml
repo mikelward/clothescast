@@ -21,6 +21,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="garment_pants">Pantaloni</string>
     <string name="garment_jeans">Blugi</string>
     <string name="garment_gloves">Mănuși</string>
+    <string name="garment_umbrella">Umbrelă</string>
 
     <string name="settings_clothes_empty">Nicio regulă. Atinge Adaugă pentru a crea.</string>
     <string name="settings_clothes_add">Adaugă</string>
@@ -29,6 +30,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_clothes_dialog_add_title">Adaugă regulă de îmbrăcăminte</string>
     <string name="settings_clothes_dialog_edit_title">Editează regula de îmbrăcăminte</string>
     <string name="settings_clothes_item_label">Articol</string>
+    <string name="settings_clothes_color_label">Culoare</string>
     <string name="settings_clothes_condition_label">Condiție</string>
     <string name="settings_clothes_value_label_temp">Prag (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Prag (%%)</string>
@@ -113,6 +115,8 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_refresh">Reîmprospătează</string>
     <string name="today_empty_title">Niciun ClothesCast încă</string>
     <string name="today_empty_subtitle">ClothesCast-ul tău de dimineață va apărea aici odată generat.</string>
+    <string name="today_empty_location_title">Locație necesară</string>
+    <string name="today_empty_location_subtitle">Configurează-ți locația pentru a primi ClothesCast-ul tău.</string>
     <string name="today_fetch_now">Aduce acum</string>
     <string name="today_generated_at">Generat la %1$s</string>
     <string name="today_location_unknown">Locația ta</string>
@@ -153,6 +157,11 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="feels_like_week_widget_label">Temperatură resimțită (7 zile)</string>
     <string name="feels_like_week_widget_description">Temperatura resimțită pentru următoarele 7 zile.</string>
     <string name="feels_like_widget_empty_title">Nicio prognoză încă</string>
+    <string name="conditions_widget_label">Condiții</string>
+    <string name="conditions_widget_description">Temperatură, ploaie, vânt și UV dintr-o privire.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Forecast card. -->
     <string name="today_forecast_title">Prognoză orară</string>
@@ -201,6 +210,10 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_failed_no_location">Nu am putut determina locația ta. Acordă permisiune permanentă de locație sau setează un oraș în Setări.</string>
     <string name="today_failed_show_details">Arată detalii</string>
     <string name="today_failed_hide_details">Ascunde detalii</string>
+    <string name="today_mqtt_failed_title">Nu s-a putut trimite către casa ta inteligentă</string>
+    <string name="today_cast_failed_title">Nu s-a putut transmite pe afișajul tău</string>
+    <string name="today_publish_failed_body">Vom încerca din nou la următoarea actualizare.</string>
+    <string name="today_publish_failed_dismiss">Închide</string>
 
     <!-- Location required. -->
     <string name="today_location_required_title">Configurează locația</string>
@@ -340,6 +353,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_schedule_time_label">Oră</string>
     <string name="settings_schedule_days_label">Zile ale săptămânii</string>
     <string name="settings_daily_mention_evening_events">Menționează evenimentele de seară</string>
+    <string name="settings_schedule_preview">Redă acum</string>
 
     <!-- Tonight settings. -->
     <string name="settings_tonight_title">ClothesCast nocturn</string>
@@ -1190,6 +1204,13 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_schedule_promo_body">Alege când primești notificări și anunțuri.</string>
     <string name="today_schedule_promo_cta">Setări program</string>
     <string name="today_schedule_promo_dismiss">Închide</string>
+    <string name="today_play_promo_title">Ascultă ClothesCast-ul tău zilnic</string>
+    <string name="today_play_promo_body">Atinge butonul de redare pentru a-ți auzi ClothesCast-ul.</string>
+    <string name="today_play_promo_dismiss">Închide</string>
+    <string name="today_gemini_promo_title">Încearcă voci de înaltă calitate</string>
+    <string name="today_gemini_promo_body">Activează Gemini pentru a-ți auzi ClothesCast-ul cu voci naturale, realiste.</string>
+    <string name="today_gemini_promo_cta">Setări de voce</string>
+    <string name="today_gemini_promo_dismiss">Închide</string>
     <string name="today_clothes_promo_title">Fă hainele ale tale</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Redă</string>

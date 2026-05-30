@@ -20,6 +20,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="garment_pants">กางเกงขายาว</string>
     <string name="garment_jeans">กางเกงยีนส์</string>
     <string name="garment_gloves">ถุงมือ</string>
+    <string name="garment_umbrella">ร่ม</string>
 
     <string name="settings_clothes_empty">ยังไม่มีกฎ แตะ เพิ่ม เพื่อสร้างใหม่</string>
     <string name="settings_clothes_add">เพิ่ม</string>
@@ -28,6 +29,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_clothes_dialog_add_title">เพิ่มกฎเสื้อผ้า</string>
     <string name="settings_clothes_dialog_edit_title">แก้ไขกฎเสื้อผ้า</string>
     <string name="settings_clothes_item_label">เสื้อผ้า</string>
+    <string name="settings_clothes_color_label">สี</string>
     <string name="settings_clothes_condition_label">เงื่อนไข</string>
     <string name="settings_clothes_value_label_temp">ค่าเกณฑ์ (%1$s)</string>
     <string name="settings_clothes_value_label_precip">ค่าเกณฑ์ (%%)</string>
@@ -125,6 +127,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_refresh">รีเฟรช</string>
     <string name="today_empty_title">ยังไม่มี ClothesCast</string>
     <string name="today_empty_subtitle">ClothesCast ช่วงเช้าจะปรากฏที่นี่เมื่อสร้างเสร็จแล้ว</string>
+    <string name="today_empty_location_title">ต้องระบุตำแหน่ง</string>
+    <string name="today_empty_location_subtitle">ตั้งค่าตำแหน่งของคุณเพื่อรับ ClothesCast ของคุณ</string>
     <string name="today_fetch_now">ดึงข้อมูลเดี๋ยวนี้</string>
     <string name="today_generated_at">สร้างเมื่อ %1$s</string>
     <string name="today_location_unknown">ตำแหน่งของคุณ</string>
@@ -157,6 +161,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="feels_like_week_widget_label">อุณหภูมิที่รู้สึก (7 วัน)</string>
     <string name="feels_like_week_widget_description">อุณหภูมิที่รู้สึกในช่วง 7 วันข้างหน้า</string>
     <string name="feels_like_widget_empty_title">ยังไม่มีพยากรณ์</string>
+    <string name="conditions_widget_label">สภาพอากาศ</string>
+    <string name="conditions_widget_description">อุณหภูมิ ฝน ลม และ UV ในพริบตา</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Forecast / charts -->
     <string name="today_forecast_title">พยากรณ์รายชั่วโมง</string>
@@ -201,6 +210,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_failed_no_location">ไม่สามารถรับตำแหน่งของคุณได้ อนุญาตการเข้าถึงตำแหน่งตลอดเวลา หรือตั้งค่าเมืองในการตั้งค่า</string>
     <string name="today_failed_show_details">แสดงรายละเอียด</string>
     <string name="today_failed_hide_details">ซ่อนรายละเอียด</string>
+    <string name="today_mqtt_failed_title">ไม่สามารถส่งไปยังสมาร์ทโฮมของคุณได้</string>
+    <string name="today_cast_failed_title">ไม่สามารถแคสต์ไปยังจอแสดงผลของคุณได้</string>
+    <string name="today_publish_failed_body">เราจะลองอีกครั้งในการอัปเดตครั้งถัดไป</string>
+    <string name="today_publish_failed_dismiss">ปิด</string>
 
     <!-- Location required -->
     <string name="today_location_required_title">ตั้งค่าตำแหน่งของคุณ</string>
@@ -340,6 +353,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_time_label">เวลา</string>
     <string name="settings_schedule_days_label">วันในสัปดาห์</string>
     <string name="settings_daily_mention_evening_events">กล่าวถึงกิจกรรมตอนเย็น</string>
+    <string name="settings_schedule_preview">เล่นเลย</string>
 
     <!-- Nightly ClothesCast settings -->
     <string name="settings_tonight_title">ClothesCast รายคืน</string>
@@ -1212,6 +1226,13 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_schedule_promo_body">เลือกเวลาที่คุณจะได้รับการแจ้งเตือนและการประกาศ</string>
     <string name="today_schedule_promo_cta">การตั้งค่ากำหนดการ</string>
     <string name="today_schedule_promo_dismiss">ปิด</string>
+    <string name="today_play_promo_title">ฟัง ClothesCast ประจำวันของคุณ</string>
+    <string name="today_play_promo_body">แตะปุ่มเล่นเพื่อฟัง ClothesCast ของคุณ</string>
+    <string name="today_play_promo_dismiss">ปิด</string>
+    <string name="today_gemini_promo_title">ลองใช้เสียงคุณภาพสูง</string>
+    <string name="today_gemini_promo_body">เปิด Gemini เพื่อฟัง ClothesCast ของคุณด้วยเสียงที่เป็นธรรมชาติและสมจริง</string>
+    <string name="today_gemini_promo_cta">การตั้งค่าเสียง</string>
+    <string name="today_gemini_promo_dismiss">ปิด</string>
     <string name="today_clothes_promo_title">ปรับเสื้อผ้าให้เป็นของคุณ</string>
     <string name="today_insight_format_link">รูปแบบ</string>
     <string name="today_play">เล่น</string>

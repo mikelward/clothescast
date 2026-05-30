@@ -27,6 +27,7 @@ What is NOT overridden, by design:
     <string name="garment_pants">Kelnės</string>
     <string name="garment_jeans">Džinsai</string>
     <string name="garment_gloves">Pirštinės</string>
+    <string name="garment_umbrella">Skėtis</string>
 
     <string name="settings_clothes_empty">Taisyklių nėra. Paliesk Pridėti, kad sukurtum naują.</string>
     <string name="settings_clothes_add">Pridėti</string>
@@ -35,6 +36,7 @@ What is NOT overridden, by design:
     <string name="settings_clothes_dialog_add_title">Pridėti aprangos taisyklę</string>
     <string name="settings_clothes_dialog_edit_title">Redaguoti aprangos taisyklę</string>
     <string name="settings_clothes_item_label">Drabužis</string>
+    <string name="settings_clothes_color_label">Spalva</string>
     <string name="settings_clothes_condition_label">Sąlyga</string>
     <string name="settings_clothes_value_label_temp">Riba (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Riba (%%)</string>
@@ -113,6 +115,8 @@ What is NOT overridden, by design:
     <string name="today_refresh">Atnaujinti</string>
     <string name="today_empty_title">ClothesCast dar nėra</string>
     <string name="today_empty_subtitle">Ryto ClothesCast pasirodys čia, kai bus sugeneruotas.</string>
+    <string name="today_empty_location_title">Reikalinga vieta</string>
+    <string name="today_empty_location_subtitle">Nustatykite savo vietą, kad gautumėte savo ClothesCast.</string>
     <string name="today_fetch_now">Gauti dabar</string>
     <string name="today_generated_at">Sugeneruota %1$s</string>
     <string name="today_location_unknown">Tavo vieta</string>
@@ -153,6 +157,11 @@ What is NOT overridden, by design:
     <string name="feels_like_week_widget_label">Juntama temperatūra (7 dienos)</string>
     <string name="feels_like_week_widget_description">Juntama temperatūra artimiausias 7 dienas.</string>
     <string name="feels_like_widget_empty_title">Prognozės dar nėra</string>
+    <string name="conditions_widget_label">Sąlygos</string>
+    <string name="conditions_widget_description">Temperatūra, lietus, vėjas ir UV vienu žvilgsniu.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Hourly forecast card. -->
     <string name="today_forecast_title">Valandos prognozė</string>
@@ -201,6 +210,10 @@ What is NOT overridden, by design:
     <string name="today_failed_no_location">Nepavyko gauti tavo vietos. Suteik nuolatinį buvimo vietos leidimą arba nustatymuose pasirink miestą.</string>
     <string name="today_failed_show_details">Rodyti išsamią informaciją</string>
     <string name="today_failed_hide_details">Slėpti išsamią informaciją</string>
+    <string name="today_mqtt_failed_title">Nepavyko išsiųsti į jūsų išmaniuosius namus</string>
+    <string name="today_cast_failed_title">Nepavyko perduoti į jūsų ekraną</string>
+    <string name="today_publish_failed_body">Bandysime dar kartą kito atnaujinimo metu.</string>
+    <string name="today_publish_failed_dismiss">Atmesti</string>
 
     <!-- Location required card. -->
     <string name="today_location_required_title">Nustatyk savo vietą</string>
@@ -344,6 +357,7 @@ What is NOT overridden, by design:
     <string name="settings_schedule_time_label">Laikas</string>
     <string name="settings_schedule_days_label">Savaitės dienos</string>
     <string name="settings_daily_mention_evening_events">Minėti vakaro renginius</string>
+    <string name="settings_schedule_preview">Leisti dabar</string>
 
     <!-- Nightly ClothesCast. -->
     <string name="settings_tonight_title">Nakties ClothesCast</string>
@@ -1202,6 +1216,13 @@ What is NOT overridden, by design:
     <string name="today_schedule_promo_body">Pasirink, kada gauti pranešimus ir skelbimus.</string>
     <string name="today_schedule_promo_cta">Tvarkaraščio nustatymai</string>
     <string name="today_schedule_promo_dismiss">Atmesti</string>
+    <string name="today_play_promo_title">Klausykite savo kasdienio ClothesCast</string>
+    <string name="today_play_promo_body">Palieskite leidimo mygtuką, kad išgirstumėte savo ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Atmesti</string>
+    <string name="today_gemini_promo_title">Išbandykite aukštos kokybės balsus</string>
+    <string name="today_gemini_promo_body">Įjunkite Gemini, kad išgirstumėte savo ClothesCast natūraliais, gyvais balsais.</string>
+    <string name="today_gemini_promo_cta">Balso nustatymai</string>
+    <string name="today_gemini_promo_dismiss">Atmesti</string>
     <string name="today_clothes_promo_title">Pritaikyk drabužius sau</string>
     <string name="today_insight_format_link">Formatas</string>
     <string name="today_play">Leisti</string>

@@ -16,6 +16,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_refresh">Actualitza</string>
     <string name="today_empty_title">Encara no hi ha ClothesCast</string>
     <string name="today_empty_subtitle">El teu ClothesCast matinal apareixerà aquí un cop generat.</string>
+    <string name="today_empty_location_title">Cal una ubicació</string>
+    <string name="today_empty_location_subtitle">Configura la teva ubicació per obtenir el teu ClothesCast.</string>
     <string name="today_fetch_now">Obtén ara</string>
     <string name="today_generated_at">Generat a les %1$s</string>
     <string name="today_location_unknown">La teva ubicació</string>
@@ -58,6 +60,11 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="feels_like_week_widget_label">Sensació (7 dies)</string>
     <string name="feels_like_week_widget_description">La temperatura percebuda durant els pròxims 7 dies.</string>
     <string name="feels_like_widget_empty_title">Encara no hi ha previsió</string>
+    <string name="conditions_widget_label">Condicions</string>
+    <string name="conditions_widget_description">Temperatura, pluja, vent i UV d\'un cop d\'ull.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <string name="today_forecast_title">Previsió per hores</string>
     <string name="today_forecast_min_max">Sensació %1$d – %2$d%3$s</string>
@@ -100,6 +107,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_failed_no_location">No hem pogut obtenir la teva ubicació. Concedeix permís d\'ubicació permanent o estableix una ciutat a Configuració.</string>
     <string name="today_failed_show_details">Mostra els detalls</string>
     <string name="today_failed_hide_details">Amaga els detalls</string>
+    <string name="today_mqtt_failed_title">No s\'ha pogut enviar a la teva llar intel·ligent</string>
+    <string name="today_cast_failed_title">No s\'ha pogut emetre a la pantalla</string>
+    <string name="today_publish_failed_body">Ho tornarem a provar a la pròxima actualització.</string>
+    <string name="today_publish_failed_dismiss">Descarta</string>
 
     <string name="today_location_required_title">Configura la teva ubicació</string>
     <string name="today_location_required_body">ClothesCast necessita saber on ets per obtenir la previsió. Concedeix permís d\'ubicació permanent o tria una ciutat.</string>
@@ -230,6 +241,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_schedule_time_label">Hora</string>
     <string name="settings_schedule_days_label">Dies de la setmana</string>
     <string name="settings_daily_mention_evening_events">Menciona els esdeveniments del vespre</string>
+    <string name="settings_schedule_preview">Reprodueix ara</string>
 
     <string name="settings_tonight_title">ClothesCast nocturn</string>
     <string name="settings_tonight_description">Un segon ClothesCast al vespre que cobreix el temps per aquesta nit. En vespres tranquils roman silenciós, o no apareix si «Notifica només quan hi ha esdeveniments al vespre» és actiu; en vespres amb esdeveniments toca un so i (si has activat la lectura en veu alta) es llegeix sol.</string>
@@ -426,6 +438,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="garment_pants">Pantalons</string>
     <string name="garment_jeans">Texans</string>
     <string name="garment_gloves">Guants</string>
+    <string name="garment_umbrella">Paraigua</string>
 
     <string name="settings_clothes_empty">Sense regles. Toca Afegir per crear-ne una.</string>
     <string name="settings_clothes_add">Afegir</string>
@@ -434,6 +447,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_clothes_dialog_add_title">Afegir regla de roba</string>
     <string name="settings_clothes_dialog_edit_title">Editar regla de roba</string>
     <string name="settings_clothes_item_label">Peça de roba</string>
+    <string name="settings_clothes_color_label">Color</string>
     <string name="settings_clothes_condition_label">Condició</string>
     <string name="settings_clothes_value_label_temp">Llindar (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Llindar (%)</string>
@@ -1152,6 +1166,13 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_schedule_promo_body">Tria quan reps notificacions i anuncis.</string>
     <string name="today_schedule_promo_cta">Configuració de la programació</string>
     <string name="today_schedule_promo_dismiss">Descarta</string>
+    <string name="today_play_promo_title">Escolta el teu ClothesCast diari</string>
+    <string name="today_play_promo_body">Toca el botó de reproducció per escoltar el teu ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Descarta</string>
+    <string name="today_gemini_promo_title">Prova veus d\'alta qualitat</string>
+    <string name="today_gemini_promo_body">Activa Gemini per escoltar el teu ClothesCast amb veus naturals i realistes.</string>
+    <string name="today_gemini_promo_cta">Configuració de veu</string>
+    <string name="today_gemini_promo_dismiss">Descarta</string>
     <string name="today_clothes_promo_title">Fes teva la roba</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Reprodueix</string>

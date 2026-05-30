@@ -22,6 +22,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="garment_pants">প্যান্ট</string>
     <string name="garment_jeans">জিন্স</string>
     <string name="garment_gloves">দস্তানা</string>
+    <string name="garment_umbrella">ছাতা</string>
 
     <string name="settings_clothes_empty">কোনো নিয়ম নেই। একটি তৈরি করতে যোগ করুন-এ ট্যাপ করুন।</string>
     <string name="settings_clothes_add">যোগ করুন</string>
@@ -30,6 +31,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_clothes_dialog_add_title">পোশাকের নিয়ম যোগ করুন</string>
     <string name="settings_clothes_dialog_edit_title">পোশাকের নিয়ম সম্পাদনা করুন</string>
     <string name="settings_clothes_item_label">পোশাক</string>
+    <string name="settings_clothes_color_label">রং</string>
     <string name="settings_clothes_condition_label">শর্ত</string>
     <string name="settings_clothes_value_label_temp">সীমা (%1$s)</string>
     <string name="settings_clothes_value_label_precip">সীমা (%%)</string>
@@ -120,6 +122,8 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_refresh">রিফ্রেশ</string>
     <string name="today_empty_title">এখনো কোনো ClothesCast নেই</string>
     <string name="today_empty_subtitle">আপনার সকালের ClothesCast তৈরি হলে এখানে দেখা যাবে।</string>
+    <string name="today_empty_location_title">অবস্থান প্রয়োজন</string>
+    <string name="today_empty_location_subtitle">আপনার ClothesCast পেতে আপনার অবস্থান সেট আপ করুন।</string>
     <string name="today_fetch_now">এখনই আনুন</string>
     <string name="today_generated_at">%1$s-এ তৈরি</string>
     <string name="today_location_unknown">আপনার অবস্থান</string>
@@ -195,6 +199,10 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_failed_no_location">আপনার অবস্থান পাওয়া যায়নি। সর্বদা অবস্থান অনুমতি দিন, অথবা সেটিংসে একটি শহর নির্ধারণ করুন।</string>
     <string name="today_failed_show_details">বিবরণ দেখুন</string>
     <string name="today_failed_hide_details">বিবরণ লুকান</string>
+    <string name="today_mqtt_failed_title">আপনার স্মার্ট হোমে পাঠানো যায়নি</string>
+    <string name="today_cast_failed_title">আপনার ডিসপ্লেতে কাস্ট করা যায়নি</string>
+    <string name="today_publish_failed_body">পরবর্তী আপডেটে আমরা আবার চেষ্টা করব।</string>
+    <string name="today_publish_failed_dismiss">বন্ধ</string>
 
     <!-- Location required -->
     <string name="today_location_required_title">আপনার অবস্থান নির্ধারণ করুন</string>
@@ -234,6 +242,11 @@ West Bengal vocabulary differences in a future PR.
     <string name="feels_like_week_widget_label">অনুভূত তাপমাত্রা (৭ দিন)</string>
     <string name="feels_like_week_widget_description">আগামী ৭ দিনের অনুভূত তাপমাত্রা।</string>
     <string name="feels_like_widget_empty_title">এখনো কোনো পূর্বাভাস নেই</string>
+    <string name="conditions_widget_label">অবস্থা</string>
+    <string name="conditions_widget_description">তাপমাত্রা, বৃষ্টি, বাতাস ও UV এক নজরে।</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- ============================================================
          Onboarding
@@ -318,6 +331,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_schedule_time_label">সময়</string>
     <string name="settings_schedule_days_label">সপ্তাহের দিন</string>
     <string name="settings_daily_mention_evening_events">সন্ধ্যার ইভেন্ট উল্লেখ করুন</string>
+    <string name="settings_schedule_preview">এখন চালান</string>
     <string name="settings_tonight_title">রাতের ClothesCast</string>
     <string name="settings_tonight_description">সন্ধ্যায় একটি দ্বিতীয় ClothesCast যা আজ রাতের আবহাওয়া জানায়। শান্ত সন্ধ্যায় এটি নীরব থাকে, বা যদি "শুধুমাত্র সন্ধ্যার ইভেন্ট থাকলে বিজ্ঞপ্তি দিন" চালু থাকে তবে একদমই দেখা নাও যেতে পারে; ইভেন্টের সন্ধ্যায় এটি শব্দ করে এবং (কথ্য বিতরণ চালু থাকলে) পড়ে শোনায়।</string>
     <string name="settings_tonight_enabled">রাতের ClothesCast দেখান</string>
@@ -1284,6 +1298,13 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_schedule_promo_body">তুমি কখন বিজ্ঞপ্তি ও ঘোষণা পাবে তা বেছে নাও।</string>
     <string name="today_schedule_promo_cta">সময়সূচি সেটিংস</string>
     <string name="today_schedule_promo_dismiss">বন্ধ</string>
+    <string name="today_play_promo_title">আপনার দৈনিক ClothesCast শুনুন</string>
+    <string name="today_play_promo_body">আপনার ClothesCast শুনতে প্লে বোতামে ট্যাপ করুন।</string>
+    <string name="today_play_promo_dismiss">বন্ধ</string>
+    <string name="today_gemini_promo_title">উচ্চ মানের কণ্ঠ ব্যবহার করে দেখুন</string>
+    <string name="today_gemini_promo_body">স্বাভাবিক, প্রাণবন্ত কণ্ঠে আপনার ClothesCast শুনতে Gemini চালু করুন।</string>
+    <string name="today_gemini_promo_cta">ভয়েস সেটিংস</string>
+    <string name="today_gemini_promo_dismiss">বন্ধ</string>
     <string name="today_clothes_promo_title">পোশাককে নিজের করো</string>
     <string name="today_insight_format_link">ফর্ম্যাট</string>
     <string name="today_play">চালাও</string>

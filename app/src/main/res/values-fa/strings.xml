@@ -24,6 +24,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="garment_pants">شلوار</string>
     <string name="garment_jeans">جین</string>
     <string name="garment_gloves">دستکش</string>
+    <string name="garment_umbrella">چتر</string>
 
     <string name="settings_clothes_empty">قانونی وجود ندارد. برای ایجاد یک قانون روی افزودن ضربه بزنید.</string>
     <string name="settings_clothes_add">افزودن</string>
@@ -32,6 +33,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_clothes_dialog_add_title">افزودن قانون لباس</string>
     <string name="settings_clothes_dialog_edit_title">ویرایش قانون لباس</string>
     <string name="settings_clothes_item_label">لباس</string>
+    <string name="settings_clothes_color_label">رنگ</string>
     <string name="settings_clothes_condition_label">شرط</string>
     <string name="settings_clothes_value_label_temp">آستانه (%1$s)</string>
     <string name="settings_clothes_value_label_precip">آستانه (%%)</string>
@@ -118,6 +120,8 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_refresh">بازخوانی</string>
     <string name="today_empty_title">هنوز ClothesCast وجود ندارد</string>
     <string name="today_empty_subtitle">ClothesCast صبحگاهی شما پس از تولید اینجا نمایش داده می‌شود.</string>
+    <string name="today_empty_location_title">موقعیت مکانی لازم است</string>
+    <string name="today_empty_location_subtitle">برای دریافت ClothesCast خود، موقعیت مکانی‌تان را تنظیم کنید.</string>
     <string name="today_fetch_now">دریافت اکنون</string>
     <string name="today_generated_at">تولید شده در %1$s</string>
     <string name="today_location_unknown">موقعیت شما</string>
@@ -158,6 +162,11 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="feels_like_week_widget_label">دمای احساس‌شده (7 روز)</string>
     <string name="feels_like_week_widget_description">دمای احساس‌شده طی 7 روز آینده.</string>
     <string name="feels_like_widget_empty_title">هنوز پیش‌بینی‌ای نیست</string>
+    <string name="conditions_widget_label">شرایط</string>
+    <string name="conditions_widget_description">دما، باران، باد و UV در یک نگاه.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Today — forecast charts -->
     <string name="today_forecast_title">دمای احساس‌شده</string>
@@ -196,6 +205,10 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_failed_no_location">موقعیت شما را نمی‌توانیم دریافت کنیم. مجوز موقعیت دائمی بدهید، یا یک شهر در تنظیمات تنظیم کنید.</string>
     <string name="today_failed_show_details">نمایش جزئیات</string>
     <string name="today_failed_hide_details">پنهان کردن جزئیات</string>
+    <string name="today_mqtt_failed_title">ارسال به خانه هوشمند شما ممکن نشد</string>
+    <string name="today_cast_failed_title">ارسال به نمایشگر شما ممکن نشد</string>
+    <string name="today_publish_failed_body">در به‌روزرسانی بعدی دوباره تلاش می‌کنیم.</string>
+    <string name="today_publish_failed_dismiss">رد کردن</string>
 
     <!-- Today — location required -->
     <string name="today_location_required_title">موقعیت خود را تنظیم کنید</string>
@@ -335,6 +348,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_schedule_time_label">زمان</string>
     <string name="settings_schedule_days_label">روزهای هفته</string>
     <string name="settings_daily_mention_evening_events">ذکر رویدادهای عصر</string>
+    <string name="settings_schedule_preview">اکنون پخش کن</string>
     <string name="settings_tonight_title">ClothesCast شبانه</string>
     <string name="settings_tonight_description">یک ClothesCast دوم در عصر که آب‌وهوای امشب را پوشش می‌دهد. شب‌های آرام ساکت می‌ماند؛ شب‌های رویداد صدا پخش می‌کند و خودش را می‌خواند.</string>
     <string name="settings_tonight_enabled">نمایش ClothesCast شبانه</string>
@@ -1204,6 +1218,13 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_schedule_promo_body">انتخاب کنید چه زمانی اعلان‌ها و اعلام‌ها را دریافت کنید.</string>
     <string name="today_schedule_promo_cta">تنظیمات برنامه</string>
     <string name="today_schedule_promo_dismiss">رد کردن</string>
+    <string name="today_play_promo_title">ClothesCast روزانه خود را بشنوید</string>
+    <string name="today_play_promo_body">برای شنیدن ClothesCast خود، روی دکمه پخش ضربه بزنید.</string>
+    <string name="today_play_promo_dismiss">رد کردن</string>
+    <string name="today_gemini_promo_title">صداهای باکیفیت را امتحان کنید</string>
+    <string name="today_gemini_promo_body">برای شنیدن ClothesCast خود با صداهای طبیعی و واقعی، Gemini را روشن کنید.</string>
+    <string name="today_gemini_promo_cta">تنظیمات صدا</string>
+    <string name="today_gemini_promo_dismiss">رد کردن</string>
     <string name="today_clothes_promo_title">لباس را مال خودت کن</string>
     <string name="today_insight_format_link">قالب</string>
     <string name="today_play">پخش</string>

@@ -44,6 +44,7 @@ displayed label localizes.
     <string name="garment_pants">Housut</string>
     <string name="garment_jeans">Farkut</string>
     <string name="garment_gloves">Hanskat</string>
+    <string name="garment_umbrella">Sateenvarjo</string>
 
     <string name="settings_clothes_title">Vaatesäännöt</string>
     <string name="settings_clothes_description">Kun ennuste ylittää jonkin näistä raja-arvoista, vaatekappale ilmestyy päivittäiseen ClothesCast-tiedotteeseen.</string>
@@ -55,6 +56,7 @@ displayed label localizes.
     <string name="settings_clothes_dialog_add_title">Lisää vaatesääntö</string>
     <string name="settings_clothes_dialog_edit_title">Muokkaa vaatesääntöä</string>
     <string name="settings_clothes_item_label">Vaatekappale</string>
+    <string name="settings_clothes_color_label">Väri</string>
     <string name="settings_clothes_condition_label">Ehto</string>
     <string name="settings_clothes_value_label_temp">Raja-arvo (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Raja-arvo (%%)</string>
@@ -70,6 +72,7 @@ displayed label localizes.
     <string name="settings_schedule_time_label">Aika</string>
     <string name="settings_schedule_days_label">Viikonpäivät</string>
     <string name="settings_daily_mention_evening_events">Mainitse iltatapahtumat</string>
+    <string name="settings_schedule_preview">Toista nyt</string>
 
     <string name="settings_tonight_title">Iltainen ClothesCast</string>
     <string name="settings_tonight_description">Toinen ClothesCast illalla tämän yön säätä varten. Hiljaisina iltoina se on äänettömänä tai ei näy lainkaan, jos "Ilmoita vain illan tapahtumista" on käytössä. Tapahtumia sisältävinä iltoina se soittaa äänen ja (jos puhelähtö on käytössä) lukee itsensä ääneen.</string>
@@ -278,6 +281,8 @@ displayed label localizes.
     <string name="today_refresh">Päivitä</string>
     <string name="today_empty_title">Ei ClothesCastia vielä</string>
     <string name="today_empty_subtitle">Aamuinen ClothesCastisi ilmestyy tähän, kun se on luotu.</string>
+    <string name="today_empty_location_title">Sijainti vaaditaan</string>
+    <string name="today_empty_location_subtitle">Määritä sijaintisi saadaksesi ClothesCastisi.</string>
     <string name="today_fetch_now">Hae nyt</string>
     <string name="today_generated_at">Luotu kello %1$s</string>
 
@@ -308,6 +313,10 @@ displayed label localizes.
     <string name="today_failed_unhandled">Tapahtui odottamaton virhe.</string>
     <string name="today_failed_show_details">Näytä tiedot</string>
     <string name="today_failed_hide_details">Piilota tiedot</string>
+    <string name="today_mqtt_failed_title">Lähetys älykotiisi epäonnistui</string>
+    <string name="today_cast_failed_title">Lähetys näytöllesi epäonnistui</string>
+    <string name="today_publish_failed_body">Yritämme uudelleen seuraavan päivityksen yhteydessä.</string>
+    <string name="today_publish_failed_dismiss">Sulje</string>
 
     <string name="widget_label">Asu</string>
     <string name="widget_description">Tämän hetkisen päiväosan asu yhdellä silmäyksellä.</string>
@@ -318,6 +327,11 @@ displayed label localizes.
     <string name="feels_like_week_widget_label">Tuntuva lämpötila (7 päivää)</string>
     <string name="feels_like_week_widget_description">Tuntuva lämpötila seuraavan 7 päivän ajalle.</string>
     <string name="feels_like_widget_empty_title">Ei ennustetta vielä</string>
+    <string name="conditions_widget_label">Olosuhteet</string>
+    <string name="conditions_widget_description">Lämpötila, sade, tuuli ja UV yhdellä silmäyksellä.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <string name="onboarding_title">Tervetuloa ClothesCastiin</string>
     <string name="onboarding_subtitle">Kaksi nopeaa valintaa ja olet valmis. Kaikella muulla on järkevä oletusarvo, jonka voit myöhemmin muuttaa asetuksissa.</string>
@@ -1221,6 +1235,13 @@ displayed label localizes.
     <string name="today_schedule_promo_body">Valitse, milloin saat ilmoitukset ja kuulutukset.</string>
     <string name="today_schedule_promo_cta">Aikataulun asetukset</string>
     <string name="today_schedule_promo_dismiss">Sulje</string>
+    <string name="today_play_promo_title">Kuuntele päivittäinen ClothesCastisi</string>
+    <string name="today_play_promo_body">Napauta toistopainiketta kuullaksesi ClothesCastisi.</string>
+    <string name="today_play_promo_dismiss">Sulje</string>
+    <string name="today_gemini_promo_title">Kokeile korkealaatuisia ääniä</string>
+    <string name="today_gemini_promo_body">Ota Gemini käyttöön kuullaksesi ClothesCastisi luonnollisilla, eloisilla äänillä.</string>
+    <string name="today_gemini_promo_cta">Ääniasetukset</string>
+    <string name="today_gemini_promo_dismiss">Sulje</string>
     <string name="today_clothes_promo_title">Tee vaatteista omasi</string>
     <string name="today_insight_format_link">Muoto</string>
     <string name="today_play">Toista</string>

@@ -25,6 +25,7 @@ standard in Israeli digital communication.
     <string name="garment_pants">מכנסיים ארוכים</string>
     <string name="garment_jeans">ג׳ינס</string>
     <string name="garment_gloves">כפפות</string>
+    <string name="garment_umbrella">מטרייה</string>
 
     <string name="settings_clothes_empty">אין חוקים. הקש על הוספה כדי ליצור אחד.</string>
     <string name="settings_clothes_add">הוספה</string>
@@ -33,6 +34,7 @@ standard in Israeli digital communication.
     <string name="settings_clothes_dialog_add_title">הוספת חוק לגדים</string>
     <string name="settings_clothes_dialog_edit_title">עריכת חוק לגדים</string>
     <string name="settings_clothes_item_label">פריט לבוש</string>
+    <string name="settings_clothes_color_label">צבע</string>
     <string name="settings_clothes_condition_label">תנאי</string>
     <string name="settings_clothes_value_label_temp">סף (%1$s)</string>
     <string name="settings_clothes_value_label_precip">סף (%%)</string>
@@ -118,6 +120,8 @@ standard in Israeli digital communication.
     <string name="today_refresh">רענן/י</string>
     <string name="today_empty_title">אין ClothesCast עדיין</string>
     <string name="today_empty_subtitle">ClothesCast הבוקר שלך יופיע כאן לאחר שייווצר.</string>
+    <string name="today_empty_location_title">נדרש מיקום</string>
+    <string name="today_empty_location_subtitle">הגדר את המיקום שלך כדי לקבל את ה-ClothesCast שלך.</string>
     <string name="today_fetch_now">טען עכשיו</string>
     <string name="today_generated_at">נוצר ב-%1$s</string>
     <string name="today_location_unknown">המיקום שלך</string>
@@ -158,6 +162,11 @@ standard in Israeli digital communication.
     <string name="feels_like_week_widget_label">טמפרטורה מורגשת (7 ימים)</string>
     <string name="feels_like_week_widget_description">הטמפרטורה המורגשת ב-7 הימים הקרובים.</string>
     <string name="feels_like_widget_empty_title">אין עדיין תחזית</string>
+    <string name="conditions_widget_label">תנאים</string>
+    <string name="conditions_widget_description">טמפרטורה, גשם, רוח ו-UV במבט אחד.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Today — forecast chart -->
     <string name="today_forecast_title">טמפרטורה מורגשת</string>
@@ -202,6 +211,10 @@ standard in Israeli digital communication.
     <string name="today_failed_no_location">לא הצלחנו לאתר את מיקומך. הענק/י הרשאת מיקום תמידית, או הגדר/י עיר בהגדרות.</string>
     <string name="today_failed_show_details">הצג/י פרטים</string>
     <string name="today_failed_hide_details">הסתר/י פרטים</string>
+    <string name="today_mqtt_failed_title">לא ניתן היה לשלוח לבית החכם שלך</string>
+    <string name="today_cast_failed_title">לא ניתן היה להעביר למסך שלך</string>
+    <string name="today_publish_failed_body">ננסה שוב בעדכון הבא.</string>
+    <string name="today_publish_failed_dismiss">סגור</string>
 
     <!-- Today — location required -->
     <string name="today_location_required_title">הגדר/י את מיקומך</string>
@@ -341,6 +354,7 @@ standard in Israeli digital communication.
     <string name="settings_schedule_time_label">שעה</string>
     <string name="settings_schedule_days_label">ימות השבוע</string>
     <string name="settings_daily_mention_evening_events">ציין/י אירועי ערב</string>
+    <string name="settings_schedule_preview">הפעל עכשיו</string>
     <string name="settings_tonight_title">ClothesCast לילי</string>
     <string name="settings_tonight_description">ClothesCast שני בערב המכסה את מזג האוויר הלילי. בערבים שקטים נשאר שקט; בערבי אירועים משמיע צליל וקורא את עצמו.</string>
     <string name="settings_tonight_enabled">הצג/י ClothesCast לילי</string>
@@ -1214,6 +1228,13 @@ standard in Israeli digital communication.
     <string name="today_schedule_promo_body">בחר/י מתי לקבל התראות והכרזות.</string>
     <string name="today_schedule_promo_cta">הגדרות לוח זמנים</string>
     <string name="today_schedule_promo_dismiss">סגור</string>
+    <string name="today_play_promo_title">האזן ל-ClothesCast היומי שלך</string>
+    <string name="today_play_promo_body">הקש על לחצן ההפעלה כדי לשמוע את ה-ClothesCast שלך.</string>
+    <string name="today_play_promo_dismiss">סגור</string>
+    <string name="today_gemini_promo_title">נסה קולות באיכות גבוהה</string>
+    <string name="today_gemini_promo_body">הפעל את Gemini כדי לשמוע את ה-ClothesCast שלך בקולות טבעיים וחיים.</string>
+    <string name="today_gemini_promo_cta">הגדרות קול</string>
+    <string name="today_gemini_promo_dismiss">סגור</string>
     <string name="today_clothes_promo_title">התאם את הבגדים אישית</string>
     <string name="today_insight_format_link">פורמט</string>
     <string name="today_play">הפעל</string>

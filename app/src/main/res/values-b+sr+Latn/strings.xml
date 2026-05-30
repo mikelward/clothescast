@@ -34,6 +34,7 @@ default English (matching values-pl / values-uk).
     <string name="garment_pants">Pantalone</string>
     <string name="garment_jeans">Farmerke</string>
     <string name="garment_gloves">Rukavice</string>
+    <string name="garment_umbrella">Kišobran</string>
     <string name="garment_polo">Polo</string>
     <string name="garment_thin_jacket">Tanka jakna</string>
     <string name="garment_puffer">Puffer jakna</string>
@@ -46,6 +47,7 @@ default English (matching values-pl / values-uk).
     <string name="settings_clothes_dialog_add_title">Dodaj pravilo odevanja</string>
     <string name="settings_clothes_dialog_edit_title">Izmeni pravilo odevanja</string>
     <string name="settings_clothes_item_label">Odevni predmet</string>
+    <string name="settings_clothes_color_label">Boja</string>
     <string name="settings_clothes_condition_label">Uslov</string>
     <string name="settings_clothes_value_label_temp">Prag (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Prag (%%)</string>
@@ -204,6 +206,7 @@ default English (matching values-pl / values-uk).
     <string name="settings_schedule_time_label">Vreme</string>
     <string name="settings_schedule_days_label">Dani u sedmici</string>
     <string name="settings_daily_mention_evening_events">Pomeni večernje događaje</string>
+    <string name="settings_schedule_preview">Pusti sada</string>
 
     <string name="settings_tonight_title">Noćni ClothesCast</string>
     <string name="settings_tonight_description">Drugi ClothesCast uveče koji pokriva vremensku prognozu za večeras. Mirnih večeri ostaje tih ili se uopšte ne pojavljuje ako je uključeno „Obavesti samo kad ima večernjih događaja"; večerima sa događajima reproducira zvuk i (ako je uključen govorni prikaz) čita se naglas.</string>
@@ -445,6 +448,8 @@ default English (matching values-pl / values-uk).
     <string name="today_refresh">Osveži</string>
     <string name="today_empty_title">Još nema ClothesCasta</string>
     <string name="today_empty_subtitle">Tvoj jutarnji ClothesCast pojaviće se ovde čim bude generisan.</string>
+    <string name="today_empty_location_title">Potrebna je lokacija</string>
+    <string name="today_empty_location_subtitle">Podesite svoju lokaciju da biste dobili svoj ClothesCast.</string>
     <string name="today_fetch_now">Preuzmi odmah</string>
     <string name="today_generated_at">Generisano u %1$s</string>
     <string name="today_location_unknown">Tvoja lokacija</string>
@@ -478,6 +483,11 @@ default English (matching values-pl / values-uk).
     <string name="feels_like_week_widget_label">Osećajna (7 dana)</string>
     <string name="feels_like_week_widget_description">Osećajna temperatura za narednih 7 dana.</string>
     <string name="feels_like_widget_empty_title">Još nema prognoze</string>
+    <string name="conditions_widget_label">Uslovi</string>
+    <string name="conditions_widget_description">Temperatura, kiša, vetar i UV na prvi pogled.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Hourly forecast card. -->
     <string name="today_forecast_title">Prognoza po satu</string>
@@ -526,6 +536,10 @@ default English (matching values-pl / values-uk).
     <string name="today_failed_no_location">Nismo mogli da dobijemo tvoju lokaciju. Dozvoli trajni pristup lokaciji ili podesi grad u podešavanjima.</string>
     <string name="today_failed_show_details">Prikaži detalje</string>
     <string name="today_failed_hide_details">Sakrij detalje</string>
+    <string name="today_mqtt_failed_title">Slanje u vaš pametni dom nije uspelo</string>
+    <string name="today_cast_failed_title">Prebacivanje na vaš ekran nije uspelo</string>
+    <string name="today_publish_failed_body">Pokušaćemo ponovo pri sledećem ažuriranju.</string>
+    <string name="today_publish_failed_dismiss">Odbaci</string>
 
     <!-- Location required banner. -->
     <string name="today_location_required_title">Podesi svoju lokaciju</string>
@@ -1202,6 +1216,13 @@ default English (matching values-pl / values-uk).
     <string name="today_schedule_promo_body">Izaberi kada primaš obaveštenja i najave.</string>
     <string name="today_schedule_promo_cta">Podešavanja rasporeda</string>
     <string name="today_schedule_promo_dismiss">Odbaci</string>
+    <string name="today_play_promo_title">Slušajte svoj dnevni ClothesCast</string>
+    <string name="today_play_promo_body">Dodirnite dugme za reprodukciju da čujete svoj ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Odbaci</string>
+    <string name="today_gemini_promo_title">Isprobajte glasove visokog kvaliteta</string>
+    <string name="today_gemini_promo_body">Uključite Gemini da čujete svoj ClothesCast prirodnim, životnim glasovima.</string>
+    <string name="today_gemini_promo_cta">Podešavanja glasa</string>
+    <string name="today_gemini_promo_dismiss">Odbaci</string>
     <string name="today_clothes_promo_title">Prilagodi odeću sebi</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Pusti</string>

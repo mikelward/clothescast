@@ -172,6 +172,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="garment_pants">Nadrág</string>
     <string name="garment_jeans">Farmer</string>
     <string name="garment_gloves">Kesztyű</string>
+    <string name="garment_umbrella">Esernyő</string>
     <string name="garment_polo">Galléros póló</string>
     <string name="garment_thin_jacket">Könnyű dzseki</string>
     <string name="garment_puffer">Steppelt kabát</string>
@@ -187,6 +188,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_clothes_dialog_add_title">Öltözködési szabály hozzáadása</string>
     <string name="settings_clothes_dialog_edit_title">Öltözködési szabály szerkesztése</string>
     <string name="settings_clothes_item_label">Ruhadarab</string>
+    <string name="settings_clothes_color_label">Szín</string>
     <string name="settings_clothes_condition_label">Feltétel</string>
     <string name="settings_clothes_value_label_temp">Küszöb (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Küszöb (%%)</string>
@@ -202,6 +204,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_schedule_time_label">Időpont</string>
     <string name="settings_schedule_days_label">Hét napjai</string>
     <string name="settings_daily_mention_evening_events">Esti események megemlítése</string>
+    <string name="settings_schedule_preview">Lejátszás most</string>
 
     <string name="settings_tonight_title">Esti ClothesCast</string>
     <string name="settings_tonight_description">Egy második ClothesCast este a mai éjszakai időjáráshoz. Csendes estéken néma marad, vagy egyáltalán nem jelenik meg, ha az „Értesítés csak esti eseményeknél" aktív; eseményes estéken hangot ad, és (ha bekapcsoltad a hangos kimenetelt) felolvassa magát.</string>
@@ -366,6 +369,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_refresh">Frissítés</string>
     <string name="today_empty_title">Még nincs ClothesCast</string>
     <string name="today_empty_subtitle">A reggeli ClothesCastod itt jelenik meg, amint elkészül.</string>
+    <string name="today_empty_location_title">Hely szükséges</string>
+    <string name="today_empty_location_subtitle">Állítsa be a helyét, hogy megkapja a ClothesCastját.</string>
     <string name="today_fetch_now">Betöltés most</string>
     <string name="today_generated_at">Létrehozva: %1$s</string>
 
@@ -404,6 +409,10 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_failed_unhandled">Váratlan hiba történt.</string>
     <string name="today_failed_show_details">Részletek megjelenítése</string>
     <string name="today_failed_hide_details">Részletek elrejtése</string>
+    <string name="today_mqtt_failed_title">Nem sikerült elküldeni az okosotthonába</string>
+    <string name="today_cast_failed_title">Nem sikerült a kijelzőre küldeni</string>
+    <string name="today_publish_failed_body">A következő frissítéskor újra próbálkozunk.</string>
+    <string name="today_publish_failed_dismiss">Elvetés</string>
     <string name="today_failed_no_location">Nem sikerült meghatározni a helyszínedet. Adj állandó helyszín-engedélyt, vagy állíts be egy várost a beállításokban.</string>
 
     <string name="today_location_required_title">Állítsd be a helyszínedet</string>
@@ -482,6 +491,11 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="feels_like_week_widget_label">Hőérzet (7 nap)</string>
     <string name="feels_like_week_widget_description">A hőérzet a következő 7 napra.</string>
     <string name="feels_like_widget_empty_title">Még nincs előrejelzés</string>
+    <string name="conditions_widget_label">Körülmények</string>
+    <string name="conditions_widget_description">Hőmérséklet, eső, szél és UV egy pillantással.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->
     <string name="onboarding_title">Üdvözöl a ClothesCast</string>
@@ -1205,6 +1219,13 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_schedule_promo_body">Válaszd ki, mikor kapsz értesítéseket és bejelentéseket.</string>
     <string name="today_schedule_promo_cta">Ütemezés beállításai</string>
     <string name="today_schedule_promo_dismiss">Elvetés</string>
+    <string name="today_play_promo_title">Hallgassa meg napi ClothesCastját</string>
+    <string name="today_play_promo_body">Koppintson a lejátszás gombra a ClothesCast meghallgatásához.</string>
+    <string name="today_play_promo_dismiss">Elvetés</string>
+    <string name="today_gemini_promo_title">Próbáljon ki kiváló minőségű hangokat</string>
+    <string name="today_gemini_promo_body">Kapcsolja be a Geminit, hogy természetes, élethű hangokon hallgassa a ClothesCastját.</string>
+    <string name="today_gemini_promo_cta">Hangbeállítások</string>
+    <string name="today_gemini_promo_dismiss">Elvetés</string>
     <string name="today_clothes_promo_title">Tedd magadévá a ruhákat</string>
     <string name="today_insight_format_link">Formátum</string>
     <string name="today_play">Lejátszás</string>

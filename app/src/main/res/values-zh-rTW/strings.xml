@@ -67,6 +67,7 @@ label localises.
     <string name="garment_pants">長褲</string>
     <string name="garment_jeans">牛仔褲</string>
     <string name="garment_gloves">手套</string>
+    <string name="garment_umbrella">雨傘</string>
 
     <!-- Clothes settings — top of the screen. -->
     <string name="settings_clothes_title">穿衣規則</string>
@@ -79,6 +80,7 @@ label localises.
     <string name="settings_clothes_dialog_add_title">新增穿衣規則</string>
     <string name="settings_clothes_dialog_edit_title">編輯穿衣規則</string>
     <string name="settings_clothes_item_label">服裝</string>
+    <string name="settings_clothes_color_label">顏色</string>
     <string name="settings_clothes_condition_label">觸發條件</string>
     <string name="settings_clothes_value_label_temp">閾值 (%1$s)</string>
     <string name="settings_clothes_value_label_precip">閾值 (%%)</string>
@@ -99,6 +101,7 @@ label localises.
     <string name="settings_schedule_time_label">時間</string>
     <string name="settings_schedule_days_label">星期</string>
     <string name="settings_daily_mention_evening_events">提及晚間行程</string>
+    <string name="settings_schedule_preview">立即播放</string>
 
     <string name="settings_tonight_title">夜間 ClothesCast</string>
     <string name="settings_tonight_description">晚間的第二份 ClothesCast，涵蓋今晚的天氣。在沒有行程的夜晚保持靜音，或者如果開啟了「僅在有晚間行程時通知」就完全不出現；在有行程的夜晚會播放提示音，並且（如果你啟用了語音朗讀）會自動朗讀。</string>
@@ -333,6 +336,8 @@ label localises.
     <string name="today_refresh">重新整理</string>
     <string name="today_empty_title">還沒有 ClothesCast</string>
     <string name="today_empty_subtitle">你的早晨 ClothesCast 產生後會顯示在這裡。</string>
+    <string name="today_empty_location_title">需要位置資訊</string>
+    <string name="today_empty_location_subtitle">設定您的位置以取得您的 ClothesCast。</string>
     <string name="today_fetch_now">立即取得</string>
     <string name="today_generated_at">產生時間：%1$s</string>
 
@@ -363,6 +368,10 @@ label localises.
     <string name="today_failed_unhandled">發生了非預期的錯誤。</string>
     <string name="today_failed_show_details">顯示詳細資料</string>
     <string name="today_failed_hide_details">隱藏詳細資料</string>
+    <string name="today_mqtt_failed_title">無法傳送到您的智慧家庭</string>
+    <string name="today_cast_failed_title">無法投放到您的顯示器</string>
+    <string name="today_publish_failed_body">我們將在下次更新時重試。</string>
+    <string name="today_publish_failed_dismiss">關閉</string>
 
     <!-- Home-screen App Widget. "穿搭" is a fashion-vocab word for an
          outfit / day's clothing combination, idiomatic in both
@@ -377,6 +386,11 @@ label localises.
     <string name="feels_like_week_widget_label">體感溫度（7 天）</string>
     <string name="feels_like_week_widget_description">未來 7 天的體感溫度。</string>
     <string name="feels_like_widget_empty_title">還沒有預報</string>
+    <string name="conditions_widget_label">天氣狀況</string>
+    <string name="conditions_widget_description">溫度、降雨、風力和 UV 一目了然。</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!--
     Onboarding flow — first-run welcome, two permission steps, Gemini
@@ -1376,6 +1390,13 @@ label localises.
     <string name="today_schedule_promo_body">選擇何時收到通知和播報。</string>
     <string name="today_schedule_promo_cta">排程設定</string>
     <string name="today_schedule_promo_dismiss">關閉</string>
+    <string name="today_play_promo_title">聆聽您的每日 ClothesCast</string>
+    <string name="today_play_promo_body">輕觸播放按鈕即可聆聽您的 ClothesCast。</string>
+    <string name="today_play_promo_dismiss">關閉</string>
+    <string name="today_gemini_promo_title">試用高品質語音</string>
+    <string name="today_gemini_promo_body">開啟 Gemini，以自然逼真的語音聆聽您的 ClothesCast。</string>
+    <string name="today_gemini_promo_cta">語音設定</string>
+    <string name="today_gemini_promo_dismiss">關閉</string>
     <string name="today_clothes_promo_title">把服裝變成你的</string>
     <string name="today_insight_format_link">格式</string>
     <string name="today_play">播放</string>

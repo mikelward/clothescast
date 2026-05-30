@@ -44,6 +44,7 @@ displayed label localizes.
     <string name="garment_pants">Pantolon</string>
     <string name="garment_jeans">Kot pantolon</string>
     <string name="garment_gloves">Eldiven</string>
+    <string name="garment_umbrella">Şemsiye</string>
 
     <string name="settings_clothes_title">Kıyafet Kuralları</string>
     <string name="settings_clothes_description">Bir tahmin bu eşiklerden birini aşarsa, kıyafet günlük ClothesCast\'ında görünür.</string>
@@ -55,6 +56,7 @@ displayed label localizes.
     <string name="settings_clothes_dialog_add_title">Giysi kuralı ekle</string>
     <string name="settings_clothes_dialog_edit_title">Giysi kuralını düzenle</string>
     <string name="settings_clothes_item_label">Giysi</string>
+    <string name="settings_clothes_color_label">Renk</string>
     <string name="settings_clothes_condition_label">Koşul</string>
     <string name="settings_clothes_value_label_temp">Eşik (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Eşik (%%)</string>
@@ -70,6 +72,7 @@ displayed label localizes.
     <string name="settings_schedule_time_label">Saat</string>
     <string name="settings_schedule_days_label">Haftanın günleri</string>
     <string name="settings_daily_mention_evening_events">Akşam etkinliklerinden bahset</string>
+    <string name="settings_schedule_preview">Şimdi oynat</string>
 
     <string name="settings_tonight_title">Gecelik ClothesCast</string>
     <string name="settings_tonight_description">Bu gecenin hava durumu için akşam ikinci bir ClothesCast. Sakin akşamlarda sessiz kalır veya "Yalnızca akşam etkinlikleri varsa bildir" etkinse hiç görünmez; etkinlikleri olan akşamlarda ses çıkarır ve (sesli çıkış etkinse) kendini sesli okur.</string>
@@ -278,6 +281,8 @@ displayed label localizes.
     <string name="today_refresh">Yenile</string>
     <string name="today_empty_title">Henüz ClothesCast yok</string>
     <string name="today_empty_subtitle">Sabah ClothesCast\'ın oluşturulduğunda burada görünecek.</string>
+    <string name="today_empty_location_title">Konum gerekli</string>
+    <string name="today_empty_location_subtitle">ClothesCast\'inizi almak için konumunuzu ayarlayın.</string>
     <string name="today_fetch_now">Şimdi al</string>
     <string name="today_generated_at">Saat %1$s\'de oluşturuldu</string>
 
@@ -308,6 +313,10 @@ displayed label localizes.
     <string name="today_failed_unhandled">Beklenmedik bir hata oluştu.</string>
     <string name="today_failed_show_details">Ayrıntıları göster</string>
     <string name="today_failed_hide_details">Ayrıntıları gizle</string>
+    <string name="today_mqtt_failed_title">Akıllı evinize gönderilemedi</string>
+    <string name="today_cast_failed_title">Ekranınıza yayınlanamadı</string>
+    <string name="today_publish_failed_body">Bir sonraki güncellemede tekrar deneyeceğiz.</string>
+    <string name="today_publish_failed_dismiss">Kapat</string>
 
     <string name="widget_label">Kıyafet</string>
     <string name="widget_description">Mevcut günün dilimindeki kıyafete bir bakış.</string>
@@ -318,6 +327,11 @@ displayed label localizes.
     <string name="feels_like_week_widget_label">Hissedilen sıcaklık (7 gün)</string>
     <string name="feels_like_week_widget_description">Önümüzdeki 7 gün boyunca hissedilen sıcaklık.</string>
     <string name="feels_like_widget_empty_title">Henüz tahmin yok</string>
+    <string name="conditions_widget_label">Koşullar</string>
+    <string name="conditions_widget_description">Sıcaklık, yağmur, rüzgar ve UV bir bakışta.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <string name="onboarding_title">ClothesCast\'a Hoş Geldiniz</string>
     <string name="onboarding_subtitle">İki hızlı seçim ve hazırsın. Diğer her şeyin daha sonra ayarlardan değiştirebileceğin makul bir varsayılanı var.</string>
@@ -1214,6 +1228,13 @@ displayed label localizes.
     <string name="today_schedule_promo_body">Bildirimleri ve duyuruları ne zaman alacağını seç.</string>
     <string name="today_schedule_promo_cta">Program ayarları</string>
     <string name="today_schedule_promo_dismiss">Kapat</string>
+    <string name="today_play_promo_title">Günlük ClothesCast\'inizi dinleyin</string>
+    <string name="today_play_promo_body">ClothesCast\'inizi duymak için oynat düğmesine dokunun.</string>
+    <string name="today_play_promo_dismiss">Kapat</string>
+    <string name="today_gemini_promo_title">Yüksek kaliteli sesleri deneyin</string>
+    <string name="today_gemini_promo_body">ClothesCast\'inizi doğal, gerçekçi seslerle duymak için Gemini\'yi açın.</string>
+    <string name="today_gemini_promo_cta">Ses ayarları</string>
+    <string name="today_gemini_promo_dismiss">Kapat</string>
     <string name="today_clothes_promo_title">Kıyafetleri kendine göre ayarla</string>
     <string name="today_insight_format_link">Biçim</string>
     <string name="today_play">Oynat</string>

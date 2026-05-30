@@ -26,6 +26,7 @@ they work correctly in both the single-band and range templates.
     <string name="garment_pants">بنطلون</string>
     <string name="garment_jeans">جينز</string>
     <string name="garment_gloves">قفازات</string>
+    <string name="garment_umbrella">مظلة</string>
 
     <string name="settings_clothes_empty">لا توجد قواعد. اضغط على إضافة لإنشاء واحدة.</string>
     <string name="settings_clothes_add">إضافة</string>
@@ -34,6 +35,7 @@ they work correctly in both the single-band and range templates.
     <string name="settings_clothes_dialog_add_title">إضافة قاعدة ملابس</string>
     <string name="settings_clothes_dialog_edit_title">تعديل قاعدة الملابس</string>
     <string name="settings_clothes_item_label">الملابس</string>
+    <string name="settings_clothes_color_label">اللون</string>
     <string name="settings_clothes_condition_label">الشرط</string>
     <string name="settings_clothes_value_label_temp">العتبة (%1$s)</string>
     <string name="settings_clothes_value_label_precip">العتبة (%%)</string>
@@ -118,6 +120,8 @@ they work correctly in both the single-band and range templates.
     <string name="today_refresh">تحديث</string>
     <string name="today_empty_title">لا يوجد ClothesCast بعد</string>
     <string name="today_empty_subtitle">سيظهر ClothesCast الصباحي هنا بعد إنشائه.</string>
+    <string name="today_empty_location_title">الموقع مطلوب</string>
+    <string name="today_empty_location_subtitle">قم بإعداد موقعك للحصول على ClothesCast.</string>
     <string name="today_fetch_now">جلب الآن</string>
     <string name="today_generated_at">تم الإنشاء في %1$s</string>
     <string name="today_location_unknown">موقعك</string>
@@ -158,6 +162,11 @@ they work correctly in both the single-band and range templates.
     <string name="feels_like_week_widget_label">درجة الحرارة المحسوسة (7 أيام)</string>
     <string name="feels_like_week_widget_description">درجة الحرارة المحسوسة خلال الأيام السبعة القادمة.</string>
     <string name="feels_like_widget_empty_title">لا توجد توقعات بعد</string>
+    <string name="conditions_widget_label">الأحوال الجوية</string>
+    <string name="conditions_widget_description">درجة الحرارة والمطر والرياح وUV في لمحة.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Today — forecast / temperature chart -->
     <string name="today_forecast_title">درجة الحرارة المحسوسة</string>
@@ -206,6 +215,10 @@ they work correctly in both the single-band and range templates.
     <string name="today_failed_no_location">تعذّر تحديد موقعك. امنح إذن الموقع الدائم، أو حدد مدينة في الإعدادات.</string>
     <string name="today_failed_show_details">إظهار التفاصيل</string>
     <string name="today_failed_hide_details">إخفاء التفاصيل</string>
+    <string name="today_mqtt_failed_title">تعذّر الإرسال إلى منزلك الذكي</string>
+    <string name="today_cast_failed_title">تعذّر البث إلى شاشتك</string>
+    <string name="today_publish_failed_body">سنحاول مرة أخرى في التحديث التالي.</string>
+    <string name="today_publish_failed_dismiss">إغلاق</string>
     <string name="today_location_required_title">إعداد موقعك</string>
     <string name="today_location_required_body">تحتاج ClothesCast إلى معرفة موقعك لجلب التوقعات. امنح إذن الموقع الدائم، أو اختر مدينة.</string>
     <string name="today_location_required_action">فتح إعدادات الموقع</string>
@@ -345,6 +358,7 @@ they work correctly in both the single-band and range templates.
     <string name="settings_schedule_time_label">الوقت</string>
     <string name="settings_schedule_days_label">أيام الأسبوع</string>
     <string name="settings_daily_mention_evening_events">ذكر أحداث المساء</string>
+    <string name="settings_schedule_preview">تشغيل الآن</string>
     <string name="settings_tonight_title">ClothesCast الليلي</string>
     <string name="settings_tonight_description">ClothesCast ثانٍ مسائي يغطي طقس الليلة. في المساء الهادئ يبقى صامتًا؛ في مساء الأحداث يُصدر صوتًا ويقرأ نفسه.</string>
     <string name="settings_tonight_enabled">إظهار ClothesCast الليلي</string>
@@ -1217,6 +1231,13 @@ they work correctly in both the single-band and range templates.
     <string name="today_schedule_promo_body">اختر متى تتلقى الإشعارات والإعلانات.</string>
     <string name="today_schedule_promo_cta">إعدادات الجدول</string>
     <string name="today_schedule_promo_dismiss">إغلاق</string>
+    <string name="today_play_promo_title">استمع إلى ClothesCast اليومي</string>
+    <string name="today_play_promo_body">انقر على زر التشغيل لسماع ClothesCast.</string>
+    <string name="today_play_promo_dismiss">إغلاق</string>
+    <string name="today_gemini_promo_title">جرّب أصواتًا عالية الجودة</string>
+    <string name="today_gemini_promo_body">فعّل Gemini لسماع ClothesCast بأصوات طبيعية وواقعية.</string>
+    <string name="today_gemini_promo_cta">إعدادات الصوت</string>
+    <string name="today_gemini_promo_dismiss">إغلاق</string>
     <string name="today_clothes_promo_title">اجعل الملابس ملكك</string>
     <string name="today_insight_format_link">التنسيق</string>
     <string name="today_play">تشغيل</string>

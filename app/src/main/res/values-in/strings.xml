@@ -22,6 +22,7 @@ to values/strings.xml (English).
     <string name="garment_pants">Celana panjang</string>
     <string name="garment_jeans">Celana jeans</string>
     <string name="garment_gloves">Sarung tangan</string>
+    <string name="garment_umbrella">Payung</string>
 
     <string name="settings_clothes_empty">Belum ada aturan. Ketuk Tambah untuk membuat satu.</string>
     <string name="settings_clothes_add">Tambah</string>
@@ -30,6 +31,7 @@ to values/strings.xml (English).
     <string name="settings_clothes_dialog_add_title">Tambah aturan pakaian</string>
     <string name="settings_clothes_dialog_edit_title">Edit aturan pakaian</string>
     <string name="settings_clothes_item_label">Pakaian</string>
+    <string name="settings_clothes_color_label">Warna</string>
     <string name="settings_clothes_condition_label">Pemicu</string>
     <string name="settings_clothes_value_label_temp">Ambang batas (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Ambang batas (%%)</string>
@@ -116,6 +118,8 @@ to values/strings.xml (English).
     <string name="today_refresh">Perbarui</string>
     <string name="today_empty_title">Belum ada ClothesCast</string>
     <string name="today_empty_subtitle">ClothesCast pagi Anda akan muncul di sini setelah dibuat.</string>
+    <string name="today_empty_location_title">Lokasi diperlukan</string>
+    <string name="today_empty_location_subtitle">Atur lokasi Anda untuk mendapatkan ClothesCast Anda.</string>
     <string name="today_fetch_now">Ambil sekarang</string>
     <string name="today_generated_at">Dibuat pukul %1$s</string>
     <string name="today_location_unknown">Lokasi Anda</string>
@@ -156,6 +160,11 @@ to values/strings.xml (English).
     <string name="feels_like_week_widget_label">Suhu terasa (7 hari)</string>
     <string name="feels_like_week_widget_description">Suhu terasa selama 7 hari ke depan.</string>
     <string name="feels_like_widget_empty_title">Belum ada prakiraan</string>
+    <string name="conditions_widget_label">Kondisi</string>
+    <string name="conditions_widget_description">Suhu, hujan, angin, dan UV sekilas.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Forecast cards -->
     <string name="today_forecast_title">Prakiraan per jam</string>
@@ -198,6 +207,10 @@ to values/strings.xml (English).
     <string name="today_failed_no_location">Kami tidak dapat menemukan lokasi Anda. Izinkan akses lokasi setiap saat, atau atur kota di Pengaturan.</string>
     <string name="today_failed_show_details">Tampilkan detail</string>
     <string name="today_failed_hide_details">Sembunyikan detail</string>
+    <string name="today_mqtt_failed_title">Tidak dapat mengirim ke rumah pintar Anda</string>
+    <string name="today_cast_failed_title">Tidak dapat menampilkan ke layar Anda</string>
+    <string name="today_publish_failed_body">Kami akan mencoba lagi pada pembaruan berikutnya.</string>
+    <string name="today_publish_failed_dismiss">Tutup</string>
 
     <!-- Location required prompt -->
     <string name="today_location_required_title">Atur lokasi Anda</string>
@@ -337,6 +350,7 @@ to values/strings.xml (English).
     <string name="settings_schedule_time_label">Waktu</string>
     <string name="settings_schedule_days_label">Hari dalam seminggu</string>
     <string name="settings_daily_mention_evening_events">Sebutkan acara malam</string>
+    <string name="settings_schedule_preview">Putar sekarang</string>
     <string name="settings_tonight_title">ClothesCast Malam</string>
     <string name="settings_tonight_description">ClothesCast kedua di malam hari yang mencakup cuaca malam ini. Di malam yang tenang, notifikasi tidak muncul, atau sama sekali tidak muncul jika "Hanya beri tahu saat ada acara malam" diaktifkan; di malam dengan acara, notifikasi berbunyi dan (jika pengiriman dengan suara diaktifkan) dibacakan.</string>
     <string name="settings_tonight_enabled">Tampilkan ClothesCast malam</string>
@@ -1212,6 +1226,13 @@ to values/strings.xml (English).
     <string name="today_schedule_promo_body">Pilih kapan Anda menerima notifikasi dan pengumuman.</string>
     <string name="today_schedule_promo_cta">Pengaturan jadwal</string>
     <string name="today_schedule_promo_dismiss">Tutup</string>
+    <string name="today_play_promo_title">Dengarkan ClothesCast harian Anda</string>
+    <string name="today_play_promo_body">Ketuk tombol putar untuk mendengar ClothesCast Anda.</string>
+    <string name="today_play_promo_dismiss">Tutup</string>
+    <string name="today_gemini_promo_title">Coba suara berkualitas tinggi</string>
+    <string name="today_gemini_promo_body">Aktifkan Gemini untuk mendengar ClothesCast Anda dengan suara alami yang hidup.</string>
+    <string name="today_gemini_promo_cta">Setelan suara</string>
+    <string name="today_gemini_promo_dismiss">Tutup</string>
     <string name="today_clothes_promo_title">Buat pakaian sendiri</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Putar</string>

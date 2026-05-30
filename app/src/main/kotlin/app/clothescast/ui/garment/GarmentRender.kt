@@ -14,8 +14,10 @@ import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
+import app.clothescast.core.domain.model.toWindSpeedUnit
 import app.clothescast.insight.InsightFormatter
 import java.io.ByteArrayOutputStream
 import kotlin.math.pow
@@ -445,6 +447,25 @@ private const val DROPLET_BOTTOM = 20.23f
 // looks ≈ 50 % blue and 85 % fill looks meaningfully less than 100 %.
 private const val DROPLET_AREA_EXPONENT = 0.7
 
+// Material `air` (wind) silhouette in a 24×24 viewport — the three flowing
+// lines that universally read as wind. Drawn as a solid glyph tinted by the
+// Beaufort scale rather than partially filled.
+private const val AIR_PATH =
+    "M14.5,17c0,1.65 -1.35,3 -3,3s-3,-1.35 -3,-3h2c0,0.55 0.45,1 1,1s1,-0.45 1,-1 " +
+        "-0.45,-1 -1,-1H2v-2h9.5C13.15,14 14.5,15.35 14.5,17zM19,6.5C19,4.57 17.43,3 " +
+        "15.5,3S12,4.57 12,6.5h2C14,5.67 14.67,5 15.5,5S17,5.67 17,6.5S16.33,8 15.5,8H2v2h13.5" +
+        "C17.43,10 19,8.43 19,6.5zM18.5,11H2v2h16.5c0.83,0 1.5,0.67 1.5,1.5S19.33,17 18.5,17" +
+        "S17,16.33 17,15.5h-2c0,1.93 1.57,3.5 3.5,3.5s3.5,-1.57 3.5,-3.5S20.43,11 18.5,11z"
+// Material `wb_sunny` (sun + rays) in a 24×24 viewport, tinted by the WHO UV
+// colour scale and paired with a "UV n" label so it doesn't read as a plain
+// "sunny" condition glyph.
+private const val SUN_PATH =
+    "M6.76,4.84l-1.8,-1.79 -1.41,1.41 1.79,1.79 1.42,-1.41zM4,10.5L1,10.5v2h3v-2zM13,0.55h-2" +
+        "L11,3.5h2L13,0.55zM20.45,4.46l-1.41,-1.41 -1.79,1.79 1.41,1.41 1.79,-1.79zM17.24,18.16" +
+        "l1.79,1.8 1.41,-1.41 -1.8,-1.79 -1.4,1.4zM20,10.5v2h3v-2h-3zM12,5.5c-3.31,0 -6,2.69 " +
+        "-6,6s2.69,6 6,6 6,-2.69 6,-6 -2.69,-6 -6,-6zM11,22.45h2L13,19.5h-2v2.95zM3.55,18.54" +
+        "l1.41,1.41 1.79,-1.8 -1.41,-1.41 -1.79,1.8z"
+
 // Coloured icon palette for the outfit-card info rows. Outline reads as a
 // thin dark line against the white card; fill colours pop against it.
 private const val THERMOMETER_FILL_ARGB = 0xFFE53935.toInt()
@@ -572,6 +593,38 @@ private fun drawFillableInfoIcon(
 }
 
 /**
+ * Draws a fully-filled glyph (no partial-fill metaphor) at ([x], [y]) sized
+ * [size]×[size], tinted [fillArgb] with a thin [outlineArgb] edge for legibility
+ * against either a light or dark background. Used by the wind / UV cells, whose
+ * value is conveyed by the scale tint + label rather than a fill level.
+ */
+private fun drawSolidGlyph(
+    canvas: Canvas,
+    x: Int,
+    y: Int,
+    size: Int,
+    pathData: String,
+    fillArgb: Int,
+    outlineArgb: Int,
+) {
+    val path = AndroidPathParser.createPathFromPathData(pathData)
+    val scale = size.toFloat() / 24f
+    canvas.save()
+    canvas.translate(x.toFloat(), y.toFloat())
+    canvas.scale(scale, scale)
+    canvas.drawPath(path, Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL; color = fillArgb })
+    canvas.drawPath(
+        path,
+        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            color = outlineArgb
+            strokeWidth = INFO_ICON_STROKE_WIDTH
+        },
+    )
+    canvas.restore()
+}
+
+/**
  * Computes the two info-row strings shown beneath the prose on the outfit
  * card. Pulled out so [MainActivity] and [FetchAndNotifyWorker] share the
  * same min/max feels-like and peak-rain logic. Returns `tempLine` empty
@@ -592,6 +645,14 @@ internal data class OutfitCardInfoLines(
     // Compact peak-rain label without the "Peak" lead-in, for the conditions
     // widget. Null whenever [rainLine] is. Default null for card callers.
     val rainLineShort: String? = null,
+    // Conditions-widget wind / UV cells. Each label is null unless the period's
+    // peak is "notable" (>= WIND_NOTABLE_KMH / UV_NOTABLE); the raw maximum is
+    // carried alongside so the renderer can pick the Beaufort / WHO scale tint.
+    // Defaults keep the outfit card (which ignores these) unaffected.
+    val windLabel: String? = null,
+    val windMaxKmh: Double? = null,
+    val uvLabel: String? = null,
+    val uvMax: Double? = null,
 )
 
 internal fun outfitCardInfoLines(
@@ -599,6 +660,7 @@ internal fun outfitCardInfoLines(
     formatter: InsightFormatter,
     hourly: List<HourlyForecast>,
     temperatureUnit: TemperatureUnit,
+    windSpeedUnit: WindSpeedUnit = WindSpeedUnit.KMH,
 ): OutfitCardInfoLines {
     val lowC = hourly.minOfOrNull { it.feelsLikeC }
     val highC = hourly.maxOfOrNull { it.feelsLikeC }
@@ -627,38 +689,64 @@ internal fun outfitCardInfoLines(
         rainLineShort = null
         rainFillFraction = null
     }
+    // Wind / UV: take the period's peak and only surface it when notable.
+    val windMaxKmh = hourly.mapNotNull { it.windSpeedKmh }.maxOrNull()
+        ?.takeIf { it >= WIND_NOTABLE_KMH }
+    val windLabel = windMaxKmh?.let {
+        context.getString(
+            R.string.conditions_wind,
+            it.toWindSpeedUnit(windSpeedUnit).roundToInt(),
+            windSpeedUnit.symbol(),
+        )
+    }
+    val uvMax = hourly.mapNotNull { it.uvIndex }.maxOrNull()
+        ?.takeIf { it >= UV_NOTABLE }
+    val uvLabel = uvMax?.let { context.getString(R.string.conditions_uv, it.roundToInt()) }
     return OutfitCardInfoLines(
         tempLine = tempLine,
         rainLine = rainLine,
         rainLineShort = rainLineShort,
         tempFillFraction = tempFillFraction,
         rainFillFraction = rainFillFraction,
+        windLabel = windLabel,
+        windMaxKmh = windMaxKmh,
+        uvLabel = uvLabel,
+        uvMax = uvMax,
     )
 }
 
+/** Which glyph a [ConditionsCell] draws. */
+internal enum class ConditionsGlyph { THERMOMETER, DROPLET, WIND, UV }
+
 /**
- * Rasterizes a horizontal "conditions strip" — a min→high feels-like
- * thermometer next to the peak-rain droplet — into a [Bitmap] for the
- * home-screen conditions widget (via [androidx.glance.ImageProvider]). Reuses
- * the same glyph primitives and [OutfitCardInfoLines] math the outfit card
- * draws, so the widget and the card stay in lockstep.
+ * One indicator on the conditions strip: a glyph plus its label. Thermometer /
+ * droplet read [fillFraction] (a partial fill); the solid wind / UV glyphs read
+ * [tintArgb] (their Beaufort / WHO scale colour, null → theme outline colour).
+ */
+internal data class ConditionsCell(
+    val glyph: ConditionsGlyph,
+    val label: String,
+    val fillFraction: Float = 0f,
+    val tintArgb: Int? = null,
+)
+
+/**
+ * Rasterizes a horizontal "conditions strip" — a row of [cells] (feels-like
+ * thermometer, rain droplet, and optionally wind / UV) — into a [Bitmap] for
+ * the home-screen conditions widget (via [androidx.glance.ImageProvider]).
+ * Reuses the same glyph primitives the outfit card draws, so the widget and the
+ * card stay in lockstep. Cells are laid out left-to-right and centred; content
+ * wider than the bitmap is scaled down to fit rather than clipped.
  *
- * Layout: `[thermometer] 9–28°C   [droplet] 60% at 3pm`, centred horizontally.
- * The thermometer fills to [tempFraction] (the day's high); the low/high range
- * is carried by [rangeLabel]. Pass [rainLabel] = null (and [rainFraction] =
- * null) to drop the droplet cell — matches the card's "rain only when peak ≥
- * 30 %" rule. [darkTheme] swaps the glyph interior / outline / text colours so
- * the strip reads on a dark widget background; the red / blue fills stay
- * constant since they pop on either background. Memoised on the full input
- * tuple (labels + fractions + size + theme) so frequent widget refreshes don't
- * re-rasterize.
+ * [darkTheme] swaps the glyph interior / outline / text colours so the strip
+ * reads on a dark widget background; the thermometer red / droplet blue and the
+ * wind / UV scale tints stay constant since they pop on either background.
+ * Memoised on the full input tuple (cells + size + theme) so frequent widget
+ * refreshes don't re-rasterize.
  */
 internal fun renderConditionsStripBitmap(
     context: Context,
-    rangeLabel: String,
-    rainLabel: String?,
-    tempFraction: Float,
-    rainFraction: Float?,
+    cells: List<ConditionsCell>,
     widthPx: Int,
     heightPx: Int,
     darkTheme: Boolean,
@@ -666,10 +754,8 @@ internal fun renderConditionsStripBitmap(
     require(widthPx > 0 && heightPx > 0) {
         "conditions strip size must be positive, got ${widthPx}×$heightPx"
     }
-    val key = ConditionsStripCacheKey(
-        rangeLabel, rainLabel, tempFraction,
-        rainFraction, widthPx, heightPx, darkTheme,
-    )
+    require(cells.isNotEmpty()) { "conditions strip needs at least one cell" }
+    val key = ConditionsStripCacheKey(cells, widthPx, heightPx, darkTheme)
     conditionsStripCache[key]?.let { return it }
 
     // Defensively cap the raster height; the Image upscales the bounded bitmap
@@ -695,16 +781,12 @@ internal fun renderConditionsStripBitmap(
     var iconGap = iconPx * STRIP_ICON_TEXT_GAP_FRACTION
     var sectionGap = iconPx * STRIP_SECTION_GAP_FRACTION
 
-    val labels = buildList {
-        add(rangeLabel)
-        if (rainLabel != null) add(rainLabel)
-    }
     fun contentWidth(): Float =
-        labels.sumOf { (iconPx + iconGap + textPaint.measureText(it)).toDouble() }.toFloat() +
-            sectionGap * (labels.size - 1)
+        cells.sumOf { (iconPx + iconGap + textPaint.measureText(it.label)).toDouble() }.toFloat() +
+            sectionGap * (cells.size - 1)
 
-    // Shrink icon + text together so a long "Peak 60% at 3pm" on a short-wide
-    // cell scales down to fit rather than clipping off the right edge.
+    // Shrink icon + text together so a full row (thermometer + rain + wind + UV)
+    // on a short-wide cell scales down to fit rather than clipping off the edge.
     val usableWidth = w * STRIP_USABLE_WIDTH_FRACTION
     val fitScale = (usableWidth / contentWidth()).coerceIn(STRIP_MIN_FIT_SCALE, 1f)
     if (fitScale < 1f) {
@@ -714,30 +796,26 @@ internal fun renderConditionsStripBitmap(
         textPaint.textSize *= fitScale
     }
 
-    val cellWidths = labels.map { iconPx + iconGap + textPaint.measureText(it) }
-    val totalWidth = cellWidths.sum() + sectionGap * (labels.size - 1)
+    val cellWidths = cells.map { iconPx + iconGap + textPaint.measureText(it.label) }
+    val totalWidth = cellWidths.sum() + sectionGap * (cells.size - 1)
     var x = ((w - totalWidth) / 2f).coerceAtLeast(0f)
     val iconTop = (h - iconPx) / 2
     val textCenterY = iconTop + iconPx / 2f
     val baseline = textCenterY - (textPaint.fontMetrics.ascent + textPaint.fontMetrics.descent) / 2f
 
-    labels.forEachIndexed { i, label ->
+    cells.forEachIndexed { i, cell ->
         val ix = x.roundToInt()
-        if (i == 0) {
-            drawThermometerIcon(
-                canvas, ix, iconTop, iconPx,
-                fillFraction = tempFraction,
-                interiorArgb = interiorArgb,
-                outlineArgb = outlineArgb,
-            )
-        } else {
-            drawRainDropletIcon(
-                canvas, ix, iconTop, iconPx, rainFraction ?: 0f,
-                interiorArgb = interiorArgb,
-                outlineArgb = outlineArgb,
-            )
+        when (cell.glyph) {
+            ConditionsGlyph.THERMOMETER ->
+                drawThermometerIcon(canvas, ix, iconTop, iconPx, cell.fillFraction, interiorArgb, outlineArgb)
+            ConditionsGlyph.DROPLET ->
+                drawRainDropletIcon(canvas, ix, iconTop, iconPx, cell.fillFraction, interiorArgb, outlineArgb)
+            ConditionsGlyph.WIND ->
+                drawSolidGlyph(canvas, ix, iconTop, iconPx, AIR_PATH, cell.tintArgb ?: outlineArgb, outlineArgb)
+            ConditionsGlyph.UV ->
+                drawSolidGlyph(canvas, ix, iconTop, iconPx, SUN_PATH, cell.tintArgb ?: outlineArgb, outlineArgb)
         }
-        canvas.drawText(label, ix + iconPx + iconGap, baseline, textPaint)
+        canvas.drawText(cell.label, ix + iconPx + iconGap, baseline, textPaint)
         x += cellWidths[i] + sectionGap
     }
 
@@ -746,10 +824,7 @@ internal fun renderConditionsStripBitmap(
 }
 
 private data class ConditionsStripCacheKey(
-    val rangeLabel: String,
-    val rainLabel: String?,
-    val tempFraction: Float,
-    val rainFraction: Float?,
+    val cells: List<ConditionsCell>,
     val widthPx: Int,
     val heightPx: Int,
     val darkTheme: Boolean,
@@ -785,7 +860,45 @@ private const val STRIP_DARK_OUTLINE_ARGB = 0xFFCCCCCC.toInt()
 private const val STRIP_DARK_TEXT_ARGB = 0xFFECECEC.toInt()
 private const val STRIP_LIGHT_TEXT_ARGB = 0xFF1A1A1A.toInt()
 
+// Widget surface (Box background) behind the strip. The renderer draws on a
+// transparent bitmap — the widget paints these — but they're the single source
+// of truth so [ConditionsWidget] and the snapshot tests stay in lockstep. M3
+// light/dark surface neutrals.
+internal const val STRIP_SURFACE_LIGHT_ARGB = 0xFFFEF7FF.toInt()
+internal const val STRIP_SURFACE_DARK_ARGB = 0xFF1C1B1F.toInt()
+
 private const val RAIN_PEAK_THRESHOLD_PCT = 30
+
+// "Notable" thresholds — below these the wind / UV cells are hidden, matching
+// the strip's principle of surfacing a metric only when it's worth acting on.
+internal const val WIND_NOTABLE_KMH = 30.0
+internal const val UV_NOTABLE = 6.0
+
+/**
+ * Beaufort-flavoured colour for a wind speed in km/h: amber (fresh breeze) →
+ * orange (strong) → red (gale) → violet (storm). Since the cell only shows ≥
+ * [WIND_NOTABLE_KMH] the user always sees amber-or-worse, escalating with
+ * strength. Reads on both light and dark widget backgrounds.
+ */
+internal fun windScaleColorArgb(kmh: Double): Int = when {
+    kmh < 40.0 -> 0xFFF9A825.toInt() // amber — Beaufort 5, fresh breeze
+    kmh < 55.0 -> 0xFFEF6C00.toInt() // orange — Beaufort 6–7, strong/near gale
+    kmh < 75.0 -> 0xFFD50000.toInt() // red — Beaufort 8, gale
+    else -> 0xFF6A1B9A.toInt() // violet — Beaufort 9+, storm
+}
+
+/**
+ * WHO UV-index colour scale: green (low) → yellow → orange → red → violet
+ * (extreme). The cell only shows ≥ [UV_NOTABLE], so in practice the user sees
+ * orange-or-worse.
+ */
+internal fun uvScaleColorArgb(index: Double): Int = when {
+    index < 3.0 -> 0xFF558B2F.toInt() // green — low
+    index < 6.0 -> 0xFFF9A825.toInt() // yellow — moderate
+    index < 8.0 -> 0xFFEF6C00.toInt() // orange — high
+    index < 11.0 -> 0xFFD50000.toInt() // red — very high
+    else -> 0xFF6A1B9A.toInt() // violet — extreme
+}
 
 // Anchors for the saturated tails of the thermometer scale — below
 // [THERMOMETER_FREEZING_FLOOR_C] the column reads empty, above

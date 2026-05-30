@@ -119,6 +119,8 @@ internal object OpenMeteoMapper {
                 precipitationProbabilityPct = (precipitationProbability.getOrNull(i) ?: 0).toDouble(),
                 condition = WmoCodeMapper.map(weatherCode.getOrNull(i)),
                 precipitationMm = precipitation.getOrNull(i) ?: 0.0,
+                windSpeedKmh = windSpeed.getOrNull(i),
+                uvIndex = uvIndex.getOrNull(i),
             )
         }
         return out

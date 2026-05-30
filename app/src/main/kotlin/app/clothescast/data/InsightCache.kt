@@ -273,6 +273,8 @@ class InsightCache(
         val precipitationProbabilityPct: Double,
         val condition: String,
         val precipitationMm: Double = 0.0,
+        val windSpeedKmh: Double? = null,
+        val uvIndex: Double? = null,
     ) {
         fun toDomain(): HourlyForecast = HourlyForecast(
             time = LocalTime.ofSecondOfDay(secondOfDay.toLong()),
@@ -282,6 +284,8 @@ class InsightCache(
             condition = runCatching { WeatherCondition.valueOf(condition) }
                 .getOrDefault(WeatherCondition.UNKNOWN),
             precipitationMm = precipitationMm,
+            windSpeedKmh = windSpeedKmh,
+            uvIndex = uvIndex,
         )
     }
 
@@ -477,6 +481,8 @@ class InsightCache(
         precipitationProbabilityPct = precipitationProbabilityPct,
         condition = condition.name,
         precipitationMm = precipitationMm,
+        windSpeedKmh = windSpeedKmh,
+        uvIndex = uvIndex,
     )
 
     private fun WeatherAlert.toDto(): AlertDto = AlertDto(

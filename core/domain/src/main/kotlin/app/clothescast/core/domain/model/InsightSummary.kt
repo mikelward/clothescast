@@ -47,6 +47,16 @@ data class InsightSummary(
      * doesn't already know about, and likewise carries no event title.
      */
     val eveningEventTieIn: EveningEventTieInClause? = null,
+    /**
+     * Carried accessories (today only umbrella) the user's rules fired,
+     * independent of [clothes]. The formatter folds these into the precip
+     * clause ("Rain at 3pm, bring an umbrella."), so they must survive the
+     * clothes-mention gating that nulls [clothes] under
+     * [ClothesMentionMode.NEVER] / IF_CHANGED — a rain accessory isn't a
+     * "clothes" mention, and an opted-in umbrella should still be named on a
+     * rainy day even when the wear clause is suppressed.
+     */
+    val carriedAccessories: List<String> = emptyList(),
 )
 
 /**

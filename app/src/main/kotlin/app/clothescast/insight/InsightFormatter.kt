@@ -274,7 +274,10 @@ class InsightFormatter(
             // the precip clause (not the wear clause) so rain and the umbrella
             // still travel together.
             summary.precip?.let {
-                add(formatPrecip(it, summary.clothes?.items.orEmpty().firstOrNull(::isAccessory)))
+                // Sourced from [carriedAccessories], not the (clothes-mention-
+                // gated) wear clause, so an opted-in umbrella still surfaces
+                // when the wear clause is suppressed (Clothes = Never / unchanged).
+                add(formatPrecip(it, summary.carriedAccessories.firstOrNull()))
             }
         }
         val tieInClauses = buildList {

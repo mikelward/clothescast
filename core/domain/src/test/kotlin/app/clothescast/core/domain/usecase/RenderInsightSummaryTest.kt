@@ -214,6 +214,21 @@ class RenderInsightSummaryTest {
     }
 
     @Test
+    fun `carried accessories survive clothes-mention suppression`() {
+        // Clothes = Never nulls the wear clause, but a fired umbrella rule still
+        // rides on carriedAccessories so the formatter can fold "bring an
+        // umbrella" into the precip clause regardless of the clothes setting.
+        val out = subject(
+            mildToday,
+            yesterday,
+            listOf("sweater", "umbrella"),
+            clothesMentionMode = ClothesMentionMode.NEVER,
+        )
+        out.clothes.shouldBeNull()
+        out.carriedAccessories.shouldContainExactly("umbrella")
+    }
+
+    @Test
     fun `clothes mention IF_CHANGED suppresses when items match yesterday`() {
         subject(
             mildToday,

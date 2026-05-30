@@ -269,13 +269,10 @@ internal fun FormatContent(
                     optionLabel = { stringResource(bottomsFormatLabel(it)) },
                     onSelect = onSetBottomsFormat,
                 )
-                FormatDropdownRow(
-                    label = stringResource(R.string.settings_format_rain_accessory_label),
-                    options = RainAccessory.entries,
-                    selected = rainAccessory,
-                    optionLabel = { stringResource(rainAccessoryLabel(it)) },
-                    onSelect = onSetRainAccessory,
-                )
+                // The old "Rain accessory" dropdown is retired: carrying an
+                // umbrella is now a configurable clothes rule (precip-keyed) in
+                // Settings → Clothes, not a global format toggle. A follow-up
+                // adds an "Accessories: Always/Never" control here.
             }
         }
     }
@@ -296,11 +293,6 @@ private fun bottomsFormatLabel(format: BottomsFormat): Int = when (format) {
     BottomsFormat.ALWAYS -> R.string.settings_format_bottoms_always
     BottomsFormat.IF_GARMENTS -> R.string.settings_format_bottoms_if_garments
     BottomsFormat.NEVER -> R.string.settings_format_bottoms_never
-}
-
-private fun rainAccessoryLabel(accessory: RainAccessory): Int = when (accessory) {
-    RainAccessory.NONE -> R.string.settings_format_rain_accessory_none
-    RainAccessory.UMBRELLA -> R.string.settings_format_rain_accessory_umbrella
 }
 
 private fun preambleVisibilityLabel(visibility: PreambleVisibility): Int = when (visibility) {

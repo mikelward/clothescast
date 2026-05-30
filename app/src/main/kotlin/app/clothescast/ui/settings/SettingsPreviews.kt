@@ -295,51 +295,6 @@ internal fun SettingsFormatCurrentForecastPreview() {
     }
 }
 
-// Covers the rain-accessory path with both preview cards showing the
-// accessory clause: the synthetic example renders "Rain at 5pm, bring an
-// umbrella." and the current-forecast card folds the umbrella into the
-// evening tie-in.
-@Preview(name = "Settings · Format (rain accessory)", widthDp = 360)
-@Composable
-internal fun SettingsFormatRainAccessoryPreview() {
-    SettingsFrame {
-        FormatContent(
-            rangeFormat = RangeFormat.DEGREES,
-            clothesFormat = ClothesFormat.ITEMS,
-            bottomsFormat = BottomsFormat.IF_GARMENTS,
-            rainAccessory = RainAccessory.UMBRELLA,
-            deltaThresholdC = 3.0,
-            deltaFormat = DeltaFormat.DEGREES,
-            clothesMentionMode =ClothesMentionMode.ALWAYS,
-            region = Region.SYSTEM,
-            temperatureUnit = TemperatureUnit.CELSIUS,
-            currentInsightSummary = InsightSummary(
-                period = ForecastPeriod.TODAY,
-                band = BandClause(
-                    low = TemperatureBand.COOL,
-                    high = TemperatureBand.MILD,
-                    feelsLikeMinC = 12.0,
-                    feelsLikeMaxC = 20.0,
-                ),
-                clothes = ClothesClause(items = listOf("sweater")),
-                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0), PrecipLikelihood.LIKELY),
-            ),
-            padding = PaddingValues(0.dp),
-            onSetRangeFormat = {},
-            onSetClothesFormat = {},
-            onSetBottomsFormat = {},
-            onSetRainAccessory = {},
-            onSetDeltaThresholdC = {},
-            onSetDeltaFormat = {},
-            onSetClothesMentionMode = {},
-            periodPreamble = PreambleVisibility.SPEECH_ONLY,
-            wearPreamble = PreambleVisibility.ALWAYS,
-            onSetPeriodPreamble = {},
-            onSetWearPreamble = {},
-        )
-    }
-}
-
 @Preview(name = "Settings · Clothes rules", widthDp = 360)
 @Composable
 internal fun SettingsClothesPreview() {

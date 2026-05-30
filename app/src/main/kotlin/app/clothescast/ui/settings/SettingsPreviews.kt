@@ -300,6 +300,7 @@ internal fun SettingsClothesPreview() {
             outfitTopColors = emptyMap(),
             outfitBottomColors = emptyMap(),
             outfitHandsColors = emptyMap(),
+            outfitCarriedColors = emptyMap(),
             padding = PaddingValues(0.dp),
             onAdd = {},
             onReplace = { _, _ -> },
@@ -309,6 +310,7 @@ internal fun SettingsClothesPreview() {
             onSetOutfitTopColor = { _, _ -> },
             onSetOutfitBottomColor = { _, _ -> },
             onSetOutfitHandsColor = { _, _ -> },
+            onSetOutfitCarriedColor = { _, _ -> },
         )
     }
 }
@@ -334,6 +336,7 @@ internal fun SettingsClothesFahrenheitPreview() {
             outfitTopColors = emptyMap(),
             outfitBottomColors = emptyMap(),
             outfitHandsColors = emptyMap(),
+            outfitCarriedColors = emptyMap(),
             padding = PaddingValues(0.dp),
             onAdd = {},
             onReplace = { _, _ -> },
@@ -343,6 +346,7 @@ internal fun SettingsClothesFahrenheitPreview() {
             onSetOutfitTopColor = { _, _ -> },
             onSetOutfitBottomColor = { _, _ -> },
             onSetOutfitHandsColor = { _, _ -> },
+            onSetOutfitCarriedColor = { _, _ -> },
         )
     }
 }

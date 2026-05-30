@@ -943,6 +943,8 @@ class FetchAndNotifyWorker(
         // Gloves aren't holiday-themed, so the hands overlay just takes the
         // user's picked colour (empty = baked-in gloves colours).
         val handsColors: Map<OutfitSuggestion.Hands, Long> = prefs.outfitHandsColors
+        // The umbrella isn't holiday-themed either — just the user's picked colour.
+        val carriedColors: Map<OutfitSuggestion.Carried, Long> = prefs.outfitCarriedColors
         val topStrokes: Map<OutfitSuggestion.Top, Long> =
             theme?.topStrokeOverrides ?: emptyMap()
         val bottomStrokes: Map<OutfitSuggestion.Bottom, Long> =
@@ -998,6 +1000,7 @@ class FetchAndNotifyWorker(
                     topColors = topColors,
                     bottomColors = bottomColors,
                     handsColors = handsColors,
+                    carriedColors = carriedColors,
                     topStrokes = topStrokes,
                     bottomStrokes = bottomStrokes,
                 )
@@ -1160,6 +1163,7 @@ class FetchAndNotifyWorker(
         topColors: Map<OutfitSuggestion.Top, Long>,
         bottomColors: Map<OutfitSuggestion.Bottom, Long>,
         handsColors: Map<OutfitSuggestion.Hands, Long>,
+        carriedColors: Map<OutfitSuggestion.Carried, Long>,
         topStrokes: Map<OutfitSuggestion.Top, Long>,
         bottomStrokes: Map<OutfitSuggestion.Bottom, Long>,
     ): ByteArray? {
@@ -1186,6 +1190,7 @@ class FetchAndNotifyWorker(
                 topColors = topColors,
                 bottomColors = bottomColors,
                 handsColors = handsColors,
+                carriedColors = carriedColors,
                 topStrokes = topStrokes,
                 bottomStrokes = bottomStrokes,
             )

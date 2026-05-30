@@ -140,3 +140,9 @@ internal fun ClothingThickJacketWithGlovesPreview() {
         }
     }
 }
+
+@Preview(name = "Clothing · umbrella", widthDp = 360)
+@Composable
+internal fun ClothingUmbrellaPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_umbrella, "umbrella")
+}

@@ -49,6 +49,14 @@ internal val outfitHandsDefaults: Map<OutfitSuggestion.Hands, GarmentDefaults> =
     OutfitSuggestion.Hands.GLOVES to GarmentDefaults(0xFF37474F.toInt(), 0xFF263238.toInt()),
 )
 
+// The umbrella is the only CARRIED-slot tier today; the recolour primary is the
+// canopy fill / stroke in ic_outfit_umbrella.xml (#2D6CDF over #163F7E). The
+// wooden crook handle, metal ferrule, and dark closure strap are accent colours
+// that survive the recolour unchanged (same as a puffer's white panels).
+internal val outfitCarriedDefaults: Map<OutfitSuggestion.Carried, GarmentDefaults> = mapOf(
+    OutfitSuggestion.Carried.UMBRELLA to GarmentDefaults(0xFF2D6CDF.toInt(), 0xFF163F7E.toInt()),
+)
+
 @DrawableRes
 internal fun topDrawable(top: OutfitSuggestion.Top): Int = when (top) {
     OutfitSuggestion.Top.TSHIRT -> R.drawable.ic_outfit_tshirt
@@ -75,6 +83,15 @@ internal fun bottomDrawable(bottom: OutfitSuggestion.Bottom): Int = when (bottom
 @DrawableRes
 internal fun handsDrawable(hands: OutfitSuggestion.Hands): Int = when (hands) {
     OutfitSuggestion.Hands.GLOVES -> R.drawable.ic_outfit_gloves
+}
+
+// The umbrella vector is authored at a full-figure 96×192 viewport (torso
+// 0–96, legs 96–192) with the furled umbrella held at the right hip and hanging
+// down past the legs, so it overlays the whole top+bottom figure at matching
+// width — see renderCarriedFigureBitmap / GarmentCarriedIcon.
+@DrawableRes
+internal fun carriedDrawable(carried: OutfitSuggestion.Carried): Int = when (carried) {
+    OutfitSuggestion.Carried.UMBRELLA -> R.drawable.ic_outfit_umbrella
 }
 
 /**

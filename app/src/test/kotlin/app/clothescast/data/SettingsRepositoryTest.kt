@@ -605,6 +605,7 @@ class SettingsRepositoryTest {
         prefs.outfitTopColors shouldBe emptyMap()
         prefs.outfitBottomColors shouldBe emptyMap()
         prefs.outfitHandsColors shouldBe emptyMap()
+        prefs.outfitCarriedColors shouldBe emptyMap()
     }
 
     @Test
@@ -614,6 +615,15 @@ class SettingsRepositoryTest {
 
         subject.setOutfitHandsColor(OutfitSuggestion.Hands.GLOVES, null)
         subject.preferences.first().outfitHandsColors.containsKey(OutfitSuggestion.Hands.GLOVES) shouldBe false
+    }
+
+    @Test
+    fun `setOutfitCarriedColor round-trips a fill and clears with null`() = runTest {
+        subject.setOutfitCarriedColor(OutfitSuggestion.Carried.UMBRELLA, 0xFF1E88E5L)
+        subject.preferences.first().outfitCarriedColors[OutfitSuggestion.Carried.UMBRELLA] shouldBe 0xFF1E88E5L
+
+        subject.setOutfitCarriedColor(OutfitSuggestion.Carried.UMBRELLA, null)
+        subject.preferences.first().outfitCarriedColors.containsKey(OutfitSuggestion.Carried.UMBRELLA) shouldBe false
     }
 
     @Test

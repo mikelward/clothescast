@@ -256,6 +256,7 @@ class SettingsViewModel(
                         outfitTopColors = prefs.outfitTopColors,
                         outfitBottomColors = prefs.outfitBottomColors,
                         outfitHandsColors = prefs.outfitHandsColors,
+                        outfitCarriedColors = prefs.outfitCarriedColors,
                         holidayCountrySelection = prefs.holidayCountrySelection,
                         holidayOverrides = prefs.holidayOverrides,
                         effectiveEnabledHolidayCountries = effectiveCountries,
@@ -502,6 +503,14 @@ class SettingsViewModel(
     fun setOutfitHandsColor(hands: OutfitSuggestion.Hands, argb: Long?) {
         viewModelScope.launch {
             settingsRepository.setOutfitHandsColor(hands, argb)
+            refreshOutfitWidget()
+        }
+    }
+
+    /** Sibling of [setOutfitTopColor] for the optional carried umbrella overlay. */
+    fun setOutfitCarriedColor(carried: OutfitSuggestion.Carried, argb: Long?) {
+        viewModelScope.launch {
+            settingsRepository.setOutfitCarriedColor(carried, argb)
             refreshOutfitWidget()
         }
     }

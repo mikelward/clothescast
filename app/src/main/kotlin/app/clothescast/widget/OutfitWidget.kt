@@ -34,6 +34,7 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
+import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -46,6 +47,7 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.ui.garment.bottomDrawable
 import app.clothescast.ui.garment.outfitBottomDefaults
 import app.clothescast.ui.garment.renderOutfitBitmap
+import app.clothescast.ui.garment.renderCarriedFigureBitmap
 import app.clothescast.ui.garment.renderTopWithHandsBitmap
 import kotlinx.coroutines.flow.first
 
@@ -93,9 +95,10 @@ class OutfitWidget : GlanceAppWidget() {
         val topColors = prefs?.outfitTopColors ?: emptyMap()
         val bottomColors = prefs?.outfitBottomColors ?: emptyMap()
         val handsColors = prefs?.outfitHandsColors ?: emptyMap()
+        val carriedColors = prefs?.outfitCarriedColors ?: emptyMap()
         provideContent {
             GlanceTheme {
-                OutfitWidgetContent(insight, topColors, bottomColors, handsColors)
+                OutfitWidgetContent(insight, topColors, bottomColors, handsColors, carriedColors)
             }
         }
     }
@@ -139,6 +142,7 @@ private fun OutfitWidgetContent(
     topColors: Map<OutfitSuggestion.Top, Long>,
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
     handsColors: Map<OutfitSuggestion.Hands, Long>,
+    carriedColors: Map<OutfitSuggestion.Carried, Long>,
 ) {
     val size = LocalSize.current
     val context = LocalContext.current
@@ -159,7 +163,7 @@ private fun OutfitWidgetContent(
             size.width >= size.height &&
             insight.nextOutfit != null
         ) {
-            SideBySideContent(insight, size, topColors, bottomColors, handsColors)
+            SideBySideContent(insight, size, topColors, bottomColors, handsColors, carriedColors)
         } else {
             SingleColumnContent(
                 label = context.getString(periodLabelRes(insight.period)),
@@ -168,6 +172,7 @@ private fun OutfitWidgetContent(
                 topColors = topColors,
                 bottomColors = bottomColors,
                 handsColors = handsColors,
+                carriedColors = carriedColors,
             )
         }
     }
@@ -181,6 +186,7 @@ private fun SingleColumnContent(
     topColors: Map<OutfitSuggestion.Top, Long>,
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
     handsColors: Map<OutfitSuggestion.Hands, Long>,
+    carriedColors: Map<OutfitSuggestion.Carried, Long>,
 ) {
     val context = LocalContext.current
     val iconSize = scaledIconSize(size)
@@ -202,41 +208,57 @@ private fun SingleColumnContent(
         Spacer(modifier = GlanceModifier.height(2.dp))
         // Top-over-bottom vertical stack matches the Today screen's
         // OutfitPreviewCard so the home-screen glance reads the same way as
-        // the in-app card the user already knows.
-        Image(
-            provider = ImageProvider(
-                // The top bitmap carries the optional gloves overlay; the
-                // gloves vector sits at the body's sides at matching scale.
-                renderTopWithHandsBitmap(
-                    context = context,
-                    top = outfit.top,
-                    hands = outfit.hands,
-                    sizePx = iconPx,
-                    topFillArgb = topColors[outfit.top],
-                    handsFillArgb = outfit.hands?.let { handsColors[it] },
-                ),
-            ),
-            contentDescription = if (outfit.hands != null) {
-                context.getString(topLabelRes(outfit.top)) + ", " +
-                    context.getString(R.string.garment_gloves)
-            } else {
-                context.getString(topLabelRes(outfit.top))
-            },
-            modifier = GlanceModifier.size(iconSize),
-        )
-        Image(
-            provider = ImageProvider(
-                renderOutfitBitmap(
-                    context = context,
-                    drawableRes = bottomDrawable(outfit.bottom),
-                    defaults = outfitBottomDefaults.getValue(outfit.bottom),
-                    customFillArgb = bottomColors[outfit.bottom],
-                    sizePx = iconPx,
-                ),
-            ),
-            contentDescription = context.getString(bottomLabelRes(outfit.bottom)),
-            modifier = GlanceModifier.size(iconSize),
-        )
+        // the in-app card the user already knows. The optional umbrella is a
+        // full-figure overlay (held at the hip, hanging past the legs), so it's
+        // laid over the whole top+bottom stack in a Box rather than on one icon.
+        Box {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Image(
+                    provider = ImageProvider(
+                        // The top bitmap carries the optional gloves overlay; the
+                        // gloves vector sits at the body's sides at matching scale.
+                        renderTopWithHandsBitmap(
+                            context = context,
+                            top = outfit.top,
+                            hands = outfit.hands,
+                            sizePx = iconPx,
+                            topFillArgb = topColors[outfit.top],
+                            handsFillArgb = outfit.hands?.let { handsColors[it] },
+                        ),
+                    ),
+                    contentDescription = outfitContentDescription(context, outfit),
+                    modifier = GlanceModifier.size(iconSize),
+                )
+                Image(
+                    provider = ImageProvider(
+                        renderOutfitBitmap(
+                            context = context,
+                            drawableRes = bottomDrawable(outfit.bottom),
+                            defaults = outfitBottomDefaults.getValue(outfit.bottom),
+                            customFillArgb = bottomColors[outfit.bottom],
+                            sizePx = iconPx,
+                        ),
+                    ),
+                    contentDescription = context.getString(bottomLabelRes(outfit.bottom)),
+                    modifier = GlanceModifier.size(iconSize),
+                )
+            }
+            outfit.carried?.let { carried ->
+                Image(
+                    provider = ImageProvider(
+                        renderCarriedFigureBitmap(
+                            context = context,
+                            carried = carried,
+                            widthPx = iconPx,
+                            heightPx = iconPx * 2,
+                            customFillArgb = carriedColors[carried],
+                        ),
+                    ),
+                    contentDescription = context.getString(R.string.garment_umbrella),
+                    modifier = GlanceModifier.width(iconSize).height(iconSize * 2),
+                )
+            }
+        }
         Spacer(modifier = GlanceModifier.height(2.dp))
         Text(
             text = context.getString(topLabelRes(outfit.top)) +
@@ -254,6 +276,7 @@ private fun SideBySideContent(
     topColors: Map<OutfitSuggestion.Top, Long>,
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
     handsColors: Map<OutfitSuggestion.Hands, Long>,
+    carriedColors: Map<OutfitSuggestion.Carried, Long>,
 ) {
     val context = LocalContext.current
     val primaryOutfit = insight.outfit ?: return
@@ -278,6 +301,7 @@ private fun SideBySideContent(
                 topColors = topColors,
                 bottomColors = bottomColors,
                 handsColors = handsColors,
+                carriedColors = carriedColors,
             )
         }
         Box(
@@ -291,6 +315,7 @@ private fun SideBySideContent(
                 topColors = topColors,
                 bottomColors = bottomColors,
                 handsColors = handsColors,
+                carriedColors = carriedColors,
             )
         }
     }
@@ -384,6 +409,16 @@ private fun sideBySideLabelRes(period: ForecastPeriod): Pair<Int, Int> = when (p
     ForecastPeriod.TONIGHT ->
         R.string.today_outfit_label_tonight to R.string.today_outfit_label_tomorrow
 }
+
+// Top-icon accessible label, appending the carried / extremity gear the
+// composited overlay shows so a screen reader names the whole glance ("Coat,
+// umbrella, gloves") rather than just the top.
+private fun outfitContentDescription(context: Context, outfit: OutfitSuggestion): String =
+    buildList {
+        add(context.getString(topLabelRes(outfit.top)))
+        if (outfit.carried != null) add(context.getString(R.string.garment_umbrella))
+        if (outfit.hands != null) add(context.getString(R.string.garment_gloves))
+    }.joinToString(", ")
 
 private fun topLabelRes(top: OutfitSuggestion.Top): Int = when (top) {
     OutfitSuggestion.Top.TSHIRT -> R.string.today_outfit_top_tshirt

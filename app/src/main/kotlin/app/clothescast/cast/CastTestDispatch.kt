@@ -102,6 +102,7 @@ internal suspend fun castCurrentInsight(
     val topColors = prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())
     val bottomColors = prefs.outfitBottomColors + (theme?.bottomOverrides ?: emptyMap())
     val handsColors = prefs.outfitHandsColors
+    val carriedColors = prefs.outfitCarriedColors
     val topStrokes = theme?.topStrokeOverrides ?: emptyMap()
     val bottomStrokes = theme?.bottomStrokeOverrides ?: emptyMap()
 
@@ -115,6 +116,7 @@ internal suspend fun castCurrentInsight(
             topColors = topColors,
             bottomColors = bottomColors,
             handsColors = handsColors,
+            carriedColors = carriedColors,
             topStrokes = topStrokes,
             bottomStrokes = bottomStrokes,
         )

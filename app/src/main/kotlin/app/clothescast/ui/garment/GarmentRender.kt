@@ -119,6 +119,33 @@ internal fun GarmentHandsIcon(
     )
 }
 
+/**
+ * Renders a carried-gear icon (today only the umbrella) for the optional
+ * [OutfitSuggestion.carried] slot. The umbrella vector is authored at a
+ * full-figure 96×192 viewport — held at the hip and hanging down past the legs
+ * — so callers overlay it across the *whole* top+bottom figure (at width W it is
+ * 2·W tall), leaving it in the empty space beside the body; see
+ * [renderCarriedFigureBitmap] for the bitmap-surface equivalent.
+ */
+@Composable
+internal fun GarmentCarriedIcon(
+    carried: OutfitSuggestion.Carried,
+    customFill: Color?,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+    customStroke: Color? = null,
+) {
+    val defaults = outfitCarriedDefaults.getValue(carried)
+    GarmentIconImpl(
+        drawableRes = carriedDrawable(carried),
+        defaults = defaults,
+        customFill = customFill,
+        customStroke = customStroke,
+        contentDescription = contentDescription,
+        modifier = modifier,
+    )
+}
+
 @Composable
 private fun GarmentIconImpl(
     @DrawableRes drawableRes: Int,
@@ -312,12 +339,12 @@ private data class BitmapCacheKey(
 )
 
 /**
- * The top garment bitmap with the optional [hands] accessory composited over
- * it at the same `sizePx`-square footprint — the overlay look gloves use on the
- * bitmap render surfaces (notification / widget via [androidx.glance.ImageProvider],
- * Nest-Hub card). The gloves vector sits at the lower sides of its 96×96
- * viewport, so a same-size overlay lands the gloves at the body's hands without
- * any per-surface alignment maths.
+ * The top garment bitmap with the optional [hands] (gloves) accessory
+ * composited over it at the same `sizePx`-square footprint — the overlay look
+ * gloves use on the bitmap render surfaces (notification / widget via
+ * [androidx.glance.ImageProvider], Nest-Hub card). The gloves vector sits at the
+ * lower sides of its 96×96 viewport, so a same-size overlay lands the gloves at
+ * the body's hands without any per-surface alignment maths.
  *
  * When [hands] is null this returns the (cached) plain top bitmap untouched, so
  * the no-gloves path stays byte-identical to the previous single-icon render —
@@ -359,6 +386,55 @@ internal fun renderTopWithHandsBitmap(
 }
 
 /**
+ * Renders the carried [carried] (umbrella) overlay as a transparent
+ * [widthPx]×[heightPx] bitmap, for the bitmap surfaces (Nest-Hub card, widget)
+ * to composite over the *whole* figure. The umbrella vector is authored at a
+ * full-figure 96×192 viewport (held at the hip, hanging down past the legs), so
+ * callers render it at `heightPx = 2·widthPx` — matching the vector's 1:2
+ * aspect — and draw it spanning both the top and bottom icon positions, leaving
+ * the umbrella in the empty space beside the body. Non-square because the
+ * figure overlay isn't square; the recolour matches by original colour exactly
+ * as [renderOutfitBitmap] does.
+ */
+internal fun renderCarriedFigureBitmap(
+    context: Context,
+    carried: OutfitSuggestion.Carried,
+    widthPx: Int,
+    heightPx: Int,
+    customFillArgb: Long? = null,
+    customStrokeArgb: Long? = null,
+): Bitmap {
+    require(widthPx > 0 && heightPx > 0) { "carried bitmap size must be positive, got ${widthPx}×$heightPx" }
+    val vector = loadOutfitVector(context, carriedDrawable(carried))
+    val recolor = buildRecolorMap(
+        outfitCarriedDefaults.getValue(carried),
+        customFillArgb?.let { Color(it.toInt()) },
+        customStrokeArgb?.let { Color(it.toInt()) },
+    )
+    val bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    canvas.scale(widthPx / vector.viewportWidth, heightPx / vector.viewportHeight)
+    val paint = Paint().apply { isAntiAlias = true }
+    vector.paths.forEach { p ->
+        val androidPath = p.toAndroidPath()
+        p.fillArgb?.let { argb ->
+            paint.style = Paint.Style.FILL
+            paint.color = recolor[argb] ?: argb
+            canvas.drawPath(androidPath, paint)
+        }
+        p.strokeArgb?.let { argb ->
+            paint.style = Paint.Style.STROKE
+            paint.color = recolor[argb] ?: argb
+            paint.strokeWidth = p.strokeWidth
+            paint.strokeCap = p.strokeCap
+            paint.strokeJoin = p.strokeJoin
+            canvas.drawPath(androidPath, paint)
+        }
+    }
+    return bitmap
+}
+
+/**
  * Renders a Nest-Hub-ready outfit card as a PNG.
  *
  * Layout (800 × 480 px, white background, landscape):
@@ -390,6 +466,8 @@ internal fun renderOutfitCard(
     bottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     handsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
     handsStrokes: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
+    carriedColors: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
+    carriedStrokes: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
 ): ByteArray {
     val bmp = Bitmap.createBitmap(CARD_W, CARD_H, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bmp)
@@ -420,6 +498,23 @@ internal fun renderOutfitCard(
     )
     canvas.drawBitmap(topBmp, CARD_PAD.toFloat(), CARD_PAD.toFloat(), null)
     canvas.drawBitmap(botBmp, CARD_PAD.toFloat(), (CARD_PAD + ICON_PX + ICON_V_GAP).toFloat(), null)
+
+    // The umbrella is a full-figure overlay (held at the hip, hanging past the
+    // legs), so it spans both icon bitmaps rather than sitting on one. Authored
+    // at a 96×192 viewport, it renders at ICON_PX×(2·ICON_PX) over the top
+    // icon's origin so its canopy runs down beside the legs. Only drawn when a
+    // carried (umbrella) rule fired.
+    outfit.carried?.let { carried ->
+        val carriedBmp = renderCarriedFigureBitmap(
+            context = context,
+            carried = carried,
+            widthPx = ICON_PX,
+            heightPx = ICON_PX * 2,
+            customFillArgb = carriedColors[carried],
+            customStrokeArgb = carriedStrokes[carried],
+        )
+        canvas.drawBitmap(carriedBmp, CARD_PAD.toFloat(), CARD_PAD.toFloat(), null)
+    }
 
     // Period-aware header along the top of the right column — sits over
     // the prose rather than the icons. Fixed at proseX so it left-aligns

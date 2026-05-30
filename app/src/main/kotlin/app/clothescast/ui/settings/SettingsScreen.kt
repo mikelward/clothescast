@@ -176,6 +176,7 @@ internal fun ClothesPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             outfitTopColors = state.outfitTopColors,
             outfitBottomColors = state.outfitBottomColors,
             outfitHandsColors = state.outfitHandsColors,
+            outfitCarriedColors = state.outfitCarriedColors,
             padding = padding,
             onAdd = viewModel::addClothesRule,
             onReplace = viewModel::replaceClothesRule,
@@ -185,6 +186,7 @@ internal fun ClothesPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             onSetOutfitTopColor = viewModel::setOutfitTopColor,
             onSetOutfitBottomColor = viewModel::setOutfitBottomColor,
             onSetOutfitHandsColor = viewModel::setOutfitHandsColor,
+            onSetOutfitCarriedColor = viewModel::setOutfitCarriedColor,
         )
     }
 }

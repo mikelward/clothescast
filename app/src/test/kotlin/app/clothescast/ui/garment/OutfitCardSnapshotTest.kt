@@ -161,6 +161,66 @@ class OutfitCardSnapshotTest {
     }
 
     @Test
+    fun outfit_card_rainy_jacket_jeans_umbrella() {
+        // Rainy day: the full-figure umbrella overlay spans both icons, held at
+        // the hip and hanging down beside the leg. Exercises the optional carried
+        // slot on the cast card.
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(
+                    OutfitSuggestion.Top.THICK_JACKET,
+                    OutfitSuggestion.Bottom.JEANS,
+                    carried = OutfitSuggestion.Carried.UMBRELLA,
+                ),
+                header = "Today's ClothesCast",
+                prose = "A wet one today. Wear a jacket and jeans, and bring an umbrella.",
+                info = OutfitCardInfoLines(
+                    tempLine = "9–15°C",
+                    tempFillFraction = thermometerFillFractionFor(15.0),
+                    rainFillFraction = 0.80f,
+                    rainLineShort = "80%",
+                ),
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
+            ),
+        )
+    }
+
+    @Test
+    fun outfit_card_freezing_coat_gloves_yellow_umbrella() {
+        // A cold rainy day lights both overlays at once — the gloved hand grips
+        // the umbrella's crook — and a user-picked umbrella colour threads
+        // through carriedColors and recolours the canopy, proving the carried
+        // colour-picker reaches the cast card and composites cleanly with gloves.
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(
+                    OutfitSuggestion.Top.THICK_COAT,
+                    OutfitSuggestion.Bottom.LONG_PANTS,
+                    hands = OutfitSuggestion.Hands.GLOVES,
+                    carried = OutfitSuggestion.Carried.UMBRELLA,
+                ),
+                header = "Today's ClothesCast",
+                prose = "A freezing, wet one. Wear a coat and long pants, and gloves, " +
+                    "and bring an umbrella.",
+                info = OutfitCardInfoLines(
+                    tempLine = "-3–2°C",
+                    tempFillFraction = thermometerFillFractionFor(2.0),
+                    rainFillFraction = 0.70f,
+                    rainLineShort = "70%",
+                ),
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
+                carriedColors = mapOf(OutfitSuggestion.Carried.UMBRELLA to 0xFFFDD835L), // yellow canopy
+            ),
+        )
+    }
+
+    @Test
     fun outfit_card_all_indicators() {
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         writeCard(

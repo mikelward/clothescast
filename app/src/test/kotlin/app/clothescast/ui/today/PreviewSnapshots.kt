@@ -18,6 +18,7 @@ import app.clothescast.ui.garment.ClothingLongPantsPreview
 import app.clothescast.ui.garment.ClothingLongSkirtPreview
 import app.clothescast.ui.garment.ClothingGlovesPreview
 import app.clothescast.ui.garment.ClothingThickJacketWithGlovesPreview
+import app.clothescast.ui.garment.ClothingUmbrellaPreview
 import app.clothescast.ui.garment.ClothingPoloPreview
 import app.clothescast.ui.garment.ClothingPufferJacketPreview
 import app.clothescast.ui.garment.ClothingShortSkirtPreview
@@ -62,6 +63,8 @@ import app.clothescast.widget.FeelsLikeWidgetWeekPreview
 import app.clothescast.widget.FeelsLikeWidgetWidePreview
 import app.clothescast.widget.WidgetEmptyPreview
 import app.clothescast.widget.WidgetTodayCoatPantsGlovesPreview
+import app.clothescast.widget.WidgetTodayCoatGlovesUmbrellaPreview
+import app.clothescast.widget.WidgetTodayJacketUmbrellaPreview
 import app.clothescast.widget.WidgetTodayCompactPreview
 import app.clothescast.widget.WidgetTodayExtraLargePreview
 import app.clothescast.widget.WidgetTodayJacketPantsPreview
@@ -381,6 +384,8 @@ class PreviewSnapshots {
     @Test fun outfit_jacket_pants() = capture { OutfitJacketPantsPreview() }
     @Test fun outfit_sweater_pants_dark() = capture { OutfitSweaterPantsDarkPreview() }
     @Test fun outfit_coat_pants_gloves() = capture { OutfitCoatPantsGlovesPreview() }
+    @Test fun outfit_jacket_jeans_umbrella() = capture { OutfitJacketJeansUmbrellaPreview() }
+    @Test fun outfit_coat_pants_gloves_umbrella() = capture { OutfitCoatPantsGlovesUmbrellaPreview() }
     @Test fun outfit_row_today_tonight() = capture { OutfitRowTodayTonightPreview() }
     @Test fun outfit_row_tonight_tomorrow() = capture { OutfitRowTonightTomorrowPreview() }
     @Test fun outfit_rationale_dialog() = captureDialog { OutfitRationaleDialogPreview() }
@@ -567,11 +572,14 @@ class PreviewSnapshots {
     @Test fun clothing_long_pants() = capture { ClothingLongPantsPreview() }
     @Test fun clothing_gloves() = capture { ClothingGlovesPreview() }
     @Test fun clothing_thick_jacket_with_gloves() = capture { ClothingThickJacketWithGlovesPreview() }
+    @Test fun clothing_umbrella() = capture { ClothingUmbrellaPreview() }
 
     @Test fun widget_today_tshirt_shorts() = capture { WidgetTodayTShirtShortsPreview() }
     @Test fun widget_tonight_sweater_pants() = capture { WidgetTonightSweaterPantsPreview() }
     @Test fun widget_today_jacket_pants() = capture { WidgetTodayJacketPantsPreview() }
     @Test fun widget_today_coat_pants_gloves() = capture { WidgetTodayCoatPantsGlovesPreview() }
+    @Test fun widget_today_jacket_umbrella() = capture { WidgetTodayJacketUmbrellaPreview() }
+    @Test fun widget_today_coat_gloves_umbrella() = capture { WidgetTodayCoatGlovesUmbrellaPreview() }
     @Test fun widget_tonight_dark() = capture { WidgetTonightDarkPreview() }
     @Test fun widget_empty() = capture { WidgetEmptyPreview() }
     @Test fun widget_today_compact() = capture { WidgetTodayCompactPreview() }

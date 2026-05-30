@@ -26,6 +26,7 @@ What is NOT overridden, by design:
     <string name="garment_shorts">Šortai</string>
     <string name="garment_pants">Kelnės</string>
     <string name="garment_jeans">Džinsai</string>
+    <string name="garment_gloves">Pirštinės</string>
 
     <string name="settings_clothes_empty">Taisyklių nėra. Paliesk Pridėti, kad sukurtum naują.</string>
     <string name="settings_clothes_add">Pridėti</string>

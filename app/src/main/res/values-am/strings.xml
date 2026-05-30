@@ -20,6 +20,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="garment_shorts">ሹርቴ</string>
     <string name="garment_pants">ሱሪ</string>
     <string name="garment_jeans">ጂንስ</string>
+    <string name="garment_gloves">ጓንቶች</string>
     <string name="garment_puffer">ፑፈር ጃኬት</string>
     <string name="garment_thin_jacket">ቀጭን ጃኬት</string>
     <string name="garment_skirt">ቀሚስ</string>

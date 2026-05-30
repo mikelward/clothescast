@@ -23,6 +23,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="garment_shorts">شلوارک</string>
     <string name="garment_pants">شلوار</string>
     <string name="garment_jeans">جین</string>
+    <string name="garment_gloves">دستکش</string>
 
     <string name="settings_clothes_empty">قانونی وجود ندارد. برای ایجاد یک قانون روی افزودن ضربه بزنید.</string>
     <string name="settings_clothes_add">افزودن</string>

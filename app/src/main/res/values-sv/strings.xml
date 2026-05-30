@@ -54,6 +54,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="garment_shorts">Shorts</string>
     <string name="garment_pants">Byxor</string>
     <string name="garment_jeans">Jeans</string>
+    <string name="garment_gloves">Handskar</string>
     <string name="garment_polo">Piké/Pikétröja</string>
     <string name="garment_thin_jacket">Tunn jacka</string>
     <string name="garment_puffer">Dunjacka</string>

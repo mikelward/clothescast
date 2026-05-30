@@ -52,6 +52,7 @@ Not overridden by design:
     <string name="garment_shorts">शॉर्ट्स</string>
     <string name="garment_pants">पैंट</string>
     <string name="garment_jeans">जींस</string>
+    <string name="garment_gloves">दस्ताने</string>
 
     <!-- Clothes rules screen. -->
     <string name="settings_clothes_title">कपड़ों के नियम</string>

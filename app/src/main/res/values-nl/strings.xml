@@ -47,6 +47,7 @@ the displayed label localizes.
     <string name="garment_shorts">Shorts</string>
     <string name="garment_pants">Broek</string>
     <string name="garment_jeans">Spijkerbroek</string>
+    <string name="garment_gloves">Handschoenen</string>
 
     <!-- Clothes settings. -->
     <string name="settings_clothes_title">Kledingregels</string>

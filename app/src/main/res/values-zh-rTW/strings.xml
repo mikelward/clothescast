@@ -66,6 +66,7 @@ label localises.
     <string name="garment_shorts">短褲</string>
     <string name="garment_pants">長褲</string>
     <string name="garment_jeans">牛仔褲</string>
+    <string name="garment_gloves">手套</string>
 
     <!-- Clothes settings — top of the screen. -->
     <string name="settings_clothes_title">穿衣規則</string>

@@ -61,6 +61,7 @@ only the displayed label localizes.
     <string name="garment_shorts">Шорти</string>
     <string name="garment_pants">Штани</string>
     <string name="garment_jeans">Джинси</string>
+    <string name="garment_gloves">Рукавички</string>
     <string name="garment_polo">Поло</string>
     <string name="garment_thin_jacket">Легка куртка</string>
     <string name="garment_puffer">Пуховик</string>

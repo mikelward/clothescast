@@ -86,6 +86,7 @@ data class ClothesRule(
             ClothesRule(Garment.SWEATER, TemperatureBelow(16.0)),
             ClothesRule(Garment.JACKET, TemperatureBelow(10.0)),
             ClothesRule(Garment.COAT, TemperatureBelow(4.0)),
+            ClothesRule(Garment.GLOVES, TemperatureBelow(4.0)),
             ClothesRule(Garment.SHORTS, TemperatureAbove(23.0)),
         )
 

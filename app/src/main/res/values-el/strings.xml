@@ -70,6 +70,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="garment_shorts">Σορτς</string>
     <string name="garment_pants">Παντελόνι</string>
     <string name="garment_jeans">Τζιν</string>
+    <string name="garment_gloves">Γάντια</string>
 
     <!-- Clothes settings — top of the screen. εσύ-form imperatives
          throughout ("Πάτησε Προσθήκη για να δημιουργήσεις"). The

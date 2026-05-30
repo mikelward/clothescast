@@ -20,6 +20,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="garment_shorts">Pantaloni scurți</string>
     <string name="garment_pants">Pantaloni</string>
     <string name="garment_jeans">Blugi</string>
+    <string name="garment_gloves">Mănuși</string>
 
     <string name="settings_clothes_empty">Nicio regulă. Atinge Adaugă pentru a crea.</string>
     <string name="settings_clothes_add">Adaugă</string>

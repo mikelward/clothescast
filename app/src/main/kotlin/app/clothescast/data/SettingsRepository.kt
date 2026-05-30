@@ -19,6 +19,7 @@ import app.clothescast.core.domain.model.DeltaFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
+import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
@@ -1325,7 +1326,13 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
     // Schedule migration runs first so it sees the true on-disk state — the
     // cast migration always writes its own sentinel, which would otherwise make
     // a fresh store look "existing" to the schedule migration's empty-store check.
-    produceMigrations = { listOf(scheduleEnabledOptInMigration(), castEnabledOptInMigration()) },
+    produceMigrations = {
+        listOf(
+            scheduleEnabledOptInMigration(),
+            castEnabledOptInMigration(),
+            glovesDefaultMigration(),
+        )
+    },
 )
 
 // One-time migration grandfathering the evening / "tonight" cast for installs
@@ -1390,6 +1397,70 @@ private fun castEnabledOptInMigration(): DataMigration<Preferences> {
             }
             if (currentData[castEnabled] == null && currentData[castRouteId] != null) {
                 result[castEnabled] = true
+            }
+            result[migrated] = true
+            return result
+        }
+
+        override suspend fun cleanUp() = Unit
+    }
+}
+
+// One-time migration appending the gloves freezing-day default to installs that
+// already have an explicit clothes-rules list. [SettingsRepository.parseRules]
+// only falls back to [ClothesRule.DEFAULTS] when the stored key is absent / blank
+// / corrupt, so a user who ever added, edited, or deleted a rule has a persisted
+// list that predates gloves and would otherwise never pick up the new default
+// (and would report it as a customised MISSING category in telemetry). Fresh and
+// never-configured installs have no stored key and read DEFAULTS — which now
+// include gloves — directly, so they need no migration and are left untouched.
+// Preserves every stored rule and customised threshold; appends the gloves
+// default (sourced from DEFAULTS, so it tracks the catalog threshold) at the end
+// only when the stored list decodes to at least one catalog rule and none of
+// them is gloves. A legacy-only list (decodes but no catalog garment) and corrupt
+// JSON are both left as-is — parseRules falls back to DEFAULTS (which include
+// gloves) for those at read time, so appending here would only strip the other
+// defaults. Runs exactly once via a sentinel. Internal for unit testing.
+internal fun glovesDefaultMigration(): DataMigration<Preferences> {
+    val migrated = booleanPreferencesKey("gloves_default_migrated_v1")
+    val clothesRules = stringPreferencesKey("clothes_rules_json")
+    val json = Json { ignoreUnknownKeys = true }
+    return object : DataMigration<Preferences> {
+        override suspend fun shouldMigrate(currentData: Preferences): Boolean =
+            currentData[migrated] != true
+
+        override suspend fun migrate(currentData: Preferences): Preferences {
+            // The returned Preferences replaces the store, so carry every
+            // existing entry forward, then add ours.
+            val result = mutablePreferencesOf()
+            currentData.asMap().forEach { (key, value) ->
+                @Suppress("UNCHECKED_CAST")
+                result[key as Preferences.Key<Any>] = value
+            }
+            val stored = currentData[clothesRules]
+            if (!stored.isNullOrBlank()) {
+                runCatching {
+                    val dtos = json.decodeFromString<List<ClothesRuleDto>>(stored)
+                    // Decide on the domain-valid rules, not the raw DTOs: a list
+                    // that decodes but contains only legacy free-form items (no
+                    // catalog garment) yields no domain rules, and parseRules
+                    // treats that as "no rules configured" via its
+                    // ifEmpty { DEFAULTS } fallback. Appending gloves to the raw
+                    // DTOs there would leave a non-empty [..legacy.., gloves] list
+                    // that decodes to just [gloves], stripping the
+                    // sweater/jacket/coat/shorts defaults those users still get
+                    // today. So only append when there are real catalog rules and
+                    // none of them is gloves; legacy-only lists are left untouched.
+                    val domainRules = dtos.mapNotNull { it.toDomain() }
+                    if (domainRules.isNotEmpty() && domainRules.none { it.item == Garment.GLOVES }) {
+                        val glovesDto = ClothesRule.DEFAULTS.first { it.item == Garment.GLOVES }.toDto()
+                        result[clothesRules] = json.encodeToString(dtos + glovesDto)
+                    }
+                }
+                // Corrupt JSON: leave the stored value untouched and still set the
+                // sentinel below — parseRules falls back to DEFAULTS (which include
+                // gloves) when it can't decode this value, so those users still
+                // get gloves at read time.
             }
             result[migrated] = true
             return result

@@ -101,7 +101,7 @@ class ClothesRuleTest {
         // Umbrella was deliberately dropped: the precip clause already names rain,
         // and the wet-weather accessory is going to become a personalised setting.
         val items = ClothesRule.DEFAULTS.map { it.item.itemKey }
-        items shouldBe listOf("sweater", "jacket", "coat", "shorts")
+        items shouldBe listOf("sweater", "jacket", "coat", "gloves", "shorts")
     }
 
     @Test
@@ -114,10 +114,11 @@ class ClothesRuleTest {
     }
 
     @Test
-    fun `freezing morning triggers coat alongside sweater and jacket`() {
-        // Sub-zero feels-like crosses every cold-weather threshold including coat.
+    fun `freezing morning triggers coat and gloves alongside sweater and jacket`() {
+        // Sub-zero feels-like crosses every cold-weather threshold including coat
+        // and the gloves default (both below 4°C).
         val day = forecast(min = -2.0, max = 4.0)
         val triggered = ClothesRule.DEFAULTS.filter { it.appliesTo(day) }.map { it.item.itemKey }
-        triggered shouldBe listOf("sweater", "jacket", "coat")
+        triggered shouldBe listOf("sweater", "jacket", "coat", "gloves")
     }
 }

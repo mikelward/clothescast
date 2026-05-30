@@ -352,8 +352,8 @@ class GenerateDailyInsightTest {
 
         val insight = subject(london, prefs).insight
 
-        insight.summary.clothes!!.items.shouldContainExactly("sweater", "coat", "pants")
-        insight.recommendedItems.shouldContainExactly("sweater", "coat", "pants")
+        insight.summary.clothes!!.items.shouldContainExactly("sweater", "coat", "gloves", "pants")
+        insight.recommendedItems.shouldContainExactly("sweater", "coat", "gloves", "pants")
     }
 
     @Test
@@ -1312,12 +1312,13 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `evening tie-in surfaces a warmer same-layer default top`() = runTest {
+    fun `evening tie-in stays silent for a same-layer default top`() = runTest {
         // defaultTop = PUFFER. A cold morning fires the jacket rule (day top =
         // jacket); the milder evening fires no top rule, so the night falls back
-        // to the default puffer. Jacket and puffer are both SHELL, but the puffer
-        // is warmer (layerCount 4 vs 3) — a genuine upgrade the day didn't wear,
-        // so it must surface. A layer-band-only check would wrongly stay silent.
+        // to the default puffer. Jacket and puffer are both SHELL — a puffer is a
+        // warm shell, not an extra layer — so the evening doesn't add a layer the
+        // day didn't have, and the tie-in says nothing. ("Extra cold" would be
+        // signalled by gloves, not a warmer same-layer top.)
         val zone = ZoneId.of("Europe/London")
         val daytime = listOf(
             HourlyForecast(LocalTime.of(8, 0), 9.0, 8.0, 5.0, WeatherCondition.CLEAR),
@@ -1354,10 +1355,7 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        val tie = result.insight.summary.eveningEventTieIn
-        tie.shouldNotBeNull()
-        tie!!.items shouldBe listOf("puffer")
-        tie.rainTime.shouldBeNull()
+        result.insight.summary.eveningEventTieIn.shouldBeNull()
     }
 
     @Test

@@ -314,21 +314,23 @@ class DeriveInsight(
         dayItems: List<String>,
     ): List<String> {
         val dayGarments = dayItems.mapNotNull { Garment.fromKey(it) }
-        // Warmest top worn by day, by [Garment.warmth] (not the layer band), so a
-        // same-band-but-warmer evening top (jacket → puffer) still counts — the
-        // goal is to name the warmest top the evening actually needs. The
-        // coat-vs-puffer warmth inconsistency is tracked on [Garment.warmth].
+        // Warmest top worn by day, by [Garment.warmth] (== layer position now
+        // that puffer is an honest shell), so an evening top is "extra" only
+        // when it adds a layer the day didn't have.
         val dayTopWarmth = dayGarments
             .filter { it.slot == Garment.Slot.TOP }
             .maxOfOrNull { it.warmth } ?: 0
-        val dayBottomKeys = dayGarments
-            .filter { it.slot == Garment.Slot.BOTTOM }
-            .mapTo(mutableSetOf()) { it.itemKey }
+        // Non-top slots substitute, so an evening garment is "extra" when the
+        // day didn't already include that exact garment — a different bottom,
+        // or gloves the warmer day didn't need.
+        val daySubstituteKeys = dayGarments
+            .filter { it.slot != Garment.Slot.TOP }
+            .groupBy({ it.slot }, { it.itemKey })
         return eveningItems.filter { item ->
             val g = Garment.fromKey(item) ?: return@filter false
             when (g.slot) {
                 Garment.Slot.TOP -> g.warmth > dayTopWarmth
-                Garment.Slot.BOTTOM -> g.itemKey !in dayBottomKeys
+                else -> g.itemKey !in daySubstituteKeys[g.slot].orEmpty()
             }
         }
     }

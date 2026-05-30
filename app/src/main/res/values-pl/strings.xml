@@ -47,6 +47,7 @@ is unchanged; only the displayed label localizes.
     <string name="garment_shorts">Szorty</string>
     <string name="garment_pants">Spodnie</string>
     <string name="garment_jeans">Dżinsy</string>
+    <string name="garment_gloves">Rękawiczki</string>
 
     <!-- Clothes settings. -->
     <string name="settings_clothes_title">Reguły ubioru</string>

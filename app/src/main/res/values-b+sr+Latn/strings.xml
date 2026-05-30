@@ -33,6 +33,7 @@ default English (matching values-pl / values-uk).
     <string name="garment_shorts">Šorts</string>
     <string name="garment_pants">Pantalone</string>
     <string name="garment_jeans">Farmerke</string>
+    <string name="garment_gloves">Rukavice</string>
     <string name="garment_polo">Polo</string>
     <string name="garment_thin_jacket">Tanka jakna</string>
     <string name="garment_puffer">Puffer jakna</string>

@@ -263,6 +263,7 @@ object Telemetry {
             putString("sweater_delta_c", snapshot.sweaterDeltaC)
             putString("jacket_delta_c", snapshot.jacketDeltaC)
             putString("coat_delta_c", snapshot.coatDeltaC)
+            putString("gloves_delta_c", snapshot.glovesDeltaC)
             putString("shorts_delta_c", snapshot.shortsDeltaC)
         }
         analytics.logEvent(EVENT_CLOTHES_RULES_SNAPSHOT, params)

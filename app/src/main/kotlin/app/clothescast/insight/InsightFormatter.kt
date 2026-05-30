@@ -610,27 +610,29 @@ class InsightFormatter(
      */
     private fun layerCountPhrase(items: List<String>): String? {
         var topCount = 0
-        val bottoms = mutableListOf<String>()
+        // Non-top garments (bottoms when they reach here, plus extremity gear
+        // like gloves) are named after the count: "Wear 3 layers and gloves."
+        val tail = mutableListOf<String>()
         for (item in items) {
             val garment = Garment.fromKey(item) ?: return null
-            if (garment.slot == Garment.Slot.TOP && garment.layerCount > topCount) {
-                topCount = garment.layerCount
-            } else if (garment.slot == Garment.Slot.BOTTOM) {
-                bottoms.add(item)
+            if (garment.slot == Garment.Slot.TOP) {
+                if (garment.layerCount > topCount) topCount = garment.layerCount
+            } else {
+                tail.add(item)
             }
         }
         if (topCount == 0) return null
         val countPhrase = resources.getQuantityString(R.plurals.insight_clothes_layer_count, topCount, topCount)
-        if (bottoms.isEmpty()) return countPhrase
-        // Route the bottoms through the phraser so they get localized
-        // garment names and the plural-vs-singular article rules, but join
-        // the count + bottoms with the localized "and" template directly —
-        // passing "1 layer" into joinItems as a list item makes the
-        // English phraser treat it as an article-taking noun and emit
-        // "a 1 layer and shorts", which is the broken output we're avoiding.
-        val bottomsPhrase = phraser.joinItems(bottoms)
-        if (bottomsPhrase.isBlank()) return countPhrase
-        return resources.getString(R.string.insight_clothes_join_two, countPhrase, bottomsPhrase)
+        if (tail.isEmpty()) return countPhrase
+        // Route the tail through the phraser so it gets localized garment names
+        // and the plural-vs-singular article rules, but join the count + tail
+        // with the localized "and" template directly — passing "1 layer" into
+        // joinItems as a list item makes the English phraser treat it as an
+        // article-taking noun and emit "a 1 layer and gloves", the broken
+        // output we're avoiding.
+        val tailPhrase = phraser.joinItems(tail)
+        if (tailPhrase.isBlank()) return countPhrase
+        return resources.getString(R.string.insight_clothes_join_two, countPhrase, tailPhrase)
     }
 
     private fun formatPrecip(precip: PrecipClause): String {

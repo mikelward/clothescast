@@ -43,6 +43,7 @@ displayed label localizes.
     <string name="garment_shorts">Shortsit</string>
     <string name="garment_pants">Housut</string>
     <string name="garment_jeans">Farkut</string>
+    <string name="garment_gloves">Hanskat</string>
 
     <string name="settings_clothes_title">Vaatesäännöt</string>
     <string name="settings_clothes_description">Kun ennuste ylittää jonkin näistä raja-arvoista, vaatekappale ilmestyy päivittäiseen ClothesCast-tiedotteeseen.</string>

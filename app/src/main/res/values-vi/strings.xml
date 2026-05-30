@@ -24,6 +24,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="garment_shorts">Quần short</string>
     <string name="garment_pants">Quần dài</string>
     <string name="garment_jeans">Quần jean</string>
+    <string name="garment_gloves">Găng tay</string>
 
     <string name="settings_clothes_empty">Chưa có quy tắc. Nhấn Thêm để tạo mới.</string>
     <string name="settings_clothes_add">Thêm</string>

@@ -471,9 +471,19 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `layer-count format renders a puffer as 4 layers`() {
+    fun `layer-count format renders a puffer as 3 layers`() {
+        // A puffer is a warm shell, not a literal fourth layer — layer-count mode
+        // tops out at 3. "Extra cold" is signalled by gloves, not a higher count.
         layerCountSubject.format(summary(clothes = ClothesClause(listOf("puffer")))) shouldBe
-            "Today, it will be 21°. Wear 4 layers."
+            "Today, it will be 21°. Wear 3 layers."
+    }
+
+    @Test
+    fun `layer-count format appends gloves after the layer count`() {
+        // Gloves are the "extra cold" escalation past a full layer stack: they
+        // ride along after the count rather than inflating it.
+        layerCountSubject.format(summary(clothes = ClothesClause(listOf("coat", "gloves")))) shouldBe
+            "Today, it will be 21°. Wear 3 layers and gloves."
     }
 
     @Test
@@ -1451,6 +1461,16 @@ class InsightFormatterTest {
         germanSubject.format(
             summary(clothes = ClothesClause(listOf("sweater", "jacket", "shorts"))),
         ) shouldBe "Heute wird es 21°. Trag Pullover, Jacke und kurze Hose."
+    }
+
+    @Test
+    fun `de — gloves localizes through the phraser map, not the raw key`() {
+        // Guards the GARMENT_RES_IDS wiring for the freezing-day default: a
+        // gloves key missing from the map would fall through as the raw English
+        // "gloves" in otherwise-German prose. Must read "Handschuhe".
+        germanSubject.format(
+            summary(clothes = ClothesClause(listOf("coat", "gloves"))),
+        ) shouldBe "Heute wird es 21°. Trag Mantel und Handschuhe."
     }
 
     @Test

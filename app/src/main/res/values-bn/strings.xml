@@ -21,6 +21,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="garment_shorts">শর্টস</string>
     <string name="garment_pants">প্যান্ট</string>
     <string name="garment_jeans">জিন্স</string>
+    <string name="garment_gloves">দস্তানা</string>
 
     <string name="settings_clothes_empty">কোনো নিয়ম নেই। একটি তৈরি করতে যোগ করুন-এ ট্যাপ করুন।</string>
     <string name="settings_clothes_add">যোগ করুন</string>

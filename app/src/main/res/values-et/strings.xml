@@ -431,6 +431,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="garment_skirt">Seelik</string>
     <string name="garment_pants">Püksid</string>
     <string name="garment_jeans">Teksad</string>
+    <string name="garment_gloves">Kindad</string>
 
     <string name="settings_clothes_empty">Reegleid pole. Lisa uus puudutades Lisa.</string>
     <string name="settings_clothes_add">Lisa</string>

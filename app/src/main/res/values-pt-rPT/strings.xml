@@ -77,6 +77,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="garment_shorts">Calções</string>
     <string name="garment_pants">Calças</string>
     <string name="garment_jeans">Calças de ganga</string>
+    <string name="garment_gloves">Luvas</string>
 
     <!-- Clothes settings — top of the screen. Tu-form imperatives
          throughout ("Toca em Adicionar", "Eliminar"). pt-PT uses

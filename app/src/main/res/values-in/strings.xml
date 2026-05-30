@@ -21,6 +21,7 @@ to values/strings.xml (English).
     <string name="garment_shorts">Celana pendek</string>
     <string name="garment_pants">Celana panjang</string>
     <string name="garment_jeans">Celana jeans</string>
+    <string name="garment_gloves">Sarung tangan</string>
 
     <string name="settings_clothes_empty">Belum ada aturan. Ketuk Tambah untuk membuat satu.</string>
     <string name="settings_clothes_add">Tambah</string>

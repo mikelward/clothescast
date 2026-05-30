@@ -43,6 +43,7 @@ displayed label localizes.
     <string name="garment_shorts">Şort</string>
     <string name="garment_pants">Pantolon</string>
     <string name="garment_jeans">Kot pantolon</string>
+    <string name="garment_gloves">Eldiven</string>
 
     <string name="settings_clothes_title">Kıyafet Kuralları</string>
     <string name="settings_clothes_description">Bir tahmin bu eşiklerden birini aşarsa, kıyafet günlük ClothesCast\'ında görünür.</string>

@@ -26,6 +26,7 @@ data class ClothesRulesSnapshot(
     val sweaterDeltaC: String,
     val jacketDeltaC: String,
     val coatDeltaC: String,
+    val glovesDeltaC: String,
     val shortsDeltaC: String,
 ) {
     companion object {
@@ -63,6 +64,7 @@ data class ClothesRulesSnapshot(
                 sweaterDeltaC = perCategory["sweater"] ?: MISSING,
                 jacketDeltaC = perCategory["jacket"] ?: MISSING,
                 coatDeltaC = perCategory["coat"] ?: MISSING,
+                glovesDeltaC = perCategory["gloves"] ?: MISSING,
                 shortsDeltaC = perCategory["shorts"] ?: MISSING,
             )
         }

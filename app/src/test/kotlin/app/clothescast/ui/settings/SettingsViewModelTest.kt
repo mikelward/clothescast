@@ -136,6 +136,7 @@ class SettingsViewModelTest {
                 cancelAlarm = { _ -> },
                 geocodingClient = OpenMeteoGeocodingClient(emptyGeocoding),
                 voiceEnumerator = EmptyVoiceEnumerator,
+                voiceEnumerationDispatcher = dispatcher,
             ),
         )
     }
@@ -339,6 +340,7 @@ class SettingsViewModelTest {
                     },
                 ),
                 voiceEnumerator = EmptyVoiceEnumerator,
+                voiceEnumerationDispatcher = dispatcher,
                 calendarEventReader = reader,
             ),
         )
@@ -395,6 +397,7 @@ class SettingsViewModelTest {
                     },
                 ),
                 voiceEnumerator = EmptyVoiceEnumerator,
+                voiceEnumerationDispatcher = dispatcher,
                 refreshLocationCache = { refreshCount++ },
             ),
         )
@@ -428,6 +431,7 @@ class SettingsViewModelTest {
                     },
                 ),
                 voiceEnumerator = EmptyVoiceEnumerator,
+                voiceEnumerationDispatcher = dispatcher,
                 refreshOutfitWidget = { refreshCount++ },
             ),
         )
@@ -511,6 +515,7 @@ class SettingsViewModelTest {
                         },
                     ),
                     voiceEnumerator = countingEnumerator,
+                    voiceEnumerationDispatcher = dispatcher,
                 ),
             )
             // Drain the initial enumeration triggered by the first prefs
@@ -665,6 +670,7 @@ class SettingsViewModelTest {
             cancelAlarm = { _ -> },
             geocodingClient = OpenMeteoGeocodingClient(emptyGeocoding),
             voiceEnumerator = EmptyVoiceEnumerator,
+            voiceEnumerationDispatcher = dispatcher,
             discovery = discovery,
         )
     }

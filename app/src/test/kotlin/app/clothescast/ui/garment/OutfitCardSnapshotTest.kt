@@ -49,12 +49,13 @@ class OutfitCardSnapshotTest {
                 header = "Today's ClothesCast",
                 prose = "Today, it will be warm. 3° warmer than yesterday. " +
                     "Wear a t-shirt and shorts. Chance of rain at 3pm.",
-                tempLine = "22–30°C",
-                rainLine = "Peak 40% at 3pm",
-                // Warm day: high 30°C, HOT band → (5 + (30-28)/12) / 6 ≈ 0.86.
-                tempFillFraction = thermometerFillFractionFor(30.0),
-                // Peak 40% rain → droplet 40% full.
-                rainFillFraction = 0.40f,
+                info = OutfitCardInfoLines(
+                    tempLine = "22–30°C",
+                    // Warm day: high 30°C, HOT band → (5 + (30-28)/12) / 6 ≈ 0.86.
+                    tempFillFraction = thermometerFillFractionFor(30.0),
+                    rainFillFraction = 0.40f, // Peak 40% rain → droplet 40% full.
+                    rainLineShort = "40%",
+                ),
                 topColors = emptyMap(),
                 bottomColors = emptyMap(),
             ),
@@ -70,12 +71,13 @@ class OutfitCardSnapshotTest {
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
                 header = "Tonight's ClothesCast",
                 prose = "Tonight, it will be cool. Wear a sweater and long pants.",
-                tempLine = "11–18°C",
-                // Peak below threshold — rain row hidden.
-                rainLine = null,
-                // Cool evening: high 18°C, start of MILD band → exactly 0.5 fill.
-                tempFillFraction = thermometerFillFractionFor(18.0),
-                rainFillFraction = null,
+                info = OutfitCardInfoLines(
+                    tempLine = "11–18°C",
+                    // Peak below threshold — rain cell hidden (rainLineShort null).
+                    // Cool evening: high 18°C, start of MILD band → exactly 0.5 fill.
+                    tempFillFraction = thermometerFillFractionFor(18.0),
+                    rainFillFraction = null,
+                ),
                 topColors = emptyMap(),
                 bottomColors = emptyMap(),
             ),
@@ -92,13 +94,39 @@ class OutfitCardSnapshotTest {
                 header = "Today's ClothesCast",
                 prose = "Today, it will be cool. 2° cooler than yesterday. " +
                     "Wear a jacket and jeans.",
-                tempLine = "9–15°C",
-                rainLine = null,
-                // Cool day: high 15°C, midpoint of COOL band → 0.417 fill.
-                tempFillFraction = thermometerFillFractionFor(15.0),
-                rainFillFraction = null,
+                info = OutfitCardInfoLines(
+                    tempLine = "9–15°C",
+                    // Cool day: high 15°C, midpoint of COOL band → 0.417 fill.
+                    tempFillFraction = thermometerFillFractionFor(15.0),
+                    rainFillFraction = null,
+                ),
                 topColors = mapOf(OutfitSuggestion.Top.THIN_JACKET to 0xFFE53935L), // red jacket
                 bottomColors = mapOf(OutfitSuggestion.Bottom.JEANS to 0xFF1A237EL),  // navy jeans
+            ),
+        )
+    }
+
+    @Test
+    fun outfit_card_all_indicators() {
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
+                header = "Today's ClothesCast",
+                prose = "A hot, breezy one. Wear a t-shirt and shorts, and watch the sun.",
+                info = OutfitCardInfoLines(
+                    tempLine = "18–34°C",
+                    tempFillFraction = thermometerFillFractionFor(34.0),
+                    rainFillFraction = 0.40f,
+                    rainLineShort = "40%",
+                    windLabel = "45 km/h", // orange (strong breeze)
+                    windMaxKmh = 45.0,
+                    uvLabel = "UV 9", // red (very high)
+                    uvMax = 9.0,
+                ),
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
             ),
         )
     }

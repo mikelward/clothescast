@@ -32,6 +32,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="garment_pants">Hlače</string>
     <string name="garment_jeans">Traperice</string>
     <string name="garment_gloves">Rukavice</string>
+    <string name="garment_umbrella">Kišobran</string>
 
     <!-- Clothes settings — top of the screen. -->
     <string name="settings_clothes_title">Pravila odijevanja</string>
@@ -44,6 +45,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_clothes_dialog_add_title">Dodaj pravilo odijevanja</string>
     <string name="settings_clothes_dialog_edit_title">Uredi pravilo odijevanja</string>
     <string name="settings_clothes_item_label">Odjevni predmet</string>
+    <string name="settings_clothes_color_label">Boja</string>
     <string name="settings_clothes_condition_label">Uvjet</string>
     <string name="settings_clothes_value_label_temp">Prag (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Prag (%%)</string>
@@ -66,6 +68,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_schedule_time_label">Vrijeme</string>
     <string name="settings_schedule_days_label">Dani u tjednu</string>
     <string name="settings_daily_mention_evening_events">Spomeni večernje događaje</string>
+    <string name="settings_schedule_preview">Reproduciraj sada</string>
 
     <string name="settings_tonight_title">Noćni ClothesCast</string>
     <string name="settings_tonight_description">Drugi ClothesCast navečer koji pokriva vrijeme za večeras. Tihim večerima ostaje bez zvuka ili se uopće ne pojavi ako je „Obavijesti samo kad ima večernjih događaja“ uključeno; večerima s događajima reproducira zvuk i (ako je uključen izgovor) sam se čita.</string>
@@ -321,6 +324,8 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_refresh">Osvježi</string>
     <string name="today_empty_title">Još nema ClothesCasta</string>
     <string name="today_empty_subtitle">Tvoj jutarnji ClothesCast pojavit će se ovdje čim bude generiran.</string>
+    <string name="today_empty_location_title">Potrebna je lokacija</string>
+    <string name="today_empty_location_subtitle">Postavite svoju lokaciju da biste dobili svoj ClothesCast.</string>
     <string name="today_fetch_now">Dohvati sada</string>
     <string name="today_generated_at">Generirano u %1$s</string>
 
@@ -351,6 +356,10 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_failed_unhandled">Došlo je do neočekivane greške.</string>
     <string name="today_failed_show_details">Prikaži detalje</string>
     <string name="today_failed_hide_details">Sakrij detalje</string>
+    <string name="today_mqtt_failed_title">Slanje u vaš pametni dom nije uspjelo</string>
+    <string name="today_cast_failed_title">Emitiranje na vaš zaslon nije uspjelo</string>
+    <string name="today_publish_failed_body">Pokušat ćemo ponovno pri sljedećem ažuriranju.</string>
+    <string name="today_publish_failed_dismiss">Odbaci</string>
 
     <!-- Home-screen App Widget. "Outfit" is in common Croatian use as a
          loanword and matches the casual register; the empty state
@@ -364,6 +373,11 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="feels_like_week_widget_label">Osjećajna (7 dana)</string>
     <string name="feels_like_week_widget_description">Osjećajna temperatura za sljedećih 7 dana.</string>
     <string name="feels_like_widget_empty_title">Još nema prognoze</string>
+    <string name="conditions_widget_label">Uvjeti</string>
+    <string name="conditions_widget_description">Temperatura, kiša, vjetar i UV na prvi pogled.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!--
     Onboarding flow — first-run welcome, two permission steps, Gemini
@@ -1282,6 +1296,13 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_schedule_promo_body">Odaberi kada primaš obavijesti i najave.</string>
     <string name="today_schedule_promo_cta">Postavke rasporeda</string>
     <string name="today_schedule_promo_dismiss">Odbaci</string>
+    <string name="today_play_promo_title">Poslušajte svoj dnevni ClothesCast</string>
+    <string name="today_play_promo_body">Dodirnite gumb za reprodukciju da čujete svoj ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Odbaci</string>
+    <string name="today_gemini_promo_title">Isprobajte glasove visoke kvalitete</string>
+    <string name="today_gemini_promo_body">Uključite Gemini da čujete svoj ClothesCast prirodnim, životnim glasovima.</string>
+    <string name="today_gemini_promo_cta">Postavke glasa</string>
+    <string name="today_gemini_promo_dismiss">Odbaci</string>
     <string name="today_clothes_promo_title">Prilagodi odjeću sebi</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Pusti</string>

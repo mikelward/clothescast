@@ -64,6 +64,7 @@ displayed label localizes.
     <string name="garment_pants">긴바지</string>
     <string name="garment_jeans">청바지</string>
     <string name="garment_gloves">장갑</string>
+    <string name="garment_umbrella">우산</string>
 
     <!-- Clothes settings — top of the screen. -->
     <string name="settings_clothes_title">옷 규칙</string>
@@ -76,6 +77,7 @@ displayed label localizes.
     <string name="settings_clothes_dialog_add_title">옷 규칙 추가</string>
     <string name="settings_clothes_dialog_edit_title">옷 규칙 편집</string>
     <string name="settings_clothes_item_label">의류</string>
+    <string name="settings_clothes_color_label">색상</string>
     <string name="settings_clothes_condition_label">조건</string>
     <string name="settings_clothes_value_label_temp">기준값 (%1$s)</string>
     <string name="settings_clothes_value_label_precip">기준값 (%%)</string>
@@ -97,6 +99,7 @@ displayed label localizes.
     <string name="settings_schedule_time_label">시간</string>
     <string name="settings_schedule_days_label">요일</string>
     <string name="settings_daily_mention_evening_events">저녁 일정 언급</string>
+    <string name="settings_schedule_preview">지금 재생</string>
 
     <string name="settings_tonight_title">야간 ClothesCast</string>
     <string name="settings_tonight_description">오늘 밤 날씨를 알려주는 두 번째 ClothesCast입니다. 일정이 없는 저녁에는 무음으로 유지되거나 「저녁 일정이 있을 때만 알림」이 켜져 있으면 아예 표시되지 않아요. 일정이 있는 저녁에는 소리를 재생하고 (음성 읽기를 활성화한 경우) 자동으로 읽어줍니다.</string>
@@ -365,6 +368,8 @@ displayed label localizes.
     <string name="today_refresh">새로고침</string>
     <string name="today_empty_title">아직 ClothesCast가 없어요</string>
     <string name="today_empty_subtitle">아침 ClothesCast가 생성되면 여기에 표시됩니다.</string>
+    <string name="today_empty_location_title">위치가 필요합니다</string>
+    <string name="today_empty_location_subtitle">ClothesCast를 받으려면 위치를 설정하세요.</string>
     <string name="today_fetch_now">지금 가져오기</string>
     <string name="today_generated_at">생성 시각: %1$s</string>
 
@@ -395,6 +400,10 @@ displayed label localizes.
     <string name="today_failed_unhandled">예상치 못한 오류가 발생했어요.</string>
     <string name="today_failed_show_details">자세히 보기</string>
     <string name="today_failed_hide_details">자세히 숨기기</string>
+    <string name="today_mqtt_failed_title">스마트 홈으로 전송할 수 없습니다</string>
+    <string name="today_cast_failed_title">디스플레이로 전송할 수 없습니다</string>
+    <string name="today_publish_failed_body">다음 업데이트 때 다시 시도합니다.</string>
+    <string name="today_publish_failed_dismiss">닫기</string>
 
     <!-- Home-screen App Widget. "코디" (short for 코디네이션) is the
          standard Korean fashion-vocab word for an outfit / day's
@@ -408,6 +417,11 @@ displayed label localizes.
     <string name="feels_like_week_widget_label">체감 온도 (7일)</string>
     <string name="feels_like_week_widget_description">앞으로 7일간의 체감 온도입니다.</string>
     <string name="feels_like_widget_empty_title">아직 예보가 없어요</string>
+    <string name="conditions_widget_label">날씨 상태</string>
+    <string name="conditions_widget_description">온도, 비, 바람, UV를 한눈에.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!--
     Onboarding flow — first-run welcome, two permission steps, Gemini
@@ -1366,6 +1380,13 @@ displayed label localizes.
     <string name="today_schedule_promo_body">알림과 안내를 받을 시간을 선택하세요.</string>
     <string name="today_schedule_promo_cta">일정 설정</string>
     <string name="today_schedule_promo_dismiss">닫기</string>
+    <string name="today_play_promo_title">매일의 ClothesCast 듣기</string>
+    <string name="today_play_promo_body">재생 버튼을 탭하여 ClothesCast를 들어보세요.</string>
+    <string name="today_play_promo_dismiss">닫기</string>
+    <string name="today_gemini_promo_title">고품질 음성 사용해 보기</string>
+    <string name="today_gemini_promo_body">자연스럽고 생생한 음성으로 ClothesCast를 들으려면 Gemini를 켜세요.</string>
+    <string name="today_gemini_promo_cta">음성 설정</string>
+    <string name="today_gemini_promo_dismiss">닫기</string>
     <string name="today_clothes_promo_title">옷을 내 것으로</string>
     <string name="today_insight_format_link">형식</string>
     <string name="today_play">재생</string>

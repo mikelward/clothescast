@@ -62,6 +62,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="garment_pants">Pantalones</string>
     <string name="garment_jeans">Vaqueros</string>
     <string name="garment_gloves">Guantes</string>
+    <string name="garment_umbrella">Paraguas</string>
 
     <!-- Clothes settings — top of the screen. -->
     <string name="settings_clothes_title">Reglas de ropa</string>
@@ -74,6 +75,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_clothes_dialog_add_title">Añadir regla de ropa</string>
     <string name="settings_clothes_dialog_edit_title">Editar regla de ropa</string>
     <string name="settings_clothes_item_label">Prenda</string>
+    <string name="settings_clothes_color_label">Color</string>
     <string name="settings_clothes_condition_label">Condición</string>
     <string name="settings_clothes_value_label_temp">Umbral (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Umbral (%%)</string>
@@ -95,6 +97,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_schedule_time_label">Hora</string>
     <string name="settings_schedule_days_label">Días de la semana</string>
     <string name="settings_daily_mention_evening_events">Mencionar eventos de la tarde</string>
+    <string name="settings_schedule_preview">Reproducir ahora</string>
 
     <string name="settings_tonight_title">ClothesCast nocturno</string>
     <string name="settings_tonight_description">Un segundo ClothesCast por la tarde que cubre el tiempo de esta noche. En tardes tranquilas se queda silencioso, o no aparece en absoluto si „Notificar solo cuando haya eventos de la tarde“ está activado; en tardes con eventos reproduce un sonido y (si has activado la lectura en voz alta) se lee solo.</string>
@@ -347,6 +350,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_refresh">Actualizar</string>
     <string name="today_empty_title">Aún no hay ClothesCast</string>
     <string name="today_empty_subtitle">Tu ClothesCast matutino aparecerá aquí cuando se genere.</string>
+    <string name="today_empty_location_title">Se requiere ubicación</string>
+    <string name="today_empty_location_subtitle">Configura tu ubicación para obtener tu ClothesCast.</string>
     <string name="today_fetch_now">Obtener ahora</string>
     <string name="today_generated_at">Generado a las %1$s</string>
 
@@ -377,6 +382,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_failed_unhandled">Se ha producido un error inesperado.</string>
     <string name="today_failed_show_details">Mostrar detalles</string>
     <string name="today_failed_hide_details">Ocultar detalles</string>
+    <string name="today_mqtt_failed_title">No se pudo enviar a tu hogar inteligente</string>
+    <string name="today_cast_failed_title">No se pudo enviar a tu pantalla</string>
+    <string name="today_publish_failed_body">Lo intentaremos de nuevo en la próxima actualización.</string>
+    <string name="today_publish_failed_dismiss">Descartar</string>
 
     <!-- Home-screen App Widget. "Outfit" stays as the loanword (in
          common Spanish use, fits the casual register and matches the
@@ -390,6 +399,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="feels_like_week_widget_label">Sensación térmica (7 días)</string>
     <string name="feels_like_week_widget_description">La sensación térmica durante los próximos 7 días.</string>
     <string name="feels_like_widget_empty_title">Aún no hay previsión</string>
+    <string name="conditions_widget_label">Condiciones</string>
+    <string name="conditions_widget_description">Temperatura, lluvia, viento y UV de un vistazo.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!--
     Onboarding flow — first-run welcome, two permission steps, Gemini
@@ -1340,6 +1354,13 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_schedule_promo_body">Elige cuándo recibes notificaciones y anuncios.</string>
     <string name="today_schedule_promo_cta">Ajustes de programación</string>
     <string name="today_schedule_promo_dismiss">Descartar</string>
+    <string name="today_play_promo_title">Escucha tu ClothesCast diario</string>
+    <string name="today_play_promo_body">Toca el botón de reproducción para escuchar tu ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Descartar</string>
+    <string name="today_gemini_promo_title">Prueba voces de alta calidad</string>
+    <string name="today_gemini_promo_body">Activa Gemini para escuchar tu ClothesCast con voces naturales y realistas.</string>
+    <string name="today_gemini_promo_cta">Ajustes de voz</string>
+    <string name="today_gemini_promo_dismiss">Descartar</string>
     <string name="today_clothes_promo_title">Haz tuya la ropa</string>
     <string name="today_insight_format_link">Formato</string>
     <string name="today_play">Reproducir</string>

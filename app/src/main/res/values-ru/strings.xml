@@ -69,6 +69,7 @@ only the displayed label localizes.
     <string name="garment_pants">Брюки</string>
     <string name="garment_jeans">Джинсы</string>
     <string name="garment_gloves">Перчатки</string>
+    <string name="garment_umbrella">Зонт</string>
     <string name="garment_polo">Поло</string>
     <string name="garment_thin_jacket">Лёгкая куртка</string>
     <string name="garment_puffer">Пуховик</string>
@@ -85,6 +86,7 @@ only the displayed label localizes.
     <string name="settings_clothes_dialog_add_title">Добавить правило одежды</string>
     <string name="settings_clothes_dialog_edit_title">Изменить правило одежды</string>
     <string name="settings_clothes_item_label">Одежда</string>
+    <string name="settings_clothes_color_label">Цвет</string>
     <string name="settings_clothes_condition_label">Условие</string>
     <string name="settings_clothes_value_label_temp">Порог (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Порог (%%)</string>
@@ -105,6 +107,7 @@ only the displayed label localizes.
     <string name="settings_schedule_time_label">Время</string>
     <string name="settings_schedule_days_label">Дни недели</string>
     <string name="settings_daily_mention_evening_events">Упоминать вечерние события</string>
+    <string name="settings_schedule_preview">Воспроизвести</string>
 
     <string name="settings_tonight_title">Вечерний ClothesCast</string>
     <string name="settings_tonight_description">Второй ClothesCast вечером, охватывающий погоду на сегодня вечером. В тихие вечера остаётся беззвучным или вообще не появляется, если включено «Уведомлять только при вечерних событиях»; в вечера с событиями издаёт звук и (если включено озвучивание) читает себя вслух.</string>
@@ -433,6 +436,8 @@ only the displayed label localizes.
     <string name="today_refresh">Обновить</string>
     <string name="today_empty_title">ClothesCast пока нет</string>
     <string name="today_empty_subtitle">Твой утренний ClothesCast появится здесь, как только сгенерируется.</string>
+    <string name="today_empty_location_title">Требуется местоположение</string>
+    <string name="today_empty_location_subtitle">Настройте местоположение, чтобы получить ClothesCast.</string>
     <string name="today_fetch_now">Получить сейчас</string>
     <string name="today_generated_at">Создано в %1$s</string>
 
@@ -527,6 +532,10 @@ only the displayed label localizes.
     <string name="today_failed_unhandled">Произошла непредвиденная ошибка.</string>
     <string name="today_failed_show_details">Показать подробности</string>
     <string name="today_failed_hide_details">Скрыть подробности</string>
+    <string name="today_mqtt_failed_title">Не удалось отправить в умный дом</string>
+    <string name="today_cast_failed_title">Не удалось транслировать на дисплей</string>
+    <string name="today_publish_failed_body">Мы повторим попытку при следующем обновлении.</string>
+    <string name="today_publish_failed_dismiss">Скрыть</string>
     <string name="today_failed_no_location">Не удалось определить твоё местоположение. Предоставь постоянный доступ к местоположению или укажи город в Настройках.</string>
     <string name="today_location_required_title">Настрой своё местоположение</string>
     <string name="today_location_required_body">ClothesCast должен знать, где ты находишься, чтобы получить прогноз. Предоставь постоянный доступ к местоположению или выбери город.</string>
@@ -557,6 +566,11 @@ only the displayed label localizes.
     <string name="feels_like_week_widget_label">Ощущаемая температура (7 дней)</string>
     <string name="feels_like_week_widget_description">Ощущаемая температура на ближайшие 7 дней.</string>
     <string name="feels_like_widget_empty_title">Прогноза пока нет</string>
+    <string name="conditions_widget_label">Условия</string>
+    <string name="conditions_widget_description">Температура, дождь, ветер и UV с первого взгляда.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!--
     Onboarding flow — first-run welcome, two permission steps, Gemini
@@ -1268,6 +1282,13 @@ only the displayed label localizes.
     <string name="today_schedule_promo_body">Выбери, когда получать уведомления и объявления.</string>
     <string name="today_schedule_promo_cta">Настройки расписания</string>
     <string name="today_schedule_promo_dismiss">Скрыть</string>
+    <string name="today_play_promo_title">Слушайте свой ежедневный ClothesCast</string>
+    <string name="today_play_promo_body">Нажмите кнопку воспроизведения, чтобы услышать ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Скрыть</string>
+    <string name="today_gemini_promo_title">Попробуйте высококачественные голоса</string>
+    <string name="today_gemini_promo_body">Включите Gemini, чтобы слушать ClothesCast естественными, живыми голосами.</string>
+    <string name="today_gemini_promo_cta">Настройки голоса</string>
+    <string name="today_gemini_promo_dismiss">Скрыть</string>
     <string name="today_clothes_promo_title">Настрой одежду под себя</string>
     <string name="today_insight_format_link">Формат</string>
     <string name="today_play">Воспроизвести</string>

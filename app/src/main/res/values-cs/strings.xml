@@ -170,6 +170,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="garment_pants">Kalhoty</string>
     <string name="garment_jeans">Džíny</string>
     <string name="garment_gloves">Rukavice</string>
+    <string name="garment_umbrella">Deštník</string>
     <string name="garment_polo">Polo tričko</string>
     <string name="garment_thin_jacket">Lehká bunda</string>
     <string name="garment_puffer">Péřová bunda</string>
@@ -185,6 +186,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_clothes_dialog_add_title">Přidat pravidlo oblékání</string>
     <string name="settings_clothes_dialog_edit_title">Upravit pravidlo oblékání</string>
     <string name="settings_clothes_item_label">Oblečení</string>
+    <string name="settings_clothes_color_label">Barva</string>
     <string name="settings_clothes_condition_label">Podmínka</string>
     <string name="settings_clothes_value_label_temp">Práh (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Práh (%%)</string>
@@ -200,6 +202,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_schedule_time_label">Čas</string>
     <string name="settings_schedule_days_label">Dny v týdnu</string>
     <string name="settings_daily_mention_evening_events">Zmiňovat večerní události</string>
+    <string name="settings_schedule_preview">Přehrát nyní</string>
 
     <string name="settings_tonight_title">Noční ClothesCast</string>
     <string name="settings_tonight_description">Druhý ClothesCast večer pro počasí dnešní noci. V klidných večerech zůstane tichý nebo se vůbec nezobrazí, pokud je aktivní „Upozorňovat jen při večerních událostech"; ve večerech s událostmi přehraje zvuk a (pokud máš zapnutý mluvený výstup) přečte se sám nahlas.</string>
@@ -364,6 +367,8 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_refresh">Obnovit</string>
     <string name="today_empty_title">Zatím žádný ClothesCast</string>
     <string name="today_empty_subtitle">Tvůj ranní ClothesCast se zde zobrazí, jakmile bude vytvořen.</string>
+    <string name="today_empty_location_title">Vyžadována poloha</string>
+    <string name="today_empty_location_subtitle">Nastavte svou polohu a získejte svůj ClothesCast.</string>
     <string name="today_fetch_now">Načíst nyní</string>
     <string name="today_generated_at">Vytvořeno v %1$s</string>
 
@@ -402,6 +407,10 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_failed_unhandled">Došlo k neočekávané chybě.</string>
     <string name="today_failed_show_details">Zobrazit podrobnosti</string>
     <string name="today_failed_hide_details">Skrýt podrobnosti</string>
+    <string name="today_mqtt_failed_title">Odeslání do chytré domácnosti se nezdařilo</string>
+    <string name="today_cast_failed_title">Odeslání na displej se nezdařilo</string>
+    <string name="today_publish_failed_body">Zkusíme to znovu při příští aktualizaci.</string>
+    <string name="today_publish_failed_dismiss">Zavřít</string>
     <string name="today_failed_no_location">Nepodařilo se zjistit tvou polohu. Udělej trvalé oprávnění k poloze nebo nastav město v nastavení.</string>
 
     <string name="today_location_required_title">Nastav svou polohu</string>
@@ -480,6 +489,11 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="feels_like_week_widget_label">Pocitová (7 dní)</string>
     <string name="feels_like_week_widget_description">Pocitová teplota na příštích 7 dní.</string>
     <string name="feels_like_widget_empty_title">Zatím žádná předpověď</string>
+    <string name="conditions_widget_label">Podmínky</string>
+    <string name="conditions_widget_description">Teplota, déšť, vítr a UV na první pohled.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->
     <string name="onboarding_title">Vítej v ClothesCastu</string>
@@ -1222,6 +1236,13 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_schedule_promo_body">Vyber, kdy dostáváš oznámení a hlášení.</string>
     <string name="today_schedule_promo_cta">Nastavení plánu</string>
     <string name="today_schedule_promo_dismiss">Zavřít</string>
+    <string name="today_play_promo_title">Poslechněte si svůj denní ClothesCast</string>
+    <string name="today_play_promo_body">Klepnutím na tlačítko přehrávání si poslechněte svůj ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Zavřít</string>
+    <string name="today_gemini_promo_title">Vyzkoušejte vysoce kvalitní hlasy</string>
+    <string name="today_gemini_promo_body">Zapněte Gemini a poslechněte si svůj ClothesCast přirozenými, věrnými hlasy.</string>
+    <string name="today_gemini_promo_cta">Nastavení hlasu</string>
+    <string name="today_gemini_promo_dismiss">Zavřít</string>
     <string name="today_clothes_promo_title">Přizpůsob si oblečení</string>
     <string name="today_insight_format_link">Formát</string>
     <string name="today_play">Přehrát</string>

@@ -71,6 +71,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="garment_pants">Παντελόνι</string>
     <string name="garment_jeans">Τζιν</string>
     <string name="garment_gloves">Γάντια</string>
+    <string name="garment_umbrella">Ομπρέλα</string>
 
     <!-- Clothes settings — top of the screen. εσύ-form imperatives
          throughout ("Πάτησε Προσθήκη για να δημιουργήσεις"). The
@@ -87,6 +88,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_clothes_dialog_add_title">Προσθήκη κανόνα ένδυσης</string>
     <string name="settings_clothes_dialog_edit_title">Επεξεργασία κανόνα ένδυσης</string>
     <string name="settings_clothes_item_label">Ρούχο</string>
+    <string name="settings_clothes_color_label">Χρώμα</string>
     <string name="settings_clothes_condition_label">Συνθήκη</string>
     <string name="settings_clothes_value_label_temp">Όριο (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Όριο (%)</string>
@@ -111,6 +113,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_schedule_time_label">Ώρα</string>
     <string name="settings_schedule_days_label">Ημέρες της εβδομάδας</string>
     <string name="settings_daily_mention_evening_events">Αναφορά βραδινών συμβάντων</string>
+    <string name="settings_schedule_preview">Αναπαραγωγή τώρα</string>
 
     <string name="settings_tonight_title">Νυχτερινός ClothesCast</string>
     <string name="settings_tonight_description">Ένας δεύτερος ClothesCast το βράδυ που καλύπτει τον καιρό για απόψε. Σε ήσυχα βράδια παραμένει σιωπηλός, ή δεν εμφανίζεται καθόλου αν είναι ενεργό το «Ειδοποίηση μόνο όταν υπάρχουν βραδινά συμβάντα»· σε βράδια με συμβάντα παίζει έναν ήχο και (αν έχεις ενεργοποιήσει την ανάγνωση φωνητικά) διαβάζεται μόνος του.</string>
@@ -397,6 +400,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_refresh">Ανανέωση</string>
     <string name="today_empty_title">Δεν υπάρχει ακόμη ClothesCast</string>
     <string name="today_empty_subtitle">Ο πρωινός σου ClothesCast θα εμφανιστεί εδώ μόλις δημιουργηθεί.</string>
+    <string name="today_empty_location_title">Απαιτείται τοποθεσία</string>
+    <string name="today_empty_location_subtitle">Ρυθμίστε την τοποθεσία σας για να λάβετε το ClothesCast σας.</string>
     <string name="today_fetch_now">Ανάκτηση τώρα</string>
     <string name="today_generated_at">Δημιουργήθηκε στις %1$s</string>
 
@@ -428,6 +433,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_failed_no_location">Δεν μπορέσαμε να βρούμε την τοποθεσία σου. Παραχώρησε άδεια τοποθεσίας πάντα ενεργής, ή όρισε μια πόλη στις Ρυθμίσεις.</string>
     <string name="today_failed_show_details">Εμφάνιση λεπτομερειών</string>
     <string name="today_failed_hide_details">Απόκρυψη λεπτομερειών</string>
+    <string name="today_mqtt_failed_title">Δεν ήταν δυνατή η αποστολή στο έξυπνο σπίτι σας</string>
+    <string name="today_cast_failed_title">Δεν ήταν δυνατή η μετάδοση στην οθόνη σας</string>
+    <string name="today_publish_failed_body">Θα προσπαθήσουμε ξανά στην επόμενη ενημέρωση.</string>
+    <string name="today_publish_failed_dismiss">Απόρριψη</string>
 
     <string name="today_location_required_title">Όρισε την τοποθεσία σου</string>
     <string name="today_location_required_body">Ο ClothesCast πρέπει να γνωρίζει πού βρίσκεσαι για να ανακτήσει την πρόβλεψη. Παραχώρησε άδεια τοποθεσίας πάντα ενεργής, ή επίλεξε μια πόλη.</string>
@@ -445,6 +454,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="feels_like_week_widget_label">Αισθητή θερμοκρασία (7 ημέρες)</string>
     <string name="feels_like_week_widget_description">Η αισθητή θερμοκρασία για τις επόμενες 7 ημέρες.</string>
     <string name="feels_like_widget_empty_title">Δεν υπάρχει ακόμη πρόβλεψη</string>
+    <string name="conditions_widget_label">Συνθήκες</string>
+    <string name="conditions_widget_description">Θερμοκρασία, βροχή, άνεμος και UV με μια ματιά.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!--
     Onboarding flow — first-run welcome, two permission steps (notifs +
@@ -1334,6 +1348,13 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_schedule_promo_body">Επίλεξε πότε λαμβάνεις ειδοποιήσεις και ανακοινώσεις.</string>
     <string name="today_schedule_promo_cta">Ρυθμίσεις προγράμματος</string>
     <string name="today_schedule_promo_dismiss">Απόρριψη</string>
+    <string name="today_play_promo_title">Ακούστε το καθημερινό σας ClothesCast</string>
+    <string name="today_play_promo_body">Πατήστε το κουμπί αναπαραγωγής για να ακούσετε το ClothesCast σας.</string>
+    <string name="today_play_promo_dismiss">Απόρριψη</string>
+    <string name="today_gemini_promo_title">Δοκιμάστε φωνές υψηλής ποιότητας</string>
+    <string name="today_gemini_promo_body">Ενεργοποιήστε το Gemini για να ακούτε το ClothesCast σας με φυσικές, ρεαλιστικές φωνές.</string>
+    <string name="today_gemini_promo_cta">Ρυθμίσεις φωνής</string>
+    <string name="today_gemini_promo_dismiss">Απόρριψη</string>
     <string name="today_clothes_promo_title">Κάνε τα ρούχα δικά σου</string>
     <string name="today_insight_format_link">Μορφή</string>
     <string name="today_play">Αναπαραγωγή</string>

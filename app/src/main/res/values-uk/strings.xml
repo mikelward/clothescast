@@ -62,6 +62,7 @@ only the displayed label localizes.
     <string name="garment_pants">Штани</string>
     <string name="garment_jeans">Джинси</string>
     <string name="garment_gloves">Рукавички</string>
+    <string name="garment_umbrella">Парасолька</string>
     <string name="garment_polo">Поло</string>
     <string name="garment_thin_jacket">Легка куртка</string>
     <string name="garment_puffer">Пуховик</string>
@@ -78,6 +79,7 @@ only the displayed label localizes.
     <string name="settings_clothes_dialog_add_title">Додати правило одягу</string>
     <string name="settings_clothes_dialog_edit_title">Редагувати правило одягу</string>
     <string name="settings_clothes_item_label">Одяг</string>
+    <string name="settings_clothes_color_label">Колір</string>
     <string name="settings_clothes_condition_label">Умова</string>
     <string name="settings_clothes_value_label_temp">Поріг (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Поріг (%)</string>
@@ -93,6 +95,7 @@ only the displayed label localizes.
     <string name="settings_schedule_time_label">Час</string>
     <string name="settings_schedule_days_label">Дні тижня</string>
     <string name="settings_daily_mention_evening_events">Згадувати вечірні події</string>
+    <string name="settings_schedule_preview">Відтворити зараз</string>
 
     <string name="settings_tonight_title">Вечірній ClothesCast</string>
     <string name="settings_tonight_description">Другий ClothesCast увечері, що охоплює погоду на сьогоднішній вечір. У тихі вечори залишається беззвучним або не з\'являється зовсім, якщо увімкнено «Сповіщати лише при вечірніх подіях»; у вечори з подіями видає звук і (якщо увімкнено озвучення) читає себе вголос.</string>
@@ -381,6 +384,8 @@ only the displayed label localizes.
     <string name="today_refresh">Оновити</string>
     <string name="today_empty_title">ClothesCast ще немає</string>
     <string name="today_empty_subtitle">Ваш ранковий ClothesCast з\'явиться тут, щойно буде згенеровано.</string>
+    <string name="today_empty_location_title">Потрібне місцезнаходження</string>
+    <string name="today_empty_location_subtitle">Налаштуйте своє місцезнаходження, щоб отримати свій ClothesCast.</string>
     <string name="today_fetch_now">Отримати зараз</string>
     <string name="today_generated_at">Згенеровано о %1$s</string>
     <string name="today_location_unknown">Ваше місцезнаходження</string>
@@ -426,6 +431,11 @@ only the displayed label localizes.
     <string name="feels_like_week_widget_label">Відчувана температура (7 днів)</string>
     <string name="feels_like_week_widget_description">Відчувана температура на наступні 7 днів.</string>
     <string name="feels_like_widget_empty_title">Прогнозу ще немає</string>
+    <string name="conditions_widget_label">Умови</string>
+    <string name="conditions_widget_description">Температура, дощ, вітер і UV з першого погляду.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Hourly forecast card. -->
     <string name="today_forecast_title">Погодинний прогноз</string>
@@ -474,6 +484,10 @@ only the displayed label localizes.
     <string name="today_failed_no_location">Не вдалося визначити ваше місцезнаходження. Надайте постійний дозвіл на місцезнаходження або вкажіть місто в налаштуваннях.</string>
     <string name="today_failed_show_details">Показати подробиці</string>
     <string name="today_failed_hide_details">Приховати подробиці</string>
+    <string name="today_mqtt_failed_title">Не вдалося надіслати до вашого розумного дому</string>
+    <string name="today_cast_failed_title">Не вдалося транслювати на ваш дисплей</string>
+    <string name="today_publish_failed_body">Ми спробуємо знову під час наступного оновлення.</string>
+    <string name="today_publish_failed_dismiss">Закрити</string>
 
     <!-- Location-required prompt. -->
     <string name="today_location_required_title">Налаштуйте місцезнаходження</string>
@@ -1211,6 +1225,13 @@ only the displayed label localizes.
     <string name="today_schedule_promo_body">Оберіть, коли отримувати сповіщення та оголошення.</string>
     <string name="today_schedule_promo_cta">Налаштування розкладу</string>
     <string name="today_schedule_promo_dismiss">Закрити</string>
+    <string name="today_play_promo_title">Слухайте свій щоденний ClothesCast</string>
+    <string name="today_play_promo_body">Торкніться кнопки відтворення, щоб почути свій ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Закрити</string>
+    <string name="today_gemini_promo_title">Спробуйте високоякісні голоси</string>
+    <string name="today_gemini_promo_body">Увімкніть Gemini, щоб слухати свій ClothesCast природними, живими голосами.</string>
+    <string name="today_gemini_promo_cta">Налаштування голосу</string>
+    <string name="today_gemini_promo_dismiss">Закрити</string>
     <string name="today_clothes_promo_title">Зроби одяг своїм</string>
     <string name="today_insight_format_link">Формат</string>
     <string name="today_play">Відтворити</string>

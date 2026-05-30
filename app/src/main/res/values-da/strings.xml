@@ -55,6 +55,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="garment_pants">Bukser</string>
     <string name="garment_jeans">Jeans</string>
     <string name="garment_gloves">Handsker</string>
+    <string name="garment_umbrella">Paraply</string>
     <string name="garment_polo">Polo/Poloshirt</string>
     <string name="garment_thin_jacket">Tynd jakke</string>
     <string name="garment_puffer">Dunjakke</string>
@@ -70,6 +71,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_clothes_dialog_add_title">Tilføj tøjregel</string>
     <string name="settings_clothes_dialog_edit_title">Rediger tøjregel</string>
     <string name="settings_clothes_item_label">Tøjstykke</string>
+    <string name="settings_clothes_color_label">Farve</string>
     <string name="settings_clothes_condition_label">Betingelse</string>
     <string name="settings_clothes_value_label_temp">Tærskel (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Tærskel (%%)</string>
@@ -85,6 +87,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_schedule_time_label">Tidspunkt</string>
     <string name="settings_schedule_days_label">Ugedage</string>
     <string name="settings_daily_mention_evening_events">Nævn aftenbegivenheder</string>
+    <string name="settings_schedule_preview">Afspil nu</string>
 
     <string name="settings_tonight_title">Aftenens ClothesCast</string>
     <string name="settings_tonight_description">Et andet ClothesCast om aftenen for vejret i aften. På rolige aftener er det stille eller vises slet ikke, hvis "Giv kun besked ved aftenbegivenheder" er aktiveret; på aftener med begivenheder afspiller det en lyd og (hvis du har talesyntese aktiveret) læser sig selv op.</string>
@@ -365,6 +368,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_refresh">Opdater</string>
     <string name="today_empty_title">Intet ClothesCast endnu</string>
     <string name="today_empty_subtitle">Dit morgenvise ClothesCast dukker op her, når det er genereret.</string>
+    <string name="today_empty_location_title">Placering kræves</string>
+    <string name="today_empty_location_subtitle">Konfigurer din placering for at få din ClothesCast.</string>
     <string name="today_fetch_now">Hent nu</string>
     <string name="today_generated_at">Genereret klokken %1$s</string>
 
@@ -402,6 +407,10 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_failed_unhandled">En uventet fejl opstod.</string>
     <string name="today_failed_show_details">Vis detaljer</string>
     <string name="today_failed_hide_details">Skjul detaljer</string>
+    <string name="today_mqtt_failed_title">Kunne ikke sende til dit smarte hjem</string>
+    <string name="today_cast_failed_title">Kunne ikke caste til din skærm</string>
+    <string name="today_publish_failed_body">Vi prøver igen ved næste opdatering.</string>
+    <string name="today_publish_failed_dismiss">Afvis</string>
     <string name="today_failed_no_location">Din placering kunne ikke fastslås. Giv permanent placeringsadgang, eller angiv en by i indstillingerne.</string>
 
     <string name="today_location_required_title">Angiv din placering</string>
@@ -481,6 +490,11 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="feels_like_week_widget_label">Følt temperatur (7 dage)</string>
     <string name="feels_like_week_widget_description">Den følte temperatur over de næste 7 dage.</string>
     <string name="feels_like_widget_empty_title">Ingen prognose endnu</string>
+    <string name="conditions_widget_label">Forhold</string>
+    <string name="conditions_widget_description">Temperatur, regn, vind og UV på et øjeblik.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->
     <string name="onboarding_title">Velkommen til ClothesCast</string>
@@ -1242,6 +1256,13 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_schedule_promo_body">Vælg, hvornår du får notifikationer og oplæsninger.</string>
     <string name="today_schedule_promo_cta">Tidsplanindstillinger</string>
     <string name="today_schedule_promo_dismiss">Afvis</string>
+    <string name="today_play_promo_title">Hør din daglige ClothesCast</string>
+    <string name="today_play_promo_body">Tryk på afspilningsknappen for at høre din ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Afvis</string>
+    <string name="today_gemini_promo_title">Prøv stemmer i høj kvalitet</string>
+    <string name="today_gemini_promo_body">Slå Gemini til for at høre din ClothesCast med naturlige, livagtige stemmer.</string>
+    <string name="today_gemini_promo_cta">Stemmeindstillinger</string>
+    <string name="today_gemini_promo_dismiss">Afvis</string>
     <string name="today_clothes_promo_title">Gør tøjet til dit eget</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Afspil</string>

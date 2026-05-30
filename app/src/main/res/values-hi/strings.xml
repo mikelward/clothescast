@@ -53,6 +53,7 @@ Not overridden by design:
     <string name="garment_pants">पैंट</string>
     <string name="garment_jeans">जींस</string>
     <string name="garment_gloves">दस्ताने</string>
+    <string name="garment_umbrella">छाता</string>
 
     <!-- Clothes rules screen. -->
     <string name="settings_clothes_title">कपड़ों के नियम</string>
@@ -64,6 +65,7 @@ Not overridden by design:
     <string name="settings_clothes_dialog_add_title">कपड़ों का नियम जोड़ें</string>
     <string name="settings_clothes_dialog_edit_title">कपड़ों का नियम संपादित करें</string>
     <string name="settings_clothes_item_label">कपड़ा</string>
+    <string name="settings_clothes_color_label">रंग</string>
     <string name="settings_clothes_condition_label">शर्त</string>
     <string name="settings_clothes_value_label_temp">सीमा (%1$s)</string>
     <string name="settings_clothes_value_label_precip">सीमा (%%)</string>
@@ -79,6 +81,7 @@ Not overridden by design:
     <string name="settings_schedule_time_label">समय</string>
     <string name="settings_schedule_days_label">सप्ताह के दिन</string>
     <string name="settings_daily_mention_evening_events">शाम की घटनाओं का उल्लेख करें</string>
+    <string name="settings_schedule_preview">अभी चलाएँ</string>
 
     <string name="settings_tonight_title">रात्रि ClothesCast</string>
     <string name="settings_tonight_description">एक दूसरा ClothesCast शाम को जो आज रात के मौसम को कवर करता है। शांत शामों पर यह चुप रहता है, या यदि "केवल शाम की घटनाएँ होने पर सूचित करें" चालू है तो दिखता नहीं; घटनाओं वाली शामों पर यह आवाज़ करता है और (यदि बोलकर पढ़ने की सुविधा चालू हो) खुद पढ़ता है।</string>
@@ -337,6 +340,8 @@ Not overridden by design:
     <string name="today_refresh">रीफ़्रेश करें</string>
     <string name="today_empty_title">अभी कोई ClothesCast नहीं</string>
     <string name="today_empty_subtitle">आपका सुबह का ClothesCast तैयार होने पर यहाँ दिखेगा।</string>
+    <string name="today_empty_location_title">स्थान आवश्यक है</string>
+    <string name="today_empty_location_subtitle">अपना ClothesCast पाने के लिए अपना स्थान सेट करें।</string>
     <string name="today_fetch_now">अभी लाएँ</string>
     <string name="today_generated_at">%1$s को बनाया गया</string>
     <string name="today_location_unknown">आपका स्थान</string>
@@ -387,6 +392,10 @@ Not overridden by design:
     <string name="today_failed_no_location">आपका स्थान नहीं मिला। हमेशा-चालू स्थान अनुमति दें, या सेटिंग में कोई शहर सेट करें।</string>
     <string name="today_failed_show_details">विवरण दिखाएँ</string>
     <string name="today_failed_hide_details">विवरण छुपाएँ</string>
+    <string name="today_mqtt_failed_title">आपके स्मार्ट होम पर नहीं भेजा जा सका</string>
+    <string name="today_cast_failed_title">आपके डिस्प्ले पर कास्ट नहीं किया जा सका</string>
+    <string name="today_publish_failed_body">हम अगले अपडेट पर फिर से कोशिश करेंगे।</string>
+    <string name="today_publish_failed_dismiss">बंद करें</string>
 
     <!-- Location required empty state. -->
     <string name="today_location_required_title">अपना स्थान सेट करें</string>
@@ -417,6 +426,11 @@ Not overridden by design:
     <string name="feels_like_week_widget_label">महसूस तापमान (7 दिन)</string>
     <string name="feels_like_week_widget_description">अगले 7 दिनों का महसूस तापमान।</string>
     <string name="feels_like_widget_empty_title">अभी कोई पूर्वानुमान नहीं</string>
+    <string name="conditions_widget_label">स्थितियाँ</string>
+    <string name="conditions_widget_description">तापमान, बारिश, हवा और UV एक नज़र में।</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->
     <string name="onboarding_title">ClothesCast में आपका स्वागत है</string>
@@ -1244,6 +1258,13 @@ Not overridden by design:
     <string name="today_schedule_promo_body">चुनें कि आपको सूचनाएँ और घोषणाएँ कब मिलें।</string>
     <string name="today_schedule_promo_cta">समय-सारणी सेटिंग</string>
     <string name="today_schedule_promo_dismiss">बंद करें</string>
+    <string name="today_play_promo_title">अपना दैनिक ClothesCast सुनें</string>
+    <string name="today_play_promo_body">अपना ClothesCast सुनने के लिए प्ले बटन पर टैप करें।</string>
+    <string name="today_play_promo_dismiss">बंद करें</string>
+    <string name="today_gemini_promo_title">उच्च गुणवत्ता वाली आवाज़ें आज़माएँ</string>
+    <string name="today_gemini_promo_body">प्राकृतिक, सजीव आवाज़ों में अपना ClothesCast सुनने के लिए Gemini चालू करें।</string>
+    <string name="today_gemini_promo_cta">आवाज़ सेटिंग</string>
+    <string name="today_gemini_promo_dismiss">बंद करें</string>
     <string name="today_clothes_promo_title">कपड़ों को अपना बनाएँ</string>
     <string name="today_insight_format_link">प्रारूप</string>
     <string name="today_play">चलाएँ</string>

@@ -20,6 +20,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="garment_pants">Suruali ndefu</string>
     <string name="garment_jeans">Jins</string>
     <string name="garment_gloves">Glavu</string>
+    <string name="garment_umbrella">Mwavuli</string>
 
     <string name="settings_clothes_empty">Hakuna sheria bado. Gonga Ongeza ili kuunda.</string>
     <string name="settings_clothes_add">Ongeza</string>
@@ -28,6 +29,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_clothes_dialog_add_title">Ongeza sheria ya mavazi</string>
     <string name="settings_clothes_dialog_edit_title">Hariri sheria ya mavazi</string>
     <string name="settings_clothes_item_label">Vazi</string>
+    <string name="settings_clothes_color_label">Rangi</string>
     <string name="settings_clothes_condition_label">Hali</string>
     <string name="settings_clothes_value_label_temp">Kiwango (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Kiwango (%%)</string>
@@ -109,6 +111,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_refresh">Onyesha upya</string>
     <string name="today_empty_title">Hakuna ClothesCast bado</string>
     <string name="today_empty_subtitle">ClothesCast yako ya asubuhi itaonekana hapa baada ya kuundwa.</string>
+    <string name="today_empty_location_title">Eneo linahitajika</string>
+    <string name="today_empty_location_subtitle">Sanidi eneo lako ili kupata ClothesCast yako.</string>
     <string name="today_fetch_now">Pakua sasa</string>
     <string name="today_generated_at">Imetayarishwa saa %1$s</string>
     <string name="today_location_unknown">Mahali pako</string>
@@ -147,6 +151,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="feels_like_week_widget_label">Joto linalohisi (siku 7)</string>
     <string name="feels_like_week_widget_description">Joto linalohisi kwa siku 7 zijazo.</string>
     <string name="feels_like_widget_empty_title">Hakuna utabiri bado</string>
+    <string name="conditions_widget_label">Hali</string>
+    <string name="conditions_widget_description">Halijoto, mvua, upepo na UV kwa mtazamo mmoja.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Today forecast / charts -->
     <string name="today_forecast_title">Joto linalohisi</string>
@@ -183,6 +192,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_failed_no_location">Hatukuweza kupata mahali pako. Toa ruhusa ya mahali daima, au weka mji katika Mipangilio.</string>
     <string name="today_failed_show_details">Onyesha maelezo</string>
     <string name="today_failed_hide_details">Ficha maelezo</string>
+    <string name="today_mqtt_failed_title">Imeshindwa kutuma kwenye nyumba yako ya kisasa</string>
+    <string name="today_cast_failed_title">Imeshindwa kutuma kwenye skrini yako</string>
+    <string name="today_publish_failed_body">Tutajaribu tena kwenye sasisho linalofuata.</string>
+    <string name="today_publish_failed_dismiss">Funga</string>
     <string name="today_location_required_title">Weka mahali pako</string>
     <string name="today_location_required_body">ClothesCast inahitaji kujua uko wapi ili kupata utabiri. Toa ruhusa ya mahali daima, au chagua mji.</string>
     <string name="today_location_required_action">Fungua mipangilio ya mahali</string>
@@ -298,6 +311,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_time_label">Wakati</string>
     <string name="settings_schedule_days_label">Siku za wiki</string>
     <string name="settings_daily_mention_evening_events">Taja matukio ya jioni</string>
+    <string name="settings_schedule_preview">Cheza sasa</string>
     <string name="settings_tonight_title">ClothesCast ya usiku</string>
     <string name="settings_tonight_description">ClothesCast ya pili jioni inayoshughulikia hali ya hewa ya usiku huu. Jioni tulivu inabaki kimya; jioni za matukio inacheza sauti na kusoma yenyewe.</string>
     <string name="settings_tonight_enabled">Onyesha ClothesCast ya usiku</string>
@@ -1184,6 +1198,13 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_schedule_promo_body">Chagua wakati unapopokea arifa na matangazo.</string>
     <string name="today_schedule_promo_cta">Mipangilio ya ratiba</string>
     <string name="today_schedule_promo_dismiss">Funga</string>
+    <string name="today_play_promo_title">Sikiliza ClothesCast yako ya kila siku</string>
+    <string name="today_play_promo_body">Gusa kitufe cha kucheza ili kusikia ClothesCast yako.</string>
+    <string name="today_play_promo_dismiss">Funga</string>
+    <string name="today_gemini_promo_title">Jaribu sauti za ubora wa juu</string>
+    <string name="today_gemini_promo_body">Washa Gemini ili kusikia ClothesCast yako kwa sauti za asili, zinazofanana na halisi.</string>
+    <string name="today_gemini_promo_cta">Mipangilio ya sauti</string>
+    <string name="today_gemini_promo_dismiss">Funga</string>
     <string name="today_clothes_promo_title">Fanya nguo ziwe zako</string>
     <string name="today_insight_format_link">Umbo</string>
     <string name="today_play">Cheza</string>

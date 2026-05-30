@@ -78,6 +78,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="garment_pants">Calças</string>
     <string name="garment_jeans">Calças de ganga</string>
     <string name="garment_gloves">Luvas</string>
+    <string name="garment_umbrella">Guarda-chuva</string>
 
     <!-- Clothes settings — top of the screen. Tu-form imperatives
          throughout ("Toca em Adicionar", "Eliminar"). pt-PT uses
@@ -95,6 +96,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_clothes_dialog_add_title">Adicionar regra de vestuário</string>
     <string name="settings_clothes_dialog_edit_title">Editar regra de vestuário</string>
     <string name="settings_clothes_item_label">Peça</string>
+    <string name="settings_clothes_color_label">Cor</string>
     <string name="settings_clothes_condition_label">Condição</string>
     <string name="settings_clothes_value_label_temp">Limite (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Limite (%)</string>
@@ -117,6 +119,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_schedule_time_label">Hora</string>
     <string name="settings_schedule_days_label">Dias da semana</string>
     <string name="settings_daily_mention_evening_events">Mencionar eventos da noite</string>
+    <string name="settings_schedule_preview">Reproduzir agora</string>
 
     <string name="settings_tonight_title">ClothesCast noturno</string>
     <string name="settings_tonight_description">Um segundo ClothesCast à noite que cobre o tempo para esta noite. Em noites tranquilas fica silencioso, ou nem aparece se «Notificar apenas quando houver eventos noturnos» estiver ativo; em noites com eventos toca um som e (se ativaste a leitura em voz alta) lê-se sozinho.</string>
@@ -371,6 +374,8 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_refresh">Atualizar</string>
     <string name="today_empty_title">Ainda sem ClothesCast</string>
     <string name="today_empty_subtitle">O teu ClothesCast matinal aparece aqui assim que for gerado.</string>
+    <string name="today_empty_location_title">Localização necessária</string>
+    <string name="today_empty_location_subtitle">Configure a sua localização para obter o seu ClothesCast.</string>
     <string name="today_fetch_now">Obter agora</string>
     <string name="today_generated_at">Gerado às %1$s</string>
 
@@ -401,6 +406,10 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_failed_unhandled">Ocorreu um erro inesperado.</string>
     <string name="today_failed_show_details">Mostrar detalhes</string>
     <string name="today_failed_hide_details">Ocultar detalhes</string>
+    <string name="today_mqtt_failed_title">Não foi possível enviar para a sua casa inteligente</string>
+    <string name="today_cast_failed_title">Não foi possível transmitir para o seu ecrã</string>
+    <string name="today_publish_failed_body">Tentaremos novamente na próxima atualização.</string>
+    <string name="today_publish_failed_dismiss">Dispensar</string>
 
     <!-- Home-screen App Widget. "Visual" (PT) for the widget label
          where pt-BR uses the loanword "Look" — both languages know
@@ -416,6 +425,11 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="feels_like_week_widget_label">Sensação térmica (7 dias)</string>
     <string name="feels_like_week_widget_description">A sensação térmica ao longo dos próximos 7 dias.</string>
     <string name="feels_like_widget_empty_title">Ainda sem previsão</string>
+    <string name="conditions_widget_label">Condições</string>
+    <string name="conditions_widget_description">Temperatura, chuva, vento e UV num relance.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!--
     Onboarding flow — first-run welcome, two permission steps, Gemini
@@ -1340,6 +1354,13 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_schedule_promo_body">Escolhe quando recebes notificações e anúncios.</string>
     <string name="today_schedule_promo_cta">Definições de agendamento</string>
     <string name="today_schedule_promo_dismiss">Dispensar</string>
+    <string name="today_play_promo_title">Ouça o seu ClothesCast diário</string>
+    <string name="today_play_promo_body">Toque no botão de reprodução para ouvir o seu ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Dispensar</string>
+    <string name="today_gemini_promo_title">Experimente vozes de alta qualidade</string>
+    <string name="today_gemini_promo_body">Ative o Gemini para ouvir o seu ClothesCast com vozes naturais e realistas.</string>
+    <string name="today_gemini_promo_cta">Definições de voz</string>
+    <string name="today_gemini_promo_dismiss">Dispensar</string>
     <string name="today_clothes_promo_title">Faz a roupa tua</string>
     <string name="today_insight_format_link">Formato</string>
     <string name="today_play">Reproduzir</string>

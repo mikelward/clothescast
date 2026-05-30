@@ -20,6 +20,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="garment_pants">Bikses</string>
     <string name="garment_jeans">Džinsi</string>
     <string name="garment_gloves">Cimdi</string>
+    <string name="garment_umbrella">Lietussargs</string>
     <string name="garment_puffer">Pūķa jaka</string>
     <string name="garment_thin_jacket">Plāna jaka</string>
     <string name="garment_skirt">Svārki</string>
@@ -32,6 +33,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_clothes_dialog_add_title">Pievienot apģērba noteikumu</string>
     <string name="settings_clothes_dialog_edit_title">Rediģēt apģērba noteikumu</string>
     <string name="settings_clothes_item_label">Apģērba gabals</string>
+    <string name="settings_clothes_color_label">Krāsa</string>
     <string name="settings_clothes_condition_label">Nosacījums</string>
     <string name="settings_clothes_value_label_temp">Slieksnis (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Slieksnis (%%)</string>
@@ -125,6 +127,8 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_refresh">Atjaunināt</string>
     <string name="today_empty_title">ClothesCast vēl nav</string>
     <string name="today_empty_subtitle">Tavs rīta ClothesCast parādīsies šeit, tiklīdz tas tiks ģenerēts.</string>
+    <string name="today_empty_location_title">Nepieciešama atrašanās vieta</string>
+    <string name="today_empty_location_subtitle">Iestatiet savu atrašanās vietu, lai saņemtu savu ClothesCast.</string>
     <string name="today_fetch_now">Ielādēt tagad</string>
     <string name="today_generated_at">Ģenerēts plkst. %1$s</string>
     <string name="today_location_unknown">Tava atrašanās vieta</string>
@@ -155,6 +159,11 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="feels_like_week_widget_label">Sajustā temperatūra (7 dienas)</string>
     <string name="feels_like_week_widget_description">Sajustā temperatūra nākamajās 7 dienās.</string>
     <string name="feels_like_widget_empty_title">Prognozes vēl nav</string>
+    <string name="conditions_widget_label">Apstākļi</string>
+    <string name="conditions_widget_description">Temperatūra, lietus, vējš un UV vienā mirklī.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Today forecast / charts -->
     <string name="today_forecast_title">Stundas prognoze</string>
@@ -189,6 +198,10 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_failed_no_location">Nevarējām noteikt tavu atrašanās vietu. Piešķir pastāvīgu atrašanās vietas atļauju vai norādi pilsētu iestatījumos.</string>
     <string name="today_failed_show_details">Rādīt detaļas</string>
     <string name="today_failed_hide_details">Slēpt detaļas</string>
+    <string name="today_mqtt_failed_title">Neizdevās nosūtīt uz jūsu viedmāju</string>
+    <string name="today_cast_failed_title">Neizdevās pārraidīt uz jūsu displeju</string>
+    <string name="today_publish_failed_body">Mēģināsim vēlreiz nākamajā atjauninājumā.</string>
+    <string name="today_publish_failed_dismiss">Aizvērt</string>
     <string name="today_location_required_title">Norādi atrašanās vietu</string>
     <string name="today_location_required_body">ClothesCast jāzina, kur tu atrodies, lai iegūtu prognozi. Piešķir pastāvīgu atrašanās vietas atļauju vai izvēlies pilsētu.</string>
     <string name="today_location_required_action">Atvērt atrašanās vietas iestatījumus</string>
@@ -320,6 +333,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_schedule_time_label">Laiks</string>
     <string name="settings_schedule_days_label">Nedēļas dienas</string>
     <string name="settings_daily_mention_evening_events">Pieminēt vakara notikumus</string>
+    <string name="settings_schedule_preview">Atskaņot tagad</string>
     <string name="settings_tonight_title">Nakts ClothesCast</string>
     <string name="settings_tonight_description">Otrs ClothesCast vakarā, kas aptver šovakarējā laika apstākļus. Klusās vakaros tas paliek klusēdams vai vispār neparādās, ja ir ieslēgta opcija "Paziņot tikai tad, kad ir vakara notikumi"; notikumu vakaros tas atskaņo skaņu un (ja esi iespējojis balss piegādi) nolasa sevi skaļi.</string>
     <string name="settings_tonight_enabled">Rādīt nakts ClothesCast</string>
@@ -1154,6 +1168,13 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_schedule_promo_body">Izvēlieties, kad saņemt paziņojumus un izziņojumus.</string>
     <string name="today_schedule_promo_cta">Grafika iestatījumi</string>
     <string name="today_schedule_promo_dismiss">Aizvērt</string>
+    <string name="today_play_promo_title">Klausieties savu ikdienas ClothesCast</string>
+    <string name="today_play_promo_body">Pieskarieties atskaņošanas pogai, lai klausītos savu ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Aizvērt</string>
+    <string name="today_gemini_promo_title">Izmēģiniet augstas kvalitātes balsis</string>
+    <string name="today_gemini_promo_body">Ieslēdziet Gemini, lai klausītos savu ClothesCast dabiskās, dzīvīgās balsīs.</string>
+    <string name="today_gemini_promo_cta">Balss iestatījumi</string>
+    <string name="today_gemini_promo_dismiss">Aizvērt</string>
     <string name="today_clothes_promo_title">Padari apģērbu par savējo</string>
     <string name="today_insight_format_link">Formāts</string>
     <string name="today_play">Atskaņot</string>

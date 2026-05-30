@@ -30,6 +30,7 @@ What is NOT overridden, by design:
     <string name="garment_pants">Панталон</string>
     <string name="garment_jeans">Дънки</string>
     <string name="garment_gloves">Ръкавици</string>
+    <string name="garment_umbrella">Чадър</string>
     <string name="garment_polo">Поло</string>
     <string name="garment_thin_jacket">Тънко яке</string>
     <string name="garment_puffer">Зимно яке</string>
@@ -42,6 +43,7 @@ What is NOT overridden, by design:
     <string name="settings_clothes_dialog_add_title">Добави правило за обличане</string>
     <string name="settings_clothes_dialog_edit_title">Редактирай правило за обличане</string>
     <string name="settings_clothes_item_label">Дреха</string>
+    <string name="settings_clothes_color_label">Цвят</string>
     <string name="settings_clothes_condition_label">Условие</string>
     <string name="settings_clothes_value_label_temp">Праг (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Праг (%)</string>
@@ -126,6 +128,8 @@ What is NOT overridden, by design:
     <string name="today_refresh">Обнови</string>
     <string name="today_empty_title">Все още няма ClothesCast</string>
     <string name="today_empty_subtitle">Сутрешният ти ClothesCast ще се появи тук, след като бъде генериран.</string>
+    <string name="today_empty_location_title">Изисква се местоположение</string>
+    <string name="today_empty_location_subtitle">Настройте местоположението си, за да получите своя ClothesCast.</string>
     <string name="today_fetch_now">Вземи сега</string>
     <string name="today_generated_at">Генерирано в %1$s</string>
     <string name="today_location_unknown">Твоето местоположение</string>
@@ -166,6 +170,11 @@ What is NOT overridden, by design:
     <string name="feels_like_week_widget_label">Усещана температура (7 дни)</string>
     <string name="feels_like_week_widget_description">Усещаната температура през следващите 7 дни.</string>
     <string name="feels_like_widget_empty_title">Все още няма прогноза</string>
+    <string name="conditions_widget_label">Условия</string>
+    <string name="conditions_widget_description">Температура, дъжд, вятър и UV с един поглед.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Hourly forecast card. -->
     <string name="today_forecast_title">Почасова прогноза</string>
@@ -214,6 +223,10 @@ What is NOT overridden, by design:
     <string name="today_failed_no_location">Не успяхме да получим твоето местоположение. Разреши постоянен достъп до местоположение или задай град в Настройките.</string>
     <string name="today_failed_show_details">Покажи подробности</string>
     <string name="today_failed_hide_details">Скрий подробности</string>
+    <string name="today_mqtt_failed_title">Изпращането към умния ви дом не бе успешно</string>
+    <string name="today_cast_failed_title">Предаването към дисплея ви не бе успешно</string>
+    <string name="today_publish_failed_body">Ще опитаме отново при следващото обновяване.</string>
+    <string name="today_publish_failed_dismiss">Затвори</string>
 
     <!-- Location-required prompt. -->
     <string name="today_location_required_title">Настрой местоположението си</string>
@@ -355,6 +368,7 @@ What is NOT overridden, by design:
     <string name="settings_schedule_time_label">Час</string>
     <string name="settings_schedule_days_label">Дни от седмицата</string>
     <string name="settings_daily_mention_evening_events">Споменавай вечерни събития</string>
+    <string name="settings_schedule_preview">Пусни сега</string>
 
     <!-- Nightly ClothesCast. -->
     <string name="settings_tonight_title">Нощен ClothesCast</string>
@@ -1199,6 +1213,13 @@ What is NOT overridden, by design:
     <string name="today_schedule_promo_body">Избери кога да получаваш известия и съобщения.</string>
     <string name="today_schedule_promo_cta">Настройки на разписанието</string>
     <string name="today_schedule_promo_dismiss">Затвори</string>
+    <string name="today_play_promo_title">Чуйте своя ежедневен ClothesCast</string>
+    <string name="today_play_promo_body">Докоснете бутона за възпроизвеждане, за да чуете своя ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Затвори</string>
+    <string name="today_gemini_promo_title">Изпробвайте висококачествени гласове</string>
+    <string name="today_gemini_promo_body">Включете Gemini, за да чувате своя ClothesCast с естествени, реалистични гласове.</string>
+    <string name="today_gemini_promo_cta">Настройки на гласа</string>
+    <string name="today_gemini_promo_dismiss">Затвори</string>
     <string name="today_clothes_promo_title">Направи дрехите свои</string>
     <string name="today_insight_format_link">Формат</string>
     <string name="today_play">Възпроизведи</string>

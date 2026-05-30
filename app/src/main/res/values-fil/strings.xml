@@ -20,6 +20,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="garment_pants">Mahabang pantalon</string>
     <string name="garment_jeans">Maong</string>
     <string name="garment_gloves">Guwantes</string>
+    <string name="garment_umbrella">Payong</string>
 
     <string name="settings_clothes_empty">Wala pang panuntunan. I-tap ang Magdagdag para lumikha.</string>
     <string name="settings_clothes_add">Magdagdag</string>
@@ -28,6 +29,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_clothes_dialog_add_title">Magdagdag ng panuntunan sa damit</string>
     <string name="settings_clothes_dialog_edit_title">I-edit ang panuntunan sa damit</string>
     <string name="settings_clothes_item_label">Damit</string>
+    <string name="settings_clothes_color_label">Kulay</string>
     <string name="settings_clothes_condition_label">Kondisyon</string>
     <string name="settings_clothes_value_label_temp">Limitasyon (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Limitasyon (%%)</string>
@@ -111,6 +113,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_refresh">I-refresh</string>
     <string name="today_empty_title">Wala pang ClothesCast</string>
     <string name="today_empty_subtitle">Lilitaw dito ang iyong umaga na ClothesCast kapag nagawa na ito.</string>
+    <string name="today_empty_location_title">Kailangan ng lokasyon</string>
+    <string name="today_empty_location_subtitle">I-set up ang iyong lokasyon para makuha ang iyong ClothesCast.</string>
     <string name="today_fetch_now">Kunin ngayon</string>
     <string name="today_generated_at">Nagawa noong %1$s</string>
     <string name="today_location_unknown">Ang iyong lokasyon</string>
@@ -150,6 +154,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="feels_like_week_widget_label">Nararamdamang temperatura (7 araw)</string>
     <string name="feels_like_week_widget_description">Ang nararamdamang temperatura sa susunod na 7 araw.</string>
     <string name="feels_like_widget_empty_title">Wala pang forecast</string>
+    <string name="conditions_widget_label">Mga kondisyon</string>
+    <string name="conditions_widget_description">Temperatura, ulan, hangin at UV sa isang sulyap.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">UV %1$d</string>
 
     <!-- Forecast card -->
     <string name="today_forecast_title">Oras-orasang hula</string>
@@ -196,6 +205,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_failed_no_location">Hindi namin makuha ang iyong lokasyon. Ibigay ang palaging naka-on na pahintulot sa lokasyon, o magtakda ng lungsod sa Mga Setting.</string>
     <string name="today_failed_show_details">Ipakita ang mga detalye</string>
     <string name="today_failed_hide_details">Itago ang mga detalye</string>
+    <string name="today_mqtt_failed_title">Hindi maipadala sa iyong smart home</string>
+    <string name="today_cast_failed_title">Hindi ma-cast sa iyong display</string>
+    <string name="today_publish_failed_body">Susubukan naming muli sa susunod na update.</string>
+    <string name="today_publish_failed_dismiss">Isara</string>
 
     <string name="today_location_required_title">Itakda ang iyong lokasyon</string>
     <string name="today_location_required_body">Kailangan ng ClothesCast na malaman kung nasaan ka para makuha ang hula. Ibigay ang palaging naka-on na pahintulot sa lokasyon, o pumili ng lungsod.</string>
@@ -353,6 +366,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_time_label">Oras</string>
     <string name="settings_schedule_days_label">Mga araw ng linggo</string>
     <string name="settings_daily_mention_evening_events">Banggitin ang mga gabi na evento</string>
+    <string name="settings_schedule_preview">I-play ngayon</string>
 
     <string name="settings_tonight_title">Pang-gabing ClothesCast</string>
     <string name="settings_tonight_description">Pangalawang ClothesCast sa gabi na sumasaklaw sa panahon ngayong gabi. Sa mga tahimik na gabi ay nananatiling tahimik ito, o hindi lumilitaw kung naka-on ang "Mag-notify lamang kapag may mga gabi na evento"; sa mga gabi na may evento ay nagpapatugtog ng tunog at (kung pinagana mo ang pagbabasa nang malakas) binabasa ang sarili nito.</string>
@@ -1263,6 +1277,13 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_schedule_promo_body">Piliin kung kailan ka makakatanggap ng mga notification at anunsyo.</string>
     <string name="today_schedule_promo_cta">Mga setting ng schedule</string>
     <string name="today_schedule_promo_dismiss">Isara</string>
+    <string name="today_play_promo_title">Pakinggan ang iyong pang-araw-araw na ClothesCast</string>
+    <string name="today_play_promo_body">I-tap ang play button para marinig ang iyong ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Isara</string>
+    <string name="today_gemini_promo_title">Subukan ang mga de-kalidad na boses</string>
+    <string name="today_gemini_promo_body">I-on ang Gemini para marinig ang iyong ClothesCast sa natural at totoong-tunog na mga boses.</string>
+    <string name="today_gemini_promo_cta">Mga setting ng boses</string>
+    <string name="today_gemini_promo_dismiss">Isara</string>
     <string name="today_clothes_promo_title">Gawing sariling iyo ang mga damit</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">I-play</string>

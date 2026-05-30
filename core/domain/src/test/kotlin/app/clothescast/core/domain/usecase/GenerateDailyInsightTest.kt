@@ -973,6 +973,53 @@ class GenerateDailyInsightTest {
     }
 
     @Test
+    fun `evening tie-in keeps the umbrella even when it also fired during the day`() = runTest {
+        // Rain both daytime and tonight + an umbrella rule: the umbrella fires
+        // for both slices, so the clothes-delta dedup would drop it from the
+        // evening tie-in. It must survive — the evening rain warning still
+        // wants "bring an umbrella" — so it rides on the tie-in independently.
+        val zone = ZoneId.of("Europe/London")
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 16.0, 15.0, 50.0, WeatherCondition.RAIN),
+            HourlyForecast(LocalTime.of(15, 0), 18.0, 17.0, 60.0, WeatherCondition.RAIN),
+        )
+        val evening = listOf(
+            HourlyForecast(LocalTime.of(19, 0), 16.0, 15.0, 60.0, WeatherCondition.RAIN),
+            HourlyForecast(LocalTime.of(21, 0), 15.0, 14.0, 80.0, WeatherCondition.RAIN),
+        )
+        val baseHourly = today.copy(
+            hourly = daytime + evening,
+            precipitationProbabilityMaxPct = 80.0,
+            condition = WeatherCondition.RAIN,
+        )
+        val diner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(23, 0),
+            location = "Restaurant",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(diner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val umbrellaOnly = listOf(ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)))
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = umbrellaOnly,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        val tie = result.insight.summary.eveningEventTieIn
+        tie.shouldNotBeNull()
+        tie!!.items shouldBe listOf("umbrella")
+        tie.rainTime shouldBe LocalTime.of(21, 0)
+    }
+
+    @Test
     fun `evening tie-in mirrors what the night notification would itself say`() = runTest {
         // The day's evening tie-in is the night insight, dictated by the
         // night bundle. When the night insight would say "Bring a jacket;

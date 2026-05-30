@@ -23,7 +23,6 @@ import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PreambleVisibility
-import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
@@ -241,7 +240,6 @@ class SettingsViewModel(
                         rangeFormat = prefs.rangeFormat,
                         clothesFormat = prefs.clothesFormat,
                         bottomsFormat = prefs.bottomsFormat,
-                        rainAccessory = prefs.rainAccessory,
                         periodPreamble = prefs.periodPreamble,
                         wearPreamble = prefs.wearPreamble,
                         deltaThresholdC = prefs.deltaThresholdC,
@@ -1024,9 +1022,6 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setBottomsFormat(format) }
     }
 
-    fun setRainAccessory(accessory: RainAccessory) {
-        viewModelScope.launch { settingsRepository.setRainAccessory(accessory) }
-    }
 
     fun setPeriodPreamble(visibility: PreambleVisibility) {
         viewModelScope.launch { settingsRepository.setPeriodPreamble(visibility) }

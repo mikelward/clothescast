@@ -228,7 +228,6 @@ internal fun VoicePage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             rangeFormat = state.rangeFormat,
             clothesFormat = state.clothesFormat,
             bottomsFormat = state.bottomsFormat,
-            rainAccessory = state.rainAccessory,
             padding = padding,
             onSetTtsEngine = viewModel::setTtsEngine,
             onSetGeminiVoice = viewModel::setGeminiVoice,

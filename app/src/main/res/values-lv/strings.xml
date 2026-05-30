@@ -908,9 +908,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_format_bottoms_always">Vienmēr</string>
     <string name="settings_format_bottoms_if_garments">Ja ir augša</string>
     <string name="settings_format_bottoms_never">Nekad</string>
-    <string name="settings_format_rain_accessory_label">Lietus piederums</string>
-    <string name="settings_format_rain_accessory_none">Izsl.</string>
-    <string name="settings_format_rain_accessory_umbrella">Lietussargs</string>
     <string name="settings_format_period_preamble_label">Ievads</string>
     <string name="settings_format_wear_preamble_label">„Apģērb“ ievads</string>
     <string name="settings_format_preamble_always">Vienmēr</string>

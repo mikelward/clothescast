@@ -224,7 +224,6 @@ object Telemetry {
             putString("range_format", snapshot.rangeFormat)
             putString("clothes_format", snapshot.clothesFormat)
             putString("bottoms_format", snapshot.bottomsFormat)
-            putString("rain_accessory", snapshot.rainAccessory)
             putLong("delta_threshold_c", snapshot.deltaThresholdC.toLong())
             putString("delta_format", snapshot.deltaFormat)
         })

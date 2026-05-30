@@ -1014,9 +1014,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_format_bottoms_always">Zawsze</string>
     <string name="settings_format_bottoms_if_garments">Gdy są części</string>
     <string name="settings_format_bottoms_never">Nigdy</string>
-    <string name="settings_format_rain_accessory_label">Akcesorium na deszcz</string>
-    <string name="settings_format_rain_accessory_none">Wyłączone</string>
-    <string name="settings_format_rain_accessory_umbrella">Parasol</string>
     <string name="settings_format_period_preamble_label">Wprowadzenie</string>
     <string name="settings_format_wear_preamble_label">Wprowadzenie „Załóż"</string>
     <string name="settings_format_preamble_always">Zawsze</string>

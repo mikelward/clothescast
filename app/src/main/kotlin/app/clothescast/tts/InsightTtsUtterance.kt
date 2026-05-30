@@ -6,7 +6,6 @@ import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PreambleVisibility
-import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -39,7 +38,6 @@ internal fun insightTtsUtterance(
     rangeFormat: RangeFormat = RangeFormat.DEGREES,
     clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
-    rainAccessory: RainAccessory = RainAccessory.NONE,
     periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     fallbackLocale: Locale = Locale.getDefault(),
@@ -48,7 +46,7 @@ internal fun insightTtsUtterance(
     val regionLocale = region.toJavaLocale() ?: fallbackLocale
     val locale = voiceLocale.resolve(regionLocale)
     val forecast = InsightFormatter.forContext(
-        context, locale, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat, rainAccessory,
+        context, locale, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat,
         periodPreamble, wearPreamble,
     )
         // Spoken playback stays silent when nothing fired — no "it will be the

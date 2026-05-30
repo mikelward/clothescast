@@ -967,9 +967,6 @@ standard in Israeli digital communication.
     <string name="settings_format_bottoms_always">תמיד</string>
     <string name="settings_format_bottoms_if_garments">אם יש פריטים</string>
     <string name="settings_format_bottoms_never">אף פעם</string>
-    <string name="settings_format_rain_accessory_label">אביזר גשם</string>
-    <string name="settings_format_rain_accessory_none">כבוי</string>
-    <string name="settings_format_rain_accessory_umbrella">מטרייה</string>
     <string name="settings_format_period_preamble_label">פתיח</string>
     <string name="settings_format_wear_preamble_label">פתיח "לבש/י"</string>
     <string name="settings_format_preamble_always">תמיד</string>

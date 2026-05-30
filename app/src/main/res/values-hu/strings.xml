@@ -960,9 +960,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_format_bottoms_always">Mindig</string>
     <string name="settings_format_bottoms_if_garments">Ha van ruhadarab</string>
     <string name="settings_format_bottoms_never">Soha</string>
-    <string name="settings_format_rain_accessory_label">Esőkellék</string>
-    <string name="settings_format_rain_accessory_none">Ki</string>
-    <string name="settings_format_rain_accessory_umbrella">Esernyő</string>
     <string name="settings_format_period_preamble_label">Bevezető</string>
     <string name="settings_format_wear_preamble_label">„Vegyél fel” bevezető</string>
     <string name="settings_format_preamble_always">Mindig</string>

@@ -1080,9 +1080,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_format_bottoms_always">Sempre</string>
     <string name="settings_format_bottoms_if_garments">Se ci sono capi</string>
     <string name="settings_format_bottoms_never">Mai</string>
-    <string name="settings_format_rain_accessory_label">Accessorio pioggia</string>
-    <string name="settings_format_rain_accessory_none">Disattivato</string>
-    <string name="settings_format_rain_accessory_umbrella">Ombrello</string>
     <string name="settings_format_period_preamble_label">Introduzione</string>
     <string name="settings_format_wear_preamble_label">Introduzione „Indossa“</string>
     <string name="settings_format_preamble_always">Sempre</string>

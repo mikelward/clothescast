@@ -73,15 +73,13 @@ data class ClothesRule(
         // align with the `today_outfit_top_*` labels in values/strings.xml.
         // Per-language phrasers translate at format time
         // (e.g. GermanClothesPhraser maps "sweater" → "Pullover").
-        // Wet-weather accessories live on the format option [RainAccessory]
-        // instead of [DEFAULTS]: NONE preserves the historical silence on
-        // umbrellas, UMBRELLA opts in to "bring an umbrella" alongside the
-        // existing rain mention. We still ship no precip-keyed default
-        // because "bring an umbrella" is the wrong answer for users who'd
-        // reach for a rain jacket or hood instead.
-        // TODO(rain-accessory-variants): broaden [RainAccessory] beyond
-        //  UMBRELLA (rain jacket, hood, rain boots, …) once the resource
-        //  strings and per-locale phrasers cover them.
+        // Wet-weather accessories live on an opt-in umbrella [ClothesRule]
+        // (a carried accessory) instead of [DEFAULTS]: we ship no precip-keyed
+        // default because "bring an umbrella" is the wrong answer for users
+        // who'd reach for a rain jacket or hood instead.
+        // TODO(rain-accessory-variants): broaden the carried-accessory rules
+        //  beyond the umbrella (rain jacket, hood, rain boots, …) once the
+        //  resource strings and per-locale phrasers cover them.
         val DEFAULTS: List<ClothesRule> = listOf(
             ClothesRule(Garment.SWEATER, TemperatureBelow(16.0)),
             ClothesRule(Garment.JACKET, TemperatureBelow(10.0)),

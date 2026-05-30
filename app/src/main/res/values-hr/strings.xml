@@ -1036,9 +1036,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_format_bottoms_always">Uvijek</string>
     <string name="settings_format_bottoms_if_garments">Ako ima komada</string>
     <string name="settings_format_bottoms_never">Nikad</string>
-    <string name="settings_format_rain_accessory_label">Dodatak za kišu</string>
-    <string name="settings_format_rain_accessory_none">Isključeno</string>
-    <string name="settings_format_rain_accessory_umbrella">Kišobran</string>
     <string name="settings_format_period_preamble_label">Uvod</string>
     <string name="settings_format_wear_preamble_label">Uvod „Obuci“</string>
     <string name="settings_format_preamble_always">Uvijek</string>

@@ -44,7 +44,6 @@ import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
-import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -83,7 +82,6 @@ internal fun VoiceContent(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
     bottomsFormat: BottomsFormat,
-    rainAccessory: RainAccessory,
     padding: PaddingValues,
     onSetTtsEngine: (TtsEngine) -> Unit,
     onSetGeminiVoice: (String) -> Unit,
@@ -127,7 +125,6 @@ internal fun VoiceContent(
                     rangeFormat = rangeFormat,
                     clothesFormat = clothesFormat,
                     bottomsFormat = bottomsFormat,
-                    rainAccessory = rainAccessory,
                 )
             } finally {
                 isPreviewing = false
@@ -652,7 +649,6 @@ internal suspend fun runTtsPreview(
     rangeFormat: RangeFormat = RangeFormat.DEGREES,
     clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
-    rainAccessory: RainAccessory = RainAccessory.NONE,
 ) {
     val app = context.applicationContext as app.clothescast.ClothesCastApplication
     // Network synthesis and AudioTrack write are both blocking-ish work — Ktor
@@ -668,7 +664,6 @@ internal suspend fun runTtsPreview(
             rangeFormat = rangeFormat,
             clothesFormat = clothesFormat,
             bottomsFormat = bottomsFormat,
-            rainAccessory = rainAccessory,
         )
         withSpeechAudioFocus(context) {
             try {

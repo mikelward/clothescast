@@ -30,7 +30,6 @@ import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PreambleVisibility
-import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
@@ -229,9 +228,6 @@ class SettingsRepository(
         dataStore.edit { it[INSIGHT_BOTTOMS_FORMAT] = format.name }
     }
 
-    suspend fun setRainAccessory(accessory: RainAccessory) {
-        dataStore.edit { it[RAIN_ACCESSORY] = accessory.name }
-    }
 
     suspend fun setPeriodPreamble(visibility: PreambleVisibility) {
         dataStore.edit { it[INSIGHT_PERIOD_PREAMBLE] = visibility.name }
@@ -904,9 +900,6 @@ class SettingsRepository(
         val bottomsFormat = this[INSIGHT_BOTTOMS_FORMAT]
             ?.let { runCatching { BottomsFormat.valueOf(it) }.getOrNull() }
             ?: BottomsFormat.IF_GARMENTS
-        val rainAccessory = this[RAIN_ACCESSORY]
-            ?.let { runCatching { RainAccessory.valueOf(it) }.getOrNull() }
-            ?: RainAccessory.NONE
         val periodPreamble = this[INSIGHT_PERIOD_PREAMBLE]
             ?.let { runCatching { PreambleVisibility.valueOf(it) }.getOrNull() }
             ?: PreambleVisibility.ALWAYS
@@ -1033,7 +1026,6 @@ class SettingsRepository(
             rangeFormat = rangeFormat,
             clothesFormat = clothesFormat,
             bottomsFormat = bottomsFormat,
-            rainAccessory = rainAccessory,
             periodPreamble = periodPreamble,
             wearPreamble = wearPreamble,
             deltaThresholdC = deltaThresholdC,
@@ -1132,7 +1124,6 @@ class SettingsRepository(
         rangeFormat = rangeFormat.name,
         clothesFormat = clothesFormat.name,
         bottomsFormat = bottomsFormat.name,
-        rainAccessory = rainAccessory.name,
         deltaThresholdC = deltaThresholdC?.roundToInt() ?: -1,
         deltaFormat = deltaFormat.name,
         useCalendarEvents = useCalendarEvents,
@@ -1288,7 +1279,6 @@ class SettingsRepository(
         private val INSIGHT_RANGE_FORMAT = stringPreferencesKey("insight_range_format")
         private val INSIGHT_CLOTHES_FORMAT = stringPreferencesKey("insight_clothes_format")
         private val INSIGHT_BOTTOMS_FORMAT = stringPreferencesKey("insight_bottoms_format")
-        private val RAIN_ACCESSORY = stringPreferencesKey("rain_accessory")
         private val INSIGHT_PERIOD_PREAMBLE = stringPreferencesKey("insight_period_preamble")
         private val INSIGHT_WEAR_PREAMBLE = stringPreferencesKey("insight_wear_preamble")
         private val INSIGHT_DELTA_THRESHOLD_C = doublePreferencesKey("insight_delta_threshold_c")

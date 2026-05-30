@@ -10,7 +10,6 @@ import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.PreambleVisibility
-import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.HolidayCatalog
 import app.clothescast.core.domain.model.HolidayTheme
@@ -88,7 +87,6 @@ data class TodayState(
     val rangeFormat: RangeFormat = RangeFormat.DEGREES,
     val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     val bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
-    val rainAccessory: RainAccessory = RainAccessory.NONE,
     val periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     val wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     val distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
@@ -627,7 +625,6 @@ class TodayViewModel(
             rangeFormat = prefs.rangeFormat,
             clothesFormat = prefs.clothesFormat,
             bottomsFormat = prefs.bottomsFormat,
-            rainAccessory = prefs.rainAccessory,
             periodPreamble = prefs.periodPreamble,
             wearPreamble = prefs.wearPreamble,
             distanceUnit = prefs.distanceUnit,

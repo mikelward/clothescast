@@ -1116,9 +1116,6 @@ label localizes.
     <string name="settings_format_bottoms_always">始终</string>
     <string name="settings_format_bottoms_if_garments">有衣物时</string>
     <string name="settings_format_bottoms_never">从不</string>
-    <string name="settings_format_rain_accessory_label">雨具</string>
-    <string name="settings_format_rain_accessory_none">关闭</string>
-    <string name="settings_format_rain_accessory_umbrella">雨伞</string>
     <string name="settings_format_period_preamble_label">开场语</string>
     <string name="settings_format_wear_preamble_label">“穿”的开场语</string>
     <string name="settings_format_preamble_always">始终</string>

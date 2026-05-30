@@ -1039,9 +1039,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_format_bottoms_always">সবসময়</string>
     <string name="settings_format_bottoms_if_garments">যদি পোশাক থাকে</string>
     <string name="settings_format_bottoms_never">কখনো না</string>
-    <string name="settings_format_rain_accessory_label">বৃষ্টির সরঞ্জাম</string>
-    <string name="settings_format_rain_accessory_none">বন্ধ</string>
-    <string name="settings_format_rain_accessory_umbrella">ছাতা</string>
     <string name="settings_format_period_preamble_label">ভূমিকা</string>
     <string name="settings_format_wear_preamble_label">“পরো” ভূমিকা</string>
     <string name="settings_format_preamble_always">সবসময়</string>

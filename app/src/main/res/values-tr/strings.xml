@@ -969,9 +969,6 @@ displayed label localizes.
     <string name="settings_format_bottoms_always">Her zaman</string>
     <string name="settings_format_bottoms_if_garments">Giysi varsa</string>
     <string name="settings_format_bottoms_never">Asla</string>
-    <string name="settings_format_rain_accessory_label">Yağmur aksesuarı</string>
-    <string name="settings_format_rain_accessory_none">Kapalı</string>
-    <string name="settings_format_rain_accessory_umbrella">Şemsiye</string>
     <string name="settings_format_period_preamble_label">Giriş</string>
     <string name="settings_format_wear_preamble_label">"Giy" girişi</string>
     <string name="settings_format_preamble_always">Her zaman</string>

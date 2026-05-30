@@ -344,7 +344,6 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
                 prefs.rangeFormat,
                 prefs.clothesFormat,
                 prefs.bottomsFormat,
-                prefs.rainAccessory,
                 prefs.periodPreamble,
                 prefs.wearPreamble,
             )

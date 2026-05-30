@@ -17,7 +17,6 @@ import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
-import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
@@ -101,17 +100,6 @@ class InsightFormatter(
      * [BottomsFormat.NEVER] drops them from items mode too.
      */
     private val bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
-    /**
-     * Optional wet-weather accessory named alongside the rain mention. With
-     * [RainAccessory.NONE] (default) the precip clause stays a bare "Rain at
-     * 3pm." and the evening tie-in keeps its existing prose; with
-     * [RainAccessory.UMBRELLA] the precip clause becomes "Rain at 3pm, bring
-     * an umbrella." and the evening tie-in folds the same accessory into its
-     * items list ("Tonight, rain at 9pm, bring an umbrella."). Triggered on
-     * the same threshold the rain mention already uses (POSSIBLE ≥ 30%), so
-     * the accessory and the rain mention always travel together.
-     */
-    private val rainAccessory: RainAccessory = RainAccessory.NONE,
     /**
      * Where the period preamble ("Today, it will be …") is allowed to survive.
      * See [PreambleVisibility]. Combined with the per-call [InsightSurface] to
@@ -270,7 +258,7 @@ class InsightFormatter(
             if (wearItems.isNotEmpty()) formatClothesWear(wearItems, wearMode)?.let(::add)
             // The carried accessory (umbrella) now comes from the user's fired
             // rule — it lands in the recommended items as a Slot.CARRIED garment
-            // — rather than the retired RainAccessory toggle. It's folded into
+            // — via the opt-in umbrella clothes rule. It's folded into
             // the precip clause (not the wear clause) so rain and the umbrella
             // still travel together.
             summary.precip?.let {
@@ -729,7 +717,7 @@ class InsightFormatter(
         // Accessories (umbrella) are silenced from the incoming items list for
         // the same reason they're silenced in the main wear-list: until the
         // accessory catalog lands we only name temperature-driven clothing
-        // there. If the user has opted into [RainAccessory] and the evening's
+        // there. If the user has opted into the umbrella rule and the evening's
         // peak condition is rain-like (RAIN / DRIZZLE), we re-inject the
         // chosen accessory below so the existing insight_tie_in_with_rain
         // template carries it ("…, bring a jacket and an umbrella.") and the
@@ -740,7 +728,7 @@ class InsightFormatter(
         // the underlying peak is actually snow.
         val filteredItems = tieIn.items.filterNot(::isAccessory)
         // The carried accessory rides in on the tie-in's own items (the fired
-        // umbrella rule), not the retired RainAccessory toggle.
+        // umbrella rule).
         val accessoryKey = tieIn.items.firstOrNull(::isAccessory)
             ?.takeIf { rainTime != null && tieIn.precipCondition?.warrantsRainAccessory() == true }
         val items = if (accessoryKey != null) filteredItems + accessoryKey else filteredItems
@@ -931,7 +919,6 @@ class InsightFormatter(
             rangeFormat: RangeFormat = RangeFormat.DEGREES,
             clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
             bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
-            rainAccessory: RainAccessory = RainAccessory.NONE,
             periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
             wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
         ): InsightFormatter =
@@ -942,7 +929,6 @@ class InsightFormatter(
                 rangeFormat,
                 clothesFormat,
                 bottomsFormat,
-                rainAccessory,
                 periodPreamble,
                 wearPreamble,
             )
@@ -955,7 +941,6 @@ class InsightFormatter(
             rangeFormat: RangeFormat = RangeFormat.DEGREES,
             clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
             bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
-            rainAccessory: RainAccessory = RainAccessory.NONE,
             periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
             wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
         ): InsightFormatter {
@@ -967,7 +952,6 @@ class InsightFormatter(
                 rangeFormat,
                 clothesFormat,
                 bottomsFormat,
-                rainAccessory,
                 periodPreamble,
                 wearPreamble,
             )

@@ -39,7 +39,6 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.PreambleVisibility
-import app.clothescast.core.domain.model.RainAccessory
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.Schedule
@@ -196,7 +195,6 @@ internal fun SettingsFormatPreview() {
             rangeFormat = RangeFormat.BANDS,
             clothesFormat = ClothesFormat.ITEMS,
             bottomsFormat = BottomsFormat.IF_GARMENTS,
-            rainAccessory = RainAccessory.NONE,
             deltaThresholdC = 3.0,
             deltaFormat = DeltaFormat.DEGREES,
             clothesMentionMode =ClothesMentionMode.ALWAYS,
@@ -206,7 +204,6 @@ internal fun SettingsFormatPreview() {
             onSetRangeFormat = {},
             onSetClothesFormat = {},
             onSetBottomsFormat = {},
-            onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetDeltaFormat = {},
             onSetClothesMentionMode = {},
@@ -228,7 +225,6 @@ internal fun SettingsFormatClothesNeverPreview() {
             rangeFormat = RangeFormat.BANDS,
             clothesFormat = ClothesFormat.ITEMS,
             bottomsFormat = BottomsFormat.IF_GARMENTS,
-            rainAccessory = RainAccessory.NONE,
             deltaThresholdC = 3.0,
             deltaFormat = DeltaFormat.DEGREES,
             clothesMentionMode =ClothesMentionMode.NEVER,
@@ -238,7 +234,6 @@ internal fun SettingsFormatClothesNeverPreview() {
             onSetRangeFormat = {},
             onSetClothesFormat = {},
             onSetBottomsFormat = {},
-            onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetDeltaFormat = {},
             onSetClothesMentionMode = {},
@@ -261,7 +256,6 @@ internal fun SettingsFormatCurrentForecastPreview() {
             rangeFormat = RangeFormat.DEGREES,
             clothesFormat = ClothesFormat.ITEMS,
             bottomsFormat = BottomsFormat.IF_GARMENTS,
-            rainAccessory = RainAccessory.NONE,
             deltaThresholdC = 3.0,
             deltaFormat = DeltaFormat.DEGREES,
             clothesMentionMode =ClothesMentionMode.ALWAYS,
@@ -283,7 +277,6 @@ internal fun SettingsFormatCurrentForecastPreview() {
             onSetRangeFormat = {},
             onSetClothesFormat = {},
             onSetBottomsFormat = {},
-            onSetRainAccessory = {},
             onSetDeltaThresholdC = {},
             onSetDeltaFormat = {},
             onSetClothesMentionMode = {},
@@ -425,7 +418,6 @@ internal fun SettingsVoiceDevicePreview() {
             rangeFormat = RangeFormat.DEGREES,
             clothesFormat = ClothesFormat.ITEMS,
             bottomsFormat = BottomsFormat.IF_GARMENTS,
-            rainAccessory = RainAccessory.NONE,
             padding = PaddingValues(0.dp),
             onSetTtsEngine = {},
             onSetGeminiVoice = {},
@@ -456,7 +448,6 @@ internal fun SettingsVoiceGeminiPreview() {
             rangeFormat = RangeFormat.DEGREES,
             clothesFormat = ClothesFormat.ITEMS,
             bottomsFormat = BottomsFormat.IF_GARMENTS,
-            rainAccessory = RainAccessory.NONE,
             padding = PaddingValues(0.dp),
             onSetTtsEngine = {},
             onSetGeminiVoice = {},

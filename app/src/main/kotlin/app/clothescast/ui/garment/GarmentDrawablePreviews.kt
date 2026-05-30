@@ -41,6 +41,34 @@ private fun ClothingDrawableFrame(@DrawableRes iconRes: Int, label: String) {
     }
 }
 
+@Preview(name = "Clothing · umbrella", widthDp = 360)
+@Composable
+internal fun ClothingUmbrellaPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_umbrella, "umbrella")
+}
+
+@Preview(name = "Clothing · sweater + umbrella", widthDp = 360)
+@Composable
+internal fun ClothingSweaterWithUmbrellaPreview() {
+    Surface(color = Color(0xFFF5F5F5)) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxWidth().padding(24.dp),
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_outfit_umbrella),
+                contentDescription = "umbrella",
+                modifier = Modifier.size(160.dp),
+            )
+            Image(
+                painter = painterResource(id = R.drawable.ic_outfit_sweater),
+                contentDescription = "sweater",
+                modifier = Modifier.size(160.dp),
+            )
+        }
+    }
+}
+
 @Preview(name = "Clothing · t-shirt", widthDp = 360)
 @Composable
 internal fun ClothingTShirtPreview() {

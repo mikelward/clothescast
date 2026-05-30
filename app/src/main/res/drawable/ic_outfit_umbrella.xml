@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="96dp" android:height="96dp" android:viewportWidth="96" android:viewportHeight="96">
+
+    <!-- Stick and Handle -->
+    <path android:fillColor="#5D4037" android:strokeColor="#3E2723" android:strokeWidth="2.25" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M11,70 L11,90 Q11,94 15,94 Q19,94 19,90 L19,86" />
+
+    <!-- Strapped Canopy -->
+    <path android:fillColor="#1976D2" android:strokeColor="#0D47A1" android:strokeWidth="2.25" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M7,20 L15,20 L20,70 L2,70 Z" />
+
+    <!-- Canopy Top Tip -->
+    <path android:fillColor="#5D4037" android:strokeColor="#3E2723" android:strokeWidth="2.25" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M11,20 L11,12" />
+
+    <!-- Strap -->
+    <path android:fillColor="#0D47A1" android:strokeColor="#0D47A1" android:strokeWidth="2.25" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M4,45 L18,45" />
+
+</vector>

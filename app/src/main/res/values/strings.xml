@@ -1044,8 +1044,8 @@
     <string name="notification_channel_weather_alerts_description">High-priority alerts for severe or extreme weather events affecting your area. Delivered as soon as the daily fetch detects them.</string>
     <string name="notification_weather_alert_title">Weather alert: %1$s</string>
 
-    <string name="settings_notification_permission_title">Notifications are blocked</string>
-    <string name="settings_notification_permission_description">Without notification permission, your daily ClothesCast has nowhere to go. Grant it so ClothesCast can post tomorrow morning.</string>
+    <string name="settings_notification_permission_title">Get a ClothesCast tomorrow morning</string>
+    <string name="settings_notification_permission_description">Turn on notifications and ClothesCast will post your weather summary first thing tomorrow morning.</string>
     <string name="settings_notification_permission_grant">Grant notification permission</string>
 
     <!-- Master calendar-access switch + its sub-features. The master gates all

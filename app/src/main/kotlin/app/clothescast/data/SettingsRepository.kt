@@ -27,6 +27,7 @@ import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.HolidayCountrySelection
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
+import app.clothescast.core.domain.model.HomeSection
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PreambleVisibility
@@ -293,6 +294,18 @@ class SettingsRepository(
 
     suspend fun setClothesRules(rules: List<ClothesRule>) {
         dataStore.edit { it[CLOTHES_RULES] = json.encodeToString(rules.map { rule -> rule.toDto() }) }
+    }
+
+    /**
+     * Persists the home-screen section order as the stored enum names. The
+     * order is normalized on write so a partial list (e.g. a future build that
+     * only knew about a subset) round-trips to a complete one — read-back in
+     * [parseHomeSectionOrder] normalizes again defensively.
+     */
+    suspend fun setHomeSectionOrder(order: List<HomeSection>) {
+        dataStore.edit {
+            it[HOME_SECTION_ORDER] = json.encodeToString(HomeSection.normalize(order).map { s -> s.name })
+        }
     }
 
     suspend fun setDefaultBottom(bottom: OutfitSuggestion.Bottom) {
@@ -848,6 +861,7 @@ class SettingsRepository(
         val themeMode = this[THEME_MODE]?.let { runCatching { ThemeMode.valueOf(it) }.getOrNull() }
             ?: ThemeMode.SYSTEM
         val rules = parseRules(this[CLOTHES_RULES])
+        val homeSectionOrder = parseHomeSectionOrder(this[HOME_SECTION_ORDER])
         // Constrain the stored value to the catalog enum so a hand-edited
         // DataStore (or a forward-compat value from a future build) can't drop
         // an unknown variant into the fallback slot. Any valid Bottom is a
@@ -1017,6 +1031,7 @@ class SettingsRepository(
             timeFormatSetting = timeFormatSetting,
             themeMode = themeMode,
             clothesRules = rules,
+            homeSectionOrder = homeSectionOrder,
             defaultBottom = defaultBottom,
             defaultTop = defaultTop,
             location = location,
@@ -1258,6 +1273,21 @@ class SettingsRepository(
             .ifEmpty { ClothesRule.DEFAULTS }
     }
 
+    /**
+     * Decodes the stored home-section order (a JSON list of [HomeSection] enum
+     * names), dropping unknown / removed names, then normalizes so the result
+     * is always a complete list — absent key, malformed JSON, or an
+     * all-unknown list all fall back to [HomeSection.DEFAULTS].
+     */
+    private fun parseHomeSectionOrder(raw: String?): List<HomeSection> {
+        if (raw.isNullOrBlank()) return HomeSection.DEFAULTS
+        val stored = runCatching {
+            json.decodeFromString<List<String>>(raw)
+                .mapNotNull { name -> runCatching { HomeSection.valueOf(name) }.getOrNull() }
+        }.getOrDefault(emptyList())
+        return HomeSection.normalize(stored)
+    }
+
     companion object {
         private val SCHEDULE_TIME = stringPreferencesKey("schedule_time_hhmm")
         private val SCHEDULE_DAYS = stringSetPreferencesKey("schedule_days")
@@ -1268,6 +1298,7 @@ class SettingsRepository(
         private val TIME_FORMAT_SETTING = stringPreferencesKey("time_format")
         private val THEME_MODE = stringPreferencesKey("theme_mode")
         private val CLOTHES_RULES = stringPreferencesKey("clothes_rules_json")
+        private val HOME_SECTION_ORDER = stringPreferencesKey("home_section_order_json")
         private val DEFAULT_BOTTOM = stringPreferencesKey("default_bottom")
         private val DEFAULT_TOP = stringPreferencesKey("default_top")
         private val LOCATION_LAT = doublePreferencesKey("location_latitude")

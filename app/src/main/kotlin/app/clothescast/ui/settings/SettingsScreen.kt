@@ -249,9 +249,11 @@ internal fun DisplayPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
         DisplayContent(
             themeMode = state.themeMode,
             colorPalette = state.colorPalette,
+            homeSectionOrder = state.homeSectionOrder,
             padding = padding,
             onSetThemeMode = viewModel::setThemeMode,
             onSetColorPalette = viewModel::setColorPalette,
+            onReorderHomeSection = viewModel::reorderHomeSection,
         )
     }
 }

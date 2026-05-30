@@ -21,6 +21,7 @@ import app.clothescast.core.domain.model.DeltaFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
+import app.clothescast.core.domain.model.HomeSection
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.EventKind
@@ -410,9 +411,11 @@ internal fun SettingsDisplayPreview() {
         DisplayContent(
             themeMode = ThemeMode.SYSTEM,
             colorPalette = ColorPalette.RAINBOW,
+            homeSectionOrder = HomeSection.DEFAULTS,
             padding = PaddingValues(0.dp),
             onSetThemeMode = {},
             onSetColorPalette = {},
+            onReorderHomeSection = { _, _ -> },
         )
     }
 }

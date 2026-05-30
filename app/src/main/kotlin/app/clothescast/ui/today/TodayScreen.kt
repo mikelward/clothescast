@@ -92,6 +92,7 @@ import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.GarmentReason
 import app.clothescast.core.domain.model.HolidayTheme
+import app.clothescast.core.domain.model.HomeSection
 import app.clothescast.core.domain.model.bannerTextKeyFor
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
@@ -864,6 +865,8 @@ internal fun HomePageScaffold(
     onOpenVoice: () -> Unit,
     onDismissGeminiTtsPromoCard: () -> Unit,
     onNavigateToClothes: () -> Unit,
+    homeSectionOrder: List<HomeSection> = HomeSection.DEFAULTS,
+    insightSlot: (@Composable ColumnScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     // Edge fades hint at off-screen content above / below — drawn at the
@@ -907,25 +910,37 @@ internal fun HomePageScaffold(
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
                 )
-                // Outfit row sits above the page body so it also renders when
-                // the page's own insight is missing (page 2's placeholder, or a
-                // not-yet-cached next period). [outfitInsight] is always this
-                // period's insight, pinning the same today + tonight pair to the
-                // same vertical offset on every page so swiping doesn't jump the
-                // content. Null only on previews / tests that don't wire a pair.
-                if (outfitInsight != null) {
-                    OutfitPreviewRow(
-                        insight = outfitInsight,
-                        temperatureUnit = state.temperatureUnit,
-                        clothesRules = state.clothesRules,
-                        outfitTopColors = state.outfitTopColors,
-                        outfitBottomColors = state.outfitBottomColors,
-                        outfitHandsColors = state.outfitHandsColors,
-                        outfitCarriedColors = state.outfitCarriedColors,
-                        outfitTopStrokes = state.outfitTopStrokes,
-                        outfitBottomStrokes = state.outfitBottomStrokes,
-                        onNavigateToClothes = onNavigateToClothes,
-                    )
+                // The outfit row and the insight ([insightSlot]) are the two
+                // user-reorderable sections; [homeSectionOrder] decides which
+                // comes first. Both render above the page's own [content]
+                // (charts / placeholder), which always trails the pair. The
+                // same order is used on all three pager pages — the 7-day page
+                // passes its week-headline card as [insightSlot] — so the
+                // outfit row keeps the same vertical offset across a swipe
+                // regardless of which order the user picked.
+                //
+                // The outfit row still renders even when the page's own insight
+                // is missing (page 2's placeholder, or a not-yet-cached next
+                // period): [outfitInsight] is always this period's insight,
+                // null only on previews / tests that don't wire a pair.
+                homeSectionOrder.forEach { section ->
+                    when (section) {
+                        HomeSection.OUTFIT -> if (outfitInsight != null) {
+                            OutfitPreviewRow(
+                                insight = outfitInsight,
+                                temperatureUnit = state.temperatureUnit,
+                                clothesRules = state.clothesRules,
+                                outfitTopColors = state.outfitTopColors,
+                                outfitBottomColors = state.outfitBottomColors,
+                                outfitHandsColors = state.outfitHandsColors,
+                                outfitCarriedColors = state.outfitCarriedColors,
+                                outfitTopStrokes = state.outfitTopStrokes,
+                                outfitBottomStrokes = state.outfitBottomStrokes,
+                                onNavigateToClothes = onNavigateToClothes,
+                            )
+                        }
+                        HomeSection.INSIGHT -> insightSlot?.invoke(this)
+                    }
                 }
                 content()
             }
@@ -1000,6 +1015,75 @@ private fun TodayPage(
         onNavigateToClothes = onNavigateToClothes,
         onDismissMqttError = onDismissMqttError,
         onDismissCastError = onDismissCastError,
+        homeSectionOrder = state.homeSectionOrder,
+        // The insight (insight card + its confidence chip) is the second
+        // reorderable section. It renders only when this period actually has an
+        // insight; the null case falls through to the placeholder in [content].
+        insightSlot = {
+            if (insight != null) {
+                // Two separate per-model-spread affordances:
+                //
+                //  - The confidence chip [ConfidenceChip] keeps its labelled
+                //    "tap to show / hide" toggle (wired through [onChipTap] →
+                //    [onToggleModelSpread]). That's the explicit on/off control.
+                //
+                //  - Tapping the plot grid of any chart enters scrub mode on
+                //    the shared [ChartScrubController], which (via the
+                //    [SpreadCoordinator] wired below) reveals the per-model
+                //    spread if it isn't already on. The matching restore
+                //    icon exits scrub mode and undoes only that auto-reveal
+                //    — spread state the user enabled via the chip is left
+                //    alone.
+                //
+                // [chipToggle] is null when there's no per-model data in
+                // the cache (e.g. older payloads) — in that case the chip
+                // stays as a static confidence summary and the controller's
+                // [spreadCoordinator] stays null so chart gestures just
+                // scrub without touching spread state.
+                val perModelAvailable = insight.perModelHourly != null
+                val chipToggle = onToggleModelSpread.takeIf { perModelAvailable }
+                InsightCard(
+                    insight = insight,
+                    region = state.region,
+                    temperatureUnit = state.temperatureUnit,
+                    rangeFormat = state.rangeFormat,
+                    clothesFormat = state.clothesFormat,
+                    bottomsFormat = state.bottomsFormat,
+                    periodPreamble = state.periodPreamble,
+                    wearPreamble = state.wearPreamble,
+                    showChevronRight = showChevronRight,
+                    showChevronLeft = showChevronLeft,
+                    onChevronTap = onChevronTap,
+                    onChevronRightTap = onChevronRightTap,
+                    onLongPressDate = onLongPressDate,
+                    onNavigateToFormat = onNavigateToFormat,
+                    onNavigateToLocation = onSetUpLocation,
+                )
+                insight.confidence?.let {
+                    // Wrap the per-model toggle so a tap also scrolls the chip to the
+                    // top of the viewport — the per-model overlay renders on the
+                    // charts below the chip, so scrolling them into view is part of
+                    // the same gesture's payoff.
+                    val onChipTap: (() -> Unit)? = chipToggle?.let { toggle ->
+                        {
+                            toggle()
+                            scrollScope.launch { scrollState.animateScrollTo(chipScrollOffset) }
+                        }
+                    }
+                    ConfidenceChip(
+                        modifier = Modifier.onGloballyPositioned { coords ->
+                            chipScrollOffset = coords.positionInParent().y.roundToInt()
+                        },
+                        info = it,
+                        perModelHourly = insight.perModelHourly,
+                        temperatureUnit = state.temperatureUnit,
+                        windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                        showModelSpread = state.showModelSpread,
+                        onToggleModelSpread = onChipTap,
+                    )
+                }
+            }
+        },
     ) {
         if (insight == null) {
             MissingPeriodPlaceholder(
@@ -1013,67 +1097,9 @@ private fun TodayPage(
             )
             return@HomePageScaffold
         }
-        // Two separate per-model-spread affordances:
-        //
-        //  - The confidence chip [ConfidenceChip] keeps its labelled
-        //    "tap to show / hide" toggle (wired through [onChipTap] →
-        //    [onToggleModelSpread]). That's the explicit on/off control.
-        //
-        //  - Tapping the plot grid of any chart enters scrub mode on
-        //    the shared [ChartScrubController], which (via the
-        //    [SpreadCoordinator] wired below) reveals the per-model
-        //    spread if it isn't already on. The matching restore
-        //    icon exits scrub mode and undoes only that auto-reveal
-        //    — spread state the user enabled via the chip is left
-        //    alone.
-        //
-        // [chipToggle] is null when there's no per-model data in
-        // the cache (e.g. older payloads) — in that case the chip
-        // stays as a static confidence summary and the controller's
-        // [spreadCoordinator] stays null so chart gestures just
-        // scrub without touching spread state.
+        // Whether the cache carried per-model curves — gates the scrub→spread
+        // bridge below (see [insightSlot] for the chip side of the same flag).
         val perModelAvailable = insight.perModelHourly != null
-        val chipToggle = onToggleModelSpread.takeIf { perModelAvailable }
-        InsightCard(
-            insight = insight,
-            region = state.region,
-            temperatureUnit = state.temperatureUnit,
-            rangeFormat = state.rangeFormat,
-            clothesFormat = state.clothesFormat,
-            bottomsFormat = state.bottomsFormat,
-            periodPreamble = state.periodPreamble,
-            wearPreamble = state.wearPreamble,
-            showChevronRight = showChevronRight,
-            showChevronLeft = showChevronLeft,
-            onChevronTap = onChevronTap,
-            onChevronRightTap = onChevronRightTap,
-            onLongPressDate = onLongPressDate,
-            onNavigateToFormat = onNavigateToFormat,
-            onNavigateToLocation = onSetUpLocation,
-        )
-        insight.confidence?.let {
-            // Wrap the per-model toggle so a tap also scrolls the chip to the
-            // top of the viewport — the per-model overlay renders on the
-            // charts below the chip, so scrolling them into view is part of
-            // the same gesture's payoff.
-            val onChipTap: (() -> Unit)? = chipToggle?.let { toggle ->
-                {
-                    toggle()
-                    scrollScope.launch { scrollState.animateScrollTo(chipScrollOffset) }
-                }
-            }
-            ConfidenceChip(
-                modifier = Modifier.onGloballyPositioned { coords ->
-                    chipScrollOffset = coords.positionInParent().y.roundToInt()
-                },
-                info = it,
-                perModelHourly = insight.perModelHourly,
-                temperatureUnit = state.temperatureUnit,
-                windSpeedUnit = state.distanceUnit.windSpeedUnit(),
-                showModelSpread = state.showModelSpread,
-                onToggleModelSpread = onChipTap,
-            )
-        }
         if (insight.hourly.isNotEmpty()) {
             // Pass per-model data unconditionally so each chart's y-axis is
             // sized to the same envelope whether the overlay is showing or

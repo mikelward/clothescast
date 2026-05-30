@@ -28,6 +28,7 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TemperatureUnitSetting
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
+import app.clothescast.core.domain.model.HomeSection
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.model.VoiceLocale
@@ -136,6 +137,29 @@ class SettingsRepositoryTest {
         subject.setDeliveryMode(DeliveryMode.NOTIFICATION_AND_TTS)
 
         subject.preferences.first().deliveryMode shouldBe DeliveryMode.NOTIFICATION_AND_TTS
+    }
+
+    @Test
+    fun `homeSectionOrder defaults to the canonical order`() = runTest {
+        subject.preferences.first().homeSectionOrder shouldBe HomeSection.DEFAULTS
+    }
+
+    @Test
+    fun `setHomeSectionOrder round-trips a reordered list`() = runTest {
+        subject.setHomeSectionOrder(listOf(HomeSection.INSIGHT, HomeSection.OUTFIT))
+
+        subject.preferences.first().homeSectionOrder shouldContainExactly
+            listOf(HomeSection.INSIGHT, HomeSection.OUTFIT)
+    }
+
+    @Test
+    fun `homeSectionOrder normalizes a partial stored list on read`() = runTest {
+        // A stored order naming only one section gets the rest appended in
+        // default order, so a future-added section never goes missing.
+        subject.setHomeSectionOrder(listOf(HomeSection.INSIGHT))
+
+        subject.preferences.first().homeSectionOrder shouldContainExactly
+            listOf(HomeSection.INSIGHT, HomeSection.OUTFIT)
     }
 
     @Test

@@ -261,6 +261,7 @@ class SettingsViewModel(
                         holidayOverrides = prefs.holidayOverrides,
                         effectiveEnabledHolidayCountries = effectiveCountries,
                         clothesRules = prefs.clothesRules,
+                        homeSectionOrder = prefs.homeSectionOrder,
                         defaultBottom = prefs.defaultBottom,
                         defaultTop = prefs.defaultTop,
                         location = prefs.location,
@@ -578,6 +579,21 @@ class SettingsViewModel(
             if (index !in current.indices) return@launch
             settingsRepository.setClothesRules(current.toMutableList().apply { removeAt(index) })
             refreshOutfitWidget()
+        }
+    }
+
+    /**
+     * Moves the home-screen section from [from] to [to], committing a settled
+     * drag-reorder. No-ops on out-of-range or identical indices. Read-modify-
+     * write on the current order, mirroring [replaceClothesRule] /
+     * [deleteClothesRule].
+     */
+    fun reorderHomeSection(from: Int, to: Int) {
+        viewModelScope.launch {
+            val current = _state.value.homeSectionOrder
+            if (from !in current.indices || to !in current.indices || from == to) return@launch
+            val reordered = current.toMutableList().apply { add(to, removeAt(from)) }
+            settingsRepository.setHomeSectionOrder(reordered)
         }
     }
 

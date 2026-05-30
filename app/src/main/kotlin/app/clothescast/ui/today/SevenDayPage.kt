@@ -235,7 +235,12 @@ internal fun SevenDayPage(
         onNavigateToClothes = onNavigateToClothes,
         onDismissMqttError = onDismissMqttError,
         onDismissCastError = onDismissCastError,
-    ) {
+        homeSectionOrder = state.homeSectionOrder,
+        // The week-headline card is this page's "insight" section, so it
+        // reorders against the outfit row exactly like the per-period insight
+        // card does on pages 0 / 1 — keeping the outfit row at a consistent
+        // vertical offset across a swipe whichever order the user picked.
+        insightSlot = {
         // Page header — same visual treatment as [InsightCard] on pages 0 / 1:
         // a 20.dp-padded Card with the chevron in a 28.dp slot on the left,
         // a "Next 7 days" label in the centered position the per-period
@@ -328,7 +333,8 @@ internal fun SevenDayPage(
                 )
             }
         }
-
+        },
+    ) {
         if (days.size < 2 || flatHourly.isEmpty() || startDate == null) return@HomePageScaffold
 
         // Shared scrub controller — same role as on the per-period pages.

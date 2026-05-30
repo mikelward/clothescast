@@ -36,6 +36,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -618,6 +619,15 @@ private fun ClothesRuleDialog(
         null -> ConditionType.TEMP_BELOW
     }
     var type by remember { mutableStateOf(initialType) }
+    // A carried accessory (umbrella) is only ever named off a rain/drizzle
+    // precip clause, so a temperature-keyed umbrella rule would fire but render
+    // nothing. Restrict carried gear to the precipitation condition and force
+    // the selection there if the user picks it while a temp type was active.
+    val carried = garment.slot == Garment.Slot.CARRIED
+    val allowedTypes = if (carried) listOf(ConditionType.PRECIP_ABOVE) else ConditionType.entries.toList()
+    LaunchedEffect(carried) {
+        if (carried && type != ConditionType.PRECIP_ABOVE) type = ConditionType.PRECIP_ABOVE
+    }
     // Pre-fill in the user's *current* display unit. A 65°F rule opened by a °C
     // user pre-fills as "18" (the saved value converted via Celsius); when the
     // user *changes* the value and confirms, the new condition takes the
@@ -701,7 +711,7 @@ private fun ClothesRuleDialog(
                     text = stringResource(R.string.settings_clothes_condition_label),
                     style = MaterialTheme.typography.labelLarge,
                 )
-                ConditionType.entries.forEach { entry ->
+                allowedTypes.forEach { entry ->
                     RadioRow(
                         label = stringResource(entry.labelRes),
                         selected = type == entry,

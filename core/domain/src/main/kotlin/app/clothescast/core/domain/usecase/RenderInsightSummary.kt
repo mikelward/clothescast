@@ -151,6 +151,10 @@ class RenderInsightSummary {
             // points at.
             calendarTieIn = if (period == ForecastPeriod.TONIGHT) calendarTieInClause(todayRuleItems, peak, events) else null,
             eveningEventTieIn = eveningEventTieIn,
+            // Carried accessories (umbrella) ride independently of the wear
+            // clause: the formatter folds them into the precip clause, so they
+            // must survive clothes-mention gating that suppresses [clothes].
+            carriedAccessories = todayItems.filter { Garment.isAccessoryKey(it) },
         )
     }
 

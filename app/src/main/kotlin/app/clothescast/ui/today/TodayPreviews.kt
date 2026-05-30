@@ -116,6 +116,9 @@ private val SAMPLE_INSIGHT = Insight(
         delta = DeltaClause(4, DeltaClause.Direction.WARMER),
         clothes = ClothesClause(listOf("sweater", "umbrella")),
         precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
+        // Mirrors RenderInsightSummary: the umbrella rides independently of the
+        // wear clause so it folds into the precip clause ("…bring an umbrella").
+        carriedAccessories = listOf("umbrella"),
     ),
     recommendedItems = listOf("sweater", "umbrella"),
     generatedAt = Instant.parse("2026-04-26T07:30:00Z"),

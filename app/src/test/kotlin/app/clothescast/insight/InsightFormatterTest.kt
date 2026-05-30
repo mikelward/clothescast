@@ -8,6 +8,7 @@ import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.CalendarTieInClause
 import app.clothescast.core.domain.model.EveningEventTieInClause
+import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaClause
@@ -57,7 +58,14 @@ class InsightFormatterTest {
         precip: PrecipClause? = null,
         calendarTieIn: CalendarTieInClause? = null,
         eveningEventTieIn: EveningEventTieInClause? = null,
-    ) = InsightSummary(period, band, alert, delta, clothes, precip, calendarTieIn, eveningEventTieIn)
+        // Mirrors RenderInsightSummary: carried accessories ride independently of
+        // the wear clause. Defaults to the accessories in [clothes] so existing
+        // umbrella-in-clothes cases work; override to exercise the gating-
+        // independent path (clothes == null but the umbrella still surfaces).
+        carriedAccessories: List<String> = clothes?.items.orEmpty().filter { Garment.isAccessoryKey(it) },
+    ) = InsightSummary(
+        period, band, alert, delta, clothes, precip, calendarTieIn, eveningEventTieIn, carriedAccessories,
+    )
 
     @Test
     fun `band-only insight emits the lead-in and single feels-like temp`() {
@@ -1303,6 +1311,20 @@ class InsightFormatterTest {
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
             ),
         ) shouldBe "Heute wird es 21°. Regen um 15 Uhr, denk an Regenschirm."
+    }
+
+    @Test
+    fun `umbrella still surfaces in the precip clause when the wear clause is suppressed`() {
+        // Clothes = Never (or an unchanged outfit under If changed) nulls the
+        // wear clause, but a carried accessory rides on carriedAccessories
+        // independently, so an opted-in umbrella still gets named on a rainy day.
+        subject.format(
+            summary(
+                clothes = null,
+                carriedAccessories = listOf("umbrella"),
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
+            ),
+        ) shouldBe "Today, it will be 21°. Rain at 3pm, bring an umbrella."
     }
 
     @Test

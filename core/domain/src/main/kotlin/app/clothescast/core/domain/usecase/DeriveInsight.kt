@@ -281,11 +281,17 @@ class DeriveInsight(
             eveningItems = nightView.triggeredOutfit.items,
             dayItems = todayItems,
         )
+        // Carried accessories (umbrella) ride with the evening rain warning, not
+        // the clothes delta: an umbrella that fired both today and tonight would
+        // be deduped out of the delta, silently dropping "bring an umbrella
+        // tonight" — so source it straight from the evening outfit. The
+        // formatter still gates it on a rain/drizzle precip clause.
+        val eveningAccessories = nightView.triggeredOutfit.items.filter { Garment.isAccessoryKey(it) }
         val precip = nightSummary.precip
         if (clothesDelta.isEmpty() && precip == null) return null
 
         return EveningEventTieInClause(
-            items = clothesDelta,
+            items = clothesDelta + eveningAccessories,
             rainTime = precip?.time,
             likelihood = precip?.likelihood ?: PrecipLikelihood.LIKELY,
             precipCondition = precip?.condition,
@@ -330,6 +336,10 @@ class DeriveInsight(
             val g = Garment.fromKey(item) ?: return@filter false
             when (g.slot) {
                 Garment.Slot.TOP -> g.warmth > dayTopWarmth
+                // Carried accessories (umbrella) are handled separately in
+                // buildEveningEventTieIn so they survive the day-dedup; keep
+                // them out of the worn-garment delta to avoid a double mention.
+                Garment.Slot.CARRIED -> false
                 else -> g.itemKey !in daySubstituteKeys[g.slot].orEmpty()
             }
         }

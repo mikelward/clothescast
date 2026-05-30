@@ -70,16 +70,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.takeOrElse
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -1795,15 +1799,37 @@ internal fun OutfitPreviewCard(
             // Reserve two lines for the garment-name text so cards match
             // even when one combination wraps and the other doesn't (e.g.
             // "Thick jacket · Long pants" wraps at the row's per-card width
-            // but "Sweater · Long pants" doesn't).
-            Text(
-                text = stringResource(topLabelRes(outfit.top)) +
-                    " · " +
-                    stringResource(bottomLabelRes(outfit.bottom)),
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center,
-                minLines = 2,
-            )
+            // but "Sweater · Long pants" doesn't). Bottom-align the text in
+            // that slot so a single (non-wrapping) line sits the same
+            // distance from the card's bottom edge that the "Today" label
+            // sits from the top — `minLines = 2` alone top-anchors the line
+            // and leaves the empty second line below it, making the text look
+            // floated up away from the bottom. Cap at two lines with an
+            // ellipsis so a longer locale or a large accessibility font scale
+            // truncates visibly rather than clipping silently, and every card
+            // in a row stays exactly two lines tall.
+            val garmentTextStyle = MaterialTheme.typography.bodySmall
+            val twoLineHeight = with(LocalDensity.current) {
+                garmentTextStyle.lineHeight
+                    .takeOrElse { garmentTextStyle.fontSize.takeOrElse { 14.sp } * 1.4f }
+                    .toDp() * 2
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = twoLineHeight),
+                contentAlignment = Alignment.BottomCenter,
+            ) {
+                Text(
+                    text = stringResource(topLabelRes(outfit.top)) +
+                        " · " +
+                        stringResource(bottomLabelRes(outfit.bottom)),
+                    style = garmentTextStyle,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
     if (showRationale) {

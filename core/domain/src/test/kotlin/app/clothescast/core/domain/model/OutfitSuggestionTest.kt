@@ -492,4 +492,62 @@ class OutfitSuggestionTest {
             Garment.fromKey(hands.itemKey())?.slot shouldBe Garment.Slot.HANDS
         }
     }
+
+    @Test
+    fun `a firing umbrella rule sets the carried slot`() {
+        // An umbrella rule keyed on rain chance lights the optional carried tier
+        // when the day's precip probability crosses its threshold.
+        val umbrellaRules = listOf(
+            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 12.0, feelsLikeMax = 18.0, precipMaxPct = 60.0),
+            umbrellaRules,
+        )
+        outfit.carried shouldBe OutfitSuggestion.Carried.UMBRELLA
+    }
+
+    @Test
+    fun `carried stays null when no umbrella rule fires`() {
+        // Carried is opt-in with no fallback: a dry day (or no umbrella rule)
+        // leaves it null rather than promoting to a default, so no umbrella icon
+        // shows when the user hasn't earned one.
+        val umbrellaRules = listOf(
+            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 12.0, feelsLikeMax = 18.0, precipMaxPct = 10.0),
+            umbrellaRules,
+        )
+        outfit.carried shouldBe null
+    }
+
+    @Test
+    fun `gloves and umbrella light the hands and carried slots independently`() {
+        // The two opt-in tiers don't compete: a cold, rainy day with both rules
+        // firing lights gloves on the hands slot and the umbrella on carried.
+        val triggered = TriggeredOutfit(
+            rules = listOf(
+                ClothesRule(Garment.COAT, ClothesRule.TemperatureBelow(5.0)),
+                ClothesRule(Garment.GLOVES, ClothesRule.TemperatureBelow(4.0)),
+                ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ),
+            fallbacks = emptyList(),
+        )
+        OutfitSuggestion.fromTriggeredOutfit(triggered) shouldBe OutfitSuggestion(
+            OutfitSuggestion.Top.THICK_COAT,
+            OutfitSuggestion.Bottom.LONG_PANTS,
+            OutfitSuggestion.Hands.GLOVES,
+            OutfitSuggestion.Carried.UMBRELLA,
+        )
+    }
+
+    @Test
+    fun `carried itemKey round-trips through the garment catalog`() {
+        // The slot's catalog key must resolve back to the CARRIED-slot garment so
+        // prose / persistence / the umbrella icon all key off the same string.
+        OutfitSuggestion.Carried.entries.forEach { carried ->
+            Garment.fromKey(carried.itemKey())?.slot shouldBe Garment.Slot.CARRIED
+        }
+    }
 }

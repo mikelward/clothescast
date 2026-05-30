@@ -4,8 +4,8 @@ import java.time.LocalTime
 
 /**
  * A glanceable outfit pairing — one [Top] and one [Bottom], plus an optional [Hands]
- * accessory — derived from the forecast so the home screen can render big icons instead
- * of a comma-separated word list.
+ * accessory and an optional [Carried] accessory (umbrella) — derived from the forecast
+ * so the home screen can render big icons instead of a comma-separated word list.
  *
  * The picker is driven entirely by the user's [ClothesRule] list — the same rules that
  * populate [Insight.recommendedItems]. Top tier (coldest first): a firing `jacket` rule
@@ -43,6 +43,7 @@ data class OutfitSuggestion(
     val top: Top,
     val bottom: Bottom,
     val hands: Hands? = null,
+    val carried: Carried? = null,
 ) {
     enum class Top {
         TSHIRT, POLO, SWEATER, THIN_JACKET, THICK_JACKET, THICK_COAT, PUFFER_JACKET;
@@ -91,6 +92,23 @@ data class OutfitSuggestion(
         }
     }
 
+    /**
+     * Optional carried accessory shown alongside the worn outfit — today just
+     * the umbrella, the `Garment.Slot.CARRIED` member. Like [hands] it's a
+     * single opt-in tier with no fallback: present only when a carried-accessory
+     * rule fires (a rain-keyed umbrella rule), never promoted to a default. It's
+     * independent of [hands], so a cold rainy day can light both the glove icon
+     * and the umbrella.
+     */
+    enum class Carried {
+        UMBRELLA;
+
+        /** Catalog key (matches [Garment.itemKey]) for prose / persistence. */
+        fun itemKey(): String = when (this) {
+            UMBRELLA -> "umbrella"
+        }
+    }
+
     companion object {
         // Catalog item keys (see [Garment.itemKey]) that drive each icon tier.
         // Top tiers (coldest first): coat → THICK_COAT, puffer → PUFFER_JACKET,
@@ -122,6 +140,9 @@ data class OutfitSuggestion(
         // OutfitSuggestion), so this never promotes to a default the way the top
         // and bottom slots do.
         private val GLOVES_KEYS = listOf(Garment.GLOVES)
+        // Carried tier: a firing `umbrella` rule lights the optional umbrella
+        // icon. Like the hands tier it has no fallback — uncovered stays null.
+        private val CARRIED_KEYS = listOf(Garment.UMBRELLA)
 
         /**
          * Two-piece icon outfit for [forecast] given the user's [clothesRules].
@@ -191,7 +212,9 @@ data class OutfitSuggestion(
             }
             // Optional, no fallback: null unless a hands rule actually fired.
             val hands = if (firingRules.hasKeyIn(GLOVES_KEYS)) Hands.GLOVES else null
-            return OutfitSuggestion(top, bottom, hands)
+            // Same shape for carried gear (umbrella): independent of hands.
+            val carried = if (firingRules.hasKeyIn(CARRIED_KEYS)) Carried.UMBRELLA else null
+            return OutfitSuggestion(top, bottom, hands, carried)
         }
 
         /** True when any rule in the list is keyed on a garment in [keys]. */

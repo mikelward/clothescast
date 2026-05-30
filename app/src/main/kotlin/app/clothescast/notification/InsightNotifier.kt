@@ -9,9 +9,7 @@ import app.clothescast.MainActivity
 import app.clothescast.R
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
-import app.clothescast.ui.garment.outfitTopDefaults
-import app.clothescast.ui.garment.renderOutfitBitmap
-import app.clothescast.ui.garment.topDrawable
+import app.clothescast.ui.garment.renderTopWithHandsBitmap
 
 /**
  * Posts the daily insight as a system notification. Tapping the notification opens
@@ -48,6 +46,7 @@ class InsightNotifier(private val context: Context) {
                 largeIconForTop(
                     context = context,
                     top = top,
+                    hands = insight.outfit?.hands,
                     customFillArgb = top?.let { topColors[it] },
                     customStrokeArgb = top?.let { topStrokes[it] },
                 ),
@@ -91,14 +90,17 @@ class InsightNotifier(private val context: Context) {
          * Reuses the full-colour `ic_outfit_tshirt` / `ic_outfit_sweater` /
          * `ic_outfit_thick_jacket` drawables from `OutfitPreviewCard` so the
          * notification visual matches the home-screen card — including any
-         * user-picked colour override passed in via [customFillArgb], and
-         * the tricolour-holiday accent passed in via [customStrokeArgb].
-         * Returns null when [top] is missing (older cached payloads),
+         * user-picked colour override passed in via [customFillArgb], the
+         * tricolour-holiday accent passed in via [customStrokeArgb], and the
+         * optional gloves overlay when [hands] is set (so the notification
+         * shows the same extremity gear the card and widget do on a freezing
+         * day). Returns null when [top] is missing (older cached payloads),
          * letting the system fall back to no large icon.
          */
         internal fun largeIconForTop(
             context: Context,
             top: OutfitSuggestion.Top?,
+            hands: OutfitSuggestion.Hands? = null,
             customFillArgb: Long? = null,
             customStrokeArgb: Long? = null,
         ): Bitmap? {
@@ -106,13 +108,13 @@ class InsightNotifier(private val context: Context) {
             val sizePx = context.resources.getDimensionPixelSize(android.R.dimen.notification_large_icon_width)
                 .takeIf { it > 0 }
                 ?: LARGE_ICON_FALLBACK_PX
-            return renderOutfitBitmap(
+            return renderTopWithHandsBitmap(
                 context = context,
-                drawableRes = topDrawable(top),
-                defaults = outfitTopDefaults.getValue(top),
-                customFillArgb = customFillArgb,
+                top = top,
+                hands = hands,
                 sizePx = sizePx,
-                customStrokeArgb = customStrokeArgb,
+                topFillArgb = customFillArgb,
+                topStrokeArgb = customStrokeArgb,
             )
         }
 

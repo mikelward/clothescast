@@ -109,6 +109,21 @@ class InsightNotifierTest {
         check(bitmap.width > 0 && bitmap.height > 0) { "expected a non-empty bitmap" }
     }
 
+    @Test
+    fun `largeIconForTop composites the gloves overlay when the hands slot is set`() {
+        // Exercises the hands != null branch of renderTopWithHandsBitmap — it
+        // reads outfitHandsDefaults.getValue(GLOVES), so a missing entry would
+        // throw here. The overlaid pixels are pixel-verified by the NATIVE
+        // cast-card snapshot; this just guards the notification wiring.
+        val bitmap = InsightNotifier.largeIconForTop(
+            context,
+            OutfitSuggestion.Top.THICK_COAT,
+            hands = OutfitSuggestion.Hands.GLOVES,
+        )
+        bitmap.shouldNotBeNull()
+        check(bitmap.width > 0 && bitmap.height > 0) { "expected a non-empty bitmap" }
+    }
+
     private fun sampleInsight(
         outfit: OutfitSuggestion? = OutfitSuggestion(
             top = OutfitSuggestion.Top.TSHIRT,

@@ -850,12 +850,13 @@ private fun BannerStack(
  * in the common layout: the top/bottom edge fades, the time-format provider,
  * the scrolling Column with its nav-bar inset + padding, the top-of-scroll
  * [BannerStack] (location / update / local-build / crash / telemetry / promo /
- * work-status / holiday), and the user-reorderable sections (the conditions
- * strip, the [OutfitPreviewRow], and the insight slot) in [homeSectionOrder].
- * Pages 0 / 1 add the insight card + per-period chart deck; page 2 adds the
- * weekly header + 7-day chart deck. Keeping the chrome here means the banner
- * stack and reorderable sections are byte-identical across all three pages —
- * swiping between Today / Tonight / 7-day keeps the same cards in the same place.
+ * work-status / holiday), and the user-reorderable sections in
+ * [homeSectionOrder]: the conditions strip and [OutfitPreviewRow] (drawn here),
+ * plus the [insightSlot], [confidenceSlot], and [chartsSlot] the page supplies.
+ * Pages 0 / 1 fill the insight / confidence / per-period chart slots; page 2
+ * supplies the weekly header (as [insightSlot]) + 7-day chart deck. Keeping the
+ * chrome here means the banner stack and reorderable sections are byte-identical
+ * across all three pages — swiping keeps the same cards in the same place.
  */
 @Composable
 internal fun HomePageScaffold(
@@ -880,6 +881,8 @@ internal fun HomePageScaffold(
     homeSectionOrder: List<HomeSection> = HomeSection.DEFAULTS,
     insightSlot: (@Composable ColumnScope.() -> Unit)? = null,
     conditionsHourly: List<HourlyForecast>? = null,
+    confidenceSlot: (@Composable ColumnScope.() -> Unit)? = null,
+    chartsSlot: (@Composable ColumnScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     // Conditions for the strip. Driven by [conditionsHourly] — the hourly
@@ -961,14 +964,17 @@ internal fun HomePageScaffold(
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
                 )
-                // The conditions strip, the outfit row, and the insight
-                // ([insightSlot]) are the three user-reorderable sections;
-                // [homeSectionOrder] decides their order. All render above the
-                // page's own [content] (charts / placeholder), which always
-                // trails them. The same order is used on all three pager pages —
-                // the 7-day page passes its week-headline card as [insightSlot] —
-                // so each section keeps the same vertical offset across a swipe
-                // regardless of which order the user picked.
+                // The conditions strip, outfit row, insight ([insightSlot]),
+                // confidence chip ([confidenceSlot]), and chart deck
+                // ([chartsSlot]) are the user-reorderable sections;
+                // [homeSectionOrder] decides their order. Each renders only when
+                // it has content this period (e.g. confidence / charts need a
+                // cached insight), so a section the user ordered but has no data
+                // for simply contributes nothing. The non-reorderable [content]
+                // (the missing-period placeholder) always trails them. The same
+                // order is used on all three pager pages — the 7-day page
+                // supplies its week-headline card as [insightSlot] — so each
+                // section keeps the same vertical offset across a swipe.
                 //
                 // The outfit row still renders even when the page's own insight
                 // is missing (page 2's placeholder, or a not-yet-cached next
@@ -1000,6 +1006,8 @@ internal fun HomePageScaffold(
                             )
                         }
                         HomeSection.INSIGHT -> insightSlot?.invoke(this)
+                        HomeSection.CONFIDENCE -> confidenceSlot?.invoke(this)
+                        HomeSection.CHARTS -> chartsSlot?.invoke(this)
                     }
                 }
                 content()
@@ -1108,10 +1116,15 @@ private fun TodayPage(
     onDismissGeminiTtsPromoCard: () -> Unit,
 ) {
     val scrollScope = rememberCoroutineScope()
-    // Captured via onGloballyPositioned on the ConfidenceChip below so the
-    // tap handler can scroll the chip to the top of the viewport without
-    // hard-coding offsets above it (outfit row + insight card heights vary).
+    // Captured via onGloballyPositioned so the chip-tap handler can scroll the
+    // relevant section to the top of the viewport without hard-coding offsets
+    // (outfit / insight / conditions heights vary). Both are measured in the
+    // same coordinate space (the scrolling Column), so a chip tap scrolls to
+    // whichever of the two sits higher — see [onChipTap] below. The chart
+    // offset starts at "unknown" (MAX) so before the deck is laid out (or when
+    // it's absent) the tap just targets the chip.
     var chipScrollOffset by remember { mutableIntStateOf(0) }
+    var chartsScrollOffset by remember { mutableIntStateOf(Int.MAX_VALUE) }
     HomePageScaffold(
         state = state,
         scrollState = scrollState,
@@ -1136,32 +1149,12 @@ private fun TodayPage(
         // page's insight (this period on page 0, the next period on page 1), so
         // each page's strip shows its own feels-like range / rain / wind / UV.
         conditionsHourly = insight?.hourly,
-        // The insight (insight card + its confidence chip) is the second
-        // reorderable section. It renders only when this period actually has an
-        // insight; the null case falls through to the placeholder in [content].
+        // The insight card — its own reorderable section. The confidence chip
+        // that used to ride along with it is now [confidenceSlot]; the chart
+        // deck is [chartsSlot]. Renders only when this period has an insight;
+        // the null case falls through to the placeholder in [content].
         insightSlot = {
             if (insight != null) {
-                // Two separate per-model-spread affordances:
-                //
-                //  - The confidence chip [ConfidenceChip] keeps its labelled
-                //    "tap to show / hide" toggle (wired through [onChipTap] →
-                //    [onToggleModelSpread]). That's the explicit on/off control.
-                //
-                //  - Tapping the plot grid of any chart enters scrub mode on
-                //    the shared [ChartScrubController], which (via the
-                //    [SpreadCoordinator] wired below) reveals the per-model
-                //    spread if it isn't already on. The matching restore
-                //    icon exits scrub mode and undoes only that auto-reveal
-                //    — spread state the user enabled via the chip is left
-                //    alone.
-                //
-                // [chipToggle] is null when there's no per-model data in
-                // the cache (e.g. older payloads) — in that case the chip
-                // stays as a static confidence summary and the controller's
-                // [spreadCoordinator] stays null so chart gestures just
-                // scrub without touching spread state.
-                val perModelAvailable = insight.perModelHourly != null
-                val chipToggle = onToggleModelSpread.takeIf { perModelAvailable }
                 InsightCard(
                     insight = insight,
                     region = state.region,
@@ -1179,22 +1172,48 @@ private fun TodayPage(
                     onNavigateToFormat = onNavigateToFormat,
                     onNavigateToLocation = onSetUpLocation,
                 )
-                insight.confidence?.let {
-                    // Wrap the per-model toggle so a tap also scrolls the chip to the
-                    // top of the viewport — the per-model overlay renders on the
-                    // charts below the chip, so scrolling them into view is part of
-                    // the same gesture's payoff.
+            }
+        },
+        // The forecast-confidence chip — now its own reorderable section,
+        // decoupled from the insight card so the user can position it anywhere.
+        // Only shown when this period carries a confidence summary.
+        confidenceSlot = {
+            if (insight != null) {
+                insight.confidence?.let { confidence ->
+                    // Two separate per-model-spread affordances:
+                    //
+                    //  - The confidence chip [ConfidenceChip] keeps its labelled
+                    //    "tap to show / hide" toggle (wired through [onChipTap] →
+                    //    [onToggleModelSpread]). That's the explicit on/off control.
+                    //
+                    //  - Tapping the plot grid of any chart enters scrub mode on
+                    //    the shared [ChartScrubController], which (via the
+                    //    [SpreadCoordinator] wired in [chartsSlot]) reveals the
+                    //    per-model spread if it isn't already on.
+                    //
+                    // [chipToggle] is null when there's no per-model data in the
+                    // cache (e.g. older payloads) — the chip then stays a static
+                    // confidence summary.
+                    val perModelAvailable = insight.perModelHourly != null
+                    val chipToggle = onToggleModelSpread.takeIf { perModelAvailable }
+                    // Wrap the per-model toggle so a tap also scrolls the
+                    // affected charts into view — the per-model overlay renders
+                    // on the chart deck, which (now that CONFIDENCE and CHARTS
+                    // reorder independently) may sit above *or* below the chip.
+                    // Scroll to whichever of the chip / chart deck is higher so
+                    // the revealed overlays land on screen in either order.
                     val onChipTap: (() -> Unit)? = chipToggle?.let { toggle ->
                         {
                             toggle()
-                            scrollScope.launch { scrollState.animateScrollTo(chipScrollOffset) }
+                            val target = minOf(chipScrollOffset, chartsScrollOffset)
+                            scrollScope.launch { scrollState.animateScrollTo(target) }
                         }
                     }
                     ConfidenceChip(
                         modifier = Modifier.onGloballyPositioned { coords ->
                             chipScrollOffset = coords.positionInParent().y.roundToInt()
                         },
-                        info = it,
+                        info = confidence,
                         perModelHourly = insight.perModelHourly,
                         temperatureUnit = state.temperatureUnit,
                         windSpeedUnit = state.distanceUnit.windSpeedUnit(),
@@ -1204,23 +1223,15 @@ private fun TodayPage(
                 }
             }
         },
-    ) {
-        if (insight == null) {
-            MissingPeriodPlaceholder(
-                period = fallbackPeriod,
-                morningTime = state.morningTime,
-                tonightTime = state.tonightTime,
-                showChevronLeft = showChevronLeft,
-                onChevronTap = onChevronTap,
-                showChevronRight = showChevronRight,
-                onChevronRightTap = onChevronRightTap,
-            )
-            return@HomePageScaffold
-        }
-        // Whether the cache carried per-model curves — gates the scrub→spread
-        // bridge below (see [insightSlot] for the chip side of the same flag).
-        val perModelAvailable = insight.perModelHourly != null
-        if (insight.hourly.isNotEmpty()) {
+        // The chart deck — its own reorderable section. Moves as one contiguous
+        // block so every card keeps sharing the single [ChartScrubController] /
+        // y-axis envelope set up here. Renders only once this period's hourly
+        // forecast is cached.
+        chartsSlot = chartsSlot@{
+            if (insight == null || insight.hourly.isEmpty()) return@chartsSlot
+            // Whether the cache carried per-model curves — gates the scrub→spread
+            // bridge below (see [confidenceSlot] for the chip side of the flag).
+            val perModelAvailable = insight.perModelHourly != null
             // Pass per-model data unconditionally so each chart's y-axis is
             // sized to the same envelope whether the overlay is showing or
             // not — tapping the toggle adds / removes lines but never
@@ -1282,6 +1293,16 @@ private fun TodayPage(
                 }
             }
             CompositionLocalProvider(LocalChartScrub provides scrubController) {
+                // Wrap the deck so its top offset (in the scrolling Column) is
+                // captured for the confidence chip's scroll-to-charts payoff.
+                // spacedBy matches the outer Column so the wrapper is visually
+                // transparent — the cards keep their 16.dp gaps.
+                Column(
+                    modifier = Modifier.onGloballyPositioned { coords ->
+                        chartsScrollOffset = coords.positionInParent().y.roundToInt()
+                    },
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
                 ForecastCard(
                     hourly = insight.hourly,
                     temperatureUnit = state.temperatureUnit,
@@ -1360,7 +1381,22 @@ private fun TodayPage(
                         showModelSpread = state.showModelSpread,
                     )
                 }
+                }
             }
+        },
+    ) {
+        // Non-reorderable: the "paired period not cached yet" placeholder. Shown
+        // in place of the insight/charts when this period has no insight.
+        if (insight == null) {
+            MissingPeriodPlaceholder(
+                period = fallbackPeriod,
+                morningTime = state.morningTime,
+                tonightTime = state.tonightTime,
+                showChevronLeft = showChevronLeft,
+                onChevronTap = onChevronTap,
+                showChevronRight = showChevronRight,
+                onChevronRightTap = onChevronRightTap,
+            )
         }
     }
 }

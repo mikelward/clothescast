@@ -1091,10 +1091,15 @@ enum class ForecastModel(val openMeteoId: String) {
 enum class ColorPalette { RAINBOW, ACCESSIBLE, HIGHLIGHTER }
 
 /**
- * A reorderable section on the home-screen pager pages. The conditions strip,
- * the outfit preview, and the forecast insight are all user-orderable; the enum
- * is the single source of truth for "which sections exist", so adding a value
- * here (and rendering it in `HomePageScaffold`) is all a future section needs.
+ * A reorderable section on the home-screen pager pages. Every value is
+ * user-orderable; the enum is the single source of truth for "which sections
+ * exist", so adding a value here (and rendering it in `HomePageScaffold`) is
+ * all a future section needs.
+ *
+ * TODO(home-sections): let the user hide/show sections, not just reorder them.
+ *  Deferred to keep the first reorder-all PR small — would mean carrying a
+ *  visibility flag alongside each section (e.g. a `HomeSectionPref(section,
+ *  visible)`) through the repository, state, and Settings UI.
  */
 enum class HomeSection {
     /** The at-a-glance conditions strip (feels-like, rain, and notable wind / UV). */
@@ -1105,11 +1110,30 @@ enum class HomeSection {
 
     /** The forecast insight (per-period insight card / 7-day week headline). */
     INSIGHT,
+
+    /** The forecast-confidence chip (per-model agreement summary). */
+    CONFIDENCE,
+
+    /**
+     * The chart deck: feels-like, air temperature, precipitation (probability
+     * and amount), and the per-model diagnostic charts (wind, humidity, cloud,
+     * solar, UV, sunshine). Reordered as a single block for now.
+     *
+     * TODO(home-sections): let the user reorder the individual charts within
+     *  the deck. They must stay contiguous so they keep sharing one scrub
+     *  controller / y-axis envelope — see `HomePageScaffold`. Deferred with the
+     *  hide/show work above.
+     */
+    CHARTS,
     ;
 
     companion object {
-        /** Canonical out-of-the-box order: conditions, then outfit, then insight. */
-        val DEFAULTS: List<HomeSection> = listOf(CONDITIONS, OUTFIT, INSIGHT)
+        /**
+         * Canonical out-of-the-box order: the at-a-glance conditions strip at
+         * the top, then the outfit row, the insight, and finally the confidence
+         * chip directly above the chart deck.
+         */
+        val DEFAULTS: List<HomeSection> = listOf(CONDITIONS, OUTFIT, INSIGHT, CONFIDENCE, CHARTS)
 
         /**
          * Normalize a stored / partial order into a complete, valid one:

@@ -146,12 +146,17 @@ class SettingsRepositoryTest {
 
     @Test
     fun `setHomeSectionOrder round-trips a reordered list`() = runTest {
-        subject.setHomeSectionOrder(
-            listOf(HomeSection.INSIGHT, HomeSection.CONDITIONS, HomeSection.OUTFIT),
+        // A complete order round-trips verbatim.
+        val reordered = listOf(
+            HomeSection.INSIGHT,
+            HomeSection.CONDITIONS,
+            HomeSection.OUTFIT,
+            HomeSection.CONFIDENCE,
+            HomeSection.CHARTS,
         )
+        subject.setHomeSectionOrder(reordered)
 
-        subject.preferences.first().homeSectionOrder shouldContainExactly
-            listOf(HomeSection.INSIGHT, HomeSection.CONDITIONS, HomeSection.OUTFIT)
+        subject.preferences.first().homeSectionOrder shouldContainExactly reordered
     }
 
     @Test
@@ -161,7 +166,13 @@ class SettingsRepositoryTest {
         subject.setHomeSectionOrder(listOf(HomeSection.INSIGHT))
 
         subject.preferences.first().homeSectionOrder shouldContainExactly
-            listOf(HomeSection.INSIGHT, HomeSection.CONDITIONS, HomeSection.OUTFIT)
+            listOf(
+                HomeSection.INSIGHT,
+                HomeSection.CONDITIONS,
+                HomeSection.OUTFIT,
+                HomeSection.CONFIDENCE,
+                HomeSection.CHARTS,
+            )
     }
 
     @Test

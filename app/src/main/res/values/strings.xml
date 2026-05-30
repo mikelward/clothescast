@@ -548,6 +548,8 @@
     <string name="settings_display_home_section_conditions">Conditions</string>
     <string name="settings_display_home_section_outfit">Outfit</string>
     <string name="settings_display_home_section_insight">Forecast</string>
+    <string name="settings_display_home_section_confidence">Confidence</string>
+    <string name="settings_display_home_section_charts">Charts</string>
     <!-- Accessibility label for the drag handle; %1$s is the section name. -->
     <string name="settings_display_home_layout_drag">Drag to reorder %1$s</string>
 

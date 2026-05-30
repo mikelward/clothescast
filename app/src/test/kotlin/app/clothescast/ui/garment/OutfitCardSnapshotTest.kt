@@ -134,6 +134,33 @@ class OutfitCardSnapshotTest {
     }
 
     @Test
+    fun outfit_card_freezing_coat_pants_red_gloves() {
+        // A user-picked gloves colour threads through handsColors and recolours
+        // the overlay — proving the hands colour-picker reaches the cast card.
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(
+                    OutfitSuggestion.Top.THICK_COAT,
+                    OutfitSuggestion.Bottom.LONG_PANTS,
+                    OutfitSuggestion.Hands.GLOVES,
+                ),
+                header = "Today's ClothesCast",
+                prose = "A freezing one today. Wear a coat and long pants, and gloves.",
+                info = OutfitCardInfoLines(
+                    tempLine = "-3–2°C",
+                    tempFillFraction = thermometerFillFractionFor(2.0),
+                    rainFillFraction = null,
+                ),
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
+                handsColors = mapOf(OutfitSuggestion.Hands.GLOVES to 0xFFE53935L), // red gloves
+            ),
+        )
+    }
+
+    @Test
     fun outfit_card_all_indicators() {
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         writeCard(

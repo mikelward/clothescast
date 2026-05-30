@@ -558,6 +558,16 @@ class SettingsRepositoryTest {
         val prefs = subject.preferences.first()
         prefs.outfitTopColors shouldBe emptyMap()
         prefs.outfitBottomColors shouldBe emptyMap()
+        prefs.outfitHandsColors shouldBe emptyMap()
+    }
+
+    @Test
+    fun `setOutfitHandsColor round-trips a fill and clears with null`() = runTest {
+        subject.setOutfitHandsColor(OutfitSuggestion.Hands.GLOVES, 0xFFE53935L)
+        subject.preferences.first().outfitHandsColors[OutfitSuggestion.Hands.GLOVES] shouldBe 0xFFE53935L
+
+        subject.setOutfitHandsColor(OutfitSuggestion.Hands.GLOVES, null)
+        subject.preferences.first().outfitHandsColors.containsKey(OutfitSuggestion.Hands.GLOVES) shouldBe false
     }
 
     @Test

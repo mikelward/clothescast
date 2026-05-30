@@ -861,6 +861,9 @@ class FetchAndNotifyWorker(
             prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())
         val bottomColors: Map<OutfitSuggestion.Bottom, Long> =
             prefs.outfitBottomColors + (theme?.bottomOverrides ?: emptyMap())
+        // Gloves aren't holiday-themed, so the hands overlay just takes the
+        // user's picked colour (empty = baked-in gloves colours).
+        val handsColors: Map<OutfitSuggestion.Hands, Long> = prefs.outfitHandsColors
         val topStrokes: Map<OutfitSuggestion.Top, Long> =
             theme?.topStrokeOverrides ?: emptyMap()
         val bottomStrokes: Map<OutfitSuggestion.Bottom, Long> =
@@ -915,6 +918,7 @@ class FetchAndNotifyWorker(
                     prose = prose,
                     topColors = topColors,
                     bottomColors = bottomColors,
+                    handsColors = handsColors,
                     topStrokes = topStrokes,
                     bottomStrokes = bottomStrokes,
                 )
@@ -946,7 +950,7 @@ class FetchAndNotifyWorker(
 
             awaitDeliveryAlignment()
 
-            val notifyJob = launch { postPeriodNotification(insight, prefs, prose, topColors, topStrokes, gates, forceNotify = forceNotifyAndSpeak) }
+            val notifyJob = launch { postPeriodNotification(insight, prefs, prose, topColors, topStrokes, handsColors, gates, forceNotify = forceNotifyAndSpeak) }
 
             // Cast load — runs in parallel with notification + MQTT.
             // The phone speaker awaits this when castWillHaveAudio so
@@ -1076,6 +1080,7 @@ class FetchAndNotifyWorker(
         prose: String,
         topColors: Map<OutfitSuggestion.Top, Long>,
         bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+        handsColors: Map<OutfitSuggestion.Hands, Long>,
         topStrokes: Map<OutfitSuggestion.Top, Long>,
         bottomStrokes: Map<OutfitSuggestion.Bottom, Long>,
     ): ByteArray? {
@@ -1101,6 +1106,7 @@ class FetchAndNotifyWorker(
                 info = info,
                 topColors = topColors,
                 bottomColors = bottomColors,
+                handsColors = handsColors,
                 topStrokes = topStrokes,
                 bottomStrokes = bottomStrokes,
             )
@@ -1185,6 +1191,7 @@ class FetchAndNotifyWorker(
         prose: String,
         topColors: Map<OutfitSuggestion.Top, Long>,
         topStrokes: Map<OutfitSuggestion.Top, Long>,
+        handsColors: Map<OutfitSuggestion.Hands, Long>,
         gates: app.clothescast.core.domain.usecase.DeliveryGates,
         forceNotify: Boolean = false,
     ) {
@@ -1204,9 +1211,9 @@ class FetchAndNotifyWorker(
         if (!canNotify) return
         when (insight.period) {
             ForecastPeriod.TODAY ->
-                app.insightNotifier.notify(insight, prose, topColors, topStrokes)
+                app.insightNotifier.notify(insight, prose, topColors, topStrokes, handsColors)
             ForecastPeriod.TONIGHT ->
-                app.tonightInsightNotifier.notify(insight, prose, topColors, topStrokes)
+                app.tonightInsightNotifier.notify(insight, prose, topColors, topStrokes, handsColors)
         }
         recordDeliveryDelay(insight.period)
     }

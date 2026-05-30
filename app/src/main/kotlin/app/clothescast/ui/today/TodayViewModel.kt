@@ -134,6 +134,9 @@ data class TodayState(
     val outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     /** Sibling of [outfitTopColors] for the bottom-icon tier. */
     val outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    /** Sibling of [outfitTopColors] for the optional gloves (hands) overlay.
+     *  No holiday theming today, so this is just the user's picked colour. */
+    val outfitHandsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
     /**
      * Holiday-theme accent colour overrides for the *stroke* / outline of
      * each top tier. Empty = no override; the renderer auto-derives a
@@ -638,6 +641,7 @@ class TodayViewModel(
             showModelSpread = spread,
             outfitTopColors = topColors,
             outfitBottomColors = bottomColors,
+            outfitHandsColors = prefs.outfitHandsColors,
             outfitTopStrokes = topStrokes,
             outfitBottomStrokes = bottomStrokes,
             activeHoliday = theme,

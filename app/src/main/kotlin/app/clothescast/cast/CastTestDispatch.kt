@@ -102,6 +102,7 @@ internal suspend fun castCurrentInsight(
     val theme = resolveHolidayTheme(prefs, calendarEventReader)
     val topColors = prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())
     val bottomColors = prefs.outfitBottomColors + (theme?.bottomOverrides ?: emptyMap())
+    val handsColors = prefs.outfitHandsColors
     val topStrokes = theme?.topStrokeOverrides ?: emptyMap()
     val bottomStrokes = theme?.bottomStrokeOverrides ?: emptyMap()
 
@@ -114,6 +115,7 @@ internal suspend fun castCurrentInsight(
             info = info,
             topColors = topColors,
             bottomColors = bottomColors,
+            handsColors = handsColors,
             topStrokes = topStrokes,
             bottomStrokes = bottomStrokes,
         )

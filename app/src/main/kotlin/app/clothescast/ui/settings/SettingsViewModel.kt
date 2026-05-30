@@ -245,6 +245,7 @@ class SettingsViewModel(
                         colorPalette = prefs.colorPalette,
                         outfitTopColors = prefs.outfitTopColors,
                         outfitBottomColors = prefs.outfitBottomColors,
+                        outfitHandsColors = prefs.outfitHandsColors,
                         holidayCountrySelection = prefs.holidayCountrySelection,
                         holidayOverrides = prefs.holidayOverrides,
                         effectiveEnabledHolidayCountries = effectiveCountries,
@@ -483,6 +484,14 @@ class SettingsViewModel(
     fun setOutfitBottomColor(bottom: OutfitSuggestion.Bottom, argb: Long?) {
         viewModelScope.launch {
             settingsRepository.setOutfitBottomColor(bottom, argb)
+            refreshOutfitWidget()
+        }
+    }
+
+    /** Sibling of [setOutfitTopColor] for the optional gloves (hands) overlay. */
+    fun setOutfitHandsColor(hands: OutfitSuggestion.Hands, argb: Long?) {
+        viewModelScope.launch {
+            settingsRepository.setOutfitHandsColor(hands, argb)
             refreshOutfitWidget()
         }
     }

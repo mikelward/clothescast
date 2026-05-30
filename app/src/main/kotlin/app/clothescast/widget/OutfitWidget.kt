@@ -92,9 +92,10 @@ class OutfitWidget : GlanceAppWidget() {
         // run on this dispatcher rather than during composition.
         val topColors = prefs?.outfitTopColors ?: emptyMap()
         val bottomColors = prefs?.outfitBottomColors ?: emptyMap()
+        val handsColors = prefs?.outfitHandsColors ?: emptyMap()
         provideContent {
             GlanceTheme {
-                OutfitWidgetContent(insight, topColors, bottomColors)
+                OutfitWidgetContent(insight, topColors, bottomColors, handsColors)
             }
         }
     }
@@ -137,6 +138,7 @@ private fun OutfitWidgetContent(
     insight: Insight?,
     topColors: Map<OutfitSuggestion.Top, Long>,
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+    handsColors: Map<OutfitSuggestion.Hands, Long>,
 ) {
     val size = LocalSize.current
     val context = LocalContext.current
@@ -157,7 +159,7 @@ private fun OutfitWidgetContent(
             size.width >= size.height &&
             insight.nextOutfit != null
         ) {
-            SideBySideContent(insight, size, topColors, bottomColors)
+            SideBySideContent(insight, size, topColors, bottomColors, handsColors)
         } else {
             SingleColumnContent(
                 label = context.getString(periodLabelRes(insight.period)),
@@ -165,6 +167,7 @@ private fun OutfitWidgetContent(
                 size = size,
                 topColors = topColors,
                 bottomColors = bottomColors,
+                handsColors = handsColors,
             )
         }
     }
@@ -177,6 +180,7 @@ private fun SingleColumnContent(
     size: DpSize,
     topColors: Map<OutfitSuggestion.Top, Long>,
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+    handsColors: Map<OutfitSuggestion.Hands, Long>,
 ) {
     val context = LocalContext.current
     val iconSize = scaledIconSize(size)
@@ -209,6 +213,7 @@ private fun SingleColumnContent(
                     hands = outfit.hands,
                     sizePx = iconPx,
                     topFillArgb = topColors[outfit.top],
+                    handsFillArgb = outfit.hands?.let { handsColors[it] },
                 ),
             ),
             contentDescription = if (outfit.hands != null) {
@@ -248,6 +253,7 @@ private fun SideBySideContent(
     size: DpSize,
     topColors: Map<OutfitSuggestion.Top, Long>,
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+    handsColors: Map<OutfitSuggestion.Hands, Long>,
 ) {
     val context = LocalContext.current
     val primaryOutfit = insight.outfit ?: return
@@ -271,6 +277,7 @@ private fun SideBySideContent(
                 size = columnSize,
                 topColors = topColors,
                 bottomColors = bottomColors,
+                handsColors = handsColors,
             )
         }
         Box(
@@ -283,6 +290,7 @@ private fun SideBySideContent(
                 size = columnSize,
                 topColors = topColors,
                 bottomColors = bottomColors,
+                handsColors = handsColors,
             )
         }
     }

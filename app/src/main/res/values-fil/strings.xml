@@ -70,8 +70,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_band_mild">katamtaman</string>
     <string name="insight_band_warm">mainit-init</string>
     <string name="insight_band_hot">mainit</string>
-    <string name="insight_delta_warmer">Ngayon ay %1$d° mas mainit.</string>
-    <string name="insight_delta_cooler">Ngayon ay %1$d° mas malamig.</string>
+    <string name="insight_delta_warmer">%1$d° na mas mainit kaysa kahapon.</string>
+    <string name="insight_delta_cooler">%1$d° na mas malamig kaysa kahapon.</string>
     <string name="insight_alert">Babala: %1$s.</string>
     <string name="insight_clothes_wear">Magsuot ng %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

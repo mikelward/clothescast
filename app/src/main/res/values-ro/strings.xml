@@ -70,8 +70,8 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="insight_band_mild">blând</string>
     <string name="insight_band_warm">cald</string>
     <string name="insight_band_hot">cald tare</string>
-    <string name="insight_delta_warmer">Astăzi va fi cu %1$d° mai cald.</string>
-    <string name="insight_delta_cooler">Astăzi va fi cu %1$d° mai rece.</string>
+    <string name="insight_delta_warmer">cu %1$d° mai cald decât ieri.</string>
+    <string name="insight_delta_cooler">cu %1$d° mai rece decât ieri.</string>
     <string name="insight_alert">Avertisment: %1$s.</string>
     <string name="insight_clothes_wear">Poartă %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

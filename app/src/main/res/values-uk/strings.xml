@@ -587,8 +587,8 @@ only the displayed label localizes.
     <string name="insight_band_mild">тепло</string>
     <string name="insight_band_warm">жарко</string>
     <string name="insight_band_hot">дуже спекотно</string>
-    <string name="insight_delta_warmer">Сьогодні на %1$d° тепліше.</string>
-    <string name="insight_delta_cooler">Сьогодні на %1$d° холодніше.</string>
+    <string name="insight_delta_warmer">на %1$d° тепліше, ніж вчора.</string>
+    <string name="insight_delta_cooler">на %1$d° прохолодніше, ніж вчора.</string>
     <string name="insight_alert">Попередження: %1$s.</string>
     <string name="insight_clothes_wear">Одягніть %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

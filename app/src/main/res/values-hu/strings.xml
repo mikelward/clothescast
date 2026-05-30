@@ -578,8 +578,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="insight_band_mild">enyhe</string>
     <string name="insight_band_warm">meleg</string>
     <string name="insight_band_hot">forró</string>
-    <string name="insight_delta_warmer">Ma %1$d°-kal melegebb lesz.</string>
-    <string name="insight_delta_cooler">Ma %1$d°-kal hidegebb lesz.</string>
+    <string name="insight_delta_warmer">%1$d°-kal melegebb lesz, mint tegnap.</string>
+    <string name="insight_delta_cooler">%1$d°-kal hűvösebb lesz, mint tegnap.</string>
     <string name="insight_alert">Figyelmeztetés: %1$s.</string>
     <string name="insight_clothes_wear">Vegyél fel %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

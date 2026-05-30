@@ -97,8 +97,8 @@ default English (matching values-pl / values-uk).
     <string name="insight_band_mild">blago</string>
     <string name="insight_band_warm">toplo</string>
     <string name="insight_band_hot">vruće</string>
-    <string name="insight_delta_warmer">Danas će biti %1$d° toplije.</string>
-    <string name="insight_delta_cooler">Danas će biti %1$d° hladnije.</string>
+    <string name="insight_delta_warmer">%1$d° toplije nego juče.</string>
+    <string name="insight_delta_cooler">%1$d° hladnije nego juče.</string>
     <string name="insight_alert">Upozorenje: %1$s.</string>
     <string name="insight_clothes_wear">Obuci %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

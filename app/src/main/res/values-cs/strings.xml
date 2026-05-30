@@ -575,8 +575,8 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="insight_band_mild">mírně</string>
     <string name="insight_band_warm">teplo</string>
     <string name="insight_band_hot">horko</string>
-    <string name="insight_delta_warmer">Dnes bude o %1$d° tepleji.</string>
-    <string name="insight_delta_cooler">Dnes bude o %1$d° chladněji.</string>
+    <string name="insight_delta_warmer">o %1$d° tepleji než včera.</string>
+    <string name="insight_delta_cooler">o %1$d° chladněji než včera.</string>
     <string name="insight_alert">Výstraha: %1$s.</string>
     <string name="insight_clothes_wear">Obleč si %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

@@ -516,8 +516,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_band_mild">ήπιος καιρός</string>
     <string name="insight_band_warm">ζέστη</string>
     <string name="insight_band_hot">καύσωνας</string>
-    <string name="insight_delta_warmer">Σήμερα θα είναι %1$d° πιο ζεστό από χθες.</string>
-    <string name="insight_delta_cooler">Σήμερα θα είναι %1$d° πιο κρύο από χθες.</string>
+    <string name="insight_delta_warmer">%1$d° πιο ζεστά από χθες.</string>
+    <string name="insight_delta_cooler">%1$d° πιο δροσερά από χθες.</string>
     <string name="insight_alert">Ειδοποίηση: %1$s.</string>
     <string name="insight_clothes_wear">Φόρεσε %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

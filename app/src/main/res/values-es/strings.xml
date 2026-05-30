@@ -455,8 +455,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_band_mild">templado</string>
     <string name="insight_band_warm">cálido</string>
     <string name="insight_band_hot">muy caluroso</string>
-    <string name="insight_delta_warmer">Hará %1$d° más hoy.</string>
-    <string name="insight_delta_cooler">Hará %1$d° menos hoy.</string>
+    <string name="insight_delta_warmer">%1$d° más que ayer.</string>
+    <string name="insight_delta_cooler">%1$d° menos que ayer.</string>
     <string name="insight_alert">Alerta: %1$s.</string>
     <string name="insight_clothes_wear">Lleva %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

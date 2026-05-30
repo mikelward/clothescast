@@ -250,11 +250,14 @@ class InsightFormatter(
                 }
             }
             // When the range is omitted there's no band sentence ahead of the
-            // delta, so it leads the temperature content and must introduce
-            // itself ("it will be 5° warmer than yesterday.") rather than ride
-            // as a bare fragment that the period lead folds into subject-less
-            // ("Today, 5° warmer than yesterday.").
-            numericDelta?.let { add(formatDelta(it, leadsTemperature = rangeFormat == RangeFormat.NONE)) }
+            // delta, so it leads the temperature content and introduces itself
+            // ("Today, it will be 5° warmer than yesterday.") rather than riding
+            // as a subject-less fragment ("Today, 5° warmer than yesterday.").
+            // [formatDelta] handles the lead-dropped case (where "it will be"
+            // collapses into the dropped preamble) per locale.
+            numericDelta?.let {
+                add(formatDelta(it, leadsTemperature = rangeFormat == RangeFormat.NONE, omitLead = omitLead))
+            }
             if (wearItems.isNotEmpty()) formatClothesWear(wearItems, wearMode)?.let(::add)
             // The carried accessory (umbrella) now comes from the user's fired
             // rule — it lands in the recommended items as a Slot.CARRIED garment
@@ -495,19 +498,7 @@ class InsightFormatter(
         TemperatureBand.HOT -> R.string.insight_band_hot
     }
 
-    private fun formatDelta(delta: DeltaClause, leadsTemperature: Boolean = false): String {
-        // The delta is normally a bare fragment ("5° warmer than yesterday.")
-        // built to trail a band sentence. When it instead leads the temperature
-        // content (range omitted) it needs the self-introducing "it will be …"
-        // form, which every locale ships as insight_delta_*_lead; the period
-        // lead is then folded in front of it by [renderLeadOnly].
-        val lead = leadsTemperature
-        val template = when (delta.direction) {
-            DeltaClause.Direction.WARMER ->
-                if (lead) R.string.insight_delta_warmer_lead else R.string.insight_delta_warmer
-            DeltaClause.Direction.COOLER ->
-                if (lead) R.string.insight_delta_cooler_lead else R.string.insight_delta_cooler
-        }
+    private fun formatDelta(delta: DeltaClause, leadsTemperature: Boolean = false, omitLead: Boolean = false): String {
         // DeltaClause.degrees is the absolute Celsius delta. Temperature
         // *differences* convert with the ratio only (no +32 offset), so
         // 5°C of warming surfaces as 9°F to a Fahrenheit user — without
@@ -517,7 +508,43 @@ class InsightFormatter(
             TemperatureUnit.CELSIUS -> delta.degrees
             TemperatureUnit.FAHRENHEIT -> (delta.degrees * 9.0 / 5.0).roundToInt()
         }
-        return resources.getString(template, degrees)
+        val bareTemplate = when (delta.direction) {
+            DeltaClause.Direction.WARMER -> R.string.insight_delta_warmer
+            DeltaClause.Direction.COOLER -> R.string.insight_delta_cooler
+        }
+        val bare = resources.getString(bareTemplate, degrees)
+        // Trailing a band sentence: a subject-less comparison fragment ("5°
+        // warmer than yesterday.") — the preceding sentence already supplied the
+        // subject. It opens a new sentence after the band sentence's full stop,
+        // so capitalize its first letter. For locales whose fragment starts with
+        // the degree number (English, German) this is a no-op; for those that
+        // open with a word or particle (Polish "o 5°…" → "O 5°…", Russian "на
+        // 5°…" → "На 5°…") it restores sentence case.
+        if (!leadsTemperature) return capitalize(bare)
+        // Range omitted: the delta leads the temperature content, so it needs a
+        // self-introducing subject ("it will be …"), shipped per-locale as
+        // insight_delta_*_lead.
+        val leadTemplate = when (delta.direction) {
+            DeltaClause.Direction.WARMER -> R.string.insight_delta_warmer_lead
+            DeltaClause.Direction.COOLER -> R.string.insight_delta_cooler_lead
+        }
+        val withSubject = resources.getString(leadTemplate, degrees)
+        // With the period lead present, [renderLeadOnly] folds it in front of
+        // the self-introducing form ("Today, it will be 5° warmer than
+        // yesterday."). With the lead dropped, that subject is part of the
+        // dropped scaffold and should go too — *if* the locale's _lead form is
+        // just the bare fragment with the subject prepended (English "it will
+        // be " + "5° warmer than yesterday.", German "es wird " + "5° wärmer als
+        // gestern.", and the other SVO locales whose _lead leads with a verb).
+        // [renderLeadOnly] then capitalizes the bare fragment. Where the two
+        // diverge — locales whose delta is verb-final or otherwise can't expose
+        // a leading-subject prefix (the bare form doesn't tail the _lead form) —
+        // keep the _lead form on the no-lead surface, since its bare form would
+        // re-introduce the period word the no-lead surface exists to hide. This
+        // also lets the Speech-only preview parenthesise the whole "(Today, it
+        // will be) …" preamble.
+        if (omitLead && withSubject.endsWith(bare)) return bare
+        return withSubject
     }
 
     /**

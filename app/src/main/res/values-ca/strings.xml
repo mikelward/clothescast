@@ -526,8 +526,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="insight_band_mild">bon temps</string>
     <string name="insight_band_warm">calor</string>
     <string name="insight_band_hot">molta calor</string>
-    <string name="insight_delta_warmer">Avui farà %1$d° més de calor.</string>
-    <string name="insight_delta_cooler">Avui farà %1$d° més de fred.</string>
+    <string name="insight_delta_warmer">%1$d° més que ahir.</string>
+    <string name="insight_delta_cooler">%1$d° menys que ahir.</string>
     <string name="insight_alert">Alerta: %1$s.</string>
     <!-- Reflexive imperative "tu": "Posa't el jersei." -->
     <string name="insight_clothes_wear">Posa\'t %1$s.</string>

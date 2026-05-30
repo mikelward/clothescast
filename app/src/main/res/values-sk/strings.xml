@@ -589,8 +589,8 @@ What is NOT overridden, by design:
     <string name="insight_band_mild">mierne</string>
     <string name="insight_band_warm">teplo</string>
     <string name="insight_band_hot">horúco</string>
-    <string name="insight_delta_warmer">Dnes bude o %1$d° teplejšie.</string>
-    <string name="insight_delta_cooler">Dnes bude o %1$d° chladnejšie.</string>
+    <string name="insight_delta_warmer">o %1$d° teplejšie ako včera.</string>
+    <string name="insight_delta_cooler">o %1$d° chladnejšie ako včera.</string>
     <string name="insight_alert">Výstraha: %1$s.</string>
     <string name="insight_clothes_wear">Obleč si %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

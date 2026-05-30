@@ -83,8 +83,8 @@ What is NOT overridden, by design:
     <string name="insight_band_mild">меко</string>
     <string name="insight_band_warm">топло</string>
     <string name="insight_band_hot">горещо</string>
-    <string name="insight_delta_warmer">Днес ще бъде с %1$d° по-топло.</string>
-    <string name="insight_delta_cooler">Днес ще бъде с %1$d° по-студено.</string>
+    <string name="insight_delta_warmer">с %1$d° по-топло от вчера.</string>
+    <string name="insight_delta_cooler">с %1$d° по-хладно от вчера.</string>
     <string name="insight_alert">Предупреждение: %1$s.</string>
     <string name="insight_clothes_wear">Облечи %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

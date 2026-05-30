@@ -72,8 +72,8 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="insight_band_mild">sederhana</string>
     <string name="insight_band_warm">hangat</string>
     <string name="insight_band_hot">panas</string>
-    <string name="insight_delta_warmer">Hari ini %1$d° lebih panas.</string>
-    <string name="insight_delta_cooler">Hari ini %1$d° lebih sejuk.</string>
+    <string name="insight_delta_warmer">%1$d° lebih panas daripada semalam.</string>
+    <string name="insight_delta_cooler">%1$d° lebih sejuk daripada semalam.</string>
     <string name="insight_alert">Amaran: %1$s.</string>
     <string name="insight_clothes_wear">Pakai %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

@@ -64,6 +64,32 @@ class GarmentTest {
     }
 
     @Test
+    fun `umbrella is a carried accessory that round-trips and reads as an accessory`() {
+        // The umbrella joins the catalog as carried gear: it round-trips via
+        // fromKey, sits in the CARRIED slot (so it never competes with the worn
+        // top/bottom/hands stack), and reads as an accessory so the wear-clause
+        // prose keeps naming it with "bring/carry" rather than "wear".
+        Garment.fromKey("umbrella") shouldBe Garment.UMBRELLA
+        Garment.UMBRELLA.slot shouldBe Garment.Slot.CARRIED
+        Garment.UMBRELLA.layerCount shouldBe 0
+        Garment.isAccessoryKey("umbrella") shouldBe true
+        // Worn garments are not accessories.
+        Garment.isAccessoryKey("sweater") shouldBe false
+    }
+
+    @Test
+    fun `layerReduce keeps a single carried umbrella alongside the worn stack`() {
+        // A firing umbrella rule passes through reduction next to the top stack
+        // — carried gear substitutes within its own slot (you carry one
+        // umbrella) and never displaces a top or bottom.
+        val rules = listOf(
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(50.0)),
+        )
+        Garment.layerReduce(rules) shouldBe rules
+    }
+
+    @Test
     fun `fromKey does not depend on process locale`() {
         val originalDefault = Locale.getDefault()
         Locale.setDefault(Locale.forLanguageTag("tr-TR"))

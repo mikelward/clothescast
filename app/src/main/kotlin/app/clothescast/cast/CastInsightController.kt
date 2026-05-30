@@ -9,6 +9,8 @@ import app.clothescast.core.data.tts.PcmAudio
 import app.clothescast.core.data.tts.WavEncoder
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.diag.DiagLog
+import app.clothescast.net.NetworkErrorKind
+import app.clothescast.net.classifyNetworkError
 import com.google.android.gms.cast.CastMediaControlIntent
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaLoadRequestData
@@ -422,7 +424,12 @@ class CastInsightController(
             CastWorkerOutcome.Failed(failure.message ?: "Cast failed")
         } catch (t: Throwable) {
             DiagLog.w(TAG, "Cast load failed unexpectedly", t)
-            CastWorkerOutcome.Failed(t.message ?: "Cast failed")
+            // An unexpected failure on the cast hot path (media-server bind,
+            // LAN host/encode step) can surface a raw socket exception; lead
+            // with a network hint when we recognise one so "couldn't cast" is
+            // actionable rather than an opaque stack-trace message.
+            val hint = classifyNetworkError(t)?.let { castNetworkHintFor(it) }
+            CastWorkerOutcome.Failed(hint ?: t.message ?: "Cast failed")
         }
     }
 
@@ -569,6 +576,27 @@ class CastInsightController(
 
     companion object {
         private const val TAG = "CastInsightController"
+
+        /**
+         * Plain-English hint for an *unexpected* cast failure that bottomed out
+         * in a connection-layer error (the phone's media server couldn't bind /
+         * be reached on the LAN), or null when the cause isn't a recognisable
+         * network problem so the caller falls back to the raw message. The typed
+         * [CastFailure] cases already carry their own network wording — this only
+         * covers the generic catch-all path. `internal` for test visibility.
+         */
+        internal fun castNetworkHintFor(kind: NetworkErrorKind?): String? = when (kind) {
+            NetworkErrorKind.UNKNOWN_HOST,
+            NetworkErrorKind.NO_ROUTE,
+            NetworkErrorKind.CONNECTION_REFUSED,
+            NetworkErrorKind.TIMEOUT,
+            ->
+                "Couldn't reach the smart display on the network — make sure the " +
+                    "phone and the display are on the same Wi-Fi and nothing's blocking the LAN."
+            NetworkErrorKind.TLS ->
+                "Couldn't establish a secure connection to the smart display on the network."
+            null -> null
+        }
 
         /**
          * 24 kHz mono 16-bit PCM, [MIN_CAST_DURATION_SECONDS] of zeros,

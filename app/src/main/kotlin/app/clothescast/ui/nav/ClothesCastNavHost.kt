@@ -374,6 +374,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
                     val bottomColors: Map<OutfitSuggestion.Bottom, Long> =
                         prefs.outfitBottomColors + (theme?.bottomOverrides ?: emptyMap())
                     val handsColors: Map<OutfitSuggestion.Hands, Long> = prefs.outfitHandsColors
+                    val carriedColors: Map<OutfitSuggestion.Carried, Long> = prefs.outfitCarriedColors
                     val topStrokes: Map<OutfitSuggestion.Top, Long> =
                         theme?.topStrokeOverrides ?: emptyMap()
                     val bottomStrokes: Map<OutfitSuggestion.Bottom, Long> =
@@ -387,6 +388,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
                         topColors = topColors,
                         bottomColors = bottomColors,
                         handsColors = handsColors,
+                        carriedColors = carriedColors,
                         topStrokes = topStrokes,
                         bottomStrokes = bottomStrokes,
                     )

@@ -65,6 +65,7 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.garment.outfitBottomDefaults
+import app.clothescast.ui.garment.outfitCarriedDefaults
 import app.clothescast.ui.garment.outfitHandsDefaults
 import app.clothescast.ui.garment.outfitTopDefaults
 import kotlin.math.roundToInt
@@ -87,6 +88,7 @@ internal fun ClothesContent(
     outfitTopColors: Map<OutfitSuggestion.Top, Long>,
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long>,
     outfitHandsColors: Map<OutfitSuggestion.Hands, Long>,
+    outfitCarriedColors: Map<OutfitSuggestion.Carried, Long>,
     padding: PaddingValues,
     onAdd: (ClothesRule) -> Unit,
     onReplace: (Int, ClothesRule) -> Unit,
@@ -96,6 +98,7 @@ internal fun ClothesContent(
     onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
     onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
     onSetOutfitHandsColor: (OutfitSuggestion.Hands, Long?) -> Unit,
+    onSetOutfitCarriedColor: (OutfitSuggestion.Carried, Long?) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
@@ -116,12 +119,14 @@ internal fun ClothesContent(
                 outfitTopColors = outfitTopColors,
                 outfitBottomColors = outfitBottomColors,
                 outfitHandsColors = outfitHandsColors,
+                outfitCarriedColors = outfitCarriedColors,
                 onAdd = onAdd,
                 onReplace = onReplace,
                 onDelete = onDelete,
                 onSetOutfitTopColor = onSetOutfitTopColor,
                 onSetOutfitBottomColor = onSetOutfitBottomColor,
                 onSetOutfitHandsColor = onSetOutfitHandsColor,
+                onSetOutfitCarriedColor = onSetOutfitCarriedColor,
             )
             FallbackOutfitCard(
                 rules = rules,
@@ -139,9 +144,11 @@ internal fun ClothesContent(
                 outfitTopColors = outfitTopColors,
                 outfitBottomColors = outfitBottomColors,
                 outfitHandsColors = outfitHandsColors,
+                outfitCarriedColors = outfitCarriedColors,
                 onSetOutfitTopColor = onSetOutfitTopColor,
                 onSetOutfitBottomColor = onSetOutfitBottomColor,
                 onSetOutfitHandsColor = onSetOutfitHandsColor,
+                onSetOutfitCarriedColor = onSetOutfitCarriedColor,
             )
         }
     }
@@ -159,9 +166,11 @@ private fun GarmentColorsCard(
     outfitTopColors: Map<OutfitSuggestion.Top, Long>,
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long>,
     outfitHandsColors: Map<OutfitSuggestion.Hands, Long>,
+    outfitCarriedColors: Map<OutfitSuggestion.Carried, Long>,
     onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
     onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
     onSetOutfitHandsColor: (OutfitSuggestion.Hands, Long?) -> Unit,
+    onSetOutfitCarriedColor: (OutfitSuggestion.Carried, Long?) -> Unit,
 ) {
     var pickerTarget by remember { mutableStateOf<GarmentPickerTarget?>(null) }
     SectionCard(title = stringResource(R.string.settings_display_garment_colors_title)) {
@@ -182,13 +191,21 @@ private fun GarmentColorsCard(
                 onClick = { pickerTarget = GarmentPickerTarget.Bottom(bottom) },
             )
         }
-        // Optional extremity gear (gloves) last — the same overlay-only tier the
-        // outfit icon paints over the top when a hands rule fires.
+        // Optional overlay gear last — the overlay-only tiers the outfit icon
+        // paints over the top when their rule fires: gloves (hands), then the
+        // carried umbrella.
         OutfitSuggestion.Hands.entries.forEach { hands ->
             GarmentColorRow(
                 label = stringResource(handsOutfitLabelRes(hands)),
                 effectiveColor = colorFor(outfitHandsColors[hands], outfitHandsDefaults.getValue(hands).fillArgb),
                 onClick = { pickerTarget = GarmentPickerTarget.Hands(hands) },
+            )
+        }
+        OutfitSuggestion.Carried.entries.forEach { carried ->
+            GarmentColorRow(
+                label = stringResource(carriedOutfitLabelRes(carried)),
+                effectiveColor = colorFor(outfitCarriedColors[carried], outfitCarriedDefaults.getValue(carried).fillArgb),
+                onClick = { pickerTarget = GarmentPickerTarget.Carried(carried) },
             )
         }
     }
@@ -197,12 +214,19 @@ private fun GarmentColorsCard(
             is GarmentPickerTarget.Top -> stringResource(topOutfitLabelRes(target.top))
             is GarmentPickerTarget.Bottom -> stringResource(bottomOutfitLabelRes(target.bottom))
             is GarmentPickerTarget.Hands -> stringResource(handsOutfitLabelRes(target.hands))
+            is GarmentPickerTarget.Carried -> stringResource(carriedOutfitLabelRes(target.carried))
         }
         GarmentColorPickerDialog(
             garmentLabel = label,
-            currentArgb = target.currentArgb(outfitTopColors, outfitBottomColors, outfitHandsColors),
+            currentArgb = target.currentArgb(outfitTopColors, outfitBottomColors, outfitHandsColors, outfitCarriedColors),
             onPick = { picked ->
-                target.applyColor(picked, onSetOutfitTopColor, onSetOutfitBottomColor, onSetOutfitHandsColor)
+                target.applyColor(
+                    picked,
+                    onSetOutfitTopColor,
+                    onSetOutfitBottomColor,
+                    onSetOutfitHandsColor,
+                    onSetOutfitCarriedColor,
+                )
             },
             onDismiss = { pickerTarget = null },
         )
@@ -213,13 +237,13 @@ private sealed interface GarmentPickerTarget {
     data class Top(val top: OutfitSuggestion.Top) : GarmentPickerTarget
     data class Bottom(val bottom: OutfitSuggestion.Bottom) : GarmentPickerTarget
     data class Hands(val hands: OutfitSuggestion.Hands) : GarmentPickerTarget
+    data class Carried(val carried: OutfitSuggestion.Carried) : GarmentPickerTarget
 }
 
 /**
  * The outfit-icon color tier a rule's [Garment] recolors, or null for catalog
  * garments with no icon tier of their own — `shirt` (no `Top.SHIRT` drawable
- * yet) and the carried `umbrella` (drawn as gear, not a recolorable outfit
- * piece). Mirrors the garment→tier dispatch in
+ * yet). Mirrors the garment→tier dispatch in
  * [OutfitSuggestion.Companion.fromForecast]'s picker so the swatch shown when
  * editing a rule matches the color that rule's firing icon actually paints
  * with (`hoodie` shares the `SWEATER` tier; `pants` the `LONG_PANTS` one).
@@ -238,7 +262,8 @@ private fun Garment.colorTarget(): GarmentPickerTarget? = when (this) {
     Garment.JEANS -> GarmentPickerTarget.Bottom(OutfitSuggestion.Bottom.JEANS)
     Garment.PANTS -> GarmentPickerTarget.Bottom(OutfitSuggestion.Bottom.LONG_PANTS)
     Garment.GLOVES -> GarmentPickerTarget.Hands(OutfitSuggestion.Hands.GLOVES)
-    Garment.SHIRT, Garment.UMBRELLA -> null
+    Garment.UMBRELLA -> GarmentPickerTarget.Carried(OutfitSuggestion.Carried.UMBRELLA)
+    Garment.SHIRT -> null
 }
 
 /** The user's current ARGB override for this tier, or null when on its default. */
@@ -246,10 +271,12 @@ private fun GarmentPickerTarget.currentArgb(
     topColors: Map<OutfitSuggestion.Top, Long>,
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
     handsColors: Map<OutfitSuggestion.Hands, Long>,
+    carriedColors: Map<OutfitSuggestion.Carried, Long>,
 ): Long? = when (this) {
     is GarmentPickerTarget.Top -> topColors[top]
     is GarmentPickerTarget.Bottom -> bottomColors[bottom]
     is GarmentPickerTarget.Hands -> handsColors[hands]
+    is GarmentPickerTarget.Carried -> carriedColors[carried]
 }
 
 /** The color this tier renders with — the user's override, or the baked default. */
@@ -257,10 +284,13 @@ private fun GarmentPickerTarget.effectiveColor(
     topColors: Map<OutfitSuggestion.Top, Long>,
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
     handsColors: Map<OutfitSuggestion.Hands, Long>,
+    carriedColors: Map<OutfitSuggestion.Carried, Long>,
 ): Color = when (this) {
     is GarmentPickerTarget.Top -> colorFor(topColors[top], outfitTopDefaults.getValue(top).fillArgb)
     is GarmentPickerTarget.Bottom -> colorFor(bottomColors[bottom], outfitBottomDefaults.getValue(bottom).fillArgb)
     is GarmentPickerTarget.Hands -> colorFor(handsColors[hands], outfitHandsDefaults.getValue(hands).fillArgb)
+    is GarmentPickerTarget.Carried ->
+        colorFor(carriedColors[carried], outfitCarriedDefaults.getValue(carried).fillArgb)
 }
 
 /** Routes a picked ARGB (or null to clear) to the matching tier's setter. */
@@ -269,11 +299,13 @@ private fun GarmentPickerTarget.applyColor(
     onSetTop: (OutfitSuggestion.Top, Long?) -> Unit,
     onSetBottom: (OutfitSuggestion.Bottom, Long?) -> Unit,
     onSetHands: (OutfitSuggestion.Hands, Long?) -> Unit,
+    onSetCarried: (OutfitSuggestion.Carried, Long?) -> Unit,
 ) {
     when (this) {
         is GarmentPickerTarget.Top -> onSetTop(top, argb)
         is GarmentPickerTarget.Bottom -> onSetBottom(bottom, argb)
         is GarmentPickerTarget.Hands -> onSetHands(hands, argb)
+        is GarmentPickerTarget.Carried -> onSetCarried(carried, argb)
     }
 }
 
@@ -365,6 +397,11 @@ private fun handsOutfitLabelRes(hands: OutfitSuggestion.Hands): Int = when (hand
     OutfitSuggestion.Hands.GLOVES -> R.string.garment_gloves
 }
 
+@StringRes
+private fun carriedOutfitLabelRes(carried: OutfitSuggestion.Carried): Int = when (carried) {
+    OutfitSuggestion.Carried.UMBRELLA -> R.string.garment_umbrella
+}
+
 /**
  * The "If no rules match" card — picks the fallback top *and* bottom the
  * home-screen outfit lands on when no clothes rule fires for that tier. Each
@@ -399,7 +436,10 @@ private fun FallbackOutfitCard(
     var colorEditing by remember { mutableStateOf<FallbackSlot?>(null) }
     val topTarget = GarmentPickerTarget.Top(defaultTop)
     val bottomTarget = GarmentPickerTarget.Bottom(defaultBottom)
+    // The fallback rows only ever cover top / bottom tiers, so the overlay-tier
+    // colour maps are never consulted — pass empty ones to the shared helpers.
     val handsColors = emptyMap<OutfitSuggestion.Hands, Long>()
+    val carriedColors = emptyMap<OutfitSuggestion.Carried, Long>()
     SectionCard(title = stringResource(R.string.settings_default_outfit_title)) {
         FallbackOutfitRow(
             label = stringResource(topOutfitLabelRes(defaultTop)),
@@ -407,7 +447,7 @@ private fun FallbackOutfitCard(
                 fallbackRange(rules, FallbackTier.TOP),
                 temperatureUnit,
             ),
-            swatchColor = topTarget.effectiveColor(outfitTopColors, outfitBottomColors, handsColors),
+            swatchColor = topTarget.effectiveColor(outfitTopColors, outfitBottomColors, handsColors, carriedColors),
             swatchDescription = stringResource(
                 R.string.settings_garment_color_swatch_description,
                 stringResource(topOutfitLabelRes(defaultTop)),
@@ -422,7 +462,7 @@ private fun FallbackOutfitCard(
                 fallbackRange(rules, FallbackTier.BOTTOM),
                 temperatureUnit,
             ),
-            swatchColor = bottomTarget.effectiveColor(outfitTopColors, outfitBottomColors, handsColors),
+            swatchColor = bottomTarget.effectiveColor(outfitTopColors, outfitBottomColors, handsColors, carriedColors),
             swatchDescription = stringResource(
                 R.string.settings_garment_color_swatch_description,
                 stringResource(bottomOutfitLabelRes(defaultBottom)),
@@ -462,9 +502,15 @@ private fun FallbackOutfitCard(
         }
         GarmentColorPickerDialog(
             garmentLabel = stringResource(labelRes),
-            currentArgb = target.currentArgb(outfitTopColors, outfitBottomColors, handsColors),
+            currentArgb = target.currentArgb(outfitTopColors, outfitBottomColors, handsColors, carriedColors),
             onPick = { picked ->
-                target.applyColor(picked, onSetOutfitTopColor, onSetOutfitBottomColor) { _, _ -> }
+                target.applyColor(
+                    picked,
+                    onSetOutfitTopColor,
+                    onSetOutfitBottomColor,
+                    onSetHands = { _, _ -> },
+                    onSetCarried = { _, _ -> },
+                )
             },
             onDismiss = { colorEditing = null },
         )
@@ -601,12 +647,14 @@ private fun ClothesRulesCard(
     outfitTopColors: Map<OutfitSuggestion.Top, Long>,
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long>,
     outfitHandsColors: Map<OutfitSuggestion.Hands, Long>,
+    outfitCarriedColors: Map<OutfitSuggestion.Carried, Long>,
     onAdd: (ClothesRule) -> Unit,
     onReplace: (Int, ClothesRule) -> Unit,
     onDelete: (Int) -> Unit,
     onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
     onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
     onSetOutfitHandsColor: (OutfitSuggestion.Hands, Long?) -> Unit,
+    onSetOutfitCarriedColor: (OutfitSuggestion.Carried, Long?) -> Unit,
 ) {
     var addOpen by remember { mutableStateOf(false) }
     var editIndex by remember { mutableStateOf<Int?>(null) }
@@ -633,7 +681,7 @@ private fun ClothesRulesCard(
                 rule = rule,
                 temperatureUnit = temperatureUnit,
                 swatchColor = rule.item.colorTarget()
-                    ?.effectiveColor(outfitTopColors, outfitBottomColors, outfitHandsColors),
+                    ?.effectiveColor(outfitTopColors, outfitBottomColors, outfitHandsColors, outfitCarriedColors),
                 onEditColor = { colorEditIndex = index },
                 onEdit = { editIndex = index },
             )
@@ -651,6 +699,7 @@ private fun ClothesRulesCard(
             outfitTopColors = outfitTopColors,
             outfitBottomColors = outfitBottomColors,
             outfitHandsColors = outfitHandsColors,
+            outfitCarriedColors = outfitCarriedColors,
             onDismiss = { addOpen = false },
             onConfirm = {
                 addOpen = false
@@ -659,6 +708,7 @@ private fun ClothesRulesCard(
             onSetOutfitTopColor = onSetOutfitTopColor,
             onSetOutfitBottomColor = onSetOutfitBottomColor,
             onSetOutfitHandsColor = onSetOutfitHandsColor,
+            onSetOutfitCarriedColor = onSetOutfitCarriedColor,
         )
     }
 
@@ -670,6 +720,7 @@ private fun ClothesRulesCard(
             outfitTopColors = outfitTopColors,
             outfitBottomColors = outfitBottomColors,
             outfitHandsColors = outfitHandsColors,
+            outfitCarriedColors = outfitCarriedColors,
             onDismiss = { editIndex = null },
             onConfirm = {
                 onReplace(editing, it)
@@ -678,6 +729,7 @@ private fun ClothesRulesCard(
             onSetOutfitTopColor = onSetOutfitTopColor,
             onSetOutfitBottomColor = onSetOutfitBottomColor,
             onSetOutfitHandsColor = onSetOutfitHandsColor,
+            onSetOutfitCarriedColor = onSetOutfitCarriedColor,
             onDelete = {
                 onDelete(editing)
                 editIndex = null
@@ -695,9 +747,20 @@ private fun ClothesRulesCard(
         if (target != null) {
             GarmentColorPickerDialog(
                 garmentLabel = stringResource(garmentLabelRes(garment)),
-                currentArgb = target.currentArgb(outfitTopColors, outfitBottomColors, outfitHandsColors),
+                currentArgb = target.currentArgb(
+                    outfitTopColors,
+                    outfitBottomColors,
+                    outfitHandsColors,
+                    outfitCarriedColors,
+                ),
                 onPick = { picked ->
-                    target.applyColor(picked, onSetOutfitTopColor, onSetOutfitBottomColor, onSetOutfitHandsColor)
+                    target.applyColor(
+                        picked,
+                        onSetOutfitTopColor,
+                        onSetOutfitBottomColor,
+                        onSetOutfitHandsColor,
+                        onSetOutfitCarriedColor,
+                    )
                 },
                 onDismiss = { colorEditIndex = null },
             )
@@ -815,11 +878,13 @@ internal fun ClothesRuleDialog(
     outfitTopColors: Map<OutfitSuggestion.Top, Long>,
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long>,
     outfitHandsColors: Map<OutfitSuggestion.Hands, Long>,
+    outfitCarriedColors: Map<OutfitSuggestion.Carried, Long>,
     onDismiss: () -> Unit,
     onConfirm: (ClothesRule) -> Unit,
     onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
     onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
     onSetOutfitHandsColor: (OutfitSuggestion.Hands, Long?) -> Unit,
+    onSetOutfitCarriedColor: (OutfitSuggestion.Carried, Long?) -> Unit,
     // Non-null only when editing an existing rule — surfaces a Delete affordance
     // in the dialog title. Null for the add dialog (nothing to delete yet).
     onDelete: (() -> Unit)? = null,
@@ -831,9 +896,9 @@ internal fun ClothesRuleDialog(
     var garment by remember {
         mutableStateOf(initial?.item ?: Garment.SWEATER)
     }
-    // The outfit-icon tier this garment recolors (null for shirt / umbrella,
-    // which have no icon of their own). Tracks the dropdown, so changing the
-    // garment re-points the swatch at the tier the new garment paints.
+    // The outfit-icon tier this garment recolors (null only for shirt, which
+    // has no icon of its own). Tracks the dropdown, so changing the garment
+    // re-points the swatch at the tier the new garment paints.
     val colorTarget = garment.colorTarget()
     var colorPickerOpen by remember { mutableStateOf(false) }
     val initialType = when (initial?.condition) {
@@ -942,6 +1007,7 @@ internal fun ClothesRuleDialog(
                     outfitTopColors,
                     outfitBottomColors,
                     outfitHandsColors,
+                    outfitCarriedColors,
                 ),
                 onSwatchClick = { colorPickerOpen = true },
                 allowedTypes = allowedTypes,
@@ -962,7 +1028,7 @@ internal fun ClothesRuleDialog(
     // The color is a per-tier setting shared with the Garment colors card, so
     // a pick applies live (independent of the rule's OK / Cancel) — same as the
     // card. Guarded on colorTarget so it closes itself if the user switches to a
-    // tier-less garment (shirt / umbrella) while it's open.
+    // tier-less garment (shirt) while it's open.
     if (colorPickerOpen && colorTarget != null) {
         GarmentColorPickerDialog(
             garmentLabel = stringResource(garmentLabelRes(garment)),
@@ -970,6 +1036,7 @@ internal fun ClothesRuleDialog(
                 outfitTopColors,
                 outfitBottomColors,
                 outfitHandsColors,
+                outfitCarriedColors,
             ),
             onPick = { picked ->
                 colorTarget.applyColor(
@@ -977,6 +1044,7 @@ internal fun ClothesRuleDialog(
                     onSetOutfitTopColor,
                     onSetOutfitBottomColor,
                     onSetOutfitHandsColor,
+                    onSetOutfitCarriedColor,
                 )
             },
             onDismiss = { colorPickerOpen = false },
@@ -1080,7 +1148,7 @@ internal fun ClothesRuleEditPreviewCard() {
                 garment = Garment.SWEATER,
                 onGarmentChange = {},
                 swatchColor = GarmentPickerTarget.Top(OutfitSuggestion.Top.SWEATER)
-                    .effectiveColor(emptyMap(), emptyMap(), emptyMap()),
+                    .effectiveColor(emptyMap(), emptyMap(), emptyMap(), emptyMap()),
                 onSwatchClick = {},
                 allowedTypes = ConditionType.entries.toList(),
                 type = ConditionType.TEMP_BELOW,

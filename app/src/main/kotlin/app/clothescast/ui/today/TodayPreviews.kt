@@ -217,6 +217,37 @@ internal fun OutfitCoatPantsGlovesPreview() {
     }
 }
 
+@Preview(name = "Outfit · jacket + jeans + umbrella", widthDp = 360)
+@Composable
+internal fun OutfitJacketJeansUmbrellaPreview() {
+    Frame {
+        OutfitPreviewCard(
+            outfit = OutfitSuggestion(
+                OutfitSuggestion.Top.THICK_JACKET,
+                OutfitSuggestion.Bottom.JEANS,
+                carried = OutfitSuggestion.Carried.UMBRELLA,
+            ),
+            label = "Today",
+        )
+    }
+}
+
+@Preview(name = "Outfit · coat + pants + gloves + umbrella", widthDp = 360)
+@Composable
+internal fun OutfitCoatPantsGlovesUmbrellaPreview() {
+    Frame {
+        OutfitPreviewCard(
+            outfit = OutfitSuggestion(
+                OutfitSuggestion.Top.THICK_COAT,
+                OutfitSuggestion.Bottom.LONG_PANTS,
+                hands = OutfitSuggestion.Hands.GLOVES,
+                carried = OutfitSuggestion.Carried.UMBRELLA,
+            ),
+            label = "Today",
+        )
+    }
+}
+
 @Preview(name = "Outfit row · today + tonight", widthDp = 360)
 @Composable
 internal fun OutfitRowTodayTonightPreview() {

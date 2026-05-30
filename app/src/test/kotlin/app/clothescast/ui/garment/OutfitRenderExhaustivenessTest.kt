@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test
  * the unguarded ones, so this drives the check off `entries` to close that
  * gap.
  *
- * When a future tier lands a third slot (e.g. an `OutfitSuggestion.Hands`
- * gloves icon — the `ic_outfit_gloves` drawable already exists), add its
- * `outfitHandsDefaults` map and a sibling assertion here so every render
- * surface is held to handling it before it can ship.
+ * When a future tier lands a new slot (as the `OutfitSuggestion.Hands` gloves
+ * and `OutfitSuggestion.Carried` umbrella tiers did), add its defaults map and a
+ * sibling assertion here so every render surface is held to handling it before
+ * it can ship.
  *
  * Pure JVM — the defaults maps are plain Kotlin, so no Robolectric is needed.
  */
@@ -59,5 +59,15 @@ class OutfitRenderExhaustivenessTest {
         // its entry blows up only when a hands rule actually fires at render time.
         OutfitSuggestion.Hands.entries.filterNot { it in outfitHandsDefaults }.shouldBeEmpty()
         outfitHandsDefaults.keys.shouldContainExactlyInAnyOrder(*OutfitSuggestion.Hands.entries.toTypedArray())
+    }
+
+    @Test
+    fun `every Carried tier has a render-path defaults entry`() {
+        // The optional umbrella overlay (renderCarriedFigureBitmap /
+        // GarmentCarriedIcon) reads outfitCarriedDefaults.getValue(carried), so a
+        // new Carried tier without its entry blows up only when a carried rule
+        // actually fires at render time.
+        OutfitSuggestion.Carried.entries.filterNot { it in outfitCarriedDefaults }.shouldBeEmpty()
+        outfitCarriedDefaults.keys.shouldContainExactlyInAnyOrder(*OutfitSuggestion.Carried.entries.toTypedArray())
     }
 }

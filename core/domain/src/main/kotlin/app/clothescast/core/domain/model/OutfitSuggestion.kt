@@ -35,20 +35,14 @@ import java.time.LocalTime
  * adjusted) — that's what people experience on the way out the door, and it's already
  * what [ClothesRule.appliesTo] does.
  *
- * Note: [top], [bottom], and [hands] (gloves) all render on the icon surfaces
+ * Note: [top], [bottom], and [hands] (gloves) render on every icon surface
  * (home-screen card, widget, notification, Nest-Hub cast card). [carried]
- * (umbrella) is computed but not yet drawn.
- *
- * TODO(umbrella-icon): render [carried] on those surfaces, threaded through
- *  both render paths (renderTopWithHands / renderTopWithHandsBitmap in
- *  GarmentRender.kt). Agreed compositing order, back to front:
- *  umbrella → top → gloves (the umbrella sits behind the body so its canopy
- *  peeks out; gloves stay in front on the hands). Anchor the umbrella to the
- *  hands position; confirm orientation/offset against the 96x96
- *  ic_outfit_umbrella drawable so it's visible rather than hidden under the
- *  top. Also add a user color picker (outfit_carried_colors, mirroring
- *  outfit_hands_colors) and slot it into the per-row recolor flow, not just
- *  the standalone GarmentColorsCard.
+ * (umbrella) renders as a full-figure overlay — held at the hip and hanging
+ * straight down beside the legs — on the surfaces that show the whole figure
+ * (Today cards, widget, cast card); the top-only notification large icon omits
+ * it. On a cold rainy day the gloved hand reads as gripping its crook. Its fill
+ * is user-recolorable via the same per-row / GarmentColorsCard flow as the worn
+ * tiers (`outfit_carried_colors`).
  */
 data class OutfitSuggestion(
     val top: Top,

@@ -121,6 +121,7 @@ import app.clothescast.ui.LocalTimeFormat
 import app.clothescast.ui.formatHourMinute
 import app.clothescast.ui.formatScrubHour
 import app.clothescast.ui.garment.GarmentBottomIcon
+import app.clothescast.ui.garment.GarmentCarriedIcon
 import app.clothescast.ui.garment.GarmentHandsIcon
 import app.clothescast.ui.garment.GarmentTopIcon
 import app.clothescast.diag.BugReport
@@ -919,6 +920,8 @@ internal fun HomePageScaffold(
                         clothesRules = state.clothesRules,
                         outfitTopColors = state.outfitTopColors,
                         outfitBottomColors = state.outfitBottomColors,
+                        outfitHandsColors = state.outfitHandsColors,
+                        outfitCarriedColors = state.outfitCarriedColors,
                         outfitTopStrokes = state.outfitTopStrokes,
                         outfitBottomStrokes = state.outfitBottomStrokes,
                         onNavigateToClothes = onNavigateToClothes,
@@ -1677,6 +1680,7 @@ internal fun OutfitPreviewRow(
     outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     outfitHandsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
+    outfitCarriedColors: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
     outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onNavigateToClothes: () -> Unit = {},
@@ -1696,6 +1700,7 @@ internal fun OutfitPreviewRow(
             outfitTopColors = outfitTopColors,
             outfitBottomColors = outfitBottomColors,
             outfitHandsColors = outfitHandsColors,
+            outfitCarriedColors = outfitCarriedColors,
             outfitTopStrokes = outfitTopStrokes,
             outfitBottomStrokes = outfitBottomStrokes,
             onNavigateToClothes = onNavigateToClothes,
@@ -1752,6 +1757,7 @@ internal fun OutfitPreviewCard(
     outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     outfitHandsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
+    outfitCarriedColors: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
     outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onNavigateToClothes: () -> Unit = {},
@@ -1788,40 +1794,55 @@ internal fun OutfitPreviewCard(
             // sits above it; the icons still meet flush at the waistline
             // (bottom icons are all 96×96, so width(80.dp) already gives an
             // 80dp-square — no slot needed).
-            Column(
-                verticalArrangement = Arrangement.spacedBy(0.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Box(
-                    modifier = Modifier.size(80.dp),
-                    contentAlignment = Alignment.BottomCenter,
+            // The umbrella is a full-figure overlay (held at the hip, hanging
+            // down past the legs), so it spans the top+bottom stack rather than
+            // sitting on one icon — pin the Box to the figure's 80×160 footprint
+            // (top 80 + bottom 80) and lay the umbrella over the whole thing so
+            // its 96×192 art maps 1:1. Only when a carried (umbrella) rule fired.
+            Box(modifier = Modifier.size(width = 80.dp, height = 160.dp)) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    GarmentTopIcon(
-                        top = outfit.top,
-                        customFill = outfitTopColors[outfit.top]?.let { Color(it.toInt()) },
-                        customStroke = outfitTopStrokes[outfit.top]?.let { Color(it.toInt()) },
-                        contentDescription = stringResource(topLabelRes(outfit.top)),
-                        modifier = Modifier.width(80.dp),
-                    )
-                    // Gloves overlay the top at the same width, bottom-aligned
-                    // so they land at the body's sides. Only when a hands rule
-                    // fired — extremity gear is opt-in, so most outfits skip it.
-                    outfit.hands?.let { hands ->
-                        GarmentHandsIcon(
-                            hands = hands,
-                            customFill = outfitHandsColors[hands]?.let { Color(it.toInt()) },
-                            contentDescription = stringResource(R.string.garment_gloves),
+                    Box(
+                        modifier = Modifier.size(80.dp),
+                        contentAlignment = Alignment.BottomCenter,
+                    ) {
+                        GarmentTopIcon(
+                            top = outfit.top,
+                            customFill = outfitTopColors[outfit.top]?.let { Color(it.toInt()) },
+                            customStroke = outfitTopStrokes[outfit.top]?.let { Color(it.toInt()) },
+                            contentDescription = stringResource(topLabelRes(outfit.top)),
                             modifier = Modifier.width(80.dp),
                         )
+                        // Gloves overlay the top at the same width, bottom-aligned
+                        // so they land at the body's sides. Only when a hands rule
+                        // fired — extremity gear is opt-in, so most outfits skip it.
+                        outfit.hands?.let { hands ->
+                            GarmentHandsIcon(
+                                hands = hands,
+                                customFill = outfitHandsColors[hands]?.let { Color(it.toInt()) },
+                                contentDescription = stringResource(R.string.garment_gloves),
+                                modifier = Modifier.width(80.dp),
+                            )
+                        }
                     }
+                    GarmentBottomIcon(
+                        bottom = outfit.bottom,
+                        customFill = outfitBottomColors[outfit.bottom]?.let { Color(it.toInt()) },
+                        customStroke = outfitBottomStrokes[outfit.bottom]?.let { Color(it.toInt()) },
+                        contentDescription = stringResource(bottomLabelRes(outfit.bottom)),
+                        modifier = Modifier.width(80.dp),
+                    )
                 }
-                GarmentBottomIcon(
-                    bottom = outfit.bottom,
-                    customFill = outfitBottomColors[outfit.bottom]?.let { Color(it.toInt()) },
-                    customStroke = outfitBottomStrokes[outfit.bottom]?.let { Color(it.toInt()) },
-                    contentDescription = stringResource(bottomLabelRes(outfit.bottom)),
-                    modifier = Modifier.width(80.dp),
-                )
+                outfit.carried?.let { carried ->
+                    GarmentCarriedIcon(
+                        carried = carried,
+                        customFill = outfitCarriedColors[carried]?.let { Color(it.toInt()) },
+                        contentDescription = stringResource(R.string.garment_umbrella),
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
             }
             // Reserve two lines for the garment-name text so cards match
             // even when one combination wraps and the other doesn't (e.g.

@@ -94,10 +94,13 @@ class InsightNotifier(private val context: Context) {
          * notification visual matches the home-screen card — including any
          * user-picked colour override passed in via [customFillArgb], the
          * tricolour-holiday accent passed in via [customStrokeArgb], and the
-         * optional gloves overlay when [hands] is set (so the notification
-         * shows the same extremity gear the card and widget do on a freezing
-         * day). Returns null when [top] is missing (older cached payloads),
-         * letting the system fall back to no large icon.
+         * optional gloves overlay when [hands] is set (so the notification shows
+         * the same extremity gear the card and widget do on a freezing day). The
+         * carried umbrella is a full-figure overlay (held at the hip, hanging
+         * past the legs), so it has no place on this top-only large icon — it
+         * shows on the Today cards, widget, and cast card instead. Returns null
+         * when [top] is missing (older cached payloads), letting the system fall
+         * back to no large icon.
          */
         internal fun largeIconForTop(
             context: Context,

@@ -3,9 +3,9 @@ package app.clothescast.core.domain.model
 import java.time.LocalTime
 
 /**
- * A glanceable two-piece outfit pairing — one [Top] and one [Bottom] — derived from the
- * forecast so the home screen can render two big icons instead of a comma-separated word
- * list.
+ * A glanceable outfit pairing — one [Top] and one [Bottom], plus an optional [Hands]
+ * accessory — derived from the forecast so the home screen can render big icons instead
+ * of a comma-separated word list.
  *
  * The picker is driven entirely by the user's [ClothesRule] list — the same rules that
  * populate [Insight.recommendedItems]. Top tier (coldest first): a firing `jacket` rule
@@ -23,13 +23,26 @@ import java.time.LocalTime
  * card lets the user point each fallback at any catalog garment so the home-screen
  * icon matches what they actually wear when no rule fires.
  *
+ * [hands] is the odd one out: it is **nullable and has no default**. Unlike a top or a
+ * bottom — which the user always wears, so an uncovered slot falls through to a sensible
+ * default icon — extremity gear is opt-in. A firing `gloves` rule sets [hands] to
+ * [Hands.GLOVES]; with no firing hands rule it stays null and no glove icon is shown.
+ * That mirrors the prose, which surfaces gloves only as an "extra cold" escalation and
+ * never recommends an accessory the user didn't ask for (see the comment on
+ * [ClothesRule.DEFAULTS]).
+ *
  * Rule conditions are checked against feels-like temperatures (wind chill / humidity
  * adjusted) — that's what people experience on the way out the door, and it's already
  * what [ClothesRule.appliesTo] does.
+ *
+ * Note: [hands] is computed here today but the icon render surfaces (home-screen card,
+ * widget, Nest-Hub cast card) still draw only [top] + [bottom]; wiring the glove icon
+ * into those surfaces is a follow-up.
  */
 data class OutfitSuggestion(
     val top: Top,
     val bottom: Bottom,
+    val hands: Hands? = null,
 ) {
     enum class Top {
         TSHIRT, POLO, SWEATER, THIN_JACKET, THICK_JACKET, THICK_COAT, PUFFER_JACKET;
@@ -62,6 +75,22 @@ data class OutfitSuggestion(
         }
     }
 
+    /**
+     * Optional extremity gear worn alongside the top/bottom stack — today just
+     * gloves, the `Garment.Slot.HANDS` member. A single tier rather than a
+     * default-bearing slot: it's present only when a hands rule fires (see the
+     * `hands` note on [OutfitSuggestion]), so there's no "fallback hands" the
+     * way there's a `defaultTop` / `defaultBottom`.
+     */
+    enum class Hands {
+        GLOVES;
+
+        /** Catalog key (matches [Garment.itemKey]) for prose / persistence. */
+        fun itemKey(): String = when (this) {
+            GLOVES -> "gloves"
+        }
+    }
+
     companion object {
         // Catalog item keys (see [Garment.itemKey]) that drive each icon tier.
         // Top tiers (coldest first): coat → THICK_COAT, puffer → PUFFER_JACKET,
@@ -88,6 +117,11 @@ data class OutfitSuggestion(
         private val SHORT_SKIRT_KEYS = listOf(Garment.SHORT_SKIRT)
         private val LONG_SKIRT_KEYS = listOf(Garment.SKIRT)
         private val JEANS_KEYS = listOf(Garment.JEANS)
+        // Hands tier: a firing `gloves` rule lights the optional glove icon.
+        // No fallback tier — uncovered hands stay null (see the `hands` note on
+        // OutfitSuggestion), so this never promotes to a default the way the top
+        // and bottom slots do.
+        private val GLOVES_KEYS = listOf(Garment.GLOVES)
 
         /**
          * Two-piece icon outfit for [forecast] given the user's [clothesRules].
@@ -155,7 +189,9 @@ data class OutfitSuggestion(
                 firingRules.hasKeyIn(JEANS_KEYS) -> Bottom.JEANS
                 else -> defaultBottom
             }
-            return OutfitSuggestion(top, bottom)
+            // Optional, no fallback: null unless a hands rule actually fired.
+            val hands = if (firingRules.hasKeyIn(GLOVES_KEYS)) Hands.GLOVES else null
+            return OutfitSuggestion(top, bottom, hands)
         }
 
         /** True when any rule in the list is keyed on a garment in [keys]. */

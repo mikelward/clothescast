@@ -45,9 +45,8 @@ import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.ui.garment.bottomDrawable
 import app.clothescast.ui.garment.outfitBottomDefaults
-import app.clothescast.ui.garment.outfitTopDefaults
 import app.clothescast.ui.garment.renderOutfitBitmap
-import app.clothescast.ui.garment.topDrawable
+import app.clothescast.ui.garment.renderTopWithHandsBitmap
 import kotlinx.coroutines.flow.first
 
 /**
@@ -202,15 +201,22 @@ private fun SingleColumnContent(
         // the in-app card the user already knows.
         Image(
             provider = ImageProvider(
-                renderOutfitBitmap(
+                // The top bitmap carries the optional gloves overlay; the
+                // gloves vector sits at the body's sides at matching scale.
+                renderTopWithHandsBitmap(
                     context = context,
-                    drawableRes = topDrawable(outfit.top),
-                    defaults = outfitTopDefaults.getValue(outfit.top),
-                    customFillArgb = topColors[outfit.top],
+                    top = outfit.top,
+                    hands = outfit.hands,
                     sizePx = iconPx,
+                    topFillArgb = topColors[outfit.top],
                 ),
             ),
-            contentDescription = context.getString(topLabelRes(outfit.top)),
+            contentDescription = if (outfit.hands != null) {
+                context.getString(topLabelRes(outfit.top)) + ", " +
+                    context.getString(R.string.garment_gloves)
+            } else {
+                context.getString(topLabelRes(outfit.top))
+            },
             modifier = GlanceModifier.size(iconSize),
         )
         Image(

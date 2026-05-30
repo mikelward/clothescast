@@ -107,6 +107,33 @@ class OutfitCardSnapshotTest {
     }
 
     @Test
+    fun outfit_card_freezing_coat_pants_gloves() {
+        // Freezing day: the gloves overlay sits over the coat at the body's
+        // sides. Exercises the optional hands slot on the cast card.
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(
+                    OutfitSuggestion.Top.THICK_COAT,
+                    OutfitSuggestion.Bottom.LONG_PANTS,
+                    OutfitSuggestion.Hands.GLOVES,
+                ),
+                header = "Today's ClothesCast",
+                prose = "A freezing one today. Wear a coat and long pants, and gloves.",
+                info = OutfitCardInfoLines(
+                    tempLine = "-3–2°C",
+                    // Freezing: high 2°C, FREEZING band → low fill.
+                    tempFillFraction = thermometerFillFractionFor(2.0),
+                    rainFillFraction = null,
+                ),
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
+            ),
+        )
+    }
+
+    @Test
     fun outfit_card_all_indicators() {
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         writeCard(

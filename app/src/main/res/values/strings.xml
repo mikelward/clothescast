@@ -1019,6 +1019,7 @@
     <string name="settings_clothes_dialog_add_title">Add clothes rule</string>
     <string name="settings_clothes_dialog_edit_title">Edit clothes rule</string>
     <string name="settings_clothes_item_label">Garment</string>
+    <string name="settings_clothes_color_label">Color</string>
     <string name="settings_clothes_condition_label">Trigger</string>
     <string name="settings_clothes_value_label_temp">Threshold (%1$s)</string>
     <string name="settings_clothes_value_label_precip">Threshold (%%)</string>

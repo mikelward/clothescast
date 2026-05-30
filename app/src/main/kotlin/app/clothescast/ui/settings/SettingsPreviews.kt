@@ -372,6 +372,19 @@ internal fun SettingsGarmentColorPickerPreview() {
     }
 }
 
+// The per-rule edit dialog (rendered as a card — see ClothesRuleEditPreviewCard
+// for why it isn't the real AlertDialog). Captures the garment field, the
+// color swatch under it (the "edit color" affordance — sweater's default
+// brown here), the condition radios, and the pre-filled threshold field, so the
+// editor's layout is a reviewable image diff.
+@Preview(name = "Settings · Clothes rule dialog", widthDp = 360)
+@Composable
+internal fun SettingsClothesRuleDialogPreview() {
+    SettingsFrame {
+        ClothesRuleEditPreviewCard()
+    }
+}
+
 @Preview(name = "Settings · Region & Units", widthDp = 360)
 @Composable
 internal fun SettingsRegionPreview() {

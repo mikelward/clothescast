@@ -33,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -46,6 +47,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
@@ -106,14 +110,30 @@ internal fun ClothesContent(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            ClothesRulesCard(rules, temperatureUnit, onAdd, onReplace, onDelete)
+            ClothesRulesCard(
+                rules = rules,
+                temperatureUnit = temperatureUnit,
+                outfitTopColors = outfitTopColors,
+                outfitBottomColors = outfitBottomColors,
+                outfitHandsColors = outfitHandsColors,
+                onAdd = onAdd,
+                onReplace = onReplace,
+                onDelete = onDelete,
+                onSetOutfitTopColor = onSetOutfitTopColor,
+                onSetOutfitBottomColor = onSetOutfitBottomColor,
+                onSetOutfitHandsColor = onSetOutfitHandsColor,
+            )
             FallbackOutfitCard(
                 rules = rules,
                 defaultTop = defaultTop,
                 defaultBottom = defaultBottom,
                 temperatureUnit = temperatureUnit,
+                outfitTopColors = outfitTopColors,
+                outfitBottomColors = outfitBottomColors,
                 onSetDefaultTop = onSetDefaultTop,
                 onSetDefaultBottom = onSetDefaultBottom,
+                onSetOutfitTopColor = onSetOutfitTopColor,
+                onSetOutfitBottomColor = onSetOutfitBottomColor,
             )
             GarmentColorsCard(
                 outfitTopColors = outfitTopColors,
@@ -173,20 +193,16 @@ private fun GarmentColorsCard(
         }
     }
     pickerTarget?.let { target ->
-        val (label, current) = when (target) {
-            is GarmentPickerTarget.Top -> stringResource(topOutfitLabelRes(target.top)) to outfitTopColors[target.top]
-            is GarmentPickerTarget.Bottom -> stringResource(bottomOutfitLabelRes(target.bottom)) to outfitBottomColors[target.bottom]
-            is GarmentPickerTarget.Hands -> stringResource(handsOutfitLabelRes(target.hands)) to outfitHandsColors[target.hands]
+        val label = when (target) {
+            is GarmentPickerTarget.Top -> stringResource(topOutfitLabelRes(target.top))
+            is GarmentPickerTarget.Bottom -> stringResource(bottomOutfitLabelRes(target.bottom))
+            is GarmentPickerTarget.Hands -> stringResource(handsOutfitLabelRes(target.hands))
         }
         GarmentColorPickerDialog(
             garmentLabel = label,
-            currentArgb = current,
+            currentArgb = target.currentArgb(outfitTopColors, outfitBottomColors, outfitHandsColors),
             onPick = { picked ->
-                when (target) {
-                    is GarmentPickerTarget.Top -> onSetOutfitTopColor(target.top, picked)
-                    is GarmentPickerTarget.Bottom -> onSetOutfitBottomColor(target.bottom, picked)
-                    is GarmentPickerTarget.Hands -> onSetOutfitHandsColor(target.hands, picked)
-                }
+                target.applyColor(picked, onSetOutfitTopColor, onSetOutfitBottomColor, onSetOutfitHandsColor)
             },
             onDismiss = { pickerTarget = null },
         )
@@ -197,6 +213,68 @@ private sealed interface GarmentPickerTarget {
     data class Top(val top: OutfitSuggestion.Top) : GarmentPickerTarget
     data class Bottom(val bottom: OutfitSuggestion.Bottom) : GarmentPickerTarget
     data class Hands(val hands: OutfitSuggestion.Hands) : GarmentPickerTarget
+}
+
+/**
+ * The outfit-icon color tier a rule's [Garment] recolors, or null for catalog
+ * garments with no icon tier of their own — `shirt` (no `Top.SHIRT` drawable
+ * yet) and the carried `umbrella` (drawn as gear, not a recolorable outfit
+ * piece). Mirrors the garment→tier dispatch in
+ * [OutfitSuggestion.Companion.fromForecast]'s picker so the swatch shown when
+ * editing a rule matches the color that rule's firing icon actually paints
+ * with (`hoodie` shares the `SWEATER` tier; `pants` the `LONG_PANTS` one).
+ */
+private fun Garment.colorTarget(): GarmentPickerTarget? = when (this) {
+    Garment.COAT -> GarmentPickerTarget.Top(OutfitSuggestion.Top.THICK_COAT)
+    Garment.PUFFER -> GarmentPickerTarget.Top(OutfitSuggestion.Top.PUFFER_JACKET)
+    Garment.JACKET -> GarmentPickerTarget.Top(OutfitSuggestion.Top.THICK_JACKET)
+    Garment.THIN_JACKET -> GarmentPickerTarget.Top(OutfitSuggestion.Top.THIN_JACKET)
+    Garment.SWEATER, Garment.HOODIE -> GarmentPickerTarget.Top(OutfitSuggestion.Top.SWEATER)
+    Garment.POLO -> GarmentPickerTarget.Top(OutfitSuggestion.Top.POLO)
+    Garment.TSHIRT -> GarmentPickerTarget.Top(OutfitSuggestion.Top.TSHIRT)
+    Garment.SHORTS -> GarmentPickerTarget.Bottom(OutfitSuggestion.Bottom.SHORTS)
+    Garment.SHORT_SKIRT -> GarmentPickerTarget.Bottom(OutfitSuggestion.Bottom.SHORT_SKIRT)
+    Garment.SKIRT -> GarmentPickerTarget.Bottom(OutfitSuggestion.Bottom.LONG_SKIRT)
+    Garment.JEANS -> GarmentPickerTarget.Bottom(OutfitSuggestion.Bottom.JEANS)
+    Garment.PANTS -> GarmentPickerTarget.Bottom(OutfitSuggestion.Bottom.LONG_PANTS)
+    Garment.GLOVES -> GarmentPickerTarget.Hands(OutfitSuggestion.Hands.GLOVES)
+    Garment.SHIRT, Garment.UMBRELLA -> null
+}
+
+/** The user's current ARGB override for this tier, or null when on its default. */
+private fun GarmentPickerTarget.currentArgb(
+    topColors: Map<OutfitSuggestion.Top, Long>,
+    bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+    handsColors: Map<OutfitSuggestion.Hands, Long>,
+): Long? = when (this) {
+    is GarmentPickerTarget.Top -> topColors[top]
+    is GarmentPickerTarget.Bottom -> bottomColors[bottom]
+    is GarmentPickerTarget.Hands -> handsColors[hands]
+}
+
+/** The color this tier renders with — the user's override, or the baked default. */
+private fun GarmentPickerTarget.effectiveColor(
+    topColors: Map<OutfitSuggestion.Top, Long>,
+    bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+    handsColors: Map<OutfitSuggestion.Hands, Long>,
+): Color = when (this) {
+    is GarmentPickerTarget.Top -> colorFor(topColors[top], outfitTopDefaults.getValue(top).fillArgb)
+    is GarmentPickerTarget.Bottom -> colorFor(bottomColors[bottom], outfitBottomDefaults.getValue(bottom).fillArgb)
+    is GarmentPickerTarget.Hands -> colorFor(handsColors[hands], outfitHandsDefaults.getValue(hands).fillArgb)
+}
+
+/** Routes a picked ARGB (or null to clear) to the matching tier's setter. */
+private fun GarmentPickerTarget.applyColor(
+    argb: Long?,
+    onSetTop: (OutfitSuggestion.Top, Long?) -> Unit,
+    onSetBottom: (OutfitSuggestion.Bottom, Long?) -> Unit,
+    onSetHands: (OutfitSuggestion.Hands, Long?) -> Unit,
+) {
+    when (this) {
+        is GarmentPickerTarget.Top -> onSetTop(top, argb)
+        is GarmentPickerTarget.Bottom -> onSetBottom(bottom, argb)
+        is GarmentPickerTarget.Hands -> onSetHands(hands, argb)
+    }
 }
 
 @Composable
@@ -229,6 +307,34 @@ private fun GarmentColorRow(
             modifier = Modifier.padding(start = 16.dp),
         )
     }
+}
+
+/**
+ * A standalone tappable color swatch — the "edit color" affordance the rule
+ * dialog and the fallback rows share. A filled circle showing the tier's
+ * current color that opens [GarmentColorPickerDialog] on tap; [description]
+ * carries the accessible label (e.g. "Color swatch Sweater").
+ */
+@Composable
+private fun GarmentColorSwatchButton(
+    color: Color,
+    description: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .size(28.dp)
+            .clip(CircleShape)
+            .background(color)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+                shape = CircleShape,
+            )
+            .clickable(role = Role.Button, onClick = onClick)
+            .semantics { contentDescription = description },
+    )
 }
 
 private fun colorFor(customArgb: Long?, defaultArgb: Int): Color =
@@ -279,10 +385,21 @@ private fun FallbackOutfitCard(
     defaultTop: OutfitSuggestion.Top,
     defaultBottom: OutfitSuggestion.Bottom,
     temperatureUnit: TemperatureUnit,
+    outfitTopColors: Map<OutfitSuggestion.Top, Long>,
+    outfitBottomColors: Map<OutfitSuggestion.Bottom, Long>,
     onSetDefaultTop: (OutfitSuggestion.Top) -> Unit,
     onSetDefaultBottom: (OutfitSuggestion.Bottom) -> Unit,
+    onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
+    onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
 ) {
     var editing by remember { mutableStateOf<FallbackSlot?>(null) }
+    // The fallback row whose color swatch was tapped, or null when no color
+    // picker is open. The slot's tier is the same OutfitSuggestion key the row
+    // already selects, so no Garment→tier mapping is needed here.
+    var colorEditing by remember { mutableStateOf<FallbackSlot?>(null) }
+    val topTarget = GarmentPickerTarget.Top(defaultTop)
+    val bottomTarget = GarmentPickerTarget.Bottom(defaultBottom)
+    val handsColors = emptyMap<OutfitSuggestion.Hands, Long>()
     SectionCard(title = stringResource(R.string.settings_default_outfit_title)) {
         FallbackOutfitRow(
             label = stringResource(topOutfitLabelRes(defaultTop)),
@@ -290,6 +407,12 @@ private fun FallbackOutfitCard(
                 fallbackRange(rules, FallbackTier.TOP),
                 temperatureUnit,
             ),
+            swatchColor = topTarget.effectiveColor(outfitTopColors, outfitBottomColors, handsColors),
+            swatchDescription = stringResource(
+                R.string.settings_garment_color_swatch_description,
+                stringResource(topOutfitLabelRes(defaultTop)),
+            ),
+            onEditColor = { colorEditing = FallbackSlot.TOP },
             onEdit = { editing = FallbackSlot.TOP },
         )
         HorizontalDivider()
@@ -299,6 +422,12 @@ private fun FallbackOutfitCard(
                 fallbackRange(rules, FallbackTier.BOTTOM),
                 temperatureUnit,
             ),
+            swatchColor = bottomTarget.effectiveColor(outfitTopColors, outfitBottomColors, handsColors),
+            swatchDescription = stringResource(
+                R.string.settings_garment_color_swatch_description,
+                stringResource(bottomOutfitLabelRes(defaultBottom)),
+            ),
+            onEditColor = { colorEditing = FallbackSlot.BOTTOM },
             onEdit = { editing = FallbackSlot.BOTTOM },
         )
     }
@@ -321,6 +450,25 @@ private fun FallbackOutfitCard(
         )
         null -> Unit
     }
+    // Color is a per-tier setting shared with the rules and the Garment colors
+    // card, so a pick applies live — independent of the garment picker above.
+    val colorSlot = colorEditing
+    if (colorSlot != null) {
+        val target = if (colorSlot == FallbackSlot.TOP) topTarget else bottomTarget
+        val labelRes = if (colorSlot == FallbackSlot.TOP) {
+            topOutfitLabelRes(defaultTop)
+        } else {
+            bottomOutfitLabelRes(defaultBottom)
+        }
+        GarmentColorPickerDialog(
+            garmentLabel = stringResource(labelRes),
+            currentArgb = target.currentArgb(outfitTopColors, outfitBottomColors, handsColors),
+            onPick = { picked ->
+                target.applyColor(picked, onSetOutfitTopColor, onSetOutfitBottomColor) { _, _ -> }
+            },
+            onDismiss = { colorEditing = null },
+        )
+    }
 }
 
 private enum class FallbackSlot { TOP, BOTTOM }
@@ -329,6 +477,9 @@ private enum class FallbackSlot { TOP, BOTTOM }
 private fun FallbackOutfitRow(
     label: String,
     description: String?,
+    swatchColor: Color,
+    swatchDescription: String,
+    onEditColor: () -> Unit,
     onEdit: () -> Unit,
 ) {
     Row(
@@ -347,6 +498,12 @@ private fun FallbackOutfitRow(
                 )
             }
         }
+        GarmentColorSwatchButton(
+            color = swatchColor,
+            description = swatchDescription,
+            onClick = onEditColor,
+            modifier = Modifier.padding(end = 8.dp),
+        )
         TextButton(onClick = onEdit) { Text(stringResource(R.string.settings_clothes_edit)) }
     }
 }
@@ -441,9 +598,15 @@ private fun FallbackBottomPickerDialog(
 private fun ClothesRulesCard(
     rules: List<ClothesRule>,
     temperatureUnit: TemperatureUnit,
+    outfitTopColors: Map<OutfitSuggestion.Top, Long>,
+    outfitBottomColors: Map<OutfitSuggestion.Bottom, Long>,
+    outfitHandsColors: Map<OutfitSuggestion.Hands, Long>,
     onAdd: (ClothesRule) -> Unit,
     onReplace: (Int, ClothesRule) -> Unit,
     onDelete: (Int) -> Unit,
+    onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
+    onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
+    onSetOutfitHandsColor: (OutfitSuggestion.Hands, Long?) -> Unit,
 ) {
     var addOpen by remember { mutableStateOf(false) }
     var editIndex by remember { mutableStateOf<Int?>(null) }
@@ -479,11 +642,17 @@ private fun ClothesRulesCard(
         ClothesRuleDialog(
             initial = null,
             temperatureUnit = temperatureUnit,
+            outfitTopColors = outfitTopColors,
+            outfitBottomColors = outfitBottomColors,
+            outfitHandsColors = outfitHandsColors,
             onDismiss = { addOpen = false },
             onConfirm = {
                 addOpen = false
                 onAdd(it)
             },
+            onSetOutfitTopColor = onSetOutfitTopColor,
+            onSetOutfitBottomColor = onSetOutfitBottomColor,
+            onSetOutfitHandsColor = onSetOutfitHandsColor,
         )
     }
 
@@ -492,11 +661,17 @@ private fun ClothesRulesCard(
         ClothesRuleDialog(
             initial = rules[editing],
             temperatureUnit = temperatureUnit,
+            outfitTopColors = outfitTopColors,
+            outfitBottomColors = outfitBottomColors,
+            outfitHandsColors = outfitHandsColors,
             onDismiss = { editIndex = null },
             onConfirm = {
                 onReplace(editing, it)
                 editIndex = null
             },
+            onSetOutfitTopColor = onSetOutfitTopColor,
+            onSetOutfitBottomColor = onSetOutfitBottomColor,
+            onSetOutfitHandsColor = onSetOutfitHandsColor,
         )
     }
 }
@@ -599,11 +774,17 @@ private fun garmentLabelRes(garment: Garment): Int = when (garment) {
 }
 
 @Composable
-private fun ClothesRuleDialog(
+internal fun ClothesRuleDialog(
     initial: ClothesRule?,
     temperatureUnit: TemperatureUnit,
+    outfitTopColors: Map<OutfitSuggestion.Top, Long>,
+    outfitBottomColors: Map<OutfitSuggestion.Bottom, Long>,
+    outfitHandsColors: Map<OutfitSuggestion.Hands, Long>,
     onDismiss: () -> Unit,
     onConfirm: (ClothesRule) -> Unit,
+    onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
+    onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
+    onSetOutfitHandsColor: (OutfitSuggestion.Hands, Long?) -> Unit,
 ) {
     // Pre-select the initial rule's garment when editing; default to SWEATER
     // when adding (the most common cold-weather rule). Items not in the catalog
@@ -612,6 +793,11 @@ private fun ClothesRuleDialog(
     var garment by remember {
         mutableStateOf(initial?.item ?: Garment.SWEATER)
     }
+    // The outfit-icon tier this garment recolors (null for shirt / umbrella,
+    // which have no icon of their own). Tracks the dropdown, so changing the
+    // garment re-points the swatch at the tier the new garment paints.
+    val colorTarget = garment.colorTarget()
+    var colorPickerOpen by remember { mutableStateOf(false) }
     val initialType = when (initial?.condition) {
         is ClothesRule.TemperatureBelow -> ConditionType.TEMP_BELOW
         is ClothesRule.TemperatureAbove -> ConditionType.TEMP_ABOVE
@@ -699,48 +885,163 @@ private fun ClothesRuleDialog(
             )
         },
         text = {
-            Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                GarmentDropdown(
-                    selected = garment,
-                    onSelect = { garment = it },
-                )
-                Text(
-                    text = stringResource(R.string.settings_clothes_condition_label),
-                    style = MaterialTheme.typography.labelLarge,
-                )
-                allowedTypes.forEach { entry ->
-                    RadioRow(
-                        label = stringResource(entry.labelRes),
-                        selected = type == entry,
-                        onSelect = { type = entry },
-                    )
-                }
-                OutlinedTextField(
-                    value = valueText,
-                    onValueChange = { valueText = it },
-                    label = {
-                        Text(
-                            if (type == ConditionType.PRECIP_ABOVE) {
-                                stringResource(R.string.settings_clothes_value_label_precip)
-                            } else {
-                                stringResource(
-                                    R.string.settings_clothes_value_label_temp,
-                                    temperatureUnit.symbol(),
-                                )
-                            },
-                        )
-                    },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    isError = !valueValid,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
+            ClothesRuleFields(
+                garment = garment,
+                onGarmentChange = { garment = it },
+                swatchColor = colorTarget?.effectiveColor(
+                    outfitTopColors,
+                    outfitBottomColors,
+                    outfitHandsColors,
+                ),
+                onSwatchClick = { colorPickerOpen = true },
+                allowedTypes = allowedTypes,
+                type = type,
+                onTypeChange = { type = it },
+                valueText = valueText,
+                onValueChange = { valueText = it },
+                valueValid = valueValid,
+                valueLabel = if (type == ConditionType.PRECIP_ABOVE) {
+                    stringResource(R.string.settings_clothes_value_label_precip)
+                } else {
+                    stringResource(R.string.settings_clothes_value_label_temp, temperatureUnit.symbol())
+                },
+            )
         },
     )
+
+    // The color is a per-tier setting shared with the Garment colors card, so
+    // a pick applies live (independent of the rule's OK / Cancel) — same as the
+    // card. Guarded on colorTarget so it closes itself if the user switches to a
+    // tier-less garment (shirt / umbrella) while it's open.
+    if (colorPickerOpen && colorTarget != null) {
+        GarmentColorPickerDialog(
+            garmentLabel = stringResource(garmentLabelRes(garment)),
+            currentArgb = colorTarget.currentArgb(
+                outfitTopColors,
+                outfitBottomColors,
+                outfitHandsColors,
+            ),
+            onPick = { picked ->
+                colorTarget.applyColor(
+                    picked,
+                    onSetOutfitTopColor,
+                    onSetOutfitBottomColor,
+                    onSetOutfitHandsColor,
+                )
+            },
+            onDismiss = { colorPickerOpen = false },
+        )
+    }
+}
+
+/**
+ * The rule editor's form body — garment picker, the optional color swatch
+ * ([swatchColor] is null for garments with no icon tier), the condition-type
+ * radios, and the threshold field. Pulled out of [ClothesRuleDialog]'s dialog
+ * slot so [ClothesRuleEditPreviewCard] can render the same fields for a
+ * snapshot without the real `AlertDialog` (see that function's note).
+ */
+@Composable
+private fun ClothesRuleFields(
+    garment: Garment,
+    onGarmentChange: (Garment) -> Unit,
+    swatchColor: Color?,
+    onSwatchClick: () -> Unit,
+    allowedTypes: List<ConditionType>,
+    type: ConditionType,
+    onTypeChange: (ConditionType) -> Unit,
+    valueText: String,
+    onValueChange: (String) -> Unit,
+    valueValid: Boolean,
+    valueLabel: String,
+) {
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        GarmentDropdown(selected = garment, onSelect = onGarmentChange)
+        if (swatchColor != null) {
+            // A labeled "Color" row (swatch + caption) rather than a bare
+            // swatch, so it's clear the circle edits this garment's color.
+            GarmentColorRow(
+                label = stringResource(R.string.settings_clothes_color_label),
+                effectiveColor = swatchColor,
+                onClick = onSwatchClick,
+            )
+        }
+        Text(
+            text = stringResource(R.string.settings_clothes_condition_label),
+            style = MaterialTheme.typography.labelLarge,
+        )
+        allowedTypes.forEach { entry ->
+            RadioRow(
+                label = stringResource(entry.labelRes),
+                selected = type == entry,
+                onSelect = { onTypeChange(entry) },
+            )
+        }
+        OutlinedTextField(
+            value = valueText,
+            onValueChange = onValueChange,
+            label = { Text(valueLabel) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            isError = !valueValid,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+/**
+ * Renders the rule editor as a dialog-shaped card for snapshotting. The real
+ * [ClothesRuleDialog] can't be captured: an editable [OutlinedTextField] inside
+ * a Material3 `AlertDialog` measures in an infinite loop under Robolectric
+ * (it never reports idle, so `waitForIdle` times out). Rendering the same
+ * [ClothesRuleFields] in a plain surface sidesteps the popup window while still
+ * regressing the actual field layout — including the new color swatch.
+ * Edit-mode sweater rule, threshold pre-filled in °C.
+ */
+@Composable
+internal fun ClothesRuleEditPreviewCard() {
+    Surface(
+        shape = MaterialTheme.shapes.extraLarge,
+        tonalElevation = 6.dp,
+        modifier = Modifier.padding(16.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.settings_clothes_dialog_edit_title),
+                style = MaterialTheme.typography.headlineSmall,
+            )
+            ClothesRuleFields(
+                garment = Garment.SWEATER,
+                onGarmentChange = {},
+                swatchColor = GarmentPickerTarget.Top(OutfitSuggestion.Top.SWEATER)
+                    .effectiveColor(emptyMap(), emptyMap(), emptyMap()),
+                onSwatchClick = {},
+                allowedTypes = ConditionType.entries.toList(),
+                type = ConditionType.TEMP_BELOW,
+                onTypeChange = {},
+                valueText = "16",
+                onValueChange = {},
+                valueValid = true,
+                valueLabel = stringResource(
+                    R.string.settings_clothes_value_label_temp,
+                    TemperatureUnit.CELSIUS.symbol(),
+                ),
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                TextButton(onClick = {}) { Text(stringResource(android.R.string.cancel)) }
+                TextButton(onClick = {}) { Text(stringResource(android.R.string.ok)) }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

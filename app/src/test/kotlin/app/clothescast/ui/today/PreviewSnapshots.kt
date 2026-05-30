@@ -33,6 +33,7 @@ import app.clothescast.ui.onboarding.OnboardingPartialPreview
 import app.clothescast.ui.settings.SettingsCalendarPreview
 import app.clothescast.ui.settings.SettingsClothesFahrenheitPreview
 import app.clothescast.ui.settings.SettingsClothesPreview
+import app.clothescast.ui.settings.SettingsClothesRuleDialogPreview
 import app.clothescast.ui.settings.SettingsDisplayPreview
 import app.clothescast.ui.settings.SettingsForecastersPreview
 import app.clothescast.ui.settings.SettingsFormatClothesNeverPreview
@@ -630,6 +631,10 @@ class PreviewSnapshots {
     @Test fun settings_format_current_forecast() = capture { SettingsFormatCurrentForecastPreview() }
     @Test fun settings_clothes() = capture { SettingsClothesPreview() }
     @Test fun settings_clothes_fahrenheit() = capture { SettingsClothesFahrenheitPreview() }
+    // Rendered as a card, not the real AlertDialog (an editable text field
+    // inside a Material3 dialog loops forever under Robolectric) — so it's a
+    // plain onRoot capture, not captureDialog. See ClothesRuleEditPreviewCard.
+    @Test fun settings_clothes_rule_dialog() = capture { SettingsClothesRuleDialogPreview() }
     @Test fun settings_region() = capture { SettingsRegionPreview() }
     @Test fun settings_display() = capture { SettingsDisplayPreview() }
     @Test fun settings_voice_device() = capture { SettingsVoiceDevicePreview() }

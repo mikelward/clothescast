@@ -610,6 +610,10 @@ private fun ClothesRulesCard(
 ) {
     var addOpen by remember { mutableStateOf(false) }
     var editIndex by remember { mutableStateOf<Int?>(null) }
+    // The rule whose inline color swatch was tapped, or null when no row-level
+    // color picker is open. Edits the same per-tier color the rule dialog and
+    // the Garment colors card do.
+    var colorEditIndex by remember { mutableStateOf<Int?>(null) }
 
     SectionCard(title = stringResource(R.string.settings_clothes_title)) {
         Text(
@@ -628,8 +632,10 @@ private fun ClothesRulesCard(
             ClothesRuleRow(
                 rule = rule,
                 temperatureUnit = temperatureUnit,
+                swatchColor = rule.item.colorTarget()
+                    ?.effectiveColor(outfitTopColors, outfitBottomColors, outfitHandsColors),
+                onEditColor = { colorEditIndex = index },
                 onEdit = { editIndex = index },
-                onDelete = { onDelete(index) },
             )
         }
         Button(
@@ -672,7 +678,30 @@ private fun ClothesRulesCard(
             onSetOutfitTopColor = onSetOutfitTopColor,
             onSetOutfitBottomColor = onSetOutfitBottomColor,
             onSetOutfitHandsColor = onSetOutfitHandsColor,
+            onDelete = {
+                onDelete(editing)
+                editIndex = null
+            },
         )
+    }
+
+    // Inline (row-level) color picker — the swatch on a rule row opens this
+    // directly, without going through the edit dialog. Same per-tier color the
+    // dialog and the Garment colors card edit; applies live on pick.
+    val colorEditing = colorEditIndex
+    if (colorEditing != null && colorEditing in rules.indices) {
+        val garment = rules[colorEditing].item
+        val target = garment.colorTarget()
+        if (target != null) {
+            GarmentColorPickerDialog(
+                garmentLabel = stringResource(garmentLabelRes(garment)),
+                currentArgb = target.currentArgb(outfitTopColors, outfitBottomColors, outfitHandsColors),
+                onPick = { picked ->
+                    target.applyColor(picked, onSetOutfitTopColor, onSetOutfitBottomColor, onSetOutfitHandsColor)
+                },
+                onDismiss = { colorEditIndex = null },
+            )
+        }
     }
 }
 
@@ -680,8 +709,9 @@ private fun ClothesRulesCard(
 private fun ClothesRuleRow(
     rule: ClothesRule,
     temperatureUnit: TemperatureUnit,
+    swatchColor: Color?,
+    onEditColor: () -> Unit,
     onEdit: () -> Unit,
-    onDelete: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -698,13 +728,18 @@ private fun ClothesRuleRow(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        TextButton(onClick = onEdit) { Text(stringResource(R.string.settings_clothes_edit)) }
-        IconButton(onClick = onDelete) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = stringResource(R.string.settings_clothes_delete),
+        if (swatchColor != null) {
+            GarmentColorSwatchButton(
+                color = swatchColor,
+                description = stringResource(
+                    R.string.settings_garment_color_swatch_description,
+                    stringResource(garmentLabelRes(rule.item)),
+                ),
+                onClick = onEditColor,
+                modifier = Modifier.padding(end = 8.dp),
             )
         }
+        TextButton(onClick = onEdit) { Text(stringResource(R.string.settings_clothes_edit)) }
     }
 }
 
@@ -785,6 +820,9 @@ internal fun ClothesRuleDialog(
     onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
     onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
     onSetOutfitHandsColor: (OutfitSuggestion.Hands, Long?) -> Unit,
+    // Non-null only when editing an existing rule — surfaces a Delete affordance
+    // in the dialog title. Null for the add dialog (nothing to delete yet).
+    onDelete: (() -> Unit)? = null,
 ) {
     // Pre-select the initial rule's garment when editing; default to SWEATER
     // when adding (the most common cold-weather rule). Items not in the catalog
@@ -877,12 +915,24 @@ internal fun ClothesRuleDialog(
             }
         },
         title = {
-            Text(
-                stringResource(
-                    if (initial == null) R.string.settings_clothes_dialog_add_title
-                    else R.string.settings_clothes_dialog_edit_title,
-                ),
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(
+                        if (initial == null) R.string.settings_clothes_dialog_add_title
+                        else R.string.settings_clothes_dialog_edit_title,
+                    ),
+                    modifier = Modifier.weight(1f),
+                )
+                if (onDelete != null) {
+                    IconButton(onClick = onDelete) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = stringResource(R.string.settings_clothes_delete),
+                            tint = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                }
+            }
         },
         text = {
             ClothesRuleFields(
@@ -1012,10 +1062,20 @@ internal fun ClothesRuleEditPreviewCard() {
             modifier = Modifier.padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text(
-                text = stringResource(R.string.settings_clothes_dialog_edit_title),
-                style = MaterialTheme.typography.headlineSmall,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(R.string.settings_clothes_dialog_edit_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.weight(1f),
+                )
+                IconButton(onClick = {}) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = stringResource(R.string.settings_clothes_delete),
+                        tint = MaterialTheme.colorScheme.error,
+                    )
+                }
+            }
             ClothesRuleFields(
                 garment = Garment.SWEATER,
                 onGarmentChange = {},

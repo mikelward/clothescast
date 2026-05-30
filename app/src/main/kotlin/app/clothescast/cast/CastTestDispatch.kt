@@ -4,6 +4,7 @@ import android.content.Context
 import app.clothescast.R
 import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.usecase.DeriveInsight
 import app.clothescast.data.InsightCache
@@ -91,6 +92,7 @@ internal suspend fun castCurrentInsight(
         formatter = formatter,
         hourly = insight.hourly,
         temperatureUnit = prefs.temperatureUnit,
+        windSpeedUnit = prefs.distanceUnit.windSpeedUnit(),
     )
     val header = context.getString(
         if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today
@@ -109,10 +111,7 @@ internal suspend fun castCurrentInsight(
             outfit = outfit,
             header = header,
             prose = prose,
-            tempLine = info.tempLine,
-            rainLine = info.rainLine,
-            tempFillFraction = info.tempFillFraction,
-            rainFillFraction = info.rainFillFraction,
+            info = info,
             topColors = topColors,
             bottomColors = bottomColors,
             topStrokes = topStrokes,

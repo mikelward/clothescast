@@ -92,6 +92,8 @@
     <!-- At-a-glance conditions widget (thermometer + rain). -->
     <string name="conditions_widget_label">Conditions</string>
     <string name="conditions_widget_description">Temperature, rain, wind and UV at a glance.</string>
+    <!-- Conditions strip rain cell — peak chance only, e.g. "60%". -->
+    <string name="conditions_rain_pct">%1$d%%</string>
     <!-- Conditions widget wind cell, e.g. "35 km/h" (value + unit symbol). -->
     <string name="conditions_wind">%1$d %2$s</string>
     <!-- Conditions widget UV cell, e.g. "UV 8". -->

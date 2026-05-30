@@ -32,15 +32,12 @@ import app.clothescast.ClothesCastApplication
 import app.clothescast.R
 import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.insight.InsightFormatter
-import app.clothescast.ui.garment.ConditionsCell
-import app.clothescast.ui.garment.ConditionsGlyph
 import app.clothescast.ui.garment.OutfitCardInfoLines
 import app.clothescast.ui.garment.STRIP_SURFACE_DARK_ARGB
 import app.clothescast.ui.garment.STRIP_SURFACE_LIGHT_ARGB
+import app.clothescast.ui.garment.conditionsCells
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.renderConditionsStripBitmap
-import app.clothescast.ui.garment.uvScaleColorArgb
-import app.clothescast.ui.garment.windScaleColorArgb
 import kotlinx.coroutines.flow.first
 
 /**
@@ -166,22 +163,6 @@ private val STRIP_LIGHT_SURFACE = Color(STRIP_SURFACE_LIGHT_ARGB)
 private val STRIP_DARK_SURFACE = Color(STRIP_SURFACE_DARK_ARGB)
 private val STRIP_LIGHT_TEXT = Color(0xFF1A1A1A)
 private val STRIP_DARK_TEXT = Color(0xFFECECEC)
-
-// Builds the strip's cells from the computed info: thermometer always, then the
-// rain / wind / UV cells only when their label is present (gated upstream in
-// outfitCardInfoLines). Wind / UV pick their Beaufort / WHO scale tint.
-private fun conditionsCells(info: OutfitCardInfoLines): List<ConditionsCell> = buildList {
-    add(ConditionsCell(ConditionsGlyph.THERMOMETER, info.tempLine, fillFraction = info.tempFillFraction))
-    info.rainLineShort?.let {
-        add(ConditionsCell(ConditionsGlyph.DROPLET, it, fillFraction = info.rainFillFraction ?: 0f))
-    }
-    info.windLabel?.let {
-        add(ConditionsCell(ConditionsGlyph.WIND, it, tintArgb = windScaleColorArgb(info.windMaxKmh ?: 0.0)))
-    }
-    info.uvLabel?.let {
-        add(ConditionsCell(ConditionsGlyph.UV, it, tintArgb = uvScaleColorArgb(info.uvMax ?: 0.0)))
-    }
-}
 
 private fun conditionsContentDescription(info: OutfitCardInfoLines): String =
     listOfNotNull(

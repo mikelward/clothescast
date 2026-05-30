@@ -1376,6 +1376,7 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
             scheduleEnabledOptInMigration(),
             castEnabledOptInMigration(),
             glovesDefaultMigration(),
+            umbrellaRuleMigration(),
         )
     },
 )
@@ -1506,6 +1507,62 @@ internal fun glovesDefaultMigration(): DataMigration<Preferences> {
                 // sentinel below — parseRules falls back to DEFAULTS (which include
                 // gloves) when it can't decode this value, so those users still
                 // get gloves at read time.
+            }
+            result[migrated] = true
+            return result
+        }
+
+        override suspend fun cleanUp() = Unit
+    }
+}
+
+/**
+ * One-time migration turning the retired `rain_accessory = UMBRELLA` toggle
+ * into a configurable umbrella [ClothesRule] at the historical 30% gate, so
+ * opted-in users keep their "bring an umbrella" prose now that the umbrella is
+ * rule-driven rather than a global format option. `NONE` (or absent) users get
+ * nothing. The old `rain_accessory` key is dropped either way.
+ *
+ * Unlike [glovesDefaultMigration] — where gloves already ship in DEFAULTS, so a
+ * fresh install needs no rule materialised — the umbrella is *not* a default,
+ * so an opted-in user with no stored rule list must have one written out
+ * (their existing domain rules, or DEFAULTS, plus umbrella); otherwise
+ * `parseRules`' `ifEmpty { DEFAULTS }` fallback would silently drop the
+ * umbrella they'd opted into.
+ */
+internal fun umbrellaRuleMigration(): DataMigration<Preferences> {
+    val migrated = booleanPreferencesKey("umbrella_rule_migrated_v1")
+    val rainAccessory = stringPreferencesKey("rain_accessory")
+    val clothesRules = stringPreferencesKey("clothes_rules_json")
+    val json = Json { ignoreUnknownKeys = true }
+    // Match the old POSSIBLE-tier gate (rain mentioned from ~30%); `> 30` is
+    // close enough to the historical `>= 30` that no real forecast differs.
+    val umbrellaRule = ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0))
+    return object : DataMigration<Preferences> {
+        override suspend fun shouldMigrate(currentData: Preferences): Boolean =
+            currentData[migrated] != true
+
+        override suspend fun migrate(currentData: Preferences): Preferences {
+            val result = mutablePreferencesOf()
+            currentData.asMap().forEach { (key, value) ->
+                @Suppress("UNCHECKED_CAST")
+                result[key as Preferences.Key<Any>] = value
+            }
+            val optedIn = currentData[rainAccessory] == "UMBRELLA"
+            // The toggle is retired regardless of its value.
+            result.remove(rainAccessory)
+            if (optedIn) {
+                val stored = currentData[clothesRules]
+                val existingDtos = stored?.takeIf { it.isNotBlank() }
+                    ?.let { runCatching { json.decodeFromString<List<ClothesRuleDto>>(it) }.getOrNull() }
+                val domainRules = existingDtos?.mapNotNull { it.toDomain() }.orEmpty()
+                if (domainRules.none { it.item == Garment.UMBRELLA }) {
+                    // Append to the user's real catalog rules, or materialise
+                    // DEFAULTS (what parseRules would otherwise have served) so
+                    // their existing recommendations survive alongside umbrella.
+                    val base = if (domainRules.isNotEmpty()) domainRules else ClothesRule.DEFAULTS
+                    result[clothesRules] = json.encodeToString((base + umbrellaRule).map { it.toDto() })
+                }
             }
             result[migrated] = true
             return result

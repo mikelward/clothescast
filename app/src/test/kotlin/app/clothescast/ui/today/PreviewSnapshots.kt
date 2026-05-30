@@ -387,6 +387,7 @@ class PreviewSnapshots {
     @Test fun outfit_rationale_dialog_tuned() = captureDialog { OutfitRationaleDialogTunedPreview() }
 
     @Test fun today_empty_state() = capture { TodayEmptyStatePreview() }
+    @Test fun today_empty_state_location_required() = capture { TodayEmptyStateLocationRequiredPreview() }
     @Test fun today_insight_card() = capture { TodayInsightCardPreview() }
     @Test fun today_insight_card_layered() = capture { TodayInsightCardLayeredPreview() }
     @Test fun today_insight_card_dark() = capture { TodayInsightCardDarkPreview() }

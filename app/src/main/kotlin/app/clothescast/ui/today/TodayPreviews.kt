@@ -334,6 +334,12 @@ internal fun TodayEmptyStatePreview() {
     Frame { EmptyState(onRefresh = {}) }
 }
 
+@Preview(name = "Today · empty state (location required)", widthDp = 360)
+@Composable
+internal fun TodayEmptyStateLocationRequiredPreview() {
+    Frame { EmptyState(onRefresh = {}, locationActionRequired = true, onSetUpLocation = {}) }
+}
+
 @Preview(name = "Today · insight loaded", widthDp = 360)
 @Composable
 internal fun TodayInsightCardPreview() {

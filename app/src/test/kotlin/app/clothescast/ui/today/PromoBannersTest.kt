@@ -37,9 +37,11 @@ class PromoBannersTest {
     }
 
     @Test
-    fun `location and privacy show to a brand-new user with no forecast`() {
-        // Location + telemetry aren't forecast-gated, so they're the only
-        // promos a first-run (empty-cache) user can see.
+    fun `only privacy shows to a brand-new user with no forecast`() {
+        // The empty-cache screen carries its own "set up your location"
+        // placeholder, so the location banner is forecast-gated to avoid
+        // double-prompting; telemetry isn't gated, so it's the only promo a
+        // first-run (empty-cache) user can see.
         promoBannersToShow(
             locationActionRequired = true,
             telemetryNoticeVisible = true,
@@ -49,7 +51,23 @@ class PromoBannersTest {
             geminiPromoEligible = false,
             celebrationEligible = true,
             hasForecast = false,
-        ) shouldContainExactlyInAnyOrder listOf(PromoBanner.LOCATION, PromoBanner.TELEMETRY)
+        ) shouldContainExactlyInAnyOrder listOf(PromoBanner.TELEMETRY)
+    }
+
+    @Test
+    fun `location banner waits for a forecast before taking over from the empty state`() {
+        // No forecast yet: the empty-state placeholder owns the location prompt,
+        // so the banner stays hidden even though location is required.
+        promoBannersToShow(
+            locationActionRequired = true,
+            telemetryNoticeVisible = false,
+            clothesPromoEligible = false,
+            schedulePromoEligible = false,
+            playPromoEligible = false,
+            geminiPromoEligible = false,
+            celebrationEligible = false,
+            hasForecast = false,
+        ) shouldBe emptySet()
     }
 
     @Test

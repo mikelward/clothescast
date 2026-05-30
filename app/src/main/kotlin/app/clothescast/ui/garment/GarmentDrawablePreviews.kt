@@ -41,6 +41,42 @@ private fun ClothingDrawableFrame(@DrawableRes iconRes: Int, label: String) {
     }
 }
 
+@Preview(name = "Clothing · rain boots", widthDp = 360)
+@Composable
+internal fun ClothingRainBootsPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_rain_boots, "rain boots")
+}
+
+@Preview(name = "Clothing · winter boots", widthDp = 360)
+@Composable
+internal fun ClothingWinterBootsPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_winter_boots, "winter boots")
+}
+
+@Preview(name = "Clothing · boots", widthDp = 360)
+@Composable
+internal fun ClothingBootsPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_boots, "boots")
+}
+
+@Preview(name = "Clothing · shoes", widthDp = 360)
+@Composable
+internal fun ClothingShoesPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_shoes, "shoes")
+}
+
+@Preview(name = "Clothing · candles", widthDp = 360)
+@Composable
+internal fun ClothingCandlesPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_candles, "candles")
+}
+
+@Preview(name = "Clothing · flipflops", widthDp = 360)
+@Composable
+internal fun ClothingFlipflopsPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_flipflops, "flipflops")
+}
+
 @Preview(name = "Clothing · t-shirt", widthDp = 360)
 @Composable
 internal fun ClothingTShirtPreview() {

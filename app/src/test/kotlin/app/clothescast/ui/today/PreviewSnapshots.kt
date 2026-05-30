@@ -27,6 +27,12 @@ import app.clothescast.ui.garment.ClothingTShirtPreview
 import app.clothescast.ui.garment.ClothingThickCoatPreview
 import app.clothescast.ui.garment.ClothingThickJacketPreview
 import app.clothescast.ui.garment.ClothingThinJacketPreview
+import app.clothescast.ui.garment.ClothingRainBootsPreview
+import app.clothescast.ui.garment.ClothingWinterBootsPreview
+import app.clothescast.ui.garment.ClothingBootsPreview
+import app.clothescast.ui.garment.ClothingShoesPreview
+import app.clothescast.ui.garment.ClothingCandlesPreview
+import app.clothescast.ui.garment.ClothingFlipflopsPreview
 import app.clothescast.ui.onboarding.OnboardingCompletePreview
 import app.clothescast.ui.onboarding.OnboardingFreshPreview
 import app.clothescast.ui.onboarding.OnboardingPartialPreview
@@ -567,6 +573,12 @@ class PreviewSnapshots {
     @Test fun clothing_long_pants() = capture { ClothingLongPantsPreview() }
     @Test fun clothing_gloves() = capture { ClothingGlovesPreview() }
     @Test fun clothing_thick_jacket_with_gloves() = capture { ClothingThickJacketWithGlovesPreview() }
+    @Test fun clothing_rain_boots() = capture { ClothingRainBootsPreview() }
+    @Test fun clothing_winter_boots() = capture { ClothingWinterBootsPreview() }
+    @Test fun clothing_boots() = capture { ClothingBootsPreview() }
+    @Test fun clothing_shoes() = capture { ClothingShoesPreview() }
+    @Test fun clothing_candles() = capture { ClothingCandlesPreview() }
+    @Test fun clothing_flipflops() = capture { ClothingFlipflopsPreview() }
 
     @Test fun widget_today_tshirt_shorts() = capture { WidgetTodayTShirtShortsPreview() }
     @Test fun widget_tonight_sweater_pants() = capture { WidgetTonightSweaterPantsPreview() }

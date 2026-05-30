@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
@@ -158,11 +159,20 @@ private fun SingleColumnMock(label: String, outfit: OutfitSuggestion, size: DpSi
         )
         Spacer(modifier = Modifier.height(2.dp))
         val iconSize = scaledIconSizeMock(size)
-        Image(
-            painter = painterResource(id = topIconResMock(outfit.top)),
-            contentDescription = stringResource(topLabelResMock(outfit.top)),
-            modifier = Modifier.size(iconSize),
-        )
+        Box(contentAlignment = Alignment.Center) {
+            Image(
+                painter = painterResource(id = topIconResMock(outfit.top)),
+                contentDescription = stringResource(topLabelResMock(outfit.top)),
+                modifier = Modifier.size(iconSize),
+            )
+            outfit.hands?.let { hands ->
+                Image(
+                    painter = painterResource(id = handsIconResMock(hands)),
+                    contentDescription = stringResource(handsLabelResMock(hands)),
+                    modifier = Modifier.size(iconSize),
+                )
+            }
+        }
         Image(
             painter = painterResource(id = bottomIconResMock(outfit.bottom)),
             contentDescription = stringResource(bottomLabelResMock(outfit.bottom)),
@@ -170,11 +180,21 @@ private fun SingleColumnMock(label: String, outfit: OutfitSuggestion, size: DpSi
         )
         Spacer(modifier = Modifier.height(2.dp))
         Text(
-            text = stringResource(topLabelResMock(outfit.top)) +
-                " · " +
-                stringResource(bottomLabelResMock(outfit.bottom)),
+            text = buildString {
+                append(stringResource(topLabelResMock(outfit.top)))
+                append(" · ")
+                append(stringResource(bottomLabelResMock(outfit.bottom)))
+                outfit.hands?.let {
+                    append(" · ")
+                    append(stringResource(handsLabelResMock(it)))
+                }
+            },
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = scaledSubtitleSpMock(size),
+            // Mirror the real widget's one-line ellipsis (see OutfitWidget) so
+            // the snapshot matches what RemoteViews renders.
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
@@ -233,6 +253,21 @@ internal fun WidgetTodayJacketPantsPreview() {
         OutfitWidgetMockFilled(
             period = ForecastPeriod.TODAY,
             outfit = OutfitSuggestion(OutfitSuggestion.Top.THICK_JACKET, OutfitSuggestion.Bottom.LONG_PANTS),
+        )
+    }
+}
+
+@Preview(name = "Widget · tonight · coat + pants + gloves", widthDp = 192, heightDp = 192)
+@Composable
+internal fun WidgetTonightCoatPantsGlovesPreview() {
+    WidgetFrame {
+        OutfitWidgetMockFilled(
+            period = ForecastPeriod.TONIGHT,
+            outfit = OutfitSuggestion(
+                OutfitSuggestion.Top.THICK_COAT,
+                OutfitSuggestion.Bottom.LONG_PANTS,
+                OutfitSuggestion.Hands.GLOVES,
+            ),
         )
     }
 }
@@ -403,6 +438,14 @@ private fun bottomLabelResMock(bottom: OutfitSuggestion.Bottom): Int = when (bot
     OutfitSuggestion.Bottom.LONG_SKIRT -> R.string.today_outfit_bottom_long_skirt
     OutfitSuggestion.Bottom.JEANS -> R.string.today_outfit_bottom_jeans
     OutfitSuggestion.Bottom.LONG_PANTS -> R.string.today_outfit_bottom_long_pants
+}
+
+private fun handsIconResMock(hands: OutfitSuggestion.Hands): Int = when (hands) {
+    OutfitSuggestion.Hands.GLOVES -> R.drawable.ic_outfit_gloves
+}
+
+private fun handsLabelResMock(hands: OutfitSuggestion.Hands): Int = when (hands) {
+    OutfitSuggestion.Hands.GLOVES -> R.string.garment_gloves
 }
 
 //

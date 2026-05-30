@@ -92,6 +92,31 @@ internal fun GarmentBottomIcon(
     )
 }
 
+/**
+ * Renders the optional hands accessory (gloves). Unlike the top / bottom icons
+ * this is overlaid on the top icon's box at full size — the gloves drawable's
+ * cuffs are positioned in its 96×96 viewport to sit at the sleeve ends of the
+ * top garments, so sharing the top's bounds keeps them aligned.
+ */
+@Composable
+internal fun GarmentHandsIcon(
+    hands: app.clothescast.core.domain.model.OutfitSuggestion.Hands,
+    customFill: Color?,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+    customStroke: Color? = null,
+) {
+    val defaults = outfitHandsDefaults.getValue(hands)
+    GarmentIconImpl(
+        drawableRes = handsDrawable(hands),
+        defaults = defaults,
+        customFill = customFill,
+        customStroke = customStroke,
+        contentDescription = contentDescription,
+        modifier = modifier,
+    )
+}
+
 @Composable
 private fun GarmentIconImpl(
     @DrawableRes drawableRes: Int,
@@ -343,6 +368,22 @@ internal fun renderOutfitCard(
     )
     canvas.drawBitmap(topBmp, CARD_PAD.toFloat(), CARD_PAD.toFloat(), null)
     canvas.drawBitmap(botBmp, CARD_PAD.toFloat(), (CARD_PAD + ICON_PX + ICON_V_GAP).toFloat(), null)
+    // Gloves overlay the top icon at the same origin and size — the drawable's
+    // cuffs are positioned in its viewport to meet the top garment's sleeve
+    // ends, so sharing the top's bounds keeps them aligned. Only freezing-day
+    // outfits carry a hands slot; rendered at default colours (gloves aren't
+    // user-customisable, matching the in-app card).
+    outfit.hands?.let { hands ->
+        val handsBmp = renderOutfitBitmap(
+            context = context,
+            drawableRes = handsDrawable(hands),
+            defaults = outfitHandsDefaults.getValue(hands),
+            customFillArgb = null,
+            sizePx = ICON_PX,
+            customStrokeArgb = null,
+        )
+        canvas.drawBitmap(handsBmp, CARD_PAD.toFloat(), CARD_PAD.toFloat(), null)
+    }
 
     // Period-aware header along the top of the right column — sits over
     // the prose rather than the icons. Fixed at proseX so it left-aligns

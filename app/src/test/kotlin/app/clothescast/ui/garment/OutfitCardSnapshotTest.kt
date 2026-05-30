@@ -83,6 +83,30 @@ class OutfitCardSnapshotTest {
     }
 
     @Test
+    fun outfit_card_tonight_coat_pants_gloves() {
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(
+                    OutfitSuggestion.Top.THICK_COAT,
+                    OutfitSuggestion.Bottom.LONG_PANTS,
+                    OutfitSuggestion.Hands.GLOVES,
+                ),
+                header = "Tonight's ClothesCast",
+                prose = "Tonight, it will be freezing. Wear a coat, long pants, and gloves.",
+                tempLine = "-3–2°C",
+                rainLine = null,
+                // Freezing night: high 2°C, COLD band → low fill.
+                tempFillFraction = thermometerFillFractionFor(2.0),
+                rainFillFraction = null,
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
+            ),
+        )
+    }
+
+    @Test
     fun outfit_card_today_jacket_jeans_custom_colors() {
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         writeCard(

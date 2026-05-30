@@ -44,7 +44,9 @@ import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.ui.garment.bottomDrawable
+import app.clothescast.ui.garment.handsDrawable
 import app.clothescast.ui.garment.outfitBottomDefaults
+import app.clothescast.ui.garment.outfitHandsDefaults
 import app.clothescast.ui.garment.outfitTopDefaults
 import app.clothescast.ui.garment.renderOutfitBitmap
 import app.clothescast.ui.garment.topDrawable
@@ -199,20 +201,39 @@ private fun SingleColumnContent(
         Spacer(modifier = GlanceModifier.height(2.dp))
         // Top-over-bottom vertical stack matches the Today screen's
         // OutfitPreviewCard so the home-screen glance reads the same way as
-        // the in-app card the user already knows.
-        Image(
-            provider = ImageProvider(
-                renderOutfitBitmap(
-                    context = context,
-                    drawableRes = topDrawable(outfit.top),
-                    defaults = outfitTopDefaults.getValue(outfit.top),
-                    customFillArgb = topColors[outfit.top],
-                    sizePx = iconPx,
+        // the in-app card the user already knows. Gloves (when present) overlay
+        // the top icon in a same-size Box — the drawable's cuffs are positioned
+        // to meet the top garment's sleeve ends, so sharing bounds aligns them.
+        Box(contentAlignment = Alignment.Center) {
+            Image(
+                provider = ImageProvider(
+                    renderOutfitBitmap(
+                        context = context,
+                        drawableRes = topDrawable(outfit.top),
+                        defaults = outfitTopDefaults.getValue(outfit.top),
+                        customFillArgb = topColors[outfit.top],
+                        sizePx = iconPx,
+                    ),
                 ),
-            ),
-            contentDescription = context.getString(topLabelRes(outfit.top)),
-            modifier = GlanceModifier.size(iconSize),
-        )
+                contentDescription = context.getString(topLabelRes(outfit.top)),
+                modifier = GlanceModifier.size(iconSize),
+            )
+            outfit.hands?.let { hands ->
+                Image(
+                    provider = ImageProvider(
+                        renderOutfitBitmap(
+                            context = context,
+                            drawableRes = handsDrawable(hands),
+                            defaults = outfitHandsDefaults.getValue(hands),
+                            customFillArgb = null,
+                            sizePx = iconPx,
+                        ),
+                    ),
+                    contentDescription = context.getString(handsLabelRes(hands)),
+                    modifier = GlanceModifier.size(iconSize),
+                )
+            }
+        }
         Image(
             provider = ImageProvider(
                 renderOutfitBitmap(
@@ -228,9 +249,20 @@ private fun SingleColumnContent(
         )
         Spacer(modifier = GlanceModifier.height(2.dp))
         Text(
-            text = context.getString(topLabelRes(outfit.top)) +
-                " · " +
-                context.getString(bottomLabelRes(outfit.bottom)),
+            text = buildString {
+                append(context.getString(topLabelRes(outfit.top)))
+                append(" · ")
+                append(context.getString(bottomLabelRes(outfit.bottom)))
+                outfit.hands?.let {
+                    append(" · ")
+                    append(context.getString(handsLabelRes(it)))
+                }
+            },
+            // One line; the three-item gloves subtitle overflows the smallest
+            // widgets, so truncate with an ellipsis rather than wrap (vertical
+            // space is tighter than horizontal here) — the gloves icon overlay
+            // still conveys the accessory when the word is clipped.
+            maxLines = 1,
             style = scaledSubtitleStyle(size),
         )
     }
@@ -387,4 +419,8 @@ private fun bottomLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom)
     OutfitSuggestion.Bottom.LONG_SKIRT -> R.string.today_outfit_bottom_long_skirt
     OutfitSuggestion.Bottom.JEANS -> R.string.today_outfit_bottom_jeans
     OutfitSuggestion.Bottom.LONG_PANTS -> R.string.today_outfit_bottom_long_pants
+}
+
+private fun handsLabelRes(hands: OutfitSuggestion.Hands): Int = when (hands) {
+    OutfitSuggestion.Hands.GLOVES -> R.string.garment_gloves
 }

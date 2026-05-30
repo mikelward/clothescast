@@ -121,6 +121,7 @@ import app.clothescast.ui.LocalTimeFormat
 import app.clothescast.ui.formatHourMinute
 import app.clothescast.ui.formatScrubHour
 import app.clothescast.ui.garment.GarmentBottomIcon
+import app.clothescast.ui.garment.GarmentHandsIcon
 import app.clothescast.ui.garment.GarmentTopIcon
 import app.clothescast.diag.BugReport
 import app.clothescast.diag.BugReportConsentDialog
@@ -1663,6 +1664,17 @@ internal fun OutfitPreviewCard(
                         contentDescription = stringResource(topLabelRes(outfit.top)),
                         modifier = Modifier.width(80.dp),
                     )
+                    // Gloves overlay the top icon's box at the same width so the
+                    // cuffs (positioned in the drawable's viewport) land at the
+                    // garment's sleeve ends. Only present on freezing days.
+                    outfit.hands?.let { hands ->
+                        GarmentHandsIcon(
+                            hands = hands,
+                            customFill = null,
+                            contentDescription = stringResource(handsLabelRes(hands)),
+                            modifier = Modifier.width(80.dp),
+                        )
+                    }
                 }
                 GarmentBottomIcon(
                     bottom = outfit.bottom,
@@ -1677,9 +1689,15 @@ internal fun OutfitPreviewCard(
             // "Thick jacket · Long pants" wraps at the row's per-card width
             // but "Sweater · Long pants" doesn't).
             Text(
-                text = stringResource(topLabelRes(outfit.top)) +
-                    " · " +
-                    stringResource(bottomLabelRes(outfit.bottom)),
+                text = buildString {
+                    append(stringResource(topLabelRes(outfit.top)))
+                    append(" · ")
+                    append(stringResource(bottomLabelRes(outfit.bottom)))
+                    outfit.hands?.let {
+                        append(" · ")
+                        append(stringResource(handsLabelRes(it)))
+                    }
+                },
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
                 minLines = 2,
@@ -1900,6 +1918,10 @@ private fun bottomLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom)
     OutfitSuggestion.Bottom.LONG_SKIRT -> R.string.today_outfit_bottom_long_skirt
     OutfitSuggestion.Bottom.JEANS -> R.string.today_outfit_bottom_jeans
     OutfitSuggestion.Bottom.LONG_PANTS -> R.string.today_outfit_bottom_long_pants
+}
+
+private fun handsLabelRes(hands: OutfitSuggestion.Hands): Int = when (hands) {
+    OutfitSuggestion.Hands.GLOVES -> R.string.garment_gloves
 }
 
 @Composable

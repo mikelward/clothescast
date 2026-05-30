@@ -3,9 +3,10 @@ package app.clothescast.core.domain.model
 import java.time.LocalTime
 
 /**
- * A glanceable two-piece outfit pairing — one [Top] and one [Bottom] — derived from the
- * forecast so the home screen can render two big icons instead of a comma-separated word
- * list.
+ * A glanceable outfit pairing — one [Top] and one [Bottom], plus an optional [Hands]
+ * accessory — derived from the forecast so the home screen can render big icons instead
+ * of a comma-separated word list. Top and bottom always resolve (to a default when no
+ * rule fires); hands is null unless a freezing-day gloves rule fires.
  *
  * The picker is driven entirely by the user's [ClothesRule] list — the same rules that
  * populate [Insight.recommendedItems]. Top tier (coldest first): a firing `jacket` rule
@@ -30,6 +31,7 @@ import java.time.LocalTime
 data class OutfitSuggestion(
     val top: Top,
     val bottom: Bottom,
+    val hands: Hands? = null,
 ) {
     enum class Top {
         TSHIRT, POLO, SWEATER, THIN_JACKET, THICK_JACKET, THICK_COAT, PUFFER_JACKET;
@@ -62,6 +64,20 @@ data class OutfitSuggestion(
         }
     }
 
+    /**
+     * Optional hands accessory ([Garment.Slot.HANDS]). Unlike [Top] / [Bottom],
+     * the hands slot has no always-on default — a bare-handed outfit is the norm
+     * — so [OutfitSuggestion.hands] is null unless a freezing-day rule fires.
+     */
+    enum class Hands {
+        GLOVES;
+
+        /** Catalog key (matches [Garment.itemKey]) for prose / persistence. */
+        fun itemKey(): String = when (this) {
+            GLOVES -> "gloves"
+        }
+    }
+
     companion object {
         // Catalog item keys (see [Garment.itemKey]) that drive each icon tier.
         // Top tiers (coldest first): coat → THICK_COAT, puffer → PUFFER_JACKET,
@@ -88,6 +104,9 @@ data class OutfitSuggestion(
         private val SHORT_SKIRT_KEYS = listOf(Garment.SHORT_SKIRT)
         private val LONG_SKIRT_KEYS = listOf(Garment.SKIRT)
         private val JEANS_KEYS = listOf(Garment.JEANS)
+        // Hands slot: a firing `gloves` rule adds gloves; no rule means
+        // bare-handed (null), since there's no always-on hands default.
+        private val GLOVES_KEYS = listOf(Garment.GLOVES)
 
         /**
          * Two-piece icon outfit for [forecast] given the user's [clothesRules].
@@ -155,7 +174,10 @@ data class OutfitSuggestion(
                 firingRules.hasKeyIn(JEANS_KEYS) -> Bottom.JEANS
                 else -> defaultBottom
             }
-            return OutfitSuggestion(top, bottom)
+            // Hands is the only optional slot — present only when a gloves rule
+            // fires, absent otherwise (no bare-handed default to fall back on).
+            val hands = if (firingRules.hasKeyIn(GLOVES_KEYS)) Hands.GLOVES else null
+            return OutfitSuggestion(top, bottom, hands)
         }
 
         /** True when any rule in the list is keyed on a garment in [keys]. */

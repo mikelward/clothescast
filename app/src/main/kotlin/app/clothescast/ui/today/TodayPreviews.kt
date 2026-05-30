@@ -188,6 +188,21 @@ internal fun OutfitJacketPantsPreview() {
     }
 }
 
+@Preview(name = "Outfit · coat + pants + gloves", widthDp = 360)
+@Composable
+internal fun OutfitCoatPantsGlovesPreview() {
+    Frame {
+        OutfitPreviewCard(
+            outfit = OutfitSuggestion(
+                OutfitSuggestion.Top.THICK_COAT,
+                OutfitSuggestion.Bottom.LONG_PANTS,
+                OutfitSuggestion.Hands.GLOVES,
+            ),
+            label = "Tonight",
+        )
+    }
+}
+
 @Preview(name = "Outfit · sweater + pants (dark)", widthDp = 360)
 @Composable
 internal fun OutfitSweaterPantsDarkPreview() {

@@ -157,6 +157,41 @@ class OutfitSuggestionTest {
     }
 
     @Test
+    fun `freezing day adds gloves to the hands slot`() {
+        // Default gloves rule is TemperatureBelow(4.0). A feels-like min of 2°C
+        // fires it, so the hands slot carries GLOVES alongside the cold top.
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 2.0, feelsLikeMax = 6.0),
+            rules,
+        )
+        outfit.hands shouldBe OutfitSuggestion.Hands.GLOVES
+        outfit.top shouldBe OutfitSuggestion.Top.THICK_COAT
+    }
+
+    @Test
+    fun `above the gloves threshold leaves hands bare`() {
+        // 5°C is at-or-above the 4°C cutoff (TemperatureBelow is strictly less),
+        // so no gloves — the hands slot is null, not an empty default.
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 5.0, feelsLikeMax = 9.0),
+            rules,
+        )
+        outfit.hands shouldBe null
+    }
+
+    @Test
+    fun `deleted gloves rule never fills the hands slot`() {
+        // With no gloves rule the hands slot stays empty no matter how cold —
+        // we don't recommend an accessory the user removed.
+        val noGloves = ClothesRule.DEFAULTS.filterNot { it.item == Garment.GLOVES }
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = -10.0, feelsLikeMax = -2.0),
+            noGloves,
+        )
+        outfit.hands shouldBe null
+    }
+
+    @Test
     fun `fromTriggeredOutfit agrees with fromForecast for the same rules and forecast`() {
         // The displayed icon derives from the TriggeredOutfit the prose uses
         // (see DeriveInsight), so the two entry points must agree — otherwise

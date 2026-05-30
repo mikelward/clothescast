@@ -29,6 +29,7 @@ What is NOT overridden, by design:
     <string name="garment_shorts">Къси панталони</string>
     <string name="garment_pants">Панталон</string>
     <string name="garment_jeans">Дънки</string>
+    <string name="garment_gloves">Ръкавици</string>
     <string name="garment_polo">Поло</string>
     <string name="garment_thin_jacket">Тънко яке</string>
     <string name="garment_puffer">Зимно яке</string>

@@ -171,6 +171,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="garment_shorts">Rövidnadrág</string>
     <string name="garment_pants">Nadrág</string>
     <string name="garment_jeans">Farmer</string>
+    <string name="garment_gloves">Kesztyű</string>
     <string name="garment_polo">Galléros póló</string>
     <string name="garment_thin_jacket">Könnyű dzseki</string>
     <string name="garment_puffer">Steppelt kabát</string>

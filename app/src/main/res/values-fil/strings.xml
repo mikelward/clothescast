@@ -19,6 +19,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="garment_shorts">Short</string>
     <string name="garment_pants">Mahabang pantalon</string>
     <string name="garment_jeans">Maong</string>
+    <string name="garment_gloves">Guwantes</string>
 
     <string name="settings_clothes_empty">Wala pang panuntunan. I-tap ang Magdagdag para lumikha.</string>
     <string name="settings_clothes_add">Magdagdag</string>

@@ -49,7 +49,10 @@ enum class Garment(
     HOODIE("hoodie", Slot.TOP, Layer.MID, layerCount = 2),
     JACKET("jacket", Slot.TOP, Layer.SHELL, layerCount = 3),
     COAT("coat", Slot.TOP, Layer.SHELL, layerCount = 3),
-    PUFFER("puffer", Slot.TOP, Layer.SHELL, layerCount = 4),
+    // A puffer is a (warm) shell, not a literal fourth layer — its layerCount
+    // matches the other shells. "Extra cold" beyond a full shell stack is
+    // signalled by extremity gear (gloves), not a higher layer count.
+    PUFFER("puffer", Slot.TOP, Layer.SHELL, layerCount = 3),
     THIN_JACKET("thin-jacket", Slot.TOP, Layer.MID, layerCount = 2),
     TSHIRT("t-shirt", Slot.TOP, Layer.BASE, layerCount = 1),
     POLO("polo", Slot.TOP, Layer.BASE, layerCount = 1),
@@ -62,7 +65,12 @@ enum class Garment(
     SHORT_SKIRT("short-skirt", Slot.BOTTOM),
     SKIRT("skirt", Slot.BOTTOM),
     PANTS("pants", Slot.BOTTOM),
-    JEANS("jeans", Slot.BOTTOM);
+    JEANS("jeans", Slot.BOTTOM),
+
+    // Extremity gear — worn alongside the top/bottom stack, not part of it.
+    // Gloves are the "extra cold" signal: they fire below the coat threshold
+    // rather than inflating the layer count.
+    GLOVES("gloves", Slot.HANDS);
 
     /**
      * Canonical relative warmth for outfit comparisons — "is the evening's top
@@ -87,6 +95,7 @@ enum class Garment(
     enum class Slot(val reduction: Reduction) {
         TOP(Reduction.LAYERED),
         BOTTOM(Reduction.SUBSTITUTE),
+        HANDS(Reduction.SUBSTITUTE),
     }
 
     /**
@@ -201,7 +210,10 @@ enum class Garment(
 
         /** Winner priority per [Reduction.SUBSTITUTE] slot. */
         private val SUBSTITUTE_PRIORITY: Map<Slot, List<Garment>> =
-            mapOf(Slot.BOTTOM to BOTTOM_PRIORITY)
+            mapOf(
+                Slot.BOTTOM to BOTTOM_PRIORITY,
+                Slot.HANDS to listOf(GLOVES),
+            )
 
         /** Rank of this garment within a priority list — earlier wins; anything
          *  off the list sorts last so it only wins if nothing ranked fired. */

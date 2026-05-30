@@ -25,6 +25,7 @@ they work correctly in both the single-band and range templates.
     <string name="garment_shorts">شورت</string>
     <string name="garment_pants">بنطلون</string>
     <string name="garment_jeans">جينز</string>
+    <string name="garment_gloves">قفازات</string>
 
     <string name="settings_clothes_empty">لا توجد قواعد. اضغط على إضافة لإنشاء واحدة.</string>
     <string name="settings_clothes_add">إضافة</string>

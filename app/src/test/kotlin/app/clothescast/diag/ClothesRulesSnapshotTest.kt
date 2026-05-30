@@ -19,7 +19,23 @@ class ClothesRulesSnapshotTest {
         snap.sweaterDeltaC shouldBe "0"
         snap.jacketDeltaC shouldBe "0"
         snap.coatDeltaC shouldBe "0"
+        snap.glovesDeltaC shouldBe "0"
         snap.shortsDeltaC shouldBe "0"
+    }
+
+    @Test
+    fun `deleting the gloves default reports it MISSING and customised`() {
+        // Gloves ships as a freezing-day default; removing it from the rule list
+        // must surface as a customised category with a MISSING delta, the same
+        // way coat does — so the new default is measurable like the others.
+        val rules = ClothesRule.DEFAULTS.filterNot { it.item.itemKey == "gloves" }
+
+        val snap = ClothesRulesSnapshot.from(rules)
+
+        snap.glovesDeltaC shouldBe ClothesRulesSnapshot.MISSING
+        snap.customisedCount shouldBe 1
+        snap.categoriesCustomised shouldBe "gloves"
+        snap.allDefaults shouldBe false
     }
 
     @Test

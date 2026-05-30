@@ -31,6 +31,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="garment_shorts">Kratke hlače</string>
     <string name="garment_pants">Hlače</string>
     <string name="garment_jeans">Traperice</string>
+    <string name="garment_gloves">Rukavice</string>
 
     <!-- Clothes settings — top of the screen. -->
     <string name="settings_clothes_title">Pravila odijevanja</string>

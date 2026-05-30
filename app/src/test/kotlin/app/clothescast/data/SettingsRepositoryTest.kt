@@ -42,6 +42,8 @@ import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.Dispatchers
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
@@ -942,6 +944,7 @@ class SettingsRepositoryTest {
         snap.sweaterDeltaC shouldBe "0"
         snap.jacketDeltaC shouldBe "0"
         snap.coatDeltaC shouldBe "0"
+        snap.glovesDeltaC shouldBe "0"
         snap.shortsDeltaC shouldBe "0"
         snap.categoriesCustomised shouldBe ""
     }
@@ -1074,5 +1077,113 @@ class SettingsRepositoryTest {
 
         migration.shouldMigrate(emptyPreferences()) shouldBe true
         migration.shouldMigrate(mutablePreferencesOf(scheduleMigratedKey to true)) shouldBe false
+    }
+
+    // --- gloves default migration ---
+
+    private val clothesRulesKey = stringPreferencesKey("clothes_rules_json")
+    private val glovesMigratedKey = booleanPreferencesKey("gloves_default_migrated_v1")
+    private val migrationJson = Json { ignoreUnknownKeys = true }
+
+    // Decode a stored clothes-rules JSON string the same way the production read
+    // path does (ClothesRuleDto.toDomain drops non-catalog keys).
+    private fun decodeStoredRules(raw: String?): List<ClothesRule> =
+        migrationJson.decodeFromString<List<ClothesRuleDto>>(raw!!).mapNotNull { it.toDomain() }
+
+    // The pre-gloves default list — what an install that persisted rules before
+    // this change would hold on disk.
+    private val preGlovesDefaultsJson =
+        """[{"item":"sweater","type":"temp_below","value":16.0,"unit":"CELSIUS"},""" +
+            """{"item":"jacket","type":"temp_below","value":10.0,"unit":"CELSIUS"},""" +
+            """{"item":"coat","type":"temp_below","value":4.0,"unit":"CELSIUS"},""" +
+            """{"item":"shorts","type":"temp_above","value":23.0,"unit":"CELSIUS"}]"""
+
+    @Test
+    fun `gloves migration appends the gloves default to a stored list without it`() = runTest {
+        val before = mutablePreferencesOf(clothesRulesKey to preGlovesDefaultsJson)
+
+        val result = glovesDefaultMigration().migrate(before)
+
+        val rules = decodeStoredRules(result[clothesRulesKey])
+        rules.map { it.item.itemKey } shouldBe listOf("sweater", "jacket", "coat", "shorts", "gloves")
+        // The appended rule tracks the catalog default (TemperatureBelow 4°C).
+        rules.last() shouldBe ClothesRule.DEFAULTS.first { it.item == Garment.GLOVES }
+        result[glovesMigratedKey] shouldBe true
+    }
+
+    @Test
+    fun `gloves migration preserves a customised threshold and still appends gloves`() = runTest {
+        // User nudged coat to 2°C; the migration must keep that and add gloves.
+        val customised = """[{"item":"coat","type":"temp_below","value":2.0,"unit":"CELSIUS"}]"""
+        val before = mutablePreferencesOf(clothesRulesKey to customised)
+
+        val result = glovesDefaultMigration().migrate(before)
+
+        val rules = decodeStoredRules(result[clothesRulesKey])
+        rules.map { it.item.itemKey } shouldBe listOf("coat", "gloves")
+        (rules.first().condition as ClothesRule.TemperatureBelow).value shouldBe 2.0
+    }
+
+    @Test
+    fun `gloves migration does not duplicate an existing gloves rule`() = runTest {
+        // A user who already added a gloves rule (at their own 0°C threshold)
+        // keeps exactly that — no second default appended.
+        val withGloves =
+            """[{"item":"coat","type":"temp_below","value":4.0,"unit":"CELSIUS"},""" +
+                """{"item":"gloves","type":"temp_below","value":0.0,"unit":"CELSIUS"}]"""
+        val before = mutablePreferencesOf(clothesRulesKey to withGloves)
+
+        val result = glovesDefaultMigration().migrate(before)
+
+        val rules = decodeStoredRules(result[clothesRulesKey])
+        rules.count { it.item == Garment.GLOVES } shouldBe 1
+        (rules.first { it.item == Garment.GLOVES }.condition as ClothesRule.TemperatureBelow)
+            .value shouldBe 0.0
+    }
+
+    @Test
+    fun `gloves migration leaves a fresh install with no stored list untouched`() = runTest {
+        val result = glovesDefaultMigration().migrate(emptyPreferences())
+
+        // No stored key is written: parseRules reads DEFAULTS (now incl. gloves)
+        // directly, so a fresh install needs nothing grandfathered.
+        result[clothesRulesKey] shouldBe null
+        result[glovesMigratedKey] shouldBe true
+    }
+
+    @Test
+    fun `gloves migration leaves corrupt JSON untouched but sets the sentinel`() = runTest {
+        val before = mutablePreferencesOf(clothesRulesKey to "{not valid json")
+
+        val result = glovesDefaultMigration().migrate(before)
+
+        // parseRules falls back to DEFAULTS (incl. gloves) when it can't decode,
+        // so leaving the bytes as-is still gets the user gloves at read time.
+        result[clothesRulesKey] shouldBe "{not valid json"
+        result[glovesMigratedKey] shouldBe true
+    }
+
+    @Test
+    fun `gloves migration leaves a legacy-only list untouched so defaults still apply`() = runTest {
+        // A stored list that decodes but holds only legacy free-form items (no
+        // catalog garment) yields no domain rules. parseRules treats that as
+        // "unconfigured" and falls back to DEFAULTS — appending gloves to the raw
+        // list would defeat that fallback and strip the other defaults, so the
+        // migration must leave such a list alone.
+        val legacyOnly = """[{"item":"cardigan","type":"temp_below","value":12.0,"unit":"CELSIUS"}]"""
+        val before = mutablePreferencesOf(clothesRulesKey to legacyOnly)
+
+        val result = glovesDefaultMigration().migrate(before)
+
+        result[clothesRulesKey] shouldBe legacyOnly
+        result[glovesMigratedKey] shouldBe true
+    }
+
+    @Test
+    fun `gloves migration runs once, gated by its sentinel`() = runTest {
+        val migration = glovesDefaultMigration()
+
+        migration.shouldMigrate(emptyPreferences()) shouldBe true
+        migration.shouldMigrate(mutablePreferencesOf(glovesMigratedKey to true)) shouldBe false
     }
 }

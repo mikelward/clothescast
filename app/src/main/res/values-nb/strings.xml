@@ -54,6 +54,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="garment_shorts">Shorts</string>
     <string name="garment_pants">Bukse</string>
     <string name="garment_jeans">Jeans</string>
+    <string name="garment_gloves">Hansker</string>
     <string name="garment_polo">Polo/Poloskjorte</string>
     <string name="garment_thin_jacket">Tynn jakke</string>
     <string name="garment_puffer">Dunjacke</string>

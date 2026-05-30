@@ -42,7 +42,8 @@ class GarmentTest {
     @Test
     fun `layerCount maps tops by perceived warmth and bottoms to zero`() {
         // Drives ClothesFormat.LAYER_COUNT — t/p/sh=1, thin-jkt/sw/hood=2,
-        // jkt/coat=3, puffer=4; bottoms don't contribute to the count.
+        // jkt/coat/puffer=3 (a puffer is a warm shell, not a 4th layer);
+        // bottoms and gloves don't contribute to the count.
         Garment.TSHIRT.layerCount shouldBe 1
         Garment.POLO.layerCount shouldBe 1
         Garment.SHIRT.layerCount shouldBe 1
@@ -51,11 +52,15 @@ class GarmentTest {
         Garment.THIN_JACKET.layerCount shouldBe 2
         Garment.JACKET.layerCount shouldBe 3
         Garment.COAT.layerCount shouldBe 3
-        Garment.PUFFER.layerCount shouldBe 4
+        // A puffer is a warm shell, not a literal fourth layer — same count as
+        // the other shells; "extra cold" is signalled by gloves, not a higher count.
+        Garment.PUFFER.layerCount shouldBe 3
         Garment.SHORTS.layerCount shouldBe 0
         Garment.SKIRT.layerCount shouldBe 0
         Garment.PANTS.layerCount shouldBe 0
         Garment.JEANS.layerCount shouldBe 0
+        // Extremity gear isn't a torso layer.
+        Garment.GLOVES.layerCount shouldBe 0
     }
 
     @Test

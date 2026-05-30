@@ -169,6 +169,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="garment_shorts">Šortky</string>
     <string name="garment_pants">Kalhoty</string>
     <string name="garment_jeans">Džíny</string>
+    <string name="garment_gloves">Rukavice</string>
     <string name="garment_polo">Polo tričko</string>
     <string name="garment_thin_jacket">Lehká bunda</string>
     <string name="garment_puffer">Péřová bunda</string>

@@ -172,6 +172,7 @@ What is NOT overridden, by design:
     <string name="garment_shorts">Šortky</string>
     <string name="garment_pants">Nohavice</string>
     <string name="garment_jeans">Rifle</string>
+    <string name="garment_gloves">Rukavice</string>
     <string name="garment_polo">Polo tričko</string>
     <string name="garment_thin_jacket">Ľahká bunda</string>
     <string name="garment_puffer">Páperová bunda</string>

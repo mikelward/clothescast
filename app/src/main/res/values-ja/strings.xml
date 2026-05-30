@@ -59,6 +59,7 @@ the displayed label localizes.
     <string name="garment_shorts">ショートパンツ</string>
     <string name="garment_pants">ズボン</string>
     <string name="garment_jeans">ジーンズ</string>
+    <string name="garment_gloves">手袋</string>
 
     <!-- Clothes settings — top of the screen. -->
     <string name="settings_clothes_title">服のルール</string>

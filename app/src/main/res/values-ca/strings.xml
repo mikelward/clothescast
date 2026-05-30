@@ -425,6 +425,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="garment_shirt">Camisa</string>
     <string name="garment_pants">Pantalons</string>
     <string name="garment_jeans">Texans</string>
+    <string name="garment_gloves">Guants</string>
 
     <string name="settings_clothes_empty">Sense regles. Toca Afegir per crear-ne una.</string>
     <string name="settings_clothes_add">Afegir</string>

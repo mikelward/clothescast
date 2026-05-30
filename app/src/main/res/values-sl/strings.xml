@@ -19,6 +19,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="garment_shorts">Kratke hlače</string>
     <string name="garment_pants">Hlače</string>
     <string name="garment_jeans">Kavbojke</string>
+    <string name="garment_gloves">Rokavice</string>
 
     <string name="settings_clothes_empty">Ni pravil. Pritisni Dodaj za novo.</string>
     <string name="settings_clothes_add">Dodaj</string>

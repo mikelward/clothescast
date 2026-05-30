@@ -63,6 +63,7 @@ displayed label localizes.
     <string name="garment_shorts">반바지</string>
     <string name="garment_pants">긴바지</string>
     <string name="garment_jeans">청바지</string>
+    <string name="garment_gloves">장갑</string>
 
     <!-- Clothes settings — top of the screen. -->
     <string name="settings_clothes_title">옷 규칙</string>

@@ -278,6 +278,7 @@ private val GARMENT_RES_IDS: Map<Garment, Int> = mapOf(
     Garment.SKIRT to R.string.garment_skirt,
     Garment.PANTS to R.string.garment_pants,
     Garment.JEANS to R.string.garment_jeans,
+    Garment.GLOVES to R.string.garment_gloves,
 )
 
 /**

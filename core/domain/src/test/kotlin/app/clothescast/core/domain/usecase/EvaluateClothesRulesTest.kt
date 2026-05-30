@@ -189,8 +189,8 @@ class EvaluateClothesRulesTest {
         // a real outfit ("sweater under a coat") rather than naming every
         // also-ran.
         val out = subject(forecast(min = 2.0, max = 8.0), ClothesRule.DEFAULTS)
-        out.rules.map { it.item.itemKey }.shouldContainExactly("sweater", "jacket", "coat")
-        out.items.shouldContainExactly("sweater", "coat", "pants")
+        out.rules.map { it.item.itemKey }.shouldContainExactly("sweater", "jacket", "coat", "gloves")
+        out.items.shouldContainExactly("sweater", "coat", "gloves", "pants")
     }
 
     @Test

@@ -986,6 +986,7 @@
     <string name="garment_shirt">Shirt</string>
     <string name="garment_pants">Pants</string>
     <string name="garment_jeans">Jeans</string>
+    <string name="garment_gloves">Gloves</string>
 
     <!-- Editor strings restored from the pre-lockdown UI. Free-form
          garment-name input is gone; the user picks from the garment dropdown

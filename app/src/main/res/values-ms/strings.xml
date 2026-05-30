@@ -21,6 +21,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="garment_shorts">Seluar pendek</string>
     <string name="garment_pants">Seluar panjang</string>
     <string name="garment_jeans">Seluar jean</string>
+    <string name="garment_gloves">Sarung tangan</string>
 
     <string name="settings_clothes_empty">Belum ada peraturan. Ketik Tambah untuk membuat satu.</string>
     <string name="settings_clothes_add">Tambah</string>

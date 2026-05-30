@@ -57,6 +57,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="garment_shorts">Kurze Hose</string>
     <string name="garment_pants">Lange Hose</string>
     <string name="garment_jeans">Jeans</string>
+    <string name="garment_gloves">Handschuhe</string>
 
     <!-- Clothes settings — top of the screen. -->
     <string name="settings_clothes_title">Kleidungsregeln</string>

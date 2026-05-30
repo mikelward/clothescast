@@ -569,6 +569,7 @@ private fun garmentLabelRes(garment: Garment): Int = when (garment) {
     Garment.SKIRT -> R.string.garment_skirt
     Garment.PANTS -> R.string.garment_pants
     Garment.JEANS -> R.string.garment_jeans
+    Garment.GLOVES -> R.string.garment_gloves
 }
 
 @Composable

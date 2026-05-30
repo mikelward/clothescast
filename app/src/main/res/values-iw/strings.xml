@@ -24,6 +24,7 @@ standard in Israeli digital communication.
     <string name="garment_shorts">מכנסיים קצרים</string>
     <string name="garment_pants">מכנסיים ארוכים</string>
     <string name="garment_jeans">ג׳ינס</string>
+    <string name="garment_gloves">כפפות</string>
 
     <string name="settings_clothes_empty">אין חוקים. הקש על הוספה כדי ליצור אחד.</string>
     <string name="settings_clothes_add">הוספה</string>

@@ -19,6 +19,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="garment_shorts">กางเกงขาสั้น</string>
     <string name="garment_pants">กางเกงขายาว</string>
     <string name="garment_jeans">กางเกงยีนส์</string>
+    <string name="garment_gloves">ถุงมือ</string>
 
     <string name="settings_clothes_empty">ยังไม่มีกฎ แตะ เพิ่ม เพื่อสร้างใหม่</string>
     <string name="settings_clothes_add">เพิ่ม</string>

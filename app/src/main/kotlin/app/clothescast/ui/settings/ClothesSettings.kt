@@ -60,6 +60,7 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.garment.outfitBottomDefaults
+import app.clothescast.ui.garment.outfitHandsDefaults
 import app.clothescast.ui.garment.outfitTopDefaults
 import kotlin.math.roundToInt
 
@@ -80,6 +81,7 @@ internal fun ClothesContent(
     temperatureUnit: TemperatureUnit,
     outfitTopColors: Map<OutfitSuggestion.Top, Long>,
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long>,
+    outfitHandsColors: Map<OutfitSuggestion.Hands, Long>,
     padding: PaddingValues,
     onAdd: (ClothesRule) -> Unit,
     onReplace: (Int, ClothesRule) -> Unit,
@@ -88,6 +90,7 @@ internal fun ClothesContent(
     onSetDefaultTop: (OutfitSuggestion.Top) -> Unit,
     onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
     onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
+    onSetOutfitHandsColor: (OutfitSuggestion.Hands, Long?) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
@@ -114,8 +117,10 @@ internal fun ClothesContent(
             GarmentColorsCard(
                 outfitTopColors = outfitTopColors,
                 outfitBottomColors = outfitBottomColors,
+                outfitHandsColors = outfitHandsColors,
                 onSetOutfitTopColor = onSetOutfitTopColor,
                 onSetOutfitBottomColor = onSetOutfitBottomColor,
+                onSetOutfitHandsColor = onSetOutfitHandsColor,
             )
         }
     }
@@ -132,8 +137,10 @@ internal fun ClothesContent(
 private fun GarmentColorsCard(
     outfitTopColors: Map<OutfitSuggestion.Top, Long>,
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long>,
+    outfitHandsColors: Map<OutfitSuggestion.Hands, Long>,
     onSetOutfitTopColor: (OutfitSuggestion.Top, Long?) -> Unit,
     onSetOutfitBottomColor: (OutfitSuggestion.Bottom, Long?) -> Unit,
+    onSetOutfitHandsColor: (OutfitSuggestion.Hands, Long?) -> Unit,
 ) {
     var pickerTarget by remember { mutableStateOf<GarmentPickerTarget?>(null) }
     SectionCard(title = stringResource(R.string.settings_display_garment_colors_title)) {
@@ -154,11 +161,21 @@ private fun GarmentColorsCard(
                 onClick = { pickerTarget = GarmentPickerTarget.Bottom(bottom) },
             )
         }
+        // Optional extremity gear (gloves) last — the same overlay-only tier the
+        // outfit icon paints over the top when a hands rule fires.
+        OutfitSuggestion.Hands.entries.forEach { hands ->
+            GarmentColorRow(
+                label = stringResource(handsOutfitLabelRes(hands)),
+                effectiveColor = colorFor(outfitHandsColors[hands], outfitHandsDefaults.getValue(hands).fillArgb),
+                onClick = { pickerTarget = GarmentPickerTarget.Hands(hands) },
+            )
+        }
     }
     pickerTarget?.let { target ->
         val (label, current) = when (target) {
             is GarmentPickerTarget.Top -> stringResource(topOutfitLabelRes(target.top)) to outfitTopColors[target.top]
             is GarmentPickerTarget.Bottom -> stringResource(bottomOutfitLabelRes(target.bottom)) to outfitBottomColors[target.bottom]
+            is GarmentPickerTarget.Hands -> stringResource(handsOutfitLabelRes(target.hands)) to outfitHandsColors[target.hands]
         }
         GarmentColorPickerDialog(
             garmentLabel = label,
@@ -167,6 +184,7 @@ private fun GarmentColorsCard(
                 when (target) {
                     is GarmentPickerTarget.Top -> onSetOutfitTopColor(target.top, picked)
                     is GarmentPickerTarget.Bottom -> onSetOutfitBottomColor(target.bottom, picked)
+                    is GarmentPickerTarget.Hands -> onSetOutfitHandsColor(target.hands, picked)
                 }
             },
             onDismiss = { pickerTarget = null },
@@ -177,6 +195,7 @@ private fun GarmentColorsCard(
 private sealed interface GarmentPickerTarget {
     data class Top(val top: OutfitSuggestion.Top) : GarmentPickerTarget
     data class Bottom(val bottom: OutfitSuggestion.Bottom) : GarmentPickerTarget
+    data class Hands(val hands: OutfitSuggestion.Hands) : GarmentPickerTarget
 }
 
 @Composable
@@ -232,6 +251,11 @@ private fun bottomOutfitLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (b
     OutfitSuggestion.Bottom.LONG_SKIRT -> R.string.today_outfit_bottom_long_skirt
     OutfitSuggestion.Bottom.JEANS -> R.string.today_outfit_bottom_jeans
     OutfitSuggestion.Bottom.LONG_PANTS -> R.string.today_outfit_bottom_long_pants
+}
+
+@StringRes
+private fun handsOutfitLabelRes(hands: OutfitSuggestion.Hands): Int = when (hands) {
+    OutfitSuggestion.Hands.GLOVES -> R.string.garment_gloves
 }
 
 /**

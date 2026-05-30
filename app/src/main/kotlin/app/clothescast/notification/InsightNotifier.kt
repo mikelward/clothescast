@@ -24,6 +24,7 @@ class InsightNotifier(private val context: Context) {
         prose: String,
         topColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
         topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+        handsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
     ) {
         if (!NotificationPermission.isGranted(context)) return
 
@@ -49,6 +50,7 @@ class InsightNotifier(private val context: Context) {
                     hands = insight.outfit?.hands,
                     customFillArgb = top?.let { topColors[it] },
                     customStrokeArgb = top?.let { topStrokes[it] },
+                    handsFillArgb = insight.outfit?.hands?.let { handsColors[it] },
                 ),
             )
             .setContentTitle(context.getString(R.string.notification_daily_insight_title))
@@ -103,6 +105,7 @@ class InsightNotifier(private val context: Context) {
             hands: OutfitSuggestion.Hands? = null,
             customFillArgb: Long? = null,
             customStrokeArgb: Long? = null,
+            handsFillArgb: Long? = null,
         ): Bitmap? {
             if (top == null) return null
             val sizePx = context.resources.getDimensionPixelSize(android.R.dimen.notification_large_icon_width)
@@ -115,6 +118,7 @@ class InsightNotifier(private val context: Context) {
                 sizePx = sizePx,
                 topFillArgb = customFillArgb,
                 topStrokeArgb = customStrokeArgb,
+                handsFillArgb = handsFillArgb,
             )
         }
 

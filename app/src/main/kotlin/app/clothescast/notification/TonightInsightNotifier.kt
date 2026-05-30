@@ -30,6 +30,7 @@ class TonightInsightNotifier(private val context: Context) {
         prose: String,
         topColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
         topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+        handsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
     ) {
         if (!NotificationPermission.isGranted(context)) return
 
@@ -53,6 +54,7 @@ class TonightInsightNotifier(private val context: Context) {
                     hands = insight.outfit?.hands,
                     customFillArgb = top?.let { topColors[it] },
                     customStrokeArgb = top?.let { topStrokes[it] },
+                    handsFillArgb = insight.outfit?.hands?.let { handsColors[it] },
                 ),
             )
             .setContentTitle(context.getString(R.string.notification_tonight_insight_title))

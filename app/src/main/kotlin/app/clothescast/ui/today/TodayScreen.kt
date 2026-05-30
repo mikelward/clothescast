@@ -1661,6 +1661,7 @@ internal fun OutfitPreviewRow(
     clothesRules: List<ClothesRule> = emptyList(),
     outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    outfitHandsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
     outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onNavigateToClothes: () -> Unit = {},
@@ -1679,6 +1680,7 @@ internal fun OutfitPreviewRow(
             clothesRules = clothesRules,
             outfitTopColors = outfitTopColors,
             outfitBottomColors = outfitBottomColors,
+            outfitHandsColors = outfitHandsColors,
             outfitTopStrokes = outfitTopStrokes,
             outfitBottomStrokes = outfitBottomStrokes,
             onNavigateToClothes = onNavigateToClothes,
@@ -1693,6 +1695,7 @@ internal fun OutfitPreviewRow(
                 clothesRules = clothesRules,
                 outfitTopColors = outfitTopColors,
                 outfitBottomColors = outfitBottomColors,
+                outfitHandsColors = outfitHandsColors,
                 outfitTopStrokes = outfitTopStrokes,
                 outfitBottomStrokes = outfitBottomStrokes,
                 onNavigateToClothes = onNavigateToClothes,
@@ -1733,6 +1736,7 @@ internal fun OutfitPreviewCard(
     clothesRules: List<ClothesRule> = emptyList(),
     outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    outfitHandsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
     outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onNavigateToClothes: () -> Unit = {},
@@ -1790,7 +1794,7 @@ internal fun OutfitPreviewCard(
                     outfit.hands?.let { hands ->
                         GarmentHandsIcon(
                             hands = hands,
-                            customFill = null,
+                            customFill = outfitHandsColors[hands]?.let { Color(it.toInt()) },
                             contentDescription = stringResource(R.string.garment_gloves),
                             modifier = Modifier.width(80.dp),
                         )

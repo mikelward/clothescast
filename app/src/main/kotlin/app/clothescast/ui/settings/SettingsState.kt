@@ -95,6 +95,8 @@ data class SettingsState(
     val outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     /** Sibling of [outfitTopColors] for the bottom-icon tier. */
     val outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    /** Sibling of [outfitTopColors] for the optional gloves (hands) overlay. */
+    val outfitHandsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
     /**
      * Country picker: Home / Current / All bucket flags plus per-country
      * AUTO / ON / OFF overrides ([HolidayCountrySelection.countryOverrides]).

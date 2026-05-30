@@ -351,6 +351,7 @@ internal fun SettingsClothesPreview() {
             temperatureUnit = TemperatureUnit.CELSIUS,
             outfitTopColors = emptyMap(),
             outfitBottomColors = emptyMap(),
+            outfitHandsColors = emptyMap(),
             padding = PaddingValues(0.dp),
             onAdd = {},
             onReplace = { _, _ -> },
@@ -359,6 +360,7 @@ internal fun SettingsClothesPreview() {
             onSetDefaultTop = {},
             onSetOutfitTopColor = { _, _ -> },
             onSetOutfitBottomColor = { _, _ -> },
+            onSetOutfitHandsColor = { _, _ -> },
         )
     }
 }
@@ -383,6 +385,7 @@ internal fun SettingsClothesFahrenheitPreview() {
             temperatureUnit = TemperatureUnit.FAHRENHEIT,
             outfitTopColors = emptyMap(),
             outfitBottomColors = emptyMap(),
+            outfitHandsColors = emptyMap(),
             padding = PaddingValues(0.dp),
             onAdd = {},
             onReplace = { _, _ -> },
@@ -391,6 +394,7 @@ internal fun SettingsClothesFahrenheitPreview() {
             onSetDefaultTop = {},
             onSetOutfitTopColor = { _, _ -> },
             onSetOutfitBottomColor = { _, _ -> },
+            onSetOutfitHandsColor = { _, _ -> },
         )
     }
 }

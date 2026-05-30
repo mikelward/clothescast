@@ -749,10 +749,25 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `omit range on the visual surface gives the leading delta a capitalised it-will-be`() {
+    fun `omit range on the visual surface drops the leading delta's it-will-be subject`() {
+        // With the period lead dropped, "it will be" goes with it — the delta
+        // collapses to the bare fragment, mirroring how the band sentence
+        // collapses to a bare "14° to 20°." on the same surface, rather than
+        // reading the redundant "It will be …" beneath the card's "Today" header.
         omitCardSubject.format(
             summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)),
-        ) shouldBe "It will be 5° warmer than yesterday."
+        ) shouldBe "5° warmer than yesterday."
+    }
+
+    @Test
+    fun `omit range preview parenthesises the whole leading-delta preamble`() {
+        // Speech-only preview: the dropped preamble is the full "Today, it will
+        // be" that fronts the temperature field — the same parenthesised
+        // preamble the band sentence shows ("(Today, it will be) 14° to 20°.").
+        omitCardSubject.format(
+            summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)),
+            surface = InsightSurface.SETTINGS_PREVIEW,
+        ) shouldBe "(Today, it will be) 5° warmer than yesterday."
     }
 
     @Test
@@ -1602,11 +1617,12 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `de — no-lead leading delta uses the self-introducing German fragment`() {
+    fun `de — no-lead leading delta drops the it-will-be subject like English`() {
         // Range omitted + a numeric delta: the delta leads the temperature
-        // content, so it uses insight_delta_warmer_lead ("es wird … wärmer als
-        // gestern.") capitalised, rather than the trailing "Heute wird es …"
-        // fragment.
+        // content. With the lead dropped, the "es wird" subject goes with it
+        // (German's insight_delta_warmer is the bare "%d° wärmer als gestern."
+        // comparison fragment, just as English drops "it will be"), rather than
+        // the self-introducing "Es wird …" form.
         val germanNoLead = InsightFormatter.forContext(
             context,
             Locale.GERMAN,
@@ -1615,7 +1631,107 @@ class InsightFormatterTest {
         )
         germanNoLead.format(
             summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)),
-        ) shouldBe "Es wird 5° wärmer als gestern."
+        ) shouldBe "5° wärmer als gestern."
+    }
+
+    @Test
+    fun `de — omit-range preview parenthesises the whole leading-delta preamble`() {
+        // Like English's "(Today, it will be) 5° warmer than yesterday.": the
+        // dropped preamble is the full "Heute, es wird" that fronts the
+        // temperature field, not just "Heute,".
+        val germanPreview = InsightFormatter.forContext(
+            context,
+            Locale.GERMAN,
+            rangeFormat = RangeFormat.NONE,
+            periodPreamble = PreambleVisibility.SPEECH_ONLY,
+        )
+        germanPreview.format(
+            summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)),
+            surface = InsightSurface.SETTINGS_PREVIEW,
+        ) shouldBe "(Heute, es wird) 5° wärmer als gestern."
+    }
+
+    @Test
+    fun `de — trailing delta after a band sentence drops the repeated Heute`() {
+        // With a band sentence ahead supplying the subject, the delta is the
+        // bare comparison fragment — no second "Heute wird es …" stutter.
+        germanSubject.format(
+            summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)),
+        ) shouldBe "Heute wird es 21°. 5° wärmer als gestern."
+    }
+
+    // ---------------------------------------------------------------------
+    // Other-locale leading-delta coverage: every SVO locale whose
+    // insight_delta_*_lead fronts a verb now behaves like English — the verb
+    // joins the dropped preamble on the no-lead surface and the preview
+    // parenthesises it. French exercises a number-initial fragment (no
+    // capitalisation needed); Polish exercises a particle-initial fragment,
+    // pinning the trailing/leading sentence-case fix ("o …" → "O …").
+    // ---------------------------------------------------------------------
+
+    @Test
+    fun `fr — omit-range no-lead drops the verb like English`() {
+        val frNoLead = InsightFormatter.forContext(
+            context,
+            Locale.FRENCH,
+            rangeFormat = RangeFormat.NONE,
+            periodPreamble = PreambleVisibility.NEVER,
+        )
+        frNoLead.format(
+            summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)),
+        ) shouldBe "5° de plus qu'hier."
+    }
+
+    @Test
+    fun `fr — omit-range preview parenthesises the leading-delta preamble`() {
+        val frPreview = InsightFormatter.forContext(
+            context,
+            Locale.FRENCH,
+            rangeFormat = RangeFormat.NONE,
+            periodPreamble = PreambleVisibility.SPEECH_ONLY,
+        )
+        frPreview.format(
+            summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)),
+            surface = InsightSurface.SETTINGS_PREVIEW,
+        ) shouldBe "(Aujourd'hui, il fera) 5° de plus qu'hier."
+    }
+
+    @Test
+    fun `pl — omit-range no-lead capitalises the particle-initial fragment`() {
+        val plNoLead = InsightFormatter.forContext(
+            context,
+            Locale.forLanguageTag("pl"),
+            rangeFormat = RangeFormat.NONE,
+            periodPreamble = PreambleVisibility.NEVER,
+        )
+        plNoLead.format(
+            summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)),
+        ) shouldBe "O 5° cieplej niż wczoraj."
+    }
+
+    @Test
+    fun `pl — trailing delta after a band sentence opens with a capital`() {
+        // The bare fragment opens "o 5° cieplej …"; trailing a band sentence it
+        // starts a new sentence, so formatDelta capitalises it to "O 5° …"
+        // rather than leaving a lowercase letter after the full stop.
+        val plSubject = InsightFormatter.forContext(context, Locale.forLanguageTag("pl"))
+        plSubject.format(
+            summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)),
+        ) shouldBe "Dziś będzie 21°. O 5° cieplej niż wczoraj."
+    }
+
+    @Test
+    fun `pl — omit-range preview parenthesises the leading-delta preamble`() {
+        val plPreview = InsightFormatter.forContext(
+            context,
+            Locale.forLanguageTag("pl"),
+            rangeFormat = RangeFormat.NONE,
+            periodPreamble = PreambleVisibility.SPEECH_ONLY,
+        )
+        plPreview.format(
+            summary(delta = DeltaClause(5, DeltaClause.Direction.WARMER)),
+            surface = InsightSurface.SETTINGS_PREVIEW,
+        ) shouldBe "(Dziś, będzie) o 5° cieplej niż wczoraj."
     }
 
     // ---------------------------------------------------------------------

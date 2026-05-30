@@ -77,8 +77,8 @@ What is NOT overridden, by design:
     <string name="insight_band_mild">švelnu</string>
     <string name="insight_band_warm">šilta</string>
     <string name="insight_band_hot">karšta</string>
-    <string name="insight_delta_warmer">Šiandien bus %1$d° šilčiau.</string>
-    <string name="insight_delta_cooler">Šiandien bus %1$d° šalčiau.</string>
+    <string name="insight_delta_warmer">%1$d° šilčiau nei vakar.</string>
+    <string name="insight_delta_cooler">%1$d° vėsiau nei vakar.</string>
     <string name="insight_alert">Įspėjimas: %1$s.</string>
     <string name="insight_clothes_wear">Apsivilk %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

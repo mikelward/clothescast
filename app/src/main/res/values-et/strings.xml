@@ -532,8 +532,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="insight_band_mild">mahe</string>
     <string name="insight_band_warm">soe</string>
     <string name="insight_band_hot">kuum</string>
-    <string name="insight_delta_warmer">Täna on %1$d° soojem.</string>
-    <string name="insight_delta_cooler">Täna on %1$d° külmem.</string>
+    <string name="insight_delta_warmer">%1$d° soojem kui eile.</string>
+    <string name="insight_delta_cooler">%1$d° jahedam kui eile.</string>
     <string name="insight_alert">Hoiatus: %1$s.</string>
     <!-- "Pane selga" = idiomatic "put on" with split verb. -->
     <string name="insight_clothes_wear">Pane selga %1$s.</string>

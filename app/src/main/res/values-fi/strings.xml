@@ -378,8 +378,8 @@ displayed label localizes.
     <string name="insight_band_warm">lämmintä</string>
     <string name="insight_band_hot">kuumaa</string>
 
-    <string name="insight_delta_warmer">Tänään on %1$d° lämpimämpi.</string>
-    <string name="insight_delta_cooler">Tänään on %1$d° kylmempi.</string>
+    <string name="insight_delta_warmer">%1$d° lämpimämpi kuin eilen.</string>
+    <string name="insight_delta_cooler">%1$d° viileämpi kuin eilen.</string>
 
     <string name="insight_alert">Varoitus: %1$s.</string>
 

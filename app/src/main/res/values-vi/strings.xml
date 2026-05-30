@@ -75,8 +75,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="insight_band_mild">dễ chịu</string>
     <string name="insight_band_warm">ấm</string>
     <string name="insight_band_hot">nóng</string>
-    <string name="insight_delta_warmer">Hôm nay ấm hơn %1$d°.</string>
-    <string name="insight_delta_cooler">Hôm nay lạnh hơn %1$d°.</string>
+    <string name="insight_delta_warmer">ấm hơn hôm qua %1$d°.</string>
+    <string name="insight_delta_cooler">mát hơn hôm qua %1$d°.</string>
     <string name="insight_alert">Cảnh báo: %1$s.</string>
     <string name="insight_clothes_wear">Mặc %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

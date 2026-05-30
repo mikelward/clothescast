@@ -74,8 +74,8 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="insight_band_mild">معتدل</string>
     <string name="insight_band_warm">گرم</string>
     <string name="insight_band_hot">داغ</string>
-    <string name="insight_delta_warmer">امروز %1$d° گرم‌تر خواهد بود.</string>
-    <string name="insight_delta_cooler">امروز %1$d° سردتر خواهد بود.</string>
+    <string name="insight_delta_warmer">%1$d° گرم‌تر از دیروز خواهد بود.</string>
+    <string name="insight_delta_cooler">%1$d° خنک‌تر از دیروز خواهد بود.</string>
     <string name="insight_alert">هشدار: %1$s.</string>
     <!-- SOV: "%1$s را بپوشید" = "[item] را (object marker) wear". -->
     <string name="insight_clothes_wear">%1$s را بپوشید.</string>

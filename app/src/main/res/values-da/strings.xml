@@ -581,8 +581,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="insight_band_warm">varmt</string>
     <string name="insight_band_hot">meget varmt</string>
 
-    <string name="insight_delta_warmer">Det bliver %1$d° varmere i dag.</string>
-    <string name="insight_delta_cooler">Det bliver %1$d° koldere i dag.</string>
+    <string name="insight_delta_warmer">%1$d° varmere end i går.</string>
+    <string name="insight_delta_cooler">%1$d° koldere end i går.</string>
 
     <string name="insight_alert">Advarsel: %1$s.</string>
 

@@ -422,8 +422,8 @@ the displayed label localizes.
     <string name="insight_band_warm">warm</string>
     <string name="insight_band_hot">erg warm</string>
 
-    <string name="insight_delta_warmer">Het wordt vandaag %1$d° warmer.</string>
-    <string name="insight_delta_cooler">Het wordt vandaag %1$d° kouder.</string>
+    <string name="insight_delta_warmer">%1$d° warmer dan gisteren.</string>
+    <string name="insight_delta_cooler">%1$d° kouder dan gisteren.</string>
 
     <string name="insight_alert">Waarschuwing: %1$s.</string>
 

@@ -442,8 +442,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_band_warm">warm</string>
     <string name="insight_band_hot">heiss</string>
 
-    <string name="insight_delta_warmer">Heute wird es %1$d° wärmer.</string>
-    <string name="insight_delta_cooler">Heute wird es %1$d° kälter.</string>
+    <!-- Subject-less comparison fragment (see values-de): keep it equal to
+         insight_delta_*_lead minus the leading "es wird " so the no-lead
+         surface drops that subject the way English drops "it will be". -->
+    <string name="insight_delta_warmer">%1$d° wärmer als gestern.</string>
+    <string name="insight_delta_cooler">%1$d° kühler als gestern.</string>
 
     <string name="insight_alert">Warnung: %1$s.</string>
 

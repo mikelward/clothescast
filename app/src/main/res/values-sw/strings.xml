@@ -70,8 +70,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_band_mild">ya wastani</string>
     <string name="insight_band_warm">joto kidogo</string>
     <string name="insight_band_hot">joto</string>
-    <string name="insight_delta_warmer">Itakuwa %1$d° ya joto zaidi kuliko jana.</string>
-    <string name="insight_delta_cooler">Itakuwa %1$d° baridi zaidi kuliko jana.</string>
+    <string name="insight_delta_warmer">moto zaidi kwa %1$d° kuliko jana.</string>
+    <string name="insight_delta_cooler">baridi zaidi kwa %1$d° kuliko jana.</string>
     <string name="insight_alert">Tahadhari: %1$s.</string>
     <string name="insight_clothes_wear">Vaa %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

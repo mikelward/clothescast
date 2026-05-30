@@ -76,8 +76,8 @@ they work correctly in both the single-band and range templates.
     <string name="insight_band_mild">معتدل</string>
     <string name="insight_band_warm">دافئ</string>
     <string name="insight_band_hot">حار</string>
-    <string name="insight_delta_warmer">سيكون اليوم أدفأ بـ %1$d°.</string>
-    <string name="insight_delta_cooler">سيكون اليوم أبرد بـ %1$d°.</string>
+    <string name="insight_delta_warmer">%1$d° أدفأ من الأمس.</string>
+    <string name="insight_delta_cooler">%1$d° أبرد من الأمس.</string>
     <string name="insight_alert">تنبيه: %1$s.</string>
     <string name="insight_clothes_wear">ارتدِ %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

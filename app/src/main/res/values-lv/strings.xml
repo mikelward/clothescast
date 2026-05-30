@@ -83,8 +83,8 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="insight_band_mild">mērens</string>
     <string name="insight_band_warm">silts</string>
     <string name="insight_band_hot">karsts</string>
-    <string name="insight_delta_warmer">Šodien būs par %1$d° siltāks.</string>
-    <string name="insight_delta_cooler">Šodien būs par %1$d° aukstāks.</string>
+    <string name="insight_delta_warmer">%1$d° siltāks nekā vakar.</string>
+    <string name="insight_delta_cooler">%1$d° vēsāks nekā vakar.</string>
     <string name="insight_alert">Brīdinājums: %1$s.</string>
     <string name="insight_clothes_wear">Apģērb %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

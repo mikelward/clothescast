@@ -421,8 +421,8 @@ is unchanged; only the displayed label localizes.
     <string name="insight_band_warm">ciepło</string>
     <string name="insight_band_hot">gorąco</string>
 
-    <string name="insight_delta_warmer">Dziś będzie o %1$d° cieplej.</string>
-    <string name="insight_delta_cooler">Dziś będzie o %1$d° chłodniej.</string>
+    <string name="insight_delta_warmer">o %1$d° cieplej niż wczoraj.</string>
+    <string name="insight_delta_cooler">o %1$d° chłodniej niż wczoraj.</string>
 
     <string name="insight_alert">Ostrzeżenie: %1$s.</string>
 

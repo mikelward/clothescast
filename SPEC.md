@@ -1,4 +1,189 @@
-# Clothescast design specs
+# ClothesCast design specs
+
+## Product summary
+
+ClothesCast is an Android weather-and-clothing assistant. Its job is to turn a
+forecast into a short, actionable briefing: what it feels like outside, how that
+compares with yesterday, what to wear, and whether rain, wind, alerts, or an
+evening plan should change the user's behaviour. The app is deliberately
+personal and practical rather than meteorological: it optimises for "what should
+I put on before I leave?" instead of a full weather-office report.
+
+### Purpose
+
+- **Primary promise:** deliver a once- or twice-daily clothes-aware forecast at
+  user-chosen times, without making the user open a weather app.
+- **Secondary promise:** keep the Today screen and home-screen widgets fresh so
+  the same advice is available on demand.
+- **Differentiator:** advice is driven by the user's own clothing thresholds,
+  defaults, units, region, speech preferences, calendar opt-ins, and preferred
+  output channels.
+- **Privacy posture:** deterministic local rendering is the default. Weather and
+  geocoding require Open-Meteo; Gemini TTS, MQTT, Cast, calendar access,
+  telemetry, and crash reporting are separately gated by settings, runtime
+  permissions, or user-provided endpoints.
+
+### Behaviour overview
+
+1. **Input collection.** The worker resolves a forecast location from either the
+   user's saved city or coarse device location, reads forecast and warning data
+   from Open-Meteo, optionally reads calendar events on device, and optionally
+   consults multiple forecast models for confidence and per-model rain timing.
+2. **Insight derivation.** Pure-domain logic slices the day into Today and
+   Tonight windows, evaluates clothing rules against **feels-like**
+   temperatures, compares against yesterday when useful, folds in rain and
+   severe-alert signals, and renders a localised prose summary.
+3. **Outfit selection.** The same triggered rule set drives both prose and the
+   outfit icon. Top and bottom fallbacks keep the outfit card populated even
+   when no rule fires.
+4. **Delivery.** A run can post a phone notification, speak on the phone, cast to
+   a selected smart display, publish retained MQTT topics, update widgets, and
+   cache the current and next period. Delivery channels are additive; failures
+   are logged and surfaced where possible without cancelling unrelated
+   channels.
+5. **Manual paths.** Onboarding and Today-screen refreshes silently populate the
+   cache; explicit Play / Cast / test actions bypass some scheduled-delivery
+   gates because the user just asked for output now.
+
+### Main user surfaces
+
+- **Onboarding.** Lightweight first-run setup for location and optional phone
+  pairing, then an automatic silent refresh so Today can start populated.
+- **Today.** The home screen shows the current / next forecast periods, outfit
+  card, feels-like and precipitation charts, confidence / per-model diagnostics,
+  weather alerts, celebratory theming, setup promos, update notices, crash-report
+  banners, and a manual refresh / play path.
+- **Settings.** Structured cards cover Location, Schedule, Clothes, Format,
+  Region, Display, Calendar, Voice, Smart Home, Privacy, Developer, and About.
+  Settings are meant to be discoverable and reversible rather than hidden behind
+  one monolithic preferences list.
+- **Notifications.** Separate Today, Tonight, and severe-weather notifications;
+  tapping insight notifications returns to Today.
+- **Widgets.** Glance widgets expose outfit and feels-like chart summaries on the
+  launcher.
+- **Smart-home outputs.** MQTT publishes text, image, audio, timestamp, and
+  combined media topics when configured. Cast sends the rendered outfit card and,
+  when Gemini PCM exists, spoken audio to a selected receiver.
+- **TV / leanback.** The manifest opts into Android TV / leanback launchability
+  while keeping touchscreen optional, so the same app can appear on supported TV
+  homes without filtering out phones.
+
+### Product behaviour principles
+
+- **Feels-like first.** Clothing rules and user-facing temperature advice use
+  apparent temperature, not raw 2 m air temperature.
+- **One sentence should be enough.** The core briefing should fit in a
+  notification, sound natural over TTS, and stay useful when mirrored through
+  MQTT or Cast.
+- **Calendar data gates advice; it should not become gossip.** Calendar access is
+  opt-in and primarily gates event-relevant advice. Any event-derived prose that
+  leaves the device must be called out explicitly in privacy docs and PRs.
+- **Scheduled delivery is not cache freshness.** The user may disable audible or
+  visible delivery while still expecting the Today screen and widgets to refresh.
+- **Suppress duplicate speakers.** When Cast or MQTT successfully carries audio,
+  optional skip-phone-speech toggles avoid the phone reading the same forecast on
+  top of the smart-home destination.
+- **Failures are visible but isolated.** Weather fetch failures retry; destination
+  failures are logged and exposed in Settings where appropriate; one broken
+  destination should not block the rest of the run.
+
+### Design and style
+
+- **Tone:** friendly, concise, and practical. Copy should answer "what should I
+  do?" before explaining why.
+- **Visual style:** Material 3 Compose with dynamic/system theming, light/dark
+  support, card-based settings, short directional navigation transitions, and
+  RTL-aware motion.
+- **Charts:** weather charts favour readable overlays and an explicit app palette
+  over purely theme-derived colours. Rainbow is the default, Accessible uses a
+  colour-vision-deficiency-safe palette, and Highlighter is intentionally vivid.
+- **Outfit art:** vector garments must work at both notification/list sizes and
+  widget/detail sizes. Silhouette, waist alignment, season cues, and realistic
+  default colours matter more than fine detail.
+- **Localisation:** region controls rendered language and default units; voice
+  locale controls spoken accent. AUTO settings should follow system / region
+  choices and re-resolve when those choices change.
+- **Voice:** device TTS is the default low-friction path. Gemini TTS is BYOK,
+  styleable, and used only when selected and keyed; device TTS remains the
+  fallback for phone playback.
+- **Smart-home UX:** smart-home integrations are opt-in and should describe where
+  payloads go. Settings status rows should show selected routes, broker errors,
+  and last-delivery state rather than making users infer background behaviour.
+
+### Architecture and code organisation
+
+- `:core:domain` is pure Kotlin and owns weather / clothing / insight models,
+  rule evaluation, delivery gate algebra, calendar classification, holiday
+  resolution, and rendered-summary semantics. It must stay JVM-testable and free
+  of Android concerns.
+- `:core:data` is pure Kotlin and owns network clients / DTO mapping for
+  Open-Meteo forecasts, geocoding, warnings, multi-model confidence, Gemini TTS,
+  WAV encoding, and API-call logging seams.
+- `:app` owns Android integration: Compose UI, DataStore preferences, encrypted
+  key storage, permissions, receivers, WorkManager, AlarmManager, notifications,
+  widgets, Cast, MQTT, calendar provider reads, platform TTS, diagnostics,
+  telemetry, and app-update / distribution affordances.
+- Scheduling is `AlarmManager` → `AlarmReceiver` → `WorkManager`, with
+  boot/package/timezone/locale receivers re-arming alarms. Worker fetch jitter
+  spreads Open-Meteo load, then delivery alignment restores a deterministic
+  user-visible post / speak time.
+- The cache stores forecast snapshots rather than only rendered strings so later
+  settings changes can re-render from the same upstream data where possible.
+
+### Data, privacy, and permissions
+
+- **Always expected off-device:** Open-Meteo forecast / geocoding / warning
+  requests for the active location.
+- **Opt-in or configured off-device:** Gemini TTS text over a user-provided key,
+  MQTT payloads to a user-provided broker, Cast media served over the LAN,
+  Firebase Analytics / Crashlytics telemetry when enabled, and user-shared bug
+  reports.
+- **On-device sensitive state:** Gemini and MQTT passwords are encrypted at rest;
+  diagnostic logs and crash payloads can contain rendered insight prose and stay
+  local unless the user shares a report or telemetry sends its trimmed payload.
+- **Runtime permissions:** coarse / background location, notifications,
+  calendar, and exact-alarm-related platform capabilities must have explicit UX
+  and fallbacks.
+- **Analytics limits:** aggregate settings and delivery outcomes may be counted;
+  calendar data, precise location, insight prose, API keys, notification text,
+  ad identifiers, and user content must stay out of Firebase payloads.
+
+### Roadmap
+
+Near-term product work should focus on recommendation quality and reducing
+setup friction rather than adding more delivery destinations:
+
+1. **Tune clothing recommendations.** Revisit default thresholds and rule
+   evaluation with more real forecasts, including how humidity, wind, and
+   other apparent-temperature drivers should influence advice beyond the
+   current feels-like temperature inputs.
+2. **Expand garments and wet-weather handling.** Add wet-weather items and
+   more everyday garments to the catalogue, with matching drawables,
+   editable defaults, and copy that distinguishes rain warnings from clothing
+   advice.
+3. **Let users try Gemini without bringing their own key.** Explore a safe
+   trial path for Gemini voice — for example a limited free trial, paid trial,
+   or other owner-funded quota — with explicit cost caps, abuse controls,
+   privacy review, and clear fallback to device TTS when trial access is
+   unavailable.
+
+### Inconsistencies and further investigation
+
+These notes capture mismatches found while summarising the product; they are not
+all fixed in this document because some require product or privacy decisions.
+
+- **Calendar privacy wording:** `PRIVACY.md` says event titles may appear in the
+  spoken sentence / rendered payload, while the current settings model comments
+  say event titles and times never appear in rendered prose. This is a
+  privacy-sensitive contradiction and should be resolved before broadening any
+  calendar-derived output.
+- **Foreground service wording:** the manifest comment says background TTS on
+  Android 14+ requires a short foreground service, while the delivery-pipeline
+  section below says foreground-service permissions are declared but unused on
+  `main`. Verify whether any current path calls foreground service APIs.
+- **TV surface scope:** the manifest opts into leanback / TV launchability, but
+  the product docs do not describe a TV-optimised UI beyond Cast / smart display.
+  Decide whether TV is supported, experimental, or merely installable.
 
 ## Clothing drawables
 
@@ -63,15 +248,12 @@ each other.
 
 ## Delivery pipeline
 
-The intended end state of the twice-daily forecast pipeline, including
-the planned **Cast to smart display** destination. This section is the
-contract for what fires when, in what order, with what gates, on what
-threads, and which permissions / system components it needs. It
-deliberately omits implementation detail — the goal is a design
-reviewers can agree on before the code lands. Pre-existing destinations
-(phone notification, phone speaker, MQTT bridge) are documented as they
-already work in `main`; Cast is described as the destination we're
-adding.
+The current twice-daily forecast pipeline supports phone notification,
+phone speech, Cast smart-display output, MQTT publication, widget/cache
+refresh, and manual refresh / play / cast paths. This section documents
+what fires when, in what order, with what gates, on what threads, and
+which permissions / system components it needs. It is a current-state
+contract for `main`, not a future Cast design note.
 
 ### Destinations
 
@@ -90,8 +272,11 @@ the worker delivers to whichever apply.
    the WAV-wrapped Gemini synth and shows the rendered outfit PNG as
    poster art via the Default Media Receiver.
 4. **MQTT bridge.** A user-hosted broker (typically Home Assistant).
-   Three retained topics under a configurable prefix: prose, outfit
-   image, WAV-wrapped audio.
+   Retained period topics are published under a configurable prefix for
+   `text`, `image`, optional WAV-wrapped `audio`, and optional muxed
+   outfit-card-plus-audio `video`. The latest successful period bundle is
+   also mirrored under `now/text`, `now/image`, `now/audio`, `now/video`,
+   and completed by `now/timestamp` as the dedupe / commit marker.
 
 Destinations are deliberately additive: no destination's success or
 failure cancels another. The only cross-destination interaction is the
@@ -109,12 +294,15 @@ flow the worker subscribes to.
 - **Schedule (Today)** — time + days for the morning run. Default
   07:00, weekdays + weekends.
 - **Tonight enabled** — whether the evening run happens at all.
-  Default on.
+  Fresh installs default this off; upgraded installs with existing
+  preferences are migrated on unless the user explicitly turns it off.
 - **Schedule (Tonight)** — time + days for the evening run. Default
   19:00.
 - **Delivery mode (Today)** — one of `NOTIFICATION_ONLY`, `TTS_ONLY`,
-  `NOTIFICATION_AND_TTS`. Default `NOTIFICATION_AND_TTS`. Gates the
-  phone notification post and the phone speaker for the morning run.
+  `NOTIFICATION_AND_TTS`, or `SILENT`. Default `NOTIFICATION_AND_TTS`.
+  The Settings UI presents this as Notification and Spoken aloud toggles;
+  turning both off stores `SILENT`, which still lets the cache, widgets,
+  Cast, and MQTT update without a phone notification or phone audio.
 - **Delivery mode (Tonight)** — same shape, gates the evening run.
 - **Tonight: only when events** — when on, the worker skips the
   evening run's notification, phone TTS, **and cast** if the calendar
@@ -145,19 +333,23 @@ flow the worker subscribes to.
   `MqttPublisher.preparePublish`). Downstream gates use this
   composite — referred to as `mqttPublishable` in the sequencing
   section — rather than the raw toggle.
-- The prose and image topics fire on every worker run when the
-  bridge is `mqttPublishable` (regardless of the worker's other
+- The period `text` and `image` topics fire on every worker run when
+  the bridge is `mqttPublishable` (regardless of the worker's other
   destinations, including on empty-evening tonight runs — the
   retained payload still reflects the latest forecast for HA
-  automations that don't care about the calendar). The audio
-  topic fires on every worker run when the bridge is
-  `mqttPublishable` **and Gemini is available** — the bridge is
-  its own PCM consumer (see `needsSynth`), so a Gemini-configured,
-  bridge-publishable, no-cast, notification-only run still
-  synthesises and retains `${topic}/audio` for HA's
-  speak-on-trigger automations. The audio topic does **not** fire
-  on a device-TTS run (no PCM buffer exists) or when Gemini synth
-  fails this run.
+  automations that don't care about the calendar). The period
+  `audio` topic fires when the bridge is `mqttPublishable` **and
+  Gemini is available** — the bridge is its own PCM consumer (see
+  `needsSynth`), so a Gemini-configured, bridge-publishable,
+  no-cast, notification-only run still synthesises and retains
+  `${topic}/<period>/audio` for HA's speak-on-trigger automations.
+  The period `video` topic fires when the worker can mux the outfit
+  PNG and WAV into a single MP4. The latest bundle is mirrored to
+  `${topic}/now/{text,image,audio,video}`; missing image / audio /
+  video modalities clear their retained `now` slots, and
+  `${topic}/now/timestamp` is published last as the commit marker.
+  Audio and video do **not** fire on a device-TTS run (no PCM buffer
+  exists) or when Gemini synth fails this run.
 
 #### Cast (smart display)
 
@@ -325,8 +517,9 @@ together.
    aligned moment, even on empty-evening runs where the
    user-facing destinations are suppressed.
 
-**Post-alignment fan-out** — six destinations, fired in parallel
-where there's no ordering constraint:
+**Post-alignment fan-out** — phone notification, Cast, phone speech,
+and one coordinated MQTT bundle, fired in parallel where there's no
+ordering constraint:
 
 7. **Phone notification** (gated on delivery mode AND
    `!emptyEveningSkip`). Fires immediately at alignment. The first
@@ -384,24 +577,21 @@ where there's no ordering constraint:
      this is where the on-device engine does its own synth + play.
    Wraps the call in `withSpeechAudioFocus`; only this step takes
    audio focus on the phone.
-10. **MQTT prose** (gated on `mqttPublishable`). Publish the prose
-    sentence to the retained prose topic. Fires immediately at
-    alignment, in parallel with the notification, cast, and the
-    other MQTT publishes. Not gated by `emptyEveningSkip` — HA
-    sees the latest forecast on every run.
-11. **MQTT image** (gated on `mqttPublishable`). Publish the
-    rendered outfit PNG to the retained image topic. Fires
-    immediately at alignment. Not gated by `emptyEveningSkip`.
-12. **MQTT audio** (gated on `mqttPublishable` AND the synth
-    buffer from track 4 exists). Publish the WAV to the retained
-    audio topic. Fires immediately at alignment. Not gated by
-    `emptyEveningSkip`. Skipped when synth wasn't run (device-TTS
-    path, or no consumer wanted it) or when synth failed.
-13. **End of run.**
+10. **MQTT bundle** (gated on `mqttPublishable`). Publish the retained
+    period `text`, optional `image`, optional `audio`, and optional
+    `video` topics; then mirror the same coherent bundle to `now/image`,
+    `now/audio`, `now/video`, `now/text`, and finally `now/timestamp` as
+    the commit marker. Fires immediately at alignment, in parallel with
+    notification and Cast. Not gated by `emptyEveningSkip` — HA sees the
+    latest forecast on every run. Audio is skipped when synth wasn't run
+    (device-TTS path, or no consumer wanted it) or when synth failed;
+    video is skipped when either image or audio is missing or MP4 muxing
+    fails.
+11. **End of run.**
 
-The phone notification (step 7), cast load (step 8), and the three
-MQTT publishes (steps 10–12) all kick off at alignment, in
-parallel. The phone speaker (step 9) is the only post-alignment
+The phone notification (step 7), cast load (step 8), and MQTT bundle
+(step 10) all kick off at alignment, in parallel. The phone speaker
+(step 9) is the only post-alignment
 step with an ordering dependency: when a cast is attempted, the
 phone speaker waits for the cast result so `castSkipPhoneSpeech`
 can do its job. In the typical discovered-route case the wait is
@@ -420,9 +610,11 @@ ahead of it.
 ### Behaviour matrix
 
 Common configurations and what fires per run. `N` = phone notification,
-`P` = phone speaker, `C` = cast, `M-audio` = MQTT `${topic}/audio`.
-`M-prose` and `M-image` always fire when the bridge is enabled, so
-they're omitted from the matrix.
+`P` = phone speaker, `C` = cast, `M-audio` = MQTT
+`${topic}/<period>/audio`. `M-text` and `M-image` always fire when the
+bridge is publishable; optional `M-video` follows the same synth/image
+availability as `M-audio`, and the latest successful bundle is mirrored to
+`/now`. Those MQTT outputs are omitted from the matrix.
 
 For brevity the rows below assume Gemini is available unless marked
 otherwise, and that synth succeeds when `needsSynth` fires. "Cast ok"
@@ -455,6 +647,9 @@ makes no distinction between Gemini playback and Device fallback.
 | `TTS_ONLY`                | yes         | yes       | ok                 | off                 | P + C (audio)     |
 | `TTS_ONLY`                | yes         | yes       | fails              | any                 | P                 |
 | `TTS_ONLY`                | yes         | no        | ok                 | any                 | P + C (silent)    |
+| `SILENT`                  | no          | yes       | n/a                | n/a                 | none              |
+| `SILENT`                  | yes         | yes       | ok                 | any                 | C (audio)         |
+| `SILENT`                  | yes         | no        | ok                 | any                 | C (silent)        |
 | At home + skip-at-home on | yes         | yes       | ok                 | any                 | N (or none) + C (audio) |
 | At home + skip-at-home on | yes         | no        | ok                 | any                 | N (or none) + C (silent) |
 | At home + skip-at-home on | yes         | yes       | fails              | any                 | N (or none) — no P |
@@ -463,8 +658,8 @@ makes no distinction between Gemini playback and Device fallback.
 publishable**. Synth is decided pre-alignment by `needsSynth`
 (`geminiAvailable && (mqttPublishable || ((phoneRequested ||
 willCast) && !emptyEveningSkip))`) at step 3 and run in step 4; the
-publish itself happens at step 12, in parallel with the notification,
-cast load, and the other MQTT publishes at the alignment moment.
+publish itself happens inside the step-10 MQTT bundle, in parallel with
+notification and cast load at the alignment moment.
 A later cast failure (display asleep / busy / load rejected) doesn't
 retract the MQTT audio payload, and neither does a
 `castSkipPhoneSpeech` suppression of P after a successful cast.
@@ -479,7 +674,8 @@ Skip-at-home with `mqttPublishable` still produces M-audio (the
 bridge is its own consumer); skip-at-home with no cast and no
 publishable bridge produces no M-audio (nothing wants synth).
 Empty-evening tonight runs publish M-audio too when the bridge is
-publishable. The configurations that produce no M-audio are
+publishable. M-video follows M-audio when the outfit PNG is available and
+MP4 muxing succeeds. The configurations that produce no M-audio are
 therefore: any run where the bridge isn't publishable AND no
 audio-consuming destination fires (no consumer), every C (silent) /
 image-only cast row (Gemini unavailable, no PCM exists), and any

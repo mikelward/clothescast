@@ -20,6 +20,10 @@ composeBom = "2026.03.00"
 # androidx.core baseline at 1.13–1.15 so it doesn't force a compileSdk lift the
 # way Vico/Glance bumps would. Bump in lockstep with any AGP/compileSdk upgrade.
 navigation = "2.8.5"
+# Drag-and-drop reordering for Compose lists/columns (used by the Settings →
+# Display "Home screen layout" reorder UI). 3.1.0 needs Compose foundation
+# 1.7.0+, well under the BoM above. Lives on Maven Central.
+reorderable = "3.1.0"
 junit5 = "5.11.3"
 mockk = "1.13.13"
 kotest = "5.9.1"
@@ -84,6 +88,7 @@ androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "u
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+reorderable = { group = "sh.calvin.reorderable", name = "reorderable", version.ref = "reorderable" }
 
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }

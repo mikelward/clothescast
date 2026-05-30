@@ -319,6 +319,8 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.vico.compose.m3)
+    // Drag-to-reorder for the Settings → Display "Home screen layout" list.
+    implementation(libs.reorderable)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation(libs.kotlinx.coroutines.core)

@@ -13,6 +13,7 @@ import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.HolidayCatalog
 import app.clothescast.core.domain.model.HolidayTheme
+import app.clothescast.core.domain.model.HomeSection
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.RangeFormat
@@ -109,6 +110,8 @@ data class TodayState(
      * time (which can differ from these if the user has nudged a knob since); the
      * dialog prefers these for display so the controls stay honest. */
     val clothesRules: List<ClothesRule> = emptyList(),
+    /** Top-to-bottom order of the reorderable home-screen sections. */
+    val homeSectionOrder: List<HomeSection> = HomeSection.DEFAULTS,
     /**
      * Whether to overlay each major weather model's hourly curve on the
      * forecast / feels-like / precipitation charts. Session-scoped (lives on
@@ -638,6 +641,7 @@ class TodayViewModel(
             useDeviceLocation = prefs.useDeviceLocation,
             hasFallbackLocation = prefs.location != null,
             clothesRules = prefs.clothesRules,
+            homeSectionOrder = prefs.homeSectionOrder,
             showModelSpread = spread,
             outfitTopColors = topColors,
             outfitBottomColors = bottomColors,

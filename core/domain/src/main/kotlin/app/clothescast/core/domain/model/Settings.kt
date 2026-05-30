@@ -553,6 +553,12 @@ data class UserPreferences(
      */
     val defaultTop: OutfitSuggestion.Top = OutfitSuggestion.Top.TSHIRT,
     /**
+     * Top-to-bottom order of the reorderable home-screen sections (outfit /
+     * insight). Always a complete, normalized list — see [HomeSection.normalize]
+     * — so consumers can iterate it directly. Defaults to [HomeSection.DEFAULTS].
+     */
+    val homeSectionOrder: List<HomeSection> = HomeSection.DEFAULTS,
+    /**
      * The fixed location to fetch weather for when [useDeviceLocation] is false (or as a
      * fallback when device location can't be resolved). Null when the user has not
      * configured one.
@@ -1083,3 +1089,37 @@ enum class ForecastModel(val openMeteoId: String) {
  * routing the trio around the deutan / protan / tritan collision axes.
  */
 enum class ColorPalette { RAINBOW, ACCESSIBLE, HIGHLIGHTER }
+
+/**
+ * A reorderable section on the home-screen pager pages. For now only the
+ * outfit preview and the forecast insight are user-orderable; the enum is the
+ * single source of truth for "which sections exist", so adding a value here
+ * (and rendering it in `HomePageScaffold`) is all a future section needs.
+ */
+enum class HomeSection {
+    /** The today + tonight outfit-preview row. */
+    OUTFIT,
+
+    /** The forecast insight (per-period insight card / 7-day week headline). */
+    INSIGHT,
+    ;
+
+    companion object {
+        /** Canonical out-of-the-box order: outfit above the insight. */
+        val DEFAULTS: List<HomeSection> = listOf(OUTFIT, INSIGHT)
+
+        /**
+         * Normalize a stored / partial order into a complete, valid one:
+         * de-duplicates, keeps the caller's relative order for sections it
+         * names, then appends any sections it omitted in [DEFAULTS] order so a
+         * value added to this enum later automatically shows up (at the end)
+         * for users whose persisted order predates it. An empty / all-unknown
+         * input falls back to [DEFAULTS].
+         */
+        fun normalize(order: List<HomeSection>): List<HomeSection> {
+            val seen = LinkedHashSet(order)
+            seen.addAll(DEFAULTS)
+            return seen.toList()
+        }
+    }
+}

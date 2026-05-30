@@ -13,6 +13,7 @@ import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.HolidayCountrySelection
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
+import app.clothescast.core.domain.model.HomeSection
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
@@ -119,6 +120,7 @@ data class SettingsState(
      */
     val effectiveEnabledHolidayCountries: Set<String> = emptySet(),
     val clothesRules: List<ClothesRule> = ClothesRule.DEFAULTS,
+    val homeSectionOrder: List<HomeSection> = HomeSection.DEFAULTS,
     val defaultBottom: OutfitSuggestion.Bottom = OutfitSuggestion.Bottom.LONG_PANTS,
     val defaultTop: OutfitSuggestion.Top = OutfitSuggestion.Top.TSHIRT,
     val location: Location? = null,

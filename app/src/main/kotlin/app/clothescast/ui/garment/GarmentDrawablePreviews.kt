@@ -65,10 +65,10 @@ internal fun ClothingShoesPreview() {
     ClothingDrawableFrame(R.drawable.ic_outfit_shoes, "shoes")
 }
 
-@Preview(name = "Clothing · candles", widthDp = 360)
+@Preview(name = "Clothing · sandals", widthDp = 360)
 @Composable
-internal fun ClothingCandlesPreview() {
-    ClothingDrawableFrame(R.drawable.ic_outfit_candles, "candles")
+internal fun ClothingSandalsPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_sandals, "sandals")
 }
 
 @Preview(name = "Clothing · flipflops", widthDp = 360)

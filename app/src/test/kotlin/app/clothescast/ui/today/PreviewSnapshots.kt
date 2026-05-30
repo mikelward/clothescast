@@ -31,7 +31,7 @@ import app.clothescast.ui.garment.ClothingRainBootsPreview
 import app.clothescast.ui.garment.ClothingWinterBootsPreview
 import app.clothescast.ui.garment.ClothingBootsPreview
 import app.clothescast.ui.garment.ClothingShoesPreview
-import app.clothescast.ui.garment.ClothingCandlesPreview
+import app.clothescast.ui.garment.ClothingSandalsPreview
 import app.clothescast.ui.garment.ClothingFlipflopsPreview
 import app.clothescast.ui.onboarding.OnboardingCompletePreview
 import app.clothescast.ui.onboarding.OnboardingFreshPreview
@@ -577,7 +577,7 @@ class PreviewSnapshots {
     @Test fun clothing_winter_boots() = capture { ClothingWinterBootsPreview() }
     @Test fun clothing_boots() = capture { ClothingBootsPreview() }
     @Test fun clothing_shoes() = capture { ClothingShoesPreview() }
-    @Test fun clothing_candles() = capture { ClothingCandlesPreview() }
+    @Test fun clothing_sandals() = capture { ClothingSandalsPreview() }
     @Test fun clothing_flipflops() = capture { ClothingFlipflopsPreview() }
 
     @Test fun widget_today_tshirt_shorts() = capture { WidgetTodayTShirtShortsPreview() }

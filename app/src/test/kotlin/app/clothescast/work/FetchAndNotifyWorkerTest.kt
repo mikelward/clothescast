@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.Configuration
+import androidx.work.Data
 import androidx.work.ListenableWorker.Result
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -19,6 +20,7 @@ import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.repository.ForecastBundle
 import app.clothescast.data.InsightCache
+import app.clothescast.ui.today.WorkInfoLite
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.longs.shouldBeGreaterThan
@@ -195,7 +197,113 @@ class FetchAndNotifyWorkerTest {
             result.outputData.getBoolean(FetchAndNotifyWorker.KEY_SKIP_TELEMETRY, false) shouldBe false
             result.outputData.getLong(FetchAndNotifyWorker.KEY_COMPLETED_AT, 0L) shouldBeGreaterThan
                 before - 1
+            // Nothing resolved → nothing to fetch a forecast for; don't spin up
+            // a recovery run that would just fail the same way.
+            recoveryWorkInfos() shouldHaveSize 0
         }
+    }
+
+    @Test
+    fun `cache-only refresh with a resolvable location but empty cache kicks an observed recovery refresh`() {
+        // The reported bug: the scheduled run failed for lack of a location, the
+        // user then grants it, and the cache-only refresh resolves a fix but —
+        // with nothing cached — leaves the Today screen empty until the next
+        // alarm. A saved fallback city makes resolveLocation return non-null
+        // here; with an empty cache the branch should kick a recovery refresh so
+        // a forecast actually populates the screen.
+        //
+        // It must land on the *observed* daily / tonight queue (not the
+        // unobserved silent queue) so its success supersedes the stale
+        // REASON_NO_LOCATION failure the scheduled run left there — otherwise
+        // the forecast populates but the "no location" banner lingers once the
+        // saved fallback drops the location-required suppression.
+        runBlocking {
+            app.settingsRepository.setLocation(
+                Location(latitude = 51.5, longitude = -0.1, displayName = "London"),
+            )
+            val worker = TestListenableWorkerBuilder<FetchAndNotifyWorker>(context)
+                .setInputData(workDataOf(FetchAndNotifyWorker.KEY_CACHE_LOCATION_ONLY to true))
+                .build()
+
+            val result = worker.doWork()
+
+            result.shouldBeInstanceOf<Result.Success>()
+            // Exactly one recovery run, on one of the two observed queues
+            // (which one depends on the current schedule window).
+            observedRefreshWorkInfos().map { it.state } shouldContainExactlyInAnyOrder
+                listOf(WorkInfo.State.ENQUEUED)
+            workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_SILENT) shouldHaveSize 0
+        }
+    }
+
+    @Test
+    fun `cache-only refresh with a forecast already cached stays a location-only write`() {
+        // When a forecast is already on screen there's nothing to populate, so
+        // the cache-only refresh stays cheap (location write only) rather than
+        // burning a fresh fetch — that's the whole reason the path exists apart
+        // from the recovery refresh.
+        runBlocking {
+            app.settingsRepository.setLocation(
+                Location(latitude = 51.5, longitude = -0.1, displayName = "London"),
+            )
+            app.insightCache.store(
+                InsightCache.Slot.THIS_PERIOD,
+                sampleSnapshot(period = ForecastPeriod.TODAY),
+            )
+            val worker = TestListenableWorkerBuilder<FetchAndNotifyWorker>(context)
+                .setInputData(workDataOf(FetchAndNotifyWorker.KEY_CACHE_LOCATION_ONLY to true))
+                .build()
+
+            val result = worker.doWork()
+
+            result.shouldBeInstanceOf<Result.Success>()
+            recoveryWorkInfos() shouldHaveSize 0
+        }
+    }
+
+    // --- staleNoLocationFailure (cross-queue recovery predicate) --------
+
+    @Test
+    fun `staleNoLocationFailure is false for an empty history`() {
+        staleNoLocationFailure(emptyList()) shouldBe false
+    }
+
+    @Test
+    fun `staleNoLocationFailure is true when the latest terminal is a no-location failure`() {
+        staleNoLocationFailure(
+            listOf(lite(WorkInfo.State.FAILED, completedAt = 100, reason = FetchAndNotifyWorker.REASON_NO_LOCATION)),
+        ) shouldBe true
+    }
+
+    @Test
+    fun `staleNoLocationFailure ignores the failure while a run is active`() {
+        // A pending / running recovery on the queue means the failure isn't
+        // stale — it's about to be superseded — so don't kick another.
+        staleNoLocationFailure(
+            listOf(
+                lite(WorkInfo.State.FAILED, completedAt = 100, reason = FetchAndNotifyWorker.REASON_NO_LOCATION),
+                lite(WorkInfo.State.ENQUEUED),
+            ),
+        ) shouldBe false
+    }
+
+    @Test
+    fun `staleNoLocationFailure is false when a newer success supersedes the failure`() {
+        staleNoLocationFailure(
+            listOf(
+                lite(WorkInfo.State.FAILED, completedAt = 100, reason = FetchAndNotifyWorker.REASON_NO_LOCATION),
+                lite(WorkInfo.State.SUCCEEDED, completedAt = 200),
+            ),
+        ) shouldBe false
+    }
+
+    @Test
+    fun `staleNoLocationFailure is false for a failure with a different reason`() {
+        // A network / HTTP failure isn't cleared by saving a location, so it's
+        // not ours to supersede from the cache-only path.
+        staleNoLocationFailure(
+            listOf(lite(WorkInfo.State.FAILED, completedAt = 100, reason = FetchAndNotifyWorker.REASON_UNHANDLED)),
+        ) shouldBe false
     }
 
     @Test
@@ -349,8 +457,32 @@ class FetchAndNotifyWorkerTest {
         target(ForecastPeriod.TONIGHT, LocalTime.of(2, 0)) shouldBe date.minusDays(1)
     }
 
+    // Minimal WorkInfoLite for the staleNoLocationFailure pure-function tests.
+    private fun lite(
+        state: WorkInfo.State,
+        completedAt: Long = 0L,
+        reason: String? = null,
+    ): WorkInfoLite {
+        val data = Data.Builder()
+            .putLong(FetchAndNotifyWorker.KEY_COMPLETED_AT, completedAt)
+            .apply { if (reason != null) putString(FetchAndNotifyWorker.KEY_REASON, reason) }
+            .build()
+        return WorkInfoLite(state = state, runAttemptCount = 1, outputData = data)
+    }
+
     private fun workInfosFor(name: String): List<WorkInfo> =
         WorkManager.getInstance(context).getWorkInfosForUniqueWork(name).get()
+
+    // The two observed refresh queues the Today banner watches; the cache-only
+    // recovery lands on whichever matches the current schedule window.
+    private fun observedRefreshWorkInfos(): List<WorkInfo> =
+        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME) +
+            workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT)
+
+    // Every queue a cache-only recovery could plausibly enqueue on — used to
+    // assert the branch *didn't* kick one.
+    private fun recoveryWorkInfos(): List<WorkInfo> =
+        observedRefreshWorkInfos() + workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_SILENT)
 
     private fun sampleSnapshot(period: ForecastPeriod): ForecastSnapshot {
         val today = LocalDate.of(2026, 5, 27)

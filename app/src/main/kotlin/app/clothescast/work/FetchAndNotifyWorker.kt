@@ -11,6 +11,7 @@ import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -53,6 +54,8 @@ import app.clothescast.tts.InsightTtsUtterance
 import app.clothescast.tts.insightTtsUtterance
 import app.clothescast.tts.resolveHolidayVoice
 import app.clothescast.tts.withSpeechAudioFocus
+import app.clothescast.ui.today.WorkInfoLite
+import app.clothescast.ui.today.toLite
 import app.clothescast.R
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.renderOutfitCard
@@ -169,14 +172,55 @@ class FetchAndNotifyWorker(
             return playInsight(prefs, requestedPeriod)
         }
 
-        // Cache-only path triggered by the Settings location toggle. Just
-        // resolves the device fix and writes it back via setLocation; skips
-        // the forecast / insight / deliver pipeline so the user doesn't get
-        // a duplicate notification (or TTS) when they enable device location
-        // later in the day, after the morning run already fired.
+        // Cache-only path triggered by the Settings / onboarding location
+        // toggle. Resolves the device fix and writes it back via setLocation,
+        // then skips the forecast / insight / deliver pipeline so the user
+        // doesn't get a duplicate notification (or TTS) when they enable device
+        // location later in the day, after the morning run already fired.
+        //
+        // Exception: when there's no cached insight to duplicate — the common
+        // case being the scheduled run having failed for lack of a location
+        // ("No location available; failing run"), then the user granting it —
+        // there's nothing for the Today screen to show, and it would sit on its
+        // empty state until the next alarm. Kick a silent refresh (same
+        // no-notification / no-TTS / no-MQTT / no-cast contract) so a forecast
+        // actually populates the screen the user just unblocked.
         if (inputData.getBoolean(KEY_CACHE_LOCATION_ONLY, false)) {
-            DiagLog.i(TAG, "Cache-only location refresh; skipping insight pipeline.")
-            resolveLocation(prefs, forceFresh = true)
+            val resolved = resolveLocation(prefs, forceFresh = true)
+            if (resolved != null && !hasCachedThisPeriodInsight()) {
+                // Route the recovery through the *observed* daily / tonight
+                // queue (silent = no notification / TTS), not the silent-refresh
+                // queue. The scheduled run that failed for lack of a location
+                // left a terminal REASON_NO_LOCATION WorkInfo on an observed
+                // queue, and the Today banner only suppresses it while the
+                // location-action banner is showing — which stops the moment
+                // resolveLocation() saves a fallback here. A success on the
+                // unobserved silent queue can't supersede that stale failure
+                // (TodayViewModel.workStatusFlow doesn't watch it), so the screen
+                // would populate the forecast yet still show the "no location"
+                // error. enqueueOneShot's REPLACE on the observed queue both
+                // clears the stale failure and shows a "Fetching" spinner while
+                // it runs.
+                //
+                // Recover the current window for the actual fetch. But the
+                // failure may sit on the *other* observed queue: if this
+                // morning's daily run failed and the user only grants location
+                // after the tonight window opens, the current period is TONIGHT
+                // while the stale REASON_NO_LOCATION lives on the daily queue.
+                // mergeWorkStatus surfaces a failure on *either* queue, so also
+                // kick a (silent) recovery on the other queue when it carries
+                // that stale failure — a no-op in the common same-window case.
+                val period = currentPeriodForSchedule(prefs)
+                val other = otherPeriod(period)
+                val periods = buildList {
+                    add(period)
+                    if (hasStaleNoLocationFailure(observedWorkName(other))) add(other)
+                }
+                DiagLog.i(TAG, "Cache-only refresh resolved a location with nothing cached; kicking $periods refresh.")
+                periods.forEach { enqueueOneShot(applicationContext, silent = true, period = it) }
+            } else {
+                DiagLog.i(TAG, "Cache-only location refresh; skipping insight pipeline.")
+            }
             return Result.success()
         }
 
@@ -714,6 +758,41 @@ class FetchAndNotifyWorker(
         val joined = if (firstLine.isNullOrEmpty()) t.javaClass.simpleName
         else "${t.javaClass.simpleName}: $firstLine"
         return if (joined.length <= MAX_DETAIL_LEN) joined else joined.take(MAX_DETAIL_LEN - 1) + "…"
+    }
+
+    // True when the current-window slot already holds a snapshot. The
+    // cache-only refresh uses this to decide whether enabling device location
+    // needs to kick a first fetch (empty cache) or can stay a cheap
+    // location-only write (a forecast is already on screen). A read failure
+    // degrades to "nothing cached" so we err towards fetching rather than
+    // leaving the user on a blank Today screen.
+    private suspend fun hasCachedThisPeriodInsight(): Boolean =
+        runCatching { app.insightCache.thisPeriod.first() }.getOrNull() != null
+
+    // The observed unique-work queue (the ones TodayViewModel.workStatusFlow
+    // watches) that a [period]'s scheduled run lands on.
+    private fun observedWorkName(period: ForecastPeriod): String = when (period) {
+        ForecastPeriod.TODAY -> UNIQUE_WORK_NAME
+        ForecastPeriod.TONIGHT -> UNIQUE_WORK_NAME_TONIGHT
+    }
+
+    private fun otherPeriod(period: ForecastPeriod): ForecastPeriod = when (period) {
+        ForecastPeriod.TODAY -> ForecastPeriod.TONIGHT
+        ForecastPeriod.TONIGHT -> ForecastPeriod.TODAY
+    }
+
+    // True when [workName]'s most-recent terminal run failed for lack of a
+    // location and nothing's currently active on it — i.e. a stale
+    // REASON_NO_LOCATION WorkInfo the banner would surface once the saved
+    // fallback drops the location-action suppression. A query failure degrades
+    // to false — we'd rather skip the extra recovery than throw out of the
+    // cache-only path. The decision itself lives in [staleNoLocationFailure]
+    // so it can be unit-tested without WorkManager.
+    private fun hasStaleNoLocationFailure(workName: String): Boolean {
+        val infos = runCatching {
+            WorkManager.getInstance(applicationContext).getWorkInfosForUniqueWork(workName).get()
+        }.getOrElse { return false }
+        return staleNoLocationFailure(infos.toLite())
     }
 
     private suspend fun resolveLocation(prefs: UserPreferences, forceFresh: Boolean = false): Location? {
@@ -1877,4 +1956,30 @@ class FetchAndNotifyWorker(
             }
         }
     }
+}
+
+/**
+ * True when [infos] (one observed queue's WorkManager history) shows a *stale*
+ * no-location failure: nothing currently active, and the most-recent terminal
+ * run is a [FetchAndNotifyWorker.REASON_NO_LOCATION] failure. Mirrors
+ * [app.clothescast.ui.today.selectStatus]'s "latest terminal by completed-at,
+ * active runs win" rule so the cache-only recovery clears exactly the failure
+ * the Today banner would otherwise surface.
+ *
+ * Top-level + [WorkInfoLite]-based (rather than a private method querying
+ * WorkManager) so it's directly unit-testable — same pattern as `selectStatus`.
+ */
+internal fun staleNoLocationFailure(infos: List<WorkInfoLite>): Boolean {
+    val active = infos.any {
+        it.state == WorkInfo.State.ENQUEUED ||
+            it.state == WorkInfo.State.RUNNING ||
+            it.state == WorkInfo.State.BLOCKED
+    }
+    if (active) return false
+    val latest = infos
+        .filter { it.state == WorkInfo.State.SUCCEEDED || it.state == WorkInfo.State.FAILED }
+        .maxByOrNull { it.outputData.getLong(FetchAndNotifyWorker.KEY_COMPLETED_AT, 0L) }
+        ?: return false
+    return latest.state == WorkInfo.State.FAILED &&
+        latest.outputData.getString(FetchAndNotifyWorker.KEY_REASON) == FetchAndNotifyWorker.REASON_NO_LOCATION
 }

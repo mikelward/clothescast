@@ -730,25 +730,12 @@ private fun BannerStack(
         onDismiss = onDismissClothesPromoCard,
         modifier = bannerModifier,
     )
-    // "Set up a schedule" nudge — scheduled casts don't fire until the user
-    // enables a slot, so a fresh install gets nothing on a timer. Gated
-    // upstream on neither master switch being on (plus the user not having
-    // dismissed), and held back by [promoBannersToShow] until a forecast
-    // exists and there's room under the cap. Sits between the clothes promo
-    // and the celebration promo. The CTA only routes to Schedule settings
-    // (where the notification-permission prompt lives); enabling a slot there
-    // auto-hides the card, so unlike the clothes card the CTA doesn't dismiss.
-    SchedulePromoCard(
-        visible = PromoBanner.SCHEDULE in shownPromos,
-        onOpenSchedule = onOpenSchedule,
-        onDismiss = onDismissSchedulePromoCard,
-        modifier = bannerModifier,
-    )
     // "Preview your ClothesCast" nudge — let the user hear the cast on demand
     // instead of waiting for the alarm. Gated upstream on a cast slot being
-    // enabled (true by default for the morning cast) plus not dismissed. Its
-    // Play button mirrors the top-bar one: same window derivation, same
-    // play-retires-the-promo behavior.
+    // enabled (true by default for the morning cast) plus not dismissed. Sits
+    // between the clothes promo and the schedule promo. Its Play button mirrors
+    // the top-bar one: same window derivation, same play-retires-the-promo
+    // behavior.
     val playPromoContext = LocalContext.current
     PlayPromoCard(
         visible = PromoBanner.PLAY in shownPromos,
@@ -770,6 +757,20 @@ private fun BannerStack(
             if (state.thisPeriodInsight != null) onDismissPlayPromoCard()
         },
         onDismiss = onDismissPlayPromoCard,
+        modifier = bannerModifier,
+    )
+    // "Set up a schedule" nudge — scheduled casts don't fire until the user
+    // enables a slot, so a fresh install gets nothing on a timer. Gated
+    // upstream on neither master switch being on (plus the user not having
+    // dismissed), and held back by [promoBannersToShow] until a forecast
+    // exists and there's room under the cap. Sits between the play promo
+    // and the Gemini-voices promo. The CTA only routes to Schedule settings
+    // (where the notification-permission prompt lives); enabling a slot there
+    // auto-hides the card, so unlike the clothes card the CTA doesn't dismiss.
+    SchedulePromoCard(
+        visible = PromoBanner.SCHEDULE in shownPromos,
+        onOpenSchedule = onOpenSchedule,
+        onDismiss = onDismissSchedulePromoCard,
         modifier = bannerModifier,
     )
     // "Try high quality voices" nudge — point users who haven't set up Gemini

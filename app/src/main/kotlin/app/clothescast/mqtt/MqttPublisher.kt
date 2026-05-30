@@ -3,6 +3,8 @@ package app.clothescast.mqtt
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.diag.DiagLog
+import app.clothescast.net.NetworkErrorKind
+import app.clothescast.net.classifyNetworkError
 import com.hivemq.client.mqtt.MqttClient
 import com.hivemq.client.mqtt.datatypes.MqttQos
 import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient
@@ -408,20 +410,31 @@ class MqttPublisher(
             // shadowed by a misleading "MQTT publish failed" line.
             throw ce
         } catch (t: Throwable) {
-            // Carry the throwable's class+message text on the Failure outcome
-            // (it's surfaced on the Settings status row and in the bug report)
-            // but don't attach `t` to the log line: the HiveMQ/Netty trace it
-            // produces is ~4 lines per topic per attempt — 32 lines for one
-            // unreachable-broker bundle — and the message string already names
-            // the cause (`AnnotatedNoRouteToHostException: No route to host`).
-            val msg = "${t.javaClass.simpleName}: ${t.message ?: "unknown error"}".take(250)
+            // Carry a user-readable Failure message but keep it short — it's
+            // surfaced on the Settings status row, the Today error banner, and
+            // in the bug report. When the cause is a recognisable connection
+            // failure (no route, refused, timeout, DNS, TLS), lead with a
+            // plain-English hint that helps the user tell a network / firewall
+            // problem from a broker one; otherwise fall back to the raw
+            // class+message (e.g. an ACL rejection). We don't attach `t` to the
+            // log line: the HiveMQ/Netty trace is ~4 lines per topic per
+            // attempt (32 lines for one unreachable-broker bundle) and the
+            // message string already names the cause.
+            val raw = "${t.javaClass.simpleName}: ${t.message ?: "unknown error"}"
+            val msg = networkHintFor(classifyNetworkError(t), prepared.host, prepared.port)
+                ?.let { "$it ($raw)" }
+                ?.let { it.take(250) }
+                ?: raw.take(250)
             DiagLog.w(TAG, "MQTT publish failed to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic ($msg)")
             result = MqttPublishOutcome.Failure(msg)
         }
         result
     } ?: run {
         DiagLog.w(TAG, "MQTT publish timed out after ${publishTimeoutMs}ms to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic")
-        MqttPublishOutcome.Failure("Connection timed out (>${publishTimeoutMs}ms)")
+        MqttPublishOutcome.Failure(
+            "Couldn't reach the broker at ${prepared.host}:${prepared.port} within " +
+                "${publishTimeoutMs}ms — check it's online and that nothing's blocking the port.",
+        )
     }
 
     private data class PreparedPublish(
@@ -499,6 +512,34 @@ class MqttPublisher(
             return "$trimmed/now/$kind"
         }
     }
+}
+
+/**
+ * A plain-English hint for an MQTT publish that failed at the connection layer,
+ * or null when the failure wasn't a recognisable network problem (e.g. a broker
+ * ACL rejection) so the caller surfaces the raw error instead. Mentions the
+ * `host:port` so the user can sanity-check it against their broker config.
+ *
+ * `internal` so [MqttPublisherTest] can assert the wording without driving a
+ * real socket failure.
+ */
+internal fun networkHintFor(kind: NetworkErrorKind?, host: String, port: Int): String? = when (kind) {
+    NetworkErrorKind.UNKNOWN_HOST ->
+        "Couldn't find the broker \"$host\" — check the address, and that this " +
+            "phone is on the same network as your broker."
+    NetworkErrorKind.NO_ROUTE ->
+        "Couldn't reach the broker at $host:$port — the phone may be on a " +
+            "different network, or a firewall is blocking it."
+    NetworkErrorKind.CONNECTION_REFUSED ->
+        "The broker at $host:$port refused the connection — check it's running " +
+            "and listening on port $port."
+    NetworkErrorKind.TIMEOUT ->
+        "Timed out connecting to $host:$port — the broker may be offline, or a " +
+            "firewall is silently dropping the connection."
+    NetworkErrorKind.TLS ->
+        "Couldn't establish a secure (TLS) connection to $host:$port — check the " +
+            "\"Use TLS\" setting matches your broker and that its certificate is valid."
+    null -> null
 }
 
 /**

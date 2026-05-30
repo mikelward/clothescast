@@ -13,6 +13,7 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -360,6 +361,75 @@ class MqttPublisherTest {
 
         val failure = outcome.shouldBeInstanceOf<MqttPublishOutcome.Failure>()
         failure.message shouldBe "IllegalStateException: simulated broker rejection"
+    }
+
+    @Test
+    fun `network failure surfaces a plain-English hint plus the raw cause`() = runTest {
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "192.168.1.50", mqttPort = 1883),
+            ),
+            passwordProvider = { null },
+            publish = { _, _, _ -> throw java.net.NoRouteToHostException("No route to host") },
+            retryDelayMs = 1L,
+        )
+
+        val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
+
+        val failure = outcome.shouldBeInstanceOf<MqttPublishOutcome.Failure>()
+        // Leads with the actionable hint (host:port + firewall guidance) and
+        // keeps the raw exception in parens for the bug report.
+        failure.message shouldContain "192.168.1.50:1883"
+        failure.message shouldContain "firewall"
+        failure.message shouldContain "NoRouteToHostException"
+    }
+
+    @Test
+    fun `unknown-host failure names the address and the same-network hint`() = runTest {
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.invalid"),
+            ),
+            passwordProvider = { null },
+            publish = { _, _, _ -> throw java.net.UnknownHostException("broker.invalid") },
+            retryDelayMs = 1L,
+        )
+
+        val failure = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
+            .shouldBeInstanceOf<MqttPublishOutcome.Failure>()
+        failure.message shouldContain "broker.invalid"
+        failure.message shouldContain "same network"
+    }
+
+    @Test
+    fun `non-network broker rejection keeps the raw message without a hint`() = runTest {
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = { _, _, _ -> error("not authorized") },
+            retryDelayMs = 1L,
+        )
+
+        val failure = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
+            .shouldBeInstanceOf<MqttPublishOutcome.Failure>()
+        // An ACL rejection isn't a network problem, so no firewall hint — the
+        // raw class+message is surfaced as-is.
+        failure.message shouldBe "IllegalStateException: not authorized"
+    }
+
+    @Test
+    fun `networkHintFor wording covers each connection-failure kind`() {
+        networkHintFor(
+            app.clothescast.net.NetworkErrorKind.CONNECTION_REFUSED,
+            "broker.local",
+            8883,
+        )!! shouldContain "refused"
+        networkHintFor(app.clothescast.net.NetworkErrorKind.TLS, "broker.local", 8883)!! shouldContain "TLS"
+        networkHintFor(app.clothescast.net.NetworkErrorKind.TIMEOUT, "broker.local", 1883)!! shouldContain "offline"
+        // Null kind (not a network failure) yields no hint.
+        networkHintFor(null, "broker.local", 1883).let { it shouldBe null }
     }
 
     @Test

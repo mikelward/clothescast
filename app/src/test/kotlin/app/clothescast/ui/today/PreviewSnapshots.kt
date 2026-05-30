@@ -16,6 +16,8 @@ import app.clothescast.ui.LauncherIconPreview
 import app.clothescast.ui.garment.ClothingJeansPreview
 import app.clothescast.ui.garment.ClothingLongPantsPreview
 import app.clothescast.ui.garment.ClothingLongSkirtPreview
+import app.clothescast.ui.garment.ClothingGlovesPreview
+import app.clothescast.ui.garment.ClothingThickJacketWithGlovesPreview
 import app.clothescast.ui.garment.ClothingPoloPreview
 import app.clothescast.ui.garment.ClothingPufferJacketPreview
 import app.clothescast.ui.garment.ClothingShortSkirtPreview
@@ -560,6 +562,8 @@ class PreviewSnapshots {
     @Test fun clothing_long_skirt() = capture { ClothingLongSkirtPreview() }
     @Test fun clothing_jeans() = capture { ClothingJeansPreview() }
     @Test fun clothing_long_pants() = capture { ClothingLongPantsPreview() }
+    @Test fun clothing_gloves() = capture { ClothingGlovesPreview() }
+    @Test fun clothing_thick_jacket_with_gloves() = capture { ClothingThickJacketWithGlovesPreview() }
 
     @Test fun widget_today_tshirt_shorts() = capture { WidgetTodayTShirtShortsPreview() }
     @Test fun widget_tonight_sweater_pants() = capture { WidgetTonightSweaterPantsPreview() }

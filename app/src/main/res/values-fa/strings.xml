@@ -74,7 +74,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="insight_band_hot">داغ</string>
     <string name="insight_delta_warmer">امروز %1$d° گرم‌تر خواهد بود.</string>
     <string name="insight_delta_cooler">امروز %1$d° سردتر خواهد بود.</string>
-    <string name="insight_alert">هشدار: %1$s.</string>
     <!-- SOV: "%1$s را بپوشید" = "[item] را (object marker) wear". -->
     <string name="insight_clothes_wear">%1$s را بپوشید.</string>
     <string name="insight_clothes_bare">%1$s.</string>
@@ -412,9 +411,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast شبانه (ساکت)</string>
     <string name="notification_channel_tonight_insight_silent_description">خلاصه آب‌وهوای عصرگاهی وقتی عصر شما خالی است. ساکت ارسال می‌شود.</string>
     <string name="notification_tonight_insight_title">ClothesCast امشب</string>
-    <string name="notification_channel_weather_alerts_name">هشدارهای آب‌وهوای شدید</string>
-    <string name="notification_channel_weather_alerts_description">هشدارهای با اولویت بالا برای رویدادهای آب‌وهوایی شدید یا بحرانی که منطقه شما را تحت تأثیر قرار می‌دهند.</string>
-    <string name="notification_weather_alert_title">هشدار آب‌وهوا: %1$s</string>
 
     <!-- Settings — notification permission -->
     <string name="settings_notification_permission_title">اعلان‌ها مسدود شده‌اند</string>

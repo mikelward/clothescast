@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DailyForecast
@@ -20,7 +19,6 @@ import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.UserPreferences
-import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.repository.ForecastBundle
 import app.clothescast.core.domain.usecase.DailyInsightResult
@@ -69,8 +67,8 @@ import java.time.ZoneId
  * snapshot's [ForecastSnapshot.period]).
  *
  * The cache stores the full [ForecastBundle] (so the delta clause keeps its
- * yesterday data, the precip clause keeps its per-model series, and severe
- * alerts survive a settings-driven re-render) plus a minimal projection of
+ * yesterday data and the precip clause keeps its per-model series across a
+ * settings-driven re-render) plus a minimal projection of
  * each [CalendarEvent] — start / end / allDay / a location-presence boolean —
  * matching the subset [app.clothescast.core.domain.usecase.RenderInsightSummary]
  * actually reads. Event titles and free-form location strings are
@@ -110,22 +108,18 @@ class InsightCache(
      * latest cached snapshot. Re-emits whenever either input changes, so the
      * Today screen / Format settings preview / widget always render the current
      * prefs against the most recent weather data without anyone having to
-     * re-trigger a recompute. `now` defaults to the snapshot's `generatedAt`
-     * — alerts are filtered against that timestamp, which matches the worker's
-     * "active at fetch time" semantics; pass a different clock for tests that
-     * want to age alerts past expiry.
+     * re-trigger a recompute.
      */
     fun deriveFlow(
         slot: Slot,
         prefsFlow: Flow<UserPreferences>,
-        now: (snapshot: ForecastSnapshot) -> Instant = ForecastSnapshot::generatedAt,
     ): Flow<DailyInsightResult?> {
         val snapshotFlow = when (slot) {
             Slot.THIS_PERIOD -> thisPeriod
             Slot.NEXT_PERIOD -> nextPeriod
         }
         return combine(snapshotFlow, prefsFlow) { snapshot, prefs ->
-            snapshot?.let { deriveInsight(it, prefs, now(it)) }
+            snapshot?.let { deriveInsight(it, prefs) }
         }
     }
 
@@ -150,7 +144,6 @@ class InsightCache(
         today: LocalDate,
         period: ForecastPeriod,
         prefs: UserPreferences,
-        now: Instant? = null,
         // Forwarded to [DeriveInsight] so cache-hit deliveries (debug-tap
         // redelivery later in the day, alarm re-fires) emit the same
         // `delta:` diagnostic line a fresh fetch would. The 300-line
@@ -161,7 +154,7 @@ class InsightCache(
     ): DailyInsightResult? {
         val snapshot = thisPeriod.first() ?: return null
         if (snapshot.bundle.today.date != today || snapshot.period != period) return null
-        return deriveInsight(snapshot, prefs, now ?: snapshot.generatedAt, diagLog = diagLog)
+        return deriveInsight(snapshot, prefs, diagLog = diagLog)
     }
 
     suspend fun clear() {
@@ -218,7 +211,6 @@ class InsightCache(
     private data class ForecastBundleDto(
         val today: DailyForecastDto,
         val yesterday: DailyForecastDto,
-        val alerts: List<AlertDto> = emptyList(),
         val confidence: ConfidenceInfoDto? = null,
         val perModelHourly: PerModelHourlyDto? = null,
         val tomorrowHourly: List<HourlyDto> = emptyList(),
@@ -229,7 +221,6 @@ class InsightCache(
         fun toDomain(): ForecastBundle = ForecastBundle(
             today = today.toDomain(),
             yesterday = yesterday.toDomain(),
-            alerts = alerts.map { it.toDomain() },
             confidence = confidence?.toDomain(),
             perModelHourly = perModelHourly?.toDomain(),
             tomorrowHourly = tomorrowHourly.map { it.toDomain() },
@@ -282,26 +273,6 @@ class InsightCache(
             condition = runCatching { WeatherCondition.valueOf(condition) }
                 .getOrDefault(WeatherCondition.UNKNOWN),
             precipitationMm = precipitationMm,
-        )
-    }
-
-    @Serializable
-    private data class AlertDto(
-        val event: String,
-        val severity: String,
-        val headline: String? = null,
-        val description: String? = null,
-        val onsetEpochMillis: Long,
-        val expiresEpochMillis: Long,
-    ) {
-        fun toDomain(): WeatherAlert = WeatherAlert(
-            event = event,
-            severity = runCatching { AlertSeverity.valueOf(severity) }
-                .getOrDefault(AlertSeverity.MINOR),
-            headline = headline,
-            description = description,
-            onset = Instant.ofEpochMilli(onsetEpochMillis),
-            expires = Instant.ofEpochMilli(expiresEpochMillis),
         )
     }
 
@@ -449,7 +420,6 @@ class InsightCache(
     private fun ForecastBundle.toDto(): ForecastBundleDto = ForecastBundleDto(
         today = today.toDto(),
         yesterday = yesterday.toDto(),
-        alerts = alerts.map { it.toDto() },
         confidence = confidence?.toDto(),
         perModelHourly = perModelHourly?.toDto(),
         tomorrowHourly = tomorrowHourly.map { it.toDto() },
@@ -477,15 +447,6 @@ class InsightCache(
         precipitationProbabilityPct = precipitationProbabilityPct,
         condition = condition.name,
         precipitationMm = precipitationMm,
-    )
-
-    private fun WeatherAlert.toDto(): AlertDto = AlertDto(
-        event = event,
-        severity = severity.name,
-        headline = headline,
-        description = description,
-        onsetEpochMillis = onset.toEpochMilli(),
-        expiresEpochMillis = expires.toEpochMilli(),
     )
 
     private fun ConfidenceInfo.toDto(): ConfidenceInfoDto = ConfidenceInfoDto(

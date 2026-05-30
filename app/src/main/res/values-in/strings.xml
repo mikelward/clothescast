@@ -72,7 +72,6 @@ to values/strings.xml (English).
     <string name="insight_band_hot">panas</string>
     <string name="insight_delta_warmer">Hari ini %1$d° lebih panas.</string>
     <string name="insight_delta_cooler">Hari ini %1$d° lebih dingin.</string>
-    <string name="insight_alert">Peringatan: %1$s.</string>
     <string name="insight_clothes_wear">Kenakan %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Indonesian has no grammatical articles. -->
@@ -539,9 +538,6 @@ to values/strings.xml (English).
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast Malam (senyap)</string>
     <string name="notification_channel_tonight_insight_silent_description">Ringkasan cuaca malam saat malam Anda kosong. Diposting secara senyap — Anda dapat melihatnya di layar kunci, tetapi tidak akan mengeluarkan suara.</string>
     <string name="notification_tonight_insight_title">ClothesCast malam ini</string>
-    <string name="notification_channel_weather_alerts_name">Peringatan cuaca ekstrem</string>
-    <string name="notification_channel_weather_alerts_description">Peringatan prioritas tinggi untuk cuaca buruk atau ekstrem yang mempengaruhi area Anda. Dikirimkan segera setelah pengambilan harian mendeteksinya.</string>
-    <string name="notification_weather_alert_title">Peringatan cuaca: %1$s</string>
 
     <!-- Notification permission settings -->
     <string name="settings_notification_permission_title">Notifikasi diblokir</string>

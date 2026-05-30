@@ -302,9 +302,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_description">O resumo do tempo da noite quando sua noite está livre. Enviado em silêncio — você pode dar uma olhada na tela de bloqueio, mas ele não emite som.</string>
     <string name="notification_tonight_insight_title">Tempo desta noite</string>
 
-    <string name="notification_channel_weather_alerts_name">Alertas de tempo severo</string>
-    <string name="notification_channel_weather_alerts_description">Alertas de alta prioridade para eventos meteorológicos graves ou extremos na sua região. Enviados assim que a busca diária os detecta.</string>
-    <string name="notification_weather_alert_title">Alerta meteorológico: %1$s</string>
 
     <!-- Notification-permission card. -->
     <string name="settings_notification_permission_title">As notificações estão bloqueadas</string>
@@ -450,7 +447,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_band_hot">muito quente</string>
     <string name="insight_delta_warmer">Hoje estará %1$d° mais quente.</string>
     <string name="insight_delta_cooler">Hoje estará %1$d° mais frio.</string>
-    <string name="insight_alert">Alerta: %1$s.</string>
     <string name="insight_clothes_wear">Vista %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Articles omitted — Portuguese gender agreement requires per-garment metadata. -->

@@ -243,9 +243,6 @@ displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_description">Iltainen säätiivis hiljaisina iltoina. Toimitetaan äänettömästi — näet sen lukitusnäytöllä, mutta se ei soi.</string>
     <string name="notification_tonight_insight_title">Tämän illan sää</string>
 
-    <string name="notification_channel_weather_alerts_name">Säävaroitukset</string>
-    <string name="notification_channel_weather_alerts_description">Korkean prioriteetin varoitukset alueesi vaikeista tai äärimmäisistä sääilmiöistä. Lähetetään heti, kun ne havaitaan päivittäisellä haulla.</string>
-    <string name="notification_weather_alert_title">Säävaroitus: %1$s</string>
 
     <string name="settings_notification_permission_title">Ilmoitukset on estetty</string>
     <string name="settings_notification_permission_description">Ilman ilmoituslupaa päivittäisellä ClothesCastilla ei ole paikkaa mennä. Salli se, jotta ClothesCast voi ilmestyä huomenna aamulla.</string>
@@ -367,7 +364,6 @@ displayed label localizes.
     <string name="insight_delta_warmer">Tänään on %1$d° lämpimämpi.</string>
     <string name="insight_delta_cooler">Tänään on %1$d° kylmempi.</string>
 
-    <string name="insight_alert">Varoitus: %1$s.</string>
 
     <!-- "Pue" = imperative "put on"; clothing nouns appear in partitive case. -->
     <string name="insight_clothes_wear">Pue %1$s.</string>

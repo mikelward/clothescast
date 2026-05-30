@@ -72,7 +72,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="insight_band_hot">panas</string>
     <string name="insight_delta_warmer">Hari ini %1$d° lebih panas.</string>
     <string name="insight_delta_cooler">Hari ini %1$d° lebih sejuk.</string>
-    <string name="insight_alert">Amaran: %1$s.</string>
     <string name="insight_clothes_wear">Pakai %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Malay has no grammatical articles. -->
@@ -536,9 +535,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast Malam (senyap)</string>
     <string name="notification_channel_tonight_insight_silent_description">Ringkasan cuaca petang apabila petang anda kosong. Dihantar secara senyap — anda boleh melihatnya pada skrin kunci, tetapi tidak akan berbunyi.</string>
     <string name="notification_tonight_insight_title">ClothesCast Malam Ini</string>
-    <string name="notification_channel_weather_alerts_name">Amaran cuaca buruk</string>
-    <string name="notification_channel_weather_alerts_description">Amaran keutamaan tinggi untuk peristiwa cuaca buruk atau ekstrem yang mempengaruhi kawasan anda. Dihantar sebaik sahaja pengambilan harian mengesannya.</string>
-    <string name="notification_weather_alert_title">Amaran cuaca: %1$s</string>
 
     <!-- Notification permission prompt in settings -->
     <string name="settings_notification_permission_title">Pemberitahuan disekat</string>

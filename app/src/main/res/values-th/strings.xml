@@ -70,7 +70,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_band_hot">ร้อน</string>
     <string name="insight_delta_warmer">วันนี้อุ่นกว่าเมื่อวาน %1$d°</string>
     <string name="insight_delta_cooler">วันนี้หนาวกว่าเมื่อวาน %1$d°</string>
-    <string name="insight_alert">เตือน: %1$s</string>
     <string name="insight_clothes_wear">สวม%1$s</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Thai has no grammatical articles. -->
@@ -536,9 +535,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast รายคืน (เงียบ)</string>
     <string name="notification_channel_tonight_insight_silent_description">สรุปสภาพอากาศตอนเย็นเมื่อตอนเย็นว่าง โพสต์แบบเงียบ — สามารถดูบนหน้าจอล็อก แต่จะไม่ส่งเสียง</string>
     <string name="notification_tonight_insight_title">ClothesCast คืนนี้</string>
-    <string name="notification_channel_weather_alerts_name">การแจ้งเตือนสภาพอากาศรุนแรง</string>
-    <string name="notification_channel_weather_alerts_description">การแจ้งเตือนลำดับความสำคัญสูงสำหรับสภาพอากาศรุนแรงหรือสุดขีดที่ส่งผลกระทบต่อพื้นที่ของคุณ ส่งทันทีที่การดึงข้อมูลรายวันตรวจพบ</string>
-    <string name="notification_weather_alert_title">การแจ้งเตือนสภาพอากาศ: %1$s</string>
 
     <!-- Notification permission settings -->
     <string name="settings_notification_permission_title">การแจ้งเตือนถูกบล็อก</string>

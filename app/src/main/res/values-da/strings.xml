@@ -325,9 +325,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="notification_channel_tonight_insight_silent_description">Den aftenvise vejropsummering på rolige aftener. Leveres lydløst — du kan se den på låseskærmen, men den laver ingen lyd.</string>
     <string name="notification_tonight_insight_title">Vejret i aften</string>
 
-    <string name="notification_channel_weather_alerts_name">Vejradvarsler</string>
-    <string name="notification_channel_weather_alerts_description">Højprioriterede advarsler for alvorlige eller ekstreme vejrhændelser i dit område. Sendes, så snart de opdages ved den daglige hentning.</string>
-    <string name="notification_weather_alert_title">Vejradvarsel: %1$s</string>
 
     <!-- Notification permission card. -->
     <string name="settings_notification_permission_title">Notifikationer er blokeret</string>
@@ -570,7 +567,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="insight_delta_warmer">Det bliver %1$d° varmere i dag.</string>
     <string name="insight_delta_cooler">Det bliver %1$d° koldere i dag.</string>
 
-    <string name="insight_alert">Advarsel: %1$s.</string>
 
     <!-- Split-verb "tag … på" = put on. -->
     <string name="insight_clothes_wear">Tag %1$s på.</string>

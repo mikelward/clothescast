@@ -4,8 +4,8 @@ import java.time.LocalTime
 
 /**
  * The structured form of a daily insight. Each clause is a pure-data description
- * of one of the seven independent rules in
- * [app.clothescast.core.domain.usecase.RenderInsightSummary] (alert, band, delta,
+ * of one of the independent rules in
+ * [app.clothescast.core.domain.usecase.RenderInsightSummary] (band, delta,
  * clothes, precip, calendar tie-in, evening-event tie-in); the corresponding
  * prose is produced by an Android-side formatter that resolves item keys and
  * templates through string resources.
@@ -30,7 +30,6 @@ import java.time.LocalTime
 data class InsightSummary(
     val period: ForecastPeriod,
     val band: BandClause,
-    val alert: AlertClause? = null,
     val delta: DeltaClause? = null,
     val clothes: ClothesClause? = null,
     val precip: PrecipClause? = null,
@@ -48,13 +47,6 @@ data class InsightSummary(
      */
     val eveningEventTieIn: EveningEventTieInClause? = null,
 )
-
-/**
- * Highest-severity SEVERE/EXTREME alert event name (e.g. "Tornado Warning"). Pulled
- * verbatim from the upstream warning feed; the formatter renders it as
- * "Alert: <event>." with no further interpretation.
- */
-data class AlertClause(val event: String)
 
 /**
  * The feels-like temperature window for the period, carried both as bands

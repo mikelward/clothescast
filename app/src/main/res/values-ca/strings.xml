@@ -454,9 +454,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="notification_channel_tonight_insight_silent_description">El resum meteorològic del vespre quan el teu vespre és lliure. S\'envia silenciosament — pots veure\'l a la pantalla de bloqueig, però no fa cap so.</string>
     <string name="notification_tonight_insight_title">El temps d\'aquesta nit</string>
 
-    <string name="notification_channel_weather_alerts_name">Alertes de temps sever</string>
-    <string name="notification_channel_weather_alerts_description">Alertes d\'alta prioritat per a fenòmens meteorològics greus o extrems que afecten la teva àrea. S\'entreguen tan aviat com la recerca diària els detecta.</string>
-    <string name="notification_weather_alert_title">Alerta meteorològica: %1$s</string>
 
     <string name="settings_notification_permission_title">Les notificacions estan bloquejades</string>
     <string name="settings_notification_permission_description">Sense permís de notificació, el teu ClothesCast diari no té on anar. Concedeix-lo perquè ClothesCast pugui publicar demà al matí.</string>
@@ -514,7 +511,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="insight_band_hot">molta calor</string>
     <string name="insight_delta_warmer">Avui farà %1$d° més de calor.</string>
     <string name="insight_delta_cooler">Avui farà %1$d° més de fred.</string>
-    <string name="insight_alert">Alerta: %1$s.</string>
     <!-- Reflexive imperative "tu": "Posa't el jersei." -->
     <string name="insight_clothes_wear">Posa\'t %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

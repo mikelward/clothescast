@@ -83,7 +83,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="insight_band_hot">karsts</string>
     <string name="insight_delta_warmer">Šodien būs par %1$d° siltāks.</string>
     <string name="insight_delta_cooler">Šodien būs par %1$d° aukstāks.</string>
-    <string name="insight_alert">Brīdinājums: %1$s.</string>
     <string name="insight_clothes_wear">Apģērb %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
@@ -511,9 +510,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="notification_channel_tonight_insight_silent_name">Nakts ClothesCast (klusais)</string>
     <string name="notification_channel_tonight_insight_silent_description">Vakara laika apkopojums, ja vakars ir brīvs. Publicēts klusumā — vari to apskatīt bloķēšanas ekrānā, taču tas neskanēs.</string>
     <string name="notification_tonight_insight_title">Šovakarējais ClothesCast</string>
-    <string name="notification_channel_weather_alerts_name">Bīstama laika brīdinājumi</string>
-    <string name="notification_channel_weather_alerts_description">Augstpriorāri brīdinājumi par smagiem vai ekstremāliem laika apstākļiem tavā apkārtnē. Piegādāti, tiklīdz ikdienas ielāde tos atklāj.</string>
-    <string name="notification_weather_alert_title">Laika brīdinājums: %1$s</string>
 
     <!-- Notification permission settings -->
     <string name="settings_notification_permission_title">Paziņojumi ir bloķēti</string>

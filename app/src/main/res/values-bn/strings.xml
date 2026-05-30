@@ -72,7 +72,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="insight_band_hot">গরম</string>
     <string name="insight_delta_warmer">আজ %1$d° বেশি গরম।</string>
     <string name="insight_delta_cooler">আজ %1$d° বেশি ঠান্ডা।</string>
-    <string name="insight_alert">সতর্কতা: %1$s।</string>
     <string name="insight_clothes_wear">%1$s পরুন।</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Bengali has no grammatical articles. -->
@@ -638,9 +637,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="notification_channel_tonight_insight_silent_name">রাতের ClothesCast (নীরব)</string>
     <string name="notification_channel_tonight_insight_silent_description">সন্ধ্যা ফাঁকা থাকলে সন্ধ্যার আবহাওয়ার সারসংক্ষেপ। নীরবে পোস্ট হয় — লক স্ক্রিনে দেখতে পাবেন, কিন্তু কোনো শব্দ করবে না।</string>
     <string name="notification_tonight_insight_title">আজ রাতের ClothesCast</string>
-    <string name="notification_channel_weather_alerts_name">গুরুতর আবহাওয়া সতর্কতা</string>
-    <string name="notification_channel_weather_alerts_description">আপনার এলাকায় গুরুতর বা চরম আবহাওয়ার জন্য উচ্চ-অগ্রাধিকার সতর্কতা। দৈনিক ফেচ শনাক্ত করার সাথে সাথে প্রেরণ করা হয়।</string>
-    <string name="notification_weather_alert_title">আবহাওয়া সতর্কতা: %1$s</string>
 
     <!-- ============================================================
          Error / incompatible device

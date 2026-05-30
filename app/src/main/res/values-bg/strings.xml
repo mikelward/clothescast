@@ -83,7 +83,6 @@ What is NOT overridden, by design:
     <string name="insight_band_hot">горещо</string>
     <string name="insight_delta_warmer">Днес ще бъде с %1$d° по-топло.</string>
     <string name="insight_delta_cooler">Днес ще бъде с %1$d° по-студено.</string>
-    <string name="insight_alert">Предупреждение: %1$s.</string>
     <string name="insight_clothes_wear">Облечи %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
@@ -553,9 +552,6 @@ What is NOT overridden, by design:
     <string name="notification_channel_tonight_insight_silent_name">Нощен ClothesCast (тих)</string>
     <string name="notification_channel_tonight_insight_silent_description">Вечерното резюме на времето, когато вечерта е спокойна. Публикува се тихо — можеш да го видиш на заключения екран, но няма да издаде звук.</string>
     <string name="notification_tonight_insight_title">Нощният ClothesCast</string>
-    <string name="notification_channel_weather_alerts_name">Предупреждения за тежко време</string>
-    <string name="notification_channel_weather_alerts_description">Приоритетни предупреждения за тежки или екстремни метеорологични явления в твоя район. Доставят се веднага след като дневното извличане ги открие.</string>
-    <string name="notification_weather_alert_title">Метеорологично предупреждение: %1$s</string>
 
     <!-- Notification permission card. -->
     <string name="settings_notification_permission_title">Известията са блокирани</string>

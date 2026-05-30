@@ -3,7 +3,6 @@ package app.clothescast.insight
 import android.content.res.Configuration
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import app.clothescast.core.domain.model.AlertClause
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.CalendarTieInClause
@@ -51,13 +50,12 @@ class InsightFormatterTest {
     private fun summary(
         period: ForecastPeriod = ForecastPeriod.TODAY,
         band: BandClause = BandClause(TemperatureBand.MILD, TemperatureBand.MILD),
-        alert: AlertClause? = null,
         delta: DeltaClause? = null,
         clothes: ClothesClause? = null,
         precip: PrecipClause? = null,
         calendarTieIn: CalendarTieInClause? = null,
         eveningEventTieIn: EveningEventTieInClause? = null,
-    ) = InsightSummary(period, band, alert, delta, clothes, precip, calendarTieIn, eveningEventTieIn)
+    ) = InsightSummary(period, band, delta, clothes, precip, calendarTieIn, eveningEventTieIn)
 
     @Test
     fun `band-only insight emits the lead-in and single feels-like temp`() {
@@ -670,12 +668,6 @@ class InsightFormatterTest {
         ) shouldBe "Today, it will be 21°. Chance of drizzle at noon."
     }
 
-    @Test
-    fun `alert clause emits before the band`() {
-        val out = subject.format(summary(alert = AlertClause("Tornado Warning")))
-        out shouldBe "Alert: Tornado Warning. Today, it will be 21°."
-    }
-
     private val omitSubject = InsightFormatter.forContext(
         context,
         Locale.ENGLISH,
@@ -840,19 +832,6 @@ class InsightFormatterTest {
         // The TTS path opts out so spoken playback stays silent rather than
         // reading out a content-free filler line.
         omitSubject.format(summary(), placeholderWhenEmpty = false) shouldBe ""
-    }
-
-    @Test
-    fun `omit range with no clause but an alert still emits the alert`() {
-        omitSubject.format(summary(alert = AlertClause("Tornado Warning"))) shouldBe
-            "Alert: Tornado Warning."
-    }
-
-    @Test
-    fun `omit range keeps the alert ahead of the merged lead`() {
-        omitSubject.format(
-            summary(alert = AlertClause("Tornado Warning"), clothes = ClothesClause(listOf("sweater"))),
-        ) shouldBe "Alert: Tornado Warning. Today, wear a sweater."
     }
 
     @Test
@@ -1293,19 +1272,18 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `full insight composes alert + band + delta + clothes + precip in order`() {
+    fun `full insight composes band + delta + clothes + precip in order`() {
         // Umbrella is silenced (accessories don't surface in rendered prose);
         // "Wear a sweater. Rain at 3pm." carries the message.
         val out = subject.format(
             summary(
-                alert = AlertClause("Flood Warning"),
                 band = BandClause(TemperatureBand.COOL, TemperatureBand.MILD),
                 delta = DeltaClause(6, DeltaClause.Direction.WARMER),
                 clothes = ClothesClause(listOf("sweater", "umbrella")),
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
             ),
         )
-        out shouldBe "Alert: Flood Warning. Today, it will be 15° to 21°. 6° warmer than yesterday. " +
+        out shouldBe "Today, it will be 15° to 21°. 6° warmer than yesterday. " +
             "Wear a sweater. Rain at 3pm."
     }
 

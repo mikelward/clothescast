@@ -1029,9 +1029,6 @@
     <string name="notification_channel_tonight_insight_silent_description">The evening weather summary when your evening is empty. Posted silently — you can glance at it on the lock screen, but it won\'t make a sound.</string>
     <string name="notification_tonight_insight_title">Tonight\'s ClothesCast</string>
 
-    <string name="notification_channel_weather_alerts_name">Severe weather alerts</string>
-    <string name="notification_channel_weather_alerts_description">High-priority alerts for severe or extreme weather events affecting your area. Delivered as soon as the daily fetch detects them.</string>
-    <string name="notification_weather_alert_title">Weather alert: %1$s</string>
 
     <string name="settings_notification_permission_title">Notifications are blocked</string>
     <string name="settings_notification_permission_description">Without notification permission, your daily ClothesCast has nowhere to go. Grant it so ClothesCast can post tomorrow morning.</string>
@@ -1183,7 +1180,6 @@
     <string name="insight_delta_cooler_lead">it will be %1$d° cooler than yesterday.</string>
 
     <!-- Severe-weather alert prefix. %1$s = event name (e.g. "Tornado Warning"). -->
-    <string name="insight_alert">Alert: %1$s.</string>
 
     <!--
     Clothes phrasing. The list of items is composed locale-by-locale so the

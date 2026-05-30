@@ -344,9 +344,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_description">Η βραδινή σύνοψη καιρού όταν το βράδυ σου είναι ελεύθερο. Παραδίδεται σιωπηλά — μπορείς να τη δεις στην οθόνη κλειδώματος, αλλά δεν παράγει ήχο.</string>
     <string name="notification_tonight_insight_title">Καιρός απόψε</string>
 
-    <string name="notification_channel_weather_alerts_name">Ειδοποιήσεις ακραίων καιρικών φαινομένων</string>
-    <string name="notification_channel_weather_alerts_description">Ειδοποιήσεις υψηλής προτεραιότητας για σοβαρά ή ακραία καιρικά φαινόμενα στην περιοχή σου. Παραδίδονται μόλις η καθημερινή ανάκτηση τα εντοπίσει.</string>
-    <string name="notification_weather_alert_title">Ειδοποίηση καιρού: %1$s</string>
 
     <!-- Notification-permission card. -->
     <string name="settings_notification_permission_title">Οι ειδοποιήσεις είναι αποκλεισμένες</string>
@@ -504,7 +501,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_band_hot">καύσωνας</string>
     <string name="insight_delta_warmer">Σήμερα θα είναι %1$d° πιο ζεστό από χθες.</string>
     <string name="insight_delta_cooler">Σήμερα θα είναι %1$d° πιο κρύο από χθες.</string>
-    <string name="insight_alert">Ειδοποίηση: %1$s.</string>
     <string name="insight_clothes_wear">Φόρεσε %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Articles omitted — Greek garments carry grammatical gender

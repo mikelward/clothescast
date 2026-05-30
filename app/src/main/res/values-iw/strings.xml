@@ -75,7 +75,6 @@ standard in Israeli digital communication.
     <string name="insight_band_hot">חם</string>
     <string name="insight_delta_warmer">היום יהיה %1$d° יותר חם.</string>
     <string name="insight_delta_cooler">היום יהיה %1$d° יותר קר.</string>
-    <string name="insight_alert">אזהרה: %1$s.</string>
     <!-- Slash notation for gender-neutral imperative (standard in Israeli digital text). -->
     <string name="insight_clothes_wear">לבש/י %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
@@ -420,9 +419,6 @@ standard in Israeli digital communication.
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast לילי (שקט)</string>
     <string name="notification_channel_tonight_insight_silent_description">סיכום מזג האוויר הערבי כשהערב שלך ריק. נשלח בשקט.</string>
     <string name="notification_tonight_insight_title">ClothesCast ללילה</string>
-    <string name="notification_channel_weather_alerts_name">התראות מזג אוויר קיצוני</string>
-    <string name="notification_channel_weather_alerts_description">התראות עדיפות גבוהה לאירועי מזג אוויר קיצוניים המשפיעים על אזורך.</string>
-    <string name="notification_weather_alert_title">התראת מזג אוויר: %1$s</string>
 
     <!-- Settings — notification permission -->
     <string name="settings_notification_permission_title">התראות חסומות</string>

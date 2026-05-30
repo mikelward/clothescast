@@ -70,7 +70,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_band_hot">joto</string>
     <string name="insight_delta_warmer">Itakuwa %1$d° ya joto zaidi kuliko jana.</string>
     <string name="insight_delta_cooler">Itakuwa %1$d° baridi zaidi kuliko jana.</string>
-    <string name="insight_alert">Tahadhari: %1$s.</string>
     <string name="insight_clothes_wear">Vaa %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Swahili has no articles; pass through bare. -->
@@ -377,9 +376,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast ya usiku (kimya)</string>
     <string name="notification_channel_tonight_insight_silent_description">Muhtasari wa hali ya hewa ya jioni jioni yako ikiwa tulivu. Imetumwa kimya.</string>
     <string name="notification_tonight_insight_title">ClothesCast ya Usiku Huu</string>
-    <string name="notification_channel_weather_alerts_name">Arifa za hali mbaya ya hewa</string>
-    <string name="notification_channel_weather_alerts_description">Arifa za kipaumbele cha juu kwa matukio ya hali mbaya au ya hatari ya hewa yanayoathiri eneo lako.</string>
-    <string name="notification_weather_alert_title">Arifa ya hali ya hewa: %1$s</string>
 
     <!-- Settings: notifications permission -->
     <string name="settings_notification_permission_title">Arifa zimezuiwa</string>

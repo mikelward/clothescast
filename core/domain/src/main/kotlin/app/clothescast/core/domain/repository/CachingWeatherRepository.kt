@@ -24,13 +24,6 @@ import kotlin.math.roundToLong
  * sense falls out of the rounded key.
  *
  * Errors from the delegate propagate; the cache is only written on success.
- *
- * TODO: alerts ride along with the cached bundle, so a severe warning that
- * Open-Meteo issues mid-TTL is invisible to the worker until the next
- * miss. Acceptable for now (the alerts feed is best-effort and the worker
- * runs at least twice a day) but if alert latency starts mattering, give
- * alerts a shorter TTL or split them out of `WeatherRepository.fetchForecast`
- * onto their own method so the caching decorator can leave them alone.
  */
 class CachingWeatherRepository(
     private val delegate: WeatherRepository,

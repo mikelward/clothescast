@@ -272,9 +272,6 @@ the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_description">De avondlijkse weersamenvatting op vrije avonden. Stil bezorgd — je kunt hem op het vergrendelscherm zien, maar hij maakt geen geluid.</string>
     <string name="notification_tonight_insight_title">Weer vanavond</string>
 
-    <string name="notification_channel_weather_alerts_name">Weerwaarschuwingen</string>
-    <string name="notification_channel_weather_alerts_description">Waarschuwingen met hoge prioriteit voor ernstige of extreme weersomstandigheden in jouw regio. Worden verzonden zodra ze worden gedetecteerd bij de dagelijkse ophaalbeurt.</string>
-    <string name="notification_weather_alert_title">Weerwaarschuwing: %1$s</string>
 
     <!-- Notification-permission card. -->
     <string name="settings_notification_permission_title">Meldingen zijn geblokkeerd</string>
@@ -411,7 +408,6 @@ the displayed label localizes.
     <string name="insight_delta_warmer">Het wordt vandaag %1$d° warmer.</string>
     <string name="insight_delta_cooler">Het wordt vandaag %1$d° kouder.</string>
 
-    <string name="insight_alert">Waarschuwing: %1$s.</string>
 
     <string name="insight_clothes_wear">Draag %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

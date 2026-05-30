@@ -23,10 +23,6 @@ import java.time.LocalDate
  * worker run. Callers that already hold a fresh snapshot (the cache after a
  * worker write, the Today screen / widget / cast / Format settings preview
  * combining snapshot + prefs flows) call [DeriveInsight] directly.
- *
- * Severe-weather alerts piggy-back on the same fetch and are returned alongside
- * the insight in [DailyInsightResult]; the worker uses them to drive a separate
- * high-priority notification while still feeding them into the daily summary.
  */
 class GenerateDailyInsight(
     private val weatherRepository: WeatherRepository,

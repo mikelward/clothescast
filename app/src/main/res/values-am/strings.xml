@@ -366,9 +366,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="notification_channel_tonight_insight_silent_name">ምሽታዊ ClothesCast (ዝምታ)</string>
     <string name="notification_channel_tonight_insight_silent_description">ምሽቱ ጸጥ ሲሆን የምሽቱ የአየር ሁኔታ ማጠቃለያ። ዝምታ ሆኖ ይለጠፋል።</string>
     <string name="notification_tonight_insight_title">የዛሬ ምሽት ClothesCast</string>
-    <string name="notification_channel_weather_alerts_name">የጠና የአየር ሁኔታ ማስጠንቀቂያዎች</string>
-    <string name="notification_channel_weather_alerts_description">ለቦታዎ አካባቢ ለሚጎዱ ጠና ወይም ከፍተኛ የአየር ሁኔታ ዝግጅቶች ከፍተኛ ቅድሚያ ማስጠንቀቂያዎች።</string>
-    <string name="notification_weather_alert_title">የአየር ሁኔታ ማስጠንቀቂያ: %1$s</string>
 
     <!-- Insight prose -->
     <string name="insight_lead_today">ዛሬ</string>
@@ -397,7 +394,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_band_hot">ሙቀታማ</string>
     <string name="insight_delta_warmer">ከትናንት %1$d° ሙቀቱ ይጨምራል።</string>
     <string name="insight_delta_cooler">ከትናንት %1$d° ቀዝቃዛ ይሆናል።</string>
-    <string name="insight_alert">ማስጠንቀቂያ: %1$s።</string>
     <string name="insight_clothes_wear">%1$s ይልበሱ።</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Amharic has no grammatical articles; pass through bare. -->

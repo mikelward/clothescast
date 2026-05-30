@@ -452,21 +452,6 @@ class FetchAndNotifyWorker(
             val snapshot = capturedSnapshot(location, prefs, period, dayOffset = 0)
             val result = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, it) })
             val isSilentRun = inputData.getBoolean(KEY_SILENT_REFRESH, false)
-            // Severe alerts are out-of-band: post them as separate high-priority
-            // notifications on every fresh fetch, regardless of whether the daily
-            // summary itself is blank or suppressed. Silent app-open refreshes
-            // skip this — re-issuing the morning alarm's already-posted alert
-            // with the same stable notification ID re-fires its HUN (heads-up
-            // sound / banner) on every app open with a stale cache, which is
-            // exactly the surprise the silent contract is meant to avoid. New
-            // alerts that landed since the last scheduled run will be picked
-            // up by the next morning / tonight alarm.
-            if (!isSilentRun) {
-                result.alerts.filter { it.isHighPriority() }.forEach { alert ->
-                    runCatching { app.weatherAlertNotifier.notify(alert) }
-                        .onFailure { DiagLog.w(TAG, "Severe alert notification failed for ${alert.event}.", it) }
-                }
-            }
             val insight = result.insight
             runCatching { app.insightCache.store(InsightCache.Slot.THIS_PERIOD, snapshot) }
                 .onSuccess {

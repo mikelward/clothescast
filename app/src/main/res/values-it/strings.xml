@@ -291,9 +291,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_description">Il riepilogo meteo serale quando la serata è libera. Inviato in silenzio — puoi dargli un\'occhiata sulla schermata di blocco, ma non emette suoni.</string>
     <string name="notification_tonight_insight_title">Meteo di stasera</string>
 
-    <string name="notification_channel_weather_alerts_name">Allerte meteo</string>
-    <string name="notification_channel_weather_alerts_description">Allerte ad alta priorità per eventi meteo gravi o estremi nella tua zona. Recapitate non appena il recupero quotidiano le rileva.</string>
-    <string name="notification_weather_alert_title">Allerta meteo: %1$s</string>
 
     <!-- Notification-permission card. -->
     <string name="settings_notification_permission_title">Le notifiche sono bloccate</string>
@@ -432,7 +429,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_band_hot">molto caldo</string>
     <string name="insight_delta_warmer">Oggi farà %1$d° in più.</string>
     <string name="insight_delta_cooler">Oggi farà %1$d° in meno.</string>
-    <string name="insight_alert">Allerta: %1$s.</string>
     <string name="insight_clothes_wear">Indossa %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Articles omitted — Italian gender agreement requires per-garment metadata. -->

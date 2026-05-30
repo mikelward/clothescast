@@ -15,10 +15,8 @@ import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.TriggeredOutfit
 import app.clothescast.core.domain.model.UserPreferences
-import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.repository.ForecastBundle
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -55,7 +53,6 @@ class DeriveInsight(
     operator fun invoke(
         snapshot: ForecastSnapshot,
         prefs: UserPreferences,
-        now: Instant = snapshot.generatedAt,
         // Diagnostic hook forwarded to [RenderInsightSummary] for the
         // delta-clause one-liner. Only the worker delivery path passes a
         // DiagLog adapter; cache re-derives (Today screen, widget, format
@@ -63,7 +60,6 @@ class DeriveInsight(
         diagLog: (String) -> Unit = {},
     ): DailyInsightResult {
         val bundle = snapshot.bundle
-        val activeAlerts = bundle.alerts.filter { it.expires.isAfter(now) }
         val morningStart = prefs.schedule.time
         val tonightStart = prefs.tonightSchedule.time
         val period = snapshot.period
@@ -84,7 +80,6 @@ class DeriveInsight(
                 morningStart = morningStart,
                 tonightStart = tonightStart,
                 allEvents = snapshot.events,
-                alerts = activeAlerts,
                 todayItems = periodView.triggeredOutfit.items,
             )
         } else {
@@ -121,7 +116,6 @@ class DeriveInsight(
             today = periodView.forecast,
             yesterday = deltaYesterdayForRender,
             todayItems = periodView.triggeredOutfit.items,
-            alerts = activeAlerts,
             events = periodView.events,
             period = period,
             todayForDelta = periodView.deltaToday,
@@ -167,7 +161,7 @@ class DeriveInsight(
             upcomingDays = bundle.upcomingDays,
             weekPerModelHourly = bundle.perModelHourly,
         )
-        return DailyInsightResult(insight = insight, alerts = activeAlerts)
+        return DailyInsightResult(insight = insight)
     }
 
     private fun buildPeriodView(
@@ -244,7 +238,6 @@ class DeriveInsight(
         morningStart: LocalTime,
         tonightStart: LocalTime,
         allEvents: List<CalendarEvent>,
-        alerts: List<WeatherAlert>,
         todayItems: List<String>,
     ): EveningEventTieInClause? {
         val nightEvents = filterEventsForPeriod(allEvents, ForecastPeriod.TONIGHT, tonightStart)
@@ -263,7 +256,6 @@ class DeriveInsight(
             today = nightView.forecast,
             yesterday = nightView.deltaYesterday,
             todayItems = nightView.triggeredOutfit.items,
-            alerts = alerts,
             events = nightView.events,
             period = ForecastPeriod.TONIGHT,
             todayForDelta = nightView.deltaToday,
@@ -452,12 +444,10 @@ internal fun DailyForecast.slicedForTonight(
 }
 
 /**
- * Bundles the daily insight with the active alerts that informed it. Alerts are kept
- * separate from [Insight] because they have a different lifecycle: the insight is
- * cached for the day and redelivered on demand, while alerts drive a one-shot
- * high-priority notification at fetch time.
+ * Wraps the derived daily [Insight]. A thin holder rather than returning [Insight]
+ * directly so the delivery pipeline has a stable result type to thread additional
+ * derived outputs through without churning every call site.
  */
 data class DailyInsightResult(
     val insight: Insight,
-    val alerts: List<WeatherAlert>,
 )

@@ -298,9 +298,6 @@ the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_description">予定のない夜の天気要約です。無音で配信され、ロック画面で確認できますが、音は鳴りません。</string>
     <string name="notification_tonight_insight_title">今夜の天気</string>
 
-    <string name="notification_channel_weather_alerts_name">悪天候警報</string>
-    <string name="notification_channel_weather_alerts_description">あなたの地域の重大または極端な気象現象に対する高優先度の警報です。日次取得で検出され次第、配信されます。</string>
-    <string name="notification_weather_alert_title">気象警報：%1$s</string>
 
     <!-- Notification-permission card. -->
     <string name="settings_notification_permission_title">通知がブロックされています</string>
@@ -444,7 +441,6 @@ the displayed label localizes.
     <string name="insight_band_hot">暑い</string>
     <string name="insight_delta_warmer">今日は%1$d°暖かくなります。</string>
     <string name="insight_delta_cooler">今日は%1$d°涼しくなります。</string>
-    <string name="insight_alert">警報：%1$s。</string>
     <!-- を is the universal object marker in Japanese, works after any noun. -->
     <string name="insight_clothes_wear">%1$sを着ていきましょう。</string>
     <string name="insight_clothes_bare">%1$s.</string>

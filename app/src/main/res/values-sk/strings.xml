@@ -333,9 +333,6 @@ What is NOT overridden, by design:
     <string name="notification_channel_tonight_insight_silent_description">Večerné zhrnutie počasia v pokojné večery. Doručí sa ticho — uvidíš ho na zamykacej obrazovke, ale nevydá žiadny zvuk.</string>
     <string name="notification_tonight_insight_title">Dnešné večerné počasie</string>
 
-    <string name="notification_channel_weather_alerts_name">Výstrahy pred búrkami</string>
-    <string name="notification_channel_weather_alerts_description">Vysokoprioritné výstrahy pred silnými alebo extrémnymi poveternostnými javmi vo tvojej oblasti. Odosielajú sa hneď po zistení pri dennom načítaní.</string>
-    <string name="notification_weather_alert_title">Výstraha pred počasím: %1$s</string>
 
     <!-- Notification-permission card. -->
     <string name="settings_notification_permission_title">Upozornenia sú zablokované</string>
@@ -577,7 +574,6 @@ What is NOT overridden, by design:
     <string name="insight_band_hot">horúco</string>
     <string name="insight_delta_warmer">Dnes bude o %1$d° teplejšie.</string>
     <string name="insight_delta_cooler">Dnes bude o %1$d° chladnejšie.</string>
-    <string name="insight_alert">Výstraha: %1$s.</string>
     <string name="insight_clothes_wear">Obleč si %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>

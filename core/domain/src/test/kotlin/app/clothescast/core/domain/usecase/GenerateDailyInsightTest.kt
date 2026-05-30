@@ -1,6 +1,5 @@
 package app.clothescast.core.domain.usecase
 
-import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
@@ -24,7 +23,6 @@ import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.model.UserPreferences
-import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.repository.ForecastBundle
@@ -354,25 +352,6 @@ class GenerateDailyInsightTest {
 
         insight.summary.clothes!!.items.shouldContainExactly("sweater", "coat", "gloves", "pants")
         insight.recommendedItems.shouldContainExactly("sweater", "coat", "gloves", "pants")
-    }
-
-    @Test
-    fun `severe alerts are surfaced in result and woven into the summary`() = runTest {
-        val severe = WeatherAlert(
-            event = "Severe Thunderstorm Warning",
-            severity = AlertSeverity.SEVERE,
-            headline = "Damaging hail expected",
-            description = null,
-            onset = clockInstant,
-            expires = clockInstant.plusSeconds(3600),
-        )
-        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday, alerts = listOf(severe)))
-        val subject = GenerateDailyInsight(weather, clock = clock)
-
-        val result = subject(london, prefs)
-
-        result.alerts.shouldContainExactly(severe)
-        result.insight.summary.alert!!.event shouldBe "Severe Thunderstorm Warning"
     }
 
     @Test
@@ -1860,24 +1839,6 @@ class GenerateDailyInsightTest {
         )
 
         result.insight.hasEvents shouldBe false
-    }
-
-    @Test
-    fun `expired alerts are filtered before reaching the summary and the result`() = runTest {
-        val stale = WeatherAlert(
-            event = "Wind Advisory",
-            severity = AlertSeverity.MODERATE,
-            headline = null,
-            description = null,
-            onset = clockInstant.minusSeconds(7200),
-            expires = clockInstant.minusSeconds(60),
-        )
-        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday, alerts = listOf(stale)))
-        val subject = GenerateDailyInsight(weather, clock = clock)
-
-        val result = subject(london, prefs)
-
-        result.alerts shouldBe emptyList()
     }
 
     @Test

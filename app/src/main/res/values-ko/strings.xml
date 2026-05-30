@@ -314,9 +314,6 @@ displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_description">일정이 없는 저녁의 날씨 요약입니다. 무음으로 전송되며 잠금 화면에서 확인할 수 있지만 소리는 나지 않아요.</string>
     <string name="notification_tonight_insight_title">오늘 밤 날씨</string>
 
-    <string name="notification_channel_weather_alerts_name">악천후 경보</string>
-    <string name="notification_channel_weather_alerts_description">지역의 심각하거나 극심한 기상 현상에 대한 높은 우선순위의 경보입니다. 일일 가져오기에서 감지되는 즉시 전달됩니다.</string>
-    <string name="notification_weather_alert_title">기상 경보: %1$s</string>
 
     <!-- Notification-permission card. -->
     <string name="settings_notification_permission_title">알림이 차단되었어요</string>
@@ -459,7 +456,6 @@ displayed label localizes.
     <string name="insight_band_hot">더운</string>
     <string name="insight_delta_warmer">오늘은 %1$d° 더 따뜻합니다.</string>
     <string name="insight_delta_cooler">오늘은 %1$d° 더 춥습니다.</string>
-    <string name="insight_alert">경보: %1$s.</string>
     <string name="insight_clothes_wear">%1$s 챙기세요.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Korean has no grammatical articles. -->

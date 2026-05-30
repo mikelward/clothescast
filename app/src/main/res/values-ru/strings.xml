@@ -372,9 +372,6 @@ only the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_description">Вечерняя сводка погоды, когда у тебя свободный вечер. Доставляется бесшумно — можешь увидеть на экране блокировки, но звук не издаётся.</string>
     <string name="notification_tonight_insight_title">Погода сегодня вечером</string>
 
-    <string name="notification_channel_weather_alerts_name">Предупреждения о непогоде</string>
-    <string name="notification_channel_weather_alerts_description">Высокоприоритетные предупреждения о серьёзных или экстремальных погодных явлениях в твоём районе. Доставляются, как только ежедневный сбор данных их обнаружит.</string>
-    <string name="notification_weather_alert_title">Погодное предупреждение: %1$s</string>
 
     <!-- Notification-permission card. -->
     <string name="settings_notification_permission_title">Уведомления заблокированы</string>
@@ -634,7 +631,6 @@ only the displayed label localizes.
     <string name="insight_band_hot">очень жарко</string>
     <string name="insight_delta_warmer">Сегодня на %1$d° теплее.</string>
     <string name="insight_delta_cooler">Сегодня на %1$d° холоднее.</string>
-    <string name="insight_alert">Предупреждение: %1$s.</string>
     <string name="insight_clothes_wear">Надень %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>

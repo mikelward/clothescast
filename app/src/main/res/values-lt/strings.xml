@@ -77,7 +77,6 @@ What is NOT overridden, by design:
     <string name="insight_band_hot">karšta</string>
     <string name="insight_delta_warmer">Šiandien bus %1$d° šilčiau.</string>
     <string name="insight_delta_cooler">Šiandien bus %1$d° šalčiau.</string>
-    <string name="insight_alert">Įspėjimas: %1$s.</string>
     <string name="insight_clothes_wear">Apsivilk %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
@@ -551,9 +550,6 @@ What is NOT overridden, by design:
     <string name="notification_channel_tonight_insight_silent_name">Nakties ClothesCast (tylus)</string>
     <string name="notification_channel_tonight_insight_silent_description">Vakaro orų santrauka ramiais vakarais. Pateikiama tyliai — gali matyti užrakto ekrane, bet nekeliks garso.</string>
     <string name="notification_tonight_insight_title">Šiandien vakaro ClothesCast</string>
-    <string name="notification_channel_weather_alerts_name">Stichinių orų įspėjimai</string>
-    <string name="notification_channel_weather_alerts_description">Aukšto prioriteto įspėjimai apie stichinį arba ekstremalų orą tavo vietovėje. Pateikiami iškart aptikus per kasdienį gavimą.</string>
-    <string name="notification_weather_alert_title">Orų įspėjimas: %1$s</string>
 
     <!-- Notification permission card. -->
     <string name="settings_notification_permission_title">Pranešimai užblokuoti</string>

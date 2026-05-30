@@ -328,7 +328,7 @@ private suspend fun loadInsight(context: Context): Pair<Insight, UserPreferences
 
 // Mirrors MainActivity's theme resolution so the widget's dark mode tracks the
 // in-app ThemeMode preference rather than only the system setting.
-private fun resolveDarkTheme(context: Context, themeMode: ThemeMode): Boolean = when (themeMode) {
+internal fun resolveDarkTheme(context: Context, themeMode: ThemeMode): Boolean = when (themeMode) {
     ThemeMode.LIGHT -> false
     ThemeMode.DARK -> true
     ThemeMode.SYSTEM -> (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
@@ -349,6 +349,8 @@ internal suspend fun updateAllClothesCastWidgets(context: Context) {
         .onFailure { DiagLog.w(TAG, "Feels-like widget update failed.", it) }
     runCatching { SevenDayFeelsLikeWidget().updateAll(context) }
         .onFailure { DiagLog.w(TAG, "7-day feels-like widget update failed.", it) }
+    runCatching { ConditionsWidget().updateAll(context) }
+        .onFailure { DiagLog.w(TAG, "Conditions widget update failed.", it) }
 }
 
 private const val TAG = "Widget"

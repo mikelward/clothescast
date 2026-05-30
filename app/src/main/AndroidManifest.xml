@@ -168,6 +168,21 @@
                 android:resource="@xml/feels_like_week_widget_info" />
         </receiver>
 
+        <!-- Home-screen App Widget: the at-a-glance conditions strip
+             (thermometer + rain). exported=true is required for the OS
+             launcher to bind. -->
+        <receiver
+            android:name=".widget.ConditionsWidgetReceiver"
+            android:label="@string/conditions_widget_label"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/conditions_widget_info" />
+        </receiver>
+
     </application>
 
 </manifest>

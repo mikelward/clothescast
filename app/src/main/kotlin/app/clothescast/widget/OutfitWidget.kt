@@ -126,7 +126,7 @@ private const val MAX_ICON_BITMAP_PX = 512
 // ACTION_MAIN + a unique data URI gives the framework a fully-specified
 // component / action / data tuple to key the PendingIntent on, which makes
 // the trampoline more resilient to launcher-side state stripping.
-private fun launchAppIntent(context: Context): Intent =
+internal fun launchAppIntent(context: Context): Intent =
     Intent(Intent.ACTION_MAIN)
         .setClass(context, MainActivity::class.java)
         .addCategory(Intent.CATEGORY_LAUNCHER)

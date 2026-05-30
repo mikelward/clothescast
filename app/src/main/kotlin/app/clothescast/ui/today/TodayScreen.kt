@@ -31,6 +31,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
@@ -340,6 +341,8 @@ fun TodayScreen(
             pagerState = pagerState,
             onRefresh = { triggerRefresh(context, state.morningTime, state.tonightTime) },
             onSetUpLocation = onNavigateToLocation,
+            onDismissMqttError = viewModel::dismissMqttPublishError,
+            onDismissCastError = viewModel::dismissCastPublishError,
             onOpenPrivacy = onNavigateToPrivacy,
             onOpenCalendarSettings = onNavigateToCalendar,
             onOpenSchedule = {
@@ -388,6 +391,8 @@ private fun TodayContent(
     pagerState: PagerState,
     onRefresh: () -> Unit,
     onSetUpLocation: () -> Unit,
+    onDismissMqttError: () -> Unit,
+    onDismissCastError: () -> Unit,
     onOpenPrivacy: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
     onOpenSchedule: () -> Unit,
@@ -481,6 +486,8 @@ private fun TodayContent(
                     onDismissPlayPromoCard = onDismissPlayPromoCard,
                     onOpenVoice = onOpenVoice,
                     onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+                    onDismissMqttError = onDismissMqttError,
+                    onDismissCastError = onDismissCastError,
                     onOpenCalendarSettings = onOpenCalendarSettings,
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
@@ -563,6 +570,8 @@ private fun TodayContent(
                         onDismissPlayPromoCard = onDismissPlayPromoCard,
                         onOpenVoice = onOpenVoice,
                         onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+                    onDismissMqttError = onDismissMqttError,
+                    onDismissCastError = onDismissCastError,
                     )
                     return@HorizontalPager
                 }
@@ -621,6 +630,8 @@ private fun TodayContent(
                     onDismissPlayPromoCard = onDismissPlayPromoCard,
                     onOpenVoice = onOpenVoice,
                     onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+                    onDismissMqttError = onDismissMqttError,
+                    onDismissCastError = onDismissCastError,
                 )
             }
         }
@@ -656,6 +667,8 @@ private fun BannerStack(
     onOpenCalendarSettings: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
     onSetUpLocation: () -> Unit,
+    onDismissMqttError: () -> Unit,
+    onDismissCastError: () -> Unit,
 ) {
     val bannerModifier = Modifier.fillMaxWidth()
     // Cap the setup/promo stack so a fresh user isn't buried under "set this
@@ -765,6 +778,28 @@ private fun BannerStack(
         modifier = bannerModifier,
     )
     WorkStatusBanner(status = workStatusToShow, modifier = bannerModifier)
+    // Delivery-destination failures sit just under the fetch / work-status
+    // banner: the forecast may have fetched fine, but if the cast to the
+    // smart display or the publish to the Home Assistant bridge failed, the
+    // user should see it here rather than only in Smart Home settings. Each
+    // clears itself once a later run succeeds (the worker records a null
+    // error), so no dismiss affordance is needed — same as WorkStatusBanner.
+    if (!state.mqttPublishError.isNullOrBlank()) {
+        PublishErrorBanner(
+            title = stringResource(R.string.today_mqtt_failed_title),
+            detail = state.mqttPublishError,
+            onDismiss = onDismissMqttError,
+            modifier = bannerModifier,
+        )
+    }
+    if (!state.castPublishError.isNullOrBlank()) {
+        PublishErrorBanner(
+            title = stringResource(R.string.today_cast_failed_title),
+            detail = state.castPublishError,
+            onDismiss = onDismissCastError,
+            modifier = bannerModifier,
+        )
+    }
     HolidayBanner(
         theme = state.activeHoliday,
         region = state.region,
@@ -792,6 +827,8 @@ internal fun HomePageScaffold(
     locationActionRequired: Boolean,
     outfitInsight: Insight?,
     onSetUpLocation: () -> Unit,
+    onDismissMqttError: () -> Unit,
+    onDismissCastError: () -> Unit,
     onOpenPrivacy: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
     onOpenSchedule: () -> Unit,
@@ -839,6 +876,8 @@ internal fun HomePageScaffold(
                     onDismissPlayPromoCard = onDismissPlayPromoCard,
                     onOpenVoice = onOpenVoice,
                     onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+                    onDismissMqttError = onDismissMqttError,
+                    onDismissCastError = onDismissCastError,
                     onOpenCalendarSettings = onOpenCalendarSettings,
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
@@ -898,6 +937,8 @@ private fun TodayPage(
     onHideModelSpread: () -> Unit,
     onLongPressDate: () -> Unit,
     onSetUpLocation: () -> Unit,
+    onDismissMqttError: () -> Unit,
+    onDismissCastError: () -> Unit,
     onOpenPrivacy: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
     onOpenSchedule: () -> Unit,
@@ -930,6 +971,8 @@ private fun TodayPage(
         onOpenVoice = onOpenVoice,
         onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
         onNavigateToClothes = onNavigateToClothes,
+        onDismissMqttError = onDismissMqttError,
+        onDismissCastError = onDismissCastError,
     ) {
         if (insight == null) {
             MissingPeriodPlaceholder(
@@ -1449,6 +1492,83 @@ internal fun WorkStatusBanner(
                             )
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Top-of-page error card for a failed delivery to a smart-home destination
+ * (MQTT bridge or Cast display). Styled like [WorkStatusBanner]'s failed state
+ * — error-container card, a friendly title + "we'll retry" body, and the raw
+ * failure reason tucked behind a Show details toggle so the technical string
+ * (broker error, cast load rejection) is available without dominating the card.
+ *
+ * Unlike the fetch-failure banner this one carries a dismiss (X). A delivery
+ * failure can outlive the config that would retry it — e.g. a failed on-demand
+ * Play, or the user turning the destination off afterwards — so there has to be
+ * a way to clear a failure the user has seen. Dismissal is recorded against the
+ * failure's timestamp upstream ([TodayViewModel.dismissMqttPublishError] /
+ * [TodayViewModel.dismissCastPublishError]), so a strictly-newer failure still
+ * surfaces.
+ */
+@Composable
+private fun PublishErrorBanner(
+    title: String,
+    detail: String?,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        ),
+    ) {
+        Column(
+            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 4.dp, bottom = 16.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.weight(1f),
+                )
+                IconButton(onClick = onDismiss) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(R.string.today_publish_failed_dismiss),
+                    )
+                }
+            }
+            Text(
+                text = stringResource(R.string.today_publish_failed_body),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(end = 12.dp),
+            )
+            if (!detail.isNullOrBlank()) {
+                var showDetails by rememberSaveable(detail) { mutableStateOf(false) }
+                Text(
+                    text = stringResource(
+                        if (showDetails) R.string.today_failed_hide_details
+                        else R.string.today_failed_show_details,
+                    ),
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .clickable { showDetails = !showDetails },
+                )
+                if (showDetails) {
+                    Text(
+                        text = detail,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
                 }
             }
         }

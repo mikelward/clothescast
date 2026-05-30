@@ -207,6 +207,26 @@ data class TodayState(
      * read that wouldn't fire anyway.
      */
     val usesCalendarThemes: Boolean = false,
+    /**
+     * Human-readable reason the most recent MQTT bridge publish failed, or null
+     * when the last attempt succeeded, none has run, or the user dismissed it.
+     * The Today banner stack surfaces this as a top-of-page error card —
+     * mirroring the fetch-failure banner — so a broken Home Assistant bridge is
+     * visible without opening Smart Home settings. Shown for any failed delivery
+     * attempt (scheduled or on-demand Play); cleared the moment a later publish
+     * succeeds (the worker records a null error) or the user taps dismiss.
+     */
+    val mqttPublishError: String? = null,
+    /**
+     * [SettingsRepository.MqttPublishStatus.recordedAtMs] of the failure backing
+     * [mqttPublishError], so [TodayViewModel.dismissMqttPublishError] can mark
+     * exactly the on-screen failure as seen (and let a newer one resurface).
+     */
+    val mqttPublishErrorAt: Long = 0L,
+    /** Sibling of [mqttPublishError] for the Cast / smart-display destination. */
+    val castPublishError: String? = null,
+    /** Sibling of [mqttPublishErrorAt] for the cast destination. */
+    val castPublishErrorAt: Long = 0L,
 )
 
 sealed class WorkStatus {
@@ -343,6 +363,26 @@ internal fun mergeWorkStatus(a: WorkStatus, b: WorkStatus): WorkStatus = when {
 internal data class WorkSignals(
     val status: WorkStatus,
     val anyWorkActive: Boolean,
+)
+
+/**
+ * Per-tick bundle of the odds-and-ends signals folded into
+ * [TodayViewModel.state] so the outer combine stays at its five-flow
+ * typed-overload cap: the session-scoped model-spread toggle, the "Gemini key
+ * configured" mirror, and the latest MQTT / Cast publish-error messages (null
+ * when the last attempt succeeded or none has run yet).
+ */
+internal data class MiscSignals(
+    val showModelSpread: Boolean,
+    val geminiKeyConfigured: Boolean,
+    /** Latest MQTT publish failure to show (null when none / dismissed). */
+    val mqttError: String?,
+    /** [recordedAtMs] of the latest MQTT failure, so dismiss can mark it seen. */
+    val mqttErrorAt: Long,
+    /** Sibling of [mqttError] for the cast destination. */
+    val castError: String?,
+    /** Sibling of [mqttErrorAt] for the cast destination. */
+    val castErrorAt: Long,
 )
 
 /**
@@ -491,22 +531,46 @@ class TodayViewModel(
             }
         }
 
-    // Fuse the session-scoped spread toggle with the external "Gemini key
-    // configured" signal into one input so the outer [state] combine stays at
-    // five flows (the typed-overload cap). Both are simple booleans that only
-    // feed the final state; pairing them keeps us off the loosely-typed vararg
-    // `combine` overload.
-    private val spreadAndGeminiKey: Flow<Pair<Boolean, Boolean>> =
-        combine(showModelSpread, geminiKeyConfigured, ::Pair)
+    // Fuse the session-scoped spread toggle, the external "Gemini key
+    // configured" signal, and the latest MQTT / Cast publish-error messages
+    // into one input so the outer [state] combine stays at five flows (the
+    // typed-overload cap). The publish errors ride here so a failed cast or
+    // smart-home publish surfaces as a top-of-page banner alongside the
+    // fetch-failure card, without adding a sixth combine input.
+    private val miscSignals: Flow<MiscSignals> =
+        combine(
+            showModelSpread,
+            geminiKeyConfigured,
+            settingsRepository.mqttPublishStatus,
+            settingsRepository.castStatus,
+        ) { spread, geminiKey, mqtt, cast ->
+            // Hide an error the user has already dismissed from the banner
+            // (recordedAt <= dismissedAt); a strictly-newer failure resurfaces.
+            val mqttError = mqtt?.takeIf {
+                it.errorMessage != null && it.recordedAtMs > it.dismissedAtMs
+            }?.errorMessage
+            val castError = cast?.takeIf {
+                it.errorMessage != null && it.recordedAtMs > it.dismissedAtMs
+            }?.errorMessage
+            MiscSignals(
+                showModelSpread = spread,
+                geminiKeyConfigured = geminiKey,
+                mqttError = mqttError,
+                mqttErrorAt = mqtt?.recordedAtMs ?: 0L,
+                castError = castError,
+                castErrorAt = cast?.recordedAtMs ?: 0L,
+            )
+        }
 
     val state: StateFlow<TodayState> = combine(
         insightCache.thisPeriod,
         insightCache.nextPeriod,
         workStatusFlow,
         preferencesDateEvents,
-        spreadAndGeminiKey,
-    ) { thisPeriodSnapshot, nextPeriodSnapshot, workSignals, prefsDateEvents, spreadAndKey ->
-        val (spread, geminiKeyConfigured) = spreadAndKey
+        miscSignals,
+    ) { thisPeriodSnapshot, nextPeriodSnapshot, workSignals, prefsDateEvents, misc ->
+        val spread = misc.showModelSpread
+        val geminiKeyConfigured = misc.geminiKeyConfigured
         val (prefs, today, events) = prefsDateEvents
         // Derive each cached snapshot against the *current* prefs so a settings
         // change re-renders the prose / outfit / bullets in the same frame as
@@ -588,6 +652,21 @@ class TodayViewModel(
             geminiTtsPromoCardVisible = !prefs.geminiPromoCardDismissed && !geminiKeyConfigured,
             telemetryNoticeVisible = !prefs.telemetryNoticeAcked,
             usesCalendarThemes = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive,
+            // Surface a publish error for any failed delivery attempt — a
+            // scheduled run or an on-demand Play — regardless of the current
+            // destination config. We deliberately don't gate on whether the
+            // destination is still "live" (master toggle / host / route): a
+            // Play-button delivery is a real attempt that can fail even when no
+            // schedule would retry it, and a later config change that stops
+            // future attempts shouldn't silently bury a failure the user hasn't
+            // seen. Instead the banner carries a dismiss action; [miscSignals]
+            // filters out an error the user dismissed, and a strictly-newer
+            // failure resurfaces. The *At fields ride along so dismiss knows
+            // which failure was on screen.
+            mqttPublishError = misc.mqttError,
+            mqttPublishErrorAt = misc.mqttErrorAt,
+            castPublishError = misc.castError,
+            castPublishErrorAt = misc.castErrorAt,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayState())
 
@@ -664,6 +743,28 @@ class TodayViewModel(
     fun notifyCalendarPermissionChanged() {
         viewModelScope.launch {
             settingsRepository.markCalendarPermissionRechecked()
+        }
+    }
+
+    /**
+     * Records that the user dismissed the MQTT publish-error banner. Marks the
+     * on-screen failure ([TodayState.mqttPublishErrorAt]) as seen so it hides;
+     * a strictly-newer failure resurfaces. No-op when nothing is shown.
+     */
+    fun dismissMqttPublishError() {
+        val at = state.value.mqttPublishErrorAt
+        if (at <= 0L) return
+        viewModelScope.launch {
+            settingsRepository.setMqttErrorDismissedAt(at)
+        }
+    }
+
+    /** Mirrors [dismissMqttPublishError] for the cast banner. */
+    fun dismissCastPublishError() {
+        val at = state.value.castPublishErrorAt
+        if (at <= 0L) return
+        viewModelScope.launch {
+            settingsRepository.setCastErrorDismissedAt(at)
         }
     }
 

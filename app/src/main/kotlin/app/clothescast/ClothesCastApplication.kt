@@ -221,7 +221,11 @@ class ClothesCastApplication : Application() {
         )
     }
 
-    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    // Process-lifetime scope for fire-and-forget work that must outlive the
+    // component that started it — e.g. a DataStore write kicked off as a screen
+    // is being torn down. Injected into collaborators (CastInsightController,
+    // Telemetry) and read by the nav layer for the onboarding-skip write.
+    internal val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     override fun attachBaseContext(base: Context) {
         // Re-apply the persisted per-app locale before the framework caches a

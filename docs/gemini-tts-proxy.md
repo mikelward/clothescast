@@ -12,9 +12,13 @@ Check verifies the request came from a genuine install of the app.
   key and forwards each TTS request to Google.
 - Users who paste their own key in Settings continue to bypass the
   function entirely and pay their own Gemini bill.
-- Per-install usage is counted in Firestore (`installs/<fid>`) so you
-  can later enforce a free-trial limit — currently informational only,
-  see `docs/TODO.md` "Enforce shared-key TTS trial limit".
+- Per-install usage is counted in Firestore (`installs/<fid>`) and
+  capped at 5 successful syntheses per UTC day. Above the cap the
+  function returns `429 daily_quota_exhausted`; the Android client
+  surfaces a friendly "free TTS limit reached" message and the user
+  can drop in their own Gemini key to bypass the proxy entirely. See
+  `functions/README.md` → "Quota enforcement" for the doc shape and
+  rollback semantics.
 - Firebase App Check (Play Integrity in release, Debug provider in
   debug) blocks scraping and modded clients without holding up
   legitimate users.
@@ -182,7 +186,8 @@ End-to-end check after all the above:
    `generativelanguage.googleapis.com`.
 5. In the Firebase console → Firestore → `installs` collection, you
    should see a doc keyed by your Firebase Installation ID with
-   `firstUseAt`, `count: 1`, `lastUseAt`.
+   `firstUseAt`, `count: 1`, `lastUseAt`, `dayKey: "YYYY-MM-DD"`,
+   `dayCount: 1`.
 
 Then paste a real Gemini key into Settings and Test Voice again:
 
@@ -227,11 +232,13 @@ but using one is closer to production behaviour.
   tier covers 50K reads + 20K writes/day. At 1000 users × 2 daily
   insights = ~60K invocations/month — well within free tier on the
   infrastructure side; the Gemini bill is the only one that scales.
-- **Limiting abuse**: App Check stops scrapers but doesn't cap
-  per-install volume. The function already counts every successful
-  call in `installs/<fid>.count` — wiring the limit (30 calls or
-  30 days from first use, return 429) is tracked in
-  `docs/TODO.md` under "Deferred to v2".
+- **Limiting abuse**: App Check stops scrapers; a transactional
+  per-install cap of 5 successful syntheses per UTC day stops a
+  single legitimate install from melting the budget. Above the cap
+  the function returns `429 daily_quota_exhausted` with a
+  `resetAtUtc` timestamp; see `functions/README.md` → "Quota
+  enforcement" for the doc shape and the rollback-on-failure
+  semantics.
 - **Rotating the Gemini key**: `firebase functions:secrets:set
   GEMINI_API_KEY` again, then redeploy. The function picks up the
   new value on cold start.

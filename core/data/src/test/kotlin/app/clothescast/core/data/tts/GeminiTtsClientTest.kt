@@ -593,6 +593,52 @@ class GeminiTtsClientTest {
     }
 
     @Test
+    fun `throws GeminiTtsDailyQuotaExhaustedException on shared-key proxy 429`() = runTest {
+        val client = GeminiTtsClient(
+            httpClient = mockClient(
+                status = HttpStatusCode.TooManyRequests,
+                responseBody = """
+                    {"error":"daily_quota_exhausted","limit":5,"resetAtUtc":"2026-06-01T00:00:00.000Z"}
+                """.trimIndent(),
+            ),
+            callPlanner = directPlanner("test-key"),
+        )
+
+        val ex = shouldThrow<GeminiTtsDailyQuotaExhaustedException> { client.synthesize(text = "hi") }
+
+        ex.limit shouldBe 5
+        ex.resetAtUtc shouldBe "2026-06-01T00:00:00.000Z"
+        // Friendly copy — the Voice settings preview Toast shows this
+        // directly, so it must read as user-facing English, not as a
+        // raw error token.
+        ex.message!!.shouldContain("Free TTS limit reached for today")
+        ex.message!!.shouldNotContain("daily_quota_exhausted")
+    }
+
+    @Test
+    fun `falls back to GeminiTtsHttpException on a non-quota 429 body`() = runTest {
+        // Generic Gemini rate-limit response (BYOK path or proxy forwarding
+        // a Gemini-side 429) keeps the existing path, not the typed quota
+        // exception — surfacing the upstream message in the Toast is more
+        // useful than the friendly "free limit" copy when the user's own
+        // key is the one being throttled.
+        val client = GeminiTtsClient(
+            httpClient = mockClient(
+                status = HttpStatusCode.TooManyRequests,
+                responseBody = """
+                    {"error":{"code":429,"message":"Rate limit exceeded.","status":"RESOURCE_EXHAUSTED"}}
+                """.trimIndent(),
+            ),
+            callPlanner = directPlanner("test-key"),
+        )
+
+        val ex = shouldThrow<GeminiTtsHttpException> { client.synthesize(text = "hi") }
+
+        ex.status shouldBe HttpStatusCode.TooManyRequests
+        ex.message shouldBe "Gemini TTS HTTP 429: Rate limit exceeded."
+    }
+
+    @Test
     fun `request body uses each character-register directive for the matching TtsStyle`() = runTest {
         // One assertion per playful / persona register: pick a phrase that
         // only that directive contains and verify it lands in the prompt

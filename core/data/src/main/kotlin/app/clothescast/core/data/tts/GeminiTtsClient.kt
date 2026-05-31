@@ -547,7 +547,18 @@ class GeminiTtsClient(
         // empty-response exception. Pull the body on a non-success status and
         // surface it.
         if (!httpResponse.status.isSuccess()) {
-            throw GeminiTtsHttpException(httpResponse.status, httpResponse.bodyAsBytes())
+            val body = httpResponse.bodyAsBytes()
+            // 429 from the shared-key proxy carries a structured
+            // `{"error":"daily_quota_exhausted", "limit": N, "resetAtUtc": "…"}`
+            // body distinct from Gemini's `{"error":{"message":…}}` envelope.
+            // Surface it as a typed exception so the diagnostic Toast in
+            // VoiceSettings shows a friendly "free TTS limit reached today"
+            // message instead of the raw "daily_quota_exhausted" token, and
+            // callers can match on the type for future Settings nudges.
+            if (httpResponse.status == HttpStatusCode.TooManyRequests) {
+                parseDailyQuotaExhausted(body)?.let { throw it }
+            }
+            throw GeminiTtsHttpException(httpResponse.status, body)
         }
 
         val response: TtsResponse = httpResponse.body()
@@ -607,6 +618,36 @@ class GeminiTtsBlockedException(message: String) : IllegalStateException(message
  * error envelope; falls back to a truncated raw excerpt when the body isn't
  * shaped that way.
  */
+/**
+ * Surfaced when the shared-key proxy reports the install has used its full
+ * daily allowance (HTTP 429 with `{"error":"daily_quota_exhausted", …}`).
+ * The friendly [message] is what the Voice settings preview Toast shows;
+ * [resetAtUtc] is the ISO-8601 timestamp at which the next slot opens, for
+ * any UI that wants to render "available again at HH:MM your time".
+ *
+ * Callers that want to fall through to device TTS should treat this as the
+ * same recoverable failure mode as other `GeminiTts*Exception`s — but the
+ * type lets a future Settings banner identify the specific case and prompt
+ * the user to add their own Gemini key.
+ */
+class GeminiTtsDailyQuotaExhaustedException(
+    val limit: Int?,
+    val resetAtUtc: String?,
+) : IllegalStateException(
+    "Free TTS limit reached for today. Add your own Gemini key in Settings " +
+        "for unlimited use.",
+)
+
+private fun parseDailyQuotaExhausted(body: ByteArray): GeminiTtsDailyQuotaExhaustedException? {
+    val raw = runCatching { body.toString(Charsets.UTF_8) }.getOrNull() ?: return null
+    val root = runCatching { Json.parseToJsonElement(raw) as? JsonObject }.getOrNull() ?: return null
+    val error = (root["error"] as? JsonPrimitive)?.content ?: return null
+    if (error != "daily_quota_exhausted") return null
+    val limit = (root["limit"] as? JsonPrimitive)?.content?.toIntOrNull()
+    val resetAtUtc = (root["resetAtUtc"] as? JsonPrimitive)?.content
+    return GeminiTtsDailyQuotaExhaustedException(limit = limit, resetAtUtc = resetAtUtc)
+}
+
 class GeminiTtsHttpException(val status: HttpStatusCode, body: ByteArray) :
     IllegalStateException(buildMessage(status, body)) {
 

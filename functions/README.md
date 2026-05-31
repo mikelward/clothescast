@@ -45,11 +45,42 @@ curl -i -X POST "http://127.0.0.1:5001/<project-id>/us-central1/tts" \
 npm run deploy
 ```
 
-## Counting vs enforcement
+## Quota enforcement
 
-v1 counts every successful call in `installs/<fid>` (`firstUseAt`,
-`count`, `lastUseAt`) but does not enforce any limit — every
-authenticated request is forwarded to Gemini. Enforcement (return
-`429 trial_exhausted` after 30 calls or 30 days, emit
-`X-Trial-Remaining` on success) is tracked under "Deferred to v2" in
-`docs/TODO.md`.
+Each install gets 5 successful syntheses per UTC calendar day. The
+reservation is transactional:
+
+1. Pre-flight transaction reads `installs/<fid>`; if today's
+   `dayCount` is already at 5, the request returns
+   `429 { "error": "daily_quota_exhausted", "limit": 5,
+   "resetAtUtc": "<next-UTC-midnight>" }` without calling Gemini.
+2. Otherwise we increment `dayCount` (and lifetime `count` +
+   `lastUseAt`) before the upstream call.
+3. On a non-success upstream status — or a fetch failure — we
+   transactionally decrement so a Gemini hiccup doesn't burn a
+   slot.
+
+Successful responses carry `X-Daily-Quota-Limit: 5` and
+`X-Daily-Quota-Remaining: <n>` headers. The Android client
+(`core/data/.../tts/GeminiTtsClient.kt`) throws
+`GeminiTtsDailyQuotaExhaustedException` on the 429, which surfaces
+in the Voice settings preview Toast as "Free TTS limit reached for
+today. Add your own Gemini key in Settings for unlimited use."
+
+Firestore document shape:
+
+```
+installs/<fid> {
+  firstUseAt: Timestamp,
+  lastUseAt:  Timestamp,
+  count:      number,   // lifetime
+  dayKey:     string,   // "YYYY-MM-DD" UTC
+  dayCount:   number,   // successful calls within dayKey
+}
+```
+
+If Firestore is unreachable, the function **fails open** (forwards
+the call without recording it) so a backend hiccup doesn't deny
+service. The trade-off is that a sustained outage lets a single
+install exceed the daily cap — acceptable given how expensive
+Gemini TTS is relative to a Firestore read.

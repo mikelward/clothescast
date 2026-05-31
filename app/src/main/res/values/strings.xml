@@ -794,7 +794,7 @@
 
     <string name="settings_tts_engine_title">Voice engine</string>
     <string name="settings_tts_engine_description">Choose between low-quality on-device speech and high-quality online speech.</string>
-    <string name="settings_tts_engine_device">Device (offline, free)</string>
+    <string name="settings_tts_engine_device">Device (low-quality, on-device)</string>
     <string name="settings_tts_engine_gemini">Gemini (high quality, online)</string>
     <string name="settings_tts_voice_label">Voice</string>
     <string name="settings_tts_voice_dismiss">Done</string>

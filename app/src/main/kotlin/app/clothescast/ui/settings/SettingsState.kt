@@ -78,6 +78,18 @@ data class SettingsState(
      * extra data leaves the device.
      */
     val currentInsightSummary: InsightSummary? = null,
+    /**
+     * A TODAY-period [InsightSummary] for the Voice settings Test voice
+     * preview to speak — picked from whichever cache slot
+     * ([InsightCache.Slot.THIS_PERIOD] or [InsightCache.Slot.NEXT_PERIOD])
+     * happens to hold a daytime snapshot, so the preview always sounds like
+     * a morning briefing rather than "Tonight will be …". May reach forwards
+     * (tomorrow's TODAY, pre-cached by the evening fetch) or backwards
+     * (today's TODAY, still in THIS_PERIOD after the morning fetch).
+     * `null` when nothing's cached yet — `runTtsPreview` falls back to its
+     * built-in `SAMPLE_SUMMARY` in that case.
+     */
+    val voicePreviewInsightSummary: InsightSummary? = null,
     val region: Region = Region.SYSTEM,
     // Match SettingsRepository's locale-aware defaults so en-US devices don't
     // briefly render °C / km before the first DataStore emission overrides it.

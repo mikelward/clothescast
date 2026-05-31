@@ -159,6 +159,7 @@ internal fun SettingsRootPage(
     SettingsScaffold(R.string.settings_title, onBack) { padding ->
         SettingsRoot(
             useDeviceLocation = state.useDeviceLocation,
+            scheduleEnabled = state.dailyEnabled || state.tonightEnabled,
             items = items,
             padding = padding,
             onOpenLocation = onOpenLocation,
@@ -187,9 +188,12 @@ internal fun SchedulePage(
             deliveryMode = state.deliveryMode,
             tonightDeliveryMode = state.tonightDeliveryMode,
             sharedTtsAvailable = state.sharedTtsAvailable,
+            useDeviceLocation = state.useDeviceLocation,
+            location = state.location,
             padding = padding,
             onSetSchedule = viewModel::setSchedule,
             onSetDailyEnabled = viewModel::setDailyEnabled,
+            onSetUseDeviceLocation = viewModel::setUseDeviceLocation,
             onSetTonightSchedule = viewModel::setTonightSchedule,
             onSetTonightEnabled = viewModel::setTonightEnabled,
             onSetTonightNotifyOnlyOnEvents = viewModel::setTonightNotifyOnlyOnEvents,
@@ -319,6 +323,7 @@ internal fun LocationPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             location = state.location,
             useDeviceLocation = state.useDeviceLocation,
             locationDetecting = state.locationDetecting,
+            scheduleEnabled = state.dailyEnabled || state.tonightEnabled,
             padding = padding,
             onSetUseDeviceLocation = viewModel::setUseDeviceLocation,
             onSelectLocation = viewModel::selectLocation,
@@ -471,6 +476,7 @@ internal fun AboutPage(onBack: () -> Unit) {
 @Composable
 internal fun SettingsRoot(
     useDeviceLocation: Boolean,
+    scheduleEnabled: Boolean,
     items: List<SettingsMenuItem>,
     padding: PaddingValues,
     onOpenLocation: () -> Unit,
@@ -494,6 +500,7 @@ internal fun SettingsRoot(
             // rationale dialogs live.
             BackgroundLocationWarningCard(
                 useDeviceLocation = useDeviceLocation,
+                scheduleEnabled = scheduleEnabled,
                 onClick = onOpenLocation,
             )
             items.forEach { item ->

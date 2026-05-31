@@ -1,5 +1,6 @@
 package app.clothescast.ui.settings
 
+import android.Manifest
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -53,7 +54,10 @@ import androidx.lifecycle.LifecycleEventObserver
 import app.clothescast.R
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.TimeFormat
+import app.clothescast.location.hasBackgroundLocationPermission
+import app.clothescast.location.hasCoarseLocationPermission
 import app.clothescast.notification.NotificationPermission
 import app.clothescast.work.FetchAndNotifyWorker
 import app.clothescast.ui.EdgeFadeOverlay
@@ -76,11 +80,17 @@ internal fun ScheduleContent(
     deliveryMode: DeliveryMode,
     tonightDeliveryMode: DeliveryMode,
     sharedTtsAvailable: Boolean,
+    // Location state, so enabling a schedule can request exactly the location
+    // access an unattended scheduled run needs: foreground when no location is
+    // set yet, then always-on once device location is the source.
+    useDeviceLocation: Boolean,
+    location: Location?,
     padding: PaddingValues,
     onSetSchedule: (LocalTime, Set<DayOfWeek>) -> Unit,
     onSetDailyEnabled: (Boolean) -> Unit,
     onSetTonightSchedule: (LocalTime, Set<DayOfWeek>) -> Unit,
     onSetTonightEnabled: (Boolean) -> Unit,
+    onSetUseDeviceLocation: (Boolean) -> Unit,
     onSetTonightNotifyOnlyOnEvents: (Boolean) -> Unit,
     onSetDailyMentionEveningEvents: (Boolean) -> Unit,
     onSetDeliveryMode: (DeliveryMode) -> Unit,
@@ -106,16 +116,32 @@ internal fun ScheduleContent(
     var notificationGranted by remember {
         mutableStateOf(NotificationPermission.isGranted(context))
     }
+    // Location grants gate the just-in-time prompts on the schedule-enable path.
+    // Re-checked on resume alongside notifications so a grant/revoke made in
+    // system Settings (the always-on picker deep-links there) is reflected
+    // without an in-app action.
+    var coarseGranted by remember { mutableStateOf(hasCoarseLocationPermission(context)) }
+    var backgroundGranted by remember { mutableStateOf(hasBackgroundLocationPermission(context)) }
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 notificationGranted = NotificationPermission.isGranted(context)
+                coarseGranted = hasCoarseLocationPermission(context)
+                backgroundGranted = hasBackgroundLocationPermission(context)
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
+
+    var backgroundRationaleOpen by remember { mutableStateOf(false) }
+    var backgroundDeniedOpen by remember { mutableStateOf(false) }
+    // Set while a notification prompt fired from the enable path is in flight, so
+    // its result callback knows to continue into the location chain rather than
+    // showing two system dialogs at once. Delivery-channel toggles reuse the same
+    // launcher but leave this false, so they don't trigger the location chain.
+    var pendingScheduleLocationCheck by remember { mutableStateOf(false) }
 
     // Turning a delivery channel on requests exactly what that channel needs,
     // just-in-time. Notify → the system POST_NOTIFICATIONS prompt (no-op on
@@ -123,12 +149,74 @@ internal fun ScheduleContent(
     // NotificationPermissionBanner shown beside the toggle). Speak → the full
     // Voice settings page (via onSetUpSpeech) to pick Gemini-with-key or device
     // TTS, which returns here via its "Done" button.
+    val backgroundLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        backgroundGranted = granted
+        if (!granted) backgroundDeniedOpen = true
+    }
+
+    // Launching ACCESS_BACKGROUND_LOCATION on Android 11+ deep-links to the
+    // system Location-permission picker (the "Allow all the time" page). We
+    // front it with our own rationale so the deep-link isn't a surprise.
+    val ensureBackgroundLocation: () -> Unit = {
+        if (!backgroundGranted) backgroundRationaleOpen = true
+    }
+
+    val foregroundLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        coarseGranted = granted
+        if (granted) {
+            // Granting foreground from the schedule path means the user wants the
+            // scheduled cast to follow the device, so switch the source on — then
+            // chain into always-on, which the unattended run actually needs.
+            onSetUseDeviceLocation(true)
+            ensureBackgroundLocation()
+        }
+    }
+
+    // The location access a scheduled run needs, requested just-in-time when a
+    // schedule is enabled. No location set yet → ask for foreground (which turns
+    // device location on); already on device location → make sure always-on is
+    // granted. A manual city needs no location permission, so nothing fires.
+    val ensureLocationForSchedule: () -> Unit = {
+        when {
+            useDeviceLocation && !coarseGranted ->
+                foregroundLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+            useDeviceLocation -> ensureBackgroundLocation()
+            location == null ->
+                foregroundLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+        }
+    }
+
     val notificationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
-    ) { granted -> notificationGranted = granted }
+    ) { granted ->
+        notificationGranted = granted
+        // Continue the enable chain only if this prompt came from enabling a
+        // schedule; sequencing after the notification result avoids stacking two
+        // system permission dialogs.
+        if (pendingScheduleLocationCheck) {
+            pendingScheduleLocationCheck = false
+            ensureLocationForSchedule()
+        }
+    }
     val requestNotificationPermission: () -> Unit = {
         if (NotificationPermission.isRequired() && !notificationGranted) {
             notificationLauncher.launch(NotificationPermission.MANIFEST_PERMISSION)
+        }
+    }
+
+    // Enabling a schedule opts the user into unattended delivery, so request
+    // everything that run needs: notifications first, then — sequenced after its
+    // result — the location access the worker needs to resolve a fix on its own.
+    val onScheduleEnabled: () -> Unit = {
+        if (NotificationPermission.isRequired() && !notificationGranted) {
+            pendingScheduleLocationCheck = true
+            notificationLauncher.launch(NotificationPermission.MANIFEST_PERMISSION)
+        } else {
+            ensureLocationForSchedule()
         }
     }
 
@@ -153,13 +241,15 @@ internal fun ScheduleContent(
                 notificationGranted = notificationGranted,
                 mentionEveningEvents = dailyMentionEveningEvents,
                 // Enabling a master switch is the user opting into scheduled
-                // delivery, so prompt for notification permission right then —
-                // not only when the notification channel is toggled. The channel
-                // is on by default, so without this the prompt would never fire
-                // on the enable path and the worker would later no-op silently.
+                // delivery, so prompt for everything that unattended run needs —
+                // notifications and, when device location is the source, the
+                // always-on location grant — right then, not only when a channel
+                // is toggled. The notification channel is on by default, so
+                // without this the prompts would never fire on the enable path
+                // and the worker would later no-op silently.
                 onSetEnabled = { enabled ->
                     onSetDailyEnabled(enabled)
-                    if (enabled) requestNotificationPermission()
+                    if (enabled) onScheduleEnabled()
                 },
                 onChange = onSetSchedule,
                 onSetDeliveryMode = onSetDeliveryMode,
@@ -176,11 +266,12 @@ internal fun ScheduleContent(
                 notifyOnlyOnEvents = tonightNotifyOnlyOnEvents,
                 deliveryMode = tonightDeliveryMode,
                 notificationGranted = notificationGranted,
-                // Same as the morning card: prompt for notification permission
-                // the moment the user enables the evening schedule.
+                // Same as the morning card: prompt for notification and (when
+                // device location is the source) always-on location the moment
+                // the user enables the evening schedule.
                 onSetEnabled = { enabled ->
                     onSetTonightEnabled(enabled)
-                    if (enabled) requestNotificationPermission()
+                    if (enabled) onScheduleEnabled()
                 },
                 onSetNotifyOnlyOnEvents = onSetTonightNotifyOnlyOnEvents,
                 onChange = onSetTonightSchedule,
@@ -191,6 +282,44 @@ internal fun ScheduleContent(
                 previewEnabled = previewEnabled,
             )
         }
+    }
+
+    if (backgroundRationaleOpen) {
+        AlertDialog(
+            onDismissRequest = { backgroundRationaleOpen = false },
+            title = { Text(stringResource(R.string.settings_location_background_rationale_title)) },
+            text = { Text(stringResource(R.string.settings_location_background_rationale_body)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    backgroundRationaleOpen = false
+                    backgroundLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                }) { Text(stringResource(R.string.settings_location_background_rationale_continue)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { backgroundRationaleOpen = false }) {
+                    Text(stringResource(R.string.settings_location_background_rationale_dismiss))
+                }
+            },
+        )
+    }
+
+    if (backgroundDeniedOpen) {
+        AlertDialog(
+            onDismissRequest = { backgroundDeniedOpen = false },
+            title = { Text(stringResource(R.string.settings_location_background_denied_title)) },
+            text = { Text(stringResource(R.string.settings_location_background_denied_body)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    backgroundDeniedOpen = false
+                    openAppDetails(context)
+                }) { Text(stringResource(R.string.settings_location_background_denied_open)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { backgroundDeniedOpen = false }) {
+                    Text(stringResource(R.string.settings_location_background_denied_keep))
+                }
+            },
+        )
     }
 }
 

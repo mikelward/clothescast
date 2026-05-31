@@ -87,6 +87,7 @@ internal fun SettingsRootPreview() {
     SettingsFrame {
         SettingsRoot(
             useDeviceLocation = false,
+            scheduleEnabled = true,
             items = SettingsDest.entries.map { dest ->
                 SettingsMenuItem(dest.titleRes, dest.subtitleRes) {}
             },
@@ -127,11 +128,14 @@ private fun ScheduleContentSample() {
         deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
         tonightDeliveryMode = DeliveryMode.NOTIFICATION_ONLY,
         sharedTtsAvailable = false,
+        useDeviceLocation = false,
+        location = null,
         padding = PaddingValues(0.dp),
         onSetSchedule = { _, _ -> },
         onSetDailyEnabled = {},
         onSetTonightSchedule = { _, _ -> },
         onSetTonightEnabled = {},
+        onSetUseDeviceLocation = {},
         onSetTonightNotifyOnlyOnEvents = {},
         onSetDailyMentionEveningEvents = {},
         onSetDeliveryMode = {},
@@ -539,6 +543,9 @@ internal fun SettingsLocationPreview() {
                 addressDetail = "Westminster, London SW1A 2AA, UK",
             ),
             useDeviceLocation = true,
+            // A schedule is on, so the always-on warning banner shows — that's
+            // the state this snapshot is meant to cover.
+            scheduleEnabled = true,
             padding = PaddingValues(0.dp),
             onSetUseDeviceLocation = {},
             onSelectLocation = {},
@@ -567,6 +574,7 @@ internal fun SettingsDoneBarPreview() {
                         addressDetail = "Westminster, London SW1A 2AA, UK",
                     ),
                     useDeviceLocation = true,
+                    scheduleEnabled = true,
                     padding = padding,
                     onSetUseDeviceLocation = {},
                     onSelectLocation = {},

@@ -40,6 +40,7 @@ import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.InsightSummary
+import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -79,6 +80,8 @@ internal fun VoiceContent(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
     bottomsFormat: BottomsFormat,
+    periodPreamble: PreambleVisibility,
+    wearPreamble: PreambleVisibility,
     // The most recently cached InsightSummary from InsightCache.Slot.THIS_PERIOD,
     // wired in via SettingsState.currentInsightSummary. When non-null the preview
     // speaks the user's actual upcoming briefing so it reflects their real
@@ -141,6 +144,8 @@ internal fun VoiceContent(
                     rangeFormat = rangeFormat,
                     clothesFormat = clothesFormat,
                     bottomsFormat = bottomsFormat,
+                    periodPreamble = periodPreamble,
+                    wearPreamble = wearPreamble,
                     summary = currentInsight,
                 )
             } finally {
@@ -633,6 +638,8 @@ internal suspend fun runTtsPreview(
     rangeFormat: RangeFormat = RangeFormat.DEGREES,
     clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
+    periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
+    wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     summary: InsightSummary? = null,
 ) {
     val app = context.applicationContext as app.clothescast.ClothesCastApplication
@@ -649,6 +656,8 @@ internal suspend fun runTtsPreview(
             rangeFormat = rangeFormat,
             clothesFormat = clothesFormat,
             bottomsFormat = bottomsFormat,
+            periodPreamble = periodPreamble,
+            wearPreamble = wearPreamble,
         )
         withSpeechAudioFocus(context) {
             try {

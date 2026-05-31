@@ -424,6 +424,30 @@ android {
         // themes) on the unit-test classpath to render Compose previews to PNG.
         unitTests.isIncludeAndroidResources = true
     }
+
+    lint {
+        // Some androidx lint checks ship compiled against a newer Kotlin
+        // Analysis API than AGP 8.7.3's bundled lint provides, so they throw
+        // IncompatibleClassChangeError ("Found class
+        // KaCallableMemberCall, but interface was expected") mid-analysis and
+        // abort the whole run before any real issue is reported — a binary
+        // incompatibility between the detector jars and the lint binary, not a
+        // code problem. AGP's own crash message recommends disabling the
+        // offending detectors. Disable the ones that crash here:
+        //   NullSafeMutableLiveData      — androidx.lifecycle 2.8.7
+        //   FrequentlyChangingValue      — Compose runtime
+        //   RememberInComposition        — Compose runtime
+        //   AutoboxingStateCreation      — Compose runtime
+        //   AutoboxingStateValueProperty — Compose runtime
+        // Drop these once an AGP / androidx bump realigns the analysis API.
+        disable += setOf(
+            "NullSafeMutableLiveData",
+            "FrequentlyChangingValue",
+            "RememberInComposition",
+            "AutoboxingStateCreation",
+            "AutoboxingStateValueProperty",
+        )
+    }
 }
 
 dependencies {

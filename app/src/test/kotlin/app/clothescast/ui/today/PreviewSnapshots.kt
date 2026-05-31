@@ -538,6 +538,10 @@ class PreviewSnapshots {
     @Test fun work_status_failed_unhandled() = capture { WorkStatusFailedUnhandledPreview() }
     @Test fun work_status_failed_no_location() = capture { WorkStatusFailedNoLocationPreview() }
     @Test fun location_action_required_banner() = capture { LocationActionRequiredBannerPreview() }
+    // POST_NOTIFICATIONS is denied by the @Before default, so the banner
+    // renders here (it draws nothing once granted / on pre-Android-13). Covers
+    // the card now that it lives in the Today banner stack rather than Settings.
+    @Test fun notification_permission_banner() = capture { NotificationPermissionBannerPreview() }
     @Test fun last_crash_banner() = capture { LastCrashBannerPreview() }
     @Test fun bug_report_consent_dialog() = captureDialog { BugReportConsentDialogPreview() }
     @Test fun update_available_banner() = capture { UpdateAvailableBannerPreview() }
@@ -616,8 +620,8 @@ class PreviewSnapshots {
     // ScheduleContent reads POST_NOTIFICATIONS via LocalContext to decide
     // whether the notification channel toggles read as on; grant it so the
     // preview captures the enabled-and-permitted happy path rather than the
-    // permission-blocked state (toggles off + banner), which is already
-    // covered by settings_root.
+    // permission-blocked state (toggles read off), which the
+    // settings_schedule_notifications_blocked snapshot covers.
     @Test fun settings_schedule() {
         shadowOf(RuntimeEnvironment.getApplication())
             .grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
@@ -626,8 +630,8 @@ class PreviewSnapshots {
 
     // The permission-blocked counterpart: with POST_NOTIFICATIONS denied (the
     // @Before default) the notification toggles read off regardless of the
-    // stored delivery mode and each card surfaces the recoverable-grant banner.
-    // Taller viewport so both banners fit in one frame.
+    // stored delivery mode. The recoverable-grant banner now lives in the Today
+    // banner stack (see notification_permission_banner), not here.
     @Test
     @Config(qualifiers = "w360dp-h900dp-xhdpi")
     fun settings_schedule_notifications_blocked() =

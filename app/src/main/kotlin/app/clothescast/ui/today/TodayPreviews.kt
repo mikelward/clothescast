@@ -56,6 +56,7 @@ import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.usecase.ThemeForToday
 import app.clothescast.diag.BugReportConsentDialog
 import app.clothescast.ui.EdgeFadeOverlay
+import app.clothescast.ui.settings.NotificationPermissionBanner
 import app.clothescast.ui.theme.ClothesCastTheme
 import app.clothescast.work.FetchAndNotifyWorker
 import java.time.Instant
@@ -1176,6 +1177,17 @@ internal fun WorkStatusFailedNoLocationPreview() {
 @Composable
 internal fun LocationActionRequiredBannerPreview() {
     Frame { LocationActionRequiredBanner(onSetUpLocation = {}) }
+}
+
+// The notification-permission warning now lives in the Today banner stack
+// (gated on the user having a notify-posting schedule enabled), not in
+// Settings. Its snapshot is captured with POST_NOTIFICATIONS denied — see
+// PreviewSnapshots.notification_permission_banner — so the card actually
+// renders; granted / pre-Android-13 it draws nothing.
+@Preview(name = "Banner · notification permission", widthDp = 360)
+@Composable
+internal fun NotificationPermissionBannerPreview() {
+    Frame { NotificationPermissionBanner() }
 }
 
 @Preview(name = "Banner · last-run crash", widthDp = 360)

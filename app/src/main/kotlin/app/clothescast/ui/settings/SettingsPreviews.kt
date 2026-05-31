@@ -104,8 +104,8 @@ internal fun SettingsSchedulePreview() {
 // Same screen as SettingsSchedulePreview, but its snapshot is captured with
 // POST_NOTIFICATIONS denied (see PreviewSnapshots) so it covers the
 // permission-blocked state: the notification channel toggles read off
-// regardless of the stored delivery mode and each card surfaces the
-// recoverable-grant banner.
+// regardless of the stored delivery mode. The recoverable-grant banner now
+// lives in the Today banner stack, not here.
 @Preview(name = "Settings · Schedule (notifications blocked)", widthDp = 360)
 @Composable
 internal fun SettingsScheduleNotificationsBlockedPreview() {

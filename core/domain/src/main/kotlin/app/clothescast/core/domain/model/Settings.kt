@@ -42,6 +42,10 @@ enum class WindSpeedUnit { KMH, MPH }
  */
 enum class DeliveryMode { NOTIFICATION_ONLY, TTS_ONLY, NOTIFICATION_AND_TTS, SILENT }
 
+/** True for the two modes that post a phone notification. */
+val DeliveryMode.postsNotification: Boolean
+    get() = this == DeliveryMode.NOTIFICATION_ONLY || this == DeliveryMode.NOTIFICATION_AND_TTS
+
 /**
  * Per-holiday firing state, with [AUTO] the default and [ON] / [OFF] as
  * explicit overrides:

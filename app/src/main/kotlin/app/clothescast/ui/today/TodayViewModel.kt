@@ -16,6 +16,7 @@ import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.HomeSection
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.postsNotification
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -104,6 +105,16 @@ data class TodayState(
     // just exposes the prefs side of the equation.
     val useDeviceLocation: Boolean = false,
     val hasFallbackLocation: Boolean = false,
+    /**
+     * True iff at least one enabled schedule (morning / tonight) delivers via a
+     * notification-posting mode. The Today screen reads this to decide whether
+     * the missing-notification-permission warning is worth surfacing: a user
+     * whose schedules are all off, SILENT, or TTS-only won't have a notification
+     * dropped, so there's nothing to warn about. The permission state itself is
+     * checked live in the banner composable (it needs Context + an on-resume
+     * re-check), so this is just the prefs side of the gate.
+     */
+    val notifyScheduleEnabled: Boolean = false,
     /** Live clothes rules the rationale dialog reads to render the current threshold
      * value and the `−1°` / `+1°` controls. The cached [Insight.outfitRationale]
      * still carries the rule values that *were* in effect at insight-generation
@@ -640,6 +651,9 @@ class TodayViewModel(
             tonightTime = prefs.tonightSchedule.time,
             useDeviceLocation = prefs.useDeviceLocation,
             hasFallbackLocation = prefs.location != null,
+            notifyScheduleEnabled =
+                (prefs.dailyEnabled && prefs.deliveryMode.postsNotification) ||
+                    (prefs.tonightEnabled && prefs.tonightDeliveryMode.postsNotification),
             clothesRules = prefs.clothesRules,
             homeSectionOrder = prefs.homeSectionOrder,
             showModelSpread = spread,

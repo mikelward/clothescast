@@ -684,6 +684,10 @@
     <string name="settings_api_key_gemini_label">Gemini</string>
 
     <string name="settings_api_key_gemini_header">Use Gemini to get high quality voices.</string>
+    <!-- Shown next to the Gemini header in Voice settings and the Speech setup
+         sheet to disclose that turning Gemini on routes the spoken sentence
+         off the device. -->
+    <string name="settings_api_key_gemini_disclosure">Uses ClothesCast and Gemini servers.</string>
     <string name="settings_api_key_status_set">A Gemini key is configured.</string>
     <string name="settings_api_key_status_unset">Get a free API key at aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Paste your Gemini API key</string>

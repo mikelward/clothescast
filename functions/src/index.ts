@@ -119,16 +119,49 @@ export const tts = onRequest(
       });
     } catch (err) {
       logger.error("Upstream Gemini fetch failed", { code: errorCode(err) });
-      releaseDailySlot(installId, today).catch((rbErr) => {
-        logger.warn("Quota rollback after fetch failure failed", {
-          code: errorCode(rbErr),
-        });
-      });
+      // Await the rollback before responding: Cloud Functions for
+      // Firebase v2 doesn't guarantee work continues after res.send(),
+      // and a missed rollback here burns one of the user's daily
+      // slots on a network blip. Only roll back when we actually
+      // reserved a slot — when reserveDailySlot failed open
+      // (reservation.reserved === false), no counter was incremented
+      // and a decrement would silently steal from a future slot once
+      // Firestore recovers.
+      if (reservation.reserved) {
+        try {
+          await releaseDailySlot(installId, today);
+        } catch (rbErr) {
+          logger.warn("Quota rollback after fetch failure failed", {
+            code: errorCode(rbErr),
+          });
+        }
+      }
       res.status(502).json({ error: "upstream_unreachable" });
       return;
     }
 
-    const upstreamBody = await upstream.arrayBuffer();
+    // The fetch() resolves once headers are in; the body read can
+    // still throw if the upstream connection drops between header and
+    // body. Treat that like a fetch-throw — release the slot before
+    // responding so a transient network blip doesn't burn one of the
+    // user's daily slots.
+    let upstreamBody: ArrayBuffer;
+    try {
+      upstreamBody = await upstream.arrayBuffer();
+    } catch (err) {
+      logger.error("Upstream Gemini body read failed", { code: errorCode(err) });
+      if (reservation.reserved) {
+        try {
+          await releaseDailySlot(installId, today);
+        } catch (rbErr) {
+          logger.warn("Quota rollback after body read failure failed", {
+            code: errorCode(rbErr),
+          });
+        }
+      }
+      res.status(502).json({ error: "upstream_unreachable" });
+      return;
+    }
 
     if (upstream.ok) {
       if (reservation.reserved) {
@@ -142,12 +175,20 @@ export const tts = onRequest(
       });
       // Only successful syntheses should burn quota. Roll back the
       // reservation; clients can retry within the same day without
-      // penalty.
-      releaseDailySlot(installId, today).catch((err) => {
-        logger.warn("Quota rollback after upstream non-success failed", {
-          code: errorCode(err),
-        });
-      });
+      // penalty. Awaited (not fire-and-forget) so the work doesn't
+      // get cut off by the response below — see the fetch-throw
+      // path above for the rationale. Gated on `reservation.reserved`
+      // for the same reason: a failed-open reservation has nothing
+      // to undo.
+      if (reservation.reserved) {
+        try {
+          await releaseDailySlot(installId, today);
+        } catch (err) {
+          logger.warn("Quota rollback after upstream non-success failed", {
+            code: errorCode(err),
+          });
+        }
+      }
     }
 
     res.status(upstream.status);

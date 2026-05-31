@@ -112,8 +112,6 @@ Not overridden by design:
     <string name="settings_tts_device_voice_currently_loading">लोड हो रहा है…</string>
     <string name="settings_tts_device_voice_network">नेटवर्क</string>
     <string name="settings_tts_device_voice_offline">ऑफ़लाइन</string>
-    <string name="settings_tts_install_google_hint">बेहतर आवाज़ों के लिए Google का टेक्स्ट-टू-स्पीच इंजन इंस्टाल करें।</string>
-    <string name="settings_tts_install_google_button">Google TTS इंस्टाल करें</string>
     <string name="settings_tts_test">आवाज़ परखें</string>
     <string name="settings_tts_test_in_flight">परख रहे हैं — कृपया प्रतीक्षा करें…</string>
 

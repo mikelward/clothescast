@@ -841,8 +841,6 @@
     <string name="settings_tts_device_voice_currently_loading">Loading…</string>
     <string name="settings_tts_device_voice_network">Network</string>
     <string name="settings_tts_device_voice_offline">Offline</string>
-    <string name="settings_tts_install_google_hint">Install Google\'s text-to-speech engine for high-quality voices.</string>
-    <string name="settings_tts_install_google_button">Install Google TTS</string>
     <string name="settings_tts_voice_locale_label">Accent</string>
     <!-- Caption under Voice > Accent: only the spoken accent, not the on-screen
          text. Pairs with settings_region_language_description. -->

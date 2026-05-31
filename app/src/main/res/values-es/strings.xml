@@ -538,8 +538,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_device_voice_currently_loading">Cargando…</string>
     <string name="settings_tts_device_voice_network">Red</string>
     <string name="settings_tts_device_voice_offline">Sin conexión</string>
-    <string name="settings_tts_install_google_hint">Instala el motor de síntesis de voz de Google para obtener voces de mayor calidad.</string>
-    <string name="settings_tts_install_google_button">Instalar Google TTS</string>
 
     <string name="settings_tts_voice_locale_am_et">Amhárico (Etiopía)</string>
     <string name="settings_tts_voice_locale_da_dk">Danés (Dinamarca)</string>

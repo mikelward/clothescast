@@ -237,8 +237,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_tts_device_voice_currently_loading">Betöltés…</string>
     <string name="settings_tts_device_voice_network">Hálózat</string>
     <string name="settings_tts_device_voice_offline">Offline</string>
-    <string name="settings_tts_install_google_hint">Telepítsd a Google Text-to-Speech motort a jobb minőségű hangokhoz.</string>
-    <string name="settings_tts_install_google_button">Google TTS telepítése</string>
 
     <!-- TTS style picker. -->
     <string name="settings_tts_style_label">Stílus</string>

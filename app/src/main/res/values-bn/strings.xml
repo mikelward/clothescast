@@ -387,8 +387,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_tts_device_voice_currently_loading">লোড হচ্ছে…</string>
     <string name="settings_tts_device_voice_network">নেটওয়ার্ক</string>
     <string name="settings_tts_device_voice_offline">অফলাইন</string>
-    <string name="settings_tts_install_google_hint">উচ্চমানের ভয়েসের জন্য Google-এর টেক্সট-টু-স্পিচ ইঞ্জিন ইনস্টল করুন।</string>
-    <string name="settings_tts_install_google_button">Google TTS ইনস্টল করুন</string>
     <string name="settings_tts_voice_locale_description">কথ্য ভয়েসের উচ্চারণভঙ্গি নির্ধারণ করে। প্রদর্শিত লেখা পরিবর্তন করে না।</string>
     <string name="settings_tts_test">ভয়েস পরীক্ষা করুন</string>
     <string name="settings_tts_test_in_flight">পরীক্ষা করা হচ্ছে — অনুগ্রহ করে অপেক্ষা করুন…</string>

@@ -294,8 +294,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_tts_device_voice_currently_loading">Laadimine…</string>
     <string name="settings_tts_device_voice_network">Võrk</string>
     <string name="settings_tts_device_voice_offline">Võrguühenduseta</string>
-    <string name="settings_tts_install_google_hint">Installi Google\'i tekst-kõneks mootor kõrgekvaliteediliste häälte saamiseks.</string>
-    <string name="settings_tts_install_google_button">Installi Google TTS</string>
     <string name="settings_tts_voice_locale_label">Aktsent</string>
     <string name="settings_tts_voice_locale_description">Määrab kõnehääle aksendi. Ei muuda kuvatavat teksti.</string>
     <string name="settings_tts_voice_locale_system">Järgi keelesätet</string>

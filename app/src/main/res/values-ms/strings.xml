@@ -401,8 +401,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_tts_device_voice_currently_loading">Memuatkan…</string>
     <string name="settings_tts_device_voice_network">Rangkaian</string>
     <string name="settings_tts_device_voice_offline">Luar talian</string>
-    <string name="settings_tts_install_google_hint">Pasang enjin teks-ke-ucapan Google untuk suara berkualiti lebih tinggi.</string>
-    <string name="settings_tts_install_google_button">Pasang Google TTS</string>
     <string name="settings_tts_voice_locale_description">Menetapkan loghat suara yang diucapkan. Tidak mengubah teks yang dipaparkan.</string>
     <string name="settings_tts_test">Uji suara</string>
     <string name="settings_tts_test_in_flight">Menguji — sila tunggu…</string>

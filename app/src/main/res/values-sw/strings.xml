@@ -359,8 +359,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_device_voice_currently_loading">Inapakia…</string>
     <string name="settings_tts_device_voice_network">Mtandao</string>
     <string name="settings_tts_device_voice_offline">Bila mtandao</string>
-    <string name="settings_tts_install_google_hint">Sakinisha injini ya maandishi-kwa-sauti ya Google kwa sauti za ubora wa juu.</string>
-    <string name="settings_tts_install_google_button">Sakinisha Google TTS</string>
     <string name="settings_tts_test">Jaribu sauti</string>
     <string name="settings_tts_test_in_flight">Inajaribu — tafadhali subiri…</string>
 

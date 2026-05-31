@@ -413,8 +413,6 @@ What is NOT overridden, by design:
     <string name="settings_tts_device_voice_currently_loading">Kraunama…</string>
     <string name="settings_tts_device_voice_network">Tinklas</string>
     <string name="settings_tts_device_voice_offline">Neprisijungus</string>
-    <string name="settings_tts_install_google_hint">Įdiek „Google" teksto į kalbą variklį, kad gautum aukštesnės kokybės balsus.</string>
-    <string name="settings_tts_install_google_button">Įdiegti „Google TTS"</string>
 
     <string name="settings_tts_voice_locale_description">Nustato kalbamo balso akcentą. Nekeičia rodomo teksto.</string>
     <string name="settings_tts_test">Išbandyti balsą</string>

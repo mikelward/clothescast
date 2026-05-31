@@ -406,8 +406,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_tts_device_voice_currently_loading">جارٍ التحميل…</string>
     <string name="settings_tts_device_voice_network">الشبكة</string>
     <string name="settings_tts_device_voice_offline">بدون إنترنت</string>
-    <string name="settings_tts_install_google_hint">ثبّت محرك تحويل النص إلى كلام من Google للحصول على أصوات أعلى جودة.</string>
-    <string name="settings_tts_install_google_button">تثبيت Google TTS</string>
     <string name="settings_tts_test">اختبار الصوت</string>
     <string name="settings_tts_test_in_flight">جارٍ الاختبار — الرجاء الانتظار…</string>
 

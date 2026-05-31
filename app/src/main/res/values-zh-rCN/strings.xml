@@ -529,8 +529,6 @@ label localizes.
     <string name="settings_tts_device_voice_currently_loading">加载中…</string>
     <string name="settings_tts_device_voice_network">网络</string>
     <string name="settings_tts_device_voice_offline">离线</string>
-    <string name="settings_tts_install_google_hint">安装 Google 文字转语音引擎以获得更高质量的语音。</string>
-    <string name="settings_tts_install_google_button">安装 Google TTS</string>
 
     <string name="settings_tts_voice_locale_am_et">阿姆哈拉语（埃塞俄比亚）</string>
     <string name="settings_tts_voice_locale_da_dk">丹麦语（丹麦）</string>

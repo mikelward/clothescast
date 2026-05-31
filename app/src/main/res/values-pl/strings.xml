@@ -499,8 +499,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_tts_device_voice_currently_loading">Ładowanie…</string>
     <string name="settings_tts_device_voice_network">Sieć</string>
     <string name="settings_tts_device_voice_offline">Offline</string>
-    <string name="settings_tts_install_google_hint">Zainstaluj silnik tekstu na mowę Google, aby uzyskać lepsze głosy.</string>
-    <string name="settings_tts_install_google_button">Zainstaluj Google TTS</string>
 
     <string name="today_failed_no_location">Nie można ustalić Twojej lokalizacji. Przyznaj stały dostęp do lokalizacji lub ustaw miasto w ustawieniach.</string>
     <string name="today_location_required_title">Skonfiguruj lokalizację</string>

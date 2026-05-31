@@ -565,8 +565,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_device_voice_currently_loading">Wird geladen…</string>
     <string name="settings_tts_device_voice_network">Netzwerk</string>
     <string name="settings_tts_device_voice_offline">Offline</string>
-    <string name="settings_tts_install_google_hint">Installiere Googles Text-to-Speech-Engine für hochwertigere Stimmen.</string>
-    <string name="settings_tts_install_google_button">Google TTS installieren</string>
 
     <string name="settings_tts_voice_locale_am_et">Amharisch (Äthiopien)</string>
     <string name="settings_tts_voice_locale_da_dk">Dänisch (Dänemark)</string>

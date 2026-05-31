@@ -537,8 +537,6 @@ the displayed label localizes.
     <string name="settings_tts_device_voice_currently_loading">読み込み中…</string>
     <string name="settings_tts_device_voice_network">ネットワーク</string>
     <string name="settings_tts_device_voice_offline">オフライン</string>
-    <string name="settings_tts_install_google_hint">より高品質な音声のために、Googleのテキスト読み上げエンジンをインストールしてください。</string>
-    <string name="settings_tts_install_google_button">Google TTSをインストール</string>
 
     <string name="settings_tts_voice_locale_am_et">アムハラ語（エチオピア）</string>
     <string name="settings_tts_voice_locale_da_dk">デンマーク語（デンマーク）</string>

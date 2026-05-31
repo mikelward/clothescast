@@ -24,8 +24,6 @@ import androidx.lifecycle.lifecycleScope
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.diag.DiagLog
 import app.clothescast.locale.AppLocale
-import app.clothescast.notification.NotificationPermission
-import app.clothescast.ui.isTelevision
 import app.clothescast.ui.nav.ClothesCastNavHost
 import app.clothescast.ui.theme.ClothesCastTheme
 import app.clothescast.work.FetchAndNotifyWorker
@@ -62,18 +60,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val app = application as ClothesCastApplication
         // Read the persisted theme synchronously so the first frame already
-        // matches the user's pick — same flicker-avoidance pattern used in
-        // shouldStartOnboarding for the initial-screen decision.
+        // matches the user's pick (no flash of the wrong theme before the
+        // collected flow catches up).
         val initialPrefs = runBlocking {
             app.settingsRepository.preferences.first().let {
                 it.themeMode to it.colorPalette
             }
         }
-        // Decide the start destination once, synchronously, so the first frame
-        // is already correct (no flash of Today before snapping to Onboarding).
-        // NavHost ignores this after process death — it restores its own saved
-        // back stack — so it only governs a genuine first launch.
-        val startOnboarding = shouldStartOnboarding(this, app)
         try {
             setContent {
                 val themeMode by app.settingsRepository.preferences
@@ -121,7 +114,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background,
                     ) {
-                        ClothesCastNavHost(app, startOnboarding, deepLinkIntent)
+                        ClothesCastNavHost(app, deepLinkIntent)
                     }
                 }
             }
@@ -214,34 +207,4 @@ class MainActivity : ComponentActivity() {
                 flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
     }
-}
-
-// Decide the start destination once, synchronously. Permission checks are sync;
-// DataStore reads (Gemini key + preferences) go through one Preferences fetch
-// each, microseconds in practice — runBlocking here keeps the UX flicker-free
-// (no flash of Today before snapping to Onboarding) at a negligible startup cost.
-private fun shouldStartOnboarding(context: Context, app: ClothesCastApplication): Boolean {
-    val tv = isTelevision(context)
-    // TV OS does not expose POST_NOTIFICATIONS or GPS-based location; skip
-    // both checks so a configured-key + city TV install goes straight to Today.
-    val notificationOk = tv || NotificationPermission.isGranted(context)
-    val keyOk = runBlocking { app.secureKeyStore.geminiKeyConfiguredFlow.first() }
-    val prefs = runBlocking { app.settingsRepository.preferences.first() }
-    // Once the user has tapped "Skip", honor that for good — don't drag them
-    // back through onboarding on the next cold launch just because a condition
-    // is still unmet. Banners on Today cover whatever they skipped.
-    if (prefs.onboardingSkipped) return false
-    val locationOk = if (tv) {
-        // On TV only a manually picked city counts — device location is unavailable.
-        prefs.location != null
-    } else {
-        // Location is "configured" if either branch is filled in — device-location
-        // toggle on (with permission) or a manual city stored.
-        val coarseGranted = androidx.core.content.ContextCompat.checkSelfPermission(
-            context,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-        (prefs.useDeviceLocation && coarseGranted) || prefs.location != null
-    }
-    return !(notificationOk && keyOk && locationOk)
 }

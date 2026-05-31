@@ -69,15 +69,20 @@ nothing breaks; it just means the shared path is off.
 
 ### 3. Enable Firestore
 
-In the Firebase console: **Build → Firestore Database → Create
+In the Firebase console, open **Firestore Database → Create
 database**. Pick **Production mode** (the rules in
 `firestore.rules` deny all client access; only the function writes
 to it via the Admin SDK). Region is up to you — pick something close
 to your function region (step 5).
 
-### 4. Enable App Check
+### 4. Register apps in App Check, and enable anonymous sign-in
 
-**Build → App Check**.
+Find these products by name in the left sidebar — the category
+headers Firebase groups them under (App Check currently sits under a
+"Security" group) get reshuffled periodically, so navigate by product
+name, not by category. There is no top-level "Build" menu.
+
+**App Check** — register each app:
 
 - For each Android app added in step 2, **Register** it.
 - **Release app** (`app.clothescast`): choose **Play Integrity** as
@@ -87,25 +92,33 @@ to your function region (step 5).
   too (it'll be paired with a Debug provider override at runtime —
   see step 8). Click into the app → **Manage debug tokens**; you'll
   add per-device tokens here in step 8.
-- Once both are registered, click **Cloud Functions → Enforce**.
-  Until you do this, the function still works but doesn't actually
-  reject unsigned requests.
 
-Also enable anonymous sign-in and protect it with App Check — the
-function keys its per-install daily quota on the anonymous Firebase
-Auth `uid`, so the client can't spoof the quota bucket the way it
-could when the proxy trusted a header:
+You do **not** enforce App Check on Functions from the console. That
+toggle only applies to *callable* (`onCall`) functions; our `tts` is a
+plain HTTP (`onRequest`) function, which enforces App Check **in code**
+— it reads the `X-Firebase-AppCheck` header and rejects the request if
+`getAppCheck().verifyToken()` fails (see `functions/src/index.ts`). So
+enforcement is always on for `tts` and there's nothing to flip here.
 
-- **Build → Authentication → Get started → Sign-in method →
-  Anonymous → Enable.** The app signs in anonymously to obtain the
-  ID token it sends to the proxy; no other provider is needed.
-- Back in **Build → App Check**, also click **Authentication →
-  Enforce**. This is what stops scripted anonymous-account farming
-  to mint fresh `uid`s and reset the daily cap. Without it, App Check
-  still gates the function but not account creation.
-- Optionally, under **Authentication → Settings → User account
-  management**, enable auto-deletion of anonymous accounts that have
-  been inactive for 30+ days so stale quota identities don't pile up.
+**Authentication** — enable anonymous sign-in:
+
+- Open **Authentication → Sign-in method → Anonymous → Enable.** The
+  app signs in anonymously to get the ID token it sends to the proxy
+  (the function verifies it and keys the per-install daily quota on the
+  `uid`); no other provider is needed. **If this is off, the shared
+  voice silently falls back to device TTS.**
+- **Enforce App Check on Authentication** to stop scripted
+  anonymous-account farming (minting fresh `uid`s to reset the daily
+  cap): in **App Check**, expand the **Authentication** product's
+  metrics row and click **Enforce** (takes up to ~15 min to apply).
+  Without it, App Check still gates the function but not account
+  creation.
+- *(Optional)* Auto-delete anonymous accounts inactive for 30+ days so
+  stale quota identities don't pile up. This lives under
+  **Authentication → Settings → User account management** and
+  **requires upgrading to Firebase Authentication with Identity
+  Platform.** The client re-signs in anonymously if a still-cached
+  account gets deleted, so it's safe to enable.
 
 ### 5. Set up the function locally
 

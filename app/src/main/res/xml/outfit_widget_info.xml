@@ -15,5 +15,5 @@
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
     android:initialLayout="@layout/glance_default_loading_layout"
-    android:previewImage="@drawable/ic_outfit_tshirt"
+    android:previewImage="@drawable/widget_preview_outfit"
     android:description="@string/widget_description" />

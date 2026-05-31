@@ -1,6 +1,17 @@
+# Dotfiles: ignore every dotfile / dot-directory by default, then allowlist the
+# ones we deliberately track. New tooling drops config like .env, .vscode/,
+# .DS_Store, .gradle/, .idea/ — all caught here until someone allowlists it.
+.*
+!.editorconfig
+!.gitattributes
+!.gitignore
+!.github/
+!.claude/
+
+# ...but keep ignoring machine-local bits inside the allowlisted dot-dirs.
+.claude/settings.local.json
+
 # Gradle
-.gradle/
-.kotlin/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 local.properties
@@ -11,16 +22,11 @@ local.properties
 *.ap_
 *.dex
 captures/
-.cxx/
 
 # IDE
-.idea/
 *.iml
-.vscode/
-.fleet/
 
 # OS
-.DS_Store
 Thumbs.db
 
 # Keystore / secrets

@@ -17,7 +17,7 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.DailyHistoryEntry
-import app.clothescast.core.domain.model.DeliveryMode
+import app.clothescast.core.domain.model.postsNotification
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.ForecastSnapshot
 import app.clothescast.core.domain.model.HolidayTheme
@@ -1295,9 +1295,7 @@ class FetchAndNotifyWorker(
         }
         // forceNotify: the Today screen's Play button posts the notification
         // even on SILENT / TTS-only — an explicit tap means "show it now."
-        val canNotify = forceNotify ||
-            mode == DeliveryMode.NOTIFICATION_ONLY ||
-            mode == DeliveryMode.NOTIFICATION_AND_TTS
+        val canNotify = forceNotify || mode.postsNotification
         if (!canNotify) return
         when (insight.period) {
             ForecastPeriod.TODAY ->

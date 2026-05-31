@@ -150,6 +150,7 @@ import app.clothescast.diag.findActivity
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
+import app.clothescast.ui.settings.NotificationPermissionBanner
 import app.clothescast.ui.theme.AppTheme
 import app.clothescast.work.FetchAndNotifyWorker
 import java.time.LocalDate
@@ -726,6 +727,14 @@ private fun BannerStack(
     UpdateAvailableBanner(modifier = bannerModifier)
     LocalBuildBanner(modifier = bannerModifier)
     LastCrashBanner(modifier = bannerModifier)
+    // Scheduled notifications silently won't post until POST_NOTIFICATIONS is
+    // granted (Android 13+). Only surfaced when the user has actually enabled a
+    // notify-posting schedule — there's nothing to warn about when every
+    // schedule is off, SILENT, or TTS-only. The banner renders nothing once the
+    // permission is granted or on pre-Android-13, so it's safe to keep mounted.
+    if (state.notifyScheduleEnabled) {
+        NotificationPermissionBanner(modifier = bannerModifier)
+    }
     // One-shot privacy disclosure for the default-on Firebase telemetry,
     // so the default isn't silent. Auto-hides once the user dismisses it
     // (or taps through to Privacy from it). Stays out of the way of the

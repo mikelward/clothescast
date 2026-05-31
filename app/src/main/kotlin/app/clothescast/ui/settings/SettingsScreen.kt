@@ -438,7 +438,6 @@ internal fun SettingsRoot(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            NotificationPermissionBanner()
             // Surface a missing always-on grant from the settings root too so the
             // user sees the broken state without having to drill into Location.
             // Tapping the card deep-links into Location where the launcher and

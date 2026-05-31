@@ -477,13 +477,6 @@ private fun DeliveryModeSection(
             if (enabled) onRequestNotificationPermission()
         },
     )
-    // Surface the recoverable grant path whenever the user wants notifications
-    // (stored preference on) but the permission is still missing; the banner
-    // renders nothing once granted (or on pre-Android-13), so it's safe to keep
-    // mounted while the channel is enabled.
-    if (notifyStored && !notificationGranted) {
-        NotificationPermissionBanner()
-    }
     ToggleRow(
         label = stringResource(R.string.settings_delivery_tts),
         checked = ttsOn,

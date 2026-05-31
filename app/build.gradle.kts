@@ -49,6 +49,22 @@ fun git(vararg args: String): String {
     return output
 }
 
+/**
+ * Escapes a string so it's safe to drop verbatim between the quotes of a
+ * `buildConfigField("String", …)` value — i.e. a Java string literal in the
+ * generated BuildConfig.java. Handles backslash (first, so the others aren't
+ * double-escaped), quote, and the control characters a value pasted with a
+ * trailing line break would otherwise inject: an unescaped newline splits the
+ * literal across two lines and the compiler reports an "unclosed string
+ * literal". Returns the escaped body only — callers add the surrounding quotes.
+ */
+fun String.asJavaStringLiteralBody(): String = this
+    .replace("\\", "\\\\")
+    .replace("\"", "\\\"")
+    .replace("\n", "\\n")
+    .replace("\r", "\\r")
+    .replace("\t", "\\t")
+
 // versionCode: total commit count on the current branch. Monotonically increases,
 // reproducible (same commit -> same number), required by Firebase App Distribution
 // and the Play Store. CI must use `actions/checkout@v4` with `fetch-depth: 0` —
@@ -132,7 +148,7 @@ android {
         // Defined for all variants so the composable compiles regardless of
         // which buildType is active.
         buildConfigField("boolean", "IS_LOCAL_BUILD", (!isCiBuild).toString())
-        buildConfigField("String", "GIT_BRANCH", "\"${gitBranch.replace("\"", "\\\"")}\"")
+        buildConfigField("String", "GIT_BRANCH", "\"${gitBranch.asJavaStringLiteralBody()}\"")
         buildConfigField("String", "GIT_SHA", "\"$gitShortSha\"")
         buildConfigField("boolean", "GIT_DIRTY", gitDirty.toString())
         buildConfigField("long", "BUILD_TIMESTAMP_MS", "${buildTimestampMs}L")
@@ -156,18 +172,18 @@ android {
         // Full setup walkthrough — Firebase project, App Check, function
         // deploy, where to get this URL — lives in docs/gemini-tts-proxy.md.
         val geminiProxyUrl: String = run {
-            val fromEnv = System.getenv("GEMINI_PROXY_URL")?.takeIf { it.isNotBlank() }
+            val fromEnv = System.getenv("GEMINI_PROXY_URL")?.trim()?.takeIf { it.isNotBlank() }
             val fromLocalProps: String? = rootProject.file("local.properties")
                 .takeIf { it.exists() }
                 ?.let { file ->
                     val props = Properties()
                     file.inputStream().use { props.load(it) }
-                    props.getProperty("geminiProxyUrl")?.takeIf { it.isNotBlank() }
+                    props.getProperty("geminiProxyUrl")?.trim()?.takeIf { it.isNotBlank() }
                 }
-            val fromGradleProps = providers.gradleProperty("geminiProxyUrl").orNull?.takeIf { it.isNotBlank() }
+            val fromGradleProps = providers.gradleProperty("geminiProxyUrl").orNull?.trim()?.takeIf { it.isNotBlank() }
             fromEnv ?: fromLocalProps ?: fromGradleProps ?: ""
         }
-        buildConfigField("String", "GEMINI_PROXY_URL", "\"${geminiProxyUrl.replace("\"", "\\\"")}\"")
+        buildConfigField("String", "GEMINI_PROXY_URL", "\"${geminiProxyUrl.asJavaStringLiteralBody()}\"")
     }
 
     signingConfigs {

@@ -255,6 +255,36 @@ verification by default (since the SDK can't reach the real Firebase
 backend), so a debug token isn't strictly required while emulating —
 but using one is closer to production behaviour.
 
+## Rolling out the anonymous-ID migration
+
+The quota identity changed from a client-chosen `X-Install-Id` header to
+a server-verified anonymous Firebase Auth `uid`. To avoid breaking the
+free voice for anyone mid-rollout, both client and function speak both
+dialects during the transition, so **the function deploy, the app
+release, and the Firebase config can happen in any order**:
+
+- **Client** sends *both* the legacy `X-Install-Id` and an
+  `Authorization: Bearer <idToken>` on every shared-key request. If
+  anonymous sign-in is unavailable it sends the FID alone.
+- **Function** prefers the verified `uid` and falls back to
+  `X-Install-Id` only when there's no Bearer token.
+
+So an old app hits the new function (FID fallback) and a new app hits an
+old function (still reads the FID) without anyone dropping to device TTS.
+
+One step is *not* order-independent: **enable Anonymous sign-in (step 4)
+before the new app ships**, or the client can't get an ID token (it
+degrades to the spoofable FID path, which still works but doesn't gain
+the protection).
+
+⚠️ **The fallback keeps the spoofing hole open.** A client can omit the
+Bearer token and rotate `X-Install-Id` to evade the cap for as long as
+the fallback exists. Close it in a **cleanup phase** once old app
+versions have aged out: drop the `X-Install-Id` send from the client and
+delete the fallback branch in `functions/src/index.ts` (then the
+`missing_identity` path becomes `missing_auth_token` again). Only then is
+the cap actually tamper-resistant.
+
 ## Operational notes
 
 - **Cost**: Gemini Flash TTS is ~$0.003 per ~5 s clip. Cloud

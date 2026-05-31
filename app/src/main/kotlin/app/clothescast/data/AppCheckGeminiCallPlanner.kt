@@ -9,6 +9,8 @@ import app.clothescast.diag.DiagLog
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.installations.FirebaseInstallations
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
 /**
@@ -21,11 +23,15 @@ import kotlinx.coroutines.tasks.await
  *   developer-operated Cloud Function at [proxyBaseUrl], carrying a
  *   Firebase App Check attestation token (`X-Firebase-AppCheck`), an
  *   anonymous Firebase Authentication ID token (`Authorization: Bearer
- *   <idToken>`), and the model name (`X-Gemini-Model`). The function
- *   holds the developer's Gemini key and forwards the call. Quota is
- *   keyed server-side on the verified `uid` from the ID token rather
- *   than a client-supplied header, so a modded client can't rotate an
- *   identifier to evade the daily cap.
+ *   <idToken>`), the model name (`X-Gemini-Model`), and — during the
+ *   rollout migration — the legacy Firebase Installation ID
+ *   (`X-Install-Id`). The function holds the developer's Gemini key and
+ *   forwards the call. It prefers the verified `uid` from the ID token
+ *   (which a modded client can't rotate to evade the daily cap) and
+ *   falls back to the FID only for app versions built before the switch.
+ *   Sending both keeps a pre-switch *and* a post-switch function happy,
+ *   so the app, function, and Firebase config can roll out in any order;
+ *   the FID send is removed once old app versions age out.
  * - **No key set and shared path disabled** ([sharedPathEnabled] is
  *   false — CI builds without `google-services.json`, or forks that
  *   haven't configured `GEMINI_PROXY_URL`): throw
@@ -47,6 +53,7 @@ class AppCheckGeminiCallPlanner(
     private val model: String,
     private val appCheck: () -> FirebaseAppCheck = { FirebaseAppCheck.getInstance() },
     private val auth: () -> FirebaseAuth = { FirebaseAuth.getInstance() },
+    private val installations: () -> FirebaseInstallations = { FirebaseInstallations.getInstance() },
 ) : GeminiCallPlanner {
 
     override suspend fun plan(): GeminiCallPlan {
@@ -88,9 +95,27 @@ class AppCheckGeminiCallPlanner(
             endpoint = endpoint,
             applyAuth = {
                 val appCheckToken = appCheck().getAppCheckToken(false).await().token
-                val idToken = anonymousIdToken()
                 it.headers.append("X-Firebase-AppCheck", appCheckToken)
-                it.headers.append("Authorization", "Bearer $idToken")
+                // Backward-compat during the rollout: always send the FID so
+                // a not-yet-redeployed function (which keys quota on
+                // X-Install-Id) keeps working, and so a token fetch failure
+                // still leaves a usable identity. The new function prefers
+                // the verified uid below and ignores this when present.
+                it.headers.append("X-Install-Id", installations().id.await())
+                // Anonymous ID token: the new function verifies it and keys
+                // quota on the unspoofable uid. If sign-in is unavailable
+                // (Anonymous provider disabled, offline), fall back to the
+                // FID-only request above rather than failing the call —
+                // worst case the user is on the old, spoofable identity, not
+                // dropped to device TTS.
+                try {
+                    val idToken = anonymousIdToken()
+                    it.headers.append("Authorization", "Bearer $idToken")
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    DiagLog.w(TAG, "Anonymous ID token unavailable; sending FID only", e)
+                }
                 it.headers.append("X-Gemini-Model", model)
             },
         )

@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // The `installs/{fid}` collection is written exclusively by the `tts`
+    // Cloud Function (via the Admin SDK, which bypasses rules). No client
+    // — Android app, web, otherwise — has any read or write access.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

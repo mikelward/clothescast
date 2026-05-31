@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026-05-23_
+_Last updated: 2026-05-31_
 
 ClothesCast is a daily weather-insight app for Android. This policy
 describes what data the app handles, where it goes, and what control you
@@ -230,13 +230,39 @@ The source code is at <https://github.com/mikelward/clothescast>.
   network — and discovery stops as soon as you leave the page or pick
   a result. No discovery happens unless you tap the button.
 
-### API keys you provide
+### Online TTS: shared key by default, your own key on request
 
-- If you use online TTS, you supply your own Google Gemini API key.
-  Keys are stored on your device, encrypted at rest using a key sealed
-  by the Android Keystore. They are sent only to the corresponding
-  provider on requests you initiate, and are never shared with us or
-  any third party.
+Online TTS (the Gemini voice) has two paths.
+
+- **Default — shared key via the ClothesCast TTS proxy.** When you have
+  not set your own Gemini key, online TTS requests go to a small
+  ClothesCast-operated Cloud Function instead of directly to Google.
+  The function holds a Google Gemini API key paid for by the developer,
+  forwards your request to Google, and returns the audio. It does not
+  log the spoken prose or the audio response.
+  - **Sent on each request:** the rendered insight sentence (the same
+    text the phone speaks), a per-install pseudonymous identifier
+    (your Firebase Installation ID), a Firebase App Check attestation
+    token (proves the request came from a genuine install — verified
+    in-memory and discarded), and the model name. No coordinates,
+    calendar metadata as fields, account, advertising ID, or device
+    identifiers are added.
+  - **Stored:** a Firestore document at `installs/<your install ID>`
+    with a first-use timestamp, a successful-call counter, and a
+    most-recent-use timestamp. Used now for capacity planning and
+    later to enforce a free-trial limit (planned: 30 calls or 30 days
+    from first use). Not used for advertising or cross-app tracking.
+    Your install ID changes if you reinstall the app or use "Clear
+    data" in Android Settings.
+  - **Cloud Functions infrastructure logs** (operated by Google Cloud,
+    not configured by us) record the client IP and HTTP status of
+    each call. We do not associate the IP with your install ID.
+- **Your own key (BYOK).** Open Settings → Voice → Gemini API key and
+  paste your own key. Keys are stored on your device, encrypted at
+  rest using a key sealed by the Android Keystore. With your own key
+  set, online TTS requests skip the ClothesCast proxy entirely and
+  go straight to Google — no install ID, no App Check token, no proxy
+  involvement. Your key is never shared with us or any third party.
 
 ## Third-party services
 
@@ -247,13 +273,16 @@ policies apply to anything they receive:
 |---|---|---|
 | [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate (forecast); your typed search text when you use a location picker (first-run onboarding and Settings) | Always for forecast; only when you search for a place name |
 | Google's geocoding service (via Android's [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder) on Play Services devices), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate | Always on Play Services devices (city / country lookup for the Today header); skipped on AOSP devices |
-| [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence | Only if you select Gemini TTS |
+| ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, your Firebase Installation ID, a Firebase App Check token, and the Gemini model name | Online TTS with the shared key (default) |
+| [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence (forwarded by the proxy, or sent directly when you use your own key) | Online TTS, either path |
 | Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence, as a retained MQTT message | Only if you opt in to the Smart Home bridge and configure a broker |
 | Analytics / crash-reporting service (e.g. Firebase Crashlytics + Google Analytics for Firebase) | Aggregate usage events and crash diagnostics — see "Analytics and crash reporting" below for what's in and out | Possibly always, in all builds |
 
 These providers act as service providers fulfilling a single request and
-returning the result. The TTS providers receive only the sentence to be
-spoken, with no user identifier attached beyond the API key you supplied.
+returning the result. When the ClothesCast TTS proxy is in the path, it
+adds the install ID and App Check token described above; when you use
+your own Gemini key, the request goes straight to Google and no install
+identifier is attached.
 
 Note on Gemini API: request inputs are not retained for training by
 default. See the provider's policy linked above for the authoritative
@@ -407,6 +436,18 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-05-31** — Online TTS now has a shared-key default: when you
+  haven't supplied your own Gemini API key, the spoken sentence is sent
+  to a small Cloud Function operated by the developer, which forwards
+  it to Google's Gemini API and returns the audio. The function holds
+  the Gemini key, doesn't log the spoken prose, and records only a
+  per-install counter (keyed by your Firebase Installation ID) for
+  capacity planning. A Firebase App Check token is sent alongside each
+  request to prove it came from a genuine install; it's verified and
+  discarded. The BYOK path (your own key in Settings) is unchanged and
+  bypasses the proxy entirely. See "Online TTS: shared key by default,
+  your own key on request" and the updated third-party services table
+  above for the full breakdown.
 - **2026-05-29** — The optional usage-analytics settings snapshot now
   records one analytics event per Settings page (Schedule, Clothes,
   Format, Region, Display, Calendar) instead of a single combined event.

@@ -27,6 +27,18 @@ Code TODOs in source files are linked from here when they exist.
 - [x] Gemini TTS as opt-in voice engine (PR #27)
 - [x] Diagnostic "Test Gemini voice" button in Settings (PR #28)
 - [x] **Voice picker** for Gemini. Curated list in `TtsVoices.kt`; Despina is the current default (validated across en-GB / en-AU / en-US / de-*).
+- [ ] **Re-translate the Voice engine subhead + per-engine descriptions
+      once the English copy is locked in.** PR #874 rewrote the base
+      `settings_tts_engine_description`, `settings_api_key_gemini_header`,
+      and added `settings_tts_device_header` to make the data-boundary
+      tradeoff explicit ("low-quality on-device" vs. "high-quality via
+      ClothesCast and Gemini servers"). The pre-existing `values-*`
+      overrides (44 locales each for the first two strings) still carry
+      the old copy, so non-English devices fall back to the stale
+      translation rather than the new disclosure. Hold the re-translation
+      until the English wording is settled, then either delete the stale
+      overrides (forcing en-US fallback) or push fresh translations
+      through the usual pipeline.
 
 ## Calendar integration (next-up after TTS)
 

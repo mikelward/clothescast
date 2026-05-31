@@ -661,10 +661,10 @@ data class UserPreferences(
      * Set to true once the user acts on the Today-screen "Automatic
      * ClothesCasts" promo card — either dismissing it via the X button or
      * following its CTA into the schedule page. Either action retires the card
-     * for good; it no longer keys off the schedule switches (the morning slot
-     * is on out of the box now, so gating on [dailyEnabled] would hide the card
-     * before the user ever saw it). Same "dismiss or follow through" pattern as
-     * [clothesPromoCardDismissed].
+     * for good; it no longer keys off the schedule switches (so the promo still
+     * surfaces when no slot is enabled — the default now — instead of being
+     * hidden before the user ever saw it). Same "dismiss or follow through"
+     * pattern as [clothesPromoCardDismissed].
      */
     val scheduleCardDismissed: Boolean = false,
     /**
@@ -706,15 +706,17 @@ data class UserPreferences(
      */
     val calendarPermissionRecheckTick: Long = 0L,
     /**
-     * Master switch for the morning / "daily" insight. On by default — a fresh
-     * install gets the morning cast (notification + TTS) without opting in,
-     * with the notification permission requested during onboarding. The
-     * Today-screen "Automatic ClothesCasts" promo points the user at the
-     * schedule page to tweak the time or turn it off. When off the worker skips
-     * the entire morning pipeline (no fetch, no notification, no TTS, no widget
-     * refresh from that path). Unlike [tonightEnabled], which stays opt-in.
+     * Master switch for the morning / "daily" insight. Off by default — both
+     * scheduled slots are opt-in now that there's no first-run onboarding to
+     * gather the notification permission upfront. The user turns the slot on
+     * from the schedule page, which is where the just-in-time POST_NOTIFICATIONS
+     * prompt fires (see ScheduleSettings), so we never schedule a morning
+     * notification the user was never asked to allow. The Today-screen
+     * "Automatic ClothesCasts" promo points them there. When off the worker
+     * skips the entire morning pipeline (no fetch, no notification, no TTS, no
+     * widget refresh from that path). Like [tonightEnabled], also opt-in.
      */
-    val dailyEnabled: Boolean = true,
+    val dailyEnabled: Boolean = false,
     /**
      * When the evening / "tonight" insight should fire. Distinct from [schedule]
      * (the morning slot) so the user can keep the morning at 07:00 and still

@@ -352,10 +352,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_location_search">Tìm kiếm</string>
     <string name="settings_location_searching">Đang tìm kiếm…</string>
     <string name="settings_location_no_results">Không có kết quả.</string>
-    <string name="settings_location_rationale_title">Quyền truy cập vị trí</string>
-    <string name="settings_location_rationale_body">ClothesCast đọc vị trí của bạn để tải dự báo địa phương.</string>
-    <string name="settings_location_rationale_continue">Tiếp tục</string>
-    <string name="settings_location_rationale_dismiss">Để sau</string>
     <string name="settings_location_background_rationale_title">Cho phép mọi lúc</string>
     <string name="settings_location_background_rationale_body">Cho phép ClothesCast đọc vị trí khi ứng dụng đóng để dự báo buổi sáng cập nhật đúng giờ.</string>
     <string name="settings_location_background_rationale_continue">Mở Cài đặt</string>

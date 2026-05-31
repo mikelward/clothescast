@@ -340,10 +340,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_location_search">بحث</string>
     <string name="settings_location_searching">جارٍ البحث…</string>
     <string name="settings_location_no_results">لا توجد نتائج.</string>
-    <string name="settings_location_rationale_title">الوصول إلى الموقع</string>
-    <string name="settings_location_rationale_body">تقرأ ClothesCast موقعك لجلب توقعات الطقس المحلية.</string>
-    <string name="settings_location_rationale_continue">متابعة</string>
-    <string name="settings_location_rationale_dismiss">ليس الآن</string>
     <string name="settings_location_background_rationale_title">السماح في جميع الأوقات</string>
     <string name="settings_location_background_rationale_body">اسمح لـ ClothesCast بقراءة موقعك أثناء الإغلاق حتى تتحدث توقعات الصباح في الوقت المناسب.</string>
     <string name="settings_location_background_rationale_continue">فتح الإعدادات</string>

@@ -504,10 +504,6 @@ label localizes.
     <string name="settings_location_background_denied_open">打开设置</string>
     <string name="settings_location_background_denied_keep">继续使用保存的位置</string>
 
-    <string name="settings_location_rationale_title">始终开启位置</string>
-    <string name="settings_location_rationale_body">ClothesCast 在后台更新您的预报以准时送达，因此需要"始终允许"位置权限。</string>
-    <string name="settings_location_rationale_continue">继续</string>
-    <string name="settings_location_rationale_dismiss">暂不</string>
 
 
     <string name="settings_region_language_am_et">阿姆哈拉语（埃塞俄比亚）</string>

@@ -496,10 +496,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_location_background_denied_open">Apri Impostazioni</string>
     <string name="settings_location_background_denied_keep">Continua a usare la posizione salvata</string>
 
-    <string name="settings_location_rationale_title">Posizione sempre attiva</string>
-    <string name="settings_location_rationale_body">ClothesCast aggiorna le previsioni in background per consegnarle puntualmente e necessita dell\'autorizzazione alla posizione \'Consenti sempre\'.</string>
-    <string name="settings_location_rationale_continue">Continua</string>
-    <string name="settings_location_rationale_dismiss">Non ora</string>
 
 
     <string name="settings_region_language_am_et">Amarico (Etiopia)</string>

@@ -310,10 +310,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_location_background_denied_open">Åbn indstillinger</string>
     <string name="settings_location_background_denied_keep">Behold gemt placering</string>
 
-    <string name="settings_location_rationale_title">Permanent placering</string>
-    <string name="settings_location_rationale_body">ClothesCast opdaterer din prognose i baggrunden for at levere den til tiden. Det kræver placeringstilladelsen "Tillad altid".</string>
-    <string name="settings_location_rationale_continue">Fortsæt</string>
-    <string name="settings_location_rationale_dismiss">Ikke nu</string>
 
     <!-- Notification channels. -->
     <string name="notification_channel_daily_insight_name">Dagligt ClothesCast</string>

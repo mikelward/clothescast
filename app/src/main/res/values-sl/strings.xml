@@ -347,10 +347,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_location_search">Iskanje</string>
     <string name="settings_location_searching">Iskanje…</string>
     <string name="settings_location_no_results">Ni zadetkov.</string>
-    <string name="settings_location_rationale_title">Dostop do lokacije</string>
-    <string name="settings_location_rationale_body">ClothesCast prebere tvojo lokacijo za pridobitev lokalne napovedi.</string>
-    <string name="settings_location_rationale_continue">Nadaljuj</string>
-    <string name="settings_location_rationale_dismiss">Ne zdaj</string>
     <string name="settings_location_background_rationale_title">Dovoli ves čas</string>
     <string name="settings_location_background_rationale_body">Dovoli ClothesCastu, da prebere tvojo lokacijo, ko je zaprt, da se jutranja napoved posodobi pravočasno.</string>
     <string name="settings_location_background_rationale_continue">Odpri nastavitve</string>

@@ -353,10 +353,6 @@ only the displayed label localizes.
     <string name="settings_location_background_denied_open">Открыть настройки</string>
     <string name="settings_location_background_denied_keep">Продолжить использовать сохранённое местоположение</string>
 
-    <string name="settings_location_rationale_title">Постоянное местоположение</string>
-    <string name="settings_location_rationale_body">ClothesCast обновляет прогноз в фоновом режиме, чтобы доставить его вовремя. Для этого требуется разрешение на местоположение «Разрешить всегда».</string>
-    <string name="settings_location_rationale_continue">Продолжить</string>
-    <string name="settings_location_rationale_dismiss">Не сейчас</string>
 
     <!--
     Notification channels (system Settings → App → Notifications) and

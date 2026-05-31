@@ -333,10 +333,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_location_search">Cari</string>
     <string name="settings_location_searching">Mencari…</string>
     <string name="settings_location_no_results">Tiada padanan.</string>
-    <string name="settings_location_rationale_title">Akses lokasi</string>
-    <string name="settings_location_rationale_body">ClothesCast membaca lokasi anda untuk mengambil ramalan tempatan anda.</string>
-    <string name="settings_location_rationale_continue">Teruskan</string>
-    <string name="settings_location_rationale_dismiss">Bukan sekarang</string>
     <string name="settings_location_background_rationale_title">Benarkan sepanjang masa</string>
     <string name="settings_location_background_rationale_body">Benarkan ClothesCast membaca lokasi anda semasa ditutup supaya ramalan pagi dikemas kini tepat pada waktunya.</string>
     <string name="settings_location_background_rationale_continue">Buka Tetapan</string>

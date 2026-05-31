@@ -512,10 +512,6 @@ the displayed label localizes.
     <string name="settings_location_background_denied_open">設定を開く</string>
     <string name="settings_location_background_denied_keep">保存済みの位置情報を使い続ける</string>
 
-    <string name="settings_location_rationale_title">常時位置情報</string>
-    <string name="settings_location_rationale_body">ClothesCastは予報を時間通りに届けるためバックグラウンドで更新します。そのため、位置情報の「常に許可」が必要です。</string>
-    <string name="settings_location_rationale_continue">続ける</string>
-    <string name="settings_location_rationale_dismiss">後で</string>
 
 
     <string name="settings_region_language_am_et">アムハラ語（エチオピア）</string>

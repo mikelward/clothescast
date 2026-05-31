@@ -350,10 +350,6 @@ What is NOT overridden, by design:
     <string name="settings_location_search">Търси</string>
     <string name="settings_location_searching">Търси се…</string>
     <string name="settings_location_no_results">Няма резултати.</string>
-    <string name="settings_location_rationale_title">Достъп до местоположение</string>
-    <string name="settings_location_rationale_body">ClothesCast чете местоположението ти, за да вземе местната прогноза.</string>
-    <string name="settings_location_rationale_continue">Продължи</string>
-    <string name="settings_location_rationale_dismiss">Не сега</string>
     <string name="settings_location_background_rationale_title">Разреши винаги</string>
     <string name="settings_location_background_rationale_body">Разреши на ClothesCast да чете местоположението ти, докато е затворен, за да се актуализира сутрешната прогноза навреме.</string>
     <string name="settings_location_background_rationale_continue">Отвори настройките</string>

@@ -336,10 +336,6 @@ standard in Israeli digital communication.
     <string name="settings_location_search">חפש/י</string>
     <string name="settings_location_searching">מחפש/ת…</string>
     <string name="settings_location_no_results">אין תוצאות.</string>
-    <string name="settings_location_rationale_title">גישה למיקום</string>
-    <string name="settings_location_rationale_body">ClothesCast קורא את מיקומך כדי לאחזר את התחזית המקומית שלך.</string>
-    <string name="settings_location_rationale_continue">המשך/י</string>
-    <string name="settings_location_rationale_dismiss">לא עכשיו</string>
     <string name="settings_location_background_rationale_title">אפשר/י בכל עת</string>
     <string name="settings_location_background_rationale_body">אפשר/י ל-ClothesCast לקרוא את מיקומך כשהוא סגור כדי שתחזית הבוקר תתעדכן בזמן.</string>
     <string name="settings_location_background_rationale_continue">פתח/י הגדרות</string>

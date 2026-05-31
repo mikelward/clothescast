@@ -128,7 +128,6 @@ private fun LocationCard(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    var rationaleOpen by remember { mutableStateOf(false) }
     var backgroundRationaleOpen by remember { mutableStateOf(false) }
     var backgroundDeniedOpen by remember { mutableStateOf(false) }
 
@@ -178,9 +177,12 @@ private fun LocationCard(
                         return@Switch
                     }
                     when {
-                        // Show the rationale before the foreground prompt; we'll auto-
-                        // chain into the background rationale when the user grants.
-                        !coarseGranted -> rationaleOpen = true
+                        // Go straight to the system foreground prompt; we auto-chain
+                        // into the background rationale once the user grants. Showing
+                        // our own rationale first just stacks a second dialog in front
+                        // of the system one.
+                        !coarseGranted ->
+                            foregroundLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
                         !backgroundGranted -> {
                             // Foreground granted previously; surface the always-on
                             // rationale before deep-linking into Settings.
@@ -313,25 +315,6 @@ private fun LocationCard(
                 dialogOpen = false
             },
             onSearch = onSearch,
-        )
-    }
-
-    if (rationaleOpen) {
-        AlertDialog(
-            onDismissRequest = { rationaleOpen = false },
-            title = { Text(stringResource(R.string.settings_location_rationale_title)) },
-            text = { Text(stringResource(R.string.settings_location_rationale_body)) },
-            confirmButton = {
-                TextButton(onClick = {
-                    rationaleOpen = false
-                    foregroundLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-                }) { Text(stringResource(R.string.settings_location_rationale_continue)) }
-            },
-            dismissButton = {
-                TextButton(onClick = { rationaleOpen = false }) {
-                    Text(stringResource(R.string.settings_location_rationale_dismiss))
-                }
-            },
         )
     }
 

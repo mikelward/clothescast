@@ -722,10 +722,6 @@
     <string name="settings_location_search">Search</string>
     <string name="settings_location_searching">Searching…</string>
     <string name="settings_location_no_results">No matches.</string>
-    <string name="settings_location_rationale_title">Location access</string>
-    <string name="settings_location_rationale_body">ClothesCast reads your location to fetch your local forecast.</string>
-    <string name="settings_location_rationale_continue">Continue</string>
-    <string name="settings_location_rationale_dismiss">Not now</string>
     <string name="settings_location_background_rationale_title">Allow all the time</string>
     <string name="settings_location_background_rationale_body">Allow ClothesCast to read your location while it\'s closed so the morning forecast updates on time.</string>
     <string name="settings_location_background_rationale_continue">Open Settings</string>

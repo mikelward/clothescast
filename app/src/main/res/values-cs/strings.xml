@@ -309,10 +309,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_location_background_denied_open">Otevřít nastavení</string>
     <string name="settings_location_background_denied_keep">Ponechat uloženou polohu</string>
 
-    <string name="settings_location_rationale_title">Trvalá poloha</string>
-    <string name="settings_location_rationale_body">ClothesCast aktualizuje tvou předpověď na pozadí, aby ji doručil včas. K tomu potřebuje oprávnění k poloze „Vždy povolit".</string>
-    <string name="settings_location_rationale_continue">Pokračovat</string>
-    <string name="settings_location_rationale_dismiss">Teď ne</string>
 
     <!-- Notification channels. -->
     <string name="notification_channel_daily_insight_name">Denní ClothesCast</string>

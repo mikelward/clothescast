@@ -332,10 +332,6 @@ to values/strings.xml (English).
     <string name="settings_location_search">Cari</string>
     <string name="settings_location_searching">Mencari…</string>
     <string name="settings_location_no_results">Tidak ada hasil.</string>
-    <string name="settings_location_rationale_title">Akses lokasi</string>
-    <string name="settings_location_rationale_body">ClothesCast membaca lokasi Anda untuk mengambil prakiraan lokal.</string>
-    <string name="settings_location_rationale_continue">Lanjutkan</string>
-    <string name="settings_location_rationale_dismiss">Nanti saja</string>
     <string name="settings_location_background_rationale_title">Izinkan setiap saat</string>
     <string name="settings_location_background_rationale_body">Izinkan ClothesCast membaca lokasi Anda saat ditutup agar prakiraan pagi diperbarui tepat waktu.</string>
     <string name="settings_location_background_rationale_continue">Buka Pengaturan</string>

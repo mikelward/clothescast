@@ -439,10 +439,6 @@ displayed label localizes.
     <string name="settings_location_background_denied_open">Ayarları aç</string>
     <string name="settings_location_background_denied_keep">Kayıtlı konumu koru</string>
 
-    <string name="settings_location_rationale_title">Kalıcı konum</string>
-    <string name="settings_location_rationale_body">ClothesCast zamanında teslim etmek için tahmininizi arka planda günceller. Bunun için "Her zaman izin ver" konum iznine ihtiyaç vardır.</string>
-    <string name="settings_location_rationale_continue">Devam et</string>
-    <string name="settings_location_rationale_dismiss">Şimdi değil</string>
 
     <string name="settings_root_schedule_subtitle">Bildirimler ve saatler</string>
     <string name="settings_root_format_subtitle">İfade ve ayrıntı düzeyi</string>

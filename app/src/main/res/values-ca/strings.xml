@@ -224,10 +224,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_location_search">Cerca</string>
     <string name="settings_location_searching">Cercant…</string>
     <string name="settings_location_no_results">No hi ha coincidències.</string>
-    <string name="settings_location_rationale_title">Accés a la ubicació</string>
-    <string name="settings_location_rationale_body">ClothesCast llegeix la teva ubicació per obtenir la previsió local.</string>
-    <string name="settings_location_rationale_continue">Continua</string>
-    <string name="settings_location_rationale_dismiss">Ara no</string>
     <string name="settings_location_background_rationale_title">Permet sempre</string>
     <string name="settings_location_background_rationale_body">Permet que ClothesCast llegeixi la teva ubicació mentre és tancada perquè la previsió matinal s\'actualitzi a temps.</string>
     <string name="settings_location_background_rationale_continue">Obre Configuració</string>

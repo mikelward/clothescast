@@ -440,10 +440,6 @@ displayed label localizes.
     <string name="settings_location_background_denied_open">Avaa asetukset</string>
     <string name="settings_location_background_denied_keep">Pidä tallennettu sijainti</string>
 
-    <string name="settings_location_rationale_title">Jatkuva sijainti</string>
-    <string name="settings_location_rationale_body">ClothesCast päivittää ennusteesi taustalla toimittaakseen sen ajoissa. Tähän tarvitaan "Salli aina" -sijaintilupa.</string>
-    <string name="settings_location_rationale_continue">Jatka</string>
-    <string name="settings_location_rationale_dismiss">Ei nyt</string>
 
     <string name="settings_root_schedule_subtitle">Ilmoitukset ja ajat</string>
     <string name="settings_root_format_subtitle">Sanamuoto ja yksityiskohtien taso</string>

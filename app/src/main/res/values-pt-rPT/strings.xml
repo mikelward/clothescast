@@ -608,10 +608,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_location_manual_override_disclosure">Se escolheres uma cidade, a deteção automática será desativada.</string>
 
     <!-- Location permission rationale dialogs. -->
-    <string name="settings_location_rationale_title">Acesso à localização</string>
-    <string name="settings_location_rationale_body">O ClothesCast lê a tua localização para ir buscar a previsão local.</string>
-    <string name="settings_location_rationale_continue">Continuar</string>
-    <string name="settings_location_rationale_dismiss">Agora não</string>
     <string name="settings_location_background_rationale_title">Permitir sempre</string>
     <string name="settings_location_background_rationale_body">O ClothesCast vai buscar a tua previsão em segundo plano todas as manhãs e precisa do acesso à localização \'Permitir sempre\'. Serás redirecionado para as Definições do sistema para o conceder.</string>
     <string name="settings_location_background_rationale_continue">Abrir Definições</string>

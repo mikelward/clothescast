@@ -510,10 +510,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_location_background_denied_open">Ouvrir les paramètres</string>
     <string name="settings_location_background_denied_keep">Conserver la position enregistrée</string>
 
-    <string name="settings_location_rationale_title">Position permanente</string>
-    <string name="settings_location_rationale_body">ClothesCast met à jour tes prévisions en arrière-plan pour les livrer à temps et a besoin de l\'autorisation de position \'Autoriser en permanence\'.</string>
-    <string name="settings_location_rationale_continue">Continuer</string>
-    <string name="settings_location_rationale_dismiss">Pas maintenant</string>
 
 
     <string name="settings_region_language_am_et">Amharique (Éthiopie)</string>

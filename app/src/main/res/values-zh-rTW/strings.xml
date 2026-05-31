@@ -574,10 +574,6 @@ label localises.
     <string name="settings_location_manual_override">位置不對？手動設定</string>
     <string name="settings_location_manual_override_disclosure">選擇城市會關閉自動偵測。</string>
 
-    <string name="settings_location_rationale_title">位置權限</string>
-    <string name="settings_location_rationale_body">ClothesCast 會讀取你的位置以取得當地天氣預報。</string>
-    <string name="settings_location_rationale_continue">繼續</string>
-    <string name="settings_location_rationale_dismiss">暫不</string>
 
     <string name="settings_location_background_rationale_title">始終允許</string>
     <string name="settings_location_background_rationale_body">允許 ClothesCast 在應用程式關閉時也讀取你的位置，讓早晨預報能準時更新。</string>

@@ -266,7 +266,16 @@ jobs:
             # multi-line `@Test\n@Config(...)\nfun foo()` styles — a single-line
             # `(?<=@Test fun )` regex misses the latter and would prune the PNG
             # as orphaned even though the test still runs.
-            expected=$(find app/src/test -name '*.kt' -print0 \
+            # Scan every test source root, including variant-specific
+            # ones like `src/testDebug/` (added 2026-05 for the App Check
+            # debug-token snapshot). Missing a source root here silently
+            # marks every PNG only that root's tests record as orphaned
+            # and deletes it on the next CI regen — the bug behind PR
+            # #905's first regen wiping
+            # `settings_voice_app_check_debug_token.png`. A glob covers
+            # any future `testRelease`, `androidTest`, etc. without
+            # another edit here.
+            expected=$(find app/src/test app/src/test[A-Z]* -name '*.kt' -print0 2>/dev/null \
               | xargs -0 perl -0777 -ne 'while (/\@Test\b(?:\s|\@\w+(?:\([^)]*\))?)*?\bfun\s+(\w+)/g) { print "$1\n" }')
             for png in app/snapshots/*.png; do
               [ -f "$png" ] || continue

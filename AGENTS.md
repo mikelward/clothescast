@@ -78,10 +78,6 @@ new rule the first time something bites you, not the third.
 
 - **Linear history.** Never merge — rebase. The repo's PRs land as a linear
   chain on `main`. A merge commit in a PR is a sign something went wrong.
-- **One concern per PR.** If you're tempted to add infra (test framework, CI
-  step, build wiring) alongside a feature, split it: infra PR first, feature
-  PR rebased on top. Reviewers read smaller PRs faster and the feature PR's
-  diff actually shows the feature.
 - **Clean up unmerged commits before pushing for review.** Anything still
   on a feature branch (not yet merged to `main`) is scratch space — amend,
   squash, reorder, split, drop, rebase onto a different base as needed.

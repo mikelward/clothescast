@@ -107,6 +107,15 @@ internal fun VoiceContent(
     // atomic with respect to other UI events.
     var isPreviewing by remember { mutableStateOf(false) }
 
+    // A Gemini preview with no key configured can't reach Gemini, so
+    // runTtsPreview falls back to the device voice — which sounds to the user
+    // like *that* is the Gemini voice they just selected. Suppress the preview
+    // entirely in that case (switching engine, picking a voice/style/locale,
+    // or the Test button) so we never pass off the device voice as Gemini.
+    // The user enters a key first; previews resume once one's set.
+    fun canPreview(engine: TtsEngine): Boolean =
+        engine != TtsEngine.GEMINI || geminiKeyConfigured
+
     fun preview(
         engine: TtsEngine,
         gVoice: String,
@@ -115,6 +124,7 @@ internal fun VoiceContent(
         locale: VoiceLocale,
     ) {
         if (isPreviewing) return
+        if (!canPreview(engine)) return
         isPreviewing = true
         coroutineScope.launch {
             try {
@@ -234,7 +244,10 @@ internal fun VoiceContent(
                                 preview(TtsEngine.GEMINI, geminiVoice, picked, deviceVoice, voiceLocale)
                             },
                         )
-                        TestVoiceButton(isPreviewing = isPreviewing) {
+                        // Disabled until a key is set — without one the preview
+                        // would only play the device-voice fallback, masquerading
+                        // as Gemini. The "Not set" status above tells the user why.
+                        TestVoiceButton(isPreviewing = isPreviewing, enabled = geminiKeyConfigured) {
                             preview(selected, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
                         }
                     }
@@ -613,14 +626,16 @@ internal fun InstallGoogleTtsHint() {
 }
 
 @Composable
-private fun TestVoiceButton(isPreviewing: Boolean, onClick: () -> Unit) {
+private fun TestVoiceButton(isPreviewing: Boolean, enabled: Boolean = true, onClick: () -> Unit) {
     // Disabled while previewing — billed cloud TTS calls can't be reliably
     // un-billed once dispatched, and the in-flight playback is already what
     // a fresh tap would re-trigger. Spinner replaces the label so the user
-    // sees the click was registered and something is happening.
+    // sees the click was registered and something is happening. Also disabled
+    // when the caller says so (e.g. Gemini selected with no key) to avoid
+    // playing a device-voice fallback dressed up as the chosen engine.
     Button(
         onClick = onClick,
-        enabled = !isPreviewing,
+        enabled = enabled && !isPreviewing,
         modifier = Modifier.fillMaxWidth(),
     ) {
         if (isPreviewing) {

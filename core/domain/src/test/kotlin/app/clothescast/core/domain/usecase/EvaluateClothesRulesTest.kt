@@ -84,11 +84,9 @@ class EvaluateClothesRulesTest {
 
     @Test
     fun `wet cold day matches cold-weather rules, bottom slot resolves to the default`() {
-        // Defaults no longer include umbrella — the precip clause announces rain,
-        // and the wet-weather accessory will become a personalised setting.
         val out = subject(forecast(min = 9.0, max = 15.0, precip = 70.0), ClothesRule.DEFAULTS)
-        out.rules.map { it.item.itemKey }.shouldContainExactly("sweater", "jacket")
-        out.items.shouldContainExactly("sweater", "jacket", "pants")
+        out.rules.map { it.item.itemKey }.shouldContainExactly("sweater", "jacket", "umbrella")
+        out.items.shouldContainExactly("sweater", "jacket", "pants", "umbrella")
     }
 
 

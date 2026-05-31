@@ -99,11 +99,11 @@ data class OutfitSuggestion(
 
     /**
      * Optional carried accessory shown alongside the worn outfit — today just
-     * the umbrella, the `Garment.Slot.CARRIED` member. Like [hands] it's a
-     * single opt-in tier with no fallback: present only when a carried-accessory
-     * rule fires (a rain-keyed umbrella rule), never promoted to a default. It's
-     * independent of [hands], so a cold rainy day can light both the glove icon
-     * and the umbrella.
+     * the umbrella, the `Garment.Slot.CARRIED` member. Like [hands] it has no
+     * fallback icon: present only when a carried-accessory rule fires (the
+     * default rain-keyed umbrella rule, unless the user edits or deletes it).
+     * It's independent of [hands], so a cold rainy day can light both the glove
+     * icon and the umbrella.
      */
     enum class Carried {
         UMBRELLA;

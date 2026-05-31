@@ -97,11 +97,9 @@ class ClothesRuleTest {
     }
 
     @Test
-    fun `defaults cover the temperature-driven MVP cases`() {
-        // Umbrella was deliberately dropped: the precip clause already names rain,
-        // and the wet-weather accessory is going to become a personalised setting.
+    fun `defaults cover temperature and rain gear cases`() {
         val items = ClothesRule.DEFAULTS.map { it.item.itemKey }
-        items shouldBe listOf("sweater", "jacket", "coat", "gloves", "shorts")
+        items shouldBe listOf("sweater", "jacket", "coat", "gloves", "shorts", "umbrella")
     }
 
     @Test

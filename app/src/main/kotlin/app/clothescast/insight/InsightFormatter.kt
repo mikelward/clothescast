@@ -259,14 +259,14 @@ class InsightFormatter(
                 add(formatDelta(it, leadsTemperature = rangeFormat == RangeFormat.NONE, omitLead = omitLead))
             }
             if (wearItems.isNotEmpty()) formatClothesWear(wearItems, wearMode)?.let(::add)
-            // The carried accessory (umbrella) now comes from the user's fired
+            // The carried accessory (umbrella) comes from the user's fired
             // rule — it lands in the recommended items as a Slot.CARRIED garment
-            // — via the opt-in umbrella clothes rule. It's folded into
-            // the precip clause (not the wear clause) so rain and the umbrella
-            // still travel together.
+            // via the default, configurable umbrella clothes rule. It's folded
+            // into the precip clause (not the wear clause) so rain and the
+            // umbrella still travel together.
             summary.precip?.let {
                 // Sourced from [carriedAccessories], not the (clothes-mention-
-                // gated) wear clause, so an opted-in umbrella still surfaces
+                // gated) wear clause, so a fired umbrella rule still surfaces
                 // when the wear clause is suppressed (Clothes = Never / unchanged).
                 add(formatPrecip(it, summary.carriedAccessories.firstOrNull()))
             }
@@ -441,9 +441,9 @@ class InsightFormatter(
     //  precip mention should suppress it (umbrella: yes; sunscreen: no),
     //  and pick a temporally-correct template ("Bring a hat today." vs
     //  "Tonight, bring a hat." vs no-prefix). Until then we ship
-    //  temperature-driven clothing only and accept that user-typed
-    //  umbrella rules are silent — the precip clause still warns about
-    //  rain, which is the main thing.
+    //  temperature-driven clothing only and accept that umbrella rules are
+    //  silent there — the precip clause still warns about rain, which is the
+    //  main thing.
     private fun isAccessory(item: String): Boolean = Garment.isAccessoryKey(item)
 
     private fun normalizeItemKey(item: String): String = item.trim().lowercase(Locale.ROOT)
@@ -744,8 +744,8 @@ class InsightFormatter(
         // Accessories (umbrella) are silenced from the incoming items list for
         // the same reason they're silenced in the main wear-list: until the
         // accessory catalog lands we only name temperature-driven clothing
-        // there. If the user has opted into the umbrella rule and the evening's
-        // peak condition is rain-like (RAIN / DRIZZLE), we re-inject the
+        // there. If the umbrella rule fires and the evening's peak condition
+        // is rain-like (RAIN / DRIZZLE), we re-inject the
         // chosen accessory below so the existing insight_tie_in_with_rain
         // template carries it ("…, bring a jacket and an umbrella.") and the
         // bare-rain path is promoted to the item-led template. SNOW /

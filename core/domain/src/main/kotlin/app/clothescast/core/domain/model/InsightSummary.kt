@@ -53,7 +53,7 @@ data class InsightSummary(
      * clause ("Rain at 3pm, bring an umbrella."), so they must survive the
      * clothes-mention gating that nulls [clothes] under
      * [ClothesMentionMode.NEVER] / IF_CHANGED — a rain accessory isn't a
-     * "clothes" mention, and an opted-in umbrella should still be named on a
+     * "clothes" mention, and a fired umbrella rule should still be named on a
      * rainy day even when the wear clause is suppressed.
      */
     val carriedAccessories: List<String> = emptyList(),

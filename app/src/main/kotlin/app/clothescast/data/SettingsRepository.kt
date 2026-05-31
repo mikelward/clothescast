@@ -1423,6 +1423,7 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
             scheduleEnabledOptInMigration(),
             castEnabledOptInMigration(),
             glovesDefaultMigration(),
+            umbrellaDefaultMigration(),
             umbrellaRuleMigration(),
         )
     },
@@ -1566,19 +1567,57 @@ internal fun glovesDefaultMigration(): DataMigration<Preferences> {
     }
 }
 
+// One-time migration appending the umbrella rain default to installs that
+// already have an explicit clothes-rules list. Fresh and never-configured
+// installs read [ClothesRule.DEFAULTS] directly; explicit lists need this
+// materialised once so the new default remains configurable and deletable after
+// the migration sentinel is set. Mirrors [glovesDefaultMigration]: preserve
+// custom thresholds, do not duplicate an existing umbrella rule, and leave
+// corrupt / legacy-only lists untouched so the read path can still fall back to
+// DEFAULTS. Internal for unit testing.
+internal fun umbrellaDefaultMigration(): DataMigration<Preferences> {
+    val migrated = booleanPreferencesKey("umbrella_default_migrated_v1")
+    val clothesRules = stringPreferencesKey("clothes_rules_json")
+    val json = Json { ignoreUnknownKeys = true }
+    return object : DataMigration<Preferences> {
+        override suspend fun shouldMigrate(currentData: Preferences): Boolean =
+            currentData[migrated] != true
+
+        override suspend fun migrate(currentData: Preferences): Preferences {
+            val result = mutablePreferencesOf()
+            currentData.asMap().forEach { (key, value) ->
+                @Suppress("UNCHECKED_CAST")
+                result[key as Preferences.Key<Any>] = value
+            }
+            val stored = currentData[clothesRules]
+            if (!stored.isNullOrBlank()) {
+                runCatching {
+                    val dtos = json.decodeFromString<List<ClothesRuleDto>>(stored)
+                    val domainRules = dtos.mapNotNull { it.toDomain() }
+                    if (domainRules.isNotEmpty() && domainRules.none { it.item == Garment.UMBRELLA }) {
+                        val umbrellaDto = ClothesRule.DEFAULTS.first { it.item == Garment.UMBRELLA }.toDto()
+                        result[clothesRules] = json.encodeToString(dtos + umbrellaDto)
+                    }
+                }
+            }
+            result[migrated] = true
+            return result
+        }
+
+        override suspend fun cleanUp() = Unit
+    }
+}
+
 /**
  * One-time migration turning the retired `rain_accessory = UMBRELLA` toggle
  * into a configurable umbrella [ClothesRule] at the historical 30% gate, so
- * opted-in users keep their "bring an umbrella" prose now that the umbrella is
- * rule-driven rather than a global format option. `NONE` (or absent) users get
- * nothing. The old `rain_accessory` key is dropped either way.
+ * opted-in users with explicit rule lists keep their "bring an umbrella" prose
+ * now that the umbrella is rule-driven rather than a global format option.
+ * `NONE` (or absent) users get no extra materialised rule. The old
+ * `rain_accessory` key is dropped either way.
  *
- * Unlike [glovesDefaultMigration] — where gloves already ship in DEFAULTS, so a
- * fresh install needs no rule materialised — the umbrella is *not* a default,
- * so an opted-in user with no stored rule list must have one written out
- * (their existing domain rules, or DEFAULTS, plus umbrella); otherwise
- * `parseRules`' `ifEmpty { DEFAULTS }` fallback would silently drop the
- * umbrella they'd opted into.
+ * Umbrella now ships in [ClothesRule.DEFAULTS], so opted-in users without a
+ * stored rules list need no write: the read path serves the default directly.
  *
  * Gated by the `umbrella_rule_migrated_v2` sentinel. Bumped from v1 to re-run
  * once for users who migrated under v1 while the Format toggle still existed
@@ -1586,17 +1625,14 @@ internal fun glovesDefaultMigration(): DataMigration<Preferences> {
  * removing the toggle): that UI could write `rain_accessory = UMBRELLA` after
  * v1 had already fired, stranding the opt-in once the key stopped being read.
  * The re-run is idempotent for everyone else — v1 already removed the key for
- * normal opt-ins, so it finds `rain_accessory` absent and no-ops, and it never
- * resurrects an umbrella rule a user later deleted on purpose.
+ * normal opt-ins, so it finds `rain_accessory` absent and no-ops.
  */
 internal fun umbrellaRuleMigration(): DataMigration<Preferences> {
     val migrated = booleanPreferencesKey("umbrella_rule_migrated_v2")
     val rainAccessory = stringPreferencesKey("rain_accessory")
     val clothesRules = stringPreferencesKey("clothes_rules_json")
     val json = Json { ignoreUnknownKeys = true }
-    // Match the old POSSIBLE-tier gate (rain mentioned from ~30%); `> 30` is
-    // close enough to the historical `>= 30` that no real forecast differs.
-    val umbrellaRule = ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0))
+    val umbrellaRule = ClothesRule.DEFAULTS.first { it.item == Garment.UMBRELLA }
     return object : DataMigration<Preferences> {
         override suspend fun shouldMigrate(currentData: Preferences): Boolean =
             currentData[migrated] != true
@@ -1616,11 +1652,13 @@ internal fun umbrellaRuleMigration(): DataMigration<Preferences> {
                     ?.let { runCatching { json.decodeFromString<List<ClothesRuleDto>>(it) }.getOrNull() }
                 val domainRules = existingDtos?.mapNotNull { it.toDomain() }.orEmpty()
                 if (domainRules.none { it.item == Garment.UMBRELLA }) {
-                    // Append to the user's real catalog rules, or materialise
-                    // DEFAULTS (what parseRules would otherwise have served) so
-                    // their existing recommendations survive alongside umbrella.
-                    val base = if (domainRules.isNotEmpty()) domainRules else ClothesRule.DEFAULTS
-                    result[clothesRules] = json.encodeToString((base + umbrellaRule).map { it.toDto() })
+                    // Append to the user's real catalog rules. If there are no
+                    // domain-valid stored rules, the read path now serves
+                    // DEFAULTS with umbrella directly, so no materialised list is
+                    // needed.
+                    if (domainRules.isNotEmpty()) {
+                        result[clothesRules] = json.encodeToString((domainRules + umbrellaRule).map { it.toDto() })
+                    }
                 }
             }
             result[migrated] = true

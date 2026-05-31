@@ -1930,9 +1930,9 @@ class GenerateDailyInsightTest {
     @Test
     fun `evening tie-in surfaces bare per-model rain when no clothes rule fires`() = runTest {
         // The case AGENTS.md flags under "Domain conventions": no clothes
-        // rule triggers for the tonight window (mild evening, no
-        // user-defined umbrella rule — the defaults intentionally don't
-        // ship one), but a per-model series spots rain ≥ 30%. Pre-fix the
+        // rule triggers for the tonight window (mild evening, with the
+        // default umbrella rule removed for this user's config), but a
+        // per-model series spots rain ≥ 30%. Pre-fix the
         // tie-in returned null and the morning insight stayed silent on
         // evening rain; the fix emits an item-less clause that the
         // formatter renders as a bare "Rain tonight at 9pm." (or

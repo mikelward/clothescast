@@ -509,9 +509,8 @@ class OutfitSuggestionTest {
 
     @Test
     fun `carried stays null when no umbrella rule fires`() {
-        // Carried is opt-in with no fallback: a dry day (or no umbrella rule)
-        // leaves it null rather than promoting to a default, so no umbrella icon
-        // shows when the user hasn't earned one.
+        // Carried has no fallback: a dry day (or no umbrella rule) leaves it
+        // null, so no umbrella icon shows when no precipitation rule fires.
         val umbrellaRules = listOf(
             ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
         )
@@ -524,8 +523,8 @@ class OutfitSuggestionTest {
 
     @Test
     fun `gloves and umbrella light the hands and carried slots independently`() {
-        // The two opt-in tiers don't compete: a cold, rainy day with both rules
-        // firing lights gloves on the hands slot and the umbrella on carried.
+        // The two accessory tiers don't compete: a cold, rainy day with both
+        // rules firing lights gloves on the hands slot and umbrella on carried.
         val triggered = TriggeredOutfit(
             rules = listOf(
                 ClothesRule(Garment.COAT, ClothesRule.TemperatureBelow(5.0)),

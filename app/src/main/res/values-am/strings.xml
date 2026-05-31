@@ -297,7 +297,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Settings — TTS / voice -->
     <string name="settings_tts_engine_title">የድምፅ ሞተር</string>
     <string name="settings_tts_engine_description">በዝቅተኛ ጥራት የመሣሪያ ድምፅ እና በከፍተኛ ጥራት የመስመር ላይ ድምፅ መካከል ምረጥ።</string>
-    <string name="settings_tts_engine_device">መሳሪያ (offline, ነፃ)</string>
+    <string name="settings_tts_engine_device">መሳሪያ (ዝቅተኛ ጥራት፣ በመሳሪያው ላይ)</string>
     <string name="settings_tts_engine_gemini">Gemini (ከፍተኛ ጥራት, online)</string>
     <string name="settings_tts_voice_label">ድምፅ</string>
     <string name="settings_tts_voice_dismiss">ተጠናቀቀ</string>

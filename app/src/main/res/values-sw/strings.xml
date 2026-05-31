@@ -326,7 +326,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Settings: TTS / voice -->
     <string name="settings_tts_engine_title">Injini ya sauti</string>
     <string name="settings_tts_engine_description">Chagua kati ya usemi wa ubora wa chini kwenye kifaa na usemi wa ubora wa juu mtandaoni.</string>
-    <string name="settings_tts_engine_device">Kifaa (bila mtandao, bure)</string>
+    <string name="settings_tts_engine_device">Kifaa (ubora wa chini, kwenye kifaa)</string>
     <string name="settings_tts_engine_gemini">Gemini (ubora wa juu, mtandaoni)</string>
     <string name="settings_tts_voice_label">Sauti</string>
     <string name="settings_tts_voice_dismiss">Imekamilika</string>

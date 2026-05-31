@@ -220,7 +220,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">Beszédmotor</string>
-    <string name="settings_tts_engine_device">Eszköz (offline, ingyenes)</string>
+    <string name="settings_tts_engine_device">Eszköz (alacsony minőség, eszközön)</string>
     <string name="settings_tts_engine_gemini">Gemini (magas minőség, online)</string>
     <string name="settings_tts_engine_description">Válassz a gyenge minőségű, eszközön futó beszéd és a kiváló minőségű online beszéd között.</string>
 

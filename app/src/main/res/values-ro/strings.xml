@@ -373,7 +373,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <!-- Voice / TTS settings. -->
     <string name="settings_tts_engine_title">Motor vocal</string>
     <string name="settings_tts_engine_description">Alege între voce de calitate scăzută pe dispozitiv și voce de calitate înaltă online.</string>
-    <string name="settings_tts_engine_device">Dispozitiv (offline, gratuit)</string>
+    <string name="settings_tts_engine_device">Dispozitiv (calitate scăzută, pe dispozitiv)</string>
     <string name="settings_tts_engine_gemini">Gemini (calitate ridicată, online)</string>
     <string name="settings_tts_voice_label">Voce</string>
     <string name="settings_tts_voice_dismiss">Gata</string>

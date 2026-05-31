@@ -115,7 +115,7 @@ the displayed label localizes.
     hint and the in-line "API キーを追加" dialog.
     -->
     <string name="settings_tts_engine_title">音声エンジン</string>
-    <string name="settings_tts_engine_device">端末（オフライン、無料）</string>
+    <string name="settings_tts_engine_device">端末（低品質、端末上）</string>
     <string name="settings_tts_engine_gemini">Gemini（高品質、オンライン）</string>
 
     <string name="settings_tts_voice_label">音声</string>

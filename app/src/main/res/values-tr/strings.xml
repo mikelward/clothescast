@@ -87,7 +87,7 @@ displayed label localizes.
     <string name="settings_delivery_notification_and_tts">Bildirim ve sesli</string>
 
     <string name="settings_tts_engine_title">Konuşma motoru</string>
-    <string name="settings_tts_engine_device">Cihaz (çevrimdışı, ücretsiz)</string>
+    <string name="settings_tts_engine_device">Cihaz (düşük kalite, cihazda)</string>
     <string name="settings_tts_engine_gemini">Gemini (yüksek kalite, çevrimiçi)</string>
 
     <string name="settings_tts_voice_label">Ses</string>

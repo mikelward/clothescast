@@ -218,7 +218,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">Řečový engine</string>
-    <string name="settings_tts_engine_device">Zařízení (offline, zdarma)</string>
+    <string name="settings_tts_engine_device">Zařízení (nízká kvalita, v zařízení)</string>
     <string name="settings_tts_engine_gemini">Gemini (vysoká kvalita, online)</string>
     <string name="settings_tts_engine_description">Vyber si mezi řečí v nízké kvalitě v zařízení a řečí ve vysoké kvalitě online.</string>
 

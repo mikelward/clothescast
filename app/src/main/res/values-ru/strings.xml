@@ -127,7 +127,7 @@ only the displayed label localizes.
     hint and the in-line "Добавить ключ API" dialog.
     -->
     <string name="settings_tts_engine_title">Голосовой движок</string>
-    <string name="settings_tts_engine_device">Устройство (офлайн, бесплатно)</string>
+    <string name="settings_tts_engine_device">Устройство (низкое качество, на устройстве)</string>
     <string name="settings_tts_engine_gemini">Gemini (высокое качество, онлайн)</string>
     <string name="settings_tts_engine_description">Выбери между речью низкого качества на устройстве и речью высокого качества онлайн.</string>
 

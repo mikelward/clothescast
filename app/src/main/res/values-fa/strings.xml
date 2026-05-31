@@ -364,7 +364,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <!-- Settings — TTS engine -->
     <string name="settings_tts_engine_title">موتور صوتی</string>
     <string name="settings_tts_engine_description">بین گفتار کم‌کیفیت روی دستگاه و گفتار باکیفیت آنلاین یکی را انتخاب کنید.</string>
-    <string name="settings_tts_engine_device">دستگاه (آفلاین، رایگان)</string>
+    <string name="settings_tts_engine_device">دستگاه (کیفیت پایین، روی دستگاه)</string>
     <string name="settings_tts_engine_gemini">Gemini (کیفیت بالا، آنلاین)</string>
     <string name="settings_tts_voice_label">صدا</string>
     <string name="settings_tts_voice_dismiss">انجام شد</string>

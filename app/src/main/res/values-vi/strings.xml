@@ -395,7 +395,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
          ===================================================================== -->
     <string name="settings_tts_engine_title">Công cụ giọng nói</string>
     <string name="settings_tts_engine_description">Chọn giữa giọng nói chất lượng thấp trên thiết bị và giọng nói chất lượng cao trực tuyến.</string>
-    <string name="settings_tts_engine_device">Thiết bị (ngoại tuyến, miễn phí)</string>
+    <string name="settings_tts_engine_device">Thiết bị (chất lượng thấp, trên thiết bị)</string>
     <string name="settings_tts_engine_gemini">Gemini (chất lượng cao, trực tuyến)</string>
     <string name="settings_tts_voice_label">Giọng</string>
     <string name="settings_tts_voice_dismiss">Xong</string>

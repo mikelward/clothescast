@@ -374,7 +374,7 @@ they work correctly in both the single-band and range templates.
     <string name="settings_delivery_notification_and_tts">إشعار وقراءة صوتية</string>
     <string name="settings_tts_engine_title">محرك الصوت</string>
     <string name="settings_tts_engine_description">اختر بين الكلام منخفض الجودة على الجهاز والكلام عالي الجودة عبر الإنترنت.</string>
-    <string name="settings_tts_engine_device">الجهاز (بدون إنترنت، مجاني)</string>
+    <string name="settings_tts_engine_device">الجهاز (جودة منخفضة، على الجهاز)</string>
     <string name="settings_tts_engine_gemini">Gemini (جودة عالية، عبر الإنترنت)</string>
     <string name="settings_tts_voice_label">الصوت</string>
     <string name="settings_tts_voice_dismiss">تم</string>

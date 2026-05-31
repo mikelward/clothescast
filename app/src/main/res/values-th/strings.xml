@@ -373,7 +373,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- TTS / Voice settings -->
     <string name="settings_tts_engine_title">เครื่องมือเสียง</string>
     <string name="settings_tts_engine_description">เลือกระหว่างเสียงพูดคุณภาพต่ำในเครื่องและเสียงพูดคุณภาพสูงออนไลน์</string>
-    <string name="settings_tts_engine_device">อุปกรณ์ (ออฟไลน์ ฟรี)</string>
+    <string name="settings_tts_engine_device">อุปกรณ์ (คุณภาพต่ำ บนอุปกรณ์)</string>
     <string name="settings_tts_engine_gemini">Gemini (คุณภาพสูง ออนไลน์)</string>
     <string name="settings_tts_voice_label">เสียง</string>
     <string name="settings_tts_voice_dismiss">เสร็จสิ้น</string>

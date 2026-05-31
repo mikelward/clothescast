@@ -97,7 +97,7 @@ the displayed label localizes.
     Voice screen.
     -->
     <string name="settings_tts_engine_title">Spraakengine</string>
-    <string name="settings_tts_engine_device">Apparaat (offline, gratis)</string>
+    <string name="settings_tts_engine_device">Apparaat (lage kwaliteit, op apparaat)</string>
     <string name="settings_tts_engine_gemini">Gemini (hoge kwaliteit, online)</string>
 
     <string name="settings_tts_voice_label">Stem</string>

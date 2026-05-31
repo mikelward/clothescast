@@ -113,7 +113,7 @@ label localizes.
     hint and the in-line "添加 API 密钥" dialog.
     -->
     <string name="settings_tts_engine_title">语音引擎</string>
-    <string name="settings_tts_engine_device">设备（离线，免费）</string>
+    <string name="settings_tts_engine_device">设备（低质量，本机）</string>
     <string name="settings_tts_engine_gemini">Gemini（高质量，在线）</string>
 
     <string name="settings_tts_voice_label">语音</string>

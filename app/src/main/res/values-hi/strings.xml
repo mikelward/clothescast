@@ -99,7 +99,7 @@ Not overridden by design:
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">आवाज़ इंजन</string>
     <string name="settings_tts_engine_description">डिवाइस पर निम्न-गुणवत्ता वाली वाणी और ऑनलाइन उच्च-गुणवत्ता वाली वाणी के बीच चुनें।</string>
-    <string name="settings_tts_engine_device">डिवाइस (ऑफ़लाइन, मुफ़्त)</string>
+    <string name="settings_tts_engine_device">डिवाइस (कम क्वालिटी, डिवाइस पर)</string>
     <string name="settings_tts_engine_gemini">Gemini (उच्च गुणवत्ता, ऑनलाइन)</string>
     <string name="settings_tts_voice_label">आवाज़</string>
     <string name="settings_tts_voice_dismiss">हो गया</string>

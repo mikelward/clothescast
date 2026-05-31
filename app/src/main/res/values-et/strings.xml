@@ -260,7 +260,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
 
     <string name="settings_tts_engine_title">Häälemootor</string>
     <string name="settings_tts_engine_description">Vali madala kvaliteediga kõne seadmes ja kõrgkvaliteetse võrgukõne vahel.</string>
-    <string name="settings_tts_engine_device">Seade (võrguühenduseta, tasuta)</string>
+    <string name="settings_tts_engine_device">Seade (madal kvaliteet, seadmes)</string>
     <string name="settings_tts_engine_gemini">Gemini (kõrge kvaliteet, võrguühendusega)</string>
     <string name="settings_tts_voice_label">Hääl</string>
     <string name="settings_tts_voice_dismiss">Valmis</string>

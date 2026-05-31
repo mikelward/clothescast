@@ -225,7 +225,7 @@ What is NOT overridden, by design:
     Voice screen.
     -->
     <string name="settings_tts_engine_title">Hlasový engine</string>
-    <string name="settings_tts_engine_device">Zariadenie (offline, zadarmo)</string>
+    <string name="settings_tts_engine_device">Zariadenie (nízka kvalita, v zariadení)</string>
     <string name="settings_tts_engine_gemini">Gemini (vysoká kvalita, online)</string>
     <string name="settings_tts_engine_description">Vyber si medzi rečou v nízkej kvalite v zariadení a rečou vo vysokej kvalite online.</string>
 

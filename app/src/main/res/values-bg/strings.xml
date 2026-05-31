@@ -388,7 +388,7 @@ What is NOT overridden, by design:
     <!-- Voice / TTS screen. -->
     <string name="settings_tts_engine_title">Гласов двигател</string>
     <string name="settings_tts_engine_description">Избери между речта с ниско качество на устройството и онлайн речта с високо качество.</string>
-    <string name="settings_tts_engine_device">Устройство (офлайн, безплатно)</string>
+    <string name="settings_tts_engine_device">Устройство (ниско качество, на устройството)</string>
     <string name="settings_tts_engine_gemini">Gemini (високо качество, онлайн)</string>
     <string name="settings_tts_voice_label">Глас</string>
     <string name="settings_tts_voice_dismiss">Готово</string>

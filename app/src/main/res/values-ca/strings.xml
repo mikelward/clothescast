@@ -258,7 +258,7 @@ the in-app clock is digit-driven and reads consistently across locales.
 
     <string name="settings_tts_engine_title">Motor de veu</string>
     <string name="settings_tts_engine_description">Tria entre veu de baixa qualitat al dispositiu o veu de qualitat alta en línia.</string>
-    <string name="settings_tts_engine_device">Dispositiu (sense connexió, gratuït)</string>
+    <string name="settings_tts_engine_device">Dispositiu (qualitat baixa, al dispositiu)</string>
     <string name="settings_tts_engine_gemini">Gemini (alta qualitat, en línia)</string>
     <string name="settings_tts_voice_label">Veu</string>
     <string name="settings_tts_voice_dismiss">Fet</string>

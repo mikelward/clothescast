@@ -368,7 +368,7 @@ to values/strings.xml (English).
     <!-- TTS / voice settings -->
     <string name="settings_tts_engine_title">Mesin suara</string>
     <string name="settings_tts_engine_description">Pilih antara ucapan berkualitas rendah di perangkat dan ucapan berkualitas tinggi secara daring.</string>
-    <string name="settings_tts_engine_device">Perangkat (offline, gratis)</string>
+    <string name="settings_tts_engine_device">Perangkat (kualitas rendah, di perangkat)</string>
     <string name="settings_tts_engine_gemini">Gemini (kualitas tinggi, online)</string>
     <string name="settings_tts_voice_label">Suara</string>
     <string name="settings_tts_voice_dismiss">Selesai</string>

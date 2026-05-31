@@ -389,7 +389,7 @@ The rest of the UI falls through to values/strings.xml (English).
          ============================================================ -->
     <string name="settings_tts_engine_title">Voice engine</string>
     <string name="settings_tts_engine_description">Pumili sa pagitan ng mababang-kalidad na pananalita sa device at mataas na kalidad na online na pananalita.</string>
-    <string name="settings_tts_engine_device">Device (offline, libre)</string>
+    <string name="settings_tts_engine_device">Device (mababang kalidad, sa device)</string>
     <string name="settings_tts_engine_gemini">Gemini (mataas na kalidad, online)</string>
     <string name="settings_tts_voice_label">Boses</string>
     <string name="settings_tts_voice_dismiss">Tapos na</string>

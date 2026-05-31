@@ -150,9 +150,18 @@ new rule the first time something bites you, not the third.
   it skips `ci:` / `test:`. Note the path-based filter already drops
   top-level `*.md`, `docs/`, and dotfile-only commits regardless of
   prefix (PRIVACY.md is the exception — it's treated as non-docs so
-  privacy-policy updates still surface), so a pure-`AGENTS.md` change
-  doesn't strictly need the prefix; reach for `internal:` when an
-  internal-only change touches paths that *would* otherwise ship a bullet.
+  privacy-policy updates still surface), so a pure-`AGENTS.md` change is
+  dropped either way — but still prefix it so the subject's intent is
+  explicit and never reads like a shippable bullet. Reach for `internal:`
+  especially when an internal-only change touches paths that *would*
+  otherwise ship a bullet.
+- **Docs-only commits use a `docs:` subject prefix.** A commit touching
+  only `docs/`, top-level `*.md` (READMEs, setup guides), or dotfiles
+  takes `docs:` (e.g. `docs: fix stale Firebase Console nav`). Prefix it
+  even though the path filter already drops it from the changelog — the
+  prefix makes the intent explicit and keeps the subject from reading
+  like end-user copy. Exception: a PRIVACY.md-only change ships as a
+  bullet (it's treated as non-docs), so leave that one unprefixed.
 - **Play caps `whatsnew-en-US` at 500 bytes.** When the bullet list
   exceeds that, CI truncates and appends `…`. Avoid lining up a long
   stack of small commits if any one of them tells the user-facing story

@@ -238,7 +238,7 @@ internal fun VoicePage(
             bottomsFormat = state.bottomsFormat,
             periodPreamble = state.periodPreamble,
             wearPreamble = state.wearPreamble,
-            currentInsight = state.currentInsightSummary,
+            currentInsight = state.voicePreviewInsightSummary,
             padding = padding,
             onSetTtsEngine = viewModel::setTtsEngine,
             onSetGeminiVoice = viewModel::setGeminiVoice,

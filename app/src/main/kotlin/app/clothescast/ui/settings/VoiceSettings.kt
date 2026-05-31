@@ -82,11 +82,12 @@ internal fun VoiceContent(
     bottomsFormat: BottomsFormat,
     periodPreamble: PreambleVisibility,
     wearPreamble: PreambleVisibility,
-    // The most recently cached InsightSummary from InsightCache.Slot.THIS_PERIOD,
-    // wired in via SettingsState.currentInsightSummary. When non-null the preview
-    // speaks the user's actual upcoming briefing so it reflects their real
-    // numbers; when null (fresh install, cache cleared) the preview falls back
-    // to [SAMPLE_SUMMARY].
+    // A TODAY-period InsightSummary picked from whichever cache slot holds a
+    // daytime snapshot, wired in via SettingsState.voicePreviewInsightSummary.
+    // Always TODAY so the audition reads as a morning briefing — never
+    // "Tonight will be …". When non-null the preview speaks the user's real
+    // upcoming-or-just-past TODAY briefing in their real numbers; when null
+    // (fresh install, cache cleared) it falls back to [SAMPLE_SUMMARY].
     currentInsight: InsightSummary?,
     padding: PaddingValues,
     onSetTtsEngine: (TtsEngine) -> Unit,

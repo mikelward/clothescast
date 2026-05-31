@@ -314,12 +314,38 @@ class SettingsViewModel(
             }
         }
         insightCache?.let { cache ->
+            // currentInsightSummary tracks the current-period slot for the
+            // Format settings preview card ("your real ClothesCast right now,
+            // with these format settings"), so it can read TODAY or TONIGHT
+            // depending on which alarm last fired.
             viewModelScope.launch {
                 cache.deriveFlow(
                     slot = InsightCache.Slot.THIS_PERIOD,
                     prefsFlow = settingsRepository.preferences,
                 ).collect { result ->
                     _state.update { it.copy(currentInsightSummary = result?.insight?.summary) }
+                }
+            }
+            // voicePreviewInsightSummary always prefers a daytime (TODAY)
+            // summary so the Test voice audition reads as a morning briefing
+            // — "Tonight will be …" reads wrong as an audition. Exactly one
+            // of THIS_PERIOD / NEXT_PERIOD holds a TODAY snapshot at any time:
+            //  - after morning fetch: THIS_PERIOD = TODAY, NEXT_PERIOD = TONIGHT (today)
+            //  - after evening fetch: THIS_PERIOD = TONIGHT, NEXT_PERIOD = TODAY (tomorrow)
+            // Pick whichever slot's summary is TODAY; null when neither has
+            // been fetched yet (fresh install / cleared cache), which is the
+            // canned-sample fallback in runTtsPreview.
+            viewModelScope.launch {
+                combine(
+                    cache.deriveFlow(InsightCache.Slot.THIS_PERIOD, settingsRepository.preferences),
+                    cache.deriveFlow(InsightCache.Slot.NEXT_PERIOD, settingsRepository.preferences),
+                ) { thisPeriod, nextPeriod ->
+                    listOf(thisPeriod, nextPeriod)
+                        .firstNotNullOfOrNull { result ->
+                            result?.insight?.summary?.takeIf { it.period == ForecastPeriod.TODAY }
+                        }
+                }.collect { summary ->
+                    _state.update { it.copy(voicePreviewInsightSummary = summary) }
                 }
             }
         }

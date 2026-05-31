@@ -30,6 +30,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
+import app.clothescast.ui.isTelevision
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -892,6 +900,10 @@ internal fun HomePageScaffold(
     // Reuses the exact helper the conditions widget and outfit card feed off so
     // every surface reads the same indicators in the same order.
     val context = LocalContext.current
+    // D-pad scrolling support for Android TV (see the Column modifier below).
+    val isTv = remember(context) { isTelevision(context) }
+    val tvScrollScope = rememberCoroutineScope()
+    val tvScrollStepPx = with(LocalDensity.current) { 240.dp.toPx() }
     val conditionsInfo: OutfitCardInfoLines? = remember(
         conditionsHourly,
         state.region,
@@ -931,6 +943,45 @@ internal fun HomePageScaffold(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    // On TV the home page is a mostly read-only card stack with
+                    // little focusable content, so D-pad presses can't move focus
+                    // past the confidence chip and the chart deck below it stays
+                    // unreachable. Make the scroll container focusable and turn
+                    // D-pad up/down into a scroll so the whole page is navigable
+                    // with a remote. Gated on TV so phone / touch is unchanged.
+                    .then(
+                        if (isTv) {
+                            Modifier
+                                .focusable()
+                                .onKeyEvent { event ->
+                                    if (event.type != KeyEventType.KeyDown) {
+                                        false
+                                    } else when (event.key) {
+                                        Key.DirectionDown ->
+                                            if (scrollState.canScrollForward) {
+                                                tvScrollScope.launch {
+                                                    scrollState.animateScrollBy(tvScrollStepPx)
+                                                }
+                                                true
+                                            } else {
+                                                false
+                                            }
+                                        Key.DirectionUp ->
+                                            if (scrollState.canScrollBackward) {
+                                                tvScrollScope.launch {
+                                                    scrollState.animateScrollBy(-tvScrollStepPx)
+                                                }
+                                                true
+                                            } else {
+                                                false
+                                            }
+                                        else -> false
+                                    }
+                                }
+                        } else {
+                            Modifier
+                        },
+                    )
                     .verticalScroll(scrollState)
                     // Nav-bar inset goes here — *inside* the scroll viewport, as
                     // content padding — so the last card can scroll fully above

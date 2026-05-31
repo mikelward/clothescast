@@ -446,6 +446,7 @@ internal fun SettingsVoiceDevicePreview() {
             onSetVoiceLocale = {},
             onSetGeminiKey = {},
             onClearGeminiKey = {},
+            onPairFromPhone = {},
         )
     }
 }
@@ -476,6 +477,7 @@ internal fun SettingsVoiceGeminiPreview() {
             onSetVoiceLocale = {},
             onSetGeminiKey = {},
             onClearGeminiKey = {},
+            onPairFromPhone = {},
         )
     }
 }

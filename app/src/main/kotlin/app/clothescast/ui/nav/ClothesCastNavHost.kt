@@ -237,7 +237,13 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
         composable<FormatDest> { e -> FormatPage(e.settingsViewModel(nav, app), onBack) }
         composable<ClothesDest> { e -> ClothesPage(e.settingsViewModel(nav, app), onBack) }
         composable<RegionDest> { e -> RegionPage(e.settingsViewModel(nav, app), onBack) }
-        composable<VoiceDest> { e -> VoicePage(e.settingsViewModel(nav, app), onBack) }
+        composable<VoiceDest> { e ->
+            VoicePage(
+                viewModel = e.settingsViewModel(nav, app),
+                onBack = onBack,
+                onPairFromPhone = { nav.navigate(PairingRoute) },
+            )
+        }
         composable<DisplayDest> { e -> DisplayPage(e.settingsViewModel(nav, app), onBack) }
         composable<LocationDest> { e -> LocationPage(e.settingsViewModel(nav, app), onBack) }
         composable<CalendarDest> { e ->

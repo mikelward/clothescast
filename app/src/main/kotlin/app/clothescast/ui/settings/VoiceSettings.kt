@@ -61,6 +61,7 @@ import app.clothescast.tts.resolve
 import app.clothescast.tts.toJavaLocale
 import app.clothescast.tts.withSpeechAudioFocus
 import app.clothescast.ui.EdgeFadeOverlay
+import app.clothescast.ui.prefersRemoteKeyEntry
 import java.text.Collator
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -90,8 +91,12 @@ internal fun VoiceContent(
     onSetVoiceLocale: (VoiceLocale) -> Unit,
     onSetGeminiKey: (String) -> Unit,
     onClearGeminiKey: () -> Unit,
+    onPairFromPhone: () -> Unit,
 ) {
     val context = LocalContext.current
+    // Only surface the "Pair from phone" handoff where typing a key directly is
+    // hard (TV / no touchscreen) — see prefersRemoteKeyEntry.
+    val showPairFromPhone = remember(context) { prefersRemoteKeyEntry(context) }
     val coroutineScope = rememberCoroutineScope()
     // While a preview is in flight (synthesis + playback) we lock the whole
     // voice section. Cloud TTS calls are billed per-character and the in-flight
@@ -199,6 +204,18 @@ internal fun VoiceContent(
                             onSave = onSetGeminiKey,
                             onClear = onClearGeminiKey,
                         )
+                        // Entering a long API key with a remote is painful, so
+                        // offer the same phone-pairing handoff (QR + local web
+                        // form) onboarding uses — but only on devices where
+                        // direct entry is actually hard (TV / no touchscreen).
+                        // Touch devices can paste or type the key fine, so the
+                        // extra button would just be noise there.
+                        if (showPairFromPhone) {
+                            TextButton(
+                                onClick = onPairFromPhone,
+                                modifier = Modifier.fillMaxWidth(),
+                            ) { Text(stringResource(R.string.onboarding_pair_from_phone)) }
+                        }
                         VoicePicker(
                             title = stringResource(R.string.settings_tts_voice_label),
                             voices = GEMINI_VOICES,

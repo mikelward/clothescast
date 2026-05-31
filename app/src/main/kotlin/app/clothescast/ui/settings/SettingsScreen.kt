@@ -213,7 +213,11 @@ internal fun RegionPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
 }
 
 @Composable
-internal fun VoicePage(viewModel: SettingsViewModel, onBack: () -> Unit) {
+internal fun VoicePage(
+    viewModel: SettingsViewModel,
+    onBack: () -> Unit,
+    onPairFromPhone: () -> Unit,
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     SettingsScaffold(R.string.settings_root_voice, onBack) { padding ->
         VoiceContent(
@@ -238,6 +242,7 @@ internal fun VoicePage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             onSetVoiceLocale = viewModel::setVoiceLocale,
             onSetGeminiKey = viewModel::setApiKey,
             onClearGeminiKey = viewModel::clearApiKey,
+            onPairFromPhone = onPairFromPhone,
         )
     }
 }

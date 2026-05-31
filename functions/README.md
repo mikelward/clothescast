@@ -2,8 +2,9 @@
 
 Single function today: `tts` — the Gemini TTS proxy backing the Android
 app's shared-key path. Holds the developer's Gemini API key, verifies
-Firebase App Check on each request, counts usage per Firebase
-Installation ID in Firestore, and forwards to Gemini.
+Firebase App Check and an anonymous Firebase Authentication ID token on
+each request, counts usage per verified `uid` in Firestore, and forwards
+to Gemini.
 
 **Setup guide for the whole proxy (Firebase project, App Check,
 function deploy, Android wiring):**
@@ -26,12 +27,13 @@ npm run serve     # starts functions + firestore emulators, prints local URL
 ```
 
 Exercise the local endpoint with a debug App Check token (register it
-in the Firebase Console first):
+in the Firebase Console first) and an anonymous ID token (mint one from
+the Auth emulator, or sign in anonymously against the real project):
 
 ```sh
 curl -i -X POST "http://127.0.0.1:5001/<project-id>/us-central1/tts" \
   -H "X-Firebase-AppCheck: <debug token>" \
-  -H "X-Install-Id: dev-test-install-001" \
+  -H "Authorization: Bearer <anonymous ID token>" \
   -H "X-Gemini-Model: gemini-2.5-flash-preview-tts" \
   -H "Content-Type: application/json" \
   -d '{ "contents":[{"parts":[{"text":"Read the following: hello"}]}],
@@ -47,10 +49,12 @@ npm run deploy
 
 ## Quota enforcement
 
-Each install gets 5 successful syntheses per UTC calendar day. The
-reservation is transactional:
+Each install gets 5 successful syntheses per UTC calendar day, keyed on
+the anonymous Firebase Auth `uid` from the verified ID token (not a
+client-supplied header — a modded client can't pick its own bucket).
+The reservation is transactional:
 
-1. Pre-flight transaction reads `installs/<fid>`; if today's
+1. Pre-flight transaction reads `quota/<uid>`; if today's
    `dayCount` is already at 5, the request returns
    `429 { "error": "daily_quota_exhausted", "limit": 5,
    "resetAtUtc": "<next-UTC-midnight>" }` without calling Gemini.
@@ -70,7 +74,7 @@ today. Add your own Gemini key in Settings for unlimited use."
 Firestore document shape:
 
 ```
-installs/<fid> {
+quota/<uid> {
   firstUseAt: Timestamp,
   lastUseAt:  Timestamp,
   count:      number,   // lifetime
@@ -82,5 +86,5 @@ installs/<fid> {
 If Firestore is unreachable, the function **fails open** (forwards
 the call without recording it) so a backend hiccup doesn't deny
 service. The trade-off is that a sustained outage lets a single
-install exceed the daily cap — acceptable given how expensive
+uid exceed the daily cap — acceptable given how expensive
 Gemini TTS is relative to a Firestore read.

@@ -12,7 +12,8 @@ Check verifies the request came from a genuine install of the app.
   key and forwards each TTS request to Google.
 - Users who paste their own key in Settings continue to bypass the
   function entirely and pay their own Gemini bill.
-- Per-install usage is counted in Firestore (`installs/<fid>`) and
+- Per-install usage is counted in Firestore (`quota/<uid>`, keyed on
+  the verified anonymous Firebase Auth uid) and
   capped at 5 successful syntheses per UTC day. Above the cap the
   function returns `429 daily_quota_exhausted`; the Android client
   surfaces a friendly "free TTS limit reached" message and the user
@@ -89,6 +90,22 @@ to your function region (step 5).
 - Once both are registered, click **Cloud Functions → Enforce**.
   Until you do this, the function still works but doesn't actually
   reject unsigned requests.
+
+Also enable anonymous sign-in and protect it with App Check — the
+function keys its per-install daily quota on the anonymous Firebase
+Auth `uid`, so the client can't spoof the quota bucket the way it
+could when the proxy trusted a header:
+
+- **Build → Authentication → Get started → Sign-in method →
+  Anonymous → Enable.** The app signs in anonymously to obtain the
+  ID token it sends to the proxy; no other provider is needed.
+- Back in **Build → App Check**, also click **Authentication →
+  Enforce**. This is what stops scripted anonymous-account farming
+  to mint fresh `uid`s and reset the daily cap. Without it, App Check
+  still gates the function but not account creation.
+- Optionally, under **Authentication → Settings → User account
+  management**, enable auto-deletion of anonymous accounts that have
+  been inactive for 30+ days so stale quota identities don't pile up.
 
 ### 5. Set up the function locally
 
@@ -184,8 +201,8 @@ End-to-end check after all the above:
 4. Filter Logcat for `GeminiTtsClient` (or the proxy hostname) and
    confirm the request hit your function URL, **not**
    `generativelanguage.googleapis.com`.
-5. In the Firebase console → Firestore → `installs` collection, you
-   should see a doc keyed by your Firebase Installation ID with
+5. In the Firebase console → Firestore → `quota` collection, you
+   should see a doc keyed by your anonymous Firebase Auth uid with
    `firstUseAt`, `count: 1`, `lastUseAt`, `dayKey: "YYYY-MM-DD"`,
    `dayCount: 1`.
 
@@ -193,7 +210,7 @@ Then paste a real Gemini key into Settings and Test Voice again:
 
 6. Same Logcat filter — this time the request should go straight to
    `generativelanguage.googleapis.com` with `x-goog-api-key` set, and
-   the Firestore `installs/<fid>` doc should **not** get a new
+   the Firestore `quota/<uid>` doc should **not** get a new
    increment (BYOK never touches the proxy).
 
 ## Running the function locally (emulator)
@@ -211,7 +228,7 @@ It prints local URLs like
 ```sh
 curl -i -X POST "http://127.0.0.1:5001/<projectId>/us-central1/tts" \
   -H "X-Firebase-AppCheck: <debug token>" \
-  -H "X-Install-Id: dev-test-install-001" \
+  -H "Authorization: Bearer <anonymous ID token>" \
   -H "X-Gemini-Model: gemini-2.5-flash-preview-tts" \
   -H "Content-Type: application/json" \
   -d '{ "contents":[{"parts":[{"text":"Hello"}]}],
@@ -232,13 +249,16 @@ but using one is closer to production behaviour.
   tier covers 50K reads + 20K writes/day. At 1000 users × 2 daily
   insights = ~60K invocations/month — well within free tier on the
   infrastructure side; the Gemini bill is the only one that scales.
-- **Limiting abuse**: App Check stops scrapers; a transactional
-  per-install cap of 5 successful syntheses per UTC day stops a
-  single legitimate install from melting the budget. Above the cap
-  the function returns `429 daily_quota_exhausted` with a
-  `resetAtUtc` timestamp; see `functions/README.md` → "Quota
-  enforcement" for the doc shape and the rollback-on-failure
-  semantics.
+- **Limiting abuse**: App Check stops scrapers and modded clients; a
+  transactional cap of 5 successful syntheses per UTC day, keyed on the
+  verified anonymous Auth `uid`, stops a single install from melting the
+  budget. Because the `uid` is minted and signed by Firebase Auth (not a
+  client-supplied header), a modified client can't rotate it to reset the
+  cap — provided App Check is enforced on Authentication (step 4) so it
+  can't farm fresh anonymous accounts either. Above the cap the function
+  returns `429 daily_quota_exhausted` with a `resetAtUtc` timestamp; see
+  `functions/README.md` → "Quota enforcement" for the doc shape and the
+  rollback-on-failure semantics.
 - **Rotating the Gemini key**: `firebase functions:secrets:set
   GEMINI_API_KEY` again, then redeploy. The function picks up the
   new value on cold start.

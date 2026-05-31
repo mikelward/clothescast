@@ -655,6 +655,10 @@ class PreviewSnapshots {
     @Test fun settings_voice_gemini() = capture { SettingsVoiceGeminiPreview() }
     @Test fun settings_voice_gemini_no_key() = capture { SettingsVoiceGeminiNoKeyPreview() }
     @Test fun settings_voice_gemini_no_key_shared() = capture { SettingsVoiceGeminiNoKeySharedPreview() }
+    // The debug-only Voice → App Check debug token row is snapshotted by
+    // `DebugPreviewSnapshots` in the `testDebug` source set, since the
+    // preview composable is itself debug-variant-only and a reference
+    // from this shared file would break `:app:testReleaseUnitTest`.
     @Test fun settings_location() = capture { SettingsLocationPreview() }
     @Test fun settings_location_manual() = capture { SettingsLocationManualPreview() }
 

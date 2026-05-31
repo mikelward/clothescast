@@ -98,6 +98,16 @@ internal fun VoiceContent(
     onSetGeminiKey: (String) -> Unit,
     onClearGeminiKey: () -> Unit,
     onPairFromPhone: () -> Unit,
+    // Debug builds only: when true, render the Firebase App Check debug
+    // token row underneath the Test Voice button. Defaulted to false so
+    // the `SettingsVoice*Preview` snapshots in `SettingsPreviews.kt`
+    // *don't* render the row — otherwise `AppCheckDebugTokenRow()`
+    // would read the developer's real `BuildConfig.APP_CHECK_DEBUG_TOKEN`
+    // and bake it into PNGs committed to git. The production `VoicePage`
+    // wrapper in `SettingsScreen.kt` flips this on; the dedicated
+    // placeholder-driven preview lives at
+    // `AppCheckDebugTokenRowPreview.kt` for visual review.
+    showAppCheckDebugTokenRow: Boolean = false,
 ) {
     val context = LocalContext.current
     // Only surface the "Pair from phone" handoff where typing a key directly is
@@ -270,8 +280,13 @@ internal fun VoiceContent(
                         // grepping Logcat. Empty stub in release builds
                         // and on CI debug builds; hidden when no token
                         // is baked in. See the source-set split next
-                        // to AppCheckProviderFactoryProvider.
-                        AppCheckDebugTokenRow()
+                        // to AppCheckProviderFactoryProvider. Gated on
+                        // `showAppCheckDebugTokenRow` (off by default)
+                        // so the SettingsVoice* snapshot previews don't
+                        // bake a real token into committed PNGs.
+                        if (showAppCheckDebugTokenRow) {
+                            AppCheckDebugTokenRow()
+                        }
                     }
                     TtsEngine.DEVICE -> {
                         Text(

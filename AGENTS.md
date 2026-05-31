@@ -4,6 +4,20 @@ Rules and gotchas for AI coding agents (Claude Code, Codex, etc.) working in
 this repo. Keep this file short and concrete — one-liners over essays. Add a
 new rule the first time something bites you, not the third.
 
+## Talking to the user
+
+- **One question at a time.** Never stack multiple questions in a single
+  turn — ask the most important one, wait for the answer, then ask the
+  next if you still need it. A wall of bundled questions is harder to
+  answer than a short back-and-forth.
+- **Don't interrupt.** Never fire off a question while the user is still
+  typing. Let them finish; a half-typed message isn't an invitation to
+  jump in.
+- **Keep replies short — don't dump a full page.** Lead with the single
+  most important point and stop. If there's more, say the first point and
+  ask whether they're ready for the next one rather than emptying
+  everything at once.
+
 ## Working in this repo
 
 - This repo is an Android app (Kotlin + Compose) with two pure-Kotlin

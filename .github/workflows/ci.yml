@@ -854,6 +854,13 @@ jobs:
           UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
           UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
           UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+          # Baked into BuildConfig.GEMINI_PROXY_URL — picked up by
+          # AppCheckGeminiCallPlanner so the Play APK can route Gemini TTS through
+          # the developer-paid Cloud Function proxy when no BYOK key is set.
+          # Blank when the secret is unset (forks, CI repos without the proxy
+          # deployed): planner falls back to BYOK-only, same as a debug build
+          # without geminiProxyUrl in local.properties.
+          GEMINI_PROXY_URL: ${{ secrets.GEMINI_PROXY_URL }}
         run: |
           set -o pipefail
           ./gradlew :app:bundleRelease --stacktrace --info 2>&1 | tee -a /tmp/android-build.log

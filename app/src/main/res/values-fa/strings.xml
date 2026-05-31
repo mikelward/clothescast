@@ -311,6 +311,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_tts_device_header">صداهای کم‌کیفیت تعبیه‌شده در گوشی شما.</string>
     <string name="settings_api_key_status_set">یک کلید Gemini پیکربندی شده.</string>
     <string name="settings_api_key_status_unset">یک کلید API رایگان از aistudio.google.com دریافت کنید</string>
+    <string name="settings_api_key_status_unset_shared">اختیاری — کلید خودتان را بچسبانید. یکی رایگان از aistudio.google.com بگیرید</string>
     <string name="settings_api_key_placeholder">کلید Gemini API خود را جای‌گذاری کنید</string>
     <string name="settings_api_key_save">ذخیره کلید Gemini</string>
     <string name="settings_api_key_clear">پاک کردن کلید ذخیره‌شده Gemini</string>
@@ -476,6 +477,14 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_display_palette_rainbow_description">خطوط نمودار صورتی، نارنجی و سبز با کارت‌های اطمینان Material فیروزه‌ای/قرمز. پیش‌فرض.</string>
     <string name="settings_display_palette_highlighter">ماژیک هایلایت</string>
     <string name="settings_display_palette_highlighter_description">خطوط نمودار به رنگ‌های ارغوانی، زرد و فیروزه‌ای — مانند ردّ ماژیک هایلایت روی کاغذ. در نگاه اول به‌وضوح از \"رنگین‌کمان\" متمایزند؛ تم روشن از تنالیته‌های عمیق‌تر برای خوانایی استفاده می‌کند. برای کوررنگی قرمز-سبز ایمن است.</string>
+    <string name="settings_display_home_layout_title">چیدمان صفحه اصلی</string>
+    <string name="settings_display_home_layout_description">برای تغییر ترتیب نمایش این بخش‌ها در صفحه اصلی، دستگیره‌ها را بکشید.</string>
+    <string name="settings_display_home_layout_drag">برای تغییر ترتیب %1$s بکشید</string>
+    <string name="settings_display_home_section_outfit">لباس</string>
+    <string name="settings_display_home_section_conditions">شرایط</string>
+    <string name="settings_display_home_section_confidence">اطمینان</string>
+    <string name="settings_display_home_section_insight">پیش‌بینی</string>
+    <string name="settings_display_home_section_charts">نمودارها</string>
     <string name="settings_display_palette_accessible">در دسترس</string>
     <string name="settings_display_palette_accessible_description">پالتی برگرفته از Okabe-Ito که برای تمایز در انواع کوررنگی طراحی شده. کارت‌های اطمینان از آبی آسمانی، خنثی و کهربایی به‌جای فیروزه‌ای، خنثی و قرمز استفاده می‌کنند.</string>
     <string name="today_cloud_range">ابر %1$d–%2$d%%</string>

@@ -316,6 +316,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_device_header">เสียงคุณภาพต่ำที่มีมาในเครื่องของคุณ</string>
     <string name="settings_api_key_status_set">กำหนดค่า Gemini key แล้ว</string>
     <string name="settings_api_key_status_unset">รับ API key ฟรีที่ aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">ไม่บังคับ — วางคีย์ของคุณเอง รับฟรีที่ aistudio.google.com</string>
     <string name="settings_api_key_placeholder">วาง Gemini API key ของคุณ</string>
     <string name="settings_api_key_save">บันทึก Gemini key</string>
     <string name="settings_api_key_clear">ล้าง Gemini key ที่บันทึกไว้</string>
@@ -601,6 +602,14 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_palette_rainbow_description">เส้นกราฟสีชมพู ส้ม และเขียว พร้อมการ์ดความเชื่อมั่น Material สีเขียวน้ำทะเล/แดง ค่าเริ่มต้น</string>
     <string name="settings_display_palette_highlighter">ปากกาเน้น</string>
     <string name="settings_display_palette_highlighter_description">เส้นกราฟสีบานเย็น เหลือง และฟ้าคราม — เหมือนรอยปากกาเน้นข้อความบนหน้ากระดาษ มองปุ๊บก็เห็นต่างจาก \"สีรุ้ง\" ทันที ธีมสว่างใช้โทนเข้มขึ้นเพื่อให้อ่านง่าย ปลอดภัยกับตาบอดสีแดง-เขียว</string>
+    <string name="settings_display_home_layout_title">เลย์เอาต์หน้าหลัก</string>
+    <string name="settings_display_home_layout_description">ลากที่จับเพื่อจัดลำดับการแสดงส่วนเหล่านี้บนหน้าหลักใหม่</string>
+    <string name="settings_display_home_layout_drag">ลากเพื่อจัดลำดับ %1$s ใหม่</string>
+    <string name="settings_display_home_section_outfit">ชุดแต่งกาย</string>
+    <string name="settings_display_home_section_conditions">สภาพอากาศ</string>
+    <string name="settings_display_home_section_confidence">ความเชื่อมั่น</string>
+    <string name="settings_display_home_section_insight">พยากรณ์</string>
+    <string name="settings_display_home_section_charts">กราฟ</string>
     <string name="settings_unit_auto">อัตโนมัติ</string>
     <string name="today_cloud_range">เมฆ %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">แบบจำลองไม่ตรงกันเรื่องฝน (Δ %1$.0f%% ใน %2$d แบบจำลอง)</string>

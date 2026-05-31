@@ -296,6 +296,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <string name="settings_api_key_status_set">Έχει ρυθμιστεί ένα Gemini key.</string>
     <string name="settings_api_key_status_unset">Δεν έχει ρυθμιστεί Gemini key. Πάρε ένα από το aistudio.google.com για να χρησιμοποιήσεις τις φωνές Gemini.</string>
+    <string name="settings_api_key_status_unset_shared">Προαιρετικό — επικόλλησε το δικό σου key. Πάρε ένα δωρεάν από το aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Επικόλλησε το Gemini API key σου</string>
     <string name="settings_api_key_save">Αποθήκευση Gemini key</string>
     <string name="settings_api_key_clear">Διαγραφή αποθηκευμένου Gemini key</string>
@@ -748,6 +749,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Ροζ, πορτοκαλί και πράσινες γραμμές γραφημάτων με κάρτες αξιοπιστίας Material πετρόλ/κόκκινο. Προεπιλογή.</string>
     <string name="settings_display_palette_highlighter">Μαρκαδόρος</string>
     <string name="settings_display_palette_highlighter_description">Γραμμές γραφήματος σε ματζέντα, κίτρινο και κυανό — σαν ίχνος μαρκαδόρου στη σελίδα. Με μια ματιά διακρίνονται από το \"Ουράνιο τόξο\"· το ανοιχτό θέμα χρησιμοποιεί πιο σκούρες εκδοχές για αναγνωσιμότητα. Ασφαλές για κόκκινη-πράσινη αχρωματοψία.</string>
+    <string name="settings_display_home_layout_title">Διάταξη αρχικής οθόνης</string>
+    <string name="settings_display_home_layout_description">Σύρε τις λαβές για να αλλάξεις τη σειρά με την οποία εμφανίζονται αυτές οι ενότητες στην αρχική οθόνη.</string>
+    <string name="settings_display_home_layout_drag">Σύρε για αναδιάταξη: %1$s</string>
+    <string name="settings_display_home_section_outfit">Σύνολο</string>
+    <string name="settings_display_home_section_conditions">Συνθήκες</string>
+    <string name="settings_display_home_section_confidence">Αξιοπιστία</string>
+    <string name="settings_display_home_section_insight">Πρόβλεψη</string>
+    <string name="settings_display_home_section_charts">Γραφήματα</string>
     <string name="settings_unit_auto">Αυτόματο</string>
     <string name="today_cloud_range">Νέφωση %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Τα μοντέλα διαφωνούν για τη βροχή (Δ %1$.0f%% σε %2$d μοντέλα)</string>

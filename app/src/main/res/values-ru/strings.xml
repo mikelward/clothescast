@@ -320,6 +320,7 @@ only the displayed label localizes.
 
     <string name="settings_api_key_status_set">Ключ Gemini настроен.</string>
     <string name="settings_api_key_status_unset">Ключ Gemini не настроен. Получи на aistudio.google.com, чтобы использовать голоса Gemini.</string>
+    <string name="settings_api_key_status_unset_shared">Необязательно — вставь свой ключ. Получи бесплатно на aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Вставь свой ключ API Gemini</string>
     <string name="settings_api_key_save">Сохранить ключ Gemini</string>
     <string name="settings_api_key_clear">Удалить сохранённый ключ Gemini</string>
@@ -686,6 +687,14 @@ only the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Розовые, оранжевые и зелёные линии графиков с карточками достоверности Material бирюзово/красного цвета. По умолчанию.</string>
     <string name="settings_display_palette_highlighter">Маркер</string>
     <string name="settings_display_palette_highlighter_description">Линии графика пурпурного, жёлтого и голубого цвета — как след маркера на странице. Заметно отличаются от \"Радуги\" с первого взгляда; светлая тема использует более глубокие оттенки для читаемости. Безопасно при красно-зелёной цветовой слепоте.</string>
+    <string name="settings_display_home_layout_title">Макет главного экрана</string>
+    <string name="settings_display_home_layout_description">Перетаскивай маркеры, чтобы изменить порядок отображения этих разделов на главном экране.</string>
+    <string name="settings_display_home_layout_drag">Перетащите, чтобы изменить порядок: %1$s</string>
+    <string name="settings_display_home_section_outfit">Образ</string>
+    <string name="settings_display_home_section_conditions">Условия</string>
+    <string name="settings_display_home_section_confidence">Достоверность</string>
+    <string name="settings_display_home_section_insight">Прогноз</string>
+    <string name="settings_display_home_section_charts">Графики</string>
     <string name="settings_unit_auto">Авто</string>
     <string name="today_cloud_range">Облачность %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Модели расходятся во мнении о дожде (Δ %1$.0f%% по %2$d моделям)</string>

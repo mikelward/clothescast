@@ -258,6 +258,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <string name="settings_api_key_status_set">È configurata una chiave Gemini.</string>
     <string name="settings_api_key_status_unset">Nessuna chiave Gemini configurata. Ottienine una su aistudio.google.com per usare le voci Gemini.</string>
+    <string name="settings_api_key_status_unset_shared">Facoltativo — incolla la tua chiave. Ottienine una gratis su aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Incolla la tua chiave API Gemini</string>
     <string name="settings_api_key_save">Salva chiave Gemini</string>
     <string name="settings_api_key_clear">Cancella chiave Gemini salvata</string>
@@ -715,6 +716,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Linee del grafico rosa, arancione e verde con schede di affidabilità Material verde acqua/rosso. Il valore predefinito.</string>
     <string name="settings_display_palette_highlighter">Evidenziatore</string>
     <string name="settings_display_palette_highlighter_description">Linee del grafico magenta, gialle e ciano — come tratti di evidenziatore sulla pagina. Visivamente diverse da \"Arcobaleno\" al primo sguardo; il tema chiaro usa varianti più scure per la leggibilità. Sicuro per il daltonismo rosso-verde.</string>
+    <string name="settings_display_home_layout_title">Layout della schermata Home</string>
+    <string name="settings_display_home_layout_description">Trascina le maniglie per riordinare come queste sezioni appaiono nella schermata Home.</string>
+    <string name="settings_display_home_layout_drag">Trascina per riordinare %1$s</string>
+    <string name="settings_display_home_section_outfit">Outfit</string>
+    <string name="settings_display_home_section_conditions">Condizioni</string>
+    <string name="settings_display_home_section_confidence">Affidabilità</string>
+    <string name="settings_display_home_section_insight">Previsioni</string>
+    <string name="settings_display_home_section_charts">Grafici</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Nuvolosità %1$d\u2013%2$d%%</string>
     <string name="today_confidence_tap_to_hide">Tocca per nascondere le previsioni per modello</string>

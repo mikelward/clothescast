@@ -206,6 +206,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_tts_device_header">Veus de baixa qualitat integrades al teu telèfon.</string>
     <string name="settings_api_key_status_set">Hi ha una clau de Gemini configurada.</string>
     <string name="settings_api_key_status_unset">Obtén una clau gratuïta a aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">Opcional — enganxa la teva clau. Aconsegueix-ne una gratis a aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Enganxa la teva clau API de Gemini</string>
     <string name="settings_api_key_save">Guarda la clau de Gemini</string>
     <string name="settings_api_key_clear">Esborra la clau de Gemini guardada</string>
@@ -568,6 +569,14 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_display_palette_rainbow_description">Línies de gràfic rosa, taronja i verd amb targetes de confiança Material blau verdós/vermell. Per defecte.</string>
     <string name="settings_display_palette_highlighter">Marcador</string>
     <string name="settings_display_palette_highlighter_description">Línies de gràfic en magenta, groc i cian — com una pinzellada de marcador a la pàgina. Es distingeixen clarament de l\'\"Arc de Sant Martí\" d\'un cop d\'ull; el tema clar utilitza variants més profundes per a la llegibilitat. Segures per al daltonisme vermell-verd.</string>
+    <string name="settings_display_home_layout_title">Disseny de la pantalla d\'inici</string>
+    <string name="settings_display_home_layout_description">Arrossega les nanses per reordenar com apareixen aquestes seccions a la pantalla d\'inici.</string>
+    <string name="settings_display_home_layout_drag">Arrossega per reordenar %1$s</string>
+    <string name="settings_display_home_section_outfit">Conjunt</string>
+    <string name="settings_display_home_section_conditions">Condicions</string>
+    <string name="settings_display_home_section_confidence">Confiança</string>
+    <string name="settings_display_home_section_insight">Previsió</string>
+    <string name="settings_display_home_section_charts">Gràfics</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Nuvolositat %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Els models no es posen d\'acord sobre la pluja (Δ %1$.0f%% entre %2$d models)</string>

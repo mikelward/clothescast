@@ -320,6 +320,7 @@ What is NOT overridden, by design:
     <string name="settings_tts_device_header">Žemos kokybės balsai, įdiegti tavo telefone.</string>
     <string name="settings_api_key_status_set">Gemini raktas sukonfigūruotas.</string>
     <string name="settings_api_key_status_unset">Gauk nemokamą API raktą adresu aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">Pasirinktinai — įklijuok savo raktą. Gauk nemokamą adresu aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Įklijuok Gemini API raktą</string>
     <string name="settings_api_key_save">Išsaugoti Gemini raktą</string>
     <string name="settings_api_key_clear">Ištrinti išsaugotą Gemini raktą</string>
@@ -620,6 +621,14 @@ What is NOT overridden, by design:
     <string name="settings_display_palette_rainbow_description">Rožinės, oranžinės ir žalios diagramų linijos su Material žalsvomis/raudonomis patikimumo kortelėmis. Numatytoji.</string>
     <string name="settings_display_palette_highlighter">Žymeklis</string>
     <string name="settings_display_palette_highlighter_description">Purpurinės, geltonos ir žydros diagramos linijos — tarsi žymeklio brūkšnis ant puslapio. Iš pirmo žvilgsnio aiškiai skiriasi nuo \"Vaivorykštės\"; šviesi tema naudoja tamsesnius variantus, kad būtų geriau įskaitoma. Saugu esant raudonai-žaliai spalvinei aklumai.</string>
+    <string name="settings_display_home_layout_title">Pradžios ekrano išdėstymas</string>
+    <string name="settings_display_home_layout_description">Vilkdami rankenėles pakeiskite, kokia tvarka šie skyriai rodomi pradžios ekrane.</string>
+    <string name="settings_display_home_layout_drag">Vilkite, kad pertvarkytumėte %1$s</string>
+    <string name="settings_display_home_section_outfit">Apranga</string>
+    <string name="settings_display_home_section_conditions">Sąlygos</string>
+    <string name="settings_display_home_section_confidence">Patikimumas</string>
+    <string name="settings_display_home_section_insight">Prognozė</string>
+    <string name="settings_display_home_section_charts">Grafikai</string>
     <string name="settings_unit_auto">Automatiškai</string>
     <string name="today_cloud_range">Debesuotumas %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Modeliai nesutaria dėl lietaus (Δ %1$.0f%% iš %2$d modelių)</string>

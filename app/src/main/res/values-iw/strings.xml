@@ -317,6 +317,7 @@ standard in Israeli digital communication.
     <string name="settings_tts_device_header">קולות באיכות נמוכה שמובנים בטלפון שלך.</string>
     <string name="settings_api_key_status_set">מפתח Gemini מוגדר.</string>
     <string name="settings_api_key_status_unset">קבל/י מפתח API חינמי ב-aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">אופציונלי — הדבק/י מפתח משלך. קבל/י אחד בחינם ב-aistudio.google.com</string>
     <string name="settings_api_key_placeholder">הדבק/י את מפתח Gemini API שלך</string>
     <string name="settings_api_key_save">שמור/י מפתח Gemini</string>
     <string name="settings_api_key_clear">מחק/י מפתח Gemini שמור</string>
@@ -484,6 +485,14 @@ standard in Israeli digital communication.
     <string name="settings_display_palette_rainbow_description">קווי גרף ורוד, כתום וירוק עם כרטיסי אמון Material בירקרק/אדום. ברירת המחדל.</string>
     <string name="settings_display_palette_highlighter">טוש זוהר</string>
     <string name="settings_display_palette_highlighter_description">קווי גרף בצבעי מגנטה, צהוב ותכלת — כמו טוש זוהר על הדף. נבדלים מ\"קשת בענן\" במבט ראשון; הערכת הבהיר משתמשת בגוונים עמוקים יותר לקריאות. בטוחים לעיוורי צבעים אדום-ירוק.</string>
+    <string name="settings_display_home_layout_title">פריסת מסך הבית</string>
+    <string name="settings_display_home_layout_description">גרור את הידיות כדי לסדר מחדש את האופן שבו הקטעים האלה מופיעים במסך הבית.</string>
+    <string name="settings_display_home_layout_drag">גרור כדי לסדר מחדש את %1$s</string>
+    <string name="settings_display_home_section_outfit">לבוש</string>
+    <string name="settings_display_home_section_conditions">תנאים</string>
+    <string name="settings_display_home_section_confidence">ודאות</string>
+    <string name="settings_display_home_section_insight">תחזית</string>
+    <string name="settings_display_home_section_charts">תרשימים</string>
     <string name="settings_display_palette_accessible">נגיש</string>
     <string name="settings_display_palette_accessible_description">פלטה המבוססת על Okabe-Ito, מעוצבת להישאר מבחינה בעיוורון צבעים. כרטיסי האמון משתמשים בכחול שמים, ניטרלי וענבר במקום ירקרק, ניטרלי ואדום.</string>
     <string name="today_cloud_range">ענן %1$d–%2$d%%</string>

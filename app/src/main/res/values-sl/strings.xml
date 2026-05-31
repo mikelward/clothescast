@@ -328,6 +328,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_tts_device_header">Glasovi v nizki kakovosti, vgrajeni v tvoj telefon.</string>
     <string name="settings_api_key_status_set">Gemini-ključ je nastavljen.</string>
     <string name="settings_api_key_status_unset">Pridobi brezplačen API-ključ na aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">Izbirno — prilepi svoj ključ. Pridobi brezplačnega na aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Prilepi svoj Gemini API-ključ</string>
     <string name="settings_api_key_save">Shrani Gemini-ključ</string>
     <string name="settings_api_key_clear">Izbriši shranjeni Gemini-ključ</string>
@@ -613,6 +614,14 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_display_palette_rainbow_description">Rožnate, oranžne in zelene linije grafikonov z modrozeleno/rdečimi karticami zanesljivosti Material. Privzeto.</string>
     <string name="settings_display_palette_highlighter">Označevalec</string>
     <string name="settings_display_palette_highlighter_description">Magenta, rumene in cijan črte grafa — kot sled označevalca na strani. Na prvi pogled vidno drugačne od \"Mavrice\"; svetla tema uporablja temnejše različice za boljšo berljivost. Varno za rdeče-zeleno barvno slepoto.</string>
+    <string name="settings_display_home_layout_title">Postavitev začetnega zaslona</string>
+    <string name="settings_display_home_layout_description">Povleci ročice, da spremeniš vrstni red prikaza teh razdelkov na začetnem zaslonu.</string>
+    <string name="settings_display_home_layout_drag">Povleci za spremembo vrstnega reda: %1$s</string>
+    <string name="settings_display_home_section_outfit">Obleka</string>
+    <string name="settings_display_home_section_conditions">Pogoji</string>
+    <string name="settings_display_home_section_confidence">Zanesljivost</string>
+    <string name="settings_display_home_section_insight">Napoved</string>
+    <string name="settings_display_home_section_charts">Grafi</string>
     <string name="settings_unit_auto">Samodejno</string>
     <string name="today_cloud_range">Oblačnost %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Modeli se ne strinjajo glede dežja (Δ %1$.0f%% za %2$d modele)</string>

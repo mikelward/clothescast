@@ -169,6 +169,7 @@ default English (matching values-pl / values-uk).
     <string name="settings_tts_device_header">Glasovi niskog kvaliteta ugrađeni u tvoj telefon.</string>
     <string name="settings_api_key_status_set">Gemini ključ je podešen.</string>
     <string name="settings_api_key_status_unset">Nema Gemini ključa. Nabavi ga besplatno na aistudio.google.com za korišćenje Gemini glasova.</string>
+    <string name="settings_api_key_status_unset_shared">Opciono — nalepi sopstveni ključ. Nabavi ga besplatno na aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Nalepi svoj Gemini API ključ</string>
     <string name="settings_api_key_save">Sačuvaj Gemini ključ</string>
     <string name="settings_api_key_clear">Obriši sačuvani Gemini ključ</string>
@@ -617,6 +618,14 @@ default English (matching values-pl / values-uk).
     <string name="settings_display_palette_rainbow_description">Roze, narandžaste i zelene linije grafikona sa tirkiznim/crvenim karticama pouzdanosti Material. Podrazumevano.</string>
     <string name="settings_display_palette_highlighter">Marker</string>
     <string name="settings_display_palette_highlighter_description">Magenta, žute i cijan linije grafikona — kao trag markera na stranici. Na prvi pogled vidno drugačije od \"Duge\"; svetla tema koristi dublje varijante za čitljivost. Bezbedno za crveno-zeleno slepilo za boje.</string>
+    <string name="settings_display_home_layout_title">Raspored početnog ekrana</string>
+    <string name="settings_display_home_layout_description">Prevuci ručice da promeniš redosled kojim se ovi odeljci prikazuju na početnom ekranu.</string>
+    <string name="settings_display_home_layout_drag">Prevuci da promeniš redosled: %1$s</string>
+    <string name="settings_display_home_section_outfit">Kombinacija</string>
+    <string name="settings_display_home_section_conditions">Uslovi</string>
+    <string name="settings_display_home_section_confidence">Pouzdanost</string>
+    <string name="settings_display_home_section_insight">Prognoza</string>
+    <string name="settings_display_home_section_charts">Grafikoni</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Oblačnost %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Modeli se ne slažu oko kiše (Δ %1$.0f%% kod %2$d modela)</string>

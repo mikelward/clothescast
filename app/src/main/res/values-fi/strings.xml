@@ -221,6 +221,7 @@ displayed label localizes.
 
     <string name="settings_api_key_status_set">Gemini-avain on asetettu.</string>
     <string name="settings_api_key_status_unset">Gemini-avainta ei ole asetettu. Hanki avain osoitteesta aistudio.google.com käyttääksesi Gemini-ääniä.</string>
+    <string name="settings_api_key_status_unset_shared">Valinnainen — liitä oma avaimesi. Hanki ilmainen osoitteesta aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Liitä Gemini-API-avain tähän</string>
     <string name="settings_api_key_save">Tallenna Gemini-avain</string>
     <string name="settings_api_key_clear">Poista tallennettu Gemini-avain</string>
@@ -611,6 +612,14 @@ displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Vaaleanpunaiset, oranssit ja vihreät kaavioviivat sekä Material teal/punaiset luotettavuuskortit. Oletus.</string>
     <string name="settings_display_palette_highlighter">Korostuskynä</string>
     <string name="settings_display_palette_highlighter_description">Magenta, keltaiset ja syaaninväriset kaaviolinjat — kuin korostuskynänjälki sivulla. Erottuu ensisilmäyksellä \"Sateenkaaresta\"; vaalea teema käyttää syvempiä variantteja luettavuuden vuoksi. Turvallinen puna-vihersokeudelle.</string>
+    <string name="settings_display_home_layout_title">Aloitusnäytön asettelu</string>
+    <string name="settings_display_home_layout_description">Vedä kahvoista järjestääksesi uudelleen, miten nämä osiot näkyvät aloitusnäytöllä.</string>
+    <string name="settings_display_home_layout_drag">Vedä järjestääksesi uudelleen: %1$s</string>
+    <string name="settings_display_home_section_outfit">Asu</string>
+    <string name="settings_display_home_section_conditions">Olosuhteet</string>
+    <string name="settings_display_home_section_confidence">Luotettavuus</string>
+    <string name="settings_display_home_section_insight">Ennuste</string>
+    <string name="settings_display_home_section_charts">Kaaviot</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Pilvisyys %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Mallit ovat eri mieltä sateesta (Δ %1$.0f%% %2$d mallin kesken)</string>

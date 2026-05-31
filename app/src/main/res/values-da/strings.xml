@@ -279,6 +279,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_tts_device_header">Stemmer i lav kvalitet indbygget i din telefon.</string>
     <string name="settings_api_key_status_set">En Gemini-nøgle er oprettet.</string>
     <string name="settings_api_key_status_unset">Ingen Gemini-nøgle oprettet. Hent en på aistudio.google.com for at bruge Gemini-stemmer.</string>
+    <string name="settings_api_key_status_unset_shared">Valgfrit — indsæt din egen nøgle. Hent en gratis på aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Indsæt Gemini API-nøgle her</string>
     <string name="settings_api_key_save">Gem Gemini-nøgle</string>
     <string name="settings_api_key_clear">Slet gemt Gemini-nøgle</string>
@@ -631,6 +632,14 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_display_palette_rainbow_description">Lyserøde, orange og grønne diagramlinjer med Material teal/røde tillidskort. Standard.</string>
     <string name="settings_display_palette_highlighter">Markeringspen</string>
     <string name="settings_display_palette_highlighter_description">Magenta, gule og cyan grafiklinjer — som markeringspenne på siden. Ved første øjekast synligt anderledes end \"Regnbue\"; det lyse tema bruger dybere varianter for læsbarhed. Sikker ved rød-grøn farveblindhed.</string>
+    <string name="settings_display_home_layout_title">Layout for startskærm</string>
+    <string name="settings_display_home_layout_description">Træk i håndtagene for at ændre rækkefølgen, som disse sektioner vises i på startskærmen.</string>
+    <string name="settings_display_home_layout_drag">Træk for at ændre rækkefølgen af %1$s</string>
+    <string name="settings_display_home_section_outfit">Outfit</string>
+    <string name="settings_display_home_section_conditions">Forhold</string>
+    <string name="settings_display_home_section_confidence">Sikkerhed</string>
+    <string name="settings_display_home_section_insight">Prognose</string>
+    <string name="settings_display_home_section_charts">Diagrammer</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Skydække %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Modellerne er uenige om regn (Δ %1$.0f%% på tværs af %2$d modeller)</string>

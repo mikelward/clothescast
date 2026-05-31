@@ -284,6 +284,7 @@ What is NOT overridden, by design:
     <string name="settings_tts_device_header">Hlasy v nízkej kvalite zabudované v tvojom telefóne.</string>
     <string name="settings_api_key_status_set">Gemini kľúč je nastavený.</string>
     <string name="settings_api_key_status_unset">Žiadny Gemini kľúč nie je nastavený. Získaj ho na aistudio.google.com pre používanie hlasov Gemini.</string>
+    <string name="settings_api_key_status_unset_shared">Voliteľné — vlož vlastný kľúč. Získaj ho zdarma na aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Vlož sem Gemini API kľúč</string>
     <string name="settings_api_key_save">Uložiť Gemini kľúč</string>
     <string name="settings_api_key_clear">Vymazať uložený Gemini kľúč</string>
@@ -632,6 +633,14 @@ What is NOT overridden, by design:
     <string name="settings_display_palette_rainbow_description">Ružové, oranžové a zelené čiary grafov s tyrkysovými/červenými kartami istoty Material. Predvolené.</string>
     <string name="settings_display_palette_highlighter">Zvýrazňovač</string>
     <string name="settings_display_palette_highlighter_description">Purpurové, žlté a azúrové čiary grafu — ako stopa zvýrazňovača na stránke. Na prvý pohľad viditeľne odlišné od \"Dúhy\"; svetlá téma používa hlbšie varianty pre čitateľnosť. Bezpečné pri červeno-zelenej farboslepote.</string>
+    <string name="settings_display_home_layout_title">Rozloženie domovskej obrazovky</string>
+    <string name="settings_display_home_layout_description">Potiahnutím úchytiek zmeň poradie, v ktorom sa tieto sekcie zobrazujú na domovskej obrazovke.</string>
+    <string name="settings_display_home_layout_drag">Potiahnutím zmeň poradie: %1$s</string>
+    <string name="settings_display_home_section_outfit">Outfit</string>
+    <string name="settings_display_home_section_conditions">Podmienky</string>
+    <string name="settings_display_home_section_confidence">Spoľahlivosť</string>
+    <string name="settings_display_home_section_insight">Predpoveď</string>
+    <string name="settings_display_home_section_charts">Grafy</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Oblačnosť %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Modely sa nezhodujú na zrážkach (Δ %1$.0f%% pre %2$d modely)</string>

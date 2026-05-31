@@ -265,6 +265,7 @@ the displayed label localizes.
 
     <string name="settings_api_key_status_set">Gemini キーが設定されています。</string>
     <string name="settings_api_key_status_unset">Gemini キーが未設定です。aistudio.google.com で取得すると Gemini 音声を使用できます。</string>
+    <string name="settings_api_key_status_unset_shared">任意 — 自分のキーを貼り付けます。aistudio.google.com で無料で取得できます</string>
     <string name="settings_api_key_placeholder">Gemini API キーを貼り付け</string>
     <string name="settings_api_key_save">Gemini キーを保存</string>
     <string name="settings_api_key_clear">保存された Gemini キーを削除</string>
@@ -738,6 +739,14 @@ the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">ピンク・オレンジ・グリーンのグラフ線とMaterialのティール/レッドの信頼度カード。デフォルト設定。</string>
     <string name="settings_display_palette_highlighter">ハイライト</string>
     <string name="settings_display_palette_highlighter_description">マゼンタ・イエロー・シアンのグラフ線。ページの上の蛍光ペンのよう。「レインボー」とひと目で見分けがつき、ライトテーマでは読みやすさのため少し濃いバージョンを使います。赤緑の色覚特性でも安全です。</string>
+    <string name="settings_display_home_layout_title">ホーム画面のレイアウト</string>
+    <string name="settings_display_home_layout_description">ハンドルをドラッグして、これらのセクションがホーム画面に表示される順序を変更します。</string>
+    <string name="settings_display_home_layout_drag">ドラッグして%1$sを並べ替え</string>
+    <string name="settings_display_home_section_outfit">コーデ</string>
+    <string name="settings_display_home_section_conditions">コンディション</string>
+    <string name="settings_display_home_section_confidence">信頼度</string>
+    <string name="settings_display_home_section_insight">予報</string>
+    <string name="settings_display_home_section_charts">グラフ</string>
     <string name="settings_unit_auto">自動</string>
     <string name="today_cloud_range">雲量 %1$d〜%2$d%%</string>
     <string name="today_confidence_precip_spread">降水確率でモデル間に差あり（Δ %1$.0f%%、%2$dモデル間）</string>

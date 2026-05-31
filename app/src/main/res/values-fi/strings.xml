@@ -1264,4 +1264,19 @@ displayed label localizes.
     <string name="today_week_ahead_steady">Tasainen viikko edessä.</string>
     <string name="today_week_ahead_warmer">Lämpimämpi %1$s.</string>
     <string name="today_week_empty">Valmis seuraavan ennusteen jälkeen.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Ääniasetukset</string>
+    <string name="settings_page_schedule">Aikatauluasetukset</string>
+    <string name="settings_page_format">Muotoasetukset</string>
+    <string name="settings_page_region">Alueasetukset</string>
+    <string name="settings_page_clothes">Vaateasetukset</string>
+    <string name="settings_page_display">Näyttöasetukset</string>
+    <string name="settings_page_location">Sijaintiasetukset</string>
+    <string name="settings_page_calendar">Kalenteriasetukset</string>
+    <string name="settings_page_forecasters">Ennustemalliasetukset</string>
+    <string name="settings_page_smart_home">Älykotiasetukset</string>
+    <string name="settings_page_privacy">Tietosuoja-asetukset</string>
+    <string name="settings_page_developer">Kehittäjäasetukset</string>
 </resources>

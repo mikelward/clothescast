@@ -173,7 +173,7 @@ internal fun SchedulePage(
     onSetUpSpeech: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScaffold(R.string.settings_root_schedule, onBack) { padding ->
+    SettingsScaffold(R.string.settings_page_schedule, onBack) { padding ->
         CompositionLocalProvider(LocalTimeFormat provides state.timeFormat) {
         ScheduleContent(
             time = state.scheduleTime,
@@ -206,7 +206,7 @@ internal fun SchedulePage(
 @Composable
 internal fun ClothesPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScaffold(R.string.settings_root_clothes, onBack) { padding ->
+    SettingsScaffold(R.string.settings_page_clothes, onBack) { padding ->
         ClothesContent(
             rules = state.clothesRules,
             defaultBottom = state.defaultBottom,
@@ -233,7 +233,7 @@ internal fun ClothesPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
 @Composable
 internal fun RegionPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScaffold(R.string.settings_root_region, onBack) { padding ->
+    SettingsScaffold(R.string.settings_page_region, onBack) { padding ->
         RegionContent(
             region = state.region,
             temperatureUnitSetting = state.temperatureUnitSetting,
@@ -258,7 +258,7 @@ internal fun VoicePage(
     onPairFromPhone: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScaffold(R.string.settings_root_voice, onBack) { padding ->
+    SettingsScaffold(R.string.settings_page_voice, onBack) { padding ->
         VoiceContent(
             selected = state.ttsEngine,
             geminiVoice = state.geminiVoice,
@@ -293,7 +293,7 @@ internal fun VoicePage(
 @Composable
 internal fun DisplayPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScaffold(R.string.settings_root_display, onBack) { padding ->
+    SettingsScaffold(R.string.settings_page_display, onBack) { padding ->
         DisplayContent(
             themeMode = state.themeMode,
             colorPalette = state.colorPalette,
@@ -309,7 +309,7 @@ internal fun DisplayPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
 @Composable
 internal fun LocationPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScaffold(R.string.settings_root_location, onBack) { padding ->
+    SettingsScaffold(R.string.settings_page_location, onBack) { padding ->
         LocationContent(
             location = state.location,
             useDeviceLocation = state.useDeviceLocation,
@@ -332,7 +332,7 @@ internal fun CalendarPage(
     onNavigateToLocation: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScaffold(R.string.settings_root_calendar, onBack) { padding ->
+    SettingsScaffold(R.string.settings_page_calendar, onBack) { padding ->
         CalendarContent(
             holidayCountrySelection = state.holidayCountrySelection,
             holidayOverrides = state.holidayOverrides,
@@ -370,7 +370,7 @@ internal fun CalendarPage(
 @Composable
 internal fun ForecastersPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScaffold(R.string.settings_root_forecasters, onBack) { padding ->
+    SettingsScaffold(R.string.settings_page_forecasters, onBack) { padding ->
         ForecastersContent(
             forecastModels = state.forecastModels,
             location = state.location,
@@ -387,7 +387,7 @@ internal fun SmartHomePage(
     onSetUpSpeech: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScaffold(R.string.settings_root_smart_home, onBack) { padding ->
+    SettingsScaffold(R.string.settings_page_smart_home, onBack) { padding ->
         CompositionLocalProvider(LocalTimeFormat provides state.timeFormat) {
         SmartHomeContent(
             bridgeEnabled = state.mqttBridgeEnabled,
@@ -447,7 +447,7 @@ internal fun SmartHomePage(
 @Composable
 internal fun PrivacyPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScaffold(R.string.settings_root_privacy, onBack) { padding ->
+    SettingsScaffold(R.string.settings_page_privacy, onBack) { padding ->
         PrivacyContent(
             telemetryEnabled = state.telemetryEnabled,
             padding = padding,

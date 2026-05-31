@@ -1306,4 +1306,19 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_week_ahead_steady">Matatag na linggo sa hinaharap.</string>
     <string name="today_week_ahead_warmer">Mas mainit %1$s.</string>
     <string name="today_week_empty">Magiging handa pagkatapos ng susunod na forecast.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Mga setting ng boses</string>
+    <string name="settings_page_schedule">Mga setting ng iskedyul</string>
+    <string name="settings_page_format">Mga setting ng format</string>
+    <string name="settings_page_region">Mga setting ng rehiyon</string>
+    <string name="settings_page_clothes">Mga setting ng damit</string>
+    <string name="settings_page_display">Mga setting ng display</string>
+    <string name="settings_page_location">Mga setting ng lokasyon</string>
+    <string name="settings_page_calendar">Mga setting ng kalendaryo</string>
+    <string name="settings_page_forecasters">Mga setting ng forecaster</string>
+    <string name="settings_page_smart_home">Mga setting ng Smart Home</string>
+    <string name="settings_page_privacy">Mga setting ng pagkapribado</string>
+    <string name="settings_page_developer">Mga setting ng developer</string>
 </resources>

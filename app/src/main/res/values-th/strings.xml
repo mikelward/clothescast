@@ -1255,4 +1255,19 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_week_ahead_steady">สัปดาห์คงที่</string>
     <string name="today_week_ahead_warmer">อุ่นขึ้น %1$s</string>
     <string name="today_week_empty">พร้อมหลังจากการพยากรณ์ครั้งถัดไป</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">การตั้งค่าเสียง</string>
+    <string name="settings_page_schedule">การตั้งค่ากำหนดการ</string>
+    <string name="settings_page_format">การตั้งค่ารูปแบบ</string>
+    <string name="settings_page_region">การตั้งค่าภูมิภาค</string>
+    <string name="settings_page_clothes">การตั้งค่าเสื้อผ้า</string>
+    <string name="settings_page_display">การตั้งค่าการแสดงผล</string>
+    <string name="settings_page_location">การตั้งค่าตำแหน่ง</string>
+    <string name="settings_page_calendar">การตั้งค่าปฏิทิน</string>
+    <string name="settings_page_forecasters">การตั้งค่าผู้พยากรณ์</string>
+    <string name="settings_page_smart_home">การตั้งค่า Smart Home</string>
+    <string name="settings_page_privacy">การตั้งค่าความเป็นส่วนตัว</string>
+    <string name="settings_page_developer">การตั้งค่านักพัฒนา</string>
 </resources>

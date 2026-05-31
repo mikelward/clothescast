@@ -1245,4 +1245,19 @@ default English (matching values-pl / values-uk).
     <string name="today_week_ahead_steady">Stabilna nedelja pred nama.</string>
     <string name="today_week_ahead_warmer">Toplije %1$s.</string>
     <string name="today_week_empty">Biće spremno posle sledeće prognoze.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Podešavanja glasa</string>
+    <string name="settings_page_schedule">Podešavanja rasporeda</string>
+    <string name="settings_page_format">Podešavanja formata</string>
+    <string name="settings_page_region">Podešavanja regiona</string>
+    <string name="settings_page_clothes">Podešavanja odevanja</string>
+    <string name="settings_page_display">Podešavanja prikaza</string>
+    <string name="settings_page_location">Podešavanja lokacije</string>
+    <string name="settings_page_calendar">Podešavanja kalendara</string>
+    <string name="settings_page_forecasters">Podešavanja modela prognoze</string>
+    <string name="settings_page_smart_home">Podešavanja pametnog doma</string>
+    <string name="settings_page_privacy">Podešavanja privatnosti</string>
+    <string name="settings_page_developer">Podešavanja programera</string>
 </resources>

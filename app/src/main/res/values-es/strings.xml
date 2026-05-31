@@ -1383,4 +1383,19 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_week_ahead_steady">Semana estable.</string>
     <string name="today_week_ahead_warmer">Más cálido %1$s.</string>
     <string name="today_week_empty">Estará listo tras la próxima previsión.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Ajustes de voz</string>
+    <string name="settings_page_schedule">Ajustes de programación</string>
+    <string name="settings_page_format">Ajustes de formato</string>
+    <string name="settings_page_region">Ajustes de región</string>
+    <string name="settings_page_clothes">Ajustes de ropa</string>
+    <string name="settings_page_display">Ajustes de pantalla</string>
+    <string name="settings_page_location">Ajustes de ubicación</string>
+    <string name="settings_page_calendar">Ajustes de calendario</string>
+    <string name="settings_page_forecasters">Ajustes de modelos de previsión</string>
+    <string name="settings_page_smart_home">Ajustes de Smart Home</string>
+    <string name="settings_page_privacy">Ajustes de privacidad</string>
+    <string name="settings_page_developer">Ajustes de desarrollador</string>
 </resources>

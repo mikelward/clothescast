@@ -1247,4 +1247,19 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_week_ahead_steady">هفته‌ای پایدار در پیش.</string>
     <string name="today_week_ahead_warmer">گرم‌تر %1$s.</string>
     <string name="today_week_empty">پس از پیش‌بینی بعدی آماده می‌شود.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">تنظیمات صدا</string>
+    <string name="settings_page_schedule">تنظیمات برنامه</string>
+    <string name="settings_page_format">تنظیمات قالب‌بندی</string>
+    <string name="settings_page_region">تنظیمات منطقه</string>
+    <string name="settings_page_clothes">تنظیمات لباس</string>
+    <string name="settings_page_display">تنظیمات نمایش</string>
+    <string name="settings_page_location">تنظیمات موقعیت</string>
+    <string name="settings_page_calendar">تنظیمات تقویم</string>
+    <string name="settings_page_forecasters">تنظیمات مدل‌های پیش‌بینی</string>
+    <string name="settings_page_smart_home">تنظیمات خانه هوشمند</string>
+    <string name="settings_page_privacy">تنظیمات حریم خصوصی</string>
+    <string name="settings_page_developer">تنظیمات توسعه‌دهنده</string>
 </resources>

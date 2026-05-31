@@ -1304,4 +1304,19 @@ is unchanged; only the displayed label localizes.
     <string name="today_week_ahead_steady">Stabilny tydzień.</string>
     <string name="today_week_ahead_warmer">Cieplej %1$s.</string>
     <string name="today_week_empty">Gotowe po następnej prognozie.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Ustawienia głosu</string>
+    <string name="settings_page_schedule">Ustawienia harmonogramu</string>
+    <string name="settings_page_format">Ustawienia formatu</string>
+    <string name="settings_page_region">Ustawienia regionu</string>
+    <string name="settings_page_clothes">Ustawienia ubrań</string>
+    <string name="settings_page_display">Ustawienia wyświetlania</string>
+    <string name="settings_page_location">Ustawienia lokalizacji</string>
+    <string name="settings_page_calendar">Ustawienia kalendarza</string>
+    <string name="settings_page_forecasters">Ustawienia modeli prognoz</string>
+    <string name="settings_page_smart_home">Ustawienia inteligentnego domu</string>
+    <string name="settings_page_privacy">Ustawienia prywatności</string>
+    <string name="settings_page_developer">Ustawienia dewelopera</string>
 </resources>

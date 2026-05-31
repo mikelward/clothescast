@@ -1408,4 +1408,19 @@ displayed label localizes.
     <string name="today_week_ahead_steady">한 주 내내 안정적.</string>
     <string name="today_week_ahead_warmer">%1$s 더 따뜻함.</string>
     <string name="today_week_empty">다음 예보 후에 준비됩니다.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">음성 설정</string>
+    <string name="settings_page_schedule">일정 설정</string>
+    <string name="settings_page_format">형식 설정</string>
+    <string name="settings_page_region">지역 설정</string>
+    <string name="settings_page_clothes">옷 설정</string>
+    <string name="settings_page_display">디스플레이 설정</string>
+    <string name="settings_page_location">위치 설정</string>
+    <string name="settings_page_calendar">캘린더 설정</string>
+    <string name="settings_page_forecasters">예보 모델 설정</string>
+    <string name="settings_page_smart_home">스마트 홈 설정</string>
+    <string name="settings_page_privacy">개인정보 설정</string>
+    <string name="settings_page_developer">개발자 설정</string>
 </resources>

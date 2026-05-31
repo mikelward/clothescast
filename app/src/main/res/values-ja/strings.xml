@@ -1405,4 +1405,19 @@ the displayed label localizes.
     <string name="today_week_ahead_steady">安定した一週間。</string>
     <string name="today_week_ahead_warmer">%1$sは暖かめ。</string>
     <string name="today_week_empty">次の予報後に表示されます。</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">音声設定</string>
+    <string name="settings_page_schedule">スケジュール設定</string>
+    <string name="settings_page_format">フォーマット設定</string>
+    <string name="settings_page_region">地域設定</string>
+    <string name="settings_page_clothes">服装設定</string>
+    <string name="settings_page_display">表示設定</string>
+    <string name="settings_page_location">位置情報設定</string>
+    <string name="settings_page_calendar">カレンダー設定</string>
+    <string name="settings_page_forecasters">予報モデル設定</string>
+    <string name="settings_page_smart_home">スマートホーム設定</string>
+    <string name="settings_page_privacy">プライバシー設定</string>
+    <string name="settings_page_developer">開発者設定</string>
 </resources>

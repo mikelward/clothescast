@@ -1316,4 +1316,19 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_week_ahead_steady">Tuần ổn định.</string>
     <string name="today_week_ahead_warmer">Ấm hơn %1$s.</string>
     <string name="today_week_empty">Sẽ sẵn sàng sau dự báo tiếp theo.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Cài đặt giọng nói</string>
+    <string name="settings_page_schedule">Cài đặt lịch trình</string>
+    <string name="settings_page_format">Cài đặt định dạng</string>
+    <string name="settings_page_region">Cài đặt khu vực</string>
+    <string name="settings_page_clothes">Cài đặt quần áo</string>
+    <string name="settings_page_display">Cài đặt hiển thị</string>
+    <string name="settings_page_location">Cài đặt vị trí</string>
+    <string name="settings_page_calendar">Cài đặt lịch</string>
+    <string name="settings_page_forecasters">Cài đặt nguồn dự báo</string>
+    <string name="settings_page_smart_home">Cài đặt Smart Home</string>
+    <string name="settings_page_privacy">Cài đặt quyền riêng tư</string>
+    <string name="settings_page_developer">Cài đặt nhà phát triển</string>
 </resources>

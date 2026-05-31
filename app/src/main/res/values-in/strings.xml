@@ -1255,4 +1255,19 @@ to values/strings.xml (English).
     <string name="today_week_ahead_steady">Minggu yang stabil di depan.</string>
     <string name="today_week_ahead_warmer">Lebih hangat %1$s.</string>
     <string name="today_week_empty">Akan siap setelah perkiraan berikutnya.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Pengaturan suara</string>
+    <string name="settings_page_schedule">Pengaturan jadwal</string>
+    <string name="settings_page_format">Pengaturan format</string>
+    <string name="settings_page_region">Pengaturan wilayah</string>
+    <string name="settings_page_clothes">Pengaturan pakaian</string>
+    <string name="settings_page_display">Pengaturan tampilan</string>
+    <string name="settings_page_location">Pengaturan lokasi</string>
+    <string name="settings_page_calendar">Pengaturan kalender</string>
+    <string name="settings_page_forecasters">Pengaturan prakiraan</string>
+    <string name="settings_page_smart_home">Pengaturan rumah pintar</string>
+    <string name="settings_page_privacy">Pengaturan privasi</string>
+    <string name="settings_page_developer">Pengaturan pengembang</string>
 </resources>

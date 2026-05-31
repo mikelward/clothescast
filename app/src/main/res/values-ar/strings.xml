@@ -1260,4 +1260,19 @@ they work correctly in both the single-band and range templates.
     <string name="today_week_ahead_steady">أسبوع مستقر.</string>
     <string name="today_week_ahead_warmer">أدفأ %1$s.</string>
     <string name="today_week_empty">سيكون جاهزًا بعد التوقع التالي.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">إعدادات الصوت</string>
+    <string name="settings_page_schedule">إعدادات الجدول</string>
+    <string name="settings_page_format">إعدادات الصياغة</string>
+    <string name="settings_page_region">إعدادات المنطقة</string>
+    <string name="settings_page_clothes">إعدادات الملابس</string>
+    <string name="settings_page_display">إعدادات العرض</string>
+    <string name="settings_page_location">إعدادات الموقع</string>
+    <string name="settings_page_calendar">إعدادات التقويم</string>
+    <string name="settings_page_forecasters">إعدادات نماذج التنبؤ</string>
+    <string name="settings_page_smart_home">إعدادات المنزل الذكي</string>
+    <string name="settings_page_privacy">إعدادات الخصوصية</string>
+    <string name="settings_page_developer">إعدادات المطور</string>
 </resources>

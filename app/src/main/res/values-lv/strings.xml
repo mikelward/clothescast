@@ -1197,4 +1197,19 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_week_ahead_steady">Stabila nedēļa priekšā.</string>
     <string name="today_week_ahead_warmer">Siltāks %1$s.</string>
     <string name="today_week_empty">Būs pieejams pēc nākamās prognozes.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Balss iestatījumi</string>
+    <string name="settings_page_schedule">Grafika iestatījumi</string>
+    <string name="settings_page_format">Formāta iestatījumi</string>
+    <string name="settings_page_region">Reģiona iestatījumi</string>
+    <string name="settings_page_clothes">Apģērba iestatījumi</string>
+    <string name="settings_page_display">Displeja iestatījumi</string>
+    <string name="settings_page_location">Atrašanās vietas iestatījumi</string>
+    <string name="settings_page_calendar">Kalendāra iestatījumi</string>
+    <string name="settings_page_forecasters">Prognozētāju iestatījumi</string>
+    <string name="settings_page_smart_home">Viedmājas iestatījumi</string>
+    <string name="settings_page_privacy">Privātuma iestatījumi</string>
+    <string name="settings_page_developer">Izstrādātāja iestatījumi</string>
 </resources>

@@ -1325,4 +1325,19 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_week_ahead_steady">Mirno tijekom tjedna.</string>
     <string name="today_week_ahead_warmer">Toplije %1$s.</string>
     <string name="today_week_empty">Bit će spremno nakon sljedeće prognoze.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Postavke glasa</string>
+    <string name="settings_page_schedule">Postavke rasporeda</string>
+    <string name="settings_page_format">Postavke formata</string>
+    <string name="settings_page_region">Postavke regije</string>
+    <string name="settings_page_clothes">Postavke odjeće</string>
+    <string name="settings_page_display">Postavke zaslona</string>
+    <string name="settings_page_location">Postavke lokacije</string>
+    <string name="settings_page_calendar">Postavke kalendara</string>
+    <string name="settings_page_forecasters">Postavke modela prognoze</string>
+    <string name="settings_page_smart_home">Postavke pametnog doma</string>
+    <string name="settings_page_privacy">Postavke privatnosti</string>
+    <string name="settings_page_developer">Postavke razvojnog programera</string>
 </resources>

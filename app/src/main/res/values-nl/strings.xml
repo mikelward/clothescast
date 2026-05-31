@@ -1304,4 +1304,19 @@ the displayed label localizes.
     <string name="today_week_ahead_steady">Stabiele week.</string>
     <string name="today_week_ahead_warmer">Warmer %1$s.</string>
     <string name="today_week_empty">Beschikbaar na de volgende voorspelling.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Steminstellingen</string>
+    <string name="settings_page_schedule">Schema-instellingen</string>
+    <string name="settings_page_format">Format-instellingen</string>
+    <string name="settings_page_region">Regio-instellingen</string>
+    <string name="settings_page_clothes">Kledinginstellingen</string>
+    <string name="settings_page_display">Weergave-instellingen</string>
+    <string name="settings_page_location">Locatie-instellingen</string>
+    <string name="settings_page_calendar">Agenda-instellingen</string>
+    <string name="settings_page_forecasters">Voorspellingsmodelinstellingen</string>
+    <string name="settings_page_smart_home">Slim thuis-instellingen</string>
+    <string name="settings_page_privacy">Privacy-instellingen</string>
+    <string name="settings_page_developer">Ontwikkelaarsinstellingen</string>
 </resources>

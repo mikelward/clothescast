@@ -1375,4 +1375,19 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_week_ahead_steady">Σταθερή εβδομάδα.</string>
     <string name="today_week_ahead_warmer">Πιο ζεστά %1$s.</string>
     <string name="today_week_empty">Έτοιμο μετά την επόμενη πρόγνωση.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Ρυθμίσεις φωνής</string>
+    <string name="settings_page_schedule">Ρυθμίσεις προγράμματος</string>
+    <string name="settings_page_format">Ρυθμίσεις μορφής</string>
+    <string name="settings_page_region">Ρυθμίσεις περιοχής</string>
+    <string name="settings_page_clothes">Ρυθμίσεις ρούχων</string>
+    <string name="settings_page_display">Ρυθμίσεις εμφάνισης</string>
+    <string name="settings_page_location">Ρυθμίσεις τοποθεσίας</string>
+    <string name="settings_page_calendar">Ρυθμίσεις ημερολογίου</string>
+    <string name="settings_page_forecasters">Ρυθμίσεις μοντέλων πρόβλεψης</string>
+    <string name="settings_page_smart_home">Ρυθμίσεις έξυπνου σπιτιού</string>
+    <string name="settings_page_privacy">Ρυθμίσεις απορρήτου</string>
+    <string name="settings_page_developer">Ρυθμίσεις προγραμματιστή</string>
 </resources>

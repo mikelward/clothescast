@@ -1257,4 +1257,19 @@ standard in Israeli digital communication.
     <string name="today_week_ahead_steady">שבוע יציב.</string>
     <string name="today_week_ahead_warmer">חם יותר %1$s.</string>
     <string name="today_week_empty">יהיה זמין אחרי התחזית הבאה.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">הגדרות קול</string>
+    <string name="settings_page_schedule">הגדרות לוח הזמנים</string>
+    <string name="settings_page_format">הגדרות ניסוח</string>
+    <string name="settings_page_region">הגדרות אזור</string>
+    <string name="settings_page_clothes">הגדרות בגדים</string>
+    <string name="settings_page_display">הגדרות תצוגה</string>
+    <string name="settings_page_location">הגדרות מיקום</string>
+    <string name="settings_page_calendar">הגדרות לוח השנה</string>
+    <string name="settings_page_forecasters">הגדרות מודלי תחזית</string>
+    <string name="settings_page_smart_home">הגדרות בית חכם</string>
+    <string name="settings_page_privacy">הגדרות פרטיות</string>
+    <string name="settings_page_developer">הגדרות מפתח</string>
 </resources>

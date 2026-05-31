@@ -1287,4 +1287,19 @@ Not overridden by design:
     <string name="today_week_ahead_steady">स्थिर सप्ताह आगे।</string>
     <string name="today_week_ahead_warmer">गर्म %1$s।</string>
     <string name="today_week_empty">अगले पूर्वानुमान के बाद तैयार होगा।</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">आवाज़ सेटिंग</string>
+    <string name="settings_page_schedule">समय-सारणी सेटिंग</string>
+    <string name="settings_page_format">प्रारूप सेटिंग</string>
+    <string name="settings_page_region">क्षेत्र सेटिंग</string>
+    <string name="settings_page_clothes">कपड़े सेटिंग</string>
+    <string name="settings_page_display">प्रदर्शन सेटिंग</string>
+    <string name="settings_page_location">स्थान सेटिंग</string>
+    <string name="settings_page_calendar">कैलेंडर सेटिंग</string>
+    <string name="settings_page_forecasters">पूर्वानुमानकर्ता सेटिंग</string>
+    <string name="settings_page_smart_home">स्मार्ट होम सेटिंग</string>
+    <string name="settings_page_privacy">गोपनीयता सेटिंग</string>
+    <string name="settings_page_developer">डेवलपर सेटिंग</string>
 </resources>

@@ -713,4 +713,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_calendar_birthdays_description">Verwende besondere Farben und Nachrichten für Geburtstage in deinen Kalendern.</string>
     <string name="settings_calendar_public_holidays_description">Verwende besondere Farben und Nachrichten für Feiertage in deinen Kalendern.</string>
     <string name="settings_calendar_open_system_settings">Systemeinstellungen öffnen</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Stimmeinstellungen</string>
+    <string name="settings_page_schedule">Zeitplaneinstellungen</string>
+    <string name="settings_page_format">Formateinstellungen</string>
+    <string name="settings_page_region">Regionseinstellungen</string>
+    <string name="settings_page_clothes">Kleidungseinstellungen</string>
+    <string name="settings_page_smart_home">Smart-Home-Einstellungen</string>
+    <string name="settings_page_developer">Entwicklereinstellungen</string>
 </resources>

@@ -1195,4 +1195,19 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_week_ahead_steady">Setmana estable.</string>
     <string name="today_week_ahead_warmer">Més càlid %1$s.</string>
     <string name="today_week_empty">Disponible després de la pròxima previsió.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Configuració de veu</string>
+    <string name="settings_page_schedule">Configuració de programació</string>
+    <string name="settings_page_format">Configuració de format</string>
+    <string name="settings_page_region">Configuració de regió</string>
+    <string name="settings_page_clothes">Configuració de roba</string>
+    <string name="settings_page_display">Configuració de pantalla</string>
+    <string name="settings_page_location">Configuració d\'ubicació</string>
+    <string name="settings_page_calendar">Configuració de calendari</string>
+    <string name="settings_page_forecasters">Configuració de models de previsió</string>
+    <string name="settings_page_smart_home">Configuració de Smart Home</string>
+    <string name="settings_page_privacy">Configuració de privadesa</string>
+    <string name="settings_page_developer">Configuració de desenvolupador</string>
 </resources>

@@ -1242,4 +1242,19 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_week_ahead_steady">Stabilen teden pred nami.</string>
     <string name="today_week_ahead_warmer">Topleje %1$s.</string>
     <string name="today_week_empty">Bo na voljo po naslednji napovedi.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Nastavitve glasu</string>
+    <string name="settings_page_schedule">Nastavitve urnika</string>
+    <string name="settings_page_format">Nastavitve oblike</string>
+    <string name="settings_page_region">Nastavitve regije</string>
+    <string name="settings_page_clothes">Nastavitve oblačil</string>
+    <string name="settings_page_display">Nastavitve zaslona</string>
+    <string name="settings_page_location">Nastavitve lokacije</string>
+    <string name="settings_page_calendar">Nastavitve koledarja</string>
+    <string name="settings_page_forecasters">Nastavitve modelov napovedi</string>
+    <string name="settings_page_smart_home">Nastavitve pametnega doma</string>
+    <string name="settings_page_privacy">Nastavitve zasebnosti</string>
+    <string name="settings_page_developer">Nastavitve razvijalca</string>
 </resources>

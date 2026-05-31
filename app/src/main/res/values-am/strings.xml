@@ -1226,4 +1226,19 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_week_ahead_steady">የተረጋጋ ሳምንት በፊት።</string>
     <string name="today_week_ahead_warmer">ሞቃት %1$s።</string>
     <string name="today_week_empty">ከቀጣዩ ትንበያ በኋላ ይዘጋጃል።</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">የድምፅ ቅንብሮች</string>
+    <string name="settings_page_schedule">የመርሃ ግብር ቅንብሮች</string>
+    <string name="settings_page_format">የቅርጸት ቅንብሮች</string>
+    <string name="settings_page_region">የክልል ቅንብሮች</string>
+    <string name="settings_page_clothes">የልብስ ቅንብሮች</string>
+    <string name="settings_page_display">የማሳያ ቅንብሮች</string>
+    <string name="settings_page_location">የቦታ ቅንብሮች</string>
+    <string name="settings_page_calendar">የቀን መቁጠሪያ ቅንብሮች</string>
+    <string name="settings_page_forecasters">የትንበያ ሞዴል ቅንብሮች</string>
+    <string name="settings_page_smart_home">የስማርት ቤት ቅንብሮች</string>
+    <string name="settings_page_privacy">የግለነት ቅንብሮች</string>
+    <string name="settings_page_developer">የገንቢ ቅንብሮች</string>
 </resources>

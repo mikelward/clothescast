@@ -54,6 +54,11 @@ internal fun LocationContent(
     location: Location?,
     useDeviceLocation: Boolean,
     locationDetecting: Boolean = false,
+    // Whether a morning or evening schedule is enabled. Background ("Allow all
+    // the time") location is only needed when the worker runs unattended, so
+    // the always-on warning banner only nags when a schedule is on — granting
+    // it now lives on the Schedule page's enable flow.
+    scheduleEnabled: Boolean = false,
     padding: PaddingValues,
     onSetUseDeviceLocation: (Boolean) -> Unit,
     onSelectLocation: (Location) -> Unit,
@@ -79,6 +84,7 @@ internal fun LocationContent(
                 current = location,
                 useDeviceLocation = useDeviceLocation,
                 locationDetecting = locationDetecting,
+                scheduleEnabled = scheduleEnabled,
                 onSetUseDeviceLocation = onSetUseDeviceLocation,
                 onSelect = onSelectLocation,
                 onClear = onClearLocation,
@@ -103,6 +109,7 @@ private fun LocationCard(
     current: Location?,
     useDeviceLocation: Boolean,
     locationDetecting: Boolean,
+    scheduleEnabled: Boolean,
     onSetUseDeviceLocation: (Boolean) -> Unit,
     onSelect: (Location) -> Unit,
     onClear: () -> Unit,
@@ -144,16 +151,17 @@ private fun LocationCard(
         coarseGranted = granted
         // Only flip the toggle on if foreground was granted; otherwise the worker
         // would hit our isPermissionGranted check, return null, and quietly fall
-        // through to the settings location every day.
+        // through to the settings location every day. We no longer auto-chain into
+        // the always-on prompt here — background location is only needed once a
+        // schedule runs the worker unattended, so that grant moved to the Schedule
+        // page's enable flow.
         onSetUseDeviceLocation(granted)
-        if (granted && !hasBackgroundLocationPermission(context)) {
-            // Auto-chain into the always-on rationale; the worker can't read the
-            // device fix without ACCESS_BACKGROUND_LOCATION.
-            backgroundRationaleOpen = true
-        }
     }
 
-    if (useDeviceLocation && !backgroundGranted) {
+    // Only nag for always-on once a schedule actually needs it: device location +
+    // a foreground refresh works fine without ACCESS_BACKGROUND_LOCATION; it's the
+    // unattended scheduled run that can't read the fix without it.
+    if (useDeviceLocation && scheduleEnabled && !backgroundGranted) {
         BackgroundLocationWarningBanner(
             onGrant = { backgroundRationaleOpen = true },
         )
@@ -176,20 +184,15 @@ private fun LocationCard(
                         onSetUseDeviceLocation(false)
                         return@Switch
                     }
-                    when {
-                        // Go straight to the system foreground prompt; we auto-chain
-                        // into the background rationale once the user grants. Showing
-                        // our own rationale first just stacks a second dialog in front
-                        // of the system one.
-                        !coarseGranted ->
-                            foregroundLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-                        !backgroundGranted -> {
-                            // Foreground granted previously; surface the always-on
-                            // rationale before deep-linking into Settings.
-                            onSetUseDeviceLocation(true)
-                            backgroundRationaleOpen = true
-                        }
-                        else -> onSetUseDeviceLocation(true)
+                    // Just get foreground location here — that's all turning on
+                    // device location needs to resolve a fix on a foreground
+                    // refresh. The always-on ("Allow all the time") grant is
+                    // requested later, when the user enables a schedule and the
+                    // worker actually needs to read the fix unattended.
+                    if (!coarseGranted) {
+                        foregroundLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+                    } else {
+                        onSetUseDeviceLocation(true)
                     }
                 },
             )
@@ -414,15 +417,17 @@ private fun BackgroundLocationWarningBanner(onGrant: () -> Unit) {
 /**
  * Settings root warning card — a compact deep-link variant of
  * [BackgroundLocationWarningBanner]. Shown on the Settings root when device
- * location is on but background access is missing; tapping the card navigates
- * into the Location sub-page where the full launcher and rationale dialogs
- * live. Renders nothing while permission is granted or device location is off,
- * and re-checks on resume so granting from system Settings clears the card
- * without an in-app action.
+ * location is on, a schedule is enabled, but background access is missing;
+ * tapping the card navigates into the Location sub-page where the full launcher
+ * and rationale dialogs live. Renders nothing while permission is granted,
+ * device location is off, or no schedule needs an unattended fix, and re-checks
+ * on resume so granting from system Settings clears the card without an in-app
+ * action.
  */
 @Composable
 internal fun BackgroundLocationWarningCard(
     useDeviceLocation: Boolean,
+    scheduleEnabled: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -440,7 +445,7 @@ internal fun BackgroundLocationWarningCard(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    if (!useDeviceLocation || backgroundGranted) return
+    if (!useDeviceLocation || !scheduleEnabled || backgroundGranted) return
 
     Card(
         onClick = onClick,

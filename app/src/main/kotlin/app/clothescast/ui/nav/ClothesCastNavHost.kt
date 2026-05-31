@@ -78,6 +78,12 @@ private const val NAV_ANIM_MS = 200
 // link matching with page 0. The feels-like home-screen widgets deep-link to
 // page 0 / 2.
 @Serializable internal data class TodayRoute(val page: Int = 0)
+// TODO: Onboarding is disabled — the app always starts on Today (see the
+// startDestination below) and nothing navigates to OnboardingRoute anymore.
+// This route and the OnboardingScreen/ViewModel/Previews, the onboarding_*
+// strings, the onboardingSkipped preference, and enqueueOnboardingRefresh are
+// all dead now. Delete them in the follow-up purge once we're sure onboarding
+// won't be re-enabled.
 @Serializable internal object OnboardingRoute
 @Serializable internal object PairingRoute
 
@@ -100,7 +106,6 @@ private const val NAV_ANIM_MS = 200
 @Composable
 fun ClothesCastNavHost(
     app: ClothesCastApplication,
-    startOnboarding: Boolean,
     newIntent: Intent?,
 ) {
     val nav = rememberNavController()
@@ -116,7 +121,7 @@ fun ClothesCastNavHost(
 
     NavHost(
         navController = nav,
-        startDestination = if (startOnboarding) OnboardingRoute else TodayRoute(),
+        startDestination = TodayRoute(),
         // Push/pop slide so sub-pages animate in from the leading edge (and back
         // out the same way on up-navigation). The library default is a 700ms
         // crossfade, which both reads as "appearing from nowhere" and overlaps the

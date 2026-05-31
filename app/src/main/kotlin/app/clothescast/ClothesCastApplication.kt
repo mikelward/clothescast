@@ -349,7 +349,7 @@ class ClothesCastApplication : Application() {
         if (com.google.firebase.FirebaseApp.getApps(this).isEmpty()) return
         try {
             com.google.firebase.appcheck.FirebaseAppCheck.getInstance()
-                .installAppCheckProviderFactory(provideAppCheckProviderFactory())
+                .installAppCheckProviderFactory(provideAppCheckProviderFactory(this))
         } catch (t: Throwable) {
             // Don't crash startup if App Check init fails (e.g. Play Integrity
             // unavailable on a GMS-less device). The planner's SHARED path

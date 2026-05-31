@@ -1,4 +1,5 @@
 import java.util.Properties
+import java.util.UUID
 
 plugins {
     alias(libs.plugins.android.application)
@@ -97,6 +98,66 @@ val isCiBuild: Boolean = System.getenv("CI") == "true"
 val launcherIconRes: String = if (isCiBuild) "@mipmap/ic_launcher" else "@mipmap/ic_launcher_construction"
 println("clothescast: isCiBuild=$isCiBuild, launcherIcon=$launcherIconRes (versionCode=$gitCommitCount, HEAD=$gitShortSha)")
 
+/**
+ * Returns this developer's stable Firebase App Check debug token, or `""`
+ * on CI builds. On a local build we read `appCheckDebugToken=<uuid>` from
+ * `local.properties` if present, otherwise we mint a fresh UUID and append
+ * it to that file (preserving any existing contents) so subsequent builds
+ * reuse the same value. Register the value once in Firebase Console (App
+ * Check → app.clothescast.debug → Manage debug tokens) and every debug
+ * build off this laptop reuses it — including across `gradlew clean`,
+ * `Clear data`, and reinstalls.
+ *
+ * CI builds intentionally leave this empty so the Firebase Debug provider
+ * falls back to its own per-install random UUID. That keeps the
+ * developer's token out of FAD-distributed debug APKs (any tester would
+ * otherwise extract it from `BuildConfig` and inherit the developer's
+ * App Check identity). FAD testers' devices keep using the original
+ * "grep Logcat once per fresh install" workflow.
+ *
+ * The token has no power over release App Check (Play Integrity), and
+ * Firestore rules deny all client access regardless of who's authed via
+ * App Check — so the worst-case exposure of a leaked debug token is
+ * free-riding on the dev's debug-identity quota at the TTS proxy.
+ */
+fun ensureAppCheckDebugToken(localProperties: java.io.File): String {
+    if (isCiBuild) return ""
+    val key = "appCheckDebugToken"
+    if (localProperties.exists()) {
+        val props = Properties()
+        localProperties.inputStream().use { stream -> props.load(stream) }
+        val existing = props.getProperty(key)
+        if (existing != null && existing.isNotBlank()) {
+            return existing
+        }
+    }
+    val token = UUID.randomUUID().toString()
+    // Append rather than rewrite via Properties.store(): the user may
+    // hand-edit local.properties (e.g. geminiProxyUrl) and Properties
+    // drops comments + reorders on a full rewrite. Appending preserves
+    // existing contents verbatim.
+    val existing = if (localProperties.exists()) localProperties.readText() else ""
+    val needsLeadingNewline = existing.isNotEmpty() && !existing.endsWith("\n")
+    val addition = buildString {
+        if (needsLeadingNewline) append('\n')
+        append("\n# Firebase App Check debug token — generated once per developer.\n")
+        append("# Register in Firebase Console (App Check → app.clothescast.debug → Manage debug tokens).\n")
+        append("# Surfaced in Settings → Voice in debug builds for easy copy-paste. Keep private.\n")
+        append(key).append('=').append(token).append('\n')
+    }
+    localProperties.appendText(addition)
+    logger.lifecycle(
+        "clothescast: generated App Check debug token in local.properties — register " +
+            "in Firebase Console → App Check → app.clothescast.debug.",
+    )
+    return token
+}
+
+// Stable per-developer Firebase App Check debug token, read at the file
+// level so both the debug `buildConfigField` and the debug-only res
+// generator below can reference the same value. Empty on CI builds.
+val appCheckDebugToken: String = ensureAppCheckDebugToken(rootProject.file("local.properties"))
+
 // Today-screen local-build banner: shown on non-CI builds (gated on the same
 // `isCiBuild` flag the launcher icon uses) so a developer can see at a glance
 // which APK is installed and how fresh it is — "claude/foo · abc1234 (dirty)
@@ -185,6 +246,16 @@ android {
         }
         buildConfigField("String", "GEMINI_PROXY_URL", "\"${geminiProxyUrl.asJavaStringLiteralBody()}\"")
     }
+
+    // Defence-in-depth: nuke any stale `app_check_debug.xml` from an
+    // earlier iteration of this branch where we were (incorrectly)
+    // hoping the SDK would read the token from a resource string. It
+    // never did. The token's real plumbing is now in
+    // `app/src/debug/.../AppCheckProviderFactoryProvider.kt`, which
+    // pre-populates the SDK's SharedPreferences store. This `delete`
+    // ensures a `gradlew clean`-less local checkout that previously
+    // generated the XML doesn't ship a forever-stale resource.
+    file("build/generated/appCheck/debug/res/values/app_check_debug.xml").delete()
 
     signingConfigs {
         // Stable debug-keystore signing. When the env vars below are present
@@ -276,6 +347,14 @@ android {
                 "proguard-debug.pro",
             )
             applicationIdSuffix = ".debug"
+            // Debug-only so the per-developer App Check token doesn't
+            // end up readable in any release artefact. Empty on CI
+            // builds; Settings → Voice hides the row when empty.
+            buildConfigField(
+                "String",
+                "APP_CHECK_DEBUG_TOKEN",
+                "\"$appCheckDebugToken\"",
+            )
         }
         release {
             isMinifyEnabled = true

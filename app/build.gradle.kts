@@ -1,5 +1,15 @@
 import java.util.Properties
 import java.util.UUID
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.TaskAction
 
 plugins {
     alias(libs.plugins.android.application)
@@ -257,6 +267,10 @@ android {
     // generated the XML doesn't ship a forever-stale resource.
     file("build/generated/appCheck/debug/res/values/app_check_debug.xml").delete()
 
+    // Widget picker previews are generated res drawables — see the
+    // GenerateWidgetPreviewsTask + androidComponents.onVariants block after
+    // this android{} block, which wires them into the AGP resource pipeline.
+
     signingConfigs {
         // Stable debug-keystore signing. When the env vars below are present
         // (decoded from GitHub Secrets in the workflow), every CI build is
@@ -446,6 +460,84 @@ android {
             "RememberInComposition",
             "AutoboxingStateCreation",
             "AutoboxingStateValueProperty",
+        )
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Widget picker previews -> generated res drawables copied from snapshots
+// ----------------------------------------------------------------------------
+// The launcher widget picker shows android:previewImage for each widget (see
+// res/xml/*_widget_info.xml). Rather than ship a hand-drawn glyph or a second
+// committed copy of each render, we reuse the Roborazzi snapshots the test
+// suite already produces under app/snapshots/ as the real preview art. Those
+// live outside res/ (not a resource dir), so a task copies them into a
+// generated res/drawable-nodpi under valid drawable resource names. The
+// snapshot stays the single source of truth -- when the regen bot updates a
+// snapshot the preview follows automatically; nothing to keep in sync by hand,
+// and no duplicate PNG bytes in git.
+//
+// Wired into AGP's resource pipeline via onVariants + addGeneratedSourceDirectory
+// rather than a configuration-time copy under build/: AGP owns the task's output
+// dir and orders it after `clean`, so a clean build
+// (`./gradlew clean :app:assembleDebug`) regenerates the drawables before
+// resource merging instead of failing on missing @drawable/widget_preview_*.
+
+// previewImage drawable name -> source snapshot under app/snapshots.
+val widgetPreviewMapping = mapOf(
+    "widget_preview_outfit" to "widget_today_tshirt_shorts",
+    "widget_preview_feels_like" to "feels_like_widget_today",
+    "widget_preview_feels_like_week" to "feels_like_widget_week",
+    // All-indicators strip (temperature / humidity / wind / UV) so the
+    // conditions widget's picker preview shows its full range of icons.
+    "widget_preview_conditions" to "conditions_strip_all_indicators_light",
+)
+
+abstract class GenerateWidgetPreviewsTask : DefaultTask() {
+    // The source snapshot PNGs. NAME_ONLY: only the file name + contents matter
+    // for up-to-date checks, not the absolute path, so the cache survives a
+    // checkout in a different directory.
+    @get:InputFiles
+    @get:PathSensitive(PathSensitivity.NAME_ONLY)
+    abstract val sourceSnapshots: ConfigurableFileCollection
+
+    // drawable resource name -> source snapshot base name (no extension).
+    @get:Input
+    abstract val previewToSnapshot: MapProperty<String, String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        val drawableDir = outputDir.get().dir("drawable-nodpi").asFile
+        // Start clean so a renamed/removed mapping can't leave an orphan behind.
+        drawableDir.deleteRecursively()
+        drawableDir.mkdirs()
+        val byName = sourceSnapshots.files.associateBy { it.name }
+        previewToSnapshot.get().forEach { (drawable, snapshot) ->
+            val src = byName["$snapshot.png"]
+                ?: error(
+                    "Widget preview source snapshot missing: $snapshot.png -- " +
+                        "run the snapshot tests to regenerate it.",
+                )
+            src.copyTo(File(drawableDir, "$drawable.png"), overwrite = true)
+        }
+    }
+}
+
+androidComponents {
+    onVariants { variant ->
+        val taskName = "generate${variant.name.replaceFirstChar { it.uppercase() }}WidgetPreviews"
+        val generate = tasks.register<GenerateWidgetPreviewsTask>(taskName) {
+            previewToSnapshot.set(widgetPreviewMapping)
+            sourceSnapshots.from(
+                widgetPreviewMapping.values.map { file("snapshots/$it.png") },
+            )
+        }
+        variant.sources.res?.addGeneratedSourceDirectory(
+            generate,
+            GenerateWidgetPreviewsTask::outputDir,
         )
     }
 }

@@ -14,5 +14,5 @@
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
     android:initialLayout="@layout/glance_default_loading_layout"
-    android:previewImage="@drawable/ic_widget_chart"
+    android:previewImage="@drawable/widget_preview_feels_like_week"
     android:description="@string/feels_like_week_widget_description" />

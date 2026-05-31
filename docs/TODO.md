@@ -231,6 +231,10 @@ Open work:
 ## Deferred to v2 (out of scope for v1)
 
 - iOS port (needs a Mac + KMP-promotion of the core modules).
-- Backend Gemini proxy (interface in place; swap before Play Store).
+- Enforce shared-key TTS trial limit (30 calls or 30 days from first
+  use, whichever first). The Cloud Function (`functions/src/index.ts`)
+  counts already; flip on 429 + `X-Trial-Remaining` and wire the
+  Settings nudge / `SharedTrialExhaustedException` in
+  `core/data/.../tts/GeminiTtsClient.kt`.
 - Google Home / alarm-clock-app integration.
 - Play Store submission. Sideload + FAD only for v1.

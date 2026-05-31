@@ -107,8 +107,9 @@ class SettingsRepositoryTest {
         prefs.temperatureUnit shouldBe TemperatureUnit.CELSIUS
         prefs.distanceUnit shouldBe DistanceUnit.MILES   // setUp pins Locale.UK → miles
         prefs.clothesRules shouldBe ClothesRule.DEFAULTS
-        // Morning slot is on out of the box; the evening slot stays opt-in.
-        prefs.dailyEnabled shouldBe true
+        // Both scheduled slots are opt-in out of the box (no onboarding to gather
+        // the notification permission upfront).
+        prefs.dailyEnabled shouldBe false
         prefs.tonightEnabled shouldBe false
         prefs.dailyMentionEveningEvents shouldBe false
     }
@@ -983,11 +984,10 @@ class SettingsRepositoryTest {
         defaults.deliveryModeDaily shouldBe DeliveryMode.NOTIFICATION_AND_TTS.name
         defaults.deliveryModeTonight shouldBe DeliveryMode.NOTIFICATION_AND_TTS.name
         defaults.themeMode shouldBe ThemeMode.SYSTEM.name
-        // Morning slot is on out of the box; the evening slot stays opt-in (the
-        // user enables it, and the notification permission, from the schedule
-        // page). The 07:00 / 19:00 every-day times are the morning's effective
-        // values and the evening's once it's turned on.
-        defaults.dailyEnabled shouldBe true
+        // Both slots are opt-in out of the box; the user enables a slot, and the
+        // notification permission, from the schedule page. The 07:00 / 19:00
+        // every-day times are the slots' effective values once turned on.
+        defaults.dailyEnabled shouldBe false
         defaults.dailyTimeBucketHour shouldBe "07"
         defaults.dailyDaysCount shouldBe 7
         defaults.tonightTimeBucketHour shouldBe "19"
@@ -1140,9 +1140,9 @@ class SettingsRepositoryTest {
     fun `schedule migration writes nothing for a fresh empty store`() = runTest {
         val result = scheduleEnabledOptInMigration().migrate(emptyPreferences())
 
-        // Nothing to grandfather: the morning slot is default-on and the evening
-        // slot default-off, so a fresh install needs neither key written. Only
-        // the sentinel lands so the migration won't run again.
+        // Nothing to grandfather: both slots are default-off, so a fresh install
+        // needs neither key written. Only the sentinel lands so the migration
+        // won't run again.
         result[dailyEnabledKey] shouldBe null
         result[tonightEnabledKey] shouldBe null
         result[scheduleMigratedKey] shouldBe true
@@ -1152,8 +1152,8 @@ class SettingsRepositoryTest {
     fun `schedule migration grandfathers the evening slot on an existing store`() = runTest {
         // A store that already holds any preference predates the evening slot
         // becoming opt-in, so the user was getting evening casts under the old
-        // default-on — preserve that. The morning slot is left alone (it reads
-        // on by default).
+        // default-on — preserve that. The morning slot is left alone (a clean
+        // opt-in reset; it reads off by default).
         val existing = mutablePreferencesOf(stringPreferencesKey("region") to "en-GB")
 
         val result = scheduleEnabledOptInMigration().migrate(existing)

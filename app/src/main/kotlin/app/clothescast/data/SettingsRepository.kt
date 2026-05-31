@@ -908,13 +908,12 @@ class SettingsRepository(
             ?.toSet()
             ?.takeIf { it.isNotEmpty() }
             ?: Schedule.EVERY_DAY
-        // Morning slot is on out of the box (absent key ⇒ on) — a fresh install
-        // gets the daily cast without opting in, with the notification
-        // permission requested during onboarding. The evening slot stays
-        // opt-in (absent key ⇒ off); only an explicit stored `true` enables it.
-        // An explicit `false` on the morning slot is respected — that's the
-        // user having turned it off from the schedule page.
-        val dailyEnabled = this[DAILY_ENABLED] != false
+        // Both scheduled slots are opt-in (absent key ⇒ off): there's no first-run
+        // onboarding to gather the notification permission upfront, so a fresh
+        // install starts with no scheduled cast and the user turns a slot on from
+        // the schedule page — which is where the just-in-time POST_NOTIFICATIONS
+        // prompt fires. Only an explicit stored `true` enables either slot.
+        val dailyEnabled = this[DAILY_ENABLED] == true
         val tonightEnabled = this[TONIGHT_ENABLED] == true
         val tonightNotifyOnlyOnEvents = this[TONIGHT_NOTIFY_ONLY_ON_EVENTS] == true
         val dailyMentionEveningEvents = this[DAILY_MENTION_EVENING_EVENTS] == true
@@ -1430,16 +1429,19 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
 )
 
 // One-time migration grandfathering the evening / "tonight" cast for installs
-// that predate it becoming an opt-in slot. The morning slot is default-on
-// (absent key ⇒ on — see [UserPreferences.dailyEnabled]), so it needs no
-// preservation here: existing and fresh installs alike read it as on. The
-// evening slot is default-off, but an install already on the old default-on
-// behaviour was getting evening casts, and silently reading its absent key as
-// off would stop them on the next launch. Preserve them: when the store already
-// holds *any* preference (i.e. it predates this change) and the evening key was
-// never explicitly written, write an explicit `true`. A fresh install has an
-// empty store at migration time, so it falls through to the default-off evening
-// slot. Runs exactly once via a sentinel. Internal for direct unit testing.
+// that predate it becoming an opt-in slot. Both slots are opt-in now (absent
+// key ⇒ off — see [UserPreferences.dailyEnabled] / [tonightEnabled]). The
+// morning slot is deliberately NOT preserved here: flipping it to opt-in is a
+// clean reset, so existing and fresh installs alike read it off until the user
+// enables it (and grants the notification permission) from the schedule page.
+// The evening slot, though, flipped to opt-in while installs were still getting
+// evening casts under the old default-on behaviour, and silently reading its
+// absent key as off would stop them on the next launch. Preserve those: when the
+// store already holds *any* preference (i.e. it predates that change) and the
+// evening key was never explicitly written, write an explicit `true`. A fresh
+// install has an empty store at migration time, so it falls through to the
+// default-off evening slot. Runs exactly once via a sentinel. Internal for
+// direct unit testing.
 internal fun scheduleEnabledOptInMigration(): DataMigration<Preferences> {
     val migrated = booleanPreferencesKey("schedule_default_off_migrated_v1")
     val tonightEnabled = booleanPreferencesKey("tonight_enabled")

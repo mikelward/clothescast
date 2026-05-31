@@ -1285,4 +1285,19 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_week_ahead_steady">Stabil uge forude.</string>
     <string name="today_week_ahead_warmer">Varmere %1$s.</string>
     <string name="today_week_empty">Klar efter næste prognose.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Stemmeindstillinger</string>
+    <string name="settings_page_schedule">Tidsplanindstillinger</string>
+    <string name="settings_page_format">Formatindstillinger</string>
+    <string name="settings_page_region">Regionsindstillinger</string>
+    <string name="settings_page_clothes">Tøjindstillinger</string>
+    <string name="settings_page_display">Visningsindstillinger</string>
+    <string name="settings_page_location">Placeringsindstillinger</string>
+    <string name="settings_page_calendar">Kalenderindstillinger</string>
+    <string name="settings_page_forecasters">Prognosemodelindstillinger</string>
+    <string name="settings_page_smart_home">Smart hjem-indstillinger</string>
+    <string name="settings_page_privacy">Privatlivsindstillinger</string>
+    <string name="settings_page_developer">Udviklerindstillinger</string>
 </resources>

@@ -1227,4 +1227,19 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_week_ahead_steady">Wiki tulivu mbele.</string>
     <string name="today_week_ahead_warmer">Joto zaidi %1$s.</string>
     <string name="today_week_empty">Itakuwa tayari baada ya utabiri unaofuata.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Mipangilio ya sauti</string>
+    <string name="settings_page_schedule">Mipangilio ya ratiba</string>
+    <string name="settings_page_format">Mipangilio ya umbizo</string>
+    <string name="settings_page_region">Mipangilio ya eneo</string>
+    <string name="settings_page_clothes">Mipangilio ya mavazi</string>
+    <string name="settings_page_display">Mipangilio ya onyesho</string>
+    <string name="settings_page_location">Mipangilio ya mahali</string>
+    <string name="settings_page_calendar">Mipangilio ya kalenda</string>
+    <string name="settings_page_forecasters">Mipangilio ya modeli za utabiri</string>
+    <string name="settings_page_smart_home">Mipangilio ya nyumba ya kisasa</string>
+    <string name="settings_page_privacy">Mipangilio ya faragha</string>
+    <string name="settings_page_developer">Mipangilio ya msanidi programu</string>
 </resources>

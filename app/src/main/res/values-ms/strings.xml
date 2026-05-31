@@ -1261,4 +1261,19 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_week_ahead_steady">Minggu yang stabil.</string>
     <string name="today_week_ahead_warmer">Lebih hangat %1$s.</string>
     <string name="today_week_empty">Akan siap selepas ramalan berikutnya.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Tetapan suara</string>
+    <string name="settings_page_schedule">Tetapan jadual</string>
+    <string name="settings_page_format">Tetapan format</string>
+    <string name="settings_page_region">Tetapan rantau</string>
+    <string name="settings_page_clothes">Tetapan pakaian</string>
+    <string name="settings_page_display">Tetapan paparan</string>
+    <string name="settings_page_location">Tetapan lokasi</string>
+    <string name="settings_page_calendar">Tetapan kalendar</string>
+    <string name="settings_page_forecasters">Tetapan peramal cuaca</string>
+    <string name="settings_page_smart_home">Tetapan rumah pintar</string>
+    <string name="settings_page_privacy">Tetapan privasi</string>
+    <string name="settings_page_developer">Tetapan pembangun</string>
 </resources>

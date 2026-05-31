@@ -1254,4 +1254,19 @@ only the displayed label localizes.
     <string name="today_week_ahead_steady">Стабільний тиждень попереду.</string>
     <string name="today_week_ahead_warmer">Тепліше %1$s.</string>
     <string name="today_week_empty">Буде готово після наступного прогнозу.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Налаштування голосу</string>
+    <string name="settings_page_schedule">Налаштування розкладу</string>
+    <string name="settings_page_format">Налаштування формату</string>
+    <string name="settings_page_region">Налаштування регіону</string>
+    <string name="settings_page_clothes">Налаштування одягу</string>
+    <string name="settings_page_display">Налаштування екрана</string>
+    <string name="settings_page_location">Налаштування місцезнаходження</string>
+    <string name="settings_page_calendar">Налаштування календаря</string>
+    <string name="settings_page_forecasters">Налаштування прогнозистів</string>
+    <string name="settings_page_smart_home">Налаштування розумного дому</string>
+    <string name="settings_page_privacy">Налаштування конфіденційності</string>
+    <string name="settings_page_developer">Налаштування розробника</string>
 </resources>

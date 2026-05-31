@@ -1233,4 +1233,19 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_week_ahead_steady">Săptămână stabilă.</string>
     <string name="today_week_ahead_warmer">Mai cald %1$s.</string>
     <string name="today_week_empty">Va fi gata după următoarea prognoză.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Setări de voce</string>
+    <string name="settings_page_schedule">Setări de program</string>
+    <string name="settings_page_format">Setări de format</string>
+    <string name="settings_page_region">Setări de regiune</string>
+    <string name="settings_page_clothes">Setări de îmbrăcăminte</string>
+    <string name="settings_page_display">Setări de afișaj</string>
+    <string name="settings_page_location">Setări de locație</string>
+    <string name="settings_page_calendar">Setări de calendar</string>
+    <string name="settings_page_forecasters">Setări de modele de prognoză</string>
+    <string name="settings_page_smart_home">Setări de Smart Home</string>
+    <string name="settings_page_privacy">Setări de confidențialitate</string>
+    <string name="settings_page_developer">Setări de dezvoltator</string>
 </resources>

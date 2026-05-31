@@ -1245,4 +1245,19 @@ What is NOT overridden, by design:
     <string name="today_week_ahead_steady">Stabili savaitė.</string>
     <string name="today_week_ahead_warmer">Šilčiau %1$s.</string>
     <string name="today_week_empty">Bus parengta po kitos prognozės.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Balso nustatymai</string>
+    <string name="settings_page_schedule">Tvarkaraščio nustatymai</string>
+    <string name="settings_page_format">Formato nustatymai</string>
+    <string name="settings_page_region">Regiono nustatymai</string>
+    <string name="settings_page_clothes">Drabužių nustatymai</string>
+    <string name="settings_page_display">Rodymo nustatymai</string>
+    <string name="settings_page_location">Vietos nustatymai</string>
+    <string name="settings_page_calendar">Kalendoriaus nustatymai</string>
+    <string name="settings_page_forecasters">Prognozuotojų nustatymai</string>
+    <string name="settings_page_smart_home">Išmaniųjų namų nustatymai</string>
+    <string name="settings_page_privacy">Privatumo nustatymai</string>
+    <string name="settings_page_developer">Kūrėjo nustatymai</string>
 </resources>

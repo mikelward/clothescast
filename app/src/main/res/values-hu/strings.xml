@@ -1248,4 +1248,19 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_week_ahead_steady">Stabil hét elöl.</string>
     <string name="today_week_ahead_warmer">Melegebb %1$s.</string>
     <string name="today_week_empty">A következő előrejelzés után lesz elérhető.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Hangbeállítások</string>
+    <string name="settings_page_schedule">Ütemezési beállítások</string>
+    <string name="settings_page_format">Formátumbeállítások</string>
+    <string name="settings_page_region">Régióbeállítások</string>
+    <string name="settings_page_clothes">Ruházati beállítások</string>
+    <string name="settings_page_display">Megjelenítési beállítások</string>
+    <string name="settings_page_location">Helyszínbeállítások</string>
+    <string name="settings_page_calendar">Naptárbeállítások</string>
+    <string name="settings_page_forecasters">Előrejelző-beállítások</string>
+    <string name="settings_page_smart_home">Okosotthon-beállítások</string>
+    <string name="settings_page_privacy">Adatvédelmi beállítások</string>
+    <string name="settings_page_developer">Fejlesztői beállítások</string>
 </resources>

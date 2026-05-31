@@ -1257,4 +1257,19 @@ displayed label localizes.
     <string name="today_week_ahead_steady">Sakin bir hafta.</string>
     <string name="today_week_ahead_warmer">%1$s daha sıcak.</string>
     <string name="today_week_empty">Sonraki tahminden sonra hazır olacak.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Ses ayarları</string>
+    <string name="settings_page_schedule">Program ayarları</string>
+    <string name="settings_page_format">Biçim ayarları</string>
+    <string name="settings_page_region">Bölge ayarları</string>
+    <string name="settings_page_clothes">Kıyafet ayarları</string>
+    <string name="settings_page_display">Görünüm ayarları</string>
+    <string name="settings_page_location">Konum ayarları</string>
+    <string name="settings_page_calendar">Takvim ayarları</string>
+    <string name="settings_page_forecasters">Tahmin modeli ayarları</string>
+    <string name="settings_page_smart_home">Akıllı Ev ayarları</string>
+    <string name="settings_page_privacy">Gizlilik ayarları</string>
+    <string name="settings_page_developer">Geliştirici ayarları</string>
 </resources>

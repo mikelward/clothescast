@@ -1242,4 +1242,19 @@ What is NOT overridden, by design:
     <string name="today_week_ahead_steady">Стабилна седмица.</string>
     <string name="today_week_ahead_warmer">По-топло %1$s.</string>
     <string name="today_week_empty">Ще е готово след следващата прогноза.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Настройки на гласа</string>
+    <string name="settings_page_schedule">Настройки на графика</string>
+    <string name="settings_page_format">Настройки на формата</string>
+    <string name="settings_page_region">Настройки на региона</string>
+    <string name="settings_page_clothes">Настройки на дрехите</string>
+    <string name="settings_page_display">Настройки на дисплея</string>
+    <string name="settings_page_location">Настройки на местоположението</string>
+    <string name="settings_page_calendar">Настройки на календара</string>
+    <string name="settings_page_forecasters">Настройки на прогностиците</string>
+    <string name="settings_page_smart_home">Настройки на умния дом</string>
+    <string name="settings_page_privacy">Настройки на поверителността</string>
+    <string name="settings_page_developer">Настройки на разработчика</string>
 </resources>

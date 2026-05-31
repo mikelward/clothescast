@@ -558,7 +558,7 @@ internal fun SettingsLocationPreview() {
 internal fun SettingsDoneBarPreview() {
     SettingsFrame {
         CompositionLocalProvider(LocalSettingsDoneAction provides {}) {
-            SettingsScaffold(R.string.settings_root_location, onBack = {}) { padding ->
+            SettingsScaffold(R.string.settings_page_location, onBack = {}) { padding ->
                 LocationContent(
                     location = Location(
                         latitude = 51.5074,

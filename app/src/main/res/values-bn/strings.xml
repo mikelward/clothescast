@@ -1327,4 +1327,19 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_week_ahead_steady">সামনে স্থিতিশীল সপ্তাহ।</string>
     <string name="today_week_ahead_warmer">উষ্ণ %1$s।</string>
     <string name="today_week_empty">পরবর্তী পূর্বাভাসের পর প্রস্তুত হবে।</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">ভয়েস সেটিংস</string>
+    <string name="settings_page_schedule">সময়সূচি সেটিংস</string>
+    <string name="settings_page_format">ফর্ম্যাট সেটিংস</string>
+    <string name="settings_page_region">অঞ্চল সেটিংস</string>
+    <string name="settings_page_clothes">পোশাক সেটিংস</string>
+    <string name="settings_page_display">প্রদর্শন সেটিংস</string>
+    <string name="settings_page_location">অবস্থান সেটিংস</string>
+    <string name="settings_page_calendar">ক্যালেন্ডার সেটিংস</string>
+    <string name="settings_page_forecasters">পূর্বাভাসদাতা সেটিংস</string>
+    <string name="settings_page_smart_home">স্মার্ট হোম সেটিংস</string>
+    <string name="settings_page_privacy">গোপনীয়তা সেটিংস</string>
+    <string name="settings_page_developer">ডেভেলপার সেটিংস</string>
 </resources>

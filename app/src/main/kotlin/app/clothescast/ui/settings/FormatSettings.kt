@@ -125,7 +125,7 @@ private const val PREVIEW_DELTA_C = 5.0
 @Composable
 internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScaffold(R.string.settings_root_format, onBack) { padding ->
+    SettingsScaffold(R.string.settings_page_format, onBack) { padding ->
         FormatContent(
             periodPreamble = state.periodPreamble,
             wearPreamble = state.wearPreamble,

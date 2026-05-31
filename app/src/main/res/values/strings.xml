@@ -498,19 +498,38 @@
     <string name="settings_title">Settings</string>
     <string name="settings_back">Back</string>
 
-    <string name="settings_root_voice">Speech settings</string>
-    <string name="settings_root_schedule">Schedule settings</string>
-    <string name="settings_root_format">Format settings</string>
-    <string name="settings_root_region">Region settings</string>
-    <string name="settings_root_clothes">Clothes settings</string>
-    <string name="settings_root_display">Display settings</string>
-    <string name="settings_root_location">Location settings</string>
-    <string name="settings_root_calendar">Calendar settings</string>
-    <string name="settings_root_forecasters">Forecaster settings</string>
-    <string name="settings_root_smart_home">Smart Home settings</string>
-    <string name="settings_root_privacy">Privacy settings</string>
+    <!-- Root menu row labels: bare nouns, shown in the Settings root list.
+         The "… settings" sub-page titles live in settings_page_* below. -->
+    <string name="settings_root_voice">Speech</string>
+    <string name="settings_root_schedule">Schedule</string>
+    <string name="settings_root_format">Format</string>
+    <string name="settings_root_region">Region</string>
+    <string name="settings_root_clothes">Clothes</string>
+    <string name="settings_root_display">Display</string>
+    <string name="settings_root_location">Location</string>
+    <string name="settings_root_calendar">Calendar</string>
+    <string name="settings_root_forecasters">Forecasters</string>
+    <string name="settings_root_smart_home">Smart Home</string>
+    <string name="settings_root_privacy">Privacy</string>
     <string name="settings_root_about">About</string>
-    <string name="settings_root_developer">Developer settings</string>
+    <string name="settings_root_developer">Developer</string>
+
+    <!-- Sub-page titles, shown in each settings sub-page's top bar. The bare
+         menu-row labels that open them are settings_root_* above; these add
+         "settings" so the page header reads "Speech settings", "Clothes
+         settings", … one per SettingsDest entry. -->
+    <string name="settings_page_voice">Speech settings</string>
+    <string name="settings_page_schedule">Schedule settings</string>
+    <string name="settings_page_format">Format settings</string>
+    <string name="settings_page_region">Region settings</string>
+    <string name="settings_page_clothes">Clothes settings</string>
+    <string name="settings_page_display">Display settings</string>
+    <string name="settings_page_location">Location settings</string>
+    <string name="settings_page_calendar">Calendar settings</string>
+    <string name="settings_page_forecasters">Forecaster settings</string>
+    <string name="settings_page_smart_home">Smart Home settings</string>
+    <string name="settings_page_privacy">Privacy settings</string>
+    <string name="settings_page_developer">Developer settings</string>
 
     <string name="settings_root_schedule_subtitle">Notifications and Times</string>
     <string name="settings_root_format_subtitle">Wording and Verbosity</string>

@@ -1383,4 +1383,19 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_week_ahead_steady">Semana estável.</string>
     <string name="today_week_ahead_warmer">Mais quente %1$s.</string>
     <string name="today_week_empty">Estará pronto após a próxima previsão.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Definições de voz</string>
+    <string name="settings_page_schedule">Definições de agendamento</string>
+    <string name="settings_page_format">Definições de formato</string>
+    <string name="settings_page_region">Definições de região</string>
+    <string name="settings_page_clothes">Definições de vestuário</string>
+    <string name="settings_page_display">Definições de ecrã</string>
+    <string name="settings_page_location">Definições de localização</string>
+    <string name="settings_page_calendar">Definições de calendário</string>
+    <string name="settings_page_forecasters">Definições de modelos de previsão</string>
+    <string name="settings_page_smart_home">Definições de Smart Home</string>
+    <string name="settings_page_privacy">Definições de privacidade</string>
+    <string name="settings_page_developer">Definições de programador</string>
 </resources>

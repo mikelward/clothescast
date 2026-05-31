@@ -1265,4 +1265,19 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_week_ahead_steady">Stabilní týden.</string>
     <string name="today_week_ahead_warmer">Tepleji %1$s.</string>
     <string name="today_week_empty">Bude k dispozici po další předpovědi.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Nastavení hlasu</string>
+    <string name="settings_page_schedule">Nastavení plánu</string>
+    <string name="settings_page_format">Nastavení formátu</string>
+    <string name="settings_page_region">Nastavení oblasti</string>
+    <string name="settings_page_clothes">Nastavení oblečení</string>
+    <string name="settings_page_display">Nastavení zobrazení</string>
+    <string name="settings_page_location">Nastavení polohy</string>
+    <string name="settings_page_calendar">Nastavení kalendáře</string>
+    <string name="settings_page_forecasters">Nastavení modelů předpovědi</string>
+    <string name="settings_page_smart_home">Nastavení chytré domácnosti</string>
+    <string name="settings_page_privacy">Nastavení soukromí</string>
+    <string name="settings_page_developer">Nastavení vývojáře</string>
 </resources>

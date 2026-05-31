@@ -1279,4 +1279,19 @@ What is NOT overridden, by design:
     <string name="today_week_ahead_steady">Stabilný týždeň.</string>
     <string name="today_week_ahead_warmer">Teplejšie %1$s.</string>
     <string name="today_week_empty">Bude k dispozícii po ďalšej predpovedi.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Nastavenia hlasu</string>
+    <string name="settings_page_schedule">Nastavenia plánu</string>
+    <string name="settings_page_format">Nastavenia formátu</string>
+    <string name="settings_page_region">Nastavenia regiónu</string>
+    <string name="settings_page_clothes">Nastavenia oblečenia</string>
+    <string name="settings_page_display">Nastavenia zobrazenia</string>
+    <string name="settings_page_location">Nastavenia polohy</string>
+    <string name="settings_page_calendar">Nastavenia kalendára</string>
+    <string name="settings_page_forecasters">Nastavenia modelov prognóz</string>
+    <string name="settings_page_smart_home">Nastavenia inteligentnej domácnosti</string>
+    <string name="settings_page_privacy">Nastavenia súkromia</string>
+    <string name="settings_page_developer">Nastavenia vývojára</string>
 </resources>

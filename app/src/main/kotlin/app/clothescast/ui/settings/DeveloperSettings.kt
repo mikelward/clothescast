@@ -93,7 +93,7 @@ internal fun DeveloperPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     // cloud TTS is billable and cancellation isn't a reliable cost control,
     // so an in-flight guard stops rapid taps queuing duplicate paid requests.
     var isSpeaking by remember { mutableStateOf(false) }
-    SettingsScaffold(R.string.settings_root_developer, onBack) { padding ->
+    SettingsScaffold(R.string.settings_page_developer, onBack) { padding ->
         DeveloperContent(
             region = state.region,
             holidayOverrides = state.holidayOverrides,

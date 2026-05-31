@@ -1403,4 +1403,19 @@ label localizes.
     <string name="today_week_ahead_steady">本周平稳。</string>
     <string name="today_week_ahead_warmer">%1$s 转暖。</string>
     <string name="today_week_empty">下次预报后就绪。</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">语音设置</string>
+    <string name="settings_page_schedule">计划设置</string>
+    <string name="settings_page_format">格式设置</string>
+    <string name="settings_page_region">地区设置</string>
+    <string name="settings_page_clothes">服装设置</string>
+    <string name="settings_page_display">显示设置</string>
+    <string name="settings_page_location">位置设置</string>
+    <string name="settings_page_calendar">日历设置</string>
+    <string name="settings_page_forecasters">预报模型设置</string>
+    <string name="settings_page_smart_home">智能家居设置</string>
+    <string name="settings_page_privacy">隐私设置</string>
+    <string name="settings_page_developer">开发者设置</string>
 </resources>

@@ -1199,4 +1199,19 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_week_ahead_steady">Ühtlane nädal ees.</string>
     <string name="today_week_ahead_warmer">Soojem %1$s.</string>
     <string name="today_week_empty">Valmis pärast järgmist prognoosi.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Hääle seaded</string>
+    <string name="settings_page_schedule">Ajakava seaded</string>
+    <string name="settings_page_format">Vormingu seaded</string>
+    <string name="settings_page_region">Piirkonna seaded</string>
+    <string name="settings_page_clothes">Riietuse seaded</string>
+    <string name="settings_page_display">Ekraani seaded</string>
+    <string name="settings_page_location">Asukoha seaded</string>
+    <string name="settings_page_calendar">Kalendri seaded</string>
+    <string name="settings_page_forecasters">Prognoosijate seaded</string>
+    <string name="settings_page_smart_home">Nutikodu seaded</string>
+    <string name="settings_page_privacy">Privaatsuse seaded</string>
+    <string name="settings_page_developer">Arendaja seaded</string>
 </resources>

@@ -240,7 +240,8 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Settings — API key / Gemini -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">ከፍተኛ ጥራት ያለው ድምፅ ለማግኘት Gemini ይጠቀሙ።</string>
+    <string name="settings_api_key_gemini_header">በClothesCast እና Gemini አገልጋዮች በኩል ከፍተኛ ጥራት ያላቸው ድምፆች።</string>
+    <string name="settings_tts_device_header">በስልክህ ውስጥ የተገነቡ ዝቅተኛ ጥራት ድምፆች።</string>
     <string name="settings_api_key_status_set">Gemini ቁልፍ ተዋቅሯል።</string>
     <string name="settings_api_key_status_unset">ነፃ API key ያግኙ aistudio.google.com ላይ</string>
     <string name="settings_api_key_placeholder">Gemini API key ይለጥፉ</string>
@@ -295,7 +296,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Settings — TTS / voice -->
     <string name="settings_tts_engine_title">የድምፅ ሞተር</string>
-    <string name="settings_tts_engine_description">Gemini በጣም ተፈጥሯዊ ይሰማል፣ ነገር ግን የ API ቁልፍ ይፈልጋል።</string>
+    <string name="settings_tts_engine_description">በዝቅተኛ ጥራት የመሣሪያ ድምፅ እና በከፍተኛ ጥራት የመስመር ላይ ድምፅ መካከል ምረጥ።</string>
     <string name="settings_tts_engine_device">መሳሪያ (offline, ነፃ)</string>
     <string name="settings_tts_engine_gemini">Gemini (ከፍተኛ ጥራት, online)</string>
     <string name="settings_tts_voice_label">ድምፅ</string>
@@ -920,7 +921,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_delivery_notification">አሳውቅ</string>
     <string name="settings_delivery_tts">ተናገር</string>
     <string name="speech_setup_title">በድምፅ የሚነበቡ ClothesCast ያዋቅሩ</string>
-    <string name="speech_setup_description">ClothesCast በድምፅ እንዴት እንደሚነበብ ይምረጡ። ነፃውን የመሳሪያ ድምፅ ይጠቀሙ፣ ወይም ለከፍተኛ ጥራት ድምፆች የGemini API ቁልፍ ያክሉ።</string>
     <string name="speech_setup_smart_home_note">የስማርት ቤት ንግግር የGemini API ቁልፍ ይፈልጋል። ያለ እሱም ካስቲንግ አሁንም ልብስዎን ያሳያል።</string>
     <string name="speech_setup_done">ተጠናቀቀ</string>
 

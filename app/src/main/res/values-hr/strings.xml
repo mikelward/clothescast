@@ -564,7 +564,8 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_display_theme_dark">Tamna</string>
 
     <!-- API key screen — Gemini section header. -->
-    <string name="settings_api_key_gemini_header">Koristi Gemini za visokokvalitetne glasove.</string>
+    <string name="settings_api_key_gemini_header">Glasovi visoke kvalitete putem servera ClothesCast i Gemini.</string>
+    <string name="settings_tts_device_header">Glasovi niske kvalitete ugrađeni u tvoj telefon.</string>
 
     <!-- Location screen — additional strings. -->
     <string name="settings_location_detecting">Otkrivanje…</string>
@@ -574,7 +575,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_location_manual_override_disclosure">Ako odabereš grad, automatsko otkrivanje bit će onemogućeno.</string>
 
     <!-- TTS engine selection — description beneath the Gemini/Device toggle. -->
-    <string name="settings_tts_engine_description">Gemini zvuči puno prirodnije, ali zahtijeva API ključ.</string>
+    <string name="settings_tts_engine_description">Odaberi između govora niske kvalitete na uređaju i govora visoke kvalitete na mreži.</string>
 
     <!-- In-app update banner: shown when a newer build is on the Play Store. -->
     <string name="today_update_available_title">Dostupno ažuriranje</string>
@@ -1018,7 +1019,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_delivery_notification">Obavijesti</string>
     <string name="settings_delivery_tts">Pročitaj</string>
     <string name="speech_setup_title">Postavi izgovorene ClothesCastove</string>
-    <string name="speech_setup_description">Odaberi kako se tvoj ClothesCast čita naglas. Koristi besplatni glas uređaja ili dodaj Gemini API ključ za glasove visoke kvalitete.</string>
     <string name="speech_setup_smart_home_note">Izgovor u pametnom domu zahtijeva Gemini API ključ. Emitiranje i bez njega prikazuje tvoj outfit.</string>
     <string name="speech_setup_done">Gotovo</string>
 

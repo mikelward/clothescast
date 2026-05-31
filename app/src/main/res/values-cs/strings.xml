@@ -220,7 +220,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_tts_engine_title">Řečový engine</string>
     <string name="settings_tts_engine_device">Zařízení (offline, zdarma)</string>
     <string name="settings_tts_engine_gemini">Gemini (vysoká kvalita, online)</string>
-    <string name="settings_tts_engine_description">Gemini zní mnohem přirozeněji, ale vyžaduje API klíč.</string>
+    <string name="settings_tts_engine_description">Vyber si mezi řečí v nízké kvalitě v zařízení a řečí ve vysoké kvalitě online.</string>
 
     <string name="settings_tts_voice_label">Hlas</string>
     <string name="settings_tts_voice_dismiss">Hotovo</string>
@@ -275,7 +275,8 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Použij Gemini pro kvalitní hlasy.</string>
+    <string name="settings_api_key_gemini_header">Hlasy ve vysoké kvalitě přes servery ClothesCast a Gemini.</string>
+    <string name="settings_tts_device_header">Hlasy v nízké kvalitě zabudované do tvého telefonu.</string>
     <string name="settings_api_key_status_set">Gemini klíč je nastaven.</string>
     <string name="settings_api_key_status_unset">Žádný Gemini klíč není nastaven. Získej ho na aistudio.google.com pro použití hlasů Gemini.</string>
     <string name="settings_api_key_placeholder">Vlož sem Gemini API klíč</string>
@@ -957,7 +958,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_delivery_notification">Oznámit</string>
     <string name="settings_delivery_tts">Přečíst</string>
     <string name="speech_setup_title">Nastav mluvené ClothesCasty</string>
-    <string name="speech_setup_description">Vyber, jak se tvůj ClothesCast čte nahlas. Použij bezplatný hlas zařízení, nebo přidej Gemini API klíč pro hlasy ve vysoké kvalitě.</string>
     <string name="speech_setup_smart_home_note">Mluvený výstup v chytré domácnosti vyžaduje Gemini API klíč. Casting tvůj outfit ukáže i bez něj.</string>
     <string name="speech_setup_done">Hotovo</string>
 

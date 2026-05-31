@@ -327,7 +327,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
          Settings — Voice / API key
          ===================================================================== -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Dùng Gemini để có giọng đọc chất lượng cao.</string>
+    <string name="settings_api_key_gemini_header">Giọng nói chất lượng cao qua máy chủ ClothesCast và Gemini.</string>
+    <string name="settings_tts_device_header">Giọng nói chất lượng thấp tích hợp sẵn trong điện thoại của bạn.</string>
     <string name="settings_api_key_status_set">Đã cài đặt khóa Gemini.</string>
     <string name="settings_api_key_status_unset">Lấy khóa API miễn phí tại aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Dán khóa API Gemini của bạn</string>
@@ -393,7 +394,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
          Settings — Voice engine / TTS
          ===================================================================== -->
     <string name="settings_tts_engine_title">Công cụ giọng nói</string>
-    <string name="settings_tts_engine_description">Gemini nghe tự nhiên hơn nhiều nhưng cần khóa API.</string>
+    <string name="settings_tts_engine_description">Chọn giữa giọng nói chất lượng thấp trên thiết bị và giọng nói chất lượng cao trực tuyến.</string>
     <string name="settings_tts_engine_device">Thiết bị (ngoại tuyến, miễn phí)</string>
     <string name="settings_tts_engine_gemini">Gemini (chất lượng cao, trực tuyến)</string>
     <string name="settings_tts_voice_label">Giọng</string>
@@ -1011,7 +1012,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_delivery_notification">Thông báo</string>
     <string name="settings_delivery_tts">Đọc</string>
     <string name="speech_setup_title">Thiết lập ClothesCast nói</string>
-    <string name="speech_setup_description">Chọn cách đọc to ClothesCast của bạn. Dùng giọng nói miễn phí của thiết bị, hoặc thêm khóa API Gemini để có giọng nói chất lượng cao.</string>
     <string name="speech_setup_smart_home_note">Giọng nói trên nhà thông minh cần khóa API Gemini. Việc truyền hình vẫn hiển thị trang phục của bạn mà không cần khóa.</string>
     <string name="speech_setup_done">Xong</string>
 

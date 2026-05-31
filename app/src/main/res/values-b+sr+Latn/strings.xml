@@ -165,7 +165,8 @@ default English (matching values-pl / values-uk).
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Koristi Gemini za visokokvalitetne glasove.</string>
+    <string name="settings_api_key_gemini_header">Glasovi visokog kvaliteta preko servera ClothesCast i Gemini.</string>
+    <string name="settings_tts_device_header">Glasovi niskog kvaliteta ugrađeni u tvoj telefon.</string>
     <string name="settings_api_key_status_set">Gemini ključ je podešen.</string>
     <string name="settings_api_key_status_unset">Nema Gemini ključa. Nabavi ga besplatno na aistudio.google.com za korišćenje Gemini glasova.</string>
     <string name="settings_api_key_placeholder">Nalepi svoj Gemini API ključ</string>
@@ -222,7 +223,7 @@ default English (matching values-pl / values-uk).
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">Glasovni mehanizam</string>
-    <string name="settings_tts_engine_description">Gemini zvuči mnogo prirodnije, ali zahteva API ključ.</string>
+    <string name="settings_tts_engine_description">Izaberi između govora niskog kvaliteta na uređaju i govora visokog kvaliteta na mreži.</string>
     <string name="settings_tts_engine_device">Uređaj (offline, besplatno)</string>
     <string name="settings_tts_engine_gemini">Gemini (visoki kvalitet, online)</string>
     <string name="settings_tts_voice_label">Glas</string>
@@ -938,7 +939,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_delivery_notification">Obavesti</string>
     <string name="settings_delivery_tts">Pročitaj</string>
     <string name="speech_setup_title">Podesi izgovorene ClothesCastove</string>
-    <string name="speech_setup_description">Izaberi kako se tvoj ClothesCast čita naglas. Koristi besplatni glas uređaja ili dodaj Gemini API ključ za glasove visokog kvaliteta.</string>
     <string name="speech_setup_smart_home_note">Govor u pametnom domu zahteva Gemini API ključ. Emitovanje i bez njega prikazuje tvoju kombinaciju.</string>
     <string name="speech_setup_done">Gotovo</string>
 

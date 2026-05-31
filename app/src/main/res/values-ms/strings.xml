@@ -310,7 +310,8 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <!-- Gemini API key -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Gunakan Gemini untuk mendapatkan suara berkualiti tinggi.</string>
+    <string name="settings_api_key_gemini_header">Suara berkualiti tinggi melalui pelayan ClothesCast dan Gemini.</string>
+    <string name="settings_tts_device_header">Suara berkualiti rendah yang terbina dalam telefon anda.</string>
     <string name="settings_api_key_status_set">Kunci Gemini telah dikonfigurasi.</string>
     <string name="settings_api_key_status_unset">Dapatkan kunci API percuma di aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Tampal kunci API Gemini anda</string>
@@ -367,7 +368,7 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <!-- TTS / Voice settings -->
     <string name="settings_tts_engine_title">Enjin suara</string>
-    <string name="settings_tts_engine_description">Gemini kedengaran jauh lebih semula jadi tetapi memerlukan kunci API.</string>
+    <string name="settings_tts_engine_description">Pilih antara pertuturan berkualiti rendah pada peranti atau pertuturan berkualiti tinggi dalam talian.</string>
     <string name="settings_tts_engine_device">Peranti (luar talian, percuma)</string>
     <string name="settings_tts_engine_gemini">Gemini (berkualiti tinggi, dalam talian)</string>
     <string name="settings_tts_voice_label">Suara</string>
@@ -956,7 +957,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_delivery_notification">Beritahu</string>
     <string name="settings_delivery_tts">Sebut</string>
     <string name="speech_setup_title">Sediakan ClothesCast bersuara</string>
-    <string name="speech_setup_description">Pilih cara ClothesCast anda disebut dengan kuat. Gunakan suara peranti percuma, atau tambah Gemini API key untuk suara berkualiti tinggi.</string>
     <string name="speech_setup_smart_home_note">Sebutan rumah pintar memerlukan Gemini API key. Cast tetap menunjukkan pakaian anda tanpanya.</string>
     <string name="speech_setup_done">Selesai</string>
 

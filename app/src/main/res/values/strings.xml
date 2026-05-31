@@ -785,7 +785,6 @@
     <string name="settings_delivery_tts">Speak</string>
 
     <string name="speech_setup_title">Set up spoken ClothesCasts</string>
-    <string name="speech_setup_description">Choose how your ClothesCast is spoken aloud. Use the free device voice, or add a Gemini API key for high-quality voices.</string>
     <string name="speech_setup_smart_home_note">Smart home speech requires a Gemini API key. Casting still shows your outfit without it.</string>
     <string name="speech_setup_done">Done</string>
 

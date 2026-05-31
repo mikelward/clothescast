@@ -129,7 +129,7 @@ only the displayed label localizes.
     <string name="settings_tts_engine_title">Голосовой движок</string>
     <string name="settings_tts_engine_device">Устройство (офлайн, бесплатно)</string>
     <string name="settings_tts_engine_gemini">Gemini (высокое качество, онлайн)</string>
-    <string name="settings_tts_engine_description">Gemini звучит гораздо естественнее, но требует ключ API.</string>
+    <string name="settings_tts_engine_description">Выбери между речью низкого качества на устройстве и речью высокого качества онлайн.</string>
 
     <string name="settings_tts_voice_label">Голос</string>
     <string name="settings_tts_voice_dismiss">Готово</string>
@@ -315,7 +315,8 @@ only the displayed label localizes.
     and save / clear buttons. URLs stay verbatim.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Используй Gemini для голосов высокого качества.</string>
+    <string name="settings_api_key_gemini_header">Голоса высокого качества через серверы ClothesCast и Gemini.</string>
+    <string name="settings_tts_device_header">Голоса низкого качества, встроенные в твой телефон.</string>
 
     <string name="settings_api_key_status_set">Ключ Gemini настроен.</string>
     <string name="settings_api_key_status_unset">Ключ Gemini не настроен. Получи на aistudio.google.com, чтобы использовать голоса Gemini.</string>
@@ -1003,7 +1004,6 @@ only the displayed label localizes.
     <string name="settings_delivery_notification">Уведомить</string>
     <string name="settings_delivery_tts">Озвучить</string>
     <string name="speech_setup_title">Настрой озвучивание ClothesCast</string>
-    <string name="speech_setup_description">Выбери, как твой ClothesCast будет озвучиваться. Используй бесплатный голос устройства или добавь ключ API Gemini для голосов высокого качества.</string>
     <string name="speech_setup_smart_home_note">Для озвучивания в умном доме нужен ключ API Gemini. Трансляция всё равно показывает твой образ и без него.</string>
     <string name="speech_setup_done">Готово</string>
 

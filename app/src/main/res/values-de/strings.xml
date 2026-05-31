@@ -627,7 +627,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_theme_dark">Dunkel</string>
 
     <!-- API key screen — Gemini section header. -->
-    <string name="settings_api_key_gemini_header">Verwende Gemini für hochwertige Stimmen.</string>
+    <string name="settings_api_key_gemini_header">Stimmen in hoher Qualität über ClothesCast- und Gemini-Server.</string>
+    <string name="settings_tts_device_header">Stimmen in geringer Qualität, eingebaut in dein Smartphone.</string>
 
     <!-- Location screen — additional strings. -->
     <string name="settings_location_detecting">Wird ermittelt…</string>
@@ -637,7 +638,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_location_manual_override_disclosure">Wenn du eine Stadt wählst, wird die automatische Erkennung deaktiviert.</string>
 
     <!-- TTS engine selection — description beneath the Gemini/Device toggle. -->
-    <string name="settings_tts_engine_description">Gemini klingt deutlich natürlicher, benötigt aber einen API-Schlüssel.</string>
+    <string name="settings_tts_engine_description">Wähle zwischen Sprachausgabe in geringer Qualität auf dem Gerät und Sprachausgabe in hoher Qualität online.</string>
 
     <!-- In-app update banner: shown when a newer build is on the Play Store. -->
     <string name="today_update_available_title">Update verfügbar</string>
@@ -1111,7 +1112,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_delivery_notification">Benachrichtigen</string>
     <string name="settings_delivery_tts">Sprechen</string>
     <string name="speech_setup_title">Gesprochene ClothesCasts einrichten</string>
-    <string name="speech_setup_description">Wähle, wie dein ClothesCast vorgelesen wird. Nutze die kostenlose Gerätestimme oder füge einen Gemini-API-Schlüssel für hochwertige Stimmen hinzu.</string>
     <string name="speech_setup_smart_home_note">Sprache im Smart Home benötigt einen Gemini-API-Schlüssel. Das Übertragen zeigt dein Outfit auch ohne ihn.</string>
     <string name="speech_setup_done">Fertig</string>
 

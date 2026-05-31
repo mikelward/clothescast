@@ -105,7 +105,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_tts_engine_title">Talesynteseenhet</string>
     <string name="settings_tts_engine_device">Enhet (offline, gratis)</string>
     <string name="settings_tts_engine_gemini">Gemini (høy kvalitet, online)</string>
-    <string name="settings_tts_engine_description">Gemini høres mye mer naturlig ut, men krever en API-nøkkel.</string>
+    <string name="settings_tts_engine_description">Velg mellom tale i lav kvalitet på enheten og tale i høy kvalitet på nett.</string>
 
     <string name="settings_tts_voice_label">Stemme</string>
     <string name="settings_tts_voice_dismiss">Ferdig</string>
@@ -275,7 +275,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Bruk Gemini for stemmer av høy kvalitet.</string>
+    <string name="settings_api_key_gemini_header">Stemmer i høy kvalitet via ClothesCast- og Gemini-servere.</string>
+    <string name="settings_tts_device_header">Stemmer i lav kvalitet, innebygd i telefonen din.</string>
     <string name="settings_api_key_status_set">En Gemini-nøkkel er satt opp.</string>
     <string name="settings_api_key_status_unset">Ingen Gemini-nøkkel satt opp. Hent en på aistudio.google.com for å bruke Gemini-stemmer.</string>
     <string name="settings_api_key_placeholder">Lim inn Gemini API-nøkkel her</string>
@@ -978,7 +979,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_delivery_notification">Varsle</string>
     <string name="settings_delivery_tts">Les opp</string>
     <string name="speech_setup_title">Konfigurer talte ClothesCasts</string>
-    <string name="speech_setup_description">Velg hvordan ClothesCast-en din leses opp. Bruk den gratis enhetsstemmen, eller legg til en Gemini-API-nøkkel for stemmer i høy kvalitet.</string>
     <string name="speech_setup_smart_home_note">Tale i smarthjemmet krever en Gemini-API-nøkkel. Casting viser antrekket ditt også uten den.</string>
     <string name="speech_setup_done">Ferdig</string>
 

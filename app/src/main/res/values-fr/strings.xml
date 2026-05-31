@@ -596,7 +596,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_theme_dark">Sombre</string>
 
     <!-- API key screen — Gemini section header. -->
-    <string name="settings_api_key_gemini_header">Utilise Gemini pour obtenir des voix de haute qualité.</string>
+    <string name="settings_api_key_gemini_header">Voix de haute qualité via les serveurs ClothesCast et Gemini.</string>
+    <string name="settings_tts_device_header">Voix de basse qualité intégrées à ton téléphone.</string>
 
     <!-- Location screen — additional strings. -->
     <string name="settings_location_detecting">Détection…</string>
@@ -606,7 +607,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_location_manual_override_disclosure">Choisir une ville désactive la détection auto.</string>
 
     <!-- TTS engine selection — description beneath the Gemini/Device toggle. -->
-    <string name="settings_tts_engine_description">Gemini sonne beaucoup plus naturel, mais nécessite une clé API.</string>
+    <string name="settings_tts_engine_description">Choisis entre une voix de basse qualité sur l\'appareil et une voix de haute qualité en ligne.</string>
 
     <!-- In-app update banner: shown when a newer build is on the Play Store. -->
     <string name="today_update_available_title">Mise à jour disponible</string>
@@ -1076,7 +1077,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_delivery_notification">Notifier</string>
     <string name="settings_delivery_tts">Lire à voix haute</string>
     <string name="speech_setup_title">Configurer les ClothesCasts à voix haute</string>
-    <string name="speech_setup_description">Choisis comment ton ClothesCast est lu à voix haute. Utilise la voix gratuite de l\'appareil, ou ajoute une clé API Gemini pour des voix de haute qualité.</string>
     <string name="speech_setup_smart_home_note">La lecture sur la maison connectée nécessite une clé API Gemini. La diffusion affiche quand même ta tenue sans elle.</string>
     <string name="speech_setup_done">Terminé</string>
 

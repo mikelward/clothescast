@@ -551,7 +551,8 @@ is unchanged; only the displayed label localizes.
     <string name="settings_display_theme_dark">Ciemny</string>
 
     <!-- API key screen — Gemini section header. -->
-    <string name="settings_api_key_gemini_header">Używaj Gemini do głosów wysokiej jakości.</string>
+    <string name="settings_api_key_gemini_header">Głosy w wysokiej jakości przez serwery ClothesCast i Gemini.</string>
+    <string name="settings_tts_device_header">Głosy w niskiej jakości wbudowane w Twój telefon.</string>
 
     <!-- Location screen — additional strings. -->
     <string name="settings_location_detecting">Ustalanie…</string>
@@ -561,7 +562,7 @@ is unchanged; only the displayed label localizes.
     <string name="settings_location_manual_override_disclosure">Wybór miasta wyłącza automatyczne wykrywanie.</string>
 
     <!-- TTS engine selection — description. -->
-    <string name="settings_tts_engine_description">Gemini brzmi znacznie bardziej naturalnie, ale wymaga klucza API.</string>
+    <string name="settings_tts_engine_description">Wybierz między mową w niskiej jakości na urządzeniu a mową w wysokiej jakości online.</string>
 
     <!-- In-app update banner. -->
     <string name="today_update_available_title">Dostępna aktualizacja</string>
@@ -996,7 +997,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_delivery_notification">Powiadom</string>
     <string name="settings_delivery_tts">Przeczytaj</string>
     <string name="speech_setup_title">Skonfiguruj mówione ClothesCasty</string>
-    <string name="speech_setup_description">Wybierz sposób odczytywania Twojego ClothesCasta na głos. Użyj bezpłatnego głosu urządzenia lub dodaj klucz API Gemini, aby uzyskać głosy wysokiej jakości.</string>
     <string name="speech_setup_smart_home_note">Mowa w inteligentnym domu wymaga klucza API Gemini. Przesyłanie i tak pokazuje Twój strój nawet bez niego.</string>
     <string name="speech_setup_done">Gotowe</string>
 

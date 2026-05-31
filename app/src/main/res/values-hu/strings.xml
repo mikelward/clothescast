@@ -222,7 +222,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_tts_engine_title">Beszédmotor</string>
     <string name="settings_tts_engine_device">Eszköz (offline, ingyenes)</string>
     <string name="settings_tts_engine_gemini">Gemini (magas minőség, online)</string>
-    <string name="settings_tts_engine_description">A Gemini sokkal természetesebben hangzik, de API-kulcsra van szükség.</string>
+    <string name="settings_tts_engine_description">Válassz a gyenge minőségű, eszközön futó beszéd és a kiváló minőségű online beszéd között.</string>
 
     <string name="settings_tts_voice_label">Hang</string>
     <string name="settings_tts_voice_dismiss">Kész</string>
@@ -277,7 +277,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Használj Geminit a kiváló minőségű hangokhoz.</string>
+    <string name="settings_api_key_gemini_header">Kiváló minőségű hangok a ClothesCast és a Gemini szerverein keresztül.</string>
+    <string name="settings_tts_device_header">A telefonodba beépített, gyenge minőségű hangok.</string>
     <string name="settings_api_key_status_set">Gemini-kulcs be van állítva.</string>
     <string name="settings_api_key_status_unset">Nincs Gemini-kulcs beállítva. Szerezz egyet az aistudio.google.com oldalon a Gemini-hangok használatához.</string>
     <string name="settings_api_key_placeholder">Gemini API-kulcs beillesztése ide</string>
@@ -942,7 +943,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_delivery_notification">Értesítés</string>
     <string name="settings_delivery_tts">Felolvasás</string>
     <string name="speech_setup_title">Beszélt ClothesCastok beállítása</string>
-    <string name="speech_setup_description">Válaszd ki, hogyan olvassa fel a ClothesCast. Használd az ingyenes eszközhangot, vagy adj hozzá egy Gemini API-kulcsot a kiváló minőségű hangokhoz.</string>
     <string name="speech_setup_smart_home_note">Az okosotthoni beszédhez Gemini API-kulcs szükséges. A küldés enélkül is megjeleníti az öltözékedet.</string>
     <string name="speech_setup_done">Kész</string>
 

@@ -312,7 +312,8 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- API key settings -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">ใช้ Gemini เพื่อรับเสียงคุณภาพสูง</string>
+    <string name="settings_api_key_gemini_header">เสียงคุณภาพสูงผ่านเซิร์ฟเวอร์ของ ClothesCast และ Gemini</string>
+    <string name="settings_tts_device_header">เสียงคุณภาพต่ำที่มีมาในเครื่องของคุณ</string>
     <string name="settings_api_key_status_set">กำหนดค่า Gemini key แล้ว</string>
     <string name="settings_api_key_status_unset">รับ API key ฟรีที่ aistudio.google.com</string>
     <string name="settings_api_key_placeholder">วาง Gemini API key ของคุณ</string>
@@ -371,7 +372,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- TTS / Voice settings -->
     <string name="settings_tts_engine_title">เครื่องมือเสียง</string>
-    <string name="settings_tts_engine_description">Gemini ฟังดูเป็นธรรมชาติกว่ามาก แต่ต้องใช้ API key</string>
+    <string name="settings_tts_engine_description">เลือกระหว่างเสียงพูดคุณภาพต่ำในเครื่องและเสียงพูดคุณภาพสูงออนไลน์</string>
     <string name="settings_tts_engine_device">อุปกรณ์ (ออฟไลน์ ฟรี)</string>
     <string name="settings_tts_engine_gemini">Gemini (คุณภาพสูง ออนไลน์)</string>
     <string name="settings_tts_voice_label">เสียง</string>
@@ -950,7 +951,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_delivery_notification">แจ้งเตือน</string>
     <string name="settings_delivery_tts">พูด</string>
     <string name="speech_setup_title">ตั้งค่า ClothesCast แบบพูด</string>
-    <string name="speech_setup_description">เลือกวิธีอ่านออกเสียง ClothesCast ของคุณ ใช้เสียงอุปกรณ์ฟรี หรือเพิ่ม Gemini API key เพื่อรับเสียงคุณภาพสูง</string>
     <string name="speech_setup_smart_home_note">เสียงพูดบนสมาร์ทโฮมต้องใช้ Gemini API key การ Cast ยังคงแสดงชุดแต่งกายของคุณได้แม้ไม่มีคีย์</string>
     <string name="speech_setup_done">เสร็จสิ้น</string>
 

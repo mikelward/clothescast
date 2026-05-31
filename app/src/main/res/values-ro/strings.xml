@@ -312,7 +312,8 @@ surfaces fall back to default English (matching values-pl / values-uk).
 
     <!-- API key settings. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Folosește Gemini pentru voci de înaltă calitate.</string>
+    <string name="settings_api_key_gemini_header">Voci de calitate înaltă prin serverele ClothesCast și Gemini.</string>
+    <string name="settings_tts_device_header">Voci de calitate scăzută integrate în telefonul tău.</string>
     <string name="settings_api_key_status_set">O cheie Gemini este configurată.</string>
     <string name="settings_api_key_status_unset">Obține o cheie API gratuită la aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Lipește cheia ta API Gemini</string>
@@ -371,7 +372,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
 
     <!-- Voice / TTS settings. -->
     <string name="settings_tts_engine_title">Motor vocal</string>
-    <string name="settings_tts_engine_description">Gemini sună mult mai natural, dar necesită o cheie API.</string>
+    <string name="settings_tts_engine_description">Alege între voce de calitate scăzută pe dispozitiv și voce de calitate înaltă online.</string>
     <string name="settings_tts_engine_device">Dispozitiv (offline, gratuit)</string>
     <string name="settings_tts_engine_gemini">Gemini (calitate ridicată, online)</string>
     <string name="settings_tts_voice_label">Voce</string>
@@ -926,7 +927,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_delivery_notification">Notifică</string>
     <string name="settings_delivery_tts">Citește</string>
     <string name="speech_setup_title">Configurează ClothesCast-uri citite cu voce tare</string>
-    <string name="speech_setup_description">Alege cum este citit cu voce tare ClothesCast-ul tău. Folosește vocea gratuită a dispozitivului sau adaugă o cheie API Gemini pentru voci de înaltă calitate.</string>
     <string name="speech_setup_smart_home_note">Citirea în casa inteligentă necesită o cheie API Gemini. Transmiterea îți arată ținuta și fără ea.</string>
     <string name="speech_setup_done">Gata</string>
 

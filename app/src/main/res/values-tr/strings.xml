@@ -503,7 +503,8 @@ displayed label localizes.
     <string name="settings_display_theme_light">Açık</string>
     <string name="settings_display_theme_dark">Koyu</string>
 
-    <string name="settings_api_key_gemini_header">Kaliteli sesler için Gemini\'yi kullanın.</string>
+    <string name="settings_api_key_gemini_header">ClothesCast ve Gemini sunucuları üzerinden yüksek kaliteli sesler.</string>
+    <string name="settings_tts_device_header">Telefonuna yerleşik düşük kaliteli sesler.</string>
 
     <string name="settings_location_detecting">Belirleniyor…</string>
     <string name="settings_location_background_banner_title">Kalıcı konum izni gerekli</string>
@@ -511,7 +512,7 @@ displayed label localizes.
     <string name="settings_location_manual_override">Yanlış konum mu? Manuel olarak ayarla</string>
     <string name="settings_location_manual_override_disclosure">Bir şehir seçmek otomatik algılamayı devre dışı bırakır.</string>
 
-    <string name="settings_tts_engine_description">Gemini çok daha doğal geliyor ancak bir API anahtarı gerektirir.</string>
+    <string name="settings_tts_engine_description">Cihazda düşük kaliteli konuşma ile çevrim içi yüksek kaliteli konuşma arasında seç.</string>
 
     <string name="today_update_available_title">Güncelleme mevcut</string>
     <string name="today_update_available_body">Play Store\'da ClothesCast\'ın daha yeni bir sürümü var.</string>
@@ -951,7 +952,6 @@ displayed label localizes.
     <string name="settings_delivery_notification">Bildir</string>
     <string name="settings_delivery_tts">Seslendir</string>
     <string name="speech_setup_title">Sesli ClothesCast\'ları ayarla</string>
-    <string name="speech_setup_description">ClothesCast\'ının nasıl seslendirileceğini seç. Ücretsiz cihaz sesini kullan veya yüksek kaliteli sesler için bir Gemini API anahtarı ekle.</string>
     <string name="speech_setup_smart_home_note">Akıllı ev seslendirmesi bir Gemini API anahtarı gerektirir. Yayınlama, anahtar olmadan da kıyafetini gösterir.</string>
     <string name="speech_setup_done">Tamam</string>
 

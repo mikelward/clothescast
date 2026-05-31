@@ -202,7 +202,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_privacy_open_policy">Llegeix la política de privadesa completa</string>
 
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Utilitza Gemini per obtenir veus d\'alta qualitat.</string>
+    <string name="settings_api_key_gemini_header">Veus d\'alta qualitat a través dels servidors de ClothesCast i Gemini.</string>
+    <string name="settings_tts_device_header">Veus de baixa qualitat integrades al teu telèfon.</string>
     <string name="settings_api_key_status_set">Hi ha una clau de Gemini configurada.</string>
     <string name="settings_api_key_status_unset">Obtén una clau gratuïta a aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Enganxa la teva clau API de Gemini</string>
@@ -256,7 +257,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_delivery_notification_and_tts">Notificació i lectura en veu alta</string>
 
     <string name="settings_tts_engine_title">Motor de veu</string>
-    <string name="settings_tts_engine_description">Gemini sona molt més natural, però necessita una clau API.</string>
+    <string name="settings_tts_engine_description">Tria entre veu de baixa qualitat al dispositiu o veu de qualitat alta en línia.</string>
     <string name="settings_tts_engine_device">Dispositiu (sense connexió, gratuït)</string>
     <string name="settings_tts_engine_gemini">Gemini (alta qualitat, en línia)</string>
     <string name="settings_tts_voice_label">Veu</string>
@@ -889,7 +890,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_delivery_notification">Notifica</string>
     <string name="settings_delivery_tts">Llegeix en veu alta</string>
     <string name="speech_setup_title">Configura els ClothesCast parlats</string>
-    <string name="speech_setup_description">Tria com es llegeix en veu alta el teu ClothesCast. Fes servir la veu gratuïta del dispositiu, o afegeix una clau API de Gemini per a veus d\'alta qualitat.</string>
     <string name="speech_setup_smart_home_note">La veu a la llar intel·ligent requereix una clau API de Gemini. L\'emissió mostra igualment el teu conjunt sense ella.</string>
     <string name="speech_setup_done">Fet</string>
 

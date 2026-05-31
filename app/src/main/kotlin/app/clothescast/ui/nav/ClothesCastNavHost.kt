@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -46,6 +47,7 @@ import app.clothescast.ui.settings.DeveloperPage
 import app.clothescast.ui.settings.DisplayPage
 import app.clothescast.ui.settings.ForecastersPage
 import app.clothescast.ui.settings.FormatPage
+import app.clothescast.ui.settings.LocalSettingsDoneAction
 import app.clothescast.ui.settings.LocationPage
 import app.clothescast.ui.settings.PrivacyPage
 import app.clothescast.ui.settings.RegionPage
@@ -61,7 +63,9 @@ import app.clothescast.ui.today.TodayViewModel
 import app.clothescast.widget.updateAllClothesCastWidgets
 import app.clothescast.work.FetchAndNotifyWorker
 import kotlinx.coroutines.flow.first
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.serializer
 
 // Duration of the push/pop slide between destinations. Short enough to feel
 // snappy (and to keep the can't-tap-yet window small), long enough to read as a
@@ -225,6 +229,9 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
     val onBack: () -> Unit = { nav.popBackStack() }
 
     navigation<SettingsGraph>(startDestination = SettingsRootDest) {
+        // The root menu is the hub; its back arrow returns to Today. It's not
+        // wrapped in SettingsSubPage, so it never grows a Done bar even when
+        // opened straight from Today — Done is for focused sub-tasks, not the menu.
         composable<SettingsRootDest> { e ->
             SettingsRootPage(
                 viewModel = e.settingsViewModel(nav, app),
@@ -234,37 +241,88 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
             )
         }
         composable<ScheduleDest> { e ->
-            SchedulePage(
-                viewModel = e.settingsViewModel(nav, app),
-                onBack = onBack,
-            )
+            SettingsSubPage(nav, e) {
+                SchedulePage(
+                    viewModel = e.settingsViewModel(nav, app),
+                    onBack = onBack,
+                    onSetUpSpeech = { nav.navigate(VoiceDest) },
+                )
+            }
         }
-        composable<FormatDest> { e -> FormatPage(e.settingsViewModel(nav, app), onBack) }
-        composable<ClothesDest> { e -> ClothesPage(e.settingsViewModel(nav, app), onBack) }
-        composable<RegionDest> { e -> RegionPage(e.settingsViewModel(nav, app), onBack) }
+        composable<FormatDest> { e -> SettingsSubPage(nav, e) { FormatPage(e.settingsViewModel(nav, app), onBack) } }
+        composable<ClothesDest> { e -> SettingsSubPage(nav, e) { ClothesPage(e.settingsViewModel(nav, app), onBack) } }
+        composable<RegionDest> { e -> SettingsSubPage(nav, e) { RegionPage(e.settingsViewModel(nav, app), onBack) } }
         composable<VoiceDest> { e ->
-            VoicePage(
-                viewModel = e.settingsViewModel(nav, app),
-                onBack = onBack,
-                onPairFromPhone = { nav.navigate(PairingRoute) },
-            )
+            SettingsSubPage(nav, e) {
+                VoicePage(
+                    viewModel = e.settingsViewModel(nav, app),
+                    onBack = onBack,
+                    onPairFromPhone = { nav.navigate(PairingRoute) },
+                )
+            }
         }
-        composable<DisplayDest> { e -> DisplayPage(e.settingsViewModel(nav, app), onBack) }
-        composable<LocationDest> { e -> LocationPage(e.settingsViewModel(nav, app), onBack) }
+        composable<DisplayDest> { e -> SettingsSubPage(nav, e) { DisplayPage(e.settingsViewModel(nav, app), onBack) } }
+        composable<LocationDest> { e -> SettingsSubPage(nav, e) { LocationPage(e.settingsViewModel(nav, app), onBack) } }
         composable<CalendarDest> { e ->
-            CalendarPage(
-                viewModel = e.settingsViewModel(nav, app),
-                onBack = onBack,
-                onNavigateToRegion = { nav.navigate(RegionDest) },
-                onNavigateToLocation = { nav.navigate(LocationDest) },
-            )
+            SettingsSubPage(nav, e) {
+                CalendarPage(
+                    viewModel = e.settingsViewModel(nav, app),
+                    onBack = onBack,
+                    onNavigateToRegion = { nav.navigate(RegionDest) },
+                    onNavigateToLocation = { nav.navigate(LocationDest) },
+                )
+            }
         }
-        composable<ForecastersDest> { e -> ForecastersPage(e.settingsViewModel(nav, app), onBack) }
-        composable<SmartHomeDest> { e -> SmartHomePage(e.settingsViewModel(nav, app), onBack) }
-        composable<PrivacyDest> { e -> PrivacyPage(e.settingsViewModel(nav, app), onBack) }
-        composable<AboutDest> { AboutPage(onBack) }
-        composable<DeveloperDest> { e -> DeveloperPage(e.settingsViewModel(nav, app), onBack) }
+        composable<ForecastersDest> { e -> SettingsSubPage(nav, e) { ForecastersPage(e.settingsViewModel(nav, app), onBack) } }
+        composable<SmartHomeDest> { e ->
+            SettingsSubPage(nav, e) {
+                SmartHomePage(
+                    viewModel = e.settingsViewModel(nav, app),
+                    onBack = onBack,
+                    onSetUpSpeech = { nav.navigate(VoiceDest) },
+                )
+            }
+        }
+        composable<PrivacyDest> { e -> SettingsSubPage(nav, e) { PrivacyPage(e.settingsViewModel(nav, app), onBack) } }
+        composable<AboutDest> { e -> SettingsSubPage(nav, e) { AboutPage(onBack) } }
+        composable<DeveloperDest> { e -> SettingsSubPage(nav, e) { DeveloperPage(e.settingsViewModel(nav, app), onBack) } }
     }
+}
+
+/**
+ * Wraps a Settings sub-page, providing [LocalSettingsDoneAction] so the page's
+ * [app.clothescast.ui.settings.SettingsScaffold] shows a bottom "Done" bar when
+ * the page was opened from outside the Settings root menu — deep-linked from a
+ * Today promo/banner, or pushed from another settings page's setup jump
+ * (Schedule / Smart Home → Voice). Done returns to wherever the page opened.
+ *
+ * [NavController.previousBackStackEntry] skips NavGraph nodes, so it's the
+ * visible screen beneath this one: [SettingsRootDest] when reached through the
+ * menu — no Done, the back arrow goes back to the menu — or Today / another
+ * sub-page otherwise, where Done pops back to it. Computed once per entry so the
+ * opener is captured when the page is first shown.
+ */
+@OptIn(ExperimentalSerializationApi::class)
+@Composable
+private fun SettingsSubPage(
+    nav: NavController,
+    entry: NavBackStackEntry,
+    content: @Composable () -> Unit,
+) {
+    val doneAction: (() -> Unit)? = remember(entry) {
+        // A type-safe destination's route is registered as its serializer's
+        // serial name, so comparing against SettingsRootDest's serial name
+        // identifies the menu hub without depending on NavDestination.hasRoute
+        // (which isn't reachable as a KClass overload from app code in nav 2.8).
+        val rootRoute = serializer<SettingsRootDest>().descriptor.serialName
+        val below = nav.previousBackStackEntry?.destination
+        if (below != null && below.route != rootRoute) {
+            { nav.popBackStack() }
+        } else {
+            null
+        }
+    }
+    CompositionLocalProvider(LocalSettingsDoneAction provides doneAction, content = content)
 }
 
 // The Settings root menu's order, labels, and subtitles live in SettingsDest;

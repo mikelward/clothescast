@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -13,15 +14,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -69,11 +73,26 @@ internal enum class SettingsDest(
 }
 
 /**
+ * Optional "Done" action for a Settings sub-page, supplied by the nav host (see
+ * ClothesCastNavHost) when the page was opened from outside the Settings root
+ * menu — deep-linked from a Today promo/banner, or pushed from another settings
+ * page's setup jump (e.g. enabling spoken delivery on Schedule / Smart Home).
+ * When non-null, [SettingsScaffold] renders a bottom "Done" bar that invokes it:
+ * a clear "finished — take me back" affordance for a focused task, alongside the
+ * top-bar back arrow. Null (the default, and always so for menu-originated pages
+ * and for previews/tests with no provider) renders no bar, so the menu-driven
+ * browse flow keeps its single back affordance.
+ */
+internal val LocalSettingsDoneAction = staticCompositionLocalOf<(() -> Unit)?> { null }
+
+/**
  * Shared chrome for a Settings sub-page: a top bar showing [titleRes] with a back
  * arrow wired to [onBack] (which pops the nav back stack), plus edge-to-edge
  * content insets. Every destination in the Settings nested graph renders through
  * this — there's no central route state or custom back handling; the framework's
- * back stack owns up-navigation.
+ * back stack owns up-navigation. When [LocalSettingsDoneAction] is provided, a
+ * bottom "Done" bar is shown that returns the user to wherever the page was
+ * opened from.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,6 +101,7 @@ internal fun SettingsScaffold(
     onBack: () -> Unit,
     content: @Composable (PaddingValues) -> Unit,
 ) {
+    val onDone = LocalSettingsDoneAction.current
     Scaffold(
         // Drop the default `safeDrawing` content insets so each sub-screen's
         // scroll viewport extends edge-to-edge under the (transparent) nav bar.
@@ -103,8 +123,29 @@ internal fun SettingsScaffold(
                 },
             )
         },
+        bottomBar = { if (onDone != null) SettingsDoneBar(onDone) },
         content = content,
     )
+}
+
+/**
+ * Bottom "Done" bar for a settings sub-page opened as a standalone task. A
+ * full-width button on its own surface, lifted above the system nav bar so it
+ * doesn't collide with gesture / button navigation. The host [Scaffold] insets
+ * its content by this bar's height, so a page's scroll viewport ends just above
+ * the button.
+ */
+@Composable
+private fun SettingsDoneBar(onDone: () -> Unit) {
+    Surface {
+        Button(
+            onClick = onDone,
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.navigationBars)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+        ) { Text(stringResource(R.string.settings_done)) }
+    }
 }
 
 @Composable
@@ -129,6 +170,7 @@ internal fun SettingsRootPage(
 internal fun SchedulePage(
     viewModel: SettingsViewModel,
     onBack: () -> Unit,
+    onSetUpSpeech: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     SettingsScaffold(R.string.settings_root_schedule, onBack) { padding ->
@@ -144,8 +186,6 @@ internal fun SchedulePage(
             dailyMentionEveningEvents = state.dailyMentionEveningEvents,
             deliveryMode = state.deliveryMode,
             tonightDeliveryMode = state.tonightDeliveryMode,
-            ttsEngine = state.ttsEngine,
-            geminiKeyConfigured = state.apiKeyConfigured,
             sharedTtsAvailable = state.sharedTtsAvailable,
             padding = padding,
             onSetSchedule = viewModel::setSchedule,
@@ -156,9 +196,7 @@ internal fun SchedulePage(
             onSetDailyMentionEveningEvents = viewModel::setDailyMentionEveningEvents,
             onSetDeliveryMode = viewModel::setDeliveryMode,
             onSetTonightDeliveryMode = viewModel::setTonightDeliveryMode,
-            onSetTtsEngine = viewModel::setTtsEngine,
-            onSetGeminiKey = viewModel::setApiKey,
-            onClearGeminiKey = viewModel::clearApiKey,
+            onSetUpSpeech = onSetUpSpeech,
             previewEnabled = !state.anyWorkActive,
         )
         }
@@ -343,7 +381,11 @@ internal fun ForecastersPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
 }
 
 @Composable
-internal fun SmartHomePage(viewModel: SettingsViewModel, onBack: () -> Unit) {
+internal fun SmartHomePage(
+    viewModel: SettingsViewModel,
+    onBack: () -> Unit,
+    onSetUpSpeech: () -> Unit,
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     SettingsScaffold(R.string.settings_root_smart_home, onBack) { padding ->
         CompositionLocalProvider(LocalTimeFormat provides state.timeFormat) {
@@ -396,9 +438,7 @@ internal fun SmartHomePage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             onSetCastTonight = viewModel::setCastTonight,
             onSetCastSkipPhoneSpeech = viewModel::setCastSkipPhoneSpeech,
             onSetMqttSkipPhoneSpeech = viewModel::setMqttSkipPhoneSpeech,
-            onSetTtsEngine = viewModel::setTtsEngine,
-            onSetGeminiKey = viewModel::setApiKey,
-            onClearGeminiKey = viewModel::clearApiKey,
+            onSetUpSpeech = onSetUpSpeech,
         )
         }
     }

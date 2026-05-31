@@ -949,9 +949,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_schedule_enabled">Napi ClothesCast</string>
     <string name="settings_delivery_notification">Értesítés</string>
     <string name="settings_delivery_tts">Felolvasás</string>
-    <string name="speech_setup_title">Beszélt ClothesCastok beállítása</string>
-    <string name="speech_setup_smart_home_note">Az okosotthoni beszédhez Gemini API-kulcs szükséges. A küldés enélkül is megjeleníti az öltözékedet.</string>
-    <string name="speech_setup_done">Kész</string>
+    <string name="settings_done">Kész</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Ruházat</string>

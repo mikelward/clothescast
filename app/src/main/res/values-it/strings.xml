@@ -1069,9 +1069,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_schedule_enabled">ClothesCast quotidiano</string>
     <string name="settings_delivery_notification">Notifica</string>
     <string name="settings_delivery_tts">Riproduci voce</string>
-    <string name="speech_setup_title">Configura i ClothesCast parlati</string>
-    <string name="speech_setup_smart_home_note">La voce sulla casa intelligente richiede una chiave API Gemini. La trasmissione mostra comunque il tuo outfit anche senza.</string>
-    <string name="speech_setup_done">Fatto</string>
+    <string name="settings_done">Fatto</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Abbigliamento</string>

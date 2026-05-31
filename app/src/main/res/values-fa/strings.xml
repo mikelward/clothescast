@@ -948,9 +948,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_schedule_enabled">ClothesCast روزانه</string>
     <string name="settings_delivery_notification">اعلان</string>
     <string name="settings_delivery_tts">خواندن</string>
-    <string name="speech_setup_title">راه‌اندازی ClothesCastهای گفتاری</string>
-    <string name="speech_setup_smart_home_note">گفتار خانه هوشمند به یک کلید Gemini API نیاز دارد. ارسال تصویری حتی بدون آن هم لباس شما را نمایش می‌دهد.</string>
-    <string name="speech_setup_done">انجام شد</string>
+    <string name="settings_done">انجام شد</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">لباس</string>

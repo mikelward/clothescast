@@ -1120,9 +1120,7 @@ label localises.
     <string name="settings_schedule_enabled">每日 ClothesCast</string>
     <string name="settings_delivery_notification">通知</string>
     <string name="settings_delivery_tts">朗讀</string>
-    <string name="speech_setup_title">設定語音 ClothesCast</string>
-    <string name="speech_setup_smart_home_note">智慧家庭語音需要 Gemini API 金鑰。即使沒有它，投放時仍會顯示你的穿搭。</string>
-    <string name="speech_setup_done">完成</string>
+    <string name="settings_done">完成</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">服裝</string>

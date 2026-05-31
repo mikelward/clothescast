@@ -953,9 +953,7 @@ only the displayed label localizes.
     <string name="settings_schedule_enabled">Щоденний ClothesCast</string>
     <string name="settings_delivery_notification">Сповістити</string>
     <string name="settings_delivery_tts">Озвучити</string>
-    <string name="speech_setup_title">Налаштуйте озвучення ClothesCast</string>
-    <string name="speech_setup_smart_home_note">Озвучення в розумному домі потребує ключа API Gemini. Трансляція все одно показує ваше вбрання й без нього.</string>
-    <string name="speech_setup_done">Готово</string>
+    <string name="settings_done">Готово</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Одяг</string>

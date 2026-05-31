@@ -1018,9 +1018,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_schedule_enabled">ClothesCast hàng ngày</string>
     <string name="settings_delivery_notification">Thông báo</string>
     <string name="settings_delivery_tts">Đọc</string>
-    <string name="speech_setup_title">Thiết lập ClothesCast nói</string>
-    <string name="speech_setup_smart_home_note">Giọng nói trên nhà thông minh cần khóa API Gemini. Việc truyền hình vẫn hiển thị trang phục của bạn mà không cần khóa.</string>
-    <string name="speech_setup_done">Xong</string>
+    <string name="settings_done">Xong</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">Quần áo</string>

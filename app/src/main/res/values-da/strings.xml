@@ -986,9 +986,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_schedule_enabled">Dagligt ClothesCast</string>
     <string name="settings_delivery_notification">Underret</string>
     <string name="settings_delivery_tts">Læs op</string>
-    <string name="speech_setup_title">Konfigurer talte ClothesCasts</string>
-    <string name="speech_setup_smart_home_note">Tale i smart home kræver en Gemini-API-nøgle. Casting viser stadig dit outfit uden den.</string>
-    <string name="speech_setup_done">Færdig</string>
+    <string name="settings_done">Færdig</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Tøj</string>

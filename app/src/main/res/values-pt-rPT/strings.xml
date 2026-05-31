@@ -1084,9 +1084,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_schedule_enabled">ClothesCast diário</string>
     <string name="settings_delivery_notification">Notificar</string>
     <string name="settings_delivery_tts">Ler em voz alta</string>
-    <string name="speech_setup_title">Configurar ClothesCasts em voz alta</string>
-    <string name="speech_setup_smart_home_note">A fala na casa inteligente requer uma chave API Gemini. A transmissão continua a mostrar o teu visual sem ela.</string>
-    <string name="speech_setup_done">Concluído</string>
+    <string name="settings_done">Concluído</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Vestuário</string>

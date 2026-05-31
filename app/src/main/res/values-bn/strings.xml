@@ -1028,9 +1028,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_schedule_enabled">দৈনিক ClothesCast</string>
     <string name="settings_delivery_notification">জানান</string>
     <string name="settings_delivery_tts">পড়ুন</string>
-    <string name="speech_setup_title">কথ্য ClothesCast সেট আপ করুন</string>
-    <string name="speech_setup_smart_home_note">স্মার্ট হোমে কথা বলার জন্য একটি Gemini API কী প্রয়োজন। এটি ছাড়াও কাস্টিং আপনার পোশাক দেখায়।</string>
-    <string name="speech_setup_done">সম্পন্ন</string>
+    <string name="settings_done">সম্পন্ন</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">পোশাক</string>

@@ -109,9 +109,10 @@ internal fun SmartHomeContent(
     onSetCastTonight: (Boolean) -> Unit,
     onSetCastSkipPhoneSpeech: (Boolean) -> Unit,
     onSetMqttSkipPhoneSpeech: (Boolean) -> Unit,
-    onSetTtsEngine: (TtsEngine) -> Unit,
-    onSetGeminiKey: (String) -> Unit,
-    onClearGeminiKey: () -> Unit,
+    // Enabling Cast / MQTT spoken delivery jumps to the full Voice settings page
+    // (which returns here via its "Done" button) to set the Gemini engine + key —
+    // smart-home audio synthesizes through Gemini only. See onEnableDelivery.
+    onSetUpSpeech: () -> Unit,
 ) {
     // Cancel any in-flight scan when this screen leaves the composition —
     // the user backing out of Smart Home shouldn't leave the NsdManager
@@ -125,12 +126,11 @@ internal fun SmartHomeContent(
 
     // Cast and the MQTT bridge speak / publish the ClothesCast to another
     // device, so enabling either needs the same just-in-time setup as the
-    // schedule page's delivery channels: the Speech setup sheet (Gemini key or
-    // device TTS) plus the notification permission. Reuse the same flows by
+    // schedule page's delivery channels: the full Voice settings page (Gemini
+    // key + engine) plus the notification permission. Reuse the same flows by
     // wrapping the enable callbacks below; the prompts no-op when already
     // satisfied.
     val context = LocalContext.current
-    var speechSheetOpen by rememberSaveable { mutableStateOf(false) }
     val notificationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) { /* No follow-up needed; the worker reads permission state at delivery time. */ }
@@ -141,17 +141,17 @@ internal fun SmartHomeContent(
     }
     val onEnableDelivery: () -> Unit = {
         requestNotificationPermission()
-        // The Speech setup sheet is just-in-time setup for a working spoken
-        // path, which on smart-home destinations means the Gemini engine AND a
-        // key — device TTS is silent on Cast / MQTT, and audio only synthesizes
+        // Spoken delivery on smart-home destinations means the Gemini engine AND
+        // a key — device TTS is silent on Cast / MQTT, and audio only synthesizes
         // when ttsEngine == GEMINI with a key set (see geminiAvailable in
         // FetchAndNotifyWorker / DeliveryGates). When both hold there's nothing
-        // left to set up, so skip the sheet rather than re-prompting. Otherwise
-        // show it: a key-less user can add one, and a key-holding user still on
-        // device TTS can switch the engine so smart-home audio actually plays.
-        // The notification request above still fires (it no-ops when granted).
+        // left to set up, so skip the jump rather than re-prompting. Otherwise
+        // open Voice settings: a key-less user can add one, and a key-holding
+        // user still on device TTS can switch the engine so smart-home audio
+        // actually plays. The notification request above still fires (it no-ops
+        // when granted).
         val geminiReady = geminiKeyConfigured && ttsEngine == TtsEngine.GEMINI
-        if (!geminiReady) speechSheetOpen = true
+        if (!geminiReady) onSetUpSpeech()
     }
     val onSetCastEnabledGated: (Boolean) -> Unit = { enabled ->
         onSetCastEnabled(enabled)
@@ -225,19 +225,6 @@ internal fun SmartHomeContent(
                 onUseDiscoveredService = onUseDiscoveredService,
             )
         }
-    }
-
-    if (speechSheetOpen) {
-        SpeechSetupSheet(
-            selectedEngine = ttsEngine,
-            geminiKeyConfigured = geminiKeyConfigured,
-            onSetTtsEngine = onSetTtsEngine,
-            onSetGeminiKey = onSetGeminiKey,
-            onClearGeminiKey = onClearGeminiKey,
-            onConfirm = { speechSheetOpen = false },
-            onDismiss = { speechSheetOpen = false },
-            showSmartHomeSpeechNote = true,
-        )
     }
 }
 

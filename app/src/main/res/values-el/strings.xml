@@ -1076,9 +1076,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_schedule_enabled">Καθημερινό ClothesCast</string>
     <string name="settings_delivery_notification">Ειδοποίηση</string>
     <string name="settings_delivery_tts">Εκφώνηση</string>
-    <string name="speech_setup_title">Ρύθμιση εκφωνούμενων ClothesCast</string>
-    <string name="speech_setup_smart_home_note">Η εκφώνηση στο έξυπνο σπίτι απαιτεί Gemini API key. Η μετάδοση δείχνει το σύνολό σου ακόμη και χωρίς αυτό.</string>
-    <string name="speech_setup_done">Έγινε</string>
+    <string name="settings_done">Έγινε</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Ρούχα</string>

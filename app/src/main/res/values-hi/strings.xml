@@ -988,9 +988,7 @@ Not overridden by design:
     <string name="settings_schedule_enabled">दैनिक ClothesCast</string>
     <string name="settings_delivery_notification">सूचित करें</string>
     <string name="settings_delivery_tts">बोलें</string>
-    <string name="speech_setup_title">बोले जाने वाले ClothesCast सेट करें</string>
-    <string name="speech_setup_smart_home_note">स्मार्ट होम पर बोलने के लिए Gemini API कुंजी ज़रूरी है। इसके बिना भी कास्टिंग आपकी पोशाक दिखाती है।</string>
-    <string name="speech_setup_done">हो गया</string>
+    <string name="settings_done">हो गया</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">कपड़े</string>

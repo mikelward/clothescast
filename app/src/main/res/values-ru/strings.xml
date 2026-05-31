@@ -1010,9 +1010,7 @@ only the displayed label localizes.
     <string name="settings_schedule_enabled">Ежедневный ClothesCast</string>
     <string name="settings_delivery_notification">Уведомить</string>
     <string name="settings_delivery_tts">Озвучить</string>
-    <string name="speech_setup_title">Настрой озвучивание ClothesCast</string>
-    <string name="speech_setup_smart_home_note">Для озвучивания в умном доме нужен ключ API Gemini. Трансляция всё равно показывает твой образ и без него.</string>
-    <string name="speech_setup_done">Готово</string>
+    <string name="settings_done">Готово</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Одежда</string>

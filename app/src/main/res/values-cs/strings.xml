@@ -964,9 +964,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_schedule_enabled">Denní ClothesCast</string>
     <string name="settings_delivery_notification">Oznámit</string>
     <string name="settings_delivery_tts">Přečíst</string>
-    <string name="speech_setup_title">Nastav mluvené ClothesCasty</string>
-    <string name="speech_setup_smart_home_note">Mluvený výstup v chytré domácnosti vyžaduje Gemini API klíč. Casting tvůj outfit ukáže i bez něj.</string>
-    <string name="speech_setup_done">Hotovo</string>
+    <string name="settings_done">Hotovo</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Oblečení</string>

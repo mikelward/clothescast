@@ -286,6 +286,11 @@ internal fun VoicePage(
             onSetGeminiKey = viewModel::setApiKey,
             onClearGeminiKey = viewModel::clearApiKey,
             onPairFromPhone = onPairFromPhone,
+            // Production entry point — show the debug-token row. Previews
+            // (`SettingsVoice*Preview` in `SettingsPreviews.kt`) leave this
+            // off by default so a developer's real token never gets baked
+            // into the committed `app/snapshots/settings_voice_*.png` files.
+            showAppCheckDebugTokenRow = true,
         )
     }
 }

@@ -42,7 +42,18 @@ import app.clothescast.BuildConfig
 internal fun AppCheckDebugTokenRow() {
     val token = BuildConfig.APP_CHECK_DEBUG_TOKEN
     if (token.isBlank()) return
+    AppCheckDebugTokenContent(token = token)
+}
 
+/**
+ * Inner, token-driven body of [AppCheckDebugTokenRow], split out so the
+ * `@Preview` in [AppCheckDebugTokenRowPreview] can render the visible
+ * state without depending on `BuildConfig.APP_CHECK_DEBUG_TOKEN` —
+ * which is blank on CI builds (where Roborazzi captures snapshots),
+ * so the public composable would render nothing there.
+ */
+@Composable
+internal fun AppCheckDebugTokenContent(token: String) {
     val context = LocalContext.current
     Row(
         modifier = Modifier

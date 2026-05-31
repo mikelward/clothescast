@@ -313,7 +313,25 @@ class SettingsViewModel(
                 }
             }
         }
-        viewModelScope.launch { refreshApiKeyStatus() }
+        // Re-validate the API-key status whenever the stored ciphertext appears
+        // or disappears. Collecting the flow (rather than a one-shot
+        // refreshApiKeyStatus() at init) is what lets a key written *outside*
+        // this ViewModel flip the flag — notably the phone-pairing flow now
+        // reachable from Voice settings, which persists the key through a
+        // separate PairingViewModel; without it, returning to the still-alive
+        // SettingsViewModel via popBackStack() would keep showing the key as
+        // unset until the ViewModel was recreated. We re-run refreshApiKeyStatus()
+        // (which decrypts via keyStore.get()) on each emission rather than
+        // trusting the flow's presence-only boolean: get() clears corrupt
+        // ciphertext and returns false, so a key that exists but can no longer
+        // be decrypted (e.g. after a Keystore restore/rotation) surfaces as
+        // unset and prompts re-entry, instead of reading "configured" until the
+        // next TTS attempt fails. Emissions are distinctUntilChanged on
+        // presence, so the decrypt only runs when the stored key actually
+        // changes — not a hot path.
+        viewModelScope.launch {
+            keyStore.geminiKeyConfiguredFlow.collect { refreshApiKeyStatus() }
+        }
         viewModelScope.launch {
             keyStore.mqttPasswordConfiguredFlow.collect { set ->
                 _state.update { it.copy(mqttPasswordSet = set) }

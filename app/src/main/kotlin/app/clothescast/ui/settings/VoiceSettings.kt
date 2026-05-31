@@ -79,6 +79,12 @@ internal fun VoiceContent(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
     bottomsFormat: BottomsFormat,
+    // The most recently cached InsightSummary from InsightCache.Slot.THIS_PERIOD,
+    // wired in via SettingsState.currentInsightSummary. When non-null the preview
+    // speaks the user's actual upcoming briefing so it reflects their real
+    // numbers; when null (fresh install, cache cleared) the preview falls back
+    // to [SAMPLE_SUMMARY].
+    currentInsight: InsightSummary?,
     padding: PaddingValues,
     onSetTtsEngine: (TtsEngine) -> Unit,
     onSetGeminiVoice: (String) -> Unit,
@@ -135,6 +141,7 @@ internal fun VoiceContent(
                     rangeFormat = rangeFormat,
                     clothesFormat = clothesFormat,
                     bottomsFormat = bottomsFormat,
+                    summary = currentInsight,
                 )
             } finally {
                 isPreviewing = false
@@ -591,14 +598,14 @@ private fun TestVoiceButton(isPreviewing: Boolean, enabled: Boolean = true, onCl
 }
 
 /**
- * Plays a preview through the chosen engine + voice. Builds a fixed canned
- * [InsightSummary] and renders it through the same TTS-utterance formatter the
- * real briefing pipeline uses, so the preview reads exactly like a real
- * morning briefing in the chosen voice locale — no separate per-locale
- * sample string to keep in sync with the prose templates. The summary is
- * deliberately broad enough to exercise band + delta + multi-item clothes
- * clauses on every preview tap, and costs the same number of BYOK tokens
- * each time so engines / voices compare on identical words.
+ * Plays a preview through the chosen engine + voice. Prefers the user's most
+ * recently cached [InsightSummary] (passed as [summary]) so the preview reads
+ * like their actual upcoming briefing with their real numbers; falls back to
+ * a canned [SAMPLE_SUMMARY] on a fresh install where no insight has been
+ * fetched yet. Either way the summary is rendered through the same TTS
+ * utterance formatter the real briefing pipeline uses, so the preview reads
+ * exactly like a real briefing in the chosen voice locale — no separate
+ * per-locale sample string to keep in sync with the prose templates.
  *
  * The sample is rendered in the selected *voice locale* so the preview
  * matches the accent and language the user is auditioning, not the app's
@@ -620,6 +627,7 @@ internal suspend fun runTtsPreview(
     rangeFormat: RangeFormat = RangeFormat.DEGREES,
     clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
+    summary: InsightSummary? = null,
 ) {
     val app = context.applicationContext as app.clothescast.ClothesCastApplication
     // Network synthesis and AudioTrack write are both blocking-ish work — Ktor
@@ -628,7 +636,7 @@ internal suspend fun runTtsPreview(
     withContext(Dispatchers.IO) {
         val utterance = insightTtsUtterance(
             context = context,
-            summary = SAMPLE_SUMMARY,
+            summary = summary ?: SAMPLE_SUMMARY,
             region = region,
             voiceLocale = voiceLocale,
             temperatureUnit = temperatureUnit,
@@ -681,17 +689,30 @@ internal fun ttsEngineLabel(engine: TtsEngine): Int = when (engine) {
     TtsEngine.GEMINI -> R.string.settings_tts_engine_gemini
 }
 
-// Canned forecast for the voice preview: a cold day 7°C down on yesterday with
-// sweater + jacket as the clothes pick. Exercises band, delta, and a multi-item
+// Canned forecast used by the voice preview when no real cached InsightSummary
+// is available yet (fresh install / cleared cache). A cold day with a 4°-9°C
+// feels-like range, 7°C down on yesterday, sweater + jacket as the clothes
+// pick. Exercises band (range, not single-degree), delta, and a multi-item
 // clothes clause without dragging in a precip / tie-in time. With Celsius +
-// degrees-range + items-clothes this renders (en-US) as "Today, it will be 8°.
-// 7° cooler than yesterday. Wear a sweater and jacket." — the exact prose
-// shifts with voice locale and the user's format settings (temperature unit,
-// range format, clothes format, rain accessory), which is intentional: the
-// preview should sound like what the user actually hears at briefing time.
+// degrees-range + items-clothes this renders (en-US) as "Today, it will be
+// 4° to 9°. 7° cooler than yesterday. Wear a sweater and jacket." — the exact
+// prose shifts with voice locale and the user's format settings (temperature
+// unit, range format, clothes format, rain accessory), which is intentional:
+// the preview should sound like what the user actually hears at briefing time.
+//
+// `feelsLikeMinC` / `feelsLikeMaxC` are passed explicitly so the formatter
+// emits a low-to-high range rather than collapsing on a single midpoint —
+// `BandClause`'s defaults use the band's midpointC for both halves, so
+// `BandClause(COLD, COLD)` (no explicit temps) would render as a single "8°"
+// and silently drop the low temp from the preview.
 private val SAMPLE_SUMMARY = InsightSummary(
     period = ForecastPeriod.TODAY,
-    band = BandClause(TemperatureBand.COLD, TemperatureBand.COLD),
+    band = BandClause(
+        low = TemperatureBand.COLD,
+        high = TemperatureBand.COLD,
+        feelsLikeMinC = 4.0,
+        feelsLikeMaxC = 9.0,
+    ),
     delta = DeltaClause(degrees = 7, direction = DeltaClause.Direction.COOLER),
     clothes = ClothesClause(items = listOf("sweater", "jacket")),
 )

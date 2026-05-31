@@ -411,6 +411,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
         castRouteDiscovery = app.castRouteDiscovery,
         calendarEventReader = app.calendarEventReader,
         castAvailable = app.castContext != null,
+        sharedTtsAvailable = app.sharedTtsAvailable,
         castNowAction = app.castInsightController?.let { controller ->
             {
                 castCurrentInsight(

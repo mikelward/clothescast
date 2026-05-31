@@ -4,8 +4,7 @@ import app.clothescast.core.data.diag.ApiCallEvent
 import app.clothescast.core.data.diag.ApiCallLogger
 import app.clothescast.core.data.diag.ApiEndpoints
 import app.clothescast.core.data.diag.NoOpApiCallLogger
-import app.clothescast.core.data.insight.KeyProvider
-import app.clothescast.core.data.insight.MissingApiKeyException
+import app.clothescast.core.data.insight.GeminiCallPlanner
 import app.clothescast.core.domain.model.TtsStyle
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -44,6 +43,10 @@ const val DEFAULT_GEMINI_TTS_MODEL: String = "gemini-2.5-flash-preview-tts"
 // decision".
 const val DEFAULT_GEMINI_TTS_VOICE: String = "Despina"
 
+// Kept for the existing test that asserts BYOK requests still hit
+// `generativelanguage.googleapis.com`. `GeminiEndpoint.Direct` is the
+// production source of truth — these constants mirror it for tests
+// that pre-date the per-call planner.
 internal const val GEMINI_HOST = "generativelanguage.googleapis.com"
 internal const val GEMINI_API_VERSION = "v1beta"
 
@@ -435,8 +438,10 @@ private val ACCENT_DIRECTIVES: Map<String, String> = mapOf(
 )
 
 /**
- * Calls Gemini's audio-output model (e.g. `gemini-2.5-flash-preview-tts`). Uses the
- * standard Generative Language host with a BYOK `x-goog-api-key` header.
+ * Calls Gemini's audio-output model (e.g. `gemini-2.5-flash-preview-tts`). The
+ * target host and request-time auth headers come from [callPlanner] — `:app`'s
+ * planner picks between the developer's Cloud Function proxy (default) and the
+ * direct Generative Language host (when the user has set their own key).
  *
  * The model returns a single 16-bit signed PCM audio stream at a sample rate carried
  * in the `mimeType` (`audio/L16;codec=pcm;rate=24000`). [PcmAudio.sampleRate] parses
@@ -452,7 +457,7 @@ private val ACCENT_DIRECTIVES: Map<String, String> = mapOf(
  */
 class GeminiTtsClient(
     private val httpClient: HttpClient,
-    private val keyProvider: KeyProvider,
+    private val callPlanner: GeminiCallPlanner,
     private val model: String = DEFAULT_GEMINI_TTS_MODEL,
     private val apiCallLogger: ApiCallLogger = NoOpApiCallLogger,
 ) {
@@ -462,9 +467,7 @@ class GeminiTtsClient(
         locale: Locale? = null,
         style: TtsStyle = TtsStyle.WEATHER_FORECASTER,
     ): PcmAudio {
-        val key = keyProvider.get().also {
-            if (it.isBlank()) throw MissingApiKeyException()
-        }
+        val plan = callPlanner.plan()
 
         // WEATHER_FORECASTER gets the full accent directive ("Speak with a
         // Standard British accent."). Character styles get only a bare language
@@ -495,10 +498,10 @@ class GeminiTtsClient(
             httpClient.post {
                 url {
                     protocol = URLProtocol.HTTPS
-                    host = GEMINI_HOST
-                    path(GEMINI_API_VERSION, "models", "$model:generateContent")
+                    host = plan.endpoint.host
+                    path(plan.endpoint.apiVersion, "models", "$model:generateContent")
                 }
-                header("x-goog-api-key", key)
+                plan.applyAuth(this)
                 contentType(ContentType.Application.Json)
                 setBody(
                     TtsRequest(

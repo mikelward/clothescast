@@ -168,6 +168,14 @@ data class SettingsState(
     val telemetryEnabled: Boolean = true,
     val apiKeyConfigured: Boolean = false,
     /**
+     * True when this build can synthesise Gemini TTS through the developer's
+     * Cloud Function proxy (Firebase initialised + `GEMINI_PROXY_URL` set).
+     * The Voice screen ORs this with [apiKeyConfigured] so users without a
+     * BYOK key can still preview / use Gemini when the shared path is live.
+     * Process-stable, set once when the ViewModel is constructed.
+     */
+    val sharedTtsAvailable: Boolean = false,
+    /**
      * True while the WorkManager location-cache-refresh job is ENQUEUED,
      * RUNNING, or BLOCKED. Drives "Detecting…" in the Location settings
      * card — the label only shows "Detecting…" while this is true, so it

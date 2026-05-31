@@ -72,6 +72,7 @@ internal fun VoiceContent(
     deviceVoices: List<DeviceVoice>,
     effectiveDeviceVoice: DeviceVoice?,
     geminiKeyConfigured: Boolean,
+    sharedTtsAvailable: Boolean,
     voiceLocale: VoiceLocale,
     region: Region,
     temperatureUnit: TemperatureUnit,
@@ -102,14 +103,13 @@ internal fun VoiceContent(
     // atomic with respect to other UI events.
     var isPreviewing by remember { mutableStateOf(false) }
 
-    // A Gemini preview with no key configured can't reach Gemini, so
-    // runTtsPreview falls back to the device voice — which sounds to the user
-    // like *that* is the Gemini voice they just selected. Suppress the preview
-    // entirely in that case (switching engine, picking a voice/style/locale,
-    // or the Test button) so we never pass off the device voice as Gemini.
-    // The user enters a key first; previews resume once one's set.
+    // A Gemini preview that can't reach Gemini falls back to the device voice
+    // in runTtsPreview — which sounds to the user like *that* is the Gemini
+    // voice they just selected. Suppress the preview entirely when there's no
+    // way to actually synthesise through Gemini: no BYOK key set and the
+    // shared-key proxy isn't available on this build either.
     fun canPreview(engine: TtsEngine): Boolean =
-        engine != TtsEngine.GEMINI || geminiKeyConfigured
+        engine != TtsEngine.GEMINI || geminiKeyConfigured || sharedTtsAvailable
 
     fun preview(
         engine: TtsEngine,
@@ -239,10 +239,16 @@ internal fun VoiceContent(
                                 preview(TtsEngine.GEMINI, geminiVoice, picked, deviceVoice, voiceLocale)
                             },
                         )
-                        // Disabled until a key is set — without one the preview
-                        // would only play the device-voice fallback, masquerading
-                        // as Gemini. The "Not set" status above tells the user why.
-                        TestVoiceButton(isPreviewing = isPreviewing, enabled = geminiKeyConfigured) {
+                        // Disabled only when there's no way to actually reach
+                        // Gemini — neither a BYOK key set nor the shared-key
+                        // proxy available on this build. Without either, the
+                        // preview would fall back to the device voice and
+                        // masquerade as Gemini. The "Not set" status above
+                        // tells the user the BYOK side of why.
+                        TestVoiceButton(
+                            isPreviewing = isPreviewing,
+                            enabled = geminiKeyConfigured || sharedTtsAvailable,
+                        ) {
                             preview(selected, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
                         }
                     }

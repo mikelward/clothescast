@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import app.clothescast.core.data.insight.KeyProvider
 import app.clothescast.core.data.insight.MissingApiKeyException
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
@@ -38,15 +37,16 @@ import java.util.Base64
  * device-to-device transfer that doesn't preserve hardware-backed keys, etc.) by asking
  * the user to re-enter their key, rather than looping on a corrupt ciphertext.
  *
- * `SecureKeyStore` itself implements [KeyProvider] — `get()` returns the Gemini key,
- * matching the contract `GeminiTtsClient` consumes.
+ * Read by the Gemini call planner on the BYOK branch: when the user has stored
+ * their own Gemini key, the planner pulls it via [get] and routes the request
+ * directly to Google instead of the developer's TTS proxy.
  */
 class SecureKeyStore(
     private val aead: Aead,
     private val dataStore: DataStore<Preferences>,
-) : KeyProvider {
+) {
 
-    override suspend fun get(): String = read(GEMINI_PREF_KEY, GEMINI_AAD, "Gemini")
+    suspend fun get(): String = read(GEMINI_PREF_KEY, GEMINI_AAD, "Gemini")
 
     suspend fun set(key: String) = write(GEMINI_PREF_KEY, GEMINI_AAD, key)
 

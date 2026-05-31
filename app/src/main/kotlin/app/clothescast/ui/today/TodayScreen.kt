@@ -780,28 +780,15 @@ private fun BannerStack(
         onDismiss = onDismissPlayPromoCard,
         modifier = bannerModifier,
     )
-    // "Set up a schedule" nudge — scheduled casts don't fire until the user
-    // enables a slot, so a fresh install gets nothing on a timer. Gated
-    // upstream on neither master switch being on (plus the user not having
-    // dismissed), and held back by [promoBannersToShow] until a forecast
-    // exists and there's room under the cap. Sits between the play promo
-    // and the Gemini-voices promo. The CTA only routes to Schedule settings
-    // (where the notification-permission prompt lives); enabling a slot there
-    // auto-hides the card, so unlike the clothes card the CTA doesn't dismiss.
-    SchedulePromoCard(
-        visible = PromoBanner.SCHEDULE in shownPromos,
-        onOpenSchedule = onOpenSchedule,
-        onDismiss = onDismissSchedulePromoCard,
-        modifier = bannerModifier,
-    )
     // "Try high quality voices" nudge — point users who haven't set up Gemini
     // at Voice settings so they can swap the device's built-in TTS for the
     // natural Gemini voices. Gated upstream on no Gemini key being configured
     // (plus not dismissed), and held back by [promoBannersToShow] until a
-    // forecast exists and there's room under the cap. Sits right after the play
-    // promo. Like the clothes card, the CTA dismisses too — once the user's
-    // been pointed at Voice settings the card retires whether or not they add a
-    // key (and it auto-hides the moment a key lands regardless).
+    // forecast exists and there's room under the cap. Sits between the play
+    // promo and the schedule promo. Like the clothes card, the CTA dismisses
+    // too — once the user's been pointed at Voice settings the card retires
+    // whether or not they add a key (and it auto-hides the moment a key lands
+    // regardless).
     GeminiTtsPromoCard(
         visible = PromoBanner.GEMINI in shownPromos,
         onSetUpVoices = {
@@ -809,6 +796,21 @@ private fun BannerStack(
             onOpenVoice()
         },
         onDismiss = onDismissGeminiTtsPromoCard,
+        modifier = bannerModifier,
+    )
+    // "Set up a schedule" nudge — scheduled casts don't fire until the user
+    // enables a slot, so a fresh install gets nothing on a timer. Gated
+    // upstream on neither master switch being on (plus the user not having
+    // dismissed), and held back by [promoBannersToShow] until a forecast
+    // exists and there's room under the cap. Sits between the Gemini-voices
+    // promo and the celebration promo. The CTA only routes to Schedule
+    // settings (where the notification-permission prompt lives); enabling a
+    // slot there auto-hides the card, so unlike the clothes card the CTA
+    // doesn't dismiss.
+    SchedulePromoCard(
+        visible = PromoBanner.SCHEDULE in shownPromos,
+        onOpenSchedule = onOpenSchedule,
+        onDismiss = onDismissSchedulePromoCard,
         modifier = bannerModifier,
     )
     // Promo card for the calendar-sourced holiday + birthday theming. Gated

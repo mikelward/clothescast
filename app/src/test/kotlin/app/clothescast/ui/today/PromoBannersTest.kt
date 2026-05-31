@@ -275,6 +275,21 @@ class PromoBannersTest {
     }
 
     @Test
+    fun `gemini promo outranks schedule under the cap`() {
+        promoBannersToShow(
+            locationActionRequired = false,
+            telemetryNoticeVisible = false,
+            clothesPromoEligible = false,
+            schedulePromoEligible = true,
+            playPromoEligible = false,
+            geminiPromoEligible = true,
+            celebrationEligible = false,
+            hasForecast = true,
+            maxVisible = 1,
+        ) shouldContainExactlyInAnyOrder listOf(PromoBanner.GEMINI)
+    }
+
+    @Test
     fun `play promo outranks gemini under the cap`() {
         promoBannersToShow(
             locationActionRequired = false,

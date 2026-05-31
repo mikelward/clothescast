@@ -236,6 +236,8 @@ internal fun VoicePage(
             rangeFormat = state.rangeFormat,
             clothesFormat = state.clothesFormat,
             bottomsFormat = state.bottomsFormat,
+            periodPreamble = state.periodPreamble,
+            wearPreamble = state.wearPreamble,
             currentInsight = state.currentInsightSummary,
             padding = padding,
             onSetTtsEngine = viewModel::setTtsEngine,

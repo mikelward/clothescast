@@ -279,6 +279,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_tts_device_header">Hlasy v nízké kvalitě zabudované do tvého telefonu.</string>
     <string name="settings_api_key_status_set">Gemini klíč je nastaven.</string>
     <string name="settings_api_key_status_unset">Žádný Gemini klíč není nastaven. Získej ho na aistudio.google.com pro použití hlasů Gemini.</string>
+    <string name="settings_api_key_status_unset_shared">Volitelné — vlož vlastní klíč. Získej ho zdarma na aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Vlož sem Gemini API klíč</string>
     <string name="settings_api_key_save">Uložit Gemini klíč</string>
     <string name="settings_api_key_clear">Smazat uložený Gemini klíč</string>
@@ -618,6 +619,14 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_display_palette_rainbow_description">Růžové, oranžové a zelené linky grafů s tyrkysovými/červenými kartami spolehlivosti Material. Výchozí.</string>
     <string name="settings_display_palette_highlighter">Zvýrazňovač</string>
     <string name="settings_display_palette_highlighter_description">Purpurové, žluté a azurové čáry grafu — jako stopa zvýrazňovače na stránce. Na první pohled viditelně odlišné od \"Duhy\"; světlý motiv používá hlubší varianty pro čitelnost. Bezpečné při červeno-zelené barvosleposti.</string>
+    <string name="settings_display_home_layout_title">Rozvržení domovské obrazovky</string>
+    <string name="settings_display_home_layout_description">Přetažením úchytů změň pořadí, v jakém se tyto sekce zobrazují na domovské obrazovce.</string>
+    <string name="settings_display_home_layout_drag">Přetažením změň pořadí: %1$s</string>
+    <string name="settings_display_home_section_outfit">Outfit</string>
+    <string name="settings_display_home_section_conditions">Podmínky</string>
+    <string name="settings_display_home_section_confidence">Spolehlivost</string>
+    <string name="settings_display_home_section_insight">Předpověď</string>
+    <string name="settings_display_home_section_charts">Grafy</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Oblačnost %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Modely se neshodují na srážkách (Δ %1$.0f%% pro %2$d modely)</string>

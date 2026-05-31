@@ -269,6 +269,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <string name="settings_api_key_status_set">Uma chave Gemini está configurada.</string>
     <string name="settings_api_key_status_unset">Nenhuma chave Gemini configurada. Obtenha uma em aistudio.google.com para usar vozes Gemini.</string>
+    <string name="settings_api_key_status_unset_shared">Opcional — cole sua própria chave. Obtenha uma grátis em aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Cole sua chave API Gemini</string>
     <string name="settings_api_key_save">Salvar chave Gemini</string>
     <string name="settings_api_key_clear">Apagar chave Gemini salva</string>
@@ -716,6 +717,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Linhas de gráfico rosa, laranja e verde com cartões de confiança Material verde-azulado/vermelho. O padrão.</string>
     <string name="settings_display_palette_highlighter">Marca-texto</string>
     <string name="settings_display_palette_highlighter_description">Linhas de gráfico magenta, amarelas e ciano — como marcadores fluorescentes na página. Visivelmente diferentes de \"Arco-íris\" à primeira vista; o tema claro usa variantes mais escuras para legibilidade. Seguro para daltonismo vermelho-verde.</string>
+    <string name="settings_display_home_layout_title">Layout da tela inicial</string>
+    <string name="settings_display_home_layout_description">Arraste as alças para reordenar como essas seções aparecem na tela inicial.</string>
+    <string name="settings_display_home_layout_drag">Arraste para reordenar %1$s</string>
+    <string name="settings_display_home_section_outfit">Look</string>
+    <string name="settings_display_home_section_conditions">Condições</string>
+    <string name="settings_display_home_section_confidence">Confiança</string>
+    <string name="settings_display_home_section_insight">Previsão</string>
+    <string name="settings_display_home_section_charts">Gráficos</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Nuvens %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Os modelos discordam sobre chuva (Δ %1$.0f%% em %2$d modelos)</string>

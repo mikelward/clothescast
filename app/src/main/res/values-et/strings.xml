@@ -208,6 +208,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_tts_device_header">Madala kvaliteediga hääled, mis on telefoni sisse ehitatud.</string>
     <string name="settings_api_key_status_set">Gemini võti on seadistatud.</string>
     <string name="settings_api_key_status_unset">Hangi tasuta API-võti aadressilt aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">Valikuline — kleebi oma võti. Hangi tasuta aadressilt aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Kleebi oma Gemini API-võti</string>
     <string name="settings_api_key_save">Salvesta Gemini võti</string>
     <string name="settings_api_key_clear">Kustuta salvestatud Gemini võti</string>
@@ -576,6 +577,14 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_display_palette_rainbow_description">Roosa, oranž ja roheline diagrammijoon koos Material teal/punaste usaldusväärsuskaartidega. Vaikimisi.</string>
     <string name="settings_display_palette_highlighter">Esiletõstja</string>
     <string name="settings_display_palette_highlighter_description">Magenta, kollased ja tsüaani värvi graafiku jooned — nagu esiletõstja jälg lehel. Ühe pilguga selgelt erinevad \"Vikerkaarest\"; hele teema kasutab loetavuse jaoks tumedamaid variante. Ohutu punase-rohelise värvipimeduse korral.</string>
+    <string name="settings_display_home_layout_title">Avakuva paigutus</string>
+    <string name="settings_display_home_layout_description">Lohista pidemeid, et muuta nende jaotiste järjestust avakuval.</string>
+    <string name="settings_display_home_layout_drag">Lohista, et muuta jaotise %1$s järjestust</string>
+    <string name="settings_display_home_section_outfit">Riietus</string>
+    <string name="settings_display_home_section_conditions">Tingimused</string>
+    <string name="settings_display_home_section_confidence">Usaldusväärsus</string>
+    <string name="settings_display_home_section_insight">Prognoos</string>
+    <string name="settings_display_home_section_charts">Graafikud</string>
     <string name="settings_unit_auto">Automaatne</string>
     <string name="today_cloud_range">Pilvisus %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Mudelid ei nõustu vihma osas (Δ %1$.0f%% %2$d mudeli vahel)</string>

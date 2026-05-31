@@ -325,6 +325,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_device_header">Mga boses na may mababang kalidad na nakapaloob sa iyong telepono.</string>
     <string name="settings_api_key_status_set">May naka-configure na Gemini key.</string>
     <string name="settings_api_key_status_unset">Kumuha ng libreng API key sa aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">Opsyonal — i-paste ang sarili mong key. Kumuha ng libre sa aistudio.google.com</string>
     <string name="settings_api_key_placeholder">I-paste ang iyong Gemini API key</string>
     <string name="settings_api_key_save">I-save ang Gemini key</string>
     <string name="settings_api_key_clear">I-clear ang nakaimbak na Gemini key</string>
@@ -651,6 +652,14 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_palette_rainbow_description">Pink, orange, at berdeng linya ng tsart na may teal/pulang confidence card na Material. Default.</string>
     <string name="settings_display_palette_highlighter">Highlighter</string>
     <string name="settings_display_palette_highlighter_description">Mga linya ng tsart sa magenta, dilaw, at cyan — parang gurit ng highlighter sa pahina. Madaling makita ang pagkaiba sa \"Bahaghari\"; gumagamit ang light theme ng mas matingkad na bersyon para sa kabasahan. Ligtas para sa pagkabulag sa pula-berde.</string>
+    <string name="settings_display_home_layout_title">Layout ng home screen</string>
+    <string name="settings_display_home_layout_description">I-drag ang mga hawakan para baguhin ang pagkakasunod-sunod ng mga seksyong ito sa home screen.</string>
+    <string name="settings_display_home_layout_drag">I-drag para baguhin ang pagkakasunod-sunod ng %1$s</string>
+    <string name="settings_display_home_section_outfit">Outfit</string>
+    <string name="settings_display_home_section_conditions">Mga kondisyon</string>
+    <string name="settings_display_home_section_confidence">Kumpiyansa</string>
+    <string name="settings_display_home_section_insight">Hula</string>
+    <string name="settings_display_home_section_charts">Mga tsart</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Ulap %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Hindi nagkakasundo ang mga modelo sa ulan (Δ %1$.0f%% sa %2$d modelo)</string>

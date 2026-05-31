@@ -321,6 +321,7 @@ they work correctly in both the single-band and range templates.
     <string name="settings_tts_device_header">أصوات منخفضة الجودة مدمجة في هاتفك.</string>
     <string name="settings_api_key_status_set">تم تكوين مفتاح Gemini.</string>
     <string name="settings_api_key_status_unset">احصل على مفتاح API مجاني من aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">اختياري — الصق مفتاحك الخاص. احصل على واحد مجانًا من aistudio.google.com</string>
     <string name="settings_api_key_placeholder">الصق مفتاح Gemini API</string>
     <string name="settings_api_key_save">حفظ مفتاح Gemini</string>
     <string name="settings_api_key_clear">مسح مفتاح Gemini المخزّن</string>
@@ -488,6 +489,14 @@ they work correctly in both the single-band and range templates.
     <string name="settings_display_palette_rainbow_description">خطوط مخطط وردي وبرتقالي وأخضر مع بطاقات ثقة Material باللون الفيروزي/الأحمر. الافتراضي.</string>
     <string name="settings_display_palette_highlighter">قلم تظليل</string>
     <string name="settings_display_palette_highlighter_description">خطوط رسم بياني بألوان أرجواني وأصفر وسماوي — كأثر قلم تظليل على الورق. تختلف عن \"قوس قزح\" بوضوح من النظرة الأولى؛ يستخدم الوضع الفاتح إصدارات أعمق لزيادة الوضوح. آمنة لعمى الألوان الأحمر-الأخضر.</string>
+    <string name="settings_display_home_layout_title">تخطيط الشاشة الرئيسية</string>
+    <string name="settings_display_home_layout_description">اسحب المقابض لإعادة ترتيب طريقة ظهور هذه الأقسام على الشاشة الرئيسية.</string>
+    <string name="settings_display_home_layout_drag">اسحب لإعادة ترتيب %1$s</string>
+    <string name="settings_display_home_section_outfit">الزي</string>
+    <string name="settings_display_home_section_conditions">الأحوال الجوية</string>
+    <string name="settings_display_home_section_confidence">الثقة</string>
+    <string name="settings_display_home_section_insight">التوقعات</string>
+    <string name="settings_display_home_section_charts">المخططات</string>
     <string name="settings_display_palette_accessible">إمكانية الوصول</string>
     <string name="settings_display_palette_accessible_description">لوحة ألوان مشتقة من Okabe-Ito مصممة للتمييز في حالات عمى الألوان. تستخدم بطاقات الثقة الأزرق السماوي والمحايد والكهرماني بدلاً من الفيروزي والمحايد والأحمر.</string>
     <string name="today_cloud_range">السحب %1$d–%2$d%%</string>

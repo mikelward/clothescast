@@ -316,6 +316,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_tts_device_header">Voci de calitate scăzută integrate în telefonul tău.</string>
     <string name="settings_api_key_status_set">O cheie Gemini este configurată.</string>
     <string name="settings_api_key_status_unset">Obține o cheie API gratuită la aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">Opțional — lipește-ți propria cheie. Obține una gratuit la aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Lipește cheia ta API Gemini</string>
     <string name="settings_api_key_save">Salvează cheia Gemini</string>
     <string name="settings_api_key_clear">Șterge cheia Gemini salvată</string>
@@ -604,6 +605,14 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_display_palette_rainbow_description">Linii de grafic roz, portocaliu și verde cu carduri de încredere Material teal/roșu. Implicit.</string>
     <string name="settings_display_palette_highlighter">Marker</string>
     <string name="settings_display_palette_highlighter_description">Linii de grafic magenta, galben și cyan — ca urma unui marker pe pagină. Vizibil diferite față de \"Curcubeu\" de la prima privire; tema deschisă folosește variante mai închise pentru lizibilitate. Sigure în cazul daltonismului roșu-verde.</string>
+    <string name="settings_display_home_layout_title">Aspectul ecranului principal</string>
+    <string name="settings_display_home_layout_description">Trage de mânere pentru a reordona modul în care apar aceste secțiuni pe ecranul principal.</string>
+    <string name="settings_display_home_layout_drag">Trage pentru a reordona %1$s</string>
+    <string name="settings_display_home_section_outfit">Ținută</string>
+    <string name="settings_display_home_section_conditions">Condiții</string>
+    <string name="settings_display_home_section_confidence">Încredere</string>
+    <string name="settings_display_home_section_insight">Prognoză</string>
+    <string name="settings_display_home_section_charts">Grafice</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Nori %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Modelele nu sunt de acord cu privire la ploaie (Δ %1$.0f%% pe %2$d modele)</string>

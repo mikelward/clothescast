@@ -313,6 +313,7 @@ to values/strings.xml (English).
     <string name="settings_tts_device_header">Suara berkualitas rendah bawaan di ponselmu.</string>
     <string name="settings_api_key_status_set">Kunci Gemini telah dikonfigurasi.</string>
     <string name="settings_api_key_status_unset">Dapatkan kunci API gratis di aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">Opsional — tempel kuncimu sendiri. Dapatkan gratis di aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Tempelkan kunci API Gemini Anda</string>
     <string name="settings_api_key_save">Simpan kunci Gemini</string>
     <string name="settings_api_key_clear">Hapus kunci Gemini tersimpan</string>
@@ -601,6 +602,14 @@ to values/strings.xml (English).
     <string name="settings_display_palette_rainbow_description">Garis grafik merah muda, oranye, dan hijau dengan kartu keyakinan Material teal/merah. Bawaan.</string>
     <string name="settings_display_palette_highlighter">Stabilo</string>
     <string name="settings_display_palette_highlighter_description">Garis grafik magenta, kuning, dan cyan — seperti goresan stabilo di halaman. Sekilas tampak jelas berbeda dari \"Pelangi\"; tema terang memakai varian yang lebih gelap agar lebih mudah dibaca. Aman untuk buta warna merah-hijau.</string>
+    <string name="settings_display_home_layout_title">Tata letak layar utama</string>
+    <string name="settings_display_home_layout_description">Seret pegangan untuk mengatur ulang urutan tampilan bagian-bagian ini di layar utama.</string>
+    <string name="settings_display_home_layout_drag">Seret untuk mengatur ulang %1$s</string>
+    <string name="settings_display_home_section_outfit">Pakaian</string>
+    <string name="settings_display_home_section_conditions">Kondisi</string>
+    <string name="settings_display_home_section_confidence">Keyakinan</string>
+    <string name="settings_display_home_section_insight">Prakiraan</string>
+    <string name="settings_display_home_section_charts">Grafik</string>
     <string name="settings_unit_auto">Otomatis</string>
     <string name="today_cloud_range">Awan %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Model tidak sepakat soal hujan (Δ %1$.0f%% dari %2$d model)</string>

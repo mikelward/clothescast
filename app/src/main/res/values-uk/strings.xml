@@ -286,6 +286,7 @@ only the displayed label localizes.
     <string name="settings_tts_device_header">Голоси низької якості, вбудовані у твій телефон.</string>
     <string name="settings_api_key_status_set">Ключ Gemini налаштовано.</string>
     <string name="settings_api_key_status_unset">Отримайте безкоштовний ключ API на aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">Необов\'язково — встав свій ключ. Отримай безкоштовно на aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Вставте ваш ключ API Gemini</string>
     <string name="settings_api_key_save">Зберегти ключ Gemini</string>
     <string name="settings_api_key_clear">Видалити збережений ключ Gemini</string>
@@ -629,6 +630,14 @@ only the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Рожеві, помаранчеві та зелені лінії графіків з картками достовірності Material бірюзово/червоного. За замовчуванням.</string>
     <string name="settings_display_palette_highlighter">Маркер</string>
     <string name="settings_display_palette_highlighter_description">Лінії графіка пурпурового, жовтого та блакитного кольорів — наче слід маркера на сторінці. Помітно відрізняються від \"Райдуги\" з першого погляду; світла тема використовує глибші варіанти для читабельності. Безпечно для червоно-зеленої цветової сліпоти.</string>
+    <string name="settings_display_home_layout_title">Макет головного екрана</string>
+    <string name="settings_display_home_layout_description">Перетягуй маркери, щоб змінити порядок відображення цих розділів на головному екрані.</string>
+    <string name="settings_display_home_layout_drag">Перетягни, щоб змінити порядок: %1$s</string>
+    <string name="settings_display_home_section_outfit">Вбрання</string>
+    <string name="settings_display_home_section_conditions">Умови</string>
+    <string name="settings_display_home_section_confidence">Достовірність</string>
+    <string name="settings_display_home_section_insight">Прогноз</string>
+    <string name="settings_display_home_section_charts">Графіки</string>
     <string name="settings_unit_auto">Авто</string>
     <string name="today_cloud_range">Хмарність %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Моделі розходяться щодо дощу (Δ %1$.0f%% по %2$d моделях)</string>

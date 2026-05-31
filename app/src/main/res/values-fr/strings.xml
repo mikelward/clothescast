@@ -268,6 +268,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <string name="settings_api_key_status_set">Une clé Gemini est configurée.</string>
     <string name="settings_api_key_status_unset">Aucune clé Gemini configurée. Obtiens-en une sur aistudio.google.com pour utiliser les voix Gemini.</string>
+    <string name="settings_api_key_status_unset_shared">Facultatif — colle ta propre clé. Obtiens-en une gratuitement sur aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Colle ta clé API Gemini</string>
     <string name="settings_api_key_save">Enregistrer la clé Gemini</string>
     <string name="settings_api_key_clear">Effacer la clé Gemini enregistrée</string>
@@ -729,6 +730,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Lignes de graphique roses, oranges et vertes avec des cartes de confiance sarcelle/rouge Material. Par défaut.</string>
     <string name="settings_display_palette_highlighter">Surligneur</string>
     <string name="settings_display_palette_highlighter_description">Lignes de graphique magenta, jaune et cyan — comme un coup de surligneur sur la page. Visiblement différentes d\'\"Arc-en-ciel\" d\'un coup d\'œil ; le thème clair utilise des variantes plus profondes pour la lisibilité. Adapté au daltonisme rouge-vert.</string>
+    <string name="settings_display_home_layout_title">Disposition de l\'écran d\'accueil</string>
+    <string name="settings_display_home_layout_description">Fais glisser les poignées pour réorganiser l\'ordre d\'affichage de ces sections sur l\'écran d\'accueil.</string>
+    <string name="settings_display_home_layout_drag">Faire glisser pour réorganiser %1$s</string>
+    <string name="settings_display_home_section_outfit">Tenue</string>
+    <string name="settings_display_home_section_conditions">Conditions</string>
+    <string name="settings_display_home_section_confidence">Fiabilité</string>
+    <string name="settings_display_home_section_insight">Prévisions</string>
+    <string name="settings_display_home_section_charts">Graphiques</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Nuages %1$d\u2013%2$d%%</string>
     <string name="today_confidence_tap_to_hide">Appuyer pour masquer les prévisions par modèle</string>

@@ -249,6 +249,7 @@ Not overridden by design:
     <string name="settings_tts_device_header">आपके फ़ोन में निर्मित निम्न-गुणवत्ता वाली आवाज़ें।</string>
     <string name="settings_api_key_status_set">Gemini कुंजी सेट है।</string>
     <string name="settings_api_key_status_unset">aistudio.google.com पर मुफ़्त API कुंजी पाएँ</string>
+    <string name="settings_api_key_status_unset_shared">वैकल्पिक — अपनी कुंजी पेस्ट करें। aistudio.google.com पर मुफ़्त में पाएँ</string>
     <string name="settings_api_key_placeholder">अपनी Gemini API कुंजी चिपकाएँ</string>
     <string name="settings_api_key_save">Gemini कुंजी सेव करें</string>
     <string name="settings_api_key_clear">सेव की गई Gemini कुंजी हटाएँ</string>
@@ -631,6 +632,14 @@ Not overridden by design:
     <string name="settings_display_palette_rainbow_description">गुलाबी, नारंगी और हरी चार्ट लाइनें Material टील/लाल विश्वास कार्ड के साथ। डिफ़ॉल्ट।</string>
     <string name="settings_display_palette_highlighter">हाइलाइटर</string>
     <string name="settings_display_palette_highlighter_description">मैजेंटा, पीली और सायन रंग की चार्ट लाइनें — पन्ने पर हाइलाइटर पेन की तरह। \"इंद्रधनुष\" से एक नज़र में स्पष्ट रूप से अलग; लाइट थीम पठनीयता के लिए गहरे संस्करण उपयोग करती है। लाल-हरे रंग अंधता में सुरक्षित।</string>
+    <string name="settings_display_home_layout_title">होम स्क्रीन लेआउट</string>
+    <string name="settings_display_home_layout_description">ये सेक्शन होम स्क्रीन पर किस क्रम में दिखें, यह बदलने के लिए हैंडल खींचें।</string>
+    <string name="settings_display_home_layout_drag">%1$s को पुनः क्रमित करने के लिए खींचें</string>
+    <string name="settings_display_home_section_outfit">पोशाक</string>
+    <string name="settings_display_home_section_conditions">स्थितियाँ</string>
+    <string name="settings_display_home_section_confidence">विश्वास</string>
+    <string name="settings_display_home_section_insight">पूर्वानुमान</string>
+    <string name="settings_display_home_section_charts">चार्ट</string>
     <string name="settings_unit_auto">स्वचालित</string>
     <string name="today_cloud_range">बादल %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">मॉडल बारिश पर सहमत नहीं (Δ %1$.0f%%, %2$d मॉडल में)</string>

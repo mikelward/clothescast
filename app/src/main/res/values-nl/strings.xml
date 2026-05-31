@@ -244,6 +244,7 @@ the displayed label localizes.
     <string name="settings_api_key_gemini_label">Gemini</string>
     <string name="settings_api_key_status_set">Er is een Gemini-sleutel ingesteld.</string>
     <string name="settings_api_key_status_unset">Geen Gemini-sleutel ingesteld. Haal er een op via aistudio.google.com om Gemini-stemmen te gebruiken.</string>
+    <string name="settings_api_key_status_unset_shared">Optioneel — plak je eigen sleutel. Haal er gratis een op via aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Plak hier je Gemini-API-sleutel</string>
     <string name="settings_api_key_save">Gemini-sleutel opslaan</string>
     <string name="settings_api_key_clear">Opgeslagen Gemini-sleutel wissen</string>
@@ -677,6 +678,14 @@ the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Roze, oranje en groene grafieklijnen met Material teal/rode betrouwbaarheidskaarten. De standaard.</string>
     <string name="settings_display_palette_highlighter">Markeerstift</string>
     <string name="settings_display_palette_highlighter_description">Magenta, gele en cyaan grafieklijnen — als markeerstift op de pagina. Op het eerste gezicht zichtbaar anders dan \"Regenboog\"; het lichte thema gebruikt diepere varianten voor leesbaarheid. Veilig bij rood-groen kleurenblindheid.</string>
+    <string name="settings_display_home_layout_title">Indeling van startscherm</string>
+    <string name="settings_display_home_layout_description">Sleep aan de handgrepen om de volgorde van deze secties op het startscherm te wijzigen.</string>
+    <string name="settings_display_home_layout_drag">Sleep om %1$s opnieuw te ordenen</string>
+    <string name="settings_display_home_section_outfit">Outfit</string>
+    <string name="settings_display_home_section_conditions">Omstandigheden</string>
+    <string name="settings_display_home_section_confidence">Betrouwbaarheid</string>
+    <string name="settings_display_home_section_insight">Voorspelling</string>
+    <string name="settings_display_home_section_charts">Grafieken</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Bewolking %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Modellen het niet eens over neerslag (Δ %1$.0f%% over %2$d modellen)</string>

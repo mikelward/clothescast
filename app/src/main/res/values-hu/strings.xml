@@ -281,6 +281,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_tts_device_header">A telefonodba beépített, gyenge minőségű hangok.</string>
     <string name="settings_api_key_status_set">Gemini-kulcs be van állítva.</string>
     <string name="settings_api_key_status_unset">Nincs Gemini-kulcs beállítva. Szerezz egyet az aistudio.google.com oldalon a Gemini-hangok használatához.</string>
+    <string name="settings_api_key_status_unset_shared">Választható — illeszd be a saját kulcsod. Szerezz egyet ingyen az aistudio.google.com oldalon</string>
     <string name="settings_api_key_placeholder">Gemini API-kulcs beillesztése ide</string>
     <string name="settings_api_key_save">Gemini-kulcs mentése</string>
     <string name="settings_api_key_clear">Mentett Gemini-kulcs törlése</string>
@@ -621,6 +622,14 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_display_palette_rainbow_description">Rózsaszín, narancssárga és zöld diagramvonalak Material kékeszöld/piros megbízhatósági kártyákkal. Az alapértelmezett.</string>
     <string name="settings_display_palette_highlighter">Szövegkiemelő</string>
     <string name="settings_display_palette_highlighter_description">Magenta, sárga és ciánkék diagramvonalak — mint a szövegkiemelő nyoma a lapon. Első pillantásra láthatóan más, mint a \"Szivárvány\"; a világos téma mélyebb változatokat használ az olvashatóság érdekében. Biztonságos vörös-zöld színtévesztéshez.</string>
+    <string name="settings_display_home_layout_title">Kezdőképernyő elrendezése</string>
+    <string name="settings_display_home_layout_description">Húzd a fogantyúkat, hogy átrendezd, milyen sorrendben jelennek meg ezek a szakaszok a kezdőképernyőn.</string>
+    <string name="settings_display_home_layout_drag">Húzd a(z) %1$s átrendezéséhez</string>
+    <string name="settings_display_home_section_outfit">Outfit</string>
+    <string name="settings_display_home_section_conditions">Körülmények</string>
+    <string name="settings_display_home_section_confidence">Megbízhatóság</string>
+    <string name="settings_display_home_section_insight">Előrejelzés</string>
+    <string name="settings_display_home_section_charts">Diagramok</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Felhőzet %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">A modellek nem értenek egyet a csapadékban (Δ %1$.0f%% %2$d modell között)</string>

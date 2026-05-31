@@ -239,6 +239,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
 
     <string name="settings_api_key_status_set">Gemini ključ je postavljen.</string>
     <string name="settings_api_key_status_unset">Gemini ključ nije postavljen. Nabavi ga na aistudio.google.com za korištenje Gemini glasova.</string>
+    <string name="settings_api_key_status_unset_shared">Neobavezno — zalijepi vlastiti ključ. Nabavi ga besplatno na aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Zalijepi svoj Gemini API ključ</string>
     <string name="settings_api_key_save">Spremi Gemini ključ</string>
     <string name="settings_api_key_clear">Izbriši spremljeni Gemini ključ</string>
@@ -698,6 +699,14 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_display_palette_rainbow_description">Ružičaste, narančaste i zelene linije grafikona s tirkiznim/crvenim karticama pouzdanosti Material. Zadano.</string>
     <string name="settings_display_palette_highlighter">Marker</string>
     <string name="settings_display_palette_highlighter_description">Magenta, žute i cijan linije grafikona — kao trag markera na stranici. Na prvi pogled vidno različite od \"Duge\"; svijetla tema koristi dublje varijante za čitljivost. Sigurne za crveno-zelenu sljepoću za boje.</string>
+    <string name="settings_display_home_layout_title">Raspored početnog zaslona</string>
+    <string name="settings_display_home_layout_description">Povuci ručke da promijeniš redoslijed prikaza ovih odjeljaka na početnom zaslonu.</string>
+    <string name="settings_display_home_layout_drag">Povuci za promjenu redoslijeda: %1$s</string>
+    <string name="settings_display_home_section_outfit">Outfit</string>
+    <string name="settings_display_home_section_conditions">Uvjeti</string>
+    <string name="settings_display_home_section_confidence">Pouzdanost</string>
+    <string name="settings_display_home_section_insight">Prognoza</string>
+    <string name="settings_display_home_section_charts">Grafikoni</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Oblačnost %1$d\u2013%2$d%%</string>
     <string name="today_confidence_tap_to_hide">Dodirnite za skrivanje prognoza po modelu</string>

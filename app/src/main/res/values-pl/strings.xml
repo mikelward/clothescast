@@ -244,6 +244,7 @@ is unchanged; only the displayed label localizes.
     <string name="settings_api_key_gemini_label">Gemini</string>
     <string name="settings_api_key_status_set">Klucz Gemini jest skonfigurowany.</string>
     <string name="settings_api_key_status_unset">Brak klucza Gemini. Pobierz go na stronie aistudio.google.com, aby korzystać z głosów Gemini.</string>
+    <string name="settings_api_key_status_unset_shared">Opcjonalnie — wklej własny klucz. Zdobądź go za darmo na aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Wklej tutaj klucz API Gemini</string>
     <string name="settings_api_key_save">Zapisz klucz Gemini</string>
     <string name="settings_api_key_clear">Usuń zapisany klucz Gemini</string>
@@ -675,6 +676,14 @@ is unchanged; only the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Różowe, pomarańczowe i zielone linie wykresów z turkusowo/czerwonymi kartami pewności Material. Domyślna.</string>
     <string name="settings_display_palette_highlighter">Zakreślacz</string>
     <string name="settings_display_palette_highlighter_description">Magentowe, żółte i cyjanowe linie wykresu — jak ślad zakreślacza na stronie. Na pierwszy rzut oka widocznie inne niż \"Tęcza\"; jasny motyw używa głębszych wariantów dla czytelności. Bezpieczne przy daltonizmie czerwono-zielonym.</string>
+    <string name="settings_display_home_layout_title">Układ ekranu głównego</string>
+    <string name="settings_display_home_layout_description">Przeciągaj uchwyty, aby zmienić kolejność wyświetlania tych sekcji na ekranie głównym.</string>
+    <string name="settings_display_home_layout_drag">Przeciągnij, aby zmienić kolejność: %1$s</string>
+    <string name="settings_display_home_section_outfit">Outfit</string>
+    <string name="settings_display_home_section_conditions">Warunki</string>
+    <string name="settings_display_home_section_confidence">Pewność</string>
+    <string name="settings_display_home_section_insight">Prognoza</string>
+    <string name="settings_display_home_section_charts">Wykresy</string>
     <string name="settings_unit_auto">Auto</string>
     <string name="today_cloud_range">Zachmurzenie %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Modele nie zgadzają się co do opadów (Δ %1$.0f%% dla %2$d modeli)</string>

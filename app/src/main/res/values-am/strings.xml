@@ -244,6 +244,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_device_header">በስልክህ ውስጥ የተገነቡ ዝቅተኛ ጥራት ድምፆች።</string>
     <string name="settings_api_key_status_set">Gemini ቁልፍ ተዋቅሯል።</string>
     <string name="settings_api_key_status_unset">ነፃ API key ያግኙ aistudio.google.com ላይ</string>
+    <string name="settings_api_key_status_unset_shared">አማራጭ — የራስዎን ቁልፍ ይለጥፉ። ነፃ ቁልፍ በ aistudio.google.com ያግኙ</string>
     <string name="settings_api_key_placeholder">Gemini API key ይለጥፉ</string>
     <string name="settings_api_key_save">Gemini ቁልፍ አስቀምጥ</string>
     <string name="settings_api_key_clear">የተቀመጠ Gemini ቁልፍ ሰርዝ</string>
@@ -458,6 +459,14 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_palette_rainbow_description">ሮዝ፣ ብርቱካናማ እና አረንጓዴ ሰንጠረዥ መስመሮች የ Material ቲያ/ቀይ የአስተማማኝነት ካርዶች ጋር። ነባሪ።</string>
     <string name="settings_display_palette_highlighter">ማድመቂያ</string>
     <string name="settings_display_palette_highlighter_description">ማጄንታ፣ ቢጫ እና ሳያን የግራፍ መስመሮች — በወረቀት ላይ እንዳለ የማስታወቂያ ብዕር ሁሉ። ከ\"ቀስተ ደመና\" በቅጽበት ይለያያሉ፤ የብርሃን ጭብጥ ለንባብ ምቾት ጥልቅ ቅርጾች ይጠቀማል። ለቀይ-አረንጓዴ የቀለም ዕውር ሁኔታ ደህንነቱ የተጠበቀ።</string>
+    <string name="settings_display_home_layout_title">የመነሻ ማያ ገጽ አቀማመጥ</string>
+    <string name="settings_display_home_layout_description">እነዚህ ክፍሎች በመነሻ ማያ ገጹ ላይ የሚታዩበትን ቅደም ተከተል ለመቀየር መያዣዎቹን ይጎትቱ።</string>
+    <string name="settings_display_home_layout_drag">%1$s ለመቀየር ይጎትቱ</string>
+    <string name="settings_display_home_section_outfit">ልብስ</string>
+    <string name="settings_display_home_section_conditions">ሁኔታዎች</string>
+    <string name="settings_display_home_section_confidence">መተማመኛ</string>
+    <string name="settings_display_home_section_insight">ትንበያ</string>
+    <string name="settings_display_home_section_charts">ቻርቶች</string>
     <string name="settings_display_palette_accessible">ተደራሽ</string>
     <string name="settings_display_palette_accessible_description">ዲዩተራኖፒያ፣ ፕሮቶናኖፒያ እና ትሪታኖፒያ ሲኖር ሊለዩ የሚችሉ Okabe-Ito ፓሌት። ካርዶቹ ቲያ፣ ገለልተኛ እና ቀይ ፋንታ ሰማያዊ፣ ገለልተኛ እና ሀምበር ይጠቀማሉ።</string>
     <string name="today_cloud_range">ደመና %1$d–%2$d%%</string>

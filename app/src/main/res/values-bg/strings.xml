@@ -331,6 +331,7 @@ What is NOT overridden, by design:
     <string name="settings_tts_device_header">Гласове с ниско качество, вградени в телефона ти.</string>
     <string name="settings_api_key_status_set">Конфигуриран е ключ за Gemini.</string>
     <string name="settings_api_key_status_unset">Вземи безплатен API ключ от aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">По избор — постави свой ключ. Вземи безплатен от aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Постави своя API ключ за Gemini</string>
     <string name="settings_api_key_save">Запази ключа за Gemini</string>
     <string name="settings_api_key_clear">Изтрий запазения ключ за Gemini</string>
@@ -615,6 +616,14 @@ What is NOT overridden, by design:
     <string name="settings_display_palette_rainbow_description">Розови, оранжеви и зелени линии на графиките с карти за достоверност Material синьо-зелено/червено. По подразбиране.</string>
     <string name="settings_display_palette_highlighter">Маркер</string>
     <string name="settings_display_palette_highlighter_description">Линии на графиката в магента, жълто и циан — като следа от маркер върху страницата. Видимо различни от \"Дъга\" от пръв поглед; светлата тема използва по-наситени варианти за четливост. Безопасни при червено-зелена цветна слепота.</string>
+    <string name="settings_display_home_layout_title">Оформление на началния екран</string>
+    <string name="settings_display_home_layout_description">Плъзни манипулаторите, за да пренаредиш как тези секции се показват на началния екран.</string>
+    <string name="settings_display_home_layout_drag">Плъзни, за да пренаредиш %1$s</string>
+    <string name="settings_display_home_section_outfit">Тоалет</string>
+    <string name="settings_display_home_section_conditions">Условия</string>
+    <string name="settings_display_home_section_confidence">Увереност</string>
+    <string name="settings_display_home_section_insight">Прогноза</string>
+    <string name="settings_display_home_section_charts">Графики</string>
     <string name="settings_unit_auto">Авто</string>
     <string name="today_cloud_range">Облачност %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Моделите не са съгласни за дъжда (Δ %1$.0f%% при %2$d модела)</string>

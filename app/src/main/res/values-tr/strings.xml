@@ -221,6 +221,7 @@ displayed label localizes.
 
     <string name="settings_api_key_status_set">Bir Gemini anahtarı ayarlandı.</string>
     <string name="settings_api_key_status_unset">Gemini anahtarı ayarlanmadı. Gemini seslerini kullanmak için aistudio.google.com adresinden bir anahtar alın.</string>
+    <string name="settings_api_key_status_unset_shared">İsteğe bağlı — kendi anahtarını yapıştır. aistudio.google.com adresinden ücretsiz al</string>
     <string name="settings_api_key_placeholder">Gemini API anahtarını buraya yapıştırın</string>
     <string name="settings_api_key_save">Gemini anahtarını kaydet</string>
     <string name="settings_api_key_clear">Kayıtlı Gemini anahtarını sil</string>
@@ -610,6 +611,14 @@ displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Pembe, turuncu ve yeşil grafik çizgileri ile Material teal/kırmızı güven kartları. Varsayılan.</string>
     <string name="settings_display_palette_highlighter">Fosforlu kalem</string>
     <string name="settings_display_palette_highlighter_description">Macenta, sarı ve camgöbeği renkli grafik çizgileri — sayfa üzerindeki fosforlu kalem izi gibi. \"Gökkuşağı\"ndan ilk bakışta belirgin biçimde farklı; açık tema okunabilirlik için daha koyu varyantlar kullanır. Kırmızı-yeşil renk körlüğünde güvenli.</string>
+    <string name="settings_display_home_layout_title">Ana ekran düzeni</string>
+    <string name="settings_display_home_layout_description">Bu bölümlerin ana ekranda görünme sırasını değiştirmek için tutamaçları sürükleyin.</string>
+    <string name="settings_display_home_layout_drag">%1$s sırasını değiştirmek için sürükleyin</string>
+    <string name="settings_display_home_section_outfit">Kıyafet</string>
+    <string name="settings_display_home_section_conditions">Koşullar</string>
+    <string name="settings_display_home_section_confidence">Güvenilirlik</string>
+    <string name="settings_display_home_section_insight">Tahmin</string>
+    <string name="settings_display_home_section_charts">Grafikler</string>
     <string name="settings_unit_auto">Otomatik</string>
     <string name="today_cloud_range">Bulutluluk %1$d\u2013%2$d%%</string>
     <string name="today_confidence_precip_spread">Modeller yağmur konusunda hemfikir değil (Δ %1$.0f%%, %2$d model arasında)</string>

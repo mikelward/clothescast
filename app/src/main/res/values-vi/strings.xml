@@ -331,6 +331,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_tts_device_header">Giọng nói chất lượng thấp tích hợp sẵn trong điện thoại của bạn.</string>
     <string name="settings_api_key_status_set">Đã cài đặt khóa Gemini.</string>
     <string name="settings_api_key_status_unset">Lấy khóa API miễn phí tại aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">Tùy chọn — dán khóa của riêng bạn. Lấy miễn phí tại aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Dán khóa API Gemini của bạn</string>
     <string name="settings_api_key_save">Lưu khóa Gemini</string>
     <string name="settings_api_key_clear">Xóa khóa Gemini đã lưu</string>
@@ -662,6 +663,14 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_display_palette_rainbow_description">Đường biểu đồ màu hồng, cam và xanh lá với thẻ độ tin cậy Material xanh mòng két/đỏ. Mặc định.</string>
     <string name="settings_display_palette_highlighter">Bút dạ quang</string>
     <string name="settings_display_palette_highlighter_description">Các đường biểu đồ màu hồng cánh sen, vàng và xanh lơ — như nét bút dạ quang trên trang giấy. Khác biệt rõ rệt so với \"Cầu vồng\" ngay từ cái nhìn đầu tiên; chủ đề sáng dùng các biến thể đậm hơn để dễ đọc. An toàn cho người mù màu đỏ-xanh lục.</string>
+    <string name="settings_display_home_layout_title">Bố cục màn hình chính</string>
+    <string name="settings_display_home_layout_description">Kéo các tay cầm để sắp xếp lại thứ tự hiển thị của các phần này trên màn hình chính.</string>
+    <string name="settings_display_home_layout_drag">Kéo để sắp xếp lại %1$s</string>
+    <string name="settings_display_home_section_outfit">Trang phục</string>
+    <string name="settings_display_home_section_conditions">Điều kiện</string>
+    <string name="settings_display_home_section_confidence">Độ tin cậy</string>
+    <string name="settings_display_home_section_insight">Dự báo</string>
+    <string name="settings_display_home_section_charts">Biểu đồ</string>
     <string name="settings_unit_auto">Tự động</string>
     <string name="today_cloud_range">Mây %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Các mô hình không đồng thuận về mưa (Δ %1$.0f%% trên %2$d mô hình)</string>

@@ -296,6 +296,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_tts_device_header">Zemas kvalitātes balsis, kas iebūvētas jūsu tālrunī.</string>
     <string name="settings_api_key_status_set">Gemini atslēga ir konfigurēta.</string>
     <string name="settings_api_key_status_unset">Iegūsti bezmaksas API atslēgu vietnē aistudio.google.com</string>
+    <string name="settings_api_key_status_unset_shared">Neobligāti — ielīmē savu atslēgu. Iegūsti bezmaksas vietnē aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Ielīmē savu Gemini API atslēgu</string>
     <string name="settings_api_key_save">Saglabāt Gemini atslēgu</string>
     <string name="settings_api_key_clear">Dzēst saglabāto Gemini atslēgu</string>
@@ -573,6 +574,14 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_display_palette_rainbow_description">Rozā, oranžas un zaļas diagrammas līnijas ar Material tirkīza/sarkanām ticamības kartēm. Noklusējums.</string>
     <string name="settings_display_palette_highlighter">Marķieris</string>
     <string name="settings_display_palette_highlighter_description">Fuksiju, dzeltenas un ciāna grafika līnijas — kā marķiera pēdas uz lapas. No pirmā skatiena nepārprotami atšķiras no \"Varavīksnes\"; gaišā tēma izmanto tumšākus variantus labākai lasāmībai. Droši sarkanas-zaļas krāsu akluma gadījumā.</string>
+    <string name="settings_display_home_layout_title">Sākuma ekrāna izkārtojums</string>
+    <string name="settings_display_home_layout_description">Velc rokturus, lai mainītu secību, kādā šīs sadaļas tiek rādītas sākuma ekrānā.</string>
+    <string name="settings_display_home_layout_drag">Velc, lai mainītu %1$s secību</string>
+    <string name="settings_display_home_section_outfit">Apģērbs</string>
+    <string name="settings_display_home_section_conditions">Apstākļi</string>
+    <string name="settings_display_home_section_confidence">Ticamība</string>
+    <string name="settings_display_home_section_insight">Prognoze</string>
+    <string name="settings_display_home_section_charts">Grafiki</string>
     <string name="settings_unit_auto">Automātiski</string>
     <string name="today_cloud_range">Mākoņainums %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">Modeļi nepiekrīt lietus jautājumā (Δ %1$.0f%% starp %2$d modeļiem)</string>

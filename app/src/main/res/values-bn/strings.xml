@@ -543,6 +543,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_tts_device_header">আপনার ফোনে অন্তর্নির্মিত নিম্ন-মানের ভয়েস।</string>
     <string name="settings_api_key_status_set">একটি Gemini কী কনফিগার করা আছে।</string>
     <string name="settings_api_key_status_unset">aistudio.google.com-এ বিনামূল্যে API কী নিন</string>
+    <string name="settings_api_key_status_unset_shared">ঐচ্ছিক — নিজের কী পেস্ট করুন। aistudio.google.com থেকে বিনামূল্যে একটি নিন</string>
     <string name="settings_api_key_placeholder">আপনার Gemini API কী পেস্ট করুন</string>
     <string name="settings_api_key_save">Gemini কী সংরক্ষণ করুন</string>
     <string name="settings_api_key_clear">সংরক্ষিত Gemini কী মুছুন</string>
@@ -671,6 +672,14 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_display_palette_rainbow_description">গোলাপি, কমলা এবং সবুজ চার্ট লাইন সহ Material টিল/লাল আস্থা কার্ড। ডিফল্ট।</string>
     <string name="settings_display_palette_highlighter">হাইলাইটার</string>
     <string name="settings_display_palette_highlighter_description">ম্যাজেন্টা, হলুদ এবং সায়ান চার্ট লাইন — যেন পাতার উপর হাইলাইটার কলমের ছোঁয়া। এক নজরেই \"রংধনু\" থেকে দৃশ্যমানভাবে আলাদা; লাইট থিমে পঠনযোগ্যতার জন্য গভীরতর সংস্করণ ব্যবহার করা হয়। লাল-সবুজ বর্ণান্ধতার জন্য নিরাপদ।</string>
+    <string name="settings_display_home_layout_title">হোম স্ক্রিনের লেআউট</string>
+    <string name="settings_display_home_layout_description">এই বিভাগগুলো হোম স্ক্রিনে কীভাবে দেখাবে তা পুনর্বিন্যাস করতে হ্যান্ডেলগুলো টেনে নিন।</string>
+    <string name="settings_display_home_layout_drag">%1$s পুনর্বিন্যাস করতে টেনে নিন</string>
+    <string name="settings_display_home_section_outfit">পোশাক</string>
+    <string name="settings_display_home_section_conditions">অবস্থা</string>
+    <string name="settings_display_home_section_confidence">আস্থা</string>
+    <string name="settings_display_home_section_insight">পূর্বাভাস</string>
+    <string name="settings_display_home_section_charts">চার্ট</string>
     <string name="settings_unit_auto">স্বয়ংক্রিয়</string>
     <string name="today_cloud_range">মেঘ %1$d–%2$d%%</string>
     <string name="today_confidence_precip_spread">মডেলগুলো বৃষ্টি নিয়ে একমত নয় (Δ %1$.0f%%, %2$dটি মডেল)</string>

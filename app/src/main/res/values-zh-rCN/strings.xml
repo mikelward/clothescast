@@ -260,6 +260,7 @@ label localizes.
 
     <string name="settings_api_key_status_set">已配置 Gemini 密钥。</string>
     <string name="settings_api_key_status_unset">未配置 Gemini 密钥。可在 aistudio.google.com 获取一个，以使用 Gemini 语音。</string>
+    <string name="settings_api_key_status_unset_shared">可选 — 粘贴你自己的密钥。可在 aistudio.google.com 免费获取</string>
     <string name="settings_api_key_placeholder">粘贴你的 Gemini API 密钥</string>
     <string name="settings_api_key_save">保存 Gemini 密钥</string>
     <string name="settings_api_key_clear">清除已保存的 Gemini 密钥</string>
@@ -730,6 +731,14 @@ label localizes.
     <string name="settings_display_palette_rainbow_description">粉红、橙色和绿色图表线条，以及 Material 青色/红色置信度卡片。默认设置。</string>
     <string name="settings_display_palette_highlighter">荧光笔</string>
     <string name="settings_display_palette_highlighter_description">洋红、黄色和青色的图表线条——像是用荧光笔在纸上画过。一眼就能与\"彩虹\"区分；浅色主题使用更深的变体以提高可读性。对红绿色盲安全。</string>
+    <string name="settings_display_home_layout_title">主屏幕布局</string>
+    <string name="settings_display_home_layout_description">拖动手柄可重新排列这些版块在主屏幕上的显示顺序。</string>
+    <string name="settings_display_home_layout_drag">拖动以重新排列%1$s</string>
+    <string name="settings_display_home_section_outfit">穿搭</string>
+    <string name="settings_display_home_section_conditions">天气状况</string>
+    <string name="settings_display_home_section_confidence">可信度</string>
+    <string name="settings_display_home_section_insight">预报</string>
+    <string name="settings_display_home_section_charts">图表</string>
     <string name="settings_unit_auto">自动</string>
     <string name="today_cloud_range">云量 %1$d〜%2$d%%</string>
     <string name="today_confidence_precip_spread">各模型对降水意见不一（Δ %1$.0f%%，共 %2$d 个模型）</string>

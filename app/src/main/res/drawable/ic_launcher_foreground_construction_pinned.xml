@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Snapshot-stable copy of ic_launcher_foreground_construction for the
+  LauncherIconDevPreview. The shipping construction layer-list at
+  drawable/ic_launcher_foreground_construction.xml references
+  @mipmap/ic_launcher_foreground, which Robolectric's mipmap resolver
+  occasionally loads from a different density bucket than the test's
+  xhdpi qualifier between runs — same artwork, different antialiasing,
+  ~80x70 vs ~116x103 visible bbox on the captured PNG. That churn
+  isn't a real UI change but burns through the captureUntilStable
+  noise budget and gets committed by the regen bot. Pointing the
+  preview-only construction overlay at the density-pinned PNG under
+  drawable-nodpi/ removes that ambiguity.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_launcher_foreground_pinned" />
+    <item
+        android:drawable="@drawable/ic_construction_badge"
+        android:gravity="bottom|fill_horizontal"
+        android:height="14dp" />
+</layer-list>

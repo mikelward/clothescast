@@ -23,6 +23,18 @@ import app.clothescast.R
 //
 // The dev icon foreground is a layer-list, which painterResource() doesn't support
 // (only VectorDrawables and rasters). AndroidView + ImageView handles it correctly.
+//
+// Foreground resources are referenced through drawable-nodpi copies
+// (R.drawable.ic_launcher_foreground_pinned and the matching construction
+// layer-list) rather than R.mipmap.ic_launcher_foreground. The mipmap
+// resolver picks density buckets inconsistently between Robolectric
+// runs even with @Config(qualifiers = "...xhdpi") on the test, so the
+// captured launcher_icon{,_dev}.png oscillated between a ~80x70 and
+// ~116x103 visible bbox — same artwork at the resource level, different
+// anti-aliasing in the rasterised output, defeating the
+// captureUntilStable noise budget and producing churn in every PR's
+// snapshot regen. Pinning to a single PNG file makes the render
+// deterministic.
 
 @Composable
 private fun AdaptiveIconFrame(foreground: @Composable () -> Unit) {
@@ -48,7 +60,7 @@ private fun AdaptiveIconFrame(foreground: @Composable () -> Unit) {
 internal fun LauncherIconPreview() {
     AdaptiveIconFrame {
         Image(
-            painter = painterResource(R.mipmap.ic_launcher_foreground),
+            painter = painterResource(R.drawable.ic_launcher_foreground_pinned),
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize(),
@@ -63,7 +75,7 @@ internal fun LauncherIconDevPreview() {
         AndroidView(
             factory = { context ->
                 ImageView(context).also {
-                    it.setImageResource(R.drawable.ic_launcher_foreground_construction)
+                    it.setImageResource(R.drawable.ic_launcher_foreground_construction_pinned)
                     it.scaleType = ImageView.ScaleType.FIT_XY
                 }
             },

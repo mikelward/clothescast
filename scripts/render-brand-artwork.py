@@ -158,6 +158,7 @@ def render_launcher_icons(logo: Image.Image) -> None:
     # launcher mask. Scale-to-fit the logo into LAUNCHER_ARTWORK_FRACTION
     # of the canvas and center it on transparent padding.
     src_w, src_h = logo.size
+    xxxhdpi_out = None
     for density, size in LAUNCHER_DENSITIES.items():
         out = ROOT / f"app/src/main/res/mipmap-{density}/ic_launcher_foreground.png"
         target = int(size * LAUNCHER_ARTWORK_FRACTION)
@@ -170,6 +171,17 @@ def render_launcher_icons(logo: Image.Image) -> None:
         out.parent.mkdir(parents=True, exist_ok=True)
         canvas.save(out, "PNG", optimize=True)
         print(f"Wrote {out.relative_to(ROOT)} ({size}x{size}, artwork {w}x{h})")
+        if density == "xxxhdpi":
+            xxxhdpi_out = out
+
+    # Density-pinned copy for LauncherIcon{,Dev}Preview / snapshot tests.
+    # Same bytes as the xxxhdpi mipmap, just at a path Robolectric's
+    # resource resolver can't ambiguate between density buckets — see
+    # the docstring in LauncherIconPreviews.kt for why.
+    pinned = ROOT / "app/src/main/res/drawable-nodpi/ic_launcher_foreground_pinned.png"
+    pinned.parent.mkdir(parents=True, exist_ok=True)
+    pinned.write_bytes(xxxhdpi_out.read_bytes())
+    print(f"Wrote {pinned.relative_to(ROOT)} (copy of mipmap-xxxhdpi)")
 
 
 def render_banner(banner: Banner, logo_src: Image.Image) -> None:

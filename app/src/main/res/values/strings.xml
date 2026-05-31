@@ -15,6 +15,7 @@
     <string name="today_report_a_bug">Report a bug</string>
     <string name="today_refresh">Refresh</string>
     <string name="today_play">Play</string>
+    <string name="today_stop">Stop</string>
     <string name="today_play_toast_daily">Playing your daily ClothesCast.</string>
     <string name="today_play_toast_nightly">Playing your nightly ClothesCast.</string>
     <string name="today_empty_title">No ClothesCast yet</string>
@@ -912,6 +913,7 @@
     <string name="settings_tts_voice_locale_am_et">Amharic (Ethiopia)</string>
     <string name="settings_tts_test">Test voice</string>
     <string name="settings_tts_test_in_flight">Testing — please wait…</string>
+    <string name="settings_tts_stop">Stop</string>
 
     <string name="settings_region_language_title">Language</string>
     <!-- Caption rendered under the Region > Language title, pairing with

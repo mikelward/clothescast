@@ -202,6 +202,14 @@ Open:
 - [ ] **Clothes rule presets** ("Cyclist", "Commuter", "Dog walker") — pick a
       preset, customise from there.
 - [ ] **Quiet hours** — don't fire if the device is in DND.
+- [ ] **Consider unifying the in-app theme primary with the brand blue.**
+      The logo, launcher icons, and Play / TV artwork now use the clothes
+      palette's medium blue (`#1E88E5`), but the Material theme primary in
+      `Theme.kt` is still a deeper royal blue (`#1E6FFF`, dark variant
+      `#8AB4FF`). Decide whether the UI accent should match the logo — if so,
+      move the light/dark primaries to `#1E88E5` and rederive the dark tint,
+      and expect a wide UI-snapshot churn (buttons, switches, links). See the
+      TODO in `Theme.kt`.
 - [x] **Per-locale defaults** — Fahrenheit / miles when the system locale is
       en-US. Shipped via `TemperatureUnitSetting.AUTO` / `DistanceUnitSetting.AUTO`
       (the defaults in `UserPreferences`), which resolve from the device/region

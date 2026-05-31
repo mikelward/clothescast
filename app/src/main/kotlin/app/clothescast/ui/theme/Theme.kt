@@ -12,6 +12,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import app.clothescast.core.domain.model.ColorPalette
 
+// TODO: Consider unifying this with the brand blue. The logo / launcher
+// icons / Play artwork use the clothes palette's medium blue (#1E88E5);
+// this UI primary is a deeper royal blue. See docs/TODO.md.
 private val LightScheme = lightColorScheme(
     primary = Color(0xFF1E6FFF),
     onPrimary = Color.White,

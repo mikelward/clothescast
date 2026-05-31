@@ -171,6 +171,14 @@ class SettingsViewModel(
      */
     private val castAvailable: Boolean = false,
     /**
+     * True when the developer's Cloud Function TTS proxy is available on
+     * this build (Firebase initialised + `GEMINI_PROXY_URL` set). Lets a
+     * user without a BYOK key still preview / use Gemini — the Voice
+     * screen ORs this with `apiKeyConfigured`. Process-stable; passed
+     * straight through to [SettingsState.sharedTtsAvailable] on init.
+     */
+    private val sharedTtsAvailable: Boolean = false,
+    /**
      * Reads the user's synced calendars for the Celebrations screen's
      * upcoming-birthdays / -holidays listing. Null in pure-VM tests that don't
      * need an Android ContentResolver; [loadCalendarCelebrations] then no-ops
@@ -189,7 +197,9 @@ class SettingsViewModel(
     private val insightCache: InsightCache? = null,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(SettingsState())
+    private val _state = MutableStateFlow(
+        SettingsState(sharedTtsAvailable = sharedTtsAvailable),
+    )
     val state: StateFlow<SettingsState> = _state.asStateFlow()
 
     /**
@@ -1133,6 +1143,7 @@ class SettingsViewModel(
         private val castRouteDiscovery: CastRouteDiscovery? = null,
         private val castNowAction: (suspend () -> CastTestOutcome)? = null,
         private val castAvailable: Boolean = false,
+        private val sharedTtsAvailable: Boolean = false,
         private val calendarEventReader: CalendarEventReader? = null,
         private val insightCache: InsightCache? = null,
     ) : ViewModelProvider.Factory {
@@ -1158,6 +1169,7 @@ class SettingsViewModel(
                 castRouteDiscovery = castRouteDiscovery,
                 castNowAction = castNowAction,
                 castAvailable = castAvailable,
+                sharedTtsAvailable = sharedTtsAvailable,
                 calendarEventReader = calendarEventReader,
                 insightCache = insightCache,
             ) as T

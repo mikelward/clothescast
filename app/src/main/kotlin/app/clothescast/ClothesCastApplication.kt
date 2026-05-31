@@ -6,8 +6,10 @@ import app.clothescast.alarm.DailyAlarmScheduler
 import app.clothescast.calendar.CalendarContractEventReader
 import app.clothescast.cast.CastInsightController
 import app.clothescast.cast.CastRouteDiscovery
+import app.clothescast.BuildConfig
 import app.clothescast.core.data.diag.ApiCallLogger
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
+import app.clothescast.core.data.tts.DEFAULT_GEMINI_TTS_MODEL
 import app.clothescast.core.data.tts.GeminiTtsClient
 import app.clothescast.core.data.weather.ConfidenceFetchLogger
 import app.clothescast.core.data.weather.OpenMeteoClient
@@ -19,7 +21,9 @@ import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.repository.WeatherRepository
 import app.clothescast.core.domain.usecase.DeriveInsight
 import app.clothescast.core.domain.usecase.GenerateDailyInsight
+import app.clothescast.data.AppCheckGeminiCallPlanner
 import app.clothescast.data.DailyHistoryStore
+import app.clothescast.data.provideAppCheckProviderFactory
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
@@ -91,7 +95,44 @@ class ClothesCastApplication : Application() {
     val calendarEventReader: CalendarEventReader by lazy { CalendarContractEventReader(this) }
     val appUpdateChecker: AppUpdateChecker by lazy { AppUpdateChecker(this) }
     val geminiTtsClient: GeminiTtsClient by lazy {
-        GeminiTtsClient(httpClient, secureKeyStore, apiCallLogger = apiCallLogger)
+        GeminiTtsClient(
+            httpClient = httpClient,
+            callPlanner = geminiCallPlanner,
+            apiCallLogger = apiCallLogger,
+        )
+    }
+
+    /**
+     * Is the shared-key TTS path (developer's Cloud Function proxy)
+     * usable on this build? True iff Firebase initialised
+     * (`google-services.json` was present at build time and the
+     * runtime SDK has an app instance) AND `GEMINI_PROXY_URL` is
+     * non-blank. The Voice settings UI and the daily worker OR this
+     * flag against `geminiKeyConfigured` so a user without a BYOK key
+     * can still use Gemini — preview button enabled, scheduled
+     * delivery synthesises through the proxy. Computed once at first
+     * read; both inputs are stable for the process lifetime.
+     */
+    val sharedTtsAvailable: Boolean by lazy {
+        com.google.firebase.FirebaseApp.getApps(this).isNotEmpty() &&
+            BuildConfig.GEMINI_PROXY_URL.isNotBlank()
+    }
+
+    /**
+     * Picks the Gemini backend per call: BYOK direct to Google when the
+     * user has set their own key, otherwise the developer's Cloud Function
+     * proxy. Constructed lazily so a CI build without `google-services.json`
+     * still assembles — `sharedPathEnabled` is evaluated here against the
+     * live `FirebaseApp` registry, and a missing proxy URL falls back to
+     * BYOK semantics.
+     */
+    private val geminiCallPlanner: AppCheckGeminiCallPlanner by lazy {
+        AppCheckGeminiCallPlanner(
+            secureKeyStore = secureKeyStore,
+            proxyBaseUrl = BuildConfig.GEMINI_PROXY_URL,
+            sharedPathEnabled = sharedTtsAvailable,
+            model = DEFAULT_GEMINI_TTS_MODEL,
+        )
     }
 
     /**
@@ -238,6 +279,7 @@ class ClothesCastApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         DiagLog.install(this)
+        initAppCheck()
         // Bridge the user's Privacy toggle to Firebase. No-ops on builds
         // assembled without google-services.json (CI). Crashlytics's own
         // UncaughtExceptionHandler is auto-installed by FirebaseInitProvider
@@ -284,6 +326,36 @@ class ClothesCastApplication : Application() {
             } catch (t: Throwable) {
                 DiagLog.e(TAG, "Initial alarm scheduling failed", t)
             }
+        }
+    }
+
+    /**
+     * Register a Firebase App Check provider so the TTS proxy can verify
+     * that requests come from a genuine install of this app.
+     *
+     * The actual factory — Play Integrity in release, Firebase Debug
+     * provider in debug — comes from [provideAppCheckProviderFactory],
+     * which has variant-specific implementations in `app/src/debug/...`
+     * and `app/src/release/...`. Keeps the debug-only
+     * `firebase-appcheck-debug` class off the release compile classpath
+     * (where it isn't available, since that dep is `debugImplementation`).
+     *
+     * Skipped entirely when FirebaseApp didn't initialise (CI builds
+     * without `google-services.json`); in that case the planner also
+     * sees `sharedPathEnabled = false` and falls back to BYOK semantics,
+     * so a missing provider never surfaces at request time.
+     */
+    private fun initAppCheck() {
+        if (com.google.firebase.FirebaseApp.getApps(this).isEmpty()) return
+        try {
+            com.google.firebase.appcheck.FirebaseAppCheck.getInstance()
+                .installAppCheckProviderFactory(provideAppCheckProviderFactory())
+        } catch (t: Throwable) {
+            // Don't crash startup if App Check init fails (e.g. Play Integrity
+            // unavailable on a GMS-less device). The planner's SHARED path
+            // will then surface the SDK's own error at TTS request time,
+            // which the Settings Test Voice catch-all already toasts.
+            DiagLog.w(TAG, "App Check init failed; shared TTS may not work", t)
         }
     }
 

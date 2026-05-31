@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -139,6 +141,33 @@ android {
         // somehow land on sub-minSdk devices don't pollute Crashlytics /
         // Analytics with a config the app was never built for.
         buildConfigField("int", "MIN_SDK_VERSION", libs.versions.minSdk.get())
+
+        // Base URL for the developer's Cloud Function TTS proxy. Per-developer
+        // (each fork has its own Firebase project), so it's sourced — in this
+        // priority — from the `GEMINI_PROXY_URL` env var, a `geminiProxyUrl=…`
+        // line in `<rootDir>/local.properties`, or a `geminiProxyUrl` Gradle
+        // property (`~/.gradle/gradle.properties` or `-PgeminiProxyUrl=…` on
+        // the command line). Empty when none of those are set, which is the
+        // CI case — `AppCheckGeminiCallPlanner` treats blank as "shared key
+        // disabled" and falls back to BYOK semantics. Format: scheme + host +
+        // optional single path segment, no trailing slash, e.g.
+        // https://us-central1-myproj.cloudfunctions.net/tts.
+        //
+        // Full setup walkthrough — Firebase project, App Check, function
+        // deploy, where to get this URL — lives in docs/gemini-tts-proxy.md.
+        val geminiProxyUrl: String = run {
+            val fromEnv = System.getenv("GEMINI_PROXY_URL")?.takeIf { it.isNotBlank() }
+            val fromLocalProps: String? = rootProject.file("local.properties")
+                .takeIf { it.exists() }
+                ?.let { file ->
+                    val props = Properties()
+                    file.inputStream().use { props.load(it) }
+                    props.getProperty("geminiProxyUrl")?.takeIf { it.isNotBlank() }
+                }
+            val fromGradleProps = providers.gradleProperty("geminiProxyUrl").orNull?.takeIf { it.isNotBlank() }
+            fromEnv ?: fromLocalProps ?: fromGradleProps ?: ""
+        }
+        buildConfigField("String", "GEMINI_PROXY_URL", "\"${geminiProxyUrl.replace("\"", "\\\"")}\"")
     }
 
     signingConfigs {
@@ -386,6 +415,18 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
+    // App Check (Play Integrity in release, Debug provider in debug) +
+    // Installations: the TTS proxy gates on a valid App Check token and
+    // counts usage per Firebase Installation ID. Both no-op on builds
+    // assembled without google-services.json — FirebaseApp doesn't init,
+    // the planner falls back to BYOK semantics, and the rest of the app
+    // continues to assemble and run.
+    implementation(libs.firebase.appcheck.playintegrity)
+    debugImplementation(libs.firebase.appcheck.debug)
+    implementation(libs.firebase.installations)
+    // `.await()` on the App Check token / Installations ID Tasks. Production
+    // (not test-only) because the planner runs in the main coroutine flow.
+    implementation(libs.kotlinx.coroutines.play.services)
 
     testImplementation(platform("org.junit:junit-bom:5.11.3"))
     testImplementation(libs.junit.jupiter.api)

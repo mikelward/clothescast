@@ -228,6 +228,7 @@ internal fun VoicePage(
             deviceVoices = state.deviceVoices,
             effectiveDeviceVoice = state.effectiveDeviceVoice,
             geminiKeyConfigured = state.apiKeyConfigured,
+            sharedTtsAvailable = state.sharedTtsAvailable,
             voiceLocale = state.voiceLocale,
             region = state.region,
             temperatureUnit = state.temperatureUnit,

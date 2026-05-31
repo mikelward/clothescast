@@ -954,8 +954,14 @@ class FetchAndNotifyWorker(
         // of prefs so the pre- and post-alignment fan-outs stay
         // consistent and the gate algebra is unit-testable (see
         // DeliveryGatesTest in :core:domain).
-        val geminiAvailable = isGeminiEngineSelected(prefs) &&
-            runCatching { app.secureKeyStore.geminiKeyConfiguredFlow.first() }.getOrDefault(false)
+        // Gemini is reachable from the worker if the user picked it AND either
+        // has their own key set (BYOK → direct to Google) or the shared-key
+        // proxy is available on this build (Cloud Function holds the dev key).
+        // Without either, fall back to device TTS.
+        val geminiAvailable = isGeminiEngineSelected(prefs) && (
+            runCatching { app.secureKeyStore.geminiKeyConfiguredFlow.first() }.getOrDefault(false) ||
+                app.sharedTtsAvailable
+            )
         val gates = computeDeliveryGates(
             prefs = prefs,
             period = insight.period,

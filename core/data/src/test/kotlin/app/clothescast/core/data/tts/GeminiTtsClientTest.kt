@@ -1,7 +1,8 @@
 package app.clothescast.core.data.tts
 
-import app.clothescast.core.data.insight.KeyProvider
-import app.clothescast.core.data.insight.MissingApiKeyException
+import app.clothescast.core.data.insight.GeminiCallPlan
+import app.clothescast.core.data.insight.GeminiCallPlanner
+import app.clothescast.core.data.insight.GeminiEndpoint
 import app.clothescast.core.domain.model.TtsStyle
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
@@ -45,8 +46,16 @@ class GeminiTtsClientTest {
         }
     }
 
-    private class FakeKeyProvider(private val key: String) : KeyProvider {
-        override suspend fun get() = key
+    /**
+     * Mimics `:app`'s BYOK branch — direct to Google, key in
+     * `x-goog-api-key`. Mirrors the production planner so the test
+     * exercises the same wiring without depending on Android types.
+     */
+    private fun directPlanner(key: String): GeminiCallPlanner = GeminiCallPlanner {
+        GeminiCallPlan(
+            endpoint = GeminiEndpoint.Direct,
+            applyAuth = { it.headers.append("x-goog-api-key", key) },
+        )
     }
 
     @Test
@@ -54,7 +63,7 @@ class GeminiTtsClientTest {
         var captured: HttpRequestData? = null
         val client = GeminiTtsClient(
             httpClient = mockClient(SUCCESS_BODY) { captured = it },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hello")
@@ -79,7 +88,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hello")
@@ -97,7 +106,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hello world")
@@ -116,7 +125,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hello", locale = Locale.UK)
@@ -134,7 +143,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hello", locale = Locale.forLanguageTag("en-AU"))
@@ -159,7 +168,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hello", locale = Locale.forLanguageTag("en-AU"))
@@ -179,7 +188,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hello", locale = Locale.forLanguageTag("en-GB"))
@@ -200,7 +209,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(
@@ -227,7 +236,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hallo", locale = Locale.forLanguageTag("de-DE"))
@@ -248,7 +257,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hallo", locale = Locale.forLanguageTag("de-AT"))
@@ -267,7 +276,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hallo", locale = Locale.forLanguageTag("de-CH"))
@@ -286,7 +295,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "olá", locale = Locale.forLanguageTag("pt-PT"))
@@ -306,7 +315,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "你好", locale = Locale.forLanguageTag("zh-TW"))
@@ -332,7 +341,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hi", locale = Locale.forLanguageTag("ar-SA"))
@@ -350,7 +359,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hi", locale = Locale.forLanguageTag("ar-EG"))
@@ -368,7 +377,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hi", locale = Locale.forLanguageTag("ar-AE"))
@@ -386,7 +395,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hi", locale = Locale.forLanguageTag("ar-MA"))
@@ -408,7 +417,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hi", locale = Locale.forLanguageTag("ar-LB"))
@@ -434,7 +443,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hello", locale = Locale.forLanguageTag("en-NZ"))
@@ -454,7 +463,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hello", locale = Locale.UK, style = TtsStyle.PIRATE)
@@ -474,7 +483,7 @@ class GeminiTtsClientTest {
                     .bytes()
                     .toString(Charsets.UTF_8)
             },
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         client.synthesize(text = "hello", locale = Locale.UK, style = TtsStyle.WEATHER_FORECASTER)
@@ -488,7 +497,7 @@ class GeminiTtsClientTest {
     fun `decodes inline pcm and parses sample rate from mime type`() = runTest {
         val client = GeminiTtsClient(
             httpClient = mockClient(SUCCESS_BODY),
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         val audio = client.synthesize(text = "hello")
@@ -499,13 +508,33 @@ class GeminiTtsClientTest {
     }
 
     @Test
-    fun `throws MissingApiKeyException when key is blank`() = runTest {
+    fun `uses the planner's endpoint and lets it attach auth headers`() = runTest {
+        // Mirrors `:app`'s shared-key path: a different host and a pair of
+        // proxy-only headers (App Check token + Firebase install ID),
+        // *no* `x-goog-api-key`. Locks in that GeminiTtsClient no longer
+        // assumes a single backend or auth shape.
+        var captured: HttpRequestData? = null
         val client = GeminiTtsClient(
-            httpClient = mockClient(SUCCESS_BODY),
-            keyProvider = FakeKeyProvider("   "),
+            httpClient = mockClient(SUCCESS_BODY) { captured = it },
+            callPlanner = GeminiCallPlanner {
+                GeminiCallPlan(
+                    endpoint = GeminiEndpoint(host = "example-proxy.test", apiVersion = "v1"),
+                    applyAuth = {
+                        it.headers.append("X-Firebase-AppCheck", "fake-app-check-token")
+                        it.headers.append("X-Install-Id", "fake-fid")
+                    },
+                )
+            },
         )
 
-        shouldThrow<MissingApiKeyException> { client.synthesize(text = "hello") }
+        client.synthesize(text = "hello")
+
+        val req = checkNotNull(captured)
+        req.url.host shouldBe "example-proxy.test"
+        req.url.encodedPath shouldBe "/v1/models/gemini-2.5-flash-preview-tts:generateContent"
+        req.headers["X-Firebase-AppCheck"] shouldBe "fake-app-check-token"
+        req.headers["X-Install-Id"] shouldBe "fake-fid"
+        req.headers["x-goog-api-key"] shouldBe null
     }
 
     @Test
@@ -517,7 +546,7 @@ class GeminiTtsClientTest {
                     {"error":{"code":400,"message":"Invalid voice 'Nope'.","status":"INVALID_ARGUMENT"}}
                 """.trimIndent(),
             ),
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         val ex = shouldThrow<GeminiTtsHttpException> { client.synthesize(text = "hi") }
@@ -537,7 +566,7 @@ class GeminiTtsClientTest {
                 status = HttpStatusCode.BadGateway,
                 responseBody = "",
             ),
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         val ex = shouldThrow<GeminiTtsHttpException> { client.synthesize(text = "hi") }
@@ -553,7 +582,7 @@ class GeminiTtsClientTest {
                 status = HttpStatusCode.InternalServerError,
                 responseBody = raw,
             ),
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         val ex = shouldThrow<GeminiTtsHttpException> { client.synthesize(text = "hi") }
@@ -598,7 +627,7 @@ class GeminiTtsClientTest {
                         .bytes()
                         .toString(Charsets.UTF_8)
                 },
-                keyProvider = FakeKeyProvider("test-key"),
+                callPlanner = directPlanner("test-key"),
             )
 
             client.synthesize(text = "hello world", style = style)
@@ -673,7 +702,7 @@ class GeminiTtsClientTest {
     fun `throws GeminiTtsEmptyResponseException when response has no inline audio`() = runTest {
         val client = GeminiTtsClient(
             httpClient = mockClient("""{"candidates":[]}"""),
-            keyProvider = FakeKeyProvider("test-key"),
+            callPlanner = directPlanner("test-key"),
         )
 
         shouldThrow<GeminiTtsEmptyResponseException> { client.synthesize(text = "hi") }

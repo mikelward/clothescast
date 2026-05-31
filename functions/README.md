@@ -5,24 +5,19 @@ app's shared-key path. Holds the developer's Gemini API key, verifies
 Firebase App Check on each request, counts usage per Firebase
 Installation ID in Firestore, and forwards to Gemini.
 
-See `PRIVACY.md` for the user-facing description of what the proxy
-sees, stores, and forwards.
+**Setup guide for the whole proxy (Firebase project, App Check,
+function deploy, Android wiring):**
+**[`docs/gemini-tts-proxy.md`](../docs/gemini-tts-proxy.md)**.
 
-## One-time setup
+User-facing privacy disclosure: `PRIVACY.md` → "Online TTS: shared
+key by default, your own key on request".
+
+## Quick commands
 
 ```sh
-cd functions
-npm install
-firebase login                                  # if you haven't
-firebase use --add                              # pick the same project as app/google-services.json
-firebase functions:secrets:set GEMINI_API_KEY   # paste the developer's Gemini key
+npm install                                     # one-time
+firebase functions:secrets:set GEMINI_API_KEY   # one-time (see setup guide)
 ```
-
-In the Firebase Console, enable the **App Check** product for the
-project, register the Android app (Play Integrity provider for
-release, debug provider for local builds) and turn on enforcement for
-Cloud Functions → `tts`. Enable Cloud Firestore in **Native mode**
-(any region).
 
 ## Run locally
 

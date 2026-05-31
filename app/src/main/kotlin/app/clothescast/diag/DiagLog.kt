@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.Log
 import app.clothescast.BuildConfig
 import java.io.File
-import java.io.PrintWriter
-import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -39,14 +37,28 @@ object DiagLog {
 
     /**
      * How many `at …` frames per Throwable in the chain to keep in diag-log
-     * entries. The full trace still goes to `last-crash.txt` for uncaught
-     * exceptions, so the snapshot just needs the call site. One frame
-     * trims a typical `MqttPublisher: publish failed` block from 13 lines
-     * to 4 — the cause chain text + the top frame for each link is enough
-     * to read on its own, and the ten-deep Netty / executor noise that
-     * otherwise dominates the 300-line buffer goes away.
+     * entries. A fuller (but still capped) trace goes to `last-crash.txt` for
+     * uncaught exceptions — see [CRASH_STACK_FRAMES] — so the snapshot just
+     * needs the call site. One frame trims a typical `MqttPublisher: publish
+     * failed` block from 13 lines to 4 — the cause chain text + the top frame
+     * for each link is enough to read on its own, and the ten-deep Netty /
+     * executor noise that otherwise dominates the 300-line buffer goes away.
      */
     private const val COMPACT_STACK_FRAMES = 1
+
+    /**
+     * How many `at …` frames per Throwable to keep in `last-crash.txt`. More
+     * generous than [COMPACT_STACK_FRAMES] because the crash file is the
+     * primary post-mortem record (it's only written once, so it isn't fighting
+     * the snapshot budget) — but still capped, because the deep tail of an
+     * uncaught exception is platform plumbing (Looper / Choreographer /
+     * ActivityThread, Compose recomposition internals) that tells you nothing,
+     * and in a release build every frame is obfuscated to single letters so
+     * there's no app frame worth digging out from the bottom. Keep the throw
+     * site and its immediate callers; drop the rest with a `... N more`
+     * summary so it's clear frames were elided rather than missing.
+     */
+    private const val CRASH_STACK_FRAMES = 12
 
     /**
      * Snapshot-side defence against an individual log entry dominating the
@@ -223,7 +235,10 @@ object DiagLog {
 
     private fun writeCrashLog(thread: Thread, throwable: Throwable) {
         val file = crashFileProvider?.invoke() ?: return
-        val stack = stackTraceString(throwable)
+        // Filter the deep, useless tail (platform plumbing, obfuscated frames)
+        // out of the crash record too — keep the exception, its cause chain,
+        // and the top [CRASH_STACK_FRAMES] frames, not the full ~80-frame dump.
+        val stack = compactStackTraceString(throwable, maxFrames = CRASH_STACK_FRAMES, omittedSummary = true)
         val header = "Uncaught exception on thread \"${thread.name}\""
         // log() with a non-null throwable blocks on the executor, so by the
         // time snapshot() runs below the crash header line is on disk and
@@ -241,19 +256,18 @@ object DiagLog {
         unacknowledgedCrashState.value = true
     }
 
-    private fun stackTraceString(t: Throwable): String =
-        StringWriter().also { sw -> PrintWriter(sw).use { t.printStackTrace(it) } }
-            .toString().trimEnd()
-
     /**
      * Formats [t] like [Throwable.printStackTrace] but keeps only the top
-     * [maxFrames] frames per Throwable in the cause chain. The dropped
-     * deeper frames aren't summarised — the omitted-count line `... N more`
-     * is intentionally absent so each Throwable costs `1 + maxFrames` lines
-     * flat, maximising how much pre-failure history fits in the 300-line
-     * snapshot budget. The full trace still goes to `last-crash.txt` via
-     * [writeCrashLog] for uncaught exceptions, so post-mortem debugging
-     * loses nothing.
+     * [maxFrames] frames per Throwable in the cause chain, dropping the deep
+     * tail of platform / framework plumbing that isn't useful for triage.
+     *
+     * By default the dropped frames aren't summarised, so each Throwable costs
+     * a flat `1 + maxFrames` lines — that maximises how much pre-failure
+     * history fits in the 300-line snapshot budget, where this runs for every
+     * logged throwable. Pass [omittedSummary] `true` (as [writeCrashLog] does
+     * for `last-crash.txt`, which isn't budget-constrained) to append a
+     * `\t... N more` line per Throwable so a reader can tell frames were
+     * elided rather than absent.
      *
      * Cyclic cause chains (`a.cause = b; b.cause = a`) are guarded via an
      * identity set so a pathological Throwable can't spin the calling
@@ -263,7 +277,11 @@ object DiagLog {
      * aren't silently lost; their frames are intentionally dropped to
      * keep the budget tight. Visible for tests.
      */
-    internal fun compactStackTraceString(t: Throwable, maxFrames: Int = COMPACT_STACK_FRAMES): String {
+    internal fun compactStackTraceString(
+        t: Throwable,
+        maxFrames: Int = COMPACT_STACK_FRAMES,
+        omittedSummary: Boolean = false,
+    ): String {
         val sb = StringBuilder()
         val seen = java.util.IdentityHashMap<Throwable, Boolean>()
         var current: Throwable? = t
@@ -281,6 +299,9 @@ object DiagLog {
             val keep = minOf(maxFrames, frames.size)
             for (i in 0 until keep) {
                 sb.append('\n').append("\tat ").append(frames[i])
+            }
+            if (omittedSummary && frames.size > keep) {
+                sb.append('\n').append("\t... ").append(frames.size - keep).append(" more")
             }
             for (suppressed in current.suppressed) {
                 sb.append('\n').append("\tSuppressed: ").append(suppressed.javaClass.name)

@@ -691,6 +691,10 @@
     <string name="settings_tts_device_header">Low-quality voices built in to your phone.</string>
     <string name="settings_api_key_status_set">A Gemini key is configured.</string>
     <string name="settings_api_key_status_unset">Get a free API key at aistudio.google.com</string>
+    <!-- Variant of settings_api_key_status_unset shown when the shared-key Gemini
+         proxy is reachable on this build, so the user can hit Test voice without
+         setting a key. Frames the key field as optional rather than required. -->
+    <string name="settings_api_key_status_unset_shared">Optional — paste your own key. Get one free at aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Paste your Gemini API key</string>
     <string name="settings_api_key_save">Save Gemini key</string>
     <string name="settings_api_key_replace">Replace Gemini key</string>

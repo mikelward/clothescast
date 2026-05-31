@@ -179,9 +179,14 @@ export const tts = onRequest(
         res.setHeader("X-Daily-Quota-Remaining", String(reservation.remaining));
       }
     } else if (upstream.ok) {
-      logger.warn("Gemini returned 200 but no inline audio", {
-        bodyExcerpt: excerpt(upstreamBody),
-      });
+      // Only log structural fields from the envelope — never the body
+      // bytes. A text-only candidate (the no-`inlineData` case this
+      // branch handles) can echo user-prompt-derived content from
+      // GeminiTtsClient: forecast prose, calendar event titles, etc.
+      // CLAUDE.md / PRIVACY.md disallow shipping that off-device into
+      // logs. `blockReason` / `finishReason` / candidate count are
+      // safe.
+      logger.warn("Gemini returned 200 but no inline audio", structuralEnvelope(upstreamBody));
       if (reservation.reserved) {
         try {
           await releaseDailySlot(installId, today);
@@ -386,6 +391,38 @@ function responseHasAudio(body: ArrayBuffer): boolean {
     }
   }
   return false;
+}
+
+/**
+ * Pulls non-payload structural fields out of a Gemini envelope for
+ * safe logging — `blockReason`, `finishReason`, `candidates.length`.
+ * Never returns the candidate text / inlineData. Used to log the
+ * no-audio 200 case without persisting user-prompt-derived content
+ * in Cloud Logging.
+ */
+function structuralEnvelope(body: ArrayBuffer): Record<string, unknown> {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(Buffer.from(body).toString("utf8"));
+  } catch {
+    return { parseable: false };
+  }
+  if (!parsed || typeof parsed !== "object") return { parseable: false };
+  const envelope = parsed as Record<string, unknown>;
+  const promptFeedback = envelope.promptFeedback as
+    | { blockReason?: unknown }
+    | undefined;
+  const candidates = envelope.candidates;
+  const candidateCount = Array.isArray(candidates) ? candidates.length : 0;
+  const firstFinishReason = Array.isArray(candidates) && candidates.length > 0 &&
+    candidates[0] && typeof candidates[0] === "object"
+    ? (candidates[0] as Record<string, unknown>).finishReason
+    : undefined;
+  return {
+    blockReason: promptFeedback?.blockReason ?? null,
+    finishReason: firstFinishReason ?? null,
+    candidateCount,
+  };
 }
 
 function excerpt(body: ArrayBuffer): string {

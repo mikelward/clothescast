@@ -190,7 +190,13 @@ android {
     // app — the applicationId is the install identity; do not change it again
     // without a planned migration story.
     namespace = "app.clothescast"
-    compileSdk = 35
+    compileSdk = 36
+    // Pin to the build-tools the CI / sandbox setup installs. AGP 8.10's default
+    // is 35.0.0, so without this AGP would fetch 35.0.0 on demand even though
+    // we pre-install 36.0.0 — defeating the point of pinning the SDK packages in
+    // ci.yml / session-start.sh (and failing when on-demand downloads are
+    // blocked). Keep this in lockstep with the build-tools version installed there.
+    buildToolsVersion = "36.0.0"
 
     defaultConfig {
         applicationId = "app.clothescast"
@@ -198,7 +204,7 @@ android {
         // install-time gate (this line) and BuildConfig.MIN_SDK_VERSION below
         // — see the catalog entry for why the runtime guard exists.
         minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = 35
+        targetSdk = 36
         versionCode = gitCommitCount
         // semver build metadata: <base>+<commitCount>.<shortSha>. Some downstream
         // tools (Crashlytics, Bugsnag, screenshots in bug reports) carry only

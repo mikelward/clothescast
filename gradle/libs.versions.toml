@@ -1,5 +1,9 @@
 [versions]
-agp = "8.7.3"
+# AGP 8.10.x is the newest line that still runs on the repo's current Gradle
+# 8.11.1 wrapper (AGP 8.11+ requires Gradle 8.13+); it supports compileSdk 36,
+# which targetSdk 36 needs (AGP 8.7.x capped at compileSdk 35). Bump the Gradle
+# wrapper in lockstep before moving to AGP 8.11+.
+agp = "8.10.1"
 kotlin = "2.0.21"
 # Android API floor. Single source of truth: `app/build.gradle.kts` reads this
 # for `minSdk` and re-emits it as `BuildConfig.MIN_SDK_VERSION` so the runtime
@@ -47,7 +51,7 @@ vico = "2.0.3"
 # needed, runs in :app's JVM unit tests job. The CI step uploads the PNGs as a
 # workflow artifact for human review on every PR (no diff gate, by intent).
 roborazzi = "1.32.0"
-robolectric = "4.14.1"
+robolectric = "4.16.1"
 junit4 = "4.13.2"
 # Play in-app updates: AppUpdateManager + the FLEXIBLE flow (background download
 # + "Restart to install" prompt). Used to surface the update-available banner on

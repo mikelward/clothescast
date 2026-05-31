@@ -261,5 +261,14 @@ Open work:
   TTS — a Today / Settings banner pointing at the BYOK flow would
   let users notice and resolve the cap without going hunting in the
   logs.
+- Bind the TTS proxy quota to a server-verified install identity
+  rather than the client-chosen `X-Install-Id` header. Today a
+  caller with a valid App Check token can rotate the header per
+  request and get a fresh `installs/<id>` doc each time, bypassing
+  the daily cap. The standard fix is to have the Android client send
+  the Firebase Installations *auth token* (a JWT issued for the FID)
+  and have the function call the Installations REST API to verify
+  and extract the FID before reserving a slot. Surfaced by Codex
+  review on #893.
 - Google Home / alarm-clock-app integration.
 - Play Store submission. Sideload + FAD only for v1.

@@ -2,7 +2,6 @@ package app.clothescast.ui.settings
 
 import app.clothescast.diag.DiagLog
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,11 +11,15 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -27,7 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -57,10 +59,12 @@ import app.clothescast.tts.resolve
 import app.clothescast.tts.toJavaLocale
 import app.clothescast.tts.withSpeechAudioFocus
 import app.clothescast.ui.EdgeFadeOverlay
+import app.clothescast.ui.StopSquareIcon
 import app.clothescast.ui.prefersRemoteKeyEntry
 import java.text.Collator
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -118,10 +122,23 @@ internal fun VoiceContent(
     // voice section. Cloud TTS calls are billed per-character and the in-flight
     // request can't reliably be un-billed by client-side cancellation, so the
     // safe behaviour is to ignore further triggers — engine taps, voice taps,
-    // locale taps, the Test Voice button — until the current preview finishes.
+    // locale taps — until the current preview finishes. The one exception is
+    // the Test Voice button itself, which becomes a Stop button mid-preview
+    // (see [TestVoiceButton]) so the user can cut a long sample short;
+    // cancelling [previewJob] tears down the AudioTrack / TextToSpeech engine
+    // via their `invokeOnCancellation` hooks, halting playback immediately.
     // Compose callbacks run on the main thread, so the read-then-write here is
     // atomic with respect to other UI events.
     var isPreviewing by remember { mutableStateOf(false) }
+    var previewJob by remember { mutableStateOf<Job?>(null) }
+
+    fun stopPreview() {
+        // Cancelling the job propagates down through speak() into
+        // PcmAudioPlayer.awaitMarker / AndroidTtsSpeaker.speakAndAwait, both of
+        // which stop their underlying player on cancellation. isPreviewing is
+        // reset by the launch's finally block as the coroutine unwinds.
+        previewJob?.cancel()
+    }
 
     // A Gemini preview that can't reach Gemini falls back to the device voice
     // in runTtsPreview — which sounds to the user like *that* is the Gemini
@@ -141,7 +158,7 @@ internal fun VoiceContent(
         if (isPreviewing) return
         if (!canPreview(engine)) return
         isPreviewing = true
-        coroutineScope.launch {
+        previewJob = coroutineScope.launch {
             try {
                 runTtsPreview(
                     context = context,
@@ -161,6 +178,7 @@ internal fun VoiceContent(
                 )
             } finally {
                 isPreviewing = false
+                previewJob = null
             }
         }
     }
@@ -271,6 +289,7 @@ internal fun VoiceContent(
                         TestVoiceButton(
                             isPreviewing = isPreviewing,
                             enabled = geminiKeyConfigured || sharedTtsAvailable,
+                            onStop = ::stopPreview,
                         ) {
                             preview(selected, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
                         }
@@ -304,7 +323,7 @@ internal fun VoiceContent(
                                 preview(selected, geminiVoice, ttsStyle, picked, voiceLocale)
                             },
                         )
-                        TestVoiceButton(isPreviewing = isPreviewing) {
+                        TestVoiceButton(isPreviewing = isPreviewing, onStop = ::stopPreview) {
                             preview(selected, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
                         }
                     }
@@ -601,25 +620,39 @@ private fun DeviceVoicePicker(
 private const val DEVICE_VOICE_AUTO_ID = "__auto__"
 
 @Composable
-private fun TestVoiceButton(isPreviewing: Boolean, enabled: Boolean = true, onClick: () -> Unit) {
-    // Disabled while previewing — billed cloud TTS calls can't be reliably
-    // un-billed once dispatched, and the in-flight playback is already what
-    // a fresh tap would re-trigger. Spinner replaces the label so the user
-    // sees the click was registered and something is happening. Also disabled
-    // when the caller says so (e.g. Gemini selected with no key) to avoid
-    // playing a device-voice fallback dressed up as the chosen engine.
+private fun TestVoiceButton(
+    isPreviewing: Boolean,
+    enabled: Boolean = true,
+    onStop: () -> Unit,
+    onClick: () -> Unit,
+) {
+    // Mid-preview the button flips to Stop so the user can cut a long sample
+    // short instead of waiting it out — cancelling tears down the player (see
+    // [stopPreview]). It stays tappable while previewing for exactly that
+    // reason; a billed cloud TTS request may already be dispatched and can't be
+    // un-billed, but stopping local playback is still the action the user
+    // wants. A spinner sits beside the Stop label so it's clear synthesis /
+    // playback is still in flight. When idle the button is disabled if the
+    // caller says so (e.g. Gemini selected with no key) to avoid playing a
+    // device-voice fallback dressed up as the chosen engine.
     Button(
-        onClick = onClick,
-        enabled = enabled && !isPreviewing,
+        onClick = if (isPreviewing) onStop else onClick,
+        enabled = if (isPreviewing) true else enabled,
         modifier = Modifier.fillMaxWidth(),
     ) {
         if (isPreviewing) {
-            Box(contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    strokeWidth = 2.dp,
-                )
-            }
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.dp,
+                // Default is colorScheme.primary, which all but vanishes on the
+                // filled Button's primary background; track the button's
+                // content colour so the spinner reads against it.
+                color = LocalContentColor.current,
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Icon(imageVector = StopSquareIcon, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(stringResource(R.string.settings_tts_stop))
         } else {
             Text(stringResource(R.string.settings_tts_test))
         }

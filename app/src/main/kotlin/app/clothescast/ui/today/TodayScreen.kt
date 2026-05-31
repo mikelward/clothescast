@@ -133,6 +133,7 @@ import app.clothescast.ClothesCastApplication
 import app.clothescast.tts.toJavaLocale
 import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.LocalTimeFormat
+import app.clothescast.ui.StopSquareIcon
 import app.clothescast.ui.formatHourMinute
 import app.clothescast.ui.formatScrubHour
 import app.clothescast.ui.garment.GarmentBottomIcon
@@ -272,50 +273,61 @@ fun TodayScreen(
                     // TTS, MQTT publish, cast. It replays a fresh cached
                     // snapshot when one exists, else fetches fresh, so it's
                     // enabled whenever idle even with an empty cache (matching
-                    // Refresh). Gated only on [state.anyWorkActive]: broader
-                    // than [isWorking], it stays true through the post-fetch
-                    // TTS / MQTT / Cast window that the spinner-banner logic
-                    // treats as Idle, so a tap during a Refresh's announcement
-                    // (or a Play's own) can't start a second concurrent
-                    // delivery now that Play runs on its own unique-work queue.
-                    IconButton(
-                        onClick = {
-                            // "Play" means the *current* cast, so derive the
-                            // window from the wall clock at tap time — not from
-                            // the cached page-0 insight's period. If the screen
-                            // sits open across the daily/nightly boundary that
-                            // cached period goes stale (still TODAY) while the
-                            // user now wants the nightly cast; the worker also
-                            // keys its next-occurrence logic off the current
-                            // window, so handing it the stale TODAY would make it
-                            // play tomorrow's daytime instead of tonight. Uses
-                            // the same window check Refresh does.
-                            val playPeriod =
-                                if (LocalTime.now().isInTonightWindow(state.morningTime, state.tonightTime)) {
-                                    ForecastPeriod.TONIGHT
-                                } else {
-                                    ForecastPeriod.TODAY
+                    // Refresh). While a delivery is in flight ([anyWorkActive],
+                    // broader than [isWorking] so it stays true through the
+                    // post-fetch TTS / MQTT / Cast window the spinner-banner
+                    // logic treats as Idle) the button flips to a Stop control
+                    // that cancels the active delivery — whether it's this
+                    // Play, a Refresh, or a scheduled run mid-announcement — so
+                    // the user can cut a long cast short instead of waiting it
+                    // out. Cancelling stops the TTS playback (see
+                    // [FetchAndNotifyWorker.cancelDelivery]).
+                    if (state.anyWorkActive) {
+                        IconButton(onClick = { FetchAndNotifyWorker.cancelDelivery(context) }) {
+                            Icon(
+                                imageVector = StopSquareIcon,
+                                contentDescription = stringResource(R.string.today_stop),
+                            )
+                        }
+                    } else {
+                        IconButton(
+                            onClick = {
+                                // "Play" means the *current* cast, so derive the
+                                // window from the wall clock at tap time — not from
+                                // the cached page-0 insight's period. If the screen
+                                // sits open across the daily/nightly boundary that
+                                // cached period goes stale (still TODAY) while the
+                                // user now wants the nightly cast; the worker also
+                                // keys its next-occurrence logic off the current
+                                // window, so handing it the stale TODAY would make it
+                                // play tomorrow's daytime instead of tonight. Uses
+                                // the same window check Refresh does.
+                                val playPeriod =
+                                    if (LocalTime.now().isInTonightWindow(state.morningTime, state.tonightTime)) {
+                                        ForecastPeriod.TONIGHT
+                                    } else {
+                                        ForecastPeriod.TODAY
+                                    }
+                                triggerPlay(context, playPeriod)
+                                // Using Play is the user acting on the "Preview your
+                                // ClothesCast" promo, so retire it — they've found
+                                // the button it points at. Require a delivered
+                                // forecast (thisPeriodInsight != null), matching the
+                                // hasForecast gate promoBannersToShow uses to render
+                                // the card: otherwise a fresh install (daily on by
+                                // default) tapping Play before any forecast exists
+                                // would persist the dismissal and the promo would
+                                // never get its chance to show.
+                                if (state.playPromoCardVisible && state.thisPeriodInsight != null) {
+                                    viewModel.dismissPlayPromoCard()
                                 }
-                            triggerPlay(context, playPeriod)
-                            // Using Play is the user acting on the "Preview your
-                            // ClothesCast" promo, so retire it — they've found
-                            // the button it points at. Require a delivered
-                            // forecast (thisPeriodInsight != null), matching the
-                            // hasForecast gate promoBannersToShow uses to render
-                            // the card: otherwise a fresh install (daily on by
-                            // default) tapping Play before any forecast exists
-                            // would persist the dismissal and the promo would
-                            // never get its chance to show.
-                            if (state.playPromoCardVisible && state.thisPeriodInsight != null) {
-                                viewModel.dismissPlayPromoCard()
-                            }
-                        },
-                        enabled = !state.anyWorkActive,
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = stringResource(R.string.today_play),
-                        )
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.PlayArrow,
+                                contentDescription = stringResource(R.string.today_play),
+                            )
+                        }
                     }
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(

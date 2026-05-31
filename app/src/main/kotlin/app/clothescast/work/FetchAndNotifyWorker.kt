@@ -1785,6 +1785,25 @@ class FetchAndNotifyWorker(
         }
 
         /**
+         * Cancel any in-flight delivery — the Today screen's Play button turns
+         * into a Stop button while a delivery is mid-announcement and routes
+         * here. Cancels all three delivery queues that feed
+         * [TodayState.anyWorkActive] (daily / tonight scheduled fetches and the
+         * on-demand play), covering both a Play the user started and a Refresh
+         * or scheduled run that's currently speaking. WorkManager cancellation
+         * cancels the running coroutine, which propagates into the suspending
+         * `speak()` call and stops the AudioTrack / TextToSpeech engine via
+         * their `invokeOnCancellation` hooks. A future scheduled alarm is
+         * unaffected — it re-enqueues on its own next fire.
+         */
+        fun cancelDelivery(context: Context) {
+            val workManager = WorkManager.getInstance(context)
+            workManager.cancelUniqueWork(UNIQUE_WORK_NAME)
+            workManager.cancelUniqueWork(UNIQUE_WORK_NAME_TONIGHT)
+            workManager.cancelUniqueWork(UNIQUE_WORK_NAME_PLAY)
+        }
+
+        /**
          * Cache-only refresh: resolves the device location and writes it to
          * settings without running the insight pipeline. Used when the user
          * toggles device location ON from Settings so they see their city

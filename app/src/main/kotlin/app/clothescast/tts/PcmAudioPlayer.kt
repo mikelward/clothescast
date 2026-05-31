@@ -5,7 +5,9 @@ import android.media.AudioFormat
 import android.media.AudioTrack
 import app.clothescast.diag.DiagLog
 import app.clothescast.core.data.tts.PcmAudio
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.resume
 
 /**
@@ -72,7 +74,21 @@ internal object PcmAudioPlayer {
 
             var offset = 0
             while (offset < pcm.size) {
-                val written = track.write(pcm, offset, pcm.size - offset)
+                // Write one track-buffer's worth at a time, checking for
+                // cancellation between chunks. AudioTrack.write is a blocking
+                // JNI call (WRITE_BLOCKING), not a coroutine suspension point —
+                // handing it the whole remaining PCM blocks here for nearly the
+                // entire utterance, during which coroutine cancellation can't
+                // land. That left the Stop affordances (settings voice preview
+                // and the Today app-bar delivery cancel) unable to cut a long
+                // Gemini cast short, since the cancellation hook only arms in
+                // awaitMarker below — i.e. after the last byte is queued.
+                // Bounding each write to the buffer keeps the blocking window
+                // to a fraction of a second, so ensureActive() throws promptly
+                // on cancel and the finally tears the track down.
+                coroutineContext.ensureActive()
+                val chunk = minOf(bufferBytes, pcm.size - offset)
+                val written = track.write(pcm, offset, chunk)
                 if (written <= 0) {
                     DiagLog.w(TAG, "AudioTrack.write returned $written at offset $offset; aborting playback")
                     return

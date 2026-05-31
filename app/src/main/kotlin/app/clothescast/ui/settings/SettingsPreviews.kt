@@ -482,6 +482,40 @@ internal fun SettingsVoiceGeminiPreview() {
     }
 }
 
+// Gemini selected but no key configured: the Test Voice button is disabled so
+// we never play the device-voice fallback dressed up as Gemini. Captures the
+// "enter a key first" state alongside the key-set Gemini preview above.
+@Preview(name = "Settings · Voice (Gemini, no key)", widthDp = 360)
+@Composable
+internal fun SettingsVoiceGeminiNoKeyPreview() {
+    SettingsFrame {
+        VoiceContent(
+            selected = TtsEngine.GEMINI,
+            geminiVoice = UserPreferences.DEFAULT_GEMINI_VOICE,
+            ttsStyle = TtsStyle.WEATHER_FORECASTER,
+            deviceVoice = null,
+            deviceVoices = emptyList(),
+            effectiveDeviceVoice = null,
+            geminiKeyConfigured = false,
+            voiceLocale = VoiceLocale.SYSTEM,
+            region = Region.SYSTEM,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            rangeFormat = RangeFormat.DEGREES,
+            clothesFormat = ClothesFormat.ITEMS,
+            bottomsFormat = BottomsFormat.IF_GARMENTS,
+            padding = PaddingValues(0.dp),
+            onSetTtsEngine = {},
+            onSetGeminiVoice = {},
+            onSetTtsStyle = {},
+            onSetDeviceVoice = {},
+            onSetVoiceLocale = {},
+            onSetGeminiKey = {},
+            onClearGeminiKey = {},
+            onPairFromPhone = {},
+        )
+    }
+}
+
 // Render with device-location ON and a stored fallback city: this exercises
 // both the "currently using" path (the card displays the cached city) and —
 // because the Robolectric host has no ACCESS_BACKGROUND_LOCATION grant —

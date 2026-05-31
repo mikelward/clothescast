@@ -13,7 +13,7 @@ import io.ktor.client.request.HttpRequestBuilder
  *    `x-goog-api-key` via the plan's `applyAuth` callback.
  *  - the developer's Cloud Function proxy, constructed at the call site
  *    from `BuildConfig.GEMINI_PROXY_URL` in `:app`. App Check token +
- *    Firebase Installation ID travel in headers via `applyAuth`.
+ *    anonymous Firebase Auth ID token travel in headers via `applyAuth`.
  */
 data class GeminiEndpoint(
     val host: String,

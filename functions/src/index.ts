@@ -4,6 +4,7 @@ import { defineSecret } from "firebase-functions/params";
 import { logger } from "firebase-functions";
 import { initializeApp } from "firebase-admin/app";
 import { getAppCheck } from "firebase-admin/app-check";
+import { getAuth } from "firebase-admin/auth";
 import {
   FieldValue,
   getFirestore,
@@ -23,7 +24,7 @@ const ALLOWED_MODELS = new Set<string>(["gemini-2.5-flash-preview-tts"]);
 const GEMINI_HOST = "generativelanguage.googleapis.com";
 const GEMINI_API_VERSION = "v1beta";
 
-const INSTALLS_COLLECTION = "installs";
+const QUOTA_COLLECTION = "quota";
 
 // Per-install daily quota for the shared-key path. Counted by UTC calendar
 // day so the reset moment is global and unambiguous; the Android client's
@@ -57,9 +58,29 @@ export const tts = onRequest(
       return;
     }
 
-    const installId = headerValue(req.header("X-Install-Id"));
-    if (!installId || !/^[A-Za-z0-9_-]{1,128}$/.test(installId)) {
-      res.status(400).json({ error: "missing_or_invalid_install_id" });
+    // Quota is keyed on the Firebase Authentication uid pulled from a
+    // verified anonymous ID token — never a client-supplied header. The
+    // uid is minted and signed by Firebase Auth, so a modded client can't
+    // choose its own quota bucket the way it could when we trusted an
+    // `X-Install-Id` header: verifyIdToken rejects anything we didn't
+    // issue. App Check above already proves the caller is a genuine app
+    // build; enforcing App Check on Authentication in the console
+    // (Build → App Check → Authentication → Enforce) closes the last gap
+    // by stopping scripted anonymous-account farming to rotate the uid.
+    const authHeader = headerValue(req.header("Authorization"));
+    const idToken = authHeader?.startsWith("Bearer ")
+      ? authHeader.slice("Bearer ".length).trim()
+      : null;
+    if (!idToken) {
+      res.status(401).json({ error: "missing_auth_token" });
+      return;
+    }
+    let uid: string;
+    try {
+      uid = (await getAuth().verifyIdToken(idToken)).uid;
+    } catch (err) {
+      logger.warn("ID token verification failed", { code: errorCode(err) });
+      res.status(401).json({ error: "invalid_auth_token" });
       return;
     }
 
@@ -85,7 +106,7 @@ export const tts = onRequest(
     const today = utcDayKey(now);
     let reservation: Reservation;
     try {
-      reservation = await reserveDailySlot(installId, today);
+      reservation = await reserveDailySlot(uid, today);
     } catch (err) {
       logger.warn("Quota reservation failed; failing open", {
         code: errorCode(err),
@@ -129,7 +150,7 @@ export const tts = onRequest(
       // Firestore recovers.
       if (reservation.reserved) {
         try {
-          await releaseDailySlot(installId, today);
+          await releaseDailySlot(uid, today);
         } catch (rbErr) {
           logger.warn("Quota rollback after fetch failure failed", {
             code: errorCode(rbErr),
@@ -152,7 +173,7 @@ export const tts = onRequest(
       logger.error("Upstream Gemini body read failed", { code: errorCode(err) });
       if (reservation.reserved) {
         try {
-          await releaseDailySlot(installId, today);
+          await releaseDailySlot(uid, today);
         } catch (rbErr) {
           logger.warn("Quota rollback after body read failure failed", {
             code: errorCode(rbErr),
@@ -189,7 +210,7 @@ export const tts = onRequest(
       logger.warn("Gemini returned 200 but no inline audio", structuralEnvelope(upstreamBody));
       if (reservation.reserved) {
         try {
-          await releaseDailySlot(installId, today);
+          await releaseDailySlot(uid, today);
         } catch (err) {
           logger.warn("Quota rollback after no-audio 200 failed", {
             code: errorCode(err),
@@ -210,7 +231,7 @@ export const tts = onRequest(
       // to undo.
       if (reservation.reserved) {
         try {
-          await releaseDailySlot(installId, today);
+          await releaseDailySlot(uid, today);
         } catch (err) {
           logger.warn("Quota rollback after upstream non-success failed", {
             code: errorCode(err),
@@ -238,10 +259,10 @@ interface Reservation {
 }
 
 async function reserveDailySlot(
-  installId: string,
+  uid: string,
   today: string,
 ): Promise<Reservation> {
-  const docRef = getFirestore().collection(INSTALLS_COLLECTION).doc(installId);
+  const docRef = getFirestore().collection(QUOTA_COLLECTION).doc(uid);
   return await getFirestore().runTransaction(async (tx) => {
     const snap = await tx.get(docRef);
     const now = Timestamp.now();
@@ -281,10 +302,10 @@ async function reserveDailySlot(
 }
 
 async function releaseDailySlot(
-  installId: string,
+  uid: string,
   today: string,
 ): Promise<void> {
-  const docRef = getFirestore().collection(INSTALLS_COLLECTION).doc(installId);
+  const docRef = getFirestore().collection(QUOTA_COLLECTION).doc(uid);
   await getFirestore().runTransaction(async (tx) => {
     const snap = await tx.get(docRef);
     if (!snap.exists) return;

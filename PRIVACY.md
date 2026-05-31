@@ -8,7 +8,10 @@ have over it.
 
 ## TL;DR
 
-- ClothesCast has no user accounts and no backend that holds your data.
+- ClothesCast has no login and no personal account. The free online
+  voice signs in **anonymously** — a random ID with no name, email, or
+  password — purely to count your daily usage; no backend holds personal
+  data about you.
   The app may send anonymous crash reports and aggregate usage analytics
   to a third-party reporting service so the developer can fix bugs and
   decide which features to keep — see "Analytics and crash reporting"
@@ -240,29 +243,43 @@ Online TTS (the Gemini voice) has two paths.
   The function holds a Google Gemini API key paid for by the developer,
   forwards your request to Google, and returns the audio. It does not
   log the spoken prose or the audio response.
+  - **First use — an anonymous identifier from Google.** Before the
+    first shared-key request, the app signs in anonymously to Firebase
+    Authentication (a Google service). This is **not** a user account:
+    there is no name, email, password, or sign-in screen. It returns a
+    random, app-generated identifier — just a string of letters and
+    digits, e.g. `a1B2c3…` — that is **not** linked to your name,
+    email, phone number, device, or location, and is never used for
+    advertising or tracking across apps. It exists only so the proxy
+    can count how many free clips this app install has used today. On
+    the shared path your data is handled by ClothesCast and Google
+    servers.
   - **Sent on each request:** the rendered insight sentence (the same
-    text the phone speaks), a per-install pseudonymous identifier
-    (your Firebase Installation ID), a Firebase App Check attestation
-    token (proves the request came from a genuine install — verified
-    in-memory and discarded), and the model name. No coordinates,
-    calendar metadata as fields, account, advertising ID, or device
-    identifiers are added.
-  - **Stored:** a Firestore document at `installs/<your install ID>`
+    text the phone speaks), the anonymous identifier above (carried as
+    a signed Firebase ID token in the `Authorization` header, which the
+    proxy verifies to read the identifier — the client cannot forge or
+    swap it), a Firebase App Check attestation token (proves the request
+    came from a genuine install — verified in-memory and discarded), and
+    the model name. No coordinates, calendar metadata as fields, user
+    account, advertising ID, or hardware / device identifiers are added.
+  - **Stored:** a Firestore document at `quota/<your anonymous ID>`
     with a first-use timestamp, a successful-call counter, and a
-    most-recent-use timestamp. Used now for capacity planning and
-    later to enforce a free-trial limit (planned: 30 calls or 30 days
-    from first use). Not used for advertising or cross-app tracking.
-    Your install ID changes if you reinstall the app or use "Clear
-    data" in Android Settings.
+    most-recent-use timestamp, capped at 5 successful clips per UTC day.
+    Used to enforce the free daily limit and for capacity planning. Not
+    used for advertising or cross-app tracking. Your anonymous
+    identifier resets if you reinstall the app or use "Clear data" in
+    Android Settings.
   - **Cloud Functions infrastructure logs** (operated by Google Cloud,
     not configured by us) record the client IP and HTTP status of
-    each call. We do not associate the IP with your install ID.
+    each call. We do not associate the IP with your anonymous
+    identifier.
 - **Your own key (BYOK).** Open Settings → Voice → Gemini API key and
   paste your own key. Keys are stored on your device, encrypted at
   rest using a key sealed by the Android Keystore. With your own key
   set, online TTS requests skip the ClothesCast proxy entirely and
-  go straight to Google — no install ID, no App Check token, no proxy
-  involvement. Your key is never shared with us or any third party.
+  go straight to Google — no anonymous identifier, no App Check token,
+  no anonymous sign-in, no proxy involvement. Your key is never shared
+  with us or any third party.
 
 ## Third-party services
 
@@ -273,16 +290,17 @@ policies apply to anything they receive:
 |---|---|---|
 | [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate (forecast); your typed search text when you use a location picker (first-run onboarding and Settings) | Always for forecast; only when you search for a place name |
 | Google's geocoding service (via Android's [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder) on Play Services devices), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate | Always on Play Services devices (city / country lookup for the Today header); skipped on AOSP devices |
-| ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, your Firebase Installation ID, a Firebase App Check token, and the Gemini model name | Online TTS with the shared key (default) |
+| Google Firebase Authentication | An App Check attestation, to mint and refresh an anonymous identifier (no name, email, or password) | First use of the shared-key path, then periodic token refreshes |
+| ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, an anonymous app identifier (as a signed Firebase ID token), a Firebase App Check token, and the Gemini model name | Online TTS with the shared key (default) |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence (forwarded by the proxy, or sent directly when you use your own key) | Online TTS, either path |
 | Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence, as a retained MQTT message | Only if you opt in to the Smart Home bridge and configure a broker |
 | Analytics / crash-reporting service (e.g. Firebase Crashlytics + Google Analytics for Firebase) | Aggregate usage events and crash diagnostics — see "Analytics and crash reporting" below for what's in and out | Possibly always, in all builds |
 
 These providers act as service providers fulfilling a single request and
 returning the result. When the ClothesCast TTS proxy is in the path, it
-adds the install ID and App Check token described above; when you use
-your own Gemini key, the request goes straight to Google and no install
-identifier is attached.
+adds the anonymous identifier and App Check token described above; when
+you use your own Gemini key, the request goes straight to Google and no
+anonymous identifier is attached.
 
 Note on Gemini API: request inputs are not retained for training by
 default. See the provider's policy linked above for the authoritative
@@ -290,7 +308,11 @@ terms.
 
 ## What we do _not_ collect
 
-- No accounts, no sign-in.
+- No user accounts and no personal sign-in — no name, email, password,
+  or login screen. (The free online-TTS path uses an anonymous,
+  randomly-generated identifier to count daily usage, described under
+  "Online TTS" above; it identifies an app install, not you, and carries
+  no personal information.)
 - No advertising identifiers, no ad networks, no ad targeting.
 - No precise GPS location.
 - No contacts, photos, microphone, or files.
@@ -436,6 +458,18 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-05-31** — Hardened the shared-key TTS identifier. The free
+  online-TTS path now identifies each install by an anonymous Firebase
+  Authentication identifier, verified on the server, instead of the
+  Firebase Installation ID the app previously sent in a header. This
+  stops a modified client from rotating the identifier to bypass the
+  daily free-clip limit. The identifier is still random and carries no
+  personal information; the daily counter moved from
+  `installs/<install ID>` to `quota/<anonymous ID>`. To obtain the
+  identifier the app now signs in anonymously to Firebase Authentication
+  (a Google service) — no name, email, or password, and no user-facing
+  account. See "Online TTS: shared key by default, your own key on
+  request" and the third-party services table above.
 - **2026-05-31** — Online TTS now has a shared-key default: when you
   haven't supplied your own Gemini API key, the spoken sentence is sent
   to a small Cloud Function operated by the developer, which forwards

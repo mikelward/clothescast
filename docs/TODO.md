@@ -269,14 +269,18 @@ Open work:
   TTS — a Today / Settings banner pointing at the BYOK flow would
   let users notice and resolve the cap without going hunting in the
   logs.
-- Bind the TTS proxy quota to a server-verified install identity
-  rather than the client-chosen `X-Install-Id` header. Today a
-  caller with a valid App Check token can rotate the header per
-  request and get a fresh `installs/<id>` doc each time, bypassing
-  the daily cap. The standard fix is to have the Android client send
-  the Firebase Installations *auth token* (a JWT issued for the FID)
-  and have the function call the Installations REST API to verify
-  and extract the FID before reserving a slot. Surfaced by Codex
-  review on #893.
+- [x] **Bind the TTS proxy quota to a server-verified identity**
+  rather than the client-chosen `X-Install-Id` header. Done: the
+  client now sends an anonymous Firebase Authentication ID token
+  (`Authorization: Bearer …`) and the function verifies it
+  (`getAuth().verifyIdToken`) and keys the daily quota on the
+  resulting `uid` (`quota/<uid>`). The earlier idea of verifying a
+  Firebase Installations *auth token* was dropped — there's no
+  documented way for a custom backend to verify one (the Installations
+  REST API only creates/deletes installations and generates tokens; no
+  verify/introspect method, and the Admin SDK has no installations-token
+  verifier). Requires Anonymous sign-in enabled and App Check enforced
+  on Authentication in the Firebase project. Surfaced by Codex review
+  on #893.
 - Google Home / alarm-clock-app integration.
 - Play Store submission. Sideload + FAD only for v1.

@@ -372,6 +372,19 @@ new rule the first time something bites you, not the third.
   rule is about the default English we author in base `values/` and in
   our commits, PRs, comments, and docs.
 
+- **Plain, honest voice in user-facing copy.** Write privacy
+  disclosures (`PRIVACY.md`), changelog / "What's new" bullets, settings
+  and UI strings, and docs the way you'd say them out loud — direct and
+  specific, no weasel words. If the app does something, name it plainly:
+  the free voice "signs in anonymously," not "has no accounts you sign
+  in to." Never hedge a true-but-narrow claim to imply something broader;
+  if a caveat matters, state it outright. Prefer the concrete term ("an
+  anonymous, random ID — no name, email, or password") over the vague
+  reassurance ("no data held about you"). Applies doubly to anything
+  describing what crosses the device boundary — see the Privacy section:
+  the reader should come away knowing exactly what happens, not
+  comfortably misled.
+
 ## Domain conventions
 
 - Clothes rules and outfit suggestions both look at *feels-like*

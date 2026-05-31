@@ -7,6 +7,25 @@
 -dontwarn io.ktor.util.debug.**
 -dontwarn java.lang.management.**
 
+# Type-safe Navigation Compose routes. Each NavHost destination is a top-level
+# @Serializable object / data class in app.clothescast.ui.nav (TodayRoute,
+# OnboardingRoute, PairingRoute, the Settings*Dest objects, SettingsGraph).
+# Compose Navigation resolves a route's KSerializer *reflectively, by KClass*,
+# while building the graph at NavHost composition. R8's optimizing+obfuscating
+# release build strips the synthetic serializer() / INSTANCE members of the
+# parameterless @Serializable objects — the kotlinx-serialization bundled rules
+# only keep a serializer that's otherwise statically reachable, and a route used
+# solely via composable<Route> / navigate(Route) isn't — so the reflective
+# lookup throws "Serializer for class <obfuscated> is not found" and the app
+# dies on launch. (TodayRoute survives because its data-class $$serializer is
+# directly referenced; the bare object routes don't.) Keep every route type and
+# its generated serialization machinery; the classes are tiny.
+-keep @kotlinx.serialization.Serializable class app.clothescast.ui.nav.** { *; }
+-keep class app.clothescast.ui.nav.**$$serializer { *; }
+-keep class app.clothescast.ui.nav.**$Companion {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
 # Compose's FontWeightAdjustmentHelper uses reflection to safely access
 # Configuration.fontWeightAdjustment on API 31+ devices. Some OEM Android 12
 # builds omit this field despite reporting API 31. Without this keep rule, R8

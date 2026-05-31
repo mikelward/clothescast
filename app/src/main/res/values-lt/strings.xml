@@ -319,8 +319,6 @@ What is NOT overridden, by design:
     <string name="settings_api_key_gemini_header">Aukštos kokybės balsai per ClothesCast ir Gemini serverius.</string>
     <string name="settings_tts_device_header">Žemos kokybės balsai, įdiegti tavo telefone.</string>
     <string name="settings_api_key_status_set">Gemini raktas sukonfigūruotas.</string>
-    <string name="settings_api_key_status_unset">Gauk nemokamą API raktą adresu aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">Pasirinktinai — įklijuok savo raktą. Gauk nemokamą adresu aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Įklijuok Gemini API raktą</string>
     <string name="settings_api_key_save">Išsaugoti Gemini raktą</string>
     <string name="settings_api_key_clear">Ištrinti išsaugotą Gemini raktą</string>

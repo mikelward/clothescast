@@ -295,8 +295,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_api_key_gemini_label">Gemini</string>
 
     <string name="settings_api_key_status_set">Έχει ρυθμιστεί ένα Gemini key.</string>
-    <string name="settings_api_key_status_unset">Δεν έχει ρυθμιστεί Gemini key. Πάρε ένα από το aistudio.google.com για να χρησιμοποιήσεις τις φωνές Gemini.</string>
-    <string name="settings_api_key_status_unset_shared">Προαιρετικό — επικόλλησε το δικό σου key. Πάρε ένα δωρεάν από το aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Επικόλλησε το Gemini API key σου</string>
     <string name="settings_api_key_save">Αποθήκευση Gemini key</string>
     <string name="settings_api_key_clear">Διαγραφή αποθηκευμένου Gemini key</string>

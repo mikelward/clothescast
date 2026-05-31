@@ -168,8 +168,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_api_key_gemini_header">Glasovi visokog kvaliteta preko servera ClothesCast i Gemini.</string>
     <string name="settings_tts_device_header">Glasovi niskog kvaliteta ugrađeni u tvoj telefon.</string>
     <string name="settings_api_key_status_set">Gemini ključ je podešen.</string>
-    <string name="settings_api_key_status_unset">Nema Gemini ključa. Nabavi ga besplatno na aistudio.google.com za korišćenje Gemini glasova.</string>
-    <string name="settings_api_key_status_unset_shared">Opciono — nalepi sopstveni ključ. Nabavi ga besplatno na aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Nalepi svoj Gemini API ključ</string>
     <string name="settings_api_key_save">Sačuvaj Gemini ključ</string>
     <string name="settings_api_key_clear">Obriši sačuvani Gemini ključ</string>

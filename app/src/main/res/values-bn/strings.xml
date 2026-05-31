@@ -542,8 +542,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_api_key_gemini_header">ClothesCast এবং Gemini সার্ভারের মাধ্যমে উচ্চ-মানের ভয়েস।</string>
     <string name="settings_tts_device_header">আপনার ফোনে অন্তর্নির্মিত নিম্ন-মানের ভয়েস।</string>
     <string name="settings_api_key_status_set">একটি Gemini কী কনফিগার করা আছে।</string>
-    <string name="settings_api_key_status_unset">aistudio.google.com-এ বিনামূল্যে API কী নিন</string>
-    <string name="settings_api_key_status_unset_shared">ঐচ্ছিক — নিজের কী পেস্ট করুন। aistudio.google.com থেকে বিনামূল্যে একটি নিন</string>
     <string name="settings_api_key_placeholder">আপনার Gemini API কী পেস্ট করুন</string>
     <string name="settings_api_key_save">Gemini কী সংরক্ষণ করুন</string>
     <string name="settings_api_key_clear">সংরক্ষিত Gemini কী মুছুন</string>

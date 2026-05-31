@@ -44,7 +44,15 @@ internal fun KeyEntryFields(
     onSave: (String) -> Unit,
     onClear: () -> Unit,
 ) {
-    LinkifiedText(text = statusText, style = MaterialTheme.typography.bodyMedium)
+    // Match the muted color of the surrounding body paragraphs (engine
+    // description, per-engine header) so the status line doesn't read
+    // heavier than them — by default LinkifiedText uses LocalContentColor
+    // (full onSurface), which renders darker than the body text above.
+    LinkifiedText(
+        text = statusText,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
 
     var input by remember { mutableStateOf("") }
     // Default the input to hidden when a key is already saved; re-key on

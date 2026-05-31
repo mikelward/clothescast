@@ -312,8 +312,6 @@ to values/strings.xml (English).
     <string name="settings_api_key_gemini_header">Suara berkualitas tinggi melalui server ClothesCast dan Gemini.</string>
     <string name="settings_tts_device_header">Suara berkualitas rendah bawaan di ponselmu.</string>
     <string name="settings_api_key_status_set">Kunci Gemini telah dikonfigurasi.</string>
-    <string name="settings_api_key_status_unset">Dapatkan kunci API gratis di aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">Opsional — tempel kuncimu sendiri. Dapatkan gratis di aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Tempelkan kunci API Gemini Anda</string>
     <string name="settings_api_key_save">Simpan kunci Gemini</string>
     <string name="settings_api_key_clear">Hapus kunci Gemini tersimpan</string>

@@ -420,8 +420,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_api_key_gemini_header">Sauti za ubora wa juu kupitia seva za ClothesCast na Gemini.</string>
     <string name="settings_tts_device_header">Sauti za ubora wa chini zilizojengwa kwenye simu yako.</string>
     <string name="settings_api_key_status_set">Ufunguo wa Gemini umewekwa.</string>
-    <string name="settings_api_key_status_unset">Pata ufunguo wa API bure kwenye aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">Si lazima — bandika ufunguo wako mwenyewe. Pata bure kwenye aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Bandika ufunguo wako wa Gemini API</string>
     <string name="settings_api_key_save">Hifadhi ufunguo wa Gemini</string>
     <string name="settings_api_key_clear">Futa ufunguo uliohifadhiwa wa Gemini</string>

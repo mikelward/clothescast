@@ -111,14 +111,21 @@ internal fun SettingsNavRow(
     }
 }
 
-private const val AISTUDIO_HOST = "aistudio.google.com"
-private const val AISTUDIO_URL = "https://aistudio.google.com/"
+// The literal substring LinkifiedText turns into a tappable link. Lives as a
+// constant so the source string and the linkified label can't drift; the link
+// target is the API-key creation deep-link below so the user lands on the
+// action they're here to do (not the AI Studio home screen). "get a key" reads
+// as natural in-sentence English; if/when this string is translated, the
+// per-locale linked phrase needs a per-locale constant alongside (see the
+// docs/TODO.md entry).
+private const val AISTUDIO_LINK_LABEL = "get a key"
+private const val AISTUDIO_URL = "https://aistudio.google.com/app/apikey"
 
 /**
- * Plain Text replacement that turns the literal "aistudio.google.com" inside the
- * supplied string into a clickable link. The Gemini-key copy in onboarding and
- * settings mentions the URL inline; rendering it as a tappable link saves the
- * user from typing it into a browser.
+ * Plain Text replacement that turns the literal "get a key" inside the supplied
+ * string into a clickable link pointing at AI Studio's API-key creation page.
+ * The Gemini-key copy in onboarding and settings uses the phrase inline so
+ * we don't need to render a bare URL.
  */
 @Composable
 internal fun LinkifiedText(
@@ -129,7 +136,7 @@ internal fun LinkifiedText(
 ) {
     val linkColor = MaterialTheme.colorScheme.primary
     val annotated = remember(text, linkColor) {
-        val idx = text.indexOf(AISTUDIO_HOST)
+        val idx = text.indexOf(AISTUDIO_LINK_LABEL)
         if (idx < 0) {
             AnnotatedString(text)
         } else {
@@ -144,8 +151,8 @@ internal fun LinkifiedText(
                         ),
                     ),
                 )
-                withLink(link) { append(AISTUDIO_HOST) }
-                append(text, idx + AISTUDIO_HOST.length, text.length)
+                withLink(link) { append(AISTUDIO_LINK_LABEL) }
+                append(text, idx + AISTUDIO_LINK_LABEL.length, text.length)
             }
         }
     }

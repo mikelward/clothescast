@@ -278,8 +278,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_api_key_gemini_header">Hlasy ve vysoké kvalitě přes servery ClothesCast a Gemini.</string>
     <string name="settings_tts_device_header">Hlasy v nízké kvalitě zabudované do tvého telefonu.</string>
     <string name="settings_api_key_status_set">Gemini klíč je nastaven.</string>
-    <string name="settings_api_key_status_unset">Žádný Gemini klíč není nastaven. Získej ho na aistudio.google.com pro použití hlasů Gemini.</string>
-    <string name="settings_api_key_status_unset_shared">Volitelné — vlož vlastní klíč. Získej ho zdarma na aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Vlož sem Gemini API klíč</string>
     <string name="settings_api_key_save">Uložit Gemini klíč</string>
     <string name="settings_api_key_clear">Smazat uložený Gemini klíč</string>

@@ -320,8 +320,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_api_key_gemini_header">أصوات عالية الجودة عبر خوادم ClothesCast وGemini.</string>
     <string name="settings_tts_device_header">أصوات منخفضة الجودة مدمجة في هاتفك.</string>
     <string name="settings_api_key_status_set">تم تكوين مفتاح Gemini.</string>
-    <string name="settings_api_key_status_unset">احصل على مفتاح API مجاني من aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">اختياري — الصق مفتاحك الخاص. احصل على واحد مجانًا من aistudio.google.com</string>
     <string name="settings_api_key_placeholder">الصق مفتاح Gemini API</string>
     <string name="settings_api_key_save">حفظ مفتاح Gemini</string>
     <string name="settings_api_key_clear">مسح مفتاح Gemini المخزّن</string>

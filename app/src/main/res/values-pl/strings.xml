@@ -243,8 +243,6 @@ is unchanged; only the displayed label localizes.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
     <string name="settings_api_key_status_set">Klucz Gemini jest skonfigurowany.</string>
-    <string name="settings_api_key_status_unset">Brak klucza Gemini. Pobierz go na stronie aistudio.google.com, aby korzystać z głosów Gemini.</string>
-    <string name="settings_api_key_status_unset_shared">Opcjonalnie — wklej własny klucz. Zdobądź go za darmo na aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Wklej tutaj klucz API Gemini</string>
     <string name="settings_api_key_save">Zapisz klucz Gemini</string>
     <string name="settings_api_key_clear">Usuń zapisany klucz Gemini</string>

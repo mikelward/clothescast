@@ -231,7 +231,6 @@ internal fun SmartHomeContent(
         SpeechSetupSheet(
             selectedEngine = ttsEngine,
             geminiKeyConfigured = geminiKeyConfigured,
-            sharedTtsAvailable = sharedTtsAvailable,
             onSetTtsEngine = onSetTtsEngine,
             onSetGeminiKey = onSetGeminiKey,
             onClearGeminiKey = onClearGeminiKey,

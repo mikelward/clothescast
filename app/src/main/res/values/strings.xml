@@ -688,13 +688,18 @@
          sheet, paired with the Gemini header above so the user reads both
          halves of the engine tradeoff (offline + low quality vs. server +
          high quality). -->
-    <string name="settings_tts_device_header">Low-quality voices built in to your phone.</string>
+    <string name="settings_tts_device_header">Low-quality voices built into your phone.</string>
     <string name="settings_api_key_status_set">A Gemini key is configured.</string>
-    <string name="settings_api_key_status_unset">Get a free API key at aistudio.google.com</string>
-    <!-- Variant of settings_api_key_status_unset shown when the shared-key Gemini
-         proxy is reachable on this build, so the user can hit Test voice without
-         setting a key. Frames the key field as optional rather than required. -->
-    <string name="settings_api_key_status_unset_shared">Optional — paste your own key. Get one free at aistudio.google.com</string>
+    <!-- Single status line for the no-key state, shown on Voice settings, the
+         Speech setup sheet, and the onboarding key step. Leads with the free
+         tier the user can use right now and the upgrade their own key buys.
+         "get a key" is linkified by LinkifiedText to AI Studio's API-key page
+         (see AISTUDIO_LINK_LABEL in SettingsCommon.kt) — keep that exact
+         substring intact when editing. The "2" is conservative against the
+         proxy's actual DAILY_LIMIT in functions/src/index.ts (currently 5);
+         promising less and delivering more is the safe direction, and the
+         cap can move quietly in the proxy without re-translating. -->
+    <string name="settings_api_key_status_unset">2 free each day, get a key for more.</string>
     <string name="settings_api_key_placeholder">Paste your Gemini API key</string>
     <string name="settings_api_key_save">Save Gemini key</string>
     <string name="settings_api_key_replace">Replace Gemini key</string>
@@ -795,7 +800,7 @@
     <string name="settings_tts_engine_title">Voice engine</string>
     <string name="settings_tts_engine_description">Choose between low-quality on-device speech and high-quality online speech.</string>
     <string name="settings_tts_engine_device">Device (low-quality, on-device)</string>
-    <string name="settings_tts_engine_gemini">Gemini (high quality, online)</string>
+    <string name="settings_tts_engine_gemini">Gemini (high-quality, online)</string>
     <string name="settings_tts_voice_label">Voice</string>
     <string name="settings_tts_voice_dismiss">Done</string>
     <!-- Style preamble for Gemini TTS. "Normal" is the original studio-voice

@@ -150,7 +150,6 @@ internal fun SettingsSpeechSetupGeminiPreview() {
         SpeechSetupContent(
             selectedEngine = TtsEngine.GEMINI,
             geminiKeyConfigured = false,
-            sharedTtsAvailable = false,
             onSetTtsEngine = {},
             onSetGeminiKey = {},
             onClearGeminiKey = {},
@@ -166,7 +165,6 @@ internal fun SettingsSpeechSetupDevicePreview() {
         SpeechSetupContent(
             selectedEngine = TtsEngine.DEVICE,
             geminiKeyConfigured = false,
-            sharedTtsAvailable = false,
             onSetTtsEngine = {},
             onSetGeminiKey = {},
             onClearGeminiKey = {},
@@ -182,7 +180,6 @@ internal fun SettingsSpeechSetupSmartHomePreview() {
         SpeechSetupContent(
             selectedEngine = TtsEngine.DEVICE,
             geminiKeyConfigured = false,
-            sharedTtsAvailable = false,
             onSetTtsEngine = {},
             onSetGeminiKey = {},
             onClearGeminiKey = {},

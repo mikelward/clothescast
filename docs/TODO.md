@@ -34,12 +34,20 @@ Code TODOs in source files are linked from here when they exist.
       Follow-up: translated the three strings across all 44 `values-*`
       overrides so the new on-device vs. online tradeoff (and the
       "ClothesCast and Gemini servers" disclosure) ships in every locale.
-- [ ] **Translate `settings_api_key_status_unset_shared`** ("Optional —
-      paste your own key. Get one free at aistudio.google.com") across all
-      44 `values-*` overrides. Shown in Voice settings and the Speech
-      setup sheet on builds where the shared-key proxy is reachable and
-      no BYOK key is set, so non-English devices currently fall back to
-      the English copy.
+- [ ] **Translate `settings_api_key_status_unset`** ("2 free each
+      day, get a key for more.") across all 44 `values-*` overrides.
+      Shown on Voice settings, the Speech setup sheet, and the
+      onboarding key step whenever no BYOK key is set. The old
+      translations were stripped when this string's meaning changed
+      from "no key configured, go get one" to surfacing the free
+      daily allowance, so non-English devices currently fall back to
+      the English copy. The "2" understates the actual
+      `DAILY_LIMIT` in `functions/src/index.ts` (currently 5) on
+      purpose — users get more than promised, not less. Re-translate
+      if the source number changes. Translation also needs a
+      per-locale `AISTUDIO_LINK_LABEL` (currently the hard-coded
+      English "get a key" in `SettingsCommon.kt`) so the linkified
+      substring matches the translated string.
 - [ ] **Reorder the Gemini section: Test voice above the API key field.**
       Today (and in the snapshot for the no-key / shared-proxy state) the
       key entry — `Paste your Gemini API key` + `Save Gemini key` —

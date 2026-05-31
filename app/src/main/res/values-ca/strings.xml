@@ -205,8 +205,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_api_key_gemini_header">Veus d\'alta qualitat a través dels servidors de ClothesCast i Gemini.</string>
     <string name="settings_tts_device_header">Veus de baixa qualitat integrades al teu telèfon.</string>
     <string name="settings_api_key_status_set">Hi ha una clau de Gemini configurada.</string>
-    <string name="settings_api_key_status_unset">Obtén una clau gratuïta a aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">Opcional — enganxa la teva clau. Aconsegueix-ne una gratis a aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Enganxa la teva clau API de Gemini</string>
     <string name="settings_api_key_save">Guarda la clau de Gemini</string>
     <string name="settings_api_key_clear">Esborra la clau de Gemini guardada</string>

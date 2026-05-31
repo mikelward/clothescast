@@ -199,14 +199,8 @@ internal fun VoiceContent(
                         KeyEntryFields(
                             configured = geminiKeyConfigured,
                             statusText = stringResource(
-                                when {
-                                    geminiKeyConfigured -> R.string.settings_api_key_status_set
-                                    // Builds with the shared-key proxy reachable can synthesise
-                                    // through Gemini without a BYOK key — frame the field as
-                                    // optional rather than the old "go get one" call to action.
-                                    sharedTtsAvailable -> R.string.settings_api_key_status_unset_shared
-                                    else -> R.string.settings_api_key_status_unset
-                                },
+                                if (geminiKeyConfigured) R.string.settings_api_key_status_set
+                                else R.string.settings_api_key_status_unset,
                             ),
                             placeholder = stringResource(R.string.settings_api_key_placeholder),
                             saveLabel = stringResource(R.string.settings_api_key_save),

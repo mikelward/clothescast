@@ -285,8 +285,6 @@ only the displayed label localizes.
     <string name="settings_api_key_gemini_header">Голоси високої якості через сервери ClothesCast і Gemini.</string>
     <string name="settings_tts_device_header">Голоси низької якості, вбудовані у твій телефон.</string>
     <string name="settings_api_key_status_set">Ключ Gemini налаштовано.</string>
-    <string name="settings_api_key_status_unset">Отримайте безкоштовний ключ API на aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">Необов\'язково — встав свій ключ. Отримай безкоштовно на aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Вставте ваш ключ API Gemini</string>
     <string name="settings_api_key_save">Зберегти ключ Gemini</string>
     <string name="settings_api_key_clear">Видалити збережений ключ Gemini</string>

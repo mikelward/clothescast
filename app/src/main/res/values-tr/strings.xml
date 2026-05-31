@@ -220,8 +220,6 @@ displayed label localizes.
     <string name="settings_api_key_gemini_label">Gemini</string>
 
     <string name="settings_api_key_status_set">Bir Gemini anahtarı ayarlandı.</string>
-    <string name="settings_api_key_status_unset">Gemini anahtarı ayarlanmadı. Gemini seslerini kullanmak için aistudio.google.com adresinden bir anahtar alın.</string>
-    <string name="settings_api_key_status_unset_shared">İsteğe bağlı — kendi anahtarını yapıştır. aistudio.google.com adresinden ücretsiz al</string>
     <string name="settings_api_key_placeholder">Gemini API anahtarını buraya yapıştırın</string>
     <string name="settings_api_key_save">Gemini anahtarını kaydet</string>
     <string name="settings_api_key_clear">Kayıtlı Gemini anahtarını sil</string>

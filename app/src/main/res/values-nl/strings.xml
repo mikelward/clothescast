@@ -243,8 +243,6 @@ the displayed label localizes.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
     <string name="settings_api_key_status_set">Er is een Gemini-sleutel ingesteld.</string>
-    <string name="settings_api_key_status_unset">Geen Gemini-sleutel ingesteld. Haal er een op via aistudio.google.com om Gemini-stemmen te gebruiken.</string>
-    <string name="settings_api_key_status_unset_shared">Optioneel — plak je eigen sleutel. Haal er gratis een op via aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Plak hier je Gemini-API-sleutel</string>
     <string name="settings_api_key_save">Gemini-sleutel opslaan</string>
     <string name="settings_api_key_clear">Opgeslagen Gemini-sleutel wissen</string>

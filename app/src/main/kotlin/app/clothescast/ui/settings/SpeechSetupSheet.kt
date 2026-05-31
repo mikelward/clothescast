@@ -37,7 +37,6 @@ import app.clothescast.core.domain.model.TtsEngine
 internal fun SpeechSetupSheet(
     selectedEngine: TtsEngine,
     geminiKeyConfigured: Boolean,
-    sharedTtsAvailable: Boolean,
     onSetTtsEngine: (TtsEngine) -> Unit,
     onSetGeminiKey: (String) -> Unit,
     onClearGeminiKey: () -> Unit,
@@ -50,7 +49,6 @@ internal fun SpeechSetupSheet(
         SpeechSetupContent(
             selectedEngine = selectedEngine,
             geminiKeyConfigured = geminiKeyConfigured,
-            sharedTtsAvailable = sharedTtsAvailable,
             onSetTtsEngine = onSetTtsEngine,
             onSetGeminiKey = onSetGeminiKey,
             onClearGeminiKey = onClearGeminiKey,
@@ -69,7 +67,6 @@ internal fun SpeechSetupSheet(
 internal fun SpeechSetupContent(
     selectedEngine: TtsEngine,
     geminiKeyConfigured: Boolean,
-    sharedTtsAvailable: Boolean,
     onSetTtsEngine: (TtsEngine) -> Unit,
     onSetGeminiKey: (String) -> Unit,
     onClearGeminiKey: () -> Unit,
@@ -113,14 +110,8 @@ internal fun SpeechSetupContent(
                 KeyEntryFields(
                     configured = geminiKeyConfigured,
                     statusText = stringResource(
-                        when {
-                            geminiKeyConfigured -> R.string.settings_api_key_status_set
-                            // Mirrors the same branch in VoiceContent: with the shared-key
-                            // proxy reachable the key is an optional upgrade, not the
-                            // gate to using Gemini at all.
-                            sharedTtsAvailable -> R.string.settings_api_key_status_unset_shared
-                            else -> R.string.settings_api_key_status_unset
-                        },
+                        if (geminiKeyConfigured) R.string.settings_api_key_status_set
+                        else R.string.settings_api_key_status_unset,
                     ),
                     placeholder = stringResource(R.string.settings_api_key_placeholder),
                     saveLabel = stringResource(R.string.settings_api_key_save),

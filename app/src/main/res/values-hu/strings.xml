@@ -280,8 +280,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_api_key_gemini_header">Kiváló minőségű hangok a ClothesCast és a Gemini szerverein keresztül.</string>
     <string name="settings_tts_device_header">A telefonodba beépített, gyenge minőségű hangok.</string>
     <string name="settings_api_key_status_set">Gemini-kulcs be van állítva.</string>
-    <string name="settings_api_key_status_unset">Nincs Gemini-kulcs beállítva. Szerezz egyet az aistudio.google.com oldalon a Gemini-hangok használatához.</string>
-    <string name="settings_api_key_status_unset_shared">Választható — illeszd be a saját kulcsod. Szerezz egyet ingyen az aistudio.google.com oldalon</string>
     <string name="settings_api_key_placeholder">Gemini API-kulcs beillesztése ide</string>
     <string name="settings_api_key_save">Gemini-kulcs mentése</string>
     <string name="settings_api_key_clear">Mentett Gemini-kulcs törlése</string>

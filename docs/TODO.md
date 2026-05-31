@@ -34,6 +34,18 @@ Code TODOs in source files are linked from here when they exist.
       Follow-up: translated the three strings across all 44 `values-*`
       overrides so the new on-device vs. online tradeoff (and the
       "ClothesCast and Gemini servers" disclosure) ships in every locale.
+- [ ] **Append the "X settings" suffix to every localized
+      `settings_root_*` value and to `speech_setup_title`.** Base
+      English now reads "Schedule settings", "Clothes settings",
+      "Speech settings", etc. on the root settings list, every
+      sub-page's app-bar, and the speech-setup bottom sheet, but
+      the 44 `values-*` overrides still translate the old one-word
+      labels. Stale-but-translated is the deliberate choice — see
+      the prior precedent — so localized devices keep the
+      shorter form until a translation pass lands. The Forecasters
+      label drops to singular ("Forecaster settings") in the
+      English source for readability; localizations should follow
+      whatever singular/plural reads naturally in their language.
 - [ ] **Translate `settings_api_key_status_unset`** ("2 free each
       day, get a key for more.") across all 44 `values-*` overrides.
       Shown on Voice settings, the Speech setup sheet, and the

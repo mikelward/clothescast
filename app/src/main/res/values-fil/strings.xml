@@ -324,8 +324,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_api_key_gemini_header">Mga boses na may mataas na kalidad sa pamamagitan ng mga server ng ClothesCast at Gemini.</string>
     <string name="settings_tts_device_header">Mga boses na may mababang kalidad na nakapaloob sa iyong telepono.</string>
     <string name="settings_api_key_status_set">May naka-configure na Gemini key.</string>
-    <string name="settings_api_key_status_unset">Kumuha ng libreng API key sa aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">Opsyonal — i-paste ang sarili mong key. Kumuha ng libre sa aistudio.google.com</string>
     <string name="settings_api_key_placeholder">I-paste ang iyong Gemini API key</string>
     <string name="settings_api_key_save">I-save ang Gemini key</string>
     <string name="settings_api_key_clear">I-clear ang nakaimbak na Gemini key</string>

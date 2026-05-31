@@ -220,8 +220,6 @@ displayed label localizes.
     <string name="settings_api_key_gemini_label">Gemini</string>
 
     <string name="settings_api_key_status_set">Gemini-avain on asetettu.</string>
-    <string name="settings_api_key_status_unset">Gemini-avainta ei ole asetettu. Hanki avain osoitteesta aistudio.google.com käyttääksesi Gemini-ääniä.</string>
-    <string name="settings_api_key_status_unset_shared">Valinnainen — liitä oma avaimesi. Hanki ilmainen osoitteesta aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Liitä Gemini-API-avain tähän</string>
     <string name="settings_api_key_save">Tallenna Gemini-avain</string>
     <string name="settings_api_key_clear">Poista tallennettu Gemini-avain</string>

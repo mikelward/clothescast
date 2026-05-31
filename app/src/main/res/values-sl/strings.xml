@@ -327,8 +327,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_api_key_gemini_header">Glasovi v visoki kakovosti prek strežnikov ClothesCast in Gemini.</string>
     <string name="settings_tts_device_header">Glasovi v nizki kakovosti, vgrajeni v tvoj telefon.</string>
     <string name="settings_api_key_status_set">Gemini-ključ je nastavljen.</string>
-    <string name="settings_api_key_status_unset">Pridobi brezplačen API-ključ na aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">Izbirno — prilepi svoj ključ. Pridobi brezplačnega na aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Prilepi svoj Gemini API-ključ</string>
     <string name="settings_api_key_save">Shrani Gemini-ključ</string>
     <string name="settings_api_key_clear">Izbriši shranjeni Gemini-ključ</string>

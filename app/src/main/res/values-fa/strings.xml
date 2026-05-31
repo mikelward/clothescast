@@ -310,8 +310,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_api_key_gemini_header">صداهای باکیفیت از طریق سرورهای ClothesCast و Gemini.</string>
     <string name="settings_tts_device_header">صداهای کم‌کیفیت تعبیه‌شده در گوشی شما.</string>
     <string name="settings_api_key_status_set">یک کلید Gemini پیکربندی شده.</string>
-    <string name="settings_api_key_status_unset">یک کلید API رایگان از aistudio.google.com دریافت کنید</string>
-    <string name="settings_api_key_status_unset_shared">اختیاری — کلید خودتان را بچسبانید. یکی رایگان از aistudio.google.com بگیرید</string>
     <string name="settings_api_key_placeholder">کلید Gemini API خود را جای‌گذاری کنید</string>
     <string name="settings_api_key_save">ذخیره کلید Gemini</string>
     <string name="settings_api_key_clear">پاک کردن کلید ذخیره‌شده Gemini</string>

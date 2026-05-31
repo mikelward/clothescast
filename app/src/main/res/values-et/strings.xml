@@ -207,8 +207,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_api_key_gemini_header">Kõrgkvaliteetsed hääled ClothesCasti ja Gemini serverite kaudu.</string>
     <string name="settings_tts_device_header">Madala kvaliteediga hääled, mis on telefoni sisse ehitatud.</string>
     <string name="settings_api_key_status_set">Gemini võti on seadistatud.</string>
-    <string name="settings_api_key_status_unset">Hangi tasuta API-võti aadressilt aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">Valikuline — kleebi oma võti. Hangi tasuta aadressilt aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Kleebi oma Gemini API-võti</string>
     <string name="settings_api_key_save">Salvesta Gemini võti</string>
     <string name="settings_api_key_clear">Kustuta salvestatud Gemini võti</string>

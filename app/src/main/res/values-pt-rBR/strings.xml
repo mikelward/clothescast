@@ -268,8 +268,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_api_key_gemini_label">Gemini</string>
 
     <string name="settings_api_key_status_set">Uma chave Gemini está configurada.</string>
-    <string name="settings_api_key_status_unset">Nenhuma chave Gemini configurada. Obtenha uma em aistudio.google.com para usar vozes Gemini.</string>
-    <string name="settings_api_key_status_unset_shared">Opcional — cole sua própria chave. Obtenha uma grátis em aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Cole sua chave API Gemini</string>
     <string name="settings_api_key_save">Salvar chave Gemini</string>
     <string name="settings_api_key_clear">Apagar chave Gemini salva</string>

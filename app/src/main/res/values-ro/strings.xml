@@ -315,8 +315,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_api_key_gemini_header">Voci de calitate înaltă prin serverele ClothesCast și Gemini.</string>
     <string name="settings_tts_device_header">Voci de calitate scăzută integrate în telefonul tău.</string>
     <string name="settings_api_key_status_set">O cheie Gemini este configurată.</string>
-    <string name="settings_api_key_status_unset">Obține o cheie API gratuită la aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">Opțional — lipește-ți propria cheie. Obține una gratuit la aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Lipește cheia ta API Gemini</string>
     <string name="settings_api_key_save">Salvează cheia Gemini</string>
     <string name="settings_api_key_clear">Șterge cheia Gemini salvată</string>

@@ -259,8 +259,6 @@ label localizes.
     <string name="settings_api_key_gemini_label">Gemini</string>
 
     <string name="settings_api_key_status_set">已配置 Gemini 密钥。</string>
-    <string name="settings_api_key_status_unset">未配置 Gemini 密钥。可在 aistudio.google.com 获取一个，以使用 Gemini 语音。</string>
-    <string name="settings_api_key_status_unset_shared">可选 — 粘贴你自己的密钥。可在 aistudio.google.com 免费获取</string>
     <string name="settings_api_key_placeholder">粘贴你的 Gemini API 密钥</string>
     <string name="settings_api_key_save">保存 Gemini 密钥</string>
     <string name="settings_api_key_clear">清除已保存的 Gemini 密钥</string>

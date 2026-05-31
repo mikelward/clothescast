@@ -313,8 +313,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_api_key_gemini_header">Suara berkualiti tinggi melalui pelayan ClothesCast dan Gemini.</string>
     <string name="settings_tts_device_header">Suara berkualiti rendah yang terbina dalam telefon anda.</string>
     <string name="settings_api_key_status_set">Kunci Gemini telah dikonfigurasi.</string>
-    <string name="settings_api_key_status_unset">Dapatkan kunci API percuma di aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">Pilihan — tampal kunci anda sendiri. Dapatkan percuma di aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Tampal kunci API Gemini anda</string>
     <string name="settings_api_key_save">Simpan kunci Gemini</string>
     <string name="settings_api_key_clear">Kosongkan kunci Gemini yang tersimpan</string>

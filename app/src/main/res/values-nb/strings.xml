@@ -278,8 +278,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_api_key_gemini_header">Stemmer i høy kvalitet via ClothesCast- og Gemini-servere.</string>
     <string name="settings_tts_device_header">Stemmer i lav kvalitet, innebygd i telefonen din.</string>
     <string name="settings_api_key_status_set">En Gemini-nøkkel er satt opp.</string>
-    <string name="settings_api_key_status_unset">Ingen Gemini-nøkkel satt opp. Hent en på aistudio.google.com for å bruke Gemini-stemmer.</string>
-    <string name="settings_api_key_status_unset_shared">Valgfritt — lim inn din egen nøkkel. Hent en gratis på aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Lim inn Gemini API-nøkkel her</string>
     <string name="settings_api_key_save">Lagre Gemini-nøkkel</string>
     <string name="settings_api_key_clear">Slett lagret Gemini-nøkkel</string>

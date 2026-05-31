@@ -316,8 +316,6 @@ standard in Israeli digital communication.
     <string name="settings_api_key_gemini_header">קולות באיכות גבוהה דרך השרתים של ClothesCast ושל Gemini.</string>
     <string name="settings_tts_device_header">קולות באיכות נמוכה שמובנים בטלפון שלך.</string>
     <string name="settings_api_key_status_set">מפתח Gemini מוגדר.</string>
-    <string name="settings_api_key_status_unset">קבל/י מפתח API חינמי ב-aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">אופציונלי — הדבק/י מפתח משלך. קבל/י אחד בחינם ב-aistudio.google.com</string>
     <string name="settings_api_key_placeholder">הדבק/י את מפתח Gemini API שלך</string>
     <string name="settings_api_key_save">שמור/י מפתח Gemini</string>
     <string name="settings_api_key_clear">מחק/י מפתח Gemini שמור</string>

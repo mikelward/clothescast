@@ -262,7 +262,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_api_key_gemini_label">Gemini</string>
 
     <string name="settings_api_key_status_set">Ein Gemini-Schlüssel ist eingerichtet.</string>
-    <string name="settings_api_key_status_unset">Kein Gemini-Schlüssel eingerichtet. Hol dir einen unter aistudio.google.com, um Gemini-Stimmen zu nutzen.</string>
     <string name="settings_api_key_placeholder">Gemini-API-Schlüssel hier einfügen</string>
     <string name="settings_api_key_save">Gemini-Schlüssel speichern</string>
     <string name="settings_api_key_clear">Gespeicherten Gemini-Schlüssel löschen</string>

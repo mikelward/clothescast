@@ -295,8 +295,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_api_key_gemini_header">Augstas kvalitātes balsis caur ClothesCast un Gemini serveriem.</string>
     <string name="settings_tts_device_header">Zemas kvalitātes balsis, kas iebūvētas jūsu tālrunī.</string>
     <string name="settings_api_key_status_set">Gemini atslēga ir konfigurēta.</string>
-    <string name="settings_api_key_status_unset">Iegūsti bezmaksas API atslēgu vietnē aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">Neobligāti — ielīmē savu atslēgu. Iegūsti bezmaksas vietnē aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Ielīmē savu Gemini API atslēgu</string>
     <string name="settings_api_key_save">Saglabāt Gemini atslēgu</string>
     <string name="settings_api_key_clear">Dzēst saglabāto Gemini atslēgu</string>

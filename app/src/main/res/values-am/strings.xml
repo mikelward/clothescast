@@ -243,8 +243,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_api_key_gemini_header">በClothesCast እና Gemini አገልጋዮች በኩል ከፍተኛ ጥራት ያላቸው ድምፆች።</string>
     <string name="settings_tts_device_header">በስልክህ ውስጥ የተገነቡ ዝቅተኛ ጥራት ድምፆች።</string>
     <string name="settings_api_key_status_set">Gemini ቁልፍ ተዋቅሯል።</string>
-    <string name="settings_api_key_status_unset">ነፃ API key ያግኙ aistudio.google.com ላይ</string>
-    <string name="settings_api_key_status_unset_shared">አማራጭ — የራስዎን ቁልፍ ይለጥፉ። ነፃ ቁልፍ በ aistudio.google.com ያግኙ</string>
     <string name="settings_api_key_placeholder">Gemini API key ይለጥፉ</string>
     <string name="settings_api_key_save">Gemini ቁልፍ አስቀምጥ</string>
     <string name="settings_api_key_clear">የተቀመጠ Gemini ቁልፍ ሰርዝ</string>

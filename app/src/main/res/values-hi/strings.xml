@@ -248,8 +248,6 @@ Not overridden by design:
     <string name="settings_api_key_gemini_header">ClothesCast और Gemini सर्वर के माध्यम से उच्च-गुणवत्ता वाली आवाज़ें।</string>
     <string name="settings_tts_device_header">आपके फ़ोन में निर्मित निम्न-गुणवत्ता वाली आवाज़ें।</string>
     <string name="settings_api_key_status_set">Gemini कुंजी सेट है।</string>
-    <string name="settings_api_key_status_unset">aistudio.google.com पर मुफ़्त API कुंजी पाएँ</string>
-    <string name="settings_api_key_status_unset_shared">वैकल्पिक — अपनी कुंजी पेस्ट करें। aistudio.google.com पर मुफ़्त में पाएँ</string>
     <string name="settings_api_key_placeholder">अपनी Gemini API कुंजी चिपकाएँ</string>
     <string name="settings_api_key_save">Gemini कुंजी सेव करें</string>
     <string name="settings_api_key_clear">सेव की गई Gemini कुंजी हटाएँ</string>

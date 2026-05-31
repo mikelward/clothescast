@@ -264,8 +264,6 @@ the displayed label localizes.
     <string name="settings_api_key_gemini_label">Gemini</string>
 
     <string name="settings_api_key_status_set">Gemini キーが設定されています。</string>
-    <string name="settings_api_key_status_unset">Gemini キーが未設定です。aistudio.google.com で取得すると Gemini 音声を使用できます。</string>
-    <string name="settings_api_key_status_unset_shared">任意 — 自分のキーを貼り付けます。aistudio.google.com で無料で取得できます</string>
     <string name="settings_api_key_placeholder">Gemini API キーを貼り付け</string>
     <string name="settings_api_key_save">Gemini キーを保存</string>
     <string name="settings_api_key_clear">保存された Gemini キーを削除</string>

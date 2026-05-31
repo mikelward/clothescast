@@ -330,8 +330,6 @@ What is NOT overridden, by design:
     <string name="settings_api_key_gemini_header">Гласове с високо качество чрез сървърите на ClothesCast и Gemini.</string>
     <string name="settings_tts_device_header">Гласове с ниско качество, вградени в телефона ти.</string>
     <string name="settings_api_key_status_set">Конфигуриран е ключ за Gemini.</string>
-    <string name="settings_api_key_status_unset">Вземи безплатен API ключ от aistudio.google.com</string>
-    <string name="settings_api_key_status_unset_shared">По избор — постави свой ключ. Вземи безплатен от aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Постави своя API ключ за Gemini</string>
     <string name="settings_api_key_save">Запази ключа за Gemini</string>
     <string name="settings_api_key_clear">Изтрий запазения ключ за Gemini</string>

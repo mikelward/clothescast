@@ -319,8 +319,6 @@ only the displayed label localizes.
     <string name="settings_tts_device_header">Голоса низкого качества, встроенные в твой телефон.</string>
 
     <string name="settings_api_key_status_set">Ключ Gemini настроен.</string>
-    <string name="settings_api_key_status_unset">Ключ Gemini не настроен. Получи на aistudio.google.com, чтобы использовать голоса Gemini.</string>
-    <string name="settings_api_key_status_unset_shared">Необязательно — вставь свой ключ. Получи бесплатно на aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Вставь свой ключ API Gemini</string>
     <string name="settings_api_key_save">Сохранить ключ Gemini</string>
     <string name="settings_api_key_clear">Удалить сохранённый ключ Gemini</string>

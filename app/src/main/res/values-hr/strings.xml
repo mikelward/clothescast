@@ -238,8 +238,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_api_key_gemini_label">Gemini</string>
 
     <string name="settings_api_key_status_set">Gemini ključ je postavljen.</string>
-    <string name="settings_api_key_status_unset">Gemini ključ nije postavljen. Nabavi ga na aistudio.google.com za korištenje Gemini glasova.</string>
-    <string name="settings_api_key_status_unset_shared">Neobavezno — zalijepi vlastiti ključ. Nabavi ga besplatno na aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Zalijepi svoj Gemini API ključ</string>
     <string name="settings_api_key_save">Spremi Gemini ključ</string>
     <string name="settings_api_key_clear">Izbriši spremljeni Gemini ključ</string>

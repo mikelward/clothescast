@@ -80,9 +80,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -91,6 +94,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -1475,63 +1479,33 @@ internal fun MissingPeriodPlaceholder(
     } else {
         R.string.today_placeholder_tonight_title
     }
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+    // Matches InsightCard's shell: full-height back-chevron on the left edge,
+    // centered title, optional forward-chevron on the right edge — so swiping
+    // between an InsightCard and this placeholder doesn't shift the header.
+    InsightCardShell(
+        showChevronLeft = showChevronLeft,
+        showChevronRight = showChevronRight,
+        onChevronLeftTap = onChevronTap,
+        onChevronRightTap = onChevronRightTap,
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            // Matches InsightCard's three-zone header: back-chevron in the
-            // left slot, centred title, optional forward-chevron in the
-            // right slot. Both 28.dp slots stay reserved whether or not a
-            // chevron renders, so swiping between an InsightCard and this
-            // placeholder doesn't shift the header horizontally.
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(28.dp)) {
-                    if (showChevronLeft) {
-                        IconButton(
-                            onClick = onChevronTap,
-                            modifier = Modifier.size(28.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                                contentDescription = stringResource(R.string.today_back_to_primary),
-                            )
-                        }
-                    }
-                }
-                Row(
-                    modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = stringResource(titleRes),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                }
-                Box(modifier = Modifier.size(28.dp)) {
-                    if (showChevronRight && onChevronRightTap != null) {
-                        IconButton(
-                            onClick = onChevronRightTap,
-                            modifier = Modifier.size(28.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                contentDescription = stringResource(R.string.today_view_other_period),
-                            )
-                        }
-                    }
-                }
-            }
             Text(
-                text = stringResource(
-                    R.string.today_placeholder_body,
-                    readyAtText,
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                text = stringResource(titleRes),
+                style = MaterialTheme.typography.titleMedium,
             )
         }
+        Text(
+            text = stringResource(
+                R.string.today_placeholder_body,
+                readyAtText,
+            ),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
@@ -2307,6 +2281,114 @@ private fun bottomLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom)
     OutfitSuggestion.Bottom.LONG_PANTS -> R.string.today_outfit_bottom_long_pants
 }
 
+/**
+ * Shared scaffold for the swipeable pager cards — the per-period [InsightCard],
+ * the [MissingPeriodPlaceholder], and the 7-day overview header. Lays out a
+ * full-width [Card] with the caller's [content] (centered header label + prose)
+ * in a padded column, optionally flanked by full-height chevron buttons hugging
+ * the card's left / right edges.
+ *
+ * The chevrons are edge-to-edge tappable strips spanning the card's full height
+ * rather than icons docked at the top of the header row, so the back / forward
+ * affordance reads as a button the user can hit anywhere down the card's side.
+ * They carry no fill of their own — just the press ripple — so the card keeps a
+ * single surface color. When a chevron is present the column drops its padding
+ * on that edge: the chevron strip already supplies the gutter, so the prose
+ * doesn't double up the inset.
+ *
+ * With no chevrons (the standalone non-pager card) the layout collapses to a
+ * plain 20.dp-padded column, byte-identical to the card before chevrons existed.
+ */
+@Composable
+internal fun InsightCardShell(
+    showChevronLeft: Boolean,
+    showChevronRight: Boolean,
+    onChevronLeftTap: (() -> Unit)?,
+    onChevronRightTap: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    // AutoMirrored chevron variants flip in RTL automatically.
+    val renderLeft = showChevronLeft && onChevronLeftTap != null
+    val renderRight = showChevronRight && onChevronRightTap != null
+    // Whenever any chevron shows, both edges reserve an equal-width strip — a
+    // real chevron on one side, an inert spacer on the other for single-chevron
+    // pages — so the weighted column always sits between symmetric flanks and
+    // its centered header stays centered against the *full card width*. Without
+    // this, page 0 (right chevron only) and the 7-day page (left only) would
+    // center their title within the off-center remaining width, jittering the
+    // header sideways as the user swipes. With no chevron at all the strips
+    // vanish and the column falls back to plain 20.dp padding.
+    val flank = renderLeft || renderRight
+    Card(modifier = modifier.fillMaxWidth()) {
+        // IntrinsicSize.Min lets the edge buttons stretch to the column's
+        // height via fillMaxHeight without forcing the card to a fixed size.
+        Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+            if (flank) {
+                if (renderLeft) {
+                    EdgeChevron(
+                        icon = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = stringResource(R.string.today_back_to_primary),
+                        onClick = { onChevronLeftTap?.invoke() },
+                    )
+                } else {
+                    Spacer(modifier = Modifier.width(InsightCardChevronWidth))
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(
+                        start = if (flank) 0.dp else 20.dp,
+                        end = if (flank) 0.dp else 20.dp,
+                        top = 20.dp,
+                        bottom = 20.dp,
+                    ),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                content = content,
+            )
+            if (flank) {
+                if (renderRight) {
+                    EdgeChevron(
+                        icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = stringResource(R.string.today_view_other_period),
+                        onClick = { onChevronRightTap?.invoke() },
+                    )
+                } else {
+                    Spacer(modifier = Modifier.width(InsightCardChevronWidth))
+                }
+            }
+        }
+    }
+}
+
+/** Width of an [InsightCardShell] edge strip — a chevron button or its inert
+ *  counterweight spacer. Sized so the 24.dp chevron icon centers with a 4.dp
+ *  gutter each side, keeping the prose inset in check (32.dp from the card edge). */
+private val InsightCardChevronWidth = 32.dp
+
+/**
+ * A full-height tappable strip docked to a card edge, with the chevron [icon]
+ * vertically centered in a fixed [InsightCardChevronWidth] so its inert spacer
+ * counterweight on the opposite edge stays exactly the same width.
+ */
+@Composable
+private fun EdgeChevron(
+    icon: ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .width(InsightCardChevronWidth)
+            .clickable(onClick = onClick, role = Role.Button),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(imageVector = icon, contentDescription = contentDescription)
+    }
+}
+
 @Composable
 internal fun InsightCard(
     insight: Insight,
@@ -2413,102 +2495,72 @@ internal fun InsightCard(
     // nothing useful — we still have coords, so the maps link is worth keeping.
     val locationLabel = shortLocationLabel(location?.displayName)
         ?: location?.let { stringResource(R.string.today_location_unknown) }
-    val renderLeftChevron = showChevronLeft && onChevronTap != null
+    // The left chevron always routes through onChevronTap; the right chevron
+    // prefers onChevronRightTap when supplied (page 1 routes left / right to
+    // different destinations) and otherwise falls back to onChevronTap.
     val rightChevronAction = onChevronRightTap ?: onChevronTap
-    val renderRightChevron = showChevronRight && rightChevronAction != null
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+    InsightCardShell(
+        showChevronLeft = showChevronLeft,
+        showChevronRight = showChevronRight,
+        onChevronLeftTap = onChevronTap,
+        onChevronRightTap = rightChevronAction,
+    ) {
+        // Centered header: period label + optional location, in the same
+        // horizontal position whether or not a chevron is currently rendered.
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            // Three-zone header: 28.dp slots are reserved on both edges so
-            // the period label sits in the same horizontal position whether
-            // or not a chevron is currently rendered, and so the back/forward
-            // affordances land on opposite edges as the user swipes between
-            // pages. AutoMirrored chevron variants flip in RTL automatically.
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(28.dp)) {
-                    if (renderLeftChevron) {
-                        IconButton(
-                            onClick = { onChevronTap?.invoke() },
-                            modifier = Modifier.size(28.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                                contentDescription = stringResource(R.string.today_back_to_primary),
-                            )
-                        }
-                    }
-                }
-                Row(
-                    modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = periodLabel,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = if (onLongPressDate != null) {
-                            Modifier.pointerInput(onLongPressDate) {
-                                detectTapGestures(onLongPress = { onLongPressDate() })
-                            }
-                        } else {
-                            Modifier
-                        },
-                    )
-                    if (location != null && locationLabel != null) {
-                        Text(
-                            text = " · ",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = locationLabel,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary,
-                            // Tapping the city name opens the Location settings
-                            // page — the address detail + Map button live there.
-                            // Falls back to inert text when no nav callback is
-                            // wired (previews / tests).
-                            modifier = if (onNavigateToLocation != null) {
-                                Modifier.clickable { onNavigateToLocation() }
-                            } else {
-                                Modifier
-                            },
-                        )
-                    }
-                }
-                Box(modifier = Modifier.size(28.dp)) {
-                    if (renderRightChevron) {
-                        IconButton(
-                            onClick = { rightChevronAction?.invoke() },
-                            modifier = Modifier.size(28.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                contentDescription = stringResource(R.string.today_view_other_period),
-                            )
-                        }
-                    }
-                }
-            }
             Text(
-                // VISUAL surface: under the default Speech-only period preamble
-                // the card opens straight on the measurement ("14° to 20°. …"),
-                // dropping the redundant "Today, it will be …" lead the card's
-                // own period header already supplies. The user's Lead-in setting
-                // can override (Always shows the lead here too; Never drops it
-                // from the spoken briefing as well).
-                text = formatter.format(insight.summary, isFutureDay = isFutureDay),
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = if (onNavigateToFormat != null) {
-                    Modifier.clickable { onNavigateToFormat() }
+                text = periodLabel,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = if (onLongPressDate != null) {
+                    Modifier.pointerInput(onLongPressDate) {
+                        detectTapGestures(onLongPress = { onLongPressDate() })
+                    }
                 } else {
                     Modifier
                 },
             )
+            if (location != null && locationLabel != null) {
+                Text(
+                    text = " · ",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = locationLabel,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    // Tapping the city name opens the Location settings
+                    // page — the address detail + Map button live there.
+                    // Falls back to inert text when no nav callback is
+                    // wired (previews / tests).
+                    modifier = if (onNavigateToLocation != null) {
+                        Modifier.clickable { onNavigateToLocation() }
+                    } else {
+                        Modifier
+                    },
+                )
+            }
         }
+        Text(
+            // VISUAL surface: under the default Speech-only period preamble
+            // the card opens straight on the measurement ("14° to 20°. …"),
+            // dropping the redundant "Today, it will be …" lead the card's
+            // own period header already supplies. The user's Lead-in setting
+            // can override (Always shows the lead here too; Never drops it
+            // from the spoken briefing as well).
+            text = formatter.format(insight.summary, isFutureDay = isFutureDay),
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = if (onNavigateToFormat != null) {
+                Modifier.clickable { onNavigateToFormat() }
+            } else {
+                Modifier
+            },
+        )
     }
 }
 

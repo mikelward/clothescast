@@ -251,6 +251,14 @@ internal fun VoiceContent(
                         ) {
                             preview(selected, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
                         }
+                        // Debug builds: surface the Firebase App Check
+                        // debug token with a copy button so testers can
+                        // register it in Firebase Console without
+                        // grepping Logcat. Empty stub in release builds
+                        // and on CI debug builds; hidden when no token
+                        // is baked in. See the source-set split next
+                        // to AppCheckProviderFactoryProvider.
+                        AppCheckDebugTokenRow()
                     }
                     TtsEngine.DEVICE -> {
                         Text(

@@ -513,13 +513,17 @@ dependencies {
     // App Check (Play Integrity in release, Debug provider in debug) +
     // anonymous Auth: the TTS proxy gates on a valid App Check token and
     // counts usage per anonymous Firebase Authentication uid (verified
-    // server-side, so the client can't spoof its quota bucket). Both
-    // no-op on builds assembled without google-services.json — FirebaseApp
-    // doesn't init, the planner falls back to BYOK semantics, and the rest
-    // of the app continues to assemble and run.
+    // server-side, so the client can't spoof its quota bucket). Installations
+    // stays for the migration window — the client sends the legacy FID
+    // alongside the ID token so a not-yet-redeployed function keeps working;
+    // it's dropped once old app versions age out. All no-op on builds
+    // assembled without google-services.json — FirebaseApp doesn't init, the
+    // planner falls back to BYOK semantics, and the rest of the app
+    // continues to assemble and run.
     implementation(libs.firebase.appcheck.playintegrity)
     debugImplementation(libs.firebase.appcheck.debug)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.installations)
     // `.await()` on the App Check token / anonymous sign-in / ID token Tasks.
     // Production (not test-only) because the planner runs in the main coroutine flow.
     implementation(libs.kotlinx.coroutines.play.services)

@@ -145,6 +145,7 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity" }
 firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+firebase-installations = { group = "com.google.firebase", name = "firebase-installations" }
 
 hivemq-mqtt-client = { group = "com.hivemq", name = "hivemq-mqtt-client", version.ref = "hivemqMqttClient" }
 

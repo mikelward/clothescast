@@ -260,8 +260,13 @@ Online TTS (the Gemini voice) has two paths.
     proxy verifies to read the identifier — the client cannot forge or
     swap it), a Firebase App Check attestation token (proves the request
     came from a genuine install — verified in-memory and discarded), and
-    the model name. No coordinates, calendar metadata as fields, user
-    account, advertising ID, or hardware / device identifiers are added.
+    the model name. During the current rollout the app *also* sends a
+    Firebase Installation ID for backward compatibility (so older proxy
+    versions still recognize the install); it is likewise an anonymous,
+    random identifier with no personal information, and is dropped once
+    the rollout completes. No coordinates, calendar metadata as fields,
+    user account, advertising ID, or hardware / device identifiers are
+    added.
   - **Stored:** a Firestore document at `quota/<your anonymous ID>`
     with a first-use timestamp, a successful-call counter, and a
     most-recent-use timestamp, capped at 5 successful clips per UTC day.
@@ -291,7 +296,7 @@ policies apply to anything they receive:
 | [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate (forecast); your typed search text when you use a location picker (first-run onboarding and Settings) | Always for forecast; only when you search for a place name |
 | Google's geocoding service (via Android's [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder) on Play Services devices), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate | Always on Play Services devices (city / country lookup for the Today header); skipped on AOSP devices |
 | Google Firebase Authentication | An App Check attestation, to mint and refresh an anonymous identifier (no name, email, or password) | First use of the shared-key path, then periodic token refreshes |
-| ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, an anonymous app identifier (as a signed Firebase ID token), a Firebase App Check token, and the Gemini model name | Online TTS with the shared key (default) |
+| ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, an anonymous app identifier (as a signed Firebase ID token; plus a Firebase Installation ID during the current rollout), a Firebase App Check token, and the Gemini model name | Online TTS with the shared key (default) |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence (forwarded by the proxy, or sent directly when you use your own key) | Online TTS, either path |
 | Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence, as a retained MQTT message | Only if you opt in to the Smart Home bridge and configure a broker |
 | Analytics / crash-reporting service (e.g. Firebase Crashlytics + Google Analytics for Firebase) | Aggregate usage events and crash diagnostics — see "Analytics and crash reporting" below for what's in and out | Possibly always, in all builds |
@@ -458,6 +463,12 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-05-31** — Transitional note for the identifier change below:
+  during the staged rollout the app sends *both* the new anonymous
+  Firebase Authentication identifier and the older Firebase Installation
+  ID, so older versions of the proxy keep working while clients update.
+  Both are anonymous, random identifiers with no personal information.
+  The Installation ID is dropped once the rollout completes.
 - **2026-05-31** — Hardened the shared-key TTS identifier. The free
   online-TTS path now identifies each install by an anonymous Firebase
   Authentication identifier, verified on the server, instead of the

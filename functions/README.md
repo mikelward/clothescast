@@ -52,6 +52,10 @@ npm run deploy
 Each install gets 5 successful syntheses per UTC calendar day, keyed on
 the anonymous Firebase Auth `uid` from the verified ID token (not a
 client-supplied header — a modded client can't pick its own bucket).
+During the client rollout, requests without a Bearer token fall back to
+the legacy client-chosen `X-Install-Id` header so pre-switch app
+versions keep working; that fallback is spoofable and is removed once
+old app versions age out (see `docs/gemini-tts-proxy.md` → rollout).
 The reservation is transactional:
 
 1. Pre-flight transaction reads `quota/<uid>`; if today's

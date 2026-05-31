@@ -27,7 +27,7 @@ import app.clothescast.R
  * page — adjust the morning time, add an evening cast, or turn delivery off.
  * The card routes to Schedule settings, which requests the notification
  * permission just-in-time when the user flips a slot on. Sits between the
- * clothes promo and the celebration-themes promo.
+ * Gemini-voices promo and the celebration-themes promo.
  *
  * Visibility is decided upstream in [TodayViewModel] via
  * [TodayState.schedulePromoCardVisible] — shown until the user acts on it,

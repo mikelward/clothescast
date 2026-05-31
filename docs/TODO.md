@@ -243,10 +243,12 @@ Open work:
 ## Deferred to v2 (out of scope for v1)
 
 - iOS port (needs a Mac + KMP-promotion of the core modules).
-- Enforce shared-key TTS trial limit (30 calls or 30 days from first
-  use, whichever first). The Cloud Function (`functions/src/index.ts`)
-  counts already; flip on 429 + `X-Trial-Remaining` and wire the
-  Settings nudge / `SharedTrialExhaustedException` in
-  `core/data/.../tts/GeminiTtsClient.kt`.
+- Settings nudge for `GeminiTtsDailyQuotaExhaustedException`. The
+  proxy now caps the shared-key path at 5 successful syntheses per
+  UTC day and the Voice settings preview Toast shows a friendly
+  message, but the morning worker just degrades silently to device
+  TTS — a Today / Settings banner pointing at the BYOK flow would
+  let users notice and resolve the cap without going hunting in the
+  logs.
 - Google Home / alarm-clock-app integration.
 - Play Store submission. Sideload + FAD only for v1.

@@ -25,6 +25,13 @@ const GEMINI_API_VERSION = "v1beta";
 
 const INSTALLS_COLLECTION = "installs";
 
+// Per-install daily quota for the shared-key path. Counted by UTC calendar
+// day so the reset moment is global and unambiguous; the Android client's
+// nudge copy ("resets at midnight UTC") matches. Bump when we have a clearer
+// signal of real-world legitimate use — five successful syntheses covers
+// two morning + two evening insights + one preview tap per day.
+const DAILY_LIMIT = 5;
+
 export const tts = onRequest(
   {
     secrets: [GEMINI_API_KEY],
@@ -68,14 +75,33 @@ export const tts = onRequest(
       return;
     }
 
-    // Count usage (v1: count only, do not enforce). The enforcement step
-    // — return 429 when count >= 30 or now - firstUseAt >= 30 days, and
-    // emit `X-Trial-Remaining` on success — lands as a follow-up; see
-    // docs/TODO.md "Enforce shared-key TTS trial limit".
-    //
-    // We do the bookkeeping AFTER a successful Gemini call so failed
-    // attempts don't inflate the count (matches the eventual enforcement
-    // semantics where the trial measures successful syntheses).
+    // Reserve a quota slot transactionally before calling Gemini. A failed
+    // upstream call rolls the slot back below so a Gemini hiccup doesn't
+    // burn a user's daily allowance. Firestore outages fail open
+    // (`reservation.reserved === false` with a logged warning) — better to
+    // serve audio than to block on our own bookkeeping when the upstream
+    // path is the expensive bit.
+    const now = new Date();
+    const today = utcDayKey(now);
+    let reservation: Reservation;
+    try {
+      reservation = await reserveDailySlot(installId, today);
+    } catch (err) {
+      logger.warn("Quota reservation failed; failing open", {
+        code: errorCode(err),
+      });
+      reservation = { reserved: false, remaining: null };
+    }
+    if (reservation.exhausted) {
+      res.setHeader("X-Daily-Quota-Limit", String(DAILY_LIMIT));
+      res.setHeader("X-Daily-Quota-Remaining", "0");
+      res.status(429).json({
+        error: "daily_quota_exhausted",
+        limit: DAILY_LIMIT,
+        resetAtUtc: nextUtcMidnightIso(now),
+      });
+      return;
+    }
 
     const upstreamUrl =
       `https://${GEMINI_HOST}/${GEMINI_API_VERSION}` +
@@ -93,6 +119,11 @@ export const tts = onRequest(
       });
     } catch (err) {
       logger.error("Upstream Gemini fetch failed", { code: errorCode(err) });
+      releaseDailySlot(installId, today).catch((rbErr) => {
+        logger.warn("Quota rollback after fetch failure failed", {
+          code: errorCode(rbErr),
+        });
+      });
       res.status(502).json({ error: "upstream_unreachable" });
       return;
     }
@@ -100,18 +131,22 @@ export const tts = onRequest(
     const upstreamBody = await upstream.arrayBuffer();
 
     if (upstream.ok) {
-      // Fire-and-forget the count update so a Firestore hiccup doesn't
-      // stall the audio response. We accept the small slop this
-      // introduces (a missed write means an undercount, never a charged
-      // user lockout); when enforcement lands the decision must be
-      // synchronous and replace this block.
-      recordCall(installId).catch((err) => {
-        logger.warn("Firestore count update failed", { code: errorCode(err) });
-      });
+      if (reservation.reserved) {
+        res.setHeader("X-Daily-Quota-Limit", String(DAILY_LIMIT));
+        res.setHeader("X-Daily-Quota-Remaining", String(reservation.remaining));
+      }
     } else {
       logger.warn("Gemini returned non-success", {
         status: upstream.status,
         bodyExcerpt: excerpt(upstreamBody),
+      });
+      // Only successful syntheses should burn quota. Roll back the
+      // reservation; clients can retry within the same day without
+      // penalty.
+      releaseDailySlot(installId, today).catch((err) => {
+        logger.warn("Quota rollback after upstream non-success failed", {
+          code: errorCode(err),
+        });
       });
     }
 
@@ -124,24 +159,101 @@ export const tts = onRequest(
   },
 );
 
-async function recordCall(installId: string): Promise<void> {
+interface Reservation {
+  /** True when we successfully reserved a slot (and so should rollback on failure). */
+  reserved: boolean;
+  /** True when the install already exhausted today's allowance. */
+  exhausted?: boolean;
+  /** Remaining slots for today after this call, or null when we failed open. */
+  remaining: number | null;
+}
+
+async function reserveDailySlot(
+  installId: string,
+  today: string,
+): Promise<Reservation> {
   const docRef = getFirestore().collection(INSTALLS_COLLECTION).doc(installId);
-  await getFirestore().runTransaction(async (tx) => {
+  return await getFirestore().runTransaction(async (tx) => {
     const snap = await tx.get(docRef);
     const now = Timestamp.now();
+
+    const data = snap.exists ? (snap.data() ?? {}) : {};
+    const sameDay = data.dayKey === today;
+    const dayCount = sameDay && typeof data.dayCount === "number"
+      ? data.dayCount
+      : 0;
+
+    if (dayCount >= DAILY_LIMIT) {
+      return { reserved: false, exhausted: true, remaining: 0 };
+    }
+
+    const nextDayCount = dayCount + 1;
+    const remaining = DAILY_LIMIT - nextDayCount;
+
     if (snap.exists) {
       tx.update(docRef, {
         count: FieldValue.increment(1),
         lastUseAt: now,
+        dayKey: today,
+        dayCount: nextDayCount,
       });
     } else {
       tx.set(docRef, {
         firstUseAt: now,
-        count: 1,
         lastUseAt: now,
+        count: 1,
+        dayKey: today,
+        dayCount: 1,
       });
     }
+
+    return { reserved: true, remaining };
   });
+}
+
+async function releaseDailySlot(
+  installId: string,
+  today: string,
+): Promise<void> {
+  const docRef = getFirestore().collection(INSTALLS_COLLECTION).doc(installId);
+  await getFirestore().runTransaction(async (tx) => {
+    const snap = await tx.get(docRef);
+    if (!snap.exists) return;
+    const data = snap.data() ?? {};
+    // Day rolled between reserve and rollback: another day's counter would
+    // be wrong to decrement. Lifetime `count` likewise stays as-is — at
+    // most one extra count survives across the day boundary, which is
+    // tolerable.
+    if (data.dayKey !== today) return;
+    const dayCount = typeof data.dayCount === "number" ? data.dayCount : 0;
+    if (dayCount <= 0) return;
+    tx.update(docRef, {
+      count: FieldValue.increment(-1),
+      dayCount: dayCount - 1,
+    });
+  });
+}
+
+function utcDayKey(date: Date): string {
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(date.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function nextUtcMidnightIso(date: Date): string {
+  const next = new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate() + 1,
+      0,
+      0,
+      0,
+      0,
+    ),
+  );
+  return next.toISOString();
 }
 
 function headerValue(raw: unknown): string | null {

@@ -131,6 +131,25 @@ class DiagLogTest {
     }
 
     @Test
+    fun `compactStackTraceString summarises dropped frames when asked`() {
+        // The crash-file path (writeCrashLog) opts into the omitted-count line
+        // so a reader can tell the deep tail was elided, not absent — while the
+        // snapshot path keeps the default silent truncation above.
+        val t = makeWithStackDepth(10)
+        val s = DiagLog.compactStackTraceString(t, maxFrames = 3, omittedSummary = true)
+        s.lines().count { it.startsWith("\tat ") } shouldBe 3
+        s shouldContain "\t... 7 more"
+    }
+
+    @Test
+    fun `compactStackTraceString omits the summary when frames fit under the cap`() {
+        val t = makeWithStackDepth(2)
+        val s = DiagLog.compactStackTraceString(t, maxFrames = 5, omittedSummary = true)
+        s.lines().count { it.startsWith("\tat ") } shouldBe 2
+        s shouldNotContain "more"
+    }
+
+    @Test
     fun `compactStackTraceString preserves the cause chain with a 'Caused by' prefix`() {
         val cause = RuntimeException("inner")
         val outer = IllegalStateException("outer", cause)

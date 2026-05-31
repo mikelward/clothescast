@@ -457,8 +457,6 @@ displayed label localizes.
     <string name="settings_tts_device_voice_currently_loading">Yükleniyor…</string>
     <string name="settings_tts_device_voice_network">Ağ</string>
     <string name="settings_tts_device_voice_offline">Çevrimdışı</string>
-    <string name="settings_tts_install_google_hint">Daha kaliteli sesler için Google Metin Okuma motorunu yükleyin.</string>
-    <string name="settings_tts_install_google_button">Google TTS\'yi yükle</string>
 
     <string name="today_failed_no_location">Konumunuz belirlenemedi. Kalıcı konum iznini verin veya ayarlardan bir şehir belirleyin.</string>
     <string name="today_location_required_title">Konumunuzu ayarlayın</string>

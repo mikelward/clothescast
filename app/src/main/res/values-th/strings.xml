@@ -405,8 +405,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_device_voice_currently_loading">กำลังโหลด…</string>
     <string name="settings_tts_device_voice_network">เครือข่าย</string>
     <string name="settings_tts_device_voice_offline">ออฟไลน์</string>
-    <string name="settings_tts_install_google_hint">ติดตั้งเครื่องมือแปลงข้อความเป็นเสียงของ Google เพื่อรับเสียงคุณภาพสูงขึ้น</string>
-    <string name="settings_tts_install_google_button">ติดตั้ง Google TTS</string>
     <string name="settings_tts_voice_locale_description">ตั้งค่าสำเนียงของเสียงพูด ไม่เปลี่ยนข้อความที่แสดง</string>
     <string name="settings_tts_test">ทดสอบเสียง</string>
     <string name="settings_tts_test_in_flight">กำลังทดสอบ — โปรดรอ…</string>

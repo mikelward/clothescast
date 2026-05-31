@@ -137,9 +137,6 @@ internal fun SpeechSetupContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                if (!rememberIsGoogleTtsInstalled()) {
-                    InstallGoogleTtsHint()
-                }
             }
         }
         Button(

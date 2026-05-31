@@ -400,8 +400,6 @@ What is NOT overridden, by design:
     <string name="settings_tts_device_voice_currently_loading">Зарежда се…</string>
     <string name="settings_tts_device_voice_network">Мрежа</string>
     <string name="settings_tts_device_voice_offline">Офлайн</string>
-    <string name="settings_tts_install_google_hint">Инсталирай гласовия синтезатор на Google за гласове с по-високо качество.</string>
-    <string name="settings_tts_install_google_button">Инсталирай Google TTS</string>
 
     <!-- TTS style picker. -->
     <string name="settings_tts_style_label">Стил</string>

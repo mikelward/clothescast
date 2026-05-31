@@ -329,8 +329,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_device_voice_currently_loading">እየጫነ ነው…</string>
     <string name="settings_tts_device_voice_network">ኔትወርክ</string>
     <string name="settings_tts_device_voice_offline">Offline</string>
-    <string name="settings_tts_install_google_hint">ከፍተኛ ጥራት ያላቸው ድምፆች ለማግኘት የ Google ጽሑፍ-ወደ-ንግግር ሞተር ይጫኑ።</string>
-    <string name="settings_tts_install_google_button">Google TTS ጫን</string>
     <string name="settings_tts_test">ድምፅ ሙከራ</string>
     <string name="settings_tts_test_in_flight">እየሞከረ ነው — እባክዎ ይጠብቁ…</string>
 

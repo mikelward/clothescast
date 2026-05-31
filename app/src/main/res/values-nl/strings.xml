@@ -501,8 +501,6 @@ the displayed label localizes.
     <string name="settings_tts_device_voice_currently_loading">Wordt geladen…</string>
     <string name="settings_tts_device_voice_network">Netwerk</string>
     <string name="settings_tts_device_voice_offline">Offline</string>
-    <string name="settings_tts_install_google_hint">Installeer Google\'s tekst-naar-spraak-engine voor betere stemmen.</string>
-    <string name="settings_tts_install_google_button">Google TTS installeren</string>
 
     <string name="today_failed_no_location">Je locatie kon niet worden bepaald. Sta permanente locatietoegang toe of stel een stad in via de instellingen.</string>
     <string name="today_location_required_title">Stel je locatie in</string>

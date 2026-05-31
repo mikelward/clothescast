@@ -145,8 +145,6 @@ only the displayed label localizes.
     <string name="settings_tts_device_voice_currently_loading">Загрузка…</string>
     <string name="settings_tts_device_voice_network">Сеть</string>
     <string name="settings_tts_device_voice_offline">Офлайн</string>
-    <string name="settings_tts_install_google_hint">Установи движок Google для синтеза речи, чтобы получить голоса более высокого качества.</string>
-    <string name="settings_tts_install_google_button">Установить Google TTS</string>
 
     <!-- TTS style picker. -->
     <string name="settings_tts_style_label">Стиль</string>

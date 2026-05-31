@@ -261,8 +261,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_tts_device_voice_currently_loading">Učitavanje…</string>
     <string name="settings_tts_device_voice_network">Mreža</string>
     <string name="settings_tts_device_voice_offline">Van mreže</string>
-    <string name="settings_tts_install_google_hint">Instaliraj Google TTS za glasove višeg kvaliteta.</string>
-    <string name="settings_tts_install_google_button">Instaliraj Google TTS</string>
     <string name="settings_tts_test">Testiraj glas</string>
     <string name="settings_tts_test_in_flight">Testiranje — sačekaj…</string>
 

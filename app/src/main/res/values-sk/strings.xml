@@ -242,8 +242,6 @@ What is NOT overridden, by design:
     <string name="settings_tts_device_voice_currently_loading">Načítavam…</string>
     <string name="settings_tts_device_voice_network">Sieť</string>
     <string name="settings_tts_device_voice_offline">Offline</string>
-    <string name="settings_tts_install_google_hint">Nainštaluj Google hlasový engine pre kvalitnejšie hlasy.</string>
-    <string name="settings_tts_install_google_button">Nainštalovať Google TTS</string>
 
     <!-- TTS style picker. -->
     <string name="settings_tts_style_label">Štýl</string>

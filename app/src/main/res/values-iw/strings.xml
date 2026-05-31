@@ -402,8 +402,6 @@ standard in Israeli digital communication.
     <string name="settings_tts_device_voice_currently_loading">טוען/ת…</string>
     <string name="settings_tts_device_voice_network">רשת</string>
     <string name="settings_tts_device_voice_offline">ללא אינטרנט</string>
-    <string name="settings_tts_install_google_hint">התקן/י את מנוע הטקסט-לדיבור של Google לקולות איכותיים יותר.</string>
-    <string name="settings_tts_install_google_button">התקן/י Google TTS</string>
     <string name="settings_tts_test">בדוק/י קול</string>
     <string name="settings_tts_test_in_flight">בודק/ת — אנא המתן/י…</string>
 

@@ -405,8 +405,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_tts_device_voice_currently_loading">Se încarcă…</string>
     <string name="settings_tts_device_voice_network">Rețea</string>
     <string name="settings_tts_device_voice_offline">Offline</string>
-    <string name="settings_tts_install_google_hint">Instalează motorul text-to-speech Google pentru voci de calitate mai bună.</string>
-    <string name="settings_tts_install_google_button">Instalează Google TTS</string>
     <string name="settings_tts_voice_locale_description">Setează accentul vocii vorbite. Nu modifică textul afișat.</string>
     <string name="settings_tts_test">Testează vocea</string>
     <string name="settings_tts_test_in_flight">Se testează — așteaptă…</string>

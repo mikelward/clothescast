@@ -396,8 +396,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_tts_device_voice_currently_loading">در حال بارگذاری…</string>
     <string name="settings_tts_device_voice_network">شبکه</string>
     <string name="settings_tts_device_voice_offline">آفلاین</string>
-    <string name="settings_tts_install_google_hint">برای صداهای باکیفیت‌تر موتور متن به گفتار Google را نصب کنید.</string>
-    <string name="settings_tts_install_google_button">نصب Google TTS</string>
     <string name="settings_tts_test">آزمایش صدا</string>
     <string name="settings_tts_test_in_flight">در حال آزمایش — لطفاً صبر کنید…</string>
 

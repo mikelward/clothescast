@@ -458,8 +458,6 @@ displayed label localizes.
     <string name="settings_tts_device_voice_currently_loading">Ladataan…</string>
     <string name="settings_tts_device_voice_network">Verkko</string>
     <string name="settings_tts_device_voice_offline">Offline</string>
-    <string name="settings_tts_install_google_hint">Asenna Googlen tekstistä puheeksi -moottori parempilaatuisia ääniä varten.</string>
-    <string name="settings_tts_install_google_button">Asenna Google TTS</string>
 
     <string name="today_failed_no_location">Sijaintiasi ei voitu määrittää. Myönnä jatkuva sijaintilupa tai aseta kaupunki asetuksissa.</string>
     <string name="today_location_required_title">Aseta sijaintisi</string>

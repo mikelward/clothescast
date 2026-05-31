@@ -129,10 +129,10 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!--
     Voice screen — engine picker (Device / Gemini), voice + language
-    sub-pickers, device-voice picker, install-Google-TTS hint, test-voice
-    button. Tu-form imperatives ("Πάτησε", "Δοκίμασε"). The "API key"
-    loanword stays unchanged — modern Greek tech vocab keeps the Latin
-    abbreviation, the same way it does for "URL", "JSON", "TTS".
+    sub-pickers, device-voice picker, test-voice button. Tu-form
+    imperatives ("Πάτησε", "Δοκίμασε"). The "API key" loanword stays
+    unchanged — modern Greek tech vocab keeps the Latin abbreviation,
+    the same way it does for "URL", "JSON", "TTS".
     -->
     <string name="settings_tts_engine_title">Μηχανή φωνής</string>
     <string name="settings_tts_engine_device">Συσκευή (offline, δωρεάν)</string>
@@ -143,17 +143,13 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_voice_locale_description">Ορίζει την προφορά της φωνής εκφώνησης. Δεν αλλάζει το εμφανιζόμενο κείμενο.</string>
     <string name="settings_tts_voice_locale_system">Ακολούθησε τη ρύθμιση γλώσσας</string>
 
-    <!-- Device-voice sub-picker (Android system TTS voices) and the
-         inline Google-TTS install hint shown when no Google network
-         voice is available. -->
+    <!-- Device-voice sub-picker (Android system TTS voices). -->
     <string name="settings_tts_device_voice_label">Φωνή συσκευής</string>
     <string name="settings_tts_device_voice_auto">Αυτόματα (καλύτερη για την προφορά)</string>
     <string name="settings_tts_device_voice_currently">Τρέχουσα: %1$s</string>
     <string name="settings_tts_device_voice_currently_loading">Φόρτωση…</string>
     <string name="settings_tts_device_voice_network">Δικτυακή</string>
     <string name="settings_tts_device_voice_offline">Εκτός σύνδεσης</string>
-    <string name="settings_tts_install_google_hint">Εγκατέστησε τη μηχανή κειμένου σε ομιλία της Google για φωνές υψηλότερης ποιότητας.</string>
-    <string name="settings_tts_install_google_button">Εγκατάσταση Google TTS</string>
 
     <string name="settings_tts_test">Δοκιμή φωνής</string>
     <string name="settings_tts_test_in_flight">Δοκιμή — περίμενε…</string>

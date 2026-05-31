@@ -503,8 +503,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_tts_device_voice_currently_loading">Učitavanje…</string>
     <string name="settings_tts_device_voice_network">Mreža</string>
     <string name="settings_tts_device_voice_offline">Izvan mreže</string>
-    <string name="settings_tts_install_google_hint">Instaliraj Googleov engine za sintezu govora za glasove više kvalitete.</string>
-    <string name="settings_tts_install_google_button">Instaliraj Google TTS</string>
 
     <string name="settings_tts_voice_locale_am_et">Amharski (Etiopija)</string>
     <string name="settings_tts_voice_locale_da_dk">Danski (Danska)</string>

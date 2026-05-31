@@ -420,8 +420,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_tts_device_voice_currently_loading">Nalaganje…</string>
     <string name="settings_tts_device_voice_network">Omrežje</string>
     <string name="settings_tts_device_voice_offline">Brez povezave</string>
-    <string name="settings_tts_install_google_hint">Namesti Googlov mehanizem za pretvorbo besedila v govor za glasove višje kakovosti.</string>
-    <string name="settings_tts_install_google_button">Namesti Google TTS</string>
     <string name="settings_tts_voice_locale_description">Nastavi naglas izgovorjenega glasa. Ne spremeni prikazanega besedila.</string>
 
     <!-- Voice locale picker labels — in Slovenian. -->

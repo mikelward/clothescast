@@ -290,8 +290,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_tts_device_voice_currently_loading">Carregant…</string>
     <string name="settings_tts_device_voice_network">Xarxa</string>
     <string name="settings_tts_device_voice_offline">Sense connexió</string>
-    <string name="settings_tts_install_google_hint">Instal·la el motor de text a veu de Google per a veus de major qualitat.</string>
-    <string name="settings_tts_install_google_button">Instal·la Google TTS</string>
     <string name="settings_tts_voice_locale_label">Accent</string>
     <string name="settings_tts_voice_locale_description">Estableix l\'accent de la veu parlada. No canvia el text que es mostra.</string>
     <string name="settings_tts_voice_locale_system">Segueix la configuració d\'idioma</string>

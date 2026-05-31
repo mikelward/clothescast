@@ -589,9 +589,8 @@ label localises.
     <string name="settings_location_background_denied_open">開啟設定</string>
     <string name="settings_location_background_denied_keep">暫不</string>
 
-    <!-- Voice screen — engine-picker description, the device-voice
-         sub-picker with auto / network / offline labels, and the
-         Google-TTS install hint shown when the system has no engine. -->
+    <!-- Voice screen — engine-picker description and the device-voice
+         sub-picker with auto / network / offline labels. -->
     <string name="settings_tts_engine_description">Gemini 聽起來自然得多，但需要 API 金鑰。</string>
 
     <string name="settings_tts_device_voice_label">裝置語音</string>
@@ -600,8 +599,6 @@ label localises.
     <string name="settings_tts_device_voice_currently_loading">載入中…</string>
     <string name="settings_tts_device_voice_network">網路</string>
     <string name="settings_tts_device_voice_offline">離線</string>
-    <string name="settings_tts_install_google_hint">安裝 Google 文字轉語音引擎以獲得更高品質的語音。</string>
-    <string name="settings_tts_install_google_button">安裝 Google TTS</string>
 
     <!-- Region screen — additional language picker labels for locales
          that landed after the original zh-TW translation pass. -->

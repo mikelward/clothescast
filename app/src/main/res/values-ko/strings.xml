@@ -131,9 +131,8 @@ displayed label localizes.
     <string name="settings_tts_test_in_flight">테스트 중 — 잠시만요…</string>
 
     <!--
-    Voice screen — device-voice picker (Android system TTS voices) and
-    the inline Google TTS install hint shown when no Google-Network
-    voice is available. New strings added to baseline mid-session.
+    Voice screen — device-voice picker (Android system TTS voices).
+    New strings added to baseline mid-session.
     -->
     <string name="settings_tts_device_voice_label">기기 음성</string>
     <string name="settings_tts_device_voice_auto">자동 (억양에 가장 적합)</string>
@@ -141,8 +140,6 @@ displayed label localizes.
     <string name="settings_tts_device_voice_currently_loading">로딩 중…</string>
     <string name="settings_tts_device_voice_network">네트워크</string>
     <string name="settings_tts_device_voice_offline">오프라인</string>
-    <string name="settings_tts_install_google_hint">더 높은 품질의 음성을 위해 Google 텍스트 음성 변환 엔진을 설치하세요.</string>
-    <string name="settings_tts_install_google_button">Google TTS 설치</string>
 
     <!--
     Region screen — language picker title + caption (the disambiguation

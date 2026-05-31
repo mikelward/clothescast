@@ -431,8 +431,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_tts_device_voice_currently_loading">Đang tải…</string>
     <string name="settings_tts_device_voice_network">Mạng</string>
     <string name="settings_tts_device_voice_offline">Ngoại tuyến</string>
-    <string name="settings_tts_install_google_hint">Cài Google Text-to-Speech để có giọng đọc chất lượng cao hơn.</string>
-    <string name="settings_tts_install_google_button">Cài Google TTS</string>
 
     <!-- Accent picker -->
     <string name="settings_tts_voice_locale_description">Đặt giọng nói được đọc to. Không thay đổi văn bản hiển thị.</string>

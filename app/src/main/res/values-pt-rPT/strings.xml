@@ -631,8 +631,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_tts_device_voice_currently_loading">A carregar…</string>
     <string name="settings_tts_device_voice_network">Rede</string>
     <string name="settings_tts_device_voice_offline">Sem ligação</string>
-    <string name="settings_tts_install_google_hint">Instala o mecanismo de texto em voz do Google para vozes de maior qualidade.</string>
-    <string name="settings_tts_install_google_button">Instalar Google TTS</string>
 
     <!-- Language picker — newly added locales not yet in pt-PT file. -->
     <string name="settings_region_language_am_et">Amárico (Etiópia)</string>

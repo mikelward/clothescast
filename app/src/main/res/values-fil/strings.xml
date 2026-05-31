@@ -423,8 +423,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_device_voice_currently_loading">Naglo-load…</string>
     <string name="settings_tts_device_voice_network">Network</string>
     <string name="settings_tts_device_voice_offline">Offline</string>
-    <string name="settings_tts_install_google_hint">I-install ang text-to-speech engine ng Google para sa mas de-kalidad na mga boses.</string>
-    <string name="settings_tts_install_google_button">I-install ang Google TTS</string>
     <string name="settings_tts_voice_locale_description">Itinatakda ang punto ng binibigkas na boses. Hindi nagbabago ng ipinapakitang teksto.</string>
     <string name="settings_tts_test">Subukan ang boses</string>
     <string name="settings_tts_test_in_flight">Sinusubukan — mangyaring maghintay…</string>

@@ -121,8 +121,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_tts_device_voice_currently_loading">Laster…</string>
     <string name="settings_tts_device_voice_network">Nettverk</string>
     <string name="settings_tts_device_voice_offline">Offline</string>
-    <string name="settings_tts_install_google_hint">Installer Googles tekst-til-tale-motor for bedre stemmer.</string>
-    <string name="settings_tts_install_google_button">Installer Google TTS</string>
 
     <!-- TTS style picker. -->
     <string name="settings_tts_style_label">Stil</string>

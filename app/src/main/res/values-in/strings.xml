@@ -400,8 +400,6 @@ to values/strings.xml (English).
     <string name="settings_tts_device_voice_currently_loading">Memuat…</string>
     <string name="settings_tts_device_voice_network">Jaringan</string>
     <string name="settings_tts_device_voice_offline">Offline</string>
-    <string name="settings_tts_install_google_hint">Instal mesin text-to-speech Google untuk suara berkualitas lebih tinggi.</string>
-    <string name="settings_tts_install_google_button">Instal Google TTS</string>
     <string name="settings_tts_voice_locale_description">Mengatur aksen suara yang diucapkan. Tidak mengubah teks yang ditampilkan.</string>
     <string name="settings_tts_test">Uji suara</string>
     <string name="settings_tts_test_in_flight">Menguji — mohon tunggu…</string>

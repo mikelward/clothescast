@@ -383,8 +383,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_tts_device_voice_currently_loading">Ielādē…</string>
     <string name="settings_tts_device_voice_network">Tīkls</string>
     <string name="settings_tts_device_voice_offline">Bezsaiste</string>
-    <string name="settings_tts_install_google_hint">Instalē Google teksta-uz-runu dzinēju augstākas kvalitātes balsīm.</string>
-    <string name="settings_tts_install_google_button">Instalēt Google TTS</string>
     <string name="settings_tts_voice_locale_description">Iestata runātās balss akcentu. Nemaina rādīto tekstu.</string>
     <string name="settings_tts_test">Testēt balsi</string>
     <string name="settings_tts_test_in_flight">Testē — lūdzu, uzgaidi…</string>

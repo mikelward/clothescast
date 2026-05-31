@@ -226,10 +226,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_location_search">Otsi</string>
     <string name="settings_location_searching">Otsimine…</string>
     <string name="settings_location_no_results">Tulemused puuduvad.</string>
-    <string name="settings_location_rationale_title">Asukohaluba</string>
-    <string name="settings_location_rationale_body">ClothesCast loeb su asukohta kohaliku prognoosi laadimiseks.</string>
-    <string name="settings_location_rationale_continue">Jätka</string>
-    <string name="settings_location_rationale_dismiss">Mitte praegu</string>
     <string name="settings_location_background_rationale_title">Luba alati</string>
     <string name="settings_location_background_rationale_body">Luba ClothesCast\'il lugeda su asukohta rakenduse suletuks ajal, et hommikune prognoos uueneks õigeaegselt.</string>
     <string name="settings_location_background_rationale_continue">Ava seaded</string>

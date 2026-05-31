@@ -330,10 +330,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_location_search">جستجو</string>
     <string name="settings_location_searching">در حال جستجو…</string>
     <string name="settings_location_no_results">نتیجه‌ای یافت نشد.</string>
-    <string name="settings_location_rationale_title">دسترسی به موقعیت</string>
-    <string name="settings_location_rationale_body">ClothesCast موقعیت شما را برای دریافت پیش‌بینی محلی می‌خواند.</string>
-    <string name="settings_location_rationale_continue">ادامه</string>
-    <string name="settings_location_rationale_dismiss">نه الان</string>
     <string name="settings_location_background_rationale_title">همیشه اجازه بده</string>
     <string name="settings_location_background_rationale_body">اجازه دهید ClothesCast موقعیت شما را در زمان بسته بودن بخواند تا پیش‌بینی صبحگاهی به موقع به‌روز شود.</string>
     <string name="settings_location_background_rationale_continue">باز کردن تنظیمات</string>

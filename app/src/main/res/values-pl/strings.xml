@@ -481,10 +481,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_location_background_denied_open">Otwórz ustawienia</string>
     <string name="settings_location_background_denied_keep">Zachowaj zapisaną lokalizację</string>
 
-    <string name="settings_location_rationale_title">Stała lokalizacja</string>
-    <string name="settings_location_rationale_body">ClothesCast aktualizuje prognozę w tle, aby dostarczyć ją na czas. Wymaga to uprawnienia lokalizacji \'Zawsze zezwalaj\'.</string>
-    <string name="settings_location_rationale_continue">Dalej</string>
-    <string name="settings_location_rationale_dismiss">Nie teraz</string>
 
     <string name="settings_root_schedule_subtitle">Powiadomienia i godziny</string>
     <string name="settings_root_format_subtitle">Sformułowanie i szczegółowość</string>

@@ -268,10 +268,6 @@ Not overridden by design:
     <string name="settings_location_search">खोजें</string>
     <string name="settings_location_searching">खोज रहे हैं…</string>
     <string name="settings_location_no_results">कोई मिलान नहीं।</string>
-    <string name="settings_location_rationale_title">स्थान एक्सेस</string>
-    <string name="settings_location_rationale_body">ClothesCast आपका स्थानीय पूर्वानुमान लाने के लिए आपका स्थान पढ़ता है।</string>
-    <string name="settings_location_rationale_continue">जारी रखें</string>
-    <string name="settings_location_rationale_dismiss">अभी नहीं</string>
     <string name="settings_location_background_rationale_title">हमेशा अनुमति दें</string>
     <string name="settings_location_background_rationale_body">ClothesCast बंद होने पर भी सुबह का पूर्वानुमान समय पर अपडेट हो सके, इसके लिए "हमेशा अनुमति दें" की ज़रूरत है।</string>
     <string name="settings_location_background_rationale_continue">सेटिंग खोलें</string>

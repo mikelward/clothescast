@@ -316,10 +316,6 @@ What is NOT overridden, by design:
     <string name="settings_location_background_denied_open">Otvoriť nastavenia</string>
     <string name="settings_location_background_denied_keep">Ponechať uloženú polohu</string>
 
-    <string name="settings_location_rationale_title">Trvalá poloha</string>
-    <string name="settings_location_rationale_body">ClothesCast aktualizuje predpoveď na pozadí, aby ju doručil načas. Na to potrebuje oprávnenie k polohe „Vždy povoliť".</string>
-    <string name="settings_location_rationale_continue">Pokračovať</string>
-    <string name="settings_location_rationale_dismiss">Teraz nie</string>
 
     <!--
     Notification channels.

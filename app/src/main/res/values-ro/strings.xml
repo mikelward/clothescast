@@ -335,10 +335,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_location_search">Caută</string>
     <string name="settings_location_searching">Se caută…</string>
     <string name="settings_location_no_results">Niciun rezultat.</string>
-    <string name="settings_location_rationale_title">Acces la locație</string>
-    <string name="settings_location_rationale_body">ClothesCast citește locația ta pentru a prelua prognoza locală.</string>
-    <string name="settings_location_rationale_continue">Continuă</string>
-    <string name="settings_location_rationale_dismiss">Nu acum</string>
     <string name="settings_location_background_rationale_title">Permite mereu</string>
     <string name="settings_location_background_rationale_body">Permite ClothesCast să citească locația ta când este închis, astfel prognoza de dimineață se actualizează la timp.</string>
     <string name="settings_location_background_rationale_continue">Deschide Setările</string>

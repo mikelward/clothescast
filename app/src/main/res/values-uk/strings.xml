@@ -305,10 +305,6 @@ only the displayed label localizes.
     <string name="settings_location_search">Знайти</string>
     <string name="settings_location_searching">Пошук…</string>
     <string name="settings_location_no_results">Нічого не знайдено.</string>
-    <string name="settings_location_rationale_title">Доступ до місцезнаходження</string>
-    <string name="settings_location_rationale_body">ClothesCast зчитує ваше місцезнаходження, щоб отримати місцевий прогноз.</string>
-    <string name="settings_location_rationale_continue">Продовжити</string>
-    <string name="settings_location_rationale_dismiss">Не зараз</string>
     <string name="settings_location_background_rationale_title">Дозволити завжди</string>
     <string name="settings_location_background_rationale_body">Дозвольте ClothesCast зчитувати ваше місцезнаходження, коли застосунок закрито, щоб ранковий прогноз оновлювався вчасно.</string>
     <string name="settings_location_background_rationale_continue">Відкрити налаштування</string>

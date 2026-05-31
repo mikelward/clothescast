@@ -311,10 +311,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_location_background_denied_open">Beállítások megnyitása</string>
     <string name="settings_location_background_denied_keep">Mentett helyszín megtartása</string>
 
-    <string name="settings_location_rationale_title">Állandó helyszín</string>
-    <string name="settings_location_rationale_body">A ClothesCast a háttérben frissíti az előrejelzésedet, hogy időben kézbesítse. Ehhez „Mindig engedélyezve" helyszín-engedély szükséges.</string>
-    <string name="settings_location_rationale_continue">Folytatás</string>
-    <string name="settings_location_rationale_dismiss">Most nem</string>
 
     <!-- Notification channels. -->
     <string name="notification_channel_daily_insight_name">Napi ClothesCast</string>

@@ -188,10 +188,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_location_search">Pretraži</string>
     <string name="settings_location_searching">Pretraga…</string>
     <string name="settings_location_no_results">Nema rezultata.</string>
-    <string name="settings_location_rationale_title">Pristup lokaciji</string>
-    <string name="settings_location_rationale_body">ClothesCast čita tvoju lokaciju radi preuzimanja lokalne prognoze.</string>
-    <string name="settings_location_rationale_continue">Nastavi</string>
-    <string name="settings_location_rationale_dismiss">Ne sada</string>
     <string name="settings_location_background_rationale_title">Dozvoli uvek</string>
     <string name="settings_location_background_rationale_body">Dozvoli ClothesCastu da čita tvoju lokaciju dok je zatvoren kako bi se jutarnja prognoza ažurirala na vreme.</string>
     <string name="settings_location_background_rationale_continue">Otvori podešavanja</string>

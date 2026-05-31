@@ -522,10 +522,6 @@ displayed label localizes.
     <string name="settings_location_background_denied_open">설정 열기</string>
     <string name="settings_location_background_denied_keep">저장된 위치 계속 사용</string>
 
-    <string name="settings_location_rationale_title">상시 위치</string>
-    <string name="settings_location_rationale_body">ClothesCast는 예보를 제때 전달하기 위해 백그라운드에서 업데이트하므로 \'항상 허용\' 위치 권한이 필요합니다.</string>
-    <string name="settings_location_rationale_continue">계속</string>
-    <string name="settings_location_rationale_dismiss">나중에</string>
 
 
     <string name="settings_region_language_am_et">암하라어 (에티오피아)</string>

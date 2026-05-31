@@ -346,10 +346,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_location_search">Maghanap</string>
     <string name="settings_location_searching">Naghahanap…</string>
     <string name="settings_location_no_results">Walang nahanap na tugma.</string>
-    <string name="settings_location_rationale_title">Access sa lokasyon</string>
-    <string name="settings_location_rationale_body">Binabasa ng ClothesCast ang iyong lokasyon para makuha ang lokal na hula.</string>
-    <string name="settings_location_rationale_continue">Magpatuloy</string>
-    <string name="settings_location_rationale_dismiss">Hindi ngayon</string>
     <string name="settings_location_background_rationale_title">Payagan sa lahat ng oras</string>
     <string name="settings_location_background_rationale_body">Payagan ang ClothesCast na basahin ang iyong lokasyon habang nakasara ito para ma-update ang umaga na hula sa oras.</string>
     <string name="settings_location_background_rationale_continue">Buksan ang Mga Setting</string>

@@ -335,10 +335,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_location_search">ค้นหา</string>
     <string name="settings_location_searching">กำลังค้นหา…</string>
     <string name="settings_location_no_results">ไม่พบผลลัพธ์</string>
-    <string name="settings_location_rationale_title">การเข้าถึงตำแหน่ง</string>
-    <string name="settings_location_rationale_body">ClothesCast อ่านตำแหน่งของคุณเพื่อดึงพยากรณ์อากาศท้องถิ่น</string>
-    <string name="settings_location_rationale_continue">ดำเนินการต่อ</string>
-    <string name="settings_location_rationale_dismiss">ไม่ใช่ตอนนี้</string>
     <string name="settings_location_background_rationale_title">อนุญาตตลอดเวลา</string>
     <string name="settings_location_background_rationale_body">อนุญาตให้ ClothesCast อ่านตำแหน่งของคุณขณะแอปปิดอยู่ เพื่อให้พยากรณ์อากาศช่วงเช้าอัปเดตตรงเวลา</string>
     <string name="settings_location_background_rationale_continue">เปิดการตั้งค่า</string>

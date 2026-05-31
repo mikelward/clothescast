@@ -293,10 +293,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_location_search">Tafuta</string>
     <string name="settings_location_searching">Inatafuta…</string>
     <string name="settings_location_no_results">Hakuna matokeo.</string>
-    <string name="settings_location_rationale_title">Upatikanaji wa mahali</string>
-    <string name="settings_location_rationale_body">ClothesCast inasoma mahali pako ili kupata utabiri wako wa karibu.</string>
-    <string name="settings_location_rationale_continue">Endelea</string>
-    <string name="settings_location_rationale_dismiss">Si sasa</string>
     <string name="settings_location_background_rationale_title">Ruhusu wakati wote</string>
     <string name="settings_location_background_rationale_body">Ruhusu ClothesCast kusoma mahali pako programu ikifungwa ili utabiri wa asubuhi usasishwe kwa wakati.</string>
     <string name="settings_location_background_rationale_continue">Fungua Mipangilio</string>

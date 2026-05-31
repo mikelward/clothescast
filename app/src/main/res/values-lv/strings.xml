@@ -315,10 +315,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_location_search">Meklēt</string>
     <string name="settings_location_searching">Meklē…</string>
     <string name="settings_location_no_results">Nav atbilstību.</string>
-    <string name="settings_location_rationale_title">Atrašanās vietas piekļuve</string>
-    <string name="settings_location_rationale_body">ClothesCast nolasa tavu atrašanās vietu, lai iegūtu vietējo prognozi.</string>
-    <string name="settings_location_rationale_continue">Turpināt</string>
-    <string name="settings_location_rationale_dismiss">Ne tagad</string>
     <string name="settings_location_background_rationale_title">Atļaut vienmēr</string>
     <string name="settings_location_background_rationale_body">Atļauj ClothesCast nolasīt tavu atrašanās vietu, kamēr lietotne ir aizvērta, lai rīta prognoze tiktu atjaunināta laicīgi.</string>
     <string name="settings_location_background_rationale_continue">Atvērt iestatījumus</string>

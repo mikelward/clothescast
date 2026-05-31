@@ -483,10 +483,6 @@ the displayed label localizes.
     <string name="settings_location_background_denied_open">Instellingen openen</string>
     <string name="settings_location_background_denied_keep">Opgeslagen locatie behouden</string>
 
-    <string name="settings_location_rationale_title">Permanente locatie</string>
-    <string name="settings_location_rationale_body">ClothesCast vernieuwt je voorspelling op de achtergrond om hem op tijd te bezorgen. Daarvoor is de locatietoestemming \'Altijd toestaan\' nodig.</string>
-    <string name="settings_location_rationale_continue">Doorgaan</string>
-    <string name="settings_location_rationale_dismiss">Niet nu</string>
 
     <string name="settings_root_schedule_subtitle">Meldingen en tijdstippen</string>
     <string name="settings_root_format_subtitle">Formulering en uitvoerigheid</string>

@@ -263,10 +263,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_location_search">ፈልግ</string>
     <string name="settings_location_searching">እየፈለገ ነው…</string>
     <string name="settings_location_no_results">ምንም ውጤት የለም።</string>
-    <string name="settings_location_rationale_title">የቦታ ፍቃድ</string>
-    <string name="settings_location_rationale_body">ClothesCast ሀገርዎን ትንበያ ለማምጣት ቦታዎን ያነባል።</string>
-    <string name="settings_location_rationale_continue">ቀጥል</string>
-    <string name="settings_location_rationale_dismiss">አሁን አይሆንም</string>
     <string name="settings_location_background_rationale_title">ሁልጊዜ ፍቀድ</string>
     <string name="settings_location_background_rationale_body">ClothesCast ሲዘጋ ቦታዎን ሊያነብ \'ሁልጊዜ ፍቀድ\' ይምረጡ እናም የጠዋቱ ትንበያ ወቅቱን ጠብቆ ይዘምናል።</string>
     <string name="settings_location_background_rationale_continue">ቅንብሮችን ክፈት</string>

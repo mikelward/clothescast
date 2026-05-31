@@ -565,10 +565,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_location_search">অনুসন্ধান</string>
     <string name="settings_location_searching">অনুসন্ধান করা হচ্ছে…</string>
     <string name="settings_location_no_results">কোনো ফলাফল নেই।</string>
-    <string name="settings_location_rationale_title">অবস্থানের অ্যাক্সেস</string>
-    <string name="settings_location_rationale_body">স্থানীয় পূর্বাভাস আনতে ClothesCast আপনার অবস্থান পড়ে।</string>
-    <string name="settings_location_rationale_continue">চালিয়ে যান</string>
-    <string name="settings_location_rationale_dismiss">এখন নয়</string>
     <string name="settings_location_background_rationale_title">সব সময় অনুমতি দিন</string>
     <string name="settings_location_background_rationale_body">অ্যাপ বন্ধ থাকলেও সকালের পূর্বাভাস সময়মতো আপডেট হতে ClothesCast-কে আপনার অবস্থান পড়ার অনুমতি দিন।</string>
     <string name="settings_location_background_rationale_continue">সেটিংস খুলুন</string>

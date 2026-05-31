@@ -478,10 +478,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_location_background_denied_open">Otvori Postavke</string>
     <string name="settings_location_background_denied_keep">Nastavi koristiti spremljenu lokaciju</string>
 
-    <string name="settings_location_rationale_title">Stalna lokacija</string>
-    <string name="settings_location_rationale_body">ClothesCast ažurira tvoju prognozu u pozadini kako bi je dostavio na vrijeme, pa mu je potrebno dopuštenje lokacije \'Dopusti uvijek\'.</string>
-    <string name="settings_location_rationale_continue">Nastavi</string>
-    <string name="settings_location_rationale_dismiss">Sad ne</string>
 
 
     <string name="settings_region_language_am_et">Amharski (Etiopija)</string>

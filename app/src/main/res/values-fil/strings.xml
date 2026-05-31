@@ -1007,9 +1007,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_enabled">Pang-araw na ClothesCast</string>
     <string name="settings_delivery_notification">Mag-abiso</string>
     <string name="settings_delivery_tts">Bigkasin</string>
-    <string name="speech_setup_title">I-set up ang binibigkas na ClothesCast</string>
-    <string name="speech_setup_smart_home_note">Kailangan ng Gemini API key ang pagbigkas sa smart home. Ipinapakita pa rin ng Cast ang iyong outfit kahit wala ito.</string>
-    <string name="speech_setup_done">Tapos na</string>
+    <string name="settings_done">Tapos na</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">Damit</string>

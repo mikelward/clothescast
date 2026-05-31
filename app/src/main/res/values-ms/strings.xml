@@ -963,9 +963,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_schedule_enabled">ClothesCast Harian</string>
     <string name="settings_delivery_notification">Beritahu</string>
     <string name="settings_delivery_tts">Sebut</string>
-    <string name="speech_setup_title">Sediakan ClothesCast bersuara</string>
-    <string name="speech_setup_smart_home_note">Sebutan rumah pintar memerlukan Gemini API key. Cast tetap menunjukkan pakaian anda tanpanya.</string>
-    <string name="speech_setup_done">Selesai</string>
+    <string name="settings_done">Selesai</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">Pakaian</string>

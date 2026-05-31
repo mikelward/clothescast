@@ -958,9 +958,7 @@ displayed label localizes.
     <string name="settings_schedule_enabled">Günlük ClothesCast</string>
     <string name="settings_delivery_notification">Bildir</string>
     <string name="settings_delivery_tts">Seslendir</string>
-    <string name="speech_setup_title">Sesli ClothesCast\'ları ayarla</string>
-    <string name="speech_setup_smart_home_note">Akıllı ev seslendirmesi bir Gemini API anahtarı gerektirir. Yayınlama, anahtar olmadan da kıyafetini gösterir.</string>
-    <string name="speech_setup_done">Tamam</string>
+    <string name="settings_done">Tamam</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Kıyafetler</string>

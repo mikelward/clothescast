@@ -1025,9 +1025,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_schedule_enabled">Dnevni ClothesCast</string>
     <string name="settings_delivery_notification">Obavijesti</string>
     <string name="settings_delivery_tts">Pročitaj</string>
-    <string name="speech_setup_title">Postavi izgovorene ClothesCastove</string>
-    <string name="speech_setup_smart_home_note">Izgovor u pametnom domu zahtijeva Gemini API ključ. Emitiranje i bez njega prikazuje tvoj outfit.</string>
-    <string name="speech_setup_done">Gotovo</string>
+    <string name="settings_done">Gotovo</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Odjeća</string>

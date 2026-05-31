@@ -40,7 +40,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,7 +54,6 @@ import app.clothescast.R
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.TimeFormat
-import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.notification.NotificationPermission
 import app.clothescast.work.FetchAndNotifyWorker
 import app.clothescast.ui.EdgeFadeOverlay
@@ -77,8 +75,6 @@ internal fun ScheduleContent(
     dailyMentionEveningEvents: Boolean,
     deliveryMode: DeliveryMode,
     tonightDeliveryMode: DeliveryMode,
-    ttsEngine: TtsEngine,
-    geminiKeyConfigured: Boolean,
     sharedTtsAvailable: Boolean,
     padding: PaddingValues,
     onSetSchedule: (LocalTime, Set<DayOfWeek>) -> Unit,
@@ -89,16 +85,16 @@ internal fun ScheduleContent(
     onSetDailyMentionEveningEvents: (Boolean) -> Unit,
     onSetDeliveryMode: (DeliveryMode) -> Unit,
     onSetTonightDeliveryMode: (DeliveryMode) -> Unit,
-    onSetTtsEngine: (TtsEngine) -> Unit,
-    onSetGeminiKey: (String) -> Unit,
-    onClearGeminiKey: () -> Unit,
+    // Enabling the "Speak" delivery channel jumps to the full Voice settings page
+    // to pick the engine and (for Gemini) drop in a key. The page shows a "Done"
+    // button that returns here — see ClothesCastNavHost wiring it to VoiceDest.
+    onSetUpSpeech: () -> Unit,
     // Gates the per-section "Play now" buttons: false while any daily / tonight
     // / play worker is active, so a preview can't start a second concurrent
     // delivery. Defaulted true for previews/tests that don't observe work state.
     previewEnabled: Boolean = true,
 ) {
     val context = LocalContext.current
-    var speechSheetOpen by rememberSaveable { mutableStateOf(false) }
 
     // Whether POST_NOTIFICATIONS is granted gates how the notification channel
     // toggles read: without the permission the OS drops every post, so the
@@ -124,8 +120,9 @@ internal fun ScheduleContent(
     // Turning a delivery channel on requests exactly what that channel needs,
     // just-in-time. Notify → the system POST_NOTIFICATIONS prompt (no-op on
     // pre-Android-13 or when already granted; a denial is recoverable via the
-    // NotificationPermissionBanner shown beside the toggle). Speak → the
-    // cut-down Speech setup sheet to pick Gemini-with-key or device TTS.
+    // NotificationPermissionBanner shown beside the toggle). Speak → the full
+    // Voice settings page (via onSetUpSpeech) to pick Gemini-with-key or device
+    // TTS, which returns here via its "Done" button.
     val notificationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) { granted -> notificationGranted = granted }
@@ -134,7 +131,6 @@ internal fun ScheduleContent(
             notificationLauncher.launch(NotificationPermission.MANIFEST_PERMISSION)
         }
     }
-    val requestSpeechSetup: () -> Unit = { speechSheetOpen = true }
 
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
@@ -169,7 +165,7 @@ internal fun ScheduleContent(
                 onSetDeliveryMode = onSetDeliveryMode,
                 onSetMentionEveningEvents = onSetDailyMentionEveningEvents,
                 onRequestNotificationPermission = requestNotificationPermission,
-                onRequestSpeechSetup = requestSpeechSetup,
+                onRequestSpeechSetup = onSetUpSpeech,
                 onPreview = { triggerPreview(context, ForecastPeriod.TODAY) },
                 previewEnabled = previewEnabled,
             )
@@ -190,23 +186,11 @@ internal fun ScheduleContent(
                 onChange = onSetTonightSchedule,
                 onSetDeliveryMode = onSetTonightDeliveryMode,
                 onRequestNotificationPermission = requestNotificationPermission,
-                onRequestSpeechSetup = requestSpeechSetup,
+                onRequestSpeechSetup = onSetUpSpeech,
                 onPreview = { triggerPreview(context, ForecastPeriod.TONIGHT) },
                 previewEnabled = previewEnabled,
             )
         }
-    }
-
-    if (speechSheetOpen) {
-        SpeechSetupSheet(
-            selectedEngine = ttsEngine,
-            geminiKeyConfigured = geminiKeyConfigured,
-            onSetTtsEngine = onSetTtsEngine,
-            onSetGeminiKey = onSetGeminiKey,
-            onClearGeminiKey = onClearGeminiKey,
-            onConfirm = { speechSheetOpen = false },
-            onDismiss = { speechSheetOpen = false },
-        )
     }
 }
 

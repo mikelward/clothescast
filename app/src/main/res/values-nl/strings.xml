@@ -1005,9 +1005,7 @@ the displayed label localizes.
     <string name="settings_schedule_enabled">Dagelijkse ClothesCast</string>
     <string name="settings_delivery_notification">Meld</string>
     <string name="settings_delivery_tts">Voorlezen</string>
-    <string name="speech_setup_title">Gesproken ClothesCasts instellen</string>
-    <string name="speech_setup_smart_home_note">Spraak in het smart home vereist een Gemini-API-sleutel. Uitzenden toont je outfit ook zonder sleutel.</string>
-    <string name="speech_setup_done">Klaar</string>
+    <string name="settings_done">Klaar</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Kleding</string>

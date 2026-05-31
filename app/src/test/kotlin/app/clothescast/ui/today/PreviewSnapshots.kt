@@ -36,6 +36,7 @@ import app.clothescast.ui.settings.SettingsClothesFahrenheitPreview
 import app.clothescast.ui.settings.SettingsClothesPreview
 import app.clothescast.ui.settings.SettingsClothesRuleDialogPreview
 import app.clothescast.ui.settings.SettingsDisplayPreview
+import app.clothescast.ui.settings.SettingsDoneBarPreview
 import app.clothescast.ui.settings.SettingsForecastersPreview
 import app.clothescast.ui.settings.SettingsFormatClothesNeverPreview
 import app.clothescast.ui.settings.SettingsFormatCurrentForecastPreview
@@ -51,9 +52,6 @@ import app.clothescast.ui.settings.SettingsRootPreview
 import app.clothescast.ui.settings.SettingsScheduleNotificationsBlockedPreview
 import app.clothescast.ui.settings.SettingsSchedulePreview
 import app.clothescast.ui.settings.SettingsSmartHomePreview
-import app.clothescast.ui.settings.SettingsSpeechSetupDevicePreview
-import app.clothescast.ui.settings.SettingsSpeechSetupGeminiPreview
-import app.clothescast.ui.settings.SettingsSpeechSetupSmartHomePreview
 import app.clothescast.ui.settings.SettingsVoiceDevicePreview
 import app.clothescast.ui.settings.SettingsVoiceGeminiNoKeyPreview
 import app.clothescast.ui.settings.SettingsVoiceGeminiNoKeySharedPreview
@@ -637,9 +635,7 @@ class PreviewSnapshots {
     @Config(qualifiers = "w360dp-h900dp-xhdpi")
     fun settings_schedule_notifications_blocked() =
         capture { SettingsScheduleNotificationsBlockedPreview() }
-    @Test fun settings_speech_setup_gemini() = capture { SettingsSpeechSetupGeminiPreview() }
-    @Test fun settings_speech_setup_device() = capture { SettingsSpeechSetupDevicePreview() }
-    @Test fun settings_speech_setup_smart_home() = capture { SettingsSpeechSetupSmartHomePreview() }
+    @Test fun settings_done_bar() = capture { SettingsDoneBarPreview() }
     @Test fun settings_format() = capture { SettingsFormatPreview() }
     @Test fun settings_format_clothes_never() = capture { SettingsFormatClothesNeverPreview() }
     @Test fun settings_format_current_forecast() = capture { SettingsFormatCurrentForecastPreview() }

@@ -957,9 +957,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_enabled">ClothesCast รายวัน</string>
     <string name="settings_delivery_notification">แจ้งเตือน</string>
     <string name="settings_delivery_tts">พูด</string>
-    <string name="speech_setup_title">ตั้งค่า ClothesCast แบบพูด</string>
-    <string name="speech_setup_smart_home_note">เสียงพูดบนสมาร์ทโฮมต้องใช้ Gemini API key การ Cast ยังคงแสดงชุดแต่งกายของคุณได้แม้ไม่มีคีย์</string>
-    <string name="speech_setup_done">เสร็จสิ้น</string>
+    <string name="settings_done">เสร็จสิ้น</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">เสื้อผ้า</string>

@@ -978,9 +978,7 @@ What is NOT overridden, by design:
     <string name="settings_schedule_enabled">Denný ClothesCast</string>
     <string name="settings_delivery_notification">Upozorniť</string>
     <string name="settings_delivery_tts">Prečítať</string>
-    <string name="speech_setup_title">Nastav hovorené ClothesCasty</string>
-    <string name="speech_setup_smart_home_note">Hovorený výstup v inteligentnej domácnosti vyžaduje Gemini API kľúč. Casting tvoj outfit ukáže aj bez neho.</string>
-    <string name="speech_setup_done">Hotovo</string>
+    <string name="settings_done">Hotovo</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Oblečenie</string>

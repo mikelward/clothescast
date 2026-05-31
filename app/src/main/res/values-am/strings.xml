@@ -927,9 +927,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_enabled">ዕለታዊ ClothesCast</string>
     <string name="settings_delivery_notification">አሳውቅ</string>
     <string name="settings_delivery_tts">ተናገር</string>
-    <string name="speech_setup_title">በድምፅ የሚነበቡ ClothesCast ያዋቅሩ</string>
-    <string name="speech_setup_smart_home_note">የስማርት ቤት ንግግር የGemini API ቁልፍ ይፈልጋል። ያለ እሱም ካስቲንግ አሁንም ልብስዎን ያሳያል።</string>
-    <string name="speech_setup_done">ተጠናቀቀ</string>
+    <string name="settings_done">ተጠናቀቀ</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">ልብስ</string>

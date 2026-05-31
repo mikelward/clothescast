@@ -965,9 +965,7 @@ displayed label localizes.
     <string name="settings_schedule_enabled">Päivittäinen ClothesCast</string>
     <string name="settings_delivery_notification">Ilmoita</string>
     <string name="settings_delivery_tts">Lue ääneen</string>
-    <string name="speech_setup_title">Määritä puhutut ClothesCastit</string>
-    <string name="speech_setup_smart_home_note">Älykodin puhe vaatii Gemini API -avaimen. Lähetys näyttää asusi silti ilman sitä.</string>
-    <string name="speech_setup_done">Valmis</string>
+    <string name="settings_done">Valmis</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Vaatteet</string>

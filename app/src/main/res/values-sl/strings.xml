@@ -941,9 +941,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_schedule_enabled">Dnevni ClothesCast</string>
     <string name="settings_delivery_notification">Obvesti</string>
     <string name="settings_delivery_tts">Preberi</string>
-    <string name="speech_setup_title">Nastavi izgovorjene ClothesCaste</string>
-    <string name="speech_setup_smart_home_note">Govor v pametnem domu zahteva Gemini API ključ. Predvajanje na zaslon tudi brez njega prikaže tvojo obleko.</string>
-    <string name="speech_setup_done">Končano</string>
+    <string name="settings_done">Končano</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Oblačila</string>

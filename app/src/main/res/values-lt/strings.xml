@@ -944,9 +944,7 @@ What is NOT overridden, by design:
     <string name="settings_schedule_enabled">Dienos ClothesCast</string>
     <string name="settings_delivery_notification">Pranešti</string>
     <string name="settings_delivery_tts">Įgarsinti</string>
-    <string name="speech_setup_title">Nustatyk įgarsintus ClothesCast</string>
-    <string name="speech_setup_smart_home_note">Įgarsinimui išmaniuosiuose namuose reikia Gemini API rakto. Transliavimas vis tiek rodo tavo aprangą ir be jo.</string>
-    <string name="speech_setup_done">Atlikta</string>
+    <string name="settings_done">Atlikta</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Apranga</string>

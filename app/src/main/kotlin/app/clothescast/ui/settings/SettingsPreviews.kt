@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -125,8 +126,6 @@ private fun ScheduleContentSample() {
         dailyMentionEveningEvents = false,
         deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
         tonightDeliveryMode = DeliveryMode.NOTIFICATION_ONLY,
-        ttsEngine = TtsEngine.DEVICE,
-        geminiKeyConfigured = false,
         sharedTtsAvailable = false,
         padding = PaddingValues(0.dp),
         onSetSchedule = { _, _ -> },
@@ -137,56 +136,8 @@ private fun ScheduleContentSample() {
         onSetDailyMentionEveningEvents = {},
         onSetDeliveryMode = {},
         onSetTonightDeliveryMode = {},
-        onSetTtsEngine = {},
-        onSetGeminiKey = {},
-        onClearGeminiKey = {},
+        onSetUpSpeech = {},
     )
-}
-
-@Preview(name = "Settings · Speech setup (Gemini)", widthDp = 360)
-@Composable
-internal fun SettingsSpeechSetupGeminiPreview() {
-    SettingsFrame {
-        SpeechSetupContent(
-            selectedEngine = TtsEngine.GEMINI,
-            geminiKeyConfigured = false,
-            onSetTtsEngine = {},
-            onSetGeminiKey = {},
-            onClearGeminiKey = {},
-            onConfirm = {},
-        )
-    }
-}
-
-@Preview(name = "Settings · Speech setup (device)", widthDp = 360)
-@Composable
-internal fun SettingsSpeechSetupDevicePreview() {
-    SettingsFrame {
-        SpeechSetupContent(
-            selectedEngine = TtsEngine.DEVICE,
-            geminiKeyConfigured = false,
-            onSetTtsEngine = {},
-            onSetGeminiKey = {},
-            onClearGeminiKey = {},
-            onConfirm = {},
-        )
-    }
-}
-
-@Preview(name = "Settings · Speech setup (smart home + device)", widthDp = 360)
-@Composable
-internal fun SettingsSpeechSetupSmartHomePreview() {
-    SettingsFrame {
-        SpeechSetupContent(
-            selectedEngine = TtsEngine.DEVICE,
-            geminiKeyConfigured = false,
-            onSetTtsEngine = {},
-            onSetGeminiKey = {},
-            onClearGeminiKey = {},
-            onConfirm = {},
-            showSmartHomeSpeechNote = true,
-        )
-    }
 }
 
 @Preview(name = "Settings · Format", widthDp = 360)
@@ -597,6 +548,36 @@ internal fun SettingsLocationPreview() {
     }
 }
 
+// Captures the bottom "Done" bar chrome that SettingsScaffold shows when a
+// sub-page is opened from outside the Settings root menu (a Today promo/banner,
+// or another settings page's setup jump). Driven by LocalSettingsDoneAction;
+// menu-originated pages render the same scaffold without the bar. Hosted on the
+// Location page as a representative sub-page.
+@Preview(name = "Settings · Done bar", widthDp = 360)
+@Composable
+internal fun SettingsDoneBarPreview() {
+    SettingsFrame {
+        CompositionLocalProvider(LocalSettingsDoneAction provides {}) {
+            SettingsScaffold(R.string.settings_root_location, onBack = {}) { padding ->
+                LocationContent(
+                    location = Location(
+                        latitude = 51.5074,
+                        longitude = -0.1278,
+                        displayName = "London",
+                        addressDetail = "Westminster, London SW1A 2AA, UK",
+                    ),
+                    useDeviceLocation = true,
+                    padding = padding,
+                    onSetUseDeviceLocation = {},
+                    onSelectLocation = {},
+                    onClearLocation = {},
+                    onSearchLocations = { emptyList() },
+                )
+            }
+        }
+    }
+}
+
 // Manual / forward-geocoded pick: device-location off, no addressDetail.
 // Captures the summary-as-tap-target affordance for the manual flow,
 // which the GPS-path preview above can't exercise because addressDetail
@@ -848,9 +829,7 @@ internal fun SettingsSmartHomePreview() {
             onSetCastTonight = {},
             onSetCastSkipPhoneSpeech = {},
             onSetMqttSkipPhoneSpeech = {},
-            onSetTtsEngine = {},
-            onSetGeminiKey = {},
-            onClearGeminiKey = {},
+            onSetUpSpeech = {},
         )
     }
 }

@@ -943,9 +943,7 @@ What is NOT overridden, by design:
     <string name="settings_schedule_enabled">Ежедневен ClothesCast</string>
     <string name="settings_delivery_notification">Известяване</string>
     <string name="settings_delivery_tts">Прочети</string>
-    <string name="speech_setup_title">Настрой изговарянето на ClothesCast</string>
-    <string name="speech_setup_smart_home_note">Изговарянето в умния дом изисква ключ за API на Gemini. Предаването пак показва тоалета ти и без него.</string>
-    <string name="speech_setup_done">Готово</string>
+    <string name="settings_done">Готово</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Облекло</string>

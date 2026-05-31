@@ -1003,9 +1003,7 @@ is unchanged; only the displayed label localizes.
     <string name="settings_schedule_enabled">Codzienny ClothesCast</string>
     <string name="settings_delivery_notification">Powiadom</string>
     <string name="settings_delivery_tts">Przeczytaj</string>
-    <string name="speech_setup_title">Skonfiguruj mówione ClothesCasty</string>
-    <string name="speech_setup_smart_home_note">Mowa w inteligentnym domu wymaga klucza API Gemini. Przesyłanie i tak pokazuje Twój strój nawet bez niego.</string>
-    <string name="speech_setup_done">Gotowe</string>
+    <string name="settings_done">Gotowe</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Ubrania</string>

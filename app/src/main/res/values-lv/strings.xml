@@ -897,9 +897,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_schedule_enabled">Ikdienas ClothesCast</string>
     <string name="settings_delivery_notification">Paziņot</string>
     <string name="settings_delivery_tts">Nolasīt</string>
-    <string name="speech_setup_title">Iestatiet runāto ClothesCast</string>
-    <string name="speech_setup_smart_home_note">Runai viedajās mājās nepieciešama Gemini API atslēga. Apraide joprojām rāda jūsu apģērbu arī bez tās.</string>
-    <string name="speech_setup_done">Gatavs</string>
+    <string name="settings_done">Gatavs</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Apģērbs</string>

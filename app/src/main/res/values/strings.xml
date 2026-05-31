@@ -793,9 +793,7 @@
     <string name="settings_delivery_notification">Notify</string>
     <string name="settings_delivery_tts">Speak</string>
 
-    <string name="speech_setup_title">Speech settings</string>
-    <string name="speech_setup_smart_home_note">Smart home speech needs the Gemini voice. Casting still shows your outfit without it.</string>
-    <string name="speech_setup_done">Done</string>
+    <string name="settings_done">Done</string>
 
     <string name="settings_tts_engine_title">Voice engine</string>
     <string name="settings_tts_engine_description">Choose between low-quality on-device speech and high-quality online speech.</string>

@@ -1110,9 +1110,7 @@ displayed label localizes.
     <string name="settings_schedule_enabled">매일 ClothesCast</string>
     <string name="settings_delivery_notification">알림</string>
     <string name="settings_delivery_tts">읽기</string>
-    <string name="speech_setup_title">음성 ClothesCast 설정</string>
-    <string name="speech_setup_smart_home_note">스마트홈 음성에는 Gemini API 키가 필요해요. 키가 없어도 캐스팅할 때 코디는 표시됩니다.</string>
-    <string name="speech_setup_done">완료</string>
+    <string name="settings_done">완료</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">옷</string>

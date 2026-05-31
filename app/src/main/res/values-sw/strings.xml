@@ -928,9 +928,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_schedule_enabled">ClothesCast ya kila siku</string>
     <string name="settings_delivery_notification">Arifu</string>
     <string name="settings_delivery_tts">Soma</string>
-    <string name="speech_setup_title">Sanidi ClothesCast zinazosomwa kwa sauti</string>
-    <string name="speech_setup_smart_home_note">Usemaji wa nyumba mahiri unahitaji ufunguo wa API wa Gemini. Kutuma kwenye skrini bado huonyesha mavazi yako bila huo.</string>
-    <string name="speech_setup_done">Imekamilika</string>
+    <string name="settings_done">Imekamilika</string>
 
     <!-- Clothes-mention picker -->
     <string name="settings_clothes_mention_label">Mavazi</string>

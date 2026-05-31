@@ -896,9 +896,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_schedule_enabled">ClothesCast diari</string>
     <string name="settings_delivery_notification">Notifica</string>
     <string name="settings_delivery_tts">Llegeix en veu alta</string>
-    <string name="speech_setup_title">Configura els ClothesCast parlats</string>
-    <string name="speech_setup_smart_home_note">La veu a la llar intel·ligent requereix una clau API de Gemini. L\'emissió mostra igualment el teu conjunt sense ella.</string>
-    <string name="speech_setup_done">Fet</string>
+    <string name="settings_done">Fet</string>
 
     <!-- Clothes-mention picker on Format / Schedule -->
     <string name="settings_clothes_mention_label">Roba</string>

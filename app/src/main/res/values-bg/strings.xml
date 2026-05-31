@@ -327,7 +327,8 @@ What is NOT overridden, by design:
 
     <!-- API key screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Използвай Gemini за гласове с високо качество.</string>
+    <string name="settings_api_key_gemini_header">Гласове с високо качество чрез сървърите на ClothesCast и Gemini.</string>
+    <string name="settings_tts_device_header">Гласове с ниско качество, вградени в телефона ти.</string>
     <string name="settings_api_key_status_set">Конфигуриран е ключ за Gemini.</string>
     <string name="settings_api_key_status_unset">Вземи безплатен API ключ от aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Постави своя API ключ за Gemini</string>
@@ -386,7 +387,7 @@ What is NOT overridden, by design:
 
     <!-- Voice / TTS screen. -->
     <string name="settings_tts_engine_title">Гласов двигател</string>
-    <string name="settings_tts_engine_description">Gemini звучи много по-естествено, но изисква API ключ.</string>
+    <string name="settings_tts_engine_description">Избери между речта с ниско качество на устройството и онлайн речта с високо качество.</string>
     <string name="settings_tts_engine_device">Устройство (офлайн, безплатно)</string>
     <string name="settings_tts_engine_gemini">Gemini (високо качество, онлайн)</string>
     <string name="settings_tts_voice_label">Глас</string>
@@ -936,7 +937,6 @@ What is NOT overridden, by design:
     <string name="settings_delivery_notification">Известяване</string>
     <string name="settings_delivery_tts">Прочети</string>
     <string name="speech_setup_title">Настрой изговарянето на ClothesCast</string>
-    <string name="speech_setup_description">Избери как твоят ClothesCast да се изговаря на глас. Използвай безплатния глас на устройството или добави ключ за API на Gemini за гласове с високо качество.</string>
     <string name="speech_setup_smart_home_note">Изговарянето в умния дом изисква ключ за API на Gemini. Предаването пак показва тоалета ти и без него.</string>
     <string name="speech_setup_done">Готово</string>
 

@@ -313,7 +313,8 @@ standard in Israeli digital communication.
 
     <!-- Settings — API key -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">השתמש/י ב-Gemini לקבלת קולות איכותיים.</string>
+    <string name="settings_api_key_gemini_header">קולות באיכות גבוהה דרך השרתים של ClothesCast ושל Gemini.</string>
+    <string name="settings_tts_device_header">קולות באיכות נמוכה שמובנים בטלפון שלך.</string>
     <string name="settings_api_key_status_set">מפתח Gemini מוגדר.</string>
     <string name="settings_api_key_status_unset">קבל/י מפתח API חינמי ב-aistudio.google.com</string>
     <string name="settings_api_key_placeholder">הדבק/י את מפתח Gemini API שלך</string>
@@ -368,7 +369,7 @@ standard in Israeli digital communication.
     <string name="settings_delivery_tts_only">קריאה בקול בלבד</string>
     <string name="settings_delivery_notification_and_tts">התראה וקריאה בקול</string>
     <string name="settings_tts_engine_title">מנוע קול</string>
-    <string name="settings_tts_engine_description">Gemini נשמע טבעי בהרבה אך זקוק למפתח API.</string>
+    <string name="settings_tts_engine_description">בחר/י בין דיבור באיכות נמוכה במכשיר לבין דיבור באיכות גבוהה באינטרנט.</string>
     <string name="settings_tts_engine_device">מכשיר (ללא אינטרנט, חינם)</string>
     <string name="settings_tts_engine_gemini">Gemini (איכות גבוהה, מקוון)</string>
     <string name="settings_tts_voice_label">קול</string>
@@ -949,7 +950,6 @@ standard in Israeli digital communication.
     <string name="settings_delivery_notification">התראה</string>
     <string name="settings_delivery_tts">קריאה</string>
     <string name="speech_setup_title">הגדרת ClothesCast מדוברים</string>
-    <string name="speech_setup_description">בחר/י כיצד ClothesCast שלך ייקרא בקול. השתמש/י בקול המכשיר החינמי, או הוסף/י מפתח Gemini API לקולות באיכות גבוהה.</string>
     <string name="speech_setup_smart_home_note">דיבור בבית חכם דורש מפתח Gemini API. השידור מציג את הלבוש שלך גם בלעדיו.</string>
     <string name="speech_setup_done">סיום</string>
 

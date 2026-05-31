@@ -317,7 +317,8 @@ they work correctly in both the single-band and range templates.
 
     <!-- Settings — API key / Gemini -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">استخدم Gemini للحصول على أصوات عالية الجودة.</string>
+    <string name="settings_api_key_gemini_header">أصوات عالية الجودة عبر خوادم ClothesCast وGemini.</string>
+    <string name="settings_tts_device_header">أصوات منخفضة الجودة مدمجة في هاتفك.</string>
     <string name="settings_api_key_status_set">تم تكوين مفتاح Gemini.</string>
     <string name="settings_api_key_status_unset">احصل على مفتاح API مجاني من aistudio.google.com</string>
     <string name="settings_api_key_placeholder">الصق مفتاح Gemini API</string>
@@ -372,7 +373,7 @@ they work correctly in both the single-band and range templates.
     <string name="settings_delivery_tts_only">قراءة صوتية فقط</string>
     <string name="settings_delivery_notification_and_tts">إشعار وقراءة صوتية</string>
     <string name="settings_tts_engine_title">محرك الصوت</string>
-    <string name="settings_tts_engine_description">Gemini يبدو أكثر طبيعية بكثير لكنه يحتاج إلى مفتاح API.</string>
+    <string name="settings_tts_engine_description">اختر بين الكلام منخفض الجودة على الجهاز والكلام عالي الجودة عبر الإنترنت.</string>
     <string name="settings_tts_engine_device">الجهاز (بدون إنترنت، مجاني)</string>
     <string name="settings_tts_engine_gemini">Gemini (جودة عالية، عبر الإنترنت)</string>
     <string name="settings_tts_voice_label">الصوت</string>
@@ -950,7 +951,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_delivery_notification">إشعار</string>
     <string name="settings_delivery_tts">قراءة</string>
     <string name="speech_setup_title">إعداد عمليات ClothesCast المنطوقة</string>
-    <string name="speech_setup_description">اختر طريقة قراءة ClothesCast بصوت عالٍ. استخدم صوت الجهاز المجاني، أو أضِف مفتاح Gemini API للحصول على أصوات عالية الجودة.</string>
     <string name="speech_setup_smart_home_note">يتطلب كلام المنزل الذكي مفتاح Gemini API. يعرض البث ملابسك بدونه أيضًا.</string>
     <string name="speech_setup_done">تم</string>
 

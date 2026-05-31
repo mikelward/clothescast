@@ -309,7 +309,8 @@ to values/strings.xml (English).
 
     <!-- API key settings -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Gunakan Gemini untuk mendapatkan suara berkualitas tinggi.</string>
+    <string name="settings_api_key_gemini_header">Suara berkualitas tinggi melalui server ClothesCast dan Gemini.</string>
+    <string name="settings_tts_device_header">Suara berkualitas rendah bawaan di ponselmu.</string>
     <string name="settings_api_key_status_set">Kunci Gemini telah dikonfigurasi.</string>
     <string name="settings_api_key_status_unset">Dapatkan kunci API gratis di aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Tempelkan kunci API Gemini Anda</string>
@@ -366,7 +367,7 @@ to values/strings.xml (English).
 
     <!-- TTS / voice settings -->
     <string name="settings_tts_engine_title">Mesin suara</string>
-    <string name="settings_tts_engine_description">Gemini terdengar jauh lebih alami tetapi membutuhkan kunci API.</string>
+    <string name="settings_tts_engine_description">Pilih antara ucapan berkualitas rendah di perangkat dan ucapan berkualitas tinggi secara daring.</string>
     <string name="settings_tts_engine_device">Perangkat (offline, gratis)</string>
     <string name="settings_tts_engine_gemini">Gemini (kualitas tinggi, online)</string>
     <string name="settings_tts_voice_label">Suara</string>
@@ -950,7 +951,6 @@ to values/strings.xml (English).
     <string name="settings_delivery_notification">Beri tahu</string>
     <string name="settings_delivery_tts">Bacakan</string>
     <string name="speech_setup_title">Siapkan ClothesCast bersuara</string>
-    <string name="speech_setup_description">Pilih cara ClothesCast Anda dibacakan dengan keras. Gunakan suara perangkat gratis, atau tambahkan Gemini API key untuk suara berkualitas tinggi.</string>
     <string name="speech_setup_smart_home_note">Suara rumah pintar memerlukan Gemini API key. Cast tetap menampilkan pakaian Anda tanpanya.</string>
     <string name="speech_setup_done">Selesai</string>
 

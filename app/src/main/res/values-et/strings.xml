@@ -204,7 +204,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_privacy_open_policy">Loe täielikku privaatsuspoliitikat</string>
 
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Kasuta Gemini\'t kõrgekvaliteediliste häälte saamiseks.</string>
+    <string name="settings_api_key_gemini_header">Kõrgkvaliteetsed hääled ClothesCasti ja Gemini serverite kaudu.</string>
+    <string name="settings_tts_device_header">Madala kvaliteediga hääled, mis on telefoni sisse ehitatud.</string>
     <string name="settings_api_key_status_set">Gemini võti on seadistatud.</string>
     <string name="settings_api_key_status_unset">Hangi tasuta API-võti aadressilt aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Kleebi oma Gemini API-võti</string>
@@ -258,7 +259,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_delivery_notification_and_tts">Teavitus ja kõvalugemine</string>
 
     <string name="settings_tts_engine_title">Häälemootor</string>
-    <string name="settings_tts_engine_description">Gemini kõlab palju loomulikumalt, kuid vajab API-võtit.</string>
+    <string name="settings_tts_engine_description">Vali madala kvaliteediga kõne seadmes ja kõrgkvaliteetse võrgukõne vahel.</string>
     <string name="settings_tts_engine_device">Seade (võrguühenduseta, tasuta)</string>
     <string name="settings_tts_engine_gemini">Gemini (kõrge kvaliteet, võrguühendusega)</string>
     <string name="settings_tts_voice_label">Hääl</string>
@@ -893,7 +894,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_delivery_notification">Teavita</string>
     <string name="settings_delivery_tts">Loe ette</string>
     <string name="speech_setup_title">Seadista räägitavad ClothesCastid</string>
-    <string name="speech_setup_description">Vali, kuidas su ClothesCast ette loetakse. Kasuta tasuta seadme häält või lisa kõrge kvaliteediga häälte jaoks Gemini API võti.</string>
     <string name="speech_setup_smart_home_note">Kõne nutikodus nõuab Gemini API võtit. Ülekanne näitab su riietust ka ilma selleta.</string>
     <string name="speech_setup_done">Valmis</string>
 

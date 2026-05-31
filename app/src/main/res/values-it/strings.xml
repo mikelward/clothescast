@@ -582,7 +582,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_theme_dark">Scuro</string>
 
     <!-- API key screen — Gemini section header. -->
-    <string name="settings_api_key_gemini_header">Usa Gemini per voci di alta qualità.</string>
+    <string name="settings_api_key_gemini_header">Voci di alta qualità tramite i server di ClothesCast e Gemini.</string>
+    <string name="settings_tts_device_header">Voci di bassa qualità integrate nel tuo telefono.</string>
 
     <!-- Location screen — additional strings. -->
     <string name="settings_location_detecting">Rilevamento in corso…</string>
@@ -592,7 +593,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_location_manual_override_disclosure">Se scegli una città, il rilevamento automatico verrà disattivato.</string>
 
     <!-- TTS engine selection — description beneath the Gemini/Device toggle. -->
-    <string name="settings_tts_engine_description">Gemini suona molto più naturale, ma richiede una chiave API.</string>
+    <string name="settings_tts_engine_description">Scegli tra voce di bassa qualità sul dispositivo e voce di alta qualità online.</string>
 
     <!-- In-app update banner: shown when a newer build is on the Play Store. -->
     <string name="today_update_available_title">Aggiornamento disponibile</string>
@@ -1062,7 +1063,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_delivery_notification">Notifica</string>
     <string name="settings_delivery_tts">Riproduci voce</string>
     <string name="speech_setup_title">Configura i ClothesCast parlati</string>
-    <string name="speech_setup_description">Scegli come viene letto ad alta voce il tuo ClothesCast. Usa la voce gratuita del dispositivo, oppure aggiungi una chiave API Gemini per voci di alta qualità.</string>
     <string name="speech_setup_smart_home_note">La voce sulla casa intelligente richiede una chiave API Gemini. La trasmissione mostra comunque il tuo outfit anche senza.</string>
     <string name="speech_setup_done">Fatto</string>
 

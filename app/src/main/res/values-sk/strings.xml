@@ -227,7 +227,7 @@ What is NOT overridden, by design:
     <string name="settings_tts_engine_title">Hlasový engine</string>
     <string name="settings_tts_engine_device">Zariadenie (offline, zadarmo)</string>
     <string name="settings_tts_engine_gemini">Gemini (vysoká kvalita, online)</string>
-    <string name="settings_tts_engine_description">Gemini znie oveľa prirodzenejšie, no vyžaduje API kľúč.</string>
+    <string name="settings_tts_engine_description">Vyber si medzi rečou v nízkej kvalite v zariadení a rečou vo vysokej kvalite online.</string>
 
     <string name="settings_tts_voice_label">Hlas</string>
     <string name="settings_tts_voice_dismiss">Hotovo</string>
@@ -280,7 +280,8 @@ What is NOT overridden, by design:
     API keys screen.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Použi Gemini pre kvalitné hlasy.</string>
+    <string name="settings_api_key_gemini_header">Hlasy vo vysokej kvalite cez servery ClothesCast a Gemini.</string>
+    <string name="settings_tts_device_header">Hlasy v nízkej kvalite zabudované v tvojom telefóne.</string>
     <string name="settings_api_key_status_set">Gemini kľúč je nastavený.</string>
     <string name="settings_api_key_status_unset">Žiadny Gemini kľúč nie je nastavený. Získaj ho na aistudio.google.com pre používanie hlasov Gemini.</string>
     <string name="settings_api_key_placeholder">Vlož sem Gemini API kľúč</string>
@@ -971,7 +972,6 @@ What is NOT overridden, by design:
     <string name="settings_delivery_notification">Upozorniť</string>
     <string name="settings_delivery_tts">Prečítať</string>
     <string name="speech_setup_title">Nastav hovorené ClothesCasty</string>
-    <string name="speech_setup_description">Vyber, ako sa tvoj ClothesCast číta nahlas. Použi bezplatný hlas zariadenia, alebo pridaj Gemini API kľúč pre hlasy vo vysokej kvalite.</string>
     <string name="speech_setup_smart_home_note">Hovorený výstup v inteligentnej domácnosti vyžaduje Gemini API kľúč. Casting tvoj outfit ukáže aj bez neho.</string>
     <string name="speech_setup_done">Hotovo</string>
 

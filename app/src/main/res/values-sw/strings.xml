@@ -325,7 +325,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Settings: TTS / voice -->
     <string name="settings_tts_engine_title">Injini ya sauti</string>
-    <string name="settings_tts_engine_description">Gemini inasikika asili zaidi lakini inahitaji ufunguo wa API.</string>
+    <string name="settings_tts_engine_description">Chagua kati ya usemi wa ubora wa chini kwenye kifaa na usemi wa ubora wa juu mtandaoni.</string>
     <string name="settings_tts_engine_device">Kifaa (bila mtandao, bure)</string>
     <string name="settings_tts_engine_gemini">Gemini (ubora wa juu, mtandaoni)</string>
     <string name="settings_tts_voice_label">Sauti</string>
@@ -417,7 +417,8 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Settings: API key -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Tumia Gemini kupata sauti za ubora wa juu.</string>
+    <string name="settings_api_key_gemini_header">Sauti za ubora wa juu kupitia seva za ClothesCast na Gemini.</string>
+    <string name="settings_tts_device_header">Sauti za ubora wa chini zilizojengwa kwenye simu yako.</string>
     <string name="settings_api_key_status_set">Ufunguo wa Gemini umewekwa.</string>
     <string name="settings_api_key_status_unset">Pata ufunguo wa API bure kwenye aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Bandika ufunguo wako wa Gemini API</string>
@@ -921,7 +922,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_delivery_notification">Arifu</string>
     <string name="settings_delivery_tts">Soma</string>
     <string name="speech_setup_title">Sanidi ClothesCast zinazosomwa kwa sauti</string>
-    <string name="speech_setup_description">Chagua jinsi ClothesCast yako inavyosomwa kwa sauti. Tumia sauti ya bure ya kifaa, au ongeza ufunguo wa API wa Gemini kwa sauti za ubora wa juu.</string>
     <string name="speech_setup_smart_home_note">Usemaji wa nyumba mahiri unahitaji ufunguo wa API wa Gemini. Kutuma kwenye skrini bado huonyesha mavazi yako bila huo.</string>
     <string name="speech_setup_done">Imekamilika</string>
 

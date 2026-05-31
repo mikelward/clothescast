@@ -694,10 +694,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_location_manual_override_disclosure">Η επιλογή πόλης απενεργοποιεί τον αυτόματο εντοπισμό.</string>
 
     <!-- Missing API key strings. -->
-    <string name="settings_api_key_gemini_header">Χρησιμοποίησε το Gemini για φωνές υψηλής ποιότητας.</string>
+    <string name="settings_api_key_gemini_header">Φωνές υψηλής ποιότητας μέσω των διακομιστών ClothesCast και Gemini.</string>
+    <string name="settings_tts_device_header">Φωνές χαμηλής ποιότητας ενσωματωμένες στο τηλέφωνό σου.</string>
 
     <!-- Missing TTS engine description. -->
-    <string name="settings_tts_engine_description">Το Gemini ακούγεται πολύ πιο φυσικό, αλλά χρειάζεται κλειδί API.</string>
+    <string name="settings_tts_engine_description">Διάλεξε ανάμεσα σε ομιλία χαμηλής ποιότητας στη συσκευή και ομιλία υψηλής ποιότητας στο διαδίκτυο.</string>
 
     <!-- Missing Today screen strings. -->
     <string name="today_location_unknown">Η τοποθεσία σου</string>
@@ -1069,7 +1070,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_delivery_notification">Ειδοποίηση</string>
     <string name="settings_delivery_tts">Εκφώνηση</string>
     <string name="speech_setup_title">Ρύθμιση εκφωνούμενων ClothesCast</string>
-    <string name="speech_setup_description">Επίλεξε πώς εκφωνείται ο ClothesCast σου. Χρησιμοποίησε τη δωρεάν φωνή της συσκευής ή πρόσθεσε ένα Gemini API key για φωνές υψηλής ποιότητας.</string>
     <string name="speech_setup_smart_home_note">Η εκφώνηση στο έξυπνο σπίτι απαιτεί Gemini API key. Η μετάδοση δείχνει το σύνολό σου ακόμη και χωρίς αυτό.</string>
     <string name="speech_setup_done">Έγινε</string>
 

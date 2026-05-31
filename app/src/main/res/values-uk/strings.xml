@@ -113,7 +113,7 @@ only the displayed label localizes.
     <string name="settings_tts_engine_title">Голосовий рушій</string>
     <string name="settings_tts_engine_device">Пристрій (офлайн, безкоштовно)</string>
     <string name="settings_tts_engine_gemini">Gemini (висока якість, онлайн)</string>
-    <string name="settings_tts_engine_description">Gemini звучить значно природніше, але потребує ключ API.</string>
+    <string name="settings_tts_engine_description">Обери між мовленням низької якості на пристрої та мовленням високої якості онлайн.</string>
 
     <string name="settings_tts_voice_label">Голос</string>
     <string name="settings_tts_voice_dismiss">Готово</string>
@@ -282,7 +282,8 @@ only the displayed label localizes.
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Використовуйте Gemini для голосів високої якості.</string>
+    <string name="settings_api_key_gemini_header">Голоси високої якості через сервери ClothesCast і Gemini.</string>
+    <string name="settings_tts_device_header">Голоси низької якості, вбудовані у твій телефон.</string>
     <string name="settings_api_key_status_set">Ключ Gemini налаштовано.</string>
     <string name="settings_api_key_status_unset">Отримайте безкоштовний ключ API на aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Вставте ваш ключ API Gemini</string>
@@ -946,7 +947,6 @@ only the displayed label localizes.
     <string name="settings_delivery_notification">Сповістити</string>
     <string name="settings_delivery_tts">Озвучити</string>
     <string name="speech_setup_title">Налаштуйте озвучення ClothesCast</string>
-    <string name="speech_setup_description">Оберіть, як ваш ClothesCast читатиметься вголос. Використовуйте безкоштовний голос пристрою або додайте ключ API Gemini для голосів високої якості.</string>
     <string name="speech_setup_smart_home_note">Озвучення в розумному домі потребує ключа API Gemini. Трансляція все одно показує ваше вбрання й без нього.</string>
     <string name="speech_setup_done">Готово</string>
 

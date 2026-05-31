@@ -602,7 +602,8 @@ label localizes.
     <string name="settings_display_theme_dark">深色</string>
 
     <!-- API keys screen — header above the Gemini block. -->
-    <string name="settings_api_key_gemini_header">使用 Gemini 获得高质量语音。</string>
+    <string name="settings_api_key_gemini_header">通过 ClothesCast 和 Gemini 服务器的高质量语音。</string>
+    <string name="settings_tts_device_header">内置于你手机的低质量语音。</string>
 
     <!-- Location screen additions — device-location subtitle, in-flight
          "detecting…" state, the always-on banner shown when the
@@ -616,7 +617,7 @@ label localizes.
 
     <!-- Voice screen — engine-picker description (Device vs Gemini
          trade-offs). -->
-    <string name="settings_tts_engine_description">Gemini 听起来自然得多，但需要 API 密钥。</string>
+    <string name="settings_tts_engine_description">在设备端的低质量语音和在线的高质量语音之间进行选择。</string>
 
     <!-- Outfit card labels — additional garments not previously translated. -->
     <string name="today_outfit_top_polo">POLO 衫</string>
@@ -1098,7 +1099,6 @@ label localizes.
     <string name="settings_delivery_notification">通知</string>
     <string name="settings_delivery_tts">朗读</string>
     <string name="speech_setup_title">设置语音 ClothesCast</string>
-    <string name="speech_setup_description">选择如何朗读你的 ClothesCast。使用免费的设备语音，或添加 Gemini API 密钥以获得高质量语音。</string>
     <string name="speech_setup_smart_home_note">智能家居语音需要 Gemini API 密钥。即使没有它，投屏时仍会显示你的穿搭。</string>
     <string name="speech_setup_done">完成</string>
 

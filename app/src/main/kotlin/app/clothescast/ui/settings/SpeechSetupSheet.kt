@@ -86,7 +86,10 @@ internal fun SpeechSetupContent(
             style = MaterialTheme.typography.headlineSmall,
         )
         Text(
-            text = stringResource(R.string.speech_setup_description),
+            // Same one-liner as the Voice engine section in full Settings — the
+            // two card-style entry points stay in lockstep with one string instead
+            // of two so a copy update in one place can't drift away from the other.
+            text = stringResource(R.string.settings_tts_engine_description),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

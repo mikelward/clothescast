@@ -353,7 +353,7 @@ West Bengal vocabulary differences in a future PR.
          ============================================================ -->
 
     <string name="settings_tts_engine_title">ভয়েস ইঞ্জিন</string>
-    <string name="settings_tts_engine_description">Gemini অনেক বেশি স্বাভাবিক শোনায় কিন্তু একটি API কী প্রয়োজন।</string>
+    <string name="settings_tts_engine_description">ডিভাইসে নিম্ন-মানের ভয়েস এবং অনলাইনে উচ্চ-মানের ভয়েসের মধ্যে বেছে নিন।</string>
     <string name="settings_tts_engine_device">ডিভাইস (অফলাইন, বিনামূল্যে)</string>
     <string name="settings_tts_engine_gemini">Gemini (উচ্চমান, অনলাইন)</string>
     <string name="settings_tts_voice_label">ভয়েস</string>
@@ -539,7 +539,8 @@ West Bengal vocabulary differences in a future PR.
          ============================================================ -->
 
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">উচ্চমানের ভয়েস পেতে Gemini ব্যবহার করুন।</string>
+    <string name="settings_api_key_gemini_header">ClothesCast এবং Gemini সার্ভারের মাধ্যমে উচ্চ-মানের ভয়েস।</string>
+    <string name="settings_tts_device_header">আপনার ফোনে অন্তর্নির্মিত নিম্ন-মানের ভয়েস।</string>
     <string name="settings_api_key_status_set">একটি Gemini কী কনফিগার করা আছে।</string>
     <string name="settings_api_key_status_unset">aistudio.google.com-এ বিনামূল্যে API কী নিন</string>
     <string name="settings_api_key_placeholder">আপনার Gemini API কী পেস্ট করুন</string>
@@ -1021,7 +1022,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_delivery_notification">জানান</string>
     <string name="settings_delivery_tts">পড়ুন</string>
     <string name="speech_setup_title">কথ্য ClothesCast সেট আপ করুন</string>
-    <string name="speech_setup_description">আপনার ClothesCast কীভাবে পড়ে শোনানো হবে তা বেছে নিন। বিনামূল্যের ডিভাইস ভয়েস ব্যবহার করুন, অথবা উচ্চমানের ভয়েসের জন্য একটি Gemini API কী যোগ করুন।</string>
     <string name="speech_setup_smart_home_note">স্মার্ট হোমে কথা বলার জন্য একটি Gemini API কী প্রয়োজন। এটি ছাড়াও কাস্টিং আপনার পোশাক দেখায়।</string>
     <string name="speech_setup_done">সম্পন্ন</string>
 

@@ -610,7 +610,8 @@ the displayed label localizes.
     <string name="settings_display_theme_dark">ダーク</string>
 
     <!-- API keys screen — header above the Gemini block. -->
-    <string name="settings_api_key_gemini_header">Gemini を使うと高品質な音声が利用できます。</string>
+    <string name="settings_api_key_gemini_header">ClothesCast と Gemini のサーバー経由の高品質な音声。</string>
+    <string name="settings_tts_device_header">スマホに内蔵された低品質な音声。</string>
 
     <!-- Location screen additions — device-location subtitle, in-flight
          "detecting…" state, the always-on banner shown when the
@@ -624,7 +625,7 @@ the displayed label localizes.
 
     <!-- Voice screen — engine-picker description (Device vs Gemini
          trade-offs). -->
-    <string name="settings_tts_engine_description">Gemini は端末の音声よりずっと自然に聞こえますが、API キーが必要です。</string>
+    <string name="settings_tts_engine_description">端末内の低品質な音声と、オンラインの高品質な音声から選べます。</string>
 
     <!-- Outfit card labels — additional garments not previously translated. -->
     <string name="today_outfit_top_polo">ポロシャツ</string>
@@ -1100,7 +1101,6 @@ the displayed label localizes.
     <string name="settings_delivery_notification">通知</string>
     <string name="settings_delivery_tts">読み上げ</string>
     <string name="speech_setup_title">音声で読み上げる ClothesCast の設定</string>
-    <string name="speech_setup_description">ClothesCast を音声で読み上げる方法を選べます。無料の端末の音声を使うか、Gemini API キーを追加して高品質な音声を利用できます。</string>
     <string name="speech_setup_smart_home_note">スマートホームでの読み上げには Gemini API キーが必要です。キーがなくてもキャスト時にコーデは表示されます。</string>
     <string name="speech_setup_done">完了</string>
 

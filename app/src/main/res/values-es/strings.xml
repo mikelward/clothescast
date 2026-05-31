@@ -599,7 +599,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_theme_dark">Oscuro</string>
 
     <!-- API key screen — Gemini section header. -->
-    <string name="settings_api_key_gemini_header">Usa Gemini para obtener voces de alta calidad.</string>
+    <string name="settings_api_key_gemini_header">Voces de alta calidad a través de los servidores de ClothesCast y Gemini.</string>
+    <string name="settings_tts_device_header">Voces de baja calidad integradas en tu teléfono.</string>
 
     <!-- Location screen — additional strings. -->
     <string name="settings_location_detecting">Detectando…</string>
@@ -609,7 +610,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_location_manual_override_disclosure">Elegir una ciudad desactiva la detección automática.</string>
 
     <!-- TTS engine selection — description beneath the Gemini/Device toggle. -->
-    <string name="settings_tts_engine_description">Gemini suena mucho más natural, pero necesita una clave API.</string>
+    <string name="settings_tts_engine_description">Elige entre voz de baja calidad en el dispositivo y voz de alta calidad en línea.</string>
 
     <!-- In-app update banner: shown when a newer build is on the Play Store. -->
     <string name="today_update_available_title">Actualización disponible</string>
@@ -1077,7 +1078,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_delivery_notification">Notificar</string>
     <string name="settings_delivery_tts">Leer en voz alta</string>
     <string name="speech_setup_title">Configurar ClothesCasts en voz alta</string>
-    <string name="speech_setup_description">Elige cómo se lee en voz alta tu ClothesCast. Usa la voz gratuita del dispositivo o añade una clave API de Gemini para voces de alta calidad.</string>
     <string name="speech_setup_smart_home_note">La voz en el hogar inteligente requiere una clave API de Gemini. La emisión sigue mostrando tu conjunto sin ella.</string>
     <string name="speech_setup_done">Hecho</string>
 

@@ -307,7 +307,8 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
 
     <!-- Settings — API key -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">از Gemini برای دریافت صداهای باکیفیت استفاده کنید.</string>
+    <string name="settings_api_key_gemini_header">صداهای باکیفیت از طریق سرورهای ClothesCast و Gemini.</string>
+    <string name="settings_tts_device_header">صداهای کم‌کیفیت تعبیه‌شده در گوشی شما.</string>
     <string name="settings_api_key_status_set">یک کلید Gemini پیکربندی شده.</string>
     <string name="settings_api_key_status_unset">یک کلید API رایگان از aistudio.google.com دریافت کنید</string>
     <string name="settings_api_key_placeholder">کلید Gemini API خود را جای‌گذاری کنید</string>
@@ -362,7 +363,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
 
     <!-- Settings — TTS engine -->
     <string name="settings_tts_engine_title">موتور صوتی</string>
-    <string name="settings_tts_engine_description">Gemini بسیار طبیعی‌تر به نظر می‌رسد اما به کلید API نیاز دارد.</string>
+    <string name="settings_tts_engine_description">بین گفتار کم‌کیفیت روی دستگاه و گفتار باکیفیت آنلاین یکی را انتخاب کنید.</string>
     <string name="settings_tts_engine_device">دستگاه (آفلاین، رایگان)</string>
     <string name="settings_tts_engine_gemini">Gemini (کیفیت بالا، آنلاین)</string>
     <string name="settings_tts_voice_label">صدا</string>
@@ -941,7 +942,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_delivery_notification">اعلان</string>
     <string name="settings_delivery_tts">خواندن</string>
     <string name="speech_setup_title">راه‌اندازی ClothesCastهای گفتاری</string>
-    <string name="speech_setup_description">انتخاب کنید ClothesCast شما چگونه با صدای بلند خوانده شود. از صدای رایگان دستگاه استفاده کنید، یا برای صداهای باکیفیت یک کلید Gemini API اضافه کنید.</string>
     <string name="speech_setup_smart_home_note">گفتار خانه هوشمند به یک کلید Gemini API نیاز دارد. ارسال تصویری حتی بدون آن هم لباس شما را نمایش می‌دهد.</string>
     <string name="speech_setup_done">انجام شد</string>
 

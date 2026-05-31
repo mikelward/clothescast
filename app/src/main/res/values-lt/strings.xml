@@ -316,7 +316,8 @@ What is NOT overridden, by design:
 
     <!-- API key screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Naudok Gemini aukštos kokybės balsams.</string>
+    <string name="settings_api_key_gemini_header">Aukštos kokybės balsai per ClothesCast ir Gemini serverius.</string>
+    <string name="settings_tts_device_header">Žemos kokybės balsai, įdiegti tavo telefone.</string>
     <string name="settings_api_key_status_set">Gemini raktas sukonfigūruotas.</string>
     <string name="settings_api_key_status_unset">Gauk nemokamą API raktą adresu aistudio.google.com</string>
     <string name="settings_api_key_placeholder">Įklijuok Gemini API raktą</string>
@@ -375,7 +376,7 @@ What is NOT overridden, by design:
 
     <!-- Voice engine. -->
     <string name="settings_tts_engine_title">Balso variklis</string>
-    <string name="settings_tts_engine_description">Gemini skamba daug natūraliau, tačiau reikia API rakto.</string>
+    <string name="settings_tts_engine_description">Pasirink, ar naudoti žemos kokybės kalbėjimą įrenginyje, ar aukštos kokybės kalbėjimą internete.</string>
     <string name="settings_tts_engine_device">Įrenginys (neprisijungus, nemokamas)</string>
     <string name="settings_tts_engine_gemini">Gemini (aukšta kokybė, prisijungus)</string>
     <string name="settings_tts_voice_label">Balsas</string>
@@ -937,7 +938,6 @@ What is NOT overridden, by design:
     <string name="settings_delivery_notification">Pranešti</string>
     <string name="settings_delivery_tts">Įgarsinti</string>
     <string name="speech_setup_title">Nustatyk įgarsintus ClothesCast</string>
-    <string name="speech_setup_description">Pasirink, kaip tavo ClothesCast bus skaitomas balsu. Naudok nemokamą įrenginio balsą arba pridėk Gemini API raktą aukštos kokybės balsams.</string>
     <string name="speech_setup_smart_home_note">Įgarsinimui išmaniuosiuose namuose reikia Gemini API rakto. Transliavimas vis tiek rodo tavo aprangą ir be jo.</string>
     <string name="speech_setup_done">Atlikta</string>
 

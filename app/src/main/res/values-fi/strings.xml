@@ -504,7 +504,8 @@ displayed label localizes.
     <string name="settings_display_theme_light">Vaalea</string>
     <string name="settings_display_theme_dark">Tumma</string>
 
-    <string name="settings_api_key_gemini_header">Käytä Geminiä laadukkaisiin ääniin.</string>
+    <string name="settings_api_key_gemini_header">Korkealaatuiset äänet ClothesCast- ja Gemini-palvelimien kautta.</string>
+    <string name="settings_tts_device_header">Heikkolaatuiset äänet, jotka on rakennettu puhelimeesi.</string>
 
     <string name="settings_location_detecting">Määritetään…</string>
     <string name="settings_location_background_banner_title">Jatkuva sijaintilupa vaaditaan</string>
@@ -512,7 +513,7 @@ displayed label localizes.
     <string name="settings_location_manual_override">Väärä sijainti? Aseta manuaalisesti</string>
     <string name="settings_location_manual_override_disclosure">Kaupungin valitseminen poistaa automaattisen tunnistuksen käytöstä.</string>
 
-    <string name="settings_tts_engine_description">Gemini kuulostaa paljon luonnollisemmalta, mutta vaatii API-avaimen.</string>
+    <string name="settings_tts_engine_description">Valitse heikkolaatuisen laitepuheen ja korkealaatuisen verkkopuheen väliltä.</string>
 
     <string name="today_update_available_title">Päivitys saatavilla</string>
     <string name="today_update_available_body">Uudempi versio ClothesCastista on saatavilla Play Storessa.</string>
@@ -958,7 +959,6 @@ displayed label localizes.
     <string name="settings_delivery_notification">Ilmoita</string>
     <string name="settings_delivery_tts">Lue ääneen</string>
     <string name="speech_setup_title">Määritä puhutut ClothesCastit</string>
-    <string name="speech_setup_description">Valitse, miten ClothesCast luetaan ääneen. Käytä ilmaista laitteen ääntä tai lisää Gemini API -avain korkealaatuisia ääniä varten.</string>
     <string name="speech_setup_smart_home_note">Älykodin puhe vaatii Gemini API -avaimen. Lähetys näyttää asusi silti ilman sitä.</string>
     <string name="speech_setup_done">Valmis</string>
 

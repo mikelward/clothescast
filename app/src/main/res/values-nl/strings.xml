@@ -553,7 +553,8 @@ the displayed label localizes.
     <string name="settings_display_theme_dark">Donker</string>
 
     <!-- API key screen — Gemini section header. -->
-    <string name="settings_api_key_gemini_header">Gebruik Gemini voor stemmen van hoge kwaliteit.</string>
+    <string name="settings_api_key_gemini_header">Stemmen van hoge kwaliteit via de servers van ClothesCast en Gemini.</string>
+    <string name="settings_tts_device_header">Stemmen van lage kwaliteit ingebouwd in je telefoon.</string>
 
     <!-- Location screen — additional strings. -->
     <string name="settings_location_detecting">Wordt bepaald…</string>
@@ -563,7 +564,7 @@ the displayed label localizes.
     <string name="settings_location_manual_override_disclosure">Als je een stad kiest, wordt automatische detectie uitgeschakeld.</string>
 
     <!-- TTS engine selection — description. -->
-    <string name="settings_tts_engine_description">Gemini klinkt veel natuurlijker, maar heeft een API-sleutel nodig.</string>
+    <string name="settings_tts_engine_description">Kies tussen spraak van lage kwaliteit op het apparaat en spraak van hoge kwaliteit online.</string>
 
     <!-- In-app update banner. -->
     <string name="today_update_available_title">Update beschikbaar</string>
@@ -998,7 +999,6 @@ the displayed label localizes.
     <string name="settings_delivery_notification">Meld</string>
     <string name="settings_delivery_tts">Voorlezen</string>
     <string name="speech_setup_title">Gesproken ClothesCasts instellen</string>
-    <string name="speech_setup_description">Kies hoe je ClothesCast wordt voorgelezen. Gebruik de gratis apparaatstem of voeg een Gemini-API-sleutel toe voor stemmen van hoge kwaliteit.</string>
     <string name="speech_setup_smart_home_note">Spraak in het smart home vereist een Gemini-API-sleutel. Uitzenden toont je outfit ook zonder sleutel.</string>
     <string name="speech_setup_done">Klaar</string>
 

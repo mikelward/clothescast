@@ -598,7 +598,8 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_display_theme_dark">Escuro</string>
 
     <!-- API key screen — Gemini section header. -->
-    <string name="settings_api_key_gemini_header">Usa o Gemini para vozes de alta qualidade.</string>
+    <string name="settings_api_key_gemini_header">Vozes de alta qualidade através dos servidores do ClothesCast e do Gemini.</string>
+    <string name="settings_tts_device_header">Vozes de baixa qualidade integradas no teu telemóvel.</string>
 
     <!-- Location screen — additional strings. -->
     <string name="settings_location_detecting">A detetar…</string>
@@ -622,7 +623,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_location_background_denied_keep">Continuar a usar a localização guardada</string>
 
     <!-- TTS engine selection — description beneath the Gemini/Device toggle. -->
-    <string name="settings_tts_engine_description">O Gemini soa muito mais natural, mas precisa de uma chave de API.</string>
+    <string name="settings_tts_engine_description">Escolhe entre voz de baixa qualidade no dispositivo e voz de alta qualidade em linha.</string>
 
     <!-- TTS device voice picker. -->
     <string name="settings_tts_device_voice_label">Voz do dispositivo</string>
@@ -1077,7 +1078,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_delivery_notification">Notificar</string>
     <string name="settings_delivery_tts">Ler em voz alta</string>
     <string name="speech_setup_title">Configurar ClothesCasts em voz alta</string>
-    <string name="speech_setup_description">Escolhe como o teu ClothesCast é lido em voz alta. Usa a voz gratuita do dispositivo ou adiciona uma chave API Gemini para vozes de alta qualidade.</string>
     <string name="speech_setup_smart_home_note">A fala na casa inteligente requer uma chave API Gemini. A transmissão continua a mostrar o teu visual sem ela.</string>
     <string name="speech_setup_done">Concluído</string>
 

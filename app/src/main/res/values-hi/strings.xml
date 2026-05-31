@@ -98,7 +98,7 @@ Not overridden by design:
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">आवाज़ इंजन</string>
-    <string name="settings_tts_engine_description">Gemini बहुत ज़्यादा स्वाभाविक लगती है लेकिन इसके लिए API कुंजी ज़रूरी है।</string>
+    <string name="settings_tts_engine_description">डिवाइस पर निम्न-गुणवत्ता वाली वाणी और ऑनलाइन उच्च-गुणवत्ता वाली वाणी के बीच चुनें।</string>
     <string name="settings_tts_engine_device">डिवाइस (ऑफ़लाइन, मुफ़्त)</string>
     <string name="settings_tts_engine_gemini">Gemini (उच्च गुणवत्ता, ऑनलाइन)</string>
     <string name="settings_tts_voice_label">आवाज़</string>
@@ -245,7 +245,8 @@ Not overridden by design:
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">बेहतर आवाज़ें पाने के लिए Gemini उपयोग करें।</string>
+    <string name="settings_api_key_gemini_header">ClothesCast और Gemini सर्वर के माध्यम से उच्च-गुणवत्ता वाली आवाज़ें।</string>
+    <string name="settings_tts_device_header">आपके फ़ोन में निर्मित निम्न-गुणवत्ता वाली आवाज़ें।</string>
     <string name="settings_api_key_status_set">Gemini कुंजी सेट है।</string>
     <string name="settings_api_key_status_unset">aistudio.google.com पर मुफ़्त API कुंजी पाएँ</string>
     <string name="settings_api_key_placeholder">अपनी Gemini API कुंजी चिपकाएँ</string>
@@ -981,7 +982,6 @@ Not overridden by design:
     <string name="settings_delivery_notification">सूचित करें</string>
     <string name="settings_delivery_tts">बोलें</string>
     <string name="speech_setup_title">बोले जाने वाले ClothesCast सेट करें</string>
-    <string name="speech_setup_description">चुनें कि आपका ClothesCast कैसे बोलकर पढ़ा जाए। मुफ़्त डिवाइस आवाज़ उपयोग करें, या उच्च-गुणवत्ता वाली आवाज़ों के लिए Gemini API कुंजी जोड़ें।</string>
     <string name="speech_setup_smart_home_note">स्मार्ट होम पर बोलने के लिए Gemini API कुंजी ज़रूरी है। इसके बिना भी कास्टिंग आपकी पोशाक दिखाती है।</string>
     <string name="speech_setup_done">हो गया</string>
 

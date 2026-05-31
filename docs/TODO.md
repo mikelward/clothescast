@@ -34,6 +34,22 @@ Code TODOs in source files are linked from here when they exist.
       Follow-up: translated the three strings across all 44 `values-*`
       overrides so the new on-device vs. online tradeoff (and the
       "ClothesCast and Gemini servers" disclosure) ships in every locale.
+- [ ] **Translate `settings_api_key_status_unset_shared`** ("Optional —
+      paste your own key. Get one free at aistudio.google.com") across all
+      44 `values-*` overrides. Shown in Voice settings and the Speech
+      setup sheet on builds where the shared-key proxy is reachable and
+      no BYOK key is set, so non-English devices currently fall back to
+      the English copy.
+- [ ] **Reorder the Gemini section: Test voice above the API key field.**
+      Today (and in the snapshot for the no-key / shared-proxy state) the
+      key entry — `Paste your Gemini API key` + `Save Gemini key` —
+      occupies the prime real estate just under the engine subhead, even
+      though the user can already hear Gemini for free by hitting Test
+      voice at the bottom of the card. Moving the voice / style pickers
+      and the Test voice button up, with the key field collapsed below
+      as an "unlimited use" upgrade, would let "try it now" actually
+      lead the section. Mirror in `SpeechSetupSheet` so the first-opt-in
+      flow matches.
 
 ## Calendar integration (next-up after TTS)
 

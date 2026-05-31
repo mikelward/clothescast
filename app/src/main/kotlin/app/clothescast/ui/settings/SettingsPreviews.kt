@@ -127,6 +127,7 @@ private fun ScheduleContentSample() {
         tonightDeliveryMode = DeliveryMode.NOTIFICATION_ONLY,
         ttsEngine = TtsEngine.DEVICE,
         geminiKeyConfigured = false,
+        sharedTtsAvailable = false,
         padding = PaddingValues(0.dp),
         onSetSchedule = { _, _ -> },
         onSetDailyEnabled = {},
@@ -149,6 +150,7 @@ internal fun SettingsSpeechSetupGeminiPreview() {
         SpeechSetupContent(
             selectedEngine = TtsEngine.GEMINI,
             geminiKeyConfigured = false,
+            sharedTtsAvailable = false,
             onSetTtsEngine = {},
             onSetGeminiKey = {},
             onClearGeminiKey = {},
@@ -164,6 +166,7 @@ internal fun SettingsSpeechSetupDevicePreview() {
         SpeechSetupContent(
             selectedEngine = TtsEngine.DEVICE,
             geminiKeyConfigured = false,
+            sharedTtsAvailable = false,
             onSetTtsEngine = {},
             onSetGeminiKey = {},
             onClearGeminiKey = {},
@@ -179,6 +182,7 @@ internal fun SettingsSpeechSetupSmartHomePreview() {
         SpeechSetupContent(
             selectedEngine = TtsEngine.DEVICE,
             geminiKeyConfigured = false,
+            sharedTtsAvailable = false,
             onSetTtsEngine = {},
             onSetGeminiKey = {},
             onClearGeminiKey = {},
@@ -519,6 +523,42 @@ internal fun SettingsVoiceGeminiNoKeyPreview() {
     }
 }
 
+// Gemini selected, no BYOK key, but the shared-key proxy is reachable on this
+// build: the Test Voice button is enabled and the key field reframes itself as
+// optional ("Optional — paste your own key…") rather than the gate-style "Get a
+// free API key…" copy. Companion to SettingsVoiceGeminiNoKeyPreview.
+@Preview(name = "Settings · Voice (Gemini, no key, shared)", widthDp = 360)
+@Composable
+internal fun SettingsVoiceGeminiNoKeySharedPreview() {
+    SettingsFrame {
+        VoiceContent(
+            selected = TtsEngine.GEMINI,
+            geminiVoice = UserPreferences.DEFAULT_GEMINI_VOICE,
+            ttsStyle = TtsStyle.WEATHER_FORECASTER,
+            deviceVoice = null,
+            deviceVoices = emptyList(),
+            effectiveDeviceVoice = null,
+            geminiKeyConfigured = false,
+            sharedTtsAvailable = true,
+            voiceLocale = VoiceLocale.SYSTEM,
+            region = Region.SYSTEM,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            rangeFormat = RangeFormat.DEGREES,
+            clothesFormat = ClothesFormat.ITEMS,
+            bottomsFormat = BottomsFormat.IF_GARMENTS,
+            padding = PaddingValues(0.dp),
+            onSetTtsEngine = {},
+            onSetGeminiVoice = {},
+            onSetTtsStyle = {},
+            onSetDeviceVoice = {},
+            onSetVoiceLocale = {},
+            onSetGeminiKey = {},
+            onClearGeminiKey = {},
+            onPairFromPhone = {},
+        )
+    }
+}
+
 // Render with device-location ON and a stored fallback city: this exercises
 // both the "currently using" path (the card displays the cached city) and —
 // because the Robolectric host has no ACCESS_BACKGROUND_LOCATION grant —
@@ -780,6 +820,7 @@ internal fun SettingsSmartHomePreview() {
             castSkipPhoneSpeech = true,
             ttsEngine = TtsEngine.DEVICE,
             geminiKeyConfigured = false,
+            sharedTtsAvailable = false,
             padding = PaddingValues(0.dp),
             onSetBridgeEnabled = {},
             onSaveConfig = { _, _, _, _, _, _ -> },

@@ -90,6 +90,7 @@ internal fun SmartHomeContent(
     castSkipPhoneSpeech: Boolean,
     ttsEngine: TtsEngine,
     geminiKeyConfigured: Boolean,
+    sharedTtsAvailable: Boolean,
     padding: PaddingValues,
     onSetBridgeEnabled: (Boolean) -> Unit,
     onSaveConfig: (host: String, port: Int, useTls: Boolean, username: String, topic: String, password: String?) -> Unit,
@@ -230,6 +231,7 @@ internal fun SmartHomeContent(
         SpeechSetupSheet(
             selectedEngine = ttsEngine,
             geminiKeyConfigured = geminiKeyConfigured,
+            sharedTtsAvailable = sharedTtsAvailable,
             onSetTtsEngine = onSetTtsEngine,
             onSetGeminiKey = onSetGeminiKey,
             onClearGeminiKey = onClearGeminiKey,

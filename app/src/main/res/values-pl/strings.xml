@@ -97,7 +97,7 @@ is unchanged; only the displayed label localizes.
     Voice screen.
     -->
     <string name="settings_tts_engine_title">Silnik mowy</string>
-    <string name="settings_tts_engine_device">Urządzenie (offline, bezpłatnie)</string>
+    <string name="settings_tts_engine_device">Urządzenie (niska jakość, na urządzeniu)</string>
     <string name="settings_tts_engine_gemini">Gemini (wysoka jakość, online)</string>
 
     <string name="settings_tts_voice_label">Głos</string>

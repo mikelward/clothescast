@@ -135,7 +135,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     and the in-line "Add API key" dialog.
     -->
     <string name="settings_tts_engine_title">Sprach-Engine</string>
-    <string name="settings_tts_engine_device">Gerät (offline, kostenlos)</string>
+    <string name="settings_tts_engine_device">Gerät (niedrige Qualität, auf dem Gerät)</string>
     <string name="settings_tts_engine_gemini">Gemini (hohe Qualität, online)</string>
 
     <string name="settings_tts_voice_label">Stimme</string>

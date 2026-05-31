@@ -105,7 +105,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     hint and the in-line "Aggiungi chiave API" dialog.
     -->
     <string name="settings_tts_engine_title">Motore vocale</string>
-    <string name="settings_tts_engine_device">Dispositivo (offline, gratis)</string>
+    <string name="settings_tts_engine_device">Dispositivo (bassa qualità, sul dispositivo)</string>
     <string name="settings_tts_engine_gemini">Gemini (alta qualità, online)</string>
 
     <string name="settings_tts_voice_label">Voce</string>

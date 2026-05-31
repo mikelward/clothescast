@@ -88,7 +88,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     hint and the in-line "Add API key" dialog.
     -->
     <string name="settings_tts_engine_title">Glasovni mehanizam</string>
-    <string name="settings_tts_engine_device">Uređaj (offline, besplatno)</string>
+    <string name="settings_tts_engine_device">Uređaj (niska kvaliteta, na uređaju)</string>
     <string name="settings_tts_engine_gemini">Gemini (visoka kvaliteta, online)</string>
 
     <string name="settings_tts_voice_label">Glas</string>

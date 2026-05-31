@@ -224,7 +224,7 @@ default English (matching values-pl / values-uk).
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">Glasovni mehanizam</string>
     <string name="settings_tts_engine_description">Izaberi između govora niskog kvaliteta na uređaju i govora visokog kvaliteta na mreži.</string>
-    <string name="settings_tts_engine_device">Uređaj (offline, besplatno)</string>
+    <string name="settings_tts_engine_device">Uređaj (niska kvaliteta, na uređaju)</string>
     <string name="settings_tts_engine_gemini">Gemini (visoki kvalitet, online)</string>
     <string name="settings_tts_voice_label">Glas</string>
     <string name="settings_tts_voice_dismiss">Gotovo</string>

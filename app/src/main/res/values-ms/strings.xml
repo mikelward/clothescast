@@ -369,7 +369,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <!-- TTS / Voice settings -->
     <string name="settings_tts_engine_title">Enjin suara</string>
     <string name="settings_tts_engine_description">Pilih antara pertuturan berkualiti rendah pada peranti atau pertuturan berkualiti tinggi dalam talian.</string>
-    <string name="settings_tts_engine_device">Peranti (luar talian, percuma)</string>
+    <string name="settings_tts_engine_device">Peranti (kualiti rendah, pada peranti)</string>
     <string name="settings_tts_engine_gemini">Gemini (berkualiti tinggi, dalam talian)</string>
     <string name="settings_tts_voice_label">Suara</string>
     <string name="settings_tts_voice_dismiss">Selesai</string>

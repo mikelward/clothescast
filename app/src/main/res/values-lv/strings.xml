@@ -351,7 +351,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <!-- TTS settings -->
     <string name="settings_tts_engine_title">Balss dzinējs</string>
     <string name="settings_tts_engine_description">Izvēlieties starp zemas kvalitātes runu ierīcē un augstas kvalitātes runu tiešsaistē.</string>
-    <string name="settings_tts_engine_device">Ierīce (bezsaiste, bezmaksas)</string>
+    <string name="settings_tts_engine_device">Ierīce (zema kvalitāte, ierīcē)</string>
     <string name="settings_tts_engine_gemini">Gemini (augsta kvalitāte, tiešsaistē)</string>
     <string name="settings_tts_voice_label">Balss</string>
     <string name="settings_tts_voice_dismiss">Gatavs</string>

@@ -135,7 +135,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     the same way it does for "URL", "JSON", "TTS".
     -->
     <string name="settings_tts_engine_title">Μηχανή φωνής</string>
-    <string name="settings_tts_engine_device">Συσκευή (offline, δωρεάν)</string>
+    <string name="settings_tts_engine_device">Συσκευή (χαμηλή ποιότητα, στη συσκευή)</string>
     <string name="settings_tts_engine_gemini">Gemini (υψηλή ποιότητα, online)</string>
 
     <string name="settings_tts_voice_label">Φωνή</string>

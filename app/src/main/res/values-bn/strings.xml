@@ -354,7 +354,7 @@ West Bengal vocabulary differences in a future PR.
 
     <string name="settings_tts_engine_title">ভয়েস ইঞ্জিন</string>
     <string name="settings_tts_engine_description">ডিভাইসে নিম্ন-মানের ভয়েস এবং অনলাইনে উচ্চ-মানের ভয়েসের মধ্যে বেছে নিন।</string>
-    <string name="settings_tts_engine_device">ডিভাইস (অফলাইন, বিনামূল্যে)</string>
+    <string name="settings_tts_engine_device">ডিভাইস (নিম্ন মান, ডিভাইসে)</string>
     <string name="settings_tts_engine_gemini">Gemini (উচ্চমান, অনলাইন)</string>
     <string name="settings_tts_voice_label">ভয়েস</string>
     <string name="settings_tts_voice_dismiss">সম্পন্ন</string>

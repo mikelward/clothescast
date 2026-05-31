@@ -121,7 +121,7 @@ label localises.
     hint and the in-line "新增 API 金鑰" dialog.
     -->
     <string name="settings_tts_engine_title">語音引擎</string>
-    <string name="settings_tts_engine_device">裝置（離線，免費）</string>
+    <string name="settings_tts_engine_device">裝置（低品質，本機）</string>
     <string name="settings_tts_engine_gemini">Gemini（高品質，線上）</string>
 
     <string name="settings_tts_voice_label">語音</string>

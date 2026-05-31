@@ -370,7 +370,7 @@ standard in Israeli digital communication.
     <string name="settings_delivery_notification_and_tts">התראה וקריאה בקול</string>
     <string name="settings_tts_engine_title">מנוע קול</string>
     <string name="settings_tts_engine_description">בחר/י בין דיבור באיכות נמוכה במכשיר לבין דיבור באיכות גבוהה באינטרנט.</string>
-    <string name="settings_tts_engine_device">מכשיר (ללא אינטרנט, חינם)</string>
+    <string name="settings_tts_engine_device">מכשיר (איכות נמוכה, במכשיר)</string>
     <string name="settings_tts_engine_gemini">Gemini (איכות גבוהה, מקוון)</string>
     <string name="settings_tts_voice_label">קול</string>
     <string name="settings_tts_voice_dismiss">סיום</string>

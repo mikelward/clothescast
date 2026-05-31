@@ -384,7 +384,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <!-- Voice engine. -->
     <string name="settings_tts_engine_title">Glasovni mehanizem</string>
     <string name="settings_tts_engine_description">Izberi med govorom v nizki kakovosti v napravi in govorom v visoki kakovosti na spletu.</string>
-    <string name="settings_tts_engine_device">Naprava (brez omrežja, brezplačno)</string>
+    <string name="settings_tts_engine_device">Naprava (nizka kakovost, v napravi)</string>
     <string name="settings_tts_engine_gemini">Gemini (visoka kakovost, z omrežjem)</string>
     <string name="settings_tts_voice_label">Glas</string>
     <string name="settings_tts_voice_dismiss">Končano</string>

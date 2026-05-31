@@ -87,7 +87,7 @@ displayed label localizes.
     <string name="settings_delivery_notification_and_tts">Ilmoitus ja puhe</string>
 
     <string name="settings_tts_engine_title">Puhesynteesimoottori</string>
-    <string name="settings_tts_engine_device">Laite (offline, ilmainen)</string>
+    <string name="settings_tts_engine_device">Laite (heikko laatu, laitteessa)</string>
     <string name="settings_tts_engine_gemini">Gemini (korkea laatu, online)</string>
 
     <string name="settings_tts_voice_label">Ääni</string>

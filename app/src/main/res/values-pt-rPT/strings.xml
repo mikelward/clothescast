@@ -142,7 +142,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     "dispositivo" reads as native PT in the engine picker.
     -->
     <string name="settings_tts_engine_title">Motor de voz</string>
-    <string name="settings_tts_engine_device">Dispositivo (offline, gratuito)</string>
+    <string name="settings_tts_engine_device">Dispositivo (qualidade baixa, no dispositivo)</string>
     <string name="settings_tts_engine_gemini">Gemini (alta qualidade, online)</string>
 
     <string name="settings_tts_voice_label">Voz</string>

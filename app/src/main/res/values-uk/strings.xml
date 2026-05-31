@@ -111,7 +111,7 @@ only the displayed label localizes.
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">Голосовий рушій</string>
-    <string name="settings_tts_engine_device">Пристрій (офлайн, безкоштовно)</string>
+    <string name="settings_tts_engine_device">Пристрій (низька якість, на пристрої)</string>
     <string name="settings_tts_engine_gemini">Gemini (висока якість, онлайн)</string>
     <string name="settings_tts_engine_description">Обери між мовленням низької якості на пристрої та мовленням високої якості онлайн.</string>
 

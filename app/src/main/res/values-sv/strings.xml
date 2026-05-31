@@ -103,7 +103,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">Röstmotor</string>
-    <string name="settings_tts_engine_device">Enhet (offline, gratis)</string>
+    <string name="settings_tts_engine_device">Enhet (låg kvalitet, på enheten)</string>
     <string name="settings_tts_engine_gemini">Gemini (hög kvalitet, online)</string>
     <string name="settings_tts_engine_description">Välj mellan tal i låg kvalitet på enheten och tal i hög kvalitet online.</string>
 

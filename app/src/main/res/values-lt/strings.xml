@@ -377,7 +377,7 @@ What is NOT overridden, by design:
     <!-- Voice engine. -->
     <string name="settings_tts_engine_title">Balso variklis</string>
     <string name="settings_tts_engine_description">Pasirink, ar naudoti žemos kokybės kalbėjimą įrenginyje, ar aukštos kokybės kalbėjimą internete.</string>
-    <string name="settings_tts_engine_device">Įrenginys (neprisijungus, nemokamas)</string>
+    <string name="settings_tts_engine_device">Įrenginys (žema kokybė, įrenginyje)</string>
     <string name="settings_tts_engine_gemini">Gemini (aukšta kokybė, prisijungus)</string>
     <string name="settings_tts_voice_label">Balsas</string>
     <string name="settings_tts_voice_dismiss">Atlikta</string>

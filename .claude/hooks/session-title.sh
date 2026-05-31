@@ -38,17 +38,22 @@ cur_title="$(printf '%s' "$input" | jq -r '.session_title // ""')"
 [ -n "$prompt" ] || exit 0
 
 marker="${TMPDIR:-/tmp}/cc-autotitle-${session_id//[^A-Za-z0-9_-]/_}"
+backoff="$marker.off"
 last_set=""
 [ -f "$marker" ] && last_set="$(cat "$marker" 2>/dev/null)"
+
+# Once we've backed off (manual rename seen), stay silent for the session.
+[ -f "$backoff" ] && exit 0
 
 # Respect a human-set name (only observable when the build supplies
 # session_title): if a title exists and it isn't the one we last wrote,
 # someone renamed it deliberately. Back off for the rest of the session.
+# The flag lives in a separate file (not a sentinel string in $marker) so a
+# legitimately generated title like "backed-off" can't be mistaken for it.
 if [ -n "$cur_title" ] && [ "$cur_title" != "$last_set" ]; then
-  printf 'backed-off' >"$marker" 2>/dev/null || true
+  : >"$backoff" 2>/dev/null || true
   exit 0
 fi
-[ "$last_set" = "backed-off" ] && exit 0
 
 # Ask a fast model for a label. Run from a fresh, private temp dir (layer 1 of
 # the recursion guard) so the inner call discovers no .claude/settings.json or

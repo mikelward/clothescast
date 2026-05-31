@@ -163,10 +163,33 @@ export const tts = onRequest(
       return;
     }
 
-    if (upstream.ok) {
+    // Even a 200 from Gemini can carry no audio: the prompt can land on
+    // a safety filter (`promptFeedback.blockReason`) or the candidate
+    // can come back without an `inlineData` part. The Android client
+    // (`GeminiTtsClient.synthesize`) treats both as synthesis failures
+    // and falls back to device TTS — so we should treat them the same
+    // way for quota purposes and refund the slot, otherwise a string
+    // of safety-blocked prompts could burn the user's daily allowance
+    // while delivering no audio.
+    const successHasAudio = upstream.ok && responseHasAudio(upstreamBody);
+
+    if (successHasAudio) {
       if (reservation.reserved) {
         res.setHeader("X-Daily-Quota-Limit", String(DAILY_LIMIT));
         res.setHeader("X-Daily-Quota-Remaining", String(reservation.remaining));
+      }
+    } else if (upstream.ok) {
+      logger.warn("Gemini returned 200 but no inline audio", {
+        bodyExcerpt: excerpt(upstreamBody),
+      });
+      if (reservation.reserved) {
+        try {
+          await releaseDailySlot(installId, today);
+        } catch (err) {
+          logger.warn("Quota rollback after no-audio 200 failed", {
+            code: errorCode(err),
+          });
+        }
       }
     } else {
       logger.warn("Gemini returned non-success", {
@@ -306,6 +329,63 @@ function headerValue(raw: unknown): string | null {
     return headerValue(raw[0]);
   }
   return null;
+}
+
+/**
+ * Returns true when the upstream 200 response actually carries audio.
+ *
+ * Mirrors what `GeminiTtsClient.synthesize` checks for on the Android
+ * client: presence of at least one `candidates[*].content.parts[*].inlineData`,
+ * and no `promptFeedback.blockReason`. A 200 that fails either check
+ * is treated by the client as a synthesis failure (falls back to device
+ * TTS), so for quota purposes we treat it the same way and refund the
+ * slot.
+ *
+ * Defaults to "looks like audio" when the body isn't parseable as the
+ * expected JSON envelope — better to credit the user with a slot than
+ * to over-rollback on a payload shape we don't recognise. Gemini is
+ * the only producer here, so an unparseable 200 body is the
+ * vanishingly-rare case in practice.
+ */
+function responseHasAudio(body: ArrayBuffer): boolean {
+  let text: string;
+  try {
+    text = Buffer.from(body).toString("utf8");
+  } catch {
+    return true;
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    return true;
+  }
+  if (!parsed || typeof parsed !== "object") return true;
+  const envelope = parsed as Record<string, unknown>;
+  const promptFeedback = envelope.promptFeedback as
+    | { blockReason?: unknown }
+    | undefined;
+  if (promptFeedback && promptFeedback.blockReason) return false;
+  const candidates = envelope.candidates;
+  if (!Array.isArray(candidates) || candidates.length === 0) return false;
+  for (const candidate of candidates) {
+    if (!candidate || typeof candidate !== "object") continue;
+    const content = (candidate as Record<string, unknown>).content as
+      | { parts?: unknown }
+      | undefined;
+    const parts = content?.parts;
+    if (!Array.isArray(parts)) continue;
+    for (const part of parts) {
+      if (!part || typeof part !== "object") continue;
+      const inlineData = (part as Record<string, unknown>).inlineData as
+        | { data?: unknown }
+        | undefined;
+      if (inlineData && typeof inlineData.data === "string" && inlineData.data.length > 0) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 function excerpt(body: ArrayBuffer): string {

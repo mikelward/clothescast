@@ -409,12 +409,15 @@ new rule the first time something bites you, not the third.
   30% in the tonight window and the user has an evening event with a
   location, the clause still emits — without recommending clothes —
   as a bare rain warning ("Rain tonight at 9pm." / "Chance of rain
-  tonight at 9pm." for the POSSIBLE tier). The principle: we don't
-  recommend clothes the user hasn't asked for (an umbrella isn't a
-  default, see the comment on `ClothesRule.DEFAULTS`), but we *do*
-  surface rain when a model spots it — staying silent on evening rain
-  because no rule happened to trigger is exactly the case the per-model
-  tier exists to catch.
+  tonight at 9pm." for the POSSIBLE tier). The principle: we *always*
+  surface rain when a model spots it, even when no clothes rule fires —
+  e.g. the user lowered their umbrella gate, deleted the rule, or the
+  probability sits below it. The umbrella itself ships as a precip-keyed
+  default (peak probability above 30% — see the comment on
+  `ClothesRule.DEFAULTS`), so on a default setup the evening clause names
+  it; the bare-rain path is the fallback for when it doesn't. Staying
+  silent on evening rain because no rule happened to trigger is exactly
+  the case the per-model tier exists to catch.
 - The `:app` module owns Android concerns; LLM choice (which Gemini model
   to call) is `:app`'s problem. The `:core:domain` module is pure Kotlin
   and must stay that way — it's where the clothes / insight logic lives

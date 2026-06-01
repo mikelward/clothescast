@@ -73,10 +73,13 @@ data class ClothesRule(
         // align with the `today_outfit_top_*` labels in values/strings.xml.
         // Per-language phrasers translate at format time
         // (e.g. GermanClothesPhraser maps "sweater" → "Pullover").
-        // Wet-weather accessories live on an opt-in umbrella [ClothesRule]
-        // (a carried accessory) instead of [DEFAULTS]: we ship no precip-keyed
-        // default because "bring an umbrella" is the wrong answer for users
-        // who'd reach for a rain jacket or hood instead.
+        // The umbrella ships as a precip-keyed default (carried accessory):
+        // when the day's peak rain probability clears 30% we suggest bringing
+        // one, folded into the insight's rain clause ("Rain at 3pm, bring an
+        // umbrella."). Like every default it's editable — the user can lower /
+        // raise the gate or delete the rule entirely from the clothes-rule
+        // editor. The 30% gate mirrors the POSSIBLE rain tier the morning
+        // insight already uses to mention rain at all.
         // TODO(rain-accessory-variants): broaden the carried-accessory rules
         //  beyond the umbrella (rain jacket, hood, rain boots, …) once the
         //  resource strings and per-locale phrasers cover them.
@@ -86,6 +89,7 @@ data class ClothesRule(
             ClothesRule(Garment.COAT, TemperatureBelow(4.0)),
             ClothesRule(Garment.GLOVES, TemperatureBelow(4.0)),
             ClothesRule(Garment.SHORTS, TemperatureAbove(23.0)),
+            ClothesRule(Garment.UMBRELLA, PrecipitationProbabilityAbove(30.0)),
         )
 
         /** Sanity bounds in °C for the rationale dialog's `+1°` / `−1°` taps. Wide enough

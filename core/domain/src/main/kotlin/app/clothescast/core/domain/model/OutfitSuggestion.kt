@@ -100,10 +100,10 @@ data class OutfitSuggestion(
     /**
      * Optional carried accessory shown alongside the worn outfit — today just
      * the umbrella, the `Garment.Slot.CARRIED` member. Like [hands] it's a
-     * single opt-in tier with no fallback: present only when a carried-accessory
-     * rule fires (a rain-keyed umbrella rule), never promoted to a default. It's
-     * independent of [hands], so a cold rainy day can light both the glove icon
-     * and the umbrella.
+     * single tier with no fallback: present only when a carried-accessory rule
+     * fires (the rain-keyed umbrella rule, which ships as a precip default — see
+     * [ClothesRule.DEFAULTS]). It's independent of [hands], so a cold rainy day
+     * can light both the glove icon and the umbrella.
      */
     enum class Carried {
         UMBRELLA;
@@ -166,7 +166,17 @@ data class OutfitSuggestion(
             defaultBottom: Bottom = Bottom.LONG_PANTS,
             defaultTop: Top = Top.TSHIRT,
         ): OutfitSuggestion =
-            pickOutfit(clothesRules.filter { it.appliesTo(forecast) }, defaultTop, defaultBottom)
+            pickOutfit(
+                // Mirror EvaluateClothesRules' carried-accessory gate: the
+                // umbrella surfaces only when the day's condition warrants rain
+                // gear, so the next-period icon agrees with the primary path.
+                clothesRules.filter {
+                    it.appliesTo(forecast) &&
+                        !(it.item.slot == Garment.Slot.CARRIED && !forecast.condition.warrantsRainAccessory())
+                },
+                defaultTop,
+                defaultBottom,
+            )
 
         /**
          * Two-piece icon outfit derived from an already-evaluated

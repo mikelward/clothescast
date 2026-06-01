@@ -6,7 +6,9 @@ import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.WeatherCondition
 import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldNotContain
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -14,7 +16,12 @@ class EvaluateClothesRulesTest {
     private val subject = EvaluateClothesRules()
     private val date = LocalDate.of(2026, 4, 25)
 
-    private fun forecast(min: Double, max: Double, precip: Double = 0.0): DailyForecast =
+    private fun forecast(
+        min: Double,
+        max: Double,
+        precip: Double = 0.0,
+        condition: WeatherCondition = WeatherCondition.CLEAR,
+    ): DailyForecast =
         DailyForecast(
             date = date,
             temperatureMinC = min,
@@ -23,7 +30,7 @@ class EvaluateClothesRulesTest {
             feelsLikeMaxC = max,
             precipitationProbabilityMaxPct = precip,
             precipitationMmTotal = 0.0,
-            condition = WeatherCondition.CLEAR,
+            condition = condition,
         )
 
     @Test
@@ -83,12 +90,43 @@ class EvaluateClothesRulesTest {
     }
 
     @Test
-    fun `wet cold day matches cold-weather rules, bottom slot resolves to the default`() {
-        // Defaults no longer include umbrella — the precip clause announces rain,
-        // and the wet-weather accessory will become a personalised setting.
-        val out = subject(forecast(min = 9.0, max = 15.0, precip = 70.0), ClothesRule.DEFAULTS)
-        out.rules.map { it.item.itemKey }.shouldContainExactly("sweater", "jacket")
-        out.items.shouldContainExactly("sweater", "jacket", "pants")
+    fun `wet cold day matches cold-weather rules plus the umbrella default, bottom slot resolves to the default`() {
+        // 70% rain clears the umbrella default's 30% gate, so it fires alongside
+        // the cold-weather tops; the umbrella rides in the wear list as a carried
+        // accessory (the formatter folds it into the rain clause downstream).
+        val out = subject(
+            forecast(min = 9.0, max = 15.0, precip = 70.0, condition = WeatherCondition.RAIN),
+            ClothesRule.DEFAULTS,
+        )
+        out.rules.map { it.item.itemKey }.shouldContainExactly("sweater", "jacket", "umbrella")
+        // items floats only bottoms to the end, so the umbrella (unclassified)
+        // stays ahead of the default-fallback pants.
+        out.items.shouldContainExactly("sweater", "jacket", "umbrella", "pants")
+    }
+
+    @Test
+    fun `snowy day above the umbrella gate suppresses the carried umbrella`() {
+        // The umbrella default keys off aggregate precip probability, so an 80%
+        // snowy day clears its gate — but snow doesn't warrant an umbrella, so
+        // the carried rule is filtered out while the worn cold-weather rules
+        // still fire. Keeps the icon, recommendations, and prose consistent.
+        val out = subject(
+            forecast(min = -2.0, max = 2.0, precip = 80.0, condition = WeatherCondition.SNOW),
+            ClothesRule.DEFAULTS,
+        )
+        out.rules.map { it.item.itemKey }.shouldContainExactly("sweater", "jacket", "coat", "gloves")
+        out.items.shouldNotContain("umbrella")
+    }
+
+    @Test
+    fun `thunderstorm day above the umbrella gate keeps the carried umbrella`() {
+        // Thunderstorm is treated as rain — a wet forecast the user wants an
+        // umbrella for — so the carried rule survives the condition gate.
+        val out = subject(
+            forecast(min = 12.0, max = 18.0, precip = 70.0, condition = WeatherCondition.THUNDERSTORM),
+            ClothesRule.DEFAULTS,
+        )
+        out.rules.map { it.item.itemKey }.shouldContain("umbrella")
     }
 
 

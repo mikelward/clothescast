@@ -271,6 +271,25 @@ class RenderInsightSummaryTest {
     }
 
     @Test
+    fun `clothes mention IF_CHANGED ignores a carried accessory difference`() {
+        // The umbrella default fires today (rain likely) but not on the dry
+        // yesterday. The worn garments are identical, so IF_CHANGED must
+        // suppress the wear clause — the umbrella is not a wear change, it
+        // rides the precip clause via carriedAccessories. Otherwise a rainy
+        // mild day would emit a redundant baseline "Wear a t-shirt and pants."
+        val out = subject(
+            mildToday,
+            yesterday,
+            listOf("t-shirt", "pants", "umbrella"),
+            clothesMentionMode = ClothesMentionMode.IF_CHANGED,
+            yesterdayTriggeredItems = listOf("t-shirt", "pants"),
+        )
+        out.clothes.shouldBeNull()
+        // The umbrella still surfaces independently for the precip clause.
+        out.carriedAccessories.shouldContainExactly("umbrella")
+    }
+
+    @Test
     fun `clothes mention mode is ignored on TONIGHT`() {
         // TONIGHT has no yesterday-overnight comparison, so it always names
         // clothing regardless of mode.

@@ -21,6 +21,57 @@ class ClothesRulesSnapshotTest {
         snap.coatDeltaC shouldBe "0"
         snap.glovesDeltaC shouldBe "0"
         snap.shortsDeltaC shouldBe "0"
+        snap.umbrellaDeltaPct shouldBe "0"
+    }
+
+    @Test
+    fun `umbrella gate customisation is bucketed as a percentage-point delta`() {
+        // The umbrella default is precip-keyed (>30%). Raising the gate to 60%
+        // is a +30pp change that must register as a customised category — not
+        // silently report "0" the way routing it through the °C bucket would.
+        val rules = ClothesRule.DEFAULTS.map { rule ->
+            if (rule.item == Garment.UMBRELLA) {
+                rule.copy(condition = ClothesRule.PrecipitationProbabilityAbove(60.0))
+            } else {
+                rule
+            }
+        }
+
+        val snap = ClothesRulesSnapshot.from(rules)
+
+        snap.umbrellaDeltaPct shouldBe "+30"
+        snap.customisedCount shouldBe 1
+        snap.categoriesCustomised shouldBe "umbrella"
+        snap.allDefaults shouldBe false
+    }
+
+    @Test
+    fun `lowering the umbrella gate reports a signed negative bucket`() {
+        // Default 30% → 10% is a -20pp change.
+        val rules = ClothesRule.DEFAULTS.map { rule ->
+            if (rule.item == Garment.UMBRELLA) {
+                rule.copy(condition = ClothesRule.PrecipitationProbabilityAbove(10.0))
+            } else {
+                rule
+            }
+        }
+
+        val snap = ClothesRulesSnapshot.from(rules)
+
+        snap.umbrellaDeltaPct shouldBe "-20"
+        snap.customisedCount shouldBe 1
+    }
+
+    @Test
+    fun `deleting the umbrella default reports it MISSING and customised`() {
+        val rules = ClothesRule.DEFAULTS.filterNot { it.item == Garment.UMBRELLA }
+
+        val snap = ClothesRulesSnapshot.from(rules)
+
+        snap.umbrellaDeltaPct shouldBe ClothesRulesSnapshot.MISSING
+        snap.customisedCount shouldBe 1
+        snap.categoriesCustomised shouldBe "umbrella"
+        snap.allDefaults shouldBe false
     }
 
     @Test

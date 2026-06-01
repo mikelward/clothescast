@@ -44,6 +44,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
@@ -221,60 +222,74 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `umbrella migration materialises a rule for an opted-in user and drops the raw key`() = runTest {
-        // A user who had opted into the retired rain_accessory = UMBRELLA toggle
-        // before it became a clothes rule. The migration materialises an umbrella
-        // ClothesRule keyed on a precipitation-probability condition (appended to
-        // the stored defaults) and drops the raw rain_accessory key.
-        val rainAccessoryKey = stringPreferencesKey("rain_accessory")
-        val before = mutablePreferencesOf(rainAccessoryKey to "UMBRELLA")
+    fun `umbrella migration appends the umbrella default to a stored list without it`() = runTest {
+        // A user with a persisted rule list that predates the umbrella default
+        // gets it appended, keyed on a precipitation-probability condition.
+        val legacyJson = encodeRules(
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+        )
+        val before = mutablePreferencesOf(clothesRulesKey to legacyJson)
 
-        val result = umbrellaRuleMigration().migrate(before)
+        val result = umbrellaDefaultMigration().migrate(before)
 
         val rules = decodeStoredRules(result[clothesRulesKey])
-        val umbrellaRule = rules.find { it.item == Garment.UMBRELLA }
-        umbrellaRule shouldNotBe null
-        (umbrellaRule!!.condition is ClothesRule.PrecipitationProbabilityAbove) shouldBe true
-        result[rainAccessoryKey] shouldBe null
+        rules.map { it.item } shouldBe listOf(Garment.SWEATER, Garment.UMBRELLA)
+        val umbrellaRule = rules.first { it.item == Garment.UMBRELLA }
+        (umbrellaRule.condition is ClothesRule.PrecipitationProbabilityAbove) shouldBe true
     }
 
     @Test
-    fun `umbrella migration adds no umbrella rule when rain_accessory was never set`() = runTest {
-        // A user who never opted in: no umbrella rule is materialised, and the
-        // stored clothes-rules list is left untouched (null → read DEFAULTS).
-        val result = umbrellaRuleMigration().migrate(emptyPreferences())
+    fun `umbrella migration does not duplicate an existing umbrella rule`() = runTest {
+        val withUmbrella = encodeRules(
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(50.0)),
+        )
+        val before = mutablePreferencesOf(clothesRulesKey to withUmbrella)
+
+        val result = umbrellaDefaultMigration().migrate(before)
+
+        val rules = decodeStoredRules(result[clothesRulesKey])
+        rules.count { it.item == Garment.UMBRELLA } shouldBe 1
+        // The user's customised gate survives — we don't reset it to the default.
+        (rules.first { it.item == Garment.UMBRELLA }.condition as ClothesRule.PrecipitationProbabilityAbove)
+            .percent shouldBe 50.0
+    }
+
+    @Test
+    fun `umbrella migration leaves a fresh install with no stored list untouched`() = runTest {
+        // No stored key: parseRules reads DEFAULTS (now incl. umbrella) directly.
+        val result = umbrellaDefaultMigration().migrate(emptyPreferences())
 
         result[clothesRulesKey] shouldBe null
     }
 
     @Test
-    fun `umbrella migration re-runs for users migrated under the v1 sentinel`() = runTest {
-        // The v1->v2 bump: a user who migrated while the Format toggle still
-        // existed (v1 set) must be re-evaluated, so a rain_accessory written
-        // after v1 fired isn't stranded once the key stops being read.
-        val v1 = booleanPreferencesKey("umbrella_rule_migrated_v1")
-        umbrellaRuleMigration().shouldMigrate(mutablePreferencesOf(v1 to true)) shouldBe true
-    }
-
-    @Test
-    fun `umbrella migration runs once, gated by its v2 sentinel`() = runTest {
-        val v2 = booleanPreferencesKey("umbrella_rule_migrated_v2")
-        umbrellaRuleMigration().shouldMigrate(mutablePreferencesOf(v2 to true)) shouldBe false
-    }
-
-    @Test
-    fun `umbrella migration rescues a rain_accessory opt-in stranded after the v1 run`() = runTest {
-        // Intermediate build: v1 already fired, then the still-present Format
-        // toggle wrote rain_accessory = UMBRELLA. The v2 re-run converts it.
-        val v1 = booleanPreferencesKey("umbrella_rule_migrated_v1")
+    fun `umbrella migration drops the retired rain_accessory toggle key`() = runTest {
         val rainAccessoryKey = stringPreferencesKey("rain_accessory")
-        val before = mutablePreferencesOf(v1 to true, rainAccessoryKey to "UMBRELLA")
+        val before = mutablePreferencesOf(rainAccessoryKey to "UMBRELLA")
 
-        val result = umbrellaRuleMigration().migrate(before)
+        val result = umbrellaDefaultMigration().migrate(before)
 
-        val umbrellaRule = decodeStoredRules(result[clothesRulesKey]).find { it.item == Garment.UMBRELLA }
-        umbrellaRule shouldNotBe null
         result[rainAccessoryKey] shouldBe null
+    }
+
+    @Test
+    fun `umbrella migration leaves a legacy-only list untouched so defaults still apply`() = runTest {
+        val legacyOnlyJson = """[{"item":"poncho","type":"temp_below","value":5.0}]"""
+        val before = mutablePreferencesOf(clothesRulesKey to legacyOnlyJson)
+
+        val result = umbrellaDefaultMigration().migrate(before)
+
+        result[clothesRulesKey] shouldBe legacyOnlyJson
+    }
+
+    @Test
+    fun `umbrella migration runs once, gated by its sentinel`() = runTest {
+        val migration = umbrellaDefaultMigration()
+        migration.shouldMigrate(emptyPreferences()) shouldBe true
+        migration.shouldMigrate(
+            mutablePreferencesOf(booleanPreferencesKey("umbrella_default_migrated_v1") to true),
+        ) shouldBe false
     }
 
     @Test
@@ -1192,6 +1207,11 @@ class SettingsRepositoryTest {
     // path does (ClothesRuleDto.toDomain drops non-catalog keys).
     private fun decodeStoredRules(raw: String?): List<ClothesRule> =
         migrationJson.decodeFromString<List<ClothesRuleDto>>(raw!!).mapNotNull { it.toDomain() }
+
+    // Encode rules to the on-disk JSON the same way the production write path
+    // does (ClothesRule.toDto), so migration tests can build realistic input.
+    private fun encodeRules(vararg rules: ClothesRule): String =
+        migrationJson.encodeToString(rules.map { it.toDto() })
 
     // The pre-gloves default list — what an install that persisted rules before
     // this change would hold on disk.

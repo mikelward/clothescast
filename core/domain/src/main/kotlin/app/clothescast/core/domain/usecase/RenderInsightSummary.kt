@@ -286,12 +286,23 @@ class RenderInsightSummary {
                 // the tolerated aliases (trousers, jumper, tshirt) onto the
                 // canonical key, so this also picks up the case / whitespace
                 // tolerance the previous normalize() pass was doing. Unknown
-                // items (umbrella, anything else off-catalog) fall back to the
-                // trimmed lowercase string so they still compare consistently.
+                // items (anything off-catalog) fall back to the trimmed
+                // lowercase string so they still compare consistently.
+                //
+                // Accessories (umbrella) are excluded from the comparison: the
+                // formatter strips them from the wear sentence and renders them
+                // through the precip clause instead, so an umbrella that fired
+                // today but not yesterday isn't a *wear* change — letting it
+                // through would emit a redundant baseline "Wear a t-shirt and
+                // pants." just because the umbrella's default gate cleared. The
+                // umbrella still surfaces via [carriedAccessories] → precip
+                // clause regardless of this gate.
                 val canonicalize: (String) -> String = { item ->
                     Garment.fromKey(item)?.itemKey ?: item.trim().lowercase(Locale.ROOT)
                 }
-                if (items.map(canonicalize).toSet() == yesterdayItems.map(canonicalize).toSet()) {
+                val wornToday = items.filterNot { Garment.isAccessoryKey(it) }.map(canonicalize).toSet()
+                val wornYesterday = yesterdayItems.filterNot { Garment.isAccessoryKey(it) }.map(canonicalize).toSet()
+                if (wornToday == wornYesterday) {
                     null
                 } else {
                     ClothesClause(items)

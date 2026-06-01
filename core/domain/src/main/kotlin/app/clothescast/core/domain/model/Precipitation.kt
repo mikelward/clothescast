@@ -19,6 +19,32 @@ internal fun WeatherCondition.isPrecipitation(): Boolean = when (this) {
 }
 
 /**
+ * True when a "bring an umbrella" carried accessory reads correctly for this
+ * condition — wet, rain-shaped precipitation the user shelters under. RAIN and
+ * DRIZZLE qualify; THUNDERSTORM does too — it's rain with lightning, and a
+ * thunderstorm forecast is still a wet one the user wants an umbrella for. SNOW
+ * isn't wet-in-the-umbrella sense, and FOG / dry-sky / UNKNOWN states aren't
+ * precipitation at all.
+ *
+ * The single source of truth shared by every umbrella surface so they can't
+ * drift: the rule engine ([EvaluateClothesRules]) gates the carried-accessory
+ * rule on it (so the home-screen icon, the bulleted recommendations, and the
+ * outfit card all agree), and the prose formatter gates the "bring an umbrella"
+ * clause on it too.
+ */
+fun WeatherCondition.warrantsRainAccessory(): Boolean = when (this) {
+    WeatherCondition.RAIN,
+    WeatherCondition.DRIZZLE,
+    WeatherCondition.THUNDERSTORM -> true
+    WeatherCondition.SNOW,
+    WeatherCondition.FOG,
+    WeatherCondition.CLEAR,
+    WeatherCondition.PARTLY_CLOUDY,
+    WeatherCondition.CLOUDY,
+    WeatherCondition.UNKNOWN -> false
+}
+
+/**
  * Per-model agreement thresholds for surfacing rain, in precipitation-
  * probability percent. The user's mental model is "1 model says rain → hedge
  * it as a chance; majority of models say a lot of rain → just say rain". 30%

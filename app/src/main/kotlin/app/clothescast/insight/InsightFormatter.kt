@@ -25,6 +25,7 @@ import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.WeekAheadClause
 import app.clothescast.core.domain.model.WeekAheadInsight
 import app.clothescast.core.domain.model.toUnit
+import app.clothescast.core.domain.model.warrantsRainAccessory
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.TextStyle
@@ -696,26 +697,6 @@ class InsightFormatter(
                 resources.getString(R.string.insight_precip_chance, rawType.lowercase(locale), timePhrase)
             }
         }
-    }
-
-    /**
-     * Conditions where a "bring an umbrella" mention reads correctly. SNOW
-     * and FOG aren't actually wet-in-the-umbrella sense; THUNDERSTORM has
-     * rain but recommending an umbrella under lightning is bad practice.
-     * Anything else (CLEAR / cloud / UNKNOWN) doesn't reach the precip
-     * clause at all (RenderInsightSummary already filters via
-     * isPrecipitation()).
-     */
-    private fun WeatherCondition.warrantsRainAccessory(): Boolean = when (this) {
-        WeatherCondition.RAIN,
-        WeatherCondition.DRIZZLE -> true
-        WeatherCondition.SNOW,
-        WeatherCondition.THUNDERSTORM,
-        WeatherCondition.FOG,
-        WeatherCondition.CLEAR,
-        WeatherCondition.PARTLY_CLOUDY,
-        WeatherCondition.CLOUDY,
-        WeatherCondition.UNKNOWN -> false
     }
 
     /**

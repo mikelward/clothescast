@@ -1324,6 +1324,17 @@ internal fun GeminiTtsPromoCardPreview() {
     }
 }
 
+@Preview(name = "Banner · gemini voice limit", widthDp = 360)
+@Composable
+internal fun GeminiTtsLimitCardPreview() {
+    Frame {
+        GeminiTtsLimitCardContent(
+            onOpenVoice = {},
+            onDismiss = {},
+        )
+    }
+}
+
 @Preview(name = "Banner · local build (clean)", widthDp = 360)
 @Composable
 internal fun LocalBuildBannerPreview() {

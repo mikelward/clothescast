@@ -664,6 +664,80 @@ class SettingsRepository(
     }
 
     /**
+     * Runtime status of the shared free Gemini TTS daily allowance, separate
+     * from user preferences. [exceededAtMs] is the epoch-ms wall clock of the
+     * synth that hit the shared-key daily quota (a
+     * [app.clothescast.core.data.tts.GeminiTtsDailyQuotaExhaustedException]).
+     * [resetAtMs] is the epoch-ms at which the allowance next opens (from the
+     * proxy's `resetAtUtc`, or the next UTC midnight when it doesn't say), so
+     * the card can auto-expire once the quota has reset even before a later
+     * synth runs. [dismissedAtMs] is the most recent timestamp the user
+     * dismissed the Today card for (0 = none). The card hides while
+     * [exceededAtMs] <= [dismissedAtMs] or once the wall clock passes
+     * [resetAtMs]; a strictly-newer exceedance resurfaces.
+     */
+    data class GeminiTtsLimitStatus(
+        val exceededAtMs: Long,
+        val resetAtMs: Long,
+        val dismissedAtMs: Long = 0L,
+    )
+
+    /**
+     * Emits the latest shared-key daily TTS quota state, or null when the free
+     * allowance hasn't been hit (or a later synth cleared it). Drives the Today
+     * card that points users at Speech settings so they can add their own
+     * Gemini key for unlimited casts.
+     */
+    val geminiTtsLimitStatus: Flow<GeminiTtsLimitStatus?> = dataStore.data.map { prefs ->
+        val ms = prefs[GEMINI_TTS_LIMIT_AT_MS] ?: return@map null
+        GeminiTtsLimitStatus(
+            exceededAtMs = ms,
+            resetAtMs = prefs[GEMINI_TTS_LIMIT_RESET_AT_MS] ?: 0L,
+            dismissedAtMs = prefs[GEMINI_TTS_LIMIT_DISMISSED_AT_MS] ?: 0L,
+        )
+    }
+
+    /**
+     * Records that a synth hit the shared free Gemini TTS daily allowance, so
+     * the Today screen can surface a card linking to Speech settings. The cast
+     * itself still plays via the device engine; this only drives the nudge.
+     * [resetAtMs] is when the allowance next opens (epoch-ms) — the caller
+     * derives it from the quota exception's `resetAtUtc`, falling back to the
+     * next UTC midnight — so the card auto-expires at the reset boundary.
+     */
+    suspend fun setGeminiTtsLimitExceeded(
+        atMs: Long = System.currentTimeMillis(),
+        resetAtMs: Long,
+    ) {
+        dataStore.edit {
+            it[GEMINI_TTS_LIMIT_AT_MS] = atMs
+            it[GEMINI_TTS_LIMIT_RESET_AT_MS] = resetAtMs
+        }
+    }
+
+    /**
+     * Clears the shared-key daily-quota notice after a synth succeeds — the
+     * allowance has reset (or the user added their own key), so the Today card
+     * retires. Leaves [GEMINI_TTS_LIMIT_DISMISSED_AT_MS] untouched so a fresh
+     * exceedance still resurfaces.
+     */
+    suspend fun clearGeminiTtsLimitExceeded() {
+        dataStore.edit {
+            it.remove(GEMINI_TTS_LIMIT_AT_MS)
+            it.remove(GEMINI_TTS_LIMIT_RESET_AT_MS)
+        }
+    }
+
+    /**
+     * Records that the user dismissed the Gemini TTS limit card from the Today
+     * screen. Pass the [exceededAtMs] of the notice they saw so a strictly-newer
+     * exceedance still surfaces.
+     */
+    suspend fun setGeminiTtsLimitDismissedAt(atMs: Long) {
+        dataStore.edit { it[GEMINI_TTS_LIMIT_DISMISSED_AT_MS] = atMs }
+    }
+
+    /**
      * Persists the MQTT broker connection settings for the optional Smart Home
      * bridge. Blank host clears it (and effectively disables the bridge even
      * if [setMqttBridgeEnabled] is true — the publisher gates on a non-blank
@@ -1320,6 +1394,10 @@ class SettingsRepository(
         private val SCHEDULE_CARD_DISMISSED = booleanPreferencesKey("schedule_card_dismissed")
         private val PLAY_CARD_DISMISSED = booleanPreferencesKey("play_card_dismissed")
         private val GEMINI_PROMO_CARD_DISMISSED = booleanPreferencesKey("gemini_promo_card_dismissed")
+        private val GEMINI_TTS_LIMIT_AT_MS = longPreferencesKey("gemini_tts_limit_at_ms")
+        private val GEMINI_TTS_LIMIT_RESET_AT_MS = longPreferencesKey("gemini_tts_limit_reset_at_ms")
+        private val GEMINI_TTS_LIMIT_DISMISSED_AT_MS =
+            longPreferencesKey("gemini_tts_limit_dismissed_at_ms")
         private val ONBOARDING_SKIPPED = booleanPreferencesKey("onboarding_skipped")
         private val CALENDAR_PERMISSION_RECHECK_TICK = longPreferencesKey("calendar_permission_recheck_tick")
         private val DAILY_ENABLED = booleanPreferencesKey("daily_enabled")

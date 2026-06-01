@@ -21,12 +21,16 @@ class ConsensusBlendTest {
         temp: Double,
         feels: Double = temp - 1.0,
         precip: Double = 0.0,
+        wind: Double? = null,
+        uv: Double? = null,
         condition: WeatherCondition = WeatherCondition.CLEAR,
     ) = HourlyForecast(
         time = LocalTime.of(h, 0),
         temperatureC = temp,
         feelsLikeC = feels,
         precipitationProbabilityPct = precip,
+        windSpeedKmh = wind,
+        uvIndex = uv,
         condition = condition,
     )
 
@@ -35,6 +39,8 @@ class ConsensusBlendTest {
         apparent: Double,
         air: Double,
         precip: Double? = 0.0,
+        wind: Double? = null,
+        uv: Double? = null,
         condition: WeatherCondition? = null,
         date: LocalDate = today,
     ) = PerModelHour(
@@ -42,6 +48,8 @@ class ConsensusBlendTest {
         apparentTemperatureC = apparent,
         temperatureC = air,
         precipitationProbabilityPct = precip,
+        windSpeedKmh = wind,
+        uvIndex = uv,
         condition = condition,
     )
 
@@ -184,6 +192,47 @@ class ConsensusBlendTest {
     }
 
     @Test
+    fun `wind and uv are averaged across the candidates that reported them`() {
+        // best_match carries no wind / UV (the primary forecast call omits
+        // them — see OpenMeteoClient.asPerModelHours), so the blend averages
+        // only the consulted models. A lone best_match spike can't survive
+        // because it isn't a candidate for these fields.
+        val best = listOf(hour(12, temp = 10.0, wind = 99.0, uv = 99.0))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(perModel(12, apparent = 11.0, air = 12.0, wind = 20.0, uv = 5.0)),
+                "icon_seamless" to listOf(perModel(12, apparent = 13.0, air = 14.0, wind = 30.0, uv = 7.0)),
+                PerModelHourly.BEST_MATCH_MODEL_ID to listOf(
+                    perModel(12, apparent = 9.0, air = 10.0, wind = null, uv = null),
+                ),
+            ),
+        )
+
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
+
+        blended[0].windSpeedKmh!! shouldBe (25.0 plusOrMinus 0.0001) // (20 + 30) / 2, best_match null skipped
+        blended[0].uvIndex!! shouldBe (6.0 plusOrMinus 0.0001)       // (5 + 7) / 2
+    }
+
+    @Test
+    fun `wind and uv fall back to best-match when no candidate reported them`() {
+        // Two models report temp (so the hour blends) but neither carries
+        // wind / UV — keep best_match's own values rather than nulling them.
+        val best = listOf(hour(12, temp = 10.0, wind = 42.0, uv = 8.0))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(perModel(12, apparent = 11.0, air = 12.0, wind = null, uv = null)),
+                "icon_seamless" to listOf(perModel(12, apparent = 13.0, air = 14.0, wind = null, uv = null)),
+            ),
+        )
+
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
+
+        blended[0].windSpeedKmh!! shouldBe (42.0 plusOrMinus 0.0001)
+        blended[0].uvIndex!! shouldBe (8.0 plusOrMinus 0.0001)
+    }
+
+    @Test
     fun `per-model entries on a different calendar day do not blend with best-match`() {
         // best_match is today's hourly only (indexed by LocalTime). Per-model
         // entries carry a full LocalDateTime, so the same hour-of-day on a
@@ -323,9 +372,58 @@ class ConsensusBlendTest {
         // umbrella rule keys off this, so without recomputation the chart
         // would show "100% rain" while the umbrella stayed unrecommended.
         out.precipitationProbabilityMaxPct shouldBe (90.0 plusOrMinus 0.0001)
-        // Precip mm and condition stay from best_match (no consensus available).
+        // Precip mm stays from best_match (no consensus available). Condition is
+        // recomputed from the peak-precip hour, which is CLEAR here too.
         out.precipitationMmTotal shouldBe daily.precipitationMmTotal
-        out.condition shouldBe daily.condition
+        out.condition shouldBe WeatherCondition.CLEAR
+    }
+
+    @Test
+    fun `withAggregatesFrom takes the daily condition from the peak-precip hour`() {
+        // best_match's daily code says CLEAR, but the blended hourly turns the
+        // day snowy at its wettest hour. The recomputed daily condition must
+        // follow it so the week-ahead headline names snow, not plain rain.
+        val daily = DailyForecast(
+            date = java.time.LocalDate.of(2026, 5, 13),
+            temperatureMinC = 0.0,
+            temperatureMaxC = 4.0,
+            feelsLikeMinC = -2.0,
+            feelsLikeMaxC = 2.0,
+            precipitationProbabilityMaxPct = 20.0,
+            precipitationMmTotal = 1.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val blended = listOf(
+            hour(12, temp = 3.0, precip = 40.0, condition = WeatherCondition.CLOUDY),
+            hour(15, temp = 2.0, precip = 85.0, condition = WeatherCondition.SNOW),
+            hour(18, temp = 1.0, precip = 50.0, condition = WeatherCondition.CLOUDY),
+        )
+
+        val out = daily.withAggregatesFrom(blended)
+
+        out.precipitationProbabilityMaxPct shouldBe (85.0 plusOrMinus 0.0001)
+        out.condition shouldBe WeatherCondition.SNOW
+    }
+
+    @Test
+    fun `withAggregatesFrom keeps best-match condition when the peak hour is UNKNOWN`() {
+        val daily = DailyForecast(
+            date = java.time.LocalDate.of(2026, 5, 13),
+            temperatureMinC = 5.0,
+            temperatureMaxC = 15.0,
+            feelsLikeMinC = 3.0,
+            feelsLikeMaxC = 12.0,
+            precipitationProbabilityMaxPct = 30.0,
+            precipitationMmTotal = 2.0,
+            condition = WeatherCondition.CLOUDY,
+        )
+        val blended = listOf(
+            hour(12, temp = 12.0, precip = 70.0, condition = WeatherCondition.UNKNOWN),
+        )
+
+        val out = daily.withAggregatesFrom(blended)
+
+        out.condition shouldBe WeatherCondition.CLOUDY
     }
 
     @Test

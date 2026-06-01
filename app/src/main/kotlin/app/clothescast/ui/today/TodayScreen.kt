@@ -920,11 +920,6 @@ internal fun HomePageScaffold(
     homeSectionOrder: List<HomeSection> = HomeSection.DEFAULTS,
     insightSlot: (@Composable ColumnScope.() -> Unit)? = null,
     conditionsHourly: List<HourlyForecast>? = null,
-    // Per-model arrays matching [conditionsHourly]'s window, so the strip's UV
-    // reads the same cross-model consensus the UV chart draws (not a lone
-    // primary-series spike). Null on cached payloads without per-model data —
-    // [outfitCardInfoLines] then falls back to the primary hourly series.
-    conditionsPerModelHourly: PerModelHourly? = null,
     confidenceSlot: (@Composable ColumnScope.() -> Unit)? = null,
     chartsSlot: (@Composable ColumnScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
@@ -942,7 +937,6 @@ internal fun HomePageScaffold(
     val tvScrollStepPx = with(LocalDensity.current) { 240.dp.toPx() }
     val conditionsInfo: OutfitCardInfoLines? = remember(
         conditionsHourly,
-        conditionsPerModelHourly,
         state.region,
         state.temperatureUnit,
         state.distanceUnit,
@@ -956,7 +950,6 @@ internal fun HomePageScaffold(
                     hourly = hourly,
                     temperatureUnit = state.temperatureUnit,
                     windSpeedUnit = state.distanceUnit.windSpeedUnit(),
-                    perModelHourly = conditionsPerModelHourly,
                 )
             }.onFailure { t ->
                 // Explicit fallback: a formatter/resource failure hides the
@@ -1238,9 +1231,6 @@ private fun TodayPage(
         // page's insight (this period on page 0, the next period on page 1), so
         // each page's strip shows its own feels-like range / rain / wind / UV.
         conditionsHourly = insight?.hourly,
-        // Per-model arrays for this period so the strip's UV matches the chart's
-        // consensus blend rather than a primary-series spike.
-        conditionsPerModelHourly = insight?.perModelHourly,
         // The insight card — its own reorderable section. The confidence chip
         // that used to ride along with it is now [confidenceSlot]; the chart
         // deck is [chartsSlot]. Renders only when this period has an insight;

@@ -151,4 +151,52 @@ class CurrentTimeIndicatorTest {
         )
         x!! shouldBe (15.75 plusOrMinus 1e-6)
     }
+
+    @Test
+    fun `indicator canvas-x clamps a late last-hour now to the right edge`() {
+        // 06:48 against a TONIGHT window whose last point is 06:00 maps to
+        // chartX = lastIndex + 0.8, well past Vico's ~half-cell end padding.
+        // With a chart spanning [0, 100] px and chartZero at the +0.5-cell
+        // start padding, that raw canvas-x overshoots the right edge — the
+        // clamp pins it there so the live indicator stays visible instead of
+        // vanishing for the back half of the final hour.
+        val pxPerUnit = 8f // px per chart-x unit (hour)
+        val chartZero = 4f // chartX = 0 sits half a cell in from the left
+        val layerLeftPx = 0f
+        val layerRightPx = 100f
+        val x = indicatorCanvasX(
+            chartZero = chartZero,
+            pxPerUnit = pxPerUnit,
+            chartX = 12.8, // raw canvasX = 4 + 8*12.8 = 106.4, past the edge
+            layerLeftPx = layerLeftPx,
+            layerRightPx = layerRightPx,
+        )
+        x shouldBe layerRightPx
+    }
+
+    @Test
+    fun `indicator canvas-x leaves an in-window now untouched`() {
+        val x = indicatorCanvasX(
+            chartZero = 4f,
+            pxPerUnit = 8f,
+            chartX = 5.0, // raw canvasX = 44, comfortably inside [0, 100]
+            layerLeftPx = 0f,
+            layerRightPx = 100f,
+        )
+        x shouldBe 44f
+    }
+
+    @Test
+    fun `indicator canvas-x clamps a pre-window now to the left edge`() {
+        // RTL or a leading-padding overshoot can push canvasX below the
+        // left edge; the clamp pins it to the edge rather than off-plot.
+        val x = indicatorCanvasX(
+            chartZero = 4f,
+            pxPerUnit = 8f,
+            chartX = -1.0, // raw canvasX = -4, below the left edge
+            layerLeftPx = 0f,
+            layerRightPx = 100f,
+        )
+        x shouldBe 0f
+    }
 }

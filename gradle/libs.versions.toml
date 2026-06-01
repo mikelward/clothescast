@@ -30,9 +30,9 @@ navigation = "2.9.8"
 # Display "Home screen layout" reorder UI). 3.1.0 needs Compose foundation
 # 1.7.0+, well under the BoM above. Lives on Maven Central.
 reorderable = "3.1.0"
-junit5 = "5.11.3"
+junit5 = "6.1.0"
 mockk = "1.14.11"
-kotest = "5.9.1"
+kotest = "6.1.11"
 turbine = "1.2.1"
 coroutines = "1.11.0"
 ktor = "3.5.0"

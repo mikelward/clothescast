@@ -663,7 +663,7 @@ dependencies {
     // Production (not test-only) because the planner runs in the main coroutine flow.
     implementation(libs.kotlinx.coroutines.play.services)
 
-    testImplementation(platform("org.junit:junit-bom:5.11.3"))
+    testImplementation(platform("org.junit:junit-bom:6.1.0"))
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
     // Gradle 9 no longer injects the JUnit Platform launcher onto the test

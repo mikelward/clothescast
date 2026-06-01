@@ -154,6 +154,7 @@ fun PrecipitationChart(
     val scrubBounds = rememberChartScrubBounds()
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
     val decorations = listOf(scrubIndicator)
+    val axisLabel = rememberOnSurfaceAxisLabel()
 
     Box(
         modifier = modifier
@@ -176,10 +177,14 @@ fun PrecipitationChart(
                     lineProvider = lineProvider,
                     rangeProvider = rangeProvider,
                 ),
-                startAxis = VerticalAxis.rememberStart(valueFormatter = startFormatter),
+                startAxis = VerticalAxis.rememberStart(label = axisLabel, valueFormatter = startFormatter),
                 bottomAxis = LocalChartBottomItemPlacer.current?.let { placer ->
-                    HorizontalAxis.rememberBottom(itemPlacer = placer, valueFormatter = bottomFormatter)
-                } ?: HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
+                    HorizontalAxis.rememberBottom(
+                        label = axisLabel,
+                        itemPlacer = placer,
+                        valueFormatter = bottomFormatter,
+                    )
+                } ?: HorizontalAxis.rememberBottom(label = axisLabel, valueFormatter = bottomFormatter),
                 decorations = decorations,
             ),
             modelProducer = producer,

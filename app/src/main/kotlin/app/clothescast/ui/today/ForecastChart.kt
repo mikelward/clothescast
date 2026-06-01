@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -20,6 +21,7 @@ import app.clothescast.core.domain.model.toUnit
 import app.clothescast.ui.theme.AppTheme
 import java.time.LocalDate
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
@@ -244,6 +246,7 @@ fun ForecastChart(
 
     val modelColors = AppTheme.palette.modelColors
     val lineProvider = rememberPinnedLineProvider(visibleModels, mainLineColor, modelColors)
+    val axisLabel = rememberOnSurfaceAxisLabel()
 
     val scrubController = LocalChartScrub.current
     val scrubBounds = rememberChartScrubBounds()
@@ -269,12 +272,17 @@ fun ForecastChart(
                     rangeProvider = rangeProvider,
                 ),
                 startAxis = VerticalAxis.rememberStart(
+                    label = axisLabel,
                     itemPlacer = yItemPlacer,
                     valueFormatter = startFormatter,
                 ),
                 bottomAxis = LocalChartBottomItemPlacer.current?.let { placer ->
-                    HorizontalAxis.rememberBottom(itemPlacer = placer, valueFormatter = bottomFormatter)
-                } ?: HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
+                    HorizontalAxis.rememberBottom(
+                        label = axisLabel,
+                        itemPlacer = placer,
+                        valueFormatter = bottomFormatter,
+                    )
+                } ?: HorizontalAxis.rememberBottom(label = axisLabel, valueFormatter = bottomFormatter),
                 decorations = decorations,
             ),
             modelProducer = producer,
@@ -300,6 +308,16 @@ fun ForecastChart(
         )
     }
 }
+
+// Axis tick labels (the 00/03/06… hours and 0%/20%… values) in the theme's
+// onSurface color. Vico defaults axis labels to a fixed ~54%-opacity black,
+// which it doesn't derive from the Material color scheme: readable on the
+// light card, but low-contrast on the dark one. onSurface follows the theme
+// and matches the card's own title/value text. Shared by every forecast
+// chart's start and bottom axes — all in this package, so internal.
+@Composable
+internal fun rememberOnSurfaceAxisLabel() =
+    rememberAxisLabelComponent(color = MaterialTheme.colorScheme.onSurface)
 
 // Builds a [LineCartesianLayer.LineProvider] whose Line list lines up with the
 // series order both charts emit into their model producer: when [mainLineColor]

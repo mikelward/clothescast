@@ -277,6 +277,7 @@ private fun PerModelDiagnosticChart(
     val scrubBounds = rememberChartScrubBounds()
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
     val decorations = listOf(scrubIndicator)
+    val axisLabel = rememberOnSurfaceAxisLabel()
 
     Box(
         modifier = Modifier
@@ -297,12 +298,17 @@ private fun PerModelDiagnosticChart(
                     rangeProvider = rangeProvider,
                 ),
                 startAxis = VerticalAxis.rememberStart(
+                    label = axisLabel,
                     itemPlacer = yItemPlacer,
                     valueFormatter = startFormatter,
                 ),
                 bottomAxis = LocalChartBottomItemPlacer.current?.let { placer ->
-                    HorizontalAxis.rememberBottom(itemPlacer = placer, valueFormatter = bottomFormatter)
-                } ?: HorizontalAxis.rememberBottom(valueFormatter = bottomFormatter),
+                    HorizontalAxis.rememberBottom(
+                        label = axisLabel,
+                        itemPlacer = placer,
+                        valueFormatter = bottomFormatter,
+                    )
+                } ?: HorizontalAxis.rememberBottom(label = axisLabel, valueFormatter = bottomFormatter),
                 decorations = decorations,
             ),
             modelProducer = producer,

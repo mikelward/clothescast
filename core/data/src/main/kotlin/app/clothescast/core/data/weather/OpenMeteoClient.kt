@@ -4,6 +4,7 @@ import app.clothescast.core.data.diag.ApiCallLogger
 import app.clothescast.core.data.diag.ApiEndpoints
 import app.clothescast.core.data.diag.NoOpApiCallLogger
 import app.clothescast.core.data.diag.instrument
+import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.PerModelHour
@@ -112,21 +113,27 @@ class OpenMeteoClient(
         // ordering of these two blocks regressed that by passing the
         // pre-injection map (Codex caught it on PR review).
         //
-        // Include tomorrow's best_match hours too. The multi-model fetcher
-        // pulls today + tomorrow's pre-dawn (forecast_days=2) to feed the
-        // evening tie-in's wrap past midnight, so the consulted models
-        // (ECMWF / GFS / ICON) have tomorrow entries. If best_match's
-        // entries stopped at today's 23:00, [RenderInsightSummary.pickPerModelPeak]'s
-        // `majorityNeeded = models.size / 2 + 1` would compute the bar from
-        // all 4 models but only 3 readings would actually exist for any
-        // tomorrow hour, silently downgrading a clean 2-of-3-models-agree
-        // tomorrow peak to POSSIBLE (Codex caught it). Pulling
-        // [ForecastBundle.tomorrowHourly] through keeps best_match a real
-        // 4th vote on both sides of the midnight boundary.
+        // Include best_match hours for every forward day, not just today. The
+        // consulted models (ECMWF / GFS / ICON) carry the full forecast_days=7
+        // window, so best_match has to span it too or the consensus silently
+        // changes character partway through the week: with best_match present
+        // only for today + tomorrow, days 3–7 would average the consulted
+        // models *without* Open-Meteo's auto-pick, breaking the equal-weight
+        // policy [blendConsensusHourly] documents and making days 1–2 and 3–7
+        // blend differently (Codex caught it). It also keeps best_match a real
+        // vote in [RenderInsightSummary.pickPerModelPeak]'s `majorityNeeded`
+        // bar on both sides of the midnight boundary.
+        //
+        // Sources overlap — `tomorrowHourly` is tomorrow's pre-dawn slice and
+        // `upcomingDays[0]` is tomorrow's full day — so dedupe by timestamp
+        // (first wins) to avoid double-weighting best_match on the overlapping
+        // hours. Today comes only from best_match's own hourly.
         val tomorrowDate = bundle.today.date.plusDays(1)
         val bestMatchPerModel =
-            bestMatchHourly.asPerModelHours(bundle.today.date) +
-                bundle.tomorrowHourly.asPerModelHours(tomorrowDate)
+            (bestMatchHourly.asPerModelHours(bundle.today.date) +
+                bundle.tomorrowHourly.asPerModelHours(tomorrowDate) +
+                bundle.upcomingDays.flatMap { it.hourly.asPerModelHours(it.date) })
+                .distinctBy { it.time }
         val perModelWithBestMatch = multi?.hourly?.let { existing ->
             existing.copy(
                 byModel = existing.byModel +
@@ -142,12 +149,26 @@ class OpenMeteoClient(
         // steps) for a max computed from the hourly *samples*, which can
         // differ by a fraction of a degree even when the consensus didn't
         // apply anywhere.
-        val blendedToday = blendConsensusHourly(bundle.today.date, bestMatchHourly, perModelWithBestMatch)
-            ?.let { bundle.today.withAggregatesFrom(it) }
-            ?: bundle.today
+        //
+        // Blend every forward-looking series, not just today: the consulted
+        // models are fetched at forecast_days=7, so the whole week can follow
+        // the consensus. This keeps the 7-day chart's combined line, the
+        // week-ahead headline, and the conditions strip's week-wide peaks all
+        // reading the same blended numbers — and lets the strip read wind / UV
+        // straight off [HourlyForecast] (now consensus) instead of recomputing
+        // the per-model mean itself. Yesterday is historical, with no per-model
+        // coverage, so it stays best_match.
+        fun blendDay(day: DailyForecast): DailyForecast =
+            blendConsensusHourly(day.date, day.hourly, perModelWithBestMatch)
+                ?.let { day.withAggregatesFrom(it) }
+                ?: day
 
         bundle.copy(
-            today = blendedToday,
+            today = blendDay(bundle.today),
+            tomorrow = bundle.tomorrow?.let { blendDay(it) },
+            upcomingDays = bundle.upcomingDays.map { blendDay(it) },
+            tomorrowHourly = blendConsensusHourly(tomorrowDate, bundle.tomorrowHourly, perModelWithBestMatch)
+                ?: bundle.tomorrowHourly,
             confidence = multi?.confidence,
             perModelHourly = perModelWithBestMatch,
         )

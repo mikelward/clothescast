@@ -85,7 +85,6 @@ class ConditionsWidget : GlanceAppWidget() {
                     hourly = insight.hourly,
                     temperatureUnit = prefs.temperatureUnit,
                     windSpeedUnit = prefs.distanceUnit.windSpeedUnit(),
-                    perModelHourly = insight.perModelHourly,
                 )
             }.getOrNull()
         } else {

@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -561,6 +562,7 @@ private fun TodayContent(
             // each delivery, so this fallback only fires before the first
             // post-upgrade worker run.
             val nextPeriodFallback = state.thisPeriodInsight.period.opposite()
+            val pagerFlingBehavior = PagerDefaults.flingBehavior(state = pagerState)
             HorizontalPager(
                 state = pagerState,
                 // Pre-compose the neighbouring pages so the swipe is pure
@@ -571,9 +573,22 @@ private fun TodayContent(
                 // 1 covers 0↔1 and 1↔2 — the common swipe paths — without
                 // paying for page 2's composition on a cold open to page 0.
                 beyondViewportPageCount = 1,
+                flingBehavior = pagerFlingBehavior,
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    // Bias the pager/vertical-scroll direction lock toward
+                    // horizontal. Without this, a lazy diagonal swipe whose
+                    // vertical component happens to cross touch slop first
+                    // locks to vertical scrolling and the pager never sees the
+                    // gesture, even when the swipe is *mostly* sideways. See
+                    // BiasedPagerDrag.kt for the algorithm; biasK = 0.5
+                    // accepts gestures up to ~63° below horizontal.
+                    .horizontalBiasedPagerDrag(
+                        pagerState = pagerState,
+                        flingBehavior = pagerFlingBehavior,
+                        scope = pagerScope,
+                    ),
             ) { page ->
                 if (page == 2) {
                     // Plot today + upcomingDays so the chart starts on the

@@ -72,7 +72,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_band_hot">mainit</string>
     <string name="insight_delta_warmer">%1$d° na mas mainit kaysa kahapon.</string>
     <string name="insight_delta_cooler">%1$d° na mas malamig kaysa kahapon.</string>
-    <string name="insight_alert">Babala: %1$s.</string>
     <string name="insight_clothes_wear">Magsuot ng %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Filipino particles ("ng") are omitted in list context for naturalness. -->
@@ -574,9 +573,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="notification_channel_tonight_insight_silent_description">Ang gabi na buod ng panahon kapag walang laman ang iyong gabi. Nipo-post nang tahimik — maaari mo itong tingnan sa lock screen, ngunit hindi ito magpapatugtog ng tunog.</string>
     <string name="notification_tonight_insight_title">ClothesCast ngayong gabi</string>
 
-    <string name="notification_channel_weather_alerts_name">Mga babala sa matinding panahon</string>
-    <string name="notification_channel_weather_alerts_description">Mataas na priyoridad na mga babala para sa matindi o matinding mga kaganapan ng panahon na nakakaapekto sa iyong lugar. Inihahatid sa sandaling matukoy ng pang-araw na fetch.</string>
-    <string name="notification_weather_alert_title">Babala sa panahon: %1$s</string>
 
     <string name="settings_notification_permission_title">Naka-block ang mga notipikasyon</string>
     <string name="settings_notification_permission_description">Kung walang pahintulot sa notipikasyon, wala kung saan mapupunta ang iyong pang-araw na ClothesCast. Ibigay ito para makapag-post ang ClothesCast bukas ng umaga.</string>

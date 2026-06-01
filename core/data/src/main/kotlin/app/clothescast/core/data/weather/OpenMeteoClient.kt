@@ -8,7 +8,6 @@ import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
-import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.blendConsensusHourly
 import app.clothescast.core.domain.model.withAggregatesFrom
 import app.clothescast.core.domain.repository.ForecastBundle
@@ -20,7 +19,6 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.http.URLProtocol
 import io.ktor.http.path
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.time.LocalDateTime
@@ -44,13 +42,8 @@ internal const val OPEN_METEO_HOST = "api.open-meteo.com"
  * The mapper splits the hourly stream by date so each [DailyForecast.hourly]
  * carries only that day's entries; daily aggregates flow through unchanged.
  *
- * Severe-weather alerts come from a second `/v1/warnings` call. The warnings endpoint
- * is best-effort: if it fails (4xx, 5xx, network), we return the forecast with an empty
- * alerts list rather than failing the whole fetch — a missing alerts feed must not
- * suppress the daily insight.
- *
- * Cross-model confidence is computed by a third path that fires several model-specific
- * forecast calls in parallel. Same best-effort policy: confidence is null when the
+ * Cross-model confidence is computed by a second path that fires several model-specific
+ * forecast calls in parallel. Best-effort policy: confidence is null when the
  * extra calls fail.
  */
 class OpenMeteoClient(
@@ -89,12 +82,11 @@ class OpenMeteoClient(
     )
 
     override suspend fun fetchForecast(location: Location): ForecastBundle = coroutineScope {
-        // Primary forecast and the side-band fetches all kick off in parallel — the
-        // multi-model call now pulls both confidence aggregates and per-model
-        // hourly series in one go, so doing it concurrently with alerts hides its
-        // latency behind the primary fetch.
+        // Primary forecast and the side-band fetch kick off in parallel — the
+        // multi-model call pulls both confidence aggregates and per-model
+        // hourly series in one go, so doing it concurrently with the primary
+        // fetch hides its latency behind it.
         val primary = async { fetchPrimary(location) }
-        val alerts = async { fetchAlerts(location) }
         val models = confidenceModelsProvider(location)
         val multiModel = async { confidenceFetcher.fetch(location, models) }
 
@@ -156,7 +148,6 @@ class OpenMeteoClient(
 
         bundle.copy(
             today = blendedToday,
-            alerts = alerts.await(),
             confidence = multi?.confidence,
             perModelHourly = perModelWithBestMatch,
         )
@@ -220,25 +211,4 @@ class OpenMeteoClient(
                 )
             }.body()
         }
-
-    private suspend fun fetchAlerts(location: Location): List<WeatherAlert> = try {
-        apiCallLogger.instrument(ApiEndpoints.OPEN_METEO_WARNINGS) {
-            val response: OpenMeteoWarningsResponse = httpClient.get {
-                expectSuccess = true
-                url {
-                    protocol = URLProtocol.HTTPS
-                    host = OPEN_METEO_HOST
-                    path("v1", "warnings")
-                }
-                parameter("latitude", location.latitude)
-                parameter("longitude", location.longitude)
-                parameter("timezone", "auto")
-            }.body()
-            OpenMeteoWarningsMapper.toAlerts(response)
-        }
-    } catch (ce: CancellationException) {
-        throw ce
-    } catch (_: Throwable) {
-        emptyList()
-    }
 }

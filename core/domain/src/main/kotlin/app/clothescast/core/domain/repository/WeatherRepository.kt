@@ -5,7 +5,6 @@ import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.PerModelHourly
-import app.clothescast.core.domain.model.WeatherAlert
 import java.time.ZoneId
 
 /**
@@ -13,11 +12,7 @@ import java.time.ZoneId
  * actual weather with today's forecast — Open-Meteo's `forecast?past_days=1` returns
  * both in one response, so a single call satisfies this contract.
  *
- * Severe-weather alerts are returned alongside the forecast in [ForecastBundle.alerts].
- * Implementations should treat the alerts feed as best-effort: a failure to fetch
- * warnings must not fail the whole forecast call — return an empty list instead.
- *
- * Cross-model confidence ([ForecastBundle.confidence]) is also best-effort: implementations
+ * Cross-model confidence ([ForecastBundle.confidence]) is best-effort: implementations
  * may return null when the multi-model fetch fails or isn't supported.
  */
 interface WeatherRepository {
@@ -27,7 +22,6 @@ interface WeatherRepository {
 data class ForecastBundle(
     val today: DailyForecast,
     val yesterday: DailyForecast,
-    val alerts: List<WeatherAlert> = emptyList(),
     val confidence: ConfidenceInfo? = null,
     /**
      * Per-model hourly apparent-temperature and precipitation-probability

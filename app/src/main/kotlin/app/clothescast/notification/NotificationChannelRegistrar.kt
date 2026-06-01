@@ -11,19 +11,22 @@ import app.clothescast.R
  * is a user-visible change. Bump the suffix when channel semantics change.
  */
 internal const val CHANNEL_DAILY_INSIGHT = "daily_insight_v1"
-internal const val CHANNEL_WEATHER_ALERTS = "weather_alerts_v1"
 internal const val CHANNEL_TONIGHT_INSIGHT_DEFAULT = "tonight_insight_default_v1"
 internal const val CHANNEL_TONIGHT_INSIGHT_SILENT = "tonight_insight_silent_v1"
+
+// Retired channel IDs to delete on upgrade. Android persists channels by ID
+// until the app explicitly deletes them, so dropping the create call alone
+// leaves the dead channel in system notification settings for existing
+// installs. deleteNotificationChannel is a no-op when the ID was never
+// registered (fresh installs), so this is safe to call unconditionally.
+private const val CHANNEL_WEATHER_ALERTS_RETIRED = "weather_alerts_v1"
 
 /**
  * Registers the notification channel(s) used by the app. Idempotent — safe to call from
  * Application.onCreate on every cold start.
  *
- * Four channels:
+ * Three channels:
  * - **Daily insight** (HIGH): the morning weather summary the user opted in to.
- * - **Severe weather alerts** (MAX): out-of-band notifications for SEVERE / EXTREME
- *   alerts. Separate channel so the user can mute the daily summary without losing
- *   life-safety alerts (and vice-versa).
  * - **Tonight insight (with events)** (DEFAULT): the evening summary when the user
  *   has calendar events tonight. Plays the default notification sound — the user is
  *   actually heading out and should hear the heads-up.
@@ -40,6 +43,10 @@ object NotificationChannelRegistrar {
     fun register(context: Context) {
         val manager = context.getSystemService<NotificationManager>() ?: return
 
+        // Remove the retired severe-weather-alerts channel from installs that
+        // previously registered it (the feature is gone); see the const above.
+        manager.deleteNotificationChannel(CHANNEL_WEATHER_ALERTS_RETIRED)
+
         val daily = NotificationChannel(
             CHANNEL_DAILY_INSIGHT,
             context.getString(R.string.notification_channel_daily_insight_name),
@@ -47,17 +54,6 @@ object NotificationChannelRegistrar {
         ).apply {
             description = context.getString(R.string.notification_channel_daily_insight_description)
             setShowBadge(true)
-            lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
-        }
-
-        val alerts = NotificationChannel(
-            CHANNEL_WEATHER_ALERTS,
-            context.getString(R.string.notification_channel_weather_alerts_name),
-            NotificationManager.IMPORTANCE_MAX,
-        ).apply {
-            description = context.getString(R.string.notification_channel_weather_alerts_description)
-            setShowBadge(true)
-            enableVibration(true)
             lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
         }
 
@@ -84,7 +80,6 @@ object NotificationChannelRegistrar {
         }
 
         manager.createNotificationChannel(daily)
-        manager.createNotificationChannel(alerts)
         manager.createNotificationChannel(tonightWithEvents)
         manager.createNotificationChannel(tonightSilent)
     }

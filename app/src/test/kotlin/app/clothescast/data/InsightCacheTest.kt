@@ -5,7 +5,6 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
@@ -26,7 +25,6 @@ import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.UserPreferences
-import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.repository.ForecastBundle
 import io.kotest.matchers.shouldBe
@@ -259,24 +257,6 @@ class InsightCacheTest {
 
         val read = subject.thisPeriod.first()
         read?.bundle?.upcomingDays shouldBe listOf(tomorrow, dayAfter)
-    }
-
-    @Test
-    fun `alerts round-trip through the cache`() = runTest {
-        val alert = WeatherAlert(
-            event = "Tornado Warning",
-            severity = AlertSeverity.EXTREME,
-            headline = "Take shelter immediately",
-            description = "Confirmed funnel south of city",
-            onset = now,
-            expires = now.plusSeconds(3600),
-        )
-        subject.store(
-            InsightCache.Slot.THIS_PERIOD,
-            sample.copy(bundle = bundle.copy(alerts = listOf(alert))),
-        )
-
-        subject.thisPeriod.first()?.bundle?.alerts?.singleOrNull() shouldBe alert
     }
 
     @Test

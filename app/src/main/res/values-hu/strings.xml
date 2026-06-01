@@ -316,9 +316,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="notification_channel_tonight_insight_silent_description">Az esti időjárás-összefoglaló csendes estéken. Némán érkezik — láthatod a zárolási képernyőn, de nem ad hangot.</string>
     <string name="notification_tonight_insight_title">Mai esti időjárás</string>
 
-    <string name="notification_channel_weather_alerts_name">Viharfigyelmeztetések</string>
-    <string name="notification_channel_weather_alerts_description">Magas prioritású figyelmeztetések súlyos vagy szélsőséges időjárási eseményekre a térségedben. A napi lekéréskor észlelés után azonnal elküldésre kerülnek.</string>
-    <string name="notification_weather_alert_title">Időjárási figyelmeztetés: %1$s</string>
 
     <!-- Notification permission card. -->
     <string name="settings_notification_permission_title">Az értesítések le vannak tiltva</string>
@@ -562,7 +559,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="insight_band_hot">forró</string>
     <string name="insight_delta_warmer">%1$d°-kal melegebb lesz, mint tegnap.</string>
     <string name="insight_delta_cooler">%1$d°-kal hűvösebb lesz, mint tegnap.</string>
-    <string name="insight_alert">Figyelmeztetés: %1$s.</string>
     <string name="insight_clothes_wear">Vegyél fel %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>

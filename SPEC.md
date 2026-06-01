@@ -4,7 +4,7 @@
 
 ClothesCast is an Android weather-and-clothing assistant. Its job is to turn a
 forecast into a short, actionable briefing: what it feels like outside, how that
-compares with yesterday, what to wear, and whether rain, wind, alerts, or an
+compares with yesterday, what to wear, and whether rain, wind, or an
 evening plan should change the user's behaviour. The app is deliberately
 personal and practical rather than meteorological: it optimises for "what should
 I put on before I leave?" instead of a full weather-office report.
@@ -26,13 +26,13 @@ I put on before I leave?" instead of a full weather-office report.
 ### Behaviour overview
 
 1. **Input collection.** The worker resolves a forecast location from either the
-   user's saved city or coarse device location, reads forecast and warning data
+   user's saved city or coarse device location, reads forecast data
    from Open-Meteo, optionally reads calendar events on device, and optionally
    consults multiple forecast models for confidence and per-model rain timing.
 2. **Insight derivation.** Pure-domain logic slices the day into Today and
    Tonight windows, evaluates clothing rules against **feels-like**
-   temperatures, compares against yesterday when useful, folds in rain and
-   severe-alert signals, and renders a localised prose summary.
+   temperatures, compares against yesterday when useful, folds in rain
+   signals, and renders a localised prose summary.
 3. **Outfit selection.** The same triggered rule set drives both prose and the
    outfit icon. Top and bottom fallbacks keep the outfit card populated even
    when no rule fires.
@@ -51,13 +51,13 @@ I put on before I leave?" instead of a full weather-office report.
   pairing, then an automatic silent refresh so Today can start populated.
 - **Today.** The home screen shows the current / next forecast periods, outfit
   card, feels-like and precipitation charts, confidence / per-model diagnostics,
-  weather alerts, celebratory theming, setup promos, update notices, crash-report
+  celebratory theming, setup promos, update notices, crash-report
   banners, and a manual refresh / play path.
 - **Settings.** Structured cards cover Location, Schedule, Clothes, Format,
   Region, Display, Calendar, Voice, Smart Home, Privacy, Developer, and About.
   Settings are meant to be discoverable and reversible rather than hidden behind
   one monolithic preferences list.
-- **Notifications.** Separate Today, Tonight, and severe-weather notifications;
+- **Notifications.** Separate Today and Tonight notifications;
   tapping insight notifications returns to Today.
 - **Widgets.** Glance widgets expose outfit and feels-like chart summaries on the
   launcher.
@@ -117,7 +117,7 @@ I put on before I leave?" instead of a full weather-office report.
   resolution, and rendered-summary semantics. It must stay JVM-testable and free
   of Android concerns.
 - `:core:data` is pure Kotlin and owns network clients / DTO mapping for
-  Open-Meteo forecasts, geocoding, warnings, multi-model confidence, Gemini TTS,
+  Open-Meteo forecasts, geocoding, multi-model confidence, Gemini TTS,
   WAV encoding, and API-call logging seams.
 - `:app` owns Android integration: Compose UI, DataStore preferences, encrypted
   key storage, permissions, receivers, WorkManager, AlarmManager, notifications,
@@ -132,7 +132,7 @@ I put on before I leave?" instead of a full weather-office report.
 
 ### Data, privacy, and permissions
 
-- **Always expected off-device:** Open-Meteo forecast / geocoding / warning
+- **Always expected off-device:** Open-Meteo forecast / geocoding
   requests for the active location.
 - **Opt-in or configured off-device:** Gemini TTS text over a user-provided key,
   MQTT payloads to a user-provided broker, Cast media served over the LAN,

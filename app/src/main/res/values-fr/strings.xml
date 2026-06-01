@@ -296,9 +296,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_description">Le résumé météo du soir quand ta soirée est libre. Envoyé en silence — tu peux y jeter un œil sur l\'écran de verrouillage, mais aucun son ne sera émis.</string>
     <string name="notification_tonight_insight_title">Météo de ce soir</string>
 
-    <string name="notification_channel_weather_alerts_name">Alertes météo</string>
-    <string name="notification_channel_weather_alerts_description">Alertes haute priorité pour les phénomènes météo graves ou extrêmes dans ta région. Envoyées dès que la récupération quotidienne les détecte.</string>
-    <string name="notification_weather_alert_title">Alerte météo : %1$s</string>
 
     <!-- Notification-permission card. -->
     <string name="settings_notification_permission_title">Les notifications sont bloquées</string>
@@ -446,7 +443,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_band_hot">très chaud</string>
     <string name="insight_delta_warmer">%1$d° de plus qu\'hier.</string>
     <string name="insight_delta_cooler">%1$d° de moins qu\'hier.</string>
-    <string name="insight_alert">Alerte : %1$s.</string>
     <string name="insight_clothes_wear">Porte %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Articles omitted — French gender agreement can\'t be resolved without

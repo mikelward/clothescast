@@ -15,15 +15,13 @@ kotlin = "2.0.21"
 # Telemetry silences Firebase when SDK_INT < MIN_SDK_VERSION.
 minSdk = "31"
 ksp = "2.0.21-1.0.27"
-coreKtx = "1.15.0"
-lifecycle = "2.8.7"
-activityCompose = "1.9.3"
-composeBom = "2026.03.00"
+coreKtx = "1.17.0"
+lifecycle = "2.9.4"
+activityCompose = "1.11.0"
+composeBom = "2026.05.01"
 # Navigation Compose — type-safe routes (@Serializable destinations) require
-# 2.8.0+. Aligned with lifecycle 2.8.x (the repo is on 2.8.7); 2.8.x keeps the
-# androidx.core baseline at 1.13–1.15 so it doesn't force a compileSdk lift the
-# way Vico/Glance bumps would. Bump in lockstep with any AGP/compileSdk upgrade.
-navigation = "2.8.5"
+# 2.8.0+. Aligned with the lifecycle 2.9.x cohort.
+navigation = "2.9.4"
 # Drag-and-drop reordering for Compose lists/columns (used by the Settings →
 # Display "Home screen layout" reorder UI). 3.1.0 needs Compose foundation
 # 1.7.0+, well under the BoM above. Lives on Maven Central.
@@ -39,13 +37,16 @@ serialization = "1.7.3"
 tink = "1.15.0"
 datastore = "1.1.1"
 work = "2.10.0"
-# Glance powers the home-screen App Widget. 1.1.1 is the latest stable that
-# works with AGP 8.7 / compileSdk 35 — 1.2.x bumps the AndroidX core baseline
-# and would force a compileSdk lift, paralleling the Vico version pin above.
+# Glance powers the home-screen App Widget. Held at 1.1.1: 1.2.x exists only as
+# a release candidate (no stable yet) and is what the live-widget-preview API
+# needs — tracked in #914. compileSdk is no longer the blocker; the RC status is.
 glance = "1.1.1"
-# Pinned to the 2.0.x line: Vico 2.2+ pulls androidx.core:core-ktx 1.16+ and
-# 2.3+ pulls 1.17+, both of which require AGP 8.9+ / compileSdk 36. The app is
-# on AGP 8.7.3 / compileSdk 35; bump Vico in lockstep with an AGP upgrade.
+# Vico charting (forecast graphs). Held at 2.0.3: it's the last release built
+# against Kotlin 2.0 metadata — 2.1.0+ depend on kotlin-stdlib 2.1.x, whose
+# metadata this repo's Kotlin 2.0.21 can't read ("incompatible version of
+# Kotlin … binary version 2.x, expected 2.0"). compileSdk is no longer the
+# blocker (that's why 2.x wanted core 1.16+/1.17+, now satisfied); Kotlin is.
+# Bump Vico in lockstep with a Kotlin 2.1+/2.2 upgrade.
 vico = "2.0.3"
 # Roborazzi renders @Preview composables to PNG via Robolectric — no emulator
 # needed, runs in :app's JVM unit tests job. The CI step uploads the PNGs as a

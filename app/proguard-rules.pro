@@ -59,11 +59,12 @@
 # R8 input. None are reachable from an MQTT publisher that just opens a TLS
 # socket and publishes a UTF-8 string — they're all alternative codec paths
 # (Brotli, Zstd, jzlib, LZ4, LZF, LZMA), protobuf serialization, JBoss
-# marshalling, GraalVM/SVM substitution annotations, and JDK-private SSL
-# self-signed cert utilities — but their references would trip R8 without
-# these warnings suppressed. List harvested from missing_rules.txt; if a
-# Netty version bump adds new optional integrations, re-run assembleDebug
-# and append any new ones here.
+# marshalling, GraalVM/SVM substitution annotations, JDK-private SSL
+# self-signed cert utilities, and OSGi bundle metadata annotations (compile-only,
+# referenced from a shaded jctools package-info) — but their references would
+# trip R8 without these warnings suppressed. List harvested from
+# missing_rules.txt; if a Netty version bump adds new optional integrations,
+# re-run assembleDebug and append any new ones here.
 -dontwarn com.aayushatharva.brotli4j.**
 -dontwarn com.github.luben.zstd.**
 -dontwarn com.google.protobuf.**
@@ -73,6 +74,7 @@
 -dontwarn lzma.sdk.**
 -dontwarn net.jpountz.**
 -dontwarn org.jboss.marshalling.**
+-dontwarn org.osgi.annotation.bundle.**
 -dontwarn sun.security.x509.**
 
 # HiveMQ MQTT Client wires its Netty pipeline through an internal Dagger 2

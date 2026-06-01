@@ -468,7 +468,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- "Denk an Regenschirm für heute Abend." / "…, Regen um 21 Uhr." -->
     <string name="insight_tie_in">Denk an %1$s für heute Abend.</string>
-    <string name="insight_tie_in_with_rain">Denk an %1$s für heute Abend, Regen um %2$s.</string>
+    <string name="insight_tie_in_with_rain">Denk an %1$s für heute Abend, %3$s um %2$s.</string>
     <!-- "15 Uhr" / "15 Uhr 30" — read naturally by German TTS. -->
     <string name="insight_time_hour">%1$d Uhr</string>
     <string name="insight_time_hour_minutes">%1$d Uhr %2$02d</string>

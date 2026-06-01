@@ -414,7 +414,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_condition_thunderstorm">ነጎድጓዳ ዝናብ</string>
     <string name="insight_condition_unknown">ያልታወቀ</string>
     <string name="insight_tie_in">ዛሬ ምሽት %1$s ይዙ።</string>
-    <string name="insight_tie_in_with_rain">ዛሬ ምሽት %1$s ይዙ፣ ዝናብ %2$s ሰዓት።</string>
+    <string name="insight_tie_in_with_rain">ዛሬ ምሽት %1$s ይዙ፣ %3$s %2$s ሰዓት።</string>
     <!-- Amharic: bare digits for TTS-friendly 24h time. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -423,10 +423,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- insight_tie_in_at_night: bare imperative, "tonight" already established -->
     <string name="insight_tie_in_at_night">%1$s ይዙ።</string>
     <!-- insight_tie_in_with_rain_chance: %1$s = item, %2$s = time -->
-    <string name="insight_tie_in_with_rain_chance">%1$s ይዙ፣ ዝናብ ሊኖር ይችላል %2$s ሰዓት።</string>
+    <string name="insight_tie_in_with_rain_chance">%1$s ይዙ፣ %3$s ሊኖር ይችላል %2$s ሰዓት።</string>
     <!-- insight_evening_rain / insight_evening_rain_chance: %1$s = time -->
-    <string name="insight_evening_rain">ዛሬ ምሽት ዝናብ %1$s ሰዓት።</string>
-    <string name="insight_evening_rain_chance">ዛሬ ምሽት ዝናብ ሊኖር ይችላል %1$s ሰዓት።</string>
+    <string name="insight_evening_rain">ዛሬ ምሽት %2$s %1$s ሰዓት።</string>
+    <string name="insight_evening_rain_chance">ዛሬ ምሽት %2$s ሊኖር ይችላል %1$s ሰዓት።</string>
 
     <!-- Miscellaneous -->
 

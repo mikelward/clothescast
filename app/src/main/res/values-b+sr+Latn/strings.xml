@@ -121,10 +121,10 @@ default English (matching values-pl / values-uk).
     <string name="insight_condition_unknown">Nepoznato</string>
     <string name="insight_tie_in">Ponesi %1$s večeras.</string>
     <string name="insight_tie_in_at_night">Ponesi %1$s.</string>
-    <string name="insight_tie_in_with_rain">Ponesi %1$s večeras, kiša u %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Večeras moguća kiša u %2$s, ponesi %1$s.</string>
-    <string name="insight_evening_rain">Večeras kiša u %1$s.</string>
-    <string name="insight_evening_rain_chance">Večeras moguća kiša u %1$s.</string>
+    <string name="insight_tie_in_with_rain">Ponesi %1$s večeras, %3$s u %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Večeras moguća %3$s u %2$s, ponesi %1$s.</string>
+    <string name="insight_evening_rain">Večeras %2$s u %1$s.</string>
+    <string name="insight_evening_rain_chance">Večeras moguća %2$s u %1$s.</string>
     <!-- "15" — preposition "u" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>

@@ -98,7 +98,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="insight_condition_thunderstorm">Giông bão</string>
     <string name="insight_condition_unknown">Không xác định</string>
     <string name="insight_tie_in">Mang %1$s tối nay.</string>
-    <string name="insight_tie_in_with_rain">Mang %1$s tối nay, mưa lúc %2$s.</string>
+    <string name="insight_tie_in_with_rain">Mang %1$s tối nay, %3$s lúc %2$s.</string>
     <!-- "15 giờ" / "15 giờ 30 phút" — preposition "lúc" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d giờ</string>
     <string name="insight_time_hour_minutes">%1$d giờ %2$02d phút</string>
@@ -631,9 +631,9 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
          ===================================================================== -->
     <string name="insight_precip_chance">Có thể %1$s %2$s.</string>
     <string name="insight_tie_in_at_night">Mang %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Tối nay, có thể mưa lúc %2$s, mang %1$s.</string>
-    <string name="insight_evening_rain">Tối nay, mưa lúc %1$s.</string>
-    <string name="insight_evening_rain_chance">Tối nay, có thể mưa lúc %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Tối nay, có thể %3$s lúc %2$s, mang %1$s.</string>
+    <string name="insight_evening_rain">Tối nay, %2$s lúc %1$s.</string>
+    <string name="insight_evening_rain_chance">Tối nay, có thể %2$s lúc %1$s.</string>
 
     <string name="today_forecast_air_section_title">Nhiệt độ không khí</string>
 

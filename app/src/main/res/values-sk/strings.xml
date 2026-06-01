@@ -595,10 +595,10 @@ What is NOT overridden, by design:
     <string name="insight_condition_unknown">Neznáme</string>
     <string name="insight_tie_in">Vezmi si %1$s na večer.</string>
     <string name="insight_tie_in_at_night">Vezmi si %1$s.</string>
-    <string name="insight_tie_in_with_rain">Vezmi si %1$s na večer, dážď o %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Dnes večer možnosť dažďa o %2$s, vezmi si %1$s.</string>
-    <string name="insight_evening_rain">Dnes večer dážď o %1$s.</string>
-    <string name="insight_evening_rain_chance">Dnes večer možnosť dažďa o %1$s.</string>
+    <string name="insight_tie_in_with_rain">Vezmi si %1$s na večer, %3$s o %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Dnes večer možnosť %3$s o %2$s, vezmi si %1$s.</string>
+    <string name="insight_evening_rain">Dnes večer %2$s o %1$s.</string>
+    <string name="insight_evening_rain_chance">Dnes večer možnosť %2$s o %1$s.</string>
     <!-- "15" — preposition "o" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>

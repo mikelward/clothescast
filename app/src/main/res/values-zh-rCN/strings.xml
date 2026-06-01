@@ -462,7 +462,7 @@ label localizes.
     <string name="insight_condition_unknown">未知</string>
     <!-- "为15点的会议带上雨伞。" — time before event name follows Chinese convention. -->
     <string name="insight_tie_in">今晚带上%1$s。</string>
-    <string name="insight_tie_in_with_rain">今晚带上%1$s，%2$s有雨。</string>
+    <string name="insight_tie_in_with_rain">今晚带上%1$s，%2$s有%3$s。</string>
     <!-- "15点" / "15点30分" — Chinese spoken time. insight_precip_at_time is a passthrough. -->
     <string name="insight_time_hour">%1$d点</string>
     <string name="insight_time_hour_minutes">%1$d点%2$02d分</string>
@@ -697,9 +697,9 @@ label localizes.
     <!-- "可能" — invariant adverb; works for any precip noun. -->
     <string name="insight_precip_chance">可能%1$s（%2$s）。</string>
     <string name="insight_tie_in_at_night">带上%1$s。</string>
-    <string name="insight_tie_in_with_rain_chance">今晚带上%1$s，%2$s可能有雨。</string>
-    <string name="insight_evening_rain">今晚%1$s有雨。</string>
-    <string name="insight_evening_rain_chance">今晚%1$s可能有雨。</string>
+    <string name="insight_tie_in_with_rain_chance">今晚带上%1$s，%2$s可能有%3$s。</string>
+    <string name="insight_evening_rain">今晚%1$s有%2$s。</string>
+    <string name="insight_evening_rain_chance">今晚%1$s可能有%2$s。</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast 无法在此设备上运行 — 你的 Android 版本缺少应用界面所需的功能（Configuration.fontWeightAdjustment，需 Android 12 及以上）。请联系设备制造商进行系统更新。</string>

@@ -96,7 +96,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="insight_condition_unknown">অজানা</string>
     <!-- "মিটিং (15)-এর জন্য কোট নিন।" -->
     <string name="insight_tie_in">আজ রাতে %1$s নিন।</string>
-    <string name="insight_tie_in_with_rain">আজ রাতে %1$s নিন, %2$s-এ বৃষ্টি।</string>
+    <string name="insight_tie_in_with_rain">আজ রাতে %1$s নিন, %2$s-এ %3$s।</string>
     <!-- "15" — suffix "-এ" comes from insight_precip_at_time wrapper. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -107,9 +107,9 @@ West Bengal vocabulary differences in a future PR.
 
     <string name="insight_precip_chance">%1$s হওয়ার সম্ভাবনা %2$s।</string>
     <string name="insight_tie_in_at_night">%1$s নিন।</string>
-    <string name="insight_tie_in_with_rain_chance">আজ রাতে %1$s নিন, %2$s-এ বৃষ্টির সম্ভাবনা।</string>
-    <string name="insight_evening_rain">আজ রাতে %1$s-এ বৃষ্টি।</string>
-    <string name="insight_evening_rain_chance">আজ রাতে %1$s-এ বৃষ্টির সম্ভাবনা।</string>
+    <string name="insight_tie_in_with_rain_chance">আজ রাতে %1$s নিন, %2$s-এ %3$s সম্ভাবনা।</string>
+    <string name="insight_evening_rain">আজ রাতে %1$s-এ %2$s।</string>
+    <string name="insight_evening_rain_chance">আজ রাতে %1$s-এ %2$s সম্ভাবনা।</string>
 
     <!-- ============================================================
          Today screen

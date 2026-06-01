@@ -436,10 +436,10 @@ is unchanged; only the displayed label localizes.
 
     <string name="insight_tie_in">Weź %1$s wieczorem.</string>
     <string name="insight_tie_in_at_night">Weź %1$s wieczorem.</string>
-    <string name="insight_tie_in_with_rain">Weź %1$s wieczorem, deszcz o %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Możliwy deszcz o %2$s — weź %1$s.</string>
-    <string name="insight_evening_rain">Wieczorem deszcz o %1$s.</string>
-    <string name="insight_evening_rain_chance">Wieczorem możliwy deszcz o %1$s.</string>
+    <string name="insight_tie_in_with_rain">Weź %1$s wieczorem, %3$s o %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Możliwy %3$s o %2$s — weź %1$s.</string>
+    <string name="insight_evening_rain">Wieczorem %2$s o %1$s.</string>
+    <string name="insight_evening_rain_chance">Wieczorem możliwy %2$s o %1$s.</string>
     <string name="insight_precip_chance">Możliwy %1$s %2$s.</string>
 
     <!-- "15" — preposition "o" comes from surrounding templates. -->

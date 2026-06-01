@@ -93,7 +93,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="insight_condition_thunderstorm">Nevihta</string>
     <string name="insight_condition_unknown">Neznano</string>
     <string name="insight_tie_in">Vzemi %1$s s seboj nocoj.</string>
-    <string name="insight_tie_in_with_rain">Vzemi %1$s s seboj nocoj, dež ob %2$s.</string>
+    <string name="insight_tie_in_with_rain">Vzemi %1$s s seboj nocoj, %3$s ob %2$s.</string>
     <!-- Slovenian time format uses "." separator: "ob 15.30". -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>
@@ -102,9 +102,9 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="insight_tie_in_at_night">Vzemi %1$s s seboj.</string>
     <!-- Hedged precipitation: "Možnost dežja" (chance of rain). -->
     <string name="insight_precip_chance">Možnost %1$s %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Nocoj možnost dežja ob %2$s, vzemi %1$s s seboj.</string>
-    <string name="insight_evening_rain">Nocoj dež ob %1$s.</string>
-    <string name="insight_evening_rain_chance">Nocoj možnost dežja ob %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Nocoj možnost %3$s ob %2$s, vzemi %1$s s seboj.</string>
+    <string name="insight_evening_rain">Nocoj %2$s ob %1$s.</string>
+    <string name="insight_evening_rain_chance">Nocoj možnost %2$s ob %1$s.</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast ne more delovati na tej napravi — vaša različica Androida nima funkcije, ki jo zahteva vmesnik aplikacije (Configuration.fontWeightAdjustment, pričakovano na Androidu 12 in novejšem). Za posodobitev sistema se obrnite na proizvajalca naprave.</string>

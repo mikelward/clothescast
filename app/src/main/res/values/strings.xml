@@ -1349,44 +1349,52 @@
     <string name="insight_tie_in_at_night">Bring %1$s.</string>
     <!--
     Variant of insight_tie_in for the morning insight's evening tie-in when the
-    evening forecast also has rain ≥ 30%. Folds the rain time into the same
-    sentence so the morning insight mentions evening rain alongside the evening
-    clothing tip, without emitting a second precip clause that would compete
-    with the morning slice's own. Rain clause leads the item ("Tonight, rain
-    at 9pm, bring a jacket.") so the sentence reads weather-then-action,
-    mirroring how the day insight orders precip before the carry. "umbrella"
-    is stripped from the items by the formatter when this template is used
-    — the rain mention already covers what an umbrella's for — so the
-    template never has to apologise for "bring an umbrella, rain at 9pm."
-    %1$s = item phrase, %2$s = spoken time.
+    evening forecast also has precipitation ≥ 30%. Folds the precip time into
+    the same sentence so the morning insight mentions the evening weather
+    alongside the evening clothing tip, without emitting a second precip clause
+    that would compete with the morning slice's own. The precip clause leads the
+    item ("Tonight, rain at 9pm, bring a jacket.") so the sentence reads
+    weather-then-action, mirroring how the day insight orders precip before the
+    carry. "umbrella" is stripped from the items by the formatter when this
+    template is used — the precip mention already covers what an umbrella's for
+    — so the template never has to apologise for "bring an umbrella, rain at
+    9pm." %1$s = item phrase, %2$s = spoken time, %3$s = condition noun (the same
+    insight_condition_* label the main clause uses, lowercased mid-sentence) so a
+    stormy / snowy evening names the real condition ("Tonight, snow at 9pm, …")
+    instead of always saying "rain".
     -->
-    <string name="insight_tie_in_with_rain">Tonight, rain at %2$s, bring %1$s.</string>
+    <string name="insight_tie_in_with_rain">Tonight, %3$s at %2$s, bring %1$s.</string>
     <!--
     POSSIBLE-tier counterpart of insight_tie_in_with_rain: a clothes rule
     triggered for the evening but only one per-model series flagged the
-    rain at ≥ 30%. Hedges the wording so a single-model rain reading
-    doesn't render with the same definite tone as a majority-of-models
-    agreement. %1$s = item phrase, %2$s = spoken time.
+    precip at ≥ 30%. Hedges the wording so a single-model reading doesn't
+    render with the same definite tone as a majority-of-models agreement.
+    %1$s = item phrase, %2$s = spoken time, %3$s = condition noun (lowercased),
+    so the hedge reads "chance of snow" / "chance of thunderstorm" when the
+    peak isn't plain rain.
     -->
-    <string name="insight_tie_in_with_rain_chance">Tonight, chance of rain at %2$s, bring %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Tonight, chance of %3$s at %2$s, bring %1$s.</string>
     <!--
-    Bare-rain variant of the evening tie-in for the morning insight: emitted
+    Bare-precip variant of the evening tie-in for the morning insight: emitted
     when the user has an evening event with a location and the per-model
-    forecast tier spots rain ≥ 50% (majority of models agree) at some hour in
+    forecast tier spots precip ≥ 50% (majority of models agree) at some hour in
     the tonight window, but no clothes rule fired for that period. The
     morning insight stays silent on clothing because nothing's been picked
-    yet — the rain mention itself is the point. %1$s = spoken time.
-    Fronts the "Tonight," time marker so the bare-rain sentence reads in
-    the same "<time>, <content>." shape as the band lead and the item-led
-    tie-in templates.
+    yet — the precip mention itself is the point. %1$s = spoken time, %2$s =
+    condition noun (lowercased) so a snowy / stormy evening names the real
+    condition ("Tonight, snow at 9pm.") instead of always saying "rain".
+    Fronts the "Tonight," time marker so the sentence reads in the same
+    "<time>, <content>." shape as the band lead and the item-led tie-in
+    templates.
     -->
-    <string name="insight_evening_rain">Tonight, rain at %1$s.</string>
+    <string name="insight_evening_rain">Tonight, %2$s at %1$s.</string>
     <!--
     POSSIBLE-tier counterpart of insight_evening_rain: only one per-model
     series flagged the tonight hour ≥ 30%, so we hedge the wording. Matches
-    insight_precip_chance's "Chance of rain" pattern. %1$s = spoken time.
+    insight_precip_chance's "Chance of rain" pattern. %1$s = spoken time,
+    %2$s = condition noun (lowercased).
     -->
-    <string name="insight_evening_rain_chance">Tonight, chance of rain at %1$s.</string>
+    <string name="insight_evening_rain_chance">Tonight, chance of %2$s at %1$s.</string>
 
     <!--
     Holidays sub-page: per-holiday opt-in toggles. On the matching calendar

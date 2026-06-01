@@ -102,7 +102,7 @@ they work correctly in both the single-band and range templates.
     <string name="insight_condition_unknown">غير معروف</string>
     <string name="insight_tie_in">خذ %1$s الليلة.</string>
     <!-- %2$s is the spoken time from insight_time_hour — "الساعة" embedded here. -->
-    <string name="insight_tie_in_with_rain">خذ %1$s الليلة، مطر الساعة %2$s.</string>
+    <string name="insight_tie_in_with_rain">خذ %1$s الليلة، %3$s الساعة %2$s.</string>
     <!-- Bare number; "في الساعة" comes from insight_precip_at_time. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -456,9 +456,9 @@ they work correctly in both the single-band and range templates.
     <!-- Insight prose (additional templates) -->
     <string name="insight_precip_chance">احتمال %1$s %2$s.</string>
     <string name="insight_tie_in_at_night">خذ %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">خذ %1$s الليلة، احتمال مطر الساعة %2$s.</string>
-    <string name="insight_evening_rain">الليلة، مطر الساعة %1$s.</string>
-    <string name="insight_evening_rain_chance">الليلة، احتمال مطر الساعة %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">خذ %1$s الليلة، احتمال %3$s الساعة %2$s.</string>
+    <string name="insight_evening_rain">الليلة، %2$s الساعة %1$s.</string>
+    <string name="insight_evening_rain_chance">الليلة، احتمال %2$s الساعة %1$s.</string>
 
     <!-- Strings added to match base. -->
     <string name="settings_region_language_title">اللغة</string>

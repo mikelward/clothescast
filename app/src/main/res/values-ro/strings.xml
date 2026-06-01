@@ -92,7 +92,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="insight_condition_thunderstorm">Furtună</string>
     <string name="insight_condition_unknown">Necunoscut</string>
     <string name="insight_tie_in">Ia %1$s diseară.</string>
-    <string name="insight_tie_in_with_rain">Ia %1$s diseară, ploaie la %2$s.</string>
+    <string name="insight_tie_in_with_rain">Ia %1$s diseară, %3$s la %2$s.</string>
     <!-- "15" — preposition "la" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -100,9 +100,9 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <!-- Missing insight prose strings. -->
     <string name="insight_precip_chance">Posibil %1$s %2$s.</string>
     <string name="insight_tie_in_at_night">Ia %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Diseară, posibil ploaie la %2$s, ia %1$s.</string>
-    <string name="insight_evening_rain">Diseară, ploaie la %1$s.</string>
-    <string name="insight_evening_rain_chance">Diseară, posibil ploaie la %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Diseară, posibil %3$s la %2$s, ia %1$s.</string>
+    <string name="insight_evening_rain">Diseară, %2$s la %1$s.</string>
+    <string name="insight_evening_rain_chance">Diseară, posibil %2$s la %1$s.</string>
 
     <!-- Error screen. -->
     <string name="error_device_incompatible">ClothesCast nu poate rula pe acest dispozitiv — versiunea ta de Android nu include o funcție necesară pentru interfața aplicației (Configuration.fontWeightAdjustment, disponibilă pe Android 12 și versiuni superioare). Contactează producătorul dispozitivului pentru o actualizare de sistem.</string>

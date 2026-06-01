@@ -454,7 +454,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_condition_thunderstorm">Temporale</string>
     <string name="insight_condition_unknown">Sconosciuto</string>
     <string name="insight_tie_in">Porta %1$s stasera.</string>
-    <string name="insight_tie_in_with_rain">Porta %1$s stasera, pioggia alle %2$s.</string>
+    <string name="insight_tie_in_with_rain">Porta %1$s stasera, %3$s alle %2$s.</string>
     <!-- "15" / "15 e 30" — preposition "alle" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d e %2$02d</string>
@@ -682,9 +682,9 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_tie_in_at_night">Porta %1$s.</string>
     <!-- Hedged precipitation and evening-rain templates. -->
     <string name="insight_precip_chance">Possibilità di %1$s %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Stasera, possibilità di pioggia alle %2$s, porta %1$s.</string>
-    <string name="insight_evening_rain">Stasera, pioggia alle %1$s.</string>
-    <string name="insight_evening_rain_chance">Stasera, possibilità di pioggia alle %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Stasera, possibilità di %3$s alle %2$s, porta %1$s.</string>
+    <string name="insight_evening_rain">Stasera, %2$s alle %1$s.</string>
+    <string name="insight_evening_rain_chance">Stasera, possibilità di %2$s alle %1$s.</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast non può essere eseguito su questo dispositivo — la tua versione di Android manca di una funzionalità richiesta dall\'interfaccia dell\'app (Configuration.fontWeightAdjustment, prevista su Android 12 e versioni successive). Contatta il produttore del dispositivo per un aggiornamento di sistema.</string>

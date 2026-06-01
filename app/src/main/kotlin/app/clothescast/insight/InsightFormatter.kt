@@ -741,6 +741,18 @@ class InsightFormatter(
             ?.takeIf { rainTime != null && tieIn.precipCondition?.warrantsRainAccessory() == true }
         val items = if (accessoryKey != null) filteredItems + accessoryKey else filteredItems
         val renderedItems = if (items.isEmpty()) "" else phraser.joinItems(items)
+        // The condition noun the evening clause names — the same conditionRes()
+        // label the main precip clause uses, so a stormy or snowy evening reads
+        // "Tonight, thunderstorm at 9pm, …" / "Tonight, snow at 9pm, …" rather
+        // than mislabelling every wet evening as "rain". Lowercased to match the
+        // mid-sentence casing the main chance clause already applies (the
+        // condition resources are Title Case for the sentence-leading main
+        // clause). precipCondition is null on cached payloads written before the
+        // field existed — fall back to RAIN so they keep their prior wording
+        // rather than guessing a different noun.
+        val conditionNoun =
+            resources.getString(conditionRes(tieIn.precipCondition ?: WeatherCondition.RAIN))
+                .lowercase(locale)
         if (renderedItems.isBlank()) {
             // No items left to name. If there's a rain time, the clause
             // collapses to the bare-rain prose (the only signal left);
@@ -750,7 +762,7 @@ class InsightFormatter(
                 PrecipLikelihood.LIKELY -> R.string.insight_evening_rain
                 PrecipLikelihood.POSSIBLE -> R.string.insight_evening_rain_chance
             }
-            return resources.getString(template, spokenTime(rainTime))
+            return resources.getString(template, spokenTime(rainTime), conditionNoun)
         }
         // No rain — bare item-led sentence. Always uses the TODAY-context
         // "Tonight, bring …" template because the evening tie-in only fires
@@ -763,7 +775,7 @@ class InsightFormatter(
             PrecipLikelihood.LIKELY -> R.string.insight_tie_in_with_rain
             PrecipLikelihood.POSSIBLE -> R.string.insight_tie_in_with_rain_chance
         }
-        return resources.getString(template, renderedItems, spokenTime(rainTime))
+        return resources.getString(template, renderedItems, spokenTime(rainTime), conditionNoun)
     }
 
     private fun leadRes(period: ForecastPeriod, isFutureDay: Boolean): Int = when (period) {

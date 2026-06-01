@@ -395,11 +395,11 @@ displayed label localizes.
 
     <string name="insight_tie_in">Ota %1$s mukaan tänä iltana.</string>
     <string name="insight_tie_in_at_night">Ota %1$s mukaan tänä iltana.</string>
-    <string name="insight_tie_in_with_rain">Ota %1$s mukaan tänä iltana, sadetta kello %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Mahdollisesti sadetta kello %2$s — ota %1$s mukaan.</string>
+    <string name="insight_tie_in_with_rain">Ota %1$s mukaan tänä iltana, %3$s kello %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Mahdollisesti %3$s kello %2$s — ota %1$s mukaan.</string>
     <string name="insight_precip_chance">Mahdollisesti %1$s %2$s.</string>
-    <string name="insight_evening_rain">Tänä iltana sadetta kello %1$s.</string>
-    <string name="insight_evening_rain_chance">Tänä iltana mahdollisesti sadetta kello %1$s.</string>
+    <string name="insight_evening_rain">Tänä iltana %2$s kello %1$s.</string>
+    <string name="insight_evening_rain_chance">Tänä iltana mahdollisesti %2$s kello %1$s.</string>
 
     <!-- Finnish time format: period as decimal separator, no AM/PM. -->
     <string name="insight_time_hour">%1$d</string>

@@ -652,10 +652,10 @@ only the displayed label localizes.
     <string name="insight_condition_unknown">Неизвестно</string>
     <string name="insight_tie_in">Возьми %1$s сегодня вечером.</string>
     <string name="insight_tie_in_at_night">Возьми %1$s сегодня вечером.</string>
-    <string name="insight_tie_in_with_rain">Возьми %1$s сегодня вечером, дождь в %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Возможен дождь в %2$s — возьми %1$s.</string>
-    <string name="insight_evening_rain">Сегодня вечером дождь в %1$s.</string>
-    <string name="insight_evening_rain_chance">Сегодня вечером возможен дождь в %1$s.</string>
+    <string name="insight_tie_in_with_rain">Возьми %1$s сегодня вечером, %3$s в %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Возможен %3$s в %2$s — возьми %1$s.</string>
+    <string name="insight_evening_rain">Сегодня вечером %2$s в %1$s.</string>
+    <string name="insight_evening_rain_chance">Сегодня вечером возможен %2$s в %1$s.</string>
     <!-- "15" — preposition "в" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>

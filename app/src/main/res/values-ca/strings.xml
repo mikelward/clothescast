@@ -533,10 +533,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="insight_condition_unknown">Desconegut</string>
     <string name="insight_tie_in">Emporta\'t %1$s aquesta nit.</string>
     <string name="insight_tie_in_at_night">Emporta\'t %1$s.</string>
-    <string name="insight_tie_in_with_rain">Aquesta nit, pluja a les %2$s, emporta\'t %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Aquesta nit, possibilitat de pluja a les %2$s, emporta\'t %1$s.</string>
-    <string name="insight_evening_rain">Aquesta nit, pluja a les %1$s.</string>
-    <string name="insight_evening_rain_chance">Aquesta nit, possibilitat de pluja a les %1$s.</string>
+    <string name="insight_tie_in_with_rain">Aquesta nit, %3$s a les %2$s, emporta\'t %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Aquesta nit, possibilitat de %3$s a les %2$s, emporta\'t %1$s.</string>
+    <string name="insight_evening_rain">Aquesta nit, %2$s a les %1$s.</string>
+    <string name="insight_evening_rain_chance">Aquesta nit, possibilitat de %2$s a les %1$s.</string>
     <!-- "15" / "15:30" — "a les" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>

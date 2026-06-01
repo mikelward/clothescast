@@ -521,7 +521,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_condition_thunderstorm">Καταιγίδα</string>
     <string name="insight_condition_unknown">Άγνωστος</string>
     <string name="insight_tie_in">Πάρε %1$s απόψε.</string>
-    <string name="insight_tie_in_with_rain">Πάρε %1$s απόψε, βροχή στις %2$s.</string>
+    <string name="insight_tie_in_with_rain">Πάρε %1$s απόψε, %3$s στις %2$s.</string>
     <!-- "15:00" / "15:30" — standard Greek 24-hour colon notation,
          TTS reads naturally. -->
     <string name="insight_time_hour">%1$d:00</string>
@@ -645,9 +645,9 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Missing insight prose. -->
     <string name="insight_precip_chance">Πιθανότητα %1$s %2$s.</string>
     <string name="insight_tie_in_at_night">Πάρε %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Πάρε %1$s απόψε, πιθανότητα βροχής στις %2$s.</string>
-    <string name="insight_evening_rain">Απόψε, βροχή στις %1$s.</string>
-    <string name="insight_evening_rain_chance">Απόψε, πιθανότητα βροχής στις %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Πάρε %1$s απόψε, πιθανότητα %3$s στις %2$s.</string>
+    <string name="insight_evening_rain">Απόψε, %2$s στις %1$s.</string>
+    <string name="insight_evening_rain_chance">Απόψε, πιθανότητα %2$s στις %1$s.</string>
 
     <!-- Missing onboarding strings. -->
     <string name="onboarding_subtitle_tv">Δύο γρήγορες επιλογές και είσαι έτοιμος. Μπορείς να τα αλλάξεις αργότερα στις Ρυθμίσεις.</string>

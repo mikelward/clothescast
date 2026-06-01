@@ -93,7 +93,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_condition_thunderstorm">พายุฝนฟ้าคะนอง</string>
     <string name="insight_condition_unknown">ไม่ทราบ</string>
     <string name="insight_tie_in">พก%1$sไปคืนนี้</string>
-    <string name="insight_tie_in_with_rain">พก%1$sไปคืนนี้, ฝนตกเวลา %2$s</string>
+    <string name="insight_tie_in_with_rain">พก%1$sไปคืนนี้, %3$sเวลา %2$s</string>
     <!-- "15 นาฬิกา" / "15 นาฬิกา 30 นาที" — preposition "เวลา" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d นาฬิกา</string>
     <string name="insight_time_hour_minutes">%1$d นาฬิกา %2$02d นาที</string>
@@ -101,9 +101,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Missing insight strings -->
     <string name="insight_precip_chance">อาจมี%1$s%2$s</string>
     <string name="insight_tie_in_at_night">พก%1$sด้วย</string>
-    <string name="insight_tie_in_with_rain_chance">คืนนี้อาจมีฝนเวลา %2$s พก%1$sด้วย</string>
-    <string name="insight_evening_rain">คืนนี้ฝนตกเวลา %1$s</string>
-    <string name="insight_evening_rain_chance">คืนนี้อาจมีฝนเวลา %1$s</string>
+    <string name="insight_tie_in_with_rain_chance">คืนนี้อาจมี%3$sเวลา %2$s พก%1$sด้วย</string>
+    <string name="insight_evening_rain">คืนนี้%2$sเวลา %1$s</string>
+    <string name="insight_evening_rain_chance">คืนนี้อาจมี%2$sเวลา %1$s</string>
 
     <!-- Missing garment names -->
     <string name="garment_puffer">เสื้อขนเป็ด</string>

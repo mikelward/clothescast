@@ -594,10 +594,10 @@ only the displayed label localizes.
     <string name="insight_tie_in">Візьміть %1$s сьогодні ввечері.</string>
     <!-- No-prefix counterpart: band lead already established the night context. -->
     <string name="insight_tie_in_at_night">Візьміть %1$s.</string>
-    <string name="insight_tie_in_with_rain">Візьміть %1$s сьогодні ввечері, дощ о %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Сьогодні ввечері можливий дощ о %2$s, візьміть %1$s.</string>
-    <string name="insight_evening_rain">Сьогодні ввечері дощ о %1$s.</string>
-    <string name="insight_evening_rain_chance">Сьогодні ввечері можливий дощ о %1$s.</string>
+    <string name="insight_tie_in_with_rain">Візьміть %1$s сьогодні ввечері, %3$s о %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Сьогодні ввечері можливий %3$s о %2$s, візьміть %1$s.</string>
+    <string name="insight_evening_rain">Сьогодні ввечері %2$s о %1$s.</string>
+    <string name="insight_evening_rain_chance">Сьогодні ввечері можливий %2$s о %1$s.</string>
     <!-- "15" — preposition "о" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>

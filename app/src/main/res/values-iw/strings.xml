@@ -102,7 +102,7 @@ standard in Israeli digital communication.
     <string name="insight_condition_unknown">לא ידוע</string>
     <string name="insight_tie_in">קח/י %1$s הלילה.</string>
     <!-- %2$s is the spoken time — "בשעה" embedded here since time is a bare number. -->
-    <string name="insight_tie_in_with_rain">קח/י %1$s הלילה, גשם בשעה %2$s.</string>
+    <string name="insight_tie_in_with_rain">קח/י %1$s הלילה, %3$s בשעה %2$s.</string>
     <!-- Bare number; "בשעה" comes from insight_precip_at_time. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -452,9 +452,9 @@ standard in Israeli digital communication.
     <!-- Insight prose templates (additional) -->
     <string name="insight_precip_chance">סיכוי ל%1$s %2$s.</string>
     <string name="insight_tie_in_at_night">קח/י %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">קח/י %1$s הלילה, סיכוי לגשם בשעה %2$s.</string>
-    <string name="insight_evening_rain">הלילה, גשם בשעה %1$s.</string>
-    <string name="insight_evening_rain_chance">הלילה, סיכוי לגשם בשעה %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">קח/י %1$s הלילה, סיכוי ל%3$s בשעה %2$s.</string>
+    <string name="insight_evening_rain">הלילה, %2$s בשעה %1$s.</string>
+    <string name="insight_evening_rain_chance">הלילה, סיכוי ל%2$s בשעה %1$s.</string>
 
     <!-- Strings added to match base. -->
     <string name="settings_region_language_title">שפה</string>

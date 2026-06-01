@@ -438,10 +438,10 @@ the displayed label localizes.
 
     <string name="insight_tie_in">Neem %1$s mee vanavond.</string>
     <string name="insight_tie_in_at_night">Neem %1$s mee vanavond.</string>
-    <string name="insight_tie_in_with_rain">Neem %1$s mee vanavond, regen om %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Kans op regen om %2$s — neem %1$s mee.</string>
-    <string name="insight_evening_rain">Vanavond regen om %1$s.</string>
-    <string name="insight_evening_rain_chance">Vanavond kans op regen om %1$s.</string>
+    <string name="insight_tie_in_with_rain">Neem %1$s mee vanavond, %3$s om %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Kans op %3$s om %2$s — neem %1$s mee.</string>
+    <string name="insight_evening_rain">Vanavond %2$s om %1$s.</string>
+    <string name="insight_evening_rain_chance">Vanavond kans op %2$s om %1$s.</string>
     <string name="insight_precip_chance">Kans op %1$s %2$s.</string>
 
     <!-- "15 uur" — preposition "om" comes from surrounding templates. -->

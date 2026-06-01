@@ -460,13 +460,19 @@ private class ChartScrubIndicator(
 
             val time = controller?.activeTime ?: return
             val chartX = currentTimeChartX(hourly, startDate, time) ?: return
-            // Gate on the actual canvas pixel — chartX can fall outside
-            // the data-range bounds (`ranges.minX..maxX`) when the user
-            // scrubs into Vico's start / end padding, but it should
-            // still draw as long as the resulting line lands on the
-            // visible plot area.
-            val canvasX = chartZero + pxPerUnit * chartX.toFloat()
-            if (canvasX < layerBounds.left || canvasX > layerBounds.right) return
+            // Clamp to the plot's visible edges instead of culling. See
+            // [indicatorCanvasX] — the live "now" position can sit up to a
+            // full hour past the last data point (the 06:30–07:00 gap on a
+            // TONIGHT chart whose last point is 06:00), which lands beyond
+            // Vico's ~half-cell end padding; pinning it to the edge keeps
+            // the indicator visible through the final hour.
+            val canvasX = indicatorCanvasX(
+                chartZero = chartZero,
+                pxPerUnit = pxPerUnit,
+                chartX = chartX,
+                layerLeftPx = layerBounds.left,
+                layerRightPx = layerBounds.right,
+            )
             line.drawVertical(context, canvasX, layerBounds.top, layerBounds.bottom)
         }
     }

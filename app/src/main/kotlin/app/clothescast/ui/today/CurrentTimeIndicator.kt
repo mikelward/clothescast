@@ -70,3 +70,29 @@ internal fun currentTimeChartX(
     }
     return null
 }
+
+/**
+ * Canvas-x for the live indicator line, clamped to the plot's visible
+ * edges. [currentTimeChartX] treats each hourly sample as a 1-hour bin,
+ * so a "now" inside the *last* bin can map up to a full cell past the
+ * rightmost data point — e.g. 06:48 against a TONIGHT window whose last
+ * point is 06:00 yields chartX = lastIndex + 0.8. Vico's end padding only
+ * reserves ~half a cell, so that raw canvas-x lands beyond the right edge
+ * and the previous "cull if off-plot" gate dropped the line entirely for
+ * the back half of the final hour (the 06:30–07:00 gap on a default 07:00
+ * wake time). Pinning the line to the edge keeps "now" visible through the
+ * whole last hour instead; the leading side is handled symmetrically.
+ *
+ * Scrubbed times never reach the clamp out of range — [chartXToTime] pins
+ * a scrub to ±half a cell — and these per-period charts disable
+ * scroll/zoom and fit the full window, so `scroll` is always 0 and the
+ * clamp can't surface a line for a position that's genuinely scrolled
+ * off-screen.
+ */
+internal fun indicatorCanvasX(
+    chartZero: Float,
+    pxPerUnit: Float,
+    chartX: Double,
+    layerLeftPx: Float,
+    layerRightPx: Float,
+): Float = (chartZero + pxPerUnit * chartX.toFloat()).coerceIn(layerLeftPx, layerRightPx)

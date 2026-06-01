@@ -57,6 +57,12 @@ private const val STABLE_SAMPLES = 2
  * Can't be exercised by Robolectric (no real display/window), so it's verified
  * on-device; the chart's *appearance* is locked by the WidgetForecastChart
  * snapshots.
+ *
+ * Why not Vico's compose-glance (`CartesianChartImage`) and drop all this? It
+ * was evaluated and deliberately not adopted — it can't reuse the real themed
+ * chart, so it reintroduces the off-brand-lookalike drift this path avoids, for
+ * no testability win. The full trade-off, plus the other alternatives
+ * considered, lives in `docs/widgets.md` ("Alternatives considered").
  */
 internal suspend fun renderComposableToBitmap(
     context: Context,

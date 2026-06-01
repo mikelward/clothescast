@@ -241,6 +241,14 @@ internal fun SevenDayPage(
         // week's feels-like range and its peak rain / wind / UV rather than
         // repeating today's figures.
         conditionsHourly = flatHourly,
+        // Week-wide per-model arrays so the strip's UV reads the same consensus
+        // the UV chart on this page draws — not a lone primary-series spike on
+        // some day the consensus rates lower. Use the coverage-gated value (null
+        // on a legacy cache whose per-model series only spans the first couple
+        // of days): an ungated short series would make the strip's consensus
+        // summarize just that side-band and miss the week's real peak. Null
+        // falls back to the full-week primary [flatHourly] in outfitCardInfoLines.
+        conditionsPerModelHourly = weekPerModelDiagnostics,
         // The week-headline card is this page's "insight" section, so it
         // reorders against the outfit row exactly like the per-period insight
         // card does on pages 0 / 1 — keeping the outfit row at a consistent

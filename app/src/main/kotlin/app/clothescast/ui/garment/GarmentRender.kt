@@ -12,6 +12,7 @@ import androidx.core.graphics.PathParser as AndroidPathParser
 import app.clothescast.R
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -847,8 +848,18 @@ internal fun outfitCardInfoLines(
         rainLineShort = null
         rainFillFraction = null
     }
-    // Wind / UV: take the period's peak and only surface it when notable.
-    val windMaxKmh = hourly.mapNotNull { it.windSpeedKmh }.maxOrNull()
+    // Wind / UV: take the period's peak and only surface it when notable. Both
+    // prefer the cross-model consensus (per-hour mean across models) when
+    // per-model data is available — the same blend the wind / UV diagnostic
+    // charts and their "Peak N" subtitles draw, so the strip and the charts
+    // can't disagree — and fall back to the primary hourly series for callers /
+    // cached payloads that carry no per-model arrays (previews, pre-multi-model
+    // caches). The consensus is computed in km/h and gated against the km/h
+    // threshold; the km/h→unit conversion is linear, so this matches the wind
+    // chart's consensus (which converts before averaging) before the label
+    // converts for display.
+    val windMaxKmh = (perModelHourly?.let { consensusPeak(it) { h -> h.windSpeedKmh } }
+        ?: hourly.mapNotNull { it.windSpeedKmh }.maxOrNull())
         ?.takeIf { it >= WIND_NOTABLE_KMH }
     val windLabel = windMaxKmh?.let {
         context.getString(
@@ -857,15 +868,10 @@ internal fun outfitCardInfoLines(
             windSpeedUnit.symbol(),
         )
     }
-    // Peak UV from the cross-model consensus (per-hour mean across models) when
-    // per-model data is available — the same blend the UV diagnostic chart and
-    // its "Peak N" subtitle draw, so the strip and the chart can't disagree.
-    // Falls back to the primary hourly series for callers / cached payloads that
-    // carry no per-model arrays (previews, pre-multi-model caches). Gate on the
-    // *rounded* peak so the cell appears for exactly the values the label
-    // renders: a 5.5–5.9 peak reads as "UV 6" once rounded, so testing the raw
-    // value against UV_NOTABLE (6.0) would hide a UV the user is told is 6.
-    val uvPeak = perModelHourly?.let { consensusUvPeak(it) }
+    // UV gates on the *rounded* peak so the cell appears for exactly the values
+    // the label renders: a 5.5–5.9 peak reads as "UV 6" once rounded, so testing
+    // the raw value against UV_NOTABLE (6.0) would hide a UV the user is told is 6.
+    val uvPeak = perModelHourly?.let { consensusPeak(it) { h -> h.uvIndex } }
         ?: hourly.mapNotNull { it.uvIndex }.maxOrNull()
     val uvMax = uvPeak?.takeIf { it.roundToInt() >= UV_NOTABLE }
     val uvLabel = uvMax?.let { context.getString(R.string.conditions_uv, it.roundToInt()) }
@@ -1095,18 +1101,21 @@ internal const val WIND_NOTABLE_KMH = 30.0
 internal const val UV_NOTABLE = 6.0
 
 /**
- * Peak UV across the cross-model consensus: the per-hour mean of [uvIndex]
- * across whichever models reported at that hour, then the maximum of those
- * means. Mirrors the main line the UV diagnostic chart draws (and its "Peak N"
- * subtitle), so the conditions strip surfaces the same UV the user sees plotted
- * rather than a lone primary-series spike the consensus smooths away. Null when
- * no model reports UV at any hour.
+ * Peak of a metric across the cross-model consensus: the per-hour mean of
+ * [picker] across whichever models reported at that hour, then the maximum of
+ * those means. Mirrors the main line the diagnostic charts draw (and their
+ * "Peak N" subtitles), so the conditions strip surfaces the same UV / wind the
+ * user sees plotted rather than a lone primary-series spike the consensus
+ * smooths away. Null when no model reports the metric at any hour.
  */
-internal fun consensusUvPeak(perModelHourly: PerModelHourly): Double? {
+internal fun consensusPeak(
+    perModelHourly: PerModelHourly,
+    picker: (PerModelHour) -> Double?,
+): Double? {
     val byIndex = mutableMapOf<Int, MutableList<Double>>()
     perModelHourly.byModel.values.forEach { entries ->
         entries.forEachIndexed { i, entry ->
-            entry.uvIndex?.let { byIndex.getOrPut(i) { mutableListOf() } += it }
+            picker(entry)?.let { byIndex.getOrPut(i) { mutableListOf() } += it }
         }
     }
     return byIndex.values.maxOfOrNull { it.average() }

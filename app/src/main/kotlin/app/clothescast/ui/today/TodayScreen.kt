@@ -563,6 +563,14 @@ private fun TodayContent(
             val nextPeriodFallback = state.thisPeriodInsight.period.opposite()
             HorizontalPager(
                 state = pagerState,
+                // Pre-compose the neighbouring pages so the swipe is pure
+                // translation of already-laid-out content. The 7-day page
+                // (page 2) carries six Vico chart cards plus the per-model
+                // diagnostic deck; composing all that on the frame the user's
+                // finger starts moving is the bulk of the perceived jank.
+                // 1 covers 0↔1 and 1↔2 — the common swipe paths — without
+                // paying for page 2's composition on a cold open to page 0.
+                beyondViewportPageCount = 1,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),

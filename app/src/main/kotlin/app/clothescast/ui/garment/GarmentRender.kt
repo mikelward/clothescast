@@ -633,6 +633,12 @@ private const val DROPLET_FILL_ARGB = 0xFF1E88E5.toInt()
 private const val INFO_ICON_OUTLINE_ARGB = 0xFF333333.toInt()
 // Stroke width in 24-unit viewport coordinates; ≈2.25 px at INFO_ICON_PX=36.
 private const val INFO_ICON_STROKE_WIDTH = 1.5f
+// The sun glyph (Material `wb_sunny`) is a disc plus eight thin rays. At the
+// full INFO_ICON_STROKE_WIDTH a centered outline nearly swallows each ~1.4-unit
+// ray, so the sun reads as mostly black outline rather than a tinted sun. A
+// thinner edge keeps the silhouette legible while letting the UV-scale fill
+// show through the rays.
+private const val SUN_STROKE_WIDTH = 0.75f
 
 /**
  * Draws a coloured thermometer at ([x], [y]) sized [size]×[size]. The
@@ -766,6 +772,7 @@ private fun drawSolidGlyph(
     pathData: String,
     fillArgb: Int,
     outlineArgb: Int,
+    outlineWidth: Float = INFO_ICON_STROKE_WIDTH,
 ) {
     val path = AndroidPathParser.createPathFromPathData(pathData)
     val scale = size.toFloat() / 24f
@@ -778,7 +785,7 @@ private fun drawSolidGlyph(
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.STROKE
             color = outlineArgb
-            strokeWidth = INFO_ICON_STROKE_WIDTH
+            strokeWidth = outlineWidth
         },
     )
     canvas.restore()
@@ -1032,7 +1039,10 @@ private fun drawConditionsRow(
             ConditionsGlyph.WIND ->
                 drawSolidGlyph(canvas, ix, iconTop, iconPx, AIR_PATH, cell.tintArgb ?: outlineArgb, outlineArgb)
             ConditionsGlyph.UV ->
-                drawSolidGlyph(canvas, ix, iconTop, iconPx, SUN_PATH, cell.tintArgb ?: outlineArgb, outlineArgb)
+                drawSolidGlyph(
+                    canvas, ix, iconTop, iconPx, SUN_PATH, cell.tintArgb ?: outlineArgb, outlineArgb,
+                    outlineWidth = SUN_STROKE_WIDTH,
+                )
         }
         canvas.drawText(cell.label, ix + iconPx + iconGap, baseline, textPaint)
         x += cellWidths[i] + sectionGap

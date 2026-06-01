@@ -352,21 +352,14 @@ they work correctly in both the single-band and range templates.
     <!-- Settings — schedule -->
     <string name="settings_schedule_title">ClothesCast اليومي</string>
     <string name="settings_schedule_time_label">الوقت</string>
-    <string name="settings_schedule_days_label">أيام الأسبوع</string>
     <string name="settings_daily_mention_evening_events">ذكر أحداث المساء</string>
     <string name="settings_schedule_preview">تشغيل الآن</string>
     <string name="settings_tonight_title">ClothesCast الليلي</string>
-    <string name="settings_tonight_description">ClothesCast ثانٍ مسائي يغطي طقس الليلة. في المساء الهادئ يبقى صامتًا؛ في مساء الأحداث يُصدر صوتًا ويقرأ نفسه.</string>
     <string name="settings_tonight_enabled">إظهار ClothesCast الليلي</string>
     <string name="settings_tonight_time_label">الوقت</string>
-    <string name="settings_tonight_days_label">أيام الأسبوع</string>
     <string name="settings_tonight_notify_only_on_events">إشعار فقط عند وجود أحداث مسائية</string>
 
     <!-- Settings — delivery / TTS -->
-    <string name="settings_delivery_label">التسليم</string>
-    <string name="settings_delivery_notification_only">إشعار فقط</string>
-    <string name="settings_delivery_tts_only">قراءة صوتية فقط</string>
-    <string name="settings_delivery_notification_and_tts">إشعار وقراءة صوتية</string>
     <string name="settings_tts_engine_title">محرك الصوت</string>
     <string name="settings_tts_engine_description">اختر بين الكلام منخفض الجودة على الجهاز والكلام عالي الجودة عبر الإنترنت.</string>
     <string name="settings_tts_engine_device">الجهاز (جودة منخفضة، على الجهاز)</string>
@@ -442,11 +435,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_notification_permission_grant">منح إذن الإشعارات</string>
 
     <!-- Settings — calendar -->
-    <string name="settings_calendar_title">التقويم</string>
-    <string name="settings_calendar_use_events">استخدام أحداث تقويم اليوم</string>
-    <string name="settings_calendar_description_off">تخصيص توقعات الصباح وفق أحداث اليوم — تُستخدم العناوين والأوقات فقط، ولا يغادر أي شيء الجهاز.</string>
-    <string name="settings_calendar_description_on">جارٍ تخصيص توقعات الصباح وفق أحداث اليوم. تُستخدم العناوين والأوقات فقط؛ لا يغادر أي شيء الجهاز.</string>
-    <string name="settings_calendar_grant_permission">منح إذن التقويم</string>
     <string name="settings_calendar_open_settings">تم رفض إذن التقويم. امنحه من إعدادات النظام.</string>
 
     <!-- Settings — about -->
@@ -620,9 +608,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_tts_voice_locale_sq_al">الألبانية (ألبانيا)</string>
     <string name="settings_region_language_am_et">الأمهرية (إثيوبيا)</string>
     <string name="settings_tts_voice_locale_am_et">الأمهرية (إثيوبيا)</string>
-    <string name="settings_region_language_ar_ae">العربية (الإمارات العربية المتحدة)</string>
-    <string name="settings_region_language_ar_eg">العربية (مصر)</string>
-    <string name="settings_region_language_ar_ma">العربية (المغرب)</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit, + debug screen. -->
@@ -830,8 +815,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_holiday_override_auto_on">تلقائي (تشغيل)</string>
     <string name="settings_holiday_override_off">إيقاف</string>
     <string name="settings_holiday_override_on">تشغيل</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">شغّل المفتاح أعلاه لتطبيق سمة الزي على الأحداث المكتشفة من تقاويمك المتزامنة.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">ستظهر الأحداث المكتشفة من تقاويمك المتزامنة هنا في تحديث قادم.</string>
     <string name="settings_holidays_collapse">طيّ</string>
     <string name="settings_holidays_expand">توسيع</string>
     <string name="settings_holidays_link_calendar_settings_a11y">إعدادات التقويم</string>
@@ -848,13 +831,10 @@ they work correctly in both the single-band and range templates.
     <!-- Settings — home location -->
 
     <!-- Settings — root holidays and smart home -->
-    <string name="settings_root_holidays">الاحتفالات</string>
-    <string name="settings_root_holidays_subtitle">الأعياد وأعياد الميلاد</string>
     <string name="settings_root_smart_home">المنزل الذكي</string>
     <string name="settings_root_smart_home_subtitle">الشاشات الذكية وأتمتة المنزل</string>
 
     <!-- Settings — schedule description -->
-    <string name="settings_schedule_description">ClothesCast صباحي يغطي طقس ذلك اليوم.</string>
 
     <!-- Settings — skip TTS at home -->
 

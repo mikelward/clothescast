@@ -200,21 +200,14 @@ default English (matching values-pl / values-uk).
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Dnevni ClothesCast</string>
     <string name="settings_schedule_time_label">Vreme</string>
-    <string name="settings_schedule_days_label">Dani u sedmici</string>
     <string name="settings_daily_mention_evening_events">Pomeni večernje događaje</string>
     <string name="settings_schedule_preview">Pusti sada</string>
 
     <string name="settings_tonight_title">Noćni ClothesCast</string>
-    <string name="settings_tonight_description">Drugi ClothesCast uveče koji pokriva vremensku prognozu za večeras. Mirnih večeri ostaje tih ili se uopšte ne pojavljuje ako je uključeno „Obavesti samo kad ima večernjih događaja"; večerima sa događajima reproducira zvuk i (ako je uključen govorni prikaz) čita se naglas.</string>
     <string name="settings_tonight_enabled">Prikaži noćni ClothesCast</string>
     <string name="settings_tonight_time_label">Vreme</string>
-    <string name="settings_tonight_days_label">Dani u sedmici</string>
     <string name="settings_tonight_notify_only_on_events">Obavesti samo kad ima večernjih događaja</string>
 
-    <string name="settings_delivery_label">Isporuka</string>
-    <string name="settings_delivery_notification_only">Samo obaveštenje</string>
-    <string name="settings_delivery_tts_only">Samo govorni prikaz</string>
-    <string name="settings_delivery_notification_and_tts">Obaveštenje i govorni prikaz</string>
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">Glasovni mehanizam</string>
@@ -405,11 +398,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_notification_permission_grant">Dozvoli obaveštenja</string>
 
     <!-- Calendar opt-in card. -->
-    <string name="settings_calendar_title">Kalendar</string>
-    <string name="settings_calendar_use_events">Koristi današnje događaje iz kalendara</string>
-    <string name="settings_calendar_description_off">Prilagodi jutarnju prognozu današnjim događajima — koriste se samo naslovi i vremena, ništa ne napušta uređaj.</string>
-    <string name="settings_calendar_description_on">Prilagođava jutarnju prognozu današnjim događajima. Koriste se samo naslovi i vremena; ništa ne napušta uređaj.</string>
-    <string name="settings_calendar_grant_permission">Dozvoli pristup kalendaru</string>
     <string name="settings_calendar_open_settings">Pristup kalendaru odbijen. Dozvoli ga u sistemskim podešavanjima.</string>
 
     <!-- Debug screen. -->
@@ -687,8 +675,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_about_open_meteo">Vremenske podatke obezbeđuje Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Praznici</string>
-    <string name="settings_root_holidays_subtitle">Tematske boje i baneri</string>
     <string name="settings_holidays_title">Praznici</string>
     <string name="settings_holiday_country_home">Dom (%1$s)</string>
     <string name="settings_holiday_country_current">Trenutna lokacija (%1$s)</string>
@@ -836,7 +822,6 @@ default English (matching values-pl / values-uk).
     <!-- Smart Home settings, outfit card headers, and other missing strings. -->
     <string name="settings_root_smart_home">Pametni dom</string>
     <string name="settings_root_smart_home_subtitle">Pametni displej i kućna automatizacija</string>
-    <string name="settings_schedule_description">ClothesCast ujutro koji pokriva vreme dana.</string>
     <string name="settings_api_key_replace">Zameni Gemini ključ</string>
     <string name="outfit_card_header_today">Današnji ClothesCast</string>
     <string name="outfit_card_header_tonight">Večernji ClothesCast</string>
@@ -855,8 +840,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_holidays_link_location_settings_a11y">Podešavanja lokacije</string>
     <string name="settings_holidays_link_region_settings_a11y">Podešavanja regiona</string>
     <string name="settings_holidays_permission_revoked">Potrebna dozvola za kalendar. Dodirnite za ponovnu dodelu.</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Uključite prekidač gore za prilagodbu današnje kombinacije na osnovu događaja iz sinhronizovanih kalendara.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Otkriveni događaji iz vaših sinhronizovanih kalendara pojaviće se ovde u budućem ažuriranju.</string>
     <string name="settings_smart_home_cast_title">Prenos</string>
     <string name="settings_smart_home_cast_device_label">Pametni ekran</string>
     <string name="settings_smart_home_cast_device_none">Nije odabran ekran</string>

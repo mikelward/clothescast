@@ -77,21 +77,14 @@ the displayed label localizes.
     -->
     <string name="settings_schedule_title">Dagelijkse ClothesCast</string>
     <string name="settings_schedule_time_label">Tijdstip</string>
-    <string name="settings_schedule_days_label">Weekdagen</string>
     <string name="settings_daily_mention_evening_events">Avondafspraken vermelden</string>
     <string name="settings_schedule_preview">Nu afspelen</string>
 
     <string name="settings_tonight_title">Avondlijkse ClothesCast</string>
-    <string name="settings_tonight_description">Een tweede ClothesCast \'s avonds voor het weer van vanavond. Op rustige avonden blijft hij stil of verschijnt hij helemaal niet als \'Alleen meldingen bij avondafspraken\' is ingeschakeld; op avonden met afspraken speelt hij een geluid af en (als je gesproken uitvoer hebt ingeschakeld) leest hij zichzelf voor.</string>
     <string name="settings_tonight_enabled">Avondlijkse ClothesCast weergeven</string>
     <string name="settings_tonight_time_label">Tijdstip</string>
-    <string name="settings_tonight_days_label">Weekdagen</string>
     <string name="settings_tonight_notify_only_on_events">Alleen meldingen bij avondafspraken</string>
 
-    <string name="settings_delivery_label">Bezorging</string>
-    <string name="settings_delivery_notification_only">Alleen melding</string>
-    <string name="settings_delivery_tts_only">Alleen gesproken</string>
-    <string name="settings_delivery_notification_and_tts">Melding en gesproken</string>
 
     <!--
     Voice screen.
@@ -284,11 +277,6 @@ the displayed label localizes.
     <string name="settings_notification_permission_grant">Meldingen toestaan</string>
 
     <!-- Calendar opt-in card. -->
-    <string name="settings_calendar_title">Agenda</string>
-    <string name="settings_calendar_use_events">Agenda-afspraken van vandaag gebruiken</string>
-    <string name="settings_calendar_description_off">Als dit is ingeschakeld, leest ClothesCast de afspraken van vandaag uit je apparaatagenda, zodat je ochtendlijkse ClothesCast suggesties kan doen voor specifieke afspraken — bijvoorbeeld "Neem een paraplu mee voor je hardlooptraining om 15 uur in het park". Alleen afsprakentitels en tijdstippen worden gebruikt; beschrijvingen, deelnemers en locaties worden gelezen maar verlaten het apparaat nooit.</string>
-    <string name="settings_calendar_description_on">Leest de afspraken van vandaag uit je apparaatagenda om je ochtendlijkse ClothesCast aan te vullen. Alleen titels en tijdstippen worden gebruikt in de samenvatting; beschrijvingen en deelnemers niet. Alles blijft op het apparaat.</string>
-    <string name="settings_calendar_grant_permission">Toegang tot agenda toestaan</string>
     <string name="settings_calendar_open_settings">Toegang tot agenda geweigerd. Sta dit toe in de systeeminstellingen.</string>
 
     <!-- Debug screen. -->
@@ -747,8 +735,6 @@ the displayed label localizes.
     <string name="settings_about_open_meteo">Weergegevens door Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Feestdagen</string>
-    <string name="settings_root_holidays_subtitle">Thema kleuren en banners</string>
     <string name="settings_holidays_title">Feestdagen</string>
     <string name="settings_holiday_country_home">Thuis (%1$s)</string>
     <string name="settings_holiday_country_current">Huidige locatie (%1$s)</string>
@@ -852,7 +838,6 @@ the displayed label localizes.
     <!-- Missing strings — Smart Home, holiday banners, outfit card, settings. -->
     <string name="settings_root_smart_home">Slim thuis</string>
     <string name="settings_root_smart_home_subtitle">Slimme schermen en huisautomatisering</string>
-    <string name="settings_schedule_description">Een ClothesCast \'s ochtends met het weer van de dag.</string>
     <string name="settings_api_key_replace">Gemini-sleutel vervangen</string>
     <string name="outfit_card_header_today">Huidig ClothesCast</string>
     <string name="outfit_card_header_tonight">Avond-ClothesCast</string>
@@ -871,8 +856,6 @@ the displayed label localizes.
     <string name="settings_holidays_link_location_settings_a11y">Locatie-instellingen</string>
     <string name="settings_holidays_link_region_settings_a11y">Regio-instellingen</string>
     <string name="settings_holidays_permission_revoked">Kalendermachtiging vereist. Tik om opnieuw te verlenen.</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Schakel de bovenstaande schakelaar in om het outfit van vandaag te personaliseren op basis van gedetecteerde evenementen uit je gesynchroniseerde kalenders.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Gedetecteerde evenementen uit je gesynchroniseerde kalenders verschijnen hier in een toekomstige update.</string>
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
     <string name="settings_smart_home_cast_title">Uitzenden</string>
     <string name="settings_smart_home_cast_device_label">Slim scherm</string>

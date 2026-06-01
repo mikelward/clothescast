@@ -83,21 +83,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     -->
     <string name="settings_schedule_title">ClothesCast quotidiano</string>
     <string name="settings_schedule_time_label">Ora</string>
-    <string name="settings_schedule_days_label">Giorni della settimana</string>
     <string name="settings_daily_mention_evening_events">Cita gli eventi serali</string>
     <string name="settings_schedule_preview">Riproduci ora</string>
 
     <string name="settings_tonight_title">ClothesCast serale</string>
-    <string name="settings_tonight_description">Un secondo ClothesCast la sera che copre il tempo di stasera. Nelle serate tranquille resta silenzioso, o non appare affatto se „Avvisa solo quando ci sono eventi serali“ è attivo; nelle serate con eventi riproduce un suono e (se hai attivato la lettura vocale) si legge da solo.</string>
     <string name="settings_tonight_enabled">Mostra un ClothesCast serale</string>
     <string name="settings_tonight_time_label">Ora</string>
-    <string name="settings_tonight_days_label">Giorni della settimana</string>
     <string name="settings_tonight_notify_only_on_events">Avvisa solo quando ci sono eventi serali</string>
 
-    <string name="settings_delivery_label">Recapito</string>
-    <string name="settings_delivery_notification_only">Solo notifica</string>
-    <string name="settings_delivery_tts_only">Solo lettura vocale</string>
-    <string name="settings_delivery_notification_and_tts">Notifica e lettura vocale</string>
 
     <!--
     Voice screen — engine picker (Device / Gemini),
@@ -306,11 +299,6 @@ zh-CN) is unchanged; only the displayed label localizes.
          disclosure ("descrizioni, partecipanti e luoghi vengono letti
          ma non lasciano mai il dispositivo"). Quotes around the nested
          example follow the same „…" house style. -->
-    <string name="settings_calendar_title">Calendario</string>
-    <string name="settings_calendar_use_events">Usa gli eventi del calendario di oggi</string>
-    <string name="settings_calendar_description_off">Quando attivo, ClothesCast legge gli eventi di oggi dal calendario del tuo dispositivo, così il tuo ClothesCast mattutino può suggerire capi legati a eventi specifici — per esempio „porta un ombrello per la corsa al parco delle 15“. Vengono usati solo titolo e orario degli eventi; descrizioni, partecipanti e luoghi vengono letti ma non lasciano mai il dispositivo.</string>
-    <string name="settings_calendar_description_on">Sto leggendo gli eventi di oggi dal calendario del tuo dispositivo per arricchire il tuo ClothesCast mattutino. Nel riepilogo si usano solo titoli e orari; descrizioni e partecipanti no. Tutto resta sul dispositivo.</string>
-    <string name="settings_calendar_grant_permission">Concedi l\'accesso al calendario</string>
     <string name="settings_calendar_open_settings">Accesso al calendario negato. Concedilo dalle impostazioni di sistema.</string>
 
     <!-- Debug screen — visible only on debug builds. -->
@@ -784,8 +772,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_about_open_meteo">Dati meteo forniti da Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Festività</string>
-    <string name="settings_root_holidays_subtitle">Palette e banner a tema</string>
     <string name="settings_holidays_title">Festività</string>
     <string name="settings_holiday_country_home">Casa (%1$s)</string>
     <string name="settings_holiday_country_current">Posizione attuale (%1$s)</string>
@@ -894,7 +880,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_smart_home_subtitle">Display intelligenti e domotica</string>
 
     <!-- Schedule screen description. -->
-    <string name="settings_schedule_description">Un ClothesCast al mattino che copre il tempo della giornata.</string>
 
     <!-- API key — replace button. -->
     <string name="settings_api_key_replace">Sostituisci chiave Gemini</string>
@@ -923,8 +908,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_holidays_link_location_settings_a11y">Impostazioni posizione</string>
     <string name="settings_holidays_link_region_settings_a11y">Impostazioni regione</string>
     <string name="settings_holidays_permission_revoked">Autorizzazione calendario necessaria. Tocca per concederla di nuovo.</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Attiva l\'interruttore qui sopra per personalizzare l\'outfit di oggi in base agli eventi rilevati nei tuoi calendari sincronizzati.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Gli eventi rilevati nei tuoi calendari sincronizzati appariranno qui in un futuro aggiornamento.</string>
 
     <!-- Holiday name. -->
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>

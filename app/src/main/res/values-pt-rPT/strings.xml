@@ -117,21 +117,14 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     -->
     <string name="settings_schedule_title">ClothesCast diário</string>
     <string name="settings_schedule_time_label">Hora</string>
-    <string name="settings_schedule_days_label">Dias da semana</string>
     <string name="settings_daily_mention_evening_events">Mencionar eventos da noite</string>
     <string name="settings_schedule_preview">Reproduzir agora</string>
 
     <string name="settings_tonight_title">ClothesCast noturno</string>
-    <string name="settings_tonight_description">Um segundo ClothesCast à noite que cobre o tempo para esta noite. Em noites tranquilas fica silencioso, ou nem aparece se «Notificar apenas quando houver eventos noturnos» estiver ativo; em noites com eventos toca um som e (se ativaste a leitura em voz alta) lê-se sozinho.</string>
     <string name="settings_tonight_enabled">Mostrar um ClothesCast noturno</string>
     <string name="settings_tonight_time_label">Hora</string>
-    <string name="settings_tonight_days_label">Dias da semana</string>
     <string name="settings_tonight_notify_only_on_events">Notificar apenas quando houver eventos noturnos</string>
 
-    <string name="settings_delivery_label">Entrega</string>
-    <string name="settings_delivery_notification_only">Apenas notificação</string>
-    <string name="settings_delivery_tts_only">Apenas leitura em voz alta</string>
-    <string name="settings_delivery_notification_and_tts">Notificação e leitura em voz alta</string>
 
     <!--
     Voice screen — engine picker (Device / Gemini),
@@ -331,11 +324,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
          disclosure ("descrições, participantes e locais … nunca saem
          do dispositivo"). Quotes around the nested example follow
          PT's «…» guillemets house style (BR uses German „…"). -->
-    <string name="settings_calendar_title">Calendário</string>
-    <string name="settings_calendar_use_events">Utilizar eventos do calendário de hoje</string>
-    <string name="settings_calendar_description_off">Quando ativado, o ClothesCast lê os eventos de hoje do calendário do teu dispositivo, para que o teu ClothesCast matinal possa sugerir peças associadas a eventos específicos — por exemplo «leva um chapéu de chuva para a tua corrida no parque às 15h». Apenas títulos e horas dos eventos são utilizados; descrições, participantes e locais são lidos, mas nunca saem do dispositivo.</string>
-    <string name="settings_calendar_description_on">A ler os eventos de hoje do calendário do teu dispositivo para enriquecer o teu ClothesCast matinal. No resumo, apenas títulos e horas são utilizados; descrições e participantes não. Tudo permanece no dispositivo.</string>
-    <string name="settings_calendar_grant_permission">Conceder acesso ao calendário</string>
     <string name="settings_calendar_open_settings">Acesso ao calendário recusado. Concede-o nas definições do sistema.</string>
 
     <!-- Debug screen — visible only on debug builds. "Acionar" (PT)
@@ -828,8 +816,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_about_open_meteo">Dados meteorológicos pela Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Feriados</string>
-    <string name="settings_root_holidays_subtitle">Cores temáticas e banners</string>
     <string name="settings_holidays_title">Feriados</string>
     <string name="settings_holiday_country_home">Casa (%1$s)</string>
     <string name="settings_holiday_country_current">Localização atual (%1$s)</string>
@@ -992,7 +978,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
     <string name="settings_smart_home_discover_label_mqtt">Broker MQTT</string>
     <string name="settings_api_key_replace">Substituir chave Gemini</string>
-    <string name="settings_schedule_description">Um ClothesCast de manhã que cobre o tempo desse dia.</string>
     <string name="settings_holidays_source_region">Região (%1$s)</string>
     <string name="settings_holidays_source_location">Localização (%1$s)</string>
     <string name="settings_holidays_source_global">Global</string>
@@ -1001,8 +986,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_holidays_link_region_settings_a11y">Definições de região</string>
     <string name="settings_holidays_link_location_settings_a11y">Definições de localização</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Definições de calendário</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Ativa o botão acima para personalizar o visual de hoje com base em eventos detetados nos teus calendários sincronizados.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Os eventos detetados nos teus calendários sincronizados aparecerão aqui numa atualização futura.</string>
     <string name="settings_holidays_permission_revoked">É necessária permissão do calendário. Toca para voltar a conceder.</string>
     <string name="holiday_name_us_presidents_day">Dia dos Presidentes</string>
     <string name="holiday_banner_japan_coming_of_age_day">Feliz Dia da Maioridade Japonesa</string>

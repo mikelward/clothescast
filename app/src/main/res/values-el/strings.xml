@@ -111,21 +111,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     -->
     <string name="settings_schedule_title">Καθημερινός ClothesCast</string>
     <string name="settings_schedule_time_label">Ώρα</string>
-    <string name="settings_schedule_days_label">Ημέρες της εβδομάδας</string>
     <string name="settings_daily_mention_evening_events">Αναφορά βραδινών συμβάντων</string>
     <string name="settings_schedule_preview">Αναπαραγωγή τώρα</string>
 
     <string name="settings_tonight_title">Νυχτερινός ClothesCast</string>
-    <string name="settings_tonight_description">Ένας δεύτερος ClothesCast το βράδυ που καλύπτει τον καιρό για απόψε. Σε ήσυχα βράδια παραμένει σιωπηλός, ή δεν εμφανίζεται καθόλου αν είναι ενεργό το «Ειδοποίηση μόνο όταν υπάρχουν βραδινά συμβάντα»· σε βράδια με συμβάντα παίζει έναν ήχο και (αν έχεις ενεργοποιήσει την ανάγνωση φωνητικά) διαβάζεται μόνος του.</string>
     <string name="settings_tonight_enabled">Εμφάνιση νυχτερινού ClothesCast</string>
     <string name="settings_tonight_time_label">Ώρα</string>
-    <string name="settings_tonight_days_label">Ημέρες της εβδομάδας</string>
     <string name="settings_tonight_notify_only_on_events">Ειδοποίηση μόνο όταν υπάρχουν βραδινά συμβάντα</string>
 
-    <string name="settings_delivery_label">Παράδοση</string>
-    <string name="settings_delivery_notification_only">Μόνο ειδοποίηση</string>
-    <string name="settings_delivery_tts_only">Μόνο φωνητική ανάγνωση</string>
-    <string name="settings_delivery_notification_and_tts">Ειδοποίηση και φωνητική ανάγνωση</string>
 
     <!--
     Voice screen — engine picker (Device / Gemini), voice + language
@@ -351,11 +344,6 @@ zh-CN) is unchanged; only the displayed label localizes.
          disclosure ("περιγραφές, συμμετέχοντες και τοποθεσίες … δεν
          φεύγουν ποτέ από τη συσκευή"). Quotes around the nested
          example follow Greek «…» guillemets house style. -->
-    <string name="settings_calendar_title">Ημερολόγιο</string>
-    <string name="settings_calendar_use_events">Χρήση συμβάντων ημερολογίου σήμερα</string>
-    <string name="settings_calendar_description_off">Όταν είναι ενεργή, ο ClothesCast διαβάζει τα σημερινά συμβάντα από το ημερολόγιο της συσκευής σου, ώστε ο πρωινός σου ClothesCast να μπορεί να προτείνει ρούχα συνδεδεμένα με συγκεκριμένα συμβάντα — για παράδειγμα «πάρε ομπρέλα για το τρέξιμό σου στο πάρκο στις 15:00». Χρησιμοποιούνται μόνο οι τίτλοι και οι ώρες των συμβάντων· οι περιγραφές, οι συμμετέχοντες και οι τοποθεσίες διαβάζονται αλλά δεν φεύγουν ποτέ από τη συσκευή.</string>
-    <string name="settings_calendar_description_on">Διαβάζονται τα σημερινά συμβάντα από το ημερολόγιο της συσκευής σου για να εμπλουτίσουν τον πρωινό σου ClothesCast. Στη σύνοψη χρησιμοποιούνται μόνο τίτλοι και ώρες· περιγραφές και συμμετέχοντες όχι. Όλα παραμένουν στη συσκευή.</string>
-    <string name="settings_calendar_grant_permission">Παραχώρηση πρόσβασης ημερολογίου</string>
     <string name="settings_calendar_open_settings">Πρόσβαση στο ημερολόγιο απορρίφθηκε. Παραχώρησέ την από τις Ρυθμίσεις συστήματος.</string>
 
     <!-- Debug screen — visible only on debug builds. "Worker" stays in
@@ -818,8 +806,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_about_open_meteo">Δεδομένα καιρού από το Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Αργίες</string>
-    <string name="settings_root_holidays_subtitle">Θεματικά χρώματα και πανό</string>
     <string name="settings_holidays_title">Αργίες</string>
     <string name="settings_holiday_country_home">Σπίτι (%1$s)</string>
     <string name="settings_holiday_country_current">Τρέχουσα τοποθεσία (%1$s)</string>
@@ -967,7 +953,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Smart Home settings, outfit card headers, and other missing strings. -->
     <string name="settings_root_smart_home">Έξυπνο σπίτι</string>
     <string name="settings_root_smart_home_subtitle">Έξυπνες οθόνες και οικιακή αυτοματοποίηση</string>
-    <string name="settings_schedule_description">Ένα ClothesCast το πρωί που καλύπτει τον καιρό της ημέρας.</string>
     <string name="settings_api_key_replace">Αντικατάσταση κλειδιού Gemini</string>
     <string name="outfit_card_header_today">ClothesCast σήμερα</string>
     <string name="outfit_card_header_tonight">ClothesCast απόψε</string>
@@ -986,8 +971,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_holidays_link_location_settings_a11y">Ρυθμίσεις τοποθεσίας</string>
     <string name="settings_holidays_link_region_settings_a11y">Ρυθμίσεις περιοχής</string>
     <string name="settings_holidays_permission_revoked">Απαιτείται άδεια ημερολογίου. Πάτησε για εκ νέου παροχή.</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Ενεργοποίησε τον διακόπτη παραπάνω για προσαρμογή της σημερινής στολής βάσει εκδηλώσεων από τα συγχρονισμένα ημερολόγιά σου.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Εντοπισμένες εκδηλώσεις από τα συγχρονισμένα ημερολόγιά σου θα εμφανιστούν εδώ σε μελλοντική ενημέρωση.</string>
     <string name="settings_smart_home_cast_title">Μεταδίδω</string>
     <string name="settings_smart_home_cast_device_label">Έξυπνη οθόνη</string>
     <string name="settings_smart_home_cast_device_none">Δεν επιλέχθηκε οθόνη</string>

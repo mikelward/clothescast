@@ -93,21 +93,14 @@ the displayed label localizes.
     -->
     <string name="settings_schedule_title">毎日の ClothesCast</string>
     <string name="settings_schedule_time_label">時刻</string>
-    <string name="settings_schedule_days_label">曜日</string>
     <string name="settings_daily_mention_evening_events">夜の予定に言及する</string>
     <string name="settings_schedule_preview">今すぐ再生</string>
 
     <string name="settings_tonight_title">夜間の ClothesCast</string>
-    <string name="settings_tonight_description">今夜の天気を伝える、夜のもう1つの ClothesCast です。予定のない夜は無音のまま、または「夜に予定があるときのみ通知」がオンの場合は表示されません。予定のある夜は音を鳴らし、（音声読み上げを有効にしている場合は）自動で読み上げます。</string>
     <string name="settings_tonight_enabled">夜間の ClothesCast を表示</string>
     <string name="settings_tonight_time_label">時刻</string>
-    <string name="settings_tonight_days_label">曜日</string>
     <string name="settings_tonight_notify_only_on_events">夜に予定があるときのみ通知</string>
 
-    <string name="settings_delivery_label">配信方法</string>
-    <string name="settings_delivery_notification_only">通知のみ</string>
-    <string name="settings_delivery_tts_only">音声読み上げのみ</string>
-    <string name="settings_delivery_notification_and_tts">通知と音声読み上げ</string>
 
     <!--
     Voice screen — engine picker (Device / Gemini),
@@ -313,11 +306,6 @@ the displayed label localizes.
          disclosure ("説明、参加者、場所は読み取られますが端末から外には出ません").
          Quotes around the nested example use Japanese corner-bracket
          「…」. -->
-    <string name="settings_calendar_title">カレンダー</string>
-    <string name="settings_calendar_use_events">今日のカレンダーの予定を使用</string>
-    <string name="settings_calendar_description_off">有効にすると、ClothesCast は端末のカレンダーから今日の予定を読み取り、朝の ClothesCast が特定の予定に合わせて服装を提案できるようになります — 例：「午後3時の公園ランニングのために傘を持参」。予定のタイトルと時刻のみが使用され、説明、参加者、場所は読み取られますが端末から外には出ません。</string>
-    <string name="settings_calendar_description_on">朝の ClothesCast を充実させるため、端末のカレンダーから今日の予定を読み取っています。要約にはタイトルと時刻のみを使用し、説明や参加者は使用しません。すべて端末内に留まります。</string>
-    <string name="settings_calendar_grant_permission">カレンダーへのアクセスを許可</string>
     <string name="settings_calendar_open_settings">カレンダーへのアクセスが拒否されました。システム設定で許可してください。</string>
 
     <!-- Debug screen — visible only on debug builds. -->
@@ -813,8 +801,6 @@ the displayed label localizes.
     <string name="settings_forecasters_bom_subtitle">オーストラリア — メンテナンス中。できるだけ早く復旧する予定です。</string>
 
     <!-- Settings root — Holidays row and subtitle. -->
-    <string name="settings_root_holidays">祝日</string>
-    <string name="settings_root_holidays_subtitle">テーマカラーとバナー</string>
 
     <!--
     Holidays sub-page — page title, country picker controls,
@@ -979,8 +965,6 @@ the displayed label localizes.
     <string name="settings_api_key_replace">Gemini キーを変更</string>
 
     <!-- Holidays settings — calendar section placeholders and links. -->
-    <string name="settings_holidays_calendar_section_placeholder_off">上のトグルをオンにすると、同期したカレンダーで検出したイベントに合わせて今日のコーデにテーマが適用されます。</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">同期したカレンダーで検出したイベントは、将来のアップデートでここに表示されます。</string>
     <string name="settings_holidays_link_calendar_settings_a11y">カレンダー設定</string>
     <string name="settings_holidays_link_location_settings_a11y">位置情報設定</string>
     <string name="settings_holidays_link_region_settings_a11y">地域設定</string>
@@ -998,7 +982,6 @@ the displayed label localizes.
     <string name="settings_root_smart_home_subtitle">スマートディスプレイとホームオートメーション</string>
 
     <!-- Schedule screen description. -->
-    <string name="settings_schedule_description">その日の天気をお知らせする、毎朝の ClothesCast です。</string>
 
     <!-- Skip TTS at home settings. -->
 

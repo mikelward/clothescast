@@ -347,23 +347,16 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <!-- Schedule settings. -->
     <string name="settings_schedule_title">ClothesCast zilnic</string>
     <string name="settings_schedule_time_label">Oră</string>
-    <string name="settings_schedule_days_label">Zile ale săptămânii</string>
     <string name="settings_daily_mention_evening_events">Menționează evenimentele de seară</string>
     <string name="settings_schedule_preview">Redă acum</string>
 
     <!-- Tonight settings. -->
     <string name="settings_tonight_title">ClothesCast nocturn</string>
-    <string name="settings_tonight_description">Un al doilea ClothesCast seara care acoperă vremea de diseară. În serile liniștite rămâne tăcut sau nu apare deloc dacă „Notifică doar când sunt evenimente de seară" este activat; în serile cu evenimente redă un sunet și (dacă ai activat livrarea citită cu voce tare) se citește singur.</string>
     <string name="settings_tonight_enabled">Arată un ClothesCast nocturn</string>
     <string name="settings_tonight_time_label">Oră</string>
-    <string name="settings_tonight_days_label">Zile ale săptămânii</string>
     <string name="settings_tonight_notify_only_on_events">Notifică doar când sunt evenimente de seară</string>
 
     <!-- Delivery options. -->
-    <string name="settings_delivery_label">Livrare</string>
-    <string name="settings_delivery_notification_only">Doar notificare</string>
-    <string name="settings_delivery_tts_only">Doar citit cu voce tare</string>
-    <string name="settings_delivery_notification_and_tts">Notificare și citit cu voce tare</string>
 
     <!-- Voice / TTS settings. -->
     <string name="settings_tts_engine_title">Motor vocal</string>
@@ -560,11 +553,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_notification_permission_grant">Acordă permisiunea pentru notificări</string>
 
     <!-- Calendar settings. -->
-    <string name="settings_calendar_title">Calendar</string>
-    <string name="settings_calendar_use_events">Folosește evenimentele din calendar de astăzi</string>
-    <string name="settings_calendar_description_off">Personalizează prognoza de dimineață în funcție de evenimentele de astăzi — se folosesc doar titlurile și orele, nimic nu părăsește dispozitivul.</string>
-    <string name="settings_calendar_description_on">Personalizează prognoza de dimineață în funcție de evenimentele de astăzi. Se folosesc doar titlurile și orele; nimic nu părăsește dispozitivul.</string>
-    <string name="settings_calendar_grant_permission">Acordă permisiunea de calendar</string>
     <string name="settings_calendar_open_settings">Permisiunea de calendar refuzată. Acordă-o din Setările sistemului.</string>
 
     <!-- Debug settings. -->
@@ -674,8 +662,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_about_open_meteo">Date meteo de la Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Sărbători</string>
-    <string name="settings_root_holidays_subtitle">Culori tematice și bannere</string>
     <string name="settings_holidays_title">Sărbători</string>
     <string name="settings_holiday_country_home">Acasă (%1$s)</string>
     <string name="settings_holiday_country_current">Locație curentă (%1$s)</string>
@@ -823,7 +809,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <!-- Smart Home settings, outfit card headers, and other missing strings. -->
     <string name="settings_root_smart_home">Casă inteligentă</string>
     <string name="settings_root_smart_home_subtitle">Afișaje inteligente și automatizare acasă</string>
-    <string name="settings_schedule_description">Un ClothesCast dimineața care acoperă vremea zilei.</string>
     <string name="settings_api_key_replace">Înlocuiește cheia Gemini</string>
     <string name="outfit_card_header_today">ClothesCast de astăzi</string>
     <string name="outfit_card_header_tonight">ClothesCast de diseară</string>
@@ -842,8 +827,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_holidays_link_location_settings_a11y">Setări locație</string>
     <string name="settings_holidays_link_region_settings_a11y">Setări regiune</string>
     <string name="settings_holidays_permission_revoked">Permisiune calendar necesară. Atinge pentru a acorda din nou.</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Activează comutatorul de mai sus pentru a personaliza ținuta de astăzi în funcție de evenimentele din calendarele sincronizate.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Evenimentele detectate din calendarele tale sincronizate vor apărea aici într-o actualizare viitoare.</string>
     <string name="settings_smart_home_cast_title">Transmite</string>
     <string name="settings_smart_home_cast_device_label">Afișaj inteligent</string>
     <string name="settings_smart_home_cast_device_none">Nu este selectat niciun afișaj</string>

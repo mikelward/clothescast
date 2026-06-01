@@ -105,21 +105,14 @@ only the displayed label localizes.
     -->
     <string name="settings_schedule_title">Ежедневный ClothesCast</string>
     <string name="settings_schedule_time_label">Время</string>
-    <string name="settings_schedule_days_label">Дни недели</string>
     <string name="settings_daily_mention_evening_events">Упоминать вечерние события</string>
     <string name="settings_schedule_preview">Воспроизвести</string>
 
     <string name="settings_tonight_title">Вечерний ClothesCast</string>
-    <string name="settings_tonight_description">Второй ClothesCast вечером, охватывающий погоду на сегодня вечером. В тихие вечера остаётся беззвучным или вообще не появляется, если включено «Уведомлять только при вечерних событиях»; в вечера с событиями издаёт звук и (если включено озвучивание) читает себя вслух.</string>
     <string name="settings_tonight_enabled">Показывать вечерний ClothesCast</string>
     <string name="settings_tonight_time_label">Время</string>
-    <string name="settings_tonight_days_label">Дни недели</string>
     <string name="settings_tonight_notify_only_on_events">Уведомлять только при вечерних событиях</string>
 
-    <string name="settings_delivery_label">Доставка</string>
-    <string name="settings_delivery_notification_only">Только уведомление</string>
-    <string name="settings_delivery_tts_only">Только озвучивание</string>
-    <string name="settings_delivery_notification_and_tts">Уведомление и озвучивание</string>
 
     <!--
     Voice screen — engine picker (Device / Gemini),
@@ -382,11 +375,6 @@ only the displayed label localizes.
          disclosure ("описания, участники и места читаются, но никогда не
          покидают устройство"). Quotes around the nested example follow
          the locale's «…» guillemet style. -->
-    <string name="settings_calendar_title">Календарь</string>
-    <string name="settings_calendar_use_events">Использовать события календаря на сегодня</string>
-    <string name="settings_calendar_description_off">Когда включено, ClothesCast читает события сегодняшнего дня из календаря твоего устройства, чтобы утренний ClothesCast мог предложить вещи, привязанные к конкретным событиям — например, «возьми зонт на пробежку в парке в 15:00». Используются только заголовки и время событий; описания, участники и места читаются, но никогда не покидают устройство.</string>
-    <string name="settings_calendar_description_on">Читаю события сегодняшнего дня из календаря твоего устройства, чтобы обогатить утренний ClothesCast. В сводке используются только заголовки и время; описания и участники не используются. Всё остаётся на устройстве.</string>
-    <string name="settings_calendar_grant_permission">Разрешить доступ к календарю</string>
     <string name="settings_calendar_open_settings">Доступ к календарю запрещён. Разреши в системных настройках.</string>
 
     <!-- Display / theme settings. -->
@@ -756,8 +744,6 @@ only the displayed label localizes.
     <string name="settings_about_open_meteo">Данные о погоде от Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Праздники</string>
-    <string name="settings_root_holidays_subtitle">Тематические цвета и баннеры</string>
     <string name="settings_holidays_title">Праздники</string>
     <string name="settings_holiday_country_home">Дом (%1$s)</string>
     <string name="settings_holiday_country_current">Текущее местоположение (%1$s)</string>
@@ -919,7 +905,6 @@ only the displayed label localizes.
     <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
     <string name="settings_smart_home_discover_label_mqtt">MQTT-брокер</string>
     <string name="settings_api_key_replace">Заменить ключ Gemini</string>
-    <string name="settings_schedule_description">Утренний ClothesCast с прогнозом погоды на этот день.</string>
     <string name="settings_holidays_source_region">Регион (%1$s)</string>
     <string name="settings_holidays_source_location">Местоположение (%1$s)</string>
     <string name="settings_holidays_source_global">Глобальный</string>
@@ -928,8 +913,6 @@ only the displayed label localizes.
     <string name="settings_holidays_link_region_settings_a11y">Настройки региона</string>
     <string name="settings_holidays_link_location_settings_a11y">Настройки местоположения</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Настройки календаря</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Включите переключатель выше, чтобы тематизировать сегодняшний образ в соответствии с событиями из синхронизированных календарей.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Обнаруженные события из ваших синхронизированных календарей появятся здесь в будущем обновлении.</string>
     <string name="settings_holidays_permission_revoked">Необходимо разрешение на доступ к календарю. Нажмите, чтобы предоставить снова.</string>
     <string name="holiday_name_us_presidents_day">День президентов</string>
     <string name="holiday_banner_japan_coming_of_age_day">С японским Днём совершеннолетия</string>

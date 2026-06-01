@@ -344,21 +344,14 @@ to values/strings.xml (English).
     <!-- Schedule settings -->
     <string name="settings_schedule_title">ClothesCast Harian</string>
     <string name="settings_schedule_time_label">Waktu</string>
-    <string name="settings_schedule_days_label">Hari dalam seminggu</string>
     <string name="settings_daily_mention_evening_events">Sebutkan acara malam</string>
     <string name="settings_schedule_preview">Putar sekarang</string>
     <string name="settings_tonight_title">ClothesCast Malam</string>
-    <string name="settings_tonight_description">ClothesCast kedua di malam hari yang mencakup cuaca malam ini. Di malam yang tenang, notifikasi tidak muncul, atau sama sekali tidak muncul jika "Hanya beri tahu saat ada acara malam" diaktifkan; di malam dengan acara, notifikasi berbunyi dan (jika pengiriman dengan suara diaktifkan) dibacakan.</string>
     <string name="settings_tonight_enabled">Tampilkan ClothesCast malam</string>
     <string name="settings_tonight_time_label">Waktu</string>
-    <string name="settings_tonight_days_label">Hari dalam seminggu</string>
     <string name="settings_tonight_notify_only_on_events">Hanya beri tahu saat ada acara malam</string>
 
     <!-- Delivery settings -->
-    <string name="settings_delivery_label">Pengiriman</string>
-    <string name="settings_delivery_notification_only">Notifikasi saja</string>
-    <string name="settings_delivery_tts_only">Dibacakan saja</string>
-    <string name="settings_delivery_notification_and_tts">Notifikasi dan dibacakan</string>
 
     <!-- TTS / voice settings -->
     <string name="settings_tts_engine_title">Mesin suara</string>
@@ -557,11 +550,6 @@ to values/strings.xml (English).
     <string name="settings_notification_permission_grant">Izinkan notifikasi</string>
 
     <!-- Calendar settings -->
-    <string name="settings_calendar_title">Kalender</string>
-    <string name="settings_calendar_use_events">Gunakan acara kalender hari ini</string>
-    <string name="settings_calendar_description_off">Sesuaikan prakiraan pagi dengan acara hari ini — hanya judul dan waktu yang digunakan, tidak ada yang meninggalkan perangkat.</string>
-    <string name="settings_calendar_description_on">Menyesuaikan prakiraan pagi dengan acara hari ini. Hanya judul dan waktu yang digunakan; tidak ada yang meninggalkan perangkat.</string>
-    <string name="settings_calendar_grant_permission">Izinkan akses kalender</string>
     <string name="settings_calendar_open_settings">Izin kalender ditolak. Berikan dari Pengaturan sistem.</string>
 
     <!-- Debug settings -->
@@ -675,8 +663,6 @@ to values/strings.xml (English).
     <string name="settings_forecasters_bom">BOM</string>
     <string name="settings_forecasters_bom_subtitle">Australia — sedang dalam pemeliharaan, akan kembali secepatnya.</string>
 
-    <string name="settings_root_holidays">Hari Libur</string>
-    <string name="settings_root_holidays_subtitle">Warna tema dan spanduk</string>
     <string name="settings_holidays_title">Hari Libur</string>
     <string name="settings_holiday_country_home">Rumah (%1$s)</string>
     <string name="settings_holiday_country_current">Lokasi saat ini (%1$s)</string>
@@ -835,8 +821,6 @@ to values/strings.xml (English).
     <string name="settings_api_key_replace">Ganti kunci Gemini</string>
 
     <!-- Holidays settings -->
-    <string name="settings_holidays_calendar_section_placeholder_off">Aktifkan tombol di atas untuk menampilkan tema outfit hari ini berdasarkan acara yang terdeteksi dari kalender tersinkron Anda.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Acara yang terdeteksi dari kalender tersinkron Anda akan muncul di sini dalam pembaruan mendatang.</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Pengaturan kalender</string>
     <string name="settings_holidays_link_location_settings_a11y">Pengaturan lokasi</string>
     <string name="settings_holidays_link_region_settings_a11y">Pengaturan wilayah</string>
@@ -854,7 +838,6 @@ to values/strings.xml (English).
     <string name="settings_root_smart_home_subtitle">Layar Pintar dan Otomasi Rumah</string>
 
     <!-- Schedule description -->
-    <string name="settings_schedule_description">ClothesCast pagi yang mencakup cuaca hari itu.</string>
 
     <!-- Skip TTS at home -->
 

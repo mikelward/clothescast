@@ -327,21 +327,14 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <!-- Schedule settings -->
     <string name="settings_schedule_title">Ikdienas ClothesCast</string>
     <string name="settings_schedule_time_label">Laiks</string>
-    <string name="settings_schedule_days_label">Nedēļas dienas</string>
     <string name="settings_daily_mention_evening_events">Pieminēt vakara notikumus</string>
     <string name="settings_schedule_preview">Atskaņot tagad</string>
     <string name="settings_tonight_title">Nakts ClothesCast</string>
-    <string name="settings_tonight_description">Otrs ClothesCast vakarā, kas aptver šovakarējā laika apstākļus. Klusās vakaros tas paliek klusēdams vai vispār neparādās, ja ir ieslēgta opcija "Paziņot tikai tad, kad ir vakara notikumi"; notikumu vakaros tas atskaņo skaņu un (ja esi iespējojis balss piegādi) nolasa sevi skaļi.</string>
     <string name="settings_tonight_enabled">Rādīt nakts ClothesCast</string>
     <string name="settings_tonight_time_label">Laiks</string>
-    <string name="settings_tonight_days_label">Nedēļas dienas</string>
     <string name="settings_tonight_notify_only_on_events">Paziņot tikai tad, kad ir vakara notikumi</string>
 
     <!-- Delivery settings -->
-    <string name="settings_delivery_label">Piegāde</string>
-    <string name="settings_delivery_notification_only">Tikai paziņojums</string>
-    <string name="settings_delivery_tts_only">Tikai skaļi nolasīts</string>
-    <string name="settings_delivery_notification_and_tts">Paziņojums un skaļi nolasīts</string>
 
     <!-- TTS settings -->
     <string name="settings_tts_engine_title">Balss dzinējs</string>
@@ -529,11 +522,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_notification_permission_grant">Piešķirt paziņojumu atļauju</string>
 
     <!-- Calendar settings -->
-    <string name="settings_calendar_title">Kalendārs</string>
-    <string name="settings_calendar_use_events">Izmantot šodienas kalendāra notikumus</string>
-    <string name="settings_calendar_description_off">Pielāgo rīta prognozi šodienas notikumiem — tiek izmantoti tikai nosaukumi un laiki, un nekas nepamet ierīci.</string>
-    <string name="settings_calendar_description_on">Pielāgo rīta prognozi šodienas notikumiem. Tiek izmantoti tikai nosaukumi un laiki; nekas nepamet ierīci.</string>
-    <string name="settings_calendar_grant_permission">Piešķirt kalendāra atļauju</string>
     <string name="settings_calendar_open_settings">Kalendāra atļauja liegta. Piešķir to sistēmas iestatījumos.</string>
 
     <!-- Debug settings -->
@@ -643,8 +631,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_about_open_meteo">Laika dati no Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Svētki</string>
-    <string name="settings_root_holidays_subtitle">Tematiskās krāsas un reklāmkarogi</string>
     <string name="settings_holidays_title">Svētki</string>
     <string name="settings_holiday_country_home">Mājas (%1$s)</string>
     <string name="settings_holiday_country_current">Pašreizējā atrašanās vieta (%1$s)</string>
@@ -806,7 +792,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
     <string name="settings_smart_home_discover_label_mqtt">MQTT brokera serveris</string>
     <string name="settings_api_key_replace">Aizstāt Gemini atslēgu</string>
-    <string name="settings_schedule_description">Rīta ClothesCast, kas aptver tās dienas laika apstākļus.</string>
     <string name="settings_holidays_source_region">Reģions (%1$s)</string>
     <string name="settings_holidays_source_location">Atrašanās vieta (%1$s)</string>
     <string name="settings_holidays_source_global">Globāls</string>
@@ -815,8 +800,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_holidays_link_region_settings_a11y">Reģiona iestatījumi</string>
     <string name="settings_holidays_link_location_settings_a11y">Atrašanās vietas iestatījumi</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Kalendāra iestatījumi</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Ieslēdz augstāk esošo slēdzi, lai tematizētu šodienas apģērbu pēc notikumiem no sinhronizētajiem kalendāriem.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Konstatētie notikumi no jūsu sinhronizētajiem kalendāriem parādīsies šeit nākamajā atjauninājumā.</string>
     <string name="settings_holidays_permission_revoked">Nepieciešama kalendāra piekļuves atļauja. Pieskarties, lai piešķirtu atkārtoti.</string>
     <string name="holiday_name_us_presidents_day">Prezidentu diena</string>
     <string name="holiday_banner_japan_coming_of_age_day">Priecīgu Japānas pilngadības dienu</string>

@@ -329,24 +329,17 @@ West Bengal vocabulary differences in a future PR.
 
     <string name="settings_schedule_title">দৈনিক ClothesCast</string>
     <string name="settings_schedule_time_label">সময়</string>
-    <string name="settings_schedule_days_label">সপ্তাহের দিন</string>
     <string name="settings_daily_mention_evening_events">সন্ধ্যার ইভেন্ট উল্লেখ করুন</string>
     <string name="settings_schedule_preview">এখন চালান</string>
     <string name="settings_tonight_title">রাতের ClothesCast</string>
-    <string name="settings_tonight_description">সন্ধ্যায় একটি দ্বিতীয় ClothesCast যা আজ রাতের আবহাওয়া জানায়। শান্ত সন্ধ্যায় এটি নীরব থাকে, বা যদি "শুধুমাত্র সন্ধ্যার ইভেন্ট থাকলে বিজ্ঞপ্তি দিন" চালু থাকে তবে একদমই দেখা নাও যেতে পারে; ইভেন্টের সন্ধ্যায় এটি শব্দ করে এবং (কথ্য বিতরণ চালু থাকলে) পড়ে শোনায়।</string>
     <string name="settings_tonight_enabled">রাতের ClothesCast দেখান</string>
     <string name="settings_tonight_time_label">সময়</string>
-    <string name="settings_tonight_days_label">সপ্তাহের দিন</string>
     <string name="settings_tonight_notify_only_on_events">শুধুমাত্র সন্ধ্যার ইভেন্ট থাকলে বিজ্ঞপ্তি দিন</string>
 
     <!-- ============================================================
          Settings — Delivery
          ============================================================ -->
 
-    <string name="settings_delivery_label">বিতরণ</string>
-    <string name="settings_delivery_notification_only">শুধুমাত্র বিজ্ঞপ্তি</string>
-    <string name="settings_delivery_tts_only">শুধুমাত্র কথ্য</string>
-    <string name="settings_delivery_notification_and_tts">বিজ্ঞপ্তি ও কথ্য</string>
 
     <!-- ============================================================
          Settings — Voice / TTS
@@ -586,11 +579,6 @@ West Bengal vocabulary differences in a future PR.
          Settings — Calendar
          ============================================================ -->
 
-    <string name="settings_calendar_title">ক্যালেন্ডার</string>
-    <string name="settings_calendar_use_events">আজকের ক্যালেন্ডার ইভেন্ট ব্যবহার করুন</string>
-    <string name="settings_calendar_description_off">আজকের ইভেন্ট অনুযায়ী সকালের পূর্বাভাস তৈরি করুন — শুধুমাত্র শিরোনাম ও সময় ব্যবহার করা হয়, এবং কিছুই ডিভাইস ছাড়ে না।</string>
-    <string name="settings_calendar_description_on">আজকের ইভেন্ট অনুযায়ী সকালের পূর্বাভাস তৈরি হচ্ছে। শুধুমাত্র শিরোনাম ও সময় ব্যবহার করা হয়; কিছুই ডিভাইস ছাড়ে না।</string>
-    <string name="settings_calendar_grant_permission">ক্যালেন্ডারের অনুমতি দিন</string>
     <string name="settings_calendar_open_settings">ক্যালেন্ডারের অনুমতি প্রত্যাখ্যাত হয়েছে। সিস্টেম সেটিংস থেকে অনুমতি দিন।</string>
 
     <!-- ============================================================
@@ -745,8 +733,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_forecasters_bom">BOM</string>
     <string name="settings_forecasters_bom_subtitle">অস্ট্রেলিয়ান — রক্ষণাবেক্ষণ চলছে, যত দ্রুত সম্ভব ফিরবে।</string>
 
-    <string name="settings_root_holidays">সরকারি ছুটি</string>
-    <string name="settings_root_holidays_subtitle">থিম রং ও ব্যানার</string>
     <string name="settings_holidays_title">সরকারি ছুটি</string>
     <string name="settings_holiday_country_home">বাড়ি (%1$s)</string>
     <string name="settings_holiday_country_current">বর্তমান অবস্থান (%1$s)</string>
@@ -905,8 +891,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_api_key_replace">Gemini কী পরিবর্তন করুন</string>
 
     <!-- Settings — Holidays / calendar section. -->
-    <string name="settings_holidays_calendar_section_placeholder_off">আপনার সিঙ্ক করা ক্যালেন্ডার থেকে শনাক্ত ইভেন্টে আজকের পোশাক থিম করতে উপরের টগলটি চালু করুন।</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">আপনার সিঙ্ক করা ক্যালেন্ডার থেকে শনাক্ত ইভেন্টগুলো ভবিষ্যতের আপডেটে এখানে দেখা যাবে।</string>
     <string name="settings_holidays_link_calendar_settings_a11y">ক্যালেন্ডার সেটিংস</string>
     <string name="settings_holidays_link_location_settings_a11y">অবস্থান সেটিংস</string>
     <string name="settings_holidays_link_region_settings_a11y">অঞ্চল সেটিংস</string>
@@ -924,7 +908,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_root_smart_home_subtitle">স্মার্ট ডিসপ্লে ও হোম অটোমেশন</string>
 
     <!-- Settings — Schedule description. -->
-    <string name="settings_schedule_description">সকালের একটি ClothesCast যা সেদিনের আবহাওয়া জানায়।</string>
 
     <!-- Settings — Skip TTS at home. -->
 

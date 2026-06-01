@@ -79,22 +79,15 @@ Not overridden by design:
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">दैनिक ClothesCast</string>
     <string name="settings_schedule_time_label">समय</string>
-    <string name="settings_schedule_days_label">सप्ताह के दिन</string>
     <string name="settings_daily_mention_evening_events">शाम की घटनाओं का उल्लेख करें</string>
     <string name="settings_schedule_preview">अभी चलाएँ</string>
 
     <string name="settings_tonight_title">रात्रि ClothesCast</string>
-    <string name="settings_tonight_description">एक दूसरा ClothesCast शाम को जो आज रात के मौसम को कवर करता है। शांत शामों पर यह चुप रहता है, या यदि "केवल शाम की घटनाएँ होने पर सूचित करें" चालू है तो दिखता नहीं; घटनाओं वाली शामों पर यह आवाज़ करता है और (यदि बोलकर पढ़ने की सुविधा चालू हो) खुद पढ़ता है।</string>
     <string name="settings_tonight_enabled">रात्रि ClothesCast दिखाएँ</string>
     <string name="settings_tonight_time_label">समय</string>
-    <string name="settings_tonight_days_label">सप्ताह के दिन</string>
     <string name="settings_tonight_notify_only_on_events">केवल शाम की घटनाएँ होने पर सूचित करें</string>
 
     <!-- Delivery picker. -->
-    <string name="settings_delivery_label">डिलीवरी</string>
-    <string name="settings_delivery_notification_only">केवल सूचना</string>
-    <string name="settings_delivery_tts_only">केवल बोलकर</string>
-    <string name="settings_delivery_notification_and_tts">सूचना और बोलकर</string>
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">आवाज़ इंजन</string>
@@ -298,11 +291,6 @@ Not overridden by design:
     <string name="settings_notification_permission_grant">सूचना अनुमति दें</string>
 
     <!-- Calendar settings. -->
-    <string name="settings_calendar_title">कैलेंडर</string>
-    <string name="settings_calendar_use_events">आज की कैलेंडर घटनाएँ उपयोग करें</string>
-    <string name="settings_calendar_description_off">सुबह के पूर्वानुमान को आज की घटनाओं के अनुसार अनुकूलित करें — केवल शीर्षक और समय उपयोग होते हैं, और कुछ भी डिवाइस से बाहर नहीं जाता।</string>
-    <string name="settings_calendar_description_on">सुबह के पूर्वानुमान को आज की घटनाओं के अनुसार अनुकूलित किया जा रहा है। केवल शीर्षक और समय उपयोग होते हैं; कुछ भी डिवाइस से बाहर नहीं जाता।</string>
-    <string name="settings_calendar_grant_permission">कैलेंडर अनुमति दें</string>
     <string name="settings_calendar_open_settings">कैलेंडर अनुमति नकारी गई। सिस्टम सेटिंग से दें।</string>
 
     <!-- Debug screen (debug builds only). -->
@@ -705,8 +693,6 @@ Not overridden by design:
     <string name="settings_forecasters_bom">BOM</string>
     <string name="settings_forecasters_bom_subtitle">ऑस्ट्रेलियाई — रखरखाव के तहत, जल्द से जल्द लौट आएगा।</string>
 
-    <string name="settings_root_holidays">सार्वजनिक छुट्टियाँ</string>
-    <string name="settings_root_holidays_subtitle">थीम रंग और बैनर</string>
     <string name="settings_holidays_title">सार्वजनिक छुट्टियाँ</string>
     <string name="settings_holiday_country_home">घर (%1$s)</string>
     <string name="settings_holiday_country_current">वर्तमान स्थान (%1$s)</string>
@@ -865,8 +851,6 @@ Not overridden by design:
     <string name="settings_api_key_replace">Gemini कुंजी बदलें</string>
 
     <!-- Settings — Holidays / calendar section. -->
-    <string name="settings_holidays_calendar_section_placeholder_off">आज की पोशाक को आपके सिंक किए हुए कैलेंडर की पहचानी गई घटनाओं पर थीम करने के लिए ऊपर का टॉगल चालू करें।</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">आपके सिंक किए हुए कैलेंडर की पहचानी गई घटनाएँ आने वाले अपडेट में यहाँ दिखेंगी।</string>
     <string name="settings_holidays_link_calendar_settings_a11y">कैलेंडर सेटिंग</string>
     <string name="settings_holidays_link_location_settings_a11y">स्थान सेटिंग</string>
     <string name="settings_holidays_link_region_settings_a11y">क्षेत्र सेटिंग</string>
@@ -884,7 +868,6 @@ Not overridden by design:
     <string name="settings_root_smart_home_subtitle">स्मार्ट डिस्प्ले और होम ऑटोमेशन</string>
 
     <!-- Settings — Schedule description. -->
-    <string name="settings_schedule_description">सुबह का ClothesCast जो उस दिन के मौसम को कवर करता है।</string>
 
     <!-- Settings — Skip TTS at home. -->
 

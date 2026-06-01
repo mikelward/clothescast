@@ -85,21 +85,14 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Dagligt ClothesCast</string>
     <string name="settings_schedule_time_label">Tidspunkt</string>
-    <string name="settings_schedule_days_label">Ugedage</string>
     <string name="settings_daily_mention_evening_events">Nævn aftenbegivenheder</string>
     <string name="settings_schedule_preview">Afspil nu</string>
 
     <string name="settings_tonight_title">Aftenens ClothesCast</string>
-    <string name="settings_tonight_description">Et andet ClothesCast om aftenen for vejret i aften. På rolige aftener er det stille eller vises slet ikke, hvis "Giv kun besked ved aftenbegivenheder" er aktiveret; på aftener med begivenheder afspiller det en lyd og (hvis du har talesyntese aktiveret) læser sig selv op.</string>
     <string name="settings_tonight_enabled">Vis aftenens ClothesCast</string>
     <string name="settings_tonight_time_label">Tidspunkt</string>
-    <string name="settings_tonight_days_label">Ugedage</string>
     <string name="settings_tonight_notify_only_on_events">Giv kun besked ved aftenbegivenheder</string>
 
-    <string name="settings_delivery_label">Levering</string>
-    <string name="settings_delivery_notification_only">Kun notifikation</string>
-    <string name="settings_delivery_tts_only">Kun tale</string>
-    <string name="settings_delivery_notification_and_tts">Notifikation og tale</string>
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">Talemaskine</string>
@@ -332,11 +325,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_notification_permission_grant">Tillad notifikationer</string>
 
     <!-- Calendar opt-in card. -->
-    <string name="settings_calendar_title">Kalender</string>
-    <string name="settings_calendar_use_events">Brug dagens kalenderbegivenheder</string>
-    <string name="settings_calendar_description_off">Når aktiveret læser ClothesCast dagens begivenheder fra din enhedskalender, så dit morgenvise ClothesCast kan give forslag knyttet til specifikke begivenheder — f.eks. "Tag en paraply med til din løbetur i parken klokken 15". Kun begivenhedstitler og tidspunkter bruges; beskrivelser, deltagere og steder læses, men forlader aldrig enheden.</string>
-    <string name="settings_calendar_description_on">Læser dagens begivenheder fra din enhedskalender for at supplere dit morgenvise ClothesCast. Kun titler og tidspunkter bruges i det renderede resumé; ikke beskrivelser eller deltagere. Alt forbliver på enheden.</string>
-    <string name="settings_calendar_grant_permission">Tillad kalenderadgang</string>
     <string name="settings_calendar_open_settings">Kalenderadgang nægtet. Tillad den i Systemindstillinger.</string>
 
     <!-- Debug screen. -->
@@ -701,8 +689,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_about_open_meteo">Vejrdata fra Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Helligdage</string>
-    <string name="settings_root_holidays_subtitle">Temafarver og bannere</string>
     <string name="settings_holidays_title">Helligdage</string>
     <string name="settings_holiday_country_home">Hjem (%1$s)</string>
     <string name="settings_holiday_country_current">Nuværende placering (%1$s)</string>
@@ -810,7 +796,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_root_smart_home_subtitle">Smarte skærme og hjemautomatisering</string>
 
     <!-- Schedule description -->
-    <string name="settings_schedule_description">En ClothesCast om morgenen der dækker dagens vejr.</string>
 
     <!-- API key -->
     <string name="settings_api_key_replace">Erstat Gemini-nøgle</string>
@@ -837,8 +822,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_holidays_link_location_settings_a11y">Stedsindstillinger</string>
     <string name="settings_holidays_link_region_settings_a11y">Regionindstillinger</string>
     <string name="settings_holidays_permission_revoked">Kalendertilladelse er påkrævet. Tryk for at give tilladelse igen.</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Aktiver knappen ovenfor for at tilpasse dagens antræk baseret på opdagede begivenheder fra dine synkroniserede kalendere.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Opdagede begivenheder fra dine synkroniserede kalendere vises her i en fremtidig opdatering.</string>
 
     <!-- Holiday name -->
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>

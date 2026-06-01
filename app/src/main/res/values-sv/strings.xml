@@ -85,21 +85,14 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Dagligt ClothesCast</string>
     <string name="settings_schedule_time_label">Tid</string>
-    <string name="settings_schedule_days_label">Veckodagar</string>
     <string name="settings_daily_mention_evening_events">Nämn kvällshändelser</string>
     <string name="settings_schedule_preview">Spela upp nu</string>
 
     <string name="settings_tonight_title">Kvällens ClothesCast</string>
-    <string name="settings_tonight_description">Ett andra ClothesCast på kvällen för vädret ikväll. På lugna kvällar är det tyst eller visas inte alls om "Avisera bara vid kvällshändelser" är aktiverat; på kvällar med händelser spelar det upp ett ljud och (om du har röstutläsning aktiverat) läser upp sig självt.</string>
     <string name="settings_tonight_enabled">Visa kvällets ClothesCast</string>
     <string name="settings_tonight_time_label">Tid</string>
-    <string name="settings_tonight_days_label">Veckodagar</string>
     <string name="settings_tonight_notify_only_on_events">Avisera bara vid kvällshändelser</string>
 
-    <string name="settings_delivery_label">Leverans</string>
-    <string name="settings_delivery_notification_only">Endast avisering</string>
-    <string name="settings_delivery_tts_only">Endast röst</string>
-    <string name="settings_delivery_notification_and_tts">Avisering och röst</string>
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">Röstmotor</string>
@@ -332,11 +325,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_notification_permission_grant">Tillåt aviseringar</string>
 
     <!-- Calendar opt-in card. -->
-    <string name="settings_calendar_title">Kalender</string>
-    <string name="settings_calendar_use_events">Använd dagens kalenderhändelser</string>
-    <string name="settings_calendar_description_off">När aktiverat läser ClothesCast dagens händelser från din enhetskalender så att ditt morgonliga ClothesCast kan ge förslag kopplade till specifika händelser — t.ex. "Ta med ett paraply till din löptur i parken klockan 15". Bara händelsetitlar och tider används; beskrivningar, deltagare och platser läses men lämnar aldrig enheten.</string>
-    <string name="settings_calendar_description_on">Läser dagens händelser från din enhetskalender för att komplettera ditt morgonliga ClothesCast. Bara titlar och tider används i den renderade sammanfattningen; inte beskrivningar eller deltagare. Allt stannar på enheten.</string>
-    <string name="settings_calendar_grant_permission">Tillåt kalenderåtkomst</string>
     <string name="settings_calendar_open_settings">Kalenderåtkomst nekad. Tillåt den i Systeminställningar.</string>
 
     <!-- Debug screen. -->
@@ -700,8 +688,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_about_open_meteo">Väderdata från Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Helgdagar</string>
-    <string name="settings_root_holidays_subtitle">Temafärger och banners</string>
     <string name="settings_holidays_title">Helgdagar</string>
     <string name="settings_holiday_country_home">Hemort (%1$s)</string>
     <string name="settings_holiday_country_current">Aktuell plats (%1$s)</string>
@@ -809,7 +795,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_root_smart_home_subtitle">Smarta skärmar och hemautomatisering</string>
 
     <!-- Schedule description -->
-    <string name="settings_schedule_description">En ClothesCast på morgonen som täcker dagens väder.</string>
 
     <!-- API key -->
     <string name="settings_api_key_replace">Ersätt Gemini-nyckel</string>
@@ -836,8 +821,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_holidays_link_location_settings_a11y">Platsinställningar</string>
     <string name="settings_holidays_link_region_settings_a11y">Regioninställningar</string>
     <string name="settings_holidays_permission_revoked">Kalenderbehörighet krävs. Tryck för att bevilja igen.</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Aktivera reglaget ovan för att anpassa dagens outfit baserat på identifierade händelser från dina synkroniserade kalendrar.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Identifierade händelser från dina synkroniserade kalendrar visas här i en framtida uppdatering.</string>
 
     <!-- Holiday name -->
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>

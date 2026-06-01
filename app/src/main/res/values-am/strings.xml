@@ -275,19 +275,12 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Settings — schedule -->
     <string name="settings_schedule_title">ዕለታዊ ClothesCast</string>
     <string name="settings_schedule_time_label">ጊዜ</string>
-    <string name="settings_schedule_days_label">የሳምንቱ ቀናት</string>
     <string name="settings_daily_mention_evening_events">የምሽት ዝግጅቶችን ጥቀስ</string>
     <string name="settings_schedule_preview">አሁን አጫውት</string>
     <string name="settings_tonight_title">ምሽታዊ ClothesCast</string>
-    <string name="settings_tonight_description">ዛሬ ምሽቱን ሁኔታ የሚሸፍን ምሽታዊ ሁለተኛ ClothesCast። ጸጥ ባሉ ምሽቶች ዝም ይላል፣ ዝግጅት ባለባቸው ምሽቶች ድምፅ ያሰማና ራሱን ያነባል።</string>
     <string name="settings_tonight_enabled">ምሽታዊ ClothesCast አሳይ</string>
     <string name="settings_tonight_time_label">ጊዜ</string>
-    <string name="settings_tonight_days_label">የሳምንቱ ቀናት</string>
     <string name="settings_tonight_notify_only_on_events">የምሽት ዝግጅቶች ሲኖሩ ብቻ አሳውቅ</string>
-    <string name="settings_delivery_label">አደራረስ</string>
-    <string name="settings_delivery_notification_only">ማሳወቂያ ብቻ</string>
-    <string name="settings_delivery_tts_only">በድምፅ ብቻ</string>
-    <string name="settings_delivery_notification_and_tts">ማሳወቂያ እና በድምፅ</string>
 
     <!-- Settings — TTS / voice -->
     <string name="settings_tts_engine_title">የድምፅ ሞተር</string>
@@ -342,11 +335,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_notification_permission_grant">የማሳወቂያ ፍቃድ ስጥ</string>
 
     <!-- Settings — calendar -->
-    <string name="settings_calendar_title">የቀን መቁጠሪያ</string>
-    <string name="settings_calendar_use_events">የዛሬ የቀን መቁጠሪያ ዝግጅቶችን ተጠቀም</string>
-    <string name="settings_calendar_description_off">የጠዋቱ ትንበያ ለዛሬ ዝግጅቶቻቸው ብጁ ያደርጋል — ርዕሶችና ጊዜዎች ብቻ ይጠቀማሉ፣ ምንም ከመሳሪያው አይወጣም።</string>
-    <string name="settings_calendar_description_on">የጠዋቱ ትንበያ ለዛሬ ዝግጅቶቻቸው ብጁ እያደረገ ነው። ርዕሶችና ጊዜዎች ብቻ ይጠቀማሉ፣ ምንም ከመሳሪያው አይወጣም።</string>
-    <string name="settings_calendar_grant_permission">የቀን መቁጠሪያ ፍቃድ ስጥ</string>
     <string name="settings_calendar_open_settings">የቀን መቁጠሪያ ፍቃድ ተከልክሏል። ከስርዓት ቅንብሮች ፍቀዱ።</string>
 
     <!-- Settings — about -->
@@ -590,11 +578,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_voice_locale_fa_ir">ፋርሲ (ኢራን)</string>
     <string name="settings_region_language_sq_al">አልባኒያኛ (አልባኒያ)</string>
     <string name="settings_tts_voice_locale_sq_al">አልባኒያኛ (አልባኒያ)</string>
-    <string name="settings_region_language_ar_ae">አረብኛ (የተባበሩት አረብ ኤሚሬቶች)</string>
     <string name="settings_tts_voice_locale_ar_ae">አረብኛ (የተባበሩት አረብ ኤሚሬቶች)</string>
-    <string name="settings_region_language_ar_eg">አረብኛ (ግብጽ)</string>
     <string name="settings_tts_voice_locale_ar_eg">አረብኛ (ግብጽ)</string>
-    <string name="settings_region_language_ar_ma">አረብኛ (ሞሮኮ)</string>
     <string name="settings_tts_voice_locale_ar_ma">አረብኛ (ሞሮኮ)</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
@@ -803,8 +788,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holiday_override_auto_on">ራስ-ሰር (ነቅቷል)</string>
     <string name="settings_holiday_override_off">ጠፍቷል</string>
     <string name="settings_holiday_override_on">ነቅቷል</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">ከላይ ያለውን ማብሪያ ይክፈቱ፣ ከዚያ ከተመሳሰሉ ቀን መቁጠሪያዎች የተገኙ ዝግጅቶች የዛሬ ልብስ ጭብጥ ይሆናሉ።</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">ከተመሳሰሉ ቀን መቁጠሪያዎች የተገኙ ዝግጅቶች በቀጣይ ዝማኔ እዚህ ይታያሉ።</string>
     <string name="settings_holidays_collapse">ሰብስብ</string>
     <string name="settings_holidays_expand">ዘርጋ</string>
     <string name="settings_holidays_link_calendar_settings_a11y">የቀን መቁጠሪያ ቅንብሮች</string>
@@ -817,13 +800,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_source_location">ቦታ (%1$s)</string>
     <string name="settings_holidays_source_region">ክልል (%1$s)</string>
     <string name="settings_holidays_title">በዓሎች</string>
-    <string name="settings_root_holidays">ክብረ በዓሎች</string>
-    <string name="settings_root_holidays_subtitle">በዓሎች እና ልደቶች</string>
     <string name="settings_root_smart_home">ስማርት ቤት</string>
     <string name="settings_root_smart_home_subtitle">ስማርት ማሳያዎች እና የቤት አውቶሜሽን</string>
 
     <!-- Schedule description -->
-    <string name="settings_schedule_description">የዕለቱን የአየር ሁኔታ የሚሸፍን የጠዋቱ ClothesCast።</string>
 
     <!-- Skip TTS at home -->
 

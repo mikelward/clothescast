@@ -70,21 +70,14 @@ displayed label localizes.
 
     <string name="settings_schedule_title">Päivittäinen ClothesCast</string>
     <string name="settings_schedule_time_label">Aika</string>
-    <string name="settings_schedule_days_label">Viikonpäivät</string>
     <string name="settings_daily_mention_evening_events">Mainitse iltatapahtumat</string>
     <string name="settings_schedule_preview">Toista nyt</string>
 
     <string name="settings_tonight_title">Iltainen ClothesCast</string>
-    <string name="settings_tonight_description">Toinen ClothesCast illalla tämän yön säätä varten. Hiljaisina iltoina se on äänettömänä tai ei näy lainkaan, jos "Ilmoita vain illan tapahtumista" on käytössä. Tapahtumia sisältävinä iltoina se soittaa äänen ja (jos puhelähtö on käytössä) lukee itsensä ääneen.</string>
     <string name="settings_tonight_enabled">Näytä iltainen ClothesCast</string>
     <string name="settings_tonight_time_label">Aika</string>
-    <string name="settings_tonight_days_label">Viikonpäivät</string>
     <string name="settings_tonight_notify_only_on_events">Ilmoita vain illan tapahtumista</string>
 
-    <string name="settings_delivery_label">Toimitus</string>
-    <string name="settings_delivery_notification_only">Vain ilmoitus</string>
-    <string name="settings_delivery_tts_only">Vain puheena</string>
-    <string name="settings_delivery_notification_and_tts">Ilmoitus ja puhe</string>
 
     <string name="settings_tts_engine_title">Puhesynteesimoottori</string>
     <string name="settings_tts_engine_device">Laite (heikko laatu, laitteessa)</string>
@@ -253,11 +246,6 @@ displayed label localizes.
     <string name="settings_notification_permission_description">Ilman ilmoituslupaa päivittäisellä ClothesCastilla ei ole paikkaa mennä. Salli se, jotta ClothesCast voi ilmestyä huomenna aamulla.</string>
     <string name="settings_notification_permission_grant">Salli ilmoitukset</string>
 
-    <string name="settings_calendar_title">Kalenteri</string>
-    <string name="settings_calendar_use_events">Käytä tämän päivän kalenteritapahtumia</string>
-    <string name="settings_calendar_description_off">Kun käytössä, ClothesCast lukee tämän päivän tapahtumat laitteen kalenteristasi, jotta aamuinen ClothesCast voi antaa ehdotuksia tiettyihin tapahtumiin — esimerkiksi "Muista sateenvarjo puiston juoksullesi kello 15". Vain tapahtumien otsikot ja ajat käytetään; kuvaukset, osallistujat ja sijainnit luetaan, mutta eivät koskaan poistu laitteelta.</string>
-    <string name="settings_calendar_description_on">Lukee tämän päivän tapahtumat laitteen kalenteristasi täydentääkseen aamuistasi ClothesCastia. Renderöidyssä tiivistelmässä käytetään vain otsikoita ja aikoja; ei kuvauksia tai osallistujia. Kaikki pysyy laitteella.</string>
-    <string name="settings_calendar_grant_permission">Salli kalenteripääsy</string>
     <string name="settings_calendar_open_settings">Kalenteripääsy evätty. Salli se järjestelmäasetuksissa.</string>
 
     <string name="settings_debug_title">Virheenkorjaus (vain kehitysversioissa)</string>
@@ -681,8 +669,6 @@ displayed label localizes.
     <string name="settings_about_open_meteo">Säädata: Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Juhlapyhät</string>
-    <string name="settings_root_holidays_subtitle">Teemavärit ja bannerit</string>
     <string name="settings_holidays_title">Juhlapyhät</string>
     <string name="settings_holiday_country_home">Kotipaikka (%1$s)</string>
     <string name="settings_holiday_country_current">Nykyinen sijainti (%1$s)</string>
@@ -790,7 +776,6 @@ displayed label localizes.
     <string name="settings_root_smart_home_subtitle">Älykkäät näytöt ja kotiautomaatio</string>
 
     <!-- Schedule description -->
-    <string name="settings_schedule_description">ClothesCast aamuisin päivän säästä.</string>
 
     <!-- API key -->
     <string name="settings_api_key_replace">Vaihda Gemini-avain</string>
@@ -817,8 +802,6 @@ displayed label localizes.
     <string name="settings_holidays_link_location_settings_a11y">Sijaintiasetukset</string>
     <string name="settings_holidays_link_region_settings_a11y">Alueasetukset</string>
     <string name="settings_holidays_permission_revoked">Kalenterilupa vaaditaan. Napauta myöntääksesi luvan uudelleen.</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Ota yllä oleva kytkin käyttöön mukauttaaksesi päivän asun synkronoitujen kalenterien havaittujen tapahtumien perusteella.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Synkronoitujen kalenterien havaitut tapahtumat näkyvät tässä tulevassa päivityksessä.</string>
 
     <!-- Holiday name -->
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>

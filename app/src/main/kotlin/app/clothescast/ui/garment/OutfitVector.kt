@@ -1,5 +1,6 @@
 package app.clothescast.ui.garment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Paint
@@ -48,6 +49,11 @@ private val cache = ConcurrentHashMap<Int, OutfitVector>()
 internal fun loadOutfitVector(context: Context, @DrawableRes resId: Int): OutfitVector =
     cache.getOrPut(resId) { parseOutfitVector(context.resources, resId) }
 
+// resId is a vector drawable (@DrawableRes), and we deliberately read its raw
+// XML with getXml() to parse the <path> elements ourselves. Lint wants an
+// @XmlRes for getXml() and so flags a false positive — vector drawables are
+// XML resources, and parsing one this way is intentional.
+@SuppressLint("ResourceType")
 private fun parseOutfitVector(res: Resources, @DrawableRes resId: Int): OutfitVector {
     val parser = res.getXml(resId)
     val attrs = Xml.asAttributeSet(parser)

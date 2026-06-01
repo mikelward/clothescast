@@ -13,7 +13,6 @@ import org.gradle.api.tasks.TaskAction
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.roborazzi)
@@ -392,10 +391,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
-    kotlinOptions {
-        jvmTarget = "21"
-    }
-
     buildFeatures {
         compose = true
         buildConfig = true
@@ -467,6 +462,15 @@ android {
             "AutoboxingStateCreation",
             "AutoboxingStateValueProperty",
         )
+    }
+}
+
+// AGP 9 provides Kotlin support built-in (the standalone kotlin-android plugin
+// is gone), so Kotlin compiler options move here from the old `kotlinOptions`
+// block inside `android { }`.
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
     }
 }
 
@@ -653,6 +657,9 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.11.3"))
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
+    // Gradle 9 no longer injects the JUnit Platform launcher onto the test
+    // runtime classpath; declare it explicitly (version from the junit-bom).
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.datastore.preferences.core)

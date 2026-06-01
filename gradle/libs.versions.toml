@@ -1,9 +1,12 @@
 [versions]
-# AGP 8.10.x is the newest line that still runs on the repo's current Gradle
-# 8.11.1 wrapper (AGP 8.11+ requires Gradle 8.13+); it supports compileSdk 36,
-# which targetSdk 36 needs (AGP 8.7.x capped at compileSdk 35). Bump the Gradle
-# wrapper in lockstep before moving to AGP 8.11+.
-agp = "8.10.1"
+# AGP 9.x pairs with the Gradle 9.x wrapper (kept in lockstep in
+# gradle-wrapper.properties — currently 9.4.1; AGP 9 requires Gradle 9 and
+# JDK 17+, we build on 21). AGP 9 ships Kotlin support built-in, so the
+# standalone kotlin-android plugin is gone — Kotlin compiler options live in a
+# top-level `kotlin { compilerOptions { } }` block in app/build.gradle.kts.
+# Roborazzi must be >= 1.57 here: earlier releases use AGP's removed
+# `TestedExtension` and fail to apply on AGP 9.
+agp = "9.2.1"
 kotlin = "2.2.21"
 # Android API floor. Single source of truth: `app/build.gradle.kts` reads this
 # for `minSdk` and re-emits it as `BuildConfig.MIN_SDK_VERSION` so the runtime
@@ -52,7 +55,7 @@ vico = "2.5.1"
 # Roborazzi renders @Preview composables to PNG via Robolectric — no emulator
 # needed, runs in :app's JVM unit tests job. The CI step uploads the PNGs as a
 # workflow artifact for human review on every PR (no diff gate, by intent).
-roborazzi = "1.32.0"
+roborazzi = "1.63.0"
 robolectric = "4.16.1"
 junit4 = "4.13.2"
 # Play in-app updates: AppUpdateManager + the FLEXIBLE flow (background download
@@ -160,7 +163,6 @@ play-services-cast-framework = { group = "com.google.android.gms", name = "play-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

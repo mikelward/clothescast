@@ -553,6 +553,15 @@ androidComponents {
 }
 
 dependencies {
+    // Force Guava off the vulnerable 31.1-android that firebase-analytics pulls
+    // transitively (via play-services-measurement, which still pins it even in
+    // its latest release). Clears CVE-2023-2976 / GHSA-7g45-4rm6-3mm3 (moderate:
+    // FileBackedOutputStream temp-dir disclosure, fixed in 32.0.0). The app
+    // doesn't use that API, so this is alert hygiene, not a behavior change.
+    constraints {
+        implementation(libs.guava)
+    }
+
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
 

@@ -16,8 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -62,12 +64,21 @@ private val SIDE_BY_SIDE_MIN_WIDTH = 240.dp
 
 @Composable
 private fun WidgetFrame(darkTheme: Boolean = false, content: @Composable () -> Unit) {
-    ClothesCastTheme(darkTheme = darkTheme, dynamicColor = false) {
-        // Slight surface inset so the rounded widget corners are visible against
-        // a launcher-like backdrop. The actual launcher applies its own
-        // wallpaper, so the colour here is just for visual contrast.
-        Surface(color = MaterialTheme.colorScheme.background) {
-            Box(modifier = Modifier.padding(16.dp)) { content() }
+    // Render every widget preview in inspection mode, matching `Frame` in
+    // TodayPreviews.kt. The feels-like widget previews reuse `ForecastChart`
+    // through `WidgetForecastChart`, so they need the same synchronous Vico
+    // producer dispatcher (`Dispatchers.Unconfined` under inspection mode,
+    // `Dispatchers.Default` otherwise) — without it the snapshot can race the
+    // background transaction and capture a chrome-only card with no plotted
+    // line under heavy parallel CI load.
+    CompositionLocalProvider(LocalInspectionMode provides true) {
+        ClothesCastTheme(darkTheme = darkTheme, dynamicColor = false) {
+            // Slight surface inset so the rounded widget corners are visible
+            // against a launcher-like backdrop. The actual launcher applies
+            // its own wallpaper, so the colour here is just for visual contrast.
+            Surface(color = MaterialTheme.colorScheme.background) {
+                Box(modifier = Modifier.padding(16.dp)) { content() }
+            }
         }
     }
 }

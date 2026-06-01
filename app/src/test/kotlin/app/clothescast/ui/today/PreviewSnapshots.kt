@@ -192,23 +192,18 @@ class PreviewSnapshots {
      * Captures a snapshot to disk and re-captures until two consecutive
      * attempts produce the same bytes — i.e. the rendering has settled.
      *
-     * The test clock is pinned (see [pinClock]) because Vico 2.1+'s chart
-     * host never reports idle. So rather than leaning on auto-advance, we
-     * step the clock by hand: one generous [SETTLE_MILLIS] slice up front to
-     * drain each chart's `CartesianChartModelProducer` flow and finish its
-     * data-diff animation — the collection + recompose + paint sequence that
-     * `waitForIdle()` alone doesn't cover — then one frame per attempt so the
-     * settled state paints before we rasterize. Applied uniformly; it's cheap
-     * on chart-less previews (a single virtual-time step), so there's no need
-     * to annotate each chart-bearing preview by hand.
-     *
-     * If a chart is mid-paint we see different bytes on consecutive captures
-     * and keep looping; once the picture stops changing we accept it. Catches
-     * the "card chrome rendered but chart line missing" case the older
-     * [looksEmpty] backstop misses — a card with axis grid + text has many
-     * distinct colours and never trips [looksEmpty]'s all-pixels-equal
-     * check, but it's still the wrong answer compared to a stabilised
-     * second capture.
+     * The test clock is pinned (see [pinClock]) because Vico's chart host
+     * requests an animation frame on every frame for the life of the
+     * composition — under the default auto-advancing clock that pumps
+     * frames forever and throws AppNotIdleException. With the clock pinned,
+     * we step it by hand: one generous [SETTLE_MILLIS] slice up front so
+     * `animateFloatAsState`-driven on-load animations settle to their final
+     * values (e.g. [app.clothescast.ui.EdgeFadeOverlay]'s top/bottom fade
+     * alphas), then one frame per attempt so the settled picture paints
+     * before we rasterise. Chart producers run synchronously under inspection
+     * mode (set in [Frame]), so there's no background-dispatcher race to
+     * wait on and no data-diff animation to settle — chart animations are
+     * disabled everywhere (see [CHART_ANIMATION_SPEC]).
      *
      * After the in-session stable check passes, the result is compared
      * against the pre-capture baseline (the PNG already on disk, i.e.
@@ -222,14 +217,6 @@ class PreviewSnapshots {
      * [looksEmpty] stays as a separate guard so a *completely* blank
      * capture (every sampled pixel matching the first) never gets to
      * "stable" status just by failing the same way twice in a row.
-     *
-     * History: PR #436's CI runs flipped `precipitation_card_dry.png`
-     * between a "with chart" (29.6KB) and a "no chart" render (11.6KB)
-     * on consecutive runs of the *same* commit — the chart-missing
-     * race the stable check now closes. PR #438 cut that race to
-     * pieces but still left a 41-byte anti-aliasing wobble on
-     * `uv_index_card_with_model_spread.png` flipping each run; this
-     * helper's noise-tolerant baseline restore handles that.
      */
     private fun captureUntilStable(maxAttempts: Int = 10, snapshot: () -> Unit) {
         val outputFile = File("$outputDir/${testName.methodName}.png")
@@ -237,57 +224,28 @@ class PreviewSnapshots {
         // restore at the end. Null when this is a new preview with no
         // existing PNG; in that case any capture is the new baseline.
         val baseline = if (outputFile.exists()) outputFile.readBytes() else null
-        // The clock is pinned (see pinClock), so nothing has advanced since
-        // setContent. Step it one generous slice so that, once a chart's model
-        // has landed, Vico's data-diff animation (default tween(500ms)) runs to
-        // completion before we rasterize. SETTLE_MILLIS stays well under the
-        // 60s live-"now" minute tick so those LaunchedEffects don't re-loop
-        // mid-capture and perturb the indicator.
         composeRule.waitForIdle()
         composeRule.mainClock.advanceTimeBy(SETTLE_MILLIS)
         var prior: ByteArray? = null
-        repeat(maxAttempts) { attempt ->
+        repeat(maxAttempts) {
             composeRule.waitForIdle()
-            // One more frame so the latest collected/animated state paints
-            // before we rasterize. Vico keeps requesting frames forever, but
-            // the *pixels* are static once the data has settled, so consecutive
-            // captures match and the stability check converges.
+            // Drive one frame so the latest composition paints before we
+            // rasterise. Vico keeps requesting frames forever, but the pixels
+            // are static once composition has settled, so consecutive captures
+            // match and the stability check converges.
             composeRule.mainClock.advanceTimeByFrame()
             snapshot()
-            // looksEmpty (-> null): a *completely* blank capture must never
-            // reach "stable" by failing the same way twice. undersized: a
-            // capture far smaller than a content-bearing baseline is almost
-            // always card chrome with the Vico plot still unpainted (see the
-            // runTransaction note below) — also barred from converging until
-            // the attempt budget is spent.
             val current = if (looksEmpty(outputFile)) null else outputFile.readBytes()
-            val undersized = undersizedVsBaseline(current, baseline)
-            if (current != null && prior != null && prior.contentEquals(current) && !undersized) {
+            if (current != null && prior != null && prior.contentEquals(current)) {
                 restoreBaselineIfOnlyNoise(outputFile, current, baseline)
                 return
             }
             prior = current
-            // Vico processes the CartesianChartModelProducer transaction on a
-            // background dispatcher (Dispatchers.Default). The pinned Compose
-            // clock and waitForIdle() don't wait on it, so under parallel test
-            // load (CI runs :core:*:test alongside :app's snapshot tests) the
-            // model can land *after* we'd otherwise capture, leaving the plot
-            // blank. Yield real wall-clock time so Default drains before the
-            // next capture — but only while the picture isn't a settled,
-            // full-size render yet. A stable chart-less preview with an existing
-            // baseline returns above on its second capture without ever
-            // sleeping, so the common case stays free.
-            if (current == null || baseline == null || undersized) {
-                Thread.sleep(REAL_SETTLE_MILLIS)
-            }
         }
-        // Never converged on a settled, full-size capture within the budget.
-        // When we have a content-bearing baseline, keep it rather than commit a
-        // chart that failed to paint under load — a blank plot regressing a
-        // good snapshot is the one outcome worse than a stale one, and it would
-        // sail through CI (record-only, no diff gate). A genuine change repaints
-        // on a less-loaded run. New previews (no baseline) keep the last capture
-        // for the author to review.
+        // Never converged on a settled capture within the budget. When we have
+        // a content-bearing baseline, keep it rather than commit something
+        // unstable — a genuine change repaints on a less-loaded run. New
+        // previews (no baseline) keep the last capture for the author to review.
         if (baseline != null) {
             outputFile.writeBytes(baseline)
             System.err.println(
@@ -300,21 +258,6 @@ class PreviewSnapshots {
                     "$maxAttempts attempts",
             )
         }
-    }
-
-    /**
-     * True when [current] is far enough below a content-bearing [baseline]'s
-     * encoded size to look like a chart card whose Vico plot hasn't painted
-     * yet — the "chrome only" render comes out roughly a third the size of the
-     * full chart. Used purely as a "keep settling" hint, never a hard failure:
-     * on the final attempt the under-size capture is still accepted, so a
-     * legitimately slimmer redraw eventually commits rather than hanging.
-     * Always false when either side is null (a new preview with no baseline, or
-     * a fully blank capture already handled by [looksEmpty]).
-     */
-    private fun undersizedVsBaseline(current: ByteArray?, baseline: ByteArray?): Boolean {
-        if (current == null || baseline == null) return false
-        return current.size < baseline.size * MIN_SETTLED_SIZE_RATIO
     }
 
     /**
@@ -384,20 +327,15 @@ class PreviewSnapshots {
         return maxOf(rDiff, gDiff, bDiff)
     }
 
-    // Virtual time to advance the pinned clock once before capturing, to
-    // settle the chart deck. Two components have to finish; only one is
-    // time-gated. The producer-flow drain (LaunchedEffect → runTransaction →
-    // host collect → recompose → paint) isn't — it propagates in a frame or
-    // two, and 1s is ~62 frames. The data-diff animation is: Vico's default
-    // spec is tween(durationMillis = 500) (animateIn is off, so no entry
-    // animation on top), so 1s is a 2x margin over the only thing the clock
-    // has to outrun. It also stays far under the 60s live-"now" minute tick,
-    // so the tick's delay() never fires mid-capture. Costs ~near-zero
-    // wall-clock under Robolectric — the clock is virtual — so we spend it on
-    // every preview rather than gating it on "is this one chart-bearing?". If
-    // a future Vico raised that 500ms default past 1s, the clock stays pinned
-    // (no re-hang) and the under-settle surfaces as visible snapshot churn in
-    // review, not a silently-wrong baseline.
+    // Virtual time to advance the pinned clock once before capturing, to let
+    // any `animateFloatAsState`-driven on-load animations settle to their
+    // final values before we rasterise — e.g. EdgeFadeOverlay's top/bottom
+    // fade alphas, which spring from 0 to their target visibility. 1s sits
+    // comfortably above any tween a preview is realistically running and
+    // well under the 60s live-"now" minute tick so those LaunchedEffects
+    // don't re-loop mid-capture. Costs ~near-zero wall-clock under
+    // Robolectric — the clock is virtual — so we spend it on every preview
+    // rather than gating it case by case.
     //
     // Noise tolerances for the baseline-restore comparison.
     //
@@ -420,16 +358,6 @@ class PreviewSnapshots {
     // sub-tolerance pixels, well under the cap.
     private companion object {
         const val SETTLE_MILLIS = 1_000L
-        // Real wall-clock pause between captures while a chart is still
-        // settling, so Vico's background-dispatcher transaction can drain even
-        // under heavy parallel test load. Only spent on not-yet-settled
-        // previews (see captureUntilStable), so chart-less captures pay nothing.
-        const val REAL_SETTLE_MILLIS = 200L
-        // A capture below this fraction of a content-bearing baseline's size is
-        // treated as "chart not painted yet" and kept out of the stability
-        // check. Blank chart cards encode at ~1/3 the size of the full chart;
-        // 0.6 sits comfortably between the two.
-        const val MIN_SETTLED_SIZE_RATIO = 0.6
         const val INTENSITY_TOLERANCE = 8
         const val NOISY_PIXEL_BUDGET = 64
         const val IN_TOLERANCE_PIXEL_BUDGET = 4096

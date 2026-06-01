@@ -471,7 +471,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Counterpart used on a TONIGHT insight where the band lead already
          says "Esta noche …"; drops "esta noche" so it isn't repeated. -->
     <string name="insight_tie_in_at_night">Lleva %1$s.</string>
-    <string name="insight_tie_in_with_rain">Lleva %1$s esta noche, lluvia a las %2$s.</string>
+    <string name="insight_tie_in_with_rain">Lleva %1$s esta noche, %3$s a las %2$s.</string>
     <!-- "15" — prepositions ("a las", "de las") come from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -697,9 +697,9 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <string name="insight_precip_chance">Posibilidad de %1$s %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Esta noche, posibilidad de lluvia a las %2$s, lleva %1$s.</string>
-    <string name="insight_evening_rain">Esta noche, lluvia a las %1$s.</string>
-    <string name="insight_evening_rain_chance">Esta noche, posibilidad de lluvia a las %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Esta noche, posibilidad de %3$s a las %2$s, lleva %1$s.</string>
+    <string name="insight_evening_rain">Esta noche, %2$s a las %1$s.</string>
+    <string name="insight_evening_rain_chance">Esta noche, posibilidad de %2$s a las %1$s.</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast no puede ejecutarse en este dispositivo — tu versión de Android carece de una función que la interfaz de la app requiere (Configuration.fontWeightAdjustment, esperada en Android 12 y superior). Contacta al fabricante de tu dispositivo para obtener una actualización del sistema.</string>

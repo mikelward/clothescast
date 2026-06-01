@@ -95,7 +95,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="insight_condition_thunderstorm">Ribut petir</string>
     <string name="insight_condition_unknown">Tidak diketahui</string>
     <string name="insight_tie_in">Bawa %1$s malam ini.</string>
-    <string name="insight_tie_in_with_rain">Bawa %1$s malam ini, hujan pada pukul %2$s.</string>
+    <string name="insight_tie_in_with_rain">Bawa %1$s malam ini, %3$s pada pukul %2$s.</string>
     <!-- "15" / "15.30" — "pukul" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>
@@ -576,9 +576,9 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <!-- Insight prose: evening tie-in variants -->
     <string name="insight_tie_in_at_night">Bawa %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Malam ini, kemungkinan hujan pada pukul %2$s, bawa %1$s.</string>
-    <string name="insight_evening_rain">Malam ini, hujan pada pukul %1$s.</string>
-    <string name="insight_evening_rain_chance">Malam ini, kemungkinan hujan pada pukul %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Malam ini, kemungkinan %3$s pada pukul %2$s, bawa %1$s.</string>
+    <string name="insight_evening_rain">Malam ini, %2$s pada pukul %1$s.</string>
+    <string name="insight_evening_rain_chance">Malam ini, kemungkinan %2$s pada pukul %1$s.</string>
 
     <string name="today_forecast_air_section_title">Suhu udara</string>
 

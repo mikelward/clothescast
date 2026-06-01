@@ -106,12 +106,12 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="insight_condition_thunderstorm">Pērkona negaiss</string>
     <string name="insight_condition_unknown">Nezināms</string>
     <string name="insight_tie_in">Paņem %1$s šovakar līdzi.</string>
-    <string name="insight_tie_in_with_rain">Paņem %1$s šovakar līdzi, lietus plkst. %2$s.</string>
+    <string name="insight_tie_in_with_rain">Paņem %1$s šovakar līdzi, %3$s plkst. %2$s.</string>
     <!-- TONIGHT form — no "Šovakar" prefix, night context already set -->
     <string name="insight_tie_in_at_night">Paņem %1$s līdzi.</string>
-    <string name="insight_tie_in_with_rain_chance">Šovakar iespējams lietus plkst. %2$s, paņem %1$s līdzi.</string>
-    <string name="insight_evening_rain">Šovakar lietus plkst. %1$s.</string>
-    <string name="insight_evening_rain_chance">Šovakar iespējams lietus plkst. %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Šovakar iespējams %3$s plkst. %2$s, paņem %1$s līdzi.</string>
+    <string name="insight_evening_rain">Šovakar %2$s plkst. %1$s.</string>
+    <string name="insight_evening_rain_chance">Šovakar iespējams %2$s plkst. %1$s.</string>
     <!-- Latvian time format uses "." separator: "plkst. 15.30". -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>

@@ -102,7 +102,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <!-- SOV: "%1$s را امشب ببرید" = "[item] را tonight bring". -->
     <string name="insight_tie_in">%1$s را امشب ببرید.</string>
     <!-- %2$s is the spoken time — "ساعت" embedded here since time is a bare number. -->
-    <string name="insight_tie_in_with_rain">%1$s را امشب ببرید، باران ساعت %2$s.</string>
+    <string name="insight_tie_in_with_rain">%1$s را امشب ببرید، %3$s ساعت %2$s.</string>
     <!-- Bare number; "ساعت" comes from insight_precip_at_time. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -444,9 +444,9 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <!-- Insight prose — precipitation and tie-in variants -->
     <string name="insight_precip_chance">احتمال %1$s %2$s.</string>
     <string name="insight_tie_in_at_night">%1$s را ببرید.</string>
-    <string name="insight_tie_in_with_rain_chance">%1$s را امشب ببرید، احتمال باران ساعت %2$s.</string>
-    <string name="insight_evening_rain">امشب، باران ساعت %1$s.</string>
-    <string name="insight_evening_rain_chance">امشب، احتمال باران ساعت %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">%1$s را امشب ببرید، احتمال %3$s ساعت %2$s.</string>
+    <string name="insight_evening_rain">امشب، %2$s ساعت %1$s.</string>
+    <string name="insight_evening_rain_chance">امشب، احتمال %2$s ساعت %1$s.</string>
 
     <!-- Strings added to match base. -->
     <string name="settings_region_language_title">زبان</string>

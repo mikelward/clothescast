@@ -499,7 +499,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Counterpart used on a TONIGHT insight where the band lead already
          says "Heute Abend …"; drops "heute Abend" so it isn't repeated. -->
     <string name="insight_tie_in_at_night">Denk an %1$s.</string>
-    <string name="insight_tie_in_with_rain">Denk an %1$s für heute Abend, Regen um %2$s.</string>
+    <string name="insight_tie_in_with_rain">Denk an %1$s für heute Abend, %3$s um %2$s.</string>
     <!-- "15 Uhr" / "15 Uhr 30" — read naturally by German TTS. -->
     <string name="insight_time_hour">%1$d Uhr</string>
     <string name="insight_time_hour_minutes">%1$d Uhr %2$02d</string>
@@ -728,9 +728,9 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <!-- "Evtl." (eventuell) is an invariable adverb — no gender agreement needed. -->
     <string name="insight_precip_chance">Evtl. %1$s %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Evtl. Regen um %2$s — denk an %1$s für heute Abend.</string>
-    <string name="insight_evening_rain">Heute Abend Regen um %1$s.</string>
-    <string name="insight_evening_rain_chance">Evtl. Regen heute Abend um %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Evtl. %3$s um %2$s — denk an %1$s für heute Abend.</string>
+    <string name="insight_evening_rain">Heute Abend %2$s um %1$s.</string>
+    <string name="insight_evening_rain_chance">Evtl. %2$s heute Abend um %1$s.</string>
     <!-- Precip + accessory carry: "Regen um 15 Uhr, denk an Regenschirm." %1$s = condition, %2$s = time, %3$s = accessory. -->
     <string name="insight_precip_with_accessory">%1$s %2$s, denk an %3$s.</string>
     <string name="insight_precip_chance_with_accessory">Evtl. %1$s %2$s, denk an %3$s.</string>

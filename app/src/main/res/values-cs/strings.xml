@@ -581,10 +581,10 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="insight_condition_unknown">Neznámé</string>
     <string name="insight_tie_in">Vezmi si %1$s na večer.</string>
     <string name="insight_tie_in_at_night">Vezmi si %1$s na večer.</string>
-    <string name="insight_tie_in_with_rain">Vezmi si %1$s na večer, déšť v %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Možný déšť v %2$s — vezmi si %1$s.</string>
-    <string name="insight_evening_rain">Večer déšť v %1$s.</string>
-    <string name="insight_evening_rain_chance">Večer možný déšť v %1$s.</string>
+    <string name="insight_tie_in_with_rain">Vezmi si %1$s na večer, %3$s v %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Možný %3$s v %2$s — vezmi si %1$s.</string>
+    <string name="insight_evening_rain">Večer %2$s v %1$s.</string>
+    <string name="insight_evening_rain_chance">Večer možný %2$s v %1$s.</string>
     <!-- "15" — preposition "v" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>

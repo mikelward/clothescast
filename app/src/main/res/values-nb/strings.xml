@@ -592,10 +592,10 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
 
     <string name="insight_tie_in">Ta med deg %1$s i kveld.</string>
     <string name="insight_tie_in_at_night">Ta med deg %1$s i kveld.</string>
-    <string name="insight_tie_in_with_rain">Ta med deg %1$s i kveld, regn klokken %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Sjanse for regn klokken %2$s — ta med deg %1$s.</string>
-    <string name="insight_evening_rain">I kveld regn klokken %1$s.</string>
-    <string name="insight_evening_rain_chance">I kveld sjanse for regn klokken %1$s.</string>
+    <string name="insight_tie_in_with_rain">Ta med deg %1$s i kveld, %3$s klokken %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Sjanse for %3$s klokken %2$s — ta med deg %1$s.</string>
+    <string name="insight_evening_rain">I kveld %2$s klokken %1$s.</string>
+    <string name="insight_evening_rain_chance">I kveld sjanse for %2$s klokken %1$s.</string>
 
     <!-- "15" — "klokken" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>

@@ -436,7 +436,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="insight_condition_thunderstorm">Grmljavina</string>
     <string name="insight_condition_unknown">Nepoznato</string>
     <string name="insight_tie_in">Ponesi %1$s večeras.</string>
-    <string name="insight_tie_in_with_rain">Ponesi %1$s večeras, kiša u %2$s.</string>
+    <string name="insight_tie_in_with_rain">Ponesi %1$s večeras, %3$s u %2$s.</string>
     <!-- "15" — preposition "u" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -665,9 +665,9 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <!-- Hedged precipitation and evening-rain templates.
          "Možda" (maybe) is an invariable adverb — no gender agreement issues. -->
     <string name="insight_precip_chance">Možda %1$s %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Večeras, možda kiša u %2$s, ponesi %1$s.</string>
-    <string name="insight_evening_rain">Večeras, kiša u %1$s.</string>
-    <string name="insight_evening_rain_chance">Večeras, možda kiša u %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Večeras, možda %3$s u %2$s, ponesi %1$s.</string>
+    <string name="insight_evening_rain">Večeras, %2$s u %1$s.</string>
+    <string name="insight_evening_rain_chance">Večeras, možda %2$s u %1$s.</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast ne može raditi na ovom uređaju — tvoja Android verzija nema značajku koju sučelje aplikacije zahtijeva (Configuration.fontWeightAdjustment, očekuje se na Androidu 12 i novijim). Obrati se proizvođaču uređaja za ažuriranje sustava.</string>

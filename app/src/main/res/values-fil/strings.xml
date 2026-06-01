@@ -93,7 +93,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_condition_thunderstorm">Bagyo</string>
     <string name="insight_condition_unknown">Hindi kilala</string>
     <string name="insight_tie_in">Magdala ng %1$s ngayong gabi.</string>
-    <string name="insight_tie_in_with_rain">Magdala ng %1$s ngayong gabi, ulan ng %2$s.</string>
+    <string name="insight_tie_in_with_rain">Magdala ng %1$s ngayong gabi, %3$s ng %2$s.</string>
     <!-- "15" — preposition "ng" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -620,9 +620,9 @@ The rest of the UI falls through to values/strings.xml (English).
          ============================================================ -->
     <string name="insight_precip_chance">Posibilidad ng %1$s %2$s.</string>
     <string name="insight_tie_in_at_night">Magdala ng %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Ngayong gabi, posibilidad ng ulan ng %2$s, magdala ng %1$s.</string>
-    <string name="insight_evening_rain">Ngayong gabi, ulan ng %1$s.</string>
-    <string name="insight_evening_rain_chance">Ngayong gabi, posibilidad ng ulan ng %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Ngayong gabi, posibilidad ng %3$s ng %2$s, magdala ng %1$s.</string>
+    <string name="insight_evening_rain">Ngayong gabi, %2$s ng %1$s.</string>
+    <string name="insight_evening_rain_chance">Ngayong gabi, posibilidad ng %2$s ng %1$s.</string>
 
     <string name="today_forecast_air_section_title">Temperatura ng hangin</string>
 

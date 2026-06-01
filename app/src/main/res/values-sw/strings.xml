@@ -93,7 +93,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_condition_thunderstorm">Dhoruba ya radi</string>
     <string name="insight_condition_unknown">Haijulikana</string>
     <string name="insight_tie_in">Chukua %1$s usiku huu.</string>
-    <string name="insight_tie_in_with_rain">Chukua %1$s usiku huu, mvua saa %2$s.</string>
+    <string name="insight_tie_in_with_rain">Chukua %1$s usiku huu, %3$s saa %2$s.</string>
     <!-- Swahili: bare digits for TTS-friendly 24h time. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -427,9 +427,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Insight: precipitation / tie-in templates (new variants) -->
     <string name="insight_precip_chance">Uwezekano wa %1$s %2$s.</string>
     <string name="insight_tie_in_at_night">Chukua %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Usiku huu, uwezekano wa mvua saa %2$s, chukua %1$s.</string>
-    <string name="insight_evening_rain">Usiku huu, mvua saa %1$s.</string>
-    <string name="insight_evening_rain_chance">Usiku huu, uwezekano wa mvua saa %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Usiku huu, uwezekano wa %3$s saa %2$s, chukua %1$s.</string>
+    <string name="insight_evening_rain">Usiku huu, %2$s saa %1$s.</string>
+    <string name="insight_evening_rain_chance">Usiku huu, uwezekano wa %2$s saa %1$s.</string>
 
     <!-- Strings added to match base. -->
     <string name="settings_region_language_title">Lugha</string>

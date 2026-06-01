@@ -1029,6 +1029,48 @@ class InsightFormatterTest {
     }
 
     @Test
+    fun `evening event tie-in names the peak condition instead of always saying rain`() {
+        // A snowy evening reads "snow", a stormy one "thunderstorm" — the same
+        // condition noun the main precip clause uses — so the two clauses agree
+        // rather than the evening tie-in mislabelling every wet evening "rain".
+        subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("jacket"),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = WeatherCondition.SNOW,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, snow at 9pm, bring a jacket."
+
+        subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = emptyList(),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = WeatherCondition.THUNDERSTORM,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, thunderstorm at 9pm."
+    }
+
+    @Test
+    fun `evening event tie-in hedges the named condition on a POSSIBLE chance`() {
+        // The chance hedge keeps the real condition noun: "chance of snow",
+        // not "chance of rain".
+        subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = emptyList(),
+                    rainTime = LocalTime.of(21, 0),
+                    likelihood = PrecipLikelihood.POSSIBLE,
+                    precipCondition = WeatherCondition.SNOW,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, chance of snow at 9pm."
+    }
+
+    @Test
     fun `evening event tie-in silences a lone umbrella and falls through to bare rain`() {
         // Umbrella is filtered out (accessories are silenced); with no items
         // left to name and a rain time still set, the clause collapses to
@@ -1272,8 +1314,9 @@ class InsightFormatterTest {
     fun `umbrella accessory is suppressed in the evening tie-in when the peak is snow`() {
         // The clause's rainTime field gets populated from any precip peak
         // (DeriveInsight aliases it across condition types), so we explicitly
-        // check the precipCondition before injecting. SNOW → bare-rain
-        // template, no umbrella ride-along.
+        // check the precipCondition before injecting. SNOW → bare-precip
+        // template, no umbrella ride-along — and the clause names "snow", not
+        // "rain", so it agrees with the main clause's condition noun.
         umbrellaSubject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
@@ -1282,11 +1325,13 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.SNOW,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, rain at 9pm."
+        ) shouldBe "Today, it will be 21°. Tonight, snow at 9pm."
     }
 
     @Test
     fun `umbrella accessory is suppressed in the evening tie-in when the peak is thunderstorm`() {
+        // No umbrella under lightning, but the clause still names the real
+        // condition ("thunderstorm") rather than mislabelling it "rain".
         umbrellaSubject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
@@ -1295,7 +1340,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.THUNDERSTORM,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring a jacket."
+        ) shouldBe "Today, it will be 21°. Tonight, thunderstorm at 9pm, bring a jacket."
     }
 
     @Test
@@ -1561,6 +1606,11 @@ class InsightFormatterTest {
 
     @Test
     fun `de — evening event tie-in folds rain time via German positional placeholders`() {
+        // The condition noun is now a parameter (lowercased mid-sentence, the
+        // same treatment insight_precip_chance already applies — German ships
+        // "Evtl. regen …" there), so it reads "regen um 21 Uhr" rather than the
+        // old hardcoded "Regen". The win is that a snowy / stormy evening now
+        // names the real condition instead of always saying rain.
         val out = germanSubject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
@@ -1569,7 +1619,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Heute wird es 21°. Denk an Regenschirm für heute Abend, Regen um 21 Uhr."
+        out shouldBe "Heute wird es 21°. Denk an Regenschirm für heute Abend, regen um 21 Uhr."
     }
 
     @Test

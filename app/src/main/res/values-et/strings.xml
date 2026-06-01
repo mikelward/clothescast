@@ -541,10 +541,10 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="insight_tie_in">Võta %1$s täna õhtul kaasa.</string>
     <!-- No-prefix tonight form: band lead already established the night context. -->
     <string name="insight_tie_in_at_night">Võta %1$s kaasa.</string>
-    <string name="insight_tie_in_with_rain">Võta %1$s täna õhtul kaasa, vihma kell %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Täna õhtul vihma võimalus kell %2$s, võta %1$s kaasa.</string>
-    <string name="insight_evening_rain">Täna õhtul vihma kell %1$s.</string>
-    <string name="insight_evening_rain_chance">Täna õhtul vihma võimalus kell %1$s.</string>
+    <string name="insight_tie_in_with_rain">Võta %1$s täna õhtul kaasa, %3$s kell %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Täna õhtul %3$s võimalus kell %2$s, võta %1$s kaasa.</string>
+    <string name="insight_evening_rain">Täna õhtul %2$s kell %1$s.</string>
+    <string name="insight_evening_rain_chance">Täna õhtul %2$s võimalus kell %1$s.</string>
     <!-- Estonian time format uses "." separator: "kell 15.30". -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>

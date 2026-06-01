@@ -99,7 +99,7 @@ What is NOT overridden, by design:
     <string name="insight_condition_thunderstorm">Perkūnija</string>
     <string name="insight_condition_unknown">Nežinoma</string>
     <string name="insight_tie_in">Pasiimk %1$s šįvakar.</string>
-    <string name="insight_tie_in_with_rain">Pasiimk %1$s šįvakar, lietus %2$s val.</string>
+    <string name="insight_tie_in_with_rain">Pasiimk %1$s šįvakar, %3$s %2$s val.</string>
     <!-- Lithuanian time uses "val." (= o\'clock) suffix; minutes joined by ":". -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -589,9 +589,9 @@ What is NOT overridden, by design:
     <!-- Additional insight prose templates. -->
     <string name="insight_precip_chance">Gali būti %1$s %2$s.</string>
     <string name="insight_tie_in_at_night">Pasiimk %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Pasiimk %1$s šįvakar, gali lyti %2$s val.</string>
-    <string name="insight_evening_rain">Šįvakar lietus %1$s val.</string>
-    <string name="insight_evening_rain_chance">Šįvakar gali lyti %1$s val.</string>
+    <string name="insight_tie_in_with_rain_chance">Pasiimk %1$s šįvakar, gali būti %3$s %2$s val.</string>
+    <string name="insight_evening_rain">Šįvakar %2$s %1$s val.</string>
+    <string name="insight_evening_rain_chance">Šįvakar gali būti %2$s %1$s val.</string>
 
     <string name="today_forecast_air_section_title">Oro temperatūra</string>
 

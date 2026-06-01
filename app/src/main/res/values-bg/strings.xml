@@ -105,7 +105,7 @@ What is NOT overridden, by design:
     <string name="insight_condition_thunderstorm">Гръмотевична буря</string>
     <string name="insight_condition_unknown">Неизвестно</string>
     <string name="insight_tie_in">Вземи %1$s за тази вечер.</string>
-    <string name="insight_tie_in_with_rain">Вземи %1$s за тази вечер, дъжд в %2$s.</string>
+    <string name="insight_tie_in_with_rain">Вземи %1$s за тази вечер, %3$s в %2$s.</string>
     <!-- "15" — preposition "в" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -113,9 +113,9 @@ What is NOT overridden, by design:
     <!-- New insight strings -->
     <string name="insight_precip_chance">Шанс за %1$s %2$s.</string>
     <string name="insight_tie_in_at_night">Вземи %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Тази вечер шанс за дъжд в %2$s, вземи %1$s.</string>
-    <string name="insight_evening_rain">Тази вечер дъжд в %1$s.</string>
-    <string name="insight_evening_rain_chance">Тази вечер шанс за дъжд в %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Тази вечер шанс за %3$s в %2$s, вземи %1$s.</string>
+    <string name="insight_evening_rain">Тази вечер %2$s в %1$s.</string>
+    <string name="insight_evening_rain_chance">Тази вечер шанс за %2$s в %1$s.</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast не може да работи на това устройство — Android сборката ти липсва функция, необходима за интерфейса на приложението (Configuration.fontWeightAdjustment, очаквана при Android 12 и нагоре). Свържи се с производителя на устройството за системна актуализация.</string>

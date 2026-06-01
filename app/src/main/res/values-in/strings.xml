@@ -95,7 +95,7 @@ to values/strings.xml (English).
     <string name="insight_condition_thunderstorm">Badai petir</string>
     <string name="insight_condition_unknown">Tidak diketahui</string>
     <string name="insight_tie_in">Bawa %1$s malam ini.</string>
-    <string name="insight_tie_in_with_rain">Bawa %1$s malam ini, hujan pukul %2$s.</string>
+    <string name="insight_tie_in_with_rain">Bawa %1$s malam ini, %3$s pukul %2$s.</string>
     <!-- "15" / "15.30" — "pukul" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>
@@ -103,9 +103,9 @@ to values/strings.xml (English).
     <!-- Insight prose: precip chance hedge and evening rain -->
     <string name="insight_precip_chance">Kemungkinan %1$s %2$s.</string>
     <string name="insight_tie_in_at_night">Bawa %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Malam ini, kemungkinan hujan pukul %2$s, bawa %1$s.</string>
-    <string name="insight_evening_rain">Malam ini, hujan pukul %1$s.</string>
-    <string name="insight_evening_rain_chance">Malam ini, kemungkinan hujan pukul %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Malam ini, kemungkinan %3$s pukul %2$s, bawa %1$s.</string>
+    <string name="insight_evening_rain">Malam ini, %2$s pukul %1$s.</string>
+    <string name="insight_evening_rain_chance">Malam ini, kemungkinan %2$s pukul %1$s.</string>
 
     <!-- Device incompatibility error -->
     <string name="error_device_incompatible">ClothesCast tidak dapat berjalan di perangkat ini — build Android Anda tidak memiliki fitur yang dibutuhkan oleh antarmuka aplikasi (Configuration.fontWeightAdjustment, diharapkan ada di Android 12 ke atas). Silakan hubungi produsen perangkat Anda untuk pembaruan sistem.</string>

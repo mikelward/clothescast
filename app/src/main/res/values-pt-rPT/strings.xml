@@ -496,7 +496,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="insight_condition_thunderstorm">Trovoada</string>
     <string name="insight_condition_unknown">Desconhecido</string>
     <string name="insight_tie_in">Leva %1$s esta noite.</string>
-    <string name="insight_tie_in_with_rain">Leva %1$s esta noite, chuva às %2$s.</string>
+    <string name="insight_tie_in_with_rain">Leva %1$s esta noite, %3$s às %2$s.</string>
     <!-- "15h" / "15h30" — PT-PT hour notation, TTS reads naturally. -->
     <string name="insight_time_hour">%1$dh</string>
     <string name="insight_time_hour_minutes">%1$dh%2$02d</string>
@@ -704,9 +704,9 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
 
     <string name="insight_precip_chance">Possibilidade de %1$s %2$s.</string>
     <string name="insight_tie_in_at_night">Leva %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Esta noite, possibilidade de chuva às %2$s, leva %1$s.</string>
-    <string name="insight_evening_rain">Esta noite, chuva às %1$s.</string>
-    <string name="insight_evening_rain_chance">Esta noite, possibilidade de chuva às %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Esta noite, possibilidade de %3$s às %2$s, leva %1$s.</string>
+    <string name="insight_evening_rain">Esta noite, %2$s às %1$s.</string>
+    <string name="insight_evening_rain_chance">Esta noite, possibilidade de %2$s às %1$s.</string>
 
     <string name="settings_tts_style_label">Estilo</string>
     <string name="settings_tts_style_weather_forecaster">Apresentador de meteorologia</string>

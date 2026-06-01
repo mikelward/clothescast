@@ -296,18 +296,8 @@ fun ForecastChart(
             // swallow horizontal drags. The scrub gesture lives on the parent Box.
             scrollState = rememberVicoScrollState(scrollEnabled = false),
             zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
-            // No animations. The chart appears at its final shape the moment
-            // the card composes (animateIn = false) and every later data change
-            // — per-model spread toggle, °C/°F, feels-like, a live refresh —
-            // applies instantly (animationSpec = null). The entry grow-in ran
-            // on every page swipe for no gain on a static glanceable card. The
-            // diff animation grew newly-added series up from the layer baseline
-            // rather than fanning them out from the combined line, so the
-            // spread reveal read as a grow-in, not an uncertainty cue — and the
-            // toggles it fired on are deliberate user actions (or rare
-            // background refreshes) where instant is the right feel.
-            animateIn = false,
-            animationSpec = null,
+            animateIn = CHART_ANIMATE_IN,
+            animationSpec = CHART_ANIMATION_SPEC,
             modifier = Modifier.matchParentSize(),
         )
     }

@@ -314,11 +314,8 @@ private fun PerModelDiagnosticChart(
             modelProducer = producer,
             scrollState = rememberVicoScrollState(scrollEnabled = false),
             zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
-            // No animations — appears at final shape on compose (animateIn) and
-            // data changes apply instantly (animationSpec = null), so the spread
-            // reveal and toggles snap rather than grow in. See ForecastChart.
-            animateIn = false,
-            animationSpec = null,
+            animateIn = CHART_ANIMATE_IN,
+            animationSpec = CHART_ANIMATION_SPEC,
             modifier = Modifier.matchParentSize(),
         )
     }

@@ -205,21 +205,14 @@ What is NOT overridden, by design:
     -->
     <string name="settings_schedule_title">Denný ClothesCast</string>
     <string name="settings_schedule_time_label">Čas</string>
-    <string name="settings_schedule_days_label">Dni v týždni</string>
     <string name="settings_daily_mention_evening_events">Spomínať večerné udalosti</string>
     <string name="settings_schedule_preview">Prehrať teraz</string>
 
     <string name="settings_tonight_title">Nočný ClothesCast</string>
-    <string name="settings_tonight_description">Druhý ClothesCast večer pre počasie tejto noci. V pokojné večery zostane tichý alebo sa vôbec nezobrazí, ak je aktívne „Upozorňovať len pri večerných udalostiach"; vo večery s udalosťami prehrá zvuk a (ak máš zapnuté hlasové čítanie) prečíta sa nahlas.</string>
     <string name="settings_tonight_enabled">Zobrazovať nočný ClothesCast</string>
     <string name="settings_tonight_time_label">Čas</string>
-    <string name="settings_tonight_days_label">Dni v týždni</string>
     <string name="settings_tonight_notify_only_on_events">Upozorňovať len pri večerných udalostiach</string>
 
-    <string name="settings_delivery_label">Doručenie</string>
-    <string name="settings_delivery_notification_only">Len upozornenie</string>
-    <string name="settings_delivery_tts_only">Len hlasovo</string>
-    <string name="settings_delivery_notification_and_tts">Upozornenie aj hlasovo</string>
 
     <!--
     Voice screen.
@@ -340,11 +333,6 @@ What is NOT overridden, by design:
     <string name="settings_notification_permission_grant">Udeliť oprávnenie na upozornenia</string>
 
     <!-- Calendar opt-in card. -->
-    <string name="settings_calendar_title">Kalendár</string>
-    <string name="settings_calendar_use_events">Používať dnešné udalosti z kalendára</string>
-    <string name="settings_calendar_description_off">Po zapnutí ClothesCast číta dnešné udalosti z kalendára zariadenia, aby mohol ranný ClothesCast navrhovať oblečenie pre konkrétne udalosti — napr. „Vezmi si dáždnik na beh v parku o 15:00". Používajú sa len názvy udalostí a časy; opisy a účastníci sa čítajú, ale nikdy neopustia zariadenie.</string>
-    <string name="settings_calendar_description_on">Číta dnešné udalosti z kalendára zariadenia na doplnenie ranného ClothesCastu. V zostavenej správe sa používajú len názvy a časy; opisy a účastníci nie. Všetko zostáva v zariadení.</string>
-    <string name="settings_calendar_grant_permission">Udeliť prístup ku kalendáru</string>
     <string name="settings_calendar_open_settings">Prístup ku kalendáru bol zamietnutý. Udeľ ho v systémových nastaveniach.</string>
 
     <!-- Debug screen. -->
@@ -702,8 +690,6 @@ What is NOT overridden, by design:
     <string name="settings_about_open_meteo">Údaje o počasí poskytuje Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Sviatky</string>
-    <string name="settings_root_holidays_subtitle">Tematické farby a bannery</string>
     <string name="settings_holidays_title">Sviatky</string>
     <string name="settings_holiday_country_home">Domov (%1$s)</string>
     <string name="settings_holiday_country_current">Aktuálna poloha (%1$s)</string>
@@ -807,7 +793,6 @@ What is NOT overridden, by design:
     <!-- Settings — root navigation. -->
     <string name="settings_root_smart_home">Inteligentná domácnosť</string>
     <string name="settings_root_smart_home_subtitle">Inteligentné displeje a domáca automatizácia</string>
-    <string name="settings_schedule_description">ClothesCast ráno pokrývajúci počasie daného dňa.</string>
     <string name="settings_api_key_replace">Nahradiť kľúč Gemini</string>
 
     <!-- Outfit card headers. -->
@@ -832,8 +817,6 @@ What is NOT overridden, by design:
     <string name="settings_holidays_link_location_settings_a11y">Nastavenia polohy</string>
     <string name="settings_holidays_link_region_settings_a11y">Nastavenia regiónu</string>
     <string name="settings_holidays_permission_revoked">Vyžaduje sa oprávnenie ku kalendáru. Ťuknutím udeľte znovu.</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Zapnite prepínač vyššie na prispôsobenie dnešného outfitu na základe udalostí z vašich synchronizovaných kalendárov.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Zistené udalosti z vašich synchronizovaných kalendárov sa tu zobrazia v budúcej aktualizácii.</string>
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
 
     <!-- Home location settings. -->

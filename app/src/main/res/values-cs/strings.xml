@@ -200,21 +200,14 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Denní ClothesCast</string>
     <string name="settings_schedule_time_label">Čas</string>
-    <string name="settings_schedule_days_label">Dny v týdnu</string>
     <string name="settings_daily_mention_evening_events">Zmiňovat večerní události</string>
     <string name="settings_schedule_preview">Přehrát nyní</string>
 
     <string name="settings_tonight_title">Noční ClothesCast</string>
-    <string name="settings_tonight_description">Druhý ClothesCast večer pro počasí dnešní noci. V klidných večerech zůstane tichý nebo se vůbec nezobrazí, pokud je aktivní „Upozorňovat jen při večerních událostech"; ve večerech s událostmi přehraje zvuk a (pokud máš zapnutý mluvený výstup) přečte se sám nahlas.</string>
     <string name="settings_tonight_enabled">Zobrazovat noční ClothesCast</string>
     <string name="settings_tonight_time_label">Čas</string>
-    <string name="settings_tonight_days_label">Dny v týdnu</string>
     <string name="settings_tonight_notify_only_on_events">Upozorňovat jen při večerních událostech</string>
 
-    <string name="settings_delivery_label">Doručení</string>
-    <string name="settings_delivery_notification_only">Jen oznámení</string>
-    <string name="settings_delivery_tts_only">Jen mluvené</string>
-    <string name="settings_delivery_notification_and_tts">Oznámení i mluvené</string>
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">Řečový engine</string>
@@ -331,11 +324,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_notification_permission_grant">Povolit oznámení</string>
 
     <!-- Calendar settings. -->
-    <string name="settings_calendar_title">Kalendář</string>
-    <string name="settings_calendar_use_events">Použít dnešní události z kalendáře</string>
-    <string name="settings_calendar_description_off">Pokud je zapnuto, ClothesCast čte dnešní události z tvého kalendáře zařízení, aby mohl ranní ClothesCast navrhovat konkrétní události — například „Vezmi si deštník na svůj běh v parku ve 15 hodin". Používají se jen názvy událostí a časy; popisy, účastníci a místa se čtou, ale nikdy neopustí zařízení.</string>
-    <string name="settings_calendar_description_on">Čte dnešní události z tvého kalendáře zařízení pro doplnění ranního ClothesCastu. V sestavené přehledu se používají pouze názvy a časy; popisy a účastníci ne. Vše zůstane v zařízení.</string>
-    <string name="settings_calendar_grant_permission">Povolit přístup ke kalendáři</string>
     <string name="settings_calendar_open_settings">Přístup ke kalendáři byl odmítnut. Povol ho v systémovém nastavení.</string>
 
     <!-- Debug screen. -->
@@ -688,8 +676,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_about_open_meteo">Data o počasí poskytuje Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Svátky</string>
-    <string name="settings_root_holidays_subtitle">Tematické barvy a bannery</string>
     <string name="settings_holidays_title">Svátky</string>
     <string name="settings_holiday_country_home">Domov (%1$s)</string>
     <string name="settings_holiday_country_current">Aktuální poloha (%1$s)</string>
@@ -793,7 +779,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <!-- Settings — root navigation. -->
     <string name="settings_root_smart_home">Chytrá domácnost</string>
     <string name="settings_root_smart_home_subtitle">Chytré displeje a domácí automatizace</string>
-    <string name="settings_schedule_description">ClothesCast ráno pokrývající počasí daného dne.</string>
     <string name="settings_api_key_replace">Nahradit klíč Gemini</string>
 
     <!-- Outfit card headers. -->
@@ -818,8 +803,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_holidays_link_location_settings_a11y">Nastavení polohy</string>
     <string name="settings_holidays_link_region_settings_a11y">Nastavení regionu</string>
     <string name="settings_holidays_permission_revoked">Vyžadováno oprávnění ke kalendáři. Klepnutím udělte znovu.</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Zapněte přepínač výše pro přizpůsobení dnešního outfitu na základě událostí zjištěných z vašich synchronizovaných kalendářů.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Zjištěné události z vašich synchronizovaných kalendářů se zde zobrazí v budoucí aktualizaci.</string>
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
 
     <!-- Home location settings. -->

@@ -362,23 +362,16 @@ What is NOT overridden, by design:
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Дневен ClothesCast</string>
     <string name="settings_schedule_time_label">Час</string>
-    <string name="settings_schedule_days_label">Дни от седмицата</string>
     <string name="settings_daily_mention_evening_events">Споменавай вечерни събития</string>
     <string name="settings_schedule_preview">Пусни сега</string>
 
     <!-- Nightly ClothesCast. -->
     <string name="settings_tonight_title">Нощен ClothesCast</string>
-    <string name="settings_tonight_description">Втори ClothesCast вечерта, обхващащ времето тази нощ. В спокойни вечери остава тих или изобщо не се появява, ако е включено „Уведомявай само при вечерни събития"; при вечери с събития издава звук и (ако е включено гласово четене) се чете на глас.</string>
     <string name="settings_tonight_enabled">Показвай нощен ClothesCast</string>
     <string name="settings_tonight_time_label">Час</string>
-    <string name="settings_tonight_days_label">Дни от седмицата</string>
     <string name="settings_tonight_notify_only_on_events">Уведомявай само при вечерни събития</string>
 
     <!-- Delivery picker. -->
-    <string name="settings_delivery_label">Доставяне</string>
-    <string name="settings_delivery_notification_only">Само известие</string>
-    <string name="settings_delivery_tts_only">Само гласово</string>
-    <string name="settings_delivery_notification_and_tts">Известие и гласово</string>
 
     <!-- Voice / TTS screen. -->
     <string name="settings_tts_engine_title">Гласов двигател</string>
@@ -571,11 +564,6 @@ What is NOT overridden, by design:
     <string name="settings_notification_permission_grant">Разреши известия</string>
 
     <!-- Calendar settings. -->
-    <string name="settings_calendar_title">Календар</string>
-    <string name="settings_calendar_use_events">Използвай събитията от календара за днес</string>
-    <string name="settings_calendar_description_off">Адаптирай сутрешната прогноза към събитията за днес — използват се само заглавия и часове и нищо не напуска устройството.</string>
-    <string name="settings_calendar_description_on">Адаптира сутрешната прогноза към събитията за днес. Използват се само заглавия и часове; нищо не напуска устройството.</string>
-    <string name="settings_calendar_grant_permission">Разреши достъп до календара</string>
     <string name="settings_calendar_open_settings">Достъпът до календара е отказан. Разреши го от системните настройки.</string>
 
     <!-- Debug screen. -->
@@ -685,8 +673,6 @@ What is NOT overridden, by design:
     <string name="settings_about_open_meteo">Данни за времето от Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Празници</string>
-    <string name="settings_root_holidays_subtitle">Тематични цветове и банери</string>
     <string name="settings_holidays_title">Празници</string>
     <string name="settings_holiday_country_home">Дом (%1$s)</string>
     <string name="settings_holiday_country_current">Текуща локация (%1$s)</string>
@@ -834,7 +820,6 @@ What is NOT overridden, by design:
     <!-- Smart Home settings, outfit card headers, and other missing strings. -->
     <string name="settings_root_smart_home">Умен дом</string>
     <string name="settings_root_smart_home_subtitle">Умни дисплеи и домашна автоматизация</string>
-    <string name="settings_schedule_description">ClothesCast сутринта, обхващащ времето за деня.</string>
     <string name="settings_api_key_replace">Смени ключа за Gemini</string>
     <string name="outfit_card_header_today">Днешният ClothesCast</string>
     <string name="outfit_card_header_tonight">Вечерният ClothesCast</string>
@@ -853,8 +838,6 @@ What is NOT overridden, by design:
     <string name="settings_holidays_link_location_settings_a11y">Настройки на местоположението</string>
     <string name="settings_holidays_link_region_settings_a11y">Настройки на региона</string>
     <string name="settings_holidays_permission_revoked">Необходимо разрешение за календар. Докоснете за повторно предоставяне.</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Включи превключвателя по-горе, за да персонализираш днешното облекло въз основа на събития от синхронизираните ти календари.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Открити събития от синхронизираните ти календари ще се появят тук в бъдеща актуализация.</string>
     <string name="settings_smart_home_cast_title">Предаване</string>
     <string name="settings_smart_home_cast_device_label">Умен дисплей</string>
     <string name="settings_smart_home_cast_device_none">Не е избран дисплей</string>

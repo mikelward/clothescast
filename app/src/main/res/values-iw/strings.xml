@@ -348,21 +348,14 @@ standard in Israeli digital communication.
     <!-- Settings — schedule (daily + nightly) -->
     <string name="settings_schedule_title">ClothesCast יומי</string>
     <string name="settings_schedule_time_label">שעה</string>
-    <string name="settings_schedule_days_label">ימות השבוע</string>
     <string name="settings_daily_mention_evening_events">ציין/י אירועי ערב</string>
     <string name="settings_schedule_preview">הפעל עכשיו</string>
     <string name="settings_tonight_title">ClothesCast לילי</string>
-    <string name="settings_tonight_description">ClothesCast שני בערב המכסה את מזג האוויר הלילי. בערבים שקטים נשאר שקט; בערבי אירועים משמיע צליל וקורא את עצמו.</string>
     <string name="settings_tonight_enabled">הצג/י ClothesCast לילי</string>
     <string name="settings_tonight_time_label">שעה</string>
-    <string name="settings_tonight_days_label">ימות השבוע</string>
     <string name="settings_tonight_notify_only_on_events">הודע/י רק כשיש אירועי ערב</string>
 
     <!-- Settings — delivery / TTS -->
-    <string name="settings_delivery_label">משלוח</string>
-    <string name="settings_delivery_notification_only">התראה בלבד</string>
-    <string name="settings_delivery_tts_only">קריאה בקול בלבד</string>
-    <string name="settings_delivery_notification_and_tts">התראה וקריאה בקול</string>
     <string name="settings_tts_engine_title">מנוע קול</string>
     <string name="settings_tts_engine_description">בחר/י בין דיבור באיכות נמוכה במכשיר לבין דיבור באיכות גבוהה באינטרנט.</string>
     <string name="settings_tts_engine_device">מכשיר (איכות נמוכה, במכשיר)</string>
@@ -438,11 +431,6 @@ standard in Israeli digital communication.
     <string name="settings_notification_permission_grant">הענק/י הרשאת התראות</string>
 
     <!-- Settings — calendar -->
-    <string name="settings_calendar_title">לוח שנה</string>
-    <string name="settings_calendar_use_events">השתמש/י באירועי לוח השנה של היום</string>
-    <string name="settings_calendar_description_off">התאם/י את תחזית הבוקר לאירועי היום — נעשה שימוש בכותרות ובזמנים בלבד, ושום דבר לא יוצא מהמכשיר.</string>
-    <string name="settings_calendar_description_on">מתאים את תחזית הבוקר לאירועי היום. נעשה שימוש בכותרות ובזמנים בלבד; שום דבר לא יוצא מהמכשיר.</string>
-    <string name="settings_calendar_grant_permission">הענק/י הרשאת לוח שנה</string>
     <string name="settings_calendar_open_settings">הרשאת לוח שנה נדחתה. הענק/י אותה מהגדרות המערכת.</string>
 
     <!-- Settings — about -->
@@ -616,11 +604,8 @@ standard in Israeli digital communication.
     <string name="settings_tts_voice_locale_sq_al">אלבנית (אלבניה)</string>
     <string name="settings_region_language_am_et">אמהרית (אתיופיה)</string>
     <string name="settings_tts_voice_locale_am_et">אמהרית (אתיופיה)</string>
-    <string name="settings_region_language_ar_ae">ערבית (איחוד האמירויות)</string>
     <string name="settings_tts_voice_locale_ar_ae">ערבית (איחוד האמירויות)</string>
-    <string name="settings_region_language_ar_eg">ערבית (מצרים)</string>
     <string name="settings_tts_voice_locale_ar_eg">ערבית (מצרים)</string>
-    <string name="settings_region_language_ar_ma">ערבית (מרוקו)</string>
     <string name="settings_tts_voice_locale_ar_ma">ערבית (מרוקו)</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
@@ -829,8 +814,6 @@ standard in Israeli digital communication.
     <string name="settings_holiday_override_auto_on">אוטומטי (פועל)</string>
     <string name="settings_holiday_override_off">כבוי</string>
     <string name="settings_holiday_override_on">פועל</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">הפעל/י את המתג למעלה כדי לעצב את לבוש היום לפי אירועים שזוהו מהיומנים המסונכרנים שלך.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">אירועים שזוהו מהיומנים המסונכרנים שלך יופיעו כאן בעדכון עתידי.</string>
     <string name="settings_holidays_collapse">כיווץ</string>
     <string name="settings_holidays_expand">הרחבה</string>
     <string name="settings_holidays_link_calendar_settings_a11y">הגדרות יומן</string>
@@ -847,13 +830,10 @@ standard in Israeli digital communication.
     <!-- Settings — home location -->
 
     <!-- Settings — root holidays and smart home -->
-    <string name="settings_root_holidays">חגיגות</string>
-    <string name="settings_root_holidays_subtitle">חגים וימי הולדת</string>
     <string name="settings_root_smart_home">בית חכם</string>
     <string name="settings_root_smart_home_subtitle">מסכים חכמים ואוטומציית הבית</string>
 
     <!-- Settings — schedule description -->
-    <string name="settings_schedule_description">ClothesCast בבוקר המכסה את מזג האוויר של אותו יום.</string>
 
     <!-- Settings — skip TTS at home -->
 

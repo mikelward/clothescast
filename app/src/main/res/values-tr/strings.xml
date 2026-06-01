@@ -70,21 +70,14 @@ displayed label localizes.
 
     <string name="settings_schedule_title">Günlük ClothesCast</string>
     <string name="settings_schedule_time_label">Saat</string>
-    <string name="settings_schedule_days_label">Haftanın günleri</string>
     <string name="settings_daily_mention_evening_events">Akşam etkinliklerinden bahset</string>
     <string name="settings_schedule_preview">Şimdi oynat</string>
 
     <string name="settings_tonight_title">Gecelik ClothesCast</string>
-    <string name="settings_tonight_description">Bu gecenin hava durumu için akşam ikinci bir ClothesCast. Sakin akşamlarda sessiz kalır veya "Yalnızca akşam etkinlikleri varsa bildir" etkinse hiç görünmez; etkinlikleri olan akşamlarda ses çıkarır ve (sesli çıkış etkinse) kendini sesli okur.</string>
     <string name="settings_tonight_enabled">Gecelik ClothesCast\'ı göster</string>
     <string name="settings_tonight_time_label">Saat</string>
-    <string name="settings_tonight_days_label">Haftanın günleri</string>
     <string name="settings_tonight_notify_only_on_events">Yalnızca akşam etkinlikleri varsa bildir</string>
 
-    <string name="settings_delivery_label">Teslim</string>
-    <string name="settings_delivery_notification_only">Yalnızca bildirim</string>
-    <string name="settings_delivery_tts_only">Yalnızca sesli</string>
-    <string name="settings_delivery_notification_and_tts">Bildirim ve sesli</string>
 
     <string name="settings_tts_engine_title">Konuşma motoru</string>
     <string name="settings_tts_engine_device">Cihaz (düşük kalite, cihazda)</string>
@@ -253,11 +246,6 @@ displayed label localizes.
     <string name="settings_notification_permission_description">Bildirim izni olmadan günlük ClothesCast\'ının gidecek yeri yok. Yarın sabah ClothesCast görünebilsin diye izin ver.</string>
     <string name="settings_notification_permission_grant">Bildirimlere izin ver</string>
 
-    <string name="settings_calendar_title">Takvim</string>
-    <string name="settings_calendar_use_events">Bugünün takvim etkinliklerini kullan</string>
-    <string name="settings_calendar_description_off">Etkinleştirildiğinde, ClothesCast sabah ClothesCast\'ının belirli etkinliklere önerilerde bulunabilmesi için cihazınızın takviminden bugünün etkinliklerini okur — örneğin "Saat 15\'te parkta koşun için şemsiyeni unut". Yalnızca etkinlik başlıkları ve saatler kullanılır; açıklamalar, katılımcılar ve konumlar okunur ancak cihazı asla terk etmez.</string>
-    <string name="settings_calendar_description_on">Sabah ClothesCast\'ını tamamlamak için cihazınızın takviminden bugünün etkinliklerini okur. Oluşturulan özette yalnızca başlıklar ve saatler kullanılır; açıklamalar ve katılımcılar değil. Her şey cihazda kalır.</string>
-    <string name="settings_calendar_grant_permission">Takvim erişimine izin ver</string>
     <string name="settings_calendar_open_settings">Takvim erişimi reddedildi. Sistem ayarlarından izin verin.</string>
 
     <string name="settings_debug_title">Hata ayıklama (yalnızca hata ayıklama sürümlerinde)</string>
@@ -835,8 +823,6 @@ displayed label localizes.
     <string name="settings_holiday_override_auto_on">Otomatik (açık)</string>
     <string name="settings_holiday_override_off">Kapalı</string>
     <string name="settings_holiday_override_on">Açık</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Senkronize takvimlerdeki etkinlikleri bugünün kıyafet temasına uygulamak için yukarıdaki geçişi açın.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Senkronize takvimlerdeki algılanan etkinlikler gelecekteki bir güncellemede burada görünecek.</string>
     <string name="settings_holidays_collapse">Daralt</string>
     <string name="settings_holidays_expand">Genişlet</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Takvim ayarları</string>
@@ -849,13 +835,10 @@ displayed label localizes.
     <string name="settings_holidays_source_location">Konum (%1$s)</string>
     <string name="settings_holidays_source_region">Bölge (%1$s)</string>
     <string name="settings_holidays_title">Tatiller</string>
-    <string name="settings_root_holidays">Kutlamalar</string>
-    <string name="settings_root_holidays_subtitle">Tatiller ve Doğum Günleri</string>
     <string name="settings_root_smart_home">Akıllı Ev</string>
     <string name="settings_root_smart_home_subtitle">Akıllı Ekranlar ve Ev Otomasyonu</string>
 
     <!-- Schedule description -->
-    <string name="settings_schedule_description">O günün hava durumunu kapsayan sabah ClothesCast\'ı.</string>
 
     <!-- Skip TTS at home -->
 

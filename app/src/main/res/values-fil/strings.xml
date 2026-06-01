@@ -360,24 +360,17 @@ The rest of the UI falls through to values/strings.xml (English).
          ============================================================ -->
     <string name="settings_schedule_title">Pang-araw na ClothesCast</string>
     <string name="settings_schedule_time_label">Oras</string>
-    <string name="settings_schedule_days_label">Mga araw ng linggo</string>
     <string name="settings_daily_mention_evening_events">Banggitin ang mga gabi na evento</string>
     <string name="settings_schedule_preview">I-play ngayon</string>
 
     <string name="settings_tonight_title">Pang-gabing ClothesCast</string>
-    <string name="settings_tonight_description">Pangalawang ClothesCast sa gabi na sumasaklaw sa panahon ngayong gabi. Sa mga tahimik na gabi ay nananatiling tahimik ito, o hindi lumilitaw kung naka-on ang "Mag-notify lamang kapag may mga gabi na evento"; sa mga gabi na may evento ay nagpapatugtog ng tunog at (kung pinagana mo ang pagbabasa nang malakas) binabasa ang sarili nito.</string>
     <string name="settings_tonight_enabled">Magpakita ng pang-gabing ClothesCast</string>
     <string name="settings_tonight_time_label">Oras</string>
-    <string name="settings_tonight_days_label">Mga araw ng linggo</string>
     <string name="settings_tonight_notify_only_on_events">Mag-notify lamang kapag may mga gabi na evento</string>
 
     <!-- ============================================================
          Settings — Delivery
          ============================================================ -->
-    <string name="settings_delivery_label">Paghahatid</string>
-    <string name="settings_delivery_notification_only">Notipikasyon lamang</string>
-    <string name="settings_delivery_tts_only">Binibigkas lamang</string>
-    <string name="settings_delivery_notification_and_tts">Notipikasyon at binibigkas</string>
 
     <!-- ============================================================
          Settings — Voice / TTS
@@ -592,11 +585,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- ============================================================
          Settings — Calendar
          ============================================================ -->
-    <string name="settings_calendar_title">Kalendaryo</string>
-    <string name="settings_calendar_use_events">Gamitin ang mga evento ng kalendaryo ngayon</string>
-    <string name="settings_calendar_description_off">Iaangkop ang umaga na hula sa mga evento ngayon — mga titulo at oras lamang ang ginagamit, at walang lumalabas sa device.</string>
-    <string name="settings_calendar_description_on">Inaangkop ang umaga na hula sa mga evento ngayon. Mga titulo at oras lamang ang ginagamit; walang lumalabas sa device.</string>
-    <string name="settings_calendar_grant_permission">Ibigay ang pahintulot sa kalendaryo</string>
     <string name="settings_calendar_open_settings">Tinanggihan ang pahintulot sa kalendaryo. Ibigay ito mula sa system na Mga Setting.</string>
 
     <!-- ============================================================
@@ -725,8 +713,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_forecasters_bom">BOM</string>
     <string name="settings_forecasters_bom_subtitle">Australian — kasalukuyang maintenance, babalik sa lalong madaling panahon.</string>
 
-    <string name="settings_root_holidays">Pista Opisyal</string>
-    <string name="settings_root_holidays_subtitle">Mga kulay ng tema at banner</string>
     <string name="settings_holidays_title">Pista Opisyal</string>
     <string name="settings_holiday_country_home">Tahanan (%1$s)</string>
     <string name="settings_holiday_country_current">Kasalukuyang lokasyon (%1$s)</string>
@@ -885,8 +871,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_api_key_replace">Palitan ang Gemini key</string>
 
     <!-- Holidays settings -->
-    <string name="settings_holidays_calendar_section_placeholder_off">I-on ang toggle sa itaas para mag-theme ng outfit ngayon batay sa mga nakitang evento mula sa iyong mga naka-sync na kalendaryo.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Ang mga nakitang evento mula sa iyong mga naka-sync na kalendaryo ay lilitaw dito sa susunod na update.</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Mga setting ng kalendaryo</string>
     <string name="settings_holidays_link_location_settings_a11y">Mga setting ng lokasyon</string>
     <string name="settings_holidays_link_region_settings_a11y">Mga setting ng rehiyon</string>
@@ -904,7 +888,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_root_smart_home_subtitle">Mga Smart Display at Home Automation</string>
 
     <!-- Schedule description -->
-    <string name="settings_schedule_description">Isang umaga na ClothesCast na sumasaklaw sa panahon ng araw na iyon.</string>
 
     <!-- Skip TTS at home -->
 

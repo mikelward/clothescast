@@ -66,21 +66,14 @@ spousal register), matching the existing insight prose ("Ponesi …",
     -->
     <string name="settings_schedule_title">Dnevni ClothesCast</string>
     <string name="settings_schedule_time_label">Vrijeme</string>
-    <string name="settings_schedule_days_label">Dani u tjednu</string>
     <string name="settings_daily_mention_evening_events">Spomeni večernje događaje</string>
     <string name="settings_schedule_preview">Reproduciraj sada</string>
 
     <string name="settings_tonight_title">Noćni ClothesCast</string>
-    <string name="settings_tonight_description">Drugi ClothesCast navečer koji pokriva vrijeme za večeras. Tihim večerima ostaje bez zvuka ili se uopće ne pojavi ako je „Obavijesti samo kad ima večernjih događaja“ uključeno; večerima s događajima reproducira zvuk i (ako je uključen izgovor) sam se čita.</string>
     <string name="settings_tonight_enabled">Prikaži noćni ClothesCast</string>
     <string name="settings_tonight_time_label">Vrijeme</string>
-    <string name="settings_tonight_days_label">Dani u tjednu</string>
     <string name="settings_tonight_notify_only_on_events">Obavijesti samo kad ima večernjih događaja</string>
 
-    <string name="settings_delivery_label">Isporuka</string>
-    <string name="settings_delivery_notification_only">Samo obavijest</string>
-    <string name="settings_delivery_tts_only">Samo izgovor</string>
-    <string name="settings_delivery_notification_and_tts">Obavijest i izgovor</string>
 
     <!--
     Voice screen — engine picker (Device / Gemini),
@@ -288,11 +281,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
          i lokacije … nikad ne napuštaju uređaj"). Quotes around the
          nested example follow the same „…" house style as the German
          file. -->
-    <string name="settings_calendar_title">Kalendar</string>
-    <string name="settings_calendar_use_events">Koristi današnje događaje iz kalendara</string>
-    <string name="settings_calendar_description_off">Kada je uključeno, ClothesCast čita današnje događaje iz tvog kalendara na uređaju, kako bi tvoj jutarnji ClothesCast mogao predložiti predmete vezane uz konkretne događaje — na primjer „ponesi kišobran za trčanje u parku u 15 sati“. Koriste se samo naslovi i vremena događaja; opisi, sudionici i lokacije se čitaju, ali nikad ne napuštaju uređaj.</string>
-    <string name="settings_calendar_description_on">Čita današnje događaje iz tvog kalendara na uređaju, kako bi obogatio tvoj jutarnji ClothesCast. U sažetku se koriste samo naslovi i vremena; opisi i sudionici ne. Sve ostaje na uređaju.</string>
-    <string name="settings_calendar_grant_permission">Dopusti pristup kalendaru</string>
     <string name="settings_calendar_open_settings">Pristup kalendaru odbijen. Dopusti ga u postavkama sustava.</string>
 
     <!-- Debug screen — visible only on debug builds. -->
@@ -767,8 +755,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_about_open_meteo">Vremenski podaci: Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Blagdani</string>
-    <string name="settings_root_holidays_subtitle">Tematske boje i banneri</string>
     <string name="settings_holidays_title">Blagdani</string>
     <string name="settings_holiday_country_home">Dom (%1$s)</string>
     <string name="settings_holiday_country_current">Trenutna lokacija (%1$s)</string>
@@ -916,7 +902,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <!-- Smart Home settings, outfit card headers, and other missing strings. -->
     <string name="settings_root_smart_home">Pametni dom</string>
     <string name="settings_root_smart_home_subtitle">Pametni zasloni i kućna automatizacija</string>
-    <string name="settings_schedule_description">ClothesCast ujutro koji pokriva vrijeme dana.</string>
     <string name="settings_api_key_replace">Zamijeni Gemini ključ</string>
     <string name="outfit_card_header_today">Današnji ClothesCast</string>
     <string name="outfit_card_header_tonight">Večernji ClothesCast</string>
@@ -935,8 +920,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_holidays_link_location_settings_a11y">Postavke lokacije</string>
     <string name="settings_holidays_link_region_settings_a11y">Postavke regije</string>
     <string name="settings_holidays_permission_revoked">Potrebno dopuštenje za kalendar. Dodirnite za ponovnu dodjelu.</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Uključite prekidač gore za prilagodbu današnjeg outfita na temelju događaja iz sinkroniziranih kalendara.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Otkriveni događaji iz vaših sinkroniziranih kalendara pojavit će se ovdje u budućem ažuriranju.</string>
     <string name="settings_smart_home_cast_title">Prenesi</string>
     <string name="settings_smart_home_cast_device_label">Pametni zaslon</string>
     <string name="settings_smart_home_cast_device_none">Nije odabran zaslon</string>

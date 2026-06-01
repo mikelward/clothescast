@@ -351,23 +351,16 @@ What is NOT overridden, by design:
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Dienos ClothesCast</string>
     <string name="settings_schedule_time_label">Laikas</string>
-    <string name="settings_schedule_days_label">Savaitės dienos</string>
     <string name="settings_daily_mention_evening_events">Minėti vakaro renginius</string>
     <string name="settings_schedule_preview">Leisti dabar</string>
 
     <!-- Nightly ClothesCast. -->
     <string name="settings_tonight_title">Nakties ClothesCast</string>
-    <string name="settings_tonight_description">Antras ClothesCast vakare, apimantis šios nakties orą. Ramiais vakarais tyliai tyli arba visai nepasirodo, jei įjungta „Pranešti tik esant vakaro renginiams"; renginių vakarais skleidžia garsą ir (jei įjungtas balso skaitymas) perskaito save.</string>
     <string name="settings_tonight_enabled">Rodyti nakties ClothesCast</string>
     <string name="settings_tonight_time_label">Laikas</string>
-    <string name="settings_tonight_days_label">Savaitės dienos</string>
     <string name="settings_tonight_notify_only_on_events">Pranešti tik esant vakaro renginiams</string>
 
     <!-- Delivery options. -->
-    <string name="settings_delivery_label">Pateikimas</string>
-    <string name="settings_delivery_notification_only">Tik pranešimas</string>
-    <string name="settings_delivery_tts_only">Tik balsu</string>
-    <string name="settings_delivery_notification_and_tts">Pranešimas ir balsu</string>
 
     <!-- Voice engine. -->
     <string name="settings_tts_engine_title">Balso variklis</string>
@@ -569,11 +562,6 @@ What is NOT overridden, by design:
     <string name="settings_notification_permission_grant">Suteikti pranešimų leidimą</string>
 
     <!-- Calendar settings. -->
-    <string name="settings_calendar_title">Kalendorius</string>
-    <string name="settings_calendar_use_events">Naudoti šiandienos kalendoriaus renginius</string>
-    <string name="settings_calendar_description_off">Pritaikyti ryto prognozę prie šiandienos renginių — naudojami tik pavadinimai ir laikas, ir niekas nepalieka įrenginio.</string>
-    <string name="settings_calendar_description_on">Ryto prognozė pritaikoma prie šiandienos renginių. Naudojami tik pavadinimai ir laikas; niekas nepalieka įrenginio.</string>
-    <string name="settings_calendar_grant_permission">Suteikti kalendoriaus leidimą</string>
     <string name="settings_calendar_open_settings">Kalendoriaus leidimas atmestas. Suteik jį sistemos nustatymuose.</string>
 
     <!-- Debug screen. -->
@@ -690,8 +678,6 @@ What is NOT overridden, by design:
     <string name="settings_about_open_meteo">Orų duomenys iš Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Šventės</string>
-    <string name="settings_root_holidays_subtitle">Teminės spalvos ir reklamjuostės</string>
     <string name="settings_holidays_title">Šventės</string>
     <string name="settings_holiday_country_home">Namai (%1$s)</string>
     <string name="settings_holiday_country_current">Dabartinė vieta (%1$s)</string>
@@ -853,7 +839,6 @@ What is NOT overridden, by design:
     <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
     <string name="settings_smart_home_discover_label_mqtt">MQTT tarpinis serveris</string>
     <string name="settings_api_key_replace">Pakeisti Gemini raktą</string>
-    <string name="settings_schedule_description">Rytas ClothesCast su tos dienos orų prognoze.</string>
     <string name="settings_holidays_source_region">Regionas (%1$s)</string>
     <string name="settings_holidays_source_location">Vieta (%1$s)</string>
     <string name="settings_holidays_source_global">Pasaulinis</string>
@@ -862,8 +847,6 @@ What is NOT overridden, by design:
     <string name="settings_holidays_link_region_settings_a11y">Regiono nustatymai</string>
     <string name="settings_holidays_link_location_settings_a11y">Vietos nustatymai</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Kalendoriaus nustatymai</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Įjunk viršuje esantį jungiklį, kad šiandienos apranga būtų tematizuota pagal sinchronizuotų kalendorių aptiktus įvykius.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Aptikti jūsų sinchronizuotų kalendorių įvykiai pasirodys čia būsimame atnaujinime.</string>
     <string name="settings_holidays_permission_revoked">Reikalingas kalendoriaus prieigos leidimas. Bakstelėk, kad suteiktum iš naujo.</string>
     <string name="holiday_name_us_presidents_day">Prezidentų diena</string>
     <string name="holiday_banner_japan_coming_of_age_day">Su japonų pilnametystės diena</string>

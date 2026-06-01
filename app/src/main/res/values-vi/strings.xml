@@ -366,24 +366,17 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
          ===================================================================== -->
     <string name="settings_schedule_title">ClothesCast hàng ngày</string>
     <string name="settings_schedule_time_label">Giờ</string>
-    <string name="settings_schedule_days_label">Ngày trong tuần</string>
     <string name="settings_daily_mention_evening_events">Đề cập sự kiện buổi tối</string>
     <string name="settings_schedule_preview">Phát ngay</string>
 
     <string name="settings_tonight_title">ClothesCast buổi tối</string>
-    <string name="settings_tonight_description">ClothesCast thứ hai vào buổi tối, dự báo thời tiết tối nay. Vào buổi tối yên tĩnh sẽ im lặng, hoặc không xuất hiện nếu "Chỉ thông báo khi có sự kiện buổi tối" được bật; vào buổi tối có sự kiện sẽ phát âm thanh và (nếu bật đọc to) tự đọc ra.</string>
     <string name="settings_tonight_enabled">Hiện ClothesCast buổi tối</string>
     <string name="settings_tonight_time_label">Giờ</string>
-    <string name="settings_tonight_days_label">Ngày trong tuần</string>
     <string name="settings_tonight_notify_only_on_events">Chỉ thông báo khi có sự kiện buổi tối</string>
 
     <!-- =====================================================================
          Settings — Delivery
          ===================================================================== -->
-    <string name="settings_delivery_label">Phương thức</string>
-    <string name="settings_delivery_notification_only">Chỉ thông báo</string>
-    <string name="settings_delivery_tts_only">Chỉ đọc to</string>
-    <string name="settings_delivery_notification_and_tts">Thông báo và đọc to</string>
 
     <!-- =====================================================================
          Settings — Voice engine / TTS
@@ -603,11 +596,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <!-- =====================================================================
          Settings — Calendar
          ===================================================================== -->
-    <string name="settings_calendar_title">Lịch</string>
-    <string name="settings_calendar_use_events">Dùng sự kiện lịch hôm nay</string>
-    <string name="settings_calendar_description_off">Điều chỉnh dự báo buổi sáng theo sự kiện hôm nay — chỉ sử dụng tiêu đề và giờ, không có gì rời khỏi thiết bị.</string>
-    <string name="settings_calendar_description_on">Đang điều chỉnh dự báo buổi sáng theo sự kiện hôm nay. Chỉ dùng tiêu đề và giờ; không có gì rời khỏi thiết bị.</string>
-    <string name="settings_calendar_grant_permission">Cấp quyền lịch</string>
     <string name="settings_calendar_open_settings">Đã từ chối quyền lịch. Cấp từ Cài đặt hệ thống.</string>
 
     <!-- =====================================================================
@@ -736,8 +724,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_forecasters_bom">BOM</string>
     <string name="settings_forecasters_bom_subtitle">Úc — đang bảo trì, sẽ trở lại sớm nhất có thể.</string>
 
-    <string name="settings_root_holidays">Ngày lễ</string>
-    <string name="settings_root_holidays_subtitle">Màu chủ đề và băng rôn</string>
     <string name="settings_holidays_title">Ngày lễ</string>
     <string name="settings_holiday_country_home">Quê hương (%1$s)</string>
     <string name="settings_holiday_country_current">Vị trí hiện tại (%1$s)</string>
@@ -896,8 +882,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_api_key_replace">Thay khóa Gemini</string>
 
     <!-- Settings — Holidays / calendar -->
-    <string name="settings_holidays_calendar_section_placeholder_off">Bật nút gạt ở trên để tô màu trang phục hôm nay theo sự kiện được phát hiện từ lịch đã đồng bộ.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Các sự kiện được phát hiện từ lịch đã đồng bộ sẽ xuất hiện ở đây trong bản cập nhật tiếp theo.</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Cài đặt lịch</string>
     <string name="settings_holidays_link_location_settings_a11y">Cài đặt vị trí</string>
     <string name="settings_holidays_link_region_settings_a11y">Cài đặt khu vực</string>
@@ -915,7 +899,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_root_smart_home_subtitle">Màn hình thông minh và tự động hóa nhà</string>
 
     <!-- Settings — Schedule description -->
-    <string name="settings_schedule_description">ClothesCast buổi sáng bao gồm thời tiết trong ngày.</string>
 
     <!-- Settings — Skip TTS at home -->
 

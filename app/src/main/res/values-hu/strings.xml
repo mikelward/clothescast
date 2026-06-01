@@ -202,21 +202,14 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Napi ClothesCast</string>
     <string name="settings_schedule_time_label">Időpont</string>
-    <string name="settings_schedule_days_label">Hét napjai</string>
     <string name="settings_daily_mention_evening_events">Esti események megemlítése</string>
     <string name="settings_schedule_preview">Lejátszás most</string>
 
     <string name="settings_tonight_title">Esti ClothesCast</string>
-    <string name="settings_tonight_description">Egy második ClothesCast este a mai éjszakai időjáráshoz. Csendes estéken néma marad, vagy egyáltalán nem jelenik meg, ha az „Értesítés csak esti eseményeknél" aktív; eseményes estéken hangot ad, és (ha bekapcsoltad a hangos kimenetelt) felolvassa magát.</string>
     <string name="settings_tonight_enabled">Esti ClothesCast megjelenítése</string>
     <string name="settings_tonight_time_label">Időpont</string>
-    <string name="settings_tonight_days_label">Hét napjai</string>
     <string name="settings_tonight_notify_only_on_events">Értesítés csak esti eseményeknél</string>
 
-    <string name="settings_delivery_label">Kézbesítés</string>
-    <string name="settings_delivery_notification_only">Csak értesítés</string>
-    <string name="settings_delivery_tts_only">Csak hangosan</string>
-    <string name="settings_delivery_notification_and_tts">Értesítés és hangos</string>
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">Beszédmotor</string>
@@ -333,11 +326,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_notification_permission_grant">Értesítések engedélyezése</string>
 
     <!-- Calendar settings. -->
-    <string name="settings_calendar_title">Naptár</string>
-    <string name="settings_calendar_use_events">Mai naptári események használata</string>
-    <string name="settings_calendar_description_off">Ha engedélyezve van, a ClothesCast beolvassa a mai eseményeket az eszköz naptárából, hogy a reggeli ClothesCast konkrét eseményekre tegyen javaslatokat — például „Vigyél esernyőt a 15 órai parkfutásodhoz". Csak az esemény nevét és időpontját használja; leírásokat, résztvevőket és helyszíneket beolvas, de soha nem hagyja el az eszközt.</string>
-    <string name="settings_calendar_description_on">Beolvassa a mai eseményeket az eszköz naptárából a reggeli ClothesCast kiegészítéséhez. A generált összefoglalóban csak neveket és időpontokat használ; leírásokat és résztvevőket nem. Minden az eszközön marad.</string>
-    <string name="settings_calendar_grant_permission">Naptár-hozzáférés engedélyezése</string>
     <string name="settings_calendar_open_settings">Naptár-hozzáférés megtagadva. Engedélyezd a rendszerbeállításokban.</string>
 
     <!-- Debug screen. -->
@@ -691,8 +679,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_about_open_meteo">Időjárási adatok az Open-Meteótól</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Ünnepek</string>
-    <string name="settings_root_holidays_subtitle">Tematikus színek és szalagcímek</string>
     <string name="settings_holidays_title">Ünnepek</string>
     <string name="settings_holiday_country_home">Otthon (%1$s)</string>
     <string name="settings_holiday_country_current">Jelenlegi hely (%1$s)</string>
@@ -840,7 +826,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <!-- Smart Home settings, outfit card headers, and other missing strings. -->
     <string name="settings_root_smart_home">Okosotthon</string>
     <string name="settings_root_smart_home_subtitle">Okos kijelzők és otthonautomatizálás</string>
-    <string name="settings_schedule_description">ClothesCast reggel, amely lefedi az adott nap időjárását.</string>
     <string name="settings_api_key_replace">Gemini-kulcs cseréje</string>
     <string name="outfit_card_header_today">Mai ClothesCast</string>
     <string name="outfit_card_header_tonight">Esti ClothesCast</string>
@@ -859,8 +844,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_holidays_link_location_settings_a11y">Helyszínbeállítások</string>
     <string name="settings_holidays_link_region_settings_a11y">Régióbeállítások</string>
     <string name="settings_holidays_permission_revoked">Naptárengedély szükséges. Koppintson az újbóli megadáshoz.</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Kapcsolja be a fenti kapcsolót, hogy a mai outfit a szinkronizált naptárakból észlelt eseményekre szabódjon.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">A szinkronizált naptárakból észlelt események egy jövőbeli frissítésben megjelennek itt.</string>
     <string name="settings_smart_home_cast_title">Közvetítés</string>
     <string name="settings_smart_home_cast_device_label">Okos kijelző</string>
     <string name="settings_smart_home_cast_device_none">Nincs kijelző kiválasztva</string>

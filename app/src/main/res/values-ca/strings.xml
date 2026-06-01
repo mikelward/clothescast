@@ -235,21 +235,14 @@ the in-app clock is digit-driven and reads consistently across locales.
 
     <string name="settings_schedule_title">ClothesCast diari</string>
     <string name="settings_schedule_time_label">Hora</string>
-    <string name="settings_schedule_days_label">Dies de la setmana</string>
     <string name="settings_daily_mention_evening_events">Menciona els esdeveniments del vespre</string>
     <string name="settings_schedule_preview">Reprodueix ara</string>
 
     <string name="settings_tonight_title">ClothesCast nocturn</string>
-    <string name="settings_tonight_description">Un segon ClothesCast al vespre que cobreix el temps per aquesta nit. En vespres tranquils roman silenciós, o no apareix si «Notifica només quan hi ha esdeveniments al vespre» és actiu; en vespres amb esdeveniments toca un so i (si has activat la lectura en veu alta) es llegeix sol.</string>
     <string name="settings_tonight_enabled">Mostra un ClothesCast nocturn</string>
     <string name="settings_tonight_time_label">Hora</string>
-    <string name="settings_tonight_days_label">Dies de la setmana</string>
     <string name="settings_tonight_notify_only_on_events">Notifica només quan hi ha esdeveniments al vespre</string>
 
-    <string name="settings_delivery_label">Lliurament</string>
-    <string name="settings_delivery_notification_only">Només notificació</string>
-    <string name="settings_delivery_tts_only">Només lectura en veu alta</string>
-    <string name="settings_delivery_notification_and_tts">Notificació i lectura en veu alta</string>
 
     <string name="settings_tts_engine_title">Motor de veu</string>
     <string name="settings_tts_engine_description">Tria entre veu de baixa qualitat al dispositiu o veu de qualitat alta en línia.</string>
@@ -470,11 +463,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_notification_permission_description">Sense permís de notificació, el teu ClothesCast diari no té on anar. Concedeix-lo perquè ClothesCast pugui publicar demà al matí.</string>
     <string name="settings_notification_permission_grant">Concedeix permís de notificació</string>
 
-    <string name="settings_calendar_title">Calendari</string>
-    <string name="settings_calendar_use_events">Utilitza els esdeveniments del calendari d\'avui</string>
-    <string name="settings_calendar_description_off">Personalitza la previsió matinal amb els esdeveniments d\'avui — només s\'utilitzen els títols i les hores, i res no surt del dispositiu.</string>
-    <string name="settings_calendar_description_on">Personalitzant la previsió matinal amb els esdeveniments d\'avui. Només s\'utilitzen els títols i les hores; res no surt del dispositiu.</string>
-    <string name="settings_calendar_grant_permission">Concedeix permís del calendari</string>
     <string name="settings_calendar_open_settings">Permís del calendari denegat. Concedeix-lo des de la Configuració del sistema.</string>
 
     <string name="settings_debug_title">Depuració (només en compilacions de depuració)</string>
@@ -641,8 +629,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_about_open_meteo">Dades meteorològiques d\'Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Festius</string>
-    <string name="settings_root_holidays_subtitle">Colors temàtics i pancartes</string>
     <string name="settings_holidays_title">Festius</string>
     <string name="settings_holiday_country_home">Casa (%1$s)</string>
     <string name="settings_holiday_country_current">Ubicació actual (%1$s)</string>
@@ -804,7 +790,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
     <string name="settings_smart_home_discover_label_mqtt">Servidor MQTT</string>
     <string name="settings_api_key_replace">Substituir la clau de Gemini</string>
-    <string name="settings_schedule_description">Un ClothesCast del matí que cobreix el temps d\'aquell dia.</string>
     <string name="settings_holidays_source_region">Regió (%1$s)</string>
     <string name="settings_holidays_source_location">Ubicació (%1$s)</string>
     <string name="settings_holidays_source_global">Global</string>
@@ -813,8 +798,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_holidays_link_region_settings_a11y">Configuració de la regió</string>
     <string name="settings_holidays_link_location_settings_a11y">Configuració de la ubicació</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Configuració del calendari</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Activa el commutador de dalt per tematitzar l\'outfit d\'avui amb els esdeveniments detectats dels calendaris sincronitzats.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Els esdeveniments detectats dels teus calendaris sincronitzats apareixeran aquí en una propera actualització.</string>
     <string name="settings_holidays_permission_revoked">Cal permís d\'accés al calendari. Toca per tornar a concedir-lo.</string>
     <string name="holiday_name_us_presidents_day">Dia dels Presidents</string>
     <string name="holiday_banner_japan_coming_of_age_day">Feliç Dia japonès de la Majoria d\'Edat</string>

@@ -91,21 +91,14 @@ label localizes.
     -->
     <string name="settings_schedule_title">每日 ClothesCast</string>
     <string name="settings_schedule_time_label">时间</string>
-    <string name="settings_schedule_days_label">星期</string>
     <string name="settings_daily_mention_evening_events">提及晚间日程</string>
     <string name="settings_schedule_preview">立即播放</string>
 
     <string name="settings_tonight_title">夜间 ClothesCast</string>
-    <string name="settings_tonight_description">晚间的第二份 ClothesCast，覆盖今晚的天气。在没有日程的夜晚保持静音，或者如果开启了“仅在有晚间日程时通知”则完全不出现；在有日程的夜晚会播放提示音，并且（如果你启用了语音朗读）会自动朗读。</string>
     <string name="settings_tonight_enabled">显示夜间 ClothesCast</string>
     <string name="settings_tonight_time_label">时间</string>
-    <string name="settings_tonight_days_label">星期</string>
     <string name="settings_tonight_notify_only_on_events">仅在有晚间日程时通知</string>
 
-    <string name="settings_delivery_label">推送方式</string>
-    <string name="settings_delivery_notification_only">仅通知</string>
-    <string name="settings_delivery_tts_only">仅语音朗读</string>
-    <string name="settings_delivery_notification_and_tts">通知和语音朗读</string>
 
     <!--
     Voice screen — engine picker (Device / Gemini),
@@ -307,11 +300,6 @@ label localizes.
     <!-- Calendar opt-in card. Description preserves the privacy
          disclosure ("描述、参与人和地点会被读取，但不会离开设备"). Quotes
          around the nested example use Chinese full-width "…". -->
-    <string name="settings_calendar_title">日历</string>
-    <string name="settings_calendar_use_events">使用今天的日历日程</string>
-    <string name="settings_calendar_description_off">启用后，ClothesCast 会读取你设备日历上今天的日程，让你的早晨 ClothesCast 能针对具体日程给出建议 — 例如“为下午 3 点的公园跑步带上雨伞”。只使用日程的标题和时间；描述、参与人和地点会被读取，但不会离开设备。</string>
-    <string name="settings_calendar_description_on">正在读取你设备日历上今天的日程，以丰富你的早晨 ClothesCast。在生成的摘要里只使用标题和时间；不使用描述和参与人。一切都留在设备上。</string>
-    <string name="settings_calendar_grant_permission">授予日历权限</string>
     <string name="settings_calendar_open_settings">日历权限被拒绝。在系统设置里授予。</string>
 
     <!-- Debug screen — visible only on debug builds. -->
@@ -805,8 +793,6 @@ label localizes.
     <string name="settings_forecasters_bom_subtitle">澳大利亚——维护中，将尽快恢复。</string>
 
     <!-- Settings root — Holidays row and subtitle. -->
-    <string name="settings_root_holidays">节假日</string>
-    <string name="settings_root_holidays_subtitle">主题色和横幅</string>
 
     <!--
     Holidays sub-page — page title, country picker controls,
@@ -976,8 +962,6 @@ label localizes.
     <string name="settings_api_key_replace">更换 Gemini 密钥</string>
 
     <!-- Holidays calendar section placeholders. -->
-    <string name="settings_holidays_calendar_section_placeholder_off">打开上方开关，根据你同步日历中检测到的日程为今天的穿搭添加主题色。</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">你同步日历中检测到的日程将在后续版本中显示在这里。</string>
 
     <!-- Holidays settings links (accessibility labels). -->
     <string name="settings_holidays_link_calendar_settings_a11y">日历设置</string>
@@ -1001,7 +985,6 @@ label localizes.
     <string name="settings_root_smart_home_subtitle">智能显示器与家庭自动化</string>
 
     <!-- Schedule screen description. -->
-    <string name="settings_schedule_description">每天早晨发送一份覆盖当日天气的 ClothesCast。</string>
 
     <!-- Skip TTS at home. -->
 

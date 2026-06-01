@@ -342,19 +342,12 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <!-- Settings — schedule -->
     <string name="settings_schedule_title">ClothesCast روزانه</string>
     <string name="settings_schedule_time_label">زمان</string>
-    <string name="settings_schedule_days_label">روزهای هفته</string>
     <string name="settings_daily_mention_evening_events">ذکر رویدادهای عصر</string>
     <string name="settings_schedule_preview">اکنون پخش کن</string>
     <string name="settings_tonight_title">ClothesCast شبانه</string>
-    <string name="settings_tonight_description">یک ClothesCast دوم در عصر که آب‌وهوای امشب را پوشش می‌دهد. شب‌های آرام ساکت می‌ماند؛ شب‌های رویداد صدا پخش می‌کند و خودش را می‌خواند.</string>
     <string name="settings_tonight_enabled">نمایش ClothesCast شبانه</string>
     <string name="settings_tonight_time_label">زمان</string>
-    <string name="settings_tonight_days_label">روزهای هفته</string>
     <string name="settings_tonight_notify_only_on_events">فقط در صورت وجود رویدادهای عصر اعلان بده</string>
-    <string name="settings_delivery_label">تحویل</string>
-    <string name="settings_delivery_notification_only">فقط اعلان</string>
-    <string name="settings_delivery_tts_only">فقط خواندن با صدای بلند</string>
-    <string name="settings_delivery_notification_and_tts">اعلان و خواندن با صدای بلند</string>
 
     <!-- Settings — TTS engine -->
     <string name="settings_tts_engine_title">موتور صوتی</string>
@@ -430,11 +423,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_notification_permission_grant">اعطای مجوز اعلان</string>
 
     <!-- Settings — calendar -->
-    <string name="settings_calendar_title">تقویم</string>
-    <string name="settings_calendar_use_events">استفاده از رویدادهای تقویم امروز</string>
-    <string name="settings_calendar_description_off">پیش‌بینی صبحگاهی را بر اساس رویدادهای امروز تنظیم کنید — فقط عناوین و زمان‌ها استفاده می‌شوند و هیچ چیز دستگاه را ترک نمی‌کند.</string>
-    <string name="settings_calendar_description_on">پیش‌بینی صبحگاهی بر اساس رویدادهای امروز تنظیم می‌شود. فقط عناوین و زمان‌ها استفاده می‌شوند؛ هیچ چیز دستگاه را ترک نمی‌کند.</string>
-    <string name="settings_calendar_grant_permission">اعطای مجوز تقویم</string>
     <string name="settings_calendar_open_settings">مجوز تقویم رد شد. از تنظیمات سیستم آن را اعطا کنید.</string>
 
     <!-- Settings — about -->
@@ -608,11 +596,8 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_tts_voice_locale_sq_al">آلبانیایی (آلبانی)</string>
     <string name="settings_region_language_am_et">امهری (اتیوپی)</string>
     <string name="settings_tts_voice_locale_am_et">امهری (اتیوپی)</string>
-    <string name="settings_region_language_ar_ae">عربی (امارات متحده عربی)</string>
     <string name="settings_tts_voice_locale_ar_ae">عربی (امارات متحده عربی)</string>
-    <string name="settings_region_language_ar_eg">عربی (مصر)</string>
     <string name="settings_tts_voice_locale_ar_eg">عربی (مصر)</string>
-    <string name="settings_region_language_ar_ma">عربی (مراکش)</string>
     <string name="settings_tts_voice_locale_ar_ma">عربی (مراکش)</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
@@ -821,8 +806,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_holiday_override_auto_on">خودکار (روشن)</string>
     <string name="settings_holiday_override_off">خاموش</string>
     <string name="settings_holiday_override_on">روشن</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">کلید بالا را روشن کنید تا لباس امروز بر اساس رویدادهای شناسایی‌شده از تقویم‌های همگام‌سازی‌شده شما تنظیم شود.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">رویدادهای شناسایی‌شده از تقویم‌های همگام‌سازی‌شده شما در یک به‌روزرسانی آینده اینجا نمایش داده می‌شوند.</string>
     <string name="settings_holidays_collapse">جمع کردن</string>
     <string name="settings_holidays_expand">گسترش</string>
     <string name="settings_holidays_link_calendar_settings_a11y">تنظیمات تقویم</string>
@@ -839,13 +822,10 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <!-- Settings — home location -->
 
     <!-- Settings — root holidays and smart home -->
-    <string name="settings_root_holidays">جشن‌ها</string>
-    <string name="settings_root_holidays_subtitle">تعطیلات و تولدها</string>
     <string name="settings_root_smart_home">خانه هوشمند</string>
     <string name="settings_root_smart_home_subtitle">نمایشگرهای هوشمند و اتوماسیون خانه</string>
 
     <!-- Settings — schedule description -->
-    <string name="settings_schedule_description">یک ClothesCast صبحگاهی که آب‌وهوای همان روز را پوشش می‌دهد.</string>
 
     <!-- Settings — skip TTS at home -->
 

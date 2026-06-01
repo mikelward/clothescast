@@ -93,21 +93,14 @@ only the displayed label localizes.
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Щоденний ClothesCast</string>
     <string name="settings_schedule_time_label">Час</string>
-    <string name="settings_schedule_days_label">Дні тижня</string>
     <string name="settings_daily_mention_evening_events">Згадувати вечірні події</string>
     <string name="settings_schedule_preview">Відтворити зараз</string>
 
     <string name="settings_tonight_title">Вечірній ClothesCast</string>
-    <string name="settings_tonight_description">Другий ClothesCast увечері, що охоплює погоду на сьогоднішній вечір. У тихі вечори залишається беззвучним або не з\'являється зовсім, якщо увімкнено «Сповіщати лише при вечірніх подіях»; у вечори з подіями видає звук і (якщо увімкнено озвучення) читає себе вголос.</string>
     <string name="settings_tonight_enabled">Показувати вечірній ClothesCast</string>
     <string name="settings_tonight_time_label">Час</string>
-    <string name="settings_tonight_days_label">Дні тижня</string>
     <string name="settings_tonight_notify_only_on_events">Сповіщати лише при вечірніх подіях</string>
 
-    <string name="settings_delivery_label">Доставка</string>
-    <string name="settings_delivery_notification_only">Лише сповіщення</string>
-    <string name="settings_delivery_tts_only">Лише озвучення</string>
-    <string name="settings_delivery_notification_and_tts">Сповіщення та озвучення</string>
 
     <!-- Voice screen. -->
     <string name="settings_tts_engine_title">Голосовий рушій</string>
@@ -335,11 +328,6 @@ only the displayed label localizes.
     <string name="settings_notification_permission_grant">Надати дозвіл на сповіщення</string>
 
     <!-- Calendar opt-in card. -->
-    <string name="settings_calendar_title">Календар</string>
-    <string name="settings_calendar_use_events">Використовувати події календаря на сьогодні</string>
-    <string name="settings_calendar_description_off">Налаштуйте ранковий прогноз під події сьогодні — використовуються лише назви та час, і нічого не покидає пристрій.</string>
-    <string name="settings_calendar_description_on">Ранковий прогноз налаштовується під події сьогодні. Використовуються лише назви та час; нічого не покидає пристрій.</string>
-    <string name="settings_calendar_grant_permission">Надати дозвіл на календар</string>
     <string name="settings_calendar_open_settings">Доступ до календаря відхилено. Надайте його в системних налаштуваннях.</string>
 
     <!-- Display / theme settings. -->
@@ -699,8 +687,6 @@ only the displayed label localizes.
     <string name="settings_about_open_meteo">Дані про погоду від Open-Meteo</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Свята</string>
-    <string name="settings_root_holidays_subtitle">Тематичні кольори та банери</string>
     <string name="settings_holidays_title">Свята</string>
     <string name="settings_holiday_country_home">Дім (%1$s)</string>
     <string name="settings_holiday_country_current">Поточне місце (%1$s)</string>
@@ -862,7 +848,6 @@ only the displayed label localizes.
     <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
     <string name="settings_smart_home_discover_label_mqtt">MQTT-брокер</string>
     <string name="settings_api_key_replace">Замінити ключ Gemini</string>
-    <string name="settings_schedule_description">Ранковий ClothesCast з прогнозом погоди на цей день.</string>
     <string name="settings_holidays_source_region">Регіон (%1$s)</string>
     <string name="settings_holidays_source_location">Місцезнаходження (%1$s)</string>
     <string name="settings_holidays_source_global">Глобальний</string>
@@ -871,8 +856,6 @@ only the displayed label localizes.
     <string name="settings_holidays_link_region_settings_a11y">Налаштування регіону</string>
     <string name="settings_holidays_link_location_settings_a11y">Налаштування місцезнаходження</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Налаштування календаря</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Увімкніть перемикач вище, щоб тематизувати сьогоднішній образ відповідно до подій із синхронізованих календарів.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Виявлені події з ваших синхронізованих календарів з\'являться тут у майбутньому оновленні.</string>
     <string name="settings_holidays_permission_revoked">Потрібен дозвіл на доступ до календаря. Натисніть, щоб надати знову.</string>
     <string name="holiday_name_us_presidents_day">День президентів</string>
     <string name="holiday_banner_japan_coming_of_age_day">З японським Днем повноліття</string>

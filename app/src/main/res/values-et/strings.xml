@@ -237,21 +237,14 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
 
     <string name="settings_schedule_title">Igapäevane ClothesCast</string>
     <string name="settings_schedule_time_label">Kellaaeg</string>
-    <string name="settings_schedule_days_label">Nädalapäevad</string>
     <string name="settings_daily_mention_evening_events">Maini õhtuseid sündmusi</string>
     <string name="settings_schedule_preview">Esita kohe</string>
 
     <string name="settings_tonight_title">Õhtune ClothesCast</string>
-    <string name="settings_tonight_description">Teine ClothesCast õhtul, mis käsitleb tänase õhtu ilma. Vaiksetel õhtutel jääb vaikseks või ei ilmu üldse, kui „Teavita ainult õhtuste sündmuste korral" on sees; sündmustega õhtutel esitab heli ja (kui kõvalugemise edastus on lubatud) loeb ise ette.</string>
     <string name="settings_tonight_enabled">Näita õhtust ClothesCast\'i</string>
     <string name="settings_tonight_time_label">Kellaaeg</string>
-    <string name="settings_tonight_days_label">Nädalapäevad</string>
     <string name="settings_tonight_notify_only_on_events">Teavita ainult õhtuste sündmuste korral</string>
 
-    <string name="settings_delivery_label">Edastus</string>
-    <string name="settings_delivery_notification_only">Ainult teavitus</string>
-    <string name="settings_delivery_tts_only">Ainult kõvalugemine</string>
-    <string name="settings_delivery_notification_and_tts">Teavitus ja kõvalugemine</string>
 
     <string name="settings_tts_engine_title">Häälemootor</string>
     <string name="settings_tts_engine_description">Vali madala kvaliteediga kõne seadmes ja kõrgkvaliteetse võrgukõne vahel.</string>
@@ -476,11 +469,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_notification_permission_description">Ilma teavitusloata pole sinu igapäevasel ClothesCast\'il kuhugi minna. Anna luba, et ClothesCast saaks homme hommikul postitada.</string>
     <string name="settings_notification_permission_grant">Anna teavitusluba</string>
 
-    <string name="settings_calendar_title">Kalender</string>
-    <string name="settings_calendar_use_events">Kasuta tänaseid kalendrisündmusi</string>
-    <string name="settings_calendar_description_off">Kohanda hommikuprognoosi tänaste sündmustega — kasutatakse ainult pealkirju ja kellaaegu ning midagi ei lahku seadmest.</string>
-    <string name="settings_calendar_description_on">Hommikuprognoosi kohandatakse tänaste sündmustega. Kasutatakse ainult pealkirju ja kellaaegu; midagi ei lahku seadmest.</string>
-    <string name="settings_calendar_grant_permission">Anna kalenderiluba</string>
     <string name="settings_calendar_open_settings">Kalendriluba keelati. Anna see süsteemi seadetest.</string>
 
     <string name="settings_debug_title">Silumine (ainult silumisjärgud)</string>
@@ -646,8 +634,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_about_open_meteo">Ilmaandmed Open-Meteolt</string>
 
     <!-- Holidays settings page -->
-    <string name="settings_root_holidays">Pühad</string>
-    <string name="settings_root_holidays_subtitle">Teemavärvid ja bännerid</string>
     <string name="settings_holidays_title">Pühad</string>
     <string name="settings_holiday_country_home">Kodu (%1$s)</string>
     <string name="settings_holiday_country_current">Praegune asukoht (%1$s)</string>
@@ -809,7 +795,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
     <string name="settings_smart_home_discover_label_mqtt">MQTT-brokker</string>
     <string name="settings_api_key_replace">Asenda Gemini võti</string>
-    <string name="settings_schedule_description">Hommikune ClothesCast, mis katab selle päeva ilma.</string>
     <string name="settings_holidays_source_region">Piirkond (%1$s)</string>
     <string name="settings_holidays_source_location">Asukoht (%1$s)</string>
     <string name="settings_holidays_source_global">Globaalne</string>
@@ -818,8 +803,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_holidays_link_region_settings_a11y">Piirkonna seaded</string>
     <string name="settings_holidays_link_location_settings_a11y">Asukoha seaded</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Kalendri seaded</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Luba ülalolevate lülitiga tänase riietuse teemastamine sünkroonitud kalendrite tuvastatud sündmuste põhjal.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Sünkroonitud kalendritest tuvastatud sündmused ilmuvad siin tulevases uuenduses.</string>
     <string name="settings_holidays_permission_revoked">Kalender vajab juurdepääsuluba. Puuduta uuesti lubamiseks.</string>
     <string name="holiday_name_us_presidents_day">Presidentide päev</string>
     <string name="holiday_banner_japan_coming_of_age_day">Head Jaapani täiskasvanuks saamise päeva</string>

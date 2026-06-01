@@ -305,19 +305,12 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Settings: schedule -->
     <string name="settings_schedule_title">ClothesCast ya kila siku</string>
     <string name="settings_schedule_time_label">Wakati</string>
-    <string name="settings_schedule_days_label">Siku za wiki</string>
     <string name="settings_daily_mention_evening_events">Taja matukio ya jioni</string>
     <string name="settings_schedule_preview">Cheza sasa</string>
     <string name="settings_tonight_title">ClothesCast ya usiku</string>
-    <string name="settings_tonight_description">ClothesCast ya pili jioni inayoshughulikia hali ya hewa ya usiku huu. Jioni tulivu inabaki kimya; jioni za matukio inacheza sauti na kusoma yenyewe.</string>
     <string name="settings_tonight_enabled">Onyesha ClothesCast ya usiku</string>
     <string name="settings_tonight_time_label">Wakati</string>
-    <string name="settings_tonight_days_label">Siku za wiki</string>
     <string name="settings_tonight_notify_only_on_events">Arifa tu kunapokuwa na matukio ya jioni</string>
-    <string name="settings_delivery_label">Utoaji</string>
-    <string name="settings_delivery_notification_only">Arifa peke yake</string>
-    <string name="settings_delivery_tts_only">Kusomwa kwa sauti peke yake</string>
-    <string name="settings_delivery_notification_and_tts">Arifa na kusomwa kwa sauti</string>
 
     <!-- Settings: TTS / voice -->
     <string name="settings_tts_engine_title">Injini ya sauti</string>
@@ -396,11 +389,6 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Settings: calendar -->
     <string name="settings_root_calendar_subtitle">Matukio ya leo</string>
-    <string name="settings_calendar_title">Kalenda</string>
-    <string name="settings_calendar_use_events">Tumia matukio ya kalenda ya leo</string>
-    <string name="settings_calendar_description_off">Rekebisha utabiri wa asubuhi kulingana na matukio ya leo — vichwa vya habari na nyakati peke yake ndivyo vinavyotumika, na hakuna kinachoacha kifaa.</string>
-    <string name="settings_calendar_description_on">Inayorekebisha utabiri wa asubuhi kulingana na matukio ya leo. Vichwa vya habari na nyakati peke yake ndivyo vinavyotumika; hakuna kinachoacha kifaa.</string>
-    <string name="settings_calendar_grant_permission">Toa ruhusa ya kalenda</string>
     <string name="settings_calendar_open_settings">Ruhusa ya kalenda imekataliwa. Itoe kutoka Mipangilio ya mfumo.</string>
 
     <!-- Settings: privacy / telemetry -->
@@ -591,11 +579,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_voice_locale_sq_al">Kialbania (Albania)</string>
     <string name="settings_region_language_am_et">Kiamhari (Ethiopia)</string>
     <string name="settings_tts_voice_locale_am_et">Kiamhari (Ethiopia)</string>
-    <string name="settings_region_language_ar_ae">Kiarabu (Falme za Kiarabu)</string>
     <string name="settings_tts_voice_locale_ar_ae">Kiarabu (Falme za Kiarabu)</string>
-    <string name="settings_region_language_ar_eg">Kiarabu (Misri)</string>
     <string name="settings_tts_voice_locale_ar_eg">Kiarabu (Misri)</string>
-    <string name="settings_region_language_ar_ma">Kiarabu (Moroko)</string>
     <string name="settings_tts_voice_locale_ar_ma">Kiarabu (Moroko)</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
@@ -804,8 +789,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holiday_override_auto_on">Otomatiki (imewashwa)</string>
     <string name="settings_holiday_override_off">Imezimwa</string>
     <string name="settings_holiday_override_on">Imewashwa</string>
-    <string name="settings_holidays_calendar_section_placeholder_off">Washa kitufe hapo juu ili kuunda mandhari ya mavazi ya leo kulingana na matukio yaliyogunduliwa kutoka kalenda zako zilizosawazishwa.</string>
-    <string name="settings_holidays_calendar_section_placeholder_on">Matukio yaliyogunduliwa kutoka kalenda zako zilizosawazishwa yataonekana hapa katika sasisho la baadaye.</string>
     <string name="settings_holidays_collapse">Kunja</string>
     <string name="settings_holidays_expand">Panua</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Mipangilio ya kalenda</string>
@@ -818,13 +801,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_source_location">Mahali (%1$s)</string>
     <string name="settings_holidays_source_region">Eneo (%1$s)</string>
     <string name="settings_holidays_title">Likizo</string>
-    <string name="settings_root_holidays">Sherehe</string>
-    <string name="settings_root_holidays_subtitle">Likizo na Siku za Kuzaliwa</string>
     <string name="settings_root_smart_home">Nyumba ya Kisasa</string>
     <string name="settings_root_smart_home_subtitle">Maonyesho ya Kisasa na Uendeshaji Otomatiki wa Nyumba</string>
 
     <!-- Schedule description -->
-    <string name="settings_schedule_description">ClothesCast asubuhi inayoshughulikia hali ya hewa ya siku hiyo.</string>
 
     <!-- Skip TTS at home -->
 

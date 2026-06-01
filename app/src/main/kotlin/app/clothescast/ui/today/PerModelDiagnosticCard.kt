@@ -314,10 +314,11 @@ private fun PerModelDiagnosticChart(
             modelProducer = producer,
             scrollState = rememberVicoScrollState(scrollEnabled = false),
             zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
-            // No entry animation — appears at final shape on compose, snappier
-            // on page swipes. Diff animation (animationSpec) kept, so the
-            // per-model spread reveal still animates. See ForecastChart.
+            // No animations — appears at final shape on compose (animateIn) and
+            // data changes apply instantly (animationSpec = null), so the spread
+            // reveal and toggles snap rather than grow in. See ForecastChart.
             animateIn = false,
+            animationSpec = null,
             modifier = Modifier.matchParentSize(),
         )
     }

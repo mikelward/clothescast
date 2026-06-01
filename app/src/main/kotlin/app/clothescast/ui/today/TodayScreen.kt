@@ -1090,8 +1090,12 @@ internal fun HomePageScaffold(
     }
 }
 
-/** Height of the home-page conditions band. */
-private val CONDITIONS_STRIP_HEIGHT = 36.dp
+/**
+ * Height of the home-page conditions band. Kept tight to the rasterized
+ * thermometer + label inside it: the strip is full-width but its content is a
+ * short, centered row, so a taller band just adds empty color above and below.
+ */
+private val CONDITIONS_STRIP_HEIGHT = 24.dp
 
 /**
  * Conditions band: the same feels-like / rain / wind / UV indicators the

@@ -5,6 +5,7 @@ import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TriggeredOutfit
+import app.clothescast.core.domain.model.warrantsRainAccessory
 
 /**
  * Resolves the day's outfit from the forecast: the user's threshold
@@ -34,6 +35,17 @@ class EvaluateClothesRules {
         defaultBottom: OutfitSuggestion.Bottom = OutfitSuggestion.Bottom.LONG_PANTS,
     ): TriggeredOutfit {
         val matched = rules.filter { it.appliesTo(forecast) }
+            // A carried accessory (the umbrella) is rain gear: it surfaces only
+            // when the day's condition warrants one. The umbrella default keys
+            // off aggregate precipitation *probability*, which can clear its
+            // gate on a snowy day, so gate the carried slot on the precipitation
+            // *type* here — at the single rule-evaluation chokepoint the icon,
+            // the recommendations, and the prose all read from — rather than
+            // letting "bring an umbrella" reach the snow-day outfit surfaces.
+            // Worn garments (tops/bottoms/gloves) are unaffected.
+            .filterNot {
+                it.item.slot == Garment.Slot.CARRIED && !forecast.condition.warrantsRainAccessory()
+            }
         // Every [ClothesRule.item] is a catalog [Garment], so each matched rule
         // claims a known slot. A slot covered by a matched rule (whether keyed
         // on temperature or precipitation) doesn't also get its per-tier default.

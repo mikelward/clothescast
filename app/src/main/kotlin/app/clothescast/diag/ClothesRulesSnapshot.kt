@@ -28,12 +28,24 @@ data class ClothesRulesSnapshot(
     val coatDeltaC: String,
     val glovesDeltaC: String,
     val shortsDeltaC: String,
+    val umbrellaDeltaPct: String,
 ) {
     companion object {
         const val MISSING = "MISSING"
 
         /** Largest absolute integer Celsius delta reported verbatim; beyond this saturates. */
         const val DELTA_CLAMP_C: Int = 5
+
+        /**
+         * Largest absolute percentage-point delta reported for the precip-keyed
+         * umbrella default; beyond this saturates. Wider than [DELTA_CLAMP_C]
+         * because a probability gate spans 0–100%, but still bucketed (rounded to
+         * the nearest [PCT_BUCKET]) so the aggregate stays coarse.
+         */
+        const val DELTA_CLAMP_PCT: Int = 50
+
+        /** Rounding granularity for the umbrella percentage-point delta bucket. */
+        private const val PCT_BUCKET: Int = 10
 
         /** Firebase Analytics caps event-param strings at 100 chars; this stays well clear. */
         private const val CATEGORIES_MAX_LEN = 36
@@ -49,7 +61,16 @@ data class ClothesRulesSnapshot(
             val byItem = rules.associateBy { it.item.itemKey }
             val perCategory: Map<String, String> = defaults.mapValues { (item, defaultRule) ->
                 val userRule = byItem[item]
-                if (userRule == null) MISSING else deltaBucket(userRule, defaultRule)
+                when {
+                    userRule == null -> MISSING
+                    // The umbrella default is precip-keyed (no Celsius threshold),
+                    // so bucket its probability-gate delta separately — routing it
+                    // through deltaBucket would always report "0" and hide every
+                    // gate customisation. See precipDeltaBucket.
+                    defaultRule.condition is ClothesRule.PrecipitationProbabilityAbove ->
+                        precipDeltaBucket(userRule, defaultRule)
+                    else -> deltaBucket(userRule, defaultRule)
+                }
             }
             val customisedKeys = perCategory.entries
                 .filter { it.value != "0" }
@@ -66,6 +87,7 @@ data class ClothesRulesSnapshot(
                 coatDeltaC = perCategory["coat"] ?: MISSING,
                 glovesDeltaC = perCategory["gloves"] ?: MISSING,
                 shortsDeltaC = perCategory["shorts"] ?: MISSING,
+                umbrellaDeltaPct = perCategory["umbrella"] ?: MISSING,
             )
         }
 
@@ -86,6 +108,29 @@ data class ClothesRulesSnapshot(
                 raw <= -(DELTA_CLAMP_C + 1) -> "-${DELTA_CLAMP_C}-"
                 raw > 0 -> "+$raw"
                 raw < 0 -> "$raw"
+                else -> "0"
+            }
+        }
+
+        /**
+         * Signed percentage-point delta of a precip-keyed [userRule] from its
+         * precip-keyed [defaultRule] (the umbrella's rain-probability gate),
+         * rounded to the nearest [PCT_BUCKET] and clamped to ±[DELTA_CLAMP_PCT] —
+         * `"0"`, `"+10"`, `"-20"`, `"+50+"` (saturated above), `"-50-"` (below).
+         * A user rule that isn't precip-keyed (shouldn't happen — the umbrella
+         * editor only writes precip conditions) reports [MISSING].
+         */
+        private fun precipDeltaBucket(userRule: ClothesRule, defaultRule: ClothesRule): String {
+            val defaultPct = (defaultRule.condition as? ClothesRule.PrecipitationProbabilityAbove)?.percent
+                ?: return MISSING
+            val userPct = (userRule.condition as? ClothesRule.PrecipitationProbabilityAbove)?.percent
+                ?: return MISSING
+            val bucketed = ((userPct - defaultPct) / PCT_BUCKET).roundToInt() * PCT_BUCKET
+            return when {
+                bucketed >= DELTA_CLAMP_PCT + PCT_BUCKET -> "+${DELTA_CLAMP_PCT}+"
+                bucketed <= -(DELTA_CLAMP_PCT + PCT_BUCKET) -> "-${DELTA_CLAMP_PCT}-"
+                bucketed > 0 -> "+$bucketed"
+                bucketed < 0 -> "$bucketed"
                 else -> "0"
             }
         }

@@ -463,6 +463,14 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-06-01** — The umbrella is now a default clothes rule keyed on
+  rain probability. The `clothes_rules_snapshot` analytics event gained
+  one aggregate param, `umbrella_delta_pct`: the user's umbrella
+  rain-probability gate as a signed percentage-point delta from the 30%
+  default, rounded to the nearest 10 and clamped to ±50 (e.g. `"+30"`,
+  `"-20"`, `MISSING` if the rule was deleted). Same hard limits as the
+  rest of the event — no raw thresholds, no calendar / location / insight
+  content.
 - **2026-05-31** — Transitional note for the identifier change below:
   during the staged rollout the app sends *both* the new anonymous
   Firebase Authentication identifier and the older Firebase Installation

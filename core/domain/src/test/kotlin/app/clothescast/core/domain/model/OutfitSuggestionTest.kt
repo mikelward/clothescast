@@ -15,6 +15,7 @@ class OutfitSuggestionTest {
         feelsLikeMax: Double,
         hourly: List<HourlyForecast> = emptyList(),
         precipMaxPct: Double = 0.0,
+        condition: WeatherCondition = WeatherCondition.CLEAR,
     ): DailyForecast = DailyForecast(
         date = date,
         temperatureMinC = feelsLikeMin,
@@ -23,7 +24,7 @@ class OutfitSuggestionTest {
         feelsLikeMaxC = feelsLikeMax,
         precipitationProbabilityMaxPct = precipMaxPct,
         precipitationMmTotal = 0.0,
-        condition = WeatherCondition.CLEAR,
+        condition = condition,
         hourly = hourly,
     )
 
@@ -496,15 +497,60 @@ class OutfitSuggestionTest {
     @Test
     fun `a firing umbrella rule sets the carried slot`() {
         // An umbrella rule keyed on rain chance lights the optional carried tier
-        // when the day's precip probability crosses its threshold.
+        // when the day's precip probability crosses its threshold and the
+        // condition is wet (rain).
         val umbrellaRules = listOf(
             ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
         )
         val outfit = OutfitSuggestion.fromForecast(
-            forecast(feelsLikeMin = 12.0, feelsLikeMax = 18.0, precipMaxPct = 60.0),
+            forecast(
+                feelsLikeMin = 12.0,
+                feelsLikeMax = 18.0,
+                precipMaxPct = 60.0,
+                condition = WeatherCondition.RAIN,
+            ),
             umbrellaRules,
         )
         outfit.carried shouldBe OutfitSuggestion.Carried.UMBRELLA
+    }
+
+    @Test
+    fun `a thunderstorm day still lights the carried umbrella`() {
+        // Thunderstorm is treated as rain: it's a wet forecast the user wants an
+        // umbrella for, so the carried slot fires (consistent with the prose).
+        val umbrellaRules = listOf(
+            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(
+                feelsLikeMin = 12.0,
+                feelsLikeMax = 18.0,
+                precipMaxPct = 60.0,
+                condition = WeatherCondition.THUNDERSTORM,
+            ),
+            umbrellaRules,
+        )
+        outfit.carried shouldBe OutfitSuggestion.Carried.UMBRELLA
+    }
+
+    @Test
+    fun `a snowy day suppresses the carried umbrella even above the gate`() {
+        // The umbrella default keys off aggregate precip probability, which can
+        // clear its gate on a snowy day — but snow isn't wet-in-the-umbrella
+        // sense, so the carried slot stays null and no umbrella icon shows.
+        val umbrellaRules = listOf(
+            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(
+                feelsLikeMin = -2.0,
+                feelsLikeMax = 2.0,
+                precipMaxPct = 80.0,
+                condition = WeatherCondition.SNOW,
+            ),
+            umbrellaRules,
+        )
+        outfit.carried shouldBe null
     }
 
     @Test

@@ -97,11 +97,18 @@ class ClothesRuleTest {
     }
 
     @Test
-    fun `defaults cover the temperature-driven MVP cases`() {
-        // Umbrella was deliberately dropped: the precip clause already names rain,
-        // and the wet-weather accessory is going to become a personalised setting.
+    fun `defaults cover the temperature cases plus the precip-keyed umbrella`() {
+        // The umbrella ships as a precip-keyed default (peak rain probability
+        // above 30%); the temperature rules cover the cold / warm cases.
         val items = ClothesRule.DEFAULTS.map { it.item.itemKey }
-        items shouldBe listOf("sweater", "jacket", "coat", "gloves", "shorts")
+        items shouldBe listOf("sweater", "jacket", "coat", "gloves", "shorts", "umbrella")
+    }
+
+    @Test
+    fun `umbrella default fires when peak rain probability clears its gate`() {
+        val umbrella = ClothesRule.DEFAULTS.first { it.item == Garment.UMBRELLA }
+        umbrella.appliesTo(forecast(min = 10.0, max = 18.0, precip = 40.0)) shouldBe true
+        umbrella.appliesTo(forecast(min = 10.0, max = 18.0, precip = 30.0)) shouldBe false
     }
 
     @Test

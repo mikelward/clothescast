@@ -218,9 +218,10 @@ data class CalendarTieInClause(val item: String)
  *
  * [precipCondition] mirrors the same per-model peak's [WeatherCondition] so
  * the formatter can decide whether a wet-weather accessory mention makes
- * sense (umbrella for RAIN / DRIZZLE, but never for SNOW or THUNDERSTORM).
- * Null on cached payloads written before this field existed — the formatter
- * treats that as "unknown, skip the accessory" rather than guess.
+ * sense — see [warrantsRainAccessory] (umbrella for RAIN / DRIZZLE /
+ * THUNDERSTORM, but never for SNOW). Null on cached payloads written before
+ * this field existed — the formatter treats that as "unknown, skip the
+ * accessory" rather than guess.
  */
 data class EveningEventTieInClause(
     val items: List<String> = emptyList(),

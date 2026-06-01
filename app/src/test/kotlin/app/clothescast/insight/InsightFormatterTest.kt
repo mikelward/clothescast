@@ -1166,12 +1166,15 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `umbrella accessory is suppressed when the precip is a thunderstorm`() {
-        // Lightning + umbrella is bad practice; the precip clause already
-        // names the thunderstorm, the listener doesn't need an unsafe carry.
+    fun `umbrella accessory rides a thunderstorm precip clause`() {
+        // Thunderstorm is treated as rain — a wet forecast the user wants an
+        // umbrella for — so the accessory rides the clause like rain/drizzle.
         umbrellaSubject.format(
-            summary(precip = PrecipClause(WeatherCondition.THUNDERSTORM, LocalTime.of(15, 0))),
-        ) shouldBe "Today, it will be 21°. Thunderstorm at 3pm."
+            summary(
+                clothes = ClothesClause(listOf("umbrella")),
+                precip = PrecipClause(WeatherCondition.THUNDERSTORM, LocalTime.of(15, 0)),
+            ),
+        ) shouldBe "Today, it will be 21°. Thunderstorm at 3pm, bring an umbrella."
     }
 
     @Test

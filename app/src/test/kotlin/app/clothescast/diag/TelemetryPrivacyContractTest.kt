@@ -55,6 +55,7 @@ class TelemetryPrivacyContractTest {
         "customised_count", "extra_rules_count", "categories_customised",
         "all_defaults",
         "sweater_delta_c", "jacket_delta_c", "coat_delta_c", "gloves_delta_c", "shorts_delta_c",
+        "umbrella_delta_pct",
     )
 
     private val allowedUserPropertyKeys = setOf(

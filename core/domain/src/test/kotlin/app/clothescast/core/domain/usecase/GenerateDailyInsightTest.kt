@@ -129,18 +129,19 @@ class GenerateDailyInsightTest {
         val insight = subject(london, prefs).insight
 
         // today: feels-like 6→25 → cold to warm; +8°C high vs yesterday → 8° warmer;
-        // clothes defaults at this temperature: sweater, jacket, shorts (umbrella was
-        // dropped — the precip clause carries the rain message);
+        // clothes defaults at this temperature: sweater, jacket, shorts, plus the
+        // umbrella (60% precip clears its 30% default gate). The formatter folds
+        // the umbrella into the precip clause; here it rides in the resolved items.
         // 60% precipitation → noon fallback (no hourly entries on `today`).
         insight.summary.band.low shouldBe TemperatureBand.COLD
         insight.summary.band.high shouldBe TemperatureBand.WARM
         insight.summary.delta.shouldNotBeNull()
         insight.summary.delta!!.degrees shouldBe 8
         insight.summary.delta!!.direction shouldBe DeltaClause.Direction.WARMER
-        insight.summary.clothes!!.items.shouldContainExactly("sweater", "jacket", "shorts")
+        insight.summary.clothes!!.items.shouldContainExactly("sweater", "jacket", "umbrella", "shorts")
         insight.summary.precip!!.condition shouldBe WeatherCondition.RAIN
         insight.summary.precip!!.time shouldBe LocalTime.NOON
-        insight.recommendedItems.shouldContainExactly("sweater", "jacket", "shorts")
+        insight.recommendedItems.shouldContainExactly("sweater", "jacket", "umbrella", "shorts")
         insight.generatedAt shouldBe clockInstant
         insight.forDate shouldBe today.date
     }
@@ -171,13 +172,14 @@ class GenerateDailyInsightTest {
 
     @Test
     fun `IF_CHANGED emits the clothes clause when clothing differs from yesterday`() = runTest {
-        // yesterday (10→17) triggers only sweater; today (6→25) adds jacket and shorts.
+        // yesterday (10→17) triggers only sweater; today (6→25) adds jacket and
+        // shorts, plus the umbrella (60% precip clears its 30% default gate).
         val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
         val subject = GenerateDailyInsight(weather, clock = clock)
 
         val insight = subject(london, prefs.copy(clothesMentionMode = ClothesMentionMode.IF_CHANGED)).insight
 
-        insight.summary.clothes!!.items.shouldContainExactly("sweater", "jacket", "shorts")
+        insight.summary.clothes!!.items.shouldContainExactly("sweater", "jacket", "umbrella", "shorts")
     }
 
     @Test
@@ -188,7 +190,7 @@ class GenerateDailyInsightTest {
         val insight = subject(london, prefs.copy(clothesMentionMode = ClothesMentionMode.NEVER)).insight
 
         insight.summary.clothes.shouldBeNull()
-        insight.recommendedItems.shouldContainExactly("sweater", "jacket", "shorts")
+        insight.recommendedItems.shouldContainExactly("sweater", "jacket", "umbrella", "shorts")
         insight.outfit.shouldNotBeNull()
     }
 

@@ -185,6 +185,10 @@ fun PrecipitationChart(
             modelProducer = producer,
             scrollState = rememberVicoScrollState(scrollEnabled = false),
             zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
+            // No entry animation — appears at final shape on compose, snappier
+            // on page swipes. Diff animation (animationSpec) kept. See
+            // ForecastChart for the rationale.
+            animateIn = false,
             modifier = Modifier.matchParentSize(),
         )
     }

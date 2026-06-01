@@ -84,8 +84,20 @@ internal fun Frame(
     colorPalette: ColorPalette = ColorPalette.RAINBOW,
     content: @Composable () -> Unit,
 ) {
-    ClothesCastTheme(darkTheme = darkTheme, dynamicColor = false, colorPalette = colorPalette) {
-        Surface { Column(modifier = Modifier.padding(16.dp)) { content() } }
+    // Render every preview in inspection mode, exactly as Android Studio's
+    // @Preview pane does. Beyond matching Studio, this is what lets the Vico
+    // charts snapshot deterministically: Vico's CartesianChartModelProducer
+    // runs its model transform on Dispatchers.Default (a real background
+    // thread) in normal composition, but switches to Dispatchers.Unconfined
+    // — synchronous, on the calling thread — when LocalInspectionMode is set.
+    // Without this, a chart-bearing preview races the background transform and
+    // can capture a chrome-only card with no plotted line. The inspection-mode
+    // guards in the *Banner wrappers don't bite here: the banner previews
+    // render the stateless *Card variants directly, which carry no guard.
+    CompositionLocalProvider(LocalInspectionMode provides true) {
+        ClothesCastTheme(darkTheme = darkTheme, dynamicColor = false, colorPalette = colorPalette) {
+            Surface { Column(modifier = Modifier.padding(16.dp)) { content() } }
+        }
     }
 }
 
@@ -2100,14 +2112,13 @@ private val SAMPLE_WEEK_OUTFIT_INSIGHT = SAMPLE_INSIGHT.copy(
 
 // The 7-day previews render the full [HomePageScaffold], whose banner stack
 // reads runtime-only app state (update checker, crash log, telemetry pref).
-// Flag inspection mode so those banners no-op (see the LocalInspectionMode
-// guards in the *Banner wrappers) and the chart deck snapshots cleanly without
-// a live Application — matching how Android Studio renders the same screen.
+// [Frame] already provides LocalInspectionMode = true, so those banners no-op
+// (see the LocalInspectionMode guards in the *Banner wrappers) and the chart
+// deck snapshots cleanly without a live Application — matching how Android
+// Studio renders the same screen.
 @Composable
 private fun SevenDayFrame(content: @Composable () -> Unit) {
-    Frame {
-        CompositionLocalProvider(LocalInspectionMode provides true) { content() }
-    }
+    Frame { content() }
 }
 
 // [SAMPLE_WEEK]'s feels-like highs swing from 18° today up to 22° Wednesday

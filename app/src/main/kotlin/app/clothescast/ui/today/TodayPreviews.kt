@@ -1426,7 +1426,9 @@ internal fun ForecastChartWithCurrentTimePreview() {
             ChartScrubController().apply {
                 setNow(
                     java.time.LocalDateTime.of(
-                        java.time.LocalDate.now(),
+                        // Fixed date (a Monday) so the fixture is deterministic
+                        // across runs — see issue #920.
+                        java.time.LocalDate.of(2024, 1, 1),
                         java.time.LocalTime.of(14, 30),
                     ),
                 )
@@ -1436,6 +1438,10 @@ internal fun ForecastChartWithCurrentTimePreview() {
             ForecastChart(
                 hourly = SAMPLE_HOURLY,
                 temperatureUnit = TemperatureUnit.CELSIUS,
+                // Match the pinned setNow date above so the now-indicator lands
+                // mid-chart; ForecastChart's startDate otherwise defaults to
+                // LocalDate.now() and the two-year gap would push it off-axis.
+                startDate = java.time.LocalDate.of(2024, 1, 1),
                 showFeelsLike = true,
             )
         }
@@ -1641,7 +1647,11 @@ internal fun WindCardWithModelSpreadPreview() {
 @Composable
 internal fun WindCardScrubbedPreview() {
     Frame {
-        val today = java.time.LocalDate.now()
+        // Fixed date (a Monday) so the scrub fixture is deterministic across
+        // runs — see issue #920. The hourly chart only labels times, so the
+        // date never reaches the snapshot, but pinning it keeps the fixture
+        // free of any wall-clock dependency.
+        val today = java.time.LocalDate.of(2024, 1, 1)
         val controller = androidx.compose.runtime.remember {
             ChartScrubController().apply {
                 scrubTo(java.time.LocalDateTime.of(today, java.time.LocalTime.of(14, 30)))
@@ -1870,7 +1880,11 @@ internal fun ForecastCardWithModelSpreadPreview() {
 @Composable
 internal fun ForecastCardScrubbedPreview() {
     Frame {
-        val today = java.time.LocalDate.now()
+        // Fixed date (a Monday) so the scrub fixture is deterministic across
+        // runs — see issue #920. The hourly chart only labels times, so the
+        // date never reaches the snapshot, but pinning it keeps the fixture
+        // free of any wall-clock dependency.
+        val today = java.time.LocalDate.of(2024, 1, 1)
         val controller = androidx.compose.runtime.remember {
             ChartScrubController().apply {
                 scrubTo(java.time.LocalDateTime.of(today, java.time.LocalTime.of(14, 30)))

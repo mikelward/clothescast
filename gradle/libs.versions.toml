@@ -42,15 +42,13 @@ work = "2.11.2"
 # a release candidate (no stable yet) and is what the live-widget-preview API
 # needs — tracked in #914. compileSdk is no longer the blocker; the RC status is.
 glance = "1.1.1"
-# Vico charting (forecast graphs). The old Kotlin-2.0-metadata pin is gone now
-# that Kotlin is on 2.2.x (it can read the 2.1.x stdlib metadata 2.1.0+ ship),
-# so newer 2.x is reachable — but the bump is deferred to a follow-up: Vico
-# 2.1+ changes chart-host frame timing in a way that makes the 7-day page's
-# minute-tick scrub loop never reach idle under the snapshot harness's clock,
-# which needs a harness fix to land cleanly. Tracked separately; 2.0.3 builds
-# and tests fine on Kotlin 2.2. (Vico 3.x is a full API rewrite — a separate
-# migration again, not a version bump.)
-vico = "2.0.3"
+# Vico charting (forecast graphs). On Kotlin 2.2.x (it reads the 2.1.x stdlib
+# metadata that Vico 2.1+ ships). Vico 2.1+ runs a continuous chart-host frame
+# loop that the Roborazzi snapshot harness has to drain deterministically — see
+# the capture loop in PreviewSnapshots.kt, which pins the test clock and waits
+# on the chart's model producer rather than relying on Compose idleness alone.
+# (Vico 3.x is a full API rewrite — a separate migration, not a version bump.)
+vico = "2.5.1"
 # Roborazzi renders @Preview composables to PNG via Robolectric — no emulator
 # needed, runs in :app's JVM unit tests job. The CI step uploads the PNGs as a
 # workflow artifact for human review on every PR (no diff gate, by intent).

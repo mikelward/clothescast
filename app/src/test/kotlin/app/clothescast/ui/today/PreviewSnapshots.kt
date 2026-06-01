@@ -153,6 +153,22 @@ class PreviewSnapshots {
         )
     }
 
+    // Pin the Compose test clock before any setContent runs. Vico 2.1+'s
+    // CartesianChartHost requests an animation frame on every frame for the
+    // life of the composition — even with scroll, zoom, and entry animation
+    // all disabled and a static dataset, it never reports idle. Under the
+    // default auto-advancing clock that makes waitForIdle() (including the one
+    // setContent calls internally) pump frames until Espresso's 60s ceiling
+    // and throw AppNotIdleException, so a chart-bearing preview can't be
+    // captured at all. Driving the clock by hand (see captureUntilStable)
+    // sidesteps the perpetual-frame loop: waitForIdle() no longer advances
+    // time, so it returns once the *non-clock* work has drained, and we choose
+    // exactly how far to step the clock to settle the chart.
+    @Before
+    fun pinClock() {
+        composeRule.mainClock.autoAdvance = false
+    }
+
     private fun capture(content: @Composable () -> Unit) {
         composeRule.setContent { content() }
         captureUntilStable {
@@ -176,16 +192,15 @@ class PreviewSnapshots {
      * Captures a snapshot to disk and re-captures until two consecutive
      * attempts produce the same bytes — i.e. the rendering has settled.
      *
-     * Two layers of "give async work time to drain" before each attempt:
-     *  - `waitForIdle()` drains the Compose dispatcher.
-     *  - We then pump a handful of additional frames. Vico's
-     *    `CartesianChartModelProducer` feeds the chart host via a separate
-     *    coroutine flow that `waitForIdle()` doesn't always cover, so the
-     *    first capture can land before the chart line has actually painted.
-     *    The frame pump gives the host's collection + recompose + paint
-     *    sequence room to complete. Cheap on chart-less previews (just a
-     *    few no-op frames), so we apply it uniformly rather than annotating
-     *    each chart-bearing preview by hand.
+     * The test clock is pinned (see [pinClock]) because Vico 2.1+'s chart
+     * host never reports idle. So rather than leaning on auto-advance, we
+     * step the clock by hand: one generous [SETTLE_MILLIS] slice up front to
+     * drain each chart's `CartesianChartModelProducer` flow and finish its
+     * data-diff animation — the collection + recompose + paint sequence that
+     * `waitForIdle()` alone doesn't cover — then one frame per attempt so the
+     * settled state paints before we rasterize. Applied uniformly; it's cheap
+     * on chart-less previews (a single virtual-time step), so there's no need
+     * to annotate each chart-bearing preview by hand.
      *
      * If a chart is mid-paint we see different bytes on consecutive captures
      * and keep looping; once the picture stops changing we accept it. Catches
@@ -216,19 +231,33 @@ class PreviewSnapshots {
      * `uv_index_card_with_model_spread.png` flipping each run; this
      * helper's noise-tolerant baseline restore handles that.
      */
-    private fun captureUntilStable(maxAttempts: Int = 4, snapshot: () -> Unit) {
+    private fun captureUntilStable(maxAttempts: Int = 6, snapshot: () -> Unit) {
         val outputFile = File("$outputDir/${testName.methodName}.png")
         // Snapshot the pre-capture bytes for the noise-tolerant baseline
         // restore at the end. Null when this is a new preview with no
         // existing PNG; in that case any capture is the new baseline.
         val baseline = if (outputFile.exists()) outputFile.readBytes() else null
+        // The clock is pinned (see pinClock), so nothing has advanced since
+        // setContent. Step it one generous slice to settle the chart deck:
+        //  - drains each chart's CartesianChartModelProducer flow — the
+        //    LaunchedEffect/runTransaction → host-collect → recompose → paint
+        //    chain that waitForIdle() alone doesn't cover, and the exact step
+        //    the old fixed 3-frame pump was too short to finish, so charts
+        //    sometimes captured as chrome-with-no-line;
+        //  - runs Vico's data-diff animation to completion (its default spec is
+        //    tween(500ms), so one SETTLE_MILLIS step clears it at 2x margin).
+        // SETTLE_MILLIS stays well under the 60s live-"now" minute tick so those
+        // LaunchedEffects don't re-loop mid-capture and perturb the indicator.
+        composeRule.waitForIdle()
+        composeRule.mainClock.advanceTimeBy(SETTLE_MILLIS)
         var prior: ByteArray? = null
         repeat(maxAttempts) { attempt ->
             composeRule.waitForIdle()
-            repeat(FRAME_PUMP_COUNT) {
-                composeRule.mainClock.advanceTimeByFrame()
-                composeRule.waitForIdle()
-            }
+            // One more frame so the latest collected/animated state paints
+            // before we rasterize. Vico keeps requesting frames forever, but
+            // the *pixels* are static once the data has settled above, so
+            // consecutive captures match and the stability check converges.
+            composeRule.mainClock.advanceTimeByFrame()
             snapshot()
             if (looksEmpty(outputFile)) {
                 // Don't let a blank capture become "stable" by repeating —
@@ -243,7 +272,6 @@ class PreviewSnapshots {
                 }
                 prior = current
             }
-            if (attempt < maxAttempts - 1) Thread.sleep(50L * (attempt + 1))
         }
         System.err.println(
             "WARN: snapshot ${testName.methodName} did not stabilise after $maxAttempts attempts",
@@ -317,11 +345,20 @@ class PreviewSnapshots {
         return maxOf(rDiff, gDiff, bDiff)
     }
 
-    // Number of additional frames to advance past Compose's idle state
-    // before each capture attempt. Three covers Vico's typical
-    // producer-flow-emit + host-recompose + paint sequence with margin;
-    // each frame is ~16ms in virtual time but ~near-zero wall-clock under
-    // Robolectric, so the cost is negligible.
+    // Virtual time to advance the pinned clock once before capturing, to
+    // settle the chart deck. Two components have to finish; only one is
+    // time-gated. The producer-flow drain (LaunchedEffect → runTransaction →
+    // host collect → recompose → paint) isn't — it propagates in a frame or
+    // two, and 1s is ~62 frames. The data-diff animation is: Vico's default
+    // spec is tween(durationMillis = 500) (animateIn is off, so no entry
+    // animation on top), so 1s is a 2x margin over the only thing the clock
+    // has to outrun. It also stays far under the 60s live-"now" minute tick,
+    // so the tick's delay() never fires mid-capture. Costs ~near-zero
+    // wall-clock under Robolectric — the clock is virtual — so we spend it on
+    // every preview rather than gating it on "is this one chart-bearing?". If
+    // a future Vico raised that 500ms default past 1s, the clock stays pinned
+    // (no re-hang) and the under-settle surfaces as visible snapshot churn in
+    // review, not a silently-wrong baseline.
     //
     // Noise tolerances for the baseline-restore comparison.
     //
@@ -343,7 +380,7 @@ class PreviewSnapshots {
     // ~20 axis labels on a chart card typically affects a few hundred
     // sub-tolerance pixels, well under the cap.
     private companion object {
-        const val FRAME_PUMP_COUNT = 3
+        const val SETTLE_MILLIS = 1_000L
         const val INTENSITY_TOLERANCE = 8
         const val NOISY_PIXEL_BUDGET = 64
         const val IN_TOLERANCE_PIXEL_BUDGET = 4096

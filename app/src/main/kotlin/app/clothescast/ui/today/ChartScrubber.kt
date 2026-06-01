@@ -24,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalConfiguration
@@ -35,10 +34,10 @@ import app.clothescast.R
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.ui.formatScrubHour
 import java.time.format.TextStyle
-import com.patrykandpatrick.vico.core.cartesian.CartesianDrawingContext
-import com.patrykandpatrick.vico.core.cartesian.decoration.Decoration
-import com.patrykandpatrick.vico.core.common.Fill
-import com.patrykandpatrick.vico.core.common.component.LineComponent
+import com.patrykandpatrick.vico.compose.cartesian.CartesianDrawingContext
+import com.patrykandpatrick.vico.compose.cartesian.decoration.Decoration
+import com.patrykandpatrick.vico.compose.common.Fill
+import com.patrykandpatrick.vico.compose.common.component.LineComponent
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -162,7 +161,7 @@ internal val LocalChartScrub = compositionLocalOf<ChartScrubController?> { null 
  * cascading signature churn through ~12 composables.
  */
 internal val LocalChartBottomFormatter =
-    compositionLocalOf<com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter?> { null }
+    compositionLocalOf<com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter?> { null }
 
 /**
  * Paired with [LocalChartBottomFormatter]. Vico won't accept an empty string
@@ -174,7 +173,7 @@ internal val LocalChartBottomFormatter =
  * behaviour byte-identical.
  */
 internal val LocalChartBottomItemPlacer =
-    compositionLocalOf<com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis.ItemPlacer?> { null }
+    compositionLocalOf<com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis.ItemPlacer?> { null }
 
 @Composable
 internal fun rememberChartScrubController(): ChartScrubController =
@@ -437,7 +436,7 @@ private class ChartScrubIndicator(
     private val startDate: LocalDate,
     color: Color,
 ) : Decoration {
-    private val line = LineComponent(fill = Fill(color.toArgb()), thicknessDp = 1.5f)
+    private val line = LineComponent(fill = Fill(color), thickness = 1.5.dp)
 
     override fun drawUnderLayers(context: CartesianDrawingContext) {
         with(context) {

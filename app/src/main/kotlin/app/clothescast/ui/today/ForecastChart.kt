@@ -10,7 +10,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHour
@@ -22,22 +24,20 @@ import app.clothescast.ui.theme.AppTheme
 import java.time.LocalDate
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
-import com.patrykandpatrick.vico.compose.common.fill
-import com.patrykandpatrick.vico.core.cartesian.Zoom
-import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
-import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
-import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
-import com.patrykandpatrick.vico.core.common.data.ExtraStore
+import com.patrykandpatrick.vico.compose.common.Fill
+import com.patrykandpatrick.vico.compose.cartesian.Zoom
+import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.VerticalAxis
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianLayerRangeProvider
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.compose.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.compose.cartesian.layer.LineCartesianLayer
+import com.patrykandpatrick.vico.compose.common.data.ExtraStore
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.roundToInt
@@ -311,7 +311,13 @@ fun ForecastChart(
 // chart's start and bottom axes — all in this package, so internal.
 @Composable
 internal fun rememberOnSurfaceAxisLabel() =
-    rememberAxisLabelComponent(color = MaterialTheme.colorScheme.onSurface)
+    // Passing `style` replaces Vico's whole default axis-label TextStyle, not
+    // just the color — so re-state its default size (Defaults.AXIS_LABEL_SIZE =
+    // 12sp) or the labels fall back to Compose's larger default and shrink the
+    // plot. Color is the only thing we mean to change (see the note above).
+    rememberAxisLabelComponent(
+        style = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 12.sp),
+    )
 
 // Builds a [LineCartesianLayer.LineProvider] whose Line list lines up with the
 // series order both charts emit into their model producer: when [mainLineColor]
@@ -341,7 +347,7 @@ internal fun rememberPinnedLineProvider(
     val visibleColors = visibleModels.map { modelColors.getValue(it) }
     return remember(visibleModels, mainLineColor, visibleColors) {
         val mainLine = mainLineColor?.let {
-            LineCartesianLayer.Line(fill = LineCartesianLayer.LineFill.single(fill(it)))
+            LineCartesianLayer.Line(fill = LineCartesianLayer.LineFill.single(Fill(it)))
         }
         // best_match draws at 4 dp so it reads as a reference baseline
         // through the thinner 2-dp consulted-model lines on top of it.
@@ -349,12 +355,12 @@ internal fun rememberPinnedLineProvider(
         val perModelLines = visibleModels.map { modelId ->
             val color = modelColors.getValue(modelId)
             val stroke = if (modelId == BEST_MATCH_MODEL_ID) {
-                LineCartesianLayer.LineStroke.Continuous(thicknessDp = 4f)
+                LineCartesianLayer.LineStroke.Continuous(thickness = 4.dp)
             } else {
                 LineCartesianLayer.LineStroke.Continuous()
             }
             LineCartesianLayer.Line(
-                fill = LineCartesianLayer.LineFill.single(fill(color)),
+                fill = LineCartesianLayer.LineFill.single(Fill(color)),
                 stroke = stroke,
             )
         }

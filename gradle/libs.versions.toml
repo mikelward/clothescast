@@ -4,7 +4,7 @@
 # which targetSdk 36 needs (AGP 8.7.x capped at compileSdk 35). Bump the Gradle
 # wrapper in lockstep before moving to AGP 8.11+.
 agp = "8.10.1"
-kotlin = "2.0.21"
+kotlin = "2.2.21"
 # Android API floor. Single source of truth: `app/build.gradle.kts` reads this
 # for `minSdk` and re-emits it as `BuildConfig.MIN_SDK_VERSION` so the runtime
 # can defend against APKs landing on devices below the floor. The OS package
@@ -14,7 +14,7 @@ kotlin = "2.0.21"
 # resulting Crashlytics noise is from a configuration we never built for, so
 # Telemetry silences Firebase when SDK_INT < MIN_SDK_VERSION.
 minSdk = "31"
-ksp = "2.0.21-1.0.27"
+ksp = "2.2.21-2.0.5"
 coreKtx = "1.17.0"
 lifecycle = "2.9.4"
 activityCompose = "1.11.0"
@@ -41,12 +41,14 @@ work = "2.10.0"
 # a release candidate (no stable yet) and is what the live-widget-preview API
 # needs — tracked in #914. compileSdk is no longer the blocker; the RC status is.
 glance = "1.1.1"
-# Vico charting (forecast graphs). Held at 2.0.3: it's the last release built
-# against Kotlin 2.0 metadata — 2.1.0+ depend on kotlin-stdlib 2.1.x, whose
-# metadata this repo's Kotlin 2.0.21 can't read ("incompatible version of
-# Kotlin … binary version 2.x, expected 2.0"). compileSdk is no longer the
-# blocker (that's why 2.x wanted core 1.16+/1.17+, now satisfied); Kotlin is.
-# Bump Vico in lockstep with a Kotlin 2.1+/2.2 upgrade.
+# Vico charting (forecast graphs). The old Kotlin-2.0-metadata pin is gone now
+# that Kotlin is on 2.2.x (it can read the 2.1.x stdlib metadata 2.1.0+ ship),
+# so newer 2.x is reachable — but the bump is deferred to a follow-up: Vico
+# 2.1+ changes chart-host frame timing in a way that makes the 7-day page's
+# minute-tick scrub loop never reach idle under the snapshot harness's clock,
+# which needs a harness fix to land cleanly. Tracked separately; 2.0.3 builds
+# and tests fine on Kotlin 2.2. (Vico 3.x is a full API rewrite — a separate
+# migration again, not a version bump.)
 vico = "2.0.3"
 # Roborazzi renders @Preview composables to PNG via Robolectric — no emulator
 # needed, runs in :app's JVM unit tests job. The CI step uploads the PNGs as a

@@ -391,6 +391,7 @@ fun TodayScreen(
             onDismissPlayPromoCard = viewModel::dismissPlayPromoCard,
             onOpenVoice = onNavigateToVoice,
             onDismissGeminiTtsPromoCard = viewModel::dismissGeminiTtsPromoCard,
+            onDismissGeminiTtsLimitCard = viewModel::dismissGeminiTtsLimitCard,
             onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
             onNavigateToClothes = onNavigateToClothes,
             onNavigateToFormat = onNavigateToFormat,
@@ -436,6 +437,7 @@ private fun TodayContent(
     onDismissPlayPromoCard: () -> Unit,
     onOpenVoice: () -> Unit,
     onDismissGeminiTtsPromoCard: () -> Unit,
+    onDismissGeminiTtsLimitCard: () -> Unit,
     onCalendarPermissionChanged: () -> Unit,
     onNavigateToClothes: () -> Unit,
     onNavigateToFormat: () -> Unit,
@@ -520,6 +522,7 @@ private fun TodayContent(
                     onDismissPlayPromoCard = onDismissPlayPromoCard,
                     onOpenVoice = onOpenVoice,
                     onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+                    onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
                     onDismissMqttError = onDismissMqttError,
                     onDismissCastError = onDismissCastError,
                     onOpenCalendarSettings = onOpenCalendarSettings,
@@ -617,6 +620,7 @@ private fun TodayContent(
                         onDismissPlayPromoCard = onDismissPlayPromoCard,
                         onOpenVoice = onOpenVoice,
                         onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+                        onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
                     onDismissMqttError = onDismissMqttError,
                     onDismissCastError = onDismissCastError,
                     )
@@ -677,6 +681,7 @@ private fun TodayContent(
                     onDismissPlayPromoCard = onDismissPlayPromoCard,
                     onOpenVoice = onOpenVoice,
                     onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+                    onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
                     onDismissMqttError = onDismissMqttError,
                     onDismissCastError = onDismissCastError,
                 )
@@ -711,6 +716,7 @@ private fun BannerStack(
     onDismissPlayPromoCard: () -> Unit,
     onOpenVoice: () -> Unit,
     onDismissGeminiTtsPromoCard: () -> Unit,
+    onDismissGeminiTtsLimitCard: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
     onSetUpLocation: () -> Unit,
@@ -827,6 +833,18 @@ private fun BannerStack(
         onDismiss = onDismissGeminiTtsPromoCard,
         modifier = bannerModifier,
     )
+    // "Free voice limit reached" — the shared Gemini TTS allowance is spent for
+    // the day, so a cast just fell back to the device voice. Not a promo (it's
+    // an actionable notice, not gated by [promoBannersToShow]'s cap) and stands
+    // in for the promo above, which the ViewModel holds back while this shows.
+    // The CTA routes to Speech settings to add a BYOK key but doesn't dismiss —
+    // the card retires on its own once the next synth succeeds.
+    GeminiTtsLimitCard(
+        visible = state.geminiTtsLimitCardVisible,
+        onOpenVoice = onOpenVoice,
+        onDismiss = onDismissGeminiTtsLimitCard,
+        modifier = bannerModifier,
+    )
     // "Set up a schedule" nudge — scheduled casts don't fire until the user
     // enables a slot, so a fresh install gets nothing on a timer. Gated
     // upstream on neither master switch being on (plus the user not having
@@ -916,6 +934,7 @@ internal fun HomePageScaffold(
     onDismissPlayPromoCard: () -> Unit,
     onOpenVoice: () -> Unit,
     onDismissGeminiTtsPromoCard: () -> Unit,
+    onDismissGeminiTtsLimitCard: () -> Unit,
     onNavigateToClothes: () -> Unit,
     homeSectionOrder: List<HomeSection> = HomeSection.DEFAULTS,
     insightSlot: (@Composable ColumnScope.() -> Unit)? = null,
@@ -1040,6 +1059,7 @@ internal fun HomePageScaffold(
                     onDismissPlayPromoCard = onDismissPlayPromoCard,
                     onOpenVoice = onOpenVoice,
                     onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+                    onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
                     onDismissMqttError = onDismissMqttError,
                     onDismissCastError = onDismissCastError,
                     onOpenCalendarSettings = onOpenCalendarSettings,
@@ -1196,6 +1216,7 @@ private fun TodayPage(
     onDismissPlayPromoCard: () -> Unit,
     onOpenVoice: () -> Unit,
     onDismissGeminiTtsPromoCard: () -> Unit,
+    onDismissGeminiTtsLimitCard: () -> Unit,
 ) {
     val scrollScope = rememberCoroutineScope()
     // Captured via onGloballyPositioned so the chip-tap handler can scroll the
@@ -1223,6 +1244,7 @@ private fun TodayPage(
         onDismissPlayPromoCard = onDismissPlayPromoCard,
         onOpenVoice = onOpenVoice,
         onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+        onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
         onNavigateToClothes = onNavigateToClothes,
         onDismissMqttError = onDismissMqttError,
         onDismissCastError = onDismissCastError,

@@ -34,6 +34,7 @@ import app.clothescast.core.domain.usecase.computeDeliveryGates
 import app.clothescast.core.domain.usecase.isGeminiEngineSelected
 import app.clothescast.core.domain.usecase.isMqttPublishable
 import app.clothescast.core.domain.util.isWithin
+import app.clothescast.core.data.tts.GeminiTtsDailyQuotaExhaustedException
 import app.clothescast.core.data.tts.PcmAudio
 import app.clothescast.core.data.tts.WavEncoder
 import app.clothescast.data.InsightCache
@@ -74,6 +75,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneOffset
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
@@ -1131,11 +1133,69 @@ class FetchAndNotifyWorker(
                 style = selection.style,
             ).synthesize(utterance.text, utterance.locale)
         }
+            .onSuccess {
+                // A successful synth means the shared-key daily allowance isn't
+                // exhausted (or the user added their own key), so retire any
+                // Today limit card. Best-effort: a failed write just leaves the
+                // card up until the next success.
+                persistQuotaStatus { app.settingsRepository.clearGeminiTtsLimitExceeded() }
+            }
             .onFailure { t ->
                 if (t is CancellationException) throw t
+                if (t is GeminiTtsDailyQuotaExhaustedException) {
+                    // The free shared-key allowance is spent for today. The cast
+                    // still plays via the device engine below; record the limit so
+                    // the Today screen can nudge the user toward Speech settings to
+                    // add their own Gemini key for unlimited casts. Persist the
+                    // reset time so the card auto-expires at the daily boundary
+                    // even before a later synth clears it.
+                    persistQuotaStatus {
+                        app.settingsRepository.setGeminiTtsLimitExceeded(
+                            resetAtMs = quotaResetAtMs(t.resetAtUtc),
+                        )
+                    }
+                }
                 DiagLog.w(TAG, "Gemini TTS synth failed; downstream audio destinations degrade.", t)
             }
             .getOrNull()
+    }
+
+    /**
+     * Best-effort persistence of the Gemini TTS quota status (the limit-card
+     * set/clear). Rethrows [CancellationException] so a worker cancellation
+     * mid-`DataStore.edit` still unwinds the delivery path rather than being
+     * swallowed (per the repo's structured-concurrency guidance); any other
+     * write failure is logged and ignored — a dropped status write just leaves
+     * the Today card slightly stale, not worth failing delivery over.
+     */
+    private suspend fun persistQuotaStatus(block: suspend () -> Unit) {
+        try {
+            block()
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (t: Throwable) {
+            DiagLog.w(TAG, "Failed to persist Gemini TTS quota status.", t)
+        }
+    }
+
+    /**
+     * Epoch-ms at which the shared free TTS allowance next opens. Prefers the
+     * proxy's ISO-8601 `resetAtUtc`; when it's absent or unparseable, falls
+     * back to the next UTC midnight — the free budget is a per-UTC-day quota,
+     * so that's when a fresh slot is guaranteed. Used to auto-expire the Today
+     * limit card at the reset boundary.
+     */
+    private fun quotaResetAtMs(resetAtUtc: String?): Long {
+        resetAtUtc?.let { iso ->
+            runCatching { Instant.parse(iso).toEpochMilli() }.getOrNull()?.let { return it }
+        }
+        return Instant.now()
+            .atZone(ZoneOffset.UTC)
+            .toLocalDate()
+            .plusDays(1)
+            .atStartOfDay(ZoneOffset.UTC)
+            .toInstant()
+            .toEpochMilli()
     }
 
     /**

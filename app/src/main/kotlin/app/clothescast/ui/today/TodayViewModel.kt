@@ -211,6 +211,23 @@ data class TodayState(
      */
     val geminiTtsPromoCardVisible: Boolean = false,
     /**
+     * Whether the "free voice limit reached" card is showing — true iff a synth
+     * hit the shared-key daily Gemini TTS allowance, the user hasn't dismissed
+     * that exceedance, AND no BYOK Gemini key is configured (a configured key
+     * bypasses the shared proxy, so the card hides the instant one is added).
+     * Points at Speech settings so the user can add their own Gemini key for
+     * unlimited casts. Mutually exclusive with
+     * [geminiTtsPromoCardVisible]: the promo pitches voices the user has just
+     * found a limit on, so it stands down while this shows.
+     */
+    val geminiTtsLimitCardVisible: Boolean = false,
+    /**
+     * [SettingsRepository.GeminiTtsLimitStatus.exceededAtMs] backing
+     * [geminiTtsLimitCardVisible], so dismissal marks exactly the on-screen
+     * exceedance as seen (and lets a newer one resurface).
+     */
+    val geminiTtsLimitExceededAt: Long = 0L,
+    /**
      * Whether the one-time telemetry/privacy disclosure is still pending
      * (the user hasn't acked it). Lifted out of the banner so [BannerStack]
      * can fold it into the capped promo pool alongside the location, clothes,
@@ -401,6 +418,10 @@ internal data class MiscSignals(
     val castError: String?,
     /** Sibling of [mqttErrorAt] for the cast destination. */
     val castErrorAt: Long,
+    /** True iff the shared free Gemini TTS daily limit is hit and not dismissed. */
+    val geminiTtsLimitExceeded: Boolean,
+    /** [exceededAtMs] of the latest limit hit, so dismiss can mark it seen. */
+    val geminiTtsLimitExceededAt: Long,
 )
 
 /**
@@ -549,6 +570,27 @@ class TodayViewModel(
             }
         }
 
+    // Wrap the persisted quota status so the limit card auto-expires at the
+    // reset boundary even while the Today screen stays open and nothing else
+    // emits. The dismiss/now-vs-reset gate in [miscSignals] only re-evaluates
+    // on an upstream emission, and no other flow is keyed to the (UTC-based)
+    // reset — the [dateTicker] fires at *local* midnight, which can be hours
+    // off. So re-emit the same status once the reset passes, flipping the
+    // gate; [flatMapLatest] cancels the pending wait when a newer status (a
+    // fresh hit, a clear, or a dismissal) arrives.
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    private val geminiTtsLimitStatusTicking: Flow<SettingsRepository.GeminiTtsLimitStatus?> =
+        settingsRepository.geminiTtsLimitStatus.flatMapLatest { status ->
+            flow {
+                emit(status)
+                val untilResetMs = status?.resetAtMs?.minus(System.currentTimeMillis())
+                if (untilResetMs != null && untilResetMs > 0) {
+                    delay(untilResetMs)
+                    emit(status)
+                }
+            }
+        }
+
     // Fuse the session-scoped spread toggle, the external "Gemini key
     // configured" signal, and the latest MQTT / Cast publish-error messages
     // into one input so the outer [state] combine stays at five flows (the
@@ -561,7 +603,8 @@ class TodayViewModel(
             geminiKeyConfigured,
             settingsRepository.mqttPublishStatus,
             settingsRepository.castStatus,
-        ) { spread, geminiKey, mqtt, cast ->
+            geminiTtsLimitStatusTicking,
+        ) { spread, geminiKey, mqtt, cast, ttsLimit ->
             // Hide an error the user has already dismissed from the banner
             // (recordedAt <= dismissedAt); a strictly-newer failure resurfaces.
             val mqttError = mqtt?.takeIf {
@@ -570,6 +613,20 @@ class TodayViewModel(
             val castError = cast?.takeIf {
                 it.errorMessage != null && it.recordedAtMs > it.dismissedAtMs
             }?.errorMessage
+            // Same dismiss semantics for the shared-key daily TTS allowance: the
+            // card hides once the user dismisses the exceedance they saw, and a
+            // strictly-newer one (a later run that re-hit the limit) resurfaces.
+            // Also auto-expire it once the wall clock passes the recorded reset
+            // time — opening the app after the daily quota has reset (but before
+            // the next synth runs to clear it) shouldn't still claim today's free
+            // voices are spent. resetAtMs <= 0 means "no reset info"; don't expire
+            // on that. [geminiTtsLimitStatusTicking] re-emits at the reset
+            // boundary so this re-evaluates even if the screen stays open and no
+            // other flow emits.
+            val now = System.currentTimeMillis()
+            val ttsLimitExceeded = ttsLimit?.let {
+                it.exceededAtMs > it.dismissedAtMs && (it.resetAtMs <= 0L || now < it.resetAtMs)
+            } ?: false
             MiscSignals(
                 showModelSpread = spread,
                 geminiKeyConfigured = geminiKey,
@@ -577,6 +634,8 @@ class TodayViewModel(
                 mqttErrorAt = mqtt?.recordedAtMs ?: 0L,
                 castError = castError,
                 castErrorAt = cast?.recordedAtMs ?: 0L,
+                geminiTtsLimitExceeded = ttsLimitExceeded,
+                geminiTtsLimitExceededAt = ttsLimit?.exceededAtMs ?: 0L,
             )
         }
 
@@ -672,7 +731,18 @@ class TodayViewModel(
             schedulePromoCardVisible = !prefs.scheduleCardDismissed,
             playPromoCardVisible = !prefs.playCardDismissed &&
                 (prefs.dailyEnabled || prefs.tonightEnabled),
-            geminiTtsPromoCardVisible = !prefs.geminiPromoCardDismissed && !geminiKeyConfigured,
+            // Stand the "try high-quality voices" promo down while the limit
+            // card is up — pitching voices the user just hit a cap on reads as
+            // a bug. The limit card already routes to the same Speech settings.
+            geminiTtsPromoCardVisible = !prefs.geminiPromoCardDismissed &&
+                !geminiKeyConfigured && !misc.geminiTtsLimitExceeded,
+            // Gate on no BYOK key: a configured key bypasses the shared free
+            // proxy entirely, so the moment the user adds one (e.g. via this
+            // card's CTA) the limit no longer applies and the card hides
+            // immediately — without waiting for the next synth to clear the
+            // persisted quota status.
+            geminiTtsLimitCardVisible = misc.geminiTtsLimitExceeded && !geminiKeyConfigured,
+            geminiTtsLimitExceededAt = misc.geminiTtsLimitExceededAt,
             telemetryNoticeVisible = !prefs.telemetryNoticeAcked,
             usesCalendarThemes = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive,
             // Surface a publish error for any failed delivery attempt — a
@@ -751,6 +821,21 @@ class TodayViewModel(
     fun dismissGeminiTtsPromoCard() {
         viewModelScope.launch {
             settingsRepository.setGeminiPromoCardDismissed(true)
+        }
+    }
+
+    /**
+     * Records that the user dismissed the "free voice limit reached" card.
+     * Marks the on-screen exceedance ([TodayState.geminiTtsLimitExceededAt]) as
+     * seen so it hides; a strictly-newer limit hit resurfaces. No-op when
+     * nothing is shown. The CTA doesn't dismiss — Speech settings auto-clears
+     * the card once the user adds a key and the next synth succeeds.
+     */
+    fun dismissGeminiTtsLimitCard() {
+        val at = state.value.geminiTtsLimitExceededAt
+        if (at <= 0L) return
+        viewModelScope.launch {
+            settingsRepository.setGeminiTtsLimitDismissedAt(at)
         }
     }
 

@@ -18,8 +18,8 @@ import app.clothescast.ui.today.LocalScrubMomentFormat
 import app.clothescast.ui.today.ScrubMomentFormat
 import com.patrykandpatrick.vico.compose.common.ProvideVicoTheme
 import com.patrykandpatrick.vico.compose.m3.common.rememberM3VicoTheme
-import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.TextStyle

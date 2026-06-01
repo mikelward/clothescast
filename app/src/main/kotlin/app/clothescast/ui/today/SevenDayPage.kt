@@ -37,8 +37,8 @@ import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.core.domain.usecase.DeriveWeekAheadInsight
 import app.clothescast.insight.InsightFormatter
-import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.TextStyle

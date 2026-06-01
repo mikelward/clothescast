@@ -482,6 +482,13 @@ private fun bottomLabelResMock(bottom: OutfitSuggestion.Bottom): Int = when (bot
 // composes with data under the PreviewSnapshots harness.
 //
 
+// Pinned reference date so the day/week axis labels stay deterministic across
+// runs (issue #920). The week chart labels each point by its real weekday, so a
+// LocalDate.now()-based fixture churned the committed PNG ~6 days out of 7.
+// 2024-01-01 is a Monday, so the week axis reads Mon→Sun no matter when the
+// snapshot test runs.
+private val SAMPLE_START_DATE: LocalDate = LocalDate.of(2024, 1, 1)
+
 // One synthetic day of hourly feels-like (°C): cool overnight, warm mid-afternoon.
 private val SAMPLE_FEELS_DAY: List<HourlyForecast> = run {
     val feels = listOf(
@@ -511,7 +518,7 @@ private val SAMPLE_FEELS_WEEK: List<DailyForecast> = (0..6).map { d ->
     val feels = hourly.map { it.feelsLikeC }
     val air = hourly.map { it.temperatureC }
     DailyForecast(
-        date = LocalDate.now().plusDays(d.toLong()),
+        date = SAMPLE_START_DATE.plusDays(d.toLong()),
         temperatureMinC = air.min(),
         temperatureMaxC = air.max(),
         feelsLikeMinC = feels.min(),
@@ -523,7 +530,7 @@ private val SAMPLE_FEELS_WEEK: List<DailyForecast> = (0..6).map { d ->
     )
 }
 
-private val SAMPLE_NOW: LocalDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 30))
+private val SAMPLE_NOW: LocalDateTime = LocalDateTime.of(SAMPLE_START_DATE, LocalTime.of(10, 30))
 
 @Preview(name = "Feels-like widget · today", widthDp = 360)
 @Composable
@@ -534,7 +541,7 @@ internal fun FeelsLikeWidgetTodayPreview() {
             days = null,
             temperatureUnit = TemperatureUnit.CELSIUS,
             timeFormat = TimeFormat.TWELVE_HOUR,
-            startDate = LocalDate.now(),
+            startDate = SAMPLE_START_DATE,
             now = SAMPLE_NOW,
         )
     }
@@ -549,7 +556,7 @@ internal fun FeelsLikeWidgetTodayDarkPreview() {
             days = null,
             temperatureUnit = TemperatureUnit.CELSIUS,
             timeFormat = TimeFormat.TWELVE_HOUR,
-            startDate = LocalDate.now(),
+            startDate = SAMPLE_START_DATE,
             now = SAMPLE_NOW,
         )
     }
@@ -589,7 +596,7 @@ internal fun FeelsLikeWidgetWidePreview() {
                 days = null,
                 temperatureUnit = TemperatureUnit.CELSIUS,
                 timeFormat = TimeFormat.TWELVE_HOUR,
-                startDate = LocalDate.now(),
+                startDate = SAMPLE_START_DATE,
                 now = SAMPLE_NOW,
                 fillHeight = true,
             )
@@ -606,7 +613,7 @@ internal fun FeelsLikeWidgetNoCurrentTimePreview() {
             days = null,
             temperatureUnit = TemperatureUnit.CELSIUS,
             timeFormat = TimeFormat.TWELVE_HOUR,
-            startDate = LocalDate.now(),
+            startDate = SAMPLE_START_DATE,
             now = null,
         )
     }

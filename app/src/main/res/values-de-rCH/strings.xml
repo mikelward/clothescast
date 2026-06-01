@@ -296,9 +296,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_description">Die abendliche Wetterzusammenfassung an freien Abenden. Wird lautlos zugestellt — du kannst sie auf dem Sperrbildschirm sehen, sie macht aber keinen Ton.</string>
     <string name="notification_tonight_insight_title">Wetter heute Abend</string>
 
-    <string name="notification_channel_weather_alerts_name">Unwetterwarnungen</string>
-    <string name="notification_channel_weather_alerts_description">Hochpriorisierte Warnungen für schwere oder extreme Wetterereignisse in deiner Region. Werden gesendet, sobald sie beim täglichen Abruf erkannt werden.</string>
-    <string name="notification_weather_alert_title">Wetterwarnung: %1$s</string>
 
     <!-- Notification-permission card (Settings → top of any screen if
          POST_NOTIFICATIONS is denied). -->
@@ -435,7 +432,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_delta_warmer">%1$d° wärmer als gestern.</string>
     <string name="insight_delta_cooler">%1$d° kühler als gestern.</string>
 
-    <string name="insight_alert">Warnung: %1$s.</string>
 
     <!--
     Imperative "Trag …" — informal Du-form, matches the app's casual tone.

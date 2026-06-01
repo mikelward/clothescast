@@ -39,7 +39,6 @@ import app.clothescast.mqtt.MqttPublisher
 import app.clothescast.notification.InsightNotifier
 import app.clothescast.notification.NotificationChannelRegistrar
 import app.clothescast.notification.TonightInsightNotifier
-import app.clothescast.notification.WeatherAlertNotifier
 import app.clothescast.tts.AndroidTtsSpeaker
 import app.clothescast.tts.AndroidTtsVoiceEnumerator
 import app.clothescast.tts.TtsSpeaker
@@ -76,7 +75,6 @@ class ClothesCastApplication : Application() {
     val reverseGeocoder: ReverseGeocoder by lazy { ReverseGeocoder(this) }
     val insightNotifier: InsightNotifier by lazy { InsightNotifier(this) }
     val tonightInsightNotifier: TonightInsightNotifier by lazy { TonightInsightNotifier(this) }
-    val weatherAlertNotifier: WeatherAlertNotifier by lazy { WeatherAlertNotifier(this) }
     val dailyAlarmScheduler: DailyAlarmScheduler by lazy { DailyAlarmScheduler(this) }
     /**
      * Build an on-device TTS speaker pinned to [voiceId], or to the auto-pick

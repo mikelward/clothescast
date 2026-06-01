@@ -314,9 +314,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="notification_channel_tonight_insight_silent_description">Večerní shrnutí počasí v klidné večery. Doručí se tiše — uvidíš ho na zamykací obrazovce, ale nevydá žádný zvuk.</string>
     <string name="notification_tonight_insight_title">Dnešní večerní počasí</string>
 
-    <string name="notification_channel_weather_alerts_name">Výstrahy před bouřkami</string>
-    <string name="notification_channel_weather_alerts_description">Vysoce prioritní výstrahy před silnými nebo extrémními povětrnostními jevy ve tvé oblasti. Odesílají se, jakmile jsou zjištěny při denním načítání.</string>
-    <string name="notification_weather_alert_title">Výstraha před počasím: %1$s</string>
 
     <!-- Notification permission card. -->
     <string name="settings_notification_permission_title">Oznámení jsou zablokována</string>
@@ -559,7 +556,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="insight_band_hot">horko</string>
     <string name="insight_delta_warmer">o %1$d° tepleji než včera.</string>
     <string name="insight_delta_cooler">o %1$d° chladněji než včera.</string>
-    <string name="insight_alert">Výstraha: %1$s.</string>
     <string name="insight_clothes_wear">Obleč si %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>

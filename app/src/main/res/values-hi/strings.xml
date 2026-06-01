@@ -281,9 +281,6 @@ Not overridden by design:
     <string name="notification_channel_tonight_insight_silent_description">जब आपकी शाम खाली हो तब की मौसम सारांश। चुपचाप भेजी जाती है — लॉक स्क्रीन पर देख सकते हैं, लेकिन आवाज़ नहीं होगी।</string>
     <string name="notification_tonight_insight_title">आज रात का ClothesCast</string>
 
-    <string name="notification_channel_weather_alerts_name">गंभीर मौसम चेतावनियाँ</string>
-    <string name="notification_channel_weather_alerts_description">आपके क्षेत्र को प्रभावित करने वाले गंभीर मौसम की उच्च-प्राथमिकता चेतावनियाँ। दैनिक फ़ेच द्वारा पता चलते ही दी जाती हैं।</string>
-    <string name="notification_weather_alert_title">मौसम चेतावनी: %1$s</string>
 
     <!-- Notification permission card. -->
     <string name="settings_notification_permission_title">सूचनाएँ अवरुद्ध हैं</string>
@@ -476,7 +473,6 @@ Not overridden by design:
     <string name="insight_band_hot">बहुत गर्म</string>
     <string name="insight_delta_warmer">आज %1$d° ज़्यादा गर्म।</string>
     <string name="insight_delta_cooler">आज %1$d° ज़्यादा ठंडा।</string>
-    <string name="insight_alert">चेतावनी: %1$s।</string>
     <string name="insight_clothes_wear">%1$s पहनें।</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Hindi has no grammatical articles. -->

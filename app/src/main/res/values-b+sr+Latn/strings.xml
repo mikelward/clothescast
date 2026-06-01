@@ -99,7 +99,6 @@ default English (matching values-pl / values-uk).
     <string name="insight_band_hot">vruće</string>
     <string name="insight_delta_warmer">%1$d° toplije nego juče.</string>
     <string name="insight_delta_cooler">%1$d° hladnije nego juče.</string>
-    <string name="insight_alert">Upozorenje: %1$s.</string>
     <string name="insight_clothes_wear">Obuci %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>
@@ -388,9 +387,6 @@ default English (matching values-pl / values-uk).
     <string name="notification_channel_tonight_insight_silent_description">Večernji vremenski rezime kada ti je večer slobodna. Šalje se tiho — možeš da ga pogledaš na zaključanom ekranu, ali neće reprodukovati zvuk.</string>
     <string name="notification_tonight_insight_title">Večerašnji ClothesCast</string>
 
-    <string name="notification_channel_weather_alerts_name">Upozorenja o nepogodama</string>
-    <string name="notification_channel_weather_alerts_description">Hitna upozorenja za teška ili ekstremna vremenska zbivanja u tvom području. Šalju se čim ih dnevno preuzimanje otkrije.</string>
-    <string name="notification_weather_alert_title">Vremensko upozorenje: %1$s</string>
 
     <!-- Notification-permission card. -->
     <string name="settings_notification_permission_title">Obaveštenja su blokirana</string>

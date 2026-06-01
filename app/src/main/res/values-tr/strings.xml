@@ -238,9 +238,6 @@ displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_description">Sakin akşamlarda gelen akşam hava durumu özeti. Sessiz teslim edilir — kilit ekranında görebilirsiniz ama ses çıkarmaz.</string>
     <string name="notification_tonight_insight_title">Bu akşamın hava durumu</string>
 
-    <string name="notification_channel_weather_alerts_name">Hava durumu uyarıları</string>
-    <string name="notification_channel_weather_alerts_description">Bölgenizdeki şiddetli veya aşırı hava olayları için yüksek öncelikli uyarılar. Günlük veri çekiminde tespit edildiğinde gönderilir.</string>
-    <string name="notification_weather_alert_title">Hava durumu uyarısı: %1$s</string>
 
     <string name="settings_notification_permission_title">Bildirimler engellendi</string>
     <string name="settings_notification_permission_description">Bildirim izni olmadan günlük ClothesCast\'ının gidecek yeri yok. Yarın sabah ClothesCast görünebilsin diye izin ver.</string>
@@ -368,7 +365,6 @@ displayed label localizes.
     <string name="insight_delta_warmer">Bugün %1$d° daha sıcak olacak.</string>
     <string name="insight_delta_cooler">Bugün %1$d° daha soğuk olacak.</string>
 
-    <string name="insight_alert">Uyarı: %1$s.</string>
 
     <string name="insight_clothes_wear">%1$s giy.</string>
     <string name="insight_clothes_bare">%1$s.</string>

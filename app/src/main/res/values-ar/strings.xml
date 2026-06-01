@@ -78,7 +78,6 @@ they work correctly in both the single-band and range templates.
     <string name="insight_band_hot">حار</string>
     <string name="insight_delta_warmer">%1$d° أدفأ من الأمس.</string>
     <string name="insight_delta_cooler">%1$d° أبرد من الأمس.</string>
-    <string name="insight_alert">تنبيه: %1$s.</string>
     <string name="insight_clothes_wear">ارتدِ %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Arabic has no indefinite article equivalent to English "a/an". -->
@@ -425,9 +424,6 @@ they work correctly in both the single-band and range templates.
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast الليلي (صامت)</string>
     <string name="notification_channel_tonight_insight_silent_description">ملخص الطقس المسائي في المساء الهادئ. يُرسَل صامتًا.</string>
     <string name="notification_tonight_insight_title">ClothesCast الليلة</string>
-    <string name="notification_channel_weather_alerts_name">تحذيرات الطقس الشديد</string>
-    <string name="notification_channel_weather_alerts_description">تحذيرات ذات أولوية عالية لأحداث الطقس الشديدة أو القاسية التي تؤثر على منطقتك.</string>
-    <string name="notification_weather_alert_title">تحذير طقس: %1$s</string>
 
     <!-- Settings — notification permission -->
     <string name="settings_notification_permission_title">الإشعارات محظورة</string>

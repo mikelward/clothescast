@@ -77,7 +77,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="insight_band_hot">nóng</string>
     <string name="insight_delta_warmer">ấm hơn hôm qua %1$d°.</string>
     <string name="insight_delta_cooler">mát hơn hôm qua %1$d°.</string>
-    <string name="insight_alert">Cảnh báo: %1$s.</string>
     <string name="insight_clothes_wear">Mặc %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Vietnamese has no grammatical articles. -->
@@ -584,9 +583,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="notification_channel_tonight_insight_silent_description">Tóm tắt thời tiết buổi tối khi buổi tối của bạn trống. Đăng im lặng — bạn có thể xem trên màn hình khóa nhưng sẽ không phát âm thanh.</string>
     <string name="notification_tonight_insight_title">ClothesCast tối nay</string>
 
-    <string name="notification_channel_weather_alerts_name">Cảnh báo thời tiết khắc nghiệt</string>
-    <string name="notification_channel_weather_alerts_description">Cảnh báo ưu tiên cao về các sự kiện thời tiết nghiêm trọng hoặc cực đoan ảnh hưởng đến khu vực của bạn. Được gửi ngay khi lần tải hàng ngày phát hiện.</string>
-    <string name="notification_weather_alert_title">Cảnh báo thời tiết: %1$s</string>
 
     <!-- Notification permission -->
     <string name="settings_notification_permission_title">Thông báo bị chặn</string>

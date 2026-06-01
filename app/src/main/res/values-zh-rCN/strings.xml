@@ -288,9 +288,6 @@ label localizes.
     <string name="notification_channel_tonight_insight_silent_description">晚上没有日程时的晚间天气摘要。静默发送 — 你可以在锁屏上看到，但不会发出声音。</string>
     <string name="notification_tonight_insight_title">今晚的天气</string>
 
-    <string name="notification_channel_weather_alerts_name">极端天气警报</string>
-    <string name="notification_channel_weather_alerts_description">针对你所在地区严重或极端天气事件的高优先级警报。日常获取检测到时立即发送。</string>
-    <string name="notification_weather_alert_title">天气警报：%1$s</string>
 
     <!-- Notification-permission card. -->
     <string name="settings_notification_permission_title">通知已被阻止</string>
@@ -438,7 +435,6 @@ label localizes.
     <string name="insight_band_hot">炎热</string>
     <string name="insight_delta_warmer">今天气温升高%1$d°。</string>
     <string name="insight_delta_cooler">今天气温下降%1$d°。</string>
-    <string name="insight_alert">警告：%1$s。</string>
     <string name="insight_clothes_wear">穿上%1$s。</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <!-- Chinese has no grammatical articles. -->

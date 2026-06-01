@@ -267,9 +267,6 @@ is unchanged; only the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_description">Wieczorne podsumowanie pogody w spokojne wieczory. Dostarczane bezgłośnie — możesz je zobaczyć na ekranie blokady, ale nie wydaje dźwięku.</string>
     <string name="notification_tonight_insight_title">Pogoda wieczorem</string>
 
-    <string name="notification_channel_weather_alerts_name">Ostrzeżenia pogodowe</string>
-    <string name="notification_channel_weather_alerts_description">Wysokopriorytetowe ostrzeżenia o poważnych lub ekstremalnych zjawiskach pogodowych w Twoim rejonie. Wysyłane natychmiast po wykryciu podczas codziennego pobierania.</string>
-    <string name="notification_weather_alert_title">Ostrzeżenie pogodowe: %1$s</string>
 
     <!-- Notification-permission card. -->
     <string name="settings_notification_permission_title">Powiadomienia są zablokowane</string>
@@ -411,7 +408,6 @@ is unchanged; only the displayed label localizes.
     <string name="insight_delta_warmer">o %1$d° cieplej niż wczoraj.</string>
     <string name="insight_delta_cooler">o %1$d° chłodniej niż wczoraj.</string>
 
-    <string name="insight_alert">Ostrzeżenie: %1$s.</string>
 
     <string name="insight_clothes_wear">Załóż %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

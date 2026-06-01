@@ -1,7 +1,5 @@
 package app.clothescast.core.domain.usecase
 
-import app.clothescast.core.domain.model.AlertClause
-import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.CalendarTieInClause
@@ -20,7 +18,6 @@ import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.PrecipProbability.LIKELY_THRESHOLD
 import app.clothescast.core.domain.model.PrecipProbability.POSSIBLE_THRESHOLD
 import app.clothescast.core.domain.model.TemperatureBand
-import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.isPrecipitation
 import java.time.LocalTime
@@ -37,27 +34,25 @@ import kotlin.math.roundToInt
  * [EveningEventTieInClause] (see [GenerateDailyInsight]).
  *
  * Rules (each yields 0 or 1 clause):
- * 1. [AlertClause] — highest-severity SEVERE/EXTREME alert. Extreme outranks Severe;
- *    ties take the first listed.
- * 2. [BandClause] — classify feels-like low and high into bands. Always emitted.
- * 3. [DeltaClause] — yesterday vs today; only emitted when the larger absolute
+ * 1. [BandClause] — classify feels-like low and high into bands. Always emitted.
+ * 2. [DeltaClause] — yesterday vs today; only emitted when the larger absolute
  *    feels-like delta is ≥ 3°C, and only for [ForecastPeriod.TODAY] (yesterday's
  *    overnight comparison isn't useful, and the morning pass already covers it).
- * 4. [ClothesClause] — items triggered by the user's rule list, in rule order.
- * 5. [PrecipClause] — fires in two tiers driven by cross-model agreement:
+ * 3. [ClothesClause] — items triggered by the user's rule list, in rule order.
+ * 4. [PrecipClause] — fires in two tiers driven by cross-model agreement:
  *    [PrecipLikelihood.LIKELY] when a majority of consulted models hit ≥ 50%
  *    at the same hour ("Rain at 3pm."), [PrecipLikelihood.POSSIBLE] when at
  *    least one model hits ≥ 30% but the majority bar isn't cleared ("Chance
  *    of rain at 3pm."). Falls back to the base hourly series — and ultimately
  *    a noon synthesis from the day-level field — when per-model data isn't
  *    available; both fallbacks render as LIKELY (the existing behaviour).
- * 6. [CalendarTieInClause] — when clothes + precip both fired AND a calendar
+ * 5. [CalendarTieInClause] — when clothes + precip both fired AND a calendar
  *    event overlaps the precip peak hour. Picks "umbrella" when on the clothes
- *    list, otherwise the first triggered item, mirroring rule 4's ordering.
+ *    list, otherwise the first triggered item, mirroring rule 3's ordering.
  *    **Only emitted on [ForecastPeriod.TONIGHT].** On TODAY the bare precip
  *    clause ("Rain at 3pm.") is enough — the listener already knows about
  *    their morning event, so chaining a tie-in just repeats what they heard.
- * 7. [EveningEventTieInClause] — passes through whatever the caller built. The
+ * 6. [EveningEventTieInClause] — passes through whatever the caller built. The
  *    renderer doesn't know how to compose one because it requires consulting
  *    the night forecast slice, which is the caller's job.
  *
@@ -68,7 +63,6 @@ class RenderInsightSummary {
         today: DailyForecast,
         yesterday: DailyForecast,
         todayItems: List<String>,
-        alerts: List<WeatherAlert> = emptyList(),
         events: List<CalendarEvent> = emptyList(),
         period: ForecastPeriod = ForecastPeriod.TODAY,
         // The today side of the delta comparison, paired with [yesterday]. The
@@ -131,7 +125,6 @@ class RenderInsightSummary {
         val peak = peakPrecip(today, perModelHourly)
         return InsightSummary(
             period = period,
-            alert = alertClause(alerts),
             band = bandClause(today),
             delta = if (period == ForecastPeriod.TODAY) deltaClause(todayForDelta, yesterday, deltaThresholdC, deltaFormat, diagLog) else null,
             clothes = clothesClause(todayItems, period, clothesMentionMode, yesterdayTriggeredItems),
@@ -156,13 +149,6 @@ class RenderInsightSummary {
             // must survive clothes-mention gating that suppresses [clothes].
             carriedAccessories = todayItems.filter { Garment.isAccessoryKey(it) },
         )
-    }
-
-    private fun alertClause(alerts: List<WeatherAlert>): AlertClause? {
-        val top = alerts.firstOrNull { it.severity == AlertSeverity.EXTREME }
-            ?: alerts.firstOrNull { it.severity == AlertSeverity.SEVERE }
-            ?: return null
-        return AlertClause(top.event)
     }
 
     private fun bandClause(today: DailyForecast): BandClause = BandClause(
@@ -429,7 +415,7 @@ class RenderInsightSummary {
         // never want a calendar event title flowing through to off-device TTS
         // (the prose is fed to Gemini over the BYOK key).
         events.firstOrNull { it.overlaps(peak.time) } ?: return null
-        // Pick the first triggered item, mirroring rule 4's ordering. The formatter
+        // Pick the first triggered item, mirroring rule 3's ordering. The formatter
         // silences accessories (umbrella) before they reach the rendered prose, so
         // there's no point picking a specifically-precip-motivated item here — until
         // the accessory catalog lands, calendar tie-ins are garment-only.

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
 import app.clothescast.R
-import app.clothescast.core.domain.model.AlertClause
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesClause
@@ -223,13 +222,11 @@ class InsightFormatter(
         // post-filter list (umbrella isn't surfaced anywhere, so it can't
         // dedup against anything either).
         val mentionedKeys = wearItems.map(::normalizeItemKey).toSet()
-        // The alert (if any) always leads. The rest splits into daytime content
-        // (band / delta / clothes / precip) and tie-in clauses. Tie-ins carry
-        // their own temporal lead ("Tonight, bring …"), so when we omit the
-        // range the day lead is folded only into the first daytime clause —
-        // never a tie-in, which would double the lead ("Today, tonight, …").
-        // See [renderLeadOnly].
-        val alert = summary.alert?.let(::formatAlert)
+        // The content splits into daytime content (band / delta / clothes /
+        // precip) and tie-in clauses. Tie-ins carry their own temporal lead
+        // ("Tonight, bring …"), so when we omit the range the day lead is folded
+        // only into the first daytime clause — never a tie-in, which would
+        // double the lead ("Today, tonight, …"). See [renderLeadOnly].
         // A BANDS-style delta is the user's Band change-format: today's high band
         // changed vs yesterday. It *replaces* the temperature sentence with an
         // absolute band callout ("Today, it will be hot.") in place of the
@@ -294,7 +291,7 @@ class InsightFormatter(
         } else {
             (primaryClauses + tieInClauses).joinToString(" ")
         }
-        val rendered = listOfNotNull(alert, body.ifBlank { null }).joinToString(" ")
+        val rendered = body
         if (rendered.isNotBlank()) return rendered
         // Nothing fired. Display surfaces show a "Today, it will be the same as
         // yesterday." line so the card isn't blank; TTS opts out via
@@ -415,8 +412,8 @@ class InsightFormatter(
      * recover it and show it parenthesised — "(Today, it will be) 14° to 20°.".
      * The no-lead form is lowercased first so it reads as a continuation after
      * the closing paren ("…) cool to mild." not "…) Cool to mild."). Falls back
-     * to [withLead] unchanged if the suffix doesn't line up (e.g. an alert
-     * prefix shifts the strings) — a harmless "lead shown without parens".
+     * to [withLead] unchanged if the suffix doesn't line up (e.g. a leading
+     * clause shifts the strings) — a harmless "lead shown without parens".
      */
     private fun parenthesizeLead(withLead: String, noLead: String): String {
         if (noLead.isBlank()) return withLead
@@ -447,9 +444,6 @@ class InsightFormatter(
     private fun isAccessory(item: String): Boolean = Garment.isAccessoryKey(item)
 
     private fun normalizeItemKey(item: String): String = item.trim().lowercase(Locale.ROOT)
-
-    private fun formatAlert(alert: AlertClause): String =
-        resources.getString(R.string.insight_alert, alert.event)
 
     private fun formatBand(period: ForecastPeriod, band: BandClause, isFutureDay: Boolean, omitLead: Boolean): String {
         val low = band.feelsLikeMinC.toUnit(temperatureUnit).roundToInt()

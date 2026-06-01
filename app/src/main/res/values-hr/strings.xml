@@ -267,9 +267,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="notification_channel_tonight_insight_silent_description">Večernji vremenski sažetak kad ti je večer slobodna. Šalje se tiho — možeš ga pogledati na zaključanom zaslonu, ali neće proizvesti zvuk.</string>
     <string name="notification_tonight_insight_title">Vrijeme večeras</string>
 
-    <string name="notification_channel_weather_alerts_name">Upozorenja o nepogodama</string>
-    <string name="notification_channel_weather_alerts_description">Upozorenja visokog prioriteta za teška ili ekstremna vremenska zbivanja u tvom području. Šalju se čim ih dnevno dohvaćanje otkrije.</string>
-    <string name="notification_weather_alert_title">Vremensko upozorenje: %1$s</string>
 
     <!-- Notification-permission card. -->
     <string name="settings_notification_permission_title">Obavijesti su blokirane</string>
@@ -416,7 +413,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="insight_band_hot">vruće</string>
     <string name="insight_delta_warmer">%1$d° toplije nego jučer.</string>
     <string name="insight_delta_cooler">%1$d° hladnije nego jučer.</string>
-    <string name="insight_alert">Upozorenje: %1$s.</string>
     <string name="insight_clothes_wear">Obuci %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
     <string name="insight_clothes_article_a">%1$s</string>

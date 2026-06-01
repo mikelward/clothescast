@@ -1,6 +1,5 @@
 package app.clothescast.core.data.weather
 
-import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.Location
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContain
@@ -9,7 +8,6 @@ import io.kotest.matchers.shouldBe
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
-import io.ktor.client.engine.mock.respondError
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -42,30 +40,6 @@ class OpenMeteoClientTest {
                     status = HttpStatusCode.OK,
                     headers = headersOf(HttpHeaders.ContentType, "application/json"),
                 )
-                "/v1/warnings" -> respond(
-                    content = fixtureBytes("/openmeteo_warnings_london.json"),
-                    status = HttpStatusCode.OK,
-                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
-                )
-                else -> error("unexpected path ${request.url.encodedPath}")
-            }
-        }
-        return HttpClient(engine) {
-            install(ContentNegotiation) {
-                json(Json { ignoreUnknownKeys = true })
-            }
-        }
-    }
-
-    private fun mockClientWithWarningsFailure(): HttpClient {
-        val engine = MockEngine { request ->
-            when (request.url.encodedPath) {
-                "/v1/forecast" -> respond(
-                    content = fixtureBytes("/openmeteo_london.json"),
-                    status = HttpStatusCode.OK,
-                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
-                )
-                "/v1/warnings" -> respondError(HttpStatusCode.InternalServerError)
                 else -> error("unexpected path ${request.url.encodedPath}")
             }
         }
@@ -117,21 +91,7 @@ class OpenMeteoClientTest {
     }
 
     @Test
-    fun `also queries the warnings endpoint with location and timezone`() = runTest {
-        val captured = mutableListOf<HttpRequestData>()
-        val client = OpenMeteoClient(mockClient { captured += it })
-
-        client.fetchForecast(london)
-
-        val warningsReq = captured.first { it.url.encodedPath == "/v1/warnings" }
-        warningsReq.url.host shouldBe OPEN_METEO_HOST
-        warningsReq.url.parameters["latitude"] shouldBe "51.5074"
-        warningsReq.url.parameters["longitude"] shouldBe "-0.1278"
-        warningsReq.url.parameters["timezone"] shouldBe "auto"
-    }
-
-    @Test
-    fun `parses fixture into a forecast bundle with alerts`() = runTest {
+    fun `parses fixture into a forecast bundle`() = runTest {
         val client = OpenMeteoClient(mockClient())
 
         val bundle = client.fetchForecast(london)
@@ -139,18 +99,6 @@ class OpenMeteoClientTest {
         bundle.yesterday.temperatureMaxC shouldBe 18.0
         bundle.today.temperatureMaxC shouldBe 24.0
         bundle.today.hourly.size shouldBe 8
-        bundle.alerts.size shouldBe 3
-        bundle.alerts.first().severity shouldBe AlertSeverity.SEVERE
-    }
-
-    @Test
-    fun `warnings failure does not fail the forecast fetch`() = runTest {
-        val client = OpenMeteoClient(mockClientWithWarningsFailure())
-
-        val bundle = client.fetchForecast(london)
-
-        bundle.today.temperatureMaxC shouldBe 24.0
-        bundle.alerts shouldBe emptyList()
     }
 
     @Test
@@ -166,7 +114,6 @@ class OpenMeteoClientTest {
                     status = HttpStatusCode.BadGateway,
                     headers = headersOf(HttpHeaders.ContentType, "text/html"),
                 )
-                "/v1/warnings" -> respondError(HttpStatusCode.InternalServerError)
                 else -> error("unexpected path ${request.url.encodedPath}")
             }
         }
@@ -195,7 +142,6 @@ class OpenMeteoClientTest {
                     status = HttpStatusCode.TooManyRequests,
                     headers = headersOf(HttpHeaders.ContentType, "application/json"),
                 )
-                "/v1/warnings" -> respondError(HttpStatusCode.InternalServerError)
                 else -> error("unexpected path ${request.url.encodedPath}")
             }
         }

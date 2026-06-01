@@ -35,8 +35,8 @@ artifact (see below) for sideload installs.
   changes.
 - **Open-Meteo** for forecast and city geocoding (no key, free).
 - **Deterministic on-device rendering** for the insight sentence —
-  template-fillable rules over the forecast, clothes thresholds, weather
-  alerts, and (optionally) today's calendar events. No LLM round trip.
+  template-fillable rules over the forecast, clothes thresholds, and
+  (optionally) today's calendar events. No LLM round trip.
 - **TTS — your choice of engine**: the platform `TextToSpeech` engine
   (default, fully on-device), or an online voice via the Gemini API.
   Online engines are BYOK; keys are encrypted on-device via Tink +

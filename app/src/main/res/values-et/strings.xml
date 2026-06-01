@@ -461,9 +461,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="notification_channel_tonight_insight_silent_description">Õhtune ilmakokkuvõte, kui õhtu on vaba. Postitatakse vaikselt — saad sellele lukustusekraanilt pilgu heita, kuid heli ei esita.</string>
     <string name="notification_tonight_insight_title">Tänase õhtu ClothesCast</string>
 
-    <string name="notification_channel_weather_alerts_name">Tormhoiatused</string>
-    <string name="notification_channel_weather_alerts_description">Kõrge prioriteediga hoiatused tõsiste või äärmuslike ilmasündmuste kohta sinu piirkonnas. Edastatakse kohe, kui igapäevane laadimine need avastab.</string>
-    <string name="notification_weather_alert_title">Ilmahoiatus: %1$s</string>
 
     <string name="settings_notification_permission_title">Teavitused on blokeeritud</string>
     <string name="settings_notification_permission_description">Ilma teavitusloata pole sinu igapäevasel ClothesCast\'il kuhugi minna. Anna luba, et ClothesCast saaks homme hommikul postitada.</string>
@@ -516,7 +513,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="insight_band_hot">kuum</string>
     <string name="insight_delta_warmer">%1$d° soojem kui eile.</string>
     <string name="insight_delta_cooler">%1$d° jahedam kui eile.</string>
-    <string name="insight_alert">Hoiatus: %1$s.</string>
     <!-- "Pane selga" = idiomatic "put on" with split verb. -->
     <string name="insight_clothes_wear">Pane selga %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>

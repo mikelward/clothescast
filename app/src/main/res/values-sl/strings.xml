@@ -72,7 +72,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="insight_band_hot">vroče</string>
     <string name="insight_delta_warmer">%1$d° topleje kot včeraj.</string>
     <string name="insight_delta_cooler">%1$d° hladneje kot včeraj.</string>
-    <string name="insight_alert">Opozorilo: %1$s.</string>
     <!-- Informal "ti": "Obleci …", "Vzemi … s seboj". -->
     <string name="insight_clothes_wear">Obleci %1$s.</string>
     <string name="insight_clothes_bare">%1$s.</string>
@@ -552,9 +551,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="notification_channel_tonight_insight_silent_name">Nočni ClothesCast (tiho)</string>
     <string name="notification_channel_tonight_insight_silent_description">Večerni vremenski povzetek, ko je tvoj večer prost. Objavljeno tiho — na zaklenjenem zaslonu si ga lahko ogledaš, a ne bo proizvajal zvoka.</string>
     <string name="notification_tonight_insight_title">Nocojšnji ClothesCast</string>
-    <string name="notification_channel_weather_alerts_name">Opozorila o hudih vremenskih razmerah</string>
-    <string name="notification_channel_weather_alerts_description">Visoko prednostna opozorila o hudih ali ekstremnih vremenskih razmerah na tvojem območju. Dostavljena takoj, ko jih dnevni prenos zazna.</string>
-    <string name="notification_weather_alert_title">Vremensko opozorilo: %1$s</string>
 
     <!-- Notification permission card. -->
     <string name="settings_notification_permission_title">Obvestila so blokirana</string>

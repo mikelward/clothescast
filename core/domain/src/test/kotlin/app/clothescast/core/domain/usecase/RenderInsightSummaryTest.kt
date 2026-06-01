@@ -1,6 +1,5 @@
 package app.clothescast.core.domain.usecase
 
-import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.DailyForecast
@@ -13,14 +12,12 @@ import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.TemperatureBand
-import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -408,40 +405,7 @@ class RenderInsightSummaryTest {
     }
 
     @Test
-    fun `alert clause is emitted with the highest-severity event`() {
-        val severe = WeatherAlert(
-            event = "Severe Thunderstorm Warning",
-            severity = AlertSeverity.SEVERE,
-            headline = null, description = null,
-            onset = Instant.parse("2026-04-25T15:00:00Z"),
-            expires = Instant.parse("2026-04-25T20:00:00Z"),
-        )
-        val extreme = WeatherAlert(
-            event = "Tornado Warning",
-            severity = AlertSeverity.EXTREME,
-            headline = null, description = null,
-            onset = Instant.parse("2026-04-25T15:00:00Z"),
-            expires = Instant.parse("2026-04-25T20:00:00Z"),
-        )
-        val out = subject(mildToday, yesterday, emptyList(), alerts = listOf(severe, extreme))
-        out.alert.shouldNotBeNull()
-        out.alert!!.event shouldBe "Tornado Warning"
-    }
-
-    @Test
-    fun `non-severe alerts are ignored`() {
-        val moderate = WeatherAlert(
-            event = "Wind Advisory",
-            severity = AlertSeverity.MODERATE,
-            headline = null, description = null,
-            onset = Instant.parse("2026-04-25T08:00:00Z"),
-            expires = Instant.parse("2026-04-25T18:00:00Z"),
-        )
-        subject(mildToday, yesterday, emptyList(), alerts = listOf(moderate)).alert.shouldBeNull()
-    }
-
-    @Test
-    fun `full insight composes alert + band + delta + clothes + precipitation`() {
+    fun `full insight composes band + delta + clothes + precipitation`() {
         val today = mildToday.copy(
             feelsLikeMinC = 15.0,
             feelsLikeMaxC = 23.0,
@@ -451,19 +415,10 @@ class RenderInsightSummaryTest {
                 HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.RAIN),
             ),
         )
-        val severe = WeatherAlert(
-            event = "Flood Warning",
-            severity = AlertSeverity.SEVERE,
-            headline = null, description = null,
-            onset = Instant.parse("2026-04-25T15:00:00Z"),
-            expires = Instant.parse("2026-04-25T20:00:00Z"),
-        )
         val out = subject(
             today, yesterday,
             todayItems = listOf("sweater", "umbrella"),
-            alerts = listOf(severe),
         )
-        out.alert!!.event shouldBe "Flood Warning"
         out.band.low shouldBe TemperatureBand.COOL
         out.band.high shouldBe TemperatureBand.MILD
         out.delta!!.degrees shouldBe 6

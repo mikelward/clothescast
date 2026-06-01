@@ -190,11 +190,8 @@ fun PrecipitationChart(
             modelProducer = producer,
             scrollState = rememberVicoScrollState(scrollEnabled = false),
             zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content),
-            // No animations — appears at final shape on compose (animateIn) and
-            // data changes apply instantly (animationSpec = null), snappier on
-            // page swipes and toggles. See ForecastChart for the rationale.
-            animateIn = false,
-            animationSpec = null,
+            animateIn = CHART_ANIMATE_IN,
+            animationSpec = CHART_ANIMATION_SPEC,
             modifier = Modifier.matchParentSize(),
         )
     }

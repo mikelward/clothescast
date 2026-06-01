@@ -630,6 +630,9 @@ private const val SUN_PATH =
 
 // Coloured icon palette for the outfit-card info rows. Outline reads as a
 // thin dark line against the white card; fill colours pop against it.
+// The thermometer's liquid is normally tinted on a cold→hot scale by
+// [temperatureScaleColorArgb]; this red is the scale's HOT anchor and the
+// fallback for callers that don't classify a temperature.
 private const val THERMOMETER_FILL_ARGB = 0xFFE53935.toInt()
 private const val DROPLET_FILL_ARGB = 0xFF1E88E5.toInt()
 private const val INFO_ICON_OUTLINE_ARGB = 0xFF333333.toInt()
@@ -639,10 +642,13 @@ private const val INFO_ICON_STROKE_WIDTH = 1.5f
 /**
  * Draws a coloured thermometer at ([x], [y]) sized [size]×[size]. The
  * whole silhouette — bulb included — fills upward in proportion to
- * [fillFraction] (clamped to 0..1), so the visible red area tracks
- * temperature linearly. A thin outline traces the silhouette so the icon
- * stays legible even when the column is empty; [interiorArgb] / [outlineArgb]
- * default to the white-card palette but can be themed for a dark widget.
+ * [fillFraction] (clamped to 0..1), so the visible liquid area tracks
+ * temperature linearly. [fillArgb] colours that liquid on a cold→hot scale
+ * (see [temperatureScaleColorArgb]); it defaults to the legacy red for
+ * callers that don't classify a temperature. A thin outline traces the
+ * silhouette so the icon stays legible even when the column is empty;
+ * [interiorArgb] / [outlineArgb] default to the white-card palette but can be
+ * themed for a dark widget.
  */
 private fun drawThermometerIcon(
     canvas: Canvas,
@@ -652,6 +658,7 @@ private fun drawThermometerIcon(
     fillFraction: Float,
     interiorArgb: Int = android.graphics.Color.WHITE,
     outlineArgb: Int = INFO_ICON_OUTLINE_ARGB,
+    fillArgb: Int = THERMOMETER_FILL_ARGB,
 ) {
     val fill = fillFraction.coerceIn(0f, 1f)
     val liquidTopY = THERMOMETER_FILL_TOP +
@@ -662,7 +669,7 @@ private fun drawThermometerIcon(
         y = y,
         size = size,
         pathData = THERMOMETER_PATH,
-        fillArgb = THERMOMETER_FILL_ARGB,
+        fillArgb = fillArgb,
         liquidTopY = liquidTopY,
         interiorArgb = interiorArgb,
         outlineArgb = outlineArgb,
@@ -797,9 +804,14 @@ private fun drawSolidGlyph(
 internal data class OutfitCardInfoLines(
     val tempLine: String,
     // Day's high feels-like mapped over 0..40 °C, clamped — drives the
-    // thermometer's red liquid height. Calculation runs in °C regardless of
+    // thermometer's liquid height. Calculation runs in °C regardless of
     // the user's display unit (which only affects [tempLine]).
     val tempFillFraction: Float,
+    // Day's high feels-like in °C, null when [hourly] is empty — drives the
+    // thermometer liquid's cold→hot tint via [temperatureScaleColorArgb].
+    // Kept in °C (unit-independent) like [tempFillFraction]; the band
+    // breakpoints are Celsius.
+    val tempHighC: Double? = null,
     // Peak precipitation probability / 100 — drives the droplet's blue fill.
     // Null whenever [rainLineShort] is null (cell hidden below the 30 % threshold).
     val rainFillFraction: Float?,
@@ -879,6 +891,7 @@ internal fun outfitCardInfoLines(
         tempLine = tempLine,
         rainLineShort = rainLineShort,
         tempFillFraction = tempFillFraction,
+        tempHighC = highC,
         rainFillFraction = rainFillFraction,
         windLabel = windLabel,
         windMaxKmh = windMaxKmh,
@@ -894,6 +907,8 @@ internal enum class ConditionsGlyph { THERMOMETER, DROPLET, WIND, UV }
  * One indicator on the conditions strip: a glyph plus its label. Thermometer /
  * droplet read [fillFraction] (a partial fill); the solid wind / UV glyphs read
  * [tintArgb] (their Beaufort / WHO scale colour, null → theme outline colour).
+ * The thermometer reads *both*: [fillFraction] for the liquid height and
+ * [tintArgb] for its cold→hot colour (null → the legacy red fallback).
  */
 internal data class ConditionsCell(
     val glyph: ConditionsGlyph,
@@ -911,8 +926,9 @@ internal data class ConditionsCell(
  * wider than the bitmap is scaled down to fit rather than clipped.
  *
  * [darkTheme] swaps the glyph interior / outline / text colours so the strip
- * reads on a dark widget background; the thermometer red / droplet blue and the
- * wind / UV scale tints stay constant since they pop on either background.
+ * reads on a dark widget background; the thermometer cold→hot tint, the droplet
+ * blue, and the wind / UV scale tints stay constant since they pop on either
+ * background.
  * Memoised on the full input tuple (cells + size + theme) so frequent widget
  * refreshes don't re-rasterize.
  */
@@ -973,7 +989,14 @@ internal fun renderConditionsStripBitmap(
  * same set in the same order.
  */
 internal fun conditionsCells(info: OutfitCardInfoLines): List<ConditionsCell> = buildList {
-    add(ConditionsCell(ConditionsGlyph.THERMOMETER, info.tempLine, fillFraction = info.tempFillFraction))
+    add(
+        ConditionsCell(
+            ConditionsGlyph.THERMOMETER,
+            info.tempLine,
+            fillFraction = info.tempFillFraction,
+            tintArgb = info.tempHighC?.let { temperatureScaleColorArgb(it) },
+        ),
+    )
     info.rainLineShort?.let {
         add(ConditionsCell(ConditionsGlyph.DROPLET, it, fillFraction = info.rainFillFraction ?: 0f))
     }
@@ -1036,7 +1059,10 @@ private fun drawConditionsRow(
         val ix = x.roundToInt()
         when (cell.glyph) {
             ConditionsGlyph.THERMOMETER ->
-                drawThermometerIcon(canvas, ix, iconTop, iconPx, cell.fillFraction, interiorArgb, outlineArgb)
+                drawThermometerIcon(
+                    canvas, ix, iconTop, iconPx, cell.fillFraction, interiorArgb, outlineArgb,
+                    fillArgb = cell.tintArgb ?: THERMOMETER_FILL_ARGB,
+                )
             ConditionsGlyph.DROPLET ->
                 drawRainDropletIcon(canvas, ix, iconTop, iconPx, cell.fillFraction, interiorArgb, outlineArgb)
             ConditionsGlyph.WIND ->
@@ -1146,6 +1172,24 @@ internal fun uvScaleColorArgb(index: Double): Int = when {
     index < 8.0 -> 0xFFEF6C00.toInt() // orange — high
     index < 11.0 -> 0xFFD50000.toInt() // red — very high
     else -> 0xFF6A1B9A.toInt() // violet — extreme
+}
+
+/**
+ * Cold→hot colour for a feels-like temperature in °C, keyed to the same
+ * [TemperatureBand] the thermometer's fill height uses — so the liquid's
+ * colour and level agree (a barely-COLD column is short *and* blue, a HOT
+ * one is tall *and* red). Deep blue (freezing) → blue → cyan → green
+ * (mild) → orange → red (hot). The HOT red matches [THERMOMETER_FILL_ARGB],
+ * the legacy fill. Reads on both light and dark widget backgrounds, like the
+ * wind / UV scales.
+ */
+internal fun temperatureScaleColorArgb(c: Double): Int = when (TemperatureBand.forCelsius(c)) {
+    TemperatureBand.FREEZING -> 0xFF1565C0.toInt() // deep blue — freezing
+    TemperatureBand.COLD -> 0xFF039BE5.toInt() // blue — cold
+    TemperatureBand.COOL -> 0xFF00ACC1.toInt() // cyan — cool
+    TemperatureBand.MILD -> 0xFF43A047.toInt() // green — mild
+    TemperatureBand.WARM -> 0xFFFB8C00.toInt() // orange — warm
+    TemperatureBand.HOT -> 0xFFE53935.toInt() // red — hot
 }
 
 // Anchors for the saturated tails of the thermometer scale — below

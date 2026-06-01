@@ -40,7 +40,12 @@ class ConditionsStripSnapshotTest {
     private val ctx: Context get() = ApplicationProvider.getApplicationContext()
 
     private fun thermo(label: String, c: Double) =
-        ConditionsCell(ConditionsGlyph.THERMOMETER, label, fillFraction = thermometerFillFractionFor(c))
+        ConditionsCell(
+            ConditionsGlyph.THERMOMETER,
+            label,
+            fillFraction = thermometerFillFractionFor(c),
+            tintArgb = temperatureScaleColorArgb(c),
+        )
 
     private fun rain(label: String, fraction: Float) =
         ConditionsCell(ConditionsGlyph.DROPLET, label, fillFraction = fraction)

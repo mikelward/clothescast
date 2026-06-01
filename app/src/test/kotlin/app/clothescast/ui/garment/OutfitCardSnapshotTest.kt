@@ -53,6 +53,7 @@ class OutfitCardSnapshotTest {
                     tempLine = "22–30°C",
                     // Warm day: high 30°C, HOT band → (5 + (30-28)/12) / 6 ≈ 0.86.
                     tempFillFraction = thermometerFillFractionFor(30.0),
+                    tempHighC = 30.0,
                     rainFillFraction = 0.40f, // Peak 40% rain → droplet 40% full.
                     rainLineShort = "40%",
                 ),
@@ -76,6 +77,7 @@ class OutfitCardSnapshotTest {
                     // Peak below threshold — rain cell hidden (rainLineShort null).
                     // Cool evening: high 18°C, start of MILD band → exactly 0.5 fill.
                     tempFillFraction = thermometerFillFractionFor(18.0),
+                    tempHighC = 18.0,
                     rainFillFraction = null,
                 ),
                 topColors = emptyMap(),
@@ -98,6 +100,7 @@ class OutfitCardSnapshotTest {
                     tempLine = "9–15°C",
                     // Cool day: high 15°C, midpoint of COOL band → 0.417 fill.
                     tempFillFraction = thermometerFillFractionFor(15.0),
+                    tempHighC = 15.0,
                     rainFillFraction = null,
                 ),
                 topColors = mapOf(OutfitSuggestion.Top.THIN_JACKET to 0xFFE53935L), // red jacket
@@ -125,6 +128,7 @@ class OutfitCardSnapshotTest {
                     tempLine = "-3–2°C",
                     // Freezing: high 2°C, FREEZING band → low fill.
                     tempFillFraction = thermometerFillFractionFor(2.0),
+                    tempHighC = 2.0,
                     rainFillFraction = null,
                 ),
                 topColors = emptyMap(),
@@ -151,6 +155,7 @@ class OutfitCardSnapshotTest {
                 info = OutfitCardInfoLines(
                     tempLine = "-3–2°C",
                     tempFillFraction = thermometerFillFractionFor(2.0),
+                    tempHighC = 2.0,
                     rainFillFraction = null,
                 ),
                 topColors = emptyMap(),
@@ -179,6 +184,7 @@ class OutfitCardSnapshotTest {
                 info = OutfitCardInfoLines(
                     tempLine = "9–15°C",
                     tempFillFraction = thermometerFillFractionFor(15.0),
+                    tempHighC = 15.0,
                     rainFillFraction = 0.80f,
                     rainLineShort = "80%",
                 ),
@@ -210,6 +216,7 @@ class OutfitCardSnapshotTest {
                 info = OutfitCardInfoLines(
                     tempLine = "-3–2°C",
                     tempFillFraction = thermometerFillFractionFor(2.0),
+                    tempHighC = 2.0,
                     rainFillFraction = 0.70f,
                     rainLineShort = "70%",
                 ),
@@ -232,6 +239,7 @@ class OutfitCardSnapshotTest {
                 info = OutfitCardInfoLines(
                     tempLine = "18–34°C",
                     tempFillFraction = thermometerFillFractionFor(34.0),
+                    tempHighC = 34.0,
                     rainFillFraction = 0.40f,
                     rainLineShort = "40%",
                     windLabel = "45 km/h", // orange (strong breeze)

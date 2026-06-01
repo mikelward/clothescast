@@ -12,6 +12,7 @@ import androidx.core.graphics.PathParser as AndroidPathParser
 import app.clothescast.R
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WindSpeedUnit
@@ -805,8 +806,9 @@ internal data class OutfitCardInfoLines(
     // below the 30 % threshold. Default null for callers that don't compute it.
     val rainLineShort: String? = null,
     // Wind / UV cells. Each label is null unless the period's peak is "notable"
-    // (>= WIND_NOTABLE_KMH / UV_NOTABLE); the raw maximum rides alongside so the
-    // renderer can pick the Beaufort / WHO scale tint.
+    // (wind >= WIND_NOTABLE_KMH; UV once it rounds to >= UV_NOTABLE, matching the
+    // integer the label shows); the raw maximum rides alongside so the renderer
+    // can pick the Beaufort / WHO scale tint.
     val windLabel: String? = null,
     val windMaxKmh: Double? = null,
     val uvLabel: String? = null,
@@ -819,6 +821,7 @@ internal fun outfitCardInfoLines(
     hourly: List<HourlyForecast>,
     temperatureUnit: TemperatureUnit,
     windSpeedUnit: WindSpeedUnit = WindSpeedUnit.KMH,
+    perModelHourly: PerModelHourly? = null,
 ): OutfitCardInfoLines {
     val lowC = hourly.minOfOrNull { it.feelsLikeC }
     val highC = hourly.maxOfOrNull { it.feelsLikeC }
@@ -854,8 +857,17 @@ internal fun outfitCardInfoLines(
             windSpeedUnit.symbol(),
         )
     }
-    val uvMax = hourly.mapNotNull { it.uvIndex }.maxOrNull()
-        ?.takeIf { it >= UV_NOTABLE }
+    // Peak UV from the cross-model consensus (per-hour mean across models) when
+    // per-model data is available — the same blend the UV diagnostic chart and
+    // its "Peak N" subtitle draw, so the strip and the chart can't disagree.
+    // Falls back to the primary hourly series for callers / cached payloads that
+    // carry no per-model arrays (previews, pre-multi-model caches). Gate on the
+    // *rounded* peak so the cell appears for exactly the values the label
+    // renders: a 5.5–5.9 peak reads as "UV 6" once rounded, so testing the raw
+    // value against UV_NOTABLE (6.0) would hide a UV the user is told is 6.
+    val uvPeak = perModelHourly?.let { consensusUvPeak(it) }
+        ?: hourly.mapNotNull { it.uvIndex }.maxOrNull()
+    val uvMax = uvPeak?.takeIf { it.roundToInt() >= UV_NOTABLE }
     val uvLabel = uvMax?.let { context.getString(R.string.conditions_uv, it.roundToInt()) }
     return OutfitCardInfoLines(
         tempLine = tempLine,
@@ -1083,6 +1095,24 @@ internal const val WIND_NOTABLE_KMH = 30.0
 internal const val UV_NOTABLE = 6.0
 
 /**
+ * Peak UV across the cross-model consensus: the per-hour mean of [uvIndex]
+ * across whichever models reported at that hour, then the maximum of those
+ * means. Mirrors the main line the UV diagnostic chart draws (and its "Peak N"
+ * subtitle), so the conditions strip surfaces the same UV the user sees plotted
+ * rather than a lone primary-series spike the consensus smooths away. Null when
+ * no model reports UV at any hour.
+ */
+internal fun consensusUvPeak(perModelHourly: PerModelHourly): Double? {
+    val byIndex = mutableMapOf<Int, MutableList<Double>>()
+    perModelHourly.byModel.values.forEach { entries ->
+        entries.forEachIndexed { i, entry ->
+            entry.uvIndex?.let { byIndex.getOrPut(i) { mutableListOf() } += it }
+        }
+    }
+    return byIndex.values.maxOfOrNull { it.average() }
+}
+
+/**
  * Beaufort-flavoured colour for a wind speed in km/h: amber (fresh breeze) →
  * orange (strong) → red (gale) → violet (storm). Since the cell only shows ≥
  * [WIND_NOTABLE_KMH] the user always sees amber-or-worse, escalating with
@@ -1097,8 +1127,9 @@ internal fun windScaleColorArgb(kmh: Double): Int = when {
 
 /**
  * WHO UV-index colour scale: green (low) → yellow → orange → red → violet
- * (extreme). The cell only shows ≥ [UV_NOTABLE], so in practice the user sees
- * orange-or-worse.
+ * (extreme). The cell only shows once the peak rounds to ≥ [UV_NOTABLE], so the
+ * user sees high-yellow-or-worse (a 5.5–5.9 peak reads "UV 6" but still tints
+ * yellow until the raw value crosses 6.0).
  */
 internal fun uvScaleColorArgb(index: Double): Int = when {
     index < 3.0 -> 0xFF558B2F.toInt() // green — low

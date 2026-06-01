@@ -1,5 +1,6 @@
 package app.clothescast.notification
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import androidx.core.app.NotificationCompat
@@ -25,6 +26,11 @@ import app.clothescast.core.domain.model.OutfitSuggestion
  */
 class TonightInsightNotifier(private val context: Context) {
 
+    // POST_NOTIFICATIONS is checked via NotificationPermission.isGranted() at the
+    // top of this method (an early return), but lint can't trace the permission
+    // check through that helper to the notify() call below — so it flags a false
+    // positive. The guard makes the post safe on Android 13+.
+    @SuppressLint("MissingPermission")
     fun notify(
         insight: Insight,
         prose: String,

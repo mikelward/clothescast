@@ -633,12 +633,13 @@ private const val DROPLET_FILL_ARGB = 0xFF1E88E5.toInt()
 private const val INFO_ICON_OUTLINE_ARGB = 0xFF333333.toInt()
 // Stroke width in 24-unit viewport coordinates; ≈2.25 px at INFO_ICON_PX=36.
 private const val INFO_ICON_STROKE_WIDTH = 1.5f
-// The sun glyph (Material `wb_sunny`) is a disc plus eight thin rays. At the
-// full INFO_ICON_STROKE_WIDTH a centered outline nearly swallows each ~1.4-unit
-// ray, so the sun reads as mostly black outline rather than a tinted sun. A
-// thinner edge keeps the silhouette legible while letting the UV-scale fill
-// show through the rays.
-private const val SUN_STROKE_WIDTH = 0.75f
+// The solid scale-tinted glyphs are thin-featured: the sun (Material
+// `wb_sunny`) is a disc plus eight ~1.4-unit rays, and the wind (`air`) is
+// three flowing lines of similar width. At the full INFO_ICON_STROKE_WIDTH a
+// centered outline nearly swallows each one, so the glyph reads as mostly
+// black outline rather than a tinted shape. A thinner edge keeps the
+// silhouette legible while letting the scale-tinted fill show through.
+private const val THIN_GLYPH_STROKE_WIDTH = 0.75f
 
 /**
  * Draws a coloured thermometer at ([x], [y]) sized [size]×[size]. The
@@ -1037,11 +1038,14 @@ private fun drawConditionsRow(
             ConditionsGlyph.DROPLET ->
                 drawRainDropletIcon(canvas, ix, iconTop, iconPx, cell.fillFraction, interiorArgb, outlineArgb)
             ConditionsGlyph.WIND ->
-                drawSolidGlyph(canvas, ix, iconTop, iconPx, AIR_PATH, cell.tintArgb ?: outlineArgb, outlineArgb)
+                drawSolidGlyph(
+                    canvas, ix, iconTop, iconPx, AIR_PATH, cell.tintArgb ?: outlineArgb, outlineArgb,
+                    outlineWidth = THIN_GLYPH_STROKE_WIDTH,
+                )
             ConditionsGlyph.UV ->
                 drawSolidGlyph(
                     canvas, ix, iconTop, iconPx, SUN_PATH, cell.tintArgb ?: outlineArgb, outlineArgb,
-                    outlineWidth = SUN_STROKE_WIDTH,
+                    outlineWidth = THIN_GLYPH_STROKE_WIDTH,
                 )
         }
         canvas.drawText(cell.label, ix + iconPx + iconGap, baseline, textPaint)

@@ -632,10 +632,10 @@ private const val THERMOMETER_FILL_ARGB = 0xFFE53935.toInt()
 private const val DROPLET_FILL_ARGB = 0xFF1E88E5.toInt()
 private const val INFO_ICON_OUTLINE_ARGB = 0xFF333333.toInt()
 // Outline width for the fill-metaphor glyphs (thermometer, droplet) in 24-unit
-// viewport coordinates; ≈1.9 px at INFO_ICON_PX=36. Their broad silhouettes
-// carry a heavier edge than the thin-featured sun / wind, but a touch under the
+// viewport coordinates; ≈1.5 px at INFO_ICON_PX=36. Their broad silhouettes
+// carry a heavier edge than the thin-featured sun / wind, but staying under the
 // old 1.5 keeps the outline from reading as chunky against the fill.
-private const val INFO_ICON_STROKE_WIDTH = 1.25f
+private const val INFO_ICON_STROKE_WIDTH = 1.0f
 // The solid scale-tinted glyphs are thin-featured: the sun (Material
 // `wb_sunny`) is a disc plus eight ~1.4-unit rays, and the wind (`air`) is
 // three flowing lines of similar width. At the full INFO_ICON_STROKE_WIDTH a
